@@ -2,17 +2,17 @@ package com.bobmowzie.mowziesmobs.enums;
 
 public enum MMAnimation
 {
-    ATTACK((byte) 1);
+    ATTACK(1);
 
-    private MMAnimation(byte id)
+    private MMAnimation(int id)
     {
         this.id = id;
     }
 
     public int animID()
     {
-        return (int) this.id;
+        return this.id;
     }
 
-    public final byte id;
+    public final int id;
 }
