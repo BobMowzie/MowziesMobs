@@ -52,9 +52,9 @@ public class AnimBasicAttack extends AIAnimation
 		super.updateTask();
 		if(entity.getAnimTick() < ((this.duration / 2) - 2) && entity.getAttackTarget() != null)
 			entity.getLookHelper().setLookPositionWithEntity(entityTarget, 30F, 30F);
-		if (this.entity.getAnimTick() == ((this.duration / 2) - 2) && entityTarget != null) {
+		if (this.entity.getAnimTick() == ((this.duration / 2) - 2)) {
 			float damage = (float) this.entity.getAttack();
-			this.entityTarget.attackEntityFrom(DamageSource.causeMobDamage(this.entity), damage);
+			if (entityTarget != null) this.entityTarget.attackEntityFrom(DamageSource.causeMobDamage(this.entity), damage);
 			entity.playSound(attackSound, 1, 1);
 		}
 	}

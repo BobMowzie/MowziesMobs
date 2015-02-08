@@ -30,13 +30,12 @@ public class EntityFoliaath extends MMEntityBase
         tasks.addTask(2, new AnimBasicAttack(this, 14, "foliaathattack"));
 		tasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true));
 		tasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityCreature.class, 0, true));
+    }
 
-	}
-
-    public void entityInit()
+ /*   public void entityInit()
     {
         super.entityInit();
-    }
+    }*/
 
     public int getAttack() {
         return 5;
@@ -59,7 +58,9 @@ public class EntityFoliaath extends MMEntityBase
             setRotationYawHead((float) (Math.atan2(getAttackTarget().posZ - posZ, getAttackTarget().posX - posX) * (180 / Math.PI) + 90));
             targetDistance = (float) Math.sqrt((getAttackTarget().posZ - posZ) * (getAttackTarget().posZ - posZ) + (getAttackTarget().posX - posX) * (getAttackTarget().posX - posX));
 
-            if (targetDistance <= 5) AnimationAPI.sendAnimPacket(this, MMAnimation.ATTACK.animID());
+            if (targetDistance <= 5 && getAnimID() == 0) {
+                AnimationAPI.sendAnimPacket(this, MMAnimation.ATTACK.animID());
+            }
 
             if (targetDistance <= 11)
             {
