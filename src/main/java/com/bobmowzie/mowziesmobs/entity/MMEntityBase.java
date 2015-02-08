@@ -96,4 +96,8 @@ public class MMEntityBase extends EntityCreature implements IEntityAdditionalSpa
     public int getAnimTick() {
         return animTick;
     }
+
+    public int getAttack() {
+        return 0;
+    }
 }
