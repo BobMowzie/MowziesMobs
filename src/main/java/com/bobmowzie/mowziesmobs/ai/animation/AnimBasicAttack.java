@@ -24,7 +24,7 @@ public class AnimBasicAttack extends AIAnimation
 	@Override
 	public int getAnimID()
 	{
-		return MMAnimation.ATTACK.id;
+		return MMAnimation.ATTACK.animID();
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class AnimBasicAttack extends AIAnimation
 	public void startExecuting()
 	{
 		super.startExecuting();
-		System.out.println("Bite");
+
 		this.entityTarget = this.entity.getAttackTarget();
 	}
 
@@ -51,10 +51,11 @@ public class AnimBasicAttack extends AIAnimation
 	public void updateTask()
 	{
 		super.updateTask();
+		System.out.println(entity.getAnimTick());
 		if (this.entity.getAnimTick() == ((this.duration / 2) - 2)) {
 			float damage = (float) this.entity.getAttack();
 			this.entityTarget.attackEntityFrom(DamageSource.causeMobDamage(this.entity), damage);
-			entity.playSound(attackSound, 1, 1);
+//			entity.playSound(attackSound, 1, 1);
 		}
 	}
 }

@@ -69,6 +69,7 @@ public class MMEntityBase extends EntityCreature implements IEntityAdditionalSpa
     public void onUpdate() {
         super.onUpdate();
         frame++;
+        if (animID != 0) animTick++;
     }
 
     @Override
