@@ -3,8 +3,9 @@ package com.bobmowzie.mowziesmobs.entity;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.animation.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.client.model.animation.tools.IntermittentAnimation;
-import com.bobmowzie.mowziesmobs.packet.PacketDecreaseTimer;
-import com.bobmowzie.mowziesmobs.packet.PacketIncreaseTimer;
+import com.bobmowzie.mowziesmobs.packet.AbstractPacket;
+import com.bobmowzie.mowziesmobs.packet.foliaath.PacketDecreaseTimer;
+import com.bobmowzie.mowziesmobs.packet.foliaath.PacketIncreaseTimer;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAISwimming;
@@ -16,6 +17,7 @@ public class EntityFoliaath extends MMEntityBase
 	public IntermittentAnimation openMouth = new IntermittentAnimation(15, 70, 20, 1);
 	public ControlledAnimation active = new ControlledAnimation(10);
 	public float targetDistance;
+    public boolean lastTimeDecrease = false;
 
 	public EntityFoliaath(World world)
 	{
@@ -26,31 +28,53 @@ public class EntityFoliaath extends MMEntityBase
 		tasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityCreature.class, 0, true));
 	}
 
-	@Override
-	public void onUpdate() {
-		super.onUpdate();
-		if (this.worldObj.isRemote) {
-			if (getAnimID() == 0) {
-				this.openMouth.runAnimation();
-			} else {
-				this.openMouth.stopAnimation();
-			}
-		}
-		this.renderYawOffset = 0;
-		this.rotationYaw = 0;
+    public void entityInit()
+    {
+        super.entityInit();
+    }
 
-		if (this.getAttackTarget() instanceof EntityFoliaath) this.setAttackTarget(null);
+	public void onUpdate()
+    {
+		super.onUpdate();
+		if (worldObj.isRemote)
+        {
+			if (getAnimID() == 0) openMouth.runAnimation();
+			else openMouth.stopAnimation();
+		}
+		renderYawOffset = 0;
+		rotationYaw = 0;
+
+        if (getAttackTarget() instanceof EntityFoliaath) setAttackTarget(null);
 		if (getAttackTarget() != null)
-		{
-			this.setRotationYawHead((float) (Math.atan2(getAttackTarget().posZ - this.posZ, getAttackTarget().posX - this.posX) * (180 / Math.PI) + 90));
-			targetDistance = (float) Math.sqrt((getAttackTarget().posZ - this.posZ) * (getAttackTarget().posZ - this.posZ) + (getAttackTarget().posX - this.posX) * (getAttackTarget().posX - this.posX));
-			if (targetDistance <= 7) MowziesMobs.networkWrapper.sendToAll(new PacketIncreaseTimer(this.getEntityId()));
-			else MowziesMobs.networkWrapper.sendToAll(new PacketDecreaseTimer(this.getEntityId()));
-		}
-		else
-		{
-			MowziesMobs.networkWrapper.sendToAll(new PacketDecreaseTimer(this.getEntityId()));
-		}
+        {
+            setRotationYawHead((float) (Math.atan2(getAttackTarget().posZ - posZ, getAttackTarget().posX - posX) * (180 / Math.PI) + 90));
+            targetDistance = (float) Math.sqrt((getAttackTarget().posZ - posZ) * (getAttackTarget().posZ - posZ) + (getAttackTarget().posX - posX) * (getAttackTarget().posX - posX));
+
+            if (targetDistance <= 7)
+            {
+                sendPacket(new PacketIncreaseTimer(getEntityId()));
+                lastTimeDecrease = false;
+            }
+            else if (!lastTimeDecrease)
+            {
+                sendPacket(new PacketDecreaseTimer(getEntityId()));
+                lastTimeDecrease = true;
+            }
+        }
+        else if (!lastTimeDecrease)
+        {
+            sendPacket(new PacketDecreaseTimer(getEntityId()));
+            lastTimeDecrease = true;
+        }
 	}
+
+    public void sendPacket(AbstractPacket packet)
+    {
+        if (!worldObj.isRemote)
+        {
+            System.out.println("[MowziesMobs]: Sending packet " + packet);
+            MowziesMobs.networkWrapper.sendToAll(packet);
+        }
+    }
 }
 

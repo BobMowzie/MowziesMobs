@@ -6,9 +6,6 @@ import thehippomaster.AnimationAPI.AIAnimation;
 
 public class AnimAttack extends AIAnimation
 {
-	//you are using it :P nothing actually usesthis clas
-	//oh
-
 	private EntityFoliaath entity;
 	private int duration;
 

@@ -1,15 +1,11 @@
 [
 	{
-		"modid": "${modid}",
-		"name": "${name}",
+		"modid": "mowziesmobs",
+		"name": "MowziesMobs",
 		"description": "Prehistoric Genetics is a Minecraft mod that helps you to bring extinct creatures back to life!",
 		"version": "${version}",
-		"mcversion": "${mcversion}",
 		"url": "",
-		"authorList":
-		[
-			"RafaMv"
-		],
+		"authorList": ["BobMowzie", "iLexiconn"],
 		"credits": "RafaMv",
 		"logoFile": ""
 	}

@@ -1,8 +1,8 @@
 package com.bobmowzie.mowziesmobs;
 
 import com.bobmowzie.mowziesmobs.client.gui.MMGuiHandler;
-import com.bobmowzie.mowziesmobs.packet.PacketDecreaseTimer;
-import com.bobmowzie.mowziesmobs.packet.PacketIncreaseTimer;
+import com.bobmowzie.mowziesmobs.packet.foliaath.PacketDecreaseTimer;
+import com.bobmowzie.mowziesmobs.packet.foliaath.PacketIncreaseTimer;
 import com.bobmowzie.mowziesmobs.proxy.CommonProxy;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -45,14 +45,14 @@ public class MowziesMobs extends BasicLLibMod
 	@EventHandler
 	public void init(FMLInitializationEvent event)
 	{
-		this.proxy.itemRegistry();
-		this.proxy.tileEntityRegistry();
-		this.proxy.entityRegistry();
+		proxy.itemRegistry();
+		proxy.tileEntityRegistry();
+		proxy.entityRegistry();
 
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new MMGuiHandler());
-		this.networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel("mmNetworkWrapper");
-		this.networkWrapper.registerMessage(PacketIncreaseTimer.class, PacketIncreaseTimer.class, 0, Side.CLIENT);
-		this.networkWrapper.registerMessage(PacketDecreaseTimer.class, PacketDecreaseTimer.class, 1, Side.CLIENT);
+		networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel("mmNetworkWrapper");
+		networkWrapper.registerMessage(PacketIncreaseTimer.class, PacketIncreaseTimer.class, 0, Side.CLIENT);
+		networkWrapper.registerMessage(PacketDecreaseTimer.class, PacketDecreaseTimer.class, 1, Side.CLIENT);
 	}
 
 	public static String getModID()

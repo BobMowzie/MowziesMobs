@@ -79,21 +79,21 @@ public class MMEntityBase extends EntityCreature implements IEntityAdditionalSpa
 
     @Override
     public void setAnimID(int i) {
-
+        animID = i;
     }
 
     @Override
     public void setAnimTick(int i) {
-
+        animTick = i;
     }
 
     @Override
     public int getAnimID() {
-        return 0;
+        return animID;
     }
 
     @Override
     public int getAnimTick() {
-        return 0;
+        return animTick;
     }
 }
