@@ -1,0 +1,19 @@
+{
+  "examplemaster":
+  {
+      "category":"master",
+      "sounds":
+      [
+          "master1"
+      ]
+  },
+  "examplehostile":
+  {
+      "category":"hostile",
+      "sounds":
+      [
+          "hostile1",
+          "hostile2"
+      ]
+  }
+}

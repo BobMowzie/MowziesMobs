@@ -1,0 +1,24 @@
+//Creative_Tabs==================================================
+itemGroup.prehistoricgenetics.creativeTab=Prehistoric Genetics Tab
+
+
+
+//Entities======================================================
+entity.EntityTest.name=Test Entity
+
+
+
+//Items=========================================================
+item.test.name=Test Item
+
+
+
+//Tile_Entities==================================================
+tile.test.name=Test TileEntity
+
+
+
+//Containers====================================================
+container.test=Test Container
+
+
