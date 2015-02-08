@@ -1,8 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import com.bobmowzie.mowziesmobs.client.model.animation.tools.MowzieModelRenderer;
-
 import com.bobmowzie.mowziesmobs.client.model.animation.tools.MowzieModelBase;
+import com.bobmowzie.mowziesmobs.client.model.animation.tools.MowzieModelRenderer;
 import com.bobmowzie.mowziesmobs.entity.EntityFoliaath;
 import net.minecraft.entity.Entity;
 import org.lwjgl.opengl.GL11;
@@ -230,7 +229,6 @@ public class ModelFoliaath extends MowzieModelBase {
 	@Override
 	public void render(Entity foliaath, float f, float f1, float f2, float f3, float f4, float f5) {
 		setRotationAngles((EntityFoliaath) foliaath, f, f1, f2, f3, f4, f5);
-		Stem1Joint.render(f5);
 		float leafScale = 1.25F;
 		GL11.glScalef(leafScale, leafScale, leafScale);
 		this.BigLeaf2Base.rotationPointY -= 3.5;
@@ -241,7 +239,11 @@ public class ModelFoliaath extends MowzieModelBase {
 		this.BigLeaf1Base.render(f5);
 		this.BigLeaf3Base.render(f5);
 		this.BigLeaf4Base.render(f5);
-		GL11.glScalef(1/leafScale, 1/leafScale, 1/leafScale);
+		GL11.glScalef(1 / leafScale, 1 / leafScale, 1 / leafScale);
+		GL11.glTranslatef(0, 1.4F, 0);
+		GL11.glTranslatef(0, -1.4F * activeProgress, 0);
+		GL11.glScalef(activeProgress, activeProgress, activeProgress);
+		Stem1Joint.render(f5);
 	}
 
 	public void setRotateAngle(MowzieModelRenderer modelRenderer, float x, float y, float z) {
@@ -255,30 +257,32 @@ public class ModelFoliaath extends MowzieModelBase {
 		setToInitPose();
 
 		activeProgress = foliaath.active.getAnimationProgressSinSqrt();
+		float activeIntermittent = foliaath.active.getAnimationProgressSinSqrt() - foliaath.active.getAnimationProgressSinToTenWithoutReturn();
+		float activeComplete = activeProgress - activeIntermittent;
 
 		float globalSpeed = 0.9f;
 
 		Stem1Joint.rotateAngleY += (f3 / (180f / (float) Math.PI));
 
-		flap(Stem1Base, 0.25F * globalSpeed, 0.15F, false, 0F, 0F, foliaath.frame, 1F);
-		walk(Stem1Base, 0.5F * globalSpeed, 0.05F, false, 0F, 0F, foliaath.frame, 1F);
-		walk(Stem2, 0.5F * globalSpeed, 0.05F, false, 0.5F, 0F, foliaath.frame, 1F);
-		walk(Stem3, 0.5F * globalSpeed, 0.07F, false, 1F, 0F, foliaath.frame, 1F);
-		walk(Stem4, 0.5F * globalSpeed, 0.05F, false, 1.5F, 0F, foliaath.frame, 1F);
-		walk(HeadBase, 0.5F * globalSpeed, 0.15F, true, 1.3F, 0F, foliaath.frame, 1F);
-		HeadBase.rotateAngleY += rotateBox(0.25F * globalSpeed, 0.15F, false, 0F, 0F, foliaath.frame, 1F);
-		walk(Leaf1Head, 0.5F * globalSpeed, 0.15F, false, 3F, -0.1F, foliaath.frame, 1F);
-		walk(Leaf2Head, 0.5F * globalSpeed, 0.15F, false, 3F, -0.1F, foliaath.frame, 1F);
-		walk(Leaf3Head, 0.5F * globalSpeed, 0.15F, false, 3F, -0.1F, foliaath.frame, 1F);
-		walk(Leaf4Head, 0.5F * globalSpeed, 0.15F, false, 3F, -0.1F, foliaath.frame, 1F);
-		walk(Leaf5Head, 0.5F * globalSpeed, 0.15F, false, 3F, -0.1F, foliaath.frame, 1F);
-		walk(Leaf6Head, 0.5F * globalSpeed, 0.15F, false, 3F, -0.1F, foliaath.frame, 1F);
-		walk(Leaf7Head, 0.5F * globalSpeed, 0.15F, false, 3F, -0.1F, foliaath.frame, 1F);
-		walk(Leaf8Head, 0.5F * globalSpeed, 0.15F, false, 3F, -0.1F, foliaath.frame, 1F);
-		chainWave(leafParts1, 0.5F * globalSpeed, 0.13F * activeProgress, 2, foliaath.frame, 1F);
-		chainWave(leafParts2, 0.5F * globalSpeed, 0.13F * activeProgress, 2, foliaath.frame, 1F);
-		chainWave(leafParts3, 0.5F * globalSpeed, 0.13F * activeProgress, 2, foliaath.frame, 1F);
-		chainWave(leafParts4, 0.5F * globalSpeed, 0.13F * activeProgress, 2, foliaath.frame, 1F);
+		flap(Stem1Base, 0.25F * globalSpeed, 0.15F * activeComplete, false, 0F, 0F, foliaath.frame, 1F);
+		walk(Stem1Base, 0.5F * globalSpeed, 0.05F * activeComplete, false, 0F, 0F, foliaath.frame, 1F);
+		walk(Stem2, 0.5F * globalSpeed, 0.05F * activeComplete, false, 0.5F, 0F, foliaath.frame, 1F);
+		walk(Stem3, 0.5F * globalSpeed, 0.07F * activeComplete, false, 1F, 0F, foliaath.frame, 1F);
+		walk(Stem4, 0.5F * globalSpeed, 0.05F * activeComplete, false, 1.5F, 0F, foliaath.frame, 1F);
+		walk(HeadBase, 0.5F * globalSpeed, 0.15F * activeComplete, true, 1.3F, 0F, foliaath.frame, 1F);
+		HeadBase.rotateAngleY += rotateBox(0.25F * globalSpeed, 0.15F * activeComplete, false, 0F, 0F, foliaath.frame, 1F);
+		walk(Leaf1Head, 0.5F * globalSpeed, 0.15F * activeComplete, false, 3F, -0.1F, foliaath.frame, 1F);
+		walk(Leaf2Head, 0.5F * globalSpeed, 0.15F * activeComplete, false, 3F, -0.1F, foliaath.frame, 1F);
+		walk(Leaf3Head, 0.5F * globalSpeed, 0.15F * activeComplete, false, 3F, -0.1F, foliaath.frame, 1F);
+		walk(Leaf4Head, 0.5F * globalSpeed, 0.15F * activeComplete, false, 3F, -0.1F, foliaath.frame, 1F);
+		walk(Leaf5Head, 0.5F * globalSpeed, 0.15F * activeComplete, false, 3F, -0.1F, foliaath.frame, 1F);
+		walk(Leaf6Head, 0.5F * globalSpeed, 0.15F * activeComplete, false, 3F, -0.1F, foliaath.frame, 1F);
+		walk(Leaf7Head, 0.5F * globalSpeed, 0.15F * activeComplete, false, 3F, -0.1F, foliaath.frame, 1F);
+		walk(Leaf8Head, 0.5F * globalSpeed, 0.15F * activeComplete, false, 3F, -0.1F, foliaath.frame, 1F);
+		chainWave(leafParts1, 0.5F * globalSpeed, 0.13F * activeComplete, 2, foliaath.frame, 1F);
+		chainWave(leafParts2, 0.5F * globalSpeed, 0.13F * activeComplete, 2, foliaath.frame, 1F);
+		chainWave(leafParts3, 0.5F * globalSpeed, 0.13F * activeComplete, 2, foliaath.frame, 1F);
+		chainWave(leafParts4, 0.5F * globalSpeed, 0.13F * activeComplete, 2, foliaath.frame, 1F);
 
 		//Open Mouth Animation
 		float openMouthProgress = foliaath.openMouth.getAnimationProgressSinSqrt();
@@ -315,6 +319,18 @@ public class ModelFoliaath extends MowzieModelBase {
 		Leaf8Head.rotateAngleX -= headLeafRotation;
 
 		//Activate Animation
-
+		chainFlap(stemParts, 0.7F, 0.2F * 2 * activeIntermittent, 2F, foliaath.frame, 1F);
+		chainSwing(tongueParts, 0.7F, 0.6F * 2 * activeIntermittent, -2F, foliaath.frame, 1F);
+		chainWave(leafParts1, 1.5F, 0.1F * 2 * activeIntermittent, 0, foliaath.frame, 1F);
+		chainWave(leafParts2, 1.5F, 0.1F * 2 * activeIntermittent, 0, foliaath.frame, 1F);
+		chainWave(leafParts3, 1.5F, 0.1F * 2 * activeIntermittent, 0, foliaath.frame, 1F);
+		chainWave(leafParts4, 1.5F, 0.1F * 2 * activeIntermittent, 0, foliaath.frame, 1F);
+		Stem1Base.rotateAngleX -= 0.1 * 2 * activeIntermittent;
+		Stem2.rotateAngleX -= 0.5 * 2 * activeIntermittent;
+		Stem3.rotateAngleX += 0.9 * 2 * activeIntermittent;
+		Stem4.rotateAngleX += 0.6 * 2 * activeIntermittent;
+		HeadBase.rotateAngleX += 0.6 * 2 * activeIntermittent;
+		MouthTop1.rotateAngleX += 0.4 * 2 * activeIntermittent;
+		MouthBottom1.rotateAngleX += 0.4 * 2 * activeIntermittent;
 	}
 }

@@ -25,6 +25,8 @@ public class ControlledAnimation
      */
     private double duration;
 
+    private double timerChange;
+
     public ControlledAnimation(int duration)
     {
         this.timer = 0;
@@ -82,7 +84,7 @@ public class ControlledAnimation
      */
     public void increaseTimer()
     {
-        if (this.timer < this.duration) this.timer++;
+        if (this.timer < this.duration) {this.timer++; timerChange = 1;}
     }
 
     /**
@@ -115,7 +117,7 @@ public class ControlledAnimation
      */
     public void decreaseTimer()
     {
-        if (this.timer > 0.0D) this.timer--;
+        if (this.timer > 0.0D) {this.timer--; timerChange = -1;}
     }
 
     /**
@@ -210,6 +212,13 @@ public class ControlledAnimation
      */
     public float getAnimationProgressSinToTen()
     {
+        return (float) Math.pow((double) MathHelper.sin(1.57079632679F * (float) (this.timer / this.duration)), 10);
+    }
+
+    @SideOnly(Side.CLIENT)
+    public float getAnimationProgressSinToTenWithoutReturn()
+    {
+        if (timerChange == -1) return MathHelper.sin(1.57079632679F * (float) (this.timer / this.duration))*MathHelper.sin(1.57079632679F * (float) (this.timer / this.duration));
         return (float) Math.pow((double) MathHelper.sin(1.57079632679F * (float) (this.timer / this.duration)), 10);
     }
 

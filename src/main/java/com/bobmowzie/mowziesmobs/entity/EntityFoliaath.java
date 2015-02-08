@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 public class EntityFoliaath extends MMEntityBase
 {
 	public IntermittentAnimation openMouth = new IntermittentAnimation(15, 70, 20, 1);
-	public ControlledAnimation active = new ControlledAnimation(10);
+	public ControlledAnimation active = new ControlledAnimation(30);
 	public float targetDistance;
     public int lastTimeDecrease = 0;
 
@@ -38,7 +38,7 @@ public class EntityFoliaath extends MMEntityBase
 		super.onUpdate();
 		if (worldObj.isRemote)
         {
-			if (getAnimID() == 0) openMouth.runAnimation();
+			if (getAnimID() == 0 && active.getAnimationFraction() == 1) openMouth.runAnimation();
 			else openMouth.stopAnimation();
 		}
 		renderYawOffset = 0;
@@ -50,18 +50,18 @@ public class EntityFoliaath extends MMEntityBase
             setRotationYawHead((float) (Math.atan2(getAttackTarget().posZ - posZ, getAttackTarget().posX - posX) * (180 / Math.PI) + 90));
             targetDistance = (float) Math.sqrt((getAttackTarget().posZ - posZ) * (getAttackTarget().posZ - posZ) + (getAttackTarget().posX - posX) * (getAttackTarget().posX - posX));
 
-            if (targetDistance <= 7)
+            if (targetDistance <= 11)
             {
                 sendPacket(new PacketIncreaseTimer(getEntityId()));
                 lastTimeDecrease = 0;
             }
-            else if (lastTimeDecrease <= 10)
+            else if (lastTimeDecrease <= 30)
             {
                 sendPacket(new PacketDecreaseTimer(getEntityId()));
                 lastTimeDecrease++;
             }
         }
-        else if (lastTimeDecrease <= 10)
+        else if (lastTimeDecrease <= 30)
         {
             sendPacket(new PacketDecreaseTimer(getEntityId()));
             lastTimeDecrease++;
