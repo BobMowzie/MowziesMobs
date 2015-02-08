@@ -17,7 +17,7 @@ public class EntityFoliaath extends MMEntityBase
 	public IntermittentAnimation openMouth = new IntermittentAnimation(15, 70, 20, 1);
 	public ControlledAnimation active = new ControlledAnimation(10);
 	public float targetDistance;
-    public boolean lastTimeDecrease = false;
+    public int lastTimeDecrease = 0;
 
 	public EntityFoliaath(World world)
 	{
@@ -53,18 +53,18 @@ public class EntityFoliaath extends MMEntityBase
             if (targetDistance <= 7)
             {
                 sendPacket(new PacketIncreaseTimer(getEntityId()));
-                lastTimeDecrease = false;
+                lastTimeDecrease = 0;
             }
-            else if (!lastTimeDecrease)
+            else if (lastTimeDecrease <= 10)
             {
                 sendPacket(new PacketDecreaseTimer(getEntityId()));
-                lastTimeDecrease = true;
+                lastTimeDecrease++;
             }
         }
-        else if (!lastTimeDecrease)
+        else if (lastTimeDecrease <= 10)
         {
             sendPacket(new PacketDecreaseTimer(getEntityId()));
-            lastTimeDecrease = true;
+            lastTimeDecrease++;
         }
 	}
 
