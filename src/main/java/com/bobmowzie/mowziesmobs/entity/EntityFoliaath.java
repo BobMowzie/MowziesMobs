@@ -72,7 +72,6 @@ public class EntityFoliaath extends MMEntityBase
     {
         if (!worldObj.isRemote)
         {
-            System.out.println("[MowziesMobs]: Sending packet " + packet);
             MowziesMobs.networkWrapper.sendToAll(packet);
         }
     }
