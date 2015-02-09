@@ -13,6 +13,8 @@ public class MMEntityBase extends EntityCreature implements IEntityAdditionalSpa
     private int animTick;
     private int animID;
     public int frame;
+    public float targetDistance;
+    public float targetAngle;
 
     public MMEntityBase(World world)
     {
@@ -70,6 +72,11 @@ public class MMEntityBase extends EntityCreature implements IEntityAdditionalSpa
         super.onUpdate();
         frame++;
         if (animID != 0) animTick++;
+
+        if(this.getAttackTarget() != null) {
+            targetDistance = (float) Math.sqrt((getAttackTarget().posZ - posZ) * (getAttackTarget().posZ - posZ) + (getAttackTarget().posX - posX) * (getAttackTarget().posX - posX));
+            targetAngle = (float) (Math.atan2(getAttackTarget().posZ - posZ, getAttackTarget().posX - posX) * (180 / Math.PI) + 90);
+        }
     }
 
     @Override

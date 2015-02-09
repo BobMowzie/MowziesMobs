@@ -23,7 +23,10 @@ public class PacketDecreaseTimer extends AbstractPacket<PacketDecreaseTimer>
     public void handleClientMessage(PacketDecreaseTimer message, EntityPlayer player)
     {
         Entity entity = player.worldObj.getEntityByID(message.entityId);
-        if (entity != null && entity instanceof EntityFoliaath) ((EntityFoliaath) entity).active.decreaseTimer(2);
+        if (entity != null && entity instanceof EntityFoliaath) {
+            EntityFoliaath foliaath = (EntityFoliaath) entity;
+            foliaath.activate.decreaseTimer(2);
+        }
     }
 
     public void handleServerMessage(PacketDecreaseTimer message, EntityPlayer player)

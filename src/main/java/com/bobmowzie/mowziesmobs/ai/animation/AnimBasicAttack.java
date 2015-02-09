@@ -12,13 +12,19 @@ public class AnimBasicAttack extends AIAnimation
 	private int duration;
 	private EntityLivingBase entityTarget;
 	private String attackSound;
+	private float knockback = 1;
+	private float range;
 
-	public AnimBasicAttack(MMEntityBase entity, int duration, String sound)
+	public AnimBasicAttack(MMEntityBase entity, int duration, String sound, float knockback, float range)
 	{
 		super(entity);
+		setMutexBits(8);
 		this.entity = entity;
 		this.duration = duration;
+		entityTarget = null;
 		attackSound = sound;
+		this.knockback = knockback;
+		this.range = range;
 	}
 
 	@Override
@@ -50,11 +56,15 @@ public class AnimBasicAttack extends AIAnimation
 	public void updateTask()
 	{
 		super.updateTask();
-		if(entity.getAnimTick() < ((this.duration / 2) - 2) && entity.getAttackTarget() != null)
+		if(entity.getAnimTick() < ((this.duration / 2) - 4) && entityTarget != null)
 			entity.getLookHelper().setLookPositionWithEntity(entityTarget, 30F, 30F);
-		if (this.entity.getAnimTick() == ((this.duration / 2) - 2)) {
+		if (this.entity.getAnimTick() == ((this.duration / 2) - 4)) {
 			float damage = (float) this.entity.getAttack();
-			if (entityTarget != null) this.entityTarget.attackEntityFrom(DamageSource.causeMobDamage(this.entity), damage);
+			if (entityTarget != null && entity.targetDistance <= range) {
+				this.entityTarget.attackEntityFrom(DamageSource.causeMobDamage(this.entity), damage);
+				entityTarget.motionX *= knockback;
+				entityTarget.motionZ *= knockback;
+			}
 			entity.playSound(attackSound, 1, 1);
 		}
 	}

@@ -18,8 +18,8 @@ import thehippomaster.AnimationAPI.AnimationAPI;
 public class EntityFoliaath extends MMEntityBase
 {
 	public IntermittentAnimation openMouth = new IntermittentAnimation(15, 70, 20, 1);
-	public ControlledAnimation active = new ControlledAnimation(30);
-	public float targetDistance;
+	public ControlledAnimation activate = new ControlledAnimation(30);
+    public boolean active = false;
     public int lastTimeDecrease = 0;
 
 	public EntityFoliaath(World world)
@@ -27,18 +27,13 @@ public class EntityFoliaath extends MMEntityBase
 		super(world);
 		this.getNavigator().setAvoidsWater(true);
 		tasks.addTask(0, new EntityAISwimming(this));
-        tasks.addTask(2, new AnimBasicAttack(this, 14, "foliaathattack"));
+        tasks.addTask(2, new AnimBasicAttack(this, 14, "foliaathattack", 2F, 4.5F));
 		tasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true));
 		tasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityCreature.class, 0, true));
     }
 
- /*   public void entityInit()
-    {
-        super.entityInit();
-    }*/
-
     public int getAttack() {
-        return 5;
+        return 12;
     }
 
 	public void onUpdate()
@@ -46,19 +41,19 @@ public class EntityFoliaath extends MMEntityBase
 		super.onUpdate();
 		if (worldObj.isRemote)
         {
-			if (getAnimID() == 0 && active.getAnimationFraction() == 1) openMouth.runAnimation();
+			if (getAnimID() == 0 && activate.getAnimationFraction() == 1) openMouth.runAnimation();
 			else openMouth.stopAnimation();
 		}
+
 		renderYawOffset = 0;
 		rotationYaw = 0;
 
         if (getAttackTarget() instanceof EntityFoliaath) setAttackTarget(null);
 		if (getAttackTarget() != null)
         {
-            setRotationYawHead((float) (Math.atan2(getAttackTarget().posZ - posZ, getAttackTarget().posX - posX) * (180 / Math.PI) + 90));
-            targetDistance = (float) Math.sqrt((getAttackTarget().posZ - posZ) * (getAttackTarget().posZ - posZ) + (getAttackTarget().posX - posX) * (getAttackTarget().posX - posX));
+            setRotationYawHead(targetAngle);
 
-            if (targetDistance <= 5 && getAnimID() == 0) {
+            if (targetDistance <= 4.5 && getAnimID() == 0) {
                 AnimationAPI.sendAnimPacket(this, MMAnimation.ATTACK.animID());
             }
 
@@ -67,13 +62,13 @@ public class EntityFoliaath extends MMEntityBase
                 sendPacket(new PacketIncreaseTimer(getEntityId()));
                 lastTimeDecrease = 0;
             }
-            else if (lastTimeDecrease <= 30)
+            else if (lastTimeDecrease <= 30 && getAnimID() == 0)
             {
                 sendPacket(new PacketDecreaseTimer(getEntityId()));
                 lastTimeDecrease++;
             }
         }
-        else if (lastTimeDecrease <= 30)
+        else if (lastTimeDecrease <= 30 && getAnimID() == 0)
         {
             sendPacket(new PacketDecreaseTimer(getEntityId()));
             lastTimeDecrease++;

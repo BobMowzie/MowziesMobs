@@ -5,6 +5,8 @@ import com.bobmowzie.mowziesmobs.client.model.animation.tools.MowzieModelRendere
 import com.bobmowzie.mowziesmobs.entity.EntityFoliaath;
 import net.minecraft.entity.Entity;
 import org.lwjgl.opengl.GL11;
+import thehippomaster.AnimationAPI.IAnimatedEntity;
+import thehippomaster.AnimationAPI.client.Animator;
 
 public class ModelFoliaath extends MowzieModelBase {
 	public MowzieModelRenderer BigLeaf2Base;
@@ -49,9 +51,13 @@ public class ModelFoliaath extends MowzieModelBase {
 	public MowzieModelRenderer[] leafParts4;
 	private float activeProgress;
 
+	private Animator animator;
+
 	public ModelFoliaath() {
 		this.textureWidth = 128;
 		this.textureHeight = 64;
+		animator = new Animator(this);
+
 		this.HeadBase = new MowzieModelRenderer(this, 80, 15);
 		this.HeadBase.setRotationPoint(0.0F, -10.0F, 0.0F);
 		this.HeadBase.addBox(-3.0F, -3.0F, 0.0F, 6, 6, 2, 0.0F);
@@ -228,7 +234,7 @@ public class ModelFoliaath extends MowzieModelBase {
 
 	@Override
 	public void render(Entity foliaath, float f, float f1, float f2, float f3, float f4, float f5) {
-		setRotationAngles((EntityFoliaath) foliaath, f, f1, f2, f3, f4, f5);
+		animate((IAnimatedEntity) foliaath, f, f1, f2, f3, f4, f5);
 		float leafScale = 1.25F;
 		GL11.glScalef(leafScale, leafScale, leafScale);
 		this.BigLeaf2Base.rotationPointY -= 3.5;
@@ -256,8 +262,8 @@ public class ModelFoliaath extends MowzieModelBase {
 		super.setRotationAngles(f, f1, f2, f3, f4, f5, foliaath);
 		setToInitPose();
 
-		activeProgress = foliaath.active.getAnimationProgressSinSqrt();
-		float activeIntermittent = foliaath.active.getAnimationProgressSinSqrt() - foliaath.active.getAnimationProgressSinToTenWithoutReturn();
+		activeProgress = foliaath.activate.getAnimationProgressSinSqrt();
+		float activeIntermittent = foliaath.activate.getAnimationProgressSinSqrt() - foliaath.activate.getAnimationProgressSinToTenWithoutReturn();
 		float activeComplete = activeProgress - activeIntermittent;
 
 		float globalSpeed = 0.9f;
@@ -332,5 +338,40 @@ public class ModelFoliaath extends MowzieModelBase {
 		HeadBase.rotateAngleX += 0.6 * 2 * activeIntermittent;
 		MouthTop1.rotateAngleX += 0.4 * 2 * activeIntermittent;
 		MouthBottom1.rotateAngleX += 0.4 * 2 * activeIntermittent;
+	}
+
+	public void animate(IAnimatedEntity foliaath, float f, float f1, float f2, float f3, float f4, float f5) {
+		animator.update(foliaath);
+		setRotationAngles((EntityFoliaath)foliaath, f, f1, f2, f3, f4, f5);
+
+		//Bite
+		animator.setAnim(1);
+		animator.startPhase(3);
+		animator.rotate(Stem1Base, 0.4F, 0, 0);
+		animator.rotate(Stem2, -0.3F, 0, 0);
+		animator.rotate(Stem3, 0.2F, 0, 0);
+		animator.rotate(Stem4, 0.2F, 0, 0);
+		animator.rotate(HeadBase, -0.6F, 0, 0);
+		animator.rotate(MouthTop1, 0.8F, 0, 0);
+		animator.rotate(MouthBottom1, 0.8F, 0, 0);
+		animator.rotate(Tongue1Base, -0.2F, 0, 0);
+		animator.rotate(Tongue2, -0.5F, 0, 0);
+		animator.move(Tongue2, 0, -0.3F, 0);
+		animator.rotate(Tongue3, 0.4F, 0, 0);
+		animator.endPhase();
+		animator.setStationaryPhase(1);
+		animator.startPhase(2);
+		animator.rotate(Stem1Base, -0.6F, 0, 0);
+		animator.rotate(Stem2, -1.2F, 0, 0);
+		animator.rotate(Stem3, 0.8F, 0, 0);
+		animator.rotate(Stem4, 0.8F, 0, 0);
+		animator.rotate(HeadBase, 0.4F, 0, 0);
+		animator.rotate(MouthTop1, -0.1F, 0, 0);
+		animator.rotate(MouthBottom1, -0.1F, 0, 0);
+		animator.rotate(MouthTop2, 0.15F, 0, 0);
+		animator.rotate(MouthBottom2, 0.15F, 0, 0);
+		animator.endPhase();
+		animator.setStationaryPhase(3);
+		animator.resetPhase(5);
 	}
 }
