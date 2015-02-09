@@ -45,7 +45,7 @@ public class EntityFoliaath extends MMEntityBase
             else openMouth.stopAnimation();
         }
 
-        if (openMouth.getAnimationFraction() > 0 && frame % 12 == 0)
+        if (openMouth.getAnimationFraction() > 0.5 && frame % 12 == 0)
         {
             MowziesMobs.playSound(getEntityId(), "mowziesmobs:foliaathpant");
         }
