@@ -1,9 +1,11 @@
 package com.bobmowzie.mowziesmobs;
 
 import com.bobmowzie.mowziesmobs.client.gui.MMGuiHandler;
+import com.bobmowzie.mowziesmobs.packet.PacketPlaySound;
 import com.bobmowzie.mowziesmobs.packet.foliaath.PacketDecreaseTimer;
 import com.bobmowzie.mowziesmobs.packet.foliaath.PacketIncreaseTimer;
 import com.bobmowzie.mowziesmobs.proxy.CommonProxy;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -52,10 +54,21 @@ public class MowziesMobs extends BasicLLibMod
         networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel("mmNetworkWrapper");
         networkWrapper.registerMessage(PacketIncreaseTimer.class, PacketIncreaseTimer.class, 0, Side.CLIENT);
         networkWrapper.registerMessage(PacketDecreaseTimer.class, PacketDecreaseTimer.class, 1, Side.CLIENT);
+        networkWrapper.registerMessage(PacketPlaySound.class, PacketPlaySound.class, 2, Side.SERVER);
     }
 
     public static String getModID()
     {
         return MowziesMobs.MODID + ":";
+    }
+
+    public static void playSound(int entityId, String soundName)
+    {
+        playSound(entityId, soundName, 1, 1);
+    }
+
+    public static void playSound(int entityId, String soundName, float volume, float pitch)
+    {
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) networkWrapper.sendToServer(new PacketPlaySound(entityId, soundName, volume, pitch));
     }
 }

@@ -45,7 +45,10 @@ public class EntityFoliaath extends MMEntityBase
             else openMouth.stopAnimation();
         }
 
-        if (frame % 12 == 0) playSound("mowziesmobs:foliaathpant", 1, 1);
+        if (openMouth.getAnimationFraction() > 0 && frame % 12 == 0)
+        {
+            MowziesMobs.playSound(getEntityId(), "mowziesmobs:foliaathpant");
+        }
 
         renderYawOffset = 0;
         rotationYaw = 0;
