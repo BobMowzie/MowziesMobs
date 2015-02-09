@@ -27,7 +27,7 @@ public class EntityFoliaath extends MMEntityBase
 		super(world);
 		this.getNavigator().setAvoidsWater(true);
 		tasks.addTask(0, new EntityAISwimming(this));
-        tasks.addTask(2, new AnimBasicAttack(this, 14, "foliaathattack", 2F, 4.5F));
+        tasks.addTask(2, new AnimBasicAttack(this, 14, "mowziesmobsfoliaathbite1", 2F, 4.5F));
 		tasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true));
 		tasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityCreature.class, 0, true));
     }
@@ -44,6 +44,8 @@ public class EntityFoliaath extends MMEntityBase
 			if (getAnimID() == 0 && activate.getAnimationFraction() == 1) openMouth.runAnimation();
 			else openMouth.stopAnimation();
 		}
+
+        if (this.frame % 62 == 28) playSound("mowziesmobs:foliaathpant", 1, 1);
 
 		renderYawOffset = 0;
 		rotationYaw = 0;
