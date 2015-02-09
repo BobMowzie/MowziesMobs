@@ -2,7 +2,6 @@ package com.bobmowzie.mowziesmobs.block;
 
 import com.bobmowzie.mowziesmobs.MMTabs;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 

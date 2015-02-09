@@ -1,9 +1,9 @@
 package com.bobmowzie.mowziesmobs.client.model.animation.tools;
 
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.MathHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.MathHelper;
 
 /**
  * This is a buffer used to delay a chain of parented boxes by using the yaw and pitch

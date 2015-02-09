@@ -1,20 +1,21 @@
 package com.bobmowzie.mowziesmobs.client.model.animation.tools;
 
-import java.util.Random;
-
-import net.minecraft.util.MathHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.util.MathHelper;
+
+import java.util.Random;
 
 /**
  * This is a timer that can be used to easily animate models with intermittent poses. You have to
  * set the number of ticks between poses, a number of ticks that represents the interval of the pose
  * change, increase or decrease the timer, and get the percentage using a specific function.
- * 
+ *
  * @author RafaMv
  */
 @SideOnly(Side.CLIENT)
-public class IntermittentAnimation {
+public class IntermittentAnimation
+{
     /**
      * It is the timer used to animate.
      */
@@ -60,7 +61,8 @@ public class IntermittentAnimation {
      */
     Random rand = new Random();
 
-    public IntermittentAnimation(int duration, int intervalDuration, int goChance, int returnChance) {
+    public IntermittentAnimation(int duration, int intervalDuration, int goChance, int returnChance)
+    {
         this.timer = 0;
         this.duration = (double) duration;
         this.intervalDuration = (double) intervalDuration;
@@ -76,7 +78,8 @@ public class IntermittentAnimation {
      * @param duration is the maximum number of ticks that the timer can reach.
      */
     @SideOnly(Side.CLIENT)
-    public void setDuration(int duration) {
+    public void setDuration(int duration)
+    {
         this.timer = 0;
         this.duration = (double) duration;
     }
@@ -84,7 +87,8 @@ public class IntermittentAnimation {
     /**
      * Returns the timer of this animation. Useful to save the progress of the animation.
      */
-    public double getTimer() {
+    public double getTimer()
+    {
         return this.timer;
     }
 
@@ -94,12 +98,16 @@ public class IntermittentAnimation {
      * @param time is the number of ticks to be set.
      */
     @SideOnly(Side.CLIENT)
-    public void setTimer(int time) {
+    public void setTimer(int time)
+    {
         this.timer = (double) time;
 
-        if (this.timer > this.duration) {
+        if (this.timer > this.duration)
+        {
             this.timer = this.duration;
-        } else if (this.timer < 0) {
+        }
+        else if (this.timer < 0)
+        {
             this.timer = 0;
         }
     }
@@ -108,7 +116,8 @@ public class IntermittentAnimation {
      * Sets the timer to 0.
      */
     @SideOnly(Side.CLIENT)
-    public void resetTimer() {
+    public void resetTimer()
+    {
         this.timer = 0;
     }
 
@@ -118,34 +127,34 @@ public class IntermittentAnimation {
     @SideOnly(Side.CLIENT)
     public void runAnimation()
     {
-    	if (!this.runInterval)
-    	{
+        if (!this.runInterval)
+        {
             if (this.timer < this.duration && this.timer > 0.0D)
             {
-        		this.timer += this.inverter;
+                this.timer += this.inverter;
             }
-        	else
-        	{
+            else
+            {
                 if (this.timer >= this.duration)
                 {
-            		this.timer = this.duration;
+                    this.timer = this.duration;
                 }
                 else if (this.timer <= 0.0D)
                 {
-            		this.timer = 0.0D;
+                    this.timer = 0.0D;
                 }
-        		this.timerInterval = 0.0D;
-        		this.runInterval = true;
-        	}
-    	}
-    	else
-    	{
-    		if (this.timerInterval < this.intervalDuration)
-    		{
-        		this.timerInterval++;
-    		}
-    		else
-    		{
+                this.timerInterval = 0.0D;
+                this.runInterval = true;
+            }
+        }
+        else
+        {
+            if (this.timerInterval < this.intervalDuration)
+            {
+                this.timerInterval++;
+            }
+            else
+            {
                 if (this.rand.nextInt(this.goChance) == 0)
                 {
                     if (this.inverter > 0)
@@ -159,8 +168,8 @@ public class IntermittentAnimation {
                     this.timer += this.inverter;
                     this.runInterval = false;
                 }
-    		}
-    	}
+            }
+        }
     }
 
     /**
@@ -169,17 +178,17 @@ public class IntermittentAnimation {
     @SideOnly(Side.CLIENT)
     public void stopAnimation()
     {
-		if (this.timer > 0.0D)
-		{
-			this.timer--;
-		}
-		else
-		{
-			this.timer = 0.0D;
-			this.runInterval = true;
-			this.timerInterval = 0.0D;
-			this.inverter = 1;
-		}
+        if (this.timer > 0.0D)
+        {
+            this.timer--;
+        }
+        else
+        {
+            this.timer = 0.0D;
+            this.runInterval = true;
+            this.timerInterval = 0.0D;
+            this.inverter = 1;
+        }
     }
 
     /**
@@ -190,24 +199,24 @@ public class IntermittentAnimation {
     @SideOnly(Side.CLIENT)
     public void stopAnimation(int time)
     {
-		if (this.timer - time > 0.0D)
-		{
-			this.timer -= time;
-		}
-		else
-		{
-			this.timer = 0.0D;
-			this.runInterval = false;
-			this.timerInterval = 0.0D;
-			this.inverter = 1;
-		}
+        if (this.timer - time > 0.0D)
+        {
+            this.timer -= time;
+        }
+        else
+        {
+            this.timer = 0.0D;
+            this.runInterval = false;
+            this.timerInterval = 0.0D;
+            this.inverter = 1;
+        }
     }
 
-	/**
-	 * Returns a float that represents a fraction of the animation, a value between 0.0F and 1.0F.
-	 */
-	@SideOnly(Side.CLIENT)
-	public float getAnimationFraction()
+    /**
+     * Returns a float that represents a fraction of the animation, a value between 0.0F and 1.0F.
+     */
+    @SideOnly(Side.CLIENT)
+    public float getAnimationFraction()
     {
         return (float) (this.timer / this.duration);
     }
@@ -282,7 +291,8 @@ public class IntermittentAnimation {
     @SideOnly(Side.CLIENT)
     public float getAnimationProgressSinToTenWithoutReturn()
     {
-        if (inverter == -1) return MathHelper.sin(1.57079632679F * (float) (this.timer / this.duration))*MathHelper.sin(1.57079632679F * (float) (this.timer / this.duration));
+        if (inverter == -1)
+            return MathHelper.sin(1.57079632679F * (float) (this.timer / this.duration)) * MathHelper.sin(1.57079632679F * (float) (this.timer / this.duration));
         return (float) Math.pow((double) MathHelper.sin(1.57079632679F * (float) (this.timer / this.duration)), 10);
     }
 
@@ -348,11 +358,11 @@ public class IntermittentAnimation {
     @SideOnly(Side.CLIENT)
     public float getAnimationProgressArcTan()
     {
-        return (float) (0.5F + 0.49806510671F * Math.atan(3.14159265359D * ((double) (this.timer / this.duration) - 0.5D)));
+        return (float) (0.5F + 0.49806510671F * Math.atan(3.14159265359D * (this.timer / this.duration - 0.5D)));
     }
 
     /**
-     * Returns a value between 0.0F and 1.0F depending on the timer and duration of the animation. 
+     * Returns a value between 0.0F and 1.0F depending on the timer and duration of the animation.
      * This value starts at 1.0F and ends at 1.0F.
      * The equation used is 0.5 - 0.5 * cos(2 * PI * x + sin(2 * PI * x)). It is smooth.
      */
@@ -376,7 +386,7 @@ public class IntermittentAnimation {
     }
 
     /**
-     * Returns a value between 0.0F and 1.0F depending on the timer and duration of the animation. 
+     * Returns a value between 0.0F and 1.0F depending on the timer and duration of the animation.
      * This value starts at 1.0F and ends at 1.0F.
      * The equation used is 0.5 + 0.5 * cos(2 PI * x + sin(2 * PI * x)). It is smooth.
      */

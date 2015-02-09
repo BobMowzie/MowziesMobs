@@ -36,22 +36,26 @@ public class MMEntityBase extends EntityCreature implements IEntityAdditionalSpa
     }
 
     @Override
-    public ItemStack getHeldItem() {
+    public ItemStack getHeldItem()
+    {
         return null;
     }
 
     @Override
-    public ItemStack getEquipmentInSlot(int p_71124_1_) {
+    public ItemStack getEquipmentInSlot(int p_71124_1_)
+    {
         return null;
     }
 
     @Override
-    public void setCurrentItemOrArmor(int p_70062_1_, ItemStack p_70062_2_) {
+    public void setCurrentItemOrArmor(int p_70062_1_, ItemStack p_70062_2_)
+    {
 
     }
 
     @Override
-    public ItemStack[] getLastActiveItems() {
+    public ItemStack[] getLastActiveItems()
+    {
         return new ItemStack[0];
     }
 
@@ -68,12 +72,14 @@ public class MMEntityBase extends EntityCreature implements IEntityAdditionalSpa
     }
 
     @Override
-    public void onUpdate() {
+    public void onUpdate()
+    {
         super.onUpdate();
         frame++;
         if (animID != 0) animTick++;
 
-        if(this.getAttackTarget() != null) {
+        if (this.getAttackTarget() != null)
+        {
             targetDistance = (float) Math.sqrt((getAttackTarget().posZ - posZ) * (getAttackTarget().posZ - posZ) + (getAttackTarget().posX - posX) * (getAttackTarget().posX - posX));
             targetAngle = (float) (Math.atan2(getAttackTarget().posZ - posZ, getAttackTarget().posX - posX) * (180 / Math.PI) + 90);
         }
@@ -86,26 +92,31 @@ public class MMEntityBase extends EntityCreature implements IEntityAdditionalSpa
     }
 
     @Override
-    public void setAnimID(int i) {
+    public void setAnimID(int i)
+    {
         animID = i;
     }
 
     @Override
-    public void setAnimTick(int i) {
+    public void setAnimTick(int i)
+    {
         animTick = i;
     }
 
     @Override
-    public int getAnimID() {
+    public int getAnimID()
+    {
         return animID;
     }
 
     @Override
-    public int getAnimTick() {
+    public int getAnimTick()
+    {
         return animTick;
     }
 
-    public int getAttack() {
+    public int getAttack()
+    {
         return 0;
     }
 }

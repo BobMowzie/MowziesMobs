@@ -17,45 +17,46 @@ import thehippomaster.AnimationAPI.AnimationAPI;
 
 public class EntityFoliaath extends MMEntityBase
 {
-	public IntermittentAnimation openMouth = new IntermittentAnimation(15, 70, 20, 1);
-	public ControlledAnimation activate = new ControlledAnimation(30);
-    public boolean active = false;
+    public IntermittentAnimation openMouth = new IntermittentAnimation(15, 70, 20, 1);
+    public ControlledAnimation activate = new ControlledAnimation(30);
     public int lastTimeDecrease = 0;
 
-	public EntityFoliaath(World world)
-	{
-		super(world);
-		this.getNavigator().setAvoidsWater(true);
-		tasks.addTask(0, new EntityAISwimming(this));
+    public EntityFoliaath(World world)
+    {
+        super(world);
+        this.getNavigator().setAvoidsWater(true);
+        tasks.addTask(0, new EntityAISwimming(this));
         tasks.addTask(2, new AnimBasicAttack(this, 14, "mowziesmobsfoliaathbite1", 2F, 4.5F));
-		tasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true));
-		tasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityCreature.class, 0, true));
+        tasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true));
+        tasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityCreature.class, 0, true));
     }
 
-    public int getAttack() {
+    public int getAttack()
+    {
         return 12;
     }
 
-	public void onUpdate()
+    public void onUpdate()
     {
-		super.onUpdate();
-		if (worldObj.isRemote)
+        super.onUpdate();
+        if (worldObj.isRemote)
         {
-			if (getAnimID() == 0 && activate.getAnimationFraction() == 1) openMouth.runAnimation();
-			else openMouth.stopAnimation();
-		}
+            if (getAnimID() == 0 && activate.getAnimationFraction() == 1) openMouth.runAnimation();
+            else openMouth.stopAnimation();
+        }
 
         if (this.frame % 62 == 28) playSound("mowziesmobs:foliaathpant", 1, 1);
 
-		renderYawOffset = 0;
-		rotationYaw = 0;
+        renderYawOffset = 0;
+        rotationYaw = 0;
 
         if (getAttackTarget() instanceof EntityFoliaath) setAttackTarget(null);
-		if (getAttackTarget() != null)
+        if (getAttackTarget() != null)
         {
             setRotationYawHead(targetAngle);
 
-            if (targetDistance <= 4.5 && getAnimID() == 0) {
+            if (targetDistance <= 4.5 && getAnimID() == 0)
+            {
                 AnimationAPI.sendAnimPacket(this, MMAnimation.ATTACK.animID());
             }
 
@@ -75,7 +76,7 @@ public class EntityFoliaath extends MMEntityBase
             sendPacket(new PacketDecreaseTimer(getEntityId()));
             lastTimeDecrease++;
         }
-	}
+    }
 
     public void sendPacket(AbstractPacket packet)
     {

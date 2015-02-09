@@ -18,7 +18,7 @@ public class ControlledAnimation
      * It is the timer used to animate
      */
     private double timer;
-    
+
     /**
      * It is the limit time, the maximum value that the timer can be. I
      * represents the duration of the animation
@@ -44,9 +44,9 @@ public class ControlledAnimation
         this.duration = (double) duration;
     }
 
-	/**
-	 * Returns the timer of this animation. Useful to save the progress of the animation.
-	 */
+    /**
+     * Returns the timer of this animation. Useful to save the progress of the animation.
+     */
     public double getTimer()
     {
         return timer;
@@ -57,19 +57,19 @@ public class ControlledAnimation
      *
      * @param time is the number of ticks to be set.
      */
-	public void setTimer(int time)
+    public void setTimer(int time)
     {
-		this.timer = (double) time;
+        this.timer = (double) time;
 
-		if (this.timer > this.duration)
-		{
-			this.timer = this.duration;
-		}
-		else if (this.timer < 0)
-		{
-			this.timer = 0;
-		}
-	}
+        if (this.timer > this.duration)
+        {
+            this.timer = this.duration;
+        }
+        else if (this.timer < 0)
+        {
+            this.timer = 0;
+        }
+    }
 
     /**
      * Sets the timer to 0.
@@ -84,7 +84,11 @@ public class ControlledAnimation
      */
     public void increaseTimer()
     {
-        if (this.timer < this.duration) {this.timer++; timerChange = 1;}
+        if (this.timer < this.duration)
+        {
+            this.timer++;
+            timerChange = 1;
+        }
     }
 
     /**
@@ -117,7 +121,11 @@ public class ControlledAnimation
      */
     public void decreaseTimer()
     {
-        if (this.timer > 0.0D) {this.timer--; timerChange = -1;}
+        if (this.timer > 0.0D)
+        {
+            this.timer--;
+            timerChange = -1;
+        }
     }
 
     /**
@@ -145,10 +153,10 @@ public class ControlledAnimation
         }
     }
 
-	/**
-	 * Returns a float that represents a fraction of the animation, a value between 0.0F and 1.0F.
-	 */
-	public float getAnimationFraction()
+    /**
+     * Returns a float that represents a fraction of the animation, a value between 0.0F and 1.0F.
+     */
+    public float getAnimationFraction()
     {
         return (float) (this.timer / this.duration);
     }
@@ -218,7 +226,8 @@ public class ControlledAnimation
     @SideOnly(Side.CLIENT)
     public float getAnimationProgressSinToTenWithoutReturn()
     {
-        if (timerChange == -1) return MathHelper.sin(1.57079632679F * (float) (this.timer / this.duration))*MathHelper.sin(1.57079632679F * (float) (this.timer / this.duration));
+        if (timerChange == -1)
+            return MathHelper.sin(1.57079632679F * (float) (this.timer / this.duration)) * MathHelper.sin(1.57079632679F * (float) (this.timer / this.duration));
         return (float) Math.pow((double) MathHelper.sin(1.57079632679F * (float) (this.timer / this.duration)), 10);
     }
 
@@ -279,11 +288,11 @@ public class ControlledAnimation
      */
     public float getAnimationProgressArcTan()
     {
-        return (float) (0.5F + 0.49806510671F * Math.atan(3.14159265359D * ((double) (this.timer / this.duration) - 0.5D)));
+        return (float) (0.5F + 0.49806510671F * Math.atan(3.14159265359D * (this.timer / this.duration - 0.5D)));
     }
 
     /**
-     * Returns a value between 0.0F and 1.0F depending on the timer and duration of the animation. 
+     * Returns a value between 0.0F and 1.0F depending on the timer and duration of the animation.
      * This value starts at 1.0F and ends at 1.0F.
      * The equation used is 0.5 - 0.5 * cos(2 * PI * x + sin(2 * PI * x)). It is smooth.
      */
@@ -305,7 +314,7 @@ public class ControlledAnimation
     }
 
     /**
-     * Returns a value between 0.0F and 1.0F depending on the timer and duration of the animation. 
+     * Returns a value between 0.0F and 1.0F depending on the timer and duration of the animation.
      * This value starts at 1.0F and ends at 1.0F.
      * The equation used is 0.5 + 0.5 * cos(2 PI * x + sin(2 * PI * x)). It is smooth.
      */
@@ -313,5 +322,5 @@ public class ControlledAnimation
     {
         float x = 6.28318530718F * (float) (this.timer / this.duration);
         return 0.5F + 0.5F * MathHelper.cos(x + MathHelper.sin(x));
-	}
+    }
 }

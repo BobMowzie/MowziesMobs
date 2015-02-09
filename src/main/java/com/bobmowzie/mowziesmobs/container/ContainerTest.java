@@ -9,7 +9,7 @@ public class ContainerTest extends Container
 {
     public ContainerTest(InventoryPlayer inventory, TileTest tileEntity)
     {
-    	
+
     }
 
     public boolean canInteractWith(EntityPlayer player)

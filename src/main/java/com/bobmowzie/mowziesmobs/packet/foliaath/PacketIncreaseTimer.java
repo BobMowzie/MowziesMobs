@@ -23,7 +23,8 @@ public class PacketIncreaseTimer extends AbstractPacket<PacketIncreaseTimer>
     public void handleClientMessage(PacketIncreaseTimer message, EntityPlayer player)
     {
         Entity entity = player.worldObj.getEntityByID(message.entityId);
-        if (entity != null && entity instanceof EntityFoliaath) {
+        if (entity != null && entity instanceof EntityFoliaath)
+        {
             EntityFoliaath foliaath = (EntityFoliaath) entity;
             foliaath.activate.increaseTimer();
         }
