@@ -8,7 +8,9 @@ import com.bobmowzie.mowziesmobs.enums.MMAnimation;
 import com.bobmowzie.mowziesmobs.packet.AbstractPacket;
 import com.bobmowzie.mowziesmobs.packet.foliaath.PacketDecreaseTimer;
 import com.bobmowzie.mowziesmobs.packet.foliaath.PacketIncreaseTimer;
+import com.bobmowzie.mowziesmobs.packet.foliaath.PacketSetActive;
 import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,6 +21,7 @@ public class EntityFoliaath extends MMEntityBase
 {
     public IntermittentAnimation openMouth = new IntermittentAnimation(15, 70, 7, 1);
     public ControlledAnimation activate = new ControlledAnimation(30);
+    public boolean active;
     public int lastTimeDecrease = 0;
     private double prevOpenMouth;
     private double prevActivate;
@@ -38,6 +41,13 @@ public class EntityFoliaath extends MMEntityBase
         return 12;
     }
 
+    @Override
+    protected void applyEntityAttributes() {
+        super.applyEntityAttributes();
+        getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(1.0);
+        getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(20);
+    }
+
     public void onUpdate()
     {
         super.onUpdate();
@@ -46,6 +56,17 @@ public class EntityFoliaath extends MMEntityBase
             if (getAnimID() == 0 && activate.getAnimationFraction() == 1) openMouth.runAnimation();
             else openMouth.stopAnimation();
         }
+
+        if (activate.getAnimationFraction() == 1)
+        {
+            if (active == false) sendPacket(new PacketSetActive(getEntityId(), true));
+        }
+        else
+        {
+            if (active == true) sendPacket(new PacketSetActive(getEntityId(), false));
+        }
+
+        //System.out.println(active);
 
         if (frame % 13 == 3)
         {
