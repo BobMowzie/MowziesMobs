@@ -17,9 +17,11 @@ import thehippomaster.AnimationAPI.AnimationAPI;
 
 public class EntityFoliaath extends MMEntityBase
 {
-    public IntermittentAnimation openMouth = new IntermittentAnimation(15, 70, 20, 1);
+    public IntermittentAnimation openMouth = new IntermittentAnimation(15, 70, 7, 1);
     public ControlledAnimation activate = new ControlledAnimation(30);
     public int lastTimeDecrease = 0;
+    private double prevOpenMouth;
+    private double prevActivate;
 
     public EntityFoliaath(World world)
     {
@@ -45,10 +47,21 @@ public class EntityFoliaath extends MMEntityBase
             else openMouth.stopAnimation();
         }
 
-        if (openMouth.getAnimationFraction() > 0.5 && frame % 12 == 0)
+        if (frame % 13 == 3)
         {
-            MowziesMobs.playSound(getEntityId(), "mowziesmobs:foliaathpant");
+            if (openMouth.getTimer() >= 10) MowziesMobs.playSound(getEntityId(), "mowziesmobs:foliaathpant1");
+            else if (activate.getTimer() >= 25) MowziesMobs.playSound(getEntityId(), "mowziesmobs:foliaathpant2");
         }
+
+        if (openMouth.getTimer() == 1 && prevOpenMouth-openMouth.getTimer() < 0) MowziesMobs.playSound(getEntityId(), "mowziesmobs:foliaathrustle");
+        if (openMouth.getTimer() == 13 && prevOpenMouth-openMouth.getTimer() < 0) MowziesMobs.playSound(getEntityId(), "mowziesmobs:foliaathgrunt");
+        prevOpenMouth = openMouth.getTimer();
+
+        if (activate.getTimer() == 1 && prevActivate-activate.getTimer() < 0) MowziesMobs.playSound(getEntityId(), "mowziesmobs:foliaathrustle");
+        if (activate.getTimer() == 5 && prevActivate-activate.getTimer() < 0) MowziesMobs.playSound(getEntityId(), "mowziesmobs:foliaathemerge");
+        if (activate.getTimer() == 28 && prevActivate-activate.getTimer() > 0) MowziesMobs.playSound(getEntityId(), "mowziesmobs:foliaathrustle");
+        if (activate.getTimer() == 24 && prevActivate-activate.getTimer() > 0) MowziesMobs.playSound(getEntityId(), "mowziesmobs:foliaathretreat");
+        prevActivate = activate.getTimer();
 
         renderYawOffset = 0;
         rotationYaw = 0;

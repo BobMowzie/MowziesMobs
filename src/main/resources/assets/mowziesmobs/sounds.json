@@ -3,7 +3,8 @@
     "foliaathbite2": {"category": "master","sounds": [{"name": "foliaathbite2","stream": false}]},
     "foliaathemerge": {"category": "master","sounds": [{"name": "foliaathemerge","stream": false}]},
     "foliaathgrunt": {"category": "master","sounds": [{"name": "foliaathgrunt","stream": false}]},
-    "foliaathpant": {"category": "master","sounds": [{"name": "foliaathpant","stream": false}]},
+    "foliaathpant1": {"category": "master","sounds": [{"name": "foliaathpant1","stream": false}]},
+    "foliaathpant2": {"category": "master","sounds": [{"name": "foliaathpant2","stream": false}]},
     "foliaathretreat": {"category": "master","sounds": [{"name": "foliaathretreat","stream": false}]},
     "foliaathrustle": {"category": "master","sounds": [{"name": "foliaathrustle","stream": false}]}
 }
