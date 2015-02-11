@@ -8,12 +8,15 @@ import com.bobmowzie.mowziesmobs.enums.MMAnimation;
 import com.bobmowzie.mowziesmobs.packet.AbstractPacket;
 import com.bobmowzie.mowziesmobs.packet.foliaath.PacketDecreaseTimer;
 import com.bobmowzie.mowziesmobs.packet.foliaath.PacketIncreaseTimer;
-import com.bobmowzie.mowziesmobs.packet.foliaath.PacketSetActive;
+import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import thehippomaster.AnimationAPI.AnimationAPI;
 
@@ -38,14 +41,14 @@ public class EntityFoliaath extends MMEntityBase
 
     public int getAttack()
     {
-        return 12;
+        return 8;
     }
 
     @Override
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
         getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(1.0);
-        getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(20);
+        getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(10);
     }
 
     public void onUpdate()
@@ -57,14 +60,14 @@ public class EntityFoliaath extends MMEntityBase
             else openMouth.stopAnimation();
         }
 
-        if (activate.getAnimationFraction() == 1)
+        /*if (activate.getAnimationFraction() == 1)
         {
             if (active == false) sendPacket(new PacketSetActive(getEntityId(), true));
         }
         else
         {
             if (active == true) sendPacket(new PacketSetActive(getEntityId(), false));
-        }
+        }*/
 
         //System.out.println(active);
 
@@ -115,12 +118,69 @@ public class EntityFoliaath extends MMEntityBase
         }
     }
 
+    @Override
+    public void applyEntityCollision(Entity p_70108_1_)
+    {
+        if (p_70108_1_.riddenByEntity != this && p_70108_1_.ridingEntity != this)
+        {
+            double d0 = p_70108_1_.posX - this.posX;
+            double d1 = p_70108_1_.posZ - this.posZ;
+            double d2 = MathHelper.abs_max(d0, d1);
+
+            if (d2 >= 0.009999999776482582D)
+            {
+                d2 = (double)MathHelper.sqrt_double(d2);
+                d0 /= d2;
+                d1 /= d2;
+                double d3 = 1.0D / d2;
+
+                if (d3 > 1.0D)
+                {
+                    d3 = 1.0D;
+                }
+
+                d0 *= d3;
+                d1 *= d3;
+                d0 *= 0.05000000074505806D;
+                d1 *= 0.05000000074505806D;
+                d0 *= (double)(1.0F - this.entityCollisionReduction);
+                d1 *= (double)(1.0F - this.entityCollisionReduction);
+                addVelocity(d0, 0.0D, d1);
+                p_70108_1_.addVelocity(d0, 0.0D, d1);
+            }
+        }
+    }
+
     public void sendPacket(AbstractPacket packet)
     {
         if (!worldObj.isRemote)
         {
             MowziesMobs.networkWrapper.sendToAll(packet);
         }
+    }
+
+    @Override
+    public boolean getCanSpawnHere() {
+        if (this.worldObj.checkNoEntityCollision(this.boundingBox) && this.worldObj.getCollidingBoundingBoxes(this, this.boundingBox).isEmpty() && !this.worldObj.isAnyLiquid(this.boundingBox))
+        {
+            int i = MathHelper.floor_double(this.posX);
+            int j = MathHelper.floor_double(this.boundingBox.minY);
+            int k = MathHelper.floor_double(this.posZ);
+
+            if (j < 63)
+            {
+                return false;
+            }
+
+            Block block = this.worldObj.getBlock(i, j - 1, k);
+
+            if (block == Blocks.grass || block.isLeaves(worldObj, i, j - 1, k))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
 
