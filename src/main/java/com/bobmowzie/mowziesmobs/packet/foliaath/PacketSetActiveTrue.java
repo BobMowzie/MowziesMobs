@@ -6,43 +6,39 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 
-public class PacketSetActive extends AbstractPacket<PacketSetActive>
+public class PacketSetActiveTrue extends AbstractPacket<PacketSetActiveTrue>
 {
     public int entityId;
-    public boolean b;
 
-    public PacketSetActive()
+    public PacketSetActiveTrue()
     {
 
     }
 
-    public PacketSetActive(int id, boolean b)
+    public PacketSetActiveTrue(int id)
     {
         entityId = id;
-        this.b = b;
     }
 
-    public void handleClientMessage(PacketSetActive message, EntityPlayer player)
+    public void handleClientMessage(PacketSetActiveTrue message, EntityPlayer player)
     {
         Entity entity = player.worldObj.getEntityByID(message.entityId);
-        if (entity != null && entity instanceof EntityFoliaath) ((EntityFoliaath)entity).active = b;
+        if (entity != null && entity instanceof EntityFoliaath) ((EntityFoliaath)entity).active = true;
     }
 
-    public void handleServerMessage(PacketSetActive message, EntityPlayer player)
+    public void handleServerMessage(PacketSetActiveTrue message, EntityPlayer player)
     {
         Entity entity = player.worldObj.getEntityByID(message.entityId);
-        if (entity != null && entity instanceof EntityFoliaath) ((EntityFoliaath)entity).active = b;
+        if (entity != null && entity instanceof EntityFoliaath) ((EntityFoliaath)entity).active = true;
     }
 
     public void fromBytes(ByteBuf buf)
     {
         entityId = buf.readInt();
-        b = buf.readBoolean();
     }
 
     public void toBytes(ByteBuf buf)
     {
         buf.writeInt(entityId);
-        buf.writeBoolean(b);
     }
 }

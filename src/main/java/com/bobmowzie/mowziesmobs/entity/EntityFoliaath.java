@@ -8,6 +8,8 @@ import com.bobmowzie.mowziesmobs.enums.MMAnimation;
 import com.bobmowzie.mowziesmobs.packet.AbstractPacket;
 import com.bobmowzie.mowziesmobs.packet.foliaath.PacketDecreaseTimer;
 import com.bobmowzie.mowziesmobs.packet.foliaath.PacketIncreaseTimer;
+import com.bobmowzie.mowziesmobs.packet.foliaath.PacketSetActiveFalse;
+import com.bobmowzie.mowziesmobs.packet.foliaath.PacketSetActiveTrue;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
@@ -54,23 +56,31 @@ public class EntityFoliaath extends MMEntityBase
     public void onUpdate()
     {
         super.onUpdate();
+        //Open mouth animation
         if (worldObj.isRemote)
         {
             if (getAnimID() == 0 && activate.getAnimationFraction() == 1) openMouth.runAnimation();
             else openMouth.stopAnimation();
         }
 
-        /*if (activate.getAnimationFraction() == 1)
+        if (worldObj.isRemote && activate.getAnimationFraction() >= 0.8)
         {
-            if (active == false) sendPacket(new PacketSetActive(getEntityId(), true));
+            if (active == false) {
+                sendPacket2(new PacketSetActiveTrue(getEntityId()));
+                active = true;
+            }
         }
-        else
+        else if (worldObj.isRemote && activate.getAnimationFraction() < 0.8)
         {
-            if (active == true) sendPacket(new PacketSetActive(getEntityId(), false));
-        }*/
+            if (active == true) {
+                sendPacket2(new PacketSetActiveFalse(getEntityId()));
+                active = false;
+            }
+        }
 
-        //System.out.println(active);
+        System.out.println(active);
 
+        //Sounds
         if (frame % 13 == 3)
         {
             if (openMouth.getTimer() >= 10) MowziesMobs.playSound(getEntityId(), "mowziesmobs:foliaathpant1");
@@ -87,6 +97,7 @@ public class EntityFoliaath extends MMEntityBase
         if (activate.getTimer() == 24 && prevActivate-activate.getTimer() > 0) MowziesMobs.playSound(getEntityId(), "mowziesmobs:foliaathretreat");
         prevActivate = activate.getTimer();
 
+        //Targetting, attacking, and activating
         renderYawOffset = 0;
         rotationYaw = 0;
 
@@ -95,7 +106,7 @@ public class EntityFoliaath extends MMEntityBase
         {
             setRotationYawHead(targetAngle);
 
-            if (targetDistance <= 4.5 && getAnimID() == 0)
+            if (targetDistance <= 4.5 && getAnimID() == 0 && active)
             {
                 AnimationAPI.sendAnimPacket(this, MMAnimation.ATTACK.animID());
             }
@@ -157,6 +168,11 @@ public class EntityFoliaath extends MMEntityBase
         {
             MowziesMobs.networkWrapper.sendToAll(packet);
         }
+    }
+
+    public void sendPacket2(AbstractPacket packet)
+    {
+        MowziesMobs.networkWrapper.sendToServer(packet);
     }
 
     @Override
