@@ -28,4 +28,10 @@ public class RenderFoliaath extends RenderLiving
     {
         return new ResourceLocation(MowziesMobs.getModID() + "textures/entity/TextureFoliaath.png");
     }
+
+    @Override
+    protected float getDeathMaxRotation(EntityLivingBase entity)
+    {
+        return 0;
+    }
 }

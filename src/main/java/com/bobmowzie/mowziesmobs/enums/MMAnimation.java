@@ -2,7 +2,9 @@ package com.bobmowzie.mowziesmobs.enums;
 
 public enum MMAnimation
 {
-    ATTACK(1);
+    ATTACK(1),
+    TAKEDAMAGE(2),
+    DIE(3);
 
     private MMAnimation(int id)
     {

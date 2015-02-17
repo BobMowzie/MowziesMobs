@@ -36,7 +36,7 @@ public class PacketPlaySound extends AbstractPacket<PacketPlaySound>
 
     public void handleServerMessage(PacketPlaySound message, EntityPlayer player)
     {
-        player.worldObj.playSoundAtEntity(player.worldObj.getEntityByID(message.entityId), message.soundName, message.volume, message.pitch);
+        if (player.worldObj.getEntityByID(message.entityId) != null) player.worldObj.playSoundAtEntity(player.worldObj.getEntityByID(message.entityId), message.soundName, message.volume, message.pitch);
     }
 
     public void fromBytes(ByteBuf buf)

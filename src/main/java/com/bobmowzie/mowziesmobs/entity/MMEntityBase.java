@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import thehippomaster.AnimationAPI.IAnimatedEntity;
 
@@ -15,6 +16,7 @@ public class MMEntityBase extends EntityCreature implements IEntityAdditionalSpa
     public int frame;
     public float targetDistance;
     public float targetAngle;
+    public DamageSource dieSource;
 
     public MMEntityBase(World world)
     {
