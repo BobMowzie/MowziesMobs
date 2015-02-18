@@ -2,13 +2,11 @@ package com.bobmowzie.mowziesmobs.ai.animation;
 
 import com.bobmowzie.mowziesmobs.entity.MMEntityBase;
 import com.bobmowzie.mowziesmobs.enums.MMAnimation;
-import net.minecraft.util.DamageSource;
 import thehippomaster.AnimationAPI.AIAnimation;
 
 public class AnimDie extends AIAnimation
 {
     private int duration;
-    private DamageSource dmgSource;
     private MMEntityBase dyingEntity;
 
     public AnimDie(MMEntityBase entity, int duration)
@@ -41,14 +39,12 @@ public class AnimDie extends AIAnimation
     public void startExecuting()
     {
         super.startExecuting();
-        dmgSource = dyingEntity.dieSource;
     }
 
     @Override
     public void resetTask()
     {
         super.resetTask();
-        dyingEntity.onDeath(dmgSource);
     }
 
     @Override

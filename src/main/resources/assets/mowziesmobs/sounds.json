@@ -6,5 +6,8 @@
     "foliaathpant1": {"category": "master","sounds": [{"name": "foliaathpant1","stream": false}]},
     "foliaathpant2": {"category": "master","sounds": [{"name": "foliaathpant2","stream": false}]},
     "foliaathretreat": {"category": "master","sounds": [{"name": "foliaathretreat","stream": false}]},
-    "foliaathrustle": {"category": "master","sounds": [{"name": "foliaathrustle","stream": false}]}
+    "foliaathdie": {"category": "master","sounds": [{"name": "foliaathdie","stream": false}]},
+    "foliaathhurt": {"category": "master","sounds": [{"name": "foliaathhurt","stream": false}]},
+    "foliaathrustle": {"category": "master","sounds": [{"name": "foliaathrustle","stream": false}]},
+    "dirtimpact": {"category": "master","sounds": [{"name": "dirtimpact","stream": false}]}
 }

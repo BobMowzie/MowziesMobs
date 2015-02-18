@@ -57,6 +57,16 @@ public class EntityFoliaath extends MMEntityBase
         return 8;
     }
 
+    public String getHurtSound()
+    {
+        return "mowziesmobs:foliaathhurt";
+    }
+
+    public String getDeathSound()
+    {
+        return "mowziesmobs:foliaathdie";
+    }
+
     @Override
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
@@ -90,7 +100,7 @@ public class EntityFoliaath extends MMEntityBase
         }
 
         //Sounds
-        if (frame % 13 == 3)
+        if (frame % 13 == 3 && getAnimID() != MMAnimation.DIE.animID())
         {
             if (openMouth.getTimer() >= 10) MowziesMobs.playSound(getEntityId(), "mowziesmobs:foliaathpant1");
             else if (activate.getTimer() >= 25) MowziesMobs.playSound(getEntityId(), "mowziesmobs:foliaathpant2");
