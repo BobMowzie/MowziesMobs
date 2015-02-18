@@ -1,8 +1,8 @@
 [
 	{
 		"modid": "mowziesmobs",
-		"name": "MowziesMobs",
-		"description": "Prehistoric Genetics is a Minecraft mod that helps you to bring extinct creatures back to life!",
+		"name": "Mowzie's Mobs",
+		"description": "Mowzie's Mobs adds a variety of high-quality fantasy creatures to your Minecraft world. Currently, Mowzie's Mobs adds only one mob, the foliaath, but this number will grow soon.",
 		"version": "${version}",
 		"url": "",
 		"authorList": ["BobMowzie", "iLexiconn"],
