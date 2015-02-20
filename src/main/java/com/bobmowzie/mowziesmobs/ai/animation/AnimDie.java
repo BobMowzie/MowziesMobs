@@ -39,6 +39,7 @@ public class AnimDie extends AIAnimation
     public void startExecuting()
     {
         super.startExecuting();
+        dyingEntity.setAnimTick(0);
     }
 
     @Override

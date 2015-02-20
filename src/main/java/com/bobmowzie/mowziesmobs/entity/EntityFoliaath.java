@@ -28,7 +28,7 @@ import thehippomaster.AnimationAPI.AnimationAPI;
 
 public class EntityFoliaath extends MMEntityBase
 {
-    public IntermittentAnimation openMouth = new IntermittentAnimation(15, 70, 5, 1);
+    public IntermittentAnimation openMouth = new IntermittentAnimation(15, 30, 50, 1);
     public ControlledAnimation activate = new ControlledAnimation(30);
     public ControlledAnimation deathFlail = new ControlledAnimation(5);
     public ControlledAnimation stopDance = new ControlledAnimation(10);
@@ -36,7 +36,7 @@ public class EntityFoliaath extends MMEntityBase
     public int lastTimeDecrease = 0;
     private double prevOpenMouth;
     private double prevActivate;
-    private int deathLength = 30;
+    private int deathLength = 50;
 
     public EntityFoliaath(World world)
     {
@@ -178,7 +178,7 @@ public class EntityFoliaath extends MMEntityBase
     {
         ++this.deathTime;
 
-        if (this.deathTime == deathLength)
+        if (this.deathTime == deathLength-20)
         {
             int i;
 

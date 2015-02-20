@@ -493,6 +493,6 @@ public class ModelFoliaath extends MowzieModelBase
         animator.rotate(Leaf7Head, 0.7F, 0, 0);
         animator.rotate(Leaf8Head, 0.7F, 0, 0);
         animator.endPhase();
-        animator.setStationaryPhase(7);
+        animator.setStationaryPhase(27);
     }
 }
