@@ -125,7 +125,7 @@ public class EntityFoliaath extends MMEntityBase
         {
             setRotationYawHead(targetAngle);
 
-            if (targetDistance <= 4.5 && getAnimID() == 0 && active)
+            if (targetDistance <= 4.5 && getAttackTarget().posY - posY >= -1 && getAttackTarget().posY - posY <= 2 && getAnimID() == 0 && active)
             {
                 AnimationAPI.sendAnimPacket(this, MMAnimation.ATTACK.animID());
             }
