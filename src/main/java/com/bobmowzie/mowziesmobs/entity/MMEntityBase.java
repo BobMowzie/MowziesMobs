@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.entity;
 
+import com.bobmowzie.mowziesmobs.ai.animation.MMAnimBase;
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.EntityCreature;
@@ -17,6 +18,7 @@ public class MMEntityBase extends EntityCreature implements IEntityAdditionalSpa
     public float targetDistance;
     public float targetAngle;
     public DamageSource dieSource;
+    public MMAnimBase currentAnim = null;
 
     public MMEntityBase(World world)
     {

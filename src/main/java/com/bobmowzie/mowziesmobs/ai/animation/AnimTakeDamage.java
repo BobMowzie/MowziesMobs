@@ -2,15 +2,14 @@ package com.bobmowzie.mowziesmobs.ai.animation;
 
 import com.bobmowzie.mowziesmobs.entity.MMEntityBase;
 import com.bobmowzie.mowziesmobs.enums.MMAnimation;
-import thehippomaster.AnimationAPI.AIAnimation;
 
-public class AnimTakeDamage extends AIAnimation
+public class AnimTakeDamage extends MMAnimBase
 {
     private int duration;
 
     public AnimTakeDamage(MMEntityBase entity, int duration)
     {
-        super(entity);
+        super(entity, duration);
         setMutexBits(8);
         this.duration = duration;
     }
@@ -25,12 +24,6 @@ public class AnimTakeDamage extends AIAnimation
     public boolean isAutomatic()
     {
         return true;
-    }
-
-    @Override
-    public int getDuration()
-    {
-        return this.duration;
     }
 
     @Override

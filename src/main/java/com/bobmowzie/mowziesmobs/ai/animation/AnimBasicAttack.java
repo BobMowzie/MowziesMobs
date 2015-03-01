@@ -4,9 +4,8 @@ import com.bobmowzie.mowziesmobs.entity.MMEntityBase;
 import com.bobmowzie.mowziesmobs.enums.MMAnimation;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
-import thehippomaster.AnimationAPI.AIAnimation;
 
-public class AnimBasicAttack extends AIAnimation
+public class AnimBasicAttack extends MMAnimBase
 {
     private MMEntityBase entity;
     private int duration;
@@ -17,7 +16,7 @@ public class AnimBasicAttack extends AIAnimation
 
     public AnimBasicAttack(MMEntityBase entity, int duration, String sound, float knockback, float range)
     {
-        super(entity);
+        super(entity, duration);
         setMutexBits(8);
         this.entity = entity;
         this.duration = duration;
@@ -37,12 +36,6 @@ public class AnimBasicAttack extends AIAnimation
     public boolean isAutomatic()
     {
         return true;
-    }
-
-    @Override
-    public int getDuration()
-    {
-        return this.duration;
     }
 
     @Override

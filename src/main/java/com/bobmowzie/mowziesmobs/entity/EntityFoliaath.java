@@ -46,11 +46,11 @@ public class EntityFoliaath extends MMEntityBase
         super(world);
         getNavigator().setAvoidsWater(true);
         tasks.addTask(0, new EntityAISwimming(this));
-        tasks.addTask(2, new AnimBasicAttack(this, 14, "mowziesmobs:foliaathbite1", 2F, 4.5F));
-        tasks.addTask(2, new AnimTakeDamage(this, 10));
-        tasks.addTask(2, new AnimDie(this, deathLength));
-        tasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true));
-        tasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityCreature.class, 0, true));
+        tasks.addTask(1, new AnimBasicAttack(this, 14, "mowziesmobs:foliaathbite1", 2F, 4.5F));
+        tasks.addTask(1, new AnimTakeDamage(this, 10));
+        tasks.addTask(1, new AnimDie(this, deathLength));
+        tasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true));
+        tasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityCreature.class, 0, true));
         experienceValue = 20;
         this.setSize(0.5F, 2.5F);
     }
@@ -165,6 +165,7 @@ public class EntityFoliaath extends MMEntityBase
             {
                 if (getHealth() > 0.0F && getAnimID() == 0) AnimationAPI.sendAnimPacket(this, MMAnimation.TAKEDAMAGE.animID());
                 else if (getHealth() <= 0.0F) {
+                    if (currentAnim != null) currentAnim.resetTask();
                     AnimationAPI.sendAnimPacket(this, MMAnimation.DIE.animID());
                 }
             }
