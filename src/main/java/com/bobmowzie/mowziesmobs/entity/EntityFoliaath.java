@@ -15,12 +15,15 @@ import com.bobmowzie.mowziesmobs.packet.foliaath.PacketSetActiveTrue;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -280,6 +283,12 @@ public class EntityFoliaath extends MMEntityBase
             }
         }
         return false;
+    }
+
+    @Override
+    public void onKillEntity(EntityLivingBase entity)
+    {
+        addPotionEffect(new PotionEffect(Potion.regeneration.id, 300, 1));
     }
 }
 
