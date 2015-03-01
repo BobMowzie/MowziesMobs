@@ -1,13 +1,13 @@
 package com.bobmowzie.mowziesmobs;
 
-import com.bobmowzie.mowziesmobs.item.ItemTest;
+import com.bobmowzie.mowziesmobs.item.ItemFoliaathSeed;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.ilexiconn.llib.content.IContentProvider;
 import net.minecraft.item.Item;
 
 public class MMItems implements IContentProvider
 {
-    public static Item itemTest;
+    public static Item itemFoliaathSeed;
 
     public void init()
     {
@@ -16,7 +16,7 @@ public class MMItems implements IContentProvider
 
     public void registerItems()
     {
-        itemTest = new ItemTest();
-        GameRegistry.registerItem(itemTest, "itemTest");
+        itemFoliaathSeed = new ItemFoliaathSeed();
+        GameRegistry.registerItem(itemFoliaathSeed, "foliaathseed");
     }
 }

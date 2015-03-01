@@ -37,9 +37,9 @@ public class MowziesMobs extends BasicLLibMod
     @EventHandler
     public void preInit(FMLPreInitializationEvent preEvent)
     {
-        //		getContentHandler().addContentProvider(new MMTabs());
+        getContentHandler().addContentProvider(new MMTabs());
         //		getContentHandler().addContentProvider(new MMBlocks());
-        //		getContentHandler().addContentProvider(new MMItems());
+        getContentHandler().addContentProvider(new MMItems());
         getContentHandler().addContentProvider(new MMEntities());
         //		getContentHandler().addContentProvider(new MMRecipes());
         getContentHandler().init();

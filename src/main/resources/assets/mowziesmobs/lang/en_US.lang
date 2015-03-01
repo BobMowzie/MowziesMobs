@@ -1,5 +1,5 @@
 //Creative_Tabs==================================================
-itemGroup.mowziesmobs.creativeTab=Mowzie's Mobs
+itemGroup.mowziesmobs.generic=Mowzie's Mobs
 
 
 
@@ -9,7 +9,7 @@ entity.Foliaath.name=Foliaath
 
 
 //Items=========================================================
-item.test.name=Test Item
+item.foliaathseed.name=Foliaath Seed
 
 
 

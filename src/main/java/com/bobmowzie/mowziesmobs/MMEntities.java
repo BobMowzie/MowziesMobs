@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs;
 
+import com.bobmowzie.mowziesmobs.entity.EntityBabyFoliaath;
 import com.bobmowzie.mowziesmobs.entity.EntityFoliaath;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import net.ilexiconn.llib.content.IContentProvider;
@@ -13,6 +14,7 @@ public class MMEntities implements IContentProvider
     public void init()
     {
         registerEntity(EntityFoliaath.class, "Foliaath", true, 0x47CC3B, 0xC03BCC, true, 15, 1, 1, EnumCreatureType.monster, new BiomeGenBase[]{BiomeGenBase.jungleHills, BiomeGenBase.jungle, BiomeGenBase.jungleEdge});
+        registerEntity(EntityBabyFoliaath.class, "Baby Foliaath", true, 0, 0, false, 0, 0, 0, EnumCreatureType.monster, null);
     }
 
     public static void registerEntity(Class entityClass, String name, boolean addEgg, int mainColor, int subColor, boolean addSpawn, int frequency, int minGroup, int maxGroup, EnumCreatureType typeOfCreature, BiomeGenBase... biomes)
