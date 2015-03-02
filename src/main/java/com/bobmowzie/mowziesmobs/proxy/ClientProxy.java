@@ -1,10 +1,7 @@
 package com.bobmowzie.mowziesmobs.proxy;
 
-import com.bobmowzie.mowziesmobs.client.model.entity.ModelBabyFoliaath;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelFoliaath;
-import com.bobmowzie.mowziesmobs.client.renderer.entity.RenderBabyFoliaath;
 import com.bobmowzie.mowziesmobs.client.renderer.entity.RenderFoliaath;
-import com.bobmowzie.mowziesmobs.entity.EntityBabyFoliaath;
 import com.bobmowzie.mowziesmobs.entity.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.tile.TileTest;
 import cpw.mods.fml.client.registry.RenderingRegistry;
@@ -19,7 +16,7 @@ public class ClientProxy extends CommonProxy
     public void entityRegistry()
     {
         RenderingRegistry.registerEntityRenderingHandler(EntityFoliaath.class, new RenderFoliaath(new ModelFoliaath(), 1.0F));
-        RenderingRegistry.registerEntityRenderingHandler(EntityBabyFoliaath.class, new RenderBabyFoliaath(new ModelBabyFoliaath(), 0F));
+   //     RenderingRegistry.registerEntityRenderingHandler(EntityBabyFoliaath.class, new RenderBabyFoliaath(new ModelBabyFoliaath(), 0F));
     }
 
     @Override

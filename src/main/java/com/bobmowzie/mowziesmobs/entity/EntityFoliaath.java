@@ -123,7 +123,7 @@ public class EntityFoliaath extends MMEntityBase
         renderYawOffset = 0;
         rotationYaw = 0;
 
-        if (getAttackTarget() instanceof EntityFoliaath) setAttackTarget(null);
+        if (getAttackTarget() instanceof EntityFoliaath/* || getAttackTarget() instanceof EntityBabyFoliaath*/) setAttackTarget(null);
         if (getAttackTarget() != null)
         {
             setRotationYawHead(targetAngle);

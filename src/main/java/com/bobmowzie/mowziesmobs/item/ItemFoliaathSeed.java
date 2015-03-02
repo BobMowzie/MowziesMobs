@@ -2,13 +2,7 @@ package com.bobmowzie.mowziesmobs.item;
 
 import com.bobmowzie.mowziesmobs.MMTabs;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.entity.EntityBabyFoliaath;
-import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Facing;
-import net.minecraft.world.World;
 
 public class ItemFoliaathSeed extends Item {
     public ItemFoliaathSeed() {
@@ -18,7 +12,7 @@ public class ItemFoliaathSeed extends Item {
         setCreativeTab(MMTabs.generic);
     }
 
-    @Override
+   /* @Override
     public boolean onItemUse(ItemStack itemStack, EntityPlayer player, World world, int x, int y, int z, int hitX, float hitY, float hitZ, float metadata) {
         if (world.isRemote) {
             return true;
@@ -54,5 +48,5 @@ public class ItemFoliaathSeed extends Item {
             }
             return true;
         }
-    }
+    }*/
 }
