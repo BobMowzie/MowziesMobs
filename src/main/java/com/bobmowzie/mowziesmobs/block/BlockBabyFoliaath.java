@@ -13,8 +13,8 @@ public class BlockBabyFoliaath extends BlockContainer
     public BlockBabyFoliaath()
     {
         super(Material.plants);
-        setBlockName("Baby Foliaath");
-        setBlockTextureName(MowziesMobs.getModID() + "test");
+        setBlockName("babyFoliaath");
+        setBlockTextureName(MowziesMobs.getModID() + "babyFoliaath");
         setHardness(0F);
         setResistance(0F);
         setCreativeTab(MMTabs.generic);

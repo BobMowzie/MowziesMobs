@@ -4,11 +4,12 @@ import com.bobmowzie.mowziesmobs.MMTabs;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import net.minecraft.item.Item;
 
-public class ItemFoliaathSeed extends Item {
-    public ItemFoliaathSeed() {
-        super();
-        setUnlocalizedName("foliaathseed");
-        setTextureName(MowziesMobs.getModID() + "TextureFoliaathSeed");
+public class ItemFoliaathSeed extends Item
+{
+    public ItemFoliaathSeed()
+    {
+        setUnlocalizedName("foliaathSeed");
+        setTextureName(MowziesMobs.getModID() + "foliaathSeed");
         setCreativeTab(MMTabs.generic);
     }
 

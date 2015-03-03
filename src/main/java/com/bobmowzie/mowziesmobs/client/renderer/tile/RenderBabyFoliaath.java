@@ -10,7 +10,7 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderBabyFoliaath extends TileEntitySpecialRenderer
 {
-    public ResourceLocation texture = new ResourceLocation(MowziesMobs.getModID() + "textures/blocks/TextureBabyFoliaath.png");
+    public ResourceLocation texture = new ResourceLocation(MowziesMobs.getModID() + "textures/blocks/babyFoliaath.png");
     public ModelBabyFoliaath model = new ModelBabyFoliaath();
 
     public RenderBabyFoliaath()

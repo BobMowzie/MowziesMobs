@@ -26,7 +26,7 @@ public class RenderFoliaath extends RenderLiving
     @Override
     public ResourceLocation getEntityTexture(Entity entity)
     {
-        return new ResourceLocation(MowziesMobs.getModID() + "textures/entity/TextureFoliaath.png");
+        return new ResourceLocation(MowziesMobs.getModID() + "textures/entity/textureFoliaath.png");
     }
 
     @Override
