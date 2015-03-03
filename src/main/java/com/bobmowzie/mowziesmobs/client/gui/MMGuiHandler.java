@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.gui;
 
 import com.bobmowzie.mowziesmobs.container.ContainerTest;
-import com.bobmowzie.mowziesmobs.tile.TileTest;
+import com.bobmowzie.mowziesmobs.tile.TileBabyFoliaath;
 import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -13,8 +13,8 @@ public class MMGuiHandler implements IGuiHandler
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
     {
         TileEntity tileEntity = world.getTileEntity(x, y, z);
-        if (tileEntity instanceof TileTest && ID == 0)
-            return new ContainerTest(player.inventory, (TileTest) tileEntity);
+        if (tileEntity instanceof TileBabyFoliaath && ID == 0)
+            return new ContainerTest(player.inventory, (TileBabyFoliaath) tileEntity);
         return null;
     }
 
@@ -22,7 +22,7 @@ public class MMGuiHandler implements IGuiHandler
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
     {
         TileEntity tileEntity = world.getTileEntity(x, y, z);
-        if (tileEntity instanceof TileTest) return new GuiTest(player.inventory, (TileTest) tileEntity);
+        if (tileEntity instanceof TileBabyFoliaath) return new GuiTest(player.inventory, (TileBabyFoliaath) tileEntity);
         return null;
     }
 }

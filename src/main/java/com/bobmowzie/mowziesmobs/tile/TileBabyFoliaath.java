@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.tile;
 import net.ilexiconn.llib.tile.TileEntityExtraData;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class TileTest extends TileEntityExtraData
+public class TileBabyFoliaath extends TileEntityExtraData
 {
     @Override
     public void loadFromNBT(NBTTagCompound nbtTagCompound)
@@ -15,8 +15,7 @@ public class TileTest extends TileEntityExtraData
     {
     }
 
-    public TileTest()
+    public TileBabyFoliaath()
     {
-
     }
 }

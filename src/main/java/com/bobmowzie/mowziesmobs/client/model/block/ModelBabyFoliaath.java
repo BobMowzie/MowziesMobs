@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.client.model.entity;
+package com.bobmowzie.mowziesmobs.client.model.block;
 
 /**
  * Created by jnad325 on 3/1/15.

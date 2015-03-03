@@ -1,21 +1,21 @@
 package com.bobmowzie.mowziesmobs.client.renderer.tile;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.block.ModelBlockTest;
-import com.bobmowzie.mowziesmobs.tile.TileTest;
+import com.bobmowzie.mowziesmobs.client.model.block.ModelBabyFoliaath;
+import com.bobmowzie.mowziesmobs.tile.TileBabyFoliaath;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
-public class TileRendererTest extends TileEntitySpecialRenderer
+public class RenderBabyFoliaath extends TileEntitySpecialRenderer
 {
 
-    private static final ResourceLocation texture = new ResourceLocation(MowziesMobs.getModID() + "textures/blocks/test.png");
-    private ModelBlockTest model = new ModelBlockTest();
+    private static final ResourceLocation texture = new ResourceLocation(MowziesMobs.getModID() + "textures/blocks/TextureBabyFoliaath.png");
+    private ModelBabyFoliaath model = new ModelBabyFoliaath();
 
-    public TileRendererTest()
+    public RenderBabyFoliaath()
     {
 
     }
@@ -23,9 +23,9 @@ public class TileRendererTest extends TileEntitySpecialRenderer
     @Override
     public void renderTileEntityAt(TileEntity tileEntity, double x, double y, double z, float f)
     {
-        if (tileEntity instanceof TileTest)
+        if (tileEntity instanceof TileBabyFoliaath)
         {
-            TileTest tileEntityModel = (TileTest) tileEntity;
+            TileBabyFoliaath tileEntityModel = (TileBabyFoliaath) tileEntity;
             GL11.glPushMatrix();
             GL11.glScalef(1.0F, 1.0F, 1.0F);
             GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
