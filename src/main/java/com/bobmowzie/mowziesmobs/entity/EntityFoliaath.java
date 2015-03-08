@@ -40,6 +40,7 @@ public class EntityFoliaath extends MMEntityBase
     private double prevOpenMouth;
     private double prevActivate;
     private int deathLength = 50;
+    boolean resettingTarget;
 
     public EntityFoliaath(World world)
     {
@@ -124,8 +125,10 @@ public class EntityFoliaath extends MMEntityBase
         rotationYaw = 0;
 
         if (getAttackTarget() instanceof EntityFoliaath/* || getAttackTarget() instanceof EntityBabyFoliaath*/) setAttackTarget(null);
+        if (resettingTarget) setRotationYawHead(prevRotationYawHead);
         if (getAttackTarget() != null)
         {
+            resettingTarget = false;
             setRotationYawHead(targetAngle);
 
             if (targetDistance <= 4.5 && getAttackTarget().posY - posY >= -1 && getAttackTarget().posY - posY <= 2 && getAnimID() == 0 && active)
@@ -144,15 +147,24 @@ public class EntityFoliaath extends MMEntityBase
                 lastTimeDecrease++;
             }
         }
-        else if (lastTimeDecrease <= 30 && getAnimID() == 0)
-        {
+        else if (lastTimeDecrease <= 30 && getAnimID() == 0 && !resettingTarget) {
             sendPacket(new PacketDecreaseTimer(getEntityId()));
             lastTimeDecrease++;
         }
 
         if (getAnimID() == MMAnimation.DIE.animID() && getAnimTick() <= 12) deathFlail.increaseTimer();
         if (getAnimID() == MMAnimation.DIE.animID() && getAnimTick() > 12) deathFlail.decreaseTimer();
-        if (getAnimID() == MMAnimation.DIE.animID()) {stopDance.increaseTimer(); activate.increaseTimer();}
+        if (getAnimID() == MMAnimation.DIE.animID())
+        {
+            stopDance.increaseTimer();
+            activate.increaseTimer();
+        }
+
+        if (getAttackTarget() != null && frame % 20 == 0 && getAnimID() == 0)
+        {
+            setAttackTarget(null);
+            resettingTarget = true;
+        }
     }
 
     @Override
@@ -246,8 +258,7 @@ public class EntityFoliaath extends MMEntityBase
     @Override
     public boolean canBeCollidedWith()
     {
-        if (active) return true;
-        else return false;
+        return active;
     }
 
     public void sendPacket(AbstractPacket packet)
