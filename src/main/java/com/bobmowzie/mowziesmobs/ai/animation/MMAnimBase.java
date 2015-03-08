@@ -4,9 +4,6 @@ import com.bobmowzie.mowziesmobs.entity.MMEntityBase;
 import thehippomaster.AnimationAPI.AIAnimation;
 import thehippomaster.AnimationAPI.IAnimatedEntity;
 
-/**
- * Created by jnad325 on 3/1/15.
- */
 public class MMAnimBase extends AIAnimation
     {
         MMEntityBase animatingEntity;
@@ -16,6 +13,7 @@ public class MMAnimBase extends AIAnimation
         {
             super(entity);
             this.duration = duration;
+            animatingEntity = (MMEntityBase)entity;
         }
 
         @Override
@@ -40,13 +38,13 @@ public class MMAnimBase extends AIAnimation
         public void startExecuting()
         {
             super.startExecuting();
-//            animatingEntity.currentAnim = this;
+            animatingEntity.currentAnim = this;
         }
 
         @Override
         public void resetTask()
         {
             super.resetTask();
-      //      animatingEntity.currentAnim = null;
+            animatingEntity.currentAnim = null;
         }
     }

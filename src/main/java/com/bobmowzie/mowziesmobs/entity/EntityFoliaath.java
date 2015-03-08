@@ -57,7 +57,7 @@ public class EntityFoliaath extends MMEntityBase
 
     public int getAttack()
     {
-        return 8;
+        return 10;
     }
 
     public String getHurtSound()
@@ -152,7 +152,7 @@ public class EntityFoliaath extends MMEntityBase
 
         if (getAnimID() == MMAnimation.DIE.animID() && getAnimTick() <= 12) deathFlail.increaseTimer();
         if (getAnimID() == MMAnimation.DIE.animID() && getAnimTick() > 12) deathFlail.decreaseTimer();
-        if (getAnimID() == MMAnimation.DIE.animID()) stopDance.increaseTimer();
+        if (getAnimID() == MMAnimation.DIE.animID()) {stopDance.increaseTimer(); activate.increaseTimer();}
     }
 
     @Override
