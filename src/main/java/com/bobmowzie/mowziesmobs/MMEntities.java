@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs;
 
 import com.bobmowzie.mowziesmobs.entity.EntityFoliaath;
+import com.bobmowzie.mowziesmobs.entity.EntityWroughtnaut;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import net.ilexiconn.llib.content.IContentProvider;
 import net.minecraft.entity.EntityList;
@@ -13,6 +14,7 @@ public class MMEntities implements IContentProvider
     public void init()
     {
         registerEntity(EntityFoliaath.class, "Foliaath", true, 0x47CC3B, 0xC03BCC, true, 20, 1, 1, EnumCreatureType.monster, new BiomeGenBase[]{BiomeGenBase.jungleHills, BiomeGenBase.jungle, BiomeGenBase.jungleEdge});
+        registerEntity(EntityWroughtnaut.class, "FerrousWroughtnaut", true, 0x47CC3B, 0xC03BCC, false, 1, 1, 1, EnumCreatureType.monster, null);
     }
 
     public static void registerEntity(Class entityClass, String name, boolean addEgg, int mainColor, int subColor, boolean addSpawn, int frequency, int minGroup, int maxGroup, EnumCreatureType typeOfCreature, BiomeGenBase... biomes)
