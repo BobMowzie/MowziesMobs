@@ -20,6 +20,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.item.EntityXPOrb;
+import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.potion.Potion;
@@ -40,7 +41,7 @@ public class EntityFoliaath extends MMEntityBase
     private double prevOpenMouth;
     private double prevActivate;
     private int deathLength = 50;
-    boolean resettingTarget;
+    int resettingTargetTimer = 0;
 
     public EntityFoliaath(World world)
     {
@@ -124,11 +125,10 @@ public class EntityFoliaath extends MMEntityBase
         renderYawOffset = 0;
         rotationYaw = 0;
 
-        if (getAttackTarget() instanceof EntityFoliaath/* || getAttackTarget() instanceof EntityBabyFoliaath*/) setAttackTarget(null);
-        if (resettingTarget) setRotationYawHead(prevRotationYawHead);
+        if (getAttackTarget() instanceof EntityFoliaath || getAttackTarget() instanceof EntityOcelot) setAttackTarget(null);
+        if (resettingTargetTimer > 0) setRotationYawHead(prevRotationYawHead);
         if (getAttackTarget() != null)
         {
-            resettingTarget = false;
             setRotationYawHead(targetAngle);
 
             if (targetDistance <= 4.5 && getAttackTarget().posY - posY >= -1 && getAttackTarget().posY - posY <= 2 && getAnimID() == 0 && active)
@@ -147,7 +147,7 @@ public class EntityFoliaath extends MMEntityBase
                 lastTimeDecrease++;
             }
         }
-        else if (lastTimeDecrease <= 30 && getAnimID() == 0 && !resettingTarget) {
+        else if (lastTimeDecrease <= 30 && getAnimID() == 0 && resettingTargetTimer == 0) {
             sendPacket(new PacketDecreaseTimer(getEntityId()));
             lastTimeDecrease++;
         }
@@ -160,10 +160,12 @@ public class EntityFoliaath extends MMEntityBase
             activate.increaseTimer();
         }
 
+        if (resettingTargetTimer > 0) resettingTargetTimer--;
+
         if (getAttackTarget() != null && frame % 20 == 0 && getAnimID() == 0)
         {
             setAttackTarget(null);
-            resettingTarget = true;
+            resettingTargetTimer = 2;
         }
     }
 

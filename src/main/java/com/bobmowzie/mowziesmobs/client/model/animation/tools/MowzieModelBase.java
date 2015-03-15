@@ -28,7 +28,6 @@ public class MowzieModelBase extends ModelBase
      * Resets the rotate angles and rotation points to its original value if they were saved before.
      * Note: Call this at the beginning of setRotationAngles.
      *
-     * @see setInitPose() method in MowzieModelBase class.
      */
     protected void setToInitPose()
     {
@@ -101,7 +100,6 @@ public class MowzieModelBase extends ModelBase
      * <p/>
      * Note: Just keep f and f1 from the setRotationAngles() method.
      *
-     * @param box    is the ModelRenderer to be animated;
      * @param speed  is how fast the animation runs;
      * @param degree is how far the box will rotate;
      * @param invert will invert the rotation;
@@ -154,6 +152,28 @@ public class MowzieModelBase extends ModelBase
         int inverted = 1;
         if (invert) inverted = -1;
         box.rotateAngleX += MathHelper.cos(f * speed + offset) * degree * inverted * f1 + weight * f1;
+    }
+
+    /**
+     * Rotates a box side to side (rotateAngleX). Useful for waists and torsos.
+     * <p/>
+     * Note: Just keep f and f1 from the setRotationAngles() method.
+     *
+     * @param box    is the ModelRenderer to be animated;
+     * @param speed  is how fast the animation runs;
+     * @param degree is how far the box will rotate;
+     * @param invert will invert the rotation;
+     * @param offset will offset the timing of the animation;
+     * @param weight will make the animation favor one direction
+     *               more based on how fast the mob is moving;
+     * @param f      is the walked distance;
+     * @param f1     is the walk speed.
+     */
+    public void swing(MowzieModelRenderer box, float speed, float degree, boolean invert, float offset, float weight, float f, float f1)
+    {
+        int inverted = 1;
+        if (invert) inverted = -1;
+        box.rotateAngleY += MathHelper.cos(f * speed + offset) * degree * inverted * f1 + weight * f1;
     }
 
     /**

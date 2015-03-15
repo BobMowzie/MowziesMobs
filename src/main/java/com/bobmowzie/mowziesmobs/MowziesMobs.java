@@ -13,6 +13,7 @@ import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
@@ -60,6 +61,11 @@ public class MowziesMobs extends BasicLLibMod
         networkWrapper.registerMessage(PacketPlaySound.class, PacketPlaySound.class, 2, Side.SERVER);
         networkWrapper.registerMessage(PacketSetActiveTrue.class, PacketSetActiveTrue.class, 3, Side.SERVER);
         networkWrapper.registerMessage(PacketSetActiveFalse.class, PacketSetActiveFalse.class, 4, Side.SERVER);
+    }
+
+    @EventHandler
+    public void postInit(FMLPostInitializationEvent event) {
+        System.out.println("Post Init");
     }
 
     public static String getModID()
