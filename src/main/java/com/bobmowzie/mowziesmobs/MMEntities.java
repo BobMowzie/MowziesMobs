@@ -13,7 +13,7 @@ public class MMEntities implements IContentProvider
 
     public void init()
     {
-        registerEntity(EntityFoliaath.class, "Foliaath", true, 0x47CC3B, 0xC03BCC, true, 20, 1, 1, EnumCreatureType.monster, new BiomeGenBase[]{BiomeGenBase.jungleHills, BiomeGenBase.jungle, BiomeGenBase.jungleEdge});
+        registerEntity(EntityFoliaath.class, "Foliaath", true, 0x47CC3B, 0xC03BCC, false, 20, 3, 1, EnumCreatureType.monster, new BiomeGenBase[]{BiomeGenBase.jungleHills, BiomeGenBase.jungle, BiomeGenBase.jungleEdge});
         registerEntity(EntityWroughtnaut.class, "FerrousWroughtnaut", true, 0x47CC3B, 0xC03BCC, false, 1, 1, 1, EnumCreatureType.monster, null);
     }
 

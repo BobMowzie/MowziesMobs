@@ -19,6 +19,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 import net.ilexiconn.llib.mod.BasicLLibMod;
+import net.minecraftforge.common.BiomeDictionary;
 
 @Mod(modid = MowziesMobs.MODID, name = MowziesMobs.NAME, version = MowziesMobs.VERSION, dependencies = "required-after:llib@[1.7.10-0.2.1-34,)")
 public class MowziesMobs extends BasicLLibMod
@@ -65,7 +66,8 @@ public class MowziesMobs extends BasicLLibMod
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        System.out.println("Post Init");
+        BiomeDictionary.registerAllBiomes();
+        MMBiomeDictionarySpawns.init();
     }
 
     public static String getModID()

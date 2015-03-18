@@ -293,6 +293,7 @@ public class EntityFoliaath extends MMEntityBase
 
             if (block == Blocks.grass || block.isLeaves(worldObj, i, j - 1, k))
             {
+                System.out.println("Foliaath at " + posX + ", " + posY + ", " + posZ);
                 return true;
             }
         }
@@ -302,7 +303,7 @@ public class EntityFoliaath extends MMEntityBase
     @Override
     public void onKillEntity(EntityLivingBase entity)
     {
-        addPotionEffect(new PotionEffect(Potion.regeneration.id, 300, 1));
+        addPotionEffect(new PotionEffect(Potion.regeneration.id, 300, 1, true));
     }
 }
 
