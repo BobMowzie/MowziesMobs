@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs;
 
-import com.bobmowzie.mowziesmobs.client.gui.MMGuiHandler;
 import com.bobmowzie.mowziesmobs.packet.PacketPlaySound;
 import com.bobmowzie.mowziesmobs.packet.foliaath.PacketDecreaseTimer;
 import com.bobmowzie.mowziesmobs.packet.foliaath.PacketIncreaseTimer;
@@ -39,10 +38,10 @@ public class MowziesMobs
     public void preInit(FMLPreInitializationEvent preEvent)
     {
         MMTabs.init();
-        MMBlocks.init();
+        //MMBlocks.init();
         MMItems.init();
         MMEntities.init();
-        MMTileEntities.init();
+        //MMTileEntities.init();
         MMRecipes.init();
         /*getContentHandler().addContentProvider(new MMTabs());
         getContentHandler().addContentProvider(new MMBlocks());
@@ -57,10 +56,9 @@ public class MowziesMobs
     public void init(FMLInitializationEvent event)
     {
         proxy.itemRegistry();
-        proxy.tileEntityRegistry();
+        //proxy.tileEntityRegistry();
         proxy.entityRegistry();
 
-        NetworkRegistry.INSTANCE.registerGuiHandler(this, new MMGuiHandler());
         networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel("mmNetworkWrapper");
         networkWrapper.registerMessage(PacketIncreaseTimer.class, PacketIncreaseTimer.class, 0, Side.CLIENT);
         networkWrapper.registerMessage(PacketDecreaseTimer.class, PacketDecreaseTimer.class, 1, Side.CLIENT);

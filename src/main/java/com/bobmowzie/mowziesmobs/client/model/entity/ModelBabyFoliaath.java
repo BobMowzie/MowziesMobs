@@ -1,7 +1,8 @@
-package com.bobmowzie.mowziesmobs.client.model.block;
+package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.animation.tools.MowzieModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.entity.Entity;
 
 public class ModelBabyFoliaath extends MowzieModelBase
 {
@@ -99,10 +100,9 @@ public class ModelBabyFoliaath extends MowzieModelBase
         mouthBase.addChild(mouthCover);
     }
 
-    public void render()
-    {
-        infantBase.render(0.0625f);
-        juvenileBase.render(0.0625f);
+    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+        this.infantBase.render(f5);
+        this.juvenileBase.render(f5);
     }
 
     public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z)
