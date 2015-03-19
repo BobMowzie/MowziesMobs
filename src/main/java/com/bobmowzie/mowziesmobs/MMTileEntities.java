@@ -2,11 +2,10 @@ package com.bobmowzie.mowziesmobs;
 
 import com.bobmowzie.mowziesmobs.tile.TileBabyFoliaath;
 import cpw.mods.fml.common.registry.GameRegistry;
-import net.ilexiconn.llib.content.IContentProvider;
 
-public class MMTileEntities implements IContentProvider
+public class MMTileEntities
 {
-    public void init()
+    public static void init()
     {
         GameRegistry.registerTileEntity(TileBabyFoliaath.class, "babyfoliaath");
     }

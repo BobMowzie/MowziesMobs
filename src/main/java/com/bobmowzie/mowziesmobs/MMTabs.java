@@ -2,15 +2,14 @@ package com.bobmowzie.mowziesmobs;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.ilexiconn.llib.content.IContentProvider;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 
-public class MMTabs implements IContentProvider
+public class MMTabs
 {
     public static CreativeTabs generic;
 
-    public void init()
+    public static void init()
     {
         generic = new CreativeTabs("mowziesmobs.generic")
         {

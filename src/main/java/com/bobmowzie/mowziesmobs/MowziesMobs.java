@@ -18,11 +18,10 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
-import net.ilexiconn.llib.mod.BasicLLibMod;
 import net.minecraftforge.common.BiomeDictionary;
 
-@Mod(modid = MowziesMobs.MODID, name = MowziesMobs.NAME, version = MowziesMobs.VERSION, dependencies = "required-after:llib@[1.7.10-0.2.1-34,)")
-public class MowziesMobs extends BasicLLibMod
+@Mod(modid = MowziesMobs.MODID, name = MowziesMobs.NAME, version = MowziesMobs.VERSION, dependencies = ""/*"required-after:llib@[1.7.10-0.2.1-34,)"*/)
+public class MowziesMobs
 {
     public static final String MODID = "mowziesmobs";
     public static final String NAME = "Mowzie's Mobs";
@@ -39,13 +38,19 @@ public class MowziesMobs extends BasicLLibMod
     @EventHandler
     public void preInit(FMLPreInitializationEvent preEvent)
     {
-        getContentHandler().addContentProvider(new MMTabs());
+        MMTabs.init();
+        MMBlocks.init();
+        MMItems.init();
+        MMEntities.init();
+        MMTileEntities.init();
+        MMRecipes.init();
+        /*getContentHandler().addContentProvider(new MMTabs());
         getContentHandler().addContentProvider(new MMBlocks());
         getContentHandler().addContentProvider(new MMItems());
         getContentHandler().addContentProvider(new MMEntities());
         getContentHandler().addContentProvider(new MMTileEntities());
         //		getContentHandler().addContentProvider(new MMRecipes());
-        getContentHandler().init();
+        getContentHandler().init();*/
     }
 
     @EventHandler

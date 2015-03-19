@@ -1,20 +1,9 @@
 package com.bobmowzie.mowziesmobs.tile;
 
-import net.ilexiconn.llib.tile.TileEntityExtraData;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 
-public class TileBabyFoliaath extends TileEntityExtraData
+public class TileBabyFoliaath extends TileEntity
 {
-    @Override
-    public void loadFromNBT(NBTTagCompound nbtTagCompound)
-    {
-    }
-
-    @Override
-    public void saveToNBT(NBTTagCompound nbtTagCompound)
-    {
-    }
-
     public TileBabyFoliaath()
     {
     }
