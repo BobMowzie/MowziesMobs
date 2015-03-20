@@ -1,10 +1,13 @@
 package com.bobmowzie.mowziesmobs.entity;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 public class EntityBabyFoliaath extends MMEntityBase {
@@ -50,5 +53,21 @@ public class EntityBabyFoliaath extends MMEntityBase {
     protected String getDeathSound() {
         playSound("dig.grass", 1, 0.8F);
         return null;
+    }
+
+    @Override
+    public boolean getCanSpawnHere() {
+        if (this.worldObj.checkNoEntityCollision(this.boundingBox) && this.worldObj.getCollidingBoundingBoxes(this, this.boundingBox).isEmpty() && !this.worldObj.isAnyLiquid(this.boundingBox)) {
+            int i = MathHelper.floor_double(this.posX);
+            int j = MathHelper.floor_double(this.boundingBox.minY);
+            int k = MathHelper.floor_double(this.posZ);
+
+            Block block = this.worldObj.getBlock(i, j - 1, k);
+
+            if (block == Blocks.grass || block.isLeaves(worldObj, i, j - 1, k)|| block == Blocks.dirt) {
+                return true;
+            }
+        }
+        return false;
     }
 }

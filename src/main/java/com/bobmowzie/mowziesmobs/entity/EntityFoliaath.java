@@ -293,7 +293,7 @@ public class EntityFoliaath extends MMEntityBase
 
             if (block == Blocks.grass || block.isLeaves(worldObj, i, j - 1, k))
             {
-                System.out.println("Foliaath at " + posX + ", " + posY + ", " + posZ);
+                //System.out.println("Foliaath at " + posX + ", " + posY + ", " + posZ);
                 return true;
             }
         }

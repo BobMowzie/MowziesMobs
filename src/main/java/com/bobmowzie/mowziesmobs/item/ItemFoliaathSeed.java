@@ -50,12 +50,12 @@ public class ItemFoliaathSeed extends Item
     {
         if (entity != null)
         {
-            entity.setLocationAndAngles(x, y, z, MathHelper.wrapAngleTo180_float(world.rand.nextFloat() * 360f), 0f);
+            entity.setLocationAndAngles(x + 0.5, y, z + 0.5, MathHelper.wrapAngleTo180_float(world.rand.nextFloat() * 360f), 0f);
             entity.rotationYawHead = entity.rotationYaw;
             entity.renderYawOffset = entity.rotationYaw;
             entity.onSpawnWithEgg(null);
+            if (!entity.getCanSpawnHere()) return null;
             world.spawnEntityInWorld(entity);
-            entity.playLivingSound();
         }
 
         return entity;
