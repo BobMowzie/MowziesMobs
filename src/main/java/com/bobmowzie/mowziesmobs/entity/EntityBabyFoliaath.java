@@ -41,7 +41,7 @@ public class EntityBabyFoliaath extends MMEntityBase {
         {
             if (activate.getAnimationFraction() < 1) sendPacket(new PacketIncreaseTimer(getEntityId()));
         }
-        else if (activate.getAnimationFraction() > 0) {System.out.println("Condition is false"); sendPacket(new PacketDecreaseTimer(getEntityId()));}
+        else if (activate.getAnimationFraction() > 0) {System.out.println("Condition is false");  sendPacket(new PacketDecreaseTimer(getEntityId()));}
     }
 
     private boolean arePlayersCarryingMeat(List<EntityPlayer> players) {

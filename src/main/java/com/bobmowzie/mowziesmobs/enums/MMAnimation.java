@@ -17,5 +17,6 @@ public enum MMAnimation
         return this.id;
     }
 
+
     public final int id;
 }

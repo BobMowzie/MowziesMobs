@@ -92,6 +92,7 @@ public class EntityFoliaath extends MMEntityBase
         if (worldObj.isRemote && activate.getAnimationFraction() >= 0.8)
         {
             if (active == false) {
+
                 sendPacket2(new PacketSetActiveTrue(getEntityId()));
                 active = true;
             }
