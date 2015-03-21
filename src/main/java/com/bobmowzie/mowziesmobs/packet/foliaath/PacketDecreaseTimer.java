@@ -23,20 +23,18 @@ public class PacketDecreaseTimer extends AbstractPacket<PacketDecreaseTimer>
 
     public void handleClientMessage(PacketDecreaseTimer message, EntityPlayer player)
     {
-        System.out.println("Packet is sent");
         Entity entity = player.worldObj.getEntityByID(message.entityId);
+        System.out.println(entity != null && entity instanceof EntityBabyFoliaath);
         if (entity != null && entity instanceof EntityFoliaath)
         {
             EntityFoliaath foliaath = (EntityFoliaath) entity;
             foliaath.activate.decreaseTimer(2);
-            return;
         }
-        if (entity != null && entity instanceof EntityBabyFoliaath)
+        else if (entity != null && entity instanceof EntityBabyFoliaath)
         {
             System.out.println("Closing Mouth");
             EntityBabyFoliaath foliaath = (EntityBabyFoliaath) entity;
             foliaath.activate.decreaseTimer();
-            return;
         }
     }
 

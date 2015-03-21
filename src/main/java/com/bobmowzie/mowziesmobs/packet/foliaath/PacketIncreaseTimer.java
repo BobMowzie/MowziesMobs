@@ -28,13 +28,12 @@ public class PacketIncreaseTimer extends AbstractPacket<PacketIncreaseTimer>
         {
             EntityFoliaath foliaath = (EntityFoliaath) entity;
             foliaath.activate.increaseTimer();
-            return;
         }
-        if (entity != null && entity instanceof EntityBabyFoliaath)
+        else if (entity != null && entity instanceof EntityBabyFoliaath)
         {
+            System.out.println("Opening Mouth");
             EntityBabyFoliaath foliaath = (EntityBabyFoliaath) entity;
             foliaath.activate.increaseTimer();
-            return;
         }
     }
 
