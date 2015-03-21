@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.enums;
 
 public enum MMAnimation
 {
+    BASIC(1),
     ATTACK(2),
     TAKEDAMAGE(3),
     DIE(4);

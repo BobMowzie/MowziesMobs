@@ -12,7 +12,6 @@ public class MMBiomeDictionarySpawns
 
     public static void init()
     {
-        System.out.println("Number of jungle biomes is" + jungleBiomes.length);
         for(int i = 0; i < jungleBiomes.length; i++)
         {
             jungleBiomes[i].getSpawnableList(EnumCreatureType.monster).add(foliaathSpawn);

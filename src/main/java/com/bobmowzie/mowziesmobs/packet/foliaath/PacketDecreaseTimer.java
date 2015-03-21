@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.packet.foliaath;
 
+import com.bobmowzie.mowziesmobs.entity.EntityBabyFoliaath;
 import com.bobmowzie.mowziesmobs.entity.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.packet.AbstractPacket;
 import io.netty.buffer.ByteBuf;
@@ -22,11 +23,20 @@ public class PacketDecreaseTimer extends AbstractPacket<PacketDecreaseTimer>
 
     public void handleClientMessage(PacketDecreaseTimer message, EntityPlayer player)
     {
+        System.out.println("Packet is sent");
         Entity entity = player.worldObj.getEntityByID(message.entityId);
         if (entity != null && entity instanceof EntityFoliaath)
         {
             EntityFoliaath foliaath = (EntityFoliaath) entity;
             foliaath.activate.decreaseTimer(2);
+            return;
+        }
+        if (entity != null && entity instanceof EntityBabyFoliaath)
+        {
+            System.out.println("Closing Mouth");
+            EntityBabyFoliaath foliaath = (EntityBabyFoliaath) entity;
+            foliaath.activate.decreaseTimer();
+            return;
         }
     }
 

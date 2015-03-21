@@ -1,14 +1,21 @@
 package com.bobmowzie.mowziesmobs.entity;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.ai.animation.MMAnimBase;
+import com.bobmowzie.mowziesmobs.packet.AbstractPacket;
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import thehippomaster.AnimationAPI.IAnimatedEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MMEntityBase extends EntityCreature implements IEntityAdditionalSpawnData, IAnimatedEntity
 {
@@ -122,5 +129,25 @@ public class MMEntityBase extends EntityCreature implements IEntityAdditionalSpa
     public int getAttack()
     {
         return 0;
+    }
+
+    public List<EntityPlayer> getPlayersNearby(double distanceX, double distanceY, double distanceZ, double radius)
+    {
+        List<Entity> list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.expand(distanceX, distanceY, distanceZ));
+        ArrayList<EntityPlayer> listEntityPlayers = new ArrayList<EntityPlayer>();
+        for (Entity entityNeighbor : list)
+        {
+            if (entityNeighbor instanceof EntityPlayer && getDistanceToEntity(entityNeighbor) <= radius)
+                listEntityPlayers.add((EntityPlayer) entityNeighbor);
+        }
+        return listEntityPlayers;
+    }
+
+    public void sendPacket(AbstractPacket packet)
+    {
+        if (!worldObj.isRemote)
+        {
+            MowziesMobs.networkWrapper.sendToAll(packet);
+        }
     }
 }
