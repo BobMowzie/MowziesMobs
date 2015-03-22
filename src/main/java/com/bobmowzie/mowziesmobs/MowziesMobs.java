@@ -18,6 +18,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraftforge.common.BiomeDictionary;
+import net.minecraftforge.common.MinecraftForge;
 
 @Mod(modid = MowziesMobs.MODID, name = MowziesMobs.NAME, version = MowziesMobs.VERSION, dependencies = ""/*"required-after:llib@[1.7.10-0.2.1-34,)"*/)
 public class MowziesMobs
@@ -37,6 +38,7 @@ public class MowziesMobs
     @EventHandler
     public void preInit(FMLPreInitializationEvent preEvent)
     {
+        MinecraftForge.EVENT_BUS.register(new com.bobmowzie.mowziesmobs.event.EventHandler());
         MMTabs.init();
         //MMBlocks.init();
         MMItems.init();
