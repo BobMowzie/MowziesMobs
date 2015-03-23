@@ -25,7 +25,7 @@ public class MMAnimBase extends AIAnimation
         @Override
         public boolean isAutomatic()
         {
-            return false;
+            return true;
         }
 
         @Override

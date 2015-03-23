@@ -20,7 +20,6 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.item.EntityXPOrb;
-import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.potion.Potion;
@@ -126,7 +125,7 @@ public class EntityFoliaath extends MMEntityBase
         renderYawOffset = 0;
         rotationYaw = 0;
 
-        if (getAttackTarget() instanceof EntityFoliaath || getAttackTarget() instanceof EntityOcelot) setAttackTarget(null);
+        if (getAttackTarget() instanceof EntityFoliaath || getAttackTarget() instanceof EntityBabyFoliaath) setAttackTarget(null);
         if (resettingTargetTimer > 0) setRotationYawHead(prevRotationYawHead);
         if (getAttackTarget() != null)
         {

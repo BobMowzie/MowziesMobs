@@ -38,7 +38,6 @@ public class MowziesMobs
     @EventHandler
     public void preInit(FMLPreInitializationEvent preEvent)
     {
-        MinecraftForge.EVENT_BUS.register(new com.bobmowzie.mowziesmobs.event.EventHandler());
         MMTabs.init();
         //MMBlocks.init();
         MMItems.init();
@@ -52,6 +51,8 @@ public class MowziesMobs
         getContentHandler().addContentProvider(new MMTileEntities());
         //		getContentHandler().addContentProvider(new MMRecipes());
         getContentHandler().init();*/
+
+        MinecraftForge.EVENT_BUS.register(new com.bobmowzie.mowziesmobs.event.EventHandler());
     }
 
     @EventHandler

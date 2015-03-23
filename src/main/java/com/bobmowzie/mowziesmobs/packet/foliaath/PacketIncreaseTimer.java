@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.packet.foliaath;
 
-import com.bobmowzie.mowziesmobs.entity.EntityBabyFoliaath;
 import com.bobmowzie.mowziesmobs.entity.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.packet.AbstractPacket;
 import io.netty.buffer.ByteBuf;
@@ -28,12 +27,7 @@ public class PacketIncreaseTimer extends AbstractPacket<PacketIncreaseTimer>
         {
             EntityFoliaath foliaath = (EntityFoliaath) entity;
             foliaath.activate.increaseTimer();
-        }
-        else if (entity != null && entity instanceof EntityBabyFoliaath)
-        {
-            System.out.println("Opening Mouth");
-            EntityBabyFoliaath foliaath = (EntityBabyFoliaath) entity;
-            foliaath.activate.increaseTimer();
+            return;
         }
     }
 
