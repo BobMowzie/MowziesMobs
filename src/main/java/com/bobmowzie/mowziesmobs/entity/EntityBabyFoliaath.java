@@ -10,6 +10,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -24,6 +25,7 @@ public class EntityBabyFoliaath extends MMEntityBase
     public ControlledAnimation activate = new ControlledAnimation(5);
     public boolean hungry = true;
     private int eatingItemID;
+    private int tickGrowth = 0;
 
     public EntityBabyFoliaath(World world) {
         super(world);
@@ -136,5 +138,17 @@ public class EntityBabyFoliaath extends MMEntityBase
             }
         }
         return listEntityItem;
+    }
+
+    public void writeEntityToNBT(NBTTagCompound compound)
+    {
+        super.writeEntityToNBT(compound);
+        compound.setInteger("tickGrowth", tickGrowth);
+    }
+
+    public void readEntityFromNBT(NBTTagCompound compound)
+    {
+        super.readEntityFromNBT(compound);
+        tickGrowth = compound.getInteger("tickGrowth");
     }
 }

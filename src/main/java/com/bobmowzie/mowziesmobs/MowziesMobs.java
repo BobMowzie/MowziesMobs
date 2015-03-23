@@ -17,7 +17,6 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
-import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.MinecraftForge;
 
 @Mod(modid = MowziesMobs.MODID, name = MowziesMobs.NAME, version = MowziesMobs.VERSION, dependencies = ""/*"required-after:llib@[1.7.10-0.2.1-34,)"*/)
@@ -71,8 +70,8 @@ public class MowziesMobs
     }
 
     @EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
-        BiomeDictionary.registerAllBiomes();
+    public void postInit(FMLPostInitializationEvent event)
+    {
         MMBiomeDictionarySpawns.init();
     }
 
