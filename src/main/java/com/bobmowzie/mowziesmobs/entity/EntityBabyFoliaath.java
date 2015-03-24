@@ -21,11 +21,11 @@ import java.util.List;
 
 public class EntityBabyFoliaath extends MMEntityBase
 {
-    public boolean active = false;
     public ControlledAnimation activate = new ControlledAnimation(5);
     public boolean hungry = true;
     private int eatingItemID;
     private int tickGrowth = 0;
+    private double prevActivate;
 
     public EntityBabyFoliaath(World world) {
         super(world);
@@ -54,17 +54,21 @@ public class EntityBabyFoliaath extends MMEntityBase
         }
         else activate.decreaseTimer();
 
+        if (activate.getTimer() == 1 && prevActivate-activate.getTimer() < 0) playSound("mowziesmobs:foliaathgrunt", 0.5F, 1.5F);
+        prevActivate = activate.getTimer();
+
         List<EntityItem> meats = getMeatsNearby(0.4, 0.2, 0.4, 0.4);
         if (hungry && meats.size() != 0 && getAnimID() == 0)
         {
             AnimationAPI.sendAnimPacket(this, MMAnimation.BABY_FOLIAATH_EAT.animID());
             eatingItemID = Item.getIdFromItem(meats.get(0).getEntityItem().getItem());
             meats.get(0).setDead();
+            playSound("mowziesmobs:babyFoliaathEat", 0.5F, 1.2F);
         }
 
         if (getAnimTick() == 3 || getAnimTick() == 7 || getAnimTick() == 11 || getAnimTick() == 15 || getAnimTick() == 19)
         {
-            for (int i = 0; i <= 5; i++) worldObj.spawnParticle("iconcrack_" + eatingItemID + "_1", posX, posY + 0.2, posZ, Math.random() * 0.2 - 0.1, Math.random() * 0.2, Math.random() * 0.2 - 0.1);
+            for (int i = 0; i <= 5; i++) worldObj.spawnParticle("iconcrack_" + eatingItemID + "_0", posX, posY + 0.2, posZ, Math.random() * 0.2 - 0.1, Math.random() * 0.2, Math.random() * 0.2 - 0.1);
         }
     }
 
