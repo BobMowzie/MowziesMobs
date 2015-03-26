@@ -1,8 +1,10 @@
 package com.bobmowzie.mowziesmobs.entity;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.ai.animation.AnimBabyFoliaathEat;
 import com.bobmowzie.mowziesmobs.client.model.animation.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.enums.MMAnimation;
+import com.bobmowzie.mowziesmobs.packet.foliaath.PacketSyncTickGrowth;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -24,7 +26,7 @@ public class EntityBabyFoliaath extends MMEntityBase
     public ControlledAnimation activate = new ControlledAnimation(5);
     public boolean hungry = false;
     private int eatingItemID;
-    private int tickGrowth = 0;
+    public int tickGrowth = 0;
     private double prevActivate;
     public boolean infant = false;
 
@@ -172,5 +174,6 @@ public class EntityBabyFoliaath extends MMEntityBase
     {
         super.readEntityFromNBT(compound);
         tickGrowth = compound.getInteger("tickGrowth");
+        MowziesMobs.networkWrapper.sendToAll(new PacketSyncTickGrowth(getEntityId(), tickGrowth));
     }
 }

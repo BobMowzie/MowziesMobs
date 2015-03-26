@@ -1,10 +1,7 @@
 package com.bobmowzie.mowziesmobs;
 
 import com.bobmowzie.mowziesmobs.packet.PacketPlaySound;
-import com.bobmowzie.mowziesmobs.packet.foliaath.PacketDecreaseTimer;
-import com.bobmowzie.mowziesmobs.packet.foliaath.PacketIncreaseTimer;
-import com.bobmowzie.mowziesmobs.packet.foliaath.PacketSetActiveFalse;
-import com.bobmowzie.mowziesmobs.packet.foliaath.PacketSetActiveTrue;
+import com.bobmowzie.mowziesmobs.packet.foliaath.*;
 import com.bobmowzie.mowziesmobs.proxy.CommonProxy;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -68,6 +65,7 @@ public class MowziesMobs
         networkWrapper.registerMessage(PacketPlaySound.class, PacketPlaySound.class, 2, Side.SERVER);
         networkWrapper.registerMessage(PacketSetActiveTrue.class, PacketSetActiveTrue.class, 3, Side.SERVER);
         networkWrapper.registerMessage(PacketSetActiveFalse.class, PacketSetActiveFalse.class, 4, Side.SERVER);
+        networkWrapper.registerMessage(PacketSyncTickGrowth.class, PacketSyncTickGrowth.class, 5, Side.CLIENT);
     }
 
     @EventHandler

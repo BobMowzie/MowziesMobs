@@ -13,7 +13,7 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 public class EventHandler
 {
     @SubscribeEvent
-    public void living(EntityJoinWorldEvent event)
+    public void joinWorld(EntityJoinWorldEvent event)
     {
         if (event.entity instanceof EntityZombie)
         {
