@@ -22,10 +22,11 @@ import java.util.List;
 public class EntityBabyFoliaath extends MMEntityBase
 {
     public ControlledAnimation activate = new ControlledAnimation(5);
-    public boolean hungry = true;
+    public boolean hungry = false;
     private int eatingItemID;
     private int tickGrowth = 0;
     private double prevActivate;
+    public boolean infant = false;
 
     public EntityBabyFoliaath(World world) {
         super(world);
@@ -48,7 +49,7 @@ public class EntityBabyFoliaath extends MMEntityBase
         motionZ = 0;
         renderYawOffset = 0;
 
-        if (arePlayersCarryingMeat(getPlayersNearby(3, 3, 3, 3)) && getAnimID() == 0)
+        if (arePlayersCarryingMeat(getPlayersNearby(3, 3, 3, 3)) && getAnimID() == 0 && hungry)
         {
             activate.increaseTimer();
         }
@@ -64,11 +65,28 @@ public class EntityBabyFoliaath extends MMEntityBase
             eatingItemID = Item.getIdFromItem(meats.get(0).getEntityItem().getItem());
             meats.get(0).setDead();
             playSound("mowziesmobs:babyFoliaathEat", 0.5F, 1.2F);
+            hungry = false;
+            tickGrowth++;
         }
 
         if (getAnimTick() == 3 || getAnimTick() == 7 || getAnimTick() == 11 || getAnimTick() == 15 || getAnimTick() == 19)
         {
             for (int i = 0; i <= 5; i++) worldObj.spawnParticle("iconcrack_" + eatingItemID + "_0", posX, posY + 0.2, posZ, Math.random() * 0.2 - 0.1, Math.random() * 0.2, Math.random() * 0.2 - 0.1);
+        }
+
+        //Growing
+        if (ticksExisted % 20 == 0 && !hungry) tickGrowth++;
+        infant = tickGrowth < 600;
+        if (infant) hungry = false;
+        if (tickGrowth == 600) hungry = true;
+        if (tickGrowth == 1200) hungry = true;
+        if (tickGrowth == 1800) hungry = true;
+        if (tickGrowth == 2400)
+        {
+            EntityFoliaath adultFoliaath = new EntityFoliaath(worldObj);
+            adultFoliaath.setPosition(posX, posY, posZ);
+            worldObj.spawnEntityInWorld(adultFoliaath);
+            setDead();
         }
     }
 

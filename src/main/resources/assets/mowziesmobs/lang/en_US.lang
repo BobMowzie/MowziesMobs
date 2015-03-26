@@ -6,17 +6,15 @@ itemGroup.mowziesmobs.generic=Mowzie's Mobs
 //Entities======================================================
 entity.Foliaath.name=Foliaath
 entity.FerrousWroughtnaut.name=Ferrous Wroughtnaut
+entity.babyfoliaath.name=Baby Foliaath
 
 
-
-//Items=========================================================
-item.foliaathseed.name=Foliaath Seed
+//Items========================================================
+item.foliaathSeed.name=Foliaath Seed
 
 
 
 //Tile_Entities==================================================
-tile.babyfoliaath.name=Baby Foliaath
-
 
 
 //Containers====================================================

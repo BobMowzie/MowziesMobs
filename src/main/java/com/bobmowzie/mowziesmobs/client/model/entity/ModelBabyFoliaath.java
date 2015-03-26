@@ -127,6 +127,18 @@ public class ModelBabyFoliaath extends MowzieModelBase
     public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, EntityBabyFoliaath foliaath)
     {
         setToInitPose();
+
+        if (foliaath.infant)
+        {
+            juvenileBase.isHidden = true;
+            infantBase.isHidden = false;
+        }
+        else
+        {
+            juvenileBase.isHidden = false;
+            infantBase.isHidden = true;
+        }
+
         float openMouthProgress = foliaath.activate.getAnimationProgressSinSqrt();
         mouth1.rotateAngleZ += 0.5 * openMouthProgress;
         mouth2.rotateAngleZ -= 0.5 * openMouthProgress;
