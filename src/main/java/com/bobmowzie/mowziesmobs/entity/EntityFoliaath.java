@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.entity;
 
+import com.bobmowzie.mowziesmobs.MMItems;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.ai.animation.AnimBasicAttack;
 import com.bobmowzie.mowziesmobs.ai.animation.AnimDie;
@@ -22,6 +23,7 @@ import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
@@ -297,5 +299,11 @@ public class EntityFoliaath extends MMEntityBase
     {
         addPotionEffect(new PotionEffect(Potion.regeneration.id, 300, 1, true));
     }
-}
 
+    protected Item getDropItem() {
+        int i = this.rand.nextInt(2);
+        System.out.println(i);
+        if (i == 1) return MMItems.itemFoliaathSeed;
+        else return null;
+    }
+}
