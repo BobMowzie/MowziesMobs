@@ -77,7 +77,6 @@ public class EntityBabyFoliaath extends MMEntityBase
         }
 
         //Growing
-        System.out.println(tickGrowth);
         if (ticksExisted % 20 == 0 && !hungry) tickGrowth++;
         infant = tickGrowth < 600;
         if (infant) hungry = false;
