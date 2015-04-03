@@ -65,7 +65,6 @@ public class MowziesMobs
         networkWrapper.registerMessage(PacketPlaySound.class, PacketPlaySound.class, 2, Side.SERVER);
         networkWrapper.registerMessage(PacketSetActiveTrue.class, PacketSetActiveTrue.class, 3, Side.SERVER);
         networkWrapper.registerMessage(PacketSetActiveFalse.class, PacketSetActiveFalse.class, 4, Side.SERVER);
-        networkWrapper.registerMessage(PacketSyncTickGrowth.class, PacketSyncTickGrowth.class, 5, Side.CLIENT);
     }
 
     @EventHandler

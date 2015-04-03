@@ -1,10 +1,8 @@
 package com.bobmowzie.mowziesmobs.entity;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.ai.animation.AnimBabyFoliaathEat;
 import com.bobmowzie.mowziesmobs.client.model.animation.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.enums.MMAnimation;
-import com.bobmowzie.mowziesmobs.packet.foliaath.PacketSyncTickGrowth;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -24,11 +22,8 @@ import java.util.List;
 public class EntityBabyFoliaath extends MMEntityBase
 {
     public ControlledAnimation activate = new ControlledAnimation(5);
-    public boolean hungry = false;
     private int eatingItemID;
-    public int tickGrowth = 0;
     private double prevActivate;
-    public boolean infant = false;
 
     public EntityBabyFoliaath(World world) {
         super(world);
@@ -51,7 +46,7 @@ public class EntityBabyFoliaath extends MMEntityBase
         motionZ = 0;
         renderYawOffset = 0;
 
-        if (arePlayersCarryingMeat(getPlayersNearby(3, 3, 3, 3)) && getAnimID() == 0 && hungry)
+        if (arePlayersCarryingMeat(getPlayersNearby(3, 3, 3, 3)) && getAnimID() == 0 && getHungry() == 1)
         {
             activate.increaseTimer();
         }
@@ -61,34 +56,39 @@ public class EntityBabyFoliaath extends MMEntityBase
         prevActivate = activate.getTimer();
 
         List<EntityItem> meats = getMeatsNearby(0.4, 0.2, 0.4, 0.4);
-        if (hungry && meats.size() != 0 && getAnimID() == 0)
-        {
+        if (getHungry() == 1 && meats.size() != 0 && getAnimID() == 0) {
             AnimationAPI.sendAnimPacket(this, MMAnimation.BABY_FOLIAATH_EAT.animID());
             eatingItemID = Item.getIdFromItem(meats.get(0).getEntityItem().getItem());
             meats.get(0).setDead();
             playSound("mowziesmobs:babyFoliaathEat", 0.5F, 1.2F);
-            hungry = false;
-            tickGrowth++;
+            if (!worldObj.isRemote)
+            {
+                incrementGrowth();
+                setHungry((byte) 0);
+            }
         }
 
         if (getAnimTick() == 3 || getAnimTick() == 7 || getAnimTick() == 11 || getAnimTick() == 15 || getAnimTick() == 19)
         {
-            for (int i = 0; i <= 5; i++) worldObj.spawnParticle("iconcrack_" + eatingItemID + "_0", posX, posY + 0.2, posZ, Math.random() * 0.2 - 0.1, Math.random() * 0.2, Math.random() * 0.2 - 0.1);
+            for (int i = 0; i <= 5; i++) worldObj.spawnParticle("iconcrack_" + eatingItemID + "_1", posX, posY + 0.2, posZ, Math.random() * 0.2 - 0.1, Math.random() * 0.2, Math.random() * 0.2 - 0.1);
         }
 
         //Growing
-        if (ticksExisted % 20 == 0 && !hungry) tickGrowth++;
-        infant = tickGrowth < 600;
-        if (infant) hungry = false;
-        if (tickGrowth == 600) hungry = true;
-        if (tickGrowth == 1200) hungry = true;
-        if (tickGrowth == 1800) hungry = true;
-        if (tickGrowth == 2400)
-        {
-            EntityFoliaath adultFoliaath = new EntityFoliaath(worldObj);
-            adultFoliaath.setPosition(posX, posY, posZ);
-            worldObj.spawnEntityInWorld(adultFoliaath);
-            setDead();
+        if (!worldObj.isRemote) {
+            if (ticksExisted % 20 == 0 && getHungry() == 0) incrementGrowth();
+            if (getGrowth() < 60) setInfant((byte) 1);
+            else setInfant((byte) 0);
+            if (getInfant() == 1) setHungry((byte) 0);
+            if (getGrowth() == 60) setHungry((byte) 1);
+            if (getGrowth() == 120) setHungry((byte) 1);
+            if (getGrowth() == 180) setHungry((byte) 1);
+            if (getGrowth() == 240)
+            {
+                EntityFoliaath adultFoliaath = new EntityFoliaath(worldObj);
+                adultFoliaath.setPosition(posX, posY, posZ);
+                worldObj.spawnEntityInWorld(adultFoliaath);
+                setDead();
+            }
         }
     }
 
@@ -167,13 +167,49 @@ public class EntityBabyFoliaath extends MMEntityBase
     public void writeEntityToNBT(NBTTagCompound compound)
     {
         super.writeEntityToNBT(compound);
-        compound.setInteger("tickGrowth", tickGrowth);
+        compound.setInteger("tickGrowth", getGrowth());
     }
 
     public void readEntityFromNBT(NBTTagCompound compound)
     {
         super.readEntityFromNBT(compound);
-        tickGrowth = compound.getInteger("tickGrowth");
-        MowziesMobs.networkWrapper.sendToAll(new PacketSyncTickGrowth(getEntityId(), tickGrowth));
+        setGrowth(compound.getInteger("tickGrowth"));
+  //      MowziesMobs.networkWrapper.sendToAll(new PacketSyncTickGrowth(getEntityId(), tickGrowth));
+    }
+
+    @Override
+    protected void entityInit() {
+        super.entityInit();
+        dataWatcher.addObject(30, new Integer(0));
+        dataWatcher.addObject(31, new Byte((byte) 1));
+        dataWatcher.addObject(29, new Byte((byte) 0));
+    }
+
+    public void setGrowth(int growth) {
+        dataWatcher.updateObject(30, new Integer(growth));
+    }
+
+    public int getGrowth() {
+        return dataWatcher.getWatchableObjectInt(30);
+    }
+
+    public void incrementGrowth() {
+        setGrowth(getGrowth() + 1);
+    }
+
+    public void setInfant(byte infant) {
+        dataWatcher.updateObject(31, new Byte(infant));
+    }
+
+    public byte getInfant() {
+        return dataWatcher.getWatchableObjectByte(31);
+    }
+
+    public void setHungry(byte hungry) {
+        dataWatcher.updateObject(29, new Byte(hungry));
+    }
+
+    public byte getHungry() {
+        return dataWatcher.getWatchableObjectByte(29);
     }
 }

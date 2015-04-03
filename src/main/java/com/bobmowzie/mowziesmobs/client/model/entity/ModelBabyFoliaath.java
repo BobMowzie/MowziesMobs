@@ -128,7 +128,7 @@ public class ModelBabyFoliaath extends MowzieModelBase
     {
         setToInitPose();
 
-        if (foliaath.infant)
+        if (foliaath.getInfant() == 1)
         {
             juvenileBase.isHidden = true;
             infantBase.isHidden = false;
