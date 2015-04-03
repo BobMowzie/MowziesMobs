@@ -76,13 +76,13 @@ public class EntityBabyFoliaath extends MMEntityBase
         //Growing
         if (!worldObj.isRemote) {
             if (ticksExisted % 20 == 0 && getHungry() == 0) incrementGrowth();
-            if (getGrowth() < 60) setInfant((byte) 1);
+            if (getGrowth() < 600) setInfant((byte) 1);
             else setInfant((byte) 0);
             if (getInfant() == 1) setHungry((byte) 0);
-            if (getGrowth() == 60) setHungry((byte) 1);
-            if (getGrowth() == 120) setHungry((byte) 1);
-            if (getGrowth() == 180) setHungry((byte) 1);
-            if (getGrowth() == 240)
+            if (getGrowth() == 600) setHungry((byte) 1);
+            if (getGrowth() == 1200) setHungry((byte) 1);
+            if (getGrowth() == 1800) setHungry((byte) 1);
+            if (getGrowth() == 2400)
             {
                 EntityFoliaath adultFoliaath = new EntityFoliaath(worldObj);
                 adultFoliaath.setPosition(posX, posY, posZ);
