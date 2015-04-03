@@ -14,7 +14,7 @@ public class MMEntities
     {
         registerEntity(EntityFoliaath.class, "Foliaath", true, 0x47CC3B, 0xC03BCC, false, 20, 3, 1, EnumCreatureType.monster, new BiomeGenBase[]{BiomeGenBase.jungleHills, BiomeGenBase.jungle, BiomeGenBase.jungleEdge});
         registerEntity(EntityBabyFoliaath.class, "BabyFoliaath", false, 0x47CC3B, 0xC03BCC, false, 1, 1, 1, EnumCreatureType.monster, null);
-        //registerEntity(EntityWroughtnaut.class, "FerrousWroughtnaut", false, 0x47CC3B, 0xC03BCC, false, 1, 1, 1, EnumCreatureType.monster, null);
+        //registerEntity(EntityWroughtnaut.class, "FerrousWroughtnaut", true, 0x47CC3B, 0xC03BCC, false, 1, 1, 1, EnumCreatureType.monster, null);
     }
 
     public static void registerEntity(Class entityClass, String name, boolean addEgg, int mainColor, int subColor, boolean addSpawn, int frequency, int minGroup, int maxGroup, EnumCreatureType typeOfCreature, BiomeGenBase... biomes)
