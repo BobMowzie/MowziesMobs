@@ -86,6 +86,7 @@ public class EntityBabyFoliaath extends MMEntityBase
             {
                 EntityFoliaath adultFoliaath = new EntityFoliaath(worldObj);
                 adultFoliaath.setPosition(posX, posY, posZ);
+                adultFoliaath.setCanDespawn((byte) 0);
                 worldObj.spawnEntityInWorld(adultFoliaath);
                 setDead();
             }
@@ -175,6 +176,11 @@ public class EntityBabyFoliaath extends MMEntityBase
         super.readEntityFromNBT(compound);
         setGrowth(compound.getInteger("tickGrowth"));
   //      MowziesMobs.networkWrapper.sendToAll(new PacketSyncTickGrowth(getEntityId(), tickGrowth));
+    }
+
+    @Override
+    protected boolean canDespawn() {
+        return false;
     }
 
     @Override

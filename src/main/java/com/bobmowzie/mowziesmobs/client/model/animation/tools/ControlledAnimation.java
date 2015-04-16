@@ -1,7 +1,5 @@
 package com.bobmowzie.mowziesmobs.client.model.animation.tools;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.util.MathHelper;
 
 /**
@@ -11,7 +9,6 @@ import net.minecraft.util.MathHelper;
  *
  * @author RafaMv
  */
-@SideOnly(Side.CLIENT)
 public class ControlledAnimation
 {
     /**
@@ -223,7 +220,6 @@ public class ControlledAnimation
         return (float) Math.pow((double) MathHelper.sin(1.57079632679F * (float) (this.timer / this.duration)), 10);
     }
 
-    @SideOnly(Side.CLIENT)
     public float getAnimationProgressSinToTenWithoutReturn()
     {
         if (timerChange == -1)

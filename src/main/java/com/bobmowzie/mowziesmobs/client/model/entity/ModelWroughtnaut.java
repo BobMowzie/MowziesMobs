@@ -441,14 +441,42 @@ public class ModelWroughtnaut extends MowzieModelBase {
         handLeftJoint.rotateAngleZ -= 0.5;
         axeHandle.rotateAngleY += 0.8;
 
-        f = wn.frame;
-        f1 = 1;
+//        f = wn.frame;
+//        f1 = 1;
 
-        float globalSpeed = 0.2F;
-        float globalDegree = 1;
-        float height = 1;
+        float globalSpeed = 0.7F;
+        float globalDegree = 2F;
+        float height = 3F;
 
+        //groinJoint.rotationPointY -= 1 * f1;
         bob(waist, 2F * globalSpeed, 1 * height, false, f, f1);
-        swing(waist, 1F * globalSpeed, 0.2F * globalDegree, false, 0, 0, f, f1);
+        swing(waist, 1F * globalSpeed, 0.3F * globalDegree, false, 0, 0, f, f1);
+        swing(stomachJoint, 1F * globalSpeed, 0.6F * globalDegree, true, 0, 0, f, f1);
+        swing(head, 1F * globalSpeed, 0.3F * globalDegree, false, 0, 0, f, f1);
+
+        swing(thighLeftJoint, 1F * globalSpeed, 0.4F * globalDegree, true, 0, -0.6F * globalDegree, f, f1);
+        walk(thighLeftJoint, 1F * globalSpeed, 0.4F * globalDegree, false, 0, 0.3F * globalDegree, f, f1);
+        walk(calfLeftJoint, 1F * globalSpeed, 0.5F * globalDegree, false, -2.2F, 0.1F * globalDegree, f, f1);
+        walk(footLeftJoint, 1F * globalSpeed, 0.4F * globalDegree, false, -2.1F, 0.22F * globalDegree, f, f1);
+
+        swing(thighRightJoint, 1F * globalSpeed, 0.4F * globalDegree, true, 0, 0.6F * globalDegree, f, f1);
+        walk(thighRightJoint, 1F * globalSpeed, 0.4F * globalDegree, true, 0, 0.3F * globalDegree, f, f1);
+        walk(calfRightJoint, 1F * globalSpeed, 0.5F * globalDegree, true, -2.2F, 0.1F * globalDegree, f, f1);
+        walk(footRightJoint, 1F * globalSpeed, 0.4F * globalDegree, true, -2.1F, 0.22F * globalDegree, f, f1);
+
+        walk(groinFront, 2F * globalSpeed, 0.2F * 0.8F, true, -0.5F, -0.1F, f, f1);
+        walk(groinBack, 2F * globalSpeed, 0.2F * 0.8F, false, -0.5F, 0.1F, f, f1);
+        walk(neck, 2F * globalSpeed, 0.1F * 0.8F, true, -0.5F, 0.1F, f, f1);
+
+        flap(shoulderLeft, 2F * globalSpeed, 0.05F * 0.8F, false, -0.5F, 0F, f, f1);
+        flap(shoulderRight, 2F * globalSpeed, 0.05F * 0.8F, true, -0.5F, 0F, f, f1);
+        swing(shoulderLeft, 1F * globalSpeed, 0.1F * 0.8F, true, 0F, 0.3F, f, f1);
+        swing(shoulderRight, 1F * globalSpeed, 0.1F * 0.8F, true, 0F, 0.3F, f, f1);
+        flap(upperArmLeftJoint, 2F * globalSpeed, 0.05F * 0.8F, true, -1F, 0F, f, f1);
+        flap(upperArmRightJoint, 2F * globalSpeed, 0.05F * 0.8F, true, -1F, 0F, f, f1);
+        flap(handLeft, 2 * globalSpeed, 0.2F, false, -0.5F, 0.5F, f, f1);
+        walk(lowerArmLeftJoint, 2 * globalSpeed, 0.1F, true, -0.5F, 0, f, f1);
+        walk(handLeft, 2 * globalSpeed, 0.2F, false, -0.5F, 0.6F, f, f1);
+        lowerArmLeftJoint.rotateAngleY -= 0.65F * f1;
     }
 }

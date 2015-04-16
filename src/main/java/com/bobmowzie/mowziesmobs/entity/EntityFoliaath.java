@@ -306,4 +306,24 @@ public class EntityFoliaath extends MMEntityBase
         if (i == 1) return MMItems.itemFoliaathSeed;
         else return null;
     }
+
+    @Override
+    protected boolean canDespawn() {
+        if (getCanDespawn() == 1) return true;
+        else return false;
+    }
+
+    @Override
+    protected void entityInit() {
+        super.entityInit();
+        dataWatcher.addObject(30, new Byte((byte) 1));
+    }
+
+    public void setCanDespawn(byte canDespawn) {
+        dataWatcher.updateObject(30, new Byte(canDespawn));
+    }
+
+    public int getCanDespawn() {
+        return dataWatcher.getWatchableObjectInt(30);
+    }
 }
