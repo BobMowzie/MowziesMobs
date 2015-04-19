@@ -7,12 +7,12 @@ import net.minecraft.util.DamageSource;
 
 public class AnimBasicAttack extends MMAnimBase
 {
-    private MMEntityBase entity;
-    private int duration;
-    private EntityLivingBase entityTarget;
-    private String attackSound;
-    private float knockback = 1;
-    private float range;
+    protected MMEntityBase entity;
+    protected int duration;
+    protected EntityLivingBase entityTarget;
+    protected String attackSound;
+    protected float knockback = 1;
+    protected float range;
 
     public AnimBasicAttack(MMEntityBase entity, int duration, String sound, float knockback, float range)
     {

@@ -323,7 +323,7 @@ public class EntityFoliaath extends MMEntityBase
         dataWatcher.updateObject(30, new Byte(canDespawn));
     }
 
-    public int getCanDespawn() {
-        return dataWatcher.getWatchableObjectInt(30);
+    public byte getCanDespawn() {
+        return dataWatcher.getWatchableObjectByte(30);
     }
 }

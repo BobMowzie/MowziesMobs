@@ -7,6 +7,7 @@ import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -141,6 +142,18 @@ public class MMEntityBase extends EntityCreature implements IEntityAdditionalSpa
                 listEntityPlayers.add((EntityPlayer) entityNeighbor);
         }
         return listEntityPlayers;
+    }
+
+    public List<EntityLivingBase> getEntityLivingBaseNearby(double distanceX, double distanceY, double distanceZ, double radius)
+    {
+        List<Entity> list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, this.boundingBox.expand(distanceX, distanceY, distanceZ));
+        ArrayList<EntityLivingBase> listEntityLivingBase = new ArrayList<EntityLivingBase>();
+        for (Entity entityNeighbor : list)
+        {
+            if (entityNeighbor instanceof EntityLivingBase && getDistanceToEntity(entityNeighbor) <= radius)
+                listEntityLivingBase.add((EntityLivingBase) entityNeighbor);
+        }
+        return listEntityLivingBase;
     }
 
     public void sendPacket(AbstractPacket packet)
