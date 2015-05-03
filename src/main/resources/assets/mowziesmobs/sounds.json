@@ -10,5 +10,7 @@
     "foliaathhurt": {"category": "master","sounds": [{"name": "foliaathhurt","stream": false}]},
     "foliaathrustle": {"category": "master","sounds": [{"name": "foliaathrustle","stream": false}]},
     "dirtimpact": {"category": "master","sounds": [{"name": "dirtimpact","stream": false}]},
-    "babyFoliaathEat": {"category": "master","sounds": [{"name": "babyFoliaathEat","stream": false}]}
+    "babyFoliaathEat": {"category": "master","sounds": [{"name": "babyFoliaathEat","stream": false}]},
+    "wroughtnautWhoosh": {"category": "master","sounds": [{"name": "wroughtnautWhoosh","stream": false}]},
+    "wroughtnautCreak": {"category": "master","sounds": [{"name": "wroughtnautCreak","stream": false}]}
 }
