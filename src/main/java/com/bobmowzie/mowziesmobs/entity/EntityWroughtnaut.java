@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.entity;
 
 import com.bobmowzie.mowziesmobs.ai.animation.AnimFWNAttack;
+import com.bobmowzie.mowziesmobs.ai.animation.AnimFWNVerticalAttack;
 import com.bobmowzie.mowziesmobs.client.model.animation.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.enums.MMAnimation;
 import net.minecraft.entity.ai.EntityAIAttackOnCollide;
@@ -14,11 +15,13 @@ public class EntityWroughtnaut extends MMEntityBase {
     public double walkFrame;
     public ControlledAnimation walkAnim = new ControlledAnimation(10);
     public boolean swingDirection = false;
+    public boolean vulnerable = false;
 
     public EntityWroughtnaut(World world) {
         super(world);
         getNavigator().setAvoidsWater(true);
         tasks.addTask(1, new AnimFWNAttack(this, 50, "mowziesmobs:wroughtnautWhoosh", 4F, 5F, 100F));
+        tasks.addTask(1, new AnimFWNVerticalAttack(this, 100, "mowziesmobs:wroughtnautWhoosh", 1F, 5F, 40F));
         tasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true));
         this.tasks.addTask(2, new EntityAIAttackOnCollide(this, EntityPlayer.class, 1.0D, true));
         experienceValue = 20;
@@ -32,7 +35,9 @@ public class EntityWroughtnaut extends MMEntityBase {
 
     @Override
     public boolean attackEntityFrom(DamageSource p_70097_1_, float p_70097_2_) {
-        return super.attackEntityFrom(p_70097_1_, p_70097_2_);
+        if (vulnerable) return super.attackEntityFrom(p_70097_1_, p_70097_2_);
+        else playSound("minecraft:random.anvil_land", 0.4F, 2F);
+        return false;
     }
 
     @Override
@@ -44,7 +49,9 @@ public class EntityWroughtnaut extends MMEntityBase {
 
             if (targetDistance <= 5 && getAttackTarget().posY - posY >= -1 && getAttackTarget().posY - posY <= 3 && getAnimID() == 0)
             {
-                AnimationAPI.sendAnimPacket(this, MMAnimation.ATTACK.animID());
+                int i = (int) (2 * Math.random() + 0.5);
+                if (i == 0) AnimationAPI.sendAnimPacket(this, 5);
+                else AnimationAPI.sendAnimPacket(this, MMAnimation.ATTACK.animID());
             }
         }
         if (getAnimID() == MMAnimation.ATTACK.animID() && getAnimTick() == 1)
@@ -71,7 +78,7 @@ public class EntityWroughtnaut extends MMEntityBase {
 
         if (frame % 20 == 10 && speed > 0.03) playSound("mob.zombie.metal", 0.5F, 0.5F);
 
-//        if (getAnimID() == 0) AnimationAPI.sendAnimPacket(this, MMAnimation.ATTACK.animID());
+        if (getAnimID() == 0) AnimationAPI.sendAnimPacket(this, 5);
     }
 
     @Override

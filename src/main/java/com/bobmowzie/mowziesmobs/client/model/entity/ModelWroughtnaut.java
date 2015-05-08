@@ -584,7 +584,7 @@ public class ModelWroughtnaut extends MowzieModelBase {
                 animator.rotate(stomachJoint, 0.2F, -0.5F, 0);
                 animator.rotate(waist, 0, -0.5F, 0.2F);
                 animator.move(waist, 3, 1F, -1);
-                animator.rotate(head, 0F, 0F, 0);
+                animator.rotate(head, 0F, 0.8F, 0);
                 animator.rotate(neck, 0F, 0F, 0);
 
                 animator.rotate(shoulderRight, 0, -0.6F, 0);
@@ -651,6 +651,60 @@ public class ModelWroughtnaut extends MowzieModelBase {
                     neck.rotateAngleX -= 0.06 * -frame * (frame - 7);
                 }
             }
+        }
+
+        if (entityWroughtnaut.getAnimID() == 5) {
+            animator.setAnim(5);
+            animator.setStationaryPhase(6);
+            animator.startPhase(15);
+            animator.rotate(stomachJoint, -0.65F, 0F, 0);
+            animator.move(waist, 0F, 0F, 6);
+            animator.rotate(neck, 0.65F, 0F, 0);
+
+            animator.rotate(shoulderRight, 0, 1F, 0);
+            animator.rotate(upperArmRightJoint, 0F, 0.3F, -1F);
+            animator.rotate(lowerArmRightJoint, -1.5F, 0F, 0.3F);
+            animator.rotate(handRight, 0F, 0.2F, -0.5F);
+            animator.rotate(axeHandle, 0, -1.7F, 0);
+
+            animator.rotate(shoulderLeft, 0, -1F, 0);
+            animator.rotate(upperArmLeftJoint, -0.5F, -0.3F, -1F);
+            animator.rotate(lowerArmLeftJoint, 1.7F, 0F, -0.1F);
+            animator.rotate(handLeft, -1.3F, -0.6F, -0.6F);
+
+//            animator.rotate(thighRightJoint, -0.7F, 0, 0);
+//            animator.rotate(thighRightJoint2, 0F, 0.2F, 0.5F);
+//            animator.rotate(calfRightJoint, 0.3F, 0, 0);
+//
+//            animator.rotate(thighLeftJoint, -0.2F, 0, 0);
+//            animator.rotate(thighLeftJoint2, 0F, -0.5F, -0.05F);
+//            animator.rotate(calfLeftJoint, 0.1F, 0, 0);
+//            animator.rotate(footLeftJoint, -0.1F, 0, 0);
+            animator.endPhase();
+
+            animator.setStationaryPhase(5);
+
+            animator.startPhase(6);
+            animator.rotate(stomachJoint, 0.65F, 0F, 0);
+            animator.move(waist, 0F, 4F, -3);
+            animator.rotate(neck, 0.3F, 0F, 0);
+
+            animator.rotate(shoulderRight, 0, 1F, 0);
+            animator.rotate(upperArmRightJoint, 0F, 0.3F, -1F);
+            animator.rotate(upperArmRight, 0F, 0F, 1.5F);
+            animator.rotate(lowerArmRightJoint, -1.5F, 0F, 0.3F);
+            animator.rotate(lowerArmRight, 0F, 0F, 0.7F);
+            animator.rotate(handRight, 0F, 0.2F, -0.5F);
+            animator.rotate(axeHandle, 0, -1.7F, 0);
+
+            animator.rotate(shoulderLeft, 0, -1F, 0);
+            animator.rotate(upperArmLeftJoint, -0.5F, -0.3F, -1F);
+            animator.rotate(lowerArmLeftJoint, 1.7F, 0F, -0.1F);
+            animator.rotate(handLeft, -1.3F, -0.6F, -0.6F);
+
+            animator.endPhase();
+            animator.setStationaryPhase(8);
+            animator.resetPhase(10);
         }
     }
 }
