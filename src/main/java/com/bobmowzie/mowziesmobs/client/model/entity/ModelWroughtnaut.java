@@ -496,8 +496,7 @@ public class ModelWroughtnaut extends MowzieModelBase {
         lowerArmLeftJoint.rotateAngleY -= 0.65F * f1;
     }
 
-    public void animate(float f, float f1, float f2, float f3, float f4, float f5, Entity entity)
-    {
+    public void animate(float f, float f1, float f2, float f3, float f4, float f5, Entity entity) {
         animator.update((EntityWroughtnaut) entity);
         EntityWroughtnaut entityWroughtnaut = (EntityWroughtnaut) entity;
         setRotationAngles(f, f1, f2, f3, f4, f5, entityWroughtnaut);
@@ -576,8 +575,7 @@ public class ModelWroughtnaut extends MowzieModelBase {
                     stomachJoint.rotateAngleX += 0.06 * -frame * (frame - 7);
                     neck.rotateAngleX -= 0.06 * -frame * (frame - 7);
                 }
-            }
-            else {
+            } else {
                 animator.setAnim(MMAnimation.ATTACK.animID());
                 animator.setStationaryPhase(6);
                 animator.startPhase(15);
@@ -672,19 +670,19 @@ public class ModelWroughtnaut extends MowzieModelBase {
             animator.rotate(lowerArmLeftJoint, 1.7F, 0F, -0.1F);
             animator.rotate(handLeft, -1.3F, -0.6F, -0.6F);
 
-//            animator.rotate(thighRightJoint, -0.7F, 0, 0);
-//            animator.rotate(thighRightJoint2, 0F, 0.2F, 0.5F);
-//            animator.rotate(calfRightJoint, 0.3F, 0, 0);
-//
-//            animator.rotate(thighLeftJoint, -0.2F, 0, 0);
-//            animator.rotate(thighLeftJoint2, 0F, -0.5F, -0.05F);
-//            animator.rotate(calfLeftJoint, 0.1F, 0, 0);
-//            animator.rotate(footLeftJoint, -0.1F, 0, 0);
+            animator.rotate(thighRightJoint, -0.7F, 0, 0);
+            animator.rotate(thighRightJoint2, 0F, 0.2F, 0.5F);
+            animator.rotate(calfRightJoint, 0.3F, 0, 0);
+
+            animator.rotate(thighLeftJoint, -0.1F, -0.2F, 0);
+            animator.rotate(calfLeftJoint, -0.3F, 0, 0);
+            animator.rotate(footLeftJoint, 0.3F, 0, 0);
+
             animator.endPhase();
 
             animator.setStationaryPhase(5);
 
-            animator.startPhase(6);
+            animator.startPhase(4);
             animator.rotate(stomachJoint, 0.65F, 0F, 0);
             animator.move(waist, 0F, 4F, -3);
             animator.rotate(neck, 0.3F, 0F, 0);
@@ -697,14 +695,367 @@ public class ModelWroughtnaut extends MowzieModelBase {
             animator.rotate(handRight, 0F, 0.2F, -0.5F);
             animator.rotate(axeHandle, 0, -1.7F, 0);
 
+            animator.rotate(shoulderLeft, 0, 0.3F, 0.4F);
+            animator.rotate(upperArmLeft, 0, 0.5F, -0.5F);
+            animator.rotate(lowerArmLeft, 0, -0.3F, -1.5F);
+            animator.rotate(handLeftJoint, -1.6F, 0, 0.5F);
+            animator.rotate(shoulderLeft, 0, 0.2F, 0.35F);
+            animator.rotate(upperArmLeft, 0, -0.3F, 0.5F);
+            animator.rotate(lowerArmLeft, 0, 1.5F, 1.3F);
+            animator.rotate(handLeft, -0.2F, 0, 0.3F);
+
+            animator.rotate(shoulderLeft, 0, -1F, 0);
+            animator.rotate(upperArmLeftJoint, 0F, 0.3F, -1F);
+            animator.rotate(upperArmLeft, 0F, 0F, 1.5F);
+            animator.rotate(lowerArmLeftJoint, 1F, 0F, -0.5F);
+            animator.rotate(lowerArmLeft, 0F, 0F, -0.7F);
+            animator.rotate(handLeft, 0.7F, 0F, -0.5F);
+
+            animator.rotate(thighRightJoint, -0.6F, 0.4F, 0);
+            animator.rotate(thighRightJoint2, 0F, 0F, 0);
+            animator.rotate(calfRightJoint, -0.1F, 0, 0);
+            animator.rotate(footRightJoint, 0.7F, 0, 0);
+
+            animator.rotate(thighLeftJoint, -0.2F, 0, 0);
+            animator.rotate(calfLeftJoint, 0.3F, 0, 0);
+            animator.rotate(footLeftJoint, -0.1F, 0, 0);
+
+            animator.endPhase();
+            animator.setStationaryPhase(15);
+
+            animator.startPhase(5);
+            animator.rotate(stomachJoint, 0.2F, 0F, 0);
+            animator.move(waist, 0F, 4F, -3);
+            animator.rotate(neck, -0.5F, 0F, 0);
+
+            animator.rotate(shoulderRight, 0, 1F, 0);
+            animator.rotate(upperArmRightJoint, 0F, 0.3F, -1F);
+            animator.rotate(upperArmRight, 0F, 0.15F, 1.7F);
+            animator.move(upperArmRightJoint, 0F, 7F, 0F);
+            animator.move(upperArmRight, 5F, 0F, 0F);
+            animator.rotate(lowerArmRightJoint, -2F, 0F, 0.8F);
+            animator.rotate(lowerArmRight, 0F, 0F, 0.7F);
+            animator.rotate(handRight, 0F, 0.6F, -0.5F);
+            animator.rotate(handRightJoint, 0.2F, 0F, 0F);
+            animator.rotate(axeHandle, -0.14F, -1.72F, 0.12F);
+
+            animator.rotate(shoulderLeft, 0, 0.3F, 0.4F);
+            animator.rotate(upperArmLeft, 0, 0.5F, -0.5F);
+            animator.rotate(lowerArmLeft, 0, -0.3F, -1.5F);
+            animator.rotate(handLeftJoint, -1.6F, 0, 0.5F);
+            animator.rotate(shoulderLeft, 0, 0.2F, 0.35F);
+            animator.rotate(upperArmLeft, 0, -0.3F, 0.5F);
+            animator.rotate(lowerArmLeft, 0, 1.5F, 1.3F);
+            animator.rotate(handLeft, -0.2F, 0, 0.3F);
+
+            animator.rotate(shoulderLeft, 0, -1F, 0);
+            animator.rotate(upperArmLeftJoint, 0F, -0.3F, -1F);
+            animator.rotate(upperArmLeft, 0F, -0.9F, 1.5F);
+            animator.move(upperArmLeftJoint, 0F, 5F, 0F);
+            animator.rotate(lowerArmLeftJoint, 1.2F, 0.3F, -0.8F);
+            animator.rotate(lowerArmLeft, -0.5F, -0.7F, -1.5F);
+            animator.rotate(handLeft, 0.7F, 0F, -0.5F);
+
+            animator.rotate(thighRightJoint, -0.6F, 0.4F, 0);
+            animator.rotate(thighRightJoint2, 0F, 0F, 0);
+            animator.rotate(calfRightJoint, -0.1F, 0, 0);
+            animator.rotate(footRightJoint, 0.7F, 0, 0);
+
+            animator.rotate(thighLeftJoint, -0.2F, 0, 0);
+            animator.rotate(calfLeftJoint, 0.3F, 0, 0);
+            animator.rotate(footLeftJoint, -0.1F, 0, 0);
+
+            animator.move(waistBendController, 1, 0, 0);
+            animator.endPhase();
+
+            animator.setStationaryPhase(15);
+
+            animator.startPhase(7);
+            animator.rotate(stomachJoint, 0.65F, 0F, 0);
+            animator.move(waist, 0F, 4F, -3);
+            animator.rotate(neck, 0.3F, 0F, 0);
+
+            animator.rotate(shoulderRight, 0, 1F, 0);
+            animator.rotate(upperArmRightJoint, 0F, 0.3F, -1F);
+            animator.rotate(upperArmRight, 0F, 0F, 1.5F);
+            animator.rotate(lowerArmRightJoint, -1.5F, 0F, 0.3F);
+            animator.rotate(lowerArmRight, 0F, 0F, 0.7F);
+            animator.rotate(handRight, 0F, 0.2F, -0.5F);
+            animator.rotate(axeHandle, 0, -1.7F, 0);
+
+            animator.rotate(shoulderLeft, 0, 0.3F, 0.4F);
+            animator.rotate(upperArmLeft, 0, 0.5F, -0.5F);
+            animator.rotate(lowerArmLeft, 0, -0.3F, -1.5F);
+            animator.rotate(handLeftJoint, -1.6F, 0, 0.5F);
+            animator.rotate(shoulderLeft, 0, 0.2F, 0.35F);
+            animator.rotate(upperArmLeft, 0, -0.3F, 0.5F);
+            animator.rotate(lowerArmLeft, 0, 1.5F, 1.3F);
+            animator.rotate(handLeft, -0.2F, 0, 0.3F);
+
+            animator.rotate(shoulderLeft, 0, -1F, 0);
+            animator.rotate(upperArmLeftJoint, 0F, 0.3F, -1F);
+            animator.rotate(upperArmLeft, 0F, 0F, 1.5F);
+            animator.rotate(lowerArmLeftJoint, 1F, 0F, -0.5F);
+            animator.rotate(lowerArmLeft, 0F, 0F, -0.7F);
+            animator.rotate(handLeft, 0.7F, 0F, -0.5F);
+
+            animator.rotate(thighRightJoint, -0.6F, 0.4F, 0);
+            animator.rotate(thighRightJoint2, 0F, 0F, 0);
+            animator.rotate(calfRightJoint, -0.1F, 0, 0);
+            animator.rotate(footRightJoint, 0.7F, 0, 0);
+
+            animator.rotate(thighLeftJoint, -0.2F, 0, 0);
+            animator.rotate(calfLeftJoint, 0.3F, 0, 0);
+            animator.rotate(footLeftJoint, -0.1F, 0, 0);
+
+            animator.endPhase();
+
+            animator.setStationaryPhase(5);
+
+            animator.startPhase(5);
+            animator.rotate(stomachJoint, 0.2F, 0F, 0);
+            animator.move(waist, 0F, 4F, -3);
+            animator.rotate(neck, -0.5F, 0F, 0);
+
+            animator.rotate(shoulderRight, 0, 1F, 0);
+            animator.rotate(upperArmRightJoint, 0F, 0.3F, -1F);
+            animator.rotate(upperArmRight, 0F, 0.15F, 1.7F);
+            animator.move(upperArmRightJoint, 0F, 7F, 0F);
+            animator.move(upperArmRight, 5F, 0F, 0F);
+            animator.rotate(lowerArmRightJoint, -2F, 0F, 0.8F);
+            animator.rotate(lowerArmRight, 0F, 0F, 0.7F);
+            animator.rotate(handRight, 0F, 0.6F, -0.5F);
+            animator.rotate(handRightJoint, 0.2F, 0F, 0F);
+            animator.rotate(axeHandle, -0.14F, -1.72F, 0.12F);
+
+            animator.rotate(shoulderLeft, 0, 0.3F, 0.4F);
+            animator.rotate(upperArmLeft, 0, 0.5F, -0.5F);
+            animator.rotate(lowerArmLeft, 0, -0.3F, -1.5F);
+            animator.rotate(handLeftJoint, -1.6F, 0, 0.5F);
+            animator.rotate(shoulderLeft, 0, 0.2F, 0.35F);
+            animator.rotate(upperArmLeft, 0, -0.3F, 0.5F);
+            animator.rotate(lowerArmLeft, 0, 1.5F, 1.3F);
+            animator.rotate(handLeft, -0.2F, 0, 0.3F);
+
+            animator.rotate(shoulderLeft, 0, -1F, 0);
+            animator.rotate(upperArmLeftJoint, 0F, -0.3F, -1F);
+            animator.rotate(upperArmLeft, 0F, -0.9F, 1.5F);
+            animator.move(upperArmLeftJoint, 0F, 5F, 0F);
+            animator.rotate(lowerArmLeftJoint, 1.2F, 0.3F, -0.8F);
+            animator.rotate(lowerArmLeft, -0.5F, -0.7F, -1.5F);
+            animator.rotate(handLeft, 0.7F, 0F, -0.5F);
+
+            animator.rotate(thighRightJoint, -0.6F, 0.4F, 0);
+            animator.rotate(thighRightJoint2, 0F, 0F, 0);
+            animator.rotate(calfRightJoint, -0.1F, 0, 0);
+            animator.rotate(footRightJoint, 0.7F, 0, 0);
+
+            animator.rotate(thighLeftJoint, -0.2F, 0, 0);
+            animator.rotate(calfLeftJoint, 0.3F, 0, 0);
+            animator.rotate(footLeftJoint, -0.1F, 0, 0);
+
+            animator.move(waistBendController, 1, 0, 0);
+            animator.endPhase();
+
+            animator.setStationaryPhase(5);
+
+            animator.startPhase(5);
+            animator.rotate(stomachJoint, -0.5F, 0F, 0);
+            animator.move(waist, 0F, 0F, 6);
+            animator.rotate(neck, 0.65F, 0F, 0);
+
+            animator.rotate(shoulderRight, 0, 1F, 0);
+            animator.rotate(upperArmRightJoint, 0F, 0.3F, -1F);
+            animator.rotate(upperArmRight, 0F, 0F, 1.3F);
+            animator.rotate(lowerArmRightJoint, -1.5F, 0F, 0.3F);
+            animator.rotate(handRight, 0F, 0.2F, -0.5F);
+            animator.rotate(axeHandle, 0, -1.7F, 0);
+
             animator.rotate(shoulderLeft, 0, -1F, 0);
             animator.rotate(upperArmLeftJoint, -0.5F, -0.3F, -1F);
+            animator.rotate(upperArmLeft, -0.5F, 0F, 1.3F);
             animator.rotate(lowerArmLeftJoint, 1.7F, 0F, -0.1F);
             animator.rotate(handLeft, -1.3F, -0.6F, -0.6F);
 
+            animator.rotate(thighRightJoint, -0.7F, 0, 0);
+            animator.rotate(thighRightJoint2, 0F, 0.2F, 0.5F);
+            animator.rotate(calfRightJoint, 0.3F, 0, 0);
+
+            animator.rotate(thighLeftJoint, -0.1F, -0.2F, 0);
+            animator.rotate(calfLeftJoint, -0.3F, 0, 0);
+            animator.rotate(footLeftJoint, 0.3F, 0, 0);
+
             animator.endPhase();
-            animator.setStationaryPhase(8);
+
+            animator.setStationaryPhase(3);
+
             animator.resetPhase(10);
+            neck.rotateAngleX += Math.sin(entityWroughtnaut.frame * 2) * waistBendController.rotationPointX * 0.1;
+        }
+
+        if (entityWroughtnaut.getAnimID() == MMAnimation.TAKEDAMAGE.id) {
+            animator.setAnim(MMAnimation.TAKEDAMAGE.id);
+            animator.startPhase(0);
+            animator.rotate(stomachJoint, 0.65F, 0F, 0);
+            animator.move(waist, 0F, 4F, -3);
+            animator.rotate(neck, 0.3F, 0F, 0);
+
+            animator.rotate(shoulderRight, 0, 1F, 0);
+            animator.rotate(upperArmRightJoint, 0F, 0.3F, -1F);
+            animator.rotate(upperArmRight, 0F, 0F, 1.5F);
+            animator.rotate(lowerArmRightJoint, -1.5F, 0F, 0.3F);
+            animator.rotate(lowerArmRight, 0F, 0F, 0.7F);
+            animator.rotate(handRight, 0F, 0.2F, -0.5F);
+            animator.rotate(axeHandle, 0, -1.7F, 0);
+
+            animator.rotate(shoulderLeft, 0, 0.3F, 0.4F);
+            animator.rotate(upperArmLeft, 0, 0.5F, -0.5F);
+            animator.rotate(lowerArmLeft, 0, -0.3F, -1.5F);
+            animator.rotate(handLeftJoint, -1.6F, 0, 0.5F);
+            animator.rotate(shoulderLeft, 0, 0.2F, 0.35F);
+            animator.rotate(upperArmLeft, 0, -0.3F, 0.5F);
+            animator.rotate(lowerArmLeft, 0, 1.5F, 1.3F);
+            animator.rotate(handLeft, -0.2F, 0, 0.3F);
+
+            animator.rotate(shoulderLeft, 0, -1F, 0);
+            animator.rotate(upperArmLeftJoint, 0F, 0.3F, -1F);
+            animator.rotate(upperArmLeft, 0F, 0F, 1.5F);
+            animator.rotate(lowerArmLeftJoint, 1F, 0F, -0.5F);
+            animator.rotate(lowerArmLeft, 0F, 0F, -0.7F);
+            animator.rotate(handLeft, 0.7F, 0F, -0.5F);
+
+            animator.rotate(thighRightJoint, -0.6F, 0.4F, 0);
+            animator.rotate(thighRightJoint2, 0F, 0F, 0);
+            animator.rotate(calfRightJoint, -0.1F, 0, 0);
+            animator.rotate(footRightJoint, 0.7F, 0, 0);
+
+            animator.rotate(thighLeftJoint, -0.2F, 0, 0);
+            animator.rotate(calfLeftJoint, 0.3F, 0, 0);
+            animator.rotate(footLeftJoint, -0.1F, 0, 0);
+            animator.endPhase();
+
+            animator.startPhase(4);
+            animator.rotate(stomachJoint, -0.4F, 0, 0);
+            animator.rotate(neck, -0.4F, 0, 0);
+
+            animator.rotate(shoulderLeft, 0, 0.5F, 0.75F);
+            animator.rotate(upperArmLeft, 0, 1.2F, -0.3F);
+            animator.rotate(lowerArmLeft, 0, 0.9F, -0.2F);
+            animator.rotate(lowerArmLeftJoint, 0, 0F, -0.3F);
+            animator.rotate(handLeftJoint, -1.6F, 0, 0.5F);
+            animator.rotate(handLeft, -0.2F, 0, 0.3F);
+
+            animator.rotate(shoulderRight, 0, -0.5F, -0.75F);
+            animator.rotate(upperArmRight, 0, -1F, -0.3F);
+            animator.rotate(lowerArmRight, 0, 0.9F, -0.2F);
+            animator.rotate(lowerArmRightJoint, 0, 0F, -0.3F);
+            animator.rotate(handRightJoint, -1F, 0, -0.5F);
+            animator.rotate(handRight, -0.2F, 0, 0.3F);
+
+            animator.endPhase();
+            animator.setStationaryPhase(2);
+            animator.resetPhase(9);
+        }
+
+        if (entityWroughtnaut.getAnimID() == MMAnimation.DIE.id) {
+            animator.setAnim(MMAnimation.DIE.id);
+            animator.startPhase(5);
+            animator.rotate(stomachJoint, -0.4F, 0, 0);
+            animator.rotate(neck, -0.4F, 0, 0);
+
+            animator.rotate(shoulderLeft, 0, 0.5F, 0.75F);
+            animator.rotate(upperArmLeft, 0, 1.2F, -0.3F);
+            animator.rotate(lowerArmLeft, 0, 0.9F, -0.2F);
+            animator.rotate(lowerArmLeftJoint, 0, 0F, -0.3F);
+            animator.rotate(handLeftJoint, -1.6F, 0, 0.5F);
+            animator.rotate(handLeft, -0.2F, 0, 0.3F);
+
+            animator.rotate(shoulderRight, 0, -0.5F, -0.75F);
+            animator.rotate(upperArmRight, 0, -1F, -0.3F);
+            animator.rotate(lowerArmRight, 0, 0.9F, -0.2F);
+            animator.rotate(lowerArmRightJoint, 0, 0F, -0.3F);
+            animator.rotate(handRightJoint, -1F, 0, -0.5F);
+            animator.rotate(handRight, -0.2F, 0, 0.3F);
+            animator.endPhase();
+
+            animator.startPhase(8);
+            animator.rotate(stomachJoint, -0.4F, 0, 0);
+            animator.rotate(neck, -0.4F, 0, 0);
+
+            animator.rotate(shoulderLeft, 0, 0.5F, 0.75F);
+            animator.rotate(upperArmLeft, 0, 1.2F, -0.3F);
+            animator.rotate(lowerArmLeft, 0, 0.9F, -0.2F);
+            animator.rotate(lowerArmLeftJoint, 0, 0F, -0.3F);
+            animator.rotate(handLeftJoint, -1.6F, 0, 0.5F);
+            animator.rotate(handLeft, -0.2F, 0, 0.3F);
+
+            animator.rotate(shoulderRight, 0, -0.5F, -0.75F);
+            animator.rotate(upperArmRight, 0, -1F, -0.3F);
+            animator.rotate(lowerArmRight, 0, 0.9F, -0.2F);
+            animator.rotate(lowerArmRightJoint, 0, 0F, -0.3F);
+            animator.rotate(handRightJoint, -1F, 0, -0.5F);
+            animator.rotate(handRight, -0.2F, 0, 0.3F);
+
+            animator.move(waistBendController, 1, 0, 0);
+            animator.endPhase();
+
+            animator.setStationaryPhase(30);
+
+            animator.startPhase(10);
+            animator.rotate(stomachJoint, -0.4F, 0, 0);
+            animator.rotate(neck, -0.4F, 0, 0);
+
+            animator.rotate(shoulderLeft, 0, 0.5F, 0.75F);
+            animator.rotate(upperArmLeft, 0, 1.2F, -0.3F);
+            animator.rotate(lowerArmLeft, 0, 0.9F, -0.2F);
+            animator.rotate(lowerArmLeftJoint, 0, 0F, -0.3F);
+            animator.rotate(handLeftJoint, -1.6F, 0, 0.5F);
+            animator.rotate(handLeft, -0.2F, 0, 0.3F);
+
+            animator.rotate(shoulderRight, 0, -0.5F, -0.75F);
+            animator.rotate(upperArmRight, 0, -1F, -0.3F);
+            animator.rotate(lowerArmRight, 0, 0.9F, -0.2F);
+            animator.rotate(lowerArmRightJoint, 0, 0F, -0.3F);
+            animator.rotate(handRightJoint, -1F, 0, -0.5F);
+            animator.rotate(handRight, -0.2F, 0, 0.3F);
+            animator.endPhase();
+
+            animator.setStationaryPhase(10);
+
+            animator.startPhase(4);
+            animator.move(waist, 0, 7, -10);
+            animator.rotate(stomachJoint, -0.6F, 0, 0);
+            animator.rotate(neck, -0.4F, 0, 0);
+
+            animator.rotate(shoulderLeft, 0, 0.5F, 0.75F);
+            animator.rotate(upperArmLeft, 0, 1.2F, -0.3F);
+            animator.rotate(lowerArmLeft, 0, 0.9F, -0.2F);
+            animator.rotate(lowerArmLeftJoint, 0, 0F, -0.3F);
+            animator.rotate(handLeftJoint, -1.6F, 0, 0.5F);
+            animator.rotate(handLeft, -0.2F, 0, 0.3F);
+
+            animator.rotate(shoulderRight, 0, -0.5F, -0.75F);
+            animator.rotate(upperArmRight, 0, -1F, -0.3F);
+            animator.rotate(lowerArmRight, 0, 0.9F, -0.2F);
+            animator.rotate(lowerArmRightJoint, 0, 0F, -0.3F);
+            animator.rotate(handRightJoint, -1F, 0, -0.5F);
+            animator.rotate(handRight, -0.2F, 0, 0.3F);
+
+            animator.rotate(thighRightJoint, 0.3F, 0.5F, -0.3F);
+            animator.rotate(calfRightJoint, 0.5F, 0, 0);
+            animator.rotate(footRightJoint, 1.7F, 0, 0);
+
+            animator.rotate(thighLeftJoint, 0.3F, -0.5F, 0.3F);
+            animator.rotate(calfLeftJoint, 0.5F, 0, 0);
+            animator.rotate(footLeftJoint, 1.7F, 0, 0);
+            animator.endPhase();
+
+            animator.setStationaryPhase(20);
+
+            swing(stomachJoint, 0.5F, 0.2F * waistBendController.rotationPointX, false, 0, 0, entityWroughtnaut.frame, 1F);
+            flap(neck, 0.5F, 0.2F * waistBendController.rotationPointX, false, -0.5F, 0, entityWroughtnaut.frame, 1F);
+            swing(upperArmLeftJoint, 0.5F, 0.2F * waistBendController.rotationPointX, false, -0.5F, 0, entityWroughtnaut.frame, 1F);
+            swing(upperArmRightJoint, 0.5F, 0.2F * waistBendController.rotationPointX, false, -0.5F, 0, entityWroughtnaut.frame, 1F);
         }
     }
 }

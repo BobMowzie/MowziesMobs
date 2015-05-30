@@ -34,12 +34,12 @@ public class AnimFWNVerticalAttack extends AnimBasicAttack {
     {
         entity.motionX = 0;
         entity.motionZ = 0;
-        if (entity.getAnimTick() < 27 && entityTarget != null)
+        if (entity.getAnimTick() < 26 && entityTarget != null)
             entity.getLookHelper().setLookPositionWithEntity(entityTarget, 30F, 30F);
 
         if (entity.getAnimTick() == 6) entity.playSound("mowziesmobs:wroughtnautCreak", 0.5F, 1F);
 
-        if (entity.getAnimTick() == 27) entity.playSound(attackSound, 1.2F, 1);
+        if (entity.getAnimTick() == 25) entity.playSound(attackSound, 1.2F, 1);
 
         if (this.entity.getAnimTick() == 27) {
             entity.playSound("mowziesmobs:wroughtnautSwing2", 1.5F, 1F);
@@ -58,9 +58,18 @@ public class AnimFWNVerticalAttack extends AnimBasicAttack {
                     entityHit.motionZ *= knockback;
                 }
             }
-            entity.playSound("minecraft:random.anvil_land", 1, 0.5F);
         }
-        if (entity.getAnimTick() > 27 && entity.getAnimTick() < 80) ((EntityWroughtnaut)entity).vulnerable = true;
+        if (entity.getAnimTick() == 28) entity.playSound("minecraft:random.anvil_land", 1, 0.5F);
+        if (entity.getAnimTick() == 43) entity.playSound("mowziesmobs:wroughtnautPull1", 1, 1F);
+        if (entity.getAnimTick() == 43) entity.playSound("mowziesmobs:wroughtnautCreak", 0.5F, 1F);
+        if (entity.getAnimTick() == 72) entity.playSound("mowziesmobs:wroughtnautPull5", 1, 1F);
+        if (entity.getAnimTick() == 80) entity.playSound("mowziesmobs:wroughtnautRelease2", 1, 1F);
+        if (entity.getAnimTick() > 26 && entity.getAnimTick() < 85)
+        {
+            ((EntityWroughtnaut)entity).vulnerable = true;
+            ((EntityWroughtnaut) entity).rotationYaw = ((EntityWroughtnaut) entity).prevRotationYaw;
+            ((EntityWroughtnaut) entity).renderYawOffset = ((EntityWroughtnaut) entity).prevRenderYawOffset;
+        }
         else ((EntityWroughtnaut)entity).vulnerable = false;
     }
 }

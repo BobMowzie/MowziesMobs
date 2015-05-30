@@ -20,7 +20,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAISwimming;
-import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -41,12 +40,12 @@ public class EntityFoliaath extends MMEntityBase
     public int lastTimeDecrease = 0;
     private double prevOpenMouth;
     private double prevActivate;
-    private int deathLength = 50;
     int resettingTargetTimer = 0;
 
     public EntityFoliaath(World world)
     {
         super(world);
+        deathLength = 50;
         getNavigator().setAvoidsWater(true);
         tasks.addTask(0, new EntityAISwimming(this));
         tasks.addTask(1, new AnimBasicAttack(this, 14, "mowziesmobs:foliaathbite1", 2F, 4.5F));
@@ -172,58 +171,9 @@ public class EntityFoliaath extends MMEntityBase
     }
 
     @Override
-    public boolean attackEntityFrom(DamageSource source, float damage)
-    {
-        if (active)
-        {
-            boolean b = super.attackEntityFrom(source, damage);
-            if (b)
-            {
-                if (getHealth() > 0.0F && getAnimID() == 0) AnimationAPI.sendAnimPacket(this, MMAnimation.TAKEDAMAGE.animID());
-                else if (getHealth() <= 0.0F) {
-                    if (currentAnim != null) currentAnim.resetTask();
-                    AnimationAPI.sendAnimPacket(this, MMAnimation.DIE.animID());
-                }
-            }
-            return b;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    @Override
-    protected void onDeathUpdate()
-    {
-        ++this.deathTime;
-
-        if (this.deathTime == deathLength-20)
-        {
-            int i;
-
-            if (!this.worldObj.isRemote && (this.recentlyHit > 0 || this.isPlayer()) && this.func_146066_aG() && this.worldObj.getGameRules().getGameRuleBooleanValue("doMobLoot"))
-            {
-                i = this.getExperiencePoints(this.attackingPlayer);
-
-                while (i > 0)
-                {
-                    int j = EntityXPOrb.getXPSplit(i);
-                    i -= j;
-                    this.worldObj.spawnEntityInWorld(new EntityXPOrb(this.worldObj, this.posX, this.posY, this.posZ, j));
-                }
-            }
-
-            this.setDead();
-
-            for (i = 0; i < 20; ++i)
-            {
-                double d2 = this.rand.nextGaussian() * 0.02D;
-                double d0 = this.rand.nextGaussian() * 0.02D;
-                double d1 = this.rand.nextGaussian() * 0.02D;
-                this.worldObj.spawnParticle("explode", this.posX + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, this.posY + (double)(this.rand.nextFloat() * this.height), this.posZ + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, d2, d0, d1);
-            }
-        }
+    public boolean attackEntityFrom(DamageSource p_70097_1_, float p_70097_2_) {
+        if (active) return super.attackEntityFrom(p_70097_1_, p_70097_2_);
+        return false;
     }
 
     @Override
