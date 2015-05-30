@@ -40,12 +40,3 @@ processResources {
         exclude 'mcmod.info'
     }
 }
-
-sourceSets {
-    main {
-        java {
-            srcDir 'src'
-            exclude 'thehippomaster/**'
-        }
-    }
-}
