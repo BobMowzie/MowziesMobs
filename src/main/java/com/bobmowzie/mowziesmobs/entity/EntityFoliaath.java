@@ -23,6 +23,7 @@ import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
@@ -53,7 +54,7 @@ public class EntityFoliaath extends MMEntityBase
         tasks.addTask(1, new AnimDie(this, deathLength));
         tasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true));
         tasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityCreature.class, 0, true));
-        experienceValue = 20;
+        experienceValue = 10;
         this.setSize(0.5F, 2.5F);
     }
 
@@ -275,5 +276,17 @@ public class EntityFoliaath extends MMEntityBase
 
     public byte getCanDespawn() {
         return dataWatcher.getWatchableObjectByte(30);
+    }
+
+    public void writeEntityToNBT(NBTTagCompound compound)
+    {
+        super.writeEntityToNBT(compound);
+        compound.setByte("canDespawn", getCanDespawn());
+    }
+
+    public void readEntityFromNBT(NBTTagCompound compound)
+    {
+        super.readEntityFromNBT(compound);
+        setCanDespawn(compound.getByte("canDespawn"));
     }
 }

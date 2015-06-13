@@ -75,6 +75,9 @@ public class ModelWroughtnaut extends MowzieModelBase {
     public MowzieModelRenderer calfLeft;
     public MowzieModelRenderer footLeftJoint;
     public MowzieModelRenderer footLeft;
+    public MowzieModelRenderer sword;
+    public MowzieModelRenderer swordJoint;
+    public MowzieModelRenderer rootBox;
 
     public MowzieModelRenderer waistBendController;
 
@@ -199,7 +202,7 @@ public class ModelWroughtnaut extends MowzieModelBase {
         this.axeBladeLeft1.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.axeBladeLeft1.addBox(0.0F, -4.5F, -1.0F, 10, 8, 2, 0.0F);
         this.waist = new MowzieModelRenderer(this, 64, 41);
-        this.waist.setRotationPoint(0.0F, -1.0F, 0.0F);
+        this.waist.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.waist.addBox(-8.0F, 0.0F, -8.0F, 16, 6, 16, 0.0F);
         this.setRotateAngle(waist, 0.0F, 0.7853981633974483F, 0.0F);
         this.hornLeft2 = new MowzieModelRenderer(this, 30, 0);
@@ -344,7 +347,20 @@ public class ModelWroughtnaut extends MowzieModelBase {
         this.waistBendController.setRotationPoint(0.0F, 0F, 0F);
         this.waistBendController.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         this.setRotateAngle(waistBendController, 0.0F, 0.0F, 0.0F);
+        this.swordJoint = new MowzieModelRenderer(this, 0, 0);
+        this.swordJoint.setRotationPoint(0F, -3F, 10F);
+        this.swordJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
+        this.setRotateAngle(swordJoint, 0.0F, -0.7853981633974483F, 0.0F);
+        this.sword = new MowzieModelRenderer(this, 82, 10);
+        this.sword.setRotationPoint(0F, 0F, 0F);
+        this.sword.addBox(-11F, 0F, -11F, 11, 11, 0, 0.0F);
+        this.setRotateAngle(sword, 0.0F, 0F, 0.0F);
+        this.rootBox = new MowzieModelRenderer(this, 0, 0);
+        this.rootBox.setRotationPoint(0.0F, -1.0F, 0.0F);
+        this.rootBox.addBox(0F, 0F, 0F, 0, 0, 0, 0.0F);
+        this.setRotateAngle(rootBox, 0.0F, 0F, 0.0F);
 
+        rootBox.addChild(waist);
         this.waist.addChild(this.groinJoint);
         this.upperArmRightJoint.addChild(this.upperArmRight);
         this.helmet.addChild(this.tuskRight1);
@@ -410,18 +426,20 @@ public class ModelWroughtnaut extends MowzieModelBase {
         this.axeBladeRight.addChild(this.axeBladeRight1);
         this.upperArmLeft.addChild(this.lowerArmLeftJoint);
         addChildTo(groin, groinJoint);
+        stomach.addChild(swordJoint);
+        swordJoint.addChild(sword);
 
         //Corrections
         groin.rotateAngleY -= 45 * Math.PI/180;
 
-        parts = new MowzieModelRenderer[] {waist, groin, stomachJoint, groinJoint, stomach, chestJoint, chest, neck, shoulderRightJoint, shoulderLeftJoint, head, helmet, tuskRight1, tuskLeft1, hornRight1, hornLeft1, tuskRight2, tuskLeft2, hornRight2, hornLeft2, shoulderRight, upperArmRightJoint, upperArmRight, lowerArmRightJoint, elbowRightJoint, lowerArmRight, handRightJoint, handRight, axeBase, axeHandle, axeBladeRight, axeBladeLeft, axeBladeRight1, axeBladeRight2, axeBladeRight3, axeBladeLeft1, axeBladeLeft2, axeBladeLeft3, elbowRight, shoulderLeft, upperArmLeftJoint, upperArmLeft, lowerArmLeftJoint, elbowLeftJoint, lowerArmLeft, handLeftJoint, handLeft, elbowLeft, groinFront, groinBack, thighRightJoint, thighLeftJoint, thighRightJoint2, thighRight, calfRightJoint, kneeRight, calfRight, footRightJoint, footRight, thighLeftJoint2, thighLeft, calfLeftJoint, kneeLeft, calfLeft, footLeftJoint, footLeft, waistBendController};
+        parts = new MowzieModelRenderer[] {rootBox, waist, groin, stomachJoint, groinJoint, stomach, chestJoint, chest, neck, shoulderRightJoint, shoulderLeftJoint, head, helmet, tuskRight1, tuskLeft1, hornRight1, hornLeft1, tuskRight2, tuskLeft2, hornRight2, hornLeft2, shoulderRight, upperArmRightJoint, upperArmRight, lowerArmRightJoint, elbowRightJoint, lowerArmRight, handRightJoint, handRight, axeBase, axeHandle, axeBladeRight, axeBladeLeft, axeBladeRight1, axeBladeRight2, axeBladeRight3, axeBladeLeft1, axeBladeLeft2, axeBladeLeft3, elbowRight, shoulderLeft, upperArmLeftJoint, upperArmLeft, lowerArmLeftJoint, elbowLeftJoint, lowerArmLeft, handLeftJoint, handLeft, elbowLeft, groinFront, groinBack, thighRightJoint, thighLeftJoint, thighRightJoint2, thighRight, calfRightJoint, kneeRight, calfRight, footRightJoint, footRight, thighLeftJoint2, thighLeft, calfLeftJoint, kneeLeft, calfLeft, footLeftJoint, footLeft, waistBendController, swordJoint, sword};
         setInitPose();
     }
 
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         animate(f, f1, f2, f3, f4, f5, entity);
-        this.waist.render(f5);
+        this.rootBox.render(f5);
     }
 
     public void setRotateAngle(MowzieModelRenderer MowzieModelRenderer, float x, float y, float z) {
@@ -452,6 +470,19 @@ public class ModelWroughtnaut extends MowzieModelBase {
         handLeftJoint.rotateAngleX += 1.6;
         handLeftJoint.rotateAngleZ -= 0.5;
         axeHandle.rotateAngleY += 0.8;
+
+        sword.rotationPointZ += 4;
+        sword.rotationPointX -= 5;
+        sword.rotationPointY -= 3;
+        swordJoint.rotationPointX += 2;
+        swordJoint.rotationPointY -= 5;
+        swordJoint.rotateAngleY += 1.3;
+        swordJoint.rotateAngleX -= 0.5;
+        swordJoint.rotateAngleZ -= 0.5;
+//        sword.rotationPointX += 5;
+//        sword.rotateAngleZ -= 1.7;
+//        swordJoint.rotateAngleX -= 0.1 * wn.frame;
+//        sword.rotateAngleY += 2;
 
         head.rotateAngleY += f3 / (180f / (float) Math.PI);
         neck.rotateAngleX += f4 / (180f / (float) Math.PI);
@@ -1022,8 +1053,8 @@ public class ModelWroughtnaut extends MowzieModelBase {
 
             animator.setStationaryPhase(10);
 
-            animator.startPhase(4);
-            animator.move(waist, 0, 7, -10);
+            animator.startPhase(5);
+            animator.move(rootBox, 0, 7, -10);
             animator.rotate(stomachJoint, -0.6F, 0, 0);
             animator.rotate(neck, -0.4F, 0, 0);
 
@@ -1050,12 +1081,46 @@ public class ModelWroughtnaut extends MowzieModelBase {
             animator.rotate(footLeftJoint, 1.7F, 0, 0);
             animator.endPhase();
 
-            animator.setStationaryPhase(20);
+            animator.setStationaryPhase(13);
+
+            animator.startPhase(7);
+            animator.move(rootBox, 0, 15, -33);
+            animator.rotate(rootBox, 1.5F, 0, 0);
+
+            animator.rotate(shoulderLeft, 0, 0.5F, 0.75F);
+            animator.rotate(shoulderLeftJoint, 0, 0, 0.6F);
+            animator.rotate(upperArmLeft, 2.4F, 0.6F, -0.3F);
+            animator.rotate(lowerArmLeft, 0, 0.9F, -0.2F);
+            animator.rotate(lowerArmLeftJoint, 0, 0F, -0.3F);
+            animator.rotate(handLeftJoint, -1.6F, 0, 0.5F);
+            animator.rotate(handLeft, -0.2F, 0, 0.3F);
+
+            animator.rotate(shoulderRight, 0, -0.5F, -0.75F);
+            animator.rotate(shoulderRightJoint, 0, 0, -0.6F);
+            animator.rotate(upperArmRight, -2.7F, -0.5F, 0.4F);
+            animator.rotate(lowerArmRight, 0, 0.9F, -0.2F);
+            animator.rotate(lowerArmRightJoint, 0, 0F, -0.3F);
+            animator.rotate(handRightJoint, 0.4F, 0.1F, -0.7F);
+            animator.rotate(handRight, -0.2F, 0, 0.3F);
+            animator.rotate(axeHandle, 0F, -0.5F, 0F);
+
+            animator.rotate(thighRightJoint, 0.3F, 0.5F, -0.3F);
+            animator.rotate(calfRightJoint, -0.8F, 0.1F, 0);
+            animator.rotate(calfRight, 0, 0, 0.3F);
+            animator.rotate(footRightJoint, 1.7F, 0, 0);
+
+            animator.rotate(thighLeftJoint, 0.3F, -0.5F, 0.3F);
+            animator.rotate(calfLeftJoint, -0.8F, -0.1F, 0);
+            animator.rotate(calfLeft, 0, 0, -0.3F);
+            animator.rotate(footLeftJoint, 1.7F, 0, 0);
+            animator.endPhase();
+
+            animator.setStationaryPhase(40);
 
             swing(stomachJoint, 0.5F, 0.2F * waistBendController.rotationPointX, false, 0, 0, entityWroughtnaut.frame, 1F);
-            flap(neck, 0.5F, 0.2F * waistBendController.rotationPointX, false, -0.5F, 0, entityWroughtnaut.frame, 1F);
-            swing(upperArmLeftJoint, 0.5F, 0.2F * waistBendController.rotationPointX, false, -0.5F, 0, entityWroughtnaut.frame, 1F);
-            swing(upperArmRightJoint, 0.5F, 0.2F * waistBendController.rotationPointX, false, -0.5F, 0, entityWroughtnaut.frame, 1F);
+            walk(neck, 1.5F, 0.1F * waistBendController.rotationPointX, false, 0F, 0, entityWroughtnaut.frame, 1F);
+            swing(shoulderRight, 1.5F, 0.05F * waistBendController.rotationPointX, true, 0F, 0, entityWroughtnaut.frame, 1F);
+            swing(shoulderLeft, 1.5F, 0.05F * waistBendController.rotationPointX, false, 0F, 0, entityWroughtnaut.frame, 1F);
         }
     }
 }
