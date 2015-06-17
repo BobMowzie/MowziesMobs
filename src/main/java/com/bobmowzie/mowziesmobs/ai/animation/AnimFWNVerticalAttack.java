@@ -35,6 +35,7 @@ public class AnimFWNVerticalAttack extends AnimBasicAttack {
         {
             entity.motionX = 0;
             entity.motionZ = 0;
+            entity.rotationYaw = entity.prevRotationYaw;
             if (entity.getAnimTick() < 26 && entityTarget != null)
                 entity.getLookHelper().setLookPositionWithEntity(entityTarget, 30F, 30F);
 
@@ -64,7 +65,7 @@ public class AnimFWNVerticalAttack extends AnimBasicAttack {
             if (entity.getAnimTick() == 43) entity.playSound("mowziesmobs:wroughtnautPull1", 1, 1F);
             if (entity.getAnimTick() == 43) entity.playSound("mowziesmobs:wroughtnautCreak", 0.5F, 1F);
             if (entity.getAnimTick() == 72) entity.playSound("mowziesmobs:wroughtnautPull5", 1, 1F);
-            if (entity.getAnimTick() == 80) entity.playSound("mowziesmobs:wroughtnautRelease2", 1, 1F);
+            if (entity.getAnimTick() == 81) entity.playSound("mowziesmobs:wroughtnautRelease2", 1, 1F);
             if (entity.getAnimTick() > 26 && entity.getAnimTick() < 85) {
                 ((EntityWroughtnaut) entity).vulnerable = true;
                 ((EntityWroughtnaut) entity).rotationYaw = ((EntityWroughtnaut) entity).prevRotationYaw;

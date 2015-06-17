@@ -6,7 +6,9 @@ public enum MMAnimation
     ATTACK(2),
     TAKEDAMAGE(3),
     DIE(4),
-    BABY_FOLIAATH_EAT(5);
+    BABY_FOLIAATH_EAT(5),
+    ACTIVATE(6),
+    DEACTIVATE(7);
 
     private MMAnimation(int id)
     {

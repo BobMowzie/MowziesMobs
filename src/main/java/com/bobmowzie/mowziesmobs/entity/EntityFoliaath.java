@@ -37,7 +37,6 @@ public class EntityFoliaath extends MMEntityBase
     public ControlledAnimation activate = new ControlledAnimation(30);
     public ControlledAnimation deathFlail = new ControlledAnimation(5);
     public ControlledAnimation stopDance = new ControlledAnimation(10);
-    public boolean active;
     public int lastTimeDecrease = 0;
     private double prevOpenMouth;
     private double prevActivate;

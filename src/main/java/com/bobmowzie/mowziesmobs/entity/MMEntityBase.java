@@ -31,6 +31,7 @@ public class MMEntityBase extends EntityCreature implements IEntityAdditionalSpa
     public DamageSource dieSource;
     public MMAnimBase currentAnim = null;
     protected int deathLength = 30;
+    public boolean active;
 
     public MMEntityBase(World world)
     {
@@ -97,7 +98,7 @@ public class MMEntityBase extends EntityCreature implements IEntityAdditionalSpa
         if (this.getAttackTarget() != null)
         {
             targetDistance = (float) Math.sqrt((getAttackTarget().posZ - posZ) * (getAttackTarget().posZ - posZ) + (getAttackTarget().posX - posX) * (getAttackTarget().posX - posX));
-            targetAngle = (float) (Math.atan2(getAttackTarget().posZ - posZ, getAttackTarget().posX - posX) * (180 / Math.PI) + 90);
+            targetAngle = (float) getAngleBetweenEntities(this, getAttackTarget());
         }
     }
 
@@ -134,6 +135,11 @@ public class MMEntityBase extends EntityCreature implements IEntityAdditionalSpa
     public int getAttack()
     {
         return 0;
+    }
+
+    public double getAngleBetweenEntities(Entity first, Entity second)
+    {
+        return Math.atan2(second.posZ - first.posZ, second.posX - first.posX) * (180 / Math.PI) + 90;
     }
 
     public List<EntityPlayer> getPlayersNearby(double distanceX, double distanceY, double distanceZ, double radius)
