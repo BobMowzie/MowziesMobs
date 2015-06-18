@@ -1,8 +1,15 @@
 package com.bobmowzie.mowziesmobs;
 
-import com.bobmowzie.mowziesmobs.packet.PacketPlaySound;
-import com.bobmowzie.mowziesmobs.packet.foliaath.*;
-import com.bobmowzie.mowziesmobs.proxy.CommonProxy;
+import com.bobmowzie.mowziesmobs.common.biome.MMBiomeDictionarySpawns;
+import com.bobmowzie.mowziesmobs.common.creativetab.MMTabs;
+import com.bobmowzie.mowziesmobs.common.entity.MMEntityRegistry;
+import com.bobmowzie.mowziesmobs.common.item.MMItems;
+import com.bobmowzie.mowziesmobs.common.message.MessagePlaySound;
+import com.bobmowzie.mowziesmobs.common.message.foliaath.MessageDecreaseTimer;
+import com.bobmowzie.mowziesmobs.common.message.foliaath.MessageIncreaseTimer;
+import com.bobmowzie.mowziesmobs.common.message.foliaath.MessageSetActiveFalse;
+import com.bobmowzie.mowziesmobs.common.message.foliaath.MessageSetActiveTrue;
+import com.bobmowzie.mowziesmobs.common.proxy.ServerProxy;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -14,68 +21,22 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
+import net.ilexiconn.llibrary.common.content.ContentHelper;
 import net.minecraftforge.common.MinecraftForge;
 
-//Things
-@Mod(modid = MowziesMobs.MODID, name = MowziesMobs.NAME, version = MowziesMobs.VERSION, dependencies = ""/*"required-after:llib@[1.7.10-0.2.1-34,)"*/)
+@Mod(modid = "mowziesmobs", name = "Mowzie's Mobs", version = "${version}", dependencies = "required-after:llibrary@[0.2.0-1.7.10,)")
 public class MowziesMobs
 {
-    public static final String MODID = "mowziesmobs";
-    public static final String NAME = "Mowzie's Mobs";
-    public static final String VERSION = "Alpha v0.1";
-
     public static SimpleNetworkWrapper networkWrapper;
 
-    @Instance(MowziesMobs.MODID)
+    @Instance("mowziesmobs")
     public static MowziesMobs instance;
-
-    @SidedProxy(clientSide = "com.bobmowzie.mowziesmobs.proxy.ClientProxy", serverSide = "com.bobmowzie.mowziesmobs.proxy.CommonProxy")
-    public static CommonProxy proxy;
-
-    @EventHandler
-    public void preInit(FMLPreInitializationEvent preEvent)
-    {
-        MMTabs.init();
-        //MMBlocks.init();
-        MMItems.init();
-        MMEntities.init();
-        //MMTileEntities.init();
-        MMRecipes.init();
-        /*getContentHandler().addContentProvider(new MMTabs());
-        getContentHandler().addContentProvider(new MMBlocks());
-        getContentHandler().addContentProvider(new MMItems());
-        getContentHandler().addContentProvider(new MMEntities());
-        getContentHandler().addContentProvider(new MMTileEntities());
-        //		getContentHandler().addContentProvider(new MMRecipes());
-        getContentHandler().init();*/
-
-        MinecraftForge.EVENT_BUS.register(new com.bobmowzie.mowziesmobs.event.EventHandler());
-    }
-
-    @EventHandler
-    public void init(FMLInitializationEvent event)
-    {
-        proxy.itemRegistry();
-        //proxy.tileEntityRegistry();
-        proxy.entityRegistry();
-
-        networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel("mmNetworkWrapper");
-        networkWrapper.registerMessage(PacketIncreaseTimer.class, PacketIncreaseTimer.class, 0, Side.CLIENT);
-        networkWrapper.registerMessage(PacketDecreaseTimer.class, PacketDecreaseTimer.class, 1, Side.CLIENT);
-        networkWrapper.registerMessage(PacketPlaySound.class, PacketPlaySound.class, 2, Side.SERVER);
-        networkWrapper.registerMessage(PacketSetActiveTrue.class, PacketSetActiveTrue.class, 3, Side.SERVER);
-        networkWrapper.registerMessage(PacketSetActiveFalse.class, PacketSetActiveFalse.class, 4, Side.SERVER);
-    }
-
-    @EventHandler
-    public void postInit(FMLPostInitializationEvent event)
-    {
-        MMBiomeDictionarySpawns.init();
-    }
+    @SidedProxy(clientSide = "com.bobmowzie.mowziesmobs.common.proxy.ClientProxy", serverSide = "com.bobmowzie.mowziesmobs.common.proxy.ServerProxy")
+    public static ServerProxy proxy;
 
     public static String getModID()
     {
-        return MowziesMobs.MODID + ":";
+        return "mowziesmobs:";
     }
 
     public static void playSound(int entityId, String soundName)
@@ -85,6 +46,34 @@ public class MowziesMobs
 
     public static void playSound(int entityId, String soundName, float volume, float pitch)
     {
-        if (FMLCommonHandler.instance().getEffectiveSide().isClient()) networkWrapper.sendToServer(new PacketPlaySound(entityId, soundName, volume, pitch));
+        if (FMLCommonHandler.instance().getEffectiveSide().isClient())
+            networkWrapper.sendToServer(new MessagePlaySound(entityId, soundName, volume, pitch));
+    }
+
+    @EventHandler
+    public void preInit(FMLPreInitializationEvent event)
+    {
+        ContentHelper.init(new MMTabs(), new MMItems(), new MMEntityRegistry());
+
+        MinecraftForge.EVENT_BUS.register(new com.bobmowzie.mowziesmobs.common.event.EventHandler());
+    }
+
+    @EventHandler
+    public void init(FMLInitializationEvent event)
+    {
+        proxy.init();
+
+        networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel("mowziesMobs");
+        networkWrapper.registerMessage(MessageIncreaseTimer.class, MessageIncreaseTimer.class, 0, Side.CLIENT);
+        networkWrapper.registerMessage(MessageDecreaseTimer.class, MessageDecreaseTimer.class, 1, Side.CLIENT);
+        networkWrapper.registerMessage(MessagePlaySound.class, MessagePlaySound.class, 2, Side.SERVER);
+        networkWrapper.registerMessage(MessageSetActiveTrue.class, MessageSetActiveTrue.class, 3, Side.SERVER);
+        networkWrapper.registerMessage(MessageSetActiveFalse.class, MessageSetActiveFalse.class, 4, Side.SERVER);
+    }
+
+    @EventHandler
+    public void postInit(FMLPostInitializationEvent event)
+    {
+        MMBiomeDictionarySpawns.init();
     }
 }

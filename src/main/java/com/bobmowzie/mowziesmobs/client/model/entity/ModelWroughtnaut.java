@@ -1,14 +1,14 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import com.bobmowzie.mowziesmobs.client.model.animation.tools.MowzieModelBase;
-import com.bobmowzie.mowziesmobs.client.model.animation.tools.MowzieModelRenderer;
-import com.bobmowzie.mowziesmobs.entity.EntityWroughtnaut;
-import com.bobmowzie.mowziesmobs.enums.MMAnimation;
+import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelBase;
+import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelRenderer;
+import com.bobmowzie.mowziesmobs.common.entity.EntityWroughtnaut;
+import com.bobmowzie.mowziesmobs.common.animation.MMAnimation;
 import net.minecraft.entity.Entity;
 import thehippomaster.AnimationAPI.client.Animator;
 
-public class ModelWroughtnaut extends MowzieModelBase {
-    private Animator animator;
+public class ModelWroughtnaut extends MowzieModelBase
+{
     public MowzieModelRenderer waist;
     public MowzieModelRenderer groin;
     public MowzieModelRenderer stomachJoint;
@@ -78,10 +78,11 @@ public class ModelWroughtnaut extends MowzieModelBase {
     public MowzieModelRenderer sword;
     public MowzieModelRenderer swordJoint;
     public MowzieModelRenderer rootBox;
-
     public MowzieModelRenderer waistBendController;
+    private Animator animator;
 
-    public ModelWroughtnaut() {
+    public ModelWroughtnaut()
+    {
         animator = new Animator(this);
         this.textureWidth = 128;
         this.textureHeight = 128;
@@ -430,19 +431,21 @@ public class ModelWroughtnaut extends MowzieModelBase {
         swordJoint.addChild(sword);
 
         //Corrections
-        groin.rotateAngleY -= 45 * Math.PI/180;
+        groin.rotateAngleY -= 45 * Math.PI / 180;
 
-        parts = new MowzieModelRenderer[] {rootBox, waist, groin, stomachJoint, groinJoint, stomach, chestJoint, chest, neck, shoulderRightJoint, shoulderLeftJoint, head, helmet, tuskRight1, tuskLeft1, hornRight1, hornLeft1, tuskRight2, tuskLeft2, hornRight2, hornLeft2, shoulderRight, upperArmRightJoint, upperArmRight, lowerArmRightJoint, elbowRightJoint, lowerArmRight, handRightJoint, handRight, axeBase, axeHandle, axeBladeRight, axeBladeLeft, axeBladeRight1, axeBladeRight2, axeBladeRight3, axeBladeLeft1, axeBladeLeft2, axeBladeLeft3, elbowRight, shoulderLeft, upperArmLeftJoint, upperArmLeft, lowerArmLeftJoint, elbowLeftJoint, lowerArmLeft, handLeftJoint, handLeft, elbowLeft, groinFront, groinBack, thighRightJoint, thighLeftJoint, thighRightJoint2, thighRight, calfRightJoint, kneeRight, calfRight, footRightJoint, footRight, thighLeftJoint2, thighLeft, calfLeftJoint, kneeLeft, calfLeft, footLeftJoint, footLeft, waistBendController, swordJoint, sword};
+        parts = new MowzieModelRenderer[]{rootBox, waist, groin, stomachJoint, groinJoint, stomach, chestJoint, chest, neck, shoulderRightJoint, shoulderLeftJoint, head, helmet, tuskRight1, tuskLeft1, hornRight1, hornLeft1, tuskRight2, tuskLeft2, hornRight2, hornLeft2, shoulderRight, upperArmRightJoint, upperArmRight, lowerArmRightJoint, elbowRightJoint, lowerArmRight, handRightJoint, handRight, axeBase, axeHandle, axeBladeRight, axeBladeLeft, axeBladeRight1, axeBladeRight2, axeBladeRight3, axeBladeLeft1, axeBladeLeft2, axeBladeLeft3, elbowRight, shoulderLeft, upperArmLeftJoint, upperArmLeft, lowerArmLeftJoint, elbowLeftJoint, lowerArmLeft, handLeftJoint, handLeft, elbowLeft, groinFront, groinBack, thighRightJoint, thighLeftJoint, thighRightJoint2, thighRight, calfRightJoint, kneeRight, calfRight, footRightJoint, footRight, thighLeftJoint2, thighLeft, calfLeftJoint, kneeLeft, calfLeft, footLeftJoint, footLeft, waistBendController, swordJoint, sword};
         setInitPose();
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
+    {
         animate(f, f1, f2, f3, f4, f5, entity);
         this.rootBox.render(f5);
     }
 
-    public void setRotateAngle(MowzieModelRenderer MowzieModelRenderer, float x, float y, float z) {
+    public void setRotateAngle(MowzieModelRenderer MowzieModelRenderer, float x, float y, float z)
+    {
         MowzieModelRenderer.rotateAngleX = x;
         MowzieModelRenderer.rotateAngleY = y;
         MowzieModelRenderer.rotateAngleZ = z;
@@ -453,7 +456,7 @@ public class ModelWroughtnaut extends MowzieModelBase {
         super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
         setToInitPose();
         EntityWroughtnaut wn = entity;
-        if(wn.getAnimID() != 6 && wn.getAnimID() != 7)
+        if (wn.getAnimID() != 6 && wn.getAnimID() != 7)
         {
             if (wn.getActive() == 1)
             {
@@ -521,7 +524,7 @@ public class ModelWroughtnaut extends MowzieModelBase {
         float height = 2F;
 
         //groinJoint.rotationPointY -= 1 * f1;
-        waist.rotationPointZ -= f1 * 4 * Math.pow(Math.sin(globalSpeed*(wn.frame - 15)), 2);
+        waist.rotationPointZ -= f1 * 4 * Math.pow(Math.sin(globalSpeed * (wn.frame - 15)), 2);
         bob(waist, 2F * globalSpeed, 1 * height, false, f, f1);
         swing(waist, 1F * globalSpeed, 0.3F * globalDegree, false, 0, 0, f, f1);
         swing(stomachJoint, 1F * globalSpeed, 0.6F * globalDegree, true, 0, 0, f, f1);
@@ -562,13 +565,16 @@ public class ModelWroughtnaut extends MowzieModelBase {
         swordJoint.rotateAngleZ -= 0.5;
     }
 
-    public void animate(float f, float f1, float f2, float f3, float f4, float f5, Entity entity) {
+    public void animate(float f, float f1, float f2, float f3, float f4, float f5, Entity entity)
+    {
         animator.update((EntityWroughtnaut) entity);
         EntityWroughtnaut entityWroughtnaut = (EntityWroughtnaut) entity;
         setRotationAngles(f, f1, f2, f3, f4, f5, entityWroughtnaut);
 
-        if (entityWroughtnaut.getAnimID() == MMAnimation.ATTACK.id) {
-            if (entityWroughtnaut.swingDirection == false) {
+        if (entityWroughtnaut.getAnimID() == MMAnimation.ATTACK.id)
+        {
+            if (entityWroughtnaut.swingDirection == false)
+            {
                 animator.setAnim(MMAnimation.ATTACK.animID());
                 animator.setStationaryPhase(6);
                 animator.startPhase(15);
@@ -637,11 +643,14 @@ public class ModelWroughtnaut extends MowzieModelBase {
                 animator.setStationaryPhase(8);
                 animator.resetPhase(10);
                 float frame = waistBendController.rotationPointX;
-                if (entityWroughtnaut.getAnimTick() <= 33) {
+                if (entityWroughtnaut.getAnimTick() <= 33)
+                {
                     stomachJoint.rotateAngleX += 0.06 * -frame * (frame - 7);
                     neck.rotateAngleX -= 0.06 * -frame * (frame - 7);
                 }
-            } else {
+            }
+            else
+            {
                 animator.setAnim(MMAnimation.ATTACK.animID());
                 animator.setStationaryPhase(6);
                 animator.startPhase(15);
@@ -710,14 +719,16 @@ public class ModelWroughtnaut extends MowzieModelBase {
                 animator.setStationaryPhase(8);
                 animator.resetPhase(10);
                 float frame = waistBendController.rotationPointX;
-                if (entityWroughtnaut.getAnimTick() <= 33) {
+                if (entityWroughtnaut.getAnimTick() <= 33)
+                {
                     stomachJoint.rotateAngleX += 0.06 * -frame * (frame - 7);
                     neck.rotateAngleX -= 0.06 * -frame * (frame - 7);
                 }
             }
         }
 
-        if (entityWroughtnaut.getAnimID() == 5) {
+        if (entityWroughtnaut.getAnimID() == 5)
+        {
             animator.setAnim(5);
             animator.setStationaryPhase(6);
             animator.startPhase(15);
@@ -959,7 +970,8 @@ public class ModelWroughtnaut extends MowzieModelBase {
             neck.rotateAngleX += Math.sin(entityWroughtnaut.frame * 2) * waistBendController.rotationPointX * 0.1;
         }
 
-        if (entityWroughtnaut.getAnimID() == MMAnimation.TAKEDAMAGE.id) {
+        if (entityWroughtnaut.getAnimID() == MMAnimation.TAKEDAMAGE.id)
+        {
             animator.setAnim(MMAnimation.TAKEDAMAGE.id);
             animator.startPhase(0);
             animator.rotate(stomachJoint, 0.65F, 0F, 0);
@@ -1023,7 +1035,8 @@ public class ModelWroughtnaut extends MowzieModelBase {
             animator.resetPhase(9);
         }
 
-        if (entityWroughtnaut.getAnimID() == MMAnimation.DIE.id) {
+        if (entityWroughtnaut.getAnimID() == MMAnimation.DIE.id)
+        {
             animator.setAnim(MMAnimation.DIE.id);
             animator.startPhase(5);
             animator.rotate(stomachJoint, -0.4F, 0, 0);
@@ -1158,7 +1171,8 @@ public class ModelWroughtnaut extends MowzieModelBase {
             swing(shoulderLeft, 1.5F, 0.05F * waistBendController.rotationPointX, false, 0F, 0, entityWroughtnaut.frame, 1F);
         }
 
-        if (entityWroughtnaut.getAnimID() == MMAnimation.ACTIVATE.id) {
+        if (entityWroughtnaut.getAnimID() == MMAnimation.ACTIVATE.id)
+        {
             animator.setAnim(MMAnimation.ACTIVATE.id);
             animator.startPhase(0);
             animator.rotate(shoulderLeft, 0, -0.4F, -0.4F);
@@ -1231,9 +1245,10 @@ public class ModelWroughtnaut extends MowzieModelBase {
                 thighLeftJoint.rotateAngleX += 0.01 * (frame - 13) * (frame - 26);
                 calfLeftJoint.rotateAngleX -= 0.02 * (frame - 13) * (frame - 26);
             }
-            rootBox.rotateAngleZ -= 0.05 * frame * (frame - 13) * (frame - 26)/845;
+            rootBox.rotateAngleZ -= 0.05 * frame * (frame - 13) * (frame - 26) / 845;
         }
-        if (entityWroughtnaut.getAnimID() == MMAnimation.DEACTIVATE.id) {
+        if (entityWroughtnaut.getAnimID() == MMAnimation.DEACTIVATE.id)
+        {
             animator.setAnim(MMAnimation.DEACTIVATE.id);
             animator.startPhase(0);
             animator.rotate(shoulderLeft, 0, -0.3F, -0.4F);

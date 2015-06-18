@@ -1,9 +1,10 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import com.bobmowzie.mowziesmobs.client.model.animation.tools.MowzieModelBase;
-import com.bobmowzie.mowziesmobs.client.model.animation.tools.MowzieModelRenderer;
-import com.bobmowzie.mowziesmobs.entity.EntityBabyFoliaath;
-import com.bobmowzie.mowziesmobs.enums.MMAnimation;
+import com.bobmowzie.mowziesmobs.common.entity.EntityBabyFoliaath;
+import com.bobmowzie.mowziesmobs.common.animation.MMAnimation;
+import com.google.common.collect.Lists;
+import net.ilexiconn.llibrary.client.model.modelbase.MowzieModelBase;
+import net.ilexiconn.llibrary.client.model.modelbase.MowzieModelRenderer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import thehippomaster.AnimationAPI.IAnimatedEntity;
@@ -11,7 +12,6 @@ import thehippomaster.AnimationAPI.client.Animator;
 
 public class ModelBabyFoliaath extends MowzieModelBase
 {
-    private Animator animator;
     public MowzieModelRenderer infantBase;
     public MowzieModelRenderer juvenileBase;
     public MowzieModelRenderer infantLeaf1;
@@ -28,8 +28,10 @@ public class ModelBabyFoliaath extends MowzieModelBase
     public MowzieModelRenderer mouthCover;
     public MowzieModelRenderer teeth1;
     public MowzieModelRenderer teeth2;
+    private Animator animator;
 
-    public ModelBabyFoliaath() {
+    public ModelBabyFoliaath()
+    {
         animator = new Animator(this);
         textureWidth = 64;
         textureHeight = 16;
@@ -105,16 +107,16 @@ public class ModelBabyFoliaath extends MowzieModelBase
         infantBase.addChild(infantLeaf1);
         infantBase.addChild(infantLeaf4);
         mouthBase.addChild(mouthCover);
-        
-        parts = new MowzieModelRenderer[] {infantBase, juvenileBase, infantLeaf1, infantLeaf2, infantLeaf3, infantLeaf4, juvenileLeaf1, juvenileLeaf2, juvenileLeaf3, juvenileLeaf4, mouthBase, mouth1, mouth2, mouthCover, teeth1, teeth2};
+
+        parts = Lists.newArrayList(infantBase, juvenileBase, infantLeaf1, infantLeaf2, infantLeaf3, infantLeaf4, juvenileLeaf1, juvenileLeaf2, juvenileLeaf3, juvenileLeaf4, mouthBase, mouth1, mouth2, mouthCover, teeth1, teeth2);
         setInitPose();
     }
 
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
     {
-        animate(f, f1, f2, f3, f4, f5, (IAnimatedEntity)entity);
-        this.infantBase.render(f5);
-        this.juvenileBase.render(f5);
+        animate(f, f1, f2, f3, f4, f5, (IAnimatedEntity) entity);
+        infantBase.render(f5);
+        juvenileBase.render(f5);
     }
 
     public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z)
@@ -153,8 +155,8 @@ public class ModelBabyFoliaath extends MowzieModelBase
     public void animate(float f, float f1, float f2, float f3, float f4, float f5, IAnimatedEntity entity)
     {
         animator.update(entity);
-        EntityBabyFoliaath entityfoliaath = (EntityBabyFoliaath) entity;
-        setRotationAngles(f, f1, f2, f3, f4, f5, entityfoliaath);
+        EntityBabyFoliaath foliaath = (EntityBabyFoliaath) entity;
+        setRotationAngles(f, f1, f2, f3, f4, f5, foliaath);
 
         animator.setAnim(MMAnimation.BABY_FOLIAATH_EAT.animID());
         animator.startPhase(2);
