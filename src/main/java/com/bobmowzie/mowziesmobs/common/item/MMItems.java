@@ -7,10 +7,12 @@ import net.minecraft.item.Item;
 public class MMItems implements IContentHandler
 {
     public static Item itemFoliaathSeed;
+    public static Item itemTestStructure;
 
     public void init()
     {
         itemFoliaathSeed = new ItemFoliaathSeed();
+        itemTestStructure = new ItemTestStructure();
     }
 
     public void gameRegistry() throws Exception

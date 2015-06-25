@@ -24,7 +24,7 @@ archivesBaseName = "Mowzie’s Mobs"
 minecraft {
     version = "1.7.10-10.13.4.1448-1.7.10"
     runDir = "minecraft"
-	replace '${version}', project.version
+    replace '${version}', project.version
 }
 
 repositories {
@@ -36,7 +36,7 @@ repositories {
 }
 
 dependencies {
-    compile 'net.ilexiconn.llibrary:LLibrary:0.2.0-1.7.10:dev'
+    compile 'net.ilexiconn.llibrary:LLibrary:0.3.0-1.7.10:dev'
 }
 
 processResources {
