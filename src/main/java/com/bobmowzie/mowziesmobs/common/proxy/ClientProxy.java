@@ -27,6 +27,5 @@ public class ClientProxy extends ServerProxy
         RenderingRegistry.registerEntityRenderingHandler(EntityFoliaath.class, new RenderFoliaath(new ModelFoliaath(), 1.0F));
         RenderingRegistry.registerEntityRenderingHandler(EntityWroughtnaut.class, new RenderWroughtnaut(new ModelWroughtnaut(), 1.0F));
         RenderHelper.registerItem3dRenderer(new ItemWroughtAxe(), new ModelWroughtAxe(), new ResourceLocation(MowziesMobs.getModID() + "textures/items/modeled/textureWroughtAxe.png"));
-
     }
 }

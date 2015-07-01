@@ -10,6 +10,7 @@ public class MMItems implements IContentHandler
     public static Item itemTestStructure;
     public static Item itemMobRemover;
     public static Item itemWroughtAxe;
+    public static Item itemWroughtHelm;
 
     public void init()
     {
@@ -17,6 +18,7 @@ public class MMItems implements IContentHandler
         itemTestStructure = new ItemTestStructure();
         itemMobRemover = new ItemMobRemover();
         itemWroughtAxe = new ItemWroughtAxe();
+        itemWroughtHelm = new ItemWroughtHelm();
     }
 
     public void gameRegistry() throws Exception
@@ -25,5 +27,6 @@ public class MMItems implements IContentHandler
         GameRegistry.registerItem(itemTestStructure, "teststructure");
         GameRegistry.registerItem(itemMobRemover, "mobremover");
         GameRegistry.registerItem(itemWroughtAxe, "wroughtaxe");
+        GameRegistry.registerItem(itemWroughtHelm, "wroughthelm");
     }
 }

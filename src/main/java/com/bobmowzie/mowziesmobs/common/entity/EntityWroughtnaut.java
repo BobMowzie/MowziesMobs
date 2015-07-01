@@ -2,7 +2,8 @@ package com.bobmowzie.mowziesmobs.common.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.common.animation.*;
-import com.bobmowzie.mowziesmobs.common.animation.MMAnimation;
+import com.bobmowzie.mowziesmobs.common.item.ItemWroughtAxe;
+import com.bobmowzie.mowziesmobs.common.item.ItemWroughtHelm;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -296,5 +297,12 @@ public class EntityWroughtnaut extends MMEntityBase
         setRestPosX(compound.getInteger("restPosX"));
         setRestPosY(compound.getInteger("restPosY"));
         setRestPosZ(compound.getInteger("restPosZ"));
+    }
+
+    @Override
+    protected void dropFewItems(boolean p_70628_1_, int p_70628_2_) {
+        dropItem(new ItemWroughtAxe(), 1);
+        dropItem(new ItemWroughtHelm(), 1);
+        super.dropFewItems(p_70628_1_, p_70628_2_);
     }
 }
