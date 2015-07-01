@@ -8,15 +8,22 @@ public class MMItems implements IContentHandler
 {
     public static Item itemFoliaathSeed;
     public static Item itemTestStructure;
+    public static Item itemMobRemover;
+    public static Item itemWroughtAxe;
 
     public void init()
     {
         itemFoliaathSeed = new ItemFoliaathSeed();
         itemTestStructure = new ItemTestStructure();
+        itemMobRemover = new ItemMobRemover();
+        itemWroughtAxe = new ItemWroughtAxe();
     }
 
     public void gameRegistry() throws Exception
     {
         GameRegistry.registerItem(itemFoliaathSeed, "foliaathseed");
+        GameRegistry.registerItem(itemTestStructure, "teststructure");
+        GameRegistry.registerItem(itemMobRemover, "mobremover");
+        GameRegistry.registerItem(itemWroughtAxe, "wroughtaxe");
     }
 }

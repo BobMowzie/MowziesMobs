@@ -220,7 +220,8 @@ public class EntityFoliaath extends MMEntityBase
 
     public boolean canBeCollidedWith()
     {
-        return active;
+//        return active;
+        return true;
     }
 
     public void sendPacket2(AbstractMessage packet)

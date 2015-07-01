@@ -1,3 +1,5 @@
+package com.bobmowzie.mowziesmobs.common.gen;
+
 import com.bobmowzie.mowziesmobs.common.gen.structure.StructureWroughtnautRoom;
 import net.ilexiconn.llibrary.common.structure.util.Structure;
 import net.ilexiconn.llibrary.common.structure.util.StructureGeneratorBase;
@@ -40,7 +42,6 @@ public class MMStructureGenerator extends StructureGeneratorBase
     @Override
     public void onCustomBlockAdded(World world, int x, int y, int z, int fakeID, int customData1, int customData2) {
         // TODO Auto-generated method stub
-
     }
 
     static {

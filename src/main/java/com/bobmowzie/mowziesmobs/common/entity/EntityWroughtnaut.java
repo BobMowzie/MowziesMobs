@@ -42,7 +42,7 @@ public class EntityWroughtnaut extends MMEntityBase
         tasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true));
         tasks.addTask(2, new EntityAIAttackOnCollide(this, EntityPlayer.class, 1.0D, true));
         experienceValue = 30;
-        setSize(3F, 4F);
+        setSize(2.7F, 3.7F);
         active = false;
     }
 
@@ -117,7 +117,7 @@ public class EntityWroughtnaut extends MMEntityBase
     {
         super.onUpdate();
 
-        if (getActive() == 0 && getAttackTarget() != null && targetDistance <= 8 && getAnimID() == 0)
+        if (getActive() == 0 && getAttackTarget() != null && targetDistance <= 5 && getAnimID() == 0)
         {
             AnimationAPI.sendAnimPacket(this, MMAnimation.ACTIVATE.animID());
             setActive((byte) 1);
@@ -142,7 +142,7 @@ public class EntityWroughtnaut extends MMEntityBase
             if (getAnimID() == 0) getNavigator().tryMoveToEntityLiving(getAttackTarget(), 0.2D);
             else getNavigator().clearPathEntity();
 
-            if (targetDistance <= 5 && getAttackTarget().posY - posY >= -1 && getAttackTarget().posY - posY <= 3 && getAnimID() == 0)
+            if (targetDistance <= 3.5 && getAttackTarget().posY - posY >= -1 && getAttackTarget().posY - posY <= 3 && getAnimID() == 0)
             {
                 int i = (int) (3 * Math.random() + 0.5);
                 if (attacksWithoutVertical == 4) i = 0;

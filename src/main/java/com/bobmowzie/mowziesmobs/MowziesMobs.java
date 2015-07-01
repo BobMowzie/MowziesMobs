@@ -3,6 +3,8 @@ package com.bobmowzie.mowziesmobs;
 import com.bobmowzie.mowziesmobs.common.biome.MMBiomeDictionarySpawns;
 import com.bobmowzie.mowziesmobs.common.creativetab.MMTabs;
 import com.bobmowzie.mowziesmobs.common.entity.MMEntityRegistry;
+import com.bobmowzie.mowziesmobs.common.gen.MMStructureGenerator;
+import com.bobmowzie.mowziesmobs.common.gen.MMWorldGenerator;
 import com.bobmowzie.mowziesmobs.common.item.MMItems;
 import com.bobmowzie.mowziesmobs.common.message.MessagePlaySound;
 import com.bobmowzie.mowziesmobs.common.message.foliaath.MessageDecreaseTimer;
@@ -20,6 +22,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import net.ilexiconn.llibrary.common.content.ContentHelper;
 import net.minecraftforge.common.MinecraftForge;
@@ -28,6 +31,7 @@ import net.minecraftforge.common.MinecraftForge;
 public class MowziesMobs
 {
     public static SimpleNetworkWrapper networkWrapper;
+    public static final MMStructureGenerator gen = new MMStructureGenerator();
 
     @Instance("mowziesmobs")
     public static MowziesMobs instance;
@@ -62,6 +66,8 @@ public class MowziesMobs
     public void init(FMLInitializationEvent event)
     {
         proxy.init();
+
+        GameRegistry.registerWorldGenerator(new MMWorldGenerator(), 0);
 
         networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel("mowziesMobs");
         networkWrapper.registerMessage(MessageIncreaseTimer.class, MessageIncreaseTimer.class, 0, Side.CLIENT);
