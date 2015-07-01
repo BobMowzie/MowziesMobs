@@ -13,6 +13,7 @@ entity.BabyFoliaath.name=Baby Foliaath
 item.foliaathSeed.name=Foliaath Seed
 item.mobRemover.name=Mob Remover
 item.wroughtAxe.name=Axe of a Thousand Metals
+item.wroughtHelm.name=Wrought Helm
 
 
 //Tile_Entities==================================================

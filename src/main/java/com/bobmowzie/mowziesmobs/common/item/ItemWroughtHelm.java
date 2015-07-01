@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.common.item;
 
+import com.bobmowzie.mowziesmobs.common.creativetab.MMTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
@@ -9,7 +10,9 @@ public class ItemWroughtHelm extends ItemArmor
 {
     public ItemWroughtHelm()
     {
-        super(ArmorMaterial.IRON, 2, 3);
+        super(ArmorMaterial.IRON, 2, 0);
+        setUnlocalizedName("wroughtHelm");
+        setCreativeTab(MMTabs.generic);
     }
 
     @Override
