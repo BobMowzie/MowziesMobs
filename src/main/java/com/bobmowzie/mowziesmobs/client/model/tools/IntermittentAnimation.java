@@ -15,16 +15,18 @@ import java.util.Random;
 public class IntermittentAnimation
 {
     /**
+     * It is the random used to randomize the movement.
+     */
+    Random rand = new Random();
+    /**
      * It is the timer used to animate.
      */
     private double timer;
-
     /**
      * It is the limit time, the maximum value that the timer can be. I
      * represents the duration of the animation.
      */
     private double duration;
-
     /**
      * It is a boolean that shows if the animation is already in the new pose.
      */
@@ -33,26 +35,18 @@ public class IntermittentAnimation
      * It is an inverter for the timer.
      */
     private int inverter;
-
     /**
      * It is the timer used for the interval.
      */
     private double timerInterval;
-
     /**
      * It is the interval to return to the first animation.
      */
     private double intervalDuration;
-
     /**
      * It is the chance to go to the new animation.
      */
     private int goChance;
-
-    /**
-     * It is the random used to randomize the movement.
-     */
-    Random rand = new Random();
 
     public IntermittentAnimation(int d, int i, int g)
     {

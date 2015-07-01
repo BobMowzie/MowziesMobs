@@ -15,17 +15,20 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemWroughtAxe extends ItemSword {
+public class ItemWroughtAxe extends ItemSword
+{
     private int timer = 0;
 
-    public ItemWroughtAxe() {
+    public ItemWroughtAxe()
+    {
         super(Item.ToolMaterial.IRON);
         setCreativeTab(MMTabs.generic);
         setUnlocalizedName("wroughtAxe");
     }
 
     @Override
-    public void onUpdate(ItemStack p_77663_1_, World p_77663_2_, Entity p_77663_3_, int p_77663_4_, boolean p_77663_5_) {
+    public void onUpdate(ItemStack p_77663_1_, World p_77663_2_, Entity p_77663_3_, int p_77663_4_, boolean p_77663_5_)
+    {
         if (timer > 0) timer--;
         super.onUpdate(p_77663_1_, p_77663_2_, p_77663_3_, p_77663_4_, p_77663_5_);
     }
@@ -42,7 +45,8 @@ public class ItemWroughtAxe extends ItemSword {
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack p_77659_1_, World p_77659_2_, EntityPlayer entityLiving) {
+    public ItemStack onItemRightClick(ItemStack p_77659_1_, World p_77659_2_, EntityPlayer entityLiving)
+    {
         System.out.println(timer);
         if (timer <= 0)
         {
@@ -53,14 +57,16 @@ public class ItemWroughtAxe extends ItemSword {
             float knockback = 1.2F;
             float arc = 100;
             List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby(entityLiving, range, 2, range, range);
-            for (EntityLivingBase entityHit : entitiesHit) {
+            for (EntityLivingBase entityHit : entitiesHit)
+            {
                 float entityHitAngle = (float) ((Math.atan2(entityHit.posZ - entityLiving.posZ, entityHit.posX - entityLiving.posX) * (180 / Math.PI) - 90) % 360);
                 float entityAttackingAngle = entityLiving.renderYawOffset % 360;
                 if (entityHitAngle < 0) entityHitAngle += 360;
                 if (entityAttackingAngle < 0) entityAttackingAngle += 360;
                 float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
                 float entityHitDistance = (float) Math.sqrt((entityHit.posZ - entityLiving.posZ) * (entityHit.posZ - entityLiving.posZ) + (entityHit.posX - entityLiving.posX) * (entityHit.posX - entityLiving.posX));
-                if (entityHitDistance <= range && (entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2)) {
+                if (entityHitDistance <= range && (entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2))
+                {
                     entityHit.attackEntityFrom(DamageSource.causeMobDamage(entityLiving), damage);
                     entityHit.motionX *= knockback;
                     entityHit.motionZ *= knockback;
@@ -68,7 +74,7 @@ public class ItemWroughtAxe extends ItemSword {
                 }
             }
             if (hit) entityLiving.playSound("minecraft:random.anvil_land", 0.3F, 0.5F);
-            if(!p_77659_2_.isRemote) timer = 30;
+            if (!p_77659_2_.isRemote) timer = 30;
         }
         return p_77659_1_;
     }

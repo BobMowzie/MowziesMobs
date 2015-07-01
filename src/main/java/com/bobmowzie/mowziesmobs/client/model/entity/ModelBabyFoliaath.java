@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import com.bobmowzie.mowziesmobs.common.entity.EntityBabyFoliaath;
 import com.bobmowzie.mowziesmobs.common.animation.MMAnimation;
+import com.bobmowzie.mowziesmobs.common.entity.EntityBabyFoliaath;
 import com.google.common.collect.Lists;
 import net.ilexiconn.llibrary.client.model.modelbase.MowzieModelBase;
 import net.ilexiconn.llibrary.client.model.modelbase.MowzieModelRenderer;

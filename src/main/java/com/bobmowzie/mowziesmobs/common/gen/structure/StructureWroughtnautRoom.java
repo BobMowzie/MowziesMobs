@@ -3,8 +3,9 @@ package com.bobmowzie.mowziesmobs.common.gen.structure;
 /**
  * Created by jnad325 on 6/24/15.
  */
-public class StructureWroughtnautRoom {
-        public static final int[][][][] blockArray =
+public class StructureWroughtnautRoom
+{
+    public static final int[][][][] blockArray =
             {
                     { // y
                             {
@@ -65,7 +66,7 @@ public class StructureWroughtnautRoom {
                                     {1}, {1}, {1}, {1}, {1}, {1}, {1}, {1}, {1}, {1}, {1}, {1}, {1}, {1}, {1}, {1}, {1}, {1}, {1}
                             }
                     },
-                    
+
                     {// Y = 2
                             {
                                     {1}, {1}, {1}, {1}, {1}, {1}, {1}, {1}, {1}, {1}, {1}, {1}, {1}, {1}, {1}, {1}, {1}, {1}, {1}

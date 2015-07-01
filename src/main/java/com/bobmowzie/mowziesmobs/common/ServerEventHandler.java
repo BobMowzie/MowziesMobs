@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.common.event;
+package com.bobmowzie.mowziesmobs.common;
 
 import com.bobmowzie.mowziesmobs.common.entity.EntityFoliaath;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -10,7 +10,7 @@ import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 
-public class EventHandler
+public class ServerEventHandler
 {
     @SubscribeEvent
     public void joinWorld(EntityJoinWorldEvent event)

@@ -10,17 +10,20 @@ import net.minecraft.item.ItemStack;
 /**
  * Created by jnad325 on 6/26/15.
  */
-public class ItemMobRemover extends Item {
+public class ItemMobRemover extends Item
+{
 
-    public ItemMobRemover() {
+    public ItemMobRemover()
+    {
         super();
         setUnlocalizedName("mobRemover");
-        setTextureName(MowziesMobs.getModID() + "mobRemover");
+        setTextureName(MowziesMobs.getModId() + "mobRemover");
         setCreativeTab(MMTabs.generic);
     }
 
     @Override
-    public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
+    public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity)
+    {
         entity.setDead();
         return true;
     }

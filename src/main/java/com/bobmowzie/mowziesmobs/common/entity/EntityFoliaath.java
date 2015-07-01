@@ -137,7 +137,8 @@ public class EntityFoliaath extends MMEntityBase
 
         if (getAttackTarget() instanceof EntityFoliaath || getAttackTarget() instanceof EntityBabyFoliaath)
             setAttackTarget(null);
-        if (resettingTargetTimer > 0) if (FMLCommonHandler.instance().getSide().isClient()) setRotationYawHead(prevRotationYawHead);
+        if (resettingTargetTimer > 0)
+            if (FMLCommonHandler.instance().getSide().isClient()) setRotationYawHead(prevRotationYawHead);
         if (getAttackTarget() != null)
         {
             if (FMLCommonHandler.instance().getSide().isClient()) setRotationYawHead(targetAngle);

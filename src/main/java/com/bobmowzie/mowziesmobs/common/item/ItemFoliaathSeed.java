@@ -19,7 +19,7 @@ public class ItemFoliaathSeed extends Item
     public ItemFoliaathSeed()
     {
         setUnlocalizedName("foliaathSeed");
-        setTextureName(MowziesMobs.getModID() + "foliaathSeed");
+        setTextureName(MowziesMobs.getModId() + "foliaathSeed");
         setCreativeTab(MMTabs.generic);
     }
 

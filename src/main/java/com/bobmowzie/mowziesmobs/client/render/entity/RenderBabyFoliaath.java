@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.client.renderer.entity;
+package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import net.minecraft.client.model.ModelBase;
@@ -23,7 +23,7 @@ public class RenderBabyFoliaath extends RenderLiving
     @Override
     public ResourceLocation getEntityTexture(Entity entity)
     {
-        return new ResourceLocation(MowziesMobs.getModID() + "textures/entity/textureBabyFoliaath.png");
+        return new ResourceLocation(MowziesMobs.getModId() + "textures/entity/textureBabyFoliaath.png");
     }
 
     @Override

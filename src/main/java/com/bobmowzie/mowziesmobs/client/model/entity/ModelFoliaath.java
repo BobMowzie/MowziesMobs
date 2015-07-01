@@ -2,8 +2,8 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelBase;
 import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelRenderer;
-import com.bobmowzie.mowziesmobs.common.entity.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.common.animation.MMAnimation;
+import com.bobmowzie.mowziesmobs.common.entity.EntityFoliaath;
 import net.minecraft.entity.Entity;
 import org.lwjgl.opengl.GL11;
 import thehippomaster.AnimationAPI.IAnimatedEntity;
@@ -230,7 +230,7 @@ public class ModelFoliaath extends MowzieModelBase
         headBase.rotateAngleX += -0.35;
         stem1Base.setRotationPoint(0, 0, 0);
 
-        parts = new MowzieModelRenderer[] {stem1Joint, stem1Base, bigLeaf2Base, bigLeaf1Base, bigLeaf4Base, bigLeaf3Base, stem2, stem3, stem4, headBase, mouthTop1, leaf1Head, leaf2Head, leaf3Head, leaf4Head, leaf5Head, leaf6Head, leaf7Head, leaf8Head, tongue1Base, mouthBack, mouthBottom1, mouthTop2, teethTop1, teethTop2, tongue2, tongue3, mouthBottom2, teethBottom1, teethBottom2, bigLeaf2End, bigLeaf1End, bigLeaf4End, bigLeaf3End};
+        parts = new MowzieModelRenderer[]{stem1Joint, stem1Base, bigLeaf2Base, bigLeaf1Base, bigLeaf4Base, bigLeaf3Base, stem2, stem3, stem4, headBase, mouthTop1, leaf1Head, leaf2Head, leaf3Head, leaf4Head, leaf5Head, leaf6Head, leaf7Head, leaf8Head, tongue1Base, mouthBack, mouthBottom1, mouthTop2, teethTop1, teethTop2, tongue2, tongue3, mouthBottom2, teethBottom1, teethBottom2, bigLeaf2End, bigLeaf1End, bigLeaf4End, bigLeaf3End};
         setInitPose();
     }
 

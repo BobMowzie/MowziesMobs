@@ -1,5 +1,7 @@
 package com.bobmowzie.mowziesmobs;
 
+import com.bobmowzie.mowziesmobs.common.ServerEventHandler;
+import com.bobmowzie.mowziesmobs.common.ServerProxy;
 import com.bobmowzie.mowziesmobs.common.biome.MMBiomeDictionarySpawns;
 import com.bobmowzie.mowziesmobs.common.creativetab.MMTabs;
 import com.bobmowzie.mowziesmobs.common.entity.MMEntityRegistry;
@@ -11,7 +13,6 @@ import com.bobmowzie.mowziesmobs.common.message.foliaath.MessageDecreaseTimer;
 import com.bobmowzie.mowziesmobs.common.message.foliaath.MessageIncreaseTimer;
 import com.bobmowzie.mowziesmobs.common.message.foliaath.MessageSetActiveFalse;
 import com.bobmowzie.mowziesmobs.common.message.foliaath.MessageSetActiveTrue;
-import com.bobmowzie.mowziesmobs.common.proxy.ServerProxy;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -27,18 +28,17 @@ import cpw.mods.fml.relauncher.Side;
 import net.ilexiconn.llibrary.common.content.ContentHelper;
 import net.minecraftforge.common.MinecraftForge;
 
-@Mod(modid = "mowziesmobs", name = "Mowzie's Mobs", version = "${version}", dependencies = "required-after:llibrary@[0.2.0-1.7.10,)")
+@Mod(modid = "mowziesmobs", name = "Mowzie's Mobs", version = "${version}", dependencies = "required-after:llibrary@[0.3.0-1.7.10,)")
 public class MowziesMobs
 {
-    public static SimpleNetworkWrapper networkWrapper;
     public static final MMStructureGenerator gen = new MMStructureGenerator();
-
+    public static SimpleNetworkWrapper networkWrapper;
     @Instance("mowziesmobs")
     public static MowziesMobs instance;
-    @SidedProxy(clientSide = "com.bobmowzie.mowziesmobs.common.proxy.ClientProxy", serverSide = "com.bobmowzie.mowziesmobs.common.proxy.ServerProxy")
+    @SidedProxy(clientSide = "com.bobmowzie.mowziesmobs.client.ClientProxy", serverSide = "com.bobmowzie.mowziesmobs.common.ServerProxy")
     public static ServerProxy proxy;
 
-    public static String getModID()
+    public static String getModId()
     {
         return "mowziesmobs:";
     }
@@ -54,12 +54,17 @@ public class MowziesMobs
             networkWrapper.sendToServer(new MessagePlaySound(entityId, soundName, volume, pitch));
     }
 
+    public static boolean isDebugging()
+    {
+        return "${version}".equals("${" + "version" + "}");
+    }
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
         ContentHelper.init(new MMTabs(), new MMItems(), new MMEntityRegistry());
 
-        MinecraftForge.EVENT_BUS.register(new com.bobmowzie.mowziesmobs.common.event.EventHandler());
+        MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
     }
 
     @EventHandler

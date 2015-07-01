@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.client.renderer.entity;
+package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import cpw.mods.fml.relauncher.Side;
@@ -26,7 +26,7 @@ public class RenderWroughtnaut extends RenderLiving
     @Override
     public ResourceLocation getEntityTexture(Entity entity)
     {
-        return new ResourceLocation(MowziesMobs.getModID() + "textures/entity/textureWroughtnaut.png");
+        return new ResourceLocation(MowziesMobs.getModId() + "textures/entity/textureWroughtnaut.png");
     }
 
     @Override

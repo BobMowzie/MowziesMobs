@@ -2,8 +2,8 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelBase;
 import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelRenderer;
-import com.bobmowzie.mowziesmobs.common.entity.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.common.animation.MMAnimation;
+import com.bobmowzie.mowziesmobs.common.entity.EntityWroughtnaut;
 import net.minecraft.entity.Entity;
 import thehippomaster.AnimationAPI.client.Animator;
 

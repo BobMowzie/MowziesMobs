@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.common.proxy;
+package com.bobmowzie.mowziesmobs.common;
 
 public class ServerProxy
 {
