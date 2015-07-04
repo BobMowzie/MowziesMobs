@@ -28,7 +28,7 @@ import cpw.mods.fml.relauncher.Side;
 import net.ilexiconn.llibrary.common.content.ContentHelper;
 import net.minecraftforge.common.MinecraftForge;
 
-@Mod(modid = "mowziesmobs", name = "Mowzie's Mobs", version = "${version}", dependencies = "required-after:llibrary@[0.3.0-1.7.10,)")
+@Mod(modid = "mowziesmobs", name = "Mowzie's Mobs", version = "${version}", dependencies = "required-after:llibrary@[0.3.1-1.7.10,)")
 public class MowziesMobs
 {
     public static final MMStructureGenerator gen = new MMStructureGenerator();
