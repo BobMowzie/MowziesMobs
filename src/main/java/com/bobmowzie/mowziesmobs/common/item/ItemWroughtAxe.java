@@ -47,7 +47,6 @@ public class ItemWroughtAxe extends ItemSword
     @Override
     public ItemStack onItemRightClick(ItemStack p_77659_1_, World p_77659_2_, EntityPlayer entityLiving)
     {
-        System.out.println(timer);
         if (timer <= 0)
         {
             entityLiving.playSound("mowziesmobs:wroughtnautWhoosh", 0.5F, 1F);
@@ -91,7 +90,7 @@ public class ItemWroughtAxe extends ItemSword
 
     public EnumAction getItemUseAction(ItemStack p_77661_1_)
     {
-        return EnumAction.none;
+        return EnumAction.bow;
     }
 
     public List<EntityLivingBase> getEntityLivingBaseNearby(EntityLivingBase user, double distanceX, double distanceY, double distanceZ, double radius)

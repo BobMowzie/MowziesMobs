@@ -12,6 +12,6 @@ public class ClientEventHandler
     @SubscribeEvent
     public void onItemRender(Render3dItemEvent.Pre event)
     {
-        GL11.glTranslatef(0f, -1.5f, 0f);
+        GL11.glTranslatef(-0.2f, -1.5f, 0.3f);
     }
 }

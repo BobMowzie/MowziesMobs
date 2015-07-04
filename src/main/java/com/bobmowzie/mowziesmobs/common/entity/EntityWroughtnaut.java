@@ -75,15 +75,11 @@ public class EntityWroughtnaut extends MMEntityBase
         return null;
     }
 
-    protected void func_145780_a(int p_145780_1_, int p_145780_2_, int p_145780_3_, Block p_145780_4_)
-    {
-    }
-
     protected void applyEntityAttributes()
     {
         super.applyEntityAttributes();
         getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(1.0);
-        getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(50);
+        getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(40);
     }
 
     public boolean attackEntityFrom(DamageSource source, float p_70097_2_)

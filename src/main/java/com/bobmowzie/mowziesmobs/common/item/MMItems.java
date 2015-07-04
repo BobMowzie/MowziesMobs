@@ -11,6 +11,7 @@ public class MMItems implements IContentHandler
     public static Item itemTestStructure;
     public static Item itemMobRemover;
     public static Item itemWroughtAxe;
+    public static Item itemWroughtHelm;
 
     public void init()
     {
@@ -18,16 +19,19 @@ public class MMItems implements IContentHandler
         itemTestStructure = new ItemTestStructure();
         itemMobRemover = new ItemMobRemover();
         itemWroughtAxe = new ItemWroughtAxe();
+        itemWroughtHelm = new ItemWroughtHelm();
     }
 
     public void gameRegistry() throws Exception
     {
         GameRegistry.registerItem(itemFoliaathSeed, "foliaathseed");
         GameRegistry.registerItem(itemWroughtAxe, "wroughtaxe");
+        GameRegistry.registerItem(itemMobRemover, "mobremover");
+        GameRegistry.registerItem(itemWroughtHelm, "wroughthelm");
+
         if (MowziesMobs.isDebugging())
         {
             GameRegistry.registerItem(itemTestStructure, "teststructure");
-            GameRegistry.registerItem(itemMobRemover, "mobremover");
         }
     }
 }
