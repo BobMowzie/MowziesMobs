@@ -25,9 +25,9 @@ public class ModelWroughtHelm extends ModelBiped {
         this.textureHeight = 32;
         this.helmet = new ModelRenderer(this, 0, 12);
         this.helmet.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.helmet.addBox(-5.0F, -9.0F, -5.0F, 10, 10, 10, 0.0F);
+        this.helmet.addBox(-5.0F, -9.5F, -5.0F, 10, 10, 10, 0.0F);
         this.tuskLeft1 = new ModelRenderer(this, 40, 23);
-        this.tuskLeft1.setRotationPoint(-2.5F, -0.5F, -2.5F);
+        this.tuskLeft1.setRotationPoint(-2.5F, -1F, -2.5F);
         this.tuskLeft1.addBox(-1.5F, -1.5F, -6.0F, 3, 3, 6, 0.0F);
         this.setRotateAngle(tuskLeft1, 0.4363323129985824F, 0.7853981633974483F, 0.0F);
         this.hornRight2 = new ModelRenderer(this, 34, 0);
@@ -39,11 +39,11 @@ public class ModelWroughtHelm extends ModelBiped {
         this.tuskRight2.addBox(0.0F, -2.0F, -7.0F, 2, 2, 7, 0.0F);
         this.setRotateAngle(tuskRight2, -0.8726646259971648F, 0.0F, 0.0F);
         this.hornLeft1 = new ModelRenderer(this, 8, 1);
-        this.hornLeft1.setRotationPoint(-3.0F, -7.0F, -3.0F);
+        this.hornLeft1.setRotationPoint(-3.0F, -7.5F, -3.0F);
         this.hornLeft1.addBox(-1.5F, -1.5F, -8.0F, 3, 3, 8, 0.0F);
         this.setRotateAngle(hornLeft1, -0.3490658503988659F, 0.7853981633974483F, 0.0F);
         this.tuskRight1 = new ModelRenderer(this, 40, 23);
-        this.tuskRight1.setRotationPoint(2.5F, -0.5F, -2.5F);
+        this.tuskRight1.setRotationPoint(2.5F, -1F, -2.5F);
         this.tuskRight1.addBox(-1.5F, -1.5F, -6.0F, 3, 3, 6, 0.0F);
         this.setRotateAngle(tuskRight1, 0.4363323129985824F, -0.7853981633974483F, 0.0F);
         this.hornLeft2 = new ModelRenderer(this, 30, 9);
@@ -55,7 +55,7 @@ public class ModelWroughtHelm extends ModelBiped {
         this.tuskLeft2.addBox(0.0F, -2.0F, -7.0F, 2, 2, 7, 0.0F);
         this.setRotateAngle(tuskLeft2, -0.8726646259971648F, 0.0F, 0.0F);
         this.hornRight1 = new ModelRenderer(this, 8, 1);
-        this.hornRight1.setRotationPoint(3F, -7.0F, -3.0F);
+        this.hornRight1.setRotationPoint(3F, -7.5F, -3.0F);
         this.hornRight1.addBox(-1.5F, -1.5F, -8.0F, 3, 3, 8, 0.0F);
         this.setRotateAngle(hornRight1, -0.3490658503988659F, -0.7853981633974483F, 0.0F);
         this.tuskLeft1.addChild(this.tuskLeft2);
@@ -71,7 +71,7 @@ public class ModelWroughtHelm extends ModelBiped {
 
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        float scale = 0.9f;
+        float scale = 0.95f;
         super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
         GL11.glScalef(scale, scale, scale);
         bipedHead.render(f5);
