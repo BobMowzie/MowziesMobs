@@ -72,9 +72,9 @@ public class ModelWroughtHelm extends ModelBiped {
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-        GL11.glScalef(1.1F, 1.1F, 1.1F);
+        GL11.glScalef(1.3F, 1.3F, 1.3F);
         bipedHead.render(f5);
-        GL11.glScalef(1/1.1F, 1/1.1F, 1/1.1F);
+        GL11.glScalef(1/1.3F, 1/1.3F, 1/1.3F);
     }
 
     /**

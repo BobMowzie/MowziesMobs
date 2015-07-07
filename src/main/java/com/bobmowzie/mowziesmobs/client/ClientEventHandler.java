@@ -33,7 +33,7 @@ public class ClientEventHandler
             if (event.type == IItemRenderer.ItemRenderType.ENTITY)
             {
                 GL11.glTranslatef(0f, -0.5f, 0f);
-                GL11.glScalef(0.4f, 0.4f, 0.4f);
+                GL11.glScalef(0.7f, 0.7f, 0.7f);
             }
         }
 

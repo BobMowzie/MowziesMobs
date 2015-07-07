@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.common.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.common.animation.*;
+import com.bobmowzie.mowziesmobs.common.item.MMItems;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -81,7 +82,7 @@ public class EntityWroughtnaut extends MMEntityBase
     {
         super.applyEntityAttributes();
         getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(1.0);
-        getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(40);
+        getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(1);//40);
     }
 
     public boolean attackEntityFrom(DamageSource source, float p_70097_2_)
@@ -214,7 +215,6 @@ public class EntityWroughtnaut extends MMEntityBase
 
     public void onSpawn()
     {
-        System.out.print("On Spawn");
         setRestPosX((int) posX);
         setRestPosY((int) posY);
         setRestPosZ((int) posZ);
@@ -294,5 +294,15 @@ public class EntityWroughtnaut extends MMEntityBase
         setRestPosX(compound.getInteger("restPosX"));
         setRestPosY(compound.getInteger("restPosY"));
         setRestPosZ(compound.getInteger("restPosZ"));
+    }
+
+    @Override
+    public void onDeath(DamageSource p_70645_1_) {
+        if (!worldObj.isRemote)
+        {
+            dropItem(MMItems.itemWroughtAxe, 1);
+            dropItem(MMItems.itemWroughtHelm, 1);
+        }
+        super.onDeath(p_70645_1_);
     }
 }

@@ -45,6 +45,11 @@ public class ItemWroughtHelm extends ItemArmor
     }
 
     @Override
+    public void setDamage(ItemStack stack, int damage) {
+
+    }
+
+    @Override
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
     {
         return MowziesMobs.getModId() + "textures/items/modeled/textureWroughtHelm.png";
