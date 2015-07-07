@@ -31,7 +31,7 @@ repositories {
     mavenCentral()
     maven {
         name = "ilexiconn"
-        url = "https://maven.ilexiconn.net/"
+        url = "http://maven.ilexiconn.net/"
     }
 }
 

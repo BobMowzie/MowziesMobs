@@ -49,6 +49,7 @@ public class ItemWroughtAxe extends ItemSword
     {
         if (timer <= 0)
         {
+            entityLiving.swingItem();
             entityLiving.playSound("mowziesmobs:wroughtnautWhoosh", 0.5F, 1F);
             float damage = 7;
             boolean hit = false;

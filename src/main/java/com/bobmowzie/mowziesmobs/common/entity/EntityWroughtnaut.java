@@ -12,6 +12,8 @@ import net.minecraft.entity.ai.EntityAIAttackOnCollide;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -207,6 +209,7 @@ public class EntityWroughtnaut extends MMEntityBase
             entity.motionX = -0.1 * Math.cos(angle);
             entity.motionZ = -0.1 * Math.sin(angle);
         }
+        if (!active && getAttackTarget() == null) addPotionEffect(new PotionEffect(Potion.regeneration.id, 20, 1, true));
     }
 
     public void onSpawn()
