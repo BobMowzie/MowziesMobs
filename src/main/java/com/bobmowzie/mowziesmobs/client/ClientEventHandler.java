@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client;
 
+import com.bobmowzie.mowziesmobs.common.item.ItemWroughtAxe;
 import com.bobmowzie.mowziesmobs.common.item.MMItems;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -18,10 +19,32 @@ public class ClientEventHandler
         {
             if (event.type == IItemRenderer.ItemRenderType.EQUIPPED_FIRST_PERSON)
             {
+                int timer = ((ItemWroughtAxe)(event.item)).timer;
+                if (timer > 6) {
+                    float controller1 = (float) Math.sin(timer * Math.PI / 30);
+                    float controller2 = (float) ((1/(1+Math.exp(-timer+5)))-(1/(1+Math.exp(-timer+25))));
+                    float controller3 = -timer * (timer - 30) * (timer - 20);
+                    GL11.glRotatef(90f * controller2, -1f, 0f, 1f);
+                    GL11.glRotatef(90f * controller2, -1f, 0f, -1f);
+                    GL11.glRotatef(60f * (controller3/1000 + 1.2f * controller1), -1f, 0f, -1f);
+                    GL11.glTranslatef(0.5f * controller2, -0.3f * controller2, -0.6f * controller2);
+                    GL11.glScalef(1 + 0.8f * controller1, 1 + 0.8f * controller1, 1 + 0.8f * controller1);
+                }
+
                 GL11.glTranslatef(0f, -1.5f, 0f);
             }
             if (event.type == IItemRenderer.ItemRenderType.EQUIPPED)
             {
+                int timer = ((ItemWroughtAxe)(event.item)).timer;
+                if (timer > 0) {
+                    float controller1 = (float) Math.sin(timer * Math.PI / 30);
+                    float controller2 = (float) ((1/(1+Math.exp(-timer+5)))-(1/(1+Math.exp(-timer+25))));
+                    GL11.glRotatef(90f * controller2, -1f, 0f, 1f);
+                    GL11.glRotatef(90f * controller2, -1f, 0f, -1f);
+                    GL11.glTranslatef(0.5f * controller2, -0.3f * controller2, -0.6f * controller2);
+                    GL11.glScalef(1 + 0.3f * controller1, 1 + 0.3f * controller1, 1 + 0.3f * controller1);
+                }
+
                 GL11.glTranslatef(-0.1f, -1f, 0.1f);
             }
             if (event.type == IItemRenderer.ItemRenderType.INVENTORY)

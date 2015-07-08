@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.client;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBabyFoliaath;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelFoliaath;
+import com.bobmowzie.mowziesmobs.client.model.entity.ModelPlayerExtension;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelWroughtnaut;
 import com.bobmowzie.mowziesmobs.client.model.item.ModelWroughtAxe;
 import com.bobmowzie.mowziesmobs.client.model.item.ModelWroughtHelm;
@@ -36,6 +37,7 @@ public class ClientProxy extends ServerProxy
         RenderingRegistry.registerEntityRenderingHandler(EntityWroughtnaut.class, new RenderWroughtnaut(new ModelWroughtnaut(), 1.0F));
         RenderHelper.registerItem3dRenderer(MMItems.itemWroughtAxe, new ModelWroughtAxe(), new ResourceLocation(MowziesMobs.getModId() + "textures/items/modeled/textureWroughtAxe.png"));
         RenderHelper.registerItem3dRenderer(MMItems.itemWroughtHelm, new ModelWroughtHelm(), new ResourceLocation(MowziesMobs.getModId() + "textures/items/modeled/textureWroughtHelm.png"));
+        RenderHelper.registerModelExtension(new ModelPlayerExtension());
     }
 
     public ModelBiped getArmorModel()

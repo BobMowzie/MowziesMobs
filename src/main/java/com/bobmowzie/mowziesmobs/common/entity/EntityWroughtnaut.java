@@ -18,6 +18,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 import thehippomaster.AnimationAPI.AnimationAPI;
 
 import java.util.List;
@@ -64,6 +65,33 @@ public class EntityWroughtnaut extends MMEntityBase
         return null;
     }
 
+    protected void fall(float p_70069_1_)
+    {
+        System.out.println("Fall");
+        p_70069_1_ = ForgeHooks.onLivingFall(this, p_70069_1_);
+        if (p_70069_1_ <= 0) return;
+        super.fall(p_70069_1_);
+        PotionEffect potioneffect = this.getActivePotionEffect(Potion.jump);
+        float f1 = potioneffect != null ? (float)(potioneffect.getAmplifier() + 1) : 0.0F;
+        int i = MathHelper.ceiling_float_int(p_70069_1_ - 3.0F - f1);
+
+        if (i > 0)
+        {
+            this.playSound(this.func_146067_o(i), 1.0F, 1.0F);
+            this.attackEntityFrom(DamageSource.fall, (float)i);
+            int j = MathHelper.floor_double(this.posX);
+            int k = MathHelper.floor_double(this.posY - 0.20000000298023224D - (double)this.yOffset);
+            int l = MathHelper.floor_double(this.posZ);
+            Block block = this.worldObj.getBlock(j, k, l);
+
+            if (block.getMaterial() != Material.air)
+            {
+                Block.SoundType soundtype = block.stepSound;
+                this.playSound(soundtype.getStepResourcePath(), soundtype.getVolume() * 0.5F, soundtype.getPitch() * 0.75F);
+            }
+        }
+    }
+
     protected String getLivingSound()
     {
         if (getAnimID() == 0 && getActive() == 1)
@@ -82,7 +110,7 @@ public class EntityWroughtnaut extends MMEntityBase
     {
         super.applyEntityAttributes();
         getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(1.0);
-        getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(1);//40);
+        getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(40);
     }
 
     public boolean attackEntityFrom(DamageSource source, float p_70097_2_)
@@ -304,5 +332,10 @@ public class EntityWroughtnaut extends MMEntityBase
             dropItem(MMItems.itemWroughtHelm, 1);
         }
         super.onDeath(p_70645_1_);
+    }
+
+    protected void func_145780_a(int p_145780_1_, int p_145780_2_, int p_145780_3_, Block p_145780_4_)
+    {
+
     }
 }

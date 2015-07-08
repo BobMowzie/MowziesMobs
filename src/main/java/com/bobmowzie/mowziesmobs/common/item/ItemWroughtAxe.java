@@ -17,7 +17,7 @@ import java.util.List;
 
 public class ItemWroughtAxe extends ItemSword
 {
-    private int timer = 0;
+    public int timer = 0;
 
     public ItemWroughtAxe()
     {
@@ -27,10 +27,36 @@ public class ItemWroughtAxe extends ItemSword
     }
 
     @Override
-    public void onUpdate(ItemStack p_77663_1_, World p_77663_2_, Entity p_77663_3_, int p_77663_4_, boolean p_77663_5_)
+    public void onUpdate(ItemStack p_77663_1_, World p_77663_2_, Entity entityLiving, int p_77663_4_, boolean p_77663_5_)
     {
         if (timer > 0) timer--;
-        super.onUpdate(p_77663_1_, p_77663_2_, p_77663_3_, p_77663_4_, p_77663_5_);
+        if (timer == 15)
+        {
+            float damage = 7;
+            boolean hit = false;
+            float range = 4;
+            float knockback = 1.2F;
+            float arc = 100;
+            List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby((EntityLivingBase)entityLiving, range, 2, range, range);
+            for (EntityLivingBase entityHit : entitiesHit)
+            {
+                float entityHitAngle = (float) ((Math.atan2(entityHit.posZ - entityLiving.posZ, entityHit.posX - entityLiving.posX) * (180 / Math.PI) - 90) % 360);
+                float entityAttackingAngle = entityLiving.rotationYaw % 360;
+                if (entityHitAngle < 0) entityHitAngle += 360;
+                if (entityAttackingAngle < 0) entityAttackingAngle += 360;
+                float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
+                float entityHitDistance = (float) Math.sqrt((entityHit.posZ - entityLiving.posZ) * (entityHit.posZ - entityLiving.posZ) + (entityHit.posX - entityLiving.posX) * (entityHit.posX - entityLiving.posX));
+                if (entityHitDistance <= range && (entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2))
+                {
+                    entityHit.attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase)entityLiving), damage);
+                    entityHit.motionX *= knockback;
+                    entityHit.motionZ *= knockback;
+                    hit = true;
+                }
+            }
+            if (hit) entityLiving.playSound("minecraft:random.anvil_land", 0.3F, 0.5F);
+        }
+        super.onUpdate(p_77663_1_, p_77663_2_, entityLiving, p_77663_4_, p_77663_5_);
     }
 
     public boolean getIsRepairable(ItemStack p_82789_1_, ItemStack p_82789_2_)
@@ -49,31 +75,7 @@ public class ItemWroughtAxe extends ItemSword
     {
         if (timer <= 0)
         {
-            entityLiving.swingItem();
             entityLiving.playSound("mowziesmobs:wroughtnautWhoosh", 0.5F, 1F);
-            float damage = 7;
-            boolean hit = false;
-            float range = 4;
-            float knockback = 1.2F;
-            float arc = 100;
-            List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby(entityLiving, range, 2, range, range);
-            for (EntityLivingBase entityHit : entitiesHit)
-            {
-                float entityHitAngle = (float) ((Math.atan2(entityHit.posZ - entityLiving.posZ, entityHit.posX - entityLiving.posX) * (180 / Math.PI) - 90) % 360);
-                float entityAttackingAngle = entityLiving.renderYawOffset % 360;
-                if (entityHitAngle < 0) entityHitAngle += 360;
-                if (entityAttackingAngle < 0) entityAttackingAngle += 360;
-                float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
-                float entityHitDistance = (float) Math.sqrt((entityHit.posZ - entityLiving.posZ) * (entityHit.posZ - entityLiving.posZ) + (entityHit.posX - entityLiving.posX) * (entityHit.posX - entityLiving.posX));
-                if (entityHitDistance <= range && (entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2))
-                {
-                    entityHit.attackEntityFrom(DamageSource.causeMobDamage(entityLiving), damage);
-                    entityHit.motionX *= knockback;
-                    entityHit.motionZ *= knockback;
-                    hit = true;
-                }
-            }
-            if (hit) entityLiving.playSound("minecraft:random.anvil_land", 0.3F, 0.5F);
             if (!p_77659_2_.isRemote) timer = 30;
         }
         return p_77659_1_;
