@@ -58,7 +58,7 @@ public class MMEntityBase extends EntityCreature implements IEntityAdditionalSpa
 
     }
 
-    public boolean isAIEnabled()
+    protected boolean isAIEnabled()
     {
         return true;
     }

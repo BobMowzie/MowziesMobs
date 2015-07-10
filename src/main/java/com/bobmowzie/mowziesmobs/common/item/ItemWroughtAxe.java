@@ -29,32 +29,31 @@ public class ItemWroughtAxe extends ItemSword
     @Override
     public void onUpdate(ItemStack p_77663_1_, World p_77663_2_, Entity entityLiving, int p_77663_4_, boolean p_77663_5_)
     {
-        if (timer > 0) timer--;
-        if (timer == 15)
-        {
-            float damage = 7;
-            boolean hit = false;
-            float range = 4;
-            float knockback = 1.2F;
-            float arc = 100;
-            List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby((EntityLivingBase)entityLiving, range, 2, range, range);
-            for (EntityLivingBase entityHit : entitiesHit)
-            {
-                float entityHitAngle = (float) ((Math.atan2(entityHit.posZ - entityLiving.posZ, entityHit.posX - entityLiving.posX) * (180 / Math.PI) - 90) % 360);
-                float entityAttackingAngle = entityLiving.rotationYaw % 360;
-                if (entityHitAngle < 0) entityHitAngle += 360;
-                if (entityAttackingAngle < 0) entityAttackingAngle += 360;
-                float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
-                float entityHitDistance = (float) Math.sqrt((entityHit.posZ - entityLiving.posZ) * (entityHit.posZ - entityLiving.posZ) + (entityHit.posX - entityLiving.posX) * (entityHit.posX - entityLiving.posX));
-                if (entityHitDistance <= range && (entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2))
-                {
-                    entityHit.attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase)entityLiving), damage);
-                    entityHit.motionX *= knockback;
-                    entityHit.motionZ *= knockback;
-                    hit = true;
+        if (entityLiving instanceof EntityPlayer && ((EntityPlayer)entityLiving).getHeldItem() != null && ((EntityPlayer)entityLiving).getHeldItem().getItem() == this) {
+            if (timer > 0) timer--;
+            if (timer == 15) {
+                float damage = 7;
+                boolean hit = false;
+                float range = 4;
+                float knockback = 1.2F;
+                float arc = 100;
+                List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby((EntityLivingBase) entityLiving, range, 2, range, range);
+                for (EntityLivingBase entityHit : entitiesHit) {
+                    float entityHitAngle = (float) ((Math.atan2(entityHit.posZ - entityLiving.posZ, entityHit.posX - entityLiving.posX) * (180 / Math.PI) - 90) % 360);
+                    float entityAttackingAngle = entityLiving.rotationYaw % 360;
+                    if (entityHitAngle < 0) entityHitAngle += 360;
+                    if (entityAttackingAngle < 0) entityAttackingAngle += 360;
+                    float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
+                    float entityHitDistance = (float) Math.sqrt((entityHit.posZ - entityLiving.posZ) * (entityHit.posZ - entityLiving.posZ) + (entityHit.posX - entityLiving.posX) * (entityHit.posX - entityLiving.posX));
+                    if (entityHitDistance <= range && (entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2)) {
+                        entityHit.attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase) entityLiving), damage);
+                        entityHit.motionX *= knockback;
+                        entityHit.motionZ *= knockback;
+                        hit = true;
+                    }
                 }
+                if (hit) entityLiving.playSound("minecraft:random.anvil_land", 0.3F, 0.5F);
             }
-            if (hit) entityLiving.playSound("minecraft:random.anvil_land", 0.3F, 0.5F);
         }
         super.onUpdate(p_77663_1_, p_77663_2_, entityLiving, p_77663_4_, p_77663_5_);
     }
