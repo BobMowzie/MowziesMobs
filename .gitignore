@@ -10,3 +10,4 @@ eclipse/
 gradle/
 gradlew.bat
 .*
+bin/
