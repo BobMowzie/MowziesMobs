@@ -5,8 +5,8 @@
 
 minecraft/
 build/
-.gradle/
 out/
 eclipse/
 gradle/
 gradlew.bat
+.*
