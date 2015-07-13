@@ -1,8 +1,9 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.common.animation.AnimBabyFoliaathEat;
 import com.bobmowzie.mowziesmobs.common.animation.MMAnimation;
-import net.ilexiconn.llibrary.client.model.modelbase.ControlledAnimation;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
