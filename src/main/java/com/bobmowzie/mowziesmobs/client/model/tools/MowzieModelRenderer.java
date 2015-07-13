@@ -16,6 +16,9 @@ public class MowzieModelRenderer extends ModelRenderer
     public float initRotationPointY;
     public float initRotationPointZ;
 
+    protected int textureOffsetX;
+    protected int textureOffsetY;
+
     public MowzieModelRenderer(ModelBase modelBase, String name)
     {
         super(modelBase, name);
@@ -160,5 +163,17 @@ public class MowzieModelRenderer extends ModelRenderer
     public void copyZRotationPoint(MowzieModelRenderer target)
     {
         rotationPointZ = target.rotationPointZ;
+    }
+
+    @Override
+    public ModelRenderer setTextureOffset(int textureOffsetX, int textureOffsetY) {
+    	this.textureOffsetX = textureOffsetX;
+    	this.textureOffsetY = textureOffsetY;
+    	return super.setTextureOffset(textureOffsetX, textureOffsetY);
+    }
+
+    public void add3DTexture(float posX, float posY, float posZ, int width, int height)
+    {
+    	cubeList.add(new Model3DTexture(this, textureOffsetX, textureOffsetY, posX, posY, posZ, width, height));
     }
 }
