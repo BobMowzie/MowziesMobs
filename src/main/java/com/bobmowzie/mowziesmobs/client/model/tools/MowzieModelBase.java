@@ -14,6 +14,11 @@ public class MowzieModelBase extends ModelBase
      */
     protected MowzieModelRenderer[] parts;
 
+    public MowzieModelRenderer[] getParts()
+    {
+    	return parts;
+    }
+
     /**
      * Saves the initial rotate angles and initial rotation points.
      * Note: Call this at the end of the constructor.
