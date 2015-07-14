@@ -8,4 +8,5 @@ TODO:
 -Make mobs permanently inactive in peaceful mode
 -Make MMEntityBase into an interface
 -Remove animation ID enums and make them per-mob
+-Use partial ticks in living animations
 -Balancing - Wroughtnaut too hard? Not worth reward?
