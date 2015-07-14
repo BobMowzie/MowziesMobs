@@ -1,26 +1,33 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.common.animation.MMAnimBase;
-import com.bobmowzie.mowziesmobs.common.animation.MMAnimation;
-import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import net.ilexiconn.llibrary.common.message.AbstractMessage;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import thehippomaster.AnimationAPI.AnimationAPI;
 import thehippomaster.AnimationAPI.IAnimatedEntity;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.model.tools.IntermittentAnimation;
+import com.bobmowzie.mowziesmobs.common.animation.MMAnimBase;
+import com.bobmowzie.mowziesmobs.common.animation.MMAnimation;
 
-public class MMEntityBase extends EntityCreature implements IEntityAdditionalSpawnData, IAnimatedEntity
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
+
+public class MMEntityBase extends EntityCreature implements IEntityAdditionalSpawnData, IAnimatedEntity, IntermittentAnimatableEntity
 {
+    private static final byte START_IA_HEALTH_UPDATE_ID = 4;
+
     public int frame;
     public float targetDistance;
     public float targetAngle;
@@ -29,6 +36,8 @@ public class MMEntityBase extends EntityCreature implements IEntityAdditionalSpa
     protected int deathLength = 30;
     private int animTick;
     private int animID;
+
+    private List<IntermittentAnimation> intermittentAnimations = new ArrayList<IntermittentAnimation>();
 
     public MMEntityBase(World world)
     {
@@ -173,5 +182,28 @@ public class MMEntityBase extends EntityCreature implements IEntityAdditionalSpa
             }
         }
         return b;
+    }
+
+    protected void addIntermittentAnimation(IntermittentAnimation intermittentAnimation)
+    {
+        intermittentAnimation.setID((byte) intermittentAnimations.size());
+        intermittentAnimations.add(intermittentAnimation);
+    }
+
+    @Override
+    public void handleHealthUpdate(byte id)
+    {
+        if (id >= START_IA_HEALTH_UPDATE_ID && id - START_IA_HEALTH_UPDATE_ID < intermittentAnimations.size())
+        {
+            intermittentAnimations.get(id - START_IA_HEALTH_UPDATE_ID).start();
+            return;
+        }
+        super.handleHealthUpdate(id);
+    }
+
+    @Override
+    public byte getOffsetEntityState()
+    {
+        return START_IA_HEALTH_UPDATE_ID;
     }
 }

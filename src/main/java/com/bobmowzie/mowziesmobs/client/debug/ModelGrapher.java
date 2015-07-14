@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.client.debug;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -22,8 +23,6 @@ import net.minecraftforge.client.event.RenderLivingEvent;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import scala.actors.threadpool.Arrays;
-import scala.annotation.meta.field;
 import thehippomaster.AnimationAPI.AnimationAPI;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelBase;
@@ -37,11 +36,11 @@ import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 
 public final class ModelGrapher {
+	private static final String XYZ = "\u00A7cX \u00A7aY \u00A79Z";
+
 	public static final ModelGrapher INSTANCE = new ModelGrapher();
 
 	private HashMap<MowzieModelBase, String[]> fieldNames = new HashMap<MowzieModelBase, String[]>();
-
-	private String xyz = "\u00A7cX \u00A7aY \u00A79Z";
 
 	private int xyzWidth = -1;
 
@@ -73,6 +72,7 @@ public final class ModelGrapher {
 	private void setWatchingModel(MMEntityBase entity) {
 		ticks.clear();
 		watchingEntity = entity;
+        watchingPart = 0;
 		if (watchingEntity == null) {
 			parts = null;
 			names = null;
@@ -122,7 +122,6 @@ public final class ModelGrapher {
 						nearestEntity = entity;
 					}
 				}
-				System.out.println(nearestEntity);
 				setWatchingModel(nearestEntity);
 			}
 		}
@@ -231,9 +230,9 @@ public final class ModelGrapher {
 		FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
 		fontRenderer.drawString(names[watchingPart], x + 2, y + 2, 0xFFFFFF, true);
 		if (xyzWidth == -1) {
-			xyzWidth = fontRenderer.getStringWidth(xyz);
+			xyzWidth = fontRenderer.getStringWidth(XYZ);
 		}
-		fontRenderer.drawString(xyz, x + width - xyzWidth - 2, y + 2, 0xFFFFFF, true);
+		fontRenderer.drawString(XYZ, x + width - xyzWidth - 2, y + 2, 0xFFFFFF, true);
 	}
 
 	@SubscribeEvent

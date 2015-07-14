@@ -97,7 +97,7 @@ public class EntityBabyFoliaath extends MMEntityBase
             {
                 EntityFoliaath adultFoliaath = new EntityFoliaath(worldObj);
                 adultFoliaath.setPosition(posX, posY, posZ);
-                adultFoliaath.setCanDespawn((byte) 0);
+                adultFoliaath.setCanDespawn(false);
                 worldObj.spawnEntityInWorld(adultFoliaath);
                 setDead();
             }

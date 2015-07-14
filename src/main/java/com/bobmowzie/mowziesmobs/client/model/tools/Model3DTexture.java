@@ -7,9 +7,6 @@ import net.minecraft.client.renderer.Tessellator;
 import org.lwjgl.opengl.GL11;
 
 public class Model3DTexture extends ModelBox {
-	private int textureOffsetX;
-	private int textureOffsetY;
-
 	private int width;
 	private int height;
 
@@ -20,8 +17,6 @@ public class Model3DTexture extends ModelBox {
 
 	public Model3DTexture(ModelRenderer model, int textureOffsetX, int textureOffsetY, float posX, float posY, float posZ, int width, int height) {
 		super(model, 0, 0, posX, posY, posZ, 0, 0, 0, 0);
-		this.textureOffsetX = textureOffsetX;
-		this.textureOffsetY = textureOffsetY;
 		this.width = width;
 		this.height = height;
 		u1 = textureOffsetX / model.textureWidth;
