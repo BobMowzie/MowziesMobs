@@ -33,10 +33,10 @@ public class EntityFoliaath extends MMEntityBase
     private static final int CAN_DESPAWN_ID = 30;
     private static final int ACTIVATE_TARGET_ID = 31;
 
-    private static final int MOUTH_OPEN_DURATION = 30;
+    private static final int ACTIVATE_DURATION = 30;
 
     public IntermittentAnimation openMouth = new IntermittentAnimation(this, 15, 30, 50, !worldObj.isRemote);
-    public ControlledAnimation activate = new ControlledAnimation(MOUTH_OPEN_DURATION);
+    public ControlledAnimation activate = new ControlledAnimation(ACTIVATE_DURATION);
     public ControlledAnimation deathFlail = new ControlledAnimation(5);
     public ControlledAnimation stopDance = new ControlledAnimation(10);
     public int lastTimeDecrease = 0;
@@ -206,7 +206,7 @@ public class EntityFoliaath extends MMEntityBase
 
             if (targetDistance <= 11)
             {
-                setActivateTarget(MOUTH_OPEN_DURATION);
+                setActivateTarget(ACTIVATE_DURATION);
                 lastTimeDecrease = 0;
             }
             else if (lastTimeDecrease <= 30 && getAnimID() == 0)
@@ -232,7 +232,7 @@ public class EntityFoliaath extends MMEntityBase
                 deathFlail.decreaseTimer();
             }
             stopDance.increaseTimer();
-            setActivateTarget(MOUTH_OPEN_DURATION);
+            setActivateTarget(ACTIVATE_DURATION);
         }
 
         if (resettingTargetTimer > 0)
