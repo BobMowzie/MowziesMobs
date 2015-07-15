@@ -45,8 +45,10 @@ public class EntityWroughtnaut extends MMEntityBase
         tasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true));
         tasks.addTask(2, new EntityAIAttackOnCollide(this, EntityPlayer.class, 1.0D, true));
         experienceValue = 30;
-        setSize(2.7F, 3.7F);
+        setSize(2.5F, 3.7F);
         active = false;
+        stepHeight = 1;
+        entityCollisionReduction = 100;
     }
 
     public int getAttack()
@@ -67,7 +69,6 @@ public class EntityWroughtnaut extends MMEntityBase
 
     protected void fall(float p_70069_1_)
     {
-        System.out.println("Fall");
         p_70069_1_ = ForgeHooks.onLivingFall(this, p_70069_1_);
         if (p_70069_1_ <= 0) return;
         super.fall(p_70069_1_);
@@ -159,7 +160,6 @@ public class EntityWroughtnaut extends MMEntityBase
         {
             posX = prevPosX;
             posZ = prevPosZ;
-            posY = prevPosY;
             rotationYaw = prevRotationYaw;
         }
 

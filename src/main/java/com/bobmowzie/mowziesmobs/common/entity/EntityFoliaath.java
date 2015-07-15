@@ -56,6 +56,7 @@ public class EntityFoliaath extends MMEntityBase
         tasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityCreature.class, 0, true));
         experienceValue = 10;
         setSize(0.5F, 2.5F);
+        entityCollisionReduction = 100;
     }
 
     public int getAttack()
