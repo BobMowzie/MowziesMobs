@@ -7,9 +7,6 @@ import com.bobmowzie.mowziesmobs.common.animation.AnimDie;
 import com.bobmowzie.mowziesmobs.common.animation.AnimTakeDamage;
 import com.bobmowzie.mowziesmobs.common.animation.MMAnimation;
 import com.bobmowzie.mowziesmobs.common.item.MMItems;
-import com.bobmowzie.mowziesmobs.common.message.foliaath.MessageDecreaseTimer;
-import com.bobmowzie.mowziesmobs.common.message.foliaath.MessageIncreaseTimer;
-import cpw.mods.fml.common.FMLCommonHandler;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
@@ -59,6 +56,7 @@ public class EntityFoliaath extends MMEntityBase
         experienceValue = 10;
         deathLength = 50;
         addIntermittentAnimation(openMouth);
+        entityCollisionReduction = 100;
     }
 
     @Override
