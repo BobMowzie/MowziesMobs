@@ -151,21 +151,32 @@ public class EntityFoliaath extends MMEntityBase
         prevOpenMouth = openMouthTime;
 
         int activateTime = activate.getTimer();
-        if (prevActivate - activateTime < 0)
+        if (!worldObj.isRemote)
         {
             String sound = null;
-            switch (activateTime)
+            if (prevActivate - activateTime < 0)
             {
-            case 1:
-            case 28:
-                sound = "mowziesmobs:foliaathrustle";
-                break;
-            case 5:
-                sound = "mowziesmobs:foliaathemerge";
-                break;
-            case 24:
-                sound = "mowziesmobs:foliaathretreat";
-                break;
+                switch (activateTime)
+                {
+                case 1:
+                    sound = "mowziesmobs:foliaathrustle";
+                    break;
+                case 5:
+                    sound = "mowziesmobs:foliaathemerge";
+                    break;
+                }
+            }
+            else if (prevActivate - activateTime > 0)
+            {
+                switch (activateTime)
+                {
+                case 24:
+                    sound = "mowziesmobs:foliaathretreat";
+                    break;
+                case 28:
+                    sound = "mowziesmobs:foliaathrustle";
+                    break;
+                }
             }
             if (sound != null)
             {
@@ -249,7 +260,7 @@ public class EntityFoliaath extends MMEntityBase
         }
         if (activateTime < activateTarget && activate.canIncreaseTimer() || activateTime > activateTarget && activate.canDecreaseTimer())
         {
-            activate.increaseTimer(activateTime < activateTarget ? 1 : -1);
+            activate.increaseTimer(activateTime < activateTarget ? 1 : -2);
         }
     }
 
