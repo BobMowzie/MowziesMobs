@@ -43,7 +43,7 @@ public class MMWorldGenerator implements IWorldGenerator
                         {
                             for (int x2 = 0; x2 <= xzCheckDistance; x2++)
                             {
-                                if (world.getBlock(x - x2, y - y2, z).isAir(world, x - x2, y - y2, z))
+                                if (world.getBlock(x - x2, y - y2 + 1, z).isAir(world, x - x2, y - y2, z))
                                 {
                                     generateWroughtChamber(world, random, x-x2, y-y2, z, 1);
                                     return;
@@ -56,12 +56,12 @@ public class MMWorldGenerator implements IWorldGenerator
                             }
                             for (int z2 = 0; z2 <= xzCheckDistance; z2++)
                             {
-                                if (world.getBlock(x, y - y2, z-z2).isOpaqueCube())
+                                if (world.getBlock(x, y - y2 + 1, z-z2).isOpaqueCube())
                                 {
                                     generateWroughtChamber(world, random, x, y-y2, z-z2, 2);
                                     return;
                                 }
-                                if (world.getBlock(x, y - y2, z+z2).isOpaqueCube()) {
+                                if (world.getBlock(x, y - y2 + 1, z+z2).isOpaqueCube()) {
                                     generateWroughtChamber(world, random, x, y-y2, z+z2, 4);
                                     return;
                                 }
@@ -77,12 +77,12 @@ public class MMWorldGenerator implements IWorldGenerator
     {
         Structure structure = MowziesMobs.gen.structures.get(0);
         EntityWroughtnaut wroughtnaut = new EntityWroughtnaut(world);
-        wroughtnaut.setPositionAndRotation(x + 0.5, y + 1, z + 9.5, 90 * direction, 0);
+        wroughtnaut.setPositionAndRotation(x + 0.5, y + 1, z + 9.5, 180 + 90 * direction, 0);
         MowziesMobs.gen.setStructureFacing(3);
         MowziesMobs.gen.setStructure(structure);
         MowziesMobs.gen.setDefaultOffset(structure.getOffsetX(), structure.getOffsetY(), structure.getOffsetZ());
         MowziesMobs.gen.generate(world, random, x, y - 1, z);
-        //System.out.println(x + ", " + y + ", " + z);
+        System.out.println(x + ", " + y + ", " + z);
         world.spawnEntityInWorld(wroughtnaut);
     }
 

@@ -330,7 +330,7 @@ public class ModelFoliaath extends MowzieModelBase
         leaf8Head.rotateAngleX -= headLeafRotation;
 
         //Activate Animation
-        chainSwing(stemParts, 0.7F, 0.2F * 2 * activeIntermittent, 2F, foliaath.frame, 1F);
+        chainFlap(stemParts, 0.7F, 0.2F * 2 * activeIntermittent, 2F, foliaath.frame, 1F);
         chainSwing(tongueParts, 0.7F, 0.6F * 2 * activeIntermittent, -2F, foliaath.frame, 1F);
         chainWave(leafParts1, 1.5F, 0.1F * 2 * activeIntermittent, 0, foliaath.frame, 1F);
         chainWave(leafParts2, 1.5F, 0.1F * 2 * activeIntermittent, 0, foliaath.frame, 1F);
