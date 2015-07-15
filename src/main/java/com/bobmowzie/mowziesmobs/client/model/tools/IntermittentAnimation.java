@@ -1,194 +1,213 @@
 package com.bobmowzie.mowziesmobs.client.model.tools;
 
-import net.minecraft.util.MathHelper;
-
 import java.util.Random;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.util.MathHelper;
+
+import com.bobmowzie.mowziesmobs.common.entity.IntermittentAnimatableEntity;
+
 /**
- * This is a timer that can be used to easily animate models with intermittent poses. You have to
- * set the number of ticks between poses, a number of ticks that represents the interval of the pose
- * change, increase or decrease the timer, and get the percentage using a specific function.
+ * This is a timer that can be used to easily animate models with intermittent poses. You have to set the
+ * number of ticks between poses, a number of ticks that represents the interval of the pose change, increase
+ * or decrease the timer, and get the percentage using a specific function.
  *
  * @author RafaMv
+ * @author Paul Fulham
  */
 
-public class IntermittentAnimation
+public class IntermittentAnimation<T extends Entity & IntermittentAnimatableEntity>
 {
     /**
      * It is the random used to randomize the movement.
      */
-    Random rand = new Random();
+    private Random rand = new Random();
+
+    private T entity;
     /**
      * It is the timer used to animate.
      */
-    private double timer;
+    private int timeRunning;
     /**
-     * It is the limit time, the maximum value that the timer can be. I
-     * represents the duration of the animation.
+     * It is the limit time, the maximum value that the timer can be. I represents the duration of the
+     * animation.
      */
-    private double duration;
+    private int duration;
     /**
      * It is a boolean that shows if the animation is already in the new pose.
      */
-    private boolean runInterval;
+    private boolean isRunning;
     /**
      * It is an inverter for the timer.
      */
-    private int inverter;
+    private int runDirection;
     /**
      * It is the timer used for the interval.
      */
-    private double timerInterval;
+    private int timeIdle;
     /**
      * It is the interval to return to the first animation.
      */
-    private double intervalDuration;
+    private int minIdleTime;
     /**
      * It is the chance to go to the new animation.
      */
-    private int goChance;
+    private int startProbability;
 
-    public IntermittentAnimation(int d, int i, int g)
+    private boolean isOperator;
+
+    private byte id;
+
+    public IntermittentAnimation(T entity, int duration, int intervalDuration, int startPropbability, boolean isOperator)
     {
-        timer = 0;
-        duration = (double) d;
-        intervalDuration = (double) i;
-        runInterval = true;
-        goChance = g;
-        inverter = -1;
+        this.entity = entity;
+        this.duration = duration;
+        this.minIdleTime = intervalDuration;
+        this.startProbability = startPropbability;
+        this.isOperator = isOperator;
+        timeRunning = 0;
+        isRunning = false;
+        runDirection = -1;
+    }
+
+    public void setID(byte id)
+    {
+        this.id = id;
     }
 
     /**
      * Sets the duration of the animation in ticks. Try values around 50.
      *
-     * @param d is the maximum number of ticks that the timer can reach.
+     * @param duration
+     *            is the maximum number of ticks that the timer can reach.
      */
-    public void setDuration(int d)
+    public void setDuration(int duration)
     {
-        timer = 0;
-        duration = (double) d;
+        timeRunning = 0;
+        this.duration = duration;
     }
 
     /**
      * Returns the timer of this animation. Useful to save the progress of the animation.
      */
-    public double getTimer()
+    public int getTimeRunning()
     {
-        return timer;
+        return timeRunning;
     }
 
     /**
      * Sets the timer to a specific value.
      *
-     * @param time is the number of ticks to be set.
+     * @param timeRunning
+     *            is the number of ticks to be set.
      */
-    public void setTimer(int time)
+    public void setTimeRunning(int timeRunning)
     {
-        timer = (double) time;
+        this.timeRunning = timeRunning;
 
-        if (timer > duration)
+        if (this.timeRunning > duration)
         {
-            timer = duration;
+            this.timeRunning = duration;
         }
-        else if (timer < 0)
+        else if (this.timeRunning < 0)
         {
-            timer = 0;
+            this.timeRunning = 0;
         }
     }
 
     /**
      * Sets the timer to 0.
      */
-    public void resetTimer()
+    public void resetTimeRunning()
     {
-        timer = 0;
+        timeRunning = 0;
     }
 
     /**
      * Increases the timer by 1.
      */
-    public void runAnimation()
+    public void update()
     {
-        if (!runInterval)
+        if (isRunning)
         {
-            if (timer < duration && timer > 0.0D)
+            if (timeRunning < duration && timeRunning > 0)
             {
-                timer += inverter;
+                timeRunning += runDirection;
             }
             else
             {
-                if (timer >= duration)
+                if (timeRunning >= duration)
                 {
-                    timer = duration;
+                    timeRunning = duration;
                 }
-                else if (timer <= 0.0D)
+                else if (timeRunning <= 0)
                 {
-                    timer = 0.0D;
+                    timeRunning = 0;
                 }
-                timerInterval = 0.0D;
-                runInterval = true;
+                timeIdle = 0;
+                isRunning = false;
             }
         }
-        else
+        else if (isOperator)
         {
-            if (timerInterval < intervalDuration)
+            if (timeIdle < minIdleTime)
             {
-                timerInterval++;
+                timeIdle++;
             }
             else
             {
-                if (rand.nextInt(goChance) == 0)
+                if (rand.nextInt(startProbability) == 0)
                 {
-                    if (inverter > 0)
-                    {
-                        inverter = -1;
-                    }
-                    else
-                    {
-                        inverter = 1;
-                    }
-                    timer += inverter;
-                    runInterval = false;
+                    start();
+                    entity.worldObj.setEntityState(entity, (byte) (entity.getOffsetEntityState() + id));
                 }
             }
         }
     }
 
+    public void start()
+    {
+        runDirection = -runDirection;
+        timeRunning += runDirection;
+        isRunning = true;
+    }
+
     /**
      * Decreases the timer by 1.
      */
-    public void stopAnimation()
+    public void stop()
     {
-        if (timer > 0.0D)
+        if (timeRunning > 0)
         {
-            timer--;
+            timeRunning--;
         }
         else
         {
-            timer = 0.0D;
-            runInterval = true;
-            timerInterval = 0.0D;
-            inverter = 1;
+            timeRunning = 0;
+            isRunning = false;
+            timeIdle = 0;
+            runDirection = 1;
         }
     }
 
     /**
      * Decreases the timer by a specific value.
      *
-     * @param time is the number of ticks to be decreased in the timer
+     * @param timeDelta
+     *            is the number of ticks to be decreased in the timer
      */
-    public void stopAnimation(int time)
+    public void stop(int timeDelta)
     {
-        if (timer - time > 0.0D)
+        if (timeRunning - timeDelta > 0)
         {
-            timer -= time;
+            timeRunning -= timeDelta;
         }
         else
         {
-            timer = 0.0D;
-            runInterval = false;
-            timerInterval = 0.0D;
-            inverter = 1;
+            timeRunning = 0;
+            isRunning = false;
+            timeIdle = 0;
+            runDirection = 1;
         }
     }
 
@@ -197,21 +216,20 @@ public class IntermittentAnimation
      */
     public float getAnimationFraction()
     {
-        return (float) (timer / duration);
+        return timeRunning / (float) duration;
     }
 
     /**
-     * Returns a value between 0.0F and 1.0F depending on the timer and duration
-     * of the animation. It reaches 1.0F using 1/(1 + e^(4-8*x)). It
-     * is quite uniform but slow, and needs if statements.
+     * Returns a value between 0.0F and 1.0F depending on the timer and duration of the animation. It reaches
+     * 1.0F using 1/(1 + e^(4-8*x)). It is quite uniform but slow, and needs if statements.
      */
     public float getAnimationProgressSmooth()
     {
-        if (timer > 0.0D)
+        if (timeRunning > 0)
         {
-            if (timer < duration)
+            if (timeRunning < duration)
             {
-                return (float) (1.0D / (1.0D + Math.exp(4.0D - 8.0D * (timer / duration))));
+                return (float) (1.0D / (1.0D + Math.exp(4.0D - 8.0D * getAnimationFraction())));
             }
             else
             {
@@ -222,144 +240,139 @@ public class IntermittentAnimation
     }
 
     /**
-     * Returns a value between 0.0F and 1.0F depending on the timer and duration
-     * of the animation. It reaches 1.0F using 1/(1 + e^(6-12*x)). It
-     * is quite uniform, but fast.
+     * Returns a value between 0.0F and 1.0F depending on the timer and duration of the animation. It reaches
+     * 1.0F using 1/(1 + e^(6-12*x)). It is quite uniform, but fast.
      */
     public float getAnimationProgressSteep()
     {
-        return (float) (1.0D / (1.0D + Math.exp(6.0D - 12.0D * (timer / duration))));
+        return (float) (1.0D / (1.0D + Math.exp(6.0D - 12.0D * getAnimationFraction())));
     }
 
     /**
-     * Returns a value between 0.0F and 1.0F depending on the timer and duration
-     * of the animation. It reaches 1.0F using a sine function. It is
-     * fast in the beginning and slow in the end.
+     * Returns a value between 0.0F and 1.0F depending on the timer and duration of the animation. It reaches
+     * 1.0F using a sine function. It is fast in the beginning and slow in the end.
      */
     public float getAnimationProgressSin()
     {
-        return MathHelper.sin(1.57079632679F * (float) (timer / duration));
+        return MathHelper.sin(1.57079632679F * getAnimationFraction());
     }
 
     /**
-     * Returns a value between 0.0F and 1.0F depending on the timer and duration
-     * of the animation. It reaches 1.0F using a sine function
-     * squared. It is very smooth.
+     * Returns a value between 0.0F and 1.0F depending on the timer and duration of the animation. It reaches
+     * 1.0F using a sine function squared. It is very smooth.
      */
     public float getAnimationProgressSinSqrt()
     {
-        float result = MathHelper.sin(1.57079632679F * (float) (timer / duration));
+        float result = MathHelper.sin(1.57079632679F * getAnimationFraction());
         return result * result;
     }
 
     /**
-     * Returns a value between 0.0F and 1.0F depending on the timer and duration
-     * of the animation. It reaches 1.0F using a sine function to the
-     * power of ten. It is slow in the beginning and fast in the end.
+     * Returns a value between 0.0F and 1.0F depending on the timer and duration of the animation. It reaches
+     * 1.0F using a sine function to the power of ten. It is slow in the beginning and fast in the end.
      */
     public float getAnimationProgressSinToTen()
     {
-        return (float) Math.pow((double) MathHelper.sin(1.57079632679F * (float) (timer / duration)), 10);
+        return (float) Math.pow(MathHelper.sin(1.57079632679F * getAnimationFraction()), 10);
     }
 
     public float getAnimationProgressSinToTenWithoutReturn()
     {
-        if (inverter == -1)
-            return MathHelper.sin(1.57079632679F * (float) (timer / duration)) * MathHelper.sin(1.57079632679F * (float) (timer / duration));
-        return (float) Math.pow((double) MathHelper.sin(1.57079632679F * (float) (timer / duration)), 10);
+        if (runDirection == -1)
+        {
+            return MathHelper.sin(1.57079632679F * getAnimationFraction()) * MathHelper.sin(1.57079632679F * getAnimationFraction());
+        }
+        return (float) Math.pow(MathHelper.sin(1.57079632679F * getAnimationFraction()), 10);
     }
 
     /**
-     * Returns a value between 0.0F and 1.0F depending on the timer and duration
-     * of the animation. It reaches 1.0F using a sine function to a
-     * specific power "i."
+     * Returns a value between 0.0F and 1.0F depending on the timer and duration of the animation. It reaches
+     * 1.0F using a sine function to a specific power "i."
      *
-     * @param i is the power of the sine function.
+     * @param i
+     *            is the power of the sine function.
      */
     public float getAnimationProgressSinPowerOf(int i)
     {
-        return (float) Math.pow((double) MathHelper.sin(1.57079632679F * (float) (timer / duration)), i);
+        return (float) Math.pow(MathHelper.sin(1.57079632679F * getAnimationFraction()), i);
     }
 
     /**
-     * Returns a value between 0.0F and 1.0F depending on the timer and duration
-     * of the animation. It reaches 1.0F using x^2 / (x^2 + (1-x)^2).
-     * It is smooth.
+     * Returns a value between 0.0F and 1.0F depending on the timer and duration of the animation. It reaches
+     * 1.0F using x^2 / (x^2 + (1-x)^2). It is smooth.
      */
     public float getAnimationProgressPoly2()
     {
-        float x = (float) (timer / duration);
+        float x = getAnimationFraction();
         float x2 = x * x;
         return x2 / (x2 + (1 - x) * (1 - x));
     }
 
     /**
-     * Returns a value between 0.0F and 1.0F depending on the timer and duration
-     * of the animation. It reaches 1.0F using x^3 / (x^3 + (1-x)^3).
-     * It is steep.
+     * Returns a value between 0.0F and 1.0F depending on the timer and duration of the animation. It reaches
+     * 1.0F using x^3 / (x^3 + (1-x)^3). It is steep.
      */
     public float getAnimationProgressPoly3()
     {
-        float x = (float) (timer / duration);
+        float x = getAnimationFraction();
         float x3 = x * x * x;
         return x3 / (x3 + (1 - x) * (1 - x) * (1 - x));
     }
 
     /**
-     * Returns a value between 0.0F and 1.0F depending on the timer and duration
-     * of the animation. It reaches 1.0F using x^n / (x^n + (1-x)^n).
-     * It is steeper when n increases.
+     * Returns a value between 0.0F and 1.0F depending on the timer and duration of the animation. It reaches
+     * 1.0F using x^n / (x^n + (1-x)^n). It is steeper when n increases.
      *
-     * @param n is the power of the polynomial function.
+     * @param n
+     *            is the power of the polynomial function.
      */
 
     public float getAnimationProgressPolyN(int n)
     {
-        double x = timer / duration;
-        double xi = Math.pow(x, (double) n);
-        return (float) (xi / (xi + Math.pow((1.0D - x), (double) n)));
+        double x = timeRunning / duration;
+        double xi = Math.pow(x, n);
+        return (float) (xi / (xi + Math.pow(1.0D - x, n)));
     }
 
     /**
-     * Returns a value between 0.0F and 1.0F depending on the timer and duration
-     * of the animation. It reaches 1.0F using 0.5 + arctan(PI * (x -
-     * 0.5)) / 2.00776964. It is super smooth.
+     * Returns a value between 0.0F and 1.0F depending on the timer and duration of the animation. It reaches
+     * 1.0F using 0.5 + arctan(PI * (x - 0.5)) / 2.00776964. It is super smooth.
      */
     public float getAnimationProgressArcTan()
     {
-        return (float) (0.5F + 0.49806510671F * Math.atan(3.14159265359D * (timer / duration - 0.5D)));
+        return (float) (0.5F + 0.49806510671F * Math.atan(3.14159265359D * (timeRunning / duration - 0.5D)));
     }
 
     /**
-     * Returns a value between 0.0F and 1.0F depending on the timer and duration of the animation.
-     * This value starts at 1.0F and ends at 1.0F.
-     * The equation used is 0.5 - 0.5 * cos(2 * PI * x + sin(2 * PI * x)). It is smooth.
+     * Returns a value between 0.0F and 1.0F depending on the timer and duration of the animation. This value
+     * starts at 1.0F and ends at 1.0F. The equation used is 0.5 - 0.5 * cos(2 * PI * x + sin(2 * PI * x)). It
+     * is smooth.
      */
     public float getAnimationProgressTemporary()
     {
-        float x = 6.28318530718F * (float) (timer / duration);
+        float x = 6.28318530718F * getAnimationFraction();
         return 0.5F - 0.5F * MathHelper.cos(x + MathHelper.sin(x));
     }
 
     /**
-     * Returns a value between 0.0F and 1.0F depending on the timer and duration
-     * of the animation. This value starts at 0.0F and ends at 0.0F.
-     * The equation used is sin(x * PI + sin(x * PI)). It is fast in the beginning and slow in the end.
+     * Returns a value between 0.0F and 1.0F depending on the timer and duration of the animation. This value
+     * starts at 0.0F and ends at 0.0F. The equation used is sin(x * PI + sin(x * PI)). It is fast in the
+     * beginning and slow in the end.
      */
     public float getAnimationProgressTemporaryFS()
     {
-        float x = 3.14159265359F * (float) (timer / duration);
+        float x = 3.14159265359F * getAnimationFraction();
         return MathHelper.sin(x + MathHelper.sin(x));
     }
 
     /**
-     * Returns a value between 0.0F and 1.0F depending on the timer and duration of the animation.
-     * This value starts at 1.0F and ends at 1.0F.
-     * The equation used is 0.5 + 0.5 * cos(2 PI * x + sin(2 * PI * x)). It is smooth.
+     * Returns a value between 0.0F and 1.0F depending on the timer and duration of the animation. This value
+     * starts at 1.0F and ends at 1.0F. The equation used is 0.5 + 0.5 * cos(2 PI * x + sin(2 * PI * x)). It
+     * is smooth.
      */
     public float getAnimationProgressTemporaryInvesed()
     {
-        float x = 6.28318530718F * (float) (timer / duration);
+        float x = 6.28318530718F * getAnimationFraction();
         return 0.5F + 0.5F * MathHelper.cos(x + MathHelper.sin(x));
     }
 }

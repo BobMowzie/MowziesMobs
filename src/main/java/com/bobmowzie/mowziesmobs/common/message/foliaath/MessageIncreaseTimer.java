@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.common.message.foliaath;
 
 import com.bobmowzie.mowziesmobs.common.entity.EntityFoliaath;
+
 import io.netty.buffer.ByteBuf;
 import net.ilexiconn.llibrary.common.message.AbstractMessage;
 import net.minecraft.entity.Entity;
@@ -27,6 +28,7 @@ public class MessageIncreaseTimer extends AbstractMessage<MessageIncreaseTimer>
         {
             EntityFoliaath foliaath = (EntityFoliaath) entity;
             foliaath.activate.increaseTimer();
+
         }
     }
 

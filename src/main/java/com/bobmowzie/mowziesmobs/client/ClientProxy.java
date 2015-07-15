@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.debug.ModelGrapher;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBabyFoliaath;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelFoliaath;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelPlayerExtension;
@@ -11,7 +12,10 @@ import com.bobmowzie.mowziesmobs.client.render.entity.*;
 import com.bobmowzie.mowziesmobs.common.ServerProxy;
 import com.bobmowzie.mowziesmobs.common.entity.*;
 import com.bobmowzie.mowziesmobs.common.item.MMItems;
+
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.ilexiconn.llibrary.client.render.RenderHelper;
@@ -27,6 +31,10 @@ public class ClientProxy extends ServerProxy
     public void init()
     {
         MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
+        if (MowziesMobs.isDebugging()) {
+            MinecraftForge.EVENT_BUS.register(ModelGrapher.INSTANCE);
+            FMLCommonHandler.instance().bus().register(ModelGrapher.INSTANCE);
+        }
 
         RenderingRegistry.registerEntityRenderingHandler(EntityBabyFoliaath.class, new RenderBabyFoliaath(new ModelBabyFoliaath(), 0F));
         RenderingRegistry.registerEntityRenderingHandler(EntityFoliaath.class, new RenderFoliaath(new ModelFoliaath(), 1.0F));
