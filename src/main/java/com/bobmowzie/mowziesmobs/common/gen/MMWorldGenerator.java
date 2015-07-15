@@ -82,7 +82,7 @@ public class MMWorldGenerator implements IWorldGenerator
         MowziesMobs.gen.setStructure(structure);
         MowziesMobs.gen.setDefaultOffset(structure.getOffsetX(), structure.getOffsetY(), structure.getOffsetZ());
         MowziesMobs.gen.generate(world, random, x, y - 1, z);
-        System.out.println(x + ", " + y + ", " + z);
+        //System.out.println(x + ", " + y + ", " + z);
         world.spawnEntityInWorld(wroughtnaut);
     }
 
