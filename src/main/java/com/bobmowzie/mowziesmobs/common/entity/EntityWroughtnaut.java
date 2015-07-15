@@ -116,27 +116,24 @@ public class EntityWroughtnaut extends MMEntityBase
 
     public boolean attackEntityFrom(DamageSource source, float p_70097_2_)
     {
-        if (vulnerable && source.getEntity() != null)
-        {
-            int arc = 220;
-            Entity entitySource = source.getEntity();
-            float entityHitAngle = (float) ((Math.atan2(entitySource.posZ - posZ, entitySource.posX - posX) * (180 / Math.PI) - 90) % 360);
-            float entityAttackingAngle = renderYawOffset % 360;
-            if (entityHitAngle < 0) entityHitAngle += 360;
-            if (entityAttackingAngle < 0) entityAttackingAngle += 360;
-            float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
-            if ((entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -arc + 90 / 2))
-            {
-                playSound("minecraft:random.anvil_land", 0.4F, 2F);
-                return false;
-            }
-            else
-            {
-                if (currentAnim != null) currentAnim.resetTask();
-                return super.attackEntityFrom(source, p_70097_2_);
-            }
+        if (source.getEntity() != null) {
+            if (vulnerable && source.getEntity() != null) {
+                int arc = 220;
+                Entity entitySource = source.getEntity();
+                float entityHitAngle = (float) ((Math.atan2(entitySource.posZ - posZ, entitySource.posX - posX) * (180 / Math.PI) - 90) % 360);
+                float entityAttackingAngle = renderYawOffset % 360;
+                if (entityHitAngle < 0) entityHitAngle += 360;
+                if (entityAttackingAngle < 0) entityAttackingAngle += 360;
+                float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
+                if ((entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -arc + 90 / 2)) {
+                    playSound("minecraft:random.anvil_land", 0.4F, 2F);
+                    return false;
+                } else {
+                    if (currentAnim != null) currentAnim.resetTask();
+                    return super.attackEntityFrom(source, p_70097_2_);
+                }
+            } else playSound("minecraft:random.anvil_land", 0.4F, 2F);
         }
-        else playSound("minecraft:random.anvil_land", 0.4F, 2F);
         return false;
     }
 
