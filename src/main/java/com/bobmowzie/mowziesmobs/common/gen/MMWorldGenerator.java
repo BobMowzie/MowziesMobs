@@ -29,44 +29,88 @@ public class MMWorldGenerator implements IWorldGenerator
 
     private void generateSurface(World world, Random random, int x, int z)
     {
-        int myCaveChance = 75;
+        tryWroughtChamber(world, random, x, z, 75);
+    }
+
+    private void tryWroughtChamber(World world, Random random, int x, int z, int chance)
+    {
         int xzCheckDistance = 10;
 
-        if (random.nextInt(myCaveChance) == 0)
+        if (random.nextInt(chance) == 0)
         {
-            for (int y = 50; y >= 30; y--) {
+            for (int y = 50; y >= 30; y--)
+            {
                 if (world.getBlock(x, y, z).isAir(world, x, y, z))
                 {
                     for (int y2 = 1; y2 <= 30; y2++)
                     {
                         if (world.getBlock(x, y - y2, z).isOpaqueCube())
                         {
-                            for (int x2 = 0; x2 <= xzCheckDistance; x2++)
-                            {
-                                if (world.getBlock(x - x2, y - y2 + 1, z).isOpaqueCube())
-                                {
-                                    generateWroughtChamber(world, random, x-x2, y-y2, z, 1);
-                                    return;
+                            int y4 = 0;
+                            int y5 = 0;
+                            for (int x2 = 0; x2 <= xzCheckDistance; x2++) {
+                                if (world.getBlock(x - x2, y - y2 + y4 + 1, z).isOpaqueCube()) {
+                                    Boolean wall = true;
+                                    for (int y3 = 1; y3 <= 4; y3++) {
+                                        if (!world.getBlock(x - x2, y - y2 + y4 + 1 + y3, z).isOpaqueCube()) {
+                                            wall = false;
+                                            y4 += y3;
+                                            break;
+                                        }
+                                    }
+                                    if (wall) {
+                                        generateWroughtChamber(world, random, x - x2 - 9, y - y2 + y4, z - 9, 0);
+                                        return;
+                                    }
                                 }
-                                if (world.getBlock(x + x2, y - y2, z).isOpaqueCube())
-                                {
-                                    generateWroughtChamber(world, random, x+x2, y-y2, z, 3);
-                                    return;
+                                if (world.getBlock(x + x2, y - y2 + y5 + 1, z).isOpaqueCube()) {
+                                    Boolean wall = true;
+                                    for (int y3 = 1; y3 <= 4; y3++) {
+                                        if (!world.getBlock(x + x2, y - y2 + y5 + 1 + y3, z).isOpaqueCube()) {
+                                            wall = false;
+                                            y5 += y3;
+                                            break;
+                                        }
+                                    }
+                                    if (wall) {
+                                        generateWroughtChamber(world, random, x + x2 + 9, y - y2 + y5, z - 9, 2);
+                                        return;
+                                    }
                                 }
                             }
-                            for (int z2 = 0; z2 <= xzCheckDistance; z2++)
-                            {
-                                if (world.getBlock(x, y - y2 + 1, z-z2).isOpaqueCube())
-                                {
-                                    generateWroughtChamber(world, random, x, y-y2, z-z2, 2);
-                                    return;
+                            y4 = 0;
+                            y5 = 0;
+                            for (int z2 = 0; z2 <= xzCheckDistance; z2++) {
+                                if (world.getBlock(x - 1, y - y2 + y4 + 1, z - z2).isOpaqueCube()) {
+                                    Boolean wall = true;
+                                    for (int y3 = 1; y3 <= 4; y3++) {
+                                        if (!world.getBlock(x - 1, y - y2 + y4 + 1 + y3, z - z2).isOpaqueCube()) {
+                                            wall = false;
+                                            y4 += y3;
+                                            break;
+                                        }
+                                    }
+                                    if (wall) {
+                                        generateWroughtChamber(world, random, x - 1, y - y2 + y4, z - z2 - 18, 1);
+                                        return;
+                                    }
                                 }
-                                if (world.getBlock(x, y - y2 + 1, z+z2).isOpaqueCube())
-                                {
-                                    generateWroughtChamber(world, random, x, y-y2, z+z2, 4);
-                                    return;
+                                if (world.getBlock(x - 1, y - y2 + y5 + 1, z + z2).isOpaqueCube()) {
+                                    Boolean wall = true;
+                                    for (int y3 = 1; y3 <= 4; y3++) {
+                                        if (!world.getBlock(x - 1, y - y2 + y5 + 1 + y3, z + z2).isOpaqueCube()) {
+                                            wall = false;
+                                            y5 += y3;
+                                            break;
+                                        }
+                                    }
+                                    if (wall) {
+                                        generateWroughtChamber(world, random, x - 1, y - y2 + y5, z + z2, 3);
+                                        return;
+                                    }
                                 }
                             }
+                            break;
                         }
                     }
                 }
@@ -79,8 +123,8 @@ public class MMWorldGenerator implements IWorldGenerator
         Structure structure = MowziesMobs.gen.structures.get(0);
         EntityWroughtnaut wroughtnaut = new EntityWroughtnaut(world);
         wroughtnaut.setPositionAndRotation(x + 0.5, y + 1, z + 9.5, 180 + 90 * direction, 0);
-        MowziesMobs.gen.setStructureFacing(direction);
         MowziesMobs.gen.setStructure(structure);
+        MowziesMobs.gen.setStructureFacing(direction);
         MowziesMobs.gen.setDefaultOffset(structure.getOffsetX(), structure.getOffsetY(), structure.getOffsetZ());
         MowziesMobs.gen.generate(world, random, x, y - 1, z);
         System.out.println(x + ", " + y + ", " + z);
