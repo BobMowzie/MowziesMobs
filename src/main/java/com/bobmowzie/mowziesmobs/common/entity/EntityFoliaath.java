@@ -56,7 +56,6 @@ public class EntityFoliaath extends MMEntityBase
         experienceValue = 10;
         deathLength = 50;
         addIntermittentAnimation(openMouth);
-        entityCollisionReduction = 100;
     }
 
     @Override

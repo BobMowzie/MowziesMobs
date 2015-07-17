@@ -5,6 +5,7 @@ import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelRenderer;
 import com.bobmowzie.mowziesmobs.common.animation.MMAnimation;
 import com.bobmowzie.mowziesmobs.common.entity.EntityFoliaath;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import org.lwjgl.opengl.GL11;
 import thehippomaster.AnimationAPI.IAnimatedEntity;
 import thehippomaster.AnimationAPI.client.Animator;
@@ -264,36 +265,44 @@ public class ModelFoliaath extends MowzieModelBase
     public void setRotationAngles(EntityFoliaath foliaath, float f, float f1, float f2, float f3, float f4, float f5)
     {
         super.setRotationAngles(f, f1, f2, f3, f4, f5, foliaath);
+
+        stem1Joint.rotateAngleY += (f3 / (180f / (float) Math.PI));
+    }
+
+    @Override
+    public void setLivingAnimations(EntityLivingBase entity, float f, float f1, float partialTicks)
+    {
+        EntityFoliaath foliaath = (EntityFoliaath) entity;
+        animator.update(foliaath);
         setToInitPose();
 
         activeProgress = foliaath.activate.getAnimationProgressSinSqrt();
         float activeIntermittent = foliaath.activate.getAnimationProgressSinSqrt() - foliaath.activate.getAnimationProgressSinToTenWithoutReturn();
         float activeComplete = activeProgress - activeIntermittent;
         float stopDance = foliaath.stopDance.getAnimationProgressSinSqrt() - (foliaath.stopDance.getAnimationProgressSinSqrt() - foliaath.stopDance.getAnimationProgressSinToTenWithoutReturn());
+        float frame = foliaath.frame + partialTicks;
 
         float globalSpeed = 0.9f;
 
-        stem1Joint.rotateAngleY += (f3 / (180f / (float) Math.PI));
-
-        flap(stem1Base, 0.25F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 0F, 0F, foliaath.frame, 1F);
-        walk(stem1Base, 0.5F * globalSpeed, 0.05F * (activeComplete - stopDance), false, 0F, 0F, foliaath.frame, 1F);
-        walk(stem2, 0.5F * globalSpeed, 0.05F * (activeComplete - stopDance), false, 0.5F, 0F, foliaath.frame, 1F);
-        walk(stem3, 0.5F * globalSpeed, 0.07F * (activeComplete - stopDance), false, 1F, 0F, foliaath.frame, 1F);
-        walk(stem4, 0.5F * globalSpeed, 0.05F * (activeComplete - stopDance), false, 1.5F, 0F, foliaath.frame, 1F);
-        walk(headBase, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), true, 1.3F, 0F, foliaath.frame, 1F);
-        headBase.rotateAngleY += rotateBox(0.25F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 0F, 0F, foliaath.frame, 1F);
-        walk(leaf1Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, foliaath.frame, 1F);
-        walk(leaf2Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, foliaath.frame, 1F);
-        walk(leaf3Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, foliaath.frame, 1F);
-        walk(leaf4Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, foliaath.frame, 1F);
-        walk(leaf5Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, foliaath.frame, 1F);
-        walk(leaf6Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, foliaath.frame, 1F);
-        walk(leaf7Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, foliaath.frame, 1F);
-        walk(leaf8Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, foliaath.frame, 1F);
-        chainWave(leafParts1, 0.5F * globalSpeed, 0.13F * (activeComplete - stopDance), 2, foliaath.frame, 1F);
-        chainWave(leafParts2, 0.5F * globalSpeed, 0.13F * (activeComplete - stopDance), 2, foliaath.frame, 1F);
-        chainWave(leafParts3, 0.5F * globalSpeed, 0.13F * (activeComplete - stopDance), 2, foliaath.frame, 1F);
-        chainWave(leafParts4, 0.5F * globalSpeed, 0.13F * (activeComplete - stopDance), 2, foliaath.frame, 1F);
+        flap(stem1Base, 0.25F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 0F, 0F, frame, 1F);
+        walk(stem1Base, 0.5F * globalSpeed, 0.05F * (activeComplete - stopDance), false, 0F, 0F, frame, 1F);
+        walk(stem2, 0.5F * globalSpeed, 0.05F * (activeComplete - stopDance), false, 0.5F, 0F, frame, 1F);
+        walk(stem3, 0.5F * globalSpeed, 0.07F * (activeComplete - stopDance), false, 1F, 0F, frame, 1F);
+        walk(stem4, 0.5F * globalSpeed, 0.05F * (activeComplete - stopDance), false, 1.5F, 0F, frame, 1F);
+        walk(headBase, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), true, 1.3F, 0F, frame, 1F);
+        headBase.rotateAngleY += rotateBox(0.25F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 0F, 0F, frame, 1F);
+        walk(leaf1Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, frame, 1F);
+        walk(leaf2Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, frame, 1F);
+        walk(leaf3Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, frame, 1F);
+        walk(leaf4Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, frame, 1F);
+        walk(leaf5Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, frame, 1F);
+        walk(leaf6Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, frame, 1F);
+        walk(leaf7Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, frame, 1F);
+        walk(leaf8Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, frame, 1F);
+        chainWave(leafParts1, 0.5F * globalSpeed, 0.13F * (activeComplete - stopDance), 2, frame, 1F);
+        chainWave(leafParts2, 0.5F * globalSpeed, 0.13F * (activeComplete - stopDance), 2, frame, 1F);
+        chainWave(leafParts3, 0.5F * globalSpeed, 0.13F * (activeComplete - stopDance), 2, frame, 1F);
+        chainWave(leafParts4, 0.5F * globalSpeed, 0.13F * (activeComplete - stopDance), 2, frame, 1F);
 
         //Open Mouth Animation
         float openMouthProgress = foliaath.openMouth.getAnimationProgressSinSqrt();
@@ -307,10 +316,10 @@ public class ModelFoliaath extends MowzieModelBase
         stem3.rotateAngleX -= 0.6 * openMouthIntermittent;
         stem4.rotateAngleX -= 0.6 * openMouthIntermittent;
         headBase.rotateAngleX += 0.6 * openMouthIntermittent;
-        flap(headBase, 1.5F, 0.6F * openMouthIntermittent, false, 0F, 0F, foliaath.frame, 1F);
+        flap(headBase, 1.5F, 0.6F * openMouthIntermittent, false, 0F, 0F, frame, 1F);
         mouthTop1.rotateAngleX += 0.15 * openMouthProgress;
         mouthBottom1.rotateAngleX += 0.15 * openMouthProgress;
-        chainWave(tongueParts, 0.5F * globalSpeed, -0.15F * (openMouthProgress - openMouthIntermittent), -2, foliaath.frame, 1F);
+        chainWave(tongueParts, 0.5F * globalSpeed, -0.15F * (openMouthProgress - openMouthIntermittent), -2, frame, 1F);
         tongue1Base.rotateAngleY += 0.3 * (openMouthProgress - openMouthIntermittent);
         tongue2.rotateAngleY += 0.4 * (openMouthProgress - openMouthIntermittent);
         tongue2.rotateAngleX -= 0.1 * (openMouthProgress - openMouthIntermittent);
@@ -330,12 +339,12 @@ public class ModelFoliaath extends MowzieModelBase
         leaf8Head.rotateAngleX -= headLeafRotation;
 
         //Activate Animation
-        chainFlap(stemParts, 0.7F, 0.2F * 2 * activeIntermittent, 2F, foliaath.frame, 1F);
-        chainSwing(tongueParts, 0.7F, 0.6F * 2 * activeIntermittent, -2F, foliaath.frame, 1F);
-        chainWave(leafParts1, 1.5F, 0.1F * 2 * activeIntermittent, 0, foliaath.frame, 1F);
-        chainWave(leafParts2, 1.5F, 0.1F * 2 * activeIntermittent, 0, foliaath.frame, 1F);
-        chainWave(leafParts3, 1.5F, 0.1F * 2 * activeIntermittent, 0, foliaath.frame, 1F);
-        chainWave(leafParts4, 1.5F, 0.1F * 2 * activeIntermittent, 0, foliaath.frame, 1F);
+        chainFlap(stemParts, 0.7F, 0.2F * 2 * activeIntermittent, 2F, frame, 1F);
+        chainSwing(tongueParts, 0.7F, 0.6F * 2 * activeIntermittent, -2F, frame, 1F);
+        chainWave(leafParts1, 1.5F, 0.1F * 2 * activeIntermittent, 0, frame, 1F);
+        chainWave(leafParts2, 1.5F, 0.1F * 2 * activeIntermittent, 0, frame, 1F);
+        chainWave(leafParts3, 1.5F, 0.1F * 2 * activeIntermittent, 0, frame, 1F);
+        chainWave(leafParts4, 1.5F, 0.1F * 2 * activeIntermittent, 0, frame, 1F);
         stem1Base.rotateAngleX -= 0.1 * 2 * activeIntermittent;
         stem2.rotateAngleX -= 0.5 * 2 * activeIntermittent;
         stem3.rotateAngleX += 0.9 * 2 * activeIntermittent;
@@ -347,7 +356,6 @@ public class ModelFoliaath extends MowzieModelBase
 
     public void animate(IAnimatedEntity foliaath, float f, float f1, float f2, float f3, float f4, float f5)
     {
-        animator.update(foliaath);
         EntityFoliaath entityfoliaath = (EntityFoliaath) foliaath;
         setRotationAngles(entityfoliaath, f, f1, f2, f3, f4, f5);
 

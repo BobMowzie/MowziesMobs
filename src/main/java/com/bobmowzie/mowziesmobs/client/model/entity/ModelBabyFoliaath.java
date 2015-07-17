@@ -7,6 +7,7 @@ import net.ilexiconn.llibrary.client.model.modelbase.MowzieModelBase;
 import net.ilexiconn.llibrary.client.model.modelbase.MowzieModelRenderer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import thehippomaster.AnimationAPI.IAnimatedEntity;
 import thehippomaster.AnimationAPI.client.Animator;
 
@@ -126,10 +127,26 @@ public class ModelBabyFoliaath extends MowzieModelBase
         modelRenderer.rotateAngleZ = z;
     }
 
+    @Override
+    public void setLivingAnimations(EntityLivingBase entity, float f, float f1, float partialTicks)
+    {
+        EntityBabyFoliaath foliaath = (EntityBabyFoliaath) entity;
+        animator.update(foliaath);
+        setToInitPose();
+        float frame = foliaath.frame + partialTicks;
+        float openMouthProgress = foliaath.activate.getAnimationProgressSinSqrt();
+        mouth1.rotateAngleZ += 0.5 * openMouthProgress;
+        mouth2.rotateAngleZ -= 0.5 * openMouthProgress;
+        walk(juvenileLeaf1, 1F, 0.07F * openMouthProgress, false, 0, 0, frame, 1F);
+        walk(juvenileLeaf2, 1F, 0.07F * openMouthProgress, false, 0, 0, frame, 1F);
+        walk(juvenileLeaf3, 1F, 0.07F * openMouthProgress, false, 0, 0, frame, 1F);
+        walk(juvenileLeaf4, 1F, 0.07F * openMouthProgress, false, 0, 0, frame, 1F);
+        flap(mouth1, 1F, 0.07F * openMouthProgress, false, -1, 0, frame, 1F);
+        flap(mouth2, 1F, -0.07F * openMouthProgress, false, -1, 0, frame, 1F);
+    }
+
     public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, EntityBabyFoliaath foliaath)
     {
-        setToInitPose();
-
         if (foliaath.getInfant() == 1)
         {
             juvenileBase.isHidden = true;
@@ -140,21 +157,10 @@ public class ModelBabyFoliaath extends MowzieModelBase
             juvenileBase.isHidden = false;
             infantBase.isHidden = true;
         }
-
-        float openMouthProgress = foliaath.activate.getAnimationProgressSinSqrt();
-        mouth1.rotateAngleZ += 0.5 * openMouthProgress;
-        mouth2.rotateAngleZ -= 0.5 * openMouthProgress;
-        walk(juvenileLeaf1, 1F, 0.07F * openMouthProgress, false, 0, 0, foliaath.frame, 1F);
-        walk(juvenileLeaf2, 1F, 0.07F * openMouthProgress, false, 0, 0, foliaath.frame, 1F);
-        walk(juvenileLeaf3, 1F, 0.07F * openMouthProgress, false, 0, 0, foliaath.frame, 1F);
-        walk(juvenileLeaf4, 1F, 0.07F * openMouthProgress, false, 0, 0, foliaath.frame, 1F);
-        flap(mouth1, 1F, 0.07F * openMouthProgress, false, -1, 0, foliaath.frame, 1F);
-        flap(mouth2, 1F, -0.07F * openMouthProgress, false, -1, 0, foliaath.frame, 1F);
     }
 
     public void animate(float f, float f1, float f2, float f3, float f4, float f5, IAnimatedEntity entity)
     {
-        animator.update(entity);
         EntityBabyFoliaath foliaath = (EntityBabyFoliaath) entity;
         setRotationAngles(f, f1, f2, f3, f4, f5, foliaath);
 

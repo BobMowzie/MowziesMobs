@@ -48,7 +48,6 @@ public class EntityWroughtnaut extends MMEntityBase
         setSize(2.5F, 3.7F);
         active = false;
         stepHeight = 1;
-        entityCollisionReduction = 100;
     }
 
     public int getAttack()

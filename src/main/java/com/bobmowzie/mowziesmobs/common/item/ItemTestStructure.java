@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.common.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.common.creativetab.MMTabs;
+import com.bobmowzie.mowziesmobs.common.entity.EntityWroughtnaut;
 import net.ilexiconn.llibrary.common.structure.util.Structure;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -143,14 +144,13 @@ public class ItemTestStructure extends Item
     private void generateWroughtChamber(World world, Random random, int x, int y, int z, int direction)
     {
         Structure structure = MowziesMobs.gen.structures.get(0);
-        //EntityWroughtnaut wroughtnaut = new EntityWroughtnaut(world);
-        //wroughtnaut.setPositionAndRotation(x + 0.5, y + 1, z + 9.5, 180 + 90 * direction, 0);
+        EntityWroughtnaut wroughtnaut = new EntityWroughtnaut(world);
+        wroughtnaut.setPositionAndRotation(x + 0.5, y + 1, z + 9.5, 0, 0);
         MowziesMobs.gen.setStructure(structure);
-        System.out.println(direction);
         MowziesMobs.gen.setStructureFacing(direction);
         MowziesMobs.gen.setDefaultOffset(structure.getOffsetX(), structure.getOffsetY(), structure.getOffsetZ());
         MowziesMobs.gen.generate(world, random, x, y - 1, z);
         System.out.println(x + ", " + y + ", " + z);
-        //world.spawnEntityInWorld(wroughtnaut);
+        world.spawnEntityInWorld(wroughtnaut);
     }
 }
