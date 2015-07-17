@@ -26,7 +26,7 @@ public class RenderTribesman extends RenderLiving
     @Override
     public ResourceLocation getEntityTexture(Entity entity)
     {
-        return new ResourceLocation(MowziesMobs.getModId() + "textures/entity/textureWroughtnaut.png");
+        return new ResourceLocation(MowziesMobs.getModId() + "textures/entity/textureTribesman2.png");
     }
 
     @Override

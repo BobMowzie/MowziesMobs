@@ -29,7 +29,7 @@ public class MMWorldGenerator implements IWorldGenerator
 
     private void generateSurface(World world, Random random, int x, int z)
     {
-        tryWroughtChamber(world, random, x, z, 75);
+        tryWroughtChamber(world, random, x, z, 50);
     }
 
     private void tryWroughtChamber(World world, Random random, int x, int z, int chance)
