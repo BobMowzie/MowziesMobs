@@ -1,6 +1,10 @@
 package com.bobmowzie.mowziesmobs.common.item;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.common.creativetab.MMTabs;
+import com.bobmowzie.mowziesmobs.common.message.MessageSwingWroughtAxe;
+import com.bobmowzie.mowziesmobs.common.property.WroughtAxeSwingProperty;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -17,8 +21,6 @@ import java.util.List;
 
 public class ItemWroughtAxe extends ItemSword
 {
-    public int timer = 0;
-
     public ItemWroughtAxe()
     {
         super(Item.ToolMaterial.IRON);
@@ -27,83 +29,52 @@ public class ItemWroughtAxe extends ItemSword
     }
 
     @Override
-    public void onUpdate(ItemStack p_77663_1_, World p_77663_2_, Entity entityLiving, int p_77663_4_, boolean p_77663_5_)
-    {
-        if (entityLiving instanceof EntityPlayer && ((EntityPlayer)entityLiving).getHeldItem() != null && ((EntityPlayer)entityLiving).getHeldItem().getItem() == this) {
-            if (timer > 0) timer--;
-            if (timer == 15) {
-                float damage = 7;
-                boolean hit = false;
-                float range = 4;
-                float knockback = 1.2F;
-                float arc = 100;
-                List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby((EntityLivingBase) entityLiving, range, 2, range, range);
-                for (EntityLivingBase entityHit : entitiesHit) {
-                    float entityHitAngle = (float) ((Math.atan2(entityHit.posZ - entityLiving.posZ, entityHit.posX - entityLiving.posX) * (180 / Math.PI) - 90) % 360);
-                    float entityAttackingAngle = entityLiving.rotationYaw % 360;
-                    if (entityHitAngle < 0) entityHitAngle += 360;
-                    if (entityAttackingAngle < 0) entityAttackingAngle += 360;
-                    float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
-                    float entityHitDistance = (float) Math.sqrt((entityHit.posZ - entityLiving.posZ) * (entityHit.posZ - entityLiving.posZ) + (entityHit.posX - entityLiving.posX) * (entityHit.posX - entityLiving.posX));
-                    if (entityHitDistance <= range && (entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2)) {
-                        entityHit.attackEntityFrom(DamageSource.causeMobDamage((EntityLivingBase) entityLiving), damage);
-                        entityHit.motionX *= knockback;
-                        entityHit.motionZ *= knockback;
-                        hit = true;
-                    }
-                }
-                if (hit) entityLiving.playSound("minecraft:random.anvil_land", 0.3F, 0.5F);
-            }
-        }
-        super.onUpdate(p_77663_1_, p_77663_2_, entityLiving, p_77663_4_, p_77663_5_);
-    }
-
-    public boolean getIsRepairable(ItemStack p_82789_1_, ItemStack p_82789_2_)
+    public boolean getIsRepairable(ItemStack itemStack, ItemStack itemStackMaterial)
     {
         return false;
     }
 
-    public boolean hitEntity(ItemStack p_77644_1_, EntityLivingBase p_77644_2_, EntityLivingBase p_77644_3_)
+    @Override
+    public boolean hitEntity(ItemStack heldItemStack, EntityLivingBase player, EntityLivingBase entityHit)
     {
-        p_77644_2_.playSound("minecraft:random.anvil_land", 0.3F, 0.5F);
+        if (!player.worldObj.isRemote)
+        {
+            player.playSound("minecraft:random.anvil_land", 0.3F, 0.5F);
+        }
         return true;
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack p_77659_1_, World p_77659_2_, EntityPlayer entityLiving)
+    public ItemStack onItemRightClick(ItemStack heldItemStack, World world, EntityPlayer player)
     {
-        if (timer <= 0)
+        if (!world.isRemote)
         {
-            entityLiving.playSound("mowziesmobs:wroughtnautWhoosh", 0.5F, 1F);
-            if (!p_77659_2_.isRemote) timer = 30;
+            WroughtAxeSwingProperty property = WroughtAxeSwingProperty.getProperty(player);
+            if (property.getTime() <= 0)
+            {
+                world.playSoundAtEntity(player, "mowziesmobs:wroughtnautWhoosh", 0.5F, 1F);
+                property.swing();
+                MowziesMobs.networkWrapper.sendToDimension(new MessageSwingWroughtAxe(player), player.dimension);
+            }
         }
-        return p_77659_1_;
+        return heldItemStack;
     }
 
-    public boolean onBlockDestroyed(ItemStack p_150894_1_, World p_150894_2_, Block p_150894_3_, int p_150894_4_, int p_150894_5_, int p_150894_6_, EntityLivingBase p_150894_7_)
+    @Override
+    public boolean onBlockDestroyed(ItemStack itemStack, World world, Block block, int x, int y, int z, EntityLivingBase destroyer)
     {
         return true;
     }
 
-    public float func_150893_a(ItemStack p_150893_1_, Block p_150893_2_)
+    @Override
+    public float func_150893_a(ItemStack itemStack, Block block)
     {
         return 1.0F;
     }
 
-    public EnumAction getItemUseAction(ItemStack p_77661_1_)
+    @Override
+    public EnumAction getItemUseAction(ItemStack itemStack)
     {
         return EnumAction.bow;
-    }
-
-    public List<EntityLivingBase> getEntityLivingBaseNearby(EntityLivingBase user, double distanceX, double distanceY, double distanceZ, double radius)
-    {
-        List<Entity> list = user.worldObj.getEntitiesWithinAABBExcludingEntity(user, user.boundingBox.expand(distanceX, distanceY, distanceZ));
-        ArrayList<EntityLivingBase> listEntityLivingBase = new ArrayList<EntityLivingBase>();
-        for (Entity entityNeighbor : list)
-        {
-            if (entityNeighbor instanceof EntityLivingBase && user.getDistanceToEntity(entityNeighbor) <= radius)
-                listEntityLivingBase.add((EntityLivingBase) entityNeighbor);
-        }
-        return listEntityLivingBase;
     }
 }

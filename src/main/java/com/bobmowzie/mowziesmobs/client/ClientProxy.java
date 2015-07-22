@@ -25,6 +25,7 @@ public class ClientProxy extends ServerProxy
 
     public void init()
     {
+        super.init();
         MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
         if (MowziesMobs.isDebugging()) {
             MinecraftForge.EVENT_BUS.register(ModelGrapher.INSTANCE);
