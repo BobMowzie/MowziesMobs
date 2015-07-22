@@ -171,9 +171,4 @@ public class MowzieModelRenderer extends ModelRenderer
     	this.textureOffsetY = textureOffsetY;
     	return super.setTextureOffset(textureOffsetX, textureOffsetY);
     }
-
-    public void add3DTexture(float posX, float posY, float posZ, int width, int height)
-    {
-    	cubeList.add(new Model3DTexture(this, textureOffsetX, textureOffsetY, posX, posY, posZ, width, height));
-    }
 }

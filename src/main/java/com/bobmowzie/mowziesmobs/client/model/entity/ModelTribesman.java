@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
+import org.lwjgl.opengl.GL11;
 
 /**
  * ModelTribesman - Undefined
@@ -224,8 +225,12 @@ public class ModelTribesman extends ModelBase {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) { 
+    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+        GL11.glPushMatrix();
+        GL11.glScalef(0.75f, 0.75f, 0.75f);
+        GL11.glTranslatef(0, 0.5f, 0);
         this.modelCore.render(f5);
+        GL11.glPopMatrix();
     }
 
     /**

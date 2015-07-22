@@ -1,28 +1,24 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.model.tools.IntermittentAnimation;
+import com.bobmowzie.mowziesmobs.common.animation.MMAnimBase;
+import com.bobmowzie.mowziesmobs.common.animation.MMAnimation;
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import io.netty.buffer.ByteBuf;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import net.ilexiconn.llibrary.common.message.AbstractMessage;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import thehippomaster.AnimationAPI.AnimationAPI;
 import thehippomaster.AnimationAPI.IAnimatedEntity;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.tools.IntermittentAnimation;
-import com.bobmowzie.mowziesmobs.common.animation.MMAnimBase;
-import com.bobmowzie.mowziesmobs.common.animation.MMAnimation;
-
-import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MMEntityBase extends EntityCreature implements IEntityAdditionalSpawnData, IAnimatedEntity, IntermittentAnimatableEntity
 {
@@ -205,5 +201,10 @@ public class MMEntityBase extends EntityCreature implements IEntityAdditionalSpa
     public byte getOffsetEntityState()
     {
         return START_IA_HEALTH_UPDATE_ID;
+    }
+
+    public void circleEntity(Entity target, float radius, float speed, boolean direction)
+    {
+        getNavigator().tryMoveToXYZ(target.posX + radius * Math.cos(frame * 0.5 * speed/radius), target.posY, target.posZ + radius * Math.sin(frame * 0.5 * speed/radius), speed);
     }
 }
