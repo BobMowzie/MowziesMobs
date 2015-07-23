@@ -13,7 +13,6 @@ import com.bobmowzie.mowziesmobs.common.gen.MMWorldGenerator;
 import com.bobmowzie.mowziesmobs.common.item.MMItems;
 import com.bobmowzie.mowziesmobs.common.message.MessageSwingWroughtAxe;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;

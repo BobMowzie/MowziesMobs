@@ -1,23 +1,18 @@
 package com.bobmowzie.mowziesmobs.common.item;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.common.creativetab.MMTabs;
-import com.bobmowzie.mowziesmobs.common.message.MessageSwingWroughtAxe;
-import com.bobmowzie.mowziesmobs.common.property.WroughtAxeSwingProperty;
-
 import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
-import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.common.creativetab.MMTabs;
+import com.bobmowzie.mowziesmobs.common.message.MessageSwingWroughtAxe;
+import com.bobmowzie.mowziesmobs.common.property.WroughtAxeSwingProperty;
 
 public class ItemWroughtAxe extends ItemSword
 {
