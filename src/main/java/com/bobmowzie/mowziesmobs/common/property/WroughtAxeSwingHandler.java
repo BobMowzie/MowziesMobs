@@ -1,18 +1,16 @@
 package com.bobmowzie.mowziesmobs.common.property;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.bobmowzie.mowziesmobs.common.item.MMItems;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
 
-import com.bobmowzie.mowziesmobs.common.item.MMItems;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.PlayerTickEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WroughtAxeSwingHandler
 {

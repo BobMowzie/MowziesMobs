@@ -2,7 +2,6 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.common.item.ItemWroughtAxe;
 import com.bobmowzie.mowziesmobs.common.property.WroughtAxeSwingProperty;
-
 import net.ilexiconn.llibrary.client.render.IModelExtension;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
@@ -14,12 +13,13 @@ import net.minecraft.entity.player.EntityPlayer;
  */
 public class ModelPlayerExtension extends ModelBiped implements IModelExtension
 {
+    private float partialTicks = 0;
     @Override
     public void setRotationAngles(ModelBiped modelBiped, float v, float v1, float v2, float v3, float v4, float v5, Entity entity)
     {
         if (((EntityPlayer) entity).getHeldItem() != null && ((EntityPlayer) entity).getHeldItem().getItem() instanceof ItemWroughtAxe)
         {
-            int timer = WroughtAxeSwingProperty.getProperty((EntityPlayer) entity).getTime();
+            float timer = WroughtAxeSwingProperty.getProperty((EntityPlayer) entity).getTime();
             if (timer > 0)
             {
                 float controller1 = -timer * (timer - 30) * (timer - 20);
