@@ -5,6 +5,8 @@ import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelRenderer;
 import com.bobmowzie.mowziesmobs.common.animation.MMAnimation;
 import com.bobmowzie.mowziesmobs.common.entity.EntityWroughtnaut;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.MathHelper;
+import thehippomaster.AnimationAPI.AnimationAPI;
 import thehippomaster.AnimationAPI.client.Animator;
 
 public class ModelWroughtnaut extends MowzieModelBase
@@ -516,15 +518,16 @@ public class ModelWroughtnaut extends MowzieModelBase
             }
         }
 
-        f = (float) wn.walkFrame;
-        f1 = wn.walkAnim.getAnimationProgressSinSqrt();
+        float frame = wn.frame + AnimationAPI.proxy.getPartialTick();
+        f = (float) ((4 * Math.PI * frame - 30 * MathHelper.sin((float)(0.1 * Math.PI*(frame-9)))-27*Math.PI)/(4*Math.PI)) + 5f;
+        f1 = (float) Math.pow(MathHelper.sin((float) (wn.walkAnim.getTimer() * Math.PI * 0.05)), 2);
 
         float globalSpeed = (float) (Math.PI * 0.05);
         float globalDegree = 0.8F;
         float height = 2F;
 
         //groinJoint.rotationPointY -= 1 * f1;
-        waist.rotationPointZ -= f1 * 4 * Math.pow(Math.sin(globalSpeed * (wn.frame - 15)), 2);
+        waist.rotationPointZ -= f1 * 3f * Math.pow(Math.sin(globalSpeed * (frame - 13)), 2);
         bob(waist, 2F * globalSpeed, 1 * height, false, f, f1);
         swing(waist, 1F * globalSpeed, 0.3F * globalDegree, false, 0, 0, f, f1);
         swing(stomachJoint, 1F * globalSpeed, 0.6F * globalDegree, true, 0, 0, f, f1);
