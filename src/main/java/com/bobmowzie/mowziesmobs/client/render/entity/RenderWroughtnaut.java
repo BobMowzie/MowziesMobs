@@ -12,6 +12,8 @@ import net.minecraft.util.ResourceLocation;
 @SideOnly(Side.CLIENT)
 public class RenderWroughtnaut extends RenderLiving
 {
+    private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureWroughtnaut.png");
+
     public RenderWroughtnaut(ModelBase model, float shadowSize)
     {
         super(model, shadowSize);
@@ -26,7 +28,7 @@ public class RenderWroughtnaut extends RenderLiving
     @Override
     public ResourceLocation getEntityTexture(Entity entity)
     {
-        return new ResourceLocation(MowziesMobs.getModId() + "textures/entity/textureWroughtnaut.png");
+        return TEXTURE;
     }
 
     @Override

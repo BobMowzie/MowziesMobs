@@ -27,11 +27,11 @@ public class WroughtAxeSwingHandler
         property.update();
         if (player.getHeldItem() != null && player.getHeldItem().getItem() == MMItems.itemWroughtAxe)
         {
-            if (property.getTime() > 0)
+            if (property.getTick() > 0)
             {
                 property.decrementTime();
             }
-            if (property.getTime() == 15 && !player.worldObj.isRemote)
+            if (property.getTick() == WroughtAxeSwingProperty.SWING_HIT_TICK && !player.worldObj.isRemote)
             {
                 float damage = 7;
                 boolean hit = false;

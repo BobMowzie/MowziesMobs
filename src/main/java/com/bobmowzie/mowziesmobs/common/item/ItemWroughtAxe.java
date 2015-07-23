@@ -50,7 +50,7 @@ public class ItemWroughtAxe extends ItemSword
         if (!world.isRemote)
         {
             WroughtAxeSwingProperty property = WroughtAxeSwingProperty.getProperty(player);
-            if (property.getTime() <= 0)
+            if (property.getTick() <= 0)
             {
                 world.playSoundAtEntity(player, "mowziesmobs:wroughtnautWhoosh", 0.5F, 1F);
                 property.swing();

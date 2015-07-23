@@ -13,6 +13,10 @@ import net.minecraft.util.ResourceLocation;
 @SideOnly(Side.CLIENT)
 public class RenderTribesman extends RenderLiving
 {
+    private static final ResourceLocation ELITE_TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureTribesman2.png");
+
+    private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureTribesman1.png");
+
     public RenderTribesman(ModelBase model, float shadowSize)
     {
         super(model, shadowSize);
@@ -27,8 +31,11 @@ public class RenderTribesman extends RenderLiving
     @Override
     public ResourceLocation getEntityTexture(Entity entity)
     {
-        if (entity instanceof EntityTribeElite) return new ResourceLocation(MowziesMobs.getModId() + "textures/entity/textureTribesman2.png");
-        return new ResourceLocation(MowziesMobs.getModId() + "textures/entity/textureTribesman1.png");
+        if (entity instanceof EntityTribeElite)
+        {
+            return ELITE_TEXTURE;
+        }
+        return TEXTURE;
     }
 
     @Override

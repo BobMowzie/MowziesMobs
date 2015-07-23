@@ -12,6 +12,8 @@ import net.minecraft.util.ResourceLocation;
 @SideOnly(Side.CLIENT)
 public class RenderTribeLeader extends RenderLiving
 {
+    private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureTribeLeader.png");
+
     public RenderTribeLeader(ModelBase model, float shadowSize)
     {
         super(model, shadowSize);
@@ -26,7 +28,7 @@ public class RenderTribeLeader extends RenderLiving
     @Override
     public ResourceLocation getEntityTexture(Entity entity)
     {
-        return new ResourceLocation(MowziesMobs.getModId() + "textures/entity/textureTribeLeader.png");
+        return TEXTURE;
     }
 
     @Override

@@ -26,20 +26,23 @@ import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid = "mowziesmobs", name = "Mowzie's Mobs", version = "${version}", dependencies = "required-after:llibrary@[0.3.3,)")
+@Mod(modid = MowziesMobs.MODID, name = MowziesMobs.NAME, version = MowziesMobs.VERSION, dependencies = MowziesMobs.DEPENDENCIES)
 public class MowziesMobs
 {
+    public static final String MODID = "mowziesmobs";
+    public static final String NAME = "Mowzie's Mobs";
+    public static final String VERSION = "${version}";
+    public static final String DEPENDENCIES = "required-after:llibrary@[0.3.3,)";
+
     public static final MMStructureGenerator gen = new MMStructureGenerator();
+
     public static SimpleNetworkWrapper networkWrapper;
-    @Instance("mowziesmobs")
+
+    @Instance(MODID)
     public static MowziesMobs instance;
+
     @SidedProxy(clientSide = "com.bobmowzie.mowziesmobs.client.ClientProxy", serverSide = "com.bobmowzie.mowziesmobs.common.ServerProxy")
     public static ServerProxy proxy;
-
-    public static String getModId()
-    {
-        return "mowziesmobs:";
-    }
 
     public static boolean isDebugging()
     {
@@ -61,7 +64,7 @@ public class MowziesMobs
 
         GameRegistry.registerWorldGenerator(new MMWorldGenerator(), 0);
 
-        networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel("mowziesMobs");
+        networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
         networkWrapper.registerMessage(MessageSwingWroughtAxe.class, MessageSwingWroughtAxe.class, 0, Side.CLIENT);
     }
 

@@ -14,6 +14,8 @@ import net.minecraft.world.World;
 
 public class ItemWroughtHelm extends ItemArmor
 {
+    private static final String ARMOR_TEXTURE_STRING = MowziesMobs.MODID + ":textures/items/modeled/textureWroughtHelm.png";
+
     public ItemWroughtHelm()
     {
         super(ArmorMaterial.IRON, 2, 0);
@@ -28,7 +30,7 @@ public class ItemWroughtHelm extends ItemArmor
     }
 
     @Override
-    public boolean getIsRepairable(ItemStack p_82789_1_, ItemStack p_82789_2_)
+    public boolean getIsRepairable(ItemStack itemStack, ItemStack materialItemStack)
     {
         return false;
     }
@@ -40,27 +42,32 @@ public class ItemWroughtHelm extends ItemArmor
     }
 
     @Override
-    public int getDamage(ItemStack stack) {
+    public int getDamage(ItemStack stack)
+    {
         return 0;
     }
 
     @Override
-    public void setDamage(ItemStack stack, int damage) {
+    public void setDamage(ItemStack stack, int damage)
+    {
 
     }
 
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type)
     {
-        return MowziesMobs.getModId() + "textures/items/modeled/textureWroughtHelm.png";
+        return ARMOR_TEXTURE_STRING;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot) {
+    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot)
+    {
         ModelBiped armorModel = null;
-        if (itemStack != null) {
-            if (itemStack.getItem() instanceof ItemWroughtHelm) {
+        if (itemStack != null)
+        {
+            if (itemStack.getItem() instanceof ItemWroughtHelm)
+            {
                 armorModel = MowziesMobs.proxy.getArmorModel();
             }
         }

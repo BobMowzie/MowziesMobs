@@ -18,7 +18,7 @@ public class ItemMobRemover extends Item
     {
         super();
         setUnlocalizedName("mobRemover");
-        setTextureName(MowziesMobs.getModId() + "mobRemover");
+        setTextureName(MowziesMobs.MODID + ":mobRemover");
         setCreativeTab(MMTabs.generic);
     }
 

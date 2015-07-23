@@ -12,6 +12,8 @@ import net.minecraft.util.ResourceLocation;
 @SideOnly(Side.CLIENT)
 public class RenderFoliaath extends RenderLiving
 {
+    private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureFoliaath.png");
+
     public RenderFoliaath(ModelBase model, float shadowSize)
     {
         super(model, shadowSize);
@@ -26,7 +28,7 @@ public class RenderFoliaath extends RenderLiving
     @Override
     public ResourceLocation getEntityTexture(Entity entity)
     {
-        return new ResourceLocation(MowziesMobs.getModId() + "textures/entity/textureFoliaath.png");
+        return TEXTURE;
     }
 
     @Override
