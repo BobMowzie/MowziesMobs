@@ -10,7 +10,8 @@ public class WroughtAxeSwingProperty implements IExtendedEntityProperties
 {
     private static final String IDENTIFIER = "wroughtAxeSwing";
 
-    private float time;
+    private int prevTime;
+    private int time;
 
     @Override
     public void saveNBTData(NBTTagCompound compound)
@@ -27,19 +28,29 @@ public class WroughtAxeSwingProperty implements IExtendedEntityProperties
     {
     }
 
+    public void update()
+    {
+        prevTime = time;
+    }
+
     public void swing()
     {
         time = 30;
     }
 
-    public float getTime()
+    public int getTime()
     {
         return time;
     }
 
+    public float getTime(float partialRenderTicks)
+    {
+        return prevTime + (time - prevTime) * partialRenderTicks;
+    }
+
     public void decrementTime()
     {
-        time -= 1.5;
+        time--;
     }
 
     public static WroughtAxeSwingProperty getProperty(EntityPlayer player)

@@ -2,13 +2,17 @@ package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.common.item.MMItems;
 import com.bobmowzie.mowziesmobs.common.property.WroughtAxeSwingProperty;
+
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.ilexiconn.llibrary.common.event.Render3dItemEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.IItemRenderer;
+
 import org.lwjgl.opengl.GL11;
+
+import thehippomaster.AnimationAPI.AnimationAPI;
 
 @SideOnly(Side.CLIENT)
 public class ClientEventHandler
@@ -20,7 +24,7 @@ public class ClientEventHandler
         {
             if (event.type == IItemRenderer.ItemRenderType.EQUIPPED_FIRST_PERSON)
             {
-                float time = WroughtAxeSwingProperty.getProperty((EntityPlayer) event.data[1]).getTime();
+                float time = WroughtAxeSwingProperty.getProperty((EntityPlayer) event.data[1]).getTime(AnimationAPI.proxy.getPartialTick());
                 if (time > 6)
                 {
                     float controller1 = (float) Math.sin(time * Math.PI / 30);
@@ -37,7 +41,7 @@ public class ClientEventHandler
             }
             if (event.type == IItemRenderer.ItemRenderType.EQUIPPED)
             {
-                float time = WroughtAxeSwingProperty.getProperty((EntityPlayer) event.data[1]).getTime();
+                float time = WroughtAxeSwingProperty.getProperty((EntityPlayer) event.data[1]).getTime(AnimationAPI.proxy.getPartialTick());
                 if (time > 0)
                 {
                     float controller1 = (float) Math.sin(time * Math.PI / 30);

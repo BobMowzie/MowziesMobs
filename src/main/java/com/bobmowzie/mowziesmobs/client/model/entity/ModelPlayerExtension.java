@@ -1,7 +1,10 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
+import thehippomaster.AnimationAPI.AnimationAPI;
+
 import com.bobmowzie.mowziesmobs.common.item.ItemWroughtAxe;
 import com.bobmowzie.mowziesmobs.common.property.WroughtAxeSwingProperty;
+
 import net.ilexiconn.llibrary.client.render.IModelExtension;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
@@ -19,7 +22,7 @@ public class ModelPlayerExtension extends ModelBiped implements IModelExtension
     {
         if (((EntityPlayer) entity).getHeldItem() != null && ((EntityPlayer) entity).getHeldItem().getItem() instanceof ItemWroughtAxe)
         {
-            float timer = WroughtAxeSwingProperty.getProperty((EntityPlayer) entity).getTime();
+            float timer = WroughtAxeSwingProperty.getProperty((EntityPlayer) entity).getTime(AnimationAPI.proxy.getPartialTick());
             if (timer > 0)
             {
                 float controller1 = -timer * (timer - 30) * (timer - 20);

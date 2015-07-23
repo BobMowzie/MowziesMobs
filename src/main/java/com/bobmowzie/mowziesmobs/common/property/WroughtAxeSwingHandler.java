@@ -24,6 +24,7 @@ public class WroughtAxeSwingHandler
         EntityPlayer player = event.player;
         WroughtAxeSwingProperty property = WroughtAxeSwingProperty.getProperty(player);
 
+        property.update();
         if (player.getHeldItem() != null && player.getHeldItem().getItem() == MMItems.itemWroughtAxe)
         {
             if (property.getTime() > 0)
