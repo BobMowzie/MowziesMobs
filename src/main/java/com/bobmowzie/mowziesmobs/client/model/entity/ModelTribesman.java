@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
+import com.bobmowzie.mowziesmobs.common.entity.EntityTribeElite;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
@@ -227,8 +228,16 @@ public class ModelTribesman extends ModelBase {
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         GL11.glPushMatrix();
-        GL11.glScalef(0.75f, 0.75f, 0.75f);
-        GL11.glTranslatef(0, 0.5f, 0);
+        if (entity instanceof EntityTribeElite)
+        {
+            GL11.glScalef(0.85f, 0.85f, 0.85f);
+            GL11.glTranslatef(0, 0.25f, 0);
+        }
+        else
+        {
+            GL11.glScalef(0.75f, 0.75f, 0.75f);
+            GL11.glTranslatef(0, 0.5f, 0);
+        }
         this.modelCore.render(f5);
         GL11.glPopMatrix();
     }

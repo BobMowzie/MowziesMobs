@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.common.entity.EntityTribesman;
+import com.bobmowzie.mowziesmobs.common.entity.EntityTribeElite;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.model.ModelBase;
@@ -27,7 +27,7 @@ public class RenderTribesman extends RenderLiving
     @Override
     public ResourceLocation getEntityTexture(Entity entity)
     {
-        if (((EntityTribesman)entity).getType() == 1) return new ResourceLocation(MowziesMobs.getModId() + "textures/entity/textureTribesman2.png");
+        if (entity instanceof EntityTribeElite) return new ResourceLocation(MowziesMobs.getModId() + "textures/entity/textureTribesman2.png");
         return new ResourceLocation(MowziesMobs.getModId() + "textures/entity/textureTribesman1.png");
     }
 

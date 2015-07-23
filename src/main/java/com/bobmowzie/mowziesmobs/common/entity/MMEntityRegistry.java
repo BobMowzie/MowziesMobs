@@ -35,7 +35,9 @@ public class MMEntityRegistry implements IContentHandler
         registerEntity(EntityFoliaath.class, "Foliaath", true, 0x47CC3B, 0xC03BCC, false, 20, 3, 1, EnumCreatureType.monster, BiomeGenBase.jungleHills, BiomeGenBase.jungle, BiomeGenBase.jungleEdge);
         registerEntity(EntityBabyFoliaath.class, "BabyFoliaath", false, 0x47CC3B, 0xC03BCC, false, 1, 1, 1, EnumCreatureType.monster);
         registerEntity(EntityWroughtnaut.class, "FerrousWroughtnaut", true, 0x8C8C8C, 0xFFFFFF, false, 1, 1, 1, EnumCreatureType.monster);
-        registerEntity(EntityTribesman.class, "Tribesman", true, 0x8C8C8C, 0xFFFFFF, false, 1, 1, 1, EnumCreatureType.monster);
-        registerEntity(EntityTribeLeader.class, "TribeLeader", true, 0x8C8C8C, 0xFFFFFF, false, 1, 1, 1, EnumCreatureType.monster);
+        registerEntity(EntityTribeHunter.class, "TribesmanHunter", true, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.monster);
+        registerEntity(EntityTribeElite.class, "TribesmanElite", true, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.monster);
+        registerEntity(EntityTribeVillager.class, "TribesmanVillager", true, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.creature);
+        registerEntity(EntityTribeLeader.class, "TribeLeader", true, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.monster);
     }
 }
