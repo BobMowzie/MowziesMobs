@@ -25,10 +25,10 @@ public class ModelPlayerExtension extends ModelBiped implements IModelExtension
             float timer = WroughtAxeSwingProperty.getProperty((EntityPlayer) entity).getTime(AnimationAPI.proxy.getPartialTick());
             if (timer > 0)
             {
-                float controller1 = -timer * (timer - 30) * (timer - 20);
-                float controller2 = (float) Math.sin(timer * Math.PI / 30);
-                float controller3 = (float) ((1 / (1 + Math.exp(-timer + 3))) - (1 / (1 + Math.exp(-timer + 27))));
-                modelBiped.bipedRightArm.rotateAngleY = 0.6F * controller1 / 1000 + 0.3F * controller2;
+                float controller1 = WroughtAxeSwingProperty.fnc1(timer);
+                float controller2 = WroughtAxeSwingProperty.fnc2(timer);
+                float controller3 = WroughtAxeSwingProperty.fnc3(timer, 0.1f, 0.9f, 30);
+                modelBiped.bipedRightArm.rotateAngleY = 0.6F * controller1 + 0.3F * controller2;
                 modelBiped.bipedRightArm.rotateAngleX = (float) (-Math.PI / 2 * controller3);
             }
         }

@@ -27,12 +27,12 @@ public class ClientEventHandler
                 float time = WroughtAxeSwingProperty.getProperty((EntityPlayer) event.data[1]).getTime(AnimationAPI.proxy.getPartialTick());
                 if (time > 6)
                 {
-                    float controller1 = (float) Math.sin(time * Math.PI / 30);
-                    float controller2 = (float) ((1 / (1 + Math.exp(-time + 5))) - (1 / (1 + Math.exp(-time + 25))));
-                    float controller3 = -time * (time - 30) * (time - 20);
+                    float controller1 = WroughtAxeSwingProperty.fnc2(time);
+                    float controller2 = WroughtAxeSwingProperty.fnc3(time, 0.166f, 0.833f, 30);
+                    float controller3 = WroughtAxeSwingProperty.fnc1(time);
                     GL11.glRotatef(90f * controller2, -1f, 0f, 1f);
                     GL11.glRotatef(90f * controller2, -1f, 0f, -1f);
-                    GL11.glRotatef(60f * (controller3 / 1000 + 1.2f * controller1), -1f, 0f, -1f);
+                    GL11.glRotatef(60f * (controller3 + 1.2f * controller1), -1f, 0f, -1f);
                     GL11.glTranslatef(0.5f * controller2, -0.3f * controller2, -0.6f * controller2);
                     GL11.glScalef(1 + 0.8f * controller1, 1 + 0.8f * controller1, 1 + 0.8f * controller1);
                 }
@@ -44,8 +44,8 @@ public class ClientEventHandler
                 float time = WroughtAxeSwingProperty.getProperty((EntityPlayer) event.data[1]).getTime(AnimationAPI.proxy.getPartialTick());
                 if (time > 0)
                 {
-                    float controller1 = (float) Math.sin(time * Math.PI / 30);
-                    float controller2 = (float) ((1 / (1 + Math.exp(-time + 5))) - (1 / (1 + Math.exp(-time + 25))));
+                    float controller1 = WroughtAxeSwingProperty.fnc2(time);
+                    float controller2 = WroughtAxeSwingProperty.fnc3(time, 0.166f, 0.833f, 30);
                     GL11.glRotatef(90f * controller2, -1f, 0f, 1f);
                     GL11.glRotatef(90f * controller2, -1f, 0f, -1f);
                     GL11.glTranslatef(0.5f * controller2, -0.3f * controller2, -0.8f * controller2);

@@ -50,7 +50,7 @@ public class WroughtAxeSwingProperty implements IExtendedEntityProperties
 
     public void decrementTime()
     {
-        time--;
+        time -= 2;
     }
 
     public static WroughtAxeSwingProperty getProperty(EntityPlayer player)
@@ -62,5 +62,20 @@ public class WroughtAxeSwingProperty implements IExtendedEntityProperties
             player.registerExtendedProperties(IDENTIFIER, properties);
         }
         return (WroughtAxeSwingProperty) properties;
+    }
+
+    public static float fnc1(float x)
+    {
+        return -9*x*(x-1)*(3*x-2);
+    }
+
+    public static float fnc2(float x)
+    {
+        return (float) Math.sin(x*Math.PI);
+    }
+
+    public static float fnc3(float x, float incline, float decline, float steepness)
+    {
+        return (float) (1 / (1 + Math.exp(-steepness*(x - incline))) - (1 / (1 + Math.exp(-steepness*(x - decline)))));
     }
 }
