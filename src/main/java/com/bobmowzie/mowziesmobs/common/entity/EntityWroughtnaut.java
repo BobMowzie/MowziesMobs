@@ -218,7 +218,7 @@ public class EntityWroughtnaut extends MMEntityBase
         float moveX = (float) (posX - prevPosX);
         float moveZ = (float) (posZ - prevPosZ);
         float speed = (float) Math.sqrt(moveX * moveX + moveZ * moveZ);
-        if (speed > 0.02)
+        if (speed > 0.01)
         {
             if (getAnimID() == 0) walkAnim.increaseTimer();
         }
