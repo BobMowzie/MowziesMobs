@@ -1,12 +1,24 @@
 [
-	{
-		"modid": "mowziesmobs",
-		"name": "Mowzie's Mobs",
-		"description": "Mowzie's Mobs adds a variety of high-quality fantasy creatures to your Minecraft world. Currently, Mowzie's Mobs adds only one mob, the foliaath, but this number will grow soon.",
-		"version": "${version}",
-		"url": "",
-		"authorList": ["BobMowzie", "iLexiconn"],
-		"credits": "RafaMv",
-		"logoFile": ""
-	}
+    {
+        "modid": "mowziesmobs",
+        "name": "Mowzie's Mobs",
+        "description": "Mowzie's Mobs adds a variety of high-quality fantasy creatures to your Minecraft world. Currently, Mowzie's Mobs adds only one mob, the foliaath, but this number will grow soon.",
+        "version": "${version}",
+        "mcversion": "1.7.10",
+        "authorList": [
+            "iLexiconn",
+            "BobMowzie",
+			"Pau101"
+        ],
+        "credits": "RafaMv",
+        "requiredMods": [
+            "Forge@[10.13.4.1448,)",
+            "llibrary@[0.3.3,)",
+            "AnimationAPI@[1.2.4,)"
+        ],
+        "dependencies": [
+            "llibrary@[0.3.3,)"
+        ],
+        "useDependencyInformation": true
+    }
 ]
