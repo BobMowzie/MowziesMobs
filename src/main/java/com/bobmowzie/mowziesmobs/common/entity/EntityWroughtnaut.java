@@ -25,7 +25,7 @@ import java.util.List;
 
 public class EntityWroughtnaut extends MMEntityBase
 {
-    public double walkFrame;
+//    public double walkFrame;
     public ControlledAnimation walkAnim = new ControlledAnimation(10);
     public boolean swingDirection = false;
     public boolean vulnerable = false;
@@ -212,8 +212,8 @@ public class EntityWroughtnaut extends MMEntityBase
             }
         }
 
-        double walkFrameIncrement = 1.5 * Math.pow(Math.sin((Math.PI * 0.05) * (frame - 9)), 2) + 0.25;
-        walkFrame += walkFrameIncrement;
+//        double walkFrameIncrement = 1.5 * Math.pow(Math.sin((Math.PI * 0.05) * (frame - 9)), 2) + 0.25;
+//        walkFrame += walkFrameIncrement;
 
         float moveX = (float) (posX - prevPosX);
         float moveZ = (float) (posZ - prevPosZ);
@@ -225,7 +225,7 @@ public class EntityWroughtnaut extends MMEntityBase
         else walkAnim.decreaseTimer();
         if (getAnimID() != 0) walkAnim.decreaseTimer(2);
 
-        if (frame % 20 == 3 && speed > 0.03 && getAnimID() == 0 && active) playSound("mob.zombie.metal", 0.5F, 0.5F);
+        if (frame % 20 == 5 && speed > 0.03 && getAnimID() == 0 && active) playSound("mob.zombie.metal", 0.5F, 0.5F);
 
         List<EntityLivingBase> nearestEntities = getEntityLivingBaseNearby(2.2, 2.2, 4, 2.2);
         for (Entity entity : nearestEntities)

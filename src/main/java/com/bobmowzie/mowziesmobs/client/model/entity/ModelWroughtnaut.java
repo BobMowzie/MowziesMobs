@@ -970,7 +970,7 @@ public class ModelWroughtnaut extends MowzieModelBase
             animator.setStationaryPhase(3);
 
             animator.resetPhase(10);
-            neck.rotateAngleX += Math.sin(entityWroughtnaut.frame * 2) * waistBendController.rotationPointX * 0.1;
+            neck.rotateAngleX += Math.sin((entityWroughtnaut.frame + AnimationAPI.proxy.getPartialTick())* 2) * waistBendController.rotationPointX * 0.1;
         }
 
         if (entityWroughtnaut.getAnimID() == MMAnimation.TAKEDAMAGE.id)
@@ -1168,10 +1168,10 @@ public class ModelWroughtnaut extends MowzieModelBase
 
             animator.setStationaryPhase(40);
 
-            swing(stomachJoint, 0.5F, 0.2F * waistBendController.rotationPointX, false, 0, 0, entityWroughtnaut.frame, 1F);
-            walk(neck, 1.5F, 0.1F * waistBendController.rotationPointX, false, 0F, 0, entityWroughtnaut.frame, 1F);
-            swing(shoulderRight, 1.5F, 0.05F * waistBendController.rotationPointX, true, 0F, 0, entityWroughtnaut.frame, 1F);
-            swing(shoulderLeft, 1.5F, 0.05F * waistBendController.rotationPointX, false, 0F, 0, entityWroughtnaut.frame, 1F);
+            swing(stomachJoint, 0.5F, 0.2F * waistBendController.rotationPointX, false, 0, 0, (entityWroughtnaut.frame + AnimationAPI.proxy.getPartialTick()), 1F);
+            walk(neck, 1.5F, 0.1F * waistBendController.rotationPointX, false, 0F, 0, (entityWroughtnaut.frame + AnimationAPI.proxy.getPartialTick()), 1F);
+            swing(shoulderRight, 1.5F, 0.05F * waistBendController.rotationPointX, true, 0F, 0, (entityWroughtnaut.frame + AnimationAPI.proxy.getPartialTick()), 1F);
+            swing(shoulderLeft, 1.5F, 0.05F * waistBendController.rotationPointX, false, 0F, 0, (entityWroughtnaut.frame + AnimationAPI.proxy.getPartialTick()), 1F);
         }
 
         if (entityWroughtnaut.getAnimID() == MMAnimation.ACTIVATE.id)
