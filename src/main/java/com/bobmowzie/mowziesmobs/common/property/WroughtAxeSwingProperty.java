@@ -11,8 +11,8 @@ public class WroughtAxeSwingProperty implements IExtendedEntityProperties
 {
     private static final String IDENTIFIER = "wroughtAxeSwing";
 
-    private static final int SWING_LENGTH = 15;
-    public static final int SWING_HIT_TICK = 6;
+    private static final int SWING_LENGTH = 20;
+    public static final int SWING_HIT_TICK = 10;
 
     private int prevTime;
     private int time;
