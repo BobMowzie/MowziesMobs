@@ -6,9 +6,9 @@
         "version": "${version}",
         "mcversion": "1.7.10",
         "authorList": [
-            "iLexiconn",
             "BobMowzie",
-			"pau101"
+            "iLexiconn",
+            "pau101"
         ],
         "credits": "RafaMv",
         "requiredMods": [
