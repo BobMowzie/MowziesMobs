@@ -51,6 +51,7 @@ repositories {
 
 dependencies {
     compile "net.ilexiconn.llibrary:LLibrary:${config.llibrary_version}-${config.minecraft_version}:dev"
+    compile "thehippomaster:AnimationAPI:${config.animationapi_version}:dev"
 }
 
 processResources {
