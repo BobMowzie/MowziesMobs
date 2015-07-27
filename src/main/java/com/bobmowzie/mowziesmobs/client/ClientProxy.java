@@ -15,6 +15,7 @@ import com.bobmowzie.mowziesmobs.client.model.entity.ModelWroughtnaut;
 import com.bobmowzie.mowziesmobs.client.model.extension.ModelPlayerExtension;
 import com.bobmowzie.mowziesmobs.client.model.item.ModelWroughtAxe;
 import com.bobmowzie.mowziesmobs.client.model.item.ModelWroughtHelm;
+import com.bobmowzie.mowziesmobs.client.playeranimation.PlayerAnimationHandlerClient;
 import com.bobmowzie.mowziesmobs.client.render.entity.RenderBabyFoliaath;
 import com.bobmowzie.mowziesmobs.client.render.entity.RenderFoliaath;
 import com.bobmowzie.mowziesmobs.client.render.entity.RenderTribeLeader;
@@ -59,6 +60,9 @@ public class ClientProxy extends ServerProxy
         RenderHelper.registerItem3dRenderer(MMItems.itemWroughtAxe, new ModelWroughtAxe(), new ResourceLocation(MowziesMobs.MODID, "textures/items/modeled/textureWroughtAxe.png"));
         RenderHelper.registerItem3dRenderer(MMItems.itemWroughtHelm, new ModelWroughtHelm(), new ResourceLocation(MowziesMobs.MODID, "textures/items/modeled/textureWroughtHelm.png"));
         RenderHelper.registerModelExtension(new ModelPlayerExtension());
+        PlayerAnimationHandlerClient playerAnimationHandlerClient = new PlayerAnimationHandlerClient();
+        FMLCommonHandler.instance().bus().register(playerAnimationHandlerClient);
+        MinecraftForge.EVENT_BUS.register(playerAnimationHandlerClient);
     }
 
     public ModelBiped getArmorModel()
