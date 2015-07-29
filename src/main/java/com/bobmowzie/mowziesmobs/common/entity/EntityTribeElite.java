@@ -1,70 +1,80 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by jnad325 on 7/23/15.
  */
-public class EntityTribeElite extends EntityTribesman {
-    public List<EntityTribeHunter> pack = new ArrayList<>();
-    public int packSize = 0;
-    public EntityTribeElite(World world) {
+public class EntityTribeElite extends EntityTribesman
+{
+    private List<EntityTribeHunter> pack = new ArrayList<EntityTribeHunter>();
+
+    public EntityTribeElite(World world)
+    {
         super(world);
         tasks.addTask(5, new EntityAIWander(this, 0.4));
         setMask(0);
     }
 
     @Override
-    public void onUpdate() {
+    public void onUpdate()
+    {
         super.onUpdate();
-        if (pack != null)
+        if (!worldObj.isRemote && pack != null)
         {
-            updatePackSize();
-            if (getAttackTarget() == null) {
-                for (int i = 0; i < pack.size(); i++) {
+            if (getAttackTarget() == null)
+            {
+                float theta = (2 * (float) Math.PI / pack.size());
+                for (int i = 0; i < pack.size(); i++)
+                {
                     if (pack.get(i) != null)
-                        pack.get(i).getNavigator().tryMoveToXYZ(posX + 3 * Math.cos((2 * Math.PI / packSize) * i), posY, posZ + 3 * Math.sin((2 * Math.PI / packSize) * i), 0.45);
+                    {
+                        pack.get(i).getNavigator().tryMoveToXYZ(posX + 3 * MathHelper.cos(theta * i), posY, posZ + 3 * MathHelper.sin(theta * i), 0.45);
+                    }
                 }
             }
         }
     }
 
-    private void updatePackSize() {
-        packSize = 0;
-        for (int i = 0; i < pack.size(); i++) {
-            if (pack.get(i) != null) packSize++;
-        }
+    public void removePackMember(EntityTribeHunter tribeHunter)
+    {
+        pack.remove(tribeHunter);
+    }
+
+    public void addPackMember(EntityTribeHunter tribeHunder)
+    {
+        pack.add(tribeHunder);
     }
 
     @Override
-    public IEntityLivingData onSpawnWithEgg(IEntityLivingData p_110161_1_)
+    public IEntityLivingData onSpawnWithEgg(IEntityLivingData data)
     {
         int size = rand.nextInt(2) + 3;
-        for(int i = 0; i <= size; i++)
+        for (int i = 0; i <= size; i++)
         {
             pack.add(i, new EntityTribeHunter(worldObj, this));
             pack.get(i).setMask(0);
-            pack.get(i).setIndex(i);
-            pack.get(i).setLeaderID(getEntityId());
+            pack.get(i).setLeaderUUID(getUniqueID().toString());
             pack.get(i).setPosition(posX + 0.1 * i, posY, posZ);
             worldObj.spawnEntityInWorld(pack.get(i));
         }
-        return super.onSpawnWithEgg(p_110161_1_);
+        return super.onSpawnWithEgg(data);
     }
 
     @Override
-    public void onDeath(DamageSource p_70645_1_)
+    public void onDeath(DamageSource damageSource)
     {
-        super.onDeath(p_70645_1_);
-        for(int i = 0; i < pack.size(); i++)
+        super.onDeath(damageSource);
+        for (int i = 0; i < pack.size(); i++)
         {
-            if (pack.get(i) != null) pack.get(i).leader = null;
+            pack.get(i).removeLeader();
         }
     }
 }

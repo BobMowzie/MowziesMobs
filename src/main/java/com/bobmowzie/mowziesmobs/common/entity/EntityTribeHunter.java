@@ -1,5 +1,8 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
+import java.util.List;
+import java.util.UUID;
+
 import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
@@ -8,91 +11,115 @@ import net.minecraft.world.World;
 /**
  * Created by jnad325 on 7/23/15.
  */
-public class EntityTribeHunter extends EntityTribesman {
-    public EntityTribeElite leader = null;
-    public int leaderID = -2;
-    public int index = 0;
+public class EntityTribeHunter extends EntityTribesman
+{
+    private static final String ABSENT_LEADER = "";
 
-    public EntityTribeHunter(World world) {
+    private static final int LEADER_UUID_ID = 31;
+
+    private EntityTribeElite leader;
+
+    public EntityTribeHunter(World world)
+    {
         super(world);
         tasks.addTask(5, new EntityAIWander(this, 0.4));
         this.leader = null;
     }
 
-    @Override
-    public void onUpdate() {
-        super.onUpdate();
-        if (worldObj.isRemote) {
-            if (leaderID == -2 && leaderID != -1) {
-                leaderID = getLeaderID();
-            }
-            System.out.println(leaderID);
-            if (leader == null && leaderID != -1 && leaderID != -2) {
-                leader = (EntityTribeElite) worldObj.getEntityByID(getLeaderID());
-                leader.pack.set(getPackIndex(), this);
-            }
-        }
-    }
-
-    public EntityTribeHunter(World world, EntityTribeElite leader) {
+    public EntityTribeHunter(World world, EntityTribeElite leader)
+    {
         super(world);
         this.leader = leader;
     }
 
-    public void setIndex(int index) {
-        this.index = index;
-        setPackIndex(index);
-    }
-
     @Override
-    public void onDeath(DamageSource p_70645_1_) {
-        super.onDeath(p_70645_1_);
-        if (leader != null) leader.pack.set(index, null);
-    }
-
     protected void entityInit()
     {
         super.entityInit();
-        dataWatcher.addObject(30, 0);
-        dataWatcher.addObject(31, 0);
+        dataWatcher.addObject(LEADER_UUID_ID, ABSENT_LEADER);
     }
 
-    public int getLeaderID()
+    @Override
+    public void onUpdate()
     {
-        return dataWatcher.getWatchableObjectInt(30);
+        super.onUpdate();
+        if (!worldObj.isRemote)
+        {
+            if (leader == null && getLeaderUUID() != ABSENT_LEADER)
+            {
+                leader = getLeader();
+                if (leader != null)
+                {
+                    leader.addPackMember(this);
+                }
+            }
+        }
     }
 
-    public void setLeaderID(Integer id)
+    @Override
+    public void onDeath(DamageSource damageSource)
     {
-        dataWatcher.updateObject(30, id);
+        super.onDeath(damageSource);
+        if (leader != null)
+        {
+            leader.removePackMember(this);
+        }
     }
 
-    public int getPackIndex()
+    public void setLeaderUUID(String uuid)
     {
-        return dataWatcher.getWatchableObjectInt(31);
+        dataWatcher.updateObject(LEADER_UUID_ID, uuid);
     }
 
-    public void setPackIndex(Integer index)
+    public String getLeaderUUID()
     {
-        dataWatcher.updateObject(31, index);
+        return dataWatcher.getWatchableObjectString(LEADER_UUID_ID);
     }
 
+    public EntityTribeElite getLeader()
+    {
+        try
+        {
+            UUID uuid = UUID.fromString(getLeaderUUID());
+            if (uuid == null)
+            {
+                return null;
+            }
+            List<EntityTribeElite> potentialLeaders = worldObj.getEntitiesWithinAABB(EntityTribeElite.class, boundingBox.expand(32, 32, 32));
+            for (EntityTribeElite elite : potentialLeaders)
+            {
+                if (uuid.equals(elite.getUniqueID()))
+                {
+                    return elite;
+                }
+            }
+            return null;
+        }
+        catch (IllegalArgumentException e)
+        {
+            return null;
+        }
+    }
+
+    public void removeLeader()
+    {
+        setLeaderUUID(ABSENT_LEADER);
+        leader = null;
+    }
+
+    @Override
     public void writeEntityToNBT(NBTTagCompound compound)
     {
         super.writeEntityToNBT(compound);
-        if (leader != null) setLeaderID(leader.getEntityId());
-        else setLeaderID(-1);
-        System.out.println(getLeaderID());
         compound.setInteger("mask", getMask());
-        compound.setInteger("leaderID", getLeaderID());
-        compound.setInteger("index", getPackIndex());
+        compound.setString("leaderUUID", getLeaderUUID());
     }
 
+    @Override
     public void readEntityFromNBT(NBTTagCompound compound)
     {
         super.readEntityFromNBT(compound);
         setMask(compound.getInteger("mask"));
-        setLeaderID(compound.getInteger("leaderID"));
-        setIndex(compound.getInteger("index"));
+        setLeaderUUID(compound.getString("leaderUUID"));
     }
 }
