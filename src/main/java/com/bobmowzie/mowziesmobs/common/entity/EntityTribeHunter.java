@@ -10,7 +10,7 @@ import net.minecraft.world.World;
  */
 public class EntityTribeHunter extends EntityTribesman {
     public EntityTribeElite leader = null;
-    public int leaderID = -1;
+    public int leaderID = -2;
     public int index = 0;
 
     public EntityTribeHunter(World world) {
@@ -22,12 +22,14 @@ public class EntityTribeHunter extends EntityTribesman {
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!worldObj.isRemote)
-        {
-            if (leader == null && leaderID != -1){
+        if (worldObj.isRemote) {
+            if (leaderID == -2 && leaderID != -1) {
+                leaderID = getLeaderID();
+            }
+            System.out.println(leaderID);
+            if (leader == null && leaderID != -1 && leaderID != -2) {
                 leader = (EntityTribeElite) worldObj.getEntityByID(getLeaderID());
-                leader.pack.set(index, this);
-                System.out.println(leaderID);
+                leader.pack.set(getPackIndex(), this);
             }
         }
     }
@@ -92,7 +94,5 @@ public class EntityTribeHunter extends EntityTribesman {
         setMask(compound.getInteger("mask"));
         setLeaderID(compound.getInteger("leaderID"));
         setIndex(compound.getInteger("index"));
-
-        leaderID = getLeaderID();
     }
 }
