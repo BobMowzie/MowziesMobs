@@ -9,13 +9,27 @@ import net.minecraft.world.World;
  * Created by jnad325 on 7/23/15.
  */
 public class EntityTribeHunter extends EntityTribesman {
-    public EntityTribeElite leader;
+    public EntityTribeElite leader = null;
+    public int leaderID = -1;
     public int index = 0;
 
     public EntityTribeHunter(World world) {
         super(world);
         tasks.addTask(5, new EntityAIWander(this, 0.4));
         this.leader = null;
+    }
+
+    @Override
+    public void onUpdate() {
+        super.onUpdate();
+        if (!worldObj.isRemote)
+        {
+            if (leader == null && leaderID != -1){
+                leader = (EntityTribeElite) worldObj.getEntityByID(getLeaderID());
+                leader.pack.set(index, this);
+                System.out.println(leaderID);
+            }
+        }
     }
 
     public EntityTribeHunter(World world, EntityTribeElite leader) {
@@ -64,6 +78,9 @@ public class EntityTribeHunter extends EntityTribesman {
     public void writeEntityToNBT(NBTTagCompound compound)
     {
         super.writeEntityToNBT(compound);
+        if (leader != null) setLeaderID(leader.getEntityId());
+        else setLeaderID(-1);
+        System.out.println(getLeaderID());
         compound.setInteger("mask", getMask());
         compound.setInteger("leaderID", getLeaderID());
         compound.setInteger("index", getPackIndex());
@@ -76,7 +93,6 @@ public class EntityTribeHunter extends EntityTribesman {
         setLeaderID(compound.getInteger("leaderID"));
         setIndex(compound.getInteger("index"));
 
-        leader = (EntityTribeElite) worldObj.getEntityByID(getLeaderID());
-        leader.pack.set(index, this);
+        leaderID = getLeaderID();
     }
 }
