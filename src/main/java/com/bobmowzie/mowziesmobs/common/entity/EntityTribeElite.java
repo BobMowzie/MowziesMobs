@@ -59,11 +59,11 @@ public class EntityTribeElite extends EntityTribesman
         double theta = 2 * Math.PI / pack.size();
         for (int i = 0; i < pack.size(); i++)
         {
-            double targetTheta = theta * i;
             int nearestIndex = -1;
             double smallestDiffSq = Double.MAX_VALUE;
-            double x = posX + packRadius * Math.cos(theta * i);
-            double z = posZ + packRadius * Math.sin(theta * i);
+            double targetTheta = theta * i;
+            double x = posX + packRadius * Math.cos(targetTheta);
+            double z = posZ + packRadius * Math.sin(targetTheta);
             for (int n = 0; n < pack.size(); n++)
             {
                 EntityTribeHunter tribeHunter = pack.get(n);
