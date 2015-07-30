@@ -1,12 +1,12 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
-import java.util.List;
-import java.util.UUID;
-
 import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by jnad325 on 7/23/15.
@@ -37,6 +37,26 @@ public class EntityTribeHunter extends EntityTribesman
     {
         super.entityInit();
         dataWatcher.addObject(LEADER_UUID_ID, ABSENT_LEADER);
+    }
+
+    protected void updateAttackAI() {
+        if (timeSinceAttack < 50) timeSinceAttack ++;
+        if (getAttackTarget() != null)
+        {
+            if (targetDistance > 7) getNavigator().tryMoveToXYZ(getAttackTarget().posX, getAttackTarget().posY, getAttackTarget().posZ, 0.6);
+            else
+            {
+                if (attacking == false) {
+                    if (leader != null) circleEntity(getAttackTarget(), 7, 0.3f, true, (float) (2 * Math.PI/leader.pack.size()));
+                    else circleEntity(getAttackTarget(), 7, 0.3f, true, 0);
+                }
+            }
+            if (rand.nextInt(40) == 0 && timeSinceAttack == 50)
+            {
+                attacking = true;
+                getNavigator().tryMoveToEntityLiving(getAttackTarget(), 0.5);
+            }
+        }
     }
 
     @Override

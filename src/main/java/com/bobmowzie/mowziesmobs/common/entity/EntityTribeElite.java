@@ -1,20 +1,20 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by jnad325 on 7/23/15.
  */
 public class EntityTribeElite extends EntityTribesman
 {
-    private List<EntityTribeHunter> pack = new ArrayList<EntityTribeHunter>();
+    public List<EntityTribeHunter> pack = new ArrayList<EntityTribeHunter>();
 
     public EntityTribeElite(World world)
     {
@@ -48,9 +48,9 @@ public class EntityTribeElite extends EntityTribesman
         pack.remove(tribeHunter);
     }
 
-    public void addPackMember(EntityTribeHunter tribeHunder)
+    public void addPackMember(EntityTribeHunter tribeHunter)
     {
-        pack.add(tribeHunder);
+        pack.add(tribeHunter);
     }
 
     @Override

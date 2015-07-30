@@ -253,10 +253,14 @@ public class ModelTribesman extends MowzieModelBase {
         super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
         setToInitPose();
         //        f = entity.ticksExisted;
-        //        f1 = 0.5f;        if (f1 > 0.5f) f1 = 0.5f;
+        //        f1 = 0.5f;
+        if (f1 > 0.6f) f1 = 0.6f;
         float globalSpeed = 1.5f;
         float globalHeight = 1;
         float globalDegree = 1;
+        faceTarget(neck, 2, f3, f4);
+        faceTarget(head, 2, f3, f4);
+
         bob(body, 1 * globalSpeed, 2.5f * globalHeight, false, f, f1);
         walk(body, 1 * globalSpeed, 0.2f * globalHeight, false, 1, 0.2f, f, f1);
         walk(thighLeft, 1 * globalSpeed, 0.2f * globalHeight, true, 1, -0.4f, f, f1);
