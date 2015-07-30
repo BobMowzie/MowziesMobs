@@ -47,7 +47,7 @@ public class EntityTribeHunter extends EntityTribesman
             else
             {
                 if (attacking == false) {
-                    if (leader != null) circleEntity(getAttackTarget(), 7, 0.3f, true, (float) (2 * Math.PI/leader.pack.size()));
+                    if (leader != null) circleEntity(getAttackTarget(), 7, 0.3f, true, (2 * (float) Math.PI / leader.getPackSize()));
                     else circleEntity(getAttackTarget(), 7, 0.3f, true, 0);
                 }
             }
