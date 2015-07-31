@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
-import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
@@ -22,7 +21,7 @@ public class EntityTribeHunter extends EntityTribesman
     public EntityTribeHunter(World world)
     {
         super(world);
-        tasks.addTask(5, new EntityAIWander(this, 0.4));
+        //tasks.addTask(5, new EntityAIWander(this, 0.4));
         this.leader = null;
     }
 

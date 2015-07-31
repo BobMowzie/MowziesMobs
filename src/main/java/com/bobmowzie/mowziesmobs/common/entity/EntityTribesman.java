@@ -1,12 +1,13 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
+import com.bobmowzie.mowziesmobs.common.animation.AnimBasicAttack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIAttackOnCollide;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
+import thehippomaster.AnimationAPI.AnimationAPI;
 
 /**
  * Created by jnad325 on 7/9/15.
@@ -17,8 +18,9 @@ public class EntityTribesman extends MMEntityBase {
     protected int timeSinceAttack = 0;
     public EntityTribesman(World world) {
         super(world);
-        tasks.addTask(2, new EntityAIAttackOnCollide(this, EntityPlayer.class, 0.5D, false));
-        this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true));
+        tasks.addTask(3, new EntityAIAttackOnCollide(this, EntityPlayer.class, 0.5D, false));
+        targetTasks.addTask(1, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true));
+        tasks.addTask(2, new AnimBasicAttack(this, 1, 15, "", 1, 3, 1, 7));
         setMask(0);
     }
 
@@ -26,7 +28,13 @@ public class EntityTribesman extends MMEntityBase {
     public boolean attackEntityAsMob(Entity entity) {
         attacking = false;
         timeSinceAttack = 0;
-        return entity.attackEntityFrom(DamageSource.causeMobDamage(this), 2);
+        AnimationAPI.sendAnimPacket(this, 1);
+        return super.attackEntityAsMob(entity);
+    }
+
+    @Override
+    public int getAttack() {
+        return 2;
     }
 
     protected void updateAttackAI() {
@@ -50,6 +58,7 @@ public class EntityTribesman extends MMEntityBase {
     public void onUpdate() {
         super.onUpdate();
         updateAttackAI();
+        if (getAnimID() == 0) AnimationAPI.sendAnimPacket(this, 1);
     }
 
     protected void entityInit()

@@ -12,8 +12,10 @@ public class AnimBasicAttack extends MMAnimBase
     protected String attackSound;
     protected float knockback = 1;
     protected float range;
+    protected float damageMultiplier;
+    protected int damageFrame;
 
-    public AnimBasicAttack(MMEntityBase entity, int id, int duration, String sound, float knockback, float range)
+    public AnimBasicAttack(MMEntityBase entity, int id, int duration, String sound, float knockback, float range, float damageMultiplier, int damageFrame)
     {
         super(entity, id, duration);
         setMutexBits(8);
@@ -23,6 +25,8 @@ public class AnimBasicAttack extends MMAnimBase
         attackSound = sound;
         this.knockback = knockback;
         this.range = range;
+        this.damageMultiplier = damageMultiplier;
+        this.damageFrame = damageFrame;
     }
 
     public void startExecuting()
@@ -34,14 +38,14 @@ public class AnimBasicAttack extends MMAnimBase
     public void updateTask()
     {
         super.updateTask();
-        if (entity.getAnimTick() < ((duration / 2) - 4) && entityTarget != null)
+        if (entity.getAnimTick() < damageFrame && entityTarget != null)
             entity.getLookHelper().setLookPositionWithEntity(entityTarget, 30F, 30F);
-        if (entity.getAnimTick() == ((duration / 2) - 4))
+        if (entity.getAnimTick() == damageFrame)
         {
             float damage = (float) entity.getAttack();
             if (entityTarget != null && entity.targetDistance <= range)
             {
-                entityTarget.attackEntityFrom(DamageSource.causeMobDamage(entity), damage);
+                entityTarget.attackEntityFrom(DamageSource.causeMobDamage(entity), damage * damageMultiplier);
                 entityTarget.motionX *= knockback;
                 entityTarget.motionZ *= knockback;
             }

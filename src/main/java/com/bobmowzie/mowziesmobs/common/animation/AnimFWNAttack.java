@@ -12,7 +12,7 @@ public class AnimFWNAttack extends AnimBasicAttack
 
     public AnimFWNAttack(MMEntityBase entity, int id, int duration, String sound, float knockback, float range, float arc)
     {
-        super(entity, id, duration, sound, knockback, range);
+        super(entity, id, duration, sound, knockback, range, 0, 0);
         this.arc = arc;
     }
 

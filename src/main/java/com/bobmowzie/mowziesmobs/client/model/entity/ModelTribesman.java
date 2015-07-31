@@ -1,12 +1,15 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.AdvancedModelRenderer;
 import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelBase;
-
-import com.bobmowzie.mowziesmobs.common.entity.EntityTribeElite;
-import net.minecraft.client.model.ModelRenderer;
 import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelRenderer;
+import com.bobmowzie.mowziesmobs.common.entity.EntityTribeElite;
+import com.bobmowzie.mowziesmobs.common.entity.EntityTribesman;
+import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import org.lwjgl.opengl.GL11;
+import thehippomaster.AnimationAPI.IAnimatedEntity;
+import thehippomaster.AnimationAPI.client.Animator;
 
 public class ModelTribesman extends MowzieModelBase {
     public MowzieModelRenderer modelCore;
@@ -23,12 +26,12 @@ public class ModelTribesman extends MowzieModelBase {
     public MowzieModelRenderer armLowerRight;
     public MowzieModelRenderer handRight;
     public MowzieModelRenderer spearBase;
-    public MowzieModelRenderer spear;
+    public AdvancedModelRenderer spear;
     public MowzieModelRenderer armUpperLeft;
     public MowzieModelRenderer armLowerLeft;
     public MowzieModelRenderer handLeft;
     public MowzieModelRenderer shieldBase;
-    public MowzieModelRenderer shield;
+    public AdvancedModelRenderer shield;
     public MowzieModelRenderer neck;
     public MowzieModelRenderer headJoint;
     public MowzieModelRenderer head;
@@ -37,7 +40,7 @@ public class ModelTribesman extends MowzieModelBase {
     public MowzieModelRenderer earRight;
     public MowzieModelRenderer maskLeft;
     public MowzieModelRenderer maskRight;
-    public MowzieModelRenderer mane;
+    public AdvancedModelRenderer mane;
     public MowzieModelRenderer earringLeft;
     public MowzieModelRenderer earringRight;
     public MowzieModelRenderer calfLeft;
@@ -45,7 +48,10 @@ public class ModelTribesman extends MowzieModelBase {
     public MowzieModelRenderer calfRight;
     public MowzieModelRenderer footRight;
 
+    private Animator animator;
+
     public ModelTribesman() {
+        animator = new Animator(this);
         this.textureWidth = 128;
         this.textureHeight = 64;
         this.footLeft = new MowzieModelRenderer(this, 21, 53);
@@ -93,9 +99,10 @@ public class ModelTribesman extends MowzieModelBase {
         this.armUpperLeft.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.armUpperLeft.addBox(-1.0F, 0.0F, -1.0F, 2, 8, 2, 0.0F);
         this.setRotateAngle(armUpperLeft, 0.0F, 0.0F, -0.9599310885968813F);
-        this.spear = new MowzieModelRenderer(this, 66, 0);
+        this.spear = new AdvancedModelRenderer(this, 66, 0);
         this.spear.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.spear.addBox(0.0F, -11.0F, -5.1F, 0, 16, 16, 0.0F);
+//        this.spear.addBox(0.0F, -11.0F, -5.1F, 0, 16, 16, 0.0F);
+        spear.add3DTexture(0, -11, -5.1f, 16, 16);
         this.setRotateAngle(spear, 2.356194490192345F, 0.0F, 3.141592653589793F);
         this.earLeft = new MowzieModelRenderer(this, 48, 0);
         this.earLeft.setRotationPoint(4.0F, -4.0F, -3.0F);
@@ -119,7 +126,7 @@ public class ModelTribesman extends MowzieModelBase {
         this.calfRight.setRotationPoint(0.0F, 8.0F, 0.0F);
         this.calfRight.addBox(-1.0F, 0.0F, -1.0F, 2, 7, 2, 0.0F);
         this.setRotateAngle(calfRight, 1.3089969389957472F, 0.0F, 0.0F);
-        this.shield = new MowzieModelRenderer(this, 66, 40);
+        this.shield = new AdvancedModelRenderer(this, 66, 40);
         this.shield.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.shield.addBox(1.0F, -6.0F, -6.0F, 2, 12, 12, 0.0F);
         this.setRotateAngle(shield, 0.7853981633974483F, 0.0F, 0.0F);
@@ -184,9 +191,10 @@ public class ModelTribesman extends MowzieModelBase {
         this.maskRight.setRotationPoint(0.0F, 0.0F, -1.0F);
         this.maskRight.addBox(0.0F, -8.0F, 0.0F, 7, 14, 2, 0.0F);
         this.setRotateAngle(maskRight, 0.0F, -0.4363323129985824F, 0.0F);
-        this.mane = new MowzieModelRenderer(this, 0, 0);
+        this.mane = new AdvancedModelRenderer(this, 0, 0);
         this.mane.setRotationPoint(0.0F, -2.0F, 4.0F);
-        this.mane.addBox(-12.0F, -12.0F, 0.0F, 24, 24, 0, 0.0F);
+//        this.mane.addBox(-12.0F, -12.0F, 0.0F, 24, 24, 0, 0.0F);
+        mane.add3DTexture(-12, -12, 0, 24, 24);
         this.calfLeft.addChild(this.footLeft);
         this.body.addChild(this.thighLeft);
         this.handRight.addChild(this.spearBase);
@@ -228,7 +236,7 @@ public class ModelTribesman extends MowzieModelBase {
 
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        setRotationAngles(f, f1, f2, f3, f4, f5, entity);
+        animate((IAnimatedEntity)entity, f, f1, f2, f3, f4, f5);
         GL11.glPushMatrix();
         if (entity instanceof EntityTribeElite) {
             GL11.glScalef(0.85f, 0.85f, 0.85f);
@@ -292,6 +300,49 @@ public class ModelTribesman extends MowzieModelBase {
         walk(handRight, 0.5f * globalSpeed, 1 * globalDegree, false, -2, 0.8f, f, f1);
         swing(handRight, 0.5f * globalSpeed, 1f * globalDegree, true, 0, 0, f, f1);
         walk(handLeft, 0.5f * globalSpeed, 1 * globalDegree, true, -2, 0.4f, f, f1);
+    }
+
+    public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5)
+    {
+        EntityTribesman tribesman = (EntityTribesman) entity;
+        animator.update(tribesman);
+        setRotationAngles(f, f1, f2, f3, f4, f5, tribesman);
+
+        if (entity instanceof EntityTribeElite) {
+            animator.setAnim(1);
+            animator.startPhase(4);
+            animator.rotate(body, 0, 0.2f, 0);
+            animator.rotate(chest, 0, 0.2f, 0);
+            animator.endPhase();
+            animator.startPhase(3);
+            animator.rotate(body, 0, -0.3f, 0);
+            animator.rotate(chest, 0, -0.3f, 0);
+            animator.endPhase();
+            animator.resetPhase(8);
+        }
+        else {
+            animator.setAnim(1);
+            animator.startPhase(4);
+            animator.rotate(body, 0, 0.3f, 0);
+            animator.rotate(chest, 0, 0.3f, 0);
+            animator.rotate(neck, 0, -0.2f, 0);
+            animator.rotate(head, 0, -0.2f, 0);
+            animator.rotate(armUpperRight, -2, 0, -1.5f);
+            animator.rotate(armRightJoint, 0, 0, 0);
+            animator.rotate(armLowerRight, -0.5f, 0, 0);
+            animator.rotate(handRight, 0, 1f, 0);
+            animator.endPhase();
+            animator.setStationaryPhase(1);
+            animator.startPhase(3);
+            animator.rotate(body, 0, -0.7f, 0);
+            animator.rotate(chest, 0, -0.7f, 0);
+            animator.rotate(neck, 0, 0.5f, 0);
+            animator.rotate(head, 0, 0.5f, 0);
+            animator.rotate(armRightJoint, 2, 0, 0);
+            animator.endPhase();
+            animator.setStationaryPhase(1);
+            animator.resetPhase(6);
+        }
     }
 }
 

@@ -47,7 +47,7 @@ public class EntityFoliaath extends MMEntityBase
         super(world);
         getNavigator().setAvoidsWater(true);
         tasks.addTask(0, new EntityAISwimming(this));
-        tasks.addTask(1, new AnimBasicAttack(this, 1, 14, "mowziesmobs:foliaathbite1", 2, 4.5F));
+        tasks.addTask(1, new AnimBasicAttack(this, 1, 14, "mowziesmobs:foliaathbite1", 2, 4.5F, 1, 3));
         tasks.addTask(1, new AnimTakeDamage(this, 10));
         tasks.addTask(1, new AnimDie(this, deathLength));
         tasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true));
