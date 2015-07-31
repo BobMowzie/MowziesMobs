@@ -11,9 +11,9 @@ public class AnimFWNVerticalAttack extends AnimBasicAttack
 {
     private float arc;
 
-    public AnimFWNVerticalAttack(MMEntityBase entity, int duration, String sound, float knockback, float range, float arc)
+    public AnimFWNVerticalAttack(MMEntityBase entity, int id, int duration, String sound, float knockback, float range, float arc)
     {
-        super(entity, duration, sound, knockback, range);
+        super(entity, id, duration, sound, knockback, range);
         this.arc = arc;
     }
 
@@ -23,14 +23,9 @@ public class AnimFWNVerticalAttack extends AnimBasicAttack
         entity.playSound("mowziesmobs:wroughtnautPreSwing2", 1.5F, 1F);
     }
 
-    public int getAnimID()
-    {
-        return 5;
-    }
-
     public void updateTask()
     {
-        if (entity.getAnimID() == 5)
+        if (entity.getAnimID() == getAnimID())
         {
             entity.motionX = 0;
             entity.motionZ = 0;

@@ -8,12 +8,19 @@ public abstract class MMAnimBase extends AIAnimation
 {
     protected MMEntityBase animatingEntity;
     protected int duration;
+    protected int id;
 
-    public MMAnimBase(IAnimatedEntity entity, int duration)
+    public MMAnimBase(IAnimatedEntity entity, int id, int duration)
     {
         super(entity);
         this.duration = duration;
         animatingEntity = (MMEntityBase) entity;
+        this.id = id;
+    }
+
+    @Override
+    public int getAnimID() {
+        return id;
     }
 
     public boolean isAutomatic()

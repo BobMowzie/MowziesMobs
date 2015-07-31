@@ -6,7 +6,7 @@ public class AnimTakeDamage extends MMAnimBase
 {
     public AnimTakeDamage(MMEntityBase entity, int duration)
     {
-        super(entity, duration);
+        super(entity, MMAnimation.TAKEDAMAGE.animID(), duration);
         setMutexBits(8);
     }
 

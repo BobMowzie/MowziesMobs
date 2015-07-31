@@ -4,14 +4,9 @@ import thehippomaster.AnimationAPI.IAnimatedEntity;
 
 public class AnimActivate extends MMAnimBase
 {
-    public AnimActivate(IAnimatedEntity entity, int duration)
+    public AnimActivate(IAnimatedEntity entity, int id, int duration)
     {
-        super(entity, duration);
-    }
-
-    public int getAnimID()
-    {
-        return MMAnimation.ACTIVATE.animID();
+        super(entity, id, duration);
     }
 
     public void resetTask()

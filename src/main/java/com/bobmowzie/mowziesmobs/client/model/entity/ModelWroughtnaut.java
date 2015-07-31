@@ -458,7 +458,7 @@ public class ModelWroughtnaut extends MowzieModelBase
         super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
         setToInitPose();
         EntityWroughtnaut wn = entity;
-        if (wn.getAnimID() != 6 && wn.getAnimID() != 7)
+        if (wn.getAnimID() != 3 && wn.getAnimID() != 4)
         {
             if (wn.getActive() == 1)
             {
@@ -574,11 +574,11 @@ public class ModelWroughtnaut extends MowzieModelBase
         EntityWroughtnaut entityWroughtnaut = (EntityWroughtnaut) entity;
         setRotationAngles(f, f1, f2, f3, f4, f5, entityWroughtnaut);
 
-        if (entityWroughtnaut.getAnimID() == MMAnimation.ATTACK.id)
+        if (entityWroughtnaut.getAnimID() == 1)
         {
             if (entityWroughtnaut.swingDirection == false)
             {
-                animator.setAnim(MMAnimation.ATTACK.animID());
+                animator.setAnim(1);
                 animator.setStationaryPhase(6);
                 animator.startPhase(15);
                 animator.rotate(stomachJoint, -0.2F, 0.5F, 0);
@@ -654,7 +654,7 @@ public class ModelWroughtnaut extends MowzieModelBase
             }
             else
             {
-                animator.setAnim(MMAnimation.ATTACK.animID());
+                animator.setAnim(1);
                 animator.setStationaryPhase(6);
                 animator.startPhase(15);
                 animator.rotate(stomachJoint, 0.2F, -0.5F, 0);
@@ -730,9 +730,9 @@ public class ModelWroughtnaut extends MowzieModelBase
             }
         }
 
-        if (entityWroughtnaut.getAnimID() == 5)
+        if (entityWroughtnaut.getAnimID() == 2)
         {
-            animator.setAnim(5);
+            animator.setAnim(2);
             animator.setStationaryPhase(6);
             animator.startPhase(15);
             animator.rotate(stomachJoint, -0.65F, 0F, 0);
@@ -973,9 +973,9 @@ public class ModelWroughtnaut extends MowzieModelBase
             neck.rotateAngleX += Math.sin((entityWroughtnaut.frame + AnimationAPI.proxy.getPartialTick())* 2) * waistBendController.rotationPointX * 0.1;
         }
 
-        if (entityWroughtnaut.getAnimID() == MMAnimation.TAKEDAMAGE.id)
+        if (entityWroughtnaut.getAnimID() == MMAnimation.TAKEDAMAGE.animID())
         {
-            animator.setAnim(MMAnimation.TAKEDAMAGE.id);
+            animator.setAnim(MMAnimation.TAKEDAMAGE.animID());
             animator.startPhase(0);
             animator.rotate(stomachJoint, 0.65F, 0F, 0);
             animator.move(waist, 0F, 4F, -3);
@@ -1038,9 +1038,9 @@ public class ModelWroughtnaut extends MowzieModelBase
             animator.resetPhase(9);
         }
 
-        if (entityWroughtnaut.getAnimID() == MMAnimation.DIE.id)
+        if (entityWroughtnaut.getAnimID() == MMAnimation.DIE.animID())
         {
-            animator.setAnim(MMAnimation.DIE.id);
+            animator.setAnim(MMAnimation.DIE.animID());
             animator.startPhase(5);
             animator.rotate(stomachJoint, -0.4F, 0, 0);
             animator.rotate(neck, -0.4F, 0, 0);
@@ -1174,9 +1174,9 @@ public class ModelWroughtnaut extends MowzieModelBase
             swing(shoulderLeft, 1.5F, 0.05F * waistBendController.rotationPointX, false, 0F, 0, (entityWroughtnaut.frame + AnimationAPI.proxy.getPartialTick()), 1F);
         }
 
-        if (entityWroughtnaut.getAnimID() == MMAnimation.ACTIVATE.id)
+        if (entityWroughtnaut.getAnimID() == 3)
         {
-            animator.setAnim(MMAnimation.ACTIVATE.id);
+            animator.setAnim(3);
             animator.startPhase(0);
             animator.rotate(shoulderLeft, 0, -0.4F, -0.4F);
             animator.rotate(shoulderRight, 0, 0.4F, 0.4F);
@@ -1250,9 +1250,9 @@ public class ModelWroughtnaut extends MowzieModelBase
             }
             rootBox.rotateAngleZ -= 0.05 * frame * (frame - 13) * (frame - 26) / 845;
         }
-        if (entityWroughtnaut.getAnimID() == MMAnimation.DEACTIVATE.id)
+        if (entityWroughtnaut.getAnimID() == 4)
         {
-            animator.setAnim(MMAnimation.DEACTIVATE.id);
+            animator.setAnim(4);
             animator.startPhase(0);
             animator.rotate(shoulderLeft, 0, -0.3F, -0.4F);
             animator.rotate(shoulderRight, 0, 0.2F, 0.35F);

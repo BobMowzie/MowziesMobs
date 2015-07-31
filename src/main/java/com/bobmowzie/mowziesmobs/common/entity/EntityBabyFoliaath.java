@@ -2,8 +2,6 @@ package com.bobmowzie.mowziesmobs.common.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.common.animation.AnimBabyFoliaathEat;
-import com.bobmowzie.mowziesmobs.common.animation.MMAnimation;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
@@ -29,7 +27,7 @@ public class EntityBabyFoliaath extends MMEntityBase
     public EntityBabyFoliaath(World world)
     {
         super(world);
-        tasks.addTask(1, new AnimBabyFoliaathEat(this, 20));
+        tasks.addTask(1, new AnimBabyFoliaathEat(this, 1, 20));
         setSize(0.4F, 0.4F);
     }
 
@@ -60,7 +58,7 @@ public class EntityBabyFoliaath extends MMEntityBase
         List<EntityItem> meats = getMeatsNearby(0.4, 0.2, 0.4, 0.4);
         if (getHungry() == 1 && meats.size() != 0 && getAnimID() == 0)
         {
-            AnimationAPI.sendAnimPacket(this, MMAnimation.BABY_FOLIAATH_EAT.animID());
+            AnimationAPI.sendAnimPacket(this, 1);
             eatingItemID = Item.getIdFromItem(meats.get(0).getEntityItem().getItem());
             meats.get(0).setDead();
             playSound("mowziesmobs:babyFoliaathEat", 0.5F, 1.2F);

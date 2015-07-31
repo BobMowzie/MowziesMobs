@@ -2,13 +2,8 @@ package com.bobmowzie.mowziesmobs.common.animation;
 
 public enum MMAnimation
 {
-    BASIC(1),
-    ATTACK(2),
-    TAKEDAMAGE(3),
-    DIE(4),
-    BABY_FOLIAATH_EAT(5),
-    ACTIVATE(6),
-    DEACTIVATE(7);
+    TAKEDAMAGE(-3),
+    DIE(-2);
 
     public final int id;
 

@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import com.bobmowzie.mowziesmobs.common.animation.MMAnimation;
 import com.bobmowzie.mowziesmobs.common.entity.EntityBabyFoliaath;
 import com.google.common.collect.Lists;
 import net.ilexiconn.llibrary.client.model.modelbase.MowzieModelBase;
@@ -164,7 +163,7 @@ public class ModelBabyFoliaath extends MowzieModelBase
         EntityBabyFoliaath foliaath = (EntityBabyFoliaath) entity;
         setRotationAngles(f, f1, f2, f3, f4, f5, foliaath);
 
-        animator.setAnim(MMAnimation.BABY_FOLIAATH_EAT.animID());
+        animator.setAnim(1);
         animator.startPhase(2);
         animator.rotate(mouth1, 0, 0, 0.5F);
         animator.rotate(mouth2, 0, 0, -0.5F);

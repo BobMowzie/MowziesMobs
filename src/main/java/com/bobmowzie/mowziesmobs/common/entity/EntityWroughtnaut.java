@@ -36,12 +36,12 @@ public class EntityWroughtnaut extends MMEntityBase
         super(world);
         deathLength = 130;
         getNavigator().setAvoidsWater(true);
-        tasks.addTask(1, new AnimFWNAttack(this, 50, "mowziesmobs:wroughtnautWhoosh", 4F, 5.5F, 100F));
-        tasks.addTask(1, new AnimFWNVerticalAttack(this, 105, "mowziesmobs:wroughtnautWhoosh", 1F, 5.5F, 40F));
+        tasks.addTask(1, new AnimFWNAttack(this, 1, 50, "mowziesmobs:wroughtnautWhoosh", 4F, 5.5F, 100F));
+        tasks.addTask(1, new AnimFWNVerticalAttack(this, 2, 105, "mowziesmobs:wroughtnautWhoosh", 1F, 5.5F, 40F));
         tasks.addTask(1, new AnimTakeDamage(this, 15));
         tasks.addTask(1, new AnimDie(this, deathLength));
-        tasks.addTask(1, new AnimActivate(this, 45));
-        tasks.addTask(1, new AnimDeactivate(this, 15));
+        tasks.addTask(1, new AnimActivate(this, 3, 45));
+        tasks.addTask(1, new AnimDeactivate(this, 4, 15));
         tasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true));
         tasks.addTask(2, new EntityAIAttackOnCollide(this, EntityPlayer.class, 1.0D, true));
         experienceValue = 30;
@@ -142,13 +142,13 @@ public class EntityWroughtnaut extends MMEntityBase
 
         if (getActive() == 0 && getAttackTarget() != null && targetDistance <= 5 && getAnimID() == 0)
         {
-            AnimationAPI.sendAnimPacket(this, MMAnimation.ACTIVATE.animID());
+            AnimationAPI.sendAnimPacket(this, 3);
             setActive((byte) 1);
         }
 
         if (isClientWorld() && getActive() == 1 && getAttackTarget() == null && moveForward == 0 && getAnimID() == 0 && Math.abs(posX - getRestPosX()) <= 4 && Math.abs(posY - getRestPosY()) <= 4 && Math.abs(posZ - getRestPosZ()) <= 4)
         {
-            AnimationAPI.sendAnimPacket(this, MMAnimation.DEACTIVATE.animID());
+            AnimationAPI.sendAnimPacket(this, 4);
             setActive((byte) 0);
         }
 
@@ -170,10 +170,10 @@ public class EntityWroughtnaut extends MMEntityBase
                 if (attacksWithoutVertical == 4) i = 0;
                 if (i == 0)
                 {
-                    AnimationAPI.sendAnimPacket(this, 5);
+                    AnimationAPI.sendAnimPacket(this, 2);
                     attacksWithoutVertical = 0;
                 }
-                else AnimationAPI.sendAnimPacket(this, MMAnimation.ATTACK.animID());
+                else AnimationAPI.sendAnimPacket(this, 1);
             }
         }
         else if (!getNavigator().tryMoveToXYZ((double) getRestPosX(), (double) getRestPosY(), (double) getRestPosZ(), 0.2D))
@@ -183,7 +183,7 @@ public class EntityWroughtnaut extends MMEntityBase
             setRestPosZ((int) posZ);
         }
 
-        if (getAnimID() == MMAnimation.ATTACK.animID() && getAnimTick() == 1)
+        if (getAnimID() == 1 && getAnimTick() == 1)
         {
             attacksWithoutVertical++;
             int i = (int) (Math.random() + 0.5);
@@ -191,14 +191,14 @@ public class EntityWroughtnaut extends MMEntityBase
             if (i == 1) swingDirection = true;
         }
 
-        if (getAnimID() == MMAnimation.ACTIVATE.animID())
+        if (getAnimID() == 3)
         {
             if (getAnimTick() == 1) playSound("mowziesmobs:wroughtnautGrunt2", 1, 1);
             if (getAnimTick() == 27) playSound("mob.zombie.metal", 0.5F, 0.5F);
             if (getAnimTick() == 44) playSound("mob.zombie.metal", 0.5F, 0.5F);
         }
 
-        if (getAnimID() == 5 && getAnimTick() == 29)
+        if (getAnimID() == 2 && getAnimTick() == 29)
         {
             int i = MathHelper.floor_double(posX + 4 * Math.cos((renderYawOffset + 90) * Math.PI / 180));
             int j = MathHelper.floor_double(posY - 0.20000000298023224D - (double) yOffset);

@@ -360,7 +360,7 @@ public class ModelFoliaath extends MowzieModelBase
         setRotationAngles(entityfoliaath, f, f1, f2, f3, f4, f5);
 
         //Bite
-        animator.setAnim(MMAnimation.ATTACK.animID());
+        animator.setAnim(1);
         animator.startPhase(3);
         animator.rotate(stem1Base, 0.4F, 0, 0);
         animator.rotate(stem2, -0.3F, 0, 0);

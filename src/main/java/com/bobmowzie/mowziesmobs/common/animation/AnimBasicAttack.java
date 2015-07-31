@@ -13,9 +13,9 @@ public class AnimBasicAttack extends MMAnimBase
     protected float knockback = 1;
     protected float range;
 
-    public AnimBasicAttack(MMEntityBase entity, int duration, String sound, float knockback, float range)
+    public AnimBasicAttack(MMEntityBase entity, int id, int duration, String sound, float knockback, float range)
     {
-        super(entity, duration);
+        super(entity, id, duration);
         setMutexBits(8);
         this.entity = entity;
         this.duration = duration;
@@ -23,11 +23,6 @@ public class AnimBasicAttack extends MMAnimBase
         attackSound = sound;
         this.knockback = knockback;
         this.range = range;
-    }
-
-    public int getAnimID()
-    {
-        return MMAnimation.ATTACK.animID();
     }
 
     public void startExecuting()

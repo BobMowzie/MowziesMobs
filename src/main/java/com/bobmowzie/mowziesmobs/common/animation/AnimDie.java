@@ -8,7 +8,7 @@ public class AnimDie extends MMAnimBase
 
     public AnimDie(MMEntityBase entity, int duration)
     {
-        super(entity, duration);
+        super(entity, MMAnimation.DIE.animID(), duration);
         setMutexBits(8);
         this.duration = duration;
         dyingEntity = entity;
