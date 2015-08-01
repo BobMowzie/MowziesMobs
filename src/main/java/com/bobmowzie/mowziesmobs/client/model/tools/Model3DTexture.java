@@ -32,7 +32,9 @@ public class Model3DTexture extends ModelBox {
 	@Override
 	public void render(Tessellator tessellator, float scale) {
 		GL11.glPushMatrix();
-		GL11.glTranslatef(posX1, posY1, posZ1);
+		GL11.glRotatef(90, 0, 1, 0);
+        GL11.glRotatef(180, 0, 0, 1);
+		GL11.glTranslatef(posX1 * scale, posY1 * scale, posZ1 * scale);
 		GL11.glScalef(width / 16F, height / 16F, 1);
 		float depth = 0.0625F;
 		tessellator.startDrawingQuads();

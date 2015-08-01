@@ -91,6 +91,9 @@ public class AdvancedModelRenderer extends MowzieModelRenderer {
 	}
 
 	protected void compileDisplayList(float scale) {
+	    if (displayList > 0) {
+	        GL11.glDeleteLists(displayList, 1);
+	    }
 		displayList = GLAllocation.generateDisplayLists(1);
 		GL11.glNewList(displayList, GL11.GL_COMPILE);
 		Tessellator tessellator = Tessellator.instance;

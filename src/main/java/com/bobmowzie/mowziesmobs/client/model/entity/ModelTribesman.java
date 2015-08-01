@@ -112,8 +112,7 @@ public class ModelTribesman extends MowzieModelBase {
         this.setRotateAngle(armUpperLeft, 0.0F, 0.0F, -0.9599310885968813F);
         this.spear = new AdvancedModelRenderer(this, 66, 0);
         this.spear.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.spear.addBox(0.0F, -11.0F, -5.1F, 0, 16, 16, 0.0F);
-        spear.add3DTexture(0, -11, -5.1f, 16, 16);
+        spear.add3DTexture(-4, -4, 0.5F, 15, 15);
         this.setRotateAngle(spear, 2.356194490192345F, 0.0F, 3.141592653589793F);
         this.earLeft = new MowzieModelRenderer(this, 48, 0);
         this.earLeft.setRotationPoint(4.0F, -4.0F, -3.0F);
