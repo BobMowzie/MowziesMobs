@@ -5,6 +5,7 @@ import com.bobmowzie.mowziesmobs.common.config.MMConfigHandler;
 import com.bobmowzie.mowziesmobs.common.entity.EntityWroughtnaut;
 import cpw.mods.fml.common.IWorldGenerator;
 import net.ilexiconn.llibrary.common.structure.util.Structure;
+import net.minecraft.block.BlockStone;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 
@@ -30,7 +31,7 @@ public class MMWorldGenerator implements IWorldGenerator
 
     private void generateSurface(World world, Random random, int x, int z)
     {
-        tryWroughtChamber(world, random, x, z, MMConfigHandler.spawnrateWroughtnaut);
+        if (world.getWorldInfo().isMapFeaturesEnabled()) tryWroughtChamber(world, random, x, z, MMConfigHandler.spawnrateWroughtnaut);
     }
 
     private void tryWroughtChamber(World world, Random random, int x, int z, int chance)
@@ -60,7 +61,8 @@ public class MMWorldGenerator implements IWorldGenerator
                                         }
                                     }
                                     if (wall) {
-                                        generateWroughtChamber(world, random, x - x2 - 9, y - y2 + y4, z - 9, 0);
+                                        if (world.getBlock(x - x2 - 9, y - y2 + y4, z - 9) instanceof BlockStone)
+                                            generateWroughtChamber(world, random, x - x2 - 9, y - y2 + y4, z - 9, 0);
                                         return;
                                     }
                                 }
@@ -74,7 +76,8 @@ public class MMWorldGenerator implements IWorldGenerator
                                         }
                                     }
                                     if (wall) {
-                                        generateWroughtChamber(world, random, x + x2 + 9, y - y2 + y5, z - 9, 2);
+                                        if (world.getBlock(x + x2 + 9, y - y2 + y5, z - 9) instanceof BlockStone)
+                                            generateWroughtChamber(world, random, x + x2 + 9, y - y2 + y5, z - 9, 2);
                                         return;
                                     }
                                 }
@@ -92,7 +95,8 @@ public class MMWorldGenerator implements IWorldGenerator
                                         }
                                     }
                                     if (wall) {
-                                        generateWroughtChamber(world, random, x - 1, y - y2 + y4, z - z2 - 18, 1);
+                                        if (world.getBlock(x - 1, y - y2 + y4, z - z2 - 18) instanceof BlockStone)
+                                            generateWroughtChamber(world, random, x - 1, y - y2 + y4, z - z2 - 18, 1);
                                         return;
                                     }
                                 }
@@ -106,7 +110,8 @@ public class MMWorldGenerator implements IWorldGenerator
                                         }
                                     }
                                     if (wall) {
-                                        generateWroughtChamber(world, random, x - 1, y - y2 + y5, z + z2, 3);
+                                        if (world.getBlock(x - 1, y - y2 + y5, z + z2) instanceof BlockStone)
+                                            generateWroughtChamber(world, random, x - 1, y - y2 + y5, z + z2, 3);
                                         return;
                                     }
                                 }
