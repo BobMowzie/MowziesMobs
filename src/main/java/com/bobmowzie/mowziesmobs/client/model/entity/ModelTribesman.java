@@ -47,6 +47,8 @@ public class ModelTribesman extends MowzieModelBase {
     public MowzieModelRenderer footLeft;
     public MowzieModelRenderer calfRight;
     public MowzieModelRenderer footRight;
+    public MowzieModelRenderer thighLeftJoint;
+    public MowzieModelRenderer thighRightJoint;
 
     private Animator animator;
 
@@ -60,9 +62,14 @@ public class ModelTribesman extends MowzieModelBase {
         this.setRotateAngle(footLeft, -0.5235987755982988F, 0.0F, 0.0F);
         this.thighLeft = new MowzieModelRenderer(this, 41, 52);
         this.thighLeft.mirror = true;
-        this.thighLeft.setRotationPoint(4.0F, -2.0F, 3.0F);
+        this.thighLeft.setRotationPoint(0, 0, 0);
         this.thighLeft.addBox(-1.0F, 0.0F, -1.0F, 2, 8, 2, 0.0F);
         this.setRotateAngle(thighLeft, -0.7853981633974483F, -0.6981317007977318F, 0.0F);
+        this.thighLeftJoint = new MowzieModelRenderer(this, 41, 52);
+        this.thighLeftJoint.mirror = true;
+        this.thighLeftJoint.setRotationPoint(4.0F, -2.0F, 3.0F);
+        this.thighLeftJoint.addBox(0, 0, 0, 0, 0, 0, 0.0F);
+        this.setRotateAngle(thighLeftJoint, 0, 0, 0.0F);
         this.spearBase = new MowzieModelRenderer(this, 0, 0);
         this.spearBase.setRotationPoint(0.0F, 3.0F, 0.0F);
         this.spearBase.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
@@ -75,9 +82,13 @@ public class ModelTribesman extends MowzieModelBase {
         this.loinClothFront.addBox(-4.0F, 0.0F, 0.0F, 8, 7, 0, 0.0F);
         this.setRotateAngle(loinClothFront, -0.17453292519943295F, 0.0F, 0.0F);
         this.thighRight = new MowzieModelRenderer(this, 41, 52);
-        this.thighRight.setRotationPoint(-4.0F, -2.0F, 3.0F);
+        this.thighRight.setRotationPoint(0, 0, 0);
         this.thighRight.addBox(-1.0F, 0.0F, -1.0F, 2, 8, 2, 0.0F);
         this.setRotateAngle(thighRight, -0.7853981633974483F, 0.6981317007977318F, 0.0F);
+        this.thighRightJoint = new MowzieModelRenderer(this, 41, 52);
+        this.thighRightJoint.setRotationPoint(-4.0F, -2.0F, 3.0F);
+        this.thighRightJoint.addBox(0, 0, 0, 0, 0, 0, 0.0F);
+        this.setRotateAngle(thighRightJoint, 0, 0, 0);
         this.armLowerLeft = new MowzieModelRenderer(this, 12, 55);
         this.armLowerLeft.mirror = true;
         this.armLowerLeft.setRotationPoint(0.0F, 8.0F, 0.0F);
@@ -101,7 +112,7 @@ public class ModelTribesman extends MowzieModelBase {
         this.setRotateAngle(armUpperLeft, 0.0F, 0.0F, -0.9599310885968813F);
         this.spear = new AdvancedModelRenderer(this, 66, 0);
         this.spear.setRotationPoint(0.0F, 0.0F, 0.0F);
-//        this.spear.addBox(0.0F, -11.0F, -5.1F, 0, 16, 16, 0.0F);
+        this.spear.addBox(0.0F, -11.0F, -5.1F, 0, 16, 16, 0.0F);
         spear.add3DTexture(0, -11, -5.1f, 16, 16);
         this.setRotateAngle(spear, 2.356194490192345F, 0.0F, 3.141592653589793F);
         this.earLeft = new MowzieModelRenderer(this, 48, 0);
@@ -193,14 +204,16 @@ public class ModelTribesman extends MowzieModelBase {
         this.setRotateAngle(maskRight, 0.0F, -0.4363323129985824F, 0.0F);
         this.mane = new AdvancedModelRenderer(this, 0, 0);
         this.mane.setRotationPoint(0.0F, -2.0F, 4.0F);
-//        this.mane.addBox(-12.0F, -12.0F, 0.0F, 24, 24, 0, 0.0F);
-        mane.add3DTexture(-12, -12, 0, 24, 24);
+        this.mane.addBox(-12.0F, -12.0F, 0.0F, 24, 24, 0, 0.0F);
+//        mane.add3DTexture(-12, -12, 0, 24, 24);
         this.calfLeft.addChild(this.footLeft);
-        this.body.addChild(this.thighLeft);
+        this.body.addChild(this.thighLeftJoint);
         this.handRight.addChild(this.spearBase);
         this.body.addChild(this.loinClothBack);
         this.body.addChild(this.loinClothFront);
-        this.body.addChild(this.thighRight);
+        this.body.addChild(this.thighRightJoint);
+        thighRightJoint.addChild(thighRight);
+        thighLeftJoint.addChild(thighLeft);
         this.armUpperLeft.addChild(this.armLowerLeft);
         this.armUpperRight.addChild(this.armLowerRight);
         this.earRight.addChild(this.earringRight);
@@ -229,10 +242,9 @@ public class ModelTribesman extends MowzieModelBase {
         this.modelCore.addChild(this.body);
         this.maskBase.addChild(this.maskRight);
         this.maskBase.addChild(this.mane);
-        parts = new MowzieModelRenderer[]{modelCore, body, chest, thighLeft, thighRight, loinClothFront, loinClothBack, armRightJoint, armLeftJoint, neckJoint, armUpperRight, armLowerRight, handRight, spearBase, spear, armUpperLeft, armLowerLeft, handLeft, shieldBase, shield, neck, headJoint, head, maskBase, earLeft, earRight, maskLeft, maskRight, mane, earringLeft, earringRight, calfLeft, footLeft, calfRight, footRight};
+        parts = new MowzieModelRenderer[]{modelCore, body, chest, thighLeft, thighRight, loinClothFront, loinClothBack, armRightJoint, armLeftJoint, neckJoint, armUpperRight, armLowerRight, handRight, spearBase, spear, armUpperLeft, armLowerLeft, handLeft, shieldBase, shield, neck, headJoint, head, maskBase, earLeft, earRight, maskLeft, maskRight, mane, earringLeft, earringRight, calfLeft, footLeft, calfRight, footRight, thighLeftJoint, thighRightJoint};
         setInitPose();
     }
-
 
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
@@ -260,9 +272,9 @@ public class ModelTribesman extends MowzieModelBase {
     public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity entity) {
         super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
         setToInitPose();
-        //        f = entity.ticksExisted;
-        //        f1 = 0.5f;
-        if (f1 > 0.6f) f1 = 0.6f;
+//                f = entity.ticksExisted;
+//                f1 = 0.5f;
+        if (f1 > 0.55f) f1 = 0.55f;
         float globalSpeed = 1.5f;
         float globalHeight = 1;
         float globalDegree = 1;
@@ -270,6 +282,8 @@ public class ModelTribesman extends MowzieModelBase {
         faceTarget(head, 2, f3, f4);
 
         bob(body, 1 * globalSpeed, 2.5f * globalHeight, false, f, f1);
+        walk(loinClothFront, 1 * globalSpeed, 0.5f * globalHeight, false, 2, 0, f, f1);
+        walk(loinClothBack, 1 * globalSpeed, 0.5f * globalHeight, true, 2, 0, f, f1);
         walk(body, 1 * globalSpeed, 0.2f * globalHeight, false, 1, 0.2f, f, f1);
         walk(thighLeft, 1 * globalSpeed, 0.2f * globalHeight, true, 1, -0.4f, f, f1);
         walk(thighRight, 1 * globalSpeed, 0.2f * globalHeight, true, 1, -0.4f, f, f1);
@@ -310,35 +324,123 @@ public class ModelTribesman extends MowzieModelBase {
 
         if (entity instanceof EntityTribeElite) {
             animator.setAnim(1);
+            animator.setStationaryPhase(12);
             animator.startPhase(4);
-            animator.rotate(body, 0, 0.2f, 0);
+            animator.rotate(body, -0.3f, 1f, 0);
+            animator.move(modelCore, -4, 0, -2);
             animator.rotate(chest, 0, 0.2f, 0);
-            animator.endPhase();
-            animator.startPhase(3);
-            animator.rotate(body, 0, -0.3f, 0);
-            animator.rotate(chest, 0, -0.3f, 0);
-            animator.endPhase();
-            animator.resetPhase(8);
-        }
-        else {
-            animator.setAnim(1);
-            animator.startPhase(4);
-            animator.rotate(body, 0, 0.3f, 0);
-            animator.rotate(chest, 0, 0.3f, 0);
-            animator.rotate(neck, 0, -0.2f, 0);
-            animator.rotate(head, 0, -0.2f, 0);
+            animator.rotate(neck, 0.1f, -0.6f, 0);
+            animator.rotate(head, 0.1f, -0.6f, 0);
+            animator.rotate(armUpperLeft, 0, 0, -0.5f);
             animator.rotate(armUpperRight, -2, 0, -1.5f);
-            animator.rotate(armRightJoint, 0, 0, 0);
             animator.rotate(armLowerRight, -0.5f, 0, 0);
             animator.rotate(handRight, 0, 1f, 0);
+            animator.rotate(thighLeft, -0.9f, 0.3f, 0);
+            animator.rotate(calfLeft, 0.1f, 0, 0);
+            animator.rotate(footLeft, 0, 0, 0);
+            animator.rotate(thighRight, 0.3f, -0.9f, 0);
+            animator.rotate(calfRight, 0, 0, 0);
+            animator.rotate(footRight, 0, 0, 0);
             animator.endPhase();
             animator.setStationaryPhase(1);
             animator.startPhase(3);
-            animator.rotate(body, 0, -0.7f, 0);
-            animator.rotate(chest, 0, -0.7f, 0);
-            animator.rotate(neck, 0, 0.5f, 0);
-            animator.rotate(head, 0, 0.5f, 0);
-            animator.rotate(armRightJoint, 2, 0, 0);
+            animator.rotate(body, 0.5f, -0.3f, 0);
+            animator.move(modelCore, -1.5f, 1.2f, -8.5f);
+            animator.rotate(chest, 0, -0.5f, 0);
+            animator.rotate(neck, -0.1f, 0.3f, 0);
+            animator.rotate(head, -0.2f, 0.3f, 0);
+            animator.rotate(armUpperRight, -0.8f, 0, -0.5f);
+            animator.rotate(armLowerRight, 0.7f, 0, 0);
+            animator.rotate(handRight, 0.6f, 0.6f, 0);
+            animator.rotate(thighLeft, -0.8f, 0.7f, 0);
+            animator.rotate(calfLeft, -0.6f, 0, 0);
+            animator.rotate(footLeft, 0.9f, 0, 0);
+            animator.move(thighRight, 0, 1, 0);
+            animator.rotate(thighRight, 0.7f, 0, 0f);
+            animator.rotate(calfRight, -0.5f, 0, 0);
+            animator.rotate(footRight, -0.5f, 0, 0);
+            animator.endPhase();
+            animator.setStationaryPhase(1);
+            animator.resetPhase(6);
+        }
+        else {
+            animator.setAnim(1);
+            animator.setStationaryPhase(7);
+            animator.startPhase(4);
+            animator.rotate(body, -0.3f, 1f, 0);
+            animator.move(modelCore, -4, 0, -2);
+            animator.rotate(chest, 0, 0.2f, 0);
+            animator.rotate(neck, 0.1f, -0.6f, 0);
+            animator.rotate(head, 0.1f, -0.6f, 0);
+            animator.rotate(armUpperLeft, 0, 0, -0.5f);
+            animator.rotate(armUpperRight, -2, 0, -1.5f);
+            animator.rotate(armLowerRight, -0.5f, 0, 0);
+            animator.rotate(handRight, 0, 1f, 0);
+            animator.rotate(thighLeft, -0.9f, 0.3f, 0);
+            animator.rotate(calfLeft, 0.1f, 0, 0);
+            animator.rotate(footLeft, 0, 0, 0);
+            animator.rotate(thighRight, 0.3f, -0.9f, 0);
+            animator.rotate(calfRight, 0, 0, 0);
+            animator.rotate(footRight, 0, 0, 0);
+            animator.endPhase();
+            animator.setStationaryPhase(1);
+            animator.startPhase(3);
+            animator.rotate(body, 0.5f, -0.3f, 0);
+            animator.move(modelCore, -1.5f, 1.2f, -8.5f);
+            animator.rotate(chest, 0, -0.5f, 0);
+            animator.rotate(neck, -0.1f, 0.3f, 0);
+            animator.rotate(head, -0.2f, 0.3f, 0);
+            animator.rotate(armUpperRight, -0.8f, 0, -0.5f);
+            animator.rotate(armLowerRight, 0.7f, 0, 0);
+            animator.rotate(handRight, 0.6f, 0.6f, 0);
+            animator.rotate(thighLeft, -0.8f, 0.7f, 0);
+            animator.rotate(calfLeft, -0.6f, 0, 0);
+            animator.rotate(footLeft, 0.9f, 0, 0);
+            animator.move(thighRight, 0, 1, 0);
+            animator.rotate(thighRight, 0.7f, 0, 0f);
+            animator.rotate(calfRight, -0.5f, 0, 0);
+            animator.rotate(footRight, -0.5f, 0, 0);
+            animator.endPhase();
+            animator.setStationaryPhase(1);
+            animator.resetPhase(6);
+
+            animator.setAnim(2);
+            animator.setStationaryPhase(7);
+            animator.startPhase(4);
+            animator.rotate(body, -0.5f, 0, 0);
+            animator.move(modelCore, 0, 0, 2);
+            animator.rotate(chest, -0.2f, 0, 0);
+            animator.rotate(neck, 0.1f, 0, 0);
+            animator.rotate(head, 0.1f, 0, 0);
+            animator.rotate(armUpperRight, -2, 0, -1);
+            animator.rotate(armRightJoint, -0.5f, 0, 0.3f);
+            animator.rotate(armLowerRight, -0.5f, 0, 0);
+            animator.rotate(armUpperLeft, -2, 0, 1);
+            animator.rotate(armLeftJoint, -0.5f, 0, -0.3f);
+            animator.rotate(armLowerLeft, -0.5f, 0, 0);
+            animator.rotate(handLeft, 0, 1f, 0);
+            animator.rotate(thighLeftJoint, 0.5f, 0, 0);
+            animator.rotate(thighRightJoint, 0.5f, 0, 0);
+            animator.move(thighLeft, 0, -1.5f, -2.5f);
+            animator.move(thighRight, 0, -1.5f, -2.5f);
+            animator.endPhase();
+            animator.setStationaryPhase(1);
+            animator.startPhase(3);
+            animator.rotate(body, 0.5f, -0.3f, 0);
+            animator.move(modelCore, -1.5f, 1.2f, -8.5f);
+            animator.rotate(chest, 0, -0.5f, 0);
+            animator.rotate(neck, -0.1f, 0.3f, 0);
+            animator.rotate(head, -0.2f, 0.3f, 0);
+            animator.rotate(armUpperRight, -0.8f, 0, -0.5f);
+            animator.rotate(armLowerRight, 0.7f, 0, 0);
+            animator.rotate(handRight, 0.6f, 0.6f, 0);
+            animator.rotate(thighLeft, -0.8f, 0.7f, 0);
+            animator.rotate(calfLeft, -0.6f, 0, 0);
+            animator.rotate(footLeft, 0.9f, 0, 0);
+            animator.move(thighRight, 0, 1, 0);
+            animator.rotate(thighRight, 0.7f, 0, 0f);
+            animator.rotate(calfRight, -0.5f, 0, 0);
+            animator.rotate(footRight, -0.5f, 0, 0);
             animator.endPhase();
             animator.setStationaryPhase(1);
             animator.resetPhase(6);

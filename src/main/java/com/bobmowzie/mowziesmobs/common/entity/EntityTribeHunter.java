@@ -38,26 +38,6 @@ public class EntityTribeHunter extends EntityTribesman
         dataWatcher.addObject(LEADER_UUID_ID, ABSENT_LEADER);
     }
 
-    protected void updateAttackAI() {
-        if (timeSinceAttack < 50) timeSinceAttack ++;
-        if (getAttackTarget() != null)
-        {
-            if (targetDistance > 7) getNavigator().tryMoveToXYZ(getAttackTarget().posX, getAttackTarget().posY, getAttackTarget().posZ, 0.6);
-            else
-            {
-                if (attacking == false) {
-                    if (leader != null) circleEntity(getAttackTarget(), 7, 0.3f, true, (2 * (float) Math.PI / leader.getPackSize()));
-                    else circleEntity(getAttackTarget(), 7, 0.3f, true, 0);
-                }
-            }
-            if (rand.nextInt(40) == 0 && timeSinceAttack == 50)
-            {
-                attacking = true;
-                getNavigator().tryMoveToEntityLiving(getAttackTarget(), 0.5);
-            }
-        }
-    }
-
     @Override
     public void onUpdate()
     {
