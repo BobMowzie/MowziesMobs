@@ -203,9 +203,9 @@ public class MMEntityBase extends EntityCreature implements IEntityAdditionalSpa
         return START_IA_HEALTH_UPDATE_ID;
     }
 
-    public void circleEntity(Entity target, float radius, float speed, boolean direction, float offset)
+    public void circleEntity(Entity target, float radius, float speed, boolean direction, int circleFrame, float offset)
     {
         int directionInt = direction ? 1:-1;
-        getNavigator().tryMoveToXYZ(target.posX + radius * Math.cos(directionInt * (frame + offset) * 0.5 * speed/radius), target.posY, target.posZ + radius * Math.sin(directionInt * (frame + offset) * 0.5 * speed/radius), speed);
+        getNavigator().tryMoveToXYZ(target.posX + radius * Math.cos(directionInt * circleFrame * 0.5 * speed/radius + offset), target.posY, target.posZ + radius * Math.sin(directionInt * circleFrame * 0.5 * speed/radius + offset), speed);
     }
 }

@@ -1,5 +1,9 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
+import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.entity.passive.EntityCow;
+import net.minecraft.entity.passive.EntityPig;
+import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
@@ -18,10 +22,14 @@ public class EntityTribeHunter extends EntityTribesman
 
     private EntityTribeElite leader;
 
+    public int index;
+
     public EntityTribeHunter(World world)
     {
         super(world);
-        //tasks.addTask(5, new EntityAIWander(this, 0.4));
+        targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityCow.class, 0, true));
+        targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPig.class, 0, true));
+        targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntitySheep.class, 0, true));
         this.leader = null;
     }
 
@@ -52,7 +60,19 @@ public class EntityTribeHunter extends EntityTribesman
                     leader.addPackMember(this);
                 }
             }
+            if (leader != null)
+            {
+                if(leader.getAttackTarget() != null) setAttackTarget(leader.getAttackTarget());
+            }
         }
+    }
+
+    @Override
+    protected void updateCircling() {
+        if (leader != null) {
+            circleEntity(getAttackTarget(), 7, 0.3f, true, leader.frame, (float) ((index + 1) * (Math.PI*2)/(leader.getPackSize() + 1)));
+        }
+        else super.updateCircling();
     }
 
     @Override

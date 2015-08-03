@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.AdvancedModelRenderer;
 import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelBase;
 import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelRenderer;
 import com.bobmowzie.mowziesmobs.common.animation.MMAnimation;
@@ -77,7 +78,7 @@ public class ModelWroughtnaut extends MowzieModelBase
     public MowzieModelRenderer calfLeft;
     public MowzieModelRenderer footLeftJoint;
     public MowzieModelRenderer footLeft;
-    public MowzieModelRenderer sword;
+    public AdvancedModelRenderer sword;
     public MowzieModelRenderer swordJoint;
     public MowzieModelRenderer rootBox;
     public MowzieModelRenderer waistBendController;
@@ -354,9 +355,10 @@ public class ModelWroughtnaut extends MowzieModelBase
         this.swordJoint.setRotationPoint(0F, -3F, 10F);
         this.swordJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         this.setRotateAngle(swordJoint, 0.0F, -0.7853981633974483F, 0.0F);
-        this.sword = new MowzieModelRenderer(this, 82, 10);
+        this.sword = new AdvancedModelRenderer(this, 82, 10);
         this.sword.setRotationPoint(0F, 0F, 0F);
-        this.sword.addBox(-11F, 0F, -11F, 11, 11, 0, 0.0F);
+//        this.sword.addBox(-11F, 0F, -11F, 11, 11, 0, 0.0F);
+        sword.add3DTexture(-11f, 0, -11f, 11, 11);
         this.setRotateAngle(sword, 0.0F, 0F, 0.0F);
         this.rootBox = new MowzieModelRenderer(this, 0, 0);
         this.rootBox.setRotationPoint(0.0F, -1.0F, 0.0F);
@@ -566,6 +568,11 @@ public class ModelWroughtnaut extends MowzieModelBase
         swordJoint.rotateAngleY += 1.3;
         swordJoint.rotateAngleX -= 0.5;
         swordJoint.rotateAngleZ -= 0.5;
+
+        sword.rotateAngleY += Math.PI/2;
+//        sword.rotationPointX += 10;
+        sword.rotationPointZ -= 22;
+        sword.rotationPointY += 10;
     }
 
     public void animate(float f, float f1, float f2, float f3, float f4, float f5, Entity entity)

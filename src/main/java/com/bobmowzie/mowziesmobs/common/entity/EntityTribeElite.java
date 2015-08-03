@@ -1,13 +1,16 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.entity.IEntityLivingData;
-import net.minecraft.entity.ai.EntityAIWander;
+import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.entity.passive.EntityCow;
+import net.minecraft.entity.passive.EntityPig;
+import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by jnad325 on 7/23/15.
@@ -21,7 +24,9 @@ public class EntityTribeElite extends EntityTribesman
     public EntityTribeElite(World world)
     {
         super(world);
-        tasks.addTask(5, new EntityAIWander(this, 0.4));
+        targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityCow.class, 0, true));
+        targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPig.class, 0, true));
+        targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntitySheep.class, 0, true));
         setMask(0);
     }
 
@@ -29,6 +34,12 @@ public class EntityTribeElite extends EntityTribesman
     public void onUpdate()
     {
         super.onUpdate();
+
+        for (int i = 0; i < pack.size(); i++)
+        {
+            pack.get(i).index = i;
+        }
+
         if (!worldObj.isRemote && pack != null)
         {
             if (getAttackTarget() == null)
@@ -40,6 +51,10 @@ public class EntityTribeElite extends EntityTribesman
                 }
             }
         }
+    }
+
+    public int getpackSize() {
+        return pack.size();
     }
 
     public void removePackMember(EntityTribeHunter tribeHunter)
