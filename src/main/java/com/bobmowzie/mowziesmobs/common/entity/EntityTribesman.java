@@ -8,6 +8,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackOnCollide;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
@@ -27,9 +28,9 @@ public class EntityTribesman extends MMEntityBase {
 
     public EntityTribesman(World world) {
         super(world);
-        deathLength = 40;
+        deathLength = 70;
         tasks.addTask(4, new EntityAIAttackOnCollide(this, EntityPlayer.class, 0.5D, false));
-        //tasks.addTask(5, new EntityAIWander(this, 0.4));
+        tasks.addTask(5, new EntityAIWander(this, 0.4));
         targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true));
         tasks.addTask(2, new AnimBasicAttack(this, 1, 22, "", 1, 3, 1, 9));
         tasks.addTask(3, new AnimTakeDamage(this, 10));
