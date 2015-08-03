@@ -26,7 +26,7 @@ public class ModelTribesman extends MowzieModelBase {
     public MowzieModelRenderer armUpperRight;
     public MowzieModelRenderer armLowerRight;
     public MowzieModelRenderer handRight;
-    public MowzieModelRenderer spearBase;
+    public AdvancedModelRenderer spearBase;
     public AdvancedModelRenderer spear;
     public MowzieModelRenderer armUpperLeft;
     public MowzieModelRenderer armLowerLeft;
@@ -73,11 +73,11 @@ public class ModelTribesman extends MowzieModelBase {
         this.thighLeftJoint.setRotationPoint(4.0F, 0.0F, 0.0F);
         this.thighLeftJoint.addBox(0, 0, 0, 0, 0, 0, 0.0F);
         this.setRotateAngle(thighLeftJoint, 0, 0, 0.0F);
-        this.spearBase = new MowzieModelRenderer(this, 0, 0);
+        this.spearBase = new AdvancedModelRenderer(this, 0, 0);
         this.spearBase.setRotationPoint(0.0F, 3.0F, 0.0F);
         this.spearBase.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         this.loinClothBack = new MowzieModelRenderer(this, 32, 27);
-        this.loinClothBack.setRotationPoint(0.0F, 0.0F, -1.0F);
+        this.loinClothBack.setRotationPoint(0.0F, 2.0F, 2.0F);
         this.loinClothBack.addBox(-4.0F, 0.0F, 0.0F, 8, 7, 0, 0.0F);
         this.setRotateAngle(loinClothBack, 0.17453292519943295F, 0.0F, 0.0F);
         this.loinClothFront = new MowzieModelRenderer(this, 32, 27);
@@ -299,6 +299,7 @@ public class ModelTribesman extends MowzieModelBase {
             armLowerLeft.rotateAngleX -= 0.2;
             armLowerLeft.rotateAngleY += 0.2;
             armLowerLeft.rotateAngleZ += 1;
+            spearBase.setScaleZ(1.5f);
 
             flap(armUpperLeft, 1 * globalSpeed, 0.1f * globalHeight, false, 0.5f, 0, f, f1);
             walk(armUpperLeft, 0.5f * globalSpeed, 0.3f * globalDegree, true, 0, 1, f, f1);
@@ -371,6 +372,8 @@ public class ModelTribesman extends MowzieModelBase {
         walk(armLowerLeft, 1.2f * danceSpeed, 0.5f * dance, true, 0, 0, frame, 1f);
         flap(neck, 0.3f * danceSpeed, 0.2f * dance, true, 0, 0, frame, 1f);
         flap(head, 1.2f * danceSpeed, 0.2f * dance, true, 0, 0, frame, 1f);
+        walk(loinClothFront, 0.6f * danceSpeed, 0.6f * dance, true, 1, -0.4f, frame, 1f);
+        walk(loinClothBack, 0.6f * danceSpeed, 0.6f * dance, false, 1, 0.4f, frame, 1f);
         if (tribesman instanceof EntityTribeElite) {
             armLeftJoint.rotateAngleX += 0.2 * dance;
             armLeftJoint.rotateAngleY -= 1.3 * dance;
@@ -503,7 +506,7 @@ public class ModelTribesman extends MowzieModelBase {
             animator.rotate(head, -1.58f, 0, 0);
             animator.move(body, 0, 9f, 5);
             animator.endPhase();
-            animator.setStationaryPhase(10);
+            animator.setStationaryPhase(15);
 
             armLeftJoint.rotateAngleX += 0.2 * flailer.rotationPointX;
             armLeftJoint.rotateAngleY -= 1.3 * flailer.rotationPointX;
@@ -620,7 +623,7 @@ public class ModelTribesman extends MowzieModelBase {
             animator.rotate(head, -1.58f, 0, 0);
             animator.move(body, 0, 9f, 5);
             animator.endPhase();
-            animator.setStationaryPhase(10);
+            animator.setStationaryPhase(15);
         }
         float flailSpeed = 2f;
         bob(modelCore, 0.3f * flailSpeed, 10f * flailer.rotationPointX, true, frame, 1f);
