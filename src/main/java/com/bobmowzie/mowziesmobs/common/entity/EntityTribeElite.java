@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
+import com.bobmowzie.mowziesmobs.common.animation.AnimBlock;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.passive.EntityCow;
@@ -8,6 +9,7 @@ import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import thehippomaster.AnimationAPI.AnimationAPI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,12 +23,15 @@ public class EntityTribeElite extends EntityTribesman
 
     private int packRadius = 3;
 
+    boolean vulnerable = false;
+
     public EntityTribeElite(World world)
     {
         super(world);
         targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityCow.class, 0, true));
         targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPig.class, 0, true));
         targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntitySheep.class, 0, true));
+        tasks.addTask(2, new AnimBlock(this, 2, 10));
         setMask(0);
     }
 
@@ -51,6 +56,18 @@ public class EntityTribeElite extends EntityTribesman
                 }
             }
         }
+    }
+
+    @Override
+    public boolean attackEntityFrom(DamageSource source, float damage) {
+        if (source.getEntity() != null && !vulnerable) {
+            playSound("mob.zombie.wood", 0.3f, 1.5f);
+            faceEntity(source.getEntity(), 100, getVerticalFaceSpeed());
+            getLookHelper().setLookPositionWithEntity(source.getEntity(), 200F, 30F);
+            AnimationAPI.sendAnimPacket(this, 2);
+            return false;
+        }
+        return super.attackEntityFrom(source, damage);
     }
 
     public int getpackSize() {

@@ -109,8 +109,6 @@ public class EntityTribesman extends MMEntityBase {
         }
         if (danceTimer == 0 && rand.nextInt(800) == 0) danceTimer++;
         if (getAnimID() != 0) danceTimer = 0;
-
-//        if (getAnimID() == 0) AnimationAPI.sendAnimPacket(this, -2);
     }
 
     protected void entityInit()

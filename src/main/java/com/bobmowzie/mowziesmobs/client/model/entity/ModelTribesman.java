@@ -372,8 +372,8 @@ public class ModelTribesman extends MowzieModelBase {
         walk(armLowerLeft, 1.2f * danceSpeed, 0.5f * dance, true, 0, 0, frame, 1f);
         flap(neck, 0.3f * danceSpeed, 0.2f * dance, true, 0, 0, frame, 1f);
         flap(head, 1.2f * danceSpeed, 0.2f * dance, true, 0, 0, frame, 1f);
-        walk(loinClothFront, 0.6f * danceSpeed, 0.6f * dance, true, 1, -0.4f, frame, 1f);
-        walk(loinClothBack, 0.6f * danceSpeed, 0.6f * dance, false, 1, 0.4f, frame, 1f);
+        walk(loinClothFront, 0.6f * danceSpeed, 0.6f * dance, true, 1, -0.4f * dance, frame, 1f);
+        walk(loinClothBack, 0.6f * danceSpeed, 0.6f * dance, false, 1, 0.4f * dance, frame, 1f);
         if (tribesman instanceof EntityTribeElite) {
             armLeftJoint.rotateAngleX += 0.2 * dance;
             armLeftJoint.rotateAngleY -= 1.3 * dance;
@@ -435,6 +435,27 @@ public class ModelTribesman extends MowzieModelBase {
             animator.endPhase();
             animator.setStationaryPhase(1);
             animator.resetPhase(6);
+
+            animator.setAnim(2);
+            animator.startPhase(3);
+            animator.move(body, 0, 5f, 1f);
+            animator.rotate(body, 0.3f, 0, 0);
+            animator.rotate(chest, 0, 0.8f, 0);
+            animator.rotate(thighLeftJoint, -0.3f, 0, 0);
+            animator.rotate(thighRightJoint, -0.3f, 0, 0);
+            animator.rotate(thighLeft, -0.5f, 0, 0);
+            animator.rotate(thighRight, -0.5f, 0, 0);
+            animator.rotate(calfLeft, 0.8f, 0, 0);
+            animator.rotate(calfRight, 0.8f, 0, 0);
+            animator.rotate(footLeft, -0.3f, 0, 0);
+            animator.rotate(footRight, -0.3f, 0, 0);
+            animator.rotate(neck, 0.3f, -0.8f, 0);
+            animator.rotate(head, -0.6f, 0, 0);
+            animator.rotate(armLeftJoint, 0, -0.8f, 0);
+            animator.rotate(armLeftJoint, -0.5f, 0, -1);
+            animator.rotate(armLowerLeft, 0, 0, 0.7f);
+            animator.endPhase();
+            animator.resetPhase(7);
 
             animator.setAnim(-3);
             animator.startPhase(3);
