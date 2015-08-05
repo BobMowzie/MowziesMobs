@@ -62,7 +62,7 @@ public class EntityTribeHunter extends EntityTribesman
             }
             if (leader != null)
             {
-                if(leader.getAttackTarget() != null) setAttackTarget(leader.getAttackTarget());
+                setAttackTarget(leader.getAttackTarget());
             }
         }
     }
@@ -70,7 +70,8 @@ public class EntityTribeHunter extends EntityTribesman
     @Override
     protected void updateCircling() {
         if (leader != null) {
-            circleEntity(getAttackTarget(), 7, 0.3f, true, leader.frame, (float) ((index + 1) * (Math.PI*2)/(leader.getPackSize() + 1)));
+            if (!attacking && targetDistance < 5) circleEntity(getAttackTarget(), 7, 0.3f, true, leader.frame, (float) ((index + 1) * (Math.PI * 2) / (leader.getPackSize() + 1)), 1.75f);
+            else circleEntity(getAttackTarget(), 7, 0.3f, true, leader.frame, (float) ((index + 1) * (Math.PI * 2) / (leader.getPackSize() + 1)), 1);
         }
         else super.updateCircling();
     }

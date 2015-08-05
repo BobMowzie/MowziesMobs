@@ -39,5 +39,7 @@ public class MMEntityRegistry implements IContentHandler
         registerEntity(EntityTribeElite.class, "TribesmanElite", true, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.monster);
         registerEntity(EntityTribeVillager.class, "TribesmanVillager", true, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.creature);
         registerEntity(EntityTribeLeader.class, "TribeLeader", true, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.monster);
+
+        EntityRegistry.registerModEntity(EntityDart.class, "dart", EntityRegistry.findGlobalUniqueEntityId(), MowziesMobs.instance , 64, 1, true);
     }
 }

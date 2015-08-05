@@ -31,8 +31,9 @@ public class EntityTribeElite extends EntityTribesman
         targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityCow.class, 0, true));
         targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPig.class, 0, true));
         targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntitySheep.class, 0, true));
-        tasks.addTask(2, new AnimBlock(this, 2, 10));
+        tasks.addTask(2, new AnimBlock(this, 3, 10));
         setMask(0);
+        setSize(0.7f, 2f);
     }
 
     @Override
@@ -60,11 +61,11 @@ public class EntityTribeElite extends EntityTribesman
 
     @Override
     public boolean attackEntityFrom(DamageSource source, float damage) {
-        if (source.getEntity() != null && !vulnerable) {
+        if (source.getEntity() != null && (getAnimID() == 0 || getAnimID() == -3 || getAnimID() == 3)) {
             playSound("mob.zombie.wood", 0.3f, 1.5f);
             faceEntity(source.getEntity(), 100, getVerticalFaceSpeed());
             getLookHelper().setLookPositionWithEntity(source.getEntity(), 200F, 30F);
-            AnimationAPI.sendAnimPacket(this, 2);
+            AnimationAPI.sendAnimPacket(this, 3);
             return false;
         }
         return super.attackEntityFrom(source, damage);
@@ -130,6 +131,9 @@ public class EntityTribeElite extends EntityTribesman
             tribeHunter.setMask(0);
             tribeHunter.setLeaderUUID(getUniqueID().toString());
             tribeHunter.setPosition(posX + 0.1 * i, posY, posZ);
+            int weapon = 0;
+            if (rand.nextInt(3) == 0) weapon = 1;
+            tribeHunter.setWeapon(weapon);
             worldObj.spawnEntityInWorld(tribeHunter);
         }
         return super.onSpawnWithEgg(data);

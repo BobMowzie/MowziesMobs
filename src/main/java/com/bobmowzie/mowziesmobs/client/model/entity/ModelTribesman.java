@@ -28,6 +28,7 @@ public class ModelTribesman extends MowzieModelBase {
     public MowzieModelRenderer handRight;
     public AdvancedModelRenderer spearBase;
     public AdvancedModelRenderer spear;
+    public AdvancedModelRenderer blowgun;
     public MowzieModelRenderer armUpperLeft;
     public MowzieModelRenderer armLowerLeft;
     public MowzieModelRenderer handLeft;
@@ -213,6 +214,10 @@ public class ModelTribesman extends MowzieModelBase {
         this.flailer = new MowzieModelRenderer(this, 0, 0);
         this.flailer.setRotationPoint(0.0F, 0, 0F);
         this.flailer.addBox(0, 0, 0, 0, 0, 0, 0.0F);
+        this.blowgun = new AdvancedModelRenderer(this, 82, 0);
+        this.blowgun.setRotationPoint(0.0F, 0.0F, 0.0F);
+        blowgun.add3DTexture(-4, -4, 0.5F, 15, 15);
+        this.setRotateAngle(blowgun, 2.356194490192345F, 0.0F, 3.141592653589793F);
         this.calfLeft.addChild(this.footLeft);
         this.body.addChild(this.thighLeftJoint);
         this.handRight.addChild(this.spearBase);
@@ -227,6 +232,7 @@ public class ModelTribesman extends MowzieModelBase {
         this.chest.addChild(this.neckJoint);
         this.armLeftJoint.addChild(this.armUpperLeft);
         this.spearBase.addChild(this.spear);
+        this.spearBase.addChild(this.blowgun);
         this.head.addChild(this.earLeft);
         this.maskBase.addChild(this.maskLeft);
         this.thighLeft.addChild(this.calfLeft);
@@ -249,7 +255,7 @@ public class ModelTribesman extends MowzieModelBase {
         this.modelCore.addChild(this.body);
         this.maskBase.addChild(this.maskRight);
         this.maskBase.addChild(this.mane);
-        parts = new MowzieModelRenderer[]{modelCore, body, chest, thighLeft, thighRight, loinClothFront, loinClothBack, armRightJoint, armLeftJoint, neckJoint, armUpperRight, armLowerRight, handRight, spearBase, spear, armUpperLeft, armLowerLeft, handLeft, shieldBase, shield, neck, headJoint, head, maskBase, earLeft, earRight, maskLeft, maskRight, mane, earringLeft, earringRight, calfLeft, footLeft, calfRight, footRight, thighLeftJoint, thighRightJoint, scaler, flailer};
+        parts = new MowzieModelRenderer[]{modelCore, body, chest, thighLeft, thighRight, loinClothFront, loinClothBack, armRightJoint, armLeftJoint, neckJoint, armUpperRight, armLowerRight, handRight, spearBase, spear, armUpperLeft, armLowerLeft, handLeft, shieldBase, shield, neck, headJoint, head, maskBase, earLeft, earRight, maskLeft, maskRight, mane, earringLeft, earringRight, calfLeft, footLeft, calfRight, footRight, thighLeftJoint, thighRightJoint, scaler, flailer, blowgun};
         setInitPose();
     }
 
@@ -282,14 +288,24 @@ public class ModelTribesman extends MowzieModelBase {
         setToInitPose();
 //                f = entity.ticksExisted;
 //                f1 = 0.5f;
+        if (tribesman.getWeapon() == 0) {
+            spear.isHidden = false;
+            blowgun.isHidden = true;
+        }
+        else {
+            spear.isHidden = true;
+            blowgun.isHidden = false;
+        }
         float doWalk = tribesman.doWalk.getAnimationProgressSinSqrt();
         float dance = tribesman.dancing.getAnimationProgressSinSqrt();
         if (f1 > 0.55f) f1 = 0.55f;
         float globalSpeed = 1.5f;
         float globalHeight = 1 * doWalk;
         float globalDegree = 1 * doWalk * (1 - dance);
-        faceTarget(neck, 2, f3, f4);
-        faceTarget(head, 2, f3, f4);
+        if (tribesman.getAnimID() != 2) {
+            faceTarget(neck, 2, f3, f4);
+            faceTarget(head, 2, f3, f4);
+        }
         float frame = tribesman.frame + AnimationAPI.proxy.getPartialTick();
 
         if (tribesman instanceof EntityTribeElite)
@@ -436,7 +452,7 @@ public class ModelTribesman extends MowzieModelBase {
             animator.setStationaryPhase(1);
             animator.resetPhase(6);
 
-            animator.setAnim(2);
+            animator.setAnim(3);
             animator.startPhase(3);
             animator.move(body, 0, 5f, 1f);
             animator.rotate(body, 0.3f, 0, 0);
@@ -501,7 +517,6 @@ public class ModelTribesman extends MowzieModelBase {
             animator.rotate(armLowerLeft, -0.7f, 0, 0);
             animator.rotate(armLowerRight, -0.7f, 0, 0);
             animator.endPhase();
-            animator.resetPhase(5);
             animator.startPhase(5);
             animator.rotate(head, -0.8f, 0, 0);
             animator.move(flailer, 1, 0, 0);
@@ -527,7 +542,7 @@ public class ModelTribesman extends MowzieModelBase {
             animator.rotate(head, -1.58f, 0, 0);
             animator.move(body, 0, 9f, 5);
             animator.endPhase();
-            animator.setStationaryPhase(15);
+            animator.setStationaryPhase(20);
 
             armLeftJoint.rotateAngleX += 0.2 * flailer.rotationPointX;
             armLeftJoint.rotateAngleY -= 1.3 * flailer.rotationPointX;
@@ -576,6 +591,39 @@ public class ModelTribesman extends MowzieModelBase {
             animator.setStationaryPhase(1);
             animator.resetPhase(6);
 
+            animator.setAnim(2);
+            animator.startPhase(5);
+            animator.rotate(body, -0.3f, 0, 0);
+            animator.rotate(thighRightJoint, 0.3f, 0, 0);
+            animator.rotate(thighLeftJoint, 0.3f, 0, 0);
+            animator.rotate(loinClothFront, 0.3f, 0, 0);
+            animator.rotate(loinClothBack, 0.3f, 0, 0);
+            animator.rotate(neck, -0.4f, 0, 0);
+            animator.rotate(head, 0.5f, 0, 0);
+            animator.rotate(armUpperRight, -1.5f, 0, 0);
+            animator.rotate(armLowerRight, 0, 0, -1f);
+            animator.rotate(handRight, -1f, -0.2f, 1.2f);
+            animator.move(blowgun, 0, 0, 4.5f);
+            animator.endPhase();
+            animator.setStationaryPhase(3);
+            animator.startPhase(3);
+            animator.rotate(body, 0.5f, 0, 0);
+            animator.rotate(thighRightJoint, -0.5f, 0, 0);
+            animator.rotate(thighLeftJoint, -0.5f, 0, 0);
+            animator.rotate(loinClothBack, -0.5f, 0, 0);
+            animator.rotate(loinClothFront, -0.5f, 0, 0);
+            animator.rotate(neck, 0.2f, 0, 0);
+            animator.rotate(head, -0.7f, 0, 0);
+            animator.rotate(armUpperRight, -1.8f, 0, 0);
+            animator.rotate(armRightJoint, -0.5f, 0, 0);
+            animator.move(armRightJoint, 1, 0, -2);
+            animator.rotate(armLowerRight, 0.8f, 0, -0.4f);
+            animator.rotate(handRight, -1.5f, 0.4f, 1.0f);
+            animator.move(blowgun, 0, 0, 5f);
+            animator.endPhase();
+            animator.setStationaryPhase(2);
+            animator.resetPhase(7);
+
             animator.setAnim(-3);
             animator.startPhase(3);
             animator.move(body, 0, 5f, 1f);
@@ -618,7 +666,6 @@ public class ModelTribesman extends MowzieModelBase {
             animator.rotate(armLowerLeft, -0.7f, 0, 0);
             animator.rotate(armLowerRight, -0.7f, 0, 0);
             animator.endPhase();
-            animator.resetPhase(5);
             animator.startPhase(5);
             animator.rotate(head, -0.8f, 0, 0);
             animator.move(flailer, 1, 0, 0);
@@ -644,9 +691,9 @@ public class ModelTribesman extends MowzieModelBase {
             animator.rotate(head, -1.58f, 0, 0);
             animator.move(body, 0, 9f, 5);
             animator.endPhase();
-            animator.setStationaryPhase(15);
+            animator.setStationaryPhase(20);
         }
-        float flailSpeed = 2f;
+        float flailSpeed = 2.3f;
         bob(modelCore, 0.3f * flailSpeed, 10f * flailer.rotationPointX, true, frame, 1f);
         walk(thighLeft, 0.3f * flailSpeed, 0.6f * flailer.rotationPointX, false, 0, -0.3f * flailer.rotationPointX, frame, 1f);
         walk(calfLeft, 0.3f * flailSpeed, 0.5f * flailer.rotationPointX, true, 0, 0.3f * flailer.rotationPointX, frame, 1f);
