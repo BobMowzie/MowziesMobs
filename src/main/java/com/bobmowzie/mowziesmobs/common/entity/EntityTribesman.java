@@ -14,6 +14,7 @@ import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import thehippomaster.AnimationAPI.AnimationAPI;
 
@@ -46,6 +47,31 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob {
     @Override
     public int getAttack() {
         return 4;
+    }
+
+    @Override
+    protected String getLivingSound() {
+        if (getAttackTarget() == null) {
+            int i = MathHelper.getRandomIntegerInRange(rand, 0, 11);
+            if (i == 0) playSound("mowziesmobs:barakoaTalk1", 1, 1.5f);
+            if (i == 1) playSound("mowziesmobs:barakoaTalk2", 1, 1.5f);
+            if (i == 2) playSound("mowziesmobs:barakoaTalk3", 1, 1.5f);
+            if (i == 3) playSound("mowziesmobs:barakoaTalk4", 1, 1.5f);
+            if (i == 4) playSound("mowziesmobs:barakoaTalk5", 1, 1.5f);
+            if (i == 5) playSound("mowziesmobs:barakoaTalk6", 1, 1.5f);
+            if (i == 6) playSound("mowziesmobs:barakoaTalk7", 1, 1.5f);
+            if (i == 7) playSound("mowziesmobs:barakoaTalk8", 1, 1.5f);
+        }
+        else {
+            int i = MathHelper.getRandomIntegerInRange(rand, 0, 7);
+            if (i == 0) playSound("mowziesmobs:barakoaAngry1", 1, 1.5f);
+            if (i == 1) playSound("mowziesmobs:barakoaAngry2", 1, 1.5f);
+            if (i == 2) playSound("mowziesmobs:barakoaAngry3", 1, 1.5f);
+            if (i == 3) playSound("mowziesmobs:barakoaAngry4", 1, 1.5f);
+            if (i == 4) playSound("mowziesmobs:barakoaAngry5", 1, 1.5f);
+            if (i == 5) playSound("mowziesmobs:barakoaAngry6", 1, 1.5f);
+        }
+        return null;
     }
 
     protected void applyEntityAttributes()
