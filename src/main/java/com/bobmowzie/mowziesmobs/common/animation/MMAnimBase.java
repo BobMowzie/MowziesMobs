@@ -4,7 +4,7 @@ import com.bobmowzie.mowziesmobs.common.entity.MMEntityBase;
 import thehippomaster.AnimationAPI.AIAnimation;
 import thehippomaster.AnimationAPI.IAnimatedEntity;
 
-public abstract class MMAnimBase extends AIAnimation
+public class MMAnimBase extends AIAnimation
 {
     protected MMEntityBase animatingEntity;
     protected int duration;

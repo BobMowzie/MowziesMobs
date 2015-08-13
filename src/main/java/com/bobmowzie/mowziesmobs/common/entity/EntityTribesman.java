@@ -1,9 +1,6 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
-import com.bobmowzie.mowziesmobs.common.animation.AnimBasicAttack;
-import com.bobmowzie.mowziesmobs.common.animation.AnimDie;
-import com.bobmowzie.mowziesmobs.common.animation.AnimProjectileAttack;
-import com.bobmowzie.mowziesmobs.common.animation.AnimTakeDamage;
+import com.bobmowzie.mowziesmobs.common.animation.*;
 import net.ilexiconn.llibrary.client.model.modelbase.ControlledAnimation;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -28,6 +25,10 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob {
     public ControlledAnimation doWalk = new ControlledAnimation(3);
     public ControlledAnimation dancing = new ControlledAnimation(10);
     private int danceTimer = 0;
+    private int talkTimer = 0;
+    boolean prevHasTarget = false;
+    boolean prevprevHasTarget = false;
+    boolean prevprevprevHasTarget = false;
 
     public EntityTribesman(World world) {
         super(world);
@@ -37,6 +38,7 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob {
         targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true));
         tasks.addTask(2, new AnimBasicAttack(this, 1, 19, "", 1, 3, 1, 9));
         tasks.addTask(2, new AnimProjectileAttack(this, 2, 20, 9, ""));
+        tasks.addTask(4, new MMAnimBase(this, 4, 35));
         tasks.addTask(3, new AnimTakeDamage(this, 10));
         tasks.addTask(1, new AnimDie(this, deathLength));
         setMask(0);
@@ -61,17 +63,30 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob {
             if (i == 5) playSound("mowziesmobs:barakoaTalk6", 1, 1.5f);
             if (i == 6) playSound("mowziesmobs:barakoaTalk7", 1, 1.5f);
             if (i == 7) playSound("mowziesmobs:barakoaTalk8", 1, 1.5f);
+            if (i <= 7) {
+                AnimationAPI.sendAnimPacket(this, 4);
+            }
         }
         else {
             int i = MathHelper.getRandomIntegerInRange(rand, 0, 7);
-            if (i == 0) playSound("mowziesmobs:barakoaAngry1", 1, 1.5f);
-            if (i == 1) playSound("mowziesmobs:barakoaAngry2", 1, 1.5f);
-            if (i == 2) playSound("mowziesmobs:barakoaAngry3", 1, 1.5f);
-            if (i == 3) playSound("mowziesmobs:barakoaAngry4", 1, 1.5f);
-            if (i == 4) playSound("mowziesmobs:barakoaAngry5", 1, 1.5f);
-            if (i == 5) playSound("mowziesmobs:barakoaAngry6", 1, 1.5f);
+            if (i == 0) playSound("mowziesmobs:barakoaAngry1", 1, 1.6f);
+            if (i == 1) playSound("mowziesmobs:barakoaAngry2", 1, 1.6f);
+            if (i == 2) playSound("mowziesmobs:barakoaAngry3", 1, 1.6f);
+            if (i == 3) playSound("mowziesmobs:barakoaAngry4", 1, 1.6f);
+            if (i == 4) playSound("mowziesmobs:barakoaAngry5", 1, 1.6f);
+            if (i == 5) playSound("mowziesmobs:barakoaAngry6", 1, 1.6f);
         }
         return null;
+    }
+
+    @Override
+    protected String getHurtSound() {
+        int i = MathHelper.getRandomIntegerInRange(rand, 0, 3);
+        if (i == 0) playSound("mowziesmobs:barakoaHurt1", 1, 1.6f);
+        if (i == 1) playSound("mowziesmobs:barakoaHurt2", 0.7f, 1f);
+        if (i == 2) playSound("mowziesmobs:barakoaHurt3", 0.7f, 1f);
+        if (i == 3) playSound("mowziesmobs:barakoaHurt4", 0.7f, 1f);
+        return super.getHurtSound();
     }
 
     protected void applyEntityAttributes()
@@ -140,7 +155,7 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob {
             getNavigator().clearPathEntity();
         }
 
-        if (getAnimID() == 0) doWalk.increaseTimer();
+        if (getAnimID() == 0 || getAnimID() == 4) doWalk.increaseTimer();
         else doWalk.decreaseTimer();
 
         if (danceTimer != 0 && danceTimer != 50) {
@@ -151,10 +166,20 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob {
             danceTimer = 0;
             dancing.decreaseTimer();
         }
-        if (danceTimer == 0 && rand.nextInt(800) == 0) danceTimer++;
+        if (danceTimer == 0 && rand.nextInt(800) == 0) {
+            //TODO: Dance animation is on client, but battlecry sound must be played on server. Not synced!
+            danceTimer++;
+            playSound("mowziesmobs:barakoaBattlecry2", 1.2f, 1.2f);
+        }
         if (getAnimID() != 0) danceTimer = 0;
 
-//        if (getAnimID() == 0) AnimationAPI.sendAnimPacket(this, 2);
+        if (getAttackTarget() != null && !prevHasTarget && !prevprevHasTarget && !prevprevprevHasTarget) playSound("mowziesmobs:barakoaBattlecry", 1, 1.5f);
+
+        prevprevprevHasTarget = prevprevHasTarget;
+        prevprevHasTarget = prevHasTarget;
+        prevHasTarget = (getAttackTarget() != null);
+
+//        if (getAnimID() == 0) AnimationAPI.sendAnimPacket(this, 4);
     }
 
     protected void entityInit()

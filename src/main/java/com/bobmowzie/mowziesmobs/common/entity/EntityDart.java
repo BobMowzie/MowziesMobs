@@ -282,8 +282,7 @@ public class EntityDart extends EntityArrow implements IProjectile {
                     if (isBurning() && enderman) {
                         movingobjectposition.entityHit.setFire(5);
                     }
-
-                    if (movingobjectposition.entityHit.attackEntityFrom(damagesource, (float) k)) {
+                    if (!(movingobjectposition.entityHit instanceof EntityTribesman && shootingEntity instanceof EntityTribesman) && movingobjectposition.entityHit.attackEntityFrom(damagesource, (float) k)) {
                         if (movingobjectposition.entityHit instanceof EntityLivingBase) {
                             EntityLivingBase entitylivingbase = (EntityLivingBase) movingobjectposition.entityHit;
 
@@ -507,12 +506,5 @@ public class EntityDart extends EntityArrow implements IProjectile {
     }
 
     public void getType(){
-        //to add more arrows
-        if(dataWatcher.getWatchableObjectInt(17) == 1)
-            isPoisonedAnglerToothArrow = true;
-        else if(dataWatcher.getWatchableObjectInt(17) == 2)
-            isOctineArrow = true;
-        else if(dataWatcher.getWatchableObjectInt(17) == 3)
-            isBasiliskArrow = true;
     }
 }

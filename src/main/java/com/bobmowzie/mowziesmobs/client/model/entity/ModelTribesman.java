@@ -53,6 +53,7 @@ public class ModelTribesman extends MowzieModelBase {
     public MowzieModelRenderer thighRightJoint;
     public MowzieModelRenderer scaler;
     public MowzieModelRenderer flailer;
+    public MowzieModelRenderer talker;
 
     private Animator animator;
 
@@ -210,14 +211,14 @@ public class ModelTribesman extends MowzieModelBase {
         this.mane.addBox(-12.0F, -12.0F, 0.0F, 24, 24, 0, 0.0F);
         this.scaler = new MowzieModelRenderer(this, 0, 0);
         this.scaler.setRotationPoint(0.0F, 0, 0F);
-        this.scaler.addBox(0, 0, 0, 0, 0, 0, 0.0F);
         this.flailer = new MowzieModelRenderer(this, 0, 0);
         this.flailer.setRotationPoint(0.0F, 0, 0F);
-        this.flailer.addBox(0, 0, 0, 0, 0, 0, 0.0F);
         this.blowgun = new AdvancedModelRenderer(this, 82, 0);
         this.blowgun.setRotationPoint(0.0F, 0.0F, 0.0F);
         blowgun.add3DTexture(-4, -4, 0.5F, 15, 15);
         this.setRotateAngle(blowgun, 2.356194490192345F, 0.0F, 3.141592653589793F);
+        this.talker = new MowzieModelRenderer(this, 0, 0);
+        this.talker.setRotationPoint(0, 0, 0);
         this.calfLeft.addChild(this.footLeft);
         this.body.addChild(this.thighLeftJoint);
         this.handRight.addChild(this.spearBase);
@@ -255,7 +256,7 @@ public class ModelTribesman extends MowzieModelBase {
         this.modelCore.addChild(this.body);
         this.maskBase.addChild(this.maskRight);
         this.maskBase.addChild(this.mane);
-        parts = new MowzieModelRenderer[]{modelCore, body, chest, thighLeft, thighRight, loinClothFront, loinClothBack, armRightJoint, armLeftJoint, neckJoint, armUpperRight, armLowerRight, handRight, spearBase, spear, armUpperLeft, armLowerLeft, handLeft, shieldBase, shield, neck, headJoint, head, maskBase, earLeft, earRight, maskLeft, maskRight, mane, earringLeft, earringRight, calfLeft, footLeft, calfRight, footRight, thighLeftJoint, thighRightJoint, scaler, flailer, blowgun};
+        parts = new MowzieModelRenderer[]{modelCore, body, chest, thighLeft, thighRight, loinClothFront, loinClothBack, armRightJoint, armLeftJoint, neckJoint, armUpperRight, armLowerRight, handRight, spearBase, spear, armUpperLeft, armLowerLeft, handLeft, shieldBase, shield, neck, headJoint, head, maskBase, earLeft, earRight, maskLeft, maskRight, mane, earringLeft, earringRight, calfLeft, footLeft, calfRight, footRight, thighLeftJoint, thighRightJoint, scaler, flailer, blowgun, talker};
         setInitPose();
     }
 
@@ -284,15 +285,14 @@ public class ModelTribesman extends MowzieModelBase {
     @Override
     public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity entity) {
         super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-        EntityTribesman tribesman = (EntityTribesman)entity;
+        EntityTribesman tribesman = (EntityTribesman) entity;
         setToInitPose();
 //                f = entity.ticksExisted;
 //                f1 = 0.5f;
         if (tribesman.getWeapon() == 0) {
             spear.isHidden = false;
             blowgun.isHidden = true;
-        }
-        else {
+        } else {
             spear.isHidden = true;
             blowgun.isHidden = false;
         }
@@ -308,8 +308,7 @@ public class ModelTribesman extends MowzieModelBase {
         }
         float frame = tribesman.frame + AnimationAPI.proxy.getPartialTick();
 
-        if (tribesman instanceof EntityTribeElite)
-        {
+        if (tribesman instanceof EntityTribeElite) {
             armLeftJoint.rotateAngleX -= 0.2;
             armLeftJoint.rotateAngleY += 1.3;
             armLowerLeft.rotateAngleX -= 0.2;
@@ -319,8 +318,7 @@ public class ModelTribesman extends MowzieModelBase {
 
             flap(armUpperLeft, 1 * globalSpeed, 0.1f * globalHeight, false, 0.5f, 0, f, f1);
             walk(armUpperLeft, 0.5f * globalSpeed, 0.3f * globalDegree, true, 0, 1, f, f1);
-        }
-        else {
+        } else {
             flap(armUpperLeft, 1 * globalSpeed, 0.3f * globalHeight, false, 0.5f, 0, f, f1);
             walk(armUpperLeft, 0.5f * globalSpeed, 0.7f * globalDegree, true, 0, 0, f, f1);
         }
@@ -693,6 +691,14 @@ public class ModelTribesman extends MowzieModelBase {
             animator.endPhase();
             animator.setStationaryPhase(20);
         }
+
+        animator.setAnim(4);
+        animator.startPhase(10);
+        animator.move(talker, 1, 0, 0);
+        animator.endPhase();
+        animator.setStationaryPhase(15);
+        animator.resetPhase(10);
+
         float flailSpeed = 2.3f;
         bob(modelCore, 0.3f * flailSpeed, 10f * flailer.rotationPointX, true, frame, 1f);
         walk(thighLeft, 0.3f * flailSpeed, 0.6f * flailer.rotationPointX, false, 0, -0.3f * flailer.rotationPointX, frame, 1f);
@@ -716,6 +722,26 @@ public class ModelTribesman extends MowzieModelBase {
         maskBase.setScaleX(1/scale);
         maskBase.setScaleY(1/scale);
         maskBase.setScaleZ(1/scale);
+
+
+        float talk = talker.rotationPointX;
+        walk(head, 1.5f, 0.1f * talk, false, 0, -0.5f * talk, frame, 1f);
+        walk(neck, 0, 0, false, 0, 0.5f * talk, frame, 1f);
+        walk(armUpperRight, 0.5f, 0.2f * talk, false, 0, -0.7f * talk, frame, 1f);
+        flap(armUpperRight, 0.4f, 0.2f * talk, false, 2, 0, frame, 1f);
+        walk(armLowerRight, 0.5f, 0.2f * talk, false, -1, 0.3f * talk, frame, 1f);
+        swing(handRight, 0.5f, 0.2f * talk, false, -2, 1.8f * talk, frame, 1f);
+        walk(armUpperLeft, 0.5f, 0.2f * talk, false, 0, -0.7f * talk, frame, 1f);
+        flap(armUpperLeft, 0.4f, 0.2f * talk, true, 2, 0, frame, 1f);
+        walk(armLowerLeft, 0.5f, 0.2f * talk, false, -1, 0.3f * talk, frame, 1f);
+        swing(handLeft, 0.5f, 0.2f * talk, false, -2, -1.8f * talk, frame, 1f);
+        if (tribesman instanceof EntityTribeElite) {
+            armLeftJoint.rotateAngleX += 0.2 * talk;
+            armLeftJoint.rotateAngleY -= 1.3 * talk;
+            armLowerLeft.rotateAngleX += 0.2 * talk;
+            armLowerLeft.rotateAngleY -= 0.2 * talk;
+            armLowerLeft.rotateAngleZ -= 1 * talk;
+        }
     }
 }
 
