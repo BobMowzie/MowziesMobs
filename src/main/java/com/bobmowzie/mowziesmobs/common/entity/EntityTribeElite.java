@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
 import com.bobmowzie.mowziesmobs.common.animation.AnimBlock;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.passive.EntityCow;
@@ -32,6 +33,7 @@ public class EntityTribeElite extends EntityTribesman
         targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPig.class, 0, true));
         targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntitySheep.class, 0, true));
         tasks.addTask(2, new AnimBlock(this, 3, 10));
+//        tasks.addTask(3, new EntityAIHurtByTarget(this, false));
         setMask(0);
         setSize(0.7f, 2f);
     }
@@ -61,10 +63,9 @@ public class EntityTribeElite extends EntityTribesman
 
     @Override
     public boolean attackEntityFrom(DamageSource source, float damage) {
-        if (source.getEntity() != null && (getAnimID() == 0 || getAnimID() == -3 || getAnimID() == 3)) {
+        if (source.getEntity() != null && source.getEntity() instanceof EntityLivingBase && (getAnimID() == 0 || getAnimID() == -3 || getAnimID() == 3)) {
+            blockingEntity = (EntityLivingBase)source.getEntity();
             playSound("mob.zombie.wood", 0.3f, 1.5f);
-            faceEntity(source.getEntity(), 100, getVerticalFaceSpeed());
-            getLookHelper().setLookPositionWithEntity(source.getEntity(), 200F, 30F);
             AnimationAPI.sendAnimPacket(this, 3);
             return false;
         }

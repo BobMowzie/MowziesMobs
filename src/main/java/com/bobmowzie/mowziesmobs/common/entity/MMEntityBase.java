@@ -33,6 +33,8 @@ public class MMEntityBase extends EntityCreature implements IEntityAdditionalSpa
     private int animTick;
     private int animID;
 
+    public EntityLivingBase blockingEntity = null;
+
     private List<IntermittentAnimation> intermittentAnimations = new ArrayList<IntermittentAnimation>();
 
     public MMEntityBase(World world)

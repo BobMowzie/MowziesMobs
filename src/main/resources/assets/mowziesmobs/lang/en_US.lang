@@ -7,8 +7,8 @@ itemGroup.mowziesmobs.generic=Mowzie's Mobs
 entity.Foliaath.name=Foliaath
 entity.FerrousWroughtnaut.name=Ferrous Wroughtnaut
 entity.BabyFoliaath.name=Baby Foliaath
-entity.TribesmanHunter.name=Barakoana
-entity.TribesmanElite.name=Barakoaila
+entity.TribesmanHunter.name=Barakoa
+entity.TribesmanElite.name=Barakoana
 entity.TribesmanVillager.name=Barakoa
 entity.TribeLeader.name=Barako, the Sun Chief
 

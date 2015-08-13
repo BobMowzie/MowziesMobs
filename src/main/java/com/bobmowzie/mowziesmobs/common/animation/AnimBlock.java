@@ -13,5 +13,7 @@ public class AnimBlock extends MMAnimBase {
     @Override
     public void updateTask() {
         super.updateTask();
+        animatingEntity.faceEntity(animatingEntity.blockingEntity, 100, 100);
+        animatingEntity.getLookHelper().setLookPositionWithEntity(animatingEntity.blockingEntity, 200F, 30F);
     }
 }

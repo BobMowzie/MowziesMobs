@@ -34,6 +34,7 @@ public class AnimProjectileAttack extends MMAnimBase
         super.updateTask();
         if (this.entityTarget != null)
         {
+            animatingEntity.faceEntity(entityTarget, 100, 100);
             animatingEntity.getLookHelper().setLookPositionWithEntity(entityTarget, 30F, 30F);
             if (animatingEntity.getAnimTick() == attackFrame) ((IRangedAttackMob) animatingEntity).attackEntityWithRangedAttack(entityTarget, 0);
         }

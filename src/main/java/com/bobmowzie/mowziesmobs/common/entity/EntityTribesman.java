@@ -45,14 +45,14 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob {
 
     @Override
     public int getAttack() {
-        return 3;
+        return 4;
     }
 
     protected void applyEntityAttributes()
     {
         super.applyEntityAttributes();
         getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(1.0);
-        getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(15);
+        getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(20);
     }
 
     @Override
