@@ -58,5 +58,9 @@
     "barakoaTalk6": {"category": "master","sounds": [{"name": "barakoaTalk6","stream": false}]},
     "barakoaTalk7": {"category": "master","sounds": [{"name": "barakoaTalk7","stream": false}]},
     "barakoaTalk8": {"category": "master","sounds": [{"name": "barakoaTalk8","stream": false}]},
-    "barakoaTalk9": {"category": "master","sounds": [{"name": "barakoaTalk9","stream": false}]}
+    "barakoaTalk9": {"category": "master","sounds": [{"name": "barakoaTalk9","stream": false}]},
+    "barakoaBlowdart": {"category": "master","sounds": [{"name": "barakoaBlowdart","stream": false}]},
+    "barakoaInhale": {"category": "master","sounds": [{"name": "barakoaInhale","stream": false}]},
+    "barakoaShout": {"category": "master","sounds": [{"name": "barakoaShout","stream": false}]},
+    "barakoaSwing": {"category": "master","sounds": [{"name": "barakoaSwing","stream": false}]}
 }

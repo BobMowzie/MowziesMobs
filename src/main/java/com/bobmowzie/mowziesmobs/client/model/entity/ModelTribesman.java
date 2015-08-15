@@ -366,7 +366,7 @@ public class ModelTribesman extends MowzieModelBase {
         }
 
         //Dancing
-        float danceSpeed = 1.2f;
+        float danceSpeed = 1.5f;
         thighLeft.rotateAngleY -= 0.6f * dance;
         thighRight.rotateAngleY += 0.6f * dance;
         bob(modelCore, 0.3f * danceSpeed, 10f * dance, true, frame, 1f);
@@ -385,7 +385,7 @@ public class ModelTribesman extends MowzieModelBase {
         walk(armUpperLeft, 1.2f * danceSpeed, 0.5f * dance, false, 0, -0.3f * dance, frame, 1f);
         walk(armLowerLeft, 1.2f * danceSpeed, 0.5f * dance, true, 0, 0, frame, 1f);
         flap(neck, 0.3f * danceSpeed, 0.2f * dance, true, 0, 0, frame, 1f);
-        flap(head, 1.2f * danceSpeed, 0.2f * dance, true, 0, 0, frame, 1f);
+        flap(head, 1.2f * danceSpeed, 0.4f * dance, true, 0, 0, frame, 1f);
         walk(loinClothFront, 0.6f * danceSpeed, 0.6f * dance, true, 1, -0.4f * dance, frame, 1f);
         walk(loinClothBack, 0.6f * danceSpeed, 0.6f * dance, false, 1, 0.4f * dance, frame, 1f);
         if (tribesman instanceof EntityTribeElite) {

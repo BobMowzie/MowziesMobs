@@ -24,7 +24,7 @@ public class EntityTribeElite extends EntityTribesman
 
     private int packRadius = 3;
 
-    boolean vulnerable = false;
+    private boolean vulnerable = false;
 
     public EntityTribeElite(World world)
     {
@@ -33,9 +33,13 @@ public class EntityTribeElite extends EntityTribesman
         targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPig.class, 0, true));
         targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntitySheep.class, 0, true));
         tasks.addTask(2, new AnimBlock(this, 3, 10));
-//        tasks.addTask(3, new EntityAIHurtByTarget(this, false));
-        setMask(0);
+        setMask(1);
         setSize(0.7f, 2f);
+    }
+
+    @Override
+    public int getAttack() {
+        return 6;
     }
 
     @Override
@@ -50,13 +54,10 @@ public class EntityTribeElite extends EntityTribesman
 
         if (!worldObj.isRemote && pack != null)
         {
-            if (getAttackTarget() == null)
+            float theta = (2 * (float) Math.PI / pack.size());
+            for (int i = 0; i < pack.size(); i++)
             {
-                float theta = (2 * (float) Math.PI / pack.size());
-                for (int i = 0; i < pack.size(); i++)
-                {
-                    pack.get(i).getNavigator().tryMoveToXYZ(posX + packRadius * MathHelper.cos(theta * i), posY, posZ + packRadius * MathHelper.sin(theta * i), 0.45);
-                }
+                if (pack.get(i).getAttackTarget() == null) pack.get(i).getNavigator().tryMoveToXYZ(posX + packRadius * MathHelper.cos(theta * i), posY, posZ + packRadius * MathHelper.sin(theta * i), 0.45);
             }
         }
     }
@@ -129,7 +130,6 @@ public class EntityTribeElite extends EntityTribesman
         {
             EntityTribeHunter tribeHunter = new EntityTribeHunter(worldObj, this);
             pack.add(tribeHunter);
-            tribeHunter.setMask(0);
             tribeHunter.setLeaderUUID(getUniqueID().toString());
             tribeHunter.setPosition(posX + 0.1 * i, posY, posZ);
             int weapon = 0;

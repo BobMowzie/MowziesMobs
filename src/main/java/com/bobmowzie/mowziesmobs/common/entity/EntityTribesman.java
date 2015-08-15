@@ -5,9 +5,7 @@ import net.ilexiconn.llibrary.client.model.modelbase.ControlledAnimation;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
-import net.minecraft.entity.ai.EntityAIAttackOnCollide;
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
-import net.minecraft.entity.ai.EntityAIWander;
+import net.minecraft.entity.ai.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,12 +21,14 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob {
     protected boolean attacking = false;
     protected int timeSinceAttack = 0;
     public ControlledAnimation doWalk = new ControlledAnimation(3);
-    public ControlledAnimation dancing = new ControlledAnimation(10);
+    public ControlledAnimation dancing = new ControlledAnimation(7);
     private int danceTimer = 0;
     private int talkTimer = 0;
     boolean prevHasTarget = false;
     boolean prevprevHasTarget = false;
     boolean prevprevprevHasTarget = false;
+    int cryDelay = -1;
+    public boolean circleDirection = true;
 
     public EntityTribesman(World world) {
         super(world);
@@ -36,12 +36,14 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob {
         tasks.addTask(4, new EntityAIAttackOnCollide(this, EntityPlayer.class, 0.5D, false));
         tasks.addTask(5, new EntityAIWander(this, 0.4));
         targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true));
-        tasks.addTask(2, new AnimBasicAttack(this, 1, 19, "", 1, 3, 1, 9));
-        tasks.addTask(2, new AnimProjectileAttack(this, 2, 20, 9, ""));
+        tasks.addTask(2, new AnimBasicAttack(this, 1, 19, "mowziesmobs:barakoaSwing", "", 1, 3, 1, 9));
+        tasks.addTask(2, new AnimProjectileAttack(this, 2, 20, 9, "mowziesmobs:barakoaBlowdart"));
         tasks.addTask(4, new MMAnimBase(this, 4, 35));
         tasks.addTask(3, new AnimTakeDamage(this, 10));
         tasks.addTask(1, new AnimDie(this, deathLength));
-        setMask(0);
+        this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+        this.tasks.addTask(8, new EntityAILookIdle(this));
+        setMask(MathHelper.getRandomIntegerInRange(rand, 2, 5));
         setSize(0.6f, 1.7f);
         stepHeight = 1;
     }
@@ -53,28 +55,29 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob {
 
     @Override
     protected String getLivingSound() {
-        if (getAttackTarget() == null) {
-            int i = MathHelper.getRandomIntegerInRange(rand, 0, 11);
-            if (i == 0) playSound("mowziesmobs:barakoaTalk1", 1, 1.5f);
-            if (i == 1) playSound("mowziesmobs:barakoaTalk2", 1, 1.5f);
-            if (i == 2) playSound("mowziesmobs:barakoaTalk3", 1, 1.5f);
-            if (i == 3) playSound("mowziesmobs:barakoaTalk4", 1, 1.5f);
-            if (i == 4) playSound("mowziesmobs:barakoaTalk5", 1, 1.5f);
-            if (i == 5) playSound("mowziesmobs:barakoaTalk6", 1, 1.5f);
-            if (i == 6) playSound("mowziesmobs:barakoaTalk7", 1, 1.5f);
-            if (i == 7) playSound("mowziesmobs:barakoaTalk8", 1, 1.5f);
-            if (i <= 7) {
-                AnimationAPI.sendAnimPacket(this, 4);
+        if (danceTimer == 0) {
+            if (getAttackTarget() == null) {
+                int i = MathHelper.getRandomIntegerInRange(rand, 0, 11);
+                if (i == 0) playSound("mowziesmobs:barakoaTalk1", 1, 1.5f);
+                if (i == 1) playSound("mowziesmobs:barakoaTalk2", 1, 1.5f);
+                if (i == 2) playSound("mowziesmobs:barakoaTalk3", 1, 1.5f);
+                if (i == 3) playSound("mowziesmobs:barakoaTalk4", 1, 1.5f);
+                if (i == 4) playSound("mowziesmobs:barakoaTalk5", 1, 1.5f);
+                if (i == 5) playSound("mowziesmobs:barakoaTalk6", 1, 1.5f);
+                if (i == 6) playSound("mowziesmobs:barakoaTalk7", 1, 1.5f);
+                if (i == 7) playSound("mowziesmobs:barakoaTalk8", 1, 1.5f);
+                if (i <= 7) {
+                    AnimationAPI.sendAnimPacket(this, 4);
+                }
+            } else {
+                int i = MathHelper.getRandomIntegerInRange(rand, 0, 7);
+                if (i == 0) playSound("mowziesmobs:barakoaAngry1", 1, 1.6f);
+                if (i == 1) playSound("mowziesmobs:barakoaAngry2", 1, 1.6f);
+                if (i == 2) playSound("mowziesmobs:barakoaAngry3", 1, 1.6f);
+                if (i == 3) playSound("mowziesmobs:barakoaAngry4", 1, 1.6f);
+                if (i == 4) playSound("mowziesmobs:barakoaAngry5", 1, 1.6f);
+                if (i == 5) playSound("mowziesmobs:barakoaAngry6", 1, 1.6f);
             }
-        }
-        else {
-            int i = MathHelper.getRandomIntegerInRange(rand, 0, 7);
-            if (i == 0) playSound("mowziesmobs:barakoaAngry1", 1, 1.6f);
-            if (i == 1) playSound("mowziesmobs:barakoaAngry2", 1, 1.6f);
-            if (i == 2) playSound("mowziesmobs:barakoaAngry3", 1, 1.6f);
-            if (i == 3) playSound("mowziesmobs:barakoaAngry4", 1, 1.6f);
-            if (i == 4) playSound("mowziesmobs:barakoaAngry5", 1, 1.6f);
-            if (i == 5) playSound("mowziesmobs:barakoaAngry6", 1, 1.6f);
         }
         return null;
     }
@@ -142,8 +145,8 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob {
     }
 
     protected void updateCircling() {
-        if (!attacking && targetDistance < 5) circleEntity(getAttackTarget(), 7, 0.3f, true, frame, 0, 1.75f);
-        else circleEntity(getAttackTarget(), 7, 0.3f, true, frame, 0, 1);
+        if (!attacking && targetDistance < 5) circleEntity(getAttackTarget(), 7, 0.3f, circleDirection, frame, 0, 1.75f);
+        else circleEntity(getAttackTarget(), 7, 0.3f, circleDirection, frame, 0, 1);
         attacking = false;
     }
 
@@ -155,10 +158,15 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob {
             getNavigator().clearPathEntity();
         }
 
+        if (getDancing() == 1) {
+            setDancing(0);
+            danceTimer++;
+        }
+
         if (getAnimID() == 0 || getAnimID() == 4) doWalk.increaseTimer();
         else doWalk.decreaseTimer();
 
-        if (danceTimer != 0 && danceTimer != 50) {
+        if (danceTimer != 0 && danceTimer != 30) {
             danceTimer++;
             dancing.increaseTimer();
         }
@@ -166,14 +174,18 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob {
             danceTimer = 0;
             dancing.decreaseTimer();
         }
-        if (danceTimer == 0 && rand.nextInt(800) == 0) {
-            //TODO: Dance animation is on client, but battlecry sound must be played on server. Not synced!
-            danceTimer++;
-            playSound("mowziesmobs:barakoaBattlecry2", 1.2f, 1.2f);
+        if (!worldObj.isRemote && getAnimID() == 0 && danceTimer == 0 && rand.nextInt(800) == 0) {
+            setDancing(1);
+            playSound("mowziesmobs:barakoaBattlecry2", 1.2f, 1.3f);
         }
         if (getAnimID() != 0) danceTimer = 0;
 
-        if (getAttackTarget() != null && !prevHasTarget && !prevprevHasTarget && !prevprevprevHasTarget) playSound("mowziesmobs:barakoaBattlecry", 1, 1.5f);
+        if (cryDelay > -1) cryDelay--;
+        if (cryDelay == 0) playSound("mowziesmobs:barakoaBattlecry", 1.5f, 1.5f);
+        if (getAttackTarget() != null && !prevHasTarget && !prevprevHasTarget && !prevprevprevHasTarget) cryDelay = MathHelper.getRandomIntegerInRange(rand, -15, 30);
+
+        if (getAnimID() == 1 && getAnimTick() == 5) playSound("mowziesmobs:barakoaShout", 1, 1.1f);
+        if (getAnimID() == 2 && getAnimTick() == 1) playSound("mowziesmobs:barakoaInhale", 0.7f, 1.2f);
 
         prevprevprevHasTarget = prevprevHasTarget;
         prevprevHasTarget = prevHasTarget;
@@ -182,11 +194,30 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob {
 //        if (getAnimID() == 0) AnimationAPI.sendAnimPacket(this, 4);
     }
 
+    @Override
+    protected String getDeathSound() {
+        int i = MathHelper.getRandomIntegerInRange(rand, 0, 1);
+        if (i == 0) playSound("mowziesmobs:barakoaDie1", 1, 1);
+        if (i == 1) playSound("mowziesmobs:barakoaDie2", 1, 1);
+        return super.getDeathSound();
+    }
+
     protected void entityInit()
     {
         super.entityInit();
+        dataWatcher.addObject(28, 0);
         dataWatcher.addObject(29, 0);
         dataWatcher.addObject(30, 0);
+    }
+
+    public int getDancing()
+    {
+        return dataWatcher.getWatchableObjectInt(28);
+    }
+
+    public void setDancing(Integer type)
+    {
+        dataWatcher.updateObject(28, type);
     }
 
     public int getMask()
@@ -240,7 +271,6 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob {
             entitydart.setKnockbackStrength(j);
         }
 
-        this.playSound("random.bow", 1.0F, 1.0F / (this.getRNG().nextFloat() * 0.4F + 0.8F));
         this.worldObj.spawnEntityInWorld(entitydart);
         attacking = false;
     }

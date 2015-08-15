@@ -60,10 +60,6 @@ public class EntityTribeHunter extends EntityTribesman
                     leader.addPackMember(this);
                 }
             }
-            if (leader != null)
-            {
-                setAttackTarget(leader.getAttackTarget());
-            }
         }
     }
 
