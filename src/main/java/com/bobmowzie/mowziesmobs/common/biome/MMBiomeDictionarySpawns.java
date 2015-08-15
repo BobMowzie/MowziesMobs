@@ -12,7 +12,7 @@ public class MMBiomeDictionarySpawns
     public static void init()
     {
         BiomeGenBase.SpawnListEntry foliaathSpawn = new BiomeGenBase.SpawnListEntry(EntityFoliaath.class, MMConfigHandler.spawnrateFoliaath, 3, 1);
-        BiomeGenBase.SpawnListEntry tribeEliteSpawn = new BiomeGenBase.SpawnListEntry(EntityTribeElite.class, MMConfigHandler.spawnrateFoliaath, 1, 1);
+        BiomeGenBase.SpawnListEntry tribeEliteSpawn = new BiomeGenBase.SpawnListEntry(EntityTribeElite.class, MMConfigHandler.spawnrateBarakoa, 0, 0);
         for (BiomeGenBase jungleBiome : BiomeDictionary.getBiomesForType(BiomeDictionary.Type.JUNGLE))
             jungleBiome.getSpawnableList(EnumCreatureType.monster).add(foliaathSpawn);
         for (BiomeGenBase savannaBiome : BiomeDictionary.getBiomesForType(BiomeDictionary.Type.SAVANNA))

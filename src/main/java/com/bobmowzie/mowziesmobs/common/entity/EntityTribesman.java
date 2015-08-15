@@ -49,6 +49,7 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob {
         stepHeight = 1;
         circleTick += rand.nextInt(200);
         frame += rand.nextInt(50);
+        experienceValue = 8;
     }
 
     @Override

@@ -1,12 +1,14 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
 import com.bobmowzie.mowziesmobs.common.animation.AnimBlock;
+import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -35,6 +37,8 @@ public class EntityTribeElite extends EntityTribesman
         tasks.addTask(2, new AnimBlock(this, 3, 10));
         setMask(1);
         setSize(0.7f, 2f);
+        experienceValue = 12;
+        System.out.println("Barakoa at " + posX + ", " + posZ);
     }
 
     @Override
@@ -151,5 +155,30 @@ public class EntityTribeElite extends EntityTribesman
         {
             pack.get(i).removeLeader();
         }
+    }
+
+    @Override
+    public boolean getCanSpawnHere() {
+        List<EntityLivingBase> nearby = getEntityLivingBaseNearby(10, 4, 10, 10);
+        for (int i = 0; i < nearby.size(); i++) if (nearby.get(i) instanceof EntityTribeElite) return false;
+        if (worldObj.checkNoEntityCollision(boundingBox) && worldObj.getCollidingBoundingBoxes(this, boundingBox).isEmpty() && !worldObj.isAnyLiquid(boundingBox))
+        {
+            int x = MathHelper.floor_double(posX);
+            int y = MathHelper.floor_double(boundingBox.minY);
+            int z = MathHelper.floor_double(posZ);
+
+            if (y < 63)
+            {
+                return false;
+            }
+
+            Block block = worldObj.getBlock(x, y - 1, z);
+
+            if (block == Blocks.grass || block.isLeaves(worldObj, x, y - 1, z))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
