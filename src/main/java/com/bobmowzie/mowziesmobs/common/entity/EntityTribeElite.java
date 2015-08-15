@@ -57,7 +57,10 @@ public class EntityTribeElite extends EntityTribesman
             float theta = (2 * (float) Math.PI / pack.size());
             for (int i = 0; i < pack.size(); i++)
             {
-                if (pack.get(i).getAttackTarget() == null) pack.get(i).getNavigator().tryMoveToXYZ(posX + packRadius * MathHelper.cos(theta * i), posY, posZ + packRadius * MathHelper.sin(theta * i), 0.45);
+                if (pack.get(i).getAttackTarget() == null) {
+                    pack.get(i).getNavigator().tryMoveToXYZ(posX + packRadius * MathHelper.cos(theta * i), posY, posZ + packRadius * MathHelper.sin(theta * i), 0.45);
+                    if (getDistanceToEntity(pack.get(i)) > 20) pack.get(i).setPosition(posX + packRadius * MathHelper.cos(theta * i), posY, posZ + packRadius * MathHelper.sin(theta * i));
+                }
             }
         }
     }

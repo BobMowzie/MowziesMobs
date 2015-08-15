@@ -66,8 +66,8 @@ public class EntityTribeHunter extends EntityTribesman
     @Override
     protected void updateCircling() {
         if (leader != null) {
-            if (!attacking && targetDistance < 5) circleEntity(getAttackTarget(), 7, 0.3f, true, leader.frame, (float) ((index + 1) * (Math.PI * 2) / (leader.getPackSize() + 1)), 1.75f);
-            else circleEntity(getAttackTarget(), 7, 0.3f, true, leader.frame, (float) ((index + 1) * (Math.PI * 2) / (leader.getPackSize() + 1)), 1);
+            if (!attacking && targetDistance < 5) circleEntity(getAttackTarget(), 7, 0.3f, true, leader.circleTick, (float) ((index + 1) * (Math.PI * 2) / (leader.getPackSize() + 1)), 1.75f);
+            else circleEntity(getAttackTarget(), 7, 0.3f, true, leader.circleTick, (float) ((index + 1) * (Math.PI * 2) / (leader.getPackSize() + 1)), 1);
         }
         else super.updateCircling();
     }

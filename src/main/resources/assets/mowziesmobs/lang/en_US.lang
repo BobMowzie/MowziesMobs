@@ -26,4 +26,5 @@ item.wroughtHelm.name=Wrought Helm
 //Containers====================================================
 container.test=Test Container
 
-
+//Death_Messages================================================
+death.attack.dart=%1$s was shot by %2$s

@@ -29,6 +29,7 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob {
     boolean prevprevprevHasTarget = false;
     int cryDelay = -1;
     public boolean circleDirection = true;
+    public int circleTick = 0;
 
     public EntityTribesman(World world) {
         super(world);
@@ -46,6 +47,8 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob {
         setMask(MathHelper.getRandomIntegerInRange(rand, 2, 5));
         setSize(0.6f, 1.7f);
         stepHeight = 1;
+        circleTick += rand.nextInt(200);
+        frame += rand.nextInt(50);
     }
 
     @Override
@@ -145,8 +148,11 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob {
     }
 
     protected void updateCircling() {
-        if (!attacking && targetDistance < 5) circleEntity(getAttackTarget(), 7, 0.3f, circleDirection, frame, 0, 1.75f);
-        else circleEntity(getAttackTarget(), 7, 0.3f, circleDirection, frame, 0, 1);
+        if (rand.nextInt(200) == 0) circleDirection = !circleDirection;
+        if (circleDirection) circleTick++;
+        else circleTick--;
+        if (!attacking && targetDistance < 5) circleEntity(getAttackTarget(), 7, 0.3f, true, circleTick, 0, 1.75f);
+        else circleEntity(getAttackTarget(), 7, 0.3f, true, circleTick, 0, 1);
         attacking = false;
     }
 
