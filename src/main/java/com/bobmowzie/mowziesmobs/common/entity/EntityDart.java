@@ -306,7 +306,7 @@ public class EntityDart extends EntityArrow implements IProjectile {
                             if (shootingEntity != null && movingobjectposition.entityHit != shootingEntity && movingobjectposition.entityHit instanceof EntityPlayer && shootingEntity instanceof EntityPlayerMP) {
                                 ((EntityPlayerMP) shootingEntity).playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(6, 0.0F));
                             }
-                            entitylivingbase.addPotionEffect(new PotionEffect(Potion.poison.getId(), 50, 2, false));
+                            entitylivingbase.addPotionEffect(new PotionEffect(Potion.poison.getId(), 40, 2, false));
                         }
 
                         playSound("random.bowhit", 1.0F, 1.2F / (rand.nextFloat() * 0.2F + 0.9F));

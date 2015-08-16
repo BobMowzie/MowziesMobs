@@ -4,6 +4,7 @@ import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
@@ -27,9 +28,6 @@ public class EntityTribeHunter extends EntityTribesman
     public EntityTribeHunter(World world)
     {
         super(world);
-        targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityCow.class, 0, true));
-        targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPig.class, 0, true));
-        targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntitySheep.class, 0, true));
         this.leader = null;
     }
 
@@ -60,6 +58,9 @@ public class EntityTribeHunter extends EntityTribesman
                     leader.addPackMember(this);
                 }
             }
+        }
+        if (leader != null) {
+            setAttackTarget(leader.getAttackTarget());
         }
     }
 
@@ -121,6 +122,11 @@ public class EntityTribeHunter extends EntityTribesman
     {
         setLeaderUUID(ABSENT_LEADER);
         leader = null;
+        setAttackTarget(null);
+        targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true));
+        targetTasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityCow.class, 0, true));
+        targetTasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityPig.class, 0, true));
+        targetTasks.addTask(4, new EntityAINearestAttackableTarget(this, EntitySheep.class, 0, true));
     }
 
     @Override

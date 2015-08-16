@@ -34,9 +34,10 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob {
     public EntityTribesman(World world) {
         super(world);
         deathLength = 70;
+        this.getNavigator().setAvoidsWater(true);
+        this.tasks.addTask(0, new EntityAISwimming(this));
         tasks.addTask(4, new EntityAIAttackOnCollide(this, EntityPlayer.class, 0.5D, false));
         tasks.addTask(5, new EntityAIWander(this, 0.4));
-        targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true));
         tasks.addTask(2, new AnimBasicAttack(this, 1, 19, "mowziesmobs:barakoaSwing", "", 1, 3, 1, 9));
         tasks.addTask(2, new AnimProjectileAttack(this, 2, 20, 9, "mowziesmobs:barakoaBlowdart"));
         tasks.addTask(4, new MMAnimBase(this, 4, 35));

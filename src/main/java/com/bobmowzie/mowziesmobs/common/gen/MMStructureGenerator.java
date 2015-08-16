@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.common.gen;
 
 import com.bobmowzie.mowziesmobs.common.gen.structure.StructureWroughtnautRoom;
+import com.bobmowzie.mowziesmobs.common.gen.structure.barakoa.StructureBarakoaHouse1;
 import net.ilexiconn.llibrary.common.structure.util.Structure;
 import net.ilexiconn.llibrary.common.structure.util.StructureGeneratorBase;
 import net.minecraft.entity.Entity;
@@ -18,9 +19,13 @@ public class MMStructureGenerator extends StructureGeneratorBase
 
     static
     {
-        Structure structure = new Structure("Wroughtnaut Room");
-        structure.addBlockArray(StructureWroughtnautRoom.blockArray);
-        structures.add(structure);
+        Structure wroughtRoom = new Structure("Wroughtnaut Room");
+        wroughtRoom.addBlockArray(StructureWroughtnautRoom.blockArray);
+        structures.add(wroughtRoom);
+
+        Structure barakoaHouse1 = new Structure("Barakoa House 1");
+        barakoaHouse1.addBlockArray(StructureBarakoaHouse1.blockArray);
+        structures.add(barakoaHouse1);
     }
 
     public MMStructureGenerator()
