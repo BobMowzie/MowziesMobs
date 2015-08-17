@@ -20,9 +20,14 @@ public class ModelPlayerExtension extends ModelBiped implements IModelExtension
     @Override
     public void setRotationAngles(ModelBiped modelBiped, float v, float v1, float v2, float v3, float v4, float v5, Entity entity)
     {
-        if (((EntityPlayer) entity).getHeldItem() != null && ((EntityPlayer) entity).getHeldItem().getItem() instanceof ItemWroughtAxe)
+        if (!(entity instanceof EntityPlayer))
         {
-            WroughtAxeSwingProperty property = WroughtAxeSwingProperty.getProperty((EntityPlayer) entity);
+            return;
+        }
+        EntityPlayer player = (EntityPlayer) entity;
+        if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof ItemWroughtAxe)
+        {
+            WroughtAxeSwingProperty property = WroughtAxeSwingProperty.getProperty(player);
             float time = property.getSwingPercentage(AnimationAPI.proxy.getPartialTick());
             if (time > 0)
             {

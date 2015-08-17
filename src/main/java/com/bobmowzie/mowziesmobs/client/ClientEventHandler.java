@@ -24,11 +24,16 @@ public class ClientEventHandler
         {
             if (event.type == IItemRenderer.ItemRenderType.EQUIPPED_FIRST_PERSON)
             {
-                WroughtAxeSwingProperty property = WroughtAxeSwingProperty.getProperty((EntityPlayer) event.data[1]);
-                int tick = property.getTick();
+                int tick = 0;
+                float time = 0;
+                if (event.data[1] instanceof EntityPlayer)
+                {
+                    WroughtAxeSwingProperty property = WroughtAxeSwingProperty.getProperty((EntityPlayer) event.data[1]);
+                    tick = property.getTick();
+                    time = property.getSwingPercentage(AnimationAPI.proxy.getPartialTick());
+                }
                 if (tick > 2)
                 {
-                    float time = property.getSwingPercentage(AnimationAPI.proxy.getPartialTick());
                     float controller1 = WroughtAxeSwingProperty.fnc2(time);
                     float controller2 = WroughtAxeSwingProperty.fnc3(time, 0.166f, 0.833f, 30);
                     float controller3 = WroughtAxeSwingProperty.fnc1(time);
@@ -43,7 +48,11 @@ public class ClientEventHandler
             }
             if (event.type == IItemRenderer.ItemRenderType.EQUIPPED)
             {
-                float time = WroughtAxeSwingProperty.getProperty((EntityPlayer) event.data[1]).getSwingPercentage(AnimationAPI.proxy.getPartialTick());
+                float time = 0;
+                if (event.data[1] instanceof EntityPlayer)
+                {
+                    time = WroughtAxeSwingProperty.getProperty((EntityPlayer) event.data[1]).getSwingPercentage(AnimationAPI.proxy.getPartialTick());
+                }
                 float controller1 = WroughtAxeSwingProperty.fnc2(time);
                 float controller2 = WroughtAxeSwingProperty.fnc3(time, 0.166f, 0.833f, 30);
                 GL11.glRotatef(90f * controller2, -1f, 0f, 1f);
