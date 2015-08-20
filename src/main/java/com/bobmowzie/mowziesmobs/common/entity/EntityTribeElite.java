@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.common.entity;
 
 import com.bobmowzie.mowziesmobs.common.animation.AnimBlock;
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
@@ -67,8 +68,13 @@ public class EntityTribeElite extends EntityTribesman {
 
     @Override
     public boolean attackEntityFrom(DamageSource source, float damage) {
-        if (source.getEntity() != null && source.getEntity() instanceof EntityLivingBase && (getAnimID() == 0 || getAnimID() == -3 || getAnimID() == 3)) {
-            blockingEntity = (EntityLivingBase) source.getEntity();
+        Entity entity = source.getEntity();
+        if (entity != null && entity instanceof EntityLivingBase)
+        {
+            if (!(entity instanceof EntityPlayer) || !(((EntityPlayer) entity).capabilities.isCreativeMode)) setAttackTarget((EntityLivingBase) entity);
+        }
+        if (entity != null && entity instanceof EntityLivingBase && (getAnimID() == 0 || getAnimID() == -3 || getAnimID() == 3)) {
+            blockingEntity = (EntityLivingBase) entity;
             playSound("mob.zombie.wood", 0.3f, 1.5f);
             AnimationAPI.sendAnimPacket(this, 3);
             return false;

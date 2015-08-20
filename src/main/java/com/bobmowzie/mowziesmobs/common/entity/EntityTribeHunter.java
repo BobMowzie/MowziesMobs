@@ -1,5 +1,7 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.passive.EntityPig;
@@ -71,6 +73,17 @@ public class EntityTribeHunter extends EntityTribesman
             else circleEntity(getAttackTarget(), 7, 0.3f, true, leader.circleTick, (float) ((index + 1) * (Math.PI * 2) / (leader.getPackSize() + 1)), 1);
         }
         else super.updateCircling();
+    }
+
+    @Override
+    public boolean attackEntityFrom(DamageSource source, float damage) {
+        Entity entity = source.getEntity();
+        if (entity != null && entity instanceof EntityLivingBase) {
+            if (!(entity instanceof EntityPlayer) || !(((EntityPlayer) entity).capabilities.isCreativeMode))
+                if (leader != null) leader.setAttackTarget((EntityLivingBase) entity);
+                else setAttackTarget((EntityLivingBase)entity);
+        }
+        return super.attackEntityFrom(source, damage);
     }
 
     @Override
