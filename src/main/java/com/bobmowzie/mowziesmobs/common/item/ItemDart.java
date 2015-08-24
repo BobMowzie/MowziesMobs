@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.common.item;
 
-import com.bobmowzie.mowziesmobs.common.creativetab.MMTabs;
 import com.bobmowzie.mowziesmobs.common.entity.EntityDart;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,7 +17,7 @@ public class ItemDart extends Item {
     public ItemDart() {
         super();
 //        setTextureName("thebetweenlands:" + type + "Item");
-        setCreativeTab(MMTabs.generic);
+//        setCreativeTab(MMTabs.generic);
     }
 
     @Override

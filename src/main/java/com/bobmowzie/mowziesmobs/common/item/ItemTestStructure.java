@@ -1,8 +1,7 @@
 package com.bobmowzie.mowziesmobs.common.item;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.common.creativetab.MMTabs;
-import net.ilexiconn.llibrary.common.structure.util.Structure;
+import com.bobmowzie.mowziesmobs.common.gen.structure.barakoa.StructureBarakoaHouse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -28,10 +27,7 @@ public class ItemTestStructure extends Item
         Random rand = new Random();
         if (!world.isRemote)
         {
-            Structure structure = MowziesMobs.gen.structures.get(1);
-            MowziesMobs.gen.setStructure(structure);
-            MowziesMobs.gen.setDefaultOffset(structure.getOffsetX(), structure.getOffsetY(), structure.getOffsetZ());
-            MowziesMobs.gen.generate(world, rand, x, y, z);
+            StructureBarakoaHouse.generateHouse1(world, x, y, z);
             return true;
         }
         return false;

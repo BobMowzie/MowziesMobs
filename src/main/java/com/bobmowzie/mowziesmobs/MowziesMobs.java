@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs;
 import com.bobmowzie.mowziesmobs.common.ServerEventHandler;
 import com.bobmowzie.mowziesmobs.common.ServerProxy;
 import com.bobmowzie.mowziesmobs.common.biome.MMBiomeDictionarySpawns;
+import com.bobmowzie.mowziesmobs.common.blocks.MMBlocks;
 import com.bobmowzie.mowziesmobs.common.config.MMConfigHandler;
 import com.bobmowzie.mowziesmobs.common.creativetab.MMTabs;
 import com.bobmowzie.mowziesmobs.common.entity.MMEntityRegistry;
@@ -51,7 +52,7 @@ public class MowziesMobs
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        ContentHelper.init(new MMTabs(), new MMItems(), new MMEntityRegistry());
+        ContentHelper.init(new MMTabs(), new MMItems(), new MMBlocks(), new MMEntityRegistry());
 
         ConfigHelper.registerConfigHandler(MowziesMobs.MODID, event.getSuggestedConfigurationFile(), new MMConfigHandler());
 

@@ -19,6 +19,9 @@ item.mobRemover.name=Mob Remover
 item.wroughtAxe.name=Axe of a Thousand Metals
 item.wroughtHelm.name=Wrought Helm
 
+//Blocks========================================================
+tile.paintedAcacia.name=Painted Acacia Wood
+tile.paintedAcaciaSlab.name=Painted Acacia Wood Slab
 
 //Tile_Entities==================================================
 
