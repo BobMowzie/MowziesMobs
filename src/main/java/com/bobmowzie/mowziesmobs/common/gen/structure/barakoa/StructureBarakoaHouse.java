@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.common.gen.structure.barakoa;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.common.blocks.MMBlocks;
 import net.ilexiconn.llibrary.common.structure.util.Structure;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
@@ -13,6 +14,7 @@ import java.util.Random;
  */
 public class StructureBarakoaHouse
 {
+        public static int paintedAcaciaID;
     public static final int[][][][] blockArray1 =
             {
                     { // y
@@ -104,7 +106,7 @@ public class StructureBarakoaHouse
                                     {}, {5, 4}, {0}, {0}, {0}, {5, 4}, {}
                             },
                             {
-                                    {85}, {162}, {5, 4}, {0}, {5, 4}, {162}, {85}
+                                    {85}, {162}, {Block.getIdFromBlock(MMBlocks.blockPaintedAcacia)}, {0}, {Block.getIdFromBlock(MMBlocks.blockPaintedAcacia)}, {162}, {85}
                             },
                             {
                                     {}, {85}, {}, {}, {}, {85}, {}
@@ -229,7 +231,9 @@ public class StructureBarakoaHouse
             };
 
         public static void generateHouse1(World world, int x, int y, int z) {
+                paintedAcaciaID = Block.getIdFromBlock(MMBlocks.blockPaintedAcacia);
                 Structure structure = MowziesMobs.gen.structures.get(1);
+                System.out.println(paintedAcaciaID);
                 MowziesMobs.gen.setStructure(structure);
                 MowziesMobs.gen.setDefaultOffset(structure.getOffsetX(), structure.getOffsetY(), structure.getOffsetZ());
                 MowziesMobs.gen.generate(world, new Random(), x, y, z);
