@@ -15,8 +15,13 @@ import java.util.Random;
 public class StructureBarakoaHouse
 {
         public static int paintedAcaciaID;
-    public static final int[][][][] blockArray1 =
-            {
+    public static int[][][][] blockArray1;
+
+        public static void generateHouse1(World world, int x, int y, int z) {
+                paintedAcaciaID = Block.getIdFromBlock(MMBlocks.blockPaintedAcacia);
+                
+                if (blockArray1 == null) blockArray1 = new int[][][][]
+                {
                     { // y
                             {
                                     {}, {}, {}, {}, {}, {}, {}
@@ -229,9 +234,7 @@ public class StructureBarakoaHouse
                             }
                     },
             };
-
-        public static void generateHouse1(World world, int x, int y, int z) {
-                paintedAcaciaID = Block.getIdFromBlock(MMBlocks.blockPaintedAcacia);
+                
                 Structure structure = MowziesMobs.gen.structures.get(1);
                 System.out.println(paintedAcaciaID);
                 MowziesMobs.gen.setStructure(structure);
