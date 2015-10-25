@@ -27,7 +27,7 @@ public class ItemTestStructure extends Item
         Random rand = new Random();
         if (!world.isRemote)
         {
-            StructureBarakoaHouse.generateHouse1(world, x, y, z);
+            StructureBarakoaHouse.generateHouse1(world, x, y, z, 3);
             return true;
         }
         return false;

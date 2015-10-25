@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.common.gen.structure.StructureBase;
 import net.ilexiconn.llibrary.common.structure.util.Structure;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
+import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -105,7 +106,7 @@ public class StructureBarakoaHouse extends StructureBase
                             {}, {5, 4}, {0}, {0}, {0}, {5, 4}, {}
                     },
                     {
-                            {85}, {162}, {Block.getIdFromBlock(MMBlocks.blockPaintedAcacia)}, {0}, {Block.getIdFromBlock(MMBlocks.blockPaintedAcacia)}, {162}, {85}
+                            {85}, {162}, {5, 4}, {0}, {5, 4}, {162}, {85}
                     },
                     {
                             {}, {85}, {}, {}, {}, {85}, {}
@@ -117,13 +118,13 @@ public class StructureBarakoaHouse extends StructureBase
                             {}, {85}, {}, {}, {}, {85}, {}
                     },
                     {
-                            {85}, {162}, {5, 4}, {126, 12}, {5, 4}, {162}, {85}
+                            {85}, {162}, {5, 4}, {49}, {5, 4}, {162}, {85}
                     },
                     {
                             {}, {5, 4}, {0}, {0}, {0}, {5, 4}, {}
                     },
                     {
-                            {}, {126, 12}, {0}, {0}, {0}, {126, 12}, {}
+                            {}, {49}, {0}, {0}, {0}, {49}, {}
                     },
                     {
                             {}, {5, 4}, {0}, {0}, {0}, {5, 4}, {}
@@ -229,33 +230,73 @@ public class StructureBarakoaHouse extends StructureBase
             },
     };
 
-        public static void generateHouse1(World world, int x, int y, int z) {
+        public static void generateHouse1(World world, int x, int y, int z, int direction) {
                 Structure structure = MowziesMobs.gen.structures.get(1);
                 MowziesMobs.gen.setStructure(structure);
+                MowziesMobs.gen.setStructureFacing(direction);
                 MowziesMobs.gen.setDefaultOffset(structure.getOffsetX(), structure.getOffsetY(), structure.getOffsetZ());
                 MowziesMobs.gen.generate(world, new Random(), x, y, z);
-                //TODO use replace blocks
-                for (int i = 1; i < 20; i++) {
-                        if (world.getBlock(x, y + 2 - i, z - i) instanceof BlockAir) {
-                                world.setBlock(x, y + 2 - i, z - i, Block.getBlockById(134), 2, 0);
-                                world.setBlock(x, y + 2 - i, z - i + 1, Block.getBlockById(134), 7, 0);
+//                System.out.println("Beginning generation at" + x + ", " + y + ", " + z);
+                replaceBlocks(Blocks.planks, 4, MMBlocks.blockPaintedAcacia, 0, x - 3, y, z, 7, 9, 7, world);
+                replaceBlocks(Blocks.wooden_slab, 4, MMBlocks.blockPaintedAcaciaSlab, 0, x - 3, y, z, 7, 9, 7, world);
+                replaceBlocks(Blocks.obsidian, 0, MMBlocks.blockPaintedAcaciaSlab, 12, x - 3, y, z, 7, 9, 7, world);
+
+                //Fix Logs depending on rotation
+                if (direction == 2 || direction == 4) {
+                        replaceBlocks(Blocks.log2, 8, Blocks.obsidian, 0, x - 3, y, z, 7, 9, 7, world);
+                        replaceBlocks(Blocks.log2, 4, Blocks.log2, 8, x - 3, y, z, 7, 9, 7, world);
+                        replaceBlocks(Blocks.obsidian, 0, Blocks.log2, 4, x - 3, y, z, 7, 9, 7, world);
+                }
+
+                //Stairs
+                if (direction == 1) {
+                        for (int i = 1; i < 20; i++) {
+                                if (world.getBlock(x, y + 2 - i, z + 6 + i) instanceof BlockAir) {
+                                        world.setBlock(x, y + 2 - i, z + 6 + i, Block.getBlockById(134), 3, 3);
+                                        world.setBlock(x, y + 2 - i, z + 6 + i - 1, Block.getBlockById(134), 6, 3);
+                                } else break;
                         }
+                }
+                else if (direction == 2) {
+                        for (int i = 1; i < 20; i++) {
+                                if (world.getBlock(x - 3 - i, y + 2 - i, z + 3) instanceof BlockAir) {
+                                        world.setBlock(x - 3 - i, y + 2 - i, z + 3, Block.getBlockById(134), 0, 3);
+                                        world.setBlock(x - 3 - i + 1, y + 2 - i, z + 3, Block.getBlockById(134), 5, 3);
+                                } else break;
+                        }
+                }
+                else if (direction == 3) {
+                        for (int i = 1; i < 20; i++) {
+                                if (world.getBlock(x, y + 2 - i, z - i) instanceof BlockAir) {
+                                        world.setBlock(x, y + 2 - i, z - i, Block.getBlockById(134), 2, 3);
+                                        world.setBlock(x, y + 2 - i, z - i + 1, Block.getBlockById(134), 7, 3);
+                                } else break;
+                        }
+                }
+                else if (direction == 4) {
+                        for (int i = 1; i < 20; i++) {
+                                if (world.getBlock(x + 3 + i, y + 2 - i, z + 3) instanceof BlockAir) {
+                                        world.setBlock(x + 3 + i, y + 2 - i, z + 3, Block.getBlockById(134), 1, 3);
+                                        world.setBlock(x + 3 + i - 1, y + 2 - i, z + 3, Block.getBlockById(134), 4, 3);
+                                } else break;
+                        }
+                }
+
+                //Fence poles
+                for (int i = 0; i < 20; i++) {
+                        if (world.getBlock(x + 2, y - i, z + 1) instanceof BlockAir) world.setBlock(x + 2, y - i, z + 1, Block.getBlockById(85), 0, 3);
                         else break;
                 }
                 for (int i = 0; i < 20; i++) {
-                        if (world.getBlock(x + 2, y - i, z + 1) instanceof BlockAir) world.setBlock(x + 2, y - i, z + 1, Block.getBlockById(85), 0, 0);
+                        if (world.getBlock(x - 2, y - i, z + 1) instanceof BlockAir) world.setBlock(x - 2, y - i, z + 1, Block.getBlockById(85), 0, 3);
                         else break;
                 }
                 for (int i = 0; i < 20; i++) {
-                        if (world.getBlock(x - 2, y - i, z + 1) instanceof BlockAir) world.setBlock(x - 2, y - i, z + 1, Block.getBlockById(85), 0, 0);
+                        if (world.getBlock(x + 2, y - i, z + 5) instanceof BlockAir) world.setBlock(x + 2, y - i, z + 5, Block.getBlockById(85), 0, 3);
                         else break;
                 }
                 for (int i = 0; i < 20; i++) {
-                        if (world.getBlock(x + 2, y - i, z + 5) instanceof BlockAir) world.setBlock(x + 2, y - i, z + 5, Block.getBlockById(85), 0, 0);
-                        else break;
-                }
-                for (int i = 0; i < 20; i++) {
-                        if (world.getBlock(x - 2, y - i, z + 5) instanceof BlockAir) world.setBlock(x - 2, y - i, z + 5, Block.getBlockById(85), 0, 0);
+                        if (world.getBlock(x - 2, y - i, z + 5) instanceof BlockAir) world.setBlock(x - 2, y - i, z + 5, Block.getBlockById(85), 0, 3);
                         else break;
                 }
         }
