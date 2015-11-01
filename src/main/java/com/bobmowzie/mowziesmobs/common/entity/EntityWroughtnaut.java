@@ -6,7 +6,6 @@ import com.bobmowzie.mowziesmobs.common.item.MMItems;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackOnCollide;
@@ -20,8 +19,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import thehippomaster.AnimationAPI.AnimationAPI;
-
-import java.util.List;
 
 public class EntityWroughtnaut extends MMEntityBase
 {
@@ -227,13 +224,15 @@ public class EntityWroughtnaut extends MMEntityBase
 
         if (frame % 20 == 5 && speed > 0.03 && getAnimID() == 0 && active) playSound("mob.zombie.metal", 0.5F, 0.5F);
 
-        List<EntityLivingBase> nearestEntities = getEntityLivingBaseNearby(2.2, 2.2, 4, 2.2);
-        for (Entity entity : nearestEntities)
-        {
-            double angle = (getAngleBetweenEntities(this, entity) + 90) * Math.PI / 180;
-            entity.motionX = -0.1 * Math.cos(angle);
-            entity.motionZ = -0.1 * Math.sin(angle);
-        }
+//        List<EntityLivingBase> nearestEntities = getEntityLivingBaseNearby(2.2, 2.2, 4, 2.2);
+//        for (Entity entity : nearestEntities)
+//        {
+//            double angle = (getAngleBetweenEntities(this, entity) + 90) * Math.PI / 180;
+//            entity.motionX = -0.1 * Math.cos(angle);
+//            entity.motionZ = -0.1 * Math.sin(angle);
+//        }
+        repelEntities(2.2f, 4, 2.2f, 2.2f);
+
         if (!active && getAttackTarget() == null) addPotionEffect(new PotionEffect(Potion.regeneration.id, 20, 1, true));
     }
 

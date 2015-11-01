@@ -210,4 +210,15 @@ public class MMEntityBase extends EntityCreature implements IEntityAdditionalSpa
         int directionInt = direction ? 1:-1;
         getNavigator().tryMoveToXYZ(target.posX + radius * Math.cos(directionInt * circleFrame * 0.5 * speed/radius + offset), target.posY, target.posZ + radius * Math.sin(directionInt * circleFrame * 0.5 * speed/radius + offset), speed * moveSpeedMultiplier);
     }
+
+    protected void repelEntities(float x, float y, float z, float radius)
+    {
+        List<EntityLivingBase> nearestEntities = getEntityLivingBaseNearby(x, y, z, radius);
+        for (Entity entity : nearestEntities)
+        {
+            double angle = (getAngleBetweenEntities(this, entity) + 90) * Math.PI / 180;
+            entity.motionX = -0.1 * Math.cos(angle);
+            entity.motionZ = -0.1 * Math.sin(angle);
+        }
+    }
 }
