@@ -12,6 +12,7 @@ public class MMItems implements IContentHandler
     public static Item itemMobRemover;
     public static Item itemWroughtAxe;
     public static Item itemWroughtHelm;
+    public static Item itemBarakoaMask;
     public static Item itemDart;
 
     public void init()
@@ -21,6 +22,7 @@ public class MMItems implements IContentHandler
         itemMobRemover = new ItemMobRemover();
         itemWroughtAxe = new ItemWroughtAxe();
         itemWroughtHelm = new ItemWroughtHelm();
+        itemBarakoaMask = new ItemBarakoaMask();
         itemDart = new ItemDart();
     }
 
@@ -30,6 +32,7 @@ public class MMItems implements IContentHandler
         GameRegistry.registerItem(itemWroughtAxe, "wroughtaxe");
         GameRegistry.registerItem(itemMobRemover, "mobremover");
         GameRegistry.registerItem(itemWroughtHelm, "wroughthelm");
+        GameRegistry.registerItem(itemBarakoaMask, "barakoaMask");
         GameRegistry.registerItem(itemDart, "dart");
 
         if (MowziesMobs.isDebugging())

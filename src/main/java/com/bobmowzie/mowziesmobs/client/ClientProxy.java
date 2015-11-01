@@ -24,6 +24,7 @@ import net.minecraftforge.common.MinecraftForge;
 public class ClientProxy extends ServerProxy
 {
     private static final ModelWroughtHelm modelWroughtHelm = new ModelWroughtHelm();
+    private static final ModelBarakoaMask modelBarakoaMask = new ModelBarakoaMask();
 
     public void init()
     {
@@ -45,14 +46,17 @@ public class ClientProxy extends ServerProxy
 
         RenderHelper.registerItem3dRenderer(MMItems.itemWroughtAxe, new ModelWroughtAxe(), new ResourceLocation(MowziesMobs.MODID, "textures/items/modeled/textureWroughtAxe.png"));
         RenderHelper.registerItem3dRenderer(MMItems.itemWroughtHelm, new ModelWroughtHelm(), new ResourceLocation(MowziesMobs.MODID, "textures/items/modeled/textureWroughtHelm.png"));
+        RenderHelper.registerItem3dRenderer(MMItems.itemBarakoaMask, new ModelBarakoaMask(), new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureTribesman1.png"));
         RenderHelper.registerModelExtension(new ModelPlayerExtension());
         PlayerAnimationHandlerClient playerAnimationHandlerClient = new PlayerAnimationHandlerClient();
         FMLCommonHandler.instance().bus().register(playerAnimationHandlerClient);
         MinecraftForge.EVENT_BUS.register(playerAnimationHandlerClient);
     }
 
-    public ModelBiped getArmorModel()
+    public ModelBiped getArmorModel(int i)
     {
-        return modelWroughtHelm;
+        if (i == 0) return modelWroughtHelm;
+        if (i == 1) return modelBarakoaMask;
+        else return modelWroughtHelm;
     }
 }

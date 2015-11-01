@@ -13,7 +13,7 @@ public class ServerProxy
         FMLCommonHandler.instance().bus().register(new WroughtAxeSwingHandler());
     }
 
-    public ModelBiped getArmorModel()
+    public ModelBiped getArmorModel(int i)
     {
         return null;
     }

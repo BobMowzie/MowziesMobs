@@ -68,7 +68,7 @@ public class ItemWroughtHelm extends ItemArmor
         {
             if (itemStack.getItem() instanceof ItemWroughtHelm)
             {
-                armorModel = MowziesMobs.proxy.getArmorModel();
+                armorModel = MowziesMobs.proxy.getArmorModel(0);
             }
         }
         return armorModel;
