@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.client.model.entity;
+package com.bobmowzie.mowziesmobs.client.model.item;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelRenderer;
 import net.minecraft.client.model.ModelBiped;

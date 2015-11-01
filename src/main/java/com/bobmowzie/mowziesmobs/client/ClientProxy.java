@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.debug.ModelGrapher;
 import com.bobmowzie.mowziesmobs.client.model.entity.*;
 import com.bobmowzie.mowziesmobs.client.model.extension.ModelPlayerExtension;
+import com.bobmowzie.mowziesmobs.client.model.item.ModelBarakoaMask;
 import com.bobmowzie.mowziesmobs.client.model.item.ModelWroughtAxe;
 import com.bobmowzie.mowziesmobs.client.model.item.ModelWroughtHelm;
 import com.bobmowzie.mowziesmobs.client.playeranimation.PlayerAnimationHandlerClient;
@@ -46,7 +47,11 @@ public class ClientProxy extends ServerProxy
 
         RenderHelper.registerItem3dRenderer(MMItems.itemWroughtAxe, new ModelWroughtAxe(), new ResourceLocation(MowziesMobs.MODID, "textures/items/modeled/textureWroughtAxe.png"));
         RenderHelper.registerItem3dRenderer(MMItems.itemWroughtHelm, new ModelWroughtHelm(), new ResourceLocation(MowziesMobs.MODID, "textures/items/modeled/textureWroughtHelm.png"));
-        RenderHelper.registerItem3dRenderer(MMItems.itemBarakoaMask, new ModelBarakoaMask(), new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureTribesman1.png"));
+        RenderHelper.registerItem3dRenderer(MMItems.itemBarakoaMask1, new ModelBarakoaMask(), new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureTribesman1.png"));
+        RenderHelper.registerItem3dRenderer(MMItems.itemBarakoaMask2, new ModelBarakoaMask(), new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureTribesman2.png"));
+        RenderHelper.registerItem3dRenderer(MMItems.itemBarakoaMask3, new ModelBarakoaMask(), new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureTribesman3.png"));
+        RenderHelper.registerItem3dRenderer(MMItems.itemBarakoaMask4, new ModelBarakoaMask(), new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureTribesman4.png"));
+        RenderHelper.registerItem3dRenderer(MMItems.itemBarakoaMask5, new ModelBarakoaMask(), new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureTribesman5.png"));
         RenderHelper.registerModelExtension(new ModelPlayerExtension());
         PlayerAnimationHandlerClient playerAnimationHandlerClient = new PlayerAnimationHandlerClient();
         FMLCommonHandler.instance().bus().register(playerAnimationHandlerClient);

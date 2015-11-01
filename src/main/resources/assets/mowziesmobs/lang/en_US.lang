@@ -18,6 +18,11 @@ item.foliaathSeed.name=Foliaath Seed
 item.mobRemover.name=Mob Remover
 item.wroughtAxe.name=Axe of a Thousand Metals
 item.wroughtHelm.name=Wrought Helm
+item.barakoaMask1.name=Mask of Fury
+item.barakoaMask2.name=Mask of Fear
+item.barakoaMask3.name=Mask of Rage
+item.barakoaMask4.name=Mask of Bliss
+item.barakoaMask5.name=Mask of Misery
 
 //Blocks========================================================
 tile.paintedAcacia.name=Painted Acacia Wood

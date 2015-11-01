@@ -1,17 +1,15 @@
 package com.bobmowzie.mowziesmobs.client;
 
+import com.bobmowzie.mowziesmobs.common.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.common.item.MMItems;
 import com.bobmowzie.mowziesmobs.common.property.WroughtAxeSwingProperty;
-
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.ilexiconn.llibrary.common.event.Render3dItemEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.IItemRenderer;
-
 import org.lwjgl.opengl.GL11;
-
 import thehippomaster.AnimationAPI.AnimationAPI;
 
 @SideOnly(Side.CLIENT)
@@ -98,7 +96,7 @@ public class ClientEventHandler
             }
         }
 
-        if (event.item == MMItems.itemBarakoaMask)
+        if (event.item instanceof ItemBarakoaMask)
         {
             if (event.type == IItemRenderer.ItemRenderType.EQUIPPED_FIRST_PERSON)
             {
@@ -109,15 +107,21 @@ public class ClientEventHandler
             {
                 GL11.glRotatef(-115f, 0f, 1f, 0f);
                 GL11.glScalef(2f, 2f, 2f);
-                GL11.glTranslatef(0f, -1.3f, -0.8f);
+                GL11.glTranslatef(0f, -1.3f, -0.5f);
             }
             if (event.type == IItemRenderer.ItemRenderType.INVENTORY)
             {
-                GL11.glTranslatef(-0.4f, -1.2f, 0f);
-                // GL11.glScalef(0.97f, 0.97f, 0.97f);
+                GL11.glEnable(GL11.GL_BLEND);
+                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                GL11.glColor3f(1, 1, 1);
+                GL11.glRotatef(45, 0, 1, 0);
+                GL11.glRotatef(30, 1, 0, 0);
+                GL11.glTranslatef(0, -1.7f, 0f);
+                GL11.glScalef(1.25f, 1.25f, 1.25f);
             }
             if (event.type == IItemRenderer.ItemRenderType.ENTITY)
             {
+                GL11.glDisable(GL11.GL_CULL_FACE);
                 GL11.glTranslatef(0f, -1.3f, 0f);
             }
         }

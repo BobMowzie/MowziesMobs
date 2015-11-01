@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.common;
 
+import cpw.mods.fml.common.gameevent.TickEvent;
 import net.minecraft.client.model.ModelBiped;
 
 import com.bobmowzie.mowziesmobs.common.property.WroughtAxeSwingHandler;

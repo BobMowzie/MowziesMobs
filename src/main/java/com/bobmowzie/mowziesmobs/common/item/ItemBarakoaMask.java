@@ -16,12 +16,14 @@ import net.minecraft.world.World;
  * Created by jnad325 on 11/1/15.
  */
 public class ItemBarakoaMask extends ItemArmor {
-    private static final String ARMOR_TEXTURE_STRING = MowziesMobs.MODID + ":textures/entity/textureTribesman1.png";
+    private static final String ARMOR_TEXTURE_STRING = MowziesMobs.MODID + ":textures/entity/textureTribesman";
+    public int maskType;
 
-    public ItemBarakoaMask() {
+    public ItemBarakoaMask(int i) {
         super(ArmorMaterial.CLOTH, 2, 0);
-        setUnlocalizedName("barakoaMask");
+        setUnlocalizedName("barakoaMask" + i);
         setCreativeTab(MMTabs.generic);
+        maskType = i;
     }
 
     @Override
@@ -36,7 +38,7 @@ public class ItemBarakoaMask extends ItemArmor {
 
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type) {
-        return ARMOR_TEXTURE_STRING;
+        return ARMOR_TEXTURE_STRING + maskType + ".png";
     }
 
     @Override

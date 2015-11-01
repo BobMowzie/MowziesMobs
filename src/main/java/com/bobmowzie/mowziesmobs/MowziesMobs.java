@@ -11,6 +11,7 @@ import com.bobmowzie.mowziesmobs.common.gen.MMStructureGenerator;
 import com.bobmowzie.mowziesmobs.common.gen.MMWorldGenerator;
 import com.bobmowzie.mowziesmobs.common.item.MMItems;
 import com.bobmowzie.mowziesmobs.common.message.MessageSwingWroughtAxe;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -56,7 +57,10 @@ public class MowziesMobs
 
         ConfigHelper.registerConfigHandler(MowziesMobs.MODID, event.getSuggestedConfigurationFile(), new MMConfigHandler());
 
-        MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
+        ServerEventHandler sev = new ServerEventHandler();
+        MinecraftForge.EVENT_BUS.register(sev);
+        FMLCommonHandler.instance().bus().register(sev);
+
     }
 
     @EventHandler

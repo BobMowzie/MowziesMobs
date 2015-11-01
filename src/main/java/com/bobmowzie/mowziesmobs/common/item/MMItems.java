@@ -12,7 +12,11 @@ public class MMItems implements IContentHandler
     public static Item itemMobRemover;
     public static Item itemWroughtAxe;
     public static Item itemWroughtHelm;
-    public static Item itemBarakoaMask;
+    public static Item itemBarakoaMask1;
+    public static Item itemBarakoaMask2;
+    public static Item itemBarakoaMask3;
+    public static Item itemBarakoaMask4;
+    public static Item itemBarakoaMask5;
     public static Item itemDart;
 
     public void init()
@@ -22,7 +26,11 @@ public class MMItems implements IContentHandler
         itemMobRemover = new ItemMobRemover();
         itemWroughtAxe = new ItemWroughtAxe();
         itemWroughtHelm = new ItemWroughtHelm();
-        itemBarakoaMask = new ItemBarakoaMask();
+        itemBarakoaMask1 = new ItemBarakoaMask(1);
+        itemBarakoaMask2 = new ItemBarakoaMask(2);
+        itemBarakoaMask3 = new ItemBarakoaMask(3);
+        itemBarakoaMask4 = new ItemBarakoaMask(4);
+        itemBarakoaMask5 = new ItemBarakoaMask(5);
         itemDart = new ItemDart();
     }
 
@@ -32,7 +40,11 @@ public class MMItems implements IContentHandler
         GameRegistry.registerItem(itemWroughtAxe, "wroughtaxe");
         GameRegistry.registerItem(itemMobRemover, "mobremover");
         GameRegistry.registerItem(itemWroughtHelm, "wroughthelm");
-        GameRegistry.registerItem(itemBarakoaMask, "barakoaMask");
+        GameRegistry.registerItem(itemBarakoaMask1, "barakoaMask1");
+        GameRegistry.registerItem(itemBarakoaMask2, "barakoaMask2");
+        GameRegistry.registerItem(itemBarakoaMask3, "barakoaMask3");
+        GameRegistry.registerItem(itemBarakoaMask4, "barakoaMask4");
+        GameRegistry.registerItem(itemBarakoaMask5, "barakoaMask5");
         GameRegistry.registerItem(itemDart, "dart");
 
         if (MowziesMobs.isDebugging())
