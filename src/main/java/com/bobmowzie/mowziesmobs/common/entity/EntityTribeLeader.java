@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.common.animation.MMAnimBase;
 import net.ilexiconn.llibrary.client.model.modelbase.ControlledAnimation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,6 +24,7 @@ public class EntityTribeLeader extends MMEntityBase {
         tasks.addTask(2, new MMAnimBase(this, 1, 40));
         setSize(1.5f, 2.4f);
         if (getDirection() == 0) setDirection(rand.nextInt(4) + 1);
+
     }
 
     public EntityTribeLeader(World world, int direction) {
@@ -31,6 +33,13 @@ public class EntityTribeLeader extends MMEntityBase {
         tasks.addTask(2, new MMAnimBase(this, 1, 40));
         setSize(1.5f, 2.4f);
         this.direction = direction;
+    }
+
+    protected void applyEntityAttributes()
+    {
+        super.applyEntityAttributes();
+        getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(1.0);
+        getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(50);
     }
 
     @Override

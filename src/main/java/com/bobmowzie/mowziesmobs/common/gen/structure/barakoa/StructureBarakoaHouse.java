@@ -7,6 +7,7 @@ import net.ilexiconn.llibrary.common.structure.util.Structure;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.init.Blocks;
+import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -298,6 +299,67 @@ public class StructureBarakoaHouse extends StructureBase
                 for (int i = 0; i < 20; i++) {
                         if (world.getBlock(x - 2, y - i, z + 5) instanceof BlockAir) world.setBlock(x - 2, y - i, z + 5, Block.getBlockById(85), 0, 3);
                         else break;
+                }
+
+                //Interior
+                Random rand = new Random();
+                int tableCorner = rand.nextInt(6);
+                int tableContent = rand.nextInt(4);
+                if (tableCorner == 0) {
+                        world.setBlock(x - 1, y + 4, z + 4, Block.getBlockById(126), 12, 3);
+                        if (tableContent <= 1) world.setBlock(x - 1, y + 5, z + 4, Block.getBlockById(50), 5, 3);
+                        if (tableContent == 2) {
+                                world.setBlock(x - 1, y + 5, z + 4, Block.getBlockById(144), 1, 3);
+                                ((TileEntitySkull)world.getTileEntity(x - 1, y + 5, z + 4)).func_145903_a(2);
+                        }
+                }
+                if (tableCorner == 1) {
+                        world.setBlock(x + 1, y + 4, z + 4, Block.getBlockById(126), 12, 3);
+                        if (tableContent <= 1) world.setBlock(x + 1, y + 5, z + 4, Block.getBlockById(50), 5, 3);
+                        if (tableContent == 2) {
+                                world.setBlock(x + 1, y + 5, z + 4, Block.getBlockById(144), 1, 3);
+                                ((TileEntitySkull)world.getTileEntity(x + 1, y + 5, z + 4)).func_145903_a(-2);
+                        }
+                }
+                if (tableCorner == 2) {
+                        world.setBlock(x - 1, y + 4, z + 2, Block.getBlockById(126), 12, 3);
+                        if (tableContent <= 1) world.setBlock(x - 1, y + 5, z + 2, Block.getBlockById(50), 5, 3);
+                        if (tableContent == 2) {
+                                world.setBlock(x - 1, y + 5, z + 2, Block.getBlockById(144), 1, 3);
+                                ((TileEntitySkull)world.getTileEntity(x - 1, y + 5, z + 2)).func_145903_a(6);
+                        }
+                }
+                if (tableCorner == 3) {
+                        world.setBlock(x + 1, y + 4, z + 2, Block.getBlockById(126), 12, 3);
+                        if (tableContent <= 1) world.setBlock(x + 1, y + 5, z + 2, Block.getBlockById(50), 5, 3);
+                        if (tableContent == 2) {
+                                world.setBlock(x + 1, y + 5, z + 2, Block.getBlockById(144), 1, 3);
+                                ((TileEntitySkull)world.getTileEntity(x + 1, y + 5, z + 2)).func_145903_a(-6);
+                        }
+                }
+
+                int bedCorner = rand.nextInt(6);
+                int bedDirection = rand.nextInt(2);
+                if (bedCorner == tableCorner) bedCorner = 6;
+                if (bedCorner == 0) {
+                        world.setBlock(x - 1, y + 4, z + 4, Block.getBlockById(171), 4, 3);
+                        if (bedDirection == 0) world.setBlock(x, y + 4, z + 4, Block.getBlockById(171), 4, 3);
+                        else world.setBlock(x - 1, y + 4, z + 3, Block.getBlockById(171), 4, 3);
+                }
+                if (bedCorner == 1) {
+                        world.setBlock(x + 1, y + 4, z + 4, Block.getBlockById(171), 4, 3);
+                        if (bedDirection == 0) world.setBlock(x, y + 4, z + 4, Block.getBlockById(171), 4, 3);
+                        else world.setBlock(x + 1, y + 4, z + 3, Block.getBlockById(171), 4, 3);
+                }
+                if (bedCorner == 2) {
+                        world.setBlock(x - 1, y + 4, z + 2, Block.getBlockById(171), 4, 3);
+                        if (bedDirection == 0) world.setBlock(x, y + 4, z + 2, Block.getBlockById(171), 4, 3);
+                        else world.setBlock(x - 1, y + 4, z + 3, Block.getBlockById(171), 4, 3);
+                }
+                if (bedCorner == 3) {
+                        world.setBlock(x + 1, y + 4, z + 2, Block.getBlockById(171), 4, 3);
+                        if (bedDirection == 0) world.setBlock(x, y + 4, z + 2, Block.getBlockById(171), 4, 3);
+                        else world.setBlock(x + 1, y + 4, z + 3, Block.getBlockById(171), 4, 3);
                 }
         }
 }
