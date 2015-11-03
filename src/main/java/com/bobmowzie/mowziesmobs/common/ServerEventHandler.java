@@ -35,6 +35,7 @@ public class ServerEventHandler
             if (event.player.getEquipmentInSlot(4).getItem() instanceof ItemBarakoaMask)
             {
                 ItemBarakoaMask mask = (ItemBarakoaMask) event.player.getEquipmentInSlot(4).getItem();
+                if (mask.maskType == 1) event.player.addPotionEffect(new PotionEffect(3, 0, 0));
                 if (mask.maskType == 2) event.player.addPotionEffect(new PotionEffect(1, 0, 0));
                 if (mask.maskType == 3) event.player.addPotionEffect(new PotionEffect(5, 0, 0));
                 if (mask.maskType == 4) event.player.addPotionEffect(new PotionEffect(8, 0, 0));

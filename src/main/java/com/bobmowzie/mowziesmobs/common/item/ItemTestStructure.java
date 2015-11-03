@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.common.item;
 
 import com.bobmowzie.mowziesmobs.common.creativetab.MMTabs;
-import com.bobmowzie.mowziesmobs.common.gen.structure.barakoa.StructureBarakoaHouse;
+import com.bobmowzie.mowziesmobs.common.gen.structure.barakoa.StructureBarakoThrone;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -27,7 +27,7 @@ public class ItemTestStructure extends Item
         Random rand = new Random();
         if (!world.isRemote)
         {
-            StructureBarakoaHouse.generateHouse1(world, x, y, z, 2);
+            StructureBarakoThrone.generate(world, x, y, z, 3);
             return true;
         }
         return false;

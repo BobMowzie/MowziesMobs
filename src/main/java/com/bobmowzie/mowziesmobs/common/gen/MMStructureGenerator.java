@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.common.gen;
 
 import com.bobmowzie.mowziesmobs.common.gen.structure.StructureWroughtnautRoom;
+import com.bobmowzie.mowziesmobs.common.gen.structure.barakoa.StructureBarakoThrone;
 import com.bobmowzie.mowziesmobs.common.gen.structure.barakoa.StructureBarakoaHouse;
 import net.ilexiconn.llibrary.common.structure.util.Structure;
 import net.ilexiconn.llibrary.common.structure.util.StructureGeneratorBase;
@@ -26,6 +27,10 @@ public class MMStructureGenerator extends StructureGeneratorBase
         Structure barakoaHouse1 = new Structure("Barakoa House 1");
         barakoaHouse1.addBlockArray(StructureBarakoaHouse.blockArray1);
         structures.add(barakoaHouse1);
+
+        Structure barakoThrone = new Structure("Barako Throne");
+        barakoThrone.addBlockArray(StructureBarakoThrone.blockArray);
+        structures.add(barakoThrone);
     }
 
     public MMStructureGenerator()

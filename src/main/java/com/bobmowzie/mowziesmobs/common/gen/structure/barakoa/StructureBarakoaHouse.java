@@ -237,7 +237,6 @@ public class StructureBarakoaHouse extends StructureBase
                 MowziesMobs.gen.setStructureFacing(direction);
                 MowziesMobs.gen.setDefaultOffset(structure.getOffsetX(), structure.getOffsetY(), structure.getOffsetZ());
                 MowziesMobs.gen.generate(world, new Random(), x, y, z);
-//                System.out.println("Beginning generation at" + x + ", " + y + ", " + z);
                 replaceBlocks(Blocks.planks, 4, MMBlocks.blockPaintedAcacia, 0, x - 3, y, z, 7, 9, 7, world);
                 replaceBlocks(Blocks.wooden_slab, 4, MMBlocks.blockPaintedAcaciaSlab, 0, x - 3, y, z, 7, 9, 7, world);
                 replaceBlocks(Blocks.obsidian, 0, MMBlocks.blockPaintedAcaciaSlab, 12, x - 3, y, z, 7, 9, 7, world);
