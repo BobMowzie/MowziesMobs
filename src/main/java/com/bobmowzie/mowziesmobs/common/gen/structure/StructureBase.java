@@ -8,9 +8,11 @@ import net.minecraft.world.World;
  */
 public class StructureBase {
     public static void replaceBlocks(Block toReplace, Block replacement, int x, int y, int z, int length, int width, int height, World world) {
+//        System.out.println("Replacing blocks beginning at" + x + ", " + y + ", " + z);
         int i = 0;
         for (int x_ = x; x_ <= x + length; x_++) {
-            for (int z_ = x; z_ <= z + width; z_++) {
+            for (int z_ = z; z_ <= z + width; z_++) {
+//                System.out.println("Block at " + x_ + ", " + z_);
                 for (int y_ = y; y_ <= y + height; y_++) {
                     if (world.getBlock(x_, y_, z_) == toReplace)
                     {
@@ -25,9 +27,11 @@ public class StructureBase {
     }
 
     public static void replaceBlocks(Block toReplace, int toReplaceMetaData, Block replacement, int replacementMetaData, int x, int y, int z, int length, int width, int height, World world) {
+//        System.out.println("Replacing blocks beginning at" + x + ", " + y + ", " + z);
         int i = 0;
         for (int x_ = x; x_ <= x + length; x_++) {
-            for (int z_ = x; z_ <= z + width; z_++) {
+            for (int z_ = z; z_ <= z + width; z_++) {
+//                System.out.println("Block at " + x_ + ", " + z_);
                 for (int y_ = y; y_ <= y + height; y_++) {
                     if (world.getBlock(x_, y_, z_) == toReplace && world.getBlockMetadata(x_, y_, z_) == toReplaceMetaData)
                     {

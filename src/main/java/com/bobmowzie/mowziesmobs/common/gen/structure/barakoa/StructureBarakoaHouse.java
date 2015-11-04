@@ -5,7 +5,6 @@ import com.bobmowzie.mowziesmobs.common.blocks.MMBlocks;
 import com.bobmowzie.mowziesmobs.common.gen.structure.StructureBase;
 import net.ilexiconn.llibrary.common.structure.util.Structure;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockAir;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.world.World;
@@ -251,7 +250,7 @@ public class StructureBarakoaHouse extends StructureBase
                 //Stairs
                 if (direction == 1) {
                         for (int i = 1; i < 20; i++) {
-                                if (world.getBlock(x, y + 2 - i, z + 6 + i) instanceof BlockAir) {
+                                if (!world.getBlock(x, y + 2 - i, z + 6 + i).isOpaqueCube()) {
                                         world.setBlock(x, y + 2 - i, z + 6 + i, Block.getBlockById(134), 3, 3);
                                         world.setBlock(x, y + 2 - i, z + 6 + i - 1, Block.getBlockById(134), 6, 3);
                                 } else break;
@@ -259,7 +258,7 @@ public class StructureBarakoaHouse extends StructureBase
                 }
                 else if (direction == 2) {
                         for (int i = 1; i < 20; i++) {
-                                if (world.getBlock(x - 3 - i, y + 2 - i, z + 3) instanceof BlockAir) {
+                                if (!world.getBlock(x - 3 - i, y + 2 - i, z + 3).isOpaqueCube()) {
                                         world.setBlock(x - 3 - i, y + 2 - i, z + 3, Block.getBlockById(134), 0, 3);
                                         world.setBlock(x - 3 - i + 1, y + 2 - i, z + 3, Block.getBlockById(134), 5, 3);
                                 } else break;
@@ -267,7 +266,7 @@ public class StructureBarakoaHouse extends StructureBase
                 }
                 else if (direction == 3) {
                         for (int i = 1; i < 20; i++) {
-                                if (world.getBlock(x, y + 2 - i, z - i) instanceof BlockAir) {
+                                if (!world.getBlock(x, y + 2 - i, z - i).isOpaqueCube()) {
                                         world.setBlock(x, y + 2 - i, z - i, Block.getBlockById(134), 2, 3);
                                         world.setBlock(x, y + 2 - i, z - i + 1, Block.getBlockById(134), 7, 3);
                                 } else break;
@@ -275,7 +274,7 @@ public class StructureBarakoaHouse extends StructureBase
                 }
                 else if (direction == 4) {
                         for (int i = 1; i < 20; i++) {
-                                if (world.getBlock(x + 3 + i, y + 2 - i, z + 3) instanceof BlockAir) {
+                                if (!world.getBlock(x + 3 + i, y + 2 - i, z + 3).isOpaqueCube()) {
                                         world.setBlock(x + 3 + i, y + 2 - i, z + 3, Block.getBlockById(134), 1, 3);
                                         world.setBlock(x + 3 + i - 1, y + 2 - i, z + 3, Block.getBlockById(134), 4, 3);
                                 } else break;
@@ -284,19 +283,19 @@ public class StructureBarakoaHouse extends StructureBase
 
                 //Fence poles
                 for (int i = 0; i < 20; i++) {
-                        if (world.getBlock(x + 2, y - i, z + 1) instanceof BlockAir) world.setBlock(x + 2, y - i, z + 1, Block.getBlockById(85), 0, 3);
+                        if (!world.getBlock(x + 2, y - i, z + 1).isOpaqueCube()) world.setBlock(x + 2, y - i, z + 1, Block.getBlockById(85), 0, 3);
                         else break;
                 }
                 for (int i = 0; i < 20; i++) {
-                        if (world.getBlock(x - 2, y - i, z + 1) instanceof BlockAir) world.setBlock(x - 2, y - i, z + 1, Block.getBlockById(85), 0, 3);
+                        if (!world.getBlock(x - 2, y - i, z + 1).isOpaqueCube()) world.setBlock(x - 2, y - i, z + 1, Block.getBlockById(85), 0, 3);
                         else break;
                 }
                 for (int i = 0; i < 20; i++) {
-                        if (world.getBlock(x + 2, y - i, z + 5) instanceof BlockAir) world.setBlock(x + 2, y - i, z + 5, Block.getBlockById(85), 0, 3);
+                        if (!world.getBlock(x + 2, y - i, z + 5).isOpaqueCube()) world.setBlock(x + 2, y - i, z + 5, Block.getBlockById(85), 0, 3);
                         else break;
                 }
                 for (int i = 0; i < 20; i++) {
-                        if (world.getBlock(x - 2, y - i, z + 5) instanceof BlockAir) world.setBlock(x - 2, y - i, z + 5, Block.getBlockById(85), 0, 3);
+                        if (!world.getBlock(x - 2, y - i, z + 5).isOpaqueCube()) world.setBlock(x - 2, y - i, z + 5, Block.getBlockById(85), 0, 3);
                         else break;
                 }
 
