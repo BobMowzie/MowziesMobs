@@ -18,6 +18,8 @@ public class MMItems implements IContentHandler
     public static Item itemBarakoaMask4;
     public static Item itemBarakoaMask5;
     public static Item itemDart;
+    public static Item itemSpear;
+    public static Item itemBlowgun;
 
     public void init()
     {
@@ -32,6 +34,8 @@ public class MMItems implements IContentHandler
         itemBarakoaMask4 = new ItemBarakoaMask(4);
         itemBarakoaMask5 = new ItemBarakoaMask(5);
         itemDart = new ItemDart();
+        itemSpear = new ItemSpear();
+        itemBlowgun = new ItemBlowgun();
     }
 
     public void gameRegistry() throws Exception
@@ -46,6 +50,8 @@ public class MMItems implements IContentHandler
         GameRegistry.registerItem(itemBarakoaMask4, "barakoaMask4");
         GameRegistry.registerItem(itemBarakoaMask5, "barakoaMask5");
         GameRegistry.registerItem(itemDart, "dart");
+        GameRegistry.registerItem(itemSpear, "spear");
+        GameRegistry.registerItem(itemBlowgun, "blowgun");
 
         if (MowziesMobs.isDebugging())
         {

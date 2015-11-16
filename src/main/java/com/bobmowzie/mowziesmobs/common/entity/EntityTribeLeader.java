@@ -43,6 +43,11 @@ public class EntityTribeLeader extends MMEntityBase {
     }
 
     @Override
+    protected boolean canDespawn() {
+        return false;
+    }
+
+    @Override
     public void onUpdate() {
         super.onUpdate();
         if (ticksExisted == 1) direction = getDirection();
@@ -68,21 +73,22 @@ public class EntityTribeLeader extends MMEntityBase {
     {
         Block blockLeft;
         Block blockRight;
+//        System.out.println(direction);
         if (direction == 1) {
-            blockLeft = worldObj.getBlock((int) posX, Math.round((float)(posY - 1)), (int) posZ);
-            blockRight = worldObj.getBlock((int) posX - 2, Math.round((float)(posY - 1)), (int) posZ);
+            blockLeft = worldObj.getBlock((int) posX, Math.round((float)(posY - 1)), (int) posZ + 1);
+            blockRight = worldObj.getBlock((int) posX - 2, Math.round((float)(posY - 1)), (int) posZ + 1);
         }
         else if (direction == 2) {
-            blockLeft = worldObj.getBlock((int) posX - 2, Math.round((float)(posY - 1)), (int) posZ);
-            blockRight = worldObj.getBlock((int) posX - 2, Math.round((float)(posY - 1)), (int) posZ - 2);
+            blockLeft = worldObj.getBlock((int) posX - 2, Math.round((float)(posY - 1)), (int) posZ + 1);
+            blockRight = worldObj.getBlock((int) posX - 2, Math.round((float)(posY - 1)), (int) posZ - 1);
         }
         else if (direction == 3) {
-            blockLeft = worldObj.getBlock((int) posX - 2, Math.round((float)(posY - 1)), (int) posZ - 2);
-            blockRight = worldObj.getBlock((int) posX, Math.round((float)(posY - 1)), (int) posZ - 2);
+            blockLeft = worldObj.getBlock((int) posX - 2, Math.round((float)(posY - 1)), (int) posZ - 1);
+            blockRight = worldObj.getBlock((int) posX, Math.round((float)(posY - 1)), (int) posZ - 1);
         }
         else if (direction == 4) {
-            blockLeft = worldObj.getBlock((int) posX, Math.round((float)(posY - 1)), (int) posZ - 2);
-            blockRight = worldObj.getBlock((int) posX, Math.round((float)(posY - 1)), (int) posZ);
+            blockLeft = worldObj.getBlock((int) posX, Math.round((float)(posY - 1)), (int) posZ - 1);
+            blockRight = worldObj.getBlock((int) posX, Math.round((float)(posY - 1)), (int) posZ + 1);
         }
         else return false;
 

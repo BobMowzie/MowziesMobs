@@ -28,9 +28,21 @@ public class MMStructureGenerator extends StructureGeneratorBase
         barakoaHouse1.addBlockArray(StructureBarakoaHouse.blockArray1);
         structures.add(barakoaHouse1);
 
+        Structure barakoaSkulls = new Structure("Barakoa Skulls");
+        barakoaSkulls.addBlockArray(StructureBarakoaHouse.blockArray2);
+        structures.add(barakoaSkulls);
+
         Structure barakoThrone = new Structure("Barako Throne");
         barakoThrone.addBlockArray(StructureBarakoThrone.blockArray);
         structures.add(barakoThrone);
+
+        Structure barakoaFire = new Structure("Barakoa Fire");
+        barakoaFire.addBlockArray(StructureBarakoaHouse.blockArray3);
+        structures.add(barakoaFire);
+
+        Structure barakoaHouseExtra = new Structure("Barakoa House Extra");
+        barakoaHouseExtra.addBlockArray(StructureBarakoaHouse.blockArray4);
+        structures.add(barakoaHouseExtra);
     }
 
     public MMStructureGenerator()

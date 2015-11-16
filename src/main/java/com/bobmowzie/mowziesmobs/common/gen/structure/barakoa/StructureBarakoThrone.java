@@ -429,12 +429,12 @@ public class StructureBarakoThrone extends StructureBase {
     };
 
         public static void generate(World world, int x, int y, int z, int direction) {
-                Structure structure = MowziesMobs.gen.structures.get(2);
+                Structure structure = MowziesMobs.gen.structures.get(3);
                 MowziesMobs.gen.setStructure(structure);
                 MowziesMobs.gen.setStructureFacing(direction);
                 MowziesMobs.gen.setDefaultOffset(structure.getOffsetX(), structure.getOffsetY(), structure.getOffsetZ());
                 MowziesMobs.gen.generate(world, new Random(), x, y - 1, z);
-                System.out.println("Beginning generation at " + x + ", " + y + ", " + z);
+//                System.out.println("Beginning generation at " + x + ", " + y + ", " + z);
                 if (direction == 1) {
                         replaceBlocks(Blocks.obsidian, MMBlocks.blockPaintedAcacia, x - 3, y - 1, z, 7, 10, 13, world);
                         replaceBlocks(Blocks.brick_block, MMBlocks.blockPaintedAcaciaSlab, x - 3, y - 1, z, 7, 10, 13, world);

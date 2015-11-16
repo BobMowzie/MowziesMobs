@@ -1,5 +1,7 @@
 package com.bobmowzie.mowziesmobs.common.item;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.common.creativetab.MMTabs;
 import com.bobmowzie.mowziesmobs.common.entity.EntityDart;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,8 +18,9 @@ import java.util.List;
 public class ItemDart extends Item {
     public ItemDart() {
         super();
-//        setTextureName("thebetweenlands:" + type + "Item");
-//        setCreativeTab(MMTabs.generic);
+        setUnlocalizedName("dart");
+        setTextureName(MowziesMobs.MODID + ":dart");
+        setCreativeTab(MMTabs.generic);
     }
 
     @Override

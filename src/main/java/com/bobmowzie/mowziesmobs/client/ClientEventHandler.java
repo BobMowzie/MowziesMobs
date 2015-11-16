@@ -1,6 +1,8 @@
 package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.common.item.ItemBarakoaMask;
+import com.bobmowzie.mowziesmobs.common.item.ItemWroughtAxe;
+import com.bobmowzie.mowziesmobs.common.item.ItemWroughtHelm;
 import com.bobmowzie.mowziesmobs.common.item.MMItems;
 import com.bobmowzie.mowziesmobs.common.property.WroughtAxeSwingProperty;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -9,6 +11,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.ilexiconn.llibrary.common.event.Render3dItemEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.IItemRenderer;
+import net.minecraftforge.client.event.RenderItemInFrameEvent;
 import org.lwjgl.opengl.GL11;
 import thehippomaster.AnimationAPI.AnimationAPI;
 
@@ -124,6 +127,27 @@ public class ClientEventHandler
                 GL11.glDisable(GL11.GL_CULL_FACE);
                 GL11.glTranslatef(0f, -1.3f, 0f);
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void onItemRender(RenderItemInFrameEvent event)
+    {
+        if (event.item.getItem() instanceof ItemWroughtAxe) {
+            GL11.glTranslatef(-0.4f, -0.2f, 0f);
+            GL11.glScalef(0.65f, 0.65f, 0.65f);
+            GL11.glRotatef(45f, 0f, -1f, 0f);
+            GL11.glRotatef(45f, -1f, 0f, -1f);
+        }
+
+        if (event.item.getItem() instanceof ItemWroughtHelm) {
+            GL11.glRotatef(180f, 0f, 1f, 0f);
+            GL11.glTranslatef(0f, -0.15f, 0.05f);
+        }
+
+        if (event.item.getItem() instanceof ItemBarakoaMask) {
+            GL11.glRotatef(180f, 0f, 1f, 0f);
+            GL11.glTranslatef(0f, -0.2f, 0.1f);
         }
     }
 }
