@@ -8,6 +8,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import thehippomaster.AnimationAPI.AnimationAPI;
 
@@ -75,8 +76,8 @@ public class EntityTribeLeader extends MMEntityBase {
         Block blockRight;
 //        System.out.println(direction);
         if (direction == 1) {
-            blockLeft = worldObj.getBlock((int) posX, Math.round((float)(posY - 1)), (int) posZ + 1);
-            blockRight = worldObj.getBlock((int) posX - 2, Math.round((float)(posY - 1)), (int) posZ + 1);
+            blockLeft = worldObj.getBlock(MathHelper.floor_double(posX), Math.round((float)(posY - 1)), MathHelper.floor_double(posZ) + 1);
+            blockRight = worldObj.getBlock(MathHelper.floor_double(posX) - 2, Math.round((float)(posY - 1)), MathHelper.floor_double(posZ) + 1);
         }
         else if (direction == 2) {
             blockLeft = worldObj.getBlock((int) posX - 2, Math.round((float)(posY - 1)), (int) posZ + 1);

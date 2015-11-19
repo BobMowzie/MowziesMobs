@@ -1,15 +1,12 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
-import net.minecraft.client.renderer.OpenGlHelper;
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.common.entity.EntitySunstrike;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
-
 import org.lwjgl.opengl.GL11;
-
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.common.entity.EntitySunstrike;
 
 public class RenderSunstrike extends Render
 {
@@ -39,9 +36,9 @@ public class RenderSunstrike extends Render
         }
         double bDrawStartRadius = 2;
         double bDrawEndRadius = 0.25;
-        double bRadius = 0.95;
-        double rRadius = 1.3;
-        float drawFadeInRate = 4;
+        double bRadius = 1;
+        double rRadius = 1.6;
+        float drawFadeInRate = 2;
         float drawFadeInPoint = 1 / drawFadeInRate;
         if (drawing)
         {
@@ -66,7 +63,7 @@ public class RenderSunstrike extends Render
         Tessellator t = Tessellator.instance;
         t.startDrawingQuads();
         t.setBrightness(240);
-        t.setColorRGBA_F(1, 1, 1, drawing && drawTime < drawFadeInPoint ? drawTime * drawFadeInRate : 1);
+        t.setColorRGBA_F(1, 1, 1, drawing && drawTime < drawFadeInPoint ? drawTime * drawFadeInRate : 1f);
         // ring
         t.addVertexWithUV(-rRadius + rOffset, 0, -rRadius + rOffset, rMinU, rMinV);
         t.addVertexWithUV(-rRadius + rOffset, 0, rRadius + rOffset, rMinU, rMaxV);
@@ -79,6 +76,8 @@ public class RenderSunstrike extends Render
         t.addVertexWithUV(bRadius, 0, 0, bMaxU, bMinV);
         GL11.glPushMatrix();
         GL11.glTranslated(x, y, z);
+        System.out.println(strikeTime);
+        if (strikeTime < 0) GL11.glColor4f(1, 1, 1, 0.5f);
         GL11.glRotatef(-renderManager.playerViewY, 0, 1, 0);
         bindEntityTexture(sunstrike);
         setupGL();

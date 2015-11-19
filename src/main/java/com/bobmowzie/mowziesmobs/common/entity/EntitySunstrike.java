@@ -1,7 +1,6 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
@@ -16,9 +15,9 @@ import java.util.List;
  */
 public class EntitySunstrike extends Entity
 {
-    private static final int STRIKE_LENGTH = 45;
+    private static final int STRIKE_LENGTH = 40;
 
-    private static final int STRIKE_EXPLOSION = 30;
+    private static final int STRIKE_EXPLOSION = 34;
 
     private int prevStrikeTime;
 
@@ -112,7 +111,8 @@ public class EntitySunstrike extends Entity
         {
             if (entity instanceof EntityLivingBase && getDistanceSqToEntity(entity) < radiusSq)
             {
-                ((EntityLivingBase) entity).attackEntityFrom(DamageSource.onFire, 100);
+                ((EntityLivingBase) entity).attackEntityFrom(DamageSource.onFire, 10);
+                ((EntityLivingBase) entity).setFire(5);
             }
         }
     }
