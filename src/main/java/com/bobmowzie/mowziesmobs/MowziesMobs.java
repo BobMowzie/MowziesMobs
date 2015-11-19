@@ -11,10 +11,12 @@ import com.bobmowzie.mowziesmobs.common.gen.MMStructureGenerator;
 import com.bobmowzie.mowziesmobs.common.gen.MMWorldGenerator;
 import com.bobmowzie.mowziesmobs.common.item.MMItems;
 import com.bobmowzie.mowziesmobs.common.message.MessageSwingWroughtAxe;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -45,6 +47,8 @@ public class MowziesMobs
     @SidedProxy(clientSide = "com.bobmowzie.mowziesmobs.client.ClientProxy", serverSide = "com.bobmowzie.mowziesmobs.common.ServerProxy")
     public static ServerProxy proxy;
 
+    private static ModContainer container;
+
     public static boolean isDebugging()
     {
         return "${version}".equals("${" + "version" + "}");
@@ -53,8 +57,6 @@ public class MowziesMobs
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
-        ContentHelper.init(new MMTabs(), new MMItems(), new MMBlocks(), new MMEntityRegistry());
-
         ConfigHelper.registerConfigHandler(MowziesMobs.MODID, event.getSuggestedConfigurationFile(), new MMConfigHandler());
 
         ServerEventHandler sev = new ServerEventHandler();
@@ -66,6 +68,8 @@ public class MowziesMobs
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
+        ContentHelper.init(new MMTabs(), new MMItems(), new MMBlocks(), new MMEntityRegistry());
+
         proxy.init();
 
         GameRegistry.registerWorldGenerator(new MMWorldGenerator(), 0);
@@ -78,5 +82,14 @@ public class MowziesMobs
     public void postInit(FMLPostInitializationEvent event)
     {
         MMBiomeDictionarySpawns.init();
+    }
+
+    public static ModContainer getModContainer()
+    {
+        if (container == null)
+        {
+            container = FMLCommonHandler.instance().findContainerFor(MowziesMobs.MODID);
+        }
+        return container;
     }
 }

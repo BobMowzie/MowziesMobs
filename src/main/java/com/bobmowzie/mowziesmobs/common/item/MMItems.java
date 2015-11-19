@@ -1,6 +1,8 @@
 package com.bobmowzie.mowziesmobs.common.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.common.entity.ItemMMSpawnEgg;
+
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.ilexiconn.llibrary.common.content.IContentHandler;
 import net.minecraft.item.Item;
@@ -20,6 +22,7 @@ public class MMItems implements IContentHandler
     public static Item itemDart;
     public static Item itemSpear;
     public static Item itemBlowgun;
+    public static Item itemSpawnEgg;
 
     public void init()
     {
@@ -36,6 +39,7 @@ public class MMItems implements IContentHandler
         itemDart = new ItemDart();
         itemSpear = new ItemSpear();
         itemBlowgun = new ItemBlowgun();
+        itemSpawnEgg = new ItemMMSpawnEgg();
     }
 
     public void gameRegistry() throws Exception
@@ -52,6 +56,7 @@ public class MMItems implements IContentHandler
         GameRegistry.registerItem(itemDart, "dart");
         GameRegistry.registerItem(itemSpear, "spear");
         GameRegistry.registerItem(itemBlowgun, "blowgun");
+        GameRegistry.registerItem(itemSpawnEgg, "spawnEgg");
 
         if (MowziesMobs.isDebugging())
         {
