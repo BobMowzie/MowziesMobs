@@ -16,39 +16,46 @@ import net.minecraft.world.World;
  * Created by jnad325 on 11/1/15.
  */
 public class ItemBarakoaMask extends ItemArmor {
-    private static final String ARMOR_TEXTURE_STRING = MowziesMobs.MODID + ":textures/entity/textureTribesman";
-    public int maskType;
+    static final String ARMOR_TEXTURE_FORMAT = MowziesMobs.MODID + ":textures/entity/textureTribesman%s.png";
 
-    public ItemBarakoaMask(int i) {
+    private final BarakoaMask type;
+
+    public ItemBarakoaMask(BarakoaMask type)
+    {
         super(ArmorMaterial.CLOTH, 2, 0);
-        setUnlocalizedName("barakoaMask" + i);
+        this.type = type;
+        setUnlocalizedName(type.getUnlocalizedName());
         setCreativeTab(MMTabs.generic);
-        maskType = i;
+    }
+
+    public BarakoaMask getType()
+    {
+        return type;
+    }
+
+    public int getPotionEffectId()
+    {
+        return type.getPotionEffectId();
     }
 
     @Override
-    public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack) {
-        super.onArmorTick(world, player, itemStack);
-    }
-
-    @Override
-    public boolean getIsRepairable(ItemStack itemStack, ItemStack materialItemStack) {
+    public boolean getIsRepairable(ItemStack itemStack, ItemStack materialItemStack)
+    {
         return false;
     }
 
     @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type) {
-        return ARMOR_TEXTURE_STRING + maskType + ".png";
+    public String getArmorTexture(ItemStack stack, Entity entity, int slot, String variant)
+    {
+        return type.getArmorTexture();
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
     public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot) {
         ModelBiped armorModel = null;
-        if (itemStack != null) {
-            if (itemStack.getItem() instanceof ItemBarakoaMask) {
-                armorModel = MowziesMobs.proxy.getArmorModel(1);
-            }
+        if (itemStack != null && itemStack.getItem() instanceof ItemBarakoaMask)
+        {
+            armorModel = MowziesMobs.proxy.getArmorModel(1);
         }
         return armorModel;
     }

@@ -11,7 +11,10 @@ import com.bobmowzie.mowziesmobs.client.playeranimation.PlayerAnimationHandlerCl
 import com.bobmowzie.mowziesmobs.client.render.entity.*;
 import com.bobmowzie.mowziesmobs.common.ServerProxy;
 import com.bobmowzie.mowziesmobs.common.entity.*;
+import com.bobmowzie.mowziesmobs.common.item.BarakoaMask;
+import com.bobmowzie.mowziesmobs.common.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.common.item.MMItems;
+
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -48,21 +51,27 @@ public class ClientProxy extends ServerProxy
 
         RenderHelper.registerItem3dRenderer(MMItems.itemWroughtAxe, new ModelWroughtAxe(), new ResourceLocation(MowziesMobs.MODID, "textures/items/modeled/textureWroughtAxe.png"));
         RenderHelper.registerItem3dRenderer(MMItems.itemWroughtHelm, new ModelWroughtHelm(), new ResourceLocation(MowziesMobs.MODID, "textures/items/modeled/textureWroughtHelm.png"));
-        RenderHelper.registerItem3dRenderer(MMItems.itemBarakoaMask1, new ModelBarakoaMask(), new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureTribesman1.png"));
-        RenderHelper.registerItem3dRenderer(MMItems.itemBarakoaMask2, new ModelBarakoaMask(), new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureTribesman2.png"));
-        RenderHelper.registerItem3dRenderer(MMItems.itemBarakoaMask3, new ModelBarakoaMask(), new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureTribesman3.png"));
-        RenderHelper.registerItem3dRenderer(MMItems.itemBarakoaMask4, new ModelBarakoaMask(), new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureTribesman4.png"));
-        RenderHelper.registerItem3dRenderer(MMItems.itemBarakoaMask5, new ModelBarakoaMask(), new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureTribesman5.png"));
+        ItemBarakoaMask[] masks = MMItems.itemBarakoaMasks;
+        for (int i = 0; i < masks.length; i++)
+        {
+            RenderHelper.registerItem3dRenderer(masks[i], new ModelBarakoaMask(), new ResourceLocation(MowziesMobs.MODID, String.format("textures/entity/textureTribesman%s.png", i + 1)));
+
+        }
         RenderHelper.registerModelExtension(new ModelPlayerExtension());
         PlayerAnimationHandlerClient playerAnimationHandlerClient = new PlayerAnimationHandlerClient();
         FMLCommonHandler.instance().bus().register(playerAnimationHandlerClient);
         MinecraftForge.EVENT_BUS.register(playerAnimationHandlerClient);
     }
 
-    public ModelBiped getArmorModel(int i)
+    public ModelBiped getArmorModel(int type)
     {
-        if (i == 0) return modelWroughtHelm;
-        if (i == 1) return modelBarakoaMask;
-        else return modelWroughtHelm;
+        switch (type)
+        {
+        default:
+        case 0:
+            return modelWroughtHelm;
+        case 1:
+            return modelBarakoaMask;
+        }
     }
 }
