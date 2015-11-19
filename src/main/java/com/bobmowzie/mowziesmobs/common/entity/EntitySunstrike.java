@@ -105,7 +105,7 @@ public class EntitySunstrike extends Entity
 
     public void damageEntityLivingBaseNearby(double radius)
     {
-        AxisAlignedBB region = AxisAlignedBB.getBoundingBox(posX - radius, posY, posZ - radius, posX + radius, Double.POSITIVE_INFINITY, posZ + radius);
+        AxisAlignedBB region = AxisAlignedBB.getBoundingBox(posX - radius, posY - 0.5, posZ - radius, posX + radius, Double.POSITIVE_INFINITY, posZ + radius);
         List<Entity> entities = worldObj.getEntitiesWithinAABBExcludingEntity(this, region);
         double radiusSq = radius * radius;
         for (Entity entity : entities)
