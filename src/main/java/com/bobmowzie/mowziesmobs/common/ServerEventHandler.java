@@ -41,7 +41,7 @@ public class ServerEventHandler
 
     @SubscribeEvent
     public void playerTick(TickEvent.PlayerTickEvent event) {
-        if (event.side == Side.CLIENT || event.phase == Phase.END)
+        if (event.side == Side.CLIENT || event.phase == Phase.START)
         {
             return;
         }
