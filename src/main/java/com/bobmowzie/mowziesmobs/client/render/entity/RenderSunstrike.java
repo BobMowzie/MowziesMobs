@@ -53,6 +53,27 @@ public class RenderSunstrike extends Render
         {
             return;
         }
+        boolean isLingering = sunstrike.isLingering(delta);
+        GL11.glPushMatrix();
+        GL11.glTranslated(x, y, z);
+        if (isLingering)
+        {
+            drawLingering(sunstrike, delta);
+        }
+        else
+        {
+            drawStrike(sunstrike, maxY, delta);
+        }
+        GL11.glPopMatrix();
+    }
+
+    private void drawLingering(EntitySunstrike sunstrike, float delta)
+    {
+        
+    }
+
+    private void drawStrike(EntitySunstrike sunstrike, double maxY, float delta)
+    {
         float drawTime = sunstrike.getStrikeDrawTime(delta);
         float strikeTime = sunstrike.getStrikeDamageTime(delta);
         boolean drawing = sunstrike.isStrikeDrawing(delta);
@@ -61,15 +82,12 @@ public class RenderSunstrike extends Render
         {
             opacity *= DRAW_OPACITY_MULTIPLER;
         }
-        GL11.glPushMatrix();
-        GL11.glTranslated(x, y, z);
         setupGL();
         bindEntityTexture(sunstrike);
         drawRing(drawing, drawTime, strikeTime, opacity);
         GL11.glRotatef(-renderManager.playerViewY, 0, 1, 0);
         drawBeam(drawing, drawTime, strikeTime, opacity, maxY);
         revertGL();
-        GL11.glPopMatrix();
     }
 
     private void drawRing(boolean drawing, float drawTime, float strikeTime, float opacity)
