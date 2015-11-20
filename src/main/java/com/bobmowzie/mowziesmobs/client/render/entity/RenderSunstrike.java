@@ -60,27 +60,31 @@ public class RenderSunstrike extends Render
         double rMinV = drawing ? 0 : rFrameSize / TEXTURE_HEIGHT;
         double rMaxV = rMinV + rFrameSize / TEXTURE_HEIGHT;
         double rOffset = 0.0625F * rRadius * ((drawing ? ringFrame : ringFrame + 1) % 2);
+        float opacity = drawing && drawTime < drawFadeInPoint ? drawTime * drawFadeInRate : 1f;
+        if (strikeTime < 0) opacity *= 0.7;
         Tessellator t = Tessellator.instance;
         t.startDrawingQuads();
         t.setBrightness(240);
-        t.setColorRGBA_F(1, 1, 1, drawing && drawTime < drawFadeInPoint ? drawTime * drawFadeInRate : 1f);
+        t.setColorRGBA_F(1, 1, 1, opacity);
         // ring
         t.addVertexWithUV(-rRadius + rOffset, 0, -rRadius + rOffset, rMinU, rMinV);
         t.addVertexWithUV(-rRadius + rOffset, 0, rRadius + rOffset, rMinU, rMaxV);
         t.addVertexWithUV(rRadius + rOffset, 0, rRadius + rOffset, rMaxU, rMaxV);
         t.addVertexWithUV(rRadius + rOffset, 0, -rRadius + rOffset, rMaxU, rMinV);
+        GL11.glPushMatrix();
+        GL11.glTranslated(x, y, z);
+        bindEntityTexture(sunstrike);
+        setupGL();
+        t.draw();
         // beam
+        t.startDrawingQuads();
+        t.setBrightness(240);
+        t.setColorRGBA_F(1, 1, 1, opacity);
         t.addVertexWithUV(-bRadius, 0, 0, bMinU, bMinV);
         t.addVertexWithUV(-bRadius, maxY, 0, bMinU, bMaxV);
         t.addVertexWithUV(bRadius, maxY, 0, bMaxU, bMaxV);
         t.addVertexWithUV(bRadius, 0, 0, bMaxU, bMinV);
-        GL11.glPushMatrix();
-        GL11.glTranslated(x, y, z);
-        System.out.println(strikeTime);
-        if (strikeTime < 0) GL11.glColor4f(1, 1, 1, 0.5f);
         GL11.glRotatef(-renderManager.playerViewY, 0, 1, 0);
-        bindEntityTexture(sunstrike);
-        setupGL();
         t.draw();
         revertGL();
         GL11.glPopMatrix();
