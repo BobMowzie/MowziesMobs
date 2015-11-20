@@ -15,9 +15,9 @@ import java.util.List;
  */
 public class EntitySunstrike extends Entity
 {
-    private static final int STRIKE_LENGTH = 40;
+    private static final int STRIKE_LENGTH = 43;
 
-    private static final int STRIKE_EXPLOSION = 34;
+    private static final int STRIKE_EXPLOSION = 35;
 
     private int prevStrikeTime;
 
