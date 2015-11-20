@@ -261,8 +261,6 @@ public class EntityFoliaath extends MMEntityBase
         {
             activate.increaseTimer(activateTime < activateTarget ? 1 : -2);
         }
-
-        if (getAnimID() == 0) AnimationAPI.sendAnimPacket(this, -2);
     }
 
     @Override

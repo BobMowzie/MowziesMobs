@@ -88,6 +88,7 @@ public class EntitySunstrike extends Entity
     public void onUpdate()
     {
         super.onUpdate();
+        if (ticksExisted == 1) playSound("mowziesmobs:sunstrike", 1.5f, 1.1f);
         prevStrikeTime = strikeTime++;
         if (!worldObj.isRemote)
         {

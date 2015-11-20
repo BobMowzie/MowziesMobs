@@ -88,7 +88,7 @@ public class ModelTribeLeader extends MowzieModelBase {
         this.headdress3.mirror = true;
         this.headdress3.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.headdress3.addBox(-3.0F, -18.0F, 0.0F, 6, 12, 0, 0.0F);
-        this.setRotateAngle(headdress3, -0.5235987755982988F, 0.0F, 1.3962634015954636F);
+        this.setRotateAngle(headdress3, 0.5235987755982988F, (float) Math.PI, 1.3962634015954636F);
         this.leftLowerArm = new MowzieModelRenderer(this, 56, 38);
         this.leftLowerArm.mirror = true;
         this.leftLowerArm.setRotationPoint(3.5F, 14.0F, 0.0F);
@@ -115,7 +115,7 @@ public class ModelTribeLeader extends MowzieModelBase {
         this.headdress2.mirror = true;
         this.headdress2.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.headdress2.addBox(-3.0F, -18.0F, 0.0F, 6, 12, 0, 0.0F);
-        this.setRotateAngle(headdress2, -0.5235987755982988F, 0.0F, 0.6981317007977318F);
+        this.setRotateAngle(headdress2, 0.5235987755982988F, (float) Math.PI, 0.6981317007977318F);
         this.neckJoint = new MowzieModelRenderer(this, 0, 0);
         this.neckJoint.setRotationPoint(0.0F, -8.0F, 10.0F);
         this.neckJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
@@ -131,7 +131,7 @@ public class ModelTribeLeader extends MowzieModelBase {
         this.headdress4 = new MowzieModelRenderer(this, 27, 76);
         this.headdress4.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.headdress4.addBox(-3.0F, -18.0F, 0.0F, 6, 12, 0, 0.0F);
-        this.setRotateAngle(headdress4, -0.5235987755982988F, 0.0F, -0.6981317007977318F);
+        this.setRotateAngle(headdress4, 0.5235987755982988F, (float) Math.PI, -0.6981317007977318F);
         this.forehead = new AdvancedModelRenderer(this, 0, 122);
         this.forehead.setRotationPoint(0.0F, -6.0F, 0.0F);
         this.forehead.addBox(-6.0F, -0.0F, -2.0F, 12, 4, 2, 0.0F);
@@ -147,7 +147,7 @@ public class ModelTribeLeader extends MowzieModelBase {
         this.headdress5 = new MowzieModelRenderer(this, 27, 76);
         this.headdress5.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.headdress5.addBox(-3.0F, -18.0F, 0.0F, 6, 12, 0, 0.0F);
-        this.setRotateAngle(headdress5, -0.5235987755982988F, 0.0F, -1.3962634015954636F);
+        this.setRotateAngle(headdress5, 0.5235987755982988F, (float) Math.PI, -1.3962634015954636F);
         this.leftFoot = new MowzieModelRenderer(this, 83, 27);
         this.leftFoot.mirror = true;
         this.leftFoot.setRotationPoint(0.0F, 11.0F, 5.0F);
@@ -169,7 +169,7 @@ public class ModelTribeLeader extends MowzieModelBase {
         this.headdress1 = new MowzieModelRenderer(this, 27, 76);
         this.headdress1.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.headdress1.addBox(-3.0F, -18.0F, 0.0F, 6, 12, 0, 0.0F);
-        this.setRotateAngle(headdress1, -0.5235987755982988F, 0.0F, 0.0F);
+        this.setRotateAngle(headdress1, 0.5235987755982988F, (float) Math.PI, 0.0F);
         this.leftThigh = new AdvancedModelRenderer(this, 39, 66);
         this.leftThigh.mirror = true;
         this.leftThigh.setRotationPoint(8.5F, -4.0F, 4.0F);
@@ -200,7 +200,7 @@ public class ModelTribeLeader extends MowzieModelBase {
         this.headdress7 = new MowzieModelRenderer(this, 27, 76);
         this.headdress7.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.headdress7.addBox(-3.0F, -18.0F, 0.0F, 6, 12, 0, 0.0F);
-        this.setRotateAngle(headdress7, -0.5235987755982988F, 0.0F, -2.0943951023931953F);
+        this.setRotateAngle(headdress7, 0.5235987755982988F, (float) Math.PI, -2.0943951023931953F);
         this.rightLip = new AdvancedModelRenderer(this, 26, 120);
         this.rightLip.setRotationPoint(-6.0F, 0.0F, 0.0F);
         this.rightLip.addBox(0.0F, 0.0F, -2.0F, 2, 2, 2, 0.0F);
@@ -224,7 +224,7 @@ public class ModelTribeLeader extends MowzieModelBase {
         this.headdress6.mirror = true;
         this.headdress6.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.headdress6.addBox(-3.0F, -18.0F, 0.0F, 6, 12, 0, 0.0F);
-        this.setRotateAngle(headdress6, -0.5235987755982988F, 0.0F, 2.0943951023931953F);
+        this.setRotateAngle(headdress6, 0.5235987755982988F, (float) Math.PI, 2.0943951023931953F);
         this.chest = new AdvancedModelRenderer(this, 2, 38);
         this.chest.setRotationPoint(0.0F, -16.0F, -7.0F);
         this.chest.addBox(-9.5F, -8.0F, 0.0F, 19, 8, 16, 0.0F);
@@ -310,6 +310,12 @@ public class ModelTribeLeader extends MowzieModelBase {
         EntityTribeLeader tribeLeader = (EntityTribeLeader) entity;
         float liftLegs = tribeLeader.legsUp.getAnimationProgressSinSqrt();
         float frame = tribeLeader.frame + AnimationAPI.proxy.getPartialTick();
+
+        if (f3 > 90) f3 = 90f;
+        if (f3 < -90) f3 = -90f;
+
+        faceTarget(neckJoint, 2, f3, f4);
+        faceTarget(headJoint, 2, f3, f4);
 
         walk(body, 0.06f, 0.05f, true, 0, -0.05f, frame, 1f);
         walk(neck, 0.06f, 0.05f, false, 0.5f, -0.05f, frame, 1f);

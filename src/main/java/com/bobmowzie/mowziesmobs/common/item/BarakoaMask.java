@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.common.item;
 
 public enum BarakoaMask
 {
-    FURY(5), FEAR(1), RANGE(3), BLISS(8), MISERY(11);
+    FURY(5), FEAR(1), RAGE(3), BLISS(8), MISERY(11);
 
     private final String unlocalizedName;
 

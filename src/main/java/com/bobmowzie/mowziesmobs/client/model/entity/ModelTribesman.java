@@ -209,6 +209,7 @@ public class ModelTribesman extends MowzieModelBase {
         this.mane = new AdvancedModelRenderer(this, 0, 0);
         this.mane.setRotationPoint(0.0F, -2.0F, 4.0F);
         this.mane.addBox(-12.0F, -12.0F, 0.0F, 24, 24, 0, 0.0F);
+        setRotateAngle(mane, 0, (float) Math.PI, 0);
         this.scaler = new MowzieModelRenderer(this, 0, 0);
         this.scaler.setRotationPoint(0.0F, 0, 0F);
         this.flailer = new MowzieModelRenderer(this, 0, 0);

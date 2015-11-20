@@ -62,5 +62,6 @@
     "barakoaBlowdart": {"category": "master","sounds": [{"name": "barakoaBlowdart","stream": false}]},
     "barakoaInhale": {"category": "master","sounds": [{"name": "barakoaInhale","stream": false}]},
     "barakoaShout": {"category": "master","sounds": [{"name": "barakoaShout","stream": false}]},
-    "barakoaSwing": {"category": "master","sounds": [{"name": "barakoaSwing","stream": false}]}
+    "barakoaSwing": {"category": "master","sounds": [{"name": "barakoaSwing","stream": false}]},
+    "sunstrike": {"category": "master","sounds": [{"name": "sunstrike","stream": false}]}
 }
