@@ -23,7 +23,7 @@ public class RenderSunstrike extends Render
         float strikeTime = sunstrike.getStrikeDamageTime(delta);
         float drawTime = sunstrike.getStrikeDrawTime(delta);
         boolean drawing = sunstrike.isStrikeDrawing(delta);
-        int bFrameCount = 23;
+        int bFrameCount = 31;
         int bFrame = drawing ? 0 : (int) (strikeTime * (bFrameCount + 1));
         if (bFrame > bFrameCount)
         {
@@ -55,11 +55,11 @@ public class RenderSunstrike extends Render
         {
             ringFrame = rFrameCount;
         }
-        double rMinU = (drawing ? ringFrame : (rFrameCount - ringFrame)) * rFrameSize / TEXTURE_WIDTH;
+        double rMinU = ringFrame * rFrameSize / TEXTURE_WIDTH;
         double rMaxU = rMinU + rFrameSize / TEXTURE_WIDTH;
         double rMinV = drawing ? 0 : rFrameSize / TEXTURE_HEIGHT;
         double rMaxV = rMinV + rFrameSize / TEXTURE_HEIGHT;
-        double rOffset = 0.0625F * rRadius * ((drawing ? ringFrame : ringFrame + 1) % 2);
+        double rOffset = 0.0625F * rRadius * (ringFrame % 2);
         float opacity = drawing && drawTime < drawFadeInPoint ? drawTime * drawFadeInRate : 1f;
         if (strikeTime < 0) opacity *= 0.7;
         Tessellator t = Tessellator.instance;
