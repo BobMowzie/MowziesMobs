@@ -16,78 +16,126 @@ public class RenderSunstrike extends Render
 
     private static final double TEXTURE_HEIGHT = 32;
 
+    private static final double BEAM_MIN_U = 224 / TEXTURE_WIDTH; 
+
+    private static final double BEAM_MAX_U = 1;
+
+    private static final double PIXEL_SCALE = 1 / 16D;
+
+    private static final int MAX_HEIGHT = 256;
+
+    private static final float DRAW_FADE_IN_RATE = 2;
+
+    private static final float DRAW_FADE_IN_POINT = 1 / DRAW_FADE_IN_RATE;
+
+    private static final float DRAW_OPACITY_MULTIPLER = 0.7F;
+
+    private static final double RING_RADIUS = 1.6;
+
+    private static final int RING_FRAME_SIZE = 16;
+
+    private static final int RING_FRAME_COUNT = 11;
+
+    private static final int BREAM_FRAME_COUNT = 31;
+
+    private static final double BEAM_DRAW_START_RADIUS = 2;
+
+    private static final double BEAM_DRAW_END_RADIUS = 0.25;
+
+    private static final double BEAM_STRIKE_RADIUS = 1;
+
     @Override
     public void doRender(Entity entity, double x, double y, double z, float yaw, float delta)
     {
         EntitySunstrike sunstrike = (EntitySunstrike) entity;
-        float strikeTime = sunstrike.getStrikeDamageTime(delta);
-        float drawTime = sunstrike.getStrikeDrawTime(delta);
-        boolean drawing = sunstrike.isStrikeDrawing(delta);
-        int bFrameCount = 31;
-        int bFrame = drawing ? 0 : (int) (strikeTime * (bFrameCount + 1));
-        if (bFrame > bFrameCount)
-        {
-            bFrame = bFrameCount;
-        }
-        double maxY = 256 - sunstrike.posY;
+        double maxY = MAX_HEIGHT - sunstrike.posY;
         if (maxY < 0)
         {
             return;
         }
-        double bDrawStartRadius = 2;
-        double bDrawEndRadius = 0.25;
-        double bRadius = 1;
-        double rRadius = 1.6;
-        float drawFadeInRate = 2;
-        float drawFadeInPoint = 1 / drawFadeInRate;
+        boolean isLingering = sunstrike.isLingering(delta);
+        GL11.glPushMatrix();
+        GL11.glTranslated(x, y, z);
+        if (isLingering)
+        {
+            drawLingering(sunstrike, delta);
+        }
+        else
+        {
+            drawStrike(sunstrike, maxY, delta);
+        }
+        GL11.glPopMatrix();
+    }
+
+    private void drawLingering(EntitySunstrike sunstrike, float delta)
+    {
+        
+    }
+
+    private void drawStrike(EntitySunstrike sunstrike, double maxY, float delta)
+    {
+        float drawTime = sunstrike.getStrikeDrawTime(delta);
+        float strikeTime = sunstrike.getStrikeDamageTime(delta);
+        boolean drawing = sunstrike.isStrikeDrawing(delta);
+        float opacity = drawing && drawTime < DRAW_FADE_IN_POINT ? drawTime * DRAW_FADE_IN_RATE : 1;
         if (drawing)
         {
-            bRadius = (bDrawEndRadius - bDrawStartRadius) * drawTime + bDrawStartRadius;
+            opacity *= DRAW_OPACITY_MULTIPLER;
         }
-        double bMinU = 224 / TEXTURE_WIDTH;
-        double bMaxU = 1;
-        double bMinV = bFrame / TEXTURE_HEIGHT;
-        double bMaxV = (bFrame + 1) / TEXTURE_HEIGHT;
-        int rFrameSize = 16;
-        int rFrameCount = 11;
-        int ringFrame = (int) (((drawing ? drawTime : strikeTime) * (rFrameCount + 1)));
-        if (ringFrame > rFrameCount)
+        setupGL();
+        bindEntityTexture(sunstrike);
+        drawRing(drawing, drawTime, strikeTime, opacity);
+        GL11.glRotatef(-renderManager.playerViewY, 0, 1, 0);
+        drawBeam(drawing, drawTime, strikeTime, opacity, maxY);
+        revertGL();
+    }
+
+    private void drawRing(boolean drawing, float drawTime, float strikeTime, float opacity)
+    {
+        int frame = (int) (((drawing ? drawTime : strikeTime) * (RING_FRAME_COUNT + 1)));
+        if (frame > RING_FRAME_COUNT)
         {
-            ringFrame = rFrameCount;
+            frame = RING_FRAME_COUNT;
         }
-        double rMinU = ringFrame * rFrameSize / TEXTURE_WIDTH;
-        double rMaxU = rMinU + rFrameSize / TEXTURE_WIDTH;
-        double rMinV = drawing ? 0 : rFrameSize / TEXTURE_HEIGHT;
-        double rMaxV = rMinV + rFrameSize / TEXTURE_HEIGHT;
-        double rOffset = 0.0625F * rRadius * (ringFrame % 2);
-        float opacity = drawing && drawTime < drawFadeInPoint ? drawTime * drawFadeInRate : 1f;
-        if (strikeTime < 0) opacity *= 0.7;
+        double minU = frame * RING_FRAME_SIZE / TEXTURE_WIDTH;
+        double maxU = minU + RING_FRAME_SIZE / TEXTURE_WIDTH;
+        double minV = drawing ? 0 : RING_FRAME_SIZE / TEXTURE_HEIGHT;
+        double maxV = minV + RING_FRAME_SIZE / TEXTURE_HEIGHT;
+        double offset = PIXEL_SCALE * RING_RADIUS * (frame % 2);
         Tessellator t = Tessellator.instance;
         t.startDrawingQuads();
         t.setBrightness(240);
         t.setColorRGBA_F(1, 1, 1, opacity);
-        // ring
-        t.addVertexWithUV(-rRadius + rOffset, 0, -rRadius + rOffset, rMinU, rMinV);
-        t.addVertexWithUV(-rRadius + rOffset, 0, rRadius + rOffset, rMinU, rMaxV);
-        t.addVertexWithUV(rRadius + rOffset, 0, rRadius + rOffset, rMaxU, rMaxV);
-        t.addVertexWithUV(rRadius + rOffset, 0, -rRadius + rOffset, rMaxU, rMinV);
-        GL11.glPushMatrix();
-        GL11.glTranslated(x, y, z);
-        bindEntityTexture(sunstrike);
-        setupGL();
+        t.addVertexWithUV(-RING_RADIUS + offset, 0, -RING_RADIUS + offset, minU, minV);
+        t.addVertexWithUV(-RING_RADIUS + offset, 0, RING_RADIUS + offset, minU, maxV);
+        t.addVertexWithUV(RING_RADIUS + offset, 0, RING_RADIUS + offset, maxU, maxV);
+        t.addVertexWithUV(RING_RADIUS + offset, 0, -RING_RADIUS + offset, maxU, minV);
         t.draw();
-        // beam
+    }
+
+    private void drawBeam(boolean drawing, float drawTime, float strikeTime, float opacity, double maxY)
+    {
+        int frame = drawing ? 0 : (int) (strikeTime * (BREAM_FRAME_COUNT + 1));
+        if (frame > BREAM_FRAME_COUNT)
+        {
+            frame = BREAM_FRAME_COUNT;
+        }
+        double radius = BEAM_STRIKE_RADIUS;
+        if (drawing)
+        {
+            radius = (BEAM_DRAW_END_RADIUS - BEAM_DRAW_START_RADIUS) * drawTime + BEAM_DRAW_START_RADIUS;
+        }
+        double minV = frame / TEXTURE_HEIGHT;
+        double maxV = (frame + 1) / TEXTURE_HEIGHT;
+        Tessellator t = Tessellator.instance;
         t.startDrawingQuads();
         t.setBrightness(240);
         t.setColorRGBA_F(1, 1, 1, opacity);
-        t.addVertexWithUV(-bRadius, 0, 0, bMinU, bMinV);
-        t.addVertexWithUV(-bRadius, maxY, 0, bMinU, bMaxV);
-        t.addVertexWithUV(bRadius, maxY, 0, bMaxU, bMaxV);
-        t.addVertexWithUV(bRadius, 0, 0, bMaxU, bMinV);
-        GL11.glRotatef(-renderManager.playerViewY, 0, 1, 0);
+        t.addVertexWithUV(-radius, 0, 0, BEAM_MIN_U, minV);
+        t.addVertexWithUV(-radius, maxY, 0, BEAM_MIN_U, maxV);
+        t.addVertexWithUV(radius, maxY, 0, BEAM_MAX_U, maxV);
+        t.addVertexWithUV(radius, 0, 0, BEAM_MAX_U, minV);
         t.draw();
-        revertGL();
-        GL11.glPopMatrix();
     }
 
     private void setupGL()

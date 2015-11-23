@@ -7,17 +7,23 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import io.netty.buffer.ByteBuf;
 
 import java.util.List;
+
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 
 /**
  * Created by jnad325 on 11/16/15.
  */
-public class EntitySunstrike extends Entity
+public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnData
 {
     private static final int STRIKE_LENGTH = 43;
 
     private static final int STRIKE_EXPLOSION = 35;
+
+    // 2 minutes past strike end
+    private static final int STRIKE_LINGER = STRIKE_LENGTH + 20 * 60 * 2;
 
     private int prevStrikeTime;
 
@@ -34,7 +40,6 @@ public class EntitySunstrike extends Entity
     {
         this(world);
         setPosition(x + 0.5F, y + 1.0625F, z + 0.5F);
-        if (!worldObj.canBlockSeeTheSky(MathHelper.floor_double(posX), MathHelper.floor_double(posY), MathHelper.floor_double(posZ))) setDead();
     }
 
     @Override
@@ -52,14 +57,19 @@ public class EntitySunstrike extends Entity
         return getActualStrikeTime(delta) / STRIKE_EXPLOSION;
     }
 
+    public float getStrikeDamageTime(float delta)
+    {
+        return (getActualStrikeTime(delta) - STRIKE_EXPLOSION) / (STRIKE_LENGTH - STRIKE_EXPLOSION);
+    }
+
     public boolean isStrikeDrawing(float delta)
     {
         return getActualStrikeTime(delta) < STRIKE_EXPLOSION;
     }
 
-    public float getStrikeDamageTime(float delta)
+    public boolean isLingering(float delta)
     {
-        return (getActualStrikeTime(delta) - STRIKE_EXPLOSION) / (STRIKE_LENGTH - STRIKE_EXPLOSION);
+        return getActualStrikeTime(delta) > STRIKE_LENGTH;
     }
 
     private float getActualStrikeTime(float delta)
@@ -89,11 +99,14 @@ public class EntitySunstrike extends Entity
     public void onUpdate()
     {
         super.onUpdate();
-        if (ticksExisted == 1) playSound("mowziesmobs:sunstrike", 1.5f, 1.1f);
-        prevStrikeTime = strikeTime++;
+        prevStrikeTime = strikeTime;
         if (!worldObj.isRemote)
         {
-            if (strikeTime == STRIKE_LENGTH)
+            if (strikeTime == 0)
+            {
+                playSound("mowziesmobs:sunstrike", 1.5F, 1.1F);
+            }
+            if (strikeTime == STRIKE_LINGER || !worldObj.canBlockSeeTheSky(MathHelper.floor_double(posX), MathHelper.floor_double(posY), MathHelper.floor_double(posZ)))
             {
                 setDead();
             }
@@ -102,6 +115,7 @@ public class EntitySunstrike extends Entity
                 damageEntityLivingBaseNearby(3);
             }
         }
+        strikeTime++;
     }
 
     public void damageEntityLivingBaseNearby(double radius)
@@ -122,12 +136,24 @@ public class EntitySunstrike extends Entity
     @Override
     public void writeEntityToNBT(NBTTagCompound compound)
     {
-        compound.setInteger("strikeTick", strikeTime);
+        compound.setInteger("strikeTime", strikeTime);
     }
 
     @Override
     public void readEntityFromNBT(NBTTagCompound compound)
     {
-        prevStrikeTime = strikeTime = compound.getInteger("strikeTick");
+        prevStrikeTime = strikeTime = compound.getInteger("strikeTime");
+    }
+
+    @Override
+    public void writeSpawnData(ByteBuf buffer)
+    {
+        buffer.writeInt(strikeTime);
+    }
+
+    @Override
+    public void readSpawnData(ByteBuf buffer)
+    {
+        prevStrikeTime = strikeTime = buffer.readInt();
     }
 }
