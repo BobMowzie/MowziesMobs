@@ -18,6 +18,15 @@ public class MMAnimBase extends AIAnimation
         this.id = id;
     }
 
+    public MMAnimBase(IAnimatedEntity entity, int id, int duration, boolean interruptsAI)
+    {
+        super(entity);
+        this.duration = duration;
+        animatingEntity = (MMEntityBase) entity;
+        this.id = id;
+        if (!interruptsAI) setMutexBits(8);
+    }
+
     @Override
     public int getAnimID() {
         return id;

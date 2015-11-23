@@ -59,6 +59,9 @@ public class ModelTribeLeader extends MowzieModelBase {
     public MowzieModelRenderer leftCalf;
     public MowzieModelRenderer leftFoot;
     public MowzieModelRenderer jiggleController;
+    public MowzieModelRenderer jawScaler;
+    public MowzieModelRenderer mouthScalerX;
+    public MowzieModelRenderer mouthScalerY;
 
     private Animator animator;
 
@@ -241,6 +244,12 @@ public class ModelTribeLeader extends MowzieModelBase {
         this.head.addBox(-4.5F, -9.0F, -4.5F, 9, 9, 9, 0.0F);
         jiggleController = new MowzieModelRenderer(this, 0, 0);
         jiggleController.setRotationPoint(0, 0, 0);
+        jawScaler = new MowzieModelRenderer(this, 0, 0);
+        jawScaler.setRotationPoint(1, 0, 0);
+        mouthScalerX = new MowzieModelRenderer(this, 0, 0);
+        mouthScalerX.setRotationPoint(1, 0, 0);
+        mouthScalerY = new MowzieModelRenderer(this, 0, 0);
+        mouthScalerY.setRotationPoint(1, 0, 0);
         this.upperLip.addChild(this.teethTop);
         this.head.addChild(this.maskBase);
         this.maskBase.addChild(this.leftEar);
@@ -284,7 +293,7 @@ public class ModelTribeLeader extends MowzieModelBase {
         this.maskBase.addChild(this.maskFace);
         this.headJoint.addChild(this.head);
         
-        parts = new MowzieModelRenderer[] {body, chest, rightThigh, leftThigh, neckJoint, rightArmJoint, leftArmJoint, neck, headJoint, head, maskBase, maskFace, headdress1, headdress2, headdress3, headdress4, headdress5, headdress6, headdress7, rightEar, leftEar, maskMouth, forehead, nose, upperLip, jaw, teethTop, lowerLip, leftLip, rightLip, teethBottom, rightEarring, leftEarring, rightUpperArm, rightLowerArm, rightHand, rightUpperArm_1, leftLowerArm, leftHand, rightCalf, rightFoot, leftCalf, leftFoot, jiggleController};
+        parts = new MowzieModelRenderer[] {body, chest, rightThigh, leftThigh, neckJoint, rightArmJoint, leftArmJoint, neck, headJoint, head, maskBase, maskFace, headdress1, headdress2, headdress3, headdress4, headdress5, headdress6, headdress7, rightEar, leftEar, maskMouth, forehead, nose, upperLip, jaw, teethTop, lowerLip, leftLip, rightLip, teethBottom, rightEarring, leftEarring, rightUpperArm, rightLowerArm, rightHand, rightUpperArm_1, leftLowerArm, leftHand, rightCalf, rightFoot, leftCalf, leftFoot, jiggleController, jawScaler, mouthScalerX, mouthScalerY};
         setInitPose();
     }
 
@@ -311,8 +320,8 @@ public class ModelTribeLeader extends MowzieModelBase {
         float liftLegs = tribeLeader.legsUp.getAnimationProgressSinSqrt();
         float frame = tribeLeader.frame + AnimationAPI.proxy.getPartialTick();
 
-        if (f3 > 90) f3 = 90f;
-        if (f3 < -90) f3 = -90f;
+        if (f3 > 80) f3 = 80f;
+        if (f3 < -80) f3 = -80f;
 
         faceTarget(neckJoint, 2, f3, f4);
         faceTarget(headJoint, 2, f3, f4);
@@ -328,20 +337,6 @@ public class ModelTribeLeader extends MowzieModelBase {
         rightThigh.rotateAngleY -= 0.55 * liftLegs;
         swing(rightThigh, 0.06f, 0.05f * liftLegs, false, 0, 0, frame, 1f);
         swing(leftThigh, 0.06f, 0.05f * liftLegs, true, 0, 0, frame, 1f);
-
-        float jawScale = 1;//(float) (1 + 1 * Math.pow(Math.sin(frame * 0.3), 2));
-        float mouthScaleX = 1f;//(float) (1 - 0.25 * Math.pow(Math.sin(frame * 0.17), 2));
-        float mouthScaleY = 1f;
-        float foreheadScale = 1f;//(float) (0.75 + 0.5 * Math.pow(Math.sin(frame * 0.05),2));
-        jaw.setScaleY(jawScale);
-        lowerLip.setScaleY(1/jawScale);
-        leftLip.setScaleY(1/jawScale * (jawScale * 4 - 2)/2);
-        rightLip.setScaleY(1 / jawScale * (jawScale * 4 - 2) / 2);
-        maskMouth.setScaleX(mouthScaleX);
-        leftLip.setScaleX(1/mouthScaleX);
-        rightLip.setScaleX(1/mouthScaleX);
-        maskMouth.setScaleY(mouthScaleY);
-        forehead.setScaleY(foreheadScale);
     }
 
     public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
@@ -382,6 +377,36 @@ public class ModelTribeLeader extends MowzieModelBase {
             animator.endPhase();
             animator.resetPhase(10);
         }
+        if (tribeleader.getAnimID() == 2) {
+            if (tribeleader.whichDialogue == 1) {
+                animator.setAnim(2);
+                animator.startPhase(4);
+                animator.move(jawScaler, 0.2f, 0, 0);
+                animator.move(mouthScalerX, 0.2f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(2);
+                animator.startPhase(4);
+                animator.move(jawScaler, 0.4f, 0, 0);
+                animator.move(mouthScalerX, 0.3f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(2);
+                animator.startPhase(2);
+                animator.move(jawScaler, -0.2f, 0, 0);
+                animator.move(mouthScalerX, -0.2f, 0, 0);
+                animator.endPhase();
+                animator.startPhase(1);
+                animator.move(jawScaler, 0.2f, 0, 0);
+                animator.move(mouthScalerX, 0.2f, 0, 0);
+                animator.endPhase();
+                animator.startPhase(2);
+                animator.move(jawScaler, 0.5f, 0, 0);
+                animator.move(mouthScalerX, -0.4f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(4);
+                animator.resetPhase(2);
+                animator.setStationaryPhase(40);
+            }
+        }
 
             float jiggleSpeed = 2.5f;
             float jiggleScale = (float) (jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame));
@@ -413,5 +438,19 @@ public class ModelTribeLeader extends MowzieModelBase {
             chest.rotationPointZ += jiggleController.rotationPointX * 2 * Math.cos(jiggleSpeed * frame);
             leftThigh.rotationPointZ += jiggleController.rotationPointX * 2 * Math.cos(jiggleSpeed * frame);
             rightThigh.rotationPointZ += jiggleController.rotationPointX * 2 * Math.cos(jiggleSpeed * frame);
+
+            float jawScale = jawScaler.rotationPointX;//(float) (1 + 1 * Math.pow(Math.sin(frame * 0.3), 2));
+            float mouthScaleX = mouthScalerX.rotationPointX;//(float) (1 - 0.25 * Math.pow(Math.sin(frame * 0.17), 2));
+            float mouthScaleY = mouthScalerY.rotationPointX;//(float) (1 - 0.25 * Math.pow(Math.sin(frame * 0.17), 2));
+            float foreheadScale = 1f;//(float) (0.75 + 0.5 * Math.pow(Math.sin(frame * 0.05),2));
+            jaw.setScaleY(jawScale);
+            lowerLip.setScaleY(1/jawScale);
+            leftLip.setScaleY(1/jawScale * (jawScale * 4 - 2)/2);
+            rightLip.setScaleY(1 / jawScale * (jawScale * 4 - 2) / 2);
+            maskMouth.setScaleX(mouthScaleX);
+            leftLip.setScaleX(1/mouthScaleX);
+            rightLip.setScaleX(1/mouthScaleX);
+            maskMouth.setScaleY(mouthScaleY);
+            forehead.setScaleY(foreheadScale);
     }
 }

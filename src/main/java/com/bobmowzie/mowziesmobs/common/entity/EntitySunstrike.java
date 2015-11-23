@@ -34,6 +34,7 @@ public class EntitySunstrike extends Entity
     {
         this(world);
         setPosition(x + 0.5F, y + 1.0625F, z + 0.5F);
+        if (!worldObj.canBlockSeeTheSky(MathHelper.floor_double(posX), MathHelper.floor_double(posY), MathHelper.floor_double(posZ))) setDead();
     }
 
     @Override
@@ -92,7 +93,7 @@ public class EntitySunstrike extends Entity
         prevStrikeTime = strikeTime++;
         if (!worldObj.isRemote)
         {
-            if (strikeTime == STRIKE_LENGTH || !worldObj.canBlockSeeTheSky(MathHelper.floor_double(posX), MathHelper.floor_double(posY), MathHelper.floor_double(posZ)))
+            if (strikeTime == STRIKE_LENGTH)
             {
                 setDead();
             }

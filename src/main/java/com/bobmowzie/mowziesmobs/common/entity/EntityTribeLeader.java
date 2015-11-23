@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.common.animation.MMAnimBase;
 import net.ilexiconn.llibrary.client.model.modelbase.ControlledAnimation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
@@ -21,10 +22,12 @@ public class EntityTribeLeader extends MMEntityBase {
     int direction = 0;
     public ControlledAnimation legsUp = new ControlledAnimation(15);
     private boolean blocksByFeet = true;
+    public int whichDialogue = 0;
     public EntityTribeLeader(World world) {
         super(world);
         tasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, false));
-        tasks.addTask(2, new MMAnimBase(this, 1, 40));
+        tasks.addTask(2, new MMAnimBase(this, 1, 40, false));
+        tasks.addTask(2, new MMAnimBase(this, 2, 80, false));
         this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityTribesman.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
@@ -54,6 +57,25 @@ public class EntityTribeLeader extends MMEntityBase {
     }
 
     @Override
+    protected String getLivingSound() {
+        if (getAnimID() == 0) {
+            if (getAttackTarget() == null) {
+                int i = MathHelper.getRandomIntegerInRange(rand, 1, 1);
+                if (i == 1) playSound("mowziesmobs:barakoTalk1", 1.4f, 1);
+                if (i == 2) playSound("mowziesmobs:barakoTalk2", 1.4f, 1);
+                if (i == 3) playSound("mowziesmobs:barakoTalk3", 1.4f, 1);
+                if (i == 4) playSound("mowziesmobs:barakoTalk4", 1.4f, 1);
+                if (i == 5) playSound("mowziesmobs:barakoTalk5", 1.4f, 1);
+                if (i == 6) playSound("mowziesmobs:barakoTalk6", 1.4f, 1);
+                whichDialogue = i;
+                AnimationAPI.sendAnimPacket(this, 2);
+            } else {
+            }
+        }
+        return null;
+    }
+
+    @Override
     public void onUpdate() {
         super.onUpdate();
         if (ticksExisted == 1) direction = getDirection();
@@ -64,6 +86,12 @@ public class EntityTribeLeader extends MMEntityBase {
         if (direction == 4) setRotation(270, 0);
         renderYawOffset = rotationYaw;
 
+        if (getAttackTarget() != null) {
+            EntityLivingBase target = getAttackTarget();
+        }
+        else {
+        }
+
         if (ticksExisted % 20 == 0) {
             if (checkBlocksByFeet()) blocksByFeet = true;
             else blocksByFeet = false;
@@ -73,6 +101,10 @@ public class EntityTribeLeader extends MMEntityBase {
         else legsUp.decreaseTimer();
 
         if (getAnimID() == 0 && rand.nextInt(200) == 0) AnimationAPI.sendAnimPacket(this, 1);
+
+        if (getAnimID() == 1 && (getAnimTick() == 9 || getAnimTick() == 29)) playSound("mowziesmobs:barakoBelly", 1.4f, 1f);
+
+        if (getAnimID() == 0) getLivingSound();
     }
 
     private boolean checkBlocksByFeet()
@@ -81,20 +113,20 @@ public class EntityTribeLeader extends MMEntityBase {
         Block blockRight;
 //        System.out.println(direction);
         if (direction == 1) {
-            blockLeft = worldObj.getBlock(MathHelper.floor_double(posX), Math.round((float)(posY - 1)), MathHelper.floor_double(posZ) + 1);
-            blockRight = worldObj.getBlock(MathHelper.floor_double(posX) - 2, Math.round((float)(posY - 1)), MathHelper.floor_double(posZ) + 1);
+            blockLeft = worldObj.getBlock(MathHelper.floor_double(posX) + 1, Math.round((float)(posY - 1)), MathHelper.floor_double(posZ) + 1);
+            blockRight = worldObj.getBlock(MathHelper.floor_double(posX) - 1, Math.round((float)(posY - 1)), MathHelper.floor_double(posZ) + 1);
         }
         else if (direction == 2) {
-            blockLeft = worldObj.getBlock((int) posX - 2, Math.round((float)(posY - 1)), (int) posZ + 1);
-            blockRight = worldObj.getBlock((int) posX - 2, Math.round((float)(posY - 1)), (int) posZ - 1);
+            blockLeft = worldObj.getBlock(MathHelper.floor_double(posX) - 1, Math.round((float)(posY - 1)), MathHelper.floor_double(posZ) + 1);
+            blockRight = worldObj.getBlock(MathHelper.floor_double(posX) - 1, Math.round((float)(posY - 1)), MathHelper.floor_double(posZ) - 1);
         }
         else if (direction == 3) {
-            blockLeft = worldObj.getBlock((int) posX - 2, Math.round((float)(posY - 1)), (int) posZ - 1);
-            blockRight = worldObj.getBlock((int) posX, Math.round((float)(posY - 1)), (int) posZ - 1);
+            blockLeft = worldObj.getBlock(MathHelper.floor_double(posX) - 1, Math.round((float)(posY - 1)), MathHelper.floor_double(posZ) - 1);
+            blockRight = worldObj.getBlock(MathHelper.floor_double(posX) + 1, Math.round((float)(posY - 1)), MathHelper.floor_double(posZ) - 1);
         }
         else if (direction == 4) {
-            blockLeft = worldObj.getBlock((int) posX, Math.round((float)(posY - 1)), (int) posZ - 1);
-            blockRight = worldObj.getBlock((int) posX, Math.round((float)(posY - 1)), (int) posZ + 1);
+            blockLeft = worldObj.getBlock(MathHelper.floor_double(posX) + 1, Math.round((float)(posY - 1)), MathHelper.floor_double(posZ) - 1);
+            blockRight = worldObj.getBlock(MathHelper.floor_double(posX) + 1, Math.round((float)(posY - 1)), MathHelper.floor_double(posZ) + 1);
         }
         else return false;
 
