@@ -1,5 +1,10 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
+import io.netty.buffer.ByteBuf;
+
+import java.util.List;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -7,9 +12,8 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import io.netty.buffer.ByteBuf;
 
-import java.util.List;
+import com.bobmowzie.mowziesmobs.client.audio.MovingSoundSuntrike;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 
@@ -77,6 +81,11 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         return prevStrikeTime + (strikeTime - prevStrikeTime) * delta;
     }
 
+    private void setStrikeTime(int strikeTime)
+    {
+        this.prevStrikeTime = this.strikeTime = strikeTime;
+    }
+
     @Override
     public boolean canBeCollidedWith()
     {
@@ -100,12 +109,15 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     {
         super.onUpdate();
         prevStrikeTime = strikeTime;
-        if (!worldObj.isRemote)
+        if (worldObj.isRemote)
         {
             if (strikeTime == 0)
             {
-                playSound("mowziesmobs:sunstrike", 1.5F, 1.1F);
+                Minecraft.getMinecraft().getSoundHandler().playSound(new MovingSoundSuntrike(this));
             }
+        }
+        else
+        {
             if (strikeTime == STRIKE_LINGER || !worldObj.canBlockSeeTheSky(MathHelper.floor_double(posX), MathHelper.floor_double(posY), MathHelper.floor_double(posZ)))
             {
                 setDead();
@@ -142,7 +154,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     @Override
     public void readEntityFromNBT(NBTTagCompound compound)
     {
-        prevStrikeTime = strikeTime = compound.getInteger("strikeTime");
+        setStrikeTime(compound.getInteger("strikeTime"));
     }
 
     @Override
@@ -154,6 +166,6 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     @Override
     public void readSpawnData(ByteBuf buffer)
     {
-        prevStrikeTime = strikeTime = buffer.readInt();
+        setStrikeTime(buffer.readInt());
     }
 }
