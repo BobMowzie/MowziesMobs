@@ -155,13 +155,14 @@ public class EntityWroughtnaut extends MMEntityBase
             posZ = prevPosZ;
             rotationYaw = prevRotationYaw;
         }
+        else renderYawOffset = rotationYaw;
 
         if (getAttackTarget() != null && getActive() == 1)
         {
             if (getAnimID() == 0) getNavigator().tryMoveToEntityLiving(getAttackTarget(), 0.2D);
             else getNavigator().clearPathEntity();
 
-            if (targetDistance <= 3.5 && getAttackTarget().posY - posY >= -1 && getAttackTarget().posY - posY <= 3 && getAnimID() == 0)
+            if (targetDistance <= 3.5 && getAttackTarget().posY - posY >= -1 && getAttackTarget().posY - posY <= 3 && Math.abs(MathHelper.wrapAngleTo180_double(getAngleBetweenEntities(getAttackTarget(), this) - rotationYaw)) < 35 && getAnimID() == 0)
             {
                 int i = (int) (3 * Math.random() + 0.5);
                 if (attacksWithoutVertical == 4) i = 0;

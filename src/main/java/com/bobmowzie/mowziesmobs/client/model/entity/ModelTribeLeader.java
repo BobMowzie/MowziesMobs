@@ -320,8 +320,8 @@ public class ModelTribeLeader extends MowzieModelBase {
         float liftLegs = tribeLeader.legsUp.getAnimationProgressSinSqrt();
         float frame = tribeLeader.frame + AnimationAPI.proxy.getPartialTick();
 
-        if (f3 > 80) f3 = 80f;
-        if (f3 < -80) f3 = -80f;
+        if (f3 > 70) f3 = 70f;
+        if (f3 < -70) f3 = -70f;
 
         faceTarget(neckJoint, 2, f3, f4);
         faceTarget(headJoint, 2, f3, f4);
@@ -438,7 +438,255 @@ public class ModelTribeLeader extends MowzieModelBase {
                 animator.endPhase();
                 animator.setStationaryPhase(6);
                 animator.resetPhase(4);
-                animator.setStationaryPhase(40);
+            }
+            if (tribeleader.whichDialogue == 2) {
+                animator.setAnim(2);
+                animator.startPhase(4);
+                animator.move(jawScaler, 0.2f, 0, 0);
+                animator.move(mouthScalerX, 0.3f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(2);
+                animator.startPhase(2);
+                animator.move(jawScaler, 0f, 0, 0);
+                animator.move(mouthScalerX, 0.3f, 0, 0);
+                animator.endPhase();
+                animator.startPhase(3);
+                animator.move(jawScaler, 0.5f, 0, 0);
+                animator.move(mouthScalerX, 0.1f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(2);
+                animator.startPhase(2);
+                animator.move(jawScaler, 0f, 0, 0);
+                animator.move(mouthScalerX, 0.1f, 0, 0);
+                animator.endPhase();
+                animator.startPhase(3);
+                animator.move(jawScaler, 0.7f, 0, 0);
+                animator.move(mouthScalerX, 0.1f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(6);
+                animator.resetPhase(4);
+            }
+            if (tribeleader.whichDialogue == 3) {
+                animator.setAnim(2);
+                animator.startPhase(4);
+                animator.move(jawScaler, -0.5f, 0, 0);
+                animator.move(mouthScalerX, 0, 0, 0);
+                animator.endPhase();
+                animator.startPhase(3);
+                animator.move(jawScaler, 0.3f, 0, 0);
+                animator.move(mouthScalerX, 0.2f, 0, 0);
+                animator.endPhase();
+                animator.startPhase(3);
+                animator.move(jawScaler, -0.5f, 0, 0);
+                animator.endPhase();
+                animator.startPhase(3);
+                animator.move(jawScaler, 0.3f, 0, 0);
+                animator.move(mouthScalerX, 0.2f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(2);
+                animator.resetPhase(2);
+                animator.startPhase(3);
+                animator.move(jawScaler, 0.6f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(2);
+                animator.resetPhase(2);
+                animator.startPhase(3);
+                animator.move(jawScaler, 0.4f, 0, 0);
+                animator.move(mouthScalerX, -0.4f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(2);
+                animator.startPhase(3);
+                animator.move(jawScaler, -0.2f, 0, 0);
+                animator.move(mouthScalerX, -0.3f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(1);
+                animator.startPhase(2);
+                animator.move(jawScaler, 0.05f, 0, 0);
+                animator.move(mouthScalerX, -0.5f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(2);
+                animator.resetPhase(2);
+                animator.startPhase(3);
+                animator.move(jawScaler, 0.4f, 0, 0);
+                animator.move(mouthScalerX, -0.4f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(4);
+                animator.resetPhase(4);
+            }
+            if (tribeleader.whichDialogue == 4) {
+                animator.setAnim(2);
+                animator.startPhase(3);
+                animator.move(jawScaler, 0.4f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(3);
+                animator.startPhase(2);
+                animator.move(jawScaler, -0.2f, 0, 0);
+                animator.move(mouthScalerX, 0.2f, 0, 0);
+                animator.endPhase();
+                animator.startPhase(2);
+                animator.move(jawScaler, 0.5f, 0, 0);
+                animator.move(mouthScalerX, 0f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(3);
+                animator.startPhase(2);
+                animator.move(jawScaler, 0.1f, 0, 0);
+                animator.move(mouthScalerX, -0.2f, 0, 0);
+                animator.endPhase();
+                animator.startPhase(2);
+                animator.move(jawScaler, 0.3f, 0, 0);
+                animator.move(mouthScalerX, 0.1f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(5);
+                animator.startPhase(2);
+                animator.move(jawScaler, 0f, 0, 0);
+                animator.move(mouthScalerX, 0.2f, 0, 0);
+                animator.endPhase();
+                animator.startPhase(2);
+                animator.move(jawScaler, 0.4f, 0, 0);
+                animator.move(mouthScalerX, 0f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(2);
+                animator.startPhase(2);
+                animator.move(jawScaler, -0.5f, 0, 0);
+                animator.move(mouthScalerX, -0.3f, 0, 0);
+                animator.endPhase();
+                animator.startPhase(2);
+                animator.move(jawScaler, 0f, 0, 0);
+                animator.move(mouthScalerX, -0.5f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(2);
+                animator.startPhase(2);
+                animator.move(jawScaler, 0f, 0, 0);
+                animator.move(mouthScalerX, 0.1f, 0, 0);
+                animator.endPhase();
+                animator.startPhase(2);
+                animator.move(jawScaler, 0.6f, 0, 0);
+                animator.move(mouthScalerX, 0.2f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(4);
+                animator.resetPhase(4);
+            }
+            if (tribeleader.whichDialogue == 5) {
+                animator.setAnim(2);
+                animator.startPhase(2);//q
+                animator.move(jawScaler, 0f, 0, 0);
+                animator.move(mouthScalerX, -0.4f, 0, 0);
+                animator.endPhase();
+                animator.startPhase(2);//e
+                animator.move(jawScaler, 0.2f, 0, 0);
+                animator.move(mouthScalerX, 0.2f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(1);
+                animator.startPhase(2);//n
+                animator.move(jawScaler, 0f, 0, 0);
+                animator.move(mouthScalerX, 0.2f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(2);
+                animator.startPhase(2);//da
+                animator.move(jawScaler, 0.5f, 0, 0);
+                animator.move(mouthScalerX, 0.1f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(3);
+                animator.startPhase(2);//koo
+                animator.move(jawScaler, 0f, 0, 0);
+                animator.move(mouthScalerX, -0.5f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(4);
+                animator.startPhase(2);//too
+                animator.move(jawScaler, 0.2f, 0, 0);
+                animator.move(mouthScalerX, -0.5f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(2);
+                animator.startPhase(2);
+                animator.move(jawScaler, 0.5f, 0, 0);
+                animator.move(mouthScalerX, 0f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(6);
+                animator.startPhase(2);
+                animator.move(jawScaler, 0.1f, 0, 0);
+                animator.move(mouthScalerX, -0.5f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(2);
+                animator.startPhase(1);
+                animator.move(jawScaler, 0f, 0, 0);
+                animator.move(mouthScalerX, -0.5f, 0, 0);
+                animator.endPhase();
+                animator.startPhase(2);
+                animator.move(jawScaler, 0.3f, 0, 0);
+                animator.move(mouthScalerX, -0.3f, 0, 0);
+                animator.endPhase();
+                animator.startPhase(2);
+                animator.move(jawScaler, -0.5f, 0, 0);
+                animator.move(mouthScalerX, 0.1f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(2);
+                animator.startPhase(8);
+                animator.move(jawScaler, 0.5f, 0, 0);
+                animator.move(mouthScalerX, 0.2f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(10);
+                animator.resetPhase(8);
+            }
+            if (tribeleader.whichDialogue == 6) {
+                animator.setAnim(2);
+                animator.startPhase(2);//q
+                animator.move(jawScaler, 0f, 0, 0);
+                animator.move(mouthScalerX, -0.4f, 0, 0);
+                animator.endPhase();
+                animator.startPhase(2);//e
+                animator.move(jawScaler, 0.2f, 0, 0);
+                animator.move(mouthScalerX, 0.2f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(1);
+                animator.startPhase(2);//n
+                animator.move(jawScaler, 0f, 0, 0);
+                animator.move(mouthScalerX, 0.2f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(2);
+                animator.startPhase(2);//da
+                animator.move(jawScaler, 0.5f, 0, 0);
+                animator.move(mouthScalerX, 0.1f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(3);
+                animator.startPhase(2);//koo
+                animator.move(jawScaler, 0f, 0, 0);
+                animator.move(mouthScalerX, -0.5f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(4);
+                animator.startPhase(2);//too
+                animator.move(jawScaler, 0.2f, 0, 0);
+                animator.move(mouthScalerX, -0.5f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(4);
+                animator.startPhase(5);
+                animator.move(jawScaler, 0.5f, 0, 0);
+                animator.move(mouthScalerX, 0f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(10);
+                animator.startPhase(2);
+                animator.move(jawScaler, 0.1f, 0, 0);
+                animator.move(mouthScalerX, -0.5f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(2);
+                animator.startPhase(1);
+                animator.move(jawScaler, 0f, 0, 0);
+                animator.move(mouthScalerX, -0.5f, 0, 0);
+                animator.endPhase();
+                animator.startPhase(2);
+                animator.move(jawScaler, 0.3f, 0, 0);
+                animator.move(mouthScalerX, -0.3f, 0, 0);
+                animator.endPhase();
+                animator.startPhase(1);
+                animator.move(jawScaler, -0.5f, 0, 0);
+                animator.move(mouthScalerX, 0.1f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(2);
+                animator.startPhase(8);
+                animator.move(jawScaler, 0.5f, 0, 0);
+                animator.move(mouthScalerX, 0.2f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(10);
+                animator.resetPhase(8);
             }
         }
 

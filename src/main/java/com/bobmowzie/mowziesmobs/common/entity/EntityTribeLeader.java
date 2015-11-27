@@ -28,8 +28,8 @@ public class EntityTribeLeader extends MMEntityBase {
         tasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, false));
         tasks.addTask(2, new MMAnimBase(this, 1, 40, false));
         tasks.addTask(2, new MMAnimBase(this, 2, 80, false));
-        this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-        this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityTribesman.class, 8.0F));
+        this.tasks.addTask(4, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+        this.tasks.addTask(5, new EntityAIWatchClosest(this, EntityTribesman.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
         setSize(1.5f, 2.4f);
         if (getDirection() == 0) setDirection(rand.nextInt(4) + 1);
@@ -60,15 +60,18 @@ public class EntityTribeLeader extends MMEntityBase {
     protected String getLivingSound() {
         if (getAnimID() == 0) {
             if (getAttackTarget() == null) {
-                int i = MathHelper.getRandomIntegerInRange(rand, 1, 1);
+                int i = MathHelper.getRandomIntegerInRange(rand, 1, 10);
                 if (i == 1) playSound("mowziesmobs:barakoTalk1", 1.4f, 1);
                 if (i == 2) playSound("mowziesmobs:barakoTalk2", 1.4f, 1);
                 if (i == 3) playSound("mowziesmobs:barakoTalk3", 1.4f, 1);
                 if (i == 4) playSound("mowziesmobs:barakoTalk4", 1.4f, 1);
                 if (i == 5) playSound("mowziesmobs:barakoTalk5", 1.4f, 1);
                 if (i == 6) playSound("mowziesmobs:barakoTalk6", 1.4f, 1);
-                whichDialogue = i;
-                AnimationAPI.sendAnimPacket(this, 2);
+                if (i < 7)
+                {
+                    setWhichDialogue(i);
+                    AnimationAPI.sendAnimPacket(this, 2);
+                }
             } else {
             }
         }
@@ -79,12 +82,11 @@ public class EntityTribeLeader extends MMEntityBase {
     public void onUpdate() {
         super.onUpdate();
         if (ticksExisted == 1) direction = getDirection();
-        repelEntities(2.5f, 2.5f, 2.5f, 2.5f);
-        if (direction == 1) setRotation(0, 0);
-        if (direction == 2) setRotation(90, 0);
-        if (direction == 3) setRotation(180, 0);
-        if (direction == 4) setRotation(270, 0);
+        repelEntities(2.2f, 2.5f, 2.2f, 2.2f);
+        rotationYaw = (direction - 1) * 90;
         renderYawOffset = rotationYaw;
+        posX = prevPosX;
+        posZ = prevPosZ;
 
         if (getAttackTarget() != null) {
             EntityLivingBase target = getAttackTarget();
@@ -104,7 +106,9 @@ public class EntityTribeLeader extends MMEntityBase {
 
         if (getAnimID() == 1 && (getAnimTick() == 9 || getAnimTick() == 29)) playSound("mowziesmobs:barakoBelly", 1.4f, 1f);
 
-        if (getAnimID() == 0) getLivingSound();
+        if (getAnimID() == 2 && getAnimTick() == 1) whichDialogue = getWhichDialogue();
+
+//        if (getAnimID() == 0) getLivingSound();
     }
 
     private boolean checkBlocksByFeet()
@@ -138,6 +142,7 @@ public class EntityTribeLeader extends MMEntityBase {
     {
         super.entityInit();
         dataWatcher.addObject(28, 0);
+        dataWatcher.addObject(29, 0);
     }
 
     public int getDirection()
@@ -150,6 +155,16 @@ public class EntityTribeLeader extends MMEntityBase {
         dataWatcher.updateObject(28, direction);
     }
 
+    public int getWhichDialogue()
+    {
+        return dataWatcher.getWatchableObjectInt(29);
+    }
+
+    public void setWhichDialogue(Integer i)
+    {
+        dataWatcher.updateObject(29, i);
+    }
+
     public void writeEntityToNBT(NBTTagCompound compound)
     {
         super.writeEntityToNBT(compound);
@@ -160,5 +175,10 @@ public class EntityTribeLeader extends MMEntityBase {
     {
         super.readEntityFromNBT(compound);
         setDirection(compound.getInteger("direction"));
+    }
+
+    protected void func_145780_a(int p_145780_1_, int p_145780_2_, int p_145780_3_, Block p_145780_4_)
+    {
+
     }
 }

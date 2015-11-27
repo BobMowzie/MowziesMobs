@@ -118,7 +118,7 @@ public class MMEntityBase extends EntityCreature implements IEntityAdditionalSpa
         ArrayList<EntityLivingBase> listEntityLivingBase = new ArrayList<EntityLivingBase>();
         for (Entity entityNeighbor : list)
         {
-            if (entityNeighbor instanceof EntityLivingBase && getDistanceToEntity(entityNeighbor) <= radius && entityNeighbor.posY >= posY && entityNeighbor.posY <= posY + distanceY)
+            if (entityNeighbor instanceof EntityLivingBase && getDistanceToEntity(entityNeighbor) <= radius && entityNeighbor.posY + entityNeighbor.boundingBox.maxY > posY + 2 && entityNeighbor.posY <= posY + distanceY)
                 listEntityLivingBase.add((EntityLivingBase) entityNeighbor);
         }
         return listEntityLivingBase;

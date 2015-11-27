@@ -64,9 +64,11 @@ public class ClientEventHandler
             }
             if (event.type == IItemRenderer.ItemRenderType.INVENTORY)
             {
-                GL11.glTranslatef(0.8f, -1.4f, 0f);
-                GL11.glScalef(0.4f, 0.4f, 0.4f);
-                GL11.glRotatef(40f, 1f, 0f, 0f);
+                GL11.glTranslatef(1.3f, -1.6f, 0f);
+                GL11.glScalef(0.47f, 0.47f, 0.47f);
+                GL11.glRotatef(-30f, -1f, 0, 1f);
+                GL11.glRotatef(45f, 1f, 0, 1f);
+
             }
             if (event.type == IItemRenderer.ItemRenderType.ENTITY)
             {

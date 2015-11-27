@@ -1,9 +1,8 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
+import com.bobmowzie.mowziesmobs.client.audio.MovingSoundSuntrike;
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import io.netty.buffer.ByteBuf;
-
-import java.util.List;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -13,9 +12,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-import com.bobmowzie.mowziesmobs.client.audio.MovingSoundSuntrike;
-
-import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
+import java.util.List;
 
 /**
  * Created by jnad325 on 11/16/15.
@@ -109,6 +106,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     {
         super.onUpdate();
         prevStrikeTime = strikeTime;
+
         if (worldObj.isRemote)
         {
             if (strikeTime == 0)

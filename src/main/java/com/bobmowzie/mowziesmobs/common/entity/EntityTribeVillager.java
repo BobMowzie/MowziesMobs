@@ -12,4 +12,9 @@ public class EntityTribeVillager extends EntityTribesman {
         super(world);
         targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true));
     }
+
+    @Override
+    protected boolean canDespawn() {
+        return false;
+    }
 }
