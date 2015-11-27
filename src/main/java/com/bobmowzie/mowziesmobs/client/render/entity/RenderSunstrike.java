@@ -10,7 +10,7 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderSunstrike extends Render
 {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/sunstrike.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureSunstrike.png");
 
     private static final double TEXTURE_WIDTH = 256;
 
@@ -34,7 +34,7 @@ public class RenderSunstrike extends Render
 
     private static final int RING_FRAME_SIZE = 16;
 
-    private static final int RING_FRAME_COUNT = 11;
+    private static final int RING_FRAME_COUNT = 10;
 
     private static final int BREAM_FRAME_COUNT = 31;
 
@@ -43,6 +43,8 @@ public class RenderSunstrike extends Render
     private static final double BEAM_DRAW_END_RADIUS = 0.25;
 
     private static final double BEAM_STRIKE_RADIUS = 1;
+
+    private static final double LINGER_RADIUS = 1.2;
 
     @Override
     public void doRender(Entity entity, double x, double y, double z, float yaw, float delta)
@@ -54,13 +56,14 @@ public class RenderSunstrike extends Render
             return;
         }
         boolean isLingering = sunstrike.isLingering(delta);
+        boolean isStriking = sunstrike.isStriking(delta);
         GL11.glPushMatrix();
         GL11.glTranslated(x, y, z);
         if (isLingering)
         {
             drawLingering(sunstrike, delta);
         }
-        else
+        if (isStriking)
         {
             drawStrike(sunstrike, maxY, delta);
         }
@@ -69,7 +72,22 @@ public class RenderSunstrike extends Render
 
     private void drawLingering(EntitySunstrike sunstrike, float delta)
     {
-        
+        double minU = 11 * RING_FRAME_SIZE / TEXTURE_WIDTH;
+        double maxU = minU + RING_FRAME_SIZE / TEXTURE_WIDTH;
+        double minV = RING_FRAME_SIZE / TEXTURE_HEIGHT;
+        double maxV = minV + RING_FRAME_SIZE / TEXTURE_HEIGHT;
+        double offset = PIXEL_SCALE * LINGER_RADIUS - 0.1;
+        setupGL();
+        bindEntityTexture(sunstrike);
+        Tessellator t = Tessellator.instance;
+        t.startDrawingQuads();
+        t.setColorRGBA_F(1, 1, 1, 0.7f);
+        t.addVertexWithUV(-LINGER_RADIUS + offset, -0.01, -LINGER_RADIUS + offset, minU, minV);
+        t.addVertexWithUV(-LINGER_RADIUS + offset, -0.01, LINGER_RADIUS + offset, minU, maxV);
+        t.addVertexWithUV(LINGER_RADIUS + offset, -0.01, LINGER_RADIUS + offset, maxU, maxV);
+        t.addVertexWithUV(LINGER_RADIUS + offset, -0.01, -LINGER_RADIUS + offset, maxU, minV);
+        t.draw();
+        revertGL();
     }
 
     private void drawStrike(EntitySunstrike sunstrike, double maxY, float delta)

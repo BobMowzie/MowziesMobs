@@ -3,6 +3,8 @@ package com.bobmowzie.mowziesmobs.common.entity;
 import com.bobmowzie.mowziesmobs.client.audio.MovingSoundSuntrike;
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockLeaves;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -23,8 +25,8 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
 
     private static final int STRIKE_EXPLOSION = 35;
 
-    // 2 minutes past strike end
-    private static final int STRIKE_LINGER = STRIKE_LENGTH + 20 * 60 * 2;
+    // 1 minute past strike end
+    private static final int STRIKE_LINGER = STRIKE_LENGTH + 20 * 60;
 
     private int prevStrikeTime;
 
@@ -70,7 +72,12 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
 
     public boolean isLingering(float delta)
     {
-        return getActualStrikeTime(delta) > STRIKE_LENGTH;
+        return getActualStrikeTime(delta) > STRIKE_EXPLOSION + 5;
+    }
+
+    public boolean isStriking(float delta)
+    {
+        return getActualStrikeTime(delta) < STRIKE_LENGTH;
     }
 
     private float getActualStrikeTime(float delta)
@@ -107,12 +114,26 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         super.onUpdate();
         prevStrikeTime = strikeTime;
 
+        for (int i = 1; i < 20; i++)
+        {
+            Block b = worldObj.getBlock(MathHelper.floor_double(posX), MathHelper.floor_double(posY - 1), MathHelper.floor_double(posZ));
+            if (!b.isOpaqueCube() && !(b instanceof BlockLeaves))
+            {
+                if (strikeTime <= STRIKE_LENGTH) posY -= 1;
+                else setDead();
+            }
+            else break;
+        }
+
         if (worldObj.isRemote)
         {
             if (strikeTime == 0)
             {
                 Minecraft.getMinecraft().getSoundHandler().playSound(new MovingSoundSuntrike(this));
             }
+            if (strikeTime > STRIKE_EXPLOSION && strikeTime % 8 == 0) spawnSmoke(1);
+
+            if (strikeTime == STRIKE_EXPLOSION) spawnExplosionParticles(10);
         }
         else
         {
@@ -137,9 +158,27 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         {
             if (entity instanceof EntityLivingBase && getDistanceSqToEntity(entity) < radiusSq)
             {
-                ((EntityLivingBase) entity).attackEntityFrom(DamageSource.onFire, 10);
-                ((EntityLivingBase) entity).setFire(5);
+                entity.attackEntityFrom(DamageSource.onFire, 10);
+                entity.setFire(5);
             }
+        }
+    }
+
+    private void spawnSmoke(int howMuch) {
+        for (int i = 1; i <= howMuch; i++) worldObj.spawnParticle("largesmoke", posX, posY + 0.1, posZ, 0.0D, 0.0D, 0.0D);
+    }
+
+    private void spawnExplosionParticles(int howMuch) {
+        for (int i = 0; i < howMuch; i++) {
+            float velocity = 0.1f;
+            float yaw = i * (360/howMuch);
+            float vy = rand.nextFloat() * 0.08f;
+            float vx = (float) (velocity * Math.cos(yaw * Math.PI/180));
+            float vz = (float) (velocity * Math.sin(yaw * Math.PI / 180));
+            worldObj.spawnParticle("flame", posX, posY + 0.1, posZ, vx, vy, vz);
+        }
+        for (int i = 0; i < howMuch/2; i++) {
+            worldObj.spawnParticle("lava", posX, posY + 0.1, posZ, 0, 0, 0);
         }
     }
 
