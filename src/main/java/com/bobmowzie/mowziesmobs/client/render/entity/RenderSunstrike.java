@@ -10,7 +10,7 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderSunstrike extends Render
 {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureSunstrike.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/effects/textureSunstrike.png");
 
     private static final double TEXTURE_WIDTH = 256;
 
