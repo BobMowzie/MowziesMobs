@@ -136,7 +136,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
             {
                 Minecraft.getMinecraft().getSoundHandler().playSound(new MovingSoundSuntrike(this));
             }
-            else if (strikeTime < STRIKE_EXPLOSION)
+            else if (strikeTime < STRIKE_EXPLOSION - 10)
             {
             	EffectRenderer effectRenderer = Minecraft.getMinecraft().effectRenderer;
             	float time = getStrikeTime(1);

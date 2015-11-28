@@ -2,6 +2,8 @@ package com.bobmowzie.mowziesmobs.client.particle;
 
 import net.minecraft.world.World;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
+
 public class EntityOrbFX extends EntityMMFX {
 	private double targetX;
 
@@ -35,8 +37,9 @@ public class EntityOrbFX extends EntityMMFX {
 			setDead();
 			return;
 		}
-		particleAlpha = (float) ((2 - dist) / 2);
-		final double minVel = 0.1F, maxVel = 0.35F;
+		final double peak = 0.5;
+		particleAlpha = (float) (dist > peak ? MathUtils.linearTransformd(dist, peak, 2, 1, 0) : MathUtils.linearTransformd(dist, 0.1F, peak, 0, 1));
+		final double minVel = 0.05, maxVel = 0.3;
 		double progress = Math.sin(-Math.PI / 4 * dist) + 1;
 		double magMultipler = (progress * (maxVel - minVel) + minVel) / dist;
 		vecX *= magMultipler;
