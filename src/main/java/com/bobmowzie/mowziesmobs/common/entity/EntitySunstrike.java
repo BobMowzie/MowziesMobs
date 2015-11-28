@@ -1,11 +1,13 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
-import com.bobmowzie.mowziesmobs.client.audio.MovingSoundSuntrike;
-import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import io.netty.buffer.ByteBuf;
+
+import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -14,7 +16,10 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-import java.util.List;
+import com.bobmowzie.mowziesmobs.client.audio.MovingSoundSuntrike;
+import com.bobmowzie.mowziesmobs.client.particle.EntityOrbFX;
+
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 
 /**
  * Created by jnad325 on 11/16/15.
@@ -131,9 +136,32 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
             {
                 Minecraft.getMinecraft().getSoundHandler().playSound(new MovingSoundSuntrike(this));
             }
-            if (strikeTime > STRIKE_EXPLOSION && strikeTime % 8 == 0) spawnSmoke(1);
-
-            if (strikeTime == STRIKE_EXPLOSION) spawnExplosionParticles(10);
+            else if (strikeTime < STRIKE_EXPLOSION)
+            {
+            	EffectRenderer effectRenderer = Minecraft.getMinecraft().effectRenderer;
+            	float time = getStrikeTime(1);
+            	int timeBonus = (int) (time * 5);
+            	int orbCount = rand.nextInt(4 + timeBonus) + timeBonus + 1;
+            	while (orbCount --> 0)
+            	{
+            		double theta = rand.nextDouble() * Math.PI * 2;
+            		final double min = 0.2, max = 1.9;
+            		double r = rand.nextDouble() * (max - min) + min;
+            		double ox = r * Math.cos(theta);
+            		double oz = r * Math.sin(theta);
+            		final double minY = 0.1;
+            		double oy = rand.nextDouble() * (time * 6 - minY) + minY;
+                	effectRenderer.addEffect(new EntityOrbFX(worldObj, posX + ox, posY + oy, posZ + oz, posX, posZ));
+            	}
+            }
+            else if (strikeTime > STRIKE_EXPLOSION && strikeTime % 8 == 0)
+            {
+            	spawnSmoke(1);
+            }
+            else if (strikeTime == STRIKE_EXPLOSION)
+            {
+            	spawnExplosionParticles(10);
+            }
         }
         else
         {

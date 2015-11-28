@@ -7,6 +7,7 @@ import com.bobmowzie.mowziesmobs.client.model.extension.ModelPlayerExtension;
 import com.bobmowzie.mowziesmobs.client.model.item.ModelBarakoaMask;
 import com.bobmowzie.mowziesmobs.client.model.item.ModelWroughtAxe;
 import com.bobmowzie.mowziesmobs.client.model.item.ModelWroughtHelm;
+import com.bobmowzie.mowziesmobs.client.particle.EntityMMFX;
 import com.bobmowzie.mowziesmobs.client.playeranimation.PlayerAnimationHandlerClient;
 import com.bobmowzie.mowziesmobs.client.render.entity.*;
 import com.bobmowzie.mowziesmobs.common.ServerProxy;
@@ -61,6 +62,7 @@ public class ClientProxy extends ServerProxy
         PlayerAnimationHandlerClient playerAnimationHandlerClient = new PlayerAnimationHandlerClient();
         FMLCommonHandler.instance().bus().register(playerAnimationHandlerClient);
         MinecraftForge.EVENT_BUS.register(playerAnimationHandlerClient);
+        MinecraftForge.EVENT_BUS.register(EntityMMFX.Stitcher.INSTANCE);
     }
 
     public ModelBiped getArmorModel(int type)
