@@ -29,7 +29,7 @@ public class ItemMobRemover extends Item
     {
         if (!world.isRemote)
         {
-            world.spawnEntityInWorld(new EntitySunstrike(world, x, y, z));
+            world.spawnEntityInWorld(new EntitySunstrike(world, x, y, z, player));
         }
         return true;
     }

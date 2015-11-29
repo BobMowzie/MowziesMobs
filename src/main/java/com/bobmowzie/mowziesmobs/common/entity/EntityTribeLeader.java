@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
+import com.bobmowzie.mowziesmobs.common.animation.AnimSunStrike;
 import com.bobmowzie.mowziesmobs.common.animation.MMAnimBase;
 import net.ilexiconn.llibrary.client.model.modelbase.ControlledAnimation;
 import net.minecraft.block.Block;
@@ -9,6 +10,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
@@ -21,13 +23,20 @@ import thehippomaster.AnimationAPI.AnimationAPI;
 public class EntityTribeLeader extends MMEntityBase {
     int direction = 0;
     public ControlledAnimation legsUp = new ControlledAnimation(15);
+    public ControlledAnimation angryEyebrow = new ControlledAnimation(5);
     private boolean blocksByFeet = true;
     public int whichDialogue = 0;
+    private int timeUntilSunstrike = 0;
+
+    private static final int SUNSTRIKE_PAUSE = 60;
+
     public EntityTribeLeader(World world) {
         super(world);
         tasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, false));
+        tasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityZombie.class, 0, false));
         tasks.addTask(2, new MMAnimBase(this, 1, 40, false));
         tasks.addTask(2, new MMAnimBase(this, 2, 80, false));
+        tasks.addTask(2, new AnimSunStrike(this, 3, 26));
         this.tasks.addTask(4, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         this.tasks.addTask(5, new EntityAIWatchClosest(this, EntityTribesman.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
@@ -62,17 +71,31 @@ public class EntityTribeLeader extends MMEntityBase {
             if (getAttackTarget() == null) {
                 int i = MathHelper.getRandomIntegerInRange(rand, 1, 10);
                 if (i == 1) playSound("mowziesmobs:barakoTalk1", 1.4f, 1);
-                if (i == 2) playSound("mowziesmobs:barakoTalk2", 1.4f, 1);
-                if (i == 3) playSound("mowziesmobs:barakoTalk3", 1.4f, 1);
-                if (i == 4) playSound("mowziesmobs:barakoTalk4", 1.4f, 1);
-                if (i == 5) playSound("mowziesmobs:barakoTalk5", 1.4f, 1);
-                if (i == 6) playSound("mowziesmobs:barakoTalk6", 1.4f, 1);
+                else if (i == 2) playSound("mowziesmobs:barakoTalk2", 1.4f, 1);
+                else if (i == 3) playSound("mowziesmobs:barakoTalk3", 1.4f, 1);
+                else if (i == 4) playSound("mowziesmobs:barakoTalk4", 1.4f, 1);
+                else if (i == 5) playSound("mowziesmobs:barakoTalk5", 1.4f, 1);
+                else if (i == 6) playSound("mowziesmobs:barakoTalk6", 1.4f, 1);
                 if (i < 7)
                 {
                     setWhichDialogue(i);
                     AnimationAPI.sendAnimPacket(this, 2);
                 }
-            } else {
+            }
+            else
+            {
+                int i = MathHelper.getRandomIntegerInRange(rand, 7, 16);
+                if (i == 7) playSound("mowziesmobs:barakoAngry1", 1.4f, 1);
+                else if (i == 8) playSound("mowziesmobs:barakoAngry2", 1.4f, 1);
+                else if (i == 9) playSound("mowziesmobs:barakoAngry3", 1.4f, 1);
+                else if (i == 10) playSound("mowziesmobs:barakoAngry4", 1.4f, 1);
+                else if (i == 11) playSound("mowziesmobs:barakoAngry5", 1.4f, 1);
+                else if (i == 12) playSound("mowziesmobs:barakoAngry6", 1.4f, 1);
+                if (i < 13)
+                {
+                    setWhichDialogue(i);
+                    AnimationAPI.sendAnimPacket(this, 2);
+                }
             }
         }
         return null;
@@ -90,8 +113,14 @@ public class EntityTribeLeader extends MMEntityBase {
 
         if (getAttackTarget() != null) {
             EntityLivingBase target = getAttackTarget();
+            setAngry(1);
+            if (getAnimID() == 0 && timeUntilSunstrike <= 0) {
+                AnimationAPI.sendAnimPacket(this, 3);
+                timeUntilSunstrike = SUNSTRIKE_PAUSE;
+            }
         }
         else {
+             if (!worldObj.isRemote) setAngry(0);
         }
 
         if (ticksExisted % 20 == 0) {
@@ -102,13 +131,18 @@ public class EntityTribeLeader extends MMEntityBase {
         if (blocksByFeet) legsUp.increaseTimer();
         else legsUp.decreaseTimer();
 
+        if (getAngry() == 1) angryEyebrow.increaseTimer();
+        else angryEyebrow.decreaseTimer();
+
         if (getAnimID() == 0 && rand.nextInt(200) == 0) AnimationAPI.sendAnimPacket(this, 1);
 
         if (getAnimID() == 1 && (getAnimTick() == 9 || getAnimTick() == 29)) playSound("mowziesmobs:barakoBelly", 1.4f, 1f);
 
         if (getAnimID() == 2 && getAnimTick() == 1) whichDialogue = getWhichDialogue();
 
-//        if (getAnimID() == 0) getLivingSound();
+        if (timeUntilSunstrike > 0) timeUntilSunstrike--;
+
+//        if (getAnimID() == 0) AnimationAPI.sendAnimPacket(this, 3);
     }
 
     private boolean checkBlocksByFeet()
@@ -143,6 +177,7 @@ public class EntityTribeLeader extends MMEntityBase {
         super.entityInit();
         dataWatcher.addObject(28, 0);
         dataWatcher.addObject(29, 0);
+        dataWatcher.addObject(30, 0);
     }
 
     public int getDirection()
@@ -163,6 +198,16 @@ public class EntityTribeLeader extends MMEntityBase {
     public void setWhichDialogue(Integer i)
     {
         dataWatcher.updateObject(29, i);
+    }
+
+    public int getAngry()
+    {
+        return dataWatcher.getWatchableObjectInt(30);
+    }
+
+    public void setAngry(Integer i)
+    {
+        dataWatcher.updateObject(30, i);
     }
 
     public void writeEntityToNBT(NBTTagCompound compound)

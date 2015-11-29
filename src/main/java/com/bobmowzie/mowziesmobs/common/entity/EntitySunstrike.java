@@ -1,9 +1,9 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
+import com.bobmowzie.mowziesmobs.client.audio.MovingSoundSuntrike;
+import com.bobmowzie.mowziesmobs.client.particle.EntityOrbFX;
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import io.netty.buffer.ByteBuf;
-
-import java.util.List;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.client.Minecraft;
@@ -16,10 +16,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-import com.bobmowzie.mowziesmobs.client.audio.MovingSoundSuntrike;
-import com.bobmowzie.mowziesmobs.client.particle.EntityOrbFX;
-
-import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
+import java.util.List;
 
 /**
  * Created by jnad325 on 11/16/15.
@@ -37,6 +34,8 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
 
     private int strikeTime;
 
+    public EntityLivingBase entityCasting;
+
     public EntitySunstrike(World world)
     {
         super(world);
@@ -44,10 +43,11 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         ignoreFrustumCheck = true;
     }
 
-    public EntitySunstrike(World world, int x, int y, int z)
+    public EntitySunstrike(World world, int x, int y, int z, EntityLivingBase entityCasting)
     {
         this(world);
         setPosition(x + 0.5F, y + 1.0625F, z + 0.5F);
+        this.entityCasting = entityCasting;
     }
 
     @Override
@@ -119,19 +119,23 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         super.onUpdate();
         prevStrikeTime = strikeTime;
 
-        for (int i = 1; i < 20; i++)
-        {
-            Block b = worldObj.getBlock(MathHelper.floor_double(posX), MathHelper.floor_double(posY - 1), MathHelper.floor_double(posZ));
-            if (!b.isOpaqueCube() && !(b instanceof BlockLeaves))
-            {
-                if (strikeTime <= STRIKE_LENGTH) posY -= 1;
-                else setDead();
-            }
-            else break;
-        }
-
         if (worldObj.isRemote)
         {
+            for (int i = 1; i < 20; i++)
+            {
+                System.out.println(MathHelper.floor_double(posY - 1));
+                Block b = worldObj.getBlock(MathHelper.floor_double(posX), MathHelper.floor_double(posY - 1), MathHelper.floor_double(posZ));
+                if (!b.isOpaqueCube() && !(b instanceof BlockLeaves))
+                {
+                    if (strikeTime <= STRIKE_LENGTH) posY -= 1;
+                    else {
+                        setDead();
+                        break;
+                    }
+                }
+                else break;
+            }
+
             if (strikeTime == 0)
             {
                 Minecraft.getMinecraft().getSoundHandler().playSound(new MovingSoundSuntrike(this));
@@ -186,6 +190,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         {
             if (entity instanceof EntityLivingBase && getDistanceSqToEntity(entity) < radiusSq)
             {
+                if (entityCasting instanceof EntityTribeLeader && (entity instanceof EntityTribesman || entity instanceof EntityTribeLeader)) continue;
                 entity.attackEntityFrom(DamageSource.onFire, 10);
                 entity.setFire(5);
             }
@@ -232,5 +237,10 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     public void readSpawnData(ByteBuf buffer)
     {
         setStrikeTime(buffer.readInt());
+    }
+
+    @Override
+    public void setDead() {
+        super.setDead();
     }
 }
