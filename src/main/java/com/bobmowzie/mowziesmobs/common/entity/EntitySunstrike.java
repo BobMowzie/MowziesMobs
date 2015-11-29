@@ -121,21 +121,6 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
 
         if (worldObj.isRemote)
         {
-            for (int i = 1; i < 20; i++)
-            {
-                System.out.println(MathHelper.floor_double(posY - 1));
-                Block b = worldObj.getBlock(MathHelper.floor_double(posX), MathHelper.floor_double(posY - 1), MathHelper.floor_double(posZ));
-                if (!b.isOpaqueCube() && !(b instanceof BlockLeaves))
-                {
-                    if (strikeTime <= STRIKE_LENGTH) posY -= 1;
-                    else {
-                        setDead();
-                        break;
-                    }
-                }
-                else break;
-            }
-
             if (strikeTime == 0)
             {
                 Minecraft.getMinecraft().getSoundHandler().playSound(new MovingSoundSuntrike(this));
@@ -169,6 +154,19 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         }
         else
         {
+            for (int i = 1; i < 20; i++)
+            {
+                Block b = worldObj.getBlock(MathHelper.floor_double(posX), MathHelper.floor_double(posY - 1), MathHelper.floor_double(posZ));
+                if (!b.isOpaqueCube() && !(b instanceof BlockLeaves))
+                {
+                    if (strikeTime <= STRIKE_LENGTH) posY -= 1;
+                    else {
+                        setDead();
+                        break;
+                    }
+                }
+                else break;
+            }
             if (strikeTime == STRIKE_LINGER || !worldObj.canBlockSeeTheSky(MathHelper.floor_double(posX), MathHelper.floor_double(posY), MathHelper.floor_double(posZ)))
             {
                 setDead();

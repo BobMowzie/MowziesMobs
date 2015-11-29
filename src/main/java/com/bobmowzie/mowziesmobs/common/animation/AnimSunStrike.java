@@ -27,9 +27,9 @@ public class AnimSunStrike extends MMAnimBase {
         super.updateTask();
         if (entityTarget == null) return;
         animatingEntity.getLookHelper().setLookPositionWithEntity(entityTarget, 30, 30);
-        if (animatingEntity.getAnimTick() == 13) {
+        if (!animatingEntity.worldObj.isRemote && animatingEntity.getAnimTick() == 13) {
             int x = MathHelper.floor_double(entityTarget.posX);
-            int y = MathHelper.floor_double(entityTarget.posY);
+            int y = MathHelper.floor_double(entityTarget.posY) - 1;
             int z = MathHelper.floor_double(entityTarget.posZ);
             EntitySunstrike sunstrike = new EntitySunstrike(animatingEntity.worldObj, x, y, z, animatingEntity);
             animatingEntity.worldObj.spawnEntityInWorld(sunstrike);
