@@ -52,11 +52,11 @@ public class RenderSunstrike extends Render
 
     private static final double LINGER_RADIUS = 1.2;
 
-	private static final double SCORCH_MIN_U = 11 * RING_FRAME_SIZE / TEXTURE_WIDTH;
+	private static final double SCORCH_MIN_U = 192 / TEXTURE_WIDTH;
 
 	private static final double SCORCH_MAX_U = SCORCH_MIN_U + RING_FRAME_SIZE / TEXTURE_WIDTH;
 
-	private static final double SCORCH_MIN_V = RING_FRAME_SIZE / TEXTURE_HEIGHT;
+	private static final double SCORCH_MIN_V = 16 / TEXTURE_HEIGHT;
 
 	private static final double SCORCH_MAX_V = SCORCH_MIN_V + RING_FRAME_SIZE / TEXTURE_HEIGHT;
 

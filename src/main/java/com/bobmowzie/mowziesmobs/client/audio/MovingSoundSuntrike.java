@@ -20,9 +20,9 @@ public class MovingSoundSuntrike extends MovingSound
         this.sunstrike = sunstrike;
         volume = 1.5F;
         field_147663_c = 1.1F;
-        xPosF = MathHelper.floor_double(sunstrike.posX);
-        yPosF = MathHelper.floor_double(sunstrike.posY);
-        zPosF = MathHelper.floor_double(sunstrike.posZ);
+        xPosF = (float) sunstrike.posX;
+        yPosF = (float) sunstrike.posY;
+        zPosF = (float) sunstrike.posZ;
     }
 
     @Override
