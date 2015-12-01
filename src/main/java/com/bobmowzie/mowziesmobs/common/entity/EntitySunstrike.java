@@ -7,6 +7,7 @@ import com.bobmowzie.mowziesmobs.client.particle.EntityOrbFX;
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockGlass;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EffectRenderer;
@@ -138,6 +139,27 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         super.onUpdate();
         prevStrikeTime = strikeTime;
 
+        for (int i = 1; i < 20; i++)
+        {
+            Block b = worldObj.getBlock(MathHelper.floor_double(posX), MathHelper.floor_double(posY - 1), MathHelper.floor_double(posZ));
+            if (!b.isOpaqueCube() && !(b instanceof BlockLeaves || b instanceof BlockGlass))
+            {
+                if (strikeTime <= STRIKE_LENGTH)
+                {
+                    posY -= 1;
+                }
+                else
+                {
+                    setDead();
+                    break;
+                }
+            }
+            else
+            {
+                break;
+            }
+        }
+
         if (worldObj.isRemote)
         {
             if (strikeTime == 0)
@@ -173,26 +195,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         }
         else
         {
-            for (int i = 1; i < 20; i++)
-            {
-                Block b = worldObj.getBlock(MathHelper.floor_double(posX), MathHelper.floor_double(posY - 1), MathHelper.floor_double(posZ));
-                if (!b.isOpaqueCube() && !(b instanceof BlockLeaves))
-                {
-                    if (strikeTime <= STRIKE_LENGTH)
-                    {
-                        posY -= 1;
-                    }
-                    else
-                    {
-                        setDead();
-                        break;
-                    }
-                }
-                else
-                {
-                    break;
-                }
-            }
+
             if (strikeTime >= STRIKE_LINGER || !worldObj.canBlockSeeTheSky(MathHelper.floor_double(posX), MathHelper.floor_double(posY), MathHelper.floor_double(posZ)))
             {
                 setDead();
