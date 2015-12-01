@@ -2,9 +2,11 @@ package com.bobmowzie.mowziesmobs.common.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.common.creativetab.MMTabs;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -51,12 +53,18 @@ public class ItemBarakoaMask extends ItemArmor {
     }
 
     @Override
-    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot) {
+    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot)
+    {
         ModelBiped armorModel = null;
         if (itemStack != null && itemStack.getItem() instanceof ItemBarakoaMask)
         {
             armorModel = MowziesMobs.proxy.getArmorModel(1);
         }
         return armorModel;
+    }
+
+    @Override
+    public void registerIcons(IIconRegister registrar)
+    {
     }
 }

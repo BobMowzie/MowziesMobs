@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.common.item;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
@@ -71,5 +72,10 @@ public class ItemWroughtAxe extends ItemSword
     public EnumAction getItemUseAction(ItemStack itemStack)
     {
         return EnumAction.bow;
+    }
+
+    @Override
+    public void registerIcons(IIconRegister registrar)
+    {
     }
 }

@@ -2,6 +2,8 @@ package com.bobmowzie.mowziesmobs.common.item;
 
 import com.bobmowzie.mowziesmobs.common.creativetab.MMTabs;
 import com.bobmowzie.mowziesmobs.common.gen.structure.barakoa.StructureBarakoaHouse;
+
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -152,4 +154,9 @@ public class ItemTestStructure extends Item
 //        System.out.println(x + ", " + y + ", " + z);
 //        world.spawnEntityInWorld(wroughtnaut);
 //    }
+
+    @Override
+    public void registerIcons(IIconRegister registrar)
+    {
+    }
 }
