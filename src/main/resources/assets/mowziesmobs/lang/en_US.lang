@@ -31,6 +31,9 @@ item.blowgun.name=Blowgun
 tile.paintedAcacia.name=Painted Acacia Wood
 tile.paintedAcaciaSlab.name=Painted Acacia Wood Slab
 
+//Potions========================================================
+potion.sunsBlessing=Sun's Blessing
+
 //Tile_Entities==================================================
 
 

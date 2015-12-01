@@ -20,7 +20,7 @@ import thehippomaster.AnimationAPI.AnimationAPI;
 /**
  * Created by jnad325 on 7/9/15.
  */
-public class EntityTribeLeader extends MMEntityBase {
+public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeImmune {
     int direction = 0;
     public ControlledAnimation legsUp = new ControlledAnimation(15);
     public ControlledAnimation angryEyebrow = new ControlledAnimation(5);

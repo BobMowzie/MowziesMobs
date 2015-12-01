@@ -1,5 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
+import java.util.Random;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.Tessellator;
@@ -17,6 +19,8 @@ import com.bobmowzie.mowziesmobs.common.entity.EntitySunstrike;
 public class RenderSunstrike extends Render
 {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/effects/textureSunstrike.png");
+
+    private static final Random RANDOMIZER = new Random(0);
 
     private static final double TEXTURE_WIDTH = 256;
 
@@ -69,27 +73,23 @@ public class RenderSunstrike extends Render
         {
             return;
         }
+        RANDOMIZER.setSeed(sunstrike.getVariant());
         boolean isLingering = sunstrike.isLingering(delta);
         boolean isStriking = sunstrike.isStriking(delta);
         GL11.glPushMatrix();
         GL11.glTranslated(x, y, z);
+        setupGL();
+        bindEntityTexture(sunstrike);
         if (isLingering)
         {
-            drawLingering(sunstrike, delta);
+            drawScorch(sunstrike, delta);
         }
         if (isStriking)
         {
             drawStrike(sunstrike, maxY, delta);
         }
-        GL11.glPopMatrix();
-    }
-
-    private void drawLingering(EntitySunstrike sunstrike, float delta)
-    {
-        setupGL();
-        bindEntityTexture(sunstrike);
-        drawScorch(sunstrike, delta);
         revertGL();
+        GL11.glPopMatrix();
     }
 
     private void drawScorch(EntitySunstrike sunstrike, float delta)
@@ -106,6 +106,9 @@ public class RenderSunstrike extends Render
         int maxZ = MathHelper.floor_double(ez + LINGER_RADIUS);
         Tessellator t = Tessellator.instance;
         t.startDrawingQuads();
+        float opacityMultiplier = (0.6F + RANDOMIZER.nextFloat() * 0.2F) * renderManager.worldObj.getLightBrightness(MathHelper.floor_double(ex), MathHelper.floor_double(ey), MathHelper.floor_double(ez));
+        byte mirrorX = (byte) (RANDOMIZER.nextBoolean() ? -1 : 1);
+        byte mirrorZ = (byte) (RANDOMIZER.nextBoolean() ? -1 : 1);
         for (int bx = minX; bx <= maxX; bx++)
         {
             for (int by = minY; by <= maxY; by++)
@@ -116,7 +119,7 @@ public class RenderSunstrike extends Render
 
                     if (block.getMaterial() != Material.air && world.getBlockLightValue(bx, by, bz) > 3)
                     {
-                        drawScorchBlock(block, bx, by, bz, ex, ey - sunstrike.getShadowSize(), ez);
+                        drawScorchBlock(block, bx, by, bz, ex, ey - sunstrike.getShadowSize(), ez, opacityMultiplier, mirrorX, mirrorZ);
                     }
                 }
             }
@@ -126,12 +129,12 @@ public class RenderSunstrike extends Render
         GL11.glDepthMask(true);
     }
 
-    private void drawScorchBlock(Block block, int bx, int by, int bz, double ex, double ey, double ez)
+    private void drawScorchBlock(Block block, int bx, int by, int bz, double ex, double ey, double ez, float opacityMultiplier, byte mirrorX, byte mirrorZ)
     {
         Tessellator t = Tessellator.instance;
         if (block.renderAsNormalBlock())
         {
-            float opacity = (float) ((1 - (ey - by) / 2) / 2 * renderManager.worldObj.getLightBrightness(bx, by, bz));
+            float opacity = (float) ((1 - (ey - by) / 2) * opacityMultiplier);
             if (opacity >= 0)
             {
                 if (opacity > 1)
@@ -144,10 +147,10 @@ public class RenderSunstrike extends Render
                 double y = by + block.getBlockBoundsMinY() - ey + 0.015625;
                 double minZ = bz + block.getBlockBoundsMinZ() - ez;
                 double maxZ = bz + block.getBlockBoundsMaxZ() - ez;
-                double minU = (-minX / 2 / LINGER_RADIUS + 0.5) * (SCORCH_MAX_U - SCORCH_MIN_U) + SCORCH_MIN_U;
-                double maxU = (-maxX / 2 / LINGER_RADIUS + 0.5) * (SCORCH_MAX_U - SCORCH_MIN_U) + SCORCH_MIN_U;
-                double minV = (-minZ / 2 / LINGER_RADIUS + 0.5) * (SCORCH_MAX_V - SCORCH_MIN_V) + SCORCH_MIN_V;
-                double maxV = (-maxZ / 2 / LINGER_RADIUS + 0.5) * (SCORCH_MAX_V - SCORCH_MIN_V) + SCORCH_MIN_V;
+                double minU = (mirrorX * minX / 2 / LINGER_RADIUS + 0.5) * (SCORCH_MAX_U - SCORCH_MIN_U) + SCORCH_MIN_U;
+                double maxU = (mirrorX * maxX / 2 / LINGER_RADIUS + 0.5) * (SCORCH_MAX_U - SCORCH_MIN_U) + SCORCH_MIN_U;
+                double minV = (mirrorZ * minZ / 2 / LINGER_RADIUS + 0.5) * (SCORCH_MAX_V - SCORCH_MIN_V) + SCORCH_MIN_V;
+                double maxV = (mirrorZ * maxZ / 2 / LINGER_RADIUS + 0.5) * (SCORCH_MAX_V - SCORCH_MIN_V) + SCORCH_MIN_V;
                 t.addVertexWithUV(minX, y, minZ, minU, minV);
                 t.addVertexWithUV(minX, y, maxZ, minU, maxV);
                 t.addVertexWithUV(maxX, y, maxZ, maxU, maxV);
@@ -166,12 +169,9 @@ public class RenderSunstrike extends Render
         {
             opacity *= DRAW_OPACITY_MULTIPLER;
         }
-        setupGL();
-        bindEntityTexture(sunstrike);
         drawRing(drawing, drawTime, strikeTime, opacity);
         GL11.glRotatef(-renderManager.playerViewY, 0, 1, 0);
         drawBeam(drawing, drawTime, strikeTime, opacity, maxY);
-        revertGL();
     }
 
     private void drawRing(boolean drawing, float drawTime, float strikeTime, float opacity)
@@ -194,7 +194,9 @@ public class RenderSunstrike extends Render
         t.addVertexWithUV(-RING_RADIUS + offset, 0, RING_RADIUS + offset, minU, maxV);
         t.addVertexWithUV(RING_RADIUS + offset, 0, RING_RADIUS + offset, maxU, maxV);
         t.addVertexWithUV(RING_RADIUS + offset, 0, -RING_RADIUS + offset, maxU, minV);
+        GL11.glDepthMask(false);
         t.draw();
+        GL11.glDepthMask(true);
     }
 
     private void drawBeam(boolean drawing, float drawTime, float strikeTime, float opacity, double maxY)

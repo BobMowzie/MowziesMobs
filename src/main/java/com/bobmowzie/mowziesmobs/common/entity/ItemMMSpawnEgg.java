@@ -48,7 +48,7 @@ public class ItemMMSpawnEgg extends Item
     public String getItemStackDisplayName(ItemStack itemStack)
     {
         String name = ("" + StatCollector.translateToLocal(getUnlocalizedName() + ".name")).trim();
-        String entityName = MMEntityRegistry.getEntityNameById(itemStack.getItemDamage());
+        String entityName = MMEntities.getEntityNameById(itemStack.getItemDamage());
         if (entityName != null)
         {
             name = name + " " + StatCollector.translateToLocal("entity." + entityName + ".name");
@@ -59,7 +59,7 @@ public class ItemMMSpawnEgg extends Item
     @Override
     public int getColorFromItemStack(ItemStack itemStack, int pass)
     {
-        EntityList.EntityEggInfo info = MMEntityRegistry.getEntityEggInfo(Integer.valueOf(itemStack.getItemDamage()));
+        EntityList.EntityEggInfo info = MMEntities.getEntityEggInfo(Integer.valueOf(itemStack.getItemDamage()));
         return info == null ? 0xFFFFFF : (pass == 0 ? info.primaryColor : info.secondaryColor);
     }
 
@@ -148,9 +148,9 @@ public class ItemMMSpawnEgg extends Item
 
     public static Entity spawnCreature(World world, int id, double x, double y, double z)
     {
-        if (MMEntityRegistry.hasEntityEggInfo(id))
+        if (MMEntities.hasEntityEggInfo(id))
         {
-            Entity entity = MMEntityRegistry.createEntityById(id, world);
+            Entity entity = MMEntities.createEntityById(id, world);
             if (entity instanceof EntityLivingBase)
             {
                 EntityLiving entityLiving = (EntityLiving) entity;
@@ -181,7 +181,7 @@ public class ItemMMSpawnEgg extends Item
     @Override
     public void getSubItems(Item item, CreativeTabs tab, List itemStacks)
     {
-        Iterator<EntityList.EntityEggInfo> iterator = MMEntityRegistry.getEntityEggInfoIterator();
+        Iterator<EntityList.EntityEggInfo> iterator = MMEntities.getEntityEggInfoIterator();
         while (iterator.hasNext())
         {
             EntityList.EntityEggInfo info = iterator.next();

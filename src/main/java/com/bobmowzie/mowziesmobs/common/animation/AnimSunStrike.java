@@ -31,7 +31,8 @@ public class AnimSunStrike extends MMAnimBase {
             int x = MathHelper.floor_double(entityTarget.posX);
             int y = MathHelper.floor_double(entityTarget.posY) - 1;
             int z = MathHelper.floor_double(entityTarget.posZ);
-            EntitySunstrike sunstrike = new EntitySunstrike(animatingEntity.worldObj, x, y, z, animatingEntity);
+            EntitySunstrike sunstrike = new EntitySunstrike(animatingEntity.worldObj, animatingEntity, x, y, z);
+            sunstrike.onSummon();
             animatingEntity.worldObj.spawnEntityInWorld(sunstrike);
         }
     }

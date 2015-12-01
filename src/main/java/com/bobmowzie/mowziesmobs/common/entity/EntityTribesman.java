@@ -17,7 +17,7 @@ import thehippomaster.AnimationAPI.AnimationAPI;
  * Created by jnad325 on 7/9/15.
  */
 
-public class EntityTribesman extends MMEntityBase implements IRangedAttackMob {
+public class EntityTribesman extends MMEntityBase implements IRangedAttackMob, LeaderSunstrikeImmune {
     protected boolean attacking = false;
     protected int timeSinceAttack = 0;
     public ControlledAnimation doWalk = new ControlledAnimation(3);

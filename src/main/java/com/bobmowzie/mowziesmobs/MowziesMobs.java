@@ -1,16 +1,22 @@
 package com.bobmowzie.mowziesmobs;
 
+import net.ilexiconn.llibrary.common.config.ConfigHelper;
+import net.ilexiconn.llibrary.common.content.ContentHelper;
+import net.minecraftforge.common.MinecraftForge;
+
 import com.bobmowzie.mowziesmobs.common.ServerEventHandler;
 import com.bobmowzie.mowziesmobs.common.ServerProxy;
 import com.bobmowzie.mowziesmobs.common.biome.MMBiomeDictionarySpawns;
 import com.bobmowzie.mowziesmobs.common.blocks.MMBlocks;
 import com.bobmowzie.mowziesmobs.common.config.MMConfigHandler;
 import com.bobmowzie.mowziesmobs.common.creativetab.MMTabs;
-import com.bobmowzie.mowziesmobs.common.entity.MMEntityRegistry;
+import com.bobmowzie.mowziesmobs.common.entity.MMEntities;
 import com.bobmowzie.mowziesmobs.common.gen.MMStructureGenerator;
 import com.bobmowzie.mowziesmobs.common.gen.MMWorldGenerator;
 import com.bobmowzie.mowziesmobs.common.item.MMItems;
+import com.bobmowzie.mowziesmobs.common.message.MessagePlayerSummonSunstrike;
 import com.bobmowzie.mowziesmobs.common.message.MessageSwingWroughtAxe;
+import com.bobmowzie.mowziesmobs.common.potion.MMPotions;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -25,9 +31,6 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
-import net.ilexiconn.llibrary.common.config.ConfigHelper;
-import net.ilexiconn.llibrary.common.content.ContentHelper;
-import net.minecraftforge.common.MinecraftForge;
 
 @Mod(modid = MowziesMobs.MODID, name = MowziesMobs.NAME, version = MowziesMobs.VERSION, dependencies = MowziesMobs.DEPENDENCIES)
 public class MowziesMobs
@@ -68,7 +71,7 @@ public class MowziesMobs
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
-        ContentHelper.init(new MMTabs(), new MMItems(), new MMBlocks(), new MMEntityRegistry());
+        ContentHelper.init(new MMTabs(), new MMItems(), new MMBlocks(), new MMEntities(), new MMPotions());
 
         proxy.init();
 
@@ -76,6 +79,7 @@ public class MowziesMobs
 
         networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
         networkWrapper.registerMessage(MessageSwingWroughtAxe.class, MessageSwingWroughtAxe.class, 0, Side.CLIENT);
+        networkWrapper.registerMessage(MessagePlayerSummonSunstrike.class, MessagePlayerSummonSunstrike.class, 1, Side.SERVER);
     }
 
     @EventHandler
