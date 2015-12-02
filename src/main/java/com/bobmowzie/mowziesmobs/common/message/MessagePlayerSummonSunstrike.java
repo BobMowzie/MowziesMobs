@@ -37,7 +37,7 @@ public class MessagePlayerSummonSunstrike extends AbstractMessage<MessagePlayerS
     public void handleServerMessage(MessagePlayerSummonSunstrike message, EntityPlayer player)
     {
         MovingObjectPosition raytrace = rayTrace(player, REACH);
-        if (raytrace.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && raytrace.sideHit == 1 && player.inventory.getCurrentItem() == null && player.isPotionActive(MMPotions.sunsBlessing))
+        if (raytrace != null && raytrace.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && raytrace.sideHit == 1 && player.inventory.getCurrentItem() == null && player.isPotionActive(MMPotions.sunsBlessing))
         {
             EntitySunstrike sunstrike = new EntitySunstrike(player.worldObj, player, raytrace.blockX, raytrace.blockY, raytrace.blockZ);
             sunstrike.onSummon();
@@ -50,6 +50,6 @@ public class MessagePlayerSummonSunstrike extends AbstractMessage<MessagePlayerS
         Vec3 pos = Vec3.createVectorHelper(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
         Vec3 segment = entity.getLookVec();
         segment = pos.addVector(segment.xCoord * reach, segment.yCoord * reach, segment.zCoord * reach);
-        return entity.worldObj.func_147447_a(pos, segment, false, false, true);
+        return entity.worldObj.func_147447_a(pos, segment, false, true, true);
     }
 }

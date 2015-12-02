@@ -6,18 +6,20 @@ import com.bobmowzie.mowziesmobs.client.particle.EntityOrbFX;
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockGlass;
-import net.minecraft.block.BlockLeaves;
+import net.minecraft.block.BlockSlab;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.MathHelper;
+import net.minecraft.network.play.server.S18PacketEntityTeleport;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -138,8 +140,6 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         super.onUpdate();
         prevStrikeTime = strikeTime;
 
-        moveDownToGround();
-
         if (worldObj.isRemote)
         {
             if (strikeTime == 0)
@@ -175,7 +175,8 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         }
         else
         {
-            if (strikeTime >= STRIKE_LINGER || !worldObj.canBlockSeeTheSky(MathHelper.floor_double(posX), MathHelper.floor_double(posY), MathHelper.floor_double(posZ)))
+            moveDownToGround();
+            if (strikeTime >= STRIKE_LINGER || !worldObj.canBlockSeeTheSky(MathHelper.floor_double(posX), (int) Math.round(posY), MathHelper.floor_double(posZ)))
             {
                 setDead();
             }
@@ -188,25 +189,19 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     }
 
     public void moveDownToGround() {
-        for (int i = 1; i < 20; i++)
+        MovingObjectPosition raytrace = rayTrace(this);
+        if (raytrace != null && raytrace.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && raytrace.sideHit == 1)
         {
-            Block b = worldObj.getBlock(MathHelper.floor_double(posX), MathHelper.floor_double(posY - 1), MathHelper.floor_double(posZ));
-            System.out.println(b.getLocalizedName());
-            if (!b.isOpaqueCube() && !(b instanceof BlockLeaves || b instanceof BlockGlass))
+            Block b = worldObj.getBlock(raytrace.blockX, raytrace.blockY, raytrace.blockZ);
+            setPosition(posX, raytrace.blockY + 1.0625F, posZ);
+            if (b instanceof BlockSlab && worldObj.getBlockMetadata(raytrace.blockX, raytrace.blockY, raytrace.blockZ) < 8) setPosition(posX, raytrace.blockY + 1.0625F - 0.5f, posZ);
+
+
+            S18PacketEntityTeleport teleport = new S18PacketEntityTeleport(this);
+            Iterator<EntityPlayer> tracking = ((WorldServer) worldObj).getEntityTracker().getTrackingPlayers(this).iterator();
+            while (tracking.hasNext())
             {
-                if (strikeTime <= STRIKE_LENGTH)
-                {
-                    posY -= 1;
-                }
-                else if (!worldObj.isRemote)
-                {
-                    setDead();
-                    break;
-                }
-            }
-            else
-            {
-                break;
+                ((EntityPlayerMP) tracking.next()).playerNetServerHandler.sendPacket(teleport);
             }
         }
     }
@@ -267,6 +262,13 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     public void onSummon()
     {
         setVariant(rand.nextLong());
+    }
+
+    private static MovingObjectPosition rayTrace(EntitySunstrike entity)
+    {
+        Vec3 startPos = Vec3.createVectorHelper(entity.posX, entity.posY, entity.posZ);
+        Vec3 endPos = Vec3.createVectorHelper(entity.posX, 0, entity.posZ);
+        return entity.worldObj.func_147447_a(startPos, endPos, false, true, true);
     }
 
     @Override
