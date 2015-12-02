@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
+import com.bobmowzie.mowziesmobs.common.ai.AINearestAttackableTargetBarakoa;
 import com.bobmowzie.mowziesmobs.common.animation.AnimBlock;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
@@ -27,14 +28,12 @@ public class EntityTribeElite extends EntityTribesman {
 
     private int packRadius = 3;
 
-    private boolean vulnerable = false;
-
     public EntityTribeElite(World world) {
         super(world);
         targetTasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityCow.class, 0, true));
         targetTasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityPig.class, 0, true));
         targetTasks.addTask(4, new EntityAINearestAttackableTarget(this, EntitySheep.class, 0, true));
-        targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true));
+        targetTasks.addTask(3, new AINearestAttackableTargetBarakoa(this, EntityPlayer.class, 0, true));
         tasks.addTask(2, new AnimBlock(this, 3, 10));
         setMask(1);
         setSize(0.7f, 2f);

@@ -2,14 +2,11 @@ package com.bobmowzie.mowziesmobs.common.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.common.creativetab.MMTabs;
-import com.bobmowzie.mowziesmobs.common.entity.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.common.entity.MMEntityBase;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
 
 /**
  * Created by jnad325 on 6/26/15.
@@ -22,18 +19,6 @@ public class ItemMobRemover extends Item
         setUnlocalizedName("mobRemover");
         setTextureName(MowziesMobs.MODID + ":mobRemover");
         setCreativeTab(MMTabs.generic);
-    }
-
-    @Override
-    public boolean onItemUse(ItemStack heldItemStack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
-    {
-        if (!world.isRemote)
-        {
-            EntitySunstrike sunstrike = new EntitySunstrike(world, player, x, y, z);
-            sunstrike.onSummon();
-            world.spawnEntityInWorld(sunstrike);
-        }
-        return true;
     }
 
     @Override

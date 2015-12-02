@@ -1,6 +1,6 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import com.bobmowzie.mowziesmobs.common.ai.AINearestAttackableTargetBarakoa;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 public class EntityTribeVillager extends EntityTribesman {
     public EntityTribeVillager(World world) {
         super(world);
-        targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true));
+        targetTasks.addTask(3, new AINearestAttackableTargetBarakoa(this, EntityPlayer.class, 0, true));
     }
 
     @Override

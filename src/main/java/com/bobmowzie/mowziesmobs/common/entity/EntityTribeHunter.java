@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
+import com.bobmowzie.mowziesmobs.common.ai.AINearestAttackableTargetBarakoa;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
@@ -136,7 +137,7 @@ public class EntityTribeHunter extends EntityTribesman
         setLeaderUUID(ABSENT_LEADER);
         leader = null;
         setAttackTarget(null);
-        targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true));
+        targetTasks.addTask(3, new AINearestAttackableTargetBarakoa(this, EntityPlayer.class, 0, true));
         targetTasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityCow.class, 0, true));
         targetTasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityPig.class, 0, true));
         targetTasks.addTask(4, new EntityAINearestAttackableTarget(this, EntitySheep.class, 0, true));

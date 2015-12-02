@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
+import com.bobmowzie.mowziesmobs.common.ai.AINearestAttackableTargetBarakoa;
 import com.bobmowzie.mowziesmobs.common.animation.AnimSunStrike;
 import com.bobmowzie.mowziesmobs.common.animation.MMAnimBase;
 import net.ilexiconn.llibrary.client.model.modelbase.ControlledAnimation;
@@ -32,7 +33,7 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
 
     public EntityTribeLeader(World world) {
         super(world);
-        tasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, false));
+        tasks.addTask(3, new AINearestAttackableTargetBarakoa(this, EntityPlayer.class, 0, false));
         tasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityZombie.class, 0, false));
         tasks.addTask(2, new MMAnimBase(this, 1, 40, false));
         tasks.addTask(2, new MMAnimBase(this, 2, 80, false));
