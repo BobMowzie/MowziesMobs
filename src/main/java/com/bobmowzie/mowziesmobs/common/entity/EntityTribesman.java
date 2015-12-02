@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.common.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.common.animation.*;
+import com.bobmowzie.mowziesmobs.common.item.MMItems;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
@@ -9,6 +10,7 @@ import net.minecraft.entity.ai.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import thehippomaster.AnimationAPI.AnimationAPI;
@@ -281,5 +283,14 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob, L
 
         this.worldObj.spawnEntityInWorld(entitydart);
         attacking = false;
+    }
+
+    @Override
+    public void onDeath(DamageSource p_70645_1_) {
+        if (!worldObj.isRemote && worldObj.getGameRules().getGameRuleBooleanValue("doMobLoot") && rand.nextInt(12) == 0)
+        {
+            dropItem(MMItems.itemBarakoaMasks[getMask() - 1], 1);
+        }
+        super.onDeath(p_70645_1_);
     }
 }

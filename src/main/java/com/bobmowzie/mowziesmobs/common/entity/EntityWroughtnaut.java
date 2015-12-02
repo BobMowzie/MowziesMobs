@@ -322,7 +322,7 @@ public class EntityWroughtnaut extends MMEntityBase
 
     @Override
     public void onDeath(DamageSource p_70645_1_) {
-        if (!worldObj.isRemote)
+        if (!worldObj.isRemote && worldObj.getGameRules().getGameRuleBooleanValue("doMobLoot"))
         {
             dropItem(MMItems.itemWroughtAxe, 1);
             dropItem(MMItems.itemWroughtHelm, 1);
