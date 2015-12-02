@@ -73,7 +73,7 @@ public class ModelTribeLeader extends MowzieModelBase {
         this.body.setRotationPoint(0.0F, 24.0F, -3.0F);
         this.body.addBox(-12.5F, -16.0F, -11.0F, 25, 16, 22, 0.0F);
         this.teethTop = new MowzieModelRenderer(this, 0, 120);
-        this.teethTop.setRotationPoint(0.0F, 0.0F, 1.0F);
+        this.teethTop.setRotationPoint(0.0F, 0.0F, 1.001F);
         this.teethTop.addBox(-4.0F, 0.0F, 0.0F, 8, 1, 1, 0.0F);
         this.maskBase = new MowzieModelRenderer(this, 0, 0);
         this.maskBase.setRotationPoint(0.0F, -5.0F, -6.0F);
@@ -691,8 +691,73 @@ public class ModelTribeLeader extends MowzieModelBase {
                 animator.resetPhase(8);
             }
         }
+
         if (tribeleader.getAnimID() == 3) {
-            animator.setAnim(3);
+            if (tribeleader.whichDialogue == 1) {
+                animator.setAnim(2);
+                animator.startPhase(4);
+                animator.move(jawScaler, 0.2f, 0, 0);
+                animator.move(mouthScalerX, 0.2f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(2);
+                animator.startPhase(4);
+                animator.move(jawScaler, 0.4f, 0, 0);
+                animator.move(mouthScalerX, 0.3f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(3);
+                animator.startPhase(2);
+                animator.move(jawScaler, -0.2f, 0, 0);
+                animator.move(mouthScalerX, -0.2f, 0, 0);
+                animator.endPhase();
+                animator.startPhase(1);
+                animator.move(jawScaler, 0.2f, 0, 0);
+                animator.move(mouthScalerX, 0.2f, 0, 0);
+                animator.endPhase();
+                animator.startPhase(2);
+                animator.move(jawScaler, 0.5f, 0, 0);
+                animator.move(mouthScalerX, -0.4f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(4);
+                animator.resetPhase(2);
+                animator.setStationaryPhase(8);
+                animator.startPhase(2);
+                animator.move(jawScaler, 0.05f, 0, 0);
+                animator.move(mouthScalerX, -0.5f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(6);
+                animator.resetPhase(3);
+                animator.setStationaryPhase(6);
+                animator.startPhase(2);
+                animator.move(jawScaler, 0.05f, 0, 0);
+                animator.move(mouthScalerX, -0.5f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(3);
+                animator.startPhase(2);
+                animator.move(jawScaler, -0.2f, 0, 0);
+                animator.move(mouthScalerX, -0.4f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(3);
+                animator.startPhase(3);
+                animator.move(jawScaler, 0.4f, 0, 0);
+                animator.move(mouthScalerX, -0.4f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(2);
+                animator.startPhase(2);
+                animator.move(jawScaler, -0.2f, 0, 0);
+                animator.move(mouthScalerX, -0.4f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(3);
+                animator.startPhase(3);
+                animator.move(jawScaler, 0.4f, 0, 0);
+                animator.move(mouthScalerX, -0.4f, 0, 0);
+                animator.endPhase();
+                animator.setStationaryPhase(6);
+                animator.resetPhase(4);
+            }
+        }
+
+        if (tribeleader.getAnimID() == 4) {
+            animator.setAnim(4);
             animator.startPhase(7);
             animator.rotate(rightArmJoint, -0.9f, 0.5f, 0);
             animator.rotate(rightLowerArm, 0, 0.5f, 0.3f);

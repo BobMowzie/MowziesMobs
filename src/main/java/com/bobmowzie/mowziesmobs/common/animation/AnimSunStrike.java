@@ -12,14 +12,13 @@ public class AnimSunStrike extends MMAnimBase {
     protected EntityLivingBase entityTarget;
 
     public AnimSunStrike(IAnimatedEntity entity, int id, int duration) {
-        super(entity, id, duration);
+        super(entity, id, duration, false);
     }
 
     public void startExecuting()
     {
         super.startExecuting();
         entityTarget = animatingEntity.getAttackTarget();
-        setMutexBits(8);
     }
 
     public void updateTask()

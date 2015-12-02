@@ -3,7 +3,6 @@ package com.bobmowzie.mowziesmobs.common.entity;
 import com.bobmowzie.mowziesmobs.client.audio.MovingSoundSuntrike;
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.particle.EntityOrbFX;
-
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
@@ -139,26 +138,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         super.onUpdate();
         prevStrikeTime = strikeTime;
 
-        for (int i = 1; i < 20; i++)
-        {
-            Block b = worldObj.getBlock(MathHelper.floor_double(posX), MathHelper.floor_double(posY - 1), MathHelper.floor_double(posZ));
-            if (!b.isOpaqueCube() && !(b instanceof BlockLeaves || b instanceof BlockGlass))
-            {
-                if (strikeTime <= STRIKE_LENGTH)
-                {
-                    posY -= 1;
-                }
-                else
-                {
-                    setDead();
-                    break;
-                }
-            }
-            else
-            {
-                break;
-            }
-        }
+        moveDownToGround();
 
         if (worldObj.isRemote)
         {
@@ -195,7 +175,6 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         }
         else
         {
-
             if (strikeTime >= STRIKE_LINGER || !worldObj.canBlockSeeTheSky(MathHelper.floor_double(posX), MathHelper.floor_double(posY), MathHelper.floor_double(posZ)))
             {
                 setDead();
@@ -206,6 +185,30 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
             }
         }
         strikeTime++;
+    }
+
+    public void moveDownToGround() {
+        for (int i = 1; i < 20; i++)
+        {
+            Block b = worldObj.getBlock(MathHelper.floor_double(posX), MathHelper.floor_double(posY - 1), MathHelper.floor_double(posZ));
+            System.out.println(b.getLocalizedName());
+            if (!b.isOpaqueCube() && !(b instanceof BlockLeaves || b instanceof BlockGlass))
+            {
+                if (strikeTime <= STRIKE_LENGTH)
+                {
+                    posY -= 1;
+                }
+                else if (!worldObj.isRemote)
+                {
+                    setDead();
+                    break;
+                }
+            }
+            else
+            {
+                break;
+            }
+        }
     }
 
     public void damageEntityLivingBaseNearby(double radius)

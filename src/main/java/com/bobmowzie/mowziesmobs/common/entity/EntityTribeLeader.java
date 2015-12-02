@@ -36,7 +36,8 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
         tasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityZombie.class, 0, false));
         tasks.addTask(2, new MMAnimBase(this, 1, 40, false));
         tasks.addTask(2, new MMAnimBase(this, 2, 80, false));
-        tasks.addTask(2, new AnimSunStrike(this, 3, 26));
+        tasks.addTask(2, new MMAnimBase(this, 3, 40, false));
+        tasks.addTask(2, new AnimSunStrike(this, 4, 26));
         this.tasks.addTask(4, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         this.tasks.addTask(5, new EntityAIWatchClosest(this, EntityTribesman.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
@@ -68,36 +69,36 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
     @Override
     protected String getLivingSound() {
         if (getAnimID() == 0) {
-            if (getAttackTarget() == null) {
-                int i = MathHelper.getRandomIntegerInRange(rand, 1, 10);
-                if (i == 1) playSound("mowziesmobs:barakoTalk1", 1.4f, 1);
-                else if (i == 2) playSound("mowziesmobs:barakoTalk2", 1.4f, 1);
-                else if (i == 3) playSound("mowziesmobs:barakoTalk3", 1.4f, 1);
-                else if (i == 4) playSound("mowziesmobs:barakoTalk4", 1.4f, 1);
-                else if (i == 5) playSound("mowziesmobs:barakoTalk5", 1.4f, 1);
-                else if (i == 6) playSound("mowziesmobs:barakoTalk6", 1.4f, 1);
+//            if (getAttackTarget() == null) {
+//                int i = MathHelper.getRandomIntegerInRange(rand, 1, 10);
+//                if (i == 1) playSound("mowziesmobs:barakoTalk1", 1.4f, 1);
+//                else if (i == 2) playSound("mowziesmobs:barakoTalk2", 1.4f, 1);
+//                else if (i == 3) playSound("mowziesmobs:barakoTalk3", 1.4f, 1);
+//                else if (i == 4) playSound("mowziesmobs:barakoTalk4", 1.4f, 1);
+//                else if (i == 5) playSound("mowziesmobs:barakoTalk5", 1.4f, 1);
+//                else if (i == 6) playSound("mowziesmobs:barakoTalk6", 1.4f, 1);
+//                if (i < 7)
+//                {
+//                    setWhichDialogue(i);
+//                    AnimationAPI.sendAnimPacket(this, 2);
+//                }
+//            }
+//            else
+//            {
+                int i = MathHelper.getRandomIntegerInRange(rand, 1, 1);
+                if (i == 1) playSound("mowziesmobs:barakoAngry1", 1.4f, 1);
+                else if (i == 2) playSound("mowziesmobs:barakoAngry2", 1.4f, 1);
+                else if (i == 3) playSound("mowziesmobs:barakoAngry3", 1.4f, 1);
+                else if (i == 4) playSound("mowziesmobs:barakoAngry4", 1.4f, 1);
+                else if (i == 5) playSound("mowziesmobs:barakoAngry5", 1.4f, 1);
+                else if (i == 6) playSound("mowziesmobs:barakoAngry6", 1.4f, 1);
                 if (i < 7)
                 {
                     setWhichDialogue(i);
-                    AnimationAPI.sendAnimPacket(this, 2);
+                    AnimationAPI.sendAnimPacket(this, 3);
                 }
             }
-            else
-            {
-                int i = MathHelper.getRandomIntegerInRange(rand, 7, 16);
-                if (i == 7) playSound("mowziesmobs:barakoAngry1", 1.4f, 1);
-                else if (i == 8) playSound("mowziesmobs:barakoAngry2", 1.4f, 1);
-                else if (i == 9) playSound("mowziesmobs:barakoAngry3", 1.4f, 1);
-                else if (i == 10) playSound("mowziesmobs:barakoAngry4", 1.4f, 1);
-                else if (i == 11) playSound("mowziesmobs:barakoAngry5", 1.4f, 1);
-                else if (i == 12) playSound("mowziesmobs:barakoAngry6", 1.4f, 1);
-                if (i < 13)
-                {
-                    setWhichDialogue(i);
-                    AnimationAPI.sendAnimPacket(this, 2);
-                }
-            }
-        }
+//        }
         return null;
     }
 
@@ -115,7 +116,7 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
             EntityLivingBase target = getAttackTarget();
             setAngry(1);
             if (getAnimID() == 0 && timeUntilSunstrike <= 0) {
-                AnimationAPI.sendAnimPacket(this, 3);
+                AnimationAPI.sendAnimPacket(this, 4);
                 timeUntilSunstrike = SUNSTRIKE_PAUSE;
             }
         }
@@ -142,7 +143,7 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
 
         if (timeUntilSunstrike > 0) timeUntilSunstrike--;
 
-//        if (getAnimID() == 0) AnimationAPI.sendAnimPacket(this, 3);
+//        if (getAnimID() == 0) getLivingSound();
     }
 
     private boolean checkBlocksByFeet()
