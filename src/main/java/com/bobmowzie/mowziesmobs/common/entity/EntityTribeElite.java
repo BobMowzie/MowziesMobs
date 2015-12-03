@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.passive.EntityPig;
@@ -30,6 +31,7 @@ public class EntityTribeElite extends EntityTribesman {
 
     public EntityTribeElite(World world) {
         super(world);
+        targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
         targetTasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityCow.class, 0, true));
         targetTasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityPig.class, 0, true));
         targetTasks.addTask(4, new EntityAINearestAttackableTarget(this, EntitySheep.class, 0, true));

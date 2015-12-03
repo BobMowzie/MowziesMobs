@@ -8,6 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
@@ -33,14 +34,15 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
 
     public EntityTribeLeader(World world) {
         super(world);
-        tasks.addTask(3, new AINearestAttackableTargetBarakoa(this, EntityPlayer.class, 0, false));
-        tasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityZombie.class, 0, false));
+        targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
+        tasks.addTask(4, new AINearestAttackableTargetBarakoa(this, EntityPlayer.class, 0, false));
+        tasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityZombie.class, 0, false));
         tasks.addTask(2, new MMAnimBase(this, 1, 40, false));
         tasks.addTask(2, new MMAnimBase(this, 2, 80, false));
         tasks.addTask(2, new MMAnimBase(this, 3, 40, false));
         tasks.addTask(2, new AnimSunStrike(this, 4, 26));
-        this.tasks.addTask(4, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-        this.tasks.addTask(5, new EntityAIWatchClosest(this, EntityTribesman.class, 8.0F));
+        this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityTribesman.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
         setSize(1.5f, 2.4f);
         if (getDirection() == 0) setDirection(rand.nextInt(4) + 1);
@@ -48,10 +50,7 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
     }
 
     public EntityTribeLeader(World world, int direction) {
-        super(world);
-        tasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, false));
-        tasks.addTask(2, new MMAnimBase(this, 1, 40));
-        setSize(1.5f, 2.4f);
+        this(world);
         setDirection(direction);
     }
 
@@ -70,22 +69,22 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
     @Override
     protected String getLivingSound() {
         if (getAnimID() == 0) {
-//            if (getAttackTarget() == null) {
-//                int i = MathHelper.getRandomIntegerInRange(rand, 1, 10);
-//                if (i == 1) playSound("mowziesmobs:barakoTalk1", 1.4f, 1);
-//                else if (i == 2) playSound("mowziesmobs:barakoTalk2", 1.4f, 1);
-//                else if (i == 3) playSound("mowziesmobs:barakoTalk3", 1.4f, 1);
-//                else if (i == 4) playSound("mowziesmobs:barakoTalk4", 1.4f, 1);
-//                else if (i == 5) playSound("mowziesmobs:barakoTalk5", 1.4f, 1);
-//                else if (i == 6) playSound("mowziesmobs:barakoTalk6", 1.4f, 1);
-//                if (i < 7)
-//                {
-//                    setWhichDialogue(i);
-//                    AnimationAPI.sendAnimPacket(this, 2);
-//                }
-//            }
-//            else
-//            {
+            if (getAttackTarget() == null) {
+                int i = MathHelper.getRandomIntegerInRange(rand, 1, 10);
+                if (i == 1) playSound("mowziesmobs:barakoTalk1", 1.4f, 1);
+                else if (i == 2) playSound("mowziesmobs:barakoTalk2", 1.4f, 1);
+                else if (i == 3) playSound("mowziesmobs:barakoTalk3", 1.4f, 1);
+                else if (i == 4) playSound("mowziesmobs:barakoTalk4", 1.4f, 1);
+                else if (i == 5) playSound("mowziesmobs:barakoTalk5", 1.4f, 1);
+                else if (i == 6) playSound("mowziesmobs:barakoTalk6", 1.4f, 1);
+                if (i < 7)
+                {
+                    setWhichDialogue(i);
+                    AnimationAPI.sendAnimPacket(this, 2);
+                }
+            }
+            else
+            {
                 int i = MathHelper.getRandomIntegerInRange(rand, 1, 1);
                 if (i == 1) playSound("mowziesmobs:barakoAngry1", 1.4f, 1);
                 else if (i == 2) playSound("mowziesmobs:barakoAngry2", 1.4f, 1);
@@ -99,7 +98,7 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
                     AnimationAPI.sendAnimPacket(this, 3);
                 }
             }
-//        }
+        }
         return null;
     }
 

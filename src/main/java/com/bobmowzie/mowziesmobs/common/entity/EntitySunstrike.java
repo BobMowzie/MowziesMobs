@@ -33,7 +33,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
 
     private static final int STRIKE_LENGTH = 43;
 
-    private static final int STRIKE_EXPLOSION = 35;
+    public static final int STRIKE_EXPLOSION = 35;
 
     // 1 minute past strike end
     private static final int STRIKE_LINGER = STRIKE_LENGTH + 20 * 60;
@@ -193,9 +193,9 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         if (raytrace != null && raytrace.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && raytrace.sideHit == 1)
         {
             Block b = worldObj.getBlock(raytrace.blockX, raytrace.blockY, raytrace.blockZ);
+            if (strikeTime > STRIKE_LENGTH && b != worldObj.getBlock(MathHelper.floor_double(posX), MathHelper.floor_double(posY - 1), MathHelper.floor_double(posZ))) setDead();
             setPosition(posX, raytrace.blockY + 1.0625F, posZ);
             if (b instanceof BlockSlab && worldObj.getBlockMetadata(raytrace.blockX, raytrace.blockY, raytrace.blockZ) < 8) setPosition(posX, raytrace.blockY + 1.0625F - 0.5f, posZ);
-
 
             S18PacketEntityTeleport teleport = new S18PacketEntityTeleport(this);
             Iterator<EntityPlayer> tracking = ((WorldServer) worldObj).getEntityTracker().getTrackingPlayers(this).iterator();
@@ -215,11 +215,8 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         {
             if (entity instanceof EntityLivingBase && getDistanceSqToEntity(entity) < radiusSq)
             {
-                if (caster instanceof EntityTribeLeader && (entity instanceof LeaderSunstrikeImmune))
-                {
-                    continue;
-
-                }
+                if (caster instanceof EntityTribeLeader && (entity instanceof LeaderSunstrikeImmune)) continue;
+                if (caster instanceof EntityPlayer && entity == caster) continue;
                 entity.attackEntityFrom(DamageSource.onFire, 10);
                 entity.setFire(5);
             }

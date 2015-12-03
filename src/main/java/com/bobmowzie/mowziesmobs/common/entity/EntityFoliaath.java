@@ -96,6 +96,8 @@ public class EntityFoliaath extends MMEntityBase
     public void onUpdate()
     {
         super.onUpdate();
+        posX = prevPosX;
+        posZ = prevPosZ;
         // Open mouth animation
         if (getAnimID() == 0 && !activate.canIncreaseTimer())
         {
@@ -377,5 +379,10 @@ public class EntityFoliaath extends MMEntityBase
     {
         super.readEntityFromNBT(compound);
         setCanDespawn(compound.getBoolean("canDespawn"));
+    }
+
+    protected void func_145780_a(int p_145780_1_, int p_145780_2_, int p_145780_3_, Block p_145780_4_)
+    {
+
     }
 }

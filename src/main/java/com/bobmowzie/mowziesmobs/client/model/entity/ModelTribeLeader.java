@@ -816,6 +816,9 @@ public class ModelTribeLeader extends MowzieModelBase {
             leftThigh.rotationPointZ += jiggleController.rotationPointX * 2 * Math.cos(jiggleSpeed * frame);
             rightThigh.rotationPointZ += jiggleController.rotationPointX * 2 * Math.cos(jiggleSpeed * frame);
 
+            mouthScalerY.rotationPointX += eyebrows * 0.5f;
+            mouthScalerX.rotationPointX += eyebrows * 0.3f;
+
             float jawScale = jawScaler.rotationPointX;//(float) (1 + 1 * Math.pow(Math.sin(frame * 0.3), 2));
             float mouthScaleX = mouthScalerX.rotationPointX;//(float) (1 - 0.25 * Math.pow(Math.sin(frame * 0.17), 2));
             float mouthScaleY = mouthScalerY.rotationPointX;//(float) (1 - 0.25 * Math.pow(Math.sin(frame * 0.17), 2));
