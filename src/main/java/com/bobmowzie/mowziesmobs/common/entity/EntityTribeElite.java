@@ -8,6 +8,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.passive.EntitySheep;
@@ -32,9 +34,11 @@ public class EntityTribeElite extends EntityTribesman {
     public EntityTribeElite(World world) {
         super(world);
         targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
-        targetTasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityCow.class, 0, true));
-        targetTasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityPig.class, 0, true));
-        targetTasks.addTask(4, new EntityAINearestAttackableTarget(this, EntitySheep.class, 0, true));
+        targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityCow.class, 0, true));
+        targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityPig.class, 0, true));
+        targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntitySheep.class, 0, true));
+        targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityChicken.class, 0, true));
+        targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityZombie.class, 0, true));
         targetTasks.addTask(3, new AINearestAttackableTargetBarakoa(this, EntityPlayer.class, 0, true));
         tasks.addTask(2, new AnimBlock(this, 3, 10));
         setMask(1);
@@ -168,5 +172,11 @@ public class EntityTribeElite extends EntityTribesman {
             }
         }
         return false;
+    }
+
+    @Override
+    protected void despawnEntity() {
+        super.despawnEntity();
+        for (int i = 0; i < pack.size(); i++) pack.get(i).setDead();
     }
 }

@@ -5,6 +5,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.passive.EntitySheep;
@@ -143,6 +145,9 @@ public class EntityTribeHunter extends EntityTribesman
         targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityCow.class, 0, true));
         targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityPig.class, 0, true));
         targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntitySheep.class, 0, true));
+        targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityChicken.class, 0, true));
+        targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityZombie.class, 0, true));
+
     }
 
     @Override
@@ -159,5 +164,10 @@ public class EntityTribeHunter extends EntityTribesman
         super.readEntityFromNBT(compound);
         setMask(compound.getInteger("mask"));
         setLeaderUUID(compound.getString("leaderUUID"));
+    }
+
+    @Override
+    protected boolean canDespawn() {
+        return leader == null;
     }
 }

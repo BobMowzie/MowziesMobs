@@ -15,6 +15,6 @@ public class MMConfigHandler implements IConfigHandler
     {
         spawnrateFoliaath = config.getInt("Foliaath Spawnrate", CATEGORY_GENERAL, 20, 0, 100, "");
         spawnrateWroughtnaut = config.getInt("Wroughtnaut Spawnrate (smaller is more)", CATEGORY_GENERAL, 50, 0, 100, "");
-        spawnrateBarakoa = config.getInt("Barakoa Spawnrate", CATEGORY_GENERAL, 5, 0, 100, "");
+        spawnrateBarakoa = config.getInt("Barakoa Spawnrate", CATEGORY_GENERAL, 3, 0, 100, "");
     }
 }

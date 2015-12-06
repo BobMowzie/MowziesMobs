@@ -1,6 +1,8 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.common.ai.AINearestAttackableTargetBarakoa;
+import com.bobmowzie.mowziesmobs.common.animation.AnimRadiusAttack;
 import com.bobmowzie.mowziesmobs.common.animation.AnimSunStrike;
 import com.bobmowzie.mowziesmobs.common.animation.MMAnimBase;
 import net.ilexiconn.llibrary.client.model.modelbase.ControlledAnimation;
@@ -41,12 +43,12 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
         tasks.addTask(2, new MMAnimBase(this, 2, 80, false));
         tasks.addTask(2, new MMAnimBase(this, 3, 40, false));
         tasks.addTask(2, new AnimSunStrike(this, 4, 26));
+        tasks.addTask(2, new AnimRadiusAttack(this, 5, 42, 4, 5, 4.5f, 22));
         this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityTribesman.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
         setSize(1.5f, 2.4f);
         if (getDirection() == 0) setDirection(rand.nextInt(4) + 1);
-
     }
 
     public EntityTribeLeader(World world, int direction) {
@@ -115,10 +117,11 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
         if (getAttackTarget() != null) {
             EntityLivingBase target = getAttackTarget();
             setAngry(1);
-            if (getAnimID() == 0 && timeUntilSunstrike <= 0) {
+            if (getAnimID() == 0 && timeUntilSunstrike <= 0 && targetDistance > 4) {
                 AnimationAPI.sendAnimPacket(this, 4);
                 timeUntilSunstrike = SUNSTRIKE_PAUSE;
             }
+            else if (getAnimID() == 0 && targetDistance <= 4) AnimationAPI.sendAnimPacket(this, 5);
         }
         else {
              if (!worldObj.isRemote) setAngry(0);
@@ -141,9 +144,30 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
 
         if (getAnimID() == 2 && getAnimTick() == 1) whichDialogue = getWhichDialogue();
 
+        if (getAnimID() == 5) {
+            angryEyebrow.increaseTimer();
+            if (getAnimTick() == 20) spawnExplosionParticles(30);
+//            if (getAnimTick() < 15) {
+//                EffectRenderer effectRenderer = Minecraft.getMinecraft().effectRenderer;
+//                float time = 5;
+//                int timeBonus = (int) (time * 5);
+//                int orbCount = rand.nextInt(4 + timeBonus) + timeBonus + 1;
+//                while (orbCount-- > 0) {
+//                    float theta = rand.nextFloat() * MathUtils.TAU;
+//                    final float min = 0.2F, max = 1.9F;
+//                    float r = rand.nextFloat() * (max - min) + min;
+//                    float ox = r * MathHelper.cos(theta);
+//                    float oz = r * MathHelper.sin(theta);
+//                    final float minY = 0.1F;
+//                    float oy = rand.nextFloat() * (time * 6 - minY) + minY;
+//                    effectRenderer.addEffect(new EntityOrbFX(worldObj, posX + ox, posY + oy, posZ + oz, posX, posZ));
+//                }
+//            }
+        }
+
         if (timeUntilSunstrike > 0) timeUntilSunstrike--;
 
-//        if (getAnimID() == 0) getLivingSound();
+        if (getAnimID() == 0) AnimationAPI.sendAnimPacket(this, 5);
     }
 
     private boolean checkBlocksByFeet()
@@ -171,6 +195,17 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
 
         if (blockLeft instanceof BlockAir && blockRight instanceof BlockAir) return false;
         return true;
+    }
+
+    private void spawnExplosionParticles(int amount) {
+        for (int i = 0; i < amount; i++) {
+            final float velocity = 0.25F;
+            float yaw = i * (MathUtils.TAU / amount);
+            float vy = rand.nextFloat() * 0.08F;
+            float vx = velocity * MathHelper.cos(yaw);
+            float vz = velocity * MathHelper.sin(yaw);
+            worldObj.spawnParticle("flame", posX, posY + 0.1, posZ, vx, vy, vz);
+        }
     }
 
     protected void entityInit()

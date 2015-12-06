@@ -160,7 +160,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
                     float ox = r * MathHelper.cos(theta);
                     float oz = r * MathHelper.sin(theta);
                     final float minY = 0.1F;
-                    float oy = rand.nextFloat() * (time * 6 - minY) + minY;
+                    float oy = rand.nextFloat() * 1;
                     effectRenderer.addEffect(new EntityOrbFX(worldObj, posX + ox, posY + oy, posZ + oz, posX, posZ));
                 }
             }
