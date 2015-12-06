@@ -7,12 +7,19 @@ import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 public class EntityOrbFX extends EntityMMFX
 {
     private double targetX;
-
+    private double targetY;
     private double targetZ;
+    private double startX;
+    private double startY;
+    private double startZ;
 
     private double signX;
 
     private double signZ;
+
+    private int mode;
+
+    private double duration;
 
     public EntityOrbFX(World world, double x, double y, double z, double targetX, double targetZ)
     {
@@ -24,6 +31,16 @@ public class EntityOrbFX extends EntityMMFX
         particleMaxAge = 120;
         signX = Math.signum(targetX - posX);
         signZ = Math.signum(targetZ - posZ);
+        mode = 0;
+    }
+    public EntityOrbFX(World world, double x, double y, double z, double targetX, double targetY, double targetZ, double speed) {
+        this(world, x, y, z, targetX, targetZ);
+        this.targetY = targetY;
+        this.startX = x;
+        this.startY = y;
+        this.startZ = z;
+        this.duration = speed;
+        mode = 1;
     }
 
     @Override
@@ -38,25 +55,32 @@ public class EntityOrbFX extends EntityMMFX
         prevPosX = posX;
         prevPosY = posY;
         prevPosZ = posZ;
-        double vecX = targetX - posX;
-        double vecZ = targetZ - posZ;
-        double dist = Math.sqrt(vecX * vecX + vecZ * vecZ);
-        if (dist > 2 || Math.signum(vecX) != signX || Math.signum(vecZ) != signZ || particleAge > particleMaxAge)
-        {
-            setDead();
-            return;
+        if (mode == 0) {
+            double vecX = targetX - posX;
+            double vecZ = targetZ - posZ;
+            double dist = Math.sqrt(vecX * vecX + vecZ * vecZ);
+            if (dist > 2 || Math.signum(vecX) != signX || Math.signum(vecZ) != signZ || particleAge > particleMaxAge) {
+                setDead();
+                return;
+            }
+            final double peak = 0.5;
+            particleAlpha = (float) (dist > peak ? MathUtils.linearTransformd(dist, peak, 2, 1, 0) : MathUtils.linearTransformd(dist, 0.1F, peak, 0, 1));
+            final double minVel = 0.05, maxVel = 0.3;
+            double progress = Math.sin(-Math.PI / 4 * dist) + 1;
+            double magMultipler = (progress * (maxVel - minVel) + minVel) / dist;
+            vecX *= magMultipler;
+            vecZ *= magMultipler;
+            motionX = vecX;
+            motionY = progress;
+            motionZ = vecZ;
+            moveEntity(motionX, motionY, motionZ);
         }
-        final double peak = 0.5;
-        particleAlpha = (float) (dist > peak ? MathUtils.linearTransformd(dist, peak, 2, 1, 0) : MathUtils.linearTransformd(dist, 0.1F, peak, 0, 1));
-        final double minVel = 0.05, maxVel = 0.3;
-        double progress = Math.sin(-Math.PI / 4 * dist) + 1;
-        double magMultipler = (progress * (maxVel - minVel) + minVel) / dist;
-        vecX *= magMultipler;
-        vecZ *= magMultipler;
-        motionX = vecX;
-        motionY = progress;
-        motionZ = vecZ;
-        moveEntity(motionX, motionY, motionZ);
+        else if (mode == 1) {
+            posX = startX + (targetX - startX)/( 1+ Math.exp(-(8/duration) * (particleAge - duration/2)));
+            posY = startY + (targetY - startY)/( 1+ Math.exp(-(8/duration) * (particleAge - duration/2)));
+            posZ = startZ + (targetZ - startZ)/( 1+ Math.exp(-(8/duration) * (particleAge - duration/2)));
+            if (particleAge == duration) setDead();
+        }
         particleAge++;
     }
 }

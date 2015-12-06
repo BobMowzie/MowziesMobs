@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
+import com.bobmowzie.mowziesmobs.client.particle.EntityOrbFX;
 import com.bobmowzie.mowziesmobs.common.ai.AINearestAttackableTargetBarakoa;
 import com.bobmowzie.mowziesmobs.common.animation.AnimRadiusAttack;
 import com.bobmowzie.mowziesmobs.common.animation.AnimSunStrike;
@@ -8,6 +9,8 @@ import com.bobmowzie.mowziesmobs.common.animation.MMAnimBase;
 import net.ilexiconn.llibrary.client.model.modelbase.ControlledAnimation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
@@ -147,22 +150,22 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
         if (getAnimID() == 5) {
             angryEyebrow.increaseTimer();
             if (getAnimTick() == 20) spawnExplosionParticles(30);
-//            if (getAnimTick() < 15) {
-//                EffectRenderer effectRenderer = Minecraft.getMinecraft().effectRenderer;
-//                float time = 5;
-//                int timeBonus = (int) (time * 5);
-//                int orbCount = rand.nextInt(4 + timeBonus) + timeBonus + 1;
-//                while (orbCount-- > 0) {
-//                    float theta = rand.nextFloat() * MathUtils.TAU;
-//                    final float min = 0.2F, max = 1.9F;
-//                    float r = rand.nextFloat() * (max - min) + min;
-//                    float ox = r * MathHelper.cos(theta);
-//                    float oz = r * MathHelper.sin(theta);
-//                    final float minY = 0.1F;
-//                    float oy = rand.nextFloat() * (time * 6 - minY) + minY;
-//                    effectRenderer.addEffect(new EntityOrbFX(worldObj, posX + ox, posY + oy, posZ + oz, posX, posZ));
-//                }
-//            }
+            if (getAnimTick() <= 10 && !worldObj.isRemote) {
+                int particleCount = 8;
+                while(--particleCount != 0) {
+                    double radius = 2f;
+                    double yaw = rand.nextFloat() * 2 * Math.PI;
+                    double pitch = rand.nextFloat() * 2 * Math.PI;
+                    double ox = radius * Math.sin(yaw) * Math.sin(pitch);
+                    double oy = radius * Math.cos(pitch);
+                    double oz = radius * Math.cos(yaw) * Math.sin(pitch);
+                    EffectRenderer effectRenderer = Minecraft.getMinecraft().effectRenderer;
+                    double offsetX = -0.3 * Math.sin(rotationYaw * Math.PI/180);
+                    double offsetZ = -0.3 * Math.cos(rotationYaw * Math.PI/180);
+                    double offsetY = 1;
+                    effectRenderer.addEffect(new EntityOrbFX(worldObj, posX + ox + offsetX, posY + offsetY + oy, posZ + oz + offsetZ, posX+ offsetX, posY + offsetY, posZ + offsetZ, 10));
+                }
+            }
         }
 
         if (timeUntilSunstrike > 0) timeUntilSunstrike--;
