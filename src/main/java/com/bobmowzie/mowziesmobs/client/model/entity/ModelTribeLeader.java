@@ -783,6 +783,7 @@ public class ModelTribeLeader extends MowzieModelBase {
             animator.move(neck, 3, 0, 0);
             animator.rotate(leftUpperArm, 0, 0.4f, 0);
             animator.rotate(leftLowerArm, 0, 0, -0.2f);
+            animator.move(jawScaler, 0.5f, 0, 0);
             animator.endPhase();
             animator.setStationaryPhase(3);
             animator.resetPhase(8);

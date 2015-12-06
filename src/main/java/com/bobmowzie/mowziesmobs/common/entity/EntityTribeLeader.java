@@ -46,7 +46,7 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
         tasks.addTask(2, new MMAnimBase(this, 2, 80, false));
         tasks.addTask(2, new MMAnimBase(this, 3, 40, false));
         tasks.addTask(2, new AnimSunStrike(this, 4, 26));
-        tasks.addTask(2, new AnimRadiusAttack(this, 5, 42, 4, 5, 4.5f, 22));
+        tasks.addTask(2, new AnimRadiusAttack(this, 5, 42, 6, 5, 4.5f, 22));
         this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityTribesman.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
@@ -90,7 +90,7 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
             }
             else
             {
-                int i = MathHelper.getRandomIntegerInRange(rand, 1, 1);
+                int i = MathHelper.getRandomIntegerInRange(rand, 1, 10);
                 if (i == 1) playSound("mowziesmobs:barakoAngry1", 1.4f, 1);
                 else if (i == 2) playSound("mowziesmobs:barakoAngry2", 1.4f, 1);
                 else if (i == 3) playSound("mowziesmobs:barakoAngry3", 1.4f, 1);
@@ -108,6 +108,17 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
     }
 
     @Override
+    protected String getHurtSound() {
+        return "mowziesmobs:barakoHurt";
+    }
+
+    @Override
+    protected String getDeathSound() {
+        playSound("mowziesmobs:barakoDie", 1.4f, 1);
+        return null;
+    }
+
+    @Override
     public void onUpdate() {
         super.onUpdate();
         if (ticksExisted == 1) direction = getDirection();
@@ -120,11 +131,11 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
         if (getAttackTarget() != null) {
             EntityLivingBase target = getAttackTarget();
             setAngry(1);
-            if (getAnimID() == 0 && timeUntilSunstrike <= 0 && targetDistance > 4) {
+            if (getAnimID() == 0 && timeUntilSunstrike <= 0 && targetDistance > 6) {
                 AnimationAPI.sendAnimPacket(this, 4);
                 timeUntilSunstrike = SUNSTRIKE_PAUSE;
             }
-            else if (getAnimID() == 0 && targetDistance <= 4) AnimationAPI.sendAnimPacket(this, 5);
+            else if (getAnimID() == 0 && targetDistance <= 6) AnimationAPI.sendAnimPacket(this, 5);
         }
         else {
              if (!worldObj.isRemote) setAngry(0);
@@ -149,7 +160,11 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
 
         if (getAnimID() == 5) {
             angryEyebrow.increaseTimer();
-            if (getAnimTick() == 20) spawnExplosionParticles(30);
+            if (getAnimTick() == 1) playSound("mowziesmobs:barakoBurst", 1.5f, 1.1f);
+            if (getAnimTick() == 20) {
+                spawnExplosionParticles(30);
+                playSound("mowziesmobs:barakoAttack", 1.5f, 0.9f);
+            }
             if (getAnimTick() <= 10 && !worldObj.isRemote) {
                 int particleCount = 8;
                 while(--particleCount != 0) {
@@ -170,7 +185,7 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
 
         if (timeUntilSunstrike > 0) timeUntilSunstrike--;
 
-        if (getAnimID() == 0) AnimationAPI.sendAnimPacket(this, 5);
+//        if (getAnimID() == 0) AnimationAPI.sendAnimPacket(this, 5);
     }
 
     private boolean checkBlocksByFeet()
@@ -204,10 +219,10 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
         for (int i = 0; i < amount; i++) {
             final float velocity = 0.25F;
             float yaw = i * (MathUtils.TAU / amount);
-            float vy = rand.nextFloat() * 0.08F;
+            float vy = rand.nextFloat() * 0.1F - 0.05f;
             float vx = velocity * MathHelper.cos(yaw);
             float vz = velocity * MathHelper.sin(yaw);
-            worldObj.spawnParticle("flame", posX, posY + 0.1, posZ, vx, vy, vz);
+            worldObj.spawnParticle("flame", posX, posY + 1, posZ, vx, vy, vz);
         }
     }
 

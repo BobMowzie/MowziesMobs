@@ -53,6 +53,7 @@ public class AnimSunStrike extends MMAnimBase {
             }
         }
         if (!animatingEntity.worldObj.isRemote && animatingEntity.getAnimTick() == 13) {
+            animatingEntity.playSound("mowziesmobs:barakoAttack", 1.4f, 1);
             EntitySunstrike sunstrike = new EntitySunstrike(animatingEntity.worldObj, animatingEntity, newX, y, newZ);
             sunstrike.onSummon();
             animatingEntity.worldObj.spawnEntityInWorld(sunstrike);
