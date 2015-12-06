@@ -76,6 +76,7 @@ public class EntityOrbFX extends EntityMMFX
             moveEntity(motionX, motionY, motionZ);
         }
         else if (mode == 1) {
+            particleAlpha = (float) (10 * Math.sqrt(Math.pow(posX - startX, 2) + Math.pow(posY - startY, 2) + Math.pow(posZ - startZ, 2))/Math.sqrt(Math.pow(targetX - startX, 2) + Math.pow(targetY - startY, 2) + Math.pow(targetZ - startZ, 2)));
             posX = startX + (targetX - startX)/( 1+ Math.exp(-(8/duration) * (particleAge - duration/2)));
             posY = startY + (targetY - startY)/( 1+ Math.exp(-(8/duration) * (particleAge - duration/2)));
             posZ = startZ + (targetZ - startZ)/( 1+ Math.exp(-(8/duration) * (particleAge - duration/2)));

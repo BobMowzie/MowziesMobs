@@ -217,7 +217,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
             {
                 if (caster instanceof EntityTribeLeader && (entity instanceof LeaderSunstrikeImmune)) continue;
                 if (caster instanceof EntityPlayer && entity == caster) continue;
-                entity.attackEntityFrom(DamageSource.onFire, 10);
+                entity.attackEntityFrom(DamageSource.onFire, 8.5f);
                 entity.setFire(5);
             }
         }

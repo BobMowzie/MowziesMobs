@@ -840,13 +840,13 @@ public class ModelTribeLeader extends MowzieModelBase {
         float breathScale = (float)(0.05 + 0.02 * Math.cos(0.06 * frame));
         float scaler = bellyScaler.rotationPointX + jiggleScale + breathScale;
         if (tribeleader.getAnimID() == 5) {
-            headdress1.rotateAngleX += jiggleScale;
-            headdress2.rotateAngleX += jiggleScale;
-            headdress3.rotateAngleX += jiggleScale;
-            headdress4.rotateAngleX += jiggleScale;
-            headdress5.rotateAngleX += jiggleScale;
-            headdress6.rotateAngleX += jiggleScale;
-            headdress7.rotateAngleX += jiggleScale;
+            headdress1.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame + 1);
+            headdress2.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame + 0.5);
+            headdress3.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame + 1.5);
+            headdress4.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame);
+            headdress5.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame + 1);
+            headdress6.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame + 1.5);
+            headdress7.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame);
         }
 
         body.setScaleX(scaler);
