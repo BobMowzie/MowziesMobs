@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.particle.EntityOrbFX;
 import com.bobmowzie.mowziesmobs.common.ai.AINearestAttackableTargetBarakoa;
 import com.bobmowzie.mowziesmobs.common.animation.AnimRadiusAttack;
+import com.bobmowzie.mowziesmobs.common.animation.AnimSpawnBarakoa;
 import com.bobmowzie.mowziesmobs.common.animation.AnimSunStrike;
 import com.bobmowzie.mowziesmobs.common.animation.MMAnimBase;
 import net.ilexiconn.llibrary.client.model.modelbase.ControlledAnimation;
@@ -47,8 +48,9 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
         tasks.addTask(2, new MMAnimBase(this, 3, 40, false));
         tasks.addTask(2, new AnimSunStrike(this, 4, 26));
         tasks.addTask(2, new AnimRadiusAttack(this, 5, 42, 5, 5, 4.5f, 22));
+        tasks.addTask(2, new AnimSpawnBarakoa(this, 6, 70));
         this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityTribesman.class, 8.0F));
+//        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityTribesman.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
         setSize(1.5f, 2.4f);
         if (getDirection() == 0) setDirection(rand.nextInt(4) + 1);
@@ -159,7 +161,7 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
         if (getAnimID() == 2 && getAnimTick() == 1) whichDialogue = getWhichDialogue();
 
         if (getAnimID() == 5) {
-            angryEyebrow.increaseTimer();
+            rotationYawHead = rotationYaw;
             if (getAnimTick() == 1) playSound("mowziesmobs:barakoBurst", 1.5f, 1.1f);
             if (getAnimTick() == 20) {
                 spawnExplosionParticles(30);
@@ -185,7 +187,7 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
 
         if (timeUntilSunstrike > 0) timeUntilSunstrike--;
 
-//        if (getAnimID() == 0) AnimationAPI.sendAnimPacket(this, 5);
+//        if (getAnimID() == 0) AnimationAPI.sendAnimPacket(this, 6);
     }
 
     private boolean checkBlocksByFeet()

@@ -6,10 +6,12 @@ import com.bobmowzie.mowziesmobs.common.entity.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.common.gen.structure.barakoa.StructureBarakoThrone;
 import com.bobmowzie.mowziesmobs.common.gen.structure.barakoa.StructureBarakoaHouse;
 import net.ilexiconn.llibrary.common.structure.util.Structure;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -42,6 +44,7 @@ public class ItemTestStructure extends Item
         else {
             structure++;
             if (structure > 2) structure = 0;
+            if (world.isRemote) Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new ChatComponentText("Generating structure " + structure));
         }
         return true;
     }

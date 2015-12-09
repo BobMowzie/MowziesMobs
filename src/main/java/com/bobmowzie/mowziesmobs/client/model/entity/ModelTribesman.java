@@ -297,6 +297,7 @@ public class ModelTribesman extends MowzieModelBase {
             spear.isHidden = true;
             blowgun.isHidden = false;
         }
+        if (!tribesman.active) return;
         float doWalk = tribesman.doWalk.getAnimationProgressSinSqrt();
         float dance = tribesman.dancing.getAnimationProgressSinSqrt();
         if (f1 > 0.55f) f1 = 0.55f;
@@ -699,6 +700,29 @@ public class ModelTribesman extends MowzieModelBase {
         animator.endPhase();
         animator.setStationaryPhase(15);
         animator.resetPhase(10);
+
+        animator.setAnim(5);
+        animator.startPhase(10);
+        animator.move(scaler, -0.999f, 0, 0);
+        animator.move(flailer, 1, 0, 0);
+        animator.move(body, 0, -9, -5);
+        animator.endPhase();
+        animator.setStationaryPhase(2);
+        animator.startPhase(5);
+        animator.move(scaler, -0.999f, 0, 0);
+        animator.move(body, 0, -9, -5);
+        animator.rotate(head, 1.58f, 0, 0);
+        animator.endPhase();
+        animator.setStationaryPhase(5);
+
+        //Inactive
+        if (!tribesman.active) {
+            scaler.rotationPointX += 0.999f;
+            head.rotateAngleX -= 1.58f;
+            body.rotationPointY += 9f;
+            body.rotationPointZ += 5f;
+            if (!tribesman.onGround) body.rotateAngleX += 0.4f * frame;
+        }
 
         float flailSpeed = 2.3f;
         bob(modelCore, 0.3f * flailSpeed, 10f * flailer.rotationPointX, true, frame, 1f);

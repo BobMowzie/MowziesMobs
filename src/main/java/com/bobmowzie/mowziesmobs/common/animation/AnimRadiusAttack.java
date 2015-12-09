@@ -22,6 +22,7 @@ public class AnimRadiusAttack extends MMAnimBase {
         this.damage = damage;
         this.knockBack = knockBack;
         this.damageFrame = damageFrame;
+        setMutexBits(8);
     }
 
     @Override

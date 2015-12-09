@@ -67,6 +67,7 @@
     "barakoaInhale": {"category": "hostile","sounds": [{"name": "barakoaInhale","stream": false}]},
     "barakoaShout": {"category": "hostile","sounds": [{"name": "barakoaShout","stream": false}]},
     "barakoaSwing": {"category": "hostile","sounds": [{"name": "barakoaSwing","stream": false}]},
+    "barakoaEmerge": {"category": "hostile","sounds": [{"name": "barakoaEmerge","stream": false}]},
 
     "barakoBelly": {"category": "hostile","sounds": [{"name": "barakoBelly","stream": false}]},
     "barakoAngry1": {"category": "hostile","sounds": [{"name": "barakoAngry1","stream": true}]},

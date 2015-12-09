@@ -34,7 +34,7 @@ public class AnimSunStrike extends MMAnimBase {
         if (entityTarget == null) return;
         if (animatingEntity.getAnimTick() < 13) animatingEntity.getLookHelper().setLookPositionWithEntity(entityTarget, 30, 30);
 
-        if (animatingEntity.getAnimTick() == 9) {
+        if (animatingEntity.getAnimTick() == 1) {
             prevX = entityTarget.posX;
             prevZ = entityTarget.posZ;
         }
@@ -42,8 +42,8 @@ public class AnimSunStrike extends MMAnimBase {
             double x = entityTarget.posX;
             y = MathHelper.floor_double(entityTarget.posY - 1);
             double z = entityTarget.posZ;
-            double vx = x - prevX;
-            double vz = z - prevZ;
+            double vx = (x - prevX)/9;
+            double vz = (z - prevZ)/9;
             int t = EntitySunstrike.STRIKE_EXPLOSION + 3;
             newX = MathHelper.floor_double(x + vx * t);
             newZ = MathHelper.floor_double(z + vz * t);
