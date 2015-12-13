@@ -170,4 +170,10 @@ public class EntityTribeHunter extends EntityTribesman
     protected boolean canDespawn() {
         return leader == null;
     }
+
+    @Override
+    public void setDead() {
+        System.out.println("Dead");
+        super.setDead();
+    }
 }

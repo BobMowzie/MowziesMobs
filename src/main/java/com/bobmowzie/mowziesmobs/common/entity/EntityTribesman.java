@@ -218,7 +218,7 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob, L
         prevHasTarget = (getAttackTarget() != null);
 
 //        if (getAnimID() == 0) AnimationAPI.sendAnimPacket(this, 4);
-        if (ticksExisted == 50) setDead();
+//        if (ticksExisted == 50) setDead();
     }
 
     @Override
@@ -235,7 +235,7 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob, L
         dataWatcher.addObject(28, 0);
         dataWatcher.addObject(29, 0);
         dataWatcher.addObject(30, 0);
-        dataWatcher.addObject(31, 1);
+        dataWatcher.addObject(27, 1);
     }
 
     public int getDancing()
@@ -270,12 +270,12 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob, L
 
     public int getActive()
     {
-        return dataWatcher.getWatchableObjectInt(31);
+        return dataWatcher.getWatchableObjectInt(27);
     }
 
     public void setActive(Integer active)
     {
-        dataWatcher.updateObject(31, active);
+        dataWatcher.updateObject(27, active);
     }
 
     public void writeEntityToNBT(NBTTagCompound compound)
