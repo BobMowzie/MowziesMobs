@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.common.entity;
 
 import com.bobmowzie.mowziesmobs.common.ai.AINearestAttackableTargetBarakoa;
 import com.bobmowzie.mowziesmobs.common.animation.AnimBlock;
+import cpw.mods.fml.common.eventhandler.Event;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -15,9 +16,11 @@ import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.event.ForgeEventFactory;
 import thehippomaster.AnimationAPI.AnimationAPI;
 
 import java.util.ArrayList;
@@ -30,6 +33,8 @@ public class EntityTribeElite extends EntityTribesman {
     private List<EntityTribeHunter> pack = new ArrayList<EntityTribeHunter>();
 
     private int packRadius = 3;
+
+    private boolean persistenceRequired;
 
     public EntityTribeElite(World world) {
         super(world);
@@ -176,7 +181,57 @@ public class EntityTribeElite extends EntityTribesman {
 
     @Override
     protected void despawnEntity() {
-        super.despawnEntity();
-        for (int i = 0; i < pack.size(); i++) pack.get(i).setDead();
+
+        Event.Result result = null;
+//        if (this.persistenceRequired)
+//        {
+//            this.entityAge = 0;
+//        }
+        if ((this.entityAge & 0x1F) == 0x1F && (result = ForgeEventFactory.canEntityDespawn(this)) != Event.Result.DEFAULT)
+        {
+            if (result == Event.Result.DENY)
+            {
+                this.entityAge = 0;
+            }
+            else
+            {
+                for (int i = 0; i < pack.size(); i++) pack.get(i).setDead();
+                this.setDead();
+            }
+        }
+        else
+        {
+            EntityPlayer entityplayer = this.worldObj.getClosestPlayerToEntity(this, -1.0D);
+
+            if (entityplayer != null)
+            {
+                double d0 = entityplayer.posX - this.posX;
+                double d1 = entityplayer.posY - this.posY;
+                double d2 = entityplayer.posZ - this.posZ;
+                double d3 = d0 * d0 + d1 * d1 + d2 * d2;
+
+                if (this.canDespawn() && d3 > 16384.0D)
+                {
+                    for (int i = 0; i < pack.size(); i++) pack.get(i).setDead();
+                    this.setDead();
+                }
+
+                if (this.entityAge > 600 && this.rand.nextInt(800) == 0 && d3 > 1024.0D && this.canDespawn())
+                {
+                    for (int i = 0; i < pack.size(); i++) pack.get(i).setDead();
+                    this.setDead();
+                }
+                else if (d3 < 1024.0D)
+                {
+                    this.entityAge = 0;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void readEntityFromNBT(NBTTagCompound compound) {
+        super.readEntityFromNBT(compound);
+        this.persistenceRequired = compound.getBoolean("PersistenceRequired");
     }
 }

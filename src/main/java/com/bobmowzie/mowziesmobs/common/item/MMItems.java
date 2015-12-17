@@ -46,14 +46,14 @@ public class MMItems implements IContentHandler
         {
             GameRegistry.registerItem(itemBarakoaMasks[i], itemBarakoaMasks[i].getType().getUnlocalizedName());
         }
-        GameRegistry.registerItem(itemDart, "dart");
-        GameRegistry.registerItem(itemSpear, "spear");
-        GameRegistry.registerItem(itemBlowgun, "blowgun");
+//        GameRegistry.registerItem(itemDart, "dart");
+//        GameRegistry.registerItem(itemSpear, "spear");
+//        GameRegistry.registerItem(itemBlowgun, "blowgun");
         GameRegistry.registerItem(itemSpawnEgg, "spawnEgg");
 
         if (MowziesMobs.isDebugging())
         {
-            GameRegistry.registerItem(itemTestStructure, "teststructure");
+//            GameRegistry.registerItem(itemTestStructure, "teststructure");
         }
     }
 }

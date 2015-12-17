@@ -2,17 +2,12 @@ package com.bobmowzie.mowziesmobs.common.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.common.creativetab.MMTabs;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
 
 /**
  * Created by jnad325 on 11/1/15.
@@ -66,5 +61,16 @@ public class ItemBarakoaMask extends ItemArmor {
     @Override
     public void registerIcons(IIconRegister registrar)
     {
+    }
+
+    @Override
+    public int getColor(ItemStack itemStack)
+    {
+        return 0xFFFFFFFF;
+    }
+
+    @Override
+    public ArmorMaterial getArmorMaterial() {
+        return ArmorMaterial.CHAIN;
     }
 }
