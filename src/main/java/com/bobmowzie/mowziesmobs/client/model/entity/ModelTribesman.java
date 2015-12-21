@@ -702,6 +702,7 @@ public class ModelTribesman extends MowzieModelBase {
         animator.resetPhase(10);
 
         animator.setAnim(5);
+        animator.setStationaryPhase(3);
         animator.startPhase(10);
         animator.move(scaler, -0.999f, 0, 0);
         animator.move(flailer, 1, 0, 0);

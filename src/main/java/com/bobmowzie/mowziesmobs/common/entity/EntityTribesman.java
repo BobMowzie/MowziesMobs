@@ -45,7 +45,7 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob, L
         tasks.addTask(4, new MMAnimBase(this, 4, 35));
         tasks.addTask(3, new AnimTakeDamage(this, 10));
         tasks.addTask(1, new AnimDie(this, deathLength));
-        tasks.addTask(0, new AnimActivate(this, 5, 17));
+        tasks.addTask(0, new AnimActivate(this, 5, 20));
         this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
         setMask(MathHelper.getRandomIntegerInRange(rand, 2, 5));
@@ -218,7 +218,7 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob, L
         prevHasTarget = (getAttackTarget() != null);
 
 //        if (getAnimID() == 0) AnimationAPI.sendAnimPacket(this, 4);
-//        if (ticksExisted == 50) setDead();
+        if (ticksExisted == 50) setDead();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.common.blocks;
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import net.ilexiconn.llibrary.common.content.IContentHandler;
 import net.minecraft.block.Block;
 
@@ -18,7 +19,7 @@ public class MMBlocks implements IContentHandler {
 
     public void gameRegistry() throws Exception
     {
-//        GameRegistry.registerBlock(blockPaintedAcacia, "paintedAcacia");
-//        GameRegistry.registerBlock(blockPaintedAcaciaSlab, "paintedAcaciaSlab");
+        GameRegistry.registerBlock(blockPaintedAcacia, "paintedAcacia");
+        GameRegistry.registerBlock(blockPaintedAcaciaSlab, "paintedAcaciaSlab");
     }
 }

@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.common.potion;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.ilexiconn.llibrary.common.content.IContentHandler;
 import net.minecraft.potion.Potion;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -64,6 +65,6 @@ public class MMPotions implements IContentHandler
     @Override
     public void gameRegistry() throws Exception
     {
-//        MinecraftForge.EVENT_BUS.register(sunsBlessing);
+        MinecraftForge.EVENT_BUS.register(sunsBlessing);
     }
 }

@@ -35,6 +35,7 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
     private boolean blocksByFeet = true;
     public int whichDialogue = 0;
     private int timeUntilSunstrike = 0;
+    public int barakoaSpawnCount = 0;
 
     private static final int SUNSTRIKE_PAUSE = 60;
 
@@ -48,7 +49,7 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
         tasks.addTask(2, new MMAnimBase(this, 3, 40, false));
         tasks.addTask(2, new AnimSunStrike(this, 4, 26));
         tasks.addTask(2, new AnimRadiusAttack(this, 5, 42, 5, 5, 4.5f, 22));
-        tasks.addTask(2, new AnimSpawnBarakoa(this, 6, 70));
+        tasks.addTask(2, new AnimSpawnBarakoa(this, 6, 35));
         this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
 //        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityTribesman.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
@@ -187,7 +188,7 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
 
         if (timeUntilSunstrike > 0) timeUntilSunstrike--;
 
-//        if (getAnimID() == 0) AnimationAPI.sendAnimPacket(this, 6);
+        if (getAnimID() == 0) AnimationAPI.sendAnimPacket(this, 6);
     }
 
     private boolean checkBlocksByFeet()
