@@ -1,36 +1,22 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
-import java.util.Iterator;
-import java.util.List;
-
+import com.bobmowzie.mowziesmobs.common.creativetab.MMTabs;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Facing;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.common.creativetab.MMTabs;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.registry.EntityRegistry;
-import cpw.mods.fml.common.registry.EntityRegistry.EntityRegistration;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import java.util.Iterator;
+import java.util.List;
 
 public class ItemMMSpawnEgg extends Item
 {
@@ -59,7 +45,7 @@ public class ItemMMSpawnEgg extends Item
     @Override
     public int getColorFromItemStack(ItemStack itemStack, int pass)
     {
-        EntityList.EntityEggInfo info = MMEntities.getEntityEggInfo(Integer.valueOf(itemStack.getItemDamage()));
+        MMEntityEggInfo info = MMEntities.getEntityEggInfo(Integer.valueOf(itemStack.getItemDamage()));
         return info == null ? 0xFFFFFF : (pass == 0 ? info.primaryColor : info.secondaryColor);
     }
 
@@ -181,10 +167,10 @@ public class ItemMMSpawnEgg extends Item
     @Override
     public void getSubItems(Item item, CreativeTabs tab, List itemStacks)
     {
-        Iterator<EntityList.EntityEggInfo> iterator = MMEntities.getEntityEggInfoIterator();
+        Iterator<MMEntityEggInfo> iterator = MMEntities.getEntityEggInfoIterator();
         while (iterator.hasNext())
         {
-            EntityList.EntityEggInfo info = iterator.next();
+            MMEntityEggInfo info = iterator.next();
             itemStacks.add(new ItemStack(item, 1, info.spawnedID));
         }
     }

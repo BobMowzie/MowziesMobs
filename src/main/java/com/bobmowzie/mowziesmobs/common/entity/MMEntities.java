@@ -5,7 +5,6 @@ import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry.EntityRegistration;
 import net.ilexiconn.llibrary.common.content.IContentHandler;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.world.World;
@@ -17,7 +16,7 @@ import java.util.Map;
 
 public class MMEntities implements IContentHandler
 {
-    private static final Map<Integer, EntityList.EntityEggInfo> ENTITY_EGGS = new LinkedHashMap<Integer, EntityList.EntityEggInfo>();
+    private static final Map<Integer, MMEntityEggInfo> ENTITY_EGGS = new LinkedHashMap<Integer, MMEntityEggInfo>();
 
     private static int nextEntityId;
 
@@ -27,7 +26,7 @@ public class MMEntities implements IContentHandler
         EntityRegistry.registerModEntity(entityClass, name, entityId, MowziesMobs.instance, 64, 1, true);
         if (addEgg)
         {
-            ENTITY_EGGS.put(entityId, new EntityList.EntityEggInfo(entityId, mainColor, subColor));
+            ENTITY_EGGS.put(entityId, new MMEntityEggInfo(entityId, mainColor, subColor, name));
         }
         if (addSpawn)
         {
@@ -40,7 +39,7 @@ public class MMEntities implements IContentHandler
         return nextEntityId++;
     }
 
-    public static EntityList.EntityEggInfo getEntityEggInfo(int id)
+    public static MMEntityEggInfo getEntityEggInfo(int id)
     {
         return ENTITY_EGGS.get(id);
     }
@@ -50,7 +49,7 @@ public class MMEntities implements IContentHandler
         return ENTITY_EGGS.containsKey(id);
     }
 
-    public static Iterator<EntityList.EntityEggInfo> getEntityEggInfoIterator()
+    public static Iterator<MMEntityEggInfo> getEntityEggInfoIterator()
     {
         return ENTITY_EGGS.values().iterator();
     }

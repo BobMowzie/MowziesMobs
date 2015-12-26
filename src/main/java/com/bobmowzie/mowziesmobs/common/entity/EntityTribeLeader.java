@@ -3,10 +3,7 @@ package com.bobmowzie.mowziesmobs.common.entity;
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.particle.EntityOrbFX;
 import com.bobmowzie.mowziesmobs.common.ai.AINearestAttackableTargetBarakoa;
-import com.bobmowzie.mowziesmobs.common.animation.AnimRadiusAttack;
-import com.bobmowzie.mowziesmobs.common.animation.AnimSpawnBarakoa;
-import com.bobmowzie.mowziesmobs.common.animation.AnimSunStrike;
-import com.bobmowzie.mowziesmobs.common.animation.MMAnimBase;
+import com.bobmowzie.mowziesmobs.common.animation.*;
 import net.ilexiconn.llibrary.client.model.modelbase.ControlledAnimation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
@@ -50,6 +47,8 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
         tasks.addTask(2, new AnimSunStrike(this, 4, 26));
         tasks.addTask(2, new AnimRadiusAttack(this, 5, 42, 5, 5, 4.5f, 22));
         tasks.addTask(2, new AnimSpawnBarakoa(this, 6, 35));
+        tasks.addTask(3, new AnimTakeDamage(this, 13));
+        tasks.addTask(1, new AnimDie(this, deathLength));
         this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
 //        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityTribesman.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
@@ -139,6 +138,8 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
                 timeUntilSunstrike = SUNSTRIKE_PAUSE;
             }
             else if (getAnimID() == 0 && targetDistance <= 5) AnimationAPI.sendAnimPacket(this, 5);
+            else if (getAnimID() == 0 && rand.nextInt(150) == 0 && targetDistance > 5)
+                AnimationAPI.sendAnimPacket(this, 6);
         }
         else {
              if (!worldObj.isRemote) setAngry(0);
@@ -187,8 +188,6 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
         }
 
         if (timeUntilSunstrike > 0) timeUntilSunstrike--;
-
-        if (getAnimID() == 0) AnimationAPI.sendAnimPacket(this, 6);
     }
 
     private boolean checkBlocksByFeet()

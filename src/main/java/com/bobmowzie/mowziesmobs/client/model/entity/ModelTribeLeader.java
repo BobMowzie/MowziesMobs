@@ -854,8 +854,8 @@ public class ModelTribeLeader extends MowzieModelBase {
             animator.rotate(body, -0.1f, 0, 0);
             animator.rotate(leftThigh, 0, -0.1f * liftLegs, 0);
             animator.rotate(rightThigh, 0, 0.1f * liftLegs, 0);
-            animator.rotate(leftThigh, 0.1f * (1-liftLegs), 0, 0);
-            animator.rotate(rightThigh, 0.1f * (1-liftLegs), 0, 0);
+            animator.rotate(leftThigh, 0.1f * (1 - liftLegs), 0, 0);
+            animator.rotate(rightThigh, 0.1f * (1 - liftLegs), 0, 0);
             animator.endPhase();
             animator.setStationaryPhase(5);
             animator.startPhase(3);
@@ -868,8 +868,8 @@ public class ModelTribeLeader extends MowzieModelBase {
             animator.rotate(body, 0.3f, 0, 0);
             animator.rotate(leftThigh, 0, 0.3f * liftLegs, 0);
             animator.rotate(rightThigh, 0, -0.3f * liftLegs, 0);
-            animator.rotate(leftThigh, -0.3f * (1-liftLegs), 0, 0);
-            animator.rotate(rightThigh, -0.3f * (1-liftLegs), 0, 0);
+            animator.rotate(leftThigh, -0.3f * (1 - liftLegs), 0, 0);
+            animator.rotate(rightThigh, -0.3f * (1 - liftLegs), 0, 0);
             animator.endPhase();
             animator.startPhase(10);
             animator.move(bellyScaler, -0.1f, 0, 0);
@@ -881,12 +881,32 @@ public class ModelTribeLeader extends MowzieModelBase {
             animator.rotate(leftThigh, 0, 0.3f * liftLegs, 0);
             animator.rotate(rightThigh, 0, -0.3f * liftLegs, 0);
             animator.rotate(leftThigh, -0.3f * (1-liftLegs), 0, 0);
-            animator.rotate(rightThigh, -0.3f * (1-liftLegs), 0, 0);
+            animator.rotate(rightThigh, -0.3f * (1 - liftLegs), 0, 0);
             animator.endPhase();
             animator.resetPhase(7);
         }
 
-        float jiggleSpeed = 2.5f;
+        if (tribeleader.getAnimID() == -3) {
+            animator.setAnim(-3);
+            animator.startPhase(2);
+            animator.move(jiggleController, 1, 0, 0);
+            animator.move(bellyScaler, -0.1f, 0, 0);
+            animator.move(mouthScalerX, 0.5f, 0, 0);
+            animator.rotate(neckJoint, 0.3f, 0, 0);
+            animator.rotate(headJoint, 0.3f, 0, 0);
+            animator.rotate(rightArmJoint, -0.5f, 0.2f, 0);
+            animator.rotate(rightLowerArm, 0, 0.2f, 0.1f);
+            animator.rotate(rightHand, -0.5f, -0.7f, 0);
+            animator.rotate(leftArmJoint, -0.5f, -0.2f, 0);
+            animator.rotate(leftLowerArm, 0, -0.2f, 0.1f);
+            animator.rotate(leftHand, -0.5f, 0.7f, 0);
+            animator.rotate(leftThigh, -0.3f * (1-liftLegs), 0, 0);
+            animator.rotate(rightThigh, -0.3f * (1-liftLegs), 0, 0);
+            animator.endPhase();
+            animator.resetPhase(10);
+        }
+
+            float jiggleSpeed = 2.5f;
         float jiggleScale = (float) (jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame));
         float breathScale = (float)(0.05 + 0.02 * Math.cos(0.06 * frame));
         float scaler = bellyScaler.rotationPointX + jiggleScale + breathScale;

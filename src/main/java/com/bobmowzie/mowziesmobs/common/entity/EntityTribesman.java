@@ -218,7 +218,6 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob, L
         prevHasTarget = (getAttackTarget() != null);
 
 //        if (getAnimID() == 0) AnimationAPI.sendAnimPacket(this, 4);
-        if (ticksExisted == 50) setDead();
     }
 
     @Override
