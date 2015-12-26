@@ -24,4 +24,10 @@ public class AnimDie extends MMAnimBase
         super.startExecuting();
         dyingEntity.setAnimTick(0);
     }
+
+    @Override
+    public void updateTask() {
+        super.updateTask();
+        System.out.println("Dying");
+    }
 }

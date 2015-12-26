@@ -25,7 +25,7 @@ public class ModelTribeLeader extends MowzieModelBase {
     public MowzieModelRenderer neck;
     public MowzieModelRenderer headJoint;
     public MowzieModelRenderer head;
-    public MowzieModelRenderer maskBase;
+    public AdvancedModelRenderer maskBase;
     public MowzieModelRenderer maskFace;
     public MowzieModelRenderer headdress1;
     public MowzieModelRenderer headdress2;
@@ -76,7 +76,7 @@ public class ModelTribeLeader extends MowzieModelBase {
         this.teethTop = new MowzieModelRenderer(this, 0, 120);
         this.teethTop.setRotationPoint(0.0F, 0.0F, 1.001F);
         this.teethTop.addBox(-4.0F, 0.0F, 0.0F, 8, 1, 1, 0.0F);
-        this.maskBase = new MowzieModelRenderer(this, 0, 0);
+        this.maskBase = new AdvancedModelRenderer(this, 0, 0);
         this.maskBase.setRotationPoint(0.0F, -5.0F, -6.0F);
         this.maskBase.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         this.leftEar = new MowzieModelRenderer(this, 38, 109);
@@ -326,8 +326,12 @@ public class ModelTribeLeader extends MowzieModelBase {
         faceTarget(neckJoint, 2, f3, f4);
         faceTarget(headJoint, 2, f3, f4);
 
-        walk(body, 0.06f, 0.05f, true, 0, -0.05f, frame, 1f);
-        walk(neck, 0.06f, 0.05f, false, 0.5f, -0.05f, frame, 1f);
+        if (tribeLeader.getAnimID() != -2) {
+            walk(body, 0.06f, 0.05f, true, 0, -0.05f, frame, 1f);
+            walk(neck, 0.06f, 0.05f, false, 0.5f, -0.05f, frame, 1f);
+            swing(rightThigh, 0.06f, 0.05f * liftLegs, false, 0, 0, frame, 1f);
+            swing(leftThigh, 0.06f, 0.05f * liftLegs, true, 0, 0, frame, 1f);
+        }
 
         leftThigh.rotateAngleX -= 0.7 * liftLegs;
         rightThigh.rotateAngleX -= 0.7 * liftLegs;
@@ -335,8 +339,6 @@ public class ModelTribeLeader extends MowzieModelBase {
         rightThigh.rotateAngleZ -= 1.5 * liftLegs;
         leftThigh.rotateAngleY += 0.55 * liftLegs;
         rightThigh.rotateAngleY -= 0.55 * liftLegs;
-        swing(rightThigh, 0.06f, 0.05f * liftLegs, false, 0, 0, frame, 1f);
-        swing(leftThigh, 0.06f, 0.05f * liftLegs, true, 0, 0, frame, 1f);
     }
 
     public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
@@ -886,6 +888,103 @@ public class ModelTribeLeader extends MowzieModelBase {
             animator.resetPhase(7);
         }
 
+        if (tribeleader.getAnimID() == -2) {
+            animator.setAnim(-2);
+            animator.startPhase(2);
+            animator.move(jiggleController, 1, 0, 0);
+            animator.move(bellyScaler, -0.1f, 0, 0);
+            animator.move(mouthScalerX, 0.5f, 0, 0);
+            animator.rotate(neckJoint, 0.3f, 0, 0);
+            animator.rotate(headJoint, 0.3f, 0, 0);
+            animator.rotate(rightArmJoint, -0.5f, 0.2f, 0);
+            animator.rotate(rightLowerArm, 0, 0.2f, 0.1f);
+            animator.rotate(rightHand, -0.5f, -0.7f, 0);
+            animator.rotate(leftArmJoint, -0.5f, -0.2f, 0);
+            animator.rotate(leftLowerArm, 0, -0.2f, 0.1f);
+            animator.rotate(leftHand, -0.5f, 0.7f, 0);
+            animator.rotate(leftThigh, -0.3f * (1 - liftLegs), 0, 0);
+            animator.rotate(rightThigh, -0.3f * (1 - liftLegs), 0, 0);
+            animator.endPhase();
+            animator.resetPhase(5);
+            animator.startPhase(5);
+            animator.move(mouthScalerX, 0.2f, 0, 0);
+            animator.move(jawScaler, 1.5f, 0, 0);
+            animator.rotate(neckJoint, -0.3f, 0, 0);
+            animator.rotate(headJoint, -0.4f, 0, 0);
+            animator.rotate(rightUpperArm, 0, 0, 0);
+            animator.rotate(rightArmJoint, -0.5f, 0.9f, -0.5f);
+            animator.rotate(rightLowerArm, -0.1f, 0, 0.2f);
+            animator.rotate(rightHand, -0.5f, 0.5f, 0);
+            animator.rotate(leftUpperArm, 0, 0, 0);
+            animator.rotate(leftArmJoint, -0.5f, -0.9f, 0.5f);
+            animator.rotate(leftLowerArm, -0.1f, 0, -0.2f);
+            animator.rotate(leftHand, -0.5f, -0.5f, 0);
+            animator.move(jiggleController, 0, 1, 0);
+            animator.endPhase();
+            animator.setStationaryPhase(25);
+            animator.startPhase(10);
+            animator.move(mouthScalerX, 0.2f, 0, 0);
+            animator.move(jawScaler, 1.5f, 0, 0);
+            animator.rotate(neckJoint, -0.3f, 0, 0);
+            animator.rotate(headJoint, -0.4f, 0, 0);
+            animator.rotate(rightUpperArm, 0, 0, 0);
+            animator.rotate(rightArmJoint, -0.5f, 0.9f, -0.5f);
+            animator.rotate(rightLowerArm, -0.1f, 0, 0.2f);
+            animator.rotate(rightHand, -0.5f, 0.5f, 0);
+            animator.rotate(leftUpperArm, 0, 0, 0);
+            animator.rotate(leftArmJoint, -0.5f, -0.9f, 0.5f);
+            animator.rotate(leftLowerArm, -0.1f, 0, -0.2f);
+            animator.rotate(leftHand, -0.5f, -0.5f, 0);
+            animator.endPhase();
+            animator.setStationaryPhase(8);
+            animator.startPhase(15);
+            animator.rotate(neckJoint, -0.3f, 0, 0);
+            animator.rotate(headJoint, -0.4f, 0, 0);
+            animator.rotate(rightUpperArm, 0, 0, 0);
+            animator.rotate(rightArmJoint, -0.5f, 0.9f, -0.5f);
+            animator.rotate(rightLowerArm, -0.1f, 0, 0.2f);
+            animator.rotate(rightHand, -0.5f, 0.5f, 0);
+            animator.rotate(leftUpperArm, 0, 0, 0);
+            animator.rotate(leftArmJoint, -0.5f, -0.9f, 0.5f);
+            animator.rotate(leftLowerArm, -0.1f, 0, -0.2f);
+            animator.rotate(leftHand, -0.5f, -0.5f, 0);
+            animator.move(bellyScaler, 0, 0.9999f, 0);
+            animator.move(body, 0, -36, 4);
+            animator.endPhase();
+            animator.setStationaryPhase(17);
+            animator.startPhase(3);
+            animator.rotate(neckJoint, -0.3f, 0, 0);
+            animator.rotate(headJoint, -0.4f, 0, 0);
+            animator.move(bellyScaler, 0, 0.9999f, 0);
+            animator.move(body, 0, -10, 4);
+            animator.endPhase();
+            animator.startPhase(2);
+            animator.rotate(neckJoint, -0.3f, 0, 0);
+            animator.rotate(headJoint, -1.2f, 0, 0);
+            animator.rotate(headdress1, -0.25f, 0, 0);
+            animator.rotate(headdress2, -0.25f, 0, 0);
+            animator.rotate(headdress3, -0.25f, 0, 0);
+            animator.rotate(headdress4, -0.25f, 0, 0);
+            animator.rotate(headdress5, -0.25f, 0, 0);
+            animator.rotate(headdress6, -0.25f, 0, 0);
+            animator.rotate(headdress7, -0.25f, 0, 0);
+            animator.move(bellyScaler, 0, 0.9999f, 0);
+            animator.move(body, 0, -5, 10);
+            animator.endPhase();
+            animator.setStationaryPhase(100);
+
+            swing(rightArmJoint, 2f, 0.05f * jiggleController.rotationPointY, false, 0, 0, frame, 1);
+            swing(leftArmJoint, 2f, 0.05f * jiggleController.rotationPointY, true, 0, 0, frame, 1);
+            walk(rightArmJoint, 2f, 0.05f * jiggleController.rotationPointY, false, 0, 0, frame, 1);
+            walk(leftArmJoint, 2f, 0.05f * jiggleController.rotationPointY, false, 0, 0, frame, 1);
+            swing(neck, 0.5f, 0.1f * jiggleController.rotationPointY, false, 0, 0, frame, 1);
+            swing(head, 0.5f, 0.1f * jiggleController.rotationPointY, false, 0, 0, frame, 1);
+            walk(leftThigh, 0.5f, 0.15f * jiggleController.rotationPointY * (1 - liftLegs), false, 0, 0, frame, 1);
+            walk(rightThigh, 0.5f, 0.15f * jiggleController.rotationPointY * (1 - liftLegs), true, 0, 0, frame, 1);
+            flap(body, 0.5f, 0.05f * jiggleController.rotationPointY * (1 - liftLegs), true, 0, 0, frame, 1);
+            jawScaler.rotationPointX += 0.1 * jiggleController.rotationPointY * Math.cos(frame * 2);
+        }
+
         if (tribeleader.getAnimID() == -3) {
             animator.setAnim(-3);
             animator.startPhase(2);
@@ -906,7 +1005,7 @@ public class ModelTribeLeader extends MowzieModelBase {
             animator.resetPhase(10);
         }
 
-            float jiggleSpeed = 2.5f;
+        float jiggleSpeed = 2.5f;
         float jiggleScale = (float) (jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame));
         float breathScale = (float)(0.05 + 0.02 * Math.cos(0.06 * frame));
         float scaler = bellyScaler.rotationPointX + jiggleScale + breathScale;
@@ -920,17 +1019,17 @@ public class ModelTribeLeader extends MowzieModelBase {
             headdress7.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame);
         }
 
-        body.setScaleX(scaler);
+        body.setScaleX(scaler * (1 - bellyScaler.rotationPointY));
         chest.setScaleX(1 / scaler);
         rightThigh.setScaleX(1 / scaler);
         leftThigh.setScaleX(1 / scaler);
 
-        body.setScaleY(scaler);
+        body.setScaleY(scaler * (1 - bellyScaler.rotationPointY));
         chest.setScaleY(1 / scaler);
         rightThigh.setScaleY(1 / scaler);
         leftThigh.setScaleY(1 / scaler);
 
-        body.setScaleZ(scaler);
+        body.setScaleZ(scaler * (1 - bellyScaler.rotationPointY));
         chest.setScaleZ(1 / scaler);
         rightThigh.setScaleZ(1 / scaler);
         leftThigh.setScaleZ(1 / scaler);
@@ -963,5 +1062,9 @@ public class ModelTribeLeader extends MowzieModelBase {
         rightLip.setScaleX(1/mouthScaleX);
         maskMouth.setScaleY(mouthScaleY);
         forehead.setScaleY(foreheadScale);
+
+        maskBase.setScaleX(1/(1 - bellyScaler.rotationPointY));
+        maskBase.setScaleY(1/(1 - bellyScaler.rotationPointY));
+        maskBase.setScaleZ(1/(1 - bellyScaler.rotationPointY));
     }
 }

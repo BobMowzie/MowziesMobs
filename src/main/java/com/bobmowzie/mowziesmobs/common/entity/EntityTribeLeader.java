@@ -38,6 +38,7 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
 
     public EntityTribeLeader(World world) {
         super(world);
+        deathLength = 130;
         targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
         tasks.addTask(4, new AINearestAttackableTargetBarakoa(this, EntityPlayer.class, 0, false));
         tasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityZombie.class, 0, false));
@@ -50,7 +51,7 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
         tasks.addTask(3, new AnimTakeDamage(this, 13));
         tasks.addTask(1, new AnimDie(this, deathLength));
         this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-//        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityTribesman.class, 8.0F));
+        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityTribesman.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
         setSize(1.5f, 2.4f);
         if (getDirection() == 0) setDirection(rand.nextInt(4) + 1);
@@ -188,6 +189,10 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
         }
 
         if (timeUntilSunstrike > 0) timeUntilSunstrike--;
+//        if (getAnimID() == 0) {
+//            AnimationAPI.sendAnimPacket(this, -2);
+//            playSound("mowziesmobs:barakoDie", 1.4f, 1);
+//        }
     }
 
     private boolean checkBlocksByFeet()
