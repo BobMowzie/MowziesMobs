@@ -36,8 +36,8 @@ public class MMWorldGenerator implements IWorldGenerator
 
     private void tryWroughtChamber(World world, Random random, int x, int z, int chance)
     {
+        if (chance <= 0) return;
         int xzCheckDistance = 10;
-
         if (random.nextInt(chance) == 0)
         {
             for (int y = 50; y >= 30; y--)

@@ -100,7 +100,9 @@ public class MMEntities implements IContentHandler
         registerEntity(EntityTribeElite.class, "TribesmanElite", true, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.monster);
         registerEntity(EntityTribeVillager.class, "TribesmanVillager", true, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.creature);
         registerEntity(EntityTribeLeader.class, "TribeLeader", true, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.monster);
+
         EntityRegistry.registerModEntity(EntitySunstrike.class, "Sunstrike", nextEntityId(), MowziesMobs.instance, 64, 1, true);
+        EntityRegistry.registerModEntity(EntitySolarBeam.class, "SolarBeam", nextEntityId(), MowziesMobs.instance, 64, 1, true);
 
         EntityRegistry.registerModEntity(EntityDart.class, "dart", nextEntityId(), MowziesMobs.instance, 64, 1, true);
     }
