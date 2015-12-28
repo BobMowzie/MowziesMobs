@@ -45,9 +45,9 @@ public class EntitySolarBeam extends Entity {
     public void onUpdate() {
         super.onUpdate();
         calculateEndPos();
-        if (ticksExisted > 100) setDead();
+//        if (ticksExisted > 100) setDead();
         List<Entity> hit = raytraceEntities(worldObj, Vec3.createVectorHelper(posX, posY, posZ), Vec3.createVectorHelper(endPosX, endPosY, endPosZ), true, true, false).entities;
-        for (int i = 0; i < hit.size(); i++) hit.get(i).attackEntityFrom(DamageSource.onFire, 3);
+        if (!worldObj.isRemote) for (int i = 0; i < hit.size(); i++) hit.get(i).attackEntityFrom(DamageSource.onFire, 3);
 //        System.out.println("Start: " + posX + ", " + posY + ", " + posZ + "  End: " + endPosX + ", " + endPosY + ", " + endPosZ);
     }
 
@@ -66,8 +66,8 @@ public class EntitySolarBeam extends Entity {
     }
 
     private void calculateEndPos() {
-        endPosZ = posZ + RADIUS * Math.sin(yaw) * Math.cos(pitch);
         endPosX = posX + RADIUS * Math.cos(yaw) * Math.cos(pitch);
+        endPosZ = posZ + RADIUS * Math.sin(yaw) * Math.cos(pitch);
         endPosY = posY + RADIUS * Math.sin(pitch);
     }
 
@@ -91,7 +91,7 @@ public class EntitySolarBeam extends Entity {
 
     public HitResult raytraceEntities(World world, Vec3 from, Vec3 to, boolean stopOnLiquid, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock) {
         HitResult result = new HitResult();
-        result.setBlockHit(world.func_147447_a(from, to, stopOnLiquid, ignoreBlockWithoutBoundingBox, returnLastUncollidableBlock));
+        result.setBlockHit(world.func_147447_a(Vec3.createVectorHelper(from.xCoord, from.yCoord, from.zCoord), to, stopOnLiquid, ignoreBlockWithoutBoundingBox, returnLastUncollidableBlock));
         List<Entity> entities = world.selectEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(from.xCoord, from.yCoord, from.zCoord, to.xCoord, to.yCoord, to.zCoord).expand(1, 1, 1), new IEntitySelector() {
             @Override
             public boolean isEntityApplicable(Entity entity) {
@@ -109,5 +109,23 @@ public class EntitySolarBeam extends Entity {
             }
         }
         return result;
+    }
+
+    @Override
+    public boolean canBeCollidedWith()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean canBePushed()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isInRangeToRenderDist(double distance)
+    {
+        return distance < 1024;
     }
 }

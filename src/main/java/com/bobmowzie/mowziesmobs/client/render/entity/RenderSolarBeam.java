@@ -22,9 +22,12 @@ public class RenderSolarBeam extends Render {
 
     private static final double START_RADIUS = 1.3;
 
+    private static final double BEAM_RADIUS = 1;
+
     @Override
     public void doRender(Entity entity, double x, double y, double z, float yaw, float delta) {
         EntitySolarBeam solarBeam = (EntitySolarBeam) entity;
+        double length = Math.sqrt(Math.pow(solarBeam.endPosX - solarBeam.posX, 2) + Math.pow(solarBeam.endPosY-solarBeam.posY, 2) + Math.pow(solarBeam.endPosZ - solarBeam.posZ, 2));
         GL11.glPushMatrix();
         GL11.glTranslated(x, y, z);
         setupGL();
@@ -36,10 +39,15 @@ public class RenderSolarBeam extends Render {
         GL11.glRotatef(renderManager.playerViewX, -1, 0, 0);
         GL11.glRotatef(-renderManager.playerViewY, 0, -1, 0);
 
+        renderBeam(length, 180/Math.PI * solarBeam.yaw, 180/Math.PI * solarBeam.pitch, 8);
+
         GL11.glTranslated(solarBeam.endPosX - solarBeam.posX, solarBeam.endPosY - solarBeam.posY, solarBeam.endPosZ - solarBeam.posZ);
         GL11.glRotatef(-renderManager.playerViewY, 0, 1, 0);
         GL11.glRotatef(renderManager.playerViewX, 1, 0, 0);
         renderEnd();
+        GL11.glRotatef(renderManager.playerViewX, -1, 0, 0);
+        GL11.glRotatef(-renderManager.playerViewY, 0, -1, 0);
+
         revertGL();
         GL11.glPopMatrix();
     }
@@ -77,6 +85,45 @@ public class RenderSolarBeam extends Render {
         t.addVertexWithUV(START_RADIUS, -START_RADIUS, 0, maxU, minV);
         GL11.glDepthMask(false);
         t.draw();
+        GL11.glDepthMask(true);
+    }
+
+    private void renderBeam(double length, double yaw, double pitch, int frame) {
+        double minU = 0;
+        double minV = 0.5 + 1/TEXTURE_HEIGHT * frame;
+        double maxU = minU + 20/TEXTURE_WIDTH;
+        double maxV = minV + 1/TEXTURE_HEIGHT;
+        Tessellator t = Tessellator.instance;
+        t.startDrawingQuads();
+        t.setBrightness(240);
+        t.setColorRGBA_F(1, 1, 1, 1);
+        t.addVertexWithUV(-BEAM_RADIUS, 0, 0, minU, minV);
+        t.addVertexWithUV(-BEAM_RADIUS, length, 0, minU, maxV);
+        t.addVertexWithUV(BEAM_RADIUS, length, 0, maxU, maxV);
+        t.addVertexWithUV(BEAM_RADIUS, 0, 0, maxU, minV);
+        GL11.glDepthMask(false);
+        GL11.glRotatef(-90, 0, 0, 1);
+        GL11.glRotatef((float) pitch, 0, 0, 1);
+        GL11.glRotatef((float) yaw, 1, 0, 0);
+        GL11.glRotatef(renderManager.playerViewX, 0, 1, 0);
+        t.draw();
+        GL11.glRotatef(-renderManager.playerViewX, 0, 1, 0);
+
+        t.startDrawingQuads();
+        t.setBrightness(240);
+        t.setColorRGBA_F(1, 1, 1, 1);
+        t.addVertexWithUV(-BEAM_RADIUS, 0, 0, minU, minV);
+        t.addVertexWithUV(-BEAM_RADIUS, length, 0, minU, maxV);
+        t.addVertexWithUV(BEAM_RADIUS, length, 0, maxU, maxV);
+        t.addVertexWithUV(BEAM_RADIUS, 0, 0, maxU, minV);
+        GL11.glRotatef(-renderManager.playerViewX, 0, 1, 0);
+        GL11.glRotatef(180, 0, 1, 0);
+        t.draw();
+        GL11.glRotatef(-180, 0, 1, 0);
+        GL11.glRotatef(renderManager.playerViewX, 0, 1, 0);
+        GL11.glRotatef((float) -yaw, 1, 0, 0);
+        GL11.glRotatef((float) -pitch, 0, 0, 1);
+        GL11.glRotatef(90, 0, 0, 1);
         GL11.glDepthMask(true);
     }
 
