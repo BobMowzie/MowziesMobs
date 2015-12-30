@@ -68,19 +68,35 @@ public class EntitySolarBeam extends Entity {
                         if (target != caster) target.attackEntityFrom(DamageSource.onFire, 3);
                     }
                 }
-                int particleCount = 4;
-                while (--particleCount != 0) {
-                    double radius = 2f;
-                    double yaw = rand.nextFloat() * 2 * Math.PI;
-                    double pitch = rand.nextFloat() * 2 * Math.PI;
-                    double ox = radius * Math.sin(yaw) * Math.sin(pitch);
-                    double oy = radius * Math.cos(pitch);
-                    double oz = radius * Math.cos(yaw) * Math.sin(pitch);
-                    EffectRenderer effectRenderer = Minecraft.getMinecraft().effectRenderer;
-                    double offsetX;
-                    double offsetY;
-                    double offsetZ;
-                    effectRenderer.addEffect(new EntityOrbFX(worldObj, collidePosX, collidePosY, collidePosZ, collidePosX + ox, collidePosY + oy, collidePosZ + oz, 10));
+                if (ticksExisted - 15 < getDuration()) {
+                    int particleCount = 4;
+                    while (--particleCount != 0) {
+                        double radius = 1f;
+                        double yaw = rand.nextFloat() * 2 * Math.PI;
+                        double pitch = rand.nextFloat() * 2 * Math.PI;
+                        double ox = radius * Math.sin(yaw) * Math.sin(pitch);
+                        double oy = radius * Math.cos(pitch);
+                        double oz = radius * Math.cos(yaw) * Math.sin(pitch);
+                        EffectRenderer effectRenderer = Minecraft.getMinecraft().effectRenderer;
+                        double o2x = -1 * Math.cos(getYaw()) * Math.cos(getPitch());
+                        double o2y = -1 * Math.sin(getPitch());
+                        double o2z = -1 * Math.sin(getYaw()) * Math.cos(getPitch());
+                        effectRenderer.addEffect(new EntityOrbFX(worldObj, posX + o2x + ox, posY + o2y + oy, posZ + o2z + oz, collidePosX + o2x + ox, collidePosY + o2y + oy, collidePosZ + o2z + oz, 15));
+                    }
+                    int particleCount2 = 4;
+                    while (--particleCount2 != 0) {
+                        double radius = 2f;
+                        double yaw = rand.nextFloat() * 2 * Math.PI;
+                        double pitch = rand.nextFloat() * 2 * Math.PI;
+                        double ox = radius * Math.sin(yaw) * Math.sin(pitch);
+                        double oy = radius * Math.cos(pitch);
+                        double oz = radius * Math.cos(yaw) * Math.sin(pitch);
+                        EffectRenderer effectRenderer = Minecraft.getMinecraft().effectRenderer;
+                        double o2x = -1 * Math.cos(getYaw()) * Math.cos(getPitch());
+                        double o2y = -1 * Math.sin(getPitch());
+                        double o2z = -1 * Math.sin(getYaw()) * Math.cos(getPitch());
+                        effectRenderer.addEffect(new EntityOrbFX(worldObj, collidePosX + o2x, collidePosY + o2y, collidePosZ + o2z, collidePosX + o2x + ox, collidePosY + o2y + oy, collidePosZ + o2z + oz, 20));
+                    }
                 }
             }
         } else if (!worldObj.isRemote && ticksExisted <= 10) {
