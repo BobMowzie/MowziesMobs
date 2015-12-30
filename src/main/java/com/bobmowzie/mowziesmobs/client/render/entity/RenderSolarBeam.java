@@ -1,17 +1,13 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
-import net.minecraft.client.renderer.RenderGlobal;
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.common.entity.EntitySolarBeam;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
-
 import org.lwjgl.opengl.GL11;
-
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.common.entity.EntitySolarBeam;
 
 /**
  * Created by jnad325 on 12/26/15.
@@ -35,23 +31,6 @@ public class RenderSolarBeam extends Render {
         double length = Math.sqrt(Math.pow(solarBeam.collidePosX - solarBeam.posX, 2) + Math.pow(solarBeam.collidePosY-solarBeam.posY, 2) + Math.pow(solarBeam.collidePosZ - solarBeam.posZ, 2));
         int frame = MathHelper.floor_double((solarBeam.appear.getTimer() - 1 + delta) * 2);
         if (frame < 0) frame = 6;
-        if (solarBeam.collidePosY != 0) {
-            AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(Math.min(solarBeam.posX, solarBeam.collidePosX), Math.min(solarBeam.posY, solarBeam.collidePosY), Math.min(solarBeam.posZ, solarBeam.collidePosZ), Math.max(solarBeam.posX, solarBeam.collidePosX), Math.max(solarBeam.posY, solarBeam.collidePosY), Math.max(solarBeam.posZ, solarBeam.collidePosZ)).expand(1, 1, 1);
-//            System.out.printf("%s %s %s\n", x, y, z);
-//            new Exception().printStackTrace();
-            GL11.glDisable(GL11.GL_TEXTURE_2D);
-            GL11.glDisable(GL11.GL_LIGHTING);
-            GL11.glDisable(GL11.GL_CULL_FACE);
-            GL11.glDisable(GL11.GL_BLEND);
-            GL11.glPushMatrix();
-            GL11.glTranslated(-solarBeam.posX + x, -solarBeam.posY + y, -solarBeam.posZ + z);
-            RenderGlobal.drawOutlinedBoundingBox(aabb, -1);
-            GL11.glPopMatrix();
-            GL11.glEnable(GL11.GL_TEXTURE_2D);
-            GL11.glEnable(GL11.GL_LIGHTING);
-            GL11.glEnable(GL11.GL_CULL_FACE);
-            GL11.glDisable(GL11.GL_BLEND);
-        }
         GL11.glPushMatrix();
         GL11.glTranslated(x, y, z);
         setupGL();

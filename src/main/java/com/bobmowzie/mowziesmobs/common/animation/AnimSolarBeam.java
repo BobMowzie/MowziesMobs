@@ -33,8 +33,8 @@ public class AnimSolarBeam extends MMAnimBase {
         if (animatingEntity.getAnimTick() >= 4) {
             float radius2 = 1.2f;
             double x = animatingEntity.posX + radius1 * Math.sin(-animatingEntity.rotationYaw * Math.PI / 180) + radius2 * Math.sin(-animatingEntity.rotationYawHead * Math.PI/180) * Math.cos(-animatingEntity.rotationPitch * Math.PI/180);
-            double y = animatingEntity.posY + 1.4 + radius2 * Math.cos(-animatingEntity.rotationYawHead * Math.PI/180) * Math.cos(-animatingEntity.rotationPitch * Math.PI/180);
-            double z = animatingEntity.posZ + radius1 * Math.cos(-animatingEntity.rotationYaw * Math.PI / 180) + radius2 * Math.sin(-animatingEntity.rotationPitch * Math.PI/180);
+            double y = animatingEntity.posY + 1.4 + radius2 * Math.sin(-animatingEntity.rotationPitch * Math.PI / 180);
+            double z = animatingEntity.posZ + radius1 * Math.cos(-animatingEntity.rotationYaw * Math.PI / 180) + radius2 * Math.cos(-animatingEntity.rotationYawHead * Math.PI/180) * Math.cos(-animatingEntity.rotationPitch * Math.PI / 180);
             solarBeam.setPosition(x, y, z);
 
             float yaw = animatingEntity.rotationYawHead + 90;

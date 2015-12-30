@@ -102,5 +102,6 @@
         ]
     },
     "barakoBurst": {"category": "hostile","sounds": [{"name": "barakoBurst","stream": false}]},
-    "sunstrike": {"category": "master","sounds": [{"name": "sunstrike","stream": false}]}
+    "sunstrike": {"category": "master","sounds": [{"name": "sunstrike","stream": false}]},
+    "laser": {"category": "master","sounds": [{"name": "laser","stream": false}]}
 }

@@ -2,12 +2,9 @@ package com.bobmowzie.mowziesmobs.common.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.client.particle.EntityOrbFX;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EffectRenderer;
-import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
@@ -25,7 +22,7 @@ public class EntitySolarBeam extends Entity {
     public double endPosX, endPosY, endPosZ;
     public double collidePosX, collidePosY, collidePosZ;
 
-    private final double RADIUS = 15;
+    private final double RADIUS = 20;
 
     public ControlledAnimation appear = new ControlledAnimation(3);
 
@@ -48,6 +45,7 @@ public class EntitySolarBeam extends Entity {
         setDuration(duration);
         setPosition(x, y, z);
         calculateEndPos();
+        playSound("mowziesmobs:laser", 2f, 1);
     }
 
     @Override
@@ -62,7 +60,6 @@ public class EntitySolarBeam extends Entity {
         if (ticksExisted > 20) {
             calculateEndPos();
             List<EntityLivingBase> hit = raytraceEntities(worldObj, Vec3.createVectorHelper(posX, posY, posZ), Vec3.createVectorHelper(endPosX, endPosY, endPosZ), false, true, true).entities;
-//            System.out.printf("%s %s\n", hit.size(), worldObj.isRemote);
             if (blockSide != -1) spawnExplosionParticles(2);
             if (!worldObj.isRemote) {
                 for (EntityLivingBase target : hit) {
@@ -219,7 +216,7 @@ public class EntitySolarBeam extends Entity {
             if (entity == caster) {
                 continue;
             }
-            float pad = entity.getCollisionBorderSize();
+            float pad = entity.getCollisionBorderSize() + 0.5f;
             AxisAlignedBB aabb = entity.boundingBox.expand(pad, pad, pad);
             MovingObjectPosition hit = aabb.calculateIntercept(from, to);
             if (aabb.isVecInside(from)) {
