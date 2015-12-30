@@ -18,7 +18,7 @@ public class MMTabs implements IContentHandler
             @SideOnly(Side.CLIENT)
             public Item getTabIconItem()
             {
-                return MMItems.itemFoliaathSeed;
+                return MMItems.itemBarakoaMasks[0];
             }
         };
     }

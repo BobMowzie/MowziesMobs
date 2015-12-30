@@ -1,8 +1,6 @@
 package com.bobmowzie.mowziesmobs.common.item;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.common.entity.ItemMMSpawnEgg;
-
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.ilexiconn.llibrary.common.content.IContentHandler;
 import net.minecraft.item.Item;
@@ -38,9 +36,10 @@ public class MMItems implements IContentHandler
 
     public void gameRegistry() throws Exception
     {
+        GameRegistry.registerItem(itemSpawnEgg, "spawnEgg");
+
         GameRegistry.registerItem(itemFoliaathSeed, "foliaathseed");
         GameRegistry.registerItem(itemWroughtAxe, "wroughtaxe");
-        GameRegistry.registerItem(itemMobRemover, "mobremover");
         GameRegistry.registerItem(itemWroughtHelm, "wroughthelm");
         for (int i = 0; i < itemBarakoaMasks.length; i++)
         {
@@ -49,11 +48,8 @@ public class MMItems implements IContentHandler
         GameRegistry.registerItem(itemDart, "dart");
         GameRegistry.registerItem(itemSpear, "spear");
         GameRegistry.registerItem(itemBlowgun, "blowgun");
-        GameRegistry.registerItem(itemSpawnEgg, "spawnEgg");
 
-        if (MowziesMobs.isDebugging())
-        {
-            GameRegistry.registerItem(itemTestStructure, "teststructure");
-        }
+        GameRegistry.registerItem(itemMobRemover, "mobremover");
+        GameRegistry.registerItem(itemTestStructure, "teststructure");
     }
 }

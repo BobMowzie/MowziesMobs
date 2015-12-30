@@ -33,6 +33,7 @@ item.barakoaMask5.name=Mask of Misery
 item.dart.name=Dart
 item.spear.name=Spear
 item.blowgun.name=Blowgun
+item.testStructure.name=Test Structures
 
 //Blocks========================================================
 tile.paintedAcacia.name=Painted Acacia Wood

@@ -1,7 +1,6 @@
 package com.bobmowzie.mowziesmobs.common.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.common.creativetab.MMTabs;
 import com.bobmowzie.mowziesmobs.common.entity.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.common.gen.structure.barakoa.StructureBarakoThrone;
 import com.bobmowzie.mowziesmobs.common.gen.structure.barakoa.StructureBarakoaHouse;
@@ -25,7 +24,7 @@ public class ItemTestStructure extends Item
     public ItemTestStructure()
     {
         super();
-        setCreativeTab(MMTabs.generic);
+        setUnlocalizedName("testStructure");
     }
 
     @Override
