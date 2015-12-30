@@ -58,6 +58,11 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
         if (getDirection() == 0) setDirection(rand.nextInt(4) + 1);
     }
 
+    @Override
+    public float getEyeHeight() {
+        return 1.4f;
+    }
+
     public EntityTribeLeader(World world, int direction) {
         this(world);
         setDirection(direction);
@@ -125,6 +130,7 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
     @Override
     public void onUpdate() {
         super.onUpdate();
+        if (getAnimID() == 0) AnimationAPI.sendAnimPacket(this, 7);
         if (ticksExisted == 1) direction = getDirection();
         repelEntities(2.2f, 2.5f, 2.2f, 2.2f);
         rotationYaw = (direction - 1) * 90;
@@ -188,9 +194,7 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
                 }
             }
         }
-
         if (timeUntilSunstrike > 0) timeUntilSunstrike--;
-        if (getAnimID() == 0) AnimationAPI.sendAnimPacket(this, 7);
     }
 
     private boolean checkBlocksByFeet()

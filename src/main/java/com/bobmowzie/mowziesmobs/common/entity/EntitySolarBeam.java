@@ -22,7 +22,6 @@ public class EntitySolarBeam extends Entity {
 
     public double endPosX, endPosY, endPosZ;
     public double collidePosX, collidePosY, collidePosZ;
-    public double yaw, pitch;
 
     private final double RADIUS = 15;
 
@@ -39,11 +38,12 @@ public class EntitySolarBeam extends Entity {
         ignoreFrustumCheck = true;
     }
 
-    public EntitySolarBeam(World world, EntityLivingBase caster, double x, double y, double z, double yaw, double pitch) {
+    public EntitySolarBeam(World world, EntityLivingBase caster, double x, double y, double z, float yaw, float pitch, int duration) {
         this(world);
         this.caster = caster;
-        this.yaw = yaw;
-        this.pitch = pitch;
+        setYaw(yaw);
+        setPitch(pitch);
+        setDuration(duration);
         setPosition(x, y, z);
         calculateEndPos();
     }
@@ -51,11 +51,6 @@ public class EntitySolarBeam extends Entity {
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (caster != null) {
-            yaw = caster.rotationYawHead * Math.PI/180;
-            yaw = caster.rotationPitch * Math.PI/180;
-        }
-        System.out.println(yaw);
         if (!on && appear.getTimer() == 0) setDead();
         if (on) appear.increaseTimer();
         else appear.decreaseTimer();
@@ -68,16 +63,43 @@ public class EntitySolarBeam extends Entity {
             }
         }
 
-        if (ticksExisted > 70) on = false;
+        if (ticksExisted > getDuration()) on = false;
     }
 
     @Override
     protected void entityInit() {
+        dataWatcher.addObject(2, 0f);
+        dataWatcher.addObject(3, 0f);
+        dataWatcher.addObject(4, 0);
+    }
+
+    public void setYaw(float yaw) {
+        dataWatcher.updateObject(2, yaw);
+    }
+
+    public double getYaw() {
+        return dataWatcher.getWatchableObjectFloat(2);
+    }
+
+    public void setPitch(float pitch) {
+        dataWatcher.updateObject(3, pitch);
+    }
+
+    public double getPitch() {
+        return dataWatcher.getWatchableObjectFloat(3);
+    }
+
+    public void setDuration(int duration) {
+        dataWatcher.updateObject(4, duration);
+    }
+
+    public double getDuration() {
+        return dataWatcher.getWatchableObjectInt(4);
     }
 
     @Override
     protected void readEntityFromNBT(NBTTagCompound p_70037_1_) {
-
+        setDead();
     }
 
     @Override
@@ -86,9 +108,9 @@ public class EntitySolarBeam extends Entity {
     }
 
     private void calculateEndPos() {
-        endPosX = posX + RADIUS * Math.cos(yaw) * Math.cos(pitch);
-        endPosZ = posZ + RADIUS * Math.sin(yaw) * Math.cos(pitch);
-        endPosY = posY + RADIUS * Math.sin(pitch);
+        endPosX = posX + RADIUS * Math.cos(getYaw()) * Math.cos(getPitch());
+        endPosZ = posZ + RADIUS * Math.sin(getYaw()) * Math.cos(getPitch());
+        endPosY = posY + RADIUS * Math.sin(getPitch());
     }
 
     public static class HitResult {

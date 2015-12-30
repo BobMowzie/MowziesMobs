@@ -38,7 +38,7 @@ public class RenderSolarBeam extends Render {
 
         GL11.glDepthMask(false);
         renderStart(frame);
-        renderBeam(length, 180/Math.PI * solarBeam.yaw, 180/Math.PI * solarBeam.pitch, frame);
+        renderBeam(length, 180/Math.PI * solarBeam.getYaw(), 180/Math.PI * solarBeam.getPitch(), frame);
         GL11.glTranslated(solarBeam.collidePosX - solarBeam.posX, solarBeam.collidePosY - solarBeam.posY, solarBeam.collidePosZ - solarBeam.posZ);
         renderEnd(frame, -1);
         GL11.glDepthMask(true);
@@ -46,7 +46,7 @@ public class RenderSolarBeam extends Render {
 
         GL11.glColorMask(false, false, false, true);
         renderStart(frame);
-        renderBeam(length, 180/Math.PI * solarBeam.yaw, 180/Math.PI * solarBeam.pitch, frame);
+        renderBeam(length, 180/Math.PI * solarBeam.getYaw(), 180/Math.PI * solarBeam.getPitch(), frame);
         GL11.glTranslated(solarBeam.collidePosX - solarBeam.posX, solarBeam.collidePosY - solarBeam.posY, solarBeam.collidePosZ - solarBeam.posZ);
         renderEnd(frame, -1);
         GL11.glColorMask(true, true, true, true);

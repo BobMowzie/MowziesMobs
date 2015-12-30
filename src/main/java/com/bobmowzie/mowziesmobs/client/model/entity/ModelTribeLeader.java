@@ -323,8 +323,11 @@ public class ModelTribeLeader extends MowzieModelBase {
         float liftLegs = tribeLeader.legsUp.getAnimationProgressSinSqrt();
         float frame = tribeLeader.frame + AnimationAPI.proxy.getPartialTick();
 
-        faceTarget(neckJoint, 2, f3, f4);
-        faceTarget(headJoint, 2, f3, f4);
+        if (tribeLeader.getAnimID() != 7) {
+            faceTarget(neckJoint, 2, f3, f4);
+            faceTarget(headJoint, 2, f3, f4);
+        }
+        else faceTarget(head, 1, f3, f4);
 
         if (tribeLeader.getAnimID() != -2) {
             walk(body, 0.06f, 0.05f, true, 0, -0.05f, frame, 1f);
@@ -913,7 +916,7 @@ public class ModelTribeLeader extends MowzieModelBase {
             animator.setStationaryPhase(7);
             animator.startPhase(4);
             animator.move(bellyScaler, -0.1f, 0, 0);
-            animator.move(jiggleController, 0.7f, 0, 0);
+            animator.move(jiggleController, 0.7f, 1, 0);
             animator.move(mouthScalerX, 0.5f, 0, 0);
             animator.move(jawScaler, 2f, 0, 0);
             animator.rotate(neckJoint, 0.3f, 0, 0);
