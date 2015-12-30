@@ -14,7 +14,6 @@ public class AnimSolarBeam extends MMAnimBase {
 
     public AnimSolarBeam(IAnimatedEntity entity, int id, int duration) {
         super(entity, id, duration);
-        setMutexBits(8);
     }
 
     public void startExecuting()
