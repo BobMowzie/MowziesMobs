@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -25,6 +26,12 @@ public class EntitySolarBeam extends Entity {
 
     private final double RADIUS = 15;
 
+    public ControlledAnimation appear = new ControlledAnimation(3);
+
+    public boolean on = true;
+
+    int blockSide = -1;
+
     public EntitySolarBeam(World world)
     {
         super(world);
@@ -44,11 +51,24 @@ public class EntitySolarBeam extends Entity {
     @Override
     public void onUpdate() {
         super.onUpdate();
+        if (caster != null) {
+            yaw = caster.rotationYawHead * Math.PI/180;
+            yaw = caster.rotationPitch * Math.PI/180;
+        }
+        System.out.println(yaw);
+        if (!on && appear.getTimer() == 0) setDead();
+        if (on) appear.increaseTimer();
+        else appear.decreaseTimer();
         calculateEndPos();
-//        if (ticksExisted > 100) setDead();
-        List<Entity> hit = raytraceEntities(worldObj, Vec3.createVectorHelper(posX, posY, posZ), Vec3.createVectorHelper(endPosX, endPosY, endPosZ), true, true, false).entities;
-        if (!worldObj.isRemote) for (int i = 0; i < hit.size(); i++) hit.get(i).attackEntityFrom(DamageSource.onFire, 3);
-//        System.out.println("Start: " + posX + ", " + posY + ", " + posZ + "  End: " + endPosX + ", " + endPosY + ", " + endPosZ);
+        List<Entity> hit = raytraceEntities(worldObj, Vec3.createVectorHelper(posX, posY, posZ), Vec3.createVectorHelper(endPosX, endPosY, endPosZ), false, true, true).entities;
+        if (!worldObj.isRemote) for (int i = 0; i < hit.size(); i++) {
+            if (hit.get(i) instanceof EntityLivingBase) {
+                EntityLivingBase target = (EntityLivingBase) hit.get(i);
+                if (target != caster) target.attackEntityFrom(DamageSource.onFire, 3);
+            }
+        }
+
+        if (ticksExisted > 70) on = false;
     }
 
     @Override
@@ -92,7 +112,19 @@ public class EntitySolarBeam extends Entity {
     public HitResult raytraceEntities(World world, Vec3 from, Vec3 to, boolean stopOnLiquid, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock) {
         HitResult result = new HitResult();
         result.setBlockHit(world.func_147447_a(Vec3.createVectorHelper(from.xCoord, from.yCoord, from.zCoord), to, stopOnLiquid, ignoreBlockWithoutBoundingBox, returnLastUncollidableBlock));
-        List<Entity> entities = world.selectEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(from.xCoord, from.yCoord, from.zCoord, to.xCoord, to.yCoord, to.zCoord).expand(1, 1, 1), new IEntitySelector() {
+        if (result.blockHit != null) {
+            collidePosX = result.blockHit.hitVec.xCoord;
+            collidePosY = result.blockHit.hitVec.yCoord;
+            collidePosZ = result.blockHit.hitVec.zCoord;
+            blockSide = result.blockHit.sideHit;
+        }
+        else {
+            collidePosX = endPosX;
+            collidePosY = endPosY;
+            collidePosZ = endPosZ;
+            blockSide = -1;
+        }
+        List<Entity> entities = world.selectEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(from.xCoord, from.yCoord, from.zCoord, collidePosX, collidePosY, collidePosZ).expand(1, 1, 1), new IEntitySelector() {
             @Override
             public boolean isEntityApplicable(Entity entity) {
                 return entity.canBeCollidedWith();

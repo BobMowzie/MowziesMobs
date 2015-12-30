@@ -5,6 +5,7 @@ import com.bobmowzie.mowziesmobs.common.entity.EntitySolarBeam;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
@@ -27,36 +28,40 @@ public class RenderSolarBeam extends Render {
     @Override
     public void doRender(Entity entity, double x, double y, double z, float yaw, float delta) {
         EntitySolarBeam solarBeam = (EntitySolarBeam) entity;
-        double length = Math.sqrt(Math.pow(solarBeam.endPosX - solarBeam.posX, 2) + Math.pow(solarBeam.endPosY-solarBeam.posY, 2) + Math.pow(solarBeam.endPosZ - solarBeam.posZ, 2));
+        double length = Math.sqrt(Math.pow(solarBeam.collidePosX - solarBeam.posX, 2) + Math.pow(solarBeam.collidePosY-solarBeam.posY, 2) + Math.pow(solarBeam.collidePosZ - solarBeam.posZ, 2));
+        int frame = MathHelper.floor_double((solarBeam.appear.getTimer() - 1 + delta) * 2);
+        if (frame < 0) frame = 6;
         GL11.glPushMatrix();
         GL11.glTranslated(x, y, z);
         setupGL();
         bindEntityTexture(solarBeam);
 
-        GL11.glRotatef(-renderManager.playerViewY, 0, 1, 0);
-        GL11.glRotatef(renderManager.playerViewX, 1, 0, 0);
-        renderStart();
-        GL11.glRotatef(renderManager.playerViewX, -1, 0, 0);
-        GL11.glRotatef(-renderManager.playerViewY, 0, -1, 0);
+        GL11.glDepthMask(false);
+        renderStart(frame);
+        renderBeam(length, 180/Math.PI * solarBeam.yaw, 180/Math.PI * solarBeam.pitch, frame);
+        GL11.glTranslated(solarBeam.collidePosX - solarBeam.posX, solarBeam.collidePosY - solarBeam.posY, solarBeam.collidePosZ - solarBeam.posZ);
+        renderEnd(frame, -1);
+        GL11.glDepthMask(true);
+        GL11.glTranslated(solarBeam.posX - solarBeam.collidePosX, solarBeam.posY - solarBeam.collidePosY, solarBeam.posZ - solarBeam.collidePosZ);
 
-        renderBeam(length, 180/Math.PI * solarBeam.yaw, 180/Math.PI * solarBeam.pitch, 8);
-
-        GL11.glTranslated(solarBeam.endPosX - solarBeam.posX, solarBeam.endPosY - solarBeam.posY, solarBeam.endPosZ - solarBeam.posZ);
-        GL11.glRotatef(-renderManager.playerViewY, 0, 1, 0);
-        GL11.glRotatef(renderManager.playerViewX, 1, 0, 0);
-        renderEnd();
-        GL11.glRotatef(renderManager.playerViewX, -1, 0, 0);
-        GL11.glRotatef(-renderManager.playerViewY, 0, -1, 0);
+        GL11.glColorMask(false, false, false, true);
+        renderStart(frame);
+        renderBeam(length, 180/Math.PI * solarBeam.yaw, 180/Math.PI * solarBeam.pitch, frame);
+        GL11.glTranslated(solarBeam.collidePosX - solarBeam.posX, solarBeam.collidePosY - solarBeam.posY, solarBeam.collidePosZ - solarBeam.posZ);
+        renderEnd(frame, -1);
+        GL11.glColorMask(true, true, true, true);
 
         revertGL();
         GL11.glPopMatrix();
     }
 
-    private void renderStart() {
-        double minU = 0;
+    private void renderStart(int frame) {
+        GL11.glRotatef(-renderManager.playerViewY, 0, 1, 0);
+        GL11.glRotatef(renderManager.playerViewX, 1, 0, 0);
+        double minU = 0 + 16D/TEXTURE_WIDTH * frame;
         double minV = 0;
-        double maxU = minU + 0.0625;
-        double maxV = minV + 0.5;
+        double maxU = minU + 16D/TEXTURE_WIDTH;
+        double maxV = minV + 16D/TEXTURE_HEIGHT;
         Tessellator t = Tessellator.instance;
         t.startDrawingQuads();
         t.setBrightness(240);
@@ -65,16 +70,18 @@ public class RenderSolarBeam extends Render {
         t.addVertexWithUV(-START_RADIUS, START_RADIUS, 0, minU, maxV);
         t.addVertexWithUV(START_RADIUS, START_RADIUS, 0, maxU, maxV);
         t.addVertexWithUV(START_RADIUS, -START_RADIUS, 0, maxU, minV);
-        GL11.glDepthMask(false);
         t.draw();
-        GL11.glDepthMask(true);
+        GL11.glRotatef(renderManager.playerViewX, -1, 0, 0);
+        GL11.glRotatef(-renderManager.playerViewY, 0, -1, 0);
     }
 
-    private void renderEnd() {
-        double minU = 0;
+    private void renderEnd(int frame, int side) {
+        GL11.glRotatef(-renderManager.playerViewY, 0, 1, 0);
+        GL11.glRotatef(renderManager.playerViewX, 1, 0, 0);
+        double minU = 0 + 16D/TEXTURE_WIDTH * frame;
         double minV = 0;
-        double maxU = minU + 0.0625;
-        double maxV = minV + 0.5;
+        double maxU = minU + 16D/TEXTURE_WIDTH;
+        double maxV = minV + 16D/TEXTURE_HEIGHT;
         Tessellator t = Tessellator.instance;
         t.startDrawingQuads();
         t.setBrightness(240);
@@ -83,14 +90,14 @@ public class RenderSolarBeam extends Render {
         t.addVertexWithUV(-START_RADIUS, START_RADIUS, 0, minU, maxV);
         t.addVertexWithUV(START_RADIUS, START_RADIUS, 0, maxU, maxV);
         t.addVertexWithUV(START_RADIUS, -START_RADIUS, 0, maxU, minV);
-        GL11.glDepthMask(false);
         t.draw();
-        GL11.glDepthMask(true);
+        GL11.glRotatef(renderManager.playerViewX, -1, 0, 0);
+        GL11.glRotatef(-renderManager.playerViewY, 0, -1, 0);
     }
 
     private void renderBeam(double length, double yaw, double pitch, int frame) {
         double minU = 0;
-        double minV = 0.5 + 1/TEXTURE_HEIGHT * frame;
+        double minV = 16/TEXTURE_HEIGHT + 1/TEXTURE_HEIGHT * frame;
         double maxU = minU + 20/TEXTURE_WIDTH;
         double maxV = minV + 1/TEXTURE_HEIGHT;
         Tessellator t = Tessellator.instance;
@@ -101,7 +108,6 @@ public class RenderSolarBeam extends Render {
         t.addVertexWithUV(-BEAM_RADIUS, length, 0, minU, maxV);
         t.addVertexWithUV(BEAM_RADIUS, length, 0, maxU, maxV);
         t.addVertexWithUV(BEAM_RADIUS, 0, 0, maxU, minV);
-        GL11.glDepthMask(false);
         GL11.glRotatef(-90, 0, 0, 1);
         GL11.glRotatef((float) pitch, 0, 0, 1);
         GL11.glRotatef((float) yaw, 1, 0, 0);
@@ -124,7 +130,6 @@ public class RenderSolarBeam extends Render {
         GL11.glRotatef((float) -yaw, 1, 0, 0);
         GL11.glRotatef((float) -pitch, 0, 0, 1);
         GL11.glRotatef(90, 0, 0, 1);
-        GL11.glDepthMask(true);
     }
 
     private void setupGL()

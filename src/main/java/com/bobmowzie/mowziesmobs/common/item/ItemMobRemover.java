@@ -33,9 +33,10 @@ public class ItemMobRemover extends Item
     @Override
     public boolean onItemUse(ItemStack heldItemStack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
     {
+        EntitySolarBeam solarBeam = new EntitySolarBeam(world, player, x, y + 2, z, 2, 0);
+
         if (!world.isRemote)
         {
-            EntitySolarBeam solarBeam = new EntitySolarBeam(world, player, x, y + 2, z, 0, 0);
             world.spawnEntityInWorld(solarBeam);
         }
         return true;

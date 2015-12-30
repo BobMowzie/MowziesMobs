@@ -48,6 +48,7 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
         tasks.addTask(2, new AnimSunStrike(this, 4, 26));
         tasks.addTask(2, new AnimRadiusAttack(this, 5, 42, 5, 5, 4.5f, 22));
         tasks.addTask(2, new AnimSpawnBarakoa(this, 6, 35));
+        tasks.addTask(2, new AnimSolarBeam(this, 7, 100));
         tasks.addTask(3, new AnimTakeDamage(this, 13));
         tasks.addTask(1, new AnimDie(this, deathLength));
         this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
@@ -100,11 +101,11 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
                 else if (i == 4) playSound("mowziesmobs:barakoAngry4", 1.4f, 1);
                 else if (i == 5) playSound("mowziesmobs:barakoAngry5", 1.4f, 1);
                 else if (i == 6) playSound("mowziesmobs:barakoAngry6", 1.4f, 1);
-                if (i < 7)
-                {
-                    setWhichDialogue(i);
-                    AnimationAPI.sendAnimPacket(this, 3);
-                }
+//                if (i < 7)
+//                {
+//                    setWhichDialogue(i);
+//                    AnimationAPI.sendAnimPacket(this, 3);
+//                }
             }
         }
         return null;
@@ -189,10 +190,7 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
         }
 
         if (timeUntilSunstrike > 0) timeUntilSunstrike--;
-//        if (getAnimID() == 0) {
-//            AnimationAPI.sendAnimPacket(this, -2);
-//            playSound("mowziesmobs:barakoDie", 1.4f, 1);
-//        }
+        if (getAnimID() == 0) AnimationAPI.sendAnimPacket(this, 7);
     }
 
     private boolean checkBlocksByFeet()

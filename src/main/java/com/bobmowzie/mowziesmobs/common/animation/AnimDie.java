@@ -28,6 +28,5 @@ public class AnimDie extends MMAnimBase
     @Override
     public void updateTask() {
         super.updateTask();
-        System.out.println("Dying");
     }
 }
