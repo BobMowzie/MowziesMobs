@@ -64,7 +64,7 @@ public class EntitySolarBeam extends Entity {
         }
 
         if (ticksExisted > getDuration()) on = false;
-        if (caster == null) setDead();
+//        if (caster == null) setDead();
     }
 
     @Override
