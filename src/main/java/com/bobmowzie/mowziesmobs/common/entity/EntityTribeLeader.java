@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.particle.EntityOrbFX;
 import com.bobmowzie.mowziesmobs.common.ai.AINearestAttackableTargetBarakoa;
 import com.bobmowzie.mowziesmobs.common.animation.*;
+import com.bobmowzie.mowziesmobs.common.item.ItemTestStructure;
 import net.ilexiconn.llibrary.client.model.modelbase.ControlledAnimation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
@@ -18,6 +19,8 @@ import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import thehippomaster.AnimationAPI.AnimationAPI;
@@ -32,9 +35,14 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
     private boolean blocksByFeet = true;
     public int whichDialogue = 0;
     private int timeUntilSunstrike = 0;
+    private int timeUntilLaser = 0;
     public int barakoaSpawnCount = 0;
 
     private static final int SUNSTRIKE_PAUSE = 60;
+
+    private static final int LASER_PAUSE = 180;
+
+    private boolean pacified = false;
 
     public EntityTribeLeader(World world) {
         super(world);
@@ -72,7 +80,7 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
     {
         super.applyEntityAttributes();
         getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(1.0);
-        getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(50);
+        getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(100);
     }
 
     @Override
@@ -130,7 +138,7 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (getAnimID() == 0) AnimationAPI.sendAnimPacket(this, 7);
+        if (pacified) setAttackTarget(null);
         if (ticksExisted == 1) direction = getDirection();
         repelEntities(2.2f, 2.5f, 2.2f, 2.2f);
         rotationYaw = (direction - 1) * 90;
@@ -145,9 +153,12 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
                 AnimationAPI.sendAnimPacket(this, 4);
                 timeUntilSunstrike = SUNSTRIKE_PAUSE;
             }
+            else if (getAnimID() == 0 && getHealth() <= 50 && timeUntilLaser <= 0 && rand.nextInt(60) == 0 && (Math.abs(targetAngle - rotationYaw + 180) < 60 || Math.abs(targetAngle - rotationYaw + 180) < -300)) {
+                AnimationAPI.sendAnimPacket(this, 7);
+                timeUntilLaser = LASER_PAUSE;
+            }
             else if (getAnimID() == 0 && targetDistance <= 5) AnimationAPI.sendAnimPacket(this, 5);
-            else if (getAnimID() == 0 && rand.nextInt(150) == 0 && targetDistance > 5)
-                AnimationAPI.sendAnimPacket(this, 6);
+            else if (getAnimID() == 0 && rand.nextInt(100) == 0 && targetDistance > 5) AnimationAPI.sendAnimPacket(this, 6);
         }
         else {
              if (!worldObj.isRemote) setAngry(0);
@@ -164,7 +175,7 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
         if (getAngry() == 1) angryEyebrow.increaseTimer();
         else angryEyebrow.decreaseTimer();
 
-        if (getAnimID() == 0 && rand.nextInt(200) == 0) AnimationAPI.sendAnimPacket(this, 1);
+        if (getAnimID() == 0 && getAttackTarget() == null && rand.nextInt(200) == 0) AnimationAPI.sendAnimPacket(this, 1);
 
         if (getAnimID() == 1 && (getAnimTick() == 9 || getAnimTick() == 29)) playSound("mowziesmobs:barakoBelly", 1.4f, 1f);
 
@@ -194,7 +205,9 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
                 }
             }
         }
+        if (getAttackTarget() == null) addPotionEffect(new PotionEffect(Potion.regeneration.id, 1, 1, true));
         if (timeUntilSunstrike > 0) timeUntilSunstrike--;
+        if (timeUntilLaser > 0) timeUntilLaser--;
     }
 
     private boolean checkBlocksByFeet()
@@ -288,5 +301,11 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
     protected void func_145780_a(int p_145780_1_, int p_145780_2_, int p_145780_3_, Block p_145780_4_)
     {
 
+    }
+
+    @Override
+    protected boolean interact(EntityPlayer player) {
+        if (player.getHeldItem().getItem() instanceof ItemTestStructure) pacified = true;
+        return super.interact(player);
     }
 }

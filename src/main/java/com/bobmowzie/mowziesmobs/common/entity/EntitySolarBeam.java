@@ -63,6 +63,7 @@ public class EntitySolarBeam extends Entity {
             if (blockSide != -1) spawnExplosionParticles(2);
             if (!worldObj.isRemote) {
                 for (EntityLivingBase target : hit) {
+                    if (caster instanceof EntityTribeLeader && target instanceof LeaderSunstrikeImmune) continue;
                     target.attackEntityFrom(DamageSource.onFire, 3);
                 }
                 if (ticksExisted - 15 < getDuration()) {
@@ -211,7 +212,6 @@ public class EntitySolarBeam extends Entity {
             blockSide = -1;
         }
         List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(Math.min(posX, collidePosX), Math.min(posY, collidePosY), Math.min(posZ, collidePosZ), Math.max(posX, collidePosX), Math.max(posY, collidePosY), Math.max(posZ, collidePosZ)).expand(1, 1, 1));
-//        System.out.printf("%s\n", entities.size());
         for (EntityLivingBase entity : entities) {
             if (entity == caster) {
                 continue;
