@@ -40,7 +40,7 @@ public class RenderSolarBeam extends Render {
         renderStart(frame);
         renderBeam(length, 180/Math.PI * solarBeam.getYaw(), 180/Math.PI * solarBeam.getPitch(), frame);
         GL11.glTranslated(solarBeam.collidePosX - solarBeam.posX, solarBeam.collidePosY - solarBeam.posY, solarBeam.collidePosZ - solarBeam.posZ);
-        renderEnd(frame, -1);
+        renderEnd(frame, solarBeam.blockSide);
         GL11.glDepthMask(true);
         GL11.glTranslated(solarBeam.posX - solarBeam.collidePosX, solarBeam.posY - solarBeam.collidePosY, solarBeam.posZ - solarBeam.collidePosZ);
 
@@ -93,6 +93,54 @@ public class RenderSolarBeam extends Render {
         t.draw();
         GL11.glRotatef(renderManager.playerViewX, -1, 0, 0);
         GL11.glRotatef(-renderManager.playerViewY, 0, -1, 0);
+        if (side == -1) return;
+        t.startDrawingQuads();
+        t.setBrightness(240);
+        t.setColorRGBA_F(1, 1, 1, 1);
+        t.addVertexWithUV(-START_RADIUS, -START_RADIUS, 0, minU, minV);
+        t.addVertexWithUV(-START_RADIUS, START_RADIUS, 0, minU, maxV);
+        t.addVertexWithUV(START_RADIUS, START_RADIUS, 0, maxU, maxV);
+        t.addVertexWithUV(START_RADIUS, -START_RADIUS, 0, maxU, minV);
+        if (side == 5) {
+            GL11.glRotatef(270, 0, 1, 0);
+            GL11.glTranslatef(0, 0, -0.01f);
+            t.draw();
+            GL11.glTranslatef(0, 0, 0.01f);
+            GL11.glRotatef(-270, 0, 1, 0);
+        }
+        if (side == 4) {
+            GL11.glRotatef(90, 0, 1, 0);
+            GL11.glTranslatef(0, 0, -0.01f);
+            t.draw();
+            GL11.glTranslatef(0, 0, 0.01f);
+            GL11.glRotatef(-90, 0, 1, 0);
+        }
+        if (side == 3) {
+            GL11.glRotatef(180, 0, 1, 0);
+            GL11.glTranslatef(0, 0, -0.01f);
+            t.draw();
+            GL11.glTranslatef(0, 0, 0.01f);
+            GL11.glRotatef(-180, 0, 1, 0);
+        }
+        if (side == 2) {
+            GL11.glTranslatef(0, 0, -0.01f);
+            t.draw();
+            GL11.glTranslatef(0, 0, 0.01f);
+        }
+        if (side == 0) {
+            GL11.glRotatef(-90, 1, 0, 0);
+            GL11.glTranslatef(0, 0, -0.01f);
+            t.draw();
+            GL11.glTranslatef(0, 0, 0.01f);
+            GL11.glRotatef(90, 1, 0, 0);
+        }
+        if (side == 1) {
+            GL11.glRotatef(90, 1, 0, 0);
+            GL11.glTranslatef(0, 0, -0.01f);
+            t.draw();
+            GL11.glTranslatef(0, 0, 0.01f);
+            GL11.glRotatef(-90, 1, 0, 0);
+        }
     }
 
     private void renderBeam(double length, double yaw, double pitch, int frame) {
@@ -109,8 +157,8 @@ public class RenderSolarBeam extends Render {
         t.addVertexWithUV(BEAM_RADIUS, length, 0, maxU, maxV);
         t.addVertexWithUV(BEAM_RADIUS, 0, 0, maxU, minV);
         GL11.glRotatef(-90, 0, 0, 1);
-        GL11.glRotatef((float) pitch, 0, 0, 1);
         GL11.glRotatef((float) yaw, 1, 0, 0);
+        GL11.glRotatef((float) pitch, 0, 0, 1);
         GL11.glRotatef(renderManager.playerViewX, 0, 1, 0);
         t.draw();
         GL11.glRotatef(-renderManager.playerViewX, 0, 1, 0);
@@ -127,8 +175,8 @@ public class RenderSolarBeam extends Render {
         t.draw();
         GL11.glRotatef(-180, 0, 1, 0);
         GL11.glRotatef(renderManager.playerViewX, 0, 1, 0);
-        GL11.glRotatef((float) -yaw, 1, 0, 0);
         GL11.glRotatef((float) -pitch, 0, 0, 1);
+        GL11.glRotatef((float) -yaw, 1, 0, 0);
         GL11.glRotatef(90, 0, 0, 1);
     }
 

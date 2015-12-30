@@ -1,14 +1,14 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
+import com.bobmowzie.mowziesmobs.client.particle.EntityOrbFX;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class EntitySolarBeam extends Entity {
 
     public boolean on = true;
 
-    int blockSide = -1;
+    public int blockSide = -1;
 
     public EntitySolarBeam(World world)
     {
@@ -51,20 +51,70 @@ public class EntitySolarBeam extends Entity {
     @Override
     public void onUpdate() {
         super.onUpdate();
+//        setPitch((float) (getPitch() + 0.02));
+//        setYaw((float) (getYaw() + 0.02));
         if (!on && appear.getTimer() == 0) setDead();
-        if (on) appear.increaseTimer();
+        if (on && ticksExisted > 20) appear.increaseTimer();
         else appear.decreaseTimer();
-        calculateEndPos();
-        List<Entity> hit = raytraceEntities(worldObj, Vec3.createVectorHelper(posX, posY, posZ), Vec3.createVectorHelper(endPosX, endPosY, endPosZ), false, true, true).entities;
-        if (!worldObj.isRemote) for (int i = 0; i < hit.size(); i++) {
-            if (hit.get(i) instanceof EntityLivingBase) {
-                EntityLivingBase target = (EntityLivingBase) hit.get(i);
-                if (target != caster) target.attackEntityFrom(DamageSource.onFire, 3);
+
+        if (ticksExisted > 20) {
+            calculateEndPos();
+            List<Entity> hit = raytraceEntities(worldObj, Vec3.createVectorHelper(posX, posY, posZ), Vec3.createVectorHelper(endPosX, endPosY, endPosZ), false, true, true).entities;
+            if (blockSide != -1) spawnExplosionParticles(2);
+            if (!worldObj.isRemote) {
+                for (int i = 0; i < hit.size(); i++) {
+                    if (hit.get(i) instanceof EntityLivingBase) {
+                        EntityLivingBase target = (EntityLivingBase) hit.get(i);
+                        if (target != caster) target.attackEntityFrom(DamageSource.onFire, 3);
+                    }
+                }
+                int particleCount = 4;
+                while (--particleCount != 0) {
+                    double radius = 2f;
+                    double yaw = rand.nextFloat() * 2 * Math.PI;
+                    double pitch = rand.nextFloat() * 2 * Math.PI;
+                    double ox = radius * Math.sin(yaw) * Math.sin(pitch);
+                    double oy = radius * Math.cos(pitch);
+                    double oz = radius * Math.cos(yaw) * Math.sin(pitch);
+                    EffectRenderer effectRenderer = Minecraft.getMinecraft().effectRenderer;
+                    double offsetX;
+                    double offsetY;
+                    double offsetZ;
+                    effectRenderer.addEffect(new EntityOrbFX(worldObj, collidePosX, collidePosY, collidePosZ, collidePosX + ox, collidePosY + oy, collidePosZ + oz, 10));
+                }
+            }
+        } else if (!worldObj.isRemote && ticksExisted <= 10) {
+            int particleCount = 8;
+            while (--particleCount != 0) {
+                double radius = 2f;
+                double yaw = rand.nextFloat() * 2 * Math.PI;
+                double pitch = rand.nextFloat() * 2 * Math.PI;
+                double ox = radius * Math.sin(yaw) * Math.sin(pitch);
+                double oy = radius * Math.cos(pitch);
+                double oz = radius * Math.cos(yaw) * Math.sin(pitch);
+                EffectRenderer effectRenderer = Minecraft.getMinecraft().effectRenderer;
+                double offsetX = -3 * Math.cos(getYaw());
+                double offsetZ = -3 * Math.sin(getYaw());
+                effectRenderer.addEffect(new EntityOrbFX(worldObj, posX + ox + offsetX, posY + oy + 0.3, posZ + oz + offsetZ, posX + offsetX, posY + 0.3, posZ + offsetZ, 10));
             }
         }
+        if (ticksExisted - 20 > getDuration()) on = false;
+    }
 
-        if (ticksExisted > getDuration()) on = false;
-//        if (caster == null) setDead();
+    private void spawnExplosionParticles(int amount) {
+        for (int i = 0; i < amount; i++)
+        {
+            final float velocity = 0.1F;
+            float yaw = (float) (rand.nextFloat() * 2 * Math.PI);
+            float vy = rand.nextFloat() * 0.08F;
+            float vx = velocity * MathHelper.cos(yaw);
+            float vz = velocity * MathHelper.sin(yaw);
+            worldObj.spawnParticle("flame", collidePosX, collidePosY + 0.1, collidePosZ, vx, vy, vz);
+        }
+        for (int i = 0; i < amount / 2; i++)
+        {
+            worldObj.spawnParticle("lava", collidePosX, collidePosY + 0.1, collidePosZ, 0, 0, 0);
+        }
     }
 
     @Override
@@ -136,6 +186,7 @@ public class EntitySolarBeam extends Entity {
         HitResult result = new HitResult();
         result.setBlockHit(world.func_147447_a(Vec3.createVectorHelper(from.xCoord, from.yCoord, from.zCoord), to, stopOnLiquid, ignoreBlockWithoutBoundingBox, returnLastUncollidableBlock));
         if (result.blockHit != null) {
+            System.out.println("BlockHit");
             collidePosX = result.blockHit.hitVec.xCoord;
             collidePosY = result.blockHit.hitVec.yCoord;
             collidePosZ = result.blockHit.hitVec.zCoord;
