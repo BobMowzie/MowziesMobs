@@ -2,10 +2,12 @@ package com.bobmowzie.mowziesmobs.common.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.client.particle.EntityOrbFX;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
@@ -59,14 +61,12 @@ public class EntitySolarBeam extends Entity {
 
         if (ticksExisted > 20) {
             calculateEndPos();
-            List<Entity> hit = raytraceEntities(worldObj, Vec3.createVectorHelper(posX, posY, posZ), Vec3.createVectorHelper(endPosX, endPosY, endPosZ), false, true, true).entities;
+            List<EntityLivingBase> hit = raytraceEntities(worldObj, Vec3.createVectorHelper(posX, posY, posZ), Vec3.createVectorHelper(endPosX, endPosY, endPosZ), false, true, true).entities;
+//            System.out.printf("%s %s\n", hit.size(), worldObj.isRemote);
             if (blockSide != -1) spawnExplosionParticles(2);
             if (!worldObj.isRemote) {
-                for (int i = 0; i < hit.size(); i++) {
-                    if (hit.get(i) instanceof EntityLivingBase) {
-                        EntityLivingBase target = (EntityLivingBase) hit.get(i);
-                        if (target != caster) target.attackEntityFrom(DamageSource.onFire, 3);
-                    }
+                for (EntityLivingBase target : hit) {
+                    target.attackEntityFrom(DamageSource.onFire, 3);
                 }
                 if (ticksExisted - 15 < getDuration()) {
                     int particleCount = 4;
@@ -183,7 +183,7 @@ public class EntitySolarBeam extends Entity {
     public static class HitResult {
         private MovingObjectPosition blockHit;
 
-        private List<Entity> entities = new ArrayList<Entity>();
+        private List<EntityLivingBase> entities = new ArrayList<EntityLivingBase>();
 
         public void setBlockHit(MovingObjectPosition blockHit) {
             this.blockHit = blockHit;
@@ -193,7 +193,7 @@ public class EntitySolarBeam extends Entity {
             return blockHit;
         }
 
-        public void addEntityHit(Entity entity) {
+        public void addEntityHit(EntityLivingBase entity) {
             entities.add(entity);
         }
     }
@@ -202,7 +202,6 @@ public class EntitySolarBeam extends Entity {
         HitResult result = new HitResult();
         result.setBlockHit(world.func_147447_a(Vec3.createVectorHelper(from.xCoord, from.yCoord, from.zCoord), to, stopOnLiquid, ignoreBlockWithoutBoundingBox, returnLastUncollidableBlock));
         if (result.blockHit != null) {
-            System.out.println("BlockHit");
             collidePosX = result.blockHit.hitVec.xCoord;
             collidePosY = result.blockHit.hitVec.yCoord;
             collidePosZ = result.blockHit.hitVec.zCoord;
@@ -214,13 +213,12 @@ public class EntitySolarBeam extends Entity {
             collidePosZ = endPosZ;
             blockSide = -1;
         }
-        List<Entity> entities = world.selectEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(from.xCoord, from.yCoord, from.zCoord, collidePosX, collidePosY, collidePosZ).expand(1, 1, 1), new IEntitySelector() {
-            @Override
-            public boolean isEntityApplicable(Entity entity) {
-                return entity.canBeCollidedWith();
+        List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(Math.min(posX, collidePosX), Math.min(posY, collidePosY), Math.min(posZ, collidePosZ), Math.max(posX, collidePosX), Math.max(posY, collidePosY), Math.max(posZ, collidePosZ)).expand(1, 1, 1));
+//        System.out.printf("%s\n", entities.size());
+        for (EntityLivingBase entity : entities) {
+            if (entity == caster) {
+                continue;
             }
-        });
-        for (Entity entity : entities) {
             float pad = entity.getCollisionBorderSize();
             AxisAlignedBB aabb = entity.boundingBox.expand(pad, pad, pad);
             MovingObjectPosition hit = aabb.calculateIntercept(from, to);
