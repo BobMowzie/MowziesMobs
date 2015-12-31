@@ -1,14 +1,11 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
-import com.bobmowzie.mowziesmobs.client.audio.MovingSoundSuntrike;
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
-import com.bobmowzie.mowziesmobs.client.particle.EntityOrbFX;
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockSlab;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -144,11 +141,10 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         {
             if (strikeTime == 0)
             {
-                Minecraft.getMinecraft().getSoundHandler().playSound(new MovingSoundSuntrike(this));
+                MowziesMobs.proxy.playSunstrikeSound(this);
             }
             else if (strikeTime < STRIKE_EXPLOSION - 10)
             {
-                EffectRenderer effectRenderer = Minecraft.getMinecraft().effectRenderer;
                 float time = getStrikeTime(1);
                 int timeBonus = (int) (time * 5);
                 int orbCount = rand.nextInt(4 + timeBonus) + timeBonus + 1;
@@ -161,7 +157,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
                     float oz = r * MathHelper.sin(theta);
                     final float minY = 0.1F;
                     float oy = rand.nextFloat() * (time * 6 - minY) + minY;
-                    effectRenderer.addEffect(new EntityOrbFX(worldObj, posX + ox, posY + oy, posZ + oz, posX, posZ));
+                    MowziesMobs.proxy.spawnOrbFX(worldObj, posX + ox, posY + oy, posZ + oz, posX, posZ);
                 }
             }
             else if (strikeTime > STRIKE_EXPLOSION)

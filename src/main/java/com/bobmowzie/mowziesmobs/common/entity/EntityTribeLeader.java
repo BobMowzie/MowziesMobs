@@ -1,15 +1,13 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
-import com.bobmowzie.mowziesmobs.client.particle.EntityOrbFX;
 import com.bobmowzie.mowziesmobs.common.ai.AINearestAttackableTargetBarakoa;
 import com.bobmowzie.mowziesmobs.common.animation.*;
 import com.bobmowzie.mowziesmobs.common.item.ItemTestStructure;
-import net.ilexiconn.llibrary.client.model.modelbase.ControlledAnimation;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
@@ -151,7 +149,7 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
                 AnimationAPI.sendAnimPacket(this, 4);
                 timeUntilSunstrike = SUNSTRIKE_PAUSE;
             }
-            else if (getAnimID() == 0 && getHealth() <= 50 && timeUntilLaser <= 0 && rand.nextInt(60) == 0 && (Math.abs(targetAngle - rotationYaw + 180) < 60 || Math.abs(targetAngle - rotationYaw + 180) < -300)) {
+            else if (getAnimID() == 0 && getHealth() <= 70 && timeUntilLaser <= 0 && rand.nextInt(70) == 0 && (Math.abs(targetAngle - rotationYaw + 180) < 60 || Math.abs(targetAngle - rotationYaw + 180) < -300)) {
                 AnimationAPI.sendAnimPacket(this, 7);
                 timeUntilLaser = LASER_PAUSE;
             }
@@ -183,10 +181,10 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
             rotationYawHead = rotationYaw;
             if (getAnimTick() == 1) playSound("mowziesmobs:barakoBurst", 1.5f, 1.1f);
             if (getAnimTick() == 20) {
-                spawnExplosionParticles(30);
+                if (worldObj.isRemote) spawnExplosionParticles(30);
                 playSound("mowziesmobs:barakoAttack", 1.5f, 0.9f);
             }
-            if (getAnimTick() <= 10 && !worldObj.isRemote) {
+            if (getAnimTick() <= 10 && worldObj.isRemote) {
                 int particleCount = 8;
                 while(--particleCount != 0) {
                     double radius = 2f;
@@ -195,15 +193,14 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
                     double ox = radius * Math.sin(yaw) * Math.sin(pitch);
                     double oy = radius * Math.cos(pitch);
                     double oz = radius * Math.cos(yaw) * Math.sin(pitch);
-                    EffectRenderer effectRenderer = Minecraft.getMinecraft().effectRenderer;
                     double offsetX = -0.3 * Math.sin(rotationYaw * Math.PI/180);
                     double offsetZ = -0.3 * Math.cos(rotationYaw * Math.PI/180);
                     double offsetY = 1;
-                    effectRenderer.addEffect(new EntityOrbFX(worldObj, posX + ox + offsetX, posY + offsetY + oy, posZ + oz + offsetZ, posX+ offsetX, posY + offsetY, posZ + offsetZ, 10));
+                    MowziesMobs.proxy.spawnOrbFX(worldObj, posX + ox + offsetX, posY + offsetY + oy, posZ + oz + offsetZ, posX+ offsetX, posY + offsetY, posZ + offsetZ, 10);
                 }
             }
         }
-        if (!worldObj.isRemote && getAttackTarget() == null) heal(0.2f);
+        if (!worldObj.isRemote && getAttackTarget() == null && getAnimID() != 7) heal(0.2f);
         if (timeUntilSunstrike > 0) timeUntilSunstrike--;
         if (timeUntilLaser > 0) timeUntilLaser--;
     }

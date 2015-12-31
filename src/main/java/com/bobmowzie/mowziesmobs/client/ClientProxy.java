@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.audio.MovingSoundSuntrike;
 import com.bobmowzie.mowziesmobs.client.debug.ModelGrapher;
 import com.bobmowzie.mowziesmobs.client.model.entity.*;
 import com.bobmowzie.mowziesmobs.client.model.extension.ModelPlayerExtension;
@@ -8,6 +9,7 @@ import com.bobmowzie.mowziesmobs.client.model.item.ModelBarakoaMask;
 import com.bobmowzie.mowziesmobs.client.model.item.ModelWroughtAxe;
 import com.bobmowzie.mowziesmobs.client.model.item.ModelWroughtHelm;
 import com.bobmowzie.mowziesmobs.client.particle.EntityMMFX;
+import com.bobmowzie.mowziesmobs.client.particle.EntityOrbFX;
 import com.bobmowzie.mowziesmobs.client.playeranimation.PlayerAnimationHandlerClient;
 import com.bobmowzie.mowziesmobs.client.render.entity.*;
 import com.bobmowzie.mowziesmobs.common.ServerProxy;
@@ -19,8 +21,11 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.ilexiconn.llibrary.client.render.RenderHelper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
 @SideOnly(Side.CLIENT)
@@ -74,5 +79,22 @@ public class ClientProxy extends ServerProxy
         case 1:
             return modelBarakoaMask;
         }
+    }
+
+    @Override
+    public void playSunstrikeSound(EntitySunstrike strike) {
+        Minecraft.getMinecraft().getSoundHandler().playSound(new MovingSoundSuntrike(strike));
+    }
+
+    @Override
+    public void spawnOrbFX(World world, double x, double y, double z, double targetX, double targetZ) {
+        EffectRenderer effectRenderer = Minecraft.getMinecraft().effectRenderer;
+        effectRenderer.addEffect(new EntityOrbFX(world, x, y, z, targetX, targetZ));
+    }
+
+    @Override
+    public void spawnOrbFX(World world, double x, double y, double z, double targetX, double targetY, double targetZ, double speed) {
+        EffectRenderer effectRenderer = Minecraft.getMinecraft().effectRenderer;
+        effectRenderer.addEffect(new EntityOrbFX(world, x, y, z, targetX, targetY, targetZ, speed));
     }
 }

@@ -1,9 +1,7 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
-import com.bobmowzie.mowziesmobs.client.particle.EntityOrbFX;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -57,6 +55,20 @@ public class EntitySolarBeam extends Entity {
         if (on && ticksExisted > 20) appear.increaseTimer();
         else appear.decreaseTimer();
 
+        if (worldObj.isRemote && ticksExisted <= 10) {
+            int particleCount = 8;
+            while (--particleCount != 0) {
+                double radius = 2f;
+                double yaw = rand.nextFloat() * 2 * Math.PI;
+                double pitch = rand.nextFloat() * 2 * Math.PI;
+                double ox = radius * Math.sin(yaw) * Math.sin(pitch);
+                double oy = radius * Math.cos(pitch);
+                double oz = radius * Math.cos(yaw) * Math.sin(pitch);
+                double offsetX = -2 * Math.cos(getYaw());
+                double offsetZ = -2 * Math.sin(getYaw());
+                MowziesMobs.proxy.spawnOrbFX(worldObj, posX + ox + offsetX, posY + oy + 0.3, posZ + oz + offsetZ, posX + offsetX, posY + 0.3, posZ + offsetZ, 10);
+            }
+        }
         if (ticksExisted > 20) {
             calculateEndPos();
             List<EntityLivingBase> hit = raytraceEntities(worldObj, Vec3.createVectorHelper(posX, posY, posZ), Vec3.createVectorHelper(endPosX, endPosY, endPosZ), false, true, true).entities;
@@ -66,6 +78,7 @@ public class EntitySolarBeam extends Entity {
                     if (caster instanceof EntityTribeLeader && target instanceof LeaderSunstrikeImmune) continue;
                     target.attackEntityFrom(DamageSource.onFire, 3);
                 }
+            } else {
                 if (ticksExisted - 15 < getDuration()) {
                     int particleCount = 4;
                     while (--particleCount != 0) {
@@ -75,11 +88,10 @@ public class EntitySolarBeam extends Entity {
                         double ox = radius * Math.sin(yaw) * Math.sin(pitch);
                         double oy = radius * Math.cos(pitch);
                         double oz = radius * Math.cos(yaw) * Math.sin(pitch);
-                        EffectRenderer effectRenderer = Minecraft.getMinecraft().effectRenderer;
                         double o2x = -1 * Math.cos(getYaw()) * Math.cos(getPitch());
                         double o2y = -1 * Math.sin(getPitch());
                         double o2z = -1 * Math.sin(getYaw()) * Math.cos(getPitch());
-                        effectRenderer.addEffect(new EntityOrbFX(worldObj, posX + o2x + ox, posY + o2y + oy, posZ + o2z + oz, collidePosX + o2x + ox, collidePosY + o2y + oy, collidePosZ + o2z + oz, 15));
+                        MowziesMobs.proxy.spawnOrbFX(worldObj, posX + o2x + ox, posY + o2y + oy, posZ + o2z + oz, collidePosX + o2x + ox, collidePosY + o2y + oy, collidePosZ + o2z + oz, 15);
                     }
                     int particleCount2 = 4;
                     while (--particleCount2 != 0) {
@@ -89,27 +101,12 @@ public class EntitySolarBeam extends Entity {
                         double ox = radius * Math.sin(yaw) * Math.sin(pitch);
                         double oy = radius * Math.cos(pitch);
                         double oz = radius * Math.cos(yaw) * Math.sin(pitch);
-                        EffectRenderer effectRenderer = Minecraft.getMinecraft().effectRenderer;
                         double o2x = -1 * Math.cos(getYaw()) * Math.cos(getPitch());
                         double o2y = -1 * Math.sin(getPitch());
                         double o2z = -1 * Math.sin(getYaw()) * Math.cos(getPitch());
-                        effectRenderer.addEffect(new EntityOrbFX(worldObj, collidePosX + o2x, collidePosY + o2y, collidePosZ + o2z, collidePosX + o2x + ox, collidePosY + o2y + oy, collidePosZ + o2z + oz, 20));
+                        MowziesMobs.proxy.spawnOrbFX(worldObj, collidePosX + o2x, collidePosY + o2y, collidePosZ + o2z, collidePosX + o2x + ox, collidePosY + o2y + oy, collidePosZ + o2z + oz, 20);
                     }
                 }
-            }
-        } else if (!worldObj.isRemote && ticksExisted <= 10) {
-            int particleCount = 8;
-            while (--particleCount != 0) {
-                double radius = 2f;
-                double yaw = rand.nextFloat() * 2 * Math.PI;
-                double pitch = rand.nextFloat() * 2 * Math.PI;
-                double ox = radius * Math.sin(yaw) * Math.sin(pitch);
-                double oy = radius * Math.cos(pitch);
-                double oz = radius * Math.cos(yaw) * Math.sin(pitch);
-                EffectRenderer effectRenderer = Minecraft.getMinecraft().effectRenderer;
-                double offsetX = -3 * Math.cos(getYaw());
-                double offsetZ = -3 * Math.sin(getYaw());
-                effectRenderer.addEffect(new EntityOrbFX(worldObj, posX + ox + offsetX, posY + oy + 0.3, posZ + oz + offsetZ, posX + offsetX, posY + 0.3, posZ + offsetZ, 10));
             }
         }
         if (ticksExisted - 20 > getDuration()) on = false;
