@@ -1,12 +1,13 @@
 package com.bobmowzie.mowziesmobs.common.potion;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
-
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 
 public class MMPotion extends Potion
 {
@@ -43,6 +44,7 @@ public class MMPotion extends Potion
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void renderInventoryEffect(int x, int y, PotionEffect effect, Minecraft mc)
     {
         mc.getTextureManager().bindTexture(TEXTURE);
