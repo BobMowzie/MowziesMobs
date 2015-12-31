@@ -19,8 +19,6 @@ import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import thehippomaster.AnimationAPI.AnimationAPI;
@@ -205,7 +203,7 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
                 }
             }
         }
-        if (getAttackTarget() == null) addPotionEffect(new PotionEffect(Potion.regeneration.id, 1, 1, true));
+        if (!worldObj.isRemote && getAttackTarget() == null) heal(0.2f);
         if (timeUntilSunstrike > 0) timeUntilSunstrike--;
         if (timeUntilLaser > 0) timeUntilLaser--;
     }
