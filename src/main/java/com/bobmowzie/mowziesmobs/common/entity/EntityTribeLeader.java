@@ -145,16 +145,25 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
         if (getAttackTarget() != null) {
             EntityLivingBase target = getAttackTarget();
             setAngry(1);
+
+            float entityHitAngle = (float) ((Math.atan2(target.posZ - posZ, target.posX - posX) * (180 / Math.PI) - 90) % 360);
+            float entityAttackingAngle = rotationYaw % 360;
+            if (entityHitAngle < 0) entityHitAngle += 360;
+            if (entityAttackingAngle < 0) entityAttackingAngle += 360;
+            float entityRelativeAngle = Math.abs(entityHitAngle - entityAttackingAngle);
+
             if (getAnimID() == 0 && timeUntilSunstrike <= 0 && targetDistance > 5) {
                 AnimationAPI.sendAnimPacket(this, 4);
                 timeUntilSunstrike = SUNSTRIKE_PAUSE;
             }
-            else if (getAnimID() == 0 && getHealth() <= 70 && timeUntilLaser <= 0 && rand.nextInt(70) == 0 && (Math.abs(targetAngle - rotationYaw + 180) < 60 || Math.abs(targetAngle - rotationYaw + 180) < -300)) {
+            else if (getAnimID() == 0 && getHealth() <= 70 && timeUntilLaser <= 0 && (entityRelativeAngle < 60 || entityRelativeAngle > 300)) {
                 AnimationAPI.sendAnimPacket(this, 7);
                 timeUntilLaser = LASER_PAUSE;
             }
             else if (getAnimID() == 0 && targetDistance <= 5) AnimationAPI.sendAnimPacket(this, 5);
             else if (getAnimID() == 0 && rand.nextInt(100) == 0 && targetDistance > 5) AnimationAPI.sendAnimPacket(this, 6);
+            System.out.println(getHealth() + ", " + timeUntilLaser + ", " + entityRelativeAngle);
+
         }
         else {
              if (!worldObj.isRemote) setAngry(0);
@@ -300,7 +309,7 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
 
     @Override
     protected boolean interact(EntityPlayer player) {
-        if (player.getHeldItem().getItem() instanceof ItemTestStructure) pacified = true;
+        if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof ItemTestStructure) pacified = true;
         return super.interact(player);
     }
 }
