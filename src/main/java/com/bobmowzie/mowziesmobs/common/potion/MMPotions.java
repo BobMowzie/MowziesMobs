@@ -32,7 +32,11 @@ public class MMPotions implements IContentHandler
                 potionTypesField.set(null, newPotionTypes);
             }
         }
-        catch (NoSuchFieldException | IllegalAccessException e)
+        catch (NoSuchFieldException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IllegalAccessException e)
         {
             e.printStackTrace();
         }

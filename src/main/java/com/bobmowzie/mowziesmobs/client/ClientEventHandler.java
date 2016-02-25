@@ -9,6 +9,8 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.ilexiconn.llibrary.common.event.Render3dItemEvent;
+import net.ilexiconn.llibrary.common.event.RenderPlayerModelEvent;
+import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.event.RenderItemInFrameEvent;
@@ -150,6 +152,32 @@ public class ClientEventHandler
         if (event.item.getItem() instanceof ItemBarakoaMask) {
             GL11.glRotatef(180f, 0f, 1f, 0f);
             GL11.glTranslatef(0f, -0.2f, 0.1f);
+        }
+    }
+
+    @SubscribeEvent
+    public void onRenderPlayerPre(RenderPlayerModelEvent.Pre event)
+    {
+        if (!(event.entity instanceof EntityPlayer))
+        {
+            return;
+        }
+        EntityPlayer player = (EntityPlayer) event.entity;
+        if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof ItemWroughtAxe)
+        {
+            WroughtAxeSwingProperty property = WroughtAxeSwingProperty.getProperty(player);
+            float time = property.getSwingPercentage(AnimationAPI.proxy.getPartialTick());
+            if (time > 0)
+            {
+                float controller1 = WroughtAxeSwingProperty.fnc1(time);
+                float controller2 = WroughtAxeSwingProperty.fnc2(time);
+                float controller3 = WroughtAxeSwingProperty.fnc3(time, 0.1f, 0.9f, 30);
+                ModelRenderer rightArm = event.model.bipedRightArm;
+                float normalAmount = time < 0.1F ? 1 - time / 0.1F : time > 0.9F ? (time - 0.9F) / 0.1F : 0;
+                float swingAmount = 1 - normalAmount;
+                rightArm.rotateAngleY = rightArm.rotateAngleY * normalAmount + (0.6F * controller1 + 0.3F * controller2) * swingAmount;
+                rightArm.rotateAngleX = rightArm.rotateAngleX * normalAmount + ((float) -Math.PI / 2 * controller3) * swingAmount;
+            }
         }
     }
 }

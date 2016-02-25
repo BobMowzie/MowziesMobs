@@ -4,7 +4,6 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.audio.MovingSoundSuntrike;
 import com.bobmowzie.mowziesmobs.client.debug.ModelGrapher;
 import com.bobmowzie.mowziesmobs.client.model.entity.*;
-import com.bobmowzie.mowziesmobs.client.model.extension.ModelPlayerExtension;
 import com.bobmowzie.mowziesmobs.client.model.item.ModelBarakoaMask;
 import com.bobmowzie.mowziesmobs.client.model.item.ModelWroughtAxe;
 import com.bobmowzie.mowziesmobs.client.model.item.ModelWroughtHelm;
@@ -62,7 +61,6 @@ public class ClientProxy extends ServerProxy
             RenderHelper.registerItem3dRenderer(masks[i], new ModelBarakoaMask(), new ResourceLocation(MowziesMobs.MODID, String.format("textures/entity/textureTribesman%s.png", i + 1)));
 
         }
-        RenderHelper.registerModelExtension(new ModelPlayerExtension());
         PlayerAnimationHandlerClient playerAnimationHandlerClient = new PlayerAnimationHandlerClient();
         FMLCommonHandler.instance().bus().register(playerAnimationHandlerClient);
         MinecraftForge.EVENT_BUS.register(playerAnimationHandlerClient);
