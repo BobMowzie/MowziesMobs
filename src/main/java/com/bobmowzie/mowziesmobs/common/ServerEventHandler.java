@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.common;
 import com.bobmowzie.mowziesmobs.common.entity.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.common.entity.EntityTribesman;
 import com.bobmowzie.mowziesmobs.common.item.ItemBarakoaMask;
+import com.bobmowzie.mowziesmobs.common.property.MMPlayerExtention;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
@@ -13,13 +14,17 @@ import net.minecraft.entity.ai.EntityAIAvoidEntity;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.*;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 
 public class ServerEventHandler
 {
+    public static final String propertyId = "mm:player";
+
     @SubscribeEvent
     public void joinWorld(EntityJoinWorldEvent event)
     {
@@ -60,6 +65,7 @@ public class ServerEventHandler
 
     @SubscribeEvent
     public void playerTick(TickEvent.PlayerTickEvent event) {
+        if (((MMPlayerExtention)event.player.getExtendedProperties("mm:player")).untilSunstrike > 0) ((MMPlayerExtention)event.player.getExtendedProperties("mm:player")).untilSunstrike--;
         if (event.side == Side.CLIENT || event.phase == Phase.START)
         {
             return;
@@ -75,5 +81,10 @@ public class ServerEventHandler
             ItemBarakoaMask mask = (ItemBarakoaMask) headItemStack;
             event.player.addPotionEffect(new PotionEffect(mask.getPotionEffectId(), 0, 0));
         }
+    }
+
+    @SubscribeEvent
+    public void entityConstruction(EntityEvent.EntityConstructing event) {
+        if (event.entity instanceof EntityPlayer) event.entity.registerExtendedProperties(propertyId, new MMPlayerExtention());
     }
 }
