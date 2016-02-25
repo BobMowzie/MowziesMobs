@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs;
 
+import com.bobmowzie.mowziesmobs.common.message.MessagePlayerSolarBeam;
 import net.ilexiconn.llibrary.common.config.ConfigHelper;
 import net.ilexiconn.llibrary.common.content.ContentHelper;
 import net.minecraftforge.common.MinecraftForge;
@@ -80,6 +81,7 @@ public class MowziesMobs
         networkWrapper = NetworkRegistry.INSTANCE.newSimpleChannel(MODID);
         networkWrapper.registerMessage(MessageSwingWroughtAxe.class, MessageSwingWroughtAxe.class, 0, Side.CLIENT);
         networkWrapper.registerMessage(MessagePlayerSummonSunstrike.class, MessagePlayerSummonSunstrike.class, 1, Side.SERVER);
+        networkWrapper.registerMessage(MessagePlayerSolarBeam.class, MessagePlayerSolarBeam.class, 2, Side.SERVER);
     }
 
     @EventHandler

@@ -49,6 +49,7 @@ public class EntitySolarBeam extends Entity {
     @Override
     public void onUpdate() {
         super.onUpdate();
+        if (!worldObj.isRemote && getPlayer()) updateWithPlayer();
 //        setPitch((float) (getPitch() + 0.02));
 //        setYaw((float) (getYaw() + 0.02));
         if (!on && appear.getTimer() == 0) setDead();
@@ -66,6 +67,7 @@ public class EntitySolarBeam extends Entity {
                 double oz = radius * Math.cos(yaw) * Math.sin(pitch);
                 double offsetX = -2 * Math.cos(getYaw());
                 double offsetZ = -2 * Math.sin(getYaw());
+                if (getPlayer()) offsetX = offsetZ = 0;
                 MowziesMobs.proxy.spawnOrbFX(worldObj, posX + ox + offsetX, posY + oy + 0.3, posZ + oz + offsetZ, posX + offsetX, posY + 0.3, posZ + offsetZ, 10);
             }
         }
@@ -134,6 +136,7 @@ public class EntitySolarBeam extends Entity {
         dataWatcher.addObject(2, 0f);
         dataWatcher.addObject(3, 0f);
         dataWatcher.addObject(4, 0);
+        dataWatcher.addObject(5, (byte) 0);
     }
 
     public void setYaw(float yaw) {
@@ -158,6 +161,14 @@ public class EntitySolarBeam extends Entity {
 
     public double getDuration() {
         return dataWatcher.getWatchableObjectInt(4);
+    }
+
+    public void setPlayer(boolean player) {
+        dataWatcher.updateObject(5, player ? (byte)1:(byte)0);
+    }
+
+    public boolean getPlayer() {
+        return dataWatcher.getWatchableObjectByte(5) == (byte)1;
     }
 
     @Override
@@ -242,5 +253,11 @@ public class EntitySolarBeam extends Entity {
     public boolean isInRangeToRenderDist(double distance)
     {
         return distance < 1024;
+    }
+
+    private void updateWithPlayer() {
+        setYaw((float) ((caster.rotationYawHead + 90) * Math.PI/180));
+        setPitch((float) (-caster.rotationPitch * Math.PI/180));
+        setPosition(caster.posX, caster.posY + 1f, caster.posZ);
     }
 }
