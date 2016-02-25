@@ -76,7 +76,8 @@ public class EntitySolarBeam extends Entity {
             if (!worldObj.isRemote) {
                 for (EntityLivingBase target : hit) {
                     if (caster instanceof EntityTribeLeader && target instanceof LeaderSunstrikeImmune) continue;
-                    target.attackEntityFrom(DamageSource.onFire, 3);
+                    target.attackEntityFrom(DamageSource.onFire, 2f);
+                    target.attackEntityFrom(DamageSource.causeMobDamage(caster), 1.5f);
                 }
             } else {
                 if (ticksExisted - 15 < getDuration()) {

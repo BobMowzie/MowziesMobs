@@ -24,7 +24,7 @@ public class RenderTribeLeader extends RenderLiving
 
     private static final double BURST_RADIUS = 3.5;
     private static final int BURST_FRAME_COUNT = 10;
-    private static final int BURST_START_FRAME = 22;
+    private static final int BURST_START_FRAME = 12;
 
     public RenderTribeLeader(ModelBase model, float shadowSize)
     {

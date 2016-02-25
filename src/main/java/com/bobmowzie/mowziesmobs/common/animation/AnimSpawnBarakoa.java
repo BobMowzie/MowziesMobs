@@ -31,7 +31,7 @@ public class AnimSpawnBarakoa extends MMAnimBase {
     public void updateTask() {
         super.updateTask();
         if (animatingEntity.getAnimTick() == 1) animatingEntity.playSound("mowziesmobs:barakoaInhale", 1.2f, 0.5f);
-        if (animatingEntity.getAnimTick() == 13) {
+        if (animatingEntity.getAnimTick() == 7) {
             animatingEntity.playSound("mowziesmobs:barakoBelly", 1.5f, 1);
             animatingEntity.playSound("mowziesmobs:barakoaBlowdart", 1.5f, 0.5f);
             double angle = animatingEntity.rotationYawHead;

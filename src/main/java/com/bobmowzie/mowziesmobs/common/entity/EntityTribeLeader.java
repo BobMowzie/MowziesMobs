@@ -32,11 +32,15 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
     public int whichDialogue = 0;
     private int timeUntilSunstrike = 0;
     private int timeUntilLaser = 0;
+    private int timeUntilBarakoa = 0;
     public int barakoaSpawnCount = 0;
 
-    private static final int SUNSTRIKE_PAUSE = 60;
+    private static final int MAX_HEALTH = 150;
 
-    private static final int LASER_PAUSE = 180;
+    private static final int SUNSTRIKE_PAUSE_MAX = 40;
+    private static final int SUNSTRIKE_PAUSE_MIN = 15;
+    private static final int LASER_PAUSE = 150;
+    private static final int BARAKOA_PAUSE = 150;
 
     private boolean pacified = false;
 
@@ -49,9 +53,9 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
         tasks.addTask(2, new MMAnimBase(this, 1, 40, false));
         tasks.addTask(2, new MMAnimBase(this, 2, 80, false));
         tasks.addTask(2, new MMAnimBase(this, 3, 40, false));
-        tasks.addTask(2, new AnimSunStrike(this, 4, 26));
-        tasks.addTask(2, new AnimRadiusAttack(this, 5, 42, 5, 5, 4.5f, 22));
-        tasks.addTask(2, new AnimSpawnBarakoa(this, 6, 35));
+        tasks.addTask(2, new AnimSunStrike(this, 4, 15));
+        tasks.addTask(2, new AnimRadiusAttack(this, 5, 30, 5, 5, 4.5f, 12));
+        tasks.addTask(2, new AnimSpawnBarakoa(this, 6, 20));
         tasks.addTask(2, new AnimSolarBeam(this, 7, 100));
         tasks.addTask(3, new AnimTakeDamage(this, 13));
         tasks.addTask(1, new AnimDie(this, deathLength));
@@ -76,7 +80,7 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
     {
         super.applyEntityAttributes();
         getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(1.0);
-        getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(100);
+        getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(MAX_HEALTH);
     }
 
     @Override
@@ -152,18 +156,19 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
             if (entityAttackingAngle < 0) entityAttackingAngle += 360;
             float entityRelativeAngle = Math.abs(entityHitAngle - entityAttackingAngle);
 
-            if (getAnimID() == 0 && timeUntilSunstrike <= 0 && targetDistance > 5) {
-                AnimationAPI.sendAnimPacket(this, 4);
-                timeUntilSunstrike = SUNSTRIKE_PAUSE;
-            }
-            else if (getAnimID() == 0 && getHealth() <= 70 && timeUntilLaser <= 0 && (entityRelativeAngle < 60 || entityRelativeAngle > 300)) {
+            if (getAnimID() == 0 && getHealth() <= 70 && timeUntilLaser <= 0 && (entityRelativeAngle < 60 || entityRelativeAngle > 300) && rand.nextInt(50) == 0) {
                 AnimationAPI.sendAnimPacket(this, 7);
                 timeUntilLaser = LASER_PAUSE;
             }
             else if (getAnimID() == 0 && targetDistance <= 5) AnimationAPI.sendAnimPacket(this, 5);
-            else if (getAnimID() == 0 && rand.nextInt(100) == 0 && targetDistance > 5) AnimationAPI.sendAnimPacket(this, 6);
-            System.out.println(getHealth() + ", " + timeUntilLaser + ", " + entityRelativeAngle);
-
+            else if (getAnimID() == 0 && rand.nextInt(50) == 0 && targetDistance > 5 && timeUntilBarakoa <= 0) {
+                AnimationAPI.sendAnimPacket(this, 6);
+                timeUntilBarakoa = BARAKOA_PAUSE;
+            }
+            else if (getAnimID() == 0 && timeUntilSunstrike <= 0 && targetDistance > 5) {
+                AnimationAPI.sendAnimPacket(this, 4);
+                timeUntilSunstrike = getTimeUntilSunstrike();
+            }
         }
         else {
              if (!worldObj.isRemote) setAngry(0);
@@ -188,12 +193,12 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
 
         if (getAnimID() == 5) {
             rotationYawHead = rotationYaw;
-            if (getAnimTick() == 1) playSound("mowziesmobs:barakoBurst", 1.5f, 1.1f);
-            if (getAnimTick() == 20) {
+            if (getAnimTick() == 1) playSound("mowziesmobs:barakoBurst", 1.5f, 1.5f);
+            if (getAnimTick() == 10) {
                 if (worldObj.isRemote) spawnExplosionParticles(30);
                 playSound("mowziesmobs:barakoAttack", 1.5f, 0.9f);
             }
-            if (getAnimTick() <= 10 && worldObj.isRemote) {
+            if (getAnimTick() <= 6 && worldObj.isRemote) {
                 int particleCount = 8;
                 while(--particleCount != 0) {
                     double radius = 2f;
@@ -205,13 +210,14 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
                     double offsetX = -0.3 * Math.sin(rotationYaw * Math.PI/180);
                     double offsetZ = -0.3 * Math.cos(rotationYaw * Math.PI/180);
                     double offsetY = 1;
-                    MowziesMobs.proxy.spawnOrbFX(worldObj, posX + ox + offsetX, posY + offsetY + oy, posZ + oz + offsetZ, posX+ offsetX, posY + offsetY, posZ + offsetZ, 10);
+                    MowziesMobs.proxy.spawnOrbFX(worldObj, posX + ox + offsetX, posY + offsetY + oy, posZ + oz + offsetZ, posX+ offsetX, posY + offsetY, posZ + offsetZ, 6);
                 }
             }
         }
         if (!worldObj.isRemote && getAttackTarget() == null && getAnimID() != 7) heal(0.2f);
         if (timeUntilSunstrike > 0) timeUntilSunstrike--;
         if (timeUntilLaser > 0) timeUntilLaser--;
+        if (timeUntilBarakoa > 0) timeUntilBarakoa--;
     }
 
     private boolean checkBlocksByFeet()
@@ -311,5 +317,11 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
     protected boolean interact(EntityPlayer player) {
         if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof ItemTestStructure) pacified = true;
         return super.interact(player);
+    }
+
+    private int getTimeUntilSunstrike() {
+        int damageTaken = (int) (MAX_HEALTH - getHealth());
+        if (damageTaken > 60) damageTaken = 60;
+        return (int) (SUNSTRIKE_PAUSE_MAX - (damageTaken/60f) * (SUNSTRIKE_PAUSE_MAX - SUNSTRIKE_PAUSE_MIN));
     }
 }
