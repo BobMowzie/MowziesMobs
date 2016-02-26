@@ -42,11 +42,6 @@ public class MMAnimBase extends AIAnimation
         return duration;
     }
 
-    @Override
-    public boolean shouldExecute() {
-        return true;
-    }
-
     public void startExecuting()
     {
         super.startExecuting();
