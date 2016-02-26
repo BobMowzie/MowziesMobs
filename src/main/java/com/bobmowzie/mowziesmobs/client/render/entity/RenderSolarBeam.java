@@ -2,9 +2,11 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.common.entity.EntitySolarBeam;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -25,9 +27,14 @@ public class RenderSolarBeam extends Render {
 
     private static final double BEAM_RADIUS = 1;
 
+    private boolean clearerView = false;
+
     @Override
     public void doRender(Entity entity, double x, double y, double z, float yaw, float delta) {
         EntitySolarBeam solarBeam = (EntitySolarBeam) entity;
+
+        clearerView = solarBeam.caster instanceof EntityPlayer && Minecraft.getMinecraft().thePlayer == solarBeam.caster && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0;
+
         double length = Math.sqrt(Math.pow(solarBeam.collidePosX - solarBeam.posX, 2) + Math.pow(solarBeam.collidePosY-solarBeam.posY, 2) + Math.pow(solarBeam.collidePosZ - solarBeam.posZ, 2));
         int frame = MathHelper.floor_double((solarBeam.appear.getTimer() - 1 + delta) * 2);
         if (frame < 0) frame = 6;
@@ -45,8 +52,8 @@ public class RenderSolarBeam extends Render {
         GL11.glTranslated(solarBeam.posX - solarBeam.collidePosX, solarBeam.posY - solarBeam.collidePosY, solarBeam.posZ - solarBeam.collidePosZ);
 
         GL11.glColorMask(false, false, false, true);
-        renderStart(frame);
-        renderBeam(length, 180/Math.PI * solarBeam.getYaw(), 180/Math.PI * solarBeam.getPitch(), frame);
+        if (Minecraft.getMinecraft().gameSettings.thirdPersonView != 0) renderStart(frame);
+        renderBeam(length, 180 / Math.PI * solarBeam.getYaw(), 180 / Math.PI * solarBeam.getPitch(), frame);
         GL11.glTranslated(solarBeam.collidePosX - solarBeam.posX, solarBeam.collidePosY - solarBeam.posY, solarBeam.collidePosZ - solarBeam.posZ);
         renderEnd(frame, -1);
         GL11.glColorMask(true, true, true, true);
@@ -56,6 +63,7 @@ public class RenderSolarBeam extends Render {
     }
 
     private void renderStart(int frame) {
+        if (clearerView) return;
         GL11.glRotatef(-renderManager.playerViewY, 0, 1, 0);
         GL11.glRotatef(renderManager.playerViewX, 1, 0, 0);
         double minU = 0 + 16D/TEXTURE_WIDTH * frame;
@@ -159,22 +167,26 @@ public class RenderSolarBeam extends Render {
         GL11.glRotatef(-90, 0, 0, 1);
         GL11.glRotatef((float) yaw, 1, 0, 0);
         GL11.glRotatef((float) pitch, 0, 0, 1);
-        GL11.glRotatef(renderManager.playerViewX, 0, 1, 0);
+        if (clearerView) GL11.glRotatef(90, 0, 1, 0);
+        else GL11.glRotatef(renderManager.playerViewX, 0, 1, 0);
         t.draw();
-        GL11.glRotatef(-renderManager.playerViewX, 0, 1, 0);
+        if (clearerView) GL11.glRotatef(-90, 0, 1, 0);
+        else GL11.glRotatef(-renderManager.playerViewX, 0, 1, 0);
 
-        t.startDrawingQuads();
-        t.setBrightness(240);
-        t.setColorRGBA_F(1, 1, 1, 1);
-        t.addVertexWithUV(-BEAM_RADIUS, 0, 0, minU, minV);
-        t.addVertexWithUV(-BEAM_RADIUS, length, 0, minU, maxV);
-        t.addVertexWithUV(BEAM_RADIUS, length, 0, maxU, maxV);
-        t.addVertexWithUV(BEAM_RADIUS, 0, 0, maxU, minV);
-        GL11.glRotatef(-renderManager.playerViewX, 0, 1, 0);
-        GL11.glRotatef(180, 0, 1, 0);
-        t.draw();
-        GL11.glRotatef(-180, 0, 1, 0);
-        GL11.glRotatef(renderManager.playerViewX, 0, 1, 0);
+        if (!clearerView) {
+            t.startDrawingQuads();
+            t.setBrightness(240);
+            t.setColorRGBA_F(1, 1, 1, 1);
+            t.addVertexWithUV(-BEAM_RADIUS, 0, 0, minU, minV);
+            t.addVertexWithUV(-BEAM_RADIUS, length, 0, minU, maxV);
+            t.addVertexWithUV(BEAM_RADIUS, length, 0, maxU, maxV);
+            t.addVertexWithUV(BEAM_RADIUS, 0, 0, maxU, minV);
+            GL11.glRotatef(-renderManager.playerViewX, 0, 1, 0);
+            GL11.glRotatef(180, 0, 1, 0);
+            t.draw();
+            GL11.glRotatef(-180, 0, 1, 0);
+            GL11.glRotatef(renderManager.playerViewX, 0, 1, 0);
+        }
         GL11.glRotatef((float) -pitch, 0, 0, 1);
         GL11.glRotatef((float) -yaw, 1, 0, 0);
         GL11.glRotatef(90, 0, 0, 1);

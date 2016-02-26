@@ -15,7 +15,7 @@ import java.util.List;
  * Created by jnad325 on 12/26/15.
  */
 public class EntitySolarBeam extends Entity {
-    private EntityLivingBase caster;
+    public EntityLivingBase caster;
 
     public double endPosX, endPosY, endPosZ;
     public double collidePosX, collidePosY, collidePosZ;
@@ -44,14 +44,15 @@ public class EntitySolarBeam extends Entity {
         setPosition(x, y, z);
         calculateEndPos();
         playSound("mowziesmobs:laser", 2f, 1);
+        if (!worldObj.isRemote) setCasterID(caster.getEntityId());
     }
 
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!worldObj.isRemote && getPlayer()) updateWithPlayer();
-//        setPitch((float) (getPitch() + 0.02));
-//        setYaw((float) (getYaw() + 0.02));
+        if (ticksExisted == 1 && worldObj.isRemote) caster = (EntityLivingBase) worldObj.getEntityByID(getCasterID());
+        if (!worldObj.isRemote && getHasPlayer()) updateWithPlayer();
+
         if (!on && appear.getTimer() == 0) setDead();
         if (on && ticksExisted > 20) appear.increaseTimer();
         else appear.decreaseTimer();
@@ -67,7 +68,7 @@ public class EntitySolarBeam extends Entity {
                 double oz = radius * Math.cos(yaw) * Math.sin(pitch);
                 double offsetX = -2 * Math.cos(getYaw());
                 double offsetZ = -2 * Math.sin(getYaw());
-                if (getPlayer()) offsetX = offsetZ = 0;
+                if (getHasPlayer()) offsetX = offsetZ = 0;
                 MowziesMobs.proxy.spawnOrbFX(worldObj, posX + ox + offsetX, posY + oy + 0.3, posZ + oz + offsetZ, posX + offsetX, posY + 0.3, posZ + offsetZ, 10);
             }
         }
@@ -137,6 +138,7 @@ public class EntitySolarBeam extends Entity {
         dataWatcher.addObject(3, 0f);
         dataWatcher.addObject(4, 0);
         dataWatcher.addObject(5, (byte) 0);
+        dataWatcher.addObject(6, 0);
     }
 
     public void setYaw(float yaw) {
@@ -163,12 +165,20 @@ public class EntitySolarBeam extends Entity {
         return dataWatcher.getWatchableObjectInt(4);
     }
 
-    public void setPlayer(boolean player) {
+    public void setHasPlayer(boolean player) {
         dataWatcher.updateObject(5, player ? (byte)1:(byte)0);
     }
 
-    public boolean getPlayer() {
+    public boolean getHasPlayer() {
         return dataWatcher.getWatchableObjectByte(5) == (byte)1;
+    }
+
+    public void setCasterID(int id) {
+        dataWatcher.updateObject(6, id);
+    }
+
+    public int getCasterID() {
+        return dataWatcher.getWatchableObjectInt(6);
     }
 
     @Override
@@ -258,6 +268,6 @@ public class EntitySolarBeam extends Entity {
     private void updateWithPlayer() {
         setYaw((float) ((caster.rotationYawHead + 90) * Math.PI/180));
         setPitch((float) (-caster.rotationPitch * Math.PI/180));
-        setPosition(caster.posX, caster.posY + 1f, caster.posZ);
+        setPosition(caster.posX, caster.posY + 1.2f, caster.posZ);
     }
 }

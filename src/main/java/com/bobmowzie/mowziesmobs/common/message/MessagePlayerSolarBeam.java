@@ -32,8 +32,8 @@ public class MessagePlayerSolarBeam extends AbstractMessage<MessagePlayerSolarBe
     @Override
     public void handleServerMessage(MessagePlayerSolarBeam message, EntityPlayer player)
     {
-        EntitySolarBeam solarBeam = new EntitySolarBeam(player.worldObj, player, player.posX, player.posY + 1, player.posZ, (float) ((player.rotationYawHead + 90) * Math.PI/180), (float) (-player.rotationPitch * Math.PI/180), 55);
-        solarBeam.setPlayer(true);
+        EntitySolarBeam solarBeam = new EntitySolarBeam(player.worldObj, player, player.posX, player.posY + 1.2f, player.posZ, (float) ((player.rotationYawHead + 90) * Math.PI/180), (float) (-player.rotationPitch * Math.PI/180), 55);
+        solarBeam.setHasPlayer(true);
         player.worldObj.spawnEntityInWorld(solarBeam);
         player.addPotionEffect(new PotionEffect(Potion.moveSlowdown.getId(), 80, 2, true));
 
