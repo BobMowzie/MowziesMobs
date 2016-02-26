@@ -38,8 +38,9 @@ public class MowziesMobs
 {
     public static final String MODID = "mowziesmobs";
     public static final String NAME = "Mowzie's Mobs";
-    public static final String VERSION = "${version}";
-    public static final String DEPENDENCIES = "required-after:llibrary@[0.3.3,)";
+    public static final String VERSION = "1.2.5";
+    public static final String LLIBRARY_VERSION = "0.7.0";
+    public static final String DEPENDENCIES = "required-after:llibrary@[" + MowziesMobs.LLIBRARY_VERSION + ",)";
 
     public static final MMStructureGenerator gen = new MMStructureGenerator();
 
