@@ -5,12 +5,12 @@ import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelBase;
 import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelRenderer;
 import com.bobmowzie.mowziesmobs.common.entity.EntityTribeElite;
 import com.bobmowzie.mowziesmobs.common.entity.EntityTribesman;
+import net.ilexiconn.llibrary.LLibrary;
+import net.ilexiconn.llibrary.client.model.ModelAnimator;
+import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import org.lwjgl.opengl.GL11;
-import thehippomaster.AnimationAPI.AnimationAPI;
-import thehippomaster.AnimationAPI.IAnimatedEntity;
-import thehippomaster.AnimationAPI.client.Animator;
 
 public class ModelTribesman extends MowzieModelBase {
     public MowzieModelRenderer modelCore;
@@ -55,10 +55,10 @@ public class ModelTribesman extends MowzieModelBase {
     public MowzieModelRenderer flailer;
     public MowzieModelRenderer talker;
 
-    private Animator animator;
+    private ModelAnimator animator;
 
     public ModelTribesman() {
-        animator = new Animator(this);
+        animator = ModelAnimator.create();
         this.textureWidth = 128;
         this.textureHeight = 64;
         this.footLeft = new MowzieModelRenderer(this, 21, 53);
@@ -263,7 +263,7 @@ public class ModelTribesman extends MowzieModelBase {
 
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        animate((IAnimatedEntity)entity, f, f1, f2, f3, f4, f5);
+        animate((IAnimatedEntity) entity, f, f1, f2, f3, f4, f5);
         GL11.glPushMatrix();
         if (entity instanceof EntityTribeElite) {
             GL11.glScalef(0.85f, 0.85f, 0.85f);
@@ -297,18 +297,22 @@ public class ModelTribesman extends MowzieModelBase {
             spear.isHidden = true;
             blowgun.isHidden = false;
         }
-        if (!tribesman.active) return;
+        if (!tribesman.active) {
+            return;
+        }
         float doWalk = tribesman.doWalk.getAnimationProgressSinSqrt();
         float dance = tribesman.dancing.getAnimationProgressSinSqrt();
-        if (f1 > 0.55f) f1 = 0.55f;
+        if (f1 > 0.55f) {
+            f1 = 0.55f;
+        }
         float globalSpeed = 1.5f;
         float globalHeight = 1 * doWalk;
         float globalDegree = 1 * doWalk * (1 - dance);
-        if (tribesman.getAnimID() != 2) {
+        if (tribesman.getAnimation() != EntityTribesman.PROJECTILE_ATTACK_ANIMATION) {
             faceTarget(neck, 2, f3, f4);
             faceTarget(head, 2, f3, f4);
         }
-        float frame = tribesman.frame + AnimationAPI.proxy.getPartialTick();
+        float frame = tribesman.frame + LLibrary.PROXY.getPartialTicks();
 
         if (tribesman instanceof EntityTribeElite) {
             armLeftJoint.rotateAngleX -= 0.2;
@@ -357,7 +361,7 @@ public class ModelTribesman extends MowzieModelBase {
         swing(handRight, 0.5f * globalSpeed, 1f * globalDegree, true, 0, 0, f, f1);
         walk(handLeft, 0.5f * globalSpeed, 1 * globalDegree, true, -2, 0.4f * globalDegree, f, f1);
 
-        if (tribesman.getAnimID() != -2) {
+        if (tribesman.getAnimation() != EntityTribesman.DIE_ANIMAION) {
             walk(body, 0.2f, 0.05f, false, 0, 0, frame, 1f);
             walk(thighLeftJoint, 0.2f, 0.05f, true, 0, 0, frame, 1f);
             walk(thighRightJoint, 0.2f, 0.05f, true, 0, 0, frame, 1f);
@@ -399,18 +403,17 @@ public class ModelTribesman extends MowzieModelBase {
         }
     }
 
-    public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5)
-    {
+    public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         EntityTribesman tribesman = (EntityTribesman) entity;
         animator.update(tribesman);
         setRotationAngles(f, f1, f2, f3, f4, f5, tribesman);
 
-        float frame = tribesman.frame + AnimationAPI.proxy.getPartialTick();
+        float frame = tribesman.frame + LLibrary.PROXY.getPartialTicks();
 
         if (entity instanceof EntityTribeElite) {
-            animator.setAnim(1);
-            animator.setStationaryPhase(3);
-            animator.startPhase(4);
+            animator.setAnimation(EntityTribesman.ATTACK_ANIMATION);
+            animator.setStaticKeyframe(3);
+            animator.startKeyframe(4);
             animator.rotate(body, -0.3f, 1f, 0);
             animator.move(modelCore, -4, 0, -2);
             animator.rotate(chest, 0, 0.2f, 0);
@@ -428,9 +431,9 @@ public class ModelTribesman extends MowzieModelBase {
             animator.rotate(thighRight, 0.3f, -0.9f, 0);
             animator.rotate(calfRight, 0, 0, 0);
             animator.rotate(footRight, 0, 0, 0);
-            animator.endPhase();
-            animator.setStationaryPhase(1);
-            animator.startPhase(3);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(1);
+            animator.startKeyframe(3);
             animator.rotate(body, 0.5f, -0.3f, 0);
             animator.move(modelCore, -1.5f, 1.2f, -8.5f);
             animator.rotate(chest, 0, -0.5f, 0);
@@ -448,12 +451,12 @@ public class ModelTribesman extends MowzieModelBase {
             animator.rotate(thighRight, 0.7f, 0, 0f);
             animator.rotate(calfRight, -0.5f, 0, 0);
             animator.rotate(footRight, -0.5f, 0, 0);
-            animator.endPhase();
-            animator.setStationaryPhase(1);
-            animator.resetPhase(6);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(1);
+            animator.resetKeyframe(6);
 
-            animator.setAnim(3);
-            animator.startPhase(3);
+            /*animator.setAnimation(3);
+            animator.startKeyframe(3);
             animator.move(body, 0, 5f, 1f);
             animator.rotate(body, 0.3f, 0, 0);
             animator.rotate(chest, 0, 0.8f, 0);
@@ -470,11 +473,11 @@ public class ModelTribesman extends MowzieModelBase {
             animator.rotate(armLeftJoint, 0, -0.8f, 0);
             animator.rotate(armLeftJoint, -0.5f, 0, -1);
             animator.rotate(armLowerLeft, 0, 0, 0.7f);
-            animator.endPhase();
-            animator.resetPhase(7);
+            animator.endKeyframe();
+            animator.resetKeyframe(7);*/
 
-            animator.setAnim(-3);
-            animator.startPhase(3);
+            animator.setAnimation(EntityTribesman.DAMAGE_ANIMATION);
+            animator.startKeyframe(3);
             animator.rotate(armLeftJoint, 0.2f, -1.3f, 0);
             animator.rotate(armLowerLeft, 0.2f, -0.2f, -1);
             animator.move(body, 0, 5f, 1f);
@@ -493,11 +496,11 @@ public class ModelTribesman extends MowzieModelBase {
             animator.rotate(armUpperRight, -0.3f, 0, 1);
             animator.rotate(armLowerLeft, -0.7f, 0, 0);
             animator.rotate(armLowerRight, -0.7f, 0, 0);
-            animator.endPhase();
-            animator.resetPhase(7);
+            animator.endKeyframe();
+            animator.resetKeyframe(7);
 
-            animator.setAnim(-2);
-            animator.startPhase(3);
+            animator.setAnimation(EntityTribesman.DIE_ANIMAION);
+            animator.startKeyframe(3);
             animator.rotate(armLeftJoint, 0.2f, -1.3f, 0);
             animator.rotate(armLowerLeft, 0.2f, -0.2f, -1);
             animator.move(body, 0, 5f, 1f);
@@ -516,44 +519,43 @@ public class ModelTribesman extends MowzieModelBase {
             animator.rotate(armUpperRight, -0.3f, 0, 1);
             animator.rotate(armLowerLeft, -0.7f, 0, 0);
             animator.rotate(armLowerRight, -0.7f, 0, 0);
-            animator.endPhase();
-            animator.startPhase(5);
+            animator.endKeyframe();
+            animator.startKeyframe(5);
             animator.rotate(head, -0.8f, 0, 0);
             animator.move(flailer, 1, 0, 0);
-            animator.endPhase();
-            animator.setStationaryPhase(10);
-            animator.startPhase(10);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(10);
+            animator.startKeyframe(10);
             animator.move(scaler, 0.999f, 0, 0);
             animator.rotate(head, -0.8f, 0, 0);
             animator.move(body, 0, -22f, -5f);
-            animator.endPhase();
-            animator.startPhase(4);
+            animator.endKeyframe();
+            animator.startKeyframe(4);
             animator.move(scaler, 0.999f, 0, 0);
             animator.rotate(head, -0.8f, 0, 0);
             animator.move(body, 0, 7, 0);
-            animator.endPhase();
-            animator.startPhase(2);
+            animator.endKeyframe();
+            animator.startKeyframe(2);
             animator.move(scaler, 0.999f, 0, 0);
             animator.rotate(head, -1.6f, 0, 0);
             animator.move(body, 0, -3, 5);
-            animator.endPhase();
-            animator.startPhase(2);
+            animator.endKeyframe();
+            animator.startKeyframe(2);
             animator.move(scaler, 0.999f, 0, 0);
             animator.rotate(head, -1.58f, 0, 0);
             animator.move(body, 0, 9f, 5);
-            animator.endPhase();
-            animator.setStationaryPhase(20);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(20);
 
             armLeftJoint.rotateAngleX += 0.2 * flailer.rotationPointX;
             armLeftJoint.rotateAngleY -= 1.3 * flailer.rotationPointX;
             armLowerLeft.rotateAngleX += 0.2 * flailer.rotationPointX;
             armLowerLeft.rotateAngleY -= 0.2 * flailer.rotationPointX;
             armLowerLeft.rotateAngleZ -= 1 * flailer.rotationPointX;
-        }
-        else {
-            animator.setAnim(1);
-            animator.setStationaryPhase(3);
-            animator.startPhase(4);
+        } else {
+            animator.setAnimation(EntityTribesman.ATTACK_ANIMATION);
+            animator.setStaticKeyframe(3);
+            animator.startKeyframe(4);
             animator.rotate(body, -0.3f, 1f, 0);
             animator.move(modelCore, -4, 0, -2);
             animator.rotate(chest, 0, 0.2f, 0);
@@ -569,9 +571,9 @@ public class ModelTribesman extends MowzieModelBase {
             animator.rotate(thighRight, 0.3f, -0.9f, 0);
             animator.rotate(calfRight, 0, 0, 0);
             animator.rotate(footRight, 0, 0, 0);
-            animator.endPhase();
-            animator.setStationaryPhase(1);
-            animator.startPhase(3);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(1);
+            animator.startKeyframe(3);
             animator.rotate(body, 0.5f, -0.3f, 0);
             animator.move(modelCore, -1.5f, 1.2f, -8.5f);
             animator.rotate(chest, 0, -0.5f, 0);
@@ -587,12 +589,12 @@ public class ModelTribesman extends MowzieModelBase {
             animator.rotate(thighRight, 0.7f, 0, 0f);
             animator.rotate(calfRight, -0.5f, 0, 0);
             animator.rotate(footRight, -0.5f, 0, 0);
-            animator.endPhase();
-            animator.setStationaryPhase(1);
-            animator.resetPhase(6);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(1);
+            animator.resetKeyframe(6);
 
-            animator.setAnim(2);
-            animator.startPhase(5);
+            animator.setAnimation(EntityTribesman.PROJECTILE_ATTACK_ANIMATION);
+            animator.startKeyframe(5);
             animator.rotate(body, -0.3f, 0, 0);
             animator.rotate(thighRightJoint, 0.3f, 0, 0);
             animator.rotate(thighLeftJoint, 0.3f, 0, 0);
@@ -604,9 +606,9 @@ public class ModelTribesman extends MowzieModelBase {
             animator.rotate(armLowerRight, 0, 0, -1f);
             animator.rotate(handRight, -1f, -0.2f, 1.2f);
             animator.move(blowgun, 0, 0, 4.5f);
-            animator.endPhase();
-            animator.setStationaryPhase(3);
-            animator.startPhase(3);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(3);
+            animator.startKeyframe(3);
             animator.rotate(body, 0.5f, 0, 0);
             animator.rotate(thighRightJoint, -0.5f, 0, 0);
             animator.rotate(thighLeftJoint, -0.5f, 0, 0);
@@ -620,12 +622,12 @@ public class ModelTribesman extends MowzieModelBase {
             animator.rotate(armLowerRight, 0.8f, 0, -0.4f);
             animator.rotate(handRight, -1.5f, 0.4f, 1.0f);
             animator.move(blowgun, 0, 0, 5f);
-            animator.endPhase();
-            animator.setStationaryPhase(2);
-            animator.resetPhase(7);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(2);
+            animator.resetKeyframe(7);
 
-            animator.setAnim(-3);
-            animator.startPhase(3);
+            animator.setAnimation(EntityTribesman.DAMAGE_ANIMATION);
+            animator.startKeyframe(3);
             animator.move(body, 0, 5f, 1f);
             animator.rotate(body, 0.3f, 0, 0);
             animator.rotate(thighLeftJoint, -0.3f, 0, 0);
@@ -642,11 +644,11 @@ public class ModelTribesman extends MowzieModelBase {
             animator.rotate(armUpperRight, -0.3f, 0, 1);
             animator.rotate(armLowerLeft, -0.7f, 0, 0);
             animator.rotate(armLowerRight, -0.7f, 0, 0);
-            animator.endPhase();
-            animator.resetPhase(7);
+            animator.endKeyframe();
+            animator.resetKeyframe(7);
 
-            animator.setAnim(-2);
-            animator.startPhase(3);
+            animator.setAnimation(EntityTribesman.DIE_ANIMAION);
+            animator.startKeyframe(3);
             animator.rotate(armLeftJoint, 0.2f, -1.3f, 0);
             animator.rotate(armLowerLeft, 0.2f, -0.2f, -1);
             animator.move(body, 0, 5f, 1f);
@@ -665,56 +667,56 @@ public class ModelTribesman extends MowzieModelBase {
             animator.rotate(armUpperRight, -0.3f, 0, 1);
             animator.rotate(armLowerLeft, -0.7f, 0, 0);
             animator.rotate(armLowerRight, -0.7f, 0, 0);
-            animator.endPhase();
-            animator.startPhase(5);
+            animator.endKeyframe();
+            animator.startKeyframe(5);
             animator.rotate(head, -0.8f, 0, 0);
             animator.move(flailer, 1, 0, 0);
-            animator.endPhase();
-            animator.setStationaryPhase(10);
-            animator.startPhase(10);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(10);
+            animator.startKeyframe(10);
             animator.move(scaler, 0.999f, 0, 0);
             animator.rotate(head, -0.8f, 0, 0);
             animator.move(body, 0, -22f, -5f);
-            animator.endPhase();
-            animator.startPhase(4);
+            animator.endKeyframe();
+            animator.startKeyframe(4);
             animator.move(scaler, 0.999f, 0, 0);
             animator.rotate(head, -0.8f, 0, 0);
             animator.move(body, 0, 7, 0);
-            animator.endPhase();
-            animator.startPhase(2);
+            animator.endKeyframe();
+            animator.startKeyframe(2);
             animator.move(scaler, 0.999f, 0, 0);
             animator.rotate(head, -1.6f, 0, 0);
             animator.move(body, 0, -3, 5);
-            animator.endPhase();
-            animator.startPhase(2);
+            animator.endKeyframe();
+            animator.startKeyframe(2);
             animator.move(scaler, 0.999f, 0, 0);
             animator.rotate(head, -1.58f, 0, 0);
             animator.move(body, 0, 9f, 5);
-            animator.endPhase();
-            animator.setStationaryPhase(20);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(20);
         }
 
-        animator.setAnim(4);
-        animator.startPhase(10);
+        animator.setAnimation(EntityTribesman.IDLE_ANIMATION);
+        animator.startKeyframe(10);
         animator.move(talker, 1, 0, 0);
-        animator.endPhase();
-        animator.setStationaryPhase(15);
-        animator.resetPhase(10);
+        animator.endKeyframe();
+        animator.setStaticKeyframe(15);
+        animator.resetKeyframe(10);
 
-        animator.setAnim(5);
-        animator.setStationaryPhase(3);
-        animator.startPhase(10);
+        animator.setAnimation(EntityTribesman.ACTIVATE_ANIMATION);
+        animator.setStaticKeyframe(3);
+        animator.startKeyframe(10);
         animator.move(scaler, -0.999f, 0, 0);
         animator.move(flailer, 1, 0, 0);
         animator.move(body, 0, -9, -5);
-        animator.endPhase();
-        animator.setStationaryPhase(2);
-        animator.startPhase(5);
+        animator.endKeyframe();
+        animator.setStaticKeyframe(2);
+        animator.startKeyframe(5);
         animator.move(scaler, -0.999f, 0, 0);
         animator.move(body, 0, -9, -5);
         animator.rotate(head, 1.58f, 0, 0);
-        animator.endPhase();
-        animator.setStationaryPhase(5);
+        animator.endKeyframe();
+        animator.setStaticKeyframe(5);
 
         //Inactive
         if (!tribesman.active) {
@@ -722,7 +724,9 @@ public class ModelTribesman extends MowzieModelBase {
             head.rotateAngleX -= 1.58f;
             body.rotationPointY += 9f;
             body.rotationPointZ += 5f;
-            if (!tribesman.onGround) body.rotateAngleX += 0.4f * frame;
+            if (!tribesman.onGround) {
+                body.rotateAngleX += 0.4f * frame;
+            }
         }
 
         float flailSpeed = 2.3f;
@@ -745,9 +749,9 @@ public class ModelTribesman extends MowzieModelBase {
         body.setScaleX(scale);
         body.setScaleY(scale);
         body.setScaleZ(scale);
-        maskBase.setScaleX(1/scale);
-        maskBase.setScaleY(1/scale);
-        maskBase.setScaleZ(1/scale);
+        maskBase.setScaleX(1 / scale);
+        maskBase.setScaleY(1 / scale);
+        maskBase.setScaleZ(1 / scale);
 
 
         float talk = talker.rotationPointX;

@@ -8,8 +8,7 @@ import net.minecraft.entity.Entity;
  * WroughtAxe - Undefined
  * Created using Tabula 5.1.0
  */
-public class ModelWroughtAxe extends ModelBase
-{
+public class ModelWroughtAxe extends ModelBase {
     public ModelRenderer axeHandle;
     public ModelRenderer axeBladeRight;
     public ModelRenderer axeBladeLeft;
@@ -20,8 +19,7 @@ public class ModelWroughtAxe extends ModelBase
     public ModelRenderer axeBladeLeft2;
     public ModelRenderer axeBladeLeft3;
 
-    public ModelWroughtAxe()
-    {
+    public ModelWroughtAxe() {
         this.textureWidth = 64;
         this.textureHeight = 64;
         this.axeBladeLeft = new ModelRenderer(this, 0, 0);
@@ -70,16 +68,14 @@ public class ModelWroughtAxe extends ModelBase
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
-    {
+    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         this.axeHandle.render(f5);
     }
 
     /**
      * This is a helper function from Tabula to set the rotation of model parts
      */
-    public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z)
-    {
+    public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;

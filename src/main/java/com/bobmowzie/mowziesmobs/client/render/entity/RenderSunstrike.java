@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
-import java.util.Random;
-
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.common.entity.EntitySunstrike;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.Tessellator;
@@ -10,14 +10,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-
 import org.lwjgl.opengl.GL11;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.common.entity.EntitySunstrike;
+import java.util.Random;
 
-public class RenderSunstrike extends Render
-{
+public class RenderSunstrike extends Render {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/effects/textureSunstrike.png");
 
     private static final Random RANDOMIZER = new Random(0);
@@ -26,7 +23,7 @@ public class RenderSunstrike extends Render
 
     private static final double TEXTURE_HEIGHT = 32;
 
-    private static final double BEAM_MIN_U = 224 / TEXTURE_WIDTH; 
+    private static final double BEAM_MIN_U = 224 / TEXTURE_WIDTH;
 
     private static final double BEAM_MAX_U = 1;
 
@@ -56,21 +53,19 @@ public class RenderSunstrike extends Render
 
     private static final double LINGER_RADIUS = 1.2;
 
-	private static final double SCORCH_MIN_U = 192 / TEXTURE_WIDTH;
+    private static final double SCORCH_MIN_U = 192 / TEXTURE_WIDTH;
 
-	private static final double SCORCH_MAX_U = SCORCH_MIN_U + RING_FRAME_SIZE / TEXTURE_WIDTH;
+    private static final double SCORCH_MAX_U = SCORCH_MIN_U + RING_FRAME_SIZE / TEXTURE_WIDTH;
 
-	private static final double SCORCH_MIN_V = 16 / TEXTURE_HEIGHT;
+    private static final double SCORCH_MIN_V = 16 / TEXTURE_HEIGHT;
 
-	private static final double SCORCH_MAX_V = SCORCH_MIN_V + RING_FRAME_SIZE / TEXTURE_HEIGHT;
+    private static final double SCORCH_MAX_V = SCORCH_MIN_V + RING_FRAME_SIZE / TEXTURE_HEIGHT;
 
     @Override
-    public void doRender(Entity entity, double x, double y, double z, float yaw, float delta)
-    {
+    public void doRender(Entity entity, double x, double y, double z, float yaw, float delta) {
         EntitySunstrike sunstrike = (EntitySunstrike) entity;
         double maxY = MAX_HEIGHT - sunstrike.posY;
-        if (maxY < 0)
-        {
+        if (maxY < 0) {
             return;
         }
         RANDOMIZER.setSeed(sunstrike.getVariant());
@@ -80,20 +75,17 @@ public class RenderSunstrike extends Render
         GL11.glTranslated(x, y, z);
         setupGL();
         bindEntityTexture(sunstrike);
-        if (isLingering)
-        {
+        if (isLingering) {
             drawScorch(sunstrike, delta);
         }
-        if (isStriking)
-        {
+        if (isStriking) {
             drawStrike(sunstrike, maxY, delta);
         }
         revertGL();
         GL11.glPopMatrix();
     }
 
-    private void drawScorch(EntitySunstrike sunstrike, float delta)
-    {
+    private void drawScorch(EntitySunstrike sunstrike, float delta) {
         World world = renderManager.worldObj;
         double ex = sunstrike.lastTickPosX + (sunstrike.posX - sunstrike.lastTickPosX) * delta;
         double ey = sunstrike.lastTickPosY + (sunstrike.posY - sunstrike.lastTickPosY) * delta + sunstrike.getShadowSize();
@@ -109,16 +101,12 @@ public class RenderSunstrike extends Render
         float opacityMultiplier = (0.6F + RANDOMIZER.nextFloat() * 0.2F) * renderManager.worldObj.getLightBrightness(MathHelper.floor_double(ex), MathHelper.floor_double(ey), MathHelper.floor_double(ez));
         byte mirrorX = (byte) (RANDOMIZER.nextBoolean() ? -1 : 1);
         byte mirrorZ = (byte) (RANDOMIZER.nextBoolean() ? -1 : 1);
-        for (int bx = minX; bx <= maxX; bx++)
-        {
-            for (int by = minY; by <= maxY; by++)
-            {
-                for (int bz = minZ; bz <= maxZ; bz++)
-                {
+        for (int bx = minX; bx <= maxX; bx++) {
+            for (int by = minY; by <= maxY; by++) {
+                for (int bz = minZ; bz <= maxZ; bz++) {
                     Block block = world.getBlock(bx, by - 1, bz);
 
-                    if (block.getMaterial() != Material.air && world.getBlockLightValue(bx, by, bz) > 3)
-                    {
+                    if (block.getMaterial() != Material.air && world.getBlockLightValue(bx, by, bz) > 3) {
                         drawScorchBlock(block, bx, by, bz, ex, ey - sunstrike.getShadowSize(), ez, opacityMultiplier, mirrorX, mirrorZ);
                     }
                 }
@@ -129,16 +117,12 @@ public class RenderSunstrike extends Render
         GL11.glDepthMask(true);
     }
 
-    private void drawScorchBlock(Block block, int bx, int by, int bz, double ex, double ey, double ez, float opacityMultiplier, byte mirrorX, byte mirrorZ)
-    {
+    private void drawScorchBlock(Block block, int bx, int by, int bz, double ex, double ey, double ez, float opacityMultiplier, byte mirrorX, byte mirrorZ) {
         Tessellator t = Tessellator.instance;
-        if (block.renderAsNormalBlock())
-        {
+        if (block.renderAsNormalBlock()) {
             float opacity = (float) ((1 - (ey - by) / 2) * opacityMultiplier);
-            if (opacity >= 0)
-            {
-                if (opacity > 1)
-                {
+            if (opacity >= 0) {
+                if (opacity > 1) {
                     opacity = 1;
                 }
                 t.setColorRGBA_F(1, 1, 1, opacity);
@@ -159,14 +143,12 @@ public class RenderSunstrike extends Render
         }
     }
 
-    private void drawStrike(EntitySunstrike sunstrike, double maxY, float delta)
-    {
+    private void drawStrike(EntitySunstrike sunstrike, double maxY, float delta) {
         float drawTime = sunstrike.getStrikeDrawTime(delta);
         float strikeTime = sunstrike.getStrikeDamageTime(delta);
         boolean drawing = sunstrike.isStrikeDrawing(delta);
         float opacity = drawing && drawTime < DRAW_FADE_IN_POINT ? drawTime * DRAW_FADE_IN_RATE : 1;
-        if (drawing)
-        {
+        if (drawing) {
             opacity *= DRAW_OPACITY_MULTIPLER;
         }
         drawRing(drawing, drawTime, strikeTime, opacity);
@@ -174,11 +156,9 @@ public class RenderSunstrike extends Render
         drawBeam(drawing, drawTime, strikeTime, opacity, maxY);
     }
 
-    private void drawRing(boolean drawing, float drawTime, float strikeTime, float opacity)
-    {
+    private void drawRing(boolean drawing, float drawTime, float strikeTime, float opacity) {
         int frame = (int) (((drawing ? drawTime : strikeTime) * (RING_FRAME_COUNT + 1)));
-        if (frame > RING_FRAME_COUNT)
-        {
+        if (frame > RING_FRAME_COUNT) {
             frame = RING_FRAME_COUNT;
         }
         double minU = frame * RING_FRAME_SIZE / TEXTURE_WIDTH;
@@ -199,16 +179,13 @@ public class RenderSunstrike extends Render
         GL11.glDepthMask(true);
     }
 
-    private void drawBeam(boolean drawing, float drawTime, float strikeTime, float opacity, double maxY)
-    {
+    private void drawBeam(boolean drawing, float drawTime, float strikeTime, float opacity, double maxY) {
         int frame = drawing ? 0 : (int) (strikeTime * (BREAM_FRAME_COUNT + 1));
-        if (frame > BREAM_FRAME_COUNT)
-        {
+        if (frame > BREAM_FRAME_COUNT) {
             frame = BREAM_FRAME_COUNT;
         }
         double radius = BEAM_STRIKE_RADIUS;
-        if (drawing)
-        {
+        if (drawing) {
             radius = (BEAM_DRAW_END_RADIUS - BEAM_DRAW_START_RADIUS) * drawTime + BEAM_DRAW_START_RADIUS;
         }
         double minV = frame / TEXTURE_HEIGHT;
@@ -224,24 +201,21 @@ public class RenderSunstrike extends Render
         t.draw();
     }
 
-    private void setupGL()
-    {
+    private void setupGL() {
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glAlphaFunc(GL11.GL_GREATER, 0);
     }
 
-    private void revertGL()
-    {
+    private void revertGL() {
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glAlphaFunc(GL11.GL_GREATER, 0.1F);
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(Entity entity)
-    {
+    protected ResourceLocation getEntityTexture(Entity entity) {
         return TEXTURE;
     }
 }

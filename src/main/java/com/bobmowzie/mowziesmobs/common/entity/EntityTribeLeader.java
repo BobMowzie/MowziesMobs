@@ -6,6 +6,8 @@ import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.common.ai.AINearestAttackableTargetBarakoa;
 import com.bobmowzie.mowziesmobs.common.animation.*;
 import com.bobmowzie.mowziesmobs.common.item.ItemTestStructure;
+import net.ilexiconn.llibrary.server.animation.Animation;
+import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.entity.EntityLivingBase;
@@ -19,11 +21,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import thehippomaster.AnimationAPI.AnimationAPI;
 
-/**
- * Created by jnad325 on 7/9/15.
- */
 public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeImmune {
     int direction = 0;
     public ControlledAnimation legsUp = new ControlledAnimation(15);
@@ -44,26 +42,34 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
 
     private boolean pacified = false;
 
+    public static final Animation BELLY_ANIMATION = Animation.create(3, 40);
+    public static final Animation TALK_ANIMATION = Animation.create(4, 80);
+    public static final Animation SUNSTRIKE_ANIMATION = Animation.create(5, 15);
+    public static final Animation ATTACK_ANIMATION = Animation.create(6, 30);
+    public static final Animation SPAWN_ANIMATION = Animation.create(7, 20);
+    public static final Animation SOLAR_BEAM_ANIMATION = Animation.create(8, 100);
+
     public EntityTribeLeader(World world) {
         super(world);
         deathLength = 130;
         targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
         tasks.addTask(4, new AINearestAttackableTargetBarakoa(this, EntityPlayer.class, 0, false));
         tasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityZombie.class, 0, false));
-        tasks.addTask(2, new MMAnimBase(this, 1, 40, false));
-        tasks.addTask(2, new MMAnimBase(this, 2, 80, false));
-        tasks.addTask(2, new MMAnimBase(this, 3, 40, false));
-        tasks.addTask(2, new AnimSunStrike(this, 4, 15));
-        tasks.addTask(2, new AnimRadiusAttack(this, 5, 30, 5, 5, 4.5f, 12));
-        tasks.addTask(2, new AnimSpawnBarakoa(this, 6, 20));
-        tasks.addTask(2, new AnimSolarBeam(this, 7, 100));
-        tasks.addTask(3, new AnimTakeDamage(this, 13));
-        tasks.addTask(1, new AnimDie(this, deathLength));
+        tasks.addTask(2, new AnimationAI<>(this, BELLY_ANIMATION, false));
+        tasks.addTask(2, new AnimationAI<>(this, TALK_ANIMATION, false));
+        tasks.addTask(2, new AnimationSunStrike<>(this, SUNSTRIKE_ANIMATION));
+        tasks.addTask(2, new AnimationRadiusAttack<>(this, ATTACK_ANIMATION, 5, 5, 4.5f, 12));
+        tasks.addTask(2, new AnimationSpawnBarakoa<>(this, SPAWN_ANIMATION));
+        tasks.addTask(2, new AnimationSolarBeam<>(this, SOLAR_BEAM_ANIMATION));
+        tasks.addTask(3, new AnimationTakeDamage<>(this));
+        tasks.addTask(1, new AnimationDieAI<>(this));
         this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityTribesman.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
         setSize(1.5f, 2.4f);
-        if (getDirection() == 0) setDirection(rand.nextInt(4) + 1);
+        if (getDirection() == 0) {
+            setDirection(rand.nextInt(4) + 1);
+        }
     }
 
     @Override
@@ -76,8 +82,8 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
         setDirection(direction);
     }
 
-    protected void applyEntityAttributes()
-    {
+    @Override
+    protected void applyEntityAttributes() {
         super.applyEntityAttributes();
         getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(1.0);
         getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(MAX_HEALTH);
@@ -90,34 +96,45 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
 
     @Override
     protected String getLivingSound() {
-        if (getAnimID() == 0) {
+        if (getAnimation() == NO_ANIMATION) {
             if (getAttackTarget() == null) {
                 int i = MathHelper.getRandomIntegerInRange(rand, 1, 10);
-                if (i == 1) playSound("mowziesmobs:barakoTalk1", 1.4f, 1);
-                else if (i == 2) playSound("mowziesmobs:barakoTalk2", 1.4f, 1);
-                else if (i == 3) playSound("mowziesmobs:barakoTalk3", 1.4f, 1);
-                else if (i == 4) playSound("mowziesmobs:barakoTalk4", 1.4f, 1);
-                else if (i == 5) playSound("mowziesmobs:barakoTalk5", 1.4f, 1);
-                else if (i == 6) playSound("mowziesmobs:barakoTalk6", 1.4f, 1);
-                if (i < 7)
-                {
-                    setWhichDialogue(i);
-                    AnimationAPI.sendAnimPacket(this, 2);
+                if (i == 1) {
+                    playSound("mowziesmobs:barakoTalk1", 1.4f, 1);
+                } else if (i == 2) {
+                    playSound("mowziesmobs:barakoTalk2", 1.4f, 1);
+                } else if (i == 3) {
+                    playSound("mowziesmobs:barakoTalk3", 1.4f, 1);
+                } else if (i == 4) {
+                    playSound("mowziesmobs:barakoTalk4", 1.4f, 1);
+                } else if (i == 5) {
+                    playSound("mowziesmobs:barakoTalk5", 1.4f, 1);
+                } else if (i == 6) {
+                    playSound("mowziesmobs:barakoTalk6", 1.4f, 1);
                 }
-            }
-            else
-            {
+                if (i < 7) {
+                    setWhichDialogue(i);
+                    AnimationHandler.INSTANCE.sendAnimationMessage(this, TALK_ANIMATION);
+                }
+            } else {
                 int i = MathHelper.getRandomIntegerInRange(rand, 1, 10);
-                if (i == 1) playSound("mowziesmobs:barakoAngry1", 1.4f, 1);
-                else if (i == 2) playSound("mowziesmobs:barakoAngry2", 1.4f, 1);
-                else if (i == 3) playSound("mowziesmobs:barakoAngry3", 1.4f, 1);
-                else if (i == 4) playSound("mowziesmobs:barakoAngry4", 1.4f, 1);
-                else if (i == 5) playSound("mowziesmobs:barakoAngry5", 1.4f, 1);
-                else if (i == 6) playSound("mowziesmobs:barakoAngry6", 1.4f, 1);
+                if (i == 1) {
+                    playSound("mowziesmobs:barakoAngry1", 1.4f, 1);
+                } else if (i == 2) {
+                    playSound("mowziesmobs:barakoAngry2", 1.4f, 1);
+                } else if (i == 3) {
+                    playSound("mowziesmobs:barakoAngry3", 1.4f, 1);
+                } else if (i == 4) {
+                    playSound("mowziesmobs:barakoAngry4", 1.4f, 1);
+                } else if (i == 5) {
+                    playSound("mowziesmobs:barakoAngry5", 1.4f, 1);
+                } else if (i == 6) {
+                    playSound("mowziesmobs:barakoAngry6", 1.4f, 1);
+                }
 //                if (i < 7)
 //                {
 //                    setWhichDialogue(i);
-//                    AnimationAPI.sendAnimPacket(this, 3);
+//                    AnimationHandler.INSTANCE.sendAnimationMessage(this, 3);
 //                }
             }
         }
@@ -138,8 +155,12 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (pacified) setAttackTarget(null);
-        if (ticksExisted == 1) direction = getDirection();
+        if (pacified) {
+            setAttackTarget(null);
+        }
+        if (ticksExisted == 1) {
+            direction = getDirection();
+        }
         repelEntities(2.2f, 2.5f, 2.2f, 2.2f);
         rotationYaw = (direction - 1) * 90;
         renderYawOffset = rotationYaw;
@@ -152,98 +173,133 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
 
             float entityHitAngle = (float) ((Math.atan2(target.posZ - posZ, target.posX - posX) * (180 / Math.PI) - 90) % 360);
             float entityAttackingAngle = rotationYaw % 360;
-            if (entityHitAngle < 0) entityHitAngle += 360;
-            if (entityAttackingAngle < 0) entityAttackingAngle += 360;
+            if (entityHitAngle < 0) {
+                entityHitAngle += 360;
+            }
+            if (entityAttackingAngle < 0) {
+                entityAttackingAngle += 360;
+            }
             float entityRelativeAngle = Math.abs(entityHitAngle - entityAttackingAngle);
 
-            if (getAnimID() == 0 && getHealth() <= 70 && timeUntilLaser <= 0 && (entityRelativeAngle < 60 || entityRelativeAngle > 300) && rand.nextInt(50) == 0) {
-                AnimationAPI.sendAnimPacket(this, 7);
+            if (getAnimation() == NO_ANIMATION && getHealth() <= 70 && timeUntilLaser <= 0 && (entityRelativeAngle < 60 || entityRelativeAngle > 300) && rand.nextInt(50) == 0) {
+                AnimationHandler.INSTANCE.sendAnimationMessage(this, SOLAR_BEAM_ANIMATION);
                 timeUntilLaser = LASER_PAUSE;
-            }
-            else if (getAnimID() == 0 && targetDistance <= 5) AnimationAPI.sendAnimPacket(this, 5);
-            else if (getAnimID() == 0 && rand.nextInt(50) == 0 && targetDistance > 5 && timeUntilBarakoa <= 0) {
-                AnimationAPI.sendAnimPacket(this, 6);
+            } else if (getAnimation() == NO_ANIMATION && targetDistance <= 5) {
+                AnimationHandler.INSTANCE.sendAnimationMessage(this, ATTACK_ANIMATION);
+            } else if (getAnimation() == NO_ANIMATION && rand.nextInt(50) == 0 && targetDistance > 5 && timeUntilBarakoa <= 0) {
+                AnimationHandler.INSTANCE.sendAnimationMessage(this, SPAWN_ANIMATION);
                 timeUntilBarakoa = BARAKOA_PAUSE;
-            }
-            else if (getAnimID() == 0 && timeUntilSunstrike <= 0 && targetDistance > 5) {
-                AnimationAPI.sendAnimPacket(this, 4);
+            } else if (getAnimation() == NO_ANIMATION && timeUntilSunstrike <= 0 && targetDistance > 5) {
+                AnimationHandler.INSTANCE.sendAnimationMessage(this, SUNSTRIKE_ANIMATION);
                 timeUntilSunstrike = getTimeUntilSunstrike();
             }
-        }
-        else {
-             if (!worldObj.isRemote) setAngry(0);
+        } else {
+            if (!worldObj.isRemote) {
+                setAngry(0);
+            }
         }
 
         if (ticksExisted % 20 == 0) {
-            if (checkBlocksByFeet()) blocksByFeet = true;
-            else blocksByFeet = false;
+            if (checkBlocksByFeet()) {
+                blocksByFeet = true;
+            } else {
+                blocksByFeet = false;
+            }
         }
 
-        if (blocksByFeet) legsUp.increaseTimer();
-        else legsUp.decreaseTimer();
+        if (blocksByFeet) {
+            legsUp.increaseTimer();
+        } else {
+            legsUp.decreaseTimer();
+        }
 
-        if (getAngry() == 1) angryEyebrow.increaseTimer();
-        else angryEyebrow.decreaseTimer();
+        if (getAngry() == 1) {
+            angryEyebrow.increaseTimer();
+        } else {
+            angryEyebrow.decreaseTimer();
+        }
 
-        if (getAnimID() == 0 && getAttackTarget() == null && rand.nextInt(200) == 0) AnimationAPI.sendAnimPacket(this, 1);
+        if (getAnimation() == NO_ANIMATION && getAttackTarget() == null && rand.nextInt(200) == 0) {
+            AnimationHandler.INSTANCE.sendAnimationMessage(this, BELLY_ANIMATION);
+        }
 
-        if (getAnimID() == 1 && (getAnimTick() == 9 || getAnimTick() == 29)) playSound("mowziesmobs:barakoBelly", 1.4f, 1f);
+        if (getAnimation() == BELLY_ANIMATION && (getAnimationTick() == 9 || getAnimationTick() == 29)) {
+            playSound("mowziesmobs:barakoBelly", 1.4f, 1f);
+        }
 
-        if (getAnimID() == 2 && getAnimTick() == 1) whichDialogue = getWhichDialogue();
+        if (getAnimation() == TALK_ANIMATION && getAnimationTick() == 1) {
+            whichDialogue = getWhichDialogue();
+        }
 
-        if (getAnimID() == 5) {
+        if (getAnimation() == ATTACK_ANIMATION) {
             rotationYawHead = rotationYaw;
-            if (getAnimTick() == 1) playSound("mowziesmobs:barakoBurst", 1.5f, 1.5f);
-            if (getAnimTick() == 10) {
-                if (worldObj.isRemote) spawnExplosionParticles(30);
+            if (getAnimationTick() == 1) {
+                playSound("mowziesmobs:barakoBurst", 1.5f, 1.5f);
+            }
+            if (getAnimationTick() == 10) {
+                if (worldObj.isRemote) {
+                    spawnExplosionParticles(30);
+                }
                 playSound("mowziesmobs:barakoAttack", 1.5f, 0.9f);
             }
-            if (getAnimTick() <= 6 && worldObj.isRemote) {
+            if (getAnimationTick() <= 6 && worldObj.isRemote) {
                 int particleCount = 8;
-                while(--particleCount != 0) {
+                while (--particleCount != 0) {
                     double radius = 2f;
                     double yaw = rand.nextFloat() * 2 * Math.PI;
                     double pitch = rand.nextFloat() * 2 * Math.PI;
                     double ox = radius * Math.sin(yaw) * Math.sin(pitch);
                     double oy = radius * Math.cos(pitch);
                     double oz = radius * Math.cos(yaw) * Math.sin(pitch);
-                    double offsetX = -0.3 * Math.sin(rotationYaw * Math.PI/180);
-                    double offsetZ = -0.3 * Math.cos(rotationYaw * Math.PI/180);
+                    double offsetX = -0.3 * Math.sin(rotationYaw * Math.PI / 180);
+                    double offsetZ = -0.3 * Math.cos(rotationYaw * Math.PI / 180);
                     double offsetY = 1;
-                    MowziesMobs.proxy.spawnOrbFX(worldObj, posX + ox + offsetX, posY + offsetY + oy, posZ + oz + offsetZ, posX+ offsetX, posY + offsetY, posZ + offsetZ, 6);
+                    MowziesMobs.PROXY.spawnOrbFX(worldObj, posX + ox + offsetX, posY + offsetY + oy, posZ + oz + offsetZ, posX + offsetX, posY + offsetY, posZ + offsetZ, 6);
                 }
             }
         }
-        if (!worldObj.isRemote && getAttackTarget() == null && getAnimID() != 7) heal(0.2f);
-        if (timeUntilSunstrike > 0) timeUntilSunstrike--;
-        if (timeUntilLaser > 0) timeUntilLaser--;
-        if (timeUntilBarakoa > 0) timeUntilBarakoa--;
+        if (!worldObj.isRemote && getAttackTarget() == null && getAnimation() != SOLAR_BEAM_ANIMATION) {
+            heal(0.2f);
+        }
+        if (timeUntilSunstrike > 0) {
+            timeUntilSunstrike--;
+        }
+        if (timeUntilLaser > 0) {
+            timeUntilLaser--;
+        }
+        if (timeUntilBarakoa > 0) {
+            timeUntilBarakoa--;
+        }
     }
 
-    private boolean checkBlocksByFeet()
-    {
+    @Override
+    public Animation[] getEntityAnimations() {
+        return new Animation[]{BELLY_ANIMATION, TALK_ANIMATION, SUNSTRIKE_ANIMATION, ATTACK_ANIMATION, SPAWN_ANIMATION, SOLAR_BEAM_ANIMATION};
+    }
+
+    private boolean checkBlocksByFeet() {
         Block blockLeft;
         Block blockRight;
 //        System.out.println(direction);
         if (direction == 1) {
-            blockLeft = worldObj.getBlock(MathHelper.floor_double(posX) + 1, Math.round((float)(posY - 1)), MathHelper.floor_double(posZ) + 1);
-            blockRight = worldObj.getBlock(MathHelper.floor_double(posX) - 1, Math.round((float)(posY - 1)), MathHelper.floor_double(posZ) + 1);
+            blockLeft = worldObj.getBlock(MathHelper.floor_double(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) + 1);
+            blockRight = worldObj.getBlock(MathHelper.floor_double(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) + 1);
+        } else if (direction == 2) {
+            blockLeft = worldObj.getBlock(MathHelper.floor_double(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) + 1);
+            blockRight = worldObj.getBlock(MathHelper.floor_double(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) - 1);
+        } else if (direction == 3) {
+            blockLeft = worldObj.getBlock(MathHelper.floor_double(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) - 1);
+            blockRight = worldObj.getBlock(MathHelper.floor_double(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) - 1);
+        } else if (direction == 4) {
+            blockLeft = worldObj.getBlock(MathHelper.floor_double(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) - 1);
+            blockRight = worldObj.getBlock(MathHelper.floor_double(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) + 1);
+        } else {
+            return false;
         }
-        else if (direction == 2) {
-            blockLeft = worldObj.getBlock(MathHelper.floor_double(posX) - 1, Math.round((float)(posY - 1)), MathHelper.floor_double(posZ) + 1);
-            blockRight = worldObj.getBlock(MathHelper.floor_double(posX) - 1, Math.round((float)(posY - 1)), MathHelper.floor_double(posZ) - 1);
-        }
-        else if (direction == 3) {
-            blockLeft = worldObj.getBlock(MathHelper.floor_double(posX) - 1, Math.round((float)(posY - 1)), MathHelper.floor_double(posZ) - 1);
-            blockRight = worldObj.getBlock(MathHelper.floor_double(posX) + 1, Math.round((float)(posY - 1)), MathHelper.floor_double(posZ) - 1);
-        }
-        else if (direction == 4) {
-            blockLeft = worldObj.getBlock(MathHelper.floor_double(posX) + 1, Math.round((float)(posY - 1)), MathHelper.floor_double(posZ) - 1);
-            blockRight = worldObj.getBlock(MathHelper.floor_double(posX) + 1, Math.round((float)(posY - 1)), MathHelper.floor_double(posZ) + 1);
-        }
-        else return false;
 
-        if (blockLeft instanceof BlockAir && blockRight instanceof BlockAir) return false;
+        if (blockLeft instanceof BlockAir && blockRight instanceof BlockAir) {
+            return false;
+        }
         return true;
     }
 
@@ -258,70 +314,68 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
         }
     }
 
-    protected void entityInit()
-    {
+    @Override
+    protected void entityInit() {
         super.entityInit();
         dataWatcher.addObject(28, 0);
         dataWatcher.addObject(29, 0);
         dataWatcher.addObject(30, 0);
     }
 
-    public int getDirection()
-    {
+    public int getDirection() {
         return dataWatcher.getWatchableObjectInt(28);
     }
 
-    public void setDirection(Integer direction)
-    {
+    public void setDirection(Integer direction) {
         dataWatcher.updateObject(28, direction);
     }
 
-    public int getWhichDialogue()
-    {
+    public int getWhichDialogue() {
         return dataWatcher.getWatchableObjectInt(29);
     }
 
-    public void setWhichDialogue(Integer i)
-    {
+    public void setWhichDialogue(Integer i) {
         dataWatcher.updateObject(29, i);
     }
 
-    public int getAngry()
-    {
+    public int getAngry() {
         return dataWatcher.getWatchableObjectInt(30);
     }
 
-    public void setAngry(Integer i)
-    {
+    public void setAngry(Integer i) {
         dataWatcher.updateObject(30, i);
     }
 
-    public void writeEntityToNBT(NBTTagCompound compound)
-    {
+    @Override
+    public void writeEntityToNBT(NBTTagCompound compound) {
         super.writeEntityToNBT(compound);
         compound.setInteger("direction", getDirection());
     }
 
-    public void readEntityFromNBT(NBTTagCompound compound)
-    {
+    @Override
+    public void readEntityFromNBT(NBTTagCompound compound) {
         super.readEntityFromNBT(compound);
         setDirection(compound.getInteger("direction"));
     }
 
-    protected void func_145780_a(int p_145780_1_, int p_145780_2_, int p_145780_3_, Block p_145780_4_)
-    {
+    @Override
+    protected void func_145780_a(int p_145780_1_, int p_145780_2_, int p_145780_3_, Block p_145780_4_) {
 
     }
 
     @Override
     protected boolean interact(EntityPlayer player) {
-        if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof ItemTestStructure) pacified = true;
+        if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof ItemTestStructure) {
+            pacified = true;
+        }
         return super.interact(player);
     }
 
     private int getTimeUntilSunstrike() {
         int damageTaken = (int) (MAX_HEALTH - getHealth());
-        if (damageTaken > 60) damageTaken = 60;
-        return (int) (SUNSTRIKE_PAUSE_MAX - (damageTaken/60f) * (SUNSTRIKE_PAUSE_MAX - SUNSTRIKE_PAUSE_MIN));
+        if (damageTaken > 60) {
+            damageTaken = 60;
+        }
+        return (int) (SUNSTRIKE_PAUSE_MAX - (damageTaken / 60f) * (SUNSTRIKE_PAUSE_MAX - SUNSTRIKE_PAUSE_MIN));
     }
 }

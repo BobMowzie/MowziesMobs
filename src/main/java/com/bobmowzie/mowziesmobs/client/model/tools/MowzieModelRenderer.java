@@ -6,8 +6,7 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 
 @SideOnly(Side.CLIENT)
-public class MowzieModelRenderer extends ModelRenderer
-{
+public class MowzieModelRenderer extends ModelRenderer {
     public float initRotateAngleX;
     public float initRotateAngleY;
     public float initRotateAngleZ;
@@ -19,23 +18,19 @@ public class MowzieModelRenderer extends ModelRenderer
     protected int textureOffsetX;
     protected int textureOffsetY;
 
-    public MowzieModelRenderer(ModelBase modelBase, String name)
-    {
+    public MowzieModelRenderer(ModelBase modelBase, String name) {
         super(modelBase, name);
     }
 
-    public MowzieModelRenderer(ModelBase modelBase, int x, int y)
-    {
+    public MowzieModelRenderer(ModelBase modelBase, int x, int y) {
         super(modelBase, x, y);
     }
 
-    public MowzieModelRenderer(ModelBase modelBase)
-    {
+    public MowzieModelRenderer(ModelBase modelBase) {
         super(modelBase);
     }
 
-    public void setInitValuesToCurrentPose()
-    {
+    public void setInitValuesToCurrentPose() {
         initRotateAngleX = rotateAngleX;
         initRotateAngleY = rotateAngleY;
         initRotateAngleZ = rotateAngleZ;
@@ -45,8 +40,7 @@ public class MowzieModelRenderer extends ModelRenderer
         initRotationPointZ = rotationPointZ;
     }
 
-    public void setCurrentPoseToInitValues()
-    {
+    public void setCurrentPoseToInitValues() {
         rotateAngleX = initRotateAngleX;
         rotateAngleY = initRotateAngleY;
         rotateAngleZ = initRotateAngleZ;
@@ -56,8 +50,7 @@ public class MowzieModelRenderer extends ModelRenderer
         rotationPointZ = initRotationPointZ;
     }
 
-    public void setRotationAngles(float x, float y, float z)
-    {
+    public void setRotationAngles(float x, float y, float z) {
         rotateAngleX = x;
         rotateAngleY = y;
         rotateAngleZ = z;
@@ -66,8 +59,7 @@ public class MowzieModelRenderer extends ModelRenderer
     /**
      * Resets all rotation points.
      */
-    public void resetAllRotationPoints()
-    {
+    public void resetAllRotationPoints() {
         rotationPointX = initRotationPointX;
         rotationPointY = initRotationPointY;
         rotationPointZ = initRotationPointZ;
@@ -76,32 +68,28 @@ public class MowzieModelRenderer extends ModelRenderer
     /**
      * Resets X rotation point.
      */
-    public void resetXRotationPoints()
-    {
+    public void resetXRotationPoints() {
         rotationPointX = initRotationPointX;
     }
 
     /**
      * Resets Y rotation point.
      */
-    public void resetYRotationPoints()
-    {
+    public void resetYRotationPoints() {
         rotationPointY = initRotationPointY;
     }
 
     /**
      * Resets Z rotation point.
      */
-    public void resetZRotationPoints()
-    {
+    public void resetZRotationPoints() {
         rotationPointZ = initRotationPointZ;
     }
 
     /**
      * Resets all rotations.
      */
-    public void resetAllRotations()
-    {
+    public void resetAllRotations() {
         rotateAngleX = initRotateAngleX;
         rotateAngleY = initRotateAngleY;
         rotateAngleZ = initRotateAngleZ;
@@ -110,32 +98,28 @@ public class MowzieModelRenderer extends ModelRenderer
     /**
      * Resets X rotation.
      */
-    public void resetXRotations()
-    {
+    public void resetXRotations() {
         rotateAngleX = initRotateAngleX;
     }
 
     /**
      * Resets Y rotation.
      */
-    public void resetYRotations()
-    {
+    public void resetYRotations() {
         rotateAngleY = initRotateAngleY;
     }
 
     /**
      * Resets Z rotation.
      */
-    public void resetZRotations()
-    {
+    public void resetZRotations() {
         rotateAngleZ = initRotateAngleZ;
     }
 
     /**
      * Copies the rotation point coordinates.
      */
-    public void copyAllRotationPoints(MowzieModelRenderer target)
-    {
+    public void copyAllRotationPoints(MowzieModelRenderer target) {
         rotationPointX = target.rotationPointX;
         rotationPointY = target.rotationPointY;
         rotationPointZ = target.rotationPointZ;
@@ -144,31 +128,28 @@ public class MowzieModelRenderer extends ModelRenderer
     /**
      * Copies X rotation point.
      */
-    public void copyXRotationPoint(MowzieModelRenderer target)
-    {
+    public void copyXRotationPoint(MowzieModelRenderer target) {
         rotationPointX = target.rotationPointX;
     }
 
     /**
      * Copies Y rotation point.
      */
-    public void copyYRotationPoint(MowzieModelRenderer target)
-    {
+    public void copyYRotationPoint(MowzieModelRenderer target) {
         rotationPointY = target.rotationPointY;
     }
 
     /**
      * Copies Z rotation point.
      */
-    public void copyZRotationPoint(MowzieModelRenderer target)
-    {
+    public void copyZRotationPoint(MowzieModelRenderer target) {
         rotationPointZ = target.rotationPointZ;
     }
 
     @Override
     public ModelRenderer setTextureOffset(int textureOffsetX, int textureOffsetY) {
-    	this.textureOffsetX = textureOffsetX;
-    	this.textureOffsetY = textureOffsetY;
-    	return super.setTextureOffset(textureOffsetX, textureOffsetY);
+        this.textureOffsetX = textureOffsetX;
+        this.textureOffsetY = textureOffsetY;
+        return super.setTextureOffset(textureOffsetX, textureOffsetY);
     }
 }

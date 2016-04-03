@@ -2,16 +2,14 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelBase;
 import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelRenderer;
-import com.bobmowzie.mowziesmobs.common.animation.MMAnimation;
 import com.bobmowzie.mowziesmobs.common.entity.EntityFoliaath;
+import net.ilexiconn.llibrary.client.model.ModelAnimator;
+import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import org.lwjgl.opengl.GL11;
-import thehippomaster.AnimationAPI.IAnimatedEntity;
-import thehippomaster.AnimationAPI.client.Animator;
 
-public class ModelFoliaath extends MowzieModelBase
-{
+public class ModelFoliaath extends MowzieModelBase {
     public MowzieModelRenderer bigLeaf2Base;
     public MowzieModelRenderer bigLeaf1Base;
     public MowzieModelRenderer bigLeaf4Base;
@@ -54,13 +52,12 @@ public class ModelFoliaath extends MowzieModelBase
     public MowzieModelRenderer[] leafParts4;
     private float activeProgress;
 
-    private Animator animator;
+    private ModelAnimator animator;
 
-    public ModelFoliaath()
-    {
+    public ModelFoliaath() {
         textureWidth = 128;
         textureHeight = 64;
-        animator = new Animator(this);
+        animator = ModelAnimator.create();
 
         headBase = new MowzieModelRenderer(this, 80, 15);
         headBase.setRotationPoint(0.0F, -10.0F, 0.0F);
@@ -235,8 +232,8 @@ public class ModelFoliaath extends MowzieModelBase
         setInitPose();
     }
 
-    public void render(Entity foliaath, float f, float f1, float f2, float f3, float f4, float f5)
-    {
+    @Override
+    public void render(Entity foliaath, float f, float f1, float f2, float f3, float f4, float f5) {
         animate((IAnimatedEntity) foliaath, f, f1, f2, f3, f4, f5);
         float leafScale = 1.25F;
         GL11.glScalef(leafScale, leafScale, leafScale);
@@ -255,23 +252,20 @@ public class ModelFoliaath extends MowzieModelBase
         stem1Joint.render(f5);
     }
 
-    public void setRotateAngle(MowzieModelRenderer modelRenderer, float x, float y, float z)
-    {
+    public void setRotateAngle(MowzieModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(EntityFoliaath foliaath, float f, float f1, float f2, float f3, float f4, float f5)
-    {
+    public void setRotationAngles(EntityFoliaath foliaath, float f, float f1, float f2, float f3, float f4, float f5) {
         super.setRotationAngles(f, f1, f2, f3, f4, f5, foliaath);
 
         stem1Joint.rotateAngleY += (f3 / (180f / (float) Math.PI));
     }
 
     @Override
-    public void setLivingAnimations(EntityLivingBase entity, float f, float f1, float partialTicks)
-    {
+    public void setLivingAnimations(EntityLivingBase entity, float f, float f1, float partialTicks) {
         EntityFoliaath foliaath = (EntityFoliaath) entity;
         animator.update(foliaath);
         setToInitPose();
@@ -354,14 +348,13 @@ public class ModelFoliaath extends MowzieModelBase
         mouthBottom1.rotateAngleX += 0.4 * 2 * activeIntermittent;
     }
 
-    public void animate(IAnimatedEntity foliaath, float f, float f1, float f2, float f3, float f4, float f5)
-    {
+    public void animate(IAnimatedEntity foliaath, float f, float f1, float f2, float f3, float f4, float f5) {
         EntityFoliaath entityfoliaath = (EntityFoliaath) foliaath;
         setRotationAngles(entityfoliaath, f, f1, f2, f3, f4, f5);
 
         //Bite
-        animator.setAnim(1);
-        animator.startPhase(3);
+        animator.setAnimation(EntityFoliaath.ATTACK_ANIMATION);
+        animator.startKeyframe(3);
         animator.rotate(stem1Base, 0.4F, 0, 0);
         animator.rotate(stem2, -0.3F, 0, 0);
         animator.rotate(stem3, 0.2F, 0, 0);
@@ -373,9 +366,9 @@ public class ModelFoliaath extends MowzieModelBase
         animator.rotate(tongue2, -0.5F, 0, 0);
         animator.move(tongue2, 0, -0.3F, 0);
         animator.rotate(tongue3, 0.4F, 0, 0);
-        animator.endPhase();
-        animator.setStationaryPhase(1);
-        animator.startPhase(2);
+        animator.endKeyframe();
+        animator.setStaticKeyframe(1);
+        animator.startKeyframe(2);
         animator.rotate(stem1Base, -0.6F, 0, 0);
         animator.rotate(stem2, -1.2F, 0, 0);
         animator.rotate(stem3, 0.8F, 0, 0);
@@ -385,12 +378,12 @@ public class ModelFoliaath extends MowzieModelBase
         animator.rotate(mouthBottom1, -0.1F, 0, 0);
         animator.rotate(mouthTop2, 0.15F, 0, 0);
         animator.rotate(mouthBottom2, 0.15F, 0, 0);
-        animator.endPhase();
-        animator.setStationaryPhase(3);
-        animator.resetPhase(5);
+        animator.endKeyframe();
+        animator.setStaticKeyframe(3);
+        animator.resetKeyframe(5);
 
-        animator.setAnim(MMAnimation.TAKEDAMAGE.animID());
-        animator.startPhase(3);
+        animator.setAnimation(EntityFoliaath.DAMAGE_ANIMATION);
+        animator.startKeyframe(3);
         animator.rotate(stem2, 0.6F, 0, 0);
         animator.rotate(stem3, -0.4F, 0, 0);
         animator.rotate(stem4, -0.4F, 0, 0);
@@ -403,8 +396,8 @@ public class ModelFoliaath extends MowzieModelBase
         animator.rotate(leaf6Head, 0.6F, 0, 0);
         animator.rotate(leaf7Head, 0.6F, 0, 0);
         animator.rotate(leaf8Head, 0.6F, 0, 0);
-        animator.endPhase();
-        animator.resetPhase(7);
+        animator.endKeyframe();
+        animator.resetKeyframe(7);
 
         float deathFlailProgress = entityfoliaath.deathFlail.getAnimationProgressSinSqrt();
         chainFlap(stemParts, 0.7F, 0.2F * deathFlailProgress, 2F, entityfoliaath.frame, 1F);
@@ -413,8 +406,8 @@ public class ModelFoliaath extends MowzieModelBase
         chainWave(leafParts2, 1.5F, 0.1F * deathFlailProgress, 0, entityfoliaath.frame, 1F);
         chainWave(leafParts3, 1.5F, 0.1F * deathFlailProgress, 0, entityfoliaath.frame, 1F);
         chainWave(leafParts4, 1.5F, 0.1F * deathFlailProgress, 0, entityfoliaath.frame, 1F);
-        animator.setAnim(MMAnimation.DIE.animID());
-        animator.startPhase(4);
+        animator.setAnimation(EntityFoliaath.DIE_ANIMAION);
+        animator.startKeyframe(4);
         animator.rotate(stem1Base, -0.1F, 0, 0);
         animator.rotate(stem2, -0.5F, 0, 0);
         animator.rotate(stem3, 0.9F, 0, 0);
@@ -422,9 +415,9 @@ public class ModelFoliaath extends MowzieModelBase
         animator.rotate(headBase, 0.6F, 0, 0);
         animator.rotate(mouthTop1, 0.4F, 0, 0);
         animator.rotate(mouthBottom1, 0.4F, 0, 0);
-        animator.endPhase();
-        animator.setStationaryPhase(10);
-        animator.startPhase(5);
+        animator.endKeyframe();
+        animator.setStaticKeyframe(10);
+        animator.startKeyframe(5);
         animator.rotate(stem1Base, -0.1F, 0, 0);
         animator.rotate(stem2, -0.5F, 0, 0);
         animator.rotate(stem3, 0.9F, 0, 0);
@@ -448,8 +441,8 @@ public class ModelFoliaath extends MowzieModelBase
         animator.rotate(leaf6Head, 0.7F, 0, 0);
         animator.rotate(leaf7Head, 0.7F, 0, 0);
         animator.rotate(leaf8Head, 0.7F, 0, 0);
-        animator.endPhase();
-        animator.startPhase(2);
+        animator.endKeyframe();
+        animator.startKeyframe(2);
         animator.rotate(stem1Base, -0.1F, 0, 0);
         animator.rotate(stem2, -0.5F, 0, 0);
         animator.rotate(stem3, 0.9F, 0, 0);
@@ -473,8 +466,8 @@ public class ModelFoliaath extends MowzieModelBase
         animator.rotate(leaf6Head, 0.7F, 0, 0);
         animator.rotate(leaf7Head, 0.7F, 0, 0);
         animator.rotate(leaf8Head, 0.7F, 0, 0);
-        animator.endPhase();
-        animator.startPhase(2);
+        animator.endKeyframe();
+        animator.startKeyframe(2);
         animator.rotate(stem1Base, -0.1F, 0, 0);
         animator.rotate(stem2, -0.5F, 0, 0);
         animator.rotate(stem3, 0.9F, 0, 0);
@@ -498,7 +491,7 @@ public class ModelFoliaath extends MowzieModelBase
         animator.rotate(leaf6Head, 0.7F, 0, 0);
         animator.rotate(leaf7Head, 0.7F, 0, 0);
         animator.rotate(leaf8Head, 0.7F, 0, 0);
-        animator.endPhase();
-        animator.setStationaryPhase(27);
+        animator.endKeyframe();
+        animator.setStaticKeyframe(27);
     }
 }

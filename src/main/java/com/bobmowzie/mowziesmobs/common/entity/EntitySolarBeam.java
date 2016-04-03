@@ -11,9 +11,6 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by jnad325 on 12/26/15.
- */
 public class EntitySolarBeam extends Entity {
     public EntityLivingBase caster;
 
@@ -28,8 +25,7 @@ public class EntitySolarBeam extends Entity {
 
     public int blockSide = -1;
 
-    public EntitySolarBeam(World world)
-    {
+    public EntitySolarBeam(World world) {
         super(world);
         setSize(0.1F, 0.1F);
         ignoreFrustumCheck = true;
@@ -44,18 +40,29 @@ public class EntitySolarBeam extends Entity {
         setPosition(x, y, z);
         calculateEndPos();
         playSound("mowziesmobs:laser", 2f, 1);
-        if (!worldObj.isRemote) setCasterID(caster.getEntityId());
+        if (!worldObj.isRemote) {
+            setCasterID(caster.getEntityId());
+        }
     }
 
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (ticksExisted == 1 && worldObj.isRemote) caster = (EntityLivingBase) worldObj.getEntityByID(getCasterID());
-        if (!worldObj.isRemote && getHasPlayer()) updateWithPlayer();
+        if (ticksExisted == 1 && worldObj.isRemote) {
+            caster = (EntityLivingBase) worldObj.getEntityByID(getCasterID());
+        }
+        if (!worldObj.isRemote && getHasPlayer()) {
+            updateWithPlayer();
+        }
 
-        if (!on && appear.getTimer() == 0) setDead();
-        if (on && ticksExisted > 20) appear.increaseTimer();
-        else appear.decreaseTimer();
+        if (!on && appear.getTimer() == 0) {
+            setDead();
+        }
+        if (on && ticksExisted > 20) {
+            appear.increaseTimer();
+        } else {
+            appear.decreaseTimer();
+        }
 
         if (worldObj.isRemote && ticksExisted <= 10) {
             int particleCount = 8;
@@ -68,17 +75,23 @@ public class EntitySolarBeam extends Entity {
                 double oz = radius * Math.cos(yaw) * Math.sin(pitch);
                 double offsetX = -2 * Math.cos(getYaw());
                 double offsetZ = -2 * Math.sin(getYaw());
-                if (getHasPlayer()) offsetX = offsetZ = 0;
-                MowziesMobs.proxy.spawnOrbFX(worldObj, posX + ox + offsetX, posY + oy + 0.3, posZ + oz + offsetZ, posX + offsetX, posY + 0.3, posZ + offsetZ, 10);
+                if (getHasPlayer()) {
+                    offsetX = offsetZ = 0;
+                }
+                MowziesMobs.PROXY.spawnOrbFX(worldObj, posX + ox + offsetX, posY + oy + 0.3, posZ + oz + offsetZ, posX + offsetX, posY + 0.3, posZ + offsetZ, 10);
             }
         }
         if (ticksExisted > 20) {
             calculateEndPos();
             List<EntityLivingBase> hit = raytraceEntities(worldObj, Vec3.createVectorHelper(posX, posY, posZ), Vec3.createVectorHelper(endPosX, endPosY, endPosZ), false, true, true).entities;
-            if (blockSide != -1) spawnExplosionParticles(2);
+            if (blockSide != -1) {
+                spawnExplosionParticles(2);
+            }
             if (!worldObj.isRemote) {
                 for (EntityLivingBase target : hit) {
-                    if (caster instanceof EntityTribeLeader && target instanceof LeaderSunstrikeImmune) continue;
+                    if (caster instanceof EntityTribeLeader && target instanceof LeaderSunstrikeImmune) {
+                        continue;
+                    }
                     target.attackEntityFrom(DamageSource.onFire, 2f);
                     target.attackEntityFrom(DamageSource.causeMobDamage(caster), 1.5f);
                 }
@@ -95,7 +108,7 @@ public class EntitySolarBeam extends Entity {
                         double o2x = -1 * Math.cos(getYaw()) * Math.cos(getPitch());
                         double o2y = -1 * Math.sin(getPitch());
                         double o2z = -1 * Math.sin(getYaw()) * Math.cos(getPitch());
-                        MowziesMobs.proxy.spawnOrbFX(worldObj, posX + o2x + ox, posY + o2y + oy, posZ + o2z + oz, collidePosX + o2x + ox, collidePosY + o2y + oy, collidePosZ + o2z + oz, 15);
+                        MowziesMobs.PROXY.spawnOrbFX(worldObj, posX + o2x + ox, posY + o2y + oy, posZ + o2z + oz, collidePosX + o2x + ox, collidePosY + o2y + oy, collidePosZ + o2z + oz, 15);
                     }
                     int particleCount2 = 4;
                     while (--particleCount2 != 0) {
@@ -108,17 +121,18 @@ public class EntitySolarBeam extends Entity {
                         double o2x = -1 * Math.cos(getYaw()) * Math.cos(getPitch());
                         double o2y = -1 * Math.sin(getPitch());
                         double o2z = -1 * Math.sin(getYaw()) * Math.cos(getPitch());
-                        MowziesMobs.proxy.spawnOrbFX(worldObj, collidePosX + o2x, collidePosY + o2y, collidePosZ + o2z, collidePosX + o2x + ox, collidePosY + o2y + oy, collidePosZ + o2z + oz, 20);
+                        MowziesMobs.PROXY.spawnOrbFX(worldObj, collidePosX + o2x, collidePosY + o2y, collidePosZ + o2z, collidePosX + o2x + ox, collidePosY + o2y + oy, collidePosZ + o2z + oz, 20);
                     }
                 }
             }
         }
-        if (ticksExisted - 20 > getDuration()) on = false;
+        if (ticksExisted - 20 > getDuration()) {
+            on = false;
+        }
     }
 
     private void spawnExplosionParticles(int amount) {
-        for (int i = 0; i < amount; i++)
-        {
+        for (int i = 0; i < amount; i++) {
             final float velocity = 0.1F;
             float yaw = (float) (rand.nextFloat() * 2 * Math.PI);
             float vy = rand.nextFloat() * 0.08F;
@@ -126,8 +140,7 @@ public class EntitySolarBeam extends Entity {
             float vz = velocity * MathHelper.sin(yaw);
             worldObj.spawnParticle("flame", collidePosX, collidePosY + 0.1, collidePosZ, vx, vy, vz);
         }
-        for (int i = 0; i < amount / 2; i++)
-        {
+        for (int i = 0; i < amount / 2; i++) {
             worldObj.spawnParticle("lava", collidePosX, collidePosY + 0.1, collidePosZ, 0, 0, 0);
         }
     }
@@ -166,11 +179,11 @@ public class EntitySolarBeam extends Entity {
     }
 
     public void setHasPlayer(boolean player) {
-        dataWatcher.updateObject(5, player ? (byte)1:(byte)0);
+        dataWatcher.updateObject(5, player ? (byte) 1 : (byte) 0);
     }
 
     public boolean getHasPlayer() {
-        return dataWatcher.getWatchableObjectByte(5) == (byte)1;
+        return dataWatcher.getWatchableObjectByte(5) == (byte) 1;
     }
 
     public void setCasterID(int id) {
@@ -223,8 +236,7 @@ public class EntitySolarBeam extends Entity {
             collidePosY = result.blockHit.hitVec.yCoord;
             collidePosZ = result.blockHit.hitVec.zCoord;
             blockSide = result.blockHit.sideHit;
-        }
-        else {
+        } else {
             collidePosX = endPosX;
             collidePosY = endPosY;
             collidePosZ = endPosZ;
@@ -248,26 +260,23 @@ public class EntitySolarBeam extends Entity {
     }
 
     @Override
-    public boolean canBeCollidedWith()
-    {
+    public boolean canBeCollidedWith() {
         return false;
     }
 
     @Override
-    public boolean canBePushed()
-    {
+    public boolean canBePushed() {
         return false;
     }
 
     @Override
-    public boolean isInRangeToRenderDist(double distance)
-    {
+    public boolean isInRangeToRenderDist(double distance) {
         return distance < 1024;
     }
 
     private void updateWithPlayer() {
-        setYaw((float) ((caster.rotationYawHead + 90) * Math.PI/180));
-        setPitch((float) (-caster.rotationPitch * Math.PI/180));
+        setYaw((float) ((caster.rotationYawHead + 90) * Math.PI / 180));
+        setPitch((float) (-caster.rotationPitch * Math.PI / 180));
         setPosition(caster.posX, caster.posY + 1.2f, caster.posZ);
     }
 }

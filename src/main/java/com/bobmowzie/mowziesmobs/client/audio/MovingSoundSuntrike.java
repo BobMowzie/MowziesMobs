@@ -1,21 +1,16 @@
 package com.bobmowzie.mowziesmobs.client.audio;
 
-import net.minecraft.client.audio.ISound;
-import net.minecraft.client.audio.MovingSound;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.ResourceLocation;
-
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.common.entity.EntitySunstrike;
+import net.minecraft.client.audio.MovingSound;
+import net.minecraft.util.ResourceLocation;
 
-public class MovingSoundSuntrike extends MovingSound
-{
+public class MovingSoundSuntrike extends MovingSound {
     private static final ResourceLocation SOUND = new ResourceLocation(MowziesMobs.MODID, "sunstrike");
 
     private EntitySunstrike sunstrike;
 
-    public MovingSoundSuntrike(EntitySunstrike sunstrike)
-    {
+    public MovingSoundSuntrike(EntitySunstrike sunstrike) {
         super(SOUND);
         this.sunstrike = sunstrike;
         volume = 1.5F;
@@ -26,10 +21,8 @@ public class MovingSoundSuntrike extends MovingSound
     }
 
     @Override
-    public void update()
-    {
-        if (sunstrike.isDead)
-        {
+    public void update() {
+        if (sunstrike.isDead) {
             donePlaying = true;
         }
     }

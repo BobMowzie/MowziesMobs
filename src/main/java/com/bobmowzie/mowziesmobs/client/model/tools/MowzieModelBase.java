@@ -7,34 +7,34 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.util.MathHelper;
 
 @SideOnly(Side.CLIENT)
-public class MowzieModelBase extends ModelBase
-{
+public class MowzieModelBase extends ModelBase {
     /**
      * Store every MowzieModelRenderer in this array
      */
     protected MowzieModelRenderer[] parts;
 
-    public MowzieModelRenderer[] getParts()
-    {
-    	return parts;
+    public MowzieModelRenderer[] getParts() {
+        return parts;
     }
 
     /**
      * Saves the initial rotate angles and initial rotation points.
      * Note: Call this at the end of the constructor.
      */
-    protected void setInitPose()
-    {
-        for (MowzieModelRenderer part : parts) part.setInitValuesToCurrentPose();
+    protected void setInitPose() {
+        for (MowzieModelRenderer part : parts) {
+            part.setInitValuesToCurrentPose();
+        }
     }
 
     /**
      * Resets the rotate angles and rotation points to its original value if they were saved before.
      * Note: Call this at the beginning of setRotationAngles.
      */
-    protected void setToInitPose()
-    {
-        for (MowzieModelRenderer part : parts) part.setCurrentPoseToInitValues();
+    protected void setToInitPose() {
+        for (MowzieModelRenderer part : parts) {
+            part.setCurrentPoseToInitValues();
+        }
     }
 
     /**
@@ -49,8 +49,7 @@ public class MowzieModelBase extends ModelBase
      * @param child  is the child box;
      * @param parent is the parent box.
      */
-    protected void addChildTo(ModelRenderer child, ModelRenderer parent)
-    {
+    protected void addChildTo(ModelRenderer child, ModelRenderer parent) {
         float distance = (float) Math.sqrt(Math.pow((child.rotationPointZ - parent.rotationPointZ), 2) + Math.pow((child.rotationPointY - parent.rotationPointY), 2));
         float oldRotateAngleX = parent.rotateAngleX;
         float parentToChildAngle = (float) Math.atan((child.rotationPointZ - parent.rotationPointZ) / (child.rotationPointY - parent.rotationPointY));
@@ -69,8 +68,7 @@ public class MowzieModelBase extends ModelBase
     /**
      * Don't use this yet. I'm trying to refine the parenting method, but it's not ready yet.
      */
-    protected void newAddChildTo(ModelRenderer child, ModelRenderer parent)
-    {
+    protected void newAddChildTo(ModelRenderer child, ModelRenderer parent) {
         float distance = (float) Math.sqrt(Math.pow((child.rotationPointZ - parent.rotationPointZ), 2) + Math.pow((child.rotationPointY - parent.rotationPointY), 2));
         float angle = (float) Math.atan2(child.rotationPointY - parent.rotationPointY, child.rotationPointZ - parent.rotationPointZ);
         float newRotationPointZ = (float) (distance * (Math.cos(angle)));
@@ -91,8 +89,7 @@ public class MowzieModelBase extends ModelBase
      * @param f3 is the rotationYaw of the EntityLivingBase;
      * @param f4 is the rotationPitch of the EntityLivingBase.
      */
-    public void faceTarget(MowzieModelRenderer box, float f, float f3, float f4)
-    {
+    public void faceTarget(MowzieModelRenderer box, float f, float f3, float f4) {
         box.rotateAngleY += (f3 / (180f / (float) Math.PI)) / f;
         box.rotateAngleX += (f4 / (180f / (float) Math.PI)) / f;
     }
@@ -111,10 +108,12 @@ public class MowzieModelBase extends ModelBase
      * @param f      is the walked distance;
      * @param f1     is the walk speed.
      */
-    public float rotateBox(float speed, float degree, boolean invert, float offset, float weight, float f, float f1)
-    {
-        if (invert) return -MathHelper.cos(f * speed + offset) * degree * f1 + weight * f1;
-        else return MathHelper.cos(f * speed + offset) * degree * f1 + weight * f1;
+    public float rotateBox(float speed, float degree, boolean invert, float offset, float weight, float f, float f1) {
+        if (invert) {
+            return -MathHelper.cos(f * speed + offset) * degree * f1 + weight * f1;
+        } else {
+            return MathHelper.cos(f * speed + offset) * degree * f1 + weight * f1;
+        }
     }
 
     /**
@@ -128,10 +127,12 @@ public class MowzieModelBase extends ModelBase
      * @param f      is the walked distance;
      * @param f1     is the walk speed.
      */
-    public float moveBox(float speed, float degree, boolean bounce, float f, float f1)
-    {
-        if (bounce) return -MathHelper.abs((MathHelper.sin(f * speed) * f1 * degree));
-        else return MathHelper.sin(f * speed) * f1 * degree - f1 * degree;
+    public float moveBox(float speed, float degree, boolean bounce, float f, float f1) {
+        if (bounce) {
+            return -MathHelper.abs((MathHelper.sin(f * speed) * f1 * degree));
+        } else {
+            return MathHelper.sin(f * speed) * f1 * degree - f1 * degree;
+        }
     }
 
     /**
@@ -149,10 +150,11 @@ public class MowzieModelBase extends ModelBase
      * @param f      is the walked distance;
      * @param f1     is the walk speed.
      */
-    public void walk(MowzieModelRenderer box, float speed, float degree, boolean invert, float offset, float weight, float f, float f1)
-    {
+    public void walk(MowzieModelRenderer box, float speed, float degree, boolean invert, float offset, float weight, float f, float f1) {
         int inverted = 1;
-        if (invert) inverted = -1;
+        if (invert) {
+            inverted = -1;
+        }
         box.rotateAngleX += MathHelper.cos(f * speed + offset) * degree * inverted * f1 + weight * f1;
     }
 
@@ -171,10 +173,11 @@ public class MowzieModelBase extends ModelBase
      * @param f      is the walked distance;
      * @param f1     is the walk speed.
      */
-    public void swing(MowzieModelRenderer box, float speed, float degree, boolean invert, float offset, float weight, float f, float f1)
-    {
+    public void swing(MowzieModelRenderer box, float speed, float degree, boolean invert, float offset, float weight, float f, float f1) {
         int inverted = 1;
-        if (invert) inverted = -1;
+        if (invert) {
+            inverted = -1;
+        }
         box.rotateAngleY += MathHelper.cos(f * speed + offset) * degree * inverted * f1 + weight * f1;
     }
 
@@ -193,10 +196,11 @@ public class MowzieModelBase extends ModelBase
      * @param f      is the walked distance;
      * @param f1     is the walk speed.
      */
-    public void flap(MowzieModelRenderer box, float speed, float degree, boolean invert, float offset, float weight, float f, float f1)
-    {
+    public void flap(MowzieModelRenderer box, float speed, float degree, boolean invert, float offset, float weight, float f, float f1) {
         int inverted = 1;
-        if (invert) inverted = -1;
+        if (invert) {
+            inverted = -1;
+        }
         box.rotateAngleZ += MathHelper.cos(f * speed + offset) * degree * inverted * f1 + weight * f1;
     }
 
@@ -212,10 +216,11 @@ public class MowzieModelBase extends ModelBase
      * @param f      is the walked distance;
      * @param f1     is the walk speed.
      */
-    public void bob(MowzieModelRenderer box, float speed, float degree, boolean bounce, float f, float f1)
-    {
+    public void bob(MowzieModelRenderer box, float speed, float degree, boolean bounce, float f, float f1) {
         float bob = (float) (Math.sin(f * speed) * f1 * degree - f1 * degree);
-        if (bounce) bob = (float) -Math.abs((Math.sin(f * speed) * f1 * degree));
+        if (bounce) {
+            bob = (float) -Math.abs((Math.sin(f * speed) * f1 * degree));
+        }
         box.rotationPointY += bob;
     }
 
@@ -232,12 +237,12 @@ public class MowzieModelBase extends ModelBase
      * @param f          is the walked distance;
      * @param f1         is the walk speed.
      */
-    public void chainSwing(MowzieModelRenderer[] boxes, float speed, float degree, double rootOffset, float f, float f1)
-    {
+    public void chainSwing(MowzieModelRenderer[] boxes, float speed, float degree, double rootOffset, float f, float f1) {
         int numberOfSegments = boxes.length;
         float offset = (float) ((rootOffset * Math.PI) / (2 * numberOfSegments));
-        for (int i = 0; i < numberOfSegments; i++)
+        for (int i = 0; i < numberOfSegments; i++) {
             boxes[i].rotateAngleY += MathHelper.cos(f * speed + offset * i) * f1 * degree;
+        }
     }
 
     /**
@@ -253,12 +258,12 @@ public class MowzieModelBase extends ModelBase
      * @param f          is the walked distance;
      * @param f1         is the walk speed.
      */
-    public void chainWave(MowzieModelRenderer[] boxes, float speed, float degree, double rootOffset, float f, float f1)
-    {
+    public void chainWave(MowzieModelRenderer[] boxes, float speed, float degree, double rootOffset, float f, float f1) {
         int numberOfSegments = boxes.length;
         float offset = (float) ((rootOffset * Math.PI) / (2 * numberOfSegments));
-        for (int i = 0; i < numberOfSegments; i++)
+        for (int i = 0; i < numberOfSegments; i++) {
             boxes[i].rotateAngleX += MathHelper.cos(f * speed + offset * i) * f1 * degree;
+        }
     }
 
     /**
@@ -274,11 +279,11 @@ public class MowzieModelBase extends ModelBase
      * @param f          is the walked distance;
      * @param f1         is the walk speed.
      */
-    public void chainFlap(MowzieModelRenderer[] boxes, float speed, float degree, double rootOffset, float f, float f1)
-    {
+    public void chainFlap(MowzieModelRenderer[] boxes, float speed, float degree, double rootOffset, float f, float f1) {
         int numberOfSegments = boxes.length;
         float offset = (float) ((rootOffset * Math.PI) / (2 * numberOfSegments));
-        for (int i = 0; i < numberOfSegments; i++)
+        for (int i = 0; i < numberOfSegments; i++) {
             boxes[i].rotateAngleZ += MathHelper.cos(f * speed + offset * i) * f1 * degree;
+        }
     }
 }

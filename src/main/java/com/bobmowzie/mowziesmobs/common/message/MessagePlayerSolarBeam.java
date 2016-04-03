@@ -1,44 +1,47 @@
 package com.bobmowzie.mowziesmobs.common.message;
 
 import com.bobmowzie.mowziesmobs.common.entity.EntitySolarBeam;
-import com.bobmowzie.mowziesmobs.common.potion.MMPotions;
+import com.bobmowzie.mowziesmobs.common.potion.PotionHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import net.ilexiconn.llibrary.common.message.AbstractMessage;
+import net.ilexiconn.llibrary.server.network.AbstractMessage;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.server.MinecraftServer;
 
-public class MessagePlayerSolarBeam extends AbstractMessage<MessagePlayerSolarBeam>
-{
-    public MessagePlayerSolarBeam()
-    {
+public class MessagePlayerSolarBeam extends AbstractMessage<MessagePlayerSolarBeam> {
+    public MessagePlayerSolarBeam() {
+
     }
 
     @Override
-    public void toBytes(ByteBuf buf)
-    {
+    public void toBytes(ByteBuf buf) {
+
     }
 
     @Override
-    public void fromBytes(ByteBuf buf)
-    {
+    public void fromBytes(ByteBuf buf) {
+
     }
 
     @Override
-    public void handleClientMessage(MessagePlayerSolarBeam message, EntityPlayer player)
-    {
+    public void onClientReceived(Minecraft client, MessagePlayerSolarBeam message, EntityPlayer player, MessageContext messageContext) {
+
     }
 
     @Override
-    public void handleServerMessage(MessagePlayerSolarBeam message, EntityPlayer player)
-    {
-        EntitySolarBeam solarBeam = new EntitySolarBeam(player.worldObj, player, player.posX, player.posY + 1.2f, player.posZ, (float) ((player.rotationYawHead + 90) * Math.PI/180), (float) (-player.rotationPitch * Math.PI/180), 55);
+    public void onServerReceived(MinecraftServer server, MessagePlayerSolarBeam message, EntityPlayer player, MessageContext messageContext) {
+        EntitySolarBeam solarBeam = new EntitySolarBeam(player.worldObj, player, player.posX, player.posY + 1.2f, player.posZ, (float) ((player.rotationYawHead + 90) * Math.PI / 180), (float) (-player.rotationPitch * Math.PI / 180), 55);
         solarBeam.setHasPlayer(true);
         player.worldObj.spawnEntityInWorld(solarBeam);
         player.addPotionEffect(new PotionEffect(Potion.moveSlowdown.getId(), 80, 2, true));
 
-        int duration = player.getActivePotionEffect(MMPotions.sunsBlessing).getDuration();
-        player.removePotionEffect(MMPotions.sunsBlessing.getId());
-        if (duration - 2400 > 0) player.addPotionEffect(new PotionEffect(MMPotions.sunsBlessing.getId(), duration - 2400, 1, false));
+        int duration = player.getActivePotionEffect(PotionHandler.INSTANCE.sunsBlessing).getDuration();
+        player.removePotionEffect(PotionHandler.INSTANCE.sunsBlessing.getId());
+        if (duration - 2400 > 0) {
+            player.addPotionEffect(new PotionEffect(PotionHandler.INSTANCE.sunsBlessing.getId(), duration - 2400, 1, false));
+        }
     }
 }

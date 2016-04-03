@@ -1,23 +1,19 @@
 package com.bobmowzie.mowziesmobs.common.gen;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.common.config.MMConfigHandler;
 import com.bobmowzie.mowziesmobs.common.entity.EntityWroughtnaut;
+import coolalias.structuregenapi.util.Structure;
 import cpw.mods.fml.common.IWorldGenerator;
-import net.ilexiconn.llibrary.common.structure.util.Structure;
 import net.minecraft.block.BlockStone;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 
 import java.util.Random;
 
-public class MMWorldGenerator implements IWorldGenerator
-{
+public class MMWorldGenerator implements IWorldGenerator {
     @Override
-    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
-    {
-        switch (world.provider.dimensionId)
-        {
+    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider) {
+        switch (world.provider.dimensionId) {
             case 0: //surface gen
                 generateSurface(world, random, chunkX * 16, chunkZ * 16);
             case 1: //end gen
@@ -29,25 +25,22 @@ public class MMWorldGenerator implements IWorldGenerator
         }
     }
 
-    private void generateSurface(World world, Random random, int x, int z)
-    {
-        if (world.getWorldInfo().isMapFeaturesEnabled()) tryWroughtChamber(world, random, x, z, MMConfigHandler.spawnrateWroughtnaut);
+    private void generateSurface(World world, Random random, int x, int z) {
+        if (world.getWorldInfo().isMapFeaturesEnabled()) {
+            tryWroughtChamber(world, random, x, z, MowziesMobs.CONFIG.spawnrateWroughtnaut);
+        }
     }
 
-    private void tryWroughtChamber(World world, Random random, int x, int z, int chance)
-    {
-        if (chance <= 0) return;
+    private void tryWroughtChamber(World world, Random random, int x, int z, int chance) {
+        if (chance <= 0) {
+            return;
+        }
         int xzCheckDistance = 10;
-        if (random.nextInt(chance) == 0)
-        {
-            for (int y = 50; y >= 30; y--)
-            {
-                if (world.getBlock(x, y, z).isAir(world, x, y, z))
-                {
-                    for (int y2 = 1; y2 <= 30; y2++)
-                    {
-                        if (world.getBlock(x, y - y2, z).isOpaqueCube())
-                        {
+        if (random.nextInt(chance) == 0) {
+            for (int y = 50; y >= 30; y--) {
+                if (world.getBlock(x, y, z).isAir(world, x, y, z)) {
+                    for (int y2 = 1; y2 <= 30; y2++) {
+                        if (world.getBlock(x, y - y2, z).isOpaqueCube()) {
                             int y4 = 0;
                             int y5 = 0;
                             for (int x2 = 0; x2 <= xzCheckDistance; x2++) {
@@ -61,8 +54,9 @@ public class MMWorldGenerator implements IWorldGenerator
                                         }
                                     }
                                     if (wall) {
-                                        if (world.getBlock(x - x2 - 9, y - y2 + y4, z - 9) instanceof BlockStone)
+                                        if (world.getBlock(x - x2 - 9, y - y2 + y4, z - 9) instanceof BlockStone) {
                                             generateWroughtChamber(world, random, x - x2 - 9, y - y2 + y4, z - 9, 0);
+                                        }
                                         return;
                                     }
                                 }
@@ -76,8 +70,9 @@ public class MMWorldGenerator implements IWorldGenerator
                                         }
                                     }
                                     if (wall) {
-                                        if (world.getBlock(x + x2 + 9, y - y2 + y5, z - 9) instanceof BlockStone)
+                                        if (world.getBlock(x + x2 + 9, y - y2 + y5, z - 9) instanceof BlockStone) {
                                             generateWroughtChamber(world, random, x + x2 + 9, y - y2 + y5, z - 9, 2);
+                                        }
                                         return;
                                     }
                                 }
@@ -95,8 +90,9 @@ public class MMWorldGenerator implements IWorldGenerator
                                         }
                                     }
                                     if (wall) {
-                                        if (world.getBlock(x - 1, y - y2 + y4, z - z2 - 18) instanceof BlockStone)
+                                        if (world.getBlock(x - 1, y - y2 + y4, z - z2 - 18) instanceof BlockStone) {
                                             generateWroughtChamber(world, random, x - 1, y - y2 + y4, z - z2 - 18, 1);
+                                        }
                                         return;
                                     }
                                 }
@@ -110,8 +106,9 @@ public class MMWorldGenerator implements IWorldGenerator
                                         }
                                     }
                                     if (wall) {
-                                        if (world.getBlock(x - 1, y - y2 + y5, z + z2) instanceof BlockStone)
+                                        if (world.getBlock(x - 1, y - y2 + y5, z + z2) instanceof BlockStone) {
                                             generateWroughtChamber(world, random, x - 1, y - y2 + y5, z + z2, 3);
+                                        }
                                         return;
                                     }
                                 }
@@ -124,8 +121,7 @@ public class MMWorldGenerator implements IWorldGenerator
         }
     }
 
-    private void generateWroughtChamber(World world, Random random, int x, int y, int z, int direction)
-    {
+    private void generateWroughtChamber(World world, Random random, int x, int y, int z, int direction) {
         Structure structure = MowziesMobs.gen.structures.get(0);
         EntityWroughtnaut wroughtnaut = new EntityWroughtnaut(world);
         wroughtnaut.setPositionAndRotation(x + 0.5, y + 1, z + 9.5, 0, 0);
@@ -137,11 +133,9 @@ public class MMWorldGenerator implements IWorldGenerator
         world.spawnEntityInWorld(wroughtnaut);
     }
 
-    private void generateEnd(World world, Random random, int i, int i1)
-    {
+    private void generateEnd(World world, Random random, int i, int i1) {
     }
 
-    private void generateNether(World world, Random random, int i, int i1)
-    {
+    private void generateNether(World world, Random random, int i, int i1) {
     }
 }

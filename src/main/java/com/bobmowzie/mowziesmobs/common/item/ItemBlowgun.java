@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.common.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.common.creativetab.MMTabs;
+import com.bobmowzie.mowziesmobs.common.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.common.entity.EntityDart;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -17,116 +17,101 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.event.entity.player.ArrowNockEvent;
 
-/**
- * Created by jnad325 on 11/15/15.
- */
 public class ItemBlowgun extends ItemBow {
     public ItemBlowgun() {
         super();
         setUnlocalizedName("blowgun");
         setTextureName(MowziesMobs.MODID + ":blowgun");
-        setCreativeTab(MMTabs.generic);
+        setCreativeTab(CreativeTabHandler.INSTANCE.generic);
     }
 
-    public void registerIcons(IIconRegister p_94581_1_)
-    {
-        this.itemIcon = p_94581_1_.registerIcon(MowziesMobs.MODID + ":blowgun");
+    @Override
+    public void registerIcons(IIconRegister iconRegister) {
+        this.itemIcon = iconRegister.registerIcon(MowziesMobs.MODID + ":blowgun");
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getItemIconForUseDuration(int p_94599_1_)
-    {
+    public IIcon getItemIconForUseDuration(int meta) {
         return itemIcon;
     }
 
-    public ItemStack onItemRightClick(ItemStack p_77659_1_, World p_77659_2_, EntityPlayer p_77659_3_)
-    {
-        ArrowNockEvent event = new ArrowNockEvent(p_77659_3_, p_77659_1_);
+    @Override
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+        ArrowNockEvent event = new ArrowNockEvent(player, stack);
         MinecraftForge.EVENT_BUS.post(event);
-        if (event.isCanceled())
-        {
+        if (event.isCanceled()) {
             return event.result;
         }
 
-        if (p_77659_3_.capabilities.isCreativeMode || p_77659_3_.inventory.hasItem(MMItems.itemDart))
-        {
-            p_77659_3_.setItemInUse(p_77659_1_, this.getMaxItemUseDuration(p_77659_1_));
+        if (player.capabilities.isCreativeMode || player.inventory.hasItem(ItemHandler.INSTANCE.itemDart)) {
+            player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
         }
 
-        return p_77659_1_;
+        return stack;
     }
 
-    public void onPlayerStoppedUsing(ItemStack p_77615_1_, World p_77615_2_, EntityPlayer p_77615_3_, int p_77615_4_)
-    {
-        int j = this.getMaxItemUseDuration(p_77615_1_) - p_77615_4_;
+    @Override
+    public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int meta) {
+        int j = this.getMaxItemUseDuration(stack) - meta;
 
-        ArrowLooseEvent event = new ArrowLooseEvent(p_77615_3_, p_77615_1_, j);
+        ArrowLooseEvent event = new ArrowLooseEvent(player, stack, j);
         MinecraftForge.EVENT_BUS.post(event);
-        if (event.isCanceled())
-        {
+        if (event.isCanceled()) {
             return;
         }
         j = event.charge;
 
-        boolean flag = p_77615_3_.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, p_77615_1_) > 0;
+        boolean flag = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, stack) > 0;
 
-        if (flag || p_77615_3_.inventory.hasItem(MMItems.itemDart))
-        {
-            float f = (float)j / 20.0F;
+        if (flag || player.inventory.hasItem(ItemHandler.INSTANCE.itemDart)) {
+            float f = (float) j / 20.0F;
             f = (f * f + f * 2.0F) / 3.0F;
-            if (f > 0.1) f = 0.1f;
+            if (f > 0.1) {
+                f = 0.1f;
+            }
 
-            if ((double)f < 0.1D)
-            {
+            if ((double) f < 0.1D) {
                 return;
             }
 
-            if (f > 1.0F)
-            {
+            if (f > 1.0F) {
                 f = 1.0F;
             }
 
-            EntityDart entityDart = new EntityDart(p_77615_2_, p_77615_3_, f * 10F);
+            EntityDart entityDart = new EntityDart(world, player, f * 10F);
 
-            if (f == 1.0F)
-            {
+            if (f == 1.0F) {
                 entityDart.setIsCritical(true);
             }
 
-            int k = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, p_77615_1_);
+            int k = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, stack);
 
-            if (k > 0)
-            {
-                entityDart.setDamage(entityDart.getDamage() + (double)k * 0.5D + 0.5D);
+            if (k > 0) {
+                entityDart.setDamage(entityDart.getDamage() + (double) k * 0.5D + 0.5D);
             }
 
-            int l = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, p_77615_1_);
+            int l = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, stack);
 
-            if (l > 0)
-            {
+            if (l > 0) {
                 entityDart.setKnockbackStrength(l);
             }
 
-            if (EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, p_77615_1_) > 0)
-            {
+            if (EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, stack) > 0) {
                 entityDart.setFire(100);
             }
 
-            p_77615_1_.damageItem(1, p_77615_3_);
-            p_77615_2_.playSoundAtEntity(p_77615_3_, "random.bow", 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
+            stack.damageItem(1, player);
+            world.playSoundAtEntity(player, "random.bow", 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
 
-            if (flag)
-            {
+            if (flag) {
                 entityDart.canBePickedUp = 2;
-            }
-            else
-            {
-                p_77615_3_.inventory.consumeInventoryItem(MMItems.itemDart);
+            } else {
+                player.inventory.consumeInventoryItem(ItemHandler.INSTANCE.itemDart);
             }
 
-            if (!p_77615_2_.isRemote)
-            {
-                p_77615_2_.spawnEntityInWorld(entityDart);
+            if (!world.isRemote) {
+                world.spawnEntityInWorld(entityDart);
             }
         }
     }

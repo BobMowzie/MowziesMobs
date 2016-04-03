@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.common.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.common.creativetab.MMTabs;
+import com.bobmowzie.mowziesmobs.common.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.common.entity.EntityDart;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,15 +12,12 @@ import net.minecraft.util.EntityDamageSourceIndirect;
 
 import java.util.List;
 
-/**
- * Created by jnad325 on 8/5/15.
- */
 public class ItemDart extends Item {
     public ItemDart() {
         super();
         setUnlocalizedName("dart");
         setTextureName(MowziesMobs.MODID + ":dart");
-        setCreativeTab(MMTabs.generic);
+        setCreativeTab(CreativeTabHandler.INSTANCE.generic);
     }
 
     @Override

@@ -25,9 +25,6 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-/**
- * Created by jnad325 on 8/4/15.
- */
 public class EntityDart extends EntityArrow implements IProjectile {
     private int landedX = -1;
     private int landedY = -1;
@@ -197,9 +194,8 @@ public class EntityDart extends EntityArrow implements IProjectile {
 
                 if (ticksInGround == 1200) {
                     setDead();
-                }
-                else if (isOctineArrow && ticksInGround == 1 && worldObj.getBlock(this.landedX, this.landedY+1, this.landedZ).isReplaceable(worldObj, this.landedX, this.landedY+1, this.landedZ)) {
-                    worldObj.setBlock(this.landedX, this.landedY+1, this.landedZ, Blocks.fire);
+                } else if (isOctineArrow && ticksInGround == 1 && worldObj.getBlock(this.landedX, this.landedY + 1, this.landedZ).isReplaceable(worldObj, this.landedX, this.landedY + 1, this.landedZ)) {
+                    worldObj.setBlock(this.landedX, this.landedY + 1, this.landedZ, Blocks.fire);
                 }
             } else {
                 inGround = false;
@@ -505,6 +501,6 @@ public class EntityDart extends EntityArrow implements IProjectile {
         return damageIndex;
     }
 
-    public void getType(){
+    public void getType() {
     }
 }

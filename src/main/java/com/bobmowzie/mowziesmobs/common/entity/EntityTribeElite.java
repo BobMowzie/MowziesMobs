@@ -1,8 +1,10 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
 import com.bobmowzie.mowziesmobs.common.ai.AINearestAttackableTargetBarakoa;
-import com.bobmowzie.mowziesmobs.common.animation.AnimBlock;
+import com.bobmowzie.mowziesmobs.common.animation.AnimationBlockAI;
 import cpw.mods.fml.common.eventhandler.Event;
+import net.ilexiconn.llibrary.server.animation.Animation;
+import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -21,20 +23,18 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
-import thehippomaster.AnimationAPI.AnimationAPI;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by jnad325 on 7/23/15.
- */
 public class EntityTribeElite extends EntityTribesman {
-    private List<EntityTribeHunter> pack = new ArrayList<EntityTribeHunter>();
+    private List<EntityTribeHunter> pack = new ArrayList<>();
 
     private int packRadius = 3;
 
     private boolean persistenceRequired;
+
+    public static final Animation BLOCK_ANIMATION = Animation.create(3, 10);
 
     public EntityTribeElite(World world) {
         super(world);
@@ -45,7 +45,7 @@ public class EntityTribeElite extends EntityTribesman {
         targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityChicken.class, 0, true));
         targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityZombie.class, 0, true));
         targetTasks.addTask(3, new AINearestAttackableTargetBarakoa(this, EntityPlayer.class, 0, true));
-        tasks.addTask(2, new AnimBlock(this, 3, 10));
+        tasks.addTask(2, new AnimationBlockAI<>(this, BLOCK_ANIMATION));
         setMask(1);
         setSize(0.7f, 2f);
         experienceValue = 12;
@@ -69,8 +69,9 @@ public class EntityTribeElite extends EntityTribesman {
             for (int i = 0; i < pack.size(); i++) {
                 if (pack.get(i).getAttackTarget() == null) {
                     pack.get(i).getNavigator().tryMoveToXYZ(posX + packRadius * MathHelper.cos(theta * i), posY, posZ + packRadius * MathHelper.sin(theta * i), 0.45);
-                    if (getDistanceToEntity(pack.get(i)) > 20)
+                    if (getDistanceToEntity(pack.get(i)) > 20) {
                         pack.get(i).setPosition(posX + packRadius * MathHelper.cos(theta * i), posY, posZ + packRadius * MathHelper.sin(theta * i));
+                    }
                 }
             }
         }
@@ -79,17 +80,23 @@ public class EntityTribeElite extends EntityTribesman {
     @Override
     public boolean attackEntityFrom(DamageSource source, float damage) {
         Entity entity = source.getEntity();
-        if (entity != null && entity instanceof EntityLivingBase)
-        {
-            if (!(entity instanceof EntityPlayer) || !(((EntityPlayer) entity).capabilities.isCreativeMode)) setAttackTarget((EntityLivingBase) entity);
+        if (entity != null && entity instanceof EntityLivingBase) {
+            if (!(entity instanceof EntityPlayer) || !(((EntityPlayer) entity).capabilities.isCreativeMode)) {
+                setAttackTarget((EntityLivingBase) entity);
+            }
         }
-        if (entity != null && entity instanceof EntityLivingBase && (getAnimID() == 0 || getAnimID() == -3 || getAnimID() == 3)) {
+        if (entity != null && entity instanceof EntityLivingBase && (getAnimation() == NO_ANIMATION || getAnimation() == DAMAGE_ANIMATION || getAnimation() == BLOCK_ANIMATION)) {
             blockingEntity = (EntityLivingBase) entity;
             playSound("mob.zombie.wood", 0.3f, 1.5f);
-            AnimationAPI.sendAnimPacket(this, 3);
+            AnimationHandler.INSTANCE.sendAnimationMessage(this, BLOCK_ANIMATION);
             return false;
         }
         return super.attackEntityFrom(source, damage);
+    }
+
+    @Override
+    public Animation[] getEntityAnimations() {
+        return new Animation[]{BLOCK_ANIMATION};
     }
 
     public int getpackSize() {
@@ -142,7 +149,9 @@ public class EntityTribeElite extends EntityTribesman {
             tribeHunter.setLeaderUUID(getUniqueID().toString());
             tribeHunter.setPosition(posX + 0.1 * i, posY, posZ);
             int weapon = 0;
-            if (rand.nextInt(3) == 0) weapon = 1;
+            if (rand.nextInt(3) == 0) {
+                weapon = 1;
+            }
             tribeHunter.setWeapon(weapon);
             worldObj.spawnEntityInWorld(tribeHunter);
         }
@@ -160,7 +169,11 @@ public class EntityTribeElite extends EntityTribesman {
     @Override
     public boolean getCanSpawnHere() {
         List<EntityLivingBase> nearby = getEntityLivingBaseNearby(10, 4, 10, 10);
-        for (int i = 0; i < nearby.size(); i++) if (nearby.get(i) instanceof EntityTribeElite) return false;
+        for (int i = 0; i < nearby.size(); i++) {
+            if (nearby.get(i) instanceof EntityTribeElite) {
+                return false;
+            }
+        }
         if (worldObj.checkNoEntityCollision(boundingBox) && worldObj.getCollidingBoundingBoxes(this, boundingBox).isEmpty() && !worldObj.isAnyLiquid(boundingBox)) {
             int x = MathHelper.floor_double(posX);
             int y = MathHelper.floor_double(boundingBox.minY);
@@ -187,42 +200,37 @@ public class EntityTribeElite extends EntityTribesman {
 //        {
 //            this.entityAge = 0;
 //        }
-        if ((this.entityAge & 0x1F) == 0x1F && (result = ForgeEventFactory.canEntityDespawn(this)) != Event.Result.DEFAULT)
-        {
-            if (result == Event.Result.DENY)
-            {
+        if ((this.entityAge & 0x1F) == 0x1F && (result = ForgeEventFactory.canEntityDespawn(this)) != Event.Result.DEFAULT) {
+            if (result == Event.Result.DENY) {
                 this.entityAge = 0;
-            }
-            else
-            {
-                for (int i = 0; i < pack.size(); i++) pack.get(i).setDead();
+            } else {
+                for (int i = 0; i < pack.size(); i++) {
+                    pack.get(i).setDead();
+                }
                 this.setDead();
             }
-        }
-        else
-        {
+        } else {
             EntityPlayer entityplayer = this.worldObj.getClosestPlayerToEntity(this, -1.0D);
 
-            if (entityplayer != null)
-            {
+            if (entityplayer != null) {
                 double d0 = entityplayer.posX - this.posX;
                 double d1 = entityplayer.posY - this.posY;
                 double d2 = entityplayer.posZ - this.posZ;
                 double d3 = d0 * d0 + d1 * d1 + d2 * d2;
 
-                if (this.canDespawn() && d3 > 16384.0D)
-                {
-                    for (int i = 0; i < pack.size(); i++) pack.get(i).setDead();
+                if (this.canDespawn() && d3 > 16384.0D) {
+                    for (int i = 0; i < pack.size(); i++) {
+                        pack.get(i).setDead();
+                    }
                     this.setDead();
                 }
 
-                if (this.entityAge > 600 && this.rand.nextInt(800) == 0 && d3 > 1024.0D && this.canDespawn())
-                {
-                    for (int i = 0; i < pack.size(); i++) pack.get(i).setDead();
+                if (this.entityAge > 600 && this.rand.nextInt(800) == 0 && d3 > 1024.0D && this.canDespawn()) {
+                    for (int i = 0; i < pack.size(); i++) {
+                        pack.get(i).setDead();
+                    }
                     this.setDead();
-                }
-                else if (d3 < 1024.0D)
-                {
+                } else if (d3 < 1024.0D) {
                     this.entityAge = 0;
                 }
             }

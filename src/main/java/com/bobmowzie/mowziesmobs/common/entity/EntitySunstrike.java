@@ -19,11 +19,7 @@ import net.minecraft.world.WorldServer;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * Created by jnad325 on 11/16/15.
- */
-public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnData
-{
+public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnData {
     private static final int VARIANT_MIN_ID = 2;
 
     private static final int VARIANT_MAX_ID = 3;
@@ -41,115 +37,93 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
 
     private EntityLivingBase caster;
 
-    public EntitySunstrike(World world)
-    {
+    public EntitySunstrike(World world) {
         super(world);
         setSize(0.1F, 0.1F);
         ignoreFrustumCheck = true;
     }
 
-    public EntitySunstrike(World world, EntityLivingBase caster, int x, int y, int z)
-    {
+    public EntitySunstrike(World world, EntityLivingBase caster, int x, int y, int z) {
         this(world);
         this.caster = caster;
         setPosition(x + 0.5F, y + 1.0625F, z + 0.5F);
     }
 
     @Override
-    protected void entityInit()
-    {
+    protected void entityInit() {
         dataWatcher.addObject(VARIANT_MIN_ID, 0);
         dataWatcher.addObject(VARIANT_MAX_ID, 0);
     }
 
-    public float getStrikeTime(float delta)
-    {
+    public float getStrikeTime(float delta) {
         return getActualStrikeTime(delta) / STRIKE_LENGTH;
     }
 
-    public float getStrikeDrawTime(float delta)
-    {
+    public float getStrikeDrawTime(float delta) {
         return getActualStrikeTime(delta) / STRIKE_EXPLOSION;
     }
 
-    public float getStrikeDamageTime(float delta)
-    {
+    public float getStrikeDamageTime(float delta) {
         return (getActualStrikeTime(delta) - STRIKE_EXPLOSION) / (STRIKE_LENGTH - STRIKE_EXPLOSION);
     }
 
-    public boolean isStrikeDrawing(float delta)
-    {
+    public boolean isStrikeDrawing(float delta) {
         return getActualStrikeTime(delta) < STRIKE_EXPLOSION;
     }
 
-    public boolean isLingering(float delta)
-    {
+    public boolean isLingering(float delta) {
         return getActualStrikeTime(delta) > STRIKE_EXPLOSION + 5;
     }
 
-    public boolean isStriking(float delta)
-    {
+    public boolean isStriking(float delta) {
         return getActualStrikeTime(delta) < STRIKE_LENGTH;
     }
 
-    private float getActualStrikeTime(float delta)
-    {
+    private float getActualStrikeTime(float delta) {
         return prevStrikeTime + (strikeTime - prevStrikeTime) * delta;
     }
 
-    private void setStrikeTime(int strikeTime)
-    {
+    private void setStrikeTime(int strikeTime) {
         this.prevStrikeTime = this.strikeTime = strikeTime;
     }
 
-    private void setVariant(long variant)
-    {
+    private void setVariant(long variant) {
         dataWatcher.updateObject(VARIANT_MAX_ID, (int) (variant >> 32));
         dataWatcher.updateObject(VARIANT_MIN_ID, (int) variant);
     }
 
-    public long getVariant()
-    {
+    public long getVariant() {
         return (((long) dataWatcher.getWatchableObjectInt(VARIANT_MAX_ID)) << 32) | (dataWatcher.getWatchableObjectInt(VARIANT_MIN_ID) & 0xFFFFFFFFL);
     }
 
     @Override
-    public boolean canBeCollidedWith()
-    {
+    public boolean canBeCollidedWith() {
         return false;
     }
 
     @Override
-    public boolean canBePushed()
-    {
+    public boolean canBePushed() {
         return false;
     }
 
     @Override
-    public boolean isInRangeToRenderDist(double distance)
-    {
+    public boolean isInRangeToRenderDist(double distance) {
         return distance < 1024;
     }
 
     @Override
-    public void onUpdate()
-    {
+    public void onUpdate() {
         super.onUpdate();
         prevStrikeTime = strikeTime;
 
-        if (worldObj.isRemote)
-        {
-            if (strikeTime == 0)
-            {
-                MowziesMobs.proxy.playSunstrikeSound(this);
-            }
-            else if (strikeTime < STRIKE_EXPLOSION - 10)
-            {
+        if (worldObj.isRemote) {
+            if (strikeTime == 0) {
+                MowziesMobs.PROXY.playSunstrikeSound(this);
+            } else if (strikeTime < STRIKE_EXPLOSION - 10) {
                 float time = getStrikeTime(1);
                 int timeBonus = (int) (time * 5);
                 int orbCount = rand.nextInt(4 + timeBonus) + timeBonus + 1;
-                while (orbCount-- > 0)
-                {
+                while (orbCount-- > 0) {
                     float theta = rand.nextFloat() * MathUtils.TAU;
                     final float min = 0.2F, max = 1.9F;
                     float r = rand.nextFloat() * (max - min) + min;
@@ -157,27 +131,18 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
                     float oz = r * MathHelper.sin(theta);
                     final float minY = 0.1F;
                     float oy = rand.nextFloat() * (time * 6 - minY) + minY;
-                    MowziesMobs.proxy.spawnOrbFX(worldObj, posX + ox, posY + oy, posZ + oz, posX, posZ);
+                    MowziesMobs.PROXY.spawnOrbFX(worldObj, posX + ox, posY + oy, posZ + oz, posX, posZ);
                 }
-            }
-            else if (strikeTime > STRIKE_EXPLOSION)
-            {
+            } else if (strikeTime > STRIKE_EXPLOSION) {
                 smolder();
-            }
-            else if (strikeTime == STRIKE_EXPLOSION)
-            {
+            } else if (strikeTime == STRIKE_EXPLOSION) {
                 spawnExplosionParticles(10);
             }
-        }
-        else
-        {
+        } else {
             moveDownToGround();
-            if (strikeTime >= STRIKE_LINGER || !worldObj.canBlockSeeTheSky(MathHelper.floor_double(posX), (int) Math.round(posY), MathHelper.floor_double(posZ)))
-            {
+            if (strikeTime >= STRIKE_LINGER || !worldObj.canBlockSeeTheSky(MathHelper.floor_double(posX), (int) Math.round(posY), MathHelper.floor_double(posZ))) {
                 setDead();
-            }
-            else if (strikeTime == STRIKE_EXPLOSION)
-            {
+            } else if (strikeTime == STRIKE_EXPLOSION) {
                 damageEntityLivingBaseNearby(3);
             }
         }
@@ -186,33 +151,36 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
 
     public void moveDownToGround() {
         MovingObjectPosition raytrace = rayTrace(this);
-        if (raytrace != null && raytrace.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && raytrace.sideHit == 1)
-        {
+        if (raytrace != null && raytrace.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && raytrace.sideHit == 1) {
             Block b = worldObj.getBlock(raytrace.blockX, raytrace.blockY, raytrace.blockZ);
-            if (strikeTime > STRIKE_LENGTH && b != worldObj.getBlock(MathHelper.floor_double(posX), MathHelper.floor_double(posY - 1), MathHelper.floor_double(posZ))) setDead();
+            if (strikeTime > STRIKE_LENGTH && b != worldObj.getBlock(MathHelper.floor_double(posX), MathHelper.floor_double(posY - 1), MathHelper.floor_double(posZ))) {
+                setDead();
+            }
             setPosition(posX, raytrace.blockY + 1.0625F, posZ);
-            if (b instanceof BlockSlab && worldObj.getBlockMetadata(raytrace.blockX, raytrace.blockY, raytrace.blockZ) < 8) setPosition(posX, raytrace.blockY + 1.0625F - 0.5f, posZ);
+            if (b instanceof BlockSlab && worldObj.getBlockMetadata(raytrace.blockX, raytrace.blockY, raytrace.blockZ) < 8) {
+                setPosition(posX, raytrace.blockY + 1.0625F - 0.5f, posZ);
+            }
 
             S18PacketEntityTeleport teleport = new S18PacketEntityTeleport(this);
             Iterator<EntityPlayer> tracking = ((WorldServer) worldObj).getEntityTracker().getTrackingPlayers(this).iterator();
-            while (tracking.hasNext())
-            {
+            while (tracking.hasNext()) {
                 ((EntityPlayerMP) tracking.next()).playerNetServerHandler.sendPacket(teleport);
             }
         }
     }
 
-    public void damageEntityLivingBaseNearby(double radius)
-    {
+    public void damageEntityLivingBaseNearby(double radius) {
         AxisAlignedBB region = AxisAlignedBB.getBoundingBox(posX - radius, posY - 0.5, posZ - radius, posX + radius, Double.POSITIVE_INFINITY, posZ + radius);
         List<Entity> entities = worldObj.getEntitiesWithinAABBExcludingEntity(this, region);
         double radiusSq = radius * radius;
-        for (Entity entity : entities)
-        {
-            if (entity instanceof EntityLivingBase && getDistanceSqToEntity(entity) < radiusSq)
-            {
-                if (caster instanceof EntityTribeLeader && (entity instanceof LeaderSunstrikeImmune)) continue;
-                if (caster instanceof EntityPlayer && entity == caster) continue;
+        for (Entity entity : entities) {
+            if (entity instanceof EntityLivingBase && getDistanceSqToEntity(entity) < radiusSq) {
+                if (caster instanceof EntityTribeLeader && (entity instanceof LeaderSunstrikeImmune)) {
+                    continue;
+                }
+                if (caster instanceof EntityPlayer && entity == caster) {
+                    continue;
+                }
                 entity.attackEntityFrom(DamageSource.onFire, 4.5f);
                 entity.attackEntityFrom(DamageSource.causeMobDamage(caster), 4.5f);
                 entity.setFire(5);
@@ -220,13 +188,10 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         }
     }
 
-    private void smolder()
-    {
-        if (rand.nextFloat() < 0.1F)
-        {
+    private void smolder() {
+        if (rand.nextFloat() < 0.1F) {
             int amount = rand.nextInt(2) + 1;
-            while (amount-- > 0)
-            {
+            while (amount-- > 0) {
                 float theta = rand.nextFloat() * MathUtils.TAU;
                 float r = rand.nextFloat() * 0.7F;
                 float x = r * MathHelper.cos(theta);
@@ -236,10 +201,8 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         }
     }
 
-    private void spawnExplosionParticles(int amount)
-    {
-        for (int i = 0; i < amount; i++)
-        {
+    private void spawnExplosionParticles(int amount) {
+        for (int i = 0; i < amount; i++) {
             final float velocity = 0.1F;
             float yaw = i * (MathUtils.TAU / amount);
             float vy = rand.nextFloat() * 0.08F;
@@ -247,47 +210,40 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
             float vz = velocity * MathHelper.sin(yaw);
             worldObj.spawnParticle("flame", posX, posY + 0.1, posZ, vx, vy, vz);
         }
-        for (int i = 0; i < amount / 2; i++)
-        {
+        for (int i = 0; i < amount / 2; i++) {
             worldObj.spawnParticle("lava", posX, posY + 0.1, posZ, 0, 0, 0);
         }
     }
 
-    public void onSummon()
-    {
+    public void onSummon() {
         setVariant(rand.nextLong());
     }
 
-    private static MovingObjectPosition rayTrace(EntitySunstrike entity)
-    {
+    private static MovingObjectPosition rayTrace(EntitySunstrike entity) {
         Vec3 startPos = Vec3.createVectorHelper(entity.posX, entity.posY, entity.posZ);
         Vec3 endPos = Vec3.createVectorHelper(entity.posX, 0, entity.posZ);
         return entity.worldObj.func_147447_a(startPos, endPos, false, true, true);
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound compound)
-    {
+    public void writeEntityToNBT(NBTTagCompound compound) {
         compound.setInteger("strikeTime", strikeTime);
         compound.setLong("variant", getVariant());
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound compound)
-    {
+    public void readEntityFromNBT(NBTTagCompound compound) {
         setStrikeTime(compound.getInteger("strikeTime"));
         setVariant(compound.getLong("variant"));
     }
 
     @Override
-    public void writeSpawnData(ByteBuf buffer)
-    {
+    public void writeSpawnData(ByteBuf buffer) {
         buffer.writeInt(strikeTime);
     }
 
     @Override
-    public void readSpawnData(ByteBuf buffer)
-    {
+    public void readSpawnData(ByteBuf buffer) {
         setStrikeTime(buffer.readInt());
     }
 }

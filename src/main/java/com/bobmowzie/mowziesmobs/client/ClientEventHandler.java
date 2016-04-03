@@ -1,42 +1,36 @@
 package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.common.item.ItemBarakoaMask;
+import com.bobmowzie.mowziesmobs.common.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.common.item.ItemWroughtAxe;
 import com.bobmowzie.mowziesmobs.common.item.ItemWroughtHelm;
-import com.bobmowzie.mowziesmobs.common.item.MMItems;
 import com.bobmowzie.mowziesmobs.common.property.WroughtAxeSwingProperty;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.common.event.Render3dItemEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.event.RenderItemInFrameEvent;
 import org.lwjgl.opengl.GL11;
-import thehippomaster.AnimationAPI.AnimationAPI;
-
-//import net.ilexiconn.llibrary.common.event.RenderPlayerModelEvent;
 
 @SideOnly(Side.CLIENT)
-public class ClientEventHandler
-{
+public enum ClientEventHandler {
+    INSTANCE;
+
     @SubscribeEvent
-    public void onItemRender(Render3dItemEvent.Pre event)
-    {
-        if (event.item == MMItems.itemWroughtAxe)
-        {
-            if (event.type == IItemRenderer.ItemRenderType.EQUIPPED_FIRST_PERSON)
-            {
+    public void onItemRender(Render3dItemEvent.Pre event) {
+        if (event.item == ItemHandler.INSTANCE.itemWroughtAxe) {
+            if (event.type == IItemRenderer.ItemRenderType.EQUIPPED_FIRST_PERSON) {
                 int tick = 0;
                 float time = 0;
-                if (event.data[1] instanceof EntityPlayer)
-                {
+                if (event.data[1] instanceof EntityPlayer) {
                     WroughtAxeSwingProperty property = WroughtAxeSwingProperty.getProperty((EntityPlayer) event.data[1]);
                     tick = property.getTick();
-                    time = property.getSwingPercentage(AnimationAPI.proxy.getPartialTick());
+                    time = property.getSwingPercentage(LLibrary.PROXY.getPartialTicks());
                 }
-                if (tick > 2)
-                {
+                if (tick > 2) {
                     float controller1 = WroughtAxeSwingProperty.fnc2(time);
                     float controller2 = WroughtAxeSwingProperty.fnc3(time, 0.166f, 0.833f, 30);
                     float controller3 = WroughtAxeSwingProperty.fnc1(time);
@@ -49,12 +43,10 @@ public class ClientEventHandler
 
                 GL11.glTranslatef(0f, -1.5f, 0f);
             }
-            if (event.type == IItemRenderer.ItemRenderType.EQUIPPED)
-            {
+            if (event.type == IItemRenderer.ItemRenderType.EQUIPPED) {
                 float time = 0;
-                if (event.data[1] instanceof EntityPlayer)
-                {
-                    time = WroughtAxeSwingProperty.getProperty((EntityPlayer) event.data[1]).getSwingPercentage(AnimationAPI.proxy.getPartialTick());
+                if (event.data[1] instanceof EntityPlayer) {
+                    time = WroughtAxeSwingProperty.getProperty((EntityPlayer) event.data[1]).getSwingPercentage(LLibrary.PROXY.getPartialTicks());
                 }
                 float controller1 = WroughtAxeSwingProperty.fnc2(time);
                 float controller2 = WroughtAxeSwingProperty.fnc3(time, 0.166f, 0.833f, 30);
@@ -64,60 +56,49 @@ public class ClientEventHandler
                 GL11.glScalef(1 + 0.3f * controller1, 1 + 0.3f * controller1, 1 + 0.3f * controller1);
                 GL11.glTranslatef(-0.1f, -1f, 0.1f);
             }
-            if (event.type == IItemRenderer.ItemRenderType.INVENTORY)
-            {
+            if (event.type == IItemRenderer.ItemRenderType.INVENTORY) {
                 GL11.glTranslatef(1.3f, -1.6f, 0f);
                 GL11.glScalef(0.47f, 0.47f, 0.47f);
                 GL11.glRotatef(-30f, -1f, 0, 1f);
                 GL11.glRotatef(45f, 1f, 0, 1f);
 
             }
-            if (event.type == IItemRenderer.ItemRenderType.ENTITY)
-            {
+            if (event.type == IItemRenderer.ItemRenderType.ENTITY) {
                 GL11.glTranslatef(0f, -0.5f, 0f);
                 GL11.glScalef(0.6f, 0.6f, 0.6f);
             }
         }
 
-        if (event.item == MMItems.itemWroughtHelm)
-        {
-            if (event.type == IItemRenderer.ItemRenderType.EQUIPPED_FIRST_PERSON)
-            {
+        if (event.item == ItemHandler.INSTANCE.itemWroughtHelm) {
+            if (event.type == IItemRenderer.ItemRenderType.EQUIPPED_FIRST_PERSON) {
                 GL11.glRotatef(90f, 0f, 1f, 0f);
                 GL11.glTranslatef(-1f, -0.8f, 0f);
             }
-            if (event.type == IItemRenderer.ItemRenderType.EQUIPPED)
-            {
+            if (event.type == IItemRenderer.ItemRenderType.EQUIPPED) {
                 GL11.glRotatef(-115f, 0f, 1f, 0f);
                 GL11.glScalef(2f, 2f, 2f);
                 GL11.glTranslatef(0f, -1.3f, -0.8f);
             }
-            if (event.type == IItemRenderer.ItemRenderType.INVENTORY)
-            {
+            if (event.type == IItemRenderer.ItemRenderType.INVENTORY) {
                 GL11.glTranslatef(-0.4f, -1.2f, 0f);
                 // GL11.glScalef(0.97f, 0.97f, 0.97f);
             }
-            if (event.type == IItemRenderer.ItemRenderType.ENTITY)
-            {
+            if (event.type == IItemRenderer.ItemRenderType.ENTITY) {
                 GL11.glTranslatef(0f, -1.3f, 0f);
             }
         }
 
-        if (event.item instanceof ItemBarakoaMask)
-        {
-            if (event.type == IItemRenderer.ItemRenderType.EQUIPPED_FIRST_PERSON)
-            {
+        if (event.item instanceof ItemBarakoaMask) {
+            if (event.type == IItemRenderer.ItemRenderType.EQUIPPED_FIRST_PERSON) {
                 GL11.glRotatef(90f, 0f, 1f, 0f);
                 GL11.glTranslatef(-1f, -0.8f, 0f);
             }
-            if (event.type == IItemRenderer.ItemRenderType.EQUIPPED)
-            {
+            if (event.type == IItemRenderer.ItemRenderType.EQUIPPED) {
                 GL11.glRotatef(-115f, 0f, 1f, 0f);
                 GL11.glScalef(2f, 2f, 2f);
                 GL11.glTranslatef(0f, -1.3f, -0.5f);
             }
-            if (event.type == IItemRenderer.ItemRenderType.INVENTORY)
-            {
+            if (event.type == IItemRenderer.ItemRenderType.INVENTORY) {
                 GL11.glEnable(GL11.GL_BLEND);
                 GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
                 GL11.glColor3f(1, 1, 1);
@@ -126,8 +107,7 @@ public class ClientEventHandler
                 GL11.glTranslatef(0, -1.7f, 0f);
                 GL11.glScalef(1.25f, 1.25f, 1.25f);
             }
-            if (event.type == IItemRenderer.ItemRenderType.ENTITY)
-            {
+            if (event.type == IItemRenderer.ItemRenderType.ENTITY) {
                 GL11.glDisable(GL11.GL_CULL_FACE);
                 GL11.glTranslatef(0f, -1.3f, 0f);
             }
@@ -135,8 +115,7 @@ public class ClientEventHandler
     }
 
     @SubscribeEvent
-    public void onItemRender(RenderItemInFrameEvent event)
-    {
+    public void onItemRender(RenderItemInFrameEvent event) {
         if (event.item.getItem() instanceof ItemWroughtAxe) {
             GL11.glTranslatef(-0.4f, -0.2f, 0f);
             GL11.glScalef(0.65f, 0.65f, 0.65f);
@@ -166,7 +145,7 @@ public class ClientEventHandler
 //        if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof ItemWroughtAxe)
 //        {
 //            WroughtAxeSwingProperty property = WroughtAxeSwingProperty.getProperty(player);
-//            float time = property.getSwingPercentage(AnimationAPI.proxy.getPartialTick());
+//            float time = property.getSwingPercentage(AnimationAPI.PROXY.getPartialTick());
 //            if (time > 0)
 //            {
 //                float controller1 = WroughtAxeSwingProperty.fnc1(time);

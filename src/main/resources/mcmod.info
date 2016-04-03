@@ -13,8 +13,7 @@
         "credits": "RafaMv",
         "requiredMods": [
             "Forge@[10.13.4.1448,)",
-            "llibrary@[0.3.3,)",
-            "AnimationAPI@[1.2.4,)"
+            "llibrary@[${llibrary_version},)"
         ],
         "dependencies": [
             "llibrary@[0.3.3,)"

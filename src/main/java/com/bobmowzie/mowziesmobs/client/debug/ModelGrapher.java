@@ -1,11 +1,14 @@
 package com.bobmowzie.mowziesmobs.client.debug;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-
+import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelBase;
+import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelRenderer;
+import com.bobmowzie.mowziesmobs.common.entity.MMEntityBase;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
+import cpw.mods.fml.relauncher.ReflectionHelper;
+import net.ilexiconn.llibrary.LLibrary;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -16,27 +19,18 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
-import net.minecraft.util.Timer;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
-
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
-import thehippomaster.AnimationAPI.AnimationAPI;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelBase;
-import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelRenderer;
-import com.bobmowzie.mowziesmobs.common.entity.MMEntityBase;
-
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
-import cpw.mods.fml.relauncher.ReflectionHelper;
-
-public final class ModelGrapher
-{
+public final class ModelGrapher {
     private static final String XYZ = "\u00A7cX \u00A7aY \u00A79Z";
 
     public static final ModelGrapher INSTANCE = new ModelGrapher();
@@ -47,11 +41,9 @@ public final class ModelGrapher
 
     private int tickRange = 40;
 
-    private String[] modelBaseFieldNames = { "field_77045_g", "i", "mainModel" };
+    private String[] modelBaseFieldNames = {"field_77045_g", "i", "mainModel"};
 
     private Field modelBaseField = ReflectionHelper.findField(RendererLivingEntity.class, modelBaseFieldNames);
-
-    private Timer timer = ReflectionHelper.getPrivateValue(Minecraft.class, Minecraft.getMinecraft(), AnimationAPI.fTimer);
 
     private Entity watchingEntity;
 
@@ -67,52 +59,38 @@ public final class ModelGrapher
 
     private int watchingPart = 0;
 
-    private ModelGrapher()
-    {
+    private ModelGrapher() {
     }
 
-    private void setWatchingModel(MMEntityBase entity)
-    {
+    private void setWatchingModel(MMEntityBase entity) {
         ticks.clear();
         watchingEntity = entity;
         watchingPart = 0;
-        if (watchingEntity == null)
-        {
+        if (watchingEntity == null) {
             parts = null;
             names = null;
-        }
-        else
-        {
+        } else {
             RenderLiving render = (RenderLiving) RenderManager.instance.entityRenderMap.get(watchingEntity.getClass());
             MowzieModelBase model = (MowzieModelBase) getMainModel(render);
             parts = model.getParts();
-            if (fieldNames.containsKey(model))
-            {
+            if (fieldNames.containsKey(model)) {
                 names = fieldNames.get(model);
-            }
-            else
-            {
+            } else {
                 names = new String[parts.length];
                 fieldNames.put(model, names);
                 List<Field> fields = new ArrayList<Field>(Arrays.asList(model.getClass().getDeclaredFields()));
-                try
-                {
-                    for (int i = 0; i < parts.length; i++)
-                    {
+                try {
+                    for (int i = 0; i < parts.length; i++) {
                         MowzieModelRenderer part = parts[i];
-                        for (Field field : fields)
-                        {
-                            if (field.get(model) == part)
-                            {
+                        for (Field field : fields) {
+                            if (field.get(model) == part) {
                                 names[i] = String.format("%s (%s/%s)", field.getName(), i + 1, parts.length);
                                 fields.remove(field);
                                 break;
                             }
                         }
                     }
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     throw new Error(e);
                 }
             }
@@ -120,25 +98,19 @@ public final class ModelGrapher
     }
 
     @SubscribeEvent
-    public void onKeyInput(KeyInputEvent event)
-    {
+    public void onKeyInput(KeyInputEvent event) {
         Minecraft mc = Minecraft.getMinecraft();
-        if (mc.theWorld == null || mc.thePlayer == null || !Keyboard.isKeyDown(Keyboard.KEY_LCONTROL))
-        {
+        if (mc.theWorld == null || mc.thePlayer == null || !Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
             return;
         }
-        if (Keyboard.isKeyDown(Keyboard.KEY_F))
-        {
+        if (Keyboard.isKeyDown(Keyboard.KEY_F)) {
             List<MMEntityBase> nearEntities = mc.theWorld.getEntitiesWithinAABB(MMEntityBase.class, mc.thePlayer.boundingBox.expand(16, 16, 16));
-            if (nearEntities.size() > 0)
-            {
+            if (nearEntities.size() > 0) {
                 double minDist = Double.MAX_VALUE;
                 MMEntityBase nearestEntity = null;
-                for (MMEntityBase entity : nearEntities)
-                {
+                for (MMEntityBase entity : nearEntities) {
                     double dist = mc.thePlayer.getDistanceSqToEntity(entity);
-                    if (dist < minDist)
-                    {
+                    if (dist < minDist) {
                         minDist = dist;
                         nearestEntity = entity;
                     }
@@ -146,27 +118,20 @@ public final class ModelGrapher
                 setWatchingModel(nearestEntity);
             }
         }
-        if (Keyboard.isKeyDown(Keyboard.KEY_G))
-        {
+        if (Keyboard.isKeyDown(Keyboard.KEY_G)) {
             setWatchingModel(null);
         }
-        if (watchingEntity != null)
-        {
-            if (Keyboard.isKeyDown(Keyboard.KEY_R))
-            {
+        if (watchingEntity != null) {
+            if (Keyboard.isKeyDown(Keyboard.KEY_R)) {
                 pause = !pause;
             }
-            if (Keyboard.isKeyDown(Keyboard.KEY_DOWN))
-            {
-                if (watchingPart > 0)
-                {
+            if (Keyboard.isKeyDown(Keyboard.KEY_DOWN)) {
+                if (watchingPart > 0) {
                     watchingPart--;
                 }
             }
-            if (Keyboard.isKeyDown(Keyboard.KEY_UP))
-            {
-                if (watchingPart < parts.length - 1)
-                {
+            if (Keyboard.isKeyDown(Keyboard.KEY_UP)) {
+                if (watchingPart < parts.length - 1) {
                     watchingPart++;
                 }
             }
@@ -174,10 +139,8 @@ public final class ModelGrapher
     }
 
     @SubscribeEvent
-    public void onRenderGameOverlay(RenderGameOverlayEvent.Post event)
-    {
-        if (watchingEntity == null || event.type != RenderGameOverlayEvent.ElementType.TEXT)
-        {
+    public void onRenderGameOverlay(RenderGameOverlayEvent.Post event) {
+        if (watchingEntity == null || event.type != RenderGameOverlayEvent.ElementType.TEXT) {
             return;
         }
         GL11.glLineWidth(3);
@@ -191,10 +154,10 @@ public final class ModelGrapher
         GL11.glBegin(GL11.GL_LINES);
         GL11.glVertex2i(x, y + height / 2);
         GL11.glVertex2i(x + width, y + height / 2);
-        float mx = x + (width - ((tick + (pause ? 1 : timer.elapsedPartialTicks)) * 10) % width);
+        float mx = x + (width - ((tick + (pause ? 1 : LLibrary.PROXY.getPartialTicks())) * 10) % width);
         GL11.glVertex2f(mx, x);
         GL11.glVertex2f(mx, x + height);
-        mx = x + (width - ((tick + (pause ? 1 : timer.elapsedPartialTicks) + 20) * 10) % width);
+        mx = x + (width - ((tick + (pause ? 1 : LLibrary.PROXY.getPartialTicks()) + 20) * 10) % width);
         GL11.glVertex2f(mx, x);
         GL11.glVertex2f(mx, x + height);
         GL11.glEnd();
@@ -202,51 +165,40 @@ public final class ModelGrapher
         GL11.glPushMatrix();
         GL11.glTranslatef(x + (width - ticks.size() * 10), y + height / 2, 0);
         GL11.glBegin(GL11.GL_LINES);
-        for (int c = 0; c < 3; c++)
-        {
+        for (int c = 0; c < 3; c++) {
             GL11.glColor3f(c == 0 ? 1 : 0, c == 1 ? 1 : 0, c == 2 ? 1 : 0);
-            if (ticks.size() == 40)
-            {
+            if (ticks.size() == 40) {
                 TickPoint tickPoint = ticks.get(0);
-                if (tickPoint.renders.size() > 0)
-                {
+                if (tickPoint.renders.size() > 0) {
                     RenderPoint renderPoint = tickPoint.renders.get(0);
                     GL11.glVertex2f(0, renderPoint.values[c][watchingPart] * (height / 2 - 1));
                     GL11.glVertex2f(renderPoint.partialRenderTicks * 10, renderPoint.values[c][watchingPart] * (height / 2 - 1));
                 }
             }
-            for (int i = 0; i < ticks.size(); i++)
-            {
+            for (int i = 0; i < ticks.size(); i++) {
                 TickPoint tickPoint = ticks.get(i);
-                for (int n = 0; n < tickPoint.renders.size(); n++)
-                {
+                for (int n = 0; n < tickPoint.renders.size(); n++) {
                     RenderPoint render = tickPoint.renders.get(n);
                     float[][] values = render.values;
                     float xp1 = (i + render.partialRenderTicks) * 10;
                     float xp2 = -1;
                     float[][] next = null;
                     boolean lastRenderInTick = n == tickPoint.renders.size() - 1;
-                    if (lastRenderInTick)
-                    {
-                        if (i < ticks.size() - 1)
-                        {
+                    if (lastRenderInTick) {
+                        if (i < ticks.size() - 1) {
                             TickPoint nextTickPoint = ticks.get(i + 1);
-                            if (nextTickPoint.renders.size() > 0)
-                            {
+                            if (nextTickPoint.renders.size() > 0) {
                                 RenderPoint nextRenderPoint = nextTickPoint.renders.get(0);
                                 xp2 = (i + 1 + nextRenderPoint.partialRenderTicks) * 10;
                                 next = nextRenderPoint.values;
                             }
                         }
-                    }
-                    else
-                    {
+                    } else {
                         RenderPoint nextRenderPoint = tickPoint.renders.get(n + 1);
                         xp2 = (i + nextRenderPoint.partialRenderTicks) * 10;
                         next = nextRenderPoint.values;
                     }
-                    if (next == null)
-                    {
+                    if (next == null) {
                         xp2 = (i + 1) * 10;
                         next = values;
                     }
@@ -270,30 +222,24 @@ public final class ModelGrapher
         GL11.glColor3f(1, 1, 1);
         FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
         fontRenderer.drawString(names[watchingPart], x + 2, y + 2, 0xFFFFFF, true);
-        if (xyzWidth == -1)
-        {
+        if (xyzWidth == -1) {
             xyzWidth = fontRenderer.getStringWidth(XYZ);
         }
         fontRenderer.drawString(XYZ, x + width - xyzWidth - 2, y + 2, 0xFFFFFF, true);
     }
 
     @SubscribeEvent
-    public void onClientTick(ClientTickEvent event)
-    {
-        if (event.phase == TickEvent.Phase.START)
-        {
+    public void onClientTick(ClientTickEvent event) {
+        if (event.phase == TickEvent.Phase.START) {
             return;
         }
-        if (watchingEntity != null && watchingEntity.isDead)
-        {
+        if (watchingEntity != null && watchingEntity.isDead) {
             setWatchingModel(null);
         }
-        if (pause)
-        {
+        if (pause) {
             return;
         }
-        if (ticks.size() == tickRange)
-        {
+        if (ticks.size() == tickRange) {
             ticks.remove(0);
         }
         ticks.add(new TickPoint());
@@ -301,48 +247,38 @@ public final class ModelGrapher
     }
 
     @SubscribeEvent
-    public void onRenderLivingEvent(RenderLivingEvent.Post event)
-    {
-        if (event.entity != watchingEntity || pause)
-        {
+    public void onRenderLivingEvent(RenderLivingEvent.Post event) {
+        if (event.entity != watchingEntity || pause) {
             return;
         }
         TickPoint tick = ticks.get(ticks.size() - 1);
         float[][] rotations = new float[3][parts.length];
-        for (int i = 0; i < parts.length; i++)
-        {
+        for (int i = 0; i < parts.length; i++) {
             ModelRenderer modelRenderer = parts[i];
             rotations[0][i] = MathHelper.wrapAngleTo180_float(modelRenderer.rotateAngleX / (float) Math.PI * 180) / 180;
             rotations[1][i] = MathHelper.wrapAngleTo180_float(modelRenderer.rotateAngleY / (float) Math.PI * 180) / 180;
             rotations[2][i] = MathHelper.wrapAngleTo180_float(modelRenderer.rotateAngleZ / (float) Math.PI * 180) / 180;
         }
-        tick.renders.add(new RenderPoint(timer.renderPartialTicks, rotations));
+        tick.renders.add(new RenderPoint(LLibrary.PROXY.getPartialTicks(), rotations));
     }
 
-    private ModelBase getMainModel(RenderLiving render)
-    {
-        try
-        {
+    private ModelBase getMainModel(RenderLiving render) {
+        try {
             return (ModelBase) modelBaseField.get(render);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             return null;
         }
     }
 
-    private class TickPoint
-    {
+    private class TickPoint {
         private List<RenderPoint> renders = new ArrayList<RenderPoint>();
     }
 
-    private class RenderPoint
-    {
+    private class RenderPoint {
         private float partialRenderTicks;
         private float[][] values;
 
-        public RenderPoint(float partialRenderTicks, float[][] values)
-        {
+        public RenderPoint(float partialRenderTicks, float[][] values) {
             this.partialRenderTicks = partialRenderTicks;
             this.values = values;
         }

@@ -75,7 +75,7 @@ public class ModelWroughtHelm extends ModelBiped {
         super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
         GL11.glScalef(scale, scale, scale);
         bipedHead.render(f5);
-        GL11.glScalef(1/scale, 1/scale, 1/scale);
+        GL11.glScalef(1 / scale, 1 / scale, 1 / scale);
     }
 
     /**

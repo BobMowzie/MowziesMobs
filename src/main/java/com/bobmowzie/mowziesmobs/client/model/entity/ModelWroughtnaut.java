@@ -3,15 +3,13 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 import com.bobmowzie.mowziesmobs.client.model.tools.AdvancedModelRenderer;
 import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelBase;
 import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelRenderer;
-import com.bobmowzie.mowziesmobs.common.animation.MMAnimation;
 import com.bobmowzie.mowziesmobs.common.entity.EntityWroughtnaut;
+import net.ilexiconn.llibrary.LLibrary;
+import net.ilexiconn.llibrary.client.model.ModelAnimator;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
-import thehippomaster.AnimationAPI.AnimationAPI;
-import thehippomaster.AnimationAPI.client.Animator;
 
-public class ModelWroughtnaut extends MowzieModelBase
-{
+public class ModelWroughtnaut extends MowzieModelBase {
     public MowzieModelRenderer waist;
     public MowzieModelRenderer groin;
     public MowzieModelRenderer stomachJoint;
@@ -82,11 +80,10 @@ public class ModelWroughtnaut extends MowzieModelBase
     public MowzieModelRenderer swordJoint;
     public MowzieModelRenderer rootBox;
     public MowzieModelRenderer waistBendController;
-    private Animator animator;
+    private ModelAnimator animator;
 
-    public ModelWroughtnaut()
-    {
-        animator = new Animator(this);
+    public ModelWroughtnaut() {
+        animator = ModelAnimator.create();
         this.textureWidth = 128;
         this.textureHeight = 128;
 
@@ -442,28 +439,22 @@ public class ModelWroughtnaut extends MowzieModelBase
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5)
-    {
+    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         animate(f, f1, f2, f3, f4, f5, entity);
         this.rootBox.render(f5);
     }
 
-    public void setRotateAngle(MowzieModelRenderer MowzieModelRenderer, float x, float y, float z)
-    {
+    public void setRotateAngle(MowzieModelRenderer MowzieModelRenderer, float x, float y, float z) {
         MowzieModelRenderer.rotateAngleX = x;
         MowzieModelRenderer.rotateAngleY = y;
         MowzieModelRenderer.rotateAngleZ = z;
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, EntityWroughtnaut entity)
-    {
+    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, EntityWroughtnaut entity) {
         super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
         setToInitPose();
-        EntityWroughtnaut wn = entity;
-        if (wn.getAnimID() != 3 && wn.getAnimID() != 4)
-        {
-            if (wn.getActive() == 1)
-            {
+        if (entity.getAnimation() != EntityWroughtnaut.ACTIVATE_ANIMATION && entity.getAnimation() != EntityWroughtnaut.DEACTIVATE_ANIMATION) {
+            if (entity.getActive() == 1) {
                 shoulderLeft.rotateAngleZ -= 0.4;
                 shoulderRight.rotateAngleZ += 0.35;
                 shoulderLeft.rotateAngleY -= 0.3;
@@ -484,9 +475,7 @@ public class ModelWroughtnaut extends MowzieModelBase
 
                 head.rotateAngleY += f3 / (180f / (float) Math.PI);
                 neck.rotateAngleX += f4 / (180f / (float) Math.PI);
-            }
-            else
-            {
+            } else {
                 shoulderLeft.rotateAngleZ -= 0.4;
                 shoulderRight.rotateAngleZ += 0.4;
                 shoulderLeft.rotateAngleY -= 0.4;
@@ -520,9 +509,9 @@ public class ModelWroughtnaut extends MowzieModelBase
             }
         }
 
-        float frame = wn.frame + AnimationAPI.proxy.getPartialTick();
-        f = (float) ((4 * Math.PI * frame - 30 * MathHelper.sin((float)(0.1 * Math.PI*(frame-9)))-27*Math.PI)/(4*Math.PI)) + 5f;
-        f1 = (float) Math.pow(MathHelper.sin((float) (wn.walkAnim.getTimer() * Math.PI * 0.05)), 2);
+        float frame = entity.frame + LLibrary.PROXY.getPartialTicks();
+        f = (float) ((4 * Math.PI * frame - 30 * MathHelper.sin((float) (0.1 * Math.PI * (frame - 9))) - 27 * Math.PI) / (4 * Math.PI)) + 5f;
+        f1 = (float) Math.pow(MathHelper.sin((float) (entity.walkAnim.getTimer() * Math.PI * 0.05)), 2);
 
         float globalSpeed = (float) (Math.PI * 0.05);
         float globalDegree = 0.8F;
@@ -569,25 +558,22 @@ public class ModelWroughtnaut extends MowzieModelBase
         swordJoint.rotateAngleX -= 0.5;
         swordJoint.rotateAngleZ -= 0.5;
 
-        sword.rotateAngleY += Math.PI/2;
+        sword.rotateAngleY += Math.PI / 2;
 //        sword.rotationPointX += 10;
         sword.rotationPointZ -= 22;
         sword.rotationPointY += 10;
     }
 
-    public void animate(float f, float f1, float f2, float f3, float f4, float f5, Entity entity)
-    {
+    public void animate(float f, float f1, float f2, float f3, float f4, float f5, Entity entity) {
         animator.update((EntityWroughtnaut) entity);
         EntityWroughtnaut entityWroughtnaut = (EntityWroughtnaut) entity;
         setRotationAngles(f, f1, f2, f3, f4, f5, entityWroughtnaut);
 
-        if (entityWroughtnaut.getAnimID() == 1)
-        {
-            if (entityWroughtnaut.swingDirection == false)
-            {
-                animator.setAnim(1);
-                animator.setStationaryPhase(6);
-                animator.startPhase(15);
+        if (entityWroughtnaut.getAnimation() == EntityWroughtnaut.ATTACK_ANIMATION) {
+            if (!entityWroughtnaut.swingDirection) {
+                animator.setAnimation(EntityWroughtnaut.ATTACK_ANIMATION);
+                animator.setStaticKeyframe(6);
+                animator.startKeyframe(15);
                 animator.rotate(stomachJoint, -0.2F, 0.5F, 0);
                 animator.rotate(waist, 0, 0.5F, -0.2F);
                 animator.move(waist, -3, 1F, 1);
@@ -613,11 +599,11 @@ public class ModelWroughtnaut extends MowzieModelBase
                 animator.rotate(thighLeftJoint2, 0F, -0.5F, -0.05F);
                 animator.rotate(calfLeftJoint, 0.1F, 0, 0);
                 animator.rotate(footLeftJoint, -0.1F, 0, 0);
-                animator.endPhase();
+                animator.endKeyframe();
 
-                animator.setStationaryPhase(5);
+                animator.setStaticKeyframe(5);
 
-                animator.startPhase(6);
+                animator.startKeyframe(6);
                 animator.rotate(stomachJoint, 0.3F, -1.3F, 0);
                 animator.rotate(waist, 0, 0.5F, 0F);
                 animator.move(waist, 2, 2, -7);
@@ -649,21 +635,18 @@ public class ModelWroughtnaut extends MowzieModelBase
                 animator.rotate(calfLeftJoint, -0.1F, 0, 0);
                 animator.rotate(footLeftJoint, 0F, 0, 0);
 
-                animator.endPhase();
-                animator.setStationaryPhase(8);
-                animator.resetPhase(10);
+                animator.endKeyframe();
+                animator.setStaticKeyframe(8);
+                animator.resetKeyframe(10);
                 float frame = waistBendController.rotationPointX;
-                if (entityWroughtnaut.getAnimTick() <= 33)
-                {
+                if (entityWroughtnaut.getAnimationTick() <= 33) {
                     stomachJoint.rotateAngleX += 0.06 * -frame * (frame - 7);
                     neck.rotateAngleX -= 0.06 * -frame * (frame - 7);
                 }
-            }
-            else
-            {
-                animator.setAnim(1);
-                animator.setStationaryPhase(6);
-                animator.startPhase(15);
+            } else {
+                animator.setAnimation(EntityWroughtnaut.ATTACK_ANIMATION);
+                animator.setStaticKeyframe(6);
+                animator.startKeyframe(15);
                 animator.rotate(stomachJoint, 0.2F, -0.5F, 0);
                 animator.rotate(waist, 0, -0.5F, 0.2F);
                 animator.move(waist, 3, 1F, -1);
@@ -693,11 +676,11 @@ public class ModelWroughtnaut extends MowzieModelBase
                 animator.rotate(thighRightJoint2, 0F, 0.5F, 0.05F);
                 animator.rotate(calfRightJoint, 0.1F, 0, 0);
                 animator.rotate(footRightJoint, -0.1F, 0, 0);
-                animator.endPhase();
+                animator.endKeyframe();
 
-                animator.setStationaryPhase(5);
+                animator.setStaticKeyframe(5);
 
-                animator.startPhase(6);
+                animator.startKeyframe(6);
                 animator.rotate(stomachJoint, 0.3F, 1.3F, 0);
                 animator.rotate(waist, 0, -0.5F, 0F);
                 animator.move(waist, -2, 2, -7);
@@ -725,23 +708,21 @@ public class ModelWroughtnaut extends MowzieModelBase
                 animator.rotate(calfRightJoint, -0.1F, 0, 0);
                 animator.rotate(footRightJoint, 0F, 0, 0);
 
-                animator.endPhase();
-                animator.setStationaryPhase(8);
-                animator.resetPhase(10);
+                animator.endKeyframe();
+                animator.setStaticKeyframe(8);
+                animator.resetKeyframe(10);
                 float frame = waistBendController.rotationPointX;
-                if (entityWroughtnaut.getAnimTick() <= 33)
-                {
+                if (entityWroughtnaut.getAnimationTick() <= 33) {
                     stomachJoint.rotateAngleX += 0.06 * -frame * (frame - 7);
                     neck.rotateAngleX -= 0.06 * -frame * (frame - 7);
                 }
             }
         }
 
-        if (entityWroughtnaut.getAnimID() == 2)
-        {
-            animator.setAnim(2);
-            animator.setStationaryPhase(6);
-            animator.startPhase(15);
+        if (entityWroughtnaut.getAnimation() ==EntityWroughtnaut.VERTICAL_ATTACK_ANIMATION) {
+            animator.setAnimation(EntityWroughtnaut.VERTICAL_ATTACK_ANIMATION);
+            animator.setStaticKeyframe(6);
+            animator.startKeyframe(15);
             animator.rotate(stomachJoint, -0.65F, 0F, 0);
             animator.move(waist, 0F, 0F, 6);
             animator.rotate(neck, 0.65F, 0F, 0);
@@ -765,11 +746,11 @@ public class ModelWroughtnaut extends MowzieModelBase
             animator.rotate(calfLeftJoint, -0.3F, 0, 0);
             animator.rotate(footLeftJoint, 0.3F, 0, 0);
 
-            animator.endPhase();
+            animator.endKeyframe();
 
-            animator.setStationaryPhase(5);
+            animator.setStaticKeyframe(5);
 
-            animator.startPhase(4);
+            animator.startKeyframe(4);
             animator.rotate(stomachJoint, 0.65F, 0F, 0);
             animator.move(waist, 0F, 4F, -3);
             animator.rotate(neck, 0.3F, 0F, 0);
@@ -807,10 +788,10 @@ public class ModelWroughtnaut extends MowzieModelBase
             animator.rotate(calfLeftJoint, 0.3F, 0, 0);
             animator.rotate(footLeftJoint, -0.1F, 0, 0);
 
-            animator.endPhase();
-            animator.setStationaryPhase(15);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(15);
 
-            animator.startPhase(5);
+            animator.startKeyframe(5);
             animator.rotate(stomachJoint, 0.2F, 0F, 0);
             animator.move(waist, 0F, 4F, -3);
             animator.rotate(neck, -0.5F, 0F, 0);
@@ -853,11 +834,11 @@ public class ModelWroughtnaut extends MowzieModelBase
             animator.rotate(footLeftJoint, -0.1F, 0, 0);
 
             animator.move(waistBendController, 1, 0, 0);
-            animator.endPhase();
+            animator.endKeyframe();
 
-            animator.setStationaryPhase(15);
+            animator.setStaticKeyframe(15);
 
-            animator.startPhase(7);
+            animator.startKeyframe(7);
             animator.rotate(stomachJoint, 0.65F, 0F, 0);
             animator.move(waist, 0F, 4F, -3);
             animator.rotate(neck, 0.3F, 0F, 0);
@@ -895,11 +876,11 @@ public class ModelWroughtnaut extends MowzieModelBase
             animator.rotate(calfLeftJoint, 0.3F, 0, 0);
             animator.rotate(footLeftJoint, -0.1F, 0, 0);
 
-            animator.endPhase();
+            animator.endKeyframe();
 
-            animator.setStationaryPhase(5);
+            animator.setStaticKeyframe(5);
 
-            animator.startPhase(5);
+            animator.startKeyframe(5);
             animator.rotate(stomachJoint, 0.2F, 0F, 0);
             animator.move(waist, 0F, 4F, -3);
             animator.rotate(neck, -0.5F, 0F, 0);
@@ -942,11 +923,11 @@ public class ModelWroughtnaut extends MowzieModelBase
             animator.rotate(footLeftJoint, -0.1F, 0, 0);
 
             animator.move(waistBendController, 1, 0, 0);
-            animator.endPhase();
+            animator.endKeyframe();
 
-            animator.setStationaryPhase(5);
+            animator.setStaticKeyframe(5);
 
-            animator.startPhase(5);
+            animator.startKeyframe(5);
             animator.rotate(stomachJoint, -0.5F, 0F, 0);
             animator.move(waist, 0F, 0F, 6);
             animator.rotate(neck, 0.65F, 0F, 0);
@@ -972,18 +953,17 @@ public class ModelWroughtnaut extends MowzieModelBase
             animator.rotate(calfLeftJoint, -0.3F, 0, 0);
             animator.rotate(footLeftJoint, 0.3F, 0, 0);
 
-            animator.endPhase();
+            animator.endKeyframe();
 
-            animator.setStationaryPhase(3);
+            animator.setStaticKeyframe(3);
 
-            animator.resetPhase(10);
-            neck.rotateAngleX += Math.sin((entityWroughtnaut.frame + AnimationAPI.proxy.getPartialTick())* 2) * waistBendController.rotationPointX * 0.1;
+            animator.resetKeyframe(10);
+            neck.rotateAngleX += Math.sin((entityWroughtnaut.frame + LLibrary.PROXY.getPartialTicks()) * 2) * waistBendController.rotationPointX * 0.1;
         }
 
-        if (entityWroughtnaut.getAnimID() == MMAnimation.TAKEDAMAGE.animID())
-        {
-            animator.setAnim(MMAnimation.TAKEDAMAGE.animID());
-            animator.startPhase(0);
+        if (entityWroughtnaut.getAnimation() == EntityWroughtnaut.DAMAGE_ANIMATION) {
+            animator.setAnimation(EntityWroughtnaut.DAMAGE_ANIMATION);
+            animator.startKeyframe(0);
             animator.rotate(stomachJoint, 0.65F, 0F, 0);
             animator.move(waist, 0F, 4F, -3);
             animator.rotate(neck, 0.3F, 0F, 0);
@@ -1020,9 +1000,9 @@ public class ModelWroughtnaut extends MowzieModelBase
             animator.rotate(thighLeftJoint, -0.2F, 0, 0);
             animator.rotate(calfLeftJoint, 0.3F, 0, 0);
             animator.rotate(footLeftJoint, -0.1F, 0, 0);
-            animator.endPhase();
+            animator.endKeyframe();
 
-            animator.startPhase(4);
+            animator.startKeyframe(4);
             animator.rotate(stomachJoint, -0.4F, 0, 0);
             animator.rotate(neck, -0.4F, 0, 0);
 
@@ -1040,15 +1020,14 @@ public class ModelWroughtnaut extends MowzieModelBase
             animator.rotate(handRightJoint, -1F, 0, -0.5F);
             animator.rotate(handRight, -0.2F, 0, 0.3F);
 
-            animator.endPhase();
-            animator.setStationaryPhase(2);
-            animator.resetPhase(9);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(2);
+            animator.resetKeyframe(9);
         }
 
-        if (entityWroughtnaut.getAnimID() == MMAnimation.DIE.animID())
-        {
-            animator.setAnim(MMAnimation.DIE.animID());
-            animator.startPhase(5);
+        if (entityWroughtnaut.getAnimation() == EntityWroughtnaut.DIE_ANIMAION) {
+            animator.setAnimation(EntityWroughtnaut.DIE_ANIMAION);
+            animator.startKeyframe(5);
             animator.rotate(stomachJoint, -0.4F, 0, 0);
             animator.rotate(neck, -0.4F, 0, 0);
 
@@ -1065,9 +1044,9 @@ public class ModelWroughtnaut extends MowzieModelBase
             animator.rotate(lowerArmRightJoint, 0, 0F, -0.3F);
             animator.rotate(handRightJoint, -1F, 0, -0.5F);
             animator.rotate(handRight, -0.2F, 0, 0.3F);
-            animator.endPhase();
+            animator.endKeyframe();
 
-            animator.startPhase(8);
+            animator.startKeyframe(8);
             animator.rotate(stomachJoint, -0.4F, 0, 0);
             animator.rotate(neck, -0.4F, 0, 0);
 
@@ -1086,11 +1065,11 @@ public class ModelWroughtnaut extends MowzieModelBase
             animator.rotate(handRight, -0.2F, 0, 0.3F);
 
             animator.move(waistBendController, 1, 0, 0);
-            animator.endPhase();
+            animator.endKeyframe();
 
-            animator.setStationaryPhase(30);
+            animator.setStaticKeyframe(30);
 
-            animator.startPhase(10);
+            animator.startKeyframe(10);
             animator.rotate(stomachJoint, -0.4F, 0, 0);
             animator.rotate(neck, -0.4F, 0, 0);
 
@@ -1107,11 +1086,11 @@ public class ModelWroughtnaut extends MowzieModelBase
             animator.rotate(lowerArmRightJoint, 0, 0F, -0.3F);
             animator.rotate(handRightJoint, -1F, 0, -0.5F);
             animator.rotate(handRight, -0.2F, 0, 0.3F);
-            animator.endPhase();
+            animator.endKeyframe();
 
-            animator.setStationaryPhase(10);
+            animator.setStaticKeyframe(10);
 
-            animator.startPhase(5);
+            animator.startKeyframe(5);
             animator.move(rootBox, 0, 7, -10);
             animator.rotate(stomachJoint, -0.6F, 0, 0);
             animator.rotate(neck, -0.4F, 0, 0);
@@ -1137,11 +1116,11 @@ public class ModelWroughtnaut extends MowzieModelBase
             animator.rotate(thighLeftJoint, 0.3F, -0.5F, 0.3F);
             animator.rotate(calfLeftJoint, 0.5F, 0, 0);
             animator.rotate(footLeftJoint, 1.7F, 0, 0);
-            animator.endPhase();
+            animator.endKeyframe();
 
-            animator.setStationaryPhase(13);
+            animator.setStaticKeyframe(13);
 
-            animator.startPhase(7);
+            animator.startKeyframe(7);
             animator.move(rootBox, 0, 15, -33);
             animator.rotate(rootBox, 1.5F, 0, 0);
 
@@ -1171,20 +1150,19 @@ public class ModelWroughtnaut extends MowzieModelBase
             animator.rotate(calfLeftJoint, -0.8F, -0.1F, 0);
             animator.rotate(calfLeft, 0, 0, -0.3F);
             animator.rotate(footLeftJoint, 1.7F, 0, 0);
-            animator.endPhase();
+            animator.endKeyframe();
 
-            animator.setStationaryPhase(40);
+            animator.setStaticKeyframe(40);
 
-            swing(stomachJoint, 0.5F, 0.2F * waistBendController.rotationPointX, false, 0, 0, (entityWroughtnaut.frame + AnimationAPI.proxy.getPartialTick()), 1F);
-            walk(neck, 1.5F, 0.1F * waistBendController.rotationPointX, false, 0F, 0, (entityWroughtnaut.frame + AnimationAPI.proxy.getPartialTick()), 1F);
-            swing(shoulderRight, 1.5F, 0.05F * waistBendController.rotationPointX, true, 0F, 0, (entityWroughtnaut.frame + AnimationAPI.proxy.getPartialTick()), 1F);
-            swing(shoulderLeft, 1.5F, 0.05F * waistBendController.rotationPointX, false, 0F, 0, (entityWroughtnaut.frame + AnimationAPI.proxy.getPartialTick()), 1F);
+            swing(stomachJoint, 0.5F, 0.2F * waistBendController.rotationPointX, false, 0, 0, (entityWroughtnaut.frame + LLibrary.PROXY.getPartialTicks()), 1F);
+            walk(neck, 1.5F, 0.1F * waistBendController.rotationPointX, false, 0F, 0, (entityWroughtnaut.frame + LLibrary.PROXY.getPartialTicks()), 1F);
+            swing(shoulderRight, 1.5F, 0.05F * waistBendController.rotationPointX, true, 0F, 0, (entityWroughtnaut.frame + LLibrary.PROXY.getPartialTicks()), 1F);
+            swing(shoulderLeft, 1.5F, 0.05F * waistBendController.rotationPointX, false, 0F, 0, (entityWroughtnaut.frame + LLibrary.PROXY.getPartialTicks()), 1F);
         }
 
-        if (entityWroughtnaut.getAnimID() == 3)
-        {
-            animator.setAnim(3);
-            animator.startPhase(0);
+        if (entityWroughtnaut.getAnimation() == EntityWroughtnaut.ACTIVATE_ANIMATION) {
+            animator.setAnimation(EntityWroughtnaut.ACTIVATE_ANIMATION);
+            animator.startKeyframe(0);
             animator.rotate(shoulderLeft, 0, -0.4F, -0.4F);
             animator.rotate(shoulderRight, 0, 0.4F, 0.4F);
             animator.rotate(upperArmRight, 0, 0.5F, 0.5F);
@@ -1204,9 +1182,9 @@ public class ModelWroughtnaut extends MowzieModelBase
             animator.rotate(calfLeftJoint, -0.6F, 0, 0);
             animator.rotate(footLeft, 0.25F, 0, 0);
             animator.rotate(footRight, 0.25F, 0, 0);
-            animator.endPhase();
+            animator.endKeyframe();
 
-            animator.startPhase(10);
+            animator.startKeyframe(10);
             animator.rotate(shoulderLeft, 0, -0.4F, -0.4F);
             animator.rotate(shoulderRight, 0, 0.4F, 0.4F);
             animator.rotate(upperArmRight, 0, 0.5F, 0.5F);
@@ -1225,11 +1203,11 @@ public class ModelWroughtnaut extends MowzieModelBase
             animator.rotate(calfLeftJoint, -0.6F, 0, 0);
             animator.rotate(footLeft, 0.25F, 0, 0);
             animator.rotate(footRight, 0.25F, 0, 0);
-            animator.endPhase();
+            animator.endKeyframe();
 
-            animator.setStationaryPhase(9);
+            animator.setStaticKeyframe(9);
 
-            animator.startPhase(26);
+            animator.startKeyframe(26);
             animator.rotate(shoulderLeft, 0, -0.3F, -0.4F);
             animator.rotate(shoulderRight, 0, 0.2F, 0.35F);
             animator.rotate(upperArmLeft, 0, -0.5F, 0.5F);
@@ -1240,27 +1218,24 @@ public class ModelWroughtnaut extends MowzieModelBase
             animator.rotate(handLeftJoint, 1.6F, 0, -0.5F);
             animator.rotate(axeHandle, 0, 0.8F, 0);
             animator.move(waistBendController, 26, 0, 0);
-            animator.endPhase();
+            animator.endKeyframe();
 
-            animator.setStationaryPhase(20);
+            animator.setStaticKeyframe(20);
 
             float frame = waistBendController.rotationPointX;
-            if (entityWroughtnaut.getAnimTick() <= 27)
-            {
+            if (entityWroughtnaut.getAnimationTick() <= 27) {
                 thighRightJoint.rotateAngleX += 0.01 * frame * (frame - 13);
                 calfRightJoint.rotateAngleX -= 0.02 * frame * (frame - 13);
             }
-            if (entityWroughtnaut.getAnimTick() >= 28)
-            {
+            if (entityWroughtnaut.getAnimationTick() >= 28) {
                 thighLeftJoint.rotateAngleX += 0.01 * (frame - 13) * (frame - 26);
                 calfLeftJoint.rotateAngleX -= 0.02 * (frame - 13) * (frame - 26);
             }
             rootBox.rotateAngleZ -= 0.05 * frame * (frame - 13) * (frame - 26) / 845;
         }
-        if (entityWroughtnaut.getAnimID() == 4)
-        {
-            animator.setAnim(4);
-            animator.startPhase(0);
+        if (entityWroughtnaut.getAnimation() == EntityWroughtnaut.DEACTIVATE_ANIMATION) {
+            animator.setAnimation(EntityWroughtnaut.DEACTIVATE_ANIMATION);
+            animator.startKeyframe(0);
             animator.rotate(shoulderLeft, 0, -0.3F, -0.4F);
             animator.rotate(shoulderRight, 0, 0.2F, 0.35F);
             animator.rotate(upperArmLeft, 0, -0.5F, 0.5F);
@@ -1270,9 +1245,9 @@ public class ModelWroughtnaut extends MowzieModelBase
             animator.rotate(handRight, -0.2F, 0, 0.3F);
             animator.rotate(handLeftJoint, 1.6F, 0, -0.5F);
             animator.rotate(axeHandle, 0, 0.8F, 0);
-            animator.endPhase();
+            animator.endKeyframe();
 
-            animator.startPhase(15);
+            animator.startKeyframe(15);
             animator.rotate(shoulderLeft, 0, -0.4F, -0.4F);
             animator.rotate(shoulderRight, 0, 0.4F, 0.4F);
             animator.rotate(upperArmRight, 0, 0.5F, 0.5F);
@@ -1292,9 +1267,9 @@ public class ModelWroughtnaut extends MowzieModelBase
             animator.rotate(calfLeftJoint, -0.6F, 0, 0);
             animator.rotate(footLeft, 0.25F, 0, 0);
             animator.rotate(footRight, 0.25F, 0, 0);
-            animator.endPhase();
+            animator.endKeyframe();
 
-            animator.setStationaryPhase(20);
+            animator.setStaticKeyframe(20);
         }
     }
 }

@@ -10,30 +10,25 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 
 @SideOnly(Side.CLIENT)
-public class RenderWroughtnaut extends RenderLiving
-{
+public class RenderWroughtnaut extends RenderLiving {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureWroughtnaut.png");
 
-    public RenderWroughtnaut(ModelBase model, float shadowSize)
-    {
+    public RenderWroughtnaut(ModelBase model, float shadowSize) {
         super(model, shadowSize);
     }
 
     @Override
-    public void preRenderCallback(EntityLivingBase entity, float side)
-    {
+    public void preRenderCallback(EntityLivingBase entity, float side) {
         super.preRenderCallback(entity, side);
     }
 
     @Override
-    public ResourceLocation getEntityTexture(Entity entity)
-    {
+    public ResourceLocation getEntityTexture(Entity entity) {
         return TEXTURE;
     }
 
     @Override
-    protected float getDeathMaxRotation(EntityLivingBase entity)
-    {
+    protected float getDeathMaxRotation(EntityLivingBase entity) {
         return 0;
     }
 }

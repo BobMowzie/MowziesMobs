@@ -12,8 +12,7 @@ import net.minecraft.util.MathHelper;
  * @author RafaMv
  */
 @SideOnly(Side.CLIENT)
-public class ChainBuffer
-{
+public class ChainBuffer {
     /**
      * Used to delay the tail animation when the entity rotates.
      */
@@ -39,8 +38,7 @@ public class ChainBuffer
      */
     private float[] pitchArray;
 
-    public ChainBuffer(int numberOfParentedBoxes)
-    {
+    public ChainBuffer(int numberOfParentedBoxes) {
         yawTimer = 0;
         pitchTimer = 0;
         yawVariation = 0.0F;
@@ -52,8 +50,7 @@ public class ChainBuffer
     /**
      * Sets both yaw and pitch variations to zero.
      */
-    public void resetRotations()
-    {
+    public void resetRotations() {
         yawVariation = 0.0F;
         pitchVariation = 0.0F;
     }
@@ -73,46 +70,36 @@ public class ChainBuffer
      * @param entity         is the EntityLivingBase that will be used to animate the tail;
      */
     @SideOnly(Side.CLIENT)
-    public void calculateChainSwingBuffer(float maxAngle, int bufferTime, float angleDecrement, float divider, EntityLivingBase entity)
-    {
-        if (entity.renderYawOffset != entity.prevRenderYawOffset && MathHelper.abs(yawVariation) < maxAngle)
+    public void calculateChainSwingBuffer(float maxAngle, int bufferTime, float angleDecrement, float divider, EntityLivingBase entity) {
+        if (entity.renderYawOffset != entity.prevRenderYawOffset && MathHelper.abs(yawVariation) < maxAngle) {
             yawVariation += (entity.prevRenderYawOffset - entity.renderYawOffset) / divider;
+        }
 
-        if (yawVariation > 0.7F * angleDecrement)
-        {
-            if (yawTimer > bufferTime)
-            {
+        if (yawVariation > 0.7F * angleDecrement) {
+            if (yawTimer > bufferTime) {
                 yawVariation -= angleDecrement;
-                if (MathHelper.abs(yawVariation) < angleDecrement)
-                {
+                if (MathHelper.abs(yawVariation) < angleDecrement) {
                     yawVariation = 0.0F;
                     yawTimer = 0;
                 }
-            }
-            else
-            {
+            } else {
                 yawTimer++;
             }
-        }
-        else if (yawVariation < -0.7F * angleDecrement)
-        {
-            if (yawTimer > bufferTime)
-            {
+        } else if (yawVariation < -0.7F * angleDecrement) {
+            if (yawTimer > bufferTime) {
                 yawVariation += angleDecrement;
-                if (MathHelper.abs(yawVariation) < angleDecrement)
-                {
+                if (MathHelper.abs(yawVariation) < angleDecrement) {
                     yawVariation = 0.0F;
                     yawTimer = 0;
                 }
-            }
-            else
-            {
+            } else {
                 yawTimer++;
             }
         }
 
-        for (int i = 0; i < yawArray.length; i++)
+        for (int i = 0; i < yawArray.length; i++) {
             yawArray[i] = 0.01745329251F * yawVariation / pitchArray.length;
+        }
     }
 
     /**
@@ -130,46 +117,36 @@ public class ChainBuffer
      * @param entity         is the EntityLivingBase that will be used to animate the tail;
      */
     @SideOnly(Side.CLIENT)
-    public void calculateChainWaveBuffer(float maxAngle, int bufferTime, float angleDecrement, float divider, EntityLivingBase entity)
-    {
-        if (entity.rotationPitch != entity.prevRotationPitch && MathHelper.abs(pitchVariation) < maxAngle)
+    public void calculateChainWaveBuffer(float maxAngle, int bufferTime, float angleDecrement, float divider, EntityLivingBase entity) {
+        if (entity.rotationPitch != entity.prevRotationPitch && MathHelper.abs(pitchVariation) < maxAngle) {
             pitchVariation += (entity.prevRotationPitch - entity.rotationPitch) / divider;
+        }
 
-        if (pitchVariation > 0.7F * angleDecrement)
-        {
-            if (pitchTimer > bufferTime)
-            {
+        if (pitchVariation > 0.7F * angleDecrement) {
+            if (pitchTimer > bufferTime) {
                 pitchVariation -= angleDecrement;
-                if (MathHelper.abs(pitchVariation) < angleDecrement)
-                {
+                if (MathHelper.abs(pitchVariation) < angleDecrement) {
                     pitchVariation = 0.0F;
                     pitchTimer = 0;
                 }
-            }
-            else
-            {
+            } else {
                 pitchTimer++;
             }
-        }
-        else if (pitchVariation < -0.7F * angleDecrement)
-        {
-            if (pitchTimer > bufferTime)
-            {
+        } else if (pitchVariation < -0.7F * angleDecrement) {
+            if (pitchTimer > bufferTime) {
                 pitchVariation += angleDecrement;
-                if (MathHelper.abs(pitchVariation) < angleDecrement)
-                {
+                if (MathHelper.abs(pitchVariation) < angleDecrement) {
                     pitchVariation = 0.0F;
                     pitchTimer = 0;
                 }
-            }
-            else
-            {
+            } else {
                 pitchTimer++;
             }
         }
 
-        for (int i = 0; i < pitchArray.length; i++)
+        for (int i = 0; i < pitchArray.length; i++) {
             pitchArray[i] = 0.01745329251F * pitchVariation / pitchArray.length;
+        }
     }
 
     /**
@@ -185,46 +162,36 @@ public class ChainBuffer
      * @param entity         is the EntityLivingBase that will be used to animate the tail;
      */
     @SideOnly(Side.CLIENT)
-    public void calculateChainSwingBuffer(float maxAngle, int bufferTime, float angleDecrement, EntityLivingBase entity)
-    {
-        if (entity.renderYawOffset != entity.prevRenderYawOffset && MathHelper.abs(yawVariation) < maxAngle)
+    public void calculateChainSwingBuffer(float maxAngle, int bufferTime, float angleDecrement, EntityLivingBase entity) {
+        if (entity.renderYawOffset != entity.prevRenderYawOffset && MathHelper.abs(yawVariation) < maxAngle) {
             yawVariation += (entity.prevRenderYawOffset - entity.renderYawOffset);
+        }
 
-        if (yawVariation > 0.7F * angleDecrement)
-        {
-            if (yawTimer > bufferTime)
-            {
+        if (yawVariation > 0.7F * angleDecrement) {
+            if (yawTimer > bufferTime) {
                 yawVariation -= angleDecrement;
-                if (MathHelper.abs(yawVariation) < angleDecrement)
-                {
+                if (MathHelper.abs(yawVariation) < angleDecrement) {
                     yawVariation = 0.0F;
                     yawTimer = 0;
                 }
-            }
-            else
-            {
+            } else {
                 yawTimer++;
             }
-        }
-        else if (yawVariation < -0.7F * angleDecrement)
-        {
-            if (yawTimer > bufferTime)
-            {
+        } else if (yawVariation < -0.7F * angleDecrement) {
+            if (yawTimer > bufferTime) {
                 yawVariation += angleDecrement;
-                if (MathHelper.abs(yawVariation) < angleDecrement)
-                {
+                if (MathHelper.abs(yawVariation) < angleDecrement) {
                     yawVariation = 0.0F;
                     yawTimer = 0;
                 }
-            }
-            else
-            {
+            } else {
                 yawTimer++;
             }
         }
 
-        for (int i = 0; i < yawArray.length; i++)
+        for (int i = 0; i < yawArray.length; i++) {
             yawArray[i] = 0.01745329251F * yawVariation / pitchArray.length;
+        }
     }
 
     /**
@@ -240,46 +207,36 @@ public class ChainBuffer
      * @param entity         is the EntityLivingBase that will be used to animate the tail;
      */
     @SideOnly(Side.CLIENT)
-    public void calculateChainWaveBuffer(float maxAngle, int bufferTime, float angleDecrement, EntityLivingBase entity)
-    {
-        if (entity.rotationPitch != entity.prevRotationPitch && MathHelper.abs(pitchVariation) < maxAngle)
+    public void calculateChainWaveBuffer(float maxAngle, int bufferTime, float angleDecrement, EntityLivingBase entity) {
+        if (entity.rotationPitch != entity.prevRotationPitch && MathHelper.abs(pitchVariation) < maxAngle) {
             pitchVariation += (entity.prevRotationPitch - entity.rotationPitch);
+        }
 
-        if (pitchVariation > 0.7F * angleDecrement)
-        {
-            if (pitchTimer > bufferTime)
-            {
+        if (pitchVariation > 0.7F * angleDecrement) {
+            if (pitchTimer > bufferTime) {
                 pitchVariation -= angleDecrement;
-                if (MathHelper.abs(pitchVariation) < angleDecrement)
-                {
+                if (MathHelper.abs(pitchVariation) < angleDecrement) {
                     pitchVariation = 0.0F;
                     pitchTimer = 0;
                 }
-            }
-            else
-            {
+            } else {
                 pitchTimer++;
             }
-        }
-        else if (pitchVariation < -0.7F * angleDecrement)
-        {
-            if (pitchTimer > bufferTime)
-            {
+        } else if (pitchVariation < -0.7F * angleDecrement) {
+            if (pitchTimer > bufferTime) {
                 pitchVariation += angleDecrement;
-                if (MathHelper.abs(pitchVariation) < angleDecrement)
-                {
+                if (MathHelper.abs(pitchVariation) < angleDecrement) {
                     pitchVariation = 0.0F;
                     pitchTimer = 0;
                 }
-            }
-            else
-            {
+            } else {
                 pitchTimer++;
             }
         }
 
-        for (int i = 0; i < pitchArray.length; i++)
+        for (int i = 0; i < pitchArray.length; i++) {
             pitchArray[i] = 0.01745329251F * pitchVariation / pitchArray.length;
+        }
     }
 
     /**
@@ -288,15 +245,12 @@ public class ChainBuffer
      * @param boxes are the chain of parented boxes to be animated;
      */
     @SideOnly(Side.CLIENT)
-    public void applyChainSwingBuffer(MowzieModelRenderer[] boxes)
-    {
-        if (boxes.length == yawArray.length)
-        {
-            for (int i = 0; i < boxes.length; i++)
+    public void applyChainSwingBuffer(MowzieModelRenderer[] boxes) {
+        if (boxes.length == yawArray.length) {
+            for (int i = 0; i < boxes.length; i++) {
                 boxes[i].rotateAngleY += yawArray[i];
-        }
-        else
-        {
+            }
+        } else {
             System.out.println("Wrong array length being used in the buffer! Y axis.");
         }
     }
@@ -307,15 +261,12 @@ public class ChainBuffer
      * @param boxes are the chain of parented boxes to be animated;
      */
     @SideOnly(Side.CLIENT)
-    public void applyChainWaveBuffer(MowzieModelRenderer[] boxes)
-    {
-        if (boxes.length == pitchArray.length)
-        {
-            for (int i = 0; i < boxes.length; i++)
+    public void applyChainWaveBuffer(MowzieModelRenderer[] boxes) {
+        if (boxes.length == pitchArray.length) {
+            for (int i = 0; i < boxes.length; i++) {
                 boxes[i].rotateAngleX += pitchArray[i];
-        }
-        else
-        {
+            }
+        } else {
             System.out.println("Wrong array length being used in the buffer! X axis.");
         }
     }

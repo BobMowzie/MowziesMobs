@@ -2,7 +2,6 @@ package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.audio.MovingSoundSuntrike;
-import com.bobmowzie.mowziesmobs.client.debug.ModelGrapher;
 import com.bobmowzie.mowziesmobs.client.model.entity.*;
 import com.bobmowzie.mowziesmobs.client.model.item.ModelBarakoaMask;
 import com.bobmowzie.mowziesmobs.client.model.item.ModelWroughtAxe;
@@ -14,7 +13,7 @@ import com.bobmowzie.mowziesmobs.client.render.entity.*;
 import com.bobmowzie.mowziesmobs.common.ServerProxy;
 import com.bobmowzie.mowziesmobs.common.entity.*;
 import com.bobmowzie.mowziesmobs.common.item.ItemBarakoaMask;
-import com.bobmowzie.mowziesmobs.common.item.MMItems;
+import com.bobmowzie.mowziesmobs.common.item.ItemHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -28,20 +27,18 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
 @SideOnly(Side.CLIENT)
-public class ClientProxy extends ServerProxy
-{
+public class ClientProxy extends ServerProxy {
     private static final ModelWroughtHelm modelWroughtHelm = new ModelWroughtHelm();
     private static final ModelBarakoaMask modelBarakoaMask = new ModelBarakoaMask();
 
-    public void init()
-    {
-        super.init();
-        MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
-        if (MowziesMobs.isDebugging())
-        {
+    @Override
+    public void onInit() {
+        super.onInit();
+        MinecraftForge.EVENT_BUS.register(ClientEventHandler.INSTANCE);
+        /*if (MowziesMobs.isDebugging()) {
             MinecraftForge.EVENT_BUS.register(ModelGrapher.INSTANCE);
             FMLCommonHandler.instance().bus().register(ModelGrapher.INSTANCE);
-        }
+        }*/
         RenderingRegistry.registerEntityRenderingHandler(EntityBabyFoliaath.class, new RenderBabyFoliaath(new ModelBabyFoliaath(), 0F));
         RenderingRegistry.registerEntityRenderingHandler(EntityFoliaath.class, new RenderFoliaath(new ModelFoliaath(), 0));
         RenderingRegistry.registerEntityRenderingHandler(EntityWroughtnaut.class, new RenderWroughtnaut(new ModelWroughtnaut(), 1.0F));
@@ -53,13 +50,11 @@ public class ClientProxy extends ServerProxy
         RenderingRegistry.registerEntityRenderingHandler(EntitySunstrike.class, new RenderSunstrike());
         RenderingRegistry.registerEntityRenderingHandler(EntitySolarBeam.class, new RenderSolarBeam());
 
-        RenderHelper.registerItem3dRenderer(MMItems.itemWroughtAxe, new ModelWroughtAxe(), new ResourceLocation(MowziesMobs.MODID, "textures/items/modeled/textureWroughtAxe.png"));
-        RenderHelper.registerItem3dRenderer(MMItems.itemWroughtHelm, new ModelWroughtHelm(), new ResourceLocation(MowziesMobs.MODID, "textures/items/modeled/textureWroughtHelm.png"));
-        ItemBarakoaMask[] masks = MMItems.itemBarakoaMasks;
-        for (int i = 0; i < masks.length; i++)
-        {
+        RenderHelper.registerItem3dRenderer(ItemHandler.INSTANCE.itemWroughtAxe, new ModelWroughtAxe(), new ResourceLocation(MowziesMobs.MODID, "textures/items/modeled/textureWroughtAxe.png"));
+        RenderHelper.registerItem3dRenderer(ItemHandler.INSTANCE.itemWroughtHelm, new ModelWroughtHelm(), new ResourceLocation(MowziesMobs.MODID, "textures/items/modeled/textureWroughtHelm.png"));
+        ItemBarakoaMask[] masks = ItemHandler.INSTANCE.itemBarakoaMasks;
+        for (int i = 0; i < masks.length; i++) {
             RenderHelper.registerItem3dRenderer(masks[i], new ModelBarakoaMask(), new ResourceLocation(MowziesMobs.MODID, String.format("textures/entity/textureTribesman%s.png", i + 1)));
-
         }
         PlayerAnimationHandlerClient playerAnimationHandlerClient = new PlayerAnimationHandlerClient();
         FMLCommonHandler.instance().bus().register(playerAnimationHandlerClient);
@@ -67,15 +62,14 @@ public class ClientProxy extends ServerProxy
         MinecraftForge.EVENT_BUS.register(EntityMMFX.Stitcher.INSTANCE);
     }
 
-    public ModelBiped getArmorModel(int type)
-    {
-        switch (type)
-        {
-        default:
-        case 0:
-            return modelWroughtHelm;
-        case 1:
-            return modelBarakoaMask;
+    @Override
+    public ModelBiped getArmorModel(int type) {
+        switch (type) {
+            default:
+            case 0:
+                return modelWroughtHelm;
+            case 1:
+                return modelBarakoaMask;
         }
     }
 

@@ -14,8 +14,7 @@ public class StructureBase {
             for (int z_ = z; z_ <= z + width; z_++) {
 //                System.out.println("Block at " + x_ + ", " + z_);
                 for (int y_ = y; y_ <= y + height; y_++) {
-                    if (world.getBlock(x_, y_, z_) == toReplace)
-                    {
+                    if (world.getBlock(x_, y_, z_) == toReplace) {
 //                        System.out.println("Block at " + x_ + ", " + y_ + ", " + z_ + " is " + world.getBlock(x_, y_, z_).getLocalizedName());
                         world.setBlock(x_, y_, z_, replacement);
                         i++;
@@ -33,8 +32,7 @@ public class StructureBase {
             for (int z_ = z; z_ <= z + width; z_++) {
                 for (int y_ = y; y_ <= y + height; y_++) {
 //                    System.out.println("Block at " + x_ + ", " + y_ + ", " + z_);
-                    if (world.getBlock(x_, y_, z_) == toReplace && world.getBlockMetadata(x_, y_, z_) == toReplaceMetaData)
-                    {
+                    if (world.getBlock(x_, y_, z_) == toReplace && world.getBlockMetadata(x_, y_, z_) == toReplaceMetaData) {
 //                        System.out.println("Block at " + x_ + ", " + y_ + ", " + z_ + " is " + world.getBlock(x_, y_, z_).getLocalizedName());
                         world.setBlock(x_, y_, z_, replacement, replacementMetaData, 3);
                         i++;
