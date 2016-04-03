@@ -1,12 +1,11 @@
 package com.bobmowzie.mowziesmobs.common.gen;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.common.config.MMConfigHandler;
 import com.bobmowzie.mowziesmobs.common.entity.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.common.gen.structure.barakoa.StructureBarakoThrone;
 import com.bobmowzie.mowziesmobs.common.gen.structure.barakoa.StructureBarakoaHouse;
+import coolalias.structuregenapi.util.Structure;
 import cpw.mods.fml.common.IWorldGenerator;
-import net.ilexiconn.llibrary.common.structure.util.Structure;
 import net.minecraft.block.BlockStone;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
@@ -33,7 +32,7 @@ public class MMWorldGenerator implements IWorldGenerator
 
     private void generateSurface(World world, Random random, int x, int z)
     {
-        if (world.getWorldInfo().isMapFeaturesEnabled()) tryWroughtChamber(world, random, x, z, MMConfigHandler.spawnrateWroughtnaut);
+        if (world.getWorldInfo().isMapFeaturesEnabled()) tryWroughtChamber(world, random, x, z, MowziesMobs.CONFIG.spawnrateWroughtnaut);
     }
 
     private void tryWroughtChamber(World world, Random random, int x, int z, int chance)

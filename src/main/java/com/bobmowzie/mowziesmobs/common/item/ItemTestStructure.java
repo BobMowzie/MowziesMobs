@@ -4,7 +4,7 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.common.entity.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.common.gen.structure.barakoa.StructureBarakoThrone;
 import com.bobmowzie.mowziesmobs.common.gen.structure.barakoa.StructureBarakoaHouse;
-import net.ilexiconn.llibrary.common.structure.util.Structure;
+import coolalias.structuregenapi.util.Structure;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;

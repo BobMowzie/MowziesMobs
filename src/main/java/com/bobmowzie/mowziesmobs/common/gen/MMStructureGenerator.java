@@ -3,7 +3,6 @@ package com.bobmowzie.mowziesmobs.common.gen;
 import com.bobmowzie.mowziesmobs.common.gen.structure.StructureWroughtnautRoom;
 import com.bobmowzie.mowziesmobs.common.gen.structure.barakoa.StructureBarakoThrone;
 import com.bobmowzie.mowziesmobs.common.gen.structure.barakoa.StructureBarakoaHouse;
-import
 import coolalias.structuregenapi.util.Structure;
 import coolalias.structuregenapi.util.StructureGeneratorBase;
 import net.minecraft.entity.Entity;

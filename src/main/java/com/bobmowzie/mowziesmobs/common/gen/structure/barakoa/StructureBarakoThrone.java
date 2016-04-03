@@ -1,10 +1,10 @@
 package com.bobmowzie.mowziesmobs.common.gen.structure.barakoa;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.common.blocks.MMBlocks;
+import com.bobmowzie.mowziesmobs.common.blocks.BlockHandler;
 import com.bobmowzie.mowziesmobs.common.entity.EntityTribeLeader;
 import com.bobmowzie.mowziesmobs.common.gen.structure.StructureBase;
-import net.ilexiconn.llibrary.common.structure.util.Structure;
+import coolalias.structuregenapi.util.Structure;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.world.World;
@@ -441,8 +441,8 @@ public class StructureBarakoThrone extends StructureBase {
                 MowziesMobs.gen.generate(world, new Random(), x, y - 1, z);
 //                System.out.println("Beginning generation at " + x + ", " + y + ", " + z);
                 if (direction == 1) {
-                        replaceBlocks(Blocks.obsidian, MMBlocks.blockPaintedAcacia, x - 3, y - 1, z, 7, 10, 13, world);
-                        replaceBlocks(Blocks.brick_block, MMBlocks.blockPaintedAcaciaSlab, x - 3, y - 1, z, 7, 10, 13, world);
+                        replaceBlocks(Blocks.obsidian, BlockHandler.INSTANCE.blockPaintedAcacia, x - 3, y - 1, z, 7, 10, 13, world);
+                        replaceBlocks(Blocks.brick_block, BlockHandler.INSTANCE.blockPaintedAcaciaSlab, x - 3, y - 1, z, 7, 10, 13, world);
                         for (int i = 0; i <= 2; i++) ((TileEntitySkull)world.getTileEntity(x - 3, y + 2, z + 7 + 2 * i)).func_145903_a(4);
                         for (int i = 0; i <= 2; i++) ((TileEntitySkull)world.getTileEntity(x + 3, y + 2, z + 7 + 2 * i)).func_145903_a(-4);
                         EntityTribeLeader barako = new EntityTribeLeader(world, direction);
@@ -450,8 +450,8 @@ public class StructureBarakoThrone extends StructureBase {
                         world.spawnEntityInWorld(barako);
                 }
                 if (direction == 2) {
-                        replaceBlocks(Blocks.obsidian, MMBlocks.blockPaintedAcacia, x - 7, y - 1, z, 13, 10, 7, world);
-                        replaceBlocks(Blocks.brick_block, MMBlocks.blockPaintedAcaciaSlab, x - 7, y - 1, z, 13, 10, 7, world);
+                        replaceBlocks(Blocks.obsidian, BlockHandler.INSTANCE.blockPaintedAcacia, x - 7, y - 1, z, 13, 10, 7, world);
+                        replaceBlocks(Blocks.brick_block, BlockHandler.INSTANCE.blockPaintedAcaciaSlab, x - 7, y - 1, z, 13, 10, 7, world);
 
                         //Fix logs and hay
                         replaceBlocks(Blocks.log2, 8, Blocks.obsidian, 0, x - 7, y - 1, z, 13, 10, 7, world);
@@ -465,8 +465,8 @@ public class StructureBarakoThrone extends StructureBase {
                         world.spawnEntityInWorld(barako);
                 }
                 if (direction == 3) {
-                        replaceBlocks(Blocks.obsidian, MMBlocks.blockPaintedAcacia, x - 3, y - 1, z + 1, 7, 10, 13, world);
-                        replaceBlocks(Blocks.brick_block, MMBlocks.blockPaintedAcaciaSlab, x - 3, y - 1, z + 1, 7, 10, 13, world);
+                        replaceBlocks(Blocks.obsidian, BlockHandler.INSTANCE.blockPaintedAcacia, x - 3, y - 1, z + 1, 7, 10, 13, world);
+                        replaceBlocks(Blocks.brick_block, BlockHandler.INSTANCE.blockPaintedAcaciaSlab, x - 3, y - 1, z + 1, 7, 10, 13, world);
                         for (int i = 0; i <= 2; i++) ((TileEntitySkull)world.getTileEntity(x + 3, y + 2, z + 1 + 2 * i)).func_145903_a(-4);
                         for (int i = 0; i <= 2; i++) ((TileEntitySkull)world.getTileEntity(x - 3, y + 2, z + 1 + 2 * i)).func_145903_a(4);
                         EntityTribeLeader barako = new EntityTribeLeader(world, direction);
@@ -474,8 +474,8 @@ public class StructureBarakoThrone extends StructureBase {
                         world.spawnEntityInWorld(barako);
                 }
                 if (direction == 4) {
-                        replaceBlocks(Blocks.obsidian, MMBlocks.blockPaintedAcacia, x - 7, y - 1, z, 13, 10, 7, world);
-                        replaceBlocks(Blocks.brick_block, MMBlocks.blockPaintedAcaciaSlab, x - 7, y - 1, z, 13, 10, 7, world);
+                        replaceBlocks(Blocks.obsidian, BlockHandler.INSTANCE.blockPaintedAcacia, x - 7, y - 1, z, 13, 10, 7, world);
+                        replaceBlocks(Blocks.brick_block, BlockHandler.INSTANCE.blockPaintedAcaciaSlab, x - 7, y - 1, z, 13, 10, 7, world);
 
                         //Fix logs and hay
                         replaceBlocks(Blocks.log2, 8, Blocks.obsidian, 0, x - 7, y - 1, z, 13, 10, 7, world);
