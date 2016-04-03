@@ -6,9 +6,6 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import org.lwjgl.opengl.GL11;
 
-/**
- * Created by jnad325 on 11/1/15.
- */
 public class ModelBarakoaMask extends ModelBiped {
     public MowzieModelRenderer maskBase;
     public MowzieModelRenderer maskLeft;

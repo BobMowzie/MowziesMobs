@@ -18,6 +18,7 @@ import scala.actors.threadpool.Arrays;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class MMEntityBase extends EntityCreature implements IEntityAdditionalSpawnData, IAnimatedEntity, IntermittentAnimatableEntity {
     private static final byte START_IA_HEALTH_UPDATE_ID = 4;
@@ -33,7 +34,7 @@ public abstract class MMEntityBase extends EntityCreature implements IEntityAddi
 
     public EntityLivingBase blockingEntity = null;
 
-    private List<IntermittentAnimation> intermittentAnimations = new ArrayList<IntermittentAnimation>();
+    private List<IntermittentAnimation> intermittentAnimations = new ArrayList<>();
 
     public static final Animation DAMAGE_ANIMATION = Animation.create(1, 10);
     public static final Animation DIE_ANIMAION = Animation.create(2, 50);
@@ -81,23 +82,13 @@ public abstract class MMEntityBase extends EntityCreature implements IEntityAddi
 
     public List<EntityPlayer> getPlayersNearby(double distanceX, double distanceY, double distanceZ, double radius) {
         List<Entity> list = worldObj.getEntitiesWithinAABBExcludingEntity(this, boundingBox.expand(distanceX, distanceY, distanceZ));
-        ArrayList<EntityPlayer> listEntityPlayers = new ArrayList<EntityPlayer>();
-        for (Entity entityNeighbor : list) {
-            if (entityNeighbor instanceof EntityPlayer && getDistanceToEntity(entityNeighbor) <= radius) {
-                listEntityPlayers.add((EntityPlayer) entityNeighbor);
-            }
-        }
+        ArrayList<EntityPlayer> listEntityPlayers = list.stream().filter(entityNeighbor -> entityNeighbor instanceof EntityPlayer && getDistanceToEntity(entityNeighbor) <= radius).map(entityNeighbor -> (EntityPlayer) entityNeighbor).collect(Collectors.toCollection(ArrayList::new));
         return listEntityPlayers;
     }
 
     public List<EntityLivingBase> getEntityLivingBaseNearby(double distanceX, double distanceY, double distanceZ, double radius) {
         List<Entity> list = worldObj.getEntitiesWithinAABBExcludingEntity(this, boundingBox.expand(distanceX, distanceY, distanceZ));
-        ArrayList<EntityLivingBase> listEntityLivingBase = new ArrayList<EntityLivingBase>();
-        for (Entity entityNeighbor : list) {
-            if (entityNeighbor instanceof EntityLivingBase && getDistanceToEntity(entityNeighbor) <= radius && entityNeighbor.posY + entityNeighbor.boundingBox.maxY > posY + 2 && entityNeighbor.posY <= posY + distanceY) {
-                listEntityLivingBase.add((EntityLivingBase) entityNeighbor);
-            }
-        }
+        ArrayList<EntityLivingBase> listEntityLivingBase = list.stream().filter(entityNeighbor -> entityNeighbor instanceof EntityLivingBase && getDistanceToEntity(entityNeighbor) <= radius && entityNeighbor.posY + entityNeighbor.boundingBox.maxY > posY + 2 && entityNeighbor.posY <= posY + distanceY).map(entityNeighbor -> (EntityLivingBase) entityNeighbor).collect(Collectors.toCollection(ArrayList::new));
         return listEntityLivingBase;
     }
 
@@ -200,7 +191,7 @@ public abstract class MMEntityBase extends EntityCreature implements IEntityAddi
 
     @Override
     public Animation[] getAnimations() {
-        List<Animation> animationList = new ArrayList<Animation>();
+        List<Animation> animationList = new ArrayList<>();
         animationList.add(NO_ANIMATION);
         animationList.add(DAMAGE_ANIMATION);
         animationList.add(DIE_ANIMAION);

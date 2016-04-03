@@ -161,16 +161,16 @@ public class EntityTribeElite extends EntityTribesman {
     @Override
     public void onDeath(DamageSource damageSource) {
         super.onDeath(damageSource);
-        for (int i = 0; i < pack.size(); i++) {
-            pack.get(i).removeLeader();
+        for (EntityTribeHunter aPack : pack) {
+            aPack.removeLeader();
         }
     }
 
     @Override
     public boolean getCanSpawnHere() {
         List<EntityLivingBase> nearby = getEntityLivingBaseNearby(10, 4, 10, 10);
-        for (int i = 0; i < nearby.size(); i++) {
-            if (nearby.get(i) instanceof EntityTribeElite) {
+        for (EntityLivingBase aNearby : nearby) {
+            if (aNearby instanceof EntityTribeElite) {
                 return false;
             }
         }
@@ -204,8 +204,8 @@ public class EntityTribeElite extends EntityTribesman {
             if (result == Event.Result.DENY) {
                 this.entityAge = 0;
             } else {
-                for (int i = 0; i < pack.size(); i++) {
-                    pack.get(i).setDead();
+                for (EntityTribeHunter aPack : pack) {
+                    aPack.setDead();
                 }
                 this.setDead();
             }
@@ -219,15 +219,15 @@ public class EntityTribeElite extends EntityTribesman {
                 double d3 = d0 * d0 + d1 * d1 + d2 * d2;
 
                 if (this.canDespawn() && d3 > 16384.0D) {
-                    for (int i = 0; i < pack.size(); i++) {
-                        pack.get(i).setDead();
+                    for (EntityTribeHunter aPack : pack) {
+                        aPack.setDead();
                     }
                     this.setDead();
                 }
 
                 if (this.entityAge > 600 && this.rand.nextInt(800) == 0 && d3 > 1024.0D && this.canDespawn()) {
-                    for (int i = 0; i < pack.size(); i++) {
-                        pack.get(i).setDead();
+                    for (EntityTribeHunter aPack : pack) {
+                        aPack.setDead();
                     }
                     this.setDead();
                 } else if (d3 < 1024.0D) {

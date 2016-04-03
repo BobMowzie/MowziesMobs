@@ -21,7 +21,6 @@ public class MMWorldGenerator implements IWorldGenerator {
             case -1: //nether gen
                 generateNether(world, random, chunkX * 16, chunkZ * 16);
             default:
-                return;
         }
     }
 
@@ -122,7 +121,7 @@ public class MMWorldGenerator implements IWorldGenerator {
     }
 
     private void generateWroughtChamber(World world, Random random, int x, int y, int z, int direction) {
-        Structure structure = MowziesMobs.gen.structures.get(0);
+        Structure structure = MMStructureGenerator.structures.get(0);
         EntityWroughtnaut wroughtnaut = new EntityWroughtnaut(world);
         wroughtnaut.setPositionAndRotation(x + 0.5, y + 1, z + 9.5, 0, 0);
         MowziesMobs.gen.setStructure(structure);

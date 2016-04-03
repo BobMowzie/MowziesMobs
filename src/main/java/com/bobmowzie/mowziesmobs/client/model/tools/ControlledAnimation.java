@@ -30,7 +30,7 @@ public class ControlledAnimation {
     /**
      * Sets the duration of the animation in ticks. Try values around 50.
      *
-     * @param duration is the maximum number of ticks that the timer can reach.
+     * @param d is the maximum number of ticks that the timer can reach.
      */
     public void setDuration(int d) {
         timer = 0;

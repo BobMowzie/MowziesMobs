@@ -35,7 +35,7 @@ public final class ModelGrapher {
 
     public static final ModelGrapher INSTANCE = new ModelGrapher();
 
-    private HashMap<MowzieModelBase, String[]> fieldNames = new HashMap<MowzieModelBase, String[]>();
+    private HashMap<MowzieModelBase, String[]> fieldNames = new HashMap<>();
 
     private int xyzWidth = -1;
 
@@ -51,7 +51,7 @@ public final class ModelGrapher {
 
     private String[] names;
 
-    private ArrayList<TickPoint> ticks = new ArrayList<TickPoint>(tickRange);
+    private ArrayList<TickPoint> ticks = new ArrayList<>(tickRange);
 
     private int tick = 0;
 
@@ -78,7 +78,7 @@ public final class ModelGrapher {
             } else {
                 names = new String[parts.length];
                 fieldNames.put(model, names);
-                List<Field> fields = new ArrayList<Field>(Arrays.asList(model.getClass().getDeclaredFields()));
+                List<Field> fields = new ArrayList<>(Arrays.asList(model.getClass().getDeclaredFields()));
                 try {
                     for (int i = 0; i < parts.length; i++) {
                         MowzieModelRenderer part = parts[i];
@@ -271,7 +271,7 @@ public final class ModelGrapher {
     }
 
     private class TickPoint {
-        private List<RenderPoint> renders = new ArrayList<RenderPoint>();
+        private List<RenderPoint> renders = new ArrayList<>();
     }
 
     private class RenderPoint {

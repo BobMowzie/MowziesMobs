@@ -1,8 +1,5 @@
 package com.bobmowzie.mowziesmobs.common.gen.structure;
 
-/**
- * Created by jnad325 on 6/24/15.
- */
 public class StructureWroughtnautRoom extends StructureBase {
     public static final int[][][][] blockArray =
             {

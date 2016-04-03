@@ -13,9 +13,6 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-/**
- * Created by jnad325 on 8/12/15.
- */
 @SideOnly(Side.CLIENT)
 public class RenderDart extends Render {
     private static final ResourceLocation arrowTextures = new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureDart.png");
@@ -37,7 +34,7 @@ public class RenderDart extends Render {
         byte b0 = 0;
         float f2 = 0.0F;
         float f3 = 0.5F;
-        float f4 = (float) (0 + b0 * 10) / 32.0F;
+        float f4 = (float) (b0 * 10) / 32.0F;
         float f5 = (float) (5 + b0 * 10) / 32.0F;
         float f6 = 0.0F;
         float f7 = 0.15625F;

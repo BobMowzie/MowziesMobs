@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.common.gen.structure.barakoa;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.common.blocks.BlockHandler;
 import com.bobmowzie.mowziesmobs.common.entity.EntityTribeLeader;
+import com.bobmowzie.mowziesmobs.common.gen.MMStructureGenerator;
 import com.bobmowzie.mowziesmobs.common.gen.structure.StructureBase;
 import coolalias.structuregenapi.util.Structure;
 import net.minecraft.init.Blocks;
@@ -11,9 +12,6 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
-/**
- * Created by jnad325 on 11/1/15.
- */
 public class StructureBarakoThrone extends StructureBase {
     public static int[][][][] blockArray = {
             {//y = 1
@@ -429,7 +427,7 @@ public class StructureBarakoThrone extends StructureBase {
     };
 
     public static void generate(World world, int x, int y, int z, int direction) {
-        Structure structure = MowziesMobs.gen.structures.get(3);
+        Structure structure = MMStructureGenerator.structures.get(3);
         MowziesMobs.gen.setStructure(structure);
         MowziesMobs.gen.setStructureFacing(direction);
         MowziesMobs.gen.setDefaultOffset(structure.getOffsetX(), structure.getOffsetY(), structure.getOffsetZ());

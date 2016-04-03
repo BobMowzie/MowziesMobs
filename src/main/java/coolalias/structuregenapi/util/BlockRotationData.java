@@ -27,7 +27,7 @@ import net.minecraft.init.Blocks;
 public class BlockRotationData
 {
 	/** Valid rotation types. Each type is handled like vanilla blocks of this kind. */
-	public static enum Rotation {
+	public enum Rotation {
 		/** 0 - north/south, 1 - east/west */
 		ANVIL,
 		/**
@@ -78,10 +78,10 @@ public class BlockRotationData
 		 * if neither 0x4 nor 0x8 are set, wood is up/down; if both are set, wood is all bark
 		 */
 		WOOD
-	};
+	}
 
 	/** A mapping of blocks to rotation type for handling rotation. Allows custom blocks to be added. */
-	private static final Map<Block, Rotation> blockRotationData = new HashMap<Block, Rotation>();
+	private static final Map<Block, Rotation> blockRotationData = new HashMap<>();
 
 	/**
 	 * Returns the rotation type for the block given, or null if no type is registered

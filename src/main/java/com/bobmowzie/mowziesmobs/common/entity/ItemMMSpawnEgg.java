@@ -40,7 +40,7 @@ public class ItemMMSpawnEgg extends Item {
 
     @Override
     public int getColorFromItemStack(ItemStack itemStack, int pass) {
-        MMEntityEggInfo info = EntityHandler.INSTANCE.getEntityEggInfo(Integer.valueOf(itemStack.getItemDamage()));
+        MMEntityEggInfo info = EntityHandler.INSTANCE.getEntityEggInfo(itemStack.getItemDamage());
         return info == null ? 0xFFFFFF : (pass == 0 ? info.primaryColor : info.secondaryColor);
     }
 
@@ -114,7 +114,7 @@ public class ItemMMSpawnEgg extends Item {
                 entity.setLocationAndAngles(x, y, z, MathHelper.wrapAngleTo180_float(world.rand.nextFloat() * 360), 0.0F);
                 entityLiving.rotationYawHead = entityLiving.rotationYaw;
                 entityLiving.renderYawOffset = entityLiving.rotationYaw;
-                entityLiving.onSpawnWithEgg((IEntityLivingData) null);
+                entityLiving.onSpawnWithEgg(null);
                 world.spawnEntityInWorld(entity);
                 entityLiving.playLivingSound();
             }

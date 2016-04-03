@@ -15,13 +15,13 @@ public enum RotationOrder {
 
     private Axis[] order;
 
-    private RotationOrder(Axis... order) {
+    RotationOrder(Axis... order) {
         this.order = order;
     }
 
     public void rotate(float x, float y, float z) {
-        for (int r = 0; r < order.length; r++) {
-            switch (order[r]) {
+        for (Axis anOrder : order) {
+            switch (anOrder) {
                 case X:
                     if (x == 0) {
                         break;

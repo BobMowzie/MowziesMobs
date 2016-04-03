@@ -3,9 +3,6 @@ package com.bobmowzie.mowziesmobs.common.gen.structure;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 
-/**
- * Created by jnad325 on 8/29/15.
- */
 public class StructureBase {
     public static void replaceBlocks(Block toReplace, Block replacement, int x, int y, int z, int length, int height, int width, World world) {
 //        System.out.println("Replacing blocks beginning at" + x + ", " + y + ", " + z);

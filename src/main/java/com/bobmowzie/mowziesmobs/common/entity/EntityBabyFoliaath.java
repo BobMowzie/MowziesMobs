@@ -74,7 +74,7 @@ public class EntityBabyFoliaath extends MMEntityBase {
                 for (int i = 0; i <= 5; i++) {
                     worldObj.spawnParticle("iconcrack_" + eatingItemID + "_1", posX, posY + 0.2, posZ, Math.random() * 0.2 - 0.1, Math.random() * 0.2, Math.random() * 0.2 - 0.1);
                 }
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         }
 
@@ -170,7 +170,7 @@ public class EntityBabyFoliaath extends MMEntityBase {
 
     public List<EntityItem> getMeatsNearby(double distanceX, double distanceY, double distanceZ, double radius) {
         List<Entity> list = worldObj.getEntitiesWithinAABBExcludingEntity(this, boundingBox.expand(distanceX, distanceY, distanceZ));
-        ArrayList<EntityItem> listEntityItem = new ArrayList<EntityItem>();
+        ArrayList<EntityItem> listEntityItem = new ArrayList<>();
         for (Entity entityNeighbor : list) {
             if (entityNeighbor instanceof EntityItem && getDistanceToEntity(entityNeighbor) <= radius) {
                 String itemName = ((EntityItem) entityNeighbor).getEntityItem().getUnlocalizedName();

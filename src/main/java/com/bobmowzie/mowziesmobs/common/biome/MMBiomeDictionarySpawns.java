@@ -1,7 +1,6 @@
 package com.bobmowzie.mowziesmobs.common.biome;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.common.config.MMConfig;
 import com.bobmowzie.mowziesmobs.common.entity.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.common.entity.EntityTribeElite;
 import net.minecraft.entity.EnumCreatureType;

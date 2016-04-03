@@ -104,10 +104,8 @@ public class Structure
 	 */
 	public final int getHeight() {
 		int sum = 0;
-		Iterator<int[][][][]> iterator = this.blockArrayList.iterator();
 
-		while (iterator.hasNext()) {
-			int[][][][] blockArray = iterator.next();
+		for (int[][][][] blockArray : this.blockArrayList) {
 			sum += blockArray.length;
 		}
 

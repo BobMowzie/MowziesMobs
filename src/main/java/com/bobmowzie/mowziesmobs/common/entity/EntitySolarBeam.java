@@ -213,7 +213,7 @@ public class EntitySolarBeam extends Entity {
     public static class HitResult {
         private MovingObjectPosition blockHit;
 
-        private List<EntityLivingBase> entities = new ArrayList<EntityLivingBase>();
+        private List<EntityLivingBase> entities = new ArrayList<>();
 
         public void setBlockHit(MovingObjectPosition blockHit) {
             this.blockHit = blockHit;

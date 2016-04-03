@@ -269,8 +269,7 @@ public class GenHelper
 			for (EntityPainting toEdit : paintings) {
 				EnumArt[] aenumart = EnumArt.values();
 				int i1 = aenumart.length;
-				for (int j1 = 0; j1 < i1; ++j1) {
-					EnumArt enumart = aenumart[j1];
+				for (EnumArt enumart : aenumart) {
 					if (enumart.title.equals(name)) {
 						toEdit.art = enumart;
 						// TODO PacketDispatcher.sendPacketToAllAround(x, y, z, 64, world.provider.dimensionId, new Packet25EntityPainting(toEdit));
@@ -296,7 +295,6 @@ public class GenHelper
 			for (int i = 0; i < sign.signText.length && i < text.length; ++i) {
 				if (text[i] == null) {
 					LogHelper.warning("Uninitialized String element while setting sign text at index " + i);
-					continue;
 				} else if (text[i].length() > 15) {
 					LogHelper.warning(text[i] + " is too long to fit on a sign; maximum length is 15 characters.");
 					sign.signText[i] = text[i].substring(0, 15);

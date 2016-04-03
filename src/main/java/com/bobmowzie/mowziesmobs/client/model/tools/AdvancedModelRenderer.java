@@ -30,10 +30,10 @@ public class AdvancedModelRenderer extends MowzieModelRenderer {
 
     protected RotationOrder rotationOrder;
 
-    protected List<IModelRenderCallback> callbacks = new ArrayList<IModelRenderCallback>();
+    protected List<IModelRenderCallback> callbacks = new ArrayList<>();
 
     public AdvancedModelRenderer(ModelBase modelBase) {
-        this(modelBase, (String) null);
+        this(modelBase, null);
     }
 
     public AdvancedModelRenderer(ModelBase modelBase, int textureOffsetX, int textureOffsetY) {
@@ -96,8 +96,8 @@ public class AdvancedModelRenderer extends MowzieModelRenderer {
         GL11.glNewList(displayList, GL11.GL_COMPILE);
         Tessellator tessellator = Tessellator.instance;
 
-        for (int i = 0; i < cubeList.size(); i++) {
-            ((ModelBox) cubeList.get(i)).render(tessellator, scale);
+        for (Object aCubeList : cubeList) {
+            ((ModelBox) aCubeList).render(tessellator, scale);
         }
 
         GL11.glEndList();
@@ -148,8 +148,8 @@ public class AdvancedModelRenderer extends MowzieModelRenderer {
                             callback(scale);
 
                             if (childModels != null) {
-                                for (int i = 0; i < childModels.size(); i++) {
-                                    ((ModelRenderer) childModels.get(i)).render(scale);
+                                for (Object childModel : childModels) {
+                                    ((ModelRenderer) childModel).render(scale);
                                 }
                             }
                         } else {
@@ -160,8 +160,8 @@ public class AdvancedModelRenderer extends MowzieModelRenderer {
                             callback(scale);
 
                             if (childModels != null) {
-                                for (int i = 0; i < childModels.size(); ++i) {
-                                    ((ModelRenderer) childModels.get(i)).render(scale);
+                                for (Object childModel : childModels) {
+                                    ((ModelRenderer) childModel).render(scale);
                                 }
                             }
 
@@ -176,8 +176,8 @@ public class AdvancedModelRenderer extends MowzieModelRenderer {
                         callback(scale);
 
                         if (childModels != null) {
-                            for (int i = 0; i < childModels.size(); ++i) {
-                                ((ModelRenderer) childModels.get(i)).render(scale);
+                            for (Object childModel : childModels) {
+                                ((ModelRenderer) childModel).render(scale);
                             }
                         }
 
@@ -195,8 +195,8 @@ public class AdvancedModelRenderer extends MowzieModelRenderer {
                     callback(scale);
 
                     if (childModels != null) {
-                        for (int i = 0; i < childModels.size(); i++) {
-                            ((ModelRenderer) childModels.get(i)).render(scale);
+                        for (Object childModel : childModels) {
+                            ((ModelRenderer) childModel).render(scale);
                         }
                     }
 

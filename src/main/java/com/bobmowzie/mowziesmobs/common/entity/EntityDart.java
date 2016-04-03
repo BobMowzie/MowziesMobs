@@ -109,7 +109,7 @@ public class EntityDart extends EntityArrow implements IProjectile {
 
     @Override
     protected void entityInit() {
-        dataWatcher.addObject(16, Byte.valueOf((byte) 0));
+        dataWatcher.addObject(16, (byte) 0);
         dataWatcher.addObject(17, 0);
     }
 
@@ -485,9 +485,9 @@ public class EntityDart extends EntityArrow implements IProjectile {
         byte b0 = dataWatcher.getWatchableObjectByte(16);
 
         if (isCritical) {
-            dataWatcher.updateObject(16, Byte.valueOf((byte) (b0 | 1)));
+            dataWatcher.updateObject(16, (byte) (b0 | 1));
         } else {
-            dataWatcher.updateObject(16, Byte.valueOf((byte) (b0 & -2)));
+            dataWatcher.updateObject(16, (byte) (b0 & -2));
         }
     }
 

@@ -76,14 +76,14 @@ public class RenderHelper {
             GL11.glPushMatrix();
             float f8 = 0.125f;
             GL11.glScalef(f8, f8, f8);
-            float f9 = Minecraft.getSystemTime() % 3000l / 3000f * 8f;
+            float f9 = Minecraft.getSystemTime() % 3000L / 3000f * 8f;
             GL11.glTranslatef(f9, 0f, 0f);
             GL11.glRotatef(-50f, 0f, 0f, 1f);
             ItemRenderer.renderItemIn2D(tessellator, 0f, 0f, 1f, 1f, 256, 256, 0625f);
             GL11.glPopMatrix();
             GL11.glPushMatrix();
             GL11.glScalef(f8, f8, f8);
-            f9 = Minecraft.getSystemTime() % 4873l / 4873f * 8f;
+            f9 = Minecraft.getSystemTime() % 4873L / 4873f * 8f;
             GL11.glTranslatef(-f9, 0f, 0f);
             GL11.glRotatef(10f, 0f, 0f, 1f);
             ItemRenderer.renderItemIn2D(tessellator, 0f, 0f, 1f, 1f, 256, 256, 0625f);

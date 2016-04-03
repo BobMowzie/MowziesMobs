@@ -200,11 +200,7 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
         }
 
         if (ticksExisted % 20 == 0) {
-            if (checkBlocksByFeet()) {
-                blocksByFeet = true;
-            } else {
-                blocksByFeet = false;
-            }
+            blocksByFeet = checkBlocksByFeet();
         }
 
         if (blocksByFeet) {
@@ -297,10 +293,7 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
             return false;
         }
 
-        if (blockLeft instanceof BlockAir && blockRight instanceof BlockAir) {
-            return false;
-        }
-        return true;
+        return !(blockLeft instanceof BlockAir && blockRight instanceof BlockAir);
     }
 
     private void spawnExplosionParticles(int amount) {

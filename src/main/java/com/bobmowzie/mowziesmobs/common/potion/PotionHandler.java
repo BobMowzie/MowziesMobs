@@ -24,9 +24,7 @@ public enum PotionHandler {
                 System.arraycopy(potionTypes, 0, newPotionTypes, 0, potionTypes.length);
                 potionTypesField.set(null, newPotionTypes);
             }
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
     }

@@ -9,7 +9,7 @@ public enum BarakoaMask {
 
     private final String armorTexture;
 
-    private BarakoaMask(int potionEffectId) {
+    BarakoaMask(int potionEffectId) {
         this.potionEffectId = potionEffectId;
         int num = ordinal() + 1;
         unlocalizedName = "barakoaMask" + num;

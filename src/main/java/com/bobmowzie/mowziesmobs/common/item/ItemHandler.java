@@ -27,7 +27,6 @@ public enum ItemHandler {
         BarakoaMask[] masks = BarakoaMask.values();
         itemBarakoaMasks = new ItemBarakoaMask[masks.length];
         for (int i = 0; i < masks.length; itemBarakoaMasks[i] = new ItemBarakoaMask(masks[i++])) {
-            ;
         }
         itemDart = new ItemDart();
         itemSpear = new ItemSpear();
@@ -39,8 +38,8 @@ public enum ItemHandler {
         GameRegistry.registerItem(itemFoliaathSeed, "foliaathseed");
         GameRegistry.registerItem(itemWroughtAxe, "wroughtaxe");
         GameRegistry.registerItem(itemWroughtHelm, "wroughthelm");
-        for (int i = 0; i < itemBarakoaMasks.length; i++) {
-            GameRegistry.registerItem(itemBarakoaMasks[i], itemBarakoaMasks[i].getType().getUnlocalizedName());
+        for (ItemBarakoaMask itemBarakoaMask : itemBarakoaMasks) {
+            GameRegistry.registerItem(itemBarakoaMask, itemBarakoaMask.getType().getUnlocalizedName());
         }
         GameRegistry.registerItem(itemDart, "dart");
         GameRegistry.registerItem(itemSpear, "spear");

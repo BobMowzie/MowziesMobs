@@ -32,6 +32,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public enum ServerEventHandler {
     INSTANCE;
@@ -133,12 +134,7 @@ public enum ServerEventHandler {
 
     private List<EntityLivingBase> getEntityLivingBaseNearby(EntityLivingBase user, double distanceX, double distanceY, double distanceZ, double radius) {
         List<Entity> list = user.worldObj.getEntitiesWithinAABBExcludingEntity(user, user.boundingBox.expand(distanceX, distanceY, distanceZ));
-        ArrayList<EntityLivingBase> nearEntities = new ArrayList<EntityLivingBase>();
-        for (Entity entityNeighbor : list) {
-            if (entityNeighbor instanceof EntityLivingBase && user.getDistanceToEntity(entityNeighbor) <= radius) {
-                nearEntities.add((EntityLivingBase) entityNeighbor);
-            }
-        }
+        ArrayList<EntityLivingBase> nearEntities = list.stream().filter(entityNeighbor -> entityNeighbor instanceof EntityLivingBase && user.getDistanceToEntity(entityNeighbor) <= radius).map(entityNeighbor -> (EntityLivingBase) entityNeighbor).collect(Collectors.toCollection(ArrayList::new));
         return nearEntities;
     }
 

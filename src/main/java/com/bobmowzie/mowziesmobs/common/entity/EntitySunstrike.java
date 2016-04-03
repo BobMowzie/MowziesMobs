@@ -162,9 +162,8 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
             }
 
             S18PacketEntityTeleport teleport = new S18PacketEntityTeleport(this);
-            Iterator<EntityPlayer> tracking = ((WorldServer) worldObj).getEntityTracker().getTrackingPlayers(this).iterator();
-            while (tracking.hasNext()) {
-                ((EntityPlayerMP) tracking.next()).playerNetServerHandler.sendPacket(teleport);
+            for (EntityPlayer entityPlayer : ((WorldServer) worldObj).getEntityTracker().getTrackingPlayers(this)) {
+                ((EntityPlayerMP) entityPlayer).playerNetServerHandler.sendPacket(teleport);
             }
         }
     }

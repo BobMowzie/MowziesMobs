@@ -31,13 +31,13 @@ public class LinkedStructureGenerator
 	private StructureGeneratorBase gen = null;
 
 	/** List of structures to be generated */
-	private final List<Structure> structures = new LinkedList<Structure>();
+	private final List<Structure> structures = new LinkedList<>();
 
 	/** Individual offsets for each structure */
-	private final List<int[]> offsets = new LinkedList<int[]>();
+	private final List<int[]> offsets = new LinkedList<>();
 
 	/** Individual rotation for each structure */
-	private final List<Byte> rots = new LinkedList<Byte>();
+	private final List<Byte> rots = new LinkedList<>();
 
 	/** Constant index values for offset arrays */
 	private static final byte X = 0, Y = 1, Z = 2;

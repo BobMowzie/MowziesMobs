@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.common.gen.structure.barakoa;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.common.blocks.BlockHandler;
+import com.bobmowzie.mowziesmobs.common.gen.MMStructureGenerator;
 import com.bobmowzie.mowziesmobs.common.gen.structure.StructureBase;
 import coolalias.structuregenapi.util.Structure;
 import net.minecraft.block.Block;
@@ -11,9 +12,6 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
-/**
- * Created by jnad325 on 6/24/15.
- */
 public class StructureBarakoaHouse extends StructureBase {
     public static int[][][][] blockArray1 = {
             { // y
@@ -557,7 +555,7 @@ public class StructureBarakoaHouse extends StructureBase {
 
     public static void generateHouse1(World world, int x, int y, int z, int direction) {
         Random rand = new Random();
-        Structure structure = MowziesMobs.gen.structures.get(1);
+        Structure structure = MMStructureGenerator.structures.get(1);
         MowziesMobs.gen.setStructure(structure);
         MowziesMobs.gen.setStructureFacing(direction);
         MowziesMobs.gen.setDefaultOffset(structure.getOffsetX(), structure.getOffsetY(), structure.getOffsetZ());
@@ -746,7 +744,7 @@ public class StructureBarakoaHouse extends StructureBase {
     }
 
     public static void generateSkulls(World world, int x, int y, int z, int direction) {
-        Structure structure = MowziesMobs.gen.structures.get(2);
+        Structure structure = MMStructureGenerator.structures.get(2);
         MowziesMobs.gen.setStructure(structure);
         MowziesMobs.gen.setStructureFacing(direction);
         MowziesMobs.gen.setDefaultOffset(structure.getOffsetX(), structure.getOffsetY(), structure.getOffsetZ());
@@ -799,14 +797,14 @@ public class StructureBarakoaHouse extends StructureBase {
     }
 
     public static void generateFirepit(World world, int x, int y, int z) {
-        Structure structure = MowziesMobs.gen.structures.get(4);
+        Structure structure = MMStructureGenerator.structures.get(4);
         MowziesMobs.gen.setStructure(structure);
         MowziesMobs.gen.setDefaultOffset(-4, 0, 0);
         MowziesMobs.gen.generate(world, new Random(), x, y - 1, z);
     }
 
     public static void generateHouseExtra(World world, int x, int y, int z, int direction) {
-        Structure structure = MowziesMobs.gen.structures.get(5);
+        Structure structure = MMStructureGenerator.structures.get(5);
         MowziesMobs.gen.setStructure(structure);
         MowziesMobs.gen.setDefaultOffset(2, 0, 0);
         MowziesMobs.gen.setStructureFacing(direction);
