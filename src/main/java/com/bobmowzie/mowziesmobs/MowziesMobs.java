@@ -18,6 +18,7 @@ import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
@@ -76,5 +77,14 @@ public class MowziesMobs {
     @EventHandler
     public void onPostInit(FMLPostInitializationEvent event) {
         MMBiomeDictionarySpawns.init();
+    }
+
+    private static ModContainer container;
+
+    public static ModContainer getModContainer() {
+        if (container == null) {
+            container = FMLCommonHandler.instance().findContainerFor(MowziesMobs.MODID);
+        }
+        return container;
     }
 }
