@@ -330,7 +330,7 @@ public class ModelTribeLeader extends MowzieModelBase {
             faceTarget(head, 1, f3, f4);
         }
 
-        if (tribeLeader.getAnimation() != EntityTribeLeader.DIE_ANIMAION) {
+        if (tribeLeader.getAnimation() != EntityTribeLeader.DIE_ANIMATION) {
             walk(body, 0.06f, 0.05f, true, 0, -0.05f, frame, 1f);
             walk(neck, 0.06f, 0.05f, false, 0.5f, -0.05f, frame, 1f);
             swing(rightThigh, 0.06f, 0.05f * liftLegs, false, 0, 0, frame, 1f);
@@ -960,8 +960,8 @@ public class ModelTribeLeader extends MowzieModelBase {
             animator.resetKeyframe(10);
         }
 
-        if (tribeleader.getAnimation() == EntityTribeLeader.DIE_ANIMAION) {
-            animator.setAnimation(EntityTribeLeader.DIE_ANIMAION);
+        if (tribeleader.getAnimation() == EntityTribeLeader.DIE_ANIMATION) {
+            animator.setAnimation(EntityTribeLeader.DIE_ANIMATION);
             animator.startKeyframe(2);
             animator.move(jiggleController, 1, 0, 0);
             animator.move(bellyScaler, -0.1f, 0, 0);
@@ -1057,8 +1057,8 @@ public class ModelTribeLeader extends MowzieModelBase {
             jawScaler.rotationPointX += 0.1 * jiggleController.rotationPointY * Math.cos(frame * 2);
         }
 
-        if (tribeleader.getAnimation() == EntityTribeLeader.DAMAGE_ANIMATION) {
-            animator.setAnimation(EntityTribeLeader.DAMAGE_ANIMATION);
+        if (tribeleader.getAnimation() == EntityTribeLeader.HURT_ANIMATION) {
+            animator.setAnimation(EntityTribeLeader.HURT_ANIMATION);
             animator.startKeyframe(2);
             animator.move(jiggleController, 1, 0, 0);
             animator.move(bellyScaler, -0.1f, 0, 0);

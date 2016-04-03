@@ -961,8 +961,8 @@ public class ModelWroughtnaut extends MowzieModelBase {
             neck.rotateAngleX += Math.sin((entityWroughtnaut.frame + LLibrary.PROXY.getPartialTicks()) * 2) * waistBendController.rotationPointX * 0.1;
         }
 
-        if (entityWroughtnaut.getAnimation() == EntityWroughtnaut.DAMAGE_ANIMATION) {
-            animator.setAnimation(EntityWroughtnaut.DAMAGE_ANIMATION);
+        if (entityWroughtnaut.getAnimation() == EntityWroughtnaut.HURT_ANIMATION) {
+            animator.setAnimation(EntityWroughtnaut.HURT_ANIMATION);
             animator.startKeyframe(0);
             animator.rotate(stomachJoint, 0.65F, 0F, 0);
             animator.move(waist, 0F, 4F, -3);
@@ -1025,8 +1025,8 @@ public class ModelWroughtnaut extends MowzieModelBase {
             animator.resetKeyframe(9);
         }
 
-        if (entityWroughtnaut.getAnimation() == EntityWroughtnaut.DIE_ANIMAION) {
-            animator.setAnimation(EntityWroughtnaut.DIE_ANIMAION);
+        if (entityWroughtnaut.getAnimation() == EntityWroughtnaut.DIE_ANIMATION) {
+            animator.setAnimation(EntityWroughtnaut.DIE_ANIMATION);
             animator.startKeyframe(5);
             animator.rotate(stomachJoint, -0.4F, 0, 0);
             animator.rotate(neck, -0.4F, 0, 0);

@@ -28,14 +28,15 @@ public class EntityWroughtnaut extends MMEntityBase {
     public boolean vulnerable = false;
     private int attacksWithoutVertical = 0;
 
-    public static final Animation ATTACK_ANIMATION = Animation.create(3, 50);
-    public static final Animation VERTICAL_ATTACK_ANIMATION = Animation.create(4, 105);
-    public static final Animation ACTIVATE_ANIMATION = Animation.create(5, 45);
-    public static final Animation DEACTIVATE_ANIMATION = Animation.create(6, 15);
+    public static final Animation DIE_ANIMATION = Animation.create(130);
+    public static final Animation HURT_ANIMATION = Animation.create(15);
+    public static final Animation ATTACK_ANIMATION = Animation.create(50);
+    public static final Animation VERTICAL_ATTACK_ANIMATION = Animation.create(105);
+    public static final Animation ACTIVATE_ANIMATION = Animation.create(45);
+    public static final Animation DEACTIVATE_ANIMATION = Animation.create(15);
 
     public EntityWroughtnaut(World world) {
         super(world);
-        deathLength = 130;
         getNavigator().setAvoidsWater(true);
         tasks.addTask(1, new AnimationFWNAttackAI<>(this, ATTACK_ANIMATION, "mowziesmobs:wroughtnautWhoosh", 4F, 5.5F, 100F));
         tasks.addTask(1, new AnimationFWNVerticalAttackAI<>(this, VERTICAL_ATTACK_ANIMATION, "mowziesmobs:wroughtnautWhoosh", 1F, 5.5F, 40F));
@@ -155,8 +156,13 @@ public class EntityWroughtnaut extends MMEntityBase {
     }
 
     @Override
-    public Animation[] getEntityAnimations() {
-        return new Animation[]{ATTACK_ANIMATION, VERTICAL_ATTACK_ANIMATION, ACTIVATE_ANIMATION, DEACTIVATE_ANIMATION};
+    public Animation getDeathAnimation() {
+        return DIE_ANIMATION;
+    }
+
+    @Override
+    public Animation getHurtAnimation() {
+        return HURT_ANIMATION;
     }
 
     @Override
@@ -363,5 +369,10 @@ public class EntityWroughtnaut extends MMEntityBase {
     @Override
     protected void func_145780_a(int p_145780_1_, int p_145780_2_, int p_145780_3_, Block p_145780_4_) {
 
+    }
+
+    @Override
+    public Animation[] getAnimations() {
+        return new Animation[]{DIE_ANIMATION, HURT_ANIMATION, ATTACK_ANIMATION, VERTICAL_ATTACK_ANIMATION, ACTIVATE_ANIMATION, DEACTIVATE_ANIMATION};
     }
 }

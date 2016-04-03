@@ -32,9 +32,7 @@ public class EntityTribeElite extends EntityTribesman {
 
     private int packRadius = 3;
 
-    private boolean persistenceRequired;
-
-    public static final Animation BLOCK_ANIMATION = Animation.create(3, 10);
+    public static final Animation BLOCK_ANIMATION = Animation.create(10);
 
     public EntityTribeElite(World world) {
         super(world);
@@ -85,7 +83,7 @@ public class EntityTribeElite extends EntityTribesman {
                 setAttackTarget((EntityLivingBase) entity);
             }
         }
-        if (entity != null && entity instanceof EntityLivingBase && (getAnimation() == NO_ANIMATION || getAnimation() == DAMAGE_ANIMATION || getAnimation() == BLOCK_ANIMATION)) {
+        if (entity != null && entity instanceof EntityLivingBase && (getAnimation() == NO_ANIMATION || getAnimation() == HURT_ANIMATION || getAnimation() == BLOCK_ANIMATION)) {
             blockingEntity = (EntityLivingBase) entity;
             playSound("mob.zombie.wood", 0.3f, 1.5f);
             AnimationHandler.INSTANCE.sendAnimationMessage(this, BLOCK_ANIMATION);
@@ -95,8 +93,13 @@ public class EntityTribeElite extends EntityTribesman {
     }
 
     @Override
-    public Animation[] getEntityAnimations() {
-        return new Animation[]{BLOCK_ANIMATION};
+    public Animation getDeathAnimation() {
+        return null;
+    }
+
+    @Override
+    public Animation getHurtAnimation() {
+        return null;
     }
 
     public int getpackSize() {
@@ -161,9 +164,7 @@ public class EntityTribeElite extends EntityTribesman {
     @Override
     public void onDeath(DamageSource damageSource) {
         super.onDeath(damageSource);
-        for (EntityTribeHunter aPack : pack) {
-            aPack.removeLeader();
-        }
+        pack.forEach(EntityTribeHunter::removeLeader);
     }
 
     @Override
@@ -204,9 +205,7 @@ public class EntityTribeElite extends EntityTribesman {
             if (result == Event.Result.DENY) {
                 this.entityAge = 0;
             } else {
-                for (EntityTribeHunter aPack : pack) {
-                    aPack.setDead();
-                }
+                pack.forEach(EntityTribeHunter::setDead);
                 this.setDead();
             }
         } else {
@@ -219,16 +218,12 @@ public class EntityTribeElite extends EntityTribesman {
                 double d3 = d0 * d0 + d1 * d1 + d2 * d2;
 
                 if (this.canDespawn() && d3 > 16384.0D) {
-                    for (EntityTribeHunter aPack : pack) {
-                        aPack.setDead();
-                    }
+                    pack.forEach(EntityTribeHunter::setDead);
                     this.setDead();
                 }
 
                 if (this.entityAge > 600 && this.rand.nextInt(800) == 0 && d3 > 1024.0D && this.canDespawn()) {
-                    for (EntityTribeHunter aPack : pack) {
-                        aPack.setDead();
-                    }
+                    pack.forEach(EntityTribeHunter::setDead);
                     this.setDead();
                 } else if (d3 < 1024.0D) {
                     this.entityAge = 0;
@@ -240,6 +235,14 @@ public class EntityTribeElite extends EntityTribesman {
     @Override
     public void readEntityFromNBT(NBTTagCompound compound) {
         super.readEntityFromNBT(compound);
-        this.persistenceRequired = compound.getBoolean("PersistenceRequired");
+    }
+
+    @Override
+    public Animation[] getAnimations() {
+        Animation[] animations = super.getAnimations();
+        Animation[] newAnimations = new Animation[animations.length + 1];
+        System.arraycopy(animations, 0, newAnimations, 0, animations.length);
+        newAnimations[newAnimations.length] = BLOCK_ANIMATION;
+        return newAnimations;
     }
 }

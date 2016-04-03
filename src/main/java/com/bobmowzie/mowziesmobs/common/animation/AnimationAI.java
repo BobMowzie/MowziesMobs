@@ -4,7 +4,7 @@ import com.bobmowzie.mowziesmobs.common.entity.MMEntityBase;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 
-public class AnimationAI<T extends MMEntityBase & IAnimatedEntity> extends net.ilexiconn.llibrary.server.animation.AnimationAI {
+public class AnimationAI<T extends MMEntityBase & IAnimatedEntity> extends net.ilexiconn.llibrary.server.animation.AnimationAI<T> {
     protected T animatingEntity;
     protected Animation animation;
 

@@ -6,13 +6,13 @@ import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 
 public class AnimationDieAI<T extends MMEntityBase & IAnimatedEntity> extends AnimationAI<T> {
     public AnimationDieAI(T entity) {
-        super(entity, MMEntityBase.DIE_ANIMAION);
+        super(entity, entity.getDeathAnimation());
         setMutexBits(8);
     }
 
     @Override
     public Animation getAnimation() {
-        return MMEntityBase.DIE_ANIMAION;
+        return entity.getDeathAnimation();
     }
 
     @Override

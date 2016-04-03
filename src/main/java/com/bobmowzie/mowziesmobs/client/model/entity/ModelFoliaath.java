@@ -382,7 +382,7 @@ public class ModelFoliaath extends MowzieModelBase {
         animator.setStaticKeyframe(3);
         animator.resetKeyframe(5);
 
-        animator.setAnimation(EntityFoliaath.DAMAGE_ANIMATION);
+        animator.setAnimation(EntityFoliaath.HURT_ANIMATION);
         animator.startKeyframe(3);
         animator.rotate(stem2, 0.6F, 0, 0);
         animator.rotate(stem3, -0.4F, 0, 0);
@@ -406,7 +406,7 @@ public class ModelFoliaath extends MowzieModelBase {
         chainWave(leafParts2, 1.5F, 0.1F * deathFlailProgress, 0, entityfoliaath.frame, 1F);
         chainWave(leafParts3, 1.5F, 0.1F * deathFlailProgress, 0, entityfoliaath.frame, 1F);
         chainWave(leafParts4, 1.5F, 0.1F * deathFlailProgress, 0, entityfoliaath.frame, 1F);
-        animator.setAnimation(EntityFoliaath.DIE_ANIMAION);
+        animator.setAnimation(EntityFoliaath.DIE_ANIMATION);
         animator.startKeyframe(4);
         animator.rotate(stem1Base, -0.1F, 0, 0);
         animator.rotate(stem2, -0.5F, 0, 0);

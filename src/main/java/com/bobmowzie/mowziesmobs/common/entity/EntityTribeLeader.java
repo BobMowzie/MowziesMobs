@@ -42,16 +42,17 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
 
     private boolean pacified = false;
 
-    public static final Animation BELLY_ANIMATION = Animation.create(3, 40);
-    public static final Animation TALK_ANIMATION = Animation.create(4, 80);
-    public static final Animation SUNSTRIKE_ANIMATION = Animation.create(5, 15);
-    public static final Animation ATTACK_ANIMATION = Animation.create(6, 30);
-    public static final Animation SPAWN_ANIMATION = Animation.create(7, 20);
-    public static final Animation SOLAR_BEAM_ANIMATION = Animation.create(8, 100);
+    public static final Animation DIE_ANIMATION = Animation.create(130);
+    public static final Animation HURT_ANIMATION = Animation.create(13);
+    public static final Animation BELLY_ANIMATION = Animation.create(40);
+    public static final Animation TALK_ANIMATION = Animation.create(80);
+    public static final Animation SUNSTRIKE_ANIMATION = Animation.create(15);
+    public static final Animation ATTACK_ANIMATION = Animation.create(30);
+    public static final Animation SPAWN_ANIMATION = Animation.create(20);
+    public static final Animation SOLAR_BEAM_ANIMATION = Animation.create(100);
 
     public EntityTribeLeader(World world) {
         super(world);
-        deathLength = 130;
         targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
         tasks.addTask(4, new AINearestAttackableTargetBarakoa(this, EntityPlayer.class, 0, false));
         tasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityZombie.class, 0, false));
@@ -269,8 +270,13 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
     }
 
     @Override
-    public Animation[] getEntityAnimations() {
-        return new Animation[]{BELLY_ANIMATION, TALK_ANIMATION, SUNSTRIKE_ANIMATION, ATTACK_ANIMATION, SPAWN_ANIMATION, SOLAR_BEAM_ANIMATION};
+    public Animation getDeathAnimation() {
+        return DIE_ANIMATION;
+    }
+
+    @Override
+    public Animation getHurtAnimation() {
+        return HURT_ANIMATION;
     }
 
     private boolean checkBlocksByFeet() {
@@ -370,5 +376,10 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
             damageTaken = 60;
         }
         return (int) (SUNSTRIKE_PAUSE_MAX - (damageTaken / 60f) * (SUNSTRIKE_PAUSE_MAX - SUNSTRIKE_PAUSE_MIN));
+    }
+
+    @Override
+    public Animation[] getAnimations() {
+        return new Animation[]{DIE_ANIMATION, HURT_ANIMATION, BELLY_ANIMATION, TALK_ANIMATION, SUNSTRIKE_ANIMATION, ATTACK_ANIMATION, SPAWN_ANIMATION, SOLAR_BEAM_ANIMATION};
     }
 }

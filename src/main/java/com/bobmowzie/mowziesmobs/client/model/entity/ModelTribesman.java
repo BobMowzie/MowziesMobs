@@ -361,7 +361,7 @@ public class ModelTribesman extends MowzieModelBase {
         swing(handRight, 0.5f * globalSpeed, 1f * globalDegree, true, 0, 0, f, f1);
         walk(handLeft, 0.5f * globalSpeed, 1 * globalDegree, true, -2, 0.4f * globalDegree, f, f1);
 
-        if (tribesman.getAnimation() != EntityTribesman.DIE_ANIMAION) {
+        if (tribesman.getAnimation() != EntityTribesman.DIE_ANIMATION) {
             walk(body, 0.2f, 0.05f, false, 0, 0, frame, 1f);
             walk(thighLeftJoint, 0.2f, 0.05f, true, 0, 0, frame, 1f);
             walk(thighRightJoint, 0.2f, 0.05f, true, 0, 0, frame, 1f);
@@ -476,7 +476,7 @@ public class ModelTribesman extends MowzieModelBase {
             animator.endKeyframe();
             animator.resetKeyframe(7);*/
 
-            animator.setAnimation(EntityTribesman.DAMAGE_ANIMATION);
+            animator.setAnimation(EntityTribesman.HURT_ANIMATION);
             animator.startKeyframe(3);
             animator.rotate(armLeftJoint, 0.2f, -1.3f, 0);
             animator.rotate(armLowerLeft, 0.2f, -0.2f, -1);
@@ -499,7 +499,7 @@ public class ModelTribesman extends MowzieModelBase {
             animator.endKeyframe();
             animator.resetKeyframe(7);
 
-            animator.setAnimation(EntityTribesman.DIE_ANIMAION);
+            animator.setAnimation(EntityTribesman.DIE_ANIMATION);
             animator.startKeyframe(3);
             animator.rotate(armLeftJoint, 0.2f, -1.3f, 0);
             animator.rotate(armLowerLeft, 0.2f, -0.2f, -1);
@@ -626,7 +626,7 @@ public class ModelTribesman extends MowzieModelBase {
             animator.setStaticKeyframe(2);
             animator.resetKeyframe(7);
 
-            animator.setAnimation(EntityTribesman.DAMAGE_ANIMATION);
+            animator.setAnimation(EntityTribesman.HURT_ANIMATION);
             animator.startKeyframe(3);
             animator.move(body, 0, 5f, 1f);
             animator.rotate(body, 0.3f, 0, 0);
@@ -647,7 +647,7 @@ public class ModelTribesman extends MowzieModelBase {
             animator.endKeyframe();
             animator.resetKeyframe(7);
 
-            animator.setAnimation(EntityTribesman.DIE_ANIMAION);
+            animator.setAnimation(EntityTribesman.DIE_ANIMATION);
             animator.startKeyframe(3);
             animator.rotate(armLeftJoint, 0.2f, -1.3f, 0);
             animator.rotate(armLowerLeft, 0.2f, -0.2f, -1);

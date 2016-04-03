@@ -30,14 +30,15 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob, L
     public boolean circleDirection = true;
     public int circleTick = 0;
 
-    public static final Animation ATTACK_ANIMATION = Animation.create(3, 19);
-    public static final Animation PROJECTILE_ATTACK_ANIMATION = Animation.create(4, 20);
-    public static final Animation IDLE_ANIMATION = Animation.create(5, 35);
-    public static final Animation ACTIVATE_ANIMATION = Animation.create(6, 20);
+    public static final Animation DIE_ANIMATION = Animation.create(70);
+    public static final Animation HURT_ANIMATION = Animation.create(10);
+    public static final Animation ATTACK_ANIMATION = Animation.create(19);
+    public static final Animation PROJECTILE_ATTACK_ANIMATION = Animation.create(20);
+    public static final Animation IDLE_ANIMATION = Animation.create(35);
+    public static final Animation ACTIVATE_ANIMATION = Animation.create(20);
 
     public EntityTribesman(World world) {
         super(world);
-        deathLength = 70;
         this.getNavigator().setAvoidsWater(true);
         this.tasks.addTask(0, new EntityAISwimming(this));
         tasks.addTask(4, new EntityAIAttackOnCollide(this, EntityPlayer.class, 0.5D, false));
@@ -65,8 +66,13 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob, L
     }
 
     @Override
-    public Animation[] getEntityAnimations() {
-        return new Animation[]{ATTACK_ANIMATION, PROJECTILE_ATTACK_ANIMATION, IDLE_ANIMATION, ACTIVATE_ANIMATION};
+    public Animation getDeathAnimation() {
+        return DIE_ANIMATION;
+    }
+
+    @Override
+    public Animation getHurtAnimation() {
+        return HURT_ANIMATION;
     }
 
     @Override
@@ -401,5 +407,10 @@ public class EntityTribesman extends MMEntityBase implements IRangedAttackMob, L
             return;
         }
         super.fall(p_70069_1_);
+    }
+
+    @Override
+    public Animation[] getAnimations() {
+        return new Animation[]{DIE_ANIMATION, HURT_ANIMATION, ATTACK_ANIMATION, PROJECTILE_ATTACK_ANIMATION, IDLE_ANIMATION, ACTIVATE_ANIMATION};
     }
 }

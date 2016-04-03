@@ -24,7 +24,7 @@ public class EntityBabyFoliaath extends MMEntityBase {
     private int eatingItemID;
     private double prevActivate;
 
-    public static final Animation EAT_ANIMATION = Animation.create(3, 20);
+    public static final Animation EAT_ANIMATION = Animation.create(20);
 
     public EntityBabyFoliaath(World world) {
         super(world);
@@ -111,8 +111,13 @@ public class EntityBabyFoliaath extends MMEntityBase {
     }
 
     @Override
-    public Animation[] getEntityAnimations() {
-        return new Animation[]{EAT_ANIMATION};
+    public Animation getDeathAnimation() {
+        return null;
+    }
+
+    @Override
+    public Animation getHurtAnimation() {
+        return null;
     }
 
     private boolean arePlayersCarryingMeat(List<EntityPlayer> players) {
@@ -233,5 +238,10 @@ public class EntityBabyFoliaath extends MMEntityBase {
 
     public void setHungry(byte hungry) {
         dataWatcher.updateObject(29, hungry);
+    }
+
+    @Override
+    public Animation[] getAnimations() {
+        return new Animation[]{EAT_ANIMATION};
     }
 }

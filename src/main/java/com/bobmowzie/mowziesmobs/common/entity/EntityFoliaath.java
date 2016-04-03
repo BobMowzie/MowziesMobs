@@ -41,7 +41,9 @@ public class EntityFoliaath extends MMEntityBase {
     private double prevActivate;
     private int activateTarget;
 
-    public static final Animation ATTACK_ANIMATION = Animation.create(3, 14);
+    public static final Animation DIE_ANIMATION = Animation.create(50);
+    public static final Animation HURT_ANIMATION = Animation.create(10);
+    public static final Animation ATTACK_ANIMATION = Animation.create(14);
 
     public EntityFoliaath(World world) {
         super(world);
@@ -54,7 +56,6 @@ public class EntityFoliaath extends MMEntityBase {
         tasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityCreature.class, 0, true));
         setSize(0.5F, 2.5F);
         experienceValue = 10;
-        deathLength = 50;
         addIntermittentAnimation(openMouth);
     }
 
@@ -110,7 +111,7 @@ public class EntityFoliaath extends MMEntityBase {
         }
 
         // Sounds
-        if (frame % 13 == 3 && getAnimation() != DIE_ANIMAION) {
+        if (frame % 13 == 3 && getAnimation() != DIE_ANIMATION) {
             if (openMouth.getTimeRunning() >= 10) {
                 playSound("mowziesmobs:foliaathpant1", 1, 1);
             } else if (activate.getTimer() >= 25) {
@@ -192,7 +193,7 @@ public class EntityFoliaath extends MMEntityBase {
             lastTimeDecrease++;
         }
 
-        if (getAnimation() == DIE_ANIMAION) {
+        if (getAnimation() == DIE_ANIMATION) {
             if (getAnimationTick() <= 12) {
                 deathFlail.increaseTimer();
             } else {
@@ -224,8 +225,13 @@ public class EntityFoliaath extends MMEntityBase {
     }
 
     @Override
-    public Animation[] getEntityAnimations() {
-        return new Animation[]{ATTACK_ANIMATION};
+    public Animation getDeathAnimation() {
+        return DIE_ANIMATION;
+    }
+
+    @Override
+    public Animation getHurtAnimation() {
+        return HURT_ANIMATION;
     }
 
     @Override
@@ -325,5 +331,10 @@ public class EntityFoliaath extends MMEntityBase {
     @Override
     protected void func_145780_a(int p_145780_1_, int p_145780_2_, int p_145780_3_, Block p_145780_4_) {
 
+    }
+
+    @Override
+    public Animation[] getAnimations() {
+        return new Animation[]{DIE_ANIMATION, HURT_ANIMATION, ATTACK_ANIMATION};
     }
 }

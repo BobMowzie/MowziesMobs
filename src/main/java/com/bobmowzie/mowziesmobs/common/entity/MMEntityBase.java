@@ -14,7 +14,6 @@ import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
-import scala.actors.threadpool.Arrays;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,16 +27,12 @@ public abstract class MMEntityBase extends EntityCreature implements IEntityAddi
     public float targetAngle;
     public AnimationAI currentAnim = null;
     public boolean active;
-    protected int deathLength = 30;
     private int animationTick;
     private Animation animation;
 
     public EntityLivingBase blockingEntity = null;
 
     private List<IntermittentAnimation> intermittentAnimations = new ArrayList<>();
-
-    public static final Animation DAMAGE_ANIMATION = Animation.create(1, 10);
-    public static final Animation DIE_ANIMAION = Animation.create(2, 50);
 
     public MMEntityBase(World world) {
         super(world);
@@ -96,7 +91,7 @@ public abstract class MMEntityBase extends EntityCreature implements IEntityAddi
     protected void onDeathUpdate() {
         ++deathTime;
 
-        if (deathTime == deathLength - 20) {
+        if (deathTime == getDeathAnimation().getDuration() - 20) {
             int i;
 
             if (!worldObj.isRemote && (recentlyHit > 0 || isPlayer()) && func_146066_aG() && worldObj.getGameRules().getGameRuleBooleanValue("doMobLoot")) {
@@ -125,12 +120,12 @@ public abstract class MMEntityBase extends EntityCreature implements IEntityAddi
         boolean b = super.attackEntityFrom(source, damage);
         if (b) {
             if (getHealth() > 0.0F && getAnimation() == NO_ANIMATION) {
-                AnimationHandler.INSTANCE.sendAnimationMessage(this, DAMAGE_ANIMATION);
+                AnimationHandler.INSTANCE.sendAnimationMessage(this, getHurtAnimation());
             } else if (getHealth() <= 0.0F) {
                 if (currentAnim != null) {
                     currentAnim.resetTask();
                 }
-                AnimationHandler.INSTANCE.sendAnimationMessage(this,DIE_ANIMAION);
+                AnimationHandler.INSTANCE.sendAnimationMessage(this, getDeathAnimation());
             }
         }
         return b;
@@ -189,15 +184,7 @@ public abstract class MMEntityBase extends EntityCreature implements IEntityAddi
         this.animation = animation;
     }
 
-    @Override
-    public Animation[] getAnimations() {
-        List<Animation> animationList = new ArrayList<>();
-        animationList.add(NO_ANIMATION);
-        animationList.add(DAMAGE_ANIMATION);
-        animationList.add(DIE_ANIMAION);
-        animationList.addAll(Arrays.asList(this.getEntityAnimations()));
-        return animationList.toArray(new Animation[animationList.size()]);
-    }
+    public abstract Animation getDeathAnimation();
 
-    public abstract Animation[] getEntityAnimations();
+    public abstract Animation getHurtAnimation();
 }

@@ -6,12 +6,12 @@ import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 
 public class AnimationTakeDamage<T extends MMEntityBase & IAnimatedEntity> extends AnimationAI<T> {
     public AnimationTakeDamage(T entity) {
-        super(entity, MMEntityBase.DAMAGE_ANIMATION);
+        super(entity, entity.getHurtAnimation());
         setMutexBits(8);
     }
 
     @Override
     public Animation getAnimation() {
-        return MMEntityBase.DAMAGE_ANIMATION;
+        return entity.getHurtAnimation();
     }
 }
