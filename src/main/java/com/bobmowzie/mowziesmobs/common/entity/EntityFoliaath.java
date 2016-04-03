@@ -308,12 +308,12 @@ public class EntityFoliaath extends MMEntityBase {
         dataWatcher.updateObject(CAN_DESPAWN_ID, (byte) (canDespawn ? 1 : 0));
     }
 
-    public void setActivateTarget(int activateTarget) {
-        dataWatcher.updateObject(ACTIVATE_TARGET_ID, (byte) activateTarget);
+    public void setActivateTarget(Integer activateTarget) {
+        dataWatcher.updateObject(ACTIVATE_TARGET_ID, activateTarget);
     }
 
     public int getActivateTarget() {
-        return dataWatcher.getWatchableObjectByte(ACTIVATE_TARGET_ID);
+        return dataWatcher.getWatchableObjectInt(ACTIVATE_TARGET_ID);
     }
 
     @Override
