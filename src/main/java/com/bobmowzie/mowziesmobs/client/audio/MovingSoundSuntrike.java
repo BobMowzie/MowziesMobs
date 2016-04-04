@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.audio;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.common.entity.EntitySunstrike;
+import com.bobmowzie.mowziesmobs.server.entity.EntitySunstrike;
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.util.ResourceLocation;
 

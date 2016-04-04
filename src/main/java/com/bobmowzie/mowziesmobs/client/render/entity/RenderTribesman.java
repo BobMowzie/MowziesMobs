@@ -1,8 +1,8 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.common.entity.EntityTribeElite;
-import com.bobmowzie.mowziesmobs.common.entity.EntityTribesman;
+import com.bobmowzie.mowziesmobs.server.entity.EntityTribeElite;
+import com.bobmowzie.mowziesmobs.server.entity.EntityTribesman;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.model.ModelBase;

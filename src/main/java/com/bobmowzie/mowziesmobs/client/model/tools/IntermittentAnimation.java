@@ -1,6 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.model.tools;
 
-import com.bobmowzie.mowziesmobs.common.entity.IntermittentAnimatableEntity;
+import com.bobmowzie.mowziesmobs.server.entity.IntermittentAnimatableEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
 

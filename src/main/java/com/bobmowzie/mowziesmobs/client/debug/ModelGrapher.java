@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.client.debug;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelBase;
 import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelRenderer;
-import com.bobmowzie.mowziesmobs.common.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;

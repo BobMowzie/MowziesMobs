@@ -1,10 +1,10 @@
 package com.bobmowzie.mowziesmobs.client;
 
-import com.bobmowzie.mowziesmobs.common.item.ItemBarakoaMask;
-import com.bobmowzie.mowziesmobs.common.item.ItemHandler;
-import com.bobmowzie.mowziesmobs.common.item.ItemWroughtAxe;
-import com.bobmowzie.mowziesmobs.common.item.ItemWroughtHelm;
-import com.bobmowzie.mowziesmobs.common.property.WroughtAxeSwingProperty;
+import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
+import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
+import com.bobmowzie.mowziesmobs.server.item.ItemWroughtAxe;
+import com.bobmowzie.mowziesmobs.server.item.ItemWroughtHelm;
+import com.bobmowzie.mowziesmobs.server.property.WroughtAxeSwingProperty;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

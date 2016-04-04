@@ -1,19 +1,19 @@
 package com.bobmowzie.mowziesmobs;
 
-import com.bobmowzie.mowziesmobs.common.ServerEventHandler;
-import com.bobmowzie.mowziesmobs.common.ServerProxy;
-import com.bobmowzie.mowziesmobs.common.biome.BiomeDictionaryHandler;
-import com.bobmowzie.mowziesmobs.common.block.BlockHandler;
-import com.bobmowzie.mowziesmobs.common.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.common.creativetab.CreativeTabHandler;
-import com.bobmowzie.mowziesmobs.common.entity.EntityHandler;
-import com.bobmowzie.mowziesmobs.common.gen.MowzieStructureGenerator;
-import com.bobmowzie.mowziesmobs.common.gen.MowzieWorldGenerator;
-import com.bobmowzie.mowziesmobs.common.item.ItemHandler;
-import com.bobmowzie.mowziesmobs.common.message.MessagePlayerSolarBeam;
-import com.bobmowzie.mowziesmobs.common.message.MessagePlayerSummonSunstrike;
-import com.bobmowzie.mowziesmobs.common.message.MessageSwingWroughtAxe;
-import com.bobmowzie.mowziesmobs.common.potion.PotionHandler;
+import com.bobmowzie.mowziesmobs.server.ServerEventHandler;
+import com.bobmowzie.mowziesmobs.server.ServerProxy;
+import com.bobmowzie.mowziesmobs.server.biome.BiomeDictionaryHandler;
+import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
+import com.bobmowzie.mowziesmobs.server.gen.MowzieStructureGenerator;
+import com.bobmowzie.mowziesmobs.server.gen.MowzieWorldGenerator;
+import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
+import com.bobmowzie.mowziesmobs.server.message.MessagePlayerSolarBeam;
+import com.bobmowzie.mowziesmobs.server.message.MessagePlayerSummonSunstrike;
+import com.bobmowzie.mowziesmobs.server.message.MessageSwingWroughtAxe;
+import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -39,7 +39,7 @@ public class MowziesMobs {
 
     @Instance(MowziesMobs.MODID)
     public static MowziesMobs INSTANCE;
-    @SidedProxy(clientSide = "com.bobmowzie.mowziesmobs.client.ClientProxy", serverSide = "com.bobmowzie.mowziesmobs.common.ServerProxy")
+    @SidedProxy(clientSide = "com.bobmowzie.mowziesmobs.client.ClientProxy", serverSide = "com.bobmowzie.mowziesmobs.server.ServerProxy")
     public static ServerProxy PROXY;
 
     public static SimpleNetworkWrapper NETWORK_WRAPPER;
