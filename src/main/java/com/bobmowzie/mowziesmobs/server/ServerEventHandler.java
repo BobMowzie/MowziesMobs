@@ -74,7 +74,7 @@ public enum ServerEventHandler {
         EntityPlayer player = event.player;
         WroughtAxeSwingProperty property = WroughtAxeSwingProperty.getProperty(player);
         property.update();
-        if (player.getHeldItem() != null && player.getHeldItem().getItem() == ItemHandler.INSTANCE.itemWroughtAxe) {
+        if (player.getHeldItem() != null && player.getHeldItem().getItem() == ItemHandler.INSTANCE.wrought_axe) {
             if (property.getTick() > 0) {
                 property.decrementTime();
             }

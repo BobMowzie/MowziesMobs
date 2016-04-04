@@ -9,7 +9,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.ilexiconn.llibrary.LLibrary;
-import net.ilexiconn.llibrary.common.event.Render3dItemEvent;
+import net.ilexiconn.llibrary.server.event.Render3dItemEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.event.RenderItemInFrameEvent;
@@ -21,7 +21,7 @@ public enum ClientEventHandler {
 
     @SubscribeEvent
     public void onItemRender(Render3dItemEvent.Pre event) {
-        if (event.item == ItemHandler.INSTANCE.itemWroughtAxe) {
+        if (event.item == ItemHandler.INSTANCE.wrought_axe) {
             if (event.type == IItemRenderer.ItemRenderType.EQUIPPED_FIRST_PERSON) {
                 int tick = 0;
                 float time = 0;
@@ -69,7 +69,7 @@ public enum ClientEventHandler {
             }
         }
 
-        if (event.item == ItemHandler.INSTANCE.itemWroughtHelm) {
+        if (event.item == ItemHandler.INSTANCE.wrought_helmet) {
             if (event.type == IItemRenderer.ItemRenderType.EQUIPPED_FIRST_PERSON) {
                 GL11.glRotatef(90f, 0f, 1f, 0f);
                 GL11.glTranslatef(-1f, -0.8f, 0f);

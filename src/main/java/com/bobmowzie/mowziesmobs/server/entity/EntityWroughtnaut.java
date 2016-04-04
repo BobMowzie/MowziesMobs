@@ -360,8 +360,8 @@ public class EntityWroughtnaut extends MowzieEntity {
     @Override
     public void onDeath(DamageSource p_70645_1_) {
         if (!worldObj.isRemote && worldObj.getGameRules().getGameRuleBooleanValue("doMobLoot")) {
-            dropItem(ItemHandler.INSTANCE.itemWroughtAxe, 1);
-            dropItem(ItemHandler.INSTANCE.itemWroughtHelm, 1);
+            dropItem(ItemHandler.INSTANCE.wrought_axe, 1);
+            dropItem(ItemHandler.INSTANCE.wrought_helmet, 1);
         }
         super.onDeath(p_70645_1_);
     }

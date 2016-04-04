@@ -3,7 +3,7 @@ package net.ilexiconn.llibrary.client.render.item;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.ilexiconn.llibrary.common.event.Render3dItemEvent;
+import net.ilexiconn.llibrary.server.event.Render3dItemEvent;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

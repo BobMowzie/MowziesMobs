@@ -21,10 +21,10 @@ public class ItemMMSpawnEgg extends Item {
     private IIcon overlay;
 
     public ItemMMSpawnEgg() {
-        setUnlocalizedName("monsterPlacer");
-        setTextureName("spawn_egg");
-        setHasSubtypes(true);
-        setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
+        this.setUnlocalizedName("monsterPlacer");
+        this.setTextureName("spawn_egg");
+        this.setHasSubtypes(true);
+        this.setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
     }
 
     @Override
@@ -65,7 +65,6 @@ public class ItemMMSpawnEgg extends Item {
                     heldItemStack.stackSize--;
                 }
             }
-
             return true;
         }
     }
@@ -133,11 +132,11 @@ public class ItemMMSpawnEgg extends Item {
     }
 
     @Override
-    public void getSubItems(Item item, CreativeTabs tab, List itemStacks) {
+    public void getSubItems(Item item, CreativeTabs tab, List subItems) {
         Iterator<MowzieEntityEggInfo> iterator = EntityHandler.INSTANCE.getEntityEggInfoIterator();
         while (iterator.hasNext()) {
             MowzieEntityEggInfo info = iterator.next();
-            itemStacks.add(new ItemStack(item, 1, info.entityID));
+            subItems.add(new ItemStack(item, 1, info.entityID));
         }
     }
 

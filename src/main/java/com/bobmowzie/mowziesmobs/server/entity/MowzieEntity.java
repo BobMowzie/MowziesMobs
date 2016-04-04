@@ -45,7 +45,6 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
         if (getAnimation() != NO_ANIMATION) {
             animationTick++;
         }
-
         if (getAttackTarget() != null) {
             targetDistance = (float) Math.sqrt((getAttackTarget().posZ - posZ) * (getAttackTarget().posZ - posZ) + (getAttackTarget().posX - posX) * (getAttackTarget().posX - posX));
             targetAngle = (float) getAngleBetweenEntities(this, getAttackTarget());
@@ -54,12 +53,10 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
 
     @Override
     public void writeSpawnData(ByteBuf buffer) {
-
     }
 
     @Override
     public void readSpawnData(ByteBuf additionalData) {
-
     }
 
     @Override
@@ -76,14 +73,14 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     }
 
     public List<EntityPlayer> getPlayersNearby(double distanceX, double distanceY, double distanceZ, double radius) {
-        List<Entity> list = worldObj.getEntitiesWithinAABBExcludingEntity(this, boundingBox.expand(distanceX, distanceY, distanceZ));
-        ArrayList<EntityPlayer> listEntityPlayers = list.stream().filter(entityNeighbor -> entityNeighbor instanceof EntityPlayer && getDistanceToEntity(entityNeighbor) <= radius).map(entityNeighbor -> (EntityPlayer) entityNeighbor).collect(Collectors.toCollection(ArrayList::new));
+        List<Entity> nearbyEntities = worldObj.getEntitiesWithinAABBExcludingEntity(this, boundingBox.expand(distanceX, distanceY, distanceZ));
+        ArrayList<EntityPlayer> listEntityPlayers = nearbyEntities.stream().filter(entityNeighbor -> entityNeighbor instanceof EntityPlayer && getDistanceToEntity(entityNeighbor) <= radius).map(entityNeighbor -> (EntityPlayer) entityNeighbor).collect(Collectors.toCollection(ArrayList::new));
         return listEntityPlayers;
     }
 
     public List<EntityLivingBase> getEntityLivingBaseNearby(double distanceX, double distanceY, double distanceZ, double radius) {
-        List<Entity> list = worldObj.getEntitiesWithinAABBExcludingEntity(this, boundingBox.expand(distanceX, distanceY, distanceZ));
-        ArrayList<EntityLivingBase> listEntityLivingBase = list.stream().filter(entityNeighbor -> entityNeighbor instanceof EntityLivingBase && getDistanceToEntity(entityNeighbor) <= radius && entityNeighbor.posY + entityNeighbor.boundingBox.maxY > posY + 2 && entityNeighbor.posY <= posY + distanceY).map(entityNeighbor -> (EntityLivingBase) entityNeighbor).collect(Collectors.toCollection(ArrayList::new));
+        List<Entity> nearbyEntities = worldObj.getEntitiesWithinAABBExcludingEntity(this, boundingBox.expand(distanceX, distanceY, distanceZ));
+        ArrayList<EntityLivingBase> listEntityLivingBase = nearbyEntities.stream().filter(entityNeighbor -> entityNeighbor instanceof EntityLivingBase && getDistanceToEntity(entityNeighbor) <= radius && entityNeighbor.posY + entityNeighbor.boundingBox.maxY > posY + 2 && entityNeighbor.posY <= posY + distanceY).map(entityNeighbor -> (EntityLivingBase) entityNeighbor).collect(Collectors.toCollection(ArrayList::new));
         return listEntityLivingBase;
     }
 
@@ -92,21 +89,21 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
         ++deathTime;
 
         if (deathTime == getDeathAnimation().getDuration() - 20) {
-            int i;
+            int experience;
 
             if (!worldObj.isRemote && (recentlyHit > 0 || isPlayer()) && func_146066_aG() && worldObj.getGameRules().getGameRuleBooleanValue("doMobLoot")) {
-                i = getExperiencePoints(attackingPlayer);
+                experience = getExperiencePoints(attackingPlayer);
 
-                while (i > 0) {
-                    int j = EntityXPOrb.getXPSplit(i);
-                    i -= j;
+                while (experience > 0) {
+                    int j = EntityXPOrb.getXPSplit(experience);
+                    experience -= j;
                     worldObj.spawnEntityInWorld(new EntityXPOrb(worldObj, posX, posY, posZ, j));
                 }
             }
 
-            setDead();
+            this.setDead();
 
-            for (i = 0; i < 20; ++i) {
+            for (experience = 0; experience < 20; ++experience) {
                 double d2 = rand.nextGaussian() * 0.02D;
                 double d0 = rand.nextGaussian() * 0.02D;
                 double d1 = rand.nextGaussian() * 0.02D;
@@ -117,8 +114,8 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
 
     @Override
     public boolean attackEntityFrom(DamageSource source, float damage) {
-        boolean b = super.attackEntityFrom(source, damage);
-        if (b) {
+        boolean attack = super.attackEntityFrom(source, damage);
+        if (attack) {
             if (getHealth() > 0.0F && getAnimation() == NO_ANIMATION) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, getHurtAnimation());
             } else if (getHealth() <= 0.0F) {
@@ -128,12 +125,12 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, getDeathAnimation());
             }
         }
-        return b;
+        return attack;
     }
 
-    protected void addIntermittentAnimation(IntermittentAnimation intermittentAnimation) {
-        intermittentAnimation.setID((byte) intermittentAnimations.size());
-        intermittentAnimations.add(intermittentAnimation);
+    protected void addIntermittentAnimation(IntermittentAnimation animation) {
+        animation.setID((byte) intermittentAnimations.size());
+        intermittentAnimations.add(animation);
     }
 
     @Override
@@ -152,12 +149,12 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
 
     public void circleEntity(Entity target, float radius, float speed, boolean direction, int circleFrame, float offset, float moveSpeedMultiplier) {
         int directionInt = direction ? 1 : -1;
-        getNavigator().tryMoveToXYZ(target.posX + radius * Math.cos(directionInt * circleFrame * 0.5 * speed / radius + offset), target.posY, target.posZ + radius * Math.sin(directionInt * circleFrame * 0.5 * speed / radius + offset), speed * moveSpeedMultiplier);
+        this.getNavigator().tryMoveToXYZ(target.posX + radius * Math.cos(directionInt * circleFrame * 0.5 * speed / radius + offset), target.posY, target.posZ + radius * Math.sin(directionInt * circleFrame * 0.5 * speed / radius + offset), speed * moveSpeedMultiplier);
     }
 
     protected void repelEntities(float x, float y, float z, float radius) {
-        List<EntityLivingBase> nearestEntities = getEntityLivingBaseNearby(x, y, z, radius);
-        for (Entity entity : nearestEntities) {
+        List<EntityLivingBase> nearbyEntities = getEntityLivingBaseNearby(x, y, z, radius);
+        for (Entity entity : nearbyEntities) {
             double angle = (getAngleBetweenEntities(this, entity) + 90) * Math.PI / 180;
             entity.motionX = -0.1 * Math.cos(angle);
             entity.motionZ = -0.1 * Math.sin(angle);

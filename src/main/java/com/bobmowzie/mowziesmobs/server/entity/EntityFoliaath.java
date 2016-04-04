@@ -47,16 +47,16 @@ public class EntityFoliaath extends MowzieEntity {
 
     public EntityFoliaath(World world) {
         super(world);
-        getNavigator().setAvoidsWater(true);
-        tasks.addTask(0, new EntityAISwimming(this));
-        tasks.addTask(1, new AnimationAttackAI<>(this, ATTACK_ANIMATION, "mowziesmobs:foliaathbite1", "", 2, 4.5F, 1, 3));
-        tasks.addTask(1, new AnimationTakeDamage<>(this));
-        tasks.addTask(1, new AnimationDieAI<>(this));
-        tasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true));
-        tasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityCreature.class, 0, true));
-        setSize(0.5F, 2.5F);
-        experienceValue = 10;
-        addIntermittentAnimation(openMouth);
+        this.getNavigator().setAvoidsWater(true);
+        this.tasks.addTask(0, new EntityAISwimming(this));
+        this.tasks.addTask(1, new AnimationAttackAI<>(this, ATTACK_ANIMATION, "mowziesmobs:foliaathbite1", "", 2, 4.5F, 1, 3));
+        this.tasks.addTask(1, new AnimationTakeDamage<>(this));
+        this.tasks.addTask(1, new AnimationDieAI<>(this));
+        this.tasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true));
+        this.tasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityCreature.class, 0, true));
+        this.setSize(0.5F, 2.5F);
+        this.experienceValue = 10;
+        this.addIntermittentAnimation(openMouth);
     }
 
     @Override
@@ -69,8 +69,8 @@ public class EntityFoliaath extends MowzieEntity {
     @Override
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
-        getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(1);
-        getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(10);
+        this.getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(1);
+        this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(10);
     }
 
     @Override
@@ -91,8 +91,8 @@ public class EntityFoliaath extends MowzieEntity {
     @Override
     public void onUpdate() {
         super.onUpdate();
-        posX = prevPosX;
-        posZ = prevPosZ;
+        this.posX = prevPosX;
+        this.posZ = prevPosZ;
         // Open mouth animation
         if (getAnimation() == NO_ANIMATION && !activate.canIncreaseTimer()) {
             openMouth.update();
@@ -174,7 +174,6 @@ public class EntityFoliaath extends MowzieEntity {
         }
 
         if (getAttackTarget() != null) {
-
             rotationYawHead = targetAngle;
 
             if (targetDistance <= 4.5 && getAttackTarget().posY - posY >= -1 && getAttackTarget().posY - posY <= 2 && getAnimation() == NO_ANIMATION && active) {
@@ -213,8 +212,7 @@ public class EntityFoliaath extends MowzieEntity {
         }
         if (activateTarget == activateTime) {
             activateTarget = getActivateTarget();
-        }
-        if (activateTime < activateTarget && activate.canIncreaseTimer() || activateTime > activateTarget && activate.canDecreaseTimer()) {
+        } else if (activateTime < activateTarget && activate.canIncreaseTimer() || activateTime > activateTarget && activate.canDecreaseTimer()) {
             activate.increaseTimer(activateTime < activateTarget ? 1 : -2);
         }
     }
@@ -237,35 +235,31 @@ public class EntityFoliaath extends MowzieEntity {
     @Override
     public void applyEntityCollision(Entity entity) {
         if (entity.riddenByEntity != this && entity.ridingEntity != this) {
-            double dx = entity.posX - posX;
-            double dz = entity.posZ - posZ;
-            double majorAxis = MathHelper.abs_max(dx, dz);
-
+            double deltaX = entity.posX - posX;
+            double deltaZ = entity.posZ - posZ;
+            double majorAxis = MathHelper.abs_max(deltaX, deltaZ);
             if (majorAxis >= 0.009999999) {
                 majorAxis = MathHelper.sqrt_double(majorAxis);
-                dx /= majorAxis;
-                dz /= majorAxis;
+                deltaX /= majorAxis;
+                deltaZ /= majorAxis;
                 double reciprocal = 1 / majorAxis;
-
                 if (reciprocal > 1) {
                     reciprocal = 1;
                 }
-
-                dx *= reciprocal;
-                dz *= reciprocal;
-                dx *= 0.05;
-                dz *= 0.05;
-                dx *= 1 - entityCollisionReduction;
-                dz *= 1 - entityCollisionReduction;
-                addVelocity(dx, 0, dz);
-                entity.addVelocity(dx, 0, dz);
+                deltaX *= reciprocal;
+                deltaZ *= reciprocal;
+                deltaX *= 0.05;
+                deltaZ *= 0.05;
+                deltaX *= 1 - entityCollisionReduction;
+                deltaZ *= 1 - entityCollisionReduction;
+                this.addVelocity(deltaX, 0, deltaZ);
+                entity.addVelocity(deltaX, 0, deltaZ);
             }
         }
     }
 
     @Override
     public boolean canBeCollidedWith() {
-        // return active;
         return true;
     }
 
@@ -275,13 +269,10 @@ public class EntityFoliaath extends MowzieEntity {
             int x = MathHelper.floor_double(posX);
             int y = MathHelper.floor_double(boundingBox.minY);
             int z = MathHelper.floor_double(posZ);
-
             if (y < 63) {
                 return false;
             }
-
             Block block = worldObj.getBlock(x, y - 1, z);
-
             if (block == Blocks.grass || block.isLeaves(worldObj, x, y - 1, z)) {
                 return true;
             }
@@ -291,12 +282,12 @@ public class EntityFoliaath extends MowzieEntity {
 
     @Override
     public void onKillEntity(EntityLivingBase entity) {
-        addPotionEffect(new PotionEffect(Potion.regeneration.id, 300, 1, true));
+        this.addPotionEffect(new PotionEffect(Potion.regeneration.id, 300, 1, true));
     }
 
     @Override
     protected Item getDropItem() {
-        return rand.nextBoolean() ? ItemHandler.INSTANCE.itemFoliaathSeed : null;
+        return rand.nextBoolean() ? ItemHandler.INSTANCE.foliaath_seed : null;
     }
 
     @Override
@@ -330,11 +321,10 @@ public class EntityFoliaath extends MowzieEntity {
 
     @Override
     protected void func_145780_a(int p_145780_1_, int p_145780_2_, int p_145780_3_, Block p_145780_4_) {
-
     }
 
     @Override
     public Animation[] getAnimations() {
-        return new Animation[]{NO_ANIMATION, DIE_ANIMATION, HURT_ANIMATION, ATTACK_ANIMATION};
+        return new Animation[] {NO_ANIMATION, DIE_ANIMATION, HURT_ANIMATION, ATTACK_ANIMATION};
     }
 }

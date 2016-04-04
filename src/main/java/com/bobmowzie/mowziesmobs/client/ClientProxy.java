@@ -50,9 +50,9 @@ public class ClientProxy extends ServerProxy {
         RenderingRegistry.registerEntityRenderingHandler(EntitySunstrike.class, new RenderSunstrike());
         RenderingRegistry.registerEntityRenderingHandler(EntitySolarBeam.class, new RenderSolarBeam());
 
-        RenderHelper.registerItem3dRenderer(ItemHandler.INSTANCE.itemWroughtAxe, new ModelWroughtAxe(), new ResourceLocation(MowziesMobs.MODID, "textures/items/modeled/textureWroughtAxe.png"));
-        RenderHelper.registerItem3dRenderer(ItemHandler.INSTANCE.itemWroughtHelm, new ModelWroughtHelm(), new ResourceLocation(MowziesMobs.MODID, "textures/items/modeled/textureWroughtHelm.png"));
-        ItemBarakoaMask[] masks = ItemHandler.INSTANCE.itemBarakoaMasks;
+        RenderHelper.registerItem3dRenderer(ItemHandler.INSTANCE.wrought_axe, new ModelWroughtAxe(), new ResourceLocation(MowziesMobs.MODID, "textures/items/modeled/textureWroughtAxe.png"));
+        RenderHelper.registerItem3dRenderer(ItemHandler.INSTANCE.wrought_helmet, new ModelWroughtHelm(), new ResourceLocation(MowziesMobs.MODID, "textures/items/modeled/textureWroughtHelm.png"));
+        ItemBarakoaMask[] masks = ItemHandler.INSTANCE.barakoa_masks;
         for (int i = 0; i < masks.length; i++) {
             RenderHelper.registerItem3dRenderer(masks[i], new ModelBarakoaMask(), new ResourceLocation(MowziesMobs.MODID, String.format("textures/entity/textureTribesman%s.png", i + 1)));
         }

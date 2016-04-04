@@ -1,4 +1,4 @@
-package net.ilexiconn.llibrary.common.event;
+package net.ilexiconn.llibrary.server.event;
 
 import cpw.mods.fml.common.eventhandler.Cancelable;
 import cpw.mods.fml.common.eventhandler.Event;

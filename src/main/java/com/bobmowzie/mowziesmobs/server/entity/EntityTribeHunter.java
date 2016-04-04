@@ -64,9 +64,9 @@ public class EntityTribeHunter extends EntityTribesman {
     protected void updateCircling() {
         if (leader != null) {
             if (!attacking && targetDistance < 5) {
-                circleEntity(getAttackTarget(), 7, 0.3f, true, leader.circleTick, (float) ((index + 1) * (Math.PI * 2) / (leader.getPackSize() + 1)), 1.75f);
+                this.circleEntity(getAttackTarget(), 7, 0.3f, true, leader.circleTick, (float) ((index + 1) * (Math.PI * 2) / (leader.getPackSize() + 1)), 1.75f);
             } else {
-                circleEntity(getAttackTarget(), 7, 0.3f, true, leader.circleTick, (float) ((index + 1) * (Math.PI * 2) / (leader.getPackSize() + 1)), 1);
+                this.circleEntity(getAttackTarget(), 7, 0.3f, true, leader.circleTick, (float) ((index + 1) * (Math.PI * 2) / (leader.getPackSize() + 1)), 1);
             }
         } else {
             super.updateCircling();
@@ -81,7 +81,7 @@ public class EntityTribeHunter extends EntityTribesman {
                 if (leader != null) {
                     leader.setAttackTarget((EntityLivingBase) entity);
                 } else {
-                    setAttackTarget((EntityLivingBase) entity);
+                    this.setAttackTarget((EntityLivingBase) entity);
                 }
             }
         }
@@ -120,17 +120,16 @@ public class EntityTribeHunter extends EntityTribesman {
     }
 
     public void removeLeader() {
-        setLeaderUUID(ABSENT_LEADER);
-        leader = null;
-        setAttackTarget(null);
-        targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
-        targetTasks.addTask(4, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, true));
-        targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityCow.class, 0, true));
-        targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityPig.class, 0, true));
-        targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntitySheep.class, 0, true));
-        targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityChicken.class, 0, true));
-        targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityZombie.class, 0, true));
-
+        this.setLeaderUUID(ABSENT_LEADER);
+        this.leader = null;
+        this.setAttackTarget(null);
+        this.targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
+        this.targetTasks.addTask(4, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, true));
+        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityCow.class, 0, true));
+        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityPig.class, 0, true));
+        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntitySheep.class, 0, true));
+        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityChicken.class, 0, true));
+        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityZombie.class, 0, true));
     }
 
     @Override

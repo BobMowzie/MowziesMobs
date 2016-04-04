@@ -36,17 +36,17 @@ public class EntityTribeElite extends EntityTribesman {
 
     public EntityTribeElite(World world) {
         super(world);
-        targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
-        targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityCow.class, 0, true));
-        targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityPig.class, 0, true));
-        targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntitySheep.class, 0, true));
-        targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityChicken.class, 0, true));
-        targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityZombie.class, 0, true));
-        targetTasks.addTask(3, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, true));
-        tasks.addTask(2, new AnimationBlockAI<>(this, BLOCK_ANIMATION));
-        setMask(1);
-        setSize(0.7f, 2f);
-        experienceValue = 12;
+        this.targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
+        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityCow.class, 0, true));
+        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityPig.class, 0, true));
+        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntitySheep.class, 0, true));
+        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityChicken.class, 0, true));
+        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityZombie.class, 0, true));
+        this.targetTasks.addTask(3, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, true));
+        this.tasks.addTask(2, new AnimationBlockAI<>(this, BLOCK_ANIMATION));
+        this.setMask(1);
+        this.setSize(0.7f, 2f);
+        this.experienceValue = 12;
     }
 
     @Override
@@ -65,10 +65,11 @@ public class EntityTribeElite extends EntityTribesman {
         if (!worldObj.isRemote && pack != null) {
             float theta = (2 * (float) Math.PI / pack.size());
             for (int i = 0; i < pack.size(); i++) {
-                if (pack.get(i).getAttackTarget() == null) {
-                    pack.get(i).getNavigator().tryMoveToXYZ(posX + packRadius * MathHelper.cos(theta * i), posY, posZ + packRadius * MathHelper.sin(theta * i), 0.45);
-                    if (getDistanceToEntity(pack.get(i)) > 20) {
-                        pack.get(i).setPosition(posX + packRadius * MathHelper.cos(theta * i), posY, posZ + packRadius * MathHelper.sin(theta * i));
+                EntityTribeHunter hunter = pack.get(i);
+                if (hunter.getAttackTarget() == null) {
+                    hunter.getNavigator().tryMoveToXYZ(posX + packRadius * MathHelper.cos(theta * i), posY, posZ + packRadius * MathHelper.sin(theta * i), 0.45);
+                    if (getDistanceToEntity(hunter) > 20) {
+                        hunter.setPosition(posX + packRadius * MathHelper.cos(theta * i), posY, posZ + packRadius * MathHelper.sin(theta * i));
                     }
                 }
             }
@@ -100,10 +101,6 @@ public class EntityTribeElite extends EntityTribesman {
     @Override
     public Animation getHurtAnimation() {
         return null;
-    }
-
-    public int getpackSize() {
-        return pack.size();
     }
 
     public void removePackMember(EntityTribeHunter tribeHunter) {
@@ -170,8 +167,8 @@ public class EntityTribeElite extends EntityTribesman {
     @Override
     public boolean getCanSpawnHere() {
         List<EntityLivingBase> nearby = getEntityLivingBaseNearby(10, 4, 10, 10);
-        for (EntityLivingBase aNearby : nearby) {
-            if (aNearby instanceof EntityTribeElite) {
+        for (EntityLivingBase nearbyEntity : nearby) {
+            if (nearbyEntity instanceof EntityTribeElite) {
                 return false;
             }
         }
@@ -196,11 +193,7 @@ public class EntityTribeElite extends EntityTribesman {
     @Override
     protected void despawnEntity() {
 
-        Event.Result result = null;
-//        if (this.persistenceRequired)
-//        {
-//            this.entityAge = 0;
-//        }
+        Event.Result result;
         if ((this.entityAge & 0x1F) == 0x1F && (result = ForgeEventFactory.canEntityDespawn(this)) != Event.Result.DEFAULT) {
             if (result == Event.Result.DENY) {
                 this.entityAge = 0;
@@ -209,23 +202,23 @@ public class EntityTribeElite extends EntityTribesman {
                 this.setDead();
             }
         } else {
-            EntityPlayer entityplayer = this.worldObj.getClosestPlayerToEntity(this, -1.0D);
+            EntityPlayer closestPlayer = this.worldObj.getClosestPlayerToEntity(this, -1.0D);
 
-            if (entityplayer != null) {
-                double d0 = entityplayer.posX - this.posX;
-                double d1 = entityplayer.posY - this.posY;
-                double d2 = entityplayer.posZ - this.posZ;
-                double d3 = d0 * d0 + d1 * d1 + d2 * d2;
+            if (closestPlayer != null) {
+                double distX = closestPlayer.posX - this.posX;
+                double distY = closestPlayer.posY - this.posY;
+                double distZ = closestPlayer.posZ - this.posZ;
+                double distance = distX * distX + distY * distY + distZ * distZ;
 
-                if (this.canDespawn() && d3 > 16384.0D) {
+                if (this.canDespawn() && distance > 16384.0D) {
                     pack.forEach(EntityTribeHunter::setDead);
                     this.setDead();
                 }
 
-                if (this.entityAge > 600 && this.rand.nextInt(800) == 0 && d3 > 1024.0D && this.canDespawn()) {
+                if (this.entityAge > 600 && this.rand.nextInt(800) == 0 && distance > 1024.0D && this.canDespawn()) {
                     pack.forEach(EntityTribeHunter::setDead);
                     this.setDead();
-                } else if (d3 < 1024.0D) {
+                } else if (distance < 1024.0D) {
                     this.entityAge = 0;
                 }
             }

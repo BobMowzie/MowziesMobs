@@ -45,7 +45,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     public EntitySunstrike(World world, EntityLivingBase caster, int x, int y, int z) {
         this(world);
         this.caster = caster;
-        setPosition(x + 0.5F, y + 1.0625F, z + 0.5F);
+        this.setPosition(x + 0.5F, y + 1.0625F, z + 0.5F);
     }
 
     @Override
@@ -133,36 +133,34 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
                     MowziesMobs.PROXY.spawnOrbFX(worldObj, posX + ox, posY + oy, posZ + oz, posX, posZ);
                 }
             } else if (strikeTime > STRIKE_EXPLOSION) {
-                smolder();
+                this.smolder();
             } else if (strikeTime == STRIKE_EXPLOSION) {
-                spawnExplosionParticles(10);
+                this.spawnExplosionParticles(10);
             }
         } else {
-            moveDownToGround();
+            this.moveDownToGround();
             if (strikeTime >= STRIKE_LINGER || !worldObj.canBlockSeeTheSky(MathHelper.floor_double(posX), (int) Math.round(posY), MathHelper.floor_double(posZ))) {
-                setDead();
+                this.setDead();
             } else if (strikeTime == STRIKE_EXPLOSION) {
-                damageEntityLivingBaseNearby(3);
+                this.damageEntityLivingBaseNearby(3);
             }
         }
         strikeTime++;
     }
 
     public void moveDownToGround() {
-        MovingObjectPosition raytrace = rayTrace(this);
-        if (raytrace != null && raytrace.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && raytrace.sideHit == 1) {
-            Block b = worldObj.getBlock(raytrace.blockX, raytrace.blockY, raytrace.blockZ);
-            if (strikeTime > STRIKE_LENGTH && b != worldObj.getBlock(MathHelper.floor_double(posX), MathHelper.floor_double(posY - 1), MathHelper.floor_double(posZ))) {
-                setDead();
+        MovingObjectPosition rayTrace = rayTrace(this);
+        if (rayTrace != null && rayTrace.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && rayTrace.sideHit == 1) {
+            Block hitBlock = worldObj.getBlock(rayTrace.blockX, rayTrace.blockY, rayTrace.blockZ);
+            if (strikeTime > STRIKE_LENGTH && hitBlock != worldObj.getBlock(MathHelper.floor_double(posX), MathHelper.floor_double(posY - 1), MathHelper.floor_double(posZ))) {
+                this.setDead();
             }
-            setPosition(posX, raytrace.blockY + 1.0625F, posZ);
-            if (b instanceof BlockSlab && worldObj.getBlockMetadata(raytrace.blockX, raytrace.blockY, raytrace.blockZ) < 8) {
-                setPosition(posX, raytrace.blockY + 1.0625F - 0.5f, posZ);
+            this.setPosition(posX, rayTrace.blockY + 1.0625F, posZ);
+            if (hitBlock instanceof BlockSlab && worldObj.getBlockMetadata(rayTrace.blockX, rayTrace.blockY, rayTrace.blockZ) < 8) {
+                this.setPosition(posX, rayTrace.blockY + 1.0625F - 0.5f, posZ);
             }
-
-            S18PacketEntityTeleport teleport = new S18PacketEntityTeleport(this);
             for (EntityPlayer entityPlayer : ((WorldServer) worldObj).getEntityTracker().getTrackingPlayers(this)) {
-                ((EntityPlayerMP) entityPlayer).playerNetServerHandler.sendPacket(teleport);
+                ((EntityPlayerMP) entityPlayer).playerNetServerHandler.sendPacket(new S18PacketEntityTeleport(this));
             }
         }
     }
@@ -214,10 +212,10 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     }
 
     public void onSummon() {
-        setVariant(rand.nextLong());
+        this.setVariant(rand.nextLong());
     }
 
-    private static MovingObjectPosition rayTrace(EntitySunstrike entity) {
+    private MovingObjectPosition rayTrace(EntitySunstrike entity) {
         Vec3 startPos = Vec3.createVectorHelper(entity.posX, entity.posY, entity.posZ);
         Vec3 endPos = Vec3.createVectorHelper(entity.posX, 0, entity.posZ);
         return entity.worldObj.func_147447_a(startPos, endPos, false, true, true);

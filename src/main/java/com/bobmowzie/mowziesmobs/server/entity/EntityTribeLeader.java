@@ -23,7 +23,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeImmune {
-    int direction = 0;
+    private int direction = 0;
     public ControlledAnimation legsUp = new ControlledAnimation(15);
     public ControlledAnimation angryEyebrow = new ControlledAnimation(5);
     private boolean blocksByFeet = true;
@@ -53,23 +53,23 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
 
     public EntityTribeLeader(World world) {
         super(world);
-        targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
-        tasks.addTask(4, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, false));
-        tasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityZombie.class, 0, false));
-        tasks.addTask(2, new AnimationAI<>(this, BELLY_ANIMATION, false));
-        tasks.addTask(2, new AnimationAI<>(this, TALK_ANIMATION, false));
-        tasks.addTask(2, new AnimationSunStrike<>(this, SUNSTRIKE_ANIMATION));
-        tasks.addTask(2, new AnimationRadiusAttack<>(this, ATTACK_ANIMATION, 5, 5, 4.5f, 12));
-        tasks.addTask(2, new AnimationSpawnBarakoa<>(this, SPAWN_ANIMATION));
-        tasks.addTask(2, new AnimationSolarBeam<>(this, SOLAR_BEAM_ANIMATION));
-        tasks.addTask(3, new AnimationTakeDamage<>(this));
-        tasks.addTask(1, new AnimationDieAI<>(this));
+        this.targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
+        this.tasks.addTask(4, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, false));
+        this.tasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityZombie.class, 0, false));
+        this.tasks.addTask(2, new AnimationAI<>(this, BELLY_ANIMATION, false));
+        this.tasks.addTask(2, new AnimationAI<>(this, TALK_ANIMATION, false));
+        this.tasks.addTask(2, new AnimationSunStrike<>(this, SUNSTRIKE_ANIMATION));
+        this.tasks.addTask(2, new AnimationRadiusAttack<>(this, ATTACK_ANIMATION, 5, 5, 4.5f, 12));
+        this.tasks.addTask(2, new AnimationSpawnBarakoa<>(this, SPAWN_ANIMATION));
+        this.tasks.addTask(2, new AnimationSolarBeam<>(this, SOLAR_BEAM_ANIMATION));
+        this.tasks.addTask(3, new AnimationTakeDamage<>(this));
+        this.tasks.addTask(1, new AnimationDieAI<>(this));
         this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityTribesman.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
-        setSize(1.5f, 2.4f);
+        this.setSize(1.5f, 2.4f);
         if (getDirection() == 0) {
-            setDirection(rand.nextInt(4) + 1);
+            this.setDirection(rand.nextInt(4) + 1);
         }
     }
 
@@ -80,14 +80,14 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
 
     public EntityTribeLeader(World world, int direction) {
         this(world);
-        setDirection(direction);
+        this.setDirection(direction);
     }
 
     @Override
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
-        getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(1.0);
-        getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(MAX_HEALTH);
+        this.getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(1.0);
+        this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(MAX_HEALTH);
     }
 
     @Override
@@ -99,44 +99,19 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
     protected String getLivingSound() {
         if (getAnimation() == NO_ANIMATION) {
             if (getAttackTarget() == null) {
-                int i = MathHelper.getRandomIntegerInRange(rand, 1, 10);
-                if (i == 1) {
-                    playSound("mowziesmobs:barakoTalk1", 1.4f, 1);
-                } else if (i == 2) {
-                    playSound("mowziesmobs:barakoTalk2", 1.4f, 1);
-                } else if (i == 3) {
-                    playSound("mowziesmobs:barakoTalk3", 1.4f, 1);
-                } else if (i == 4) {
-                    playSound("mowziesmobs:barakoTalk4", 1.4f, 1);
-                } else if (i == 5) {
-                    playSound("mowziesmobs:barakoTalk5", 1.4f, 1);
-                } else if (i == 6) {
-                    playSound("mowziesmobs:barakoTalk6", 1.4f, 1);
-                }
-                if (i < 7) {
-                    setWhichDialogue(i);
+                int soundType = MathHelper.getRandomIntegerInRange(this.rand, 1, 10);
+                if (soundType < 7) {
+                    this.playSound("mowziesmobs:barakoTalk" + soundType, 1.4F, 1.0F);
+                    this.setWhichDialogue(soundType);
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, TALK_ANIMATION);
                 }
             } else {
-                int i = MathHelper.getRandomIntegerInRange(rand, 1, 10);
-                if (i == 1) {
-                    playSound("mowziesmobs:barakoAngry1", 1.4f, 1);
-                } else if (i == 2) {
-                    playSound("mowziesmobs:barakoAngry2", 1.4f, 1);
-                } else if (i == 3) {
-                    playSound("mowziesmobs:barakoAngry3", 1.4f, 1);
-                } else if (i == 4) {
-                    playSound("mowziesmobs:barakoAngry4", 1.4f, 1);
-                } else if (i == 5) {
-                    playSound("mowziesmobs:barakoAngry5", 1.4f, 1);
-                } else if (i == 6) {
-                    playSound("mowziesmobs:barakoAngry6", 1.4f, 1);
-                }
-//                if (i < 7)
-//                {
-//                    setWhichDialogue(i);
+                int soundType = MathHelper.getRandomIntegerInRange(rand, 1, 10);
+                if (soundType < 7) {
+                    this.playSound("mowziesmobs:barakoAngry" + soundType, 1.4F, 1.0F);
+//                    setWhichDialogue(soundType);
 //                    AnimationHandler.INSTANCE.sendAnimationMessage(this, 3);
-//                }
+                }
             }
         }
         return null;
@@ -149,7 +124,7 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
 
     @Override
     protected String getDeathSound() {
-        playSound("mowziesmobs:barakoDie", 1.4f, 1);
+        this.playSound("mowziesmobs:barakoDie", 1.4f, 1);
         return null;
     }
 
@@ -162,16 +137,15 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
         if (ticksExisted == 1) {
             direction = getDirection();
         }
-        repelEntities(2.2f, 2.5f, 2.2f, 2.2f);
-        rotationYaw = (direction - 1) * 90;
-        renderYawOffset = rotationYaw;
-        posX = prevPosX;
-        posZ = prevPosZ;
+        this.repelEntities(2.2f, 2.5f, 2.2f, 2.2f);
+        this.rotationYaw = (direction - 1) * 90;
+        this.renderYawOffset = rotationYaw;
+        this.posX = prevPosX;
+        this.posZ = prevPosZ;
 
         if (getAttackTarget() != null) {
             EntityLivingBase target = getAttackTarget();
-            setAngry(1);
-
+            this.setAngry(1);
             float entityHitAngle = (float) ((Math.atan2(target.posZ - posZ, target.posX - posX) * (180 / Math.PI) - 90) % 360);
             float entityAttackingAngle = rotationYaw % 360;
             if (entityHitAngle < 0) {
@@ -181,7 +155,6 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
                 entityAttackingAngle += 360;
             }
             float entityRelativeAngle = Math.abs(entityHitAngle - entityAttackingAngle);
-
             if (getAnimation() == NO_ANIMATION && getHealth() <= 70 && timeUntilLaser <= 0 && (entityRelativeAngle < 60 || entityRelativeAngle > 300) && rand.nextInt(50) == 0) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SOLAR_BEAM_ANIMATION);
                 timeUntilLaser = LASER_PAUSE;
@@ -196,7 +169,7 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
             }
         } else {
             if (!worldObj.isRemote) {
-                setAngry(0);
+                this.setAngry(0);
             }
         }
 
@@ -221,7 +194,7 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
         }
 
         if (getAnimation() == BELLY_ANIMATION && (getAnimationTick() == 9 || getAnimationTick() == 29)) {
-            playSound("mowziesmobs:barakoBelly", 1.4f, 1f);
+            this.playSound("mowziesmobs:barakoBelly", 1.4f, 1f);
         }
 
         if (getAnimation() == TALK_ANIMATION && getAnimationTick() == 1) {
@@ -231,13 +204,13 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
         if (getAnimation() == ATTACK_ANIMATION) {
             rotationYawHead = rotationYaw;
             if (getAnimationTick() == 1) {
-                playSound("mowziesmobs:barakoBurst", 1.5f, 1.5f);
+                this.playSound("mowziesmobs:barakoBurst", 1.5f, 1.5f);
             }
             if (getAnimationTick() == 10) {
                 if (worldObj.isRemote) {
                     spawnExplosionParticles(30);
                 }
-                playSound("mowziesmobs:barakoAttack", 1.5f, 0.9f);
+                this.playSound("mowziesmobs:barakoAttack", 1.5f, 0.9f);
             }
             if (getAnimationTick() <= 6 && worldObj.isRemote) {
                 int particleCount = 8;
@@ -282,7 +255,6 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
     private boolean checkBlocksByFeet() {
         Block blockLeft;
         Block blockRight;
-//        System.out.println(direction);
         if (direction == 1) {
             blockLeft = worldObj.getBlock(MathHelper.floor_double(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) + 1);
             blockRight = worldObj.getBlock(MathHelper.floor_double(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) + 1);
@@ -359,7 +331,6 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
 
     @Override
     protected void func_145780_a(int p_145780_1_, int p_145780_2_, int p_145780_3_, Block p_145780_4_) {
-
     }
 
     @Override

@@ -44,7 +44,7 @@ public class ItemBlowgun extends ItemBow {
             return event.result;
         }
 
-        if (player.capabilities.isCreativeMode || player.inventory.hasItem(ItemHandler.INSTANCE.itemDart)) {
+        if (player.capabilities.isCreativeMode || player.inventory.hasItem(ItemHandler.INSTANCE.dart)) {
             player.setItemInUse(stack, this.getMaxItemUseDuration(stack));
         }
 
@@ -64,7 +64,7 @@ public class ItemBlowgun extends ItemBow {
 
         boolean flag = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, stack) > 0;
 
-        if (flag || player.inventory.hasItem(ItemHandler.INSTANCE.itemDart)) {
+        if (flag || player.inventory.hasItem(ItemHandler.INSTANCE.dart)) {
             float f = (float) j / 20.0F;
             f = (f * f + f * 2.0F) / 3.0F;
             if (f > 0.1) {
@@ -107,7 +107,7 @@ public class ItemBlowgun extends ItemBow {
             if (flag) {
                 entityDart.canBePickedUp = 2;
             } else {
-                player.inventory.consumeInventoryItem(ItemHandler.INSTANCE.itemDart);
+                player.inventory.consumeInventoryItem(ItemHandler.INSTANCE.dart);
             }
 
             if (!world.isRemote) {
