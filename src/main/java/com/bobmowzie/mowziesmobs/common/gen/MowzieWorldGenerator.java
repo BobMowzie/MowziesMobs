@@ -12,18 +12,18 @@ import net.minecraft.world.chunk.IChunkProvider;
 
 import java.util.Random;
 
-public class MMWorldGenerator implements IWorldGenerator
+public class MowzieWorldGenerator implements IWorldGenerator
 {
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider)
     {
         switch (world.provider.dimensionId)
         {
-            case 0: //surface gen
+            case 0: //surface GENERATOR
                 generateSurface(world, random, chunkX * 16, chunkZ * 16);
-            case 1: //end gen
+            case 1: //end GENERATOR
                 generateEnd(world, random, chunkX * 16, chunkZ * 16);
-            case -1: //nether gen
+            case -1: //nether GENERATOR
                 generateNether(world, random, chunkX * 16, chunkZ * 16);
             default:
                 return;
@@ -127,13 +127,13 @@ public class MMWorldGenerator implements IWorldGenerator
 
     private void generateWroughtChamber(World world, Random random, int x, int y, int z, int direction)
     {
-        Structure structure = MowziesMobs.gen.structures.get(0);
+        Structure structure = MowzieStructureGenerator.structures.get(0);
         EntityWroughtnaut wroughtnaut = new EntityWroughtnaut(world);
         wroughtnaut.setPositionAndRotation(x + 0.5, y + 1, z + 9.5, 0, 0);
-        MowziesMobs.gen.setStructure(structure);
-        MowziesMobs.gen.setStructureFacing(direction);
-        MowziesMobs.gen.setDefaultOffset(structure.getOffsetX(), structure.getOffsetY(), structure.getOffsetZ());
-        MowziesMobs.gen.generate(world, random, x, y - 1, z);
+        MowziesMobs.GENERATOR.setStructure(structure);
+        MowziesMobs.GENERATOR.setStructureFacing(direction);
+        MowziesMobs.GENERATOR.setDefaultOffset(structure.getOffsetX(), structure.getOffsetY(), structure.getOffsetZ());
+        MowziesMobs.GENERATOR.generate(world, random, x, y - 1, z);
         //System.out.println(x + ", " + y + ", " + z);
         world.spawnEntityInWorld(wroughtnaut);
     }

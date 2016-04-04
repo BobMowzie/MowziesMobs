@@ -9,6 +9,6 @@ public class ItemSpear extends ItemSword {
         super(ToolMaterial.STONE);
         setUnlocalizedName("spear");
         setTextureName(MowziesMobs.MODID + ":spear");
-        setCreativeTab(CreativeTabHandler.INSTANCE.generic);
+        setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
     }
 }

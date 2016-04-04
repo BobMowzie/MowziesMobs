@@ -1,10 +1,10 @@
-package com.bobmowzie.mowziesmobs.common.animation;
+package com.bobmowzie.mowziesmobs.common.ai.animation;
 
-import com.bobmowzie.mowziesmobs.common.entity.MMEntityBase;
+import com.bobmowzie.mowziesmobs.common.entity.MowzieEntity;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 
-public class AnimationAI<T extends MMEntityBase & IAnimatedEntity> extends net.ilexiconn.llibrary.server.animation.AnimationAI<T> {
+public class AnimationAI<T extends MowzieEntity & IAnimatedEntity> extends net.ilexiconn.llibrary.server.animation.AnimationAI<T> {
     protected T animatingEntity;
     protected Animation animation;
 

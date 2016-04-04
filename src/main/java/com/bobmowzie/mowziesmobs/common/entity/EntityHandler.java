@@ -16,7 +16,7 @@ import java.util.Map;
 public enum EntityHandler {
     INSTANCE;
 
-    private final Map<Integer, MMEntityEggInfo> ENTITY_EGGS = new LinkedHashMap<>();
+    private final Map<Integer, MowzieEntityEggInfo> ENTITY_EGGS = new LinkedHashMap<>();
 
     private int nextEntityId;
 
@@ -24,7 +24,7 @@ public enum EntityHandler {
         int entityId = nextEntityId();
         EntityRegistry.registerModEntity(entityClass, name, entityId, MowziesMobs.INSTANCE, 64, 1, true);
         if (addEgg) {
-            ENTITY_EGGS.put(entityId, new MMEntityEggInfo(entityId, mainColor, subColor, name));
+            ENTITY_EGGS.put(entityId, new MowzieEntityEggInfo(entityId, mainColor, subColor));
         }
         if (addSpawn) {
             EntityRegistry.addSpawn(entityClass, frequency, minGroup, maxGroup, typeOfCreature, biomes);
@@ -35,7 +35,7 @@ public enum EntityHandler {
         return nextEntityId++;
     }
 
-    public MMEntityEggInfo getEntityEggInfo(int id) {
+    public MowzieEntityEggInfo getEntityEggInfo(int id) {
         return ENTITY_EGGS.get(id);
     }
 
@@ -43,7 +43,7 @@ public enum EntityHandler {
         return ENTITY_EGGS.containsKey(id);
     }
 
-    public Iterator<MMEntityEggInfo> getEntityEggInfoIterator() {
+    public Iterator<MowzieEntityEggInfo> getEntityEggInfoIterator() {
         return ENTITY_EGGS.values().iterator();
     }
 

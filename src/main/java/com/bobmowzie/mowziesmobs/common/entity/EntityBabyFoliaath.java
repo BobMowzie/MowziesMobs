@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
-import com.bobmowzie.mowziesmobs.common.animation.AnimationBabyFoliaathEatAI;
+import com.bobmowzie.mowziesmobs.common.ai.animation.AnimationBabyFoliaathEatAI;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
@@ -19,7 +19,7 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EntityBabyFoliaath extends MMEntityBase {
+public class EntityBabyFoliaath extends MowzieEntity {
     public ControlledAnimation activate = new ControlledAnimation(5);
     private int eatingItemID;
     private double prevActivate;

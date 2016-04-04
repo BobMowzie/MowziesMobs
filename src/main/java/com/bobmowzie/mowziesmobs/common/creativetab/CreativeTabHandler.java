@@ -9,10 +9,10 @@ import net.minecraft.item.Item;
 public enum CreativeTabHandler {
     INSTANCE;
 
-    public CreativeTabs generic;
+    public CreativeTabs creativeTab;
 
     public void onInit() {
-        generic = new CreativeTabs("mowziesmobs.generic") {
+        creativeTab = new CreativeTabs("mowziesmobs.creativeTab") {
             @Override
             @SideOnly(Side.CLIENT)
             public Item getTabIconItem() {

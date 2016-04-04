@@ -8,7 +8,7 @@ import com.bobmowzie.mowziesmobs.common.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.common.message.MessagePlayerSolarBeam;
 import com.bobmowzie.mowziesmobs.common.message.MessagePlayerSummonSunstrike;
 import com.bobmowzie.mowziesmobs.common.potion.PotionHandler;
-import com.bobmowzie.mowziesmobs.common.property.MMPlayerExtension;
+import com.bobmowzie.mowziesmobs.common.property.MowziePlayerExtension;
 import com.bobmowzie.mowziesmobs.common.property.WroughtAxeSwingProperty;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -108,8 +108,8 @@ public enum ServerEventHandler {
                 }
             }
         }
-        if (((MMPlayerExtension) event.player.getExtendedProperties("mm:player")).untilSunstrike > 0) {
-            ((MMPlayerExtension) event.player.getExtendedProperties("mm:player")).untilSunstrike--;
+        if (((MowziePlayerExtension) event.player.getExtendedProperties("mm:player")).untilSunstrike > 0) {
+            ((MowziePlayerExtension) event.player.getExtendedProperties("mm:player")).untilSunstrike--;
         }
         if (event.side == Side.CLIENT) {
             return;
@@ -128,7 +128,7 @@ public enum ServerEventHandler {
     @SubscribeEvent
     public void onEntityConstruction(EntityEvent.EntityConstructing event) {
         if (event.entity instanceof EntityPlayer) {
-            event.entity.registerExtendedProperties("mm:player", new MMPlayerExtension());
+            event.entity.registerExtendedProperties("mm:player", new MowziePlayerExtension());
         }
     }
 
@@ -140,13 +140,13 @@ public enum ServerEventHandler {
 
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (event.action != PlayerInteractEvent.Action.LEFT_CLICK_BLOCK && event.world.isRemote && event.entityPlayer.inventory.getCurrentItem() == null && event.entityPlayer.isPotionActive(PotionHandler.INSTANCE.sunsBlessing) && ((MMPlayerExtension) event.entityPlayer.getExtendedProperties("mm:player")).untilSunstrike <= 0) {
+        if (event.action != PlayerInteractEvent.Action.LEFT_CLICK_BLOCK && event.world.isRemote && event.entityPlayer.inventory.getCurrentItem() == null && event.entityPlayer.isPotionActive(PotionHandler.INSTANCE.sunsBlessing) && ((MowziePlayerExtension) event.entityPlayer.getExtendedProperties("mm:player")).untilSunstrike <= 0) {
             if (event.entityPlayer.isSneaking()) {
                 MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSolarBeam());
-                ((MMPlayerExtension) event.entityPlayer.getExtendedProperties("mm:player")).untilSunstrike = 150;
+                ((MowziePlayerExtension) event.entityPlayer.getExtendedProperties("mm:player")).untilSunstrike = 150;
             } else {
                 MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSummonSunstrike());
-                ((MMPlayerExtension) event.entityPlayer.getExtendedProperties("mm:player")).untilSunstrike = 90;
+                ((MowziePlayerExtension) event.entityPlayer.getExtendedProperties("mm:player")).untilSunstrike = 90;
             }
         }
     }

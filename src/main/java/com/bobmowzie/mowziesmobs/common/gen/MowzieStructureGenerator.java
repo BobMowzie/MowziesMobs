@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MMStructureGenerator extends StructureGeneratorBase {
+public class MowzieStructureGenerator extends StructureGeneratorBase {
     /**
      * List storing all structures currently available
      */
@@ -43,21 +43,21 @@ public class MMStructureGenerator extends StructureGeneratorBase {
         structures.add(barakoaHouseExtra);
     }
 
-    public MMStructureGenerator() {
+    public MowzieStructureGenerator() {
         // TODO Auto-generated constructor stub
     }
 
-    public MMStructureGenerator(Entity entity, int[][][][] blocks) {
+    public MowzieStructureGenerator(Entity entity, int[][][][] blocks) {
         super(entity, blocks);
         // TODO Auto-generated constructor stub
     }
 
-    public MMStructureGenerator(Entity entity, int[][][][] blocks, int structureFacing) {
+    public MowzieStructureGenerator(Entity entity, int[][][][] blocks, int structureFacing) {
         super(entity, blocks, structureFacing);
         // TODO Auto-generated constructor stub
     }
 
-    public MMStructureGenerator(Entity entity, int[][][][] blocks, int structureFacing, int offX, int offY, int offZ) {
+    public MowzieStructureGenerator(Entity entity, int[][][][] blocks, int structureFacing, int offX, int offY, int offZ) {
         super(entity, blocks, structureFacing, offX, offY, offZ);
         // TODO Auto-generated constructor stub
     }

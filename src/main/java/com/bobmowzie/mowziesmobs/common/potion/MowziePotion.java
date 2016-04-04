@@ -9,16 +9,13 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
 
-public class MMPotion extends Potion {
+public class MowziePotion extends Potion {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/gui/container/potions.png");
-
     private static final float TEXTURE_SIZE = 64;
-
     private static final int ICON_SIZE = 18;
-
     private static final int ICON_ROW_LENGTH = 3;
 
-    protected MMPotion(int id, boolean isBadEffect, int liquidColor) {
+    public MowziePotion(int id, boolean isBadEffect, int liquidColor) {
         super(id, isBadEffect, liquidColor);
     }
 
@@ -33,7 +30,7 @@ public class MMPotion extends Potion {
     }
 
     @Override
-    public final MMPotion setIconIndex(int x, int y) {
+    public final MowziePotion setIconIndex(int x, int y) {
         super.setIconIndex(x + y * ICON_ROW_LENGTH, 0);
         return this;
     }

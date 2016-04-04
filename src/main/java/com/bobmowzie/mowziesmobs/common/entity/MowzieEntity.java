@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.IntermittentAnimation;
-import com.bobmowzie.mowziesmobs.common.animation.AnimationAI;
+import com.bobmowzie.mowziesmobs.common.ai.animation.AnimationAI;
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import io.netty.buffer.ByteBuf;
 import net.ilexiconn.llibrary.server.animation.Animation;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class MMEntityBase extends EntityCreature implements IEntityAdditionalSpawnData, IAnimatedEntity, IntermittentAnimatableEntity {
+public abstract class MowzieEntity extends EntityCreature implements IEntityAdditionalSpawnData, IAnimatedEntity, IntermittentAnimatableEntity {
     private static final byte START_IA_HEALTH_UPDATE_ID = 4;
 
     public int frame;
@@ -34,7 +34,7 @@ public abstract class MMEntityBase extends EntityCreature implements IEntityAddi
 
     private List<IntermittentAnimation> intermittentAnimations = new ArrayList<>();
 
-    public MMEntityBase(World world) {
+    public MowzieEntity(World world) {
         super(world);
     }
 

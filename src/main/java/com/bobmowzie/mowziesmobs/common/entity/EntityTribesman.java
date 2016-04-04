@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
-import com.bobmowzie.mowziesmobs.common.animation.*;
+import com.bobmowzie.mowziesmobs.common.ai.animation.*;
 import com.bobmowzie.mowziesmobs.common.item.ItemHandler;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
@@ -16,7 +16,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-public class EntityTribesman extends MMEntityBase implements IRangedAttackMob, LeaderSunstrikeImmune {
+public class EntityTribesman extends MowzieEntity implements IRangedAttackMob, LeaderSunstrikeImmune {
     protected boolean attacking = false;
     protected int timeSinceAttack = 0;
     public ControlledAnimation doWalk = new ControlledAnimation(3);

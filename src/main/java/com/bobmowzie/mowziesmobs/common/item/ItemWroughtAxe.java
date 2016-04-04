@@ -17,7 +17,7 @@ import net.minecraft.world.World;
 public class ItemWroughtAxe extends ItemSword {
     public ItemWroughtAxe() {
         super(Item.ToolMaterial.IRON);
-        setCreativeTab(CreativeTabHandler.INSTANCE.generic);
+        setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
         setUnlocalizedName("wroughtAxe");
     }
 

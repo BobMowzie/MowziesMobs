@@ -47,7 +47,7 @@ public abstract class StructureGeneratorBase extends WorldGenerator
 	/** Stores amount to offset structure's location in the world, if any. */
 	private int offsetX = 0, offsetY = 0, offsetZ = 0;
 
-	/** When true all blocks will be set to air within the structure's area. */
+	/** When true all block will be set to air within the structure's area. */
 	private boolean removeStructure = false;
 
 	/** Stores the data for current layer. See StructureArray.java for information on how create a blockArray. */
@@ -56,11 +56,11 @@ public abstract class StructureGeneratorBase extends WorldGenerator
 	/** Stores a list of the structure to build, in 'layers' made up of individual blockArrays. */
 	private final List<int[][][][]> blockArrayList = new LinkedList();
 
-	/** Stores blocks that need to be set post-generation, such as torches */
+	/** Stores block that need to be set post-generation, such as torches */
 	private final List<BlockData> postGenBlocks = new LinkedList();
 
 	/**
-	 * Basic constructor. Sets generator to notify other blocks of blocks it changes.
+	 * Basic constructor. Sets generator to notify other block of block it changes.
 	 */
 	public StructureGeneratorBase() {
 		super(true);
@@ -508,7 +508,7 @@ public abstract class StructureGeneratorBase extends WorldGenerator
 	}
 
 	/**
-	 * Sets blocks flagged for post-gen processing; triggers onCustomBlockAdded method where applicable
+	 * Sets block flagged for post-GENERATOR processing; triggers onCustomBlockAdded method where applicable
 	 */
 	private final void doPostGenProcessing(World world) {
 		int fakeID, realID;
@@ -521,7 +521,7 @@ public abstract class StructureGeneratorBase extends WorldGenerator
 				continue;
 			}
 
-			LogHelper.fine("Post-gen processing for initial ID: " + fakeID + ", returned id from getRealID: " + realID);
+			LogHelper.fine("Post-GENERATOR processing for initial ID: " + fakeID + ", returned id from getRealID: " + realID);
 			Block realBlock = Block.getBlockById(Math.abs(realID));
 			if (realID >= 0 || world.isAirBlock(block.getPosX(), block.getPosY(), block.getPosZ())
 					|| !world.getBlock(block.getPosX(), block.getPosY(), block.getPosZ()).getMaterial().blocksMovement())

@@ -24,9 +24,9 @@ public enum ItemHandler {
         itemMobRemover = new ItemMobRemover();
         itemWroughtAxe = new ItemWroughtAxe();
         itemWroughtHelm = new ItemWroughtHelm();
-        BarakoaMask[] masks = BarakoaMask.values();
-        itemBarakoaMasks = new ItemBarakoaMask[masks.length];
-        for (int i = 0; i < masks.length; itemBarakoaMasks[i] = new ItemBarakoaMask(masks[i++])) {
+        itemBarakoaMasks = new ItemBarakoaMask[ItemBarakoaMask.BarakoaMaskType.VALUES.length];
+        for (int i = 0; i < ItemBarakoaMask.BarakoaMaskType.VALUES.length; i++) {
+            itemBarakoaMasks[i] = new ItemBarakoaMask(ItemBarakoaMask.BarakoaMaskType.VALUES[i]);
         }
         itemDart = new ItemDart();
         itemSpear = new ItemSpear();

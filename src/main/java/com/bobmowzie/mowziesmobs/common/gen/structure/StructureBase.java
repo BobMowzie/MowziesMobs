@@ -5,7 +5,7 @@ import net.minecraft.world.World;
 
 public class StructureBase {
     public static void replaceBlocks(Block toReplace, Block replacement, int x, int y, int z, int length, int height, int width, World world) {
-//        System.out.println("Replacing blocks beginning at" + x + ", " + y + ", " + z);
+//        System.out.println("Replacing block beginning at" + x + ", " + y + ", " + z);
         int i = 0;
         for (int x_ = x; x_ <= x + length; x_++) {
             for (int z_ = z; z_ <= z + width; z_++) {
@@ -19,11 +19,11 @@ public class StructureBase {
                 }
             }
         }
-//        System.out.println("Replacing " + i + " blocks");
+//        System.out.println("Replacing " + i + " block");
     }
 
     public static void replaceBlocks(Block toReplace, int toReplaceMetaData, Block replacement, int replacementMetaData, int x, int y, int z, int length, int height, int width, World world) {
-//        System.out.println("Replacing blocks beginning at" + x + ", " + y + ", " + z);
+//        System.out.println("Replacing block beginning at" + x + ", " + y + ", " + z);
         int i = 0;
         for (int x_ = x; x_ <= x + length; x_++) {
             for (int z_ = z; z_ <= z + width; z_++) {
@@ -37,6 +37,6 @@ public class StructureBase {
                 }
             }
         }
-//        System.out.println("Replacing " + i + " blocks");
+//        System.out.println("Replacing " + i + " block");
     }
 }

@@ -19,7 +19,7 @@ public class ItemWroughtHelm extends ItemArmor {
     public ItemWroughtHelm() {
         super(ArmorMaterial.IRON, 2, 0);
         setUnlocalizedName("wroughtHelm");
-        setCreativeTab(CreativeTabHandler.INSTANCE.generic);
+        setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
     }
 
     @Override

@@ -3,8 +3,8 @@ package com.bobmowzie.mowziesmobs.common.entity;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
-import com.bobmowzie.mowziesmobs.common.ai.AINearestAttackableTargetBarakoa;
-import com.bobmowzie.mowziesmobs.common.animation.*;
+import com.bobmowzie.mowziesmobs.common.ai.BarakoaAttackTargetAI;
+import com.bobmowzie.mowziesmobs.common.ai.animation.*;
 import com.bobmowzie.mowziesmobs.common.item.ItemTestStructure;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
@@ -22,7 +22,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeImmune {
+public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeImmune {
     int direction = 0;
     public ControlledAnimation legsUp = new ControlledAnimation(15);
     public ControlledAnimation angryEyebrow = new ControlledAnimation(5);
@@ -54,7 +54,7 @@ public class EntityTribeLeader extends MMEntityBase implements LeaderSunstrikeIm
     public EntityTribeLeader(World world) {
         super(world);
         targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
-        tasks.addTask(4, new AINearestAttackableTargetBarakoa(this, EntityPlayer.class, 0, false));
+        tasks.addTask(4, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, false));
         tasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityZombie.class, 0, false));
         tasks.addTask(2, new AnimationAI<>(this, BELLY_ANIMATION, false));
         tasks.addTask(2, new AnimationAI<>(this, TALK_ANIMATION, false));

@@ -444,7 +444,7 @@ public class GenHelper
 	}
 
 	/**
-	 * Fixes blocks metadata after they've been placed in the world, specifically for blocks
+	 * Fixes block metadata after they've been placed in the world, specifically for block
 	 * such as rails, furnaces, etc. whose orientation is automatically determined by the block
 	 * when placed via the onBlockAdded method.
 	 */

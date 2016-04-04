@@ -2,9 +2,9 @@ package com.bobmowzie.mowziesmobs.common.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.client.model.tools.IntermittentAnimation;
-import com.bobmowzie.mowziesmobs.common.animation.AnimationAttackAI;
-import com.bobmowzie.mowziesmobs.common.animation.AnimationDieAI;
-import com.bobmowzie.mowziesmobs.common.animation.AnimationTakeDamage;
+import com.bobmowzie.mowziesmobs.common.ai.animation.AnimationAttackAI;
+import com.bobmowzie.mowziesmobs.common.ai.animation.AnimationDieAI;
+import com.bobmowzie.mowziesmobs.common.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.common.item.ItemHandler;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
@@ -25,7 +25,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-public class EntityFoliaath extends MMEntityBase {
+public class EntityFoliaath extends MowzieEntity {
     private static final int CAN_DESPAWN_ID = 30;
     private static final int ACTIVATE_TARGET_ID = 31;
 

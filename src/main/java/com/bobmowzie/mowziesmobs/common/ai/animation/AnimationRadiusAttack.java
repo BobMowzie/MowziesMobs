@@ -1,8 +1,8 @@
-package com.bobmowzie.mowziesmobs.common.animation;
+package com.bobmowzie.mowziesmobs.common.ai.animation;
 
 import com.bobmowzie.mowziesmobs.common.entity.EntityTribeLeader;
 import com.bobmowzie.mowziesmobs.common.entity.LeaderSunstrikeImmune;
-import com.bobmowzie.mowziesmobs.common.entity.MMEntityBase;
+import com.bobmowzie.mowziesmobs.common.entity.MowzieEntity;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.entity.EntityLivingBase;
@@ -10,7 +10,7 @@ import net.minecraft.util.DamageSource;
 
 import java.util.List;
 
-public class AnimationRadiusAttack<T extends MMEntityBase & IAnimatedEntity> extends AnimationAI<T> {
+public class AnimationRadiusAttack<T extends MowzieEntity & IAnimatedEntity> extends AnimationAI<T> {
     private float radius;
     private int damage;
     private float knockBack;

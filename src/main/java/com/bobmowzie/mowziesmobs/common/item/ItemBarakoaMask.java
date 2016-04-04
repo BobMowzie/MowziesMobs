@@ -12,21 +12,21 @@ import net.minecraft.item.ItemStack;
 public class ItemBarakoaMask extends ItemArmor {
     static final String ARMOR_TEXTURE_FORMAT = MowziesMobs.MODID + ":textures/entity/textureTribesman%s.png";
 
-    private final BarakoaMask type;
+    private final BarakoaMaskType type;
 
-    public ItemBarakoaMask(BarakoaMask type) {
+    public ItemBarakoaMask(BarakoaMaskType type) {
         super(ArmorMaterial.CLOTH, 2, 0);
         this.type = type;
         setUnlocalizedName(type.getUnlocalizedName());
-        setCreativeTab(CreativeTabHandler.INSTANCE.generic);
+        setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
     }
 
-    public BarakoaMask getType() {
+    public BarakoaMaskType getType() {
         return type;
     }
 
     public int getPotionEffectId() {
-        return type.getPotionEffectId();
+        return type.getPotionID();
     }
 
     @Override
@@ -60,5 +60,34 @@ public class ItemBarakoaMask extends ItemArmor {
     @Override
     public ArmorMaterial getArmorMaterial() {
         return ArmorMaterial.CHAIN;
+    }
+
+    public enum BarakoaMaskType {
+        FURY(5), FEAR(1), RAGE(3), BLISS(8), MISERY(11);
+
+        private String unlocalizedName;
+        private int potionID;
+        private String armorTexture;
+
+        BarakoaMaskType(int potionID) {
+            this.potionID = potionID;
+            int id = ordinal() + 1;
+            this.unlocalizedName = "barakoaMask" + id;
+            this.armorTexture = String.format(ItemBarakoaMask.ARMOR_TEXTURE_FORMAT, id);
+        }
+
+        public String getUnlocalizedName() {
+            return unlocalizedName;
+        }
+
+        public int getPotionID() {
+            return potionID;
+        }
+
+        public String getArmorTexture() {
+            return armorTexture;
+        }
+
+        public static final BarakoaMaskType[] VALUES = values();
     }
 }

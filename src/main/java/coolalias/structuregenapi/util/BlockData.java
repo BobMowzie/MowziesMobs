@@ -18,7 +18,7 @@
 package coolalias.structuregenapi.util;
 
 /**
- * Stores all data needed for post-gen processing, specifically for custom 'hooks'
+ * Stores all data needed for post-GENERATOR processing, specifically for custom 'hooks'
  */
 public class BlockData
 {

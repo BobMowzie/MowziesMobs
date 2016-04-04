@@ -1,12 +1,12 @@
-package com.bobmowzie.mowziesmobs.common.animation;
+package com.bobmowzie.mowziesmobs.common.ai.animation;
 
-import com.bobmowzie.mowziesmobs.common.entity.MMEntityBase;
+import com.bobmowzie.mowziesmobs.common.entity.MowzieEntity;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 
-public class AnimationAttackAI<T extends MMEntityBase & IAnimatedEntity> extends AnimationAI<T> {
+public class AnimationAttackAI<T extends MowzieEntity & IAnimatedEntity> extends AnimationAI<T> {
     protected EntityLivingBase entityTarget;
     protected String attackSound;
     protected float knockback = 1;

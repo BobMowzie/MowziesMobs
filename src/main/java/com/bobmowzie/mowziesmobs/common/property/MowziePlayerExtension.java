@@ -5,7 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 
-public class MMPlayerExtension implements IExtendedEntityProperties {
+public class MowziePlayerExtension implements IExtendedEntityProperties {
     public int untilSunstrike = 0;
 
     @Override

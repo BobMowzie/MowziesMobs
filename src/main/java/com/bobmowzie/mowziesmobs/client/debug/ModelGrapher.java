@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.client.debug;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelBase;
 import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelRenderer;
-import com.bobmowzie.mowziesmobs.common.entity.MMEntityBase;
+import com.bobmowzie.mowziesmobs.common.entity.MowzieEntity;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -62,7 +62,7 @@ public final class ModelGrapher {
     private ModelGrapher() {
     }
 
-    private void setWatchingModel(MMEntityBase entity) {
+    private void setWatchingModel(MowzieEntity entity) {
         ticks.clear();
         watchingEntity = entity;
         watchingPart = 0;
@@ -104,11 +104,11 @@ public final class ModelGrapher {
             return;
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_F)) {
-            List<MMEntityBase> nearEntities = mc.theWorld.getEntitiesWithinAABB(MMEntityBase.class, mc.thePlayer.boundingBox.expand(16, 16, 16));
+            List<MowzieEntity> nearEntities = mc.theWorld.getEntitiesWithinAABB(MowzieEntity.class, mc.thePlayer.boundingBox.expand(16, 16, 16));
             if (nearEntities.size() > 0) {
                 double minDist = Double.MAX_VALUE;
-                MMEntityBase nearestEntity = null;
-                for (MMEntityBase entity : nearEntities) {
+                MowzieEntity nearestEntity = null;
+                for (MowzieEntity entity : nearEntities) {
                     double dist = mc.thePlayer.getDistanceSqToEntity(entity);
                     if (dist < minDist) {
                         minDist = dist;

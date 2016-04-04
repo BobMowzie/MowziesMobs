@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.common.gen.structure.barakoa;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.common.blocks.BlockHandler;
+import com.bobmowzie.mowziesmobs.common.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.common.entity.EntityTribeLeader;
 import com.bobmowzie.mowziesmobs.common.gen.structure.StructureBase;
 import coolalias.structuregenapi.util.Structure;
@@ -434,11 +434,11 @@ public class StructureBarakoThrone extends StructureBase {
                 if (direction == 2) { x += 3; z -= 10;}
 //                if (direction == 3) { x -= 20;}
                 if (direction == 4) { x -= 16; z -= 3;}
-                Structure structure = MowziesMobs.gen.structures.get(3);
-                MowziesMobs.gen.setStructure(structure);
-                MowziesMobs.gen.setStructureFacing(direction);
-                MowziesMobs.gen.setDefaultOffset(structure.getOffsetX(), structure.getOffsetY(), structure.getOffsetZ());
-                MowziesMobs.gen.generate(world, new Random(), x, y - 1, z);
+                Structure structure = MowziesMobs.GENERATOR.structures.get(3);
+                MowziesMobs.GENERATOR.setStructure(structure);
+                MowziesMobs.GENERATOR.setStructureFacing(direction);
+                MowziesMobs.GENERATOR.setDefaultOffset(structure.getOffsetX(), structure.getOffsetY(), structure.getOffsetZ());
+                MowziesMobs.GENERATOR.generate(world, new Random(), x, y - 1, z);
 //                System.out.println("Beginning generation at " + x + ", " + y + ", " + z);
                 if (direction == 1) {
                         replaceBlocks(Blocks.obsidian, BlockHandler.INSTANCE.blockPaintedAcacia, x - 3, y - 1, z, 7, 10, 13, world);

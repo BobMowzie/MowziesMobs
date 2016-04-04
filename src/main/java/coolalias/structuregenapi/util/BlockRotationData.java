@@ -26,7 +26,7 @@ import net.minecraft.init.Blocks;
 
 public class BlockRotationData
 {
-	/** Valid rotation types. Each type is handled like vanilla blocks of this kind. */
+	/** Valid rotation types. Each type is handled like vanilla block of this kind. */
 	public enum Rotation {
 		/** 0 - north/south, 1 - east/west */
 		ANVIL,
@@ -80,7 +80,7 @@ public class BlockRotationData
 		WOOD
 	}
 
-	/** A mapping of blocks to rotation type for handling rotation. Allows custom blocks to be added. */
+	/** A mapping of block to rotation type for handling rotation. Allows custom block to be added. */
 	private static final Map<Block, Rotation> blockRotationData = new HashMap<>();
 
 	/**
@@ -91,7 +91,7 @@ public class BlockRotationData
 	}
 
 	/**
-	 * Maps a block to a specified rotation type. Allows custom blocks to rotate with structure.
+	 * Maps a block to a specified rotation type. Allows custom block to rotate with structure.
 	 * @param block a valid block
 	 * @param rotationType types predefined by enumerated type ROTATION
 	 * @return false if a rotation type has already been specified for the given block
@@ -101,7 +101,7 @@ public class BlockRotationData
 	}
 
 	/**
-	 * Maps a block to a specified rotation type. Allows custom blocks to rotate with structure.
+	 * Maps a block to a specified rotation type. Allows custom block to rotate with structure.
 	 * @param block a valid block
 	 * @param rotationType types predefined by enumerated type ROTATION
 	 * @param override if true, will override the previously set rotation data for specified block
@@ -122,7 +122,7 @@ public class BlockRotationData
 		return true;
 	}
 
-	/** Set rotation data for vanilla blocks */
+	/** Set rotation data for vanilla block */
 	static
 	{
 		blockRotationData.put(Blocks.anvil, Rotation.ANVIL);

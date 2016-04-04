@@ -1,13 +1,13 @@
-package com.bobmowzie.mowziesmobs.common.animation;
+package com.bobmowzie.mowziesmobs.common.ai.animation;
 
 import com.bobmowzie.mowziesmobs.common.entity.EntitySunstrike;
-import com.bobmowzie.mowziesmobs.common.entity.MMEntityBase;
+import com.bobmowzie.mowziesmobs.common.entity.MowzieEntity;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.MathHelper;
 
-public class AnimationSunStrike<T extends MMEntityBase & IAnimatedEntity> extends AnimationAI<T> {
+public class AnimationSunStrike<T extends MowzieEntity & IAnimatedEntity> extends AnimationAI<T> {
     protected EntityLivingBase entityTarget;
     private double prevX;
     private double prevZ;

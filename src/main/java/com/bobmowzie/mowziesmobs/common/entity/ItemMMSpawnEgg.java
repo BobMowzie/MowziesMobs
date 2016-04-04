@@ -8,7 +8,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -25,7 +24,7 @@ public class ItemMMSpawnEgg extends Item {
         setUnlocalizedName("monsterPlacer");
         setTextureName("spawn_egg");
         setHasSubtypes(true);
-        setCreativeTab(CreativeTabHandler.INSTANCE.generic);
+        setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
     }
 
     @Override
@@ -40,7 +39,7 @@ public class ItemMMSpawnEgg extends Item {
 
     @Override
     public int getColorFromItemStack(ItemStack itemStack, int pass) {
-        MMEntityEggInfo info = EntityHandler.INSTANCE.getEntityEggInfo(itemStack.getItemDamage());
+        MowzieEntityEggInfo info = EntityHandler.INSTANCE.getEntityEggInfo(itemStack.getItemDamage());
         return info == null ? 0xFFFFFF : (pass == 0 ? info.primaryColor : info.secondaryColor);
     }
 
@@ -135,10 +134,10 @@ public class ItemMMSpawnEgg extends Item {
 
     @Override
     public void getSubItems(Item item, CreativeTabs tab, List itemStacks) {
-        Iterator<MMEntityEggInfo> iterator = EntityHandler.INSTANCE.getEntityEggInfoIterator();
+        Iterator<MowzieEntityEggInfo> iterator = EntityHandler.INSTANCE.getEntityEggInfoIterator();
         while (iterator.hasNext()) {
-            MMEntityEggInfo info = iterator.next();
-            itemStacks.add(new ItemStack(item, 1, info.spawnedID));
+            MowzieEntityEggInfo info = iterator.next();
+            itemStacks.add(new ItemStack(item, 1, info.entityID));
         }
     }
 

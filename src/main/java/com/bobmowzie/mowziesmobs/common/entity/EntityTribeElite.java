@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
-import com.bobmowzie.mowziesmobs.common.ai.AINearestAttackableTargetBarakoa;
-import com.bobmowzie.mowziesmobs.common.animation.AnimationBlockAI;
+import com.bobmowzie.mowziesmobs.common.ai.BarakoaAttackTargetAI;
+import com.bobmowzie.mowziesmobs.common.ai.animation.AnimationBlockAI;
 import cpw.mods.fml.common.eventhandler.Event;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
@@ -42,7 +42,7 @@ public class EntityTribeElite extends EntityTribesman {
         targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntitySheep.class, 0, true));
         targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityChicken.class, 0, true));
         targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityZombie.class, 0, true));
-        targetTasks.addTask(3, new AINearestAttackableTargetBarakoa(this, EntityPlayer.class, 0, true));
+        targetTasks.addTask(3, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, true));
         tasks.addTask(2, new AnimationBlockAI<>(this, BLOCK_ANIMATION));
         setMask(1);
         setSize(0.7f, 2f);

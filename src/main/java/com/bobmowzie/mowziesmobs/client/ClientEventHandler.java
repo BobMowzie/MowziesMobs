@@ -115,7 +115,7 @@ public enum ClientEventHandler {
     }
 
     @SubscribeEvent
-    public void onItemRender(RenderItemInFrameEvent event) {
+    public void onFrameRender(RenderItemInFrameEvent event) {
         if (event.item.getItem() instanceof ItemWroughtAxe) {
             GL11.glTranslatef(-0.4f, -0.2f, 0f);
             GL11.glScalef(0.65f, 0.65f, 0.65f);

@@ -136,7 +136,7 @@ public class Structure
 	/**
 	 * This is how much the structure should be offset from default; i.e. sets the values
 	 * that should be passed in to StructureGeneratorBase.setDefaultOffset. Used, for
-	 * example, if your structure's front door is not in the center, but a few blocks
+	 * example, if your structure's front door is not in the center, but a few block
 	 * to the left and you want the door to spawn in front of the player, or if your
 	 * structure should always be spawned in the air, etc.
 	 */

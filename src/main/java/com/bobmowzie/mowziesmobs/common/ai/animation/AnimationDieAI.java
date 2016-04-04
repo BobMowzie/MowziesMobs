@@ -1,10 +1,10 @@
-package com.bobmowzie.mowziesmobs.common.animation;
+package com.bobmowzie.mowziesmobs.common.ai.animation;
 
-import com.bobmowzie.mowziesmobs.common.entity.MMEntityBase;
+import com.bobmowzie.mowziesmobs.common.entity.MowzieEntity;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 
-public class AnimationDieAI<T extends MMEntityBase & IAnimatedEntity> extends AnimationAI<T> {
+public class AnimationDieAI<T extends MowzieEntity & IAnimatedEntity> extends AnimationAI<T> {
     public AnimationDieAI(T entity) {
         super(entity, entity.getDeathAnimation());
         setMutexBits(8);

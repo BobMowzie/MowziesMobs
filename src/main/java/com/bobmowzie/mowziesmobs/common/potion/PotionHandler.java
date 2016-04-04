@@ -30,7 +30,7 @@ public enum PotionHandler {
     }
 
     private void registerPotions() {
-        sunsBlessing = new MMPotionSunsBlessing(getFreePotionId());
+        sunsBlessing = new MowziePotionSunsBlessing(getFreePotionId());
     }
 
     private int getFreePotionId() {

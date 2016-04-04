@@ -74,7 +74,7 @@ public class ItemTestStructure extends Item
 //                                        {
 //                                            wall = false;
 //                                            y4 += y3;
-//                                            System.out.println("Raising search by " + y4 + " blocks");
+//                                            System.out.println("Raising search by " + y4 + " block");
 //                                            break;
 //                                        }
 //                                    }
@@ -156,13 +156,13 @@ public class ItemTestStructure extends Item
 //
     private void generateWroughtChamber(World world, Random random, int x, int y, int z, int direction)
     {
-        Structure structure = MowziesMobs.gen.structures.get(0);
+        Structure structure = MowziesMobs.GENERATOR.structures.get(0);
         EntityWroughtnaut wroughtnaut = new EntityWroughtnaut(world);
         wroughtnaut.setPositionAndRotation(x + 0.5, y + 1, z + 9.5, 0, 0);
-        MowziesMobs.gen.setStructure(structure);
-        MowziesMobs.gen.setStructureFacing(direction);
-        MowziesMobs.gen.setDefaultOffset(structure.getOffsetX(), structure.getOffsetY(), structure.getOffsetZ());
-        MowziesMobs.gen.generate(world, random, x, y - 1, z);
+        MowziesMobs.GENERATOR.setStructure(structure);
+        MowziesMobs.GENERATOR.setStructureFacing(direction);
+        MowziesMobs.GENERATOR.setDefaultOffset(structure.getOffsetX(), structure.getOffsetY(), structure.getOffsetZ());
+        MowziesMobs.GENERATOR.generate(world, random, x, y - 1, z);
         System.out.println(x + ", " + y + ", " + z);
         world.spawnEntityInWorld(wroughtnaut);
     }

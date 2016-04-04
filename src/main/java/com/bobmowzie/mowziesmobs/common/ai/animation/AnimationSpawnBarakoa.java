@@ -1,13 +1,13 @@
-package com.bobmowzie.mowziesmobs.common.animation;
+package com.bobmowzie.mowziesmobs.common.ai.animation;
 
 import com.bobmowzie.mowziesmobs.common.entity.EntityTribeLeader;
 import com.bobmowzie.mowziesmobs.common.entity.EntityTribeVillager;
-import com.bobmowzie.mowziesmobs.common.entity.MMEntityBase;
+import com.bobmowzie.mowziesmobs.common.entity.MowzieEntity;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 
-public class AnimationSpawnBarakoa<T extends MMEntityBase & IAnimatedEntity> extends AnimationAI<T> {
+public class AnimationSpawnBarakoa<T extends MowzieEntity & IAnimatedEntity> extends AnimationAI<T> {
     public AnimationSpawnBarakoa(T entity, Animation animation) {
         super(entity, animation);
         setMutexBits(8);

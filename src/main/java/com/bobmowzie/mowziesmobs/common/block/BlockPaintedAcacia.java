@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.common.blocks;
+package com.bobmowzie.mowziesmobs.common.block;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.common.creativetab.CreativeTabHandler;
@@ -12,7 +12,7 @@ public class BlockPaintedAcacia extends Block {
 
     public BlockPaintedAcacia() {
         super(Material.wood);
-        setCreativeTab(CreativeTabHandler.INSTANCE.generic);
+        setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
         setBlockTextureName(new ResourceLocation(MowziesMobs.MODID, "texturePaintedAcacia").toString());
         setHardness(2.0F);
         setResistance(5.0F);

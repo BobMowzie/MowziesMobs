@@ -17,7 +17,7 @@ public class ItemDart extends Item {
         super();
         setUnlocalizedName("dart");
         setTextureName(MowziesMobs.MODID + ":dart");
-        setCreativeTab(CreativeTabHandler.INSTANCE.generic);
+        setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
     }
 
     @Override

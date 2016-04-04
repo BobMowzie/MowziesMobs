@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.common.blocks;
+package com.bobmowzie.mowziesmobs.common.block;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.common.creativetab.CreativeTabHandler;
@@ -9,7 +9,7 @@ import net.minecraft.util.ResourceLocation;
 public class BlockPaintedAcaciaSlab extends BlockSlab {
     public BlockPaintedAcaciaSlab() {
         super(false, Material.wood);
-        setCreativeTab(CreativeTabHandler.INSTANCE.generic);
+        setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
         setHardness(2.0F);
         setResistance(5.0F);
         setStepSound(soundTypeWood);

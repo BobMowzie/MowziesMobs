@@ -22,7 +22,7 @@ public class ItemBlowgun extends ItemBow {
         super();
         setUnlocalizedName("blowgun");
         setTextureName(MowziesMobs.MODID + ":blowgun");
-        setCreativeTab(CreativeTabHandler.INSTANCE.generic);
+        setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
     }
 
     @Override

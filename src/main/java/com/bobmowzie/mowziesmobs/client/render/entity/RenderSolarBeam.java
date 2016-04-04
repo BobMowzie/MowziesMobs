@@ -2,6 +2,8 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.common.entity.EntitySolarBeam;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
@@ -11,19 +13,13 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
+@SideOnly(Side.CLIENT)
 public class RenderSolarBeam extends Render {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/effects/textureSolarBeam.png");
-
     private static final double TEXTURE_WIDTH = 256;
-
     private static final double TEXTURE_HEIGHT = 32;
-
-    private static final double PIXEL_SCALE = 1 / 16D;
-
     private static final double START_RADIUS = 1.3;
-
     private static final double BEAM_RADIUS = 1;
-
     private boolean clearerView = false;
 
     @Override
@@ -217,7 +213,7 @@ public class RenderSolarBeam extends Render {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(Entity p_110775_1_) {
+    protected ResourceLocation getEntityTexture(Entity entity) {
         return TEXTURE;
     }
 }

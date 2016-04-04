@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.common.blocks;
+package com.bobmowzie.mowziesmobs.common.block;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;

@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.common.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
-import com.bobmowzie.mowziesmobs.common.animation.*;
+import com.bobmowzie.mowziesmobs.common.ai.animation.*;
 import com.bobmowzie.mowziesmobs.common.item.ItemHandler;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
@@ -21,7 +21,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
-public class EntityWroughtnaut extends MMEntityBase {
+public class EntityWroughtnaut extends MowzieEntity {
     //    public double walkFrame;
     public ControlledAnimation walkAnim = new ControlledAnimation(10);
     public boolean swingDirection = false;

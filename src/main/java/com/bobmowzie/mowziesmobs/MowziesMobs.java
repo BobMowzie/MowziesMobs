@@ -3,12 +3,12 @@ package com.bobmowzie.mowziesmobs;
 import com.bobmowzie.mowziesmobs.common.ServerEventHandler;
 import com.bobmowzie.mowziesmobs.common.ServerProxy;
 import com.bobmowzie.mowziesmobs.common.biome.BiomeDictionaryHandler;
-import com.bobmowzie.mowziesmobs.common.blocks.BlockHandler;
-import com.bobmowzie.mowziesmobs.common.config.MMConfig;
+import com.bobmowzie.mowziesmobs.common.block.BlockHandler;
+import com.bobmowzie.mowziesmobs.common.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.common.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.common.entity.EntityHandler;
-import com.bobmowzie.mowziesmobs.common.gen.MMStructureGenerator;
-import com.bobmowzie.mowziesmobs.common.gen.MMWorldGenerator;
+import com.bobmowzie.mowziesmobs.common.gen.MowzieStructureGenerator;
+import com.bobmowzie.mowziesmobs.common.gen.MowzieWorldGenerator;
 import com.bobmowzie.mowziesmobs.common.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.common.message.MessagePlayerSolarBeam;
 import com.bobmowzie.mowziesmobs.common.message.MessagePlayerSummonSunstrike;
@@ -27,7 +27,6 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
-import net.ilexiconn.llibrary.server.config.ConfigHandler;
 import net.minecraftforge.common.MinecraftForge;
 
 @Mod(modid = MowziesMobs.MODID, name = MowziesMobs.NAME, version = MowziesMobs.VERSION, dependencies = MowziesMobs.DEPENDENCIES)
@@ -44,13 +43,13 @@ public class MowziesMobs {
     public static ServerProxy PROXY;
 
     public static SimpleNetworkWrapper NETWORK_WRAPPER;
-    public static MMConfig CONFIG;
-
-    public static MMStructureGenerator gen = new MMStructureGenerator();
+    public static ConfigHandler CONFIG;
+    public static MowzieStructureGenerator GENERATOR;
 
     @EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {
-        MowziesMobs.CONFIG = ConfigHandler.INSTANCE.registerConfig(this, event.getSuggestedConfigurationFile(), new MMConfig());
+        MowziesMobs.CONFIG = net.ilexiconn.llibrary.server.config.ConfigHandler.INSTANCE.registerConfig(this, event.getSuggestedConfigurationFile(), new ConfigHandler());
+        MowziesMobs.GENERATOR = new MowzieStructureGenerator();
 
         MinecraftForge.EVENT_BUS.register(ServerEventHandler.INSTANCE);
         FMLCommonHandler.instance().bus().register(ServerEventHandler.INSTANCE);
@@ -66,7 +65,7 @@ public class MowziesMobs {
 
         MowziesMobs.PROXY.onInit();
 
-        GameRegistry.registerWorldGenerator(new MMWorldGenerator(), 0);
+        GameRegistry.registerWorldGenerator(new MowzieWorldGenerator(), 0);
 
         MowziesMobs.NETWORK_WRAPPER = NetworkRegistry.INSTANCE.newSimpleChannel(MowziesMobs.MODID);
         MowziesMobs.NETWORK_WRAPPER.registerMessage(MessageSwingWroughtAxe.class, MessageSwingWroughtAxe.class, 0, Side.CLIENT);

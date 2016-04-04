@@ -17,7 +17,7 @@ public class ItemFoliaathSeed extends Item {
     public ItemFoliaathSeed() {
         setUnlocalizedName("foliaathSeed");
         setTextureName(MowziesMobs.MODID + ":foliaathSeed");
-        setCreativeTab(CreativeTabHandler.INSTANCE.generic);
+        setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
     }
 
     public Entity spawnCreature(World world, EntityLiving entity, double x, double y, double z) {
