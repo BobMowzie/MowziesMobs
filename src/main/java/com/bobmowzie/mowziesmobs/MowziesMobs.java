@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs;
 
 import com.bobmowzie.mowziesmobs.common.ServerEventHandler;
 import com.bobmowzie.mowziesmobs.common.ServerProxy;
-import com.bobmowzie.mowziesmobs.common.biome.MMBiomeDictionarySpawns;
+import com.bobmowzie.mowziesmobs.common.biome.BiomeDictionaryHandler;
 import com.bobmowzie.mowziesmobs.common.blocks.BlockHandler;
 import com.bobmowzie.mowziesmobs.common.config.MMConfig;
 import com.bobmowzie.mowziesmobs.common.creativetab.CreativeTabHandler;
@@ -76,7 +76,7 @@ public class MowziesMobs {
 
     @EventHandler
     public void onPostInit(FMLPostInitializationEvent event) {
-        MMBiomeDictionarySpawns.init();
+        BiomeDictionaryHandler.INSTANCE.onInit();
     }
 
     private static ModContainer container;

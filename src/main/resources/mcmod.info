@@ -11,12 +11,8 @@
             "pau101"
         ],
         "credits": "RafaMv",
-        "requiredMods": [
-            "Forge@[10.13.4.1448,)",
-            "llibrary@[${llibrary_version},)"
-        ],
         "dependencies": [
-            "llibrary@[0.3.3,)"
+            "llibrary@[${llibrary_version},)"
         ],
         "useDependencyInformation": true
     }

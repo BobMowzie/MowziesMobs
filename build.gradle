@@ -15,12 +15,9 @@ buildscript {
     }
 }
 
-def buildnumber = ""
-if (System.getenv().BUILD_NUMBER) buildnumber = "-" + System.getenv().BUILD_NUMBER
-
 apply plugin: "forge"
 
-version = getVersion("VERSION") + buildnumber
+version = getVersion("VERSION")
 def llibrary_version = getVersion("LLIBRARY_VERSION")
 group = "com.bobmowzie"
 archivesBaseName = "mowziesmobs"
