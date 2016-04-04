@@ -242,6 +242,6 @@ public class EntityBabyFoliaath extends MowzieEntity {
 
     @Override
     public Animation[] getAnimations() {
-        return new Animation[]{EAT_ANIMATION};
+        return new Animation[]{NO_ANIMATION, EAT_ANIMATION};
     }
 }

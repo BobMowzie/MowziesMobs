@@ -242,7 +242,7 @@ public class EntityTribeElite extends EntityTribesman {
         Animation[] animations = super.getAnimations();
         Animation[] newAnimations = new Animation[animations.length + 1];
         System.arraycopy(animations, 0, newAnimations, 0, animations.length);
-        newAnimations[newAnimations.length] = BLOCK_ANIMATION;
+        newAnimations[newAnimations.length - 1] = BLOCK_ANIMATION;
         return newAnimations;
     }
 }

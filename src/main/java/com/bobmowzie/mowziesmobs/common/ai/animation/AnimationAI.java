@@ -24,6 +24,14 @@ public class AnimationAI<T extends MowzieEntity & IAnimatedEntity> extends net.i
     }
 
     @Override
+    public boolean shouldExecute() {
+        if (this.isAutomatic()) {
+            return this.entity.getAnimation() != getAnimation();
+        }
+        return shouldAnimate();
+    }
+
+    @Override
     public Animation getAnimation() {
         return animation;
     }
