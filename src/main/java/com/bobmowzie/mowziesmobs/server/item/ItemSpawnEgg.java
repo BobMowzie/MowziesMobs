@@ -1,6 +1,8 @@
-package com.bobmowzie.mowziesmobs.server.entity;
+package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieEntityEggInfo;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -17,10 +19,10 @@ import net.minecraft.world.World;
 import java.util.Iterator;
 import java.util.List;
 
-public class ItemMMSpawnEgg extends Item {
+public class ItemSpawnEgg extends Item {
     private IIcon overlay;
 
-    public ItemMMSpawnEgg() {
+    public ItemSpawnEgg() {
         this.setUnlocalizedName("monsterPlacer");
         this.setTextureName("spawn_egg");
         this.setHasSubtypes(true);

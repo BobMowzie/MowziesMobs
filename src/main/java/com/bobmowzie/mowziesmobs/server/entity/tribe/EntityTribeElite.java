@@ -1,10 +1,11 @@
-package com.bobmowzie.mowziesmobs.server.entity;
+package com.bobmowzie.mowziesmobs.server.entity.tribe;
 
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationBlockAI;
 import cpw.mods.fml.common.eventhandler.Event;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
+import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -84,7 +85,7 @@ public class EntityTribeElite extends EntityTribesman {
                 setAttackTarget((EntityLivingBase) entity);
             }
         }
-        if (entity != null && entity instanceof EntityLivingBase && (getAnimation() == NO_ANIMATION || getAnimation() == HURT_ANIMATION || getAnimation() == BLOCK_ANIMATION)) {
+        if (entity != null && entity instanceof EntityLivingBase && (getAnimation() == IAnimatedEntity.NO_ANIMATION || getAnimation() == HURT_ANIMATION || getAnimation() == BLOCK_ANIMATION)) {
             blockingEntity = (EntityLivingBase) entity;
             playSound("mob.zombie.wood", 0.3f, 1.5f);
             AnimationHandler.INSTANCE.sendAnimationMessage(this, BLOCK_ANIMATION);

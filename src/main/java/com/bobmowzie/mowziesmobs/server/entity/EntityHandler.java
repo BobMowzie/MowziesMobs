@@ -1,10 +1,16 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityBabyFoliaath;
+import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
+import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeElite;
+import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeHunter;
+import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeLeader;
+import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeVillager;
+import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry.EntityRegistration;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.world.World;

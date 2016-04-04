@@ -1,6 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.ai.animation;
 
-import com.bobmowzie.mowziesmobs.server.entity.EntityTribeLeader;
+import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeLeader;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import net.ilexiconn.llibrary.server.animation.Animation;

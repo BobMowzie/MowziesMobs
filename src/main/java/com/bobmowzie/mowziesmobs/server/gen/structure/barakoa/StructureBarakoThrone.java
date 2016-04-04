@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.server.gen.structure.barakoa;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
-import com.bobmowzie.mowziesmobs.server.entity.EntityTribeLeader;
+import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeLeader;
 import com.bobmowzie.mowziesmobs.server.gen.structure.StructureBase;
 import coolalias.structuregenapi.util.Structure;
 import net.minecraft.init.Blocks;

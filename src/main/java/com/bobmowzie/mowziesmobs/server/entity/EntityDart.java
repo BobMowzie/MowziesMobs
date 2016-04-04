@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
+import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribesman;
 import com.bobmowzie.mowziesmobs.server.item.ItemDart;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

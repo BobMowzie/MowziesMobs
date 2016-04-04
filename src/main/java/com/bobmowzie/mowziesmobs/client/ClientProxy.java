@@ -12,6 +12,13 @@ import com.bobmowzie.mowziesmobs.client.playeranimation.PlayerAnimationHandlerCl
 import com.bobmowzie.mowziesmobs.client.render.entity.*;
 import com.bobmowzie.mowziesmobs.server.ServerProxy;
 import com.bobmowzie.mowziesmobs.server.entity.*;
+import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityBabyFoliaath;
+import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
+import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeElite;
+import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeHunter;
+import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeLeader;
+import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeVillager;
+import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import cpw.mods.fml.client.registry.RenderingRegistry;

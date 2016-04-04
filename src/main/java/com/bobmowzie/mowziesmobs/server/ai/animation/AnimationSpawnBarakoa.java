@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.ai.animation;
 
-import com.bobmowzie.mowziesmobs.server.entity.EntityTribeLeader;
-import com.bobmowzie.mowziesmobs.server.entity.EntityTribeVillager;
+import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeLeader;
+import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeVillager;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;

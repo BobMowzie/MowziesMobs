@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.gen;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.entity.EntityWroughtnaut;
+import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.gen.structure.barakoa.StructureBarakoThrone;
 import com.bobmowzie.mowziesmobs.server.gen.structure.barakoa.StructureBarakoaHouse;
 import coolalias.structuregenapi.util.Structure;

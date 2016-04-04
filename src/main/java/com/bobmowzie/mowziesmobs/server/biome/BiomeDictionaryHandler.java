@@ -1,8 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.biome;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.entity.EntityFoliaath;
-import com.bobmowzie.mowziesmobs.server.entity.EntityTribeElite;
+import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
+import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeElite;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.BiomeDictionary;

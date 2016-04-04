@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.server.entity;
+package com.bobmowzie.mowziesmobs.server.entity.tribe;
 
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
 import net.minecraft.entity.Entity;

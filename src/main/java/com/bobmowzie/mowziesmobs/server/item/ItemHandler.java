@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
-import com.bobmowzie.mowziesmobs.server.entity.ItemMMSpawnEgg;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.item.Item;
 
@@ -31,7 +30,7 @@ public enum ItemHandler {
         dart = new ItemDart();
         spear = new ItemSpear();
         blowgun = new ItemBlowgun();
-        spawn_egg = new ItemMMSpawnEgg();
+        spawn_egg = new ItemSpawnEgg();
 
         GameRegistry.registerItem(spawn_egg, "spawnEgg");
 
