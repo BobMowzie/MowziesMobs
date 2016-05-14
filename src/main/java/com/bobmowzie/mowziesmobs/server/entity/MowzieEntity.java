@@ -28,7 +28,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     public AnimationAI currentAnim = null;
     public boolean active;
     private int animationTick;
-    private Animation animation;
+    private Animation animation = NO_ANIMATION;
 
     public EntityLivingBase blockingEntity = null;
 

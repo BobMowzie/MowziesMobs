@@ -353,6 +353,6 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
 
     @Override
     public Animation[] getAnimations() {
-        return new Animation[]{NO_ANIMATION, DIE_ANIMATION, HURT_ANIMATION, BELLY_ANIMATION, TALK_ANIMATION, SUNSTRIKE_ANIMATION, ATTACK_ANIMATION, SPAWN_ANIMATION, SOLAR_BEAM_ANIMATION};
+        return new Animation[]{DIE_ANIMATION, HURT_ANIMATION, BELLY_ANIMATION, TALK_ANIMATION, SUNSTRIKE_ANIMATION, ATTACK_ANIMATION, SPAWN_ANIMATION, SOLAR_BEAM_ANIMATION};
     }
 }

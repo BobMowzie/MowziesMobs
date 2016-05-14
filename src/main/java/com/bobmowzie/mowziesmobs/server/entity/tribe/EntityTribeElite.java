@@ -28,6 +28,8 @@ import net.minecraftforge.event.ForgeEventFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 public class EntityTribeElite extends EntityTribesman {
     private List<EntityTribeHunter> pack = new ArrayList<>();
 
@@ -233,10 +235,6 @@ public class EntityTribeElite extends EntityTribesman {
 
     @Override
     public Animation[] getAnimations() {
-        Animation[] animations = super.getAnimations();
-        Animation[] newAnimations = new Animation[animations.length + 1];
-        System.arraycopy(animations, 0, newAnimations, 0, animations.length);
-        newAnimations[newAnimations.length - 1] = BLOCK_ANIMATION;
-        return newAnimations;
+        return ArrayUtils.add(super.getAnimations(), BLOCK_ANIMATION);
     }
 }

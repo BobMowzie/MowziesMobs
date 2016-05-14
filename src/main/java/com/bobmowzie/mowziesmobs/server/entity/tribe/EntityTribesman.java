@@ -414,6 +414,6 @@ public class EntityTribesman extends MowzieEntity implements IRangedAttackMob, L
 
     @Override
     public Animation[] getAnimations() {
-        return new Animation[]{NO_ANIMATION, DIE_ANIMATION, HURT_ANIMATION, ATTACK_ANIMATION, PROJECTILE_ATTACK_ANIMATION, IDLE_ANIMATION, ACTIVATE_ANIMATION};
+        return new Animation[]{DIE_ANIMATION, HURT_ANIMATION, ATTACK_ANIMATION, PROJECTILE_ATTACK_ANIMATION, IDLE_ANIMATION, ACTIVATE_ANIMATION};
     }
 }
