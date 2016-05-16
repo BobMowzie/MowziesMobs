@@ -23,7 +23,7 @@ public class AnimationSpawnBarakoa<T extends MowzieEntity & IAnimatedEntity> ext
     public void resetTask() {
         super.resetTask();
         if (((EntityTribeLeader) animatingEntity).barakoaSpawnCount < 3 && ((EntityTribeLeader) animatingEntity).targetDistance > 5) {
-            AnimationHandler.INSTANCE.sendAnimationMessage(animatingEntity, null); //todo
+            AnimationHandler.INSTANCE.sendAnimationMessage(animatingEntity, animatingEntity.NO_ANIMATION);
         } else {
             ((EntityTribeLeader) animatingEntity).barakoaSpawnCount = 0;
         }

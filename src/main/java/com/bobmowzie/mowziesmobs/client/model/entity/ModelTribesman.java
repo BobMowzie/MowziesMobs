@@ -455,7 +455,7 @@ public class ModelTribesman extends MowzieModelBase {
             animator.setStaticKeyframe(1);
             animator.resetKeyframe(6);
 
-            /*animator.setAnimation(3);
+            animator.setAnimation(EntityTribeElite.BLOCK_ANIMATION);
             animator.startKeyframe(3);
             animator.move(body, 0, 5f, 1f);
             animator.rotate(body, 0.3f, 0, 0);
@@ -474,7 +474,7 @@ public class ModelTribesman extends MowzieModelBase {
             animator.rotate(armLeftJoint, -0.5f, 0, -1);
             animator.rotate(armLowerLeft, 0, 0, 0.7f);
             animator.endKeyframe();
-            animator.resetKeyframe(7);*/
+            animator.resetKeyframe(7);
 
             animator.setAnimation(EntityTribesman.HURT_ANIMATION);
             animator.startKeyframe(3);
