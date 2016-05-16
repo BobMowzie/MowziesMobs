@@ -1,20 +1,33 @@
 package com.bobmowzie.mowziesmobs.server.property;
 
-import net.minecraft.entity.Entity;
+import net.ilexiconn.llibrary.server.entity.EntityProperties;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.World;
-import net.minecraftforge.common.IExtendedEntityProperties;
 
-public class WroughtAxeSwingProperty implements IExtendedEntityProperties {
-    private static final String IDENTIFIER = "wroughtAxeSwing";
-
+public class MowziePlayerProperties extends EntityProperties<EntityPlayer> {
     private static final int SWING_LENGTH = 20;
     public static final int SWING_HIT_TICK = 10;
 
     private int prevTime;
     private int time;
+
+    public int untilSunstrike = 0;
+
+    @Override
+    public void init() {
+
+    }
+
+    @Override
+    public String getID() {
+        return "mm:player";
+    }
+
+    @Override
+    public Class<EntityPlayer> getEntityClass() {
+        return EntityPlayer.class;
+    }
 
     @Override
     public void saveNBTData(NBTTagCompound compound) {
@@ -23,11 +36,6 @@ public class WroughtAxeSwingProperty implements IExtendedEntityProperties {
 
     @Override
     public void loadNBTData(NBTTagCompound compound) {
-
-    }
-
-    @Override
-    public void init(Entity entity, World world) {
 
     }
 
@@ -49,15 +57,6 @@ public class WroughtAxeSwingProperty implements IExtendedEntityProperties {
 
     public void decrementTime() {
         time--;
-    }
-
-    public static WroughtAxeSwingProperty getProperty(EntityPlayer player) {
-        IExtendedEntityProperties properties = player.getExtendedProperties(IDENTIFIER);
-        if (!(properties instanceof WroughtAxeSwingProperty)) {
-            properties = new WroughtAxeSwingProperty();
-            player.registerExtendedProperties(IDENTIFIER, properties);
-        }
-        return (WroughtAxeSwingProperty) properties;
     }
 
     public static float fnc1(float x) {

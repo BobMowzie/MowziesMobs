@@ -8,11 +8,11 @@ import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.message.MessagePlayerSolarBeam;
 import com.bobmowzie.mowziesmobs.server.message.MessagePlayerSummonSunstrike;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
-import com.bobmowzie.mowziesmobs.server.property.MowziePlayerExtension;
-import com.bobmowzie.mowziesmobs.server.property.WroughtAxeSwingProperty;
+import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.relauncher.Side;
+import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
@@ -26,7 +26,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
-import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
@@ -72,13 +71,13 @@ public enum ServerEventHandler {
             return;
         }
         EntityPlayer player = event.player;
-        WroughtAxeSwingProperty property = WroughtAxeSwingProperty.getProperty(player);
+        MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
         property.update();
         if (player.getHeldItem() != null && player.getHeldItem().getItem() == ItemHandler.INSTANCE.wrought_axe) {
             if (property.getTick() > 0) {
                 property.decrementTime();
             }
-            if (property.getTick() == WroughtAxeSwingProperty.SWING_HIT_TICK && !player.worldObj.isRemote) {
+            if (property.getTick() == MowziePlayerProperties.SWING_HIT_TICK && !player.worldObj.isRemote) {
                 float damage = 7;
                 boolean hit = false;
                 float range = 4;
@@ -108,8 +107,8 @@ public enum ServerEventHandler {
                 }
             }
         }
-        if (((MowziePlayerExtension) event.player.getExtendedProperties("mm:player")).untilSunstrike > 0) {
-            ((MowziePlayerExtension) event.player.getExtendedProperties("mm:player")).untilSunstrike--;
+        if (property.untilSunstrike > 0) {
+            property.untilSunstrike--;
         }
         if (event.side == Side.CLIENT) {
             return;
@@ -125,13 +124,6 @@ public enum ServerEventHandler {
         }
     }
 
-    @SubscribeEvent
-    public void onEntityConstruction(EntityEvent.EntityConstructing event) {
-        if (event.entity instanceof EntityPlayer) {
-            event.entity.registerExtendedProperties("mm:player", new MowziePlayerExtension());
-        }
-    }
-
     private List<EntityLivingBase> getEntityLivingBaseNearby(EntityLivingBase user, double distanceX, double distanceY, double distanceZ, double radius) {
         List<Entity> list = user.worldObj.getEntitiesWithinAABBExcludingEntity(user, user.boundingBox.expand(distanceX, distanceY, distanceZ));
         ArrayList<EntityLivingBase> nearEntities = list.stream().filter(entityNeighbor -> entityNeighbor instanceof EntityLivingBase && user.getDistanceToEntity(entityNeighbor) <= radius).map(entityNeighbor -> (EntityLivingBase) entityNeighbor).collect(Collectors.toCollection(ArrayList::new));
@@ -140,13 +132,14 @@ public enum ServerEventHandler {
 
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (event.action != PlayerInteractEvent.Action.LEFT_CLICK_BLOCK && event.world.isRemote && event.entityPlayer.inventory.getCurrentItem() == null && event.entityPlayer.isPotionActive(PotionHandler.INSTANCE.sunsBlessing) && ((MowziePlayerExtension) event.entityPlayer.getExtendedProperties("mm:player")).untilSunstrike <= 0) {
+        if (event.action != PlayerInteractEvent.Action.LEFT_CLICK_BLOCK && event.world.isRemote && event.entityPlayer.inventory.getCurrentItem() == null && event.entityPlayer.isPotionActive(PotionHandler.INSTANCE.sunsBlessing) && EntityPropertiesHandler.INSTANCE.getProperties(event.entityPlayer, MowziePlayerProperties.class).untilSunstrike <= 0) {
+            MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.entityPlayer, MowziePlayerProperties.class);
             if (event.entityPlayer.isSneaking()) {
                 MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSolarBeam());
-                ((MowziePlayerExtension) event.entityPlayer.getExtendedProperties("mm:player")).untilSunstrike = 150;
+                property.untilSunstrike = 150;
             } else {
                 MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSummonSunstrike());
-                ((MowziePlayerExtension) event.entityPlayer.getExtendedProperties("mm:player")).untilSunstrike = 90;
+                property.untilSunstrike = 90;
             }
         }
     }

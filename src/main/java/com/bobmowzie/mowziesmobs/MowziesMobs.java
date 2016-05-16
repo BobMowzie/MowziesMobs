@@ -14,6 +14,7 @@ import com.bobmowzie.mowziesmobs.server.message.MessagePlayerSolarBeam;
 import com.bobmowzie.mowziesmobs.server.message.MessagePlayerSummonSunstrike;
 import com.bobmowzie.mowziesmobs.server.message.MessageSwingWroughtAxe;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
+import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -26,6 +27,7 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.ilexiconn.llibrary.server.config.Config;
+import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.ilexiconn.llibrary.server.network.NetworkWrapper;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -34,7 +36,7 @@ public class MowziesMobs {
     public static final String MODID = "mowziesmobs";
     public static final String NAME = "Mowzie's Mobs";
     public static final String VERSION = "1.2.5";
-    public static final String LLIBRARY_VERSION = "1.2.0";
+    public static final String LLIBRARY_VERSION = "1.3.0";
     public static final String DEPENDENCIES = "required-after:llibrary@[" + MowziesMobs.LLIBRARY_VERSION + ",)";
 
     @Instance(MowziesMobs.MODID)
@@ -65,6 +67,7 @@ public class MowziesMobs {
 
         MowziesMobs.PROXY.onInit();
 
+        EntityPropertiesHandler.INSTANCE.registerProperties(MowziePlayerProperties.class);
         GameRegistry.registerWorldGenerator(new MowzieWorldGenerator(), 0);
     }
 

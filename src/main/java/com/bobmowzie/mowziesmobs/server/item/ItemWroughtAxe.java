@@ -3,7 +3,8 @@ package com.bobmowzie.mowziesmobs.server.item;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.message.MessageSwingWroughtAxe;
-import com.bobmowzie.mowziesmobs.server.property.WroughtAxeSwingProperty;
+import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
+import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
@@ -37,7 +38,7 @@ public class ItemWroughtAxe extends ItemSword {
     @Override
     public ItemStack onItemRightClick(ItemStack heldItemStack, World world, EntityPlayer player) {
         if (!world.isRemote) {
-            WroughtAxeSwingProperty property = WroughtAxeSwingProperty.getProperty(player);
+            MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
             if (property.getTick() <= 0) {
                 world.playSoundAtEntity(player, "mowziesmobs:wroughtnautWhoosh", 0.5F, 1F);
                 property.swing();

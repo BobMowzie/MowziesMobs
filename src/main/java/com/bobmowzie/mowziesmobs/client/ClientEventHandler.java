@@ -4,11 +4,12 @@ import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemWroughtAxe;
 import com.bobmowzie.mowziesmobs.server.item.ItemWroughtHelm;
-import com.bobmowzie.mowziesmobs.server.property.WroughtAxeSwingProperty;
+import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.ilexiconn.llibrary.LLibrary;
+import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.ilexiconn.llibrary.server.event.Render3dItemEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.IItemRenderer;
@@ -26,14 +27,14 @@ public enum ClientEventHandler {
                 int tick = 0;
                 float time = 0;
                 if (event.data[1] instanceof EntityPlayer) {
-                    WroughtAxeSwingProperty property = WroughtAxeSwingProperty.getProperty((EntityPlayer) event.data[1]);
+                    MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties((EntityPlayer) event.data[1], MowziePlayerProperties.class);
                     tick = property.getTick();
                     time = property.getSwingPercentage(LLibrary.PROXY.getPartialTicks());
                 }
                 if (tick > 2) {
-                    float controller1 = WroughtAxeSwingProperty.fnc2(time);
-                    float controller2 = WroughtAxeSwingProperty.fnc3(time, 0.166f, 0.833f, 30);
-                    float controller3 = WroughtAxeSwingProperty.fnc1(time);
+                    float controller1 = MowziePlayerProperties.fnc2(time);
+                    float controller2 = MowziePlayerProperties.fnc3(time, 0.166f, 0.833f, 30);
+                    float controller3 = MowziePlayerProperties.fnc1(time);
                     GL11.glRotatef(90f * controller2, -1f, 0f, 1f);
                     GL11.glRotatef(90f * controller2, -1f, 0f, -1f);
                     GL11.glRotatef(60f * (controller3 + 1.2f * controller1), -1f, 0f, -1f);
@@ -46,10 +47,10 @@ public enum ClientEventHandler {
             if (event.type == IItemRenderer.ItemRenderType.EQUIPPED) {
                 float time = 0;
                 if (event.data[1] instanceof EntityPlayer) {
-                    time = WroughtAxeSwingProperty.getProperty((EntityPlayer) event.data[1]).getSwingPercentage(LLibrary.PROXY.getPartialTicks());
+                    time = EntityPropertiesHandler.INSTANCE.getProperties((EntityPlayer) event.data[1], MowziePlayerProperties.class).getSwingPercentage(LLibrary.PROXY.getPartialTicks());
                 }
-                float controller1 = WroughtAxeSwingProperty.fnc2(time);
-                float controller2 = WroughtAxeSwingProperty.fnc3(time, 0.166f, 0.833f, 30);
+                float controller1 = MowziePlayerProperties.fnc2(time);
+                float controller2 = MowziePlayerProperties.fnc3(time, 0.166f, 0.833f, 30);
                 GL11.glRotatef(90f * controller2, -1f, 0f, 1f);
                 GL11.glRotatef(90f * controller2, -1f, 0f, -1f);
                 GL11.glTranslatef(0.5f * controller2, -0.3f * controller2, -0.8f * controller2);

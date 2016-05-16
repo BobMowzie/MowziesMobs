@@ -1,8 +1,9 @@
 package com.bobmowzie.mowziesmobs.server.message;
 
-import com.bobmowzie.mowziesmobs.server.property.WroughtAxeSwingProperty;
+import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
+import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.ilexiconn.llibrary.server.network.AbstractMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -34,7 +35,7 @@ public class MessageSwingWroughtAxe extends AbstractMessage<MessageSwingWroughtA
     public void onClientReceived(Minecraft client, MessageSwingWroughtAxe message, EntityPlayer player, MessageContext messageContext) {
         Entity entity = player.worldObj.getEntityByID(message.entityID);
         if (entity instanceof EntityPlayer) {
-            WroughtAxeSwingProperty.getProperty((EntityPlayer) entity).swing();
+            EntityPropertiesHandler.INSTANCE.getProperties(entity, MowziePlayerProperties.class).swing();
         }
     }
 
