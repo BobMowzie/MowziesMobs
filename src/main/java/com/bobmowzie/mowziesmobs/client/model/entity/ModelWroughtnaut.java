@@ -454,7 +454,7 @@ public class ModelWroughtnaut extends MowzieModelBase {
         super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
         setToInitPose();
         if (entity.getAnimation() != EntityWroughtnaut.ACTIVATE_ANIMATION && entity.getAnimation() != EntityWroughtnaut.DEACTIVATE_ANIMATION) {
-            if (entity.getActive() == 1) {
+            if (entity.isActive()) {
                 shoulderLeft.rotateAngleZ -= 0.4;
                 shoulderRight.rotateAngleZ += 0.35;
                 shoulderLeft.rotateAngleY -= 0.3;
