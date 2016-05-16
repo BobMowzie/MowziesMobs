@@ -15,7 +15,7 @@ public class MowzieStructureGenerator extends StructureGeneratorBase {
     /**
      * List storing all structures currently available
      */
-    public static final List<Structure> structures = new LinkedList();
+    public static final List<Structure> structures = new LinkedList<>();
 
     static {
         Structure wroughtRoom = new Structure("Wroughtnaut Room");
