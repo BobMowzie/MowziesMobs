@@ -23,6 +23,7 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationActivateAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDeactivateAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationFWNAttackAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationFWNStompAttackAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationFWNVerticalAttackAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
@@ -37,6 +38,8 @@ public class EntityWroughtnaut extends MowzieEntity {
 
     public static final Animation VERTICAL_ATTACK_ANIMATION = Animation.create(105);
 
+    public static final Animation STOMP_ATTACK_ANIMATION = Animation.create(40);
+
     public static final Animation ACTIVATE_ANIMATION = Animation.create(45);
 
     public static final Animation DEACTIVATE_ANIMATION = Animation.create(15);
@@ -46,8 +49,9 @@ public class EntityWroughtnaut extends MowzieEntity {
         HURT_ANIMATION,
         ATTACK_ANIMATION,
         VERTICAL_ATTACK_ANIMATION,
+        STOMP_ATTACK_ANIMATION,
         ACTIVATE_ANIMATION,
-        DEACTIVATE_ANIMATION 
+        DEACTIVATE_ANIMATION
     };
 
     private static final String[] LIVING_SOUNDS = {
@@ -58,6 +62,13 @@ public class EntityWroughtnaut extends MowzieEntity {
         "mowziesmobs:wroughtnautShout3"
     };
 
+    private static final float[][] VERTICAL_ATTACK_BLOCK_OFFSETS = {
+        { -0.5F, -0.5F },
+        { -0.5F, 0.5F },
+        { 0.5F, 0.5F },
+        { 0.5F, -0.5F } 
+    }; 
+
     public ControlledAnimation walkAnim = new ControlledAnimation(10);
 
     public boolean swingDirection;
@@ -66,11 +77,14 @@ public class EntityWroughtnaut extends MowzieEntity {
 
     private int attacksWithoutVertical;
 
+    private int ticksSinceLastStomp;
+
     public EntityWroughtnaut(World world) {
         super(world);
         getNavigator().setAvoidsWater(true);
         tasks.addTask(1, new AnimationFWNAttackAI(this, ATTACK_ANIMATION, "mowziesmobs:wroughtnautWhoosh", 4F, 5.5F, 100F));
         tasks.addTask(1, new AnimationFWNVerticalAttackAI(this, VERTICAL_ATTACK_ANIMATION, "mowziesmobs:wroughtnautWhoosh", 1F, 5.5F, 40F));
+        tasks.addTask(1, new AnimationFWNStompAttackAI(this, STOMP_ATTACK_ANIMATION));
         tasks.addTask(1, new AnimationTakeDamage<>(this));
         tasks.addTask(1, new AnimationDieAI<>(this));
         tasks.addTask(1, new AnimationActivateAI<>(this, ACTIVATE_ANIMATION));
@@ -183,16 +197,19 @@ public class EntityWroughtnaut extends MowzieEntity {
     public void onUpdate() {
         super.onUpdate();
 
-        if (!worldObj.isRemote && getAnimation() == NO_ANIMATION) {
-            if (isActive()) {
-                if (getAttackTarget() == null && moveForward == 0 && Math.abs(posX - getRestPosX()) <= 4 && Math.abs(posY - getRestPosY()) <= 4 && Math.abs(posZ - getRestPosZ()) <= 4) {
-                    AnimationHandler.INSTANCE.sendAnimationMessage(this, DEACTIVATE_ANIMATION);
-                    setActive(false);
+        if (!worldObj.isRemote) {
+            if (getAnimation() == NO_ANIMATION) {
+                if (isActive()) {
+                    if (getAttackTarget() == null && moveForward == 0 && Math.abs(posX - getRestPosX()) <= 4 && Math.abs(posY - getRestPosY()) <= 4 && Math.abs(posZ - getRestPosZ()) <= 4) {
+                        AnimationHandler.INSTANCE.sendAnimationMessage(this, DEACTIVATE_ANIMATION);
+                        setActive(false);
+                    }
+                } else if (getAttackTarget() != null && targetDistance <= 5) {
+                    AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_ANIMATION);
+                    setActive(true);
                 }
-            } else if (getAttackTarget() != null && targetDistance <= 5) {
-                AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_ANIMATION);
-                setActive(true);
             }
+            ticksSinceLastStomp++;
         }
 
         if (isActive()) {
@@ -209,13 +226,20 @@ public class EntityWroughtnaut extends MowzieEntity {
             } else {
                 getNavigator().clearPathEntity();
             }
-
-            if (targetDistance <= 3.5 && getAttackTarget().posY - posY >= -1 && getAttackTarget().posY - posY <= 3 && Math.abs(MathHelper.wrapAngleTo180_double(getAngleBetweenEntities(getAttackTarget(), this) - rotationYaw)) < 35 && getAnimation() == NO_ANIMATION) {
-                if (attacksWithoutVertical >= 4 || rand.nextInt(4) == 0) {
-                    AnimationHandler.INSTANCE.sendAnimationMessage(this, VERTICAL_ATTACK_ANIMATION);
-                    attacksWithoutVertical = 0;
-                } else {
-                    AnimationHandler.INSTANCE.sendAnimationMessage(this, ATTACK_ANIMATION);
+            if (getAttackTarget().posY - posY >= -1 && getAttackTarget().posY - posY <= 3 && getAnimation() == NO_ANIMATION) {
+                boolean couldStomp = targetDistance < 6 && ticksSinceLastStomp > 600;
+                if (targetDistance < 3.5 && Math.abs(MathHelper.wrapAngleTo180_double(getAngleBetweenEntities(getAttackTarget(), this) - rotationYaw)) < 35 && (!couldStomp || rand.nextInt(3) > 0)) {
+                    if (attacksWithoutVertical >= 4 || rand.nextInt(4) == 0) {
+                        AnimationHandler.INSTANCE.sendAnimationMessage(this, VERTICAL_ATTACK_ANIMATION);
+                        attacksWithoutVertical = 0;
+                    } else {
+                        AnimationHandler.INSTANCE.sendAnimationMessage(this, ATTACK_ANIMATION);
+                        attacksWithoutVertical++;
+                    }
+                } else if (couldStomp) {
+                    AnimationHandler.INSTANCE.sendAnimationMessage(this, STOMP_ATTACK_ANIMATION);
+                    ticksSinceLastStomp = 0;
+                    attacksWithoutVertical++;
                 }
             }
         } else if (!getNavigator().tryMoveToXYZ(getRestPosX(), getRestPosY(), getRestPosZ(), 0.2)) {
@@ -225,7 +249,6 @@ public class EntityWroughtnaut extends MowzieEntity {
         }
 
         if (getAnimation() == ATTACK_ANIMATION && getAnimationTick() == 1) {
-            attacksWithoutVertical++;
             swingDirection = rand.nextBoolean();
         } else if (getAnimation() == ACTIVATE_ANIMATION) {
             int tick = getAnimationTick();
@@ -245,9 +268,8 @@ public class EntityWroughtnaut extends MowzieEntity {
             double y = boundingBox.minY + 0.1;
             double z = posZ + 4.2 * vecZ;
             int hitY = MathHelper.floor_double(posY - 0.2 - yOffset);
-            float[][] offsets = { { -0.5F, -0.5F }, { -0.5F, 0.5F }, { 0.5F, 0.5F }, { 0.5F, -0.5F } }; 
-            for (int t = 0; t < offsets.length; t++) {
-                float ox = offsets[t][0], oy = offsets[t][1];
+            for (int t = 0; t < VERTICAL_ATTACK_BLOCK_OFFSETS.length; t++) {
+                float ox = VERTICAL_ATTACK_BLOCK_OFFSETS[t][0], oy = VERTICAL_ATTACK_BLOCK_OFFSETS[t][1];
                 int hitX = MathHelper.floor_double(x + ox);
                 int hitZ = MathHelper.floor_double(z + oy);
                 String particle = "blockcrack_" + Block.getIdFromBlock(worldObj.getBlock(hitX, hitY, hitZ)) + "_" + worldObj.getBlockMetadata(hitX, hitY, hitZ);

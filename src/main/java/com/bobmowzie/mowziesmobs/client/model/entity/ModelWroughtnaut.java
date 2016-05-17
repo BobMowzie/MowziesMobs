@@ -717,9 +717,7 @@ public class ModelWroughtnaut extends MowzieModelBase {
                     neck.rotateAngleX -= 0.06 * -frame * (frame - 7);
                 }
             }
-        }
-
-        if (entityWroughtnaut.getAnimation() ==EntityWroughtnaut.VERTICAL_ATTACK_ANIMATION) {
+        } else if (entityWroughtnaut.getAnimation() ==EntityWroughtnaut.VERTICAL_ATTACK_ANIMATION) {
             animator.setAnimation(EntityWroughtnaut.VERTICAL_ATTACK_ANIMATION);
             animator.setStaticKeyframe(6);
             animator.startKeyframe(15);
@@ -959,9 +957,7 @@ public class ModelWroughtnaut extends MowzieModelBase {
 
             animator.resetKeyframe(10);
             neck.rotateAngleX += Math.sin((entityWroughtnaut.frame + LLibrary.PROXY.getPartialTicks()) * 2) * waistBendController.rotationPointX * 0.1;
-        }
-
-        if (entityWroughtnaut.getAnimation() == EntityWroughtnaut.HURT_ANIMATION) {
+        } else if (entityWroughtnaut.getAnimation() == EntityWroughtnaut.HURT_ANIMATION) {
             animator.setAnimation(EntityWroughtnaut.HURT_ANIMATION);
             animator.startKeyframe(0);
             animator.rotate(stomachJoint, 0.65F, 0F, 0);
@@ -1023,9 +1019,7 @@ public class ModelWroughtnaut extends MowzieModelBase {
             animator.endKeyframe();
             animator.setStaticKeyframe(2);
             animator.resetKeyframe(9);
-        }
-
-        if (entityWroughtnaut.getAnimation() == EntityWroughtnaut.DIE_ANIMATION) {
+        } else if (entityWroughtnaut.getAnimation() == EntityWroughtnaut.DIE_ANIMATION) {
             animator.setAnimation(EntityWroughtnaut.DIE_ANIMATION);
             animator.startKeyframe(5);
             animator.rotate(stomachJoint, -0.4F, 0, 0);
@@ -1158,9 +1152,7 @@ public class ModelWroughtnaut extends MowzieModelBase {
             walk(neck, 1.5F, 0.1F * waistBendController.rotationPointX, false, 0F, 0, (entityWroughtnaut.frame + LLibrary.PROXY.getPartialTicks()), 1F);
             swing(shoulderRight, 1.5F, 0.05F * waistBendController.rotationPointX, true, 0F, 0, (entityWroughtnaut.frame + LLibrary.PROXY.getPartialTicks()), 1F);
             swing(shoulderLeft, 1.5F, 0.05F * waistBendController.rotationPointX, false, 0F, 0, (entityWroughtnaut.frame + LLibrary.PROXY.getPartialTicks()), 1F);
-        }
-
-        if (entityWroughtnaut.getAnimation() == EntityWroughtnaut.ACTIVATE_ANIMATION) {
+        } else if (entityWroughtnaut.getAnimation() == EntityWroughtnaut.ACTIVATE_ANIMATION) {
             animator.setAnimation(EntityWroughtnaut.ACTIVATE_ANIMATION);
             animator.startKeyframe(0);
             animator.rotate(shoulderLeft, 0, -0.4F, -0.4F);
@@ -1232,8 +1224,7 @@ public class ModelWroughtnaut extends MowzieModelBase {
                 calfLeftJoint.rotateAngleX -= 0.02 * (frame - 13) * (frame - 26);
             }
             rootBox.rotateAngleZ -= 0.05 * frame * (frame - 13) * (frame - 26) / 845;
-        }
-        if (entityWroughtnaut.getAnimation() == EntityWroughtnaut.DEACTIVATE_ANIMATION) {
+        } else if (entityWroughtnaut.getAnimation() == EntityWroughtnaut.DEACTIVATE_ANIMATION) {
             animator.setAnimation(EntityWroughtnaut.DEACTIVATE_ANIMATION);
             animator.startKeyframe(0);
             animator.rotate(shoulderLeft, 0, -0.3F, -0.4F);
@@ -1270,6 +1261,85 @@ public class ModelWroughtnaut extends MowzieModelBase {
             animator.endKeyframe();
 
             animator.setStaticKeyframe(20);
+        } else if (entityWroughtnaut.getAnimation() == EntityWroughtnaut.STOMP_ATTACK_ANIMATION) {
+            animator.setAnimation(EntityWroughtnaut.STOMP_ATTACK_ANIMATION);
+            animator.startKeyframe(12);
+            animator.move(waist, 0, -4.5F, 0);
+            animator.rotate(thighRight, 0.25F, 0, 0.15F);
+            animator.rotate(calfRightJoint, -0.55F, 0, 0.1F);
+            animator.rotate(footRight, 0.35F, 0, 0);
+            animator.rotate(stomachJoint, -0.2F, 0, 0);
+            animator.rotate(thighLeft, -0.4F, -0.7F, -0.6F);
+            animator.rotate(groinFront, -0.4F, -0.3F, 0.1F);
+            animator.rotate(groinBack, -0.1F, 0, 0);
+            animator.rotate(neck, -0.25F, 0, 0);
+            animator.rotate(shoulderRightJoint, -0.4F, 0, 0);
+            animator.rotate(upperArmRightJoint, 0.3F, 0.1F, -0.2F);
+            animator.rotate(shoulderLeftJoint, -0.4F, 0, 0);
+            animator.rotate(upperArmLeftJoint, -0.45F, 0.3F, 0.3F);
+            animator.rotate(handLeftJoint, 0, 0, -0.3F);
+            animator.endKeyframe();
+            animator.startKeyframe(2);
+            animator.move(waist, 0, 0, -8);
+            animator.rotate(thighLeft, 0, 0, 0);
+            animator.rotate(thighLeftJoint, -0.35F, -0.9F, 0);
+            animator.rotate(calfLeftJoint, -0.45F, 0, 0);
+            animator.rotate(footLeft, 0.75F, 0, 0);
+            animator.rotate(thighRightJoint, 0.6F, 0.25F, -0.3F);
+            animator.rotate(footRight, -0.25F, 0.2F, 0);
+            animator.rotate(calfRightJoint, -0.15F, 0, 0);
+            animator.rotate(groinFront, -0.6F, -0.8F, 0.2F);
+            animator.rotate(groinBack, 0.3F, 0, 0);
+            animator.rotate(neck, 0.6F, 0, 0);
+            animator.rotate(shoulderRightJoint, 0.1F, 0, 0);
+            animator.rotate(upperArmRightJoint, 0.3F, 0, -0.1F);
+            animator.rotate(lowerArmRightJoint, -0.4F, 0.2F, 0);
+            animator.rotate(shoulderLeftJoint, 0.1F, 0, 0);
+            animator.rotate(axeHandle, 0, 0.3F, 0.4F);
+            animator.endKeyframe();
+            animator.startKeyframe(3);
+            animator.move(waist, 0, 0, -8);
+            animator.rotate(thighLeft, 0, 0, 0);
+            animator.rotate(thighLeftJoint, -0.35F, -0.9F, 0);
+            animator.rotate(calfLeftJoint, -0.45F, 0, 0);
+            animator.rotate(footLeft, 0.75F, 0, 0);
+            animator.rotate(thighRightJoint, 0.6F, 0.25F, -0.3F);
+            animator.rotate(footRight, -0.25F, 0.2F, 0);
+            animator.rotate(calfRightJoint, -0.15F, 0, 0);
+            animator.rotate(groinFront, -0.8F, -0.8F, 0);
+            animator.rotate(groinBack, -0.2F, 0, 0);
+            animator.rotate(neck, 0.6F, 0, 0);
+            animator.rotate(shoulderLeftJoint, -0.1F, 0, 0);
+            animator.rotate(shoulderRightJoint, -0.1F, 0, 0);
+            animator.endKeyframe();
+            animator.startKeyframe(6);
+            animator.move(waist, 0, 0, -8);
+            animator.rotate(thighLeft, 0, 0, 0);
+            animator.rotate(thighLeftJoint, -0.35F, -0.9F, 0);
+            animator.rotate(calfLeftJoint, -0.45F, 0, 0);
+            animator.rotate(footLeft, 0.75F, 0, 0);
+            animator.rotate(thighRightJoint, 0.6F, 0.25F, -0.3F);
+            animator.rotate(footRight, -0.25F, 0.2F, 0);
+            animator.rotate(calfRightJoint, -0.15F, 0, 0);
+            animator.rotate(groinFront, -0.5F, -0.8F, 0);
+            animator.rotate(neck, 0.6F, 0, 0);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(2);
+            animator.startKeyframe(6);
+            animator.move(waist, 0, 0, -5);
+            animator.rotate(thighLeft, -0.15F, 0.1F, 0.0F);
+            animator.rotate(thighLeftJoint, -0.1F, -0.2F, 0.2F);
+            animator.rotate(calfLeftJoint, 0.3F, 0, 0.1F);
+            animator.rotate(footLeft, 0.35F, 0, 0);
+            animator.rotate(thighRightJoint, 0.3F, 0.1F, -0.2F);
+            animator.rotate(footRight, -0.1F, 0.1F, 0);
+            animator.rotate(groinFront, -0.2F, -0.1F, 0);
+            animator.rotate(neck, 0.2F, 0, 0);
+            animator.endKeyframe();
+            animator.startKeyframe(4);
+            animator.rotate(groinBack, -0.2F, 0, 0);
+            animator.endKeyframe();
+            animator.resetKeyframe(5);
         }
     }
 }
