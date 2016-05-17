@@ -1,7 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.ai.animation;
 
-import java.util.List;
-
+import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -15,11 +14,12 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.WorldServer;
 
-import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
+import java.util.List;
 
 public class AnimationFWNStompAttackAI extends AnimationAI<EntityWroughtnaut> {
     public AnimationFWNStompAttackAI(EntityWroughtnaut entity, Animation animation) {
         super(entity, animation);
+        setMutexBits(8);
     }
 
     @Override

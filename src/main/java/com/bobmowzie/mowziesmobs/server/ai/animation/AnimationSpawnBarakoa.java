@@ -23,7 +23,7 @@ public class AnimationSpawnBarakoa<T extends MowzieEntity & IAnimatedEntity> ext
     public void resetTask() {
         super.resetTask();
         if (((EntityTribeLeader) animatingEntity).barakoaSpawnCount < 3 && ((EntityTribeLeader) animatingEntity).targetDistance > 5) {
-            AnimationHandler.INSTANCE.sendAnimationMessage(animatingEntity, animatingEntity.NO_ANIMATION);
+            AnimationHandler.INSTANCE.sendAnimationMessage(animatingEntity, ((EntityTribeLeader) animatingEntity).SPAWN_ANIMATION);
         } else {
             ((EntityTribeLeader) animatingEntity).barakoaSpawnCount = 0;
         }
@@ -39,6 +39,7 @@ public class AnimationSpawnBarakoa<T extends MowzieEntity & IAnimatedEntity> ext
             animatingEntity.playSound("mowziesmobs:barakoBelly", 1.5f, 1);
             animatingEntity.playSound("mowziesmobs:barakoaBlowdart", 1.5f, 0.5f);
             double angle = animatingEntity.rotationYawHead;
+            if (angle < 0) angle = angle + 360;
             if (angle - animatingEntity.rotationYaw > 70) {
                 angle = 70 + animatingEntity.rotationYaw;
             } else if (angle - animatingEntity.rotationYaw < -70) {

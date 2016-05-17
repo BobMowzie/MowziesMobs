@@ -43,7 +43,7 @@ public class AnimationSolarBeam<T extends MowzieEntity & IAnimatedEntity> extend
         }
         if (animatingEntity.getAnimationTick() >= 22) {
             if (entityTarget != null) {
-                animatingEntity.getLookHelper().setLookPosition(entityTarget.posX, entityTarget.posY + entityTarget.height / 2, entityTarget.posZ, 1, 90);
+                animatingEntity.getLookHelper().setLookPosition(entityTarget.posX, entityTarget.posY + entityTarget.height / 2, entityTarget.posZ, 3, 90);
             }
         }
     }

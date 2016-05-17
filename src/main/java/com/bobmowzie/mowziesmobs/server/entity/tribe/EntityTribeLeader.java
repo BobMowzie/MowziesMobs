@@ -39,7 +39,7 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
 
     private static final int SUNSTRIKE_PAUSE_MAX = 40;
     private static final int SUNSTRIKE_PAUSE_MIN = 15;
-    private static final int LASER_PAUSE = 150;
+    private static final int LASER_PAUSE = 230;
     private static final int BARAKOA_PAUSE = 150;
 
     private boolean pacified = false;
@@ -157,7 +157,8 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
                 entityAttackingAngle += 360;
             }
             float entityRelativeAngle = Math.abs(entityHitAngle - entityAttackingAngle);
-            if (getAnimation() == NO_ANIMATION && getHealth() <= 70 && timeUntilLaser <= 0 && (entityRelativeAngle < 60 || entityRelativeAngle > 300) && rand.nextInt(50) == 0) {
+            System.out.println(getHealth() <= 70/* && timeUntilLaser <= 0 && (entityRelativeAngle < 60 || entityRelativeAngle > 300)*/);
+            if (getAnimation() == NO_ANIMATION && getHealth() <= 70 && timeUntilLaser <= 0 && (entityRelativeAngle < 60 || entityRelativeAngle > 300)) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SOLAR_BEAM_ANIMATION);
                 timeUntilLaser = LASER_PAUSE;
             } else if (getAnimation() == NO_ANIMATION && targetDistance <= 5) {
