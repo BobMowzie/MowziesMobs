@@ -61,7 +61,7 @@ public class AnimationFWNStompAttackAI extends AnimationAI<EntityWroughtnaut> {
                         world.func_147487_a("smoke", px, py, pz, 0, sx * 0.065, 0, sz * 0.065, 1);   
                     }
                 } else if (tick == 12) {
-                    animatingEntity.playSound("minecraft:random.explode", 2, 0.5F + animatingEntity.getRNG().nextFloat() * 0.1F);   
+                    animatingEntity.playSound("minecraft:random.explode", 2, 1F + animatingEntity.getRNG().nextFloat() * 0.1F);
                 }
                 if (tick % 2 == 0) {
                     int distance = tick / 2 - 1;

@@ -761,8 +761,9 @@ public class ModelWroughtnaut extends MowzieModelBase {
             animator.rotate(handRight, 0F, 0.2F, -0.5F);
             animator.rotate(axeHandle, 0, -1.7F, 0);
 
-            animator.rotate(shoulderLeft, 0, 0.3F, 0.4F);
-            animator.rotate(upperArmLeft, 0, 0.5F, -0.5F);
+            animator.rotate(shoulderLeft, 0, 0.3F, -0.4F);
+            animator.rotate(upperArmLeftJoint, -0.5F, 0.1F, -0.2F);
+            animator.rotate(upperArmLeft, -0.2F, 0.3F, -0.5F);
             animator.rotate(lowerArmLeft, 0, -0.3F, -1.5F);
             animator.rotate(handLeftJoint, -1.6F, 0, 0.5F);
             animator.rotate(shoulderLeft, 0, 0.2F, 0.35F);
@@ -805,8 +806,9 @@ public class ModelWroughtnaut extends MowzieModelBase {
             animator.rotate(handRightJoint, 0.2F, 0F, 0F);
             animator.rotate(axeHandle, -0.14F, -1.72F, 0.12F);
 
-            animator.rotate(shoulderLeft, 0, 0.3F, 0.4F);
-            animator.rotate(upperArmLeft, 0, 0.5F, -0.5F);
+            animator.rotate(shoulderLeft, 0, 0.3F, -0.4F);
+            animator.rotate(upperArmLeftJoint, -0.5F, 0.1F, -0.2F);
+            animator.rotate(upperArmLeft, -0.2F, 0.5F, -0.5F);
             animator.rotate(lowerArmLeft, 0, -0.3F, -1.5F);
             animator.rotate(handLeftJoint, -1.6F, 0, 0.5F);
             animator.rotate(shoulderLeft, 0, 0.2F, 0.35F);
@@ -849,8 +851,9 @@ public class ModelWroughtnaut extends MowzieModelBase {
             animator.rotate(handRight, 0F, 0.2F, -0.5F);
             animator.rotate(axeHandle, 0, -1.7F, 0);
 
-            animator.rotate(shoulderLeft, 0, 0.3F, 0.4F);
-            animator.rotate(upperArmLeft, 0, 0.5F, -0.5F);
+            animator.rotate(shoulderLeft, 0, 0.3F, -0.4F);
+            animator.rotate(upperArmLeftJoint, -0.5F, 0.1F, -0.2F);
+            animator.rotate(upperArmLeft, -0.2F, 0.3F, -0.5F);
             animator.rotate(lowerArmLeft, 0, -0.3F, -1.5F);
             animator.rotate(handLeftJoint, -1.6F, 0, 0.5F);
             animator.rotate(shoulderLeft, 0, 0.2F, 0.35F);
@@ -894,8 +897,9 @@ public class ModelWroughtnaut extends MowzieModelBase {
             animator.rotate(handRightJoint, 0.2F, 0F, 0F);
             animator.rotate(axeHandle, -0.14F, -1.72F, 0.12F);
 
-            animator.rotate(shoulderLeft, 0, 0.3F, 0.4F);
-            animator.rotate(upperArmLeft, 0, 0.5F, -0.5F);
+            animator.rotate(shoulderLeft, 0, 0.3F, -0.4F);
+            animator.rotate(upperArmLeftJoint, -0.5F, 0.1F, -0.2F);
+            animator.rotate(upperArmLeft, -0.2F, 0.5F, -0.5F);
             animator.rotate(lowerArmLeft, 0, -0.3F, -1.5F);
             animator.rotate(handLeftJoint, -1.6F, 0, 0.5F);
             animator.rotate(shoulderLeft, 0, 0.2F, 0.35F);

@@ -173,6 +173,7 @@ public class EntityWroughtnaut extends MowzieEntity {
                 } else {
                     if (currentAnim != null) {
                         currentAnim.resetTask();
+                        AnimationHandler.INSTANCE.sendAnimationMessage(this, NO_ANIMATION);
                     }
                     return super.attackEntityFrom(source, amount);
                 }
@@ -196,7 +197,6 @@ public class EntityWroughtnaut extends MowzieEntity {
     @Override
     public void onUpdate() {
         super.onUpdate();
-
         if (!worldObj.isRemote) {
             if (getAnimation() == NO_ANIMATION) {
                 if (isActive()) {
