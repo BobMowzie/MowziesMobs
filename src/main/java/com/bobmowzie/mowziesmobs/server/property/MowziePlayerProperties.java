@@ -70,4 +70,9 @@ public class MowziePlayerProperties extends EntityProperties<EntityPlayer> {
     public static float fnc3(float x, float incline, float decline, float steepness) {
         return (float) (1 / (1 + Math.exp(-steepness * (x - incline))) - (1 / (1 + Math.exp(-steepness * (x - decline)))));
     }
+
+    @Override
+    public int getTrackingTime() {
+        return 0;
+    }
 }
