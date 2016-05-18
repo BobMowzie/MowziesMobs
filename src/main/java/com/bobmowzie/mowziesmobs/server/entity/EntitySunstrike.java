@@ -20,14 +20,10 @@ import net.minecraft.world.WorldServer;
 import java.util.List;
 
 public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnData {
-    private static final int VARIANT_MIN_ID = 2;
-
-    private static final int VARIANT_MAX_ID = 3;
-
-    private static final int STRIKE_LENGTH = 43;
-
     public static final int STRIKE_EXPLOSION = 35;
-
+    private static final int VARIANT_MIN_ID = 2;
+    private static final int VARIANT_MAX_ID = 3;
+    private static final int STRIKE_LENGTH = 43;
     // 1 minute past strike end
     private static final int STRIKE_LINGER = STRIKE_LENGTH + 20 * 60;
 
@@ -87,13 +83,13 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         this.prevStrikeTime = this.strikeTime = strikeTime;
     }
 
+    public long getVariant() {
+        return (((long) dataWatcher.getWatchableObjectInt(VARIANT_MAX_ID)) << 32) | (dataWatcher.getWatchableObjectInt(VARIANT_MIN_ID) & 0xFFFFFFFFL);
+    }
+
     private void setVariant(long variant) {
         dataWatcher.updateObject(VARIANT_MAX_ID, (int) (variant >> 32));
         dataWatcher.updateObject(VARIANT_MIN_ID, (int) variant);
-    }
-
-    public long getVariant() {
-        return (((long) dataWatcher.getWatchableObjectInt(VARIANT_MAX_ID)) << 32) | (dataWatcher.getWatchableObjectInt(VARIANT_MIN_ID) & 0xFFFFFFFFL);
     }
 
     @Override

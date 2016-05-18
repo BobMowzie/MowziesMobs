@@ -138,19 +138,15 @@ public enum ClientEventHandler {
     }
 
     @SubscribeEvent
-    public void onRenderPlayerPre(PlayerModelEvent.SetRotationAngles event)
-    {
-        if (event.getEntityPlayer() == null)
-        {
+    public void onRenderPlayerPre(PlayerModelEvent.SetRotationAngles event) {
+        if (event.getEntityPlayer() == null) {
             return;
         }
         EntityPlayer player = event.getEntityPlayer();
-        if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof ItemWroughtAxe)
-        {
+        if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof ItemWroughtAxe) {
             MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntityPlayer(), MowziePlayerProperties.class);
             float time = property.getSwingPercentage(LLibrary.PROXY.getPartialTicks());
-            if (time > 0)
-            {
+            if (time > 0) {
                 float controller1 = MowziePlayerProperties.fnc1(time);
                 float controller2 = MowziePlayerProperties.fnc2(time);
                 float controller3 = MowziePlayerProperties.fnc3(time, 0.1f, 0.9f, 30);

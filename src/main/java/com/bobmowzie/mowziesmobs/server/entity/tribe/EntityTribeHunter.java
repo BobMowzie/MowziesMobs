@@ -23,10 +23,8 @@ public class EntityTribeHunter extends EntityTribesman {
     private static final String ABSENT_LEADER = "";
 
     private static final int LEADER_UUID_ID = 31;
-
-    private EntityTribeElite leader;
-
     public int index;
+    private EntityTribeElite leader;
 
     public EntityTribeHunter(World world) {
         super(world);
@@ -96,12 +94,12 @@ public class EntityTribeHunter extends EntityTribesman {
         }
     }
 
-    public void setLeaderUUID(String uuid) {
-        dataWatcher.updateObject(LEADER_UUID_ID, uuid);
-    }
-
     public String getLeaderUUID() {
         return dataWatcher.getWatchableObjectString(LEADER_UUID_ID);
+    }
+
+    public void setLeaderUUID(String uuid) {
+        dataWatcher.updateObject(LEADER_UUID_ID, uuid);
     }
 
     public EntityTribeElite getLeader() {

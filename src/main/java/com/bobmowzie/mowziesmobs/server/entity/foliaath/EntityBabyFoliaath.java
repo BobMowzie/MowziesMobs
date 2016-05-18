@@ -21,11 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EntityBabyFoliaath extends MowzieEntity {
+    public static final Animation EAT_ANIMATION = Animation.create(20);
     public ControlledAnimation activate = new ControlledAnimation(5);
     private int eatingItemID;
     private double prevActivate;
-
-    public static final Animation EAT_ANIMATION = Animation.create(20);
 
     public EntityBabyFoliaath(World world) {
         super(world);

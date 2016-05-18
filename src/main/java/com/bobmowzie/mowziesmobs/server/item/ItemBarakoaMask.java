@@ -65,6 +65,7 @@ public class ItemBarakoaMask extends ItemArmor {
     public enum BarakoaMaskType {
         FURY(5), FEAR(1), RAGE(3), BLISS(8), MISERY(11);
 
+        public static final BarakoaMaskType[] VALUES = values();
         private String unlocalizedName;
         private int potionID;
         private String armorTexture;
@@ -87,7 +88,5 @@ public class ItemBarakoaMask extends ItemArmor {
         public String getArmorTexture() {
             return armorTexture;
         }
-
-        public static final BarakoaMaskType[] VALUES = values();
     }
 }

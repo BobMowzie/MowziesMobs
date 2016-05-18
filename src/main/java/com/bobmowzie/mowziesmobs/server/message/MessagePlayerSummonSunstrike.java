@@ -19,6 +19,13 @@ public class MessagePlayerSummonSunstrike extends AbstractMessage<MessagePlayerS
 
     }
 
+    private static MovingObjectPosition rayTrace(EntityLivingBase entity, double reach) {
+        Vec3 pos = Vec3.createVectorHelper(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
+        Vec3 segment = entity.getLookVec();
+        segment = pos.addVector(segment.xCoord * reach, segment.yCoord * reach, segment.zCoord * reach);
+        return entity.worldObj.func_147447_a(pos, segment, false, true, true);
+    }
+
     @Override
     public void toBytes(ByteBuf buf) {
 
@@ -42,12 +49,5 @@ public class MessagePlayerSummonSunstrike extends AbstractMessage<MessagePlayerS
             sunstrike.onSummon();
             player.worldObj.spawnEntityInWorld(sunstrike);
         }
-    }
-
-    private static MovingObjectPosition rayTrace(EntityLivingBase entity, double reach) {
-        Vec3 pos = Vec3.createVectorHelper(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
-        Vec3 segment = entity.getLookVec();
-        segment = pos.addVector(segment.xCoord * reach, segment.yCoord * reach, segment.zCoord * reach);
-        return entity.worldObj.func_147447_a(pos, segment, false, true, true);
     }
 }

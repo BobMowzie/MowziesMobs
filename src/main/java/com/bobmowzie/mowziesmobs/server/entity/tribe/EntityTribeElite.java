@@ -24,18 +24,15 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 public class EntityTribeElite extends EntityTribesman {
-    private List<EntityTribeHunter> pack = new ArrayList<>();
-
-    private int packRadius = 3;
-
     public static final Animation BLOCK_ANIMATION = Animation.create(10);
+    private List<EntityTribeHunter> pack = new ArrayList<>();
+    private int packRadius = 3;
 
     public EntityTribeElite(World world) {
         super(world);

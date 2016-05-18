@@ -50,7 +50,7 @@ public class AnimationFWNStompAttackAI extends AnimationAI<EntityWroughtnaut> {
                     int bz = MathHelper.floor_double(fz);
                     String particle = "blockcrack_" + Block.getIdFromBlock(world.getBlock(bx, hitY, bz)) + "_" + world.getBlockMetadata(bx, hitY, bz);
                     int amount = 16 + world.rand.nextInt(8);
-                    while (amount --> 0) {
+                    while (amount-- > 0) {
                         double theta = world.rand.nextDouble() * Math.PI * 2;
                         double dist = world.rand.nextDouble() * 0.1 + 0.25;
                         double sx = Math.cos(theta);
@@ -58,7 +58,7 @@ public class AnimationFWNStompAttackAI extends AnimationAI<EntityWroughtnaut> {
                         double px = fx + sx * dist;
                         double py = fy + world.rand.nextDouble() * 0.1;
                         double pz = fz + sz * dist;
-                        world.func_147487_a("smoke", px, py, pz, 0, sx * 0.065, 0, sz * 0.065, 1);   
+                        world.func_147487_a("smoke", px, py, pz, 0, sx * 0.065, 0, sz * 0.065, 1);
                     }
                 } else if (tick == 12) {
                     animatingEntity.playSound("minecraft:random.explode", 2, 1F + animatingEntity.getRNG().nextFloat() * 0.1F);
@@ -67,7 +67,7 @@ public class AnimationFWNStompAttackAI extends AnimationAI<EntityWroughtnaut> {
                     int distance = tick / 2 - 2;
                     double spread = Math.PI * 2;
                     int arcLen = MathHelper.ceiling_double_int(distance * spread);
-                    AxisAlignedBB selection = AxisAlignedBB.getBoundingBox(0, animatingEntity.boundingBox.minY, 0, 0, animatingEntity.boundingBox.maxY , 0);
+                    AxisAlignedBB selection = AxisAlignedBB.getBoundingBox(0, animatingEntity.boundingBox.minY, 0, 0, animatingEntity.boundingBox.maxY, 0);
                     for (int i = 0; i < arcLen; i++) {
                         double theta = (i / (arcLen - 1.0) - 0.5) * spread + facingAngle;
                         double vx = Math.cos(theta);
@@ -113,22 +113,22 @@ public class AnimationFWNStompAttackAI extends AnimationAI<EntityWroughtnaut> {
                                     world.setBlockToAir(hitX, hitY, hitZ);
                                     int amount = 6 + world.rand.nextInt(10);
                                     String particle = "blockcrack_" + Block.getIdFromBlock(block) + "_" + meta;
-                                    while (amount --> 0) {
+                                    while (amount-- > 0) {
                                         double cx = px + world.rand.nextFloat() * 2 - 1;
                                         double cy = animatingEntity.boundingBox.minY + 0.1 + world.rand.nextFloat() * 0.3;
                                         double cz = pz + world.rand.nextFloat() * 2 - 1;
-                                        world.func_147487_a(particle, cx, cy, cz, 0, vx, 0.4 + world.rand.nextFloat() * 0.2F, vz, 1);   
+                                        world.func_147487_a(particle, cx, cy, cz, 0, vx, 0.4 + world.rand.nextFloat() * 0.2F, vz, 1);
                                     }
                                 }
                             }
                         }
                         if (world.rand.nextBoolean()) {
                             int amount = world.rand.nextInt(5);
-                            while (amount --> 0) {
+                            while (amount-- > 0) {
                                 double velX = vx * 0.075;
                                 double velY = factor * 0.3 + 0.025;
                                 double velZ = vz * 0.075;
-                                world.func_147487_a("cloud", px + world.rand.nextFloat() * 2 - 1, animatingEntity.boundingBox.minY + 0.1 + world.rand.nextFloat() * 1.5, pz + world.rand.nextFloat() * 2 - 1, 0, velX, velY, velZ, 1);   
+                                world.func_147487_a("cloud", px + world.rand.nextFloat() * 2 - 1, animatingEntity.boundingBox.minY + 0.1 + world.rand.nextFloat() * 1.5, pz + world.rand.nextFloat() * 2 - 1, 0, velX, velY, velZ, 1);
                             }
                         }
                     }

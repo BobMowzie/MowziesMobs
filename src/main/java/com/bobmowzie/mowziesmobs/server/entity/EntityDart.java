@@ -26,13 +26,13 @@ import net.minecraft.world.World;
 import java.util.List;
 
 public class EntityDart extends EntityArrow implements IProjectile {
+    public int damageIndex = -1;
     private int landedX = -1;
     private int landedY = -1;
     private int landedZ = -1;
     private Block blockHit;
     private int inData;
     private boolean inGround;
-    public int damageIndex = -1;
     private Item arrows;
     private int ticksInGround;
     private int ticksInAir;
@@ -211,22 +211,18 @@ public class EntityDart extends EntityArrow implements IProjectile {
             List colliding = worldObj.getEntitiesWithinAABBExcludingEntity(this, boundingBox.addCoord(motionX, motionY, motionZ).expand(1.0D, 1.0D, 1.0D));
             double d0 = 0.0D;
 
-            for (Object collidingObject : colliding)
-            {
+            for (Object collidingObject : colliding) {
                 Entity collidingEntity = (Entity) collidingObject;
 
-                if (collidingEntity.canBeCollidedWith() && (collidingEntity != shootingEntity || ticksInAir >= 5))
-                {
+                if (collidingEntity.canBeCollidedWith() && (collidingEntity != shootingEntity || ticksInAir >= 5)) {
                     float expand = 0.3F;
                     AxisAlignedBB axisalignedbb1 = collidingEntity.boundingBox.expand((double) expand, (double) expand, (double) expand);
                     MovingObjectPosition movingobjectposition1 = axisalignedbb1.calculateIntercept(pos, nextTickPos);
 
-                    if (movingobjectposition1 != null)
-                    {
+                    if (movingobjectposition1 != null) {
                         double d1 = pos.distanceTo(movingobjectposition1.hitVec);
 
-                        if (d1 < d0 || d0 == 0.0D)
-                        {
+                        if (d1 < d0 || d0 == 0.0D) {
                             entity = collidingEntity;
                             d0 = d1;
                         }
@@ -439,13 +435,13 @@ public class EntityDart extends EntityArrow implements IProjectile {
     }
 
     @Override
-    public void setDamage(double damageAmount) {
-        damage = damageAmount;
+    public double getDamage() {
+        return damage;
     }
 
     @Override
-    public double getDamage() {
-        return damage;
+    public void setDamage(double damageAmount) {
+        damage = damageAmount;
     }
 
     @Override
@@ -459,6 +455,12 @@ public class EntityDart extends EntityArrow implements IProjectile {
     }
 
     @Override
+    public boolean getIsCritical() {
+        byte flags = dataWatcher.getWatchableObjectByte(16);
+        return (flags & 1) != 0;
+    }
+
+    @Override
     public void setIsCritical(boolean isCritical) {
         byte flags = dataWatcher.getWatchableObjectByte(16);
 
@@ -467,11 +469,5 @@ public class EntityDart extends EntityArrow implements IProjectile {
         } else {
             dataWatcher.updateObject(16, (byte) (flags & -2));
         }
-    }
-
-    @Override
-    public boolean getIsCritical() {
-        byte flags = dataWatcher.getWatchableObjectByte(16);
-        return (flags & 1) != 0;
     }
 }

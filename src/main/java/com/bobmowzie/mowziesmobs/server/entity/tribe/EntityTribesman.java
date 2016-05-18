@@ -20,25 +20,24 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 public class EntityTribesman extends MowzieEntity implements IRangedAttackMob, LeaderSunstrikeImmune {
-    protected boolean attacking = false;
-    protected int timeSinceAttack = 0;
-    public ControlledAnimation doWalk = new ControlledAnimation(3);
-    public ControlledAnimation dancing = new ControlledAnimation(7);
-    private int danceTimer = 0;
-    private int talkTimer = 0;
-    boolean prevHasTarget = false;
-    boolean prevprevHasTarget = false;
-    boolean prevprevprevHasTarget = false;
-    int cryDelay = -1;
-    public boolean circleDirection = true;
-    public int circleTick = 0;
-
     public static final Animation DIE_ANIMATION = Animation.create(70);
     public static final Animation HURT_ANIMATION = Animation.create(10);
     public static final Animation ATTACK_ANIMATION = Animation.create(19);
     public static final Animation PROJECTILE_ATTACK_ANIMATION = Animation.create(20);
     public static final Animation IDLE_ANIMATION = Animation.create(35);
     public static final Animation ACTIVATE_ANIMATION = Animation.create(20);
+    public ControlledAnimation doWalk = new ControlledAnimation(3);
+    public ControlledAnimation dancing = new ControlledAnimation(7);
+    public boolean circleDirection = true;
+    public int circleTick = 0;
+    protected boolean attacking = false;
+    protected int timeSinceAttack = 0;
+    boolean prevHasTarget = false;
+    boolean prevprevHasTarget = false;
+    boolean prevprevprevHasTarget = false;
+    int cryDelay = -1;
+    private int danceTimer = 0;
+    private int talkTimer = 0;
 
     public EntityTribesman(World world) {
         super(world);

@@ -1,5 +1,9 @@
 package com.bobmowzie.mowziesmobs.server.entity.wroughtnaut;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
+import com.bobmowzie.mowziesmobs.server.ai.animation.*;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
@@ -18,17 +22,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationActivateAI;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDeactivateAI;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationFWNAttackAI;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationFWNStompAttackAI;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationFWNVerticalAttackAI;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
-import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
-
 public class EntityWroughtnaut extends MowzieEntity {
     public static final Animation DIE_ANIMATION = Animation.create(130);
 
@@ -45,29 +38,29 @@ public class EntityWroughtnaut extends MowzieEntity {
     public static final Animation DEACTIVATE_ANIMATION = Animation.create(15);
 
     private static final Animation[] ANIMATIONS = {
-        DIE_ANIMATION,
-        HURT_ANIMATION,
-        ATTACK_ANIMATION,
-        VERTICAL_ATTACK_ANIMATION,
-        STOMP_ATTACK_ANIMATION,
-        ACTIVATE_ANIMATION,
-        DEACTIVATE_ANIMATION
+            DIE_ANIMATION,
+            HURT_ANIMATION,
+            ATTACK_ANIMATION,
+            VERTICAL_ATTACK_ANIMATION,
+            STOMP_ATTACK_ANIMATION,
+            ACTIVATE_ANIMATION,
+            DEACTIVATE_ANIMATION
     };
 
     private static final String[] LIVING_SOUNDS = {
-        "mowziesmobs:wroughtnautGrunt1",
-        "mowziesmobs:wroughtnautGrunt3",
-        "mowziesmobs:wroughtnautShout1",
-        "mowziesmobs:wroughtnautShout2",
-        "mowziesmobs:wroughtnautShout3"
+            "mowziesmobs:wroughtnautGrunt1",
+            "mowziesmobs:wroughtnautGrunt3",
+            "mowziesmobs:wroughtnautShout1",
+            "mowziesmobs:wroughtnautShout2",
+            "mowziesmobs:wroughtnautShout3"
     };
 
     private static final float[][] VERTICAL_ATTACK_BLOCK_OFFSETS = {
-        { -0.5F, -0.5F },
-        { -0.5F, 0.5F },
-        { 0.5F, 0.5F },
-        { 0.5F, -0.5F } 
-    }; 
+            {-0.5F, -0.5F},
+            {-0.5F, 0.5F},
+            {0.5F, 0.5F},
+            {0.5F, -0.5F}
+    };
 
     public ControlledAnimation walkAnim = new ControlledAnimation(10);
 
@@ -400,7 +393,8 @@ public class EntityWroughtnaut extends MowzieEntity {
     }
 
     @Override
-    protected void func_145780_a(int x, int y, int z, Block block) {}
+    protected void func_145780_a(int x, int y, int z, Block block) {
+    }
 
     @Override
     public Animation[] getAnimations() {

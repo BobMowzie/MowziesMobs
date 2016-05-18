@@ -20,13 +20,12 @@ public class ItemDart extends Item {
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
     }
 
+    public static DamageSource causeArrowDamage(EntityDart entitydart, Entity entity) {
+        return (new EntityDamageSourceIndirect("dart", entitydart, entity)).setProjectile();
+    }
+
     @Override
     public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean par4) {
         ItemDart item = (ItemDart) stack.getItem();
-    }
-
-
-    public static DamageSource causeArrowDamage(EntityDart entitydart, Entity entity) {
-        return (new EntityDamageSourceIndirect("dart", entitydart, entity)).setProjectile();
     }
 }

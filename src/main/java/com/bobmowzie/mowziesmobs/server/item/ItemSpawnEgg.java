@@ -29,6 +29,23 @@ public class ItemSpawnEgg extends Item {
         this.setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
     }
 
+    public static Entity spawnCreature(World world, int id, double x, double y, double z) {
+        if (EntityHandler.INSTANCE.hasEntityEggInfo(id)) {
+            Entity entity = EntityHandler.INSTANCE.createEntityById(id, world);
+            if (entity instanceof EntityLivingBase) {
+                EntityLiving entityLiving = (EntityLiving) entity;
+                entity.setLocationAndAngles(x, y, z, MathHelper.wrapAngleTo180_float(world.rand.nextFloat() * 360), 0.0F);
+                entityLiving.rotationYawHead = entityLiving.rotationYaw;
+                entityLiving.renderYawOffset = entityLiving.rotationYaw;
+                entityLiving.onSpawnWithEgg(null);
+                world.spawnEntityInWorld(entity);
+                entityLiving.playLivingSound();
+            }
+            return entity;
+        }
+        return null;
+    }
+
     @Override
     public String getItemStackDisplayName(ItemStack itemStack) {
         String name = ("" + StatCollector.translateToLocal(getUnlocalizedName() + ".name")).trim();
@@ -104,23 +121,6 @@ public class ItemSpawnEgg extends Item {
                 return heldItemStack;
             }
         }
-    }
-
-    public static Entity spawnCreature(World world, int id, double x, double y, double z) {
-        if (EntityHandler.INSTANCE.hasEntityEggInfo(id)) {
-            Entity entity = EntityHandler.INSTANCE.createEntityById(id, world);
-            if (entity instanceof EntityLivingBase) {
-                EntityLiving entityLiving = (EntityLiving) entity;
-                entity.setLocationAndAngles(x, y, z, MathHelper.wrapAngleTo180_float(world.rand.nextFloat() * 360), 0.0F);
-                entityLiving.rotationYawHead = entityLiving.rotationYaw;
-                entityLiving.renderYawOffset = entityLiving.rotationYaw;
-                entityLiving.onSpawnWithEgg(null);
-                world.spawnEntityInWorld(entity);
-                entityLiving.playLivingSound();
-            }
-            return entity;
-        }
-        return null;
     }
 
     @Override

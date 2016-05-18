@@ -27,11 +27,9 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     public float targetAngle;
     public AnimationAI currentAnim = null;
     public boolean active;
+    public EntityLivingBase blockingEntity = null;
     private int animationTick;
     private Animation animation = NO_ANIMATION;
-
-    public EntityLivingBase blockingEntity = null;
-
     private List<IntermittentAnimation> intermittentAnimations = new ArrayList<>();
 
     public MowzieEntity(World world) {

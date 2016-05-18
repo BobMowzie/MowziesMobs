@@ -1,8 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.ai.animation;
 
+import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeLeader;
 import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeVillager;
-import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
@@ -39,7 +39,9 @@ public class AnimationSpawnBarakoa<T extends MowzieEntity & IAnimatedEntity> ext
             animatingEntity.playSound("mowziesmobs:barakoBelly", 1.5f, 1);
             animatingEntity.playSound("mowziesmobs:barakoaBlowdart", 1.5f, 0.5f);
             double angle = animatingEntity.rotationYawHead;
-            if (angle < 0) angle = angle + 360;
+            if (angle < 0) {
+                angle = angle + 360;
+            }
             if (angle - animatingEntity.rotationYaw > 70) {
                 angle = 70 + animatingEntity.rotationYaw;
             } else if (angle - animatingEntity.rotationYaw < -70) {

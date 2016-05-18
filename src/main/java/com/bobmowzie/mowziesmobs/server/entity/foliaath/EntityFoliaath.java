@@ -27,11 +27,12 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 public class EntityFoliaath extends MowzieEntity {
+    public static final Animation DIE_ANIMATION = Animation.create(50);
+    public static final Animation HURT_ANIMATION = Animation.create(10);
+    public static final Animation ATTACK_ANIMATION = Animation.create(14);
     private static final int CAN_DESPAWN_ID = 30;
     private static final int ACTIVATE_TARGET_ID = 31;
-
     private static final int ACTIVATE_DURATION = 30;
-
     public IntermittentAnimation<EntityFoliaath> openMouth = new IntermittentAnimation<>(this, 15, 30, 50, !worldObj.isRemote);
     public ControlledAnimation activate = new ControlledAnimation(ACTIVATE_DURATION);
     public ControlledAnimation deathFlail = new ControlledAnimation(5);
@@ -41,10 +42,6 @@ public class EntityFoliaath extends MowzieEntity {
     private double prevOpenMouth;
     private double prevActivate;
     private int activateTarget;
-
-    public static final Animation DIE_ANIMATION = Animation.create(50);
-    public static final Animation HURT_ANIMATION = Animation.create(10);
-    public static final Animation ATTACK_ANIMATION = Animation.create(14);
 
     public EntityFoliaath(World world) {
         super(world);
@@ -300,12 +297,12 @@ public class EntityFoliaath extends MowzieEntity {
         dataWatcher.updateObject(CAN_DESPAWN_ID, (byte) (canDespawn ? 1 : 0));
     }
 
-    public void setActivateTarget(int activateTarget) {
-        dataWatcher.updateObject(ACTIVATE_TARGET_ID, (byte) activateTarget);
-    }
-
     public int getActivateTarget() {
         return dataWatcher.getWatchableObjectByte(ACTIVATE_TARGET_ID);
+    }
+
+    public void setActivateTarget(int activateTarget) {
+        dataWatcher.updateObject(ACTIVATE_TARGET_ID, (byte) activateTarget);
     }
 
     @Override

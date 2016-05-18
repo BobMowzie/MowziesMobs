@@ -25,25 +25,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeImmune {
-    private int direction = 0;
-    public ControlledAnimation legsUp = new ControlledAnimation(15);
-    public ControlledAnimation angryEyebrow = new ControlledAnimation(5);
-    private boolean blocksByFeet = true;
-    public int whichDialogue = 0;
-    private int timeUntilSunstrike = 0;
-    private int timeUntilLaser = 0;
-    private int timeUntilBarakoa = 0;
-    public int barakoaSpawnCount = 0;
-
-    private static final int MAX_HEALTH = 150;
-
-    private static final int SUNSTRIKE_PAUSE_MAX = 40;
-    private static final int SUNSTRIKE_PAUSE_MIN = 15;
-    private static final int LASER_PAUSE = 230;
-    private static final int BARAKOA_PAUSE = 150;
-
-    private boolean pacified = false;
-
     public static final Animation DIE_ANIMATION = Animation.create(130);
     public static final Animation HURT_ANIMATION = Animation.create(13);
     public static final Animation BELLY_ANIMATION = Animation.create(40);
@@ -52,6 +33,21 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
     public static final Animation ATTACK_ANIMATION = Animation.create(30);
     public static final Animation SPAWN_ANIMATION = Animation.create(20);
     public static final Animation SOLAR_BEAM_ANIMATION = Animation.create(100);
+    private static final int MAX_HEALTH = 150;
+    private static final int SUNSTRIKE_PAUSE_MAX = 40;
+    private static final int SUNSTRIKE_PAUSE_MIN = 15;
+    private static final int LASER_PAUSE = 230;
+    private static final int BARAKOA_PAUSE = 150;
+    public ControlledAnimation legsUp = new ControlledAnimation(15);
+    public ControlledAnimation angryEyebrow = new ControlledAnimation(5);
+    public int whichDialogue = 0;
+    public int barakoaSpawnCount = 0;
+    private int direction = 0;
+    private boolean blocksByFeet = true;
+    private int timeUntilSunstrike = 0;
+    private int timeUntilLaser = 0;
+    private int timeUntilBarakoa = 0;
+    private boolean pacified = false;
 
     public EntityTribeLeader(World world) {
         super(world);
@@ -75,14 +71,14 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
         }
     }
 
-    @Override
-    public float getEyeHeight() {
-        return 1.4f;
-    }
-
     public EntityTribeLeader(World world, int direction) {
         this(world);
         this.setDirection(direction);
+    }
+
+    @Override
+    public float getEyeHeight() {
+        return 1.4f;
     }
 
     @Override

@@ -7,8 +7,8 @@ import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
-import com.bobmowzie.mowziesmobs.server.gen.MowzieStructureGenerator;
-import com.bobmowzie.mowziesmobs.server.gen.MowzieWorldGenerator;
+import com.bobmowzie.mowziesmobs.server.world.MowzieStructureGenerator;
+import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.message.MessagePlayerSolarBeam;
 import com.bobmowzie.mowziesmobs.server.message.MessagePlayerSummonSunstrike;
@@ -48,6 +48,14 @@ public class MowziesMobs {
     @Config
     public static ConfigHandler CONFIG;
     public static MowzieStructureGenerator GENERATOR;
+    private static ModContainer container;
+
+    public static ModContainer getModContainer() {
+        if (container == null) {
+            container = FMLCommonHandler.instance().findContainerFor(MowziesMobs.MODID);
+        }
+        return container;
+    }
 
     @EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {
@@ -74,14 +82,5 @@ public class MowziesMobs {
     @EventHandler
     public void onPostInit(FMLPostInitializationEvent event) {
         BiomeDictionaryHandler.INSTANCE.onInit();
-    }
-
-    private static ModContainer container;
-
-    public static ModContainer getModContainer() {
-        if (container == null) {
-            container = FMLCommonHandler.instance().findContainerFor(MowziesMobs.MODID);
-        }
-        return container;
     }
 }

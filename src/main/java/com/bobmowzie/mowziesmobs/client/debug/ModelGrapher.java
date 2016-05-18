@@ -1,7 +1,5 @@
 package com.bobmowzie.mowziesmobs.client.debug;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelBase;
-import com.bobmowzie.mowziesmobs.client.model.tools.MowzieModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.InputEvent.KeyInputEvent;
@@ -9,6 +7,8 @@ import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.ilexiconn.llibrary.LLibrary;
+import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
+import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -31,11 +31,9 @@ import java.util.HashMap;
 import java.util.List;
 
 public final class ModelGrapher {
-    private static final String XYZ = "\u00A7cX \u00A7aY \u00A79Z";
-
     public static final ModelGrapher INSTANCE = new ModelGrapher();
-
-    private HashMap<MowzieModelBase, String[]> fieldNames = new HashMap<>();
+    private static final String XYZ = "\u00A7cX \u00A7aY \u00A79Z";
+    private HashMap<AdvancedModelBase, String[]> fieldNames = new HashMap<>();
 
     private int xyzWidth = -1;
 
@@ -47,7 +45,7 @@ public final class ModelGrapher {
 
     private Entity watchingEntity;
 
-    private MowzieModelRenderer[] parts;
+    private AdvancedModelRenderer[] parts;
 
     private String[] names;
 
@@ -71,8 +69,8 @@ public final class ModelGrapher {
             names = null;
         } else {
             RenderLiving render = (RenderLiving) RenderManager.instance.entityRenderMap.get(watchingEntity.getClass());
-            MowzieModelBase model = (MowzieModelBase) getMainModel(render);
-            parts = model.getParts();
+            AdvancedModelBase model = (AdvancedModelBase) getMainModel(render);
+            parts = (AdvancedModelRenderer[]) model.boxList.toArray(new AdvancedModelRenderer[model.boxList.size()]);
             if (fieldNames.containsKey(model)) {
                 names = fieldNames.get(model);
             } else {
@@ -81,7 +79,7 @@ public final class ModelGrapher {
                 List<Field> fields = new ArrayList<>(Arrays.asList(model.getClass().getDeclaredFields()));
                 try {
                     for (int i = 0; i < parts.length; i++) {
-                        MowzieModelRenderer part = parts[i];
+                        AdvancedModelRenderer part = parts[i];
                         for (Field field : fields) {
                             if (field.get(model) == part) {
                                 names[i] = String.format("%s (%s/%s)", field.getName(), i + 1, parts.length);
