@@ -35,7 +35,7 @@ import net.minecraftforge.common.MinecraftForge;
 public class MowziesMobs {
     public static final String MODID = "mowziesmobs";
     public static final String NAME = "Mowzie's Mobs";
-    public static final String VERSION = "1.2.5";
+    public static final String VERSION = "1.2.8";
     public static final String LLIBRARY_VERSION = "1.3.1";
     public static final String DEPENDENCIES = "required-after:llibrary@[" + MowziesMobs.LLIBRARY_VERSION + ",)";
 
