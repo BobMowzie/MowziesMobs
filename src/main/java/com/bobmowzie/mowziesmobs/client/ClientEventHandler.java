@@ -147,9 +147,8 @@ public enum ClientEventHandler {
         EntityPlayer player = event.getEntityPlayer();
         if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof ItemWroughtAxe)
         {
-            MowziePlayerProperties property = new MowziePlayerProperties();
+            MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntityPlayer(), MowziePlayerProperties.class);
             float time = property.getSwingPercentage(LLibrary.PROXY.getPartialTicks());
-            System.out.println(property.getTick());
             if (time > 0)
             {
                 float controller1 = MowziePlayerProperties.fnc1(time);
