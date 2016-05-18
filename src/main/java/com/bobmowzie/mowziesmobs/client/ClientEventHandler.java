@@ -26,14 +26,10 @@ public enum ClientEventHandler {
             GL11.glScalef(0.65f, 0.65f, 0.65f);
             GL11.glRotatef(45f, 0f, -1f, 0f);
             GL11.glRotatef(45f, -1f, 0f, -1f);
-        }
-
-        if (event.item.getItem() instanceof ItemWroughtHelm) {
+        } else if (event.item.getItem() instanceof ItemWroughtHelm) {
             GL11.glRotatef(180f, 0f, 1f, 0f);
             GL11.glTranslatef(0f, -0.15f, 0.05f);
-        }
-
-        if (event.item.getItem() instanceof ItemBarakoaMask) {
+        } else if (event.item.getItem() instanceof ItemBarakoaMask) {
             GL11.glRotatef(180f, 0f, 1f, 0f);
             GL11.glTranslatef(0f, -0.2f, 0.1f);
         }

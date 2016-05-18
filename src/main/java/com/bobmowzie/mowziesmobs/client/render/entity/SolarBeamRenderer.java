@@ -116,34 +116,29 @@ public class SolarBeamRenderer extends Render {
             t.draw();
             GL11.glTranslatef(0, 0, 0.01f);
             GL11.glRotatef(-270, 0, 1, 0);
-        }
-        if (side == 4) {
+        } else if (side == 4) {
             GL11.glRotatef(90, 0, 1, 0);
             GL11.glTranslatef(0, 0, -0.01f);
             t.draw();
             GL11.glTranslatef(0, 0, 0.01f);
             GL11.glRotatef(-90, 0, 1, 0);
-        }
-        if (side == 3) {
+        } else if (side == 3) {
             GL11.glRotatef(180, 0, 1, 0);
             GL11.glTranslatef(0, 0, -0.01f);
             t.draw();
             GL11.glTranslatef(0, 0, 0.01f);
             GL11.glRotatef(-180, 0, 1, 0);
-        }
-        if (side == 2) {
+        } else if (side == 2) {
             GL11.glTranslatef(0, 0, -0.01f);
             t.draw();
             GL11.glTranslatef(0, 0, 0.01f);
-        }
-        if (side == 0) {
+        } else if (side == 0) {
             GL11.glRotatef(-90, 1, 0, 0);
             GL11.glTranslatef(0, 0, -0.01f);
             t.draw();
             GL11.glTranslatef(0, 0, 0.01f);
             GL11.glRotatef(90, 1, 0, 0);
-        }
-        if (side == 1) {
+        } else if (side == 1) {
             GL11.glRotatef(90, 1, 0, 0);
             GL11.glTranslatef(0, 0, -0.01f);
             t.draw();

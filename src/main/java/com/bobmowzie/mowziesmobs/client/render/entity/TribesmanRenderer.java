@@ -25,20 +25,16 @@ public class TribesmanRenderer extends RenderLiving {
 
     @Override
     public ResourceLocation getEntityTexture(Entity entity) {
-        if (entity instanceof EntityTribeElite) {
-            return TribesmanRenderer.ELITE_TEXTURE;
-        }
         EntityTribesman tribesman = (EntityTribesman) entity;
-        if (tribesman.getMask() == 2) {
+        if (tribesman instanceof EntityTribeElite) {
+            return TribesmanRenderer.ELITE_TEXTURE;
+        } else if (tribesman.getMask() == 2) {
             return TribesmanRenderer.TEXTURE2;
-        }
-        if (tribesman.getMask() == 3) {
+        } else if (tribesman.getMask() == 3) {
             return TribesmanRenderer.TEXTURE3;
-        }
-        if (tribesman.getMask() == 4) {
+        } else if (tribesman.getMask() == 4) {
             return TribesmanRenderer.TEXTURE4;
-        }
-        if (tribesman.getMask() == 5) {
+        } else if (tribesman.getMask() == 5) {
             return TribesmanRenderer.TEXTURE5;
         }
         return TribesmanRenderer.TEXTURE2;

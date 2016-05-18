@@ -58,8 +58,7 @@ public class SunstrikeRenderer extends Render {
         bindEntityTexture(sunstrike);
         if (isLingering) {
             drawScorch(sunstrike, delta);
-        }
-        if (isStriking) {
+        } else if (isStriking) {
             drawStrike(sunstrike, maxY, delta);
         }
         revertGL();
