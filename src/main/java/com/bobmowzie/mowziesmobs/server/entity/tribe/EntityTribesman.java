@@ -251,7 +251,7 @@ public class EntityTribesman extends MowzieEntity implements IRangedAttackMob, L
             return;
         }
         updateAttackAI();
-        if (getAnimation() == NO_ANIMATION) {
+        if (getAnimation() != NO_ANIMATION) {
             getNavigator().clearPathEntity();
         }
 
