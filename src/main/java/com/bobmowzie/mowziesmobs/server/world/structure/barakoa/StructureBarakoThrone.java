@@ -11,9 +11,6 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
-/**
- * Created by jnad325 on 11/1/15.
- */
 public class StructureBarakoThrone extends StructureBase {
     public static int[][][][] blockArray = {
             {//y = 1

@@ -14,7 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class ItemWroughtHelm extends ItemArmor {
-    private static final String ARMOR_TEXTURE_STRING = MowziesMobs.MODID + ":textures/items/modeled/textureWroughtHelm.png";
+    private static final String ARMOR_TEXTURE_STRING = MowziesMobs.MODID + ":textures/items/modeled/textureWroughtHelmet.png";
 
     public ItemWroughtHelm() {
         super(ArmorMaterial.IRON, 2, 0);

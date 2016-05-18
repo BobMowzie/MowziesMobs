@@ -1,34 +1,20 @@
-package net.ilexiconn.llibrary.client.render.item;
+package com.bobmowzie.mowziesmobs.client.render.item;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.model.item.WroughtHelmetModel;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.ilexiconn.llibrary.server.event.Render3dItemEvent;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
-import net.minecraftforge.common.MinecraftForge;
+import org.lwjgl.opengl.GL11;
 
-import static org.lwjgl.opengl.GL11.*;
-
-/**
- * @author iLexiconn
- * @see net.ilexiconn.llibrary.client.render.RenderHelper
- * @since 0.1.0
- */
 @SideOnly(Side.CLIENT)
-public class Item3dRenderer implements IItemRenderer {
-    public Item item;
-    public ModelBase model;
-    public ResourceLocation texture;
-
-    public Item3dRenderer(Item i, ModelBase m, ResourceLocation t) {
-        item = i;
-        model = m;
-        texture = t;
-    }
+public class WroughtHelmetRenderer implements IItemRenderer {
+    public static final ModelBase MODEL = new WroughtHelmetModel();
+    public static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/items/modeled/textureWroughtHelmet.png");
 
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {
@@ -53,7 +39,7 @@ public class Item3dRenderer implements IItemRenderer {
                 renderBlock(0.5f, 1.5f, 0.5f, type, data);
                 break;
             case INVENTORY:
-                glRotatef(180f, 0f, 1f, 0f);
+                GL11.glRotatef(180f, 0f, 1f, 0f);
                 renderBlock(0f, 1f, 0f, type, data);
                 break;
             default:
@@ -63,17 +49,26 @@ public class Item3dRenderer implements IItemRenderer {
     }
 
     public void renderBlock(float x, float y, float z, ItemRenderType type, Object... data) {
-        glPushMatrix();
-        FMLClientHandler.instance().getClient().renderEngine.bindTexture(texture);
+        GL11.glPushMatrix();
+        FMLClientHandler.instance().getClient().renderEngine.bindTexture(WroughtHelmetRenderer.TEXTURE);
 
-        if (!MinecraftForge.EVENT_BUS.post(new Render3dItemEvent.Pre(item, model, texture, type, data, x, y, z))) {
-            glTranslatef(x, y, z);
-            glScalef(-1f, -1f, 1f);
-            model.render(null, 0f, 0f, 0f, 0f, 0f, 0.0625f);
+        if (type == IItemRenderer.ItemRenderType.EQUIPPED_FIRST_PERSON) {
+            GL11.glRotatef(90f, 0f, 1f, 0f);
+            GL11.glTranslatef(-1f, -0.8f, 0f);
+        } else if (type == IItemRenderer.ItemRenderType.EQUIPPED) {
+            GL11.glRotatef(-115f, 0f, 1f, 0f);
+            GL11.glScalef(2f, 2f, 2f);
+            GL11.glTranslatef(0f, -1.3f, -0.8f);
+        } else if (type == IItemRenderer.ItemRenderType.INVENTORY) {
+            GL11.glTranslatef(-0.4f, -1.2f, 0f);
+        } else if (type == IItemRenderer.ItemRenderType.ENTITY) {
+            GL11.glTranslatef(0f, -1.3f, 0f);
         }
-        MinecraftForge.EVENT_BUS.post(new Render3dItemEvent.Post(item, model, texture, type, data, x, y, z));
 
-        glPopMatrix();
+        GL11.glTranslatef(x, y, z);
+        GL11.glScalef(-1f, -1f, 1f);
+        WroughtHelmetRenderer.MODEL.render(null, 0f, 0f, 0f, 0f, 0f, 0.0625f);
+
+        GL11.glPopMatrix();
     }
 }
-

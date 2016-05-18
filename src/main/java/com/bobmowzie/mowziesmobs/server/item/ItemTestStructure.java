@@ -15,9 +15,6 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
-/**
- * Created by jnad325 on 6/24/15.
- */
 public class ItemTestStructure extends Item {
     int structure = 0;
 

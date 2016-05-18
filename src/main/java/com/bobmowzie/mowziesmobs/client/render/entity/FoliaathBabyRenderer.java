@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.client.render;
+package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import cpw.mods.fml.relauncher.Side;

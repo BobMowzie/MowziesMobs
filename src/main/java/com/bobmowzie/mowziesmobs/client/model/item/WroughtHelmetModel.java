@@ -8,7 +8,7 @@ import net.minecraft.entity.Entity;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class WroughtHelmModel extends ModelBiped {
+public class WroughtHelmetModel extends ModelBiped {
     public ModelRenderer helmet;
     public ModelRenderer tuskRight1;
     public ModelRenderer hornRight1;
@@ -19,7 +19,7 @@ public class WroughtHelmModel extends ModelBiped {
     public ModelRenderer tuskLeft2;
     public ModelRenderer hornLeft2;
 
-    public WroughtHelmModel() {
+    public WroughtHelmetModel() {
         this.textureWidth = 64;
         this.textureHeight = 32;
         this.helmet = new ModelRenderer(this, 0, 12);
