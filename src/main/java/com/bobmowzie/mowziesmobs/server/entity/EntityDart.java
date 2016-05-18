@@ -14,7 +14,6 @@ import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -39,9 +38,6 @@ public class EntityDart extends EntityArrow implements IProjectile {
     private int ticksInAir;
     private double damage = 2.0D;
     private int knockbackStrength;
-    public boolean isOctineArrow;
-    public boolean isPoisonedAnglerToothArrow;
-    public boolean isBasiliskArrow;
 
     public EntityDart(World world) {
         super(world);
@@ -190,8 +186,6 @@ public class EntityDart extends EntityArrow implements IProjectile {
 
                 if (ticksInGround >= 1200) {
                     this.setDead();
-                } else if (isOctineArrow && ticksInGround == 1 && worldObj.getBlock(this.landedX, this.landedY + 1, this.landedZ).isReplaceable(worldObj, this.landedX, this.landedY + 1, this.landedZ)) {
-                    worldObj.setBlock(this.landedX, this.landedY + 1, this.landedZ, Blocks.fire);
                 }
             } else {
                 this.inGround = false;
@@ -273,10 +267,6 @@ public class EntityDart extends EntityArrow implements IProjectile {
                     if (!(hit.entityHit instanceof EntityTribesman && shootingEntity instanceof EntityTribesman) && hit.entityHit.attackEntityFrom(damageSource, (float) damage)) {
                         if (hit.entityHit instanceof EntityLivingBase) {
                             EntityLivingBase entitylivingbase = (EntityLivingBase) hit.entityHit;
-
-                            if (!worldObj.isRemote) {
-                                entitylivingbase.setArrowCountInEntity(entitylivingbase.getArrowCountInEntity() + 1);
-                            }
 
                             if (knockbackStrength > 0) {
                                 f4 = MathHelper.sqrt_double(motionX * motionX + motionZ * motionZ);
