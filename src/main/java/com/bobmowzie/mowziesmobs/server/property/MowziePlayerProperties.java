@@ -1,6 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.property;
 
 import net.ilexiconn.llibrary.server.entity.EntityProperties;
+import net.ilexiconn.llibrary.server.nbt.NBTHandler;
+import net.ilexiconn.llibrary.server.nbt.NBTProperty;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
@@ -9,9 +11,12 @@ public class MowziePlayerProperties extends EntityProperties<EntityPlayer> {
     private static final int SWING_LENGTH = 20;
     public static final int SWING_HIT_TICK = 10;
 
+    @NBTProperty
     private int prevTime;
+    @NBTProperty
     private int time;
 
+    @NBTProperty
     public int untilSunstrike = 0;
 
     @Override
@@ -31,12 +36,12 @@ public class MowziePlayerProperties extends EntityProperties<EntityPlayer> {
 
     @Override
     public void saveNBTData(NBTTagCompound compound) {
-
+        NBTHandler.INSTANCE.saveNBTData(this, compound);
     }
 
     @Override
     public void loadNBTData(NBTTagCompound compound) {
-
+        NBTHandler.INSTANCE.loadNBTData(this, compound);
     }
 
     public void update() {
