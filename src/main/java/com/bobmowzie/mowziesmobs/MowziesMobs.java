@@ -52,7 +52,7 @@ public class MowziesMobs {
     @EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {
         MowziesMobs.GENERATOR = new MowzieStructureGenerator();
-
+        MowziesMobs.CONFIG = net.ilexiconn.llibrary.server.config.ConfigHandler.INSTANCE.registerConfig(this, event.getSuggestedConfigurationFile(), new ConfigHandler());
         MinecraftForge.EVENT_BUS.register(ServerEventHandler.INSTANCE);
         FMLCommonHandler.instance().bus().register(ServerEventHandler.INSTANCE);
     }
