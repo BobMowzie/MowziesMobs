@@ -35,7 +35,7 @@ public class AnimationFWNStompAttackAI extends AnimationAI<EntityWroughtnaut> {
             WorldServer world = (WorldServer) animatingEntity.worldObj;
             if (tick == 6) {
                 animatingEntity.playSound("mowziesmobs:wroughtnautShout2", 1, 1);
-            } else if (tick > 7 && tick < 15) {
+            } else if (tick > 9 && tick < 17) {
                 if (tick == 10) {
                     animatingEntity.playSound("minecraft:mob.zombie.metal", 1.2F, 0.5F + animatingEntity.getRNG().nextFloat() * 0.1F);
                     final double infront = 1.47, side = -0.21;
@@ -64,7 +64,7 @@ public class AnimationFWNStompAttackAI extends AnimationAI<EntityWroughtnaut> {
                     animatingEntity.playSound("minecraft:random.explode", 2, 1F + animatingEntity.getRNG().nextFloat() * 0.1F);
                 }
                 if (tick % 2 == 0) {
-                    int distance = tick / 2 - 1;
+                    int distance = tick / 2 - 2;
                     double spread = Math.PI * 2;
                     int arcLen = MathHelper.ceiling_double_int(distance * spread);
                     AxisAlignedBB selection = AxisAlignedBB.getBoundingBox(0, animatingEntity.boundingBox.minY, 0, 0, animatingEntity.boundingBox.maxY , 0);
