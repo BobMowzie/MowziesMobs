@@ -1,6 +1,12 @@
 package com.bobmowzie.mowziesmobs.server.gen.structure;
 
+import net.ilexiconn.llibrary.server.structure.StructureHandler;
+
 public class StructureWroughtnautRoom extends StructureBase {
+    static {
+        StructureHandler.INSTANCE.createStructure("wroughtnaut_chamber");
+    }
+
     public static final int[][][][] blockArray =
             {
                     { // y

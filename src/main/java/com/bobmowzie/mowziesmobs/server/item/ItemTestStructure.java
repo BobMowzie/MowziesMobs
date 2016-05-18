@@ -33,6 +33,7 @@ public class ItemTestStructure extends Item
         if (!player.isSneaking()) {
             Random rand = new Random();
             if (!world.isRemote) {
+                //StructureHandler.INSTANCE.getStructure("wroughtnaut_chamber").generate(world, x, y, z, rand);
                 if (structure == 0) StructureBarakoaHouse.generateHouse1(world, x, y, z, rand.nextInt(4) + 1);
                 else if (structure == 1) StructureBarakoThrone.generate(world, x, y, z, rand.nextInt(4) + 1);
                 else if (structure == 2) generateWroughtChamber(world, rand, x, y, z, rand.nextInt(4) + 1);
