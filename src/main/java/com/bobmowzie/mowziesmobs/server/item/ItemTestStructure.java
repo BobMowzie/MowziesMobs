@@ -57,7 +57,26 @@ public class ItemTestStructure extends Item {
                     .setBlock(11, 5, 4, BlockState.create(Blocks.stone_stairs, 7))
                     .setBlock(6, 5, 3, BlockState.create(Blocks.stone_stairs, 4))
                     .setBlock(12, 5, 3, BlockState.create(Blocks.stone_stairs, 5))
-                    .endComponent();
+                    .fillCube(3, 1, 3, 1, 5, 1, Blocks.cobblestone)
+                    .fillCube(3, 1, 7, 1, 5, 1, Blocks.cobblestone)
+                    .fillCube(3, 1, 11, 1, 5, 1, Blocks.cobblestone)
+                    .fillCube(3, 1, 15, 1, 5, 1, Blocks.cobblestone)
+                    .fillCube(7, 1, 15, 1, 5, 1, Blocks.cobblestone)
+                    .fillCube(11, 1, 15, 1, 5, 1, Blocks.cobblestone)
+                    .fillCube(15, 1, 15, 1, 5, 1, Blocks.cobblestone)
+                    .fillCube(15, 1, 3, 1, 5, 1, Blocks.cobblestone)
+                    .fillCube(15, 1, 7, 1, 5, 1, Blocks.cobblestone)
+                    .fillCube(15, 1, 11, 1, 5, 1, Blocks.cobblestone)
+                    .fillCube(1, 1, 3, 2, 5, 15, Blocks.stone)
+                    .fillCube(16, 1, 3, 2, 5, 15, Blocks.stone)
+                    .fillCube(3, 1, 16, 13, 5, 2, Blocks.stone)
+                    .fillCube(8, 0, 1, 3, 1, 2, Blocks.double_stone_slab);
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    structure.fillCube(4 + i * 4, 0, 4 + j * 4, 3, 1, 3, Blocks.double_stone_slab);
+                }
+            }
+            structure.endComponent();
 
             structure.generate(world, x, y, z, rand);
             return true;
