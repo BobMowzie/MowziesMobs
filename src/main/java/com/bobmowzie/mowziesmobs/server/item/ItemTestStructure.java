@@ -5,12 +5,13 @@ import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.world.structure.barakoa.StructureBarakoThrone;
 import com.bobmowzie.mowziesmobs.server.world.structure.barakoa.StructureBarakoaHouse;
 import coolalias.structuregenapi.util.Structure;
-import net.minecraft.client.Minecraft;
+import net.ilexiconn.llibrary.server.structure.BlockState;
+import net.ilexiconn.llibrary.server.structure.StructureBuilder;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -25,30 +26,43 @@ public class ItemTestStructure extends Item {
 
     @Override
     public boolean onItemUse(ItemStack is, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-        if (!player.isSneaking()) {
-            Random rand = new Random();
-            if (!world.isRemote) {
-                //StructureHandler.INSTANCE.getStructure("wroughtnaut_chamber").generate(world, x, y, z, rand);
-                if (structure == 0) {
-                    StructureBarakoaHouse.generateHouse1(world, x, y, z, rand.nextInt(4) + 1);
-                } else if (structure == 1) {
-                    StructureBarakoThrone.generate(world, x, y, z, rand.nextInt(4) + 1);
-                } else if (structure == 2) {
-                    generateWroughtChamber(world, rand, x, y, z, rand.nextInt(4) + 1);
-                }
-                return true;
-            }
-            return false;
-        } else {
-            structure++;
-            if (structure > 2) {
-                structure = 0;
-            }
-            if (world.isRemote) {
-                Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(new ChatComponentText("Generating structure " + structure));
-            }
+        Random rand = new Random();
+        if (!world.isRemote) {
+            StructureBuilder structure = new StructureBuilder().startComponent()
+                    .cube(0, 0, 0, 19, 7, 19, Blocks.stone)
+                    .cube(1, 1, 1, 17, 5, 17, Blocks.air)
+                    .fillCube(8, 1, 0, 3, 5, 1, Blocks.air)
+                    .cube(7, 0, 0, 5, 7, 1, Blocks.cobblestone)
+                    .cube(7, 6, 0, 5, 1, 16, Blocks.cobblestone)
+                    .cube(3, 6, 3, 13, 1, 5, Blocks.cobblestone)
+                    .cube(3, 6, 7, 13, 1, 5, Blocks.cobblestone)
+                    .cube(3, 6, 11, 13, 1, 5, Blocks.cobblestone)
+                    .cube(7, 0, 0, 5, 1, 16, Blocks.cobblestone)
+                    .cube(3, 0, 3, 13, 1, 5, Blocks.cobblestone)
+                    .cube(3, 0, 7, 13, 1, 5, Blocks.cobblestone)
+                    .cube(3, 0, 11, 13, 1, 5, Blocks.cobblestone)
+                    .fillCube(1, 1, 1, 6, 5, 2, Blocks.stone)
+                    .fillCube(12, 1, 1, 6, 5, 2, Blocks.stone)
+                    .fillCube(7, 1, 3, 1, 5, 1, Blocks.cobblestone)
+                    .fillCube(11, 1, 3, 1, 5, 1, Blocks.cobblestone)
+                    .setBlock(8, 5, 0, BlockState.create(Blocks.stone_stairs, 5))
+                    .setBlock(10, 5, 0, BlockState.create(Blocks.stone_stairs, 4))
+                    .setBlock(7, 5, 2, BlockState.create(Blocks.stone_stairs, 6))
+                    .setBlock(11, 5, 2, BlockState.create(Blocks.stone_stairs, 6))
+                    .setBlock(7, 5, 1, BlockState.create(Blocks.stone_stairs, 7))
+                    .setBlock(11, 5, 1, BlockState.create(Blocks.stone_stairs, 7))
+                    .setBlock(8, 5, 3, BlockState.create(Blocks.stone_stairs, 5))
+                    .setBlock(10, 5, 3, BlockState.create(Blocks.stone_stairs, 4))
+                    .setBlock(7, 5, 4, BlockState.create(Blocks.stone_stairs, 7))
+                    .setBlock(11, 5, 4, BlockState.create(Blocks.stone_stairs, 7))
+                    .setBlock(6, 5, 3, BlockState.create(Blocks.stone_stairs, 4))
+                    .setBlock(12, 5, 3, BlockState.create(Blocks.stone_stairs, 5))
+                    .endComponent();
+
+            structure.generate(world, x, y, z, rand);
+            return true;
         }
-        return true;
+        return false;
     }
 
     //    private void tryWroughtChamber(World world, Random random, int x, int z, int y)

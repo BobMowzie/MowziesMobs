@@ -45,6 +45,6 @@ public enum ItemHandler {
         GameRegistry.registerItem(blowgun, "blowgun");
 
         GameRegistry.registerItem(mob_remover, "mobremover");
-        //GameRegistry.registerItem(test_structure, "teststructure");
+        GameRegistry.registerItem(test_structure, "teststructure");
     }
 }
