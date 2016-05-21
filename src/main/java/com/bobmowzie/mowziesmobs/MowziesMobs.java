@@ -59,7 +59,7 @@ public class MowziesMobs {
 
     @EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {
-        MowziesMobs.NETWORK_WRAPPER = NetworkRegistry.INSTANCE.register(MowziesMobs.MODID);
+        MowziesMobs.NETWORK_WRAPPER = NetworkRegistry.INSTANCE.newSimpleChannel(MowziesMobs.MODID);
         NetworkHandler.INSTANCE.registerMessage(MowziesMobs.NETWORK_WRAPPER, MessageSwingWroughtAxe.class);
         NetworkHandler.INSTANCE.registerMessage(MowziesMobs.NETWORK_WRAPPER, MessagePlayerSummonSunstrike.class);
         NetworkHandler.INSTANCE.registerMessage(MowziesMobs.NETWORK_WRAPPER, MessagePlayerSolarBeam.class);
