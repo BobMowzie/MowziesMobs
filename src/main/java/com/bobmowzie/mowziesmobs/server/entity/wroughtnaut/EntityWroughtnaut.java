@@ -56,10 +56,10 @@ public class EntityWroughtnaut extends MowzieEntity {
     };
 
     private static final float[][] VERTICAL_ATTACK_BLOCK_OFFSETS = {
-            {-0.5F, -0.5F},
-            {-0.5F, 0.5F},
-            {0.5F, 0.5F},
-            {0.5F, -0.5F}
+            {-0.1F, -0.1F},
+            {-0.1F, 0.1F},
+            {0.1F, 0.1F},
+            {0.1F, -0.1F}
     };
 
     public ControlledAnimation walkAnim = new ControlledAnimation(10);
@@ -161,7 +161,7 @@ public class EntityWroughtnaut extends MowzieEntity {
                 }
                 float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
                 if ((entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -arc + 90 / 2)) {
-                    playSound("minecraft:random.anvil_land", 0.4F, 2F);
+                    playSound("minecraft:random.anvil_land", 0.4F, 2);
                     return false;
                 } else {
                     if (currentAnim != null) {
@@ -171,7 +171,7 @@ public class EntityWroughtnaut extends MowzieEntity {
                     return super.attackEntityFrom(source, amount);
                 }
             } else {
-                playSound("minecraft:random.anvil_land", 0.4F, 2F);
+                playSound("minecraft:random.anvil_land", 0.4F, 2);
             }
         }
         return false;
@@ -251,7 +251,7 @@ public class EntityWroughtnaut extends MowzieEntity {
                 playSound("mob.zombie.metal", 0.5F, 0.5F);
             }
         } else if (getAnimation() == VERTICAL_ATTACK_ANIMATION && getAnimationTick() == 29) {
-            double theta = renderYawOffset * (Math.PI / 180);
+            double theta = (renderYawOffset - 4) * (Math.PI / 180);
             double perpX = Math.cos(theta);
             double perpZ = Math.sin(theta);
             theta += Math.PI / 2;
