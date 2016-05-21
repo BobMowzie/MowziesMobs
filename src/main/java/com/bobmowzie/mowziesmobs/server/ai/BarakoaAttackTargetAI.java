@@ -35,17 +35,20 @@ public class BarakoaAttackTargetAI extends EntityAITarget {
         this.targetChance = targetChance;
         this.attackableTargetSorter = new EntityAINearestAttackableTarget.Sorter(entity);
         this.setMutexBits(1);
-        this.targetEntitySelector = target -> {
-            if (target instanceof EntityPlayer) {
-                ItemStack headArmorStack = ((EntityPlayer) target).getEquipmentInSlot(4);
-                if (headArmorStack != null) {
-                    Item headItem = headArmorStack.getItem();
-                    if (headItem instanceof ItemBarakoaMask) {
-                        return false;
+        this.targetEntitySelector = new IEntitySelector() {
+            @Override
+            public boolean isEntityApplicable(Entity target) {
+                if (target instanceof EntityPlayer) {
+                    ItemStack headArmorStack = ((EntityPlayer) target).getEquipmentInSlot(4);
+                    if (headArmorStack != null) {
+                        Item headItem = headArmorStack.getItem();
+                        if (headItem instanceof ItemBarakoaMask) {
+                            return false;
+                        }
                     }
                 }
+                return target instanceof EntityLivingBase && (!(selector != null && !selector.isEntityApplicable(target)) && BarakoaAttackTargetAI.this.isSuitableTarget((EntityLivingBase) target, false));
             }
-            return target instanceof EntityLivingBase && (!(selector != null && !selector.isEntityApplicable(target)) && BarakoaAttackTargetAI.this.isSuitableTarget((EntityLivingBase) target, false));
         };
     }
 
