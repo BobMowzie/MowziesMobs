@@ -153,7 +153,6 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
                 entityAttackingAngle += 360;
             }
             float entityRelativeAngle = Math.abs(entityHitAngle - entityAttackingAngle);
-            System.out.println(getHealth() <= 70/* && timeUntilLaser <= 0 && (entityRelativeAngle < 60 || entityRelativeAngle > 300)*/);
             if (getAnimation() == NO_ANIMATION && getHealth() <= 70 && timeUntilLaser <= 0 && (entityRelativeAngle < 60 || entityRelativeAngle > 300)) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SOLAR_BEAM_ANIMATION);
                 timeUntilLaser = LASER_PAUSE;
