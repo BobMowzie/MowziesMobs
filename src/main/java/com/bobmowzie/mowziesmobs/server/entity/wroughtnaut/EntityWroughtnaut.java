@@ -4,9 +4,11 @@ import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.server.ai.animation.*;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
+
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
+import net.minecraft.block.Block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.IEntityLivingData;
@@ -71,6 +73,8 @@ public class EntityWroughtnaut extends MowzieEntity {
     private int attacksWithoutVertical;
 
     private int ticksSinceLastStomp;
+
+    private CeilingDisturbance disturbance;
 
     public EntityWroughtnaut(World world) {
         super(world);
@@ -205,13 +209,12 @@ public class EntityWroughtnaut extends MowzieEntity {
             ticksSinceLastStomp++;
         }
 
-        if (isActive()) {
-            renderYawOffset = rotationYaw;
-        } else {
+        if (!isActive()) {
             posX = prevPosX;
             posZ = prevPosZ;
             rotationYaw = prevRotationYaw;
         }
+        renderYawOffset = rotationYaw;
 
         if (getAttackTarget() != null && isActive()) {
             if (getAnimation() == NO_ANIMATION) {
@@ -251,37 +254,7 @@ public class EntityWroughtnaut extends MowzieEntity {
                 playSound("mob.zombie.metal", 0.5F, 0.5F);
             }
         } else if (getAnimation() == VERTICAL_ATTACK_ANIMATION && getAnimationTick() == 29) {
-            double theta = (renderYawOffset - 4) * (Math.PI / 180);
-            double perpX = Math.cos(theta);
-            double perpZ = Math.sin(theta);
-            theta += Math.PI / 2;
-            double vecX = Math.cos(theta);
-            double vecZ = Math.sin(theta);
-            double x = posX + 4.2 * vecX;
-            double y = boundingBox.minY + 0.1;
-            double z = posZ + 4.2 * vecZ;
-            int hitY = MathHelper.floor_double(posY - 0.2 - yOffset);
-            for (int t = 0; t < VERTICAL_ATTACK_BLOCK_OFFSETS.length; t++) {
-                float ox = VERTICAL_ATTACK_BLOCK_OFFSETS[t][0], oy = VERTICAL_ATTACK_BLOCK_OFFSETS[t][1];
-                int hitX = MathHelper.floor_double(x + ox);
-                int hitZ = MathHelper.floor_double(z + oy);
-                String particle = "blockcrack_" + Block.getIdFromBlock(worldObj.getBlock(hitX, hitY, hitZ)) + "_" + worldObj.getBlockMetadata(hitX, hitY, hitZ);
-                for (int n = 0; n < 6; n++) {
-                    double pa = rand.nextDouble() * 2 * Math.PI;
-                    double pd = rand.nextDouble() * 0.6 + 0.1;
-                    double px = x + Math.cos(pa) * pd;
-                    double pz = z + Math.sin(pa) * pd;
-                    double magnitude = rand.nextDouble() * 4 + 5;
-                    double velX = perpX * magnitude;
-                    double velY = rand.nextDouble() * 3 + 6;
-                    double velZ = perpZ * magnitude;
-                    if (vecX * (pz - posZ) - vecZ * (px - posX) > 0) {
-                        velX = -velX;
-                        velZ = -velZ;
-                    }
-                    worldObj.spawnParticle(particle, px, y, pz, velX, velY, velZ);
-                }
-            }
+            doVerticalAttackHitFX();
         }
 
         float moveX = (float) (posX - prevPosX);
@@ -306,6 +279,115 @@ public class EntityWroughtnaut extends MowzieEntity {
 
         if (!active && getAttackTarget() == null) {
             addPotionEffect(new PotionEffect(Potion.regeneration.id, 20, 1, true));
+        }
+
+        if (disturbance != null) {
+            if (disturbance.update()) {
+                disturbance = null;
+            }
+        }
+    }
+
+    private void doVerticalAttackHitFX() {
+        double theta = (renderYawOffset - 4) * (Math.PI / 180);
+        double perpX = Math.cos(theta);
+        double perpZ = Math.sin(theta);
+        theta += Math.PI / 2;
+        double vecX = Math.cos(theta);
+        double vecZ = Math.sin(theta);
+        double x = posX + 4.2 * vecX;
+        double y = boundingBox.minY + 0.1;
+        double z = posZ + 4.2 * vecZ;
+        int hitY = MathHelper.floor_double(posY - 0.2);
+        for (int t = 0; t < VERTICAL_ATTACK_BLOCK_OFFSETS.length; t++) {
+            float ox = VERTICAL_ATTACK_BLOCK_OFFSETS[t][0], oy = VERTICAL_ATTACK_BLOCK_OFFSETS[t][1];
+            int hitX = MathHelper.floor_double(x + ox);
+            int hitZ = MathHelper.floor_double(z + oy);
+            Block block = worldObj.getBlock(hitX, hitY, hitZ);
+            if (block.getRenderType() != -1) {
+                String particle = "blockcrack_" + Block.getIdFromBlock(block) + "_" + worldObj.getBlockMetadata(hitX, hitY, hitZ);
+                for (int n = 0; n < 6; n++) {
+                    double pa = rand.nextDouble() * 2 * Math.PI;
+                    double pd = rand.nextDouble() * 0.6 + 0.1;
+                    double px = x + Math.cos(pa) * pd;
+                    double pz = z + Math.sin(pa) * pd;
+                    double magnitude = rand.nextDouble() * 4 + 5;
+                    double velX = perpX * magnitude;
+                    double velY = rand.nextDouble() * 3 + 6;
+                    double velZ = perpZ * magnitude;
+                    if (vecX * (pz - posZ) - vecZ * (px - posX) > 0) {
+                        velX = -velX;
+                        velZ = -velZ;
+                    }
+                    worldObj.spawnParticle(particle, px, y, pz, velX, velY, velZ);
+                }
+            }
+        }
+        int hitX = MathHelper.floor_double(x);
+        int ceilY = MathHelper.floor_double(boundingBox.maxY);
+        int hitZ = MathHelper.floor_double(z);
+        final int maxHeight = 5;
+        int height = maxHeight;
+        for (; height --> 0; ceilY++) {
+            if (worldObj.getBlock(hitX, ceilY, hitZ).getMaterial().blocksMovement()) {
+                break;
+            }
+        }
+        float strength = height / (float) maxHeight;
+        if (strength >= 0) {
+            int radius = MathHelper.ceiling_float_int(MathHelper.sqrt_float(1 - strength * strength) * maxHeight);
+            disturbance = new CeilingDisturbance(hitX, ceilY, hitZ, radius, rand.nextInt(5) + 3, rand.nextInt(60) + 20);
+        }
+    }
+
+    private class CeilingDisturbance {
+        private final int ceilX, ceilY, ceilZ;
+
+        private final int radius;
+
+        private int delay;
+
+        private int remainingTicks;
+
+        private int duration;
+
+        public CeilingDisturbance(int x, int y, int z, int radius, int delay, int remainingTicks) {
+            this.ceilX = x;
+            this.ceilY = y;
+            this.ceilZ = z;
+            this.radius = radius;
+            this.delay = delay;
+            this.remainingTicks = remainingTicks;
+            duration = remainingTicks;
+        }
+
+        public boolean update() {
+            if (--delay > 0) {
+                return false;
+            }
+            float t = remainingTicks / (float) duration;
+            int amount = MathHelper.ceiling_float_int((1 - MathHelper.sqrt_double(1 - t * t)) * radius * radius * 0.15F);
+            boolean playSound = true;
+            while (amount --> 0) {
+                double theta = rand.nextDouble() * Math.PI * 2;
+                double dist = rand.nextDouble() * radius;
+                double x = ceilX + Math.cos(theta) * dist;
+                double y = ceilY - 0.1 - rand.nextDouble() * 0.3;
+                double z = ceilZ + Math.sin(theta) * dist;
+                int blockX = MathHelper.floor_double(x);
+                int blockZ = MathHelper.floor_double(z);
+                Block block = worldObj.getBlock(blockX, ceilY, blockZ);
+                if (block.getRenderType() != -1) {
+                    String particle = "blockdust_" + Block.getIdFromBlock(block) + "_" + worldObj.getBlockMetadata(blockX, ceilY, blockZ);
+                    worldObj.spawnParticle(particle, x, y, z, 0, 0, 0);
+                    if (playSound && rand.nextFloat() < 0.075F) {
+                        SoundType sound = block.stepSound;
+                        worldObj.playSound(posX, posY, posZ, sound.getBreakSound(), sound.getVolume() * 2, sound.getPitch() * 0.6F, false);
+                        playSound = false;
+                    }
+                }
+            }
+            return --remainingTicks <= 0;
         }
     }
 
