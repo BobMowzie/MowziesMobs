@@ -6,3 +6,9 @@ out/
 *.iml
 *.ipr
 *.iws
+bin/
+eclipse/
+run/
+.settings/
+.classpath
+.project
