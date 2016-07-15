@@ -1,10 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.block;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import net.minecraft.block.BlockSlab;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.ResourceLocation;
+
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 
 public class BlockPaintedAcaciaSlab extends BlockSlab {
     public BlockPaintedAcaciaSlab() {

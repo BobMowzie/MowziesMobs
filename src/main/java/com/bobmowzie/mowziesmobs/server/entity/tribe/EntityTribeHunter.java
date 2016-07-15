@@ -1,6 +1,9 @@
 package com.bobmowzie.mowziesmobs.server.entity.tribe;
 
-import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
@@ -15,9 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
 
 public class EntityTribeHunter extends EntityTribesman {
     private static final String ABSENT_LEADER = "";

@@ -1,7 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.ai;
 
-import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
-import net.minecraft.command.IEntitySelector;
+import java.util.Collections;
+import java.util.List;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
@@ -11,8 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import java.util.Collections;
-import java.util.List;
+import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 
 public class BarakoaAttackTargetAI extends EntityAITarget {
     private Class<? extends Entity> targetClass;

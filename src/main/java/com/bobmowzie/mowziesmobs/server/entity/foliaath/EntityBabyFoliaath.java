@@ -1,8 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.entity.foliaath;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationBabyFoliaathEatAI;
-import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
@@ -14,11 +14,12 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationBabyFoliaathEatAI;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 
 public class EntityBabyFoliaath extends MowzieEntity {
     public static final Animation EAT_ANIMATION = Animation.create(20);

@@ -1,11 +1,12 @@
 package com.bobmowzie.mowziesmobs.server.entity.tribe;
 
-import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+
+import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
 
 public class EntityTribeVillager extends EntityTribesman {
     public EntityTribeVillager(World world) {

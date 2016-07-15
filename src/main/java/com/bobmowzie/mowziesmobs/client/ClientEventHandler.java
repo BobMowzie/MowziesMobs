@@ -1,19 +1,21 @@
 package com.bobmowzie.mowziesmobs.client;
 
-import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
-import com.bobmowzie.mowziesmobs.server.item.ItemWroughtAxe;
-import com.bobmowzie.mowziesmobs.server.item.ItemWroughtHelm;
-import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.event.PlayerModelEvent;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderItemInFrameEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
 import org.lwjgl.opengl.GL11;
+
+import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
+import com.bobmowzie.mowziesmobs.server.item.ItemWroughtAxe;
+import com.bobmowzie.mowziesmobs.server.item.ItemWroughtHelm;
+import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 
 @SideOnly(Side.CLIENT)
 public enum ClientEventHandler {

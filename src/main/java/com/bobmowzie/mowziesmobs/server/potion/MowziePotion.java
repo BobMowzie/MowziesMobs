@@ -1,13 +1,13 @@
 package com.bobmowzie.mowziesmobs.server.potion;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 
 public class MowziePotion extends Potion {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/gui/container/potions.png");

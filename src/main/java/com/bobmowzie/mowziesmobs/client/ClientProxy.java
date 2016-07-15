@@ -1,11 +1,31 @@
 package com.bobmowzie.mowziesmobs.client;
 
-import com.bobmowzie.mowziesmobs.client.model.entity.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelBiped;
+import net.minecraft.world.World;
+import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import com.bobmowzie.mowziesmobs.client.model.entity.FoliaathBabyModel;
+import com.bobmowzie.mowziesmobs.client.model.entity.FoliaathModel;
+import com.bobmowzie.mowziesmobs.client.model.entity.TribeLeaderModel;
+import com.bobmowzie.mowziesmobs.client.model.entity.TribesmanModel;
+import com.bobmowzie.mowziesmobs.client.model.entity.WroughtnautModel;
 import com.bobmowzie.mowziesmobs.client.model.item.BarakoaMaskModel;
 import com.bobmowzie.mowziesmobs.client.model.item.WroughtHelmetModel;
 import com.bobmowzie.mowziesmobs.client.particle.MowzieParticle;
 import com.bobmowzie.mowziesmobs.client.particle.OrbParticle;
-import com.bobmowzie.mowziesmobs.client.render.entity.*;
+import com.bobmowzie.mowziesmobs.client.render.entity.DartRenderer;
+import com.bobmowzie.mowziesmobs.client.render.entity.FoliaathBabyRenderer;
+import com.bobmowzie.mowziesmobs.client.render.entity.FoliaathRenderer;
+import com.bobmowzie.mowziesmobs.client.render.entity.SolarBeamRenderer;
+import com.bobmowzie.mowziesmobs.client.render.entity.SunstrikeRenderer;
+import com.bobmowzie.mowziesmobs.client.render.entity.TribeLeaderRenderer;
+import com.bobmowzie.mowziesmobs.client.render.entity.TribesmanRenderer;
+import com.bobmowzie.mowziesmobs.client.render.entity.WroughtnautRenderer;
 import com.bobmowzie.mowziesmobs.client.render.item.BarakoaMaskRenderer;
 import com.bobmowzie.mowziesmobs.client.render.item.WroughtAxeRenderer;
 import com.bobmowzie.mowziesmobs.client.render.item.WroughtHelmetRenderer;
@@ -23,15 +43,6 @@ import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeVillager;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
-import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.particle.EffectRenderer;
-import net.minecraft.world.World;
-import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.common.MinecraftForge;
 
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends ServerProxy {

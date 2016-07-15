@@ -1,11 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.block;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
+
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 
 public class BlockPaintedAcacia extends Block {
     private IIcon[] icons;

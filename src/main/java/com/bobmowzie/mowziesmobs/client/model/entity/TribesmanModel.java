@@ -1,9 +1,5 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeElite;
-import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribesman;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.model.ModelAnimator;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
@@ -11,7 +7,13 @@ import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
 import org.lwjgl.opengl.GL11;
+
+import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeElite;
+import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribesman;
 
 @SideOnly(Side.CLIENT)
 public class TribesmanModel extends AdvancedModelBase {

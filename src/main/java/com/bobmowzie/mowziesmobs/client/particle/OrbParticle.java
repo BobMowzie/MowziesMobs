@@ -1,9 +1,10 @@
 package com.bobmowzie.mowziesmobs.client.particle;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 
 @SideOnly(Side.CLIENT)
 public class OrbParticle extends MowzieParticle {

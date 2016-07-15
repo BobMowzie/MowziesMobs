@@ -1,8 +1,9 @@
 package com.bobmowzie.mowziesmobs.server;
 
-import com.bobmowzie.mowziesmobs.server.entity.EntitySunstrike;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.world.World;
+
+import com.bobmowzie.mowziesmobs.server.entity.EntitySunstrike;
 
 public class ServerProxy {
     public void onInit() {

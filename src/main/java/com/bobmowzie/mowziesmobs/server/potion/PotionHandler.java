@@ -1,10 +1,10 @@
 package com.bobmowzie.mowziesmobs.server.potion;
 
-import cpw.mods.fml.relauncher.ReflectionHelper;
-import net.minecraft.potion.Potion;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+
+import net.minecraft.potion.Potion;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public enum PotionHandler {
     INSTANCE;

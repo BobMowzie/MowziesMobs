@@ -1,9 +1,10 @@
 package com.bobmowzie.mowziesmobs.client.sound;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.entity.EntitySunstrike;
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.util.ResourceLocation;
+
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.entity.EntitySunstrike;
 
 public class SunstrikeSound extends MovingSound {
     public static final ResourceLocation SOUND = new ResourceLocation(MowziesMobs.MODID, "sunstrike");

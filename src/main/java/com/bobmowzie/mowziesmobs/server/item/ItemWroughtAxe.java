@@ -1,12 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
-import com.bobmowzie.mowziesmobs.server.message.MessageSwingWroughtAxe;
-import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
@@ -14,6 +9,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.world.World;
+
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
+import com.bobmowzie.mowziesmobs.server.message.MessageSwingWroughtAxe;
+import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 
 public class ItemWroughtAxe extends ItemSword {
     public ItemWroughtAxe() {

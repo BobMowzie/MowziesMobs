@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.item.Item;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public enum ItemHandler {
     INSTANCE;

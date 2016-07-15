@@ -1,15 +1,13 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
-import net.ilexiconn.llibrary.server.structure.BlockState;
+import java.util.Random;
+
 import net.ilexiconn.llibrary.server.structure.StructureBuilder;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-
-import java.util.Random;
 
 public class ItemTestStructure extends Item {
     public ItemTestStructure() {

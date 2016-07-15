@@ -1,12 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.entity.foliaath;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
-import com.bobmowzie.mowziesmobs.client.model.tools.IntermittentAnimation;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAttackAI;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
-import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
@@ -23,8 +16,16 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+
+import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
+import com.bobmowzie.mowziesmobs.client.model.tools.IntermittentAnimation;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAttackAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 
 public class EntityFoliaath extends MowzieEntity {
     public static final Animation DIE_ANIMATION = Animation.create(50);

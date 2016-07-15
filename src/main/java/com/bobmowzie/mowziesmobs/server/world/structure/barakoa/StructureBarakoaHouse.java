@@ -1,16 +1,18 @@
 package com.bobmowzie.mowziesmobs.server.world.structure.barakoa;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
-import com.bobmowzie.mowziesmobs.server.world.MowzieStructureGenerator;
-import com.bobmowzie.mowziesmobs.server.world.structure.StructureBase;
-import coolalias.structuregenapi.util.Structure;
+import java.util.Random;
+
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.world.World;
 
-import java.util.Random;
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
+import com.bobmowzie.mowziesmobs.server.world.MowzieStructureGenerator;
+import com.bobmowzie.mowziesmobs.server.world.structure.StructureBase;
+
+import coolalias.structuregenapi.util.Structure;
 
 public class StructureBarakoaHouse extends StructureBase {
     public static int[][][][] blockArray1 = {

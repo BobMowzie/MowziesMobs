@@ -1,11 +1,12 @@
 package com.bobmowzie.mowziesmobs.server.ai.animation;
 
-import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeLeader;
-import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeVillager;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
+
+import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeLeader;
+import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeVillager;
 
 public class AnimationSpawnBarakoa<T extends MowzieEntity & IAnimatedEntity> extends AnimationAI<T> {
     public AnimationSpawnBarakoa(T entity, Animation animation) {

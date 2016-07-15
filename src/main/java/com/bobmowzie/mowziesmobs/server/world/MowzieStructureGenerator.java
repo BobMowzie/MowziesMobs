@@ -1,15 +1,17 @@
 package com.bobmowzie.mowziesmobs.server.world;
 
-import com.bobmowzie.mowziesmobs.server.world.structure.StructureWroughtnautRoom;
-import com.bobmowzie.mowziesmobs.server.world.structure.barakoa.StructureBarakoThrone;
-import com.bobmowzie.mowziesmobs.server.world.structure.barakoa.StructureBarakoaHouse;
-import coolalias.structuregenapi.util.Structure;
-import coolalias.structuregenapi.util.StructureGeneratorBase;
+import java.util.LinkedList;
+import java.util.List;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
-import java.util.LinkedList;
-import java.util.List;
+import com.bobmowzie.mowziesmobs.server.world.structure.StructureWroughtnautRoom;
+import com.bobmowzie.mowziesmobs.server.world.structure.barakoa.StructureBarakoThrone;
+import com.bobmowzie.mowziesmobs.server.world.structure.barakoa.StructureBarakoaHouse;
+
+import coolalias.structuregenapi.util.Structure;
+import coolalias.structuregenapi.util.StructureGeneratorBase;
 
 public class MowzieStructureGenerator extends StructureGeneratorBase {
     /**

@@ -1,11 +1,12 @@
 package com.bobmowzie.mowziesmobs.server.ai.animation;
 
-import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
+import java.util.List;
+
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 
-import java.util.List;
+import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 
 public class AnimationFWNAttackAI extends AnimationAttackAI<EntityWroughtnaut> {
     private float arc;

@@ -1,13 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.entity.tribe;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
-import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
-import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
-import com.bobmowzie.mowziesmobs.server.ai.animation.*;
-import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
-import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import com.bobmowzie.mowziesmobs.server.item.ItemTestStructure;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
@@ -21,8 +13,23 @@ import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
+import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
+import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationRadiusAttack;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationSolarBeam;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationSpawnBarakoa;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationSunStrike;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
+import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.item.ItemTestStructure;
 
 public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeImmune {
     public static final Animation DIE_ANIMATION = Animation.create(130);

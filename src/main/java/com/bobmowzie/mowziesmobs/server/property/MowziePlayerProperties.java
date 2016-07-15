@@ -5,7 +5,7 @@ import net.ilexiconn.llibrary.server.nbt.NBTHandler;
 import net.ilexiconn.llibrary.server.nbt.NBTProperty;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 
 public class MowziePlayerProperties extends EntityProperties<EntityPlayer> {
     public static final int SWING_HIT_TICK = 10;

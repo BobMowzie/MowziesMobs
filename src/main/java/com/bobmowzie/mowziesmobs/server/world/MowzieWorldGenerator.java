@@ -1,16 +1,18 @@
 package com.bobmowzie.mowziesmobs.server.world;
 
+import java.util.Random;
+
+import net.minecraft.block.BlockStone;
+import net.minecraft.world.World;
+import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraftforge.fml.common.IWorldGenerator;
+
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.world.structure.barakoa.StructureBarakoThrone;
 import com.bobmowzie.mowziesmobs.server.world.structure.barakoa.StructureBarakoaHouse;
-import coolalias.structuregenapi.util.Structure;
-import cpw.mods.fml.common.IWorldGenerator;
-import net.minecraft.block.BlockStone;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.IChunkProvider;
 
-import java.util.Random;
+import coolalias.structuregenapi.util.Structure;
 
 public class MowzieWorldGenerator implements IWorldGenerator {
     @Override

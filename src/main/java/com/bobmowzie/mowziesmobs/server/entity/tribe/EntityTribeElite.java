@@ -1,8 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.entity.tribe;
 
-import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationBlockAI;
-import cpw.mods.fml.common.eventhandler.Event;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
@@ -21,13 +21,15 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.fml.common.eventhandler.Event;
+
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationBlockAI;
 
 public class EntityTribeElite extends EntityTribesman {
     public static final Animation BLOCK_ANIMATION = Animation.create(10);

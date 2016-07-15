@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.ai.animation;
 
-import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
+import java.util.List;
+
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -8,13 +9,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.network.play.server.S12PacketEntityVelocity;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.WorldServer;
 
-import java.util.List;
+import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 
 public class AnimationFWNStompAttackAI extends AnimationAI<EntityWroughtnaut> {
     public AnimationFWNStompAttackAI(EntityWroughtnaut entity, Animation animation) {
