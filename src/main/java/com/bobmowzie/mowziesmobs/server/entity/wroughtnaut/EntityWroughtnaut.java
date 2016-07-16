@@ -393,7 +393,7 @@ public class EntityWroughtnaut extends MowzieEntity {
                 IBlockState block = worldObj.getBlockState(pos);
                 if (block.getRenderType() != EnumBlockRenderType.INVISIBLE) {
                     int stateId = Block.getStateId(block);
-                    worldObj.spawnParticle(EnumParticleTypes.BLOCK_DUST, x, y, z, 0, 0, 0);
+                    worldObj.spawnParticle(EnumParticleTypes.BLOCK_DUST, x, y, z, 0, 0, 0, stateId);
                     if (playSound && rand.nextFloat() < 0.075F) {
                         SoundType sound = block.getBlock().getSoundType();
                         worldObj.playSound(posX, posY, posZ, sound.getBreakSound(), SoundCategory.BLOCKS, sound.getVolume() * 2, sound.getPitch() * 0.6F, false);
