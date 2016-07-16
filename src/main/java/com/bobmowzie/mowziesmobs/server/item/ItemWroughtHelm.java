@@ -1,34 +1,29 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
-import net.minecraft.client.model.ModelBiped;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 
 public class ItemWroughtHelm extends ItemArmor {
-    private static final String ARMOR_TEXTURE_STRING = MowziesMobs.MODID + ":textures/items/modeled/textureWroughtHelmet.png";
-
     public ItemWroughtHelm() {
-        super(ArmorMaterial.IRON, 2, 0);
-        setUnlocalizedName("wroughtHelm");
+        super(ArmorMaterial.IRON, 2, EntityEquipmentSlot.HEAD);
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
+        setUnlocalizedName("wroughtHelm");
+        setRegistryName("wrought_helm");
     }
 
     @Override
-    public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack) {
-        super.onArmorTick(world, player, itemStack);
+    public void onArmorTick(World world, EntityPlayer player, ItemStack stack) {
+        super.onArmorTick(world, player, stack);
     }
 
     @Override
-    public boolean getIsRepairable(ItemStack itemStack, ItemStack materialItemStack) {
+    public boolean getIsRepairable(ItemStack stack, ItemStack material) {
         return false;
     }
 
@@ -43,28 +38,5 @@ public class ItemWroughtHelm extends ItemArmor {
     }
 
     @Override
-    public void setDamage(ItemStack stack, int damage) {
-
-    }
-
-    @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type) {
-        return ARMOR_TEXTURE_STRING;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot) {
-        ModelBiped armorModel = null;
-        if (itemStack != null) {
-            if (itemStack.getItem() instanceof ItemWroughtHelm) {
-                armorModel = MowziesMobs.PROXY.getArmorModel(0);
-            }
-        }
-        return armorModel;
-    }
-
-    @Override
-    public void registerIcons(IIconRegister registrar) {
-    }
+    public void setDamage(ItemStack stack, int damage) {}
 }

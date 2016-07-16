@@ -1,10 +1,15 @@
 package com.bobmowzie.mowziesmobs.server.potion;
 
+import org.lwjgl.opengl.GL11;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
@@ -15,8 +20,8 @@ public class MowziePotion extends Potion {
     private static final int ICON_SIZE = 18;
     private static final int ICON_ROW_LENGTH = 3;
 
-    public MowziePotion(int id, boolean isBadEffect, int liquidColor) {
-        super(id, isBadEffect, liquidColor);
+    public MowziePotion(boolean isBadEffect, int liquidColor) {
+        super(isBadEffect, liquidColor);
     }
 
     @Override
@@ -44,12 +49,13 @@ public class MowziePotion extends Potion {
     }
 
     public void drawTexturedRect(int x, int y, int u, int v, int width, int height) {
-        Tessellator t = Tessellator.instance;
-        t.startDrawingQuads();
-        t.addVertexWithUV(x, y + height, 0, u / TEXTURE_SIZE, (v + height) / TEXTURE_SIZE);
-        t.addVertexWithUV(x + width, y + height, 0, (u + width) / TEXTURE_SIZE, (v + height) / TEXTURE_SIZE);
-        t.addVertexWithUV(x + width, y, 0, (u + width) / TEXTURE_SIZE, v / TEXTURE_SIZE);
-        t.addVertexWithUV(x, y, 0, u / TEXTURE_SIZE, v / TEXTURE_SIZE);
-        t.draw();
+        Tessellator tes = Tessellator.getInstance();
+        VertexBuffer buf = tes.getBuffer();
+        buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        buf.pos(x, y + height, 0).tex(u / TEXTURE_SIZE, (v + height) / TEXTURE_SIZE).endVertex();
+        buf.pos(x + width, y + height, 0).tex((u + width) / TEXTURE_SIZE, (v + height) / TEXTURE_SIZE).endVertex();
+        buf.pos(x + width, y, 0).tex((u + width) / TEXTURE_SIZE, v / TEXTURE_SIZE).endVertex();
+        buf.pos(x, y, 0).tex(u / TEXTURE_SIZE, v / TEXTURE_SIZE).endVertex();
+        tes.draw();
     }
 }

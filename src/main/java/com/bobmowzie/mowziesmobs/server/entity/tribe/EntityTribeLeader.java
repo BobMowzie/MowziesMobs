@@ -4,6 +4,7 @@ import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
@@ -12,13 +13,22 @@ import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
+import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory.ParticleArgs;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
@@ -30,6 +40,7 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.item.ItemTestStructure;
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 
 public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeImmune {
     public static final Animation DIE_ANIMATION = Animation.create(130);
@@ -45,10 +56,15 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
     private static final int SUNSTRIKE_PAUSE_MIN = 15;
     private static final int LASER_PAUSE = 230;
     private static final int BARAKOA_PAUSE = 150;
+    private static final DataParameter<Integer> DIRECTION = EntityDataManager.createKey(EntityTribeLeader.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> DIALOGUE = EntityDataManager.createKey(EntityTribeLeader.class, DataSerializers.VARINT);
+    private static final DataParameter<Boolean> ANGRY = EntityDataManager.createKey(EntityTribeLeader.class, DataSerializers.BOOLEAN);
     public ControlledAnimation legsUp = new ControlledAnimation(15);
     public ControlledAnimation angryEyebrow = new ControlledAnimation(5);
+    // TODO: Enum!
     public int whichDialogue = 0;
     public int barakoaSpawnCount = 0;
+    // TODO: use EnumFacing!
     private int direction = 0;
     private boolean blocksByFeet = true;
     private int timeUntilSunstrike = 0;
@@ -60,7 +76,7 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
         super(world);
         this.targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
         this.tasks.addTask(4, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, false));
-        this.tasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityZombie.class, 0, false));
+        this.tasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityZombie.class, 0, false, false, null));
         this.tasks.addTask(2, new AnimationAI<>(this, BELLY_ANIMATION, false));
         this.tasks.addTask(2, new AnimationAI<>(this, TALK_ANIMATION, false));
         this.tasks.addTask(2, new AnimationSunStrike<>(this, SUNSTRIKE_ANIMATION));
@@ -91,8 +107,8 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
     @Override
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(1.0);
-        this.getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(MAX_HEALTH);
+        this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(MAX_HEALTH);
     }
 
     @Override
@@ -101,19 +117,19 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
     }
 
     @Override
-    protected String getLivingSound() {
+    protected SoundEvent getAmbientSound() {
         if (getAnimation() == NO_ANIMATION) {
             if (getAttackTarget() == null) {
-                int soundType = MathHelper.getRandomIntegerInRange(this.rand, 1, 10);
-                if (soundType < 7) {
-                    this.playSound("mowziesmobs:barakoTalk" + soundType, 1.4F, 1.0F);
-                    this.setWhichDialogue(soundType);
+                int soundType = MathHelper.getRandomIntegerInRange(this.rand, 0, 9);
+                if (soundType < MMSounds.ENTITY_BARAKO_TALK.length) {
+                    this.playSound(MMSounds.ENTITY_BARAKO_TALK[soundType], 1.4F, 1.0F);
+                    this.setWhichDialogue(soundType + 1);
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, TALK_ANIMATION);
                 }
             } else {
                 int soundType = MathHelper.getRandomIntegerInRange(rand, 1, 10);
                 if (soundType < 7) {
-                    this.playSound("mowziesmobs:barakoAngry" + soundType, 1.4F, 1.0F);
+                    this.playSound(MMSounds.ENTITY_BARAKO_ANGRY[soundType - 1], 1.4F, 1.0F);
 //                    setWhichDialogue(soundType);
 //                    AnimationHandler.INSTANCE.sendAnimationMessage(this, 3);
                 }
@@ -123,13 +139,13 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
     }
 
     @Override
-    protected String getHurtSound() {
-        return "mowziesmobs:barakoHurt";
+    protected SoundEvent getHurtSound() {
+        return MMSounds.ENTITY_BARAKO_HURT;
     }
 
     @Override
-    protected String getDeathSound() {
-        this.playSound("mowziesmobs:barakoDie", 1.4f, 1);
+    protected SoundEvent getDeathSound() {
+        this.playSound(MMSounds.ENTITY_BARAKO_DIE, 1.4f, 1);
         return null;
     }
 
@@ -150,7 +166,7 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
 
         if (getAttackTarget() != null) {
             EntityLivingBase target = getAttackTarget();
-            this.setAngry(1);
+            this.setAngry(true);
             float entityHitAngle = (float) ((Math.atan2(target.posZ - posZ, target.posX - posX) * (180 / Math.PI) - 90) % 360);
             float entityAttackingAngle = rotationYaw % 360;
             if (entityHitAngle < 0) {
@@ -174,7 +190,7 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
             }
         } else {
             if (!worldObj.isRemote) {
-                this.setAngry(0);
+                this.setAngry(false);
             }
         }
 
@@ -188,7 +204,7 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
             legsUp.decreaseTimer();
         }
 
-        if (getAngry() == 1) {
+        if (getAngry()) {
             angryEyebrow.increaseTimer();
         } else {
             angryEyebrow.decreaseTimer();
@@ -199,7 +215,7 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
         }
 
         if (getAnimation() == BELLY_ANIMATION && (getAnimationTick() == 9 || getAnimationTick() == 29)) {
-            this.playSound("mowziesmobs:barakoBelly", 1.4f, 1f);
+            this.playSound(MMSounds.ENTITY_BARAKO_BELLY, 1.4f, 1f);
         }
 
         if (getAnimation() == TALK_ANIMATION && getAnimationTick() == 1) {
@@ -209,13 +225,13 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
         if (getAnimation() == ATTACK_ANIMATION) {
             rotationYawHead = rotationYaw;
             if (getAnimationTick() == 1) {
-                this.playSound("mowziesmobs:barakoBurst", 1.5f, 1.5f);
+                this.playSound(MMSounds.ENTITY_BARAKO_BURST, 1.5f, 1.5f);
             }
             if (getAnimationTick() == 10) {
                 if (worldObj.isRemote) {
                     spawnExplosionParticles(30);
                 }
-                this.playSound("mowziesmobs:barakoAttack", 1.5f, 0.9f);
+                this.playSound(MMSounds.ENTITY_BARAKO_ATTACK, 1.5f, 0.9f);
             }
             if (getAnimationTick() <= 6 && worldObj.isRemote) {
                 int particleCount = 8;
@@ -229,7 +245,7 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
                     double offsetX = -0.3 * Math.sin(rotationYaw * Math.PI / 180);
                     double offsetZ = -0.3 * Math.cos(rotationYaw * Math.PI / 180);
                     double offsetY = 1;
-                    MowziesMobs.PROXY.spawnOrbFX(worldObj, posX + ox + offsetX, posY + offsetY + oy, posZ + oz + offsetZ, posX + offsetX, posY + offsetY, posZ + offsetZ, 6);
+                    MMParticle.ORB.spawn(worldObj, posX + ox + offsetX, posY + offsetY + oy, posZ + oz + offsetZ, ParticleArgs.get().withData(posX + offsetX, posY + offsetY, posZ + offsetZ, 6));
                 }
             }
         }
@@ -258,20 +274,20 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
     }
 
     private boolean checkBlocksByFeet() {
-        Block blockLeft;
-        Block blockRight;
+        IBlockState blockLeft;
+        IBlockState blockRight;
         if (direction == 1) {
-            blockLeft = worldObj.getBlock(MathHelper.floor_double(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) + 1);
-            blockRight = worldObj.getBlock(MathHelper.floor_double(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) + 1);
+            blockLeft = worldObj.getBlockState(new BlockPos(MathHelper.floor_double(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) + 1));
+            blockRight = worldObj.getBlockState(new BlockPos(MathHelper.floor_double(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) + 1));
         } else if (direction == 2) {
-            blockLeft = worldObj.getBlock(MathHelper.floor_double(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) + 1);
-            blockRight = worldObj.getBlock(MathHelper.floor_double(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) - 1);
+            blockLeft = worldObj.getBlockState(new BlockPos(MathHelper.floor_double(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) + 1));
+            blockRight = worldObj.getBlockState(new BlockPos(MathHelper.floor_double(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) - 1));
         } else if (direction == 3) {
-            blockLeft = worldObj.getBlock(MathHelper.floor_double(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) - 1);
-            blockRight = worldObj.getBlock(MathHelper.floor_double(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) - 1);
+            blockLeft = worldObj.getBlockState(new BlockPos(MathHelper.floor_double(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) - 1));
+            blockRight = worldObj.getBlockState(new BlockPos(MathHelper.floor_double(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) - 1));
         } else if (direction == 4) {
-            blockLeft = worldObj.getBlock(MathHelper.floor_double(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) - 1);
-            blockRight = worldObj.getBlock(MathHelper.floor_double(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) + 1);
+            blockLeft = worldObj.getBlockState(new BlockPos(MathHelper.floor_double(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) - 1));
+            blockRight = worldObj.getBlockState(new BlockPos(MathHelper.floor_double(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) + 1));
         } else {
             return false;
         }
@@ -286,40 +302,40 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
             float vy = rand.nextFloat() * 0.1F - 0.05f;
             float vx = velocity * MathHelper.cos(yaw);
             float vz = velocity * MathHelper.sin(yaw);
-            worldObj.spawnParticle("flame", posX, posY + 1, posZ, vx, vy, vz);
+            worldObj.spawnParticle(EnumParticleTypes.FLAME, posX, posY + 1, posZ, vx, vy, vz);
         }
     }
 
     @Override
     protected void entityInit() {
         super.entityInit();
-        dataWatcher.addObject(28, 0);
-        dataWatcher.addObject(29, 0);
-        dataWatcher.addObject(30, 0);
+        getDataManager().register(DIRECTION, 0);
+        getDataManager().register(DIALOGUE, 0);
+        getDataManager().register(ANGRY, false);
     }
 
     public int getDirection() {
-        return dataWatcher.getWatchableObjectInt(28);
+        return getDataManager().get(DIRECTION);
     }
 
-    public void setDirection(Integer direction) {
-        dataWatcher.updateObject(28, direction);
+    public void setDirection(int direction) {
+        getDataManager().set(DIRECTION, direction);
     }
 
     public int getWhichDialogue() {
-        return dataWatcher.getWatchableObjectInt(29);
+        return getDataManager().get(DIALOGUE);
     }
 
-    public void setWhichDialogue(Integer i) {
-        dataWatcher.updateObject(29, i);
+    public void setWhichDialogue(int dialogue) {
+        getDataManager().set(DIALOGUE, dialogue);
     }
 
-    public int getAngry() {
-        return dataWatcher.getWatchableObjectInt(30);
+    public boolean getAngry() {
+        return getDataManager().get(ANGRY);
     }
 
-    public void setAngry(Integer i) {
-        dataWatcher.updateObject(30, i);
+    public void setAngry(boolean angry) {
+        getDataManager().set(ANGRY, angry);
     }
 
     @Override
@@ -335,15 +351,14 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
     }
 
     @Override
-    protected void func_145780_a(int p_145780_1_, int p_145780_2_, int p_145780_3_, Block p_145780_4_) {
-    }
+    protected void playStepSound(BlockPos pos, Block block) {}
 
     @Override
-    protected boolean interact(EntityPlayer player) {
-        if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof ItemTestStructure) {
+    protected boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack stack) {
+        if (stack != null && stack.getItem() instanceof ItemTestStructure) {
             pacified = true;
         }
-        return super.interact(player);
+        return super.processInteract(player, hand, stack);
     }
 
     private int getTimeUntilSunstrike() {

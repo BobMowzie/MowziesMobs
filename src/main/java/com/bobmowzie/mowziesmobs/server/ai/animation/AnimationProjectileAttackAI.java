@@ -4,15 +4,16 @@ import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IRangedAttackMob;
+import net.minecraft.util.SoundEvent;
 
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 
 public class AnimationProjectileAttackAI<T extends MowzieEntity & IAnimatedEntity> extends AnimationAI<T> {
     private EntityLivingBase entityTarget;
     private int attackFrame;
-    private String attackSound;
+    private SoundEvent attackSound;
 
-    public AnimationProjectileAttackAI(T entity, Animation animation, int attackFrame, String attackSound) {
+    public AnimationProjectileAttackAI(T entity, Animation animation, int attackFrame, SoundEvent attackSound) {
         super(entity, animation);
         this.entityTarget = null;
         this.attackFrame = attackFrame;

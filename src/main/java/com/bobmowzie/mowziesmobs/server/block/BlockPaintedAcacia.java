@@ -9,15 +9,13 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 
 public class BlockPaintedAcacia extends Block {
-    private IIcon[] icons;
-
     public BlockPaintedAcacia() {
         super(Material.WOOD);
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-//        setBlockTextureName(new ResourceLocation(MowziesMobs.MODID, "texturePaintedAcacia").toString());
         setHardness(2.0F);
         setResistance(5.0F);
         setSoundType(SoundType.WOOD);
-        setRegistryName("paintedAcacia");
+        setUnlocalizedName("paintedAcacia");
+        setRegistryName("painted_acacia");
     }
 }

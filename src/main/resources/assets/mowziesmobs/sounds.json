@@ -1,107 +1,266 @@
 {
-    "foliaathbite1": {"category": "hostile","sounds": [{"name": "foliaathbite1","stream": false}]},
-    "foliaathbite2": {"category": "hostile","sounds": [{"name": "foliaathbite2","stream": false}]},
-    "foliaathemerge": {"category": "hostile","sounds": [{"name": "foliaathemerge","stream": false}]},
-    "foliaathgrunt": {"category": "hostile","sounds": [{"name": "foliaathgrunt","stream": false}]},
-    "foliaathpant1": {"category": "hostile","sounds": [{"name": "foliaathpant1","stream": false}]},
-    "foliaathpant2": {"category": "hostile","sounds": [{"name": "foliaathpant2","stream": false}]},
-    "foliaathretreat": {"category": "hostile","sounds": [{"name": "foliaathretreat","stream": false}]},
-    "foliaathdie": {"category": "hostile","sounds": [{"name": "foliaathdie","stream": false}]},
-    "foliaathhurt": {"category": "hostile","sounds": [{"name": "foliaathhurt","stream": false}]},
-    "foliaathrustle": {"category": "hostile","sounds": [{"name": "foliaathrustle","stream": false}]},
-
-    "dirtimpact": {"category": "master","sounds": [{"name": "dirtimpact","stream": false}]},
-
-    "babyFoliaathEat": {"category": "hostile","sounds": [{"name": "babyFoliaathEat","stream": false}]},
-
-    "wroughtnautWhoosh": {"category": "hostile","sounds": [{"name": "wroughtnautWhoosh","stream": false}]},
-    "wroughtnautCreak": {"category": "hostile","sounds": [{"name": "wroughtnautCreak","stream": false}]},
-    "wroughtnautDie": {"category": "hostile","sounds": [{"name": "wroughtnautDie","stream": false}]},
-    "wroughtnautGrunt1": {"category": "hostile","sounds": [{"name": "wroughtnautGrunt1","stream": false}]},
-    "wroughtnautGrunt2": {"category": "hostile","sounds": [{"name": "wroughtnautGrunt2","stream": false}]},
-    "wroughtnautGrunt3": {"category": "hostile","sounds": [{"name": "wroughtnautGrunt3","stream": false}]},
-    "wroughtnautHurt1": {"category": "hostile","sounds": [{"name": "wroughtnautHurt1","stream": false}]},
-    "wroughtnautPreSwing1": {"category": "hostile","sounds": [{"name": "wroughtnautPreSwing1","stream": false}]},
-    "wroughtnautPreSwing2": {"category": "hostile","sounds": [{"name": "wroughtnautPreSwing2","stream": false}]},
-    "wroughtnautPreSwing3": {"category": "hostile","sounds": [{"name": "wroughtnautPreSwing3","stream": false}]},
-    "wroughtnautPull1": {"category": "hostile","sounds": [{"name": "wroughtnautPull1","stream": false}]},
-    "wroughtnautPull2": {"category": "hostile","sounds": [{"name": "wroughtnautPull2","stream": false}]},
-    "wroughtnautPull3": {"category": "hostile","sounds": [{"name": "wroughtnautPull3","stream": false}]},
-    "wroughtnautPull4": {"category": "hostile","sounds": [{"name": "wroughtnautPull4","stream": false}]},
-    "wroughtnautPull5": {"category": "hostile","sounds": [{"name": "wroughtnautPull5","stream": false}]},
-    "wroughtnautPull6": {"category": "hostile","sounds": [{"name": "wroughtnautPull6","stream": false}]},
-    "wroughtnautRelease1": {"category": "hostile","sounds": [{"name": "wroughtnautRelease1","stream": false}]},
-    "wroughtnautRelease2": {"category": "hostile","sounds": [{"name": "wroughtnautRelease2","stream": false}]},
-    "wroughtnautScream": {"category": "hostile","sounds": [{"name": "wroughtnautScream","stream": false}]},
-    "wroughtnautShout1": {"category": "hostile","sounds": [{"name": "wroughtnautShout1","stream": false}]},
-    "wroughtnautShout2": {"category": "hostile","sounds": [{"name": "wroughtnautShout2","stream": false}]},
-    "wroughtnautShout3": {"category": "hostile","sounds": [{"name": "wroughtnautShout3","stream": false}]},
-    "wroughtnautSwing1": {"category": "hostile","sounds": [{"name": "wroughtnautSwing1","stream": false}]},
-    "wroughtnautSwing2": {"category": "hostile","sounds": [{"name": "wroughtnautSwing2","stream": false}]},
-    "wroughtnautSwing3": {"category": "hostile","sounds": [{"name": "wroughtnautSwing3","stream": false}]},
-
-    "barakoaAngry1": {"category": "hostile","sounds": [{"name": "barakoaAngry1","stream": false}]},
-    "barakoaAngry2": {"category": "hostile","sounds": [{"name": "barakoaAngry2","stream": false}]},
-    "barakoaAngry3": {"category": "hostile","sounds": [{"name": "barakoaAngry3","stream": false}]},
-    "barakoaAngry4": {"category": "hostile","sounds": [{"name": "barakoaAngry4","stream": false}]},
-    "barakoaAngry5": {"category": "hostile","sounds": [{"name": "barakoaAngry5","stream": false}]},
-    "barakoaAngry6": {"category": "hostile","sounds": [{"name": "barakoaAngry6","stream": false}]},
-    "barakoaBattlecry": {"category": "hostile","sounds": [{"name": "barakoaBattlecry","stream": false}]},
-    "barakoaBattlecry2": {"category": "hostile","sounds": [{"name": "barakoaBattlecry2","stream": false}]},
-    "barakoaDie1": {"category": "hostile","sounds": [{"name": "barakoaDie1","stream": false}]},
-    "barakoaDie2": {"category": "hostile","sounds": [{"name": "barakoaDie2","stream": false}]},
-    "barakoaHurt1": {"category": "hostile","sounds": [{"name": "barakoaHurt1","stream": false}]},
-    "barakoaHurt2": {"category": "hostile","sounds": [{"name": "barakoaHurt2","stream": false}]},
-    "barakoaHurt3": {"category": "hostile","sounds": [{"name": "barakoaHurt3","stream": false}]},
-    "barakoaHurt4": {"category": "hostile","sounds": [{"name": "barakoaHurt4","stream": false}]},
-    "barakoaTalk1": {"category": "hostile","sounds": [{"name": "barakoaTalk1","stream": false}]},
-    "barakoaTalk2": {"category": "hostile","sounds": [{"name": "barakoaTalk2","stream": false}]},
-    "barakoaTalk3": {"category": "hostile","sounds": [{"name": "barakoaTalk3","stream": false}]},
-    "barakoaTalk4": {"category": "hostile","sounds": [{"name": "barakoaTalk4","stream": false}]},
-    "barakoaTalk5": {"category": "hostile","sounds": [{"name": "barakoaTalk5","stream": false}]},
-    "barakoaTalk6": {"category": "hostile","sounds": [{"name": "barakoaTalk6","stream": false}]},
-    "barakoaTalk7": {"category": "hostile","sounds": [{"name": "barakoaTalk7","stream": false}]},
-    "barakoaTalk8": {"category": "hostile","sounds": [{"name": "barakoaTalk8","stream": false}]},
-    "barakoaTalk9": {"category": "hostile","sounds": [{"name": "barakoaTalk9","stream": false}]},
-    "barakoaBlowdart": {"category": "hostile","sounds": [{"name": "barakoaBlowdart","stream": false}]},
-    "barakoaInhale": {"category": "hostile","sounds": [{"name": "barakoaInhale","stream": false}]},
-    "barakoaShout": {"category": "hostile","sounds": [{"name": "barakoaShout","stream": false}]},
-    "barakoaSwing": {"category": "hostile","sounds": [{"name": "barakoaSwing","stream": false}]},
-    "barakoaEmerge": {"category": "hostile","sounds": [{"name": "barakoaEmerge","stream": false}]},
-
-    "barakoBelly": {"category": "hostile","sounds": [{"name": "barakoBelly","stream": false}]},
-    "barakoAngry1": {"category": "hostile","sounds": [{"name": "barakoAngry1","stream": true}]},
-    "barakoAngry2": {"category": "hostile","sounds": [{"name": "barakoAngry2","stream": true}]},
-    "barakoAngry3": {"category": "hostile","sounds": [{"name": "barakoAngry3","stream": true}]},
-    "barakoAngry4": {"category": "hostile","sounds": [{"name": "barakoAngry4","stream": true}]},
-    "barakoAngry5": {"category": "hostile","sounds": [{"name": "barakoAngry5","stream": true}]},
-    "barakoAngry6": {"category": "hostile","sounds": [{"name": "barakoAngry6","stream": true}]},
-    "barakoTalk1": {"category": "hostile","sounds": [{"name": "barakoTalk1","stream": true}]},
-    "barakoTalk2": {"category": "hostile","sounds": [{"name": "barakoTalk2","stream": true}]},
-    "barakoTalk3": {"category": "hostile","sounds": [{"name": "barakoTalk3","stream": true}]},
-    "barakoTalk4": {"category": "hostile","sounds": [{"name": "barakoTalk4","stream": true}]},
-    "barakoTalk5": {"category": "hostile","sounds": [{"name": "barakoTalk5","stream": true}]},
-    "barakoTalk6": {"category": "hostile","sounds": [{"name": "barakoTalk6","stream": true}]},
-    "barakoDie": {"category": "hostile","sounds": [{"name": "barakoDie","stream": false}]},
-    "barakoHurt": {
-        "category": "hostile",
-        "sounds":
-        [
-            {"name": "barakoHurt1","stream": false},
-            {"name": "barakoHurt2","stream": false},
-            {"name": "barakoHurt3","stream": false}
-        ]
-    },
-    "barakoAttack": {
-        "category": "hostile",
-        "sounds":
-        [
-            {"name": "barakoAttack1","stream": false},
-            {"name": "barakoAttack2","stream": false},
-            {"name": "barakoAttack3","stream": false}
-        ]
-    },
-    "barakoBurst": {"category": "hostile","sounds": [{"name": "barakoBurst","stream": false}]},
-    "sunstrike": {"category": "master","sounds": [{"name": "sunstrike","stream": false}]},
-    "laser": {"category": "master","sounds": [{"name": "laser","stream": false}]}
+	"foliaath.bite1": {
+		"sounds": [ { "name": "mowziesmobs:foliaathbite1" } ]
+	},
+	"foliaath.bite2": {
+		"sounds": [ { "name": "mowziesmobs:foliaathbite2" } ]
+	},
+	"foliaath.emerge":{
+		"sounds": [ { "name": "mowziesmobs:foliaathemerge" } ]
+	},
+	"foliaath.grunt": {
+		"sounds": [ { "name": "mowziesmobs:foliaathgrunt" } ]
+	},
+	"foliaath.pant1": {
+		"sounds": [ { "name": "mowziesmobs:foliaathpant1" } ]
+	},
+	"foliaath.pant2": {
+		"sounds": [ { "name": "mowziesmobs:foliaathpant2" } ]
+	},
+	"foliaath.retreat": {
+		"sounds": [ { "name": "mowziesmobs:foliaathretreat" } ]
+	},
+	"foliaath.die": {
+		"sounds": [ { "name": "mowziesmobs:foliaathdie"} ]
+	},
+	"foliaath.hurt": {
+		"sounds": [ { "name": "mowziesmobs:foliaathhurt"} ]
+	},
+	"foliaath.rustle": {
+		"sounds": [ { "name": "mowziesmobs:foliaathrustle"} ]
+	},
+	"dirtimpact": {
+		"sounds": [ { "name": "mowziesmobs:dirtimpact"} ]
+	},
+	"foliaath.baby.eat": {
+		"sounds": [ { "name": "mowziesmobs:babyFoliaathEat"} ]
+	},
+	"wroughtnaut.whoosh": {
+		"sounds": [ { "name": "mowziesmobs:wroughtnautWhoosh"} ]
+	},
+	"wroughtnaut.creak": {
+		"sounds": [ { "name": "mowziesmobs:wroughtnautCreak"} ]
+	},
+	"wroughtnaut.die": {
+		"sounds": [ { "name": "mowziesmobs:wroughtnautDie"} ]
+	},
+	"wroughtnaut.grunt1": {
+		"sounds": [ { "name": "mowziesmobs:wroughtnautGrunt1"} ]
+	},
+	"wroughtnaut.grunt2": {
+		"sounds": [ { "name": "mowziesmobs:wroughtnautGrunt2"} ]
+	},
+	"wroughtnaut.grunt3": {
+		"sounds": [ { "name": "mowziesmobs:wroughtnautGrunt3"} ]
+	},
+	"wroughtnaut.hurt1": {
+		"sounds": [ { "name": "mowziesmobs:wroughtnautHurt1"} ]
+	},
+	"wroughtnaut.preSwing1": {
+		"sounds": [ { "name": "mowziesmobs:wroughtnautPreSwing1"} ]
+	},
+	"wroughtnaut.preSwing2": {
+		"sounds": [ { "name": "mowziesmobs:wroughtnautPreSwing2"} ]
+	},
+	"wroughtnaut.preSwing3": {
+		"sounds": [ { "name": "mowziesmobs:wroughtnautPreSwing3"} ]
+	},
+	"wroughtnaut.pull1": {
+		"sounds": [ { "name": "mowziesmobs:wroughtnautPull1"} ]
+	},
+	"wroughtnaut.pull2": {
+		"sounds": [ { "name": "mowziesmobs:wroughtnautPull2"} ]
+	},
+	"wroughtnaut.pull3": {
+		"sounds": [ { "name": "mowziesmobs:wroughtnautPull3"} ]
+	},
+	"wroughtnaut.pull4": {
+		"sounds": [ { "name": "mowziesmobs:wroughtnautPull4"} ]
+	},
+	"wroughtnaut.pull5": {
+		"sounds": [ { "name": "mowziesmobs:wroughtnautPull5"} ]
+	},
+	"wroughtnaut.pull6": {
+		"sounds": [ { "name": "mowziesmobs:wroughtnautPull6"} ]
+	},
+	"wroughtnaut.release1": {
+		"sounds": [ { "name": "mowziesmobs:wroughtnautRelease1"} ]
+	},
+	"wroughtnaut.release2": {
+		"sounds": [ { "name": "mowziesmobs:wroughtnautRelease2"} ]
+	},
+	"wroughtnaut.scream": {
+		"sounds": [ { "name": "mowziesmobs:wroughtnautScream"} ]
+	},
+	"wroughtnaut.shout1": {
+		"sounds": [ { "name": "mowziesmobs:wroughtnautShout1"} ]
+	},
+	"wroughtnaut.shout2": {
+		"sounds": [ { "name": "mowziesmobs:wroughtnautShout2"} ]
+	},
+	"wroughtnaut.shout3": {
+		"sounds": [ { "name": "mowziesmobs:wroughtnautShout3"} ]
+	},
+	"wroughtnaut.ambient": {
+		"sounds": [
+			{ "name": "mowziesmobs:wroughtnautGrunt1"},
+			{ "name": "mowziesmobs:wroughtnautGrunt2"},
+			{ "name": "mowziesmobs:wroughtnautShout1"},
+			{ "name": "mowziesmobs:wroughtnautShout2"}
+		]
+	},
+	"wroughtnaut.swing1": {
+		"sounds": [ { "name": "mowziesmobs:wroughtnautSwing1"} ]
+	},
+	"wroughtnaut.swing2": {
+		"sounds": [ { "name": "mowziesmobs:wroughtnautSwing2"} ]
+	},
+	"wroughtnaut.swing3": {
+		"sounds": [ { "name": "mowziesmobs:wroughtnautSwing3"} ]
+	},
+	"barakoa.angry1": {
+		"sounds": [ { "name": "mowziesmobs:barakoaAngry1"} ]
+	},
+	"barakoa.angry2": {
+		"sounds": [ { "name": "mowziesmobs:barakoaAngry2"} ]
+	},
+	"barakoa.angry3": {
+		"sounds": [ { "name": "mowziesmobs:barakoaAngry3"} ]
+	},
+	"barakoa.angry4": {
+		"sounds": [ { "name": "mowziesmobs:barakoaAngry4"} ]
+	},
+	"barakoa.angry5": {
+		"sounds": [ { "name": "mowziesmobs:barakoaAngry5"} ]
+	},
+	"barakoa.angry6": {
+		"sounds": [ { "name": "mowziesmobs:barakoaAngry6"} ]
+	},
+	"barakoa.battlecry": {
+		"sounds": [ { "name": "mowziesmobs:barakoaBattlecry"} ]
+	},
+	"barakoa.battlecry2": {
+		"sounds": [ { "name": "mowziesmobs:barakoaBattlecry2"} ]
+	},
+	"barakoa.die": {
+		"sounds": [
+			{ "name": "mowziesmobs:barakoaDie1"},
+			{ "name": "mowziesmobs:barakoaDie2"}
+		]
+	},
+	"barakoa.hurt": {
+		"sounds": [
+			{ "name": "mowziesmobs:barakoaHurt1"},
+			{ "name": "mowziesmobs:barakoaHurt2"},
+			{ "name": "mowziesmobs:barakoaHurt3"},
+			{ "name": "mowziesmobs:barakoaHurt4"}
+		]
+	},
+	"barakoa.talk1": {
+		"sounds": [ { "name": "mowziesmobs:barakoaTalk1"} ]
+	},
+	"barakoa.talk2": {
+		"sounds": [ { "name": "mowziesmobs:barakoaTalk2"} ]
+	},
+	"barakoa.talk3": {
+		"sounds": [ { "name": "mowziesmobs:barakoaTalk3"} ]
+	},
+	"barakoa.talk4": {
+		"sounds": [ { "name": "mowziesmobs:barakoaTalk4"} ]
+	},
+	"barakoa.talk5": {
+		"sounds": [ { "name": "mowziesmobs:barakoaTalk5"} ]
+	},
+	"barakoa.talk6": {
+		"sounds": [ { "name": "mowziesmobs:barakoaTalk6"} ]
+	},
+	"barakoa.talk7": {
+		"sounds": [ { "name": "mowziesmobs:barakoaTalk7"} ]
+	},
+	"barakoa.talk8": {
+		"sounds": [ { "name": "mowziesmobs:barakoaTalk8"} ]
+	},
+	"barakoa.talk9": {
+		"sounds": [ { "name": "mowziesmobs:barakoaTalk9"} ]
+	},
+	"barakoa.blowdart": {
+		"sounds": [ { "name": "mowziesmobs:barakoaBlowdart"} ]
+	},
+	"barakoa.inhale": {
+		"sounds": [ { "name": "mowziesmobs:barakoaInhale"} ]
+	},
+	"barakoa.shout": {
+		"sounds": [ { "name": "mowziesmobs:barakoaShout"} ]
+	},
+	"barakoa.swing": {
+		"sounds": [ { "name": "mowziesmobs:barakoaSwing"} ]
+	},
+	"barakoa.emerge": {
+		"sounds": [ { "name": "mowziesmobs:barakoaEmerge"} ]
+	},
+	"barako.belly": {
+		"sounds": [ { "name": "mowziesmobs:barakoBelly"} ]
+	},
+	"barako.angry1": {
+		"sounds": [ { "name": "mowziesmobs:barakoAngry1", "stream": true} ]
+	},
+	"barako.angry2": {
+		"sounds": [ { "name": "mowziesmobs:barakoAngry2", "stream": true} ]
+	},
+	"barako.angry3": {
+		"sounds": [ { "name": "mowziesmobs:barakoAngry3", "stream": true} ]
+	},
+	"barako.angry4": {
+		"sounds": [ { "name": "mowziesmobs:barakoAngry4", "stream": true } ]
+	},
+	"barako.angry5": {
+		"sounds": [ { "name": "mowziesmobs:barakoAngry5", "stream": true } ]
+	},
+	"barako.angry6": {
+		"sounds": [ { "name": "mowziesmobs:barakoAngry6", "stream": true } ]
+	},
+	"barako.talk1": {
+		"sounds": [ { "name": "mowziesmobs:barakoTalk1", "stream": true } ]
+	},
+	"barako.talk2": {
+		"sounds": [ { "name": "mowziesmobs:barakoTalk2", "stream": true } ]
+	},
+	"barako.talk3": {
+		"sounds": [ { "name": "mowziesmobs:barakoTalk3", "stream": true } ]
+	},
+	"barako.talk4": {
+		"sounds": [ { "name": "mowziesmobs:barakoTalk4", "stream": true } ]
+	},
+	"barako.talk5": {
+		"sounds": [ { "name": "mowziesmobs:barakoTalk5", "stream": true } ]
+	},
+	"barako.talk6": {
+		"sounds": [ { "name": "mowziesmobs:barakoTalk6", "stream": true } ]
+	},
+	"barako.die": {
+		"sounds": [ { "name": "mowziesmobs:barakoDie"} ]
+	},
+	"barako.hurt": {
+		"sounds": [
+			{ "name": "mowziesmobs:barakoHurt1" },
+			{ "name": "mowziesmobs:barakoHurt2" },
+			{ "name": "mowziesmobs:barakoHurt3" }
+		]
+	},
+	"barako.attack": {
+		"sounds": [
+			{ "name": "mowziesmobs:barakoAttack1" },
+			{ "name": "mowziesmobs:barakoAttack2" },
+			{ "name": "mowziesmobs:barakoAttack3" }
+		]
+	},
+	"barako.burst": {
+		"sounds": [ { "name": "mowziesmobs:barakoBurst"} ]
+	},
+	"sunstrike": {
+		"sounds": [ { "name": "mowziesmobs:sunstrike"} ]
+	},
+	"laser": {
+		"sounds": [ { "name": "mowziesmobs:laser"} ]
+	}
 }

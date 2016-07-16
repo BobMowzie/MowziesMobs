@@ -8,8 +8,8 @@ import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 public class ItemSpear extends ItemSword {
     public ItemSpear() {
         super(ToolMaterial.STONE);
-        setUnlocalizedName("spear");
-        setTextureName(MowziesMobs.MODID + ":spear");
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
+        setUnlocalizedName("spear");
+        setRegistryName("spear");
     }
 }

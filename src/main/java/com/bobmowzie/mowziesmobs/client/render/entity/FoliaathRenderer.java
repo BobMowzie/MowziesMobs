@@ -1,30 +1,30 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
-import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.model.entity.FoliaathModel;
+import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 
 @SideOnly(Side.CLIENT)
-public class FoliaathRenderer extends RenderLiving {
+public class FoliaathRenderer extends RenderLiving<EntityFoliaath> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureFoliaath.png");
 
-    public FoliaathRenderer(ModelBase model, float shadowSize) {
-        super(model, shadowSize);
+    public FoliaathRenderer(RenderManager mgr) {
+        super(mgr, new FoliaathModel(), 0);
     }
 
     @Override
-    public ResourceLocation getEntityTexture(Entity entity) {
-        return FoliaathRenderer.TEXTURE;
-    }
-
-    @Override
-    protected float getDeathMaxRotation(EntityLivingBase entity) {
+    protected float getDeathMaxRotation(EntityFoliaath entity) {
         return 0;
+    }
+
+    @Override
+    public ResourceLocation getEntityTexture(EntityFoliaath entity) {
+        return FoliaathRenderer.TEXTURE;
     }
 }

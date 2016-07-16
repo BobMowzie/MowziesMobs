@@ -2,22 +2,30 @@ package com.bobmowzie.mowziesmobs.server.entity.tribe;
 
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.init.Enchantments;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
@@ -31,6 +39,7 @@ import com.bobmowzie.mowziesmobs.server.entity.EntityDart;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 
 public class EntityTribesman extends MowzieEntity implements IRangedAttackMob, LeaderSunstrikeImmune {
     public static final Animation DIE_ANIMATION = Animation.create(70);
@@ -39,6 +48,10 @@ public class EntityTribesman extends MowzieEntity implements IRangedAttackMob, L
     public static final Animation PROJECTILE_ATTACK_ANIMATION = Animation.create(20);
     public static final Animation IDLE_ANIMATION = Animation.create(35);
     public static final Animation ACTIVATE_ANIMATION = Animation.create(20);
+    private static final DataParameter<Boolean> DANCING = EntityDataManager.createKey(EntityTribesman.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Integer> MASK = EntityDataManager.createKey(EntityTribesman.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> WEAPON = EntityDataManager.createKey(EntityTribesman.class, DataSerializers.VARINT);
+    private static final DataParameter<Boolean> ACTIVE = EntityDataManager.createKey(EntityTribesman.class, DataSerializers.BOOLEAN);
     public ControlledAnimation doWalk = new ControlledAnimation(3);
     public ControlledAnimation dancing = new ControlledAnimation(7);
     public boolean circleDirection = true;
@@ -54,12 +67,12 @@ public class EntityTribesman extends MowzieEntity implements IRangedAttackMob, L
 
     public EntityTribesman(World world) {
         super(world);
-        this.getNavigator().setAvoidsWater(true);
+        setPathPriority(PathNodeType.WATER, 0);
         this.tasks.addTask(0, new EntityAISwimming(this));
-        tasks.addTask(4, new EntityAIAttackOnCollide(this, EntityPlayer.class, 0.5D, false));
+        tasks.addTask(4, new EntityAIAttackMelee(this, 0.5D, false));
         tasks.addTask(5, new EntityAIWander(this, 0.4));
-        tasks.addTask(2, new AnimationAttackAI<>(this, ATTACK_ANIMATION, "mowziesmobs:barakoaSwing", "", 1, 3, 1, 9));
-        tasks.addTask(2, new AnimationProjectileAttackAI<>(this, PROJECTILE_ATTACK_ANIMATION, 9, "mowziesmobs:barakoaBlowdart"));
+        tasks.addTask(2, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_BARAKOA_SWING, null, 1, 3, 1, 9));
+        tasks.addTask(2, new AnimationProjectileAttackAI<>(this, PROJECTILE_ATTACK_ANIMATION, 9, MMSounds.ENTITY_BARAKOA_BLOWDART));
         tasks.addTask(4, new AnimationAI<>(this, IDLE_ANIMATION));
         tasks.addTask(3, new AnimationTakeDamage<>(this));
         tasks.addTask(1, new AnimationDieAI<>(this));
@@ -91,59 +104,21 @@ public class EntityTribesman extends MowzieEntity implements IRangedAttackMob, L
     }
 
     @Override
-    protected String getLivingSound() {
+    protected SoundEvent getAmbientSound() {
         if (!active) {
             return null;
         }
         if (danceTimer == 0) {
             if (getAttackTarget() == null) {
                 int i = MathHelper.getRandomIntegerInRange(rand, 0, 11);
-                if (i == 0) {
-                    playSound("mowziesmobs:barakoaTalk1", 1, 1.5f);
-                }
-                if (i == 1) {
-                    playSound("mowziesmobs:barakoaTalk2", 1, 1.5f);
-                }
-                if (i == 2) {
-                    playSound("mowziesmobs:barakoaTalk3", 1, 1.5f);
-                }
-                if (i == 3) {
-                    playSound("mowziesmobs:barakoaTalk4", 1, 1.5f);
-                }
-                if (i == 4) {
-                    playSound("mowziesmobs:barakoaTalk5", 1, 1.5f);
-                }
-                if (i == 5) {
-                    playSound("mowziesmobs:barakoaTalk6", 1, 1.5f);
-                }
-                if (i == 6) {
-                    playSound("mowziesmobs:barakoaTalk7", 1, 1.5f);
-                }
-                if (i == 7) {
-                    playSound("mowziesmobs:barakoaTalk8", 1, 1.5f);
-                }
-                if (i <= 7) {
+                if (i < MMSounds.ENTITY_BARAKOA_TALK.length) {
+                    playSound(MMSounds.ENTITY_BARAKOA_TALK[i], 1, 1.5f);
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, IDLE_ANIMATION);
                 }
             } else {
                 int i = MathHelper.getRandomIntegerInRange(rand, 0, 7);
-                if (i == 0) {
-                    playSound("mowziesmobs:barakoaAngry1", 1, 1.6f);
-                }
-                if (i == 1) {
-                    playSound("mowziesmobs:barakoaAngry2", 1, 1.6f);
-                }
-                if (i == 2) {
-                    playSound("mowziesmobs:barakoaAngry3", 1, 1.6f);
-                }
-                if (i == 3) {
-                    playSound("mowziesmobs:barakoaAngry4", 1, 1.6f);
-                }
-                if (i == 4) {
-                    playSound("mowziesmobs:barakoaAngry5", 1, 1.6f);
-                }
-                if (i == 5) {
-                    playSound("mowziesmobs:barakoaAngry6", 1, 1.6f);
+                if (i < MMSounds.ENTITY_BARAKOA_ANGRY.length) {
+                    playSound(MMSounds.ENTITY_BARAKOA_ANGRY[i], 1, 1.6f);   
                 }
             }
         }
@@ -151,31 +126,15 @@ public class EntityTribesman extends MowzieEntity implements IRangedAttackMob, L
     }
 
     @Override
-    protected String getHurtSound() {
-        if (!active) {
-            return null;
-        }
-        int i = MathHelper.getRandomIntegerInRange(rand, 0, 3);
-        if (i == 0) {
-            playSound("mowziesmobs:barakoaHurt1", 1, 1.6f);
-        }
-        if (i == 1) {
-            playSound("mowziesmobs:barakoaHurt2", 0.7f, 1f);
-        }
-        if (i == 2) {
-            playSound("mowziesmobs:barakoaHurt3", 0.7f, 1f);
-        }
-        if (i == 3) {
-            playSound("mowziesmobs:barakoaHurt4", 0.7f, 1f);
-        }
-        return super.getHurtSound();
+    protected SoundEvent getHurtSound() {
+        return active ? MMSounds.ENTITY_BARAKOA_HURT : null;
     }
 
     @Override
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
-        getEntityAttribute(SharedMonsterAttributes.knockbackResistance).setBaseValue(1.0);
-        getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(20);
+        getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0);
+        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20);
     }
 
     @Override
@@ -217,7 +176,7 @@ public class EntityTribesman extends MowzieEntity implements IRangedAttackMob, L
     }
 
     @Override
-    public IEntityLivingData onSpawnWithEgg(IEntityLivingData p_110161_1_) {
+    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, IEntityLivingData data) {
         if (!(this instanceof EntityTribeElite)) {
             int weapon = 0;
             if (rand.nextInt(3) == 0) {
@@ -225,7 +184,7 @@ public class EntityTribesman extends MowzieEntity implements IRangedAttackMob, L
             }
             setWeapon(weapon);
         }
-        return super.onSpawnWithEgg(p_110161_1_);
+        return super.onInitialSpawn(difficulty, data);
     }
 
     protected void updateCircling() {
@@ -248,17 +207,17 @@ public class EntityTribesman extends MowzieEntity implements IRangedAttackMob, L
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!worldObj.isRemote && active && getActive() == 0) {
-            setActive(1);
+        if (!worldObj.isRemote && active && !getActive()) {
+            setActive(true);
         }
-        active = getActive() == 1;
+        active = getActive();
         if (!active) {
             getNavigator().clearPathEntity();
             rotationYaw = prevRotationYaw;
             renderYawOffset = rotationYaw;
             if (onGround && getAnimation() == NO_ANIMATION) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_ANIMATION);
-                playSound("mowziesmobs:barakoaEmerge", 1, 1);
+                playSound(MMSounds.ENTITY_BARAKOA_EMERGE, 1, 1);
             }
             return;
         }
@@ -267,8 +226,8 @@ public class EntityTribesman extends MowzieEntity implements IRangedAttackMob, L
             getNavigator().clearPathEntity();
         }
 
-        if (getDancing() == 1) {
-            setDancing(0);
+        if (getDancing()) {
+            setDancing(false);
             danceTimer++;
         }
 
@@ -286,8 +245,8 @@ public class EntityTribesman extends MowzieEntity implements IRangedAttackMob, L
             dancing.decreaseTimer();
         }
         if (!worldObj.isRemote && getAnimation() == NO_ANIMATION && danceTimer == 0 && rand.nextInt(800) == 0) {
-            setDancing(1);
-            playSound("mowziesmobs:barakoaBattlecry2", 1.2f, 1.3f);
+            setDancing(true);
+            playSound(MMSounds.ENTITY_BARAKOA_BATTLECRY, 1.2f, 1.3f);
         }
         if (getAnimation() != NO_ANIMATION) {
             danceTimer = 0;
@@ -297,17 +256,17 @@ public class EntityTribesman extends MowzieEntity implements IRangedAttackMob, L
             cryDelay--;
         }
         if (cryDelay == 0) {
-            playSound("mowziesmobs:barakoaBattlecry", 1.5f, 1.5f);
+            playSound(MMSounds.ENTITY_BARAKOA_BATTLECRY_2, 1.5f, 1.5f);
         }
         if (getAttackTarget() != null && !prevHasTarget && !prevprevHasTarget && !prevprevprevHasTarget) {
             cryDelay = MathHelper.getRandomIntegerInRange(rand, -15, 30);
         }
 
         if (getAnimation() == ATTACK_ANIMATION && getAnimationTick() == 5) {
-            playSound("mowziesmobs:barakoaShout", 1, 1.1f);
+            playSound(MMSounds.ENTITY_BARAKOA_SHOUT, 1, 1.1f);
         }
         if (getAnimation() == PROJECTILE_ATTACK_ANIMATION && getAnimationTick() == 1) {
-            playSound("mowziesmobs:barakoaInhale", 0.7f, 1.2f);
+            playSound(MMSounds.ENTITY_BARAKOA_INHALE, 0.7f, 1.2f);
         }
 
         prevprevprevHasTarget = prevprevHasTarget;
@@ -319,56 +278,49 @@ public class EntityTribesman extends MowzieEntity implements IRangedAttackMob, L
     }
 
     @Override
-    protected String getDeathSound() {
-        int i = MathHelper.getRandomIntegerInRange(rand, 0, 1);
-        if (i == 0) {
-            playSound("mowziesmobs:barakoaDie1", 1, 1);
-        }
-        if (i == 1) {
-            playSound("mowziesmobs:barakoaDie2", 1, 1);
-        }
-        return super.getDeathSound();
+    protected SoundEvent getDeathSound() {
+        return MMSounds.ENTITY_BARAKO_DIE;
     }
 
     @Override
     protected void entityInit() {
         super.entityInit();
-        dataWatcher.addObject(28, 0);
-        dataWatcher.addObject(29, 0);
-        dataWatcher.addObject(30, 0);
-        dataWatcher.addObject(27, 1);
+        getDataManager().register(DANCING, false);
+        getDataManager().register(MASK, 0);
+        getDataManager().register(WEAPON, 0);
+        getDataManager().register(ACTIVE, true);
     }
 
-    public int getDancing() {
-        return dataWatcher.getWatchableObjectInt(28);
+    public boolean getDancing() {
+        return getDataManager().get(DANCING);
     }
 
-    public void setDancing(Integer type) {
-        dataWatcher.updateObject(28, type);
+    public void setDancing(boolean dancing) {
+        getDataManager().set(DANCING, dancing);
     }
 
     public int getMask() {
-        return dataWatcher.getWatchableObjectInt(29);
+        return getDataManager().get(MASK);
     }
 
-    public void setMask(Integer type) {
-        dataWatcher.updateObject(29, type);
+    public void setMask(int type) {
+        getDataManager().set(MASK, type);
     }
 
     public int getWeapon() {
-        return dataWatcher.getWatchableObjectInt(30);
+        return getDataManager().get(WEAPON);
     }
 
-    public void setWeapon(Integer type) {
-        dataWatcher.updateObject(30, type);
+    public void setWeapon(int type) {
+        getDataManager().set(WEAPON, type);
     }
 
-    public int getActive() {
-        return dataWatcher.getWatchableObjectInt(27);
+    public boolean getActive() {
+        return getDataManager().get(ACTIVE);
     }
 
-    public void setActive(Integer active) {
-        dataWatcher.updateObject(27, active);
+    public void setActive(boolean active) {
+        getDataManager().set(ACTIVE, active);
     }
 
     @Override
@@ -386,27 +338,32 @@ public class EntityTribesman extends MowzieEntity implements IRangedAttackMob, L
     }
 
     @Override
-    public void attackEntityWithRangedAttack(EntityLivingBase p_82196_1_, float p_82196_2_) {
-        EntityArrow entitydart = new EntityDart(this.worldObj, this, p_82196_1_, 1.6F, 1);
-        int i = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, this.getHeldItem());
-        int j = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, this.getHeldItem());
-        entitydart.setDamage((double) (p_82196_2_ * 2.0F) + this.rand.nextGaussian() * 0.25D + (double) ((float) this.worldObj.difficultySetting.getDifficultyId() * 0.11F));
+    public void attackEntityWithRangedAttack(EntityLivingBase target, float p_82196_2_) {
+        EntityArrow dart = new EntityDart(this.worldObj, this);
+        double dx = target.posX - this.posX;
+        double dy = target.getEntityBoundingBox().minY + (double)(target.height / 3.0F) - dart.posY;
+        double dz = target.posZ - this.posZ;
+        double dist = (double)MathHelper.sqrt_double(dx * dx + dz * dz);
+        dart.setThrowableHeading(dx, dy + dist * 0.2D, dz, 1.6F, 1);
+        int i = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, this.getHeldItem(EnumHand.MAIN_HAND));
+        int j = EnchantmentHelper.getEnchantmentLevel(Enchantments.PUNCH, this.getHeldItem(EnumHand.MAIN_HAND));
+        dart.setDamage((double) (p_82196_2_ * 2.0F) + this.rand.nextGaussian() * 0.25D + (double) ((float) this.worldObj.getDifficulty().getDifficultyId() * 0.11F));
 
         if (i > 0) {
-            entitydart.setDamage(entitydart.getDamage() + (double) i * 0.5D + 0.5D);
+            dart.setDamage(dart.getDamage() + (double) i * 0.5D + 0.5D);
         }
 
         if (j > 0) {
-            entitydart.setKnockbackStrength(j);
+            dart.setKnockbackStrength(j);
         }
 
-        this.worldObj.spawnEntityInWorld(entitydart);
+        this.worldObj.spawnEntityInWorld(dart);
         attacking = false;
     }
 
     @Override
     public void onDeath(DamageSource p_70645_1_) {
-        if (!worldObj.isRemote && worldObj.getGameRules().getGameRuleBooleanValue("doMobLoot") && rand.nextInt(12) == 0) {
+        if (!worldObj.isRemote && worldObj.getGameRules().getBoolean("doMobLoot") && rand.nextInt(12) == 0) {
             dropItem(ItemHandler.INSTANCE.barakoa_masks[getMask() - 1], 1);
         }
         super.onDeath(p_70645_1_);
@@ -418,11 +375,10 @@ public class EntityTribesman extends MowzieEntity implements IRangedAttackMob, L
     }
 
     @Override
-    protected void fall(float p_70069_1_) {
-        if (!active) {
-            return;
+    public void fall(float distance, float damageMultipler) {
+        if (active) {
+            super.fall(distance, damageMultipler);
         }
-        super.fall(p_70069_1_);
     }
 
     @Override

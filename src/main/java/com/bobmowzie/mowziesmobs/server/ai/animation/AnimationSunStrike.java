@@ -3,10 +3,12 @@ package com.bobmowzie.mowziesmobs.server.ai.animation;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 
 import com.bobmowzie.mowziesmobs.server.entity.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 
 public class AnimationSunStrike<T extends MowzieEntity & IAnimatedEntity> extends AnimationAI<T> {
     protected EntityLivingBase entityTarget;
@@ -50,7 +52,7 @@ public class AnimationSunStrike<T extends MowzieEntity & IAnimatedEntity> extend
             newX = MathHelper.floor_double(x + vx * t);
             newZ = MathHelper.floor_double(z + vz * t);
             for (int i = 0; i < 5; i++) {
-                if (!animatingEntity.worldObj.canBlockSeeTheSky(newX, y, newZ)) {
+                if (!animatingEntity.worldObj.canBlockSeeSky(new BlockPos(newX, y, newZ))) {
                     y++;
                 } else {
                     break;
@@ -58,12 +60,12 @@ public class AnimationSunStrike<T extends MowzieEntity & IAnimatedEntity> extend
             }
         }
         if (!animatingEntity.worldObj.isRemote && animatingEntity.getAnimationTick() == 9) {
-            animatingEntity.playSound("mowziesmobs:barakoAttack", 1.4f, 1);
+            animatingEntity.playSound(MMSounds.ENTITY_BARAKO_ATTACK, 1.4f, 1);
             EntitySunstrike sunstrike = new EntitySunstrike(animatingEntity.worldObj, animatingEntity, newX, y, newZ);
             sunstrike.onSummon();
             animatingEntity.worldObj.spawnEntityInWorld(sunstrike);
         }
-        if (animatingEntity.getAnimationTick() >= 7) {
+        if (animatingEntity.getAnimationTick() > 6) {
             animatingEntity.getLookHelper().setLookPosition(newX, y, newZ, 20, 20);
         }
     }

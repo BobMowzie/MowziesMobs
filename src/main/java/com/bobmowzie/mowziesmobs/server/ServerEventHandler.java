@@ -8,15 +8,14 @@ import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAIAvoidEntity;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.monster.EntityZombie;
-import net.minecraft.entity.passive.EntityChicken;
-import net.minecraft.entity.passive.EntityCow;
+import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityOcelot;
-import net.minecraft.entity.passive.EntityPig;
-import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
@@ -42,30 +41,22 @@ public enum ServerEventHandler {
 
     @SubscribeEvent
     public void onJoinWorld(EntityJoinWorldEvent event) {
-        if (event.world.isRemote) {
+        if (event.getWorld().isRemote) {
             return;
         }
-        if (event.entity instanceof EntityZombie) {
-            ((EntityCreature) event.entity).tasks.addTask(2, new EntityAIAttackOnCollide((EntityCreature) event.entity, EntityFoliaath.class, 1.0D, false));
-            ((EntityCreature) event.entity).targetTasks.addTask(2, new EntityAINearestAttackableTarget((EntityCreature) event.entity, EntityFoliaath.class, 0, true));
+        Entity entity = event.getEntity();
+        if (entity instanceof EntityZombie) {
+            ((EntityCreature) entity).tasks.addTask(2, new EntityAIAttackMelee((EntityCreature) entity, 1.0D, false)); // EntityFoliaath.class
+            ((EntityCreature) entity).targetTasks.addTask(2, new EntityAINearestAttackableTarget((EntityCreature) entity, EntityFoliaath.class, 0, true, false, null));
 
-            ((EntityCreature) event.entity).tasks.addTask(2, new EntityAIAttackOnCollide((EntityCreature) event.entity, EntityTribesman.class, 1.0D, false));
-            ((EntityCreature) event.entity).targetTasks.addTask(2, new EntityAINearestAttackableTarget((EntityCreature) event.entity, EntityTribesman.class, 0, true));
+            ((EntityCreature) entity).tasks.addTask(2, new EntityAIAttackMelee((EntityCreature) entity, 1.0D, false)); // EntityTribesman.class
+            ((EntityCreature) entity).targetTasks.addTask(2, new EntityAINearestAttackableTarget((EntityCreature) entity, EntityTribesman.class, 0, true, false, null));
         }
-        if (event.entity instanceof EntityOcelot) {
-            ((EntityCreature) event.entity).tasks.addTask(3, new EntityAIAvoidEntity((EntityCreature) event.entity, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
+        if (entity instanceof EntityOcelot) {
+            ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity((EntityCreature) entity, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
         }
-        if (event.entity instanceof EntityCow) {
-            ((EntityCreature) event.entity).tasks.addTask(3, new EntityAIAvoidEntity((EntityCreature) event.entity, EntityTribesman.class, 6.0F, 1.0D, 1.2D));
-        }
-        if (event.entity instanceof EntityPig) {
-            ((EntityCreature) event.entity).tasks.addTask(3, new EntityAIAvoidEntity((EntityCreature) event.entity, EntityTribesman.class, 6.0F, 1.0D, 1.2D));
-        }
-        if (event.entity instanceof EntityChicken) {
-            ((EntityCreature) event.entity).tasks.addTask(3, new EntityAIAvoidEntity((EntityCreature) event.entity, EntityTribesman.class, 6.0F, 1.0D, 1.2D));
-        }
-        if (event.entity instanceof EntitySheep) {
-            ((EntityCreature) event.entity).tasks.addTask(3, new EntityAIAvoidEntity((EntityCreature) event.entity, EntityTribesman.class, 6.0F, 1.0D, 1.2D));
+        if (entity instanceof EntityAnimal) {
+            ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity((EntityCreature) entity, EntityTribesman.class, 6.0F, 1.0D, 1.2D));
         }
     }
 
@@ -77,7 +68,7 @@ public enum ServerEventHandler {
         EntityPlayer player = event.player;
         MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
         property.update();
-        if (player.getHeldItem() != null && player.getHeldItem().getItem() == ItemHandler.INSTANCE.wrought_axe) {
+        if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == ItemHandler.INSTANCE.wroughtAxe) {
             if (property.getTick() > 0) {
                 property.decrementTime();
             }
@@ -107,7 +98,7 @@ public enum ServerEventHandler {
                     }
                 }
                 if (hit) {
-                    player.playSound("minecraft:random.anvil_land", 0.3F, 0.5F);
+                    player.playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.3F, 0.5F);
                 }
             }
         }
@@ -117,28 +108,29 @@ public enum ServerEventHandler {
         if (event.side == Side.CLIENT) {
             return;
         }
-        ItemStack headArmorStack = event.player.getEquipmentInSlot(4);
+        ItemStack headArmorStack = event.player.inventory.armorItemInSlot(3);
         if (headArmorStack == null) {
             return;
         }
         Item headItemStack = headArmorStack.getItem();
         if (headItemStack instanceof ItemBarakoaMask) {
             ItemBarakoaMask mask = (ItemBarakoaMask) headItemStack;
-            event.player.addPotionEffect(new PotionEffect(mask.getPotionEffectId(), 0, 0));
+            event.player.addPotionEffect(new PotionEffect(mask.getPotion(), 0, 0));
         }
     }
 
     private List<EntityLivingBase> getEntityLivingBaseNearby(EntityLivingBase user, double distanceX, double distanceY, double distanceZ, double radius) {
-        List<Entity> list = user.worldObj.getEntitiesWithinAABBExcludingEntity(user, user.boundingBox.expand(distanceX, distanceY, distanceZ));
+        List<Entity> list = user.worldObj.getEntitiesWithinAABBExcludingEntity(user, user.getEntityBoundingBox().expand(distanceX, distanceY, distanceZ));
         ArrayList<EntityLivingBase> nearEntities = list.stream().filter(entityNeighbor -> entityNeighbor instanceof EntityLivingBase && user.getDistanceToEntity(entityNeighbor) <= radius).map(entityNeighbor -> (EntityLivingBase) entityNeighbor).collect(Collectors.toCollection(ArrayList::new));
         return nearEntities;
     }
 
     @SubscribeEvent
-    public void onPlayerInteract(PlayerInteractEvent event) {
-        if (event.action != PlayerInteractEvent.Action.LEFT_CLICK_BLOCK && event.world.isRemote && event.entityPlayer.inventory.getCurrentItem() == null && event.entityPlayer.isPotionActive(PotionHandler.INSTANCE.sunsBlessing) && EntityPropertiesHandler.INSTANCE.getProperties(event.entityPlayer, MowziePlayerProperties.class).untilSunstrike <= 0) {
-            MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.entityPlayer, MowziePlayerProperties.class);
-            if (event.entityPlayer.isSneaking()) {
+    public void onPlayerInteract(PlayerInteractEvent.LeftClickBlock event) {
+        EntityPlayer player = event.getEntityPlayer();
+        if (event.getWorld().isRemote && player.inventory.getCurrentItem() == null && player.isPotionActive(PotionHandler.INSTANCE.sunsBlessing) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
+            MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
+            if (player.isSneaking()) {
                 MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSolarBeam());
                 property.untilSunstrike = 150;
             } else {

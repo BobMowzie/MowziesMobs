@@ -1,13 +1,16 @@
-package com.bobmowzie.mowziesmobs.client.particle;
+package com.bobmowzie.mowziesmobs.client.particles;
 
+import net.minecraft.client.particle.Particle;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher.IParticleSpriteReceiver;
 
-@SideOnly(Side.CLIENT)
-public class OrbParticle extends MowzieParticle {
+public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
     private double targetX;
     private double targetY;
     private double targetZ;
@@ -19,11 +22,10 @@ public class OrbParticle extends MowzieParticle {
     private int mode;
     private double duration;
 
-    public OrbParticle(World world, double x, double y, double z, double targetX, double targetZ) {
+    public ParticleOrb(World world, double x, double y, double z, double targetX, double targetZ) {
         super(world, x, y, z);
         this.targetX = targetX;
         this.targetZ = targetZ;
-        setTextureIndex(0, 0);
         particleScale = 1.5F + rand.nextFloat() * 0.5F;
         particleMaxAge = 120;
         signX = Math.signum(targetX - posX);
@@ -31,7 +33,12 @@ public class OrbParticle extends MowzieParticle {
         mode = 0;
     }
 
-    public OrbParticle(World world, double x, double y, double z, double targetX, double targetY, double targetZ, double speed) {
+    @Override
+    public int getFXLayer() {
+        return 1;
+    }
+
+    public ParticleOrb(World world, double x, double y, double z, double targetX, double targetY, double targetZ, double speed) {
         this(world, x, y, z, targetX, targetZ);
         this.targetY = targetY;
         this.startX = x;
@@ -56,7 +63,7 @@ public class OrbParticle extends MowzieParticle {
             double vecZ = targetZ - posZ;
             double dist = Math.sqrt(vecX * vecX + vecZ * vecZ);
             if (dist > 2 || Math.signum(vecX) != signX || Math.signum(vecZ) != signZ || particleAge > particleMaxAge) {
-                setDead();
+                setExpired();
                 return;
             }
             final double peak = 0.5;
@@ -76,9 +83,24 @@ public class OrbParticle extends MowzieParticle {
             posY = startY + (targetY - startY) / (1 + Math.exp(-(8 / duration) * (particleAge - duration / 2)));
             posZ = startZ + (targetZ - startZ) / (1 + Math.exp(-(8 / duration) * (particleAge - duration / 2)));
             if (particleAge == duration) {
-                setDead();
+                setExpired();
             }
         }
         particleAge++;
+    }
+
+    public static final class OrbFactory extends ParticleFactory<OrbFactory, ParticleOrb> {
+        public OrbFactory() {
+            super(ParticleOrb.class, ParticleTextureStitcher.create(ParticleOrb.class, new ResourceLocation(MowziesMobs.MODID, "particles/orb")));
+        }
+
+        @Override
+        public ParticleOrb createParticle(ImmutableParticleArgs args) {
+            if (args.data.length == 2) {
+                return new ParticleOrb(args.world, args.x, args.y, args.z, (double) args.data[0], (double) args.data[1]);
+            } else {
+                return new ParticleOrb(args.world, args.x, args.y, args.z, (double) args.data[0], (double) args.data[1], (double) args.data[2], ((Number) args.data[3]).doubleValue());   
+            }
+        }
     }
 }

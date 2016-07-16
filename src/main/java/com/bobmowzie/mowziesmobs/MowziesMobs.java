@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs;
 
+import net.ilexiconn.llibrary.server.config.Config;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.ilexiconn.llibrary.server.network.NetworkHandler;
 import net.minecraftforge.common.MinecraftForge;
@@ -29,6 +30,7 @@ import com.bobmowzie.mowziesmobs.server.message.MessagePlayerSummonSunstrike;
 import com.bobmowzie.mowziesmobs.server.message.MessageSwingWroughtAxe;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.bobmowzie.mowziesmobs.server.world.MowzieStructureGenerator;
 import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
 
@@ -45,6 +47,7 @@ public class MowziesMobs {
     @SidedProxy(clientSide = "com.bobmowzie.mowziesmobs.client.ClientProxy", serverSide = "com.bobmowzie.mowziesmobs.server.ServerProxy")
     public static ServerProxy PROXY;
     public static SimpleNetworkWrapper NETWORK_WRAPPER;
+    @Config
     public static ConfigHandler CONFIG;
     public static MowzieStructureGenerator GENERATOR;
     private static ModContainer container;
@@ -62,14 +65,10 @@ public class MowziesMobs {
         NetworkHandler.INSTANCE.registerMessage(MowziesMobs.NETWORK_WRAPPER, MessageSwingWroughtAxe.class);
         NetworkHandler.INSTANCE.registerMessage(MowziesMobs.NETWORK_WRAPPER, MessagePlayerSummonSunstrike.class);
         NetworkHandler.INSTANCE.registerMessage(MowziesMobs.NETWORK_WRAPPER, MessagePlayerSolarBeam.class);
-        MowziesMobs.CONFIG = net.ilexiconn.llibrary.server.config.ConfigHandler.INSTANCE.registerConfig(this, event.getSuggestedConfigurationFile(), new ConfigHandler());
-        MowziesMobs.GENERATOR = new MowzieStructureGenerator();
+//        MowziesMobs.GENERATOR = new MowzieStructureGenerator();
         MinecraftForge.EVENT_BUS.register(ServerEventHandler.INSTANCE);
-        FMLCommonHandler.instance().bus().register(ServerEventHandler.INSTANCE);
-    }
 
-    @EventHandler
-    public void onInit(FMLInitializationEvent event) {
+        MMSounds.INSTANCE.onInit();
         CreativeTabHandler.INSTANCE.onInit();
         ItemHandler.INSTANCE.onInit();
         BlockHandler.INSTANCE.onInit();
@@ -79,7 +78,12 @@ public class MowziesMobs {
         MowziesMobs.PROXY.onInit();
 
         EntityPropertiesHandler.INSTANCE.registerProperties(MowziePlayerProperties.class);
-        GameRegistry.registerWorldGenerator(new MowzieWorldGenerator(), 0);
+//        GameRegistry.registerWorldGenerator(new MowzieWorldGenerator(), 0);
+    }
+
+    @EventHandler
+    public void onInit(FMLInitializationEvent event) {
+        MowziesMobs.PROXY.onLateInit();
     }
 
     @EventHandler

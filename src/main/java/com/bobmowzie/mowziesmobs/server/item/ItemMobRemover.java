@@ -10,11 +10,10 @@ import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 
 public class ItemMobRemover extends Item {
-
     public ItemMobRemover() {
-        setUnlocalizedName("mobRemover");
-        setTextureName(MowziesMobs.MODID + ":mobRemover");
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
+        setUnlocalizedName("mobRemover");
+        setRegistryName("mob_remover");
     }
 
     @Override

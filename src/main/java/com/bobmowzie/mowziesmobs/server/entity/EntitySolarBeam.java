@@ -6,14 +6,23 @@ import java.util.List;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
+import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory.ParticleArgs;
 import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeLeader;
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 
 public class EntitySolarBeam extends Entity {
     private final double RADIUS = 20;
@@ -24,7 +33,17 @@ public class EntitySolarBeam extends Entity {
 
     public boolean on = true;
 
-    public int blockSide = -1;
+    public EnumFacing blockSide = null;
+
+    private static final DataParameter<Float> YAW = EntityDataManager.createKey(EntitySolarBeam.class, DataSerializers.FLOAT);
+
+    private static final DataParameter<Float> PITCH = EntityDataManager.createKey(EntitySolarBeam.class, DataSerializers.FLOAT);
+
+    private static final DataParameter<Integer> DURATION = EntityDataManager.createKey(EntitySolarBeam.class, DataSerializers.VARINT);
+
+    private static final DataParameter<Boolean> HAS_PLAYER = EntityDataManager.createKey(EntitySolarBeam.class, DataSerializers.BOOLEAN);
+
+    private static final DataParameter<Integer> CASTER = EntityDataManager.createKey(EntitySolarBeam.class, DataSerializers.VARINT);
 
     public EntitySolarBeam(World world) {
         super(world);
@@ -40,7 +59,7 @@ public class EntitySolarBeam extends Entity {
         this.setDuration(duration);
         this.setPosition(x, y, z);
         this.calculateEndPos();
-        this.playSound("mowziesmobs:laser", 2f, 1);
+        this.playSound(MMSounds.LASER, 2f, 1);
         if (!worldObj.isRemote) {
             this.setCasterID(caster.getEntityId());
         }
@@ -79,13 +98,13 @@ public class EntitySolarBeam extends Entity {
                 if (getHasPlayer()) {
                     offsetX = offsetZ = 0;
                 }
-                MowziesMobs.PROXY.spawnOrbFX(worldObj, posX + ox + offsetX, posY + oy + 0.3, posZ + oz + offsetZ, posX + offsetX, posY + 0.3, posZ + offsetZ, 10);
+                MMParticle.ORB.spawn(worldObj, posX + ox + offsetX, posY + oy + 0.3, posZ + oz + offsetZ, ParticleArgs.get().withData(posX + offsetX, posY + 0.3, posZ + offsetZ, 10));
             }
         }
         if (ticksExisted > 20) {
             this.calculateEndPos();
-            List<EntityLivingBase> hit = raytraceEntities(worldObj, Vec3.createVectorHelper(posX, posY, posZ), Vec3.createVectorHelper(endPosX, endPosY, endPosZ), false, true, true).entities;
-            if (blockSide != -1) {
+            List<EntityLivingBase> hit = raytraceEntities(worldObj, new Vec3d(posX, posY, posZ), new Vec3d(endPosX, endPosY, endPosZ), false, true, true).entities;
+            if (blockSide != null) {
                 spawnExplosionParticles(2);
             }
             if (!worldObj.isRemote) {
@@ -99,7 +118,7 @@ public class EntitySolarBeam extends Entity {
             } else {
                 if (ticksExisted - 15 < getDuration()) {
                     int particleCount = 4;
-                    while (--particleCount != 0) {
+                    while (particleCount --> 0) {
                         double radius = 1f;
                         double yaw = rand.nextFloat() * 2 * Math.PI;
                         double pitch = rand.nextFloat() * 2 * Math.PI;
@@ -109,10 +128,10 @@ public class EntitySolarBeam extends Entity {
                         double o2x = -1 * Math.cos(getYaw()) * Math.cos(getPitch());
                         double o2y = -1 * Math.sin(getPitch());
                         double o2z = -1 * Math.sin(getYaw()) * Math.cos(getPitch());
-                        MowziesMobs.PROXY.spawnOrbFX(worldObj, posX + o2x + ox, posY + o2y + oy, posZ + o2z + oz, collidePosX + o2x + ox, collidePosY + o2y + oy, collidePosZ + o2z + oz, 15);
+                        MMParticle.ORB.spawn(worldObj, posX + o2x + ox, posY + o2y + oy, posZ + o2z + oz, ParticleArgs.get().withData(collidePosX + o2x + ox, collidePosY + o2y + oy, collidePosZ + o2z + oz, 15));
                     }
-                    int particleCount2 = 4;
-                    while (--particleCount2 != 0) {
+                    particleCount = 4;
+                    while (particleCount --> 0) {
                         double radius = 2f;
                         double yaw = rand.nextFloat() * 2 * Math.PI;
                         double pitch = rand.nextFloat() * 2 * Math.PI;
@@ -122,7 +141,7 @@ public class EntitySolarBeam extends Entity {
                         double o2x = -1 * Math.cos(getYaw()) * Math.cos(getPitch());
                         double o2y = -1 * Math.sin(getPitch());
                         double o2z = -1 * Math.sin(getYaw()) * Math.cos(getPitch());
-                        MowziesMobs.PROXY.spawnOrbFX(worldObj, collidePosX + o2x, collidePosY + o2y, collidePosZ + o2z, collidePosX + o2x + ox, collidePosY + o2y + oy, collidePosZ + o2z + oz, 20);
+                        MMParticle.ORB.spawn(worldObj, collidePosX + o2x, collidePosY + o2y, collidePosZ + o2z, ParticleArgs.get().withData(collidePosX + o2x + ox, collidePosY + o2y + oy, collidePosZ + o2z + oz, 20));
                     }
                 }
             }
@@ -139,71 +158,72 @@ public class EntitySolarBeam extends Entity {
             float motionY = rand.nextFloat() * 0.08F;
             float motionX = velocity * MathHelper.cos(yaw);
             float motionZ = velocity * MathHelper.sin(yaw);
-            worldObj.spawnParticle("flame", collidePosX, collidePosY + 0.1, collidePosZ, motionX, motionY, motionZ);
+            worldObj.spawnParticle(EnumParticleTypes.FLAME, collidePosX, collidePosY + 0.1, collidePosZ, motionX, motionY, motionZ);
         }
         for (int i = 0; i < amount / 2; i++) {
-            worldObj.spawnParticle("lava", collidePosX, collidePosY + 0.1, collidePosZ, 0, 0, 0);
+            worldObj.spawnParticle(EnumParticleTypes.LAVA, collidePosX, collidePosY + 0.1, collidePosZ, 0, 0, 0);
         }
     }
 
     @Override
     protected void entityInit() {
-        dataWatcher.addObject(2, 0f);
-        dataWatcher.addObject(3, 0f);
-        dataWatcher.addObject(4, 0);
-        dataWatcher.addObject(5, (byte) 0);
-        dataWatcher.addObject(6, 0);
+        getDataManager().register(YAW, 0F);
+        getDataManager().register(PITCH, 0F);
+        getDataManager().register(DURATION, 0);
+        getDataManager().register(HAS_PLAYER, false);
+        getDataManager().register(CASTER, -1);
     }
 
-    public double getYaw() {
-        return dataWatcher.getWatchableObjectFloat(2);
+    public float getYaw() {
+        return getDataManager().get(YAW);
     }
 
     public void setYaw(float yaw) {
-        dataWatcher.updateObject(2, yaw);
+        getDataManager().set(YAW, yaw);
     }
 
-    public double getPitch() {
-        return dataWatcher.getWatchableObjectFloat(3);
+    public float getPitch() {
+        return getDataManager().get(PITCH);
     }
 
     public void setPitch(float pitch) {
-        dataWatcher.updateObject(3, pitch);
+        getDataManager().set(PITCH, pitch);
     }
 
-    public double getDuration() {
-        return dataWatcher.getWatchableObjectInt(4);
+    public int getDuration() {
+        return getDataManager().get(DURATION);
     }
 
     public void setDuration(int duration) {
-        dataWatcher.updateObject(4, duration);
+        getDataManager().set(DURATION, duration);
     }
 
     public boolean getHasPlayer() {
-        return dataWatcher.getWatchableObjectByte(5) == (byte) 1;
+        return getDataManager().get(HAS_PLAYER);
     }
 
     public void setHasPlayer(boolean player) {
-        dataWatcher.updateObject(5, player ? (byte) 1 : (byte) 0);
+        getDataManager().set(HAS_PLAYER, player);
     }
 
     public int getCasterID() {
-        return dataWatcher.getWatchableObjectInt(6);
+        return getDataManager().get(CASTER);
     }
 
     public void setCasterID(int id) {
-        dataWatcher.updateObject(6, id);
+        getDataManager().set(CASTER, id);
     }
 
     @Override
-    protected void readEntityFromNBT(NBTTagCompound nbt) {
-        setDead();
+    public boolean writeToNBTOptional(NBTTagCompound compound) {
+        return false;
     }
 
     @Override
-    protected void writeEntityToNBT(NBTTagCompound nbt) {
+    protected void readEntityFromNBT(NBTTagCompound nbt) {}
 
-    }
+    @Override
+    protected void writeEntityToNBT(NBTTagCompound nbt) {}
 
     private void calculateEndPos() {
         endPosX = posX + RADIUS * Math.cos(getYaw()) * Math.cos(getPitch());
@@ -211,28 +231,28 @@ public class EntitySolarBeam extends Entity {
         endPosY = posY + RADIUS * Math.sin(getPitch());
     }
 
-    public HitResult raytraceEntities(World world, Vec3 from, Vec3 to, boolean stopOnLiquid, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock) {
+    public HitResult raytraceEntities(World world, Vec3d from, Vec3d to, boolean stopOnLiquid, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock) {
         HitResult result = new HitResult();
-        result.setBlockHit(world.func_147447_a(Vec3.createVectorHelper(from.xCoord, from.yCoord, from.zCoord), to, stopOnLiquid, ignoreBlockWithoutBoundingBox, returnLastUncollidableBlock));
+        result.setBlockHit(world.rayTraceBlocks(new Vec3d(from.xCoord, from.yCoord, from.zCoord), to, stopOnLiquid, ignoreBlockWithoutBoundingBox, returnLastUncollidableBlock));
         if (result.blockHit != null) {
             collidePosX = result.blockHit.hitVec.xCoord;
             collidePosY = result.blockHit.hitVec.yCoord;
             collidePosZ = result.blockHit.hitVec.zCoord;
-            blockSide = result.blockHit.sideHit;
+            blockSide = result.getBlockHit().sideHit;
         } else {
             collidePosX = endPosX;
             collidePosY = endPosY;
             collidePosZ = endPosZ;
-            blockSide = -1;
+            blockSide = null;
         }
-        List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(Math.min(posX, collidePosX), Math.min(posY, collidePosY), Math.min(posZ, collidePosZ), Math.max(posX, collidePosX), Math.max(posY, collidePosY), Math.max(posZ, collidePosZ)).expand(1, 1, 1));
+        List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(Math.min(posX, collidePosX), Math.min(posY, collidePosY), Math.min(posZ, collidePosZ), Math.max(posX, collidePosX), Math.max(posY, collidePosY), Math.max(posZ, collidePosZ)).expand(1, 1, 1));
         for (EntityLivingBase entity : entities) {
             if (entity == caster) {
                 continue;
             }
             float pad = entity.getCollisionBorderSize() + 0.5f;
-            AxisAlignedBB aabb = entity.boundingBox.expand(pad, pad, pad);
-            MovingObjectPosition hit = aabb.calculateIntercept(from, to);
+            AxisAlignedBB aabb = entity.getEntityBoundingBox().expand(pad, pad, pad);
+            RayTraceResult hit = aabb.calculateIntercept(from, to);
             if (aabb.isVecInside(from)) {
                 result.addEntityHit(entity);
             } else if (hit != null) {
@@ -264,15 +284,15 @@ public class EntitySolarBeam extends Entity {
     }
 
     public static class HitResult {
-        private MovingObjectPosition blockHit;
+        private RayTraceResult blockHit;
 
         private List<EntityLivingBase> entities = new ArrayList<>();
 
-        public MovingObjectPosition getBlockHit() {
+        public RayTraceResult getBlockHit() {
             return blockHit;
         }
 
-        public void setBlockHit(MovingObjectPosition blockHit) {
+        public void setBlockHit(RayTraceResult blockHit) {
             this.blockHit = blockHit;
         }
 

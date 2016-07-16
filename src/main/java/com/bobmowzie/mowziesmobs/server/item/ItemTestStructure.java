@@ -1,20 +1,14 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
-import java.util.Random;
-
-import net.ilexiconn.llibrary.server.structure.StructureBuilder;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
 
 public class ItemTestStructure extends Item {
     public ItemTestStructure() {
         this.setUnlocalizedName("testStructure");
+        setRegistryName("test_structure");
     }
 
-    @Override
+    /*@Override
     public boolean onItemUse(ItemStack is, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
         Random rand = new Random();
         if (!world.isRemote) {
@@ -99,10 +93,5 @@ public class ItemTestStructure extends Item {
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void registerIcons(IIconRegister register) {
-
-    }
+    }*/
 }

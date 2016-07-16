@@ -6,6 +6,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import com.bobmowzie.mowziesmobs.server.entity.EntitySunstrike;
@@ -18,11 +22,11 @@ public class MessagePlayerSummonSunstrike extends AbstractMessage<MessagePlayerS
 
     }
 
-    private static MovingObjectPosition rayTrace(EntityLivingBase entity, double reach) {
-        Vec3 pos = Vec3.createVectorHelper(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
-        Vec3 segment = entity.getLookVec();
+    private static RayTraceResult rayTrace(EntityLivingBase entity, double reach) {
+        Vec3d pos = new Vec3d(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
+        Vec3d segment = entity.getLookVec();
         segment = pos.addVector(segment.xCoord * reach, segment.yCoord * reach, segment.zCoord * reach);
-        return entity.worldObj.func_147447_a(pos, segment, false, true, true);
+        return entity.worldObj.rayTraceBlocks(pos, segment, false, true, true);
     }
 
     @Override
@@ -42,9 +46,10 @@ public class MessagePlayerSummonSunstrike extends AbstractMessage<MessagePlayerS
 
     @Override
     public void onServerReceived(MinecraftServer server, MessagePlayerSummonSunstrike message, EntityPlayer player, MessageContext messageContext) {
-        MovingObjectPosition raytrace = rayTrace(player, REACH);
-        if (raytrace != null && raytrace.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && raytrace.sideHit == 1 && player.inventory.getCurrentItem() == null && player.isPotionActive(PotionHandler.INSTANCE.sunsBlessing)) {
-            EntitySunstrike sunstrike = new EntitySunstrike(player.worldObj, player, raytrace.blockX, raytrace.blockY, raytrace.blockZ);
+        RayTraceResult raytrace = rayTrace(player, REACH);
+        if (raytrace != null && raytrace.typeOfHit == RayTraceResult.Type.BLOCK && raytrace.sideHit == EnumFacing.UP && player.inventory.getCurrentItem() == null && player.isPotionActive(PotionHandler.INSTANCE.sunsBlessing)) {
+            BlockPos hit = raytrace.getBlockPos();
+            EntitySunstrike sunstrike = new EntitySunstrike(player.worldObj, player, hit.getX(), hit.getY(), hit.getZ());
             sunstrike.onSummon();
             player.worldObj.spawnEntityInWorld(sunstrike);
         }

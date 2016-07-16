@@ -13,7 +13,12 @@ public class EntityTribeVillager extends EntityTribesman {
         super(world);
         this.targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
         this.targetTasks.addTask(3, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, true));
-        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityZombie.class, 0, true));
+        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityZombie.class, 0, true, true, null));
+    }
+
+    @Override
+    public double getYOffset() {
+        return height / 2;
     }
 
     @Override

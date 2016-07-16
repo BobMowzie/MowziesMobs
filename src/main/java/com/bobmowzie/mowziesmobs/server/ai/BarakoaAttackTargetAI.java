@@ -13,42 +13,32 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
+import com.google.common.base.Predicate;
 
 public class BarakoaAttackTargetAI extends EntityAITarget {
     private Class<? extends Entity> targetClass;
     private int targetChance;
     private EntityAINearestAttackableTarget.Sorter attackableTargetSorter;
-    private IEntitySelector targetEntitySelector;
+    private Predicate<Entity> targetEntitySelector;
     private EntityLivingBase targetEntity;
 
     public BarakoaAttackTargetAI(EntityCreature entity, Class<? extends Entity> targetClass, int targetChance, boolean shouldCheckSight) {
-        this(entity, targetClass, targetChance, shouldCheckSight, false);
-    }
-
-    public BarakoaAttackTargetAI(EntityCreature entity, Class<? extends Entity> targetClass, int targetChance, boolean shouldCheckSight, boolean nearbyOnly) {
-        this(entity, targetClass, targetChance, shouldCheckSight, nearbyOnly, null);
-    }
-
-    public BarakoaAttackTargetAI(EntityCreature entity, Class<? extends Entity> targetClass, int targetChance, boolean shouldCheckSight, boolean nearbyOnly, IEntitySelector selector) {
-        super(entity, shouldCheckSight, nearbyOnly);
+        super(entity, shouldCheckSight, false);
         this.targetClass = targetClass;
         this.targetChance = targetChance;
         this.attackableTargetSorter = new EntityAINearestAttackableTarget.Sorter(entity);
         this.setMutexBits(1);
-        this.targetEntitySelector = new IEntitySelector() {
-            @Override
-            public boolean isEntityApplicable(Entity target) {
-                if (target instanceof EntityPlayer) {
-                    ItemStack headArmorStack = ((EntityPlayer) target).getEquipmentInSlot(4);
-                    if (headArmorStack != null) {
-                        Item headItem = headArmorStack.getItem();
-                        if (headItem instanceof ItemBarakoaMask) {
-                            return false;
-                        }
+        this.targetEntitySelector = target -> {
+            if (target instanceof EntityPlayer) {
+                ItemStack headArmorStack = ((EntityPlayer) target).inventory.armorItemInSlot(3);
+                if (headArmorStack != null) {
+                    Item headItem = headArmorStack.getItem();
+                    if (headItem instanceof ItemBarakoaMask) {
+                        return false;
                     }
                 }
-                return target instanceof EntityLivingBase && (!(selector != null && !selector.isEntityApplicable(target)) && BarakoaAttackTargetAI.this.isSuitableTarget((EntityLivingBase) target, false));
             }
+            return target instanceof EntityLivingBase && BarakoaAttackTargetAI.this.isSuitableTarget((EntityLivingBase) target, false);
         };
     }
 
@@ -58,7 +48,7 @@ public class BarakoaAttackTargetAI extends EntityAITarget {
             return false;
         } else {
             double targetDistance = this.getTargetDistance();
-            List list = this.taskOwner.worldObj.selectEntitiesWithinAABB(this.targetClass, this.taskOwner.boundingBox.expand(targetDistance, 4.0D, targetDistance), this.targetEntitySelector);
+            List list = this.taskOwner.worldObj.getEntitiesWithinAABB(this.targetClass, this.taskOwner.getEntityBoundingBox().expand(targetDistance, 4.0D, targetDistance), this.targetEntitySelector);
             Collections.sort(list, this.attackableTargetSorter);
 
             if (list.isEmpty()) {

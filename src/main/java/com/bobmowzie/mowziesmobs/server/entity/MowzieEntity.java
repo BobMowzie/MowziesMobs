@@ -15,6 +15,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
@@ -59,11 +60,6 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     public void readSpawnData(ByteBuf additionalData) {
     }
 
-    @Override
-    protected boolean isAIEnabled() {
-        return true;
-    }
-
     public int getAttack() {
         return 0;
     }
@@ -73,14 +69,14 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     }
 
     public List<EntityPlayer> getPlayersNearby(double distanceX, double distanceY, double distanceZ, double radius) {
-        List<Entity> nearbyEntities = worldObj.getEntitiesWithinAABBExcludingEntity(this, boundingBox.expand(distanceX, distanceY, distanceZ));
-        ArrayList<EntityPlayer> listEntityPlayers = nearbyEntities.stream().filter(entityNeighbor -> entityNeighbor instanceof EntityPlayer && getDistanceToEntity(entityNeighbor) <= radius).map(entityNeighbor -> (EntityPlayer) entityNeighbor).collect(Collectors.toCollection(ArrayList::new));
+        List<Entity> nearbyEntities = worldObj.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().expand(distanceX, distanceY, distanceZ));
+        List<EntityPlayer> listEntityPlayers = nearbyEntities.stream().filter(entityNeighbor -> entityNeighbor instanceof EntityPlayer && getDistanceToEntity(entityNeighbor) <= radius).map(entityNeighbor -> (EntityPlayer) entityNeighbor).collect(Collectors.toList());
         return listEntityPlayers;
     }
 
     public List<EntityLivingBase> getEntityLivingBaseNearby(double distanceX, double distanceY, double distanceZ, double radius) {
-        List<Entity> nearbyEntities = worldObj.getEntitiesWithinAABBExcludingEntity(this, boundingBox.expand(distanceX, distanceY, distanceZ));
-        ArrayList<EntityLivingBase> listEntityLivingBase = nearbyEntities.stream().filter(entityNeighbor -> entityNeighbor instanceof EntityLivingBase && getDistanceToEntity(entityNeighbor) <= radius && entityNeighbor.posY + entityNeighbor.boundingBox.maxY > posY + 2 && entityNeighbor.posY <= posY + distanceY).map(entityNeighbor -> (EntityLivingBase) entityNeighbor).collect(Collectors.toCollection(ArrayList::new));
+        List<Entity> nearbyEntities = worldObj.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().expand(distanceX, distanceY, distanceZ));
+        List<EntityLivingBase> listEntityLivingBase = nearbyEntities.stream().filter(entityNeighbor -> entityNeighbor instanceof EntityLivingBase && getDistanceToEntity(entityNeighbor) <= radius && entityNeighbor.posY + entityNeighbor.getEntityBoundingBox().maxY > posY + 2 && entityNeighbor.posY <= posY + distanceY).map(entityNeighbor -> (EntityLivingBase) entityNeighbor).collect(Collectors.toList());
         return listEntityLivingBase;
     }
 
@@ -91,7 +87,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
         if (deathTime == getDeathAnimation().getDuration() - 20) {
             int experience;
 
-            if (!worldObj.isRemote && (recentlyHit > 0 || isPlayer()) && func_146066_aG() && worldObj.getGameRules().getGameRuleBooleanValue("doMobLoot")) {
+            if (!worldObj.isRemote && (recentlyHit > 0 || isPlayer()) && canDropLoot() && worldObj.getGameRules().getBoolean("doMobLoot")) {
                 experience = getExperiencePoints(attackingPlayer);
 
                 while (experience > 0) {
@@ -107,7 +103,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
                 double d2 = rand.nextGaussian() * 0.02D;
                 double d0 = rand.nextGaussian() * 0.02D;
                 double d1 = rand.nextGaussian() * 0.02D;
-                worldObj.spawnParticle("explode", posX + (double) (rand.nextFloat() * width * 2.0F) - (double) width, posY + (double) (rand.nextFloat() * height), posZ + (double) (rand.nextFloat() * width * 2.0F) - (double) width, d2, d0, d1);
+                worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, posX + (double) (rand.nextFloat() * width * 2.0F) - (double) width, posY + (double) (rand.nextFloat() * height), posZ + (double) (rand.nextFloat() * width * 2.0F) - (double) width, d2, d0, d1);
             }
         }
     }
@@ -134,12 +130,12 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     }
 
     @Override
-    public void handleHealthUpdate(byte id) {
+    public void handleStatusUpdate(byte id) {
         if (id >= START_IA_HEALTH_UPDATE_ID && id - START_IA_HEALTH_UPDATE_ID < intermittentAnimations.size()) {
             intermittentAnimations.get(id - START_IA_HEALTH_UPDATE_ID).start();
             return;
         }
-        super.handleHealthUpdate(id);
+        super.handleStatusUpdate(id);
     }
 
     @Override

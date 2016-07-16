@@ -144,13 +144,7 @@ public class FoliaathBabyModel extends AdvancedModelBase {
     }
 
     public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, EntityBabyFoliaath foliaath) {
-        if (foliaath.getInfant() == 1) {
-            juvenileBase.isHidden = true;
-            infantBase.isHidden = false;
-        } else {
-            juvenileBase.isHidden = false;
-            infantBase.isHidden = true;
-        }
+        infantBase.isHidden = !(juvenileBase.isHidden = foliaath.getInfant());
     }
 
     public void animate(float f, float f1, float f2, float f3, float f4, float f5, IAnimatedEntity entity) {

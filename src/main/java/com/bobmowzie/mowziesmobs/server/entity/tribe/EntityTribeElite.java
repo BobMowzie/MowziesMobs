@@ -6,7 +6,6 @@ import java.util.List;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
@@ -19,9 +18,12 @@ import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -39,11 +41,11 @@ public class EntityTribeElite extends EntityTribesman {
     public EntityTribeElite(World world) {
         super(world);
         this.targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
-        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityCow.class, 0, true));
-        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityPig.class, 0, true));
-        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntitySheep.class, 0, true));
-        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityChicken.class, 0, true));
-        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityZombie.class, 0, true));
+        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityCow.class, 0, true, false, null));
+        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityPig.class, 0, true, false, null));
+        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntitySheep.class, 0, true, false, null));
+        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityChicken.class, 0, true, false, null));
+        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityZombie.class, 0, true, false, null));
         this.targetTasks.addTask(3, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, true));
         this.tasks.addTask(2, new AnimationBlockAI<>(this, BLOCK_ANIMATION));
         this.setMask(1);
@@ -88,7 +90,7 @@ public class EntityTribeElite extends EntityTribesman {
         }
         if (entity != null && entity instanceof EntityLivingBase && (getAnimation() == IAnimatedEntity.NO_ANIMATION || getAnimation() == HURT_ANIMATION || getAnimation() == BLOCK_ANIMATION)) {
             blockingEntity = (EntityLivingBase) entity;
-            playSound("mob.zombie.wood", 0.3f, 1.5f);
+            playSound(SoundEvents.ENTITY_ZOMBIE_ATTACK_DOOR_WOOD, 0.3f, 1.5f);
             AnimationHandler.INSTANCE.sendAnimationMessage(this, BLOCK_ANIMATION);
             return false;
         }
@@ -143,12 +145,12 @@ public class EntityTribeElite extends EntityTribesman {
     }
 
     @Override
-    public IEntityLivingData onSpawnWithEgg(IEntityLivingData data) {
+    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, IEntityLivingData data) {
         int size = rand.nextInt(2) + 3;
         for (int i = 0; i <= size; i++) {
             EntityTribeHunter tribeHunter = new EntityTribeHunter(worldObj, this);
             pack.add(tribeHunter);
-            tribeHunter.setLeaderUUID(getUniqueID().toString());
+            tribeHunter.setLeaderUUID(getUniqueID());
             tribeHunter.setPosition(posX + 0.1 * i, posY, posZ);
             int weapon = 0;
             if (rand.nextInt(3) == 0) {
@@ -157,7 +159,7 @@ public class EntityTribeElite extends EntityTribesman {
             tribeHunter.setWeapon(weapon);
             worldObj.spawnEntityInWorld(tribeHunter);
         }
-        return super.onSpawnWithEgg(data);
+        return super.onInitialSpawn(difficulty, data);
     }
 
     @Override
@@ -174,20 +176,18 @@ public class EntityTribeElite extends EntityTribesman {
                 return false;
             }
         }
-        if (worldObj.checkNoEntityCollision(boundingBox) && worldObj.getCollidingBoundingBoxes(this, boundingBox).isEmpty() && !worldObj.isAnyLiquid(boundingBox)) {
-            int x = MathHelper.floor_double(posX);
-            int y = MathHelper.floor_double(boundingBox.minY);
-            int z = MathHelper.floor_double(posZ);
+        if (worldObj.checkNoEntityCollision(getEntityBoundingBox()) && worldObj.getCollisionBoxes(this, getEntityBoundingBox()).isEmpty() && !worldObj.containsAnyLiquid(getEntityBoundingBox())) {
+            BlockPos ground = new BlockPos(
+                MathHelper.floor_double(posX),
+                MathHelper.floor_double(getEntityBoundingBox().minY) - 1,
+                MathHelper.floor_double(posZ)
+            );
 
-            if (y < 63) {
+            if (ground.getY() < 64) {
                 return false;
             }
 
-            Block block = worldObj.getBlock(x, y - 1, z);
-
-            if (block == Blocks.grass) {
-                return true;
-            }
+            return worldObj.getBlockState(ground).getBlock() == Blocks.GRASS;
         }
         return false;
     }

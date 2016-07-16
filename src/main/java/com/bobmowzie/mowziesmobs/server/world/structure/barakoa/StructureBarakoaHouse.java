@@ -562,9 +562,9 @@ public class StructureBarakoaHouse extends StructureBase {
         MowziesMobs.GENERATOR.setStructureFacing(direction);
         MowziesMobs.GENERATOR.setDefaultOffset(structure.getOffsetX(), structure.getOffsetY(), structure.getOffsetZ());
         MowziesMobs.GENERATOR.generate(world, rand, x, y, z);
-        replaceBlocks(Blocks.planks, 4, BlockHandler.INSTANCE.blockPaintedAcacia, 0, x - 3, y, z, 7, 9, 7, world);
-        replaceBlocks(Blocks.wooden_slab, 4, BlockHandler.INSTANCE.blockPaintedAcaciaSlab, 0, x - 3, y, z, 7, 9, 7, world);
-        replaceBlocks(Blocks.obsidian, 0, BlockHandler.INSTANCE.blockPaintedAcaciaSlab, 12, x - 3, y, z, 7, 9, 7, world);
+        replaceBlocks(Blocks.planks, 4, BlockHandler.INSTANCE.paintedAcacia, 0, x - 3, y, z, 7, 9, 7, world);
+        replaceBlocks(Blocks.wooden_slab, 4, BlockHandler.INSTANCE.paintedAcaciaSlab, 0, x - 3, y, z, 7, 9, 7, world);
+        replaceBlocks(Blocks.obsidian, 0, BlockHandler.INSTANCE.paintedAcaciaSlab, 12, x - 3, y, z, 7, 9, 7, world);
 
         //Fix Logs depending on rotation
         if (direction == 2 || direction == 4) {
@@ -826,14 +826,14 @@ public class StructureBarakoaHouse extends StructureBase {
         }
 
         if (direction == 2 || direction == 4) {
-            replaceBlocks(Blocks.wooden_slab, 4, BlockHandler.INSTANCE.blockPaintedAcaciaSlab, 0, x, y, z - 2, 5, 9, 5, world);
-            replaceBlocks(Blocks.obsidian, 0, BlockHandler.INSTANCE.blockPaintedAcaciaSlab, 12, x, y, z - 2, 5, 9, 5, world);
+            replaceBlocks(Blocks.wooden_slab, 4, BlockHandler.INSTANCE.paintedAcaciaSlab, 0, x, y, z - 2, 5, 9, 5, world);
+            replaceBlocks(Blocks.obsidian, 0, BlockHandler.INSTANCE.paintedAcaciaSlab, 12, x, y, z - 2, 5, 9, 5, world);
             replaceBlocks(Blocks.log2, 8, Blocks.obsidian, 0, x, y, z - 2, 5, 9, 5, world);
             replaceBlocks(Blocks.log2, 4, Blocks.log2, 8, x, y, z - 2, 5, 9, 5, world);
             replaceBlocks(Blocks.obsidian, 0, Blocks.log2, 4, x, y, z - 2, 5, 9, 5, world);
         } else {
-            replaceBlocks(Blocks.wooden_slab, 4, BlockHandler.INSTANCE.blockPaintedAcaciaSlab, 0, x - 2, y, z, 5, 9, 5, world);
-            replaceBlocks(Blocks.obsidian, 0, BlockHandler.INSTANCE.blockPaintedAcaciaSlab, 12, x - 2, y, z, 5, 9, 5, world);
+            replaceBlocks(Blocks.wooden_slab, 4, BlockHandler.INSTANCE.paintedAcaciaSlab, 0, x - 2, y, z, 5, 9, 5, world);
+            replaceBlocks(Blocks.obsidian, 0, BlockHandler.INSTANCE.paintedAcaciaSlab, 12, x - 2, y, z, 5, 9, 5, world);
         }
 
         if (direction == 2) {

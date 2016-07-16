@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import net.ilexiconn.llibrary.server.network.AbstractMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.MobEffects;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.server.MinecraftServer;
@@ -37,12 +38,11 @@ public class MessagePlayerSolarBeam extends AbstractMessage<MessagePlayerSolarBe
         EntitySolarBeam solarBeam = new EntitySolarBeam(player.worldObj, player, player.posX, player.posY + 1.2f, player.posZ, (float) ((player.rotationYawHead + 90) * Math.PI / 180), (float) (-player.rotationPitch * Math.PI / 180), 55);
         solarBeam.setHasPlayer(true);
         player.worldObj.spawnEntityInWorld(solarBeam);
-        player.addPotionEffect(new PotionEffect(Potion.moveSlowdown.getId(), 80, 2, true));
-
+        player.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 80, 2, true, true));
         int duration = player.getActivePotionEffect(PotionHandler.INSTANCE.sunsBlessing).getDuration();
-        player.removePotionEffect(PotionHandler.INSTANCE.sunsBlessing.getId());
+        player.removePotionEffect(PotionHandler.INSTANCE.sunsBlessing);
         if (duration - 2400 > 0) {
-            player.addPotionEffect(new PotionEffect(PotionHandler.INSTANCE.sunsBlessing.getId(), duration - 2400, 1, false));
+            player.addPotionEffect(new PotionEffect(PotionHandler.INSTANCE.sunsBlessing, duration - 2400, 1, false, true));
         }
     }
 }

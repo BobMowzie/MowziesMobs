@@ -4,13 +4,12 @@ import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.event.PlayerModelEvent;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.RenderItemInFrameEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import org.lwjgl.opengl.GL11;
 
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemWroughtAxe;
@@ -23,17 +22,17 @@ public enum ClientEventHandler {
 
     @SubscribeEvent
     public void onFrameRender(RenderItemInFrameEvent event) {
-        if (event.item.getItem() instanceof ItemWroughtAxe) {
-            GL11.glTranslatef(-0.4f, -0.2f, 0f);
-            GL11.glScalef(0.65f, 0.65f, 0.65f);
-            GL11.glRotatef(45f, 0f, -1f, 0f);
-            GL11.glRotatef(45f, -1f, 0f, -1f);
-        } else if (event.item.getItem() instanceof ItemWroughtHelm) {
-            GL11.glRotatef(180f, 0f, 1f, 0f);
-            GL11.glTranslatef(0f, -0.15f, 0.05f);
-        } else if (event.item.getItem() instanceof ItemBarakoaMask) {
-            GL11.glRotatef(180f, 0f, 1f, 0f);
-            GL11.glTranslatef(0f, -0.2f, 0.1f);
+        if (event.getItem().getItem() instanceof ItemWroughtAxe) {
+            GlStateManager.translate(-0.4f, -0.2f, 0f);
+            GlStateManager.scale(0.65f, 0.65f, 0.65f);
+            GlStateManager.rotate(45f, 0f, -1f, 0f);
+            GlStateManager.rotate(45f, -1f, 0f, -1f);
+        } else if (event.getItem().getItem() instanceof ItemWroughtHelm) {
+            GlStateManager.rotate(180f, 0f, 1f, 0f);
+            GlStateManager.translate(0f, -0.15f, 0.05f);
+        } else if (event.getItem().getItem() instanceof ItemBarakoaMask) {
+            GlStateManager.rotate(180f, 0f, 1f, 0f);
+            GlStateManager.translate(0f, -0.2f, 0.1f);
         }
     }
 
@@ -43,7 +42,7 @@ public enum ClientEventHandler {
             return;
         }
         EntityPlayer player = event.getEntityPlayer();
-        if (player.getHeldItem() != null && player.getHeldItem().getItem() instanceof ItemWroughtAxe) {
+        if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() instanceof ItemWroughtAxe) {
             MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntityPlayer(), MowziePlayerProperties.class);
             float time = property.getSwingPercentage(LLibrary.PROXY.getPartialTicks());
             if (time > 0) {

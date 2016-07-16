@@ -448,8 +448,8 @@ public class StructureBarakoThrone extends StructureBase {
         MowziesMobs.GENERATOR.generate(world, new Random(), x, y - 1, z);
 //                System.out.println("Beginning generation at " + x + ", " + y + ", " + z);
         if (direction == 1) {
-            replaceBlocks(Blocks.obsidian, BlockHandler.INSTANCE.blockPaintedAcacia, x - 3, y - 1, z, 7, 10, 13, world);
-            replaceBlocks(Blocks.brick_block, BlockHandler.INSTANCE.blockPaintedAcaciaSlab, x - 3, y - 1, z, 7, 10, 13, world);
+            replaceBlocks(Blocks.obsidian, BlockHandler.INSTANCE.paintedAcacia, x - 3, y - 1, z, 7, 10, 13, world);
+            replaceBlocks(Blocks.brick_block, BlockHandler.INSTANCE.paintedAcaciaSlab, x - 3, y - 1, z, 7, 10, 13, world);
             for (int i = 0; i <= 2; i++) {
                 ((TileEntitySkull) world.getTileEntity(x - 3, y + 2, z + 7 + 2 * i)).func_145903_a(4);
             }
@@ -461,8 +461,8 @@ public class StructureBarakoThrone extends StructureBase {
             world.spawnEntityInWorld(barako);
         }
         if (direction == 2) {
-            replaceBlocks(Blocks.obsidian, BlockHandler.INSTANCE.blockPaintedAcacia, x - 7, y - 1, z, 13, 10, 7, world);
-            replaceBlocks(Blocks.brick_block, BlockHandler.INSTANCE.blockPaintedAcaciaSlab, x - 7, y - 1, z, 13, 10, 7, world);
+            replaceBlocks(Blocks.obsidian, BlockHandler.INSTANCE.paintedAcacia, x - 7, y - 1, z, 13, 10, 7, world);
+            replaceBlocks(Blocks.brick_block, BlockHandler.INSTANCE.paintedAcaciaSlab, x - 7, y - 1, z, 13, 10, 7, world);
 
             //Fix logs and hay
             replaceBlocks(Blocks.log2, 8, Blocks.obsidian, 0, x - 7, y - 1, z, 13, 10, 7, world);
@@ -478,8 +478,8 @@ public class StructureBarakoThrone extends StructureBase {
             world.spawnEntityInWorld(barako);
         }
         if (direction == 3) {
-            replaceBlocks(Blocks.obsidian, BlockHandler.INSTANCE.blockPaintedAcacia, x - 3, y - 1, z + 1, 7, 10, 13, world);
-            replaceBlocks(Blocks.brick_block, BlockHandler.INSTANCE.blockPaintedAcaciaSlab, x - 3, y - 1, z + 1, 7, 10, 13, world);
+            replaceBlocks(Blocks.obsidian, BlockHandler.INSTANCE.paintedAcacia, x - 3, y - 1, z + 1, 7, 10, 13, world);
+            replaceBlocks(Blocks.brick_block, BlockHandler.INSTANCE.paintedAcaciaSlab, x - 3, y - 1, z + 1, 7, 10, 13, world);
             for (int i = 0; i <= 2; i++) {
                 ((TileEntitySkull) world.getTileEntity(x + 3, y + 2, z + 1 + 2 * i)).func_145903_a(-4);
             }
@@ -491,8 +491,8 @@ public class StructureBarakoThrone extends StructureBase {
             world.spawnEntityInWorld(barako);
         }
         if (direction == 4) {
-            replaceBlocks(Blocks.obsidian, BlockHandler.INSTANCE.blockPaintedAcacia, x - 7, y - 1, z, 13, 10, 7, world);
-            replaceBlocks(Blocks.brick_block, BlockHandler.INSTANCE.blockPaintedAcaciaSlab, x - 7, y - 1, z, 13, 10, 7, world);
+            replaceBlocks(Blocks.obsidian, BlockHandler.INSTANCE.paintedAcacia, x - 7, y - 1, z, 13, 10, 7, world);
+            replaceBlocks(Blocks.brick_block, BlockHandler.INSTANCE.paintedAcaciaSlab, x - 7, y - 1, z, 13, 10, 7, world);
 
             //Fix logs and hay
             replaceBlocks(Blocks.log2, 8, Blocks.obsidian, 0, x - 7, y - 1, z, 13, 10, 7, world);

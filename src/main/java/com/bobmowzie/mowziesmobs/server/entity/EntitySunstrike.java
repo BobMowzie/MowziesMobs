@@ -4,28 +4,37 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.List;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockSlab;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.network.play.server.SPacketEntityTeleport;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
+import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory.ParticleArgs;
 import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeLeader;
 
 public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnData {
     public static final int STRIKE_EXPLOSION = 35;
-    private static final int VARIANT_MIN_ID = 2;
-    private static final int VARIANT_MAX_ID = 3;
+
     private static final int STRIKE_LENGTH = 43;
     // 1 minute past strike end
     private static final int STRIKE_LINGER = STRIKE_LENGTH + 20 * 60;
@@ -35,6 +44,10 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     private int strikeTime;
 
     private EntityLivingBase caster;
+
+    private static final DataParameter<Integer> VARIANT_LEAST = EntityDataManager.createKey(EntitySunstrike.class, DataSerializers.VARINT);
+
+    private static final DataParameter<Integer> VARIANT_MOST = EntityDataManager.createKey(EntitySunstrike.class, DataSerializers.VARINT);
 
     public EntitySunstrike(World world) {
         super(world);
@@ -50,8 +63,8 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
 
     @Override
     protected void entityInit() {
-        dataWatcher.addObject(VARIANT_MIN_ID, 0);
-        dataWatcher.addObject(VARIANT_MAX_ID, 0);
+        getDataManager().register(VARIANT_LEAST, 0);
+        getDataManager().register(VARIANT_MOST, 0);
     }
 
     public float getStrikeTime(float delta) {
@@ -87,12 +100,12 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     }
 
     public long getVariant() {
-        return (((long) dataWatcher.getWatchableObjectInt(VARIANT_MAX_ID)) << 32) | (dataWatcher.getWatchableObjectInt(VARIANT_MIN_ID) & 0xFFFFFFFFL);
+        return (((long) getDataManager().get(VARIANT_MOST)) << 32) | (getDataManager().get(VARIANT_LEAST) & 0xFFFFFFFFL);
     }
 
     private void setVariant(long variant) {
-        dataWatcher.updateObject(VARIANT_MAX_ID, (int) (variant >> 32));
-        dataWatcher.updateObject(VARIANT_MIN_ID, (int) variant);
+        getDataManager().set(VARIANT_MOST, (int) (variant >> 32));
+        getDataManager().set(VARIANT_LEAST, (int) variant);
     }
 
     @Override
@@ -130,7 +143,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
                     float oz = r * MathHelper.sin(theta);
                     final float minY = 0.1F;
                     float oy = rand.nextFloat() * (time * 6 - minY) + minY;
-                    MowziesMobs.PROXY.spawnOrbFX(worldObj, posX + ox, posY + oy, posZ + oz, posX, posZ);
+                    MMParticle.ORB.spawn(worldObj, posX + ox, posY + oy, posZ + oz, ParticleArgs.get().withData(posX, posZ));
                 }
             } else if (strikeTime > STRIKE_EXPLOSION) {
                 this.smolder();
@@ -139,7 +152,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
             }
         } else {
             this.moveDownToGround();
-            if (strikeTime >= STRIKE_LINGER || !worldObj.canBlockSeeTheSky(MathHelper.floor_double(posX), (int) Math.round(posY), MathHelper.floor_double(posZ))) {
+            if (strikeTime >= STRIKE_LINGER || !worldObj.canBlockSeeSky(getPosition())) {
                 this.setDead();
             } else if (strikeTime == STRIKE_EXPLOSION) {
                 this.damageEntityLivingBaseNearby(3);
@@ -149,24 +162,25 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     }
 
     public void moveDownToGround() {
-        MovingObjectPosition rayTrace = rayTrace(this);
-        if (rayTrace != null && rayTrace.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK && rayTrace.sideHit == 1) {
-            Block hitBlock = worldObj.getBlock(rayTrace.blockX, rayTrace.blockY, rayTrace.blockZ);
-            if (strikeTime > STRIKE_LENGTH && hitBlock != worldObj.getBlock(MathHelper.floor_double(posX), MathHelper.floor_double(posY - 1), MathHelper.floor_double(posZ))) {
+        RayTraceResult rayTrace = rayTrace(this);
+        if (rayTrace != null && rayTrace.typeOfHit == RayTraceResult.Type.BLOCK && rayTrace.sideHit == EnumFacing.UP) {
+            IBlockState hitBlock = worldObj.getBlockState(rayTrace.getBlockPos());
+            if (strikeTime > STRIKE_LENGTH && hitBlock != worldObj.getBlockState(getPosition().down())) {
                 this.setDead();
             }
-            this.setPosition(posX, rayTrace.blockY + 1.0625F, posZ);
-            if (hitBlock instanceof BlockSlab && worldObj.getBlockMetadata(rayTrace.blockX, rayTrace.blockY, rayTrace.blockZ) < 8) {
-                this.setPosition(posX, rayTrace.blockY + 1.0625F - 0.5f, posZ);
+            if (hitBlock instanceof BlockSlab && hitBlock.getValue(BlockSlab.HALF) == BlockSlab.EnumBlockHalf.BOTTOM) {
+                this.setPosition(posX, rayTrace.getBlockPos().getY() + 1.0625F - 0.5f, posZ);
+            } else {
+                this.setPosition(posX, rayTrace.getBlockPos().getY() + 1.0625F, posZ);
             }
             for (EntityPlayer entityPlayer : ((WorldServer) worldObj).getEntityTracker().getTrackingPlayers(this)) {
-                ((EntityPlayerMP) entityPlayer).playerNetServerHandler.sendPacket(new S18PacketEntityTeleport(this));
+                ((EntityPlayerMP) entityPlayer).connection.sendPacket(new SPacketEntityTeleport(this));
             }
         }
     }
 
     public void damageEntityLivingBaseNearby(double radius) {
-        AxisAlignedBB region = AxisAlignedBB.getBoundingBox(posX - radius, posY - 0.5, posZ - radius, posX + radius, Double.POSITIVE_INFINITY, posZ + radius);
+        AxisAlignedBB region = new AxisAlignedBB(posX - radius, posY - 0.5, posZ - radius, posX + radius, Double.POSITIVE_INFINITY, posZ + radius);
         List<Entity> entities = worldObj.getEntitiesWithinAABBExcludingEntity(this, region);
         double radiusSq = radius * radius;
         for (Entity entity : entities) {
@@ -192,7 +206,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
                 float r = rand.nextFloat() * 0.7F;
                 float x = r * MathHelper.cos(theta);
                 float z = r * MathHelper.sin(theta);
-                worldObj.spawnParticle("largesmoke", posX + x, posY + 0.1, posZ + z, 0, 0, 0);
+                worldObj.spawnParticle(EnumParticleTypes.SMOKE_LARGE, posX + x, posY + 0.1, posZ + z, 0, 0, 0);
             }
         }
     }
@@ -204,10 +218,10 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
             float vy = rand.nextFloat() * 0.08F;
             float vx = velocity * MathHelper.cos(yaw);
             float vz = velocity * MathHelper.sin(yaw);
-            worldObj.spawnParticle("flame", posX, posY + 0.1, posZ, vx, vy, vz);
+            worldObj.spawnParticle(EnumParticleTypes.FLAME, posX, posY + 0.1, posZ, vx, vy, vz);
         }
         for (int i = 0; i < amount / 2; i++) {
-            worldObj.spawnParticle("lava", posX, posY + 0.1, posZ, 0, 0, 0);
+            worldObj.spawnParticle(EnumParticleTypes.LAVA, posX, posY + 0.1, posZ, 0, 0, 0);
         }
     }
 
@@ -215,10 +229,10 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         this.setVariant(rand.nextLong());
     }
 
-    private MovingObjectPosition rayTrace(EntitySunstrike entity) {
-        Vec3 startPos = Vec3.createVectorHelper(entity.posX, entity.posY, entity.posZ);
-        Vec3 endPos = Vec3.createVectorHelper(entity.posX, 0, entity.posZ);
-        return entity.worldObj.func_147447_a(startPos, endPos, false, true, true);
+    private RayTraceResult rayTrace(EntitySunstrike entity) {
+        Vec3d startPos = new Vec3d(entity.posX, entity.posY, entity.posZ);
+        Vec3d endPos = new Vec3d(entity.posX, 0, entity.posZ);
+        return entity.worldObj.rayTraceBlocks(startPos, endPos, false, true, true);
     }
 
     @Override
