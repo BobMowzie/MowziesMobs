@@ -97,16 +97,6 @@ public class EntityTribeElite extends EntityTribesman {
         return super.attackEntityFrom(source, damage);
     }
 
-    @Override
-    public Animation getDeathAnimation() {
-        return null;
-    }
-
-    @Override
-    public Animation getHurtAnimation() {
-        return null;
-    }
-
     public void removePackMember(EntityTribeHunter tribeHunter) {
         pack.remove(tribeHunter);
         sortPackMembers();

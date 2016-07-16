@@ -246,7 +246,7 @@ public class EntityTribesman extends MowzieEntity implements IRangedAttackMob, L
         }
         if (!worldObj.isRemote && getAnimation() == NO_ANIMATION && danceTimer == 0 && rand.nextInt(800) == 0) {
             setDancing(true);
-            playSound(MMSounds.ENTITY_BARAKOA_BATTLECRY, 1.2f, 1.3f);
+            playSound(MMSounds.ENTITY_BARAKOA_BATTLECRY_2, 1.2f, 1.3f);
         }
         if (getAnimation() != NO_ANIMATION) {
             danceTimer = 0;
@@ -256,7 +256,7 @@ public class EntityTribesman extends MowzieEntity implements IRangedAttackMob, L
             cryDelay--;
         }
         if (cryDelay == 0) {
-            playSound(MMSounds.ENTITY_BARAKOA_BATTLECRY_2, 1.5f, 1.5f);
+            playSound(MMSounds.ENTITY_BARAKOA_BATTLECRY, 1.5f, 1.5f);
         }
         if (getAttackTarget() != null && !prevHasTarget && !prevprevHasTarget && !prevprevprevHasTarget) {
             cryDelay = MathHelper.getRandomIntegerInRange(rand, -15, 30);
@@ -279,7 +279,7 @@ public class EntityTribesman extends MowzieEntity implements IRangedAttackMob, L
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MMSounds.ENTITY_BARAKO_DIE;
+        return MMSounds.ENTITY_BARAKOA_DIE;
     }
 
     @Override
