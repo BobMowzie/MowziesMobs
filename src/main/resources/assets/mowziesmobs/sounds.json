@@ -21,185 +21,185 @@
 		"sounds": [ { "name": "mowziesmobs:foliaathretreat" } ]
 	},
 	"foliaath.die": {
-		"sounds": [ { "name": "mowziesmobs:foliaathdie"} ]
+		"sounds": [ { "name": "mowziesmobs:foliaathdie" } ]
 	},
 	"foliaath.hurt": {
-		"sounds": [ { "name": "mowziesmobs:foliaathhurt"} ]
+		"sounds": [ { "name": "mowziesmobs:foliaathhurt" } ]
 	},
 	"foliaath.rustle": {
-		"sounds": [ { "name": "mowziesmobs:foliaathrustle"} ]
+		"sounds": [ { "name": "mowziesmobs:foliaathrustle" } ]
 	},
 	"dirtimpact": {
-		"sounds": [ { "name": "mowziesmobs:dirtimpact"} ]
+		"sounds": [ { "name": "mowziesmobs:dirtimpact" } ]
 	},
 	"foliaath.baby.eat": {
-		"sounds": [ { "name": "mowziesmobs:babyFoliaathEat"} ]
+		"sounds": [ { "name": "mowziesmobs:babyFoliaathEat" } ]
 	},
 	"wroughtnaut.whoosh": {
-		"sounds": [ { "name": "mowziesmobs:wroughtnautWhoosh"} ]
+		"sounds": [ { "name": "mowziesmobs:wroughtnautWhoosh" } ]
 	},
 	"wroughtnaut.creak": {
-		"sounds": [ { "name": "mowziesmobs:wroughtnautCreak"} ]
+		"sounds": [ { "name": "mowziesmobs:wroughtnautCreak" } ]
 	},
 	"wroughtnaut.die": {
-		"sounds": [ { "name": "mowziesmobs:wroughtnautDie"} ]
+		"sounds": [ { "name": "mowziesmobs:wroughtnautDie" } ]
 	},
 	"wroughtnaut.grunt1": {
-		"sounds": [ { "name": "mowziesmobs:wroughtnautGrunt1"} ]
+		"sounds": [ { "name": "mowziesmobs:wroughtnautGrunt1" } ]
 	},
 	"wroughtnaut.grunt2": {
-		"sounds": [ { "name": "mowziesmobs:wroughtnautGrunt2"} ]
+		"sounds": [ { "name": "mowziesmobs:wroughtnautGrunt2" } ]
 	},
 	"wroughtnaut.grunt3": {
-		"sounds": [ { "name": "mowziesmobs:wroughtnautGrunt3"} ]
+		"sounds": [ { "name": "mowziesmobs:wroughtnautGrunt3" } ]
 	},
 	"wroughtnaut.hurt1": {
-		"sounds": [ { "name": "mowziesmobs:wroughtnautHurt1"} ]
+		"sounds": [ { "name": "mowziesmobs:wroughtnautHurt1" } ]
 	},
 	"wroughtnaut.preSwing1": {
-		"sounds": [ { "name": "mowziesmobs:wroughtnautPreSwing1"} ]
+		"sounds": [ { "name": "mowziesmobs:wroughtnautPreSwing1" } ]
 	},
 	"wroughtnaut.preSwing2": {
-		"sounds": [ { "name": "mowziesmobs:wroughtnautPreSwing2"} ]
+		"sounds": [ { "name": "mowziesmobs:wroughtnautPreSwing2" } ]
 	},
 	"wroughtnaut.preSwing3": {
-		"sounds": [ { "name": "mowziesmobs:wroughtnautPreSwing3"} ]
+		"sounds": [ { "name": "mowziesmobs:wroughtnautPreSwing3" } ]
 	},
 	"wroughtnaut.pull1": {
-		"sounds": [ { "name": "mowziesmobs:wroughtnautPull1"} ]
+		"sounds": [ { "name": "mowziesmobs:wroughtnautPull1" } ]
 	},
 	"wroughtnaut.pull2": {
-		"sounds": [ { "name": "mowziesmobs:wroughtnautPull2"} ]
+		"sounds": [ { "name": "mowziesmobs:wroughtnautPull2" } ]
 	},
 	"wroughtnaut.pull3": {
-		"sounds": [ { "name": "mowziesmobs:wroughtnautPull3"} ]
+		"sounds": [ { "name": "mowziesmobs:wroughtnautPull3" } ]
 	},
 	"wroughtnaut.pull4": {
-		"sounds": [ { "name": "mowziesmobs:wroughtnautPull4"} ]
+		"sounds": [ { "name": "mowziesmobs:wroughtnautPull4" } ]
 	},
 	"wroughtnaut.pull5": {
-		"sounds": [ { "name": "mowziesmobs:wroughtnautPull5"} ]
+		"sounds": [ { "name": "mowziesmobs:wroughtnautPull5" } ]
 	},
 	"wroughtnaut.pull6": {
-		"sounds": [ { "name": "mowziesmobs:wroughtnautPull6"} ]
+		"sounds": [ { "name": "mowziesmobs:wroughtnautPull6" } ]
 	},
 	"wroughtnaut.release1": {
-		"sounds": [ { "name": "mowziesmobs:wroughtnautRelease1"} ]
+		"sounds": [ { "name": "mowziesmobs:wroughtnautRelease1" } ]
 	},
 	"wroughtnaut.release2": {
-		"sounds": [ { "name": "mowziesmobs:wroughtnautRelease2"} ]
+		"sounds": [ { "name": "mowziesmobs:wroughtnautRelease2" } ]
 	},
 	"wroughtnaut.scream": {
-		"sounds": [ { "name": "mowziesmobs:wroughtnautScream"} ]
+		"sounds": [ { "name": "mowziesmobs:wroughtnautScream" } ]
 	},
 	"wroughtnaut.shout1": {
-		"sounds": [ { "name": "mowziesmobs:wroughtnautShout1"} ]
+		"sounds": [ { "name": "mowziesmobs:wroughtnautShout1" } ]
 	},
 	"wroughtnaut.shout2": {
-		"sounds": [ { "name": "mowziesmobs:wroughtnautShout2"} ]
+		"sounds": [ { "name": "mowziesmobs:wroughtnautShout2" } ]
 	},
 	"wroughtnaut.shout3": {
-		"sounds": [ { "name": "mowziesmobs:wroughtnautShout3"} ]
+		"sounds": [ { "name": "mowziesmobs:wroughtnautShout3" } ]
 	},
 	"wroughtnaut.ambient": {
 		"sounds": [
-			{ "name": "mowziesmobs:wroughtnautGrunt1"},
-			{ "name": "mowziesmobs:wroughtnautGrunt2"},
-			{ "name": "mowziesmobs:wroughtnautShout1"},
-			{ "name": "mowziesmobs:wroughtnautShout2"}
+			{ "name": "mowziesmobs:wroughtnautGrunt1" },
+			{ "name": "mowziesmobs:wroughtnautGrunt2" },
+			{ "name": "mowziesmobs:wroughtnautShout1" },
+			{ "name": "mowziesmobs:wroughtnautShout2" }
 		]
 	},
 	"wroughtnaut.swing1": {
-		"sounds": [ { "name": "mowziesmobs:wroughtnautSwing1"} ]
+		"sounds": [ { "name": "mowziesmobs:wroughtnautSwing1" } ]
 	},
 	"wroughtnaut.swing2": {
-		"sounds": [ { "name": "mowziesmobs:wroughtnautSwing2"} ]
+		"sounds": [ { "name": "mowziesmobs:wroughtnautSwing2" } ]
 	},
 	"wroughtnaut.swing3": {
-		"sounds": [ { "name": "mowziesmobs:wroughtnautSwing3"} ]
+		"sounds": [ { "name": "mowziesmobs:wroughtnautSwing3" } ]
 	},
 	"barakoa.angry1": {
-		"sounds": [ { "name": "mowziesmobs:barakoaAngry1"} ]
+		"sounds": [ { "name": "mowziesmobs:barakoaAngry1" } ]
 	},
 	"barakoa.angry2": {
-		"sounds": [ { "name": "mowziesmobs:barakoaAngry2"} ]
+		"sounds": [ { "name": "mowziesmobs:barakoaAngry2" } ]
 	},
 	"barakoa.angry3": {
-		"sounds": [ { "name": "mowziesmobs:barakoaAngry3"} ]
+		"sounds": [ { "name": "mowziesmobs:barakoaAngry3" } ]
 	},
 	"barakoa.angry4": {
-		"sounds": [ { "name": "mowziesmobs:barakoaAngry4"} ]
+		"sounds": [ { "name": "mowziesmobs:barakoaAngry4" } ]
 	},
 	"barakoa.angry5": {
-		"sounds": [ { "name": "mowziesmobs:barakoaAngry5"} ]
+		"sounds": [ { "name": "mowziesmobs:barakoaAngry5" } ]
 	},
 	"barakoa.angry6": {
-		"sounds": [ { "name": "mowziesmobs:barakoaAngry6"} ]
+		"sounds": [ { "name": "mowziesmobs:barakoaAngry6" } ]
 	},
 	"barakoa.battlecry": {
-		"sounds": [ { "name": "mowziesmobs:barakoaBattlecry"} ]
+		"sounds": [ { "name": "mowziesmobs:barakoaBattlecry" } ]
 	},
 	"barakoa.battlecry2": {
-		"sounds": [ { "name": "mowziesmobs:barakoaBattlecry2"} ]
+		"sounds": [ { "name": "mowziesmobs:barakoaBattlecry2" } ]
 	},
 	"barakoa.die": {
 		"sounds": [
-			{ "name": "mowziesmobs:barakoaDie1"},
-			{ "name": "mowziesmobs:barakoaDie2"}
+			{ "name": "mowziesmobs:barakoaDie1" },
+			{ "name": "mowziesmobs:barakoaDie2" }
 		]
 	},
 	"barakoa.hurt": {
 		"sounds": [
-			{ "name": "mowziesmobs:barakoaHurt1"},
-			{ "name": "mowziesmobs:barakoaHurt2"},
-			{ "name": "mowziesmobs:barakoaHurt3"},
-			{ "name": "mowziesmobs:barakoaHurt4"}
+			{ "name": "mowziesmobs:barakoaHurt1" },
+			{ "name": "mowziesmobs:barakoaHurt2" },
+			{ "name": "mowziesmobs:barakoaHurt3" },
+			{ "name": "mowziesmobs:barakoaHurt4" }
 		]
 	},
 	"barakoa.talk1": {
-		"sounds": [ { "name": "mowziesmobs:barakoaTalk1"} ]
+		"sounds": [ { "name": "mowziesmobs:barakoaTalk1" } ]
 	},
 	"barakoa.talk2": {
-		"sounds": [ { "name": "mowziesmobs:barakoaTalk2"} ]
+		"sounds": [ { "name": "mowziesmobs:barakoaTalk2" } ]
 	},
 	"barakoa.talk3": {
-		"sounds": [ { "name": "mowziesmobs:barakoaTalk3"} ]
+		"sounds": [ { "name": "mowziesmobs:barakoaTalk3" } ]
 	},
 	"barakoa.talk4": {
-		"sounds": [ { "name": "mowziesmobs:barakoaTalk4"} ]
+		"sounds": [ { "name": "mowziesmobs:barakoaTalk4" } ]
 	},
 	"barakoa.talk5": {
-		"sounds": [ { "name": "mowziesmobs:barakoaTalk5"} ]
+		"sounds": [ { "name": "mowziesmobs:barakoaTalk5" } ]
 	},
 	"barakoa.talk6": {
-		"sounds": [ { "name": "mowziesmobs:barakoaTalk6"} ]
+		"sounds": [ { "name": "mowziesmobs:barakoaTalk6" } ]
 	},
 	"barakoa.talk7": {
-		"sounds": [ { "name": "mowziesmobs:barakoaTalk7"} ]
+		"sounds": [ { "name": "mowziesmobs:barakoaTalk7" } ]
 	},
 	"barakoa.talk8": {
-		"sounds": [ { "name": "mowziesmobs:barakoaTalk8"} ]
+		"sounds": [ { "name": "mowziesmobs:barakoaTalk8" } ]
 	},
 	"barakoa.talk9": {
-		"sounds": [ { "name": "mowziesmobs:barakoaTalk9"} ]
+		"sounds": [ { "name": "mowziesmobs:barakoaTalk9" } ]
 	},
 	"barakoa.blowdart": {
-		"sounds": [ { "name": "mowziesmobs:barakoaBlowdart"} ]
+		"sounds": [ { "name": "mowziesmobs:barakoaBlowdart" } ]
 	},
 	"barakoa.inhale": {
-		"sounds": [ { "name": "mowziesmobs:barakoaInhale"} ]
+		"sounds": [ { "name": "mowziesmobs:barakoaInhale" } ]
 	},
 	"barakoa.shout": {
-		"sounds": [ { "name": "mowziesmobs:barakoaShout"} ]
+		"sounds": [ { "name": "mowziesmobs:barakoaShout" } ]
 	},
 	"barakoa.swing": {
-		"sounds": [ { "name": "mowziesmobs:barakoaSwing"} ]
+		"sounds": [ { "name": "mowziesmobs:barakoaSwing" } ]
 	},
 	"barakoa.emerge": {
-		"sounds": [ { "name": "mowziesmobs:barakoaEmerge"} ]
+		"sounds": [ { "name": "mowziesmobs:barakoaEmerge" } ]
 	},
 	"barako.belly": {
-		"sounds": [ { "name": "mowziesmobs:barakoBelly"} ]
+		"sounds": [ { "name": "mowziesmobs:barakoBelly" } ]
 	},
 	"barako.angry1": {
 		"sounds": [ { "name": "mowziesmobs:barakoAngry1", "stream": true} ]
@@ -238,7 +238,7 @@
 		"sounds": [ { "name": "mowziesmobs:barakoTalk6", "stream": true } ]
 	},
 	"barako.die": {
-		"sounds": [ { "name": "mowziesmobs:barakoDie"} ]
+		"sounds": [ { "name": "mowziesmobs:barakoDie" } ]
 	},
 	"barako.hurt": {
 		"sounds": [
@@ -255,12 +255,12 @@
 		]
 	},
 	"barako.burst": {
-		"sounds": [ { "name": "mowziesmobs:barakoBurst"} ]
+		"sounds": [ { "name": "mowziesmobs:barakoBurst" } ]
 	},
 	"sunstrike": {
-		"sounds": [ { "name": "mowziesmobs:sunstrike"} ]
+		"sounds": [ { "name": "mowziesmobs:sunstrike" } ]
 	},
 	"laser": {
-		"sounds": [ { "name": "mowziesmobs:laser"} ]
+		"sounds": [ { "name": "mowziesmobs:laser" } ]
 	}
 }
