@@ -1,22 +1,5 @@
 package com.bobmowzie.mowziesmobs;
 
-import net.ilexiconn.llibrary.server.config.Config;
-import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
-import net.ilexiconn.llibrary.server.network.NetworkHandler;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.Mod.Instance;
-import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-
 import com.bobmowzie.mowziesmobs.server.ServerEventHandler;
 import com.bobmowzie.mowziesmobs.server.ServerProxy;
 import com.bobmowzie.mowziesmobs.server.biome.BiomeDictionaryHandler;
@@ -32,7 +15,20 @@ import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.bobmowzie.mowziesmobs.server.world.MowzieStructureGenerator;
-import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
+import net.ilexiconn.llibrary.server.config.Config;
+import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
+import net.ilexiconn.llibrary.server.network.NetworkWrapper;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
 @Mod(modid = MowziesMobs.MODID, name = MowziesMobs.NAME, version = MowziesMobs.VERSION, dependencies = MowziesMobs.DEPENDENCIES)
 public class MowziesMobs {
@@ -46,6 +42,7 @@ public class MowziesMobs {
     public static MowziesMobs INSTANCE;
     @SidedProxy(clientSide = "com.bobmowzie.mowziesmobs.client.ClientProxy", serverSide = "com.bobmowzie.mowziesmobs.server.ServerProxy")
     public static ServerProxy PROXY;
+    @NetworkWrapper({MessageSwingWroughtAxe.class, MessagePlayerSummonSunstrike.class, MessagePlayerSolarBeam.class})
     public static SimpleNetworkWrapper NETWORK_WRAPPER;
     @Config
     public static ConfigHandler CONFIG;
@@ -61,10 +58,6 @@ public class MowziesMobs {
 
     @EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {
-        MowziesMobs.NETWORK_WRAPPER = NetworkRegistry.INSTANCE.newSimpleChannel(MowziesMobs.MODID);
-        NetworkHandler.INSTANCE.registerMessage(MowziesMobs.NETWORK_WRAPPER, MessageSwingWroughtAxe.class);
-        NetworkHandler.INSTANCE.registerMessage(MowziesMobs.NETWORK_WRAPPER, MessagePlayerSummonSunstrike.class);
-        NetworkHandler.INSTANCE.registerMessage(MowziesMobs.NETWORK_WRAPPER, MessagePlayerSolarBeam.class);
 //        MowziesMobs.GENERATOR = new MowzieStructureGenerator();
         MinecraftForge.EVENT_BUS.register(ServerEventHandler.INSTANCE);
 
