@@ -1,12 +1,9 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 
 public class ItemWroughtHelm extends ItemArmor {
@@ -17,9 +14,10 @@ public class ItemWroughtHelm extends ItemArmor {
         setRegistryName("wrought_helm");
     }
 
+    // Dirty trick to get our item to render as the item model
     @Override
-    public void onArmorTick(World world, EntityPlayer player, ItemStack stack) {
-        super.onArmorTick(world, player, stack);
+    public EntityEquipmentSlot getEquipmentSlot() {
+        return null;
     }
 
     @Override
