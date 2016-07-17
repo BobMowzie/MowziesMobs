@@ -120,7 +120,7 @@ public class AnimationFWNStompAttackAI extends AnimationAI<EntityWroughtnaut> {
                                         double cx = px + world.rand.nextFloat() * 2 - 1;
                                         double cy = animatingEntity.getEntityBoundingBox().minY + 0.1 + world.rand.nextFloat() * 0.3;
                                         double cz = pz + world.rand.nextFloat() * 2 - 1;
-                                        world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, cx, cy, cz, 0, vx, 0.4 + world.rand.nextFloat() * 0.2F, vz, stateId);
+                                        world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, cx, cy, cz, 0, vx, 0.4 + world.rand.nextFloat() * 0.2F, vz, 1, stateId);
                                     }
                                 }
                             }
