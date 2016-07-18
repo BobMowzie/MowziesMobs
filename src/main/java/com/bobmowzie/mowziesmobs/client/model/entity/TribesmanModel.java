@@ -6,11 +6,10 @@ import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import org.lwjgl.opengl.GL11;
 
 import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeElite;
 import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribesman;
@@ -267,16 +266,16 @@ public class TribesmanModel extends AdvancedModelBase {
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         animate((IAnimatedEntity) entity, f, f1, f2, f3, f4, f5);
-        GL11.glPushMatrix();
+        GlStateManager.pushMatrix();
         if (entity instanceof EntityTribeElite) {
-            GL11.glScalef(0.85f, 0.85f, 0.85f);
-            GL11.glTranslatef(0, 0.25f, 0);
+            GlStateManager.scale(0.85f, 0.85f, 0.85f);
+            GlStateManager.translate(0, 0.25f, 0);
         } else {
-            GL11.glScalef(0.75f, 0.75f, 0.75f);
-            GL11.glTranslatef(0, 0.5f, 0);
+            GlStateManager.scale(0.75f, 0.75f, 0.75f);
+            GlStateManager.translate(0, 0.5f, 0);
         }
         this.modelCore.render(f5);
-        GL11.glPopMatrix();
+        GlStateManager.popMatrix();
     }
 
     public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {

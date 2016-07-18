@@ -4,13 +4,12 @@ import net.ilexiconn.llibrary.client.model.ModelAnimator;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import org.lwjgl.opengl.GL11;
 
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 
@@ -241,20 +240,22 @@ public class FoliaathModel extends AdvancedModelBase {
     public void render(Entity foliaath, float f, float f1, float f2, float f3, float f4, float f5) {
         animate((IAnimatedEntity) foliaath, f, f1, f2, f3, f4, f5);
         float leafScale = 1.25F;
-        GL11.glScalef(leafScale, leafScale, leafScale);
         bigLeaf2Base.rotationPointY -= 3.5;
         bigLeaf1Base.rotationPointY -= 3.5;
         bigLeaf3Base.rotationPointY -= 3.5;
         bigLeaf4Base.rotationPointY -= 3.5;
+        GlStateManager.pushMatrix();
+        GlStateManager.scale(leafScale, leafScale, leafScale);
         bigLeaf2Base.render(f5);
         bigLeaf1Base.render(f5);
         bigLeaf3Base.render(f5);
         bigLeaf4Base.render(f5);
-        GL11.glScalef(1 / leafScale, 1 / leafScale, 1 / leafScale);
-        GL11.glTranslatef(0, 1.4F, 0);
-        GL11.glTranslatef(0, -1.4F * activeProgress, 0);
-        GL11.glScalef(activeProgress, activeProgress, activeProgress);
+        GlStateManager.popMatrix();
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0, 1.4F - 1.4F * activeProgress, 0);
+        GlStateManager.scale(activeProgress, activeProgress, activeProgress);
         stem1Joint.render(f5);
+        GlStateManager.popMatrix();
     }
 
     public void setRotateAngle(AdvancedModelRenderer modelRenderer, float x, float y, float z) {
