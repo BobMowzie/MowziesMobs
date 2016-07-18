@@ -47,7 +47,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
             animationTick++;
         }
         if (getAttackTarget() != null) {
-            targetDistance = (float) Math.sqrt((getAttackTarget().posZ - posZ) * (getAttackTarget().posZ - posZ) + (getAttackTarget().posX - posX) * (getAttackTarget().posX - posX));
+            targetDistance = getDistanceToEntity(getAttackTarget());
             targetAngle = (float) getAngleBetweenEntities(this, getAttackTarget());
         }
     }

@@ -59,8 +59,9 @@ public class EntityFoliaath extends MowzieEntity {
         this.tasks.addTask(1, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_FOLIAATH_BITE_1, null, 2, 4.5F, 1, 3));
         this.tasks.addTask(1, new AnimationTakeDamage<>(this));
         this.tasks.addTask(1, new AnimationDieAI<>(this));
-        this.tasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true, false, null));
-        this.tasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityCreature.class, 0, true, false, null));
+        this.tasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityLivingBase.class, 0, true, false, e ->
+            EntityPlayer.class.isAssignableFrom(e.getClass()) || EntityCreature.class.isAssignableFrom(e.getClass()))
+        );
         this.setSize(0.5F, 2.5F);
         this.experienceValue = 10;
         this.addIntermittentAnimation(openMouth);
@@ -174,10 +175,8 @@ public class EntityFoliaath extends MowzieEntity {
             setAttackTarget(null);
         }
 
-        if (resettingTargetTimer > 0) {
-            if (!worldObj.isRemote) {
-                rotationYawHead = prevRotationYawHead;
-            }
+        if (resettingTargetTimer > 0 && !worldObj.isRemote) {
+            rotationYawHead = prevRotationYawHead;
         }
 
         if (getAttackTarget() != null) {
@@ -215,7 +214,7 @@ public class EntityFoliaath extends MowzieEntity {
 
         if (getAttackTarget() != null && frame % 20 == 0 && getAnimation() == NO_ANIMATION) {
             setAttackTarget(null);
-            resettingTargetTimer = 2;
+            resettingTargetTimer = 20;
         }
         if (activateTarget == activateTime) {
             activateTarget = getActivateTarget();
