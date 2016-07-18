@@ -17,7 +17,7 @@ public enum ItemHandler {
     public Item mobRemover;
     public Item wroughtAxe;
     public Item wroughtHelmet;
-    public ItemBarakoaMask[] barakoa_masks;
+    public ItemBarakoaMask[] barakoaMasks;
     public Item dart;
     public Item spear;
     public Item blowgun;
@@ -29,9 +29,10 @@ public enum ItemHandler {
         mobRemover = new ItemMobRemover();
         wroughtAxe = new ItemWroughtAxe();
         wroughtHelmet = new ItemWroughtHelm();
-        barakoa_masks = new ItemBarakoaMask[ItemBarakoaMask.BarakoaMaskType.values().length];
-        for (int i = 0; i < ItemBarakoaMask.BarakoaMaskType.values().length; i++) {
-            barakoa_masks[i] = new ItemBarakoaMask(ItemBarakoaMask.BarakoaMaskType.values()[i]);
+        ItemBarakoaMask.Type[] types = ItemBarakoaMask.Type.values();
+        barakoaMasks = new ItemBarakoaMask[types.length];
+        for (int i = 0; i < types.length; i++) {
+            barakoaMasks[i] = new ItemBarakoaMask(types[i]);
         }
         dart = new ItemDart();
         spear = new ItemSpear();
@@ -43,7 +44,7 @@ public enum ItemHandler {
         GameRegistry.register(foliaathSeed);
         GameRegistry.register(wroughtAxe);
         GameRegistry.register(wroughtHelmet);
-        for (ItemBarakoaMask itemBarakoaMask : barakoa_masks) {
+        for (ItemBarakoaMask itemBarakoaMask : barakoaMasks) {
             GameRegistry.register(itemBarakoaMask);
         }
         GameRegistry.register(dart);

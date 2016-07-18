@@ -13,8 +13,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.item.BarakoaMaskModel;
-import com.bobmowzie.mowziesmobs.client.model.item.WroughtHelmetModel;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher;
 import com.bobmowzie.mowziesmobs.client.render.entity.DartRenderer;
 import com.bobmowzie.mowziesmobs.client.render.entity.FoliaathBabyRenderer;
@@ -39,14 +37,12 @@ import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeHunter;
 import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeLeader;
 import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeVillager;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
+import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemSpawnEgg;
 
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends ServerProxy {
-    private static final WroughtHelmetModel WROUGHT_HELM_MODEL = new WroughtHelmetModel();
-    private static final BarakoaMaskModel BARAKOA_MASK_MODEL = new BarakoaMaskModel();
-
     @Override
     public void onInit() {
         super.onInit();
@@ -72,6 +68,10 @@ public class ClientProxy extends ServerProxy {
         registerItemModel(ItemHandler.INSTANCE.spear, "spear");
         registerItemModel(ItemHandler.INSTANCE.blowgun, "blowgun");
         registerItemModel(ItemHandler.INSTANCE.spawnEgg, "spawn_egg");
+
+        for (ItemBarakoaMask mask : ItemHandler.INSTANCE.barakoaMasks) {
+            registerItemModel(mask, mask.getRegistryName().getResourcePath());
+        }
 
         ModelLoader.setCustomModelResourceLocation(ItemHandler.INSTANCE.testStructure, 0, new ModelResourceLocation("apple"));
 

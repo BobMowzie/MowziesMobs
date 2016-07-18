@@ -62,7 +62,7 @@ public class ItemSpawnEgg extends Item {
         String name = I18n.format(getUnlocalizedName() + ".name").trim();
         String entityName = getEntityIdFromItem(stack);
         if (entityName != null) {
-            name = name + " " + I18n.format("entity." + entityName + ".name");
+            name = name + " " + I18n.format("entity.mowziesmobs." + entityName + ".name");
         }
         return name;
     }

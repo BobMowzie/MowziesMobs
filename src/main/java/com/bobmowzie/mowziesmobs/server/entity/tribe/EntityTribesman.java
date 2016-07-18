@@ -364,7 +364,7 @@ public class EntityTribesman extends MowzieEntity implements IRangedAttackMob, L
     @Override
     public void onDeath(DamageSource p_70645_1_) {
         if (!worldObj.isRemote && worldObj.getGameRules().getBoolean("doMobLoot") && rand.nextInt(12) == 0) {
-            dropItem(ItemHandler.INSTANCE.barakoa_masks[getMask() - 1], 1);
+            dropItem(ItemHandler.INSTANCE.barakoaMasks[getMask() - 1], 1);
         }
         super.onDeath(p_70645_1_);
     }

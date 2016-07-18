@@ -1,16 +1,7 @@
-//Creative_Tabs==================================================
+# Creative Tabs
 itemGroup.mowziesmobs.creativeTab=Mowzie's Mobs
 
-
-
-//Entities======================================================
-entity.Foliaath.name=Foliaath
-entity.FerrousWroughtnaut.name=Ferrous Wroughtnaut
-entity.BabyFoliaath.name=Baby Foliaath
-entity.TribesmanHunter.name=Barakoa
-entity.TribesmanElite.name=Barakoana
-entity.TribesmanVillager.name=Barakoa
-entity.TribeLeader.name=Barako, the Sun Chief
+# Entities
 entity.mowziesmobs.Foliaath.name=Foliaath
 entity.mowziesmobs.FerrousWroughtnaut.name=Ferrous Wroughtnaut
 entity.mowziesmobs.BabyFoliaath.name=Baby Foliaath
@@ -19,34 +10,33 @@ entity.mowziesmobs.TribesmanElite.name=Barakoana
 entity.mowziesmobs.TribesmanVillager.name=Barakoa
 entity.mowziesmobs.TribeLeader.name=Barako, the Sun Chief
 
-
-//Items========================================================
+# Items
 item.foliaathSeed.name=Foliaath Seed
 item.mobRemover.name=Mob Remover
 item.wroughtAxe.name=Axe of a Thousand Metals
 item.wroughtHelm.name=Wrought Helm
-item.barakoaMask1.name=Mask of Fury
-item.barakoaMask2.name=Mask of Fear
-item.barakoaMask3.name=Mask of Rage
-item.barakoaMask4.name=Mask of Bliss
-item.barakoaMask5.name=Mask of Misery
+item.barakoaMask.fury.name=Mask of Fury
+item.barakoaMask.fear.name=Mask of Fear
+item.barakoaMask.rage.name=Mask of Rage
+item.barakoaMask.bliss.name=Mask of Bliss
+item.barakoaMask.misery.name=Mask of Misery
 item.dart.name=Dart
 item.spear.name=Spear
 item.blowgun.name=Blowgun
 item.testStructure.name=Test Structures
 
-//Blocks========================================================
+# Blocks
 tile.paintedAcacia.name=Painted Acacia Wood
 tile.paintedAcaciaSlab.name=Painted Acacia Wood Slab
 
-//Potions========================================================
+# Potions
 potion.sunsBlessing=Sun's Blessing
 
-//Tile_Entities==================================================
+# Tile Entities
 
 
-//Containers====================================================
+# Containers
 container.test=Test Container
 
-//Death_Messages================================================
+# Death Messages
 death.attack.dart=%1$s was shot by %2$s

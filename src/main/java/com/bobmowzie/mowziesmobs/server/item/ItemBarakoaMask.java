@@ -1,34 +1,31 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
-import net.minecraft.client.model.ModelBiped;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 
 public class ItemBarakoaMask extends ItemArmor {
-    private final BarakoaMaskType type;
+    private final Type type;
 
-    public ItemBarakoaMask(BarakoaMaskType type) {
+    public ItemBarakoaMask(Type type) {
         super(ArmorMaterial.LEATHER, 2, EntityEquipmentSlot.HEAD);
         this.type = type;
-        setUnlocalizedName(type.getUnlocalizedName());
+        setUnlocalizedName("barakoaMask." + type.name);
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setRegistryName("barakoa_" + type.name().toLowerCase());
-    }
-
-    public BarakoaMaskType getType() {
-        return type;
+        setRegistryName("barakoa_mask_" + type.name);
     }
 
     public Potion getPotion() {
-        return type.getPotion();
+        return type.potion;
+    }
+
+    @Override
+    public EntityEquipmentSlot getEquipmentSlot() {
+        return null;
     }
 
     @Override
@@ -46,28 +43,20 @@ public class ItemBarakoaMask extends ItemArmor {
         return ArmorMaterial.CHAIN;
     }
 
-    public enum BarakoaMaskType {
+    public enum Type {
         FURY(MobEffects.STRENGTH),
         FEAR(MobEffects.SPEED),
         RAGE(MobEffects.HASTE),
         BLISS(MobEffects.JUMP_BOOST),
         MISERY(MobEffects.RESISTANCE);
 
-        private String unlocalizedName;
-        private Potion potion;
+        public final String name;
 
-        BarakoaMaskType(Potion potion) {
+        public final Potion potion;
+
+        private Type(Potion potion) {
             this.potion = potion;
-            int id = ordinal() + 1;
-            this.unlocalizedName = "barakoaMask" + id;
-        }
-
-        public String getUnlocalizedName() {
-            return unlocalizedName;
-        }
-
-        public Potion getPotion() {
-            return potion;
+            name = name().toLowerCase();
         }
     }
 }
