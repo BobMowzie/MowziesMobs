@@ -536,7 +536,7 @@ public class WroughtnautModel extends AdvancedModelBase {
         walk(calfRightJoint, 1F * globalSpeed, 0.5F * globalDegree, true, -2.2F, -0.1F * globalDegree, f, f1);
         walk(footRightJoint, 1F * globalSpeed, 0.4F * globalDegree, true, -2.1F, -0.26F * globalDegree, f, f1);
 
-        walk(groinFront, 2F * globalSpeed, 0.2F * 0.8F, true, -0.5F, -0.1F, f, f1);
+        walk(groinFront, 2F * globalSpeed, 0.2F * 0.8F, true, -0.5F, 0.1F, f, f1);
         walk(groinBack, 2F * globalSpeed, 0.2F * 0.8F, false, -0.5F, 0.1F, f, f1);
         walk(neck, 2F * globalSpeed, 0.1F * 0.8F, true, -0.5F, 0.1F, f, f1);
 
