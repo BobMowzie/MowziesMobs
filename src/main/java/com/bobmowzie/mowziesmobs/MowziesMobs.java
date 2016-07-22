@@ -14,7 +14,6 @@ import com.bobmowzie.mowziesmobs.server.message.MessageSwingWroughtAxe;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import com.bobmowzie.mowziesmobs.server.world.MowzieStructureGenerator;
 import net.ilexiconn.llibrary.server.config.Config;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.ilexiconn.llibrary.server.network.NetworkWrapper;
@@ -46,7 +45,6 @@ public class MowziesMobs {
     public static SimpleNetworkWrapper NETWORK_WRAPPER;
     @Config
     public static ConfigHandler CONFIG;
-    public static MowzieStructureGenerator GENERATOR;
     private static ModContainer container;
 
     public static ModContainer getModContainer() {
