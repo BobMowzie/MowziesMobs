@@ -6,6 +6,7 @@ import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -109,6 +110,7 @@ public class TribeLeaderModel extends AdvancedModelBase {
         this.lowerLip.mirror = true;
         this.lowerLip.setRotationPoint(0.0F, 4.0F, 0.0F);
         this.lowerLip.addBox(-6.0F, 0.0F, -2.0F, 12, 2, 2, 0.0F);
+        this.lowerLip.scaleChildren = true;
         this.setRotateAngle(lowerLip, 0.0F, 0.0F, 3.141592653589793F);
         this.rightFoot = new AdvancedModelRenderer(this, 83, 27);
         this.rightFoot.setRotationPoint(0.0F, 11.0F, 5.0F);
@@ -181,6 +183,7 @@ public class TribeLeaderModel extends AdvancedModelBase {
         this.jaw = new AdvancedModelRenderer(this, 48, 109);
         this.jaw.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.jaw.addBox(-6.0F, 0.0F, 0.0F, 12, 4, 7, 0.01F);
+        this.jaw.scaleChildren = true;
         this.leftLip = new AdvancedModelRenderer(this, 26, 120);
         this.leftLip.mirror = true;
         this.leftLip.setRotationPoint(6.0F, 0.0F, 0.0F);
@@ -301,7 +304,9 @@ public class TribeLeaderModel extends AdvancedModelBase {
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         animate((IAnimatedEntity) entity, f, f1, f2, f3, f4, f5);
+        GlStateManager.enableNormalize();
         this.body.render(f5);
+        GlStateManager.disableNormalize();
     }
 
     /**
