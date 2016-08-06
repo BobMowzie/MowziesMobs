@@ -357,8 +357,7 @@ public class WroughtnautModel extends AdvancedModelBase {
         this.setRotateAngle(swordJoint, 0.0F, -0.7853981633974483F, 0.0F);
         this.sword = new AdvancedModelRenderer(this, 82, 10);
         this.sword.setRotationPoint(0F, 0F, 0F);
-//        this.sword.addBox(-11F, 0F, -11F, 11, 11, 0, 0.0F);
-        //sword.add3DTexture(-11f, 0, -11f, 11, 11); todo
+        this.sword.add3DTexture(-11f, 0, -11f, 11, 11);
         this.setRotateAngle(sword, 0.0F, 0F, 0.0F);
         this.rootBox = new AdvancedModelRenderer(this, 0, 0);
         this.rootBox.setRotationPoint(0.0F, -1.0F, 0.0F);

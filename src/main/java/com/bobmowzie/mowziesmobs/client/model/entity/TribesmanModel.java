@@ -120,7 +120,7 @@ public class TribesmanModel extends AdvancedModelBase {
         this.setRotateAngle(armUpperLeft, 0.0F, 0.0F, -0.9599310885968813F);
         this.spear = new AdvancedModelRenderer(this, 66, 0);
         this.spear.setRotationPoint(0.0F, 0.0F, 0.0F);
-        //spear.add3DTexture(-4, -4, 0.5F, 15, 15); todo
+        this.spear.add3DTexture(-4, -4, 0.5F, 15, 15);
         this.setRotateAngle(spear, 2.356194490192345F, 0.0F, 3.141592653589793F);
         this.earLeft = new AdvancedModelRenderer(this, 48, 0);
         this.earLeft.setRotationPoint(4.0F, -4.0F, -3.0F);
@@ -219,7 +219,7 @@ public class TribesmanModel extends AdvancedModelBase {
         this.flailer.setRotationPoint(0.0F, 0, 0F);
         this.blowgun = new AdvancedModelRenderer(this, 82, 0);
         this.blowgun.setRotationPoint(0.0F, 0.0F, 0.0F);
-        //blowgun.add3DTexture(-4, -4, 0.5F, 15, 15); todo
+        this.blowgun.add3DTexture(-4, -4, 0.5F, 15, 15);
         this.setRotateAngle(blowgun, 2.356194490192345F, 0.0F, 3.141592653589793F);
         this.talker = new AdvancedModelRenderer(this, 0, 0);
         this.talker.setRotationPoint(0, 0, 0);
