@@ -334,8 +334,8 @@ public class TribesmanModel extends AdvancedModelBase {
         walk(loinClothFront, 1 * globalSpeed, 0.5f * globalHeight, false, 2, 0, f, f1);
         walk(loinClothBack, 1 * globalSpeed, 0.5f * globalHeight, true, 2, 0, f, f1);
         walk(body, 1 * globalSpeed, 0.2f * globalHeight, false, 1, 0.2f * globalHeight, f, f1);
-        walk(thighLeft, 1 * globalSpeed, 0.2f * globalHeight, true, 1, -0.4f * globalHeight, f, f1);
-        walk(thighRight, 1 * globalSpeed, 0.2f * globalHeight, true, 1, -0.4f * globalHeight, f, f1);
+        walk(thighLeft, 1 * globalSpeed, 0.2f * globalHeight, true, 1, 0.4f * globalHeight, f, f1);
+        walk(thighRight, 1 * globalSpeed, 0.2f * globalHeight, true, 1, 0.4f * globalHeight, f, f1);
         swing(body, 0.5f * globalSpeed, 0.7f * globalDegree, true, 0, 0, f, f1);
         swing(thighLeft, 0.5f * globalSpeed, 0.7f * globalDegree, false, 0, 0, f, f1);
         swing(thighRight, 0.5f * globalSpeed, 0.7f * globalDegree, false, 0, 0, f, f1);
@@ -345,11 +345,11 @@ public class TribesmanModel extends AdvancedModelBase {
         flap(neck, 0.5f * globalSpeed, 0.15f * globalHeight, true, 0, 0, f, f1);
         flap(head, 0.5f * globalSpeed, 0.15f * globalHeight, true, 0, 0, f, f1);
         walk(thighLeft, 0.5f * globalSpeed, 1.4f * globalDegree, false, 0, 1f * globalHeight, f, f1);
-        walk(thighRight, 0.5f * globalSpeed, 1.4f * globalDegree, true, 0, 1f * globalHeight, f, f1);
+        walk(thighRight, 0.5f * globalSpeed, 1.4f * globalDegree, true, 0, -1f * globalHeight, f, f1);
         walk(calfLeft, 0.5f * globalSpeed, 1.2f * globalDegree, false, -1.5f, 0.3f * globalDegree, f, f1);
-        walk(calfRight, 0.5f * globalSpeed, 1.2f * globalDegree, true, -1.5f, 0.3f * globalDegree, f, f1);
+        walk(calfRight, 0.5f * globalSpeed, 1.2f * globalDegree, true, -1.5f, -0.3f * globalDegree, f, f1);
         walk(footLeft, 0.5f * globalSpeed, 1.2f * globalDegree, false, -3f, 0.15f * globalDegree, f, f1);
-        walk(footRight, 0.5f * globalSpeed, 1.2f * globalDegree, true, -3f, 0.15f * globalDegree, f, f1);
+        walk(footRight, 0.5f * globalSpeed, 1.2f * globalDegree, true, -3f, -0.15f * globalDegree, f, f1);
         thighLeft.rotateAngleY += 1f * f1 * globalDegree;
         thighRight.rotateAngleY -= 1f * f1 * globalDegree;
         walk(neck, 1 * globalSpeed, 0.2f * globalHeight, true, 0.5f, 0.5f * globalDegree, f, f1);
@@ -373,17 +373,17 @@ public class TribesmanModel extends AdvancedModelBase {
         }
 
         //Dancing
-        float danceSpeed = 1.5f;
+        float danceSpeed = 1.4f;
         thighLeft.rotateAngleY -= 0.6f * dance;
         thighRight.rotateAngleY += 0.6f * dance;
         bob(modelCore, 0.3f * danceSpeed, 10f * dance, true, frame, 1f);
         flap(modelCore, 0.3f * danceSpeed, 0.5f * dance, false, 0, 0, frame, 1f);
         walk(thighLeft, 0.3f * danceSpeed, 0.6f * dance, false, 0, -0.6f * dance, frame, 1f);
-        walk(calfLeft, 0.3f * danceSpeed, 0.5f * dance, true, 0, 0.6f * dance, frame, 1f);
+        walk(calfLeft, 0.3f * danceSpeed, 0.5f * dance, true, 0, -0.6f * dance, frame, 1f);
         walk(footLeft, 0.3f * danceSpeed, 0.2f * dance, true, 0, -0.5f * dance, frame, 1f);
-        walk(thighRight, 0.3f * danceSpeed, 0.6f * dance, true, 0, -0.6f * dance, frame, 1f);
+        walk(thighRight, 0.3f * danceSpeed, 0.6f * dance, true, 0, 0.6f * dance, frame, 1f);
         walk(calfRight, 0.3f * danceSpeed, 0.5f * dance, false, 0, 0.6f * dance, frame, 1f);
-        walk(footRight, 0.3f * danceSpeed, 0.2f * dance, false, 0, -0.5f * dance, frame, 1f);
+        walk(footRight, 0.3f * danceSpeed, 0.2f * dance, false, 0, 0.5f * dance, frame, 1f);
         armRightJoint.rotateAngleX -= 1.7 * dance;
         handRight.rotateAngleX += 1 * dance;
         walk(armUpperRight, 1.2f * danceSpeed, 0.5f * dance, false, 0, -0.3f * dance, frame, 1f);
@@ -393,7 +393,7 @@ public class TribesmanModel extends AdvancedModelBase {
         walk(armLowerLeft, 1.2f * danceSpeed, 0.5f * dance, true, 0, 0, frame, 1f);
         flap(neck, 0.3f * danceSpeed, 0.2f * dance, true, 0, 0, frame, 1f);
         flap(head, 1.2f * danceSpeed, 0.4f * dance, true, 0, 0, frame, 1f);
-        walk(loinClothFront, 0.6f * danceSpeed, 0.6f * dance, true, 1, -0.4f * dance, frame, 1f);
+        walk(loinClothFront, 0.6f * danceSpeed, 0.6f * dance, true, 1, 0.4f * dance, frame, 1f);
         walk(loinClothBack, 0.6f * danceSpeed, 0.6f * dance, false, 1, 0.4f * dance, frame, 1f);
         if (tribesman instanceof EntityTribeElite) {
             armLeftJoint.rotateAngleX += 0.2 * dance;
@@ -735,8 +735,8 @@ public class TribesmanModel extends AdvancedModelBase {
         walk(thighLeft, 0.3f * flailSpeed, 0.6f * flailer.rotationPointX, false, 0, -0.3f * flailer.rotationPointX, frame, 1f);
         walk(calfLeft, 0.3f * flailSpeed, 0.5f * flailer.rotationPointX, true, 0, 0.3f * flailer.rotationPointX, frame, 1f);
         walk(footLeft, 0.3f * flailSpeed, 0.2f * flailer.rotationPointX, true, 0, 0, frame, 1f);
-        walk(thighRight, 0.3f * flailSpeed, 0.6f * flailer.rotationPointX, true, 0, -0.3f * flailer.rotationPointX, frame, 1f);
-        walk(calfRight, 0.3f * flailSpeed, 0.5f * flailer.rotationPointX, false, 0, 0.3f * flailer.rotationPointX, frame, 1f);
+        walk(thighRight, 0.3f * flailSpeed, 0.6f * flailer.rotationPointX, true, 0, 0.3f * flailer.rotationPointX, frame, 1f);
+        walk(calfRight, 0.3f * flailSpeed, 0.5f * flailer.rotationPointX, false, 0, -0.3f * flailer.rotationPointX, frame, 1f);
         walk(footRight, 0.3f * flailSpeed, 0.2f * flailer.rotationPointX, false, 0, 0, frame, 1f);
         armRightJoint.rotateAngleX -= 1.7 * flailer.rotationPointX;
         handRight.rotateAngleX += 1 * flailer.rotationPointX;
