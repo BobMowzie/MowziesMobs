@@ -18,6 +18,7 @@ public enum ItemHandler {
     public Item wroughtAxe;
     public Item wroughtHelmet;
     public ItemBarakoaMask[] barakoaMasks;
+    public ItemBarakoMask barakoMask;
     public Item dart;
     public Item spear;
     public Item blowgun;
@@ -34,6 +35,7 @@ public enum ItemHandler {
         for (int i = 0; i < types.length; i++) {
             barakoaMasks[i] = new ItemBarakoaMask(types[i]);
         }
+        barakoMask = new ItemBarakoMask();
         dart = new ItemDart();
         spear = new ItemSpear();
         blowgun = new ItemBlowgun();
@@ -47,6 +49,7 @@ public enum ItemHandler {
         for (ItemBarakoaMask itemBarakoaMask : barakoaMasks) {
             GameRegistry.register(itemBarakoaMask);
         }
+        GameRegistry.register(barakoMask);
         GameRegistry.register(dart);
         GameRegistry.register(spear);
         GameRegistry.register(blowgun);

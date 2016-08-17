@@ -72,6 +72,7 @@ public class ClientProxy extends ServerProxy {
         for (ItemBarakoaMask mask : ItemHandler.INSTANCE.barakoaMasks) {
             registerItemModel(mask, mask.getRegistryName().getResourcePath());
         }
+        registerItemModel(ItemHandler.INSTANCE.barakoMask, "barako_mask.tbl");
 
         ModelLoader.setCustomModelResourceLocation(ItemHandler.INSTANCE.testStructure, 0, new ModelResourceLocation("apple"));
 

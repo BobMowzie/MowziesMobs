@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client;
 
+import com.bobmowzie.mowziesmobs.server.item.ItemBarakoMask;
 import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.event.PlayerModelEvent;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
@@ -31,6 +32,9 @@ public enum ClientEventHandler {
             GlStateManager.rotate(180f, 0f, 1f, 0f);
             GlStateManager.translate(0f, -0.15f, 0.05f);
         } else if (event.getItem().getItem() instanceof ItemBarakoaMask) {
+            GlStateManager.rotate(180f, 0f, 1f, 0f);
+            GlStateManager.translate(0f, -0.2f, 0.1f);
+        } else if (event.getItem().getItem() instanceof ItemBarakoMask) {
             GlStateManager.rotate(180f, 0f, 1f, 0f);
             GlStateManager.translate(0f, -0.2f, 0.1f);
         }
