@@ -261,6 +261,45 @@ public class TribesmanModel extends AdvancedModelBase {
         this.maskBase.addChild(this.maskRight);
         this.maskBase.addChild(this.mane);
         updateDefaultPose();
+
+        modelCore.scaleChildren = true;
+        body.scaleChildren = true;
+        chest.scaleChildren = true;
+        thighLeft.scaleChildren = true;
+        thighRight.scaleChildren = true;
+        loinClothFront.scaleChildren = true;
+        loinClothBack.scaleChildren = true;
+        armRightJoint.scaleChildren = true;
+        armLeftJoint.scaleChildren = true;
+        neckJoint.scaleChildren = true;
+        armUpperRight.scaleChildren = true;
+        armLowerRight.scaleChildren = true;
+        handRight.scaleChildren = true;
+        spearBase.scaleChildren = true;
+        spear.scaleChildren = true;
+        blowgun.scaleChildren = true;
+        armUpperLeft.scaleChildren = true;
+        armLowerLeft.scaleChildren = true;
+        handLeft.scaleChildren = true;
+        shieldBase.scaleChildren = true;
+        shield.scaleChildren = true;
+        neck.scaleChildren = true;
+        headJoint.scaleChildren = true;
+        head.scaleChildren = true;
+        maskBase.scaleChildren = true;
+        earLeft.scaleChildren = true;
+        earRight.scaleChildren = true;
+        maskLeft.scaleChildren = true;
+        maskRight.scaleChildren = true;
+        mane.scaleChildren = true;
+        earringLeft.scaleChildren = true;
+        earringRight.scaleChildren = true;
+        calfLeft.scaleChildren = true;
+        footLeft.scaleChildren = true;
+        calfRight.scaleChildren = true;
+        footRight.scaleChildren = true;
+        thighLeftJoint.scaleChildren = true;
+        thighRightJoint.scaleChildren = true;
     }
 
     @Override
