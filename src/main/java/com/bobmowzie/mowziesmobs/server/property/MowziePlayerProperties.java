@@ -1,11 +1,16 @@
 package com.bobmowzie.mowziesmobs.server.property;
 
+import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeHunter;
+import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribePlayer;
 import net.ilexiconn.llibrary.server.entity.EntityProperties;
 import net.ilexiconn.llibrary.server.nbt.NBTHandler;
 import net.ilexiconn.llibrary.server.nbt.NBTProperty;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.MathHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MowziePlayerProperties extends EntityProperties<EntityPlayer> {
     public static final int SWING_HIT_TICK = 10;
@@ -16,6 +21,10 @@ public class MowziePlayerProperties extends EntityProperties<EntityPlayer> {
     private int prevTime;
     @NBTProperty
     private int time;
+
+    public int tribeCircleTick;
+    public List<EntityTribePlayer> tribePack = new ArrayList<>();
+    public int tribePackRadius = 3;
 
     public static float fnc1(float x) {
         return x * ((45 - 27 * x) * x - 18);
@@ -77,5 +86,42 @@ public class MowziePlayerProperties extends EntityProperties<EntityPlayer> {
     @Override
     public int getTrackingTime() {
         return 0;
+    }
+
+    public int getPackSize() {
+        return tribePack.size();
+    }
+
+    public void removePackMember(EntityTribePlayer tribePlayer) {
+        tribePack.remove(tribePlayer);
+        //sortPackMembers();
+    }
+
+    public void addPackMember(EntityTribePlayer tribePlayer) {
+        tribePack.add(tribePlayer);
+        //sortPackMembers();
+    }
+
+    private void sortPackMembers() {
+        double theta = 2 * Math.PI / tribePack.size();
+        for (int i = 0; i < tribePack.size(); i++) {
+            int nearestIndex = -1;
+            double smallestDiffSq = Double.MAX_VALUE;
+            double targetTheta = theta * i;
+            double x = getEntity().posX + tribePackRadius * Math.cos(targetTheta);
+            double z = getEntity().posZ + tribePackRadius * Math.sin(targetTheta);
+            for (int n = 0; n < tribePack.size(); n++) {
+                EntityTribePlayer tribePlayer = tribePack.get(n);
+                double diffSq = (x - tribePlayer.posX) * (x - tribePlayer.posX) + (z - tribePlayer.posZ) * (z - tribePlayer.posZ);
+                if (diffSq < smallestDiffSq) {
+                    smallestDiffSq = diffSq;
+                    nearestIndex = n;
+                }
+            }
+            if (nearestIndex == -1) {
+                throw new ArithmeticException("All pack members have NaN x and z?");
+            }
+            tribePack.add(i, tribePack.remove(nearestIndex));
+        }
     }
 }

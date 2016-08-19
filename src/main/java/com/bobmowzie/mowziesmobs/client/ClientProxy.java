@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client;
 
+import com.bobmowzie.mowziesmobs.server.entity.tribe.*;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -32,10 +33,6 @@ import com.bobmowzie.mowziesmobs.server.entity.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntityEggInfo;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityBabyFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
-import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeElite;
-import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeHunter;
-import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeLeader;
-import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeVillager;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
@@ -53,6 +50,7 @@ public class ClientProxy extends ServerProxy {
         RenderingRegistry.registerEntityRenderingHandler(EntityTribeElite.class, TribesmanRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityTribeHunter.class, TribesmanRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityTribeVillager.class, TribesmanRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityTribePlayer.class, TribesmanRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityDart.class, DartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(EntitySunstrike.class, SunstrikeRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(EntitySolarBeam.class, SolarBeamRenderer::new);

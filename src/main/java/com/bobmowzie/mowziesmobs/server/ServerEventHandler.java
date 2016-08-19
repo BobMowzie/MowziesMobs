@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeHunter;
+import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribePlayer;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
@@ -20,6 +22,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -119,6 +122,23 @@ public enum ServerEventHandler {
         if (headItemStack instanceof ItemBarakoaMask) {
             ItemBarakoaMask mask = (ItemBarakoaMask) headItemStack;
             event.player.addPotionEffect(new PotionEffect(mask.getPotion(), 0, 0));
+        }
+
+        List<EntityTribePlayer> pack = property.tribePack;
+        for (int i = 0; i < pack.size(); i++) {
+            pack.get(i).index = i;
+        }
+        if (!player.worldObj.isRemote && pack != null) {
+            float theta = (2 * (float) Math.PI / pack.size());
+            for (int i = 0; i < pack.size(); i++) {
+                EntityTribePlayer tribePlayer = pack.get(i);
+                if (tribePlayer.getAttackTarget() == null) {
+                    tribePlayer.getNavigator().tryMoveToXYZ(player.posX + property.tribePackRadius * MathHelper.cos(theta * i), player.posY, player.posZ + property.tribePackRadius * MathHelper.sin(theta * i), 0.45);
+                    if (player.getDistanceToEntity(tribePlayer) > 20) {
+                        tribePlayer.setPosition(player.posX + property.tribePackRadius * MathHelper.cos(theta * i), player.posY, player.posZ + property.tribePackRadius * MathHelper.sin(theta * i));
+                    }
+                }
+            }
         }
     }
 
