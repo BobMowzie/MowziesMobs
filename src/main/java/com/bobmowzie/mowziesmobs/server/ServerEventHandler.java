@@ -39,6 +39,9 @@ import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 public enum ServerEventHandler {
     INSTANCE;
 
+    private final static int SUNSTRIKE_COOLDOWN = 65;
+    private final static int SOLARBEAM_COOLDOWN = 130;
+
     @SubscribeEvent
     public void onJoinWorld(EntityJoinWorldEvent event) {
         if (event.getWorld().isRemote) {
@@ -132,10 +135,25 @@ public enum ServerEventHandler {
             MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
             if (player.isSneaking()) {
                 MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSolarBeam());
-                property.untilSunstrike = 150;
+                property.untilSunstrike = SOLARBEAM_COOLDOWN;
             } else {
                 MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSummonSunstrike());
-                property.untilSunstrike = 90;
+                property.untilSunstrike = SUNSTRIKE_COOLDOWN;
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event) {
+        EntityPlayer player = event.getEntityPlayer();
+        if (event.getWorld().isRemote && player.inventory.getCurrentItem() == null && player.isPotionActive(PotionHandler.INSTANCE.sunsBlessing) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
+            MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
+            if (player.isSneaking()) {
+                MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSolarBeam());
+                property.untilSunstrike = SOLARBEAM_COOLDOWN;
+            } else {
+                MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSummonSunstrike());
+                property.untilSunstrike = SUNSTRIKE_COOLDOWN;
             }
         }
     }
