@@ -273,7 +273,7 @@ public class EntityTribesman extends MowzieEntity implements IRangedAttackMob, L
         prevprevHasTarget = prevHasTarget;
         prevHasTarget = (getAttackTarget() != null);
 
-//        if (ticksExisted > 50) setDead();
+        if (ticksExisted > 50) setDead();
 //        if (getAnimation() == NO_ANIMATION) AnimationAPI.sendAnimPacket(this, 4);
     }
 
