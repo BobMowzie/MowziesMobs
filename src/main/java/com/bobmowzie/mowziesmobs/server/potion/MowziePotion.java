@@ -43,12 +43,22 @@ public class MowziePotion extends Potion {
     @Override
     @SideOnly(Side.CLIENT)
     public void renderInventoryEffect(int x, int y, PotionEffect effect, Minecraft mc) {
-        mc.getTextureManager().bindTexture(TEXTURE);
-        int index = getStatusIconIndex();
-        drawTexturedRect(x + 6, y + 7, index % ICON_ROW_LENGTH * ICON_SIZE, index / ICON_ROW_LENGTH * ICON_SIZE, ICON_SIZE, ICON_SIZE);
+        drawEffect(x + 6, y + 7);
     }
 
-    public void drawTexturedRect(int x, int y, int u, int v, int width, int height) {
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void renderHUDEffect(int x, int y, PotionEffect effect, Minecraft mc, float alpha) {
+        drawEffect(x + 3, y + 3);
+    }
+
+    private void drawEffect(int x, int y) {
+        Minecraft.getMinecraft().getTextureManager().bindTexture(TEXTURE);
+        int index = getStatusIconIndex();
+        int u = index % ICON_ROW_LENGTH * ICON_SIZE;
+        int v = index / ICON_ROW_LENGTH * ICON_SIZE;
+        int width = ICON_SIZE;
+        int height = ICON_SIZE;
         Tessellator tes = Tessellator.getInstance();
         VertexBuffer buf = tes.getBuffer();
         buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);

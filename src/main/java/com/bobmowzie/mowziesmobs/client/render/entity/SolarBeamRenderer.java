@@ -49,7 +49,7 @@ public class SolarBeamRenderer extends Render<EntitySolarBeam> {
         if (frame < 0) {
             frame = 6;
         }
-        GlStateManager.popMatrix();
+        GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);
         setupGL();
         bindEntityTexture(solarBeam);
