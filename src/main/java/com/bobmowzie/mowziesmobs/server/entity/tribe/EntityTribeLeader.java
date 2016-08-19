@@ -291,8 +291,8 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
         } else {
             return false;
         }
-
-        return !(blockLeft instanceof BlockAir && blockRight instanceof BlockAir);
+//        System.out.println(direction + ", " + (MathHelper.floor_double(posX) - 1) + ", " + Math.round((float) (posY - 1)) + ", " + MathHelper.floor_double(posZ) + 1);
+        return !(blockLeft.getBlock() instanceof BlockAir && blockRight.getBlock() instanceof BlockAir);
     }
 
     private void spawnExplosionParticles(int amount) {

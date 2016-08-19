@@ -61,6 +61,7 @@ public class EntityTribePlayer extends EntityTribesman {
                 }
             }
         }
+        if (!worldObj.isRemote && getAttackTarget() != null && getAttackTarget().isDead) setAttackTarget(null);
     }
 
     @Override
@@ -125,7 +126,6 @@ public class EntityTribePlayer extends EntityTribesman {
         this.leader = null;
         this.setAttackTarget(null);
         this.targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
-        this.targetTasks.addTask(4, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, true));
         this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityCow.class, 0, true, false, null));
         this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityPig.class, 0, true, false, null));
         this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntitySheep.class, 0, true, false, null));

@@ -24,8 +24,10 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -176,5 +178,18 @@ public enum ServerEventHandler {
                 property.untilSunstrike = SUNSTRIKE_COOLDOWN;
             }
         }
+    }
+
+    @SubscribeEvent
+    public void onPlayerAttack(AttackEntityEvent event) {
+        if (!(event.getTarget() instanceof EntityLivingBase)) return;
+        MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
+        if (event.getTarget() instanceof EntityTribePlayer) return;
+        for (int i = 0; i < property.getPackSize(); i++) property.tribePack.get(i).setAttackTarget((EntityLivingBase) event.getTarget());
+    }
+
+    @SubscribeEvent
+    public void onPlayerLogOut(PlayerEvent.PlayerLoggedOutEvent event) {
+
     }
 }
