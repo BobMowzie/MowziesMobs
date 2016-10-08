@@ -31,7 +31,7 @@ public class TribesmanRenderer extends RenderLiving<EntityTribesman> {
     @Override
     public ResourceLocation getEntityTexture(EntityTribesman entity) {
         EntityTribesman tribesman = (EntityTribesman) entity;
-        if (tribesman instanceof EntityTribeElite) {
+        if (tribesman instanceof EntityTribeElite || tribesman.getMask() == 1) {
             return TribesmanRenderer.ELITE_TEXTURE;
         } else if (tribesman.getMask() == 2) {
             return TribesmanRenderer.TEXTURE2;

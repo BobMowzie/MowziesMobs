@@ -14,6 +14,7 @@ import com.bobmowzie.mowziesmobs.server.message.MessageSwingWroughtAxe;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
 import net.ilexiconn.llibrary.server.config.Config;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.ilexiconn.llibrary.server.network.NetworkWrapper;
@@ -28,6 +29,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 @Mod(modid = MowziesMobs.MODID, name = MowziesMobs.NAME, version = MowziesMobs.VERSION, dependencies = MowziesMobs.DEPENDENCIES)
 public class MowziesMobs {
@@ -56,7 +58,6 @@ public class MowziesMobs {
 
     @EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {
-//        MowziesMobs.GENERATOR = new MowzieStructureGenerator();
         MinecraftForge.EVENT_BUS.register(ServerEventHandler.INSTANCE);
 
         MMSounds.INSTANCE.onInit();
@@ -69,7 +70,7 @@ public class MowziesMobs {
         MowziesMobs.PROXY.onInit();
 
         EntityPropertiesHandler.INSTANCE.registerProperties(MowziePlayerProperties.class);
-//        GameRegistry.registerWorldGenerator(new MowzieWorldGenerator(), 0);
+        GameRegistry.registerWorldGenerator(new MowzieWorldGenerator(), 0);
     }
 
     @EventHandler

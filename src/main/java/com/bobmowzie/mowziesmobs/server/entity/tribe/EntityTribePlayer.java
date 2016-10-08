@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import com.google.common.base.Optional;
+import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -26,6 +27,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class EntityTribePlayer extends EntityTribesman {
+    public static final Animation BLOCK_ANIMATION = Animation.create(10);
+
     private static final Optional<UUID> ABSENT_LEADER = Optional.absent();
 
     private static final DataParameter<Optional<UUID>> LEADER = EntityDataManager.createKey(EntityTribePlayer.class, DataSerializers.OPTIONAL_UNIQUE_ID);
@@ -34,12 +37,22 @@ public class EntityTribePlayer extends EntityTribesman {
 
     public EntityTribePlayer(World world) {
         super(world);
+        experienceValue = 0;
         this.leader = null;
+        if (getMask() == 1) this.setSize(0.7f, 2f);
     }
 
     public EntityTribePlayer(World world, EntityPlayer leader) {
         super(world);
+        experienceValue = 0;
         this.leader = leader;
+        if (getMask() == 1) this.setSize(0.7f, 2f);
+    }
+
+    @Override
+    public int getAttack() {
+        if (getMask() == 1) return 6;
+        else return super.getAttack();
     }
 
     @Override
