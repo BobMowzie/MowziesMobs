@@ -115,7 +115,7 @@ public class StructureWroughtnautRoom {
         else wroughtnaut.setPositionAndRotation(pos.getX()-0.5, pos.getY()+1, pos.getZ()-9.5, 0, 0);
         if (!world.isRemote) world.spawnEntityInWorld(wroughtnaut);
 
-        System.out.println("Wroughtnaut chamber at " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
+//        System.out.println("Wroughtnaut chamber at " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
     }
 
     public static void tryWroughtChamber(World world, Random random, int x, int z, int chance) {
