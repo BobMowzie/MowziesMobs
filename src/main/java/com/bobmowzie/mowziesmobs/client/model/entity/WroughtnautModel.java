@@ -1345,8 +1345,8 @@ public class WroughtnautModel extends AdvancedModelBase {
             animator.rotate(groinBack, -0.2F, 0, 0);
             animator.endKeyframe();
             animator.resetKeyframe(5);
-        } else if (entityWroughtnaut.getAnimation() == EntityWroughtnaut.DAP_ANIMATION) {
-            animator.setAnimation(EntityWroughtnaut.DAP_ANIMATION);
+        } else if (entityWroughtnaut.getAnimation() == EntityWroughtnaut.DAB_ANIMATION) {
+            animator.setAnimation(EntityWroughtnaut.DAB_ANIMATION);
             animator.startKeyframe(10);
             animator.rotate(neck, 0, 0.7F, -1.3F);
             animator.move(neck, -2.8F, 0, 0);

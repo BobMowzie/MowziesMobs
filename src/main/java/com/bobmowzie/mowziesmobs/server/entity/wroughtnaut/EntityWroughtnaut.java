@@ -3,12 +3,10 @@ package com.bobmowzie.mowziesmobs.server.entity.wroughtnaut;
 import com.bobmowzie.mowziesmobs.server.ai.animation.*;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
-import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
@@ -56,7 +54,7 @@ public class EntityWroughtnaut extends MowzieEntity {
 
     public static final Animation DEACTIVATE_ANIMATION = Animation.create(15);
 
-    public static final Animation DAP_ANIMATION = Animation.create(18);
+    public static final Animation DAB_ANIMATION = Animation.create(18);
 
     private static final Animation[] ANIMATIONS = {
         DIE_ANIMATION,
@@ -64,7 +62,7 @@ public class EntityWroughtnaut extends MowzieEntity {
         ATTACK_ANIMATION,
         VERTICAL_ATTACK_ANIMATION,
         STOMP_ATTACK_ANIMATION,
-        DAP_ANIMATION,
+        DAB_ANIMATION,
         ACTIVATE_ANIMATION,
         DEACTIVATE_ANIMATION
     };
@@ -102,7 +100,7 @@ public class EntityWroughtnaut extends MowzieEntity {
         tasks.addTask(1, new AnimationDieAI<>(this));
         tasks.addTask(1, new AnimationActivateAI<>(this, ACTIVATE_ANIMATION));
         tasks.addTask(1, new AnimationDeactivateAI<>(this, DEACTIVATE_ANIMATION));
-        tasks.addTask(1, new AnimationAI<EntityWroughtnaut>(this, DAP_ANIMATION) {
+        tasks.addTask(1, new AnimationAI<EntityWroughtnaut>(this, DAB_ANIMATION) {
             {
                 setMutexBits(8);
             }

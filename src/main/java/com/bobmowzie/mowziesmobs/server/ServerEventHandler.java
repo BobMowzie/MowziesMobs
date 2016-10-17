@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeHunter;
 import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribePlayer;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
@@ -32,7 +31,6 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -196,21 +194,21 @@ public enum ServerEventHandler {
     @SubscribeEvent
     public void onChat(ServerChatEvent event) {
         String[] words = event.getMessage().split("\\W");
-        boolean dap = false;
+        boolean dab = false;
         for (String word : words) {
-            if (word.equalsIgnoreCase("dap")) {
-                dap = true;
+            if (word.equalsIgnoreCase("dab")) {
+                dab = true;
                 break;
             }
         }
-        if (dap) {
+        if (dab) {
             final float dist = 20.5F;
             EntityPlayerMP player = event.getPlayer();
             AxisAlignedBB bounds = player.getEntityBoundingBox().expandXyz(dist);
             List<EntityWroughtnaut> wroughtnauts = player.worldObj.getEntitiesWithinAABB(EntityWroughtnaut.class, bounds);
             for (EntityWroughtnaut wroughtnaut : wroughtnauts) {
                 if (wroughtnaut.isActive() && wroughtnaut.getDistanceSq(player.posX, player.posY, player.posZ) <= dist * dist) {
-                    AnimationHandler.INSTANCE.sendAnimationMessage(wroughtnaut, EntityWroughtnaut.DAP_ANIMATION);
+                    AnimationHandler.INSTANCE.sendAnimationMessage(wroughtnaut, EntityWroughtnaut.DAB_ANIMATION);
                 }
             }
         }
