@@ -103,6 +103,10 @@ public class EntityWroughtnaut extends MowzieEntity {
         tasks.addTask(1, new AnimationActivateAI<>(this, ACTIVATE_ANIMATION));
         tasks.addTask(1, new AnimationDeactivateAI<>(this, DEACTIVATE_ANIMATION));
         tasks.addTask(1, new AnimationAI<EntityWroughtnaut>(this, DAP_ANIMATION) {
+            {
+                setMutexBits(8);
+            }
+
             @Override
             public void updateTask() {
                 animatingEntity.motionX = 0;
