@@ -1,11 +1,14 @@
 package com.bobmowzie.mowziesmobs.server.entity.wroughtnaut;
 
+import com.bobmowzie.mowziesmobs.server.ai.animation.*;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
+import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
@@ -33,13 +36,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationActivateAI;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDeactivateAI;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationFWNAttackAI;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationFWNStompAttackAI;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationFWNVerticalAttackAI;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
@@ -60,12 +56,15 @@ public class EntityWroughtnaut extends MowzieEntity {
 
     public static final Animation DEACTIVATE_ANIMATION = Animation.create(15);
 
+    public static final Animation DAP_ANIMATION = Animation.create(18);
+
     private static final Animation[] ANIMATIONS = {
         DIE_ANIMATION,
         HURT_ANIMATION,
         ATTACK_ANIMATION,
         VERTICAL_ATTACK_ANIMATION,
         STOMP_ATTACK_ANIMATION,
+        DAP_ANIMATION,
         ACTIVATE_ANIMATION,
         DEACTIVATE_ANIMATION
     };
@@ -103,7 +102,14 @@ public class EntityWroughtnaut extends MowzieEntity {
         tasks.addTask(1, new AnimationDieAI<>(this));
         tasks.addTask(1, new AnimationActivateAI<>(this, ACTIVATE_ANIMATION));
         tasks.addTask(1, new AnimationDeactivateAI<>(this, DEACTIVATE_ANIMATION));
-        tasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true, false, null));
+        tasks.addTask(1, new AnimationAI<EntityWroughtnaut>(this, DAP_ANIMATION) {
+            @Override
+            public void updateTask() {
+                animatingEntity.motionX = 0;
+                animatingEntity.motionZ = 0;
+            }
+        });
+        tasks.addTask(2, new EntityAINearestAttackableTarget<>(this, EntityPlayer.class, 0, true, false, null));
         tasks.addTask(2, new EntityAIAttackMelee(this, 1, true));
         experienceValue = 30;
         setSize(2.5F, 3.7F);

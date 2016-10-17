@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeHunter;
 import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribePlayer;
+import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
+import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
@@ -17,12 +19,15 @@ import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -189,7 +194,25 @@ public enum ServerEventHandler {
     }
 
     @SubscribeEvent
-    public void onPlayerLogOut(PlayerEvent.PlayerLoggedOutEvent event) {
-
+    public void onChat(ServerChatEvent event) {
+        String[] words = event.getMessage().split("\\W");
+        boolean dap = false;
+        for (String word : words) {
+            if (word.equalsIgnoreCase("dap")) {
+                dap = true;
+                break;
+            }
+        }
+        if (dap) {
+            final float dist = 20.5F;
+            EntityPlayerMP player = event.getPlayer();
+            AxisAlignedBB bounds = player.getEntityBoundingBox().expandXyz(dist);
+            List<EntityWroughtnaut> wroughtnauts = player.worldObj.getEntitiesWithinAABB(EntityWroughtnaut.class, bounds);
+            for (EntityWroughtnaut wroughtnaut : wroughtnauts) {
+                if (wroughtnaut.isActive() && wroughtnaut.getDistanceSq(player.posX, player.posY, player.posZ) <= dist * dist) {
+                    AnimationHandler.INSTANCE.sendAnimationMessage(wroughtnaut, EntityWroughtnaut.DAP_ANIMATION);
+                }
+            }
+        }
     }
 }
