@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
+import com.bobmowzie.mowziesmobs.server.world.structure.StructureBarakoaVillage;
 import com.bobmowzie.mowziesmobs.server.world.structure.StructureWroughtnautRoom;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -22,7 +23,7 @@ public class ItemTestStructure extends Item {
     @Override
     public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         Random rand = new Random();
-            StructureWroughtnautRoom.tryWroughtChamber(worldIn, rand, pos.getX(), pos.getZ(), 1);
+            StructureBarakoaVillage.generateHouse(worldIn, rand, pos, EnumFacing.WEST);
             return EnumActionResult.PASS;
     }
 }
