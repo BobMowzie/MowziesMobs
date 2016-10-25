@@ -1,13 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.color.IItemColor;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-
-import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
-import com.bobmowzie.mowziesmobs.server.entity.MowzieEntityEggInfo;
 
 public enum ItemHandler {
     INSTANCE;
@@ -30,7 +25,7 @@ public enum ItemHandler {
         mobRemover = new ItemMobRemover();
         wroughtAxe = new ItemWroughtAxe();
         wroughtHelmet = new ItemWroughtHelm();
-        ItemBarakoaMask.Type[] types = ItemBarakoaMask.Type.values();
+        MaskType[] types = MaskType.values();
         barakoaMasks = new ItemBarakoaMask[types.length];
         for (int i = 0; i < types.length; i++) {
             barakoaMasks[i] = new ItemBarakoaMask(types[i]);

@@ -1,7 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.property;
 
-import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeHunter;
-import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribePlayer;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
 import net.ilexiconn.llibrary.server.entity.EntityProperties;
 import net.ilexiconn.llibrary.server.nbt.NBTHandler;
 import net.ilexiconn.llibrary.server.nbt.NBTProperty;
@@ -23,7 +22,7 @@ public class MowziePlayerProperties extends EntityProperties<EntityPlayer> {
     private int time;
 
     public int tribeCircleTick;
-    public List<EntityTribePlayer> tribePack = new ArrayList<>();
+    public List<EntityBarakoanToPlayer> tribePack = new ArrayList<>();
     public int tribePackRadius = 3;
 
     public static float fnc1(float x) {
@@ -92,12 +91,12 @@ public class MowziePlayerProperties extends EntityProperties<EntityPlayer> {
         return tribePack.size();
     }
 
-    public void removePackMember(EntityTribePlayer tribePlayer) {
+    public void removePackMember(EntityBarakoanToPlayer tribePlayer) {
         tribePack.remove(tribePlayer);
         //sortPackMembers();
     }
 
-    public void addPackMember(EntityTribePlayer tribePlayer) {
+    public void addPackMember(EntityBarakoanToPlayer tribePlayer) {
         tribePack.add(tribePlayer);
         //sortPackMembers();
     }
@@ -111,7 +110,7 @@ public class MowziePlayerProperties extends EntityProperties<EntityPlayer> {
             double x = getEntity().posX + tribePackRadius * Math.cos(targetTheta);
             double z = getEntity().posZ + tribePackRadius * Math.sin(targetTheta);
             for (int n = 0; n < tribePack.size(); n++) {
-                EntityTribePlayer tribePlayer = tribePack.get(n);
+                EntityBarakoanToPlayer tribePlayer = tribePack.get(n);
                 double diffSq = (x - tribePlayer.posX) * (x - tribePlayer.posX) + (z - tribePlayer.posZ) * (z - tribePlayer.posZ);
                 if (diffSq < smallestDiffSq) {
                     smallestDiffSq = diffSq;

@@ -16,10 +16,10 @@ import org.lwjgl.opengl.GL11;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.TribeLeaderModel;
-import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeLeader;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 
 @SideOnly(Side.CLIENT)
-public class TribeLeaderRenderer extends RenderLiving<EntityTribeLeader> {
+public class TribeLeaderRenderer extends RenderLiving<EntityBarako> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureTribeLeader.png");
     private static final ResourceLocation BURST_TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/effects/textureSunstrike.png");
     private static final double BURST_RADIUS = 3.5;
@@ -31,18 +31,18 @@ public class TribeLeaderRenderer extends RenderLiving<EntityTribeLeader> {
     }
 
     @Override
-    protected float getDeathMaxRotation(EntityTribeLeader entity) {
+    protected float getDeathMaxRotation(EntityBarako entity) {
         return 0;
     }
 
     @Override
-    public ResourceLocation getEntityTexture(EntityTribeLeader entity) {
+    public ResourceLocation getEntityTexture(EntityBarako entity) {
         return TribeLeaderRenderer.TEXTURE;
     }
 
     @Override
-    public void doRender(EntityTribeLeader barako, double x, double y, double z, float yaw, float delta) {
-        if (barako.getAnimation() == EntityTribeLeader.ATTACK_ANIMATION && barako.getAnimationTick() > BURST_START_FRAME && barako.getAnimationTick() < BURST_START_FRAME + BURST_FRAME_COUNT - 1) {
+    public void doRender(EntityBarako barako, double x, double y, double z, float yaw, float delta) {
+        if (barako.getAnimation() == EntityBarako.ATTACK_ANIMATION && barako.getAnimationTick() > BURST_START_FRAME && barako.getAnimationTick() < BURST_START_FRAME + BURST_FRAME_COUNT - 1) {
             GlStateManager.pushMatrix();
             GlStateManager.translate(x, y + 1.1, z);
             setupGL();

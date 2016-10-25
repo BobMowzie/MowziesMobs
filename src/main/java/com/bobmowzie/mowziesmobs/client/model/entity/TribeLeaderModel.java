@@ -11,7 +11,7 @@ import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeLeader;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 
 @SideOnly(Side.CLIENT)
 public class TribeLeaderModel extends AdvancedModelBase {
@@ -348,18 +348,18 @@ public class TribeLeaderModel extends AdvancedModelBase {
     public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity entity) {
         super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
         resetToDefaultPose();
-        EntityTribeLeader tribeLeader = (EntityTribeLeader) entity;
+        EntityBarako tribeLeader = (EntityBarako) entity;
         float liftLegs = tribeLeader.legsUp.getAnimationProgressSinSqrt();
         float frame = tribeLeader.frame + LLibrary.PROXY.getPartialTicks();
 
-        if (tribeLeader.getAnimation() != EntityTribeLeader.SOLAR_BEAM_ANIMATION) {
+        if (tribeLeader.getAnimation() != EntityBarako.SOLAR_BEAM_ANIMATION) {
             faceTarget(f3, f4, 2.0F, neckJoint);
             faceTarget(f3, f4, 2.0F, headJoint);
         } else {
             faceTarget(f3, f4, 1.0F, head);
         }
 
-        if (tribeLeader.getAnimation() != EntityTribeLeader.DIE_ANIMATION) {
+        if (tribeLeader.getAnimation() != EntityBarako.DIE_ANIMATION) {
             walk(body, 0.06f, 0.05f, true, 0, -0.05f, frame, 1f);
             walk(neck, 0.06f, 0.05f, false, 0.5f, -0.05f, frame, 1f);
             swing(rightThigh, 0.06f, 0.05f * liftLegs, false, 0, 0, frame, 1f);
@@ -375,7 +375,7 @@ public class TribeLeaderModel extends AdvancedModelBase {
     }
 
     public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        EntityTribeLeader tribeleader = (EntityTribeLeader) entity;
+        EntityBarako tribeleader = (EntityBarako) entity;
         animator.update(tribeleader);
 
         if (f3 > 70) {
@@ -391,8 +391,8 @@ public class TribeLeaderModel extends AdvancedModelBase {
 
         float frame = tribeleader.frame + LLibrary.PROXY.getPartialTicks();
 
-        if (tribeleader.getAnimation() == EntityTribeLeader.BELLY_ANIMATION) {
-            animator.setAnimation(EntityTribeLeader.BELLY_ANIMATION);
+        if (tribeleader.getAnimation() == EntityBarako.BELLY_ANIMATION) {
+            animator.setAnimation(EntityBarako.BELLY_ANIMATION);
             animator.startKeyframe(6);
             animator.rotate(rightArmJoint, -0.7f, 0.5f, 0);
             animator.rotate(rightLowerArm, 0, 0.5f, 0.3f);
@@ -422,9 +422,9 @@ public class TribeLeaderModel extends AdvancedModelBase {
             animator.endKeyframe();
             animator.resetKeyframe(10);
         }
-        if (tribeleader.getAnimation() == EntityTribeLeader.TALK_ANIMATION) {
+        if (tribeleader.getAnimation() == EntityBarako.TALK_ANIMATION) {
             if (tribeleader.whichDialogue == 1) {
-                animator.setAnimation(EntityTribeLeader.TALK_ANIMATION);
+                animator.setAnimation(EntityBarako.TALK_ANIMATION);
                 animator.startKeyframe(4);
                 animator.move(jawScaler, 0.2f, 0, 0);
                 animator.move(mouthScalerX, 0.2f, 0, 0);
@@ -485,7 +485,7 @@ public class TribeLeaderModel extends AdvancedModelBase {
                 animator.resetKeyframe(4);
             }
             if (tribeleader.whichDialogue == 2) {
-                animator.setAnimation(EntityTribeLeader.TALK_ANIMATION);
+                animator.setAnimation(EntityBarako.TALK_ANIMATION);
                 animator.startKeyframe(4);
                 animator.move(jawScaler, 0.2f, 0, 0);
                 animator.move(mouthScalerX, 0.3f, 0, 0);
@@ -512,7 +512,7 @@ public class TribeLeaderModel extends AdvancedModelBase {
                 animator.resetKeyframe(4);
             }
             if (tribeleader.whichDialogue == 3) {
-                animator.setAnimation(EntityTribeLeader.TALK_ANIMATION);
+                animator.setAnimation(EntityBarako.TALK_ANIMATION);
                 animator.startKeyframe(4);
                 animator.move(jawScaler, -0.5f, 0, 0);
                 animator.move(mouthScalerX, 0, 0, 0);
@@ -559,7 +559,7 @@ public class TribeLeaderModel extends AdvancedModelBase {
                 animator.resetKeyframe(4);
             }
             if (tribeleader.whichDialogue == 4) {
-                animator.setAnimation(EntityTribeLeader.TALK_ANIMATION);
+                animator.setAnimation(EntityBarako.TALK_ANIMATION);
                 animator.startKeyframe(3);
                 animator.move(jawScaler, 0.4f, 0, 0);
                 animator.endKeyframe();
@@ -612,7 +612,7 @@ public class TribeLeaderModel extends AdvancedModelBase {
                 animator.resetKeyframe(4);
             }
             if (tribeleader.whichDialogue == 5) {
-                animator.setAnimation(EntityTribeLeader.TALK_ANIMATION);
+                animator.setAnimation(EntityBarako.TALK_ANIMATION);
                 animator.startKeyframe(2);//q
                 animator.move(jawScaler, 0f, 0, 0);
                 animator.move(mouthScalerX, -0.4f, 0, 0);
@@ -673,7 +673,7 @@ public class TribeLeaderModel extends AdvancedModelBase {
                 animator.resetKeyframe(8);
             }
             if (tribeleader.whichDialogue == 6) {
-                animator.setAnimation(EntityTribeLeader.TALK_ANIMATION);
+                animator.setAnimation(EntityBarako.TALK_ANIMATION);
                 animator.startKeyframe(2);//q
                 animator.move(jawScaler, 0f, 0, 0);
                 animator.move(mouthScalerX, -0.4f, 0, 0);
@@ -799,8 +799,8 @@ public class TribeLeaderModel extends AdvancedModelBase {
             }
         }*/
 
-        if (tribeleader.getAnimation() == EntityTribeLeader.SUNSTRIKE_ANIMATION) {
-            animator.setAnimation(EntityTribeLeader.SUNSTRIKE_ANIMATION);
+        if (tribeleader.getAnimation() == EntityBarako.SUNSTRIKE_ANIMATION) {
+            animator.setAnimation(EntityBarako.SUNSTRIKE_ANIMATION);
             animator.startKeyframe(4);
             animator.rotate(rightArmJoint, -0.9f, 0.5f, 0);
             animator.rotate(rightLowerArm, 0, 0.5f, 0.3f);
@@ -829,8 +829,8 @@ public class TribeLeaderModel extends AdvancedModelBase {
             animator.resetKeyframe(4);
         }
 
-        if (tribeleader.getAnimation() == EntityTribeLeader.ATTACK_ANIMATION) {
-            animator.setAnimation(EntityTribeLeader.ATTACK_ANIMATION);
+        if (tribeleader.getAnimation() == EntityBarako.ATTACK_ANIMATION) {
+            animator.setAnimation(EntityBarako.ATTACK_ANIMATION);
             animator.startKeyframe(8);
             animator.move(bellyScaler, -0.2f, 0, 0);
             animator.rotate(neck, 0.3f, 0, 0);
@@ -875,8 +875,8 @@ public class TribeLeaderModel extends AdvancedModelBase {
             animator.resetKeyframe(6);
         }
 
-        if (tribeleader.getAnimation() == EntityTribeLeader.SPAWN_ANIMATION) {
-            animator.setAnimation(EntityTribeLeader.SPAWN_ANIMATION);
+        if (tribeleader.getAnimation() == EntityBarako.SPAWN_ANIMATION) {
+            animator.setAnimation(EntityBarako.SPAWN_ANIMATION);
             animator.startKeyframe(5);
             animator.move(bellyScaler, 0.1f, 0, 0);
             animator.move(mouthScalerX, 0.4f, 0, 0);
@@ -925,8 +925,8 @@ public class TribeLeaderModel extends AdvancedModelBase {
             animator.resetKeyframe(4);
         }
 
-        if (tribeleader.getAnimation() == EntityTribeLeader.SOLAR_BEAM_ANIMATION) {
-            animator.setAnimation(EntityTribeLeader.SOLAR_BEAM_ANIMATION);
+        if (tribeleader.getAnimation() == EntityBarako.SOLAR_BEAM_ANIMATION) {
+            animator.setAnimation(EntityBarako.SOLAR_BEAM_ANIMATION);
             animator.startKeyframe(18);
             animator.move(bellyScaler, 0.1f, 0, 0);
             animator.move(mouthScalerX, -0.4f, 0, 0);
@@ -989,8 +989,8 @@ public class TribeLeaderModel extends AdvancedModelBase {
             animator.resetKeyframe(10);
         }
 
-        if (tribeleader.getAnimation() == EntityTribeLeader.DIE_ANIMATION) {
-            animator.setAnimation(EntityTribeLeader.DIE_ANIMATION);
+        if (tribeleader.getAnimation() == EntityBarako.DIE_ANIMATION) {
+            animator.setAnimation(EntityBarako.DIE_ANIMATION);
             animator.startKeyframe(2);
             animator.move(jiggleController, 1, 0, 0);
             animator.move(bellyScaler, -0.1f, 0, 0);
@@ -1086,8 +1086,8 @@ public class TribeLeaderModel extends AdvancedModelBase {
             jawScaler.rotationPointX += 0.1 * jiggleController.rotationPointY * Math.cos(frame * 2);
         }
 
-        if (tribeleader.getAnimation() == EntityTribeLeader.HURT_ANIMATION) {
-            animator.setAnimation(EntityTribeLeader.HURT_ANIMATION);
+        if (tribeleader.getAnimation() == EntityBarako.HURT_ANIMATION) {
+            animator.setAnimation(EntityBarako.HURT_ANIMATION);
             animator.startKeyframe(2);
             animator.move(jiggleController, 1, 0, 0);
             animator.move(bellyScaler, -0.1f, 0, 0);
@@ -1110,7 +1110,7 @@ public class TribeLeaderModel extends AdvancedModelBase {
         float jiggleScale = (float) (jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame));
         float breathScale = (float) (0.05 + 0.02 * Math.cos(0.06 * frame));
         float scaler = bellyScaler.rotationPointX + jiggleScale + breathScale;
-        if (tribeleader.getAnimation() == EntityTribeLeader.ATTACK_ANIMATION || tribeleader.getAnimation() == EntityTribeLeader.SOLAR_BEAM_ANIMATION) {
+        if (tribeleader.getAnimation() == EntityBarako.ATTACK_ANIMATION || tribeleader.getAnimation() == EntityBarako.SOLAR_BEAM_ANIMATION) {
             headdress1.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame);
             headdress2.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame);
             headdress3.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame);

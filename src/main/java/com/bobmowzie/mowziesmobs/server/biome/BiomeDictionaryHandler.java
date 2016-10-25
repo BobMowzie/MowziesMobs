@@ -6,14 +6,14 @@ import net.minecraftforge.common.BiomeDictionary;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
-import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeElite;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
 
 public enum BiomeDictionaryHandler {
     INSTANCE;
 
     public void onInit() {
         Biome.SpawnListEntry foliaathSpawn = new Biome.SpawnListEntry(EntityFoliaath.class, MowziesMobs.CONFIG.spawnrateFoliaath, 3, 1);
-        Biome.SpawnListEntry tribeEliteSpawn = new Biome.SpawnListEntry(EntityTribeElite.class, MowziesMobs.CONFIG.spawnrateBarakoa, 0, 0);
+        Biome.SpawnListEntry tribeEliteSpawn = new Biome.SpawnListEntry(EntityBarakoana.class, MowziesMobs.CONFIG.spawnrateBarakoa, 0, 0);
         for (Biome jungleBiome : BiomeDictionary.getBiomesForType(BiomeDictionary.Type.JUNGLE)) {
             jungleBiome.getSpawnableList(EnumCreatureType.MONSTER).add(foliaathSpawn);
         }

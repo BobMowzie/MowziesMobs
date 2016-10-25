@@ -1,12 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
-import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribePlayer;
-import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeVillager;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
@@ -19,9 +18,9 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
 public class ItemBarakoaMask extends ItemArmor {
-    private final Type type;
+    private final MaskType type;
 
-    public ItemBarakoaMask(Type type) {
+    public ItemBarakoaMask(MaskType type) {
         super(ArmorMaterial.LEATHER, 2, EntityEquipmentSlot.HEAD);
         this.type = type;
         setUnlocalizedName("barakoaMask." + type.name);
@@ -53,28 +52,11 @@ public class ItemBarakoaMask extends ItemArmor {
         return ArmorMaterial.CHAIN;
     }
 
-    public enum Type {
-        FURY(MobEffects.STRENGTH),
-        FEAR(MobEffects.SPEED),
-        RAGE(MobEffects.HASTE),
-        BLISS(MobEffects.JUMP_BOOST),
-        MISERY(MobEffects.RESISTANCE);
-
-        public final String name;
-
-        public final Potion potion;
-
-        private Type(Potion potion) {
-            this.potion = potion;
-            name = name().toLowerCase();
-        }
-    }
-
     @Override
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand) {
         if (playerIn.inventory.armorItemInSlot(3) != null && playerIn.inventory.armorItemInSlot(3).getItem() instanceof ItemBarakoMask) {
             spawnBarakoa(this.type.name, playerIn);
-            return new ActionResult(EnumActionResult.SUCCESS, itemStackIn);
+            return new ActionResult<>(EnumActionResult.SUCCESS, itemStackIn);
         }
         else return super.onItemRightClick(itemStackIn, worldIn, playerIn, hand);
     }
@@ -88,7 +70,7 @@ public class ItemBarakoaMask extends ItemArmor {
             if (angle < 0) {
                 angle = angle + 360;
             }
-            EntityTribePlayer tribesman = new EntityTribePlayer(player.worldObj);
+            EntityBarakoanToPlayer tribesman = new EntityBarakoanToPlayer(player.worldObj);
             int mask;
             if (typeName.equals("fury")) mask = 1;
             else if (typeName.equals("fear")) mask = 2;

@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribePlayer;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
@@ -36,7 +37,6 @@ import net.minecraftforge.fml.relauncher.Side;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
-import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribesman;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.message.MessagePlayerSolarBeam;
@@ -60,14 +60,14 @@ public enum ServerEventHandler {
             ((EntityCreature) entity).tasks.addTask(2, new EntityAIAttackMelee((EntityCreature) entity, 1.0D, false)); // EntityFoliaath.class
             ((EntityCreature) entity).targetTasks.addTask(2, new EntityAINearestAttackableTarget((EntityCreature) entity, EntityFoliaath.class, 0, true, false, null));
 
-            ((EntityCreature) entity).tasks.addTask(2, new EntityAIAttackMelee((EntityCreature) entity, 1.0D, false)); // EntityTribesman.class
-            ((EntityCreature) entity).targetTasks.addTask(2, new EntityAINearestAttackableTarget((EntityCreature) entity, EntityTribesman.class, 0, true, false, null));
+            ((EntityCreature) entity).tasks.addTask(2, new EntityAIAttackMelee((EntityCreature) entity, 1.0D, false)); // EntityBarakoa.class
+            ((EntityCreature) entity).targetTasks.addTask(2, new EntityAINearestAttackableTarget((EntityCreature) entity, EntityBarakoa.class, 0, true, false, null));
         }
         if (entity instanceof EntityOcelot) {
             ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity((EntityCreature) entity, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
         }
         if (entity instanceof EntityAnimal) {
-            ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity((EntityCreature) entity, EntityTribesman.class, 6.0F, 1.0D, 1.2D));
+            ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity((EntityCreature) entity, EntityBarakoa.class, 6.0F, 1.0D, 1.2D));
         }
     }
 
@@ -129,14 +129,14 @@ public enum ServerEventHandler {
             event.player.addPotionEffect(new PotionEffect(mask.getPotion(), 0, 0));
         }
 
-        List<EntityTribePlayer> pack = property.tribePack;
+        List<EntityBarakoanToPlayer> pack = property.tribePack;
         for (int i = 0; i < pack.size(); i++) {
             pack.get(i).index = i;
         }
         if (!player.worldObj.isRemote && pack != null) {
             float theta = (2 * (float) Math.PI / pack.size());
             for (int i = 0; i < pack.size(); i++) {
-                EntityTribePlayer tribePlayer = pack.get(i);
+                EntityBarakoanToPlayer tribePlayer = pack.get(i);
                 if (tribePlayer.getAttackTarget() == null) {
                     tribePlayer.getNavigator().tryMoveToXYZ(player.posX + property.tribePackRadius * MathHelper.cos(theta * i), player.posY, player.posZ + property.tribePackRadius * MathHelper.sin(theta * i), 0.45);
                     if (player.getDistanceToEntity(tribePlayer) > 20) {
@@ -187,7 +187,7 @@ public enum ServerEventHandler {
     public void onPlayerAttack(AttackEntityEvent event) {
         if (!(event.getTarget() instanceof EntityLivingBase)) return;
         MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
-        if (event.getTarget() instanceof EntityTribePlayer) return;
+        if (event.getTarget() instanceof EntityBarakoanToPlayer) return;
         for (int i = 0; i < property.getPackSize(); i++) property.tribePack.get(i).setAttackTarget((EntityLivingBase) event.getTarget());
     }
 

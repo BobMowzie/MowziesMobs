@@ -8,7 +8,7 @@ import net.minecraft.util.SoundEvent;
 
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 
-public class AnimationProjectileAttackAI<T extends MowzieEntity & IAnimatedEntity> extends AnimationAI<T> {
+public class AnimationProjectileAttackAI<T extends MowzieEntity & IAnimatedEntity & IRangedAttackMob> extends AnimationAI<T> {
     private EntityLivingBase entityTarget;
     private int attackFrame;
     private SoundEvent attackSound;
@@ -23,25 +23,19 @@ public class AnimationProjectileAttackAI<T extends MowzieEntity & IAnimatedEntit
     @Override
     public void startExecuting() {
         super.startExecuting();
-        this.entityTarget = animatingEntity.getAttackTarget();
+        entityTarget = animatingEntity.getAttackTarget();
     }
 
     @Override
     public void updateTask() {
         super.updateTask();
-        if (this.entityTarget != null) {
+        if (entityTarget != null) {
             animatingEntity.faceEntity(entityTarget, 100, 100);
             animatingEntity.getLookHelper().setLookPositionWithEntity(entityTarget, 30F, 30F);
             if (animatingEntity.getAnimationTick() == attackFrame) {
-                ((IRangedAttackMob) animatingEntity).attackEntityWithRangedAttack(entityTarget, 0);
+                animatingEntity.attackEntityWithRangedAttack(entityTarget, 0);
                 animatingEntity.playSound(attackSound, 1, 1);
             }
         }
     }
-
-    @Override
-    public void resetTask() {
-        super.resetTask();
-    }
 }
-

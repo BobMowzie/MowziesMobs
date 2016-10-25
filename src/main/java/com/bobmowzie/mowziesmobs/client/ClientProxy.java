@@ -1,6 +1,6 @@
 package com.bobmowzie.mowziesmobs.client;
 
-import com.bobmowzie.mowziesmobs.server.entity.tribe.*;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.*;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -46,11 +46,11 @@ public class ClientProxy extends ServerProxy {
         RenderingRegistry.registerEntityRenderingHandler(EntityBabyFoliaath.class, FoliaathBabyRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityFoliaath.class, FoliaathRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityWroughtnaut.class, WroughtnautRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityTribeLeader.class, TribeLeaderRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityTribeElite.class, TribesmanRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityTribeHunter.class, TribesmanRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityTribeVillager.class, TribesmanRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityTribePlayer.class, TribesmanRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityBarako.class, TribeLeaderRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityBarakoana.class, TribesmanRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityBarakoanToBarakoana.class, TribesmanRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityBarakoaya.class, TribesmanRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityBarakoanToPlayer.class, TribesmanRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityDart.class, DartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(EntitySunstrike.class, SunstrikeRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(EntitySolarBeam.class, SolarBeamRenderer::new);

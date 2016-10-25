@@ -30,7 +30,7 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory.ParticleArgs;
-import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeLeader;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 
 public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnData {
     public static final int STRIKE_EXPLOSION = 35;
@@ -185,7 +185,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         double radiusSq = radius * radius;
         for (Entity entity : entities) {
             if (entity instanceof EntityLivingBase && getDistanceSqToEntity(entity) < radiusSq) {
-                if (caster instanceof EntityTribeLeader && (entity instanceof LeaderSunstrikeImmune)) {
+                if (caster instanceof EntityBarako && (entity instanceof LeaderSunstrikeImmune)) {
                     continue;
                 }
                 if (caster instanceof EntityPlayer && entity == caster) {

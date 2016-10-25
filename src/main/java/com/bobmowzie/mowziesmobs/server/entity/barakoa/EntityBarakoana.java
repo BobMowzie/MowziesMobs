@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.server.entity.tribe;
+package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,6 @@ import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -33,29 +32,25 @@ import org.apache.commons.lang3.ArrayUtils;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationBlockAI;
 
-public class EntityTribeElite extends EntityTribesman {
+public class EntityBarakoana extends EntityBarakoa {
     public static final Animation BLOCK_ANIMATION = Animation.create(10);
-    private List<EntityTribeHunter> pack = new ArrayList<>();
+
+    private List<EntityBarakoanToBarakoana> pack = new ArrayList<>();
+
     private int packRadius = 3;
 
-    public EntityTribeElite(World world) {
+    public EntityBarakoana(World world) {
         super(world);
         this.targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
-        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityCow.class, 0, true, false, null));
-        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityPig.class, 0, true, false, null));
-        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntitySheep.class, 0, true, false, null));
-        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityChicken.class, 0, true, false, null));
-        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget(this, EntityZombie.class, 0, true, false, null));
+        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityCow.class, 0, true, false, null));
+        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityPig.class, 0, true, false, null));
+        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntitySheep.class, 0, true, false, null));
+        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityChicken.class, 0, true, false, null));
+        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityZombie.class, 0, true, false, null));
         this.targetTasks.addTask(3, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, true));
         this.tasks.addTask(2, new AnimationBlockAI<>(this, BLOCK_ANIMATION));
         this.setMask(1);
-        this.setSize(0.7f, 2f);
         this.experienceValue = 12;
-    }
-
-    @Override
-    public int getAttack() {
-        return 6;
     }
 
     @Override
@@ -69,7 +64,7 @@ public class EntityTribeElite extends EntityTribesman {
         if (!worldObj.isRemote && pack != null) {
             float theta = (2 * (float) Math.PI / pack.size());
             for (int i = 0; i < pack.size(); i++) {
-                EntityTribeHunter hunter = pack.get(i);
+                EntityBarakoanToBarakoana hunter = pack.get(i);
                 if (hunter.getAttackTarget() == null) {
                     hunter.getNavigator().tryMoveToXYZ(posX + packRadius * MathHelper.cos(theta * i), posY, posZ + packRadius * MathHelper.sin(theta * i), 0.45);
                     if (getDistanceToEntity(hunter) > 20) {
@@ -88,7 +83,7 @@ public class EntityTribeElite extends EntityTribesman {
                 setAttackTarget((EntityLivingBase) entity);
             }
         }
-        if (entity != null && entity instanceof EntityLivingBase && (getAnimation() == IAnimatedEntity.NO_ANIMATION || getAnimation() == HURT_ANIMATION || getAnimation() == BLOCK_ANIMATION)) {
+        if (entity instanceof EntityLivingBase && (getAnimation() == IAnimatedEntity.NO_ANIMATION || getAnimation() == HURT_ANIMATION || getAnimation() == BLOCK_ANIMATION)) {
             blockingEntity = (EntityLivingBase) entity;
             playSound(SoundEvents.ENTITY_ZOMBIE_ATTACK_DOOR_WOOD, 0.3f, 1.5f);
             AnimationHandler.INSTANCE.sendAnimationMessage(this, BLOCK_ANIMATION);
@@ -97,12 +92,12 @@ public class EntityTribeElite extends EntityTribesman {
         return super.attackEntityFrom(source, damage);
     }
 
-    public void removePackMember(EntityTribeHunter tribeHunter) {
+    public void removePackMember(EntityBarakoanToBarakoana tribeHunter) {
         pack.remove(tribeHunter);
         sortPackMembers();
     }
 
-    public void addPackMember(EntityTribeHunter tribeHunter) {
+    public void addPackMember(EntityBarakoanToBarakoana tribeHunter) {
         pack.add(tribeHunter);
         sortPackMembers();
     }
@@ -116,7 +111,7 @@ public class EntityTribeElite extends EntityTribesman {
             double x = posX + packRadius * Math.cos(targetTheta);
             double z = posZ + packRadius * Math.sin(targetTheta);
             for (int n = 0; n < pack.size(); n++) {
-                EntityTribeHunter tribeHunter = pack.get(n);
+                EntityBarakoanToBarakoana tribeHunter = pack.get(n);
                 double diffSq = (x - tribeHunter.posX) * (x - tribeHunter.posX) + (z - tribeHunter.posZ) * (z - tribeHunter.posZ);
                 if (diffSq < smallestDiffSq) {
                     smallestDiffSq = diffSq;
@@ -138,14 +133,11 @@ public class EntityTribeElite extends EntityTribesman {
     public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, IEntityLivingData data) {
         int size = rand.nextInt(2) + 3;
         for (int i = 0; i <= size; i++) {
-            EntityTribeHunter tribeHunter = new EntityTribeHunter(worldObj, this);
+            EntityBarakoanToBarakoana tribeHunter = new EntityBarakoanToBarakoana(worldObj, this);
             pack.add(tribeHunter);
             tribeHunter.setLeaderUUID(getUniqueID());
             tribeHunter.setPosition(posX + 0.1 * i, posY, posZ);
-            int weapon = 0;
-            if (rand.nextInt(3) == 0) {
-                weapon = 1;
-            }
+            int weapon = rand.nextInt(3) == 0 ? 1 : 0;
             tribeHunter.setWeapon(weapon);
             worldObj.spawnEntityInWorld(tribeHunter);
         }
@@ -153,16 +145,16 @@ public class EntityTribeElite extends EntityTribesman {
     }
 
     @Override
-    public void onDeath(DamageSource damageSource) {
-        super.onDeath(damageSource);
-        pack.forEach(EntityTribeHunter::removeLeader);
+    public void onDeath(DamageSource source) {
+        super.onDeath(source);
+        pack.forEach(EntityBarakoanToBarakoana::removeLeader);
     }
 
     @Override
     public boolean getCanSpawnHere() {
         List<EntityLivingBase> nearby = getEntityLivingBaseNearby(10, 4, 10, 10);
         for (EntityLivingBase nearbyEntity : nearby) {
-            if (nearbyEntity instanceof EntityTribeElite) {
+            if (nearbyEntity instanceof EntityBarakoana) {
                 return false;
             }
         }
@@ -172,54 +164,42 @@ public class EntityTribeElite extends EntityTribesman {
                 MathHelper.floor_double(getEntityBoundingBox().minY) - 1,
                 MathHelper.floor_double(posZ)
             );
-
-            if (ground.getY() < 64) {
-                return false;
-            }
-
-            return worldObj.getBlockState(ground).getBlock() == Blocks.GRASS;
+            return ground.getY() >= 64 && worldObj.getBlockState(ground).getBlock() == Blocks.GRASS;
         }
         return false;
     }
 
     @Override
     protected void despawnEntity() {
-
         Event.Result result;
-        if ((this.entityAge & 0x1F) == 0x1F && (result = ForgeEventFactory.canEntityDespawn(this)) != Event.Result.DEFAULT) {
+        if (isNoDespawnRequired()) {
+            entityAge = 0;
+        } else if ((entityAge & 0x1F) == 0x1F && (result = ForgeEventFactory.canEntityDespawn(this)) != Event.Result.DEFAULT) {
             if (result == Event.Result.DENY) {
-                this.entityAge = 0;
+                entityAge = 0;
             } else {
-                pack.forEach(EntityTribeHunter::setDead);
-                this.setDead();
+                pack.forEach(EntityBarakoanToBarakoana::setDead);
+                setDead();
             }
         } else {
-            EntityPlayer closestPlayer = this.worldObj.getClosestPlayerToEntity(this, -1.0D);
-
+            EntityPlayer closestPlayer = worldObj.getClosestPlayerToEntity(this, -1);
             if (closestPlayer != null) {
-                double distX = closestPlayer.posX - this.posX;
-                double distY = closestPlayer.posY - this.posY;
-                double distZ = closestPlayer.posZ - this.posZ;
-                double distance = distX * distX + distY * distY + distZ * distZ;
-
-                if (this.canDespawn() && distance > 16384.0D) {
-                    pack.forEach(EntityTribeHunter::setDead);
-                    this.setDead();
+                double dX = closestPlayer.posX - posX;
+                double dY = closestPlayer.posY - posY;
+                double dZ = closestPlayer.posZ - posZ;
+                double distance = dX * dX + dY * dY + dZ * dZ;
+                if (canDespawn() && distance > 16384) {
+                    pack.forEach(EntityBarakoanToBarakoana::setDead);
+                    setDead();
                 }
-
-                if (this.entityAge > 600 && this.rand.nextInt(800) == 0 && distance > 1024.0D && this.canDespawn()) {
-                    pack.forEach(EntityTribeHunter::setDead);
-                    this.setDead();
-                } else if (distance < 1024.0D) {
-                    this.entityAge = 0;
+                if (entityAge > 600 && rand.nextInt(800) == 0 && distance > 1024 && canDespawn()) {
+                    pack.forEach(EntityBarakoanToBarakoana::setDead);
+                    setDead();
+                } else if (distance < 1024) {
+                    entityAge = 0;
                 }
             }
         }
-    }
-
-    @Override
-    public void readEntityFromNBT(NBTTagCompound compound) {
-        super.readEntityFromNBT(compound);
     }
 
     @Override

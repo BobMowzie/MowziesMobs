@@ -21,7 +21,7 @@ import net.minecraft.world.World;
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory.ParticleArgs;
-import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeLeader;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 
 public class EntitySolarBeam extends Entity {
@@ -109,7 +109,7 @@ public class EntitySolarBeam extends Entity {
             }
             if (!worldObj.isRemote) {
                 for (EntityLivingBase target : hit) {
-                    if (caster instanceof EntityTribeLeader && target instanceof LeaderSunstrikeImmune) {
+                    if (caster instanceof EntityBarako && target instanceof LeaderSunstrikeImmune) {
                         continue;
                     }
                     target.attackEntityFrom(DamageSource.onFire, 2f);

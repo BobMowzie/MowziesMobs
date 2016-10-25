@@ -9,7 +9,7 @@ import net.minecraft.util.DamageSource;
 
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeLeader;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 
 public class AnimationRadiusAttack<T extends MowzieEntity & IAnimatedEntity> extends AnimationAI<T> {
     private float radius;
@@ -32,7 +32,7 @@ public class AnimationRadiusAttack<T extends MowzieEntity & IAnimatedEntity> ext
         if (animatingEntity.getAnimationTick() == damageFrame) {
             List<EntityLivingBase> hit = animatingEntity.getEntityLivingBaseNearby(radius, 2 * radius, radius, radius);
             for (EntityLivingBase aHit : hit) {
-                if (animatingEntity instanceof EntityTribeLeader && aHit instanceof LeaderSunstrikeImmune) {
+                if (animatingEntity instanceof EntityBarako && aHit instanceof LeaderSunstrikeImmune) {
                     continue;
                 }
                 aHit.attackEntityFrom(DamageSource.causeMobDamage(animatingEntity), damage);

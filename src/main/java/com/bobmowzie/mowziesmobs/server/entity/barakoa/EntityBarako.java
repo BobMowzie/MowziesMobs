@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.server.entity.tribe;
+package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
@@ -42,7 +42,7 @@ import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.item.ItemTestStructure;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 
-public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeImmune {
+public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune {
     public static final Animation DIE_ANIMATION = Animation.create(130);
     public static final Animation HURT_ANIMATION = Animation.create(13);
     public static final Animation BELLY_ANIMATION = Animation.create(40);
@@ -56,9 +56,9 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
     private static final int SUNSTRIKE_PAUSE_MIN = 15;
     private static final int LASER_PAUSE = 230;
     private static final int BARAKOA_PAUSE = 150;
-    private static final DataParameter<Integer> DIRECTION = EntityDataManager.createKey(EntityTribeLeader.class, DataSerializers.VARINT);
-    private static final DataParameter<Integer> DIALOGUE = EntityDataManager.createKey(EntityTribeLeader.class, DataSerializers.VARINT);
-    private static final DataParameter<Boolean> ANGRY = EntityDataManager.createKey(EntityTribeLeader.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Integer> DIRECTION = EntityDataManager.createKey(EntityBarako.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> DIALOGUE = EntityDataManager.createKey(EntityBarako.class, DataSerializers.VARINT);
+    private static final DataParameter<Boolean> ANGRY = EntityDataManager.createKey(EntityBarako.class, DataSerializers.BOOLEAN);
     public ControlledAnimation legsUp = new ControlledAnimation(15);
     public ControlledAnimation angryEyebrow = new ControlledAnimation(5);
     // TODO: Enum!
@@ -72,21 +72,21 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
     private int timeUntilBarakoa = 0;
     private boolean pacified = false;
 
-    public EntityTribeLeader(World world) {
+    public EntityBarako(World world) {
         super(world);
         this.targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
         this.tasks.addTask(4, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, false));
-        this.tasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityZombie.class, 0, false, false, null));
+        this.tasks.addTask(4, new EntityAINearestAttackableTarget<>(this, EntityZombie.class, 0, false, false, null));
         this.tasks.addTask(2, new AnimationAI<>(this, BELLY_ANIMATION, false));
         this.tasks.addTask(2, new AnimationAI<>(this, TALK_ANIMATION, false));
         this.tasks.addTask(2, new AnimationSunStrike<>(this, SUNSTRIKE_ANIMATION));
         this.tasks.addTask(2, new AnimationRadiusAttack<>(this, ATTACK_ANIMATION, 5, 5, 4.5f, 12));
-        this.tasks.addTask(2, new AnimationSpawnBarakoa<>(this, SPAWN_ANIMATION));
+        this.tasks.addTask(2, new AnimationSpawnBarakoa(this, SPAWN_ANIMATION));
         this.tasks.addTask(2, new AnimationSolarBeam<>(this, SOLAR_BEAM_ANIMATION));
         this.tasks.addTask(3, new AnimationTakeDamage<>(this));
         this.tasks.addTask(1, new AnimationDieAI<>(this));
         this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityTribesman.class, 8.0F));
+        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityBarakoa.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
         this.setSize(1.5f, 2.4f);
         if (getDirection() == 0) {
@@ -94,7 +94,7 @@ public class EntityTribeLeader extends MowzieEntity implements LeaderSunstrikeIm
         }
     }
 
-    public EntityTribeLeader(World world, int direction) {
+    public EntityBarako(World world, int direction) {
         this(world);
         this.setDirection(direction);
     }

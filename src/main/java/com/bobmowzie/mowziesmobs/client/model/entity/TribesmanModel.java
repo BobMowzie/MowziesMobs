@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.model.ModelAnimator;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
@@ -11,8 +12,7 @@ import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeElite;
-import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribesman;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
 
 @SideOnly(Side.CLIENT)
 public class TribesmanModel extends AdvancedModelBase {
@@ -306,7 +306,7 @@ public class TribesmanModel extends AdvancedModelBase {
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         animate((IAnimatedEntity) entity, f, f1, f2, f3, f4, f5);
         GlStateManager.pushMatrix();
-        if (entity instanceof EntityTribeElite) {
+        if (entity instanceof EntityBarakoana) {
             GlStateManager.scale(0.85f, 0.85f, 0.85f);
             GlStateManager.translate(0, 0.25f, 0);
         } else {
@@ -327,7 +327,7 @@ public class TribesmanModel extends AdvancedModelBase {
     @Override
     public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity entity) {
         super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-        EntityTribesman tribesman = (EntityTribesman) entity;
+        EntityBarakoa tribesman = (EntityBarakoa) entity;
         resetToDefaultPose();
 //                f = entity.ticksExisted;
 //                f1 = 0.5f;
@@ -349,13 +349,13 @@ public class TribesmanModel extends AdvancedModelBase {
         float globalSpeed = 1.5f;
         float globalHeight = 1 * doWalk;
         float globalDegree = 1 * doWalk * (1 - dance);
-        if (tribesman.getAnimation() != EntityTribesman.PROJECTILE_ATTACK_ANIMATION) {
+        if (tribesman.getAnimation() != EntityBarakoa.PROJECTILE_ATTACK_ANIMATION) {
             faceTarget(f3, f4, 2.0F, neck);
             faceTarget(f3, f4, 2.0F, head);
         }
         float frame = tribesman.frame + LLibrary.PROXY.getPartialTicks();
 
-        if (tribesman instanceof EntityTribeElite) {
+        if (tribesman instanceof EntityBarakoana) {
             armLeftJoint.rotateAngleX -= 0.2;
             armLeftJoint.rotateAngleY += 1.3;
             armLowerLeft.rotateAngleX -= 0.2;
@@ -402,7 +402,7 @@ public class TribesmanModel extends AdvancedModelBase {
         swing(handRight, 0.5f * globalSpeed, 1f * globalDegree, true, 0, 0, f, f1);
         walk(handLeft, 0.5f * globalSpeed, 1 * globalDegree, true, -2, 0.4f * globalDegree, f, f1);
 
-        if (tribesman.getAnimation() != EntityTribesman.DIE_ANIMATION) {
+        if (tribesman.getAnimation() != EntityBarakoa.DIE_ANIMATION) {
             walk(body, 0.2f, 0.05f, false, 0, 0, frame, 1f);
             walk(thighLeftJoint, 0.2f, 0.05f, true, 0, 0, frame, 1f);
             walk(thighRightJoint, 0.2f, 0.05f, true, 0, 0, frame, 1f);
@@ -435,7 +435,7 @@ public class TribesmanModel extends AdvancedModelBase {
         flap(head, 1.2f * danceSpeed, 0.4f * dance, true, 0, 0, frame, 1f);
         walk(loinClothFront, 0.6f * danceSpeed, 0.6f * dance, true, 1, 0.4f * dance, frame, 1f);
         walk(loinClothBack, 0.6f * danceSpeed, 0.6f * dance, false, 1, 0.4f * dance, frame, 1f);
-        if (tribesman instanceof EntityTribeElite) {
+        if (tribesman instanceof EntityBarakoana) {
             armLeftJoint.rotateAngleX += 0.2 * dance;
             armLeftJoint.rotateAngleY -= 1.3 * dance;
             armLowerLeft.rotateAngleX += 0.2 * dance;
@@ -445,14 +445,14 @@ public class TribesmanModel extends AdvancedModelBase {
     }
 
     public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        EntityTribesman tribesman = (EntityTribesman) entity;
+        EntityBarakoa tribesman = (EntityBarakoa) entity;
         animator.update(tribesman);
         setRotationAngles(f, f1, f2, f3, f4, f5, tribesman);
 
         float frame = tribesman.frame + LLibrary.PROXY.getPartialTicks();
 
-        if (entity instanceof EntityTribeElite) {
-            animator.setAnimation(EntityTribesman.ATTACK_ANIMATION);
+        if (entity instanceof EntityBarakoana) {
+            animator.setAnimation(EntityBarakoa.ATTACK_ANIMATION);
             animator.setStaticKeyframe(3);
             animator.startKeyframe(4);
             animator.rotate(body, -0.3f, 1f, 0);
@@ -496,7 +496,7 @@ public class TribesmanModel extends AdvancedModelBase {
             animator.setStaticKeyframe(1);
             animator.resetKeyframe(6);
 
-            animator.setAnimation(EntityTribeElite.BLOCK_ANIMATION);
+            animator.setAnimation(EntityBarakoana.BLOCK_ANIMATION);
             animator.startKeyframe(3);
             animator.move(body, 0, 5f, 1f);
             animator.rotate(body, 0.3f, 0, 0);
@@ -517,7 +517,7 @@ public class TribesmanModel extends AdvancedModelBase {
             animator.endKeyframe();
             animator.resetKeyframe(7);
 
-            animator.setAnimation(EntityTribesman.HURT_ANIMATION);
+            animator.setAnimation(EntityBarakoa.HURT_ANIMATION);
             animator.startKeyframe(3);
             animator.rotate(armLeftJoint, 0.2f, -1.3f, 0);
             animator.rotate(armLowerLeft, 0.2f, -0.2f, -1);
@@ -540,7 +540,7 @@ public class TribesmanModel extends AdvancedModelBase {
             animator.endKeyframe();
             animator.resetKeyframe(7);
 
-            animator.setAnimation(EntityTribesman.DIE_ANIMATION);
+            animator.setAnimation(EntityBarakoa.DIE_ANIMATION);
             animator.startKeyframe(3);
             animator.rotate(armLeftJoint, 0.2f, -1.3f, 0);
             animator.rotate(armLowerLeft, 0.2f, -0.2f, -1);
@@ -594,7 +594,7 @@ public class TribesmanModel extends AdvancedModelBase {
             armLowerLeft.rotateAngleY -= 0.2 * flailer.rotationPointX;
             armLowerLeft.rotateAngleZ -= 1 * flailer.rotationPointX;
         } else {
-            animator.setAnimation(EntityTribesman.ATTACK_ANIMATION);
+            animator.setAnimation(EntityBarakoa.ATTACK_ANIMATION);
             animator.setStaticKeyframe(3);
             animator.startKeyframe(4);
             animator.rotate(body, -0.3f, 1f, 0);
@@ -634,7 +634,7 @@ public class TribesmanModel extends AdvancedModelBase {
             animator.setStaticKeyframe(1);
             animator.resetKeyframe(6);
 
-            animator.setAnimation(EntityTribesman.PROJECTILE_ATTACK_ANIMATION);
+            animator.setAnimation(EntityBarakoa.PROJECTILE_ATTACK_ANIMATION);
             animator.startKeyframe(5);
             animator.rotate(body, -0.3f, 0, 0);
             animator.rotate(thighRightJoint, 0.3f, 0, 0);
@@ -667,7 +667,7 @@ public class TribesmanModel extends AdvancedModelBase {
             animator.setStaticKeyframe(2);
             animator.resetKeyframe(7);
 
-            animator.setAnimation(EntityTribesman.HURT_ANIMATION);
+            animator.setAnimation(EntityBarakoa.HURT_ANIMATION);
             animator.startKeyframe(3);
             animator.move(body, 0, 5f, 1f);
             animator.rotate(body, 0.3f, 0, 0);
@@ -688,7 +688,7 @@ public class TribesmanModel extends AdvancedModelBase {
             animator.endKeyframe();
             animator.resetKeyframe(7);
 
-            animator.setAnimation(EntityTribesman.DIE_ANIMATION);
+            animator.setAnimation(EntityBarakoa.DIE_ANIMATION);
             animator.startKeyframe(3);
             animator.rotate(armLeftJoint, 0.2f, -1.3f, 0);
             animator.rotate(armLowerLeft, 0.2f, -0.2f, -1);
@@ -737,14 +737,14 @@ public class TribesmanModel extends AdvancedModelBase {
             animator.setStaticKeyframe(20);
         }
 
-        animator.setAnimation(EntityTribesman.IDLE_ANIMATION);
+        animator.setAnimation(EntityBarakoa.IDLE_ANIMATION);
         animator.startKeyframe(10);
         animator.move(talker, 1, 0, 0);
         animator.endKeyframe();
         animator.setStaticKeyframe(15);
         animator.resetKeyframe(10);
 
-        animator.setAnimation(EntityTribesman.ACTIVATE_ANIMATION);
+        animator.setAnimation(EntityBarakoa.ACTIVATE_ANIMATION);
         animator.setStaticKeyframe(3);
         animator.startKeyframe(10);
         animator.move(scaler, -0.999f, 0, 0);
@@ -802,7 +802,7 @@ public class TribesmanModel extends AdvancedModelBase {
         flap(armUpperLeft, 0.4f, 0.2f * talk, true, 2, 0, frame, 1f);
         walk(armLowerLeft, 0.5f, 0.2f * talk, false, -1, 0.3f * talk, frame, 1f);
         swing(handLeft, 0.5f, 0.2f * talk, false, -2, -1.8f * talk, frame, 1f);
-        if (tribesman instanceof EntityTribeElite) {
+        if (tribesman instanceof EntityBarakoana) {
             armLeftJoint.rotateAngleX += 0.2 * talk;
             armLeftJoint.rotateAngleY -= 1.3 * talk;
             armLowerLeft.rotateAngleX += 0.2 * talk;

@@ -4,10 +4,8 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.bobmowzie.mowziesmobs.server.entity.tribe.*;
-import net.minecraft.entity.Entity;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.*;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Biomes;
 import net.minecraft.world.World;
@@ -30,11 +28,11 @@ public enum EntityHandler {
         registerEntity(EntityFoliaath.class, "Foliaath", true, 0x47CC3B, 0xC03BCC, false, 20, 3, 1, EnumCreatureType.MONSTER, Biomes.JUNGLE_HILLS, Biomes.JUNGLE, Biomes.JUNGLE_EDGE);
         registerEntity(EntityBabyFoliaath.class, "BabyFoliaath", false, 0x47CC3B, 0xC03BCC, false, 1, 1, 1, EnumCreatureType.MONSTER);
         registerEntity(EntityWroughtnaut.class, "FerrousWroughtnaut", true, 0x8C8C8C, 0xFFFFFF, false, 1, 1, 1, EnumCreatureType.MONSTER);
-        registerEntity(EntityTribeHunter.class, "TribesmanHunter", false, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.MONSTER);
-        registerEntity(EntityTribeElite.class, "TribesmanElite", true, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.MONSTER);
-        registerEntity(EntityTribeVillager.class, "TribesmanVillager", true, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.CREATURE);
-        registerEntity(EntityTribePlayer.class, "TribesmanPlayer", false, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.CREATURE);
-        registerEntity(EntityTribeLeader.class, "TribeLeader", true, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.MONSTER);
+        registerEntity(EntityBarakoanToBarakoana.class, "TribesmanHunter", false, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.MONSTER);
+        registerEntity(EntityBarakoana.class, "TribesmanElite", true, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.MONSTER);
+        registerEntity(EntityBarakoaya.class, "TribesmanVillager", true, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.CREATURE);
+        registerEntity(EntityBarakoanToPlayer.class, "TribesmanPlayer", false, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.CREATURE);
+        registerEntity(EntityBarako.class, "TribeLeader", true, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.MONSTER);
 
         EntityRegistry.registerModEntity(EntitySunstrike.class, "Sunstrike", nextEntityId(), MowziesMobs.INSTANCE, 64, 1, true);
         EntityRegistry.registerModEntity(EntitySolarBeam.class, "SolarBeam", nextEntityId(), MowziesMobs.INSTANCE, 64, 1, true);
@@ -70,7 +68,7 @@ public enum EntityHandler {
         try {
             Class<? extends EntityLiving> clazz = entityEggs.get(name).clazz;
             if (clazz != null) {
-                entity = (EntityLiving) clazz.getConstructor(World.class).newInstance(world);
+                entity = clazz.getConstructor(World.class).newInstance(world);
             }
         } catch (Exception e) {
             e.printStackTrace();

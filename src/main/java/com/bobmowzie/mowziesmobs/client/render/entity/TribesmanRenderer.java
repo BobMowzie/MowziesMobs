@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
@@ -8,11 +9,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.TribesmanModel;
-import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribeElite;
-import com.bobmowzie.mowziesmobs.server.entity.tribe.EntityTribesman;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
 
 @SideOnly(Side.CLIENT)
-public class TribesmanRenderer extends RenderLiving<EntityTribesman> {
+public class TribesmanRenderer extends RenderLiving<EntityBarakoa> {
     private static final ResourceLocation ELITE_TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureTribesman1.png");
     private static final ResourceLocation TEXTURE2 = new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureTribesman2.png");
     private static final ResourceLocation TEXTURE3 = new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureTribesman3.png");
@@ -24,14 +24,14 @@ public class TribesmanRenderer extends RenderLiving<EntityTribesman> {
     }
 
     @Override
-    protected float getDeathMaxRotation(EntityTribesman entity) {
+    protected float getDeathMaxRotation(EntityBarakoa entity) {
         return 0;
     }
 
     @Override
-    public ResourceLocation getEntityTexture(EntityTribesman entity) {
-        EntityTribesman tribesman = (EntityTribesman) entity;
-        if (tribesman instanceof EntityTribeElite || tribesman.getMask() == 1) {
+    public ResourceLocation getEntityTexture(EntityBarakoa entity) {
+        EntityBarakoa tribesman = (EntityBarakoa) entity;
+        if (tribesman instanceof EntityBarakoana || tribesman.getMask() == 1) {
             return TribesmanRenderer.ELITE_TEXTURE;
         } else if (tribesman.getMask() == 2) {
             return TribesmanRenderer.TEXTURE2;
