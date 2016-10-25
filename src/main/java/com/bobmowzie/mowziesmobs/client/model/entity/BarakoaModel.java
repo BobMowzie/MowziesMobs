@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
 
 @SideOnly(Side.CLIENT)
-public class TribesmanModel extends AdvancedModelBase {
+public class BarakoaModel extends AdvancedModelBase {
     public AdvancedModelRenderer modelCore;
     public AdvancedModelRenderer body;
     public AdvancedModelRenderer chest;
@@ -60,7 +60,7 @@ public class TribesmanModel extends AdvancedModelBase {
 
     private ModelAnimator animator;
 
-    public TribesmanModel() {
+    public BarakoaModel() {
         animator = ModelAnimator.create();
         this.textureWidth = 128;
         this.textureHeight = 64;
@@ -306,7 +306,7 @@ public class TribesmanModel extends AdvancedModelBase {
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         animate((IAnimatedEntity) entity, f, f1, f2, f3, f4, f5);
         GlStateManager.pushMatrix();
-        if (entity instanceof EntityBarakoana) {
+        if (((EntityBarakoa) entity).getMask() == 1) {
             GlStateManager.scale(0.85f, 0.85f, 0.85f);
             GlStateManager.translate(0, 0.25f, 0);
         } else {
@@ -355,7 +355,7 @@ public class TribesmanModel extends AdvancedModelBase {
         }
         float frame = tribesman.frame + LLibrary.PROXY.getPartialTicks();
 
-        if (tribesman instanceof EntityBarakoana) {
+        if (tribesman.getMask() == 1) {
             armLeftJoint.rotateAngleX -= 0.2;
             armLeftJoint.rotateAngleY += 1.3;
             armLowerLeft.rotateAngleX -= 0.2;
@@ -435,7 +435,7 @@ public class TribesmanModel extends AdvancedModelBase {
         flap(head, 1.2f * danceSpeed, 0.4f * dance, true, 0, 0, frame, 1f);
         walk(loinClothFront, 0.6f * danceSpeed, 0.6f * dance, true, 1, 0.4f * dance, frame, 1f);
         walk(loinClothBack, 0.6f * danceSpeed, 0.6f * dance, false, 1, 0.4f * dance, frame, 1f);
-        if (tribesman instanceof EntityBarakoana) {
+        if (tribesman.getMask() == 1) {
             armLeftJoint.rotateAngleX += 0.2 * dance;
             armLeftJoint.rotateAngleY -= 1.3 * dance;
             armLowerLeft.rotateAngleX += 0.2 * dance;
@@ -451,7 +451,7 @@ public class TribesmanModel extends AdvancedModelBase {
 
         float frame = tribesman.frame + LLibrary.PROXY.getPartialTicks();
 
-        if (entity instanceof EntityBarakoana) {
+        if (tribesman.getMask() == 1) {
             animator.setAnimation(EntityBarakoa.ATTACK_ANIMATION);
             animator.setStaticKeyframe(3);
             animator.startKeyframe(4);
@@ -802,7 +802,7 @@ public class TribesmanModel extends AdvancedModelBase {
         flap(armUpperLeft, 0.4f, 0.2f * talk, true, 2, 0, frame, 1f);
         walk(armLowerLeft, 0.5f, 0.2f * talk, false, -1, 0.3f * talk, frame, 1f);
         swing(handLeft, 0.5f, 0.2f * talk, false, -2, -1.8f * talk, frame, 1f);
-        if (tribesman instanceof EntityBarakoana) {
+        if (tribesman.getMask() == 1) {
             armLeftJoint.rotateAngleX += 0.2 * talk;
             armLeftJoint.rotateAngleY -= 1.3 * talk;
             armLowerLeft.rotateAngleX += 0.2 * talk;

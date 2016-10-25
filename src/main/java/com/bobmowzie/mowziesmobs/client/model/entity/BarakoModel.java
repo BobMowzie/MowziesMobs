@@ -14,7 +14,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 
 @SideOnly(Side.CLIENT)
-public class TribeLeaderModel extends AdvancedModelBase {
+public class BarakoModel extends AdvancedModelBase {
     public AdvancedModelRenderer body;
     public AdvancedModelRenderer chest;
     public AdvancedModelRenderer rightThigh;
@@ -66,7 +66,7 @@ public class TribeLeaderModel extends AdvancedModelBase {
 
     private ModelAnimator animator;
 
-    public TribeLeaderModel() {
+    public BarakoModel() {
         this.textureWidth = 128;
         this.textureHeight = 128;
         animator = ModelAnimator.create();

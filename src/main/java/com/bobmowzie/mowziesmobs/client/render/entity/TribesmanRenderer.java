@@ -8,7 +8,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.entity.TribesmanModel;
+import com.bobmowzie.mowziesmobs.client.model.entity.BarakoaModel;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
 
 @SideOnly(Side.CLIENT)
@@ -20,7 +20,7 @@ public class TribesmanRenderer extends RenderLiving<EntityBarakoa> {
     private static final ResourceLocation TEXTURE5 = new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureTribesman5.png");
 
     public TribesmanRenderer(RenderManager mgr) {
-        super(mgr, new TribesmanModel(), 0.6F);
+        super(mgr, new BarakoaModel(), 0.6F);
     }
 
     @Override

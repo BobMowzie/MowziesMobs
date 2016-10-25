@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.entity.TribeLeaderModel;
+import com.bobmowzie.mowziesmobs.client.model.entity.BarakoModel;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 
 @SideOnly(Side.CLIENT)
@@ -27,7 +27,7 @@ public class TribeLeaderRenderer extends RenderLiving<EntityBarako> {
     private static final int BURST_START_FRAME = 12;
 
     public TribeLeaderRenderer(RenderManager mgr) {
-        super(mgr, new TribeLeaderModel(), 1.0F);
+        super(mgr, new BarakoModel(), 1.0F);
     }
 
     @Override
