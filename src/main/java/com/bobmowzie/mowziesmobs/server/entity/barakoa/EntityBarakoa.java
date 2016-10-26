@@ -171,14 +171,14 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
 
     @Override
     public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, IEntityLivingData data) {
-        if (!(this instanceof EntityBarakoana)) {
-            int weapon = 0;
-            if (rand.nextInt(3) == 0) {
-                weapon = 1;
-            }
-            setWeapon(weapon);
+        if (canHoldVaryingWeapons()) {
+            setWeapon(rand.nextInt(3) == 0 ? 1 : 0);
         }
         return super.onInitialSpawn(difficulty, data);
+    }
+
+    protected boolean canHoldVaryingWeapons() {
+        return true;
     }
 
     protected void updateCircling() {

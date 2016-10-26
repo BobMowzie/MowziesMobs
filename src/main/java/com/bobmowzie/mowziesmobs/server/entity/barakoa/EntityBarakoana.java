@@ -54,6 +54,11 @@ public class EntityBarakoana extends EntityBarakoa {
     }
 
     @Override
+    protected boolean canHoldVaryingWeapons() {
+        return false;
+    }
+
+    @Override
     public void onUpdate() {
         super.onUpdate();
 
