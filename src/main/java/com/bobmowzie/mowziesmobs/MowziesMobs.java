@@ -7,6 +7,7 @@ import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
+import com.bobmowzie.mowziesmobs.server.gui.GuiHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.message.MessagePlayerSolarBeam;
 import com.bobmowzie.mowziesmobs.server.message.MessagePlayerSummonSunstrike;
@@ -15,11 +16,12 @@ import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
+
 import net.ilexiconn.llibrary.server.config.Config;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.ilexiconn.llibrary.server.network.NetworkWrapper;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -28,6 +30,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
@@ -49,13 +52,6 @@ public class MowziesMobs {
     public static ConfigHandler CONFIG;
     private static ModContainer container;
 
-    public static ModContainer getModContainer() {
-        if (container == null) {
-            container = FMLCommonHandler.instance().findContainerFor(MowziesMobs.MODID);
-        }
-        return container;
-    }
-
     @EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(ServerEventHandler.INSTANCE);
@@ -71,6 +67,7 @@ public class MowziesMobs {
 
         EntityPropertiesHandler.INSTANCE.registerProperties(MowziePlayerProperties.class);
         GameRegistry.registerWorldGenerator(new MowzieWorldGenerator(), 0);
+        NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
     }
 
     @EventHandler
@@ -81,5 +78,17 @@ public class MowziesMobs {
     @EventHandler
     public void onPostInit(FMLPostInitializationEvent event) {
         BiomeDictionaryHandler.INSTANCE.onInit();
+    }
+
+    public static void openGui(EntityPlayer player, GuiHandler.Type type, int x) {
+        openGui(player, type, x, 0);
+    }
+
+    public static void openGui(EntityPlayer player, GuiHandler.Type type, int x, int y) {
+        openGui(player, type, x, y, 0);
+    }
+
+    public static void openGui(EntityPlayer player, GuiHandler.Type type, int x, int y, int z) {
+        
     }
 }

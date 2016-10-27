@@ -17,7 +17,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
-public class ItemBarakoaMask extends ItemArmor {
+public class ItemBarakoaMask extends ItemArmor implements BarakoaMask {
     private final MaskType type;
 
     public ItemBarakoaMask(MaskType type) {

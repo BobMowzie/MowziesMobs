@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 /**
  * Created by Josh on 8/15/2016.
  */
-public class ItemBarakoMask extends ItemArmor {
+public class ItemBarakoMask extends ItemArmor implements BarakoaMask {
         public ItemBarakoMask() {
         super(ItemArmor.ArmorMaterial.GOLD, 2, EntityEquipmentSlot.HEAD);
         setUnlocalizedName("barakoMask");
