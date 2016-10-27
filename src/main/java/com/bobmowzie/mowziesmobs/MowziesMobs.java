@@ -89,6 +89,6 @@ public class MowziesMobs {
     }
 
     public static void openGui(EntityPlayer player, GuiHandler.Type type, int x, int y, int z) {
-        
+        player.openGui(INSTANCE, type.ordinal(), player.worldObj, x, y, z);
     }
 }
