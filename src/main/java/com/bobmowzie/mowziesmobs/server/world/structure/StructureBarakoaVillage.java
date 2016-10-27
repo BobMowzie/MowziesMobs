@@ -149,7 +149,7 @@ public class StructureBarakoaVillage {
                 int sideHouseDir = rand.nextInt(6) + 1;
                 if (sideHouseDir <= 2) {
                     EnumFacing sideHouseFacing = (sideHouseDir == 1) ? EnumFacing.EAST : EnumFacing.WEST;
-                    generateSideHouse(world, rand, pos, sideHouseFacing);
+                    if (!world.isRemote) generateSideHouse(world, rand, pos, sideHouseFacing);
                 }
             }
         }
@@ -169,7 +169,7 @@ public class StructureBarakoaVillage {
                 int sideHouseDir = rand.nextInt(6) + 1;
                 if (sideHouseDir <= 2) {
                     EnumFacing sideHouseFacing = (sideHouseDir == 1) ? EnumFacing.NORTH : EnumFacing.SOUTH;
-                    generateSideHouse(world, rand, pos, sideHouseFacing);
+                    if (!world.isRemote) generateSideHouse(world, rand, pos, sideHouseFacing);
                 }
             }
         }
@@ -189,7 +189,7 @@ public class StructureBarakoaVillage {
                 int sideHouseDir = rand.nextInt(6) + 1;
                 if (sideHouseDir <= 2) {
                     EnumFacing sideHouseFacing = (sideHouseDir == 1) ? EnumFacing.EAST : EnumFacing.WEST;
-                    generateSideHouse(world, rand, pos, sideHouseFacing);
+                    if (!world.isRemote) generateSideHouse(world, rand, pos, sideHouseFacing);
                 }
             }
         }
@@ -209,12 +209,11 @@ public class StructureBarakoaVillage {
                 int sideHouseDir = rand.nextInt(6) + 1;
                 if (sideHouseDir <= 2) {
                     EnumFacing sideHouseFacing = (sideHouseDir == 1) ? EnumFacing.NORTH : EnumFacing.SOUTH;
-                    generateSideHouse(world, rand, pos, sideHouseFacing);
+                    if (!world.isRemote) generateSideHouse(world, rand, pos, sideHouseFacing);
                 }
             }
         }
 
-        //Interior
         //Interior
         int tableCorner = rand.nextInt(6);
         int tableContent = rand.nextInt(4);
@@ -225,6 +224,7 @@ public class StructureBarakoaVillage {
             }
             if (tableContent == 2) {
                 world.setBlockState(pos.add(-1, 5, 1), Blocks.SKULL.getDefaultState().withProperty(BlockSkull.FACING, EnumFacing.UP));
+                ((TileEntitySkull)world.getTileEntity(pos.add(-1, 5, 1))).setSkullRotation(2);
             }
         }
         if (tableCorner == 1) {
@@ -234,6 +234,7 @@ public class StructureBarakoaVillage {
             }
             if (tableContent == 2) {
                 world.setBlockState(pos.add(1, 5, 1), Blocks.SKULL.getDefaultState().withProperty(BlockSkull.FACING, EnumFacing.UP));
+                ((TileEntitySkull)world.getTileEntity(pos.add(1, 5, 1))).setSkullRotation(14);
             }
         }
         if (tableCorner == 2) {
@@ -243,6 +244,7 @@ public class StructureBarakoaVillage {
             }
             if (tableContent == 2) {
                 world.setBlockState(pos.add(-1, 5, -1), Blocks.SKULL.getDefaultState().withProperty(BlockSkull.FACING, EnumFacing.UP));
+                ((TileEntitySkull)world.getTileEntity(pos.add(-1, 5, -1))).setSkullRotation(6);
             }
         }
         if (tableCorner == 3) {
@@ -252,6 +254,7 @@ public class StructureBarakoaVillage {
             }
             if (tableContent == 2) {
                 world.setBlockState(pos.add(1, 5, -1), Blocks.SKULL.getDefaultState().withProperty(BlockSkull.FACING, EnumFacing.UP));
+                ((TileEntitySkull)world.getTileEntity(pos.add(1, 5, -1))).setSkullRotation(10);
             }
         }
 
