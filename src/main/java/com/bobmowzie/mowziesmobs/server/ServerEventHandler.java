@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.bobmowzie.mowziesmobs.server.entity.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
+import com.bobmowzie.mowziesmobs.server.item.ItemSpear;
+import com.bobmowzie.mowziesmobs.server.message.MessagePlayerAttackMob;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.entity.Entity;
@@ -25,8 +28,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
@@ -43,6 +49,7 @@ import com.bobmowzie.mowziesmobs.server.message.MessagePlayerSolarBeam;
 import com.bobmowzie.mowziesmobs.server.message.MessagePlayerSummonSunstrike;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
+import org.lwjgl.Sys;
 
 public enum ServerEventHandler {
     INSTANCE;
@@ -180,6 +187,16 @@ public enum ServerEventHandler {
                 MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSummonSunstrike());
                 property.untilSunstrike = SUNSTRIKE_COOLDOWN;
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerLeftClick(PlayerInteractEvent.LeftClickEmpty event) {
+        double range = 6;
+        EntityPlayer player = event.getEntityPlayer();
+        if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == ItemHandler.INSTANCE.spear){
+            EntityLivingBase entityHit = ItemSpear.raytraceEntities(player.getEntityWorld(), player, range);
+            if (entityHit != null) MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerAttackMob(entityHit));
         }
     }
 
