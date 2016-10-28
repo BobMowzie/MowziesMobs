@@ -1,19 +1,21 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.TradeStore;
 import com.bobmowzie.mowziesmobs.server.gui.GuiHandler;
+import com.bobmowzie.mowziesmobs.server.gui.GuiHandler.ContainerHolder;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.Container;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,7 +23,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
-public class EntityBarakoaya extends EntityBarakoa {
+public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder {
     private static final TradeStore DEFAULT = new TradeStore.Builder()
         .addTrade(new ItemStack(Items.GOLD_NUGGET, 12), new ItemStack(ItemHandler.INSTANCE.blowgun), 5)
         .addTrade(new ItemStack(Items.DYE, 6, EnumDyeColor.BROWN.getDyeDamage()), new ItemStack(ItemHandler.INSTANCE.dart, 8), 6)
@@ -46,6 +48,16 @@ public class EntityBarakoaya extends EntityBarakoa {
     }
 
     @Override
+    public Container createContainer(World world, EntityPlayer player) {
+        return null;
+    }
+
+    @Override
+    public GuiContainer createGui(World world, EntityPlayer player) {
+        return null;
+    }
+
+    @Override
     public void onUpdate() {
         super.onUpdate();
         if ((offeringTrade == null || timeOffering <= 0) && tradeStore.hasStock()) {
@@ -56,10 +68,10 @@ public class EntityBarakoaya extends EntityBarakoa {
 
     @Override
     protected boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack stack) {
-        ItemStack headStack = player.inventory.armorItemInSlot(3);
+        ItemStack headStack = player.inventory.armorInventory[3];
         if (headStack != null && headStack.getItem() instanceof BarakoaMask && offeringTrade != null) {
             if (!worldObj.isRemote) {
-                MowziesMobs.openGui(player, GuiHandler.Type.BARAKOA_TRADE, getEntityId());
+                GuiHandler.open(GuiHandler.BARAKOA_TRADE, player, this);
             }
             return true;
         }

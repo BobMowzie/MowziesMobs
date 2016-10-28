@@ -20,7 +20,6 @@ import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
 import net.ilexiconn.llibrary.server.config.Config;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.ilexiconn.llibrary.server.network.NetworkWrapper;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -78,17 +77,5 @@ public class MowziesMobs {
     @EventHandler
     public void onPostInit(FMLPostInitializationEvent event) {
         BiomeDictionaryHandler.INSTANCE.onInit();
-    }
-
-    public static void openGui(EntityPlayer player, GuiHandler.Type type, int x) {
-        openGui(player, type, x, 0);
-    }
-
-    public static void openGui(EntityPlayer player, GuiHandler.Type type, int x, int y) {
-        openGui(player, type, x, y, 0);
-    }
-
-    public static void openGui(EntityPlayer player, GuiHandler.Type type, int x, int y, int z) {
-        player.openGui(INSTANCE, type.ordinal(), player.worldObj, x, y, z);
     }
 }
