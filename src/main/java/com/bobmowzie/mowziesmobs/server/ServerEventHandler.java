@@ -119,7 +119,7 @@ public enum ServerEventHandler {
         if (event.side == Side.CLIENT) {
             return;
         }
-        ItemStack headArmorStack = event.player.inventory.armorItemInSlot(3);
+        ItemStack headArmorStack = event.player.inventory.armorInventory[3];
         if (headArmorStack == null) {
             return;
         }

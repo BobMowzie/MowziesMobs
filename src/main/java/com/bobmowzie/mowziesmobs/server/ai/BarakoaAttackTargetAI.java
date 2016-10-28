@@ -30,7 +30,7 @@ public class BarakoaAttackTargetAI extends EntityAITarget {
         this.setMutexBits(1);
         this.targetEntitySelector = target -> {
             if (target instanceof EntityPlayer) {
-                ItemStack headArmorStack = ((EntityPlayer) target).inventory.armorItemInSlot(3);
+                ItemStack headArmorStack = ((EntityPlayer) target).inventory.armorInventory[3];
                 if (headArmorStack != null) {
                     Item headItem = headArmorStack.getItem();
                     if (headItem instanceof ItemBarakoaMask) {

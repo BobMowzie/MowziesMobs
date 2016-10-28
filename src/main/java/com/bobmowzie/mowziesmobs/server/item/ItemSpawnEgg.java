@@ -6,13 +6,15 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieEntityEggInfo;
+
 import net.minecraft.block.BlockFence;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -32,11 +34,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
-
-import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
-import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
-import com.bobmowzie.mowziesmobs.server.entity.MowzieEntityEggInfo;
 
 public class ItemSpawnEgg extends Item {
     public ItemSpawnEgg() {
@@ -59,10 +58,10 @@ public class ItemSpawnEgg extends Item {
 
     @Override
     public String getItemStackDisplayName(ItemStack stack) {
-        String name = I18n.format(getUnlocalizedName() + ".name").trim();
+        String name = I18n.translateToLocal(getUnlocalizedName() + ".name").trim();
         String entityName = getEntityIdFromItem(stack);
         if (entityName != null) {
-            name = name + " " + I18n.format("entity.mowziesmobs." + entityName + ".name");
+            name = name + " " + I18n.translateToLocal("entity.mowziesmobs." + entityName + ".name");
         }
         return name;
     }
