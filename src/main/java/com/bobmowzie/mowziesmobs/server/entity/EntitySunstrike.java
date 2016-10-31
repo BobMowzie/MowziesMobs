@@ -99,6 +99,10 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         this.prevStrikeTime = this.strikeTime = strikeTime;
     }
 
+    public boolean isStriking() {
+        return isStriking(1);
+    }
+
     public long getVariant() {
         return (((long) getDataManager().get(VARIANT_MOST)) << 32) | (getDataManager().get(VARIANT_LEAST) & 0xFFFFFFFFL);
     }
