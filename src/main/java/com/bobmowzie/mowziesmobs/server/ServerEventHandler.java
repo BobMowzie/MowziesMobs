@@ -124,7 +124,7 @@ public enum ServerEventHandler {
         Item headItemStack = headArmorStack.getItem();
         if (headItemStack instanceof ItemBarakoaMask) {
             ItemBarakoaMask mask = (ItemBarakoaMask) headItemStack;
-            event.player.addPotionEffect(new PotionEffect(mask.getPotion(), 0, 0));
+            event.player.addPotionEffect(new PotionEffect(mask.getPotion(), 45, 0, true, true));
         }
 
         List<EntityBarakoanToPlayer> pack = property.tribePack;
