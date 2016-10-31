@@ -50,13 +50,12 @@ public enum ItemHandler {
             GameRegistry.register(itemBarakoaMask);
         }
         GameRegistry.register(barakoMask);
-        GameRegistry.register(dart);
         GameRegistry.register(spear);
         GameRegistry.register(blowgun);
+        GameRegistry.register(dart);
 
-        GameRegistry.register(mobRemover);
         GameRegistry.register(grantSunsBlessing);
-
+        GameRegistry.register(mobRemover);
         GameRegistry.register(testStructure);
     }
 

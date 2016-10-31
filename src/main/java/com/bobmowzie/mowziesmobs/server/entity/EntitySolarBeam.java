@@ -113,7 +113,7 @@ public class EntitySolarBeam extends Entity {
                         continue;
                     }
                     target.attackEntityFrom(DamageSource.onFire, 2f);
-                    target.attackEntityFrom(DamageSource.causeMobDamage(caster), 1.5f);
+                    target.attackEntityFrom(DamageSource.causeMobDamage(caster), 2f);
                 }
             } else {
                 if (ticksExisted - 15 < getDuration()) {

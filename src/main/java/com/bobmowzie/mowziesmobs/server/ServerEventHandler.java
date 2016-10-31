@@ -48,8 +48,8 @@ import net.minecraftforge.fml.relauncher.Side;
 public enum ServerEventHandler {
     INSTANCE;
 
-    private final static int SUNSTRIKE_COOLDOWN = 65;
-    private final static int SOLARBEAM_COOLDOWN = 130;
+    private final static int SUNSTRIKE_COOLDOWN = 55;
+    private final static int SOLARBEAM_COOLDOWN = 110;
 
     @SubscribeEvent
     public void onJoinWorld(EntityJoinWorldEvent event) {
@@ -124,7 +124,7 @@ public enum ServerEventHandler {
         Item headItemStack = headArmorStack.getItem();
         if (headItemStack instanceof ItemBarakoaMask) {
             ItemBarakoaMask mask = (ItemBarakoaMask) headItemStack;
-            event.player.addPotionEffect(new PotionEffect(mask.getPotion(), 45, 0, true, true));
+            event.player.addPotionEffect(new PotionEffect(mask.getPotion(), 45, 0, true, false));
         }
 
         List<EntityBarakoanToPlayer> pack = property.tribePack;

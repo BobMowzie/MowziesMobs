@@ -24,7 +24,7 @@ public class ItemGrantSunsBlessing extends Item {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand) {
-        playerIn.addPotionEffect(new PotionEffect(PotionHandler.INSTANCE.sunsBlessing, 12000));
+        playerIn.addPotionEffect(new PotionEffect(PotionHandler.INSTANCE.sunsBlessing, 12000, 1));
         return super.onItemRightClick(itemStackIn, worldIn, playerIn, hand);
     }
 
