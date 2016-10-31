@@ -45,13 +45,8 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
         frame++;
         if (getAnimation() != NO_ANIMATION) {
             animationTick++;
-            if (animationTick >= animation.getDuration()) {
-                if (worldObj.isRemote) {
-                    setAnimation(NO_ANIMATION);
-                    setAnimationTick(0);
-                } else {
-                    AnimationHandler.INSTANCE.sendAnimationMessage(this, NO_ANIMATION);
-                }
+            if (worldObj.isRemote && animationTick >= animation.getDuration()) {
+                setAnimation(NO_ANIMATION);
             }
         }
         if (getAttackTarget() != null) {
@@ -183,6 +178,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     @Override
     public void setAnimation(Animation animation) {
         this.animation = animation;
+        setAnimationTick(0);
     }
 
     public abstract Animation getDeathAnimation();
