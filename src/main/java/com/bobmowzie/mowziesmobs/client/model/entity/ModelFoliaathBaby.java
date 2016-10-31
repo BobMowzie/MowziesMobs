@@ -13,7 +13,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityBabyFoliaath;
 
 @SideOnly(Side.CLIENT)
-public class FoliaathBabyModel extends AdvancedModelBase {
+public class ModelFoliaathBaby extends AdvancedModelBase {
     public AdvancedModelRenderer infantBase;
     public AdvancedModelRenderer juvenileBase;
     public AdvancedModelRenderer infantLeaf1;
@@ -32,7 +32,7 @@ public class FoliaathBabyModel extends AdvancedModelBase {
     public AdvancedModelRenderer teeth2;
     private ModelAnimator animator;
 
-    public FoliaathBabyModel() {
+    public ModelFoliaathBaby() {
         animator = ModelAnimator.create();
         textureWidth = 64;
         textureHeight = 16;

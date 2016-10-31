@@ -7,15 +7,15 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.entity.FoliaathModel;
+import com.bobmowzie.mowziesmobs.client.model.entity.ModelFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 
 @SideOnly(Side.CLIENT)
-public class FoliaathRenderer extends RenderLiving<EntityFoliaath> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureFoliaath.png");
+public class RenderFoliaath extends RenderLiving<EntityFoliaath> {
+    private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/foliaath.png");
 
-    public FoliaathRenderer(RenderManager mgr) {
-        super(mgr, new FoliaathModel(), 0);
+    public RenderFoliaath(RenderManager mgr) {
+        super(mgr, new ModelFoliaath(), 0);
     }
 
     @Override
@@ -25,6 +25,6 @@ public class FoliaathRenderer extends RenderLiving<EntityFoliaath> {
 
     @Override
     public ResourceLocation getEntityTexture(EntityFoliaath entity) {
-        return FoliaathRenderer.TEXTURE;
+        return RenderFoliaath.TEXTURE;
     }
 }

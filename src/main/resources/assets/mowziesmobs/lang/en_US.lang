@@ -24,7 +24,7 @@ item.barakoMask.name=Sol Visage
 item.dart.name=Dart
 item.spear.name=Spear
 item.blowgun.name=Blowgun
-item.grantsunsblessing.name=Grant Sun's Blessing
+item.grantSunsBlessing.name=Grant Sun's Blessing
 item.testStructure.name=Test Structures
 
 item.blowgun.text.0=Charges quickly

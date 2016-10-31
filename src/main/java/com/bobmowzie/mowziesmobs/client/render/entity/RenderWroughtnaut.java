@@ -7,15 +7,15 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.entity.WroughtnautModel;
+import com.bobmowzie.mowziesmobs.client.model.entity.ModelWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 
 @SideOnly(Side.CLIENT)
-public class WroughtnautRenderer extends RenderLiving<EntityWroughtnaut> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureWroughtnaut.png");
+public class RenderWroughtnaut extends RenderLiving<EntityWroughtnaut> {
+    private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/wroughtnaut.png");
 
-    public WroughtnautRenderer(RenderManager mgr) {
-        super(mgr, new WroughtnautModel(), 1.0F);
+    public RenderWroughtnaut(RenderManager mgr) {
+        super(mgr, new ModelWroughtnaut(), 1.0F);
     }
 
     @Override
@@ -25,6 +25,6 @@ public class WroughtnautRenderer extends RenderLiving<EntityWroughtnaut> {
 
     @Override
     public ResourceLocation getEntityTexture(EntityWroughtnaut entity) {
-        return WroughtnautRenderer.TEXTURE;
+        return RenderWroughtnaut.TEXTURE;
     }
 }

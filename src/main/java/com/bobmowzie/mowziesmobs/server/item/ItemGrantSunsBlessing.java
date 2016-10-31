@@ -18,8 +18,8 @@ import java.util.List;
 public class ItemGrantSunsBlessing extends Item {
     public ItemGrantSunsBlessing() {
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setUnlocalizedName("grantsunsblessing");
-        setRegistryName("grantsunsblessing");
+        setUnlocalizedName("grantSunsBlessing");
+        setRegistryName("grant_suns_blessing");
     }
 
     @Override

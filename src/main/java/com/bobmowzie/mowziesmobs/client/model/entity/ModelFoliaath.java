@@ -14,7 +14,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 
 @SideOnly(Side.CLIENT)
-public class FoliaathModel extends AdvancedModelBase {
+public class ModelFoliaath extends AdvancedModelBase {
     public AdvancedModelRenderer bigLeaf2Base;
     public AdvancedModelRenderer bigLeaf1Base;
     public AdvancedModelRenderer bigLeaf4Base;
@@ -59,7 +59,7 @@ public class FoliaathModel extends AdvancedModelBase {
 
     private ModelAnimator animator;
 
-    public FoliaathModel() {
+    public ModelFoliaath() {
         textureWidth = 128;
         textureHeight = 64;
         animator = ModelAnimator.create();

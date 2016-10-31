@@ -17,16 +17,16 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class DartRenderer extends Render<EntityDart> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureDart.png");
+public class RenderDart extends Render<EntityDart> {
+    private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/dart.png");
 
-    public DartRenderer(RenderManager mgr) {
+    public RenderDart(RenderManager mgr) {
         super(mgr);
     }
 
     @Override
     protected ResourceLocation getEntityTexture(EntityDart entity) {
-        return DartRenderer.TEXTURE;
+        return RenderDart.TEXTURE;
     }
 
     @Override

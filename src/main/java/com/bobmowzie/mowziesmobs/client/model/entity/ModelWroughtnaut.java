@@ -12,7 +12,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 
 @SideOnly(Side.CLIENT)
-public class WroughtnautModel extends AdvancedModelBase {
+public class ModelWroughtnaut extends AdvancedModelBase {
     public AdvancedModelRenderer waist;
     public AdvancedModelRenderer groin;
     public AdvancedModelRenderer stomachJoint;
@@ -85,7 +85,7 @@ public class WroughtnautModel extends AdvancedModelBase {
     public AdvancedModelRenderer waistBendController;
     private ModelAnimator animator;
 
-    public WroughtnautModel() {
+    public ModelWroughtnaut() {
         animator = ModelAnimator.create();
         this.textureWidth = 128;
         this.textureHeight = 128;

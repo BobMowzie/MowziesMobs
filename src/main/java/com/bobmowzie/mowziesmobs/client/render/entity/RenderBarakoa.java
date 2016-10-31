@@ -10,12 +10,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.EnumMap;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.entity.BarakoaModel;
+import com.bobmowzie.mowziesmobs.client.model.entity.ModelBarakoa;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 
 @SideOnly(Side.CLIENT)
-public class BarakoaRenderer extends RenderLiving<EntityBarakoa> {
+public class RenderBarakoa extends RenderLiving<EntityBarakoa> {
     private static final EnumMap<MaskType, ResourceLocation> TEXTURES = MaskType.newEnumMap(ResourceLocation.class);
 
     static {
@@ -24,8 +24,8 @@ public class BarakoaRenderer extends RenderLiving<EntityBarakoa> {
         }
     }
 
-    public BarakoaRenderer(RenderManager mgr) {
-        super(mgr, new BarakoaModel(), 0.6F);
+    public RenderBarakoa(RenderManager mgr) {
+        super(mgr, new ModelBarakoa(), 0.6F);
     }
 
     @Override

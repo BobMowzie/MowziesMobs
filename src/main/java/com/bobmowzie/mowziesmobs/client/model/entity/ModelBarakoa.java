@@ -17,7 +17,7 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 
 @SideOnly(Side.CLIENT)
-public class BarakoaModel extends AdvancedModelBase {
+public class ModelBarakoa extends AdvancedModelBase {
     public AdvancedModelRenderer modelCore;
     public AdvancedModelRenderer body;
     public AdvancedModelRenderer chest;
@@ -62,7 +62,7 @@ public class BarakoaModel extends AdvancedModelBase {
 
     private ModelAnimator animator;
 
-    public BarakoaModel() {
+    public ModelBarakoa() {
         animator = ModelAnimator.create();
         this.textureWidth = 128;
         this.textureHeight = 64;

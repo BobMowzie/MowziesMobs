@@ -15,19 +15,18 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.entity.BarakoModel;
+import com.bobmowzie.mowziesmobs.client.model.entity.ModelBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 
 @SideOnly(Side.CLIENT)
-public class TribeLeaderRenderer extends RenderLiving<EntityBarako> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/textureTribeLeader.png");
-    private static final ResourceLocation BURST_TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/effects/textureSunstrike.png");
+public class RenderBarako extends RenderLiving<EntityBarako> {
+    private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/barako.png");
     private static final double BURST_RADIUS = 3.5;
     private static final int BURST_FRAME_COUNT = 10;
     private static final int BURST_START_FRAME = 12;
 
-    public TribeLeaderRenderer(RenderManager mgr) {
-        super(mgr, new BarakoModel(), 1.0F);
+    public RenderBarako(RenderManager mgr) {
+        super(mgr, new ModelBarako(), 1.0F);
     }
 
     @Override
@@ -37,7 +36,7 @@ public class TribeLeaderRenderer extends RenderLiving<EntityBarako> {
 
     @Override
     public ResourceLocation getEntityTexture(EntityBarako entity) {
-        return TribeLeaderRenderer.TEXTURE;
+        return RenderBarako.TEXTURE;
     }
 
     @Override
@@ -46,7 +45,7 @@ public class TribeLeaderRenderer extends RenderLiving<EntityBarako> {
             GlStateManager.pushMatrix();
             GlStateManager.translate(x, y + 1.1, z);
             setupGL();
-            bindTexture(BURST_TEXTURE);
+            bindTexture(RenderSunstrike.TEXTURE);
             GlStateManager.rotate(-renderManager.playerViewY, 0, 1, 0);
             GlStateManager.rotate(renderManager.playerViewX, 1, 0, 0);
             GlStateManager.disableDepth();

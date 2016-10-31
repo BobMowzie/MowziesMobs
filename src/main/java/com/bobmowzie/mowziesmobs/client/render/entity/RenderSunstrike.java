@@ -26,8 +26,8 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.EntitySunstrike;
 
 @SideOnly(Side.CLIENT)
-public class SunstrikeRenderer extends Render<EntitySunstrike> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/effects/textureSunstrike.png");
+public class RenderSunstrike extends Render<EntitySunstrike> {
+    public static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/effects/sunstrike.png");
     private static final Random RANDOMIZER = new Random(0);
     private static final double TEXTURE_WIDTH = 256;
     private static final double TEXTURE_HEIGHT = 32;
@@ -51,13 +51,13 @@ public class SunstrikeRenderer extends Render<EntitySunstrike> {
     private static final double SCORCH_MIN_V = 16 / TEXTURE_HEIGHT;
     private static final double SCORCH_MAX_V = SCORCH_MIN_V + RING_FRAME_SIZE / TEXTURE_HEIGHT;
 
-    public SunstrikeRenderer(RenderManager mgr) {
+    public RenderSunstrike(RenderManager mgr) {
         super(mgr);
     }
 
     @Override
     public ResourceLocation getEntityTexture(EntitySunstrike entity) {
-        return SunstrikeRenderer.TEXTURE;
+        return RenderSunstrike.TEXTURE;
     }
 
     @Override

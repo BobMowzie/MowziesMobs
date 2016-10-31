@@ -23,21 +23,21 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.EntitySolarBeam;
 
 @SideOnly(Side.CLIENT)
-public class SolarBeamRenderer extends Render<EntitySolarBeam> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/effects/textureSolarBeam.png");
+public class RenderSolarBeam extends Render<EntitySolarBeam> {
+    private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/effects/solar_beam.png");
     private static final double TEXTURE_WIDTH = 256;
     private static final double TEXTURE_HEIGHT = 32;
     private static final double START_RADIUS = 1.3;
     private static final double BEAM_RADIUS = 1;
     private boolean clearerView = false;
 
-    public SolarBeamRenderer(RenderManager mgr) {
+    public RenderSolarBeam(RenderManager mgr) {
         super(mgr);
     }
 
     @Override
     protected ResourceLocation getEntityTexture(EntitySolarBeam entity) {
-        return SolarBeamRenderer.TEXTURE;
+        return RenderSolarBeam.TEXTURE;
     }
 
     @Override

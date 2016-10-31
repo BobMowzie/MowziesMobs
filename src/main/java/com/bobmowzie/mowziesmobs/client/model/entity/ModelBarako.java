@@ -14,7 +14,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 
 @SideOnly(Side.CLIENT)
-public class BarakoModel extends AdvancedModelBase {
+public class ModelBarako extends AdvancedModelBase {
     public AdvancedModelRenderer body;
     public AdvancedModelRenderer chest;
     public AdvancedModelRenderer rightThigh;
@@ -66,7 +66,7 @@ public class BarakoModel extends AdvancedModelBase {
 
     private ModelAnimator animator;
 
-    public BarakoModel() {
+    public ModelBarako() {
         this.textureWidth = 128;
         this.textureHeight = 128;
         animator = ModelAnimator.create();
