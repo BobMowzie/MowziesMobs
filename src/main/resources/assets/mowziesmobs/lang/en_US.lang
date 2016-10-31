@@ -37,7 +37,7 @@ potion.sunsBlessing=Sun's Blessing
 
 
 # Containers
-container.test=Test Container
+entity.barakoaya.trade=Barakoa
 
 # Death Messages
 death.attack.dart=%1$s was shot by %2$s

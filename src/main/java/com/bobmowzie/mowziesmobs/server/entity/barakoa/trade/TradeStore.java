@@ -4,6 +4,7 @@ import java.util.Random;
 
 import com.google.common.collect.ImmutableSet;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -67,6 +68,14 @@ public final class TradeStore {
         private ImmutableSet.Builder<Trade> trades = new ImmutableSet.Builder<>();
 
         private int totalWeight;
+
+        public Builder addTrade(Item input, int inputCount, Item output, int outputCount, int weight) {
+            return addTrade(input, inputCount, 0, output, outputCount, 0, weight);
+        }
+
+        public Builder addTrade(Item input, int inputCount, int inputMeta, Item output, int outputCount, int outputMeta, int weight) {
+            return addTrade(new ItemStack(input, inputCount, inputMeta), new ItemStack(output, outputCount, outputMeta), weight);
+        }
 
         public Builder addTrade(ItemStack input, ItemStack output, int weight) {
             trades.add(new Trade(input, output, weight));
