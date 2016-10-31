@@ -27,6 +27,10 @@ item.blowgun.name=Blowgun
 item.grantsunsblessing.name=Grant Sun's Blessing
 item.testStructure.name=Test Structures
 
+item.blowgun.text.0=Charges quickly
+item.blowgun.text.1=Short range
+item.blowgun.text.2=Can only shoot darts
+
 # Blocks
 tile.paintedAcacia.name=Painted Acacia Wood
 tile.paintedAcaciaSlab.name=Painted Acacia Wood Slab

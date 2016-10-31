@@ -35,8 +35,6 @@ public class ItemBlowgun extends ItemBow {
     @Override
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
         super.addInformation(stack, playerIn, tooltip, advanced);
-        tooltip.add("Charges quickly");
-        tooltip.add("Short range");
-        tooltip.add("Can only shoot darts");
+        ItemHandler.addItemText(this, tooltip);
     }
 }

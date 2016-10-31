@@ -1,7 +1,10 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
+import java.util.List;
+
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import net.minecraft.item.Item;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public enum ItemHandler {
@@ -55,5 +58,17 @@ public enum ItemHandler {
         GameRegistry.register(grantSunsBlessing);
 
         GameRegistry.register(testStructure);
+    }
+
+    public static void addItemText(Item item, List<String> lines) {
+        String keyStart = item.getUnlocalizedName() + ".text.";
+        for (int line = 0;; line++) {
+            String key = keyStart + line;
+            if (I18n.canTranslate(key)) {
+                lines.add(I18n.translateToLocal(key));   
+            } else {
+                break;
+            }
+        }
     }
 }
