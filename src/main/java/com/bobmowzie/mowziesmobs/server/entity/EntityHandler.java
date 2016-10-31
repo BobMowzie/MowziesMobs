@@ -20,6 +20,8 @@ import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 public enum EntityHandler {
     INSTANCE;
 
+    public static final String BARAKOAYA_ID = "TribesmanVillager";
+
     private final Map<String, MowzieEntityEggInfo> entityEggs = new LinkedHashMap<>();
 
     private int nextEntityId;
@@ -30,7 +32,7 @@ public enum EntityHandler {
         registerEntity(EntityWroughtnaut.class, "FerrousWroughtnaut", true, 0x8C8C8C, 0xFFFFFF, false, 1, 1, 1, EnumCreatureType.MONSTER);
         registerEntity(EntityBarakoanToBarakoana.class, "TribesmanHunter", false, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.MONSTER);
         registerEntity(EntityBarakoana.class, "TribesmanElite", true, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.MONSTER);
-        registerEntity(EntityBarakoaya.class, "TribesmanVillager", true, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.CREATURE);
+        registerEntity(EntityBarakoaya.class, BARAKOAYA_ID, true, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.CREATURE);
         registerEntity(EntityBarakoanToPlayer.class, "TribesmanPlayer", false, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.CREATURE);
         registerEntity(EntityBarako.class, "TribeLeader", true, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.MONSTER);
 

@@ -44,13 +44,17 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
 
     @Override
     public ItemStack getPickedResult(RayTraceResult target) {
-        String id = getEntityString();
+        String id = getPickedEntityId();
         if (EntityHandler.INSTANCE.hasEntityEggInfo(id)) {
             ItemStack stack = new ItemStack(ItemHandler.INSTANCE.spawnEgg);
             ItemSpawnEgg.applyEntityIdToItemStack(stack, id);
             return stack;
         }
         return null;
+    }
+
+    protected String getPickedEntityId() {
+        return getEntityString();
     }
 
     @Override
