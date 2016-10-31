@@ -1,11 +1,15 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.IntermittentAnimation;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
+import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
+import com.bobmowzie.mowziesmobs.server.item.ItemSpawnEgg;
+
+import io.netty.buffer.ByteBuf;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
@@ -14,13 +18,12 @@ import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-
-import com.bobmowzie.mowziesmobs.client.model.tools.IntermittentAnimation;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
 
 public abstract class MowzieEntity extends EntityCreature implements IEntityAdditionalSpawnData, IAnimatedEntity, IntermittentAnimatableEntity {
     private static final byte START_IA_HEALTH_UPDATE_ID = 4;
@@ -37,6 +40,21 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
 
     public MowzieEntity(World world) {
         super(world);
+    }
+
+    @Override
+    public ItemStack getPickedResult(RayTraceResult target) {
+        String id = getPickedEntityId();
+        if (EntityHandler.INSTANCE.hasEntityEggInfo(id)) {
+            ItemStack stack = new ItemStack(ItemHandler.INSTANCE.spawnEgg);
+            ItemSpawnEgg.applyEntityIdToItemStack(stack, id);
+            return stack;
+        }
+        return null;
+    }
+
+    protected String getPickedEntityId() {
+        return getEntityString();
     }
 
     @Override

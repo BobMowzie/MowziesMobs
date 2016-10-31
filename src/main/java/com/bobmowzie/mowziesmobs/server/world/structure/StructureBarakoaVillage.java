@@ -149,7 +149,7 @@ public class StructureBarakoaVillage {
                 int sideHouseDir = rand.nextInt(6) + 1;
                 if (sideHouseDir <= 2) {
                     EnumFacing sideHouseFacing = (sideHouseDir == 1) ? EnumFacing.EAST : EnumFacing.WEST;
-                    if (!world.isRemote) generateSideHouse(world, rand, pos, sideHouseFacing);
+                    generateSideHouse(world, rand, pos, sideHouseFacing);
                 }
             }
         }
@@ -169,7 +169,7 @@ public class StructureBarakoaVillage {
                 int sideHouseDir = rand.nextInt(6) + 1;
                 if (sideHouseDir <= 2) {
                     EnumFacing sideHouseFacing = (sideHouseDir == 1) ? EnumFacing.NORTH : EnumFacing.SOUTH;
-                    if (!world.isRemote) generateSideHouse(world, rand, pos, sideHouseFacing);
+                    generateSideHouse(world, rand, pos, sideHouseFacing);
                 }
             }
         }
@@ -189,7 +189,7 @@ public class StructureBarakoaVillage {
                 int sideHouseDir = rand.nextInt(6) + 1;
                 if (sideHouseDir <= 2) {
                     EnumFacing sideHouseFacing = (sideHouseDir == 1) ? EnumFacing.EAST : EnumFacing.WEST;
-                    if (!world.isRemote) generateSideHouse(world, rand, pos, sideHouseFacing);
+                    generateSideHouse(world, rand, pos, sideHouseFacing);
                 }
             }
         }
@@ -209,7 +209,7 @@ public class StructureBarakoaVillage {
                 int sideHouseDir = rand.nextInt(6) + 1;
                 if (sideHouseDir <= 2) {
                     EnumFacing sideHouseFacing = (sideHouseDir == 1) ? EnumFacing.NORTH : EnumFacing.SOUTH;
-                    if (!world.isRemote) generateSideHouse(world, rand, pos, sideHouseFacing);
+                    generateSideHouse(world, rand, pos, sideHouseFacing);
                 }
             }
         }

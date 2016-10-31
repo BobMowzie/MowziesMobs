@@ -1,6 +1,12 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
+import java.util.List;
+import java.util.UUID;
+
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.google.common.base.Optional;
+
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -8,9 +14,6 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
-
-import java.util.List;
-import java.util.UUID;
 
 public abstract class EntityBarakoan<L extends EntityLivingBase> extends EntityBarakoa {
     protected static final Optional<UUID> ABSENT_LEADER = Optional.absent();
@@ -49,6 +52,11 @@ public abstract class EntityBarakoan<L extends EntityLivingBase> extends EntityB
 
     public void setLeaderUUID(Optional<UUID> uuid) {
         getDataManager().set(LEADER, uuid);
+    }
+
+    @Override
+    protected String getPickedEntityId() {
+        return MowziesMobs.MODID + "." + EntityHandler.BARAKOAYA_ID;
     }
 
     @Override
