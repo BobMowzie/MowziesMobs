@@ -1,9 +1,12 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+
+import java.util.List;
 
 /**
  * Created by Josh on 8/15/2016.
@@ -33,4 +36,11 @@ public class ItemBarakoMask extends ItemArmor implements BarakoaMask {
 
     @Override
     public void setDamage(ItemStack stack, int damage) {}
+
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+        super.addInformation(stack, playerIn, tooltip, advanced);
+        tooltip.add("Never breaks");
+        tooltip.add("Equip, then right-click with Barakoa mask");
+    }
 }

@@ -9,6 +9,8 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 
+import java.util.List;
+
 public class ItemMobRemover extends Item {
     public ItemMobRemover() {
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
@@ -22,5 +24,11 @@ public class ItemMobRemover extends Item {
             entity.setDead();
         }
         return true;
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+        super.addInformation(stack, playerIn, tooltip, advanced);
+        tooltip.add("Left-click to remove a Mowzie's Mobs mob");
     }
 }

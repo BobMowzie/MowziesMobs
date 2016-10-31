@@ -18,6 +18,7 @@ public enum ItemHandler {
     public Item spear;
     public Item blowgun;
     public Item spawnEgg;
+    public Item grantSunsBlessing;
 
     public void onInit() {
         foliaathSeed = new ItemFoliaathSeed();
@@ -35,6 +36,7 @@ public enum ItemHandler {
         spear = new ItemSpear();
         blowgun = new ItemBlowgun();
         spawnEgg = new ItemSpawnEgg();
+        grantSunsBlessing = new ItemGrantSunsBlessing();
 
         GameRegistry.register(spawnEgg);
 
@@ -50,6 +52,8 @@ public enum ItemHandler {
         GameRegistry.register(blowgun);
 
         GameRegistry.register(mobRemover);
+        GameRegistry.register(grantSunsBlessing);
+
         GameRegistry.register(testStructure);
     }
 }

@@ -17,6 +17,8 @@ import net.minecraftforge.event.entity.player.ArrowNockEvent;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityDart;
 
+import java.util.List;
+
 public class ItemBlowgun extends ItemBow {
     public ItemBlowgun() {
         super();
@@ -28,5 +30,13 @@ public class ItemBlowgun extends ItemBow {
     @Override
     protected boolean isArrow(ItemStack stack) {
         return stack != null && stack.getItem() == ItemHandler.INSTANCE.dart;
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+        super.addInformation(stack, playerIn, tooltip, advanced);
+        tooltip.add("Charges quickly");
+        tooltip.add("Short range");
+        tooltip.add("Can only shoot darts");
     }
 }

@@ -16,6 +16,8 @@ import net.minecraft.world.World;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityBabyFoliaath;
 
+import java.util.List;
+
 public class ItemFoliaathSeed extends Item {
     public ItemFoliaathSeed() {
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
@@ -55,5 +57,12 @@ public class ItemFoliaathSeed extends Item {
             }
         }
         return EnumActionResult.SUCCESS;
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+        super.addInformation(stack, playerIn, tooltip, advanced);
+        tooltip.add("Plant in grass");
+        tooltip.add("Feed when hungry for 3 days");
     }
 }

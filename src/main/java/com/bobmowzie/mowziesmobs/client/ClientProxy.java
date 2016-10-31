@@ -66,6 +66,7 @@ public class ClientProxy extends ServerProxy {
         registerItemModel(ItemHandler.INSTANCE.spear, "spear");
         registerItemModel(ItemHandler.INSTANCE.blowgun, "blowgun");
         registerItemModel(ItemHandler.INSTANCE.spawnEgg, "spawn_egg");
+        registerItemModel(ItemHandler.INSTANCE.grantSunsBlessing, "grantsunsblessing");
 
         for (ItemBarakoaMask mask : ItemHandler.INSTANCE.barakoaMasks) {
             registerItemModel(mask, mask.getRegistryName().getResourcePath());

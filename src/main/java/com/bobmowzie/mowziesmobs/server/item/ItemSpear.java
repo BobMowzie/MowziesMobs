@@ -63,6 +63,12 @@ public class ItemSpear extends ItemSword {
         return closest;
     }
 
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+        super.addInformation(stack, playerIn, tooltip, advanced);
+        tooltip.add("Extends attack range by 2.5 blocks");
+    }
+
     public static class HitResult {
         private RayTraceResult blockHit;
 

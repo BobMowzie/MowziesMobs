@@ -22,6 +22,8 @@ import com.bobmowzie.mowziesmobs.server.message.MessageSwingWroughtAxe;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 
+import java.util.List;
+
 public class ItemWroughtAxe extends ItemSword {
     public ItemWroughtAxe() {
         super(Item.ToolMaterial.IRON);
@@ -69,5 +71,12 @@ public class ItemWroughtAxe extends ItemSword {
     @Override
     public EnumAction getItemUseAction(ItemStack itemStack) {
         return EnumAction.BOW;
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+        super.addInformation(stack, playerIn, tooltip, advanced);
+        tooltip.add("Never breaks");
+        tooltip.add("Right-click to attack in an arc");
     }
 }
