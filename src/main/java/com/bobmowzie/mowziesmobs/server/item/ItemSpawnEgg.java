@@ -50,7 +50,7 @@ public class ItemSpawnEgg extends Item {
         Iterator<MowzieEntityEggInfo> iterator = EntityHandler.INSTANCE.getEntityEggInfoIterator();
         while (iterator.hasNext()) {
             MowzieEntityEggInfo info = iterator.next();
-            ItemStack stack = new ItemStack(item, 1);
+            ItemStack stack = new ItemStack(item);
             applyEntityIdToItemStack(stack, info.entityName);
             subItems.add(stack);
         }
@@ -61,7 +61,7 @@ public class ItemSpawnEgg extends Item {
         String name = I18n.translateToLocal(getUnlocalizedName() + ".name").trim();
         String entityName = getEntityIdFromItem(stack);
         if (entityName != null) {
-            name = name + " " + I18n.translateToLocal("entity.mowziesmobs." + entityName + ".name");
+            name = name + " " + I18n.translateToLocal("entity." + entityName + ".name");
         }
         return name;
     }

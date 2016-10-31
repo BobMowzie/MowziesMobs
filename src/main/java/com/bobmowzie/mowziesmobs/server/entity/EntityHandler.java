@@ -44,7 +44,8 @@ public enum EntityHandler {
         int entityId = nextEntityId();
         EntityRegistry.registerModEntity(entityClass, name, entityId, MowziesMobs.INSTANCE, 64, 1, true);
         if (addEgg) {
-            entityEggs.put(name, new MowzieEntityEggInfo(name, entityClass, mainColor, subColor));
+            String id = MowziesMobs.MODID + "." + name;
+            entityEggs.put(id, new MowzieEntityEggInfo(id, entityClass, mainColor, subColor));
         }
         if (addSpawn) {
             EntityRegistry.addSpawn(entityClass, spawnFrequency, minGroup, maxGroup, typeOfCreature, biomes);
