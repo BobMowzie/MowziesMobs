@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.model.ModelAnimator;
@@ -220,7 +221,7 @@ public class BarakoaModel extends AdvancedModelBase {
         this.blowgun = new AdvancedModelRenderer(this, 82, 0);
         this.blowgun.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.blowgun.add3DTexture(-4, -4, 0.5F, 15, 15);
-        this.setRotateAngle(blowgun, 2.356194490192345F, 0.0F, 3.141592653589793F);
+        this.setRotateAngle(blowgun, 2.356194490192345F, 0.0F, 0);
         this.talker = new AdvancedModelRenderer(this, 0, 0);
         this.talker.setRotationPoint(0, 0, 0);
         this.calfLeft.addChild(this.footLeft);
@@ -647,6 +648,7 @@ public class BarakoaModel extends AdvancedModelBase {
             animator.rotate(armLowerRight, 0, 0, -1f);
             animator.rotate(handRight, -1f, -0.2f, 1.2f);
             animator.move(blowgun, 0, 0, 4.5f);
+            animator.rotate(blowgun, 0, 0, MathUtils.PI);
             animator.endKeyframe();
             animator.setStaticKeyframe(3);
             animator.startKeyframe(3);
@@ -663,6 +665,7 @@ public class BarakoaModel extends AdvancedModelBase {
             animator.rotate(armLowerRight, 0.8f, 0, -0.4f);
             animator.rotate(handRight, -1.5f, 0.4f, 1.0f);
             animator.move(blowgun, 0, 0, 5f);
+            animator.rotate(blowgun, 0, 0, MathUtils.PI);
             animator.endKeyframe();
             animator.setStaticKeyframe(2);
             animator.resetKeyframe(7);
