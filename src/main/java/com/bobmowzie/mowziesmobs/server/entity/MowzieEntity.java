@@ -99,6 +99,10 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
         return getEntitiesNearby(EntityLivingBase.class, distanceX, distanceY, distanceZ, radius);
     }
 
+    public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double r) {
+        return worldObj.getEntitiesWithinAABB(entityClass, getEntityBoundingBox().expand(r, r, r), e -> e != this && getDistanceToEntity(e) <= r);
+    }
+
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double dX, double dY, double dZ, double r) {
         return worldObj.getEntitiesWithinAABB(entityClass, getEntityBoundingBox().expand(dX, dY, dZ), e -> e != this && getDistanceToEntity(e) <= r && e.posY <= posY + dY);
     }
