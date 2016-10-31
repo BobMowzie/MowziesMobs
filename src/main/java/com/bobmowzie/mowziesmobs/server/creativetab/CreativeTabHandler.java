@@ -5,6 +5,7 @@ import net.minecraft.item.Item;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 
 public enum CreativeTabHandler {
@@ -17,7 +18,7 @@ public enum CreativeTabHandler {
             @Override
             @SideOnly(Side.CLIENT)
             public Item getTabIconItem() {
-                return ItemHandler.INSTANCE.barakoaMasks[0];
+                return ItemHandler.INSTANCE.barakoaMasks.get(MaskType.FURY);
             }
         };
     }

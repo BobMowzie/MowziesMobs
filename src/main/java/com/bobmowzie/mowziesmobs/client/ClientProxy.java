@@ -21,7 +21,7 @@ import com.bobmowzie.mowziesmobs.client.render.entity.FoliaathRenderer;
 import com.bobmowzie.mowziesmobs.client.render.entity.SolarBeamRenderer;
 import com.bobmowzie.mowziesmobs.client.render.entity.SunstrikeRenderer;
 import com.bobmowzie.mowziesmobs.client.render.entity.TribeLeaderRenderer;
-import com.bobmowzie.mowziesmobs.client.render.entity.TribesmanRenderer;
+import com.bobmowzie.mowziesmobs.client.render.entity.BarakoaRenderer;
 import com.bobmowzie.mowziesmobs.client.render.entity.WroughtnautRenderer;
 import com.bobmowzie.mowziesmobs.client.sound.SunstrikeSound;
 import com.bobmowzie.mowziesmobs.server.ServerProxy;
@@ -47,10 +47,10 @@ public class ClientProxy extends ServerProxy {
         RenderingRegistry.registerEntityRenderingHandler(EntityFoliaath.class, FoliaathRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityWroughtnaut.class, WroughtnautRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityBarako.class, TribeLeaderRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityBarakoana.class, TribesmanRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityBarakoanToBarakoana.class, TribesmanRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityBarakoaya.class, TribesmanRenderer::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityBarakoanToPlayer.class, TribesmanRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityBarakoana.class, BarakoaRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityBarakoanToBarakoana.class, BarakoaRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityBarakoaya.class, BarakoaRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityBarakoanToPlayer.class, BarakoaRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityDart.class, DartRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(EntitySunstrike.class, SunstrikeRenderer::new);
         RenderingRegistry.registerEntityRenderingHandler(EntitySolarBeam.class, SolarBeamRenderer::new);
@@ -68,7 +68,7 @@ public class ClientProxy extends ServerProxy {
         registerItemModel(ItemHandler.INSTANCE.spawnEgg, "spawn_egg");
         registerItemModel(ItemHandler.INSTANCE.grantSunsBlessing, "grantsunsblessing");
 
-        for (ItemBarakoaMask mask : ItemHandler.INSTANCE.barakoaMasks) {
+        for (ItemBarakoaMask mask : ItemHandler.INSTANCE.barakoaMasks.values()) {
             registerItemModel(mask, mask.getRegistryName().getResourcePath());
         }
         registerItemModel(ItemHandler.INSTANCE.barakoMask, "barako_mask.tbl");

@@ -15,14 +15,12 @@ import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.google.common.base.Optional;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.EnumDyeColor;
@@ -39,22 +37,22 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder {
     private static final TradeStore DEFAULT = new TradeStore.Builder()
-            .addTrade(Items.GOLD_NUGGET, 9, ItemHandler.INSTANCE.blowgun, 1, 6)
-            .addTrade(Items.DYE, 20, EnumDyeColor.BROWN.getDyeDamage(), ItemHandler.INSTANCE.dart, 8, 0, 6)
-            .addTrade(Items.GOLD_NUGGET, 15, ItemHandler.INSTANCE.spear, 1, 4)
-            .addTrade(Items.GOLD_INGOT, 2, ItemHandler.INSTANCE.spear, 1, 4)
-            .addTrade(Items.GOLD_NUGGET, 6, Item.getItemFromBlock(BlockHandler.INSTANCE.paintedAcacia), 2, 4)
-            .addTrade(Items.DYE, 16, EnumDyeColor.BROWN.getDyeDamage(), Item.getItemFromBlock(BlockHandler.INSTANCE.paintedAcacia), 1, 0, 4)
-            .addTrade(Items.DYE, 10, EnumDyeColor.BROWN.getDyeDamage(), Items.COOKED_CHICKEN, 2, 0, 2)
-            .addTrade(Items.GOLD_NUGGET, 4, Items.COOKED_CHICKEN, 1, 2)
-            .addTrade(Items.DYE, 14, EnumDyeColor.BROWN.getDyeDamage(), Items.COOKED_PORKCHOP, 2, 0, 2)
-            .addTrade(Items.GOLD_NUGGET, 5, Items.COOKED_PORKCHOP, 1, 2)
+        .addTrade(Items.GOLD_NUGGET, 9, ItemHandler.INSTANCE.blowgun, 1, 6)
+        .addTrade(Items.DYE, 20, EnumDyeColor.BROWN.getDyeDamage(), ItemHandler.INSTANCE.dart, 8, 0, 6)
+        .addTrade(Items.GOLD_NUGGET, 15, ItemHandler.INSTANCE.spear, 1, 4)
+        .addTrade(Items.GOLD_INGOT, 2, ItemHandler.INSTANCE.spear, 1, 4)
+        .addTrade(Items.GOLD_NUGGET, 6, Item.getItemFromBlock(BlockHandler.INSTANCE.paintedAcacia), 2, 4)
+        .addTrade(Items.DYE, 16, EnumDyeColor.BROWN.getDyeDamage(), Item.getItemFromBlock(BlockHandler.INSTANCE.paintedAcacia), 1, 0, 4)
+        .addTrade(Items.DYE, 10, EnumDyeColor.BROWN.getDyeDamage(), Items.COOKED_CHICKEN, 2, 0, 2)
+        .addTrade(Items.GOLD_NUGGET, 4, Items.COOKED_CHICKEN, 1, 2)
+        .addTrade(Items.DYE, 14, EnumDyeColor.BROWN.getDyeDamage(), Items.COOKED_PORKCHOP, 2, 0, 2)
+        .addTrade(Items.GOLD_NUGGET, 5, Items.COOKED_PORKCHOP, 1, 2)
 
-            .addTrade(Items.MELON, 3, Items.GOLD_NUGGET, 5, 2)
-            .addTrade(Items.CHICKEN, 1, Items.GOLD_NUGGET, 3, 2)
-            .addTrade(Items.IRON_SWORD, 1, Items.GOLD_INGOT, 1, 2)
-            .addTrade(Items.IRON_HELMET, 2, Items.GOLD_INGOT, 2, 2)
-            .addTrade(Items.STONE_SWORD, 1, Items.GOLD_NUGGET, 5, 2)
+        .addTrade(Items.MELON, 3, Items.GOLD_NUGGET, 5, 2)
+        .addTrade(Items.CHICKEN, 1, Items.GOLD_NUGGET, 3, 2)
+        .addTrade(Items.IRON_SWORD, 1, Items.GOLD_INGOT, 1, 2)
+        .addTrade(Items.IRON_HELMET, 2, Items.GOLD_INGOT, 2, 2)
+        .addTrade(Items.STONE_SWORD, 1, Items.GOLD_NUGGET, 5, 2)
         .build();
 
     private static final DataParameter<Optional<Trade>> TRADE = EntityDataManager.createKey(EntityBarakoaya.class, ServerProxy.OPTIONAL_TRADE);

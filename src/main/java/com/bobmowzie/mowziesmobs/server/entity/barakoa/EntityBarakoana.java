@@ -3,9 +3,8 @@ package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.ilexiconn.llibrary.server.animation.Animation;
-import net.ilexiconn.llibrary.server.animation.AnimationHandler;
-import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
+import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
@@ -18,7 +17,6 @@ import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -27,14 +25,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
-import org.apache.commons.lang3.ArrayUtils;
-
-import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationBlockAI;
-
 public class EntityBarakoana extends EntityBarakoa {
-    public static final Animation BLOCK_ANIMATION = Animation.create(10);
-
     private List<EntityBarakoanToBarakoana> pack = new ArrayList<>();
 
     private int packRadius = 3;
@@ -48,8 +39,7 @@ public class EntityBarakoana extends EntityBarakoa {
         this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityChicken.class, 0, true, false, null));
         this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityZombie.class, 0, true, false, null));
         this.targetTasks.addTask(3, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, true));
-        this.tasks.addTask(2, new AnimationBlockAI<>(this, BLOCK_ANIMATION));
-        this.setMask(1);
+        this.setMask(MaskType.FURY);
         this.experienceValue = 12;
     }
 
@@ -87,12 +77,6 @@ public class EntityBarakoana extends EntityBarakoa {
             if (!(entity instanceof EntityPlayer) || !(((EntityPlayer) entity).capabilities.isCreativeMode)) {
                 setAttackTarget((EntityLivingBase) entity);
             }
-        }
-        if (entity instanceof EntityLivingBase && (getAnimation() == IAnimatedEntity.NO_ANIMATION || getAnimation() == HURT_ANIMATION || getAnimation() == BLOCK_ANIMATION)) {
-            blockingEntity = (EntityLivingBase) entity;
-            playSound(SoundEvents.ENTITY_ZOMBIE_ATTACK_DOOR_WOOD, 0.3f, 1.5f);
-            AnimationHandler.INSTANCE.sendAnimationMessage(this, BLOCK_ANIMATION);
-            return false;
         }
         return super.attackEntityFrom(source, damage);
     }
@@ -205,10 +189,5 @@ public class EntityBarakoana extends EntityBarakoa {
                 }
             }
         }
-    }
-
-    @Override
-    public Animation[] getAnimations() {
-        return ArrayUtils.add(super.getAnimations(), BLOCK_ANIMATION);
     }
 }

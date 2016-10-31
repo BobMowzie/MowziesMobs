@@ -1,7 +1,22 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationActivateAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAttackAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationBlockAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationProjectileAttackAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
+import com.bobmowzie.mowziesmobs.server.entity.EntityDart;
+import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
+import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -16,6 +31,7 @@ import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Enchantments;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -28,19 +44,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationActivateAI;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAttackAI;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationProjectileAttackAI;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
-import com.bobmowzie.mowziesmobs.server.entity.EntityDart;
-import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
-import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
-import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-
 public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttackMob, LeaderSunstrikeImmune {
     public static final Animation DIE_ANIMATION = Animation.create(70);
     public static final Animation HURT_ANIMATION = Animation.create(10);
@@ -48,6 +51,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     public static final Animation PROJECTILE_ATTACK_ANIMATION = Animation.create(20);
     public static final Animation IDLE_ANIMATION = Animation.create(35);
     public static final Animation ACTIVATE_ANIMATION = Animation.create(20);
+    public static final Animation BLOCK_ANIMATION = Animation.create(10);
     private static final DataParameter<Boolean> DANCING = EntityDataManager.createKey(EntityBarakoa.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Integer> MASK = EntityDataManager.createKey(EntityBarakoa.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> WEAPON = EntityDataManager.createKey(EntityBarakoa.class, DataSerializers.VARINT);
@@ -73,10 +77,11 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         tasks.addTask(4, new AnimationAI<>(this, IDLE_ANIMATION));
         tasks.addTask(3, new AnimationTakeDamage<>(this));
         tasks.addTask(1, new AnimationDieAI<>(this));
+        tasks.addTask(2, new AnimationBlockAI<>(this, BLOCK_ANIMATION));
         tasks.addTask(0, new AnimationActivateAI<>(this, ACTIVATE_ANIMATION));
         tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         tasks.addTask(8, new EntityAILookIdle(this));
-        setMask(MathHelper.getRandomIntegerInRange(rand, 2, 5));
+        setMask(MaskType.from(MathHelper.getRandomIntegerInRange(rand, 1, 4)));
         stepHeight = 1;
         circleTick += rand.nextInt(200);
         frame += rand.nextInt(50);
@@ -86,7 +91,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
 
     @Override
     public int getAttack() {
-        return getMask() == 1 ? 6 : 4;
+        return getMask() == MaskType.FURY ? 6 : 4;
     }
 
     @Override
@@ -295,17 +300,13 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         getDataManager().set(DANCING, dancing);
     }
 
-    public int getMask() {
-        return getDataManager().get(MASK);
+    public MaskType getMask() {
+        return MaskType.from(getDataManager().get(MASK));
     }
 
-    public void setMask(int type) {
-        getDataManager().set(MASK, type);
-        if (getMask() == 1) {
-            setSize(0.7f, 2f);
-        } else {
-            setSize(0.6f, 1.7f);
-        }
+    public void setMask(MaskType type) {
+        getDataManager().set(MASK, type.ordinal());
+        setSize(type.entityWidth, type.entityHeight);
     }
 
     public int getWeapon() {
@@ -327,14 +328,14 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     @Override
     public void writeEntityToNBT(NBTTagCompound compound) {
         super.writeEntityToNBT(compound);
-        compound.setInteger("mask", getMask());
+        compound.setInteger("mask", getMask().ordinal());
         compound.setInteger("weapon", getWeapon());
     }
 
     @Override
     public void readEntityFromNBT(NBTTagCompound compound) {
         super.readEntityFromNBT(compound);
-        setMask(compound.getInteger("mask"));
+        setMask(MaskType.from(compound.getInteger("mask")));
         setWeapon(compound.getInteger("weapon"));
     }
 
@@ -363,9 +364,21 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     }
 
     @Override
+    public boolean attackEntityFrom(DamageSource source, float damage) {
+        Entity entity = source.getEntity();
+        if (getMask().canBlock && entity instanceof EntityLivingBase && (getAnimation() == NO_ANIMATION || getAnimation() == HURT_ANIMATION || getAnimation() == BLOCK_ANIMATION)) {
+            blockingEntity = (EntityLivingBase) entity;
+            playSound(SoundEvents.ENTITY_ZOMBIE_ATTACK_DOOR_WOOD, 0.3F, 1.5F);
+            AnimationHandler.INSTANCE.sendAnimationMessage(this, BLOCK_ANIMATION);
+            return false;
+        }
+        return super.attackEntityFrom(source, damage);
+    }
+
+    @Override
     public void onDeath(DamageSource source) {
         if (!worldObj.isRemote && worldObj.getGameRules().getBoolean("doMobLoot") && rand.nextInt(12) == 0) {
-            dropItem(ItemHandler.INSTANCE.barakoaMasks[getMask() - 1], 1);
+            dropItem(ItemHandler.INSTANCE.barakoaMasks.get(getMask()), 1);
         }
         super.onDeath(source);
     }
@@ -384,6 +397,6 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
 
     @Override
     public Animation[] getAnimations() {
-        return new Animation[]{DIE_ANIMATION, HURT_ANIMATION, ATTACK_ANIMATION, PROJECTILE_ATTACK_ANIMATION, IDLE_ANIMATION, ACTIVATE_ANIMATION};
+        return new Animation[]{DIE_ANIMATION, HURT_ANIMATION, ATTACK_ANIMATION, PROJECTILE_ATTACK_ANIMATION, BLOCK_ANIMATION, IDLE_ANIMATION, ACTIVATE_ANIMATION};
     }
 }

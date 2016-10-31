@@ -46,14 +46,14 @@ public class AnimationSpawnBarakoa extends AnimationAI<EntityBarako> {
             } else if (angle - animatingEntity.rotationYaw < -70) {
                 angle = -70 + animatingEntity.rotationYaw;
             }
-            EntityBarakoaya tribesman = new EntityBarakoaya(animatingEntity.worldObj);
-            tribesman.setPositionAndRotation(animatingEntity.posX + 2 * Math.sin(-angle * (Math.PI / 180)), animatingEntity.posY + 1.5, animatingEntity.posZ + 2 * Math.cos(-angle * (Math.PI / 180)), animatingEntity.rotationYawHead, 0);
-            tribesman.setActive(false);
-            tribesman.active = false;
-            animatingEntity.worldObj.spawnEntityInWorld(tribesman);
-            tribesman.motionX = 0.7 * Math.sin(-angle * (Math.PI / 180));
-            tribesman.motionY = 0.5;
-            tribesman.motionZ = 0.7 * Math.cos(-angle * (Math.PI / 180));
+            EntityBarakoaya barakoa = new EntityBarakoaya(animatingEntity.worldObj);
+            barakoa.setPositionAndRotation(animatingEntity.posX + 2 * Math.sin(-angle * (Math.PI / 180)), animatingEntity.posY + 1.5, animatingEntity.posZ + 2 * Math.cos(-angle * (Math.PI / 180)), animatingEntity.rotationYawHead, 0);
+            barakoa.setActive(false);
+            barakoa.active = false;
+            animatingEntity.worldObj.spawnEntityInWorld(barakoa);
+            barakoa.motionX = 0.7 * Math.sin(-angle * (Math.PI / 180));
+            barakoa.motionY = 0.5;
+            barakoa.motionZ = 0.7 * Math.cos(-angle * (Math.PI / 180));
         }
     }
 }

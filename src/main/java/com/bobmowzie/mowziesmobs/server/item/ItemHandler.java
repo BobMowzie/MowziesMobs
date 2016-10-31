@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
+import java.util.EnumMap;
 import java.util.List;
 
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
@@ -15,7 +16,7 @@ public enum ItemHandler {
     public Item mobRemover;
     public Item wroughtAxe;
     public Item wroughtHelmet;
-    public ItemBarakoaMask[] barakoaMasks;
+    public EnumMap<MaskType, ItemBarakoaMask> barakoaMasks;
     public ItemBarakoMask barakoMask;
     public Item dart;
     public Item spear;
@@ -29,10 +30,9 @@ public enum ItemHandler {
         mobRemover = new ItemMobRemover();
         wroughtAxe = new ItemWroughtAxe();
         wroughtHelmet = new ItemWroughtHelm();
-        MaskType[] types = MaskType.values();
-        barakoaMasks = new ItemBarakoaMask[types.length];
-        for (int i = 0; i < types.length; i++) {
-            barakoaMasks[i] = new ItemBarakoaMask(types[i]);
+        barakoaMasks = MaskType.newEnumMap(ItemBarakoaMask.class);
+        for (MaskType mask : MaskType.values()) {
+            barakoaMasks.put(mask, new ItemBarakoaMask(mask));
         }
         barakoMask = new ItemBarakoMask();
         dart = new ItemDart();
@@ -46,7 +46,7 @@ public enum ItemHandler {
         GameRegistry.register(foliaathSeed);
         GameRegistry.register(wroughtAxe);
         GameRegistry.register(wroughtHelmet);
-        for (ItemBarakoaMask itemBarakoaMask : barakoaMasks) {
+        for (ItemBarakoaMask itemBarakoaMask : barakoaMasks.values()) {
             GameRegistry.register(itemBarakoaMask);
         }
         GameRegistry.register(barakoMask);

@@ -14,6 +14,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 
 @SideOnly(Side.CLIENT)
 public class BarakoaModel extends AdvancedModelBase {
@@ -307,7 +308,7 @@ public class BarakoaModel extends AdvancedModelBase {
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         animate((IAnimatedEntity) entity, f, f1, f2, f3, f4, f5);
         GlStateManager.pushMatrix();
-        if (((EntityBarakoa) entity).getMask() == 1) {
+        if (((EntityBarakoa) entity).getMask() == MaskType.FURY) {
             GlStateManager.scale(0.85f, 0.85f, 0.85f);
             GlStateManager.translate(0, 0.25f, 0);
         } else {
@@ -328,35 +329,35 @@ public class BarakoaModel extends AdvancedModelBase {
     @Override
     public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity entity) {
         super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-        EntityBarakoa tribesman = (EntityBarakoa) entity;
+        EntityBarakoa barakoa = (EntityBarakoa) entity;
         resetToDefaultPose();
 //                f = entity.ticksExisted;
 //                f1 = 0.5f;
-        if (tribesman.getWeapon() == 0) {
+        if (barakoa.getWeapon() == 0) {
             spear.isHidden = false;
             blowgun.isHidden = true;
         } else {
             spear.isHidden = true;
             blowgun.isHidden = false;
         }
-        if (!tribesman.active) {
+        if (!barakoa.active) {
             return;
         }
-        float doWalk = tribesman.doWalk.getAnimationProgressSinSqrt();
-        float dance = tribesman.dancing.getAnimationProgressSinSqrt();
+        float doWalk = barakoa.doWalk.getAnimationProgressSinSqrt();
+        float dance = barakoa.dancing.getAnimationProgressSinSqrt();
         if (f1 > 0.55f) {
             f1 = 0.55f;
         }
         float globalSpeed = 1.5f;
         float globalHeight = 1 * doWalk;
         float globalDegree = 1 * doWalk * (1 - dance);
-        if (tribesman.getAnimation() != EntityBarakoa.PROJECTILE_ATTACK_ANIMATION) {
+        if (barakoa.getAnimation() != EntityBarakoa.PROJECTILE_ATTACK_ANIMATION) {
             faceTarget(f3, f4, 2.0F, neck);
             faceTarget(f3, f4, 2.0F, head);
         }
-        float frame = tribesman.frame + LLibrary.PROXY.getPartialTicks();
+        float frame = barakoa.frame + LLibrary.PROXY.getPartialTicks();
 
-        if (tribesman.getMask() == 1) {
+        if (barakoa.getMask() == MaskType.FURY) {
             armLeftJoint.rotateAngleX -= 0.2;
             armLeftJoint.rotateAngleY += 1.3;
             armLowerLeft.rotateAngleX -= 0.2;
@@ -403,7 +404,7 @@ public class BarakoaModel extends AdvancedModelBase {
         swing(handRight, 0.5f * globalSpeed, 1f * globalDegree, true, 0, 0, f, f1);
         walk(handLeft, 0.5f * globalSpeed, 1 * globalDegree, true, -2, 0.4f * globalDegree, f, f1);
 
-        if (tribesman.getAnimation() != EntityBarakoa.DIE_ANIMATION) {
+        if (barakoa.getAnimation() != EntityBarakoa.DIE_ANIMATION) {
             walk(body, 0.2f, 0.05f, false, 0, 0, frame, 1f);
             walk(thighLeftJoint, 0.2f, 0.05f, true, 0, 0, frame, 1f);
             walk(thighRightJoint, 0.2f, 0.05f, true, 0, 0, frame, 1f);
@@ -436,7 +437,7 @@ public class BarakoaModel extends AdvancedModelBase {
         flap(head, 1.2f * danceSpeed, 0.4f * dance, true, 0, 0, frame, 1f);
         walk(loinClothFront, 0.6f * danceSpeed, 0.6f * dance, true, 1, 0.4f * dance, frame, 1f);
         walk(loinClothBack, 0.6f * danceSpeed, 0.6f * dance, false, 1, 0.4f * dance, frame, 1f);
-        if (tribesman.getMask() == 1) {
+        if (barakoa.getMask() == MaskType.FURY) {
             armLeftJoint.rotateAngleX += 0.2 * dance;
             armLeftJoint.rotateAngleY -= 1.3 * dance;
             armLowerLeft.rotateAngleX += 0.2 * dance;
@@ -446,13 +447,13 @@ public class BarakoaModel extends AdvancedModelBase {
     }
 
     public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        EntityBarakoa tribesman = (EntityBarakoa) entity;
-        animator.update(tribesman);
-        setRotationAngles(f, f1, f2, f3, f4, f5, tribesman);
+        EntityBarakoa barakoa = (EntityBarakoa) entity;
+        animator.update(barakoa);
+        setRotationAngles(f, f1, f2, f3, f4, f5, barakoa);
 
-        float frame = tribesman.frame + LLibrary.PROXY.getPartialTicks();
+        float frame = barakoa.frame + LLibrary.PROXY.getPartialTicks();
 
-        if (tribesman.getMask() == 1) {
+        if (barakoa.getMask() == MaskType.FURY) {
             animator.setAnimation(EntityBarakoa.ATTACK_ANIMATION);
             animator.setStaticKeyframe(3);
             animator.startKeyframe(4);
@@ -763,12 +764,12 @@ public class BarakoaModel extends AdvancedModelBase {
         animator.setStaticKeyframe(5);
 
         //Inactive
-        if (!tribesman.active) {
+        if (!barakoa.active) {
             scaler.rotationPointX += 0.999f;
             head.rotateAngleX -= 1.58f;
             body.rotationPointY += 9f;
             body.rotationPointZ += 5f;
-            if (!tribesman.onGround) {
+            if (!barakoa.onGround) {
                 body.rotateAngleX += 0.4f * frame;
             }
         }
@@ -805,7 +806,7 @@ public class BarakoaModel extends AdvancedModelBase {
         flap(armUpperLeft, 0.4f, 0.2f * talk, true, 2, 0, frame, 1f);
         walk(armLowerLeft, 0.5f, 0.2f * talk, false, -1, 0.3f * talk, frame, 1f);
         swing(handLeft, 0.5f, 0.2f * talk, false, -2, -1.8f * talk, frame, 1f);
-        if (tribesman.getMask() == 1) {
+        if (barakoa.getMask() == MaskType.FURY) {
             armLeftJoint.rotateAngleX += 0.2 * talk;
             armLeftJoint.rotateAngleY -= 1.3 * talk;
             armLowerLeft.rotateAngleX += 0.2 * talk;
