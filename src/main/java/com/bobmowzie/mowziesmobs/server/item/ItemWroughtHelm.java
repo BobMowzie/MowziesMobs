@@ -44,6 +44,6 @@ public class ItemWroughtHelm extends ItemArmor {
     @Override
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
         super.addInformation(stack, playerIn, tooltip, advanced);
-        tooltip.add("Never breaks");
+        ItemHandler.addItemText(this, tooltip);
     }
 }

@@ -62,7 +62,6 @@ public class ItemFoliaathSeed extends Item {
     @Override
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
         super.addInformation(stack, playerIn, tooltip, advanced);
-        tooltip.add("Plant in grass");
-        tooltip.add("Feed when hungry for 3 days");
+        ItemHandler.addItemText(this, tooltip);
     }
 }

@@ -4,10 +4,17 @@ import java.util.List;
 import java.util.UUID;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationBlockAI;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.google.common.base.Optional;
 
+import net.ilexiconn.llibrary.server.animation.Animation;
+import net.ilexiconn.llibrary.server.animation.AnimationHandler;
+import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -17,6 +24,7 @@ import net.minecraft.world.World;
 
 public abstract class EntityBarakoan<L extends EntityLivingBase> extends EntityBarakoa {
     protected static final Optional<UUID> ABSENT_LEADER = Optional.absent();
+    public static final Animation BLOCK_ANIMATION = Animation.create(10);
 
     private static final DataParameter<Optional<UUID>> LEADER = EntityDataManager.createKey(EntityBarakoanToBarakoana.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 
@@ -32,6 +40,8 @@ public abstract class EntityBarakoan<L extends EntityLivingBase> extends EntityB
 
     public EntityBarakoan(World world, Class<L> leaderClass, L leader) {
         super(world);
+        this.tasks.addTask(2, new AnimationBlockAI<>(this, BLOCK_ANIMATION));
+
         this.leaderClass = leaderClass;
         this.leader = leader;
     }
@@ -70,6 +80,18 @@ public abstract class EntityBarakoan<L extends EntityLivingBase> extends EntityB
                 }
             }
         }
+    }
+
+    @Override
+    public boolean attackEntityFrom(DamageSource source, float damage) {
+        Entity entity = source.getEntity();
+        if (getMask() == 1 && entity instanceof EntityLivingBase && (getAnimation() == IAnimatedEntity.NO_ANIMATION || getAnimation() == HURT_ANIMATION || getAnimation() == BLOCK_ANIMATION)) {
+            blockingEntity = (EntityLivingBase) entity;
+            playSound(SoundEvents.ENTITY_ZOMBIE_ATTACK_DOOR_WOOD, 0.3f, 1.5f);
+            AnimationHandler.INSTANCE.sendAnimationMessage(this, BLOCK_ANIMATION);
+            return false;
+        }
+        return super.attackEntityFrom(source, damage);
     }
 
     @Override

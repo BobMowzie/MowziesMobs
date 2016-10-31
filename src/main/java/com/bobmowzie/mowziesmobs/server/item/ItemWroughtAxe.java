@@ -76,7 +76,6 @@ public class ItemWroughtAxe extends ItemSword {
     @Override
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
         super.addInformation(stack, playerIn, tooltip, advanced);
-        tooltip.add("Never breaks");
-        tooltip.add("Right-click to attack in an arc");
+        ItemHandler.addItemText(this, tooltip);
     }
 }

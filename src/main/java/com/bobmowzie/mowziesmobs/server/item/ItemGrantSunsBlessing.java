@@ -31,9 +31,6 @@ public class ItemGrantSunsBlessing extends Item {
     @Override
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
         super.addInformation(stack, playerIn, tooltip, advanced);
-        tooltip.add("This item is creative-mode only");
-        tooltip.add("Grants Sun's Blessing for 10 minutes");
-        tooltip.add("With empty hand, right-click to call a sunstrike");
-        tooltip.add("With empty hand, shift-right-click to fire a solar beam");
+        ItemHandler.addItemText(this, tooltip);
     }
 }

@@ -66,7 +66,7 @@ public class ItemSpear extends ItemSword {
     @Override
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
         super.addInformation(stack, playerIn, tooltip, advanced);
-        tooltip.add("Extends attack range by 2.5 blocks");
+        ItemHandler.addItemText(this, tooltip);
     }
 
     public static class HitResult {

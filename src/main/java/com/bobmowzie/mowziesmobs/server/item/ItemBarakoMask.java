@@ -40,7 +40,6 @@ public class ItemBarakoMask extends ItemArmor implements BarakoaMask {
     @Override
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
         super.addInformation(stack, playerIn, tooltip, advanced);
-        tooltip.add("Never breaks");
-        tooltip.add("Equip, then right-click with Barakoa mask");
+        ItemHandler.addItemText(this, tooltip);
     }
 }

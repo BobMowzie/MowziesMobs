@@ -101,7 +101,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
 
     @Override
     protected SoundEvent getAmbientSound() {
-        if (!active || danceTimer != 0) {
+        if (!active || danceTimer != 0 || (getEntitiesNearby(EntityBarakoa.class, 8, 3, 8, 8).isEmpty() && getEntitiesNearby(EntityBarako.class, 8, 3, 8, 8).isEmpty() && getEntitiesNearby(EntityPlayer.class, 8, 3, 8, 8).isEmpty())) {
             return null;
         }
         if (getAttackTarget() == null) {

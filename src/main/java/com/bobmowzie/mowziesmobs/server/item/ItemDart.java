@@ -30,8 +30,7 @@ public class ItemDart extends ItemArrow {
     @Override
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
         super.addInformation(stack, playerIn, tooltip, advanced);
-        tooltip.add("Can only be used with blowgun");
-        tooltip.add("Poisons targets");
+        ItemHandler.addItemText(this, tooltip);
     }
 
     public static DamageSource causeArrowDamage(EntityDart entitydart, Entity entity) {

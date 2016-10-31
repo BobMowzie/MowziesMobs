@@ -29,6 +29,6 @@ public class ItemMobRemover extends Item {
     @Override
     public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
         super.addInformation(stack, playerIn, tooltip, advanced);
-        tooltip.add("Left-click to remove a Mowzie's Mobs mob");
+        ItemHandler.addItemText(this, tooltip);
     }
 }
