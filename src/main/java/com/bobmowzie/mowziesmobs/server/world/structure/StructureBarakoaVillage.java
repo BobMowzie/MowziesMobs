@@ -404,9 +404,71 @@ public class StructureBarakoaVillage {
         }
     }
 
+    public static void generateThrone(World world, Random rand, BlockPos pos, EnumFacing dir) {
+        StructureBuilder structure = new StructureBuilder().startComponent()
+
+                ;
+
+        structure.endComponent();
+        structure.rotate(dir, EnumFacing.UP).generate(world, pos, rand);
+    }
+
+    public static void generateFirepit(World world, Random rand, BlockPos pos) {
+        StructureBuilder structure = new StructureBuilder().startComponent()
+
+                ;
+
+        structure.endComponent();
+        structure.generate(world, pos, rand);
+    }
+
+    public static void generateSkulls(World world, Random rand, BlockPos pos, EnumFacing dir) {
+        StructureBuilder structure = new StructureBuilder().startComponent()
+                .fillCube(-2, 0, -1, 5, 1, 3, Blocks.HAY_BLOCK)
+                .fillCube(-1, 0, -2, 3, 1, 5, Blocks.HAY_BLOCK)
+                ;
+        structure.endComponent();
+        structure.generate(world, pos, rand);
+
+        BlockPos[] poslist1;
+        if (dir==EnumFacing.NORTH) {
+            poslist1 = new BlockPos[] {pos.add(-2, 0, -1), pos.add(-2, 0, 0), pos.add(-2, 0, 1), pos.add(-1, 0, 2),  pos.add(0, 0, 2),  pos.add(1, 0, 2), pos.add(2, 0, 1), pos.add(2, 0, 0), pos.add(2, 0, -1)};
+        }
+        else if (dir==EnumFacing.SOUTH) {
+            poslist1 = new BlockPos[] {pos.add(-2, 0, -1), pos.add(-2, 0, 0), pos.add(-2, 0, 1), pos.add(-1, 0, -2),  pos.add(0, 0, -2),  pos.add(1, 0, -2), pos.add(2, 0, 1), pos.add(2, 0, 0), pos.add(2, 0, -1)};
+        }
+        else if (dir==EnumFacing.EAST) {
+            poslist1 = new BlockPos[] {pos.add(-1, 0, -2), pos.add(0, 0, -2), pos.add(1, 0, -2), pos.add(2, 0, -1),  pos.add(2, 0, 0),  pos.add(2, 0, 1), pos.add(1, 0, 2), pos.add(0, 0, 2), pos.add(-1, 0, 2)};
+        }
+        else {
+            poslist1 = new BlockPos[] {pos.add(-1, 0, -2), pos.add(0, 0, -2), pos.add(1, 0, -2), pos.add(-2, 0, -1),  pos.add(-2, 0, 0),  pos.add(-2, 0, 1), pos.add(1, 0, 2), pos.add(0, 0, 2), pos.add(-1, 0, 2)};
+        }
+        BlockPos[] poslist2 = {pos.add(-1, 0, -1), pos.add(-1, 0, 0), pos.add(-1, 0, 1), pos.add(0, 0, -1), pos.add(0, 0, 1), pos.add(1, 0, -1), pos.add(1, 0, 0), pos.add(1, 0, 1)};
+
+        boolean lastOnFence = false;
+        for (int i = 0; i < poslist1.length; i++) {
+            if (!lastOnFence && rand.nextBoolean()) {
+                generateSkull(world, rand, poslist1[i]);
+                lastOnFence = true;
+            }
+            else {
+                world.setBlockState(poslist1[i].add(0,1,0), Blocks.SKULL.getDefaultState().withProperty(BlockSkull.FACING, EnumFacing.UP));
+                ((TileEntitySkull)world.getTileEntity(poslist1[i].add(0,1,0))).setSkullRotation(rand.nextInt(21) - 10);
+                lastOnFence = false;
+            }
+        }
+        for (int i = 0; i < poslist2.length; i++) {
+            if (rand.nextInt(5) == 0) {
+                world.setBlockState(poslist2[i].add(0, 1, 0), Blocks.SKULL.getDefaultState().withProperty(BlockSkull.FACING, EnumFacing.UP));
+                ((TileEntitySkull) world.getTileEntity(poslist2[i].add(0, 1, 0))).setSkullRotation(rand.nextInt(21) - 10);
+            }
+        }
+    }
+
     public static void generateSkull(World world, Random rand, BlockPos pos) {
-        world.setBlockState(new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ()), Blocks.OAK_FENCE.getDefaultState());
-        world.setBlockState(new BlockPos(pos.getX(), pos.getY() + 2, pos.getZ()), Blocks.SKULL.getDefaultState().withProperty(BlockSkull.FACING, EnumFacing.SOUTH));
+        world.setBlockState(pos.add(0,1,0), Blocks.OAK_FENCE.getDefaultState());
+        world.setBlockState(pos.add(0,2,0), Blocks.SKULL.getDefaultState().withProperty(BlockSkull.FACING, EnumFacing.UP));
+        ((TileEntitySkull)world.getTileEntity(pos.add(0,2,0))).setSkullRotation(rand.nextInt(21) - 10);
     }
 
     public static void generateTorch(World world, BlockPos pos) {
