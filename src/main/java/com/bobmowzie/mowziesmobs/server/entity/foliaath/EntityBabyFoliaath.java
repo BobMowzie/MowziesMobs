@@ -159,8 +159,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
 
     private Set<Item> getMeat() {
         if (meat == null) {
-            // TODO: include cooked variants?
-            meat = Sets.newHashSet(Items.PORKCHOP, Items.BEEF, Items.CHICKEN, Items.FISH, Items.SPIDER_EYE);
+            meat = Sets.newHashSet(Items.PORKCHOP, Items.COOKED_BEEF, Items.COOKED_CHICKEN, Items.COOKED_FISH, Items.RABBIT, Items.COOKED_RABBIT, Items.MUTTON, Items.COOKED_MUTTON, Items.BEEF, Items.CHICKEN, Items.FISH, Items.SPIDER_EYE);
         }
         return meat;
     }
