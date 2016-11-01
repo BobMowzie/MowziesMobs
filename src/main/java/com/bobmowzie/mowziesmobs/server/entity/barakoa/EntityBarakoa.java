@@ -67,6 +67,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     private int cryDelay = -1;
     private int danceTimer = 0;
     private int ticksWithoutTarget;
+    public int timeUntilDeath = -1;
 
     public EntityBarakoa(World world) {
         super(world);
@@ -275,6 +276,11 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             ticksWithoutTarget++;
         } else {
             ticksWithoutTarget = 0;
+        }
+
+        if (timeUntilDeath > 0) timeUntilDeath--;
+        else if (timeUntilDeath == 0) {
+            attackEntityFrom(DamageSource.causeMobDamage(this), getHealth());
         }
 
 //        if (ticksExisted > 50) setDead();

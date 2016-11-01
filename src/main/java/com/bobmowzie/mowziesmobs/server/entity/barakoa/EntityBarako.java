@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
+import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
@@ -18,6 +19,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundEvent;
@@ -42,6 +44,8 @@ import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.item.ItemTestStructure;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 
+import java.util.List;
+
 public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune {
     public static final Animation DIE_ANIMATION = Animation.create(130);
     public static final Animation HURT_ANIMATION = Animation.create(13);
@@ -51,7 +55,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune 
     public static final Animation ATTACK_ANIMATION = Animation.create(30);
     public static final Animation SPAWN_ANIMATION = Animation.create(20);
     public static final Animation SOLAR_BEAM_ANIMATION = Animation.create(100);
-    private static final int MAX_HEALTH = 150;
+    private static final int MAX_HEALTH = 100;
     private static final int SUNSTRIKE_PAUSE_MAX = 40;
     private static final int SUNSTRIKE_PAUSE_MIN = 15;
     private static final int LASER_PAUSE = 230;
@@ -80,7 +84,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune 
         this.tasks.addTask(2, new AnimationAI<>(this, BELLY_ANIMATION, false));
         this.tasks.addTask(2, new AnimationAI<>(this, TALK_ANIMATION, false));
         this.tasks.addTask(2, new AnimationSunStrike<>(this, SUNSTRIKE_ANIMATION));
-        this.tasks.addTask(2, new AnimationRadiusAttack<>(this, ATTACK_ANIMATION, 5, 5, 4.5f, 12));
+        this.tasks.addTask(2, new AnimationRadiusAttack<>(this, ATTACK_ANIMATION, 5, 5, 4.5f, 12, true));
         this.tasks.addTask(2, new AnimationSpawnBarakoa(this, SPAWN_ANIMATION));
         this.tasks.addTask(2, new AnimationSolarBeam<>(this, SOLAR_BEAM_ANIMATION));
         this.tasks.addTask(3, new AnimationTakeDamage<>(this));
@@ -176,7 +180,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune 
                 entityAttackingAngle += 360;
             }
             float entityRelativeAngle = Math.abs(entityHitAngle - entityAttackingAngle);
-            if (getAnimation() == NO_ANIMATION && getHealth() <= 70 && timeUntilLaser <= 0 && (entityRelativeAngle < 60 || entityRelativeAngle > 300)) {
+            if (getAnimation() == NO_ANIMATION && getHealth() <= 60 && timeUntilLaser <= 0 && (entityRelativeAngle < 60 || entityRelativeAngle > 300)) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SOLAR_BEAM_ANIMATION);
                 timeUntilLaser = LASER_PAUSE;
             } else if (getAnimation() == NO_ANIMATION && targetDistance <= 5) {
@@ -372,5 +376,18 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune 
     @Override
     public Animation[] getAnimations() {
         return new Animation[]{DIE_ANIMATION, HURT_ANIMATION, BELLY_ANIMATION, TALK_ANIMATION, SUNSTRIKE_ANIMATION, ATTACK_ANIMATION, SPAWN_ANIMATION, SOLAR_BEAM_ANIMATION};
+    }
+
+    @Override
+    public void onDeath(DamageSource cause) {
+        super.onDeath(cause);
+        List<EntityBarakoa> barakoa = getEntitiesNearby(EntityBarakoa.class, 20, 10, 20, 20);
+        for (EntityBarakoa entityBarakoa : barakoa) {
+            if (!(entityBarakoa instanceof EntityBarakoanToPlayer)) entityBarakoa.timeUntilDeath = rand.nextInt(20);
+        }
+        if (!worldObj.isRemote && worldObj.getGameRules().getBoolean("doMobLoot")) {
+            dropItem(ItemHandler.INSTANCE.barakoMask, 1);
+        }
+        super.onDeath(cause);
     }
 }

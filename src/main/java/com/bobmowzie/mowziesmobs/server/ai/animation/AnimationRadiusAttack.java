@@ -16,13 +16,15 @@ public class AnimationRadiusAttack<T extends MowzieEntity & IAnimatedEntity> ext
     private int damage;
     private float knockBack;
     private int damageFrame;
+    private boolean pureKnockback;
 
-    public AnimationRadiusAttack(T entity, Animation animation, float radius, int damage, float knockBack, int damageFrame) {
+    public AnimationRadiusAttack(T entity, Animation animation, float radius, int damage, float knockBack, int damageFrame, boolean pureKnockback) {
         super(entity, animation);
         this.radius = radius;
         this.damage = damage;
         this.knockBack = knockBack;
         this.damageFrame = damageFrame;
+        this.pureKnockback = pureKnockback;
         setMutexBits(8);
     }
 
@@ -36,8 +38,15 @@ public class AnimationRadiusAttack<T extends MowzieEntity & IAnimatedEntity> ext
                     continue;
                 }
                 aHit.attackEntityFrom(DamageSource.causeMobDamage(animatingEntity), damage);
-                aHit.motionX *= knockBack;
-                aHit.motionZ *= knockBack;
+                if (pureKnockback) {
+                    double angle = animatingEntity.getAngleBetweenEntities(animatingEntity, aHit);
+                    aHit.motionX = knockBack * Math.cos(Math.toRadians(angle - 90));
+                    aHit.motionZ = knockBack * Math.sin(Math.toRadians(angle - 90));
+                }
+                else {
+                    aHit.motionX *= knockBack;
+                    aHit.motionZ *= knockBack;
+                }
             }
         }
     }
