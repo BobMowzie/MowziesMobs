@@ -363,7 +363,7 @@ public class ModelBarakoa extends AdvancedModelBase {
             armLowerLeft.rotateAngleX -= 0.2;
             armLowerLeft.rotateAngleY += 0.2;
             armLowerLeft.rotateAngleZ += 1;
-            spearBase.setScale(spearBase.scaleX, spearBase.scaleY, 1.5f);
+            spearBase.setScale(spearBase.scaleX, -1, 1.5f);
 
             flap(armUpperLeft, 1 * globalSpeed, 0.1f * globalHeight, false, 0.5f, 0, f, f1);
             walk(armUpperLeft, 0.5f * globalSpeed, 0.3f * globalDegree, true, 0, 1, f, f1);

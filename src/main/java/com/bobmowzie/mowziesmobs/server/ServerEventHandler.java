@@ -183,7 +183,7 @@ public enum ServerEventHandler {
 
     @SubscribeEvent
     public void onPlayerLeftClick(PlayerInteractEvent.LeftClickEmpty event) {
-        double range = 6;
+        double range = 7;
         EntityPlayer player = event.getEntityPlayer();
         if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == ItemHandler.INSTANCE.spear){
             EntityLivingBase entityHit = ItemSpear.raytraceEntities(player.getEntityWorld(), player, range);

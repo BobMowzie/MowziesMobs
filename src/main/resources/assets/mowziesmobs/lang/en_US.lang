@@ -52,7 +52,7 @@ item.mobRemover.text.0=Left-click to remove a Mowzie's Mobs mob
 
 item.wroughtHelm.text.0=Never breaks
 
-item.spear.text.0=Extends attack range by 2.5 blocks
+item.spear.text.0=Extends attack range by 3.5 blocks
 
 # Blocks
 tile.paintedAcacia.name=Painted Acacia Wood
