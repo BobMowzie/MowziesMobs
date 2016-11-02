@@ -383,7 +383,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune 
         super.onDeath(cause);
         List<EntityBarakoa> barakoa = getEntitiesNearby(EntityBarakoa.class, 20, 10, 20, 20);
         for (EntityBarakoa entityBarakoa : barakoa) {
-            if (!(entityBarakoa instanceof EntityBarakoanToPlayer)) entityBarakoa.timeUntilDeath = rand.nextInt(20);
+            if (entityBarakoa.isBarakoDevoted()) entityBarakoa.timeUntilDeath = rand.nextInt(20);
         }
         if (!worldObj.isRemote && worldObj.getGameRules().getBoolean("doMobLoot")) {
             dropItem(ItemHandler.INSTANCE.barakoMask, 1);

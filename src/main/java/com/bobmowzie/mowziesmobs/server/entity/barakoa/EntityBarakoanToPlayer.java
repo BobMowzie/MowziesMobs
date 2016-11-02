@@ -44,4 +44,9 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<EntityPlayer> {
     private MowziePlayerProperties getPlayerProps() {
         return EntityPropertiesHandler.INSTANCE.getProperties(leader, MowziePlayerProperties.class);
     }
+
+    @Override
+    public boolean isBarakoDevoted() {
+        return false;
+    }
 }

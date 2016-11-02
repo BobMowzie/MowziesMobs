@@ -408,4 +408,8 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     public Animation[] getAnimations() {
         return new Animation[]{DIE_ANIMATION, HURT_ANIMATION, ATTACK_ANIMATION, PROJECTILE_ATTACK_ANIMATION, BLOCK_ANIMATION, IDLE_ANIMATION, ACTIVATE_ANIMATION};
     }
+
+    public boolean isBarakoDevoted() {
+        return true;
+    }
 }
