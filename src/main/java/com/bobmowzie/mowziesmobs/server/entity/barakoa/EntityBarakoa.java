@@ -412,4 +412,8 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     public boolean isBarakoDevoted() {
         return true;
     }
+
+    public int randomizeWeapon() {
+        return rand.nextInt(3) == 0 ? 1 : 0;
+    }
 }
