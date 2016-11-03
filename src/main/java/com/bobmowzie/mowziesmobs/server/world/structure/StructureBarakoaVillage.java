@@ -415,8 +415,22 @@ public class StructureBarakoaVillage {
 
     public static void generateFirepit(World world, Random rand, BlockPos pos) {
         StructureBuilder structure = new StructureBuilder().startComponent()
-
+                .setBlock(0, 0, 0, Blocks.NETHERRACK)
+                .setBlock(1, 1, 0, Blocks.STONE_SLAB.getDefaultState().withProperty(BlockStoneSlab.VARIANT, BlockStoneSlab.EnumType.COBBLESTONE))
+                .setBlock(-1, 1, 0, Blocks.STONE_SLAB.getDefaultState().withProperty(BlockStoneSlab.VARIANT, BlockStoneSlab.EnumType.COBBLESTONE))
+                .setBlock(0, 1, 1, Blocks.STONE_SLAB.getDefaultState().withProperty(BlockStoneSlab.VARIANT, BlockStoneSlab.EnumType.COBBLESTONE))
+                .setBlock(0, 1, -1, Blocks.STONE_SLAB.getDefaultState().withProperty(BlockStoneSlab.VARIANT, BlockStoneSlab.EnumType.COBBLESTONE))
+                .setBlock(0, 1, 0, Blocks.FIRE)
                 ;
+        BlockPos[] poses = new BlockPos[]{pos.add(1, 4, -4), pos.add(1, 4, 4), pos.add(-1, 4, -4), pos.add(-1, 4, 4), pos.add(4, 4, 1), pos.add(-4, 4, 1), pos.add(4, 4, -1), pos.add(-4, 4, -1), pos.add(-3, 4, 3), pos.add(-3, 4, -3), pos.add(3, 4, -3), pos.add(3, 4, 3)};
+        for (int i = 0; i < poses.length; i++) {
+            for (int dy = 0; dy <= 8; dy++) {
+                if (world.getBlockState(poses[i].add(0, -dy, 0)).isFullBlock()) {
+                    world.setBlockState(poses[i].add(0, -dy + 1, 0), Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA));
+                    break;
+                }
+            }
+        }
 
         structure.endComponent();
         structure.generate(world, pos, rand);
