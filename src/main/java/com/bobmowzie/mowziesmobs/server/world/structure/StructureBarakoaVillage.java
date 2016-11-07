@@ -9,11 +9,13 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureMineshaftPieces;
 import org.lwjgl.Sys;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -634,5 +636,55 @@ public class StructureBarakoaVillage {
     public static void generateTorch(World world, BlockPos pos) {
         world.setBlockState(new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ()), Blocks.OAK_FENCE.getDefaultState());
         world.setBlockState(new BlockPos(pos.getX(), pos.getY() + 2, pos.getZ()), Blocks.TORCH.getDefaultState());
+    }
+
+    public static void generateVillage(World world, Random rand, int x, int z, int chance) {
+        System.out.println("Beginning generation");
+        if (chance <= 0) {
+            return;
+        }
+        if (rand.nextInt(chance) == 0) {
+            System.out.println("Passes chance test");
+            BlockPos pos = new BlockPos(x, 0, z);
+            int y = findGenHeight(world, pos);
+            if (y == -1) return;
+            System.out.println("Found height at " + y);
+            pos = new BlockPos(pos.getX(), y, pos.getZ());
+            generateFirepit(world, rand, pos);
+            System.out.println("Generated firepit at " + pos.toString());
+            int initDir = rand.nextInt(4);
+            for (int i = 0; i < 4; i++) {
+                EnumFacing throneFacing = EnumFacing.HORIZONTALS[(initDir + i) % 4];
+                int throneX = x + 9 * (throneFacing == EnumFacing.WEST ? 1:0) - 9 * (throneFacing == EnumFacing.EAST ? 1:0);
+                int throneZ = z + 9 * (throneFacing == EnumFacing.NORTH ? 1:0) - 9 * (throneFacing == EnumFacing.SOUTH ? 1:0);
+                y = findGenHeight(world, new BlockPos(throneX, y, throneZ));
+                if (y != -1) {
+                    generateThrone(world, rand, new BlockPos(throneX, y - 1, throneZ), throneFacing);
+                    break;
+                }
+            }
+            System.out.println("Generating houses");
+            for (int i = 0; i < 360; i++) {
+                if (rand.nextInt(30) != 0) continue;
+                System.out.println("Passes chance test");
+                int distance = rand.nextInt(13) + 7;
+                BlockPos housePos = new BlockPos(pos.getX() + distance * Math.sin(Math.toRadians(i)), 0, pos.getZ() + distance * Math.cos(Math.toRadians(i)));
+                y = findGenHeight(world, housePos);
+                System.out.println("Attempting at " + housePos.add(0, y, 0).toString());
+                AxisAlignedBB box = new AxisAlignedBB(housePos.add(-3, y + 3, -3), housePos.add(3, y + 9, -3));
+                if (world.checkBlockCollision(box)) generateHouse(world, rand, housePos.add(0, y + rand.nextInt(2), 0), EnumFacing.HORIZONTALS[rand.nextInt(4)]);
+                else System.out.println("No space");
+            }
+        }
+    }
+
+    private static int findGenHeight(World world, BlockPos pos) {
+        for (int y = 30; y > 0; y--) {
+            if (!(world.getBlockState(pos.add(0, y, 0)).isFullBlock())) continue;
+            if (world.getBlockState(pos.add(0, y, 0)) != Blocks.GRASS.getDefaultState()) break;
+            return y;
+        }
+        System.out.println("Failed to find height");
+        return -1;
     }
 }

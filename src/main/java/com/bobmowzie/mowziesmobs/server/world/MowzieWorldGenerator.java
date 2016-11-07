@@ -10,7 +10,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.IWorldGenerator;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.Random;
 
@@ -29,6 +31,10 @@ public class MowzieWorldGenerator implements IWorldGenerator {
             default:
                 return;
         }
+    }
+
+    public static void generatePrePopulate(World world, Random random, int x, int z) {
+
     }
 
     private void generateSurface(World world, Random random, int x, int z) {
