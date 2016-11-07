@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.world.structure;
 
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.block.BlockPaintedAcacia;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import net.ilexiconn.llibrary.server.structure.StructureBuilder;
 import net.minecraft.block.*;
 import net.minecraft.init.Blocks;
@@ -10,6 +11,8 @@ import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.structure.StructureMineshaftPieces;
+import org.lwjgl.Sys;
 
 import java.util.Random;
 
@@ -406,11 +409,154 @@ public class StructureBarakoaVillage {
 
     public static void generateThrone(World world, Random rand, BlockPos pos, EnumFacing dir) {
         StructureBuilder structure = new StructureBuilder().startComponent()
+                .fillCube(0, 0, -3, 1, 1, 7, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.X))
+                .fillCube(-12, 0, -3, 1, 1, 7, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.X))
+                .fillCube(-11, 0, -3, 11, 1, 1, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.Z))
+                .fillCube(-11, 0, 3, 11, 1, 1, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.Z))
+                .fillCube(-6, 0, -2, 6, 1, 5, Blocks.HAY_BLOCK.getDefaultState().withProperty(BlockHay.AXIS, EnumFacing.Axis.Z))
+                .fillCube(-6, 0, 0, 6, 1, 1, Blocks.HAY_BLOCK)
+                .fillCube(-6, 0, -1, 6, 1, 1, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(BlockStainedGlass.COLOR, EnumDyeColor.RED))
+                .fillCube(-6, 0, 1, 6, 1, 1, Blocks.STAINED_HARDENED_CLAY.getDefaultState().withProperty(BlockStainedGlass.COLOR, EnumDyeColor.RED))
+                .fillCube(-11, 0, -2, 5, 1, 5, Blocks.HAY_BLOCK)
+                .setBlock(-12, 0, -3, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA))
+                .setBlock(-12, 0, 3, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA))
 
+                .fillCube(-5, 1, -3, 5, 1, 1, Blocks.OAK_FENCE)
+                .fillCube(-5, 1, 3, 5, 1, 1, Blocks.OAK_FENCE)
+                .fillCube(-5, 2, -3, 5, 1, 1, Blocks.SKULL.getDefaultState().withProperty(BlockSkull.FACING, EnumFacing.UP))
+                .fillCube(-5, 2, 3, 5, 1, 1, Blocks.SKULL.getDefaultState().withProperty(BlockSkull.FACING, EnumFacing.UP))
+                .fillCube(0, 0, -3, 1, 3, 1, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.Y))
+                .fillCube(-2, 0, -3, 1, 3, 1, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.Y))
+                .fillCube(-4, 0, -3, 1, 3, 1, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.Y))
+                .fillCube(-6, 0, -3, 1, 3, 1, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.Y))
+                .fillCube(0, 0, 3, 1, 3, 1, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.Y))
+                .fillCube(-2, 0, 3, 1, 3, 1, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.Y))
+                .fillCube(-4, 0, 3, 1, 3, 1, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.Y))
+                .fillCube(-6, 0, 3, 1, 3, 1, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.Y))
+                .fillCube(-5, 3, -3, 5, 1, 1, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.Z))
+                .fillCube(-5, 3, 3, 5, 1, 1, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.Z))
+                .setBlock(-6, 3, 3, Blocks.SPRUCE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.EAST))
+                .setBlock(0, 3, 3, Blocks.SPRUCE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.WEST))
+                .setBlock(-6, 3, -3, Blocks.SPRUCE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.EAST))
+                .setBlock(0, 3, -3, Blocks.SPRUCE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.WEST))
+                .setBlock(-1, 4, -3, Blocks.WOODEN_SLAB.getDefaultState().withProperty(BlockPlanks.VARIANT, BlockPlanks.EnumType.ACACIA))
+                .setBlock(-1, 4, 3, Blocks.WOODEN_SLAB.getDefaultState().withProperty(BlockPlanks.VARIANT, BlockPlanks.EnumType.ACACIA))
+                .setBlock(-5, 4, -3, Blocks.WOODEN_SLAB.getDefaultState().withProperty(BlockPlanks.VARIANT, BlockPlanks.EnumType.ACACIA))
+                .setBlock(-5, 4, 3, Blocks.WOODEN_SLAB.getDefaultState().withProperty(BlockPlanks.VARIANT, BlockPlanks.EnumType.ACACIA))
+                .fillCube(-4, 4, -3, 3, 1, 1, BlockHandler.INSTANCE.paintedAcaciaSlab)
+                .fillCube(-4, 4, 3, 3, 1, 1, BlockHandler.INSTANCE.paintedAcaciaSlab)
+
+                .cube(-11, 2, -2, 5, 1, 5, Blocks.WOODEN_SLAB.getDefaultState().withProperty(BlockWoodSlab.VARIANT, BlockPlanks.EnumType.ACACIA))
+                .cube(-11, 1, -2, 5, 1, 5, Blocks.OAK_FENCE)
+                .fillCube(-5, 1, -1, 1, 1, 3, BlockHandler.INSTANCE.paintedAcaciaSlab)
+                .fillCube(-6, 1, -1, 1, 1, 3, BlockHandler.INSTANCE.paintedAcacia)
+                .fillCube(-7, 2, -1, 1, 1, 3, BlockHandler.INSTANCE.paintedAcaciaSlab)
+                .fillCube(-10, 2, -1, 3, 1, 3, BlockHandler.INSTANCE.paintedAcacia)
+                .setBlock(-5, 1, 0, Blocks.WOODEN_SLAB.getDefaultState().withProperty(BlockWoodSlab.VARIANT, BlockPlanks.EnumType.ACACIA))
+                .setBlock(-6, 1, 0, Blocks.PLANKS.getDefaultState().withProperty(BlockWoodSlab.VARIANT, BlockPlanks.EnumType.ACACIA))
+                .setBlock(-7, 2, 0, Blocks.WOODEN_SLAB.getDefaultState().withProperty(BlockWoodSlab.VARIANT, BlockPlanks.EnumType.ACACIA))
+                .setBlock(-8, 2, 0, Blocks.PLANKS.getDefaultState().withProperty(BlockWoodSlab.VARIANT, BlockPlanks.EnumType.ACACIA))
+
+                .fillCube(-7, 0, -2, 1, 3, 1, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.Y))
+                .fillCube(-7, 0, 2, 1, 3, 1, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.Y))
+                .fillCube(-11, 0, -2, 1, 6, 1, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.Y))
+                .fillCube(-11, 0, 2, 1, 6, 1, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.Y))
+                .fillCube(-7, 0, -2, 1, 3, 1, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.Y))
+                .fillCube(-7, 0, 2, 1, 3, 1, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.Y))
+                .fillCube(-11, 0, -2, 1, 6, 1, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.Y))
+                .fillCube(-11, 0, 2, 1, 6, 1, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.Y))
+                .fillCube(-10, 3, -2, 3, 1, 1, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.Z))
+                .fillCube(-10, 3, 2, 3, 1, 1, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.Z))
+                .fillCube(-11, 3, -1, 1, 1, 3, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.X))
+                .fillCube(-10, 4, -2, 2, 1, 1, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.Z))
+                .fillCube(-10, 4, 2, 2, 1, 1, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.Z))
+                .fillCube(-11, 4, -1, 1, 2, 3, BlockHandler.INSTANCE.paintedAcacia)
+                .fillCube(-11, 6, -1, 1, 1, 3, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.X))
+                .fillCube(-11, 7, -1, 1, 1, 3, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.Y))
+                .setBlock(-11, 8, 0, Blocks.GOLD_BLOCK)
+                .setBlock(-11, 9, 0, Blocks.WOODEN_SLAB.getDefaultState().withProperty(BlockWoodSlab.VARIANT, BlockPlanks.EnumType.ACACIA))
+                .fillCube(-10, 3, -1, 2, 1, 3, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA).withProperty(BlockNewLog.LOG_AXIS, BlockLog.EnumAxis.Y))
+                .fillCube(-10, 4, -1, 2, 1, 3, Blocks.WOODEN_SLAB.getDefaultState().withProperty(BlockWoodSlab.VARIANT, BlockPlanks.EnumType.ACACIA))
+
+                .setBlock(-7, 3, -2, Blocks.SPRUCE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.WEST))
+                .setBlock(-7, 3, 2, Blocks.SPRUCE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.WEST))
+                .setBlock(-8, 4, -2, Blocks.SPRUCE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.WEST))
+                .setBlock(-8, 4, 2, Blocks.SPRUCE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.WEST))
+                .setBlock(-10, 5, -2, Blocks.SPRUCE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.WEST))
+                .setBlock(-10, 5, 2, Blocks.SPRUCE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.WEST))
+                .setBlock(-11, 6, -2, Blocks.SPRUCE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.SOUTH))
+                .setBlock(-11, 6, 2, Blocks.SPRUCE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.NORTH))
+                .setBlock(-11, 8, -1, Blocks.SPRUCE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.SOUTH))
+                .setBlock(-11, 8, 1, Blocks.SPRUCE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.NORTH))
+
+                .setBlock(-6, 2, -2, Blocks.OAK_FENCE)
+                .setBlock(-6, 2, 2, Blocks.OAK_FENCE)
+                .setBlock(-9, 5, -2, Blocks.OAK_FENCE)
+                .setBlock(-9, 5, 2, Blocks.OAK_FENCE)
+                .setBlock(-6, 3, -2, Blocks.TORCH)
+                .setBlock(-6, 3, 2, Blocks.TORCH)
+                .setBlock(-9, 6, -2, Blocks.TORCH)
+                .setBlock(-9, 6, 2, Blocks.TORCH)
                 ;
-
         structure.endComponent();
         structure.rotate(dir, EnumFacing.UP).generate(world, pos, rand);
+
+        BlockPos[] skullPosL;
+        BlockPos[] skullPosR;
+        BlockPos[] polePos;
+        int skullRot;
+        EntityBarako barako;
+
+        if (dir == EnumFacing.NORTH) {
+            skullPosL = new BlockPos[]{pos.add(-3, 2, 1), pos.add(-3, 2, 3), pos.add(-3, 2, 5)};
+            skullPosR = new BlockPos[]{pos.add(3, 2, 1), pos.add(3, 2, 3), pos.add(3, 2, 5)};
+            polePos = new BlockPos[]{pos.add(-3, -1, 0), pos.add(-3, -1, 2), pos.add(-3, -1, 4), pos.add(-3, -1, 6), pos.add(3, -1, 0), pos.add(3, -1, 2), pos.add(3, -1, 4), pos.add(3, -1, 6), pos.add(3, -1, 8), pos.add(-3, -1, 8), pos.add(3, -1, 10), pos.add(-3, -1, 10), pos.add(3, -1, 12), pos.add(-3, -1, 12), pos.add(-1, -1, 12), pos.add(1, -1, 12)};
+            skullRot = 4;
+            barako = new EntityBarako(world, 3);
+            barako.setPosition(pos.getX() + 0.5, pos.getY() + 4.5, pos.getZ() + 9.5);
+        }
+        else if (dir == EnumFacing.SOUTH) {
+            skullPosL = new BlockPos[]{pos.add(-3, 2, -1), pos.add(-3, 2, -3), pos.add(-3, 2, -5)};
+            skullPosR = new BlockPos[]{pos.add(3, 2, -1), pos.add(3, 2, -3), pos.add(3, 2, -5)};
+            polePos = new BlockPos[]{pos.add(-3, -1, 0), pos.add(-3, -1, -2), pos.add(-3, -1, -4), pos.add(-3, -1, -6), pos.add(3, -1, 0), pos.add(3, -1, -2), pos.add(3, -1, -4), pos.add(3, -1, -6), pos.add(3, -1, -8), pos.add(-3, -1, -8), pos.add(3, -1, -10), pos.add(-3, -1, -10), pos.add(3, -1, -12), pos.add(-3, -1, -12), pos.add(-1, -1, -12), pos.add(1, -1, -12)};
+            skullRot = 4;
+            barako = new EntityBarako(world, 1);
+            barako.setPosition(pos.getX() + 0.5, pos.getY() + 4.5, pos.getZ() - 8.5);
+        }
+        else if (dir == EnumFacing.EAST) {
+            skullPosL = new BlockPos[]{pos.add(-1, 2, -3), pos.add(-3, 2, -3), pos.add(-5, 2, -3)};
+            skullPosR = new BlockPos[]{pos.add(-1, 2, 3), pos.add(-3, 2, 3), pos.add(-5, 2, 3)};
+            polePos = new BlockPos[]{pos.add(0, -1, -3), pos.add(-2, -1, -3), pos.add(-4, -1, -3), pos.add(-6, -1, -3), pos.add(0, -1, 3), pos.add(-2, -1, 3), pos.add(-4, -1, 3), pos.add(-6, -1, 3), pos.add(-8, -1, 3), pos.add(-8, -1, -3), pos.add(-10, -1, 3), pos.add(-10, -1, -3), pos.add(-12, -1, 3), pos.add(-12, -1, -3), pos.add(-12, -1, -1), pos.add(-12, -1, 1)};
+            skullRot = 8;
+            barako = new EntityBarako(world, 0);
+            barako.setPosition(pos.getX() - 8.5, pos.getY() + 4.5, pos.getZ() + 0.5);
+        }
+        else {
+            skullPosL = new BlockPos[]{pos.add(1, 2, -3), pos.add(3, 2, -3), pos.add(5, 2, -3)};
+            skullPosR = new BlockPos[]{pos.add(1, 2, 3), pos.add(3, 2, 3), pos.add(5, 2, 3)};
+            polePos = new BlockPos[]{pos.add(0, -1, -3), pos.add(2, -1, -3), pos.add(4, -1, -3), pos.add(6, -1, -3), pos.add(0, -1, 3), pos.add(2, -1, 3), pos.add(4, -1, 3), pos.add(6, -1, 3), pos.add(8, -1, 3), pos.add(8, -1, -3), pos.add(10, -1, 3), pos.add(10, -1, -3), pos.add(12, -1, 3), pos.add(12, -1, -3), pos.add(12, -1, -1), pos.add(12, -1, 1)};
+            skullRot = 8;
+            barako = new EntityBarako(world, 2);
+            barako.setPosition(pos.getX() + 9.5, pos.getY() + 4.5, pos.getZ() + 0.5);
+        }
+
+        for (BlockPos skull : skullPosL) {
+            ((TileEntitySkull)world.getTileEntity(skull)).setSkullRotation(skullRot);
+        }
+        for (BlockPos skull : skullPosR) {
+            ((TileEntitySkull)world.getTileEntity(skull)).setSkullRotation(skullRot - 8);
+        }
+        for (BlockPos pole : polePos) {
+            for (int i = 0; i < 20; i++) {
+                BlockPos dPos = pole.add(0, -i, 0);
+                if (!world.getBlockState(dPos).isFullBlock()) {
+                    world.setBlockState(dPos, Blocks.LOG2.getDefaultState().withProperty(BlockNewLog.VARIANT, BlockPlanks.EnumType.ACACIA));
+                } else {
+                    break;
+                }
+            }
+        }
+        world.spawnEntityInWorld(barako);
     }
 
     public static void generateFirepit(World world, Random rand, BlockPos pos) {

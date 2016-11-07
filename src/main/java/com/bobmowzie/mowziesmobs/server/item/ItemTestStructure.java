@@ -22,7 +22,7 @@ public class ItemTestStructure extends Item {
 
     @Override
     public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-            if (!worldIn.isRemote) StructureBarakoaVillage.generateFirepit(worldIn, worldIn.rand, pos);
+            if (!worldIn.isRemote) StructureBarakoaVillage.generateThrone(worldIn, worldIn.rand, pos, EnumFacing.WEST);
             return EnumActionResult.SUCCESS;
     }
 }

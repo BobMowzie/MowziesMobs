@@ -49,10 +49,10 @@ import net.minecraft.world.World;
 public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttackMob, LeaderSunstrikeImmune {
     public static final Animation DIE_ANIMATION = Animation.create(70);
     public static final Animation HURT_ANIMATION = Animation.create(10);
-    public static final Animation ATTACK_ANIMATION = Animation.create(19);
+    public static final Animation ATTACK_ANIMATION = Animation.create(20);
     public static final Animation PROJECTILE_ATTACK_ANIMATION = Animation.create(20);
     public static final Animation IDLE_ANIMATION = Animation.create(35);
-    public static final Animation ACTIVATE_ANIMATION = Animation.create(20);
+    public static final Animation ACTIVATE_ANIMATION = Animation.create(15);
     public static final Animation BLOCK_ANIMATION = Animation.create(10);
     private static final DataParameter<Boolean> DANCING = EntityDataManager.createKey(EntityBarakoa.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Integer> MASK = EntityDataManager.createKey(EntityBarakoa.class, DataSerializers.VARINT);
