@@ -73,6 +73,8 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
         }
     }
 
+    protected void onAnimationFinish(Animation animation) {}
+
     @Override
     public void writeSpawnData(ByteBuf buffer) {
     }
@@ -201,6 +203,9 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
 
     @Override
     public void setAnimation(Animation animation) {
+        if (animation == NO_ANIMATION) {
+            onAnimationFinish(this.animation);
+        }
         this.animation = animation;
         setAnimationTick(0);
     }

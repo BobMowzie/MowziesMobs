@@ -52,7 +52,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     public static final Animation ATTACK_ANIMATION = Animation.create(20);
     public static final Animation PROJECTILE_ATTACK_ANIMATION = Animation.create(20);
     public static final Animation IDLE_ANIMATION = Animation.create(35);
-    public static final Animation ACTIVATE_ANIMATION = Animation.create(15);
+    public static final Animation ACTIVATE_ANIMATION = Animation.create(25);
     public static final Animation BLOCK_ANIMATION = Animation.create(10);
     private static final DataParameter<Boolean> DANCING = EntityDataManager.createKey(EntityBarakoa.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Integer> MASK = EntityDataManager.createKey(EntityBarakoa.class, DataSerializers.VARINT);
@@ -285,6 +285,14 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
 
 //        if (ticksExisted > 50) setDead();
 //        if (getAnimation() == NO_ANIMATION) AnimationAPI.sendAnimPacket(this, 4);
+    }
+
+    @Override
+    protected void onAnimationFinish(Animation animation) {
+        if (animation == ACTIVATE_ANIMATION) {
+            setActive(true);
+            active = true;
+        }
     }
 
     @Override
