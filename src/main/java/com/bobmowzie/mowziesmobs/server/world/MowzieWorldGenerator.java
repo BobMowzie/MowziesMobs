@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.world;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
+import com.bobmowzie.mowziesmobs.server.world.structure.StructureBarakoaVillage;
 import com.bobmowzie.mowziesmobs.server.world.structure.StructureWroughtnautRoom;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockStone;
@@ -34,7 +35,7 @@ public class MowzieWorldGenerator implements IWorldGenerator {
     }
 
     public static void generatePrePopulate(World world, Random random, int x, int z) {
-
+        StructureBarakoaVillage.generateVillage(world, random, x, z, MowziesMobs.CONFIG.spawnrateBarako);
     }
 
     private void generateSurface(World world, Random random, int x, int z) {
@@ -43,23 +44,6 @@ public class MowzieWorldGenerator implements IWorldGenerator {
 //            System.out.println("Trying wroughtnaut chamber at " + x + ", " + z);
         }
     }
-
-//    private void generateBarakoaVillage(World world, Random random, int x, int y, int z) {
-//        StructureBarakoaHouse.generateFirepit(world, x, y, z);
-//        int currentX = x;
-//        int currentZ = z;
-//        int throneDirection = random.nextInt(3);
-//        if (throneDirection == 0) {
-//            currentX += 10;
-//        } else if (throneDirection == 1) {
-//            currentZ += 10;
-//        } else if (throneDirection == 2) {
-//            currentX -= 10;
-//        } else if (throneDirection == 3) {
-//            currentZ -= 10;
-//        }
-//        StructureBarakoThrone.generate(world, currentX, y, currentZ, throneDirection);
-//    }
 
     private void generateEnd(World world, Random random, int i, int i1) {
     }
