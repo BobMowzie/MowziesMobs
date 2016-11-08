@@ -15,6 +15,7 @@ import com.bobmowzie.mowziesmobs.server.message.MessagePlayerSummonSunstrike;
 import com.bobmowzie.mowziesmobs.server.message.MessageSwingWroughtAxe;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
+import com.bobmowzie.mowziesmobs.server.recipe.RecipeHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
 
@@ -62,6 +63,7 @@ public class MowziesMobs {
         BlockHandler.INSTANCE.onInit();
         EntityHandler.INSTANCE.onInit();
         PotionHandler.INSTANCE.onInit();
+        RecipeHandler.INSTANCE.onInit();
 
         MowziesMobs.PROXY.onInit();
 
