@@ -27,6 +27,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializer;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
@@ -53,6 +54,8 @@ import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.item.ItemTestStructure;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import com.google.common.base.Optional;
+
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -75,6 +78,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     private static final DataParameter<Integer> DIRECTION = EntityDataManager.createKey(EntityBarako.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> DIALOGUE = EntityDataManager.createKey(EntityBarako.class, DataSerializers.VARINT);
     private static final DataParameter<Boolean> ANGRY = EntityDataManager.createKey(EntityBarako.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Optional<ItemStack>> DESIRES = EntityDataManager.createKey(EntityBarako.class, DataSerializers.OPTIONAL_ITEM_STACK);
     public ControlledAnimation legsUp = new ControlledAnimation(15);
     public ControlledAnimation angryEyebrow = new ControlledAnimation(5);
     private EntityPlayer customer;
@@ -87,8 +91,6 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     private int timeUntilSunstrike = 0;
     private int timeUntilLaser = 0;
     private int timeUntilBarakoa = 0;
-
-    public ItemStack desires;
 
     public EntityBarako(World world) {
         super(world);
@@ -110,7 +112,6 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         if (getDirection() == 0) {
             this.setDirection(rand.nextInt(4) + 1);
         }
-        desires = new ItemStack(Item.getItemFromBlock(Blocks.GOLD_BLOCK), 10);
     }
 
     public EntityBarako(World world, int direction) {
@@ -328,6 +329,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         getDataManager().register(DIRECTION, 0);
         getDataManager().register(DIALOGUE, 0);
         getDataManager().register(ANGRY, false);
+        getDataManager().register(DESIRES, Optional.of(new ItemStack(Item.getItemFromBlock(Blocks.GOLD_BLOCK), 10)));
     }
 
     public int getDirection() {
@@ -352,6 +354,14 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 
     public void setAngry(boolean angry) {
         getDataManager().set(ANGRY, angry);
+    }
+
+    public void setDesires(ItemStack stack) {
+    	getDataManager().set(DESIRES, Optional.fromNullable(stack));
+    }
+
+    public ItemStack getDesires() {
+    	return getDataManager().get(DESIRES).get();
     }
 
     @Override

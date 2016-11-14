@@ -33,7 +33,7 @@ public final class GuiBarakoayaTrade extends GuiContainer {
     }
 
     private GuiBarakoayaTrade(EntityBarakoaya barakoaya, InventoryBarakoaya inventory, InventoryPlayer playerInv, World world) {
-        super(new ContainerBarakoayaTrade(barakoaya, playerInv, world));
+        super(new ContainerBarakoayaTrade(barakoaya, inventory, playerInv, world));
         this.barakoaya = barakoaya;
         this.inventory = inventory;
     }

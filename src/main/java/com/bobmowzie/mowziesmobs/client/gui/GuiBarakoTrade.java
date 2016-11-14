@@ -4,9 +4,8 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoTrade;
 import com.bobmowzie.mowziesmobs.server.inventory.InventoryBarako;
-import com.bobmowzie.mowziesmobs.server.inventory.InventoryBarakoaya;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
@@ -14,34 +13,46 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-public final class GuiBarakoTrade extends GuiContainer {
+public final class GuiBarakoTrade extends GuiContainer implements InventoryBarako.ChangeListener {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/gui/container/barako.png");
 
     private final EntityBarako barako;
+
     private final InventoryBarako inventory;
 
-    private ItemStack input;
-    private ItemStack output;
+    private final ItemStack output = new ItemStack(ItemHandler.INSTANCE.grantSunsBlessing);
 
-    private GuiButton button;
+    private GuiButton grantButton;
 
     public GuiBarakoTrade(EntityBarako barako, InventoryPlayer playerInv, World world) {
         this(barako, new InventoryBarako(barako), playerInv, world);
     }
 
     public GuiBarakoTrade(EntityBarako barako, InventoryBarako inventory, InventoryPlayer playerInv, World world) {
-        super(new ContainerBarakoTrade(barako, playerInv, world));
+        super(new ContainerBarakoTrade(barako, inventory, playerInv, world));
         this.barako = barako;
         this.inventory = inventory;
-        input = barako.desires;
-        output = new ItemStack(ItemHandler.INSTANCE.grantSunsBlessing);
-        button = new GuiButton(0, 0, 0, 47, 20, "Receive");
+        inventory.addListener(this);
+    }
+
+    @Override
+    public void initGui() {
+    	super.initGui();
+    	buttonList.clear();
+        grantButton = func_189646_b(new GuiButton(0, guiLeft + 119, guiTop + 52, 47, 20, "Receive"));
+        grantButton.enabled = false;
+    }
+
+    @Override
+    protected void actionPerformed(GuiButton button) {
+    	if (button == grantButton) {
+    		// TODO: send message to server to grant and consume items from inventory (REMEMBER SERVER SIDE VALIDATION)
+    	}
     }
 
     @Override
@@ -70,23 +81,14 @@ public final class GuiBarakoTrade extends GuiContainer {
         GlStateManager.enableColorMaterial();
         GlStateManager.enableLighting();
         itemRender.zLevel = 100;
-        itemRender.renderItemAndEffectIntoGUI(input, guiLeft + 68, guiTop + 24);
-        itemRender.renderItemOverlays(fontRendererObj, input, guiLeft + 68, guiTop + 24);
+        itemRender.renderItemAndEffectIntoGUI(barako.getDesires(), guiLeft + 68, guiTop + 24);
+        itemRender.renderItemOverlays(fontRendererObj, barako.getDesires(), guiLeft + 68, guiTop + 24);
         itemRender.renderItemAndEffectIntoGUI(output, guiLeft + 134, guiTop + 24);
         itemRender.renderItemOverlays(fontRendererObj, output, guiLeft + 134, guiTop + 24);
         itemRender.zLevel = 0;
-        if (inSlot != null && inSlot.getItem() == barako.desires.getItem() && inSlot.stackSize >= barako.desires.stackSize) {
-            button.enabled = true;
-        }
-        else {
-            button.enabled = false;
-        }
-        button.xPosition = guiLeft + 119;
-        button.yPosition = guiTop + 52;
-        button.drawButton(Minecraft.getMinecraft(), mouseX, mouseY);
         GlStateManager.disableLighting();
         if (isPointInRegion(80, 24, 16, 16, mouseX, mouseY)) {
-            renderToolTip(input, mouseX, mouseY);
+            renderToolTip(barako.getDesires(), mouseX, mouseY);
         } else if (isPointInRegion(134, 24, 16, 16, mouseX, mouseY)) {
             renderToolTip(output, mouseX, mouseY);
         }
@@ -95,4 +97,11 @@ public final class GuiBarakoTrade extends GuiContainer {
         RenderHelper.enableStandardItemLighting();
         GlStateManager.popMatrix();
     }
+
+	@Override
+	public void onChange(IInventory inv) {
+        ItemStack inSlot = inv.getStackInSlot(0);
+        ItemStack desires = barako.getDesires();
+		grantButton.enabled = desires == null || inSlot != null && inSlot.getItem() == desires.getItem() && inSlot.stackSize >= desires.stackSize;
+	}
 }

@@ -1,29 +1,32 @@
 package com.bobmowzie.mowziesmobs.server.inventory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
+
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
-
-import java.util.Arrays;
 
 public final class InventoryBarako implements IInventory {
     private final EntityBarako barako;
 
-    private final ItemStack[] slots = new ItemStack[2];
+    private ItemStack input;
 
-    public ItemStack desires;
+    private List<ChangeListener> listeners;
 
     public InventoryBarako(EntityBarako barako) {
         this.barako = barako;
-        desires = barako.desires;
+    }
+
+    public void addListener(ChangeListener listener) {
+    	if (listeners == null) {
+    		listeners = new ArrayList<>();
+    	}
+    	listeners.add(listener);
     }
 
     @Override
@@ -43,44 +46,50 @@ public final class InventoryBarako implements IInventory {
 
     @Override
     public int getSizeInventory() {
-        return slots.length;
+        return 1;
     }
 
     @Override
     public ItemStack getStackInSlot(int index) {
-        return slots[index];
-    }
+        return index == 0 ? input : null;
+	}
 
-    @Override
-    public ItemStack decrStackSize(int index, int count) {
-        if (index == 1 && slots[index] != null) {
-            return ItemStackHelper.getAndSplit(slots, index, slots[index].stackSize);
-        }
-        ItemStack stack = ItemStackHelper.getAndSplit(slots, index, count);
-        if (stack != null && doUpdateForSlotChange(index)) {
-            reset();
-        }
-        return stack;
-    }
+	@Override
+	public ItemStack decrStackSize(int index, int count) {
+		ItemStack stack;
+		if (index == 0 && input != null && count > 0) {
+			ItemStack split = input.splitStack(count);
+			if (input.stackSize == 0) {
+				input = null;
+			}
+			stack = split;
+			markDirty();
+		} else {
+			stack = null;
+		}
+		return stack;
+	}
 
     @Override
     public ItemStack removeStackFromSlot(int index) {
-        return ItemStackHelper.getAndRemove(slots, index);
+    	if (index != 0) {
+    		return null;
+    	}
+    	ItemStack s = input;
+    	input = null;
+    	markDirty();
+        return s;
     }
 
     @Override
     public void setInventorySlotContents(int index, ItemStack stack) {
-        slots[index] = stack;
-        if (stack != null && stack.stackSize > getInventoryStackLimit()) {
-            stack.stackSize = getInventoryStackLimit();
-        }
-        if (doUpdateForSlotChange(index)) {
-            reset();
-        }
-    }
-
-    private boolean doUpdateForSlotChange(int slot) {
-        return slot == 0;
+    	if (index == 0) {
+            input = stack;
+            if (stack != null && stack.stackSize > getInventoryStackLimit()) {
+                stack.stackSize = getInventoryStackLimit();
+            }
+            markDirty();
+    	}
     }
 
     @Override
@@ -90,7 +99,11 @@ public final class InventoryBarako implements IInventory {
 
     @Override
     public void markDirty() {
-        reset();
+    	if (listeners != null) {
+    		for (ChangeListener listener : listeners) {
+    			listener.onChange(this);
+    		}
+    	}
     }
 
     @Override
@@ -124,17 +137,11 @@ public final class InventoryBarako implements IInventory {
 
     @Override
     public void clear() {
-        Arrays.fill(slots, null);
+        input = null;
+        markDirty();
     }
 
-    public void reset() {
-        ItemStack input = slots[0];
-        if (input != null && areItemsEqual(input, desires) && input.stackSize >= desires.stackSize) {
-                System.out.println("Hello!");
-        }
-    }
-
-    private static boolean areItemsEqual(ItemStack s1, ItemStack s2) {
-        return ItemStack.areItemsEqual(s1, s2) && (!s2.hasTagCompound() || s1.hasTagCompound() && NBTUtil.areNBTEquals(s2.getTagCompound(), s1.getTagCompound(), false));
+    public interface ChangeListener {
+    	void onChange(IInventory inv);
     }
 }
