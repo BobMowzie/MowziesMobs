@@ -114,6 +114,7 @@ public class StructureWroughtnautRoom {
         else if (dir == EnumFacing.SOUTH) wroughtnaut.setPositionAndRotation(pos.getX()-8.5, pos.getY()+1, pos.getZ()+0.5, 270, 0);
         else wroughtnaut.setPositionAndRotation(pos.getX()-0.5, pos.getY()+1, pos.getZ()-9.5, 0, 0);
         if (!world.isRemote) world.spawnEntityInWorld(wroughtnaut);
+        wroughtnaut.onInitialSpawn(world.getDifficultyForLocation(wroughtnaut.getPosition()), null);
 
 //        System.out.println("Wroughtnaut chamber at " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
     }

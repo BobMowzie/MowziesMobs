@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.gui;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaya;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -18,9 +19,11 @@ public final class GuiHandler implements IGuiHandler {
     private static final RegistryNamespaced<ResourceLocation, GuiType> GUIS = new RegistryNamespaced<>();
 
     public static final GuiTypeEntity<EntityBarakoaya> BARAKOA_TRADE = new GuiTypeEntity(EntityBarakoaya.class);
+    public static final GuiTypeEntity<EntityBarako> BARAKO_TRADE = new GuiTypeEntity(EntityBarako.class);
 
     static {
         GUIS.register(0, new ResourceLocation(MowziesMobs.MODID, "barakoa"), BARAKOA_TRADE);
+        GUIS.register(1, new ResourceLocation(MowziesMobs.MODID, "barako"), BARAKO_TRADE);
     }
 
     @Override

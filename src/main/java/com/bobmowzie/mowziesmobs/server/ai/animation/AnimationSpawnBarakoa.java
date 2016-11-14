@@ -51,6 +51,7 @@ public class AnimationSpawnBarakoa extends AnimationAI<EntityBarako> {
             barakoa.setActive(false);
             barakoa.active = false;
             animatingEntity.worldObj.spawnEntityInWorld(barakoa);
+            barakoa.onInitialSpawn(animatingEntity.worldObj.getDifficultyForLocation(barakoa.getPosition()), null);
             barakoa.motionX = 0.7 * Math.sin(-angle * (Math.PI / 180));
             barakoa.motionY = 0.5;
             barakoa.motionZ = 0.7 * Math.cos(-angle * (Math.PI / 180));

@@ -24,12 +24,12 @@ item.barakoMask.name=Sol Visage
 item.dart.name=Dart
 item.spear.name=Spear
 item.blowgun.name=Blowgun
-item.grantSunsBlessing.name=Grant Sun's Blessing
+item.grantSunsBlessing.name=Receive Sun's Blessing
 item.testStructure.name=Test Structures
 
 item.blowgun.text.0=Charges quickly
 item.blowgun.text.1=Short range
-item.blowgun.text.2=Can only shoot darts
+item.blowgun.text.2=Only shoot darts
 
 item.wroughtAxe.text.0=Never breaks
 item.wroughtAxe.text.1=Right-click to attack in an arc
@@ -41,7 +41,7 @@ item.dart.text.0=Can only be used with blowgun
 item.dart.text.1=Posions targets
 
 item.foliaathSeed.text.0=Plant in grass
-item.foliaathSeed.text.0=Feed when hungry for 3 days
+item.foliaathSeed.text.0=Feed when hungry for 2 days
 
 item.grantsunsblessing.text.0=This item is creative-mode only
 item.grantsunsblessing.text.1=Grants Sun's Blessing for 10 minutes
@@ -66,6 +66,7 @@ potion.sunsBlessing=Sun's Blessing
 
 # Containers
 entity.barakoaya.trade=Barakoa
+entity.barako.trade=Barako, the Sun Chief
 
 # Death Messages
 death.attack.dart=%1$s was shot by %2$s

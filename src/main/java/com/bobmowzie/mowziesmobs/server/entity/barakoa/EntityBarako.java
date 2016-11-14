@@ -1,11 +1,18 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
+import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoTrade;
+import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoayaTrade;
+import com.bobmowzie.mowziesmobs.server.gui.GuiHandler;
+import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoTrade;
+import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoayaTrade;
+import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
@@ -14,6 +21,9 @@ import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.inventory.Container;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -43,10 +53,12 @@ import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.item.ItemTestStructure;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
-public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune {
+public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune, GuiHandler.ContainerHolder {
     public static final Animation DIE_ANIMATION = Animation.create(130);
     public static final Animation HURT_ANIMATION = Animation.create(13);
     public static final Animation BELLY_ANIMATION = Animation.create(40);
@@ -65,6 +77,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune 
     private static final DataParameter<Boolean> ANGRY = EntityDataManager.createKey(EntityBarako.class, DataSerializers.BOOLEAN);
     public ControlledAnimation legsUp = new ControlledAnimation(15);
     public ControlledAnimation angryEyebrow = new ControlledAnimation(5);
+    private EntityPlayer customer;
     // TODO: Enum!
     public int whichDialogue = 0;
     public int barakoaSpawnCount = 0;
@@ -74,7 +87,8 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune 
     private int timeUntilSunstrike = 0;
     private int timeUntilLaser = 0;
     private int timeUntilBarakoa = 0;
-    private boolean pacified = false;
+
+    public ItemStack desires;
 
     public EntityBarako(World world) {
         super(world);
@@ -96,6 +110,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune 
         if (getDirection() == 0) {
             this.setDirection(rand.nextInt(4) + 1);
         }
+        desires = new ItemStack(Item.getItemFromBlock(Blocks.GOLD_BLOCK), 10);
     }
 
     public EntityBarako(World world, int direction) {
@@ -126,14 +141,14 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune 
             if (getAttackTarget() == null) {
                 int soundType = MathHelper.getRandomIntegerInRange(this.rand, 0, 9);
                 if (soundType < MMSounds.ENTITY_BARAKO_TALK.length) {
-                    this.playSound(MMSounds.ENTITY_BARAKO_TALK[soundType], 1.4F, 1.0F);
+                    this.playSound(MMSounds.ENTITY_BARAKO_TALK[soundType], 2F, 1.0F);
                     this.setWhichDialogue(soundType + 1);
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, TALK_ANIMATION);
                 }
             } else {
                 int soundType = MathHelper.getRandomIntegerInRange(rand, 1, 10);
                 if (soundType < 7) {
-                    this.playSound(MMSounds.ENTITY_BARAKO_ANGRY[soundType - 1], 1.4F, 1.0F);
+                    this.playSound(MMSounds.ENTITY_BARAKO_ANGRY[soundType - 1], 2F, 1.0F);
 //                    setWhichDialogue(soundType);
 //                    AnimationHandler.INSTANCE.sendAnimationMessage(this, 3);
                 }
@@ -149,16 +164,13 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune 
 
     @Override
     protected SoundEvent getDeathSound() {
-        this.playSound(MMSounds.ENTITY_BARAKO_DIE, 1.4f, 1);
+        this.playSound(MMSounds.ENTITY_BARAKO_DIE, 2f, 1);
         return null;
     }
 
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (pacified) {
-            setAttackTarget(null);
-        }
         if (ticksExisted == 1) {
             direction = getDirection();
         }
@@ -219,7 +231,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune 
         }
 
         if (getAnimation() == BELLY_ANIMATION && (getAnimationTick() == 9 || getAnimationTick() == 29)) {
-            this.playSound(MMSounds.ENTITY_BARAKO_BELLY, 1.4f, 1f);
+            this.playSound(MMSounds.ENTITY_BARAKO_BELLY, 3f, 1f);
         }
 
         if (getAnimation() == TALK_ANIMATION && getAnimationTick() == 1) {
@@ -229,13 +241,13 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune 
         if (getAnimation() == ATTACK_ANIMATION) {
             rotationYawHead = rotationYaw;
             if (getAnimationTick() == 1) {
-                this.playSound(MMSounds.ENTITY_BARAKO_BURST, 1.5f, 1.5f);
+                this.playSound(MMSounds.ENTITY_BARAKO_BURST, 1.7f, 1.5f);
             }
             if (getAnimationTick() == 10) {
                 if (worldObj.isRemote) {
                     spawnExplosionParticles(30);
                 }
-                this.playSound(MMSounds.ENTITY_BARAKO_ATTACK, 1.5f, 0.9f);
+                this.playSound(MMSounds.ENTITY_BARAKO_ATTACK, 1.7f, 0.9f);
             }
             if (getAnimationTick() <= 6 && worldObj.isRemote) {
                 int particleCount = 8;
@@ -357,14 +369,6 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune 
     @Override
     protected void playStepSound(BlockPos pos, Block block) {}
 
-    @Override
-    protected boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack stack) {
-        if (stack != null && stack.getItem() instanceof ItemTestStructure) {
-            pacified = true;
-        }
-        return super.processInteract(player, hand, stack);
-    }
-
     private int getTimeUntilSunstrike() {
         int damageTaken = (int) (MAX_HEALTH - getHealth());
         if (damageTaken > 60) {
@@ -389,5 +393,48 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune 
             dropItem(ItemHandler.INSTANCE.barakoMask, 1);
         }
         super.onDeath(cause);
+    }
+
+    public boolean isTrading() {
+        return customer != null;
+    }
+
+    public EntityPlayer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(EntityPlayer customer) {
+        this.customer = customer;
+    }
+
+    @Override
+    public Container createContainer(World world, EntityPlayer player) {
+        return new ContainerBarakoTrade(this, player.inventory, world);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public GuiContainer createGui(World world, EntityPlayer player) {
+        return new GuiBarakoTrade(this, player.inventory, world);
+    }
+
+    @Override
+    protected boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack stack) {
+        if (canTradeWith(player)) {
+            setCustomer(player);
+            if (!worldObj.isRemote) {
+                GuiHandler.open(GuiHandler.BARAKO_TRADE, player, this);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public boolean canTradeWith(EntityPlayer player) {
+        if (isTrading()) {
+            return false;
+        }
+        ItemStack headStack = player.inventory.armorInventory[3];
+        return headStack != null && headStack.getItem() instanceof BarakoaMask;
     }
 }
