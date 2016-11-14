@@ -35,7 +35,7 @@ public class MowzieWorldGenerator implements IWorldGenerator {
     }
 
     public static void generatePrePopulate(World world, Random random, int x, int z) {
-        StructureBarakoaVillage.generateVillage(world, random, x, z, MowziesMobs.CONFIG.spawnrateBarako);
+        StructureBarakoaVillage.generateVillage(world, random, x, z, MowziesMobs.CONFIG.spawnrateBarako * 3);
     }
 
     private void generateSurface(World world, Random random, int x, int z) {

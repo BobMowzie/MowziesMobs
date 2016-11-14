@@ -14,8 +14,10 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeSavanna;
 import net.minecraft.world.gen.structure.StructureMineshaftPieces;
+import net.minecraftforge.common.BiomeDictionary;
 import org.lwjgl.Sys;
 
 import java.util.List;
@@ -599,17 +601,11 @@ public class StructureBarakoaVillage {
             }
         }
         world.spawnEntityInWorld(barako);
+        barako.onInitialSpawn(world.getDifficultyForLocation(barako.getPosition()), null);
     }
 
     public static void generateFirepit(World world, Random rand, BlockPos pos) {
-        StructureBuilder structure = new StructureBuilder().startComponent()
-                .setBlock(0, 0, 0, Blocks.NETHERRACK)
-                .setBlock(1, 1, 0, Blocks.STONE_SLAB.getDefaultState().withProperty(BlockStoneSlab.VARIANT, BlockStoneSlab.EnumType.COBBLESTONE))
-                .setBlock(-1, 1, 0, Blocks.STONE_SLAB.getDefaultState().withProperty(BlockStoneSlab.VARIANT, BlockStoneSlab.EnumType.COBBLESTONE))
-                .setBlock(0, 1, 1, Blocks.STONE_SLAB.getDefaultState().withProperty(BlockStoneSlab.VARIANT, BlockStoneSlab.EnumType.COBBLESTONE))
-                .setBlock(0, 1, -1, Blocks.STONE_SLAB.getDefaultState().withProperty(BlockStoneSlab.VARIANT, BlockStoneSlab.EnumType.COBBLESTONE))
-//                .setBlock(0, 1, 0, BlockHandler.INSTANCE.staticFire)
-                ;
+        world.setBlockState(pos.add(0,1,0), BlockHandler.INSTANCE.campfire.getDefaultState());
         BlockPos[] poses = new BlockPos[]{pos.add(1, 4, -4), pos.add(1, 4, 4), pos.add(-1, 4, -4), pos.add(-1, 4, 4), pos.add(4, 4, 1), pos.add(-4, 4, 1), pos.add(4, 4, -1), pos.add(-4, 4, -1), pos.add(-3, 4, 3), pos.add(-3, 4, -3), pos.add(3, 4, -3), pos.add(3, 4, 3)};
         for (int i = 0; i < poses.length; i++) {
             for (int dy = 0; dy <= 8; dy++) {
@@ -619,9 +615,6 @@ public class StructureBarakoaVillage {
                 }
             }
         }
-
-        structure.endComponent();
-        structure.generate(world, pos, rand);
     }
 
     public static void generateSkulls(World world, Random rand, BlockPos pos, EnumFacing dir) {
@@ -680,11 +673,21 @@ public class StructureBarakoaVillage {
 
     public static void generateVillage(World world, Random rand, int x, int z, int chance) {
 //        System.out.println("Beginning generation");
-        if (chance <= 0 || !(world.getBiomeGenForCoords(new BlockPos(x, 0, z)) instanceof BiomeSavanna)) {
+        if (chance <= 0) {
             return;
         }
         if (rand.nextInt(chance) == 0) {
-            System.out.println("Village at " + x + ", " + z);
+
+            boolean isSavanna = false;
+            for (Biome savannaBiome : BiomeDictionary.getBiomesForType(BiomeDictionary.Type.SAVANNA)) {
+                if (world.getBiomeGenForCoords(new BlockPos(x, 0, z)) == savannaBiome) {
+                    isSavanna = true;
+                    break;
+                }
+            }
+            if (!isSavanna) return;
+
+//            System.out.println("Village at " + x + ", " + z);
             //System.out.println("Passes chance test");
             BlockPos pos = new BlockPos(x, 0, z);
             int y = findGenHeight(world, pos);
@@ -772,7 +775,7 @@ public class StructureBarakoaVillage {
                     //else System.out.println("No space");
                 }
             }
-            int numBarakoa = rand.nextInt(9) + 7;
+            int numBarakoa = rand.nextInt(12) + 12;
             for (int i = 1; i <= numBarakoa; i++) {
                 int distance;
                 int angle;
@@ -783,6 +786,7 @@ public class StructureBarakoaVillage {
                     barakoa.setPosition(pos.getX() + distance * Math.sin(Math.toRadians(angle)), pos.getY() + 3, pos.getZ() + distance * Math.cos(Math.toRadians(angle)));
                     if(barakoa.getCanSpawnHere()) {
                         world.spawnEntityInWorld(barakoa);
+                        barakoa.onInitialSpawn(world.getDifficultyForLocation(barakoa.getPosition()), null);
                         break;
                     }
                 }
