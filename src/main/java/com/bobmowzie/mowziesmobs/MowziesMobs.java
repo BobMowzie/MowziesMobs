@@ -9,10 +9,7 @@ import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.gui.GuiHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
-import com.bobmowzie.mowziesmobs.server.message.MessagePlayerAttackMob;
-import com.bobmowzie.mowziesmobs.server.message.MessagePlayerSolarBeam;
-import com.bobmowzie.mowziesmobs.server.message.MessagePlayerSummonSunstrike;
-import com.bobmowzie.mowziesmobs.server.message.MessageSwingWroughtAxe;
+import com.bobmowzie.mowziesmobs.server.message.*;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import com.bobmowzie.mowziesmobs.server.recipe.RecipeHandler;
@@ -47,7 +44,7 @@ public class MowziesMobs {
     public static MowziesMobs INSTANCE;
     @SidedProxy(clientSide = "com.bobmowzie.mowziesmobs.client.ClientProxy", serverSide = "com.bobmowzie.mowziesmobs.server.ServerProxy")
     public static ServerProxy PROXY;
-    @NetworkWrapper({MessageSwingWroughtAxe.class, MessagePlayerSummonSunstrike.class, MessagePlayerSolarBeam.class, MessagePlayerAttackMob.class})
+    @NetworkWrapper({MessageSwingWroughtAxe.class, MessagePlayerSummonSunstrike.class, MessagePlayerSolarBeam.class, MessagePlayerAttackMob.class, MessageBarakoTrade.class})
     public static SimpleNetworkWrapper NETWORK_WRAPPER;
     @Config
     public static ConfigHandler CONFIG;

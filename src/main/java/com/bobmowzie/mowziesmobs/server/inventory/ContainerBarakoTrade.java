@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.inventory;
 
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -81,8 +82,14 @@ public final class ContainerBarakoTrade extends Container {
         if (!world.isRemote) {
             ItemStack stack = inventory.removeStackFromSlot(0);
             if (stack != null) {
-                player.dropItem(stack, false);
+                EntityItem dropped = player.dropItem(stack, false);
+                dropped.motionX *= 0.5;
+                dropped.motionZ *= 0.5;
             }
         }
+    }
+
+    public InventoryBarako getInventoryBarako() {
+        return inventory;
     }
 }

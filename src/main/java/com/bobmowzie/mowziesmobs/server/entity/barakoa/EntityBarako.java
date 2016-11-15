@@ -2,11 +2,13 @@ package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
 import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoTrade;
 import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoayaTrade;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
 import com.bobmowzie.mowziesmobs.server.gui.GuiHandler;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoTrade;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoayaTrade;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
+import com.google.common.collect.ImmutableSet;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
@@ -26,6 +28,8 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializer;
 import net.minecraft.network.datasync.DataSerializers;
@@ -56,10 +60,11 @@ import com.bobmowzie.mowziesmobs.server.item.ItemTestStructure;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.google.common.base.Optional;
 
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.List;
+import java.util.*;
 
 public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune, GuiHandler.ContainerHolder {
     public static final Animation DIE_ANIMATION = Animation.create(130);
@@ -70,6 +75,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     public static final Animation ATTACK_ANIMATION = Animation.create(30);
     public static final Animation SPAWN_ANIMATION = Animation.create(20);
     public static final Animation SOLAR_BEAM_ANIMATION = Animation.create(100);
+    public static final Animation BLESS_ANIMATION = Animation.create(40);
     private static final int MAX_HEALTH = 100;
     private static final int SUNSTRIKE_PAUSE_MAX = 40;
     private static final int SUNSTRIKE_PAUSE_MIN = 15;
@@ -79,6 +85,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     private static final DataParameter<Integer> DIALOGUE = EntityDataManager.createKey(EntityBarako.class, DataSerializers.VARINT);
     private static final DataParameter<Boolean> ANGRY = EntityDataManager.createKey(EntityBarako.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Optional<ItemStack>> DESIRES = EntityDataManager.createKey(EntityBarako.class, DataSerializers.OPTIONAL_ITEM_STACK);
+    public List<UUID> tradedPlayers;
     public ControlledAnimation legsUp = new ControlledAnimation(15);
     public ControlledAnimation angryEyebrow = new ControlledAnimation(5);
     private EntityPlayer customer;
@@ -99,6 +106,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         this.tasks.addTask(4, new EntityAINearestAttackableTarget<>(this, EntityZombie.class, 0, false, false, null));
         this.tasks.addTask(2, new AnimationAI<>(this, BELLY_ANIMATION, false));
         this.tasks.addTask(2, new AnimationAI<>(this, TALK_ANIMATION, false));
+        this.tasks.addTask(2, new AnimationAI<>(this, TALK_ANIMATION, false));
         this.tasks.addTask(2, new AnimationSunStrike<>(this, SUNSTRIKE_ANIMATION));
         this.tasks.addTask(2, new AnimationRadiusAttack<>(this, ATTACK_ANIMATION, 5, 5, 4.5f, 12, true));
         this.tasks.addTask(2, new AnimationSpawnBarakoa(this, SPAWN_ANIMATION));
@@ -112,6 +120,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         if (getDirection() == 0) {
             this.setDirection(rand.nextInt(4) + 1);
         }
+        tradedPlayers = new ArrayList<>();
     }
 
     public EntityBarako(World world, int direction) {
@@ -368,12 +377,24 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     public void writeEntityToNBT(NBTTagCompound compound) {
         super.writeEntityToNBT(compound);
         compound.setInteger("direction", getDirection());
+        NBTTagList playersList = new NBTTagList();
+        for (UUID uuid : tradedPlayers) {
+            playersList.appendTag(NBTUtil.createUUIDTag(uuid));
+        }
+        compound.setTag("players", playersList);
     }
 
     @Override
     public void readEntityFromNBT(NBTTagCompound compound) {
         super.readEntityFromNBT(compound);
         setDirection(compound.getInteger("direction"));
+        NBTTagList playersList = compound.getTagList("players", Constants.NBT.TAG_COMPOUND);
+        for (int i = 0; i < playersList.tagCount(); i++) {
+            UUID uuid = NBTUtil.getUUIDFromTag(playersList.getCompoundTagAt(i));
+            if (uuid != null) {
+                tradedPlayers.add(uuid);
+            }
+        }
     }
 
     @Override

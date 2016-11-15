@@ -6,6 +6,8 @@ import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoTrade;
 import com.bobmowzie.mowziesmobs.server.inventory.InventoryBarako;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 
+import com.bobmowzie.mowziesmobs.server.message.MessageBarakoTrade;
+import com.bobmowzie.mowziesmobs.server.message.MessagePlayerAttackMob;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
@@ -44,13 +46,14 @@ public final class GuiBarakoTrade extends GuiContainer implements InventoryBarak
     public void initGui() {
     	super.initGui();
     	buttonList.clear();
-        grantButton = func_189646_b(new GuiButton(0, guiLeft + 119, guiTop + 52, 47, 20, "Receive"));
+        grantButton = func_189646_b(new GuiButton(0, guiLeft + 119, guiTop + 52, 47, 20, "Trade"));
         grantButton.enabled = false;
     }
 
     @Override
     protected void actionPerformed(GuiButton button) {
     	if (button == grantButton) {
+            MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageBarakoTrade(barako));
     		// TODO: send message to server to grant and consume items from inventory (REMEMBER SERVER SIDE VALIDATION)
     	}
     }
