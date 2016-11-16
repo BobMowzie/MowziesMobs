@@ -25,6 +25,7 @@ import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -85,7 +86,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     private static final DataParameter<Integer> DIALOGUE = EntityDataManager.createKey(EntityBarako.class, DataSerializers.VARINT);
     private static final DataParameter<Boolean> ANGRY = EntityDataManager.createKey(EntityBarako.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Optional<ItemStack>> DESIRES = EntityDataManager.createKey(EntityBarako.class, DataSerializers.OPTIONAL_ITEM_STACK);
-    public List<UUID> tradedPlayers;
+    private final Set<UUID> tradedPlayers = new HashSet<>();
     public ControlledAnimation legsUp = new ControlledAnimation(15);
     public ControlledAnimation angryEyebrow = new ControlledAnimation(5);
     private EntityPlayer customer;
@@ -120,7 +121,6 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         if (getDirection() == 0) {
             this.setDirection(rand.nextInt(4) + 1);
         }
-        tradedPlayers = new ArrayList<>();
     }
 
     public EntityBarako(World world, int direction) {
@@ -373,27 +373,46 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     	return getDataManager().get(DESIRES).get();
     }
 
+    public boolean doesItemSatisfyDesire(ItemStack stack) {
+        return canPayFor(stack, getDesires());
+    }
+
+    public boolean fulfillDesire(Slot input) {
+        ItemStack desires = getDesires();
+        if (canPayFor(input.getStack(), desires)) {
+            input.decrStackSize(desires.stackSize);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean hasTradedWith(EntityPlayer player) {
+        return tradedPlayers.contains(EntityPlayer.getUUID(player.getGameProfile()));
+    }
+
+    public void rememberTrade(EntityPlayer player) {
+        tradedPlayers.add(EntityPlayer.getUUID(player.getGameProfile()));
+    }
+
     @Override
     public void writeEntityToNBT(NBTTagCompound compound) {
         super.writeEntityToNBT(compound);
         compound.setInteger("direction", getDirection());
-        NBTTagList playersList = new NBTTagList();
+        NBTTagList players = new NBTTagList();
         for (UUID uuid : tradedPlayers) {
-            playersList.appendTag(NBTUtil.createUUIDTag(uuid));
+            players.appendTag(NBTUtil.createUUIDTag(uuid));
         }
-        compound.setTag("players", playersList);
+        compound.setTag("players", players);
     }
 
     @Override
     public void readEntityFromNBT(NBTTagCompound compound) {
         super.readEntityFromNBT(compound);
         setDirection(compound.getInteger("direction"));
-        NBTTagList playersList = compound.getTagList("players", Constants.NBT.TAG_COMPOUND);
-        for (int i = 0; i < playersList.tagCount(); i++) {
-            UUID uuid = NBTUtil.getUUIDFromTag(playersList.getCompoundTagAt(i));
-            if (uuid != null) {
-                tradedPlayers.add(uuid);
-            }
+        tradedPlayers.clear();
+        NBTTagList players = compound.getTagList("players", Constants.NBT.TAG_COMPOUND);
+        for (int i = 0; i < players.tagCount(); i++) {
+            tradedPlayers.add(NBTUtil.getUUIDFromTag(players.getCompoundTagAt(i)));
         }
     }
 
@@ -439,14 +458,14 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     }
 
     @Override
-    public Container createContainer(World world, EntityPlayer player) {
+    public Container createContainer(World world, EntityPlayer player, int x, int y, int z) {
         return new ContainerBarakoTrade(this, player.inventory, world);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public GuiContainer createGui(World world, EntityPlayer player) {
-        return new GuiBarakoTrade(this, player.inventory, world);
+    public GuiContainer createGui(World world, EntityPlayer player, int x, int y, int z) {
+        return new GuiBarakoTrade(this, player.inventory, world, y != 0);
     }
 
     @Override
@@ -454,7 +473,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         if (canTradeWith(player)) {
             setCustomer(player);
             if (!worldObj.isRemote) {
-                GuiHandler.open(GuiHandler.BARAKO_TRADE, player, this);
+                GuiHandler.open(GuiHandler.BARAKO_TRADE, player, this, hasTradedWith(player) ? 1 : 0);
             }
             return true;
         }
@@ -467,5 +486,9 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         }
         ItemStack headStack = player.inventory.armorInventory[3];
         return headStack != null && headStack.getItem() instanceof BarakoaMask;
+    }
+
+    private static boolean canPayFor(ItemStack stack, ItemStack worth) {
+        return worth == null && stack == null || stack != null && stack.getItem() == worth.getItem() && stack.stackSize >= worth.stackSize;
     }
 }

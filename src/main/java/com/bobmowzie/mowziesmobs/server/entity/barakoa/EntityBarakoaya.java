@@ -107,13 +107,13 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder {
     }
 
     @Override
-    public Container createContainer(World world, EntityPlayer player) {
+    public Container createContainer(World world, EntityPlayer player, int x, int y, int z) {
         return new ContainerBarakoayaTrade(this, player.inventory, world);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public GuiContainer createGui(World world, EntityPlayer player) {
+    public GuiContainer createGui(World world, EntityPlayer player, int x, int y, int z) {
         return new GuiBarakoayaTrade(this, player.inventory, world);
     }
 

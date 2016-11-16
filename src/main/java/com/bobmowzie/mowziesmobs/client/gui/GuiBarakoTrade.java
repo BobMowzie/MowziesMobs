@@ -22,6 +22,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,17 +39,15 @@ public final class GuiBarakoTrade extends GuiContainer implements InventoryBarak
 
     private boolean hasTraded;
 
-    public GuiBarakoTrade(EntityBarako barako, InventoryPlayer playerInv, World world) {
-        this(barako, new InventoryBarako(barako), playerInv, world);
+    public GuiBarakoTrade(EntityBarako barako, InventoryPlayer playerInv, World world, boolean hasTraded) {
+        this(barako, new InventoryBarako(barako), playerInv, world, hasTraded);
     }
 
-    public GuiBarakoTrade(EntityBarako barako, InventoryBarako inventory, InventoryPlayer playerInv, World world) {
+    public GuiBarakoTrade(EntityBarako barako, InventoryBarako inventory, InventoryPlayer playerInv, World world, boolean hasTraded) {
         super(new ContainerBarakoTrade(barako, inventory, playerInv, world));
         this.barako = barako;
         this.inventory = inventory;
-        UUID uuid = EntityPlayer.getUUID(barako.getCustomer().getGameProfile());
-        hasTraded = barako.tradedPlayers.contains(uuid);
-        System.out.println(hasTraded);
+        this.hasTraded = hasTraded;
         inventory.addListener(this);
     }
 
@@ -63,15 +62,12 @@ public final class GuiBarakoTrade extends GuiContainer implements InventoryBarak
         }
         grantButton = func_189646_b(new GuiButton(0, guiLeft + 114, guiTop + 52, 57, 20, text));
         grantButton.enabled = hasTraded;
+        updateButtonText();
     }
 
     @Override
     protected void actionPerformed(GuiButton button) {
     	if (button == grantButton) {
-            UUID uuid = EntityPlayer.getUUID(barako.getCustomer().getGameProfile());
-            if (!barako.tradedPlayers.contains(uuid)) {
-                barako.tradedPlayers.add(uuid);
-            }
             hasTraded = true;
             updateButtonText();
             MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageBarakoTrade(barako));
@@ -114,15 +110,8 @@ public final class GuiBarakoTrade extends GuiContainer implements InventoryBarak
             renderToolTip(barako.getDesires(), mouseX, mouseY);
         } else if (isPointInRegion(134, 24, 16, 16, mouseX, mouseY)) {
             renderToolTip(output, mouseX, mouseY);
-        } else if (isPointInRegion(114, 52, 57, 20, mouseX, mouseY)) {
-
-            List<String> hoverText = new ArrayList<String>();
-            String key = hasTraded ? "entity.barako.replenish.button.hover" : "entity.barako.trade.button.hover";
-            if (I18n.hasKey(key)) {
-                hoverText.add(I18n.format(key));
-            }
-            drawHoveringText(hoverText, mouseX, mouseY);
-
+        } else if (grantButton.isMouseOver()) {
+            drawHoveringText(getHoverText(), mouseX, mouseY);
         }
         GlStateManager.enableLighting();
         GlStateManager.enableDepth();
@@ -132,18 +121,14 @@ public final class GuiBarakoTrade extends GuiContainer implements InventoryBarak
 
 	@Override
 	public void onChange(IInventory inv) {
-        ItemStack inSlot = inv.getStackInSlot(0);
-        ItemStack desires = barako.getDesires();
-        grantButton.enabled = desires == null || hasTraded || inSlot != null && inSlot.getItem() == desires.getItem() && inSlot.stackSize >= desires.stackSize;
-        updateButtonText();
+        grantButton.enabled = hasTraded || barako.doesItemSatisfyDesire(inv.getStackInSlot(0));
 	}
 
     private void updateButtonText() {
-        String text = "";
-        String key = hasTraded ? "entity.barako.replenish.button.text" : "entity.barako.trade.button.text";
-        if (I18n.hasKey(key)) {
-            text = I18n.format(key);
-        }
-        grantButton.displayString = text;
+        grantButton.displayString = I18n.format(hasTraded ? "entity.barako.replenish.button.text" : "entity.barako.trade.button.text");
+    }
+
+    private List<String> getHoverText() {
+        return Collections.singletonList(I18n.format(hasTraded ? "entity.barako.replenish.button.hover" : "entity.barako.trade.button.hover"));
     }
 }

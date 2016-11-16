@@ -45,9 +45,9 @@ public final class GuiHandler implements IGuiHandler {
     }
 
     public interface ContainerHolder {
-        Container createContainer(World world, EntityPlayer player);
+        Container createContainer(World world, EntityPlayer player, int x, int y, int z);
 
-        GuiContainer createGui(World world, EntityPlayer player);
+        GuiContainer createGui(World world, EntityPlayer player, int x, int y, int z);
     }
 
     public static abstract class GuiType<T extends ContainerHolder> {
@@ -60,7 +60,7 @@ public final class GuiHandler implements IGuiHandler {
         public final Container createContainer(World world, EntityPlayer player, int x, int y, int z) {
             T obj = getAsType(world, player, x, y, z);
             if (obj != null) {
-                return obj.createContainer(world, player);
+                return obj.createContainer(world, player, x, y, z);
             }
             return null;
         }
@@ -68,7 +68,7 @@ public final class GuiHandler implements IGuiHandler {
         public final GuiContainer createGui(World world, EntityPlayer player, int x, int y, int z) {
             T obj = getAsType(world, player, x, y, z);
             if (obj != null) {
-                return obj.createGui(world, player);
+                return obj.createGui(world, player, x, y, z);
             }
             return null;
         }
@@ -108,6 +108,14 @@ public final class GuiHandler implements IGuiHandler {
 
     public static <T extends Entity & ContainerHolder> void open(GuiTypeEntity<T> type, EntityPlayer player, T entity) {
         open(type, player, entity.getEntityId(), 0, 0);
+    }
+
+    public static <T extends Entity & ContainerHolder> void open(GuiTypeEntity<T> type, EntityPlayer player, T entity, int y) {
+        open(type, player, entity.getEntityId(), y, 0);
+    }
+
+    public static <T extends Entity & ContainerHolder> void open(GuiTypeEntity<T> type, EntityPlayer player, T entity, int y, int z) {
+        open(type, player, entity.getEntityId(), y, z);
     }
 
     public static <T extends TileEntity & ContainerHolder> void open(GuiHandler.GuiTypeBlock<T> type, EntityPlayer player, T blockEntity) {
