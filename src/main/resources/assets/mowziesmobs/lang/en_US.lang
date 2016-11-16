@@ -67,6 +67,10 @@ potion.sunsBlessing=Sun's Blessing
 # Containers
 entity.barakoaya.trade=Barakoa
 entity.barako.trade=Barako, the Sun Chief
+entity.barako.trade.button.text=Trade
+entity.barako.trade.button.hover=Return later to replenish for free
+entity.barako.replenish.button.text=Replenish
+entity.barako.replenish.button.hover=Replenish your blessing for free
 
 # Death Messages
 death.attack.dart=%1$s was shot by %2$s

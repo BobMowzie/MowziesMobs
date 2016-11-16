@@ -55,8 +55,7 @@ public class MessageBarakoTrade extends AbstractMessage<MessageBarakoTrade> {
         Entity entity = entityPlayer.worldObj.getEntityByID(messageBarakoTrade.entityID);
         if (entity instanceof EntityBarako) {
             EntityBarako barako = (EntityBarako)entity;
-            if (barako.getCustomer().isPotionActive(PotionHandler.INSTANCE.sunsBlessing)) return;
-            else barako.getCustomer().addPotionEffect(new PotionEffect(PotionHandler.INSTANCE.sunsBlessing, 24000, 0, false, false));
+            barako.getCustomer().addPotionEffect(new PotionEffect(PotionHandler.INSTANCE.sunsBlessing, 24000, 0, false, false));
 
             UUID uuid = EntityPlayer.getUUID(barako.getCustomer().getGameProfile());
             if (!barako.tradedPlayers.contains(uuid)) {

@@ -7,18 +7,23 @@ import com.bobmowzie.mowziesmobs.server.inventory.InventoryBarako;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 
 import com.bobmowzie.mowziesmobs.server.message.MessageBarakoTrade;
-import com.bobmowzie.mowziesmobs.server.message.MessagePlayerAttackMob;
+import net.minecraft.block.SoundType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public final class GuiBarakoTrade extends GuiContainer implements InventoryBarako.ChangeListener {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/gui/container/barako.png");
@@ -31,6 +36,8 @@ public final class GuiBarakoTrade extends GuiContainer implements InventoryBarak
 
     private GuiButton grantButton;
 
+    private boolean hasTraded;
+
     public GuiBarakoTrade(EntityBarako barako, InventoryPlayer playerInv, World world) {
         this(barako, new InventoryBarako(barako), playerInv, world);
     }
@@ -39,6 +46,9 @@ public final class GuiBarakoTrade extends GuiContainer implements InventoryBarak
         super(new ContainerBarakoTrade(barako, inventory, playerInv, world));
         this.barako = barako;
         this.inventory = inventory;
+        UUID uuid = EntityPlayer.getUUID(barako.getCustomer().getGameProfile());
+        hasTraded = barako.tradedPlayers.contains(uuid);
+        System.out.println(hasTraded);
         inventory.addListener(this);
     }
 
@@ -46,15 +56,25 @@ public final class GuiBarakoTrade extends GuiContainer implements InventoryBarak
     public void initGui() {
     	super.initGui();
     	buttonList.clear();
-        grantButton = func_189646_b(new GuiButton(0, guiLeft + 119, guiTop + 52, 47, 20, "Trade"));
-        grantButton.enabled = false;
+        String text = "";
+        String key = hasTraded ? "entity.barako.replenish.button.text" : "entity.barako.trade.button.text";
+        if (I18n.hasKey(key)) {
+            text = I18n.format(key);
+        }
+        grantButton = func_189646_b(new GuiButton(0, guiLeft + 114, guiTop + 52, 57, 20, text));
+        grantButton.enabled = hasTraded;
     }
 
     @Override
     protected void actionPerformed(GuiButton button) {
     	if (button == grantButton) {
+            UUID uuid = EntityPlayer.getUUID(barako.getCustomer().getGameProfile());
+            if (!barako.tradedPlayers.contains(uuid)) {
+                barako.tradedPlayers.add(uuid);
+            }
+            hasTraded = true;
+            updateButtonText();
             MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageBarakoTrade(barako));
-    		// TODO: send message to server to grant and consume items from inventory (REMEMBER SERVER SIDE VALIDATION)
     	}
     }
 
@@ -90,10 +110,19 @@ public final class GuiBarakoTrade extends GuiContainer implements InventoryBarak
         itemRender.renderItemOverlays(fontRendererObj, output, guiLeft + 134, guiTop + 24);
         itemRender.zLevel = 0;
         GlStateManager.disableLighting();
-        if (isPointInRegion(80, 24, 16, 16, mouseX, mouseY)) {
+        if (isPointInRegion(68, 24, 16, 16, mouseX, mouseY)) {
             renderToolTip(barako.getDesires(), mouseX, mouseY);
         } else if (isPointInRegion(134, 24, 16, 16, mouseX, mouseY)) {
             renderToolTip(output, mouseX, mouseY);
+        } else if (isPointInRegion(114, 52, 57, 20, mouseX, mouseY)) {
+
+            List<String> hoverText = new ArrayList<String>();
+            String key = hasTraded ? "entity.barako.replenish.button.hover" : "entity.barako.trade.button.hover";
+            if (I18n.hasKey(key)) {
+                hoverText.add(I18n.format(key));
+            }
+            drawHoveringText(hoverText, mouseX, mouseY);
+
         }
         GlStateManager.enableLighting();
         GlStateManager.enableDepth();
@@ -105,6 +134,16 @@ public final class GuiBarakoTrade extends GuiContainer implements InventoryBarak
 	public void onChange(IInventory inv) {
         ItemStack inSlot = inv.getStackInSlot(0);
         ItemStack desires = barako.getDesires();
-		grantButton.enabled = desires == null || inSlot != null && inSlot.getItem() == desires.getItem() && inSlot.stackSize >= desires.stackSize;
+        grantButton.enabled = desires == null || hasTraded || inSlot != null && inSlot.getItem() == desires.getItem() && inSlot.stackSize >= desires.stackSize;
+        updateButtonText();
 	}
+
+    private void updateButtonText() {
+        String text = "";
+        String key = hasTraded ? "entity.barako.replenish.button.text" : "entity.barako.trade.button.text";
+        if (I18n.hasKey(key)) {
+            text = I18n.format(key);
+        }
+        grantButton.displayString = text;
+    }
 }
