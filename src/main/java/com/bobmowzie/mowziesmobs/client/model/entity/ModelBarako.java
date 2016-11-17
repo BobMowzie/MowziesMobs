@@ -1086,6 +1086,35 @@ public class ModelBarako extends AdvancedModelBase {
             jawScaler.rotationPointX += 0.1 * jiggleController.rotationPointY * Math.cos(frame * 2);
         }
 
+        if (tribeleader.getAnimation() == EntityBarako.BLESS_ANIMATION) {
+            animator.setAnimation(EntityBarako.BLESS_ANIMATION);
+            animator.startKeyframe(15);
+            animator.move(mouthScalerX, -0.4f, 0, 0);
+            animator.move(jawScaler, 0.4f, 0, 0);
+            animator.move(jiggleController, 0, 1, 0);
+            animator.rotate(chest, -0.1f, 0, 0);
+            animator.rotate(neckJoint, -0.3f, 0, 0);
+            animator.rotate(headJoint, 0.2f, 0, 0);
+            animator.rotate(rightUpperArm, 0, 0, 0);
+            animator.rotate(rightArmJoint, -0.5f, 0.9f, -0.5f);
+            animator.rotate(rightLowerArm, -0.1f, 0, 0.2f);
+            animator.rotate(rightHand, -0.5f, 0.5f, 0);
+            animator.rotate(leftUpperArm, 0, 0, 0);
+            animator.rotate(leftArmJoint, -0.5f, -0.9f, 0.5f);
+            animator.rotate(leftLowerArm, -0.1f, 0, -0.2f);
+            animator.rotate(leftHand, -0.5f, -0.5f, 0);
+            animator.rotate(body, -0.1f, 0, 0);
+            animator.rotate(leftThigh, 0, -0.1f * liftLegs, 0);
+            animator.rotate(rightThigh, 0, 0.1f * liftLegs, 0);
+            animator.rotate(leftThigh, 0.1f * (1 - liftLegs), 0, 0);
+            animator.rotate(rightThigh, 0.1f * (1 - liftLegs), 0, 0);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(30);
+            animator.resetKeyframe(15);
+
+            jawScaler.rotationPointX += 0.1 * jiggleController.rotationPointY * Math.cos(frame * 1.5);
+        }
+
         if (tribeleader.getAnimation() == EntityBarako.HURT_ANIMATION) {
             animator.setAnimation(EntityBarako.HURT_ANIMATION);
             animator.startKeyframe(2);

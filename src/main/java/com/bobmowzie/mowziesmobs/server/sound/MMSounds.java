@@ -122,6 +122,8 @@ public enum MMSounds {
 
     public static final SoundEvent ENTITY_BARAKO_DIE = reg("barako.die");
 
+    public static final SoundEvent ENTITY_BARAKO_BLESS = reg("barako.bless");
+
     public static final SoundEvent ENTITY_BARAKO_TALK_1 = reg("barako.talk1");
 
     public static final SoundEvent ENTITY_BARAKO_TALK_2 = reg("barako.talk2");

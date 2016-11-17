@@ -257,6 +257,9 @@
 	"barako.burst": {
 		"sounds": [ "mowziesmobs:entity/barako/burst" ]
 	},
+	"barako.bless": {
+		"sounds": [ "mowziesmobs:entity/barako/bless" ]
+	},
 	"sunstrike": {
 		"sounds": [ "mowziesmobs:random/sunstrike" ]
 	},

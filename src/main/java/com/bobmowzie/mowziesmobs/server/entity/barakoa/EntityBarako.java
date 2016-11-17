@@ -76,7 +76,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     public static final Animation ATTACK_ANIMATION = Animation.create(30);
     public static final Animation SPAWN_ANIMATION = Animation.create(20);
     public static final Animation SOLAR_BEAM_ANIMATION = Animation.create(100);
-    public static final Animation BLESS_ANIMATION = Animation.create(40);
+    public static final Animation BLESS_ANIMATION = Animation.create(60);
     private static final int MAX_HEALTH = 100;
     private static final int SUNSTRIKE_PAUSE_MAX = 40;
     private static final int SUNSTRIKE_PAUSE_MIN = 15;
@@ -107,7 +107,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         this.tasks.addTask(4, new EntityAINearestAttackableTarget<>(this, EntityZombie.class, 0, false, false, null));
         this.tasks.addTask(2, new AnimationAI<>(this, BELLY_ANIMATION, false));
         this.tasks.addTask(2, new AnimationAI<>(this, TALK_ANIMATION, false));
-        this.tasks.addTask(2, new AnimationAI<>(this, TALK_ANIMATION, false));
+        this.tasks.addTask(2, new AnimationAI<>(this, BLESS_ANIMATION, false));
         this.tasks.addTask(2, new AnimationSunStrike<>(this, SUNSTRIKE_ANIMATION));
         this.tasks.addTask(2, new AnimationRadiusAttack<>(this, ATTACK_ANIMATION, 5, 5, 4.5f, 12, true));
         this.tasks.addTask(2, new AnimationSpawnBarakoa(this, SPAWN_ANIMATION));
@@ -429,7 +429,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 
     @Override
     public Animation[] getAnimations() {
-        return new Animation[]{DIE_ANIMATION, HURT_ANIMATION, BELLY_ANIMATION, TALK_ANIMATION, SUNSTRIKE_ANIMATION, ATTACK_ANIMATION, SPAWN_ANIMATION, SOLAR_BEAM_ANIMATION};
+        return new Animation[]{DIE_ANIMATION, HURT_ANIMATION, BELLY_ANIMATION, TALK_ANIMATION, SUNSTRIKE_ANIMATION, ATTACK_ANIMATION, SPAWN_ANIMATION, SOLAR_BEAM_ANIMATION, BLESS_ANIMATION};
     }
 
     @Override

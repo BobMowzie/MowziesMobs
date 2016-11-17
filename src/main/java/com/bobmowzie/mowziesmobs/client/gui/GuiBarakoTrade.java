@@ -79,7 +79,7 @@ public final class GuiBarakoTrade extends GuiContainer implements InventoryBarak
         GlStateManager.color(1, 1, 1);
         mc.getTextureManager().bindTexture(TEXTURE);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
-        GuiInventory.drawEntityOnScreen(guiLeft + 33, guiTop + 56, 14, guiLeft + 33 - mouseX, guiTop + 16 - mouseY, barako);
+        GuiInventory.drawEntityOnScreen(guiLeft + 33, guiTop + 56, 14, 0, 0, barako);
     }
 
     @Override
