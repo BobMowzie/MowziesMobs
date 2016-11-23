@@ -21,6 +21,7 @@ import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
+import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -105,6 +106,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         this.targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
         this.tasks.addTask(4, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, false));
         this.tasks.addTask(4, new EntityAINearestAttackableTarget<>(this, EntityZombie.class, 0, false, false, null));
+        this.tasks.addTask(4, new EntityAINearestAttackableTarget<>(this, EntitySkeleton.class, 0, false, false, null));
         this.tasks.addTask(2, new AnimationAI<>(this, BELLY_ANIMATION, false));
         this.tasks.addTask(2, new AnimationAI<>(this, TALK_ANIMATION, false));
         this.tasks.addTask(2, new AnimationAI<>(this, BLESS_ANIMATION, false));

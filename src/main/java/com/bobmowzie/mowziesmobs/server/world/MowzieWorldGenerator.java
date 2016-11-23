@@ -1,24 +1,21 @@
 package com.bobmowzie.mowziesmobs.server.world;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.world.structure.StructureBarakoaVillage;
 import com.bobmowzie.mowziesmobs.server.world.structure.StructureWroughtnautRoom;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockStone;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.init.Biomes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeSavanna;
 import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.IWorldGenerator;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.Random;
 
 public class MowzieWorldGenerator implements IWorldGenerator {
-
 
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
@@ -34,8 +31,39 @@ public class MowzieWorldGenerator implements IWorldGenerator {
         }
     }
 
-    public static void generatePrePopulate(World world, Random random, int x, int z) {
-        StructureBarakoaVillage.generateVillage(world, random, x, z, MowziesMobs.CONFIG.spawnrateBarako * 3);
+    public static void generatePrePopulate(World world, Random random, int chunkX, int chunkZ) {
+        if (canSpawnVillageAtCoords(chunkX, chunkZ, world)) StructureBarakoaVillage.generateVillage(world, random, chunkX * 16 + 8, chunkZ * 16 + 8, 1);
+    }
+
+    private static boolean canSpawnVillageAtCoords(int chunkX, int chunkZ, World worldObj)
+    {
+        if (MowziesMobs.CONFIG.spawnrateBarako <= 0) return false;
+        int maxDistanceBetweenVillages = MowziesMobs.CONFIG.spawnrateBarako + 8;
+
+        int i = chunkX;
+        int j = chunkZ;
+
+        if (chunkX < 0)
+        {
+            chunkX -= maxDistanceBetweenVillages - 1;
+        }
+
+        if (chunkZ < 0)
+        {
+            chunkZ -= maxDistanceBetweenVillages - 1;
+        }
+
+        int k = chunkX / maxDistanceBetweenVillages;
+        int l = chunkZ / maxDistanceBetweenVillages;
+        Random random = worldObj.setRandomSeed(k, l, 14357617);
+        k = k * maxDistanceBetweenVillages;
+        l = l * maxDistanceBetweenVillages;
+        k = k + random.nextInt(maxDistanceBetweenVillages - 8);
+        l = l + random.nextInt(maxDistanceBetweenVillages - 8);
+
+        if (i == k && j == l) return true;
+
+        return false;
     }
 
     private void generateSurface(World world, Random random, int x, int z) {

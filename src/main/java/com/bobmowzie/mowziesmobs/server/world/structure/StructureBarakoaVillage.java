@@ -161,14 +161,14 @@ public class StructureBarakoaVillage {
             if (sideHouseDir <= 2) {
                 AxisAlignedBB box;
                 EnumFacing sideHouseFacing = (sideHouseDir == 1) ? EnumFacing.EAST : EnumFacing.WEST;
-                if (sideHouseFacing == EnumFacing.EAST) box = new AxisAlignedBB(pos.add(7, 0, 0).add(-2, 1, -2), pos.add(7, 0, 0).add(-2, 9, -2));
-                else box = new AxisAlignedBB(pos.add(-7, 0, 0).add(-2, 1, -2), pos.add(-7, 0, 0).add(-2, 9, -2));
-                if (!world.checkBlockCollision(box)) generateSideHouse(world, rand, pos, sideHouseFacing);
+                if (sideHouseFacing == EnumFacing.EAST) box = new AxisAlignedBB(pos.add(7, 0, 0).add(-2, 1, -2), pos.add(7, 0, 0).add(2, 9, 2));
+                else box = new AxisAlignedBB(pos.add(-7, 0, 0).add(-2, 1, -2), pos.add(-7, 0, 0).add(2, 9, 2));
+                if (world.getCollisionBoxes(box).isEmpty()) generateSideHouse(world, rand, pos, sideHouseFacing);
                 else {
                     sideHouseFacing = sideHouseFacing.getOpposite();
-                    if (sideHouseFacing == EnumFacing.EAST) box = new AxisAlignedBB(pos.add(7, 0, 0).add(-2, 1, -2), pos.add(7, 0, 0).add(-2, 9, -2));
-                    else box = new AxisAlignedBB(pos.add(-7, 0, 0).add(-2, 1, -2), pos.add(-7, 0, 0).add(-2, 9, -2));
-                    if (!world.checkBlockCollision(box)) generateSideHouse(world, rand, pos, sideHouseFacing);
+                    if (sideHouseFacing == EnumFacing.EAST) box = new AxisAlignedBB(pos.add(7, 0, 0).add(-2, 1, -2), pos.add(7, 0, 0).add(2, 9, 2));
+                    else box = new AxisAlignedBB(pos.add(-7, 0, 0).add(-2, 1, -2), pos.add(-7, 0, 0).add(2, 9, 2));
+                    if (world.getCollisionBoxes(box).isEmpty()) generateSideHouse(world, rand, pos, sideHouseFacing);
                 }
             }
         }
@@ -190,14 +190,14 @@ public class StructureBarakoaVillage {
             if (sideHouseDir <= 2) {
                 AxisAlignedBB box;
                 EnumFacing sideHouseFacing = (sideHouseDir == 1) ? EnumFacing.NORTH : EnumFacing.SOUTH;
-                if (sideHouseFacing == EnumFacing.NORTH) box = new AxisAlignedBB(pos.add(0, 0, -7).add(-2, 1, -2), pos.add(0, 0, -7).add(-2, 9, -2));
+                if (sideHouseFacing == EnumFacing.NORTH) box = new AxisAlignedBB(pos.add(0, 0, -7).add(-2, 1, -2), pos.add(0, 0, -7).add(2, 9, 2));
                 else box = new AxisAlignedBB(pos.add(0, 0, 7).add(-2, 1, -2), pos.add(0, 0, 7).add(-2, 9, -2));
-                if (!world.checkBlockCollision(box)) generateSideHouse(world, rand, pos, sideHouseFacing);
+                if (world.getCollisionBoxes(box).isEmpty()) generateSideHouse(world, rand, pos, sideHouseFacing);
                 else {
                     sideHouseFacing = sideHouseFacing.getOpposite();
-                    if (sideHouseFacing == EnumFacing.NORTH) box = new AxisAlignedBB(pos.add(0, 0, -7).add(-2, 1, -2), pos.add(0, 0, -7).add(-2, 9, -2));
-                    else box = new AxisAlignedBB(pos.add(0, 0, 7).add(-2, 1, -2), pos.add(0, 0, 7).add(-2, 9, -2));
-                    if (!world.checkBlockCollision(box)) generateSideHouse(world, rand, pos, sideHouseFacing);
+                    if (sideHouseFacing == EnumFacing.NORTH) box = new AxisAlignedBB(pos.add(0, 0, -7).add(-2, 1, -2), pos.add(0, 0, -7).add(2, 9, 2));
+                    else box = new AxisAlignedBB(pos.add(0, 0, 7).add(-2, 1, -2), pos.add(0, 0, 7).add(2, 9, 2));
+                    if (world.getCollisionBoxes(box).isEmpty()) generateSideHouse(world, rand, pos, sideHouseFacing);
                 }
             }
         }
@@ -218,14 +218,14 @@ public class StructureBarakoaVillage {
                 if (sideHouseDir <= 2) {
                     AxisAlignedBB box;
                     EnumFacing sideHouseFacing = (sideHouseDir == 1) ? EnumFacing.EAST : EnumFacing.WEST;
-                    if (sideHouseFacing == EnumFacing.EAST) box = new AxisAlignedBB(pos.add(7, 0, 0).add(-2, 1, -2), pos.add(7, 0, 0).add(-2, 9, -2));
-                    else box = new AxisAlignedBB(pos.add(-7, 0, 0).add(-2, 1, -2), pos.add(-7, 0, 0).add(-2, 9, -2));
-                    if (!world.checkBlockCollision(box)) generateSideHouse(world, rand, pos, sideHouseFacing);
+                    if (sideHouseFacing == EnumFacing.EAST) box = new AxisAlignedBB(pos.add(7, 0, 0).add(-2, 1, -2), pos.add(7, 0, 0).add(2, 9, 2));
+                    else box = new AxisAlignedBB(pos.add(-7, 0, 0).add(-2, 1, -2), pos.add(-7, 0, 0).add(2, 9, 2));
+                    if (world.getCollisionBoxes(box).isEmpty()) generateSideHouse(world, rand, pos, sideHouseFacing);
                     else {
                         sideHouseFacing = sideHouseFacing.getOpposite();
-                        if (sideHouseFacing == EnumFacing.EAST) box = new AxisAlignedBB(pos.add(7, 0, 0).add(-2, 1, -2), pos.add(7, 0, 0).add(-2, 9, -2));
-                        else box = new AxisAlignedBB(pos.add(-7, 0, 0).add(-2, 1, -2), pos.add(-7, 0, 0).add(-2, 9, -2));
-                        if (!world.checkBlockCollision(box)) generateSideHouse(world, rand, pos, sideHouseFacing);
+                        if (sideHouseFacing == EnumFacing.EAST) box = new AxisAlignedBB(pos.add(7, 0, 0).add(-2, 1, -2), pos.add(7, 0, 0).add(2, 9, 2));
+                        else box = new AxisAlignedBB(pos.add(-7, 0, 0).add(-2, 1, -2), pos.add(-7, 0, 0).add(2, 9, 2));
+                        if (world.getCollisionBoxes(box).isEmpty()) generateSideHouse(world, rand, pos, sideHouseFacing);
                     }
                 }
             }
@@ -250,12 +250,12 @@ public class StructureBarakoaVillage {
                 EnumFacing sideHouseFacing = (sideHouseDir == 1) ? EnumFacing.NORTH : EnumFacing.SOUTH;
                 if (sideHouseFacing == EnumFacing.NORTH) box = new AxisAlignedBB(pos.add(0, 0, -7).add(-2, 1, -2), pos.add(0, 0, -7).add(-2, 9, -2));
                 else box = new AxisAlignedBB(pos.add(0, 0, 7).add(-2, 1, -2), pos.add(0, 0, 7).add(-2, 9, -2));
-                if (!world.checkBlockCollision(box)) generateSideHouse(world, rand, pos, sideHouseFacing);
+                if (world.getCollisionBoxes(box).isEmpty()) generateSideHouse(world, rand, pos, sideHouseFacing);
                 else {
                     sideHouseFacing = sideHouseFacing.getOpposite();
                     if (sideHouseFacing == EnumFacing.NORTH) box = new AxisAlignedBB(pos.add(0, 0, -7).add(-2, 1, -2), pos.add(0, 0, -7).add(-2, 9, -2));
                     else box = new AxisAlignedBB(pos.add(0, 0, 7).add(-2, 1, -2), pos.add(0, 0, 7).add(-2, 9, -2));
-                    if (!world.checkBlockCollision(box)) generateSideHouse(world, rand, pos, sideHouseFacing);
+                    if (world.getCollisionBoxes(box).isEmpty()) generateSideHouse(world, rand, pos, sideHouseFacing);
                 }
             }
         }
@@ -687,7 +687,7 @@ public class StructureBarakoaVillage {
             }
             if (!isSavanna) return;
 
-//            System.out.println("Village at " + x + ", " + z);
+            System.out.println("Village at " + x + ", " + z);
             //System.out.println("Passes chance test");
             BlockPos pos = new BlockPos(x, 0, z);
             int y = findGenHeight(world, pos);
@@ -701,14 +701,15 @@ public class StructureBarakoaVillage {
                 EnumFacing throneFacing = EnumFacing.HORIZONTALS[(initDir + i) % 4];
                 int throneX = x + 9 * (throneFacing == EnumFacing.WEST ? 1:0) - 9 * (throneFacing == EnumFacing.EAST ? 1:0);
                 int throneZ = z + 9 * (throneFacing == EnumFacing.NORTH ? 1:0) - 9 * (throneFacing == EnumFacing.SOUTH ? 1:0);
+                int throneY = y;
                 y = findGenHeight(world, new BlockPos(throneX, y, throneZ));
                 if (y != -1) {
-                    generateThrone(world, rand, new BlockPos(throneX, y - 1, throneZ), throneFacing);
+                    generateThrone(world, rand, new BlockPos(throneX, throneY + y, throneZ), throneFacing);
                     break;
                 }
             }
             //System.out.println("Generating Skulls");
-            int numSkulls = rand.nextInt(6) + 3;
+            int numSkulls = rand.nextInt(3) + 2;
             for (int i = 1; i <= numSkulls; i++) {
                 int distance;
                 int angle;
@@ -718,13 +719,8 @@ public class StructureBarakoaVillage {
                     BlockPos skullPos = new BlockPos(pos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, pos.getZ() + distance * Math.cos(Math.toRadians(angle)));
                     y = findGenHeight(world, skullPos);
                     //System.out.println("Attempting at " + skullPos.add(0, y, 0).toString());
-//                    AxisAlignedBB box = new AxisAlignedBB(skullPos.add(-2, y + 1, -2), skullPos.add(2, y + 2, 2));
-//                    if (!world.checkBlockCollision(box) && y != -1) {
-//                        generateSkulls(world, rand, skullPos.add(0, y, 0), EnumFacing.HORIZONTALS[rand.nextInt(4)]);
-//                        break;
-//                    }
-//                    else //System.out.println("No space");
-                    if (y != -1) {
+                    AxisAlignedBB box = new AxisAlignedBB(skullPos.add(-2, y + 1, -2), skullPos.add(2, y + 2, 2));
+                    if (world.getCollisionBoxes(box).isEmpty() && y != -1) {
                         generateSkulls(world, rand, skullPos.add(0, y, 0), EnumFacing.HORIZONTALS[rand.nextInt(4)]);
                         break;
                     }
@@ -740,15 +736,9 @@ public class StructureBarakoaVillage {
                     angle = rand.nextInt(360);
                     BlockPos polePos = new BlockPos(pos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, pos.getZ() + distance * Math.cos(Math.toRadians(angle)));
                     y = findGenHeight(world, polePos);
-                    //System.out.println("Attempting at " + polePos.add(0, y, 0).toString());
-//                    AxisAlignedBB box = new AxisAlignedBB(polePos.add(0, y + 1, 0), polePos.add(1, y + 2, 1));
-//                    if (!world.checkBlockCollision(box) && y != -1) {
-//                        if (rand.nextBoolean()) generateTorch(world, polePos.add(0, y, 0));
-//                        else generateSkull(world, rand, polePos.add(0, y, 0));
-//                        break;
-//                    }
-//                    else //System.out.println("No space");
-                    if (y != -1) {
+//                    System.out.println("Attempting at " + polePos.add(0, y, 0).toString());
+                    AxisAlignedBB box = new AxisAlignedBB(polePos.add(0, y + 1, 0), polePos.add(1, y + 2, 1));
+                    if (world.getCollisionBoxes(box).isEmpty() && y != -1) {
                         if (rand.nextBoolean()) generateTorch(world, polePos.add(0, y, 0));
                         else generateSkull(world, rand, polePos.add(0, y, 0));
                         break;
@@ -757,50 +747,63 @@ public class StructureBarakoaVillage {
             }
 
             //System.out.println("Generating houses");
-            int numHouses = rand.nextInt(5) + 3;
+            int numHouses = rand.nextInt(4) + 3;
             for (int i = 1; i <= numHouses; i++) {
                 int distance;
                 int angle;
-                for (int j = 1; j <= 20; j++) {
-                    distance = rand.nextInt(10) + 11;
+                for (int j = 1; j <= 30; j++) {
+                    distance = rand.nextInt(8) + 10;
                     angle = rand.nextInt(360);
                     BlockPos housePos = new BlockPos(pos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, pos.getZ() + distance * Math.cos(Math.toRadians(angle)));
                     y = findGenHeight(world, housePos);
                     //System.out.println("Attempting at " + housePos.add(0, y, 0).toString());
-                    AxisAlignedBB box = new AxisAlignedBB(housePos.add(-3, y + 3, -3), housePos.add(3, y + 9, 3));
-                    if (!world.checkBlockCollision(box) && y != -1) {
+                    AxisAlignedBB box = new AxisAlignedBB(housePos.add(-5, y + 3, -5), housePos.add(5, y + 9, 5));
+                    if (world.getCollisionBoxes(box).isEmpty() && y != -1) {
                         generateHouse(world, rand, housePos.add(0, y + rand.nextInt(2), 0), EnumFacing.HORIZONTALS[rand.nextInt(4)]);
                         break;
                     }
                     //else System.out.println("No space");
                 }
             }
-            int numBarakoa = rand.nextInt(12) + 12;
+            int numBarakoa = rand.nextInt(8) + 8;
             for (int i = 1; i <= numBarakoa; i++) {
                 int distance;
                 int angle;
                 EntityBarakoaya barakoa = new EntityBarakoaya(world);
-                for (int j = 1; j <= 10; j++) {
-                    distance = rand.nextInt(15) + 5;
+                for (int j = 1; j <= 20; j++) {
+                    distance = rand.nextInt(10) + 5;
                     angle = rand.nextInt(360);
-                    barakoa.setPosition(pos.getX() + distance * Math.sin(Math.toRadians(angle)), pos.getY() + 3, pos.getZ() + distance * Math.cos(Math.toRadians(angle)));
-                    if(barakoa.getCanSpawnHere()) {
+                    BlockPos bPos = pos.add(distance * Math.sin(Math.toRadians(angle)), 0, distance * Math.cos(Math.toRadians(angle)));
+                    y = findGenHeightBarakoa(world, bPos);
+                    barakoa.setPosition(bPos.getX(), bPos.getY() + y + 1, bPos.getZ());
+                    if(y != -1 && barakoa.getCanSpawnHere() && world.getCollisionBoxes(barakoa.getEntityBoundingBox()).isEmpty()) {
                         world.spawnEntityInWorld(barakoa);
                         barakoa.onInitialSpawn(world.getDifficultyForLocation(barakoa.getPosition()), null);
                         break;
                     }
+//                    else System.out.println("No space");
                 }
             }
         }
     }
 
     private static int findGenHeight(World world, BlockPos pos) {
-        for (int y = 70; y > 50; y--) {
+        for (int y = 70 - pos.getY(); y > 50 - pos.getY(); y--) {
             if (!(world.getBlockState(pos.add(0, y, 0)).isFullBlock())) continue;
             if (world.getBlockState(pos.add(0, y, 0)) != Blocks.GRASS.getDefaultState()) break;
             return y;
         }
         //System.out.println("Failed to find height");
+        return -1;
+    }
+
+    private static int findGenHeightBarakoa(World world, BlockPos pos) {
+        for (int y = 70 - pos.getY(); y > 50 - pos.getY(); y--) {
+            if (world.getBlockState(pos.add(0, y, 0)) == Blocks.AIR.getDefaultState()) continue;
+            if (world.getBlockState(pos.add(0, y, 0)).getBlock() == Blocks.LEAVES || world.getBlockState(pos.add(0, y, 0)).getBlock() == Blocks.LEAVES2) break;
+            return y;
+        }
+//        System.out.println("Failed to find height");
         return -1;
     }
 }

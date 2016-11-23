@@ -5,16 +5,18 @@ import java.util.List;
 
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
 
+import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.ai.EntityAIAvoidEntity;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.entity.monster.EntityCreeper;
+import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityZombie;
-import net.minecraft.entity.passive.EntityChicken;
-import net.minecraft.entity.passive.EntityCow;
-import net.minecraft.entity.passive.EntityPig;
-import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.DamageSource;
@@ -38,6 +40,8 @@ public class EntityBarakoana extends EntityBarakoa {
         this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntitySheep.class, 0, true, false, null));
         this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityChicken.class, 0, true, false, null));
         this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityZombie.class, 0, true, false, null));
+        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntitySkeleton.class, 0, true, false, null));
+        this.targetTasks.addTask(6, new EntityAIAvoidEntity(this, EntityCreeper.class, 6.0F, 1.0D, 1.2D));
         this.targetTasks.addTask(3, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, true));
         this.setMask(MaskType.FURY);
         this.experienceValue = 12;
@@ -141,9 +145,9 @@ public class EntityBarakoana extends EntityBarakoa {
 
     @Override
     public boolean getCanSpawnHere() {
-        List<EntityLivingBase> nearby = getEntityLivingBaseNearby(10, 4, 10, 10);
+        List<EntityLivingBase> nearby = getEntityLivingBaseNearby(20, 4, 20, 20);
         for (EntityLivingBase nearbyEntity : nearby) {
-            if (nearbyEntity instanceof EntityBarakoana) {
+            if (nearbyEntity instanceof EntityBarakoana || nearbyEntity instanceof EntityVillager || nearbyEntity instanceof EntityBarako) {
                 return false;
             }
         }

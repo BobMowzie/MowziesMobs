@@ -19,6 +19,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -74,6 +75,8 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder {
         targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
         targetTasks.addTask(3, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, true));
         targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityZombie.class, 0, true, true, null));
+        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntitySkeleton.class, 0, true, false, null));
+        setWeapon(1);
     }
 
     @Override
@@ -104,6 +107,10 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder {
 
     public boolean isTrading() {
         return customer != null;
+    }
+
+    protected boolean canHoldVaryingWeapons() {
+        return false;
     }
 
     @Override

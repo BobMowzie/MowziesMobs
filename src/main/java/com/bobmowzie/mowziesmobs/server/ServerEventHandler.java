@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
@@ -26,9 +27,11 @@ import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIAvoidEntity;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityOcelot;
+import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
@@ -61,12 +64,21 @@ public enum ServerEventHandler {
         Entity entity = event.getEntity();
         if (entity instanceof EntityZombie) {
             ((EntityCreature) entity).targetTasks.addTask(2, new EntityAINearestAttackableTarget((EntityCreature) entity, EntityFoliaath.class, 0, true, false, null));
-            ((EntityCreature) entity).targetTasks.addTask(2, new EntityAINearestAttackableTarget((EntityCreature) entity, EntityBarakoa.class, 0, true, false, null));
+            ((EntityCreature) entity).targetTasks.addTask(3, new EntityAINearestAttackableTarget((EntityCreature) entity, EntityBarakoa.class, 0, true, false, null));
+            ((EntityCreature) entity).targetTasks.addTask(2, new EntityAINearestAttackableTarget((EntityCreature) entity, EntityBarako.class, 0, true, false, null));
         }
+        if (entity instanceof EntitySkeleton) {
+            ((EntityCreature) entity).targetTasks.addTask(3, new EntityAINearestAttackableTarget((EntityCreature) entity, EntityBarakoa.class, 0, true, false, null));
+            ((EntityCreature) entity).targetTasks.addTask(2, new EntityAINearestAttackableTarget((EntityCreature) entity, EntityBarako.class, 0, true, false, null));
+        }
+
         if (entity instanceof EntityOcelot) {
             ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity((EntityCreature) entity, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
         }
         if (entity instanceof EntityAnimal) {
+            ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity((EntityCreature) entity, EntityBarakoa.class, 6.0F, 1.0D, 1.2D));
+        }
+        if (entity instanceof EntityVillager) {
             ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity((EntityCreature) entity, EntityBarakoa.class, 6.0F, 1.0D, 1.2D));
         }
     }
@@ -226,6 +238,6 @@ public enum ServerEventHandler {
 
     @SubscribeEvent
     public void prePopulateWorld(PopulateChunkEvent.Pre event) {
-        MowzieWorldGenerator.generatePrePopulate(event.getWorld(), event.getRand(), event.getChunkX() * 16, event.getChunkZ() * 16);
+        MowzieWorldGenerator.generatePrePopulate(event.getWorld(), event.getRand(), event.getChunkX(), event.getChunkZ());
     }
 }

@@ -34,7 +34,7 @@ public enum EntityHandler {
         registerEntity(EntityBarakoana.class, "TribesmanElite", true, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.MONSTER);
         registerEntity(EntityBarakoaya.class, BARAKOAYA_ID, true, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.CREATURE);
         registerEntity(EntityBarakoanToPlayer.class, "TribesmanPlayer", false, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.CREATURE);
-        registerEntity(EntityBarako.class, "TribeLeader", true, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.MONSTER);
+        registerEntity(EntityBarako.class, "TribeLeader", true, 0xBA6656, 0xFFFF4D, false, 1, 1, 1, EnumCreatureType.MONSTER);
 
         EntityRegistry.registerModEntity(EntitySunstrike.class, "Sunstrike", nextEntityId(), MowziesMobs.INSTANCE, 64, 1, true);
         EntityRegistry.registerModEntity(EntitySolarBeam.class, "SolarBeam", nextEntityId(), MowziesMobs.INSTANCE, 64, 1, true);
