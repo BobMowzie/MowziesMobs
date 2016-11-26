@@ -55,6 +55,7 @@ item.wroughtHelm.text.0=Never breaks
 item.spear.text.0=Extends attack range by 3.5 blocks
 
 # Blocks
+tile.campfire.name=Campfire
 tile.paintedAcacia.name=Painted Acacia Wood
 tile.paintedAcaciaSlab.name=Painted Acacia Wood Slab
 
