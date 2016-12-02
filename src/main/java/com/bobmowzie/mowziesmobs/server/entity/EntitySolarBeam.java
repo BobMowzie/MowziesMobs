@@ -120,7 +120,7 @@ public class EntitySolarBeam extends Entity {
             } else {
                 for (EntityLivingBase e : hit) {
                     if (e instanceof EntityWroughtnaut) {
-                        MowziesMobs.PROXY.solarBeamHitWroughtnaught();
+                        MowziesMobs.PROXY.solarBeamHitWroughtnaught(caster);
                         break;
                     }
                 }

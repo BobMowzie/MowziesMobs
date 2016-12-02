@@ -5,6 +5,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.ModelLoader;
@@ -95,12 +96,14 @@ public class ClientProxy extends ServerProxy {
     }
 
     @Override
-    public void solarBeamHitWroughtnaught() {
-        long now = System.currentTimeMillis();
-        if (now - ClientEventHandler.INSTANCE.lastWroughtnautHitTime > 500) {
-            ClientEventHandler.INSTANCE.startWroughtnautHitTime = now;
+    public void solarBeamHitWroughtnaught(EntityLivingBase caster) {
+        if (caster == Minecraft.getMinecraft().thePlayer) {
+            long now = System.currentTimeMillis();
+            if (now - ClientEventHandler.INSTANCE.lastWroughtnautHitTime > 500) {
+                ClientEventHandler.INSTANCE.startWroughtnautHitTime = now;
+            }
+            ClientEventHandler.INSTANCE.lastWroughtnautHitTime = now;
         }
-        ClientEventHandler.INSTANCE.lastWroughtnautHitTime = now;
     }
 
     private ModelResourceLocation registerBlockModel(Block block, String name) {

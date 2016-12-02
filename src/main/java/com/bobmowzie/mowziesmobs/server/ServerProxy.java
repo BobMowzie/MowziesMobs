@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.server.entity.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
 import com.google.common.base.Optional;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
@@ -49,5 +50,5 @@ public class ServerProxy {
 
     public void playSunstrikeSound(EntitySunstrike strike) {}
 
-    public void solarBeamHitWroughtnaught() {}
+    public void solarBeamHitWroughtnaught(EntityLivingBase caster) {}
 }
