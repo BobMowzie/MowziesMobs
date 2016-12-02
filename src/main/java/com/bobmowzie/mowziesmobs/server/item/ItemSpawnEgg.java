@@ -6,6 +6,8 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntityEggInfo;
@@ -20,6 +22,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
@@ -31,11 +34,14 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants.NBT;
 
 public class ItemSpawnEgg extends Item {
     public ItemSpawnEgg() {
@@ -46,12 +52,12 @@ public class ItemSpawnEgg extends Item {
     }
 
     @Override
-    public void getSubItems(Item item, CreativeTabs tab, List subItems) {
+    public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> subItems) {
         Iterator<MowzieEntityEggInfo> iterator = EntityHandler.INSTANCE.getEntityEggInfoIterator();
         while (iterator.hasNext()) {
             MowzieEntityEggInfo info = iterator.next();
             ItemStack stack = new ItemStack(item);
-            applyEntityIdToItemStack(stack, info.entityName);
+            applyEntityIdToItemStack(stack, info.id);
             subItems.add(stack);
         }
     }
@@ -59,15 +65,16 @@ public class ItemSpawnEgg extends Item {
     @Override
     public String getItemStackDisplayName(ItemStack stack) {
         String name = I18n.translateToLocal(getUnlocalizedName() + ".name").trim();
-        String entityName = getEntityIdFromItem(stack);
+        ResourceLocation entityName = getEntityIdFromItem(stack);
         if (entityName != null) {
-            name = name + " " + I18n.translateToLocal("entity." + entityName + ".name");
+            name = name + " " + I18n.translateToLocal("entity." + entityName.getResourcePath() + ".name");
         }
         return name;
     }
 
     @Override
-    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+    public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        ItemStack stack = playerIn.getHeldItem(hand);
         if (worldIn.isRemote) {
             return EnumActionResult.SUCCESS;
         } else if (!playerIn.canPlayerEdit(pos.offset(facing), facing, stack)) {
@@ -78,11 +85,11 @@ public class ItemSpawnEgg extends Item {
                 TileEntity blockEntity = worldIn.getTileEntity(pos);
                 if (blockEntity instanceof TileEntityMobSpawner) {
                     MobSpawnerBaseLogic spawner = ((TileEntityMobSpawner) blockEntity).getSpawnerBaseLogic();
-                    spawner.setEntityName(getEntityIdFromItem(stack));
+                    spawner.func_190894_a(getEntityIdFromItem(stack));
                     blockEntity.markDirty();
                     worldIn.notifyBlockUpdate(pos, state, state, 3);
                     if (!playerIn.capabilities.isCreativeMode) {
-                        stack.stackSize--;
+                        stack.func_190918_g(1);
                     }
                     return EnumActionResult.SUCCESS;
                 }
@@ -99,7 +106,7 @@ public class ItemSpawnEgg extends Item {
                 }
                 applyItemEntityDataToEntity(worldIn, playerIn, stack, entity);
                 if (!playerIn.capabilities.isCreativeMode) {
-                    --stack.stackSize;
+                    stack.func_190918_g(1);
                 }
             }
             return EnumActionResult.SUCCESS;
@@ -107,7 +114,8 @@ public class ItemSpawnEgg extends Item {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand) {
+        ItemStack itemStackIn = playerIn.getHeldItem(hand);
         if (worldIn.isRemote) {
             return new ActionResult(EnumActionResult.PASS, itemStackIn);
         } else {
@@ -126,7 +134,7 @@ public class ItemSpawnEgg extends Item {
                         }
                         applyItemEntityDataToEntity(worldIn, playerIn, itemStackIn, entity);
                         if (!playerIn.capabilities.isCreativeMode) {
-                            itemStackIn.stackSize--;
+                            itemStackIn.func_190918_g(1);
                         }
                         playerIn.addStat(StatList.getObjectUseStats(this));
                         return new ActionResult(EnumActionResult.SUCCESS, itemStackIn);
@@ -158,7 +166,7 @@ public class ItemSpawnEgg extends Item {
     }
 
     @Nullable
-    public static Entity spawnCreature(World world, @Nullable String name, double x, double y, double z) {
+    public static Entity spawnCreature(World world, @Nullable ResourceLocation name, double x, double y, double z) {
         if (EntityHandler.INSTANCE.hasEntityEggInfo(name)) {
             Entity entity = EntityHandler.INSTANCE.createEntity(name, world);
             if (entity instanceof EntityLivingBase) {
@@ -176,20 +184,22 @@ public class ItemSpawnEgg extends Item {
     }
 
     @Nullable
-    public static String getEntityIdFromItem(ItemStack stack) {
+    public static ResourceLocation getEntityIdFromItem(ItemStack stack) {
         NBTTagCompound compound = stack.getTagCompound();
-        if (compound == null || !compound.hasKey("EntityTag", 10)) {
+        if (compound == null || !compound.hasKey("EntityTag", NBT.TAG_COMPOUND)) {
             return null;
         } else {
             NBTTagCompound nbttagcompound1 = compound.getCompoundTag("EntityTag");
-            return !nbttagcompound1.hasKey("id", 8) ? null : nbttagcompound1.getString("id");
+            String id = nbttagcompound1.getString("id");
+            ResourceLocation res = new ResourceLocation(id);
+            return StringUtils.equals(id, res.toString()) ? res : null;
         }
     }
 
-    public static void applyEntityIdToItemStack(ItemStack stack, String name) {
+    public static void applyEntityIdToItemStack(ItemStack stack, ResourceLocation id) {
         NBTTagCompound compound = stack.hasTagCompound() ? stack.getTagCompound() : new NBTTagCompound();
         NBTTagCompound entityCompound = new NBTTagCompound();
-        entityCompound.setString("id", name);
+        entityCompound.setString("id", id.toString());
         compound.setTag("EntityTag", entityCompound);
         stack.setTagCompound(compound);
     }

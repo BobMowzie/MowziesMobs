@@ -14,7 +14,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 public final class InventoryBarako implements IInventory {
     private final EntityBarako barako;
 
-    private ItemStack input;
+    private ItemStack input = ItemStack.field_190927_a;
 
     private List<ChangeListener> listeners;
 
@@ -23,10 +23,10 @@ public final class InventoryBarako implements IInventory {
     }
 
     public void addListener(ChangeListener listener) {
-    	if (listeners == null) {
-    		listeners = new ArrayList<>();
-    	}
-    	listeners.add(listener);
+        if (listeners == null) {
+            listeners = new ArrayList<>();
+        }
+        listeners.add(listener);
     }
 
     @Override
@@ -51,45 +51,45 @@ public final class InventoryBarako implements IInventory {
 
     @Override
     public ItemStack getStackInSlot(int index) {
-        return index == 0 ? input : null;
-	}
+        return index == 0 ? input : ItemStack.field_190927_a;
+    }
 
-	@Override
-	public ItemStack decrStackSize(int index, int count) {
-		ItemStack stack;
-		if (index == 0 && input != null && count > 0) {
-			ItemStack split = input.splitStack(count);
-			if (input.stackSize == 0) {
-				input = null;
-			}
-			stack = split;
-			markDirty();
-		} else {
-			stack = null;
-		}
-		return stack;
-	}
+    @Override
+    public ItemStack decrStackSize(int index, int count) {
+        ItemStack stack;
+        if (index == 0 && input != ItemStack.field_190927_a && count > 0) {
+            ItemStack split = input.splitStack(count);
+            if (input.func_190916_E() == 0) {
+                input = ItemStack.field_190927_a;
+            }
+            stack = split;
+            markDirty();
+        } else {
+            stack = ItemStack.field_190927_a;
+        }
+        return stack;
+    }
 
     @Override
     public ItemStack removeStackFromSlot(int index) {
-    	if (index != 0) {
-    		return null;
-    	}
-    	ItemStack s = input;
-    	input = null;
-    	markDirty();
+        if (index != 0) {
+            return ItemStack.field_190927_a;
+        }
+        ItemStack s = input;
+        input = ItemStack.field_190927_a;
+        markDirty();
         return s;
     }
 
     @Override
     public void setInventorySlotContents(int index, ItemStack stack) {
-    	if (index == 0) {
+        if (index == 0) {
             input = stack;
-            if (stack != null && stack.stackSize > getInventoryStackLimit()) {
-                stack.stackSize = getInventoryStackLimit();
+            if (stack != ItemStack.field_190927_a && stack.func_190916_E() > getInventoryStackLimit()) {
+                stack.func_190920_e(getInventoryStackLimit());
             }
             markDirty();
-    	}
+        }
     }
 
     @Override
@@ -99,11 +99,11 @@ public final class InventoryBarako implements IInventory {
 
     @Override
     public void markDirty() {
-    	if (listeners != null) {
-    		for (ChangeListener listener : listeners) {
-    			listener.onChange(this);
-    		}
-    	}
+        if (listeners != null) {
+            for (ChangeListener listener : listeners) {
+                listener.onChange(this);
+            }
+        }
     }
 
     @Override
@@ -137,11 +137,16 @@ public final class InventoryBarako implements IInventory {
 
     @Override
     public void clear() {
-        input = null;
+        input = ItemStack.field_190927_a;
         markDirty();
     }
 
     public interface ChangeListener {
-    	void onChange(IInventory inv);
+        void onChange(IInventory inv);
+    }
+
+    @Override
+    public boolean func_191420_l() {
+        return !input.func_190926_b();
     }
 }

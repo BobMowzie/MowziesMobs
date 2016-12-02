@@ -58,10 +58,10 @@ public final class Trade {
     }
 
     public static Trade deserialize(NBTTagCompound compound) {
-        ItemStack input = ItemStack.loadItemStackFromNBT(compound.getCompoundTag("input"));
-        ItemStack output = ItemStack.loadItemStackFromNBT(compound.getCompoundTag("output"));
+        ItemStack input = new ItemStack(compound.getCompoundTag("input"));
+        ItemStack output = new ItemStack(compound.getCompoundTag("output"));
         int weight = compound.getInteger("weight");
-        if (input == null || output == null || weight < 1) {
+        if (input.func_190926_b() || output.func_190926_b() || weight < 1) {
             return null;
         }
         return new Trade(input, output, weight);

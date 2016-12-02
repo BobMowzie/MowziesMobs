@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.creativetab;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -17,8 +18,8 @@ public enum CreativeTabHandler {
         creativeTab = new CreativeTabs("mowziesmobs.creativeTab") {
             @Override
             @SideOnly(Side.CLIENT)
-            public Item getTabIconItem() {
-                return ItemHandler.INSTANCE.barakoaMasks.get(MaskType.FURY);
+            public ItemStack getTabIconItem() {
+                return new ItemStack(ItemHandler.INSTANCE.barakoaMasks.get(MaskType.FURY));
             }
         };
     }

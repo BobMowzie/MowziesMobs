@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.inventory;
 
 import java.util.Arrays;
+import java.util.List;
 
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaya;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
@@ -10,13 +11,14 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 
 public final class InventoryBarakoaya implements IInventory {
     private final EntityBarakoaya barakoaya;
 
-    private final ItemStack[] slots = new ItemStack[2];
+    private final List<ItemStack> slots = NonNullList.func_191197_a(2, ItemStack.field_190927_a);
 
     private Trade trade;
 
@@ -41,21 +43,21 @@ public final class InventoryBarakoaya implements IInventory {
 
     @Override
     public int getSizeInventory() {
-        return slots.length;
+        return slots.size();
     }
 
     @Override
     public ItemStack getStackInSlot(int index) {
-        return slots[index];
+        return slots.get(index);
     }
 
     @Override
     public ItemStack decrStackSize(int index, int count) {
-        if (index == 1 && slots[index] != null) {
-            return ItemStackHelper.getAndSplit(slots, index, slots[index].stackSize);
+        if (index == 1 && slots.get(index) != ItemStack.field_190927_a) {
+            return ItemStackHelper.getAndSplit(slots, index, slots.get(index).func_190916_E());
         }
         ItemStack stack = ItemStackHelper.getAndSplit(slots, index, count);
-        if (stack != null && doUpdateForSlotChange(index)) {
+        if (stack != ItemStack.field_190927_a && doUpdateForSlotChange(index)) {
             reset();
         }
         return stack;
@@ -68,9 +70,9 @@ public final class InventoryBarakoaya implements IInventory {
 
     @Override
     public void setInventorySlotContents(int index, ItemStack stack) {
-        slots[index] = stack;
-        if (stack != null && stack.stackSize > getInventoryStackLimit()) {
-            stack.stackSize = getInventoryStackLimit();
+        slots.set(index, stack);
+        if (stack != ItemStack.field_190927_a && stack.func_190916_E() > getInventoryStackLimit()) {
+            stack.func_190920_e(getInventoryStackLimit());
         }
         if (doUpdateForSlotChange(index)) {
             reset();
@@ -122,24 +124,34 @@ public final class InventoryBarakoaya implements IInventory {
 
     @Override
     public void clear() {
-        Arrays.fill(slots, null);
+        slots.clear(); // NonNullList.clear fills with default value
     }
 
     public void reset() {
         trade = null;
-        ItemStack input = slots[0];
-        if (input == null) {
-            setInventorySlotContents(1, null);
+        ItemStack input = slots.get(0);
+        if (input == ItemStack.field_190927_a) {
+            setInventorySlotContents(1, ItemStack.field_190927_a);
         } else if (barakoaya.isOfferingTrade()) {
             Trade trade = barakoaya.getOfferingTrade();
             ItemStack tradeInput = trade.getInput();
-            if (areItemsEqual(input, tradeInput) && input.stackSize >= tradeInput.stackSize) {
+            if (areItemsEqual(input, tradeInput) && input.func_190916_E() >= tradeInput.func_190916_E()) {
                 this.trade = trade;
                 setInventorySlotContents(1, trade.getOutput());
             } else {
-                setInventorySlotContents(1, null);
+                setInventorySlotContents(1, ItemStack.field_190927_a);
             }
         }
+    }
+
+    @Override
+    public boolean func_191420_l() {
+        for (ItemStack stack : slots) {
+            if (!stack.func_190926_b()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static boolean areItemsEqual(ItemStack s1, ItemStack s2) {

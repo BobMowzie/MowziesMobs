@@ -32,7 +32,7 @@ public class ItemBlowgun extends ItemBow {
 
     @Override
     protected boolean isArrow(ItemStack stack) {
-        return stack != null && stack.getItem() == ItemHandler.INSTANCE.dart;
+        return stack.getItem() == ItemHandler.INSTANCE.dart;
     }
 
     private ItemStack findAmmo(EntityPlayer player)
@@ -132,9 +132,9 @@ public class ItemBlowgun extends ItemBow {
 
                     if (!flag1)
                     {
-                        --itemstack.stackSize;
+                        itemstack.func_190918_g(1);
 
-                        if (itemstack.stackSize == 0)
+                        if (itemstack.func_190916_E() == 0)
                         {
                             entityplayer.inventory.deleteStack(itemstack);
                         }

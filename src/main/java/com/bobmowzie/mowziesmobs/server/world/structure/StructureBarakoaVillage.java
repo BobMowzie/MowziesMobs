@@ -163,12 +163,12 @@ public class StructureBarakoaVillage {
                 EnumFacing sideHouseFacing = (sideHouseDir == 1) ? EnumFacing.EAST : EnumFacing.WEST;
                 if (sideHouseFacing == EnumFacing.EAST) box = new AxisAlignedBB(pos.add(7, 0, 0).add(-2, 1, -2), pos.add(7, 0, 0).add(2, 9, 2));
                 else box = new AxisAlignedBB(pos.add(-7, 0, 0).add(-2, 1, -2), pos.add(-7, 0, 0).add(2, 9, 2));
-                if (world.getCollisionBoxes(box).isEmpty()) generateSideHouse(world, rand, pos, sideHouseFacing);
+                if (world.getCollisionBoxes(null, box).isEmpty()) generateSideHouse(world, rand, pos, sideHouseFacing);
                 else {
                     sideHouseFacing = sideHouseFacing.getOpposite();
                     if (sideHouseFacing == EnumFacing.EAST) box = new AxisAlignedBB(pos.add(7, 0, 0).add(-2, 1, -2), pos.add(7, 0, 0).add(2, 9, 2));
                     else box = new AxisAlignedBB(pos.add(-7, 0, 0).add(-2, 1, -2), pos.add(-7, 0, 0).add(2, 9, 2));
-                    if (world.getCollisionBoxes(box).isEmpty()) generateSideHouse(world, rand, pos, sideHouseFacing);
+                    if (world.getCollisionBoxes(null, box).isEmpty()) generateSideHouse(world, rand, pos, sideHouseFacing);
                 }
             }
         }
@@ -192,12 +192,12 @@ public class StructureBarakoaVillage {
                 EnumFacing sideHouseFacing = (sideHouseDir == 1) ? EnumFacing.NORTH : EnumFacing.SOUTH;
                 if (sideHouseFacing == EnumFacing.NORTH) box = new AxisAlignedBB(pos.add(0, 0, -7).add(-2, 1, -2), pos.add(0, 0, -7).add(2, 9, 2));
                 else box = new AxisAlignedBB(pos.add(0, 0, 7).add(-2, 1, -2), pos.add(0, 0, 7).add(-2, 9, -2));
-                if (world.getCollisionBoxes(box).isEmpty()) generateSideHouse(world, rand, pos, sideHouseFacing);
+                if (world.getCollisionBoxes(null, box).isEmpty()) generateSideHouse(world, rand, pos, sideHouseFacing);
                 else {
                     sideHouseFacing = sideHouseFacing.getOpposite();
                     if (sideHouseFacing == EnumFacing.NORTH) box = new AxisAlignedBB(pos.add(0, 0, -7).add(-2, 1, -2), pos.add(0, 0, -7).add(2, 9, 2));
                     else box = new AxisAlignedBB(pos.add(0, 0, 7).add(-2, 1, -2), pos.add(0, 0, 7).add(2, 9, 2));
-                    if (world.getCollisionBoxes(box).isEmpty()) generateSideHouse(world, rand, pos, sideHouseFacing);
+                    if (world.getCollisionBoxes(null, box).isEmpty()) generateSideHouse(world, rand, pos, sideHouseFacing);
                 }
             }
         }
@@ -220,12 +220,12 @@ public class StructureBarakoaVillage {
                     EnumFacing sideHouseFacing = (sideHouseDir == 1) ? EnumFacing.EAST : EnumFacing.WEST;
                     if (sideHouseFacing == EnumFacing.EAST) box = new AxisAlignedBB(pos.add(7, 0, 0).add(-2, 1, -2), pos.add(7, 0, 0).add(2, 9, 2));
                     else box = new AxisAlignedBB(pos.add(-7, 0, 0).add(-2, 1, -2), pos.add(-7, 0, 0).add(2, 9, 2));
-                    if (world.getCollisionBoxes(box).isEmpty()) generateSideHouse(world, rand, pos, sideHouseFacing);
+                    if (world.getCollisionBoxes(null, box).isEmpty()) generateSideHouse(world, rand, pos, sideHouseFacing);
                     else {
                         sideHouseFacing = sideHouseFacing.getOpposite();
                         if (sideHouseFacing == EnumFacing.EAST) box = new AxisAlignedBB(pos.add(7, 0, 0).add(-2, 1, -2), pos.add(7, 0, 0).add(2, 9, 2));
                         else box = new AxisAlignedBB(pos.add(-7, 0, 0).add(-2, 1, -2), pos.add(-7, 0, 0).add(2, 9, 2));
-                        if (world.getCollisionBoxes(box).isEmpty()) generateSideHouse(world, rand, pos, sideHouseFacing);
+                        if (world.getCollisionBoxes(null, box).isEmpty()) generateSideHouse(world, rand, pos, sideHouseFacing);
                     }
                 }
             }
@@ -250,12 +250,12 @@ public class StructureBarakoaVillage {
                 EnumFacing sideHouseFacing = (sideHouseDir == 1) ? EnumFacing.NORTH : EnumFacing.SOUTH;
                 if (sideHouseFacing == EnumFacing.NORTH) box = new AxisAlignedBB(pos.add(0, 0, -7).add(-2, 1, -2), pos.add(0, 0, -7).add(-2, 9, -2));
                 else box = new AxisAlignedBB(pos.add(0, 0, 7).add(-2, 1, -2), pos.add(0, 0, 7).add(-2, 9, -2));
-                if (world.getCollisionBoxes(box).isEmpty()) generateSideHouse(world, rand, pos, sideHouseFacing);
+                if (world.getCollisionBoxes(null, box).isEmpty()) generateSideHouse(world, rand, pos, sideHouseFacing);
                 else {
                     sideHouseFacing = sideHouseFacing.getOpposite();
                     if (sideHouseFacing == EnumFacing.NORTH) box = new AxisAlignedBB(pos.add(0, 0, -7).add(-2, 1, -2), pos.add(0, 0, -7).add(-2, 9, -2));
                     else box = new AxisAlignedBB(pos.add(0, 0, 7).add(-2, 1, -2), pos.add(0, 0, 7).add(-2, 9, -2));
-                    if (world.getCollisionBoxes(box).isEmpty()) generateSideHouse(world, rand, pos, sideHouseFacing);
+                    if (world.getCollisionBoxes(null, box).isEmpty()) generateSideHouse(world, rand, pos, sideHouseFacing);
                 }
             }
         }
@@ -680,7 +680,7 @@ public class StructureBarakoaVillage {
 
             boolean isSavanna = false;
             for (Biome savannaBiome : BiomeDictionary.getBiomesForType(BiomeDictionary.Type.SAVANNA)) {
-                if (world.getBiomeGenForCoords(new BlockPos(x, 0, z)) == savannaBiome) {
+                if (world.getBiome(new BlockPos(x, 0, z)) == savannaBiome) {
                     isSavanna = true;
                     break;
                 }
@@ -720,7 +720,7 @@ public class StructureBarakoaVillage {
                     y = findGenHeight(world, skullPos);
                     //System.out.println("Attempting at " + skullPos.add(0, y, 0).toString());
                     AxisAlignedBB box = new AxisAlignedBB(skullPos.add(-2, y + 1, -2), skullPos.add(2, y + 2, 2));
-                    if (world.getCollisionBoxes(box).isEmpty() && y != -1) {
+                    if (world.getCollisionBoxes(null, box).isEmpty() && y != -1) {
                         generateSkulls(world, rand, skullPos.add(0, y, 0), EnumFacing.HORIZONTALS[rand.nextInt(4)]);
                         break;
                     }
@@ -738,7 +738,7 @@ public class StructureBarakoaVillage {
                     y = findGenHeight(world, polePos);
 //                    System.out.println("Attempting at " + polePos.add(0, y, 0).toString());
                     AxisAlignedBB box = new AxisAlignedBB(polePos.add(0, y + 1, 0), polePos.add(1, y + 2, 1));
-                    if (world.getCollisionBoxes(box).isEmpty() && y != -1) {
+                    if (world.getCollisionBoxes(null, box).isEmpty() && y != -1) {
                         if (rand.nextBoolean()) generateTorch(world, polePos.add(0, y, 0));
                         else generateSkull(world, rand, polePos.add(0, y, 0));
                         break;
@@ -758,7 +758,7 @@ public class StructureBarakoaVillage {
                     y = findGenHeight(world, housePos);
                     //System.out.println("Attempting at " + housePos.add(0, y, 0).toString());
                     AxisAlignedBB box = new AxisAlignedBB(housePos.add(-5, y + 3, -5), housePos.add(5, y + 9, 5));
-                    if (world.getCollisionBoxes(box).isEmpty() && y != -1) {
+                    if (world.getCollisionBoxes(null, box).isEmpty() && y != -1) {
                         generateHouse(world, rand, housePos.add(0, y + rand.nextInt(2), 0), EnumFacing.HORIZONTALS[rand.nextInt(4)]);
                         break;
                     }
@@ -776,7 +776,7 @@ public class StructureBarakoaVillage {
                     BlockPos bPos = pos.add(distance * Math.sin(Math.toRadians(angle)), 0, distance * Math.cos(Math.toRadians(angle)));
                     y = findGenHeightBarakoa(world, bPos);
                     barakoa.setPosition(bPos.getX(), bPos.getY() + y + 1, bPos.getZ());
-                    if(y != -1 && barakoa.getCanSpawnHere() && world.getCollisionBoxes(barakoa.getEntityBoundingBox()).isEmpty()) {
+                    if(y != -1 && barakoa.getCanSpawnHere() && world.getCollisionBoxes(null, barakoa.getEntityBoundingBox()).isEmpty()) {
                         world.spawnEntityInWorld(barakoa);
                         barakoa.onInitialSpawn(world.getDifficultyForLocation(barakoa.getPosition()), null);
                         break;

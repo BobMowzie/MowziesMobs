@@ -2,13 +2,14 @@
 itemGroup.mowziesmobs.creativeTab=Mowzie's Mobs
 
 # Entities
-entity.mowziesmobs.Foliaath.name=Foliaath
-entity.mowziesmobs.FerrousWroughtnaut.name=Ferrous Wroughtnaut
-entity.mowziesmobs.BabyFoliaath.name=Baby Foliaath
-entity.mowziesmobs.TribesmanHunter.name=Barakoa
-entity.mowziesmobs.TribesmanElite.name=Barakoana
-entity.mowziesmobs.TribesmanVillager.name=Barakoa
-entity.mowziesmobs.TribeLeader.name=Barako, the Sun Chief
+entity.foliaath.name=Foliaath
+entity.ferrous_wroughtnaut.name=Ferrous Wroughtnaut
+entity.baby_foliaath.name=Baby Foliaath
+entity.barakoan_barakoana.name=Barakoa
+entity.barakoan_player.name=Barakoa
+entity.barakoana.name=Barakoana
+entity.barakoaya.name=Barakoa
+entity.barako.name=Barako, the Sun Chief
 
 # Items
 item.foliaathSeed.name=Foliaath Seed

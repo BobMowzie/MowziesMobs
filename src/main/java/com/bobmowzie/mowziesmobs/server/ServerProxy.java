@@ -22,14 +22,14 @@ public class ServerProxy {
                 buf.writeItemStackToBuffer(trade.getOutput());
                 buf.writeInt(trade.getWeight());
             } else {
-                buf.writeItemStackToBuffer(null);
+                buf.writeItemStackToBuffer(ItemStack.field_190927_a);
             }
         }
 
         @Override
         public Optional<Trade> read(PacketBuffer buf) throws IOException {
             ItemStack input = buf.readItemStackFromBuffer();
-            if (input == null) {
+            if (input == ItemStack.field_190927_a) {
                 return Optional.absent();
             }
             return Optional.of(new Trade(input, buf.readItemStackFromBuffer(), buf.readInt()));

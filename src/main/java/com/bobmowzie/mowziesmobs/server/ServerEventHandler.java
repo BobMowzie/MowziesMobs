@@ -128,31 +128,22 @@ public enum ServerEventHandler {
         if (property.untilSunstrike > 0) {
             property.untilSunstrike--;
         }
-        if (event.side == Side.CLIENT) {
-            return;
-        }
-        ItemStack headArmorStack = event.player.inventory.armorInventory[3];
-        if (headArmorStack == null) {
-            return;
-        }
-        Item headItemStack = headArmorStack.getItem();
-        if (headItemStack instanceof ItemBarakoaMask) {
-            ItemBarakoaMask mask = (ItemBarakoaMask) headItemStack;
-            event.player.addPotionEffect(new PotionEffect(mask.getPotion(), 45, 0, true, false));
-        }
+        if (event.side == Side.SERVER) {
+            Item headItemStack = event.player.inventory.armorInventory.get(3).getItem();
+            if (headItemStack instanceof ItemBarakoaMask) {
+                ItemBarakoaMask mask = (ItemBarakoaMask) headItemStack;
+                event.player.addPotionEffect(new PotionEffect(mask.getPotion(), 45, 0, true, false));
+            }
 
-        List<EntityBarakoanToPlayer> pack = property.tribePack;
-        for (int i = 0; i < pack.size(); i++) {
-            pack.get(i).index = i;
-        }
-        if (!player.worldObj.isRemote && pack != null) {
+            List<EntityBarakoanToPlayer> pack = property.tribePack;
             float theta = (2 * (float) Math.PI / pack.size());
             for (int i = 0; i < pack.size(); i++) {
-                EntityBarakoanToPlayer tribePlayer = pack.get(i);
-                if (tribePlayer.getAttackTarget() == null) {
-                    tribePlayer.getNavigator().tryMoveToXYZ(player.posX + property.tribePackRadius * MathHelper.cos(theta * i), player.posY, player.posZ + property.tribePackRadius * MathHelper.sin(theta * i), 0.45);
-                    if (player.getDistanceToEntity(tribePlayer) > 20) {
-                        tribePlayer.setPosition(player.posX + property.tribePackRadius * MathHelper.cos(theta * i), player.posY, player.posZ + property.tribePackRadius * MathHelper.sin(theta * i));
+                EntityBarakoanToPlayer barakoan = pack.get(i);
+                barakoan.index = i;
+                if (barakoan.getAttackTarget() == null) {
+                    barakoan.getNavigator().tryMoveToXYZ(player.posX + property.tribePackRadius * MathHelper.cos(theta * i), player.posY, player.posZ + property.tribePackRadius * MathHelper.sin(theta * i), 0.45);
+                    if (player.getDistanceToEntity(barakoan) > 20) {
+                        barakoan.setPosition(player.posX + property.tribePackRadius * MathHelper.cos(theta * i), player.posY, player.posZ + property.tribePackRadius * MathHelper.sin(theta * i));
                     }
                 }
             }
@@ -168,7 +159,7 @@ public enum ServerEventHandler {
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.RightClickEmpty event) {
         EntityPlayer player = event.getEntityPlayer();
-        if (event.getWorld().isRemote && player.inventory.getCurrentItem() == null && player.isPotionActive(PotionHandler.INSTANCE.sunsBlessing) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
+        if (event.getWorld().isRemote && player.inventory.getCurrentItem() == ItemStack.field_190927_a && player.isPotionActive(PotionHandler.INSTANCE.sunsBlessing) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
             MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
             if (player.isSneaking()) {
                 MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSolarBeam());
@@ -183,7 +174,7 @@ public enum ServerEventHandler {
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event) {
         EntityPlayer player = event.getEntityPlayer();
-        if (event.getWorld().isRemote && player.inventory.getCurrentItem() == null && player.isPotionActive(PotionHandler.INSTANCE.sunsBlessing) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
+        if (event.getWorld().isRemote && player.inventory.getCurrentItem() == ItemStack.field_190927_a && player.isPotionActive(PotionHandler.INSTANCE.sunsBlessing) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
             MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
             if (player.isSneaking()) {
                 MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSolarBeam());

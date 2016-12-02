@@ -53,18 +53,19 @@ public class ItemBarakoaMask extends ItemArmor implements BarakoaMask {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player, EnumHand hand) {
-        ItemStack headStack = player.inventory.armorInventory[3];
-        if (headStack != null && headStack.getItem() instanceof ItemBarakoMask) {
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+        ItemStack stack = player.getHeldItem(hand);
+        ItemStack headStack = player.inventory.armorInventory.get(3);
+        if (headStack.getItem() instanceof ItemBarakoMask) {
             if (!player.worldObj.isRemote) {
                 spawnBarakoa(type, player);
             }
             if (!player.capabilities.isCreativeMode) {
-                stack.stackSize--;
+                stack.func_190918_g(1);
             }
             return new ActionResult<>(EnumActionResult.SUCCESS, stack);
         }
-        else return super.onItemRightClick(stack, world, player, hand);
+        else return super.onItemRightClick(world, player, hand);
     }
 
     private void spawnBarakoa(MaskType mask, EntityPlayer player) {

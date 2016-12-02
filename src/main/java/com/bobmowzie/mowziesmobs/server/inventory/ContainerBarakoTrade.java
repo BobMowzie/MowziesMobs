@@ -46,7 +46,7 @@ public final class ContainerBarakoTrade extends Container {
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int index) {
-        ItemStack stack = null;
+        ItemStack stack = ItemStack.field_190927_a;
         Slot slot = inventorySlots.get(index);
         if (slot != null && slot.getHasStack()) {
             ItemStack contained = slot.getStack();
@@ -54,23 +54,23 @@ public final class ContainerBarakoTrade extends Container {
             if (index != 0) {
                 if (index >= 1 && index < 28) {
                     if (!mergeItemStack(contained, 28, 37, false)) {
-                        return null;
+                        return ItemStack.field_190927_a;
                     }
                 } else if (index >= 28 && index < 37 && !mergeItemStack(contained, 1, 28, false)) {
-                    return null;
+                    return ItemStack.field_190927_a;
                 }
             } else if (!mergeItemStack(contained, 1, 37, false)) {
-                return null;
+                return ItemStack.field_190927_a;
             }
-            if (contained.stackSize == 0) {
-                slot.putStack(null);
+            if (contained.func_190916_E() == 0) {
+                slot.putStack(ItemStack.field_190927_a);
             } else {
                 slot.onSlotChanged();
             }
-            if (contained.stackSize == stack.stackSize) {
-                return null;
+            if (contained.func_190916_E() == stack.func_190916_E()) {
+                return ItemStack.field_190927_a;
             }
-            slot.onPickupFromSlot(player, contained);
+            slot.func_190901_a(player, contained);
         }
         return stack;
     }
@@ -81,10 +81,12 @@ public final class ContainerBarakoTrade extends Container {
         barako.setCustomer(null);
         if (!world.isRemote) {
             ItemStack stack = inventory.removeStackFromSlot(0);
-            if (stack != null) {
+            if (stack != ItemStack.field_190927_a) {
                 EntityItem dropped = player.dropItem(stack, false);
-                dropped.motionX *= 0.5;
-                dropped.motionZ *= 0.5;
+                if (dropped != null) {
+                    dropped.motionX *= 0.5;
+                    dropped.motionZ *= 0.5;
+                }
             }
         }
     }

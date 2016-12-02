@@ -22,8 +22,9 @@ public class ItemMobRemover extends Item {
     public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
         if (entity instanceof MowzieEntity) {
             entity.setDead();
+            return true;
         }
-        return true;
+        return false;
     }
 
     @Override

@@ -54,36 +54,36 @@ public final class ContainerBarakoayaTrade extends Container {
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int index) {
-        ItemStack stack = null;
+        ItemStack stack = ItemStack.field_190927_a;
         Slot slot = inventorySlots.get(index);
         if (slot != null && slot.getHasStack()) {
             ItemStack contained = slot.getStack();
             stack = contained.copy();
             if (index == 1) {
                 if (!mergeItemStack(contained, 2, 38, true)) {
-                    return null;
+                    return ItemStack.field_190927_a;
                 }
                 slot.onSlotChange(contained, stack);
             } else if (index != 0) {
                 if (index >= 2 && index < 29) {
                     if (!mergeItemStack(contained, 29, 38, false)) {
-                        return null;
+                        return ItemStack.field_190927_a;
                     }
                 } else if (index >= 29 && index < 38 && !mergeItemStack(contained, 2, 29, false)) {
-                    return null;
+                    return ItemStack.field_190927_a;
                 }
             } else if (!mergeItemStack(contained, 2, 38, false)) {
-                return null;
+                return ItemStack.field_190927_a;
             }
-            if (contained.stackSize == 0) {
-                slot.putStack(null);
+            if (contained.func_190916_E() == 0) {
+                slot.putStack(ItemStack.field_190927_a);
             } else {
                 slot.onSlotChanged();
             }
-            if (contained.stackSize == stack.stackSize) {
-                return null;
+            if (contained.func_190916_E() == stack.func_190916_E()) {
+                return ItemStack.field_190927_a;
             }
-            slot.onPickupFromSlot(player, contained);
+            slot.func_190901_a(player, contained);
         }
         return stack;
     }
@@ -94,7 +94,7 @@ public final class ContainerBarakoayaTrade extends Container {
         barakoaya.setCustomer(null);
         if (!world.isRemote) {
             ItemStack stack = inventory.removeStackFromSlot(0);
-            if (stack != null) {
+            if (stack != ItemStack.field_190927_a) {
                 player.dropItem(stack, false);
             }
         }
@@ -115,7 +115,7 @@ public final class ContainerBarakoayaTrade extends Container {
         @Override
         public ItemStack decrStackSize(int amount) {
             if (getHasStack()) {
-                removeCount += Math.min(amount, getStack().stackSize);
+                removeCount += Math.min(amount, getStack().func_190916_E());
             }
             return super.decrStackSize(amount);
         }
@@ -133,20 +133,21 @@ public final class ContainerBarakoayaTrade extends Container {
         }
 
         @Override
-        public void onPickupFromSlot(EntityPlayer player, ItemStack stack) {
+        public ItemStack func_190901_a(EntityPlayer player, ItemStack stack) {
             onCrafting(stack);
             if (barakoaya.isOfferingTrade()) {
                 Trade trade = barakoaya.getOfferingTrade();
                 ItemStack input = inventory.getStackInSlot(0);
                 ItemStack tradeInput = trade.getInput();
-                if (input != null && input.getItem() == tradeInput.getItem() && input.stackSize >= tradeInput.stackSize) {
-                    input.stackSize -= tradeInput.stackSize;
-                    if (input.stackSize <= 0) {
-                        input = null;
+                if (input.getItem() == tradeInput.getItem() && input.func_190916_E() >= tradeInput.func_190916_E()) {
+                    input.func_190918_g(tradeInput.func_190916_E());
+                    if (input.func_190916_E() <= 0) {
+                        input = ItemStack.field_190927_a;
                     }
                     inventory.setInventorySlotContents(0, input);
                 }
             }
+            return stack;
         }
     }
 }

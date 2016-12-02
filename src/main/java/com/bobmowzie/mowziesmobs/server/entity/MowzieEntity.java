@@ -21,6 +21,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -45,12 +46,16 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     @Override
     public ItemStack getPickedResult(RayTraceResult target) {
         String id = getPickedEntityId();
-        if (EntityHandler.INSTANCE.hasEntityEggInfo(id)) {
+        if (id == null) {
+            return ItemStack.field_190927_a;
+        }
+        ResourceLocation res = new ResourceLocation(id);
+        if (EntityHandler.INSTANCE.hasEntityEggInfo(res)) {
             ItemStack stack = new ItemStack(ItemHandler.INSTANCE.spawnEgg);
-            ItemSpawnEgg.applyEntityIdToItemStack(stack, id);
+            ItemSpawnEgg.applyEntityIdToItemStack(stack, res);
             return stack;
         }
-        return null;
+        return ItemStack.field_190927_a;
     }
 
     protected String getPickedEntityId() {
