@@ -1,17 +1,25 @@
 package com.bobmowzie.mowziesmobs.client;
 
-import com.bobmowzie.mowziesmobs.server.item.ItemBarakoMask;
 import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.event.PlayerModelEvent;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderItemInFrameEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.item.ItemBarakoMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemWroughtAxe;
 import com.bobmowzie.mowziesmobs.server.item.ItemWroughtHelm;
@@ -20,6 +28,12 @@ import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 @SideOnly(Side.CLIENT)
 public enum ClientEventHandler {
     INSTANCE;
+
+    private static final ResourceLocation MARIO = new ResourceLocation(MowziesMobs.MODID, "textures/gui/mario.png");
+
+    long startWroughtnautHitTime;
+
+    long lastWroughtnautHitTime;
 
     @SubscribeEvent
     public void onFrameRender(RenderItemInFrameEvent event) {
@@ -59,6 +73,56 @@ public enum ClientEventHandler {
                 rightArm.rotateAngleY = rightArm.rotateAngleY * normalAmount + (0.6F * controller1 + 0.3F * controller2) * swingAmount;
                 rightArm.rotateAngleX = rightArm.rotateAngleX * normalAmount + ((float) -Math.PI / 2 * controller3) * swingAmount;
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void onRenderOverlay(RenderGameOverlayEvent.Post e) {
+        final int startTime = 210;
+        final int pointStart = 1200;
+        final int timePerMillis = 22;
+        if (e.getType() == ElementType.POTION_ICONS) {
+            long now = System.currentTimeMillis();
+            if (now - lastWroughtnautHitTime < 500) {
+                int t = (int) (now - startWroughtnautHitTime);
+                int progress = t / timePerMillis;
+                int time = startTime - progress;
+                if (time < 0) {
+                    startWroughtnautHitTime = now;
+                    progress = 0;
+                    time = startTime;
+                }
+                int points = pointStart + progress * 50;
+                Minecraft.getMinecraft().getTextureManager().bindTexture(MARIO);
+                ScaledResolution res = e.getResolution();
+                int offsetY = 16;
+                int col = res.getScaledWidth() / 4;
+                // MARIO
+                int marioOffsetX = col / 2 - 18;
+                Gui.drawModalRectWithCustomSizedTexture(marioOffsetX, offsetY, 0, 16, 39, 7, 64, 64);
+                // points
+                drawMarioNumber(marioOffsetX, offsetY + 8, points, 6);
+                // Coin
+                int coinOffsetX = col + col / 2 - 15;
+                int coinU = 40 + ((int) (Math.max(0, MathHelper.sin(t * 0.005F)) * 2 + 0.5F)) * 6;
+                Gui.drawModalRectWithCustomSizedTexture(coinOffsetX, offsetY + 8, coinU, 8, 5, 8, 64, 64);
+                // x02
+                Gui.drawModalRectWithCustomSizedTexture(coinOffsetX + 9, offsetY + 8, 16, 8, 23, 7, 64, 64);
+                // WORLD 1-1
+                Gui.drawModalRectWithCustomSizedTexture(col * 2 + col / 2 - 19, offsetY, 0, 24, 39, 15, 64, 64);
+                // TIME
+                int timeOffsetX = col * 3 + col / 2 - 15;
+                Gui.drawModalRectWithCustomSizedTexture(timeOffsetX, offsetY, 0, 40, 30, 7, 64, 64);
+                // Time
+                drawMarioNumber(timeOffsetX + 8, offsetY + 8, time, 3);
+            }
+        }
+    }
+
+    private static void drawMarioNumber(int x, int y, int value, int length) {
+        for (int n = 0; n < length; n++, value /= 10) {
+            int digit = value % 10;
+            Gui.drawModalRectWithCustomSizedTexture(x + 8 * (length - n - 1), y, digit * 8 % 64, digit / 8 * 8, 8, 7, 64, 64);
         }
     }
 }

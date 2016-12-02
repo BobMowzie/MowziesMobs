@@ -94,6 +94,15 @@ public class ClientProxy extends ServerProxy {
         Minecraft.getMinecraft().getSoundHandler().playSound(new SunstrikeSound(strike));
     }
 
+    @Override
+    public void solarBeamHitWroughtnaught() {
+        long now = System.currentTimeMillis();
+        if (now - ClientEventHandler.INSTANCE.lastWroughtnautHitTime > 500) {
+            ClientEventHandler.INSTANCE.startWroughtnautHitTime = now;
+        }
+        ClientEventHandler.INSTANCE.lastWroughtnautHitTime = now;
+    }
+
     private ModelResourceLocation registerBlockModel(Block block, String name) {
         return registerItemModel(Item.getItemFromBlock(block), 0, name);
     }

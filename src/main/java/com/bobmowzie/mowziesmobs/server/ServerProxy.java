@@ -48,4 +48,6 @@ public class ServerProxy {
     public void onLateInit() {}
 
     public void playSunstrikeSound(EntitySunstrike strike) {}
+
+    public void solarBeamHitWroughtnaught() {}
 }

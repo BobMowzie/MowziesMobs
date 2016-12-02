@@ -18,10 +18,12 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory.ParticleArgs;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
+import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 
 public class EntitySolarBeam extends Entity {
@@ -116,6 +118,12 @@ public class EntitySolarBeam extends Entity {
                     target.attackEntityFrom(DamageSource.causeMobDamage(caster), 2f);
                 }
             } else {
+                for (EntityLivingBase e : hit) {
+                    if (e instanceof EntityWroughtnaut) {
+                        MowziesMobs.PROXY.solarBeamHitWroughtnaught();
+                        break;
+                    }
+                }
                 if (ticksExisted - 15 < getDuration()) {
                     int particleCount = 4;
                     while (particleCount --> 0) {

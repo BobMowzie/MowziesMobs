@@ -149,7 +149,7 @@ public class EntityWroughtnaut extends MowzieEntity {
     @Override
     public boolean attackEntityFrom(DamageSource source, float amount) {
         if (source.getEntity() != null) {
-            if (vulnerable && source.getEntity() != null) {
+            if (vulnerable) {
                 int arc = 220;
                 Entity entitySource = source.getEntity();
                 float entityHitAngle = (float) ((Math.atan2(entitySource.posZ - posZ, entitySource.posX - posX) * (180 / Math.PI) - 90) % 360);
