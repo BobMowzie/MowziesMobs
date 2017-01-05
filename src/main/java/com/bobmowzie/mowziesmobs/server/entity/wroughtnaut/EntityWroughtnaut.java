@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.entity.wroughtnaut;
 
-import com.bobmowzie.mowziesmobs.server.ai.animation.*;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
@@ -34,7 +33,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
+import com.bobmowzie.mowziesmobs.server.ai.animation.*;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.entity.SmartBodyHelper;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.google.common.base.Optional;
@@ -117,6 +118,11 @@ public class EntityWroughtnaut extends MowzieEntity {
         setSize(2.5F, 3.7F);
         active = false;
         stepHeight = 1;
+    }
+
+    @Override
+    protected SmartBodyHelper createBodyHelper() {
+        return new SmartBodyHelper(this);
     }
 
     @Override
