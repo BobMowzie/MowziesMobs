@@ -1,5 +1,6 @@
 # MowziesMobs #
 TODO:  
+* [ ] Cannot plant baby foliaaths
 * [ ] Make mobs permanently inactive in peaceful mode
 * [ ] Sol Visage spawn count does not decrement until death
 * [ ] Sol Visage does not stop Barakoa attacks
