@@ -1,5 +1,6 @@
 # MowziesMobs #
 TODO:  
+* [ ] Laser particles persist when holding down shift
 * [ ] Cannot plant baby foliaaths
 * [ ] Make mobs permanently inactive in peaceful mode
 * [ ] Sol Visage spawn count does not decrement until death
