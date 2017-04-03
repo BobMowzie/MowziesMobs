@@ -34,7 +34,7 @@ public class ItemFoliaathSeed extends Item {
             if (!entity.getCanSpawnHere()) {
                 return null;
             }
-            world.spawnEntityInWorld(entity);
+            world.spawnEntity(entity);
         }
         return entity;
     }
@@ -54,7 +54,7 @@ public class ItemFoliaathSeed extends Item {
                 ((EntityLiving) entity).setCustomNameTag(stack.getDisplayName());
             }
             if (!player.capabilities.isCreativeMode) {
-                stack.func_190918_g(1);
+                stack.shrink(1);
             }
         }
         return EnumActionResult.SUCCESS;

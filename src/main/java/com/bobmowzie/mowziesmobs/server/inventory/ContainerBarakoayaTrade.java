@@ -43,7 +43,7 @@ public final class ContainerBarakoayaTrade extends Container {
 
     @Override
     public boolean canInteractWith(EntityPlayer player) {
-        return inventory.isUseableByPlayer(player);
+        return inventory.isUsableByPlayer(player);
     }
 
     @Override
@@ -54,36 +54,36 @@ public final class ContainerBarakoayaTrade extends Container {
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int index) {
-        ItemStack stack = ItemStack.field_190927_a;
+        ItemStack stack = ItemStack.EMPTY;
         Slot slot = inventorySlots.get(index);
         if (slot != null && slot.getHasStack()) {
             ItemStack contained = slot.getStack();
             stack = contained.copy();
             if (index == 1) {
                 if (!mergeItemStack(contained, 2, 38, true)) {
-                    return ItemStack.field_190927_a;
+                    return ItemStack.EMPTY;
                 }
                 slot.onSlotChange(contained, stack);
             } else if (index != 0) {
                 if (index >= 2 && index < 29) {
                     if (!mergeItemStack(contained, 29, 38, false)) {
-                        return ItemStack.field_190927_a;
+                        return ItemStack.EMPTY;
                     }
                 } else if (index >= 29 && index < 38 && !mergeItemStack(contained, 2, 29, false)) {
-                    return ItemStack.field_190927_a;
+                    return ItemStack.EMPTY;
                 }
             } else if (!mergeItemStack(contained, 2, 38, false)) {
-                return ItemStack.field_190927_a;
+                return ItemStack.EMPTY;
             }
-            if (contained.func_190916_E() == 0) {
-                slot.putStack(ItemStack.field_190927_a);
+            if (contained.getCount() == 0) {
+                slot.putStack(ItemStack.EMPTY);
             } else {
                 slot.onSlotChanged();
             }
-            if (contained.func_190916_E() == stack.func_190916_E()) {
-                return ItemStack.field_190927_a;
+            if (contained.getCount() == stack.getCount()) {
+                return ItemStack.EMPTY;
             }
-            slot.func_190901_a(player, contained);
+            slot.onTake(player, contained);
         }
         return stack;
     }
@@ -94,7 +94,7 @@ public final class ContainerBarakoayaTrade extends Container {
         barakoaya.setCustomer(null);
         if (!world.isRemote) {
             ItemStack stack = inventory.removeStackFromSlot(0);
-            if (stack != ItemStack.field_190927_a) {
+            if (stack != ItemStack.EMPTY) {
                 player.dropItem(stack, false);
             }
         }
@@ -115,7 +115,7 @@ public final class ContainerBarakoayaTrade extends Container {
         @Override
         public ItemStack decrStackSize(int amount) {
             if (getHasStack()) {
-                removeCount += Math.min(amount, getStack().func_190916_E());
+                removeCount += Math.min(amount, getStack().getCount());
             }
             return super.decrStackSize(amount);
         }
@@ -128,21 +128,21 @@ public final class ContainerBarakoayaTrade extends Container {
 
         @Override
         protected void onCrafting(ItemStack stack) {
-            stack.onCrafting(barakoaya.worldObj, player, removeCount);
+            stack.onCrafting(barakoaya.world, player, removeCount);
             removeCount = 0;
         }
 
         @Override
-        public ItemStack func_190901_a(EntityPlayer player, ItemStack stack) {
+        public ItemStack onTake(EntityPlayer player, ItemStack stack) {
             onCrafting(stack);
             if (barakoaya.isOfferingTrade()) {
                 Trade trade = barakoaya.getOfferingTrade();
                 ItemStack input = inventory.getStackInSlot(0);
                 ItemStack tradeInput = trade.getInput();
-                if (input.getItem() == tradeInput.getItem() && input.func_190916_E() >= tradeInput.func_190916_E()) {
-                    input.func_190918_g(tradeInput.func_190916_E());
-                    if (input.func_190916_E() <= 0) {
-                        input = ItemStack.field_190927_a;
+                if (input.getItem() == tradeInput.getItem() && input.getCount() >= tradeInput.getCount()) {
+                    input.shrink(tradeInput.getCount());
+                    if (input.getCount() <= 0) {
+                        input = ItemStack.EMPTY;
                     }
                     inventory.setInventorySlotContents(0, input);
                 }

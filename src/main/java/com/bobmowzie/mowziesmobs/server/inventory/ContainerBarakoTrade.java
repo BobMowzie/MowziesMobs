@@ -41,12 +41,12 @@ public final class ContainerBarakoTrade extends Container {
 
     @Override
     public boolean canInteractWith(EntityPlayer player) {
-        return inventory.isUseableByPlayer(player);
+        return inventory.isUsableByPlayer(player);
     }
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int index) {
-        ItemStack stack = ItemStack.field_190927_a;
+        ItemStack stack = ItemStack.EMPTY;
         Slot slot = inventorySlots.get(index);
         if (slot != null && slot.getHasStack()) {
             ItemStack contained = slot.getStack();
@@ -54,23 +54,23 @@ public final class ContainerBarakoTrade extends Container {
             if (index != 0) {
                 if (index >= 1 && index < 28) {
                     if (!mergeItemStack(contained, 28, 37, false)) {
-                        return ItemStack.field_190927_a;
+                        return ItemStack.EMPTY;
                     }
                 } else if (index >= 28 && index < 37 && !mergeItemStack(contained, 1, 28, false)) {
-                    return ItemStack.field_190927_a;
+                    return ItemStack.EMPTY;
                 }
             } else if (!mergeItemStack(contained, 1, 37, false)) {
-                return ItemStack.field_190927_a;
+                return ItemStack.EMPTY;
             }
-            if (contained.func_190916_E() == 0) {
-                slot.putStack(ItemStack.field_190927_a);
+            if (contained.getCount() == 0) {
+                slot.putStack(ItemStack.EMPTY);
             } else {
                 slot.onSlotChanged();
             }
-            if (contained.func_190916_E() == stack.func_190916_E()) {
-                return ItemStack.field_190927_a;
+            if (contained.getCount() == stack.getCount()) {
+                return ItemStack.EMPTY;
             }
-            slot.func_190901_a(player, contained);
+            slot.onTake(player, contained);
         }
         return stack;
     }
@@ -81,7 +81,7 @@ public final class ContainerBarakoTrade extends Container {
         barako.setCustomer(null);
         if (!world.isRemote) {
             ItemStack stack = inventory.removeStackFromSlot(0);
-            if (stack != ItemStack.field_190927_a) {
+            if (stack != ItemStack.EMPTY) {
                 EntityItem dropped = player.dropItem(stack, false);
                 if (dropped != null) {
                     dropped.motionX *= 0.5;

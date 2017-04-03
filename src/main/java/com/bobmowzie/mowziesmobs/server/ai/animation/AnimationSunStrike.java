@@ -44,26 +44,26 @@ public class AnimationSunStrike<T extends MowzieEntity & IAnimatedEntity> extend
         }
         if (animatingEntity.getAnimationTick() == 7) {
             double x = entityTarget.posX;
-            y = MathHelper.floor_double(entityTarget.posY - 1);
+            y = MathHelper.floor(entityTarget.posY - 1);
             double z = entityTarget.posZ;
             double vx = (x - prevX) / 9;
             double vz = (z - prevZ) / 9;
             int t = EntitySunstrike.STRIKE_EXPLOSION + 3;
-            newX = MathHelper.floor_double(x + vx * t);
-            newZ = MathHelper.floor_double(z + vz * t);
+            newX = MathHelper.floor(x + vx * t);
+            newZ = MathHelper.floor(z + vz * t);
             for (int i = 0; i < 5; i++) {
-                if (!animatingEntity.worldObj.canBlockSeeSky(new BlockPos(newX, y, newZ))) {
+                if (!animatingEntity.world.canBlockSeeSky(new BlockPos(newX, y, newZ))) {
                     y++;
                 } else {
                     break;
                 }
             }
         }
-        if (!animatingEntity.worldObj.isRemote && animatingEntity.getAnimationTick() == 9) {
+        if (!animatingEntity.world.isRemote && animatingEntity.getAnimationTick() == 9) {
             animatingEntity.playSound(MMSounds.ENTITY_BARAKO_ATTACK, 1.4f, 1);
-            EntitySunstrike sunstrike = new EntitySunstrike(animatingEntity.worldObj, animatingEntity, newX, y, newZ);
+            EntitySunstrike sunstrike = new EntitySunstrike(animatingEntity.world, animatingEntity, newX, y, newZ);
             sunstrike.onSummon();
-            animatingEntity.worldObj.spawnEntityInWorld(sunstrike);
+            animatingEntity.world.spawnEntity(sunstrike);
         }
         if (animatingEntity.getAnimationTick() > 6) {
             animatingEntity.getLookHelper().setLookPosition(newX, y, newZ, 20, 20);

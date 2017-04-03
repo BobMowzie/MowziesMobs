@@ -39,15 +39,15 @@ item.barakoMask.text.0=Never breaks
 item.barakoMask.text.1=Equip, then right-click with Barakoa mask
 
 item.dart.text.0=Can only be used with blowgun
-item.dart.text.1=Posions targets
+item.dart.text.1=Poisons targets
 
 item.foliaathSeed.text.0=Plant in grass
 item.foliaathSeed.text.0=Feed when hungry for 2 days
 
-item.grantsunsblessing.text.0=This item is creative-mode only
-item.grantsunsblessing.text.1=Grants Sun's Blessing for 10 minutes
-item.grantsunsblessing.text.2=With empty hand, right-click to call a sunstrike
-item.grantsunsblessing.text.3=With empty hand, shift-right-click to fire a solar beam (costs 2 minutes)
+item.grantSunsBlessing.text.0=This item is creative-mode only
+item.grantSunsBlessing.text.1=Grants Sun's Blessing for 10 minutes
+item.grantSunsBlessing.text.2=With empty hand, right-click to call a sunstrike
+item.grantSunsBlessing.text.3=With empty hand, shift-right-click to fire a solar beam (costs 2 minutes)
 
 item.mobRemover.text.0=Left-click to remove a Mowzie's Mobs mob
 

@@ -35,7 +35,7 @@ public class MowzieWorldGenerator implements IWorldGenerator {
         if (canSpawnVillageAtCoords(chunkX, chunkZ, world)) StructureBarakoaVillage.generateVillage(world, random, chunkX * 16 + 8, chunkZ * 16 + 8, 1);
     }
 
-    private static boolean canSpawnVillageAtCoords(int chunkX, int chunkZ, World worldObj)
+    private static boolean canSpawnVillageAtCoords(int chunkX, int chunkZ, World world)
     {
         if (MowziesMobs.CONFIG.spawnrateBarako <= 0) return false;
         int maxDistanceBetweenVillages = MowziesMobs.CONFIG.spawnrateBarako + 8;
@@ -55,7 +55,7 @@ public class MowzieWorldGenerator implements IWorldGenerator {
 
         int k = chunkX / maxDistanceBetweenVillages;
         int l = chunkZ / maxDistanceBetweenVillages;
-        Random random = worldObj.setRandomSeed(k, l, 14357617);
+        Random random = world.setRandomSeed(k, l, 14357617);
         k = k * maxDistanceBetweenVillages;
         l = l * maxDistanceBetweenVillages;
         k = k + random.nextInt(maxDistanceBetweenVillages - 8);

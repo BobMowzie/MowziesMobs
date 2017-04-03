@@ -19,15 +19,15 @@ sourceCompatibility = targetCompatibility = "1.8"
 minecraft {
     version = "1.11-13.19.0.2153"
     runDir = "run"
-	mappings = "snapshot_20161111"
+	mappings = "snapshot_20161220"
 }
 
 repositories {
     mavenCentral()
     maven {
-        name = "ilexiconn"
-        url = "http://maven.ilexiconn.net/"
-    }
+ name = "mcmoddev"
+ url = "http://maven.mcmoddev.com"
+}
 }
 
 dependencies {

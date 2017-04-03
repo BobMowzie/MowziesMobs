@@ -35,10 +35,10 @@ public class AnimationFWNStompAttackAI extends AnimationAI<EntityWroughtnaut> {
             animatingEntity.motionZ = 0;
             double perpFacing = animatingEntity.renderYawOffset * (Math.PI / 180);
             double facingAngle = perpFacing + Math.PI / 2;
-            int hitY = MathHelper.floor_double(animatingEntity.getEntityBoundingBox().minY - 0.5);
+            int hitY = MathHelper.floor(animatingEntity.getEntityBoundingBox().minY - 0.5);
             int tick = animatingEntity.getAnimationTick();
             final int maxDistance = 6;
-            WorldServer world = (WorldServer) animatingEntity.worldObj;
+            WorldServer world = (WorldServer) animatingEntity.world;
             if (tick == 6) {
                 animatingEntity.playSound(MMSounds.ENTITY_WROUGHT_SHOUT_2, 1, 1);
             } else if (tick > 9 && tick < 17) {
@@ -52,8 +52,8 @@ public class AnimationFWNStompAttackAI extends AnimationAI<EntityWroughtnaut> {
                     double fx = animatingEntity.posX + vx + perpX * side;
                     double fy = animatingEntity.getEntityBoundingBox().minY + 0.1;
                     double fz = animatingEntity.posZ + vz + perpZ * side;
-                    int bx = MathHelper.floor_double(fx);
-                    int bz = MathHelper.floor_double(fz);
+                    int bx = MathHelper.floor(fx);
+                    int bz = MathHelper.floor(fz);
                     int amount = 16 + world.rand.nextInt(8);
                     while (amount-- > 0) {
                         double theta = world.rand.nextDouble() * Math.PI * 2;
@@ -71,7 +71,7 @@ public class AnimationFWNStompAttackAI extends AnimationAI<EntityWroughtnaut> {
                 if (tick % 2 == 0) {
                     int distance = tick / 2 - 2;
                     double spread = Math.PI * 2;
-                    int arcLen = MathHelper.ceiling_double_int(distance * spread);
+                    int arcLen = MathHelper.ceil(distance * spread);
                     double minY = animatingEntity.getEntityBoundingBox().minY;
                     double maxY = animatingEntity.getEntityBoundingBox().maxY;
                     for (int i = 0; i < arcLen; i++) {
@@ -88,7 +88,7 @@ public class AnimationFWNStompAttackAI extends AnimationAI<EntityWroughtnaut> {
                                 continue;
                             }
                             if (entity instanceof EntityLivingBase) {
-                                entity.attackEntityFrom(DamageSource.fallingBlock, factor * 5 + 1);
+                                entity.attackEntityFrom(DamageSource.FALLING_BLOCK, factor * 5 + 1);
                             }
                             double magnitude = world.rand.nextDouble() * 0.15 + 0.1;
                             entity.motionX += vx * factor * magnitude;
@@ -101,8 +101,8 @@ public class AnimationFWNStompAttackAI extends AnimationAI<EntityWroughtnaut> {
                             }
                         }
                         if (world.rand.nextBoolean()) {
-                            int hitX = MathHelper.floor_double(px);
-                            int hitZ = MathHelper.floor_double(pz);
+                            int hitX = MathHelper.floor(px);
+                            int hitZ = MathHelper.floor(pz);
                             BlockPos pos = new BlockPos(hitX, hitY, hitZ);
                             if (world.isAirBlock(pos.up())) {
                                 IBlockState block = world.getBlockState(pos);
@@ -112,7 +112,7 @@ public class AnimationFWNStompAttackAI extends AnimationAI<EntityWroughtnaut> {
                                     fallingBlock.motionY = 0.4 + factor * 0.2;
                                     fallingBlock.motionZ = 0;
                                     fallingBlock.fallTime = 2;
-                                    world.spawnEntityInWorld(fallingBlock);
+                                    world.spawnEntity(fallingBlock);
                                     world.setBlockToAir(pos);
                                     int amount = 6 + world.rand.nextInt(10);
                                     int stateId = Block.getStateId(block);

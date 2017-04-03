@@ -49,7 +49,7 @@ public class MessageBarakoTrade extends AbstractMessage<MessageBarakoTrade> {
 
     @Override
     public void onServerReceived(MinecraftServer server, MessageBarakoTrade msg, EntityPlayer player, MessageContext ctx) {
-        Entity entity = player.worldObj.getEntityByID(msg.entityID);
+        Entity entity = player.world.getEntityByID(msg.entityID);
         if (!(entity instanceof EntityBarako)) {
             return;
         }

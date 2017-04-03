@@ -85,11 +85,11 @@ public class ItemSpawnEgg extends Item {
                 TileEntity blockEntity = worldIn.getTileEntity(pos);
                 if (blockEntity instanceof TileEntityMobSpawner) {
                     MobSpawnerBaseLogic spawner = ((TileEntityMobSpawner) blockEntity).getSpawnerBaseLogic();
-                    spawner.func_190894_a(getEntityIdFromItem(stack));
+                    spawner.setEntityId(getEntityIdFromItem(stack));
                     blockEntity.markDirty();
                     worldIn.notifyBlockUpdate(pos, state, state, 3);
                     if (!playerIn.capabilities.isCreativeMode) {
-                        stack.func_190918_g(1);
+                        stack.shrink(1);
                     }
                     return EnumActionResult.SUCCESS;
                 }
@@ -106,7 +106,7 @@ public class ItemSpawnEgg extends Item {
                 }
                 applyItemEntityDataToEntity(worldIn, playerIn, stack, entity);
                 if (!playerIn.capabilities.isCreativeMode) {
-                    stack.func_190918_g(1);
+                    stack.shrink(1);
                 }
             }
             return EnumActionResult.SUCCESS;
@@ -134,7 +134,7 @@ public class ItemSpawnEgg extends Item {
                         }
                         applyItemEntityDataToEntity(worldIn, playerIn, itemStackIn, entity);
                         if (!playerIn.capabilities.isCreativeMode) {
-                            itemStackIn.func_190918_g(1);
+                            itemStackIn.shrink(1);
                         }
                         playerIn.addStat(StatList.getObjectUseStats(this));
                         return new ActionResult(EnumActionResult.SUCCESS, itemStackIn);
@@ -175,7 +175,7 @@ public class ItemSpawnEgg extends Item {
                 entityLiving.rotationYawHead = entityLiving.rotationYaw;
                 entityLiving.renderYawOffset = entityLiving.rotationYaw;
                 entityLiving.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(entityLiving)), null);
-                world.spawnEntityInWorld(entity);
+                world.spawnEntity(entity);
                 entityLiving.playLivingSound();
             }
             return entity;

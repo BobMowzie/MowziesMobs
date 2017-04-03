@@ -600,7 +600,7 @@ public class StructureBarakoaVillage {
                 }
             }
         }
-        world.spawnEntityInWorld(barako);
+        world.spawnEntity(barako);
         barako.onInitialSpawn(world.getDifficultyForLocation(barako.getPosition()), null);
     }
 
@@ -777,7 +777,7 @@ public class StructureBarakoaVillage {
                     y = findGenHeightBarakoa(world, bPos);
                     barakoa.setPosition(bPos.getX(), bPos.getY() + y + 1, bPos.getZ());
                     if(y != -1 && barakoa.getCanSpawnHere() && world.getCollisionBoxes(null, barakoa.getEntityBoundingBox()).isEmpty()) {
-                        world.spawnEntityInWorld(barakoa);
+                        world.spawnEntity(barakoa);
                         barakoa.onInitialSpawn(world.getDifficultyForLocation(barakoa.getPosition()), null);
                         break;
                     }

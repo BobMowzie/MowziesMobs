@@ -14,7 +14,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 public final class InventoryBarako implements IInventory {
     private final EntityBarako barako;
 
-    private ItemStack input = ItemStack.field_190927_a;
+    private ItemStack input = ItemStack.EMPTY;
 
     private List<ChangeListener> listeners;
 
@@ -51,21 +51,21 @@ public final class InventoryBarako implements IInventory {
 
     @Override
     public ItemStack getStackInSlot(int index) {
-        return index == 0 ? input : ItemStack.field_190927_a;
+        return index == 0 ? input : ItemStack.EMPTY;
     }
 
     @Override
     public ItemStack decrStackSize(int index, int count) {
         ItemStack stack;
-        if (index == 0 && input != ItemStack.field_190927_a && count > 0) {
+        if (index == 0 && input != ItemStack.EMPTY && count > 0) {
             ItemStack split = input.splitStack(count);
-            if (input.func_190916_E() == 0) {
-                input = ItemStack.field_190927_a;
+            if (input.getCount() == 0) {
+                input = ItemStack.EMPTY;
             }
             stack = split;
             markDirty();
         } else {
-            stack = ItemStack.field_190927_a;
+            stack = ItemStack.EMPTY;
         }
         return stack;
     }
@@ -73,10 +73,10 @@ public final class InventoryBarako implements IInventory {
     @Override
     public ItemStack removeStackFromSlot(int index) {
         if (index != 0) {
-            return ItemStack.field_190927_a;
+            return ItemStack.EMPTY;
         }
         ItemStack s = input;
-        input = ItemStack.field_190927_a;
+        input = ItemStack.EMPTY;
         markDirty();
         return s;
     }
@@ -85,8 +85,8 @@ public final class InventoryBarako implements IInventory {
     public void setInventorySlotContents(int index, ItemStack stack) {
         if (index == 0) {
             input = stack;
-            if (stack != ItemStack.field_190927_a && stack.func_190916_E() > getInventoryStackLimit()) {
-                stack.func_190920_e(getInventoryStackLimit());
+            if (stack != ItemStack.EMPTY && stack.getCount() > getInventoryStackLimit()) {
+                stack.setCount(getInventoryStackLimit());
             }
             markDirty();
         }
@@ -107,7 +107,7 @@ public final class InventoryBarako implements IInventory {
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer player) {
+    public boolean isUsableByPlayer(EntityPlayer player) {
         return barako.getCustomer() == player;
     }
 
@@ -137,7 +137,7 @@ public final class InventoryBarako implements IInventory {
 
     @Override
     public void clear() {
-        input = ItemStack.field_190927_a;
+        input = ItemStack.EMPTY;
         markDirty();
     }
 
@@ -146,7 +146,7 @@ public final class InventoryBarako implements IInventory {
     }
 
     @Override
-    public boolean func_191420_l() {
-        return !input.func_190926_b();
+    public boolean isEmpty() {
+        return !input.isEmpty();
     }
 }

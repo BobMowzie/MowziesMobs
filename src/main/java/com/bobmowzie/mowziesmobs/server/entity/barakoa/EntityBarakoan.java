@@ -64,7 +64,7 @@ public abstract class EntityBarakoan<L extends EntityLivingBase> extends EntityB
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!worldObj.isRemote) {
+        if (!world.isRemote) {
             if (leader == null && getLeaderUUID().isPresent()) {
                 leader = getLeader();
                 if (leader != null) {
@@ -98,7 +98,7 @@ public abstract class EntityBarakoan<L extends EntityLivingBase> extends EntityB
     public L getLeader() {
         Optional<UUID> uuid = getLeaderUUID();
         if (uuid.isPresent()) {
-            List<L> potentialLeaders = worldObj.getEntitiesWithinAABB(leaderClass, getEntityBoundingBox().expand(32, 32, 32));
+            List<L> potentialLeaders = world.getEntitiesWithinAABB(leaderClass, getEntityBoundingBox().expand(32, 32, 32));
             for (L entity : potentialLeaders) {
                 if (uuid.get().equals(entity.getUniqueID())) {
                     return entity;

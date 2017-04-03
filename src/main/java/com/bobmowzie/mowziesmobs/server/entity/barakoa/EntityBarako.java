@@ -151,14 +151,14 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     protected SoundEvent getAmbientSound() {
         if (getAnimation() == NO_ANIMATION) {
             if (getAttackTarget() == null) {
-                int soundType = MathHelper.getRandomIntegerInRange(this.rand, 0, 9);
+                int soundType = MathHelper.getInt(this.rand, 0, 9);
                 if (soundType < MMSounds.ENTITY_BARAKO_TALK.length) {
                     this.playSound(MMSounds.ENTITY_BARAKO_TALK[soundType], 2F, 1.0F);
                     this.setWhichDialogue(soundType + 1);
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, TALK_ANIMATION);
                 }
             } else {
-                int soundType = MathHelper.getRandomIntegerInRange(rand, 1, 10);
+                int soundType = MathHelper.getInt(rand, 1, 10);
                 if (soundType < 7) {
                     this.playSound(MMSounds.ENTITY_BARAKO_ANGRY[soundType - 1], 2F, 1.0F);
 //                    setWhichDialogue(soundType);
@@ -217,7 +217,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 timeUntilSunstrike = getTimeUntilSunstrike();
             }
         } else {
-            if (!worldObj.isRemote) {
+            if (!world.isRemote) {
                 this.setAngry(false);
             }
         }
@@ -256,12 +256,12 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 this.playSound(MMSounds.ENTITY_BARAKO_BURST, 1.7f, 1.5f);
             }
             if (getAnimationTick() == 10) {
-                if (worldObj.isRemote) {
+                if (world.isRemote) {
                     spawnExplosionParticles(30);
                 }
                 this.playSound(MMSounds.ENTITY_BARAKO_ATTACK, 1.7f, 0.9f);
             }
-            if (getAnimationTick() <= 6 && worldObj.isRemote) {
+            if (getAnimationTick() <= 6 && world.isRemote) {
                 int particleCount = 8;
                 while (--particleCount != 0) {
                     double radius = 2f;
@@ -273,11 +273,11 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                     double offsetX = -0.3 * Math.sin(rotationYaw * Math.PI / 180);
                     double offsetZ = -0.3 * Math.cos(rotationYaw * Math.PI / 180);
                     double offsetY = 1;
-                    MMParticle.ORB.spawn(worldObj, posX + ox + offsetX, posY + offsetY + oy, posZ + oz + offsetZ, ParticleArgs.get().withData(posX + offsetX, posY + offsetY, posZ + offsetZ, 6));
+                    MMParticle.ORB.spawn(world, posX + ox + offsetX, posY + offsetY + oy, posZ + oz + offsetZ, ParticleArgs.get().withData(posX + offsetX, posY + offsetY, posZ + offsetZ, 6));
                 }
             }
         }
-        if (!worldObj.isRemote && getAttackTarget() == null && getAnimation() != SOLAR_BEAM_ANIMATION) {
+        if (!world.isRemote && getAttackTarget() == null && getAnimation() != SOLAR_BEAM_ANIMATION) {
             heal(0.2f);
         }
         if (timeUntilSunstrike > 0) {
@@ -305,21 +305,21 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         IBlockState blockLeft;
         IBlockState blockRight;
         if (direction == 1) {
-            blockLeft = worldObj.getBlockState(new BlockPos(MathHelper.floor_double(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) + 1));
-            blockRight = worldObj.getBlockState(new BlockPos(MathHelper.floor_double(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) + 1));
+            blockLeft = world.getBlockState(new BlockPos(MathHelper.floor(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) + 1));
+            blockRight = world.getBlockState(new BlockPos(MathHelper.floor(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) + 1));
         } else if (direction == 2) {
-            blockLeft = worldObj.getBlockState(new BlockPos(MathHelper.floor_double(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) + 1));
-            blockRight = worldObj.getBlockState(new BlockPos(MathHelper.floor_double(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) - 1));
+            blockLeft = world.getBlockState(new BlockPos(MathHelper.floor(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) + 1));
+            blockRight = world.getBlockState(new BlockPos(MathHelper.floor(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) - 1));
         } else if (direction == 3) {
-            blockLeft = worldObj.getBlockState(new BlockPos(MathHelper.floor_double(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) - 1));
-            blockRight = worldObj.getBlockState(new BlockPos(MathHelper.floor_double(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) - 1));
+            blockLeft = world.getBlockState(new BlockPos(MathHelper.floor(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) - 1));
+            blockRight = world.getBlockState(new BlockPos(MathHelper.floor(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) - 1));
         } else if (direction == 4) {
-            blockLeft = worldObj.getBlockState(new BlockPos(MathHelper.floor_double(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) - 1));
-            blockRight = worldObj.getBlockState(new BlockPos(MathHelper.floor_double(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor_double(posZ) + 1));
+            blockLeft = world.getBlockState(new BlockPos(MathHelper.floor(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) - 1));
+            blockRight = world.getBlockState(new BlockPos(MathHelper.floor(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) + 1));
         } else {
             return false;
         }
-//        System.out.println(direction + ", " + (MathHelper.floor_double(posX) - 1) + ", " + Math.round((float) (posY - 1)) + ", " + MathHelper.floor_double(posZ) + 1);
+//        System.out.println(direction + ", " + (MathHelper.floor(posX) - 1) + ", " + Math.round((float) (posY - 1)) + ", " + MathHelper.floor(posZ) + 1);
         return !(blockLeft.getBlock() instanceof BlockAir && blockRight.getBlock() instanceof BlockAir);
     }
 
@@ -330,7 +330,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             float vy = rand.nextFloat() * 0.1F - 0.05f;
             float vx = velocity * MathHelper.cos(yaw);
             float vz = velocity * MathHelper.sin(yaw);
-            worldObj.spawnParticle(EnumParticleTypes.FLAME, posX, posY + 1, posZ, vx, vy, vz);
+            world.spawnParticle(EnumParticleTypes.FLAME, posX, posY + 1, posZ, vx, vy, vz);
         }
     }
 
@@ -382,7 +382,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     public boolean fulfillDesire(Slot input) {
         ItemStack desires = getDesires();
         if (canPayFor(input.getStack(), desires)) {
-            input.decrStackSize(desires.func_190916_E());
+            input.decrStackSize(desires.getCount());
             return true;
         }
         return false;
@@ -441,7 +441,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         for (EntityBarakoa entityBarakoa : barakoa) {
             if (entityBarakoa.isBarakoDevoted()) entityBarakoa.timeUntilDeath = rand.nextInt(20);
         }
-        if (!worldObj.isRemote && worldObj.getGameRules().getBoolean("doMobLoot")) {
+        if (!world.isRemote && world.getGameRules().getBoolean("doMobLoot")) {
             dropItem(ItemHandler.INSTANCE.barakoMask, 1);
         }
         super.onDeath(cause);
@@ -474,7 +474,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     protected boolean processInteract(EntityPlayer player, EnumHand hand) {
         if (canTradeWith(player)) {
             setCustomer(player);
-            if (!worldObj.isRemote) {
+            if (!world.isRemote) {
                 GuiHandler.open(GuiHandler.BARAKO_TRADE, player, this, hasTradedWith(player) ? 1 : 0);
             }
             return true;
@@ -491,6 +491,6 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     }
 
     private static boolean canPayFor(ItemStack stack, ItemStack worth) {
-        return stack.getItem() == worth.getItem() && stack.func_190916_E() >= worth.func_190916_E();
+        return stack.getItem() == worth.getItem() && stack.getCount() >= worth.getCount();
     }
 }

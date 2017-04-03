@@ -57,11 +57,11 @@ public class ItemBarakoaMask extends ItemArmor implements BarakoaMask {
         ItemStack stack = player.getHeldItem(hand);
         ItemStack headStack = player.inventory.armorInventory.get(3);
         if (headStack.getItem() instanceof ItemBarakoMask) {
-            if (!player.worldObj.isRemote) {
+            if (!player.world.isRemote) {
                 spawnBarakoa(type, player);
             }
             if (!player.capabilities.isCreativeMode) {
-                stack.func_190918_g(1);
+                stack.shrink(1);
             }
             return new ActionResult<>(EnumActionResult.SUCCESS, stack);
         }
@@ -77,7 +77,7 @@ public class ItemBarakoaMask extends ItemArmor implements BarakoaMask {
             if (angle < 0) {
                 angle = angle + 360;
             }
-            EntityBarakoanToPlayer barakoa = new EntityBarakoanToPlayer(player.worldObj);
+            EntityBarakoanToPlayer barakoa = new EntityBarakoanToPlayer(player.world);
             barakoa.setMask(mask);
             int weapon = barakoa.randomizeWeapon();
             barakoa.setWeapon(weapon);
@@ -85,7 +85,7 @@ public class ItemBarakoaMask extends ItemArmor implements BarakoaMask {
             barakoa.setActive(false);
             barakoa.active = false;
             property.addPackMember(barakoa);
-            player.worldObj.spawnEntityInWorld(barakoa);
+            player.world.spawnEntity(barakoa);
             barakoa.motionX = 0.5 * Math.sin(-angle * Math.PI / 180);
             barakoa.motionY = 0.5;
             barakoa.motionZ = 0.5 * Math.cos(-angle * Math.PI / 180);

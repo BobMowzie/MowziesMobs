@@ -38,7 +38,7 @@ public class EntityDart extends EntityTippedArrow {
         Entity hit = raytraceResultIn.entityHit;
         if (hit == null || !(hit instanceof EntityLivingBase)) return;
         EntityLivingBase living = (EntityLivingBase)hit;
-        if (worldObj.isRemote || (shootingEntity == hit) || (shootingEntity instanceof EntityBarakoa && living instanceof EntityBarakoa && ((EntityBarakoa) shootingEntity).isBarakoDevoted() == ((EntityBarakoa) living).isBarakoDevoted())) return;
+        if (world.isRemote || (shootingEntity == hit) || (shootingEntity instanceof EntityBarakoa && living instanceof EntityBarakoa && ((EntityBarakoa) shootingEntity).isBarakoDevoted() == ((EntityBarakoa) living).isBarakoDevoted())) return;
         super.onHit(raytraceResultIn);
         living.addPotionEffect(new PotionEffect(MobEffects.POISON, 40, 2, false, true));
         living.setArrowCountInEntity(living.getArrowCountInEntity() - 1);

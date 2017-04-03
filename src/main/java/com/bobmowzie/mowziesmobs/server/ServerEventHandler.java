@@ -95,7 +95,7 @@ public enum ServerEventHandler {
             if (property.getTick() > 0) {
                 property.decrementTime();
             }
-            if (property.getTick() == MowziePlayerProperties.SWING_HIT_TICK && !player.worldObj.isRemote) {
+            if (property.getTick() == MowziePlayerProperties.SWING_HIT_TICK && !player.world.isRemote) {
                 float damage = 7;
                 boolean hit = false;
                 float range = 4;
@@ -151,7 +151,7 @@ public enum ServerEventHandler {
     }
 
     private List<EntityLivingBase> getEntityLivingBaseNearby(EntityLivingBase user, double distanceX, double distanceY, double distanceZ, double radius) {
-        List<Entity> list = user.worldObj.getEntitiesWithinAABBExcludingEntity(user, user.getEntityBoundingBox().expand(distanceX, distanceY, distanceZ));
+        List<Entity> list = user.world.getEntitiesWithinAABBExcludingEntity(user, user.getEntityBoundingBox().expand(distanceX, distanceY, distanceZ));
         ArrayList<EntityLivingBase> nearEntities = list.stream().filter(entityNeighbor -> entityNeighbor instanceof EntityLivingBase && user.getDistanceToEntity(entityNeighbor) <= radius).map(entityNeighbor -> (EntityLivingBase) entityNeighbor).collect(Collectors.toCollection(ArrayList::new));
         return nearEntities;
     }
@@ -159,7 +159,7 @@ public enum ServerEventHandler {
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.RightClickEmpty event) {
         EntityPlayer player = event.getEntityPlayer();
-        if (event.getWorld().isRemote && player.inventory.getCurrentItem() == ItemStack.field_190927_a && player.isPotionActive(PotionHandler.INSTANCE.sunsBlessing) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
+        if (event.getWorld().isRemote && player.inventory.getCurrentItem() == ItemStack.EMPTY && player.isPotionActive(PotionHandler.INSTANCE.sunsBlessing) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
             MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
             if (player.isSneaking()) {
                 MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSolarBeam());
@@ -174,7 +174,7 @@ public enum ServerEventHandler {
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event) {
         EntityPlayer player = event.getEntityPlayer();
-        if (event.getWorld().isRemote && player.inventory.getCurrentItem() == ItemStack.field_190927_a && player.isPotionActive(PotionHandler.INSTANCE.sunsBlessing) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
+        if (event.getWorld().isRemote && player.inventory.getCurrentItem() == ItemStack.EMPTY && player.isPotionActive(PotionHandler.INSTANCE.sunsBlessing) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
             MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
             if (player.isSneaking()) {
                 MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSolarBeam());
@@ -218,7 +218,7 @@ public enum ServerEventHandler {
             final float dist = 20.5F;
             EntityPlayerMP player = event.getPlayer();
             AxisAlignedBB bounds = player.getEntityBoundingBox().expandXyz(dist);
-            List<EntityWroughtnaut> wroughtnauts = player.worldObj.getEntitiesWithinAABB(EntityWroughtnaut.class, bounds);
+            List<EntityWroughtnaut> wroughtnauts = player.world.getEntitiesWithinAABB(EntityWroughtnaut.class, bounds);
             for (EntityWroughtnaut wroughtnaut : wroughtnauts) {
                 if (wroughtnaut.isActive() && wroughtnaut.getDistanceSq(player.posX, player.posY, player.posZ) <= dist * dist) {
                     AnimationHandler.INSTANCE.sendAnimationMessage(wroughtnaut, EntityWroughtnaut.DAB_ANIMATION);

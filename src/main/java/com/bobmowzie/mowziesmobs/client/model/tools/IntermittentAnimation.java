@@ -133,7 +133,7 @@ public class IntermittentAnimation<T extends Entity & IntermittentAnimatableEnti
             } else {
                 if (rand.nextInt(startProbability) == 0) {
                     start();
-                    entity.worldObj.setEntityState(entity, (byte) (entity.getOffsetEntityState() + id));
+                    entity.world.setEntityState(entity, (byte) (entity.getOffsetEntityState() + id));
                 }
             }
         }

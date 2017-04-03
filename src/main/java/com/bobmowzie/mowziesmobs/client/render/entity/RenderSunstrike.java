@@ -83,20 +83,20 @@ public class RenderSunstrike extends Render<EntitySunstrike> {
     }
 
     private void drawScorch(EntitySunstrike sunstrike, float delta) {
-        World world = renderManager.worldObj;
+        World world = renderManager.world;
         double ex = sunstrike.lastTickPosX + (sunstrike.posX - sunstrike.lastTickPosX) * delta;
         double ey = sunstrike.lastTickPosY + (sunstrike.posY - sunstrike.lastTickPosY) * delta;
         double ez = sunstrike.lastTickPosZ + (sunstrike.posZ - sunstrike.lastTickPosZ) * delta;
-        int minX = MathHelper.floor_double(ex - LINGER_RADIUS);
-        int maxX = MathHelper.floor_double(ex + LINGER_RADIUS);
-        int minY = MathHelper.floor_double(ey - LINGER_RADIUS);
-        int maxY = MathHelper.floor_double(ey);
-        int minZ = MathHelper.floor_double(ez - LINGER_RADIUS);
-        int maxZ = MathHelper.floor_double(ez + LINGER_RADIUS);
+        int minX = MathHelper.floor(ex - LINGER_RADIUS);
+        int maxX = MathHelper.floor(ex + LINGER_RADIUS);
+        int minY = MathHelper.floor(ey - LINGER_RADIUS);
+        int maxY = MathHelper.floor(ey);
+        int minZ = MathHelper.floor(ez - LINGER_RADIUS);
+        int maxZ = MathHelper.floor(ez + LINGER_RADIUS);
         Tessellator t = Tessellator.getInstance();
         VertexBuffer buf = t.getBuffer();
         buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
-        float opacityMultiplier = (0.6F + RANDOMIZER.nextFloat() * 0.2F) * renderManager.worldObj.getLightBrightness(new BlockPos(ex, ey, ez));
+        float opacityMultiplier = (0.6F + RANDOMIZER.nextFloat() * 0.2F) * renderManager.world.getLightBrightness(new BlockPos(ex, ey, ez));
         byte mirrorX = (byte) (RANDOMIZER.nextBoolean() ? -1 : 1);
         byte mirrorZ = (byte) (RANDOMIZER.nextBoolean() ? -1 : 1);
         for (BlockPos pos : BlockPos.getAllInBoxMutable(new BlockPos(minX, minY, minZ), new BlockPos(maxX, maxY, maxZ))) {

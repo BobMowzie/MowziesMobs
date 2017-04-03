@@ -46,12 +46,12 @@ public class AnimationSpawnBarakoa extends AnimationAI<EntityBarako> {
             } else if (angle - animatingEntity.rotationYaw < -70) {
                 angle = -70 + animatingEntity.rotationYaw;
             }
-            EntityBarakoaya barakoa = new EntityBarakoaya(animatingEntity.worldObj);
+            EntityBarakoaya barakoa = new EntityBarakoaya(animatingEntity.world);
             barakoa.setPositionAndRotation(animatingEntity.posX + 2 * Math.sin(-angle * (Math.PI / 180)), animatingEntity.posY + 1.5, animatingEntity.posZ + 2 * Math.cos(-angle * (Math.PI / 180)), animatingEntity.rotationYawHead, 0);
             barakoa.setActive(false);
             barakoa.active = false;
-            animatingEntity.worldObj.spawnEntityInWorld(barakoa);
-            barakoa.onInitialSpawn(animatingEntity.worldObj.getDifficultyForLocation(barakoa.getPosition()), null);
+            animatingEntity.world.spawnEntity(barakoa);
+            barakoa.onInitialSpawn(animatingEntity.world.getDifficultyForLocation(barakoa.getPosition()), null);
             barakoa.motionX = 0.7 * Math.sin(-angle * (Math.PI / 180));
             barakoa.motionY = 0.5;
             barakoa.motionZ = 0.7 * Math.cos(-angle * (Math.PI / 180));

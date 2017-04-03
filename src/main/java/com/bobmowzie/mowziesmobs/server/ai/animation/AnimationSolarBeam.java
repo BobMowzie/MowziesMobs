@@ -26,9 +26,9 @@ public class AnimationSolarBeam<T extends MowzieEntity & IAnimatedEntity> extend
     public void updateTask() {
         super.updateTask();
         float radius1 = 1.7f;
-        if (animatingEntity.getAnimationTick() == 4 && !animatingEntity.worldObj.isRemote) {
-            solarBeam = new EntitySolarBeam(animatingEntity.worldObj, animatingEntity, animatingEntity.posX + radius1 * Math.sin(-animatingEntity.rotationYaw * Math.PI / 180), animatingEntity.posY + 1.4, animatingEntity.posZ + radius1 * Math.cos(-animatingEntity.rotationYaw * Math.PI / 180), (float) ((animatingEntity.rotationYawHead + 90) * Math.PI / 180), (float) (-animatingEntity.rotationPitch * Math.PI / 180), 55);
-            animatingEntity.worldObj.spawnEntityInWorld(solarBeam);
+        if (animatingEntity.getAnimationTick() == 4 && !animatingEntity.world.isRemote) {
+            solarBeam = new EntitySolarBeam(animatingEntity.world, animatingEntity, animatingEntity.posX + radius1 * Math.sin(-animatingEntity.rotationYaw * Math.PI / 180), animatingEntity.posY + 1.4, animatingEntity.posZ + radius1 * Math.cos(-animatingEntity.rotationYaw * Math.PI / 180), (float) ((animatingEntity.rotationYawHead + 90) * Math.PI / 180), (float) (-animatingEntity.rotationPitch * Math.PI / 180), 55);
+            animatingEntity.world.spawnEntity(solarBeam);
         }
         if (animatingEntity.getAnimationTick() >= 4) {
             float radius2 = 1.2f;

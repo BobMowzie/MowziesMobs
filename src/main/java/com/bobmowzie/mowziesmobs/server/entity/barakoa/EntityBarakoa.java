@@ -85,7 +85,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         tasks.addTask(5, new EntityAIWander(this, 0.4));
         tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         tasks.addTask(8, new EntityAILookIdle(this));
-        setMask(MaskType.from(MathHelper.getRandomIntegerInRange(rand, 1, 4)));
+        setMask(MaskType.from(MathHelper.getInt(rand, 1, 4)));
         stepHeight = 1;
         circleTick += rand.nextInt(200);
         frame += rand.nextInt(50);
@@ -114,13 +114,13 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             return null;
         }
         if (getAttackTarget() == null) {
-            int i = MathHelper.getRandomIntegerInRange(rand, 0, 11);
+            int i = MathHelper.getInt(rand, 0, 11);
             if (i < MMSounds.ENTITY_BARAKOA_TALK.length) {
                 playSound(MMSounds.ENTITY_BARAKOA_TALK[i], 1, 1.5f);
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, IDLE_ANIMATION);
             }
         } else {
-            int i = MathHelper.getRandomIntegerInRange(rand, 0, 7);
+            int i = MathHelper.getInt(rand, 0, 7);
             if (i < MMSounds.ENTITY_BARAKOA_ANGRY.length) {
                 playSound(MMSounds.ENTITY_BARAKOA_ANGRY[i], 1, 1.6f);
             }
@@ -210,7 +210,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!worldObj.isRemote && active && !getActive()) {
+        if (!world.isRemote && active && !getActive()) {
             setActive(true);
         }
         active = getActive();
@@ -247,7 +247,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             danceTimer = 0;
             dancing.decreaseTimer();
         }
-        if (!worldObj.isRemote && getAnimation() == NO_ANIMATION && danceTimer == 0 && rand.nextInt(800) == 0) {
+        if (!world.isRemote && getAnimation() == NO_ANIMATION && danceTimer == 0 && rand.nextInt(800) == 0) {
             setDancing(true);
             playSound(MMSounds.ENTITY_BARAKOA_BATTLECRY_2, 1.2f, 1.3f);
         }
@@ -262,7 +262,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             playSound(MMSounds.ENTITY_BARAKOA_BATTLECRY, 1.5f, 1.5f);
         }
         if (getAttackTarget() != null && ticksWithoutTarget > 3) {
-            cryDelay = MathHelper.getRandomIntegerInRange(rand, -15, 30);
+            cryDelay = MathHelper.getInt(rand, -15, 30);
         }
 
         if (getAnimation() == ATTACK_ANIMATION && getAnimationTick() == 5) {
@@ -358,15 +358,15 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
 
     @Override
     public void attackEntityWithRangedAttack(EntityLivingBase target, float p_82196_2_) {
-        EntityArrow dart = new EntityDart(this.worldObj, this);
+        EntityArrow dart = new EntityDart(this.world, this);
         double dx = target.posX - this.posX;
         double dy = target.getEntityBoundingBox().minY + (double)(target.height / 3.0F) - dart.posY;
         double dz = target.posZ - this.posZ;
-        double dist = (double)MathHelper.sqrt_double(dx * dx + dz * dz);
+        double dist = (double)MathHelper.sqrt(dx * dx + dz * dz);
         dart.setThrowableHeading(dx, dy + dist * 0.2D, dz, 1.6F, 1);
         int i = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, this.getHeldItem(EnumHand.MAIN_HAND));
         int j = EnchantmentHelper.getEnchantmentLevel(Enchantments.PUNCH, this.getHeldItem(EnumHand.MAIN_HAND));
-        dart.setDamage((double) (p_82196_2_ * 2.0F) + this.rand.nextGaussian() * 0.25D + (double) ((float) this.worldObj.getDifficulty().getDifficultyId() * 0.11F));
+        dart.setDamage((double) (p_82196_2_ * 2.0F) + this.rand.nextGaussian() * 0.25D + (double) ((float) this.world.getDifficulty().getDifficultyId() * 0.11F));
 
         if (i > 0) {
             dart.setDamage(dart.getDamage() + (double) i * 0.5D + 0.5D);
@@ -376,7 +376,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             dart.setKnockbackStrength(j);
         }
 
-        this.worldObj.spawnEntityInWorld(dart);
+        this.world.spawnEntity(dart);
         attacking = false;
     }
 
@@ -394,7 +394,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
 
     @Override
     public void onDeath(DamageSource source) {
-        if (!worldObj.isRemote && worldObj.getGameRules().getBoolean("doMobLoot") && rand.nextInt(12) == 0) {
+        if (!world.isRemote && world.getGameRules().getBoolean("doMobLoot") && rand.nextInt(12) == 0) {
             dropItem(ItemHandler.INSTANCE.barakoaMasks.get(getMask()), 1);
         }
         super.onDeath(source);

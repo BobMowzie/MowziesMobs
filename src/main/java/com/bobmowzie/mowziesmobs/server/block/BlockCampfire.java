@@ -23,7 +23,7 @@ public class BlockCampfire extends Block {
     private static final AxisAlignedBB BOUNDS = new AxisAlignedBB(0.125, 0, 0.125, 0.875, 0.4375, 0.875);
 
     public BlockCampfire() {
-        super(Material.WOOD);
+        super(Material.WOOD, MapColor.TNT);
         setUnlocalizedName("campfire");
         setRegistryName("campfire");
         setLightLevel(0.8125F);
@@ -76,12 +76,7 @@ public class BlockCampfire extends Block {
 
     @Override
     public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
-        entity.attackEntityFrom(DamageSource.inFire, 1);
-    }
-
-    @Override
-    public MapColor getMapColor(IBlockState state) {
-        return MapColor.TNT;
+        entity.attackEntityFrom(DamageSource.IN_FIRE, 1);
     }
 
     @Override

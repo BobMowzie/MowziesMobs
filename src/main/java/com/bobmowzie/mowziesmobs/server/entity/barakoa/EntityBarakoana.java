@@ -60,7 +60,7 @@ public class EntityBarakoana extends EntityBarakoa {
             pack.get(i).index = i;
         }
 
-        if (!worldObj.isRemote && pack != null) {
+        if (!world.isRemote && pack != null) {
             float theta = (2 * (float) Math.PI / pack.size());
             for (int i = 0; i < pack.size(); i++) {
                 EntityBarakoanToBarakoana hunter = pack.get(i);
@@ -126,13 +126,13 @@ public class EntityBarakoana extends EntityBarakoa {
     public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, IEntityLivingData data) {
         int size = rand.nextInt(2) + 3;
         for (int i = 0; i <= size; i++) {
-            EntityBarakoanToBarakoana tribeHunter = new EntityBarakoanToBarakoana(worldObj, this);
+            EntityBarakoanToBarakoana tribeHunter = new EntityBarakoanToBarakoana(world, this);
             pack.add(tribeHunter);
             tribeHunter.setLeaderUUID(getUniqueID());
             tribeHunter.setPosition(posX + 0.1 * i, posY, posZ);
             int weapon = rand.nextInt(3) == 0 ? 1 : 0;
             tribeHunter.setWeapon(weapon);
-            worldObj.spawnEntityInWorld(tribeHunter);
+            world.spawnEntity(tribeHunter);
         }
         return super.onInitialSpawn(difficulty, data);
     }
@@ -151,13 +151,13 @@ public class EntityBarakoana extends EntityBarakoa {
                 return false;
             }
         }
-        if (worldObj.checkNoEntityCollision(getEntityBoundingBox()) && worldObj.getCollisionBoxes(this, getEntityBoundingBox()).isEmpty() && !worldObj.containsAnyLiquid(getEntityBoundingBox())) {
+        if (world.checkNoEntityCollision(getEntityBoundingBox()) && world.getCollisionBoxes(this, getEntityBoundingBox()).isEmpty() && !world.containsAnyLiquid(getEntityBoundingBox())) {
             BlockPos ground = new BlockPos(
-                MathHelper.floor_double(posX),
-                MathHelper.floor_double(getEntityBoundingBox().minY) - 1,
-                MathHelper.floor_double(posZ)
+                MathHelper.floor(posX),
+                MathHelper.floor(getEntityBoundingBox().minY) - 1,
+                MathHelper.floor(posZ)
             );
-            return ground.getY() >= 64 && worldObj.getBlockState(ground).getBlock() == Blocks.GRASS;
+            return ground.getY() >= 64 && world.getBlockState(ground).getBlock() == Blocks.GRASS;
         }
         return false;
     }
@@ -175,7 +175,7 @@ public class EntityBarakoana extends EntityBarakoa {
                 setDead();
             }
         } else {
-            EntityPlayer closestPlayer = worldObj.getClosestPlayerToEntity(this, -1);
+            EntityPlayer closestPlayer = world.getClosestPlayerToEntity(this, -1);
             if (closestPlayer != null) {
                 double dX = closestPlayer.posX - posX;
                 double dY = closestPlayer.posY - posY;

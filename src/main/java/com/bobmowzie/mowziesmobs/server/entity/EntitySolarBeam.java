@@ -62,7 +62,7 @@ public class EntitySolarBeam extends Entity {
         this.setPosition(x, y, z);
         this.calculateEndPos();
         this.playSound(MMSounds.LASER, 2f, 1);
-        if (!worldObj.isRemote) {
+        if (!world.isRemote) {
             this.setCasterID(caster.getEntityId());
         }
     }
@@ -70,10 +70,10 @@ public class EntitySolarBeam extends Entity {
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (ticksExisted == 1 && worldObj.isRemote) {
-            caster = (EntityLivingBase) worldObj.getEntityByID(getCasterID());
+        if (ticksExisted == 1 && world.isRemote) {
+            caster = (EntityLivingBase) world.getEntityByID(getCasterID());
         }
-        if (!worldObj.isRemote && getHasPlayer()) {
+        if (!world.isRemote && getHasPlayer()) {
             this.updateWithPlayer();
         }
 
@@ -86,7 +86,7 @@ public class EntitySolarBeam extends Entity {
             appear.decreaseTimer();
         }
 
-        if (worldObj.isRemote && ticksExisted <= 10) {
+        if (world.isRemote && ticksExisted <= 10) {
             int particleCount = 8;
             while (--particleCount != 0) {
                 double radius = 2f;
@@ -100,21 +100,21 @@ public class EntitySolarBeam extends Entity {
                 if (getHasPlayer()) {
                     offsetX = offsetZ = 0;
                 }
-                MMParticle.ORB.spawn(worldObj, posX + ox + offsetX, posY + oy + 0.3, posZ + oz + offsetZ, ParticleArgs.get().withData(posX + offsetX, posY + 0.3, posZ + offsetZ, 10));
+                MMParticle.ORB.spawn(world, posX + ox + offsetX, posY + oy + 0.3, posZ + oz + offsetZ, ParticleArgs.get().withData(posX + offsetX, posY + 0.3, posZ + offsetZ, 10));
             }
         }
         if (ticksExisted > 20) {
             this.calculateEndPos();
-            List<EntityLivingBase> hit = raytraceEntities(worldObj, new Vec3d(posX, posY, posZ), new Vec3d(endPosX, endPosY, endPosZ), false, true, true).entities;
+            List<EntityLivingBase> hit = raytraceEntities(world, new Vec3d(posX, posY, posZ), new Vec3d(endPosX, endPosY, endPosZ), false, true, true).entities;
             if (blockSide != null) {
                 spawnExplosionParticles(2);
             }
-            if (!worldObj.isRemote) {
+            if (!world.isRemote) {
                 for (EntityLivingBase target : hit) {
                     if (caster instanceof EntityBarako && target instanceof LeaderSunstrikeImmune) {
                         continue;
                     }
-                    target.attackEntityFrom(DamageSource.onFire, 2f);
+                    target.attackEntityFrom(DamageSource.ON_FIRE, 2f);
                     target.attackEntityFrom(DamageSource.causeMobDamage(caster), 2f);
                 }
             } else {
@@ -136,7 +136,7 @@ public class EntitySolarBeam extends Entity {
                         double o2x = -1 * Math.cos(getYaw()) * Math.cos(getPitch());
                         double o2y = -1 * Math.sin(getPitch());
                         double o2z = -1 * Math.sin(getYaw()) * Math.cos(getPitch());
-                        MMParticle.ORB.spawn(worldObj, posX + o2x + ox, posY + o2y + oy, posZ + o2z + oz, ParticleArgs.get().withData(collidePosX + o2x + ox, collidePosY + o2y + oy, collidePosZ + o2z + oz, 15));
+                        MMParticle.ORB.spawn(world, posX + o2x + ox, posY + o2y + oy, posZ + o2z + oz, ParticleArgs.get().withData(collidePosX + o2x + ox, collidePosY + o2y + oy, collidePosZ + o2z + oz, 15));
                     }
                     particleCount = 4;
                     while (particleCount --> 0) {
@@ -149,7 +149,7 @@ public class EntitySolarBeam extends Entity {
                         double o2x = -1 * Math.cos(getYaw()) * Math.cos(getPitch());
                         double o2y = -1 * Math.sin(getPitch());
                         double o2z = -1 * Math.sin(getYaw()) * Math.cos(getPitch());
-                        MMParticle.ORB.spawn(worldObj, collidePosX + o2x, collidePosY + o2y, collidePosZ + o2z, ParticleArgs.get().withData(collidePosX + o2x + ox, collidePosY + o2y + oy, collidePosZ + o2z + oz, 20));
+                        MMParticle.ORB.spawn(world, collidePosX + o2x, collidePosY + o2y, collidePosZ + o2z, ParticleArgs.get().withData(collidePosX + o2x + ox, collidePosY + o2y + oy, collidePosZ + o2z + oz, 20));
                     }
                 }
             }
@@ -166,10 +166,10 @@ public class EntitySolarBeam extends Entity {
             float motionY = rand.nextFloat() * 0.08F;
             float motionX = velocity * MathHelper.cos(yaw);
             float motionZ = velocity * MathHelper.sin(yaw);
-            worldObj.spawnParticle(EnumParticleTypes.FLAME, collidePosX, collidePosY + 0.1, collidePosZ, motionX, motionY, motionZ);
+            world.spawnParticle(EnumParticleTypes.FLAME, collidePosX, collidePosY + 0.1, collidePosZ, motionX, motionY, motionZ);
         }
         for (int i = 0; i < amount / 2; i++) {
-            worldObj.spawnParticle(EnumParticleTypes.LAVA, collidePosX, collidePosY + 0.1, collidePosZ, 0, 0, 0);
+            world.spawnParticle(EnumParticleTypes.LAVA, collidePosX, collidePosY + 0.1, collidePosZ, 0, 0, 0);
         }
     }
 

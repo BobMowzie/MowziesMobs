@@ -18,7 +18,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 public final class InventoryBarakoaya implements IInventory {
     private final EntityBarakoaya barakoaya;
 
-    private final List<ItemStack> slots = NonNullList.func_191197_a(2, ItemStack.field_190927_a);
+    private final List<ItemStack> slots = NonNullList.withSize(2, ItemStack.EMPTY);
 
     private Trade trade;
 
@@ -53,11 +53,11 @@ public final class InventoryBarakoaya implements IInventory {
 
     @Override
     public ItemStack decrStackSize(int index, int count) {
-        if (index == 1 && slots.get(index) != ItemStack.field_190927_a) {
-            return ItemStackHelper.getAndSplit(slots, index, slots.get(index).func_190916_E());
+        if (index == 1 && slots.get(index) != ItemStack.EMPTY) {
+            return ItemStackHelper.getAndSplit(slots, index, slots.get(index).getCount());
         }
         ItemStack stack = ItemStackHelper.getAndSplit(slots, index, count);
-        if (stack != ItemStack.field_190927_a && doUpdateForSlotChange(index)) {
+        if (stack != ItemStack.EMPTY && doUpdateForSlotChange(index)) {
             reset();
         }
         return stack;
@@ -71,8 +71,8 @@ public final class InventoryBarakoaya implements IInventory {
     @Override
     public void setInventorySlotContents(int index, ItemStack stack) {
         slots.set(index, stack);
-        if (stack != ItemStack.field_190927_a && stack.func_190916_E() > getInventoryStackLimit()) {
-            stack.func_190920_e(getInventoryStackLimit());
+        if (stack != ItemStack.EMPTY && stack.getCount() > getInventoryStackLimit()) {
+            stack.setCount(getInventoryStackLimit());
         }
         if (doUpdateForSlotChange(index)) {
             reset();
@@ -94,7 +94,7 @@ public final class InventoryBarakoaya implements IInventory {
     }
 
     @Override
-    public boolean isUseableByPlayer(EntityPlayer player) {
+    public boolean isUsableByPlayer(EntityPlayer player) {
         return barakoaya.getCustomer() == player;
     }
 
@@ -130,24 +130,24 @@ public final class InventoryBarakoaya implements IInventory {
     public void reset() {
         trade = null;
         ItemStack input = slots.get(0);
-        if (input == ItemStack.field_190927_a) {
-            setInventorySlotContents(1, ItemStack.field_190927_a);
+        if (input == ItemStack.EMPTY) {
+            setInventorySlotContents(1, ItemStack.EMPTY);
         } else if (barakoaya.isOfferingTrade()) {
             Trade trade = barakoaya.getOfferingTrade();
             ItemStack tradeInput = trade.getInput();
-            if (areItemsEqual(input, tradeInput) && input.func_190916_E() >= tradeInput.func_190916_E()) {
+            if (areItemsEqual(input, tradeInput) && input.getCount() >= tradeInput.getCount()) {
                 this.trade = trade;
                 setInventorySlotContents(1, trade.getOutput());
             } else {
-                setInventorySlotContents(1, ItemStack.field_190927_a);
+                setInventorySlotContents(1, ItemStack.EMPTY);
             }
         }
     }
 
     @Override
-    public boolean func_191420_l() {
+    public boolean isEmpty() {
         for (ItemStack stack : slots) {
-            if (!stack.func_190926_b()) {
+            if (!stack.isEmpty()) {
                 return false;
             }
         }

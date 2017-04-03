@@ -18,7 +18,7 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<EntityPlayer> {
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!worldObj.isRemote && getAttackTarget() != null && getAttackTarget().isDead) setAttackTarget(null);
+        if (!world.isRemote && getAttackTarget() != null && getAttackTarget().isDead) setAttackTarget(null);
     }
 
     @Override

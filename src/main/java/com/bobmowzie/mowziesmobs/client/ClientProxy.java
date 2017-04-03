@@ -1,6 +1,8 @@
 package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.*;
+import net.ilexiconn.llibrary.client.model.tabula.TabulaModel;
+import net.ilexiconn.llibrary.client.model.tabula.TabulaModelHandler;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -56,6 +58,8 @@ public class ClientProxy extends ServerProxy {
         RenderingRegistry.registerEntityRenderingHandler(EntitySunstrike.class, RenderSunstrike::new);
         RenderingRegistry.registerEntityRenderingHandler(EntitySolarBeam.class, RenderSolarBeam::new);
 
+        TabulaModelHandler.INSTANCE.addDomain(MowziesMobs.MODID);
+
         registerBlockModel(BlockHandler.INSTANCE.paintedAcacia, "painted_acacia");
         registerBlockModel(BlockHandler.INSTANCE.paintedAcaciaSlab, "painted_acacia_slab");
 
@@ -97,7 +101,7 @@ public class ClientProxy extends ServerProxy {
 
     @Override
     public void solarBeamHitWroughtnaught(EntityLivingBase caster) {
-        if (caster == Minecraft.getMinecraft().thePlayer) {
+        if (caster == Minecraft.getMinecraft().player) {
             long now = System.currentTimeMillis();
             if (now - ClientEventHandler.INSTANCE.lastWroughtnautHitTime > 500) {
                 ClientEventHandler.INSTANCE.startWroughtnautHitTime = now;

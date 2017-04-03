@@ -132,7 +132,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         super.onUpdate();
         prevStrikeTime = strikeTime;
 
-        if (worldObj.isRemote) {
+        if (world.isRemote) {
             if (strikeTime == 0) {
                 MowziesMobs.PROXY.playSunstrikeSound(this);
             } else if (strikeTime < STRIKE_EXPLOSION - 10) {
@@ -147,7 +147,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
                     float oz = r * MathHelper.sin(theta);
                     final float minY = 0.1F;
                     float oy = rand.nextFloat() * (time * 6 - minY) + minY;
-                    MMParticle.ORB.spawn(worldObj, posX + ox, posY + oy, posZ + oz, ParticleArgs.get().withData(posX, posZ));
+                    MMParticle.ORB.spawn(world, posX + ox, posY + oy, posZ + oz, ParticleArgs.get().withData(posX, posZ));
                 }
             } else if (strikeTime > STRIKE_EXPLOSION) {
                 this.smolder();
@@ -156,7 +156,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
             }
         } else {
             this.moveDownToGround();
-            if (strikeTime >= STRIKE_LINGER || !worldObj.canBlockSeeSky(getPosition())) {
+            if (strikeTime >= STRIKE_LINGER || !world.canBlockSeeSky(getPosition())) {
                 this.setDead();
             } else if (strikeTime == STRIKE_EXPLOSION) {
                 this.damageEntityLivingBaseNearby(3);
@@ -168,8 +168,8 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     public void moveDownToGround() {
         RayTraceResult rayTrace = rayTrace(this);
         if (rayTrace != null && rayTrace.typeOfHit == RayTraceResult.Type.BLOCK && rayTrace.sideHit == EnumFacing.UP) {
-            IBlockState hitBlock = worldObj.getBlockState(rayTrace.getBlockPos());
-            if (strikeTime > STRIKE_LENGTH && hitBlock != worldObj.getBlockState(getPosition().down())) {
+            IBlockState hitBlock = world.getBlockState(rayTrace.getBlockPos());
+            if (strikeTime > STRIKE_LENGTH && hitBlock != world.getBlockState(getPosition().down())) {
                 this.setDead();
             }
             if (hitBlock instanceof BlockSlab && hitBlock.getValue(BlockSlab.HALF) == BlockSlab.EnumBlockHalf.BOTTOM) {
@@ -177,7 +177,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
             } else {
                 this.setPosition(posX, rayTrace.getBlockPos().getY() + 1.0625F, posZ);
             }
-            for (EntityPlayer entityPlayer : ((WorldServer) worldObj).getEntityTracker().getTrackingPlayers(this)) {
+            for (EntityPlayer entityPlayer : ((WorldServer) world).getEntityTracker().getTrackingPlayers(this)) {
                 ((EntityPlayerMP) entityPlayer).connection.sendPacket(new SPacketEntityTeleport(this));
             }
         }
@@ -185,7 +185,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
 
     public void damageEntityLivingBaseNearby(double radius) {
         AxisAlignedBB region = new AxisAlignedBB(posX - radius, posY - 0.5, posZ - radius, posX + radius, Double.POSITIVE_INFINITY, posZ + radius);
-        List<Entity> entities = worldObj.getEntitiesWithinAABBExcludingEntity(this, region);
+        List<Entity> entities = world.getEntitiesWithinAABBExcludingEntity(this, region);
         double radiusSq = radius * radius;
         for (Entity entity : entities) {
             if (entity instanceof EntityLivingBase && getDistanceSqToEntity(entity) < radiusSq) {
@@ -195,7 +195,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
                 if (caster instanceof EntityPlayer && entity == caster) {
                     continue;
                 }
-                entity.attackEntityFrom(DamageSource.onFire, 4.5f);
+                entity.attackEntityFrom(DamageSource.ON_FIRE, 4.5f);
                 entity.attackEntityFrom(DamageSource.causeMobDamage(caster), 4.5f);
                 entity.setFire(5);
             }
@@ -210,7 +210,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
                 float r = rand.nextFloat() * 0.7F;
                 float x = r * MathHelper.cos(theta);
                 float z = r * MathHelper.sin(theta);
-                worldObj.spawnParticle(EnumParticleTypes.SMOKE_LARGE, posX + x, posY + 0.1, posZ + z, 0, 0, 0);
+                world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, posX + x, posY + 0.1, posZ + z, 0, 0, 0);
             }
         }
     }
@@ -222,10 +222,10 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
             float vy = rand.nextFloat() * 0.08F;
             float vx = velocity * MathHelper.cos(yaw);
             float vz = velocity * MathHelper.sin(yaw);
-            worldObj.spawnParticle(EnumParticleTypes.FLAME, posX, posY + 0.1, posZ, vx, vy, vz);
+            world.spawnParticle(EnumParticleTypes.FLAME, posX, posY + 0.1, posZ, vx, vy, vz);
         }
         for (int i = 0; i < amount / 2; i++) {
-            worldObj.spawnParticle(EnumParticleTypes.LAVA, posX, posY + 0.1, posZ, 0, 0, 0);
+            world.spawnParticle(EnumParticleTypes.LAVA, posX, posY + 0.1, posZ, 0, 0, 0);
         }
     }
 
@@ -236,7 +236,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     private RayTraceResult rayTrace(EntitySunstrike entity) {
         Vec3d startPos = new Vec3d(entity.posX, entity.posY, entity.posZ);
         Vec3d endPos = new Vec3d(entity.posX, 0, entity.posZ);
-        return entity.worldObj.rayTraceBlocks(startPos, endPos, false, true, true);
+        return entity.world.rayTraceBlocks(startPos, endPos, false, true, true);
     }
 
     @Override

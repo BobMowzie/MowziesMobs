@@ -138,7 +138,7 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder {
         System.out.println("interact");
         if (canTradeWith(player)) {
             setCustomer(player);
-            if (!worldObj.isRemote) {
+            if (!world.isRemote) {
                 GuiHandler.open(GuiHandler.BARAKOA_TRADE, player, this);
             }
             return true;
