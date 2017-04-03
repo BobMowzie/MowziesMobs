@@ -13,6 +13,7 @@ import com.bobmowzie.mowziesmobs.server.entity.EntityDart;
 import com.bobmowzie.mowziesmobs.server.entity.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.entity.SmartBodyHelper;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 
@@ -91,6 +92,11 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         frame += rand.nextInt(50);
         experienceValue = 8;
         active = true;
+    }
+
+    @Override
+    protected SmartBodyHelper createBodyHelper() {
+        return new SmartBodyHelper(this);
     }
 
     @Override
