@@ -48,7 +48,7 @@ public class ItemFoliaathSeed extends Item {
             return EnumActionResult.FAIL;
         }
         IBlockState block = world.getBlockState(pos);
-        Entity entity = spawnCreature(world, new EntityBabyFoliaath(world), pos.getX(), pos.getY(), pos.getZ());
+        Entity entity = spawnCreature(world, new EntityBabyFoliaath(world), pos.getX(), pos.getY() + 1, pos.getZ());
         if (entity != null) {
             if (entity instanceof EntityLivingBase && stack.hasDisplayName()) {
                 ((EntityLiving) entity).setCustomNameTag(stack.getDisplayName());

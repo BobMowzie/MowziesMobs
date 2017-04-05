@@ -3,6 +3,8 @@ package com.bobmowzie.mowziesmobs.server.ai;
 import java.util.Collections;
 import java.util.List;
 
+import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
+import com.bobmowzie.mowziesmobs.server.item.ItemBarakoMask;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
@@ -31,7 +33,7 @@ public class BarakoaAttackTargetAI extends EntityAITarget {
         this.targetEntitySelector = target -> {
             if (target instanceof EntityPlayer) {
                 ItemStack headArmorStack = ((EntityPlayer) target).inventory.armorInventory.get(3);
-                if (headArmorStack.getItem() instanceof ItemBarakoaMask) {
+                if (headArmorStack.getItem() instanceof BarakoaMask) {
                     return false;
                 }
             }

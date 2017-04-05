@@ -43,7 +43,9 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.terraingen.PopulateChunkEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -193,6 +195,17 @@ public enum ServerEventHandler {
         if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == ItemHandler.INSTANCE.spear){
             EntityLivingBase entityHit = ItemSpear.raytraceEntities(player.getEntityWorld(), player, range);
             if (entityHit != null) MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerAttackMob(entityHit));
+        }
+    }
+
+    @SubscribeEvent
+    public void onLivingDamage(LivingHurtEvent event) {
+        if (event.getEntity() instanceof EntityPlayer) {
+            MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
+            if (event.getSource().getEntity() != null) {
+                for (int i = 0; i < property.getPackSize(); i++)
+                    if (property.tribePack.get(i).getAttackTarget() == null) property.tribePack.get(i).setAttackTarget((EntityLivingBase) event.getSource().getEntity());
+            }
         }
     }
 
