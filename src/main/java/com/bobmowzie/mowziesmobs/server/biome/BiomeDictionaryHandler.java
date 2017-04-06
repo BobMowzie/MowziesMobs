@@ -14,10 +14,10 @@ public enum BiomeDictionaryHandler {
     public void onInit() {
         Biome.SpawnListEntry foliaathSpawn = new Biome.SpawnListEntry(EntityFoliaath.class, MowziesMobs.CONFIG.spawnrateFoliaath, 3, 1);
         Biome.SpawnListEntry tribeEliteSpawn = new Biome.SpawnListEntry(EntityBarakoana.class, MowziesMobs.CONFIG.spawnrateBarakoa, 0, 0);
-        for (Biome jungleBiome : BiomeDictionary.getBiomesForType(BiomeDictionary.Type.JUNGLE)) {
+        for (Biome jungleBiome : BiomeDictionary.getBiomes(BiomeDictionary.Type.JUNGLE)) {
             jungleBiome.getSpawnableList(EnumCreatureType.MONSTER).add(foliaathSpawn);
         }
-        for (Biome savannaBiome : BiomeDictionary.getBiomesForType(BiomeDictionary.Type.SAVANNA)) {
+        for (Biome savannaBiome : BiomeDictionary.getBiomes(BiomeDictionary.Type.SAVANNA)) {
             savannaBiome.getSpawnableList(EnumCreatureType.MONSTER).add(tribeEliteSpawn);
         }
     }
