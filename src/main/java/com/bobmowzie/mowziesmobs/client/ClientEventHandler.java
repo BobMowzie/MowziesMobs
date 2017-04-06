@@ -38,19 +38,18 @@ public enum ClientEventHandler {
     @SubscribeEvent
     public void onFrameRender(RenderItemInFrameEvent event) {
         if (event.getItem().getItem() instanceof ItemWroughtAxe) {
-            GlStateManager.translate(-0.4f, -0.2f, 0f);
-            GlStateManager.scale(0.65f, 0.65f, 0.65f);
+            GlStateManager.translate(0.325f, 0.4f, -0.05f);
+            GlStateManager.scale(-0.65f, -0.65f, 0.65f);
             GlStateManager.rotate(45f, 0f, -1f, 0f);
             GlStateManager.rotate(45f, -1f, 0f, -1f);
         } else if (event.getItem().getItem() instanceof ItemWroughtHelm) {
-            GlStateManager.rotate(180f, 0f, 1f, 0f);
-            GlStateManager.translate(0f, -0.15f, 0.05f);
+            GlStateManager.translate(0.19f, -0.37f, -0.25f);
         } else if (event.getItem().getItem() instanceof ItemBarakoaMask) {
             GlStateManager.rotate(180f, 0f, 1f, 0f);
             GlStateManager.translate(0f, -0.2f, 0.1f);
         } else if (event.getItem().getItem() instanceof ItemBarakoMask) {
-            GlStateManager.rotate(180f, 0f, 1f, 0f);
-            GlStateManager.translate(0f, -0.2f, 0.1f);
+            GlStateManager.scale(0.85f, 0.85f, 0.85f);
+            GlStateManager.translate(0.32f, -0.4f, -0.25f);
         }
     }
 

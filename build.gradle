@@ -17,7 +17,7 @@ archivesBaseName = "mowziesmobs"
 sourceCompatibility = targetCompatibility = "1.8"
 
 minecraft {
-    version = "1.11-13.19.0.2153"
+    version = "1.11-13.19.1.2199"
     runDir = "run"
 	mappings = "snapshot_20161220"
 }
