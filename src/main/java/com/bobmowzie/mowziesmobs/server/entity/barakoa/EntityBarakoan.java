@@ -4,11 +4,9 @@ import java.util.List;
 import java.util.UUID;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationBlockAI;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.google.common.base.Optional;
 
-import net.ilexiconn.llibrary.server.animation.Animation;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -16,7 +14,6 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
-import org.lwjgl.Sys;
 
 public abstract class EntityBarakoan<L extends EntityLivingBase> extends EntityBarakoa {
     protected static final Optional<UUID> ABSENT_LEADER = Optional.absent();
@@ -35,15 +32,16 @@ public abstract class EntityBarakoan<L extends EntityLivingBase> extends EntityB
 
     public EntityBarakoan(World world, Class<L> leaderClass, L leader) {
         super(world);
-        if (leader != null) System.out.println(leader.getUniqueID());
         this.leaderClass = leaderClass;
         this.leader = leader;
+        if (leader != null) {
+            setLeaderUUID(leader.getUniqueID());
+        }
     }
 
     @Override
     protected void entityInit() {
         super.entityInit();
-        System.out.println("Init");
         getDataManager().register(LEADER, ABSENT_LEADER);
     }
 
@@ -68,9 +66,7 @@ public abstract class EntityBarakoan<L extends EntityLivingBase> extends EntityB
     public void onUpdate() {
         super.onUpdate();
         if (!world.isRemote) {
-//            System.out.println(getLeaderUUID() + " " + getLeaderUUID().isPresent());
             if (leader == null && getLeaderUUID().isPresent()) {
-                System.out.println("Try to find leader");
                 leader = getLeader();
                 if (leader != null) {
                     addAsPackMember();
@@ -102,13 +98,10 @@ public abstract class EntityBarakoan<L extends EntityLivingBase> extends EntityB
 
     public L getLeader() {
         Optional<UUID> uuid = getLeaderUUID();
-        System.out.println("UUID is " + uuid);
         if (uuid.isPresent()) {
-            System.out.println("UUID is present");
             List<L> potentialLeaders = world.getEntitiesWithinAABB(leaderClass, getEntityBoundingBox().expand(32, 32, 32));
             for (L entity : potentialLeaders) {
                 if (uuid.get().equals(entity.getUniqueID())) {
-                    System.out.println("Returned uuid");
                     return entity;
                 }
             }
