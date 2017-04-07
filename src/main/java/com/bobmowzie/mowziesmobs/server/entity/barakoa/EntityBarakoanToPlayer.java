@@ -38,7 +38,9 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<EntityPlayer> {
 
     @Override
     protected void removeAsPackMember() {
+        System.out.println(getPlayerProps().getPackSize());
         getPlayerProps().removePackMember(this);
+        System.out.println(getPlayerProps().getPackSize());
     }
 
     private MowziePlayerProperties getPlayerProps() {

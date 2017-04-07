@@ -77,20 +77,22 @@ public class ItemBarakoaMask extends ItemArmor implements BarakoaMask {
             if (angle < 0) {
                 angle = angle + 360;
             }
-            EntityBarakoanToPlayer barakoa = new EntityBarakoanToPlayer(player.world);
-            barakoa.setMask(mask);
-            int weapon;
-            if (mask != MaskType.FURY) weapon = barakoa.randomizeWeapon();
-            else weapon = 0;
-            barakoa.setWeapon(weapon);
-            barakoa.setPositionAndRotation(player.posX + 1 * Math.sin(-angle * (Math.PI / 180)), player.posY + 1.5, player.posZ + 1 * Math.cos(-angle * (Math.PI / 180)), (float) angle, 0);
-            barakoa.setActive(false);
-            barakoa.active = false;
-            property.addPackMember(barakoa);
-            player.world.spawnEntity(barakoa);
-            barakoa.motionX = 0.5 * Math.sin(-angle * Math.PI / 180);
-            barakoa.motionY = 0.5;
-            barakoa.motionZ = 0.5 * Math.cos(-angle * Math.PI / 180);
+            if (!player.world.isRemote) {
+                EntityBarakoanToPlayer barakoa = new EntityBarakoanToPlayer(player.world, player);
+                barakoa.setMask(mask);
+                int weapon;
+                if (mask != MaskType.FURY) weapon = barakoa.randomizeWeapon();
+                else weapon = 0;
+                barakoa.setWeapon(weapon);
+                barakoa.setPositionAndRotation(player.posX + 1 * Math.sin(-angle * (Math.PI / 180)), player.posY + 1.5, player.posZ + 1 * Math.cos(-angle * (Math.PI / 180)), (float) angle, 0);
+                barakoa.setActive(false);
+                barakoa.active = false;
+                property.addPackMember(barakoa);
+                player.world.spawnEntity(barakoa);
+                barakoa.motionX = 0.5 * Math.sin(-angle * Math.PI / 180);
+                barakoa.motionY = 0.5;
+                barakoa.motionZ = 0.5 * Math.cos(-angle * Math.PI / 180);
+            }
         }
     }
 }

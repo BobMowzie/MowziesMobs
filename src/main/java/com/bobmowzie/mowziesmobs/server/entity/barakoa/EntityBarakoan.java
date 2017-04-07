@@ -16,11 +16,12 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
+import org.lwjgl.Sys;
 
 public abstract class EntityBarakoan<L extends EntityLivingBase> extends EntityBarakoa {
     protected static final Optional<UUID> ABSENT_LEADER = Optional.absent();
 
-    private static final DataParameter<Optional<UUID>> LEADER = EntityDataManager.createKey(EntityBarakoanToBarakoana.class, DataSerializers.OPTIONAL_UNIQUE_ID);
+    private static final DataParameter<Optional<UUID>> LEADER = EntityDataManager.createKey(EntityBarakoan.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 
     private final Class<L> leaderClass;
 
@@ -34,6 +35,7 @@ public abstract class EntityBarakoan<L extends EntityLivingBase> extends EntityB
 
     public EntityBarakoan(World world, Class<L> leaderClass, L leader) {
         super(world);
+        if (leader != null) System.out.println(leader.getUniqueID());
         this.leaderClass = leaderClass;
         this.leader = leader;
     }
@@ -41,6 +43,7 @@ public abstract class EntityBarakoan<L extends EntityLivingBase> extends EntityB
     @Override
     protected void entityInit() {
         super.entityInit();
+        System.out.println("Init");
         getDataManager().register(LEADER, ABSENT_LEADER);
     }
 
@@ -65,7 +68,9 @@ public abstract class EntityBarakoan<L extends EntityLivingBase> extends EntityB
     public void onUpdate() {
         super.onUpdate();
         if (!world.isRemote) {
+//            System.out.println(getLeaderUUID() + " " + getLeaderUUID().isPresent());
             if (leader == null && getLeaderUUID().isPresent()) {
+                System.out.println("Try to find leader");
                 leader = getLeader();
                 if (leader != null) {
                     addAsPackMember();
@@ -97,10 +102,13 @@ public abstract class EntityBarakoan<L extends EntityLivingBase> extends EntityB
 
     public L getLeader() {
         Optional<UUID> uuid = getLeaderUUID();
+        System.out.println("UUID is " + uuid);
         if (uuid.isPresent()) {
+            System.out.println("UUID is present");
             List<L> potentialLeaders = world.getEntitiesWithinAABB(leaderClass, getEntityBoundingBox().expand(32, 32, 32));
             for (L entity : potentialLeaders) {
                 if (uuid.get().equals(entity.getUniqueID())) {
+                    System.out.println("Returned uuid");
                     return entity;
                 }
             }
