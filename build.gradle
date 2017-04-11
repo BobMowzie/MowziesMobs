@@ -1,14 +1,7 @@
 buildscript {
     repositories {
         jcenter()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
-        maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
+        maven { url = "http://files.minecraftforge.net/maven" }
     }
     dependencies {
         classpath "net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT"
@@ -24,17 +17,17 @@ archivesBaseName = "mowziesmobs"
 sourceCompatibility = targetCompatibility = "1.8"
 
 minecraft {
-    version = "1.10.2-12.18.1.2014"
-    runDir = "minecraft"
-	mappings = "snapshot_20160518"
+    version = "1.10.2-12.18.3.2281"
+    runDir = "run"
+	mappings = "snapshot_20161220"
 }
 
 repositories {
     mavenCentral()
     maven {
-        name = "ilexiconn"
-        url = "http://maven.ilexiconn.net/"
-    }
+ name = "mcmoddev"
+ url = "http://maven.mcmoddev.com"
+}
 }
 
 dependencies {

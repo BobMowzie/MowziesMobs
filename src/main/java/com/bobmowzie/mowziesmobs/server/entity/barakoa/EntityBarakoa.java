@@ -157,7 +157,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
                     updateCircling();
                 }
             }
-            if (rand.nextInt(80) == 0 && timeSinceAttack == 80) {
+            if (rand.nextInt(80) == 0 && timeSinceAttack == 80 && getEntitySenses().canSee(getAttackTarget())) {
                 attacking = true;
                 if (getAnimation() == NO_ANIMATION && getWeapon() == 0) {
                     getNavigator().tryMoveToEntityLiving(getAttackTarget(), 0.5);

@@ -36,6 +36,9 @@ public abstract class EntityBarakoan<L extends EntityLivingBase> extends EntityB
         super(world);
         this.leaderClass = leaderClass;
         this.leader = leader;
+        if (leader != null) {
+            setLeaderUUID(leader.getUniqueID());
+        }
     }
 
     @Override
