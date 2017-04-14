@@ -78,7 +78,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     public static final Animation SPAWN_ANIMATION = Animation.create(20);
     public static final Animation SOLAR_BEAM_ANIMATION = Animation.create(100);
     public static final Animation BLESS_ANIMATION = Animation.create(60);
-    private static final int MAX_HEALTH = 100;
+    private static final int MAX_HEALTH = 80;
     private static final int SUNSTRIKE_PAUSE_MAX = 40;
     private static final int SUNSTRIKE_PAUSE_MIN = 15;
     private static final int LASER_PAUSE = 230;
