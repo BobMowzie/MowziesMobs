@@ -76,7 +76,7 @@ public class BlockCampfire extends Block {
 
     @Override
     public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
-        entity.attackEntityFrom(DamageSource.inFire, 1);
+        entity.attackEntityFrom(DamageSource.IN_FIRE, 1);
     }
 
     @Override

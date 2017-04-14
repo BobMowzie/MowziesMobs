@@ -43,7 +43,7 @@ public class MessagePlayerAttackMob extends AbstractMessage<MessagePlayerAttackM
 
     @Override
     public void onServerReceived(MinecraftServer minecraftServer, MessagePlayerAttackMob messagePlayerAttackMob, EntityPlayer entityPlayer, MessageContext messageContext) {
-        Entity entity = entityPlayer.worldObj.getEntityByID(messagePlayerAttackMob.entityID);
+        Entity entity = entityPlayer.world.getEntityByID(messagePlayerAttackMob.entityID);
         if (entity != null) entityPlayer.attackTargetEntityWithCurrentItem(entity);
     }
 }

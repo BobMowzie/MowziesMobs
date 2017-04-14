@@ -96,7 +96,7 @@ public enum ServerEventHandler {
             if (property.getTick() > 0) {
                 property.decrementTime();
             }
-            if (property.getTick() == MowziePlayerProperties.SWING_HIT_TICK && !player.worldObj.isRemote) {
+            if (property.getTick() == MowziePlayerProperties.SWING_HIT_TICK && !player.world.isRemote) {
                 float damage = 7;
                 boolean hit = false;
                 float range = 4;
@@ -146,7 +146,7 @@ public enum ServerEventHandler {
         for (int i = 0; i < pack.size(); i++) {
             pack.get(i).index = i;
         }
-        if (!player.worldObj.isRemote && pack != null) {
+        if (!player.world.isRemote && pack != null) {
             float theta = (2 * (float) Math.PI / pack.size());
             for (int i = 0; i < pack.size(); i++) {
                 EntityBarakoanToPlayer tribePlayer = pack.get(i);
@@ -161,7 +161,7 @@ public enum ServerEventHandler {
     }
 
     private List<EntityLivingBase> getEntityLivingBaseNearby(EntityLivingBase user, double distanceX, double distanceY, double distanceZ, double radius) {
-        List<Entity> list = user.worldObj.getEntitiesWithinAABBExcludingEntity(user, user.getEntityBoundingBox().expand(distanceX, distanceY, distanceZ));
+        List<Entity> list = user.world.getEntitiesWithinAABBExcludingEntity(user, user.getEntityBoundingBox().expand(distanceX, distanceY, distanceZ));
         ArrayList<EntityLivingBase> nearEntities = list.stream().filter(entityNeighbor -> entityNeighbor instanceof EntityLivingBase && user.getDistanceToEntity(entityNeighbor) <= radius).map(entityNeighbor -> (EntityLivingBase) entityNeighbor).collect(Collectors.toCollection(ArrayList::new));
         return nearEntities;
     }
@@ -239,7 +239,7 @@ public enum ServerEventHandler {
             final float dist = 20.5F;
             EntityPlayerMP player = event.getPlayer();
             AxisAlignedBB bounds = player.getEntityBoundingBox().expandXyz(dist);
-            List<EntityWroughtnaut> wroughtnauts = player.worldObj.getEntitiesWithinAABB(EntityWroughtnaut.class, bounds);
+            List<EntityWroughtnaut> wroughtnauts = player.world.getEntitiesWithinAABB(EntityWroughtnaut.class, bounds);
             for (EntityWroughtnaut wroughtnaut : wroughtnauts) {
                 if (wroughtnaut.isActive() && wroughtnaut.getDistanceSq(player.posX, player.posY, player.posZ) <= dist * dist) {
                     AnimationHandler.INSTANCE.sendAnimationMessage(wroughtnaut, EntityWroughtnaut.DAB_ANIMATION);

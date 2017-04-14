@@ -35,9 +35,9 @@ public class MessagePlayerSolarBeam extends AbstractMessage<MessagePlayerSolarBe
 
     @Override
     public void onServerReceived(MinecraftServer server, MessagePlayerSolarBeam message, EntityPlayer player, MessageContext messageContext) {
-        EntitySolarBeam solarBeam = new EntitySolarBeam(player.worldObj, player, player.posX, player.posY + 1.2f, player.posZ, (float) ((player.rotationYawHead + 90) * Math.PI / 180), (float) (-player.rotationPitch * Math.PI / 180), 55);
+        EntitySolarBeam solarBeam = new EntitySolarBeam(player.world, player, player.posX, player.posY + 1.2f, player.posZ, (float) ((player.rotationYawHead + 90) * Math.PI / 180), (float) (-player.rotationPitch * Math.PI / 180), 55);
         solarBeam.setHasPlayer(true);
-        player.worldObj.spawnEntityInWorld(solarBeam);
+        player.world.spawnEntity(solarBeam);
         player.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 80, 2, false, false));
         int duration = player.getActivePotionEffect(PotionHandler.INSTANCE.sunsBlessing).getDuration();
         player.removePotionEffect(PotionHandler.INSTANCE.sunsBlessing);

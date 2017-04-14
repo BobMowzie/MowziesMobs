@@ -34,7 +34,7 @@ public class MessageSwingWroughtAxe extends AbstractMessage<MessageSwingWroughtA
 
     @Override
     public void onClientReceived(Minecraft client, MessageSwingWroughtAxe message, EntityPlayer player, MessageContext messageContext) {
-        Entity entity = player.worldObj.getEntityByID(message.entityID);
+        Entity entity = player.world.getEntityByID(message.entityID);
         if (entity instanceof EntityPlayer) {
             EntityPropertiesHandler.INSTANCE.getProperties(entity, MowziePlayerProperties.class).swing();
         }

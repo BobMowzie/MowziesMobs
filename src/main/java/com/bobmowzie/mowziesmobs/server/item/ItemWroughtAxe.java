@@ -39,7 +39,7 @@ public class ItemWroughtAxe extends ItemSword {
 
     @Override
     public boolean hitEntity(ItemStack heldItemStack, EntityLivingBase player, EntityLivingBase entityHit) {
-        if (!player.worldObj.isRemote) {
+        if (!player.world.isRemote) {
             player.playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.3F, 0.5F);
         }
         return true;

@@ -60,7 +60,7 @@ public final class GuiBarakoTrade extends GuiContainer implements InventoryBarak
         if (I18n.hasKey(key)) {
             text = I18n.format(key);
         }
-        grantButton = func_189646_b(new GuiButton(0, guiLeft + 114, guiTop + 52, 57, 20, text));
+        grantButton = addButton(new GuiButton(0, guiLeft + 114, guiTop + 52, 57, 20, text));
         grantButton.enabled = hasTraded;
         updateButtonText();
     }

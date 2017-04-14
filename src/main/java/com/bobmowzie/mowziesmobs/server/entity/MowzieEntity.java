@@ -63,7 +63,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
         frame++;
         if (getAnimation() != NO_ANIMATION) {
             animationTick++;
-            if (worldObj.isRemote && animationTick >= animation.getDuration()) {
+            if (world.isRemote && animationTick >= animation.getDuration()) {
                 setAnimation(NO_ANIMATION);
             }
         }
@@ -92,7 +92,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     }
 
     public List<EntityPlayer> getPlayersNearby(double distanceX, double distanceY, double distanceZ, double radius) {
-        List<Entity> nearbyEntities = worldObj.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().expand(distanceX, distanceY, distanceZ));
+        List<Entity> nearbyEntities = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().expand(distanceX, distanceY, distanceZ));
         List<EntityPlayer> listEntityPlayers = nearbyEntities.stream().filter(entityNeighbor -> entityNeighbor instanceof EntityPlayer && getDistanceToEntity(entityNeighbor) <= radius).map(entityNeighbor -> (EntityPlayer) entityNeighbor).collect(Collectors.toList());
         return listEntityPlayers;
     }
@@ -102,11 +102,11 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double r) {
-        return worldObj.getEntitiesWithinAABB(entityClass, getEntityBoundingBox().expand(r, r, r), e -> e != this && getDistanceToEntity(e) <= r);
+        return world.getEntitiesWithinAABB(entityClass, getEntityBoundingBox().expand(r, r, r), e -> e != this && getDistanceToEntity(e) <= r);
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double dX, double dY, double dZ, double r) {
-        return worldObj.getEntitiesWithinAABB(entityClass, getEntityBoundingBox().expand(dX, dY, dZ), e -> e != this && getDistanceToEntity(e) <= r && e.posY <= posY + dY);
+        return world.getEntitiesWithinAABB(entityClass, getEntityBoundingBox().expand(dX, dY, dZ), e -> e != this && getDistanceToEntity(e) <= r && e.posY <= posY + dY);
     }
 
     @Override
@@ -116,13 +116,13 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
         if (deathTime == getDeathAnimation().getDuration() - 20) {
             int experience;
 
-            if (!worldObj.isRemote && (recentlyHit > 0 || isPlayer()) && canDropLoot() && worldObj.getGameRules().getBoolean("doMobLoot")) {
+            if (!world.isRemote && (recentlyHit > 0 || isPlayer()) && canDropLoot() && world.getGameRules().getBoolean("doMobLoot")) {
                 experience = getExperiencePoints(attackingPlayer);
 
                 while (experience > 0) {
                     int j = EntityXPOrb.getXPSplit(experience);
                     experience -= j;
-                    worldObj.spawnEntityInWorld(new EntityXPOrb(worldObj, posX, posY, posZ, j));
+                    world.spawnEntity(new EntityXPOrb(world, posX, posY, posZ, j));
                 }
             }
 
@@ -132,7 +132,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
                 double d2 = rand.nextGaussian() * 0.02D;
                 double d0 = rand.nextGaussian() * 0.02D;
                 double d1 = rand.nextGaussian() * 0.02D;
-                worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, posX + (double) (rand.nextFloat() * width * 2.0F) - (double) width, posY + (double) (rand.nextFloat() * height), posZ + (double) (rand.nextFloat() * width * 2.0F) - (double) width, d2, d0, d1);
+                world.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, posX + (double) (rand.nextFloat() * width * 2.0F) - (double) width, posY + (double) (rand.nextFloat() * height), posZ + (double) (rand.nextFloat() * width * 2.0F) - (double) width, d2, d0, d1);
             }
         }
     }

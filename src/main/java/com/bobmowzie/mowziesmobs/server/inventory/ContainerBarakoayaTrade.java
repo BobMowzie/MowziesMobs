@@ -43,7 +43,7 @@ public final class ContainerBarakoayaTrade extends Container {
 
     @Override
     public boolean canInteractWith(EntityPlayer player) {
-        return inventory.isUseableByPlayer(player);
+        return inventory.isUsableByPlayer(player);
     }
 
     @Override
@@ -83,7 +83,7 @@ public final class ContainerBarakoayaTrade extends Container {
             if (contained.stackSize == stack.stackSize) {
                 return null;
             }
-            slot.onPickupFromSlot(player, contained);
+            slot.func_82870_a(player, contained);
         }
         return stack;
     }
@@ -128,12 +128,12 @@ public final class ContainerBarakoayaTrade extends Container {
 
         @Override
         protected void onCrafting(ItemStack stack) {
-            stack.onCrafting(barakoaya.worldObj, player, removeCount);
+            stack.onCrafting(barakoaya.world, player, removeCount);
             removeCount = 0;
         }
 
         @Override
-        public void onPickupFromSlot(EntityPlayer player, ItemStack stack) {
+        public void func_82870_a(EntityPlayer player, ItemStack stack) {
             onCrafting(stack);
             if (barakoaya.isOfferingTrade()) {
                 Trade trade = barakoaya.getOfferingTrade();

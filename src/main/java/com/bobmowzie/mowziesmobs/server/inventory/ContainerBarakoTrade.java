@@ -41,7 +41,7 @@ public final class ContainerBarakoTrade extends Container {
 
     @Override
     public boolean canInteractWith(EntityPlayer player) {
-        return inventory.isUseableByPlayer(player);
+        return inventory.isUsableByPlayer(player);
     }
 
     @Override
@@ -70,7 +70,7 @@ public final class ContainerBarakoTrade extends Container {
             if (contained.stackSize == stack.stackSize) {
                 return null;
             }
-            slot.onPickupFromSlot(player, contained);
+            slot.func_82870_a(player, contained);
         }
         return stack;
     }

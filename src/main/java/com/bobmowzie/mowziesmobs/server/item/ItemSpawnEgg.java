@@ -78,7 +78,7 @@ public class ItemSpawnEgg extends Item {
                 TileEntity blockEntity = worldIn.getTileEntity(pos);
                 if (blockEntity instanceof TileEntityMobSpawner) {
                     MobSpawnerBaseLogic spawner = ((TileEntityMobSpawner) blockEntity).getSpawnerBaseLogic();
-                    spawner.setEntityName(getEntityIdFromItem(stack));
+                    spawner.func_98272_a(getEntityIdFromItem(stack));
                     blockEntity.markDirty();
                     worldIn.notifyBlockUpdate(pos, state, state, 3);
                     if (!playerIn.capabilities.isCreativeMode) {
@@ -167,7 +167,7 @@ public class ItemSpawnEgg extends Item {
                 entityLiving.rotationYawHead = entityLiving.rotationYaw;
                 entityLiving.renderYawOffset = entityLiving.rotationYaw;
                 entityLiving.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(entityLiving)), null);
-                world.spawnEntityInWorld(entity);
+                world.spawnEntity(entity);
                 entityLiving.playLivingSound();
             }
             return entity;

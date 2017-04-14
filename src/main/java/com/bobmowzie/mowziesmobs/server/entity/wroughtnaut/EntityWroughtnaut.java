@@ -191,7 +191,7 @@ public class EntityWroughtnaut extends MowzieEntity {
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!worldObj.isRemote) {
+        if (!world.isRemote) {
             if (getAnimation() == NO_ANIMATION) {
                 if (isActive()) {
                     if (getAttackTarget() == null && moveForward == 0 && isAtRestPos()) {
@@ -254,7 +254,7 @@ public class EntityWroughtnaut extends MowzieEntity {
 
         float moveX = (float) (posX - prevPosX);
         float moveZ = (float) (posZ - prevPosZ);
-        float speed = MathHelper.sqrt_float(moveX * moveX + moveZ * moveZ);
+        float speed = MathHelper.sqrt(moveX * moveX + moveZ * moveZ);
         if (speed > 0.01) {
             if (getAnimation() == NO_ANIMATION) {
                 walkAnim.increaseTimer();
@@ -314,13 +314,13 @@ public class EntityWroughtnaut extends MowzieEntity {
         double x = posX + 4.2 * vecX;
         double y = getEntityBoundingBox().minY + 0.1;
         double z = posZ + 4.2 * vecZ;
-        int hitY = MathHelper.floor_double(posY - 0.2);
+        int hitY = MathHelper.floor(posY - 0.2);
         for (int t = 0; t < VERTICAL_ATTACK_BLOCK_OFFSETS.length; t++) {
             float ox = VERTICAL_ATTACK_BLOCK_OFFSETS[t][0], oy = VERTICAL_ATTACK_BLOCK_OFFSETS[t][1];
-            int hitX = MathHelper.floor_double(x + ox);
-            int hitZ = MathHelper.floor_double(z + oy);
+            int hitX = MathHelper.floor(x + ox);
+            int hitZ = MathHelper.floor(z + oy);
             BlockPos hit = new BlockPos(hitX, hitY, hitZ);
-            IBlockState block = worldObj.getBlockState(hit);
+            IBlockState block = world.getBlockState(hit);
             if (block.getRenderType() != EnumBlockRenderType.INVISIBLE) {
                 int stateId = Block.getStateId(block);
                 for (int n = 0; n < 6; n++) {
@@ -336,26 +336,26 @@ public class EntityWroughtnaut extends MowzieEntity {
                         velX = -velX;
                         velZ = -velZ;
                     }
-                    worldObj.spawnParticle(EnumParticleTypes.BLOCK_CRACK, px, y, pz, velX, velY, velZ, stateId);
+                    world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, px, y, pz, velX, velY, velZ, stateId);
                 }
             }
         }
-        int hitX = MathHelper.floor_double(x);
-        int ceilY = MathHelper.floor_double(getEntityBoundingBox().maxY);
-        int hitZ = MathHelper.floor_double(z);
+        int hitX = MathHelper.floor(x);
+        int ceilY = MathHelper.floor(getEntityBoundingBox().maxY);
+        int hitZ = MathHelper.floor(z);
         final int maxHeight = 5;
         int height = maxHeight;
         PooledMutableBlockPos pos = PooledMutableBlockPos.retain();
         for (; height --> 0; ceilY++) {
             pos.setPos(hitX, ceilY, hitZ);
-            if (worldObj.getBlockState(pos).getMaterial().blocksMovement()) {
+            if (world.getBlockState(pos).getMaterial().blocksMovement()) {
                 break;
             }
         }
         pos.release();
         float strength = height / (float) maxHeight;
         if (strength >= 0) {
-            int radius = MathHelper.ceiling_float_int(MathHelper.sqrt_float(1 - strength * strength) * maxHeight);
+            int radius = MathHelper.ceil(MathHelper.sqrt(1 - strength * strength) * maxHeight);
             disturbance = new CeilingDisturbance(hitX, ceilY, hitZ, radius, rand.nextInt(5) + 3, rand.nextInt(60) + 20);
         }
     }
@@ -386,7 +386,7 @@ public class EntityWroughtnaut extends MowzieEntity {
                 return false;
             }
             float t = remainingTicks / (float) duration;
-            int amount = MathHelper.ceiling_float_int((1 - MathHelper.sqrt_double(1 - t * t)) * radius * radius * 0.15F);
+            int amount = MathHelper.ceil((1 - MathHelper.sqrt(1 - t * t)) * radius * radius * 0.15F);
             boolean playSound = true;
             PooledMutableBlockPos pos = PooledMutableBlockPos.retain();
             while (amount --> 0) {
@@ -395,16 +395,16 @@ public class EntityWroughtnaut extends MowzieEntity {
                 double x = ceilX + Math.cos(theta) * dist;
                 double y = ceilY - 0.1 - rand.nextDouble() * 0.3;
                 double z = ceilZ + Math.sin(theta) * dist;
-                int blockX = MathHelper.floor_double(x);
-                int blockZ = MathHelper.floor_double(z);
+                int blockX = MathHelper.floor(x);
+                int blockZ = MathHelper.floor(z);
                 pos.setPos(blockX, ceilY, blockZ);
-                IBlockState block = worldObj.getBlockState(pos);
+                IBlockState block = world.getBlockState(pos);
                 if (block.getRenderType() != EnumBlockRenderType.INVISIBLE) {
                     int stateId = Block.getStateId(block);
-                    worldObj.spawnParticle(EnumParticleTypes.BLOCK_DUST, x, y, z, 0, 0, 0, stateId);
+                    world.spawnParticle(EnumParticleTypes.BLOCK_DUST, x, y, z, 0, 0, 0, stateId);
                     if (playSound && rand.nextFloat() < 0.075F) {
                         SoundType sound = block.getBlock().getSoundType();
-                        worldObj.playSound(posX, posY, posZ, sound.getBreakSound(), SoundCategory.BLOCKS, sound.getVolume() * 2, sound.getPitch() * 0.6F, false);
+                        world.playSound(posX, posY, posZ, sound.getBreakSound(), SoundCategory.BLOCKS, sound.getVolume() * 2, sound.getPitch() * 0.6F, false);
                         playSound = false;
                     }
                 }
@@ -469,7 +469,7 @@ public class EntityWroughtnaut extends MowzieEntity {
 
     @Override
     public void onDeath(DamageSource source) {
-        if (!worldObj.isRemote && worldObj.getGameRules().getBoolean("doMobLoot")) {
+        if (!world.isRemote && world.getGameRules().getBoolean("doMobLoot")) {
             dropItem(ItemHandler.INSTANCE.wroughtAxe, 1);
             dropItem(ItemHandler.INSTANCE.wroughtHelmet, 1);
         }

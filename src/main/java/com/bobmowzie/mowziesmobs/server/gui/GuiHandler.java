@@ -124,6 +124,6 @@ public final class GuiHandler implements IGuiHandler {
     }
 
     public static void open(GuiHandler.GuiType type, EntityPlayer player, int x, int y, int z) {
-        player.openGui(MowziesMobs.INSTANCE, GUIS.getIDForObject(type), player.worldObj, x, y, z);
+        player.openGui(MowziesMobs.INSTANCE, GUIS.getIDForObject(type), player.world, x, y, z);
     }
 }

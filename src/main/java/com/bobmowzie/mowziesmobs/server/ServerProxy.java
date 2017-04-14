@@ -18,21 +18,21 @@ public class ServerProxy {
         public void write(PacketBuffer buf, Optional<Trade> value) {
             if (value.isPresent()) {
                 Trade trade = value.get();
-                buf.writeItemStackToBuffer(trade.getInput());
-                buf.writeItemStackToBuffer(trade.getOutput());
+                buf.writeItemStack(trade.getInput());
+                buf.writeItemStack(trade.getOutput());
                 buf.writeInt(trade.getWeight());
             } else {
-                buf.writeItemStackToBuffer(null);
+                buf.writeItemStack(null);
             }
         }
 
         @Override
         public Optional<Trade> read(PacketBuffer buf) throws IOException {
-            ItemStack input = buf.readItemStackFromBuffer();
+            ItemStack input = buf.readItemStack();
             if (input == null) {
                 return Optional.absent();
             }
-            return Optional.of(new Trade(input, buf.readItemStackFromBuffer(), buf.readInt()));
+            return Optional.of(new Trade(input, buf.readItemStack(), buf.readInt()));
         }
 
         @Override

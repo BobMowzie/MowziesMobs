@@ -26,7 +26,7 @@ public class MessagePlayerSummonSunstrike extends AbstractMessage<MessagePlayerS
         Vec3d pos = new Vec3d(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
         Vec3d segment = entity.getLookVec();
         segment = pos.addVector(segment.xCoord * reach, segment.yCoord * reach, segment.zCoord * reach);
-        return entity.worldObj.rayTraceBlocks(pos, segment, false, true, true);
+        return entity.world.rayTraceBlocks(pos, segment, false, true, true);
     }
 
     @Override
@@ -49,9 +49,9 @@ public class MessagePlayerSummonSunstrike extends AbstractMessage<MessagePlayerS
         RayTraceResult raytrace = rayTrace(player, REACH);
         if (raytrace != null && raytrace.typeOfHit == RayTraceResult.Type.BLOCK && raytrace.sideHit == EnumFacing.UP && player.inventory.getCurrentItem() == null && player.isPotionActive(PotionHandler.INSTANCE.sunsBlessing)) {
             BlockPos hit = raytrace.getBlockPos();
-            EntitySunstrike sunstrike = new EntitySunstrike(player.worldObj, player, hit.getX(), hit.getY(), hit.getZ());
+            EntitySunstrike sunstrike = new EntitySunstrike(player.world, player, hit.getX(), hit.getY(), hit.getZ());
             sunstrike.onSummon();
-            player.worldObj.spawnEntityInWorld(sunstrike);
+            player.world.spawnEntity(sunstrike);
         }
     }
 }

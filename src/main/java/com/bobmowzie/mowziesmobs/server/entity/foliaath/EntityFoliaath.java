@@ -42,7 +42,7 @@ public class EntityFoliaath extends MowzieEntity {
     private static final DataParameter<Boolean> CAN_DESPAWN = EntityDataManager.createKey(EntityFoliaath.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Integer> ACTIVATE_TARGET = EntityDataManager.createKey(EntityFoliaath.class, DataSerializers.VARINT);
     private static final int ACTIVATE_DURATION = 30;
-    public IntermittentAnimation<EntityFoliaath> openMouth = new IntermittentAnimation<>(this, 15, 30, 50, !worldObj.isRemote);
+    public IntermittentAnimation<EntityFoliaath> openMouth = new IntermittentAnimation<>(this, 15, 30, 50, !world.isRemote);
     public ControlledAnimation activate = new ControlledAnimation(ACTIVATE_DURATION);
     public ControlledAnimation deathFlail = new ControlledAnimation(5);
     public ControlledAnimation stopDance = new ControlledAnimation(10);
@@ -139,7 +139,7 @@ public class EntityFoliaath extends MowzieEntity {
         prevOpenMouth = openMouthTime;
 
         int activateTime = activate.getTimer();
-        if (!worldObj.isRemote) {
+        if (!world.isRemote) {
             SoundEvent sound = null;
             if (prevActivate - activateTime < 0) {
                 switch (activateTime) {
@@ -175,7 +175,7 @@ public class EntityFoliaath extends MowzieEntity {
             setAttackTarget(null);
         }
 
-        if (resettingTargetTimer > 0 && !worldObj.isRemote) {
+        if (resettingTargetTimer > 0 && !world.isRemote) {
             rotationYawHead = prevRotationYawHead;
         }
 
@@ -193,7 +193,7 @@ public class EntityFoliaath extends MowzieEntity {
                 setActivateTarget(0);
                 lastTimeDecrease++;
             }
-        } else if (!worldObj.isRemote && lastTimeDecrease <= 30 && getAnimation() == NO_ANIMATION && resettingTargetTimer == 0) {
+        } else if (!world.isRemote && lastTimeDecrease <= 30 && getAnimation() == NO_ANIMATION && resettingTargetTimer == 0) {
             setActivateTarget(0);
             lastTimeDecrease++;
         }
@@ -243,9 +243,9 @@ public class EntityFoliaath extends MowzieEntity {
         if (!entity.getPassengers().contains(this) && entity.getRidingEntity() != this) {
             double deltaX = entity.posX - posX;
             double deltaZ = entity.posZ - posZ;
-            double majorAxis = MathHelper.abs_max(deltaX, deltaZ);
+            double majorAxis = MathHelper.absMax(deltaX, deltaZ);
             if (majorAxis >= 0.009999999) {
-                majorAxis = MathHelper.sqrt_double(majorAxis);
+                majorAxis = MathHelper.sqrt(majorAxis);
                 deltaX /= majorAxis;
                 deltaZ /= majorAxis;
                 double reciprocal = 1 / majorAxis;
@@ -271,17 +271,17 @@ public class EntityFoliaath extends MowzieEntity {
 
     @Override
     public boolean getCanSpawnHere() {
-        if (worldObj.checkNoEntityCollision(getEntityBoundingBox()) && worldObj.getCollisionBoxes(this, getEntityBoundingBox()).isEmpty() && !worldObj.containsAnyLiquid(getEntityBoundingBox())) {
+        if (world.checkNoEntityCollision(getEntityBoundingBox()) && world.getCollisionBoxes(this, getEntityBoundingBox()).isEmpty() && !world.containsAnyLiquid(getEntityBoundingBox())) {
             BlockPos ground = new BlockPos(
-                MathHelper.floor_double(posX),
-                MathHelper.floor_double(getEntityBoundingBox().minY) - 1,
-                MathHelper.floor_double(posZ)
+                MathHelper.floor(posX),
+                MathHelper.floor(getEntityBoundingBox().minY) - 1,
+                MathHelper.floor(posZ)
              );
             if (ground.getY() < 64) {
                 return false;
             }
-            IBlockState block = worldObj.getBlockState(ground);
-            if (block.getBlock() == Blocks.GRASS || block.getBlock().isLeaves(block, worldObj, ground)) {
+            IBlockState block = world.getBlockState(ground);
+            if (block.getBlock() == Blocks.GRASS || block.getBlock().isLeaves(block, world, ground)) {
                 return true;
             }
         }

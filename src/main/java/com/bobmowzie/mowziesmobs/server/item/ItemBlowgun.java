@@ -125,7 +125,7 @@ public class ItemBlowgun extends ItemBow {
                             entityarrow.pickupStatus = EntityArrow.PickupStatus.CREATIVE_ONLY;
                         }
 
-                        worldIn.spawnEntityInWorld(entityarrow);
+                        worldIn.spawnEntity(entityarrow);
                     }
 
                     worldIn.playSound((EntityPlayer)null, entityplayer.posX, entityplayer.posY, entityplayer.posZ, SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);

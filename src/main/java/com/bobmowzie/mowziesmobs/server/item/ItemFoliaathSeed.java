@@ -34,7 +34,7 @@ public class ItemFoliaathSeed extends Item {
             if (!entity.getCanSpawnHere()) {
                 return null;
             }
-            world.spawnEntityInWorld(entity);
+            world.spawnEntity(entity);
         }
         return entity;
     }

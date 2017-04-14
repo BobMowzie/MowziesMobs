@@ -88,7 +88,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
             eatingItemID = meats.get(0).getEntityItem().getItem();
             meats.get(0).setDead();
             playSound(MMSounds.ENTITY_FOLIAATH_BABY_EAT, 0.5F, 1.2F);
-            if (!worldObj.isRemote) {
+            if (!world.isRemote) {
                 incrementGrowth();
                 setHungry(false);
             }
@@ -97,14 +97,14 @@ public class EntityBabyFoliaath extends MowzieEntity {
         if (getAnimationTick() == 3 || getAnimationTick() == 7 || getAnimationTick() == 11 || getAnimationTick() == 15 || getAnimationTick() == 19) {
             try {
                 for (int i = 0; i <= 5; i++) {
-                    worldObj.spawnParticle(EnumParticleTypes.ITEM_CRACK, posX, posY + 0.2, posZ, Math.random() * 0.2 - 0.1, Math.random() * 0.2, Math.random() * 0.2 - 0.1, Item.getIdFromItem(eatingItemID));
+                    world.spawnParticle(EnumParticleTypes.ITEM_CRACK, posX, posY + 0.2, posZ, Math.random() * 0.2 - 0.1, Math.random() * 0.2, Math.random() * 0.2 - 0.1, Item.getIdFromItem(eatingItemID));
                 }
             } catch (Exception ignored) {
             }
         }
 
         //Growing
-        if (!worldObj.isRemote) {
+        if (!world.isRemote) {
             if (ticksExisted % 20 == 0 && !getHungry()) {
                 incrementGrowth();
             }
@@ -127,10 +127,10 @@ public class EntityBabyFoliaath extends MowzieEntity {
                 setHungry(true);
             }
             if (getGrowth() == 2400) {
-                EntityFoliaath adultFoliaath = new EntityFoliaath(worldObj);
+                EntityFoliaath adultFoliaath = new EntityFoliaath(world);
                 adultFoliaath.setPosition(posX, posY, posZ);
                 adultFoliaath.setCanDespawn(false);
-                worldObj.spawnEntityInWorld(adultFoliaath);
+                world.spawnEntity(adultFoliaath);
                 setDead();
             }
         }
@@ -168,7 +168,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
     public void onDeath(DamageSource source) {
         super.onDeath(source);
         for (int i = 0; i < 10; i++) {
-            worldObj.spawnParticle(EnumParticleTypes.BLOCK_CRACK, posX, posY + 0.2, posZ, 0, 0, 0, JUNGLE_LEAVES);
+            world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, posX, posY + 0.2, posZ, 0, 0, 0, JUNGLE_LEAVES);
         }
         setDead();
     }
@@ -187,16 +187,16 @@ public class EntityBabyFoliaath extends MowzieEntity {
 
     @Override
     public boolean getCanSpawnHere() {
-        if (worldObj.checkNoEntityCollision(getEntityBoundingBox()) && worldObj.getCollisionBoxes(this, getEntityBoundingBox()).isEmpty() && !worldObj.containsAnyLiquid(getEntityBoundingBox())) {
+        if (world.checkNoEntityCollision(getEntityBoundingBox()) && world.getCollisionBoxes(this, getEntityBoundingBox()).isEmpty() && !world.containsAnyLiquid(getEntityBoundingBox())) {
             BlockPos ground = new BlockPos(
-                MathHelper.floor_double(posX),
-                MathHelper.floor_double(getEntityBoundingBox().minY) - 1,
-                MathHelper.floor_double(posZ)
+                MathHelper.floor(posX),
+                MathHelper.floor(getEntityBoundingBox().minY) - 1,
+                MathHelper.floor(posZ)
             );
 
-            IBlockState block = worldObj.getBlockState(ground);
+            IBlockState block = world.getBlockState(ground);
 
-            if (block.getBlock() == Blocks.GRASS || block.getBlock() == Blocks.DIRT || block.getBlock().isLeaves(block, worldObj, ground)) {
+            if (block.getBlock() == Blocks.GRASS || block.getBlock() == Blocks.DIRT || block.getBlock().isLeaves(block, world, ground)) {
                 playSound(SoundEvents.BLOCK_GRASS_HIT, 1, 0.8F);
                 return true;
             }
@@ -205,7 +205,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
     }
 
     public List<EntityItem> getMeatsNearby(double distanceX, double distanceY, double distanceZ, double radius) {
-        List<Entity> list = worldObj.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().expand(distanceX, distanceY, distanceZ));
+        List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().expand(distanceX, distanceY, distanceZ));
         ArrayList<EntityItem> listEntityItem = new ArrayList<>();
         for (Entity entityNeighbor : list) {
             if (entityNeighbor instanceof EntityItem && getDistanceToEntity(entityNeighbor) <= radius) {

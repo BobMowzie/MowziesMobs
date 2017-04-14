@@ -52,7 +52,7 @@ public final class EntityAIAvoidEntity<T extends Entity> extends EntityAIBase {
 
     @Override
     public boolean shouldExecute() {
-        List<T> entities = entity.worldObj.getEntitiesWithinAABB(avoidClass, entity.getEntityBoundingBox().expand(distance, 3, distance), predicate);
+        List<T> entities = entity.world.getEntitiesWithinAABB(avoidClass, entity.getEntityBoundingBox().expand(distance, 3, distance), predicate);
         if (entities.isEmpty()) {
             return false;
         }
