@@ -36,6 +36,11 @@ public class EntityRing extends Entity {
     }
 
     @Override
+    public boolean canBeCollidedWith() {
+        return false;
+    }
+
+    @Override
     public void onUpdate() {
         super.onUpdate();
         if (ticksExisted >= duration) setDead();

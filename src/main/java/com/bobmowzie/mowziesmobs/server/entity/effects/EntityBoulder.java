@@ -12,6 +12,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -23,12 +24,16 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.lwjgl.Sys;
 import scala.Option;
 
+import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -45,6 +50,10 @@ public class EntityBoulder extends Entity {
     public IBlockState storedBlock;
     private int damage;
     private static final DataParameter<Optional<IBlockState>> BLOCK_STATE = EntityDataManager.createKey(EntityBoulder.class, DataSerializers.OPTIONAL_BLOCK_STATE);
+    private static final DataParameter<Boolean> SHOULD_EXPLODE = EntityDataManager.createKey(EntityBoulder.class, DataSerializers.BOOLEAN);
+    public int timeUntilDeath = 1200;
+    public float animationOffset = 0;
+    private List<Entity> ridingEntities = new ArrayList<Entity>();
 
     public EntityBoulder(World world) {
         super(world);
@@ -66,11 +75,13 @@ public class EntityBoulder extends Entity {
             else if (mat == Material.SAND) setBlock(Blocks.SANDSTONE.getDefaultState());
             else setDead();
         }
+        animationOffset = (float) (Math.random() * 8);
     }
 
     @Override
     protected void entityInit() {
         getDataManager().register(BLOCK_STATE, Optional.of(Blocks.DIRT.getDefaultState()));
+        getDataManager().register(SHOULD_EXPLODE, false);
     }
 
     @Override
@@ -80,20 +91,48 @@ public class EntityBoulder extends Entity {
 
     @Override
     public void onUpdate() {
-//        setDead();
         if (storedBlock == null) storedBlock = getBlock();
+        if (getShouldExplode()) explode();
         super.onUpdate();
-        move(null, motionX, motionY, motionZ);
-        List<EntityLivingBase> entities = getEntityLivingBaseNearby(1.7);
-        if (!travelling) repelEntities(1.4f);
-        if (travelling && !entities.isEmpty()) {
-            for (EntityLivingBase entity : entities) {
-                if (entity == caster) continue;
-                if (caster instanceof EntityPlayer) entity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) caster), damage);
-                else entity.attackEntityFrom(DamageSource.causeMobDamage(caster), damage);
-                if (!isDead) explode();
+        move(MoverType.SELF, motionX, motionY, motionZ);
+        if (ridingEntities != null) ridingEntities.clear();
+        List<Entity> onTopOfEntities = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().move(new Vec3d(0, 0.5, 0)).expand(0.6,0.5,0.6));
+        for (Entity entity : onTopOfEntities) {
+            if (entity != null && entity.canBeCollidedWith() && !(entity instanceof EntityBoulder) && entity.posY >= this.posY + 0.2) ridingEntities.add(entity);
+        }
+        if (travelling){
+            for (Entity entity:ridingEntities) {
+                entity.move(MoverType.SHULKER_BOX, motionX, motionY, motionZ);
             }
         }
+
+        if (ticksExisted < 4) {
+            List<Entity> popUpEntities = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox());
+            for (Entity entity:popUpEntities) {
+                if (entity.canBeCollidedWith() && !(entity instanceof EntityBoulder)) entity.move(MoverType.SHULKER_BOX, 0, 0.9 * (-Math.pow(5, -ticksExisted) + 1), 0);
+            }
+        }
+        List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby(1.7);
+        if (travelling && !entitiesHit.isEmpty()) {
+            for (Entity entity : entitiesHit) {
+                if (world.isRemote) continue;
+                if (entity == caster) continue;
+                if (ridingEntities.contains(entity)) continue;
+                if (caster instanceof EntityPlayer)  entity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) caster), damage);
+                else entity.attackEntityFrom(DamageSource.causeMobDamage(caster), damage);
+                if (!isDead) setShouldExplode(true);
+            }
+        }
+        List<EntityBoulder> bouldersHit = world.getEntitiesWithinAABB(EntityBoulder.class, getEntityBoundingBox().expand(0.2, 0.2, 0.2).move(new Vec3d(motionX, motionY, motionZ).normalize().scale(0.5)));
+        if (travelling && !bouldersHit.isEmpty()) {
+            for (EntityBoulder entity : bouldersHit) {
+                if (entity instanceof EntityBoulder && !((EntityBoulder)entity).travelling) {
+                    entity.hitByEntity(this);
+                    explode();
+                }
+            }
+        }
+
         if (travelling && world.checkBlockCollision(getEntityBoundingBox().expand(0.1,0.1,0.1))) explode();
 
         blockId = Block.getStateId(storedBlock);
@@ -109,6 +148,7 @@ public class EntityBoulder extends Entity {
             EntityRing ring = new EntityRing(world, (float)posX, (float)posY - 0.9f, (float)posZ, new Vec3d(0,1,0), 7, 0.83f, 1, 0.39f, 1f, 1.5f, false);
             world.spawnEntity(ring);
         }
+
         int dripTick = ticksExisted - 2;
         int dripNumber = (int)(6 * Math.pow(1.07, -ticksExisted));
         if (dripNumber >= 1 && dripTick > 0) {
@@ -119,6 +159,8 @@ public class EntityBoulder extends Entity {
                 world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, posX + particlePos.xCoord, posY, posZ + particlePos.zCoord, 0, -1, 0, blockId);
             }
         }
+        timeUntilDeath--;
+        if (timeUntilDeath < 0) this.explode();
     }
 
     private void explode() {
@@ -133,6 +175,12 @@ public class EntityBoulder extends Entity {
         playSound(MMSounds.EFFECT_GEOMANCY_BREAK, 1.5f, 1f);
     }
 
+    @Nullable
+    @Override
+    public AxisAlignedBB getCollisionBoundingBox() {
+        return getEntityBoundingBox();
+    }
+
     public IBlockState getBlock() {
         return getDataManager().get(BLOCK_STATE).get();
     }
@@ -140,6 +188,14 @@ public class EntityBoulder extends Entity {
     public void setBlock(IBlockState block) {
         getDataManager().set(BLOCK_STATE, Optional.of(block));
         this.storedBlock = block;
+    }
+
+    public boolean getShouldExplode() {
+        return getDataManager().get(SHOULD_EXPLODE);
+    }
+
+    public void setShouldExplode(boolean shouldExplode) {
+        getDataManager().set(SHOULD_EXPLODE, shouldExplode);
     }
 
     @Override
@@ -163,21 +219,41 @@ public class EntityBoulder extends Entity {
 
     @Override
     public boolean hitByEntity(Entity entityIn) {
-        if (ticksExisted > 3
-                && entityIn instanceof EntityPlayer
-                && ((EntityPlayer)entityIn).inventory.getCurrentItem() == ItemStack.EMPTY
-                && ((EntityPlayer)entityIn).isPotionActive(PotionHandler.INSTANCE.geomancy)) {
-            EntityPlayer player = (EntityPlayer)entityIn;
-            motionX = SPEED * 0.5 * player.getLookVec().xCoord;
-            motionY = SPEED * 0.5 * player.getLookVec().yCoord;
-            motionZ = SPEED * 0.5 * player.getLookVec().zCoord;
+        if (ticksExisted > 3) {
+            if (entityIn instanceof EntityPlayer
+                    && ((EntityPlayer) entityIn).inventory.getCurrentItem() == ItemStack.EMPTY
+                    && ((EntityPlayer) entityIn).isPotionActive(PotionHandler.INSTANCE.geomancy)) {
+                EntityPlayer player = (EntityPlayer) entityIn;
+                if (ridingEntities.contains(player)) {
+                    Vec3d lateralLookVec = Vec3d.fromPitchYaw(0, player.rotationYaw).normalize();
+                    motionX = SPEED * 0.5 * lateralLookVec.xCoord;
+                    motionZ = SPEED * 0.5 * lateralLookVec.zCoord;
+                } else {
+                    motionX = SPEED * 0.5 * player.getLookVec().xCoord;
+                    motionY = SPEED * 0.5 * player.getLookVec().yCoord;
+                    motionZ = SPEED * 0.5 * player.getLookVec().zCoord;
+                }
+            }
+            else if (entityIn instanceof EntityBoulder && ((EntityBoulder) entityIn).travelling) {
+                EntityBoulder boulder = (EntityBoulder)entityIn;
+                Vec3d thisPos = new Vec3d(posX, posY, posZ);
+                Vec3d boulderPos = new Vec3d(boulder.posX, boulder.posY, boulder.posZ);
+                Vec3d velVec = thisPos.subtract(boulderPos).normalize();
+                motionX = SPEED * 0.5 * velVec.xCoord;
+                motionY = SPEED * 0.5 * velVec.yCoord;
+                motionZ = SPEED * 0.5 * velVec.zCoord;
+            }
+            else {
+                return super.hitByEntity(entityIn);
+            }
+            if (!travelling) timeUntilDeath = 60;
             travelling = true;
 
             playSound(MMSounds.EFFECT_GEOMANCY_HIT_SMALL, 1.5f, 1f);
             playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL, 1.5f, 0.9f);
             Vec3d ringOffset = new Vec3d(motionX, motionY, motionZ).normalize().scale(-1);
-            EntityRing ring = new EntityRing(player.world, (float)posX + (float)ringOffset.xCoord, (float)posY + 0.5f + (float)ringOffset.yCoord, (float)posZ + (float)ringOffset.zCoord, ringOffset.normalize(), 5, 0.83f, 1, 0.39f, 1f, 1.5f, false);
-            player.world.spawnEntity(ring);
+            EntityRing ring = new EntityRing(entityIn.world, (float) posX + (float) ringOffset.xCoord, (float) posY + 0.5f + (float) ringOffset.yCoord, (float) posZ + (float) ringOffset.zCoord, ringOffset.normalize(), 5, 0.83f, 1, 0.39f, 1f, 1.5f, false);
+            entityIn.world.spawnEntity(ring);
         }
         return super.hitByEntity(entityIn);
     }

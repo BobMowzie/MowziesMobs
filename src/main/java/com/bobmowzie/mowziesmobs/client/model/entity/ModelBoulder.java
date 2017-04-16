@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
@@ -24,13 +25,13 @@ public class ModelBoulder extends AdvancedModelBase {
         small1.addBox(0F, 8F, 0F, 16, 16, 16, 0.0F);
     }
 
-    public void render(Entity entity, float f5, float delta) {
+    public void render(EntityBoulder entity, float f5, float delta) {
         setRotationAngles(entity, f5, delta);
         small1.render(f5);
     }
 
-    public void setRotationAngles(Entity entity, float f5, float delta) {
+    public void setRotationAngles(EntityBoulder entity, float f5, float delta) {
         int tick = Math.max(entity.ticksExisted, 0);
-        small1.rotationPointY = (float)(-8 - 4 * Math.pow(0.25f * (tick + delta), -4f) + 2 * Math.cos(0.1f * (entity.ticksExisted + delta)));
+        small1.rotationPointY = (float)(-8 - 4 * Math.pow(0.25f * (tick + delta), -4f) + 2 * Math.cos(0.1f * (entity.ticksExisted + entity.animationOffset + delta)));
     }
 }
