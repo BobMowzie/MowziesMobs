@@ -19,6 +19,8 @@ import com.bobmowzie.mowziesmobs.server.message.MessagePlayerSummonSunstrike;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 
+import com.bobmowzie.mowziesmobs.server.property.power.Power;
+import com.bobmowzie.mowziesmobs.server.property.power.PowerGeomancy;
 import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
@@ -43,6 +45,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -151,6 +154,10 @@ public enum ServerEventHandler {
                 }
             }
         }
+
+        for(int i = 0; i < property.powers.length; i++) {
+            property.powers[i].onUpdate(event);
+        }
     }
 
     private List<EntityLivingBase> getEntityLivingBaseNearby(EntityLivingBase user, double distanceX, double distanceY, double distanceZ, double radius) {
@@ -162,8 +169,8 @@ public enum ServerEventHandler {
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.RightClickEmpty event) {
         EntityPlayer player = event.getEntityPlayer();
+        MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
         if (event.getWorld().isRemote && player.inventory.getCurrentItem() == ItemStack.EMPTY && player.isPotionActive(PotionHandler.INSTANCE.sunsBlessing) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
-            MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
             if (player.isSneaking()) {
                 MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSolarBeam());
                 property.untilSunstrike = SOLARBEAM_COOLDOWN;
@@ -172,13 +179,25 @@ public enum ServerEventHandler {
                 property.untilSunstrike = SUNSTRIKE_COOLDOWN;
             }
         }
+
+        for(int i = 0; i < property.powers.length; i++) {
+            property.powers[i].onRightClickEmpty(event);
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerInteract(PlayerInteractEvent.EntityInteract event) {
+        MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
+        for(int i = 0; i < property.powers.length; i++) {
+            property.powers[i].onRightClickEntity(event);
+        }
     }
 
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event) {
         EntityPlayer player = event.getEntityPlayer();
+        MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
         if (event.getWorld().isRemote && player.inventory.getCurrentItem() == ItemStack.EMPTY && player.isPotionActive(PotionHandler.INSTANCE.sunsBlessing) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
-            MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
             if (player.isSneaking()) {
                 MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSolarBeam());
                 property.untilSunstrike = SOLARBEAM_COOLDOWN;
@@ -186,6 +205,10 @@ public enum ServerEventHandler {
                 MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSummonSunstrike());
                 property.untilSunstrike = SUNSTRIKE_COOLDOWN;
             }
+        }
+
+        for(int i = 0; i < property.powers.length; i++) {
+            if (event.getSide() == Side.SERVER) property.powers[i].onRightClickBlock(event);
         }
     }
 
@@ -193,9 +216,14 @@ public enum ServerEventHandler {
     public void onPlayerLeftClick(PlayerInteractEvent.LeftClickEmpty event) {
         double range = 7;
         EntityPlayer player = event.getEntityPlayer();
+        MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
         if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == ItemHandler.INSTANCE.spear){
             EntityLivingBase entityHit = ItemSpear.raytraceEntities(player.getEntityWorld(), player, range);
             if (entityHit != null) MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerAttackMob(entityHit));
+        }
+
+        for(int i = 0; i < property.powers.length; i++) {
+            property.powers[i].onLeftClickEmpty(event);
         }
     }
 
@@ -203,19 +231,60 @@ public enum ServerEventHandler {
     public void onLivingDamage(LivingHurtEvent event) {
         if (event.getEntity() instanceof EntityPlayer) {
             MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
-            if (event.getSource().getEntity() != null) {
-                for (int i = 0; i < property.getPackSize(); i++)
-                    if (property.tribePack.get(i).getAttackTarget() == null) property.tribePack.get(i).setAttackTarget((EntityLivingBase) event.getSource().getEntity());
+            if (event.getEntity() instanceof EntityPlayer) {
+                if (event.getSource().getEntity() != null) {
+                    for (int i = 0; i < property.getPackSize(); i++)
+                        if (property.tribePack.get(i).getAttackTarget() == null)
+                            property.tribePack.get(i).setAttackTarget((EntityLivingBase) event.getSource().getEntity());
+                }
+            }
+
+            for (int i = 0; i < property.powers.length; i++) {
+                property.powers[i].onTakeDamage(event);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerInteract(PlayerInteractEvent.RightClickItem event) {
+        MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
+        for(int i = 0; i < property.powers.length; i++) {
+            property.powers[i].onRightClickWithItem(event);
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerLeftClick(PlayerInteractEvent.LeftClickBlock event) {
+        MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
+        for(int i = 0; i < property.powers.length; i++) {
+            property.powers[i].onLeftClickBlock(event);
+        }
+    }
+
+    @SubscribeEvent
+    public void onLivingJump(LivingEvent.LivingJumpEvent event) {
+        if (event.getEntity() instanceof EntityPlayer) {
+            MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
+            for(int i = 0; i < property.powers.length; i++) {
+                property.powers[i].onJump(event);
             }
         }
     }
 
     @SubscribeEvent
     public void onPlayerAttack(AttackEntityEvent event) {
-        if (!(event.getTarget() instanceof EntityLivingBase)) return;
-        MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
-        if (event.getTarget() instanceof EntityBarakoanToPlayer) return;
-        for (int i = 0; i < property.getPackSize(); i++) property.tribePack.get(i).setAttackTarget((EntityLivingBase) event.getTarget());
+        if (event.getEntity() instanceof EntityPlayer) {
+            MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
+
+            for (int i = 0; i < property.powers.length; i++) {
+                property.powers[i].onLeftClickEntity(event);
+            }
+
+            if (!(event.getTarget() instanceof EntityLivingBase)) return;
+            if (event.getTarget() instanceof EntityBarakoanToPlayer) return;
+            for (int i = 0; i < property.getPackSize(); i++)
+                property.tribePack.get(i).setAttackTarget((EntityLivingBase) event.getTarget());
+        }
     }
 
     @SubscribeEvent

@@ -1,5 +1,6 @@
-package com.bobmowzie.mowziesmobs.server.entity;
+package com.bobmowzie.mowziesmobs.server.entity.effects;
 
+import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import io.netty.buffer.ByteBuf;
 
 import java.util.List;

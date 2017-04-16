@@ -1,12 +1,9 @@
 package com.bobmowzie.mowziesmobs.client.sound;
 
 import net.minecraft.client.audio.MovingSound;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.entity.EntitySunstrike;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 
 public class SunstrikeSound extends MovingSound {

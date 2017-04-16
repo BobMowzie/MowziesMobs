@@ -14,10 +14,13 @@ public enum PotionHandler {
     INSTANCE;
 
     public Potion sunsBlessing;
+    public Potion geomancy;
 
     private void registerPotions() {
         sunsBlessing = new MowziePotionSunsBlessing();
         GameRegistry.register(sunsBlessing);
+        geomancy = new MowziePotionGeomancy();
+        GameRegistry.register(geomancy);
     }
 
     public void onInit() {

@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.server;
 
 import java.io.IOException;
 
-import com.bobmowzie.mowziesmobs.server.entity.EntitySunstrike;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
 import com.google.common.base.Optional;
 

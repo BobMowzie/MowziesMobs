@@ -188,6 +188,43 @@ public enum MMSounds {
 
     public static final SoundEvent ENTITY_FOLIAATH_BABY_EAT = reg("foliaath.baby.eat");
 
+    public static final SoundEvent EFFECT_GEOMANCY_SMALL_CRASH = reg("geomancy.smallcrash");
+
+    public static final SoundEvent EFFECT_GEOMANCY_MAGIC_SMALL = reg("geomancy.hitsmall");
+
+    public static final SoundEvent EFFECT_GEOMANCY_MAGIC_BIG = reg("geomancy.hitbig");
+
+    public static final SoundEvent EFFECT_GEOMANCY_BREAK_LARGE_1 = reg("geomancy.breaklarge");
+
+    public static final SoundEvent EFFECT_GEOMANCY_BREAK_LARGE_2 = reg("geomancy.breaklarge2");
+
+    public static final SoundEvent EFFECT_GEOMANCY_BREAK_MEDIUM_1 = reg("geomancy.breakmedium");
+
+    public static final SoundEvent EFFECT_GEOMANCY_BREAK_MEDIUM_2 = reg("geomancy.breakmedium2");
+
+    public static final SoundEvent EFFECT_GEOMANCY_BREAK_MEDIUM_3 = reg("geomancy.breakmedium3");
+
+    public static final SoundEvent EFFECT_GEOMANCY_HIT = reg("geomancy.hit");
+
+    public static final SoundEvent EFFECT_GEOMANCY_HIT_MEDIUM_1 = reg("geomancy.hitmedium");
+
+    public static final SoundEvent EFFECT_GEOMANCY_HIT_MEDIUM_2 = reg("geomancy.hitmedium2");
+
+    public static final SoundEvent EFFECT_GEOMANCY_BREAK = reg("geomancy.rockbreak");
+
+    public static final SoundEvent EFFECT_GEOMANCY_CRASH = reg("geomancy.rockcrash1");
+
+    public static final SoundEvent EFFECT_GEOMANCY_CRUMBLE = reg("geomancy.rockcrumble");
+
+    public static final SoundEvent EFFECT_GEOMANCY_RUMBLE_1 = reg("geomancy.rumble1");
+
+    public static final SoundEvent EFFECT_GEOMANCY_RUMBLE_2 = reg("geomancy.rumble2");
+
+    public static final SoundEvent EFFECT_GEOMANCY_RUMBLE_3 = reg("geomancy.rumble3");
+
+    public static final SoundEvent EFFECT_GEOMANCY_HIT_SMALL = reg("geomancy.smallrockhit");
+
+
     public void onInit() {}
 
     private static SoundEvent reg(String name) {

@@ -20,7 +20,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.entity.EntitySolarBeam;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySolarBeam;
 
 @SideOnly(Side.CLIENT)
 public class RenderSolarBeam extends Render<EntitySolarBeam> {

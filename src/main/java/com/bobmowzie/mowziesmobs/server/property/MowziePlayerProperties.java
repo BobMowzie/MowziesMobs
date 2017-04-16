@@ -1,6 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.property;
 
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
+import com.bobmowzie.mowziesmobs.server.property.power.Power;
+import com.bobmowzie.mowziesmobs.server.property.power.PowerGeomancy;
 import net.ilexiconn.llibrary.server.entity.EntityProperties;
 import net.ilexiconn.llibrary.server.nbt.NBTHandler;
 import net.ilexiconn.llibrary.server.nbt.NBTProperty;
@@ -24,6 +26,8 @@ public class MowziePlayerProperties extends EntityProperties<EntityPlayer> {
     public int tribeCircleTick;
     public List<EntityBarakoanToPlayer> tribePack = new ArrayList<>();
     public int tribePackRadius = 3;
+
+    public Power[] powers = new Power[]{new PowerGeomancy(this)};
 
     public static float fnc1(float x) {
         return x * ((45 - 27 * x) * x - 18);
