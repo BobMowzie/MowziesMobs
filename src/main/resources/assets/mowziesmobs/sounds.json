@@ -267,57 +267,57 @@
 		"sounds": [ "mowziesmobs:laser/laser" ]
 	},
 	"geomancy.smallcrash": {
-		"sounds": [ "mowziesmobs:effects/geomancy/smallrockcrash" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/small_rock_crash" ]
 	},
 	"geomancy.hitsmall": {
-		"sounds": [ "mowziesmobs:effects/geomancy/magichitsmall" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/magic_hit_small" ]
 	},
 	"geomancy.hitbig": {
-		"sounds": [ "mowziesmobs:effects/geomancy/magichitbig" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/magic_hit_big" ]
 	},
 	"geomancy.breakLarge": {
-		"sounds": [ "mowziesmobs:effects/geomancy/breaklarge" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/break_large" ]
 	},
 	"geomancy.breaklarge2": {
-		"sounds": [ "mowziesmobs:effects/geomancy/breaklarge2" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/break_large_2" ]
 	},
 	"geomancy.breakmedium": {
-		"sounds": [ "mowziesmobs:effects/geomancy/breakmedium" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/break_medium" ]
 	},
 	"geomancy.breakmedium2": {
-		"sounds": [ "mowziesmobs:effects/geomancy/breakmedium2" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/break_medium_2" ]
 	},
 	"geomancy.breakmedium3": {
-		"sounds": [ "mowziesmobs:effects/geomancy/breakmedium3" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/break_medium_3" ]
 	},
 	"geomancy.hit": {
 		"sounds": [ "mowziesmobs:effects/geomancy/hit" ]
 	},
 	"geomancy.hitmedium": {
-		"sounds": [ "mowziesmobs:effects/geomancy/hitmedium" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/hit_medium" ]
 	},
 	"geomancy.hitmedium2": {
-		"sounds": [ "mowziesmobs:effects/geomancy/hitmedium2" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/hit_medium_2" ]
 	},
 	"geomancy.rockbreak": {
-		"sounds": [ "mowziesmobs:effects/geomancy/rockbreak" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/rock_break" ]
 	},
 	"geomancy.rockcrash1": {
-		"sounds": [ "mowziesmobs:effects/geomancy/rockcrash1" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/rock_crash_1" ]
 	},
 	"geomancy.rockcrumble": {
-		"sounds": [ "mowziesmobs:effects/geomancy/rockcrumble" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/rock_crumble" ]
 	},
 	"geomancy.rumble1": {
-		"sounds": [ "mowziesmobs:effects/geomancy/rumble1" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/rumble_1" ]
 	},
 	"geomancy.rumble2": {
-		"sounds": [ "mowziesmobs:effects/geomancy/rumble2" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/rumble_2" ]
 	},
 	"geomancy.rumble3": {
-		"sounds": [ "mowziesmobs:effects/geomancy/rumble3" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/rumble_3" ]
 	},
 	"geomancy.smallrockhit": {
-		"sounds": [ "mowziesmobs:effects/geomancy/smallrockhit" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/small_rock_hit" ]
 	}
 }

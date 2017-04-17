@@ -58,14 +58,15 @@ public class EntityBoulder extends Entity {
     public EntityBoulder(World world) {
         super(world);
         setSize(1F, 1F);
+        travelling = false;
+        damage = 6;
+        animationOffset = (float) (Math.random() * 8);
     }
 
     public EntityBoulder(World world, EntityLivingBase caster, int x, int y, int z, int size, IBlockState block) {
         this(world);
         this.caster = caster;
         this.setPosition(x + 0.5F, y + 1, z + 0.5F);
-        travelling = false;
-        damage = 6;
         if (!world.getEntitiesWithinAABB(EntityBoulder.class, getEntityBoundingBox()).isEmpty()) setDead();
         if (!world.isRemote && block != null) {
             Material mat = block.getMaterial();
@@ -75,7 +76,7 @@ public class EntityBoulder extends Entity {
             else if (mat == Material.SAND) setBlock(Blocks.SANDSTONE.getDefaultState());
             else setDead();
         }
-        animationOffset = (float) (Math.random() * 8);
+        if (world.collidesWithAnyBlock(getEntityBoundingBox())) setDead();
     }
 
     @Override
@@ -126,14 +127,14 @@ public class EntityBoulder extends Entity {
         List<EntityBoulder> bouldersHit = world.getEntitiesWithinAABB(EntityBoulder.class, getEntityBoundingBox().expand(0.2, 0.2, 0.2).move(new Vec3d(motionX, motionY, motionZ).normalize().scale(0.5)));
         if (travelling && !bouldersHit.isEmpty()) {
             for (EntityBoulder entity : bouldersHit) {
-                if (entity instanceof EntityBoulder && !((EntityBoulder)entity).travelling) {
+                if (!entity.travelling) {
                     entity.hitByEntity(this);
                     explode();
                 }
             }
         }
 
-        if (travelling && world.checkBlockCollision(getEntityBoundingBox().expand(0.1,0.1,0.1))) explode();
+        if (travelling && world.collidesWithAnyBlock(getEntityBoundingBox().expand(0.1,0.1,0.1))) explode();
 
         blockId = Block.getStateId(storedBlock);
 

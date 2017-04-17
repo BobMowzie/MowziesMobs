@@ -44,7 +44,7 @@ public class PowerGeomancy extends Power {
         IBlockState block = player.world.getBlockState(new BlockPos(x, y - 1, z));
         if (canUse(player) && event.getFace() == EnumFacing.UP && spawnBoulderCooldown <= 0 && !player.world.isRemote) {
             EntityBoulder boulder = new EntityBoulder(player.world, player, x, y, z, 1, block);
-            player.world.spawnEntity(boulder);
+            if (!boulder.isDead) player.world.spawnEntity(boulder);
 ////            player.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 7, 1, false, false));
             spawnBoulderCooldown = 10;
         }
