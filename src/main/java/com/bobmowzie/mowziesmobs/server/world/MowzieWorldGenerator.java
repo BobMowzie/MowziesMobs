@@ -1,14 +1,9 @@
 package com.bobmowzie.mowziesmobs.server.world;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.world.structure.StructureBarakoaVillage;
 import com.bobmowzie.mowziesmobs.server.world.structure.StructureWroughtnautRoom;
-import net.minecraft.init.Biomes;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeSavanna;
 import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.fml.common.IWorldGenerator;
@@ -61,9 +56,7 @@ public class MowzieWorldGenerator implements IWorldGenerator {
         k = k + random.nextInt(maxDistanceBetweenVillages - 8);
         l = l + random.nextInt(maxDistanceBetweenVillages - 8);
 
-        if (i == k && j == l) return true;
-
-        return false;
+        return i == k && j == l;
     }
 
     private void generateSurface(World world, Random random, int x, int z) {
