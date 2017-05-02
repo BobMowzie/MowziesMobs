@@ -23,18 +23,19 @@ public class ModelBoulder extends AdvancedModelBase {
         this.textureHeight = 16;
         small1 = new BlockModelRenderer(this);
         small1.setRotationPoint(0F, 0F, 0F);
-        small1.addBox(0F, 0F, 0F, 16, 16, 16, 0.0F);
     }
 
     public void render(EntityBoulder entity, float f5, float delta) {
         setRotationAngles(entity, f5, delta);
-        small1.render(f5, entity);
+        small1.render(f5);
     }
 
     public void setRotationAngles(EntityBoulder entity, float f5, float delta) {
         int tick = Math.max(entity.ticksExisted, 0);
         small1.setBlockState(entity.getBlock());
-        small1.setBiome(entity.world.getBiome(entity.getPosition()));
+        small1.setBiome(entity.world.getBiome(entity.getOrigin()));
+        small1.setEntity(entity);
+        small1.setOrigin(entity.getOrigin());
         small1.rotationPointY = (float)(-8 - 4 * Math.pow(0.25f * (tick + delta), -4f) + 2 * Math.cos(0.1f * (entity.ticksExisted + entity.animationOffset + delta)));
     }
 }

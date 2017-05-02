@@ -4,11 +4,13 @@ import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.google.common.base.Optional;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockFence;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
+import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -21,8 +23,11 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -41,7 +46,8 @@ public class EntityBoulder extends Entity {
     private int damage;
     private static final DataParameter<Optional<IBlockState>> BLOCK_STATE = EntityDataManager.createKey(EntityBoulder.class, DataSerializers.OPTIONAL_BLOCK_STATE);
     private static final DataParameter<Boolean> SHOULD_EXPLODE = EntityDataManager.createKey(EntityBoulder.class, DataSerializers.BOOLEAN);
-    public int timeUntilDeath = 1200;
+    private static final DataParameter<BlockPos> ORIGIN = EntityDataManager.createKey(EntityBoulder.class, DataSerializers.BLOCK_POS);
+    private static final DataParameter<Integer> DEATH_TIME = EntityDataManager.createKey(EntityBoulder.class, DataSerializers.VARINT);
     public float animationOffset = 0;
     private List<Entity> ridingEntities = new ArrayList<Entity>();
 
@@ -51,6 +57,7 @@ public class EntityBoulder extends Entity {
         travelling = false;
         damage = 6;
         animationOffset = (float) (Math.random() * 8);
+        this.setOrigin(new BlockPos(this));
     }
 
     public EntityBoulder(World world, EntityLivingBase caster, int x, int y, int z, int size, IBlockState block) {
@@ -58,21 +65,61 @@ public class EntityBoulder extends Entity {
         this.caster = caster;
         this.setPosition(x + 0.5F, y + 1, z + 0.5F);
         if (!world.getEntitiesWithinAABB(EntityBoulder.class, getEntityBoundingBox()).isEmpty()) setDead();
-        if (!world.isRemote && block != null) {
-            Material mat = block.getMaterial();
-            if (mat == Material.GRASS || mat == Material.GROUND) setBlock(Blocks.DIRT.getDefaultState());
-            else if (mat == Material.ROCK) setBlock(Blocks.STONE.getDefaultState());
-            else if (mat == Material.CLAY) setBlock(Blocks.CLAY.getDefaultState());
-            else if (mat == Material.SAND) setBlock(Blocks.SANDSTONE.getDefaultState());
-            else setDead();
-        }
         if (world.collidesWithAnyBlock(getEntityBoundingBox())) setDead();
+        if (!world.isRemote && block != null) {
+            IBlockState newBlock = block;
+            Material mat = block.getMaterial();
+            if (mat != Material.GRASS
+                    && mat != Material.GROUND
+                    && mat != Material.ROCK
+                    && mat != Material.CLAY
+                    && mat != Material.SAND
+                    ) {
+                setDead();
+                return;
+            }
+            if (block == Blocks.HAY_BLOCK
+                    || block.getBlock() == Blocks.NETHER_WART_BLOCK
+                    || block.getBlock() instanceof BlockFence
+                    || block.getBlock() == Blocks.MOB_SPAWNER
+                    || block.getBlock() == Blocks.BONE_BLOCK
+                    || block.getBlock() == Blocks.ENCHANTING_TABLE
+                    || block.getBlock() == Blocks.END_PORTAL_FRAME
+                    || block.getBlock() == Blocks.ENDER_CHEST
+                    || block.getBlock() == Blocks.SLIME_BLOCK
+                    ) {
+                setDead();
+                return;
+            }
+            if (mat == Material.GRASS || mat == Material.GROUND) newBlock = Blocks.DIRT.getDefaultState();
+            else if (mat == Material.ROCK) {
+                if (block.getBlock().getUnlocalizedName().contains("ore")) newBlock = Blocks.STONE.getDefaultState();
+                if (block.getBlock() == Blocks.QUARTZ_ORE) newBlock = Blocks.NETHERRACK.getDefaultState();
+                if (block.getBlock() == Blocks.FURNACE
+                        || block.getBlock() == Blocks.LIT_FURNACE
+                        || block.getBlock() == Blocks.DISPENSER
+                        || block.getBlock() == Blocks.DROPPER
+                        ) newBlock = Blocks.COBBLESTONE.getDefaultState();
+            }
+            else if (mat == Material.CLAY) {
+                if (block.getBlock() == Blocks.CLAY) newBlock = Blocks.HARDENED_CLAY.getDefaultState();
+            }
+            else if (mat == Material.SAND) {
+                if (block == Blocks.SAND.getStateFromMeta(0)) newBlock = Blocks.SANDSTONE.getDefaultState();
+                else if (block == Blocks.SAND.getStateFromMeta(1)) newBlock = Blocks.RED_SANDSTONE.getDefaultState();
+                else if (block.getBlock() == Blocks.GRAVEL) newBlock = Blocks.COBBLESTONE.getDefaultState();
+                else if (block.getBlock() == Blocks.SOUL_SAND) newBlock = Blocks.NETHERRACK.getDefaultState();
+            }
+            setBlock(newBlock);
+        }
     }
 
     @Override
     protected void entityInit() {
         getDataManager().register(BLOCK_STATE, Optional.of(Blocks.DIRT.getDefaultState()));
         getDataManager().register(SHOULD_EXPLODE, false);
+        getDataManager().register(ORIGIN, new BlockPos(0, 0, 0));
+        getDataManager().register(DEATH_TIME, 1200);
     }
 
     @Override
@@ -150,8 +197,9 @@ public class EntityBoulder extends Entity {
                 world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, posX + particlePos.xCoord, posY, posZ + particlePos.zCoord, 0, -1, 0, blockId);
             }
         }
-        timeUntilDeath--;
-        if (timeUntilDeath < 0) this.explode();
+        int newDeathTime = getDeathTime() - 1;
+        setDeathTime(newDeathTime);
+        if (newDeathTime < 0) this.explode();
     }
 
     private void explode() {
@@ -189,18 +237,36 @@ public class EntityBoulder extends Entity {
         getDataManager().set(SHOULD_EXPLODE, shouldExplode);
     }
 
+    public void setOrigin(BlockPos pos) {
+        this.dataManager.set(ORIGIN, pos);
+    }
+
+    public BlockPos getOrigin() {
+        return this.dataManager.get(ORIGIN);
+    }
+
+    public int getDeathTime() {
+        return dataManager.get(DEATH_TIME);
+    }
+
+    public void setDeathTime(int deathTime) {
+        dataManager.set(DEATH_TIME, deathTime);
+    }
+
     @Override
     public void writeEntityToNBT(NBTTagCompound compound) {
         Optional<IBlockState> blockOption = Optional.of(getBlock());
         if (blockOption.isPresent()) {
             compound.setTag("block", NBTUtil.writeBlockState(new NBTTagCompound(), blockOption.get()));
         }
+        compound.setInteger("deathTime", getDeathTime());
     }
 
     @Override
     public void readEntityFromNBT(NBTTagCompound compound) {
         IBlockState blockState = NBTUtil.readBlockState((NBTTagCompound) compound.getTag("block"));
         setBlock(blockState);
+        setDeathTime(compound.getInteger("deathTime"));
     }
 
     @Override
@@ -237,7 +303,7 @@ public class EntityBoulder extends Entity {
             else {
                 return super.hitByEntity(entityIn);
             }
-            if (!travelling) timeUntilDeath = 60;
+            if (!travelling) setDeathTime(60);
             travelling = true;
 
             playSound(MMSounds.EFFECT_GEOMANCY_HIT_SMALL, 1.5f, 1f);
