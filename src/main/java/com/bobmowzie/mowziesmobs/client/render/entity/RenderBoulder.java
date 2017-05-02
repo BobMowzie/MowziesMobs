@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.ResourceLocation;
@@ -61,7 +62,7 @@ public class RenderBoulder extends Render<EntityBoulder> {
     public void doRender(EntityBoulder entity, double x, double y, double z, float yaw, float delta) {
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);
-        bindEntityTexture(entity);
+        bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         model.render(entity, 0.0625F, delta);
         GlStateManager.popMatrix();
     }
