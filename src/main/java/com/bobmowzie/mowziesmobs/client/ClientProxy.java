@@ -1,5 +1,7 @@
 package com.bobmowzie.mowziesmobs.client;
 
+import com.bobmowzie.mowziesmobs.client.render.entity.*;
+import com.bobmowzie.mowziesmobs.server.entity.*;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.*;
 import net.ilexiconn.llibrary.client.model.tabula.TabulaModelHandler;
 import net.minecraft.block.Block;
@@ -16,22 +18,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher;
-import com.bobmowzie.mowziesmobs.client.render.entity.RenderDart;
-import com.bobmowzie.mowziesmobs.client.render.entity.RenderFoliaathBaby;
-import com.bobmowzie.mowziesmobs.client.render.entity.RenderFoliaath;
-import com.bobmowzie.mowziesmobs.client.render.entity.RenderSolarBeam;
-import com.bobmowzie.mowziesmobs.client.render.entity.RenderSunstrike;
-import com.bobmowzie.mowziesmobs.client.render.entity.RenderBarako;
-import com.bobmowzie.mowziesmobs.client.render.entity.RenderBarakoa;
-import com.bobmowzie.mowziesmobs.client.render.entity.RenderWroughtnaut;
 import com.bobmowzie.mowziesmobs.client.sound.SunstrikeSound;
 import com.bobmowzie.mowziesmobs.server.ServerProxy;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
-import com.bobmowzie.mowziesmobs.server.entity.EntityDart;
-import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
-import com.bobmowzie.mowziesmobs.server.entity.EntitySolarBeam;
-import com.bobmowzie.mowziesmobs.server.entity.EntitySunstrike;
-import com.bobmowzie.mowziesmobs.server.entity.MowzieEntityEggInfo;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityBabyFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
@@ -55,6 +44,7 @@ public class ClientProxy extends ServerProxy {
         RenderingRegistry.registerEntityRenderingHandler(EntityDart.class, RenderDart::new);
         RenderingRegistry.registerEntityRenderingHandler(EntitySunstrike.class, RenderSunstrike::new);
         RenderingRegistry.registerEntityRenderingHandler(EntitySolarBeam.class, RenderSolarBeam::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityRing.class, RenderRing::new);
 
         TabulaModelHandler.INSTANCE.addDomain(MowziesMobs.MODID);
 

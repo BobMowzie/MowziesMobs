@@ -38,6 +38,7 @@ public enum EntityHandler {
 
         EntityRegistry.registerModEntity(EntitySunstrike.class, "Sunstrike", nextEntityId(), MowziesMobs.INSTANCE, 64, 1, true);
         EntityRegistry.registerModEntity(EntitySolarBeam.class, "SolarBeam", nextEntityId(), MowziesMobs.INSTANCE, 64, 1, true);
+        EntityRegistry.registerModEntity(EntityRing.class, "Ring", nextEntityId(), MowziesMobs.INSTANCE, 64, 1, true);
 
         EntityRegistry.registerModEntity(EntityDart.class, "Dart", nextEntityId(), MowziesMobs.INSTANCE, 64, 1, true);
     }
