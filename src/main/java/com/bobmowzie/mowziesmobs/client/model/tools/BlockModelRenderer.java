@@ -92,7 +92,7 @@ public class BlockModelRenderer extends AdvancedModelRenderer {
                 BlockPos blockpos = new BlockPos(0, 0, 0);
                 if (entity != null) {
                     blockpos = new BlockPos(entity.posX, entity.posY, entity.posZ);
-                    GL11.glTranslatef(-(blockpos.getX() + 0.5f), -(blockpos.getY() - 0.5f), -(blockpos.getZ() + 0.5f));
+                    GL11.glTranslatef(-(blockpos.getX()), -(blockpos.getY() - 0.5f), -(blockpos.getZ()));
                 }
                 blockRendererDispatcher.getBlockModelRenderer().renderModel(entity.world, blockRendererDispatcher.getModelForState(blockState), blockState, blockpos, buf, false, MathHelper.getPositionRandom(origin));
                 Tessellator.getInstance().draw();

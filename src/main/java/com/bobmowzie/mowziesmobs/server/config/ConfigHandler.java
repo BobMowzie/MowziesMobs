@@ -10,5 +10,5 @@ public class ConfigHandler {
     @ConfigEntry(name = "Barakoa Spawnrate", minValue = "0", maxValue = "100")
     public int spawnrateBarakoa = 2;
     @ConfigEntry(name = "Barako Spawnrate", minValue = "0", maxValue = "100", comment = "Barako Spawnrate: Smaller number is more frequent, 0 to disable spawning")
-    public int spawnrateBarako = 21;
+    public int spawnrateBarako = 20;
 }

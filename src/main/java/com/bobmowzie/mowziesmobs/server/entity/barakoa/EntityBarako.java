@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoTrade;
 import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoayaTrade;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityRing;
 import com.bobmowzie.mowziesmobs.server.gui.GuiHandler;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoTrade;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoayaTrade;
@@ -42,6 +43,7 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
@@ -100,6 +102,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     private int timeUntilSunstrike = 0;
     private int timeUntilLaser = 0;
     private int timeUntilBarakoa = 0;
+    private EntityPlayer blessingPlayer;
 
     public EntityBarako(World world) {
         super(world);
@@ -277,6 +280,31 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 }
             }
         }
+
+        if (getAnimation() == BLESS_ANIMATION) {
+            rotationYawHead = rotationYaw;
+
+            if (getAnimationTick() == 1) {
+                blessingPlayer = getCustomer();
+            }
+            if (getAnimationTick() > 5 && getAnimationTick() < 40 && world.isRemote && blessingPlayer != null) {
+                int particleCount = 2;
+                while (--particleCount != 0) {
+                    double radius = 0.7f;
+                    double yaw = rand.nextFloat() * 2 * Math.PI;
+                    double pitch = rand.nextFloat() * 2 * Math.PI;
+                    double ox = radius * Math.sin(yaw) * Math.sin(pitch);
+                    double oy = radius * Math.cos(pitch);
+                    double oz = radius * Math.cos(yaw) * Math.sin(pitch);
+                    MMParticle.ORB.spawn(world, posX + ox, posY + 0.8f + oy, posZ + oz, ParticleArgs.get().withData(blessingPlayer.posX, blessingPlayer.posY + blessingPlayer.height/2, blessingPlayer.posZ, 20));
+                }
+            }
+            if (getAnimationTick() % 15 == 0) {
+                EntityRing ring = new EntityRing(world, (float)posX, (float)posY + 0.8f, (float)posZ, new Vec3d(0, 0, 0), 15, 1, 223/255f, 66/255f, 1, 3.5f, true);
+                world.spawnEntity(ring);
+            }
+        }
+
         if (!world.isRemote && getAttackTarget() == null && getAnimation() != SOLAR_BEAM_ANIMATION) {
             heal(0.2f);
         }

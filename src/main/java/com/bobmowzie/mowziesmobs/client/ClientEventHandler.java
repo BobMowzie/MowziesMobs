@@ -10,11 +10,14 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderItemInFrameEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -71,6 +74,24 @@ public enum ClientEventHandler {
                 float swingAmount = 1 - normalAmount;
                 rightArm.rotateAngleY = rightArm.rotateAngleY * normalAmount + (0.6F * controller1 + 0.3F * controller2) * swingAmount;
                 rightArm.rotateAngleX = rightArm.rotateAngleX * normalAmount + ((float) -Math.PI / 2 * controller3) * swingAmount;
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onRenderTick(TickEvent.RenderTickEvent event) {
+        EntityPlayer player = Minecraft.getMinecraft().player;
+        if (player != null) {
+            MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
+            if (property != null && property.geomancy.canUse(player) && property.geomancy.isSpawningBoulder()) {
+                BlockPos lookPos = property.geomancy.getLookBlockPos();
+                Vec3d playerEyes = player.getPositionEyes(LLibrary.PROXY.getPartialTicks());
+                Vec3d blockPos = new Vec3d(lookPos.getX() + 0.5, lookPos.getY(), lookPos.getZ() + 0.5);
+                Vec3d vec = playerEyes.subtract(blockPos).normalize();
+                float yaw = (float) Math.atan2(vec.zCoord, vec.xCoord);
+                float pitch = (float) Math.asin(vec.yCoord);
+                player.rotationYaw = (float) (yaw * 180/Math.PI + 90);
+                player.rotationPitch = (float)(pitch * 180/Math.PI);
             }
         }
     }

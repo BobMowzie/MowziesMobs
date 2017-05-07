@@ -56,6 +56,22 @@ public abstract class Power {
 
     }
 
+    public void onRightMouseDown(EntityPlayer player) {
+
+    }
+
+    public void onLeftMouseDown(EntityPlayer player) {
+
+    }
+
+    public void onRightMouseUp(EntityPlayer player) {
+
+    }
+
+    public void onLeftMouseUp(EntityPlayer player) {
+
+    }
+
     public boolean canUse(EntityPlayer player) {
         return true;
     }

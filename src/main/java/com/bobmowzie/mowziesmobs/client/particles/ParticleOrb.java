@@ -31,6 +31,7 @@ public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
         signX = Math.signum(targetX - posX);
         signZ = Math.signum(targetZ - posZ);
         mode = 0;
+        particleAlpha = 0;
     }
 
     @Override
@@ -46,6 +47,7 @@ public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
         this.startZ = z;
         this.duration = speed;
         mode = 1;
+        particleAlpha = 0;
     }
 
     @Override
@@ -54,7 +56,13 @@ public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
     }
 
     @Override
+    public boolean isTransparent() {
+        return true;
+    }
+
+    @Override
     public void onUpdate() {
+        particleAlpha = 0;
         prevPosX = posX;
         prevPosY = posY;
         prevPosZ = posZ;
@@ -78,7 +86,7 @@ public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
             motionZ = vecZ;
             move(motionX, motionY, motionZ);
         } else if (mode == 1) {
-            particleAlpha = (float) (10 * Math.sqrt(Math.pow(posX - startX, 2) + Math.pow(posY - startY, 2) + Math.pow(posZ - startZ, 2)) / Math.sqrt(Math.pow(targetX - startX, 2) + Math.pow(targetY - startY, 2) + Math.pow(targetZ - startZ, 2)));
+            particleAlpha = (float)particleAge/(float)duration;//(float) (1 * Math.sqrt(Math.pow(posX - startX, 2) + Math.pow(posY - startY, 2) + Math.pow(posZ - startZ, 2)) / Math.sqrt(Math.pow(targetX - startX, 2) + Math.pow(targetY - startY, 2) + Math.pow(targetZ - startZ, 2)));
             posX = startX + (targetX - startX) / (1 + Math.exp(-(8 / duration) * (particleAge - duration / 2)));
             posY = startY + (targetY - startY) / (1 + Math.exp(-(8 / duration) * (particleAge - duration / 2)));
             posZ = startZ + (targetZ - startZ) / (1 + Math.exp(-(8 / duration) * (particleAge - duration / 2)));

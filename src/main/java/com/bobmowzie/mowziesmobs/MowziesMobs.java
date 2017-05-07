@@ -36,7 +36,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class MowziesMobs {
     public static final String MODID = "mowziesmobs";
     public static final String NAME = "Mowzie's Mobs";
-    public static final String VERSION = "1.3.1";
+    public static final String VERSION = "1.3.2";
     public static final String LLIBRARY_VERSION = "1.7.4";
     public static final String DEPENDENCIES = "required-after:llibrary@[" + MowziesMobs.LLIBRARY_VERSION + ",)";
 
@@ -48,7 +48,6 @@ public class MowziesMobs {
     public static SimpleNetworkWrapper NETWORK_WRAPPER;
     @Config
     public static ConfigHandler CONFIG;
-    private static ModContainer container;
 
     @EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {

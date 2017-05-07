@@ -7,6 +7,7 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaya;
 import net.ilexiconn.llibrary.server.structure.StructureBuilder;
 import net.minecraft.block.*;
+import net.minecraft.init.Biomes;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.tileentity.TileEntitySkull;
@@ -22,6 +23,7 @@ import org.lwjgl.Sys;
 
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * Created by Josh on 10/9/2016.
@@ -677,17 +679,17 @@ public class StructureBarakoaVillage {
             return;
         }
         if (rand.nextInt(chance) == 0) {
-
-            boolean isSavanna = false;
-            for (Biome savannaBiome : BiomeDictionary.getBiomes(BiomeDictionary.Type.SAVANNA)) {
-                if (world.getBiome(new BlockPos(x, 0, z)) == savannaBiome) {
-                    isSavanna = true;
-                    break;
-                }
-            }
+            Biome biome = world.getBiome(new BlockPos(x, 50, z));
+            Set<BiomeDictionary.Type> types = BiomeDictionary.getTypes(biome);
+            boolean isSavanna = types.contains(BiomeDictionary.Type.SAVANNA);
+//            for (Biome savannaBiome : BiomeDictionary.getBiomes(BiomeDictionary.Type.SAVANNA)) {
+//                if (world.getBiome(new BlockPos(x, 0, z)) == savannaBiome) {
+//                    isSavanna = true;
+//                    break;
+//                }
+//            }
             if (!isSavanna) return;
 
-            System.out.println("Village at " + x + ", " + z);
             //System.out.println("Passes chance test");
             BlockPos pos = new BlockPos(x, 0, z);
             int y = findGenHeight(world, pos);

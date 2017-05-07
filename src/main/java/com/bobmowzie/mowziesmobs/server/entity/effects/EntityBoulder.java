@@ -39,7 +39,6 @@ import java.util.List;
 public class EntityBoulder extends Entity {
     int blockId;
     private EntityLivingBase caster;
-    private int size;
     private boolean travelling;
     private static float SPEED = 1.5f;
     public IBlockState storedBlock;
@@ -48,6 +47,7 @@ public class EntityBoulder extends Entity {
     private static final DataParameter<Boolean> SHOULD_EXPLODE = EntityDataManager.createKey(EntityBoulder.class, DataSerializers.BOOLEAN);
     private static final DataParameter<BlockPos> ORIGIN = EntityDataManager.createKey(EntityBoulder.class, DataSerializers.BLOCK_POS);
     private static final DataParameter<Integer> DEATH_TIME = EntityDataManager.createKey(EntityBoulder.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> SIZE = EntityDataManager.createKey(EntityBoulder.class, DataSerializers.VARINT);
     public float animationOffset = 0;
     private List<Entity> ridingEntities = new ArrayList<Entity>();
 
@@ -63,34 +63,13 @@ public class EntityBoulder extends Entity {
     public EntityBoulder(World world, EntityLivingBase caster, int x, int y, int z, int size, IBlockState block) {
         this(world);
         this.caster = caster;
+        setBoulderSize(size);
         this.setPosition(x + 0.5F, y + 1, z + 0.5F);
         if (!world.getEntitiesWithinAABB(EntityBoulder.class, getEntityBoundingBox()).isEmpty()) setDead();
         if (world.collidesWithAnyBlock(getEntityBoundingBox())) setDead();
         if (!world.isRemote && block != null) {
             IBlockState newBlock = block;
             Material mat = block.getMaterial();
-            if (mat != Material.GRASS
-                    && mat != Material.GROUND
-                    && mat != Material.ROCK
-                    && mat != Material.CLAY
-                    && mat != Material.SAND
-                    ) {
-                setDead();
-                return;
-            }
-            if (block == Blocks.HAY_BLOCK
-                    || block.getBlock() == Blocks.NETHER_WART_BLOCK
-                    || block.getBlock() instanceof BlockFence
-                    || block.getBlock() == Blocks.MOB_SPAWNER
-                    || block.getBlock() == Blocks.BONE_BLOCK
-                    || block.getBlock() == Blocks.ENCHANTING_TABLE
-                    || block.getBlock() == Blocks.END_PORTAL_FRAME
-                    || block.getBlock() == Blocks.ENDER_CHEST
-                    || block.getBlock() == Blocks.SLIME_BLOCK
-                    ) {
-                setDead();
-                return;
-            }
             if (mat == Material.GRASS || mat == Material.GROUND) newBlock = Blocks.DIRT.getDefaultState();
             else if (mat == Material.ROCK) {
                 if (block.getBlock().getUnlocalizedName().contains("ore")) newBlock = Blocks.STONE.getDefaultState();
@@ -111,6 +90,7 @@ public class EntityBoulder extends Entity {
                 else if (block.getBlock() == Blocks.SOUL_SAND) newBlock = Blocks.NETHERRACK.getDefaultState();
             }
             setBlock(newBlock);
+            setSizeParams();
         }
     }
 
@@ -120,6 +100,12 @@ public class EntityBoulder extends Entity {
         getDataManager().register(SHOULD_EXPLODE, false);
         getDataManager().register(ORIGIN, new BlockPos(0, 0, 0));
         getDataManager().register(DEATH_TIME, 1200);
+        getDataManager().register(SIZE, 0);
+    }
+
+    private void setSizeParams() {
+        int size = getBoulderSize();
+        if (size > 0) setSize(3F, 2F);
     }
 
     @Override
@@ -253,6 +239,14 @@ public class EntityBoulder extends Entity {
         dataManager.set(DEATH_TIME, deathTime);
     }
 
+    public int getBoulderSize() {
+        return dataManager.get(SIZE);
+    }
+
+    public void setBoulderSize(int size) {
+        dataManager.set(SIZE, size);
+    }
+
     @Override
     public void writeEntityToNBT(NBTTagCompound compound) {
         Optional<IBlockState> blockOption = Optional.of(getBlock());
@@ -260,6 +254,7 @@ public class EntityBoulder extends Entity {
             compound.setTag("block", NBTUtil.writeBlockState(new NBTTagCompound(), blockOption.get()));
         }
         compound.setInteger("deathTime", getDeathTime());
+        compound.setInteger("size", getBoulderSize());
     }
 
     @Override
@@ -267,6 +262,8 @@ public class EntityBoulder extends Entity {
         IBlockState blockState = NBTUtil.readBlockState((NBTTagCompound) compound.getTag("block"));
         setBlock(blockState);
         setDeathTime(compound.getInteger("deathTime"));
+        setBoulderSize(compound.getInteger("size"));
+        setSizeParams();
     }
 
     @Override

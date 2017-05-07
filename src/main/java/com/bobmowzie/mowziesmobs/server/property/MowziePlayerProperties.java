@@ -9,6 +9,7 @@ import net.ilexiconn.llibrary.server.nbt.NBTProperty;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.MathHelper;
+import org.lwjgl.input.Mouse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +23,15 @@ public class MowziePlayerProperties extends EntityProperties<EntityPlayer> {
     private int prevTime;
     @NBTProperty
     private int time;
+    public boolean mouseRightDown = false;
+    public boolean mouseLeftDown = false;
 
     public int tribeCircleTick;
     public List<EntityBarakoanToPlayer> tribePack = new ArrayList<>();
     public int tribePackRadius = 3;
 
-    public Power[] powers = new Power[]{new PowerGeomancy(this)};
+    public PowerGeomancy geomancy = new PowerGeomancy(this);
+    public Power[] powers = new Power[]{geomancy};
 
     public static float fnc1(float x) {
         return x * ((45 - 27 * x) * x - 18);

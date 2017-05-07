@@ -55,6 +55,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.Sys;
+import org.lwjgl.input.Mouse;
 
 public enum ServerEventHandler {
     INSTANCE;
@@ -155,6 +156,31 @@ public enum ServerEventHandler {
             }
         }
 
+        if (Mouse.isButtonDown(0) && !property.mouseLeftDown) {
+            property.mouseLeftDown = true;
+            for(int i = 0; i < property.powers.length; i++) {
+                property.powers[i].onLeftMouseDown(player);
+            }
+        }
+        if (Mouse.isButtonDown(1) && !property.mouseRightDown) {
+            property.mouseRightDown = true;
+            for(int i = 0; i < property.powers.length; i++) {
+                property.powers[i].onRightMouseDown(player);
+            }
+        }
+        if (!Mouse.isButtonDown(0) && property.mouseLeftDown) {
+            property.mouseLeftDown = false;
+            for(int i = 0; i < property.powers.length; i++) {
+                property.powers[i].onLeftMouseUp(player);
+            }
+        }
+        if (!Mouse.isButtonDown(1) && property.mouseRightDown) {
+            property.mouseRightDown = false;
+            for(int i = 0; i < property.powers.length; i++) {
+                property.powers[i].onRightMouseUp(player);
+            }
+        }
+
         for(int i = 0; i < property.powers.length; i++) {
             property.powers[i].onUpdate(event);
         }
@@ -208,7 +234,7 @@ public enum ServerEventHandler {
         }
 
         for(int i = 0; i < property.powers.length; i++) {
-            if (event.getSide() == Side.SERVER) property.powers[i].onRightClickBlock(event);
+            property.powers[i].onRightClickBlock(event);
         }
     }
 
