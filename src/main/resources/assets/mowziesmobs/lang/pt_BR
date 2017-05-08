@@ -1,0 +1,77 @@
+# Creative Tabs
+itemGroup.mowziesmobs.creativeTab=Mowzie's Mobs
+
+# Entities
+entity.mowziesmobs.Foliaath.name=Foliaath
+entity.mowziesmobs.FerrousWroughtnaut.name=Wroughtnaut Ferroso
+entity.mowziesmobs.BabyFoliaath.name=Foliaath Bebê
+entity.mowziesmobs.TribesmanHunter.name=Barakoa
+entity.mowziesmobs.TribesmanElite.name=Barakoana
+entity.mowziesmobs.TribesmanVillager.name=Barakoa
+entity.mowziesmobs.TribeLeader.name=Barako, o Cacique do Sol
+
+# Items
+item.foliaathSeed.name=Semente de Foliaath
+item.mobRemover.name=Removedor de Mob
+item.wroughtAxe.name=Machado de Mil Metais
+item.wroughtHelm.name=Elmo Forjado
+item.barakoaMask.fury.name=Máscara da Fúria
+item.barakoaMask.fear.name=Máscara do Medo
+item.barakoaMask.rage.name=Máscara do Raiva
+item.barakoaMask.bliss.name=Máscara da Felicidade
+item.barakoaMask.misery.name=Máscara da Miséria
+item.barakoMask.name=Rosto do Sol
+item.dart.name=Dardo
+item.spear.name=Lança
+item.blowgun.name=Zarabatana
+item.grantSunsBlessing.name=Receba a Bênção do Sol
+item.testStructure.name=Test Structures
+
+item.blowgun.text.0=Carrega rapidamente
+item.blowgun.text.1=Curto alcance
+item.blowgun.text.2=Apenas dispara dardos
+
+item.wroughtAxe.text.0=Nunca quebra
+item.wroughtAxe.text.1=Clique com o direito para atacar em arco
+
+item.barakoMask.text.0=Nunca quebra
+item.barakoMask.text.1=Equipe, então clique com o direito com uma máscara Barakoa
+
+item.dart.text.0=Pode apenas ser usado com zarabatana
+item.dart.text.1=Envenana alvos
+
+item.foliaathSeed.text.0=Plantar na grama
+item.foliaathSeed.text.0=Alimentar quando estiver com forme por 2 dias
+
+item.grantSunsBlessing.text.0=Esse item é apenas do modo criativo
+item.grantSunsBlessing.text.1=Concede a Bênção do Sol por 20 minutos
+item.grantSunsBlessing.text.2=Com a mão vazia, clique com o direito para chamar um ataque do sol
+item.grantSunsBlessing.text.3=Com a a mão vazia, shift-clique com o direito para disparar um raio solar (custa 2 minutos)
+
+item.mobRemover.text.0=Clique com o esquerdo para remover um mob do Mowzie's Mobs
+
+item.wroughtHelm.text.0=Nunca quebra
+
+item.spear.text.0=Aumenta o alcance do ataque em 3,5 blocos
+
+# Blocks
+tile.campfire.name=Fogueira de Acampamento
+tile.paintedAcacia.name=Madeira de Acácia Pintada
+tile.paintedAcaciaSlab.name=Laje de Madeira de Acácia Pintada
+
+# Potions
+potion.sunsBlessing=Bênção do Sol
+
+# Tile Entities
+
+
+# Containers
+entity.barakoaya.trade=Barakoa
+entity.barako.trade=Barako, o Cacique do Sol
+entity.barako.trade.button.text=Trocar
+entity.barako.trade.button.hover=Voltar depois para reabastecer de graça
+entity.barako.replenish.button.text=Reabastecer
+entity.barako.replenish.button.hover=Reabasteça sua bênção de graça
+
+# Death Messages
+death.attack.dart=%1$s foi atingido por %2$s
