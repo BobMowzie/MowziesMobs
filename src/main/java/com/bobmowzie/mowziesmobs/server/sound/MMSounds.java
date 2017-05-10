@@ -204,11 +204,22 @@ public enum MMSounds {
 
     public static final SoundEvent EFFECT_GEOMANCY_BREAK_MEDIUM_3 = reg("geomancy.breakmedium3");
 
+    public static final SoundEvent[] EFFECT_GEOMANCY_BREAK_MEDIUM = {
+            EFFECT_GEOMANCY_BREAK_MEDIUM_1,
+            EFFECT_GEOMANCY_BREAK_MEDIUM_2,
+            EFFECT_GEOMANCY_BREAK_MEDIUM_3
+    };
+
     public static final SoundEvent EFFECT_GEOMANCY_HIT = reg("geomancy.hit");
 
     public static final SoundEvent EFFECT_GEOMANCY_HIT_MEDIUM_1 = reg("geomancy.hitmedium");
 
     public static final SoundEvent EFFECT_GEOMANCY_HIT_MEDIUM_2 = reg("geomancy.hitmedium2");
+
+    public static final SoundEvent[] EFFECT_GEOMANCY_HIT_MEDIUM = {
+            EFFECT_GEOMANCY_HIT_MEDIUM_1,
+            EFFECT_GEOMANCY_HIT_MEDIUM_2
+    };
 
     public static final SoundEvent EFFECT_GEOMANCY_BREAK = reg("geomancy.rockbreak");
 
@@ -224,6 +235,9 @@ public enum MMSounds {
 
     public static final SoundEvent EFFECT_GEOMANCY_HIT_SMALL = reg("geomancy.smallrockhit");
 
+    public static final SoundEvent EFFECT_GEOMANCY_BOULDER_CHARGE = reg("geomancy.bouldercharge");
+
+    public static final SoundEvent EFFECT_GEOMANCY_MAGIC_CHARGE_SMALL = reg("geomancy.magicchargesmall");
 
     public void onInit() {}
 

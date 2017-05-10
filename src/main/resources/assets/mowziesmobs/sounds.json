@@ -319,5 +319,11 @@
 	},
 	"geomancy.smallrockhit": {
 		"sounds": [ "mowziesmobs:effects/geomancy/small_rock_hit" ]
+	},
+	"geomancy.bouldercharge": {
+		"sounds": [ "mowziesmobs:effects/geomancy/boulder_spawn_charge" ]
+	},
+	"geomancy.magicchargesmall": {
+		"sounds": [ "mowziesmobs:effects/geomancy/magic_charge_small" ]
 	}
 }

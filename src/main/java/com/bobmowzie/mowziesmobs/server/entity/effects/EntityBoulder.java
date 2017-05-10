@@ -4,13 +4,11 @@ import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.google.common.base.Optional;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockFence;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
-import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -26,8 +24,6 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -40,9 +36,7 @@ public class EntityBoulder extends Entity {
     int blockId;
     private EntityLivingBase caster;
     private boolean travelling;
-    private static float SPEED = 1.5f;
     public IBlockState storedBlock;
-    private int damage;
     private static final DataParameter<Optional<IBlockState>> BLOCK_STATE = EntityDataManager.createKey(EntityBoulder.class, DataSerializers.OPTIONAL_BLOCK_STATE);
     private static final DataParameter<Boolean> SHOULD_EXPLODE = EntityDataManager.createKey(EntityBoulder.class, DataSerializers.BOOLEAN);
     private static final DataParameter<BlockPos> ORIGIN = EntityDataManager.createKey(EntityBoulder.class, DataSerializers.BLOCK_POS);
@@ -50,23 +44,27 @@ public class EntityBoulder extends Entity {
     private static final DataParameter<Integer> SIZE = EntityDataManager.createKey(EntityBoulder.class, DataSerializers.VARINT);
     public float animationOffset = 0;
     private List<Entity> ridingEntities = new ArrayList<Entity>();
+    public int boulderSize = 0;
+
+    private float speed = 1.5f;
+    private int damage = 6;
+    private int finishedRisingTick = 4;
 
     public EntityBoulder(World world) {
         super(world);
-        setSize(1F, 1F);
+        setSize(10, 10);
         travelling = false;
         damage = 6;
+        finishedRisingTick = 4;
         animationOffset = (float) (Math.random() * 8);
         this.setOrigin(new BlockPos(this));
     }
 
-    public EntityBoulder(World world, EntityLivingBase caster, int x, int y, int z, int size, IBlockState block) {
+    public EntityBoulder(World world, EntityLivingBase caster, int size, IBlockState block) {
         this(world);
         this.caster = caster;
         setBoulderSize(size);
-        this.setPosition(x + 0.5F, y + 1, z + 0.5F);
-        if (!world.getEntitiesWithinAABB(EntityBoulder.class, getEntityBoundingBox()).isEmpty()) setDead();
-        if (world.collidesWithAnyBlock(getEntityBoundingBox())) setDead();
+        setSizeParams();
         if (!world.isRemote && block != null) {
             IBlockState newBlock = block;
             Material mat = block.getMaterial();
@@ -90,8 +88,13 @@ public class EntityBoulder extends Entity {
                 else if (block.getBlock() == Blocks.SOUL_SAND) newBlock = Blocks.NETHERRACK.getDefaultState();
             }
             setBlock(newBlock);
-            setSizeParams();
         }
+    }
+
+    public boolean checkCanSpawn() {
+        if (!world.getEntitiesWithinAABB(EntityBoulder.class, getEntityBoundingBox()).isEmpty()) return false;
+        if (world.collidesWithAnyBlock(getEntityBoundingBox())) return false;
+        else return true;
     }
 
     @Override
@@ -103,9 +106,23 @@ public class EntityBoulder extends Entity {
         getDataManager().register(SIZE, 0);
     }
 
-    private void setSizeParams() {
+    public void setSizeParams() {
         int size = getBoulderSize();
-        if (size > 0) setSize(3F, 2F);
+        if (size == 0) {
+            setSize(1, 1);
+        }
+        else if (size == 1) {
+            setSize(2, 1.5f);
+            finishedRisingTick = 8;
+            damage = 8;
+            speed = 1.2f;
+        }
+        else if (size > 1) {
+            setSize(3, 2.5f);
+            finishedRisingTick = 12;
+            damage = 10;
+            speed = 1f;
+        }
     }
 
     @Override
@@ -115,12 +132,16 @@ public class EntityBoulder extends Entity {
 
     @Override
     public void onUpdate() {
+        if (firstUpdate) {
+            setSizeParams();
+            boulderSize = getBoulderSize();
+        }
         if (storedBlock == null) storedBlock = getBlock();
         if (getShouldExplode()) explode();
         super.onUpdate();
         move(MoverType.SELF, motionX, motionY, motionZ);
         if (ridingEntities != null) ridingEntities.clear();
-        List<Entity> onTopOfEntities = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().move(new Vec3d(0, 0.5, 0)).expand(0.6,0.5,0.6));
+        List<Entity> onTopOfEntities = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().contract(0, height - 1, 0).move(new Vec3d(0, height - 0.5, 0)).expand(0.6,0.5,0.6));
         for (Entity entity : onTopOfEntities) {
             if (entity != null && entity.canBeCollidedWith() && !(entity instanceof EntityBoulder) && entity.posY >= this.posY + 0.2) ridingEntities.add(entity);
         }
@@ -130,10 +151,10 @@ public class EntityBoulder extends Entity {
             }
         }
 
-        if (ticksExisted < 4) {
+        if (ticksExisted < finishedRisingTick) {
             List<Entity> popUpEntities = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox());
             for (Entity entity:popUpEntities) {
-                if (entity.canBeCollidedWith() && !(entity instanceof EntityBoulder)) entity.move(MoverType.SHULKER_BOX, 0, 0.9 * (-Math.pow(5, -ticksExisted) + 1), 0);
+                if (entity.canBeCollidedWith() && !(entity instanceof EntityBoulder)) entity.move(MoverType.SHULKER_BOX, 0, 2 * (Math.pow(2, -ticksExisted * (0.6 - 0.1 * boulderSize))), 0);
             }
         }
         List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby(1.7);
@@ -162,25 +183,39 @@ public class EntityBoulder extends Entity {
         blockId = Block.getStateId(storedBlock);
 
         if (ticksExisted == 1) {
-            for (int i = 0; i < 20; i++) {
-                Vec3d particlePos = new Vec3d(Math.random() * 1.3, 0, 0);
+            for (int i = 0; i < 20 * width; i++) {
+                Vec3d particlePos = new Vec3d(Math.random() * 1.3 * width, 0, 0);
                 particlePos = particlePos.rotateYaw((float)(Math.random() * 2 * Math.PI));
                 world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, posX + particlePos.xCoord, posY - 1, posZ + particlePos.zCoord, particlePos.xCoord, 2, particlePos.zCoord, blockId);
             }
-            playSound(MMSounds.EFFECT_GEOMANCY_SMALL_CRASH, 1.5f, 1.3f);
-            playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL, 1.5f, 1);
-            EntityRing ring = new EntityRing(world, (float)posX, (float)posY - 0.9f, (float)posZ, new Vec3d(0,1,0), 7, 0.83f, 1, 0.39f, 1f, 1.5f, false);
+            if (boulderSize == 0) {
+                playSound(MMSounds.EFFECT_GEOMANCY_SMALL_CRASH, 1.5f, 1.3f);
+                playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL, 1.5f, 1f);
+            }
+            else if (boulderSize == 1) {
+                playSound(MMSounds.EFFECT_GEOMANCY_HIT_MEDIUM_2, 1.5f, 1.5f);
+                playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL, 1.5f, 0.8f);
+            }
+            else if (boulderSize == 2) {
+                playSound(MMSounds.EFFECT_GEOMANCY_HIT_MEDIUM_1, 1.5f, 0.9f);
+                playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG, 1.5f, 1.5f);
+            }
+            else if (boulderSize == 4) {
+                playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG, 2f, 0.5f);
+            }
+            EntityRing ring = new EntityRing(world, (float)posX, (float)posY - 0.9f, (float)posZ, new Vec3d(0,1,0), (int) (5 + 2 * width), 0.83f, 1, 0.39f, 1f, 1.0f + 0.5f * width, false);
             world.spawnEntity(ring);
         }
 
         int dripTick = ticksExisted - 2;
-        int dripNumber = (int)(6 * Math.pow(1.07, -ticksExisted));
+        int dripNumber = (int)(width * 6 * Math.pow(1.03 + 0.04 * 1/width, -ticksExisted));
         if (dripNumber >= 1 && dripTick > 0) {
             dripNumber *= Math.random();
             for (int i = 0; i < dripNumber; i++) {
-                Vec3d particlePos = new Vec3d(Math.random() * 0.6, 0, 0);
+                Vec3d particlePos = new Vec3d(Math.random() * 0.6 * width, 0, 0);
                 particlePos = particlePos.rotateYaw((float)(Math.random() * 2 * Math.PI));
-                world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, posX + particlePos.xCoord, posY, posZ + particlePos.zCoord, 0, -1, 0, blockId);
+                float offsetY = (float) (Math.random() * (height-1));
+                world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, posX + particlePos.xCoord, posY + offsetY, posZ + particlePos.zCoord, 0, -1, 0, blockId);
             }
         }
         int newDeathTime = getDeathTime() - 1;
@@ -190,14 +225,24 @@ public class EntityBoulder extends Entity {
 
     private void explode() {
         setDead();
-        for (int i = 0; i < 40; i++) {
-            Vec3d particlePos = new Vec3d(Math.random() * 0.7, 0, 0);
+        for (int i = 0; i < 40 * width; i++) {
+            Vec3d particlePos = new Vec3d(Math.random() * 0.7 * width, 0, 0);
             particlePos = particlePos.rotateYaw((float)(Math.random() * 2 * Math.PI));
             particlePos = particlePos.rotatePitch((float)(Math.random() * 2 * Math.PI));
             world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, posX + particlePos.xCoord, posY + 0.5 + particlePos.yCoord, posZ + particlePos.zCoord, particlePos.xCoord, particlePos.yCoord, particlePos.zCoord, blockId);
         }
-        playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL, 1.5f, 0.7f);
-        playSound(MMSounds.EFFECT_GEOMANCY_BREAK, 1.5f, 1f);
+        if (boulderSize == 0) {
+            playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL, 1.5f, 0.9f);
+            playSound(MMSounds.EFFECT_GEOMANCY_BREAK, 1.5f, 1f);
+        }
+        else if (boulderSize == 1) {
+            playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL, 1.5f, 0.7f);
+            playSound(MMSounds.EFFECT_GEOMANCY_BREAK_MEDIUM_3, 1.5f, 1.5f);
+        }
+        else if (boulderSize == 2) {
+            playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG, 1.5f, 1f);
+            playSound(MMSounds.EFFECT_GEOMANCY_BREAK_MEDIUM_1, 1.5f, 0.9f);
+        }
     }
 
     @Nullable
@@ -245,6 +290,7 @@ public class EntityBoulder extends Entity {
 
     public void setBoulderSize(int size) {
         dataManager.set(SIZE, size);
+        boulderSize = size;
     }
 
     @Override
@@ -263,7 +309,6 @@ public class EntityBoulder extends Entity {
         setBlock(blockState);
         setDeathTime(compound.getInteger("deathTime"));
         setBoulderSize(compound.getInteger("size"));
-        setSizeParams();
     }
 
     @Override
@@ -273,19 +318,19 @@ public class EntityBoulder extends Entity {
 
     @Override
     public boolean hitByEntity(Entity entityIn) {
-        if (ticksExisted > 3) {
+        if (ticksExisted > finishedRisingTick - 1) {
             if (entityIn instanceof EntityPlayer
                     && ((EntityPlayer) entityIn).inventory.getCurrentItem() == ItemStack.EMPTY
                     && ((EntityPlayer) entityIn).isPotionActive(PotionHandler.INSTANCE.geomancy)) {
                 EntityPlayer player = (EntityPlayer) entityIn;
                 if (ridingEntities.contains(player)) {
                     Vec3d lateralLookVec = Vec3d.fromPitchYaw(0, player.rotationYaw).normalize();
-                    motionX = SPEED * 0.5 * lateralLookVec.xCoord;
-                    motionZ = SPEED * 0.5 * lateralLookVec.zCoord;
+                    motionX = speed * 0.5 * lateralLookVec.xCoord;
+                    motionZ = speed * 0.5 * lateralLookVec.zCoord;
                 } else {
-                    motionX = SPEED * 0.5 * player.getLookVec().xCoord;
-                    motionY = SPEED * 0.5 * player.getLookVec().yCoord;
-                    motionZ = SPEED * 0.5 * player.getLookVec().zCoord;
+                    motionX = speed * 0.5 * player.getLookVec().xCoord;
+                    motionY = speed * 0.5 * player.getLookVec().yCoord;
+                    motionZ = speed * 0.5 * player.getLookVec().zCoord;
                 }
             }
             else if (entityIn instanceof EntityBoulder && ((EntityBoulder) entityIn).travelling) {
@@ -293,9 +338,9 @@ public class EntityBoulder extends Entity {
                 Vec3d thisPos = new Vec3d(posX, posY, posZ);
                 Vec3d boulderPos = new Vec3d(boulder.posX, boulder.posY, boulder.posZ);
                 Vec3d velVec = thisPos.subtract(boulderPos).normalize();
-                motionX = SPEED * 0.5 * velVec.xCoord;
-                motionY = SPEED * 0.5 * velVec.yCoord;
-                motionZ = SPEED * 0.5 * velVec.zCoord;
+                motionX = speed * 0.5 * velVec.xCoord;
+                motionY = speed * 0.5 * velVec.yCoord;
+                motionZ = speed * 0.5 * velVec.zCoord;
             }
             else {
                 return super.hitByEntity(entityIn);
@@ -303,10 +348,21 @@ public class EntityBoulder extends Entity {
             if (!travelling) setDeathTime(60);
             travelling = true;
 
-            playSound(MMSounds.EFFECT_GEOMANCY_HIT_SMALL, 1.5f, 1f);
-            playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL, 1.5f, 0.9f);
+            if (boulderSize == 0) {
+                playSound(MMSounds.EFFECT_GEOMANCY_HIT_SMALL, 1.5f, 1.3f);
+                playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL, 1.5f, 0.9f);
+            }
+            else if (boulderSize == 1) {
+                playSound(MMSounds.EFFECT_GEOMANCY_HIT_SMALL, 1.5f, 0.9f);
+                playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL, 1.5f, 0.5f);
+            }
+            else if (boulderSize == 2) {
+                playSound(MMSounds.EFFECT_GEOMANCY_HIT_SMALL, 1.5f, 0.5f);
+                playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG, 1.5f, 1.3f);
+            }
+
             Vec3d ringOffset = new Vec3d(motionX, motionY, motionZ).normalize().scale(-1);
-            EntityRing ring = new EntityRing(entityIn.world, (float) posX + (float) ringOffset.xCoord, (float) posY + 0.5f + (float) ringOffset.yCoord, (float) posZ + (float) ringOffset.zCoord, ringOffset.normalize(), 5, 0.83f, 1, 0.39f, 1f, 1.5f, false);
+            EntityRing ring = new EntityRing(entityIn.world, (float) posX + (float) ringOffset.xCoord, (float) posY + 0.5f + (float) ringOffset.yCoord, (float) posZ + (float) ringOffset.zCoord, ringOffset.normalize(), (int) (4 + 1 * width), 0.83f, 1, 0.39f, 1f, 1.0f + 0.5f * width, false);
             entityIn.world.spawnEntity(ring);
         }
         return super.hitByEntity(entityIn);
@@ -335,6 +391,6 @@ public class EntityBoulder extends Entity {
 
     @Override
     public void playSound(SoundEvent soundIn, float volume, float pitch) {
-        super.playSound(soundIn, volume, pitch + (float)Math.random() * 0.5f - 0.25f);
+        super.playSound(soundIn, volume, pitch + (float)Math.random() * 0.25f - 0.125f);
     }
 }

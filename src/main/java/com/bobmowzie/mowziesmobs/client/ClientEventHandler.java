@@ -83,15 +83,16 @@ public enum ClientEventHandler {
         EntityPlayer player = Minecraft.getMinecraft().player;
         if (player != null) {
             MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
-            if (property != null && property.geomancy.canUse(player) && property.geomancy.isSpawningBoulder()) {
-                BlockPos lookPos = property.geomancy.getLookBlockPos();
+            if (property != null && property.geomancy.canUse(player) && property.geomancy.isSpawningBoulder() && property.geomancy.getSpawnBoulderCharge() > 2) {
+                Vec3d lookPos = property.geomancy.getLookPos();
                 Vec3d playerEyes = player.getPositionEyes(LLibrary.PROXY.getPartialTicks());
-                Vec3d blockPos = new Vec3d(lookPos.getX() + 0.5, lookPos.getY(), lookPos.getZ() + 0.5);
-                Vec3d vec = playerEyes.subtract(blockPos).normalize();
+                Vec3d vec = playerEyes.subtract(lookPos).normalize();
                 float yaw = (float) Math.atan2(vec.zCoord, vec.xCoord);
                 float pitch = (float) Math.asin(vec.yCoord);
-                player.rotationYaw = (float) (yaw * 180/Math.PI + 90);
-                player.rotationPitch = (float)(pitch * 180/Math.PI);
+                float dYaw = ((float) (yaw * 180/Math.PI + 90) - player.rotationYaw)/2f;
+                float dPitch = ((float)(pitch * 180/Math.PI) - player.rotationPitch)/2f;
+                player.rotationYaw += dYaw;
+                player.rotationPitch += dPitch;
             }
         }
     }

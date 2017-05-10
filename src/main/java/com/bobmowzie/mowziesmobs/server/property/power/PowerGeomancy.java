@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityRing;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.server.core.patcher.LLibraryHooks;
 import net.minecraft.block.Block;
@@ -39,7 +40,7 @@ public class PowerGeomancy extends Power {
     private boolean liftedMouse = true;
     private int spawnBoulderCharge = 0;
     private BlockPos spawnBoulderPos = new BlockPos(0, 0, 0);
-    private BlockPos lookBlockPos = new BlockPos(0, 0, 0);
+    private Vec3d lookPos = new Vec3d(0, 0, 0);
     private IBlockState spawnBoulderBlock = Blocks.DIRT.getDefaultState();
 
     public PowerGeomancy(MowziePlayerProperties properties) {
@@ -58,7 +59,33 @@ public class PowerGeomancy extends Power {
             }
             else {
                 spawnBoulderCharge++;
-                player.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 0, 2, false, false));
+                if (spawnBoulderCharge > 2) player.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 0, 2, false, false));
+                if (spawnBoulderCharge == 1) player.playSound(MMSounds.EFFECT_GEOMANCY_BOULDER_CHARGE, 1, 0.95f);
+                if ((spawnBoulderCharge + 10) % 15 == 0 && spawnBoulderCharge < 40) {
+                    EntityRing ring = new EntityRing(player.world, (float)player.posX, (float)player.posY + player.height/2f, (float)player.posZ, new Vec3d(0, 1, 0), 10, 0.83f, 1, 0.39f, 0.7f, 0.8f + 2.7f * spawnBoulderCharge/60f, false) {
+                        public float interpolate(float delta) {
+                            return 1 - (ticksExisted + delta)/duration;
+                        }
+                    };
+                    if (player.world.isRemote) player.world.spawnEntity(ring);
+                }
+                if (spawnBoulderCharge == 50) {
+                    EntityRing ring = new EntityRing(player.world, (float)player.posX, (float)player.posY + player.height/2f, (float)player.posZ, new Vec3d(0, 1, 0), 20, 0.83f, 1, 0.39f, 0.7f, 4, true);
+                    if (player.world.isRemote) player.world.spawnEntity(ring);
+                    player.playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL, 1, 1f);
+                }
+                if (player.world.isRemote && spawnBoulderCharge > 5 && spawnBoulderCharge < 30) {
+                    int particleCount = 4;
+                    while (--particleCount != 0) {
+                        double radius = 0.5f + 1.5f * spawnBoulderCharge/30f;
+                        double yaw = Math.random() * 2 * Math.PI;
+                        double pitch = Math.random() * 2 * Math.PI;
+                        double ox = radius * Math.sin(yaw) * Math.sin(pitch);
+                        double oy = radius * Math.cos(pitch);
+                        double oz = radius * Math.cos(yaw) * Math.sin(pitch);
+                        MMParticle.ORB.spawn(player.world, player.posX + ox, player.posY + oy + player.height/2, player.posZ + oz, ParticleFactory.ParticleArgs.get().withData(player.posX, player.posY + player.height/2, player.posZ, 14));
+                    }
+                }
             }
             if (spawnBoulderCharge > 60) {
                 spawnBoulder(player);
@@ -89,7 +116,7 @@ public class PowerGeomancy extends Power {
             int x = MathHelper.floor(event.getHitVec().xCoord);
             int y = MathHelper.floor(event.getHitVec().yCoord);
             int z = MathHelper.floor(event.getHitVec().zCoord);
-            lookBlockPos = new BlockPos(event.getHitVec().xCoord, event.getHitVec().yCoord, event.getHitVec().zCoord);
+            lookPos = new Vec3d(event.getHitVec().xCoord, event.getHitVec().yCoord, event.getHitVec().zCoord);
             spawnBoulderPos = new BlockPos(x, y - 1, z);
             spawnBoulderBlock = player.world.getBlockState(spawnBoulderPos);
             Material mat = spawnBoulderBlock.getMaterial();
@@ -125,15 +152,16 @@ public class PowerGeomancy extends Power {
         return spawnBoulderPos;
     }
 
-    public BlockPos getLookBlockPos() {
-        return lookBlockPos;
+    public Vec3d getLookPos() {
+        return lookPos;
     }
 
     private void spawnBoulder(EntityPlayer player) {
         int size = (int)Math.floor(spawnBoulderCharge/15.f);
-        EntityBoulder boulder = new EntityBoulder(player.world, player, spawnBoulderPos.getX(), spawnBoulderPos.getY() + 1, spawnBoulderPos.getZ(), size, spawnBoulderBlock);
-        if (!player.world.isRemote) {
-            if (!boulder.isDead) player.world.spawnEntity(boulder);
+        EntityBoulder boulder = new EntityBoulder(player.world, player, size, spawnBoulderBlock);
+        boulder.setPosition(spawnBoulderPos.getX() + 0.5F, spawnBoulderPos.getY() + 2, spawnBoulderPos.getZ() + 0.5F);
+        if (!player.world.isRemote && boulder.checkCanSpawn()) {
+            player.world.spawnEntity(boulder);
         }
         spawnBoulderCooldown = 10;
         spawnBoulderCharge = 0;
@@ -143,5 +171,9 @@ public class PowerGeomancy extends Power {
     @Override
     public boolean canUse(EntityPlayer player) {
         return player.inventory.getCurrentItem() == ItemStack.EMPTY && player.isPotionActive(PotionHandler.INSTANCE.geomancy);
+    }
+
+    public int getSpawnBoulderCharge() {
+        return spawnBoulderCharge;
     }
 }
