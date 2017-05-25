@@ -1,8 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
+import com.bobmowzie.mowziesmobs.client.model.tools.LegArticulator;
 import com.bobmowzie.mowziesmobs.server.entity.EntityFrostmaw;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.model.ModelAnimator;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
@@ -69,6 +68,9 @@ public class ModelFrostmaw extends AdvancedModelBase {
     public AdvancedModelRenderer rightFoot;
     public AdvancedModelRenderer legRightFur;
     public AdvancedModelRenderer chestJoint;
+    public AdvancedModelRenderer handController;
+    public AdvancedModelRenderer swingOffsetController;
+    public AdvancedModelRenderer roarController;
 
     private ModelAnimator animator;
 
@@ -150,7 +152,7 @@ public class ModelFrostmaw extends AdvancedModelBase {
         this.setRotateAngle(jawJoint, -0.17453292519943295F, -0.7853981633974483F, 0.0F);
         this.leftFingers = new AdvancedModelRenderer(this, 0, 62);
         this.leftFingers.mirror = true;
-        this.leftFingers.setRotationPoint(0.0F, 2.5F, 2.0F);
+        this.leftFingers.setRotationPoint(0.0F, 0.0F, 7.0F);
         this.leftFingers.addBox(-10.0F, -7.5F, -2.5F, 20, 10, 5, 0.0F);
         this.headRotator = new AdvancedModelRenderer(this, 0, 0);
         this.headRotator.setRotationPoint(0.0F, -6.0F, -16.0F);
@@ -216,8 +218,8 @@ public class ModelFrostmaw extends AdvancedModelBase {
         this.setRotateAngle(chestJoint, -0.7853981633974483F, 0.0F, 0.0F);
         this.leftFingersJoint = new AdvancedModelRenderer(this, 0, 47);
         this.leftFingersJoint.mirror = true;
-        this.leftFingersJoint.setRotationPoint(0.0F, 13.0F, 2.0F);
-        this.leftFingersJoint.addBox(-10.0F, 0.0F, -5.0F, 20, 5, 7, 0.0F);
+        this.leftFingersJoint.setRotationPoint(0.0F, 15.5F, -3.0F);
+        this.leftFingersJoint.addBox(-10.0F, -2.5F, 0.0F, 20, 5, 7, 0.0F);
         this.headBack = new AdvancedModelRenderer(this, 0, 139);
         this.headBack.setRotationPoint(14.0F, 12.0F, -14.0F);
         this.headBack.addBox(-16.0F, 0.0F, -16.0F, 32, 6, 32, 0.0F);
@@ -286,6 +288,9 @@ public class ModelFrostmaw extends AdvancedModelBase {
         this.legLeftJoint.setRotationPoint(9.0F, 3.14F, 0.0F);
         this.legLeftJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         this.setRotateAngle(legLeftJoint, -0.6981317007977318F, 0.0F, 0.0F);
+        handController = new AdvancedModelRenderer(this, 0, 0);
+        swingOffsetController = new AdvancedModelRenderer(this, 0, 0);
+        roarController = new AdvancedModelRenderer(this, 0, 0);
 
         this.leftHandJoint.addChild(this.leftHand);
         this.legLeft1.addChild(this.legLeft2);
@@ -372,6 +377,16 @@ public class ModelFrostmaw extends AdvancedModelBase {
 
     public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, EntityFrostmaw entity) {
         resetToDefaultPose();
+        float delta = LLibrary.PROXY.getPartialTicks();
+
+        LegArticulator.articulateQuadruped(entity, entity.legSolver, waist, headJoint,
+                legLeft1, legLeft2, legRight1, legRight2, armLeftJoint, armLeftJoint2, armRightJoint, armRightJoint2,
+                0.6f, 0.6f, -0.65f, -0.65f,
+                delta
+        );
+        legLeftJoint.rotateAngleX -= waist.rotateAngleX - waist.defaultRotationX;
+        legRightJoint.rotateAngleX -= waist.rotateAngleX - waist.defaultRotationX;
+
 //        f = 0.5f * (entity.ticksExisted + LLibrary.PROXY.getPartialTicks());
 //        f1 = 1f;
         float globalSpeed = 0.5f;
@@ -380,8 +395,22 @@ public class ModelFrostmaw extends AdvancedModelBase {
         float frontDegree = 1.1f;
         float frontOffset = (float) (Math.PI/2);
 
+        float lookLimit = 50;
+        if (f3 > lookLimit) {
+            f3 = lookLimit;
+        }
+        if (f3 < -lookLimit) {
+            f3 = -lookLimit;
+        }
+
+        if (entity.getAnimation() == entity.ROAR_ANIMATION) {
+            f3 = f3 / (entity.getAnimationTick() + delta);
+            f4 = f4 / (entity.getAnimationTick() + delta);
+        }
+
         faceTarget(f3, f4, 1, headJoint);
 
+        waist.rotationPointZ += 10;
         bob(waist, globalSpeed, globalHeight * 3f, false, f, f1);
         walk(waist, globalSpeed, globalHeight * 0.12f, false, frontOffset, 0.08f, f, f1);
         walk(headJoint, globalSpeed, globalHeight * 0.12f, true, frontOffset + 0.4f, 0.08f, f, f1);
@@ -427,5 +456,415 @@ public class ModelFrostmaw extends AdvancedModelBase {
         EntityFrostmaw frostmaw = (EntityFrostmaw) entity;
         animator.update(frostmaw);
         setRotationAngles(f, f1, f2, f3, f4, f5, frostmaw);
+        float frame = frostmaw.ticksExisted + LLibrary.PROXY.getPartialTicks();
+
+        if (frostmaw.getAnimation() == EntityFrostmaw.SWIPE_ANIMATION) {
+            animator.setAnimation(EntityFrostmaw.SWIPE_ANIMATION);
+            if (frostmaw.swingWhichArm) {
+                animator.startKeyframe(7);
+                animator.rotate(waist, -0.3f, 0.08f, 0);
+                animator.rotate(legRightJoint, 0.3f, 0, 0);
+                animator.rotate(legLeftJoint, 0.3f, 0, 0);
+                animator.rotate(chest, 0, 0.08f, 0.5f);
+                animator.rotate(headJoint, 0.2f, 0, -0.35f);
+                animator.rotate(armLeftJoint, 0.3f, 0, -0.5f);
+                animator.rotate(armLeftJoint, 0.2f, 0, -0.25f);
+                animator.rotate(armLeftJoint2, 0f, 0, 0.18f);
+                animator.rotate(leftHand, -0.1f, 0, 0.05f);
+
+                animator.rotate(armRightJoint, -1.5f, 0.2f, 0f);
+                animator.rotate(armRight1, 0, 0, 0.5f);
+                animator.rotate(armRight2, 0.4f, 0.4f, 0f);
+                animator.rotate(rightHand, -0.8f, 0.2f, -0.8f);
+                animator.move(handController, 0, 1, 0);
+                animator.endKeyframe();
+
+                animator.setStaticKeyframe(2);
+
+                animator.startKeyframe(5);
+                animator.rotate(waist, 0.15f, -0.2f, 0);
+                animator.rotate(chest, 0, -0.2f, -0.5f);
+                animator.rotate(headJoint, -0.15f, 0.35f, 0.4f);
+                animator.rotate(legRightJoint, -0.15f, 0, 0);
+                animator.rotate(legLeftJoint, -0.15f, 0, 0);
+
+                animator.rotate(armLeftJoint, -0.8f, 0.4f, 0.8f);
+                animator.move(armLeftJoint, 0, 0, 1f);
+                animator.rotate(armLeftJoint, 0.2f, 0, -0.25f);
+                animator.rotate(armLeftJoint2, 1f, 0, -0.2f);
+                animator.rotate(armLeft2, 0, 0.2f, 0);
+                animator.rotate(leftHand, -0.5f, 0, -0.1f);
+
+                animator.rotate(armRightJoint, -0.8f, -0.4f, 0f);
+                animator.move(armRightJoint, 0, 0, -13);
+                animator.rotate(armRight1, 0, 0, -0.5f);
+                animator.rotate(armRight2, 0.5f, 0.4f, 0f);
+                animator.rotate(rightHand, -0.4f, 0.6f, -0.8f);
+                animator.move(handController, 0, 1, 0);
+                animator.move(swingOffsetController, 7, 0, 0);
+                animator.endKeyframe();
+                animator.setStaticKeyframe(3);
+                animator.resetKeyframe(10);
+
+                float swingFrame = swingOffsetController.rotationPointX;
+                if (entity.getAnimationTick() <= 14) {
+                    waist.rotateAngleX += 0.1f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    legRightJoint.rotateAngleX -= 0.1f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    legLeftJoint.rotateAngleX -= 0.1f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    armLeftJoint.rotateAngleX -= 0.2f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    armLeftJoint.rotationPointY -= 6f * (0.0817 * -swingFrame * (swingFrame - 7));
+
+                    armRightJoint.rotateAngleX += 0.4f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    armRight2.rotateAngleX -= 0.2f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    armRight2.rotateAngleY += 1f * (0.0817 * -swingFrame * (swingFrame - 7));
+                }
+            }
+            else {
+                animator.startKeyframe(7);
+                animator.rotate(waist, -0.3f, -0.08f, 0);
+                animator.rotate(legLeftJoint, 0.3f, 0, 0);
+                animator.rotate(legRightJoint, 0.3f, 0, 0);
+                animator.rotate(chest, 0, -0.08f, -0.5f);
+                animator.rotate(headJoint, 0.2f, 0, 0.35f);
+                animator.rotate(armRightJoint, 0.3f, 0, 0.5f);
+                animator.rotate(armRightJoint, 0.2f, 0, 0.25f);
+                animator.rotate(armRightJoint2, 0f, 0, -0.18f);
+                animator.rotate(rightHand, -0.1f, 0, -0.05f);
+
+                animator.rotate(armLeftJoint, -1.5f, -0.2f, 0f);
+                animator.rotate(armLeft1, 0, 0, -0.5f);
+                animator.rotate(armLeft2, 0.4f, -0.4f, 0f);
+                animator.rotate(leftHand, -0.8f, -0.2f, 0.8f);
+                animator.move(handController, 1, 0, 0);
+                animator.endKeyframe();
+
+                animator.setStaticKeyframe(2);
+
+                animator.startKeyframe(5);
+                animator.rotate(waist, 0.15f, 0.2f, 0);
+                animator.rotate(chest, 0, 0.2f, 0.5f);
+                animator.rotate(headJoint, -0.15f, -0.35f, -0.4f);
+                animator.rotate(legLeftJoint, -0.15f, 0, 0);
+                animator.rotate(legRightJoint, -0.15f, 0, 0);
+
+                animator.rotate(armRightJoint, -0.8f, -0.4f, -0.8f);
+                animator.move(armRightJoint, 0, 0, -1f);
+                animator.rotate(armRightJoint, 0.2f, 0, 0.25f);
+                animator.rotate(armRightJoint2, 1f, 0, 0.2f);
+                animator.rotate(armRight2, 0, -0.2f, 0);
+                animator.rotate(rightHand, -0.5f, 0, 0.1f);
+
+                animator.rotate(armLeftJoint, -0.8f, 0.4f, 0f);
+                animator.move(armLeftJoint, 0, 0, -13);
+                animator.rotate(armLeft1, 0, 0, 0.5f);
+                animator.rotate(armLeft2, 0.5f, -0.4f, 0f);
+                animator.rotate(leftHand, -0.4f, -0.6f, 0.8f);
+                animator.move(handController, 1, 0, 0);
+                animator.move(swingOffsetController, 7, 0, 0);
+                animator.endKeyframe();
+                animator.setStaticKeyframe(3);
+                animator.resetKeyframe(10);
+
+                float swingFrame = swingOffsetController.rotationPointX;
+                if (entity.getAnimationTick() <= 14) {
+                    waist.rotateAngleX += 0.1f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    legLeftJoint.rotateAngleX -= 0.1f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    legRightJoint.rotateAngleX -= 0.1f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    armRightJoint.rotateAngleX -= 0.2f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    armRightJoint.rotationPointY -= 6f * (0.0817 * -swingFrame * (swingFrame - 7));
+
+                    armLeftJoint.rotateAngleX += 0.4f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    armLeft2.rotateAngleX -= 0.2f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    armLeft2.rotateAngleY -= 1f * (0.0817 * -swingFrame * (swingFrame - 7));
+                }
+            }
+        }
+
+        if (frostmaw.getAnimation() == EntityFrostmaw.SWIPE_TWICE_ANIMATION) {
+            animator.setAnimation(EntityFrostmaw.SWIPE_TWICE_ANIMATION);
+            if (frostmaw.swingWhichArm) {
+                animator.startKeyframe(7);
+                animator.rotate(waist, -0.3f, 0.08f, 0);
+                animator.rotate(legRightJoint, 0.3f, 0, 0);
+                animator.rotate(legLeftJoint, 0.3f, 0, 0);
+                animator.rotate(chest, 0, 0.08f, 0.5f);
+                animator.rotate(headJoint, 0.2f, 0, -0.35f);
+                animator.rotate(armLeftJoint, 0.3f, 0, -0.5f);
+                animator.rotate(armLeftJoint, 0.2f, 0, -0.25f);
+                animator.rotate(armLeftJoint2, 0f, 0, 0.18f);
+                animator.rotate(leftHand, -0.1f, 0, 0.05f);
+
+                animator.rotate(armRightJoint, -1.5f, 0.2f, 0f);
+                animator.rotate(armRight1, 0, 0, 0.5f);
+                animator.rotate(armRight2, 0.4f, 0.4f, 0f);
+                animator.rotate(rightHand, -0.8f, 0.2f, -0.8f);
+                animator.move(handController, 0, 1, 0);
+                animator.endKeyframe();
+
+                animator.setStaticKeyframe(2);
+
+                animator.startKeyframe(6);
+                animator.rotate(waist, -0.15f, -0.2f, 0);
+                animator.rotate(chest, 0, -0.2f, -0.5f);
+                animator.rotate(headJoint, 0.15f, 0.35f, 0.4f);
+                animator.rotate(legRightJoint, 0.15f, 0, 0);
+                animator.rotate(legLeftJoint, 0.15f, 0, 0);
+
+                animator.rotate(armLeftJoint, -1.5f, -0.2f, 0f);
+                animator.rotate(armLeft1, 0, 0, -0.8f);
+                animator.rotate(armLeft2, 0.4f, -0.4f, 0f);
+                animator.rotate(leftHand, -0.8f, -0.2f, 0.8f);
+                animator.move(handController, 1, 0, 0);
+
+                animator.rotate(armRightJoint, -0.5f, -0.4f, 0f);
+                animator.move(armRightJoint, 0, 0, -13);
+                animator.rotate(armRight1, 0, 0, -0.5f);
+                animator.rotate(armRight2, 0.5f, 0.4f, 0f);
+                animator.rotate(rightHand, -0.4f, 0.6f, -0.8f);
+                animator.move(handController, 0, 1, 0);
+                animator.move(swingOffsetController, 7, 0, 0);
+                animator.endKeyframe();
+
+                animator.setStaticKeyframe(3);
+
+                animator.startKeyframe(6);
+                animator.rotate(waist, 0.15f, 0.2f, 0);
+                animator.rotate(chest, 0, 0.2f, 0.5f);
+                animator.rotate(headJoint, -0.15f, -0.35f, -0.4f);
+                animator.rotate(legLeftJoint, -0.15f, 0, 0);
+                animator.rotate(legRightJoint, -0.15f, 0, 0);
+
+                animator.rotate(armRightJoint, -0.8f, -0.4f, -0.8f);
+                animator.move(armRightJoint, 0, 0, 1f);
+                animator.rotate(armRightJoint, 0.2f, 0, 0.25f);
+                animator.rotate(armRightJoint2, 1f, 0, 0.2f);
+                animator.rotate(armRight2, 0, -0.2f, 0);
+                animator.rotate(rightHand, -0.5f, 0, 0.1f);
+
+                animator.rotate(armLeftJoint, -0.8f, 0.4f, 0f);
+                animator.move(armLeftJoint, 0, 0, -13);
+                animator.rotate(armLeft1, 0, 0, 0.5f);
+                animator.rotate(armLeft2, 0.5f, -0.4f, 0f);
+                animator.rotate(leftHand, -0.4f, -0.6f, 0.8f);
+                animator.move(handController, 1, 0, 0);
+                animator.move(swingOffsetController, 0, 0, 0);
+                animator.endKeyframe();
+                animator.setStaticKeyframe(3);
+                animator.resetKeyframe(10);
+
+                float swingFrame = swingOffsetController.rotationPointX;
+                if (entity.getAnimationTick() <= 15) {
+                    waist.rotateAngleX += 0.3f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    headJoint.rotateAngleX -= 0.3f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    legRightJoint.rotateAngleX -= 0.3f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    legLeftJoint.rotateAngleX -= 0.3f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    armLeftJoint.rotateAngleX -= 0.2f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    armLeftJoint.rotationPointY -= 6f * (0.0817 * -swingFrame * (swingFrame - 7));
+
+                    armRightJoint.rotateAngleX += 0.4f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    armRight2.rotateAngleX -= 0.2f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    armRight2.rotateAngleY += 1f * (0.0817 * -swingFrame * (swingFrame - 7));
+                }
+                if (entity.getAnimationTick() > 15 && entity.getAnimationTick() <= 25) {
+                    waist.rotateAngleX += 0.1f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    legLeftJoint.rotateAngleX -= 0.1f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    legRightJoint.rotateAngleX -= 0.1f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    armRightJoint.rotateAngleX -= 0.2f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    armRightJoint.rotationPointY -= 6f * (0.0817 * -swingFrame * (swingFrame - 7));
+
+                    armLeftJoint.rotateAngleX += 0.4f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    armLeft2.rotateAngleX -= 0.2f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    armLeft2.rotateAngleY -= 1f * (0.0817 * -swingFrame * (swingFrame - 7));
+                }
+            }
+            else {
+                animator.startKeyframe(7);
+                animator.rotate(waist, -0.3f, -0.08f, 0);
+                animator.rotate(legLeftJoint, 0.3f, 0, 0);
+                animator.rotate(legRightJoint, 0.3f, 0, 0);
+                animator.rotate(chest, 0, -0.08f, -0.5f);
+                animator.rotate(headJoint, 0.2f, 0, 0.35f);
+                animator.rotate(armRightJoint, 0.3f, 0, 0.5f);
+                animator.rotate(armRightJoint, 0.2f, 0, 0.25f);
+                animator.rotate(armRightJoint2, 0f, 0, -0.18f);
+                animator.rotate(rightHand, -0.1f, 0, -0.05f);
+
+                animator.rotate(armLeftJoint, -1.5f, -0.2f, 0f);
+                animator.rotate(armLeft1, 0, 0, -0.5f);
+                animator.rotate(armLeft2, 0.4f, -0.4f, 0f);
+                animator.rotate(leftHand, -0.8f, -0.2f, 0.8f);
+                animator.move(handController, 1, 0, 0);
+                animator.endKeyframe();
+
+                animator.setStaticKeyframe(2);
+
+                animator.startKeyframe(6);
+                animator.rotate(waist, -0.15f, 0.2f, 0);
+                animator.rotate(chest, 0, 0.2f, 0.5f);
+                animator.rotate(headJoint, 0.15f, -0.35f, -0.4f);
+                animator.rotate(legLeftJoint, 0.15f, 0, 0);
+                animator.rotate(legRightJoint, 0.15f, 0, 0);
+
+                animator.rotate(armRightJoint, -1.5f, 0.2f, 0f);
+                animator.rotate(armRight1, 0, 0, 0.8f);
+                animator.rotate(armRight2, 0.4f, 0.4f, 0f);
+                animator.rotate(rightHand, -0.8f, 0.2f, -0.8f);
+                animator.move(handController, 0, 1, 0);
+
+                animator.rotate(armLeftJoint, -0.5f, 0.4f, 0f);
+                animator.move(armLeftJoint, 0, 0, -13);
+                animator.rotate(armLeft1, 0, 0, 0.5f);
+                animator.rotate(armLeft2, 0.5f, -0.4f, 0f);
+                animator.rotate(leftHand, -0.4f, -0.6f, 0.8f);
+                animator.move(handController, 1, 0, 0);
+                animator.move(swingOffsetController, 7, 0, 0);
+                animator.endKeyframe();
+
+                animator.setStaticKeyframe(3);
+
+                animator.startKeyframe(6);
+                animator.rotate(waist, 0.15f, -0.2f, 0);
+                animator.rotate(chest, 0, -0.2f, -0.5f);
+                animator.rotate(headJoint, -0.15f, 0.35f, 0.4f);
+                animator.rotate(legRightJoint, -0.15f, 0, 0);
+                animator.rotate(legLeftJoint, -0.15f, 0, 0);
+
+                animator.rotate(armLeftJoint, -0.8f, 0.4f, 0.8f);
+                animator.move(armLeftJoint, 0, 0, 1f);
+                animator.rotate(armLeftJoint, 0.2f, 0, -0.25f);
+                animator.rotate(armLeftJoint2, 1f, 0, -0.2f);
+                animator.rotate(armLeft2, 0, 0.2f, 0);
+                animator.rotate(leftHand, -0.5f, 0, -0.1f);
+
+                animator.rotate(armRightJoint, -0.8f, -0.4f, 0f);
+                animator.move(armRightJoint, 0, 0, -13);
+                animator.rotate(armRight1, 0, 0, -0.5f);
+                animator.rotate(armRight2, 0.5f, 0.4f, 0f);
+                animator.rotate(rightHand, -0.4f, 0.6f, -0.8f);
+                animator.move(handController, 0, 1, 0);
+                animator.move(swingOffsetController, 0, 0, 0);
+                animator.endKeyframe();
+                animator.setStaticKeyframe(3);
+                animator.resetKeyframe(10);
+
+                float swingFrame = swingOffsetController.rotationPointX;
+                if (entity.getAnimationTick() <= 15) {
+                    waist.rotateAngleX += 0.3f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    headJoint.rotateAngleX -= 0.3f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    legLeftJoint.rotateAngleX -= 0.3f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    legRightJoint.rotateAngleX -= 0.3f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    armRightJoint.rotateAngleX -= 0.2f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    armRightJoint.rotationPointY -= 6f * (0.0817 * -swingFrame * (swingFrame - 7));
+
+                    armLeftJoint.rotateAngleX += 0.4f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    armLeft2.rotateAngleX -= 0.2f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    armLeft2.rotateAngleY -= 1f * (0.0817 * -swingFrame * (swingFrame - 7));
+                }
+                if (entity.getAnimationTick() > 15 && entity.getAnimationTick() <= 25) {
+                    waist.rotateAngleX += 0.1f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    legRightJoint.rotateAngleX -= 0.1f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    legLeftJoint.rotateAngleX -= 0.1f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    armLeftJoint.rotateAngleX -= 0.2f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    armLeftJoint.rotationPointY -= 6f * (0.0817 * -swingFrame * (swingFrame - 7));
+
+                    armRightJoint.rotateAngleX += 0.4f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    armRight2.rotateAngleX -= 0.2f * (0.0817 * -swingFrame * (swingFrame - 7));
+                    armRight2.rotateAngleY += 1f * (0.0817 * -swingFrame * (swingFrame - 7));
+                }
+            }
+        }
+
+        if (frostmaw.getAnimation() == EntityFrostmaw.ROAR_ANIMATION) {
+            animator.setAnimation(EntityFrostmaw.ROAR_ANIMATION);
+            animator.startKeyframe(8);
+            animator.rotate(waist, 0.2f, 0, 0);
+            animator.rotate(legRightJoint, -0.2f, 0, 0);
+            animator.rotate(legLeftJoint, -0.2f, 0, 0);
+            animator.rotate(headJoint, 0.3f, 0, 0);
+
+            animator.rotate(armLeftJoint, 0.15f, 0, 0);
+            animator.move(armLeftJoint, 0, 2, 0);
+            animator.rotate(armLeftJoint2, -0.6f, 0, 0);
+            animator.rotate(leftHand, 0.3f, 0, 0.15f);
+            animator.rotate(armRightJoint, 0.15f, 0, 0);
+            animator.move(armRightJoint, 0, 2, 0);
+            animator.rotate(armRightJoint2, -0.6f, 0, 0);
+            animator.rotate(rightHand, 0.3f, 0, -0.15f);
+            animator.endKeyframe();
+
+            animator.setStaticKeyframe(4);
+
+            animator.startKeyframe(5);
+            animator.rotate(waist, -0.2f, 0, 0);
+            animator.rotate(legRightJoint, 0.2f, 0, 0);
+            animator.rotate(legLeftJoint, 0.2f, 0, 0);
+            animator.rotate(headJoint, -0.3f, 0, 0);
+            animator.rotate(jawJoint, 1.3f, 0, 0);
+            animator.move(roarController, 1, 1, 0);
+
+            animator.rotate(armLeftJoint, -0.4f, 0, 0);
+            animator.rotate(armLeftJoint2, 0.9f, 0, 0);
+            animator.rotate(leftHand, -0.3f, 0, -0.15f);
+            animator.rotate(armRightJoint, -0.4f, 0, 0);
+            animator.rotate(armRightJoint2, 0.9f, 0, 0);
+            animator.rotate(rightHand, -0.3f, 0, 0.15f);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(50);
+            animator.resetKeyframe(8);
+        }
+
+        if (frostmaw.getAnimation() == EntityFrostmaw.ICE_BREATH_ANIMATION) {
+            animator.setAnimation(EntityFrostmaw.ICE_BREATH_ANIMATION);
+            animator.startKeyframe(10);
+            animator.rotate(waist, -0.2f, 0, 0);
+            animator.rotate(legRightJoint, 0.2f, 0, 0);
+            animator.rotate(legLeftJoint, 0.2f, 0, 0);
+            animator.rotate(headJoint, 0.6f, 0, 0);
+
+            animator.rotate(armLeftJoint, -0.4f, 0, 0);
+            animator.rotate(armLeftJoint2, 0.9f, 0, 0);
+            animator.rotate(leftHand, -0.3f, 0, -0.15f);
+            animator.rotate(armRightJoint, -0.4f, 0, 0);
+            animator.rotate(armRightJoint2, 0.9f, 0, 0);
+            animator.rotate(rightHand, -0.3f, 0, 0.15f);
+            animator.endKeyframe();
+
+            animator.setStaticKeyframe(4);
+
+            animator.startKeyframe(5);
+            animator.rotate(waist, 0.2f, 0, 0);
+            animator.rotate(legRightJoint, -0.2f, 0, 0);
+            animator.rotate(legLeftJoint, -0.2f, 0, 0);
+            animator.rotate(headJoint, -0.9f, 0, 0);
+            animator.rotate(jawJoint, 1.6f, 0, 0);
+
+            animator.rotate(armLeftJoint, 0.15f, 0, 0);
+            animator.move(armLeftJoint, 0, 2, 0);
+            animator.rotate(armLeftJoint2, -0.6f, 0, 0);
+            animator.rotate(leftHand, 0.3f, 0, 0.15f);
+            animator.rotate(armRightJoint, 0.15f, 0, 0);
+            animator.move(armRightJoint, 0, 2, 0);
+            animator.rotate(armRightJoint2, -0.6f, 0, 0);
+            animator.rotate(rightHand, 0.3f, 0, -0.15f);
+            animator.move(roarController, 1, 1, 0);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(50);
+            animator.resetKeyframe(7);
+        }
+
+        jawJoint.rotateAngleX += 0.08 * roarController.rotationPointX * Math.cos(2 * frame);
+        headBack.setScale(1, 1 - roarController.rotationPointY, 1);
+
+        rightFingersJoint.rotateAngleX -= handController.rotationPointY * Math.PI/2;
+        rightFingers.rotateAngleX -= handController.rotationPointY * Math.PI/2;
+        rightThumb.rotateAngleY += (float) (handController.rotationPointY * Math.PI);
+        rightThumb.rotateAngleZ += handController.rotationPointY * 0.7f;
+        rightThumb.rotationPointZ -= handController.rotationPointY * 6;
+
+        leftFingersJoint.rotateAngleX -= handController.rotationPointX * Math.PI/2;
+        leftFingers.rotateAngleX -= handController.rotationPointX * Math.PI/2;
+        leftThumb.rotateAngleY -= (float) (handController.rotationPointX * Math.PI);
+        leftThumb.rotateAngleZ -= handController.rotationPointX * 0.7f;
+        leftThumb.rotationPointZ -= handController.rotationPointX * 6;
     }
 }

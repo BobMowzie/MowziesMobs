@@ -325,5 +325,8 @@
 	},
 	"geomancy.magicchargesmall": {
 		"sounds": [ "mowziesmobs:effects/geomancy/magic_charge_small" ]
+	},
+	"frostmaw.roar": {
+		"sounds": [ "mowziesmobs:entity/frostmaw/roar" ]
 	}
 }

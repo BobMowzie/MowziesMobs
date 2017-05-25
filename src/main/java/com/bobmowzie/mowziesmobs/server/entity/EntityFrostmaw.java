@@ -7,6 +7,8 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.animation.Animation;
+import net.ilexiconn.llibrary.server.animation.AnimationHandler;
+import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -14,33 +16,56 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by Josh on 5/8/2017.
  */
 public class EntityFrostmaw extends MowzieEntity {
+    public static final Animation DIE_ANIMATION = Animation.create(130);
+    public static final Animation HURT_ANIMATION = Animation.create(13);
+    public static final Animation ROAR_ANIMATION = Animation.create(76);
+    public static final Animation SWIPE_ANIMATION = Animation.create(27);
+    public static final Animation SWIPE_TWICE_ANIMATION = Animation.create(55);
+    public static final Animation ICE_BREATH_ANIMATION = Animation.create(77);
+    public static final Animation ACTIVATE_ANIMATION = Animation.create(20);
+    public static final Animation DEACTIVATE_ANIMATION = Animation.create(100);
+
+    public boolean swingWhichArm = false;
+
+    public LegSolverQuadruped legSolver;
+
     public EntityFrostmaw(World world) {
         super(world);
-        setSize(4.8f, 4.5f);
+        setSize(4.5f, 4.5f);
         this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(1, new EntityAIAttackMelee(this, 1.0D, false));
         this.tasks.addTask(5, new EntityAIMoveTowardsRestriction(this, 1.0D));
         this.tasks.addTask(7, new EntityAIWanderAvoidWater(this, 1.0D));
         this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
-        this.targetTasks.addTask(2, new EntityAINearestAttackableTarget(this, EntityPlayer.class, true));
-        this.targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntitySheep.class, true));
+        this.tasks.addTask(2, new AnimationAreaAttackAI<>(this, SWIPE_ANIMATION, null, null, 2, 7, 120, 1, 9));
+        this.tasks.addTask(2, new AnimationAreaAttackAI<>(this, SWIPE_TWICE_ANIMATION, null, null, 1, 7, 120, 1, 9));
+        this.tasks.addTask(2, new AnimationAI<>(this, ICE_BREATH_ANIMATION, true));
+        this.tasks.addTask(2, new AnimationAI<>(this, ROAR_ANIMATION, false));
+        this.targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPlayer.class, true));
+        this.targetTasks.addTask(4, new EntityAINearestAttackableTarget(this, EntitySheep.class, true));
+        this.targetTasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityVillager.class, true));
         stepHeight = 1;
         frame += rand.nextInt(50);
+        legSolver = new LegSolverQuadruped(1f, 2f, -1, 1.5f);
     }
 
     protected void applyEntityAttributes()
@@ -52,17 +77,50 @@ public class EntityFrostmaw extends MowzieEntity {
     }
 
     @Override
+    public void playLivingSound() {
+        super.playLivingSound();
+        if (getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(this, ROAR_ANIMATION);
+    }
+
+    @Nullable
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return super.getAmbientSound();
+    }
+
+    @Override
     public void onUpdate() {
         super.onUpdate();
+        legSolver.update(this);
 //        renderYawOffset = rotationYaw;
-        if (getAttackTarget() != null) {
-//            getNavigator().tryMoveToEntityLiving(getAttackTarget(), 0.4);
+        this.repelEntities(4f, 4f, 4f, 4f);
+
+        if ((getAnimation() == SWIPE_ANIMATION || getAnimation() == SWIPE_TWICE_ANIMATION) && getAnimationTick() == 1) {
+            swingWhichArm = rand.nextBoolean();
         }
+
+        if (getAnimation() == SWIPE_TWICE_ANIMATION && currentAnim instanceof AnimationAreaAttackAI<?> && getAnimationTick() == 20) {
+            ((AnimationAreaAttackAI<?>)currentAnim).hitEntities();
+        }
+
+        if (getAnimation() == ROAR_ANIMATION) {
+            if (getAnimationTick() == 10) {
+                playSound(MMSounds.ENTITY_FROSTMAW_ROAR, 4, 1);
+            }
+        }
+
+        if (getAttackTarget() != null) {
+            getNavigator().tryMoveToEntityLiving(getAttackTarget(), 1);
+            if (targetDistance <= 6 && getAnimation() == NO_ANIMATION) {
+                if (rand.nextInt(3) == 0) AnimationHandler.INSTANCE.sendAnimationMessage(this, SWIPE_TWICE_ANIMATION);
+                else AnimationHandler.INSTANCE.sendAnimationMessage(this, SWIPE_ANIMATION);
+            }
+        }
+        if (getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(this, ICE_BREATH_ANIMATION);
     }
 
     @Override
     public boolean attackEntityAsMob(Entity entityIn) {
-        if (getDistanceToEntity(entityIn) > 5) return false;
         float f = (float)this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue();
         int i = 0;
 
@@ -126,6 +184,6 @@ public class EntityFrostmaw extends MowzieEntity {
 
     @Override
     public Animation[] getAnimations() {
-        return new Animation[0];
+        return new Animation[] {DIE_ANIMATION, HURT_ANIMATION, ROAR_ANIMATION, SWIPE_ANIMATION, SWIPE_TWICE_ANIMATION, ICE_BREATH_ANIMATION, ACTIVATE_ANIMATION, DEACTIVATE_ANIMATION};
     }
 }

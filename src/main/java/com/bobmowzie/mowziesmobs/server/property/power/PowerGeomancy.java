@@ -60,7 +60,7 @@ public class PowerGeomancy extends Power {
             else {
                 spawnBoulderCharge++;
                 if (spawnBoulderCharge > 2) player.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 0, 2, false, false));
-                if (spawnBoulderCharge == 1) player.playSound(MMSounds.EFFECT_GEOMANCY_BOULDER_CHARGE, 1, 0.95f);
+//                if (spawnBoulderCharge == 1) player.playSound(MMSounds.EFFECT_GEOMANCY_BOULDER_CHARGE, 1, 0.95f);
                 if ((spawnBoulderCharge + 10) % 15 == 0 && spawnBoulderCharge < 40) {
                     EntityRing ring = new EntityRing(player.world, (float)player.posX, (float)player.posY + player.height/2f, (float)player.posZ, new Vec3d(0, 1, 0), 10, 0.83f, 1, 0.39f, 0.7f, 0.8f + 2.7f * spawnBoulderCharge/60f, false) {
                         public float interpolate(float delta) {
