@@ -20,7 +20,7 @@ public enum PotionHandler {
         sunsBlessing = new MowziePotionSunsBlessing();
         GameRegistry.register(sunsBlessing);
         geomancy = new MowziePotionGeomancy();
-        GameRegistry.register(geomancy);
+//        GameRegistry.register(geomancy);
     }
 
     public void onInit() {

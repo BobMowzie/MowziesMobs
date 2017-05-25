@@ -17,6 +17,10 @@ import com.bobmowzie.mowziesmobs.server.item.ItemSpear;
 import com.bobmowzie.mowziesmobs.server.message.MessagePlayerAttackMob;
 import com.bobmowzie.mowziesmobs.server.message.MessagePlayerSolarBeam;
 import com.bobmowzie.mowziesmobs.server.message.MessagePlayerSummonSunstrike;
+import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseDown;
+import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseUp;
+import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseDown;
+import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseUp;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 
@@ -158,28 +162,34 @@ public enum ServerEventHandler {
             }
         }
 
-        if (Mouse.isButtonDown(0) && !property.mouseLeftDown) {
-            property.mouseLeftDown = true;
-            for(int i = 0; i < property.powers.length; i++) {
-                property.powers[i].onLeftMouseDown(player);
+        if (event.side == Side.CLIENT) {
+            if (Mouse.isButtonDown(0) && !property.mouseLeftDown) {
+                property.mouseLeftDown = true;
+                MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageLeftMouseDown());
+                for (int i = 0; i < property.powers.length; i++) {
+                    property.powers[i].onLeftMouseDown(player);
+                }
             }
-        }
-        if (Mouse.isButtonDown(1) && !property.mouseRightDown) {
-            property.mouseRightDown = true;
-            for(int i = 0; i < property.powers.length; i++) {
-                property.powers[i].onRightMouseDown(player);
+            if (Mouse.isButtonDown(1) && !property.mouseRightDown) {
+                property.mouseRightDown = true;
+                MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageRightMouseDown());
+                for (int i = 0; i < property.powers.length; i++) {
+                    property.powers[i].onRightMouseDown(player);
+                }
             }
-        }
-        if (!Mouse.isButtonDown(0) && property.mouseLeftDown) {
-            property.mouseLeftDown = false;
-            for(int i = 0; i < property.powers.length; i++) {
-                property.powers[i].onLeftMouseUp(player);
+            if (!Mouse.isButtonDown(0) && property.mouseLeftDown) {
+                property.mouseLeftDown = false;
+                MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageLeftMouseUp());
+                for (int i = 0; i < property.powers.length; i++) {
+                    property.powers[i].onLeftMouseUp(player);
+                }
             }
-        }
-        if (!Mouse.isButtonDown(1) && property.mouseRightDown) {
-            property.mouseRightDown = false;
-            for(int i = 0; i < property.powers.length; i++) {
-                property.powers[i].onRightMouseUp(player);
+            if (!Mouse.isButtonDown(1) && property.mouseRightDown) {
+                property.mouseRightDown = false;
+                MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageRightMouseUp());
+                for (int i = 0; i < property.powers.length; i++) {
+                    property.powers[i].onRightMouseUp(player);
+                }
             }
         }
 

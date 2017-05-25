@@ -10,6 +10,10 @@ import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.gui.GuiHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.message.*;
+import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseDown;
+import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseUp;
+import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseDown;
+import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseUp;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import com.bobmowzie.mowziesmobs.server.recipe.RecipeHandler;
@@ -36,7 +40,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class MowziesMobs {
     public static final String MODID = "mowziesmobs";
     public static final String NAME = "Mowzie's Mobs";
-    public static final String VERSION = "1.3.2";
+    public static final String VERSION = "1.3.3";
     public static final String LLIBRARY_VERSION = "1.7.4";
     public static final String DEPENDENCIES = "required-after:llibrary@[" + MowziesMobs.LLIBRARY_VERSION + ",)";
 
@@ -44,7 +48,7 @@ public class MowziesMobs {
     public static MowziesMobs INSTANCE;
     @SidedProxy(clientSide = "com.bobmowzie.mowziesmobs.client.ClientProxy", serverSide = "com.bobmowzie.mowziesmobs.server.ServerProxy")
     public static ServerProxy PROXY;
-    @NetworkWrapper({MessageSwingWroughtAxe.class, MessagePlayerSummonSunstrike.class, MessagePlayerSolarBeam.class, MessagePlayerAttackMob.class, MessageBarakoTrade.class})
+    @NetworkWrapper({MessageSwingWroughtAxe.class, MessagePlayerSummonSunstrike.class, MessagePlayerSolarBeam.class, MessagePlayerAttackMob.class, MessageBarakoTrade.class, MessageLeftMouseDown.class, MessageLeftMouseUp.class, MessageRightMouseDown.class, MessageRightMouseUp.class})
     public static SimpleNetworkWrapper NETWORK_WRAPPER;
     @Config
     public static ConfigHandler CONFIG;

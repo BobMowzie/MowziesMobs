@@ -116,7 +116,7 @@ public class EntityFrostmaw extends MowzieEntity {
                 else AnimationHandler.INSTANCE.sendAnimationMessage(this, SWIPE_ANIMATION);
             }
         }
-        if (getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(this, ICE_BREATH_ANIMATION);
+//        if (getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(this, ICE_BREATH_ANIMATION);
     }
 
     @Override
@@ -174,12 +174,12 @@ public class EntityFrostmaw extends MowzieEntity {
 
     @Override
     public Animation getDeathAnimation() {
-        return null;
+        return DIE_ANIMATION;
     }
 
     @Override
     public Animation getHurtAnimation() {
-        return null;
+        return HURT_ANIMATION;
     }
 
     @Override
