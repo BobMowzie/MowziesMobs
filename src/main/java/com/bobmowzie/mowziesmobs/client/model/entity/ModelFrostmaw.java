@@ -1,13 +1,17 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.LegArticulator;
+import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.EntityFrostmaw;
+import com.bobmowzie.mowziesmobs.server.message.MessageSendSocketPos;
 import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.model.ModelAnimator;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.Vec3d;
 
 /**
  * Created by Josh on 5/8/2017.
@@ -71,6 +75,9 @@ public class ModelFrostmaw extends AdvancedModelBase {
     public AdvancedModelRenderer handController;
     public AdvancedModelRenderer swingOffsetController;
     public AdvancedModelRenderer roarController;
+    public SocketModelRenderer rightHandSocket;
+    public SocketModelRenderer leftHandSocket;
+    public SocketModelRenderer mouthSocket;
 
     private ModelAnimator animator;
 
@@ -291,6 +298,9 @@ public class ModelFrostmaw extends AdvancedModelBase {
         handController = new AdvancedModelRenderer(this, 0, 0);
         swingOffsetController = new AdvancedModelRenderer(this, 0, 0);
         roarController = new AdvancedModelRenderer(this, 0, 0);
+        rightHandSocket = new SocketModelRenderer(this);
+        leftHandSocket = new SocketModelRenderer(this);
+        mouthSocket = new SocketModelRenderer(this);
 
         this.leftHandJoint.addChild(this.leftHand);
         this.legLeft1.addChild(this.legLeft2);
@@ -346,6 +356,9 @@ public class ModelFrostmaw extends AdvancedModelBase {
         this.legRight2.addChild(this.rightFoot);
         this.legLeft2.addChild(this.legLeftFur);
         this.waist.addChild(this.legLeftJoint);
+        rightHand.addChild(rightHandSocket);
+        leftHand.addChild(leftHandSocket);
+        headJoint.addChild(mouthSocket);
 
         antlerLeft.setScale(1, 1, -1);
         antlerRight.setScale(1, 1, -1);
@@ -365,8 +378,21 @@ public class ModelFrostmaw extends AdvancedModelBase {
 
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        animate((EntityFrostmaw) entity, f, f1, f2, f3, f4, f5);
+        EntityFrostmaw frostmaw = (EntityFrostmaw) entity;
+        animate(frostmaw, f, f1, f2, f3, f4, f5);
         this.root.render(f5);
+        mouthSocket.setRotationPoint(0, -10, 8);
+        if (frostmaw.getAnimation() == frostmaw.SWIPE_ANIMATION || frostmaw.getAnimation() == frostmaw.SWIPE_TWICE_ANIMATION || frostmaw.getAnimation() == frostmaw.ICE_BREATH_ANIMATION) {
+            Vec3d rightHandPos = rightHandSocket.getWorldPos(frostmaw);
+            Vec3d leftHandPos = leftHandSocket.getWorldPos(frostmaw);
+            Vec3d mouthPos = mouthSocket.getWorldPos(frostmaw);
+            frostmaw.socketPosArray[0] = rightHandPos;
+            frostmaw.socketPosArray[1] = leftHandPos;
+            frostmaw.socketPosArray[2] = mouthPos;
+            MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageSendSocketPos(frostmaw, 0, rightHandPos));
+            MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageSendSocketPos(frostmaw, 1, leftHandPos));
+            MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageSendSocketPos(frostmaw, 2, mouthPos));
+        }
     }
 
     public void setRotateAngle(AdvancedModelRenderer AdvancedModelRenderer, float x, float y, float z) {
@@ -378,6 +404,7 @@ public class ModelFrostmaw extends AdvancedModelBase {
     public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, EntityFrostmaw entity) {
         resetToDefaultPose();
         float delta = LLibrary.PROXY.getPartialTicks();
+        float frame = entity.ticksExisted + delta;
 
         LegArticulator.articulateQuadruped(entity, entity.legSolver, waist, headJoint,
                 legLeft1, legLeft2, legRight1, legRight2, armLeftJoint, armLeftJoint2, armRightJoint, armRightJoint2,
@@ -408,6 +435,7 @@ public class ModelFrostmaw extends AdvancedModelBase {
             f4 = f4 / (entity.getAnimationTick() + delta);
         }
 
+        //Walk
         faceTarget(f3, f4, 1, headJoint);
 
         waist.rotationPointZ += 10;
@@ -450,6 +478,22 @@ public class ModelFrostmaw extends AdvancedModelBase {
         walk(armRightJoint2, 0.5f * globalSpeed, 0.4f * globalDegree * frontDegree, false, frontOffset + 2f, -0.6f * globalDegree * frontDegree, f, f1);
         walk(leftHand, 0.5f * globalSpeed, 0.5f * globalDegree * frontDegree, false, frontOffset + 1.5f, 0.05f * globalDegree * frontDegree, f, f1);
         walk(rightHand, 0.5f * globalSpeed, 0.5f * globalDegree * frontDegree, true, frontOffset + 1.5f, 0.05f * globalDegree * frontDegree, f, f1);
+
+        //Idle
+        walk(waist, 0.08f, 0.05f, false, 0, 0, frame, 1);
+        walk(headJoint, 0.08f, 0.05f, true, 0.8f, 0, frame, 1);
+        walk(legRightJoint, 0.08f, 0.05f, true, 0, 0, frame, 1);
+        walk(legLeftJoint, 0.08f, 0.05f, true, 0, 0, frame, 1);
+        walk(armLeftJoint, 0.08f, 0.05f, true, 0, 0, frame, 1);
+        walk(armRightJoint, 0.08f, 0.05f, true, 0, 0, frame, 1);
+        walk(armLeftJoint2, 0.08f, 0.07f, true, 0, 0, frame, 1);
+        walk(armRightJoint2, 0.08f, 0.07f, true, 0, 0, frame, 1);
+        walk(leftHand, 0.08f, 0.07f, false, 0, 0, frame, 1);
+        walk(rightHand, 0.08f, 0.07f, false, 0, 0, frame, 1);
+        armLeftJoint.rotationPointZ += 1.8f * Math.cos(frame * 0.08f);
+        armRightJoint.rotationPointZ += 1.8f * Math.cos(frame * 0.08f);
+        armLeftJoint.rotationPointY -= 0.4f * Math.cos(frame * 0.08f);
+        armRightJoint.rotationPointY -= 0.4f * Math.cos(frame * 0.08f);
     }
 
     public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
@@ -503,7 +547,7 @@ public class ModelFrostmaw extends AdvancedModelBase {
                 animator.move(handController, 0, 1, 0);
                 animator.move(swingOffsetController, 7, 0, 0);
                 animator.endKeyframe();
-                animator.setStaticKeyframe(3);
+                animator.setStaticKeyframe(4);
                 animator.resetKeyframe(10);
 
                 float swingFrame = swingOffsetController.rotationPointX;
@@ -562,7 +606,7 @@ public class ModelFrostmaw extends AdvancedModelBase {
                 animator.move(handController, 1, 0, 0);
                 animator.move(swingOffsetController, 7, 0, 0);
                 animator.endKeyframe();
-                animator.setStaticKeyframe(3);
+                animator.setStaticKeyframe(4);
                 animator.resetKeyframe(10);
 
                 float swingFrame = swingOffsetController.rotationPointX;
@@ -625,7 +669,7 @@ public class ModelFrostmaw extends AdvancedModelBase {
                 animator.move(swingOffsetController, 7, 0, 0);
                 animator.endKeyframe();
 
-                animator.setStaticKeyframe(3);
+                animator.setStaticKeyframe(4);
 
                 animator.startKeyframe(6);
                 animator.rotate(waist, 0.15f, 0.2f, 0);
@@ -649,7 +693,7 @@ public class ModelFrostmaw extends AdvancedModelBase {
                 animator.move(handController, 1, 0, 0);
                 animator.move(swingOffsetController, 0, 0, 0);
                 animator.endKeyframe();
-                animator.setStaticKeyframe(3);
+                animator.setStaticKeyframe(4);
                 animator.resetKeyframe(10);
 
                 float swingFrame = swingOffsetController.rotationPointX;
@@ -720,7 +764,7 @@ public class ModelFrostmaw extends AdvancedModelBase {
                 animator.move(swingOffsetController, 7, 0, 0);
                 animator.endKeyframe();
 
-                animator.setStaticKeyframe(3);
+                animator.setStaticKeyframe(4);
 
                 animator.startKeyframe(6);
                 animator.rotate(waist, 0.15f, -0.2f, 0);
@@ -744,7 +788,7 @@ public class ModelFrostmaw extends AdvancedModelBase {
                 animator.move(handController, 0, 1, 0);
                 animator.move(swingOffsetController, 0, 0, 0);
                 animator.endKeyframe();
-                animator.setStaticKeyframe(3);
+                animator.setStaticKeyframe(4);
                 animator.resetKeyframe(10);
 
                 float swingFrame = swingOffsetController.rotationPointX;
@@ -848,7 +892,7 @@ public class ModelFrostmaw extends AdvancedModelBase {
             animator.rotate(rightHand, 0.3f, 0, -0.15f);
             animator.move(roarController, 1, 1, 0);
             animator.endKeyframe();
-            animator.setStaticKeyframe(50);
+            animator.setStaticKeyframe(65);
             animator.resetKeyframe(7);
         }
 

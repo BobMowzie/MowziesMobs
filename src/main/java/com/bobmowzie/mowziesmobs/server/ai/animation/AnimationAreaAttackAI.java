@@ -14,10 +14,12 @@ import java.util.List;
 
 public class AnimationAreaAttackAI<T extends MowzieEntity & IAnimatedEntity> extends AnimationAttackAI<T> {
     private float arc;
+    private float height;
 
-    public AnimationAreaAttackAI(T entity, Animation animation, SoundEvent attackSound, SoundEvent hitSound, float knockback, float range, float arc, float damageMultiplier, int damageFrame) {
+    public AnimationAreaAttackAI(T entity, Animation animation, SoundEvent attackSound, SoundEvent hitSound, float knockback, float range, float height, float arc, float damageMultiplier, int damageFrame) {
         super(entity, animation, attackSound, hitSound, knockback, range, damageMultiplier, damageFrame);
         this.arc = arc;
+        this.height = height;
     }
 
     @Override
@@ -36,7 +38,7 @@ public class AnimationAreaAttackAI<T extends MowzieEntity & IAnimatedEntity> ext
     }
 
     public void hitEntities() {
-        List<EntityLivingBase> entitiesHit = animatingEntity.getEntityLivingBaseNearby(range, 3, range, range);
+        List<EntityLivingBase> entitiesHit = animatingEntity.getEntityLivingBaseNearby(range, height, range, range);
         float damage = (float) animatingEntity.getAttack();
         boolean hit = false;
         for (EntityLivingBase entityHit : entitiesHit) {

@@ -13,6 +13,7 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 public enum PotionHandler {
     INSTANCE;
 
+    public Potion frozen;
     public Potion sunsBlessing;
     public Potion geomancy;
 
@@ -20,7 +21,9 @@ public enum PotionHandler {
         sunsBlessing = new MowziePotionSunsBlessing();
         GameRegistry.register(sunsBlessing);
         geomancy = new MowziePotionGeomancy();
-//        GameRegistry.register(geomancy);
+        GameRegistry.register(geomancy);
+        frozen = new MowziePotionFrozen();
+        GameRegistry.register(frozen);
     }
 
     public void onInit() {

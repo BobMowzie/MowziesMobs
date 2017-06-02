@@ -14,14 +14,14 @@ import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemSpear;
-import com.bobmowzie.mowziesmobs.server.message.MessagePlayerAttackMob;
-import com.bobmowzie.mowziesmobs.server.message.MessagePlayerSolarBeam;
-import com.bobmowzie.mowziesmobs.server.message.MessagePlayerSummonSunstrike;
+import com.bobmowzie.mowziesmobs.server.message.*;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseDown;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseUp;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseDown;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseUp;
+import com.bobmowzie.mowziesmobs.server.potion.MowziePotion;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
+import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 
 import com.bobmowzie.mowziesmobs.server.property.power.Power;
@@ -41,9 +41,11 @@ import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -89,10 +91,56 @@ public enum ServerEventHandler {
         }
         if (entity instanceof EntityAnimal) {
             ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity((EntityCreature) entity, EntityBarakoa.class, 6.0F, 1.0D, 1.2D));
-            ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity((EntityCreature) entity, EntityFrostmaw.class, 10.0F, 1.8D, 2.5D));
+            ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity((EntityCreature) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
         }
         if (entity instanceof EntityVillager) {
             ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity((EntityCreature) entity, EntityBarakoa.class, 6.0F, 1.0D, 1.2D));
+        }
+    }
+
+    @SubscribeEvent
+    public void onLivingTick(LivingEvent.LivingUpdateEvent event) {
+        if (event.getEntity() instanceof EntityLivingBase) {
+            EntityLivingBase entity = (EntityLivingBase) event.getEntity();
+            MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
+
+            if (property != null) {
+                if (property.freezeProgress >= 1) {
+                    if (!entity.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+                        property.setFrozenProperties(entity);
+                    }
+                    if (!entity.world.isRemote)
+                        MowziesMobs.NETWORK_WRAPPER.sendToDimension(new MessageFreezeEntity(entity), entity.dimension);
+                    entity.addPotionEffect(new PotionEffect(PotionHandler.INSTANCE.frozen, 50, 0, false, false));
+                    property.freezeProgress = 1f;
+                } else if (property.freezeProgress > 0.8) {
+                    entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, 5, false, false));
+                } else if (property.freezeProgress > 0.6) {
+                    entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, 4, false, false));
+                } else if (property.freezeProgress > 0.4) {
+                    entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, 3, false, false));
+                } else if (property.freezeProgress > 0.2) {
+                    entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, 2, false, false));
+                } else if (property.freezeProgress > 0) {
+                    entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, 1, false, false));
+                }
+
+                if (entity.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+                    entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, 50, false, false));
+                    entity.motionX = 0;
+                    entity.motionZ = 0;
+                    entity.rotationYaw = property.frozenYaw;
+                    entity.rotationPitch = property.frozenPitch;
+                    entity.rotationYawHead = property.frozenYawHead;
+                    entity.renderYawOffset = property.frozenRenderYawOffset;
+                    entity.swingProgress = property.frozenSwingProgress;
+                    entity.limbSwingAmount = property.frozenLimbSwingAmount;
+                    entity.setSneaking(false);
+                }
+
+                property.freezeProgress -= 0.1;
+                if (property.freezeProgress < 0) property.freezeProgress = 0;
+            }
         }
     }
 
@@ -301,6 +349,15 @@ public enum ServerEventHandler {
 
     @SubscribeEvent
     public void onLivingJump(LivingEvent.LivingJumpEvent event) {
+        if (event.getEntity() instanceof EntityLivingBase) {
+            EntityLivingBase entity = (EntityLivingBase) event.getEntity();
+            MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
+
+            if (entity.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+                entity.motionY = 0;
+            }
+        }
+
         if (event.getEntity() instanceof EntityPlayer) {
             MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
             for(int i = 0; i < property.powers.length; i++) {

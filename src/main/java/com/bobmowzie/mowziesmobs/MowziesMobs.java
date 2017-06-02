@@ -15,6 +15,7 @@ import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseUp;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseDown;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseUp;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
+import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import com.bobmowzie.mowziesmobs.server.recipe.RecipeHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
@@ -48,7 +49,7 @@ public class MowziesMobs {
     public static MowziesMobs INSTANCE;
     @SidedProxy(clientSide = "com.bobmowzie.mowziesmobs.client.ClientProxy", serverSide = "com.bobmowzie.mowziesmobs.server.ServerProxy")
     public static ServerProxy PROXY;
-    @NetworkWrapper({MessageSwingWroughtAxe.class, MessagePlayerSummonSunstrike.class, MessagePlayerSolarBeam.class, MessagePlayerAttackMob.class, MessageBarakoTrade.class, MessageLeftMouseDown.class, MessageLeftMouseUp.class, MessageRightMouseDown.class, MessageRightMouseUp.class})
+    @NetworkWrapper({MessageSwingWroughtAxe.class, MessagePlayerSummonSunstrike.class, MessagePlayerSolarBeam.class, MessagePlayerAttackMob.class, MessageBarakoTrade.class, MessageFreezeEntity.class, MessageSendSocketPos.class, MessageLeftMouseDown.class, MessageLeftMouseUp.class, MessageRightMouseDown.class, MessageRightMouseUp.class})
     public static SimpleNetworkWrapper NETWORK_WRAPPER;
     @Config
     public static ConfigHandler CONFIG;
@@ -68,6 +69,7 @@ public class MowziesMobs {
         MowziesMobs.PROXY.onInit();
 
         EntityPropertiesHandler.INSTANCE.registerProperties(MowziePlayerProperties.class);
+        EntityPropertiesHandler.INSTANCE.registerProperties(MowzieLivingProperties.class);
         GameRegistry.registerWorldGenerator(new MowzieWorldGenerator(), 0);
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
     }

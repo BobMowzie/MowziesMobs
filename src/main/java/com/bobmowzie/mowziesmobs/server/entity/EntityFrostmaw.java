@@ -1,33 +1,28 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
-import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.*;
-import com.bobmowzie.mowziesmobs.server.ai.animation.EntityAIAvoidEntity;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
-import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
-import net.minecraft.entity.monster.EntityCreeper;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
-import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import org.lwjgl.Sys;
 
 import javax.annotation.Nullable;
 
@@ -38,26 +33,32 @@ public class EntityFrostmaw extends MowzieEntity {
     public static final Animation DIE_ANIMATION = Animation.create(130);
     public static final Animation HURT_ANIMATION = Animation.create(13);
     public static final Animation ROAR_ANIMATION = Animation.create(76);
-    public static final Animation SWIPE_ANIMATION = Animation.create(27);
-    public static final Animation SWIPE_TWICE_ANIMATION = Animation.create(55);
-    public static final Animation ICE_BREATH_ANIMATION = Animation.create(77);
+    public static final Animation SWIPE_ANIMATION = Animation.create(28);
+    public static final Animation SWIPE_TWICE_ANIMATION = Animation.create(57);
+    public static final Animation ICE_BREATH_ANIMATION = Animation.create(92);
     public static final Animation ACTIVATE_ANIMATION = Animation.create(20);
     public static final Animation DEACTIVATE_ANIMATION = Animation.create(100);
 
+    public static final int ICE_BREATH_COOLDOWN = 200;
+
     public boolean swingWhichArm = false;
+    Vec3d prevRightHandPos = new Vec3d(0, 0, 0);
+    Vec3d prevLeftHandPos = new Vec3d(0, 0, 0);
+    int iceBreathCooldown = 0;
+    EntityIceBreath iceBreath;
 
     public LegSolverQuadruped legSolver;
 
     public EntityFrostmaw(World world) {
         super(world);
-        setSize(4.5f, 4.5f);
+        setSize(4f, 4f);
         this.tasks.addTask(0, new EntityAISwimming(this));
         this.tasks.addTask(5, new EntityAIMoveTowardsRestriction(this, 1.0D));
         this.tasks.addTask(7, new EntityAIWanderAvoidWater(this, 1.0D));
         this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
-        this.tasks.addTask(2, new AnimationAreaAttackAI<>(this, SWIPE_ANIMATION, null, null, 2, 7, 120, 1, 9));
-        this.tasks.addTask(2, new AnimationAreaAttackAI<>(this, SWIPE_TWICE_ANIMATION, null, null, 1, 7, 120, 1, 9));
+        this.tasks.addTask(2, new AnimationAreaAttackAI<>(this, SWIPE_ANIMATION, null, null, 2, 7, 6, 120, 1, 9));
+        this.tasks.addTask(2, new AnimationAreaAttackAI<>(this, SWIPE_TWICE_ANIMATION, null, null, 1, 7, 6, 120, 1, 9));
         this.tasks.addTask(2, new AnimationAI<>(this, ICE_BREATH_ANIMATION, true));
         this.tasks.addTask(2, new AnimationAI<>(this, ROAR_ANIMATION, false));
         this.targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityPlayer.class, true));
@@ -66,6 +67,7 @@ public class EntityFrostmaw extends MowzieEntity {
         stepHeight = 1;
         frame += rand.nextInt(50);
         legSolver = new LegSolverQuadruped(1f, 2f, -1, 1.5f);
+        socketPosArray = new Vec3d[] {new Vec3d(0, 0, 0), new Vec3d(0, 0, 0), new Vec3d(0, 0, 0)};
     }
 
     protected void applyEntityAttributes()
@@ -74,10 +76,17 @@ public class EntityFrostmaw extends MowzieEntity {
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(35.0D);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.3D);
         this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(10.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0D);
+    }
+
+    @Override
+    protected void entityInit() {
+        super.entityInit();
     }
 
     @Override
     public void playLivingSound() {
+        if (rand.nextInt(6) != 0) return;
         super.playLivingSound();
         if (getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(this, ROAR_ANIMATION);
     }
@@ -90,16 +99,16 @@ public class EntityFrostmaw extends MowzieEntity {
 
     @Override
     public void onUpdate() {
+        rotationYaw = renderYawOffset;
         super.onUpdate();
         legSolver.update(this);
-//        renderYawOffset = rotationYaw;
         this.repelEntities(4f, 4f, 4f, 4f);
 
         if ((getAnimation() == SWIPE_ANIMATION || getAnimation() == SWIPE_TWICE_ANIMATION) && getAnimationTick() == 1) {
             swingWhichArm = rand.nextBoolean();
         }
 
-        if (getAnimation() == SWIPE_TWICE_ANIMATION && currentAnim instanceof AnimationAreaAttackAI<?> && getAnimationTick() == 20) {
+        if (getAnimation() == SWIPE_TWICE_ANIMATION && currentAnim instanceof AnimationAreaAttackAI<?> && getAnimationTick() == 21) {
             ((AnimationAreaAttackAI<?>)currentAnim).hitEntities();
         }
 
@@ -109,14 +118,110 @@ public class EntityFrostmaw extends MowzieEntity {
             }
         }
 
+        if (getAnimation() == ICE_BREATH_ANIMATION) {
+            if (getAttackTarget() != null) getLookHelper().setLookPositionWithEntity(getAttackTarget(), 15, 15);
+            Vec3d mouthPos = socketPosArray[2];
+            if (getAnimationTick() == 13) {
+                iceBreath = new EntityIceBreath(world, this);
+                iceBreath.setPositionAndRotation(mouthPos.xCoord, mouthPos.yCoord, mouthPos.zCoord, rotationYawHead, rotationPitch + 10);
+                if (!world.isRemote) world.spawnEntity(iceBreath);
+            }
+            if (iceBreath != null) iceBreath.setPositionAndRotation(mouthPos.xCoord, mouthPos.yCoord, mouthPos.zCoord, rotationYawHead, rotationPitch + 10);
+        }
+
+        spawnSwipeParticles();
+
         if (getAttackTarget() != null) {
-            getNavigator().tryMoveToEntityLiving(getAttackTarget(), 1);
+            if (targetDistance > 5 && !(getAnimation() == ICE_BREATH_ANIMATION && targetDistance < 8)) getNavigator().tryMoveToEntityLiving(getAttackTarget(), 1);
+            else getNavigator().clearPathEntity();
             if (targetDistance <= 6 && getAnimation() == NO_ANIMATION) {
                 if (rand.nextInt(3) == 0) AnimationHandler.INSTANCE.sendAnimationMessage(this, SWIPE_TWICE_ANIMATION);
                 else AnimationHandler.INSTANCE.sendAnimationMessage(this, SWIPE_ANIMATION);
             }
+            if (targetDistance >= 4 && targetDistance <= 14 && getAnimation() == NO_ANIMATION && iceBreathCooldown <= 0) {
+                AnimationHandler.INSTANCE.sendAnimationMessage(this, ICE_BREATH_ANIMATION);
+                iceBreathCooldown = ICE_BREATH_COOLDOWN;
+            }
         }
+
 //        if (getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(this, ICE_BREATH_ANIMATION);
+
+        if (iceBreathCooldown > 0) iceBreathCooldown--;
+        prevRotationYaw = rotationYaw;
+    }
+
+    private void spawnSwipeParticles() {
+        int cloudDensity = 6;
+        float cloudRandomness = 0.5f;
+        if (getAnimation() == SWIPE_ANIMATION || getAnimation() == SWIPE_TWICE_ANIMATION) {
+            Vec3d rightHandPos = socketPosArray[0];
+            Vec3d leftHandPos = socketPosArray[1];
+            if (getAnimation() == SWIPE_ANIMATION) {
+                if (getAnimationTick() > 8 && getAnimationTick() < 14) {
+                    if (swingWhichArm) {
+                        double length = prevRightHandPos.subtract(rightHandPos).lengthVector();
+                        int numClouds = (int) Math.floor(2 * length);
+                        for (int i = 0; i < numClouds; i++) {
+                            double x = prevRightHandPos.xCoord + i * (rightHandPos.xCoord - prevRightHandPos.xCoord) / numClouds;
+                            double y = prevRightHandPos.yCoord + i * (rightHandPos.yCoord - prevRightHandPos.yCoord) / numClouds;
+                            double z = prevRightHandPos.zCoord + i * (rightHandPos.zCoord - prevRightHandPos.zCoord) / numClouds;
+                            for (int j = 0; j < cloudDensity; j++) {
+                                float xOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
+                                float yOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
+                                float zOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
+                                world.spawnParticle(EnumParticleTypes.CLOUD, x + xOffset, y + yOffset, z + zOffset, motionX, motionY, motionZ);
+                            }
+                        }
+                    } else {
+                        double length = prevLeftHandPos.subtract(leftHandPos).lengthVector();
+                        int numClouds = (int) Math.floor(2.5 * length);
+                        for (int i = 0; i < numClouds; i++) {
+                            double x = prevLeftHandPos.xCoord + i * (leftHandPos.xCoord - prevLeftHandPos.xCoord) / numClouds;
+                            double y = prevLeftHandPos.yCoord + i * (leftHandPos.yCoord - prevLeftHandPos.yCoord) / numClouds;
+                            double z = prevLeftHandPos.zCoord + i * (leftHandPos.zCoord - prevLeftHandPos.zCoord) / numClouds;
+                            for (int j = 0; j < cloudDensity; j++) {
+                                float xOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
+                                float yOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
+                                float zOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
+                                world.spawnParticle(EnumParticleTypes.CLOUD, x + xOffset, y + yOffset, z + zOffset, motionX, motionY, motionZ);
+                            }
+                        }
+                    }
+                }
+            } else {
+                if ((swingWhichArm && getAnimationTick() > 8 && getAnimationTick() < 14) || (!swingWhichArm && getAnimationTick() > 19 && getAnimationTick() < 25)) {
+                    double length = prevRightHandPos.subtract(rightHandPos).lengthVector();
+                    int numClouds = (int) Math.floor(2 * length);
+                    for (int i = 0; i < numClouds; i++) {
+                        double x = prevRightHandPos.xCoord + i * (rightHandPos.xCoord - prevRightHandPos.xCoord) / numClouds;
+                        double y = prevRightHandPos.yCoord + i * (rightHandPos.yCoord - prevRightHandPos.yCoord) / numClouds;
+                        double z = prevRightHandPos.zCoord + i * (rightHandPos.zCoord - prevRightHandPos.zCoord) / numClouds;
+                        for (int j = 0; j < cloudDensity; j++) {
+                            float xOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
+                            float yOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
+                            float zOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
+                            world.spawnParticle(EnumParticleTypes.CLOUD, x + xOffset, y + yOffset, z + zOffset, motionX, motionY, motionZ);
+                        }
+                    }
+                } else if ((!swingWhichArm && getAnimationTick() > 8 && getAnimationTick() < 14) || (swingWhichArm && getAnimationTick() > 19 && getAnimationTick() < 25)) {
+                    double length = prevLeftHandPos.subtract(leftHandPos).lengthVector();
+                    int numClouds = (int) Math.floor(2.5 * length);
+                    for (int i = 0; i < numClouds; i++) {
+                        double x = prevLeftHandPos.xCoord + i * (leftHandPos.xCoord - prevLeftHandPos.xCoord) / numClouds;
+                        double y = prevLeftHandPos.yCoord + i * (leftHandPos.yCoord - prevLeftHandPos.yCoord) / numClouds;
+                        double z = prevLeftHandPos.zCoord + i * (leftHandPos.zCoord - prevLeftHandPos.zCoord) / numClouds;
+                        for (int j = 0; j < cloudDensity; j++) {
+                            float xOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
+                            float yOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
+                            float zOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
+                            world.spawnParticle(EnumParticleTypes.CLOUD, x + xOffset, y + yOffset, z + zOffset, motionX, motionY, motionZ);
+                        }
+                    }
+                }
+            }
+            prevLeftHandPos = leftHandPos;
+            prevRightHandPos = rightHandPos;
+        }
     }
 
     @Override

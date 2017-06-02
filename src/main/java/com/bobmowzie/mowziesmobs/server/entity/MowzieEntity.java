@@ -24,6 +24,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
@@ -39,6 +40,9 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     private int animationTick;
     private Animation animation = NO_ANIMATION;
     private List<IntermittentAnimation> intermittentAnimations = new ArrayList<>();
+    public Vec3d moveVec = new Vec3d(0, 0, 0);
+
+    public Vec3d[] socketPosArray = new Vec3d[]{};
 
     public MowzieEntity(World world) {
         super(world);

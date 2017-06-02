@@ -5,10 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.*;
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntityRing;
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySolarBeam;
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
+import com.bobmowzie.mowziesmobs.server.entity.effects.*;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Biomes;
@@ -40,11 +37,12 @@ public enum EntityHandler {
         registerEntity(EntityBarakoaya.class, BARAKOAYA_ID, true, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.CREATURE);
         registerEntity(EntityBarakoanToPlayer.class, "barakoan_player", false, 0xBA6656, 0xFAFA78, false, 1, 1, 1, EnumCreatureType.CREATURE);
         registerEntity(EntityBarako.class, "barako", true, 0xBA6656, 0xFFFF4D, false, 1, 1, 1, EnumCreatureType.MONSTER);
-//        registerEntity(EntityFrostmaw.class, "frostmaw", true, 0xf7faff, 0xafcdff, false, 1, 1, 1, EnumCreatureType.MONSTER);
+        registerEntity(EntityFrostmaw.class, "frostmaw", true, 0xf7faff, 0xafcdff, false, 1, 1, 1, EnumCreatureType.MONSTER);
 
         EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "sunstrike"), EntitySunstrike.class, "sunstrike", nextEntityId(), MowziesMobs.INSTANCE, 64, 1, true);
         EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "solar_beam"), EntitySolarBeam.class, "solar_beam", nextEntityId(), MowziesMobs.INSTANCE, 64, 1, true);
         EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "boulder"), EntityBoulder.class, "boulder", nextEntityId(), MowziesMobs.INSTANCE, 64, 1, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "icebreath"), EntityIceBreath.class, "icebreath", nextEntityId(), MowziesMobs.INSTANCE, 64, 1, true);
         EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "ring"), EntityRing.class, "ring", nextEntityId(), MowziesMobs.INSTANCE, 64, 1, true);
 
         EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "dart"), EntityDart.class, "dart", nextEntityId(), MowziesMobs.INSTANCE, 64, 1, true);

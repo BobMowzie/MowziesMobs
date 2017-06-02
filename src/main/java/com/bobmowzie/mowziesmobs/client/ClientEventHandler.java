@@ -1,21 +1,32 @@
 package com.bobmowzie.mowziesmobs.client;
 
+import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
+import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
 import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.event.PlayerModelEvent;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
+import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.client.renderer.entity.RenderLivingBase;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderItemInFrameEvent;
+import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.settings.KeyBindingMap;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -27,12 +38,14 @@ import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemWroughtAxe;
 import com.bobmowzie.mowziesmobs.server.item.ItemWroughtHelm;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public enum ClientEventHandler {
     INSTANCE;
 
     private static final ResourceLocation MARIO = new ResourceLocation(MowziesMobs.MODID, "textures/gui/mario.png");
+    private static final ResourceLocation FROZEN = new ResourceLocation("textures/blocks/ice.png");
 
     long startWroughtnautHitTime;
 
@@ -54,6 +67,11 @@ public enum ClientEventHandler {
             GlStateManager.scale(0.85f, 0.85f, 0.85f);
             GlStateManager.translate(0.32f, -0.4f, -0.25f);
         }
+    }
+
+    @SubscribeEvent
+    public void onRenderEntity(RenderLivingEvent.Specials event) {
+
     }
 
     @SubscribeEvent
@@ -82,9 +100,9 @@ public enum ClientEventHandler {
     public void onRenderTick(TickEvent.RenderTickEvent event) {
         EntityPlayer player = Minecraft.getMinecraft().player;
         if (player != null) {
-            MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
-            if (property != null && property.geomancy.canUse(player) && property.geomancy.isSpawningBoulder() && property.geomancy.getSpawnBoulderCharge() > 2) {
-                Vec3d lookPos = property.geomancy.getLookPos();
+            MowziePlayerProperties propertyPlayer = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
+            if (propertyPlayer != null && propertyPlayer.geomancy.canUse(player) && propertyPlayer.geomancy.isSpawningBoulder() && propertyPlayer.geomancy.getSpawnBoulderCharge() > 2) {
+                Vec3d lookPos = propertyPlayer.geomancy.getLookPos();
                 Vec3d playerEyes = player.getPositionEyes(LLibrary.PROXY.getPartialTicks());
                 Vec3d vec = playerEyes.subtract(lookPos).normalize();
                 float yaw = (float) Math.atan2(vec.zCoord, vec.xCoord);
@@ -93,6 +111,11 @@ public enum ClientEventHandler {
                 float dPitch = ((float)(pitch * 180/Math.PI) - player.rotationPitch)/2f;
                 player.rotationYaw += dYaw;
                 player.rotationPitch += dPitch;
+            }
+            MowzieLivingProperties propertyLiving = EntityPropertiesHandler.INSTANCE.getProperties(player, MowzieLivingProperties.class);
+            if (player.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+                player.rotationYaw = propertyLiving.frozenYaw;
+                player.rotationPitch = propertyLiving.frozenPitch;
             }
         }
     }
@@ -137,6 +160,13 @@ public enum ClientEventHandler {
                 // Time
                 drawMarioNumber(timeOffsetX + 8, offsetY + 8, time, 3);
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void onMouseMove(MouseEvent event) {
+        if (Minecraft.getMinecraft().player.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+            event.setCanceled(true);
         }
     }
 
