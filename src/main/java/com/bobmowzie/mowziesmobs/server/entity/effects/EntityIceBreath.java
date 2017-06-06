@@ -1,5 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
+import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityRing;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
@@ -50,17 +52,13 @@ public class EntityIceBreath extends Entity {
         }
         float yaw = (float) Math.toRadians(-rotationYaw);
         float pitch = (float) Math.toRadians(-rotationPitch);
-        float spread = 0.5f;
+        float spread = 0.6f;
         float speed = 0.7f;
         float xComp = (float) (Math.sin(yaw) * Math.cos(pitch));
         float yComp = (float) (Math.sin(pitch));
         float zComp = (float) (Math.cos(yaw) * Math.cos(pitch));
         if (ticksExisted % 4 == 0) {
-            EntityRing ring = new EntityRing(world, (float)posX, (float)posY, (float)posZ, new Vec3d(xComp, yComp, zComp), 25, 0.8f, 0.8f, 1f, 1f, 10 * spread, false);
-            if (world.isRemote) world.spawnEntity(ring);
-            ring.motionX = 0.5 * xComp;
-            ring.motionZ = 0.5 * zComp;
-            ring.motionY = 0.5 * yComp;
+            if (world.isRemote) MMParticle.RING.spawn(world, posX, posY, posZ, ParticleFactory.ParticleArgs.get().withData(yaw, -pitch, 30, 0.8f, 0.8f, 1f, 1f, 50f * spread, false, 0.5f * xComp, 0.5f * yComp, 0.5f * zComp));
         }
 
         for (int i = 0; i < 50; i++) {
@@ -112,7 +110,7 @@ public class EntityIceBreath extends Entity {
             boolean yawCheck = (entityRelativeYaw <= ARC / 2 && entityRelativeYaw >= -ARC / 2) || (entityRelativeYaw >= 360 - ARC / 2 || entityRelativeYaw <= -360 + ARC / 2);
             boolean pitchCheck = (entityRelativePitch <= ARC / 2 && entityRelativePitch >= -ARC / 2) || (entityRelativePitch >= 360 - ARC / 2 || entityRelativePitch <= -360 + ARC / 2);
             if (inRange && yawCheck && pitchCheck) {
-//                entityHit.attackEntityFrom(DamageSource.causeIndirectMagicDamage(caster, null), damage);
+                entityHit.attackEntityFrom(DamageSource.causeIndirectMagicDamage(caster, null), damage);
                 MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entityHit, MowzieLivingProperties.class);
                 property.freezeProgress += 0.12;
             }

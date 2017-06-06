@@ -2,6 +2,9 @@ package com.bobmowzie.mowziesmobs.client.particle;
 
 import javax.annotation.Nullable;
 
+import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
+import com.bobmowzie.mowziesmobs.client.particles.ParticleRing;
+import com.bobmowzie.mowziesmobs.client.particles.ParticleSnowFlake;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.world.World;
 
@@ -9,7 +12,10 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory.ParticleArgs;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleOrb;
 
 public enum MMParticle {
-    ORB(new ParticleOrb.OrbFactory());
+    ORB(new ParticleOrb.OrbFactory()),
+    SNOWFLAKE(new ParticleSnowFlake.SnowFlakeFactory()),
+    RING(new ParticleRing.RingFactory()),
+    CLOUD(new ParticleCloud.CloudFactory());
 
     private ParticleFactory factory;
 

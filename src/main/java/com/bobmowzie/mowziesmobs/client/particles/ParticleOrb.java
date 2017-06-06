@@ -1,6 +1,8 @@
 package com.bobmowzie.mowziesmobs.client.particles;
 
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -47,7 +49,7 @@ public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
         this.startZ = z;
         this.duration = speed;
         mode = 1;
-        particleAlpha = 0;
+        particleAlpha = 0.1f;
     }
 
     @Override
@@ -62,7 +64,7 @@ public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
 
     @Override
     public void onUpdate() {
-        particleAlpha = 0;
+        particleAlpha = 0.1f;
         prevPosX = posX;
         prevPosY = posY;
         prevPosZ = posZ;
@@ -86,7 +88,7 @@ public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
             motionZ = vecZ;
             move(motionX, motionY, motionZ);
         } else if (mode == 1) {
-            particleAlpha = (float)particleAge/(float)duration;//(float) (1 * Math.sqrt(Math.pow(posX - startX, 2) + Math.pow(posY - startY, 2) + Math.pow(posZ - startZ, 2)) / Math.sqrt(Math.pow(targetX - startX, 2) + Math.pow(targetY - startY, 2) + Math.pow(targetZ - startZ, 2)));
+            particleAlpha = ((float)particleAge/(float)duration);//(float) (1 * Math.sqrt(Math.pow(posX - startX, 2) + Math.pow(posY - startY, 2) + Math.pow(posZ - startZ, 2)) / Math.sqrt(Math.pow(targetX - startX, 2) + Math.pow(targetY - startY, 2) + Math.pow(targetZ - startZ, 2)));
             posX = startX + (targetX - startX) / (1 + Math.exp(-(8 / duration) * (particleAge - duration / 2)));
             posY = startY + (targetY - startY) / (1 + Math.exp(-(8 / duration) * (particleAge - duration / 2)));
             posZ = startZ + (targetZ - startZ) / (1 + Math.exp(-(8 / duration) * (particleAge - duration / 2)));
@@ -95,6 +97,12 @@ public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
             }
         }
         particleAge++;
+    }
+
+    @Override
+    public void renderParticle(VertexBuffer buffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+        particleAlpha = ((float)particleAge + partialTicks)/(float)duration;
+        super.renderParticle(buffer, entityIn, partialTicks, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
     }
 
     public static final class OrbFactory extends ParticleFactory<OrbFactory, ParticleOrb> {

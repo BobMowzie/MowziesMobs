@@ -1,5 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
+import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.server.ai.animation.*;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
@@ -148,10 +150,14 @@ public class EntityFrostmaw extends MowzieEntity {
 
         if (iceBreathCooldown > 0) iceBreathCooldown--;
         prevRotationYaw = rotationYaw;
+
+//        if (ticksExisted % 40 == 0 && world.isRemote) MMParticle.CLOUD.spawn(world, posX, posY, posZ);
     }
 
     private void spawnSwipeParticles() {
-        int cloudDensity = 6;
+        int snowflakeDensity = 4;
+        float snowflakeRandomness = 0.5f;
+        int cloudDensity = 2;
         float cloudRandomness = 0.5f;
         if (getAnimation() == SWIPE_ANIMATION || getAnimation() == SWIPE_TWICE_ANIMATION) {
             Vec3d rightHandPos = socketPosArray[0];
@@ -165,11 +171,18 @@ public class EntityFrostmaw extends MowzieEntity {
                             double x = prevRightHandPos.xCoord + i * (rightHandPos.xCoord - prevRightHandPos.xCoord) / numClouds;
                             double y = prevRightHandPos.yCoord + i * (rightHandPos.yCoord - prevRightHandPos.yCoord) / numClouds;
                             double z = prevRightHandPos.zCoord + i * (rightHandPos.zCoord - prevRightHandPos.zCoord) / numClouds;
+                            for (int j = 0; j < snowflakeDensity; j++) {
+                                float xOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
+                                float yOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
+                                float zOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
+                                MMParticle.SNOWFLAKE.spawn(world, x + xOffset, y + yOffset, z + zOffset, ParticleFactory.ParticleArgs.get().withData(motionX, motionY - 0.01f, motionZ));
+                            }
                             for (int j = 0; j < cloudDensity; j++) {
                                 float xOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
                                 float yOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
                                 float zOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
-                                world.spawnParticle(EnumParticleTypes.CLOUD, x + xOffset, y + yOffset, z + zOffset, motionX, motionY, motionZ);
+                                double value = rand.nextFloat() * 0.1f;
+                                MMParticle.CLOUD.spawn(world, x + xOffset, y + yOffset, z + zOffset, ParticleFactory.ParticleArgs.get().withData(motionX, motionY, motionZ, 0.8d + value, 0.8d + value, 1d, true, 20d,  (int) (20 + rand.nextDouble() * 20)));
                             }
                         }
                     } else {
@@ -179,11 +192,18 @@ public class EntityFrostmaw extends MowzieEntity {
                             double x = prevLeftHandPos.xCoord + i * (leftHandPos.xCoord - prevLeftHandPos.xCoord) / numClouds;
                             double y = prevLeftHandPos.yCoord + i * (leftHandPos.yCoord - prevLeftHandPos.yCoord) / numClouds;
                             double z = prevLeftHandPos.zCoord + i * (leftHandPos.zCoord - prevLeftHandPos.zCoord) / numClouds;
+                            for (int j = 0; j < snowflakeDensity; j++) {
+                                float xOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
+                                float yOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
+                                float zOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
+                                MMParticle.SNOWFLAKE.spawn(world, x + xOffset, y + yOffset, z + zOffset, ParticleFactory.ParticleArgs.get().withData(motionX, motionY - 0.01f, motionZ));
+                            }
                             for (int j = 0; j < cloudDensity; j++) {
                                 float xOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
                                 float yOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
                                 float zOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
-                                world.spawnParticle(EnumParticleTypes.CLOUD, x + xOffset, y + yOffset, z + zOffset, motionX, motionY, motionZ);
+                                double value = rand.nextFloat() * 0.1f;
+                                MMParticle.CLOUD.spawn(world, x + xOffset, y + yOffset, z + zOffset, ParticleFactory.ParticleArgs.get().withData(motionX, motionY, motionZ, 0.8d + value, 0.8d + value, 1d, true, 20d,  (int) (20 + rand.nextDouble() * 20)));
                             }
                         }
                     }
@@ -196,11 +216,18 @@ public class EntityFrostmaw extends MowzieEntity {
                         double x = prevRightHandPos.xCoord + i * (rightHandPos.xCoord - prevRightHandPos.xCoord) / numClouds;
                         double y = prevRightHandPos.yCoord + i * (rightHandPos.yCoord - prevRightHandPos.yCoord) / numClouds;
                         double z = prevRightHandPos.zCoord + i * (rightHandPos.zCoord - prevRightHandPos.zCoord) / numClouds;
+                        for (int j = 0; j < snowflakeDensity; j++) {
+                            float xOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
+                            float yOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
+                            float zOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
+                            MMParticle.SNOWFLAKE.spawn(world, x + xOffset, y + yOffset, z + zOffset, ParticleFactory.ParticleArgs.get().withData(motionX, motionY - 0.01f, motionZ));
+                        }
                         for (int j = 0; j < cloudDensity; j++) {
                             float xOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
                             float yOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
                             float zOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
-                            world.spawnParticle(EnumParticleTypes.CLOUD, x + xOffset, y + yOffset, z + zOffset, motionX, motionY, motionZ);
+                            double value = rand.nextFloat() * 0.1f;
+                            MMParticle.CLOUD.spawn(world, x + xOffset, y + yOffset, z + zOffset, ParticleFactory.ParticleArgs.get().withData(motionX, motionY, motionZ, 0.8d + value, 0.8d + value, 1d, true, 20d, (int) (20 + rand.nextDouble() * 20)));
                         }
                     }
                 } else if ((!swingWhichArm && getAnimationTick() > 8 && getAnimationTick() < 14) || (swingWhichArm && getAnimationTick() > 19 && getAnimationTick() < 25)) {
@@ -210,11 +237,18 @@ public class EntityFrostmaw extends MowzieEntity {
                         double x = prevLeftHandPos.xCoord + i * (leftHandPos.xCoord - prevLeftHandPos.xCoord) / numClouds;
                         double y = prevLeftHandPos.yCoord + i * (leftHandPos.yCoord - prevLeftHandPos.yCoord) / numClouds;
                         double z = prevLeftHandPos.zCoord + i * (leftHandPos.zCoord - prevLeftHandPos.zCoord) / numClouds;
+                        for (int j = 0; j < snowflakeDensity; j++) {
+                            float xOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
+                            float yOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
+                            float zOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
+                            MMParticle.SNOWFLAKE.spawn(world, x + xOffset, y + yOffset, z + zOffset, ParticleFactory.ParticleArgs.get().withData(motionX, motionY - 0.01f, motionZ));
+                        }
                         for (int j = 0; j < cloudDensity; j++) {
                             float xOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
                             float yOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
                             float zOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
-                            world.spawnParticle(EnumParticleTypes.CLOUD, x + xOffset, y + yOffset, z + zOffset, motionX, motionY, motionZ);
+                            double value = rand.nextFloat() * 0.1f;
+                            MMParticle.CLOUD.spawn(world, x + xOffset, y + yOffset, z + zOffset, ParticleFactory.ParticleArgs.get().withData(motionX, motionY, motionZ, 0.8d + value, 0.8d + value, 1d, true, 20d, (int) (20 + rand.nextDouble() * 20)));
                         }
                     }
                 }
