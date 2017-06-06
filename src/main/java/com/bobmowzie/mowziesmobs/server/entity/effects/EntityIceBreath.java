@@ -47,31 +47,34 @@ public class EntityIceBreath extends Entity {
     @Override
     public void onUpdate() {
         super.onUpdate();
+//        rotationYaw = 0;
+//        rotationPitch = 0;
         if (ticksExisted == 1) {
             caster = (EntityLivingBase) world.getEntityByID(getCasterID());
         }
         float yaw = (float) Math.toRadians(-rotationYaw);
         float pitch = (float) Math.toRadians(-rotationPitch);
-        float spread = 0.6f;
-        float speed = 0.7f;
+        float spread = 0.25f;
+        float speed = 0.56f;
         float xComp = (float) (Math.sin(yaw) * Math.cos(pitch));
         float yComp = (float) (Math.sin(pitch));
         float zComp = (float) (Math.cos(yaw) * Math.cos(pitch));
         if (ticksExisted % 4 == 0) {
-            if (world.isRemote) MMParticle.RING.spawn(world, posX, posY, posZ, ParticleFactory.ParticleArgs.get().withData(yaw, -pitch, 30, 0.8f, 0.8f, 1f, 1f, 50f * spread, false, 0.5f * xComp, 0.5f * yComp, 0.5f * zComp));
+            if (world.isRemote) MMParticle.RING.spawn(world, posX, posY, posZ, ParticleFactory.ParticleArgs.get().withData(yaw, -pitch, 35, 1f, 1f, 1f, 1f, 110f * spread, false, 0.5f * xComp, 0.5f * yComp, 0.5f * zComp));
         }
 
-        for (int i = 0; i < 50; i++) {
-            float xSpeed = speed * xComp + (spread * (rand.nextFloat() * 2 - 1) * (1 - Math.abs(xComp)));
-            float ySpeed = speed * yComp + (spread * (rand.nextFloat() * 2 - 1) * (1 - Math.abs(yComp)));
-            float zSpeed = speed * zComp + (spread * (rand.nextFloat() * 2 - 1) * (1 - Math.abs(zComp)));
-            world.spawnParticle(EnumParticleTypes.SNOW_SHOVEL, posX, posY, posZ, xSpeed, ySpeed, zSpeed);
+        for (int i = 0; i < 9; i++) {
+            double xSpeed = speed * 1f * xComp;// + (spread * (rand.nextFloat() * 2 - 1) * (1 - Math.abs(xComp)));
+            double ySpeed = speed * 1f * yComp;// + (spread * (rand.nextFloat() * 2 - 1) * (1 - Math.abs(yComp)));
+            double zSpeed = speed * 1f * zComp;// + (spread * (rand.nextFloat() * 2 - 1) * (1 - Math.abs(zComp)));
+            MMParticle.SNOWFLAKE.spawn(world, posX, posY, posZ, ParticleFactory.ParticleArgs.get().withData(xSpeed, ySpeed, zSpeed, 37d, true));
         }
-        for (int i = 0; i < 50; i++) {
-            float xSpeed = speed * xComp + (spread * 0.6f * (rand.nextFloat() * 2 - 1) * (1 - Math.abs(xComp)));
-            float ySpeed = speed * yComp + (spread * 0.6f * (rand.nextFloat() * 2 - 1) * (1 - Math.abs(yComp)));
-            float zSpeed = speed * zComp + (spread * 0.6f * (rand.nextFloat() * 2 - 1) * (1 - Math.abs(zComp)));
-            world.spawnParticle(EnumParticleTypes.CLOUD, posX, posY, posZ, xSpeed, ySpeed, zSpeed);
+        for (int i = 0; i < 20; i++) {
+            double xSpeed = speed * xComp + (spread * 0.6 * (rand.nextFloat() * 2 - 1) * (Math.sqrt(1 - xComp * xComp)));
+            double ySpeed = speed * yComp + (spread * 0.6 * (rand.nextFloat() * 2 - 1) * (Math.sqrt(1 - yComp * yComp)));
+            double zSpeed = speed * zComp + (spread * 0.6 * (rand.nextFloat() * 2 - 1) * (Math.sqrt(1 - zComp * zComp)));
+            double value = rand.nextFloat() * 0.15f;
+            MMParticle.CLOUD.spawn(world, posX, posY, posZ, ParticleFactory.ParticleArgs.get().withData(xSpeed, ySpeed, zSpeed, 0.75d + value, 0.75d + value, 1d, true, 5d + rand.nextDouble() * 10d, 40, false));
         }
         if (ticksExisted > 10) hitEntities();
 

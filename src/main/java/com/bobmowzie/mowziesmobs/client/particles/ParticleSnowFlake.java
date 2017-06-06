@@ -23,15 +23,21 @@ import javax.vecmath.Vector3d;
 public class ParticleSnowFlake extends Particle implements ParticleTextureStitcher.IParticleSpriteReceiver {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "particles/snowflake");
     private int whichTex;
+    private int swirlTick;
+    private float spread;
+    boolean swirls;
 
-    public ParticleSnowFlake(World world, double x, double y, double z, double vX, double vY, double vZ) {
+    public ParticleSnowFlake(World world, double x, double y, double z, double vX, double vY, double vZ, double duration, boolean swirls) {
         super(world, x, y, z);
         particleScale = 1;
         whichTex = rand.nextInt(8);
         motionX = vX;
         motionY = vY;
         motionZ = vZ;
-        particleMaxAge = 40;
+        particleMaxAge = (int) duration;
+        swirlTick = rand.nextInt(120);
+        spread = rand.nextFloat();
+        this.swirls = swirls;
     }
 
     @Override
@@ -47,10 +53,24 @@ public class ParticleSnowFlake extends Particle implements ParticleTextureStitch
     @Override
     public void onUpdate() {
         super.onUpdate();
+
+        if (swirls) {
+            Vec3d motionVec = new Vec3d(motionX, motionY, motionZ).normalize();
+            float swirlRadius = 4f * (particleAge / (float) particleMaxAge) * spread;
+            float x = (float) motionVec.xCoord;
+            float y = (float) motionVec.yCoord;
+            float z = (float) motionVec.zCoord;
+            posX += swirlRadius * Math.cos(swirlTick * 0.2) * (Math.sqrt(1 - x * x));
+            posZ += swirlRadius * Math.sin(swirlTick * 0.2) * (Math.sqrt(1 - z * z));
+            posY += swirlRadius * Math.sin(swirlTick * 0.2) * (Math.sqrt(1 - y * y)) * (Math.sqrt(1 - x * x));
+            posY += swirlRadius * Math.cos(swirlTick * 0.2) * (Math.sqrt(1 - y * y)) * (Math.sqrt(1 - z * z));
+        }
+
         if (particleAge >= particleMaxAge) {
             setExpired();
         }
         particleAge++;
+        swirlTick++;
     }
 
     @Override
@@ -114,10 +134,16 @@ public class ParticleSnowFlake extends Particle implements ParticleTextureStitch
 
         @Override
         public ParticleSnowFlake createParticle(ImmutableParticleArgs args) {
-            if (args.data.length >= 3) {
-                return new ParticleSnowFlake(args.world, args.x, args.y, args.z, (double) args.data[0], (double) args.data[1], (double) args.data[2]);
+            if (args.data.length >= 5) {
+                return new ParticleSnowFlake(args.world, args.x, args.y, args.z, (double) args.data[0], (double) args.data[1], (double) args.data[2], (double) args.data[3], (boolean) args.data[4]);
             }
-            return new ParticleSnowFlake(args.world, args.x, args.y, args.z, 0, 0, 0);
+            if (args.data.length == 4) {
+                return new ParticleSnowFlake(args.world, args.x, args.y, args.z, (double) args.data[0], (double) args.data[1], (double) args.data[2], (double) args.data[3], false);
+            }
+            else if (args.data.length == 3) {
+                return new ParticleSnowFlake(args.world, args.x, args.y, args.z, (double) args.data[0], (double) args.data[1], (double) args.data[2], 40, false);
+            }
+            return new ParticleSnowFlake(args.world, args.x, args.y, args.z, 0, 0, 0, 40, false);
         }
     }
 }

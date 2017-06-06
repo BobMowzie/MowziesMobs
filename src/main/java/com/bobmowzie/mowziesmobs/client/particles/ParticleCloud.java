@@ -17,10 +17,12 @@ import net.minecraft.world.World;
 public class ParticleCloud extends Particle implements ParticleTextureStitcher.IParticleSpriteReceiver {
     private int whichTex;
     private float red, green, blue;
+    private float scale;
+    boolean decreaseSize;
 
-    public ParticleCloud(World world, double x, double y, double z, double vx, double vy, double vz, double r, double g, double b, boolean noisy, double scale, int duration) {
+    public ParticleCloud(World world, double x, double y, double z, double vx, double vy, double vz, double r, double g, double b, boolean noisy, double scale, int duration, boolean decreaseSize) {
         super(world, x, y, z);
-        particleScale = (float) scale * 0.5f;
+        this.scale = (float) scale * 0.5f;
         particleMaxAge = duration;
         whichTex = noisy ? 1 : 0;
         motionX = vx;
@@ -29,6 +31,7 @@ public class ParticleCloud extends Particle implements ParticleTextureStitcher.I
         red = (float) r;
         green = (float) g;
         blue = (float) b;
+        this.decreaseSize = decreaseSize;
     }
 
     @Override
@@ -53,11 +56,13 @@ public class ParticleCloud extends Particle implements ParticleTextureStitcher.I
     @Override
     public void renderParticle(VertexBuffer buffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         float var = (particleAge + partialTicks)/(float)particleMaxAge;
-        particleAlpha = 0.25f * ((float) (1 - Math.exp(5 * (var - 1))));
+        particleAlpha = 0.2f * ((float) (1 - Math.exp(5 * (var - 1))));
         if (particleAlpha < 0.01) particleAlpha = 0.01f;
         particleRed = red;
         particleGreen = green;
         particleBlue = blue;
+        if (decreaseSize) particleScale = scale * ((1 - 0.7f * var) + 0.3f);
+        else particleScale = scale;
 
         float f = (float)this.particleTextureIndexX / 16.0F;
         float f1 = f + 0.0624375F;
@@ -125,8 +130,8 @@ public class ParticleCloud extends Particle implements ParticleTextureStitcher.I
 
         @Override
         public ParticleCloud createParticle(ImmutableParticleArgs args) {
-            if (args.data.length >= 9) return new ParticleCloud(args.world, args.x, args.y, args.z, (double) args.data[0], (double) args.data[1], (double) args.data[2], (double) args.data[3], (double) args.data[4], (double) args.data[5], (boolean) args.data[6], (double) args.data[7], (int) args.data[8]);
-            return new ParticleCloud(args.world, args.x, args.y, args.z, 0, 0, 0, 1, 1, 1, false, 10, 40);
+            if (args.data.length >= 10) return new ParticleCloud(args.world, args.x, args.y, args.z, (double) args.data[0], (double) args.data[1], (double) args.data[2], (double) args.data[3], (double) args.data[4], (double) args.data[5], (boolean) args.data[6], (double) args.data[7], (int) args.data[8], (boolean) args.data[9]);
+            return new ParticleCloud(args.world, args.x, args.y, args.z, 0, 0, 0, 1, 1, 1, false, 10, 40, false);
         }
     }
 }
