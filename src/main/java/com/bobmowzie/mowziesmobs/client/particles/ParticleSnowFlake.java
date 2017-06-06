@@ -27,7 +27,7 @@ public class ParticleSnowFlake extends Particle implements ParticleTextureStitch
     private float spread;
     boolean swirls;
 
-    public ParticleSnowFlake(World world, double x, double y, double z, double vX, double vY, double vZ, double duration, boolean swirls) {
+    public ParticleSnowFlake(World world, double x, double y, double z, double vX, double vY, double vZ, double duration, double swirls) {
         super(world, x, y, z);
         particleScale = 1;
         whichTex = rand.nextInt(8);
@@ -37,7 +37,7 @@ public class ParticleSnowFlake extends Particle implements ParticleTextureStitch
         particleMaxAge = (int) duration;
         swirlTick = rand.nextInt(120);
         spread = rand.nextFloat();
-        this.swirls = swirls;
+        this.swirls = swirls == 1;
     }
 
     @Override
@@ -142,15 +142,15 @@ public class ParticleSnowFlake extends Particle implements ParticleTextureStitch
         @Override
         public ParticleSnowFlake createParticle(ImmutableParticleArgs args) {
             if (args.data.length >= 5) {
-                return new ParticleSnowFlake(args.world, args.x, args.y, args.z, (double) args.data[0], (double) args.data[1], (double) args.data[2], (double) args.data[3], (boolean) args.data[4]);
+                return new ParticleSnowFlake(args.world, args.x, args.y, args.z, (double) args.data[0], (double) args.data[1], (double) args.data[2], (double) args.data[3], (double) args.data[4]);
             }
             if (args.data.length == 4) {
-                return new ParticleSnowFlake(args.world, args.x, args.y, args.z, (double) args.data[0], (double) args.data[1], (double) args.data[2], (double) args.data[3], false);
+                return new ParticleSnowFlake(args.world, args.x, args.y, args.z, (double) args.data[0], (double) args.data[1], (double) args.data[2], (double) args.data[3], 0);
             }
             else if (args.data.length == 3) {
-                return new ParticleSnowFlake(args.world, args.x, args.y, args.z, (double) args.data[0], (double) args.data[1], (double) args.data[2], 40, false);
+                return new ParticleSnowFlake(args.world, args.x, args.y, args.z, (double) args.data[0], (double) args.data[1], (double) args.data[2], 40, 0);
             }
-            return new ParticleSnowFlake(args.world, args.x, args.y, args.z, 0, 0, 0, 40, false);
+            return new ParticleSnowFlake(args.world, args.x, args.y, args.z, 0, 0, 0, 40, 0);
         }
     }
 }
