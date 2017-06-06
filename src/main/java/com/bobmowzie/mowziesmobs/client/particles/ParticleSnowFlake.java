@@ -56,14 +56,21 @@ public class ParticleSnowFlake extends Particle implements ParticleTextureStitch
 
         if (swirls) {
             Vec3d motionVec = new Vec3d(motionX, motionY, motionZ).normalize();
+            float yaw = (float) Math.atan2(motionVec.xCoord, motionVec.zCoord);
+            float xzDistance = (float) motionVec.lengthVector();
+            float pitch = (float) Math.atan2(motionVec.yCoord, xzDistance);
             float swirlRadius = 4f * (particleAge / (float) particleMaxAge) * spread;
-            float x = (float) motionVec.xCoord;
-            float y = (float) motionVec.yCoord;
-            float z = (float) motionVec.zCoord;
-            posX += swirlRadius * Math.cos(swirlTick * 0.2) * (Math.sqrt(1 - x * x));
-            posZ += swirlRadius * Math.sin(swirlTick * 0.2) * (Math.sqrt(1 - z * z));
-            posY += swirlRadius * Math.sin(swirlTick * 0.2) * (Math.sqrt(1 - y * y)) * (Math.sqrt(1 - x * x));
-            posY += swirlRadius * Math.cos(swirlTick * 0.2) * (Math.sqrt(1 - y * y)) * (Math.sqrt(1 - z * z));
+            Point3d point = new Point3d(swirlRadius * Math.cos(swirlTick * 0.2), swirlRadius * Math.sin(swirlTick * 0.2), 0);
+            Matrix4d boxRotateX = new Matrix4d();
+            Matrix4d boxRotateY = new Matrix4d();
+            boxRotateX.rotX(pitch);
+            boxRotateY.rotY(yaw);
+            boxRotateX.transform(point);
+            boxRotateY.transform(point);
+            posX += point.x;
+            posY += point.y;
+            posZ += point.z;
+//            posY += swirlRadius * Math.cos(swirlTick * 0.2) * (Math.sqrt(1 - y * y)) * (Math.sqrt(1 - z * z));
         }
 
         if (particleAge >= particleMaxAge) {

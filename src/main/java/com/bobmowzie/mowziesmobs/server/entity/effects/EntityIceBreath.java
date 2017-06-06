@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class EntityIceBreath extends Entity {
     private static final int RANGE = 10;
-    private static final int ARC = 30;
+    private static final int ARC = 45;
     private static final int DAMAGE_PER_HIT = 2;
     public EntityLivingBase caster;
     private static final DataParameter<Integer> CASTER = EntityDataManager.createKey(EntityIceBreath.class, DataSerializers.VARINT);
@@ -47,7 +47,7 @@ public class EntityIceBreath extends Entity {
     @Override
     public void onUpdate() {
         super.onUpdate();
-//        rotationYaw = 0;
+//        rotationYaw += 0.5;
 //        rotationPitch = 0;
         if (ticksExisted == 1) {
             caster = (EntityLivingBase) world.getEntityByID(getCasterID());
