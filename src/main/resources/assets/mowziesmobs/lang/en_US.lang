@@ -10,6 +10,7 @@ entity.barakoan_player.name=Barakoa
 entity.barakoana.name=Barakoana
 entity.barakoaya.name=Barakoa
 entity.barako.name=Barako, the Sun Chief
+entity.frostmaw.name=Frostmaw
 
 # Items
 item.foliaathSeed.name=Foliaath Seed
@@ -27,6 +28,7 @@ item.spear.name=Spear
 item.blowgun.name=Blowgun
 item.grantSunsBlessing.name=Receive Sun's Blessing
 item.testStructure.name=Test Structures
+item.icecrystal.name=Ice Crystal
 
 item.blowgun.text.0=Charges quickly
 item.blowgun.text.1=Short range
@@ -55,6 +57,8 @@ item.wroughtHelm.text.0=Never breaks
 
 item.spear.text.0=Extends attack range by 3.5 blocks
 
+item.icecrystal.text.0=Hold right-click to channel an icy whirlwind
+
 # Blocks
 tile.campfire.name=Campfire
 tile.paintedAcacia.name=Painted Acacia Wood
@@ -62,6 +66,8 @@ tile.paintedAcaciaSlab.name=Painted Acacia Wood Slab
 
 # Potions
 potion.sunsBlessing=Sun's Blessing
+potion.geomancy=Geomancy
+potion.frozen=Frozen
 
 # Tile Entities
 

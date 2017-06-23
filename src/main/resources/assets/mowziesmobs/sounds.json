@@ -328,5 +328,11 @@
 	},
 	"frostmaw.roar": {
 		"sounds": [ "mowziesmobs:entity/frostmaw/roar" ]
+	},
+	"frostmaw.whoosh": {
+		"sounds": [ "mowziesmobs:entity/frostmaw/whoosh" ]
+	},
+	"frostmaw.icebreath": {
+		"sounds": [ "mowziesmobs:entity/frostmaw/icebreath" ]
 	}
 }

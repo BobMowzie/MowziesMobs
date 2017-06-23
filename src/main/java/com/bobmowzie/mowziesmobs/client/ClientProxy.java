@@ -1,16 +1,18 @@
 package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.client.render.entity.*;
+import com.bobmowzie.mowziesmobs.client.sound.IceBreathSound;
+import com.bobmowzie.mowziesmobs.client.sound.SpawnBoulderChargeSound;
 import com.bobmowzie.mowziesmobs.server.entity.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.*;
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntityRing;
+import com.bobmowzie.mowziesmobs.server.entity.effects.*;
 import net.ilexiconn.llibrary.client.model.tabula.TabulaModelHandler;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.model.ModelLoader;
@@ -26,8 +28,6 @@ import com.bobmowzie.mowziesmobs.server.ServerProxy;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityDart;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySolarBeam;
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntityEggInfo;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityBabyFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
@@ -69,6 +69,7 @@ public class ClientProxy extends ServerProxy {
         registerItemModel(ItemHandler.INSTANCE.dart, "dart");
         registerItemModel(ItemHandler.INSTANCE.spear, "spear");
         registerItemModel(ItemHandler.INSTANCE.blowgun, "blowgun");
+        registerItemModel(ItemHandler.INSTANCE.iceCrystal, "icecrystal");
         registerItemModel(ItemHandler.INSTANCE.spawnEgg, "spawn_egg");
         registerItemModel(ItemHandler.INSTANCE.grantSunsBlessing, "grant_suns_blessing");
 
@@ -96,6 +97,16 @@ public class ClientProxy extends ServerProxy {
     @Override
     public void playSunstrikeSound(EntitySunstrike strike) {
         Minecraft.getMinecraft().getSoundHandler().playSound(new SunstrikeSound(strike));
+    }
+
+    @Override
+    public void playIceBreathSound(EntityIceBreath iceBreath) {
+        Minecraft.getMinecraft().getSoundHandler().playSound(new IceBreathSound(iceBreath));
+    }
+
+    @Override
+    public void playBoulderChargeSound(EntityPlayer player) {
+        Minecraft.getMinecraft().getSoundHandler().playSound(new SpawnBoulderChargeSound(player));
     }
 
     @Override

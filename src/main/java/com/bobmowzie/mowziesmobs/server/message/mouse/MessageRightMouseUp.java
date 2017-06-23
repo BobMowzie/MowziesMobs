@@ -36,6 +36,10 @@ public class MessageRightMouseUp extends AbstractMessage<MessageRightMouseUp> {
     public void onServerReceived(MinecraftServer server, MessageRightMouseUp message, EntityPlayer player, MessageContext messageContext) {
         MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
         property.mouseRightDown = false;
+        if (property.usingIceBreath && property.icebreath != null) {
+            property.usingIceBreath = false;
+            property.icebreath.setDead();
+        }
         for (int i = 0; i < property.powers.length; i++) {
             property.powers[i].onRightMouseUp(player);
         }

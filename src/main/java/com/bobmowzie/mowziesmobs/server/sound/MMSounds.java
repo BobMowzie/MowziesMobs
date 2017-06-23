@@ -190,6 +190,10 @@ public enum MMSounds {
 
     public static final SoundEvent ENTITY_FROSTMAW_ROAR = reg("frostmaw.roar");
 
+    public static final SoundEvent ENTITY_FROSTMAW_WHOOSH = reg("frostmaw.whoosh");
+
+    public static final SoundEvent ENTITY_FROSTMAW_ICEBREATH = reg("frostmaw.icebreath");
+
     public static final SoundEvent EFFECT_GEOMANCY_SMALL_CRASH = reg("geomancy.smallcrash");
 
     public static final SoundEvent EFFECT_GEOMANCY_MAGIC_SMALL = reg("geomancy.hitsmall");

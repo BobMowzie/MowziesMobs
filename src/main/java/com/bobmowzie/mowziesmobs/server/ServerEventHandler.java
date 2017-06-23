@@ -210,6 +210,11 @@ public enum ServerEventHandler {
             }
         }
 
+        if (!(player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == ItemHandler.INSTANCE.iceCrystal) && property.usingIceBreath && property.icebreath != null) {
+            property.usingIceBreath = false;
+            property.icebreath.setDead();
+        }
+
         if (event.side == Side.CLIENT) {
             if (Mouse.isButtonDown(0) && !property.mouseLeftDown) {
                 property.mouseLeftDown = true;

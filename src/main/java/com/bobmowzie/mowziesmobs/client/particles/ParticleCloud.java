@@ -18,9 +18,15 @@ public class ParticleCloud extends Particle implements ParticleTextureStitcher.I
     private int whichTex;
     private float red, green, blue;
     private float scale;
-    boolean decreaseSize;
+    private EnumCloudBehavior behavior;
 
-    public ParticleCloud(World world, double x, double y, double z, double vx, double vy, double vz, double r, double g, double b, boolean noisy, double scale, int duration, boolean decreaseSize) {
+    public enum EnumCloudBehavior {
+        SHRINK,
+        GROW,
+        CONSTANT
+    }
+
+    public ParticleCloud(World world, double x, double y, double z, double vx, double vy, double vz, double r, double g, double b, boolean noisy, double scale, int duration, EnumCloudBehavior behavior) {
         super(world, x, y, z);
         this.scale = (float) scale * 0.5f;
         particleMaxAge = duration;
@@ -31,7 +37,7 @@ public class ParticleCloud extends Particle implements ParticleTextureStitcher.I
         red = (float) r;
         green = (float) g;
         blue = (float) b;
-        this.decreaseSize = decreaseSize;
+        this.behavior = behavior;
     }
 
     @Override
@@ -61,7 +67,8 @@ public class ParticleCloud extends Particle implements ParticleTextureStitcher.I
         particleRed = red;
         particleGreen = green;
         particleBlue = blue;
-        if (decreaseSize) particleScale = scale * ((1 - 0.7f * var) + 0.3f);
+        if (behavior == EnumCloudBehavior.SHRINK) particleScale = scale * ((1 - 0.7f * var) + 0.3f);
+        else if (behavior == EnumCloudBehavior.GROW) particleScale = scale * ((0.7f * var) + 0.3f);
         else particleScale = scale;
 
         float f = (float)this.particleTextureIndexX / 16.0F;
@@ -130,8 +137,8 @@ public class ParticleCloud extends Particle implements ParticleTextureStitcher.I
 
         @Override
         public ParticleCloud createParticle(ImmutableParticleArgs args) {
-            if (args.data.length >= 10) return new ParticleCloud(args.world, args.x, args.y, args.z, (double) args.data[0], (double) args.data[1], (double) args.data[2], (double) args.data[3], (double) args.data[4], (double) args.data[5], (boolean) args.data[6], (double) args.data[7], (int) args.data[8], (boolean) args.data[9]);
-            return new ParticleCloud(args.world, args.x, args.y, args.z, 0, 0, 0, 1, 1, 1, false, 10, 40, false);
+            if (args.data.length >= 10) return new ParticleCloud(args.world, args.x, args.y, args.z, (double) args.data[0], (double) args.data[1], (double) args.data[2], (double) args.data[3], (double) args.data[4], (double) args.data[5], (boolean) args.data[6], (double) args.data[7], (int) args.data[8], (EnumCloudBehavior) args.data[9]);
+            return new ParticleCloud(args.world, args.x, args.y, args.z, 0, 0, 0, 1, 1, 1, false, 10, 40, EnumCloudBehavior.CONSTANT);
         }
     }
 }
