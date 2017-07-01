@@ -44,7 +44,7 @@ item.dart.text.0=Can only be used with blowgun
 item.dart.text.1=Poisons targets
 
 item.foliaathSeed.text.0=Plant in grass
-item.foliaathSeed.text.0=Feed when hungry for 2 days
+item.foliaathSeed.text.1=Feed when hungry for 2 days
 
 item.grantSunsBlessing.text.0=This item is creative-mode only
 item.grantSunsBlessing.text.1=Grants Sun's Blessing for 20 minutes
@@ -58,6 +58,7 @@ item.wroughtHelm.text.0=Never breaks
 item.spear.text.0=Extends attack range by 3.5 blocks
 
 item.icecrystal.text.0=Hold right-click to channel an icy whirlwind
+item.icecrystal.text.1=Recharges while in inventory
 
 # Blocks
 tile.campfire.name=Campfire

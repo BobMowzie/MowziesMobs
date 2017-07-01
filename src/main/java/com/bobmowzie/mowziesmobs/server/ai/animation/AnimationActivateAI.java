@@ -13,7 +13,6 @@ public class AnimationActivateAI<T extends MowzieEntity & IAnimatedEntity> exten
     @Override
     public void resetTask() {
         super.resetTask();
-        System.out.println("Hello");
         animatingEntity.active = true;
     }
 }

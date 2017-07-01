@@ -12,6 +12,8 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
+import java.util.List;
+
 /**
  * Created by Josh on 6/6/2017.
  */
@@ -20,17 +22,43 @@ public class ItemIceCrystal extends Item {
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
         setUnlocalizedName("icecrystal");
         setRegistryName("icecrystal");
+        setMaxDamage(600);
+        setMaxStackSize(1);
     }
 
     @Override
+    public boolean isDamageable() {
+        return true;
+    }
+
+//    @Override
+//    public int getMaxItemUseDuration(ItemStack stack) {
+//        return 40;
+//    }
+
+    @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
+        ItemStack stack = playerIn.getHeldItem(handIn);
         MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(playerIn, MowziePlayerProperties.class);
-        if (!property.usingIceBreath) {
-            property.icebreath = new EntityIceBreath(worldIn, playerIn);
-            property.icebreath.setPositionAndRotation(playerIn.posX, playerIn.posY + playerIn.eyeHeight - 0.75f, playerIn.posZ, playerIn.rotationYaw, playerIn.rotationPitch);
-            if (!worldIn.isRemote) worldIn.spawnEntity(property.icebreath);
-            property.usingIceBreath = true;
+        if (stack.getItemDamage() + 20 < stack.getMaxDamage()) {
+            if (!property.usingIceBreath) {
+                property.icebreath = new EntityIceBreath(worldIn, playerIn);
+                property.icebreath.setPositionAndRotation(playerIn.posX, playerIn.posY + playerIn.eyeHeight - 0.5f, playerIn.posZ, playerIn.rotationYaw, playerIn.rotationPitch);
+                if (!worldIn.isRemote) worldIn.spawnEntity(property.icebreath);
+                property.usingIceBreath = true;
+            }
+            stack.damageItem(20, playerIn);
+            showDurabilityBar(playerIn.getHeldItem(handIn));
+        }
+        else {
+            property.icebreath.setDead();
         }
         return super.onItemRightClick(worldIn, playerIn, handIn);
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+        super.addInformation(stack, playerIn, tooltip, advanced);
+        ItemHandler.addItemText(this, tooltip);
     }
 }

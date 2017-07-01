@@ -334,5 +334,14 @@
 	},
 	"frostmaw.icebreath": {
 		"sounds": [ "mowziesmobs:entity/frostmaw/icebreath" ]
+	},
+	"frostmaw.icebreathstart": {
+		"sounds": [ "mowziesmobs:entity/frostmaw/icebreathstart" ]
+	},
+	"frostmaw.step": {
+		"sounds": [ "mowziesmobs:entity/frostmaw/step" ]
+	},
+	"frostmaw.land": {
+		"sounds": [ "mowziesmobs:entity/frostmaw/land" ]
 	}
 }

@@ -44,6 +44,10 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
 
     public Vec3d[] socketPosArray = new Vec3d[]{};
 
+    protected boolean prevOnGround;
+    protected boolean prevPrevOnGround;
+    protected boolean willLandSoon;
+
     public MowzieEntity(World world) {
         super(world);
     }
@@ -75,6 +79,8 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
 
     @Override
     public void onUpdate() {
+        prevPrevOnGround = prevOnGround;
+        prevOnGround = onGround;
         super.onUpdate();
         frame++;
         if (getAnimation() != NO_ANIMATION) {
@@ -87,6 +93,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
             targetDistance = getDistanceToEntity(getAttackTarget());
             targetAngle = (float) getAngleBetweenEntities(this, getAttackTarget());
         }
+        willLandSoon = !onGround && world.collidesWithAnyBlock(getEntityBoundingBox().move(new Vec3d(motionX, motionY, motionZ)));
     }
 
     protected void onAnimationFinish(Animation animation) {}

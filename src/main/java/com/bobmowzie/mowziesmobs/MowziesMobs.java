@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs;
 
+import com.bobmowzie.mowziesmobs.client.render.entity.FrozenRenderHandler;
 import com.bobmowzie.mowziesmobs.server.ServerEventHandler;
 import com.bobmowzie.mowziesmobs.server.ServerProxy;
 import com.bobmowzie.mowziesmobs.server.biome.BiomeDictionaryHandler;
@@ -57,6 +58,7 @@ public class MowziesMobs {
     @EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(ServerEventHandler.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(FrozenRenderHandler.class);
 
         MMSounds.INSTANCE.onInit();
         CreativeTabHandler.INSTANCE.onInit();

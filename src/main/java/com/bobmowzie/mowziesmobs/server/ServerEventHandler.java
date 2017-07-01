@@ -210,9 +210,16 @@ public enum ServerEventHandler {
             }
         }
 
-        if (!(player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == ItemHandler.INSTANCE.iceCrystal) && property.usingIceBreath && property.icebreath != null) {
+        if (!(player.getHeldItemMainhand().getItem() == ItemHandler.INSTANCE.iceCrystal || player.getHeldItemOffhand().getItem() == ItemHandler.INSTANCE.iceCrystal) && property.usingIceBreath && property.icebreath != null) {
             property.usingIceBreath = false;
             property.icebreath.setDead();
+        }
+
+        for (ItemStack stack: player.inventory.mainInventory) {
+            if (!property.usingIceBreath && stack.getItem() == ItemHandler.INSTANCE.iceCrystal) stack.setItemDamage(Math.max(stack.getItemDamage() - 1, 0));
+        }
+        for (ItemStack stack: player.inventory.offHandInventory) {
+            if (!property.usingIceBreath && stack.getItem() == ItemHandler.INSTANCE.iceCrystal) stack.setItemDamage(Math.max(stack.getItemDamage() - 1, 0));
         }
 
         if (event.side == Side.CLIENT) {

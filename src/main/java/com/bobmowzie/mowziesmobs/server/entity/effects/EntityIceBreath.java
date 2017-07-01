@@ -7,6 +7,7 @@ import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityRing;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -30,7 +31,7 @@ import java.util.List;
 public class EntityIceBreath extends Entity {
     private static final int RANGE = 10;
     private static final int ARC = 45;
-    private static final int DAMAGE_PER_HIT = 2;
+    private static final int DAMAGE_PER_HIT = 1;
     public EntityLivingBase caster;
     private static final DataParameter<Integer> CASTER = EntityDataManager.createKey(EntityIceBreath.class, DataSerializers.VARINT);
 
@@ -53,15 +54,15 @@ public class EntityIceBreath extends Entity {
     @Override
     public void onUpdate() {
         super.onUpdate();
+        if (ticksExisted == 1) playSound(MMSounds.ENTITY_FROSTMAW_ICEBREATH_START, 1, 0.6f);
         if (caster instanceof EntityPlayer) {
             rotationYaw = ((EntityPlayer) caster).rotationYaw;
             rotationPitch = ((EntityPlayer) caster).rotationPitch;
             posX = ((EntityPlayer) caster).posX;
-            posY = ((EntityPlayer) caster).posY + ((EntityPlayer) caster).eyeHeight - 0.75f;
+            posY = ((EntityPlayer) caster).posY + ((EntityPlayer) caster).eyeHeight - 0.5f;
             posZ = ((EntityPlayer) caster).posZ;
         }
-//        rotationYaw += 0.5;
-//        rotationPitch = 0;
+
         if (ticksExisted == 1) {
             caster = (EntityLivingBase) world.getEntityByID(getCasterID());
         }

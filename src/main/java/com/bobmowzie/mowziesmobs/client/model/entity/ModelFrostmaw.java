@@ -81,6 +81,7 @@ public class ModelFrostmaw extends AdvancedModelBase {
     public SocketModelRenderer mouthSocket;
     public AdvancedModelRenderer iceCrystal;
     public AdvancedModelRenderer iceCrystalJoint;
+    public AdvancedModelRenderer standUpController;
 
     private ModelAnimator animator;
 
@@ -306,6 +307,7 @@ public class ModelFrostmaw extends AdvancedModelBase {
         handController = new AdvancedModelRenderer(this, 0, 0);
         swingOffsetController = new AdvancedModelRenderer(this, 0, 0);
         roarController = new AdvancedModelRenderer(this, 0, 0);
+        standUpController = new AdvancedModelRenderer(this, 0, 0);
         rightHandSocket = new SocketModelRenderer(this);
         leftHandSocket = new SocketModelRenderer(this);
         mouthSocket = new SocketModelRenderer(this);
@@ -424,135 +426,6 @@ public class ModelFrostmaw extends AdvancedModelBase {
         );
         legLeftJoint.rotateAngleX -= waist.rotateAngleX - waist.defaultRotationX;
         legRightJoint.rotateAngleX -= waist.rotateAngleX - waist.defaultRotationX;
-
-//        f = 0.5f * (entity.ticksExisted + LLibrary.PROXY.getPartialTicks());
-//        f1 = 1f;
-        float globalSpeed = 0.5f;
-        float globalHeight = 1.2f;
-        float globalDegree = 0.8f;
-        float frontDegree = 1.1f;
-        float frontOffset = (float) (Math.PI/2);
-
-        float lookLimit = 50;
-        if (f3 > lookLimit) {
-            f3 = lookLimit;
-        }
-        if (f3 < -lookLimit) {
-            f3 = -lookLimit;
-        }
-
-        if (entity.getAnimation() == entity.ROAR_ANIMATION) {
-            f3 = f3 / (entity.getAnimationTick() + delta);
-            f4 = f4 / (entity.getAnimationTick() + delta);
-        }
-        waist.rotationPointZ += 10;
-
-        if (entity.getActive()) {
-            if (entity.getAnimation() != entity.ACTIVATE_ANIMATION && entity.getAnimation() != entity.DEACTIVATE_ANIMATION) {
-                faceTarget(f3, f4, 1, headJoint);
-
-                //walk
-                bob(waist, globalSpeed, globalHeight * 3f, false, f, f1);
-                walk(waist, globalSpeed, globalHeight * 0.12f, false, frontOffset, 0.08f, f, f1);
-                walk(headJoint, globalSpeed, globalHeight * 0.12f, true, frontOffset + 0.4f, 0.08f, f, f1);
-                walk(legLeftJoint, globalSpeed, globalHeight * 0.12f, true, frontOffset, 0.08f, f, f1);
-                walk(legRightJoint, globalSpeed, globalHeight * 0.12f, true, frontOffset, 0.08f, f, f1);
-                walk(armLeftJoint, globalSpeed, globalHeight * 0.12f, true, frontOffset, 0.08f, f, f1);
-                walk(armRightJoint, globalSpeed, globalHeight * 0.12f, true, frontOffset, 0.08f, f, f1);
-
-                swing(waist, 0.5f * globalSpeed, globalDegree * 0.2f, true, 0, 0, f, f1);
-                swing(headJoint, 0.5f * globalSpeed, globalDegree * 0.2f, false, 0, 0, f, f1);
-
-                flap(waist, 0.5f * globalSpeed, 0.15f * globalHeight, false, 1, 0, f, f1);
-                flap(legLeft1, 0.5f * globalSpeed, 0.15f * globalHeight, true, 1, 0, f, f1);
-                flap(legRight1, 0.5f * globalSpeed, 0.15f * globalHeight, true, 1, 0, f, f1);
-                flap(chest, 0.5f * globalSpeed, 0.15f * globalHeight, true, 1, 0, f, f1);
-                swing(legLeft1, 0.5F * globalSpeed, 0.2F * globalDegree, false, 0, 0.6F, f, f1);
-                swing(legRight1, 0.5F * globalSpeed, 0.2F * globalDegree, false, 0, -0.6F, f, f1);
-                walk(legLeft1, 0.5f * globalSpeed, 0.7f * globalDegree, false, 0, 0.4f, f, f1);
-                walk(legRight1, 0.5f * globalSpeed, 0.7f * globalDegree, true, 0, -0.4f, f, f1);
-                walk(legLeft2, 0.5f * globalSpeed, 0.6f * globalDegree, false, -1.8f, 0.2f, f, f1);
-                walk(legRight2, 0.5f * globalSpeed, 0.6f * globalDegree, true, -1.8f, -0.2f, f, f1);
-                walk(leftFoot, 0.5f * globalSpeed, 0.4f * globalDegree, false, -1.5f, 0.4f * globalDegree, f, f1);
-                walk(rightFoot, 0.5f * globalSpeed, 0.4f * globalDegree, true, -1.5f, -0.4f * globalDegree, f, f1);
-
-                swing(chest, 0.5f * globalSpeed, 0.3f * globalDegree * frontDegree, false, frontOffset, 0, f, f1);
-                swing(headJoint, 0.5f * globalSpeed, 0.3f * globalDegree * frontDegree, true, frontOffset, 0, f, f1);
-                swing(armLeft2, 0.5f * globalSpeed, 0.3f * globalDegree * frontDegree, true, frontOffset, 0.4f * globalDegree * frontDegree, f, f1);
-                swing(armRight2, 0.5f * globalSpeed, 0.3f * globalDegree * frontDegree, true, frontOffset, -0.4f * globalDegree * frontDegree, f, f1);
-                flap(chest, 0.5f * globalSpeed, 0.1f * globalDegree * frontDegree, true, frontOffset + 1, 0, f, f1);
-                flap(armLeftJoint, 0.5f * globalSpeed, 0.1f * globalDegree * frontDegree, false, frontOffset + 1, 0, f, f1);
-                flap(armRightJoint, 0.5f * globalSpeed, 0.1f * globalDegree * frontDegree, false, frontOffset + 1, 0, f, f1);
-                flap(headJoint, 0.5f * globalSpeed, 0.1f * globalDegree * frontDegree, false, frontOffset + 1, 0, f, f1);
-
-                walk(armLeftJoint, 0.5f * globalSpeed, 0.4f * globalDegree * frontDegree, true, frontOffset, -0.7f * globalDegree * frontDegree, f, f1);
-                walk(armRightJoint, 0.5f * globalSpeed, 0.4f * globalDegree * frontDegree, false, frontOffset, 0.7f * globalDegree * frontDegree, f, f1);
-                walk(armLeftJoint2, 0.5f * globalSpeed, 0.4f * globalDegree * frontDegree, true, frontOffset + 2f, 0.6f * globalDegree * frontDegree, f, f1);
-                walk(armRightJoint2, 0.5f * globalSpeed, 0.4f * globalDegree * frontDegree, false, frontOffset + 2f, -0.6f * globalDegree * frontDegree, f, f1);
-                walk(leftHand, 0.5f * globalSpeed, 0.5f * globalDegree * frontDegree, false, frontOffset + 1.5f, 0.05f * globalDegree * frontDegree, f, f1);
-                walk(rightHand, 0.5f * globalSpeed, 0.5f * globalDegree * frontDegree, true, frontOffset + 1.5f, 0.05f * globalDegree * frontDegree, f, f1);
-
-                //Idle
-                walk(waist, 0.08f, 0.05f, false, 0, 0, frame, 1);
-                walk(headJoint, 0.08f, 0.05f, true, 0.8f, 0, frame, 1);
-                walk(legRightJoint, 0.08f, 0.05f, true, 0, 0, frame, 1);
-                walk(legLeftJoint, 0.08f, 0.05f, true, 0, 0, frame, 1);
-                walk(armLeftJoint, 0.08f, 0.05f, true, 0, 0, frame, 1);
-                walk(armRightJoint, 0.08f, 0.05f, true, 0, 0, frame, 1);
-                walk(armLeftJoint2, 0.08f, 0.07f, true, 0, 0, frame, 1);
-                walk(armRightJoint2, 0.08f, 0.07f, true, 0, 0, frame, 1);
-                walk(leftHand, 0.08f, 0.07f, false, 0, 0, frame, 1);
-                walk(rightHand, 0.08f, 0.07f, false, 0, 0, frame, 1);
-                armLeftJoint.rotationPointZ += 1.8f * Math.cos(frame * 0.08f);
-                armRightJoint.rotationPointZ += 1.8f * Math.cos(frame * 0.08f);
-                armLeftJoint.rotationPointY -= 0.4f * Math.cos(frame * 0.08f);
-                armRightJoint.rotationPointY -= 0.4f * Math.cos(frame * 0.08f);
-            }
-            eyeLidRight.isHidden = true;
-            eyeLidLeft.isHidden = true;
-        }
-        else {
-            eyeLidLeft.isHidden = false;
-            eyeLidRight.isHidden = false;
-            root.rotateAngleZ += 0.9f;
-            root.rotationPointX -= 20;
-            chest.rotateAngleZ -= 0.1f;
-            chest.rotateAngleX += 0.2;
-            chest.rotateAngleY += 0.2;
-            headJoint.rotateAngleZ -= 0.3f;
-            armRightJoint.rotateAngleZ -= 0.8f;
-            armRightJoint.rotateAngleX += 0.2f;
-            armRightJoint.rotateAngleY -= 0.5f;
-            armRightJoint.rotationPointY += 8;
-            armRight2.rotateAngleY += 0.2f;
-            armLeftJoint.rotateAngleX -= 1.3f;
-            armLeft1.rotateAngleX -= 0.8f;
-            armLeftJoint2.rotateAngleX += 1.3f;
-            armLeftJoint2.rotateAngleZ += 0.3f;
-            armRightJoint2.rotateAngleY += 0.5f;
-            leftHand.rotateAngleX -= 0.65f;
-            handController.rotationPointX += 0.8f;
-            rightHand.rotateAngleX -= 1.7f;
-            rightHand.rotateAngleY += 0.8f;
-            rightHand.rotateAngleZ -= 3.3f;
-            handController.rotationPointY += 0.8f;
-            legLeftJoint.rotateAngleX += 0.7f;
-            legLeft1.rotateAngleX -= 0.6f;
-            legLeft2.rotateAngleX -= 0.6f;
-            legLeft2.rotateAngleZ += 0.2f;
-            legLeftJoint.rotateAngleY += 0.9f;
-            legLeftJoint.rotateAngleZ += 0.2f;
-            legLeft2.rotateAngleY += 0.3f;
-            legRightJoint.rotateAngleY -= 0.4f;
-            legRight1.rotateAngleX += 1.1f;
-            legRight1.rotateAngleZ += 0.45f;
-            legRight2.rotateAngleX -= 0.3f;
-//            legRightJoint.rotationPointZ -= 5f;
-            chest.scaleChildren = false;
-            float chestScale = (float) (1.05 + 0.05f * Math.cos(frame * 0.05f));
-            chest.setScale(chestScale, chestScale, chestScale);
-            headJoint.rotateAngleX += (float) (0.04f * Math.cos(frame * 0.05f - 1));
-        }
     }
 
     public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
@@ -1162,6 +1035,341 @@ public class ModelFrostmaw extends AdvancedModelBase {
             animator.endKeyframe();
 
             animator.resetKeyframe(20);
+        }
+        if (frostmaw.getAnimation() == EntityFrostmaw.LAND_ANIMATION) {
+            animator.setAnimation(EntityFrostmaw.LAND_ANIMATION);
+            animator.startKeyframe(4);
+            animator.rotate(waist, 0.2f, 0, 0);
+            animator.rotate(headJoint, -0.2f, 0, 0);
+            animator.rotate(legRightJoint, -0.2f, 0, 0);
+            animator.rotate(legLeftJoint, -0.2f, 0, 0);
+
+            animator.rotate(armLeftJoint, 0.15f, 0, 0);
+            animator.move(armLeftJoint, 0, 2, 0);
+            animator.rotate(armLeftJoint2, -0.6f, 0, 0);
+            animator.rotate(leftHand, 0.3f, 0, 0.15f);
+            animator.rotate(armRightJoint, 0.15f, 0, 0);
+            animator.move(armRightJoint, 0, 2, 0);
+            animator.rotate(armRightJoint2, -0.6f, 0, 0);
+            animator.rotate(rightHand, 0.3f, 0, -0.15f);
+            animator.endKeyframe();
+            animator.resetKeyframe(8);
+        }
+        if (frostmaw.getAnimation() == EntityFrostmaw.SLAM_ANIMATION) {
+            animator.setAnimation(EntityFrostmaw.SLAM_ANIMATION);
+            animator.startKeyframe(6);
+            animator.rotate(waist, 0.2f, 0, 0);
+            animator.rotate(headJoint, -0.2f, 0, 0);
+            animator.rotate(legRightJoint, -0.2f, 0, 0);
+            animator.rotate(legLeftJoint, -0.2f, 0, 0);
+
+            animator.rotate(armLeftJoint, 0.15f, 0, 0);
+            animator.move(armLeftJoint, 0, 2, 0);
+            animator.rotate(armLeftJoint2, -0.6f, 0, 0);
+            animator.rotate(leftHand, 0.3f, 0, 0.15f);
+            animator.rotate(armRightJoint, 0.15f, 0, 0);
+            animator.move(armRightJoint, 0, 2, 0);
+            animator.rotate(armRightJoint2, -0.6f, 0, 0);
+            animator.rotate(rightHand, 0.3f, 0, -0.15f);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(2);
+            animator.startKeyframe(16);
+            animator.move(standUpController, 1, 0, 0);
+            animator.rotate(waist, -0.6f, 0, 0);
+            animator.rotate(headJoint, 1.2f, 0, 0);
+            animator.move(headJoint, 0, 8, -12);
+            animator.rotate(chest, -0.2f, 0, 0);
+            animator.move(waist, 0, -3, 0);
+            animator.rotate(legLeftJoint, 0.6f, 0, 0);
+            animator.rotate(legRightJoint, 0.6f, 0, 0);
+            animator.rotate(legLeft1, 0.3f, 0, 0);
+            animator.rotate(legLeft2, -0.3f, 0, 0);
+            animator.move(legLeftJoint, 2, 0, 0);
+            animator.rotate(legRight1, 0.3f, 0, 0);
+            animator.rotate(legRight2, -0.3f, 0, 0);
+            animator.move(legRightJoint, -2, 0, 0);
+
+            animator.rotate(armLeftJoint, 0.5f, 0, 0);
+            animator.rotate(armRightJoint, 0.5f, 0, 0);
+            animator.rotate(armLeft1, 0, 0, -0.1f);
+            animator.rotate(armRight1, 0, 0, 0.1f);
+            animator.rotate(armLeft2, 1f, -1.1f, 0);
+            animator.rotate(armRight2, 1f, 1.1f, 0);
+            animator.move(handController, 0.5f, 0.5f, 0);
+            animator.rotate(leftHand, -0.3f, 0, 0);
+            animator.rotate(rightHand, -0.3f, 0, 0);
+
+            animator.endKeyframe();
+            animator.setStaticKeyframe(50);
+
+            animator.startKeyframe(7);
+            animator.move(standUpController, 1, 0, 0);
+            animator.rotate(waist, -0.6f, 0, 0);
+            animator.rotate(headJoint, 1.2f, 0, 0);
+            animator.move(headJoint, 0, 8, -12);
+            animator.rotate(chest, -0.2f, 0, 0);
+            animator.move(waist, 0, -3, 0);
+            animator.rotate(legLeftJoint, 0.6f, 0, 0);
+            animator.rotate(legRightJoint, 0.6f, 0, 0);
+            animator.rotate(legLeft1, 0.3f, 0, 0);
+            animator.rotate(legLeft2, -0.3f, 0, 0);
+            animator.move(legLeftJoint, 2, 0, 0);
+            animator.rotate(legRight1, 0.3f, 0, 0);
+            animator.rotate(legRight2, -0.3f, 0, 0);
+            animator.move(legRightJoint, -2, 0, 0);
+
+            animator.rotate(armLeftJoint, 0.5f, 0, 0);
+            animator.rotate(armRightJoint, 0.5f, 0, 0);
+            animator.rotate(armLeft1, 0, 0, -0.1f);
+            animator.rotate(armRight1, 0, 0, 0.1f);
+            animator.rotate(armLeft2, 1f, -1.1f, 0);
+            animator.rotate(armRight2, 1f, 1.1f, 0);
+            animator.move(handController, 0.8f, 0.8f, 0);
+            animator.rotate(leftHand, -0.3f, 0, 0);
+            animator.rotate(rightHand, -0.3f, 0, 0);
+
+            animator.rotate(waist, -0.3f, 0, 0);
+            animator.rotate(legLeftJoint, 0.3f, 0, 0);
+            animator.rotate(legRightJoint, 0.3f, 0, 0);
+
+            animator.rotate(armRightJoint, -2.2f, 0, 0);
+            animator.rotate(armRight2, -0.6f, 0, -1f);
+            animator.rotate(rightHand, -0.6f, 0, 0.4f);
+            animator.rotate(armLeftJoint, -2.2f, 0, 0);
+            animator.rotate(armLeft2, -0.6f, 0, 1f);
+            animator.rotate(leftHand, -0.6f, 0, -0.4f);
+
+            animator.endKeyframe();
+            animator.setStaticKeyframe(4);
+            animator.startKeyframe(4);
+            animator.rotate(waist, 0.2f, 0, 0);
+            animator.rotate(legLeftJoint, -0.2f, 0, 0);
+            animator.rotate(legRightJoint, -0.2f, 0, 0);
+            animator.rotate(headJoint, -0.2f, 0, 0);
+            animator.rotate(jawJoint, 0.5f, 0, 0);
+            animator.move(handController, 0.9f, 0.9f, 0);
+            animator.move(roarController, 0, 1, 0);
+
+            animator.rotate(armRightJoint, -1f, 0, 0);
+            animator.rotate(armRight1, 0, 1.2f, -0.3f);
+            animator.rotate(armRight2, 2.2f, -0.3f, -0.8f);
+            animator.rotate(rightHand, -1.6f, -0.15f, 0.3f);
+            animator.move(armRightJoint, 0, 4, -16);
+            animator.rotate(armLeftJoint, -1f, 0, 0);
+            animator.rotate(armLeft1, 0, -1.2f, 0.3f);
+            animator.rotate(armLeft2, 2.2f, 0.3f, 0.8f);
+            animator.rotate(leftHand, -1.6f, 0.15f, -0.3f);
+            animator.move(armLeftJoint, 0, 4, -16);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(8);
+            animator.resetKeyframe(16);
+        }
+
+        if (frostmaw.getAnimation() == EntityFrostmaw.DODGE_ANIMATION) {
+            animator.setAnimation(EntityFrostmaw.DODGE_ANIMATION);
+            animator.startKeyframe(5);
+            animator.rotate(waist, 0.2f, 0, 0);
+            animator.rotate(legRightJoint, -0.2f, 0, 0);
+            animator.rotate(legLeftJoint, -0.2f, 0, 0);
+            animator.rotate(headJoint, -0.2f, 0, 0);
+
+            animator.rotate(armLeftJoint, 0.15f, 0, 0);
+            animator.move(armLeftJoint, 0, 2, 0);
+            animator.rotate(armLeftJoint2, -0.6f, 0, 0);
+            animator.rotate(leftHand, 0.3f, 0, 0.15f);
+            animator.rotate(armRightJoint, 0.15f, 0, 0);
+            animator.move(armRightJoint, 0, 2, 0);
+            animator.rotate(armRightJoint2, -0.6f, 0, 0);
+            animator.rotate(rightHand, 0.3f, 0, -0.15f);
+            animator.endKeyframe();
+
+            animator.setStaticKeyframe(1);
+
+            animator.startKeyframe(4);
+            animator.rotate(waist, -0.1f, 0, 0);
+            animator.rotate(legRightJoint, 0.1f, 0, 0);
+            animator.rotate(legLeftJoint, 0.1f, 0, 0);
+            animator.rotate(headJoint, 0.2f, 0, 0);
+            animator.move(waist, 0, 0, 0);
+            animator.rotate(legLeft1, 0.3f, 0, 0);
+            animator.rotate(legLeft2, -0.3f, 0, 0);
+            animator.move(legLeftJoint, 2, 0, 0);
+            animator.rotate(legRight1, 0.3f, 0, 0);
+            animator.rotate(legRight2, -0.3f, 0, 0);
+            animator.move(legRightJoint, -2, 0, 0);
+
+            animator.rotate(armLeftJoint, -0.4f, 0, 0);
+            animator.rotate(armLeftJoint2, 0.9f, 0, 0);
+            animator.rotate(leftHand, -0.3f, 0, -0.15f);
+            animator.rotate(armRightJoint, -0.4f, 0, 0);
+            animator.rotate(armRightJoint2, 0.9f, 0, 0);
+            animator.rotate(rightHand, -0.3f, 0, 0.15f);
+            animator.endKeyframe();
+            animator.resetKeyframe(5);
+        }
+
+//        f = 0.5f * (frostmaw.ticksExisted + LLibrary.PROXY.getPartialTicks());
+//        f1 = 1f;
+        float globalSpeed = 0.5f;
+        float globalHeightQuad = 1.2f * (1 - standUpController.rotationPointX);
+        float globalDegreeQuad = 0.8f * (1 - standUpController.rotationPointX);
+        float frontDegree = 1.1f;
+        float frontOffset = (float) (Math.PI/2);
+        float globalHeightBi = 1f * standUpController.rotationPointX;
+        float globalDegreeBi = 1f * standUpController.rotationPointX;
+
+        float lookLimit = 50;
+        if (f3 > lookLimit) {
+            f3 = lookLimit;
+        }
+        if (f3 < -lookLimit) {
+            f3 = -lookLimit;
+        }
+
+        if (entity.getAnimation() == frostmaw.ROAR_ANIMATION) {
+            f3 = f3 / (frame);
+            f4 = f4 / (frame);
+        }
+        waist.rotationPointZ += 10;
+
+        if (frostmaw.getActive()) {
+            if (entity.getAnimation() != frostmaw.ACTIVATE_ANIMATION && entity.getAnimation() != frostmaw.DEACTIVATE_ANIMATION) {
+                faceTarget(f3 * (1 - standUpController.rotationPointX), f4, 1, headJoint);
+                float yawAmount = f3 / (180.0F / (float) Math.PI);
+                headJoint.rotateAngleZ += yawAmount * standUpController.rotationPointX;
+
+                //Walk
+                //Quadrupedal
+                bob(waist, globalSpeed, globalHeightQuad * 3f, false, f, f1);
+                walk(waist, globalSpeed, globalHeightQuad * 0.12f, false, frontOffset, 0.08f * (1 - standUpController.rotationPointX), f, f1);
+                walk(headJoint, globalSpeed, globalHeightQuad * 0.12f, true, frontOffset + 0.4f, 0.08f * (1 - standUpController.rotationPointX), f, f1);
+                walk(legLeftJoint, globalSpeed, globalHeightQuad * 0.12f, true, frontOffset, 0.08f * (1 - standUpController.rotationPointX), f, f1);
+                walk(legRightJoint, globalSpeed, globalHeightQuad * 0.12f, true, frontOffset, 0.08f * (1 - standUpController.rotationPointX), f, f1);
+                walk(armLeftJoint, globalSpeed, globalHeightQuad * 0.12f, true, frontOffset, 0.08f * (1 - standUpController.rotationPointX), f, f1);
+                walk(armRightJoint, globalSpeed, globalHeightQuad * 0.12f, true, frontOffset, 0.08f * (1 - standUpController.rotationPointX), f, f1);
+
+                swing(waist, 0.5f * globalSpeed, globalDegreeQuad * 0.2f, true, 0, 0, f, f1);
+                swing(headJoint, 0.5f * globalSpeed, globalDegreeQuad * 0.2f, false, 0, 0, f, f1);
+
+                flap(waist, 0.5f * globalSpeed, 0.15f * globalHeightQuad, false, 1, 0, f, f1);
+                flap(legLeft1, 0.5f * globalSpeed, 0.15f * globalHeightQuad, true, 1, 0, f, f1);
+                flap(legRight1, 0.5f * globalSpeed, 0.15f * globalHeightQuad, true, 1, 0, f, f1);
+                flap(chest, 0.5f * globalSpeed, 0.15f * globalHeightQuad, true, 1, 0, f, f1);
+                swing(legLeft1, 0.5F * globalSpeed, 0.2F * globalDegreeQuad, false, 0, 0.6F * (1 - standUpController.rotationPointX), f, f1);
+                swing(legRight1, 0.5F * globalSpeed, 0.2F * globalDegreeQuad, false, 0, -0.6F * (1 - standUpController.rotationPointX), f, f1);
+                walk(legLeft1, 0.5f * globalSpeed, 0.7f * globalDegreeQuad, false, 0, 0.4f * (1 - standUpController.rotationPointX), f, f1);
+                walk(legRight1, 0.5f * globalSpeed, 0.7f * globalDegreeQuad, true, 0, -0.4f * (1 - standUpController.rotationPointX), f, f1);
+                walk(legLeft2, 0.5f * globalSpeed, 0.6f * globalDegreeQuad, false, -1.8f, 0.2f * (1 - standUpController.rotationPointX), f, f1);
+                walk(legRight2, 0.5f * globalSpeed, 0.6f * globalDegreeQuad, true, -1.8f, -0.2f * (1 - standUpController.rotationPointX), f, f1);
+                walk(leftFoot, 0.5f * globalSpeed, 0.4f * globalDegreeQuad, false, -1.5f, 0.4f * globalDegreeQuad, f, f1);
+                walk(rightFoot, 0.5f * globalSpeed, 0.4f * globalDegreeQuad, true, -1.5f, -0.4f * globalDegreeQuad, f, f1);
+
+                swing(chest, 0.5f * globalSpeed, 0.3f * globalDegreeQuad * frontDegree, false, frontOffset, 0, f, f1);
+                swing(headJoint, 0.5f * globalSpeed, 0.3f * globalDegreeQuad * frontDegree, true, frontOffset, 0, f, f1);
+                swing(armLeft2, 0.5f * globalSpeed, 0.3f * globalDegreeQuad * frontDegree, true, frontOffset, 0.4f * globalDegreeQuad * frontDegree, f, f1);
+                swing(armRight2, 0.5f * globalSpeed, 0.3f * globalDegreeQuad * frontDegree, true, frontOffset, -0.4f * globalDegreeQuad * frontDegree, f, f1);
+                flap(chest, 0.5f * globalSpeed, 0.1f * globalDegreeQuad * frontDegree, true, frontOffset + 1, 0, f, f1);
+                flap(armLeftJoint, 0.5f * globalSpeed, 0.1f * globalDegreeQuad * frontDegree, false, frontOffset + 1, 0, f, f1);
+                flap(armRightJoint, 0.5f * globalSpeed, 0.1f * globalDegreeQuad * frontDegree, false, frontOffset + 1, 0, f, f1);
+                flap(headJoint, 0.5f * globalSpeed, 0.1f * globalDegreeQuad * frontDegree, false, frontOffset + 1, 0, f, f1);
+
+                walk(armLeftJoint, 0.5f * globalSpeed, 0.4f * globalDegreeQuad * frontDegree, true, frontOffset, -0.7f * globalDegreeQuad * frontDegree, f, f1);
+                walk(armRightJoint, 0.5f * globalSpeed, 0.4f * globalDegreeQuad * frontDegree, false, frontOffset, 0.7f * globalDegreeQuad * frontDegree, f, f1);
+                walk(armLeftJoint2, 0.5f * globalSpeed, 0.4f * globalDegreeQuad * frontDegree, true, frontOffset + 2f, 0.6f * globalDegreeQuad * frontDegree, f, f1);
+                walk(armRightJoint2, 0.5f * globalSpeed, 0.4f * globalDegreeQuad * frontDegree, false, frontOffset + 2f, -0.6f * globalDegreeQuad * frontDegree, f, f1);
+                walk(leftHand, 0.5f * globalSpeed, 0.5f * globalDegreeQuad * frontDegree, false, frontOffset + 1.5f, 0.05f * globalDegreeQuad * frontDegree, f, f1);
+                walk(rightHand, 0.5f * globalSpeed, 0.5f * globalDegreeQuad * frontDegree, true, frontOffset + 1.5f, 0.05f * globalDegreeQuad * frontDegree, f, f1);
+
+                //Bipedal
+                flap(root, 0.5F * globalSpeed, 0.1f * globalHeightBi, true, -0.7f, 0, f, f1);
+                bob(waist, globalSpeed, globalHeightBi * 3f, false, f, f1);
+                walk(waist, globalSpeed, 0.05f * globalHeightBi, false, -1f, 0.1f, f, f1);
+                walk(legLeftJoint, globalSpeed, 0.05f * globalHeightBi, true, -1f, 0.1f, f, f1);
+                walk(legRightJoint, globalSpeed, 0.05f * globalHeightBi, true, -1f, 0.1f, f, f1);
+                walk(chest, globalSpeed, 0.05f * globalHeightBi, false, -2f, 0.05f, f, f1);
+                walk(headJoint, globalSpeed, 0.1f * globalHeightBi, true, -2f, -0.1f, f, f1);
+                flap(chest, 0.5f * globalSpeed, 0.2f * globalHeightBi, false, -1, 0, f, f1);
+                flap(headJoint, 0.5f * globalSpeed, -0.2f * globalHeightBi, false, -1, 0, f, f1);
+
+                walk(armLeftJoint, 0.5f * globalSpeed, 0.2f * globalDegreeBi * frontDegree, false, frontOffset, 0.4f * globalDegreeBi, f, f1);
+                walk(armLeftJoint2, 0.5f * globalSpeed, 0.2f * globalDegreeBi * frontDegree, true, frontOffset + 2f, 0.6f * globalDegreeBi, f, f1);
+                walk(leftHand, 0.5f * globalSpeed, 0.2f * globalDegreeBi * frontDegree, true, frontOffset + 1.5f, 0.05f * globalDegreeBi, f, f1);
+
+                walk(armRightJoint, 0.5f * globalSpeed, 0.2f * globalDegreeBi * frontDegree, true, frontOffset, -0.4f * globalDegreeBi, f, f1);
+                walk(armRightJoint2, 0.5f * globalSpeed, 0.2f * globalDegreeBi * frontDegree, false, frontOffset + 2f, -0.6f * globalDegreeBi, f, f1);
+                walk(rightHand, 0.5f * globalSpeed, 0.2f * globalDegreeBi * frontDegree, false, frontOffset + 1.5f, -0.05f * globalDegreeBi, f, f1);
+
+                swing(legLeft1, 0.5F * globalSpeed, 0.2F * globalDegreeBi, false, 0, 0.6F * standUpController.rotationPointX, f, f1);
+                swing(legRight1, 0.5F * globalSpeed, 0.2F * globalDegreeBi, false, 0, -0.6F * standUpController.rotationPointX, f, f1);
+                walk(legLeft1, 0.5f * globalSpeed, 0.7f * globalDegreeBi, false, 0, 0.4f * standUpController.rotationPointX, f, f1);
+                walk(legRight1, 0.5f * globalSpeed, 0.7f * globalDegreeBi, true, 0, -0.4f * standUpController.rotationPointX, f, f1);
+                walk(legLeft2, 0.5f * globalSpeed, 0.6f * globalDegreeBi, false, -1.8f, 0.2f * standUpController.rotationPointX, f, f1);
+                walk(legRight2, 0.5f * globalSpeed, 0.6f * globalDegreeBi, true, -1.8f, -0.2f * standUpController.rotationPointX, f, f1);
+                walk(leftFoot, 0.5f * globalSpeed, 0.4f * globalDegreeBi, false, -1.5f, 0.4f * globalDegreeBi, f, f1);
+                walk(rightFoot, 0.5f * globalSpeed, 0.4f * globalDegreeBi, true, -1.5f, -0.4f * globalDegreeBi, f, f1);
+
+                //Idle
+                if (frostmaw.getAnimation() != frostmaw.SLAM_ANIMATION || frostmaw.getAnimationTick() < 118) {
+                    walk(waist, 0.08f, 0.05f, false, 0, 0, frame, 1);
+                    walk(headJoint, 0.08f, 0.05f, true, 0.8f, 0, frame, 1);
+                    walk(legRightJoint, 0.08f, 0.05f, true, 0, 0, frame, 1);
+                    walk(legLeftJoint, 0.08f, 0.05f, true, 0, 0, frame, 1);
+                    walk(armLeftJoint, 0.08f, 0.05f, true, 0, 0, frame, 1);
+                    walk(armRightJoint, 0.08f, 0.05f, true, 0, 0, frame, 1);
+                    walk(armLeftJoint2, 0.08f, 0.07f, true, 0, 0, frame, 1);
+                    walk(armRightJoint2, 0.08f, 0.07f, true, 0, 0, frame, 1);
+                    walk(leftHand, 0.08f, 0.07f, false, 0, 0, frame, 1);
+                    walk(rightHand, 0.08f, 0.07f, false, 0, 0, frame, 1);
+                    armLeftJoint.rotationPointZ += 1.8f * Math.cos(frame * 0.08f);
+                    armRightJoint.rotationPointZ += 1.8f * Math.cos(frame * 0.08f);
+                    armLeftJoint.rotationPointY -= 0.4f * Math.cos(frame * 0.08f);
+                    armRightJoint.rotationPointY -= 0.4f * Math.cos(frame * 0.08f);
+                }
+            }
+            eyeLidRight.isHidden = true;
+            eyeLidLeft.isHidden = true;
+        }
+        else {
+            eyeLidLeft.isHidden = false;
+            eyeLidRight.isHidden = false;
+            root.rotateAngleZ += 0.9f;
+            root.rotationPointX -= 20;
+            chest.rotateAngleZ -= 0.1f;
+            chest.rotateAngleX += 0.2;
+            chest.rotateAngleY += 0.2;
+            headJoint.rotateAngleZ -= 0.3f;
+            armRightJoint.rotateAngleZ -= 0.8f;
+            armRightJoint.rotateAngleX += 0.2f;
+            armRightJoint.rotateAngleY -= 0.5f;
+            armRightJoint.rotationPointY += 8;
+            armRight2.rotateAngleY += 0.2f;
+            armLeftJoint.rotateAngleX -= 1.3f;
+            armLeft1.rotateAngleX -= 0.8f;
+            armLeftJoint2.rotateAngleX += 1.3f;
+            armLeftJoint2.rotateAngleZ += 0.3f;
+            armRightJoint2.rotateAngleY += 0.5f;
+            leftHand.rotateAngleX -= 0.65f;
+            handController.rotationPointX += 0.8f;
+            rightHand.rotateAngleX -= 1.7f;
+            rightHand.rotateAngleY += 0.8f;
+            rightHand.rotateAngleZ -= 3.3f;
+            handController.rotationPointY += 0.8f;
+            legLeftJoint.rotateAngleX += 0.7f;
+            legLeft1.rotateAngleX -= 0.6f;
+            legLeft2.rotateAngleX -= 0.6f;
+            legLeft2.rotateAngleZ += 0.2f;
+            legLeftJoint.rotateAngleY += 0.9f;
+            legLeftJoint.rotateAngleZ += 0.2f;
+            legLeft2.rotateAngleY += 0.3f;
+            legRightJoint.rotateAngleY -= 0.4f;
+            legRight1.rotateAngleX += 1.1f;
+            legRight1.rotateAngleZ += 0.45f;
+            legRight2.rotateAngleX -= 0.3f;
+//            legRightJoint.rotationPointZ -= 5f;
+            chest.scaleChildren = false;
+            float chestScale = (float) (1.05 + 0.05f * Math.cos(frame * 0.05f));
+            chest.setScale(chestScale, chestScale, chestScale);
+            headJoint.rotateAngleX += (float) (0.04f * Math.cos(frame * 0.05f - 1));
         }
 
         jawJoint.rotateAngleX += 0.08 * roarController.rotationPointX * Math.cos(2 * frame);
