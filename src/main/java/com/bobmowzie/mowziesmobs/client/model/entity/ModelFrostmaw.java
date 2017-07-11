@@ -1017,6 +1017,102 @@ public class ModelFrostmaw extends AdvancedModelBase {
 
             iceCrystal.isHidden = frostmaw.getAnimationTick() < 28;
         }
+        if (frostmaw.getAnimation() == EntityFrostmaw.ACTIVATE_NO_CRYSTAL_ANIMATION) {
+            eyeLidLeft.isHidden = true;
+            eyeLidRight.isHidden = true;
+            animator.setAnimation(EntityFrostmaw.ACTIVATE_NO_CRYSTAL_ANIMATION);
+
+            animator.startKeyframe(0);
+            animator.rotate(root, 0, 0, 0.9f);
+            animator.move(root, -20, 0, 0);
+            animator.rotate(chest, 0.2f, 0.2f, -0.1f);
+            animator.rotate(headJoint, 0, 0, -0.3f);
+            animator.rotate(armRightJoint, 0.2f, -0.5f, -0.8f);
+            animator.move(armRightJoint, 0, 8, 0);
+            animator.rotate(armRightJoint2, 0f, 0.5f, 0);
+            animator.rotate(armRight2, 0, 0.2f, 0);
+            animator.rotate(armLeftJoint, -1.3f, 0, 0);
+            animator.rotate(armLeft1, -0.8f, 0, 0);
+            animator.rotate(armLeftJoint2, 1.3f, 0, 0.3f);
+            animator.rotate(leftHand, -0.65f, 0, 0);
+            animator.move(handController, 0.8f, 0.8f, 0);
+            animator.rotate(rightHand, -1.7f, 0.8f, -3.3f);
+            animator.rotate(legLeftJoint, 0.7f, 0, 0);
+            animator.rotate(legLeft1, -0.6f, 0, 0);
+            animator.rotate(legLeft2, -0.6f, 0, 0.2f);
+            animator.rotate(legLeftJoint, 0, 0.9f, 0.2f);
+            animator.rotate(legLeft2, 0, 0.3f, 0);
+            animator.rotate(legRightJoint, 0, -0.4f, 0);
+            animator.rotate(legRight1, 1.1f, 0, 0.45f);
+            animator.rotate(legRight2, -0.3f, 0, 0);
+            animator.endKeyframe();
+
+            animator.startKeyframe(5);
+            animator.rotate(root, 0, 0, 0.9f);
+            animator.move(root, -20, 0, 0);
+            animator.rotate(chest, 0.2f, 0.2f, -0.1f);
+            animator.rotate(headJoint, 0, 0, -0.3f);
+            animator.rotate(armRightJoint, 0.2f, -0.5f, -0.8f);
+            animator.move(armRightJoint, 0, 8, 0);
+            animator.rotate(armRightJoint2, 0f, 0.5f, 0);
+            animator.rotate(armRight2, 0, 0.2f, 0);
+            animator.rotate(armLeftJoint, -1.3f, 0, 0);
+            animator.rotate(armLeft1, -0.8f, 0, 0);
+            animator.rotate(armLeftJoint2, 1.3f, 0, 0.3f);
+            animator.rotate(leftHand, -0.65f, 0, 0);
+            animator.move(handController, 0.8f, 0.8f, 0);
+            animator.rotate(rightHand, -1.7f, 0.8f, -3.3f);
+            animator.rotate(legLeftJoint, 0.7f, 0, 0);
+            animator.rotate(legLeft1, -0.6f, 0, 0);
+            animator.rotate(legLeft2, -0.6f, 0, 0.2f);
+            animator.rotate(legLeftJoint, 0, 0.9f, 0.2f);
+            animator.rotate(legLeft2, 0, 0.3f, 0);
+            animator.rotate(legRightJoint, 0, -0.4f, 0);
+            animator.rotate(legRight1, 1.1f, 0, 0.45f);
+            animator.rotate(legRight2, -0.3f, 0, 0);
+
+            animator.move(handController, 0, -0.8f, 0);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(10);
+
+            animator.startKeyframe(15);
+            animator.rotate(waist, 0.2f, 0, 0);
+            animator.rotate(legRightJoint, -0.2f, 0, 0);
+            animator.rotate(legLeftJoint, -0.2f, 0, 0);
+            animator.rotate(headJoint, 0.3f, 0, 0);
+            animator.move(armLeftJoint, 0.15f, 2, 0);
+            animator.rotate(armLeftJoint2, -0.6f, 0, 0);
+            animator.rotate(leftHand, 0.3f, 0, 0.15f);
+            animator.rotate(armRightJoint, 0.15f, 0, 0);
+            animator.move(armRightJoint, 0, 2, 0);
+            animator.rotate(armRightJoint2, -0.6f, 0, 0);
+            animator.rotate(rightHand, 0.3f, 0, -0.15f);
+            animator.endKeyframe();
+
+            animator.setStaticKeyframe(4);
+
+            animator.startKeyframe(5);
+
+            animator.rotate(waist, -0.2f, 0, 0);
+            animator.rotate(legRightJoint, 0.2f, 0, 0);
+            animator.rotate(legLeftJoint, 0.2f, 0, 0);
+            animator.rotate(headJoint, -0.3f, 0, 0);
+            animator.rotate(jawJoint, 1.3f, 0, 0);
+            animator.move(roarController, 1, 1, 0);
+
+            animator.rotate(armLeftJoint, -0.4f, 0, 0);
+            animator.rotate(armLeftJoint2, 0.9f, 0, 0);
+            animator.rotate(leftHand, -0.3f, 0, -0.15f);
+            animator.rotate(armRightJoint, -0.4f, 0, 0);
+            animator.rotate(armRightJoint2, 0.9f, 0, 0);
+            animator.rotate(rightHand, -0.3f, 0, 0.15f);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(50);
+
+            animator.resetKeyframe(8);
+
+            iceCrystal.isHidden = frostmaw.getAnimationTick() < 28;
+        }
         if (frostmaw.getAnimation() == EntityFrostmaw.DEACTIVATE_ANIMATION) {
             animator.setAnimation(EntityFrostmaw.DEACTIVATE_ANIMATION);
             animator.startKeyframe(0);
@@ -1329,7 +1425,7 @@ public class ModelFrostmaw extends AdvancedModelBase {
         waist.rotationPointZ += 10;
 
         if (frostmaw.getActive()) {
-            if (entity.getAnimation() != frostmaw.ACTIVATE_ANIMATION && entity.getAnimation() != frostmaw.DEACTIVATE_ANIMATION) {
+            if (entity.getAnimation() != frostmaw.ACTIVATE_ANIMATION && entity.getAnimation() != frostmaw.ACTIVATE_NO_CRYSTAL_ANIMATION && entity.getAnimation() != frostmaw.DEACTIVATE_ANIMATION) {
                 faceTarget(f3 * (1 - standUpController.rotationPointX), f4, 1, headJoint);
                 float yawAmount = f3 / (180.0F / (float) Math.PI);
                 headJoint.rotateAngleZ += yawAmount * standUpController.rotationPointX;
@@ -1379,11 +1475,11 @@ public class ModelFrostmaw extends AdvancedModelBase {
                 //Bipedal
                 flap(root, 0.5F * globalSpeed, 0.1f * globalHeightBi, true, -0.7f, 0, f, f1);
                 bob(waist, globalSpeed, globalHeightBi * 3f, false, f, f1);
-                walk(waist, globalSpeed, 0.05f * globalHeightBi, false, -1f, 0.1f, f, f1);
-                walk(legLeftJoint, globalSpeed, 0.05f * globalHeightBi, true, -1f, 0.1f, f, f1);
-                walk(legRightJoint, globalSpeed, 0.05f * globalHeightBi, true, -1f, 0.1f, f, f1);
-                walk(chest, globalSpeed, 0.05f * globalHeightBi, false, -2f, 0.05f, f, f1);
-                walk(headJoint, globalSpeed, 0.1f * globalHeightBi, true, -2f, -0.1f, f, f1);
+                walk(waist, globalSpeed, 0.05f * globalHeightBi, false, -1f, 0.1f * standUpController.rotationPointX, f, f1);
+                walk(legLeftJoint, globalSpeed, 0.05f * globalHeightBi, true, -1f, 0.1f * standUpController.rotationPointX, f, f1);
+                walk(legRightJoint, globalSpeed, 0.05f * globalHeightBi, true, -1f, 0.1f * standUpController.rotationPointX, f, f1);
+                walk(chest, globalSpeed, 0.05f * globalHeightBi, false, -2f, 0.05f * standUpController.rotationPointX, f, f1);
+                walk(headJoint, globalSpeed, 0.1f * globalHeightBi, true, -2f, -0.1f * standUpController.rotationPointX, f, f1);
                 flap(chest, 0.5f * globalSpeed, 0.2f * globalHeightBi, false, -1, 0, f, f1);
                 flap(headJoint, 0.5f * globalSpeed, -0.2f * globalHeightBi, false, -1, 0, f, f1);
 
@@ -1488,5 +1584,7 @@ public class ModelFrostmaw extends AdvancedModelBase {
         iceCrystalJoint.rotateAngleX = -headJoint.rotateAngleX - chest.rotateAngleX - waist.rotateAngleX - root.rotateAngleX + 0.9f;
         iceCrystal.rotateAngleY += (float)Math.PI/2;
         iceCrystal.rotationPointY += 2 * Math.cos(0.15f * frame);
+
+        if (!frostmaw.getHasCrystal()) iceCrystal.isHidden = true;
     }
 }
