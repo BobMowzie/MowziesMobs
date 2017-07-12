@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationActivateAI;
@@ -142,7 +143,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
         getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
-        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(17);
+        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(17  * MowziesMobs.CONFIG.difficultyScaleBarakoa);
     }
 
     @Override

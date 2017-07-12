@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.foliaath;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
@@ -78,7 +79,7 @@ public class EntityFoliaath extends MowzieEntity {
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10 * MowziesMobs.CONFIG.difficultyScaleFoliaath);
     }
 
     @Override
