@@ -343,5 +343,23 @@
 	},
 	"frostmaw.land": {
 		"sounds": [ "mowziesmobs:entity/frostmaw/land" ]
+	},
+	"frostmaw.attack1": {
+		"sounds": [ "mowziesmobs:entity/frostmaw/attack1" ]
+	},
+	"frostmaw.breath1": {
+		"sounds": [ "mowziesmobs:entity/frostmaw/breath" ]
+	},
+	"frostmaw.breath2": {
+		"sounds": [ "mowziesmobs:entity/frostmaw/breath2" ]
+	},
+	"frostmaw.living1": {
+		"sounds": [ "mowziesmobs:entity/frostmaw/living1" ]
+	},
+	"frostmaw.living2": {
+		"sounds": [ "mowziesmobs:entity/frostmaw/living2" ]
+	},
+	"frostmaw.wakeup": {
+		"sounds": [ "mowziesmobs:entity/frostmaw/wakeup" ]
 	}
 }

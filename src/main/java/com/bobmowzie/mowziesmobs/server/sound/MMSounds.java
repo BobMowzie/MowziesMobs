@@ -200,6 +200,32 @@ public enum MMSounds {
 
     public static final SoundEvent ENTITY_FROSTMAW_LAND = reg("frostmaw.land");
 
+    public static final SoundEvent ENTITY_FROSTMAW_ATTACK_1 = reg("frostmaw.attack1");
+
+    public static final SoundEvent[] ENTITY_FROSTMAW_ATTACK = {
+            ENTITY_FROSTMAW_ATTACK_1
+    };
+
+    public static final SoundEvent ENTITY_FROSTMAW_BREATH_1 = reg("frostmaw.breath1");
+
+    public static final SoundEvent ENTITY_FROSTMAW_BREATH_2 = reg("frostmaw.breath2");
+
+    public static final SoundEvent[] ENTITY_FROSTMAW_BREATH = {
+            ENTITY_FROSTMAW_BREATH_1,
+            ENTITY_FROSTMAW_BREATH_2
+    };
+
+    public static final SoundEvent ENTITY_FROSTMAW_LIVING_1 = reg("frostmaw.living1");
+
+    public static final SoundEvent ENTITY_FROSTMAW_LIVING_2 = reg("frostmaw.living2");
+
+    public static final SoundEvent[] ENTITY_FROSTMAW_LIVING = {
+            ENTITY_FROSTMAW_LIVING_1,
+            ENTITY_FROSTMAW_LIVING_2
+    };
+
+    public static final SoundEvent ENTITY_FROSTMAW_WAKEUP = reg("frostmaw.wakeup");
+
     public static final SoundEvent EFFECT_GEOMANCY_SMALL_CRASH = reg("geomancy.smallcrash");
 
     public static final SoundEvent EFFECT_GEOMANCY_MAGIC_SMALL = reg("geomancy.hitsmall");

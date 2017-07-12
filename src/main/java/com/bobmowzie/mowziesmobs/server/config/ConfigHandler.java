@@ -3,12 +3,24 @@ package com.bobmowzie.mowziesmobs.server.config;
 import net.ilexiconn.llibrary.server.config.ConfigEntry;
 
 public class ConfigHandler {
-    @ConfigEntry(name = "Foliaath Spawnrate", minValue = "0", maxValue = "100")
+    @ConfigEntry(name = "Foliaath Spawn Rate", minValue = "0", maxValue = "100")
     public int spawnrateFoliaath = 20;
-    @ConfigEntry(name = "Wroughtnaut Spawnrate", minValue = "0", maxValue = "100", comment = "Wroughtnaut Spawnrate: Smaller number is more frequent, 0 to disable spawning")
+    @ConfigEntry(name = "Foliaath Difficulty Multiplier", minValue = "0", maxValue = "20")
+    public int difficultyScaleFoliaath = 1;
+    @ConfigEntry(name = "Wroughtnaut Spawn Rate", minValue = "0", maxValue = "100", comment = "Wroughtnaut Spawnrate: Smaller number is more frequent, 0 to disable spawning")
     public int spawnrateWroughtnaut = 40;
-    @ConfigEntry(name = "Barakoa Spawnrate", minValue = "0", maxValue = "100")
+    @ConfigEntry(name = "Wroughtnaut Difficulty Multiplier", minValue = "0", maxValue = "20")
+    public int difficultyScaleWroughtnaut = 1;
+    @ConfigEntry(name = "Barakoa Spawn Rate", minValue = "0", maxValue = "100")
     public int spawnrateBarakoa = 2;
-    @ConfigEntry(name = "Barako Spawnrate", minValue = "0", maxValue = "100", comment = "Barako Spawnrate: Smaller number is more frequent, 0 to disable spawning")
-    public int spawnrateBarako = 20;
+    @ConfigEntry(name = "Barakoa Difficulty Multiplier", minValue = "0", maxValue = "20")
+    public int difficultyScaleBarakoa = 1;
+    @ConfigEntry(name = "Barako Spawn Rate", minValue = "0", maxValue = "100", comment = "Barako Spawnrate: Smaller number is more frequent, 0 to disable spawning")
+    public int spawnrateBarako = 15;
+    @ConfigEntry(name = "Barako Difficulty Multiplier", minValue = "0", maxValue = "20")
+    public int difficultyScaleBarako = 1;
+    @ConfigEntry(name = "Frostmaw Spawn Rate", minValue = "0", maxValue = "100")
+    public int spawnrateFrostmaw = 3;
+    @ConfigEntry(name = "Frostmaw Difficulty Multiplier", minValue = "0", maxValue = "20")
+    public int difficultyScaleFrostmaw = 1;
 }

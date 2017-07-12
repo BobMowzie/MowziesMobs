@@ -5,7 +5,9 @@ import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
 import com.bobmowzie.mowziesmobs.server.ai.animation.*;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoan;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
@@ -25,6 +27,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemAxe;
@@ -112,7 +115,6 @@ public class EntityFrostmaw extends MowzieEntity {
         this.tasks.addTask(3, new AnimationTakeDamage<>(this));
         this.tasks.addTask(1, new AnimationDieAI<>(this));
         this.targetTasks.addTask(1, new EntityAINearestAttackableTarget(this, EntityPlayer.class, true));
-        this.targetTasks.addTask(4, new EntityAINearestAttackableTarget(this, EntitySheep.class, true));
         this.targetTasks.addTask(4, new EntityAINearestAttackableTarget(this, EntityVillager.class, true));
         stepHeight = 1;
         frame += rand.nextInt(50);
@@ -120,6 +122,7 @@ public class EntityFrostmaw extends MowzieEntity {
         socketPosArray = new Vec3d[] {new Vec3d(0, 0, 0), new Vec3d(0, 0, 0), new Vec3d(0, 0, 0), new Vec3d(0, 0, 0)};
         active = false;
         playsHurtAnimation = false;
+        rotationYaw = renderYawOffset = rand.nextFloat() * 360;
     }
 
     protected void applyEntityAttributes()
@@ -143,9 +146,13 @@ public class EntityFrostmaw extends MowzieEntity {
     @Override
     public void playLivingSound() {
         if (!active) return;
-        if (rand.nextInt(5) != 0) return;
+        int i = rand.nextInt(4);
         super.playLivingSound();
-        if (getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(this, ROAR_ANIMATION);
+        if (i == 0 && getAnimation() == NO_ANIMATION) {
+            AnimationHandler.INSTANCE.sendAnimationMessage(this, ROAR_ANIMATION);
+            return;
+        }
+        if (i < MMSounds.ENTITY_FROSTMAW_LIVING.length) playSound(MMSounds.ENTITY_FROSTMAW_LIVING[i], 2, 0.8f + rand.nextFloat() * 0.3f);
     }
 
     @Nullable
@@ -161,6 +168,7 @@ public class EntityFrostmaw extends MowzieEntity {
         this.repelEntities(4f, 4f, 4f, 4f);
 
         if (ticksExisted == 1) {
+            System.out.println("Frostmaw at " + getPosition());
             if (getHasCrystal()) {
                 Optional<UUID> crystalID = getCrystalID();
                 if (!getCrystalID().isPresent() && !world.isRemote && crystal == null) {
@@ -183,8 +191,14 @@ public class EntityFrostmaw extends MowzieEntity {
         if (getActive() && getAnimation() != ACTIVATE_ANIMATION && getAnimation() != ACTIVATE_NO_CRYSTAL_ANIMATION) {
             legSolver.update(this);
 
-            if ((getAnimation() == SWIPE_ANIMATION || getAnimation() == SWIPE_TWICE_ANIMATION) && getAnimationTick() == 1) {
-                swingWhichArm = rand.nextBoolean();
+            if (getAnimation() == SWIPE_ANIMATION || getAnimation() == SWIPE_TWICE_ANIMATION) {
+                if (getAnimationTick() == 1) swingWhichArm = rand.nextBoolean();
+                if (getAnimationTick() == 5) {
+                    int i = MathHelper.getInt(rand, 0, MMSounds.ENTITY_FROSTMAW_ATTACK.length);
+                    if (i < MMSounds.ENTITY_FROSTMAW_ATTACK.length) {
+                        playSound(MMSounds.ENTITY_FROSTMAW_ATTACK[i], 2, 0.9f + rand.nextFloat() * 0.2f);
+                    }
+                }
             }
 
             if (getAnimation() == SWIPE_ANIMATION) {
@@ -221,8 +235,15 @@ public class EntityFrostmaw extends MowzieEntity {
             }
 
             if (getAnimation() == SLAM_ANIMATION) {
+                if (getAnimationTick() == 82) {
+                    playSound(MMSounds.ENTITY_FROSTMAW_LIVING_1, 2, 1);
+                }
                 if (getAttackTarget() != null) getLookHelper().setLookPositionWithEntity(getAttackTarget(), 30, 30);
                 if (getAnimationTick() == 82) {
+                    int i = MathHelper.getInt(rand, 0, MMSounds.ENTITY_FROSTMAW_ATTACK.length - 1);
+                    if (i < MMSounds.ENTITY_FROSTMAW_ATTACK.length) {
+                        playSound(MMSounds.ENTITY_FROSTMAW_ATTACK[i], 2, 0.9f + rand.nextFloat() * 0.2f);
+                    }
                     playSound(MMSounds.ENTITY_FROSTMAW_WHOOSH, 2, 0.7f);
                 }
                 if (getAnimationTick() == 87) {
@@ -322,7 +343,7 @@ public class EntityFrostmaw extends MowzieEntity {
         else {
             getNavigator().clearPathEntity();
             renderYawOffset = prevRenderYawOffset;
-            if (!getAttackableEntityLivingBaseNearby(10, 10, 10, 10).isEmpty() && getAttackTarget() != null && getAnimation() == NO_ANIMATION) {
+            if (!getAttackableEntityLivingBaseNearby(8, 8, 8, 8).isEmpty() && getAttackTarget() != null && getAnimation() == NO_ANIMATION) {
                 if (getHasCrystal()) AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_ANIMATION);
                 else AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_NO_CRYSTAL_ANIMATION);
                 setActive(true);
@@ -340,6 +361,8 @@ public class EntityFrostmaw extends MowzieEntity {
         }
 
         if (getAnimation() == ACTIVATE_ANIMATION || getAnimation() == ACTIVATE_NO_CRYSTAL_ANIMATION) {
+            if (getAnimationTick() == 1) playSound(MMSounds.ENTITY_FROSTMAW_WAKEUP, 1, 1);
+            if (getAnimation() == ACTIVATE_ANIMATION && getAnimationTick() == 20) playSound(MMSounds.ENTITY_FROSTMAW_ATTACK[0], 1, 1);
             if (!world.isRemote && crystal != null) {
                 crystal.setDead();
                 setCrystalID(Optional.absent());
@@ -375,6 +398,12 @@ public class EntityFrostmaw extends MowzieEntity {
         float speed = MathHelper.sqrt(moveX * moveX + moveZ * moveZ);
         if (frame % 16 == 5 && speed > 0.05 && active) {
             playSound(MMSounds.ENTITY_FROSTMAW_STEP, 3F, 0.8F + rand.nextFloat() * 0.2f);
+        }
+
+        //Breathing sounds
+        if (frame % 118 == 1 && !active) {
+            int i = MathHelper.getInt(rand, 0, 1);
+            playSound(MMSounds.ENTITY_FROSTMAW_BREATH[i], 1.5F, 1.1F + rand.nextFloat() * 0.1f);
         }
 
         if (fallDistance > 0.5 && !onGround) shouldPlayLandAnimation = true;
@@ -422,6 +451,17 @@ public class EntityFrostmaw extends MowzieEntity {
                 MMParticle.CLOUD.spawn(world, posX, posY + 1f, posZ, ParticleFactory.ParticleArgs.get().withData(xSpeed, 0d, zSpeed, 0.75d, 0.75d, 1d, true, 35d, 22, ParticleCloud.EnumCloudBehavior.GROW));
             }
         }
+    }
+
+    @Override
+    public boolean getCanSpawnHere() {
+        List<EntityLivingBase> nearby = getEntityLivingBaseNearby(20, 4, 20, 20);
+        for (EntityLivingBase nearbyEntity : nearby) {
+            if (nearbyEntity instanceof EntityFrostmaw || nearbyEntity instanceof EntityVillager) {
+                return false;
+            }
+        }
+        return super.getCanSpawnHere();
     }
 
     private void spawnSwipeParticles() {
