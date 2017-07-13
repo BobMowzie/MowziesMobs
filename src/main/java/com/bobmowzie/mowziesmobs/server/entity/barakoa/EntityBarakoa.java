@@ -389,7 +389,19 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     @Override
     public boolean attackEntityFrom(DamageSource source, float damage) {
         Entity entity = source.getEntity();
-        if (getMask().canBlock && entity instanceof EntityLivingBase && (getAnimation() == NO_ANIMATION || getAnimation() == HURT_ANIMATION || getAnimation() == BLOCK_ANIMATION)) {
+        int arc = 220;
+        Entity entitySource = source.getEntity();
+        float entityHitAngle = (float) ((Math.atan2(entitySource.posZ - posZ, entitySource.posX - posX) * (180 / Math.PI) - 90) % 360);
+        float entityAttackingAngle = renderYawOffset % 360;
+        if (entityHitAngle < 0) {
+            entityHitAngle += 360;
+        }
+        if (entityAttackingAngle < 0) {
+            entityAttackingAngle += 360;
+        }
+        float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
+        boolean angleFlag = (entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -arc + 90 / 2);
+        if (angleFlag && getMask().canBlock && entity instanceof EntityLivingBase && (getAnimation() == NO_ANIMATION || getAnimation() == HURT_ANIMATION || getAnimation() == BLOCK_ANIMATION)) {
             blockingEntity = (EntityLivingBase) entity;
             playSound(SoundEvents.ENTITY_ZOMBIE_ATTACK_DOOR_WOOD, 0.3F, 1.5F);
             AnimationHandler.INSTANCE.sendAnimationMessage(this, BLOCK_ANIMATION);

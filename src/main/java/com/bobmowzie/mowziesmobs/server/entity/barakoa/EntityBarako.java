@@ -115,7 +115,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         this.tasks.addTask(2, new AnimationAI<>(this, TALK_ANIMATION, false));
         this.tasks.addTask(2, new AnimationAI<>(this, BLESS_ANIMATION, false));
         this.tasks.addTask(2, new AnimationSunStrike<>(this, SUNSTRIKE_ANIMATION));
-        this.tasks.addTask(2, new AnimationRadiusAttack<>(this, ATTACK_ANIMATION, 4.5f, 5, 3.5f, 12, true));
+        this.tasks.addTask(2, new AnimationRadiusAttack<>(this, ATTACK_ANIMATION, 4.5f, 5, 3f, 12, true));
         this.tasks.addTask(2, new AnimationSpawnBarakoa(this, SPAWN_ANIMATION));
         this.tasks.addTask(2, new AnimationSolarBeam<>(this, SOLAR_BEAM_ANIMATION));
         this.tasks.addTask(3, new AnimationTakeDamage<>(this));
@@ -190,7 +190,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         if (ticksExisted == 1) {
             direction = getDirection();
         }
-        this.repelEntities(2.2f, 2.5f, 2.2f, 2.2f);
+        if (!(getAnimation() == ATTACK_ANIMATION && getAnimationTick() >= 12 && getAnimationTick() <= 14)) this.repelEntities(2.2f, 2.5f, 2.2f, 2.2f);
         this.rotationYaw = (direction - 1) * 90;
         this.renderYawOffset = rotationYaw;
         this.posX = prevPosX;
