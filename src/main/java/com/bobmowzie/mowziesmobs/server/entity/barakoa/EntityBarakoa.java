@@ -400,7 +400,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
 
     @Override
     public void onDeath(DamageSource source) {
-        if (!world.isRemote && world.getGameRules().getBoolean("doMobLoot") && rand.nextInt(12) == 0) {
+        if (!world.isRemote && world.getGameRules().getBoolean("doMobLoot") && rand.nextInt(6) == 0) {
             dropItem(ItemHandler.INSTANCE.barakoaMasks.get(getMask()), 1);
         }
         super.onDeath(source);
