@@ -190,6 +190,8 @@ public enum MMSounds {
 
     public static final SoundEvent ENTITY_FROSTMAW_ROAR = reg("frostmaw.roar");
 
+    public static final SoundEvent ENTITY_FROSTMAW_DIE = reg("frostmaw.die");
+
     public static final SoundEvent ENTITY_FROSTMAW_WHOOSH = reg("frostmaw.whoosh");
 
     public static final SoundEvent ENTITY_FROSTMAW_ICEBREATH = reg("frostmaw.icebreath");
@@ -202,8 +204,17 @@ public enum MMSounds {
 
     public static final SoundEvent ENTITY_FROSTMAW_ATTACK_1 = reg("frostmaw.attack1");
 
+    public static final SoundEvent ENTITY_FROSTMAW_ATTACK_2 = reg("frostmaw.attack2");
+
+    public static final SoundEvent ENTITY_FROSTMAW_ATTACK_3 = reg("frostmaw.attack3");
+
+    public static final SoundEvent ENTITY_FROSTMAW_ATTACK_4 = reg("frostmaw.attack4");
+
     public static final SoundEvent[] ENTITY_FROSTMAW_ATTACK = {
-            ENTITY_FROSTMAW_ATTACK_1
+            ENTITY_FROSTMAW_ATTACK_1,
+            ENTITY_FROSTMAW_ATTACK_2,
+            ENTITY_FROSTMAW_ATTACK_3,
+            ENTITY_FROSTMAW_ATTACK_4
     };
 
     public static final SoundEvent ENTITY_FROSTMAW_BREATH_1 = reg("frostmaw.breath1");

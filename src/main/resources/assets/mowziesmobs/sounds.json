@@ -347,6 +347,18 @@
 	"frostmaw.attack1": {
 		"sounds": [ "mowziesmobs:entity/frostmaw/attack1" ]
 	},
+	"frostmaw.attack2": {
+		"sounds": [ "mowziesmobs:entity/frostmaw/attack2" ]
+	},
+	"frostmaw.attack3": {
+		"sounds": [ "mowziesmobs:entity/frostmaw/attack3" ]
+	},
+	"frostmaw.attack4": {
+		"sounds": [ "mowziesmobs:entity/frostmaw/attack4" ]
+	},
+	"frostmaw.die": {
+		"sounds": [ "mowziesmobs:entity/frostmaw/die" ]
+	},
 	"frostmaw.breath1": {
 		"sounds": [ "mowziesmobs:entity/frostmaw/breath" ]
 	},

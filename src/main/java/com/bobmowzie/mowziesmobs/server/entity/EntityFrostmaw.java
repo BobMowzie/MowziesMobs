@@ -31,6 +31,7 @@ import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
@@ -38,6 +39,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundEvent;
@@ -130,7 +132,7 @@ public class EntityFrostmaw extends MowzieEntity {
     protected void applyEntityAttributes()
     {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(100.0D * MowziesMobs.CONFIG.difficultyScaleFrostmaw);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(15.0D * MowziesMobs.CONFIG.difficultyScaleFrostmaw);
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(35.0D);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.3D);
         this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(9.0D);
@@ -195,7 +197,7 @@ public class EntityFrostmaw extends MowzieEntity {
 
             if (getAnimation() == SWIPE_ANIMATION || getAnimation() == SWIPE_TWICE_ANIMATION) {
                 if (getAnimationTick() == 1) swingWhichArm = rand.nextBoolean();
-                if (getAnimationTick() == 5) {
+                if (getAnimationTick() == 3) {
                     int i = MathHelper.getInt(rand, 0, MMSounds.ENTITY_FROSTMAW_ATTACK.length);
                     if (i < MMSounds.ENTITY_FROSTMAW_ATTACK.length) {
                         playSound(MMSounds.ENTITY_FROSTMAW_ATTACK[i], 2, 0.9f + rand.nextFloat() * 0.2f);
@@ -345,6 +347,7 @@ public class EntityFrostmaw extends MowzieEntity {
         else {
             getNavigator().clearPathEntity();
             renderYawOffset = prevRenderYawOffset;
+            addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 20, 1, true, true));
             if (!getAttackableEntityLivingBaseNearby(8, 8, 8, 8).isEmpty() && getAttackTarget() != null && getAnimation() == NO_ANIMATION) {
                 if (getHasCrystal()) AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_ANIMATION);
                 else AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_NO_CRYSTAL_ANIMATION);
@@ -364,7 +367,7 @@ public class EntityFrostmaw extends MowzieEntity {
 
         if (getAnimation() == ACTIVATE_ANIMATION || getAnimation() == ACTIVATE_NO_CRYSTAL_ANIMATION) {
             if (getAnimationTick() == 1) playSound(MMSounds.ENTITY_FROSTMAW_WAKEUP, 1, 1);
-            if (getAnimation() == ACTIVATE_ANIMATION && getAnimationTick() == 20) playSound(MMSounds.ENTITY_FROSTMAW_ATTACK[0], 1, 1);
+            if (getAnimation() == ACTIVATE_ANIMATION && getAnimationTick() == 18) playSound(MMSounds.ENTITY_FROSTMAW_ATTACK[0], 1.5f, 1);
             if (!world.isRemote && crystal != null) {
                 crystal.setDead();
                 setCrystalID(Optional.absent());
@@ -687,6 +690,13 @@ public class EntityFrostmaw extends MowzieEntity {
         }
 
         return flag;
+    }
+
+    @Override
+    protected void onDeathUpdate() {
+        super.onDeathUpdate();
+        if (getAnimationTick() == 5) playSound(MMSounds.ENTITY_FROSTMAW_DIE, 2, 1);
+        if (getAnimationTick() == 53) playSound(MMSounds.ENTITY_FROSTMAW_LAND, 2, 1);
     }
 
     @Override
