@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
+import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
 import com.bobmowzie.mowziesmobs.server.entity.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
@@ -124,23 +127,36 @@ public enum ServerEventHandler {
                 } else if (property.freezeProgress > 0) {
                     entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, 1, false, false));
                 }
-
-                if (entity.isPotionActive(PotionHandler.INSTANCE.frozen)) {
-                    entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, 50, false, false));
-                    entity.motionX = 0;
-                    entity.motionZ = 0;
-                    entity.rotationYaw = property.frozenYaw;
-                    entity.rotationPitch = property.frozenPitch;
-                    entity.rotationYawHead = property.frozenYawHead;
-                    entity.renderYawOffset = property.frozenRenderYawOffset;
-                    entity.swingProgress = property.frozenSwingProgress;
-                    entity.limbSwingAmount = property.frozenLimbSwingAmount;
-                    entity.setSneaking(false);
-                }
-
-                property.freezeProgress -= 0.1;
-                if (property.freezeProgress < 0) property.freezeProgress = 0;
             }
+
+            if (entity.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+                entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, 50, false, false));
+                entity.motionX = 0;
+                entity.motionZ = 0;
+//                entity.posX = entity.prevPosX;
+//                entity.posZ = entity.prevPosZ;
+                entity.rotationYaw = property.frozenYaw;
+                entity.rotationPitch = property.frozenPitch;
+                entity.rotationYawHead = property.frozenYawHead;
+                entity.renderYawOffset = property.frozenRenderYawOffset;
+                entity.swingProgress = property.frozenSwingProgress;
+                entity.limbSwingAmount = property.frozenLimbSwingAmount;
+                entity.setSneaking(false);
+
+                if (entity.ticksExisted % 2 == 0) {
+                    double cloudX = entity.posX + entity.width * Math.random() - entity.width / 2;
+                    double cloudZ = entity.posZ + entity.width * Math.random() - entity.width / 2;
+                    double cloudY = entity.posY + entity.height * Math.random();
+                    MMParticle.CLOUD.spawn(entity.world, cloudX, cloudY, cloudZ, ParticleFactory.ParticleArgs.get().withData(0d, -0.01d, 0d, 0.75d, 0.75d, 1d, true, 15d, 25, ParticleCloud.EnumCloudBehavior.CONSTANT));
+
+                    double snowX = entity.posX + entity.width * Math.random() - entity.width / 2;
+                    double snowZ = entity.posZ + entity.width * Math.random() - entity.width / 2;
+                    double snowY = entity.posY + entity.height * Math.random();
+                    MMParticle.SNOWFLAKE.spawn(entity.world, snowX, snowY, snowZ, ParticleFactory.ParticleArgs.get().withData(0d, -0.01d, 0d));
+                }
+            }
+            property.freezeProgress -= 0.1;
+            if (property.freezeProgress < 0) property.freezeProgress = 0;
         }
     }
 
@@ -379,7 +395,10 @@ public enum ServerEventHandler {
     }
 
     @SubscribeEvent
-    public void onPlayerAttack(AttackEntityEvent event) {
+    public void onEntityAttack(AttackEntityEvent event) {
+        if (event.getEntityLiving().isPotionActive(PotionHandler.INSTANCE.frozen)) {
+            event.setCanceled(true);    //TODO: doesn't work
+        }
         if (event.getEntity() instanceof EntityPlayer) {
             MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
 

@@ -132,7 +132,7 @@ public class EntityFrostmaw extends MowzieEntity {
     protected void applyEntityAttributes()
     {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(15.0D * MowziesMobs.CONFIG.difficultyScaleFrostmaw);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(300.0D * MowziesMobs.CONFIG.difficultyScaleFrostmaw);
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(35.0D);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.3D);
         this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(9.0D);
@@ -169,7 +169,7 @@ public class EntityFrostmaw extends MowzieEntity {
     public void onUpdate() {
         rotationYaw = renderYawOffset;
         super.onUpdate();
-        this.repelEntities(4f, 4f, 4f, 4f);
+        this.repelEntities(3.8f, 3.8f, 3.8f, 3.8f);
 
         if (ticksExisted == 1) {
             System.out.println("Frostmaw at " + getPosition());
@@ -187,7 +187,7 @@ public class EntityFrostmaw extends MowzieEntity {
             }
         }
 
-        if (crystal != null && crystal.isDead && !getActive() && getAnimation() != DEACTIVATE_ANIMATION) {
+        if (!world.isRemote && crystal != null && crystal.isDead && !getActive() && getAnimation() != DEACTIVATE_ANIMATION) {
             setHasCrystal(false);
             setCrystalID(Optional.absent());
         }
@@ -411,9 +411,9 @@ public class EntityFrostmaw extends MowzieEntity {
             playSound(MMSounds.ENTITY_FROSTMAW_BREATH[i], 1.5F, 1.1F + rand.nextFloat() * 0.1f);
         }
 
-        if (fallDistance > 0.5 && !onGround) shouldPlayLandAnimation = true;
-        if (onGround && shouldPlayLandAnimation) {
-            if (getAnimation() == NO_ANIMATION) {
+        if ((fallDistance > 0.2 && !onGround) || getAnimation() == DODGE_ANIMATION) shouldPlayLandAnimation = true;
+        if (onGround && shouldPlayLandAnimation && getAnimation() != DODGE_ANIMATION) {
+            if (!world.isRemote && getAnimation() == NO_ANIMATION) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, LAND_ANIMATION);
             }
             shouldPlayLandAnimation = false;
@@ -577,6 +577,7 @@ public class EntityFrostmaw extends MowzieEntity {
     public boolean attackEntityFrom(DamageSource source, float damage) {
         if (source == DamageSource.FALL) return false;
         boolean attack = super.attackEntityFrom(source, damage);
+        if (attack) shouldDodgeMeasure += damage;
         if (attack && !getActive()) {
             if (getAnimation() != DIE_ANIMATION) {
                 if (getHasCrystal()) AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_ANIMATION);
@@ -695,8 +696,8 @@ public class EntityFrostmaw extends MowzieEntity {
     @Override
     protected void onDeathUpdate() {
         super.onDeathUpdate();
-        if (getAnimationTick() == 5) playSound(MMSounds.ENTITY_FROSTMAW_DIE, 2, 1);
-        if (getAnimationTick() == 53) playSound(MMSounds.ENTITY_FROSTMAW_LAND, 2, 1);
+        if (getAnimationTick() == 5) playSound(MMSounds.ENTITY_FROSTMAW_DIE, 2.5f, 1);
+        if (getAnimationTick() == 53) playSound(MMSounds.ENTITY_FROSTMAW_LAND, 2.5f, 1);
     }
 
     @Override

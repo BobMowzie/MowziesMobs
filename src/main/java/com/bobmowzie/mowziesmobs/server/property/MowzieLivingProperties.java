@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.property;
 
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.property.power.Power;
 import com.bobmowzie.mowziesmobs.server.property.power.PowerGeomancy;
 import net.ilexiconn.llibrary.server.entity.EntityProperties;
@@ -32,6 +33,11 @@ public class MowzieLivingProperties extends EntityProperties<EntityLivingBase> {
     @NBTProperty
     public float frozenTicksExisted;
 
+    @NBTProperty
+    private int frozenEntityID = -1;
+
+    public EntityFrozenController frozenController = null;
+
     public void setFrozenProperties(EntityLivingBase entity) {
         if (entity != null) {
             frozenYaw = entity.rotationYaw;
@@ -41,6 +47,13 @@ public class MowzieLivingProperties extends EntityProperties<EntityLivingBase> {
             frozenSwingProgress = entity.swingProgress;
             frozenLimbSwingAmount = entity.limbSwingAmount;
             frozenTicksExisted = entity.ticksExisted;
+
+//            frozenController = new EntityFrozenController(entity.world);
+//            frozenController.setPositionAndRotation(entity.posX, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
+//            entity.world.spawnEntity(frozenController);
+//            frozenController.setRenderYawOffset(entity.renderYawOffset);
+//            entity.startRiding(frozenController, true);
+//            System.out.println(entity.isRiding());
         }
     }
 

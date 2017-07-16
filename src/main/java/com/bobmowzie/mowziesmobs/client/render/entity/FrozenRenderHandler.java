@@ -1,5 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.render.RenderHelper;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -7,17 +9,19 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -30,38 +34,36 @@ import java.util.function.Predicate;
 /**
  * Created by Josh on 6/28/2017.
  */
-public class FrozenRenderHandler {
-    public static FrozenRenderHandler INSTANCE = new FrozenRenderHandler();
+public enum FrozenRenderHandler {
+    INSTANCE;
 
-    private static final ResourceLocation FROZEN_TEXTURE = new ResourceLocation("textures/blocks/ice.png");
+    private static final ResourceLocation FROZEN_TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/frozen.png");
 
-    public static class LayerFrozen implements LayerRenderer<AbstractClientPlayer> {
-        private final RenderLivingBase<AbstractClientPlayer> renderer;
+    public static class LayerFrozen implements LayerRenderer<EntityLivingBase> {
+        private final RenderLivingBase<EntityLivingBase> renderer;
         private final Predicate<ModelRenderer> modelExclusions;
 
-        public LayerFrozen(RenderLivingBase<AbstractClientPlayer> renderer, Predicate<ModelRenderer> modelExclusions) {
+        public LayerFrozen(RenderLivingBase<EntityLivingBase> renderer, Predicate<ModelRenderer> modelExclusions) {
             this.renderer = renderer;
             this.modelExclusions = modelExclusions;
         }
 
-        public LayerFrozen(RenderLivingBase<AbstractClientPlayer> renderer) {
+        public LayerFrozen(RenderLivingBase<EntityLivingBase> renderer) {
             this(renderer, box -> {
-                if(renderer instanceof RenderPlayer) {
-                    RenderPlayer renderPlayer = (RenderPlayer) renderer;
-                    ModelPlayer playerModel = renderPlayer.getMainModel();
-                    return box == playerModel.bipedHeadwear || box == playerModel.bipedRightLegwear ||
-                            box == playerModel.bipedLeftLegwear || box == playerModel.bipedBodyWear ||
-                            box == playerModel.bipedRightArmwear || box == playerModel.bipedLeftArmwear;
-                }
+//                if(renderer instanceof RenderPlayer) {
+//                    RenderPlayer renderPlayer = (RenderPlayer) renderer;
+//                    ModelPlayer playerModel = renderPlayer.getMainModel();
+//                    return box == playerModel.bipedHeadwear || box == playerModel.bipedRightLegwear ||
+//                            box == playerModel.bipedLeftLegwear || box == playerModel.bipedBodyWear ||
+//                            box == playerModel.bipedRightArmwear || box == playerModel.bipedLeftArmwear;
+//                }
                 return false;
             });
         }
 
         @Override
-        public void doRenderLayer(AbstractClientPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-            System.out.println("Rendering layers");
-
-            if (player.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+        public void doRenderLayer(EntityLivingBase living, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+            if (living.isPotionActive(PotionHandler.INSTANCE.frozen)) {
                 ModelBase model = this.renderer.getMainModel();
                 Map<ModelRenderer, Boolean> visibilities = new HashMap<>();
                 for(ModelRenderer box : model.boxList) {
@@ -77,7 +79,7 @@ public class FrozenRenderHandler {
                 GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
                 this.renderer.bindTexture(FROZEN_TEXTURE);
                 GlStateManager.color(1, 1, 1, transparency);
-                model.render(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+                model.render(living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
                 GlStateManager.color(1, 1, 1, 1);
 
                 for(Map.Entry<ModelRenderer, Boolean> entry : visibilities.entrySet()) {
@@ -95,20 +97,18 @@ public class FrozenRenderHandler {
     }
 
     @SubscribeEvent
-    public void onPreRenderPlayer(RenderPlayerEvent.Pre event) {
-        System.out.println("Rendering player");
-        EntityPlayer player = event.getEntityPlayer();
+    public void onPreRenderEntityLivingBase(RenderLivingEvent.Pre event) {
+        EntityLivingBase player = event.getEntity();
 
         if(player.isPotionActive(PotionHandler.INSTANCE.frozen)) {
-//            if(!RenderHelper.doesRendererHaveLayer(event.getRenderer(), LayerDecay.class, false)) {
+            if(!RenderHelper.doesRendererHaveLayer(event.getRenderer(), LayerFrozen.class, false)) {
                 event.getRenderer().addLayer(new LayerFrozen(event.getRenderer()));
-//            }
+            }
         }
     }
 
     @SubscribeEvent
     public void onRenderHand(RenderSpecificHandEvent event) {
-        System.out.println("Rendering hand");
         GlStateManager.pushMatrix();
 
         EntityPlayer player = Minecraft.getMinecraft().player;
@@ -116,7 +116,7 @@ public class FrozenRenderHandler {
         if(player != null && player.isPotionActive(PotionHandler.INSTANCE.frozen)) {
             if(player.isPotionActive(PotionHandler.INSTANCE.frozen)) {
                 boolean isMainHand = event.getHand() == EnumHand.MAIN_HAND;
-                if(isMainHand && !player.isInvisible() && event.getItemStack() == null) {
+                if(isMainHand && !player.isInvisible() && event.getItemStack() == ItemStack.EMPTY) {
                     EnumHandSide enumhandside = isMainHand ? player.getPrimaryHand() : player.getPrimaryHand().opposite();
                     renderArmFirstPersonFrozen(event.getEquipProgress(), event.getSwingProgress(), enumhandside);
                     event.setCanceled(true);

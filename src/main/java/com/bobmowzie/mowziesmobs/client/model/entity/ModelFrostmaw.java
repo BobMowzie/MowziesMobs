@@ -1014,8 +1014,6 @@ public class ModelFrostmaw extends AdvancedModelBase {
             animator.setStaticKeyframe(50);
 
             animator.resetKeyframe(8);
-
-            iceCrystal.isHidden = frostmaw.getAnimationTick() < 28;
         }
         if (frostmaw.getAnimation() == EntityFrostmaw.ACTIVATE_NO_CRYSTAL_ANIMATION) {
             eyeLidLeft.isHidden = true;
@@ -1110,8 +1108,6 @@ public class ModelFrostmaw extends AdvancedModelBase {
             animator.setStaticKeyframe(50);
 
             animator.resetKeyframe(8);
-
-            iceCrystal.isHidden = frostmaw.getAnimationTick() < 28;
         }
         if (frostmaw.getAnimation() == EntityFrostmaw.DEACTIVATE_ANIMATION) {
             animator.setAnimation(EntityFrostmaw.DEACTIVATE_ANIMATION);
@@ -1585,6 +1581,7 @@ public class ModelFrostmaw extends AdvancedModelBase {
         iceCrystal.rotateAngleY += (float)Math.PI/2;
         iceCrystal.rotationPointY += 2 * Math.cos(0.15f * frame);
 
-        if (!frostmaw.getHasCrystal()) iceCrystal.isHidden = true;
+        if (frostmaw.getHasCrystal() && frostmaw.getAnimation() != frostmaw.ACTIVATE_ANIMATION || frostmaw.getAnimationTick() > 28) iceCrystal.isHidden = false;
+        else iceCrystal.isHidden = true;
     }
 }

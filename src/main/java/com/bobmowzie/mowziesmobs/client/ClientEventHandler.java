@@ -18,6 +18,8 @@ import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.MobEffects;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -44,7 +46,7 @@ public enum ClientEventHandler {
     INSTANCE;
 
     private static final ResourceLocation MARIO = new ResourceLocation(MowziesMobs.MODID, "textures/gui/mario.png");
-    private static final ResourceLocation FROZEN = new ResourceLocation("textures/blocks/ice.png");
+    private static final ResourceLocation FROZEN_BLUR = new ResourceLocation(MowziesMobs.MODID, "textures/gui/frozenblur.png");
 
     long startWroughtnautHitTime;
 
@@ -115,6 +117,25 @@ public enum ClientEventHandler {
     }
 
     @SubscribeEvent
+    public void onRenderLiving(RenderLivingEvent event) {
+        EntityLivingBase entity = event.getEntity();
+        MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
+        if (entity.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+            entity.motionX = 0;
+            entity.motionZ = 0;
+//            entity.posX = entity.prevPosX;
+//            entity.posZ = entity.prevPosZ;
+            entity.rotationYaw = property.frozenYaw;
+            entity.rotationPitch = property.frozenPitch;
+            entity.rotationYawHead = property.frozenYawHead;
+            entity.renderYawOffset = property.frozenRenderYawOffset;
+            entity.swingProgress = property.frozenSwingProgress;
+            entity.limbSwingAmount = property.frozenLimbSwingAmount;
+            entity.setSneaking(false);
+        }
+    }
+
+    @SubscribeEvent
     public void onRenderOverlay(RenderGameOverlayEvent.Post e) {
         final int startTime = 210;
         final int pointStart = 1200;
@@ -153,6 +174,11 @@ public enum ClientEventHandler {
                 Gui.drawModalRectWithCustomSizedTexture(timeOffsetX, offsetY, 0, 40, 30, 7, 64, 64);
                 // Time
                 drawMarioNumber(timeOffsetX + 8, offsetY + 8, time, 3);
+            }
+            if (Minecraft.getMinecraft().player.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+                Minecraft.getMinecraft().getTextureManager().bindTexture(FROZEN_BLUR);
+                ScaledResolution res = e.getResolution();
+                Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, res.getScaledWidth(), res.getScaledHeight(), res.getScaledWidth(), res.getScaledHeight());
             }
         }
     }
