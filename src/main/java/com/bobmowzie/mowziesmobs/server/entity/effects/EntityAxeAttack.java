@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.google.common.base.Optional;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -60,15 +61,17 @@ public class EntityAxeAttack extends Entity {
     public void onUpdate() {
         super.onUpdate();
         if (caster != null) setPositionAndRotation(caster.posX, caster.posY, caster.posZ, caster.rotationYaw, caster.rotationPitch);
-        if (!world.isRemote && caster != null) {
-            if (!getVertical() && ticksExisted == swingDurationHoriz/2 - 1) dealDamage(7, 4.5f, 160, 1.2f);
-            else if (getVertical() && ticksExisted == swingDurationVert/2 - 1) {
-                dealDamage(9, 4.5f, 40, 0.8f);
-                quakeAngle = rotationYaw;
-                quakePos = new BlockPos(posX, posY, posZ);
-                quakeBB = getEntityBoundingBox();
+        if (!world.isRemote && ticksExisted == 7) playSound(MMSounds.ENTITY_FROSTMAW_WHOOSH, 1, 0.8f);
+            if (!world.isRemote && caster != null) {
+                if (!getVertical() && ticksExisted == swingDurationHoriz/2 - 1) dealDamage(7, 4.5f, 160, 1.2f);
+                else if (getVertical() && ticksExisted == swingDurationVert/2 - 1) {
+                    dealDamage(9, 4.5f, 40, 0.8f);
+                    quakeAngle = rotationYaw;
+                    quakePos = new BlockPos(posX, posY, posZ);
+                    quakeBB = getEntityBoundingBox();
+                    playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.3F, 0.5F);
+                    playSound(SoundEvents.ENTITY_GENERIC_EXPLODE, 2, 0.9F + rand.nextFloat() * 0.1F);                }
             }
-        }
 
         if (getVertical() && caster != null) {
             if (ticksExisted >= swingDurationVert/2) {
