@@ -1,19 +1,10 @@
 package com.bobmowzie.mowziesmobs.server.property;
 
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntityFrozenController;
-import com.bobmowzie.mowziesmobs.server.property.power.Power;
-import com.bobmowzie.mowziesmobs.server.property.power.PowerGeomancy;
 import net.ilexiconn.llibrary.server.entity.EntityProperties;
 import net.ilexiconn.llibrary.server.nbt.NBTHandler;
 import net.ilexiconn.llibrary.server.nbt.NBTProperty;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.math.MathHelper;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MowzieLivingProperties extends EntityProperties<EntityLivingBase> {
     @NBTProperty
@@ -35,8 +26,6 @@ public class MowzieLivingProperties extends EntityProperties<EntityLivingBase> {
 
     @NBTProperty
     private int frozenEntityID = -1;
-
-    public EntityFrozenController frozenController = null;
 
     public void setFrozenProperties(EntityLivingBase entity) {
         if (entity != null) {

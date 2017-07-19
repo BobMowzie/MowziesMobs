@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -12,15 +13,11 @@ import net.minecraft.item.ItemSword;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
-import com.bobmowzie.mowziesmobs.server.message.MessageSwingWroughtAxe;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
-import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 
 import java.util.List;
 
@@ -49,10 +46,16 @@ public class ItemWroughtAxe extends ItemSword {
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
         if (!world.isRemote) {
             MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
-            if (property.getTick() <= 0) {
-                world.playSound(null, player.posX, player.posY, player.posZ, MMSounds.ENTITY_WROUGHT_WHOOSH, SoundCategory.PLAYERS, 0.5F, 1F);
-                property.swing();
-                MowziesMobs.NETWORK_WRAPPER.sendToDimension(new MessageSwingWroughtAxe(player), player.dimension);
+            if (property.untilAxeSwing <= 0) {
+                if (player.isSneaking() && player.onGround) {
+                    EntityAxeAttack axeAttack = new EntityAxeAttack(world, player, true);
+                    world.spawnEntity(axeAttack);
+                }
+                else {
+                    EntityAxeAttack axeAttack = new EntityAxeAttack(world, player, false);
+                    world.spawnEntity(axeAttack);
+                }
+                property.untilAxeSwing = property.SWING_COOLDOWN;
             }
         }
         return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));

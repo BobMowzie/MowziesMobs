@@ -470,10 +470,13 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         for (EntityBarakoa entityBarakoa : barakoa) {
             if (entityBarakoa.isBarakoDevoted()) entityBarakoa.timeUntilDeath = rand.nextInt(20);
         }
-        if (!world.isRemote && world.getGameRules().getBoolean("doMobLoot")) {
-            dropItem(ItemHandler.INSTANCE.barakoMask, 1);
-        }
         super.onDeath(cause);
+    }
+
+    @Override
+    protected void dropLoot() {
+        super.dropLoot();
+        dropItem(ItemHandler.INSTANCE.barakoMask, 1);
     }
 
     public boolean isTrading() {

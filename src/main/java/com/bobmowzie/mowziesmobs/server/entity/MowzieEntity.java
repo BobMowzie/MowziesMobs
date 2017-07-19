@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.IntermittentAnimation;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemSpawnEgg;
 
@@ -155,7 +156,9 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
                     world.spawnEntity(new EntityXPOrb(world, posX, posY, posZ, j));
                 }
             }
-
+            if (!world.isRemote && world.getGameRules().getBoolean("doMobLoot")) {
+                dropLoot();
+            }
             this.setDead();
 
             for (experience = 0; experience < 20; ++experience) {
@@ -216,6 +219,10 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
         }
     }
 
+    protected void dropLoot() {
+
+    }
+
     @Override
     public int getAnimationTick() {
         return this.animationTick;
@@ -243,4 +250,6 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     public abstract Animation getDeathAnimation();
 
     public abstract Animation getHurtAnimation();
+
+
 }

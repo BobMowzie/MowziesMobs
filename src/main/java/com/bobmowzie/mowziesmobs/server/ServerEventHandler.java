@@ -8,7 +8,7 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
-import com.bobmowzie.mowziesmobs.server.entity.EntityFrostmaw;
+import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
@@ -22,13 +22,10 @@ import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseDown;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseUp;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseDown;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseUp;
-import com.bobmowzie.mowziesmobs.server.potion.MowziePotion;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 
-import com.bobmowzie.mowziesmobs.server.property.power.Power;
-import com.bobmowzie.mowziesmobs.server.property.power.PowerGeomancy;
 import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
@@ -48,7 +45,6 @@ import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -58,13 +54,11 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.terraingen.PopulateChunkEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
-import org.lwjgl.Sys;
 import org.lwjgl.input.Mouse;
 
 public enum ServerEventHandler {
@@ -168,42 +162,12 @@ public enum ServerEventHandler {
         EntityPlayer player = event.player;
         MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
         property.update();
-        if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == ItemHandler.INSTANCE.wroughtAxe) {
-            if (property.getTick() > 0) {
-                property.decrementTime();
-            }
-            if (property.getTick() == MowziePlayerProperties.SWING_HIT_TICK && !player.world.isRemote) {
-                float damage = 7;
-                boolean hit = false;
-                float range = 4;
-                float knockback = 1.2F;
-                float arc = 100;
-                List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby(player, range, 2, range, range);
-                for (EntityLivingBase entityHit : entitiesHit) {
-                    float entityHitAngle = (float) ((Math.atan2(entityHit.posZ - player.posZ, entityHit.posX - player.posX) * (180 / Math.PI) - 90) % 360);
-                    float entityAttackingAngle = player.rotationYaw % 360;
-                    if (entityHitAngle < 0) {
-                        entityHitAngle += 360;
-                    }
-                    if (entityAttackingAngle < 0) {
-                        entityAttackingAngle += 360;
-                    }
-                    float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
-                    float entityHitDistance = (float) Math.sqrt((entityHit.posZ - player.posZ) * (entityHit.posZ - player.posZ) + (entityHit.posX - player.posX) * (entityHit.posX - player.posX));
-                    if (entityHitDistance <= range && entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2 || entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2) {
-                        entityHit.attackEntityFrom(DamageSource.causeMobDamage(player), damage);
-                        entityHit.motionX *= knockback;
-                        entityHit.motionZ *= knockback;
-                        hit = true;
-                    }
-                }
-                if (hit) {
-                    player.playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.3F, 0.5F);
-                }
-            }
-        }
+
         if (property.untilSunstrike > 0) {
             property.untilSunstrike--;
+        }
+        if (property.untilAxeSwing > 0) {
+            property.untilAxeSwing--;
         }
         if (event.side == Side.SERVER) {
             Item headItemStack = event.player.inventory.armorInventory.get(3).getItem();
@@ -381,7 +345,7 @@ public enum ServerEventHandler {
             EntityLivingBase entity = (EntityLivingBase) event.getEntity();
             MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
 
-            if (entity.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+            if (entity.isPotionActive(PotionHandler.INSTANCE.frozen) && entity.onGround) {
                 entity.motionY = 0;
             }
         }

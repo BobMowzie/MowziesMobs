@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.client;
 import com.bobmowzie.mowziesmobs.client.render.entity.*;
 import com.bobmowzie.mowziesmobs.client.sound.IceBreathSound;
 import com.bobmowzie.mowziesmobs.client.sound.SpawnBoulderChargeSound;
-import com.bobmowzie.mowziesmobs.server.entity.EntityFrostmaw;
+import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.*;
 import com.bobmowzie.mowziesmobs.server.entity.effects.*;
 import net.ilexiconn.llibrary.client.model.tabula.TabulaModelHandler;
@@ -55,6 +55,7 @@ public class ClientProxy extends ServerProxy {
         RenderingRegistry.registerEntityRenderingHandler(EntitySunstrike.class, RenderSunstrike::new);
         RenderingRegistry.registerEntityRenderingHandler(EntitySolarBeam.class, RenderSolarBeam::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityBoulder.class, RenderBoulder::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityAxeAttack.class, RenderAxeAttack::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityRing.class, RenderRing::new);
 
         TabulaModelHandler.INSTANCE.addDomain(MowziesMobs.MODID);

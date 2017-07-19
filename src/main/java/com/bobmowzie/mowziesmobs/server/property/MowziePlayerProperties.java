@@ -16,10 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MowziePlayerProperties extends EntityProperties<EntityPlayer> {
-    public static final int SWING_HIT_TICK = 10;
-    private static final int SWING_LENGTH = 20;
+    public static final int SWING_COOLDOWN = 20;
     @NBTProperty
     public int untilSunstrike = 0;
+    @NBTProperty
+    public int untilAxeSwing = 0;
     @NBTProperty
     private int prevTime;
     @NBTProperty
@@ -78,16 +79,8 @@ public class MowziePlayerProperties extends EntityProperties<EntityPlayer> {
         prevTime = time;
     }
 
-    public void swing() {
-        time = SWING_LENGTH;
-    }
-
     public int getTick() {
         return time;
-    }
-
-    public float getSwingPercentage(float partialRenderTicks) {
-        return (prevTime + (time - prevTime) * partialRenderTicks) / SWING_LENGTH;
     }
 
     public void decrementTime() {

@@ -1,6 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.biome;
 
-import com.bobmowzie.mowziesmobs.server.entity.EntityFrostmaw;
+import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
@@ -13,9 +13,7 @@ import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
-import java.util.Collection;
 import java.util.Set;
-import java.util.TreeSet;
 
 public enum BiomeDictionaryHandler {
     INSTANCE;

@@ -20,6 +20,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -76,20 +77,7 @@ public enum ClientEventHandler {
             return;
         }
         EntityPlayer player = event.getEntityPlayer();
-        if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() instanceof ItemWroughtAxe) {
-            MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntityPlayer(), MowziePlayerProperties.class);
-            float time = property.getSwingPercentage(LLibrary.PROXY.getPartialTicks());
-            if (time > 0) {
-                float controller1 = MowziePlayerProperties.fnc1(time);
-                float controller2 = MowziePlayerProperties.fnc2(time);
-                float controller3 = MowziePlayerProperties.fnc3(time, 0.1f, 0.9f, 30);
-                ModelRenderer rightArm = event.getModel().bipedRightArm;
-                float normalAmount = time < 0.1F ? 1 - time / 0.1F : time > 0.9F ? (time - 0.9F) / 0.1F : 0;
-                float swingAmount = 1 - normalAmount;
-                rightArm.rotateAngleY = rightArm.rotateAngleY * normalAmount + (0.6F * controller1 + 0.3F * controller2) * swingAmount;
-                rightArm.rotateAngleX = rightArm.rotateAngleX * normalAmount + ((float) -Math.PI / 2 * controller3) * swingAmount;
-            }
-        }
+        player.getHeldItem(EnumHand.MAIN_HAND);
     }
 
     @SubscribeEvent
