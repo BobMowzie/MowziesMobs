@@ -17,6 +17,8 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
+import java.util.List;
+
 public class ItemBarakoaMask extends ItemArmor implements BarakoaMask {
     private final MaskType type;
 
@@ -94,5 +96,11 @@ public class ItemBarakoaMask extends ItemArmor implements BarakoaMask {
                 barakoa.motionZ = 0.5 * Math.cos(-angle * Math.PI / 180);
             }
         }
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
+        super.addInformation(stack, playerIn, tooltip, advanced);
+        ItemHandler.addItemText(this, tooltip);
     }
 }

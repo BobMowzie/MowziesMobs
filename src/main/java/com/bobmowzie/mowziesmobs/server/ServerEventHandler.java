@@ -31,6 +31,7 @@ import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIAvoidEntity;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
@@ -45,6 +46,7 @@ import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -103,12 +105,7 @@ public enum ServerEventHandler {
 
             if (property != null) {
                 if (property.freezeProgress >= 1) {
-                    if (!entity.isPotionActive(PotionHandler.INSTANCE.frozen)) {
-                        property.setFrozenProperties(entity);
-                    }
-                    if (!entity.world.isRemote)
-                        MowziesMobs.NETWORK_WRAPPER.sendToDimension(new MessageFreezeEntity(entity), entity.dimension);
-                    entity.addPotionEffect(new PotionEffect(PotionHandler.INSTANCE.frozen, 50, 0, false, false));
+                    entity.addPotionEffect(new PotionEffect(PotionHandler.INSTANCE.frozen, 50, 1, false, false));
                     property.freezeProgress = 1f;
                 } else if (property.freezeProgress > 0.8) {
                     entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, 5, false, false));
@@ -121,20 +118,26 @@ public enum ServerEventHandler {
                 } else if (property.freezeProgress > 0) {
                     entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, 1, false, false));
                 }
+
+                if (entity.isPotionActive(PotionHandler.INSTANCE.frozen) && !property.prevFrozen) {
+                    property.onFreeze(entity);
+                    if (!entity.world.isRemote) MowziesMobs.NETWORK_WRAPPER.sendToDimension(new MessageFreezeEntity(entity), entity.dimension);
+                }
             }
 
             if (entity.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+                if (entity.getActivePotionEffect(PotionHandler.INSTANCE.frozen).getDuration() <= 0) entity.removeActivePotionEffect(PotionHandler.INSTANCE.frozen);
                 entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, 50, false, false));
-                entity.motionX = 0;
-                entity.motionZ = 0;
+//                entity.motionX = 0;
+//                entity.motionZ = 0;
 //                entity.posX = entity.prevPosX;
 //                entity.posZ = entity.prevPosZ;
-                entity.rotationYaw = property.frozenYaw;
-                entity.rotationPitch = property.frozenPitch;
-                entity.rotationYawHead = property.frozenYawHead;
-                entity.renderYawOffset = property.frozenRenderYawOffset;
-                entity.swingProgress = property.frozenSwingProgress;
-                entity.limbSwingAmount = property.frozenLimbSwingAmount;
+//                entity.rotationYaw = property.frozenYaw;
+//                entity.rotationPitch = property.frozenPitch;
+//                entity.rotationYawHead = property.frozenYawHead;
+//                entity.renderYawOffset = property.frozenRenderYawOffset;
+//                entity.swingProgress = property.frozenSwingProgress;
+//                entity.limbSwingAmount = property.frozenLimbSwingAmount;
                 entity.setSneaking(false);
 
                 if (entity.ticksExisted % 2 == 0) {
@@ -149,8 +152,16 @@ public enum ServerEventHandler {
                     MMParticle.SNOWFLAKE.spawn(entity.world, snowX, snowY, snowZ, ParticleFactory.ParticleArgs.get().withData(0d, -0.01d, 0d));
                 }
             }
+            else {
+                if (property.frozenController != null && !property.frozenController.isDead) {
+                    entity.dismountEntity(property.frozenController);
+                    property.frozenController.setDead();
+                }
+                if (entity instanceof EntityLiving && ((EntityLiving)entity).isAIDisabled()) ((EntityLiving)entity).setNoAI(false);
+            }
             property.freezeProgress -= 0.1;
             if (property.freezeProgress < 0) property.freezeProgress = 0;
+            property.prevFrozen = entity.isPotionActive(PotionHandler.INSTANCE.frozen);
         }
     }
 

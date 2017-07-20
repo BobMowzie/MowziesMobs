@@ -7,6 +7,7 @@ import java.util.Map;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.*;
 import com.bobmowzie.mowziesmobs.server.entity.effects.*;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
+import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Biomes;
@@ -45,6 +46,7 @@ public enum EntityHandler {
         EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "boulder"), EntityBoulder.class, "boulder", nextEntityId(), MowziesMobs.INSTANCE, 64, 1, true);
         EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "axe_attack"), EntityAxeAttack.class, "axe_attack", nextEntityId(), MowziesMobs.INSTANCE, 64, 1, true);
         EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "icebreath"), EntityIceBreath.class, "icebreath", nextEntityId(), MowziesMobs.INSTANCE, 64, 1, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "frozen_controller"), EntityFrozenController.class, "frozen_controller", nextEntityId(), MowziesMobs.INSTANCE, 64, 1, true);
         EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "ring"), EntityRing.class, "ring", nextEntityId(), MowziesMobs.INSTANCE, 64, 1, true);
 
         EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "dart"), EntityDart.class, "dart", nextEntityId(), MowziesMobs.INSTANCE, 64, 1, true);

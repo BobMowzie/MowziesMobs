@@ -767,7 +767,7 @@ public class StructureBarakoaVillage {
                     //else System.out.println("No space");
                 }
             }
-            int numBarakoa = rand.nextInt(8) + 8;
+            int numBarakoa = rand.nextInt(12) + 5;
             for (int i = 1; i <= numBarakoa; i++) {
                 int distance;
                 int angle;

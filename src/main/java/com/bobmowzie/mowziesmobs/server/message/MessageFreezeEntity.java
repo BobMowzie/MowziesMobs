@@ -42,7 +42,7 @@ public class MessageFreezeEntity extends AbstractMessage<MessageFreezeEntity> {
         Entity entity = player.world.getEntityByID(message.entityID);
         if (entity instanceof EntityLivingBase) {
             MowzieLivingProperties livingProperties = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
-            livingProperties.setFrozenProperties((EntityLivingBase) entity);
+            livingProperties.onFreeze((EntityLivingBase) entity);
         }
     }
 

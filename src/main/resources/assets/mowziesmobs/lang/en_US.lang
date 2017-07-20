@@ -39,6 +39,18 @@ item.wroughtAxe.text.1=Right-click to attack in an arc
 
 item.barakoMask.text.0=Never breaks
 item.barakoMask.text.1=Equip, then right-click with Barakoa mask
+item.barakoMask.text.2=to spawn followers
+
+item.barakoaMask.fear.text.0=Grants swiftness
+item.barakoaMask.fear.text.1=I wonder if...?
+item.barakoaMask.rage.text.0=Grants haste
+item.barakoaMask.rage.text.1=I wonder if...?
+item.barakoaMask.misery.text.0=Grants resistance
+item.barakoaMask.misery.text.1=I wonder if...?
+item.barakoaMask.bliss.text.0=Grants jump boost
+item.barakoaMask.bliss.text.1=I wonder if...?
+item.barakoaMask.fury.text.0=Grants strength
+item.barakoaMask.fury.text.1=I wonder if...?
 
 item.dart.text.0=Can only be used with blowgun
 item.dart.text.1=Poisons targets
@@ -46,10 +58,9 @@ item.dart.text.1=Poisons targets
 item.foliaathSeed.text.0=Plant in grass
 item.foliaathSeed.text.1=Feed when hungry for 2 days
 
-item.grantSunsBlessing.text.0=This item is creative-mode only
-item.grantSunsBlessing.text.1=Grants Sun's Blessing for 20 minutes
-item.grantSunsBlessing.text.2=With empty hand, right-click to call a sunstrike
-item.grantSunsBlessing.text.3=With empty hand, shift-right-click to fire a solar beam (costs 2 minutes)
+item.grantSunsBlessing.text.0=Grants Sun's Blessing for 20 minutes
+item.grantSunsBlessing.text.1=With empty hand, right-click to call a sunstrike
+item.grantSunsBlessing.text.2=With empty hand, shift-right-click to fire a solar beam (costs 2 minutes)
 
 item.mobRemover.text.0=Left-click to remove a Mowzie's Mobs mob
 

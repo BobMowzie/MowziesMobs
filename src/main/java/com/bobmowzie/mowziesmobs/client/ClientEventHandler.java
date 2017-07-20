@@ -109,8 +109,8 @@ public enum ClientEventHandler {
         EntityLivingBase entity = event.getEntity();
         MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
         if (entity.isPotionActive(PotionHandler.INSTANCE.frozen)) {
-            entity.motionX = 0;
-            entity.motionZ = 0;
+//            entity.motionX = 0;
+//            entity.motionZ = 0;
 //            entity.posX = entity.prevPosX;
 //            entity.posZ = entity.prevPosZ;
             entity.rotationYaw = property.frozenYaw;
@@ -163,7 +163,7 @@ public enum ClientEventHandler {
                 // Time
                 drawMarioNumber(timeOffsetX + 8, offsetY + 8, time, 3);
             }
-            if (Minecraft.getMinecraft().player.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+            if (Minecraft.getMinecraft().player.isPotionActive(PotionHandler.INSTANCE.frozen) && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0) {
                 Minecraft.getMinecraft().getTextureManager().bindTexture(FROZEN_BLUR);
                 ScaledResolution res = e.getResolution();
                 Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, res.getScaledWidth(), res.getScaledHeight(), res.getScaledWidth(), res.getScaledHeight());

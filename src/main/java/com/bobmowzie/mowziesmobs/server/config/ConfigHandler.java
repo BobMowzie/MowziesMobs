@@ -12,7 +12,7 @@ public class ConfigHandler {
     @ConfigEntry(name = "Wroughtnaut Difficulty Multiplier", minValue = "0", maxValue = "20")
     public int difficultyScaleWroughtnaut = 1;
     @ConfigEntry(name = "Barakoa Spawn Rate", minValue = "0", maxValue = "100")
-    public int spawnrateBarakoa = 2;
+    public int spawnrateBarakoa = 3;
     @ConfigEntry(name = "Barakoa Difficulty Multiplier", minValue = "0", maxValue = "20")
     public int difficultyScaleBarakoa = 1;
     @ConfigEntry(name = "Barako Spawn Rate", minValue = "0", maxValue = "100", comment = "Barako Spawnrate: Smaller number is more frequent, 0 to disable spawning")
