@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.entity.frostmaw;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
@@ -58,7 +59,8 @@ public class EntityFrozenController extends Entity {
     public void updatePassenger(Entity passenger) {
         if (this.isPassenger(passenger))
         {
-            passenger.setPositionAndRotation(this.posX, this.posY, this.posZ, this.rotationYaw, this.rotationPitch);
+            if (passenger instanceof EntityPlayer) passenger.setPosition(this.posX, this.posY, this.posZ);
+            else passenger.setPositionAndRotation(this.posX, this.posY, this.posZ, this.rotationYaw, this.rotationPitch);
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
+import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.model.ModelAnimator;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
@@ -359,7 +360,7 @@ public class ModelBarako extends AdvancedModelBase {
             faceTarget(f3, f4, 1.0F, head);
         }
 
-        if (tribeLeader.getAnimation() != EntityBarako.DIE_ANIMATION) {
+        if (tribeLeader.getAnimation() != EntityBarako.DIE_ANIMATION && !tribeLeader.isPotionActive(PotionHandler.INSTANCE.frozen)) {
             walk(body, 0.06f, 0.05f, true, 0, -0.05f, frame, 1f);
             walk(neck, 0.06f, 0.05f, false, 0.5f, -0.05f, frame, 1f);
             swing(rightThigh, 0.06f, 0.05f * liftLegs, false, 0, 0, frame, 1f);
@@ -1148,11 +1149,18 @@ public class ModelBarako extends AdvancedModelBase {
             headdress6.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame);
             headdress7.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame);
         }
-
-        body.setScale(scaler * (1 - bellyScaler.rotationPointY), scaler * (1 - bellyScaler.rotationPointY), scaler * (1 - bellyScaler.rotationPointY));
-        chest.setScale(1 / scaler, 1 / scaler, 1 / scaler);
-        rightThigh.setScale(1 / scaler, 1 / scaler, 1 / scaler);
-        leftThigh.setScale(1 / scaler, 1 / scaler, 1 / scaler);
+        if (!tribeleader.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+            body.setScale(scaler * (1 - bellyScaler.rotationPointY), scaler * (1 - bellyScaler.rotationPointY), scaler * (1 - bellyScaler.rotationPointY));
+            chest.setScale(1 / scaler, 1 / scaler, 1 / scaler);
+            rightThigh.setScale(1 / scaler, 1 / scaler, 1 / scaler);
+            leftThigh.setScale(1 / scaler, 1 / scaler, 1 / scaler);
+        }
+        else {
+            body.setScale(1, 1, 1);
+            chest.setScale(1, 1, 1);
+            rightThigh.setScale(1, 1, 1);
+            leftThigh.setScale(1, 1, 1);
+        }
 
         chest.rotationPointY += jiggleController.rotationPointX * 1.5 * Math.cos(jiggleSpeed * frame);
         chest.rotationPointZ += jiggleController.rotationPointX * 0.7 * Math.cos(jiggleSpeed * frame);

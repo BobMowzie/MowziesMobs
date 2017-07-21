@@ -373,5 +373,8 @@
 	},
 	"frostmaw.wakeup": {
 		"sounds": [ "mowziesmobs:entity/frostmaw/wakeup" ]
+	},
+	"frostmaw.frozencrash": {
+		"sounds": [ "mowziesmobs:entity/frostmaw/icecrash" ]
 	}
 }

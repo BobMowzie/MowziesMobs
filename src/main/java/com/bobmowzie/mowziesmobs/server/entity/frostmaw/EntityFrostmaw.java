@@ -164,7 +164,7 @@ public class EntityFrostmaw extends MowzieEntity {
         this.repelEntities(3.8f, 3.8f, 3.8f, 3.8f);
 
         if (ticksExisted == 1) {
-            System.out.println("Frostmaw at " + getPosition());
+//            System.out.println("Frostmaw at " + getPosition());
             if (getHasCrystal()) {
                 Optional<UUID> crystalID = getCrystalID();
                 if (!getCrystalID().isPresent() && !world.isRemote && crystal == null) {

@@ -26,9 +26,13 @@ import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockOldLeaf;
+import net.minecraft.block.BlockPlanks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
@@ -42,6 +46,7 @@ import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
@@ -49,8 +54,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -65,6 +72,8 @@ import org.lwjgl.input.Mouse;
 
 public enum ServerEventHandler {
     INSTANCE;
+
+    private static final int ICE = Block.getStateId(Blocks.ICE.getDefaultState());
 
     private final static int SUNSTRIKE_COOLDOWN = 55;
     private final static int SOLARBEAM_COOLDOWN = 110;
@@ -128,16 +137,6 @@ public enum ServerEventHandler {
             if (entity.isPotionActive(PotionHandler.INSTANCE.frozen)) {
                 if (entity.getActivePotionEffect(PotionHandler.INSTANCE.frozen).getDuration() <= 0) entity.removeActivePotionEffect(PotionHandler.INSTANCE.frozen);
                 entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, 50, false, false));
-//                entity.motionX = 0;
-//                entity.motionZ = 0;
-//                entity.posX = entity.prevPosX;
-//                entity.posZ = entity.prevPosZ;
-//                entity.rotationYaw = property.frozenYaw;
-//                entity.rotationPitch = property.frozenPitch;
-//                entity.rotationYawHead = property.frozenYawHead;
-//                entity.renderYawOffset = property.frozenRenderYawOffset;
-//                entity.swingProgress = property.frozenSwingProgress;
-//                entity.limbSwingAmount = property.frozenLimbSwingAmount;
                 entity.setSneaking(false);
 
                 if (entity.ticksExisted % 2 == 0) {
@@ -155,7 +154,17 @@ public enum ServerEventHandler {
             else {
                 if (property.frozenController != null && !property.frozenController.isDead) {
                     entity.dismountEntity(property.frozenController);
+                    entity.setPosition(property.frozenController.posX, property.frozenController.posY, property.frozenController.posZ);
                     property.frozenController.setDead();
+                    entity.playSound(MMSounds.ENTITY_FROSTMAW_FROZEN_CRASH, 1, 0.5f);
+
+                    int particleCount = (int) (10 + 1 * entity.height * entity.width * entity.width);
+                    for (int i = 0; i < particleCount; i++) {
+                        double particleX = entity.posX + entity.width * Math.random() - entity.width / 2;
+                        double particleZ = entity.posZ + entity.width * Math.random() - entity.width / 2;
+                        double particleY = entity.posY + entity.height * Math.random() + 0.3f;
+                        entity.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, particleX, particleY, particleZ, 0, 0, 0, ICE);
+                    }
                 }
                 if (entity instanceof EntityLiving && ((EntityLiving)entity).isAIDisabled()) ((EntityLiving)entity).setNoAI(false);
             }

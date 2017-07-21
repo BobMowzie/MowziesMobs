@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
+import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import net.ilexiconn.llibrary.client.model.ModelAnimator;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
@@ -7,6 +8,7 @@ import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.potion.Potion;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -284,59 +286,61 @@ public class ModelFoliaath extends AdvancedModelBase {
 
         float globalSpeed = 0.9f;
 
-        flap(stem1Base, 0.25F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 0F, 0F, frame, 1F);
-        walk(stem1Base, 0.5F * globalSpeed, 0.05F * (activeComplete - stopDance), false, 0F, 0F, frame, 1F);
-        walk(stem2, 0.5F * globalSpeed, 0.05F * (activeComplete - stopDance), false, 0.5F, 0F, frame, 1F);
-        walk(stem3, 0.5F * globalSpeed, 0.07F * (activeComplete - stopDance), false, 1F, 0F, frame, 1F);
-        walk(stem4, 0.5F * globalSpeed, 0.05F * (activeComplete - stopDance), false, 1.5F, 0F, frame, 1F);
-        walk(headBase, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), true, 1.3F, 0F, frame, 1F);
-        headBase.rotateAngleY += rotateBox(0.25F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 0F, 0F, frame, 1F);
-        walk(leaf1Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, frame, 1F);
-        walk(leaf2Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, frame, 1F);
-        walk(leaf3Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, frame, 1F);
-        walk(leaf4Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, frame, 1F);
-        walk(leaf5Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, frame, 1F);
-        walk(leaf6Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, frame, 1F);
-        walk(leaf7Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, frame, 1F);
-        walk(leaf8Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, frame, 1F);
-        chainWave(leafParts1, 0.5F * globalSpeed, 0.13F * (activeComplete - stopDance), 2, frame, 1F);
-        chainWave(leafParts2, 0.5F * globalSpeed, 0.13F * (activeComplete - stopDance), 2, frame, 1F);
-        chainWave(leafParts3, 0.5F * globalSpeed, 0.13F * (activeComplete - stopDance), 2, frame, 1F);
-        chainWave(leafParts4, 0.5F * globalSpeed, 0.13F * (activeComplete - stopDance), 2, frame, 1F);
+        if (!entity.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+            flap(stem1Base, 0.25F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 0F, 0F, frame, 1F);
+            walk(stem1Base, 0.5F * globalSpeed, 0.05F * (activeComplete - stopDance), false, 0F, 0F, frame, 1F);
+            walk(stem2, 0.5F * globalSpeed, 0.05F * (activeComplete - stopDance), false, 0.5F, 0F, frame, 1F);
+            walk(stem3, 0.5F * globalSpeed, 0.07F * (activeComplete - stopDance), false, 1F, 0F, frame, 1F);
+            walk(stem4, 0.5F * globalSpeed, 0.05F * (activeComplete - stopDance), false, 1.5F, 0F, frame, 1F);
+            walk(headBase, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), true, 1.3F, 0F, frame, 1F);
+            headBase.rotateAngleY += rotateBox(0.25F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 0F, 0F, frame, 1F);
+            walk(leaf1Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, frame, 1F);
+            walk(leaf2Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, frame, 1F);
+            walk(leaf3Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, frame, 1F);
+            walk(leaf4Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, frame, 1F);
+            walk(leaf5Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, frame, 1F);
+            walk(leaf6Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, frame, 1F);
+            walk(leaf7Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, frame, 1F);
+            walk(leaf8Head, 0.5F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 3F, -0.1F, frame, 1F);
+            chainWave(leafParts1, 0.5F * globalSpeed, 0.13F * (activeComplete - stopDance), 2, frame, 1F);
+            chainWave(leafParts2, 0.5F * globalSpeed, 0.13F * (activeComplete - stopDance), 2, frame, 1F);
+            chainWave(leafParts3, 0.5F * globalSpeed, 0.13F * (activeComplete - stopDance), 2, frame, 1F);
+            chainWave(leafParts4, 0.5F * globalSpeed, 0.13F * (activeComplete - stopDance), 2, frame, 1F);
 
-        //Open Mouth Animation
-        float openMouthProgress = foliaath.openMouth.getAnimationProgressSinSqrt();
-        float openMouthIntermittent = foliaath.openMouth.getAnimationProgressSinSqrt() - foliaath.openMouth.getAnimationProgressSinToTenWithoutReturn();
-        float headLeafRotation = 0.2F * openMouthProgress - 0.8F * openMouthIntermittent;
-        mouthTop1.rotateAngleX -= 0.3 * openMouthIntermittent;
-        mouthBottom1.rotateAngleX -= 0.3 * openMouthIntermittent;
-        mouthTop2.rotateAngleX += 0.3 * openMouthIntermittent;
-        mouthBottom2.rotateAngleX += 0.3 * openMouthIntermittent;
-        stem2.rotateAngleX += 0.9 * openMouthIntermittent;
-        stem3.rotateAngleX -= 0.6 * openMouthIntermittent;
-        stem4.rotateAngleX -= 0.6 * openMouthIntermittent;
-        headBase.rotateAngleX += 0.6 * openMouthIntermittent;
-        flap(headBase, 1.5F, 0.6F * openMouthIntermittent, false, 0F, 0F, frame, 1F);
-        mouthTop1.rotateAngleX += 0.15 * openMouthProgress;
-        mouthBottom1.rotateAngleX += 0.15 * openMouthProgress;
-        chainWave(tongueParts, 0.5F * globalSpeed, -0.15F * (openMouthProgress - openMouthIntermittent), -2, frame, 1F);
-        tongue1Base.rotateAngleY += 0.3 * (openMouthProgress - openMouthIntermittent);
-        tongue2.rotateAngleY += 0.4 * (openMouthProgress - openMouthIntermittent);
-        tongue2.rotateAngleX -= 0.1 * (openMouthProgress - openMouthIntermittent);
-        tongue3.rotateAngleX -= 0.5 * (openMouthProgress - openMouthIntermittent);
-        stem1Base.rotateAngleX -= 0.2 * openMouthProgress;
-        stem2.rotateAngleX -= 0.1 * openMouthProgress;
-        stem3.rotateAngleX -= 0.1 * openMouthProgress;
-        stem4.rotateAngleX -= 0.1 * openMouthProgress;
-        headBase.rotateAngleX += 0.6 * openMouthProgress;
-        leaf1Head.rotateAngleX -= headLeafRotation;
-        leaf2Head.rotateAngleX -= headLeafRotation;
-        leaf3Head.rotateAngleX -= headLeafRotation;
-        leaf4Head.rotateAngleX -= headLeafRotation;
-        leaf5Head.rotateAngleX -= headLeafRotation;
-        leaf6Head.rotateAngleX -= headLeafRotation;
-        leaf7Head.rotateAngleX -= headLeafRotation;
-        leaf8Head.rotateAngleX -= headLeafRotation;
+            //Open Mouth Animation
+            float openMouthProgress = foliaath.openMouth.getAnimationProgressSinSqrt();
+            float openMouthIntermittent = foliaath.openMouth.getAnimationProgressSinSqrt() - foliaath.openMouth.getAnimationProgressSinToTenWithoutReturn();
+            float headLeafRotation = 0.2F * openMouthProgress - 0.8F * openMouthIntermittent;
+            mouthTop1.rotateAngleX -= 0.3 * openMouthIntermittent;
+            mouthBottom1.rotateAngleX -= 0.3 * openMouthIntermittent;
+            mouthTop2.rotateAngleX += 0.3 * openMouthIntermittent;
+            mouthBottom2.rotateAngleX += 0.3 * openMouthIntermittent;
+            stem2.rotateAngleX += 0.9 * openMouthIntermittent;
+            stem3.rotateAngleX -= 0.6 * openMouthIntermittent;
+            stem4.rotateAngleX -= 0.6 * openMouthIntermittent;
+            headBase.rotateAngleX += 0.6 * openMouthIntermittent;
+            flap(headBase, 1.5F, 0.6F * openMouthIntermittent, false, 0F, 0F, frame, 1F);
+            mouthTop1.rotateAngleX += 0.15 * openMouthProgress;
+            mouthBottom1.rotateAngleX += 0.15 * openMouthProgress;
+            chainWave(tongueParts, 0.5F * globalSpeed, -0.15F * (openMouthProgress - openMouthIntermittent), -2, frame, 1F);
+            tongue1Base.rotateAngleY += 0.3 * (openMouthProgress - openMouthIntermittent);
+            tongue2.rotateAngleY += 0.4 * (openMouthProgress - openMouthIntermittent);
+            tongue2.rotateAngleX -= 0.1 * (openMouthProgress - openMouthIntermittent);
+            tongue3.rotateAngleX -= 0.5 * (openMouthProgress - openMouthIntermittent);
+            stem1Base.rotateAngleX -= 0.2 * openMouthProgress;
+            stem2.rotateAngleX -= 0.1 * openMouthProgress;
+            stem3.rotateAngleX -= 0.1 * openMouthProgress;
+            stem4.rotateAngleX -= 0.1 * openMouthProgress;
+            headBase.rotateAngleX += 0.6 * openMouthProgress;
+            leaf1Head.rotateAngleX -= headLeafRotation;
+            leaf2Head.rotateAngleX -= headLeafRotation;
+            leaf3Head.rotateAngleX -= headLeafRotation;
+            leaf4Head.rotateAngleX -= headLeafRotation;
+            leaf5Head.rotateAngleX -= headLeafRotation;
+            leaf6Head.rotateAngleX -= headLeafRotation;
+            leaf7Head.rotateAngleX -= headLeafRotation;
+            leaf8Head.rotateAngleX -= headLeafRotation;
+        }
 
         //Activate Animation
         chainFlap(stemParts, 0.7F, 0.2F * 2 * activeIntermittent, 2F, frame, 1F);

@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
+import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.model.ModelAnimator;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
@@ -365,46 +366,52 @@ public class ModelBarakoa extends AdvancedModelBase {
             armLowerLeft.rotateAngleZ += 1;
             spearBase.setScale(spearBase.scaleX, -1, 1.5f);
 
-            flap(armUpperLeft, 1 * globalSpeed, 0.1f * globalHeight, false, 0.5f, 0, f, f1);
-            walk(armUpperLeft, 0.5f * globalSpeed, 0.3f * globalDegree, true, 0, 1, f, f1);
+            if (!barakoa.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+                flap(armUpperLeft, 1 * globalSpeed, 0.1f * globalHeight, false, 0.5f, 0, f, f1);
+                walk(armUpperLeft, 0.5f * globalSpeed, 0.3f * globalDegree, true, 0, 1, f, f1);
+            }
         } else {
-            flap(armUpperLeft, 1 * globalSpeed, 0.3f * globalHeight, false, 0.5f, 0, f, f1);
-            walk(armUpperLeft, 0.5f * globalSpeed, 0.7f * globalDegree, true, 0, 0, f, f1);
+            if (!barakoa.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+                flap(armUpperLeft, 1 * globalSpeed, 0.3f * globalHeight, false, 0.5f, 0, f, f1);
+                walk(armUpperLeft, 0.5f * globalSpeed, 0.7f * globalDegree, true, 0, 0, f, f1);
+            }
         }
 
-        bob(body, 1 * globalSpeed, 2.5f * globalHeight, false, f, f1);
-        walk(loinClothFront, 1 * globalSpeed, 0.5f * globalHeight, false, 2, 0, f, f1);
-        walk(loinClothBack, 1 * globalSpeed, 0.5f * globalHeight, true, 2, 0, f, f1);
-        walk(body, 1 * globalSpeed, 0.2f * globalHeight, false, 1, 0.2f * globalHeight, f, f1);
-        walk(thighLeft, 1 * globalSpeed, 0.2f * globalHeight, true, 1, 0.4f * globalHeight, f, f1);
-        walk(thighRight, 1 * globalSpeed, 0.2f * globalHeight, true, 1, 0.4f * globalHeight, f, f1);
-        swing(body, 0.5f * globalSpeed, 0.7f * globalDegree, true, 0, 0, f, f1);
-        swing(thighLeft, 0.5f * globalSpeed, 0.7f * globalDegree, false, 0, 0, f, f1);
-        swing(thighRight, 0.5f * globalSpeed, 0.7f * globalDegree, false, 0, 0, f, f1);
-        swing(chest, 0.5f * globalSpeed, 1.4f * globalDegree, false, 0, 0, f, f1);
-        swing(neck, 0.5f * globalSpeed, 0.7f * globalDegree, true, 0, 0, f, f1);
-        flap(modelCore, 0.5f * globalSpeed, 0.3f * globalHeight, false, 0, 0, f, f1);
-        flap(neck, 0.5f * globalSpeed, 0.15f * globalHeight, true, 0, 0, f, f1);
-        flap(head, 0.5f * globalSpeed, 0.15f * globalHeight, true, 0, 0, f, f1);
-        walk(thighLeft, 0.5f * globalSpeed, 1.4f * globalDegree, false, 0, 1f * globalHeight, f, f1);
-        walk(thighRight, 0.5f * globalSpeed, 1.4f * globalDegree, true, 0, -1f * globalHeight, f, f1);
-        walk(calfLeft, 0.5f * globalSpeed, 1.2f * globalDegree, false, -1.5f, 0.3f * globalDegree, f, f1);
-        walk(calfRight, 0.5f * globalSpeed, 1.2f * globalDegree, true, -1.5f, -0.3f * globalDegree, f, f1);
-        walk(footLeft, 0.5f * globalSpeed, 1.2f * globalDegree, false, -3f, 0.15f * globalDegree, f, f1);
-        walk(footRight, 0.5f * globalSpeed, 1.2f * globalDegree, true, -3f, -0.15f * globalDegree, f, f1);
-        thighLeft.rotateAngleY += 1f * f1 * globalDegree;
-        thighRight.rotateAngleY -= 1f * f1 * globalDegree;
-        walk(neck, 1 * globalSpeed, 0.2f * globalHeight, true, 0.5f, 0.5f * globalDegree, f, f1);
-        walk(head, 1 * globalSpeed, 0f * globalHeight, true, 0.5f, -0.5f * globalDegree, f, f1);
-        flap(armUpperRight, 1 * globalSpeed, 0.3f * globalHeight, true, 0.5f, 0, f, f1);
-        walk(armUpperRight, 0.5f * globalSpeed, 0.7f * globalDegree, false, 0, 0, f, f1);
-        walk(armLowerRight, 0.5f * globalSpeed, 1 * globalDegree, false, -1, 0, f, f1);
-        walk(armLowerLeft, 0.5f * globalSpeed, 1 * globalDegree, true, -1, 0, f, f1);
-        walk(handRight, 0.5f * globalSpeed, 1 * globalDegree, false, -2, 0.8f * globalDegree, f, f1);
-        swing(handRight, 0.5f * globalSpeed, 1f * globalDegree, true, 0, 0, f, f1);
-        walk(handLeft, 0.5f * globalSpeed, 1 * globalDegree, true, -2, 0.4f * globalDegree, f, f1);
+        if (!barakoa.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+            bob(body, 1 * globalSpeed, 2.5f * globalHeight, false, f, f1);
+            walk(loinClothFront, 1 * globalSpeed, 0.5f * globalHeight, false, 2, 0, f, f1);
+            walk(loinClothBack, 1 * globalSpeed, 0.5f * globalHeight, true, 2, 0, f, f1);
+            walk(body, 1 * globalSpeed, 0.2f * globalHeight, false, 1, 0.2f * globalHeight, f, f1);
+            walk(thighLeft, 1 * globalSpeed, 0.2f * globalHeight, true, 1, 0.4f * globalHeight, f, f1);
+            walk(thighRight, 1 * globalSpeed, 0.2f * globalHeight, true, 1, 0.4f * globalHeight, f, f1);
+            swing(body, 0.5f * globalSpeed, 0.7f * globalDegree, true, 0, 0, f, f1);
+            swing(thighLeft, 0.5f * globalSpeed, 0.7f * globalDegree, false, 0, 0, f, f1);
+            swing(thighRight, 0.5f * globalSpeed, 0.7f * globalDegree, false, 0, 0, f, f1);
+            swing(chest, 0.5f * globalSpeed, 1.4f * globalDegree, false, 0, 0, f, f1);
+            swing(neck, 0.5f * globalSpeed, 0.7f * globalDegree, true, 0, 0, f, f1);
+            flap(modelCore, 0.5f * globalSpeed, 0.3f * globalHeight, false, 0, 0, f, f1);
+            flap(neck, 0.5f * globalSpeed, 0.15f * globalHeight, true, 0, 0, f, f1);
+            flap(head, 0.5f * globalSpeed, 0.15f * globalHeight, true, 0, 0, f, f1);
+            walk(thighLeft, 0.5f * globalSpeed, 1.4f * globalDegree, false, 0, 1f * globalHeight, f, f1);
+            walk(thighRight, 0.5f * globalSpeed, 1.4f * globalDegree, true, 0, -1f * globalHeight, f, f1);
+            walk(calfLeft, 0.5f * globalSpeed, 1.2f * globalDegree, false, -1.5f, 0.3f * globalDegree, f, f1);
+            walk(calfRight, 0.5f * globalSpeed, 1.2f * globalDegree, true, -1.5f, -0.3f * globalDegree, f, f1);
+            walk(footLeft, 0.5f * globalSpeed, 1.2f * globalDegree, false, -3f, 0.15f * globalDegree, f, f1);
+            walk(footRight, 0.5f * globalSpeed, 1.2f * globalDegree, true, -3f, -0.15f * globalDegree, f, f1);
+            thighLeft.rotateAngleY += 1f * f1 * globalDegree;
+            thighRight.rotateAngleY -= 1f * f1 * globalDegree;
+            walk(neck, 1 * globalSpeed, 0.2f * globalHeight, true, 0.5f, 0.5f * globalDegree, f, f1);
+            walk(head, 1 * globalSpeed, 0f * globalHeight, true, 0.5f, -0.5f * globalDegree, f, f1);
+            flap(armUpperRight, 1 * globalSpeed, 0.3f * globalHeight, true, 0.5f, 0, f, f1);
+            walk(armUpperRight, 0.5f * globalSpeed, 0.7f * globalDegree, false, 0, 0, f, f1);
+            walk(armLowerRight, 0.5f * globalSpeed, 1 * globalDegree, false, -1, 0, f, f1);
+            walk(armLowerLeft, 0.5f * globalSpeed, 1 * globalDegree, true, -1, 0, f, f1);
+            walk(handRight, 0.5f * globalSpeed, 1 * globalDegree, false, -2, 0.8f * globalDegree, f, f1);
+            swing(handRight, 0.5f * globalSpeed, 1f * globalDegree, true, 0, 0, f, f1);
+            walk(handLeft, 0.5f * globalSpeed, 1 * globalDegree, true, -2, 0.4f * globalDegree, f, f1);
+        }
 
-        if (barakoa.getAnimation() != EntityBarakoa.DIE_ANIMATION) {
+        if (barakoa.getAnimation() != EntityBarakoa.DIE_ANIMATION && !barakoa.isPotionActive(PotionHandler.INSTANCE.frozen)) {
             walk(body, 0.2f, 0.05f, false, 0, 0, frame, 1f);
             walk(thighLeftJoint, 0.2f, 0.05f, true, 0, 0, frame, 1f);
             walk(thighRightJoint, 0.2f, 0.05f, true, 0, 0, frame, 1f);
@@ -796,22 +803,24 @@ public class ModelBarakoa extends AdvancedModelBase {
 
 
         float talk = talker.rotationPointX;
-        walk(head, 1.5f, 0.1f * talk, false, 0, -0.5f * talk, frame, 1f);
-        walk(neck, 0, 0, false, 0, 0.5f * talk, frame, 1f);
-        walk(armUpperRight, 0.5f, 0.2f * talk, false, 0, -0.7f * talk, frame, 1f);
-        flap(armUpperRight, 0.4f, 0.2f * talk, false, 2, 0, frame, 1f);
-        walk(armLowerRight, 0.5f, 0.2f * talk, false, -1, 0.3f * talk, frame, 1f);
-        swing(handRight, 0.5f, 0.2f * talk, false, -2, 1.8f * talk, frame, 1f);
-        walk(armUpperLeft, 0.5f, 0.2f * talk, false, 0, -0.7f * talk, frame, 1f);
-        flap(armUpperLeft, 0.4f, 0.2f * talk, true, 2, 0, frame, 1f);
-        walk(armLowerLeft, 0.5f, 0.2f * talk, false, -1, 0.3f * talk, frame, 1f);
-        swing(handLeft, 0.5f, 0.2f * talk, false, -2, -1.8f * talk, frame, 1f);
-        if (barakoa.getMask() == MaskType.FURY) {
-            armLeftJoint.rotateAngleX += 0.2 * talk;
-            armLeftJoint.rotateAngleY -= 1.3 * talk;
-            armLowerLeft.rotateAngleX += 0.2 * talk;
-            armLowerLeft.rotateAngleY -= 0.2 * talk;
-            armLowerLeft.rotateAngleZ -= 1 * talk;
+        if (!barakoa.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+            walk(head, 1.5f, 0.1f * talk, false, 0, -0.5f * talk, frame, 1f);
+            walk(neck, 0, 0, false, 0, 0.5f * talk, frame, 1f);
+            walk(armUpperRight, 0.5f, 0.2f * talk, false, 0, -0.7f * talk, frame, 1f);
+            flap(armUpperRight, 0.4f, 0.2f * talk, false, 2, 0, frame, 1f);
+            walk(armLowerRight, 0.5f, 0.2f * talk, false, -1, 0.3f * talk, frame, 1f);
+            swing(handRight, 0.5f, 0.2f * talk, false, -2, 1.8f * talk, frame, 1f);
+            walk(armUpperLeft, 0.5f, 0.2f * talk, false, 0, -0.7f * talk, frame, 1f);
+            flap(armUpperLeft, 0.4f, 0.2f * talk, true, 2, 0, frame, 1f);
+            walk(armLowerLeft, 0.5f, 0.2f * talk, false, -1, 0.3f * talk, frame, 1f);
+            swing(handLeft, 0.5f, 0.2f * talk, false, -2, -1.8f * talk, frame, 1f);
+            if (barakoa.getMask() == MaskType.FURY) {
+                armLeftJoint.rotateAngleX += 0.2 * talk;
+                armLeftJoint.rotateAngleY -= 1.3 * talk;
+                armLowerLeft.rotateAngleX += 0.2 * talk;
+                armLowerLeft.rotateAngleY -= 0.2 * talk;
+                armLowerLeft.rotateAngleZ -= 1 * talk;
+            }
         }
     }
 }
