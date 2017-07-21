@@ -1,7 +1,10 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
+import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 
@@ -20,6 +23,12 @@ public class ItemSpear extends ItemSword {
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
         setUnlocalizedName("spear");
         setRegistryName("spear");
+    }
+
+    @Override
+    public boolean hitEntity(ItemStack heldItemStack, EntityLivingBase player, EntityLivingBase entityHit) {
+        if (entityHit instanceof EntityAnimal && Math.random() <= 0.33) entityHit.setHealth(0);
+        return true;
     }
 
     public static EntityLivingBase raytraceEntities(World world, EntityPlayer player, double range) {
