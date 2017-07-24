@@ -154,7 +154,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     @Override
     protected SoundEvent getAmbientSound() {
         if (getAnimation() == NO_ANIMATION) {
-            if (getAttackTarget() == null) {
+            if (getAttackTarget() == null && !isAIDisabled()) {
                 int soundType = MathHelper.getInt(this.rand, 0, 9);
                 if (soundType < MMSounds.ENTITY_BARAKO_TALK.length) {
                     this.playSound(MMSounds.ENTITY_BARAKO_TALK[soundType], 2F, 1.0F);
@@ -208,15 +208,15 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 entityAttackingAngle += 360;
             }
             float entityRelativeAngle = Math.abs(entityHitAngle - entityAttackingAngle);
-            if (getAnimation() == NO_ANIMATION && getHealth() <= 60 && timeUntilLaser <= 0 && (entityRelativeAngle < 60 || entityRelativeAngle > 300)) {
+            if (getAnimation() == NO_ANIMATION && !isAIDisabled() && getHealth() <= 60 && timeUntilLaser <= 0 && (entityRelativeAngle < 60 || entityRelativeAngle > 300)) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SOLAR_BEAM_ANIMATION);
                 timeUntilLaser = LASER_PAUSE;
-            } else if (getAnimation() == NO_ANIMATION && targetDistance <= 5) {
+            } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && targetDistance <= 5) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, ATTACK_ANIMATION);
-            } else if (getAnimation() == NO_ANIMATION && rand.nextInt(80) == 0 && getEntitiesNearby(EntityBarakoa.class, 16).size() < 5 && targetDistance > 5 && timeUntilBarakoa <= 0) {
+            } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && rand.nextInt(80) == 0 && getEntitiesNearby(EntityBarakoa.class, 16).size() < 5 && targetDistance > 5 && timeUntilBarakoa <= 0) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SPAWN_ANIMATION);
                 timeUntilBarakoa = BARAKOA_PAUSE;
-            } else if (getAnimation() == NO_ANIMATION && timeUntilSunstrike <= 0 && targetDistance > 5) {
+            } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && timeUntilSunstrike <= 0 && targetDistance > 5) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SUNSTRIKE_ANIMATION);
                 timeUntilSunstrike = getTimeUntilSunstrike();
             }
@@ -242,7 +242,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             angryEyebrow.decreaseTimer();
         }
 
-        if (getAnimation() == NO_ANIMATION && getAttackTarget() == null && rand.nextInt(200) == 0) {
+        if (getAnimation() == NO_ANIMATION && !isAIDisabled() && getAttackTarget() == null && rand.nextInt(200) == 0) {
             AnimationHandler.INSTANCE.sendAnimationMessage(this, BELLY_ANIMATION);
         }
 

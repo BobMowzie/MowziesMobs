@@ -284,6 +284,12 @@ public enum MMSounds {
 
     public static final SoundEvent EFFECT_GEOMANCY_RUMBLE_3 = reg("geomancy.rumble3");
 
+    public static final SoundEvent[] EFFECT_GEOMANCY_RUMBLE = {
+            EFFECT_GEOMANCY_RUMBLE_1,
+            EFFECT_GEOMANCY_RUMBLE_2,
+            EFFECT_GEOMANCY_RUMBLE_3
+    };
+
     public static final SoundEvent EFFECT_GEOMANCY_HIT_SMALL = reg("geomancy.smallrockhit");
 
     public static final SoundEvent EFFECT_GEOMANCY_BOULDER_CHARGE = reg("geomancy.bouldercharge");

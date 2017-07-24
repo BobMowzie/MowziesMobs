@@ -198,7 +198,7 @@ public class EntityWroughtnaut extends MowzieEntity {
     public void onUpdate() {
         super.onUpdate();
         if (!world.isRemote) {
-            if (getAnimation() == NO_ANIMATION) {
+            if (getAnimation() == NO_ANIMATION && !isAIDisabled()) {
                 if (isActive()) {
                     if (getAttackTarget() == null && moveForward == 0 && isAtRestPos()) {
                         AnimationHandler.INSTANCE.sendAnimationMessage(this, DEACTIVATE_ANIMATION);
@@ -225,7 +225,7 @@ public class EntityWroughtnaut extends MowzieEntity {
             } else {
                 getNavigator().clearPathEntity();
             }
-            if (getAttackTarget().posY - posY >= -1 && getAttackTarget().posY - posY <= 3 && getAnimation() == NO_ANIMATION) {
+            if (getAttackTarget().posY - posY >= -1 && getAttackTarget().posY - posY <= 3 && getAnimation() == NO_ANIMATION && !isAIDisabled()) {
                 boolean couldStomp = targetDistance < 6 && ticksSinceLastStomp > 600;
                 if (targetDistance < 3.5 && Math.abs(MathHelper.wrapDegrees(getAngleBetweenEntities(getAttackTarget(), this) - rotationYaw)) < 35 && (!couldStomp || rand.nextInt(3) > 0)) {
                     if (attacksWithoutVertical >= 4 || rand.nextInt(4) == 0) {
