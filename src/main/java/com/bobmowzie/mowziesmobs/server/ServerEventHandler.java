@@ -8,16 +8,19 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
-import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
+import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemSpear;
-import com.bobmowzie.mowziesmobs.server.message.*;
+import com.bobmowzie.mowziesmobs.server.message.MessageFreezeEntity;
+import com.bobmowzie.mowziesmobs.server.message.MessagePlayerAttackMob;
+import com.bobmowzie.mowziesmobs.server.message.MessagePlayerSolarBeam;
+import com.bobmowzie.mowziesmobs.server.message.MessagePlayerSummonSunstrike;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseDown;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseUp;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseDown;
@@ -25,14 +28,11 @@ import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseUp;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
-
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockOldLeaf;
-import net.minecraft.block.BlockPlanks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
@@ -48,16 +48,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.MobEffects;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -85,25 +81,25 @@ public enum ServerEventHandler {
         }
         Entity entity = event.getEntity();
         if (entity instanceof EntityZombie) {
-            ((EntityCreature) entity).targetTasks.addTask(2, new EntityAINearestAttackableTarget((EntityCreature) entity, EntityFoliaath.class, 0, true, false, null));
-            ((EntityCreature) entity).targetTasks.addTask(3, new EntityAINearestAttackableTarget((EntityCreature) entity, EntityBarakoa.class, 0, true, false, null));
-            ((EntityCreature) entity).targetTasks.addTask(2, new EntityAINearestAttackableTarget((EntityCreature) entity, EntityBarako.class, 0, true, false, null));
+            ((EntityCreature) entity).targetTasks.addTask(2, new EntityAINearestAttackableTarget<>((EntityCreature) entity, EntityFoliaath.class, 0, true, false, null));
+            ((EntityCreature) entity).targetTasks.addTask(3, new EntityAINearestAttackableTarget<>((EntityCreature) entity, EntityBarakoa.class, 0, true, false, null));
+            ((EntityCreature) entity).targetTasks.addTask(2, new EntityAINearestAttackableTarget<>((EntityCreature) entity, EntityBarako.class, 0, true, false, null));
         }
         if (entity instanceof EntitySkeleton) {
-            ((EntityCreature) entity).targetTasks.addTask(3, new EntityAINearestAttackableTarget((EntityCreature) entity, EntityBarakoa.class, 0, true, false, null));
-            ((EntityCreature) entity).targetTasks.addTask(2, new EntityAINearestAttackableTarget((EntityCreature) entity, EntityBarako.class, 0, true, false, null));
+            ((EntityCreature) entity).targetTasks.addTask(3, new EntityAINearestAttackableTarget<>((EntityCreature) entity, EntityBarakoa.class, 0, true, false, null));
+            ((EntityCreature) entity).targetTasks.addTask(2, new EntityAINearestAttackableTarget<>((EntityCreature) entity, EntityBarako.class, 0, true, false, null));
         }
 
         if (entity instanceof EntityOcelot) {
-            ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity((EntityCreature) entity, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
+            ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity<>((EntityCreature) entity, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
         }
         if (entity instanceof EntityAnimal) {
-            ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity((EntityCreature) entity, EntityBarakoa.class, 6.0F, 1.0D, 1.2D));
-            ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity((EntityCreature) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
+            ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity<>((EntityCreature) entity, EntityBarakoa.class, 6.0F, 1.0D, 1.2D));
+            ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity<>((EntityCreature) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
         }
         if (entity instanceof EntityVillager) {
-            ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity((EntityCreature) entity, EntityBarakoa.class, 6.0F, 1.0D, 1.2D));
-            ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity((EntityCreature) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
+            ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity<>((EntityCreature) entity, EntityBarakoa.class, 6.0F, 1.0D, 1.2D));
+            ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity<>((EntityCreature) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
         }
     }
 
@@ -117,16 +113,8 @@ public enum ServerEventHandler {
                 if (property.freezeProgress >= 1) {
                     entity.addPotionEffect(new PotionEffect(PotionHandler.INSTANCE.frozen, 50, 1, false, false));
                     property.freezeProgress = 1f;
-                } else if (property.freezeProgress > 0.8) {
-                    entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, 5, false, false));
-                } else if (property.freezeProgress > 0.6) {
-                    entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, 4, false, false));
-                } else if (property.freezeProgress > 0.4) {
-                    entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, 3, false, false));
-                } else if (property.freezeProgress > 0.2) {
-                    entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, 2, false, false));
                 } else if (property.freezeProgress > 0) {
-                    entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, 1, false, false));
+                    entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, MathHelper.floor(property.freezeProgress * 5 + 1), false, false));
                 }
 
                 if (entity.isPotionActive(PotionHandler.INSTANCE.frozen) && !property.prevFrozen) {
