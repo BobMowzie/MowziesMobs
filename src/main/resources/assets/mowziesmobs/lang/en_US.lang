@@ -35,7 +35,8 @@ item.blowgun.text.1=Short range
 item.blowgun.text.2=Only shoot darts
 
 item.wroughtAxe.text.0=Never breaks
-item.wroughtAxe.text.1=Right-click to attack in an arc
+item.wroughtAxe.text.1=Right-click to attack in an large arc
+item.wroughtAxe.text.2=Shift-right-click to slam the ground and create a shockwave
 
 item.barakoMask.text.0=Never breaks
 item.barakoMask.text.1=Equip, then right-click with Barakoa mask

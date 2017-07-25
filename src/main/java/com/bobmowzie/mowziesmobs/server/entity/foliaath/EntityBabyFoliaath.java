@@ -105,7 +105,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
 
         //Growing
         if (!world.isRemote) {
-            if (/*ticksExisted % 20 == 0 && */!getHungry()) {
+            if (ticksExisted % 20 == 0 && !getHungry()) {
                 incrementGrowth();
             }
             // TODO: cleanup this poor logic
