@@ -127,7 +127,7 @@ public class EntityBoulder extends Entity {
             setSize(4, 3.5f);
             finishedRisingTick = 90;
             damage = 20;
-            speed = 0.7f;
+            speed = 0.65f;
         }
     }
 
