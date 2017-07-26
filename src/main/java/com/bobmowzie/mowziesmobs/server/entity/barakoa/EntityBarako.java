@@ -127,6 +127,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         if (getDirection() == 0) {
             this.setDirection(rand.nextInt(4) + 1);
         }
+        experienceValue = 45;
     }
 
     public EntityBarako(World world, int direction) {

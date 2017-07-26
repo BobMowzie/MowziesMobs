@@ -84,6 +84,7 @@ public class ClientProxy extends ServerProxy {
 
         MinecraftForge.EVENT_BUS.register(ClientEventHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(ParticleTextureStitcher.Stitcher.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(FrozenRenderHandler.INSTANCE);
     }
 
     @Override

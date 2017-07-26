@@ -58,7 +58,6 @@ public class MowziesMobs {
     @EventHandler
     public void onPreInit(FMLPreInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(ServerEventHandler.INSTANCE);
-        MinecraftForge.EVENT_BUS.register(FrozenRenderHandler.INSTANCE);
 
         MMSounds.INSTANCE.onInit();
         CreativeTabHandler.INSTANCE.onInit();

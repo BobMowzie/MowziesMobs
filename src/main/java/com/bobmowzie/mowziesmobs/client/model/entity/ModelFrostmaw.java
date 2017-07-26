@@ -1581,7 +1581,7 @@ public class ModelFrostmaw extends AdvancedModelBase {
         iceCrystal.rotateAngleY += (float)Math.PI/2;
         iceCrystal.rotationPointY += 2 * Math.cos(0.15f * frame);
 
-        if (frostmaw.getHasCrystal() && frostmaw.getAnimation() != frostmaw.ACTIVATE_ANIMATION || frostmaw.getAnimationTick() > 28) iceCrystal.isHidden = false;
+        if (frostmaw.getHasCrystal() && (frostmaw.getAnimation() != frostmaw.ACTIVATE_ANIMATION || frostmaw.getAnimationTick() > 28)) iceCrystal.isHidden = false;
         else iceCrystal.isHidden = true;
     }
 }

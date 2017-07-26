@@ -115,6 +115,7 @@ public class EntityFrostmaw extends MowzieEntity {
         active = false;
         playsHurtAnimation = false;
         rotationYaw = renderYawOffset = rand.nextFloat() * 360;
+        experienceValue = 60;
     }
 
     protected void applyEntityAttributes()
@@ -570,7 +571,7 @@ public class EntityFrostmaw extends MowzieEntity {
         boolean attack = super.attackEntityFrom(source, damage);
         if (attack) {
             shouldDodgeMeasure += damage;
-            if (source.getEntity() != null && source.getEntity() instanceof EntityLivingBase) setAttackTarget((EntityLivingBase) source.getEntity());
+            if (source.getEntity() != null && source.getEntity() instanceof EntityLivingBase && (!(source.getEntity() instanceof EntityPlayer) || !((EntityPlayer)source.getEntity()).capabilities.isCreativeMode)) setAttackTarget((EntityLivingBase) source.getEntity());
             if (!getActive()) {
                 if (getAnimation() != DIE_ANIMATION) {
                     if (getHasCrystal()) AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_ANIMATION);
