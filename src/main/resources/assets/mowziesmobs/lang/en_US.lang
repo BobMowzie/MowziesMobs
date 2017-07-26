@@ -29,6 +29,7 @@ item.blowgun.name=Blowgun
 item.grantSunsBlessing.name=Receive Sun's Blessing
 item.testStructure.name=Test Structures
 item.icecrystal.name=Ice Crystal
+item.earthTalisman.name=Earth Talisman
 
 item.blowgun.text.0=Charges quickly
 item.blowgun.text.1=Short range
@@ -62,6 +63,12 @@ item.foliaathSeed.text.1=Feed when hungry for 2 days
 item.grantSunsBlessing.text.0=Grants Sun's Blessing for 20 minutes
 item.grantSunsBlessing.text.1=With empty hand, right-click to call a sunstrike
 item.grantSunsBlessing.text.2=With empty hand, shift-right-click to fire a solar beam (costs 2 minutes)
+
+item.earthTalisman.text.0=Creative mode only
+item.earthTalisman.text.1=Place in inventory to wield geomancy
+item.earthTalisman.text.2=Right-click earthen ground with empty hand to spawn boulder
+item.earthTalisman.text.3=Punch boulder to fire it as projectile
+item.earthTalisman.text.4=Charge right-click to spawn bigger boulders
 
 item.mobRemover.text.0=Left-click to remove a Mowzie's Mobs mob
 

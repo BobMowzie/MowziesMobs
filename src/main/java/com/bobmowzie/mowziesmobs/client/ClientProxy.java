@@ -71,6 +71,7 @@ public class ClientProxy extends ServerProxy {
         registerItemModel(ItemHandler.INSTANCE.spear, "spear");
         registerItemModel(ItemHandler.INSTANCE.blowgun, "blowgun");
         registerItemModel(ItemHandler.INSTANCE.iceCrystal, "icecrystal");
+        registerItemModel(ItemHandler.INSTANCE.earthTalisman, "earth_talisman");
         registerItemModel(ItemHandler.INSTANCE.spawnEgg, "spawn_egg");
         registerItemModel(ItemHandler.INSTANCE.grantSunsBlessing, "grant_suns_blessing");
 

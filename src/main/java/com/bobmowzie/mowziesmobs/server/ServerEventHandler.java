@@ -15,6 +15,7 @@ import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
+import com.bobmowzie.mowziesmobs.server.item.ItemEarthTalisman;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemSpear;
 import com.bobmowzie.mowziesmobs.server.message.*;
@@ -181,6 +182,11 @@ public enum ServerEventHandler {
                 ItemBarakoaMask mask = (ItemBarakoaMask) headItemStack;
                 event.player.addPotionEffect(new PotionEffect(mask.getPotion(), 45, 0, true, false));
             }
+
+            for (ItemStack itemStack : event.player.inventory.mainInventory) {
+                if (itemStack.getItem() instanceof ItemEarthTalisman) player.addPotionEffect(new PotionEffect(PotionHandler.INSTANCE.geomancy, 0, 0, false, false));
+            }
+            if (player.getHeldItemOffhand().getItem() instanceof ItemEarthTalisman) player.addPotionEffect(new PotionEffect(PotionHandler.INSTANCE.geomancy, 0, 0, false, false));
 
             List<EntityBarakoanToPlayer> pack = property.tribePack;
             float theta = (2 * (float) Math.PI / pack.size());

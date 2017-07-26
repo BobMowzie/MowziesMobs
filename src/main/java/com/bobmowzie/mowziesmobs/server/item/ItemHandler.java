@@ -24,6 +24,7 @@ public enum ItemHandler {
     public Item spawnEgg;
     public Item grantSunsBlessing;
     public Item iceCrystal;
+    public Item earthTalisman;
 
     public void onInit() {
         foliaathSeed = new ItemFoliaathSeed();
@@ -42,6 +43,7 @@ public enum ItemHandler {
         iceCrystal = new ItemIceCrystal();
         spawnEgg = new ItemSpawnEgg();
         grantSunsBlessing = new ItemGrantSunsBlessing();
+        earthTalisman = new ItemEarthTalisman();
 
 
         GameRegistry.register(spawnEgg);
@@ -59,8 +61,9 @@ public enum ItemHandler {
         GameRegistry.register(iceCrystal);
 
         GameRegistry.register(grantSunsBlessing);
+        GameRegistry.register(earthTalisman);
         GameRegistry.register(mobRemover);
-        GameRegistry.register(testStructure);
+//        GameRegistry.register(testStructure);
     }
 
     public static void addItemText(Item item, List<String> lines) {

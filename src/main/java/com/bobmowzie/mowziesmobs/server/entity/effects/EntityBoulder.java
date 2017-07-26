@@ -156,13 +156,14 @@ public class EntityBoulder extends Entity {
                 entity.move(MoverType.SHULKER_BOX, motionX, motionY, motionZ);
             }
         }
+        if (boulderSize == 3) setSize(width, Math.min(ticksExisted/(float)finishedRisingTick * 3.5f, 3.5f));
 
         if (ticksExisted < finishedRisingTick) {
             List<Entity> popUpEntities = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox());
             for (Entity entity:popUpEntities) {
                 if (entity.canBeCollidedWith() && !(entity instanceof EntityBoulder)) {
                     if (boulderSize != 3) entity.move(MoverType.SHULKER_BOX, 0, 2 * (Math.pow(2, -ticksExisted * (0.6 - 0.1 * boulderSize))), 0);
-                    else repelEntities(3);
+                    else entity.move(MoverType.SHULKER_BOX, 0, 0.6f, 0);
                 }
             }
         }
