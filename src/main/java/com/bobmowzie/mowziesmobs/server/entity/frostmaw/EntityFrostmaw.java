@@ -30,6 +30,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
@@ -119,7 +120,7 @@ public class EntityFrostmaw extends MowzieEntity {
     protected void applyEntityAttributes()
     {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10.0D * MowziesMobs.CONFIG.difficultyScaleFrostmaw);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(200.0D * MowziesMobs.CONFIG.difficultyScaleFrostmaw);
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(35.0D);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.3D);
         this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(9.0D);
@@ -339,6 +340,9 @@ public class EntityFrostmaw extends MowzieEntity {
             getNavigator().clearPathEntity();
             renderYawOffset = prevRenderYawOffset;
             addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 20, 1, true, true));
+            if (getAttackTarget() != null && getAttackTarget().isPotionActive(MobEffects.INVISIBILITY)) {
+                setAttackTarget(null);
+            }
             if (!getAttackableEntityLivingBaseNearby(8, 8, 8, 8).isEmpty() && getAttackTarget() != null && getAnimation() == NO_ANIMATION) {
                 if (getHasCrystal()) AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_ANIMATION);
                 else AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_NO_CRYSTAL_ANIMATION);
@@ -568,13 +572,16 @@ public class EntityFrostmaw extends MowzieEntity {
     public boolean attackEntityFrom(DamageSource source, float damage) {
         if (source == DamageSource.FALL) return false;
         boolean attack = super.attackEntityFrom(source, damage);
-        if (attack) shouldDodgeMeasure += damage;
-        if (attack && !getActive()) {
-            if (getAnimation() != DIE_ANIMATION) {
-                if (getHasCrystal()) AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_ANIMATION);
-                else AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_NO_CRYSTAL_ANIMATION);
+        if (attack) {
+            shouldDodgeMeasure += damage;
+            if (source.getEntity() != null && source.getEntity() instanceof EntityLivingBase) setAttackTarget((EntityLivingBase) source.getEntity());
+            if (!getActive()) {
+                if (getAnimation() != DIE_ANIMATION) {
+                    if (getHasCrystal()) AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_ANIMATION);
+                    else AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_NO_CRYSTAL_ANIMATION);
+                }
+                setActive(true);
             }
-            setActive(true);
         }
         return attack;
     }
@@ -777,6 +784,6 @@ public class EntityFrostmaw extends MowzieEntity {
     @Override
     protected void dropLoot() {
         super.dropLoot();
-        dropItem(ItemHandler.INSTANCE.iceCrystal, 1);
+        if (getHasCrystal()) dropItem(ItemHandler.INSTANCE.iceCrystal, 1);
     }
 }

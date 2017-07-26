@@ -328,6 +328,12 @@ public enum ServerEventHandler {
 
     @SubscribeEvent
     public void onLivingDamage(LivingHurtEvent event) {
+        if (event.getSource().isFireDamage() && event.getEntityLiving().isPotionActive(PotionHandler.INSTANCE.frozen)) {
+            MowzieLivingProperties properties = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowzieLivingProperties.class);
+            event.getEntityLiving().removeActivePotionEffect(PotionHandler.INSTANCE.frozen);
+            event.getEntityLiving().dismountEntity(properties.frozenController);
+            if (!event.getEntity().world.isRemote) MowziesMobs.NETWORK_WRAPPER.sendToDimension(new MessageUnfreezeEntity(event.getEntityLiving()), event.getEntityLiving().dimension);
+        }
         if (event.getEntity() instanceof EntityPlayer) {
             MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
             if (event.getEntity() instanceof EntityPlayer) {

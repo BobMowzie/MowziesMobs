@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
+import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.model.ModelAnimator;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
@@ -269,24 +270,20 @@ public class ModelFoliaath extends AdvancedModelBase {
     public void setRotationAngles(EntityFoliaath foliaath, float f, float f1, float f2, float f3, float f4, float f5) {
         super.setRotationAngles(f, f1, f2, f3, f4, f5, foliaath);
 
-        stem1Joint.rotateAngleY += (f3 / (180f / (float) Math.PI));
-    }
-
-    @Override
-    public void setLivingAnimations(EntityLivingBase entity, float f, float f1, float partialTicks) {
-        EntityFoliaath foliaath = (EntityFoliaath) entity;
         animator.update(foliaath);
         resetToDefaultPose();
+
+        stem1Joint.rotateAngleY += (f3 / (180f / (float) Math.PI));
 
         activeProgress = foliaath.activate.getAnimationProgressSinSqrt();
         float activeIntermittent = foliaath.activate.getAnimationProgressSinSqrt() - foliaath.activate.getAnimationProgressSinToTenWithoutReturn();
         float activeComplete = activeProgress - activeIntermittent;
         float stopDance = foliaath.stopDance.getAnimationProgressSinSqrt() - (foliaath.stopDance.getAnimationProgressSinSqrt() - foliaath.stopDance.getAnimationProgressSinToTenWithoutReturn());
-        float frame = foliaath.frame + partialTicks;
+        float frame = foliaath.frame + LLibrary.PROXY.getPartialTicks();
 
         float globalSpeed = 0.9f;
 
-        if (!entity.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+        if (!foliaath.isPotionActive(PotionHandler.INSTANCE.frozen)) {
             flap(stem1Base, 0.25F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 0F, 0F, frame, 1F);
             walk(stem1Base, 0.5F * globalSpeed, 0.05F * (activeComplete - stopDance), false, 0F, 0F, frame, 1F);
             walk(stem2, 0.5F * globalSpeed, 0.05F * (activeComplete - stopDance), false, 0.5F, 0F, frame, 1F);

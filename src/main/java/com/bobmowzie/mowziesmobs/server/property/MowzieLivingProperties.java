@@ -40,6 +40,8 @@ public class MowzieLivingProperties extends EntityProperties<EntityLivingBase> {
             frozenController.setPositionAndRotation(entity.posX, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
             entity.world.spawnEntity(frozenController);
             frozenController.setRenderYawOffset(entity.renderYawOffset);
+            frozenYaw = entity.rotationYaw;
+            frozenPitch = entity.rotationPitch;
             entity.startRiding(frozenController, true);
 
             if (entity instanceof EntityLiving) ((EntityLiving)entity).setNoAI(true);

@@ -50,7 +50,7 @@ public class MowziesMobs {
     public static MowziesMobs INSTANCE;
     @SidedProxy(clientSide = "com.bobmowzie.mowziesmobs.client.ClientProxy", serverSide = "com.bobmowzie.mowziesmobs.server.ServerProxy")
     public static ServerProxy PROXY;
-    @NetworkWrapper({MessagePlayerSummonSunstrike.class, MessagePlayerSolarBeam.class, MessagePlayerAttackMob.class, MessageBarakoTrade.class, MessageFreezeEntity.class, MessageSendSocketPos.class, MessageLeftMouseDown.class, MessageLeftMouseUp.class, MessageRightMouseDown.class, MessageRightMouseUp.class})
+    @NetworkWrapper({MessagePlayerSummonSunstrike.class, MessagePlayerSolarBeam.class, MessagePlayerAttackMob.class, MessageBarakoTrade.class, MessageFreezeEntity.class, MessageUnfreezeEntity.class, MessageSendSocketPos.class, MessageLeftMouseDown.class, MessageLeftMouseUp.class, MessageRightMouseDown.class, MessageRightMouseUp.class})
     public static SimpleNetworkWrapper NETWORK_WRAPPER;
     @Config
     public static ConfigHandler CONFIG;
