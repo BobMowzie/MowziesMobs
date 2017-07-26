@@ -107,7 +107,7 @@ public class EntityFrostmaw extends MowzieEntity {
         this.tasks.addTask(2, new AnimationAI<>(this, DODGE_ANIMATION, true));
         this.tasks.addTask(3, new AnimationTakeDamage<>(this));
         this.tasks.addTask(1, new AnimationDieAI<>(this));
-        this.targetTasks.addTask(1, new EntityAINearestAttackableTarget(this, EntityPlayer.class, true));
+        this.targetTasks.addTask(1, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true, false, null));
         stepHeight = 1;
         frame += rand.nextInt(50);
         legSolver = new LegSolverQuadruped(1f, 2f, -1, 1.5f);
@@ -164,7 +164,7 @@ public class EntityFrostmaw extends MowzieEntity {
 //            System.out.println("Frostmaw at " + getPosition());
             if (getHasCrystal()) {
                 Optional<UUID> crystalID = getCrystalID();
-                if (!getCrystalID().isPresent() && !world.isRemote && crystal == null) {
+                if (!getCrystalID().isPresent() && !world.isRemote && crystal == null && !getActive()) {
                     crystal = dropItem(ItemHandler.INSTANCE.iceCrystal, 1);
                     setCrystalID(Optional.of(crystal.getUniqueID()));
                 }
@@ -462,16 +462,62 @@ public class EntityFrostmaw extends MowzieEntity {
     }
 
     private void spawnSwipeParticles() {
-        int snowflakeDensity = 4;
-        float snowflakeRandomness = 0.5f;
-        int cloudDensity = 2;
-        float cloudRandomness = 0.5f;
-        if (getAnimation() == SWIPE_ANIMATION || getAnimation() == SWIPE_TWICE_ANIMATION) {
-            Vec3d rightHandPos = socketPosArray[0];
-            Vec3d leftHandPos = socketPosArray[1];
-            if (getAnimation() == SWIPE_ANIMATION) {
-                if (getAnimationTick() > 8 && getAnimationTick() < 14) {
-                    if (swingWhichArm) {
+        if (world.isRemote) {
+            int snowflakeDensity = 4;
+            float snowflakeRandomness = 0.5f;
+            int cloudDensity = 2;
+            float cloudRandomness = 0.5f;
+            if (getAnimation() == SWIPE_ANIMATION || getAnimation() == SWIPE_TWICE_ANIMATION) {
+                Vec3d rightHandPos = socketPosArray[0];
+                Vec3d leftHandPos = socketPosArray[1];
+                if (getAnimation() == SWIPE_ANIMATION) {
+                    if (getAnimationTick() > 8 && getAnimationTick() < 14) {
+                        if (swingWhichArm) {
+                            double length = prevRightHandPos.subtract(rightHandPos).lengthVector();
+                            int numClouds = (int) Math.floor(2 * length);
+                            for (int i = 0; i < numClouds; i++) {
+                                double x = prevRightHandPos.xCoord + i * (rightHandPos.xCoord - prevRightHandPos.xCoord) / numClouds;
+                                double y = prevRightHandPos.yCoord + i * (rightHandPos.yCoord - prevRightHandPos.yCoord) / numClouds;
+                                double z = prevRightHandPos.zCoord + i * (rightHandPos.zCoord - prevRightHandPos.zCoord) / numClouds;
+                                for (int j = 0; j < snowflakeDensity; j++) {
+                                    float xOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
+                                    float yOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
+                                    float zOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
+                                    MMParticle.SNOWFLAKE.spawn(world, x + xOffset, y + yOffset, z + zOffset, ParticleFactory.ParticleArgs.get().withData(motionX, motionY - 0.01f, motionZ));
+                                }
+                                for (int j = 0; j < cloudDensity; j++) {
+                                    float xOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
+                                    float yOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
+                                    float zOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
+                                    double value = rand.nextFloat() * 0.1f;
+                                    MMParticle.CLOUD.spawn(world, x + xOffset, y + yOffset, z + zOffset, ParticleFactory.ParticleArgs.get().withData(motionX, motionY, motionZ, 0.8d + value, 0.8d + value, 1d, true, 10d + rand.nextDouble() * 10d, 40, ParticleCloud.EnumCloudBehavior.SHRINK));
+                                }
+                            }
+                        } else {
+                            double length = prevLeftHandPos.subtract(leftHandPos).lengthVector();
+                            int numClouds = (int) Math.floor(2.5 * length);
+                            for (int i = 0; i < numClouds; i++) {
+                                double x = prevLeftHandPos.xCoord + i * (leftHandPos.xCoord - prevLeftHandPos.xCoord) / numClouds;
+                                double y = prevLeftHandPos.yCoord + i * (leftHandPos.yCoord - prevLeftHandPos.yCoord) / numClouds;
+                                double z = prevLeftHandPos.zCoord + i * (leftHandPos.zCoord - prevLeftHandPos.zCoord) / numClouds;
+                                for (int j = 0; j < snowflakeDensity; j++) {
+                                    float xOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
+                                    float yOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
+                                    float zOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
+                                    MMParticle.SNOWFLAKE.spawn(world, x + xOffset, y + yOffset, z + zOffset, ParticleFactory.ParticleArgs.get().withData(motionX, motionY - 0.01f, motionZ));
+                                }
+                                for (int j = 0; j < cloudDensity; j++) {
+                                    float xOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
+                                    float yOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
+                                    float zOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
+                                    double value = rand.nextFloat() * 0.1f;
+                                    MMParticle.CLOUD.spawn(world, x + xOffset, y + yOffset, z + zOffset, ParticleFactory.ParticleArgs.get().withData(motionX, motionY, motionZ, 0.8d + value, 0.8d + value, 1d, true, 10d + rand.nextDouble() * 10d, 40, ParticleCloud.EnumCloudBehavior.SHRINK));
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    if ((swingWhichArm && getAnimationTick() > 8 && getAnimationTick() < 14) || (!swingWhichArm && getAnimationTick() > 19 && getAnimationTick() < 25)) {
                         double length = prevRightHandPos.subtract(rightHandPos).lengthVector();
                         int numClouds = (int) Math.floor(2 * length);
                         for (int i = 0; i < numClouds; i++) {
@@ -492,7 +538,7 @@ public class EntityFrostmaw extends MowzieEntity {
                                 MMParticle.CLOUD.spawn(world, x + xOffset, y + yOffset, z + zOffset, ParticleFactory.ParticleArgs.get().withData(motionX, motionY, motionZ, 0.8d + value, 0.8d + value, 1d, true, 10d + rand.nextDouble() * 10d, 40, ParticleCloud.EnumCloudBehavior.SHRINK));
                             }
                         }
-                    } else {
+                    } else if ((!swingWhichArm && getAnimationTick() > 8 && getAnimationTick() < 14) || (swingWhichArm && getAnimationTick() > 19 && getAnimationTick() < 25)) {
                         double length = prevLeftHandPos.subtract(leftHandPos).lengthVector();
                         int numClouds = (int) Math.floor(2.5 * length);
                         for (int i = 0; i < numClouds; i++) {
@@ -515,53 +561,9 @@ public class EntityFrostmaw extends MowzieEntity {
                         }
                     }
                 }
-            } else {
-                if ((swingWhichArm && getAnimationTick() > 8 && getAnimationTick() < 14) || (!swingWhichArm && getAnimationTick() > 19 && getAnimationTick() < 25)) {
-                    double length = prevRightHandPos.subtract(rightHandPos).lengthVector();
-                    int numClouds = (int) Math.floor(2 * length);
-                    for (int i = 0; i < numClouds; i++) {
-                        double x = prevRightHandPos.xCoord + i * (rightHandPos.xCoord - prevRightHandPos.xCoord) / numClouds;
-                        double y = prevRightHandPos.yCoord + i * (rightHandPos.yCoord - prevRightHandPos.yCoord) / numClouds;
-                        double z = prevRightHandPos.zCoord + i * (rightHandPos.zCoord - prevRightHandPos.zCoord) / numClouds;
-                        for (int j = 0; j < snowflakeDensity; j++) {
-                            float xOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
-                            float yOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
-                            float zOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
-                            MMParticle.SNOWFLAKE.spawn(world, x + xOffset, y + yOffset, z + zOffset, ParticleFactory.ParticleArgs.get().withData(motionX, motionY - 0.01f, motionZ));
-                        }
-                        for (int j = 0; j < cloudDensity; j++) {
-                            float xOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
-                            float yOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
-                            float zOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
-                            double value = rand.nextFloat() * 0.1f;
-                            MMParticle.CLOUD.spawn(world, x + xOffset, y + yOffset, z + zOffset, ParticleFactory.ParticleArgs.get().withData(motionX, motionY, motionZ, 0.8d + value, 0.8d + value, 1d, true, 10d + rand.nextDouble() * 10d, 40, ParticleCloud.EnumCloudBehavior.SHRINK));
-                        }
-                    }
-                } else if ((!swingWhichArm && getAnimationTick() > 8 && getAnimationTick() < 14) || (swingWhichArm && getAnimationTick() > 19 && getAnimationTick() < 25)) {
-                    double length = prevLeftHandPos.subtract(leftHandPos).lengthVector();
-                    int numClouds = (int) Math.floor(2.5 * length);
-                    for (int i = 0; i < numClouds; i++) {
-                        double x = prevLeftHandPos.xCoord + i * (leftHandPos.xCoord - prevLeftHandPos.xCoord) / numClouds;
-                        double y = prevLeftHandPos.yCoord + i * (leftHandPos.yCoord - prevLeftHandPos.yCoord) / numClouds;
-                        double z = prevLeftHandPos.zCoord + i * (leftHandPos.zCoord - prevLeftHandPos.zCoord) / numClouds;
-                        for (int j = 0; j < snowflakeDensity; j++) {
-                            float xOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
-                            float yOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
-                            float zOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
-                            MMParticle.SNOWFLAKE.spawn(world, x + xOffset, y + yOffset, z + zOffset, ParticleFactory.ParticleArgs.get().withData(motionX, motionY - 0.01f, motionZ));
-                        }
-                        for (int j = 0; j < cloudDensity; j++) {
-                            float xOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
-                            float yOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
-                            float zOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
-                            double value = rand.nextFloat() * 0.1f;
-                            MMParticle.CLOUD.spawn(world, x + xOffset, y + yOffset, z + zOffset, ParticleFactory.ParticleArgs.get().withData(motionX, motionY, motionZ, 0.8d + value, 0.8d + value, 1d, true, 10d + rand.nextDouble() * 10d, 40, ParticleCloud.EnumCloudBehavior.SHRINK));
-                        }
-                    }
-                }
+                prevLeftHandPos = leftHandPos;
+                prevRightHandPos = rightHandPos;
             }
-            prevLeftHandPos = leftHandPos;
-            prevRightHandPos = rightHandPos;
         }
     }
 

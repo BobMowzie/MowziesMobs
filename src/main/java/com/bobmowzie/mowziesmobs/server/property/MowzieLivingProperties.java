@@ -46,13 +46,15 @@ public class MowzieLivingProperties extends EntityProperties<EntityLivingBase> {
 
             if (entity instanceof EntityLiving) ((EntityLiving)entity).setNoAI(true);
 
-            int particleCount = (int) (10 + 1 * entity.height * entity.width * entity.width);
-            for (int i = 0; i < particleCount; i++) {
-                double snowX = entity.posX + entity.width * Math.random() - entity.width / 2;
-                double snowZ = entity.posZ + entity.width * Math.random() - entity.width / 2;
-                double snowY = entity.posY + entity.height * Math.random();
-                Vec3d motion = new Vec3d(snowX - entity.posX, snowY - (entity.posY + entity.height/2), snowZ - entity.posZ).normalize();
-                MMParticle.SNOWFLAKE.spawn(entity.world, snowX, snowY, snowZ, ParticleFactory.ParticleArgs.get().withData(0.1d * motion.xCoord, 0.1d * motion.yCoord, 0.1d * motion.zCoord));
+            if (entity.world.isRemote) {
+                int particleCount = (int) (10 + 1 * entity.height * entity.width * entity.width);
+                for (int i = 0; i < particleCount; i++) {
+                    double snowX = entity.posX + entity.width * Math.random() - entity.width / 2;
+                    double snowZ = entity.posZ + entity.width * Math.random() - entity.width / 2;
+                    double snowY = entity.posY + entity.height * Math.random();
+                    Vec3d motion = new Vec3d(snowX - entity.posX, snowY - (entity.posY + entity.height / 2), snowZ - entity.posZ).normalize();
+                    MMParticle.SNOWFLAKE.spawn(entity.world, snowX, snowY, snowZ, ParticleFactory.ParticleArgs.get().withData(0.1d * motion.xCoord, 0.1d * motion.yCoord, 0.1d * motion.zCoord));
+                }
             }
             entity.playSound(MMSounds.ENTITY_FROSTMAW_FROZEN_CRASH, 1, 1);
         }

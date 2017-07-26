@@ -47,7 +47,7 @@ public class EntityBoulder extends Entity {
     public int boulderSize = 0;
 
     private float speed = 1.5f;
-    private int damage = 6;
+    private int damage = 8;
     private int finishedRisingTick = 4;
 
     public EntityBoulder(World world) {
@@ -114,19 +114,19 @@ public class EntityBoulder extends Entity {
         else if (size == 1) {
             setSize(2, 1.5f);
             finishedRisingTick = 8;
-            damage = 8;
+            damage = 12;
             speed = 1.2f;
         }
         else if (size == 2) {
             setSize(3, 2.5f);
             finishedRisingTick = 12;
-            damage = 10;
+            damage = 16;
             speed = 1f;
         }
         else {
             setSize(4, 3.5f);
             finishedRisingTick = 90;
-            damage = 10;
+            damage = 20;
             speed = 0.7f;
         }
     }

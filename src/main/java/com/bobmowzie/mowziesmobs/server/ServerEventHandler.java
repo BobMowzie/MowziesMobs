@@ -126,7 +126,7 @@ public enum ServerEventHandler {
                 entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, 50, false, false));
                 entity.setSneaking(false);
 
-                if (entity.ticksExisted % 2 == 0) {
+                if (entity.world.isRemote && entity.ticksExisted % 2 == 0) {
                     double cloudX = entity.posX + entity.width * Math.random() - entity.width / 2;
                     double cloudZ = entity.posZ + entity.width * Math.random() - entity.width / 2;
                     double cloudY = entity.posY + entity.height * Math.random();
@@ -145,12 +145,14 @@ public enum ServerEventHandler {
                     property.frozenController.setDead();
                     entity.playSound(MMSounds.ENTITY_FROSTMAW_FROZEN_CRASH, 1, 0.5f);
 
-                    int particleCount = (int) (10 + 1 * entity.height * entity.width * entity.width);
-                    for (int i = 0; i < particleCount; i++) {
-                        double particleX = entity.posX + entity.width * Math.random() - entity.width / 2;
-                        double particleZ = entity.posZ + entity.width * Math.random() - entity.width / 2;
-                        double particleY = entity.posY + entity.height * Math.random() + 0.3f;
-                        entity.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, particleX, particleY, particleZ, 0, 0, 0, ICE);
+                    if (entity.world.isRemote) {
+                        int particleCount = (int) (10 + 1 * entity.height * entity.width * entity.width);
+                        for (int i = 0; i < particleCount; i++) {
+                            double particleX = entity.posX + entity.width * Math.random() - entity.width / 2;
+                            double particleZ = entity.posZ + entity.width * Math.random() - entity.width / 2;
+                            double particleY = entity.posY + entity.height * Math.random() + 0.3f;
+                            entity.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, particleX, particleY, particleZ, 0, 0, 0, ICE);
+                        }
                     }
                 }
                 if (entity instanceof EntityLiving && ((EntityLiving)entity).isAIDisabled()) ((EntityLiving)entity).setNoAI(false);
