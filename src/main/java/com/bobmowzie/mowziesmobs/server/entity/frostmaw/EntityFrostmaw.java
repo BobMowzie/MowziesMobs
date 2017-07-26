@@ -135,10 +135,6 @@ public class EntityFrostmaw extends MowzieEntity {
         getDataManager().register(CRYSTAL, Optional.absent());
     }
 
-    private void isMusicPlayingNearby() {
-
-    }
-
     @Override
     public void playLivingSound() {
         if (!active) return;
