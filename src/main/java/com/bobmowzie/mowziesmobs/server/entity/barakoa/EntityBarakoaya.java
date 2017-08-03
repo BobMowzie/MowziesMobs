@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
 import com.bobmowzie.mowziesmobs.server.ai.EntityAIBarakoayaTrade;
 import com.bobmowzie.mowziesmobs.server.ai.EntityAIBarakoayaTradeLook;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
+import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.TradeStore;
 import com.bobmowzie.mowziesmobs.server.gui.GuiHandler;
@@ -36,7 +37,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder {
+public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, LeaderSunstrikeImmune {
     private static final TradeStore DEFAULT = new TradeStore.Builder()
         .addTrade(Items.GOLD_NUGGET, 9, ItemHandler.INSTANCE.blowgun, 1, 6)
         .addTrade(Items.DYE, 20, EnumDyeColor.BROWN.getDyeDamage(), ItemHandler.INSTANCE.dart, 8, 0, 6)

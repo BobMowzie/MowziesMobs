@@ -47,7 +47,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
-public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttackMob, LeaderSunstrikeImmune {
+public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttackMob {
     public static final Animation DIE_ANIMATION = Animation.create(70);
     public static final Animation HURT_ANIMATION = Animation.create(10);
     public static final Animation ATTACK_ANIMATION = Animation.create(19);
