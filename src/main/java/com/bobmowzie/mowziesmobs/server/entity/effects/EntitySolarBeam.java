@@ -242,11 +242,11 @@ public class EntitySolarBeam extends Entity {
 
     public HitResult raytraceEntities(World world, Vec3d from, Vec3d to, boolean stopOnLiquid, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock) {
         HitResult result = new HitResult();
-        result.setBlockHit(world.rayTraceBlocks(new Vec3d(from.xCoord, from.yCoord, from.zCoord), to, stopOnLiquid, ignoreBlockWithoutBoundingBox, returnLastUncollidableBlock));
+        result.setBlockHit(world.rayTraceBlocks(new Vec3d(from.x, from.y, from.z), to, stopOnLiquid, ignoreBlockWithoutBoundingBox, returnLastUncollidableBlock));
         if (result.blockHit != null) {
-            collidePosX = result.blockHit.hitVec.xCoord;
-            collidePosY = result.blockHit.hitVec.yCoord;
-            collidePosZ = result.blockHit.hitVec.zCoord;
+            collidePosX = result.blockHit.hitVec.x;
+            collidePosY = result.blockHit.hitVec.y;
+            collidePosZ = result.blockHit.hitVec.z;
             blockSide = result.getBlockHit().sideHit;
         } else {
             collidePosX = endPosX;
@@ -262,7 +262,7 @@ public class EntitySolarBeam extends Entity {
             float pad = entity.getCollisionBorderSize() + 0.5f;
             AxisAlignedBB aabb = entity.getEntityBoundingBox().expand(pad, pad, pad);
             RayTraceResult hit = aabb.calculateIntercept(from, to);
-            if (aabb.isVecInside(from)) {
+            if (aabb.contains(from)) {
                 result.addEntityHit(entity);
             } else if (hit != null) {
                 result.addEntityHit(entity);

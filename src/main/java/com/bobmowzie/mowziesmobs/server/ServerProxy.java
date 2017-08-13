@@ -42,6 +42,14 @@ public class ServerProxy {
         public DataParameter<Optional<Trade>> createKey(int id) {
             return new DataParameter<>(id, this);
         }
+
+        @Override
+        public Optional<Trade> copyValue(Optional<Trade> value) {
+            if (value.isPresent()) {
+            	return Optional.of(new Trade(value.get()));
+            }
+            return Optional.absent();
+        }
     };
 
     public void onInit() {

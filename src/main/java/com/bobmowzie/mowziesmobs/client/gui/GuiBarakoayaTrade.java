@@ -72,8 +72,8 @@ public final class GuiBarakoayaTrade extends GuiContainer {
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
         String title = I18n.format(inventory.getDisplayName().getUnformattedText());
-        fontRendererObj.drawString(title, xSize / 2 - fontRendererObj.getStringWidth(title) / 2, 6, 0x404040);
-        fontRendererObj.drawString(I18n.format("container.inventory"), 8, ySize - 96 + 2, 0x404040);
+        fontRenderer.drawString(title, xSize / 2 - fontRenderer.getStringWidth(title) / 2, 6, 0x404040);
+        fontRenderer.drawString(I18n.format("container.inventory"), 8, ySize - 96 + 2, 0x404040);
     }
 
     @Override
@@ -91,9 +91,9 @@ public final class GuiBarakoayaTrade extends GuiContainer {
             GlStateManager.enableLighting();
             itemRender.zLevel = 100;
             itemRender.renderItemAndEffectIntoGUI(input, guiLeft + 80, guiTop + 24);
-            itemRender.renderItemOverlays(fontRendererObj, input, guiLeft + 80, guiTop + 24);
+            itemRender.renderItemOverlays(fontRenderer, input, guiLeft + 80, guiTop + 24);
             itemRender.renderItemAndEffectIntoGUI(output, guiLeft + 134, guiTop + 24);
-            itemRender.renderItemOverlays(fontRendererObj, output, guiLeft + 134, guiTop + 24);
+            itemRender.renderItemOverlays(fontRenderer, output, guiLeft + 134, guiTop + 24);
             itemRender.zLevel = 0;
             GlStateManager.disableLighting();
             if (isPointInRegion(80, 24, 16, 16, mouseX, mouseY)) {

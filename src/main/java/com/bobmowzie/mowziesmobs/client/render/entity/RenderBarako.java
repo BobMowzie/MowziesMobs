@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.entity.RenderLiving;
@@ -71,7 +71,7 @@ public class RenderBarako extends RenderLiving<EntityBarako> {
         double maxV = minV + 0.5;
         double offset = 0.219 * (frame % 2);
         Tessellator t = Tessellator.getInstance();
-        VertexBuffer buf = t.getBuffer();
+        BufferBuilder buf = t.getBuffer();
         buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
         float opacity = (tick < 8) ? 0.8f : 0.4f;
         buf.pos(-BURST_RADIUS + offset, -BURST_RADIUS + offset, 0).tex(minU, minV).lightmap(0, 240).color(1, 1, 1, opacity).endVertex();

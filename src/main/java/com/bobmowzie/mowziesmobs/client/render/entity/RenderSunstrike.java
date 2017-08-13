@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -94,7 +94,7 @@ public class RenderSunstrike extends Render<EntitySunstrike> {
         int minZ = MathHelper.floor(ez - LINGER_RADIUS);
         int maxZ = MathHelper.floor(ez + LINGER_RADIUS);
         Tessellator t = Tessellator.getInstance();
-        VertexBuffer buf = t.getBuffer();
+        BufferBuilder buf = t.getBuffer();
         buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
         float opacityMultiplier = (0.6F + RANDOMIZER.nextFloat() * 0.2F) * renderManager.world.getLightBrightness(new BlockPos(ex, ey, ez));
         byte mirrorX = (byte) (RANDOMIZER.nextBoolean() ? -1 : 1);
@@ -112,7 +112,7 @@ public class RenderSunstrike extends Render<EntitySunstrike> {
 
     private void drawScorchBlock(World world, IBlockState block, BlockPos pos, double ex, double ey, double ez, float opacityMultiplier, byte mirrorX, byte mirrorZ) {
         Tessellator t = Tessellator.getInstance();
-        VertexBuffer buf = t.getBuffer();
+        BufferBuilder buf = t.getBuffer();
         if (block.isBlockNormalCube()) {
             int bx = pos.getX(), by = pos.getY(), bz = pos.getZ();
             float opacity = (float) ((1 - (ey - by) / 2) * opacityMultiplier);
@@ -162,7 +162,7 @@ public class RenderSunstrike extends Render<EntitySunstrike> {
         double maxV = minV + RING_FRAME_SIZE / TEXTURE_HEIGHT;
         double offset = PIXEL_SCALE * RING_RADIUS * (frame % 2);
         Tessellator t = Tessellator.getInstance();
-        VertexBuffer buf = t.getBuffer();
+        BufferBuilder buf = t.getBuffer();
         buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
         buf.pos(-RING_RADIUS + offset, 0, -RING_RADIUS + offset).tex(minU, minV).lightmap(0, 240).color(1, 1, 1, opacity).endVertex();
         buf.pos(-RING_RADIUS + offset, 0, RING_RADIUS + offset).tex(minU, maxV).lightmap(0, 240).color(1, 1, 1, opacity).endVertex();
@@ -185,7 +185,7 @@ public class RenderSunstrike extends Render<EntitySunstrike> {
         double minV = frame / TEXTURE_HEIGHT;
         double maxV = (frame + 1) / TEXTURE_HEIGHT;
         Tessellator t = Tessellator.getInstance();
-        VertexBuffer buf = t.getBuffer();
+        BufferBuilder buf = t.getBuffer();
         buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
         buf.pos(-radius, 0, 0).tex(BEAM_MIN_U, minV).lightmap(0, 240).color(1, 1, 1, opacity).endVertex();
         buf.pos(-radius, maxY, 0).tex(BEAM_MIN_U, maxV).lightmap(0, 240).color(1, 1, 1, opacity).endVertex();

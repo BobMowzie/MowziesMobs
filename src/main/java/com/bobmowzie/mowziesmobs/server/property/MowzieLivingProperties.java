@@ -53,7 +53,7 @@ public class MowzieLivingProperties extends EntityProperties<EntityLivingBase> {
                     double snowZ = entity.posZ + entity.width * Math.random() - entity.width / 2;
                     double snowY = entity.posY + entity.height * Math.random();
                     Vec3d motion = new Vec3d(snowX - entity.posX, snowY - (entity.posY + entity.height / 2), snowZ - entity.posZ).normalize();
-                    MMParticle.SNOWFLAKE.spawn(entity.world, snowX, snowY, snowZ, ParticleFactory.ParticleArgs.get().withData(0.1d * motion.xCoord, 0.1d * motion.yCoord, 0.1d * motion.zCoord));
+                    MMParticle.SNOWFLAKE.spawn(entity.world, snowX, snowY, snowZ, ParticleFactory.ParticleArgs.get().withData(0.1d * motion.x, 0.1d * motion.y, 0.1d * motion.z));
                 }
             }
             entity.playSound(MMSounds.ENTITY_FROSTMAW_FROZEN_CRASH, 1, 1);

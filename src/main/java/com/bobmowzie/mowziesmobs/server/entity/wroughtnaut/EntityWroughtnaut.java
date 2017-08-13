@@ -131,7 +131,7 @@ public class EntityWroughtnaut extends MowzieEntity {
     }
 
     @Override
-    public SoundEvent getHurtSound() {
+    protected SoundEvent getHurtSound(DamageSource source) {
         return MMSounds.ENTITY_WROUGHT_HURT_1;
     }
 
@@ -154,10 +154,10 @@ public class EntityWroughtnaut extends MowzieEntity {
 
     @Override
     public boolean attackEntityFrom(DamageSource source, float amount) {
-        if (source.getEntity() != null) {
+        Entity entitySource = source.getTrueSource();
+        if (entitySource != null) {
             if (vulnerable) {
                 int arc = 220;
-                Entity entitySource = source.getEntity();
                 float entityHitAngle = (float) ((Math.atan2(entitySource.posZ - posZ, entitySource.posX - posX) * (180 / Math.PI) - 90) % 360);
                 float entityAttackingAngle = renderYawOffset % 360;
                 if (entityHitAngle < 0) {

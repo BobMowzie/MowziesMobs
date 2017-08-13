@@ -7,7 +7,7 @@ import com.bobmowzie.mowziesmobs.server.entity.EntityDart;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -38,7 +38,7 @@ public class RenderDart extends Render<EntityDart> {
         GlStateManager.rotate(dart.prevRotationYaw + (dart.rotationYaw - dart.prevRotationYaw) * delta - 90, 0, 1, 0);
         GlStateManager.rotate(dart.prevRotationPitch + (dart.rotationPitch - dart.prevRotationPitch) * delta, 0, 0, 1);
         Tessellator tes = Tessellator.getInstance();
-        VertexBuffer buf = tes.getBuffer();
+        BufferBuilder buf = tes.getBuffer();
         GlStateManager.enableRescaleNormal();
         float shake = dart.arrowShake - delta;
         if (shake > 0) {
