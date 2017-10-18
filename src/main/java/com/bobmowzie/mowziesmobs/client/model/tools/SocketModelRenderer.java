@@ -23,9 +23,9 @@ public class SocketModelRenderer extends AdvancedModelRenderer{
 
     public Vec3d getWorldPos(Entity entity) {
         Vec3d modelPos = getModelPos(this, new Vec3d(rotationPointX/16, rotationPointY/16, rotationPointZ/16));
-        double x = modelPos.xCoord;
-        double y = modelPos.yCoord + 1.5f;
-        double z = modelPos.zCoord;
+        double x = modelPos.x;
+        double y = modelPos.y + 1.5f;
+        double z = modelPos.z;
         Matrix4d entityTranslate = new Matrix4d();
         Matrix4d entityRotate = new Matrix4d();
         entityTranslate.set(new Vector3d(entity.posX, entity.posY, entity.posZ));
@@ -37,9 +37,9 @@ public class SocketModelRenderer extends AdvancedModelRenderer{
     }
 
     public Vec3d getModelPos(AdvancedModelRenderer modelRenderer, Vec3d recurseValue) {
-        double x = recurseValue.xCoord;
-        double y = recurseValue.yCoord;
-        double z = recurseValue.zCoord;
+        double x = recurseValue.x;
+        double y = recurseValue.y;
+        double z = recurseValue.z;
         Point3d rendererPos = new Point3d(x, y, z);
 
         AdvancedModelRenderer parent = modelRenderer.getParent();

@@ -31,7 +31,7 @@ repositories {
 }
 
 dependencies {
-    compile "net.ilexiconn:llibrary:$llibrary_version-1.12.2:dev"
+    compile "net.ilexiconn:llibrary:$llibrary_version-1.12:dev"
 }
 
 processResources {

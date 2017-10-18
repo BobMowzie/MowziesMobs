@@ -115,10 +115,10 @@ public class PowerGeomancy extends Power {
         super.onRightClickBlock(event);
         EntityPlayer player = event.getEntityPlayer();
         if (canUse(player) && !spawningBoulder && liftedMouse && event.getFace() == EnumFacing.UP && spawnBoulderCooldown <= 0) {
-            int x = MathHelper.floor(event.getHitVec().xCoord);
-            int y = MathHelper.floor(event.getHitVec().yCoord);
-            int z = MathHelper.floor(event.getHitVec().zCoord);
-            lookPos = new Vec3d(event.getHitVec().xCoord, event.getHitVec().yCoord, event.getHitVec().zCoord);
+            int x = MathHelper.floor(event.getHitVec().x);
+            int y = MathHelper.floor(event.getHitVec().y);
+            int z = MathHelper.floor(event.getHitVec().z);
+            lookPos = new Vec3d(event.getHitVec().x, event.getHitVec().y, event.getHitVec().z);
             spawnBoulderPos = new BlockPos(x, y - 1, z);
             spawnBoulderBlock = player.world.getBlockState(spawnBoulderPos);
             Material mat = spawnBoulderBlock.getMaterial();

@@ -38,22 +38,22 @@ public class ItemSpear extends ItemSword {
         ItemSpear.HitResult result = new ItemSpear.HitResult();
         Vec3d pos = new Vec3d(player.posX, player.posY + player.getEyeHeight(), player.posZ);
         Vec3d segment = player.getLookVec();
-        segment = pos.addVector(segment.xCoord * range, segment.yCoord * range, segment.zCoord * range);
+        segment = pos.addVector(segment.x * range, segment.y * range, segment.z * range);
         result.setBlockHit(world.rayTraceBlocks(pos, segment, false, true, true));
         double collidePosX, collidePosY, collidePosZ;
         if (result.blockHit != null) {
-            collidePosX = result.blockHit.hitVec.xCoord;
-            collidePosY = result.blockHit.hitVec.yCoord;
-            collidePosZ = result.blockHit.hitVec.zCoord;
+            collidePosX = result.blockHit.hitVec.x;
+            collidePosY = result.blockHit.hitVec.y;
+            collidePosZ = result.blockHit.hitVec.z;
         }
         else {
             Vec3d end = player.getLookVec().scale(range);
-            collidePosX = end.xCoord;
-            collidePosY = end.yCoord;
-            collidePosZ = end.zCoord;
+            collidePosX = end.x;
+            collidePosY = end.y;
+            collidePosZ = end.z;
         }
 
-        List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(Math.min(pos.xCoord, collidePosX), Math.min(pos.yCoord, collidePosY), Math.min(pos.zCoord, collidePosZ), Math.max(pos.xCoord, collidePosX), Math.max(pos.yCoord, collidePosY), Math.max(pos.zCoord, collidePosZ)).expand(1, 1, 1));
+        List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(Math.min(pos.x, collidePosX), Math.min(pos.y, collidePosY), Math.min(pos.z, collidePosZ), Math.max(pos.x, collidePosX), Math.max(pos.y, collidePosY), Math.max(pos.z, collidePosZ)).expand(1, 1, 1));
         EntityLivingBase closest = null;
         for (EntityLivingBase entity : entities) {
             if (entity == player) {

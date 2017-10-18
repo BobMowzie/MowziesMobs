@@ -189,7 +189,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         List<Entity> entities = world.getEntitiesWithinAABBExcludingEntity(this, region);
         double radiusSq = radius * radius;
         for (Entity entity : entities) {
-            if (entity instanceof EntityLivingBase && getDistanceSqToEntity(entity) < radiusSq) {
+            if (entity instanceof EntityLivingBase && getDistanceSq(entity) < radiusSq) {
                 if (caster instanceof EntityBarako && (entity instanceof LeaderSunstrikeImmune)) {
                     continue;
                 }

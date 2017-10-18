@@ -61,10 +61,10 @@ public final class EntityAIAvoidEntity<T extends Entity> extends EntityAIBase {
         if (pos == null) {
             return false;
         }
-        if (avoiding.getDistanceSq(pos.xCoord, pos.yCoord, pos.zCoord) < avoiding.getDistanceSqToEntity(entity)) {
+        if (avoiding.getDistanceSq(pos.x, pos.y, pos.z) < avoiding.getDistanceSq(entity)) {
             return false;
         }
-        path = navigator.getPathToXYZ(pos.xCoord, pos.yCoord, pos.zCoord);
+        path = navigator.getPathToXYZ(pos.x, pos.y, pos.z);
         return path != null;
     }
 

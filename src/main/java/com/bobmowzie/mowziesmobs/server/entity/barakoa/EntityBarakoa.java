@@ -135,7 +135,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     }
 
     @Override
-    protected SoundEvent getHurtSound() {
+    protected SoundEvent getHurtSound(DamageSource damageSourceIn) {
         return active ? MMSounds.ENTITY_BARAKOA_HURT : null;
     }
 
@@ -221,7 +221,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         }
         active = getActive();
         if (!active) {
-            getNavigator().clearPathEntity();
+            getNavigator().clearPath();
             rotationYaw = prevRotationYaw;
             renderYawOffset = rotationYaw;
             if (onGround && getAnimation() == NO_ANIMATION) {
@@ -232,7 +232,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         }
         updateAttackAI();
         if (getAnimation() != NO_ANIMATION) {
-            getNavigator().clearPathEntity();
+            getNavigator().clearPath();
         }
 
         if (getDancing()) {
