@@ -1,8 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.message;
 
-import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseUp;
 import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
-import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import io.netty.buffer.ByteBuf;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.ilexiconn.llibrary.server.network.AbstractMessage;
@@ -17,37 +15,37 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
  * Created by Josh on 5/31/2017.
  */
 public class MessageFreezeEntity extends AbstractMessage<MessageFreezeEntity> {
-    private int entityID;
+	private int entityID;
 
-    public MessageFreezeEntity() {
+	public MessageFreezeEntity() {
 
-    }
+	}
 
-    public MessageFreezeEntity(EntityLivingBase entity) {
-        entityID = entity.getEntityId();
-    }
+	public MessageFreezeEntity(EntityLivingBase entity) {
+		entityID = entity.getEntityId();
+	}
 
-    @Override
-    public void toBytes(ByteBuf buf) {
-        buf.writeInt(entityID);
-    }
+	@Override
+	public void toBytes(ByteBuf buf) {
+		buf.writeInt(entityID);
+	}
 
-    @Override
-    public void fromBytes(ByteBuf buf) {
-        entityID = buf.readInt();
-    }
+	@Override
+	public void fromBytes(ByteBuf buf) {
+		entityID = buf.readInt();
+	}
 
-    @Override
-    public void onClientReceived(Minecraft client, MessageFreezeEntity message, EntityPlayer player, MessageContext messageContext) {
-        Entity entity = player.world.getEntityByID(message.entityID);
-        if (entity instanceof EntityLivingBase) {
-            MowzieLivingProperties livingProperties = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
-            livingProperties.onFreeze((EntityLivingBase) entity);
-        }
-    }
+	@Override
+	public void onClientReceived(Minecraft client, MessageFreezeEntity message, EntityPlayer player, MessageContext messageContext) {
+		Entity entity = player.world.getEntityByID(message.entityID);
+		if (entity instanceof EntityLivingBase) {
+			MowzieLivingProperties livingProperties = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
+			livingProperties.onFreeze((EntityLivingBase) entity);
+		}
+	}
 
-    @Override
-    public void onServerReceived(MinecraftServer server, MessageFreezeEntity message, EntityPlayer player, MessageContext messageContext) {
+	@Override
+	public void onServerReceived(MinecraftServer server, MessageFreezeEntity message, EntityPlayer player, MessageContext messageContext) {
 
-    }
+	}
 }

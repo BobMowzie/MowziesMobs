@@ -1,9 +1,5 @@
 package com.bobmowzie.mowziesmobs.server;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
@@ -64,364 +60,375 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.input.Mouse;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public enum ServerEventHandler {
-    INSTANCE;
+	INSTANCE;
 
-    private static final int ICE = Block.getStateId(Blocks.ICE.getDefaultState());
+	private static final int ICE = Block.getStateId(Blocks.ICE.getDefaultState());
 
-    private final static int SUNSTRIKE_COOLDOWN = 55;
-    private final static int SOLARBEAM_COOLDOWN = 110;
+	private final static int SUNSTRIKE_COOLDOWN = 55;
+	private final static int SOLARBEAM_COOLDOWN = 110;
 
-    @SubscribeEvent
-    public void onJoinWorld(EntityJoinWorldEvent event) {
-        if (event.getWorld().isRemote) {
-            return;
-        }
-        Entity entity = event.getEntity();
-        if (entity instanceof EntityZombie) {
-            ((EntityCreature) entity).targetTasks.addTask(2, new EntityAINearestAttackableTarget<>((EntityCreature) entity, EntityFoliaath.class, 0, true, false, null));
-            ((EntityCreature) entity).targetTasks.addTask(3, new EntityAINearestAttackableTarget<>((EntityCreature) entity, EntityBarakoa.class, 0, true, false, null));
-            ((EntityCreature) entity).targetTasks.addTask(2, new EntityAINearestAttackableTarget<>((EntityCreature) entity, EntityBarako.class, 0, true, false, null));
-        }
-        if (entity instanceof EntitySkeleton) {
-            ((EntityCreature) entity).targetTasks.addTask(3, new EntityAINearestAttackableTarget<>((EntityCreature) entity, EntityBarakoa.class, 0, true, false, null));
-            ((EntityCreature) entity).targetTasks.addTask(2, new EntityAINearestAttackableTarget<>((EntityCreature) entity, EntityBarako.class, 0, true, false, null));
-        }
+	@SubscribeEvent
+	public void onJoinWorld(EntityJoinWorldEvent event) {
+		if (event.getWorld().isRemote) {
+			return;
+		}
+		Entity entity = event.getEntity();
+		if (entity instanceof EntityZombie) {
+			((EntityCreature) entity).targetTasks.addTask(2, new EntityAINearestAttackableTarget<>((EntityCreature) entity, EntityFoliaath.class, 0, true, false, null));
+			((EntityCreature) entity).targetTasks.addTask(3, new EntityAINearestAttackableTarget<>((EntityCreature) entity, EntityBarakoa.class, 0, true, false, null));
+			((EntityCreature) entity).targetTasks.addTask(2, new EntityAINearestAttackableTarget<>((EntityCreature) entity, EntityBarako.class, 0, true, false, null));
+		}
+		if (entity instanceof EntitySkeleton) {
+			((EntityCreature) entity).targetTasks.addTask(3, new EntityAINearestAttackableTarget<>((EntityCreature) entity, EntityBarakoa.class, 0, true, false, null));
+			((EntityCreature) entity).targetTasks.addTask(2, new EntityAINearestAttackableTarget<>((EntityCreature) entity, EntityBarako.class, 0, true, false, null));
+		}
 
-        if (entity instanceof EntityOcelot) {
-            ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity<>((EntityCreature) entity, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
-        }
-        if (entity instanceof EntityAnimal) {
-            ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity<>((EntityCreature) entity, EntityBarakoa.class, 6.0F, 1.0D, 1.2D));
-            ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity<>((EntityCreature) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
-        }
-        if (entity instanceof EntityVillager) {
-            ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity<>((EntityCreature) entity, EntityBarakoa.class, 6.0F, 1.0D, 1.2D));
-            ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity<>((EntityCreature) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
-        }
-    }
+		if (entity instanceof EntityOcelot) {
+			((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity<>((EntityCreature) entity, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
+		}
+		if (entity instanceof EntityAnimal) {
+			((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity<>((EntityCreature) entity, EntityBarakoa.class, 6.0F, 1.0D, 1.2D));
+			((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity<>((EntityCreature) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
+		}
+		if (entity instanceof EntityVillager) {
+			((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity<>((EntityCreature) entity, EntityBarakoa.class, 6.0F, 1.0D, 1.2D));
+			((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity<>((EntityCreature) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
+		}
+	}
 
-    @SubscribeEvent
-    public void onLivingTick(LivingEvent.LivingUpdateEvent event) {
-        if (event.getEntity() instanceof EntityLivingBase) {
-            EntityLivingBase entity = (EntityLivingBase) event.getEntity();
-            MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
+	@SubscribeEvent
+	public void onLivingTick(LivingEvent.LivingUpdateEvent event) {
+		if (event.getEntity() instanceof EntityLivingBase) {
+			EntityLivingBase entity = (EntityLivingBase) event.getEntity();
+			MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
 
-            if (property != null) {
-                if (property.freezeProgress >= 1) {
-                    entity.addPotionEffect(new PotionEffect(PotionHandler.INSTANCE.frozen, 50, 1, false, false));
-                    property.freezeProgress = 1f;
-                } else if (property.freezeProgress > 0) {
-                    entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, MathHelper.floor(property.freezeProgress * 5 + 1), false, false));
-                }
+			if (property != null) {
+				if (property.freezeProgress >= 1) {
+					entity.addPotionEffect(new PotionEffect(PotionHandler.INSTANCE.frozen, 50, 1, false, false));
+					property.freezeProgress = 1f;
+				} else if (property.freezeProgress > 0) {
+					entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, MathHelper.floor(property.freezeProgress * 5 + 1), false, false));
+				}
 
-                if (entity.isPotionActive(PotionHandler.INSTANCE.frozen) && !property.prevFrozen) {
-                    property.onFreeze(entity);
-                    if (!entity.world.isRemote) MowziesMobs.NETWORK_WRAPPER.sendToDimension(new MessageFreezeEntity(entity), entity.dimension);
-                }
-            }
+				if (entity.isPotionActive(PotionHandler.INSTANCE.frozen) && !property.prevFrozen) {
+					property.onFreeze(entity);
+					if (!entity.world.isRemote)
+						MowziesMobs.NETWORK_WRAPPER.sendToDimension(new MessageFreezeEntity(entity), entity.dimension);
+				}
+			}
 
-            if (entity.isPotionActive(PotionHandler.INSTANCE.frozen)) {
-                if (entity.getActivePotionEffect(PotionHandler.INSTANCE.frozen).getDuration() <= 0) entity.removeActivePotionEffect(PotionHandler.INSTANCE.frozen);
-                entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, 50, false, false));
-                entity.setSneaking(false);
+			if (entity.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+				if (entity.getActivePotionEffect(PotionHandler.INSTANCE.frozen).getDuration() <= 0)
+					entity.removeActivePotionEffect(PotionHandler.INSTANCE.frozen);
+				entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, 50, false, false));
+				entity.setSneaking(false);
 
-                if (entity.world.isRemote && entity.ticksExisted % 2 == 0) {
-                    double cloudX = entity.posX + entity.width * Math.random() - entity.width / 2;
-                    double cloudZ = entity.posZ + entity.width * Math.random() - entity.width / 2;
-                    double cloudY = entity.posY + entity.height * Math.random();
-                    MMParticle.CLOUD.spawn(entity.world, cloudX, cloudY, cloudZ, ParticleFactory.ParticleArgs.get().withData(0d, -0.01d, 0d, 0.75d, 0.75d, 1d, true, 15d, 25, ParticleCloud.EnumCloudBehavior.CONSTANT));
+				if (entity.world.isRemote && entity.ticksExisted % 2 == 0) {
+					double cloudX = entity.posX + entity.width * Math.random() - entity.width / 2;
+					double cloudZ = entity.posZ + entity.width * Math.random() - entity.width / 2;
+					double cloudY = entity.posY + entity.height * Math.random();
+					MMParticle.CLOUD.spawn(entity.world, cloudX, cloudY, cloudZ, ParticleFactory.ParticleArgs.get().withData(0d, -0.01d, 0d, 0.75d, 0.75d, 1d, true, 15d, 25, ParticleCloud.EnumCloudBehavior.CONSTANT));
 
-                    double snowX = entity.posX + entity.width * Math.random() - entity.width / 2;
-                    double snowZ = entity.posZ + entity.width * Math.random() - entity.width / 2;
-                    double snowY = entity.posY + entity.height * Math.random();
-                    MMParticle.SNOWFLAKE.spawn(entity.world, snowX, snowY, snowZ, ParticleFactory.ParticleArgs.get().withData(0d, -0.01d, 0d));
-                }
-            }
-            else {
-                if (property.frozenController != null && !property.frozenController.isDead) {
-                    entity.dismountEntity(property.frozenController);
-                    entity.setPosition(property.frozenController.posX, property.frozenController.posY, property.frozenController.posZ);
-                    property.frozenController.setDead();
-                    entity.playSound(MMSounds.ENTITY_FROSTMAW_FROZEN_CRASH, 1, 0.5f);
+					double snowX = entity.posX + entity.width * Math.random() - entity.width / 2;
+					double snowZ = entity.posZ + entity.width * Math.random() - entity.width / 2;
+					double snowY = entity.posY + entity.height * Math.random();
+					MMParticle.SNOWFLAKE.spawn(entity.world, snowX, snowY, snowZ, ParticleFactory.ParticleArgs.get().withData(0d, -0.01d, 0d));
+				}
+			} else {
+				if (property.frozenController != null && !property.frozenController.isDead) {
+					entity.dismountEntity(property.frozenController);
+					entity.setPosition(property.frozenController.posX, property.frozenController.posY, property.frozenController.posZ);
+					property.frozenController.setDead();
+					entity.playSound(MMSounds.ENTITY_FROSTMAW_FROZEN_CRASH, 1, 0.5f);
 
-                    if (entity.world.isRemote) {
-                        int particleCount = (int) (10 + 1 * entity.height * entity.width * entity.width);
-                        for (int i = 0; i < particleCount; i++) {
-                            double particleX = entity.posX + entity.width * Math.random() - entity.width / 2;
-                            double particleZ = entity.posZ + entity.width * Math.random() - entity.width / 2;
-                            double particleY = entity.posY + entity.height * Math.random() + 0.3f;
-                            entity.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, particleX, particleY, particleZ, 0, 0, 0, ICE);
-                        }
-                    }
-                }
-                if (entity instanceof EntityLiving && ((EntityLiving)entity).isAIDisabled()) ((EntityLiving)entity).setNoAI(false);
-            }
-            property.freezeProgress -= 0.1;
-            if (property.freezeProgress < 0) property.freezeProgress = 0;
-            property.prevFrozen = entity.isPotionActive(PotionHandler.INSTANCE.frozen);
-        }
-    }
+					if (entity.world.isRemote) {
+						int particleCount = (int) (10 + 1 * entity.height * entity.width * entity.width);
+						for (int i = 0; i < particleCount; i++) {
+							double particleX = entity.posX + entity.width * Math.random() - entity.width / 2;
+							double particleZ = entity.posZ + entity.width * Math.random() - entity.width / 2;
+							double particleY = entity.posY + entity.height * Math.random() + 0.3f;
+							entity.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, particleX, particleY, particleZ, 0, 0, 0, ICE);
+						}
+					}
+				}
+				if (entity instanceof EntityLiving && ((EntityLiving) entity).isAIDisabled())
+					((EntityLiving) entity).setNoAI(false);
+			}
+			property.freezeProgress -= 0.1;
+			if (property.freezeProgress < 0) property.freezeProgress = 0;
+			property.prevFrozen = entity.isPotionActive(PotionHandler.INSTANCE.frozen);
+		}
+	}
 
-    @SubscribeEvent
-    public void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) {
-            return;
-        }
-        EntityPlayer player = event.player;
-        MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
-        property.update();
+	@SubscribeEvent
+	public void onPlayerTick(TickEvent.PlayerTickEvent event) {
+		if (event.phase == TickEvent.Phase.START) {
+			return;
+		}
+		EntityPlayer player = event.player;
+		MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
+		property.update();
 
-        if (property.untilSunstrike > 0) {
-            property.untilSunstrike--;
-        }
-        if (property.untilAxeSwing > 0) {
-            property.untilAxeSwing--;
-        }
-        if (event.side == Side.SERVER) {
-            Item headItemStack = event.player.inventory.armorInventory.get(3).getItem();
-            if (headItemStack instanceof ItemBarakoaMask) {
-                ItemBarakoaMask mask = (ItemBarakoaMask) headItemStack;
-                event.player.addPotionEffect(new PotionEffect(mask.getPotion(), 45, 0, true, false));
-            }
+		if (property.untilSunstrike > 0) {
+			property.untilSunstrike--;
+		}
+		if (property.untilAxeSwing > 0) {
+			property.untilAxeSwing--;
+		}
+		if (event.side == Side.SERVER) {
+			Item headItemStack = event.player.inventory.armorInventory.get(3).getItem();
+			if (headItemStack instanceof ItemBarakoaMask) {
+				ItemBarakoaMask mask = (ItemBarakoaMask) headItemStack;
+				event.player.addPotionEffect(new PotionEffect(mask.getPotion(), 45, 0, true, false));
+			}
 
-            for (ItemStack itemStack : event.player.inventory.mainInventory) {
-                if (itemStack.getItem() instanceof ItemEarthTalisman) player.addPotionEffect(new PotionEffect(PotionHandler.INSTANCE.geomancy, 0, 0, false, false));
-            }
-            if (player.getHeldItemOffhand().getItem() instanceof ItemEarthTalisman) player.addPotionEffect(new PotionEffect(PotionHandler.INSTANCE.geomancy, 0, 0, false, false));
+			for (ItemStack itemStack : event.player.inventory.mainInventory) {
+				if (itemStack.getItem() instanceof ItemEarthTalisman)
+					player.addPotionEffect(new PotionEffect(PotionHandler.INSTANCE.geomancy, 0, 0, false, false));
+			}
+			if (player.getHeldItemOffhand().getItem() instanceof ItemEarthTalisman)
+				player.addPotionEffect(new PotionEffect(PotionHandler.INSTANCE.geomancy, 0, 0, false, false));
 
-            List<EntityBarakoanToPlayer> pack = property.tribePack;
-            float theta = (2 * (float) Math.PI / pack.size());
-            for (int i = 0; i < pack.size(); i++) {
-                EntityBarakoanToPlayer barakoan = pack.get(i);
-                barakoan.index = i;
-                if (barakoan.getAttackTarget() == null) {
-                    barakoan.getNavigator().tryMoveToXYZ(player.posX + property.tribePackRadius * MathHelper.cos(theta * i), player.posY, player.posZ + property.tribePackRadius * MathHelper.sin(theta * i), 0.45);
-                    if (player.getDistance(barakoan) > 20) {
-                        barakoan.setPosition(player.posX + property.tribePackRadius * MathHelper.cos(theta * i), player.posY, player.posZ + property.tribePackRadius * MathHelper.sin(theta * i));
-                    }
-                }
-            }
-        }
+			List<EntityBarakoanToPlayer> pack = property.tribePack;
+			float theta = (2 * (float) Math.PI / pack.size());
+			for (int i = 0; i < pack.size(); i++) {
+				EntityBarakoanToPlayer barakoan = pack.get(i);
+				barakoan.index = i;
+				if (barakoan.getAttackTarget() == null) {
+					barakoan.getNavigator().tryMoveToXYZ(player.posX + property.tribePackRadius * MathHelper.cos(theta * i), player.posY, player.posZ + property.tribePackRadius * MathHelper.sin(theta * i), 0.45);
+					if (player.getDistance(barakoan) > 20) {
+						barakoan.setPosition(player.posX + property.tribePackRadius * MathHelper.cos(theta * i), player.posY, player.posZ + property.tribePackRadius * MathHelper.sin(theta * i));
+					}
+				}
+			}
+		}
 
-        if (!(player.getHeldItemMainhand().getItem() == ItemHandler.INSTANCE.iceCrystal || player.getHeldItemOffhand().getItem() == ItemHandler.INSTANCE.iceCrystal) && property.usingIceBreath && property.icebreath != null) {
-            property.usingIceBreath = false;
-            property.icebreath.setDead();
-        }
+		if (!(player.getHeldItemMainhand().getItem() == ItemHandler.INSTANCE.iceCrystal || player.getHeldItemOffhand().getItem() == ItemHandler.INSTANCE.iceCrystal) && property.usingIceBreath && property.icebreath != null) {
+			property.usingIceBreath = false;
+			property.icebreath.setDead();
+		}
 
-        for (ItemStack stack: player.inventory.mainInventory) {
-            if (!property.usingIceBreath && stack.getItem() == ItemHandler.INSTANCE.iceCrystal) stack.setItemDamage(Math.max(stack.getItemDamage() - 1, 0));
-        }
-        for (ItemStack stack: player.inventory.offHandInventory) {
-            if (!property.usingIceBreath && stack.getItem() == ItemHandler.INSTANCE.iceCrystal) stack.setItemDamage(Math.max(stack.getItemDamage() - 1, 0));
-        }
+		for (ItemStack stack : player.inventory.mainInventory) {
+			if (!property.usingIceBreath && stack.getItem() == ItemHandler.INSTANCE.iceCrystal)
+				stack.setItemDamage(Math.max(stack.getItemDamage() - 1, 0));
+		}
+		for (ItemStack stack : player.inventory.offHandInventory) {
+			if (!property.usingIceBreath && stack.getItem() == ItemHandler.INSTANCE.iceCrystal)
+				stack.setItemDamage(Math.max(stack.getItemDamage() - 1, 0));
+		}
 
-        if (event.side == Side.CLIENT) {
-            if (Mouse.isButtonDown(0) && !property.mouseLeftDown) {
-                property.mouseLeftDown = true;
-                MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageLeftMouseDown());
-                for (int i = 0; i < property.powers.length; i++) {
-                    property.powers[i].onLeftMouseDown(player);
-                }
-            }
-            if (Mouse.isButtonDown(1) && !property.mouseRightDown) {
-                property.mouseRightDown = true;
-                MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageRightMouseDown());
-                for (int i = 0; i < property.powers.length; i++) {
-                    property.powers[i].onRightMouseDown(player);
-                }
-            }
-            if (!Mouse.isButtonDown(0) && property.mouseLeftDown) {
-                property.mouseLeftDown = false;
-                MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageLeftMouseUp());
-                for (int i = 0; i < property.powers.length; i++) {
-                    property.powers[i].onLeftMouseUp(player);
-                }
-            }
-            if (!Mouse.isButtonDown(1) && property.mouseRightDown) {
-                property.mouseRightDown = false;
-                MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageRightMouseUp());
-                for (int i = 0; i < property.powers.length; i++) {
-                    property.powers[i].onRightMouseUp(player);
-                }
-            }
-        }
+		if (event.side == Side.CLIENT) {
+			if (Mouse.isButtonDown(0) && !property.mouseLeftDown) {
+				property.mouseLeftDown = true;
+				MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageLeftMouseDown());
+				for (int i = 0; i < property.powers.length; i++) {
+					property.powers[i].onLeftMouseDown(player);
+				}
+			}
+			if (Mouse.isButtonDown(1) && !property.mouseRightDown) {
+				property.mouseRightDown = true;
+				MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageRightMouseDown());
+				for (int i = 0; i < property.powers.length; i++) {
+					property.powers[i].onRightMouseDown(player);
+				}
+			}
+			if (!Mouse.isButtonDown(0) && property.mouseLeftDown) {
+				property.mouseLeftDown = false;
+				MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageLeftMouseUp());
+				for (int i = 0; i < property.powers.length; i++) {
+					property.powers[i].onLeftMouseUp(player);
+				}
+			}
+			if (!Mouse.isButtonDown(1) && property.mouseRightDown) {
+				property.mouseRightDown = false;
+				MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageRightMouseUp());
+				for (int i = 0; i < property.powers.length; i++) {
+					property.powers[i].onRightMouseUp(player);
+				}
+			}
+		}
 
-        for(int i = 0; i < property.powers.length; i++) {
-            property.powers[i].onUpdate(event);
-        }
-    }
+		for (int i = 0; i < property.powers.length; i++) {
+			property.powers[i].onUpdate(event);
+		}
+	}
 
-    private List<EntityLivingBase> getEntityLivingBaseNearby(EntityLivingBase user, double distanceX, double distanceY, double distanceZ, double radius) {
-        List<Entity> list = user.world.getEntitiesWithinAABBExcludingEntity(user, user.getEntityBoundingBox().expand(distanceX, distanceY, distanceZ));
-        ArrayList<EntityLivingBase> nearEntities = list.stream().filter(entityNeighbor -> entityNeighbor instanceof EntityLivingBase && user.getDistance(entityNeighbor) <= radius).map(entityNeighbor -> (EntityLivingBase) entityNeighbor).collect(Collectors.toCollection(ArrayList::new));
-        return nearEntities;
-    }
+	private List<EntityLivingBase> getEntityLivingBaseNearby(EntityLivingBase user, double distanceX, double distanceY, double distanceZ, double radius) {
+		List<Entity> list = user.world.getEntitiesWithinAABBExcludingEntity(user, user.getEntityBoundingBox().expand(distanceX, distanceY, distanceZ));
+		ArrayList<EntityLivingBase> nearEntities = list.stream().filter(entityNeighbor -> entityNeighbor instanceof EntityLivingBase && user.getDistance(entityNeighbor) <= radius).map(entityNeighbor -> (EntityLivingBase) entityNeighbor).collect(Collectors.toCollection(ArrayList::new));
+		return nearEntities;
+	}
 
-    @SubscribeEvent
-    public void onPlayerInteract(PlayerInteractEvent.RightClickEmpty event) {
-        EntityPlayer player = event.getEntityPlayer();
-        MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
-        if (event.getWorld().isRemote && player.inventory.getCurrentItem() == ItemStack.EMPTY && player.isPotionActive(PotionHandler.INSTANCE.sunsBlessing) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
-            if (player.isSneaking()) {
-                MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSolarBeam());
-                property.untilSunstrike = SOLARBEAM_COOLDOWN;
-            } else {
-                MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSummonSunstrike());
-                property.untilSunstrike = SUNSTRIKE_COOLDOWN;
-            }
-        }
+	@SubscribeEvent
+	public void onPlayerInteract(PlayerInteractEvent.RightClickEmpty event) {
+		EntityPlayer player = event.getEntityPlayer();
+		MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
+		if (event.getWorld().isRemote && player.inventory.getCurrentItem() == ItemStack.EMPTY && player.isPotionActive(PotionHandler.INSTANCE.sunsBlessing) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
+			if (player.isSneaking()) {
+				MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSolarBeam());
+				property.untilSunstrike = SOLARBEAM_COOLDOWN;
+			} else {
+				MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSummonSunstrike());
+				property.untilSunstrike = SUNSTRIKE_COOLDOWN;
+			}
+		}
 
-        for(int i = 0; i < property.powers.length; i++) {
-            property.powers[i].onRightClickEmpty(event);
-        }
-    }
+		for (int i = 0; i < property.powers.length; i++) {
+			property.powers[i].onRightClickEmpty(event);
+		}
+	}
 
-    @SubscribeEvent
-    public void onPlayerInteract(PlayerInteractEvent.EntityInteract event) {
-        MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
-        for(int i = 0; i < property.powers.length; i++) {
-            property.powers[i].onRightClickEntity(event);
-        }
-    }
+	@SubscribeEvent
+	public void onPlayerInteract(PlayerInteractEvent.EntityInteract event) {
+		MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
+		for (int i = 0; i < property.powers.length; i++) {
+			property.powers[i].onRightClickEntity(event);
+		}
+	}
 
-    @SubscribeEvent
-    public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event) {
-        EntityPlayer player = event.getEntityPlayer();
-        MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
-        if (event.getWorld().isRemote && player.inventory.getCurrentItem() == ItemStack.EMPTY && player.isPotionActive(PotionHandler.INSTANCE.sunsBlessing) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
-            if (player.isSneaking()) {
-                MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSolarBeam());
-                property.untilSunstrike = SOLARBEAM_COOLDOWN;
-            } else {
-                MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSummonSunstrike());
-                property.untilSunstrike = SUNSTRIKE_COOLDOWN;
-            }
-        }
+	@SubscribeEvent
+	public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event) {
+		EntityPlayer player = event.getEntityPlayer();
+		MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
+		if (event.getWorld().isRemote && player.inventory.getCurrentItem() == ItemStack.EMPTY && player.isPotionActive(PotionHandler.INSTANCE.sunsBlessing) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
+			if (player.isSneaking()) {
+				MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSolarBeam());
+				property.untilSunstrike = SOLARBEAM_COOLDOWN;
+			} else {
+				MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSummonSunstrike());
+				property.untilSunstrike = SUNSTRIKE_COOLDOWN;
+			}
+		}
 
-        for(int i = 0; i < property.powers.length; i++) {
-            property.powers[i].onRightClickBlock(event);
-        }
-    }
+		for (int i = 0; i < property.powers.length; i++) {
+			property.powers[i].onRightClickBlock(event);
+		}
+	}
 
-    @SubscribeEvent
-    public void onPlayerLeftClick(PlayerInteractEvent.LeftClickEmpty event) {
-        double range = 7;
-        EntityPlayer player = event.getEntityPlayer();
-        MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
-        if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == ItemHandler.INSTANCE.spear){
-            EntityLivingBase entityHit = ItemSpear.raytraceEntities(player.getEntityWorld(), player, range);
-            if (entityHit != null) MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerAttackMob(entityHit));
-        }
+	@SubscribeEvent
+	public void onPlayerLeftClick(PlayerInteractEvent.LeftClickEmpty event) {
+		double range = 7;
+		EntityPlayer player = event.getEntityPlayer();
+		MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
+		if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == ItemHandler.INSTANCE.spear) {
+			EntityLivingBase entityHit = ItemSpear.raytraceEntities(player.getEntityWorld(), player, range);
+			if (entityHit != null) MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerAttackMob(entityHit));
+		}
 
-        for(int i = 0; i < property.powers.length; i++) {
-            property.powers[i].onLeftClickEmpty(event);
-        }
-    }
+		for (int i = 0; i < property.powers.length; i++) {
+			property.powers[i].onLeftClickEmpty(event);
+		}
+	}
 
-    @SubscribeEvent
-    public void onLivingDamage(LivingHurtEvent event) {
-        if (event.getSource().isFireDamage() && event.getEntityLiving().isPotionActive(PotionHandler.INSTANCE.frozen)) {
-            MowzieLivingProperties properties = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowzieLivingProperties.class);
-            event.getEntityLiving().removeActivePotionEffect(PotionHandler.INSTANCE.frozen);
-            event.getEntityLiving().dismountEntity(properties.frozenController);
-            if (!event.getEntity().world.isRemote) MowziesMobs.NETWORK_WRAPPER.sendToDimension(new MessageUnfreezeEntity(event.getEntityLiving()), event.getEntityLiving().dimension);
-        }
-        if (event.getEntity() instanceof EntityPlayer) {
-            MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
-            if (event.getEntity() instanceof EntityPlayer) {
-                if (event.getSource().getTrueSource() != null) {
-                    for (int i = 0; i < property.getPackSize(); i++)
-                        if (property.tribePack.get(i).getAttackTarget() == null)
-                            property.tribePack.get(i).setAttackTarget((EntityLivingBase) event.getSource().getTrueSource());
-                }
-            }
+	@SubscribeEvent
+	public void onLivingDamage(LivingHurtEvent event) {
+		if (event.getSource().isFireDamage() && event.getEntityLiving().isPotionActive(PotionHandler.INSTANCE.frozen)) {
+			MowzieLivingProperties properties = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowzieLivingProperties.class);
+			event.getEntityLiving().removeActivePotionEffect(PotionHandler.INSTANCE.frozen);
+			event.getEntityLiving().dismountEntity(properties.frozenController);
+			if (!event.getEntity().world.isRemote)
+				MowziesMobs.NETWORK_WRAPPER.sendToDimension(new MessageUnfreezeEntity(event.getEntityLiving()), event.getEntityLiving().dimension);
+		}
+		if (event.getEntity() instanceof EntityPlayer) {
+			MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
+			if (event.getEntity() instanceof EntityPlayer) {
+				if (event.getSource().getTrueSource() != null) {
+					for (int i = 0; i < property.getPackSize(); i++)
+						if (property.tribePack.get(i).getAttackTarget() == null)
+							property.tribePack.get(i).setAttackTarget((EntityLivingBase) event.getSource().getTrueSource());
+				}
+			}
 
-            for (int i = 0; i < property.powers.length; i++) {
-                property.powers[i].onTakeDamage(event);
-            }
-        }
-    }
+			for (int i = 0; i < property.powers.length; i++) {
+				property.powers[i].onTakeDamage(event);
+			}
+		}
+	}
 
-    @SubscribeEvent
-    public void onPlayerInteract(PlayerInteractEvent.RightClickItem event) {
-        MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
-        for(int i = 0; i < property.powers.length; i++) {
-            property.powers[i].onRightClickWithItem(event);
-        }
-    }
+	@SubscribeEvent
+	public void onPlayerInteract(PlayerInteractEvent.RightClickItem event) {
+		MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
+		for (int i = 0; i < property.powers.length; i++) {
+			property.powers[i].onRightClickWithItem(event);
+		}
+	}
 
-    @SubscribeEvent
-    public void onPlayerLeftClick(PlayerInteractEvent.LeftClickBlock event) {
-        MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
-        for(int i = 0; i < property.powers.length; i++) {
-            property.powers[i].onLeftClickBlock(event);
-        }
-    }
+	@SubscribeEvent
+	public void onPlayerLeftClick(PlayerInteractEvent.LeftClickBlock event) {
+		MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
+		for (int i = 0; i < property.powers.length; i++) {
+			property.powers[i].onLeftClickBlock(event);
+		}
+	}
 
-    @SubscribeEvent
-    public void onLivingJump(LivingEvent.LivingJumpEvent event) {
-        if (event.getEntity() instanceof EntityLivingBase) {
-            EntityLivingBase entity = (EntityLivingBase) event.getEntity();
-            MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
+	@SubscribeEvent
+	public void onLivingJump(LivingEvent.LivingJumpEvent event) {
+		if (event.getEntity() instanceof EntityLivingBase) {
+			EntityLivingBase entity = (EntityLivingBase) event.getEntity();
+			MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
 
-            if (entity.isPotionActive(PotionHandler.INSTANCE.frozen) && entity.onGround) {
-                entity.motionY = 0;
-            }
-        }
+			if (entity.isPotionActive(PotionHandler.INSTANCE.frozen) && entity.onGround) {
+				entity.motionY = 0;
+			}
+		}
 
-        if (event.getEntity() instanceof EntityPlayer) {
-            MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
-            for(int i = 0; i < property.powers.length; i++) {
-                property.powers[i].onJump(event);
-            }
-        }
-    }
+		if (event.getEntity() instanceof EntityPlayer) {
+			MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
+			for (int i = 0; i < property.powers.length; i++) {
+				property.powers[i].onJump(event);
+			}
+		}
+	}
 
-    @SubscribeEvent
-    public void onEntityAttack(AttackEntityEvent event) {
-        if (event.getEntityLiving().isPotionActive(PotionHandler.INSTANCE.frozen)) {
-            event.setCanceled(true);    //TODO: doesn't work
-        }
-        if (event.getEntity() instanceof EntityPlayer) {
-            MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
+	@SubscribeEvent
+	public void onEntityAttack(AttackEntityEvent event) {
+		if (event.getEntityLiving().isPotionActive(PotionHandler.INSTANCE.frozen)) {
+			event.setCanceled(true);    //TODO: doesn't work
+		}
+		if (event.getEntity() instanceof EntityPlayer) {
+			MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
 
-            for (int i = 0; i < property.powers.length; i++) {
-                property.powers[i].onLeftClickEntity(event);
-            }
+			for (int i = 0; i < property.powers.length; i++) {
+				property.powers[i].onLeftClickEntity(event);
+			}
 
-            if (!(event.getTarget() instanceof EntityLivingBase)) return;
-            if (event.getTarget() instanceof EntityBarakoanToPlayer) return;
-            for (int i = 0; i < property.getPackSize(); i++)
-                property.tribePack.get(i).setAttackTarget((EntityLivingBase) event.getTarget());
-        }
-    }
+			if (!(event.getTarget() instanceof EntityLivingBase)) return;
+			if (event.getTarget() instanceof EntityBarakoanToPlayer) return;
+			for (int i = 0; i < property.getPackSize(); i++)
+				property.tribePack.get(i).setAttackTarget((EntityLivingBase) event.getTarget());
+		}
+	}
 
-    @SubscribeEvent
-    public void onChat(ServerChatEvent event) {
-        String[] words = event.getMessage().split("\\W");
-        boolean dab = false;
-        for (String word : words) {
-            if (word.equalsIgnoreCase("dab")) {
-                dab = true;
-                break;
-            }
-        }
-        if (dab) {
-            final float dist = 20.5F;
-            EntityPlayerMP player = event.getPlayer();
-            AxisAlignedBB bounds = player.getEntityBoundingBox().grow(dist);
-            List<EntityWroughtnaut> wroughtnauts = player.world.getEntitiesWithinAABB(EntityWroughtnaut.class, bounds);
-            for (EntityWroughtnaut wroughtnaut : wroughtnauts) {
-                if (wroughtnaut.isActive() && wroughtnaut.getDistanceSq(player.posX, player.posY, player.posZ) <= dist * dist) {
-                    AnimationHandler.INSTANCE.sendAnimationMessage(wroughtnaut, EntityWroughtnaut.DAB_ANIMATION);
-                }
-            }
-        }
-    }
+	@SubscribeEvent
+	public void onChat(ServerChatEvent event) {
+		String[] words = event.getMessage().split("\\W");
+		boolean dab = false;
+		for (String word : words) {
+			if (word.equalsIgnoreCase("dab")) {
+				dab = true;
+				break;
+			}
+		}
+		if (dab) {
+			final float dist = 20.5F;
+			EntityPlayerMP player = event.getPlayer();
+			AxisAlignedBB bounds = player.getEntityBoundingBox().grow(dist);
+			List<EntityWroughtnaut> wroughtnauts = player.world.getEntitiesWithinAABB(EntityWroughtnaut.class, bounds);
+			for (EntityWroughtnaut wroughtnaut : wroughtnauts) {
+				if (wroughtnaut.isActive() && wroughtnaut.getDistanceSq(player.posX, player.posY, player.posZ) <= dist * dist) {
+					AnimationHandler.INSTANCE.sendAnimationMessage(wroughtnaut, EntityWroughtnaut.DAB_ANIMATION);
+				}
+			}
+		}
+	}
 
-    @SubscribeEvent
-    public void prePopulateWorld(PopulateChunkEvent.Pre event) {
-        MowzieWorldGenerator.generatePrePopulate(event.getWorld(), event.getRand(), event.getChunkX(), event.getChunkZ());
-    }
+	@SubscribeEvent
+	public void prePopulateWorld(PopulateChunkEvent.Pre event) {
+		MowzieWorldGenerator.generatePrePopulate(event.getWorld(), event.getRand(), event.getChunkX(), event.getChunkZ());
+	}
 }

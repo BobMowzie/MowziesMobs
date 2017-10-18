@@ -1,5 +1,7 @@
 {
-	"variants": {
-		"variant=default": { "model": "mowziesmobs:painted_acacia" }
-	}
+  "variants": {
+    "variant=default": {
+      "model": "mowziesmobs:painted_acacia"
+    }
+  }
 }

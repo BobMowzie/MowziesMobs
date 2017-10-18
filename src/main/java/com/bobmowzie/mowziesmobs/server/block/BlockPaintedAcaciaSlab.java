@@ -1,7 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.block;
 
-import java.util.Random;
-
+import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import net.minecraft.block.BlockSlab;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -15,98 +14,98 @@ import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
+import java.util.Random;
 
 public abstract class BlockPaintedAcaciaSlab extends BlockSlab {
-    public static final PropertyEnum<Variant> VARIANT = PropertyEnum.create("variant", Variant.class);
+	public static final PropertyEnum<Variant> VARIANT = PropertyEnum.create("variant", Variant.class);
 
-    public BlockPaintedAcaciaSlab() {
-        super(Material.WOOD);
-        IBlockState state = blockState.getBaseState();
-        if (!isDouble()) {
-            state = state.withProperty(HALF, EnumBlockHalf.BOTTOM);
-        }
-        setDefaultState(state.withProperty(VARIANT, Variant.DEFAULT));
-        setHardness(2.0F);
-        setResistance(5.0F);
-        setSoundType(SoundType.WOOD);
-        setUnlocalizedName("paintedAcaciaSlab");
-        useNeighborBrightness = true;
-    }
+	public BlockPaintedAcaciaSlab() {
+		super(Material.WOOD);
+		IBlockState state = blockState.getBaseState();
+		if (!isDouble()) {
+			state = state.withProperty(HALF, EnumBlockHalf.BOTTOM);
+		}
+		setDefaultState(state.withProperty(VARIANT, Variant.DEFAULT));
+		setHardness(2.0F);
+		setResistance(5.0F);
+		setSoundType(SoundType.WOOD);
+		setUnlocalizedName("paintedAcaciaSlab");
+		useNeighborBrightness = true;
+	}
 
-    @Override
-    public Item getItemDropped(IBlockState state, Random rng, int fortune) {
-        return Item.getItemFromBlock(BlockHandler.INSTANCE.paintedAcaciaSlab);
-    }
+	@Override
+	public Item getItemDropped(IBlockState state, Random rng, int fortune) {
+		return Item.getItemFromBlock(BlockHandler.INSTANCE.paintedAcaciaSlab);
+	}
 
-    @Override
-    public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) {
-        return new ItemStack(BlockHandler.INSTANCE.paintedAcaciaSlab);
-    }
+	@Override
+	public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) {
+		return new ItemStack(BlockHandler.INSTANCE.paintedAcaciaSlab);
+	}
 
-    @Override
-    public IBlockState getStateFromMeta(int meta) {
-        IBlockState iblockstate = getDefaultState().withProperty(VARIANT, Variant.DEFAULT);
-        if (!isDouble()) {
-            iblockstate = iblockstate.withProperty(HALF, (meta & 8) == 0 ? EnumBlockHalf.BOTTOM : EnumBlockHalf.TOP);
-        }
-        return iblockstate;
-    }
+	@Override
+	public IBlockState getStateFromMeta(int meta) {
+		IBlockState iblockstate = getDefaultState().withProperty(VARIANT, Variant.DEFAULT);
+		if (!isDouble()) {
+			iblockstate = iblockstate.withProperty(HALF, (meta & 8) == 0 ? EnumBlockHalf.BOTTOM : EnumBlockHalf.TOP);
+		}
+		return iblockstate;
+	}
 
-    @Override
-    public int getMetaFromState(IBlockState state) {
-        return !isDouble() && state.getValue(HALF) == EnumBlockHalf.TOP ? 8 : 0;
-    }
+	@Override
+	public int getMetaFromState(IBlockState state) {
+		return !isDouble() && state.getValue(HALF) == EnumBlockHalf.TOP ? 8 : 0;
+	}
 
-    @Override
-    protected BlockStateContainer createBlockState() {
-        return isDouble() ? new BlockStateContainer(this, VARIANT): new BlockStateContainer(this, HALF, VARIANT);
-    }
+	@Override
+	protected BlockStateContainer createBlockState() {
+		return isDouble() ? new BlockStateContainer(this, VARIANT) : new BlockStateContainer(this, HALF, VARIANT);
+	}
 
-    @Override
-    public String getUnlocalizedName(int meta) {
-        return super.getUnlocalizedName();
-    }
+	@Override
+	public String getUnlocalizedName(int meta) {
+		return super.getUnlocalizedName();
+	}
 
-    @Override
-    public IProperty<?> getVariantProperty() {
-        return VARIANT;
-    }
+	@Override
+	public IProperty<?> getVariantProperty() {
+		return VARIANT;
+	}
 
-    @Override
-    public Comparable<?> getTypeForItem(ItemStack stack) {
-        return Variant.DEFAULT;
-    }
+	@Override
+	public Comparable<?> getTypeForItem(ItemStack stack) {
+		return Variant.DEFAULT;
+	}
 
-    public static class Double extends BlockPaintedAcaciaSlab {
-        public Double() {
-            setRegistryName("painted_acacia_double_slab");
-        }
+	public static enum Variant implements IStringSerializable {
+		DEFAULT;
 
-        @Override
-        public boolean isDouble() {
-            return true;
-        }
-    }
+		@Override
+		public String getName() {
+			return "default";
+		}
+	}
 
-    public static class Half extends BlockPaintedAcaciaSlab {
-        public Half() {
-            setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-            setRegistryName("painted_acacia_slab");
-        }
+	public static class Double extends BlockPaintedAcaciaSlab {
+		public Double() {
+			setRegistryName("painted_acacia_double_slab");
+		}
 
-        @Override
-        public boolean isDouble() {
-            return false;
-        }
-    }
+		@Override
+		public boolean isDouble() {
+			return true;
+		}
+	}
 
-    public static enum Variant implements IStringSerializable {
-        DEFAULT;
+	public static class Half extends BlockPaintedAcaciaSlab {
+		public Half() {
+			setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
+			setRegistryName("painted_acacia_slab");
+		}
 
-        @Override
-        public String getName() {
-            return "default";
-        }
-    }
+		@Override
+		public boolean isDouble() {
+			return false;
+		}
+	}
 }

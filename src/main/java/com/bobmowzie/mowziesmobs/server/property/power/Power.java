@@ -10,74 +10,74 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public abstract class Power {
 
-    private MowziePlayerProperties properties;
+	private MowziePlayerProperties properties;
 
-    public Power(MowziePlayerProperties properties) {
-        this.properties = properties;
-    }
+	public Power(MowziePlayerProperties properties) {
+		this.properties = properties;
+	}
 
-    public void onUpdate(TickEvent.PlayerTickEvent event) {
+	public void onUpdate(TickEvent.PlayerTickEvent event) {
 
-    }
+	}
 
-    public void onRightClickEmpty(PlayerInteractEvent.RightClickEmpty event) {
+	public void onRightClickEmpty(PlayerInteractEvent.RightClickEmpty event) {
 
-    }
+	}
 
-    public void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+	public void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
 
-    }
+	}
 
-    public void onRightClickWithItem(PlayerInteractEvent.RightClickItem event) {
+	public void onRightClickWithItem(PlayerInteractEvent.RightClickItem event) {
 
-    }
+	}
 
-    public void onRightClickEntity(PlayerInteractEvent.EntityInteract event) {
+	public void onRightClickEntity(PlayerInteractEvent.EntityInteract event) {
 
-    }
+	}
 
-    public void onLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event) {
+	public void onLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event) {
 
-    }
+	}
 
-    public void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
+	public void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
 
-    }
+	}
 
-    public void onLeftClickEntity(AttackEntityEvent event) {
+	public void onLeftClickEntity(AttackEntityEvent event) {
 
-    }
+	}
 
-    public void onTakeDamage(LivingHurtEvent event) {
+	public void onTakeDamage(LivingHurtEvent event) {
 
-    }
+	}
 
-    public void onJump(LivingEvent.LivingJumpEvent event) {
+	public void onJump(LivingEvent.LivingJumpEvent event) {
 
-    }
+	}
 
-    public void onRightMouseDown(EntityPlayer player) {
+	public void onRightMouseDown(EntityPlayer player) {
 
-    }
+	}
 
-    public void onLeftMouseDown(EntityPlayer player) {
+	public void onLeftMouseDown(EntityPlayer player) {
 
-    }
+	}
 
-    public void onRightMouseUp(EntityPlayer player) {
+	public void onRightMouseUp(EntityPlayer player) {
 
-    }
+	}
 
-    public void onLeftMouseUp(EntityPlayer player) {
+	public void onLeftMouseUp(EntityPlayer player) {
 
-    }
+	}
 
-    public boolean canUse(EntityPlayer player) {
-        return true;
-    }
+	public boolean canUse(EntityPlayer player) {
+		return true;
+	}
 
-    public MowziePlayerProperties getProperties() {
-        return properties;
-    }
+	public MowziePlayerProperties getProperties() {
+		return properties;
+	}
 
 }

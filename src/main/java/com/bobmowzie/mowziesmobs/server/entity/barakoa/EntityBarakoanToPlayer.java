@@ -6,49 +6,49 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 public class EntityBarakoanToPlayer extends EntityBarakoan<EntityPlayer> {
-    public EntityBarakoanToPlayer(World world) {
-        this(world, null);
-    }
+	public EntityBarakoanToPlayer(World world) {
+		this(world, null);
+	}
 
-    public EntityBarakoanToPlayer(World world, EntityPlayer leader) {
-        super(world, EntityPlayer.class, leader);
-        experienceValue = 0;
-    }
+	public EntityBarakoanToPlayer(World world, EntityPlayer leader) {
+		super(world, EntityPlayer.class, leader);
+		experienceValue = 0;
+	}
 
-    @Override
-    public void onUpdate() {
-        super.onUpdate();
-        if (!world.isRemote && getAttackTarget() != null && getAttackTarget().isDead) setAttackTarget(null);
-    }
+	@Override
+	public void onUpdate() {
+		super.onUpdate();
+		if (!world.isRemote && getAttackTarget() != null && getAttackTarget().isDead) setAttackTarget(null);
+	}
 
-    @Override
-    protected int getTribeCircleTick() {
-        return getPlayerProps().tribeCircleTick;
-    }
+	@Override
+	protected int getTribeCircleTick() {
+		return getPlayerProps().tribeCircleTick;
+	}
 
-    @Override
-    protected int getPackSize() {
-        return getPlayerProps().getPackSize();
-    }
+	@Override
+	protected int getPackSize() {
+		return getPlayerProps().getPackSize();
+	}
 
-    @Override
-    protected void addAsPackMember() {
-        getPlayerProps().addPackMember(this);
-    }
+	@Override
+	protected void addAsPackMember() {
+		getPlayerProps().addPackMember(this);
+	}
 
-    @Override
-    protected void removeAsPackMember() {
-        System.out.println(getPlayerProps().getPackSize());
-        getPlayerProps().removePackMember(this);
-        System.out.println(getPlayerProps().getPackSize());
-    }
+	@Override
+	protected void removeAsPackMember() {
+		System.out.println(getPlayerProps().getPackSize());
+		getPlayerProps().removePackMember(this);
+		System.out.println(getPlayerProps().getPackSize());
+	}
 
-    private MowziePlayerProperties getPlayerProps() {
-        return EntityPropertiesHandler.INSTANCE.getProperties(leader, MowziePlayerProperties.class);
-    }
+	private MowziePlayerProperties getPlayerProps() {
+		return EntityPropertiesHandler.INSTANCE.getProperties(leader, MowziePlayerProperties.class);
+	}
 
-    @Override
-    public boolean isBarakoDevoted() {
-        return false;
-    }
+	@Override
+	public boolean isBarakoDevoted() {
+		return false;
+	}
 }

@@ -7,27 +7,27 @@ import net.minecraft.item.ItemSlab;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public enum BlockHandler {
-    INSTANCE;
+	INSTANCE;
 
-    public Block paintedAcacia;
-    public BlockSlab paintedAcaciaSlab;
-    public BlockSlab paintedAcaciaDoubleSlab;
-    public Block campfire;
+	public Block paintedAcacia;
+	public BlockSlab paintedAcaciaSlab;
+	public BlockSlab paintedAcaciaDoubleSlab;
+	public Block campfire;
 
-    public void onInit() {
-        paintedAcacia = new BlockPaintedAcacia();
-        paintedAcaciaSlab = new BlockPaintedAcaciaSlab.Half();
-        paintedAcaciaDoubleSlab = new BlockPaintedAcaciaSlab.Double();
-        campfire = new BlockCampfire();
+	public void onInit() {
+		paintedAcacia = new BlockPaintedAcacia();
+		paintedAcaciaSlab = new BlockPaintedAcaciaSlab.Half();
+		paintedAcaciaDoubleSlab = new BlockPaintedAcaciaSlab.Double();
+		campfire = new BlockCampfire();
 
-        GameRegistry.register(paintedAcacia);
-        GameRegistry.register(new ItemBlock(paintedAcacia).setRegistryName(paintedAcacia.getRegistryName()));
-        GameRegistry.register(paintedAcaciaSlab);
-        GameRegistry.register(
-            new ItemSlab(paintedAcaciaSlab, paintedAcaciaSlab, paintedAcaciaDoubleSlab)
-            .setRegistryName(paintedAcaciaSlab.getRegistryName())
-        );
-        GameRegistry.register(paintedAcaciaDoubleSlab);
-        GameRegistry.register(campfire);
-    }
+		GameRegistry.register(paintedAcacia);
+		GameRegistry.register(new ItemBlock(paintedAcacia).setRegistryName(paintedAcacia.getRegistryName()));
+		GameRegistry.register(paintedAcaciaSlab);
+		GameRegistry.register(
+				new ItemSlab(paintedAcaciaSlab, paintedAcaciaSlab, paintedAcaciaDoubleSlab)
+						.setRegistryName(paintedAcaciaSlab.getRegistryName())
+		);
+		GameRegistry.register(paintedAcaciaDoubleSlab);
+		GameRegistry.register(campfire);
+	}
 }

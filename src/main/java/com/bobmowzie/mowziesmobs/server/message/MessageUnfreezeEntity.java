@@ -16,39 +16,39 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
  * Created by Josh on 5/31/2017.
  */
 public class MessageUnfreezeEntity extends AbstractMessage<MessageUnfreezeEntity> {
-    private int entityID;
+	private int entityID;
 
-    public MessageUnfreezeEntity() {
+	public MessageUnfreezeEntity() {
 
-    }
+	}
 
-    public MessageUnfreezeEntity(EntityLivingBase entity) {
-        entityID = entity.getEntityId();
-    }
+	public MessageUnfreezeEntity(EntityLivingBase entity) {
+		entityID = entity.getEntityId();
+	}
 
-    @Override
-    public void toBytes(ByteBuf buf) {
-        buf.writeInt(entityID);
-    }
+	@Override
+	public void toBytes(ByteBuf buf) {
+		buf.writeInt(entityID);
+	}
 
-    @Override
-    public void fromBytes(ByteBuf buf) {
-        entityID = buf.readInt();
-    }
+	@Override
+	public void fromBytes(ByteBuf buf) {
+		entityID = buf.readInt();
+	}
 
-    @Override
-    public void onClientReceived(Minecraft client, MessageUnfreezeEntity message, EntityPlayer player, MessageContext messageContext) {
-        Entity entity = player.world.getEntityByID(message.entityID);
-        if (entity instanceof EntityLivingBase) {
-            EntityLivingBase living = (EntityLivingBase) entity;
-            MowzieLivingProperties livingProperties = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
-            living.removeActivePotionEffect(PotionHandler.INSTANCE.frozen);
-            living.dismountEntity(livingProperties.frozenController);
-        }
-    }
+	@Override
+	public void onClientReceived(Minecraft client, MessageUnfreezeEntity message, EntityPlayer player, MessageContext messageContext) {
+		Entity entity = player.world.getEntityByID(message.entityID);
+		if (entity instanceof EntityLivingBase) {
+			EntityLivingBase living = (EntityLivingBase) entity;
+			MowzieLivingProperties livingProperties = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
+			living.removeActivePotionEffect(PotionHandler.INSTANCE.frozen);
+			living.dismountEntity(livingProperties.frozenController);
+		}
+	}
 
-    @Override
-    public void onServerReceived(MinecraftServer server, MessageUnfreezeEntity message, EntityPlayer player, MessageContext messageContext) {
+	@Override
+	public void onServerReceived(MinecraftServer server, MessageUnfreezeEntity message, EntityPlayer player, MessageContext messageContext) {
 
-    }
+	}
 }

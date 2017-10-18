@@ -1,49 +1,145 @@
 {
-	"parent": "builtin/generated",
-	"textures": {
-		"layer0": "mowziesmobs:items/barako_mask"
-	},
-	"tabula": "mowziesmobs:models/item/barako_mask",
-	"display": {
-		"thirdperson_righthand": {
-			"rotation": [ 60, 0, 180 ],
-			"translation": [ 0, -9, -9 ],
-			"scale": [ -0.5, -0.5, 0.5 ]
-		},
-		"thirdperson_lefthand": {
-			"rotation": [ 60, 0, 180 ],
-			"translation": [ 0, -9, -9 ],
-			"scale": [ -0.5, -0.5, 0.5 ]
-		},
-		"firstperson_righthand": {
-			"rotation": [ 0, 180, 180 ],
-			"translation": [ 6, -10.0, -7 ],
-			"scale": [ -0.5, -0.5, 0.5 ]
-		},
-		"firstperson_lefthand": {
-			"rotation": [ 0, 180, 180 ],
-			"translation": [ 6, -10.0, -7 ],
-			"scale": [ -0.5, -0.5, 0.5 ]
-		},
-		"ground": {
-			"rotation": [ 180, 180, 0 ],
-			"translation": [ 0, -9.0, 3.5 ],
-			"scale": [ -0.6, -0.6, 0.6 ]
-		},
-		"fixed": {
-			"rotation": [ 180, 180, 0 ],
-			"translation": [ -10.2, -8.2, 7.0 ],
-			"scale": [ -0.8, -0.8, 0.8 ]
-		},
-		"gui": {
-			"rotation": [ 180, 0, 0 ],
-			"translation": [ 0, -12, -1 ],
-			"scale": [ -0.51, -0.51, 0.51 ]
-		},
-		"head": {
-			"rotation": [ 180, 180, 0 ],
-			"translation": [ 0, -28, 2 ],
-			"scale": [ -1.3, -1.3, 1.3 ]
-		}
-	}
+  "parent": "builtin/generated",
+  "textures": {
+    "layer0": "mowziesmobs:items/barako_mask"
+  },
+  "tabula": "mowziesmobs:models/item/barako_mask",
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        60,
+        0,
+        180
+      ],
+      "translation": [
+        0,
+        -9,
+        -9
+      ],
+      "scale": [
+        -0.5,
+        -0.5,
+        0.5
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        60,
+        0,
+        180
+      ],
+      "translation": [
+        0,
+        -9,
+        -9
+      ],
+      "scale": [
+        -0.5,
+        -0.5,
+        0.5
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        180,
+        180
+      ],
+      "translation": [
+        6,
+        -10.0,
+        -7
+      ],
+      "scale": [
+        -0.5,
+        -0.5,
+        0.5
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        180,
+        180
+      ],
+      "translation": [
+        6,
+        -10.0,
+        -7
+      ],
+      "scale": [
+        -0.5,
+        -0.5,
+        0.5
+      ]
+    },
+    "ground": {
+      "rotation": [
+        180,
+        180,
+        0
+      ],
+      "translation": [
+        0,
+        -9.0,
+        3.5
+      ],
+      "scale": [
+        -0.6,
+        -0.6,
+        0.6
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        180,
+        180,
+        0
+      ],
+      "translation": [
+        -10.2,
+        -8.2,
+        7.0
+      ],
+      "scale": [
+        -0.8,
+        -0.8,
+        0.8
+      ]
+    },
+    "gui": {
+      "rotation": [
+        180,
+        0,
+        0
+      ],
+      "translation": [
+        0,
+        -12,
+        -1
+      ],
+      "scale": [
+        -0.51,
+        -0.51,
+        0.51
+      ]
+    },
+    "head": {
+      "rotation": [
+        180,
+        180,
+        0
+      ],
+      "translation": [
+        0,
+        -28,
+        2
+      ],
+      "scale": [
+        -1.3,
+        -1.3,
+        1.3
+      ]
+    }
+  }
 }

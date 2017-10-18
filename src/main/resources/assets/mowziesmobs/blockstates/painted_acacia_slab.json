@@ -1,6 +1,10 @@
 {
-	"variants": {
-		"half=bottom,variant=default": { "model": "mowziesmobs:half_slab_painted_acacia" },
-		"half=top,variant=default": { "model": "mowziesmobs:upper_slab_painted_acacia" }
-	}
+  "variants": {
+    "half=bottom,variant=default": {
+      "model": "mowziesmobs:half_slab_painted_acacia"
+    },
+    "half=top,variant=default": {
+      "model": "mowziesmobs:upper_slab_painted_acacia"
+    }
+  }
 }
