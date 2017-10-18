@@ -388,11 +388,11 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
 
     @Override
     public boolean attackEntityFrom(DamageSource source, float damage) {
-        Entity entity = source.getEntity();
+        Entity entity = source.getTrueSource();
         boolean angleFlag = true;
-        if (source.getEntity() != null) {
+        if (source.getTrueSource() != null) {
             int arc = 220;
-            Entity entitySource = source.getEntity();
+            Entity entitySource = source.getTrueSource();
             float entityHitAngle = (float) ((Math.atan2(entitySource.posZ - posZ, entitySource.posX - posX) * (180 / Math.PI) - 90) % 360);
             float entityAttackingAngle = renderYawOffset % 360;
             if (entityHitAngle < 0) {

@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.item;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -19,6 +20,7 @@ import net.minecraft.world.World;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemWroughtAxe extends ItemSword {
@@ -67,7 +69,7 @@ public class ItemWroughtAxe extends ItemSword {
     }
 
     @Override
-    public float getStrVsBlock(ItemStack itemStack, IBlockState block) {
+    public float getDestroySpeed(ItemStack itemStack, IBlockState block) {
         return 1.0F;
     }
 
@@ -77,8 +79,8 @@ public class ItemWroughtAxe extends ItemSword {
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
-        super.addInformation(stack, playerIn, tooltip, advanced);
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+        super.addInformation(stack, worldIn, tooltip, flagIn);
         ItemHandler.addItemText(this, tooltip);
     }
 }

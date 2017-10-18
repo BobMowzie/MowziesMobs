@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityAnimal;
@@ -15,6 +16,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +64,7 @@ public class ItemSpear extends ItemSword {
             float pad = entity.getCollisionBorderSize();
             AxisAlignedBB aabb = entity.getEntityBoundingBox().expand(pad, pad, pad);
             RayTraceResult hit = aabb.calculateIntercept(pos, segment);
-            if (aabb.isVecInside(pos) || hit != null) {
+            if (aabb.contains(pos) || hit != null) {
                 result.addEntityHit(entity);
                 if (closest == null || player.getDistance(closest) > player.getDistance(entity)) closest = entity;
             }
@@ -71,8 +73,8 @@ public class ItemSpear extends ItemSword {
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
-        super.addInformation(stack, playerIn, tooltip, advanced);
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+        super.addInformation(stack, worldIn, tooltip, flagIn);
         ItemHandler.addItemText(this, tooltip);
     }
 

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,6 +22,8 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
 
 public class ItemBlowgun extends ItemBow {
     public ItemBlowgun() {
@@ -92,7 +95,7 @@ public class ItemBlowgun extends ItemBow {
                     {
                         ItemDart itemdart = (ItemDart)(itemstack.getItem() instanceof ItemDart ? itemstack.getItem() : ItemHandler.INSTANCE.dart);
                         EntityArrow entityarrow = itemdart.createArrow(worldIn, itemstack, entityplayer);
-                        entityarrow.setAim(entityplayer, entityplayer.rotationPitch, entityplayer.rotationYaw, 0.0F, f * 1.2f, 1.0F);
+                        entityarrow.shoot(entityplayer, entityplayer.rotationPitch, entityplayer.rotationYaw, 0.0F, f * 1.2f, 1.0F);
 
                         if (f == 1.0F)
                         {
@@ -153,8 +156,8 @@ public class ItemBlowgun extends ItemBow {
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
-        super.addInformation(stack, playerIn, tooltip, advanced);
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+        super.addInformation(stack, worldIn, tooltip, flagIn);
         ItemHandler.addItemText(this, tooltip);
     }
 }

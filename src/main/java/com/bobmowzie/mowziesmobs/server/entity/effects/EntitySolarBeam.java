@@ -262,7 +262,7 @@ public class EntitySolarBeam extends Entity {
             float pad = entity.getCollisionBorderSize() + 0.5f;
             AxisAlignedBB aabb = entity.getEntityBoundingBox().expand(pad, pad, pad);
             RayTraceResult hit = aabb.calculateIntercept(from, to);
-            if (aabb.isVecInside(from)) {
+            if (aabb.contains(from)) {
                 result.addEntityHit(entity);
             } else if (hit != null) {
                 result.addEntityHit(entity);
