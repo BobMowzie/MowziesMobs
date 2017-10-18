@@ -88,7 +88,7 @@ public class EntityFoliaath extends MowzieEntity {
     }
 
     @Override
-    public SoundEvent getHurtSound() {
+    public SoundEvent getHurtSound(DamageSource damageSourceIn) {
         return MMSounds.ENTITY_FOLIAATH_HURT;
     }
 
