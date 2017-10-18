@@ -79,7 +79,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
 		List<EntityItem> meats = getMeatsNearby(0.4, 0.2, 0.4, 0.4);
 		if (getHungry() && meats.size() != 0 && getAnimation() == NO_ANIMATION) {
 			AnimationHandler.INSTANCE.sendAnimationMessage(this, EAT_ANIMATION);
-			eatingItemID = meats.get(0).getEntityItem().getItem();
+			eatingItemID = meats.get(0).getItem().getItem();
 			meats.get(0).setDead();
 			playSound(MMSounds.ENTITY_FOLIAATH_BABY_EAT, 0.5F, 1.2F);
 			if (!world.isRemote) {
@@ -203,7 +203,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
 		ArrayList<EntityItem> listEntityItem = new ArrayList<>();
 		for (Entity entityNeighbor : list) {
 			if (entityNeighbor instanceof EntityItem && getDistance(entityNeighbor) <= radius) {
-				if (getMeat().contains(((EntityItem) entityNeighbor).getEntityItem().getItem())) {
+				if (getMeat().contains(((EntityItem) entityNeighbor).getItem().getItem())) {
 					listEntityItem.add((EntityItem) entityNeighbor);
 				}
 			}

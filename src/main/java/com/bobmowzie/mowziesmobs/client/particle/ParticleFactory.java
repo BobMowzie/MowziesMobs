@@ -217,6 +217,7 @@ public abstract class ParticleFactory<F extends ParticleFactory<?, T>, T extends
 		private int color;
 		private Object[] data;
 		private boolean dataSet = false;
+
 		private ParticleArgs() {
 			this.reset();
 		}

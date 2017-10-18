@@ -62,7 +62,7 @@ public final class EntityAIAvoidEntity<T extends Entity> extends EntityAIBase {
 	}
 
 	@Override
-	public boolean continueExecuting() {
+	public boolean shouldContinueExecuting() {
 		return !navigator.noPath();
 	}
 
