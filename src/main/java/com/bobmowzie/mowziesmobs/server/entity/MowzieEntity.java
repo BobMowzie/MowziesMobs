@@ -90,7 +90,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
 			targetDistance = getDistance(getAttackTarget());
 			targetAngle = (float) getAngleBetweenEntities(this, getAttackTarget());
 		}
-		willLandSoon = !onGround && world.collidesWithAnyBlock(getEntityBoundingBox().move(new Vec3d(motionX, motionY, motionZ)));
+		willLandSoon = !onGround && world.collidesWithAnyBlock(getEntityBoundingBox().offset(new Vec3d(motionX, motionY, motionZ)));
 	}
 
 	protected void onAnimationFinish(Animation animation) {

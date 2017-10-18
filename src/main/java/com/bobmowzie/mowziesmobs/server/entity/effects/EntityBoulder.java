@@ -141,7 +141,7 @@ public class EntityBoulder extends Entity {
 		super.onUpdate();
 		move(MoverType.SELF, motionX, motionY, motionZ);
 		if (ridingEntities != null) ridingEntities.clear();
-		List<Entity> onTopOfEntities = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().contract(0, height - 1, 0).move(new Vec3d(0, height - 0.5, 0)).expand(0.6, 0.5, 0.6));
+		List<Entity> onTopOfEntities = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().contract(0, height - 1, 0).offset(new Vec3d(0, height - 0.5, 0)).expand(0.6, 0.5, 0.6));
 		for (Entity entity : onTopOfEntities) {
 			if (entity != null && entity.canBeCollidedWith() && !(entity instanceof EntityBoulder) && entity.posY >= this.posY + 0.2)
 				ridingEntities.add(entity);
@@ -175,7 +175,7 @@ public class EntityBoulder extends Entity {
 				if (!isDead && boulderSize != 3) setShouldExplode(true);
 			}
 		}
-		List<EntityBoulder> bouldersHit = world.getEntitiesWithinAABB(EntityBoulder.class, getEntityBoundingBox().expand(0.2, 0.2, 0.2).move(new Vec3d(motionX, motionY, motionZ).normalize().scale(0.5)));
+		List<EntityBoulder> bouldersHit = world.getEntitiesWithinAABB(EntityBoulder.class, getEntityBoundingBox().expand(0.2, 0.2, 0.2).offset(new Vec3d(motionX, motionY, motionZ).normalize().scale(0.5)));
 		if (travelling && !bouldersHit.isEmpty()) {
 			for (EntityBoulder entity : bouldersHit) {
 				if (!entity.travelling) {

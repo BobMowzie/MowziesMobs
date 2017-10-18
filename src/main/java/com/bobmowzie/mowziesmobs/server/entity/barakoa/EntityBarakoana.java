@@ -191,4 +191,9 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
 			}
 		}
 	}
+
+	@Override
+	public void setSwingingArms(boolean swingingArms) {
+
+	}
 }

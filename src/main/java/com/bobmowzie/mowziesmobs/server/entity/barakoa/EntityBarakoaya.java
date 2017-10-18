@@ -181,4 +181,9 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
 		setOfferingTrade(Trade.deserialize(compound.getCompoundTag("offeringTrade")));
 		timeOffering = compound.getInteger("timeOffering");
 	}
+
+	@Override
+	public void setSwingingArms(boolean swingingArms) {
+
+	}
 }

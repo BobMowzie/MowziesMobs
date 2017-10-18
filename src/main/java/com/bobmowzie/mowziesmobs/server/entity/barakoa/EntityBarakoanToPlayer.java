@@ -51,4 +51,9 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<EntityPlayer> {
 	public boolean isBarakoDevoted() {
 		return false;
 	}
+
+	@Override
+	public void setSwingingArms(boolean swingingArms) {
+
+	}
 }

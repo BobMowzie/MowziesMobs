@@ -54,7 +54,7 @@ public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> i
 
 	@Override
 	public boolean attackEntityFrom(DamageSource source, float damage) {
-		Entity entity = source.getEntity();
+		Entity entity = source.getTrueSource();
 		if (entity != null && entity instanceof EntityLivingBase) {
 			if (!(entity instanceof EntityPlayer) || !(((EntityPlayer) entity).capabilities.isCreativeMode)) {
 				if (leader != null) {
@@ -78,5 +78,10 @@ public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> i
 		this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntitySheep.class, 0, true, false, null));
 		this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityChicken.class, 0, true, false, null));
 		this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityZombie.class, 0, true, false, null));
+	}
+
+	@Override
+	public void setSwingingArms(boolean swingingArms) {
+
 	}
 }
