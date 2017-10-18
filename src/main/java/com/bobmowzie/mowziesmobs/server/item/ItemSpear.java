@@ -64,7 +64,7 @@ public class ItemSpear extends ItemSword {
             RayTraceResult hit = aabb.calculateIntercept(pos, segment);
             if (aabb.isVecInside(pos) || hit != null) {
                 result.addEntityHit(entity);
-                if (closest == null || player.getDistanceToEntity(closest) > player.getDistanceToEntity(entity)) closest = entity;
+                if (closest == null || player.getDistance(closest) > player.getDistance(entity)) closest = entity;
             }
         }
         return closest;

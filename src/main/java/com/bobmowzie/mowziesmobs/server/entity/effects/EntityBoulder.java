@@ -398,7 +398,7 @@ public class EntityBoulder extends Entity {
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double r) {
-        return world.getEntitiesWithinAABB(entityClass, getEntityBoundingBox().expand(r, r, r), e -> e != this && getDistanceToEntity(e) <= r);
+        return world.getEntitiesWithinAABB(entityClass, getEntityBoundingBox().expand(r, r, r), e -> e != this && getDistance(e) <= r);
     }
 
     protected void repelEntities(float radius) {

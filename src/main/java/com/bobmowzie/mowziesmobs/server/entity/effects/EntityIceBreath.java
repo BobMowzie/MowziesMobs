@@ -142,7 +142,7 @@ public class EntityIceBreath extends Entity {
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double dX, double dY, double dZ, double r) {
-        return world.getEntitiesWithinAABB(entityClass, getEntityBoundingBox().expand(dX, dY, dZ), e -> e != this && getDistanceToEntity(e) <= r && e.posY <= posY + dY);
+        return world.getEntitiesWithinAABB(entityClass, getEntityBoundingBox().expand(dX, dY, dZ), e -> e != this && getDistance(e) <= r && e.posY <= posY + dY);
     }
 
     @Override

@@ -369,7 +369,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         double dy = target.getEntityBoundingBox().minY + (double)(target.height / 3.0F) - dart.posY;
         double dz = target.posZ - this.posZ;
         double dist = (double)MathHelper.sqrt(dx * dx + dz * dz);
-        dart.setThrowableHeading(dx, dy + dist * 0.2D, dz, 1.6F, 1);
+        dart.shoot(dx, dy + dist * 0.2D, dz, 1.6F, 1);
         int i = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, this.getHeldItem(EnumHand.MAIN_HAND));
         int j = EnchantmentHelper.getEnchantmentLevel(Enchantments.PUNCH, this.getHeldItem(EnumHand.MAIN_HAND));
         dart.setDamage((double) (p_82196_2_ * 2.0F) + this.rand.nextGaussian() * 0.25D + (double) ((float) this.world.getDifficulty().getDifficultyId() * 0.11F));

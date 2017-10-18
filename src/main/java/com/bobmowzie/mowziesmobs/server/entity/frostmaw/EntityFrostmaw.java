@@ -428,7 +428,7 @@ public class EntityFrostmaw extends MowzieEntity {
         List<EntityLivingBase> entities = getEntityLivingBaseNearby(10, 3, 10, 10);
         for (EntityLivingBase entity:entities) {
             double angle = (getAngleBetweenEntities(this, entity) + 90) * Math.PI / 180;
-            double distance = getDistanceToEntity(entity) - 4;
+            double distance = getDistance(entity) - 4;
             entity.motionX += Math.min(1/(distance * distance), 1) * -1 * Math.cos(angle);
             entity.motionZ += Math.min(1/ (distance * distance), 1) * -1 * Math.sin(angle);
         }
