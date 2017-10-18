@@ -330,10 +330,10 @@ public enum ServerEventHandler {
         if (event.getEntity() instanceof EntityPlayer) {
             MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
             if (event.getEntity() instanceof EntityPlayer) {
-                if (event.getSource().getEntity() != null) {
+                if (event.getSource().getTrueSource() != null) {
                     for (int i = 0; i < property.getPackSize(); i++)
                         if (property.tribePack.get(i).getAttackTarget() == null)
-                            property.tribePack.get(i).setAttackTarget((EntityLivingBase) event.getSource().getEntity());
+                            property.tribePack.get(i).setAttackTarget((EntityLivingBase) event.getSource().getTrueSource());
                 }
             }
 
@@ -410,7 +410,7 @@ public enum ServerEventHandler {
         if (dab) {
             final float dist = 20.5F;
             EntityPlayerMP player = event.getPlayer();
-            AxisAlignedBB bounds = player.getEntityBoundingBox().expandXyz(dist);
+            AxisAlignedBB bounds = player.getEntityBoundingBox().grow(dist);
             List<EntityWroughtnaut> wroughtnauts = player.world.getEntitiesWithinAABB(EntityWroughtnaut.class, bounds);
             for (EntityWroughtnaut wroughtnaut : wroughtnauts) {
                 if (wroughtnaut.isActive() && wroughtnaut.getDistanceSq(player.posX, player.posY, player.posZ) <= dist * dist) {
