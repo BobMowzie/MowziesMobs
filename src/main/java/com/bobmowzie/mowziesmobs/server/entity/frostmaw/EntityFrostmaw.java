@@ -567,8 +567,8 @@ public class EntityFrostmaw extends MowzieEntity {
 		boolean attack = super.attackEntityFrom(source, damage);
 		if (attack) {
 			shouldDodgeMeasure += damage;
-			if (source.getEntity() != null && source.getEntity() instanceof EntityLivingBase && (!(source.getEntity() instanceof EntityPlayer) || !((EntityPlayer) source.getEntity()).capabilities.isCreativeMode))
-				setAttackTarget((EntityLivingBase) source.getEntity());
+			if (source.getTrueSource() != null && source.getTrueSource() instanceof EntityLivingBase && (!(source.getTrueSource() instanceof EntityPlayer) || !((EntityPlayer) source.getTrueSource()).capabilities.isCreativeMode))
+				setAttackTarget((EntityLivingBase) source.getTrueSource());
 			if (!getActive()) {
 				if (getAnimation() != DIE_ANIMATION) {
 					if (getHasCrystal()) AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_ANIMATION);
