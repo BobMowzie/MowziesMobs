@@ -1,53 +1,51 @@
 package com.bobmowzie.mowziesmobs.server.ai.animation;
 
-import java.util.List;
-
+import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 
-import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
-import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
+import java.util.List;
 
 public class AnimationRadiusAttack<T extends MowzieEntity & IAnimatedEntity> extends AnimationAI<T> {
-    private float radius;
-    private int damage;
-    private float knockBack;
-    private int damageFrame;
-    private boolean pureKnockback;
+	private float radius;
+	private int damage;
+	private float knockBack;
+	private int damageFrame;
+	private boolean pureKnockback;
 
-    public AnimationRadiusAttack(T entity, Animation animation, float radius, int damage, float knockBack, int damageFrame, boolean pureKnockback) {
-        super(entity, animation);
-        this.radius = radius;
-        this.damage = damage;
-        this.knockBack = knockBack;
-        this.damageFrame = damageFrame;
-        this.pureKnockback = pureKnockback;
-        setMutexBits(8);
-    }
+	public AnimationRadiusAttack(T entity, Animation animation, float radius, int damage, float knockBack, int damageFrame, boolean pureKnockback) {
+		super(entity, animation);
+		this.radius = radius;
+		this.damage = damage;
+		this.knockBack = knockBack;
+		this.damageFrame = damageFrame;
+		this.pureKnockback = pureKnockback;
+		setMutexBits(8);
+	}
 
-    @Override
-    public void updateTask() {
-        super.updateTask();
-        if (animatingEntity.getAnimationTick() == damageFrame) {
-            List<EntityLivingBase> hit = animatingEntity.getEntityLivingBaseNearby(radius, 2 * radius, radius, radius);
-            for (EntityLivingBase aHit : hit) {
-                if (animatingEntity instanceof EntityBarako && aHit instanceof LeaderSunstrikeImmune) {
-                    continue;
-                }
-                aHit.attackEntityFrom(DamageSource.causeMobDamage(animatingEntity), damage);
-                if (pureKnockback) {
-                    double angle = animatingEntity.getAngleBetweenEntities(animatingEntity, aHit);
-                    aHit.motionX = knockBack * Math.cos(Math.toRadians(angle - 90));
-                    aHit.motionZ = knockBack * Math.sin(Math.toRadians(angle - 90));
-                }
-                else {
-                    aHit.motionX *= knockBack;
-                    aHit.motionZ *= knockBack;
-                }
-            }
-        }
-    }
+	@Override
+	public void updateTask() {
+		super.updateTask();
+		if (animatingEntity.getAnimationTick() == damageFrame) {
+			List<EntityLivingBase> hit = animatingEntity.getEntityLivingBaseNearby(radius, 2 * radius, radius, radius);
+			for (EntityLivingBase aHit : hit) {
+				if (animatingEntity instanceof EntityBarako && aHit instanceof LeaderSunstrikeImmune) {
+					continue;
+				}
+				aHit.attackEntityFrom(DamageSource.causeMobDamage(animatingEntity), damage);
+				if (pureKnockback) {
+					double angle = animatingEntity.getAngleBetweenEntities(animatingEntity, aHit);
+					aHit.motionX = knockBack * Math.cos(Math.toRadians(angle - 90));
+					aHit.motionZ = knockBack * Math.sin(Math.toRadians(angle - 90));
+				} else {
+					aHit.motionX *= knockBack;
+					aHit.motionZ *= knockBack;
+				}
+			}
+		}
+	}
 }

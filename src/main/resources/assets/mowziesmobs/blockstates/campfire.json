@@ -1,5 +1,7 @@
 {
-	"variants": {
-		"normal": { "model": "mowziesmobs:campfire" }
-	}
+  "variants": {
+    "normal": {
+      "model": "mowziesmobs:campfire"
+    }
+  }
 }

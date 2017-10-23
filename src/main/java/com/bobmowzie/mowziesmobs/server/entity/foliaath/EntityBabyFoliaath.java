@@ -1,9 +1,10 @@
 package com.bobmowzie.mowziesmobs.server.entity.foliaath;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
+import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationBabyFoliaathEatAI;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import com.google.common.collect.Sets;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
@@ -29,249 +30,242 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationBabyFoliaathEatAI;
-import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import com.google.common.collect.Sets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class EntityBabyFoliaath extends MowzieEntity {
-    private static final int JUNGLE_LEAVES = Block.getStateId(Blocks.LEAVES.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.JUNGLE));
+	public static final Animation EAT_ANIMATION = Animation.create(20);
+	private static final int JUNGLE_LEAVES = Block.getStateId(Blocks.LEAVES.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.JUNGLE));
+	private static final DataParameter<Integer> GROWTH = EntityDataManager.createKey(EntityBabyFoliaath.class, DataSerializers.VARINT);
+	private static final DataParameter<Boolean> INFANT = EntityDataManager.createKey(EntityBabyFoliaath.class, DataSerializers.BOOLEAN);
+	private static final DataParameter<Boolean> HUNGRY = EntityDataManager.createKey(EntityBabyFoliaath.class, DataSerializers.BOOLEAN);
+	private static Set<Item> meat;
+	public ControlledAnimation activate = new ControlledAnimation(5);
+	private Item eatingItemID;
+	private double prevActivate;
 
-    private static final DataParameter<Integer> GROWTH = EntityDataManager.createKey(EntityBabyFoliaath.class, DataSerializers.VARINT);
+	public EntityBabyFoliaath(World world) {
+		super(world);
+		tasks.addTask(1, new AnimationBabyFoliaathEatAI<>(this, EAT_ANIMATION));
+		setSize(0.4F, 0.4F);
+	}
 
-    private static final DataParameter<Boolean> INFANT = EntityDataManager.createKey(EntityBabyFoliaath.class, DataSerializers.BOOLEAN);
+	@Override
+	protected void applyEntityAttributes() {
+		super.applyEntityAttributes();
+		getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0);
+		getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(1);
+	}
 
-    private static final DataParameter<Boolean> HUNGRY = EntityDataManager.createKey(EntityBabyFoliaath.class, DataSerializers.BOOLEAN);
+	@Override
+	public void onUpdate() {
+		super.onUpdate();
+		motionX = 0;
+		motionZ = 0;
+		renderYawOffset = 0;
 
-    public static final Animation EAT_ANIMATION = Animation.create(20);
-    public ControlledAnimation activate = new ControlledAnimation(5);
-    private Item eatingItemID;
-    private double prevActivate;
+		if (arePlayersCarryingMeat(getPlayersNearby(3, 3, 3, 3)) && getAnimation() == NO_ANIMATION && getHungry()) {
+			activate.increaseTimer();
+		} else {
+			activate.decreaseTimer();
+		}
 
-    private static Set<Item> meat;
+		if (activate.getTimer() == 1 && prevActivate - activate.getTimer() < 0) {
+			playSound(MMSounds.ENTITY_FOLIAATH_GRUNT, 0.5F, 1.5F);
+		}
+		prevActivate = activate.getTimer();
 
-    public EntityBabyFoliaath(World world) {
-        super(world);
-        tasks.addTask(1, new AnimationBabyFoliaathEatAI<>(this, EAT_ANIMATION));
-        setSize(0.4F, 0.4F);
-    }
+		List<EntityItem> meats = getMeatsNearby(0.4, 0.2, 0.4, 0.4);
+		if (getHungry() && meats.size() != 0 && getAnimation() == NO_ANIMATION) {
+			AnimationHandler.INSTANCE.sendAnimationMessage(this, EAT_ANIMATION);
+			eatingItemID = meats.get(0).getItem().getItem();
+			meats.get(0).setDead();
+			playSound(MMSounds.ENTITY_FOLIAATH_BABY_EAT, 0.5F, 1.2F);
+			if (!world.isRemote) {
+				incrementGrowth();
+				setHungry(false);
+			}
+		}
 
-    @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
-        getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0);
-        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(1);
-    }
+		if (getAnimationTick() == 3 || getAnimationTick() == 7 || getAnimationTick() == 11 || getAnimationTick() == 15 || getAnimationTick() == 19) {
+			try {
+				for (int i = 0; i <= 5; i++) {
+					world.spawnParticle(EnumParticleTypes.ITEM_CRACK, posX, posY + 0.2, posZ, Math.random() * 0.2 - 0.1, Math.random() * 0.2, Math.random() * 0.2 - 0.1, Item.getIdFromItem(eatingItemID));
+				}
+			} catch (Exception ignored) {
+			}
+		}
 
-    @Override
-    public void onUpdate() {
-        super.onUpdate();
-        motionX = 0;
-        motionZ = 0;
-        renderYawOffset = 0;
+		//Growing
+		if (!world.isRemote) {
+			if (ticksExisted % 20 == 0 && !getHungry()) {
+				incrementGrowth();
+			}
+			// TODO: cleanup this poor logic
+			if (getGrowth() < 600) {
+				setInfant(true);
+			} else {
+				setInfant(false);
+			}
+			if (getInfant()) {
+				setHungry(false);
+			}
+			if (getGrowth() == 600) {
+				setHungry(true);
+			}
+			if (getGrowth() == 1200) {
+				setHungry(true);
+			}
+			if (getGrowth() == 1800) {
+				setHungry(true);
+			}
+			if (getGrowth() == 2400) {
+				EntityFoliaath adultFoliaath = new EntityFoliaath(world);
+				adultFoliaath.setPosition(posX, posY, posZ);
+				adultFoliaath.setCanDespawn(false);
+				world.spawnEntity(adultFoliaath);
+				setDead();
+			}
+		}
+	}
 
-        if (arePlayersCarryingMeat(getPlayersNearby(3, 3, 3, 3)) && getAnimation() == NO_ANIMATION && getHungry()) {
-            activate.increaseTimer();
-        } else {
-            activate.decreaseTimer();
-        }
+	@Override
+	public Animation getDeathAnimation() {
+		return null;
+	}
 
-        if (activate.getTimer() == 1 && prevActivate - activate.getTimer() < 0) {
-            playSound(MMSounds.ENTITY_FOLIAATH_GRUNT, 0.5F, 1.5F);
-        }
-        prevActivate = activate.getTimer();
+	@Override
+	public Animation getHurtAnimation() {
+		return null;
+	}
 
-        List<EntityItem> meats = getMeatsNearby(0.4, 0.2, 0.4, 0.4);
-        if (getHungry() && meats.size() != 0 && getAnimation() == NO_ANIMATION) {
-            AnimationHandler.INSTANCE.sendAnimationMessage(this, EAT_ANIMATION);
-            eatingItemID = meats.get(0).getEntityItem().getItem();
-            meats.get(0).setDead();
-            playSound(MMSounds.ENTITY_FOLIAATH_BABY_EAT, 0.5F, 1.2F);
-            if (!world.isRemote) {
-                incrementGrowth();
-                setHungry(false);
-            }
-        }
+	private boolean arePlayersCarryingMeat(List<EntityPlayer> players) {
+		if (players.size() > 0) {
+			for (EntityPlayer player : players) {
+				if (getMeat().contains(player.getHeldItemMainhand().getItem())) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
-        if (getAnimationTick() == 3 || getAnimationTick() == 7 || getAnimationTick() == 11 || getAnimationTick() == 15 || getAnimationTick() == 19) {
-            try {
-                for (int i = 0; i <= 5; i++) {
-                    world.spawnParticle(EnumParticleTypes.ITEM_CRACK, posX, posY + 0.2, posZ, Math.random() * 0.2 - 0.1, Math.random() * 0.2, Math.random() * 0.2 - 0.1, Item.getIdFromItem(eatingItemID));
-                }
-            } catch (Exception ignored) {
-            }
-        }
+	private Set<Item> getMeat() {
+		if (meat == null) {
+			meat = Sets.newHashSet(Items.PORKCHOP, Items.COOKED_BEEF, Items.COOKED_CHICKEN, Items.COOKED_FISH, Items.RABBIT, Items.COOKED_RABBIT, Items.MUTTON, Items.COOKED_MUTTON, Items.BEEF, Items.CHICKEN, Items.FISH, Items.SPIDER_EYE);
+		}
+		return meat;
+	}
 
-        //Growing
-        if (!world.isRemote) {
-            if (ticksExisted % 20 == 0 && !getHungry()) {
-                incrementGrowth();
-            }
-            // TODO: cleanup this poor logic
-            if (getGrowth() < 600) {
-                setInfant(true);
-            } else {
-                setInfant(false);
-            }
-            if (getInfant()) {
-                setHungry(false);
-            }
-            if (getGrowth() == 600) {
-                setHungry(true);
-            }
-            if (getGrowth() == 1200) {
-                setHungry(true);
-            }
-            if (getGrowth() == 1800) {
-                setHungry(true);
-            }
-            if (getGrowth() == 2400) {
-                EntityFoliaath adultFoliaath = new EntityFoliaath(world);
-                adultFoliaath.setPosition(posX, posY, posZ);
-                adultFoliaath.setCanDespawn(false);
-                world.spawnEntity(adultFoliaath);
-                setDead();
-            }
-        }
-    }
+	@Override
+	public void onDeath(DamageSource source) {
+		super.onDeath(source);
+		for (int i = 0; i < 10; i++) {
+			world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, posX, posY + 0.2, posZ, 0, 0, 0, JUNGLE_LEAVES);
+		}
+		setDead();
+	}
 
-    @Override
-    public Animation getDeathAnimation() {
-        return null;
-    }
+	@Override
+	public void applyEntityCollision(Entity collider) {
+		posX = prevPosX;
+		posZ = prevPosZ;
+	}
 
-    @Override
-    public Animation getHurtAnimation() {
-        return null;
-    }
+	@Override
+	protected SoundEvent getDeathSound() {
+		playSound(SoundEvents.BLOCK_GRASS_HIT, 1, 0.8F);
+		return null;
+	}
 
-    private boolean arePlayersCarryingMeat(List<EntityPlayer> players) {
-        if (players.size() > 0) {
-            for (EntityPlayer player : players) {
-                if (getMeat().contains(player.getHeldItemMainhand().getItem())) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+	@Override
+	public boolean getCanSpawnHere() {
+		if (world.checkNoEntityCollision(getEntityBoundingBox()) && world.getCollisionBoxes(this, getEntityBoundingBox()).isEmpty() && !world.containsAnyLiquid(getEntityBoundingBox())) {
+			BlockPos ground = new BlockPos(
+					MathHelper.floor(posX),
+					MathHelper.floor(getEntityBoundingBox().minY) - 1,
+					MathHelper.floor(posZ)
+			);
 
-    private Set<Item> getMeat() {
-        if (meat == null) {
-            meat = Sets.newHashSet(Items.PORKCHOP, Items.COOKED_BEEF, Items.COOKED_CHICKEN, Items.COOKED_FISH, Items.RABBIT, Items.COOKED_RABBIT, Items.MUTTON, Items.COOKED_MUTTON, Items.BEEF, Items.CHICKEN, Items.FISH, Items.SPIDER_EYE);
-        }
-        return meat;
-    }
+			IBlockState block = world.getBlockState(ground);
 
-    @Override
-    public void onDeath(DamageSource source) {
-        super.onDeath(source);
-        for (int i = 0; i < 10; i++) {
-            world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, posX, posY + 0.2, posZ, 0, 0, 0, JUNGLE_LEAVES);
-        }
-        setDead();
-    }
+			if (block.getBlock() == Blocks.GRASS || block.getBlock() == Blocks.DIRT || block.getBlock().isLeaves(block, world, ground)) {
+				playSound(SoundEvents.BLOCK_GRASS_HIT, 1, 0.8F);
+				return true;
+			}
+		}
+		return false;
+	}
 
-    @Override
-    public void applyEntityCollision(Entity collider) {
-        posX = prevPosX;
-        posZ = prevPosZ;
-    }
+	public List<EntityItem> getMeatsNearby(double distanceX, double distanceY, double distanceZ, double radius) {
+		List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().expand(distanceX, distanceY, distanceZ));
+		ArrayList<EntityItem> listEntityItem = new ArrayList<>();
+		for (Entity entityNeighbor : list) {
+			if (entityNeighbor instanceof EntityItem && getDistance(entityNeighbor) <= radius) {
+				if (getMeat().contains(((EntityItem) entityNeighbor).getItem().getItem())) {
+					listEntityItem.add((EntityItem) entityNeighbor);
+				}
+			}
+		}
+		return listEntityItem;
+	}
 
-    @Override
-    protected SoundEvent getDeathSound() {
-        playSound(SoundEvents.BLOCK_GRASS_HIT, 1, 0.8F);
-        return null;
-    }
+	@Override
+	public void writeEntityToNBT(NBTTagCompound compound) {
+		super.writeEntityToNBT(compound);
+		compound.setInteger("tickGrowth", getGrowth());
+	}
 
-    @Override
-    public boolean getCanSpawnHere() {
-        if (world.checkNoEntityCollision(getEntityBoundingBox()) && world.getCollisionBoxes(this, getEntityBoundingBox()).isEmpty() && !world.containsAnyLiquid(getEntityBoundingBox())) {
-            BlockPos ground = new BlockPos(
-                MathHelper.floor(posX),
-                MathHelper.floor(getEntityBoundingBox().minY) - 1,
-                MathHelper.floor(posZ)
-            );
+	@Override
+	public void readEntityFromNBT(NBTTagCompound compound) {
+		super.readEntityFromNBT(compound);
+		setGrowth(compound.getInteger("tickGrowth"));
+	}
 
-            IBlockState block = world.getBlockState(ground);
+	@Override
+	protected boolean canDespawn() {
+		return false;
+	}
 
-            if (block.getBlock() == Blocks.GRASS || block.getBlock() == Blocks.DIRT || block.getBlock().isLeaves(block, world, ground)) {
-                playSound(SoundEvents.BLOCK_GRASS_HIT, 1, 0.8F);
-                return true;
-            }
-        }
-        return false;
-    }
+	@Override
+	protected void entityInit() {
+		super.entityInit();
+		getDataManager().register(GROWTH, 0);
+		getDataManager().register(INFANT, false);
+		getDataManager().register(HUNGRY, false);
+	}
 
-    public List<EntityItem> getMeatsNearby(double distanceX, double distanceY, double distanceZ, double radius) {
-        List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().expand(distanceX, distanceY, distanceZ));
-        ArrayList<EntityItem> listEntityItem = new ArrayList<>();
-        for (Entity entityNeighbor : list) {
-            if (entityNeighbor instanceof EntityItem && getDistanceToEntity(entityNeighbor) <= radius) {
-                if (getMeat().contains(((EntityItem) entityNeighbor).getEntityItem().getItem())) {
-                    listEntityItem.add((EntityItem) entityNeighbor);
-                }
-            }
-        }
-        return listEntityItem;
-    }
+	public int getGrowth() {
+		return getDataManager().get(GROWTH);
+	}
 
-    @Override
-    public void writeEntityToNBT(NBTTagCompound compound) {
-        super.writeEntityToNBT(compound);
-        compound.setInteger("tickGrowth", getGrowth());
-    }
+	public void setGrowth(int growth) {
+		getDataManager().set(GROWTH, growth);
+	}
 
-    @Override
-    public void readEntityFromNBT(NBTTagCompound compound) {
-        super.readEntityFromNBT(compound);
-        setGrowth(compound.getInteger("tickGrowth"));
-    }
+	public void incrementGrowth() {
+		setGrowth(getGrowth() + 1);
+	}
 
-    @Override
-    protected boolean canDespawn() {
-        return false;
-    }
+	public boolean getInfant() {
+		return getDataManager().get(INFANT);
+	}
 
-    @Override
-    protected void entityInit() {
-        super.entityInit();
-        getDataManager().register(GROWTH, 0);
-        getDataManager().register(INFANT, false);
-        getDataManager().register(HUNGRY, false);
-    }
+	public void setInfant(boolean infant) {
+		getDataManager().set(INFANT, infant);
+	}
 
-    public int getGrowth() {
-        return getDataManager().get(GROWTH);
-    }
+	public boolean getHungry() {
+		return getDataManager().get(HUNGRY);
+	}
 
-    public void setGrowth(int growth) {
-        getDataManager().set(GROWTH, growth);
-    }
+	public void setHungry(boolean hungry) {
+		getDataManager().set(HUNGRY, hungry);
+	}
 
-    public void incrementGrowth() {
-        setGrowth(getGrowth() + 1);
-    }
-
-    public boolean getInfant() {
-        return getDataManager().get(INFANT);
-    }
-
-    public void setInfant(boolean infant) {
-        getDataManager().set(INFANT, infant);
-    }
-
-    public boolean getHungry() {
-        return getDataManager().get(HUNGRY);
-    }
-
-    public void setHungry(boolean hungry) {
-        getDataManager().set(HUNGRY, hungry);
-    }
-
-    @Override
-    public Animation[] getAnimations() {
-        return new Animation[]{EAT_ANIMATION};
-    }
+	@Override
+	public Animation[] getAnimations() {
+		return new Animation[]{EAT_ANIMATION};
+	}
 }

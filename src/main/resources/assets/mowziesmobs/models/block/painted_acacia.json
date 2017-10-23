@@ -1,6 +1,6 @@
 {
-	"parent": "block/cube_all",
-	"textures": {
-		"all": "mowziesmobs:blocks/painted_acacia"
-	}
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "mowziesmobs:blocks/painted_acacia"
+  }
 }

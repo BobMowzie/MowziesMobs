@@ -1,36 +1,84 @@
 {
-	"parent": "item/generated",
-	"textures": {
-		"layer0": "mowziesmobs:items/blowgun"
-	},
-	"display": {
-		"thirdperson_righthand": {
-			"rotation": [ 45, 90, 0 ],
-			"translation": [ 0, -2, 1 ],
-			"scale": [ 0.9, 0.9, 0.9 ]
-		},
-		"thirdperson_lefthand": {
-			"rotation": [ 45, -90, 0 ],
-			"translation": [ 0, -2, 1 ],
-			"scale": [ 0.9, 0.9, 0.9 ]
-		},
-		"firstperson_righthand": {
-			"rotation": [ 0, 90, 0 ],
-			"translation": [ 0, 1, 2 ],
-			"scale": [ 1, 1, 1 ]
-		},
-		"firstperson_lefthand": {
-			"rotation": [ 0, -90, 0 ],
-			"translation": [ 0, 1, 2 ],
-			"scale": [ 1, 1, 1 ]
-		}
-	},
-	"overrides": [
-		{
-			"predicate": {
-				"pulling": 1
-			},
-			"model": "mowziesmobs:item/blowgun_using"
-		}
-	]
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "mowziesmobs:items/blowgun"
+  },
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        45,
+        90,
+        0
+      ],
+      "translation": [
+        0,
+        -2,
+        1
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        0.9
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        45,
+        -90,
+        0
+      ],
+      "translation": [
+        0,
+        -2,
+        1
+      ],
+      "scale": [
+        0.9,
+        0.9,
+        0.9
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "translation": [
+        0,
+        1,
+        2
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        -90,
+        0
+      ],
+      "translation": [
+        0,
+        1,
+        2
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "pulling": 1
+      },
+      "model": "mowziesmobs:item/blowgun_using"
+    }
+  ]
 }

@@ -1,8 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.message;
 
-import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import io.netty.buffer.ByteBuf;
-import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.ilexiconn.llibrary.server.network.AbstractMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -10,40 +8,39 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import org.lwjgl.Sys;
 
 /**
  * Created by Josh on 10/28/2016.
  */
 public class MessagePlayerAttackMob extends AbstractMessage<MessagePlayerAttackMob> {
-    private int entityID;
+	private int entityID;
 
-    public MessagePlayerAttackMob() {
+	public MessagePlayerAttackMob() {
 
-    }
+	}
 
-    public MessagePlayerAttackMob(EntityLivingBase target) {
-        entityID = target.getEntityId();
-    }
+	public MessagePlayerAttackMob(EntityLivingBase target) {
+		entityID = target.getEntityId();
+	}
 
-    @Override
-    public void toBytes(ByteBuf buf) {
-        buf.writeInt(entityID);
-    }
+	@Override
+	public void toBytes(ByteBuf buf) {
+		buf.writeInt(entityID);
+	}
 
-    @Override
-    public void fromBytes(ByteBuf buf) {
-        entityID = buf.readInt();
-    }
+	@Override
+	public void fromBytes(ByteBuf buf) {
+		entityID = buf.readInt();
+	}
 
-    @Override
-    public void onClientReceived(Minecraft minecraft, MessagePlayerAttackMob messagePlayerAttackMob, EntityPlayer entityPlayer, MessageContext messageContext) {
+	@Override
+	public void onClientReceived(Minecraft minecraft, MessagePlayerAttackMob messagePlayerAttackMob, EntityPlayer entityPlayer, MessageContext messageContext) {
 
-    }
+	}
 
-    @Override
-    public void onServerReceived(MinecraftServer minecraftServer, MessagePlayerAttackMob messagePlayerAttackMob, EntityPlayer entityPlayer, MessageContext messageContext) {
-        Entity entity = entityPlayer.world.getEntityByID(messagePlayerAttackMob.entityID);
-        if (entity != null) entityPlayer.attackTargetEntityWithCurrentItem(entity);
-    }
+	@Override
+	public void onServerReceived(MinecraftServer minecraftServer, MessagePlayerAttackMob messagePlayerAttackMob, EntityPlayer entityPlayer, MessageContext messageContext) {
+		Entity entity = entityPlayer.world.getEntityByID(messagePlayerAttackMob.entityID);
+		if (entity != null) entityPlayer.attackTargetEntityWithCurrentItem(entity);
+	}
 }
