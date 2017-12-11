@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
+import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
@@ -15,7 +16,7 @@ import net.minecraft.world.World;
 
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
 
-public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> {
+public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> implements LeaderSunstrikeImmune {
     public EntityBarakoanToBarakoana(World world) {
         this(world, null);
     }

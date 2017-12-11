@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
 
+import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
@@ -27,7 +28,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
-public class EntityBarakoana extends EntityBarakoa {
+public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImmune {
     private List<EntityBarakoanToBarakoana> pack = new ArrayList<>();
 
     private int packRadius = 3;
