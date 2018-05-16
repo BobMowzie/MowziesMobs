@@ -139,7 +139,7 @@ public enum ServerEventHandler {
                 }
             }
             else {
-                if (property.frozenController != null && !property.frozenController.isDead) {
+                if (property != null && property.frozenController != null && !property.frozenController.isDead) {
                     entity.dismountEntity(property.frozenController);
                     entity.setPosition(property.frozenController.posX, property.frozenController.posY, property.frozenController.posZ);
                     property.frozenController.setDead();
