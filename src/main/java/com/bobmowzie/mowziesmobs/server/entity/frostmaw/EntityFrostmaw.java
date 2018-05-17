@@ -269,7 +269,10 @@ public class EntityFrostmaw extends MowzieEntity {
 
             if (getAnimation() == ICE_BREATH_ANIMATION) {
                 if (getAttackTarget() != null) getLookHelper().setLookPositionWithEntity(getAttackTarget(), 15, 15);
-                Vec3d mouthPos = socketPosArray[2];
+                Vec3d mouthPos = new Vec3d(2.3, 2.65, 0);
+                mouthPos = mouthPos.rotateYaw((float)Math.toRadians(-rotationYaw - 90));
+                mouthPos = mouthPos.add(getPositionVector());
+                mouthPos = mouthPos.add(new Vec3d(0, 0, 1).rotatePitch((float)Math.toRadians(-rotationPitch)).rotateYaw((float)Math.toRadians(-rotationYawHead)));
                 if (getAnimationTick() == 13) {
                     iceBreath = new EntityIceBreath(world, this);
                     iceBreath.setPositionAndRotation(mouthPos.xCoord, mouthPos.yCoord, mouthPos.zCoord, rotationYawHead, rotationPitch + 10);
@@ -347,7 +350,6 @@ public class EntityFrostmaw extends MowzieEntity {
                 setActive(true);
             }
 
-//            renderYawOffset++;
             if (!world.isRemote && crystal != null) {
                 Vec3d rightHandPos = socketPosArray[3];
                 crystal.setNoGravity(true);
@@ -413,7 +415,7 @@ public class EntityFrostmaw extends MowzieEntity {
         }
 
 //        if (getAnimation() == NO_ANIMATION && onGround) {
-//            AnimationHandler.INSTANCE.sendAnimationMessage(this, ROAR_ANIMATION);
+//            AnimationHandler.INSTANCE.sendAnimationMessage(this, ICE_BREATH_ANIMATION);
 //            setActive(true);
 //        }
 
