@@ -793,6 +793,6 @@ public class EntityFrostmaw extends MowzieEntity {
 
     @Override
     protected boolean canDespawn() {
-        return false;
+        return true;
     }
 }
