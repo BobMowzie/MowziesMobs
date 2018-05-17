@@ -5,7 +5,7 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -46,19 +46,14 @@ public class ParticleSnowFlake extends Particle implements ParticleTextureStitch
     }
 
     @Override
-    public boolean isTransparent() {
-        return true;
-    }
-
-    @Override
     public void onUpdate() {
         super.onUpdate();
 
         if (swirls) {
             Vec3d motionVec = new Vec3d(motionX, motionY, motionZ).normalize();
-            float yaw = (float) Math.atan2(motionVec.xCoord, motionVec.zCoord);
+            float yaw = (float) Math.atan2(motionVec.x, motionVec.z);
             float xzDistance = (float) motionVec.lengthVector();
-            float pitch = (float) Math.atan2(motionVec.yCoord, xzDistance);
+            float pitch = (float) Math.atan2(motionVec.y, xzDistance);
             float swirlRadius = 4f * (particleAge / (float) particleMaxAge) * spread;
             Point3d point = new Point3d(swirlRadius * Math.cos(swirlTick * 0.2), swirlRadius * Math.sin(swirlTick * 0.2), 0);
             Matrix4d boxRotateX = new Matrix4d();
@@ -81,7 +76,7 @@ public class ParticleSnowFlake extends Particle implements ParticleTextureStitch
     }
 
     @Override
-    public void renderParticle(VertexBuffer buffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+    public void renderParticle(BufferBuilder buffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         float var = (particleAge + partialTicks)/(float)particleMaxAge;
         particleAlpha = (float) (1 - Math.exp(10 * (var - 1)));
         if (particleAlpha < 0.1) particleAlpha = 0.1f;
@@ -117,9 +112,9 @@ public class ParticleSnowFlake extends Particle implements ParticleTextureStitch
         {
             float f8 = this.particleAngle + (this.particleAngle - this.prevParticleAngle) * partialTicks;
             float f9 = MathHelper.cos(f8 * 0.5F);
-            float f10 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.xCoord;
-            float f11 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.yCoord;
-            float f12 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.zCoord;
+            float f10 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.x;
+            float f11 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.y;
+            float f12 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.z;
             Vec3d vec3d = new Vec3d((double)f10, (double)f11, (double)f12);
 
             for (int l = 0; l < 4; ++l)
@@ -128,10 +123,10 @@ public class ParticleSnowFlake extends Particle implements ParticleTextureStitch
             }
         }
 
-        buffer.pos((double)f5 + avec3d[0].xCoord, (double)f6 + avec3d[0].yCoord, (double)f7 + avec3d[0].zCoord).tex((double)f1, (double)f3).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-        buffer.pos((double)f5 + avec3d[1].xCoord, (double)f6 + avec3d[1].yCoord, (double)f7 + avec3d[1].zCoord).tex((double)f1, (double)f2).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-        buffer.pos((double)f5 + avec3d[2].xCoord, (double)f6 + avec3d[2].yCoord, (double)f7 + avec3d[2].zCoord).tex((double)f, (double)f2).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-        buffer.pos((double)f5 + avec3d[3].xCoord, (double)f6 + avec3d[3].yCoord, (double)f7 + avec3d[3].zCoord).tex((double)f, (double)f3).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
+        buffer.pos((double)f5 + avec3d[0].x, (double)f6 + avec3d[0].y, (double)f7 + avec3d[0].z).tex((double)f1, (double)f3).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
+        buffer.pos((double)f5 + avec3d[1].x, (double)f6 + avec3d[1].y, (double)f7 + avec3d[1].z).tex((double)f1, (double)f2).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
+        buffer.pos((double)f5 + avec3d[2].x, (double)f6 + avec3d[2].y, (double)f7 + avec3d[2].z).tex((double)f, (double)f2).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
+        buffer.pos((double)f5 + avec3d[3].x, (double)f6 + avec3d[3].y, (double)f7 + avec3d[3].z).tex((double)f, (double)f3).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
     }
 
     public static final class SnowFlakeFactory extends ParticleFactory<ParticleSnowFlake.SnowFlakeFactory, ParticleSnowFlake> {

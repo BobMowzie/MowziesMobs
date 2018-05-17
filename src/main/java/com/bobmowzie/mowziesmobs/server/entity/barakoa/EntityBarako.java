@@ -89,7 +89,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     private static final DataParameter<Integer> DIRECTION = EntityDataManager.createKey(EntityBarako.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> DIALOGUE = EntityDataManager.createKey(EntityBarako.class, DataSerializers.VARINT);
     private static final DataParameter<Boolean> ANGRY = EntityDataManager.createKey(EntityBarako.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<ItemStack> DESIRES = EntityDataManager.createKey(EntityBarako.class, DataSerializers.OPTIONAL_ITEM_STACK);
+    private static final DataParameter<ItemStack> DESIRES = EntityDataManager.createKey(EntityBarako.class, DataSerializers.ITEM_STACK);
     private final Set<UUID> tradedPlayers = new HashSet<>();
     public ControlledAnimation legsUp = new ControlledAnimation(15);
     public ControlledAnimation angryEyebrow = new ControlledAnimation(5);
@@ -175,7 +175,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     }
 
     @Override
-    protected SoundEvent getHurtSound() {
+    protected SoundEvent getHurtSound(DamageSource source) {
         return MMSounds.ENTITY_BARAKO_HURT;
     }
 

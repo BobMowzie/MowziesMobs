@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -86,7 +86,7 @@ public class RenderSolarBeam extends Render<EntitySolarBeam> {
         double maxU = minU + 16D / TEXTURE_WIDTH;
         double maxV = minV + 16D / TEXTURE_HEIGHT;
         Tessellator t = Tessellator.getInstance();
-        VertexBuffer buf = t.getBuffer();
+        BufferBuilder buf = t.getBuffer();
         buf.begin(GL11.GL_QUADS, POSITION_TEX_LMAP);
         buf.pos(-START_RADIUS, -START_RADIUS, 0).tex(minU, minV).lightmap(0, 240).endVertex();
         buf.pos(-START_RADIUS, START_RADIUS, 0).tex(minU, maxV).lightmap(0, 240).endVertex();
@@ -110,7 +110,7 @@ public class RenderSolarBeam extends Render<EntitySolarBeam> {
         double maxU = minU + 16D / TEXTURE_WIDTH;
         double maxV = minV + 16D / TEXTURE_HEIGHT;
         Tessellator t = Tessellator.getInstance();
-        VertexBuffer buf = t.getBuffer();
+        BufferBuilder buf = t.getBuffer();
         buf.begin(GL11.GL_QUADS, POSITION_TEX_LMAP);
         buf.pos(-START_RADIUS, -START_RADIUS, 0).tex(minU, minV).lightmap(0, 240).endVertex();
         buf.pos(-START_RADIUS, START_RADIUS, 0).tex(minU, maxV).lightmap(0, 240).endVertex();
@@ -162,7 +162,7 @@ public class RenderSolarBeam extends Render<EntitySolarBeam> {
         double maxU = minU + 20 / TEXTURE_WIDTH;
         double maxV = minV + 1 / TEXTURE_HEIGHT;
         Tessellator t = Tessellator.getInstance();
-        VertexBuffer buf = t.getBuffer();
+        BufferBuilder buf = t.getBuffer();
         buf.begin(GL11.GL_QUADS, POSITION_TEX_LMAP);
         buf.pos(-BEAM_RADIUS, 0, 0).tex(minU, minV).lightmap(0, 240).endVertex();
         buf.pos(-BEAM_RADIUS, length, 0).tex(minU, maxV).lightmap(0, 240).endVertex();

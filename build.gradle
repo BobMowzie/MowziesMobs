@@ -1,10 +1,13 @@
 buildscript {
     repositories {
         jcenter()
-        maven { url = "http://files.minecraftforge.net/maven" }
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+		}
     }
     dependencies {
-        classpath "net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT"
+        classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
     }
 }
 
@@ -17,21 +20,21 @@ archivesBaseName = "mowziesmobs"
 sourceCompatibility = targetCompatibility = "1.8"
 
 minecraft {
-    version = "1.11.2-13.20.0.2228"
+    version = "1.12-14.21.0.2375"
     runDir = "run"
-	mappings = "snapshot_20161220"
+	mappings = "snapshot_20170627"
 }
 
 repositories {
     mavenCentral()
     maven {
- name = "mcmoddev"
- url = "http://maven.mcmoddev.com"
-}
+		name = "mcmoddev"
+		url = "http://maven.mcmoddev.com"
+	}
 }
 
 dependencies {
-    compile "net.ilexiconn:llibrary:$llibrary_version-1.11.2:dev"
+    compile "net.ilexiconn:llibrary:$llibrary_version-1.12:dev"
 }
 
 processResources {

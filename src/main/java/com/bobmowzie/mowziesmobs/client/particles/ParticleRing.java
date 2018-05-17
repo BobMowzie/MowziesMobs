@@ -6,7 +6,7 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher;
 import net.ilexiconn.llibrary.LLibrary;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -57,11 +57,6 @@ public class ParticleRing extends Particle implements ParticleTextureStitcher.IP
     }
 
     @Override
-    public boolean isTransparent() {
-        return true;
-    }
-
-    @Override
     public void onUpdate() {
         super.onUpdate();
         if (particleAge >= particleMaxAge) {
@@ -71,7 +66,7 @@ public class ParticleRing extends Particle implements ParticleTextureStitcher.IP
     }
 
     @Override
-    public void renderParticle(VertexBuffer buffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+    public void renderParticle(BufferBuilder buffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         particleScale = size * (particleAge + partialTicks)/particleMaxAge;
         particleAlpha = opacity * 0.9f * (1 - (particleAge + partialTicks)/particleMaxAge) + 0.1f;
         particleRed = r;
@@ -117,9 +112,9 @@ public class ParticleRing extends Particle implements ParticleTextureStitcher.IP
         {
             float f8 = this.particleAngle + (this.particleAngle - this.prevParticleAngle) * partialTicks;
             float f9 = MathHelper.cos(f8 * 0.5F);
-            float f10 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.xCoord;
-            float f11 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.yCoord;
-            float f12 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.zCoord;
+            float f10 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.x;
+            float f11 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.y;
+            float f12 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.z;
             Vec3d vec3d = new Vec3d((double)f10, (double)f11, (double)f12);
 
             for (int l = 0; l < 4; ++l)
@@ -135,10 +130,10 @@ public class ParticleRing extends Particle implements ParticleTextureStitcher.IP
         boxRotateY.rotY(yaw);
 
         Point3d[] vertices = new Point3d[] {
-                new Point3d(avec3d[0].xCoord, avec3d[0].yCoord,  avec3d[0].zCoord),
-                new Point3d(avec3d[1].xCoord, avec3d[1].yCoord,  avec3d[1].zCoord),
-                new Point3d(avec3d[2].xCoord,  avec3d[2].yCoord,  avec3d[2].zCoord),
-                new Point3d(avec3d[3].xCoord,  avec3d[3].yCoord,  avec3d[3].zCoord)
+                new Point3d(avec3d[0].x, avec3d[0].y,  avec3d[0].z),
+                new Point3d(avec3d[1].x, avec3d[1].y,  avec3d[1].z),
+                new Point3d(avec3d[2].x,  avec3d[2].y,  avec3d[2].z),
+                new Point3d(avec3d[3].x,  avec3d[3].y,  avec3d[3].z)
         };
         for (Point3d vertex: vertices) {
             if (!facesCamera) {

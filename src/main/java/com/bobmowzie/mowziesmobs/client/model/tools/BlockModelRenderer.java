@@ -86,7 +86,7 @@ public class BlockModelRenderer extends AdvancedModelRenderer {
                 }
                 GlStateManager.callList(this.displayList);
                 GlStateManager.disableLighting();
-                VertexBuffer buf = Tessellator.getInstance().getBuffer();
+                BufferBuilder buf = Tessellator.getInstance().getBuffer();
                 buf.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
                 BlockRendererDispatcher blockRendererDispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
                 BlockPos blockpos = new BlockPos(0, 0, 0);
@@ -125,7 +125,7 @@ public class BlockModelRenderer extends AdvancedModelRenderer {
     private void compileDisplayList(float scale) {
         this.displayList = GLAllocation.generateDisplayLists(1);
         GlStateManager.glNewList(this.displayList, 4864);
-        VertexBuffer buffer = Tessellator.getInstance().getBuffer();
+        BufferBuilder buffer = Tessellator.getInstance().getBuffer();
         for (ModelBox box : this.cubeList) {
             box.render(buffer, scale);
         }

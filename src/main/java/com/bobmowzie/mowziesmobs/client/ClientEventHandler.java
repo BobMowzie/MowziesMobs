@@ -89,8 +89,8 @@ public enum ClientEventHandler {
                 Vec3d lookPos = propertyPlayer.geomancy.getLookPos();
                 Vec3d playerEyes = player.getPositionEyes(LLibrary.PROXY.getPartialTicks());
                 Vec3d vec = playerEyes.subtract(lookPos).normalize();
-                float yaw = (float) Math.atan2(vec.zCoord, vec.xCoord);
-                float pitch = (float) Math.asin(vec.yCoord);
+                float yaw = (float) Math.atan2(vec.z, vec.x);
+                float pitch = (float) Math.asin(vec.y);
                 float dYaw = ((float) (yaw * 180/Math.PI + 90) - player.rotationYaw)/2f;
                 float dPitch = ((float)(pitch * 180/Math.PI) - player.rotationPitch)/2f;
                 player.rotationYaw += dYaw;

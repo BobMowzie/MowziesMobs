@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.particles;
 
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -58,11 +58,6 @@ public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
     }
 
     @Override
-    public boolean isTransparent() {
-        return true;
-    }
-
-    @Override
     public void onUpdate() {
         particleAlpha = 0.1f;
         prevPosX = posX;
@@ -100,7 +95,7 @@ public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
     }
 
     @Override
-    public void renderParticle(VertexBuffer buffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+    public void renderParticle(BufferBuilder buffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         particleAlpha = ((float)particleAge + partialTicks)/(float)duration;
         super.renderParticle(buffer, entityIn, partialTicks, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
     }

@@ -55,7 +55,7 @@ public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> i
 
     @Override
     public boolean attackEntityFrom(DamageSource source, float damage) {
-        Entity entity = source.getEntity();
+        Entity entity = source.getTrueSource();
         if (entity != null && entity instanceof EntityLivingBase) {
             if (!(entity instanceof EntityPlayer) || !(((EntityPlayer) entity).capabilities.isCreativeMode)) {
                 if (leader != null) {

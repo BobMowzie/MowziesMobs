@@ -135,7 +135,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     }
 
     @Override
-    protected SoundEvent getHurtSound() {
+    protected SoundEvent getHurtSound(DamageSource source) {
         return active ? MMSounds.ENTITY_BARAKOA_HURT : null;
     }
 
@@ -387,13 +387,17 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     }
 
     @Override
+    public void setSwingingArms(boolean swingingArms) {
+    	// TODO
+    }
+
+    @Override
     public boolean attackEntityFrom(DamageSource source, float damage) {
-        Entity entity = source.getEntity();
+        Entity entity = source.getTrueSource();
         boolean angleFlag = true;
-        if (source.getEntity() != null) {
+        if (entity != null) {
             int arc = 220;
-            Entity entitySource = source.getEntity();
-            float entityHitAngle = (float) ((Math.atan2(entitySource.posZ - posZ, entitySource.posX - posX) * (180 / Math.PI) - 90) % 360);
+            float entityHitAngle = (float) ((Math.atan2(entity.posZ - posZ, entity.posX - posX) * (180 / Math.PI) - 90) % 360);
             float entityAttackingAngle = renderYawOffset % 360;
             if (entityHitAngle < 0) {
                 entityHitAngle += 360;

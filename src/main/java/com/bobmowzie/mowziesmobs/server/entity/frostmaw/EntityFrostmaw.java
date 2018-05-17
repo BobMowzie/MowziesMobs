@@ -275,11 +275,11 @@ public class EntityFrostmaw extends MowzieEntity {
                 mouthPos = mouthPos.add(new Vec3d(0, 0, 1).rotatePitch((float)Math.toRadians(-rotationPitch)).rotateYaw((float)Math.toRadians(-rotationYawHead)));
                 if (getAnimationTick() == 13) {
                     iceBreath = new EntityIceBreath(world, this);
-                    iceBreath.setPositionAndRotation(mouthPos.xCoord, mouthPos.yCoord, mouthPos.zCoord, rotationYawHead, rotationPitch + 10);
+                    iceBreath.setPositionAndRotation(mouthPos.x, mouthPos.y, mouthPos.z, rotationYawHead, rotationPitch + 10);
                     if (!world.isRemote) world.spawnEntity(iceBreath);
                 }
                 if (iceBreath != null)
-                    iceBreath.setPositionAndRotation(mouthPos.xCoord, mouthPos.yCoord, mouthPos.zCoord, rotationYawHead, rotationPitch + 10);
+                    iceBreath.setPositionAndRotation(mouthPos.x, mouthPos.y, mouthPos.z, rotationYawHead, rotationPitch + 10);
             }
 
             spawnSwipeParticles();
@@ -356,7 +356,7 @@ public class EntityFrostmaw extends MowzieEntity {
                 crystal.motionX = 0;
                 crystal.motionY = 0;
                 crystal.motionZ = 0;
-                crystal.setPosition(rightHandPos.xCoord, rightHandPos.yCoord + 0.1, rightHandPos.zCoord);
+                crystal.setPosition(rightHandPos.x, rightHandPos.y + 0.1, rightHandPos.z);
             }
         }
 
@@ -481,9 +481,9 @@ public class EntityFrostmaw extends MowzieEntity {
                             double length = prevRightHandPos.subtract(rightHandPos).lengthVector();
                             int numClouds = (int) Math.floor(2 * length);
                             for (int i = 0; i < numClouds; i++) {
-                                double x = prevRightHandPos.xCoord + i * (rightHandPos.xCoord - prevRightHandPos.xCoord) / numClouds;
-                                double y = prevRightHandPos.yCoord + i * (rightHandPos.yCoord - prevRightHandPos.yCoord) / numClouds;
-                                double z = prevRightHandPos.zCoord + i * (rightHandPos.zCoord - prevRightHandPos.zCoord) / numClouds;
+                                double x = prevRightHandPos.x + i * (rightHandPos.x - prevRightHandPos.x) / numClouds;
+                                double y = prevRightHandPos.y + i * (rightHandPos.y - prevRightHandPos.y) / numClouds;
+                                double z = prevRightHandPos.z + i * (rightHandPos.z - prevRightHandPos.z) / numClouds;
                                 for (int j = 0; j < snowflakeDensity; j++) {
                                     float xOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
                                     float yOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
@@ -502,9 +502,9 @@ public class EntityFrostmaw extends MowzieEntity {
                             double length = prevLeftHandPos.subtract(leftHandPos).lengthVector();
                             int numClouds = (int) Math.floor(2.5 * length);
                             for (int i = 0; i < numClouds; i++) {
-                                double x = prevLeftHandPos.xCoord + i * (leftHandPos.xCoord - prevLeftHandPos.xCoord) / numClouds;
-                                double y = prevLeftHandPos.yCoord + i * (leftHandPos.yCoord - prevLeftHandPos.yCoord) / numClouds;
-                                double z = prevLeftHandPos.zCoord + i * (leftHandPos.zCoord - prevLeftHandPos.zCoord) / numClouds;
+                                double x = prevLeftHandPos.x + i * (leftHandPos.x - prevLeftHandPos.x) / numClouds;
+                                double y = prevLeftHandPos.y + i * (leftHandPos.y - prevLeftHandPos.y) / numClouds;
+                                double z = prevLeftHandPos.z + i * (leftHandPos.z - prevLeftHandPos.z) / numClouds;
                                 for (int j = 0; j < snowflakeDensity; j++) {
                                     float xOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
                                     float yOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
@@ -526,9 +526,9 @@ public class EntityFrostmaw extends MowzieEntity {
                         double length = prevRightHandPos.subtract(rightHandPos).lengthVector();
                         int numClouds = (int) Math.floor(2 * length);
                         for (int i = 0; i < numClouds; i++) {
-                            double x = prevRightHandPos.xCoord + i * (rightHandPos.xCoord - prevRightHandPos.xCoord) / numClouds;
-                            double y = prevRightHandPos.yCoord + i * (rightHandPos.yCoord - prevRightHandPos.yCoord) / numClouds;
-                            double z = prevRightHandPos.zCoord + i * (rightHandPos.zCoord - prevRightHandPos.zCoord) / numClouds;
+                            double x = prevRightHandPos.x + i * (rightHandPos.x - prevRightHandPos.x) / numClouds;
+                            double y = prevRightHandPos.y + i * (rightHandPos.y - prevRightHandPos.y) / numClouds;
+                            double z = prevRightHandPos.z + i * (rightHandPos.z - prevRightHandPos.z) / numClouds;
                             for (int j = 0; j < snowflakeDensity; j++) {
                                 float xOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
                                 float yOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
@@ -547,9 +547,9 @@ public class EntityFrostmaw extends MowzieEntity {
                         double length = prevLeftHandPos.subtract(leftHandPos).lengthVector();
                         int numClouds = (int) Math.floor(2.5 * length);
                         for (int i = 0; i < numClouds; i++) {
-                            double x = prevLeftHandPos.xCoord + i * (leftHandPos.xCoord - prevLeftHandPos.xCoord) / numClouds;
-                            double y = prevLeftHandPos.yCoord + i * (leftHandPos.yCoord - prevLeftHandPos.yCoord) / numClouds;
-                            double z = prevLeftHandPos.zCoord + i * (leftHandPos.zCoord - prevLeftHandPos.zCoord) / numClouds;
+                            double x = prevLeftHandPos.x + i * (leftHandPos.x - prevLeftHandPos.x) / numClouds;
+                            double y = prevLeftHandPos.y + i * (leftHandPos.y - prevLeftHandPos.y) / numClouds;
+                            double z = prevLeftHandPos.z + i * (leftHandPos.z - prevLeftHandPos.z) / numClouds;
                             for (int j = 0; j < snowflakeDensity; j++) {
                                 float xOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
                                 float yOffset = snowflakeRandomness * (2 * rand.nextFloat() - 1);
@@ -578,7 +578,8 @@ public class EntityFrostmaw extends MowzieEntity {
         boolean attack = super.attackEntityFrom(source, damage);
         if (attack) {
             shouldDodgeMeasure += damage;
-            if (source.getEntity() != null && source.getEntity() instanceof EntityLivingBase && (!(source.getEntity() instanceof EntityPlayer) || !((EntityPlayer)source.getEntity()).capabilities.isCreativeMode)) setAttackTarget((EntityLivingBase) source.getEntity());
+            Entity entity = source.getTrueSource();
+            if (entity != null && entity instanceof EntityLivingBase && (!(entity instanceof EntityPlayer) || !((EntityPlayer)entity).capabilities.isCreativeMode)) setAttackTarget((EntityLivingBase) entity);
             if (!getActive()) {
                 if (getAnimation() != DIE_ANIMATION) {
                     if (getHasCrystal()) AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_ANIMATION);

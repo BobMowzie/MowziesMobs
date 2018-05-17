@@ -77,7 +77,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
 
     @Override
     public boolean attackEntityFrom(DamageSource source, float damage) {
-        Entity entity = source.getEntity();
+        Entity entity = source.getTrueSource();
         if (entity != null && entity instanceof EntityLivingBase) {
             if (!(entity instanceof EntityPlayer) || !(((EntityPlayer) entity).capabilities.isCreativeMode)) {
                 setAttackTarget((EntityLivingBase) entity);
@@ -166,10 +166,10 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
     protected void despawnEntity() {
         Event.Result result;
         if (isNoDespawnRequired()) {
-            entityAge = 0;
-        } else if ((entityAge & 0x1F) == 0x1F && (result = ForgeEventFactory.canEntityDespawn(this)) != Event.Result.DEFAULT) {
+        	idleTime = 0;
+        } else if ((idleTime & 0x1F) == 0x1F && (result = ForgeEventFactory.canEntityDespawn(this)) != Event.Result.DEFAULT) {
             if (result == Event.Result.DENY) {
-                entityAge = 0;
+            	idleTime = 0;
             } else {
                 pack.forEach(EntityBarakoanToBarakoana::setDead);
                 setDead();
@@ -185,11 +185,11 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
                     pack.forEach(EntityBarakoanToBarakoana::setDead);
                     setDead();
                 }
-                if (entityAge > 600 && rand.nextInt(800) == 0 && distance > 1024 && canDespawn()) {
+                if (idleTime > 600 && rand.nextInt(800) == 0 && distance > 1024 && canDespawn()) {
                     pack.forEach(EntityBarakoanToBarakoana::setDead);
                     setDead();
                 } else if (distance < 1024) {
-                    entityAge = 0;
+                	idleTime = 0;
                 }
             }
         }

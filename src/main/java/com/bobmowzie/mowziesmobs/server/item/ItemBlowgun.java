@@ -2,8 +2,11 @@ package com.bobmowzie.mowziesmobs.server.item;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -153,8 +156,8 @@ public class ItemBlowgun extends ItemBow {
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer playerIn, List<String> tooltip, boolean advanced) {
-        super.addInformation(stack, playerIn, tooltip, advanced);
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+        super.addInformation(stack, worldIn, tooltip, flagIn);
         ItemHandler.addItemText(this, tooltip);
     }
 }

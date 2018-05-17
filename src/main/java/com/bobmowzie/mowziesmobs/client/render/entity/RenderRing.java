@@ -3,11 +3,10 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityRing;
-import com.sun.javafx.geom.Vec2d;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.Vector3d;
-import net.minecraft.client.renderer.VertexBuffer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -46,8 +45,8 @@ public class RenderRing extends Render<EntityRing> {
         }
         else {
             if (entity.facing != null) {
-                float pitch = (float) Math.toDegrees(Math.asin(-entity.facing.yCoord));
-                float yaw = (float) Math.toDegrees(MathHelper.atan2(entity.facing.xCoord, entity.facing.zCoord));
+                float pitch = (float) Math.toDegrees(Math.asin(-entity.facing.y));
+                float yaw = (float) Math.toDegrees(MathHelper.atan2(entity.facing.x, entity.facing.z));
                 GlStateManager.rotate(yaw, 0, 1, 0);
                 GlStateManager.rotate(pitch, 1, 0, 0);
             }
@@ -65,7 +64,7 @@ public class RenderRing extends Render<EntityRing> {
         double minV = 0;
         double maxV = 1;
         Tessellator t = Tessellator.getInstance();
-        VertexBuffer buf = t.getBuffer();
+        BufferBuilder buf = t.getBuffer();
         buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
         float size = entity.size * entity.interpolate(partialTicks);
         float opacity = entity.opacity * (1 - size/entity.size);
