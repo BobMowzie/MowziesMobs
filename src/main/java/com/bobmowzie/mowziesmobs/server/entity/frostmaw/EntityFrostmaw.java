@@ -162,7 +162,7 @@ public class EntityFrostmaw extends MowzieEntity {
         this.repelEntities(3.8f, 3.8f, 3.8f, 3.8f);
 
         if (ticksExisted == 1) {
-//            System.out.println("Frostmaw at " + getPosition());
+            System.out.println("Frostmaw at " + getPosition());
             if (getHasCrystal()) {
                 Optional<UUID> crystalID = getCrystalID();
                 if (!getCrystalID().isPresent() && !world.isRemote && crystal == null && !getActive()) {
@@ -455,12 +455,14 @@ public class EntityFrostmaw extends MowzieEntity {
 
     @Override
     public boolean getCanSpawnHere() {
-        List<EntityLivingBase> nearby = getEntityLivingBaseNearby(20, 4, 20, 20);
+        List<EntityLivingBase> nearby = getEntityLivingBaseNearby(100, 100, 100, 100);
         for (EntityLivingBase nearbyEntity : nearby) {
             if (nearbyEntity instanceof EntityFrostmaw || nearbyEntity instanceof EntityVillager) {
+                System.out.println("Could not spawn");
                 return false;
             }
         }
+        System.out.println("Can spawn");
         return super.getCanSpawnHere();
     }
 
@@ -787,5 +789,10 @@ public class EntityFrostmaw extends MowzieEntity {
     protected void dropLoot() {
         super.dropLoot();
         if (getHasCrystal()) dropItem(ItemHandler.INSTANCE.iceCrystal, 1);
+    }
+
+    @Override
+    protected boolean canDespawn() {
+        return false;
     }
 }
