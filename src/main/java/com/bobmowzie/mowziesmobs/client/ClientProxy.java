@@ -15,9 +15,11 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -38,9 +40,8 @@ import com.bobmowzie.mowziesmobs.server.item.ItemSpawnEgg;
 
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends ServerProxy {
-    @Override
-    public void onInit() {
-        super.onInit();
+    @SubscribeEvent
+    public static void register(ModelRegistryEvent event) {
         RenderingRegistry.registerEntityRenderingHandler(EntityBabyFoliaath.class, RenderFoliaathBaby::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityFoliaath.class, RenderFoliaath::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityWroughtnaut.class, RenderWroughtnaut::new);
@@ -123,15 +124,15 @@ public class ClientProxy extends ServerProxy {
         }
     }
 
-    private ModelResourceLocation registerBlockModel(Block block, String name) {
+    private static ModelResourceLocation registerBlockModel(Block block, String name) {
         return registerItemModel(Item.getItemFromBlock(block), 0, name);
     }
 
-    private ModelResourceLocation registerItemModel(Item item, String name) {
+    private static ModelResourceLocation registerItemModel(Item item, String name) {
         return registerItemModel(item, 0, name);
     }
 
-    private ModelResourceLocation registerItemModel(Item item, int id, String name) {
+    private static ModelResourceLocation registerItemModel(Item item, int id, String name) {
         ModelResourceLocation resource = new ModelResourceLocation(MowziesMobs.MODID + ':' + name, "inventory");
         ModelLoader.setCustomModelResourceLocation(item, id, resource);
         return resource;

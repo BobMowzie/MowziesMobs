@@ -9,6 +9,7 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
@@ -156,7 +157,7 @@ public enum FrozenRenderHandler {
         GlStateManager.rotate(200.0F, 1.0F, 0.0F, 0.0F);
         GlStateManager.rotate(f * -135.0F, 0.0F, 1.0F, 0.0F);
         GlStateManager.translate(f * 5.6F, 0.0F, 0.0F);
-        RenderPlayer renderplayer = null;//TODO: (RenderPlayer)renderManager.getEntityRenderObject(abstractclientplayer);
+        RenderPlayer renderplayer = (RenderPlayer) (Render<?>) renderManager.getEntityRenderObject(abstractclientplayer);
         GlStateManager.disableCull();
 
         if (flag) {
