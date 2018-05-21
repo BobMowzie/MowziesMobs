@@ -41,21 +41,21 @@ public enum EntityHandler {
         registerEntity(EntityBarako.class, "barako", true, 0xBA6656, 0xFFFF4D, false, 1, 1, 1, EnumCreatureType.MONSTER);
         registerEntity(EntityFrostmaw.class, "frostmaw", true, 0xf7faff, 0xafcdff, false, 1, 1, 1, EnumCreatureType.MONSTER);
 
-        EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "sunstrike"), EntitySunstrike.class, "sunstrike", nextEntityId(), MowziesMobs.INSTANCE, 64, 1, true);
-        EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "solar_beam"), EntitySolarBeam.class, "solar_beam", nextEntityId(), MowziesMobs.INSTANCE, 64, 1, true);
-        EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "boulder"), EntityBoulder.class, "boulder", nextEntityId(), MowziesMobs.INSTANCE, 64, 1, true);
-        EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "axe_attack"), EntityAxeAttack.class, "axe_attack", nextEntityId(), MowziesMobs.INSTANCE, 64, 1, true);
-        EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "icebreath"), EntityIceBreath.class, "icebreath", nextEntityId(), MowziesMobs.INSTANCE, 64, 1, true);
-        EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "frozen_controller"), EntityFrozenController.class, "frozen_controller", nextEntityId(), MowziesMobs.INSTANCE, 64, 1, true);
-        EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "ring"), EntityRing.class, "ring", nextEntityId(), MowziesMobs.INSTANCE, 64, 1, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "sunstrike"), EntitySunstrike.class, "sunstrike", nextEntityId(), MowziesMobs.instance(), 64, 1, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "solar_beam"), EntitySolarBeam.class, "solar_beam", nextEntityId(), MowziesMobs.instance(), 64, 1, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "boulder"), EntityBoulder.class, "boulder", nextEntityId(), MowziesMobs.instance(), 64, 1, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "axe_attack"), EntityAxeAttack.class, "axe_attack", nextEntityId(), MowziesMobs.instance(), 64, 1, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "icebreath"), EntityIceBreath.class, "icebreath", nextEntityId(), MowziesMobs.instance(), 64, 1, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "frozen_controller"), EntityFrozenController.class, "frozen_controller", nextEntityId(), MowziesMobs.instance(), 64, 1, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "ring"), EntityRing.class, "ring", nextEntityId(), MowziesMobs.instance(), 64, 1, true);
 
-        EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "dart"), EntityDart.class, "dart", nextEntityId(), MowziesMobs.INSTANCE, 64, 1, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "dart"), EntityDart.class, "dart", nextEntityId(), MowziesMobs.instance(), 64, 1, true);
     }
 
     public void registerEntity(Class<? extends EntityLiving> entityClass, String name, boolean addEgg, int mainColor, int subColor, boolean addSpawn, int spawnFrequency, int minGroup, int maxGroup, EnumCreatureType typeOfCreature, Biome... biomes) {
         int entityId = nextEntityId();
         ResourceLocation res = new ResourceLocation(MowziesMobs.MODID, name);
-        EntityRegistry.registerModEntity(res, entityClass, name, entityId, MowziesMobs.INSTANCE, 64, 1, true);
+        EntityRegistry.registerModEntity(res, entityClass, name, entityId, MowziesMobs.instance(), 64, 1, true);
         if (addEgg) {
             entityEggs.put(res, new MowzieEntityEggInfo(res, entityClass, mainColor, subColor));
         }
