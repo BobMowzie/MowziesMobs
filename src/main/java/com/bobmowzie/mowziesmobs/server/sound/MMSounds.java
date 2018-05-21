@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.sound;
 
+import net.minecraft.client.model.ModelWitch;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
@@ -9,62 +10,106 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 
-@Mod.EventBusSubscriber
-public class MMSounds {
+@Mod.EventBusSubscriber(modid = MowziesMobs.MODID)
+public final class MMSounds {
+    private MMSounds() {
+    }
+
+    private static final SoundEvent NIL = null;
+
     // Generic
-    public static SoundEvent LASER;
-    public static SoundEvent SUNSTRIKE;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":laser")
+    public static final SoundEvent LASER = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":sunstrike")
+    public static final SoundEvent SUNSTRIKE = NIL;
 
     // Wroughtnaut
-    public static SoundEvent ENTITY_WROUGHT_PRE_SWING_1;
-    public static SoundEvent ENTITY_WROUGHT_PRE_SWING_2;
-    public static SoundEvent ENTITY_WROUGHT_CREAK;
-    public static SoundEvent ENTITY_WROUGHT_SWING_1;
-    public static SoundEvent ENTITY_WROUGHT_SWING_2;
-    public static SoundEvent ENTITY_WROUGHT_SHOUT_2;
-    public static SoundEvent ENTITY_WROUGHT_PULL_1;
-    public static SoundEvent ENTITY_WROUGHT_PULL_5;
-    public static SoundEvent ENTITY_WROUGHT_RELEASE_2;
-    public static SoundEvent ENTITY_WROUGHT_WHOOSH;
-    public static SoundEvent ENTITY_WROUGHT_HURT_1;
-    public static SoundEvent ENTITY_WROUGHT_SCREAM;
-    public static SoundEvent ENTITY_WROUGHT_GRUNT_1;
-    public static SoundEvent ENTITY_WROUGHT_GRUNT_2;
-    public static SoundEvent ENTITY_WROUGHT_AMBIENT;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.preSwing1")
+    public static final SoundEvent ENTITY_WROUGHT_PRE_SWING_1 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.preSwing2")
+    public static final SoundEvent ENTITY_WROUGHT_PRE_SWING_2 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.creak")
+    public static final SoundEvent ENTITY_WROUGHT_CREAK = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.swing1")
+    public static final SoundEvent ENTITY_WROUGHT_SWING_1 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.swing2")
+    public static final SoundEvent ENTITY_WROUGHT_SWING_2 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.shout2")
+    public static final SoundEvent ENTITY_WROUGHT_SHOUT_2 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.pull1")
+    public static final SoundEvent ENTITY_WROUGHT_PULL_1 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.pull5")
+    public static final SoundEvent ENTITY_WROUGHT_PULL_5 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.release2")
+    public static final SoundEvent ENTITY_WROUGHT_RELEASE_2 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.whoosh")
+    public static final SoundEvent ENTITY_WROUGHT_WHOOSH = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.hurt1")
+    public static final SoundEvent ENTITY_WROUGHT_HURT_1 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.scream")
+    public static final SoundEvent ENTITY_WROUGHT_SCREAM = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.grunt1")
+    public static final SoundEvent ENTITY_WROUGHT_GRUNT_1 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.grunt2")
+    public static final SoundEvent ENTITY_WROUGHT_GRUNT_2 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.ambient")
+    public static final SoundEvent ENTITY_WROUGHT_AMBIENT = NIL;
 
     // Barakoa
-    public static SoundEvent ENTITY_BARAKOA_INHALE;
-    public static SoundEvent ENTITY_BARAKOA_BLOWDART;
-    public static SoundEvent ENTITY_BARAKOA_BATTLECRY;
-    public static SoundEvent ENTITY_BARAKOA_BATTLECRY_2;
-    public static SoundEvent ENTITY_BARAKOA_SWING;
-    public static SoundEvent ENTITY_BARAKOA_EMERGE;
-    public static SoundEvent ENTITY_BARAKOA_HURT;
-    public static SoundEvent ENTITY_BARAKOA_DIE;
-    public static SoundEvent ENTITY_BARAKOA_SHOUT;
-    public static SoundEvent ENTITY_BARAKOA_TALK_1;
-    public static SoundEvent ENTITY_BARAKOA_TALK_2;
-    public static SoundEvent ENTITY_BARAKOA_TALK_3;
-    public static SoundEvent ENTITY_BARAKOA_TALK_4;
-    public static SoundEvent ENTITY_BARAKOA_TALK_5;
-    public static SoundEvent ENTITY_BARAKOA_TALK_6;
-    public static SoundEvent ENTITY_BARAKOA_TALK_7;
-    public static SoundEvent[] ENTITY_BARAKOA_TALK = {
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.inhale")
+    public static final SoundEvent ENTITY_BARAKOA_INHALE = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.blowdart")
+    public static final SoundEvent ENTITY_BARAKOA_BLOWDART = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.battlecry")
+    public static final SoundEvent ENTITY_BARAKOA_BATTLECRY = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.battlecry2")
+    public static final SoundEvent ENTITY_BARAKOA_BATTLECRY_2 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.swing")
+    public static final SoundEvent ENTITY_BARAKOA_SWING = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.emerge")
+    public static final SoundEvent ENTITY_BARAKOA_EMERGE = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.hurt")
+    public static final SoundEvent ENTITY_BARAKOA_HURT = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.die")
+    public static final SoundEvent ENTITY_BARAKOA_DIE = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.shout")
+    public static final SoundEvent ENTITY_BARAKOA_SHOUT = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.talk1")
+    public static final SoundEvent ENTITY_BARAKOA_TALK_1 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.talk2")
+    public static final SoundEvent ENTITY_BARAKOA_TALK_2 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.talk3")
+    public static final SoundEvent ENTITY_BARAKOA_TALK_3 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.talk4")
+    public static final SoundEvent ENTITY_BARAKOA_TALK_4 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.talk5")
+    public static final SoundEvent ENTITY_BARAKOA_TALK_5 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.talk6")
+    public static final SoundEvent ENTITY_BARAKOA_TALK_6 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.talk7")
+    public static final SoundEvent ENTITY_BARAKOA_TALK_7 = NIL;
+    public static final SoundEvent[] ENTITY_BARAKOA_TALK = {
 		ENTITY_BARAKOA_TALK_1,
 		ENTITY_BARAKOA_TALK_2,
 		ENTITY_BARAKOA_TALK_3,
 		ENTITY_BARAKOA_TALK_4,
 		ENTITY_BARAKOA_TALK_5,
-		ENTITY_BARAKOA_TALK_6, 		
-		ENTITY_BARAKOA_TALK_7    		
+		ENTITY_BARAKOA_TALK_6,
+		ENTITY_BARAKOA_TALK_7
     };
-    public static SoundEvent ENTITY_BARAKOA_ANGRY_1;
-    public static SoundEvent ENTITY_BARAKOA_ANGRY_2;
-    public static SoundEvent ENTITY_BARAKOA_ANGRY_3;
-    public static SoundEvent ENTITY_BARAKOA_ANGRY_4;
-    public static SoundEvent ENTITY_BARAKOA_ANGRY_5;
-    public static SoundEvent ENTITY_BARAKOA_ANGRY_6;
-    public static SoundEvent[] ENTITY_BARAKOA_ANGRY = {
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.angry1")
+    public static final SoundEvent ENTITY_BARAKOA_ANGRY_1 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.angry2")
+    public static final SoundEvent ENTITY_BARAKOA_ANGRY_2 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.angry3")
+    public static final SoundEvent ENTITY_BARAKOA_ANGRY_3 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.angry4")
+    public static final SoundEvent ENTITY_BARAKOA_ANGRY_4 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.angry5")
+    public static final SoundEvent ENTITY_BARAKOA_ANGRY_5 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.angry6")
+    public static final SoundEvent ENTITY_BARAKOA_ANGRY_6 = NIL;
+    public static final SoundEvent[] ENTITY_BARAKOA_ANGRY = {
         ENTITY_BARAKOA_ANGRY_1,
         ENTITY_BARAKOA_ANGRY_2,
         ENTITY_BARAKOA_ANGRY_3,
@@ -73,19 +118,31 @@ public class MMSounds {
         ENTITY_BARAKOA_ANGRY_6
     };
 
-    public static SoundEvent ENTITY_BARAKO_BELLY;
-    public static SoundEvent ENTITY_BARAKO_BURST;
-    public static SoundEvent ENTITY_BARAKO_ATTACK;
-    public static SoundEvent ENTITY_BARAKO_HURT;
-    public static SoundEvent ENTITY_BARAKO_DIE;
-    public static SoundEvent ENTITY_BARAKO_BLESS;
-    public static SoundEvent ENTITY_BARAKO_TALK_1;
-    public static SoundEvent ENTITY_BARAKO_TALK_2;
-    public static SoundEvent ENTITY_BARAKO_TALK_3;
-    public static SoundEvent ENTITY_BARAKO_TALK_4;
-    public static SoundEvent ENTITY_BARAKO_TALK_5;
-    public static SoundEvent ENTITY_BARAKO_TALK_6;
-    public static SoundEvent[] ENTITY_BARAKO_TALK = {
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barako.belly")
+    public static final SoundEvent ENTITY_BARAKO_BELLY = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barako.burst")
+    public static final SoundEvent ENTITY_BARAKO_BURST = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barako.attack")
+    public static final SoundEvent ENTITY_BARAKO_ATTACK = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barako.hurt")
+    public static final SoundEvent ENTITY_BARAKO_HURT = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barako.die")
+    public static final SoundEvent ENTITY_BARAKO_DIE = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barako.bless")
+    public static final SoundEvent ENTITY_BARAKO_BLESS = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barako.talk1")
+    public static final SoundEvent ENTITY_BARAKO_TALK_1 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barako.talk2")
+    public static final SoundEvent ENTITY_BARAKO_TALK_2 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barako.talk3")
+    public static final SoundEvent ENTITY_BARAKO_TALK_3 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barako.talk4")
+    public static final SoundEvent ENTITY_BARAKO_TALK_4 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barako.talk5")
+    public static final SoundEvent ENTITY_BARAKO_TALK_5 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barako.talk6")
+    public static final SoundEvent ENTITY_BARAKO_TALK_6 = NIL;
+    public static final SoundEvent[] ENTITY_BARAKO_TALK = {
         ENTITY_BARAKO_TALK_1,
         ENTITY_BARAKO_TALK_2,
         ENTITY_BARAKO_TALK_3,
@@ -93,13 +150,19 @@ public class MMSounds {
         ENTITY_BARAKO_TALK_5,
         ENTITY_BARAKO_TALK_6
     };
-    public static SoundEvent ENTITY_BARAKO_ANGRY_1;
-    public static SoundEvent ENTITY_BARAKO_ANGRY_2;
-    public static SoundEvent ENTITY_BARAKO_ANGRY_3;
-    public static SoundEvent ENTITY_BARAKO_ANGRY_4;
-    public static SoundEvent ENTITY_BARAKO_ANGRY_5;
-    public static SoundEvent ENTITY_BARAKO_ANGRY_6;
-    public static SoundEvent[] ENTITY_BARAKO_ANGRY = {
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barako.angry1")
+    public static final SoundEvent ENTITY_BARAKO_ANGRY_1 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barako.angry2")
+    public static final SoundEvent ENTITY_BARAKO_ANGRY_2 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barako.angry3")
+    public static final SoundEvent ENTITY_BARAKO_ANGRY_3 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barako.angry4")
+    public static final SoundEvent ENTITY_BARAKO_ANGRY_4 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barako.angry5")
+    public static final SoundEvent ENTITY_BARAKO_ANGRY_5 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barako.angry6")
+    public static final SoundEvent ENTITY_BARAKO_ANGRY_6 = NIL;
+    public static final SoundEvent[] ENTITY_BARAKO_ANGRY = {
         ENTITY_BARAKO_ANGRY_1,
         ENTITY_BARAKO_ANGRY_2,
         ENTITY_BARAKO_ANGRY_3,
@@ -109,209 +172,248 @@ public class MMSounds {
     };
 
     // Foliaath
-    public static SoundEvent ENTITY_FOLIAATH_GRUNT;
-    public static SoundEvent ENTITY_FOLIAATH_RUSTLE;
-    public static SoundEvent ENTITY_FOLIAATH_MERGE;
-    public static SoundEvent ENTITY_FOLIAATH_RETREAT;
-    public static SoundEvent ENTITY_FOLIAATH_PANT_1;
-    public static SoundEvent ENTITY_FOLIAATH_PANT_2;
-    public static SoundEvent ENTITY_FOLIAATH_BITE_1;
-    public static SoundEvent ENTITY_FOLIAATH_HURT;
-    public static SoundEvent ENTITY_FOLIAATH_DIE;
-    public static SoundEvent ENTITY_FOLIAATH_BABY_EAT;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":foliaath.grunt")
+    public static final SoundEvent ENTITY_FOLIAATH_GRUNT = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":foliaath.rustle")
+    public static final SoundEvent ENTITY_FOLIAATH_RUSTLE = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":foliaath.emerge")
+    public static final SoundEvent ENTITY_FOLIAATH_MERGE = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":foliaath.retreat")
+    public static final SoundEvent ENTITY_FOLIAATH_RETREAT = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":foliaath.pant1")
+    public static final SoundEvent ENTITY_FOLIAATH_PANT_1 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":foliaath.pant2")
+    public static final SoundEvent ENTITY_FOLIAATH_PANT_2 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":foliaath.bite1")
+    public static final SoundEvent ENTITY_FOLIAATH_BITE_1 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":foliaath.hurt")
+    public static final SoundEvent ENTITY_FOLIAATH_HURT = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":foliaath.die")
+    public static final SoundEvent ENTITY_FOLIAATH_DIE = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":foliaath.baby.eat")
+    public static final SoundEvent ENTITY_FOLIAATH_BABY_EAT = NIL;
 
-    public static SoundEvent ENTITY_FROSTMAW_ROAR;
-    public static SoundEvent ENTITY_FROSTMAW_DIE;
-    public static SoundEvent ENTITY_FROSTMAW_WHOOSH;
-    public static SoundEvent ENTITY_FROSTMAW_ICEBREATH;
-    public static SoundEvent ENTITY_FROSTMAW_ICEBREATH_START;
-    public static SoundEvent ENTITY_FROSTMAW_FROZEN_CRASH;
-    public static SoundEvent ENTITY_FROSTMAW_STEP;
-    public static SoundEvent ENTITY_FROSTMAW_LAND;
-    public static SoundEvent ENTITY_FROSTMAW_ATTACK_1;
-    public static SoundEvent ENTITY_FROSTMAW_ATTACK_2;
-    public static SoundEvent ENTITY_FROSTMAW_ATTACK_3;
-    public static SoundEvent ENTITY_FROSTMAW_ATTACK_4;
-    public static SoundEvent[] ENTITY_FROSTMAW_ATTACK = {
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":frostmaw.roar")
+    public static final SoundEvent ENTITY_FROSTMAW_ROAR = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":frostmaw.die")
+    public static final SoundEvent ENTITY_FROSTMAW_DIE = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":frostmaw.whoosh")
+    public static final SoundEvent ENTITY_FROSTMAW_WHOOSH = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":frostmaw.icebreath")
+    public static final SoundEvent ENTITY_FROSTMAW_ICEBREATH = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":frostmaw.icebreathstart")
+    public static final SoundEvent ENTITY_FROSTMAW_ICEBREATH_START = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":frostmaw.frozencrash")
+    public static final SoundEvent ENTITY_FROSTMAW_FROZEN_CRASH = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":frostmaw.step")
+    public static final SoundEvent ENTITY_FROSTMAW_STEP = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":frostmaw.land")
+    public static final SoundEvent ENTITY_FROSTMAW_LAND = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":frostmaw.attack1")
+    public static final SoundEvent ENTITY_FROSTMAW_ATTACK_1 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":frostmaw.attack2")
+    public static final SoundEvent ENTITY_FROSTMAW_ATTACK_2 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":frostmaw.attack3")
+    public static final SoundEvent ENTITY_FROSTMAW_ATTACK_3 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":frostmaw.attack4")
+    public static final SoundEvent ENTITY_FROSTMAW_ATTACK_4 = NIL;
+    public static final SoundEvent[] ENTITY_FROSTMAW_ATTACK = {
             ENTITY_FROSTMAW_ATTACK_1,
             ENTITY_FROSTMAW_ATTACK_2,
             ENTITY_FROSTMAW_ATTACK_3,
             ENTITY_FROSTMAW_ATTACK_4
     };
-    public static SoundEvent ENTITY_FROSTMAW_BREATH_1;
-    public static SoundEvent ENTITY_FROSTMAW_BREATH_2;
-    public static SoundEvent[] ENTITY_FROSTMAW_BREATH = {
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":frostmaw.breath1")
+    public static final SoundEvent ENTITY_FROSTMAW_BREATH_1 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":frostmaw.breath2")
+    public static final SoundEvent ENTITY_FROSTMAW_BREATH_2 = NIL;
+    public static final SoundEvent[] ENTITY_FROSTMAW_BREATH = {
             ENTITY_FROSTMAW_BREATH_1,
             ENTITY_FROSTMAW_BREATH_2
     };
-    public static SoundEvent ENTITY_FROSTMAW_LIVING_1;
-    public static SoundEvent ENTITY_FROSTMAW_LIVING_2;
-    public static SoundEvent[] ENTITY_FROSTMAW_LIVING = {
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":frostmaw.living1")
+    public static final SoundEvent ENTITY_FROSTMAW_LIVING_1 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":frostmaw.living2")
+    public static final SoundEvent ENTITY_FROSTMAW_LIVING_2 = NIL;
+    public static final SoundEvent[] ENTITY_FROSTMAW_LIVING = {
             ENTITY_FROSTMAW_LIVING_1,
             ENTITY_FROSTMAW_LIVING_2
     };
-    public static SoundEvent ENTITY_FROSTMAW_WAKEUP;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":frostmaw.wakeup")
+    public static final SoundEvent ENTITY_FROSTMAW_WAKEUP = NIL;
 
-    public static SoundEvent EFFECT_GEOMANCY_SMALL_CRASH;
-    public static SoundEvent EFFECT_GEOMANCY_MAGIC_SMALL;
-    public static SoundEvent EFFECT_GEOMANCY_MAGIC_BIG;
-    public static SoundEvent EFFECT_GEOMANCY_BREAK_LARGE_1;
-    public static SoundEvent EFFECT_GEOMANCY_BREAK_LARGE_2;
-    public static SoundEvent EFFECT_GEOMANCY_BREAK_MEDIUM_1;
-    public static SoundEvent EFFECT_GEOMANCY_BREAK_MEDIUM_2;
-    public static SoundEvent EFFECT_GEOMANCY_BREAK_MEDIUM_3;
-    public static SoundEvent[] EFFECT_GEOMANCY_BREAK_MEDIUM = {
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.smallcrash")
+    public static final SoundEvent EFFECT_GEOMANCY_SMALL_CRASH = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.hitsmall")
+    public static final SoundEvent EFFECT_GEOMANCY_MAGIC_SMALL = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.hitbig")
+    public static final SoundEvent EFFECT_GEOMANCY_MAGIC_BIG = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.breaklarge")
+    public static final SoundEvent EFFECT_GEOMANCY_BREAK_LARGE_1 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.breaklarge2")
+    public static final SoundEvent EFFECT_GEOMANCY_BREAK_LARGE_2 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.breakmedium")
+    public static final SoundEvent EFFECT_GEOMANCY_BREAK_MEDIUM_1 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.breakmedium2")
+    public static final SoundEvent EFFECT_GEOMANCY_BREAK_MEDIUM_2 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.breakmedium3")
+    public static final SoundEvent EFFECT_GEOMANCY_BREAK_MEDIUM_3 = NIL;
+    public static final SoundEvent[] EFFECT_GEOMANCY_BREAK_MEDIUM = {
             EFFECT_GEOMANCY_BREAK_MEDIUM_1,
             EFFECT_GEOMANCY_BREAK_MEDIUM_2,
             EFFECT_GEOMANCY_BREAK_MEDIUM_3
     };
-    public static SoundEvent EFFECT_GEOMANCY_HIT;
-    public static SoundEvent EFFECT_GEOMANCY_HIT_MEDIUM_1;
-    public static SoundEvent EFFECT_GEOMANCY_HIT_MEDIUM_2;
-    public static SoundEvent[] EFFECT_GEOMANCY_HIT_MEDIUM = {
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.hit")
+    public static final SoundEvent EFFECT_GEOMANCY_HIT = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.hitmedium")
+    public static final SoundEvent EFFECT_GEOMANCY_HIT_MEDIUM_1 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.hitmedium2")
+    public static final SoundEvent EFFECT_GEOMANCY_HIT_MEDIUM_2 = NIL;
+    public static final SoundEvent[] EFFECT_GEOMANCY_HIT_MEDIUM = {
             EFFECT_GEOMANCY_HIT_MEDIUM_1,
             EFFECT_GEOMANCY_HIT_MEDIUM_2
     };
-    public static SoundEvent EFFECT_GEOMANCY_BREAK;
-    public static SoundEvent EFFECT_GEOMANCY_CRASH;
-    public static SoundEvent EFFECT_GEOMANCY_CRUMBLE;
-    public static SoundEvent EFFECT_GEOMANCY_RUMBLE_1;
-    public static SoundEvent EFFECT_GEOMANCY_RUMBLE_2;
-    public static SoundEvent EFFECT_GEOMANCY_RUMBLE_3;
-    public static SoundEvent[] EFFECT_GEOMANCY_RUMBLE = {
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.rockbreak")
+    public static final SoundEvent EFFECT_GEOMANCY_BREAK = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.rockcrash1")
+    public static final SoundEvent EFFECT_GEOMANCY_CRASH = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.rockcrumble")
+    public static final SoundEvent EFFECT_GEOMANCY_CRUMBLE = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.rumble1")
+    public static final SoundEvent EFFECT_GEOMANCY_RUMBLE_1 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.rumble2")
+    public static final SoundEvent EFFECT_GEOMANCY_RUMBLE_2 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.rumble3")
+    public static final SoundEvent EFFECT_GEOMANCY_RUMBLE_3 = NIL;
+    public static final SoundEvent[] EFFECT_GEOMANCY_RUMBLE = {
             EFFECT_GEOMANCY_RUMBLE_1,
             EFFECT_GEOMANCY_RUMBLE_2,
             EFFECT_GEOMANCY_RUMBLE_3
     };
-    public static SoundEvent EFFECT_GEOMANCY_HIT_SMALL;
-    public static SoundEvent EFFECT_GEOMANCY_BOULDER_CHARGE;
-    public static SoundEvent EFFECT_GEOMANCY_MAGIC_CHARGE_SMALL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.smallrockhit")
+    public static final SoundEvent EFFECT_GEOMANCY_HIT_SMALL = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.bouldercharge")
+    public static final SoundEvent EFFECT_GEOMANCY_BOULDER_CHARGE = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.magicchargesmall")
+    public static final SoundEvent EFFECT_GEOMANCY_MAGIC_CHARGE_SMALL = NIL;
 
     @SubscribeEvent
-    public static void registerSoundEvents(RegistryEvent.Register<SoundEvent> event) {  	
-        LASER = registerSound(event, "laser");
-        SUNSTRIKE = registerSound(event, "sunstrike");
+    public static void register(RegistryEvent.Register<SoundEvent> event) {
+        event.getRegistry().registerAll(
+                create("laser"),
+                create("sunstrike"),
 
-        // Wroughtnaut
-        ENTITY_WROUGHT_PRE_SWING_1 = registerSound(event, "wroughtnaut.preSwing1");
-        ENTITY_WROUGHT_PRE_SWING_2 = registerSound(event, "wroughtnaut.preSwing2");
-        ENTITY_WROUGHT_CREAK = registerSound(event, "wroughtnaut.creak");
-        ENTITY_WROUGHT_SWING_1 = registerSound(event, "wroughtnaut.swing1");
-        ENTITY_WROUGHT_SWING_2 = registerSound(event, "wroughtnaut.swing2");
-        ENTITY_WROUGHT_SHOUT_2 = registerSound(event, "wroughtnaut.shout2");
-        ENTITY_WROUGHT_PULL_1 = registerSound(event, "wroughtnaut.pull1");
-        ENTITY_WROUGHT_PULL_5 = registerSound(event, "wroughtnaut.pull5");
-        ENTITY_WROUGHT_RELEASE_2 = registerSound(event, "wroughtnaut.release2");
-        ENTITY_WROUGHT_WHOOSH = registerSound(event, "wroughtnaut.whoosh");
-        ENTITY_WROUGHT_HURT_1 = registerSound(event, "wroughtnaut.hurt1");
-        ENTITY_WROUGHT_SCREAM = registerSound(event, "wroughtnaut.scream");
-        ENTITY_WROUGHT_GRUNT_1 = registerSound(event, "wroughtnaut.grunt1");
-        ENTITY_WROUGHT_GRUNT_2 = registerSound(event, "wroughtnaut.grunt2");
-        ENTITY_WROUGHT_AMBIENT = registerSound(event, "wroughtnaut.ambient");
+                create("wroughtnaut.preSwing1"),
+                create("wroughtnaut.preSwing2"),
+                create("wroughtnaut.creak"),
+                create("wroughtnaut.swing1"),
+                create("wroughtnaut.swing2"),
+                create("wroughtnaut.shout2"),
+                create("wroughtnaut.pull1"),
+                create("wroughtnaut.pull5"),
+                create("wroughtnaut.release2"),
+                create("wroughtnaut.whoosh"),
+                create("wroughtnaut.hurt1"),
+                create("wroughtnaut.scream"),
+                create("wroughtnaut.grunt1"),
+                create("wroughtnaut.grunt2"),
+                create("wroughtnaut.ambient"),
 
-        // Barakoa
-        ENTITY_BARAKOA_INHALE = registerSound(event, "barakoa.inhale");
-        ENTITY_BARAKOA_BLOWDART = registerSound(event, "barakoa.blowdart");
-        ENTITY_BARAKOA_BATTLECRY = registerSound(event, "barakoa.battlecry");
-        ENTITY_BARAKOA_BATTLECRY_2 = registerSound(event, "barakoa.battlecry2");
-        ENTITY_BARAKOA_SWING = registerSound(event, "barakoa.swing");
-        ENTITY_BARAKOA_EMERGE = registerSound(event, "barakoa.emerge");
-        ENTITY_BARAKOA_HURT = registerSound(event, "barakoa.hurt");
-        ENTITY_BARAKOA_DIE = registerSound(event, "barakoa.die");
-        ENTITY_BARAKOA_SHOUT = registerSound(event, "barakoa.shout");
-        ENTITY_BARAKOA_TALK_1 = registerSound(event, "barakoa.talk1");
-        ENTITY_BARAKOA_TALK_2 = registerSound(event, "barakoa.talk2");
-        ENTITY_BARAKOA_TALK_3 = registerSound(event, "barakoa.talk3");
-        ENTITY_BARAKOA_TALK_4 = registerSound(event, "barakoa.talk4");
-        ENTITY_BARAKOA_TALK_5 = registerSound(event, "barakoa.talk5");
-        ENTITY_BARAKOA_TALK_6 = registerSound(event, "barakoa.talk6");
-        ENTITY_BARAKOA_TALK_7 = registerSound(event, "barakoa.talk7");
-        ENTITY_BARAKOA_ANGRY_1 = registerSound(event, "barakoa.angry1");
-        ENTITY_BARAKOA_ANGRY_2 = registerSound(event, "barakoa.angry2");
-        ENTITY_BARAKOA_ANGRY_3 = registerSound(event, "barakoa.angry3");
-        ENTITY_BARAKOA_ANGRY_4 = registerSound(event, "barakoa.angry4");
-        ENTITY_BARAKOA_ANGRY_5 = registerSound(event, "barakoa.angry5");
-        ENTITY_BARAKOA_ANGRY_6 = registerSound(event, "barakoa.angry6");
+                create("barakoa.inhale"),
+                create("barakoa.blowdart"),
+                create("barakoa.battlecry"),
+                create("barakoa.battlecry2"),
+                create("barakoa.swing"),
+                create("barakoa.emerge"),
+                create("barakoa.hurt"),
+                create("barakoa.die"),
+                create("barakoa.shout"),
+                create("barakoa.talk1"),
+                create("barakoa.talk2"),
+                create("barakoa.talk3"),
+                create("barakoa.talk4"),
+                create("barakoa.talk5"),
+                create("barakoa.talk6"),
+                create("barakoa.talk7"),
+                create("barakoa.angry1"),
+                create("barakoa.angry2"),
+                create("barakoa.angry3"),
+                create("barakoa.angry4"),
+                create("barakoa.angry5"),
+                create("barakoa.angry6"),
 
-        ENTITY_BARAKO_BELLY = registerSound(event, "barako.belly");
-        ENTITY_BARAKO_BURST = registerSound(event, "barako.burst");
-        ENTITY_BARAKO_ATTACK = registerSound(event, "barako.attack");
-        ENTITY_BARAKO_HURT = registerSound(event, "barako.hurt");
-        ENTITY_BARAKO_DIE = registerSound(event, "barako.die");
-        ENTITY_BARAKO_BLESS = registerSound(event, "barako.bless");
-        ENTITY_BARAKO_TALK_1 = registerSound(event, "barako.talk1");
-        ENTITY_BARAKO_TALK_2 = registerSound(event, "barako.talk2");
-        ENTITY_BARAKO_TALK_3 = registerSound(event, "barako.talk3");
-        ENTITY_BARAKO_TALK_4 = registerSound(event, "barako.talk4");
-        ENTITY_BARAKO_TALK_5 = registerSound(event, "barako.talk5");
-        ENTITY_BARAKO_TALK_6 = registerSound(event, "barako.talk6");
-        ENTITY_BARAKO_ANGRY_1 = registerSound(event, "barako.angry1");
-        ENTITY_BARAKO_ANGRY_2 = registerSound(event, "barako.angry2");
-        ENTITY_BARAKO_ANGRY_3 = registerSound(event, "barako.angry3");
-        ENTITY_BARAKO_ANGRY_4 = registerSound(event, "barako.angry4");
-        ENTITY_BARAKO_ANGRY_5 = registerSound(event, "barako.angry5");
-        ENTITY_BARAKO_ANGRY_6 = registerSound(event, "barako.angry6");
+                create("barako.belly"),
+                create("barako.burst"),
+                create("barako.attack"),
+                create("barako.hurt"),
+                create("barako.die"),
+                create("barako.bless"),
+                create("barako.talk1"),
+                create("barako.talk2"),
+                create("barako.talk3"),
+                create("barako.talk4"),
+                create("barako.talk5"),
+                create("barako.talk6"),
+                create("barako.angry1"),
+                create("barako.angry2"),
+                create("barako.angry3"),
+                create("barako.angry4"),
+                create("barako.angry5"),
+                create("barako.angry6"),
 
-        // Foliaath
-        ENTITY_FOLIAATH_GRUNT = registerSound(event, "foliaath.grunt");
-        ENTITY_FOLIAATH_RUSTLE = registerSound(event, "foliaath.rustle");
-        ENTITY_FOLIAATH_MERGE = registerSound(event, "foliaath.emerge");
-        ENTITY_FOLIAATH_RETREAT = registerSound(event, "foliaath.retreat");
-        ENTITY_FOLIAATH_PANT_1 = registerSound(event, "foliaath.pant1");
-        ENTITY_FOLIAATH_PANT_2 = registerSound(event, "foliaath.pant2");
-        ENTITY_FOLIAATH_BITE_1 = registerSound(event, "foliaath.bite1");
-        ENTITY_FOLIAATH_HURT = registerSound(event, "foliaath.hurt");
-        ENTITY_FOLIAATH_DIE = registerSound(event, "foliaath.die");
-        ENTITY_FOLIAATH_BABY_EAT = registerSound(event, "foliaath.baby.eat");
+                create("foliaath.grunt"),
+                create("foliaath.rustle"),
+                create("foliaath.emerge"),
+                create("foliaath.retreat"),
+                create("foliaath.pant1"),
+                create("foliaath.pant2"),
+                create("foliaath.bite1"),
+                create("foliaath.hurt"),
+                create("foliaath.die"),
+                create("foliaath.baby.eat"),
 
-        ENTITY_FROSTMAW_ROAR = registerSound(event, "frostmaw.roar");
-        ENTITY_FROSTMAW_DIE = registerSound(event, "frostmaw.die");
-        ENTITY_FROSTMAW_WHOOSH = registerSound(event, "frostmaw.whoosh");
-        ENTITY_FROSTMAW_ICEBREATH = registerSound(event, "frostmaw.icebreath");
-        ENTITY_FROSTMAW_ICEBREATH_START = registerSound(event, "frostmaw.icebreathstart");
-        ENTITY_FROSTMAW_FROZEN_CRASH = registerSound(event, "frostmaw.frozencrash");
-        ENTITY_FROSTMAW_STEP = registerSound(event, "frostmaw.step");
-        ENTITY_FROSTMAW_LAND = registerSound(event, "frostmaw.land");
-        ENTITY_FROSTMAW_ATTACK_1 = registerSound(event, "frostmaw.attack1");
-        ENTITY_FROSTMAW_ATTACK_2 = registerSound(event, "frostmaw.attack2");
-        ENTITY_FROSTMAW_ATTACK_3 = registerSound(event, "frostmaw.attack3");
-        ENTITY_FROSTMAW_ATTACK_4 = registerSound(event, "frostmaw.attack4");
-        ENTITY_FROSTMAW_BREATH_1 = registerSound(event, "frostmaw.breath1");
-        ENTITY_FROSTMAW_BREATH_2 = registerSound(event, "frostmaw.breath2");
-        ENTITY_FROSTMAW_LIVING_1 = registerSound(event, "frostmaw.living1");
-        ENTITY_FROSTMAW_LIVING_2 = registerSound(event, "frostmaw.living2");
-        ENTITY_FROSTMAW_WAKEUP = registerSound(event, "frostmaw.wakeup");
+                create("frostmaw.roar"),
+                create("frostmaw.die"),
+                create("frostmaw.whoosh"),
+                create("frostmaw.icebreath"),
+                create("frostmaw.icebreathstart"),
+                create("frostmaw.frozencrash"),
+                create("frostmaw.step"),
+                create("frostmaw.land"),
+                create("frostmaw.attack1"),
+                create("frostmaw.attack2"),
+                create("frostmaw.attack3"),
+                create("frostmaw.attack4"),
+                create("frostmaw.breath1"),
+                create("frostmaw.breath2"),
+                create("frostmaw.living1"),
+                create("frostmaw.living2"),
+                create("frostmaw.wakeup"),
 
-        EFFECT_GEOMANCY_SMALL_CRASH = registerSound(event, "geomancy.smallcrash");
-        EFFECT_GEOMANCY_MAGIC_SMALL = registerSound(event, "geomancy.hitsmall");
-        EFFECT_GEOMANCY_MAGIC_BIG = registerSound(event, "geomancy.hitbig");
-        EFFECT_GEOMANCY_BREAK_LARGE_1 = registerSound(event, "geomancy.breaklarge");
-        EFFECT_GEOMANCY_BREAK_LARGE_2 = registerSound(event, "geomancy.breaklarge2");
-        EFFECT_GEOMANCY_BREAK_MEDIUM_1 = registerSound(event, "geomancy.breakmedium");
-        EFFECT_GEOMANCY_BREAK_MEDIUM_2 = registerSound(event, "geomancy.breakmedium2");
-        EFFECT_GEOMANCY_BREAK_MEDIUM_3 = registerSound(event, "geomancy.breakmedium3");
-        EFFECT_GEOMANCY_HIT = registerSound(event, "geomancy.hit");
-        EFFECT_GEOMANCY_HIT_MEDIUM_1 = registerSound(event, "geomancy.hitmedium");
-        EFFECT_GEOMANCY_HIT_MEDIUM_2 = registerSound(event, "geomancy.hitmedium2");
-        EFFECT_GEOMANCY_BREAK = registerSound(event, "geomancy.rockbreak");
-        EFFECT_GEOMANCY_CRASH = registerSound(event, "geomancy.rockcrash1");
-        EFFECT_GEOMANCY_CRUMBLE = registerSound(event, "geomancy.rockcrumble");
-        EFFECT_GEOMANCY_RUMBLE_1 = registerSound(event, "geomancy.rumble1");
-        EFFECT_GEOMANCY_RUMBLE_2 = registerSound(event, "geomancy.rumble2");
-        EFFECT_GEOMANCY_RUMBLE_3 = registerSound(event, "geomancy.rumble3");
-        EFFECT_GEOMANCY_HIT_SMALL = registerSound(event, "geomancy.smallrockhit");
-        EFFECT_GEOMANCY_BOULDER_CHARGE = registerSound(event, "geomancy.bouldercharge");
-        EFFECT_GEOMANCY_MAGIC_CHARGE_SMALL = registerSound(event, "geomancy.magicchargesmall");
+                create("geomancy.smallcrash"),
+                create("geomancy.hitsmall"),
+                create("geomancy.hitbig"),
+                create("geomancy.breaklarge"),
+                create("geomancy.breaklarge2"),
+                create("geomancy.breakmedium"),
+                create("geomancy.breakmedium2"),
+                create("geomancy.breakmedium3"),
+                create("geomancy.hit"),
+                create("geomancy.hitmedium"),
+                create("geomancy.hitmedium2"),
+                create("geomancy.rockbreak"),
+                create("geomancy.rockcrash1"),
+                create("geomancy.rockcrumble"),
+                create("geomancy.rumble1"),
+                create("geomancy.rumble2"),
+                create("geomancy.rumble3"),
+                create("geomancy.smallrockhit"),
+                create("geomancy.bouldercharge"),
+                create("geomancy.magicchargesmall")
+        );
     }
 
-    private static SoundEvent registerSound(RegistryEvent.Register<SoundEvent> event, String name) {
-        ResourceLocation id = new ResourceLocation(MowziesMobs.MODID, name);
-        event.getRegistry().register(new SoundEvent(id).setRegistryName(id));
-        SoundEvent soundEvent = SoundEvent.REGISTRY.getObject(id);       
-        if (soundEvent == null) {
-            throw new IllegalStateException("Invalid Sound requested: " + id);
-        } else {
-            return soundEvent;
-        }
+    private static SoundEvent create(String name) {
+        return new SoundEvent(new ResourceLocation(MowziesMobs.MODID, name)).setRegistryName(name);
     }
 }

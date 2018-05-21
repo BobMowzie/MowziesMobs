@@ -97,7 +97,7 @@ public enum ClientEventHandler {
                 player.rotationPitch += dPitch;
             }
             MowzieLivingProperties propertyLiving = EntityPropertiesHandler.INSTANCE.getProperties(player, MowzieLivingProperties.class);
-            if (player.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+            if (player.isPotionActive(PotionHandler.FROZEN)) {
                 player.rotationYaw = propertyLiving.frozenYaw;
                 player.rotationPitch = propertyLiving.frozenPitch;
             }
@@ -108,7 +108,7 @@ public enum ClientEventHandler {
     public void onRenderLiving(RenderLivingEvent event) {
         EntityLivingBase entity = event.getEntity();
         MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
-        if (entity.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+        if (entity.isPotionActive(PotionHandler.FROZEN)) {
 //            entity.motionX = 0;
 //            entity.motionZ = 0;
 //            entity.posX = entity.prevPosX;
@@ -163,7 +163,7 @@ public enum ClientEventHandler {
                 // Time
                 drawMarioNumber(timeOffsetX + 8, offsetY + 8, time, 3);
             }
-            if (Minecraft.getMinecraft().player.isPotionActive(PotionHandler.INSTANCE.frozen) && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0) {
+            if (Minecraft.getMinecraft().player.isPotionActive(PotionHandler.FROZEN) && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0) {
                 Minecraft.getMinecraft().getTextureManager().bindTexture(FROZEN_BLUR);
                 ScaledResolution res = e.getResolution();
                 Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, res.getScaledWidth(), res.getScaledHeight(), res.getScaledWidth(), res.getScaledHeight());
@@ -173,7 +173,7 @@ public enum ClientEventHandler {
 
     @SubscribeEvent
     public void onMouseMove(MouseEvent event) {
-        if (Minecraft.getMinecraft().player.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+        if (Minecraft.getMinecraft().player.isPotionActive(PotionHandler.FROZEN)) {
             event.setCanceled(true);
         }
     }

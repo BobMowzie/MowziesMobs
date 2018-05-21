@@ -1497,7 +1497,7 @@ public class ModelFrostmaw extends AdvancedModelBase {
                 walk(rightFoot, 0.5f * globalSpeed, 0.4f * globalDegreeBi, true, -1.5f, -0.4f * globalDegreeBi, f, f1);
 
                 //Idle
-                if (!frostmaw.isPotionActive(PotionHandler.INSTANCE.frozen) && (frostmaw.getAnimation() != frostmaw.SLAM_ANIMATION || frostmaw.getAnimationTick() < 118) && frostmaw.getAnimation() != EntityFrostmaw.DIE_ANIMATION) {
+                if (!frostmaw.isPotionActive(PotionHandler.FROZEN) && (frostmaw.getAnimation() != frostmaw.SLAM_ANIMATION || frostmaw.getAnimationTick() < 118) && frostmaw.getAnimation() != EntityFrostmaw.DIE_ANIMATION) {
                     walk(waist, 0.08f, 0.05f, false, 0, 0, frame, 1);
                     walk(headJoint, 0.08f, 0.05f, true, 0.8f, 0, frame, 1);
                     walk(legRightJoint, 0.08f, 0.05f, true, 0, 0, frame, 1);

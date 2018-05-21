@@ -19,7 +19,7 @@ public enum CreativeTabHandler {
             @Override
             @SideOnly(Side.CLIENT)
             public ItemStack getTabIconItem() {
-                return new ItemStack(ItemHandler.INSTANCE.barakoaMasks.get(MaskType.FURY));
+                return new ItemStack(ItemHandler.BARAKOA_MASKS.get(MaskType.FURY));
             }
         };
     }

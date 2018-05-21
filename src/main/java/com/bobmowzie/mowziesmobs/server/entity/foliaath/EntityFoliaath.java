@@ -296,7 +296,7 @@ public class EntityFoliaath extends MowzieEntity {
 
     @Override
     protected Item getDropItem() {
-        return rand.nextBoolean() ? ItemHandler.INSTANCE.foliaathSeed : null;
+        return rand.nextBoolean() ? ItemHandler.FOLIAATH_SEED : null;
     }
 
     @Override

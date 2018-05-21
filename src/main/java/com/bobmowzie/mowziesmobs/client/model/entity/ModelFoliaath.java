@@ -283,7 +283,7 @@ public class ModelFoliaath extends AdvancedModelBase {
 
         float globalSpeed = 0.9f;
 
-        if (!foliaath.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+        if (!foliaath.isPotionActive(PotionHandler.FROZEN)) {
             flap(stem1Base, 0.25F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 0F, 0F, frame, 1F);
             walk(stem1Base, 0.5F * globalSpeed, 0.05F * (activeComplete - stopDance), false, 0F, 0F, frame, 1F);
             walk(stem2, 0.5F * globalSpeed, 0.05F * (activeComplete - stopDance), false, 0.5F, 0F, frame, 1F);

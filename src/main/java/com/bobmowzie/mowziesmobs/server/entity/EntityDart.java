@@ -30,7 +30,7 @@ public class EntityDart extends EntityTippedArrow {
 
     @Override
     protected ItemStack getArrowStack() {
-        return new ItemStack(ItemHandler.INSTANCE.dart);
+        return new ItemStack(ItemHandler.DART);
     }
 
     @Override

@@ -1,32 +1,28 @@
 package com.bobmowzie.mowziesmobs.server.potion;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import net.minecraft.potion.Potion;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.FMLControlledNamespacedRegistry;
-import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
-public enum PotionHandler {
-    INSTANCE;
-
-    public Potion frozen;
-    public Potion sunsBlessing;
-    public Potion geomancy;
-
-    private void registerPotions() {
-        sunsBlessing = new MowziePotionSunsBlessing();
-        GameRegistry.register(sunsBlessing);
-        geomancy = new MowziePotionGeomancy();
-        GameRegistry.register(geomancy);
-        frozen = new MowziePotionFrozen();
-        GameRegistry.register(frozen);
+@GameRegistry.ObjectHolder(MowziesMobs.MODID)
+@Mod.EventBusSubscriber(modid = MowziesMobs.MODID)
+public final class PotionHandler {
+    private PotionHandler() {
     }
 
-    public void onInit() {
-        registerPotions();
+    public static final MowziePotionSunsBlessing SUNS_BLESSING = null;
+    public static final MowziePotionGeomancy GEOMANCY = null;
+    public static final MowziePotionFrozen FROZEN = null;
+
+    @SubscribeEvent
+    public static void register(RegistryEvent.Register<Potion> event) {
+        event.getRegistry().registerAll(
+                new MowziePotionSunsBlessing(),
+                new MowziePotionGeomancy(),
+                new MowziePotionFrozen()
+        );
     }
 }

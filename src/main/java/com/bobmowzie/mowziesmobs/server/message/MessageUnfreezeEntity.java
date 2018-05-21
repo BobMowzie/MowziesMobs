@@ -42,7 +42,7 @@ public class MessageUnfreezeEntity extends AbstractMessage<MessageUnfreezeEntity
         if (entity instanceof EntityLivingBase) {
             EntityLivingBase living = (EntityLivingBase) entity;
             MowzieLivingProperties livingProperties = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
-            living.removeActivePotionEffect(PotionHandler.INSTANCE.frozen);
+            living.removeActivePotionEffect(PotionHandler.FROZEN);
             living.dismountEntity(livingProperties.frozenController);
         }
     }

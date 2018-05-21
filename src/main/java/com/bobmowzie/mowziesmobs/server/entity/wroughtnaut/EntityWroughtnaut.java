@@ -476,8 +476,8 @@ public class EntityWroughtnaut extends MowzieEntity {
     @Override
     protected void dropLoot() {
         super.dropLoot();
-        dropItem(ItemHandler.INSTANCE.wroughtAxe, 1);
-        dropItem(ItemHandler.INSTANCE.wroughtHelmet, 1);
+        dropItem(ItemHandler.WROUGHT_AXE, 1);
+        dropItem(ItemHandler.WROUGHT_HELM, 1);
     }
 
     @Override

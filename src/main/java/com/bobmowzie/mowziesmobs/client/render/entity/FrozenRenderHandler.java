@@ -63,7 +63,7 @@ public enum FrozenRenderHandler {
 
         @Override
         public void doRenderLayer(EntityLivingBase living, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
-            if (living.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+            if (living.isPotionActive(PotionHandler.FROZEN)) {
                 ModelBase model = this.renderer.getMainModel();
                 Map<ModelRenderer, Boolean> visibilities = new HashMap<>();
                 for(ModelRenderer box : model.boxList) {
@@ -100,7 +100,7 @@ public enum FrozenRenderHandler {
     public void onPreRenderEntityLivingBase(RenderLivingEvent.Pre event) {
         EntityLivingBase player = event.getEntity();
 
-        if(player.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+        if(player.isPotionActive(PotionHandler.FROZEN)) {
             if(!RenderHelper.doesRendererHaveLayer(event.getRenderer(), LayerFrozen.class, false)) {
                 event.getRenderer().addLayer(new LayerFrozen(event.getRenderer()));
             }
@@ -113,8 +113,8 @@ public enum FrozenRenderHandler {
 
         EntityPlayer player = Minecraft.getMinecraft().player;
 
-        if(player != null && player.isPotionActive(PotionHandler.INSTANCE.frozen)) {
-            if(player.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+        if(player != null && player.isPotionActive(PotionHandler.FROZEN)) {
+            if(player.isPotionActive(PotionHandler.FROZEN)) {
                 boolean isMainHand = event.getHand() == EnumHand.MAIN_HAND;
                 if(isMainHand && !player.isInvisible() && event.getItemStack() == ItemStack.EMPTY) {
                     EnumHandSide enumhandside = isMainHand ? player.getPrimaryHand() : player.getPrimaryHand().opposite();
@@ -156,7 +156,7 @@ public enum FrozenRenderHandler {
         GlStateManager.rotate(200.0F, 1.0F, 0.0F, 0.0F);
         GlStateManager.rotate(f * -135.0F, 0.0F, 1.0F, 0.0F);
         GlStateManager.translate(f * 5.6F, 0.0F, 0.0F);
-        RenderPlayer renderplayer = (RenderPlayer)renderManager.getEntityRenderObject(abstractclientplayer);
+        RenderPlayer renderplayer = null;//TODO: (RenderPlayer)renderManager.getEntityRenderObject(abstractclientplayer);
         GlStateManager.disableCull();
 
         if (flag) {

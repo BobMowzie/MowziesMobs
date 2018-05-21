@@ -33,7 +33,7 @@ public final class GuiBarakoTrade extends GuiContainer implements InventoryBarak
 
     private final InventoryBarako inventory;
 
-    private final ItemStack output = new ItemStack(ItemHandler.INSTANCE.grantSunsBlessing);
+    private final ItemStack output = new ItemStack(ItemHandler.GRANT_SUNS_BLESSING);
 
     private GuiButton grantButton;
 

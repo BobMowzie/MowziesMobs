@@ -109,20 +109,20 @@ public enum ServerEventHandler {
 
             if (property != null) {
                 if (property.freezeProgress >= 1) {
-                    entity.addPotionEffect(new PotionEffect(PotionHandler.INSTANCE.frozen, 50, 1, false, false));
+                    entity.addPotionEffect(new PotionEffect(PotionHandler.FROZEN, 50, 1, false, false));
                     property.freezeProgress = 1f;
                 } else if (property.freezeProgress > 0) {
                     entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, MathHelper.floor(property.freezeProgress * 5 + 1), false, false));
                 }
 
-                if (entity.isPotionActive(PotionHandler.INSTANCE.frozen) && !property.prevFrozen) {
+                if (entity.isPotionActive(PotionHandler.FROZEN) && !property.prevFrozen) {
                     property.onFreeze(entity);
                     if (!entity.world.isRemote) MowziesMobs.NETWORK_WRAPPER.sendToDimension(new MessageFreezeEntity(entity), entity.dimension);
                 }
             }
 
-            if (entity.isPotionActive(PotionHandler.INSTANCE.frozen)) {
-                if (entity.getActivePotionEffect(PotionHandler.INSTANCE.frozen).getDuration() <= 0) entity.removeActivePotionEffect(PotionHandler.INSTANCE.frozen);
+            if (entity.isPotionActive(PotionHandler.FROZEN)) {
+                if (entity.getActivePotionEffect(PotionHandler.FROZEN).getDuration() <= 0) entity.removeActivePotionEffect(PotionHandler.FROZEN);
                 entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, 50, false, false));
                 entity.setSneaking(false);
 
@@ -159,7 +159,7 @@ public enum ServerEventHandler {
             }
             property.freezeProgress -= 0.1;
             if (property.freezeProgress < 0) property.freezeProgress = 0;
-            property.prevFrozen = entity.isPotionActive(PotionHandler.INSTANCE.frozen);
+            property.prevFrozen = entity.isPotionActive(PotionHandler.FROZEN);
         }
     }
 
@@ -186,9 +186,9 @@ public enum ServerEventHandler {
             }
 
             for (ItemStack itemStack : event.player.inventory.mainInventory) {
-                if (itemStack.getItem() instanceof ItemEarthTalisman) player.addPotionEffect(new PotionEffect(PotionHandler.INSTANCE.geomancy, 0, 0, false, false));
+                if (itemStack.getItem() instanceof ItemEarthTalisman) player.addPotionEffect(new PotionEffect(PotionHandler.GEOMANCY, 0, 0, false, false));
             }
-            if (player.getHeldItemOffhand().getItem() instanceof ItemEarthTalisman) player.addPotionEffect(new PotionEffect(PotionHandler.INSTANCE.geomancy, 0, 0, false, false));
+            if (player.getHeldItemOffhand().getItem() instanceof ItemEarthTalisman) player.addPotionEffect(new PotionEffect(PotionHandler.GEOMANCY, 0, 0, false, false));
 
             List<EntityBarakoanToPlayer> pack = property.tribePack;
             float theta = (2 * (float) Math.PI / pack.size());
@@ -204,16 +204,16 @@ public enum ServerEventHandler {
             }
         }
 
-        if (!(player.getHeldItemMainhand().getItem() == ItemHandler.INSTANCE.iceCrystal || player.getHeldItemOffhand().getItem() == ItemHandler.INSTANCE.iceCrystal) && property.usingIceBreath && property.icebreath != null) {
+        if (!(player.getHeldItemMainhand().getItem() == ItemHandler.ICE_CRYSTAL || player.getHeldItemOffhand().getItem() == ItemHandler.ICE_CRYSTAL) && property.usingIceBreath && property.icebreath != null) {
             property.usingIceBreath = false;
             property.icebreath.setDead();
         }
 
         for (ItemStack stack: player.inventory.mainInventory) {
-            if (!property.usingIceBreath && stack.getItem() == ItemHandler.INSTANCE.iceCrystal) stack.setItemDamage(Math.max(stack.getItemDamage() - 1, 0));
+            if (!property.usingIceBreath && stack.getItem() == ItemHandler.ICE_CRYSTAL) stack.setItemDamage(Math.max(stack.getItemDamage() - 1, 0));
         }
         for (ItemStack stack: player.inventory.offHandInventory) {
-            if (!property.usingIceBreath && stack.getItem() == ItemHandler.INSTANCE.iceCrystal) stack.setItemDamage(Math.max(stack.getItemDamage() - 1, 0));
+            if (!property.usingIceBreath && stack.getItem() == ItemHandler.ICE_CRYSTAL) stack.setItemDamage(Math.max(stack.getItemDamage() - 1, 0));
         }
 
         if (event.side == Side.CLIENT) {
@@ -262,7 +262,7 @@ public enum ServerEventHandler {
     public void onPlayerInteract(PlayerInteractEvent.RightClickEmpty event) {
         EntityPlayer player = event.getEntityPlayer();
         MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
-        if (event.getWorld().isRemote && player.inventory.getCurrentItem() == ItemStack.EMPTY && player.isPotionActive(PotionHandler.INSTANCE.sunsBlessing) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
+        if (event.getWorld().isRemote && player.inventory.getCurrentItem() == ItemStack.EMPTY && player.isPotionActive(PotionHandler.SUNS_BLESSING) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
             if (player.isSneaking()) {
                 MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSolarBeam());
                 property.untilSunstrike = SOLARBEAM_COOLDOWN;
@@ -289,7 +289,7 @@ public enum ServerEventHandler {
     public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event) {
         EntityPlayer player = event.getEntityPlayer();
         MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
-        if (event.getWorld().isRemote && player.inventory.getCurrentItem() == ItemStack.EMPTY && player.isPotionActive(PotionHandler.INSTANCE.sunsBlessing) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
+        if (event.getWorld().isRemote && player.inventory.getCurrentItem() == ItemStack.EMPTY && player.isPotionActive(PotionHandler.SUNS_BLESSING) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
             if (player.isSneaking()) {
                 MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSolarBeam());
                 property.untilSunstrike = SOLARBEAM_COOLDOWN;
@@ -309,7 +309,7 @@ public enum ServerEventHandler {
         double range = 7;
         EntityPlayer player = event.getEntityPlayer();
         MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
-        if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == ItemHandler.INSTANCE.spear){
+        if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == ItemHandler.SPEAR){
             EntityLivingBase entityHit = ItemSpear.raytraceEntities(player.getEntityWorld(), player, range);
             if (entityHit != null) MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerAttackMob(entityHit));
         }
@@ -321,9 +321,9 @@ public enum ServerEventHandler {
 
     @SubscribeEvent
     public void onLivingDamage(LivingHurtEvent event) {
-        if (event.getSource().isFireDamage() && event.getEntityLiving().isPotionActive(PotionHandler.INSTANCE.frozen)) {
+        if (event.getSource().isFireDamage() && event.getEntityLiving().isPotionActive(PotionHandler.FROZEN)) {
             MowzieLivingProperties properties = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowzieLivingProperties.class);
-            event.getEntityLiving().removeActivePotionEffect(PotionHandler.INSTANCE.frozen);
+            event.getEntityLiving().removeActivePotionEffect(PotionHandler.FROZEN);
             event.getEntityLiving().dismountEntity(properties.frozenController);
             if (!event.getEntity().world.isRemote) MowziesMobs.NETWORK_WRAPPER.sendToDimension(new MessageUnfreezeEntity(event.getEntityLiving()), event.getEntityLiving().dimension);
         }
@@ -365,7 +365,7 @@ public enum ServerEventHandler {
             EntityLivingBase entity = (EntityLivingBase) event.getEntity();
             MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
 
-            if (entity.isPotionActive(PotionHandler.INSTANCE.frozen) && entity.onGround) {
+            if (entity.isPotionActive(PotionHandler.FROZEN) && entity.onGround) {
                 entity.motionY = 0;
             }
         }
@@ -380,7 +380,7 @@ public enum ServerEventHandler {
 
     @SubscribeEvent
     public void onEntityAttack(AttackEntityEvent event) {
-        if (event.getEntityLiving().isPotionActive(PotionHandler.INSTANCE.frozen)) {
+        if (event.getEntityLiving().isPotionActive(PotionHandler.FROZEN)) {
             event.setCanceled(true);    //TODO: doesn't work
         }
         if (event.getEntity() instanceof EntityPlayer) {

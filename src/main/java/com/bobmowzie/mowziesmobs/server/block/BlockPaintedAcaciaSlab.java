@@ -36,12 +36,12 @@ public abstract class BlockPaintedAcaciaSlab extends BlockSlab {
 
     @Override
     public Item getItemDropped(IBlockState state, Random rng, int fortune) {
-        return Item.getItemFromBlock(BlockHandler.INSTANCE.paintedAcaciaSlab);
+        return Item.getItemFromBlock(BlockHandler.PAINTED_ACACIA_SLAB);
     }
 
     @Override
     public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) {
-        return new ItemStack(BlockHandler.INSTANCE.paintedAcaciaSlab);
+        return new ItemStack(BlockHandler.PAINTED_ACACIA_SLAB);
     }
 
     @Override

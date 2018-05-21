@@ -421,7 +421,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     protected void dropLoot() {
         super.dropLoot();
         if (rand.nextInt(3) == 0){
-            dropItem(ItemHandler.INSTANCE.barakoaMasks.get(getMask()), 1);
+            dropItem(ItemHandler.BARAKOA_MASKS.get(getMask()), 1);
         }
     }
 

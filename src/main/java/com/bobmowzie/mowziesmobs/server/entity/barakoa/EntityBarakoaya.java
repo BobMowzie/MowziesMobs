@@ -39,12 +39,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, LeaderSunstrikeImmune {
     private static final TradeStore DEFAULT = new TradeStore.Builder()
-        .addTrade(Items.GOLD_NUGGET, 9, ItemHandler.INSTANCE.blowgun, 1, 6)
-        .addTrade(Items.DYE, 20, EnumDyeColor.BROWN.getDyeDamage(), ItemHandler.INSTANCE.dart, 8, 0, 6)
-        .addTrade(Items.GOLD_NUGGET, 9, ItemHandler.INSTANCE.spear, 1, 4)
-        .addTrade(Items.GOLD_INGOT, 1, ItemHandler.INSTANCE.spear, 1, 4)
-        .addTrade(Items.GOLD_NUGGET, 3, Item.getItemFromBlock(BlockHandler.INSTANCE.paintedAcacia), 2, 4)
-        .addTrade(Items.DYE, 16, EnumDyeColor.BROWN.getDyeDamage(), Item.getItemFromBlock(BlockHandler.INSTANCE.paintedAcacia), 1, 0, 4)
+        .addTrade(Items.GOLD_NUGGET, 9, ItemHandler.BLOWGUN, 1, 6)
+        .addTrade(Items.DYE, 20, EnumDyeColor.BROWN.getDyeDamage(), ItemHandler.DART, 8, 0, 6)
+        .addTrade(Items.GOLD_NUGGET, 9, ItemHandler.SPEAR, 1, 4)
+        .addTrade(Items.GOLD_INGOT, 1, ItemHandler.SPEAR, 1, 4)
+        .addTrade(Items.GOLD_NUGGET, 3, Item.getItemFromBlock(BlockHandler.PAINTED_ACACIA), 2, 4)
+        .addTrade(Items.DYE, 16, EnumDyeColor.BROWN.getDyeDamage(), Item.getItemFromBlock(BlockHandler.PAINTED_ACACIA), 1, 0, 4)
         .addTrade(Items.DYE, 10, EnumDyeColor.BROWN.getDyeDamage(), Items.COOKED_CHICKEN, 2, 0, 2)
         .addTrade(Items.GOLD_NUGGET, 1, Items.COOKED_CHICKEN, 1, 2)
         .addTrade(Items.DYE, 14, EnumDyeColor.BROWN.getDyeDamage(), Items.COOKED_PORKCHOP, 2, 0, 2)

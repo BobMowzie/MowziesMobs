@@ -62,7 +62,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
         }
         ResourceLocation res = new ResourceLocation(id);
         if (EntityHandler.INSTANCE.hasEntityEggInfo(res)) {
-            ItemStack stack = new ItemStack(ItemHandler.INSTANCE.spawnEgg);
+            ItemStack stack = new ItemStack(ItemHandler.SPAWN_EGG);
             ItemSpawnEgg.applyEntityIdToItemStack(stack, res);
             return stack;
         }

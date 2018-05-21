@@ -60,27 +60,27 @@ public class ClientProxy extends ServerProxy {
 
         TabulaModelHandler.INSTANCE.addDomain(MowziesMobs.MODID);
 
-        registerBlockModel(BlockHandler.INSTANCE.paintedAcacia, "painted_acacia");
-        registerBlockModel(BlockHandler.INSTANCE.paintedAcaciaSlab, "painted_acacia_slab");
+        registerBlockModel(BlockHandler.PAINTED_ACACIA, "painted_acacia");
+        registerBlockModel(BlockHandler.PAINTED_ACACIA_SLAB, "painted_acacia_slab");
 
-        registerItemModel(ItemHandler.INSTANCE.foliaathSeed, "foliaath_seed");
-        registerItemModel(ItemHandler.INSTANCE.mobRemover, "mob_remover");
-        registerItemModel(ItemHandler.INSTANCE.wroughtAxe, "wrought_axe.tbl");
-        registerItemModel(ItemHandler.INSTANCE.wroughtHelmet, "wrought_helmet.tbl");
-        registerItemModel(ItemHandler.INSTANCE.dart, "dart");
-        registerItemModel(ItemHandler.INSTANCE.spear, "spear");
-        registerItemModel(ItemHandler.INSTANCE.blowgun, "blowgun");
-        registerItemModel(ItemHandler.INSTANCE.iceCrystal, "icecrystal");
-        registerItemModel(ItemHandler.INSTANCE.earthTalisman, "earth_talisman");
-        registerItemModel(ItemHandler.INSTANCE.spawnEgg, "spawn_egg");
-        registerItemModel(ItemHandler.INSTANCE.grantSunsBlessing, "grant_suns_blessing");
+        registerItemModel(ItemHandler.FOLIAATH_SEED, "foliaath_seed");
+        registerItemModel(ItemHandler.MOB_REMOVER, "mob_remover");
+        registerItemModel(ItemHandler.WROUGHT_AXE, "wrought_axe.tbl");
+        registerItemModel(ItemHandler.WROUGHT_HELM, "wrought_helmet.tbl");
+        registerItemModel(ItemHandler.DART, "dart");
+        registerItemModel(ItemHandler.SPEAR, "spear");
+        registerItemModel(ItemHandler.BLOWGUN, "blowgun");
+        registerItemModel(ItemHandler.ICE_CRYSTAL, "icecrystal");
+        registerItemModel(ItemHandler.EARTH_TALISMAN, "earth_talisman");
+        registerItemModel(ItemHandler.SPAWN_EGG, "spawn_egg");
+        registerItemModel(ItemHandler.GRANT_SUNS_BLESSING, "grant_suns_blessing");
 
-        for (ItemBarakoaMask mask : ItemHandler.INSTANCE.barakoaMasks.values()) {
+        for (ItemBarakoaMask mask : ItemHandler.BARAKOA_MASKS.values()) {
             registerItemModel(mask, mask.getRegistryName().getResourcePath());
         }
-        registerItemModel(ItemHandler.INSTANCE.barakoMask, "barako_mask.tbl");
+        registerItemModel(ItemHandler.BARAKO_MASK, "barako_mask.tbl");
 
-        ModelLoader.setCustomModelResourceLocation(ItemHandler.INSTANCE.testStructure, 0, new ModelResourceLocation("apple"));
+        ModelLoader.setCustomModelResourceLocation(ItemHandler.TEST_STRUCTURE, 0, new ModelResourceLocation("apple"));
 
         MinecraftForge.EVENT_BUS.register(ClientEventHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(ParticleTextureStitcher.Stitcher.INSTANCE);
@@ -94,7 +94,7 @@ public class ClientProxy extends ServerProxy {
                 MowzieEntityEggInfo info = EntityHandler.INSTANCE.getEntityEggInfo(ItemSpawnEgg.getEntityIdFromItem(stack));
                 return info == null ? -1 : (tintIndex == 0 ? info.primaryColor : info.secondaryColor);
             }
-        }, ItemHandler.INSTANCE.spawnEgg);
+        }, ItemHandler.SPAWN_EGG);
     }
 
     @Override

@@ -20,7 +20,7 @@ archivesBaseName = "mowziesmobs"
 sourceCompatibility = targetCompatibility = "1.8"
 
 minecraft {
-    version = "1.12-14.21.0.2375"
+    version = "1.12.2-14.23.3.2655"
     runDir = "run"
 	mappings = "snapshot_20170627"
 }
@@ -29,12 +29,12 @@ repositories {
     mavenCentral()
     maven {
 		name = "mcmoddev"
-		url = "http://maven.mcmoddev.com"
+		url = "http://maven.mcmoddev.com/"
 	}
 }
 
 dependencies {
-    compile "net.ilexiconn:llibrary:$llibrary_version-1.12:dev"
+    compile "net.ilexiconn:llibrary:1.7.9-1.12.2:dev"
 }
 
 processResources {

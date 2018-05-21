@@ -38,10 +38,10 @@ public class MessagePlayerSolarBeam extends AbstractMessage<MessagePlayerSolarBe
         solarBeam.setHasPlayer(true);
         player.world.spawnEntity(solarBeam);
         player.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 80, 2, false, false));
-        int duration = player.getActivePotionEffect(PotionHandler.INSTANCE.sunsBlessing).getDuration();
-        player.removePotionEffect(PotionHandler.INSTANCE.sunsBlessing);
+        int duration = player.getActivePotionEffect(PotionHandler.SUNS_BLESSING).getDuration();
+        player.removePotionEffect(PotionHandler.SUNS_BLESSING);
         if (duration - 2400 > 0) {
-            player.addPotionEffect(new PotionEffect(PotionHandler.INSTANCE.sunsBlessing, duration - 2400, 0, false, false));
+            player.addPotionEffect(new PotionEffect(PotionHandler.SUNS_BLESSING, duration - 2400, 0, false, false));
         }
     }
 }

@@ -342,7 +342,7 @@ public class EntityBoulder extends Entity {
         if (ticksExisted > finishedRisingTick - 1) {
             if (entityIn instanceof EntityPlayer
                     && ((EntityPlayer) entityIn).inventory.getCurrentItem() == ItemStack.EMPTY
-                    && ((EntityPlayer) entityIn).isPotionActive(PotionHandler.INSTANCE.geomancy)) {
+                    && ((EntityPlayer) entityIn).isPotionActive(PotionHandler.GEOMANCY)) {
                 EntityPlayer player = (EntityPlayer) entityIn;
                 if (ridingEntities.contains(player)) {
                     Vec3d lateralLookVec = Vec3d.fromPitchYaw(0, player.rotationYaw).normalize();

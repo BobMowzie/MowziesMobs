@@ -35,7 +35,7 @@ public class ItemBlowgun extends ItemBow {
 
     @Override
     protected boolean isArrow(ItemStack stack) {
-        return stack.getItem() == ItemHandler.INSTANCE.dart;
+        return stack.getItem() == ItemHandler.DART;
     }
 
     private ItemStack findAmmo(EntityPlayer player)
@@ -82,7 +82,7 @@ public class ItemBlowgun extends ItemBow {
             {
                 if (itemstack == null)
                 {
-                    itemstack = new ItemStack(ItemHandler.INSTANCE.dart);
+                    itemstack = new ItemStack(ItemHandler.DART);
                 }
 
                 float f = getArrowVelocity(i);
@@ -93,7 +93,7 @@ public class ItemBlowgun extends ItemBow {
 
                     if (!worldIn.isRemote)
                     {
-                        ItemDart itemdart = (ItemDart)(itemstack.getItem() instanceof ItemDart ? itemstack.getItem() : ItemHandler.INSTANCE.dart);
+                        ItemDart itemdart = (ItemDart)(itemstack.getItem() instanceof ItemDart ? itemstack.getItem() : ItemHandler.DART);
                         EntityArrow entityarrow = itemdart.createArrow(worldIn, itemstack, entityplayer);
                         entityarrow.setAim(entityplayer, entityplayer.rotationPitch, entityplayer.rotationYaw, 0.0F, f * 1.2f, 1.0F);
 

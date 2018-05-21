@@ -48,7 +48,7 @@ public class MessagePlayerSummonSunstrike extends AbstractMessage<MessagePlayerS
     @Override
     public void onServerReceived(MinecraftServer server, MessagePlayerSummonSunstrike message, EntityPlayer player, MessageContext messageContext) {
         RayTraceResult raytrace = rayTrace(player, REACH);
-        if (raytrace != null && raytrace.typeOfHit == RayTraceResult.Type.BLOCK && raytrace.sideHit == EnumFacing.UP && player.inventory.getCurrentItem() == ItemStack.EMPTY && player.isPotionActive(PotionHandler.INSTANCE.sunsBlessing)) {
+        if (raytrace != null && raytrace.typeOfHit == RayTraceResult.Type.BLOCK && raytrace.sideHit == EnumFacing.UP && player.inventory.getCurrentItem() == ItemStack.EMPTY && player.isPotionActive(PotionHandler.SUNS_BLESSING)) {
             BlockPos hit = raytrace.getBlockPos();
             EntitySunstrike sunstrike = new EntitySunstrike(player.world, player, hit.getX(), hit.getY(), hit.getZ());
             sunstrike.onSummon();

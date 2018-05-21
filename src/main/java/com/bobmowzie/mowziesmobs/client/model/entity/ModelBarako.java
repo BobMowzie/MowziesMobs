@@ -360,7 +360,7 @@ public class ModelBarako extends AdvancedModelBase {
             faceTarget(f3, f4, 1.0F, head);
         }
 
-        if (tribeLeader.getAnimation() != EntityBarako.DIE_ANIMATION && !tribeLeader.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+        if (tribeLeader.getAnimation() != EntityBarako.DIE_ANIMATION && !tribeLeader.isPotionActive(PotionHandler.FROZEN)) {
             walk(body, 0.06f, 0.05f, true, 0, -0.05f, frame, 1f);
             walk(neck, 0.06f, 0.05f, false, 0.5f, -0.05f, frame, 1f);
             swing(rightThigh, 0.06f, 0.05f * liftLegs, false, 0, 0, frame, 1f);
@@ -1149,7 +1149,7 @@ public class ModelBarako extends AdvancedModelBase {
             headdress6.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame);
             headdress7.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame);
         }
-        if (!tribeleader.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+        if (!tribeleader.isPotionActive(PotionHandler.FROZEN)) {
             body.setScale(scaler * (1 - bellyScaler.rotationPointY), scaler * (1 - bellyScaler.rotationPointY), scaler * (1 - bellyScaler.rotationPointY));
             chest.setScale(1 / scaler, 1 / scaler, 1 / scaler);
             rightThigh.setScale(1 / scaler, 1 / scaler, 1 / scaler);

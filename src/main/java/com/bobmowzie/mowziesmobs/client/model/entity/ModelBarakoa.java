@@ -366,18 +366,18 @@ public class ModelBarakoa extends AdvancedModelBase {
             armLowerLeft.rotateAngleZ += 1;
             spearBase.setScale(spearBase.scaleX, -1, 1.5f);
 
-            if (!barakoa.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+            if (!barakoa.isPotionActive(PotionHandler.FROZEN)) {
                 flap(armUpperLeft, 1 * globalSpeed, 0.1f * globalHeight, false, 0.5f, 0, f, f1);
                 walk(armUpperLeft, 0.5f * globalSpeed, 0.3f * globalDegree, true, 0, 1, f, f1);
             }
         } else {
-            if (!barakoa.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+            if (!barakoa.isPotionActive(PotionHandler.FROZEN)) {
                 flap(armUpperLeft, 1 * globalSpeed, 0.3f * globalHeight, false, 0.5f, 0, f, f1);
                 walk(armUpperLeft, 0.5f * globalSpeed, 0.7f * globalDegree, true, 0, 0, f, f1);
             }
         }
 
-        if (!barakoa.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+        if (!barakoa.isPotionActive(PotionHandler.FROZEN)) {
             bob(body, 1 * globalSpeed, 2.5f * globalHeight, false, f, f1);
             walk(loinClothFront, 1 * globalSpeed, 0.5f * globalHeight, false, 2, 0, f, f1);
             walk(loinClothBack, 1 * globalSpeed, 0.5f * globalHeight, true, 2, 0, f, f1);
@@ -411,7 +411,7 @@ public class ModelBarakoa extends AdvancedModelBase {
             walk(handLeft, 0.5f * globalSpeed, 1 * globalDegree, true, -2, 0.4f * globalDegree, f, f1);
         }
 
-        if (barakoa.getAnimation() != EntityBarakoa.DIE_ANIMATION && !barakoa.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+        if (barakoa.getAnimation() != EntityBarakoa.DIE_ANIMATION && !barakoa.isPotionActive(PotionHandler.FROZEN)) {
             walk(body, 0.2f, 0.05f, false, 0, 0, frame, 1f);
             walk(thighLeftJoint, 0.2f, 0.05f, true, 0, 0, frame, 1f);
             walk(thighRightJoint, 0.2f, 0.05f, true, 0, 0, frame, 1f);
@@ -803,7 +803,7 @@ public class ModelBarakoa extends AdvancedModelBase {
 
 
         float talk = talker.rotationPointX;
-        if (!barakoa.isPotionActive(PotionHandler.INSTANCE.frozen)) {
+        if (!barakoa.isPotionActive(PotionHandler.FROZEN)) {
             walk(head, 1.5f, 0.1f * talk, false, 0, -0.5f * talk, frame, 1f);
             walk(neck, 0, 0, false, 0, 0.5f * talk, frame, 1f);
             walk(armUpperRight, 0.5f, 0.2f * talk, false, 0, -0.7f * talk, frame, 1f);

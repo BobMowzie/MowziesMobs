@@ -166,7 +166,7 @@ public class EntityFrostmaw extends MowzieEntity {
             if (getHasCrystal()) {
                 Optional<UUID> crystalID = getCrystalID();
                 if (!getCrystalID().isPresent() && !world.isRemote && crystal == null && !getActive()) {
-                    crystal = dropItem(ItemHandler.INSTANCE.iceCrystal, 1);
+                    crystal = dropItem(ItemHandler.ICE_CRYSTAL, 1);
                     setCrystalID(Optional.of(crystal.getUniqueID()));
                 }
                 crystal = getCrystal();
@@ -312,7 +312,7 @@ public class EntityFrostmaw extends MowzieEntity {
                     else getNavigator().tryMoveToEntityLiving(getAttackTarget(), 0.95);
                 }
                 else getNavigator().clearPathEntity();
-                if (targetDistance <= 9 && getAnimation() == NO_ANIMATION && slamCooldown <= 0 && rand.nextInt(4) == 0 && !getAttackTarget().isPotionActive(PotionHandler.INSTANCE.frozen) && getHealth()/getMaxHealth() < 0.6) {
+                if (targetDistance <= 9 && getAnimation() == NO_ANIMATION && slamCooldown <= 0 && rand.nextInt(4) == 0 && !getAttackTarget().isPotionActive(PotionHandler.FROZEN) && getHealth()/getMaxHealth() < 0.6) {
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, SLAM_ANIMATION);
                     slamCooldown = SLAM_COOLDOWN;
                 }
@@ -380,7 +380,7 @@ public class EntityFrostmaw extends MowzieEntity {
                 if (getHasCrystal()) {
                     Optional<UUID> crystalID = getCrystalID();
                     if (!getCrystalID().isPresent() && !world.isRemote && (crystal == null || crystal.isDead)) {
-                        crystal = dropItem(ItemHandler.INSTANCE.iceCrystal, 1);
+                        crystal = dropItem(ItemHandler.ICE_CRYSTAL, 1);
                         setCrystalID(Optional.of(crystal.getUniqueID()));
                     }
                     crystal = getCrystal();
@@ -789,7 +789,7 @@ public class EntityFrostmaw extends MowzieEntity {
     @Override
     protected void dropLoot() {
         super.dropLoot();
-        if (getHasCrystal()) dropItem(ItemHandler.INSTANCE.iceCrystal, 1);
+        if (getHasCrystal()) dropItem(ItemHandler.ICE_CRYSTAL, 1);
     }
 
     @Override

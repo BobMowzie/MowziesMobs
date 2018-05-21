@@ -477,7 +477,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     @Override
     protected void dropLoot() {
         super.dropLoot();
-        dropItem(ItemHandler.INSTANCE.barakoMask, 1);
+        dropItem(ItemHandler.BARAKO_MASK, 1);
     }
 
     public boolean isTrading() {
