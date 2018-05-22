@@ -40,8 +40,9 @@ import com.bobmowzie.mowziesmobs.server.item.ItemSpawnEgg;
 
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends ServerProxy {
-    @SubscribeEvent
-    public static void register(ModelRegistryEvent event) {
+    @Override
+    public void onInit() {
+        super.onInit();
         RenderingRegistry.registerEntityRenderingHandler(EntityBabyFoliaath.class, RenderFoliaathBaby::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityFoliaath.class, RenderFoliaath::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityWroughtnaut.class, RenderWroughtnaut::new);
@@ -58,7 +59,10 @@ public class ClientProxy extends ServerProxy {
         RenderingRegistry.registerEntityRenderingHandler(EntityBoulder.class, RenderBoulder::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityAxeAttack.class, RenderAxeAttack::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityRing.class, RenderRing::new);
+    }
 
+    @SubscribeEvent
+    public static void register(ModelRegistryEvent event) {
         TabulaModelHandler.INSTANCE.addDomain(MowziesMobs.MODID);
 
         registerBlockModel(BlockHandler.PAINTED_ACACIA, "painted_acacia");
