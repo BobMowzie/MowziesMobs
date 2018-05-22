@@ -21,7 +21,7 @@ public final class ItemHandler {
     public static final ItemTestStructure TEST_STRUCTURE = null;
     public static final ItemMobRemover MOB_REMOVER = null;
     public static final ItemWroughtAxe WROUGHT_AXE = null;
-    public static final ItemWroughtHelm WROUGHT_HELM = null;
+    public static final ItemWroughtHelm WROUGHT_HELMET = null;
     public static final ItemBarakoaMask BARAKOA_MASK_FURY = null;
     public static final ItemBarakoaMask BARAKOA_MASK_FEAR = null;
     public static final ItemBarakoaMask BARAKOA_MASK_RAGE = null;

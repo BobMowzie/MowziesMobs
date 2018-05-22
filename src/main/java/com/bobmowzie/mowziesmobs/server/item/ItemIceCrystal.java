@@ -23,8 +23,8 @@ import javax.annotation.Nullable;
 public class ItemIceCrystal extends Item {
     public ItemIceCrystal() {
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setUnlocalizedName("icecrystal");
-        setRegistryName("icecrystal");
+        setUnlocalizedName("iceCrystal");
+        setRegistryName("ice_crystal");
         setMaxDamage(600);
         setMaxStackSize(1);
     }

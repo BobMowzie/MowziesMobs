@@ -157,9 +157,11 @@ public enum ServerEventHandler {
                 }
                 if (entity instanceof EntityLiving && ((EntityLiving)entity).isAIDisabled()) ((EntityLiving)entity).setNoAI(false);
             }
-            property.freezeProgress -= 0.1;
-            if (property.freezeProgress < 0) property.freezeProgress = 0;
-            property.prevFrozen = entity.isPotionActive(PotionHandler.FROZEN);
+            if (property != null) {
+                property.freezeProgress -= 0.1;
+                if (property.freezeProgress < 0) property.freezeProgress = 0;
+                property.prevFrozen = entity.isPotionActive(PotionHandler.FROZEN);
+            }
         }
     }
 

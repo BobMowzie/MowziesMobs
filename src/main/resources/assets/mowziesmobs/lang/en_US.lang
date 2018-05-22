@@ -28,7 +28,7 @@ item.spear.name=Spear
 item.blowgun.name=Blowgun
 item.grantSunsBlessing.name=Receive Sun's Blessing
 item.testStructure.name=Test Structures
-item.icecrystal.name=Ice Crystal
+item.iceCrystal.name=Ice Crystal
 item.earthTalisman.name=Earth Talisman
 
 item.blowgun.text.0=Charges quickly
@@ -72,7 +72,7 @@ item.earthTalisman.text.4=Charge right-click to spawn bigger boulders
 
 item.mobRemover.text.0=Left-click to remove a Mowzie's Mobs mob
 
-item.wroughtHelm.text.0=Never breaks
+item.wroughtHelmet.text.0=Never breaks
 
 item.spear.text.0=Extends attack range by 3.5 blocks
 item.spear.text.1=1/3 chance to instantly kill animals

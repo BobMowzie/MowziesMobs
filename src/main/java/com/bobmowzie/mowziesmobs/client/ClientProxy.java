@@ -71,7 +71,7 @@ public class ClientProxy extends ServerProxy {
         registerItemModel(ItemHandler.FOLIAATH_SEED, "foliaath_seed");
         registerItemModel(ItemHandler.MOB_REMOVER, "mob_remover");
         registerItemModel(ItemHandler.WROUGHT_AXE, "wrought_axe.tbl");
-        registerItemModel(ItemHandler.WROUGHT_HELM, "wrought_helmet.tbl");
+        registerItemModel(ItemHandler.WROUGHT_HELMET, "wrought_helmet.tbl");
         registerItemModel(ItemHandler.DART, "dart");
         registerItemModel(ItemHandler.SPEAR, "spear");
         registerItemModel(ItemHandler.BLOWGUN, "blowgun");

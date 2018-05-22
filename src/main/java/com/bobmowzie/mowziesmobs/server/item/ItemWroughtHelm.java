@@ -17,8 +17,8 @@ public class ItemWroughtHelm extends ItemArmor {
     public ItemWroughtHelm() {
         super(ArmorMaterial.IRON, 2, EntityEquipmentSlot.HEAD);
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setUnlocalizedName("wroughtHelm");
-        setRegistryName("wrought_helm");
+        setUnlocalizedName("wroughtHelmet");
+        setRegistryName("wrought_helmet");
     }
 
     // Dirty trick to get our item to render as the item model
