@@ -15,6 +15,7 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.SmartBodyHelper;
+import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 
@@ -121,14 +122,14 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         }
         if (getAttackTarget() == null) {
             int i = MathHelper.getInt(rand, 0, 11);
-            if (i < MMSounds.ENTITY_BARAKOA_TALK.length) {
-                playSound(MMSounds.ENTITY_BARAKOA_TALK[i], 1, 1.5f);
+            if (i < MMSounds.ENTITY_BARAKOA_TALK.size()) {
+                playSound(MMSounds.ENTITY_BARAKOA_TALK.get(i).get(), 1, 1.5f);
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, IDLE_ANIMATION);
             }
         } else {
             int i = MathHelper.getInt(rand, 0, 7);
-            if (i < MMSounds.ENTITY_BARAKOA_ANGRY.length) {
-                playSound(MMSounds.ENTITY_BARAKOA_ANGRY[i], 1, 1.6f);
+            if (i < MMSounds.ENTITY_BARAKOA_ANGRY.size()) {
+                playSound(MMSounds.ENTITY_BARAKOA_ANGRY.get(i).get(), 1, 1.6f);
             }
         }
         return null;
@@ -143,7 +144,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
         getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
-        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(17  * MowziesMobs.CONFIG.difficultyScaleBarakoa);
+        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10  * MowziesMobs.CONFIG.difficultyScaleBarakoa);
     }
 
     @Override
@@ -421,7 +422,25 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     protected void dropLoot() {
         super.dropLoot();
         if (rand.nextInt(3) == 0){
-            dropItem(ItemHandler.BARAKOA_MASKS.get(getMask()), 1);
+            ItemBarakoaMask mask = ItemHandler.BARAKOA_MASK_FURY;
+            switch (getMask()) {
+                case BLISS:
+                    mask = ItemHandler.BARAKOA_MASK_BLISS;
+                    break;
+                case FEAR:
+                    mask = ItemHandler.BARAKOA_MASK_FEAR;
+                    break;
+                case FURY:
+                    mask = ItemHandler.BARAKOA_MASK_FURY;
+                    break;
+                case MISERY:
+                    mask = ItemHandler.BARAKOA_MASK_MISERY;
+                    break;
+                case RAGE:
+                    mask = ItemHandler.BARAKOA_MASK_RAGE;
+                    break;
+            }
+            dropItem(mask, 1);
         }
     }
 

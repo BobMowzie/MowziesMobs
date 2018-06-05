@@ -1,5 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.sound;
 
+import com.google.common.base.Supplier;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.client.model.ModelWitch;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -88,15 +90,15 @@ public final class MMSounds {
     public static final SoundEvent ENTITY_BARAKOA_TALK_6 = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.talk7")
     public static final SoundEvent ENTITY_BARAKOA_TALK_7 = NIL;
-    public static final SoundEvent[] ENTITY_BARAKOA_TALK = {
-		ENTITY_BARAKOA_TALK_1,
-		ENTITY_BARAKOA_TALK_2,
-		ENTITY_BARAKOA_TALK_3,
-		ENTITY_BARAKOA_TALK_4,
-		ENTITY_BARAKOA_TALK_5,
-		ENTITY_BARAKOA_TALK_6,
-		ENTITY_BARAKOA_TALK_7
-    };
+    public static final ImmutableList<Supplier<SoundEvent>> ENTITY_BARAKOA_TALK = ImmutableList.of(
+            () -> ENTITY_BARAKOA_TALK_1,
+            () -> ENTITY_BARAKOA_TALK_2,
+            () -> ENTITY_BARAKOA_TALK_3,
+            () -> ENTITY_BARAKOA_TALK_4,
+            () -> ENTITY_BARAKOA_TALK_5,
+            () -> ENTITY_BARAKOA_TALK_6,
+            () -> ENTITY_BARAKOA_TALK_7
+    );
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.angry1")
     public static final SoundEvent ENTITY_BARAKOA_ANGRY_1 = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.angry2")
@@ -109,14 +111,14 @@ public final class MMSounds {
     public static final SoundEvent ENTITY_BARAKOA_ANGRY_5 = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.angry6")
     public static final SoundEvent ENTITY_BARAKOA_ANGRY_6 = NIL;
-    public static final SoundEvent[] ENTITY_BARAKOA_ANGRY = {
-        ENTITY_BARAKOA_ANGRY_1,
-        ENTITY_BARAKOA_ANGRY_2,
-        ENTITY_BARAKOA_ANGRY_3,
-        ENTITY_BARAKOA_ANGRY_4,
-        ENTITY_BARAKOA_ANGRY_5,
-        ENTITY_BARAKOA_ANGRY_6
-    };
+    public static final ImmutableList<Supplier<SoundEvent>> ENTITY_BARAKOA_ANGRY = ImmutableList.of(
+            () -> ENTITY_BARAKOA_ANGRY_1,
+            () -> ENTITY_BARAKOA_ANGRY_2,
+            () -> ENTITY_BARAKOA_ANGRY_3,
+            () -> ENTITY_BARAKOA_ANGRY_4,
+            () -> ENTITY_BARAKOA_ANGRY_5,
+            () -> ENTITY_BARAKOA_ANGRY_6
+    );
 
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barako.belly")
     public static final SoundEvent ENTITY_BARAKO_BELLY = NIL;
@@ -142,14 +144,14 @@ public final class MMSounds {
     public static final SoundEvent ENTITY_BARAKO_TALK_5 = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barako.talk6")
     public static final SoundEvent ENTITY_BARAKO_TALK_6 = NIL;
-    public static final SoundEvent[] ENTITY_BARAKO_TALK = {
-        ENTITY_BARAKO_TALK_1,
-        ENTITY_BARAKO_TALK_2,
-        ENTITY_BARAKO_TALK_3,
-        ENTITY_BARAKO_TALK_4,
-        ENTITY_BARAKO_TALK_5,
-        ENTITY_BARAKO_TALK_6
-    };
+    public static final ImmutableList<Supplier<SoundEvent>> ENTITY_BARAKO_TALK = ImmutableList.of(
+            () -> ENTITY_BARAKO_TALK_1,
+            () -> ENTITY_BARAKO_TALK_2,
+            () -> ENTITY_BARAKO_TALK_3,
+            () -> ENTITY_BARAKO_TALK_4,
+            () -> ENTITY_BARAKO_TALK_5,
+            () -> ENTITY_BARAKO_TALK_6
+    );
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barako.angry1")
     public static final SoundEvent ENTITY_BARAKO_ANGRY_1 = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barako.angry2")
@@ -162,14 +164,14 @@ public final class MMSounds {
     public static final SoundEvent ENTITY_BARAKO_ANGRY_5 = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barako.angry6")
     public static final SoundEvent ENTITY_BARAKO_ANGRY_6 = NIL;
-    public static final SoundEvent[] ENTITY_BARAKO_ANGRY = {
-        ENTITY_BARAKO_ANGRY_1,
-        ENTITY_BARAKO_ANGRY_2,
-        ENTITY_BARAKO_ANGRY_3,
-        ENTITY_BARAKO_ANGRY_4,
-        ENTITY_BARAKO_ANGRY_5,
-        ENTITY_BARAKO_ANGRY_6
-    };
+    public static final ImmutableList<Supplier<SoundEvent>> ENTITY_BARAKO_ANGRY = ImmutableList.of(
+            () -> ENTITY_BARAKO_ANGRY_1,
+            () -> ENTITY_BARAKO_ANGRY_2,
+            () -> ENTITY_BARAKO_ANGRY_3,
+            () -> ENTITY_BARAKO_ANGRY_4,
+            () -> ENTITY_BARAKO_ANGRY_5,
+            () -> ENTITY_BARAKO_ANGRY_6
+    );
 
     // Foliaath
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":foliaath.grunt")
@@ -217,28 +219,28 @@ public final class MMSounds {
     public static final SoundEvent ENTITY_FROSTMAW_ATTACK_3 = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":frostmaw.attack4")
     public static final SoundEvent ENTITY_FROSTMAW_ATTACK_4 = NIL;
-    public static final SoundEvent[] ENTITY_FROSTMAW_ATTACK = {
-            ENTITY_FROSTMAW_ATTACK_1,
-            ENTITY_FROSTMAW_ATTACK_2,
-            ENTITY_FROSTMAW_ATTACK_3,
-            ENTITY_FROSTMAW_ATTACK_4
-    };
+    public static final ImmutableList<Supplier<SoundEvent>> ENTITY_FROSTMAW_ATTACK = ImmutableList.of(
+            () -> ENTITY_FROSTMAW_ATTACK_1,
+            () -> ENTITY_FROSTMAW_ATTACK_2,
+            () -> ENTITY_FROSTMAW_ATTACK_3,
+            () -> ENTITY_FROSTMAW_ATTACK_4
+    );
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":frostmaw.breath1")
     public static final SoundEvent ENTITY_FROSTMAW_BREATH_1 = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":frostmaw.breath2")
     public static final SoundEvent ENTITY_FROSTMAW_BREATH_2 = NIL;
-    public static final SoundEvent[] ENTITY_FROSTMAW_BREATH = {
-            ENTITY_FROSTMAW_BREATH_1,
-            ENTITY_FROSTMAW_BREATH_2
-    };
+    public static final ImmutableList<Supplier<SoundEvent>> ENTITY_FROSTMAW_BREATH = ImmutableList.of(
+            () -> ENTITY_FROSTMAW_BREATH_1,
+            () -> ENTITY_FROSTMAW_BREATH_2
+    );
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":frostmaw.living1")
     public static final SoundEvent ENTITY_FROSTMAW_LIVING_1 = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":frostmaw.living2")
     public static final SoundEvent ENTITY_FROSTMAW_LIVING_2 = NIL;
-    public static final SoundEvent[] ENTITY_FROSTMAW_LIVING = {
-            ENTITY_FROSTMAW_LIVING_1,
-            ENTITY_FROSTMAW_LIVING_2
-    };
+    public static final ImmutableList<Supplier<SoundEvent>> ENTITY_FROSTMAW_LIVING = ImmutableList.of(
+            () -> ENTITY_FROSTMAW_LIVING_1,
+            () -> ENTITY_FROSTMAW_LIVING_2
+    );
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":frostmaw.wakeup")
     public static final SoundEvent ENTITY_FROSTMAW_WAKEUP = NIL;
 
@@ -258,21 +260,21 @@ public final class MMSounds {
     public static final SoundEvent EFFECT_GEOMANCY_BREAK_MEDIUM_2 = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.breakmedium3")
     public static final SoundEvent EFFECT_GEOMANCY_BREAK_MEDIUM_3 = NIL;
-    public static final SoundEvent[] EFFECT_GEOMANCY_BREAK_MEDIUM = {
-            EFFECT_GEOMANCY_BREAK_MEDIUM_1,
-            EFFECT_GEOMANCY_BREAK_MEDIUM_2,
-            EFFECT_GEOMANCY_BREAK_MEDIUM_3
-    };
+    public static final ImmutableList<Supplier<SoundEvent>> EFFECT_GEOMANCY_BREAK_MEDIUM = ImmutableList.of(
+            () -> EFFECT_GEOMANCY_BREAK_MEDIUM_1,
+            () -> EFFECT_GEOMANCY_BREAK_MEDIUM_2,
+            () -> EFFECT_GEOMANCY_BREAK_MEDIUM_3
+    );
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.hit")
     public static final SoundEvent EFFECT_GEOMANCY_HIT = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.hitmedium")
     public static final SoundEvent EFFECT_GEOMANCY_HIT_MEDIUM_1 = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.hitmedium2")
     public static final SoundEvent EFFECT_GEOMANCY_HIT_MEDIUM_2 = NIL;
-    public static final SoundEvent[] EFFECT_GEOMANCY_HIT_MEDIUM = {
-            EFFECT_GEOMANCY_HIT_MEDIUM_1,
-            EFFECT_GEOMANCY_HIT_MEDIUM_2
-    };
+    public static final ImmutableList<Supplier<SoundEvent>> EFFECT_GEOMANCY_HIT_MEDIUM = ImmutableList.of(
+            () -> EFFECT_GEOMANCY_HIT_MEDIUM_1,
+            () -> EFFECT_GEOMANCY_HIT_MEDIUM_2
+    );
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.rockbreak")
     public static final SoundEvent EFFECT_GEOMANCY_BREAK = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.rockcrash1")
@@ -285,11 +287,11 @@ public final class MMSounds {
     public static final SoundEvent EFFECT_GEOMANCY_RUMBLE_2 = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.rumble3")
     public static final SoundEvent EFFECT_GEOMANCY_RUMBLE_3 = NIL;
-    public static final SoundEvent[] EFFECT_GEOMANCY_RUMBLE = {
-            EFFECT_GEOMANCY_RUMBLE_1,
-            EFFECT_GEOMANCY_RUMBLE_2,
-            EFFECT_GEOMANCY_RUMBLE_3
-    };
+    public static final ImmutableList<Supplier<SoundEvent>> EFFECT_GEOMANCY_RUMBLE = ImmutableList.of(
+            () -> EFFECT_GEOMANCY_RUMBLE_1,
+            () -> EFFECT_GEOMANCY_RUMBLE_2,
+            () -> EFFECT_GEOMANCY_RUMBLE_3
+    );
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.smallrockhit")
     public static final SoundEvent EFFECT_GEOMANCY_HIT_SMALL = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.bouldercharge")

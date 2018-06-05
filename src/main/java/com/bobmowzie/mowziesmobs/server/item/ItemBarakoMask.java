@@ -21,7 +21,7 @@ public class ItemBarakoMask extends ItemArmor implements BarakoaMask {
         super(ItemArmor.ArmorMaterial.GOLD, 2, EntityEquipmentSlot.HEAD);
         setUnlocalizedName("barakoMask");
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setRegistryName("barakoa_mask");
+        setRegistryName("barako_mask");
     }
 
     @Override

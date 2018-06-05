@@ -157,15 +157,15 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         if (getAnimation() == NO_ANIMATION) {
             if (getAttackTarget() == null && !isAIDisabled()) {
                 int soundType = MathHelper.getInt(this.rand, 0, 9);
-                if (soundType < MMSounds.ENTITY_BARAKO_TALK.length) {
-                    this.playSound(MMSounds.ENTITY_BARAKO_TALK[soundType], 2F, 1.0F);
+                if (soundType < MMSounds.ENTITY_BARAKO_TALK.size()) {
+                    this.playSound(MMSounds.ENTITY_BARAKO_TALK.get(soundType).get(), 2F, 1.0F);
                     this.setWhichDialogue(soundType + 1);
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, TALK_ANIMATION);
                 }
             } else {
                 int soundType = MathHelper.getInt(rand, 1, 10);
                 if (soundType < 7) {
-                    this.playSound(MMSounds.ENTITY_BARAKO_ANGRY[soundType - 1], 2F, 1.0F);
+                    this.playSound(MMSounds.ENTITY_BARAKO_ANGRY.get(soundType - 1).get(), 2F, 1.0F);
 //                    setWhichDialogue(soundType);
 //                    AnimationHandler.INSTANCE.sendAnimationMessage(this, 3);
                 }

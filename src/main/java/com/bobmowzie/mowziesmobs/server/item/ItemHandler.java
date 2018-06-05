@@ -27,7 +27,6 @@ public final class ItemHandler {
     public static final ItemBarakoaMask BARAKOA_MASK_RAGE = null;
     public static final ItemBarakoaMask BARAKOA_MASK_BLISS = null;
     public static final ItemBarakoaMask BARAKOA_MASK_MISERY = null;
-    public static EnumMap<MaskType, ItemBarakoaMask> BARAKOA_MASKS;
     public static final ItemBarakoMask BARAKO_MASK = null;
     public static final ItemDart DART = null;
     public static final ItemSpear SPEAR = null;
@@ -57,12 +56,6 @@ public final class ItemHandler {
         for (MaskType mask : MaskType.values()) {
             event.getRegistry().register(new ItemBarakoaMask(mask));
         }
-        BARAKOA_MASKS = MaskType.newEnumMap(ItemBarakoaMask.class);
-        BARAKOA_MASKS.put(MaskType.FURY, BARAKOA_MASK_FURY);
-        BARAKOA_MASKS.put(MaskType.BLISS, BARAKOA_MASK_BLISS);
-        BARAKOA_MASKS.put(MaskType.FEAR, BARAKOA_MASK_FEAR);
-        BARAKOA_MASKS.put(MaskType.MISERY, BARAKOA_MASK_MISERY);
-        BARAKOA_MASKS.put(MaskType.RAGE, BARAKOA_MASK_RAGE);
     }
 
     public static void addItemText(Item item, List<String> lines) {

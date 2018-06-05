@@ -146,7 +146,7 @@ public class EntityFrostmaw extends MowzieEntity {
             AnimationHandler.INSTANCE.sendAnimationMessage(this, ROAR_ANIMATION);
             return;
         }
-        if (i < MMSounds.ENTITY_FROSTMAW_LIVING.length) playSound(MMSounds.ENTITY_FROSTMAW_LIVING[i], 2, 0.8f + rand.nextFloat() * 0.3f);
+        if (i < MMSounds.ENTITY_FROSTMAW_LIVING.size()) playSound(MMSounds.ENTITY_FROSTMAW_LIVING.get(i).get(), 2, 0.8f + rand.nextFloat() * 0.3f);
     }
 
     @Nullable
@@ -188,9 +188,9 @@ public class EntityFrostmaw extends MowzieEntity {
             if (getAnimation() == SWIPE_ANIMATION || getAnimation() == SWIPE_TWICE_ANIMATION) {
                 if (getAnimationTick() == 1) swingWhichArm = rand.nextBoolean();
                 if (getAnimationTick() == 3) {
-                    int i = MathHelper.getInt(rand, 0, MMSounds.ENTITY_FROSTMAW_ATTACK.length);
-                    if (i < MMSounds.ENTITY_FROSTMAW_ATTACK.length) {
-                        playSound(MMSounds.ENTITY_FROSTMAW_ATTACK[i], 2, 0.9f + rand.nextFloat() * 0.2f);
+                    int i = MathHelper.getInt(rand, 0, MMSounds.ENTITY_FROSTMAW_ATTACK.size());
+                    if (i < MMSounds.ENTITY_FROSTMAW_ATTACK.size()) {
+                        playSound(MMSounds.ENTITY_FROSTMAW_ATTACK.get(i).get(), 2, 0.9f + rand.nextFloat() * 0.2f);
                     }
                 }
             }
@@ -234,9 +234,9 @@ public class EntityFrostmaw extends MowzieEntity {
                 }
                 if (getAttackTarget() != null) getLookHelper().setLookPositionWithEntity(getAttackTarget(), 30, 30);
                 if (getAnimationTick() == 82) {
-                    int i = MathHelper.getInt(rand, 0, MMSounds.ENTITY_FROSTMAW_ATTACK.length - 1);
-                    if (i < MMSounds.ENTITY_FROSTMAW_ATTACK.length) {
-                        playSound(MMSounds.ENTITY_FROSTMAW_ATTACK[i], 2, 0.9f + rand.nextFloat() * 0.2f);
+                    int i = MathHelper.getInt(rand, 0, MMSounds.ENTITY_FROSTMAW_ATTACK.size() - 1);
+                    if (i < MMSounds.ENTITY_FROSTMAW_ATTACK.size()) {
+                        playSound(MMSounds.ENTITY_FROSTMAW_ATTACK.get(i).get(), 2, 0.9f + rand.nextFloat() * 0.2f);
                     }
                     playSound(MMSounds.ENTITY_FROSTMAW_WHOOSH, 2, 0.7f);
                 }
@@ -362,7 +362,7 @@ public class EntityFrostmaw extends MowzieEntity {
 
         if (getAnimation() == ACTIVATE_ANIMATION || getAnimation() == ACTIVATE_NO_CRYSTAL_ANIMATION) {
             if (getAnimationTick() == 1) playSound(MMSounds.ENTITY_FROSTMAW_WAKEUP, 1, 1);
-            if (getAnimation() == ACTIVATE_ANIMATION && getAnimationTick() == 18) playSound(MMSounds.ENTITY_FROSTMAW_ATTACK[0], 1.5f, 1);
+            if (getAnimation() == ACTIVATE_ANIMATION && getAnimationTick() == 18) playSound(MMSounds.ENTITY_FROSTMAW_ATTACK.get(0).get(), 1.5f, 1);
             if (!world.isRemote && crystal != null) {
                 crystal.setDead();
                 setCrystalID(Optional.absent());
@@ -403,7 +403,7 @@ public class EntityFrostmaw extends MowzieEntity {
         //Breathing sounds
         if (frame % 118 == 1 && !active) {
             int i = MathHelper.getInt(rand, 0, 1);
-            playSound(MMSounds.ENTITY_FROSTMAW_BREATH[i], 1.5F, 1.1F + rand.nextFloat() * 0.1f);
+            playSound(MMSounds.ENTITY_FROSTMAW_BREATH.get(i).get(), 1.5F, 1.1F + rand.nextFloat() * 0.1f);
         }
 
         if ((fallDistance > 0.2 && !onGround) || getAnimation() == DODGE_ANIMATION) shouldPlayLandAnimation = true;
