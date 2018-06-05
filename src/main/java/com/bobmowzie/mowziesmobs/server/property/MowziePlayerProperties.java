@@ -98,11 +98,14 @@ public class MowziePlayerProperties extends EntityProperties<EntityPlayer> {
 
     public void removePackMember(EntityBarakoanToPlayer tribePlayer) {
         tribePack.remove(tribePlayer);
+
         //sortPackMembers();
     }
 
     public void addPackMember(EntityBarakoanToPlayer tribePlayer) {
         tribePack.add(tribePlayer);
+        System.out.println(tribePack.size());
+
         //sortPackMembers();
     }
 

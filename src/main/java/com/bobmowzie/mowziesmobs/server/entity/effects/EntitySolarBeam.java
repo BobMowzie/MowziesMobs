@@ -254,13 +254,13 @@ public class EntitySolarBeam extends Entity {
             collidePosZ = endPosZ;
             blockSide = null;
         }
-        List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(Math.min(posX, collidePosX), Math.min(posY, collidePosY), Math.min(posZ, collidePosZ), Math.max(posX, collidePosX), Math.max(posY, collidePosY), Math.max(posZ, collidePosZ)).expand(1, 1, 1));
+        List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(Math.min(posX, collidePosX), Math.min(posY, collidePosY), Math.min(posZ, collidePosZ), Math.max(posX, collidePosX), Math.max(posY, collidePosY), Math.max(posZ, collidePosZ)).grow(1, 1, 1));
         for (EntityLivingBase entity : entities) {
             if (entity == caster) {
                 continue;
             }
             float pad = entity.getCollisionBorderSize() + 0.5f;
-            AxisAlignedBB aabb = entity.getEntityBoundingBox().expand(pad, pad, pad);
+            AxisAlignedBB aabb = entity.getEntityBoundingBox().grow(pad, pad, pad);
             RayTraceResult hit = aabb.calculateIntercept(from, to);
             if (aabb.contains(from)) {
                 result.addEntityHit(entity);

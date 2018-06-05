@@ -33,7 +33,6 @@ public abstract class EntityBarakoan<L extends EntityLivingBase> extends EntityB
     public EntityBarakoan(World world, Class<L> leaderClass, L leader) {
         super(world);
         this.leaderClass = leaderClass;
-        this.leader = leader;
         if (leader != null) {
             setLeaderUUID(leader.getUniqueID());
         }
@@ -65,12 +64,10 @@ public abstract class EntityBarakoan<L extends EntityLivingBase> extends EntityB
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!world.isRemote) {
-            if (leader == null && getLeaderUUID().isPresent()) {
-                leader = getLeader();
-                if (leader != null) {
-                    addAsPackMember();
-                }
+        if (leader == null && getLeaderUUID().isPresent()) {
+            leader = getLeader();
+            if (leader != null) {
+                addAsPackMember();
             }
         }
     }
@@ -96,10 +93,18 @@ public abstract class EntityBarakoan<L extends EntityLivingBase> extends EntityB
         }
     }
 
+    @Override
+    public void setDead() {
+        if (leader != null) {
+            removeAsPackMember();
+        }
+        super.setDead();
+    }
+
     public L getLeader() {
         Optional<UUID> uuid = getLeaderUUID();
         if (uuid.isPresent()) {
-            List<L> potentialLeaders = world.getEntitiesWithinAABB(leaderClass, getEntityBoundingBox().expand(32, 32, 32));
+            List<L> potentialLeaders = world.getEntitiesWithinAABB(leaderClass, getEntityBoundingBox().grow(32, 32, 32));
             for (L entity : potentialLeaders) {
                 if (uuid.get().equals(entity.getUniqueID())) {
                     return entity;
