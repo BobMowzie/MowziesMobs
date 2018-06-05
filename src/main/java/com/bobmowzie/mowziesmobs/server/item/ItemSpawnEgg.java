@@ -53,12 +53,14 @@ public class ItemSpawnEgg extends Item {
 
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
-        Iterator<MowzieEntityEggInfo> iterator = EntityHandler.INSTANCE.getEntityEggInfoIterator();
-        while (iterator.hasNext()) {
-            MowzieEntityEggInfo info = iterator.next();
-            ItemStack stack = new ItemStack(this);
-            applyEntityIdToItemStack(stack, info.id);
-            subItems.add(stack);
+        if (isInCreativeTab(tab)) {
+            Iterator<MowzieEntityEggInfo> iterator = EntityHandler.INSTANCE.getEntityEggInfoIterator();
+            while (iterator.hasNext()) {
+                MowzieEntityEggInfo info = iterator.next();
+                ItemStack stack = new ItemStack(this);
+                applyEntityIdToItemStack(stack, info.id);
+                subItems.add(stack);
+            }
         }
     }
 
