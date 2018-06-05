@@ -104,7 +104,7 @@ public class MowziePlayerProperties extends EntityProperties<EntityPlayer> {
 
     public void addPackMember(EntityBarakoanToPlayer tribePlayer) {
         tribePack.add(tribePlayer);
-        System.out.println(tribePack.size());
+//        System.out.println(tribePack.size());
 
         //sortPackMembers();
     }
