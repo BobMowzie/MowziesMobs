@@ -29,6 +29,8 @@ public class ModelFrostmaw extends AdvancedModelBase {
     public AdvancedModelRenderer headRotator;
     public AdvancedModelRenderer antlerLeft;
     public AdvancedModelRenderer antlerRight;
+    public AdvancedModelRenderer antlerLeftJoint;
+    public AdvancedModelRenderer antlerRightJoint;
     public AdvancedModelRenderer head;
     public AdvancedModelRenderer jawJoint;
     public AdvancedModelRenderer teethUpper;
@@ -137,11 +139,14 @@ public class ModelFrostmaw extends AdvancedModelBase {
         this.jawSpikes2 = new AdvancedModelRenderer(this, 212, 104);
         this.jawSpikes2.setRotationPoint(0.0F, 14.0F, 0.0F);
         this.jawSpikes2.addBox(-19.0F, 0.0F, -19.0F, 38, 9, 38, 0.0F);
-        this.antlerLeft = new AdvancedModelRenderer(this, 178, 77);
+        this.antlerLeft = new AdvancedModelRenderer(this, 208, 77);
         this.antlerLeft.mirror = true;
-        this.antlerLeft.setRotationPoint(22.0F, -6.0F, -15.0F);
-        this.antlerLeft.addBox(-15.0F, -40.0F, 0.0F, 30, 43, 0, 0.0F);
-        this.setRotateAngle(antlerLeft, -0.9599310885968813F, 0.3490658503988659F, 0.08726646259971647F);
+        this.antlerLeft.setRotationPoint(0, 0, 0);
+        this.antlerLeft.add3DTexture(-15.0F, -3.0F, 0.0F, 30, 43);
+        this.setRotateAngle(antlerLeft, 0, -(float)Math.PI/2, 0);
+        this.antlerLeftJoint = new AdvancedModelRenderer(this, 208, 77);
+        this.antlerLeftJoint.setRotationPoint(22.0F, -6.0F, -15.0F);
+        this.setRotateAngle(antlerLeftJoint, -0.9599310885968813F, 0.3490658503988659F, 0.08726646259971647F);
         this.rightHand = new AdvancedModelRenderer(this, 240, 0);
         this.rightHand.setRotationPoint(2.0F, 1.0F, -4.5F);
         this.rightHand.addBox(-10.0F, -2.0F, -7.52F, 20, 20, 9, 0.0F);
@@ -192,10 +197,13 @@ public class ModelFrostmaw extends AdvancedModelBase {
         this.tuskRightJoint.setRotationPoint(-12.0F, 0.0F, -19.0F);
         this.tuskRightJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         this.setRotateAngle(tuskRightJoint, 0.0F, 1.5707963267948966F, 0.0F);
-        this.antlerRight = new AdvancedModelRenderer(this, 178, 77);
-        this.antlerRight.setRotationPoint(-22.0F, -6.0F, -15.0F);
-        this.antlerRight.addBox(-15.0F, -40.0F, 0.0F, 30, 43, 0, 0.0F);
-        this.setRotateAngle(antlerRight, -0.9599310885968813F, -0.3490658503988659F, -0.08726646259971647F);
+        this.antlerRight = new AdvancedModelRenderer(this, 208, 77);
+        this.antlerRight.setRotationPoint(0, 0, 0);
+        this.antlerRight.add3DTexture(-15.0F, -3.0F, 0.0F, 30, 43);
+        this.setRotateAngle(antlerRight, 0, (float)Math.PI/2, 0);
+        this.antlerRightJoint = new AdvancedModelRenderer(this, 208, 77);
+        this.antlerRightJoint.setRotationPoint(-22.0F, -6.0F, -15.0F);
+        this.setRotateAngle(antlerRightJoint, -0.9599310885968813F, -0.3490658503988659F, -0.08726646259971647F);
         this.armRight2Fur = new AdvancedModelRenderer(this, 326, 113);
         this.armRight2Fur.setRotationPoint(0.0F, 28.0F, 0.0F);
         this.armRight2Fur.addBox(-11.0F, -5.0F, -11.0F, 22, 7, 22, 0.0F);
@@ -327,7 +335,7 @@ public class ModelFrostmaw extends AdvancedModelBase {
         this.head.addChild(this.teethUpper);
         this.armLeft2.addChild(this.leftHandJoint);
         this.jaw.addChild(this.jawSpikes2);
-        this.headJoint.addChild(this.antlerLeft);
+        this.headJoint.addChild(this.antlerLeftJoint);
         this.leftRightJoint.addChild(this.rightHand);
         this.armLeftJoint.addChild(this.armLeft1);
         this.legLeft2.addChild(this.leftFoot);
@@ -341,7 +349,7 @@ public class ModelFrostmaw extends AdvancedModelBase {
         this.head.addChild(this.eyeLidLeft);
         this.jaw.addChild(this.jawSpikes1);
         this.jaw.addChild(this.tuskRightJoint);
-        this.headJoint.addChild(this.antlerRight);
+        this.headJoint.addChild(this.antlerRightJoint);
         this.armRight2.addChild(this.armRight2Fur);
         this.legRight2.addChild(this.legRightFur);
         this.tuskLeft1.addChild(this.tuskLeft2);
@@ -375,6 +383,8 @@ public class ModelFrostmaw extends AdvancedModelBase {
         leftHand.addChild(leftHandSocket);
         headJoint.addChild(mouthSocket);
         rightHand.addChild(crystalSocket);
+        antlerLeftJoint.addChild(antlerLeft);
+        antlerRightJoint.addChild(antlerRight);
 
         antlerLeft.setScale(1, 1, -1);
         antlerRight.setScale(1, 1, -1);
