@@ -11,6 +11,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
@@ -147,12 +148,12 @@ public class EntityBoulder extends Entity {
         super.onUpdate();
         move(MoverType.SELF, motionX, motionY, motionZ);
         if (ridingEntities != null) ridingEntities.clear();
-        List<Entity> onTopOfEntities = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().contract(0, height - 1, 0).offset(new Vec3d(0, height - 0.5, 0)).expand(0.6,0.5,0.6));
+        List<Entity> onTopOfEntities = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().contract(0, height - 1, 0).offset(new Vec3d(0, height - 0.5, 0)).grow(0.6,0.5,0.6));
         for (Entity entity : onTopOfEntities) {
             if (entity != null && entity.canBeCollidedWith() && !(entity instanceof EntityBoulder) && entity.posY >= this.posY + 0.2) ridingEntities.add(entity);
         }
         if (travelling){
-            for (Entity entity:ridingEntities) {
+            for (Entity entity : ridingEntities) {
                 entity.move(MoverType.SHULKER_BOX, motionX, motionY, motionZ);
             }
         }
@@ -178,7 +179,7 @@ public class EntityBoulder extends Entity {
                 if (!isDead && boulderSize != 3) setShouldExplode(true);
             }
         }
-        List<EntityBoulder> bouldersHit = world.getEntitiesWithinAABB(EntityBoulder.class, getEntityBoundingBox().expand(0.2, 0.2, 0.2).offset(new Vec3d(motionX, motionY, motionZ).normalize().scale(0.5)));
+        List<EntityBoulder> bouldersHit = world.getEntitiesWithinAABB(EntityBoulder.class, getEntityBoundingBox().grow(0.2, 0.2, 0.2).offset(new Vec3d(motionX, motionY, motionZ).normalize().scale(0.5)));
         if (travelling && !bouldersHit.isEmpty()) {
             for (EntityBoulder entity : bouldersHit) {
                 if (!entity.travelling) {
@@ -188,7 +189,7 @@ public class EntityBoulder extends Entity {
             }
         }
 
-        if (travelling && world.collidesWithAnyBlock(getEntityBoundingBox().expand(0.1,0.1,0.1))) explode();
+        if (travelling && world.collidesWithAnyBlock(getEntityBoundingBox().grow(0.1,0.1,0.1))) setShouldExplode(true);
 
         blockId = Block.getStateId(storedBlock);
 
@@ -341,7 +342,7 @@ public class EntityBoulder extends Entity {
     public boolean hitByEntity(Entity entityIn) {
         if (ticksExisted > finishedRisingTick - 1) {
             if (entityIn instanceof EntityPlayer
-                    && ((EntityPlayer) entityIn).inventory.getCurrentItem() == ItemStack.EMPTY
+                    && ((EntityPlayer)entityIn).inventory.getCurrentItem().getItem() == Items.AIR
                     && ((EntityPlayer) entityIn).isPotionActive(PotionHandler.GEOMANCY)) {
                 EntityPlayer player = (EntityPlayer) entityIn;
                 if (ridingEntities.contains(player)) {
@@ -398,17 +399,9 @@ public class EntityBoulder extends Entity {
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double r) {
-        return world.getEntitiesWithinAABB(entityClass, getEntityBoundingBox().expand(r, r, r), e -> e != this && getDistanceToEntity(e) <= r);
+        return world.getEntitiesWithinAABB(entityClass, getEntityBoundingBox().grow(r, r, r), e -> e != this && getDistanceToEntity(e) <= r);
     }
 
-    protected void repelEntities(float radius) {
-        List<EntityLivingBase> nearbyEntities = getEntityLivingBaseNearby(radius);
-        for (Entity entity : nearbyEntities) {
-            double angle = (getAngleBetweenEntities(this, entity) + 90) * Math.PI / 180;
-            entity.motionX = -0.1 * Math.cos(angle);
-            entity.motionZ = -0.1 * Math.sin(angle);
-        }
-    }
 
     public double getAngleBetweenEntities(Entity first, Entity second) {
         return Math.atan2(second.posZ - first.posZ, second.posX - first.posX) * (180 / Math.PI) + 90;

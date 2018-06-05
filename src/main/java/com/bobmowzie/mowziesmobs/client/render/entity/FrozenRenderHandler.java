@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.EnumHand;
@@ -117,7 +118,7 @@ public enum FrozenRenderHandler {
         if(player != null && player.isPotionActive(PotionHandler.FROZEN)) {
             if(player.isPotionActive(PotionHandler.FROZEN)) {
                 boolean isMainHand = event.getHand() == EnumHand.MAIN_HAND;
-                if(isMainHand && !player.isInvisible() && event.getItemStack() == ItemStack.EMPTY) {
+                if(isMainHand && !player.isInvisible() && event.getItemStack().getItem() == Items.AIR) {
                     EnumHandSide enumhandside = isMainHand ? player.getPrimaryHand() : player.getPrimaryHand().opposite();
                     renderArmFirstPersonFrozen(event.getEquipProgress(), event.getSwingProgress(), enumhandside);
                     event.setCanceled(true);

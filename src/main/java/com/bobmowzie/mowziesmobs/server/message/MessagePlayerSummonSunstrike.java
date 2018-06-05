@@ -5,6 +5,7 @@ import net.ilexiconn.llibrary.server.network.AbstractMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
@@ -48,7 +49,7 @@ public class MessagePlayerSummonSunstrike extends AbstractMessage<MessagePlayerS
     @Override
     public void onServerReceived(MinecraftServer server, MessagePlayerSummonSunstrike message, EntityPlayer player, MessageContext messageContext) {
         RayTraceResult raytrace = rayTrace(player, REACH);
-        if (raytrace != null && raytrace.typeOfHit == RayTraceResult.Type.BLOCK && raytrace.sideHit == EnumFacing.UP && player.inventory.getCurrentItem() == ItemStack.EMPTY && player.isPotionActive(PotionHandler.SUNS_BLESSING)) {
+        if (raytrace != null && raytrace.typeOfHit == RayTraceResult.Type.BLOCK && raytrace.sideHit == EnumFacing.UP && player.inventory.getCurrentItem().getItem() == Items.AIR && player.isPotionActive(PotionHandler.SUNS_BLESSING)) {
             BlockPos hit = raytrace.getBlockPos();
             EntitySunstrike sunstrike = new EntitySunstrike(player.world, player, hit.getX(), hit.getY(), hit.getZ());
             sunstrike.onSummon();

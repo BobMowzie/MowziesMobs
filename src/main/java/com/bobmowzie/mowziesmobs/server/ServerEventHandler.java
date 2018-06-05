@@ -45,6 +45,7 @@ import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -264,7 +265,7 @@ public enum ServerEventHandler {
     public void onPlayerInteract(PlayerInteractEvent.RightClickEmpty event) {
         EntityPlayer player = event.getEntityPlayer();
         MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
-        if (event.getWorld().isRemote && player.inventory.getCurrentItem() == ItemStack.EMPTY && player.isPotionActive(PotionHandler.SUNS_BLESSING) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
+        if (event.getWorld().isRemote && player.inventory.getCurrentItem().getItem() == Items.AIR && player.isPotionActive(PotionHandler.SUNS_BLESSING) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
             if (player.isSneaking()) {
                 MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSolarBeam());
                 property.untilSunstrike = SOLARBEAM_COOLDOWN;
@@ -291,7 +292,7 @@ public enum ServerEventHandler {
     public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event) {
         EntityPlayer player = event.getEntityPlayer();
         MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
-        if (event.getWorld().isRemote && player.inventory.getCurrentItem() == ItemStack.EMPTY && player.isPotionActive(PotionHandler.SUNS_BLESSING) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
+        if (event.getWorld().isRemote && player.inventory.getCurrentItem().getItem() == Items.AIR && player.isPotionActive(PotionHandler.SUNS_BLESSING) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
             if (player.isSneaking()) {
                 MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSolarBeam());
                 property.untilSunstrike = SOLARBEAM_COOLDOWN;
