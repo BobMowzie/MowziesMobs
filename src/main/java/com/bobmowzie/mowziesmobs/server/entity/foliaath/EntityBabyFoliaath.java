@@ -205,7 +205,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
     }
 
     public List<EntityItem> getMeatsNearby(double distanceX, double distanceY, double distanceZ, double radius) {
-        List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().expand(distanceX, distanceY, distanceZ));
+        List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(distanceX, distanceY, distanceZ));
         ArrayList<EntityItem> listEntityItem = new ArrayList<>();
         for (Entity entityNeighbor : list) {
             if (entityNeighbor instanceof EntityItem && getDistanceToEntity(entityNeighbor) <= radius) {

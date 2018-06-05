@@ -246,7 +246,7 @@ public class EntityFrostmaw extends MowzieEntity {
                     float slamPosX = (float) (posX + radius * Math.cos(Math.toRadians(rotationYaw + 90)));
                     float slamPosZ = (float) (posZ + radius * Math.sin(Math.toRadians(rotationYaw + 90)));
                     if (world.isRemote) MMParticle.RING.spawn(world, slamPosX, posY + 0.2f, slamPosZ, ParticleFactory.ParticleArgs.get().withData(0f, (float)Math.PI/2f, 17, 1f, 1f, 1f, 1f, 60f, false, 0f, 0f, 0f));
-                    AxisAlignedBB hitBox = new AxisAlignedBB(new BlockPos(slamPosX - 0.5f, posY, slamPosZ - 0.5f)).expand(3, 3, 3);
+                    AxisAlignedBB hitBox = new AxisAlignedBB(new BlockPos(slamPosX - 0.5f, posY, slamPosZ - 0.5f)).grow(3, 3, 3);
                     List<EntityLivingBase> entitiesHit = world.getEntitiesWithinAABB(EntityLivingBase.class, hitBox);
                     for (EntityLivingBase entity: entitiesHit) {
                         if (entity != this) attackEntityAsMob(entity, 4f);
@@ -741,7 +741,7 @@ public class EntityFrostmaw extends MowzieEntity {
     public EntityItem getCrystal() {
         Optional<UUID> uuid = getCrystalID();
         if (uuid.isPresent()) {
-            List<EntityItem> potentialCrystals = world.getEntitiesWithinAABB(EntityItem.class, getEntityBoundingBox().expand(32, 32, 32));
+            List<EntityItem> potentialCrystals = world.getEntitiesWithinAABB(EntityItem.class, getEntityBoundingBox().grow(32, 32, 32));
             for (EntityItem entity : potentialCrystals) {
                 if (uuid.get().equals(entity.getUniqueID())) {
                     return entity;

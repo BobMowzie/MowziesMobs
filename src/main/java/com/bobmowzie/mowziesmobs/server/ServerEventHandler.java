@@ -256,7 +256,7 @@ public enum ServerEventHandler {
     }
 
     private List<EntityLivingBase> getEntityLivingBaseNearby(EntityLivingBase user, double distanceX, double distanceY, double distanceZ, double radius) {
-        List<Entity> list = user.world.getEntitiesWithinAABBExcludingEntity(user, user.getEntityBoundingBox().expand(distanceX, distanceY, distanceZ));
+        List<Entity> list = user.world.getEntitiesWithinAABBExcludingEntity(user, user.getEntityBoundingBox().grow(distanceX, distanceY, distanceZ));
         ArrayList<EntityLivingBase> nearEntities = list.stream().filter(entityNeighbor -> entityNeighbor instanceof EntityLivingBase && user.getDistanceToEntity(entityNeighbor) <= radius).map(entityNeighbor -> (EntityLivingBase) entityNeighbor).collect(Collectors.toCollection(ArrayList::new));
         return nearEntities;
     }
@@ -413,7 +413,7 @@ public enum ServerEventHandler {
         if (dab) {
             final float dist = 20.5F;
             EntityPlayerMP player = event.getPlayer();
-            AxisAlignedBB bounds = player.getEntityBoundingBox().expand(dist, dist, dist);
+            AxisAlignedBB bounds = player.getEntityBoundingBox().grow(dist, dist, dist);
             List<EntityWroughtnaut> wroughtnauts = player.world.getEntitiesWithinAABB(EntityWroughtnaut.class, bounds);
             for (EntityWroughtnaut wroughtnaut : wroughtnauts) {
                 if (wroughtnaut.isActive() && wroughtnaut.getDistanceSq(player.posX, player.posY, player.posZ) <= dist * dist) {

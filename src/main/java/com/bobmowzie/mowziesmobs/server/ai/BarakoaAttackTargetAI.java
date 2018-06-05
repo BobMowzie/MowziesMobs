@@ -47,7 +47,7 @@ public class BarakoaAttackTargetAI extends EntityAITarget {
             return false;
         } else {
             double targetDistance = this.getTargetDistance();
-            List list = this.taskOwner.world.getEntitiesWithinAABB(this.targetClass, this.taskOwner.getEntityBoundingBox().expand(targetDistance, 4.0D, targetDistance), this.targetEntitySelector);
+            List list = this.taskOwner.world.getEntitiesWithinAABB(this.targetClass, this.taskOwner.getEntityBoundingBox().grow(targetDistance, 4.0D, targetDistance), this.targetEntitySelector);
             Collections.sort(list, this.attackableTargetSorter);
 
             if (list.isEmpty()) {

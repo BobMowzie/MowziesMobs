@@ -56,14 +56,14 @@ public class ItemSpear extends ItemSword {
             collidePosZ = end.z;
         }
 
-        List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(Math.min(pos.x, collidePosX), Math.min(pos.y, collidePosY), Math.min(pos.z, collidePosZ), Math.max(pos.x, collidePosX), Math.max(pos.y, collidePosY), Math.max(pos.z, collidePosZ)).expand(1, 1, 1));
+        List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(Math.min(pos.x, collidePosX), Math.min(pos.y, collidePosY), Math.min(pos.z, collidePosZ), Math.max(pos.x, collidePosX), Math.max(pos.y, collidePosY), Math.max(pos.z, collidePosZ)).grow(1, 1, 1));
         EntityLivingBase closest = null;
         for (EntityLivingBase entity : entities) {
             if (entity == player) {
                 continue;
             }
             float pad = entity.getCollisionBorderSize();
-            AxisAlignedBB aabb = entity.getEntityBoundingBox().expand(pad, pad, pad);
+            AxisAlignedBB aabb = entity.getEntityBoundingBox().grow(pad, pad, pad);
             RayTraceResult hit = aabb.calculateIntercept(pos, segment);
             if (aabb.contains(pos) || hit != null) {
                 result.addEntityHit(entity);
