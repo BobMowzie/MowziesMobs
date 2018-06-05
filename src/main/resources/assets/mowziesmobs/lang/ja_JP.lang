@@ -1,105 +1,125 @@
 # Creative Tabs
 itemGroup.mowziesmobs.creativeTab=Mowzie's Mobs
 
+
 # Entities
-entity.foliaath.name=Foliaath
-entity.ferrous_wroughtnaut.name=Ferrous Wroughtnaut
-entity.baby_foliaath.name=Baby Foliaath
+entity.foliaath.name=フォリアス
+entity.ferrous_wroughtnaut.name=フェラス・ロートノート
+entity.baby_foliaath.name=フォリアスの苗
 entity.barakoan_barakoana.name=バラコア
 entity.barakoan_player.name=バラコア
 entity.barakoana.name=バラコアナ
 entity.barakoaya.name=バラコア
-entity.barako.name=バラコ シャンシェフ
-entity.frostmaw.name=Frostmaw
+entity.barako.name=バラコ・ザ・サンチーフ
+entity.frostmaw.name=フロスト・モー
+
 
 # Items
-item.foliaathSeed.name=Foliaathの種
-item.mobRemover.name=Mob Remover
-item.wroughtAxe.name=Axe of a Thousand Metals
-item.wroughtHelm.name=重めの兜
-item.barakoaMask.fury.name=Mask of Fury
-item.barakoaMask.fear.name=Mask of Fear
-item.barakoaMask.rage.name=Mask of Rage
-item.barakoaMask.bliss.name=Mask of Bliss
-item.barakoaMask.misery.name=Mask of Misery
-item.barakoMask.name=バラコ族の黄金マスク
-item.dart.name=ダート
+item.foliaathSeed.name=フォリアスの種
+item.mobRemover.name=モブ削除用アイテム
+item.wroughtAxe.name=千鋼の斧
+item.wroughtHelm.name=ロートヘルム
+item.barakoaMask.fury.name=激情のマスク
+item.barakoaMask.fear.name=畏怖のマスク
+item.barakoaMask.rage.name=憤怒のマスク
+item.barakoaMask.bliss.name=至福のマスク
+item.barakoaMask.misery.name=苦悩のマスク
+item.barakoMask.name=太陽の面
+item.dart.name=毒の吹き矢
 item.spear.name=槍
-item.blowgun.name=吹き矢
-item.grantSunsBlessing.name=Receive Sun's Blessing
-item.testStructure.name=Test Structures
+item.blowgun.name=吹き筒
+item.grantSunsBlessing.name=太陽の力
+item.testStructure.name=テスト
 item.icecrystal.name=アイスクリスタル
-item.earthTalisman.name=Earth Talisman
+item.earthTalisman.name=大地のタリスマン
+
 
 item.blowgun.text.0=チャージ速度が速い
-item.blowgun.text.1=短距離だがダートを飛ばせる
-item.blowgun.text.2=ダート専用
+item.blowgun.text.1=飛距離は長くない
+item.blowgun.text.2=吹き矢専用
 
-item.wroughtAxe.text.0=耐久度無限
-item.wroughtAxe.text.1=Right-click to attack in an large arc
-item.wroughtAxe.text.2=地面に向かってShift-right-clickするとショックウェーブを起こせる
 
-item.barakoMask.text.0=耐久度無限
-item.barakoMask.text.1=Equip, then right-click with Barakoa mask
-item.barakoMask.text.2=to spawn followers
+item.wroughtAxe.text.0=耐久値無限
+item.wroughtAxe.text.1=右クリックで範囲攻撃
+item.wroughtAxe.text.2=地面へShift+右クリックで地響き
 
-item.barakoaMask.fear.text.0=Grants swiftness
-item.barakoaMask.fear.text.1=被ったら仲間になれるだろうか・・・？
-item.barakoaMask.rage.text.0=Grants haste
-item.barakoaMask.rage.text.1=被ったら仲間になれるだろうか・・・？
-item.barakoaMask.misery.text.0=Grants resistance
-item.barakoaMask.misery.text.1=被ったら仲間になれるだろうか・・・？
-item.barakoaMask.bliss.text.0=Grants jump boost
-item.barakoaMask.bliss.text.1=被ったら仲間になれるだろうか・・・？
-item.barakoaMask.fury.text.0=Grants strength
-item.barakoaMask.fury.text.1=被ったら仲間になれるだろうか・・・？
 
-item.dart.text.0=Can only be used with blowgun
-item.dart.text.1=Poisons targets
+item.barakoMask.text.0=耐久値無限
+item.barakoMask.text.1=バラコアのマスクで右クリック
+item.barakoMask.text.2=手下を呼び出せる
 
-item.foliaathSeed.text.0=Plant in grass
-item.foliaathSeed.text.1=Feed when hungry for 2 days
 
-item.grantSunsBlessing.text.0=Grants Sun's Blessing for 20 minutes
-item.grantSunsBlessing.text.1=With empty hand, right-click to call a sunstrike
-item.grantSunsBlessing.text.2=With empty hand, shift-right-click to fire a solar beam (costs 2 minutes)
+item.barakoaMask.fear.text.0=移動速度が上昇する
+item.barakoaMask.fear.text.1=もしかすると...?
+item.barakoaMask.rage.text.0=採掘速度が上昇する
+item.barakoaMask.rage.text.1=もしかすると...?
+item.barakoaMask.misery.text.0=攻撃からの耐性が付く
+item.barakoaMask.misery.text.1=もしかすると...?
+item.barakoaMask.bliss.text.0=跳躍力が上昇する
+item.barakoaMask.bliss.text.1=もしかすると...?
+item.barakoaMask.fury.text.0=攻撃力が上昇する
+item.barakoaMask.fury.text.1=もしかすると...?
+
+
+item.dart.text.0=吹き筒で撃ち出す
+item.dart.text.1=当たったモブは毒に侵される
+
+
+item.foliaathSeed.text.0=草ブロックの上に植える
+item.foliaathSeed.text.1=2日間餌をやり続けよう
+
+
+item.grantSunsBlessing.text.0=20秒間太陽の力が付く
+item.grantSunsBlessing.text.1=素手で右クリックでサン・ストライクを放つ
+item.grantSunsBlessing.text.2=素手でShift+右クリックで太陽光線を放つ(ただし制限時間が縮む)
+
 
 item.earthTalisman.text.0=クリエイティブモードのみ
-item.earthTalisman.text.1=Place in inventory to wield geomancy
-item.earthTalisman.text.2=Right-click earthen ground with empty hand to spawn boulder
-item.earthTalisman.text.3=Punch boulder to fire it as projectile
-item.earthTalisman.text.4=Charge right-click to spawn bigger boulders
+item.earthTalisman.text.1=インベントリにあると大地の力が付く
+item.earthTalisman.text.2=地面を右クリックで土が浮き出す
+item.earthTalisman.text.3=土をパンチする事で弾き飛ばす
+item.earthTalisman.text.4=右クリック長押しで大きな土塊が現れる
 
-item.mobRemover.text.0=Left-click to remove a Mowzie's Mobs mob
 
-item.wroughtHelm.text.0=耐久度無限
+item.mobRemover.text.0=右クリックで当MODのモブを削除
 
-item.spear.text.0=Extends attack range by 3.5 blocks
-item.spear.text.1=1/3 chance to instantly kill animals
 
-item.icecrystal.text.0=Hold right-click to channel an icy whirlwind
-item.icecrystal.text.1=Recharges while in inventory
+item.wroughtHelm.text.0=耐久値無限
+
+
+item.spear.text.0=3.5ブロック分のリーチを持つ
+item.spear.text.1=攻撃した動物は1/3の確率で即死する
+
+
+item.icecrystal.text.0=右クリックで氷の息吹を放つ
+item.icecrystal.text.1=放置しておけばチャージされる
+
 
 # Blocks
-tile.campfire.name=Campfire
-tile.paintedAcacia.name=Painted Acacia Wood
-tile.paintedAcaciaSlab.name=Painted Acacia Wood Slab
+tile.campfire.name=焚き火
+tile.paintedAcacia.name=模様付きアカシアの木材
+tile.paintedAcaciaSlab.name=模様付きアカシアの木材ハーフブロック
+
 
 # Potions
-potion.sunsBlessing=Sun's Blessing
-potion.geomancy=Geomancy
+potion.sunsBlessing=太陽の祝福
+potion.geomancy=大地の力
 potion.frozen=凍結
+
 
 # Tile Entities
 
 
+
 # Containers
+
 entity.barakoaya.trade=バラコア
-entity.barako.trade=バラコ シャンシェフ
+entity.barako.trade=太陽の酋長
 entity.barako.trade.button.text=取引
-entity.barako.trade.button.hover=Return later to replenish for free
-entity.barako.replenish.button.text=Replenish
-entity.barako.replenish.button.hover=Replenish your blessing for free
+entity.barako.trade.button.hover=2回目以降は無償で補充できる
+entity.barako.replenish.button.text=力の補充
+entity.barako.replenish.button.hover=無償で補充できる
+
 
 # Death Messages
-death.attack.dart=%1$sは%2$sに吹き矢で撃ち抜かれた
+death.attack.dart=%1$sは%2$sに吹き矢で撃ち殺された
