@@ -136,4 +136,9 @@ public class ParticleCloud extends Particle implements ParticleTextureStitcher.I
             return new ParticleCloud(args.world, args.x, args.y, args.z, 0, 0, 0, 1, 1, 1, false, 10, 40, EnumCloudBehavior.CONSTANT);
         }
     }
+
+    @Override
+    public boolean shouldDisableDepth() {
+        return true;
+    }
 }

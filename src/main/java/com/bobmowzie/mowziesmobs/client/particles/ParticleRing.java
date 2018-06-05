@@ -162,4 +162,9 @@ public class ParticleRing extends Particle implements ParticleTextureStitcher.IP
             else return new ParticleRing(args.world, args.x, args.y, args.z, 0, 0, 25, 0.8f, 0.8f, 1f, 1f, 5, true, 0, 0, 0);
         }
     }
+
+    @Override
+    public boolean shouldDisableDepth() {
+        return true;
+    }
 }

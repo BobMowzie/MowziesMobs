@@ -114,4 +114,9 @@ public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
             }
         }
     }
+
+    @Override
+    public boolean shouldDisableDepth() {
+        return true;
+    }
 }

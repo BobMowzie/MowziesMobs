@@ -148,4 +148,9 @@ public class ParticleSnowFlake extends Particle implements ParticleTextureStitch
             return new ParticleSnowFlake(args.world, args.x, args.y, args.z, 0, 0, 0, 40, 0);
         }
     }
+
+    @Override
+    public boolean shouldDisableDepth() {
+        return true;
+    }
 }
