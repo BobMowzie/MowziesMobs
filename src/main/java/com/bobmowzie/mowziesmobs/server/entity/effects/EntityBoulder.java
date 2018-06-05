@@ -342,7 +342,7 @@ public class EntityBoulder extends Entity {
     public boolean hitByEntity(Entity entityIn) {
         if (ticksExisted > finishedRisingTick - 1) {
             if (entityIn instanceof EntityPlayer
-                    && ((EntityPlayer)entityIn).inventory.getCurrentItem().getItem() == Items.AIR
+                    && ((EntityPlayer)entityIn).inventory.getCurrentItem().isEmpty()
                     && ((EntityPlayer) entityIn).isPotionActive(PotionHandler.GEOMANCY)) {
                 EntityPlayer player = (EntityPlayer) entityIn;
                 if (ridingEntities.contains(player)) {
