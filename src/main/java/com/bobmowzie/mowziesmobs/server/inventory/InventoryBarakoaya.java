@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.inventory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -9,16 +10,16 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTUtil;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 
 public final class InventoryBarakoaya implements IInventory {
     private final EntityBarakoaya barakoaya;
 
-    private final List<ItemStack> slots = NonNullList.withSize(2, ItemStack.EMPTY);
+    private final ItemStack[] slots = new ItemStack[2];
 
     private Trade trade;
 
@@ -43,21 +44,21 @@ public final class InventoryBarakoaya implements IInventory {
 
     @Override
     public int getSizeInventory() {
-        return slots.size();
+        return slots.length;
     }
 
     @Override
     public ItemStack getStackInSlot(int index) {
-        return slots.get(index);
+        return slots[index];
     }
 
     @Override
     public ItemStack decrStackSize(int index, int count) {
-        if (index == 1 && slots.get(index) != ItemStack.EMPTY) {
-            return ItemStackHelper.getAndSplit(slots, index, slots.get(index).getCount());
+        if (index == 1 && slots[index] != null) {
+            return ItemStackHelper.getAndSplit(slots, index, slots[index].stackSize);
         }
         ItemStack stack = ItemStackHelper.getAndSplit(slots, index, count);
-        if (stack != ItemStack.EMPTY && doUpdateForSlotChange(index)) {
+        if (stack != null && doUpdateForSlotChange(index)) {
             reset();
         }
         return stack;
@@ -70,9 +71,9 @@ public final class InventoryBarakoaya implements IInventory {
 
     @Override
     public void setInventorySlotContents(int index, ItemStack stack) {
-        slots.set(index, stack);
-        if (stack != ItemStack.EMPTY && stack.getCount() > getInventoryStackLimit()) {
-            stack.setCount(getInventoryStackLimit());
+        slots[index] = stack;
+        if (stack != null && stack.stackSize > getInventoryStackLimit()) {
+            stack.stackSize = getInventoryStackLimit();
         }
         if (doUpdateForSlotChange(index)) {
             reset();
@@ -124,34 +125,24 @@ public final class InventoryBarakoaya implements IInventory {
 
     @Override
     public void clear() {
-        slots.clear(); // NonNullList.clear fills with default value
+        Arrays.fill(slots, null);
     }
 
     public void reset() {
         trade = null;
-        ItemStack input = slots.get(0);
-        if (input == ItemStack.EMPTY) {
-            setInventorySlotContents(1, ItemStack.EMPTY);
+        ItemStack input = slots[0];
+        if (input == null) {
+            setInventorySlotContents(1, null);
         } else if (barakoaya.isOfferingTrade()) {
             Trade trade = barakoaya.getOfferingTrade();
             ItemStack tradeInput = trade.getInput();
-            if (areItemsEqual(input, tradeInput) && input.getCount() >= tradeInput.getCount()) {
+            if (areItemsEqual(input, tradeInput) && input.stackSize >= tradeInput.stackSize) {
                 this.trade = trade;
                 setInventorySlotContents(1, trade.getOutput());
             } else {
-                setInventorySlotContents(1, ItemStack.EMPTY);
+                setInventorySlotContents(1, null);
             }
         }
-    }
-
-    @Override
-    public boolean isEmpty() {
-        for (ItemStack stack : slots) {
-            if (!stack.isEmpty()) {
-                return false;
-            }
-        }
-        return true;
     }
 
     private static boolean areItemsEqual(ItemStack s1, ItemStack s2) {

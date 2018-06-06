@@ -8,7 +8,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
@@ -145,15 +144,16 @@ public class EntityBoulder extends Entity {
         if (storedBlock == null) storedBlock = getBlock();
         if (getShouldExplode()) explode();
         super.onUpdate();
-        move(MoverType.SELF, motionX, motionY, motionZ);
+        move(motionX, motionY, motionZ);
         if (ridingEntities != null) ridingEntities.clear();
-        List<Entity> onTopOfEntities = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().contract(0, height - 1, 0).move(new Vec3d(0, height - 0.5, 0)).expand(0.6,0.5,0.6));
+        Vec3d offsetVec = new Vec3d(0, height - 0.5, 0);
+        List<Entity> onTopOfEntities = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().expand(0, -height + 1, 0).offset(offsetVec.xCoord, offsetVec.yCoord, offsetVec.zCoord).expand(0.6,0.5,0.6));
         for (Entity entity : onTopOfEntities) {
             if (entity != null && entity.canBeCollidedWith() && !(entity instanceof EntityBoulder) && entity.posY >= this.posY + 0.2) ridingEntities.add(entity);
         }
         if (travelling){
             for (Entity entity:ridingEntities) {
-                entity.move(MoverType.SHULKER_BOX, motionX, motionY, motionZ);
+                entity.move(motionX, motionY, motionZ);
             }
         }
         if (boulderSize == 3) setSize(width, Math.min(ticksExisted/(float)finishedRisingTick * 3.5f, 3.5f));
@@ -162,8 +162,8 @@ public class EntityBoulder extends Entity {
             List<Entity> popUpEntities = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox());
             for (Entity entity:popUpEntities) {
                 if (entity.canBeCollidedWith() && !(entity instanceof EntityBoulder)) {
-                    if (boulderSize != 3) entity.move(MoverType.SHULKER_BOX, 0, 2 * (Math.pow(2, -ticksExisted * (0.6 - 0.1 * boulderSize))), 0);
-                    else entity.move(MoverType.SHULKER_BOX, 0, 0.6f, 0);
+                    if (boulderSize != 3) entity.move(0, 2 * (Math.pow(2, -ticksExisted * (0.6 - 0.1 * boulderSize))), 0);
+                    else entity.move(0, 0.6f, 0);
                 }
             }
         }
@@ -178,7 +178,8 @@ public class EntityBoulder extends Entity {
                 if (!isDead && boulderSize != 3) setShouldExplode(true);
             }
         }
-        List<EntityBoulder> bouldersHit = world.getEntitiesWithinAABB(EntityBoulder.class, getEntityBoundingBox().expand(0.2, 0.2, 0.2).move(new Vec3d(motionX, motionY, motionZ).normalize().scale(0.5)));
+        Vec3d moveVec = new Vec3d(motionX, motionY, motionZ).normalize().scale(0.5);
+        List<EntityBoulder> bouldersHit = world.getEntitiesWithinAABB(EntityBoulder.class, getEntityBoundingBox().expand(0.2, 0.2, 0.2).offset(moveVec.xCoord, moveVec.yCoord, moveVec.zCoord));
         if (travelling && !bouldersHit.isEmpty()) {
             for (EntityBoulder entity : bouldersHit) {
                 if (!entity.travelling) {
@@ -341,7 +342,7 @@ public class EntityBoulder extends Entity {
     public boolean hitByEntity(Entity entityIn) {
         if (ticksExisted > finishedRisingTick - 1) {
             if (entityIn instanceof EntityPlayer
-                    && ((EntityPlayer) entityIn).inventory.getCurrentItem() == ItemStack.EMPTY
+                    && ((EntityPlayer) entityIn).inventory.getCurrentItem() == null
                     && ((EntityPlayer) entityIn).isPotionActive(PotionHandler.INSTANCE.geomancy)) {
                 EntityPlayer player = (EntityPlayer) entityIn;
                 if (ridingEntities.contains(player)) {

@@ -37,8 +37,7 @@ public class ItemIceCrystal extends Item {
 //    }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
-        ItemStack stack = playerIn.getHeldItem(handIn);
+    public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World worldIn, EntityPlayer playerIn, EnumHand handIn) {
         MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(playerIn, MowziePlayerProperties.class);
         if (stack.getItemDamage() + 20 < stack.getMaxDamage()) {
             if (!property.usingIceBreath) {
@@ -53,7 +52,7 @@ public class ItemIceCrystal extends Item {
         else {
             property.icebreath.setDead();
         }
-        return super.onItemRightClick(worldIn, playerIn, handIn);
+        return super.onItemRightClick(stack, worldIn, playerIn, handIn);
     }
 
     @Override

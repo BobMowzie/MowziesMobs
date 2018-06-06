@@ -179,16 +179,20 @@ public enum ServerEventHandler {
             property.untilAxeSwing--;
         }
         if (event.side == Side.SERVER) {
-            Item headItemStack = event.player.inventory.armorInventory.get(3).getItem();
+            ItemStack headArmorStack = event.player.inventory.armorInventory[3];
+            Item headItemStack = null;
+            if (headArmorStack != null) {
+                headItemStack = headArmorStack.getItem();
+            }
             if (headItemStack instanceof ItemBarakoaMask) {
                 ItemBarakoaMask mask = (ItemBarakoaMask) headItemStack;
                 event.player.addPotionEffect(new PotionEffect(mask.getPotion(), 45, 0, true, false));
             }
 
             for (ItemStack itemStack : event.player.inventory.mainInventory) {
-                if (itemStack.getItem() instanceof ItemEarthTalisman) player.addPotionEffect(new PotionEffect(PotionHandler.INSTANCE.geomancy, 0, 0, false, false));
+                if (itemStack != null && itemStack.getItem() instanceof ItemEarthTalisman) player.addPotionEffect(new PotionEffect(PotionHandler.INSTANCE.geomancy, 0, 0, false, false));
             }
-            if (player.getHeldItemOffhand().getItem() instanceof ItemEarthTalisman) player.addPotionEffect(new PotionEffect(PotionHandler.INSTANCE.geomancy, 0, 0, false, false));
+            if (player.getHeldItemOffhand() != null && player.getHeldItemOffhand().getItem() instanceof ItemEarthTalisman) player.addPotionEffect(new PotionEffect(PotionHandler.INSTANCE.geomancy, 0, 0, false, false));
 
             List<EntityBarakoanToPlayer> pack = property.tribePack;
             float theta = (2 * (float) Math.PI / pack.size());
@@ -204,16 +208,16 @@ public enum ServerEventHandler {
             }
         }
 
-        if (!(player.getHeldItemMainhand().getItem() == ItemHandler.INSTANCE.iceCrystal || player.getHeldItemOffhand().getItem() == ItemHandler.INSTANCE.iceCrystal) && property.usingIceBreath && property.icebreath != null) {
+        if (!((player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == ItemHandler.INSTANCE.iceCrystal) || (player.getHeldItemOffhand() != null && player.getHeldItemOffhand().getItem() == ItemHandler.INSTANCE.iceCrystal)) && property.usingIceBreath && property.icebreath != null) {
             property.usingIceBreath = false;
             property.icebreath.setDead();
         }
 
         for (ItemStack stack: player.inventory.mainInventory) {
-            if (!property.usingIceBreath && stack.getItem() == ItemHandler.INSTANCE.iceCrystal) stack.setItemDamage(Math.max(stack.getItemDamage() - 1, 0));
+            if (!property.usingIceBreath && stack != null && stack.getItem() == ItemHandler.INSTANCE.iceCrystal) stack.setItemDamage(Math.max(stack.getItemDamage() - 1, 0));
         }
         for (ItemStack stack: player.inventory.offHandInventory) {
-            if (!property.usingIceBreath && stack.getItem() == ItemHandler.INSTANCE.iceCrystal) stack.setItemDamage(Math.max(stack.getItemDamage() - 1, 0));
+            if (!property.usingIceBreath && stack != null && stack.getItem() == ItemHandler.INSTANCE.iceCrystal) stack.setItemDamage(Math.max(stack.getItemDamage() - 1, 0));
         }
 
         if (event.side == Side.CLIENT) {
@@ -262,7 +266,7 @@ public enum ServerEventHandler {
     public void onPlayerInteract(PlayerInteractEvent.RightClickEmpty event) {
         EntityPlayer player = event.getEntityPlayer();
         MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
-        if (event.getWorld().isRemote && player.inventory.getCurrentItem() == ItemStack.EMPTY && player.isPotionActive(PotionHandler.INSTANCE.sunsBlessing) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
+        if (event.getWorld().isRemote && player.inventory.getCurrentItem() == null && player.isPotionActive(PotionHandler.INSTANCE.sunsBlessing) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
             if (player.isSneaking()) {
                 MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSolarBeam());
                 property.untilSunstrike = SOLARBEAM_COOLDOWN;
@@ -289,7 +293,7 @@ public enum ServerEventHandler {
     public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event) {
         EntityPlayer player = event.getEntityPlayer();
         MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
-        if (event.getWorld().isRemote && player.inventory.getCurrentItem() == ItemStack.EMPTY && player.isPotionActive(PotionHandler.INSTANCE.sunsBlessing) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
+        if (event.getWorld().isRemote && player.inventory.getCurrentItem() == null && player.isPotionActive(PotionHandler.INSTANCE.sunsBlessing) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
             if (player.isSneaking()) {
                 MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSolarBeam());
                 property.untilSunstrike = SOLARBEAM_COOLDOWN;

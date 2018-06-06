@@ -89,7 +89,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     private static final DataParameter<Integer> DIRECTION = EntityDataManager.createKey(EntityBarako.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> DIALOGUE = EntityDataManager.createKey(EntityBarako.class, DataSerializers.VARINT);
     private static final DataParameter<Boolean> ANGRY = EntityDataManager.createKey(EntityBarako.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<ItemStack> DESIRES = EntityDataManager.createKey(EntityBarako.class, DataSerializers.OPTIONAL_ITEM_STACK);
+    private static final DataParameter<Optional<ItemStack>> DESIRES = EntityDataManager.createKey(EntityBarako.class, DataSerializers.OPTIONAL_ITEM_STACK);
     private final Set<UUID> tradedPlayers = new HashSet<>();
     public ControlledAnimation legsUp = new ControlledAnimation(15);
     public ControlledAnimation angryEyebrow = new ControlledAnimation(5);
@@ -370,7 +370,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         getDataManager().register(DIRECTION, 0);
         getDataManager().register(DIALOGUE, 0);
         getDataManager().register(ANGRY, false);
-        getDataManager().register(DESIRES, new ItemStack(Item.getItemFromBlock(Blocks.GOLD_BLOCK), 10));
+        getDataManager().register(DESIRES, Optional.of(new ItemStack(Item.getItemFromBlock(Blocks.GOLD_BLOCK), 10)));
     }
 
     public int getDirection() {
@@ -398,11 +398,11 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     }
 
     public void setDesires(ItemStack stack) {
-    	getDataManager().set(DESIRES, stack);
+        getDataManager().set(DESIRES, Optional.fromNullable(stack));
     }
 
     public ItemStack getDesires() {
-    	return getDataManager().get(DESIRES);
+        return getDataManager().get(DESIRES).get();
     }
 
     public boolean doesItemSatisfyDesire(ItemStack stack) {
@@ -412,7 +412,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     public boolean fulfillDesire(Slot input) {
         ItemStack desires = getDesires();
         if (canPayFor(input.getStack(), desires)) {
-            input.decrStackSize(desires.getCount());
+            input.decrStackSize(desires.stackSize);
             return true;
         }
         return false;
@@ -504,7 +504,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     }
 
     @Override
-    protected boolean processInteract(EntityPlayer player, EnumHand hand) {
+    protected boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack stack) {
         if (canTradeWith(player)) {
             setCustomer(player);
             if (!world.isRemote) {
@@ -519,11 +519,11 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         if (isTrading()) {
             return false;
         }
-        ItemStack headStack = player.inventory.armorInventory.get(3);
-        return headStack.getItem() instanceof BarakoaMask;
+        ItemStack headStack = player.inventory.armorInventory[3];
+        return headStack != null && headStack.getItem() instanceof BarakoaMask;
     }
 
     private static boolean canPayFor(ItemStack stack, ItemStack worth) {
-        return stack.getItem() == worth.getItem() && stack.getCount() >= worth.getCount();
+        return stack.getItem() == worth.getItem() && stack.stackSize >= worth.stackSize;
     }
 }

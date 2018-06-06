@@ -18,8 +18,8 @@ public enum CreativeTabHandler {
         creativeTab = new CreativeTabs("mowziesmobs.creativeTab") {
             @Override
             @SideOnly(Side.CLIENT)
-            public ItemStack getTabIconItem() {
-                return new ItemStack(ItemHandler.INSTANCE.barakoaMasks.get(MaskType.FURY));
+            public Item getTabIconItem() {
+                return ItemHandler.INSTANCE.barakoaMasks.get(MaskType.FURY);
             }
         };
     }

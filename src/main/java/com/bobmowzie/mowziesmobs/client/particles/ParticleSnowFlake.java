@@ -46,11 +46,6 @@ public class ParticleSnowFlake extends Particle implements ParticleTextureStitch
     }
 
     @Override
-    public boolean isTransparent() {
-        return true;
-    }
-
-    @Override
     public void onUpdate() {
         super.onUpdate();
 

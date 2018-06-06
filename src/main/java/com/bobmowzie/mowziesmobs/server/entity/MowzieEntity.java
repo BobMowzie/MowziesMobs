@@ -58,15 +58,15 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     public ItemStack getPickedResult(RayTraceResult target) {
         String id = getPickedEntityId();
         if (id == null) {
-            return ItemStack.EMPTY;
+            return null;
         }
         ResourceLocation res = new ResourceLocation(id);
-        if (EntityHandler.INSTANCE.hasEntityEggInfo(res)) {
+        if (EntityHandler.INSTANCE.hasEntityEggInfo(id)) {
             ItemStack stack = new ItemStack(ItemHandler.INSTANCE.spawnEgg);
-            ItemSpawnEgg.applyEntityIdToItemStack(stack, res);
+            ItemSpawnEgg.applyEntityIdToItemStack(stack, id);
             return stack;
         }
-        return ItemStack.EMPTY;
+        return null;
     }
 
     protected String getPickedEntityId() {
@@ -95,7 +95,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
             targetDistance = getDistanceToEntity(getAttackTarget());
             targetAngle = (float) getAngleBetweenEntities(this, getAttackTarget());
         }
-        willLandSoon = !onGround && world.collidesWithAnyBlock(getEntityBoundingBox().move(new Vec3d(motionX, motionY, motionZ)));
+        willLandSoon = !onGround && world.collidesWithAnyBlock(getEntityBoundingBox().offset(motionX, motionY, motionZ));
     }
 
     protected void onAnimationFinish(Animation animation) {}
@@ -124,7 +124,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
 
     public List<EntityLivingBase> getAttackableEntityLivingBaseNearby(double distanceX, double distanceY, double distanceZ, double radius) {
         List<Entity> nearbyEntities = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().expand(distanceX, distanceY, distanceZ));
-        List<EntityLivingBase> listEntityLivingBase = nearbyEntities.stream().filter(entityNeighbor -> entityNeighbor instanceof EntityLivingBase && ((EntityLivingBase)entityNeighbor).attackable() && (!(entityNeighbor instanceof EntityPlayer) || !((EntityPlayer)entityNeighbor).isCreative()) && getDistanceToEntity(entityNeighbor) <= radius).map(entityNeighbor -> (EntityLivingBase) entityNeighbor).collect(Collectors.toList());
+        List<EntityLivingBase> listEntityLivingBase = nearbyEntities.stream().filter(entityNeighbor -> entityNeighbor instanceof EntityLivingBase && ((EntityLivingBase)entityNeighbor).canBeAttackedWithItem() && (!(entityNeighbor instanceof EntityPlayer) || !((EntityPlayer)entityNeighbor).isCreative()) && getDistanceToEntity(entityNeighbor) <= radius).map(entityNeighbor -> (EntityLivingBase) entityNeighbor).collect(Collectors.toList());
         return listEntityLivingBase;
     }
 

@@ -54,36 +54,36 @@ public final class ContainerBarakoayaTrade extends Container {
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int index) {
-        ItemStack stack = ItemStack.EMPTY;
+        ItemStack stack = null;
         Slot slot = inventorySlots.get(index);
         if (slot != null && slot.getHasStack()) {
             ItemStack contained = slot.getStack();
             stack = contained.copy();
             if (index == 1) {
                 if (!mergeItemStack(contained, 2, 38, true)) {
-                    return ItemStack.EMPTY;
+                    return null;
                 }
                 slot.onSlotChange(contained, stack);
             } else if (index != 0) {
                 if (index >= 2 && index < 29) {
                     if (!mergeItemStack(contained, 29, 38, false)) {
-                        return ItemStack.EMPTY;
+                        return null;
                     }
                 } else if (index >= 29 && index < 38 && !mergeItemStack(contained, 2, 29, false)) {
-                    return ItemStack.EMPTY;
+                    return null;
                 }
             } else if (!mergeItemStack(contained, 2, 38, false)) {
-                return ItemStack.EMPTY;
+                return null;
             }
-            if (contained.getCount() == 0) {
-                slot.putStack(ItemStack.EMPTY);
+            if (contained.stackSize == 0) {
+                slot.putStack(null);
             } else {
                 slot.onSlotChanged();
             }
-            if (contained.getCount() == stack.getCount()) {
-                return ItemStack.EMPTY;
+            if (contained.stackSize == stack.stackSize) {
+                return null;
             }
-            slot.onTake(player, contained);
+            slot.onPickupFromSlot(player, contained);
         }
         return stack;
     }
@@ -94,7 +94,7 @@ public final class ContainerBarakoayaTrade extends Container {
         barakoaya.setCustomer(null);
         if (!world.isRemote) {
             ItemStack stack = inventory.removeStackFromSlot(0);
-            if (stack != ItemStack.EMPTY) {
+            if (stack != null) {
                 player.dropItem(stack, false);
             }
         }
@@ -115,7 +115,7 @@ public final class ContainerBarakoayaTrade extends Container {
         @Override
         public ItemStack decrStackSize(int amount) {
             if (getHasStack()) {
-                removeCount += Math.min(amount, getStack().getCount());
+                removeCount += Math.min(amount, getStack().stackSize);
             }
             return super.decrStackSize(amount);
         }
@@ -133,21 +133,20 @@ public final class ContainerBarakoayaTrade extends Container {
         }
 
         @Override
-        public ItemStack onTake(EntityPlayer player, ItemStack stack) {
+        public void onPickupFromSlot(EntityPlayer playerIn, ItemStack stack) {
             onCrafting(stack);
             if (barakoaya.isOfferingTrade()) {
                 Trade trade = barakoaya.getOfferingTrade();
                 ItemStack input = inventory.getStackInSlot(0);
                 ItemStack tradeInput = trade.getInput();
-                if (input.getItem() == tradeInput.getItem() && input.getCount() >= tradeInput.getCount()) {
-                    input.shrink(tradeInput.getCount());
-                    if (input.getCount() <= 0) {
-                        input = ItemStack.EMPTY;
+                if (input != null && input.getItem() == tradeInput.getItem() && input.stackSize >= tradeInput.stackSize) {
+                    input.stackSize -= tradeInput.stackSize;
+                    if (input.stackSize <= 0) {
+                        input = null;
                     }
                     inventory.setInventorySlotContents(0, input);
                 }
             }
-            return stack;
         }
     }
 }

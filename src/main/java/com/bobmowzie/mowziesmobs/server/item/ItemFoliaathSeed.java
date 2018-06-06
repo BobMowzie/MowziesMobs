@@ -40,8 +40,7 @@ public class ItemFoliaathSeed extends Item {
     }
 
     @Override
-    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        ItemStack stack = player.getHeldItem(hand);
+    public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
         if (world.isRemote) {
             return EnumActionResult.SUCCESS;
         } else if (!player.canPlayerEdit(pos.offset(facing), facing, stack)) {
@@ -54,7 +53,7 @@ public class ItemFoliaathSeed extends Item {
                 ((EntityLiving) entity).setCustomNameTag(stack.getDisplayName());
             }
             if (!player.capabilities.isCreativeMode) {
-                stack.shrink(1);
+                --stack.stackSize;
             }
         }
         return EnumActionResult.SUCCESS;

@@ -37,6 +37,11 @@ public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
     }
 
     @Override
+    public boolean isTransparent() {
+        return true;
+    }
+
+    @Override
     public int getFXLayer() {
         return 1;
     }
@@ -55,11 +60,6 @@ public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
     @Override
     public int getBrightnessForRender(float delta) {
         return 240 | super.getBrightnessForRender(delta) & 0xFF0000;
-    }
-
-    @Override
-    public boolean isTransparent() {
-        return true;
     }
 
     @Override

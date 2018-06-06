@@ -98,7 +98,7 @@ public class EntityAxeAttack extends Entity {
                             continue;
                         }
                         if (entity instanceof EntityLivingBase) {
-                            entity.attackEntityFrom(DamageSource.FALLING_BLOCK, factor * 5 + 1);
+                            entity.attackEntityFrom(DamageSource.fallingBlock, factor * 5 + 1);
                         }
                         double magnitude = -0.2;
                         entity.motionX += vx * (1 - factor) * magnitude;

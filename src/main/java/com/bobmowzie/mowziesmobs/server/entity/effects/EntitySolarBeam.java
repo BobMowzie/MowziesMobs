@@ -115,7 +115,7 @@ public class EntitySolarBeam extends Entity {
                     if (caster instanceof EntityBarako && target instanceof LeaderSunstrikeImmune) {
                         continue;
                     }
-                    target.attackEntityFrom(DamageSource.ON_FIRE, 2f);
+                    target.attackEntityFrom(DamageSource.onFire, 2f);
                     target.attackEntityFrom(DamageSource.causeMobDamage(caster), 2f);
                 }
             } else {

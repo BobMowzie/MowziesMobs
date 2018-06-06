@@ -4,7 +4,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 
 public class MowzieEntityEggInfo {
-    public final ResourceLocation id;
+    public final String entityName;
 
     public final Class<? extends EntityLiving> clazz;
 
@@ -12,8 +12,8 @@ public class MowzieEntityEggInfo {
 
     public final int secondaryColor;
 
-    public MowzieEntityEggInfo(ResourceLocation id, Class<? extends EntityLiving> clazz, int primaryColor, int secondaryColor) {
-        this.id = id;
+    public MowzieEntityEggInfo(String entityName, Class<? extends EntityLiving> clazz, int primaryColor, int secondaryColor) {
+        this.entityName = entityName;
         this.clazz = clazz;
         this.primaryColor = primaryColor;
         this.secondaryColor = secondaryColor;

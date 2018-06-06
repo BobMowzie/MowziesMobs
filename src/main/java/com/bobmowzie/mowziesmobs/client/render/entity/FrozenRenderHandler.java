@@ -116,7 +116,7 @@ public enum FrozenRenderHandler {
         if(player != null && player.isPotionActive(PotionHandler.INSTANCE.frozen)) {
             if(player.isPotionActive(PotionHandler.INSTANCE.frozen)) {
                 boolean isMainHand = event.getHand() == EnumHand.MAIN_HAND;
-                if(isMainHand && !player.isInvisible() && event.getItemStack() == ItemStack.EMPTY) {
+                if(isMainHand && !player.isInvisible() && event.getItemStack() == null) {
                     EnumHandSide enumhandside = isMainHand ? player.getPrimaryHand() : player.getPrimaryHand().opposite();
                     renderArmFirstPersonFrozen(event.getEquipProgress(), event.getSwingProgress(), enumhandside);
                     event.setCanceled(true);

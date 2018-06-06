@@ -679,15 +679,13 @@ public class StructureBarakoaVillage {
             return;
         }
         if (rand.nextInt(chance) == 0) {
-            Biome biome = world.getBiome(new BlockPos(x, 50, z));
-            Set<BiomeDictionary.Type> types = BiomeDictionary.getTypes(biome);
-            boolean isSavanna = types.contains(BiomeDictionary.Type.SAVANNA);
-//            for (Biome savannaBiome : BiomeDictionary.getBiomes(BiomeDictionary.Type.SAVANNA)) {
-//                if (world.getBiome(new BlockPos(x, 0, z)) == savannaBiome) {
-//                    isSavanna = true;
-//                    break;
-//                }
-//            }
+            boolean isSavanna = false;
+            for (Biome savannaBiome : BiomeDictionary.getBiomesForType(BiomeDictionary.Type.SAVANNA)) {
+                if (world.getBiomeForCoordsBody(new BlockPos(x, 0, z)) == savannaBiome) {
+                    isSavanna = true;
+                    break;
+                }
+            }
             if (!isSavanna) return;
 
             //System.out.println("Passes chance test");

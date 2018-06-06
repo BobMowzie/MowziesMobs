@@ -25,14 +25,14 @@ public class ServerProxy {
                 buf.writeItemStack(trade.getOutput());
                 buf.writeInt(trade.getWeight());
             } else {
-                buf.writeItemStack(ItemStack.EMPTY);
+                buf.writeItemStack(null);
             }
         }
 
         @Override
         public Optional<Trade> read(PacketBuffer buf) throws IOException {
             ItemStack input = buf.readItemStack();
-            if (input == ItemStack.EMPTY) {
+            if (input == null) {
                 return Optional.absent();
             }
             return Optional.of(new Trade(input, buf.readItemStack(), buf.readInt()));

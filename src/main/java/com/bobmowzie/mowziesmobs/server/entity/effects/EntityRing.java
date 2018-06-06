@@ -3,7 +3,6 @@ package com.bobmowzie.mowziesmobs.server.entity.effects;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.MoverType;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -45,7 +44,7 @@ public class EntityRing extends Entity {
     public void onUpdate() {
         super.onUpdate();
         if (ticksExisted >= duration) setDead();
-        move(MoverType.SELF, motionX, motionY, motionZ);
+        move(motionX, motionY, motionZ);
     }
 
     @Override

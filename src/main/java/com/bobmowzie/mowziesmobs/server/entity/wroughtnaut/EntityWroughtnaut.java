@@ -198,9 +198,9 @@ public class EntityWroughtnaut extends MowzieEntity {
     public void onUpdate() {
         super.onUpdate();
         if (!world.isRemote) {
-            if (getAnimation() == NO_ANIMATION && !isAIDisabled()) {
+            if (getAnimation() == NO_ANIMATION && moveForward == 0 && !isAIDisabled()) {
                 if (isActive()) {
-                    if (getAttackTarget() == null && moveForward == 0 && isAtRestPos()) {
+                    if (getAttackTarget() == null && isAtRestPos()) {
                         AnimationHandler.INSTANCE.sendAnimationMessage(this, DEACTIVATE_ANIMATION);
                         setActive(false);
                     }

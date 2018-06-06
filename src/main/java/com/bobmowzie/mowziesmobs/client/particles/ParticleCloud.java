@@ -41,13 +41,13 @@ public class ParticleCloud extends Particle implements ParticleTextureStitcher.I
     }
 
     @Override
-    public int getFXLayer() {
-        return 1;
+    public boolean isTransparent() {
+        return true;
     }
 
     @Override
-    public boolean isTransparent() {
-        return true;
+    public int getFXLayer() {
+        return 1;
     }
 
     @Override

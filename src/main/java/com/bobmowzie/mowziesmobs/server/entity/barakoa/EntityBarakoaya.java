@@ -135,7 +135,7 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
     }
 
     @Override
-    protected boolean processInteract(EntityPlayer player, EnumHand hand) {
+    protected boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack stack) {
         if (canTradeWith(player)) {
             setCustomer(player);
             if (!world.isRemote) {
@@ -150,8 +150,9 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
         if (isTrading()) {
             return false;
         }
-        ItemStack headStack = player.inventory.armorInventory.get(3);
-        return headStack.getItem() instanceof BarakoaMask && isOfferingTrade();
+        ItemStack headStack = player.inventory.armorInventory[3];
+
+        return headStack != null && headStack.getItem() instanceof BarakoaMask && isOfferingTrade();
     }
 
     @Override

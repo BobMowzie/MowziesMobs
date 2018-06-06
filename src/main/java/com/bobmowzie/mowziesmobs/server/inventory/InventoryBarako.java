@@ -14,7 +14,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 public final class InventoryBarako implements IInventory {
     private final EntityBarako barako;
 
-    private ItemStack input = ItemStack.EMPTY;
+    private ItemStack input = null;
 
     private List<ChangeListener> listeners;
 
@@ -51,21 +51,21 @@ public final class InventoryBarako implements IInventory {
 
     @Override
     public ItemStack getStackInSlot(int index) {
-        return index == 0 ? input : ItemStack.EMPTY;
+        return index == 0 ? input : null;
     }
 
     @Override
     public ItemStack decrStackSize(int index, int count) {
         ItemStack stack;
-        if (index == 0 && input != ItemStack.EMPTY && count > 0) {
+        if (index == 0 && input != null && count > 0) {
             ItemStack split = input.splitStack(count);
-            if (input.getCount() == 0) {
-                input = ItemStack.EMPTY;
+            if (input.stackSize == 0) {
+                input = null;
             }
             stack = split;
             markDirty();
         } else {
-            stack = ItemStack.EMPTY;
+            stack = null;
         }
         return stack;
     }
@@ -73,10 +73,10 @@ public final class InventoryBarako implements IInventory {
     @Override
     public ItemStack removeStackFromSlot(int index) {
         if (index != 0) {
-            return ItemStack.EMPTY;
+            return null;
         }
         ItemStack s = input;
-        input = ItemStack.EMPTY;
+        input = null;
         markDirty();
         return s;
     }
@@ -85,8 +85,8 @@ public final class InventoryBarako implements IInventory {
     public void setInventorySlotContents(int index, ItemStack stack) {
         if (index == 0) {
             input = stack;
-            if (stack != ItemStack.EMPTY && stack.getCount() > getInventoryStackLimit()) {
-                stack.setCount(getInventoryStackLimit());
+            if (stack != null && stack.stackSize > getInventoryStackLimit()) {
+                stack.stackSize = getInventoryStackLimit();
             }
             markDirty();
         }
@@ -108,7 +108,7 @@ public final class InventoryBarako implements IInventory {
 
     @Override
     public boolean isUsableByPlayer(EntityPlayer player) {
-        return barako.getCustomer() == player;
+        return false;
     }
 
     @Override
@@ -137,16 +137,11 @@ public final class InventoryBarako implements IInventory {
 
     @Override
     public void clear() {
-        input = ItemStack.EMPTY;
+        input = null;
         markDirty();
     }
 
     public interface ChangeListener {
         void onChange(IInventory inv);
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return !input.isEmpty();
     }
 }

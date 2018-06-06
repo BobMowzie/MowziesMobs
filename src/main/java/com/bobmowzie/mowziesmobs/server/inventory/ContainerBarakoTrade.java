@@ -46,7 +46,7 @@ public final class ContainerBarakoTrade extends Container {
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int index) {
-        ItemStack stack = ItemStack.EMPTY;
+        ItemStack stack = null;
         Slot slot = inventorySlots.get(index);
         if (slot != null && slot.getHasStack()) {
             ItemStack contained = slot.getStack();
@@ -54,23 +54,23 @@ public final class ContainerBarakoTrade extends Container {
             if (index != 0) {
                 if (index >= 1 && index < 28) {
                     if (!mergeItemStack(contained, 28, 37, false)) {
-                        return ItemStack.EMPTY;
+                        return null;
                     }
                 } else if (index >= 28 && index < 37 && !mergeItemStack(contained, 1, 28, false)) {
-                    return ItemStack.EMPTY;
+                    return null;
                 }
             } else if (!mergeItemStack(contained, 1, 37, false)) {
-                return ItemStack.EMPTY;
+                return null;
             }
-            if (contained.getCount() == 0) {
-                slot.putStack(ItemStack.EMPTY);
+            if (contained.stackSize == 0) {
+                slot.putStack(null);
             } else {
                 slot.onSlotChanged();
             }
-            if (contained.getCount() == stack.getCount()) {
-                return ItemStack.EMPTY;
+            if (contained.stackSize == stack.stackSize) {
+                return null;
             }
-            slot.onTake(player, contained);
+            slot.onPickupFromSlot(player, contained);
         }
         return stack;
     }
@@ -81,12 +81,10 @@ public final class ContainerBarakoTrade extends Container {
         barako.setCustomer(null);
         if (!world.isRemote) {
             ItemStack stack = inventory.removeStackFromSlot(0);
-            if (stack != ItemStack.EMPTY) {
+            if (stack != null) {
                 EntityItem dropped = player.dropItem(stack, false);
-                if (dropped != null) {
-                    dropped.motionX *= 0.5;
-                    dropped.motionZ *= 0.5;
-                }
+                dropped.motionX *= 0.5;
+                dropped.motionZ *= 0.5;
             }
         }
     }

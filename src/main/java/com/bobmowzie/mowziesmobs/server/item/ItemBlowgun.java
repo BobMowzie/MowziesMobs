@@ -132,9 +132,9 @@ public class ItemBlowgun extends ItemBow {
 
                     if (!flag1)
                     {
-                        itemstack.shrink(1);
+                        --itemstack.stackSize;
 
-                        if (itemstack.getCount() == 0)
+                        if (itemstack.stackSize == 0)
                         {
                             entityplayer.inventory.deleteStack(itemstack);
                         }

@@ -19,35 +19,19 @@ public enum BiomeDictionaryHandler {
     INSTANCE;
 
     public void onInit() {
-//        Biome.SpawnListEntry foliaathSpawn = new Biome.SpawnListEntry(EntityFoliaath.class, MowziesMobs.CONFIG.spawnrateFoliaath, 3, 1);
-//        Biome.SpawnListEntry tribeEliteSpawn = new Biome.SpawnListEntry(EntityBarakoana.class, MowziesMobs.CONFIG.spawnrateBarakoa, 0, 0);
-//        for (Biome jungleBiome : BiomeDictionary.getBiomes(BiomeDictionary.Type.JUNGLE)) {
-//            jungleBiome.getSpawnableList(EnumCreatureType.MONSTER).add(foliaathSpawn);
-//        }
-//        for (Biome savannaBiome : BiomeDictionary.getBiomes(BiomeDictionary.Type.SAVANNA)) {
-//            savannaBiome.getSpawnableList(EnumCreatureType.MONSTER).add(tribeEliteSpawn);
-//        }
-
-        Multimap<BiomeDictionary.Type, Biome> biomesAndTypes = HashMultimap.create();
-        for (Biome b : Biome.REGISTRY)
-        {
-            Set<BiomeDictionary.Type> types = BiomeDictionary.getTypes(b);
-            for (BiomeDictionary.Type t : types)
-            {
-                biomesAndTypes.put(t, b);
+        Biome.SpawnListEntry foliaathSpawn = new Biome.SpawnListEntry(EntityFoliaath.class, MowziesMobs.CONFIG.spawnrateFoliaath, 3, 1);
+        Biome.SpawnListEntry tribeEliteSpawn = new Biome.SpawnListEntry(EntityBarakoana.class, MowziesMobs.CONFIG.spawnrateBarakoa, 1, 1);
+        Biome.SpawnListEntry frostmawSpawn = new Biome.SpawnListEntry(EntityBarakoana.class, MowziesMobs.CONFIG.spawnrateFrostmaw, 1, 1);
+        for (Biome jungleBiome : BiomeDictionary.getBiomesForType(BiomeDictionary.Type.JUNGLE)) {
+            jungleBiome.getSpawnableList(EnumCreatureType.MONSTER).add(foliaathSpawn);
+        }
+        for (Biome savannaBiome : BiomeDictionary.getBiomesForType(BiomeDictionary.Type.SAVANNA)) {
+            savannaBiome.getSpawnableList(EnumCreatureType.MONSTER).add(tribeEliteSpawn);
+        }
+        for (Biome snowyBiome : BiomeDictionary.getBiomesForType(BiomeDictionary.Type.SNOWY)) {
+            if (!BiomeDictionary.isBiomeOfType(snowyBiome, BiomeDictionary.Type.BEACH) && !BiomeDictionary.isBiomeOfType(snowyBiome, BiomeDictionary.Type.OCEAN)) {
+                snowyBiome.getSpawnableList(EnumCreatureType.MONSTER).add(frostmawSpawn);
             }
         }
-
-        Set<Biome> frostmawBiomes = new ObjectArraySet<>();
-        for (Biome b : Biome.REGISTRY)
-        {
-            Set<BiomeDictionary.Type> types = BiomeDictionary.getTypes(b);
-            if (types.contains(BiomeDictionary.Type.SNOWY) && !types.contains(BiomeDictionary.Type.BEACH) && !types.contains(BiomeDictionary.Type.OCEAN) && !types.contains(BiomeDictionary.Type.RIVER))
-                frostmawBiomes.add(b);
-        }
-
-        EntityRegistry.addSpawn(EntityFoliaath.class, MowziesMobs.CONFIG.spawnrateFoliaath, 0, 3, EnumCreatureType.MONSTER, biomesAndTypes.get(BiomeDictionary.Type.JUNGLE).toArray(new Biome[biomesAndTypes.get(BiomeDictionary.Type.JUNGLE).size()]));
-        EntityRegistry.addSpawn(EntityBarakoana.class, MowziesMobs.CONFIG.spawnrateBarakoa, 1, 1, EnumCreatureType.MONSTER, biomesAndTypes.get(BiomeDictionary.Type.SAVANNA).toArray(new Biome[biomesAndTypes.get(BiomeDictionary.Type.SAVANNA).size()]));
-        EntityRegistry.addSpawn(EntityFrostmaw.class, MowziesMobs.CONFIG.spawnrateFrostmaw, 1, 1, EnumCreatureType.MONSTER, frostmawBiomes.toArray(new Biome[frostmawBiomes.size()]));
     }
 }
