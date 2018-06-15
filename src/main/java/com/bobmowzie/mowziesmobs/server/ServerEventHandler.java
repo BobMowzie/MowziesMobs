@@ -173,85 +173,91 @@ public enum ServerEventHandler {
         }
         EntityPlayer player = event.player;
         MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
-        property.update();
+        if (property != null) {
+            property.update();
 
-        if (property.untilSunstrike > 0) {
-            property.untilSunstrike--;
-        }
-        if (property.untilAxeSwing > 0) {
-            property.untilAxeSwing--;
-        }
-        if (event.side == Side.SERVER) {
-            Item headItemStack = event.player.inventory.armorInventory.get(3).getItem();
-            if (headItemStack instanceof ItemBarakoaMask) {
-                ItemBarakoaMask mask = (ItemBarakoaMask) headItemStack;
-                event.player.addPotionEffect(new PotionEffect(mask.getPotion(), 45, 0, true, false));
+            if (property.untilSunstrike > 0) {
+                property.untilSunstrike--;
             }
-
-            for (ItemStack itemStack : event.player.inventory.mainInventory) {
-                if (itemStack.getItem() instanceof ItemEarthTalisman) player.addPotionEffect(new PotionEffect(PotionHandler.GEOMANCY, 0, 0, false, false));
+            if (property.untilAxeSwing > 0) {
+                property.untilAxeSwing--;
             }
-            if (player.getHeldItemOffhand().getItem() instanceof ItemEarthTalisman) player.addPotionEffect(new PotionEffect(PotionHandler.GEOMANCY, 0, 0, false, false));
+            if (event.side == Side.SERVER) {
+                Item headItemStack = event.player.inventory.armorInventory.get(3).getItem();
+                if (headItemStack instanceof ItemBarakoaMask) {
+                    ItemBarakoaMask mask = (ItemBarakoaMask) headItemStack;
+                    event.player.addPotionEffect(new PotionEffect(mask.getPotion(), 45, 0, true, false));
+                }
 
-            List<EntityBarakoanToPlayer> pack = property.tribePack;
-            float theta = (2 * (float) Math.PI / pack.size());
-            for (int i = 0; i < pack.size(); i++) {
-                EntityBarakoanToPlayer barakoan = pack.get(i);
-                barakoan.index = i;
-                if (barakoan.getAttackTarget() == null) {
-                    barakoan.getNavigator().tryMoveToXYZ(player.posX + property.tribePackRadius * MathHelper.cos(theta * i), player.posY, player.posZ + property.tribePackRadius * MathHelper.sin(theta * i), 0.45);
-                    if (player.getDistanceToEntity(barakoan) > 20) {
-                        barakoan.setPosition(player.posX + property.tribePackRadius * MathHelper.cos(theta * i), player.posY, player.posZ + property.tribePackRadius * MathHelper.sin(theta * i));
+                for (ItemStack itemStack : event.player.inventory.mainInventory) {
+                    if (itemStack.getItem() instanceof ItemEarthTalisman)
+                        player.addPotionEffect(new PotionEffect(PotionHandler.GEOMANCY, 0, 0, false, false));
+                }
+                if (player.getHeldItemOffhand().getItem() instanceof ItemEarthTalisman)
+                    player.addPotionEffect(new PotionEffect(PotionHandler.GEOMANCY, 0, 0, false, false));
+
+                List<EntityBarakoanToPlayer> pack = property.tribePack;
+                float theta = (2 * (float) Math.PI / pack.size());
+                for (int i = 0; i < pack.size(); i++) {
+                    EntityBarakoanToPlayer barakoan = pack.get(i);
+                    barakoan.index = i;
+                    if (barakoan.getAttackTarget() == null) {
+                        barakoan.getNavigator().tryMoveToXYZ(player.posX + property.tribePackRadius * MathHelper.cos(theta * i), player.posY, player.posZ + property.tribePackRadius * MathHelper.sin(theta * i), 0.45);
+                        if (player.getDistanceToEntity(barakoan) > 20) {
+                            barakoan.setPosition(player.posX + property.tribePackRadius * MathHelper.cos(theta * i), player.posY, player.posZ + property.tribePackRadius * MathHelper.sin(theta * i));
+                        }
                     }
                 }
             }
-        }
 
-        if (!(player.getHeldItemMainhand().getItem() == ItemHandler.ICE_CRYSTAL || player.getHeldItemOffhand().getItem() == ItemHandler.ICE_CRYSTAL) && property.usingIceBreath && property.icebreath != null) {
-            property.usingIceBreath = false;
-            property.icebreath.setDead();
-        }
+            if (!(player.getHeldItemMainhand().getItem() == ItemHandler.ICE_CRYSTAL || player.getHeldItemOffhand().getItem() == ItemHandler.ICE_CRYSTAL) && property.usingIceBreath && property.icebreath != null) {
+                property.usingIceBreath = false;
+                property.icebreath.setDead();
+            }
 
-        for (ItemStack stack: player.inventory.mainInventory) {
-            if (!property.usingIceBreath && stack.getItem() == ItemHandler.ICE_CRYSTAL) stack.setItemDamage(Math.max(stack.getItemDamage() - 1, 0));
-        }
-        for (ItemStack stack: player.inventory.offHandInventory) {
-            if (!property.usingIceBreath && stack.getItem() == ItemHandler.ICE_CRYSTAL) stack.setItemDamage(Math.max(stack.getItemDamage() - 1, 0));
-        }
+            for (ItemStack stack : player.inventory.mainInventory) {
+                if (!property.usingIceBreath && stack.getItem() == ItemHandler.ICE_CRYSTAL)
+                    stack.setItemDamage(Math.max(stack.getItemDamage() - 1, 0));
+            }
+            for (ItemStack stack : player.inventory.offHandInventory) {
+                if (!property.usingIceBreath && stack.getItem() == ItemHandler.ICE_CRYSTAL)
+                    stack.setItemDamage(Math.max(stack.getItemDamage() - 1, 0));
+            }
 
-        if (event.side == Side.CLIENT) {
-            if (Mouse.isButtonDown(0) && !property.mouseLeftDown) {
-                property.mouseLeftDown = true;
-                MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageLeftMouseDown());
-                for (int i = 0; i < property.powers.length; i++) {
-                    property.powers[i].onLeftMouseDown(player);
+            if (event.side == Side.CLIENT) {
+                if (Mouse.isButtonDown(0) && !property.mouseLeftDown) {
+                    property.mouseLeftDown = true;
+                    MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageLeftMouseDown());
+                    for (int i = 0; i < property.powers.length; i++) {
+                        property.powers[i].onLeftMouseDown(player);
+                    }
+                }
+                if (Mouse.isButtonDown(1) && !property.mouseRightDown) {
+                    property.mouseRightDown = true;
+                    MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageRightMouseDown());
+                    for (int i = 0; i < property.powers.length; i++) {
+                        property.powers[i].onRightMouseDown(player);
+                    }
+                }
+                if (!Mouse.isButtonDown(0) && property.mouseLeftDown) {
+                    property.mouseLeftDown = false;
+                    MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageLeftMouseUp());
+                    for (int i = 0; i < property.powers.length; i++) {
+                        property.powers[i].onLeftMouseUp(player);
+                    }
+                }
+                if (!Mouse.isButtonDown(1) && property.mouseRightDown) {
+                    property.mouseRightDown = false;
+                    MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageRightMouseUp());
+                    for (int i = 0; i < property.powers.length; i++) {
+                        property.powers[i].onRightMouseUp(player);
+                    }
                 }
             }
-            if (Mouse.isButtonDown(1) && !property.mouseRightDown) {
-                property.mouseRightDown = true;
-                MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageRightMouseDown());
-                for (int i = 0; i < property.powers.length; i++) {
-                    property.powers[i].onRightMouseDown(player);
-                }
-            }
-            if (!Mouse.isButtonDown(0) && property.mouseLeftDown) {
-                property.mouseLeftDown = false;
-                MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageLeftMouseUp());
-                for (int i = 0; i < property.powers.length; i++) {
-                    property.powers[i].onLeftMouseUp(player);
-                }
-            }
-            if (!Mouse.isButtonDown(1) && property.mouseRightDown) {
-                property.mouseRightDown = false;
-                MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageRightMouseUp());
-                for (int i = 0; i < property.powers.length; i++) {
-                    property.powers[i].onRightMouseUp(player);
-                }
-            }
-        }
 
-        for(int i = 0; i < property.powers.length; i++) {
-            property.powers[i].onUpdate(event);
+            for (int i = 0; i < property.powers.length; i++) {
+                property.powers[i].onUpdate(event);
+            }
         }
     }
 
