@@ -168,7 +168,7 @@ public enum ServerEventHandler {
 
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) {
+        if (event.phase == TickEvent.Phase.START || event.player == null) {
             return;
         }
         EntityPlayer player = event.player;
