@@ -26,6 +26,8 @@ public abstract class EntityBarakoan<L extends EntityLivingBase> extends EntityB
 
     protected L leader;
 
+    public boolean shouldSetDead;
+
     public EntityBarakoan(World world, Class<L> leaderClass) {
         this(world, leaderClass, null);
     }
@@ -36,6 +38,7 @@ public abstract class EntityBarakoan<L extends EntityLivingBase> extends EntityB
         if (leader != null) {
             setLeaderUUID(leader.getUniqueID());
         }
+        shouldSetDead = false;
     }
 
     @Override
@@ -70,6 +73,7 @@ public abstract class EntityBarakoan<L extends EntityLivingBase> extends EntityB
                 addAsPackMember();
             }
         }
+        if (shouldSetDead) setDead();
     }
 
     @Override
@@ -91,6 +95,10 @@ public abstract class EntityBarakoan<L extends EntityLivingBase> extends EntityB
         if (leader != null) {
             removeAsPackMember();
         }
+    }
+
+    public void setShouldSetDead() {
+        shouldSetDead = true;
     }
 
     @Override

@@ -125,6 +125,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
 
     @Override
     public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, IEntityLivingData data) {
+        System.out.println("On spawn");
         int size = rand.nextInt(2) + 3;
         for (int i = 0; i <= size; i++) {
             EntityBarakoanToBarakoana tribeHunter = new EntityBarakoanToBarakoana(world, this);
@@ -145,6 +146,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
 
     @Override
     public boolean getCanSpawnHere() {
+        System.out.println("Check spawn");
         List<EntityLivingBase> nearby = getEntityLivingBaseNearby(20, 4, 20, 20);
         for (EntityLivingBase nearbyEntity : nearby) {
             if (nearbyEntity instanceof EntityBarakoana || nearbyEntity instanceof EntityVillager || nearbyEntity instanceof EntityBarako) {
@@ -171,7 +173,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
             if (result == Event.Result.DENY) {
             	idleTime = 0;
             } else {
-                pack.forEach(EntityBarakoanToBarakoana::setDead);
+                pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
                 setDead();
             }
         } else {
@@ -182,11 +184,11 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
                 double dZ = closestPlayer.posZ - posZ;
                 double distance = dX * dX + dY * dY + dZ * dZ;
                 if (canDespawn() && distance > 16384) {
-                    pack.forEach(EntityBarakoanToBarakoana::setDead);
+                    pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
                     setDead();
                 }
                 if (idleTime > 600 && rand.nextInt(800) == 0 && distance > 1024 && canDespawn()) {
-                    pack.forEach(EntityBarakoanToBarakoana::setDead);
+                    pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
                     setDead();
                 } else if (distance < 1024) {
                 	idleTime = 0;

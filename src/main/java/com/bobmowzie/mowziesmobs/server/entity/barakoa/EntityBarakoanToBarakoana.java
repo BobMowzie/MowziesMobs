@@ -35,21 +35,25 @@ public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> i
 
     @Override
     protected int getTribeCircleTick() {
+        if (leader == null) return 0;
         return leader.circleTick;
     }
 
     @Override
     protected int getPackSize() {
+        if (leader == null) return 0;
         return leader.getPackSize();
     }
 
     @Override
     protected void addAsPackMember() {
+        if (leader == null) return;
         leader.addPackMember(this);
     }
 
     @Override
     protected void removeAsPackMember() {
+        if (leader == null) return;
         leader.removePackMember(this);
     }
 
