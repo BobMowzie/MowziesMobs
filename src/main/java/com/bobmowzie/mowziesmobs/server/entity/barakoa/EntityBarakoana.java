@@ -77,6 +77,14 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
     }
 
     @Override
+    public void setDead() {
+        if (ticksExisted == 0) {
+            pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
+        }
+        super.setDead();
+    }
+
+    @Override
     public boolean isNotColliding()
     {
         if (ticksExisted == 0) {
