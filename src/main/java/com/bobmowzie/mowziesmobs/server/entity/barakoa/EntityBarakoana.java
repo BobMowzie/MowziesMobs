@@ -27,6 +27,7 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.common.eventhandler.Event;
+import org.lwjgl.Sys;
 
 public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImmune {
     private List<EntityBarakoanToBarakoana> pack = new ArrayList<>();
@@ -72,6 +73,17 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    public boolean isNotColliding()
+    {
+        if (ticksExisted == 0) {
+            return !this.world.containsAnyLiquid(this.getEntityBoundingBox()) && this.world.getCollisionBoxes(this, this.getEntityBoundingBox()).isEmpty();
+        }
+        else {
+            return !this.world.containsAnyLiquid(this.getEntityBoundingBox()) && this.world.getCollisionBoxes(this, this.getEntityBoundingBox()).isEmpty() && this.world.checkNoEntityCollision(this.getEntityBoundingBox(), this);
         }
     }
 
@@ -125,12 +137,11 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
 
     @Override
     public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, IEntityLivingData data) {
-        System.out.println("On spawn");
         int size = rand.nextInt(2) + 3;
+        float theta = (2 * (float) Math.PI / size);
         for (int i = 0; i <= size; i++) {
             EntityBarakoanToBarakoana tribeHunter = new EntityBarakoanToBarakoana(world, this);
-//            pack.add(tribeHunter);
-            tribeHunter.setPosition(posX + 0.1 * i, posY, posZ);
+            tribeHunter.setPosition(posX + 0.1 * MathHelper.cos(theta * i), posY, posZ + 0.1 * MathHelper.sin(theta * i));
             int weapon = rand.nextInt(3) == 0 ? 1 : 0;
             tribeHunter.setWeapon(weapon);
             world.spawnEntity(tribeHunter);
@@ -146,7 +157,6 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
 
     @Override
     public boolean getCanSpawnHere() {
-        System.out.println("Check spawn");
         List<EntityLivingBase> nearby = getEntityLivingBaseNearby(20, 4, 20, 20);
         for (EntityLivingBase nearbyEntity : nearby) {
             if (nearbyEntity instanceof EntityBarakoana || nearbyEntity instanceof EntityVillager || nearbyEntity instanceof EntityBarako) {
@@ -159,7 +169,8 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
                 MathHelper.floor(getEntityBoundingBox().minY) - 1,
                 MathHelper.floor(posZ)
             );
-            return ground.getY() >= 64 && world.getBlockState(ground).getBlock() == Blocks.GRASS;
+            boolean result = ground.getY() >= 64 && world.getBlockState(ground).getBlock() == Blocks.GRASS;
+            return result;
         }
         return false;
     }
