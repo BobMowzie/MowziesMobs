@@ -36,6 +36,8 @@ import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 
+import javax.annotation.Nullable;
+
 public class EntityFoliaath extends MowzieEntity {
     public static final Animation DIE_ANIMATION = Animation.create(50);
     public static final Animation HURT_ANIMATION = Animation.create(10);
@@ -61,8 +63,13 @@ public class EntityFoliaath extends MowzieEntity {
         this.tasks.addTask(1, new AnimationTakeDamage<>(this));
         this.tasks.addTask(1, new AnimationDieAI<>(this));
         this.tasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityLivingBase.class, 0, true, false, e ->
-            EntityPlayer.class.isAssignableFrom(e.getClass()) || EntityCreature.class.isAssignableFrom(e.getClass()))
-        );
+            EntityPlayer.class.isAssignableFrom(e.getClass()) || EntityCreature.class.isAssignableFrom(e.getClass())) {
+
+            @Override
+            protected boolean isSuitableTarget(@Nullable EntityLivingBase target, boolean includeInvincibles) {
+                return !(target instanceof EntityFoliaath) && !(target instanceof EntityBabyFoliaath) && super.isSuitableTarget(target, includeInvincibles);
+            }
+        });
         this.setSize(0.5F, 2.5F);
         this.experienceValue = 10;
         this.addIntermittentAnimation(openMouth);
@@ -172,9 +179,9 @@ public class EntityFoliaath extends MowzieEntity {
         renderYawOffset = 0;
         rotationYaw = 0;
 
-        if (getAttackTarget() instanceof EntityFoliaath || getAttackTarget() instanceof EntityBabyFoliaath) {
-            setAttackTarget(null);
-        }
+//        if (getAttackTarget() instanceof EntityFoliaath || getAttackTarget() instanceof EntityBabyFoliaath) {
+//            setAttackTarget(null);
+//        }
 
         if (resettingTargetTimer > 0 && !world.isRemote) {
             rotationYawHead = prevRotationYawHead;
