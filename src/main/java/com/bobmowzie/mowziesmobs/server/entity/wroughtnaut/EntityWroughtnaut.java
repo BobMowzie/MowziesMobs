@@ -5,10 +5,9 @@ import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.IEntityLivingData;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
+import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
@@ -156,6 +155,7 @@ public class EntityWroughtnaut extends MowzieEntity {
     public boolean attackEntityFrom(DamageSource source, float amount) {
         Entity entitySource = source.getTrueSource();
         if (entitySource != null) {
+            if (entitySource instanceof EntityLivingBase) setAttackTarget((EntityLivingBase) entitySource);
             if (vulnerable) {
                 int arc = 220;
                 float entityHitAngle = (float) ((Math.atan2(entitySource.posZ - posZ, entitySource.posX - posX) * (180 / Math.PI) - 90) % 360);
