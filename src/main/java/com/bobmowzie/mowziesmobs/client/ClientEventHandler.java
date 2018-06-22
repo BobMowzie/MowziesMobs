@@ -105,7 +105,7 @@ public enum ClientEventHandler {
     }
 
     @SubscribeEvent
-    public void onRenderLiving(RenderLivingEvent event) {
+    public void onRenderLiving(RenderLivingEvent.Pre event) {
         EntityLivingBase entity = event.getEntity();
         MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
         if (entity.isPotionActive(PotionHandler.FROZEN)) {
