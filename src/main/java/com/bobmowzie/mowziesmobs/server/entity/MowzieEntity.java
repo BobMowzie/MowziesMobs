@@ -142,6 +142,11 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
 
     @Override
     protected void onDeathUpdate() {
+        if (getDeathAnimation() == null) {
+            super.onDeathUpdate();
+            return;
+        }
+
         ++deathTime;
 
         if (deathTime == getDeathAnimation().getDuration() - 20) {
