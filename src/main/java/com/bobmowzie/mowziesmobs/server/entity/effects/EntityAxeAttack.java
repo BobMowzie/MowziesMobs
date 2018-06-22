@@ -116,7 +116,7 @@ public class EntityAxeAttack extends Entity {
                         BlockPos pos = new BlockPos(hitX, hitY, hitZ);
                         if (world.isAirBlock(pos.up())) {
                             IBlockState block = world.getBlockState(pos);
-                            if (block.getMaterial() != Material.AIR && block.isBlockNormalCube()) {
+                            if (block.getMaterial() != Material.AIR && block.isBlockNormalCube() && block != Blocks.BEDROCK) {
                                 EntityFallingBlock fallingBlock = new EntityFallingBlock(world, hitX + 0.5, hitY + 0.5, hitZ + 0.5, block);
                                 fallingBlock.motionX = 0;
                                 fallingBlock.motionY = 0.1;

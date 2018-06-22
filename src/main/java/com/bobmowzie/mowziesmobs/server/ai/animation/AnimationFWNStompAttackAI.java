@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.network.play.server.SPacketEntityVelocity;
 import net.minecraft.util.DamageSource;
@@ -106,7 +107,7 @@ public class AnimationFWNStompAttackAI extends AnimationAI<EntityWroughtnaut> {
                             BlockPos pos = new BlockPos(hitX, hitY, hitZ);
                             if (world.isAirBlock(pos.up())) {
                                 IBlockState block = world.getBlockState(pos);
-                                if (block.getMaterial() != Material.AIR && block.isBlockNormalCube()) {
+                                if (block.getMaterial() != Material.AIR && block.isBlockNormalCube() && block != Blocks.BEDROCK) {
                                     EntityFallingBlock fallingBlock = new EntityFallingBlock(world, hitX + 0.5, hitY + 0.5, hitZ + 0.5, block);
                                     fallingBlock.motionX = 0;
                                     fallingBlock.motionY = 0.4 + factor * 0.2;
