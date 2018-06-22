@@ -4,8 +4,10 @@ import java.util.EnumMap;
 import java.util.List;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -51,7 +53,9 @@ public final class ItemHandler {
                 new ItemSpawnEgg(),
                 new ItemGrantSunsBlessing(),
                 new ItemIceCrystal(),
-                new ItemEarthTalisman()
+                new ItemEarthTalisman(),
+                new ItemBlock(BlockHandler.PAINTED_ACACIA).setRegistryName(BlockHandler.PAINTED_ACACIA.getRegistryName()),
+                new ItemBlock(BlockHandler.PAINTED_ACACIA_SLAB).setRegistryName(BlockHandler.PAINTED_ACACIA_SLAB.getRegistryName())
         );
         for (MaskType mask : MaskType.values()) {
             event.getRegistry().register(new ItemBarakoaMask(mask));

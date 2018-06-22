@@ -31,6 +31,7 @@ public abstract class BlockPaintedAcaciaSlab extends BlockSlab {
         setResistance(5.0F);
         setSoundType(SoundType.WOOD);
         setUnlocalizedName("paintedAcaciaSlab");
+        setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
         useNeighborBrightness = true;
     }
 
