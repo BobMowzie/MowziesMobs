@@ -1,0 +1,107 @@
+#####By Xesar_Zk#####
+#
+# Creative Tabs
+itemGroup.mowziesmobs.creativeTab=Mowzie's Mobs
+
+# Entities
+entity.foliaath.name=Foliaath
+entity.ferrous_wroughtnaut.name=Ferrous Wroughtnaut
+entity.baby_foliaath.name=Bebe Foliaath
+entity.barakoan_barakoana.name=Barakoa
+entity.barakoan_player.name=Barakoa
+entity.barakoana.name=Barakoana
+entity.barakoaya.name=Barakoa
+entity.barako.name=Barako, el Jefe Sol
+entity.frostmaw.name=Frostmaw
+
+# Items
+item.foliaathSeed.name=Semilla de Foliaath
+item.mobRemover.name=Removedor de Mob
+item.wroughtAxe.name=Hacha de los Mil Metales
+item.wroughtHelmet.name=Casco Forjado
+item.barakoaMask.fury.name=Mascara de Furia
+item.barakoaMask.fear.name=Mascara de Miedo
+item.barakoaMask.rage.name=Mascara de Rabia
+item.barakoaMask.bliss.name=Mascara de Dicha
+item.barakoaMask.misery.name=Mascara de Miseria
+item.barakoMask.name=Semblante del Sol
+item.dart.name=Dardo
+item.spear.name=Lanza
+item.blowgun.name=Cerbatana
+item.grantSunsBlessing.name=Recibe la Bendicion del Sol
+item.testStructure.name=Estructuras de Prueba
+item.iceCrystal.name=Cristal de hielo
+item.earthTalisman.name=Talisman de Tierra
+
+item.blowgun.text.0=Cargas rapido
+item.blowgun.text.1=Corto alcance
+item.blowgun.text.2=Solo dispara los dardos
+
+item.wroughtAxe.text.0=Nunca se rompe
+item.wroughtAxe.text.1=Click derecho para atacar en un arco grande
+item.wroughtAxe.text.2=Shift + Click derecho para golpear el suelo y crear una onda de choque
+
+item.barakoMask.text.0=Nunca se rompe
+item.barakoMask.text.1=Equipa, luego Click derecho con una Mascara de Barakoa
+item.barakoMask.text.2=para engendrar seguidores
+
+item.barakoaMask.fear.text.0=Concede Rapidez
+item.barakoaMask.fear.text.1=¿Me pregunto si...?
+item.barakoaMask.rage.text.0=Concede Prisa
+item.barakoaMask.rage.text.1=¿Me pregunto si...?
+item.barakoaMask.misery.text.0=Concede Resistencia
+item.barakoaMask.misery.text.1=¿Me pregunto si...?
+item.barakoaMask.bliss.text.0=Concede Salto Impulsado
+item.barakoaMask.bliss.text.1=¿Me pregunto si...?
+item.barakoaMask.fury.text.0=Concede Fuerza
+item.barakoaMask.fury.text.1=¿Me pregunto si...?
+
+item.dart.text.0=Solo se puede usar con cerbatanas
+item.dart.text.1=Objetivos venenosos
+
+item.foliaathSeed.text.0=Plantalo en la hierba
+item.foliaathSeed.text.1=Alimentalo cuando tenga hambre por 2 dias
+
+item.grantSunsBlessing.text.0=Otorga la Bendicion del Sol por 20 minutos
+item.grantSunsBlessing.text.1=Con la mano vacia, Click derecho para llamar un ataque del sol
+item.grantSunsBlessing.text.2=Con la mano vacia, Shift + Click derecho disparar un rayo solar (cuesta 2 minutos)
+
+item.earthTalisman.text.0=Solo modo Creativo
+item.earthTalisman.text.1=Coloquelo en inventario para manejar la geomancia
+item.earthTalisman.text.2=Click derecho apuntando al suelo con la mano vacia para generar una roca
+item.earthTalisman.text.3=Golpea la Roca para dispararlo como proyectil
+item.earthTalisman.text.4=Carga Click derecho para generar rocas mas grandes
+
+item.mobRemover.text.0=Click izquierdo para eliminar un mob de Mowzie's Mobs
+
+item.wroughtHelmet.text.0=Nunca se rompe
+
+item.spear.text.0=Extiende el rango de ataque en 3.5 bloques
+item.spear.text.1=1/3 posibilidad de matar animales instantaneamente
+
+item.icecrystal.text.0=Mantenga Click derecho para canalizar un torbellino helado
+item.icecrystal.text.1=Se recarga en el inventario
+
+# Blocks
+tile.campfire.name=Hoguera
+tile.paintedAcacia.name=Madera de Acacia Pintada
+tile.paintedAcaciaSlab.name=Losa de Madera de Acacia Pintada
+
+# Potions
+potion.sunsBlessing=Bendicion del sol
+potion.geomancy=Geomancia
+potion.frozen=Congelado(a)
+
+# Tile Entities
+
+
+# Containers
+entity.barakoaya.trade=Barakoa
+entity.barako.trade=Barako, el Jefe Sol
+entity.barako.trade.button.text=Comercio
+entity.barako.trade.button.hover=Regrese luego para reponer gratis
+entity.barako.replenish.button.text=Reponer
+entity.barako.replenish.button.hover=Reponga su bendicion gratis
+
+# Death Messages
+death.attack.dart=%1$s fue destruido por %2$s
