@@ -10,10 +10,6 @@
             "pau101",
             "iLexiconn"
         ],
-        "credits": "RafaMv",
-        "dependencies": [
-            "llibrary@[${llibrary_version},)"
-        ],
-        "useDependencyInformation": true
+        "credits": "RafaMv"
     }
 ]
