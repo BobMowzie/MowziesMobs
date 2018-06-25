@@ -214,7 +214,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 timeUntilLaser = LASER_PAUSE;
             } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && targetDistance <= 5) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, ATTACK_ANIMATION);
-            } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && rand.nextInt(80) == 0 && getEntitiesNearby(EntityBarakoa.class, 16).size() < 5 && targetDistance > 5 && timeUntilBarakoa <= 0) {
+            } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && rand.nextInt(80) == 0 && getEntitiesNearby(EntityBarakoa.class, 25).size() < 5 && targetDistance > 5 && timeUntilBarakoa <= 0) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SPAWN_ANIMATION);
                 timeUntilBarakoa = BARAKOA_PAUSE;
             } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && timeUntilSunstrike <= 0 && targetDistance > 5) {
