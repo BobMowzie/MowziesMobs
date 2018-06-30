@@ -13,4 +13,4 @@ run/
 .settings/
 .classpath
 .project
-src/thaumcraft-api-master/
+src/api/

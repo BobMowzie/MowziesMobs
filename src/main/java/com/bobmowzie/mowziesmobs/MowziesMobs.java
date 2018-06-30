@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs;
 import com.bobmowzie.mowziesmobs.server.ServerEventHandler;
 import com.bobmowzie.mowziesmobs.server.ServerProxy;
 import com.bobmowzie.mowziesmobs.server.biome.BiomeDictionaryHandler;
+import com.bobmowzie.mowziesmobs.server.compat.Thaumcraft;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
@@ -20,8 +21,10 @@ import net.ilexiconn.llibrary.server.config.Config;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.ilexiconn.llibrary.server.network.NetworkWrapper;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -76,6 +79,11 @@ public final class MowziesMobs {
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
     }
 
+    @Optional.Method(modid = "thaumcraft")
+    private void loadThaumcraft() {
+        Thaumcraft.init();
+    }
+
     @EventHandler
     public void init(FMLInitializationEvent event) {
         MowziesMobs.PROXY.onLateInit();
@@ -84,6 +92,9 @@ public final class MowziesMobs {
     @EventHandler
     public void init(FMLPostInitializationEvent event) {
         BiomeDictionaryHandler.INSTANCE.onInit();
+        if (Loader.isModLoaded("thaumcraft")) {
+            loadThaumcraft();
+        }
     }
 
     @Mod.InstanceFactory
