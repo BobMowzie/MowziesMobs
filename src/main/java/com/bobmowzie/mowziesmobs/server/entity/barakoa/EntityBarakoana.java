@@ -68,7 +68,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
                 EntityBarakoanToBarakoana hunter = pack.get(i);
                 if (hunter.getAttackTarget() == null) {
                     hunter.getNavigator().tryMoveToXYZ(posX + packRadius * MathHelper.cos(theta * i), posY, posZ + packRadius * MathHelper.sin(theta * i), 0.45);
-                    if (getDistanceToEntity(hunter) > 20) {
+                    if (getDistanceToEntity(hunter) > 20 && onGround) {
                         hunter.setPosition(posX + packRadius * MathHelper.cos(theta * i), posY, posZ + packRadius * MathHelper.sin(theta * i));
                     }
                 }

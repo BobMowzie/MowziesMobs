@@ -203,7 +203,7 @@ public enum ServerEventHandler {
                     barakoan.index = i;
                     if (barakoan.getAttackTarget() == null) {
                         barakoan.getNavigator().tryMoveToXYZ(player.posX + property.tribePackRadius * MathHelper.cos(theta * i), player.posY, player.posZ + property.tribePackRadius * MathHelper.sin(theta * i), 0.45);
-                        if (player.getDistanceToEntity(barakoan) > 20) {
+                        if (player.getDistanceToEntity(barakoan) > 20 && player.onGround) {
                             barakoan.setPosition(player.posX + property.tribePackRadius * MathHelper.cos(theta * i), player.posY, player.posZ + property.tribePackRadius * MathHelper.sin(theta * i));
                         }
                     }
