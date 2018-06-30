@@ -105,10 +105,11 @@ public class AnimationFWNStompAttackAI extends AnimationAI<EntityWroughtnaut> {
                             int hitX = MathHelper.floor(px);
                             int hitZ = MathHelper.floor(pz);
                             BlockPos pos = new BlockPos(hitX, hitY, hitZ);
-                            Block groundBlock = world.getBlockState(pos).getBlock();
-                            if (world.isAirBlock(pos.up())) {
+                            BlockPos abovePos = new BlockPos(pos).up();
+                            BlockPos belowPos = new BlockPos(pos).down();
+                            if (world.isAirBlock(abovePos) && !world.isAirBlock(belowPos)) {
                                 IBlockState block = world.getBlockState(pos);
-                                if (block.getMaterial() != Material.AIR && block.isBlockNormalCube() && groundBlock != Blocks.BEDROCK) {
+                                if (block.getMaterial() != Material.AIR && block.isBlockNormalCube() && block != Blocks.BEDROCK) {
                                     EntityFallingBlock fallingBlock = new EntityFallingBlock(world, hitX + 0.5, hitY + 0.5, hitZ + 0.5, block);
                                     fallingBlock.motionX = 0;
                                     fallingBlock.motionY = 0.4 + factor * 0.2;
