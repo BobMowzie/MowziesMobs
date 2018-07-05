@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
+import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.entity.skuttler.EntitySkuttler;
 import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.model.ModelAnimator;
@@ -302,6 +303,8 @@ public class ModelSkuttler extends AdvancedModelBase {
     public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity entity) {
         super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
         resetToDefaultPose();
+//        f = entity.ticksExisted + LLibrary.PROXY.getPartialTicks();
+//        f1 = 0.5f;
 
         f3 = Math.min(f3, 30f);
         f3 = Math.max(f3, -30f);
@@ -347,5 +350,121 @@ public class ModelSkuttler extends AdvancedModelBase {
         setRotationAngles(f, f1, f2, f3, f4, f5, skuttler);
 
         float frame = skuttler.frame + LLibrary.PROXY.getPartialTicks();
+
+        if (skuttler.getAnimation() == EntitySkuttler.IDLE_ANIMATION) {
+            animator.setAnimation(EntitySkuttler.IDLE_ANIMATION);
+
+            animator.startKeyframe(6);//6
+            animator.move(body, 1, -2, 0);
+            animator.rotate(body, 0, 0, 0.1f);
+            animator.rotate(head, 0, 0, 0.6f);
+            animator.rotate(clawLeftUpper, 0.2f, -0.3f, 0.3f);
+            animator.rotate(clawLeft, -0.3f, 0.0f, -0.3f);
+            animator.rotate(clawRightUpper, 0.2f, 0.3f, -0.3f);
+            animator.rotate(clawRight, -0.3f, 0.0f, 0.3f);
+            animator.rotate(leg1RightUpper, 0, 0, -0.3f);
+            animator.rotate(leg1RightLower, 0, 0, -0.45f);
+            animator.rotate(foot1Right, 0, 0, 0.7f);
+            animator.rotate(leg2RightUpper, 0, 0, -0.3f);
+            animator.rotate(leg2RightLower, 0, 0, -0.35f);
+            animator.rotate(foot2Right, 0, 0, 0.5f);
+            animator.rotate(leg3RightUpper, 0, 0, -0.3f);
+            animator.rotate(leg3RightLower, 0, 0, -0.45f);
+            animator.rotate(foot3Right, 0, 0, 0.7f);
+            animator.rotate(leg1LeftUpper, 0, 0, 0.2f);
+            animator.rotate(leg1LeftLower, 0, 0, 0.1f);
+            animator.rotate(foot1Left, 0, 0, -0.1f);
+            animator.rotate(leg2LeftUpper, 0, 0, 0.1f);
+            animator.rotate(leg2LeftLower, 0, 0, 0.1f);
+            animator.rotate(foot2Left, 0, 0, 0f);
+            animator.rotate(leg3LeftUpper, 0, 0, 0.2f);
+            animator.rotate(leg3LeftLower, 0, 0, 0.1f);
+            animator.rotate(foot3Left, 0, 0, -0.1f);
+            animator.endKeyframe();
+
+            animator.setStaticKeyframe(9);//15
+
+            animator.startKeyframe(4);//19
+            animator.move(body, 1, -2, 0);
+            animator.rotate(body, 0, 0, 0.1f);
+            animator.rotate(head, 0.5f, 0.3f, 0.4f);
+            animator.rotate(clawLeftUpper, 0.2f, -0.3f, 0.3f);
+            animator.rotate(clawLeft, -0.3f, 0.0f, -0.3f);
+            animator.rotate(clawRightUpper, 0.2f, 0.3f, -0.3f);
+            animator.rotate(clawRight, -0.3f, 0.0f, 0.3f);
+            animator.rotate(leg1RightUpper, 0, 0, -0.3f);
+            animator.rotate(leg1RightLower, 0, 0, -0.45f);
+            animator.rotate(foot1Right, 0, 0, 0.7f);
+            animator.rotate(leg2RightUpper, 0, 0, -0.3f);
+            animator.rotate(leg2RightLower, 0, 0, -0.35f);
+            animator.rotate(foot2Right, 0, 0, 0.5f);
+            animator.rotate(leg3RightUpper, 0, 0, -0.3f);
+            animator.rotate(leg3RightLower, 0, 0, -0.45f);
+            animator.rotate(foot3Right, 0, 0, 0.7f);
+            animator.rotate(leg1LeftUpper, 0, 0, 0.2f);
+            animator.rotate(leg1LeftLower, 0, 0, 0.1f);
+            animator.rotate(foot1Left, 0, 0, -0.1f);
+            animator.rotate(leg2LeftUpper, 0, 0, 0.1f);
+            animator.rotate(leg2LeftLower, 0, 0, 0.1f);
+            animator.rotate(foot2Left, 0, 0, 0f);
+            animator.rotate(leg3LeftUpper, 0, 0, 0.2f);
+            animator.rotate(leg3LeftLower, 0, 0, 0.1f);
+            animator.rotate(foot3Left, 0, 0, -0.1f);
+            animator.endKeyframe();
+
+            animator.setStaticKeyframe(3);//22
+
+            animator.startKeyframe(4);//26
+            animator.rotate(clawRightUpper, 0, 0.2f, 0.4f);
+            animator.rotate(clawRightLower, 0, 0, 0.4f);
+            animator.rotate(clawRight, 0.5f, 0.3f, -0.4f);
+            animator.rotate(clawLeftUpper, -0.15f, -0.15f, -0.1f);
+            animator.rotate(head, 0.4f, 0.2f, 0.4f);
+            animator.endKeyframe();
+
+            animator.setStaticKeyframe(2);//28
+
+            animator.startKeyframe(1);//29
+            animator.rotate(clawRightUpper, 0, 0.2f, -0.05f);
+            animator.rotate(clawRightLower, 0, 0, -0.05f);
+            animator.rotate(clawRight, 0.5f, 0.3f, -0.4f);
+            animator.rotate(clawLeftUpper, -0.15f, -0.15f, -0.1f);
+            animator.rotate(head, 0.4f, 0.2f, 0.4f);
+            animator.endKeyframe();
+
+            animator.setStaticKeyframe(1);//30
+
+            animator.startKeyframe(2);//32
+            animator.rotate(clawRightUpper, 0, 0.2f, 0.4f);
+            animator.rotate(clawRightLower, 0, 0, 0.4f);
+            animator.rotate(clawRight, 0.5f, 0.3f, -0.4f);
+            animator.rotate(clawLeftUpper, -0.15f, -0.15f, -0.1f);
+            animator.rotate(head, 0.4f, 0.2f, 0.4f);
+            animator.endKeyframe();
+
+            animator.setStaticKeyframe(1);//33
+
+            animator.startKeyframe(1);//34
+            animator.rotate(clawRightUpper, 0, 0.2f, -0.05f);
+            animator.rotate(clawRightLower, 0, 0, -0.05f);
+            animator.rotate(clawRight, 0.5f, 0.3f, -0.4f);
+            animator.rotate(clawLeftUpper, -0.15f, -0.15f, -0.1f);
+            animator.rotate(head, 0.4f, 0.2f, 0.4f);
+            animator.endKeyframe();
+
+            animator.setStaticKeyframe(1);
+
+            animator.startKeyframe(2);
+            animator.rotate(clawRightUpper, 0, 0.2f, 0.4f);
+            animator.rotate(clawRightLower, 0, 0, 0.4f);
+            animator.rotate(clawRight, 0.5f, 0.3f, -0.4f);
+            animator.rotate(clawLeftUpper, -0.15f, -0.15f, -0.1f);
+            animator.rotate(head, 0.4f, 0.2f, 0.4f);
+            animator.endKeyframe();
+
+            animator.setStaticKeyframe(7);
+
+            animator.resetKeyframe(4);
+        }
     }
 }

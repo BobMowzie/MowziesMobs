@@ -1,9 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.entity.skuttler;
 
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.google.common.eventbus.DeadEvent;
+import com.sun.xml.internal.bind.v2.model.core.ID;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.entity.Entity;
@@ -21,11 +23,15 @@ import net.minecraft.world.World;
  * Created by Josh on 7/3/2018.
  */
 public class EntitySkuttler extends MowzieEntity {
-    public static final Animation DIE_ANIMATION = Animation.create(20);
-    public static final Animation HURT_ANIMATION = Animation.create(10);
+    public static final Animation DIE_ANIMATION = Animation.create(60);
+    public static final Animation HURT_ANIMATION = Animation.create(60);
+    public static final Animation IDLE_ANIMATION = Animation.create(48);
+    public static final Animation BURROW_ANIMATION = Animation.create(60);
     private static final Animation[] ANIMATIONS = {
             DIE_ANIMATION,
-            HURT_ANIMATION
+            HURT_ANIMATION,
+            IDLE_ANIMATION,
+            BURROW_ANIMATION
     };
 
     private boolean killedWithPickaxe;
@@ -33,12 +39,13 @@ public class EntitySkuttler extends MowzieEntity {
     public EntitySkuttler(World world) {
         super(world);
         tasks.addTask(0, new EntityAISwimming(this));
-        tasks.addTask(4, new EntityAIWander(this, 0.3));
-        tasks.addTask(1, new EntityAIAvoidEntity<>(this, EntityPlayer.class, 10f, 0.6, 0.8));
-        tasks.addTask(8, new EntityAILookIdle(this));
-        tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+//        tasks.addTask(4, new EntityAIWander(this, 0.3));
+//        tasks.addTask(1, new EntityAIAvoidEntity<>(this, EntityPlayer.class, 10f, 0.6, 0.8));
+//        tasks.addTask(8, new EntityAILookIdle(this));
+//        tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         tasks.addTask(1, new AnimationTakeDamage<>(this));
         tasks.addTask(1, new AnimationDieAI<>(this));
+        tasks.addTask(3, new AnimationAI<>(this, IDLE_ANIMATION));
         experienceValue = 20;
         stepHeight = 1;
         setSize(1f, 1.2f);
@@ -66,6 +73,14 @@ public class EntitySkuttler extends MowzieEntity {
             }
         }
         return super.attackEntityFrom(source, amount);
+    }
+
+    @Override
+    public void onUpdate() {
+        super.onUpdate();
+        if (getAnimation() == NO_ANIMATION) {
+            AnimationHandler.INSTANCE.sendAnimationMessage(this, IDLE_ANIMATION);
+        }
     }
 
     @Override
