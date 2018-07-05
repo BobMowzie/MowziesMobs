@@ -28,13 +28,19 @@ minecraft {
 repositories {
     mavenCentral()
     maven {
-		name = "mcmoddev"
-		url = "http://maven.mcmoddev.com/"
-	}
+	name = "mcmoddev"
+	url = "http://maven.mcmoddev.com/"
+    }
+    maven {
+        name 'Curseforge Maven' // Baubles + Thaumcraft
+        url 'http://minecraft.curseforge.com/api/maven/'
+    }
 }
 
 dependencies {
     compile "net.ilexiconn:llibrary:1.7.9-1.12.2:dev"
+    
+    deobfCompile "thaumcraft:Thaumcraft:1.12.2:6.1.BETA16"
 }
 
 processResources {
