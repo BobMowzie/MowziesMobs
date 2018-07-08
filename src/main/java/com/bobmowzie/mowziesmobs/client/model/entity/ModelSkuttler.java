@@ -59,6 +59,7 @@ public class ModelSkuttler extends AdvancedModelBase {
     public AdvancedModelRenderer leg3RightUpper;
     public AdvancedModelRenderer leg3RightLower;
     public AdvancedModelRenderer foot3Right;
+    public AdvancedModelRenderer dieAnimController;
 
     private ModelAnimator animator;
 
@@ -239,6 +240,8 @@ public class ModelSkuttler extends AdvancedModelBase {
         this.leg2LeftJoint.setRotationPoint(3.8F, 2.0F, -0.1F);
         this.leg2LeftJoint.addBox(0.0F, -1.0F, -0.5F, 0, 0, 0, 0.0F);
         this.setRotateAngle(leg2LeftJoint, 0.17453292519943295F, -0.04363323129985824F, 0.0F);
+        this.dieAnimController = new AdvancedModelRenderer(this, 0, 0);
+        this.dieAnimController.setRotationPoint(0, 0, 0);
         this.body.addChild(this.crystal7);
         this.body.addChild(this.clawRightJoint);
         this.leg1RightJoint.addChild(this.leg1RightUpper);
@@ -384,7 +387,7 @@ public class ModelSkuttler extends AdvancedModelBase {
 
             animator.setStaticKeyframe(9);//15
 
-            animator.startKeyframe(4);//19
+            animator.startKeyframe(3);//19
             animator.move(body, 1, -2, 0);
             animator.rotate(body, 0, 0, 0.1f);
             animator.rotate(head, 0.5f, 0.3f, 0.4f);
@@ -465,6 +468,71 @@ public class ModelSkuttler extends AdvancedModelBase {
             animator.setStaticKeyframe(7);
 
             animator.resetKeyframe(4);
+        }
+
+        if (skuttler.getAnimation() == EntitySkuttler.DIE_ANIMATION) {
+            animator.setAnimation(EntitySkuttler.DIE_ANIMATION);
+
+            animator.startKeyframe(6);
+            animator.rotate(body, -3.5f, 0, 0);
+            animator.rotate(head, 1f, 0, 0);
+            animator.move(dieAnimController, 1, 1, 0);
+            animator.endKeyframe();
+
+            animator.setStaticKeyframe(20);
+
+            animator.startKeyframe(12);
+            animator.rotate(body, -3.5f, 0, 0);
+            animator.rotate(head, 1f, 0, 0);
+            animator.move(dieAnimController, 1, 0, 0);
+            animator.rotate(leg1LeftUpper, 0, 0, 0.7f);
+            animator.rotate(leg2LeftUpper, 0, 0, 0.7f);
+            animator.rotate(leg3LeftUpper, 0, 0, 0.7f);
+            animator.rotate(leg1RightUpper, 0, 0, -0.7f);
+            animator.rotate(leg2RightUpper, 0, 0, -0.7f);
+            animator.rotate(leg3RightUpper, 0, 0, -0.7f);
+            animator.rotate(clawLeftUpper, 0, 0, 0.7f);
+            animator.rotate(clawRightUpper, 0, 0, -0.7f);
+            animator.rotate(clawLeft, 1, 0, 1);
+            animator.rotate(clawRight, 1, 0, -1);
+            animator.endKeyframe();
+
+            animator.setStaticKeyframe(15);
+
+            body.rotationPointY -= 18 * (-4 * dieAnimController.rotationPointX * dieAnimController.rotationPointX + 4 * dieAnimController.rotationPointX);
+            float globalSpeed = 1f;
+            float globalDegree = 0.5f * dieAnimController.rotationPointY;
+            flap(body, globalSpeed, globalDegree * 0.2f, true, 0, 0, frame, 1);
+            body.rotationPointX -= 1 * globalDegree * Math.cos(frame * globalSpeed);
+            flap(leg1LeftUpper, globalSpeed, globalDegree * 0.5f, true, 1.57f, -0.9f, frame, 1);
+            flap(leg1LeftLower, globalSpeed, globalDegree * 0.8f, true, 1.57f + 0.5f, 0.4f, frame, 1);
+            flap(foot1Left, globalSpeed, globalDegree * 0.5f, false, 1.57f + 1f, -0.1f, frame, 1);
+
+            flap(leg2LeftUpper, globalSpeed, globalDegree * 0.5f, true, 1.57f + 1.57f, -0.9f, frame, 1);
+            flap(leg2LeftLower, globalSpeed, globalDegree * 0.8f, true, 1.57f + 1.57f + 0.5f, 0.4f, frame, 1);
+            flap(foot2Left, globalSpeed, globalDegree * 0.5f, false, 1.57f + 1.57f + 1f, -0.1f, frame, 1);
+
+            flap(leg3LeftUpper, globalSpeed, globalDegree * 0.5f, true, 1.57f + 1.57f*2, -0.9f, frame, 1);
+            flap(leg3LeftLower, globalSpeed, globalDegree * 0.8f, true, 1.57f + 1.57f*2 + 0.5f, 0.4f, frame, 1);
+            flap(foot3Left, globalSpeed, globalDegree * 0.5f, false, 1.57f + 1.57f*2 + 1f, -0.1f, frame, 1);
+
+            flap(leg1RightUpper, globalSpeed, globalDegree * 0.5f, true, 1.57f, 0.9f, frame, 1);
+            flap(leg1RightLower, globalSpeed, globalDegree * 0.8f, true, 1.57f + 0.5f, -0.4f, frame, 1);
+            flap(foot1Right, globalSpeed, globalDegree * 0.5f, false, 1.57f + 1f, 0.1f, frame, 1);
+
+            flap(leg2RightUpper, globalSpeed, globalDegree * 0.5f, true, 1.57f + 1.57f, 0.9f, frame, 1);
+            flap(leg2RightLower, globalSpeed, globalDegree * 0.8f, true, 1.57f + 1.57f + 0.5f, -0.4f, frame, 1);
+            flap(foot2Right, globalSpeed, globalDegree * 0.5f, false, 1.57f + 1.57f + 1f, 0.1f, frame, 1);
+
+            flap(leg3RightUpper, globalSpeed, globalDegree * 0.5f, true, 1.57f + 1.57f*2, 0.9f, frame, 1);
+            flap(leg3RightLower, globalSpeed, globalDegree * 0.8f, true, 1.57f + 1.57f*2 + 0.5f, -0.4f, frame, 1);
+            flap(foot3Right, globalSpeed, globalDegree * 0.5f, false, 1.57f + 1.57f*2 + 1f, 0.1f, frame, 1);
+
+            flap(clawLeftUpper, globalSpeed, globalDegree * 0.5f, true, 0, -0.3f, frame, 1);
+            flap(clawLeftLower, globalSpeed, globalDegree * 0.5f, true, 0.5f, 0, frame, 1);
+
+            flap(clawRightUpper, globalSpeed, globalDegree * 0.5f, true, 0, 0.3f, frame, 1);
+            flap(clawRightLower, globalSpeed, globalDegree * 0.5f, true, 0.5f, 0, frame, 1);
         }
     }
 }
