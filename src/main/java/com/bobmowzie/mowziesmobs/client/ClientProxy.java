@@ -6,7 +6,7 @@ import com.bobmowzie.mowziesmobs.client.sound.SpawnBoulderChargeSound;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.*;
 import com.bobmowzie.mowziesmobs.server.entity.effects.*;
-import com.bobmowzie.mowziesmobs.server.entity.skuttler.EntitySkuttler;
+import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import net.ilexiconn.llibrary.client.model.tabula.TabulaModelHandler;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -54,7 +54,7 @@ public class ClientProxy extends ServerProxy {
         RenderingRegistry.registerEntityRenderingHandler(EntityBarakoaya.class, RenderBarakoa::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityBarakoanToPlayer.class, RenderBarakoa::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityFrostmaw.class, RenderFrostmaw::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntitySkuttler.class, RenderSkuttler::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityGrottol.class, RenderGrottol::new);
 
         RenderingRegistry.registerEntityRenderingHandler(EntityDart.class, RenderDart::new);
         RenderingRegistry.registerEntityRenderingHandler(EntitySunstrike.class, RenderSunstrike::new);

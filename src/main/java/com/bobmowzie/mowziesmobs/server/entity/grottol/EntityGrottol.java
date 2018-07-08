@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.server.entity.skuttler;
+package com.bobmowzie.mowziesmobs.server.entity.grottol;
 
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
@@ -22,7 +22,7 @@ import net.minecraft.world.World;
 /**
  * Created by Josh on 7/3/2018.
  */
-public class EntitySkuttler extends MowzieEntity {
+public class EntityGrottol extends MowzieEntity {
     public static final Animation DIE_ANIMATION = Animation.create(60);
     public static final Animation HURT_ANIMATION = Animation.create(60);
     public static final Animation IDLE_ANIMATION = Animation.create(47);
@@ -36,7 +36,7 @@ public class EntitySkuttler extends MowzieEntity {
 
     private boolean killedWithPickaxe;
 
-    public EntitySkuttler(World world) {
+    public EntityGrottol(World world) {
         super(world);
         tasks.addTask(0, new EntityAISwimming(this));
         tasks.addTask(4, new EntityAIWander(this, 0.3));

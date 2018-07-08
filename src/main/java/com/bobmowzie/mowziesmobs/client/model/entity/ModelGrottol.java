@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
-import com.bobmowzie.mowziesmobs.server.entity.skuttler.EntitySkuttler;
+import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.model.ModelAnimator;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
@@ -15,7 +15,7 @@ import net.minecraft.entity.Entity;
  */
 
 
-public class ModelSkuttler extends AdvancedModelBase {
+public class ModelGrottol extends AdvancedModelBase {
     public AdvancedModelRenderer body;
     public AdvancedModelRenderer head;
     public AdvancedModelRenderer crystal1;
@@ -63,7 +63,7 @@ public class ModelSkuttler extends AdvancedModelBase {
 
     private ModelAnimator animator;
 
-    public ModelSkuttler() {
+    public ModelGrottol() {
         animator = ModelAnimator.create();
         this.textureWidth = 64;
         this.textureHeight = 32;
@@ -348,14 +348,14 @@ public class ModelSkuttler extends AdvancedModelBase {
     }
 
     public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        EntitySkuttler skuttler = (EntitySkuttler) entity;
-        animator.update(skuttler);
-        setRotationAngles(f, f1, f2, f3, f4, f5, skuttler);
+        EntityGrottol grottol = (EntityGrottol) entity;
+        animator.update(grottol);
+        setRotationAngles(f, f1, f2, f3, f4, f5, grottol);
 
-        float frame = skuttler.frame + LLibrary.PROXY.getPartialTicks();
+        float frame = grottol.frame + LLibrary.PROXY.getPartialTicks();
 
-        if (skuttler.getAnimation() == EntitySkuttler.IDLE_ANIMATION) {
-            animator.setAnimation(EntitySkuttler.IDLE_ANIMATION);
+        if (grottol.getAnimation() == EntityGrottol.IDLE_ANIMATION) {
+            animator.setAnimation(EntityGrottol.IDLE_ANIMATION);
 
             animator.startKeyframe(6);//6
             animator.move(body, 1, -2, 0);
@@ -470,8 +470,8 @@ public class ModelSkuttler extends AdvancedModelBase {
             animator.resetKeyframe(4);
         }
 
-        if (skuttler.getAnimation() == EntitySkuttler.DIE_ANIMATION) {
-            animator.setAnimation(EntitySkuttler.DIE_ANIMATION);
+        if (grottol.getAnimation() == EntityGrottol.DIE_ANIMATION) {
+            animator.setAnimation(EntityGrottol.DIE_ANIMATION);
 
             animator.startKeyframe(6);
             animator.rotate(body, -3.5f, 0, 0);
