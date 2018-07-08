@@ -473,13 +473,26 @@ public class ModelGrottol extends AdvancedModelBase {
         if (grottol.getAnimation() == EntityGrottol.DIE_ANIMATION) {
             animator.setAnimation(EntityGrottol.DIE_ANIMATION);
 
-            animator.startKeyframe(6);
+            animator.startKeyframe(7);
             animator.rotate(body, -3.5f, 0, 0);
             animator.rotate(head, 1f, 0, 0);
             animator.move(dieAnimController, 1, 1, 0);
             animator.endKeyframe();
 
-            animator.setStaticKeyframe(20);
+            animator.startKeyframe(2);
+            animator.rotate(body, -3.5f, 0, 0);
+            animator.move(body, 0, -5, 0);
+            animator.rotate(head, 1f, 0, 0);
+            animator.move(dieAnimController, 1, 1, 0);
+            animator.endKeyframe();
+
+            animator.startKeyframe(2);
+            animator.rotate(body, -3.5f, 0, 0);
+            animator.rotate(head, 1f, 0, 0);
+            animator.move(dieAnimController, 1, 1, 0);
+            animator.endKeyframe();
+
+            animator.setStaticKeyframe(18);
 
             animator.startKeyframe(12);
             animator.rotate(body, -3.5f, 0, 0);
@@ -497,7 +510,7 @@ public class ModelGrottol extends AdvancedModelBase {
             animator.rotate(clawRight, 1, 0, -1);
             animator.endKeyframe();
 
-            animator.setStaticKeyframe(15);
+            animator.setStaticKeyframe(12);
 
             body.rotationPointY -= 18 * (-4 * dieAnimController.rotationPointX * dieAnimController.rotationPointX + 4 * dieAnimController.rotationPointX);
             float globalSpeed = 1f;
@@ -533,6 +546,77 @@ public class ModelGrottol extends AdvancedModelBase {
 
             flap(clawRightUpper, globalSpeed, globalDegree * 0.5f, true, 0, 0.3f, frame, 1);
             flap(clawRightLower, globalSpeed, globalDegree * 0.5f, true, 0.5f, 0, frame, 1);
+        }
+
+        if (grottol.getAnimation() == EntityGrottol.BURROW_ANIMATION) {
+            animator.setAnimation(EntityGrottol.BURROW_ANIMATION);
+
+            animator.startKeyframe(4);
+            animator.rotate(body, 0.2f, 0.4f, 0);
+            animator.move(body, 0, 1f, 0);
+            animator.rotate(clawLeftJoint, 0, 0.4f, 0);
+            animator.rotate(clawLeftUpper, 0, 0, -0.2f);
+            animator.rotate(clawLeftLower, 0, 0, 0.7f);
+            animator.rotate(clawLeft, 0.7f, 0, -1);
+            animator.rotate(clawRightJoint, 0, 0.2f, 0);
+            animator.rotate(clawRightUpper, 0, 0, 1.3f);
+            animator.rotate(clawRightLower, 0, 0, -0.7f);
+            animator.rotate(clawRight, 0.3f, 0, 1);
+            animator.endKeyframe();
+
+            animator.startKeyframe(4);
+            animator.rotate(body, 0.4f, -0.4f, 0);
+            animator.move(body, 0, 3f, 0);
+            animator.rotate(clawRightJoint, 0, -0.4f, 0);
+            animator.rotate(clawRightUpper, 0, 0, 0.2f);
+            animator.rotate(clawRightLower, 0, 0, -0.7f);
+            animator.rotate(clawRight, 0.7f, 0, 1);
+            animator.rotate(clawLeftJoint, 0, -0.2f, 0);
+            animator.rotate(clawLeftUpper, 0, 0, -1.3f);
+            animator.rotate(clawLeftLower, 0, 0, 0.7f);
+            animator.rotate(clawLeft, 0.3f, 0, -1);
+            animator.endKeyframe();
+
+            animator.startKeyframe(4);
+            animator.rotate(body, 0.6f, 0.4f, 0);
+            animator.move(body, 0, 7f, 0);
+            animator.rotate(clawLeftJoint, 0, 0.4f, 0);
+            animator.rotate(clawLeftUpper, 0, 0, -0.2f);
+            animator.rotate(clawLeftLower, 0, 0, 0.7f);
+            animator.rotate(clawLeft, 0.7f, 0, -1);
+            animator.rotate(clawRightJoint, 0, 0.2f, 0);
+            animator.rotate(clawRightUpper, 0, 0, 1.3f);
+            animator.rotate(clawRightLower, 0, 0, -0.7f);
+            animator.rotate(clawRight, 0.3f, 0, 1);
+            animator.endKeyframe();
+
+            animator.startKeyframe(4);
+            animator.rotate(body, 0.6f, -0.4f, 0);
+            animator.move(body, 0, 13f, 0);
+            animator.rotate(clawRightJoint, 0, -0.4f, 0);
+            animator.rotate(clawRightUpper, 0, 0, 0.2f);
+            animator.rotate(clawRightLower, 0, 0, -0.7f);
+            animator.rotate(clawRight, 0.7f, 0, 1);
+            animator.rotate(clawLeftJoint, 0, -0.2f, 0);
+            animator.rotate(clawLeftUpper, 0, 0, -1.3f);
+            animator.rotate(clawLeftLower, 0, 0, 0.7f);
+            animator.rotate(clawLeft, 0.3f, 0, -1);
+            animator.endKeyframe();
+
+            animator.startKeyframe(4);
+            animator.rotate(body, 0.6f, 0.4f, 0);
+            animator.move(body, 0, 21.6f, 0);
+            animator.rotate(clawLeftJoint, 0, 0.4f, 0);
+            animator.rotate(clawLeftUpper, 0, 0, -0.2f);
+            animator.rotate(clawLeftLower, 0, 0, 0.7f);
+            animator.rotate(clawLeft, 0.7f, 0, -1);
+            animator.rotate(clawRightJoint, 0, 0.2f, 0);
+            animator.rotate(clawRightUpper, 0, 0, 1.3f);
+            animator.rotate(clawRightLower, 0, 0, -0.7f);
+            animator.rotate(clawRight, 0.3f, 0, 1);
+            animator.endKeyframe();
+
+            animator.setStaticKeyframe(40);
         }
     }
 }
