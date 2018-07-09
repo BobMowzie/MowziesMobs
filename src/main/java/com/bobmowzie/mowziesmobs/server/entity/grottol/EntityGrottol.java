@@ -23,6 +23,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.Vec3d;
@@ -52,9 +53,14 @@ public class EntityGrottol extends MowzieEntity {
 
     public EntityGrottol(World world) {
         super(world);
-        tasks.addTask(0, new EntityAISwimming(this));
+        setPathPriority(PathNodeType.DANGER_OTHER, 0);
+        setPathPriority(PathNodeType.WATER, 0);
+        setPathPriority(PathNodeType.LAVA, 0);
+        setPathPriority(PathNodeType.DANGER_FIRE, 0);
+        setPathPriority(PathNodeType.DANGER_CACTUS, 0);
+        tasks.addTask(3, new EntityAISwimming(this));
         tasks.addTask(4, new EntityAIWander(this, 0.3));
-        tasks.addTask(1, new EntityAIAvoidEntity<EntityPlayer>(this, EntityPlayer.class, 10f, 0.6, 0.8) {
+        tasks.addTask(1, new EntityAIAvoidEntity<EntityPlayer>(this, EntityPlayer.class, 16f, 0.5, 0.7) {
             @Override
             public void updateTask() {
                 super.updateTask();
@@ -71,8 +77,8 @@ public class EntityGrottol extends MowzieEntity {
         tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         tasks.addTask(1, new AnimationTakeDamage<>(this));
         tasks.addTask(1, new AnimationDieAI<>(this));
-        tasks.addTask(3, new AnimationAI<>(this, IDLE_ANIMATION, false));
-        tasks.addTask(1, new AnimationAI<>(this, BURROW_ANIMATION));
+        tasks.addTask(5, new AnimationAI<>(this, IDLE_ANIMATION, false));
+        tasks.addTask(2, new AnimationAI<>(this, BURROW_ANIMATION, false));
         experienceValue = 20;
         stepHeight = 1;
         setSize(1f, 1.2f);
@@ -85,6 +91,11 @@ public class EntityGrottol extends MowzieEntity {
         super.applyEntityAttributes();
         getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20);
         getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
+    }
+
+    @Override
+    public boolean getCanSpawnHere() {
+        return posY <= 50 && !world.canSeeSky(getPosition()) && getEntitiesNearby(EntityGrottol.class, 20, 20, 20, 20).isEmpty() && super.getCanSpawnHere();
     }
 
     @Override
@@ -109,10 +120,11 @@ public class EntityGrottol extends MowzieEntity {
     @Override
     public void onUpdate() {
         super.onUpdate();
+        if (ticksExisted == 1) System.out.println("Grottle at " + getPosition());
         if (getAnimation() == NO_ANIMATION && rand.nextInt(180) == 0) {
             AnimationHandler.INSTANCE.sendAnimationMessage(this, IDLE_ANIMATION);
         }
-        if (fleeTime >= 100 && getAnimation() == NO_ANIMATION) {
+        if (fleeTime >= 70 && getAnimation() == NO_ANIMATION) {
             IBlockState blockBeneath = world.getBlockState(getPosition().down());
             Material mat = blockBeneath.getMaterial();
             if (mat == Material.GRASS || mat == Material.GROUND || mat == Material.SAND || mat == Material.CLAY || mat == Material.ROCK) {
