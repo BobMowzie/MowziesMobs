@@ -1,10 +1,13 @@
 package com.bobmowzie.mowziesmobs.server.entity.grottol;
 
+import com.bobmowzie.mowziesmobs.server.ai.MMAIAvoidEntity;
+import com.bobmowzie.mowziesmobs.server.ai.MMEntityMoveHelper;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import com.google.common.base.Predicates;
 import com.google.common.eventbus.DeadEvent;
 import com.sun.xml.internal.bind.v2.model.core.ID;
 import net.ilexiconn.llibrary.server.animation.Animation;
@@ -25,8 +28,11 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.pathfinding.NodeProcessor;
+import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -36,6 +42,7 @@ import net.minecraft.world.World;
 import org.lwjgl.Sys;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * Created by Josh on 7/3/2018.
@@ -60,14 +67,14 @@ public class EntityGrottol extends MowzieEntity {
 
     public EntityGrottol(World world) {
         super(world);
-        setPathPriority(PathNodeType.DANGER_OTHER, 0);
-        setPathPriority(PathNodeType.WATER, 0);
-        setPathPriority(PathNodeType.LAVA, 0);
-        setPathPriority(PathNodeType.DANGER_FIRE, 0);
-        setPathPriority(PathNodeType.DANGER_CACTUS, 0);
+        setPathPriority(PathNodeType.DANGER_OTHER, 1);
+        setPathPriority(PathNodeType.WATER, 3);
+        setPathPriority(PathNodeType.LAVA, 1);
+        setPathPriority(PathNodeType.DANGER_FIRE, 1);
+        setPathPriority(PathNodeType.DANGER_CACTUS, 1);
         tasks.addTask(3, new EntityAISwimming(this));
         tasks.addTask(4, new EntityAIWander(this, 0.3));
-        tasks.addTask(1, new EntityAIAvoidEntity<EntityPlayer>(this, EntityPlayer.class, 16f, 0.5, 0.7) {
+        tasks.addTask(1, new MMAIAvoidEntity<EntityPlayer>(this, EntityPlayer.class, 16f, 0.5, 0.7) {
             @Override
             public void updateTask() {
                 super.updateTask();
@@ -91,6 +98,38 @@ public class EntityGrottol extends MowzieEntity {
         setSize(1f, 1.2f);
         killedWithPickaxe = false;
         killedWithSilkTouch = false;
+
+        moveHelper = new MMEntityMoveHelper(this, 45);
+    }
+
+    @Override
+    public float getBlockPathWeight(BlockPos pos) {
+        return (float)(new Vec3d(pos.getX(), pos.getY(), pos.getZ()).distanceTo(getPositionVector()));
+    }
+
+    @Override
+    public boolean isPushedByWater() {
+        return false;
+    }
+
+    @Override
+    public boolean handleWaterMovement() {
+        return super.handleWaterMovement();
+    }
+
+    @Override
+    protected float getWaterSlowDown() {
+        return 1;
+    }
+
+    @Override
+    public boolean canBreatheUnderwater() {
+        return true;
+    }
+
+    @Override
+    public boolean canRenderOnFire() {
+        return false;
     }
 
     @Override

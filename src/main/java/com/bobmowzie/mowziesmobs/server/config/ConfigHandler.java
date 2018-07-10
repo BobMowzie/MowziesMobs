@@ -24,5 +24,5 @@ public class ConfigHandler {
     @ConfigEntry(name = "Frostmaw Difficulty Multiplier", minValue = "0", maxValue = "20")
     public int difficultyScaleFrostmaw = 1;
     @ConfigEntry(name = "Grottol Spawn Rate", minValue = "0", maxValue = "100")
-    public int spawnrateGrottol = 3;
+    public int spawnrateGrottol = 2;
 }

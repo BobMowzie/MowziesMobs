@@ -114,7 +114,7 @@ public class EntityWroughtnaut extends MowzieEntity {
         tasks.addTask(2, new EntityAINearestAttackableTarget<>(this, EntityPlayer.class, 0, true, false, null));
         tasks.addTask(2, new EntityAIAttackMelee(this, 1, true));
         experienceValue = 30;
-        setSize(2.5F, 3.7F);
+        setSize(2.45F, 3.7F);
         active = false;
         stepHeight = 1;
     }
