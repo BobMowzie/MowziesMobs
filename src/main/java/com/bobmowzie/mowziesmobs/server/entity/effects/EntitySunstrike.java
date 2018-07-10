@@ -189,7 +189,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         List<Entity> entities = world.getEntitiesWithinAABBExcludingEntity(this, region);
         double radiusSq = radius * radius;
         for (Entity entity : entities) {
-            if (entity instanceof EntityLivingBase && getDistanceSqToEntity(entity) < radiusSq) {
+            if (entity instanceof EntityLivingBase && getDistanceSqXZToEntity(entity) < radiusSq) {
                 if (caster instanceof EntityBarako && (entity instanceof LeaderSunstrikeImmune)) {
                     continue;
                 }
@@ -201,6 +201,13 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
                 entity.setFire(5);
             }
         }
+    }
+
+    public double getDistanceSqXZToEntity(Entity entityIn)
+    {
+        double d0 = this.posX - entityIn.posX;
+        double d2 = this.posZ - entityIn.posZ;
+        return d0 * d0 + d2 * d2;
     }
 
     private void smolder() {
