@@ -64,6 +64,10 @@ public class MMAIAvoidEntity<T extends Entity> extends EntityAIBase
         this.nearSpeed = nearSpeedIn;
         this.entityPathNavigate = entityIn.getNavigator();
         this.setMutexBits(1);
+
+        this.numChecks = numChecks;
+        this.distanceXZ = distanceXZ;
+        this.distanceY = distanceY;
     }
 
     /**
@@ -75,6 +79,7 @@ public class MMAIAvoidEntity<T extends Entity> extends EntityAIBase
 
         if (list.isEmpty())
         {
+            noToAvoidFound();
             return false;
         }
         else
@@ -95,9 +100,17 @@ public class MMAIAvoidEntity<T extends Entity> extends EntityAIBase
                 }
                 i++;
             }
-            if (entity instanceof EntityGrottol && ((EntityGrottol) entity).ticksExisted > 20 && ((EntityGrottol) entity).getAnimation() == EntityGrottol.NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage((EntityGrottol)entity, EntityGrottol.BURROW_ANIMATION);
+            noPathFound();
             return false;
         }
+    }
+
+    protected void noToAvoidFound() {
+
+    }
+
+    protected void noPathFound() {
+
     }
 
     /**

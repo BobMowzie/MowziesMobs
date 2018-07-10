@@ -60,6 +60,7 @@ public class EntityGrottol extends MowzieEntity {
     };
     private int fleeTime = 0;
     private int timeSinceFlee = 50;
+    private int fleeCheckCounter = 0;
 
     private boolean killedWithPickaxe;
     private boolean killedWithSilkTouch;
@@ -76,8 +77,20 @@ public class EntityGrottol extends MowzieEntity {
         tasks.addTask(4, new EntityAIWander(this, 0.3));
         tasks.addTask(1, new MMAIAvoidEntity<EntityPlayer>(this, EntityPlayer.class, 16f, 0.5, 0.7) {
             @Override
+            protected void noToAvoidFound() {
+                fleeCheckCounter = 0;
+            }
+
+            @Override
+            protected void noPathFound() {
+                if (fleeCheckCounter < 4) fleeCheckCounter++;
+                if (fleeCheckCounter >= 4 && getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage((EntityGrottol)entity, EntityGrottol.BURROW_ANIMATION);
+            }
+
+            @Override
             public void updateTask() {
                 super.updateTask();
+                if (fleeCheckCounter > 0) fleeCheckCounter--;
                 ((EntityGrottol)entity).fleeTime++;
             }
 
