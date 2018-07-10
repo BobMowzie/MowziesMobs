@@ -376,5 +376,13 @@
 	},
 	"frostmaw.frozencrash": {
 		"sounds": [ "mowziesmobs:entity/frostmaw/icecrash" ]
+	},
+	"grottol.step": {
+		"sounds": [
+			"mowziesmobs:entity/grottol/step1",
+			"mowziesmobs:entity/grottol/step2",
+			"mowziesmobs:entity/grottol/step3",
+			"mowziesmobs:entity/grottol/step4"
+		]
 	}
 }

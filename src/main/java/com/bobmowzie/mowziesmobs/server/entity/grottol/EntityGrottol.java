@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.google.common.eventbus.DeadEvent;
 import com.sun.xml.internal.bind.v2.model.core.ID;
 import net.ilexiconn.llibrary.server.animation.Animation;
@@ -11,6 +12,7 @@ import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.audio.Sound;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentDigging;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -26,16 +28,21 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.lwjgl.Sys;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by Josh on 7/3/2018.
  */
 public class EntityGrottol extends MowzieEntity {
     public static final Animation DIE_ANIMATION = Animation.create(73);
-    public static final Animation HURT_ANIMATION = Animation.create(60);
+    public static final Animation HURT_ANIMATION = Animation.create(10);
     public static final Animation IDLE_ANIMATION = Animation.create(47);
     public static final Animation BURROW_ANIMATION = Animation.create(20);
     private static final Animation[] ANIMATIONS = {
@@ -121,6 +128,15 @@ public class EntityGrottol extends MowzieEntity {
     public void onUpdate() {
         super.onUpdate();
         if (ticksExisted == 1) System.out.println("Grottle at " + getPosition());
+
+        //Footstep Sounds
+        float moveX = (float) (posX - prevPosX);
+        float moveZ = (float) (posZ - prevPosZ);
+        float speed = MathHelper.sqrt(moveX * moveX + moveZ * moveZ);
+        if (frame % 6 == 0 && speed > 0.05) {
+            playSound(MMSounds.ENTITY_GROTTOL_STEP, 1F, 1.8f);
+        }
+
         if (getAnimation() == NO_ANIMATION && rand.nextInt(180) == 0) {
             AnimationHandler.INSTANCE.sendAnimationMessage(this, IDLE_ANIMATION);
         }
@@ -135,6 +151,7 @@ public class EntityGrottol extends MowzieEntity {
         else fleeTime = 0;
         if (getAnimation() == BURROW_ANIMATION) {
             if (getAnimationTick() % 4 == 3) {
+                playSound(SoundEvents.BLOCK_SAND_PLACE, 1, 0.8f + rand.nextFloat() * 0.4f);
                 IBlockState blockBeneath = world.getBlockState(getPosition().down());
                 Material mat = blockBeneath.getMaterial();
                 if (mat == Material.GRASS || mat == Material.GROUND || mat == Material.SAND || mat == Material.CLAY || mat == Material.ROCK) {
@@ -150,8 +167,12 @@ public class EntityGrottol extends MowzieEntity {
             }
         }
 
+        if (getAnimation() == IDLE_ANIMATION) {
+            if (getAnimationTick() == 28 || getAnimationTick() == 33) playSound(SoundEvents.BLOCK_STONE_STEP, 0.5f, 1.4f);
+        }
+
 //        if (getAnimation() == NO_ANIMATION) {
-//            AnimationHandler.INSTANCE.sendAnimationMessage(this, BURROW_ANIMATION);
+//            AnimationHandler.INSTANCE.sendAnimationMessage(this, IDLE_ANIMATION);
 //        }
     }
 
@@ -163,6 +184,12 @@ public class EntityGrottol extends MowzieEntity {
             if (killedWithFortune) howMany = 2;
             dropItem(Items.DIAMOND, howMany);
         }
+    }
+
+    @Override
+    protected SoundEvent getDeathSound() {
+        playSound(MMSounds.EFFECT_GEOMANCY_BREAK, 1f, 1.3f);
+        return null;
     }
 
     @Override
