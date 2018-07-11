@@ -2,47 +2,39 @@ package com.bobmowzie.mowziesmobs.server.entity.grottol;
 
 import com.bobmowzie.mowziesmobs.server.ai.MMAIAvoidEntity;
 import com.bobmowzie.mowziesmobs.server.ai.MMEntityMoveHelper;
+import com.bobmowzie.mowziesmobs.server.ai.MMPathNavigateGround;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import com.google.common.base.Predicates;
-import com.google.common.eventbus.DeadEvent;
-import com.sun.xml.internal.bind.v2.model.core.ID;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.audio.Sound;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentDigging;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.*;
+import net.minecraft.entity.ai.EntityAILookIdle;
+import net.minecraft.entity.ai.EntityAISwimming;
+import net.minecraft.entity.ai.EntityAIWander;
+import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.pathfinding.NodeProcessor;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.lwjgl.Sys;
-
-import javax.annotation.Nullable;
-import java.util.List;
 
 /**
  * Created by Josh on 7/3/2018.
