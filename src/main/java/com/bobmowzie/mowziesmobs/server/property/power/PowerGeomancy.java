@@ -23,7 +23,9 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionHelper;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -39,6 +41,10 @@ import java.util.Random;
 
 public class PowerGeomancy extends Power {
 
+    private int doubleTapTimer = 0;
+
+    protected Random rand;
+
     private int spawnBoulderCooldown = 10;
     private boolean spawningBoulder = false;
     private boolean liftedMouse = true;
@@ -47,8 +53,12 @@ public class PowerGeomancy extends Power {
     private Vec3d lookPos = new Vec3d(0, 0, 0);
     private IBlockState spawnBoulderBlock = Blocks.DIRT.getDefaultState();
 
+    public boolean tunneling;
+    public boolean prevUnderground;
+
     public PowerGeomancy(MowziePlayerProperties properties) {
         super(properties);
+        rand = new Random();
     }
 
     @Override
@@ -56,6 +66,46 @@ public class PowerGeomancy extends Power {
         super.onUpdate(event);
         EntityPlayer player = event.player;
         spawnBoulderCooldown -= 1;
+        if (doubleTapTimer > 0) doubleTapTimer--;
+        if (tunneling) {
+            player.fallDistance = 0;
+            player.capabilities.isFlying = false;
+            boolean underground = !player.world.getEntitiesWithinAABB(EntityBlockSwapper.class, player.getEntityBoundingBox()).isEmpty();
+            if (player.onGround && !underground) tunneling = false;
+            Vec3d lookVec = player.getLookVec();
+            float tunnelSpeed = 0.9f;
+            if (underground) {
+                if (player.isSneaking()) player.setVelocity(tunnelSpeed * lookVec.x, tunnelSpeed * lookVec.y, tunnelSpeed * lookVec.z);
+                else player.setVelocity(tunnelSpeed * 0.5 * lookVec.x, 1, tunnelSpeed * 0.5 * lookVec.z);
+            }
+            else player.motionY += 0.015;
+
+            if ((player.isSneaking() && lookVec.y < 0) || underground) {
+                if (player.ticksExisted % 16 == 0) player.playSound(MMSounds.EFFECT_GEOMANCY_RUMBLE.get(rand.nextInt(3)).get(), 0.6f, 0.5f + rand.nextFloat() * 0.2f);
+                for (int x = -1; x <= 1; x++) {
+                    for (int y = -1; y <= 1; y++) {
+                        for (int z = -1; z <= 1; z++) {
+                            BlockPos pos = new BlockPos(player.posX + x + player.motionX, player.posY + y + player.motionY + 0.5, player.posZ + z + player.motionZ);
+                            IBlockState blockState = player.world.getBlockState(pos);
+                            if (isBlockDiggable(blockState) && blockState.getBlock() != Blocks.BEDROCK) {
+                                EntityBlockSwapper.swapBlock(player.world, pos, Blocks.AIR.getDefaultState(), 10, false, false);
+                            }
+                        }
+                    }
+                }
+            }
+            if (!prevUnderground && underground) {
+                player.playSound(MMSounds.EFFECT_GEOMANCY_BREAK_MEDIUM.get(rand.nextInt(3)).get(), 1f, 0.9f + rand.nextFloat() * 0.1f);
+                EntityRing ring = new EntityRing(player.world, (float) player.posX, (float) player.posY, (float) player.posZ, new Vec3d(0, 1, 0), (int) (5 + 2), 0.83f, 1, 0.39f, 1f, 1.0f + 0.5f * 2f, false);
+                player.world.spawnEntity(ring);
+            }
+            if (prevUnderground && !underground) {
+                player.playSound(MMSounds.EFFECT_GEOMANCY_BREAK, 1f, 0.9f + rand.nextFloat() * 0.1f);
+                EntityRing ring = new EntityRing(player.world, (float) player.posX, (float) player.posY, (float) player.posZ, new Vec3d(0, 1, 0), (int) (5 + 2), 0.83f, 1, 0.39f, 1f, 1.0f + 0.5f * 2f, false);
+                player.world.spawnEntity(ring);
+            }
+            prevUnderground = underground;
+        }
         if (spawningBoulder) {
             if (player.getDistance(spawnBoulderPos.getX(), spawnBoulderPos.getY(), spawnBoulderPos.getZ()) > 6 || !canUse(player)) {
                 spawningBoulder = false;
@@ -116,40 +166,30 @@ public class PowerGeomancy extends Power {
     public void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         super.onRightClickBlock(event);
         EntityPlayer player = event.getEntityPlayer();
-        if (canUse(player) && player.isSneaking()) {
-            EntityBlockSwapper.swapBlock(player.world, event.getPos(), Blocks.NETHERRACK.getDefaultState(), 20, false, false);
-            return;
-        }
-        if (canUse(player) && !spawningBoulder && liftedMouse && event.getFace() == EnumFacing.UP && spawnBoulderCooldown <= 0) {
-            int x = MathHelper.floor(event.getHitVec().x);
-            int y = MathHelper.floor(event.getHitVec().y);
-            int z = MathHelper.floor(event.getHitVec().z);
-            lookPos = new Vec3d(event.getHitVec().x, event.getHitVec().y, event.getHitVec().z);
-            spawnBoulderPos = new BlockPos(x, y - 1, z);
-            spawnBoulderBlock = player.world.getBlockState(spawnBoulderPos);
-            Material mat = spawnBoulderBlock.getMaterial();
-            if (mat != Material.GRASS
-                    && mat != Material.GROUND
-                    && mat != Material.ROCK
-                    && mat != Material.CLAY
-                    && mat != Material.SAND
-                    ) {
-                return;
+        if (canUse(player)) {
+            if (!tunneling && !spawningBoulder && liftedMouse && event.getFace() == EnumFacing.UP && spawnBoulderCooldown <= 0) {
+                int x = MathHelper.floor(event.getHitVec().x);
+                int y = MathHelper.floor(event.getHitVec().y);
+                int z = MathHelper.floor(event.getHitVec().z);
+                lookPos = new Vec3d(event.getHitVec().x, event.getHitVec().y, event.getHitVec().z);
+                spawnBoulderPos = new BlockPos(x, y - 1, z);
+                spawnBoulderBlock = player.world.getBlockState(spawnBoulderPos);
+                if (!isBlockDiggable(spawnBoulderBlock)) return;
+                spawningBoulder = true;
             }
-            if (spawnBoulderBlock == Blocks.HAY_BLOCK
-                    || spawnBoulderBlock.getBlock() == Blocks.NETHER_WART_BLOCK
-                    || spawnBoulderBlock.getBlock() instanceof BlockFence
-                    || spawnBoulderBlock.getBlock() == Blocks.MOB_SPAWNER
-                    || spawnBoulderBlock.getBlock() == Blocks.BONE_BLOCK
-                    || spawnBoulderBlock.getBlock() == Blocks.ENCHANTING_TABLE
-                    || spawnBoulderBlock.getBlock() == Blocks.END_PORTAL_FRAME
-                    || spawnBoulderBlock.getBlock() == Blocks.ENDER_CHEST
-                    || spawnBoulderBlock.getBlock() == Blocks.SLIME_BLOCK
-                    ) {
-                return;
-            }
-            spawningBoulder = true;
         }
+    }
+
+    @Override
+    public void onSneakDown(EntityPlayer player) {
+        super.onSneakDown(player);
+        if (doubleTapTimer > 0 && canUse(player) && !player.onGround) tunneling = true;
+        doubleTapTimer = 5;
+    }
+
+    @Override
+    public void onSneakUp(EntityPlayer player) {
+        super.onSneakUp(player);
     }
 
     public boolean isSpawningBoulder() {
@@ -184,5 +224,30 @@ public class PowerGeomancy extends Power {
 
     public int getSpawnBoulderCharge() {
         return spawnBoulderCharge;
+    }
+
+    public boolean isBlockDiggable(IBlockState blockState) {
+        Material mat = blockState.getMaterial();
+        if (mat != Material.GRASS
+                && mat != Material.GROUND
+                && mat != Material.ROCK
+                && mat != Material.CLAY
+                && mat != Material.SAND
+                ) {
+            return false;
+        }
+        if (blockState == Blocks.HAY_BLOCK
+                || blockState.getBlock() == Blocks.NETHER_WART_BLOCK
+                || blockState.getBlock() instanceof BlockFence
+                || blockState.getBlock() == Blocks.MOB_SPAWNER
+                || blockState.getBlock() == Blocks.BONE_BLOCK
+                || blockState.getBlock() == Blocks.ENCHANTING_TABLE
+                || blockState.getBlock() == Blocks.END_PORTAL_FRAME
+                || blockState.getBlock() == Blocks.ENDER_CHEST
+                || blockState.getBlock() == Blocks.SLIME_BLOCK
+                ) {
+            return false;
+        }
+        return true;
     }
 }

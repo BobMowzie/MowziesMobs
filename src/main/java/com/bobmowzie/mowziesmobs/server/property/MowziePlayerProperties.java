@@ -27,6 +27,7 @@ public class MowziePlayerProperties extends EntityProperties<EntityPlayer> {
     private int time;
     public boolean mouseRightDown = false;
     public boolean mouseLeftDown = false;
+    public boolean prevSneaking;
 
     public int tribeCircleTick;
     public List<EntityBarakoanToPlayer> tribePack = new ArrayList<>();

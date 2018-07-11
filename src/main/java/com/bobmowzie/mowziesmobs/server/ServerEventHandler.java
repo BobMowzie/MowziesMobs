@@ -255,6 +255,18 @@ public enum ServerEventHandler {
                 }
             }
 
+            if (player.isSneaking() && !property.prevSneaking) {
+                for (int i = 0; i < property.powers.length; i++) {
+                    property.powers[i].onSneakDown(player);
+                }
+            }
+            else if (!player.isSneaking() && property.prevSneaking) {
+                for (int i = 0; i < property.powers.length; i++) {
+                    property.powers[i].onSneakUp(player);
+                }
+            }
+            property.prevSneaking = player.isSneaking();
+
             for (int i = 0; i < property.powers.length; i++) {
                 property.powers[i].onUpdate(event);
             }

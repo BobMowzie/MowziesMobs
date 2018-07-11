@@ -184,7 +184,7 @@ public class EntityGrottol extends MowzieEntity {
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (ticksExisted == 1) System.out.println("Grottle at " + getPosition());
+//        if (ticksExisted == 1) System.out.println("Grottle at " + getPosition());
 
         //Sparkle particles
         if (world.isRemote && isEntityAlive() && rand.nextInt(15) == 0) {

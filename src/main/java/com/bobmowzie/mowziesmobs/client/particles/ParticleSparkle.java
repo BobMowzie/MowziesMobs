@@ -50,6 +50,8 @@ public class ParticleSparkle extends Particle implements ParticleTextureStitcher
         particleAlpha = -4 * a * a + 4 * a;
         if (particleAlpha < 0.01) particleAlpha = 0.01f;
         particleScale = (-4 * a * a + 4 * a) * scale;
+
+        //TODO: Override rendering to support rgb parameters
         super.renderParticle(buffer, entityIn, partialTicks, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
     }
 

@@ -72,6 +72,14 @@ public abstract class Power {
 
     }
 
+    public void onSneakDown(EntityPlayer player) {
+
+    }
+
+    public void onSneakUp(EntityPlayer player) {
+
+    }
+
     public boolean canUse(EntityPlayer player) {
         return true;
     }

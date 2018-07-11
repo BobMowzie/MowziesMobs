@@ -19,6 +19,8 @@ import java.util.List;
  */
 public class EntityBlockSwapper extends Entity {
     private static final DataParameter<Optional<IBlockState>> ORIG_BLOCK_STATE = EntityDataManager.createKey(EntityBlockSwapper.class, DataSerializers.OPTIONAL_BLOCK_STATE);
+    private static final DataParameter<Integer> RESTORE_TIME = EntityDataManager.createKey(EntityBlockSwapper.class, DataSerializers.VARINT);
+    private static final DataParameter<BlockPos> POS = EntityDataManager.createKey(EntityBlockSwapper.class, DataSerializers.BLOCK_POS);
     private int duration;
     private boolean breakParticlesEnd;
     private BlockPos pos;
@@ -30,13 +32,12 @@ public class EntityBlockSwapper extends Entity {
     public EntityBlockSwapper(World world, BlockPos pos, IBlockState newBlock, int duration, boolean breakParticlesStart, boolean breakParticlesEnd) {
         super(world);
         this.pos = pos;
-        this.duration = duration;
+        setRestoreTime(duration);
         this.breakParticlesEnd = breakParticlesEnd;
         setSize(1, 1);
         setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
         if (!world.isRemote) {
             setOrigBlock(world.getBlockState(pos));
-            System.out.println(getOrigBlock());
             if (breakParticlesStart) world.destroyBlock(pos, false);
             world.setBlockState(pos, newBlock);
         }
@@ -63,6 +64,26 @@ public class EntityBlockSwapper extends Entity {
     @Override
     protected void entityInit() {
         getDataManager().register(ORIG_BLOCK_STATE, Optional.of(Blocks.DIRT.getDefaultState()));
+        getDataManager().register(RESTORE_TIME, 20);
+        getDataManager().register(POS, new BlockPos(0, 0, 0));
+    }
+
+    public int getRestoreTime() {
+        return dataManager.get(RESTORE_TIME);
+    }
+
+    public void setRestoreTime(int restoreTime) {
+        dataManager.set(RESTORE_TIME, restoreTime);
+        duration = restoreTime;
+    }
+
+    public BlockPos getStorePos() {
+        return dataManager.get(POS);
+    }
+
+    public void setStorePos(BlockPos bpos) {
+        dataManager.set(POS, bpos);
+        pos = bpos;
     }
 
     public IBlockState getOrigBlock() {
@@ -75,7 +96,6 @@ public class EntityBlockSwapper extends Entity {
 
     public void restoreBlock() {
         if (!world.isRemote) {
-            System.out.println(getOrigBlock());
             if (breakParticlesEnd) world.destroyBlock(pos, false);
             world.setBlockState(pos, getOrigBlock());
             setDead();
@@ -94,11 +114,21 @@ public class EntityBlockSwapper extends Entity {
         if (blockOption.isPresent()) {
             compound.setTag("block", NBTUtil.writeBlockState(new NBTTagCompound(), blockOption.get()));
         }
+        compound.setInteger("restoreTime", getRestoreTime());
+        compound.setInteger("storePosX", getStorePos().getX());
+        compound.setInteger("storePosY", getStorePos().getY());
+        compound.setInteger("storePosZ", getStorePos().getZ());
     }
 
     @Override
     public void readEntityFromNBT(NBTTagCompound compound) {
         IBlockState blockState = NBTUtil.readBlockState((NBTTagCompound) compound.getTag("block"));
         setOrigBlock(blockState);
+        setRestoreTime(compound.getInteger("restoreTime"));
+        setStorePos(new BlockPos(
+                compound.getInteger("storePosX"),
+                compound.getInteger("storePosY"),
+                compound.getInteger("storePosZ")
+                ));
     }
 }
