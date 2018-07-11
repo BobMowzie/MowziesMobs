@@ -116,6 +116,11 @@ public class EntityGrottol extends MowzieEntity {
     }
 
     @Override
+    protected PathNavigate createNavigator(World world) {
+        return new MMPathNavigateGround(this, world);
+    }
+
+    @Override
     public float getBlockPathWeight(BlockPos pos) {
         return (float)(new Vec3d(pos.getX(), pos.getY(), pos.getZ()).distanceTo(getPositionVector()));
     }
