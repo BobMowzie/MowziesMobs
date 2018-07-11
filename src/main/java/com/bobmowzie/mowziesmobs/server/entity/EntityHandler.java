@@ -52,6 +52,8 @@ public enum EntityHandler {
         EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "ring"), EntityRing.class, "ring", nextEntityId(), MowziesMobs.instance(), 64, 1, true);
 
         EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "dart"), EntityDart.class, "dart", nextEntityId(), MowziesMobs.instance(), 64, 1, true);
+
+        EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "block_swapper"), EntityBlockSwapper.class, "block_swapper", nextEntityId(), MowziesMobs.instance(), 64, 1, true);
     }
 
     public void registerEntity(Class<? extends EntityLiving> entityClass, String name, boolean addEgg, int mainColor, int subColor, boolean addSpawn, int spawnFrequency, int minGroup, int maxGroup, EnumCreatureType typeOfCreature, Biome... biomes) {

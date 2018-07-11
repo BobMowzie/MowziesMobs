@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.property.power;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBlockSwapper;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityRing;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
@@ -115,6 +116,10 @@ public class PowerGeomancy extends Power {
     public void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         super.onRightClickBlock(event);
         EntityPlayer player = event.getEntityPlayer();
+        if (canUse(player) && player.isSneaking()) {
+            EntityBlockSwapper.swapBlock(player.world, event.getPos(), Blocks.NETHERRACK.getDefaultState(), 20, false, false);
+            return;
+        }
         if (canUse(player) && !spawningBoulder && liftedMouse && event.getFace() == EnumFacing.UP && spawnBoulderCooldown <= 0) {
             int x = MathHelper.floor(event.getHitVec().x);
             int y = MathHelper.floor(event.getHitVec().y);
