@@ -1,5 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.entity.grottol;
 
+import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
+import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
 import com.bobmowzie.mowziesmobs.server.ai.MMAIAvoidEntity;
 import com.bobmowzie.mowziesmobs.server.ai.MMEntityMoveHelper;
 import com.bobmowzie.mowziesmobs.server.ai.MMPathNavigateGround;
@@ -108,6 +111,11 @@ public class EntityGrottol extends MowzieEntity {
     }
 
     @Override
+    public int getMaxFallHeight() {
+        return 256;
+    }
+
+    @Override
     protected PathNavigate createNavigator(World world) {
         return new MMPathNavigateGround(this, world);
     }
@@ -177,6 +185,14 @@ public class EntityGrottol extends MowzieEntity {
     public void onUpdate() {
         super.onUpdate();
         if (ticksExisted == 1) System.out.println("Grottle at " + getPosition());
+
+        //Sparkle particles
+        if (world.isRemote && isEntityAlive() && rand.nextInt(15) == 0) {
+            float dx = 0.5f * (2 * rand.nextFloat() - 1f);
+            float dy = 0.3f * (2 * rand.nextFloat() - 1f);
+            float dz = 0.5f * (2 * rand.nextFloat() - 1f);
+            MMParticle.SPARKLE.spawn(world, posX + dx, posY + 0.8 + dy, posZ + dz, ParticleFactory.ParticleArgs.get().withData(0d, 0d, 0d, 1d, 1d, 1d, 4d, 22));
+        }
 
         //Footstep Sounds
         float moveX = (float) (posX - prevPosX);
