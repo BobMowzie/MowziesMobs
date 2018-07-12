@@ -31,7 +31,7 @@ public class EntityBlockSwapper extends Entity {
 
     public EntityBlockSwapper(World world, BlockPos pos, IBlockState newBlock, int duration, boolean breakParticlesStart, boolean breakParticlesEnd) {
         super(world);
-        this.pos = pos;
+        setStorePos(pos);
         setRestoreTime(duration);
         this.breakParticlesEnd = breakParticlesEnd;
         setSize(1, 1);
@@ -118,6 +118,9 @@ public class EntityBlockSwapper extends Entity {
         compound.setInteger("storePosX", getStorePos().getX());
         compound.setInteger("storePosY", getStorePos().getY());
         compound.setInteger("storePosZ", getStorePos().getZ());
+
+        System.out.println(getRestoreTime());
+        System.out.println(getStorePos());
     }
 
     @Override
@@ -129,6 +132,9 @@ public class EntityBlockSwapper extends Entity {
                 compound.getInteger("storePosX"),
                 compound.getInteger("storePosY"),
                 compound.getInteger("storePosZ")
-                ));
+        ));
+
+        System.out.println(getRestoreTime());
+        System.out.println(getStorePos());
     }
 }

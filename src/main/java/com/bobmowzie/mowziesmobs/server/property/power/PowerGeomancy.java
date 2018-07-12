@@ -167,6 +167,10 @@ public class PowerGeomancy extends Power {
         super.onRightClickBlock(event);
         EntityPlayer player = event.getEntityPlayer();
         if (canUse(player)) {
+            if (player.isSneaking()) {
+                EntityBlockSwapper.swapBlock(player.world, event.getPos(), Blocks.NETHERRACK.getDefaultState(), 40, false, false);
+                return;
+            }
             if (!tunneling && !spawningBoulder && liftedMouse && event.getFace() == EnumFacing.UP && spawnBoulderCooldown <= 0) {
                 int x = MathHelper.floor(event.getHitVec().x);
                 int y = MathHelper.floor(event.getHitVec().y);
