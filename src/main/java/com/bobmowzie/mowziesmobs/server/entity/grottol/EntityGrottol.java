@@ -2,13 +2,13 @@ package com.bobmowzie.mowziesmobs.server.entity.grottol;
 
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
-import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
 import com.bobmowzie.mowziesmobs.server.ai.MMAIAvoidEntity;
 import com.bobmowzie.mowziesmobs.server.ai.MMEntityMoveHelper;
 import com.bobmowzie.mowziesmobs.server.ai.MMPathNavigateGround;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
+import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.animation.Animation;
@@ -24,6 +24,8 @@ import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
+import net.minecraft.entity.item.EntityMinecart;
+import net.minecraft.entity.item.EntityMinecartEmpty;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
@@ -70,6 +72,7 @@ public class EntityGrottol extends MowzieEntity {
         setPathPriority(PathNodeType.DANGER_CACTUS, 1);
         tasks.addTask(3, new EntityAISwimming(this));
         tasks.addTask(4, new EntityAIWander(this, 0.3));
+        //tasks.addTask(4, new EntityAIGrottolFindMinecart(this));
         tasks.addTask(1, new MMAIAvoidEntity<EntityPlayer>(this, EntityPlayer.class, 16f, 0.5, 0.7) {
             @Override
             protected void noToAvoidFound() {
@@ -103,7 +106,7 @@ public class EntityGrottol extends MowzieEntity {
         tasks.addTask(2, new AnimationAI<>(this, BURROW_ANIMATION, false));
         experienceValue = 20;
         stepHeight = 1;
-        setSize(1f, 1.2f);
+        setSize(0.9F, 1.2F);
         killedWithPickaxe = false;
         killedWithSilkTouch = false;
 
@@ -122,7 +125,7 @@ public class EntityGrottol extends MowzieEntity {
 
     @Override
     public float getBlockPathWeight(BlockPos pos) {
-        return (float)(new Vec3d(pos.getX(), pos.getY(), pos.getZ()).distanceTo(getPositionVector()));
+        return (float) getDistanceSqToCenter(pos);
     }
 
     @Override
@@ -148,6 +151,11 @@ public class EntityGrottol extends MowzieEntity {
     @Override
     public boolean canRenderOnFire() {
         return false;
+    }
+
+    @Override
+    public boolean isServerWorld() {
+        return super.isServerWorld() && !hasMinecart();
     }
 
     @Override
@@ -239,6 +247,41 @@ public class EntityGrottol extends MowzieEntity {
 //        if (getAnimation() == NO_ANIMATION) {
 //            AnimationHandler.INSTANCE.sendAnimationMessage(this, IDLE_ANIMATION);
 //        }
+    }
+
+    public boolean hasMinecart() {
+        Entity entity = getRidingEntity();
+        return isMinecart(entity) && ((EntityMinecart) entity).getDisplayTile().getBlock() == BlockHandler.GROTTOL;
+    }
+
+    private boolean isMinecart(Entity entity) {
+        return entity instanceof EntityMinecartEmpty;
+    }
+
+    @Override
+    protected void collideWithEntity(Entity entity) {
+        if (!isMinecart(entity)) {
+            super.collideWithEntity(entity);   
+        }
+    }
+
+    @Override
+    public boolean startRiding(Entity entity, boolean force) {
+        if (super.startRiding(entity, force)) {
+            if (isMinecart(entity)) {
+                ((EntityMinecart) entity).setDisplayTile(BlockHandler.GROTTOL.getDefaultState());   
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void dismountEntity(Entity entity) {
+        super.dismountEntity(entity);
+        if (isMinecart(entity)) {
+            ((EntityMinecart) entity).setHasDisplayTile(false);
+        }
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.model.ModelAnimator;
@@ -66,7 +65,7 @@ public class ModelGrottol extends AdvancedModelBase {
     public ModelGrottol() {
         animator = ModelAnimator.create();
         this.textureWidth = 64;
-        this.textureHeight = 32;
+        this.textureHeight = 64;
         this.crystal7 = new AdvancedModelRenderer(this, 0, 17);
         this.crystal7.setRotationPoint(-3.6F, -2.4F, 1.7F);
         this.crystal7.addBox(-1.5F, -5.0F, -1.5F, 3, 8, 3, 0.0F);

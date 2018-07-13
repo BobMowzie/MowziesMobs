@@ -1,12 +1,11 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.entity.ModelFrostmaw;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGrottol;
-import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -30,7 +29,16 @@ public class RenderGrottol extends RenderLiving<EntityGrottol> {
     }
 
     @Override
-    public void doRender(EntityGrottol entity, double x, double y, double z, float entityYaw, float partialTicks) {
-        super.doRender(entity, x, y, z, entityYaw, partialTicks);
+    public void doRender(EntityGrottol entity, double x, double y, double z, float yaw, float delta) {
+        if (!entity.hasMinecart()) {
+            super.doRender(entity, x, y, z, yaw, delta);
+        }
+    }
+
+    @Override
+    public void doRenderShadowAndFire(Entity entity, double x, double y, double z, float yaw, float delta) {
+        if (!(entity instanceof EntityGrottol) || !((EntityGrottol) entity).hasMinecart()) {
+            super.doRenderShadowAndFire(entity, x, y, z, yaw, delta);
+        }
     }
 }
