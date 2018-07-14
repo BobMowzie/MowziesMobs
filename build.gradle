@@ -35,11 +35,14 @@ repositories {
         name 'Curseforge Maven' // Baubles + Thaumcraft
         url 'http://minecraft.curseforge.com/api/maven/'
     }
+    maven {
+        url = "http://maven.thiakil.com"
+    }
 }
 
 dependencies {
     compile "net.ilexiconn:llibrary:1.7.9-1.12.2:dev"
-    
+    deobfCompile "com.azanor.baubles:Baubles:1.12-1.5.2"
     deobfCompile "thaumcraft:Thaumcraft:1.12.2:6.1.BETA16"
 }
 
