@@ -384,5 +384,10 @@
 			"mowziesmobs:entity/grottol/step3",
 			"mowziesmobs:entity/grottol/step4"
 		]
+	},
+	"music.black_pink": {
+		"sounds": [
+			"mowziesmobs:music/black_pink"
+		]
 	}
 }

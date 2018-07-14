@@ -1,16 +1,14 @@
 package com.bobmowzie.mowziesmobs.server.sound;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.model.ModelWitch;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 
 @Mod.EventBusSubscriber(modid = MowziesMobs.MODID)
 public final class MMSounds {
@@ -301,6 +299,10 @@ public final class MMSounds {
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.magicchargesmall")
     public static final SoundEvent EFFECT_GEOMANCY_MAGIC_CHARGE_SMALL = NIL;
 
+    // Easter Eggs
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":music.black_pink")
+    public static final SoundEvent MUSIC_BLACK_PINK = NIL;
+
     @SubscribeEvent
     public static void register(RegistryEvent.Register<SoundEvent> event) {
         event.getRegistry().registerAll(
@@ -415,7 +417,9 @@ public final class MMSounds {
                 create("geomancy.rumble3"),
                 create("geomancy.smallrockhit"),
                 create("geomancy.bouldercharge"),
-                create("geomancy.magicchargesmall")
+                create("geomancy.magicchargesmall"),
+
+                create("music.black_pink")
         );
     }
 

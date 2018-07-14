@@ -30,14 +30,18 @@ public class RenderGrottol extends RenderLiving<EntityGrottol> {
 
     @Override
     public void doRender(EntityGrottol entity, double x, double y, double z, float yaw, float delta) {
-        if (!entity.hasMinecart()) {
+        if (entity.hasMinecartBlockDisplay()) {
+            if (!renderOutlines) {
+                renderName(entity, x, y, z);
+            }
+        } else {
             super.doRender(entity, x, y, z, yaw, delta);
         }
     }
 
     @Override
     public void doRenderShadowAndFire(Entity entity, double x, double y, double z, float yaw, float delta) {
-        if (!(entity instanceof EntityGrottol) || !((EntityGrottol) entity).hasMinecart()) {
+        if (!(entity instanceof EntityGrottol) || !((EntityGrottol) entity).hasMinecartBlockDisplay()) {
             super.doRenderShadowAndFire(entity, x, y, z, yaw, delta);
         }
     }

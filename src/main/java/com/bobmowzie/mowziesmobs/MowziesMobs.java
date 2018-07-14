@@ -58,7 +58,8 @@ public final class MowziesMobs {
             MessageLeftMouseDown.class,
             MessageLeftMouseUp.class,
             MessageRightMouseDown.class,
-            MessageRightMouseUp.class
+            MessageRightMouseUp.class,
+            MessageBlackPinkInYourArea.class
     })
     public static SimpleNetworkWrapper NETWORK_WRAPPER;
     @Config
