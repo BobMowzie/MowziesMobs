@@ -85,6 +85,7 @@ item.icecrystal.text.1=Recharges while in inventory
 tile.campfire.name=Campfire
 tile.paintedAcacia.name=Painted Acacia Wood
 tile.paintedAcaciaSlab.name=Painted Acacia Wood Slab
+tile.grottol.name=Grottol
 
 # Potions
 potion.sunsBlessing=Sun's Blessing
