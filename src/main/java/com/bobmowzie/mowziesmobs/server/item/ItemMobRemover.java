@@ -1,5 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
+import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -7,12 +9,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
-import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-
 import java.util.List;
-
 import javax.annotation.Nullable;
 
 public class ItemMobRemover extends Item {
@@ -25,7 +22,9 @@ public class ItemMobRemover extends Item {
     @Override
     public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
         if (entity instanceof MowzieEntity) {
-            entity.setDead();
+            if (!entity.world.isRemote) {
+                entity.setDead();   
+            }
             return true;
         }
         return false;
