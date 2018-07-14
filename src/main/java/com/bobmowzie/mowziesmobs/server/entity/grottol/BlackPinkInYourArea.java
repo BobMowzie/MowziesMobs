@@ -18,9 +18,9 @@ public final class BlackPinkInYourArea implements BiConsumer<World, EntityMineca
         IBlockState state = minecart.getDisplayTile();
         if (state.getBlock() != BlockHandler.GROTTOL) {
             state = BlockHandler.GROTTOL.getDefaultState();
+            minecart.setDisplayTileOffset(minecart.getDefaultDisplayTileOffset());
         }
         minecart.setDisplayTile(state.withProperty(BlockGrottol.VARIANT, BlockGrottol.Variant.BLACK_PINK));
-        minecart.setHasDisplayTile(true);
         MowziesMobs.NETWORK_WRAPPER.sendToAllTracking(new MessageBlackPinkInYourArea(minecart), minecart);
     }
 

@@ -297,8 +297,9 @@ public class EntityGrottol extends MowzieEntity {
             if (isMinecart(entity)) {
                 EntityMinecart minecart = (EntityMinecart) entity;
                 if (minecart.getDisplayTile().getBlock() != BlockHandler.GROTTOL) {
-                    minecart.setDisplayTile(BlockHandler.GROTTOL.getDefaultState());   
-                }   
+                    minecart.setDisplayTile(BlockHandler.GROTTOL.getDefaultState());
+                    minecart.setDisplayTileOffset(minecart.getDefaultDisplayTileOffset());
+                }
             }
             return true;
         }
