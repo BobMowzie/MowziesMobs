@@ -1,15 +1,15 @@
 package com.bobmowzie.mowziesmobs.client;
 
-
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher;
 import com.bobmowzie.mowziesmobs.client.render.entity.FrozenRenderHandler;
+import com.bobmowzie.mowziesmobs.server.block.BlockGrottol;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
-import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import net.ilexiconn.llibrary.client.model.tabula.TabulaModelHandler;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -30,6 +30,12 @@ public final class MMModels {
 
         registerBlockModel(BlockHandler.PAINTED_ACACIA, "painted_acacia");
         registerBlockModel(BlockHandler.PAINTED_ACACIA_SLAB, "painted_acacia_slab");
+
+        ModelLoader.setCustomStateMapper(BlockHandler.GROTTOL, new StateMap.Builder()
+            .withName(BlockGrottol.VARIANT)
+            .withSuffix("_grottol")
+            .build()
+        );
 
         registerItemModel(ItemHandler.FOLIAATH_SEED, "foliaath_seed");
         registerItemModel(ItemHandler.MOB_REMOVER, "mob_remover");

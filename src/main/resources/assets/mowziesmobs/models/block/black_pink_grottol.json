@@ -1,0 +1,9 @@
+{
+	"parent": "builtin/generated",
+	"textures": {
+		"layer0": "mowziesmobs:entity/grottol",
+		"particle": "mowziesmobs:blocks/black_pink_grottol_particle",
+		"layer1": "mowziesmobs:blocks/black_pink_grottol_particle", "__comment": "for LLibrary bug not putting particle into textures set"
+	},
+	"tabula": "mowziesmobs:models/block/black_pink_grottol"
+}

@@ -1,0 +1,8 @@
+{
+    "variants": {
+        "facing=north": { "model": "mowziesmobs:black_pink_grottol.tbl", "y": 90 },
+        "facing=south": { "model": "mowziesmobs:black_pink_grottol.tbl" },
+        "facing=west":  { "model": "mowziesmobs:black_pink_grottol.tbl", "y": 180 },
+        "facing=east":  { "model": "mowziesmobs:black_pink_grottol.tbl", "y": 270 }
+    }
+}

@@ -1,7 +1,0 @@
-{
-	"parent": "builtin/generated",
-	"textures": {
-		"layer0": "mowziesmobs:entity/grottol"
-	},
-	"tabula": "mowziesmobs:models/block/grottol"
-}

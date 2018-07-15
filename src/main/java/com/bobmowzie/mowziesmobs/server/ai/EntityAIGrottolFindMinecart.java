@@ -40,7 +40,7 @@ public final class EntityAIGrottolFindMinecart extends EntityAIBase {
 
     @Override
     public boolean shouldContinueExecuting() {
-        return predicate.test(minecart) && time < 1200 && !grottol.hasMinecart();
+        return predicate.test(minecart) && time < 1200 && !grottol.isInMinecart();
     }
 
     @Override

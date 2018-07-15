@@ -8,6 +8,7 @@ import com.bobmowzie.mowziesmobs.server.ai.MMPathNavigateGround;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
+import com.bobmowzie.mowziesmobs.server.block.BlockGrottol;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
@@ -62,6 +63,8 @@ public class EntityGrottol extends MowzieEntity {
     private boolean killedWithPickaxe;
     private boolean killedWithSilkTouch;
     private boolean killedWithFortune;
+
+    private final BlackPinkRailLine reader = BlackPinkRailLine.create();
 
     public EntityGrottol(World world) {
         super(world);
@@ -155,7 +158,7 @@ public class EntityGrottol extends MowzieEntity {
 
     @Override
     public boolean isServerWorld() {
-        return super.isServerWorld() && !hasMinecart();
+        return super.isServerWorld() && !isInMinecart();
     }
 
     @Override
@@ -192,14 +195,24 @@ public class EntityGrottol extends MowzieEntity {
     @Override
     public void onUpdate() {
         super.onUpdate();
+        if (!world.isRemote) {
+            Entity e = getRidingEntity();
+            if (isMinecart(e)) {
+                reader.accept((EntityMinecart) e);
+            }
+        }
 //        if (ticksExisted == 1) System.out.println("Grottle at " + getPosition());
 
         //Sparkle particles
         if (world.isRemote && isEntityAlive() && rand.nextInt(15) == 0) {
-            float dx = 0.5f * (2 * rand.nextFloat() - 1f);
-            float dy = 0.3f * (2 * rand.nextFloat() - 1f);
-            float dz = 0.5f * (2 * rand.nextFloat() - 1f);
-            MMParticle.SPARKLE.spawn(world, posX + dx, posY + 0.8 + dy, posZ + dz, ParticleFactory.ParticleArgs.get().withData(0d, 0d, 0d, 1d, 1d, 1d, 4d, 22));
+            double x = posX + 0.5f * (2 * rand.nextFloat() - 1f);
+            double y = posY + 0.8f + 0.3f * (2 * rand.nextFloat() - 1f);
+            double z = posZ + 0.5f * (2 * rand.nextFloat() - 1f);
+            if (isBlackPinkInYourArea()) {
+                world.spawnParticle(EnumParticleTypes.NOTE, x, y, z, rand.nextDouble() / 2, 0, 0);
+            } else {
+                MMParticle.SPARKLE.spawn(world, x, y, z, ParticleFactory.ParticleArgs.get().withData(0d, 0d, 0d, 1d, 1d, 1d, 4d, 22));   
+            }
         }
 
         //Footstep Sounds
@@ -249,12 +262,25 @@ public class EntityGrottol extends MowzieEntity {
 //        }
     }
 
-    public boolean hasMinecart() {
+    private boolean isBlackPinkInYourArea() {
+        Entity e = getRidingEntity();
+        if (isMinecart(e)) {
+            IBlockState state = ((EntityMinecart) e).getDisplayTile();
+            return state.getBlock() == BlockHandler.GROTTOL && state.getValue(BlockGrottol.VARIANT) == BlockGrottol.Variant.BLACK_PINK;
+        }
+        return false;
+    }
+
+    public boolean isInMinecart() {
+        return isMinecart(getRidingEntity());
+    }
+
+    public boolean hasMinecartBlockDisplay() {
         Entity entity = getRidingEntity();
         return isMinecart(entity) && ((EntityMinecart) entity).getDisplayTile().getBlock() == BlockHandler.GROTTOL;
     }
 
-    private boolean isMinecart(Entity entity) {
+    private static boolean isMinecart(Entity entity) {
         return entity instanceof EntityMinecartEmpty;
     }
 
@@ -269,7 +295,11 @@ public class EntityGrottol extends MowzieEntity {
     public boolean startRiding(Entity entity, boolean force) {
         if (super.startRiding(entity, force)) {
             if (isMinecart(entity)) {
-                ((EntityMinecart) entity).setDisplayTile(BlockHandler.GROTTOL.getDefaultState());   
+                EntityMinecart minecart = (EntityMinecart) entity;
+                if (minecart.getDisplayTile().getBlock() != BlockHandler.GROTTOL) {
+                    minecart.setDisplayTile(BlockHandler.GROTTOL.getDefaultState());
+                    minecart.setDisplayTileOffset(minecart.getDefaultDisplayTileOffset());
+                }
             }
             return true;
         }

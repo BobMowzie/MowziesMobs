@@ -1,0 +1,8 @@
+{
+    "variants": {
+        "facing=north": { "model": "mowziesmobs:diamond_grottol.tbl", "y": 90 },
+        "facing=south": { "model": "mowziesmobs:diamond_grottol.tbl" },
+        "facing=west":  { "model": "mowziesmobs:diamond_grottol.tbl", "y": 180 },
+        "facing=east":  { "model": "mowziesmobs:diamond_grottol.tbl", "y": 270 }
+    }
+}
