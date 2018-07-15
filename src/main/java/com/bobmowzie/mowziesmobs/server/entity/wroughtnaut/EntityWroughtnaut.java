@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.wroughtnaut;
 
+import com.bobmowzie.mowziesmobs.server.ai.MMPathNavigateGround;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
@@ -17,6 +18,7 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
@@ -117,6 +119,11 @@ public class EntityWroughtnaut extends MowzieEntity {
         setSize(2.45F, 3.7F);
         active = false;
         stepHeight = 1;
+    }
+
+    @Override
+    protected PathNavigate createNavigator(World world) {
+        return new MMPathNavigateGround(this, world);
     }
 
     @Override
