@@ -92,29 +92,33 @@ public class EntityGrottol extends MowzieEntity {
         tasks.addTask(3, new EntityAISwimming(this));
         tasks.addTask(4, new EntityAIWander(this, 0.3));
         //tasks.addTask(4, new EntityAIGrottolFindMinecart(this));
-        tasks.addTask(1, new MMAIAvoidEntity<EntityPlayer>(this, EntityPlayer.class, 16f, 0.5, 0.7) {
+        tasks.addTask(1, new MMAIAvoidEntity<EntityGrottol, EntityPlayer>(this, EntityPlayer.class, 16f, 0.5, 0.7) {
             @Override
-            protected void noToAvoidFound() {
+            protected void onSafe() {
                 fleeCheckCounter = 0;
             }
 
             @Override
-            protected void noPathFound() {
+            protected void onPathNotFound() {
                 if (fleeCheckCounter < 4) fleeCheckCounter++;
-                if (fleeCheckCounter >= 4 && getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage((EntityGrottol)entity, EntityGrottol.BURROW_ANIMATION);
+                if (fleeCheckCounter >= 4 && getAnimation() == NO_ANIMATION) {
+                    AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityGrottol.BURROW_ANIMATION);
+                }
             }
 
             @Override
             public void updateTask() {
                 super.updateTask();
-                if (fleeCheckCounter > 0) fleeCheckCounter--;
-                ((EntityGrottol)entity).fleeTime++;
+                if (fleeCheckCounter > 0) {
+                    fleeCheckCounter--;
+                }
+                entity.fleeTime++;
             }
 
             @Override
             public void resetTask() {
                 super.updateTask();
-                ((EntityGrottol)entity).timeSinceFlee = 0;
+                entity.timeSinceFlee = 0;
             }
         });
         tasks.addTask(8, new EntityAILookIdle(this));

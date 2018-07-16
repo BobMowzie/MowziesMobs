@@ -1,154 +1,110 @@
 package com.bobmowzie.mowziesmobs.server.ai;
 
-import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
+import java.util.List;
+
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
-import java.util.List;
-import javax.annotation.Nullable;
-
-import net.ilexiconn.llibrary.LLibrary;
-import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.pathfinding.Path;
-import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.math.Vec3d;
 
-public class MMAIAvoidEntity<T extends Entity> extends EntityAIBase
-{
-    private final Predicate<Entity> canBeSeenSelector;
-    /** The entity we are attached to */
-    protected EntityCreature entity;
+public class MMAIAvoidEntity<U extends EntityCreature, T extends Entity> extends EntityAIBase {
+    private static final double NEAR_DISTANCE = 7.0D;
+    
+    protected final U entity;
+
+    private final Predicate<T> selector;
+
     private final double farSpeed;
+
     private final double nearSpeed;
-    protected T closestLivingEntity;
-    private final float avoidDistance;
-    /** The PathEntity of our entity */
+
+    private final float evadeDistance;
+
+    private final Class<T> avoidedEntityType;
+
+    private final int horizontalEvasion;
+
+    private final int verticalEvasion;
+
+    private final int numChecks;
+
+    private T entityEvading;
+
     private Path entityPathEntity;
-    /** The PathNavigate of our entity */
-    private final PathNavigate entityPathNavigate;
-    /** Class of entity this behavior seeks to avoid */
-    private final Class<T> classToAvoid;
-    private final Predicate <? super T > avoidTargetSelector;
-    private int numChecks;
-    private int distanceXZ;
-    private int distanceY;
 
-    public MMAIAvoidEntity(EntityCreature entityIn, Class<T> classToAvoidIn, float avoidDistanceIn, double farSpeedIn, double nearSpeedIn)
-    {
-        this(entityIn, classToAvoidIn, Predicates.alwaysTrue(), avoidDistanceIn, farSpeedIn, nearSpeedIn, 10, 12, 7);
+    public MMAIAvoidEntity(U entity, Class<T> avoidedEntityType, float evadeDistance, double farSpeed, double nearSpeed) {
+        this(entity, avoidedEntityType, Predicates.alwaysTrue(), evadeDistance, farSpeed, nearSpeed, 10, 12, 7);
     }
 
-    public MMAIAvoidEntity(EntityCreature entityIn, Class<T> classToAvoidIn, float avoidDistanceIn, double farSpeedIn, double nearSpeedIn, int numChecks, int distanceXZ, int distanceY)
-    {
-        this(entityIn, classToAvoidIn, Predicates.alwaysTrue(), avoidDistanceIn, farSpeedIn, nearSpeedIn, numChecks, distanceXZ, distanceY);
+    public MMAIAvoidEntity(U entity, Class<T> avoidedEntityType, float evadeDistance, double farSpeed, double nearSpeed, int numChecks, int horizontalEvasion, int verticalEvasion) {
+        this(entity, avoidedEntityType, Predicates.alwaysTrue(), evadeDistance, farSpeed, nearSpeed, numChecks, horizontalEvasion, verticalEvasion);
     }
 
-    public MMAIAvoidEntity(EntityCreature entityIn, Class<T> classToAvoidIn, Predicate <? super T > avoidTargetSelectorIn, float avoidDistanceIn, double farSpeedIn, double nearSpeedIn, int numChecks, int distanceXZ, int distanceY)
-    {
-        this.canBeSeenSelector = new Predicate<Entity>()
-        {
-            public boolean apply(@Nullable Entity p_apply_1_)
-            {
-                return p_apply_1_.isEntityAlive() && MMAIAvoidEntity.this.entity.getEntitySenses().canSee(p_apply_1_) && !MMAIAvoidEntity.this.entity.isOnSameTeam(p_apply_1_);
-            }
-        };
-        this.entity = entityIn;
-        this.classToAvoid = classToAvoidIn;
-        this.avoidTargetSelector = avoidTargetSelectorIn;
-        this.avoidDistance = avoidDistanceIn;
-        this.farSpeed = farSpeedIn;
-        this.nearSpeed = nearSpeedIn;
-        this.entityPathNavigate = entityIn.getNavigator();
-        this.setMutexBits(1);
-
+    public MMAIAvoidEntity(U entity, Class<T> avoidedEntityType, Predicate<? super T> predicate, float evadeDistance, double farSpeed, double nearSpeed, int numChecks, int horizontalEvasion, int verticalEvasion) {
+        this.entity = entity;
+        this.selector = e -> e != null &&
+            EntitySelectors.CAN_AI_TARGET.test(e) &&
+            e.isEntityAlive() &&
+            entity.getEntitySenses().canSee(e) &&
+            !entity.isOnSameTeam(e) &&
+            predicate.test(e);
+        this.avoidedEntityType = avoidedEntityType;
+        this.evadeDistance = evadeDistance;
+        this.farSpeed = farSpeed;
+        this.nearSpeed = nearSpeed;
         this.numChecks = numChecks;
-        this.distanceXZ = distanceXZ;
-        this.distanceY = distanceY;
+        this.horizontalEvasion = horizontalEvasion;
+        this.verticalEvasion = verticalEvasion;
+        setMutexBits(1);
     }
 
-    /**
-     * Returns whether the EntityAIBase should begin execution.
-     */
-    public boolean shouldExecute()
-    {
-        List<T> list = this.entity.world.<T>getEntitiesWithinAABB(this.classToAvoid, this.entity.getEntityBoundingBox().grow((double)this.avoidDistance, 3.0D, (double)this.avoidDistance), Predicates.and(EntitySelectors.CAN_AI_TARGET, this.canBeSeenSelector, this.avoidTargetSelector));
-
-        if (list.isEmpty())
-        {
-            noToAvoidFound();
+    @Override
+    public boolean shouldExecute() {
+        List<T> entities = entity.world.getEntitiesWithinAABB(avoidedEntityType, entity.getEntityBoundingBox().grow(evadeDistance, 3.0D, evadeDistance), selector);
+        if (entities.isEmpty()) {
+            onSafe();
             return false;
         }
-        else
-        {
-            this.closestLivingEntity = list.get(0);
-            Vec3d vec3d = null;
-            int i = 0;
-            while (i < numChecks) {
-                vec3d = RandomPositionGenerator.findRandomTargetBlockAwayFrom(this.entity, distanceXZ, distanceY, new Vec3d(this.closestLivingEntity.posX, this.closestLivingEntity.posY, this.closestLivingEntity.posZ));
-
-                if (vec3d == null) {
-
-                } else if (this.closestLivingEntity.getDistanceSq(vec3d.x, vec3d.y, vec3d.z) < this.closestLivingEntity.getDistanceSqToEntity(this.entity)) {
-
-                } else {
-                    this.entityPathEntity = this.entityPathNavigate.getPathToXYZ(vec3d.x, vec3d.y, vec3d.z);
-                    if (entityPathEntity != null) return true;
+        entityEvading = entities.get(0);
+        for (int n = 0; n < numChecks; n++) {
+            Vec3d pos = RandomPositionGenerator.findRandomTargetBlockAwayFrom(entity, horizontalEvasion, verticalEvasion, entityEvading.getPositionVector());
+            if (pos != null && !(entityEvading.getDistanceSq(pos.x, pos.y, pos.z) < entityEvading.getDistanceSqToEntity(entity))) {
+                entityPathEntity = entity.getNavigator().getPathToXYZ(pos.x, pos.y, pos.z);
+                if (entityPathEntity != null) {
+                    return true;
                 }
-                i++;
             }
-            noPathFound();
-            return false;
         }
+        onPathNotFound();
+        return false;
     }
 
-    protected void noToAvoidFound() {
+    protected void onSafe() {}
 
+    protected void onPathNotFound() {}
+
+    @Override
+    public boolean shouldContinueExecuting() {
+        return !entity.getNavigator().noPath();
     }
 
-    protected void noPathFound() {
-
+    @Override
+    public void startExecuting() {
+        entity.getNavigator().setPath(entityPathEntity, farSpeed);
     }
 
-    /**
-     * Returns whether an in-progress EntityAIBase should continue executing
-     */
-    public boolean shouldContinueExecuting()
-    {
-        return !this.entityPathNavigate.noPath();
+    @Override
+    public void resetTask() {
+        entityEvading = null;
     }
 
-    /**
-     * Execute a one shot task or start executing a continuous task
-     */
-    public void startExecuting()
-    {
-        this.entityPathNavigate.setPath(this.entityPathEntity, this.farSpeed);
-    }
-
-    /**
-     * Reset the task's internal state. Called when this task is interrupted by another one
-     */
-    public void resetTask()
-    {
-        this.closestLivingEntity = null;
-    }
-
-    /**
-     * Keep ticking a continuous task that has already been started
-     */
-    public void updateTask()
-    {
-        if (this.entity.getDistanceSqToEntity(this.closestLivingEntity) < 49.0D)
-        {
-            this.entity.getNavigator().setSpeed(this.nearSpeed);
-        }
-        else
-        {
-            this.entity.getNavigator().setSpeed(this.farSpeed);
-        }
+    @Override
+    public void updateTask() {
+        entity.getNavigator().setSpeed(entity.getDistanceSqToEntity(entityEvading) < NEAR_DISTANCE * NEAR_DISTANCE ? nearSpeed : farSpeed);
     }
 }
