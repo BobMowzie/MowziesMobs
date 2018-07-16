@@ -11,15 +11,16 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.block.BlockGrottol;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAISwimming;
@@ -41,6 +42,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 
 /**
  * Created by Josh on 7/3/2018.
@@ -60,11 +62,15 @@ public class EntityGrottol extends MowzieEntity {
     private int timeSinceFlee = 50;
     private int fleeCheckCounter = 0;
 
-    private boolean killedWithPickaxe;
-    private boolean killedWithSilkTouch;
-    private boolean killedWithFortune;
-
     private final BlackPinkRailLine reader = BlackPinkRailLine.create();
+
+    public enum KillType {
+        NORMAL,
+        PICKAXE,
+        FORTUNE_PICKAXE
+    }
+
+    private KillType death = KillType.NORMAL;
 
     public EntityGrottol(World world) {
         super(world);
@@ -73,6 +79,16 @@ public class EntityGrottol extends MowzieEntity {
         setPathPriority(PathNodeType.LAVA, 1);
         setPathPriority(PathNodeType.DANGER_FIRE, 1);
         setPathPriority(PathNodeType.DANGER_CACTUS, 1);
+        experienceValue = 20;
+        stepHeight = 1;
+        setSize(0.9F, 1.2F);
+
+        moveHelper = new MMEntityMoveHelper(this, 45);
+    }
+
+    @Override
+    protected void initEntityAI() {
+        super.initEntityAI();
         tasks.addTask(3, new EntityAISwimming(this));
         tasks.addTask(4, new EntityAIWander(this, 0.3));
         //tasks.addTask(4, new EntityAIGrottolFindMinecart(this));
@@ -107,13 +123,6 @@ public class EntityGrottol extends MowzieEntity {
         tasks.addTask(1, new AnimationDieAI<>(this));
         tasks.addTask(5, new AnimationAI<>(this, IDLE_ANIMATION, false));
         tasks.addTask(2, new AnimationAI<>(this, BURROW_ANIMATION, false));
-        experienceValue = 20;
-        stepHeight = 1;
-        setSize(0.9F, 1.2F);
-        killedWithPickaxe = false;
-        killedWithSilkTouch = false;
-
-        moveHelper = new MMEntityMoveHelper(this, 45);
     }
 
     @Override
@@ -134,11 +143,6 @@ public class EntityGrottol extends MowzieEntity {
     @Override
     public boolean isPushedByWater() {
         return false;
-    }
-
-    @Override
-    public boolean handleWaterMovement() {
-        return super.handleWaterMovement();
     }
 
     @Override
@@ -174,18 +178,54 @@ public class EntityGrottol extends MowzieEntity {
     }
 
     @Override
-    public boolean attackEntityFrom(DamageSource source, float amount) {
-        Entity entitySource = source.getTrueSource();
-        if (entitySource != null && entitySource instanceof EntityLivingBase) {
-            EntityLivingBase livingSource = (EntityLivingBase) entitySource;
-            if (livingSource.getHeldItemMainhand().canHarvestBlock(Blocks.DIAMOND_ORE.getDefaultState())) {
-                killedWithPickaxe = true;
-                if (EnchantmentHelper.getEnchantments(livingSource.getHeldItemMainhand()).containsKey(Enchantments.SILK_TOUCH)) killedWithSilkTouch = true;
-                if (EnchantmentHelper.getEnchantments(livingSource.getHeldItemMainhand()).containsKey(Enchantments.FORTUNE)) killedWithFortune = true;
-                super.attackEntityFrom(source, 20);
+    public boolean hitByEntity(Entity entity) {
+        if (entity instanceof EntityPlayer) {
+            EntityPlayer player = (EntityPlayer) entity;
+            if (EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, player.getHeldItemMainhand()) > 0) {
+                if (!world.isRemote) {
+                    entityDropItem(ItemHandler.CAPTURED_GROTTOL.create(this), 0.0F);
+                    IBlockState state = BlockHandler.GROTTOL.getDefaultState();
+                    SoundType sound = state.getBlock().getSoundType(state, world, new BlockPos(this), entity);
+                    world.playSound(
+                        null,
+                        posX, posY, posZ,
+                        sound.getBreakSound(),
+                        getSoundCategory(),
+                        (sound.getVolume() + 1.0F) / 2.0F,
+                        sound.getPitch() * 0.8F
+                    );
+                    if (world instanceof WorldServer) {
+                        ((WorldServer) world).spawnParticle(
+                            EnumParticleTypes.BLOCK_DUST,
+                            posX, posY + height / 2.0D, posZ,
+                            32,
+                            width / 4.0F, height / 4.0F, width / 4.0F,
+                            0.05D,
+                            Block.getStateId(state)
+                        );
+                    }
+                    setDead();
+                }
+                return true;
             }
-            else {
-                playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.4F, 2);
+        }
+        return super.hitByEntity(entity);
+    }
+
+    @Override
+    public boolean attackEntityFrom(DamageSource source, float amount) {
+        Entity entity;
+        if ("player".equals(source.getDamageType()) && (entity = source.getTrueSource()) instanceof EntityPlayer) {
+            EntityPlayer player = (EntityPlayer) entity;
+            if (player.canHarvestBlock(Blocks.DIAMOND_ORE.getDefaultState())) {
+                if (EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, player.getHeldItemMainhand()) > 0) {
+                    death = KillType.FORTUNE_PICKAXE;
+                } else {
+                    death = KillType.PICKAXE;
+                }
+                return super.attackEntityFrom(source, 20);
+            } else {
+                playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.4F, 2.9F);
                 return false;
             }
         }
@@ -256,10 +296,6 @@ public class EntityGrottol extends MowzieEntity {
         if (getAnimation() == IDLE_ANIMATION) {
             if (getAnimationTick() == 28 || getAnimationTick() == 33) playSound(SoundEvents.BLOCK_STONE_STEP, 0.5f, 1.4f);
         }
-
-//        if (getAnimation() == NO_ANIMATION) {
-//            AnimationHandler.INSTANCE.sendAnimationMessage(this, IDLE_ANIMATION);
-//        }
     }
 
     private boolean isBlackPinkInYourArea() {
@@ -317,11 +353,11 @@ public class EntityGrottol extends MowzieEntity {
     @Override
     protected void dropLoot() {
         super.dropLoot();
-        if (killedWithPickaxe) {
-            int howMany = 1;
-            if (killedWithFortune) howMany = 2;
-            dropItem(Items.DIAMOND, howMany);
-        }
+        if (death == KillType.PICKAXE) {
+            dropItem(Items.DIAMOND, 1);
+        } else if (death == KillType.FORTUNE_PICKAXE) {
+            dropItem(Items.DIAMOND, 2);
+        } 
     }
 
     @Override

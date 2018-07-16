@@ -1,10 +1,10 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
-import java.util.EnumMap;
 import java.util.List;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
+import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -37,6 +37,7 @@ public final class ItemHandler {
     public static final ItemGrantSunsBlessing GRANT_SUNS_BLESSING = null;
     public static final ItemIceCrystal ICE_CRYSTAL = null;
     public static final ItemEarthTalisman EARTH_TALISMAN = null;
+    public static final ItemCapturedGrottol CAPTURED_GROTTOL = null;
 
     @SubscribeEvent
     public static void register(RegistryEvent.Register<Item> event) {
@@ -54,6 +55,10 @@ public final class ItemHandler {
                 new ItemGrantSunsBlessing(),
                 new ItemIceCrystal(),
                 new ItemEarthTalisman(),
+                new ItemCapturedGrottol()
+                    .setRegistryName("captured_grottol")
+                    .setUnlocalizedName("capturedGrottol")
+                    .setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab),
                 new ItemBlock(BlockHandler.PAINTED_ACACIA).setRegistryName(BlockHandler.PAINTED_ACACIA.getRegistryName()),
                 new ItemBlock(BlockHandler.PAINTED_ACACIA_SLAB).setRegistryName(BlockHandler.PAINTED_ACACIA_SLAB.getRegistryName())
         );

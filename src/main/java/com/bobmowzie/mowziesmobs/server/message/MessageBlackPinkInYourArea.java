@@ -13,7 +13,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -62,7 +61,7 @@ public final class MessageBlackPinkInYourArea extends AbstractMessage<MessageBla
             world.playSound(
                 x, y, z,
                 sound.getBreakSound(),
-                SoundCategory.BLOCKS,
+                minecart.getSoundCategory(),
                 (sound.getVolume() + 1.0F) / 2.0F,
                 sound.getPitch() * 0.8F,
                 false

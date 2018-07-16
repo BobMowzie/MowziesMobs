@@ -53,6 +53,7 @@ public final class MMModels {
         registerItemModel(ItemHandler.BARAKOA_MASK_FURY, "barakoa_mask_fury");
         registerItemModel(ItemHandler.BARAKOA_MASK_MISERY, "barakoa_mask_misery");
         registerItemModel(ItemHandler.BARAKOA_MASK_RAGE, "barakoa_mask_rage");
+        registerItemModel(ItemHandler.CAPTURED_GROTTOL, "captured_grottol");
 
         registerItemModel(ItemHandler.BARAKO_MASK, "barako_mask.tbl");
 

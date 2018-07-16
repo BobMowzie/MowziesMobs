@@ -6,10 +6,8 @@ import java.util.stream.Collectors;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.IntermittentAnimation;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemSpawnEgg;
-
 import io.netty.buffer.ByteBuf;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
@@ -101,11 +99,13 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     protected void onAnimationFinish(Animation animation) {}
 
     @Override
-    public void writeSpawnData(ByteBuf buffer) {
+    public void writeSpawnData(ByteBuf buf) {
     }
 
     @Override
-    public void readSpawnData(ByteBuf additionalData) {
+    public void readSpawnData(ByteBuf buf) {
+        prevRotationYaw = rotationYaw;
+        prevRenderYawOffset = renderYawOffset = prevRotationYawHead = rotationYawHead;
     }
 
     public int getAttack() {
