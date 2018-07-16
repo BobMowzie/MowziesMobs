@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
@@ -67,6 +68,7 @@ public class ItemCapturedGrottol extends Item {
         ai.taskEntries.removeIf(entry -> !(entry.action instanceof EntityAIWatchClosest));
         grottol.getRNG().setSeed("IS MATh RElatEd tO ScIENCe?".hashCode());
         ai.onUpdateTasks();
+        grottol.getRNG().setSeed(new Random().nextLong());
         ai.taskEntries.clear();
         ai.taskEntries.addAll(tasks);
     }
