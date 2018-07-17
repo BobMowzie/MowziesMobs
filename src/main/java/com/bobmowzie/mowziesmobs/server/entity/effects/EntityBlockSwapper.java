@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.entity.effects;
 import com.google.common.base.Optional;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
@@ -105,7 +106,7 @@ public class EntityBlockSwapper extends Entity {
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (ticksExisted > duration) restoreBlock();
+        if (ticksExisted > duration && world.getEntitiesWithinAABB(EntityPlayer.class, getEntityBoundingBox()).isEmpty()) restoreBlock();
     }
 
     @Override
@@ -118,9 +119,6 @@ public class EntityBlockSwapper extends Entity {
         compound.setInteger("storePosX", getStorePos().getX());
         compound.setInteger("storePosY", getStorePos().getY());
         compound.setInteger("storePosZ", getStorePos().getZ());
-
-        System.out.println(getRestoreTime());
-        System.out.println(getStorePos());
     }
 
     @Override
@@ -133,8 +131,5 @@ public class EntityBlockSwapper extends Entity {
                 compound.getInteger("storePosY"),
                 compound.getInteger("storePosZ")
         ));
-
-        System.out.println(getRestoreTime());
-        System.out.println(getStorePos());
     }
 }

@@ -67,24 +67,30 @@ public class PowerGeomancy extends Power {
         EntityPlayer player = event.player;
         spawnBoulderCooldown -= 1;
         if (doubleTapTimer > 0) doubleTapTimer--;
+
+        //Tunneling
         if (tunneling) {
             player.fallDistance = 0;
             player.capabilities.isFlying = false;
             boolean underground = !player.world.getEntitiesWithinAABB(EntityBlockSwapper.class, player.getEntityBoundingBox()).isEmpty();
             if (player.onGround && !underground) tunneling = false;
             Vec3d lookVec = player.getLookVec();
-            float tunnelSpeed = 0.9f;
+            float tunnelSpeed = 0.7f;
             if (underground) {
                 if (player.isSneaking()) player.setVelocity(tunnelSpeed * lookVec.x, tunnelSpeed * lookVec.y, tunnelSpeed * lookVec.z);
                 else player.setVelocity(tunnelSpeed * 0.5 * lookVec.x, 1, tunnelSpeed * 0.5 * lookVec.z);
             }
-            else player.motionY += 0.015;
 
             if ((player.isSneaking() && lookVec.y < 0) || underground) {
-                if (player.ticksExisted % 16 == 0) player.playSound(MMSounds.EFFECT_GEOMANCY_RUMBLE.get(rand.nextInt(3)).get(), 0.6f, 0.5f + rand.nextFloat() * 0.2f);
-                for (int x = -1; x <= 1; x++) {
-                    for (int y = -1; y <= 1; y++) {
-                        for (int z = -1; z <= 1; z++) {
+                if (player.ticksExisted % 14 == 0 && underground) player.playSound(MMSounds.EFFECT_GEOMANCY_RUMBLE.get(rand.nextInt(3)).get(), 0.6f, 0.5f + rand.nextFloat() * 0.2f);
+//                if (player.ticksExisted % 3 == 0) {
+//                    EntityRing ring = new EntityRing(player.world, (float) player.posX, (float) player.posY, (float) player.posZ, new Vec3d(0, 1, 0), 10, 0.83f, 1, 0.39f, 1f, 3f, false);
+//                    player.world.spawnEntity(ring);
+//                }
+                for (double x = -1.5; x <= 1.5; x++) {
+                    for (double y = -1.5; y <= 2; y++) {
+                        for (double z = -1.5; z <= 2; z++) {
+                            if (Math.sqrt(x * x + y * y + z * z) > 2) continue;
                             BlockPos pos = new BlockPos(player.posX + x + player.motionX, player.posY + y + player.motionY + 0.5, player.posZ + z + player.motionZ);
                             IBlockState blockState = player.world.getBlockState(pos);
                             if (isBlockDiggable(blockState) && blockState.getBlock() != Blocks.BEDROCK) {
@@ -96,16 +102,21 @@ public class PowerGeomancy extends Power {
             }
             if (!prevUnderground && underground) {
                 player.playSound(MMSounds.EFFECT_GEOMANCY_BREAK_MEDIUM.get(rand.nextInt(3)).get(), 1f, 0.9f + rand.nextFloat() * 0.1f);
-                EntityRing ring = new EntityRing(player.world, (float) player.posX, (float) player.posY, (float) player.posZ, new Vec3d(0, 1, 0), (int) (5 + 2), 0.83f, 1, 0.39f, 1f, 1.0f + 0.5f * 2f, false);
+                EntityRing ring = new EntityRing(player.world, (float) player.posX, (float) player.posY, (float) player.posZ, new Vec3d(0, 1, 0), 10, 0.83f, 1, 0.39f, 1f, 3f, false);
                 player.world.spawnEntity(ring);
             }
             if (prevUnderground && !underground) {
                 player.playSound(MMSounds.EFFECT_GEOMANCY_BREAK, 1f, 0.9f + rand.nextFloat() * 0.1f);
-                EntityRing ring = new EntityRing(player.world, (float) player.posX, (float) player.posY, (float) player.posZ, new Vec3d(0, 1, 0), (int) (5 + 2), 0.83f, 1, 0.39f, 1f, 1.0f + 0.5f * 2f, false);
+                EntityRing ring = new EntityRing(player.world, (float) player.posX, (float) player.posY, (float) player.posZ, new Vec3d(0, 1, 0), 10, 0.83f, 1, 0.39f, 1f, 3f, false);
                 player.world.spawnEntity(ring);
+                player.motionX *= 1.6;
+                player.motionY *= 1.6;
+                player.motionZ *= 1.6;
             }
             prevUnderground = underground;
         }
+
+        //Spawning boulder
         if (spawningBoulder) {
             if (player.getDistance(spawnBoulderPos.getX(), spawnBoulderPos.getY(), spawnBoulderPos.getZ()) > 6 || !canUse(player)) {
                 spawningBoulder = false;
