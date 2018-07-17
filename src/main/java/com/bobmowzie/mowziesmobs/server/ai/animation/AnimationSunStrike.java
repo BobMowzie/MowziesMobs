@@ -25,7 +25,7 @@ public class AnimationSunStrike<T extends MowzieEntity & IAnimatedEntity> extend
     @Override
     public void startExecuting() {
         super.startExecuting();
-        entityTarget = animatingEntity.getAttackTarget();
+        entityTarget = entity.getAttackTarget();
     }
 
     @Override
@@ -34,15 +34,15 @@ public class AnimationSunStrike<T extends MowzieEntity & IAnimatedEntity> extend
         if (entityTarget == null) {
             return;
         }
-        if (animatingEntity.getAnimationTick() < 9) {
-            animatingEntity.getLookHelper().setLookPositionWithEntity(entityTarget, 30, 30);
+        if (entity.getAnimationTick() < 9) {
+            entity.getLookHelper().setLookPositionWithEntity(entityTarget, 30, 30);
         }
 
-        if (animatingEntity.getAnimationTick() == 1) {
+        if (entity.getAnimationTick() == 1) {
             prevX = entityTarget.posX;
             prevZ = entityTarget.posZ;
         }
-        if (animatingEntity.getAnimationTick() == 7) {
+        if (entity.getAnimationTick() == 7) {
             double x = entityTarget.posX;
             y = MathHelper.floor(entityTarget.posY - 1);
             double z = entityTarget.posZ;
@@ -52,21 +52,21 @@ public class AnimationSunStrike<T extends MowzieEntity & IAnimatedEntity> extend
             newX = MathHelper.floor(x + vx * t);
             newZ = MathHelper.floor(z + vz * t);
             for (int i = 0; i < 5; i++) {
-                if (!animatingEntity.world.canBlockSeeSky(new BlockPos(newX, y, newZ))) {
+                if (!entity.world.canBlockSeeSky(new BlockPos(newX, y, newZ))) {
                     y++;
                 } else {
                     break;
                 }
             }
         }
-        if (!animatingEntity.world.isRemote && animatingEntity.getAnimationTick() == 9) {
-            animatingEntity.playSound(MMSounds.ENTITY_BARAKO_ATTACK, 1.4f, 1);
-            EntitySunstrike sunstrike = new EntitySunstrike(animatingEntity.world, animatingEntity, newX, y, newZ);
+        if (!entity.world.isRemote && entity.getAnimationTick() == 9) {
+            entity.playSound(MMSounds.ENTITY_BARAKO_ATTACK, 1.4f, 1);
+            EntitySunstrike sunstrike = new EntitySunstrike(entity.world, entity, newX, y, newZ);
             sunstrike.onSummon();
-            animatingEntity.world.spawnEntity(sunstrike);
+            entity.world.spawnEntity(sunstrike);
         }
-        if (animatingEntity.getAnimationTick() > 6) {
-            animatingEntity.getLookHelper().setLookPosition(newX, y, newZ, 20, 20);
+        if (entity.getAnimationTick() > 6) {
+            entity.getLookHelper().setLookPosition(newX, y, newZ, 20, 20);
         }
     }
 }

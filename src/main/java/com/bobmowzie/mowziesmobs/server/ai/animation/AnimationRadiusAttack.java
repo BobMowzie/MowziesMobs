@@ -31,15 +31,15 @@ public class AnimationRadiusAttack<T extends MowzieEntity & IAnimatedEntity> ext
     @Override
     public void updateTask() {
         super.updateTask();
-        if (animatingEntity.getAnimationTick() == damageFrame) {
-            List<EntityLivingBase> hit = animatingEntity.getEntityLivingBaseNearby(radius, 2 * radius, radius, radius);
+        if (entity.getAnimationTick() == damageFrame) {
+            List<EntityLivingBase> hit = entity.getEntityLivingBaseNearby(radius, 2 * radius, radius, radius);
             for (EntityLivingBase aHit : hit) {
-                if (animatingEntity instanceof EntityBarako && aHit instanceof LeaderSunstrikeImmune) {
+                if (entity instanceof EntityBarako && aHit instanceof LeaderSunstrikeImmune) {
                     continue;
                 }
-                aHit.attackEntityFrom(DamageSource.causeMobDamage(animatingEntity), damage);
+                aHit.attackEntityFrom(DamageSource.causeMobDamage(entity), damage);
                 if (pureKnockback) {
-                    double angle = animatingEntity.getAngleBetweenEntities(animatingEntity, aHit);
+                    double angle = entity.getAngleBetweenEntities(entity, aHit);
                     aHit.motionX = knockBack * Math.cos(Math.toRadians(angle - 90));
                     aHit.motionZ = knockBack * Math.sin(Math.toRadians(angle - 90));
                 }

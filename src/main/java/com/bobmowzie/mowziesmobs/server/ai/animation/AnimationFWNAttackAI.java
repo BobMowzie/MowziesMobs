@@ -22,28 +22,28 @@ public class AnimationFWNAttackAI extends AnimationAttackAI<EntityWroughtnaut> {
     @Override
     public void startExecuting() {
         super.startExecuting();
-        animatingEntity.playSound(MMSounds.ENTITY_WROUGHT_PRE_SWING_1, 1.5F, 1F);
+        entity.playSound(MMSounds.ENTITY_WROUGHT_PRE_SWING_1, 1.5F, 1F);
     }
 
     @Override
     public void updateTask() {
-        animatingEntity.motionX = 0;
-        animatingEntity.motionZ = 0;
-        if (animatingEntity.getAnimationTick() < (getAnimation().getDuration() / 2 + 2) && entityTarget != null) {
-            animatingEntity.getLookHelper().setLookPositionWithEntity(entityTarget, 30, 30);
+        entity.motionX = 0;
+        entity.motionZ = 0;
+        if (entity.getAnimationTick() < (getAnimation().getDuration() / 2 + 2) && entityTarget != null) {
+            entity.getLookHelper().setLookPositionWithEntity(entityTarget, 30, 30);
         }
-        if (animatingEntity.getAnimationTick() == 6) {
-            animatingEntity.playSound(MMSounds.ENTITY_WROUGHT_CREAK, 0.5F, 1);
-        } else if (animatingEntity.getAnimationTick() == (getAnimation().getDuration() / 2)) {
-            animatingEntity.playSound(attackSound, 1.2F, 1);
-        } else if (animatingEntity.getAnimationTick() == (getAnimation().getDuration() / 2 + 2)) {
-            animatingEntity.playSound(MMSounds.ENTITY_WROUGHT_SWING_1, 1.5F, 1);
-            List<EntityLivingBase> entitiesHit = animatingEntity.getEntityLivingBaseNearby(range, 3, range, range);
-            float damage = (float) animatingEntity.getAttack();
+        if (entity.getAnimationTick() == 6) {
+            entity.playSound(MMSounds.ENTITY_WROUGHT_CREAK, 0.5F, 1);
+        } else if (entity.getAnimationTick() == (getAnimation().getDuration() / 2)) {
+            entity.playSound(attackSound, 1.2F, 1);
+        } else if (entity.getAnimationTick() == (getAnimation().getDuration() / 2 + 2)) {
+            entity.playSound(MMSounds.ENTITY_WROUGHT_SWING_1, 1.5F, 1);
+            List<EntityLivingBase> entitiesHit = entity.getEntityLivingBaseNearby(range, 3, range, range);
+            float damage = (float) entity.getAttack();
             boolean hit = false;
             for (EntityLivingBase entityHit : entitiesHit) {
-                float entityHitAngle = (float) ((Math.atan2(entityHit.posZ - animatingEntity.posZ, entityHit.posX - animatingEntity.posX) * (180 / Math.PI) - 90) % 360);
-                float entityAttackingAngle = animatingEntity.renderYawOffset % 360;
+                float entityHitAngle = (float) ((Math.atan2(entityHit.posZ - entity.posZ, entityHit.posX - entity.posX) * (180 / Math.PI) - 90) % 360);
+                float entityAttackingAngle = entity.renderYawOffset % 360;
                 if (entityHitAngle < 0) {
                     entityHitAngle += 360;
                 }
@@ -51,16 +51,16 @@ public class AnimationFWNAttackAI extends AnimationAttackAI<EntityWroughtnaut> {
                     entityAttackingAngle += 360;
                 }
                 float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
-                float entityHitDistance = (float) Math.sqrt((entityHit.posZ - animatingEntity.posZ) * (entityHit.posZ - animatingEntity.posZ) + (entityHit.posX - animatingEntity.posX) * (entityHit.posX - animatingEntity.posX));
+                float entityHitDistance = (float) Math.sqrt((entityHit.posZ - entity.posZ) * (entityHit.posZ - entity.posZ) + (entityHit.posX - entity.posX) * (entityHit.posX - entity.posX));
                 if (entityHitDistance <= range && (entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2)) {
-                    entityHit.attackEntityFrom(DamageSource.causeMobDamage(animatingEntity), damage);
+                    entityHit.attackEntityFrom(DamageSource.causeMobDamage(entity), damage);
                     entityHit.motionX *= knockback;
                     entityHit.motionZ *= knockback;
                     hit = true;
                 }
             }
             if (hit) {
-                animatingEntity.playSound(SoundEvents.BLOCK_ANVIL_LAND, 1, 0.5F);
+                entity.playSound(SoundEvents.BLOCK_ANVIL_LAND, 1, 0.5F);
             }
         }
     }

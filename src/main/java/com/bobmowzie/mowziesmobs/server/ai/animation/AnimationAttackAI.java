@@ -1,12 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.ai.animation;
 
+import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
-
-import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 
 public class AnimationAttackAI<T extends MowzieEntity & IAnimatedEntity> extends AnimationAI<T> {
     protected EntityLivingBase entityTarget;
@@ -33,27 +32,27 @@ public class AnimationAttackAI<T extends MowzieEntity & IAnimatedEntity> extends
     @Override
     public void startExecuting() {
         super.startExecuting();
-        entityTarget = animatingEntity.getAttackTarget();
+        entityTarget = entity.getAttackTarget();
     }
 
     @Override
     public void updateTask() {
         super.updateTask();
-        if (animatingEntity.getAnimationTick() < damageFrame && entityTarget != null) {
-            animatingEntity.getLookHelper().setLookPositionWithEntity(entityTarget, 30F, 30F);
+        if (entity.getAnimationTick() < damageFrame && entityTarget != null) {
+            entity.getLookHelper().setLookPositionWithEntity(entityTarget, 30F, 30F);
         }
-        if (animatingEntity.getAnimationTick() == damageFrame) {
-            float damage = (float) animatingEntity.getAttack();
-            if (entityTarget != null && animatingEntity.targetDistance <= range) {
-                entityTarget.attackEntityFrom(DamageSource.causeMobDamage(animatingEntity), damage * damageMultiplier);
+        if (entity.getAnimationTick() == damageFrame) {
+            float damage = (float) entity.getAttack();
+            if (entityTarget != null && entity.targetDistance <= range) {
+                entityTarget.attackEntityFrom(DamageSource.causeMobDamage(entity), damage * damageMultiplier);
                 entityTarget.motionX *= knockback;
                 entityTarget.motionZ *= knockback;
                 if (hitSound != null) {
-                    animatingEntity.playSound(hitSound, 1, 1);   
+                    entity.playSound(hitSound, 1, 1);   
                 }
             }
             if (attackSound != null) {
-                animatingEntity.playSound(attackSound, 1, 1);   
+                entity.playSound(attackSound, 1, 1);   
             }
         }
     }
