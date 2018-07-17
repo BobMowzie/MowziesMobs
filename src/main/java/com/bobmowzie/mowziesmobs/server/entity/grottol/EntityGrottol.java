@@ -11,6 +11,7 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.block.BlockGrottol;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.entity.grottol.ai.EntityAIGrottolIdle;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.animation.Animation;
@@ -50,7 +51,7 @@ import net.minecraft.world.WorldServer;
 public class EntityGrottol extends MowzieEntity {
     public static final Animation DIE_ANIMATION = Animation.create(73);
     public static final Animation HURT_ANIMATION = Animation.create(10);
-    public static final Animation IDLE_ANIMATION = Animation.create(47);
+    public static final Animation IDLE_ANIMATION = EntityAIGrottolIdle.animation();
     public static final Animation BURROW_ANIMATION = Animation.create(20);
     private static final Animation[] ANIMATIONS = {
             DIE_ANIMATION,
@@ -60,7 +61,6 @@ public class EntityGrottol extends MowzieEntity {
     };
     private int fleeTime = 0;
     private int timeSinceFlee = 50;
-    private int fleeCheckCounter = 0;
 
     private final BlackPinkRailLine reader = BlackPinkRailLine.create();
 
@@ -80,7 +80,7 @@ public class EntityGrottol extends MowzieEntity {
         setPathPriority(PathNodeType.DANGER_FIRE, 1);
         setPathPriority(PathNodeType.DANGER_CACTUS, 1);
         experienceValue = 20;
-        stepHeight = 1;
+        stepHeight = 1.15F;
         setSize(0.9F, 1.2F);
 
         moveHelper = new MMEntityMoveHelper(this, 45);
@@ -93,6 +93,8 @@ public class EntityGrottol extends MowzieEntity {
         tasks.addTask(4, new EntityAIWander(this, 0.3));
         //tasks.addTask(4, new EntityAIGrottolFindMinecart(this));
         tasks.addTask(1, new MMAIAvoidEntity<EntityGrottol, EntityPlayer>(this, EntityPlayer.class, 16f, 0.5, 0.7) {
+            private int fleeCheckCounter = 0;
+
             @Override
             protected void onSafe() {
                 fleeCheckCounter = 0;
@@ -100,8 +102,9 @@ public class EntityGrottol extends MowzieEntity {
 
             @Override
             protected void onPathNotFound() {
-                if (fleeCheckCounter < 4) fleeCheckCounter++;
-                if (fleeCheckCounter >= 4 && getAnimation() == NO_ANIMATION) {
+                if (fleeCheckCounter < 4) {
+                    fleeCheckCounter++;
+                } else if (getAnimation() == NO_ANIMATION) {
                     AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityGrottol.BURROW_ANIMATION);
                 }
             }
@@ -109,9 +112,6 @@ public class EntityGrottol extends MowzieEntity {
             @Override
             public void updateTask() {
                 super.updateTask();
-                if (fleeCheckCounter > 0) {
-                    fleeCheckCounter--;
-                }
                 entity.fleeTime++;
             }
 
@@ -119,13 +119,14 @@ public class EntityGrottol extends MowzieEntity {
             public void resetTask() {
                 super.updateTask();
                 entity.timeSinceFlee = 0;
+                fleeCheckCounter = 0;
             }
         });
         tasks.addTask(8, new EntityAILookIdle(this));
         tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         tasks.addTask(1, new AnimationTakeDamage<>(this));
         tasks.addTask(1, new AnimationDieAI<>(this));
-        tasks.addTask(5, new AnimationAI<>(this, IDLE_ANIMATION, false));
+        tasks.addTask(5, new EntityAIGrottolIdle(this));
         tasks.addTask(2, new AnimationAI<>(this, BURROW_ANIMATION, false));
     }
 
@@ -267,38 +268,40 @@ public class EntityGrottol extends MowzieEntity {
             playSound(MMSounds.ENTITY_GROTTOL_STEP, 1F, 1.8f);
         }
 
-        if (getAnimation() == NO_ANIMATION && rand.nextInt(180) == 0) {
-            AnimationHandler.INSTANCE.sendAnimationMessage(this, IDLE_ANIMATION);
+        if (timeSinceFlee < 50) {
+            timeSinceFlee++;
+        } else {
+            fleeTime = 0;
         }
-        if (fleeTime >= 70 && getAnimation() == NO_ANIMATION) {
+
+        // AI Task
+        if (!world.isRemote && fleeTime >= 70 && getAnimation() == NO_ANIMATION) {
             IBlockState blockBeneath = world.getBlockState(getPosition().down());
             Material mat = blockBeneath.getMaterial();
             if (mat == Material.GRASS || mat == Material.GROUND || mat == Material.SAND || mat == Material.CLAY || mat == Material.ROCK) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, BURROW_ANIMATION);
             }
         }
-        if (timeSinceFlee < 50) timeSinceFlee++;
-        else fleeTime = 0;
-        if (getAnimation() == BURROW_ANIMATION) {
+        if (!world.isRemote && getAnimation() == BURROW_ANIMATION) {
             if (getAnimationTick() % 4 == 3) {
                 playSound(SoundEvents.BLOCK_SAND_PLACE, 1, 0.8f + rand.nextFloat() * 0.4f);
                 IBlockState blockBeneath = world.getBlockState(getPosition().down());
                 Material mat = blockBeneath.getMaterial();
                 if (mat == Material.GRASS || mat == Material.GROUND || mat == Material.SAND || mat == Material.CLAY || mat == Material.ROCK) {
-                    for (int i = 0; i < 8; i++) {
-                        Vec3d particlePos = new Vec3d(0.7, 0, 0);
-                        particlePos = particlePos.rotateYaw((float) Math.toRadians(-rotationYaw - 90));
-                        world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, posX + particlePos.x + Math.random() * 0.5 - 0.25, posY + 0.05 + particlePos.y, posZ + particlePos.z + Math.random() * 0.5 - 0.25, 2 * (2 * Math.random() - 1), 5 * Math.random() + 2, 2 * (2 * Math.random() - 1), Block.getStateId(blockBeneath));
-                    }
+                    Vec3d pos = new Vec3d(0.7D, 0.05D, 0.0D).rotateYaw((float) Math.toRadians(-renderYawOffset - 90));
+                    ((WorldServer) world).spawnParticle(
+                        EnumParticleTypes.BLOCK_DUST,
+                        posX + pos.x, posY + pos.y, posZ + pos.z,
+                        8,
+                        0.25D, 0.025D, 0.25D,
+                        0.1D,
+                        Block.getStateId(blockBeneath)
+                    );
                 }
             }
             if (getAnimationTick() == 19) {
                 setDead();
             }
-        }
-
-        if (getAnimation() == IDLE_ANIMATION) {
-            if (getAnimationTick() == 28 || getAnimationTick() == 33) playSound(SoundEvents.BLOCK_STONE_STEP, 0.5f, 1.4f);
         }
     }
 

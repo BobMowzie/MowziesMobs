@@ -23,18 +23,18 @@ public class AnimationProjectileAttackAI<T extends MowzieEntity & IAnimatedEntit
     @Override
     public void startExecuting() {
         super.startExecuting();
-        entityTarget = animatingEntity.getAttackTarget();
+        entityTarget = entity.getAttackTarget();
     }
 
     @Override
     public void updateTask() {
         super.updateTask();
         if (entityTarget != null) {
-            animatingEntity.faceEntity(entityTarget, 100, 100);
-            animatingEntity.getLookHelper().setLookPositionWithEntity(entityTarget, 30F, 30F);
-            if (animatingEntity.getAnimationTick() == attackFrame) {
-                animatingEntity.attackEntityWithRangedAttack(entityTarget, 0);
-                animatingEntity.playSound(attackSound, 1, 1);
+            entity.faceEntity(entityTarget, 100, 100);
+            entity.getLookHelper().setLookPositionWithEntity(entityTarget, 30F, 30F);
+            if (entity.getAnimationTick() == attackFrame) {
+                entity.attackEntityWithRangedAttack(entityTarget, 0);
+                entity.playSound(attackSound, 1, 1);
             }
         }
     }

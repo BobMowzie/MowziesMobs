@@ -19,7 +19,7 @@ public class AnimationDieAI<T extends MowzieEntity & IAnimatedEntity> extends An
     @Override
     public void startExecuting() {
         super.startExecuting();
-        animatingEntity.setAnimationTick(0);
+        entity.setAnimationTick(0);
     }
 
     @Override
