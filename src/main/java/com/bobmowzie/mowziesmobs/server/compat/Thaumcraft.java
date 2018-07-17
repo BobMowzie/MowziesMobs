@@ -49,6 +49,11 @@ public class Thaumcraft {
                     .add(Aspect.BEAST, 37)
                     .add(Aspect.COLD, 25)
             );
+            registerTCObjectTag("Grottol", new AspectList()
+                    .add(Aspect.CRYSTAL, 30)
+                    .add(Aspect.DESIRE, 30)
+                    .add(Aspect.EARTH, 17)
+            );
             registerTCObjectTag(BlockHandler.PAINTED_ACACIA, 0, new AspectList()
                     .add(Aspect.PLANT, 3)
                     .add(Aspect.CRAFT, 3)
@@ -143,6 +148,12 @@ public class Thaumcraft {
                     .add(Aspect.EARTH, 30)
                     .add(Aspect.MAGIC, 20)
                     .add(Aspect.AVERSION, 10)
+            );
+            registerTCObjectTag(ItemHandler.CAPTURED_GROTTOL, 0, new AspectList()
+                    .add(Aspect.CRYSTAL, 30)
+                    .add(Aspect.DESIRE, 30)
+                    .add(Aspect.EARTH, 17)
+                    .add(Aspect.TRAP, 12)
             );
 
         } catch (Exception e) {
