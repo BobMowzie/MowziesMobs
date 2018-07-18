@@ -708,10 +708,13 @@ public class EntityFrostmaw extends MowzieEntity {
     }
 
     @Override
-    protected void onDeathUpdate() {
-        super.onDeathUpdate();
-        if (getAnimationTick() == 5) playSound(MMSounds.ENTITY_FROSTMAW_DIE, 2.5f, 1);
-        if (getAnimationTick() == 53) playSound(MMSounds.ENTITY_FROSTMAW_LAND, 2.5f, 1);
+    protected void onDeathAIUpdate() {
+        super.onDeathAIUpdate();
+        if (getAnimationTick() == 5) {
+            playSound(MMSounds.ENTITY_FROSTMAW_DIE, 2.5f, 1);
+        } else if (getAnimationTick() == 53) {
+            playSound(MMSounds.ENTITY_FROSTMAW_LAND, 2.5f, 1);
+        }
     }
 
     @Override

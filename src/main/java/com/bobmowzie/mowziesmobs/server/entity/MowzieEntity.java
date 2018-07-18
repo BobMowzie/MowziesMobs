@@ -141,32 +141,34 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     }
 
     @Override
-    protected void onDeathUpdate() {
-        if (getDeathAnimation() == null) {
-            super.onDeathUpdate();
-            return;
+    public void onEntityUpdate() {
+        super.onEntityUpdate();
+        if (getHealth() <= 0.0F) {
+            Animation death;
+            if ((death = getDeathAnimation()) != null) {
+                onDeathUpdate(death.getDuration() - 20);   
+            } else {
+                onDeathUpdate(20);
+            }
         }
+    }
 
-        ++deathTime;
-
-        if (deathTime == getDeathAnimation().getDuration() - 20) {
-            int experience;
-
-            if (!world.isRemote && (recentlyHit > 0 || isPlayer()) && canDropLoot() && world.getGameRules().getBoolean("doMobLoot")) {
-                experience = getExperiencePoints(attackingPlayer);
-
-                while (experience > 0) {
-                    int j = EntityXPOrb.getXPSplit(experience);
-                    experience -= j;
-                    world.spawnEntity(new EntityXPOrb(world, posX, posY, posZ, j));
+    private void onDeathUpdate(int deathDuration) {
+        onDeathAIUpdate();
+        if (++deathTime >= deathDuration) {
+            boolean isPlayerKill = recentlyHit > 0;
+            if (!world.isRemote && isPlayerKill && canDropLoot() && world.getGameRules().getBoolean("doMobLoot")) {
+                for (int remaining = getExperiencePoints(attackingPlayer), value; remaining > 0; remaining -= value) {
+                    world.spawnEntity(new EntityXPOrb(world, posX, posY, posZ, value = EntityXPOrb.getXPSplit(remaining)));
                 }
             }
+
             if (!world.isRemote && world.getGameRules().getBoolean("doMobLoot")) {
                 dropLoot();
             }
-            this.setDead();
 
-            for (experience = 0; experience < 20; ++experience) {
+            setDead();
+            for (int n = 0; n < 20; n++) {
                 double d2 = rand.nextGaussian() * 0.02D;
                 double d0 = rand.nextGaussian() * 0.02D;
                 double d1 = rand.nextGaussian() * 0.02D;
@@ -174,6 +176,20 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
             }
         }
     }
+
+    protected void onDeathAIUpdate() {}
+
+    @Override
+    protected final void onDeathUpdate() {}
+
+    @Override
+    protected final void dropLoot(boolean isPlayerKill, int lootingModifier, DamageSource source) {}
+
+    @Override
+    protected final void dropFewItems(boolean isPlayerKill, int lootingModifier) {}
+
+    @Override
+    protected final void dropEquipment(boolean isPlayerKill, int lootingModifier) {}
 
     @Override
     public boolean attackEntityFrom(DamageSource source, float damage) {
