@@ -350,7 +350,7 @@ public class EntityFrostmaw extends MowzieEntity {
         }
         else {
             getNavigator().clearPathEntity();
-//            renderYawOffset = prevRenderYawOffset;
+            renderYawOffset = prevRenderYawOffset;
             addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 20, 1, true, true));
             if (getAttackTarget() != null && getAttackTarget().isPotionActive(MobEffects.INVISIBILITY)) {
                 setAttackTarget(null);
