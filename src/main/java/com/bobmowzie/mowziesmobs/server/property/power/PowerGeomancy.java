@@ -75,18 +75,15 @@ public class PowerGeomancy extends Power {
             boolean underground = !player.world.getEntitiesWithinAABB(EntityBlockSwapper.class, player.getEntityBoundingBox()).isEmpty();
             if (player.onGround && !underground) tunneling = false;
             Vec3d lookVec = player.getLookVec();
-            float tunnelSpeed = 0.7f;
+            float tunnelSpeed = 0.9f;
             if (underground) {
                 if (player.isSneaking()) player.setVelocity(tunnelSpeed * lookVec.x, tunnelSpeed * lookVec.y, tunnelSpeed * lookVec.z);
                 else player.setVelocity(tunnelSpeed * 0.5 * lookVec.x, 1, tunnelSpeed * 0.5 * lookVec.z);
             }
+            else player.motionY -= 0.07;
 
             if ((player.isSneaking() && lookVec.y < 0) || underground) {
-                if (player.ticksExisted % 14 == 0 && underground) player.playSound(MMSounds.EFFECT_GEOMANCY_RUMBLE.get(rand.nextInt(3)).get(), 0.6f, 0.5f + rand.nextFloat() * 0.2f);
-//                if (player.ticksExisted % 3 == 0) {
-//                    EntityRing ring = new EntityRing(player.world, (float) player.posX, (float) player.posY, (float) player.posZ, new Vec3d(0, 1, 0), 10, 0.83f, 1, 0.39f, 1f, 3f, false);
-//                    player.world.spawnEntity(ring);
-//                }
+                if (player.ticksExisted % 16 == 0) player.playSound(MMSounds.EFFECT_GEOMANCY_RUMBLE.get(rand.nextInt(3)).get(), 0.6f, 0.5f + rand.nextFloat() * 0.2f);
                 for (double x = -1.5; x <= 1.5; x++) {
                     for (double y = -1.5; y <= 2; y++) {
                         for (double z = -1.5; z <= 2; z++) {
@@ -109,9 +106,9 @@ public class PowerGeomancy extends Power {
                 player.playSound(MMSounds.EFFECT_GEOMANCY_BREAK, 1f, 0.9f + rand.nextFloat() * 0.1f);
                 EntityRing ring = new EntityRing(player.world, (float) player.posX, (float) player.posY, (float) player.posZ, new Vec3d(0, 1, 0), 10, 0.83f, 1, 0.39f, 1f, 3f, false);
                 player.world.spawnEntity(ring);
-                player.motionX *= 1.6;
-                player.motionY *= 1.6;
-                player.motionZ *= 1.6;
+                player.motionX *= 2;
+                player.motionY *= 2;
+                player.motionY *= 2;
             }
             prevUnderground = underground;
         }
@@ -178,17 +175,18 @@ public class PowerGeomancy extends Power {
         super.onRightClickBlock(event);
         EntityPlayer player = event.getEntityPlayer();
         if (canUse(player)) {
-            if (player.isSneaking()) {
-                EntityBlockSwapper.swapBlock(player.world, event.getPos(), Blocks.NETHERRACK.getDefaultState(), 40, false, false);
-                return;
-            }
-            if (!tunneling && !spawningBoulder && liftedMouse && event.getFace() == EnumFacing.UP && spawnBoulderCooldown <= 0) {
+            if (!tunneling && !spawningBoulder && liftedMouse && spawnBoulderCooldown <= 0) {
                 int x = MathHelper.floor(event.getHitVec().x);
                 int y = MathHelper.floor(event.getHitVec().y);
                 int z = MathHelper.floor(event.getHitVec().z);
                 lookPos = new Vec3d(event.getHitVec().x, event.getHitVec().y, event.getHitVec().z);
                 spawnBoulderPos = new BlockPos(x, y - 1, z);
                 spawnBoulderBlock = player.world.getBlockState(spawnBoulderPos);
+                if (event.getFace() != EnumFacing.UP) {
+                    IBlockState blockAbove = player.world.getBlockState(spawnBoulderPos.up());
+                    System.out.println(blockAbove.getBlock().getLocalizedName());
+                    if (blockAbove.causesSuffocation() || blockAbove == Blocks.AIR.getDefaultState()) return;
+                }
                 if (!isBlockDiggable(spawnBoulderBlock)) return;
                 spawningBoulder = true;
             }
