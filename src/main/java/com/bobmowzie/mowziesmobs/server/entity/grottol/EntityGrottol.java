@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.entity.grottol;
 
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
+import com.bobmowzie.mowziesmobs.server.ai.EntityAIGrottolFindMinecart;
 import com.bobmowzie.mowziesmobs.server.ai.MMAIAvoidEntity;
 import com.bobmowzie.mowziesmobs.server.ai.MMEntityMoveHelper;
 import com.bobmowzie.mowziesmobs.server.ai.MMPathNavigateGround;
@@ -91,7 +92,7 @@ public class EntityGrottol extends MowzieEntity {
         super.initEntityAI();
         tasks.addTask(3, new EntityAISwimming(this));
         tasks.addTask(4, new EntityAIWander(this, 0.3));
-        //tasks.addTask(4, new EntityAIGrottolFindMinecart(this));
+        tasks.addTask(4, new EntityAIGrottolFindMinecart(this));
         tasks.addTask(1, new MMAIAvoidEntity<EntityGrottol, EntityPlayer>(this, EntityPlayer.class, 16f, 0.5, 0.7) {
             private int fleeCheckCounter = 0;
 
@@ -244,6 +245,7 @@ public class EntityGrottol extends MowzieEntity {
             Entity e = getRidingEntity();
             if (isMinecart(e)) {
                 reader.accept((EntityMinecart) e);
+                setMoveForward(1);
             }
         }
 //        if (ticksExisted == 1) System.out.println("Grottle at " + getPosition());
