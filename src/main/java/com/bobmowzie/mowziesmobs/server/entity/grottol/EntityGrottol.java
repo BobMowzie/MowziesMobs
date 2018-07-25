@@ -301,7 +301,7 @@ public class EntityGrottol extends MowzieEntity {
                     );
                 }
             }
-            if (getAnimationTick() == 19) {
+            if (getAnimationTick() == 18) {
                 setDead();
             }
         }
