@@ -183,6 +183,11 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
         return false;
     }
 
+    public int getMaxSpawnedInChunk()
+    {
+        return 1;
+    }
+
     @Override
     protected void despawnEntity() {
         Event.Result result;

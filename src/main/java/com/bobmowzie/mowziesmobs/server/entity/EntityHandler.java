@@ -9,6 +9,7 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.*;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
+import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityMMLantern;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Biomes;
@@ -42,6 +43,7 @@ public enum EntityHandler {
         registerEntity(EntityBarako.class, "barako", true, 0xBA6656, 0xFFFF4D, false, 1, 1, 1, EnumCreatureType.MONSTER);
         registerEntity(EntityFrostmaw.class, "frostmaw", true, 0xf7faff, 0xafcdff, false, 1, 1, 1, EnumCreatureType.MONSTER);
         registerEntity(EntityGrottol.class, "grottol", true, 0x777777, 0xbce0ff, false, 1, 1, 1, EnumCreatureType.MONSTER);
+        registerEntity(EntityMMLantern.class, "lantern", true, 0x9ded4e, 0x28631a, false, 1, 1, 1, EnumCreatureType.MONSTER);
 
         EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "sunstrike"), EntitySunstrike.class, "sunstrike", nextEntityId(), MowziesMobs.instance(), 64, 1, true);
         EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "solar_beam"), EntitySolarBeam.class, "solar_beam", nextEntityId(), MowziesMobs.instance(), 64, 1, true);

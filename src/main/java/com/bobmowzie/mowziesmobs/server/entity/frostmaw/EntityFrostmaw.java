@@ -477,6 +477,11 @@ public class EntityFrostmaw extends MowzieEntity {
         return super.getCanSpawnHere();
     }
 
+    public int getMaxSpawnedInChunk()
+    {
+        return 1;
+    }
+
     private void spawnSwipeParticles() {
         if (world.isRemote) {
             int snowflakeDensity = 4;
