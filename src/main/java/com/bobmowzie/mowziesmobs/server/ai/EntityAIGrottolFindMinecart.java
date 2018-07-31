@@ -8,6 +8,7 @@ import com.google.common.base.Predicate;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.item.EntityMinecartEmpty;
+import net.minecraft.init.Blocks;
 
 public final class EntityAIGrottolFindMinecart extends EntityAIBase {
     private final EntityGrottol grottol;
@@ -23,12 +24,13 @@ public final class EntityAIGrottolFindMinecart extends EntityAIBase {
     public EntityAIGrottolFindMinecart(EntityGrottol grottol) {
         this.grottol = grottol;
         this.sorter = Comparator.comparing(grottol::getDistanceSqToEntity);
-        this.predicate = minecart -> minecart != null && minecart.isEntityAlive() && !minecart.isBeingRidden();
+        this.predicate = minecart -> minecart != null && minecart.isEntityAlive() && !minecart.isBeingRidden() && EntityGrottol.isBlockRail(minecart.world.getBlockState(minecart.getPosition()).getBlock());
         setMutexBits(3);
     }
 
     @Override
     public boolean shouldExecute() {
+        if (grottol.fleeTime <= 1) return false;
         List<EntityMinecartEmpty> minecarts = grottol.world.getEntitiesWithinAABB(EntityMinecartEmpty.class, grottol.getEntityBoundingBox().grow(8.0D, 4.0D, 8.0D), predicate);
         minecarts.sort(sorter);
         if (minecarts.isEmpty()) {

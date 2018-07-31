@@ -60,8 +60,9 @@ public class EntityGrottol extends MowzieEntity {
             IDLE_ANIMATION,
             BURROW_ANIMATION
     };
-    private int fleeTime = 0;
+    public int fleeTime = 0;
     private int timeSinceFlee = 50;
+    private int timeSinceMinecart = 0;
 
     private final BlackPinkRailLine reader = BlackPinkRailLine.create();
 
@@ -92,8 +93,8 @@ public class EntityGrottol extends MowzieEntity {
         super.initEntityAI();
         tasks.addTask(3, new EntityAISwimming(this));
         tasks.addTask(4, new EntityAIWander(this, 0.3));
-        tasks.addTask(4, new EntityAIGrottolFindMinecart(this));
-        tasks.addTask(1, new MMAIAvoidEntity<EntityGrottol, EntityPlayer>(this, EntityPlayer.class, 16f, 0.5, 0.7) {
+        tasks.addTask(1, new EntityAIGrottolFindMinecart(this));
+        tasks.addTask(2, new MMAIAvoidEntity<EntityGrottol, EntityPlayer>(this, EntityPlayer.class, 16f, 0.5, 0.7) {
             private int fleeCheckCounter = 0;
 
             @Override
@@ -246,6 +247,16 @@ public class EntityGrottol extends MowzieEntity {
             if (isMinecart(e)) {
                 reader.accept((EntityMinecart) e);
                 setMoveForward(1);
+                timeSinceMinecart++;
+                boolean onRail = isBlockRail(world.getBlockState(e.getPosition()).getBlock());
+                if ((timeSinceMinecart > 3 && Math.abs(e.motionX) <= 0.001 && Math.abs(e.motionY) <= 0.001 && Math.abs(e.motionZ) <= 0.001) || !onRail) {
+                    dismountRidingEntity();
+                    timeSinceMinecart = 0;
+                }
+                else if (onRail) {
+                    e.motionX *= 2.7;
+                    e.motionZ *= 2.7;
+                }
             }
         }
 //        if (ticksExisted == 1) System.out.println("Grottle at " + getPosition());
@@ -305,6 +316,10 @@ public class EntityGrottol extends MowzieEntity {
                 setDead();
             }
         }
+    }
+
+    public static boolean isBlockRail(Block block) {
+        return block == Blocks.RAIL || block == Blocks.ACTIVATOR_RAIL || block == Blocks.GOLDEN_RAIL || block == Blocks.DETECTOR_RAIL;
     }
 
     private boolean isBlackPinkInYourArea() {
