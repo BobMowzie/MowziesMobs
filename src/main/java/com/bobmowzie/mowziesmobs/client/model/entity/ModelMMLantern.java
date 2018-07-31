@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ExtendedModelRenderer;
-import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityMMLantern;
+import com.bobmowzie.mowziesmobs.server.entity.mmlantern.EntityMMLantern;
 import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.model.ModelAnimator;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;

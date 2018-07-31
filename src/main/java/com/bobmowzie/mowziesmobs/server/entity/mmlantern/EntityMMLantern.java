@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.server.entity.lantern;
+package com.bobmowzie.mowziesmobs.server.entity.mmlantern;
 
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;

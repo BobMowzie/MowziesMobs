@@ -7,7 +7,7 @@ import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.*;
 import com.bobmowzie.mowziesmobs.server.entity.effects.*;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
-import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityMMLantern;
+import com.bobmowzie.mowziesmobs.server.entity.mmlantern.EntityMMLantern;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.entity.EntityLivingBase;

@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelMMLantern;
-import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityMMLantern;
+import com.bobmowzie.mowziesmobs.server.entity.mmlantern.EntityMMLantern;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;

@@ -25,4 +25,6 @@ public class ConfigHandler {
     public int difficultyScaleFrostmaw = 1;
     @ConfigEntry(name = "Grottol Spawn Rate", minValue = "0", maxValue = "100")
     public int spawnrateGrottol = 2;
+    @ConfigEntry(name = "Lantern Spawn Rate", minValue = "0", maxValue = "100")
+    public int spawnrateLantern = 2;
 }
