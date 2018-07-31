@@ -12,6 +12,7 @@ entity.barakoaya.name=Barakoa
 entity.barako.name=Barako, the Sun Chief
 entity.frostmaw.name=Frostmaw
 entity.grottol.name=Grottol
+entity.lantern.name=Lantern
 
 # Items
 item.foliaathSeed.name=Foliaath Seed
@@ -82,6 +83,9 @@ item.icecrystal.text.0=Hold right-click to channel an icy whirlwind
 item.icecrystal.text.1=Recharges while in inventory
 
 item.capturedGrottol.name=Captured Grottol
+
+item.glowingJelly.name=Luminous Jelly
+item.glowingJelly.text.0=Eat to briefly gain night vision
 
 # Blocks
 tile.campfire.name=Campfire

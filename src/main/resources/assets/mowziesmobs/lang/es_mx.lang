@@ -13,6 +13,8 @@ entity.barakoana.name=Barakoana
 entity.barakoaya.name=Barakoa
 entity.barako.name=Barako, el Jefe Sol
 entity.frostmaw.name=Frostmaw
+entity.grottol.name=Grottol
+entity.lantern.name=Linterna
 
 # Items
 item.foliaathSeed.name=Semilla de Foliaath
@@ -81,6 +83,11 @@ item.spear.text.1=1/3 posibilidad de matar animales instantaneamente
 
 item.icecrystal.text.0=Mantenga Click derecho para canalizar un torbellino helado
 item.icecrystal.text.1=Se recarga en el inventario
+
+item.capturedGrottol.name=Grottol Capturado
+
+item.glowingJelly.name=Gelatina Luminosa
+item.glowingJelly.text.0=Come para ganar brevemente visión nocturna
 
 # Blocks
 tile.campfire.name=Hoguera

@@ -54,6 +54,11 @@ public class Thaumcraft {
                     .add(Aspect.DESIRE, 30)
                     .add(Aspect.EARTH, 17)
             );
+            registerTCObjectTag("Lantern", new AspectList()
+                    .add(Aspect.PLANT, 13)
+                    .add(Aspect.LIGHT, 13)
+                    .add(Aspect.FLIGHT, 8)
+            );
             registerTCObjectTag(BlockHandler.PAINTED_ACACIA, 0, new AspectList()
                     .add(Aspect.PLANT, 3)
                     .add(Aspect.CRAFT, 3)
@@ -154,6 +159,11 @@ public class Thaumcraft {
                     .add(Aspect.DESIRE, 30)
                     .add(Aspect.EARTH, 17)
                     .add(Aspect.TRAP, 12)
+            );
+            registerTCObjectTag(ItemHandler.GLOWING_JELLY, 0, new AspectList()
+                    .add(Aspect.PLANT, 9)
+                    .add(Aspect.LIGHT, 10)
+                    .add(Aspect.SENSES, 5)
             );
 
         } catch (Exception e) {

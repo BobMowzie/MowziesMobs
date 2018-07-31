@@ -38,6 +38,7 @@ public final class ItemHandler {
     public static final ItemIceCrystal ICE_CRYSTAL = null;
     public static final ItemEarthTalisman EARTH_TALISMAN = null;
     public static final ItemCapturedGrottol CAPTURED_GROTTOL = null;
+    public static final ItemGlowingJelly GLOWING_JELLY = null;
 
     @SubscribeEvent
     public static void register(RegistryEvent.Register<Item> event) {
@@ -57,8 +58,8 @@ public final class ItemHandler {
                 new ItemEarthTalisman(),
                 new ItemCapturedGrottol()
                     .setRegistryName("captured_grottol")
-                    .setUnlocalizedName("capturedGrottol")
-                    .setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab),
+                    .setUnlocalizedName("capturedGrottol"),
+                new ItemGlowingJelly(1, 0.1f, false),
                 new ItemBlock(BlockHandler.PAINTED_ACACIA).setRegistryName(BlockHandler.PAINTED_ACACIA.getRegistryName()),
                 new ItemBlock(BlockHandler.PAINTED_ACACIA_SLAB).setRegistryName(BlockHandler.PAINTED_ACACIA_SLAB.getRegistryName())
         );

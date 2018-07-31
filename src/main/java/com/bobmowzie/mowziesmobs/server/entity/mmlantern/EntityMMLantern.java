@@ -7,6 +7,7 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
@@ -15,6 +16,7 @@ import net.minecraft.entity.MoverType;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNavigateFlying;
 import net.minecraft.util.EnumParticleTypes;
@@ -107,7 +109,6 @@ public class EntityMMLantern extends MowzieEntity {
     @Override
     protected void onDeathAIUpdate() {
         super.onDeathAIUpdate();
-        System.out.println(getAnimationTick());
         if (getAnimationTick() == 1) {
             for (int i = 0; i < 8; i++) {
                 world.spawnParticle(EnumParticleTypes.SLIME, posX, posY, posZ, 0.2 * (rand.nextFloat() - 0.5), 0.2 * (rand.nextFloat() - 0.5), 0.2 * (rand.nextFloat() - 0.5));
@@ -121,6 +122,7 @@ public class EntityMMLantern extends MowzieEntity {
     @Override
     protected void dropLoot() {
         super.dropLoot();
+        dropItem(ItemHandler.GLOWING_JELLY, 1 + rand.nextInt(2));
     }
 
     public void fall(float distance, float damageMultiplier)

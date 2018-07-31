@@ -11,6 +11,7 @@ entity.barakoana.name=图腾祭师
 entity.barakoaya.name=图腾骑士
 entity.barako.name=太阳酋长
 entity.frostmaw.name=霜冻巨兽
+entity.lantern.name=灯笼
 
 # Items
 item.foliaathSeed.name=食人花种子
