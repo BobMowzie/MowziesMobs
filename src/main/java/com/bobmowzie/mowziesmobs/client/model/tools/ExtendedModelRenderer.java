@@ -231,11 +231,11 @@ public class ExtendedModelRenderer extends ModelRenderer {
 //                if (!this.hasLighting) {
 //                    GlStateManager.disableLighting();
 //                }
-//                if (this.opacity != 1.0F) {
-//                    GlStateManager.enableBlend();
-//                    GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-//                    GlStateManager.color(1F, 1F, 1F, opacity);
-//                }
+                if (this.opacity != 1.0F) {
+                    GlStateManager.enableBlend();
+                    GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+                    GlStateManager.color(1F, 1F, 1F, opacity);
+                }
                 GlStateManager.callList(this.displayList);
                 if (!this.scaleChildren && (this.scaleX != 1.0F || this.scaleY != 1.0F || this.scaleZ != 1.0F)) {
                     GlStateManager.popMatrix();
@@ -255,10 +255,10 @@ public class ExtendedModelRenderer extends ModelRenderer {
 //                if (!this.hasLighting) {
 //                    GlStateManager.enableLighting();
 //                }
-//                if (this.opacity != 1.0F) {
-//                    GlStateManager.disableBlend();
-//                    GlStateManager.color(1F, 1F, 1F, 1F);
-//                }
+                if (this.opacity != 1.0F) {
+                    GlStateManager.disableBlend();
+                    GlStateManager.color(1F, 1F, 1F, 1F);
+                }
                 if (this.childModels != null) {
                     for (ModelRenderer childModel : this.childModels) {
                         childModel.render(scale);

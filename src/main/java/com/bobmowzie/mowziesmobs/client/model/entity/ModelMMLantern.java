@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.ExtendedModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityMMLantern;
 import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.model.ModelAnimator;
@@ -13,17 +14,19 @@ import net.minecraft.entity.Entity;
  * Created by Josh on 7/24/2018.
  */
 public class ModelMMLantern extends AdvancedModelBase {
-    public AdvancedModelRenderer body;
+    public ExtendedModelRenderer body;
+    public ExtendedModelRenderer center;
+    public AdvancedModelRenderer bubbles;
     public AdvancedModelRenderer bubble1;
     public AdvancedModelRenderer bubble2;
     public AdvancedModelRenderer bubble3;
     public AdvancedModelRenderer bubble4;
     public AdvancedModelRenderer bottomBits;
     public AdvancedModelRenderer stem;
-    public AdvancedModelRenderer bottomBit1;
-    public AdvancedModelRenderer bottomBit2;
-    public AdvancedModelRenderer bottomBit3;
-    public AdvancedModelRenderer bottomBit4;
+    public ExtendedModelRenderer bottomBit1;
+    public ExtendedModelRenderer bottomBit2;
+    public ExtendedModelRenderer bottomBit3;
+    public ExtendedModelRenderer bottomBit4;
     public AdvancedModelRenderer leaf1;
     public AdvancedModelRenderer leaf2;
     public AdvancedModelRenderer leaf3;
@@ -47,10 +50,13 @@ public class ModelMMLantern extends AdvancedModelBase {
         this.stem2.setRotationPoint(0.0F, -3.0F, 0.0F);
         this.stem2.addBox(0.0F, -10.0F, -5.0F, 0, 10, 10, 0.0F);
         this.setRotateAngle(stem2, 0.0F, 0.7853981633974483F, 0.0F);
-        this.body = new AdvancedModelRenderer(this, 1, 0);
+        this.body = new ExtendedModelRenderer(this, 1, 0);
         this.body.setRotationPoint(0.0F, 11.0F, 0.0F);
         this.body.addBox(-7.5F, -7.5F, -7.5F, 15, 15, 15, 0.0F);
-        this.bottomBit4 = new AdvancedModelRenderer(this, 46, 0);
+        this.center = new ExtendedModelRenderer(this, 40, 51);
+        this.center.setRotationPoint(0.0F, 11.0F, 0.0F);
+        this.center.addBox(-3F, -3F, -3F, 6, 6, 6, 0.0F);
+        this.bottomBit4 = new ExtendedModelRenderer(this, 46, 0);
         this.bottomBit4.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.bottomBit4.addBox(-2.0F, 0.0F, -2.0F, 4, 7, 4, 0.0F);
         this.setRotateAngle(bottomBit4, 1.0471975511965976F, 4.71238898038469F, 0.0F);
@@ -63,18 +69,18 @@ public class ModelMMLantern extends AdvancedModelBase {
         this.leaf2.addBox(0.0F, 0.0F, -6.0F, 16, 0, 12, 0.0F);
         this.setRotateAngle(leaf2, 0.0F, 3.141592653589793F, 0.2617993877991494F);
         this.bubble3 = new AdvancedModelRenderer(this, 0, 0);
-        this.bubble3.setRotationPoint(-2.0F, 15.0F, -2.9F);
+        this.bubble3.setRotationPoint(-2.0F, 4.0F, -2.9F);
         this.bubble3.addBox(-1.5F, -1.5F, -1.5F, 3, 3, 3, 0.0F);
         this.setRotateAngle(bubble3, -0.091106186954104F, 1.7756979809790308F, 0.40980330836826856F);
         this.bubble4 = new AdvancedModelRenderer(this, 0, 0);
-        this.bubble4.setRotationPoint(3.0F, 9.2F, -2.4F);
+        this.bubble4.setRotationPoint(3.0F, -1.8F, -2.4F);
         this.bubble4.addBox(-1.5F, -1.5F, -1.5F, 3, 3, 3, 0.0F);
         this.setRotateAngle(bubble4, -0.7740535232594852F, 0.136659280431156F, 0.40980330836826856F);
         this.bubble1 = new AdvancedModelRenderer(this, 0, 7);
-        this.bubble1.setRotationPoint(2.6F, 13.5F, 2.8F);
+        this.bubble1.setRotationPoint(2.6F, 2.5F, 2.8F);
         this.bubble1.addBox(-2.0F, -2.0F, -2.0F, 4, 4, 4, 0.0F);
         this.setRotateAngle(bubble1, 0.27314402793711257F, 0.6829473363053812F, 0.5462880558742251F);
-        this.bottomBit3 = new AdvancedModelRenderer(this, 46, 0);
+        this.bottomBit3 = new ExtendedModelRenderer(this, 46, 0);
         this.bottomBit3.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.bottomBit3.addBox(-2.0F, 0.0F, -2.0F, 4, 7, 4, 0.0F);
         this.setRotateAngle(bottomBit3, 1.0471975511965976F, 3.141592653589793F, 0.0F);
@@ -82,14 +88,14 @@ public class ModelMMLantern extends AdvancedModelBase {
         this.stem1.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.stem1.addBox(-3.0F, -3.0F, -3.0F, 6, 3, 6, 0.0F);
         this.bubble2 = new AdvancedModelRenderer(this, 0, 7);
-        this.bubble2.setRotationPoint(-2.8F, 8.0F, 1.8F);
+        this.bubble2.setRotationPoint(-2.8F, -3.0F, 1.8F);
         this.bubble2.addBox(-2.0F, -2.0F, -2.0F, 4, 4, 4, 0.0F);
         this.setRotateAngle(bubble2, 1.3203415791337103F, 1.5025539530419183F, 0.5462880558742251F);
-        this.bottomBit2 = new AdvancedModelRenderer(this, 46, 0);
+        this.bottomBit2 = new ExtendedModelRenderer(this, 46, 0);
         this.bottomBit2.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.bottomBit2.addBox(-2.0F, 0.0F, -2.0F, 4, 7, 4, 0.0F);
         this.setRotateAngle(bottomBit2, 1.0471975511965976F, 1.5707963267948966F, 0.0F);
-        this.bottomBit1 = new AdvancedModelRenderer(this, 46, 0);
+        this.bottomBit1 = new ExtendedModelRenderer(this, 46, 0);
         this.bottomBit1.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.bottomBit1.addBox(-2.0F, 0.0F, -2.0F, 4, 7, 4, 0.0F);
         this.setRotateAngle(bottomBit1, 1.0471975511965976F, 0.0F, 0.0F);
@@ -105,6 +111,9 @@ public class ModelMMLantern extends AdvancedModelBase {
         this.stem.setRotationPoint(0.0F, -7.5F, 0.0F);
         this.stem.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         this.setRotateAngle(stem, 0.0F, 0.7853981633974483F, 0.0F);
+        this.bubbles = new AdvancedModelRenderer(this, 0, 0);
+        this.bubbles.setRotationPoint(0.0F, 11.0F, 0.0F);
+        this.bubbles.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         this.scaleController = new AdvancedModelRenderer(this, 0, 0);
         this.scaleController.setRotationPoint(1, 1, 1);
         this.stem.addChild(this.leaf1);
@@ -119,17 +128,28 @@ public class ModelMMLantern extends AdvancedModelBase {
         this.stem.addChild(this.leaf3);
         this.body.addChild(this.bottomBits);
         this.body.addChild(this.stem);
+        this.bubbles.addChild(bubble1);
+        this.bubbles.addChild(bubble2);
+        this.bubbles.addChild(bubble3);
+        this.bubbles.addChild(bubble4);
         updateDefaultPose();
+
+        bubbles.setShouldScaleChildren(true);
+        body.setOpacity(0.5f);
+        center.setOpacity(0.5f);
+        center.setScale(2, 2, 2);
+        bottomBit1.setOpacity(0.7f);
+        bottomBit2.setOpacity(0.7f);
+        bottomBit3.setOpacity(0.7f);
+        bottomBit4.setOpacity(0.7f);
     }
 
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         animate((IAnimatedEntity) entity, f, f1, f2, f3, f4, f5);
+        this.bubbles.render(f5);
+        this.center.render(f5);
         this.body.render(f5);
-        this.bubble1.render(f5);
-        this.bubble2.render(f5);
-        this.bubble3.render(f5);
-        this.bubble4.render(f5);
     }
 
     /**
@@ -145,6 +165,20 @@ public class ModelMMLantern extends AdvancedModelBase {
     public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity entity) {
         super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
         resetToDefaultPose();
+        this.body.setRotationPoint(0.0F, 11.0F, 0.0F);
+        this.center.setRotationPoint(0.0F, 11.0F, 0.0F);
+        this.bottomBit2.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.setRotateAngle(bottomBit2, 1.0471975511965976F, 1.5707963267948966F, 0.0F);
+        this.bottomBit1.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.setRotateAngle(bottomBit1, 1.0471975511965976F, 0.0F, 0.0F);
+        this.bottomBit3.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.setRotateAngle(bottomBit3, 1.0471975511965976F, 3.141592653589793F, 0.0F);
+        this.bottomBit4.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.setRotateAngle(bottomBit4, 1.0471975511965976F, 4.71238898038469F, 0.0F);
+
+        body.rotateAngleX = 0.f;
+        bubbles.rotateAngleX = 0.f;
+        center.rotateAngleX = 0.f;
     }
 
     public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
@@ -156,21 +190,53 @@ public class ModelMMLantern extends AdvancedModelBase {
 
         if (lantern.getAnimation() == EntityMMLantern.PUFF_ANIMATION) {
             animator.setAnimation(EntityMMLantern.PUFF_ANIMATION);
-            animator.startKeyframe(5);
+            animator.startKeyframe(7);
             animator.move(scaleController, 0.4f, -0.4f, 0.4f);
             animator.move(body, 0f, -3f, 0f);
+            animator.move(bubbles, 0f, -3f, 0f);
+            animator.move(center, 0f, -3f, 0f);
             animator.move(stem, 0f, 3f, 0f);
             animator.move(bottomBits, 0f, -3f, 0f);
+            animator.rotate(leaf1, -0.2f, 0f, 0f);
+            animator.rotate(leaf2, 0f, 0f, 0.2f);
+            animator.rotate(leaf3, -0.2f, 0f, 0f);
+            animator.rotate(leaf4, 0f, 0f, -0.2f);
             animator.endKeyframe();
-            animator.startKeyframe(2);
+            animator.startKeyframe(3);
             animator.move(scaleController, -0.45f, 0.6f, -0.45f);
-            animator.move(body, 0f, 4f, 0f);
-            animator.move(stem, 0f, -4f, 0f);
+            animator.move(body, 0f, 4.5f, 0f);
+            animator.move(bubbles, 0f, 4.5f, 0f);
+            animator.move(center, 0f, 4.5f, 0f);
+            animator.move(stem, 0f, -4.5f, 0f);
             animator.move(bottomBits, 0f, 4f, 0f);
+            animator.rotate(leaf1, 0.3f, 0f, 0f);
+            animator.rotate(leaf2, 0f, 0f, -0.3f);
+            animator.rotate(leaf3, 0.3f, 0f, 0f);
+            animator.rotate(leaf4, 0f, 0f, 0.3f);
+            animator.rotate(bottomBit1, -0.9f, 0f, 0f);
+            animator.rotate(bottomBit2, -0.9f, 0f, 0f);
+            animator.rotate(bottomBit3, -0.9f, 0f, 0f);
+            animator.rotate(bottomBit4, -0.9f, 0f, 0f);
             animator.endKeyframe();
-            animator.resetKeyframe(5);
+            animator.resetKeyframe(7);
+        }
+        if (lantern.getAnimation() == EntityMMLantern.DIE_ANIMATION) {
+            animator.setAnimation(EntityMMLantern.DIE_ANIMATION);
+            animator.startKeyframe(3);
+            animator.move(scaleController, -0.5f, -0.5f, -0.5f);
+            animator.move(bottomBits, 0f, -3f, 0f);
+            animator.move(stem, 0f, 3f, 0f);
+            animator.endKeyframe();
+            animator.startKeyframe(3);
+            animator.move(scaleController, 1.3f, 1.3f, 1.3f);
+            animator.move(bottomBits, 0f, 3f, 0f);
+            animator.move(stem, 0f, -3f, 0f);
+            animator.endKeyframe();
         }
 
         body.setScale(scaleController.rotationPointX, scaleController.rotationPointY, scaleController.rotationPointZ);
+        bubbles.setShouldScaleChildren(true);
+        bubbles.setScale(scaleController.rotationPointX, scaleController.rotationPointY, scaleController.rotationPointZ);
+        center.setScale(scaleController.rotationPointX * 2, scaleController.rotationPointY * 2, scaleController.rotationPointZ * 2);
     }
 }

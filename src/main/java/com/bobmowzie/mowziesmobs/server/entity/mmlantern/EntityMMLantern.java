@@ -1,30 +1,40 @@
 package com.bobmowzie.mowziesmobs.server.entity.lantern;
 
+import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
+import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
+import net.minecraft.init.Blocks;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNavigateFlying;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.Random;
 
 /**
  * Created by Josh on 7/24/2018.
  */
 public class EntityMMLantern extends MowzieEntity {
-    public static final Animation DIE_ANIMATION = Animation.create(73);
+    public static final Animation DIE_ANIMATION = Animation.create(25);
     public static final Animation HURT_ANIMATION = Animation.create(10);
-    public static final Animation PUFF_ANIMATION = Animation.create(20);
+    public static final Animation PUFF_ANIMATION = Animation.create(28);
     private static final Animation[] ANIMATIONS = {
             DIE_ANIMATION,
             HURT_ANIMATION,
@@ -32,6 +42,7 @@ public class EntityMMLantern extends MowzieEntity {
     };
 
     public Vec3d dir;
+    private int groundDist = 0;
 
     public EntityMMLantern(World world) {
         super(world);
@@ -44,6 +55,8 @@ public class EntityMMLantern extends MowzieEntity {
         super.initEntityAI();
         this.tasks.addTask(5, new AIRandomFly(this));
         tasks.addTask(2, new AnimationAI<>(this, PUFF_ANIMATION, false));
+        this.tasks.addTask(3, new AnimationTakeDamage<>(this));
+        this.tasks.addTask(1, new AnimationDieAI<>(this));
         this.moveHelper = new LanternMoveHelper(this);
     }
 
@@ -59,14 +72,55 @@ public class EntityMMLantern extends MowzieEntity {
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (dir != null && getAnimation() == PUFF_ANIMATION && getAnimationTick() == 4) {
+        if (dir != null && getAnimation() == PUFF_ANIMATION && getAnimationTick() == 7) {
             double l = dir.lengthVector();
             motionX += dir.x / l * 0.2D;
-            motionY += dir.y / l * 0.2D;
+            motionY += dir.y / l * 0.2D + 0.2/groundDist;
             motionZ += dir.z / l * 0.2D;
+            for (int i = 0; i < 3; i++) {
+                MMParticle.CLOUD.spawn(world, posX, posY + 0.3, posZ, ParticleFactory.ParticleArgs.get().withData(-motionX * 0.2 + 0.1 * (rand.nextFloat()-0.5), -motionY * 0.2 + 0.1 * (rand.nextFloat()-0.5), -motionZ * 0.2 + 0.1 * (rand.nextFloat()-0.5), 163d / 256d, 247d / 256d, 74d / 256d, true, 10d + rand.nextDouble() * 20d, 30, ParticleCloud.EnumCloudBehavior.GROW));
+            }
+            for (int i = 0; i < 8; i++) {
+                MMParticle.ORB.spawn(world, posX, posY + 0.3, posZ, ParticleFactory.ParticleArgs.get().withData(-motionX * 0.2 + 0.2 * (rand.nextFloat()-0.5), -motionY * 0.2 + 0.1 * (rand.nextFloat()-0.5), -motionZ * 0.2 + 0.2 * (rand.nextFloat()-0.5), 163d / 256d, 247d / 256d, 74d / 256d, 1.5d, 25));
+            }
+            playSound(MMSounds.ENTITY_LANTERN_PUFF, 0.6f, 0.8f + rand.nextFloat() * 0.4f);
+        }
+        if (groundDist < 4 && getMoveHelper().action == EntityMoveHelper.Action.WAIT) {
+            getMoveHelper().setMoveTo(posX, posY + 3, posZ, 1.0D);
         }
 
-        if (getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(this, PUFF_ANIMATION);
+        if (groundDist >= 2) motionY -= 0.0055;
+
+        if (ticksExisted % 5 == 0) {
+            BlockPos checkPos = getPosition();
+            int i;
+            for (i = 0; i < 16; i++) {
+                if (world.getBlockState(checkPos).getBlock() != Blocks.AIR) break;
+                checkPos = checkPos.down();
+            }
+            groundDist = i;
+        }
+
+//        if (getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(this, DIE_ANIMATION);
+    }
+
+    @Override
+    protected void onDeathAIUpdate() {
+        super.onDeathAIUpdate();
+        System.out.println(getAnimationTick());
+        if (getAnimationTick() == 1) {
+            for (int i = 0; i < 8; i++) {
+                world.spawnParticle(EnumParticleTypes.SLIME, posX, posY, posZ, 0.2 * (rand.nextFloat() - 0.5), 0.2 * (rand.nextFloat() - 0.5), 0.2 * (rand.nextFloat() - 0.5));
+                MMParticle.CLOUD.spawn(world, posX, posY + 0.3, posZ, ParticleFactory.ParticleArgs.get().withData(0.2 * (rand.nextFloat() - 0.5), 0.2 * (rand.nextFloat() - 0.5), 0.2 * (rand.nextFloat() - 0.5), 163d / 256d, 247d / 256d, 74d / 256d, true, 10d + rand.nextDouble() * 20d, 30, ParticleCloud.EnumCloudBehavior.GROW));
+                MMParticle.ORB.spawn(world, posX, posY + 0.3, posZ, ParticleFactory.ParticleArgs.get().withData(0.2 * (rand.nextFloat() - 0.5), 0.2 * (rand.nextFloat() - 0.5), 0.2 * (rand.nextFloat() - 0.5), 163d / 256d, 247d / 256d, 74d / 256d, 1.5d, 25));
+            }
+        }
+        if (getAnimationTick() == 2) playSound(MMSounds.ENTITY_LANTERN_POP, 1f, 0.8f + rand.nextFloat() * 0.4f);
+    }
+
+    @Override
+    protected void dropLoot() {
+        super.dropLoot();
     }
 
     public void fall(float distance, float damageMultiplier)
@@ -207,7 +261,7 @@ public class EntityMMLantern extends MowzieEntity {
         {
             Random random = this.parentEntity.getRNG();
             double d0 = this.parentEntity.posX + (double)((random.nextFloat() * 2.0F - 1.0F) * 16.0F);
-            double d1 = this.parentEntity.posY + (double)((random.nextFloat() * 2.0F - 1.0F) * 16.0F);
+            double d1 = this.parentEntity.posY + (double)((random.nextFloat() * 2.0F - 1.0F) * 16.0F - parentEntity.groundDist * 0.5);
             double d2 = this.parentEntity.posZ + (double)((random.nextFloat() * 2.0F - 1.0F) * 16.0F);
             this.parentEntity.getMoveHelper().setMoveTo(d0, d1, d2, 1.0D);
         }
@@ -242,7 +296,7 @@ public class EntityMMLantern extends MowzieEntity {
 
                     if (this.isNotColliding(this.posX, this.posY, this.posZ, d3))
                     {
-                        if (parentEntity.getAnimation() == NO_ANIMATION && parentEntity.rand.nextInt(4) == 0) AnimationHandler.INSTANCE.sendAnimationMessage(this.parentEntity, PUFF_ANIMATION);
+                        if (parentEntity.getAnimation() == NO_ANIMATION && parentEntity.rand.nextInt(Math.max(parentEntity.groundDist - 3, 1)) == 0) AnimationHandler.INSTANCE.sendAnimationMessage(this.parentEntity, PUFF_ANIMATION);
                     }
                     else
                     {

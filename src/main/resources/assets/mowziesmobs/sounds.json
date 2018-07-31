@@ -389,5 +389,11 @@
 		"sounds": [
 			"mowziesmobs:music/black_pink"
 		]
+	},
+	"lantern.pop": {
+		"sounds": [ "mowziesmobs:entity/lantern/pop" ]
+	},
+	"lantern.puff": {
+		"sounds": [ "mowziesmobs:entity/lantern/puff" ]
 	}
 }

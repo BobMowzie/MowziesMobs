@@ -243,6 +243,10 @@ public final class MMSounds {
     public static final SoundEvent ENTITY_FROSTMAW_WAKEUP = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":grottol.step")
     public static final SoundEvent ENTITY_GROTTOL_STEP = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":lantern.pop")
+    public static final SoundEvent ENTITY_LANTERN_POP = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":lantern.puff")
+    public static final SoundEvent ENTITY_LANTERN_PUFF = NIL;
 
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.smallcrash")
     public static final SoundEvent EFFECT_GEOMANCY_SMALL_CRASH = NIL;
@@ -397,6 +401,9 @@ public final class MMSounds {
                 create("frostmaw.wakeup"),
 
                 create("grottol.step"),
+
+                create("lantern.puff"),
+                create("lantern.pop"),
 
                 create("geomancy.smallcrash"),
                 create("geomancy.hitsmall"),

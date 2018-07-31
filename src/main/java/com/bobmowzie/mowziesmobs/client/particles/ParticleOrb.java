@@ -21,6 +21,7 @@ public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
     private double startZ;
     private double signX;
     private double signZ;
+    private float red, green, blue;
     private int mode;
     private double duration;
 
@@ -34,11 +35,7 @@ public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
         signZ = Math.signum(targetZ - posZ);
         mode = 0;
         particleAlpha = 0;
-    }
-
-    @Override
-    public int getFXLayer() {
-        return 1;
+        red = green = blue = 1;
     }
 
     public ParticleOrb(World world, double x, double y, double z, double targetX, double targetY, double targetZ, double speed) {
@@ -50,6 +47,26 @@ public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
         this.duration = speed;
         mode = 1;
         particleAlpha = 0.1f;
+    }
+
+    public ParticleOrb(World world, double x, double y, double z, double vx, double vy, double vz, double r, double g, double b, double scale, int duration) {
+        super(world, x, y, z);
+        particleScale = (float) scale * 0.5f;
+        particleMaxAge = duration;
+        this.duration = duration;
+        motionX = vx;
+        motionY = vy;
+        motionZ = vz;
+        red = (float) r;
+        green = (float) g;
+        blue = (float) b;
+        mode = 2;
+    }
+
+
+    @Override
+    public int getFXLayer() {
+        return 1;
     }
 
     @Override
@@ -91,12 +108,23 @@ public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
                 setExpired();
             }
         }
+        else if (mode == 2) {
+            super.onUpdate();
+//            particleAlpha = ((float)particleAge/(float)particleMaxAge);
+            if (particleAge >= particleMaxAge) {
+                setExpired();
+            }
+        }
         particleAge++;
     }
 
     @Override
     public void renderParticle(BufferBuilder buffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-        particleAlpha = ((float)particleAge + partialTicks)/(float)duration;
+        if (mode == 2) particleAlpha = Math.max(1 - ((float)particleAge + partialTicks)/(float)duration, 0.001f);
+        else particleAlpha = ((float)particleAge + partialTicks)/(float)duration;
+        particleRed = red;
+        particleGreen = green;
+        particleBlue = blue;
         super.renderParticle(buffer, entityIn, partialTicks, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
     }
 
@@ -109,8 +137,10 @@ public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
         public ParticleOrb createParticle(ImmutableParticleArgs args) {
             if (args.data.length == 2) {
                 return new ParticleOrb(args.world, args.x, args.y, args.z, (double) args.data[0], (double) args.data[1]);
-            } else {
+            } else if (args.data.length == 4) {
                 return new ParticleOrb(args.world, args.x, args.y, args.z, (double) args.data[0], (double) args.data[1], (double) args.data[2], ((Number) args.data[3]).doubleValue());   
+            } else {
+                return new ParticleOrb(args.world, args.x, args.y, args.z, (double) args.data[0], (double) args.data[1], (double) args.data[2], (double) args.data[3], (double) args.data[4], (double) args.data[5], (double) args.data[6], (int) args.data[7]);
             }
         }
     }
