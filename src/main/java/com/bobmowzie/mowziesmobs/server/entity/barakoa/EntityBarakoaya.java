@@ -53,8 +53,8 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
         .addTrade(Items.MELON, 3, Items.GOLD_NUGGET, 5, 2)
         .addTrade(Items.CHICKEN, 1, Items.GOLD_NUGGET, 3, 2)
         .addTrade(Items.IRON_SWORD, 1, Items.GOLD_INGOT, 1, 2)
-        .addTrade(Items.IRON_HELMET, 2, Items.GOLD_INGOT, 2, 2)
-        .addTrade(Items.STONE_SWORD, 1, Items.GOLD_NUGGET, 5, 2)
+        .addTrade(Items.IRON_HELMET, 1, Items.GOLD_INGOT, 4, 2)
+        .addTrade(Items.STONE_SWORD, 1, Items.GOLD_NUGGET, 7, 2)
         .build();
 
     private static final DataParameter<Optional<Trade>> TRADE = EntityDataManager.createKey(EntityBarakoaya.class, ServerProxy.OPTIONAL_TRADE);

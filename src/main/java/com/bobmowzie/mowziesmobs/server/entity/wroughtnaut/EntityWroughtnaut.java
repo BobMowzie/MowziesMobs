@@ -1,6 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.entity.wroughtnaut;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
+import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.server.ai.MMPathNavigateGround;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationActivateAI;
@@ -45,9 +47,12 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.PooledMutableBlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class EntityWroughtnaut extends MowzieEntity {
     public static final Animation DIE_ANIMATION = Animation.create(130);
@@ -100,6 +105,9 @@ public class EntityWroughtnaut extends MowzieEntity {
 
     private CeilingDisturbance disturbance;
 
+    @SideOnly(Side.CLIENT)
+    public Vec3d leftEyePos, rightEyePos;
+
     public EntityWroughtnaut(World world) {
         super(world);
         setPathPriority(PathNodeType.WATER, 0);
@@ -127,6 +135,8 @@ public class EntityWroughtnaut extends MowzieEntity {
         setSize(2.45F, 3.7F);
         active = false;
         stepHeight = 1;
+        rightEyePos = new Vec3d(0, 0, 0);
+        leftEyePos = new Vec3d(0, 0, 0);
     }
 
     @Override
@@ -170,7 +180,7 @@ public class EntityWroughtnaut extends MowzieEntity {
     public boolean attackEntityFrom(DamageSource source, float amount) {
         Entity entitySource = source.getTrueSource();
         if (entitySource != null) {
-            if (entitySource instanceof EntityLivingBase) setAttackTarget((EntityLivingBase) entitySource);
+            if ((!active || getAttackTarget() == null) && entitySource instanceof EntityLivingBase && !(entitySource instanceof EntityPlayer && ((EntityPlayer) entitySource).capabilities.isCreativeMode)) setAttackTarget((EntityLivingBase) entitySource);
             if (vulnerable) {
                 int arc = 220;
                 float entityHitAngle = (float) ((Math.atan2(entitySource.posZ - posZ, entitySource.posX - posX) * (180 / Math.PI) - 90) % 360);
@@ -231,6 +241,10 @@ public class EntityWroughtnaut extends MowzieEntity {
             posX = prevPosX;
             posZ = prevPosZ;
             rotationYaw = prevRotationYaw;
+        }
+        else if (world.isRemote) {
+            MMParticle.ORB.spawn(world, leftEyePos.x, leftEyePos.y, leftEyePos.z, ParticleFactory.ParticleArgs.get().withData(0d, 0d, 0d, 247d / 256d, 94d / 256d, 74d / 256d, 1d, 25));
+            MMParticle.ORB.spawn(world, rightEyePos.x, rightEyePos.y, rightEyePos.z, ParticleFactory.ParticleArgs.get().withData(0d, 0d, 0d, 247d / 256d, 94d / 256d, 74d / 256d, 1d, 25));
         }
         renderYawOffset = rotationYaw;
 

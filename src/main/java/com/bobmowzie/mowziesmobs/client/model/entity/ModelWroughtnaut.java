@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
 import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.model.ModelAnimator;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
@@ -83,6 +84,8 @@ public class ModelWroughtnaut extends AdvancedModelBase {
     public AdvancedModelRenderer swordJoint;
     public AdvancedModelRenderer rootBox;
     public AdvancedModelRenderer waistBendController;
+    public SocketModelRenderer eyeRight;
+    public SocketModelRenderer eyeLeft;
     private ModelAnimator animator;
 
     public ModelWroughtnaut() {
@@ -363,6 +366,10 @@ public class ModelWroughtnaut extends AdvancedModelBase {
         this.rootBox.setRotationPoint(0.0F, -1.0F, 0.0F);
         this.rootBox.addBox(0F, 0F, 0F, 0, 0, 0, 0.0F);
         this.setRotateAngle(rootBox, 0.0F, 0F, 0.0F);
+        this.eyeLeft = new SocketModelRenderer(this);
+        this.eyeLeft.setRotationPoint(-4, 4, -4);
+        this.eyeRight = new SocketModelRenderer(this);
+        this.eyeRight.setRotationPoint(4, 4, -4);
 
         rootBox.addChild(waist);
         this.waist.addChild(this.groinJoint);
@@ -429,6 +436,8 @@ public class ModelWroughtnaut extends AdvancedModelBase {
         this.helmet.addChild(this.hornRight1);
         this.axeBladeRight.addChild(this.axeBladeRight1);
         this.upperArmLeft.addChild(this.lowerArmLeftJoint);
+        this.neck.addChild(eyeLeft);
+        this.neck.addChild(eyeRight);
         groin.addChild(groinJoint);
         stomach.addChild(swordJoint);
         swordJoint.addChild(sword);
@@ -443,6 +452,17 @@ public class ModelWroughtnaut extends AdvancedModelBase {
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         animate(f, f1, f2, f3, f4, f5, entity);
         this.rootBox.render(f5);
+        EntityWroughtnaut wroughtnaut = (EntityWroughtnaut)entity;
+//        eyeRight.rotationPointZ -= 5;
+//        eyeLeft.rotationPointZ += 5;
+        eyeRight.rotationPointZ += 7;
+        eyeLeft.rotationPointZ += 7;
+        eyeRight.rotationPointX -= 1.7;
+        eyeLeft.rotationPointX += 1.7;
+        eyeRight.rotationPointY += 1.5;
+        eyeLeft.rotationPointY += 1.5;
+        wroughtnaut.rightEyePos = eyeRight.getWorldPos(wroughtnaut);
+        wroughtnaut.leftEyePos = eyeLeft.getWorldPos(wroughtnaut);
     }
 
     public void setRotateAngle(AdvancedModelRenderer modelRenderer, float x, float y, float z) {
