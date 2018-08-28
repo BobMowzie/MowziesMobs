@@ -61,6 +61,10 @@ public class EntityWroughtnaut extends MowzieEntity {
 
     public static final Animation ATTACK_ANIMATION = Animation.create(50);
 
+    public static final Animation ATTACK_TWICE_ANIMATION = Animation.create(110);
+
+    public static final Animation ATTACK_THRICE_ANIMATION = Animation.create(170);
+
     public static final Animation VERTICAL_ATTACK_ANIMATION = Animation.create(105);
 
     public static final Animation STOMP_ATTACK_ANIMATION = Animation.create(40);
@@ -74,6 +78,8 @@ public class EntityWroughtnaut extends MowzieEntity {
     private static final Animation[] ANIMATIONS = {
         DIE_ANIMATION,
         HURT_ANIMATION,
+        ATTACK_ANIMATION,
+        ATTACK_ANIMATION,
         ATTACK_ANIMATION,
         VERTICAL_ATTACK_ANIMATION,
         STOMP_ATTACK_ANIMATION,

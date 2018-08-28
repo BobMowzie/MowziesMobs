@@ -118,7 +118,7 @@ public enum ServerEventHandler {
 
                 if (entity.isPotionActive(PotionHandler.FROZEN) && !property.prevFrozen) {
                     property.onFreeze(entity);
-                    if (!entity.world.isRemote) MowziesMobs.NETWORK_WRAPPER.sendToDimension(new MessageFreezeEntity(entity), entity.dimension);
+                    //if (!entity.world.isRemote) MowziesMobs.NETWORK_WRAPPER.sendToDimension(new MessageFreezeEntity(entity), entity.dimension);
                 }
             }
 
@@ -155,8 +155,10 @@ public enum ServerEventHandler {
                             entity.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, particleX, particleY, particleZ, 0, 0, 0, ICE);
                         }
                     }
+                    if (entity instanceof EntityLiving && ((EntityLiving)entity).isAIDisabled() && property != null) {
+                        ((EntityLiving)entity).setNoAI(!property.prevHasAI);
+                    }
                 }
-                if (entity instanceof EntityLiving && ((EntityLiving)entity).isAIDisabled()) ((EntityLiving)entity).setNoAI(false);
             }
             if (property != null) {
                 property.freezeProgress -= 0.1;

@@ -27,6 +27,9 @@ public class MowzieLivingProperties extends EntityProperties<EntityLivingBase> {
     public float frozenSwingProgress;
     @NBTProperty
     public float frozenLimbSwingAmount;
+    @NBTProperty
+    public boolean prevHasAI;
+
 
     public boolean prevFrozen = false;
     public EntityFrozenController frozenController;
@@ -44,6 +47,7 @@ public class MowzieLivingProperties extends EntityProperties<EntityLivingBase> {
             frozenPitch = entity.rotationPitch;
             entity.startRiding(frozenController, true);
 
+            if (entity instanceof EntityLiving) prevHasAI = !((EntityLiving)entity).isAIDisabled();
             if (entity instanceof EntityLiving) ((EntityLiving)entity).setNoAI(true);
 
             if (entity.world.isRemote) {
