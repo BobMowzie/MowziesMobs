@@ -231,11 +231,15 @@ public class EntityWroughtnaut extends MowzieEntity {
     @Override
     public void onUpdate() {
         super.onUpdate();
+
 //        if (getAnimation() == NO_ANIMATION) {
 //            setActive(true);
 //            swingDirection = false;
 //            AnimationHandler.INSTANCE.sendAnimationMessage(this, ATTACK_THRICE_ANIMATION);
 //        }
+
+        if (getAttackTarget() != null && (getAttackTarget().isDead || getAttackTarget().getHealth() <= 0)) setAttackTarget(null);
+
         if (!world.isRemote) {
             if (getAnimation() == NO_ANIMATION && !isAIDisabled()) {
                 if (isActive()) {
