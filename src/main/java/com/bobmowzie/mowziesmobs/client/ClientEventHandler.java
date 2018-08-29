@@ -87,7 +87,7 @@ public enum ClientEventHandler {
             moveVec = moveVec.normalize();
             GlStateManager.rotate(45 - 45 * (float)moveVec.y, 1.0F, 0.0F, 0.0F);
 
-            toDefaultBiped(event.getModel());
+            /*toDefaultBiped(event.getModel());
 
             float spin = 1f * (player.ticksExisted + delta);
             event.getModel().bipedHead.rotateAngleX = 1.57f * Math.min(0f, (float)moveVec.y);
@@ -120,7 +120,7 @@ public enum ClientEventHandler {
             event.getModel().bipedRightLeg.rotateAngleX = 0;
             event.getModel().bipedRightLeg.rotateAngleY = spin;
             event.getModel().bipedRightLeg.rotateAngleZ = 0;
-            event.getModel().bipedRightLeg.setRotationPoint(-1.9F * (float)Math.sin(spin + Math.PI/2), 12.0F, -1.9f * (float)Math.cos(spin + Math.PI/2));
+            event.getModel().bipedRightLeg.setRotationPoint(-1.9F * (float)Math.sin(spin + Math.PI/2), 12.0F, -1.9f * (float)Math.cos(spin + Math.PI/2));*/
         }
     }
 

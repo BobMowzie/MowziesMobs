@@ -85,7 +85,7 @@ public class EntityMMLantern extends MowzieEntity {
             for (int i = 0; i < 8; i++) {
                 MMParticle.ORB.spawn(world, posX, posY + 0.3, posZ, ParticleFactory.ParticleArgs.get().withData(-motionX * 0.2 + 0.2 * (rand.nextFloat()-0.5), -motionY * 0.2 + 0.1 * (rand.nextFloat()-0.5), -motionZ * 0.2 + 0.2 * (rand.nextFloat()-0.5), 163d / 256d, 247d / 256d, 74d / 256d, 1.5d, 25));
             }
-            playSound(MMSounds.ENTITY_LANTERN_PUFF, 0.6f, 0.8f + rand.nextFloat() * 0.4f);
+            playSound(MMSounds.ENTITY_LANTERN_PUFF, 0.6f, 1f + rand.nextFloat() * 0.2f);
         }
         if (groundDist < 4 && getMoveHelper().action == EntityMoveHelper.Action.WAIT) {
             getMoveHelper().setMoveTo(posX, posY + 3, posZ, 1.0D);
