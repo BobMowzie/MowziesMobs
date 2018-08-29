@@ -28,16 +28,26 @@ public final class MMSounds {
     public static final SoundEvent ENTITY_WROUGHT_PRE_SWING_1 = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.preSwing2")
     public static final SoundEvent ENTITY_WROUGHT_PRE_SWING_2 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.preSwing3")
+    public static final SoundEvent ENTITY_WROUGHT_PRE_SWING_3 = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.creak")
     public static final SoundEvent ENTITY_WROUGHT_CREAK = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.swing1")
     public static final SoundEvent ENTITY_WROUGHT_SWING_1 = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.swing2")
     public static final SoundEvent ENTITY_WROUGHT_SWING_2 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.swing3")
+    public static final SoundEvent ENTITY_WROUGHT_SWING_3 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.shout1")
+    public static final SoundEvent ENTITY_WROUGHT_SHOUT_1 = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.shout2")
     public static final SoundEvent ENTITY_WROUGHT_SHOUT_2 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.shout3")
+    public static final SoundEvent ENTITY_WROUGHT_SHOUT_3 = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.pull1")
     public static final SoundEvent ENTITY_WROUGHT_PULL_1 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.pull2")
+    public static final SoundEvent ENTITY_WROUGHT_PULL_2 = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.pull5")
     public static final SoundEvent ENTITY_WROUGHT_PULL_5 = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.release2")
@@ -52,6 +62,8 @@ public final class MMSounds {
     public static final SoundEvent ENTITY_WROUGHT_GRUNT_1 = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.grunt2")
     public static final SoundEvent ENTITY_WROUGHT_GRUNT_2 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.grunt3")
+    public static final SoundEvent ENTITY_WROUGHT_GRUNT_3 = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.ambient")
     public static final SoundEvent ENTITY_WROUGHT_AMBIENT = NIL;
 
@@ -315,11 +327,16 @@ public final class MMSounds {
 
                 create("wroughtnaut.preSwing1"),
                 create("wroughtnaut.preSwing2"),
+                create("wroughtnaut.preSwing3"),
                 create("wroughtnaut.creak"),
                 create("wroughtnaut.swing1"),
                 create("wroughtnaut.swing2"),
+                create("wroughtnaut.swing3"),
+                create("wroughtnaut.shout1"),
                 create("wroughtnaut.shout2"),
+                create("wroughtnaut.shout3"),
                 create("wroughtnaut.pull1"),
+                create("wroughtnaut.pull2"),
                 create("wroughtnaut.pull5"),
                 create("wroughtnaut.release2"),
                 create("wroughtnaut.whoosh"),
@@ -327,6 +344,7 @@ public final class MMSounds {
                 create("wroughtnaut.scream"),
                 create("wroughtnaut.grunt1"),
                 create("wroughtnaut.grunt2"),
+                create("wroughtnaut.grunt3"),
                 create("wroughtnaut.ambient"),
 
                 create("barakoa.inhale"),

@@ -68,7 +68,7 @@ public class AnimationFWNAttackAI extends AnimationAttackAI<EntityWroughtnaut> {
         } else if (times > 1 && entity.getAnimationTick() == 50) {
             entity.playSound(attackSound, 1.2F, 1);
         } else if (times > 1 && entity.getAnimationTick() == 52) {
-            entity.playSound(MMSounds.ENTITY_WROUGHT_RELEASE_2, 1.5F, 1);
+            entity.playSound(MMSounds.ENTITY_WROUGHT_SWING_3, 1.5F, 1);
             List<EntityLivingBase> entitiesHit = entity.getEntityLivingBaseNearby(range, 3, range, range);
             float damage = (float) entity.getAttack();
             boolean hit = false;
@@ -93,10 +93,12 @@ public class AnimationFWNAttackAI extends AnimationAttackAI<EntityWroughtnaut> {
             if (hit) {
                 entity.playSound(SoundEvents.BLOCK_ANVIL_LAND, 1, 0.5F);
             }
+        } else if (times > 2 && entity.getAnimationTick() == 67) {
+            entity.playSound(MMSounds.ENTITY_WROUGHT_PRE_SWING_3, 1.2F, 1f);
         } else if (times > 2 && entity.getAnimationTick() == 84) {
             entity.playSound(attackSound, 1.2F, 0.9f);
         } else if (times > 2 && entity.getAnimationTick() == 88) {
-            entity.playSound(MMSounds.ENTITY_WROUGHT_SWING_1, 1.5F, 1);
+            entity.playSound(MMSounds.ENTITY_WROUGHT_GRUNT_3, 1.5F, 1.13f);
             entity.move(MoverType.SELF, Math.cos(Math.toRadians(entity.rotationYaw + 90)), 0, Math.sin(Math.toRadians(entity.rotationYaw + 90)));
             List<EntityLivingBase> entitiesHit = entity.getEntityLivingBaseNearby(range + 0.4, 3, range + 0.4, range + 0.4);
             float damage = (float) entity.getAttack();
