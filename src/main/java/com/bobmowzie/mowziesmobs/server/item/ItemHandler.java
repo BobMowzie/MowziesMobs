@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
-import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
