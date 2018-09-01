@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.client;
 import com.bobmowzie.mowziesmobs.client.render.entity.*;
 import com.bobmowzie.mowziesmobs.client.sound.IceBreathSound;
 import com.bobmowzie.mowziesmobs.client.sound.SpawnBoulderChargeSound;
+import com.bobmowzie.mowziesmobs.server.entity.EntityDynamicsTester;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.*;
 import com.bobmowzie.mowziesmobs.server.entity.effects.*;
@@ -44,6 +45,7 @@ public class ClientProxy extends ServerProxy {
         RenderingRegistry.registerEntityRenderingHandler(EntityFrostmaw.class, RenderFrostmaw::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityGrottol.class, RenderGrottol::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityMMLantern.class, RenderMMLantern::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityDynamicsTester.class, RenderDynamicsTester::new);
 
         RenderingRegistry.registerEntityRenderingHandler(EntityDart.class, RenderDart::new);
         RenderingRegistry.registerEntityRenderingHandler(EntitySunstrike.class, RenderSunstrike::new);

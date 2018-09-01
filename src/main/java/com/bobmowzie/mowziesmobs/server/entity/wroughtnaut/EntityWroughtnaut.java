@@ -335,8 +335,8 @@ public class EntityWroughtnaut extends MowzieEntity {
 
         repelEntities(2.2F, 4, 2.2F, 2.2F);
 
-        if (!active && getAttackTarget() == null) {
-            addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 20, 1, true, true));
+        if (!active) {
+            addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 20, 2, true, true));
         }
 
         if (disturbance != null) {

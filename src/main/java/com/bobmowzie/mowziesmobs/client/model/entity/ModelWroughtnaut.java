@@ -368,9 +368,9 @@ public class ModelWroughtnaut extends AdvancedModelBase {
         this.rootBox.addBox(0F, 0F, 0F, 0, 0, 0, 0.0F);
         this.setRotateAngle(rootBox, 0.0F, 0F, 0.0F);
         this.eyeLeft = new SocketModelRenderer(this);
-        this.eyeLeft.setRotationPoint(-4, 4, -4);
+        this.eyeLeft.setRotationPoint(-4, -4, 4);
         this.eyeRight = new SocketModelRenderer(this);
-        this.eyeRight.setRotationPoint(4, 4, -4);
+        this.eyeRight.setRotationPoint(4, -4, 4);
 
         rootBox.addChild(waist);
         this.waist.addChild(this.groinJoint);
@@ -456,12 +456,12 @@ public class ModelWroughtnaut extends AdvancedModelBase {
         EntityWroughtnaut wroughtnaut = (EntityWroughtnaut)entity;
 //        eyeRight.rotationPointZ -= 5;
 //        eyeLeft.rotationPointZ += 5;
-        eyeRight.rotationPointZ += 7;
-        eyeLeft.rotationPointZ += 7;
-        eyeRight.rotationPointX -= 1.7;
-        eyeLeft.rotationPointX += 1.7;
-        eyeRight.rotationPointY += 1.5;
-        eyeLeft.rotationPointY += 1.5;
+        eyeRight.rotationPointZ -= 7.5;
+        eyeLeft.rotationPointZ -= 7.5;
+        eyeRight.rotationPointX -= 1.9;
+        eyeLeft.rotationPointX += 1.9;
+        eyeRight.rotationPointY -= 1.5;
+        eyeLeft.rotationPointY -= 1.5;
         wroughtnaut.rightEyePos = eyeRight.getWorldPos(wroughtnaut);
         wroughtnaut.leftEyePos = eyeLeft.getWorldPos(wroughtnaut);
     }
