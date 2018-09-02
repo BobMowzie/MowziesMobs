@@ -172,6 +172,8 @@ public class EntityFrostmaw extends MowzieEntity {
         super.onUpdate();
         this.repelEntities(3.8f, 3.8f, 3.8f, 3.8f);
 
+        if (getAttackTarget() != null && (getAttackTarget().isDead || getAttackTarget().getHealth() <= 0)) setAttackTarget(null);
+
         if (ticksExisted == 1) {
 //            System.out.println("Frostmaw at " + getPosition());
             if (getHasCrystal()) {
