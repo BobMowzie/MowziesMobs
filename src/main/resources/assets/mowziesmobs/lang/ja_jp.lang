@@ -13,6 +13,7 @@ entity.barakoaya.name=バラコア
 entity.barako.name=バラコ・ザ・サンチーフ
 entity.frostmaw.name=フロスト・モー
 entity.lantern.name=ランタン
+entity.grottol.name=グロットル
 
 # Items
 item.foliaathSeed.name=フォリアスの種
@@ -30,8 +31,10 @@ item.spear.name=槍
 item.blowgun.name=吹き筒
 item.grantSunsBlessing.name=太陽の力
 item.testStructure.name=テスト
-item.icecrystal.name=アイスクリスタル
+item.iceCrystal.name=アイスクリスタル
 item.earthTalisman.name=大地のタリスマン
+item.capturedGrottol.name=捕まったグロットル
+item.glowingJelly.name=輝くジェル
 
 
 item.blowgun.text.0=チャージ速度が速い
@@ -69,7 +72,7 @@ item.foliaathSeed.text.0=草ブロックの上に植える
 item.foliaathSeed.text.1=2日間餌をやり続けよう
 
 
-item.grantSunsBlessing.text.0=20秒間太陽の力が付く
+item.grantSunsBlessing.text.0=20分間太陽の力が付く
 item.grantSunsBlessing.text.1=素手で右クリックでサン・ストライクを放つ
 item.grantSunsBlessing.text.2=素手でShift+右クリックで太陽光線を放つ(ただし制限時間が縮む)
 
@@ -81,7 +84,7 @@ item.earthTalisman.text.3=土をパンチする事で弾き飛ばす
 item.earthTalisman.text.4=右クリック長押しで大きな土塊が現れる
 
 
-item.mobRemover.text.0=右クリックで当MODのモブを削除
+item.mobRemover.text.0=左クリックで当MODのモブを削除
 
 
 item.wroughtHelm.text.0=耐久値無限
@@ -95,11 +98,13 @@ item.icecrystal.text.0=右クリックで氷の息吹を放つ
 item.icecrystal.text.1=放置しておけばチャージされる
 
 
+item.glowingJelly.text.0=食べるだけで暗視効果が付く
+
 # Blocks
 tile.campfire.name=焚き火
 tile.paintedAcacia.name=模様付きアカシアの木材
 tile.paintedAcaciaSlab.name=模様付きアカシアの木材ハーフブロック
-
+tile.grottol.name=グロットル
 
 # Potions
 potion.sunsBlessing=太陽の祝福
