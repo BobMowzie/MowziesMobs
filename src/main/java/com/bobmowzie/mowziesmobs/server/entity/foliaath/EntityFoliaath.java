@@ -67,7 +67,7 @@ public class EntityFoliaath extends MowzieEntity {
 
             @Override
             protected boolean isSuitableTarget(@Nullable EntityLivingBase target, boolean includeInvincibles) {
-                return !(target instanceof EntityFoliaath) && !(target instanceof EntityBabyFoliaath) && super.isSuitableTarget(target, includeInvincibles);
+                return !(target instanceof EntityFoliaath) && !(target instanceof EntityBabyFoliaath) && !target.isInvisible() && !target.getIsInvulnerable() && super.isSuitableTarget(target, includeInvincibles);
             }
         });
         this.setSize(0.5F, 2.5F);
