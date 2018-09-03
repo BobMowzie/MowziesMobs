@@ -7,10 +7,7 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.EnumAction;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
+import net.minecraft.item.*;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
@@ -24,7 +21,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-public class ItemWroughtAxe extends ItemSword {
+public class ItemWroughtAxe extends ItemAxe {
     public ItemWroughtAxe() {
         super(Item.ToolMaterial.IRON);
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MowziePlayerProperties extends EntityProperties<EntityPlayer> {
-    public static final int SWING_COOLDOWN = 20;
+    public static final int SWING_COOLDOWN = 30;
     @NBTProperty
     public int untilSunstrike = 0;
     @NBTProperty
