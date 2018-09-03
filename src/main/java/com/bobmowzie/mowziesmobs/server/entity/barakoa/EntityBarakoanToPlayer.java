@@ -2,10 +2,15 @@ package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
-public class EntityBarakoanToPlayer extends EntityBarakoan<EntityPlayer> {
+import javax.annotation.Nullable;
+import java.util.UUID;
+
+public class EntityBarakoanToPlayer extends EntityBarakoan<EntityPlayer> implements IEntityOwnable {
     public EntityBarakoanToPlayer(World world) {
         this(world, null);
     }
@@ -50,5 +55,17 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<EntityPlayer> {
     @Override
     public boolean isBarakoDevoted() {
         return false;
+    }
+
+    @Nullable
+    @Override
+    public UUID getOwnerId() {
+        return getLeader() == null ? null : getLeader().getUniqueID();
+    }
+
+    @Nullable
+    @Override
+    public Entity getOwner() {
+        return leader;
     }
 }
