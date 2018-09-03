@@ -78,6 +78,12 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     }
 
     @Override
+    public boolean getCanSpawnHere() {
+        boolean flag = world.provider.isSurfaceWorld();
+        return super.getCanSpawnHere() && flag;
+    }
+
+    @Override
     public void onUpdate() {
         prevPrevOnGround = prevOnGround;
         prevOnGround = onGround;
