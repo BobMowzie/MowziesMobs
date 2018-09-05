@@ -6,16 +6,17 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.client.model.tools.ControlledAnimation;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.client.audio.MovingSound;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.SoundCategory;
 
 public class IceBreathSound extends MovingSound {
-    private EntityIceBreath iceBreath;
+    private Entity iceBreath;
     int ticksExisted = 0;
     ControlledAnimation volumeControl;
     boolean active = true;
 
-    public IceBreathSound(EntityIceBreath icebreath) {
+    public IceBreathSound(Entity icebreath) {
         super(MMSounds.ENTITY_FROSTMAW_ICEBREATH, SoundCategory.NEUTRAL);
         this.iceBreath = icebreath;
         volume = 1F;

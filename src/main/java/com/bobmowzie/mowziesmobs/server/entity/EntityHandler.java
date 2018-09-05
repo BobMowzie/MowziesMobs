@@ -50,6 +50,7 @@ public enum EntityHandler {
         EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "boulder"), EntityBoulder.class, "boulder", nextEntityId(), MowziesMobs.instance(), 64, 1, true);
         EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "axe_attack"), EntityAxeAttack.class, "axe_attack", nextEntityId(), MowziesMobs.instance(), 64, 1, true);
         EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "icebreath"), EntityIceBreath.class, "icebreath", nextEntityId(), MowziesMobs.instance(), 64, 1, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "ice_ball"), EntityIceBall.class, "ice_ball", nextEntityId(), MowziesMobs.instance(), 64, 1, true);
         EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "frozen_controller"), EntityFrozenController.class, "frozen_controller", nextEntityId(), MowziesMobs.instance(), 64, 1, true);
         EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "ring"), EntityRing.class, "ring", nextEntityId(), MowziesMobs.instance(), 64, 1, true);
 

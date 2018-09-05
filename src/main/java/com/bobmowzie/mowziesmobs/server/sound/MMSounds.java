@@ -215,6 +215,10 @@ public final class MMSounds {
     public static final SoundEvent ENTITY_FROSTMAW_ICEBREATH = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":frostmaw.icebreathstart")
     public static final SoundEvent ENTITY_FROSTMAW_ICEBREATH_START = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":frostmaw.iceballcharge")
+    public static final SoundEvent ENTITY_FROSTMAW_ICEBALL_CHARGE = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":frostmaw.iceballshoot")
+    public static final SoundEvent ENTITY_FROSTMAW_ICEBALL_SHOOT = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":frostmaw.frozencrash")
     public static final SoundEvent ENTITY_FROSTMAW_FROZEN_CRASH = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":frostmaw.step")
@@ -405,6 +409,8 @@ public final class MMSounds {
                 create("frostmaw.whoosh"),
                 create("frostmaw.icebreath"),
                 create("frostmaw.icebreathstart"),
+                create("frostmaw.iceballcharge"),
+                create("frostmaw.iceballshoot"),
                 create("frostmaw.frozencrash"),
                 create("frostmaw.step"),
                 create("frostmaw.land"),

@@ -78,7 +78,7 @@ public class ParticleSnowFlake extends Particle implements ParticleTextureStitch
     @Override
     public void renderParticle(BufferBuilder buffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         float var = (particleAge + partialTicks)/(float)particleMaxAge;
-        particleAlpha = (float) (1 - Math.exp(10 * (var - 1)));
+        particleAlpha = (float) (1 - Math.exp(10 * (var - 1)) - Math.pow(2000, -var));
         if (particleAlpha < 0.1) particleAlpha = 0.1f;
 
         float f = (float)this.particleTextureIndexX / 16.0F;

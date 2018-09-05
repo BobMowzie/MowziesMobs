@@ -409,9 +409,11 @@ public class ModelFrostmaw extends AdvancedModelBase {
         animate(frostmaw, f, f1, f2, f3, f4, f5);
         this.root.render(f5);
         mouthSocket.setRotationPoint(0, -10, 8);
-        if (frostmaw.getAnimation() == frostmaw.SWIPE_ANIMATION || frostmaw.getAnimation() == frostmaw.SWIPE_TWICE_ANIMATION || frostmaw.getAnimation() == frostmaw.ICE_BREATH_ANIMATION || !frostmaw.getActive()) {
+        if (frostmaw.getAnimation() == frostmaw.SWIPE_ANIMATION || frostmaw.getAnimation() == frostmaw.SWIPE_TWICE_ANIMATION || frostmaw.getAnimation() == frostmaw.ICE_BREATH_ANIMATION || frostmaw.getAnimation() == frostmaw.ICE_BALL_ANIMATION || !frostmaw.getActive()) {
             Vec3d rightHandPos = rightHandSocket.getWorldPos(frostmaw);
             Vec3d leftHandPos = leftHandSocket.getWorldPos(frostmaw);
+            mouthSocket.rotationPointZ -= 28;
+            mouthSocket.rotationPointY += 26;
             Vec3d mouthPos = mouthSocket.getWorldPos(frostmaw);
             Vec3d crystalPos = crystalSocket.getWorldPos(frostmaw);
             frostmaw.socketPosArray[0] = rightHandPos;
@@ -420,7 +422,7 @@ public class ModelFrostmaw extends AdvancedModelBase {
             frostmaw.socketPosArray[3] = crystalPos;
             MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageSendSocketPos(frostmaw, 0, rightHandPos));
             MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageSendSocketPos(frostmaw, 1, leftHandPos));
-            MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageSendSocketPos(frostmaw, 2, mouthPos));
+//            MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageSendSocketPos(frostmaw, 2, mouthPos));
             MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageSendSocketPos(frostmaw, 3, crystalPos));
         }
     }
@@ -848,6 +850,65 @@ public class ModelFrostmaw extends AdvancedModelBase {
             animator.resetKeyframe(7);
             iceCrystal.rotateAngleY += frame;
         }
+
+        if (frostmaw.getAnimation() == EntityFrostmaw.ICE_BALL_ANIMATION) {
+            animator.setAnimation(EntityFrostmaw.ICE_BALL_ANIMATION);
+
+            animator.startKeyframe(20);
+            animator.rotate(waist, -0.2f, 0, 0);
+            animator.rotate(legRightJoint, 0.2f, 0, 0);
+            animator.rotate(legLeftJoint, 0.2f, 0, 0);
+            animator.rotate(headJoint, -0.1f, 0, 0);
+            animator.move(headJoint, 0, 0, -4);
+            animator.rotate(jawJoint, 1.4f, 0, 0);
+
+            animator.rotate(armLeftJoint, -0.4f, 0, 0);
+            animator.rotate(armLeftJoint2, 0.9f, 0, 0);
+            animator.rotate(leftHand, -0.3f, 0, -0.15f);
+            animator.rotate(armRightJoint, -0.4f, 0, 0);
+            animator.rotate(armRightJoint2, 0.9f, 0, 0);
+            animator.rotate(rightHand, -0.3f, 0, 0.15f);
+            animator.endKeyframe();
+
+            animator.setStaticKeyframe(8);
+
+            animator.startKeyframe(4);
+            animator.rotate(waist, -0.2f, 0, 0);
+            animator.rotate(legRightJoint, 0.2f, 0, 0);
+            animator.rotate(legLeftJoint, 0.2f, 0, 0);
+            animator.rotate(headJoint, 0.6f, 0, 0);
+
+            animator.rotate(armLeftJoint, -0.4f, 0, 0);
+            animator.rotate(armLeftJoint2, 0.9f, 0, 0);
+            animator.rotate(leftHand, -0.3f, 0, -0.15f);
+            animator.rotate(armRightJoint, -0.4f, 0, 0);
+            animator.rotate(armRightJoint2, 0.9f, 0, 0);
+            animator.rotate(rightHand, -0.3f, 0, 0.15f);
+            animator.endKeyframe();
+
+            animator.setStaticKeyframe(2);
+
+            animator.startKeyframe(3);
+            animator.rotate(waist, 0.2f, 0, 0);
+            animator.rotate(legRightJoint, -0.2f, 0, 0);
+            animator.rotate(legLeftJoint, -0.2f, 0, 0);
+            animator.rotate(headJoint, -0.9f, 0, 0);
+            animator.rotate(jawJoint, 1.6f, 0, 0);
+
+            animator.rotate(armLeftJoint, 0.15f, 0, 0);
+            animator.move(armLeftJoint, 0, 2, 0);
+            animator.rotate(armLeftJoint2, -0.6f, 0, 0);
+            animator.rotate(leftHand, 0.3f, 0, 0.15f);
+            animator.rotate(armRightJoint, 0.15f, 0, 0);
+            animator.move(armRightJoint, 0, 2, 0);
+            animator.rotate(armRightJoint2, -0.6f, 0, 0);
+            animator.rotate(rightHand, 0.3f, 0, -0.15f);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(5);
+            animator.resetKeyframe(7);
+            iceCrystal.rotateAngleY += frame;
+        }
+
         if (frostmaw.getAnimation() == EntityFrostmaw.ACTIVATE_ANIMATION) {
             eyeLidLeft.isHidden = true;
             eyeLidRight.isHidden = true;

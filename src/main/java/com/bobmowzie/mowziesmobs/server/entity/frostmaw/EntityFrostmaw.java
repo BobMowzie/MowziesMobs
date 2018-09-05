@@ -9,6 +9,7 @@ import com.bobmowzie.mowziesmobs.server.ai.MMPathNavigateGround;
 import com.bobmowzie.mowziesmobs.server.ai.animation.*;
 import com.bobmowzie.mowziesmobs.server.entity.LegSolverQuadruped;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBall;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
@@ -58,6 +59,7 @@ public class EntityFrostmaw extends MowzieEntity {
     public static final Animation SWIPE_ANIMATION = Animation.create(28);
     public static final Animation SWIPE_TWICE_ANIMATION = Animation.create(57);
     public static final Animation ICE_BREATH_ANIMATION = Animation.create(92);
+    public static final Animation ICE_BALL_ANIMATION = Animation.create(50);
     public static final Animation ACTIVATE_ANIMATION = Animation.create(118);
     public static final Animation ACTIVATE_NO_CRYSTAL_ANIMATION = Animation.create(100);
     public static final Animation DEACTIVATE_ANIMATION = Animation.create(25);
@@ -70,6 +72,7 @@ public class EntityFrostmaw extends MowzieEntity {
     private static final DataParameter<Optional<UUID>> CRYSTAL = EntityDataManager.createKey(EntityFrostmaw.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 
     public static final int ICE_BREATH_COOLDOWN = 260;
+    public static final int ICE_BALL_COOLDOWN = 200;
     public static final int SLAM_COOLDOWN = 500;
     public static final int DODGE_COOLDOWN = 200;
 
@@ -80,12 +83,15 @@ public class EntityFrostmaw extends MowzieEntity {
     private Vec3d prevRightHandPos = new Vec3d(0, 0, 0);
     private Vec3d prevLeftHandPos = new Vec3d(0, 0, 0);
     private int iceBreathCooldown = 0;
+    private int iceBallCooldown = 0;
     private int slamCooldown = 0;
     private int timeWithoutTarget;
     private int shouldDodgeMeasure = 0;
     private int dodgeCooldown = 0;
     private boolean shouldDodge;
     private float dodgeYaw = 0;
+
+    private Vec3d prevTargetPos = new Vec3d(0, 0, 0);
 
     private boolean shouldPlayLandAnimation = false;
 
@@ -102,6 +108,7 @@ public class EntityFrostmaw extends MowzieEntity {
         this.tasks.addTask(2, new AnimationAreaAttackAI<>(this, SWIPE_ANIMATION, null, null, 2, 7, 6, 120, 1f, 9));
         this.tasks.addTask(2, new AnimationAreaAttackAI<>(this, SWIPE_TWICE_ANIMATION, null, null, 1, 7, 6, 120, 1f, 9));
         this.tasks.addTask(2, new AnimationAI<>(this, ICE_BREATH_ANIMATION, true));
+        this.tasks.addTask(2, new AnimationAI<>(this, ICE_BALL_ANIMATION, true));
         this.tasks.addTask(2, new AnimationAI<>(this, ROAR_ANIMATION, false));
         this.tasks.addTask(2, new AnimationActivateAI<>(this, ACTIVATE_ANIMATION));
         this.tasks.addTask(2, new AnimationActivateAI<>(this, ACTIVATE_NO_CRYSTAL_ANIMATION));
@@ -295,6 +302,58 @@ public class EntityFrostmaw extends MowzieEntity {
                     iceBreath.setPositionAndRotation(mouthPos.x, mouthPos.y, mouthPos.z, rotationYawHead, rotationPitch + 10);
             }
 
+            if (getAnimation() == ICE_BALL_ANIMATION) {
+                if (getAttackTarget() != null) getLookHelper().setLookPositionWithEntity(getAttackTarget(), 15, 15);
+                Vec3d projectilePos = new Vec3d(2.3, 2.65, 0);
+                projectilePos = projectilePos.rotateYaw((float)Math.toRadians(-rotationYaw - 90));
+                projectilePos = projectilePos.add(getPositionVector());
+                projectilePos = projectilePos.add(new Vec3d(0, 0, 1).rotatePitch((float)Math.toRadians(-rotationPitch)).rotateYaw((float)Math.toRadians(-rotationYawHead)));
+                if (world.isRemote) {
+                    Vec3d mouthPos = socketPosArray[2];
+                    if (getAnimationTick() < 12) {
+                        for (int i = 0; i < 6; i++) {
+                            Vec3d particlePos = new Vec3d(3.5, 0, 0);
+                            particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
+                            particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                            double value = rand.nextFloat() * 0.15f;
+                            MMParticle.CLOUD.spawn(world, mouthPos.x + particlePos.x, mouthPos.y + particlePos.y, mouthPos.z + particlePos.z, ParticleFactory.ParticleArgs.get().withData(-0.1 * particlePos.x, -0.1 * particlePos.y, -0.1 * particlePos.z, 0.75d + value, 0.75d + value, 1d, true, 5d + rand.nextDouble() * 15d, 30, ParticleCloud.EnumCloudBehavior.CONSTANT));
+                        }
+                        for (int i = 0; i < 8; i++) {
+                            Vec3d particlePos = new Vec3d(3.5, 0, 0);
+                            particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
+                            particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                            MMParticle.SNOWFLAKE.spawn(world, mouthPos.x + particlePos.x, mouthPos.y + particlePos.y, mouthPos.z + particlePos.z, ParticleFactory.ParticleArgs.get().withData(-0.07 * particlePos.x, -0.07 * particlePos.y, -0.07 * particlePos.z));
+                        }
+                    }
+                }
+                if (getAnimationTick() == 1) {
+                    playSound(MMSounds.ENTITY_FROSTMAW_ICEBALL_CHARGE, 2, 0.9f);
+                }
+                if (getAnimationTick() == 32) {
+                    if (getAttackTarget() != null) prevTargetPos = getAttackTarget().getPositionVector().add(new Vec3d(0f, getAttackTarget().getEyeHeight(), 0f));
+                }
+                if (getAnimationTick() == 33) {
+                    playSound(MMSounds.ENTITY_FROSTMAW_ICEBALL_SHOOT, 2, 0.7f);
+
+                    EntityIceBall iceBall = new EntityIceBall(world, this);
+                    iceBall.setPositionAndRotation(projectilePos.x, projectilePos.y, projectilePos.z, rotationYawHead, rotationPitch + 10);
+                    float projSpeed = 1.7f;
+                    if (getAttackTarget() != null) {
+                        float ticksUntilHit = targetDistance / projSpeed;
+                        Vec3d targetPos = getAttackTarget().getPositionVector().add(new Vec3d(0f, getAttackTarget().getEyeHeight(), 0f));
+                        Vec3d targetMovement = targetPos.subtract(prevTargetPos).scale(ticksUntilHit * 0.95);
+                        targetMovement = targetMovement.subtract(0, targetMovement.y, 0);
+                        Vec3d futureTargetPos = targetPos.add(targetMovement);
+                        Vec3d shootVec = futureTargetPos.subtract(projectilePos).normalize();
+                        iceBall.setThrowableHeading(shootVec.x, shootVec.y, shootVec.z, projSpeed, 0);
+                    }
+                    else {
+                        iceBall.setThrowableHeading(getLookVec().x, getLookVec().y, getLookVec().z, projSpeed, 0);
+                    }
+                    if (!world.isRemote) world.spawnEntity(iceBall);
+                }
+            }
+
             spawnSwipeParticles();
 
             if (getAttackTarget() != null) {
@@ -314,12 +373,13 @@ public class EntityFrostmaw extends MowzieEntity {
                 }
 
                 if (shouldDodgeMeasure >= 14) shouldDodge = true;
-                if (targetDistance < 6 && shouldDodge && getAnimation() == NO_ANIMATION) {
+                if (targetDistance < 4 && shouldDodge && getAnimation() == NO_ANIMATION) {
                     shouldDodge = false;
                     dodgeCooldown = DODGE_COOLDOWN;
                     shouldDodgeMeasure = 0;
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, DODGE_ANIMATION);
                 }
+
                 if (targetDistance > 6 && !(getAnimation() == ICE_BREATH_ANIMATION && targetDistance < 8) && onGround) {
                     if (getAnimation() != SLAM_ANIMATION) getNavigator().tryMoveToEntityLiving(getAttackTarget(), 1);
                     else getNavigator().tryMoveToEntityLiving(getAttackTarget(), 0.95);
@@ -337,6 +397,10 @@ public class EntityFrostmaw extends MowzieEntity {
                 if (targetDistance >= 4 && targetDistance <= 14 && getAnimation() == NO_ANIMATION && iceBreathCooldown <= 0 && getHasCrystal() && onGround) {
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, ICE_BREATH_ANIMATION);
                     iceBreathCooldown = ICE_BREATH_COOLDOWN;
+                }
+                if (targetDistance >= 12 && getAnimation() == NO_ANIMATION && iceBallCooldown <= 0 && getHasCrystal() && onGround) {
+                    AnimationHandler.INSTANCE.sendAnimationMessage(this, ICE_BALL_ANIMATION);
+                    iceBallCooldown = ICE_BALL_COOLDOWN;
                 }
             }
             else if (!world.isRemote) {
@@ -428,11 +492,12 @@ public class EntityFrostmaw extends MowzieEntity {
         }
 
 //        if (getAnimation() == NO_ANIMATION && onGround) {
-//            AnimationHandler.INSTANCE.sendAnimationMessage(this, ICE_BREATH_ANIMATION);
+//            AnimationHandler.INSTANCE.sendAnimationMessage(this, ICE_BALL_ANIMATION);
 //            setActive(true);
 //        }
 
         if (iceBreathCooldown > 0) iceBreathCooldown--;
+        if (iceBallCooldown > 0) iceBallCooldown--;
         if (slamCooldown > 0) slamCooldown--;
         if (shouldDodgeMeasure > 0 && ticksExisted % 7 == 0) shouldDodgeMeasure--;
         if (dodgeCooldown > 0) slamCooldown--;
@@ -774,7 +839,7 @@ public class EntityFrostmaw extends MowzieEntity {
 
     @Override
     public Animation[] getAnimations() {
-        return new Animation[] {DIE_ANIMATION, HURT_ANIMATION, ROAR_ANIMATION, SWIPE_ANIMATION, SWIPE_TWICE_ANIMATION, ICE_BREATH_ANIMATION, ACTIVATE_ANIMATION, ACTIVATE_NO_CRYSTAL_ANIMATION, DEACTIVATE_ANIMATION, SLAM_ANIMATION, LAND_ANIMATION, DODGE_ANIMATION};
+        return new Animation[] {DIE_ANIMATION, HURT_ANIMATION, ROAR_ANIMATION, SWIPE_ANIMATION, SWIPE_TWICE_ANIMATION, ICE_BREATH_ANIMATION, ICE_BALL_ANIMATION, ACTIVATE_ANIMATION, ACTIVATE_NO_CRYSTAL_ANIMATION, DEACTIVATE_ANIMATION, SLAM_ANIMATION, LAND_ANIMATION, DODGE_ANIMATION};
     }
 
     @Override

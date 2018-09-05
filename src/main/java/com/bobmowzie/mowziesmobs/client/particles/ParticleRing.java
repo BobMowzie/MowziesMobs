@@ -28,7 +28,16 @@ public class ParticleRing extends Particle implements ParticleTextureStitcher.IP
     public float yaw, pitch;
     public float size;
 
-    public ParticleRing(World world, double x, double y, double z, float yaw, float pitch, int duration, float r, float g, float b, float opacity, float size, boolean facesCamera, float motionX, float motionY, float motionZ) {
+    private EnumRingBehavior behavior;
+
+    public enum EnumRingBehavior {
+        SHRINK,
+        GROW,
+        CONSTANT,
+        GROW_THEN_SHRINK
+    }
+
+    public ParticleRing(World world, double x, double y, double z, float yaw, float pitch, int duration, float r, float g, float b, float opacity, float size, boolean facesCamera, float motionX, float motionY, float motionZ, EnumRingBehavior behavior) {
         super(world, x, y, z);
         particleScale = 1;
         this.size = size;
@@ -44,6 +53,7 @@ public class ParticleRing extends Particle implements ParticleTextureStitcher.IP
         this.motionX = motionX;
         this.motionY = motionY;
         this.motionZ = motionZ;
+        this.behavior = behavior;
     }
 
     @Override
@@ -67,8 +77,20 @@ public class ParticleRing extends Particle implements ParticleTextureStitcher.IP
 
     @Override
     public void renderParticle(BufferBuilder buffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-        particleScale = size * (particleAge + partialTicks)/particleMaxAge;
-        particleAlpha = opacity * 0.9f * (1 - (particleAge + partialTicks)/particleMaxAge) + 0.1f;
+        float var = (particleAge + partialTicks)/particleMaxAge;
+        if (behavior == EnumRingBehavior.GROW) {
+            particleScale = size * var;
+        }
+        else if (behavior == EnumRingBehavior.SHRINK) {
+            particleScale = size * (1 - var);
+        }
+        else if (behavior == EnumRingBehavior.GROW_THEN_SHRINK) {
+            particleScale = (float) (size * (1 - var - Math.pow(2000, -var)));
+        }
+        else {
+            particleScale = size;
+        }
+        particleAlpha = opacity * 0.95f * (1 - (particleAge + partialTicks)/particleMaxAge) + 0.05f;
         particleRed = r;
         particleGreen = g;
         particleBlue = b;
@@ -156,10 +178,13 @@ public class ParticleRing extends Particle implements ParticleTextureStitcher.IP
 
         @Override
         public ParticleRing createParticle(ImmutableParticleArgs args) {
-            if (args.data.length >= 12) {
-                return new ParticleRing(args.world, args.x, args.y, args.z, (float) args.data[0], (float) args.data[1], (int) args.data[2], (float) args.data[3], (float) args.data[4], (float) args.data[5], (float) args.data[6], (float) args.data[7], (boolean) args.data[8], (float) args.data[9], (float) args.data[10], (float) args.data[11]);
+            if (args.data.length >= 13) {
+                return new ParticleRing(args.world, args.x, args.y, args.z, (float) args.data[0], (float) args.data[1], (int) args.data[2], (float) args.data[3], (float) args.data[4], (float) args.data[5], (float) args.data[6], (float) args.data[7], (boolean) args.data[8], (float) args.data[9], (float) args.data[10], (float) args.data[11], (EnumRingBehavior) args.data[12]);
             }
-            else return new ParticleRing(args.world, args.x, args.y, args.z, 0, 0, 25, 0.8f, 0.8f, 1f, 1f, 5, true, 0, 0, 0);
+            else if (args.data.length >= 12) {
+                return new ParticleRing(args.world, args.x, args.y, args.z, (float) args.data[0], (float) args.data[1], (int) args.data[2], (float) args.data[3], (float) args.data[4], (float) args.data[5], (float) args.data[6], (float) args.data[7], (boolean) args.data[8], (float) args.data[9], (float) args.data[10], (float) args.data[11], EnumRingBehavior.GROW);
+            }
+            else return new ParticleRing(args.world, args.x, args.y, args.z, 0, 0, 25, 0.8f, 0.8f, 1f, 1f, 5, true, 0, 0, 0, EnumRingBehavior.GROW);
         }
     }
 

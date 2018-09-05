@@ -38,6 +38,7 @@ public class ParticleCloud extends Particle implements ParticleTextureStitcher.I
         green = (float) g;
         blue = (float) b;
         this.behavior = behavior;
+        particleAngle = prevParticleAngle = (float) (rand.nextInt(4) * Math.PI/2);
     }
 
     @Override
@@ -57,7 +58,7 @@ public class ParticleCloud extends Particle implements ParticleTextureStitcher.I
     @Override
     public void renderParticle(BufferBuilder buffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         float var = (particleAge + partialTicks)/(float)particleMaxAge;
-        particleAlpha = 0.2f * ((float) (1 - Math.exp(5 * (var - 1))));
+        particleAlpha = 0.2f * ((float) (1 - Math.exp(5 * (var - 1)) - Math.pow(2000, -var)));
         if (particleAlpha < 0.01) particleAlpha = 0.01f;
         particleRed = red;
         particleGreen = green;

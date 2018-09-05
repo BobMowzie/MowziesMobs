@@ -28,12 +28,10 @@ import java.util.List;
 /**
  * Created by Josh on 5/25/2017.
  */
-public class EntityIceBreath extends Entity {
+public class EntityIceBreath extends EntityMagicEffect {
     private static final int RANGE = 10;
     private static final int ARC = 45;
     private static final int DAMAGE_PER_HIT = 1;
-    public EntityLivingBase caster;
-    private static final DataParameter<Integer> CASTER = EntityDataManager.createKey(EntityIceBreath.class, DataSerializers.VARINT);
 
     public EntityIceBreath(World world) {
         super(world);
@@ -63,9 +61,6 @@ public class EntityIceBreath extends Entity {
             posZ = ((EntityPlayer) caster).posZ;
         }
 
-        if (ticksExisted == 1) {
-            caster = (EntityLivingBase) world.getEntityByID(getCasterID());
-        }
         float yaw = (float) Math.toRadians(-rotationYaw);
         float pitch = (float) Math.toRadians(-rotationPitch);
         float spread = 0.25f;
@@ -132,7 +127,7 @@ public class EntityIceBreath extends Entity {
             if (inRange && yawCheck && pitchCheck) {
                 entityHit.attackEntityFrom(DamageSource.causeIndirectMagicDamage(caster, null), damage);
                 MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entityHit, MowzieLivingProperties.class);
-                property.freezeProgress += 0.12;
+                if (property != null) property.freezeProgress += 0.13;
             }
         }
     }
@@ -143,19 +138,6 @@ public class EntityIceBreath extends Entity {
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double dX, double dY, double dZ, double r) {
         return world.getEntitiesWithinAABB(entityClass, getEntityBoundingBox().grow(dX, dY, dZ), e -> e != this && getDistanceToEntity(e) <= r && e.posY <= posY + dY);
-    }
-
-    @Override
-    protected void entityInit() {
-        getDataManager().register(CASTER, -1);
-    }
-
-    public int getCasterID() {
-        return getDataManager().get(CASTER);
-    }
-
-    public void setCasterID(int id) {
-        getDataManager().set(CASTER, id);
     }
 
     @Override

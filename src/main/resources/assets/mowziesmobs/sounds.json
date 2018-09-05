@@ -338,6 +338,12 @@
 	"frostmaw.icebreathstart": {
 		"sounds": [ "mowziesmobs:entity/frostmaw/icebreathstart" ]
 	},
+	"frostmaw.iceballcharge": {
+		"sounds": [ "mowziesmobs:entity/frostmaw/iceballcharge" ]
+	},
+	"frostmaw.iceballshoot": {
+		"sounds": [ "mowziesmobs:entity/frostmaw/iceballshoot" ]
+	},
 	"frostmaw.step": {
 		"sounds": [ "mowziesmobs:entity/frostmaw/step" ]
 	},

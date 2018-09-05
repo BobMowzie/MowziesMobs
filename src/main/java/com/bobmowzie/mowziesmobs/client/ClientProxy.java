@@ -11,6 +11,7 @@ import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import com.bobmowzie.mowziesmobs.server.entity.mmlantern.EntityMMLantern;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -71,8 +72,8 @@ public class ClientProxy extends ServerProxy {
     }
 
     @Override
-    public void playIceBreathSound(EntityIceBreath iceBreath) {
-        Minecraft.getMinecraft().getSoundHandler().playSound(new IceBreathSound(iceBreath));
+    public void playIceBreathSound(Entity entity) {
+        Minecraft.getMinecraft().getSoundHandler().playSound(new IceBreathSound(entity));
     }
 
     @Override

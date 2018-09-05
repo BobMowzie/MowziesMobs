@@ -2,11 +2,13 @@ package com.bobmowzie.mowziesmobs.server;
 
 import java.io.IOException;
 
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBall;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
 import com.google.common.base.Optional;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -60,7 +62,7 @@ public class ServerProxy {
 
     public void playSunstrikeSound(EntitySunstrike strike) {}
 
-    public void playIceBreathSound(EntityIceBreath iceBreath) {}
+    public void playIceBreathSound(Entity entity) {}
 
     public void playBoulderChargeSound(EntityPlayer player) {}
 
