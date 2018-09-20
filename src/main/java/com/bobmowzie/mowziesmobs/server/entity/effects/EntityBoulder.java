@@ -55,7 +55,7 @@ public class EntityBoulder extends Entity {
         super(world);
         setSize(10, 10);
         travelling = false;
-        damage = 6;
+        damage = 8;
         finishedRisingTick = 4;
         animationOffset = (float) (Math.random() * 8);
         this.setOrigin(new BlockPos(this));

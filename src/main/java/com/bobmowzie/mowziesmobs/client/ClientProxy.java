@@ -8,7 +8,8 @@ import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.*;
 import com.bobmowzie.mowziesmobs.server.entity.effects.*;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
-import com.bobmowzie.mowziesmobs.server.entity.mmlantern.EntityMMLantern;
+import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityLantern;
+import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.entity.Entity;
@@ -45,7 +46,9 @@ public class ClientProxy extends ServerProxy {
         RenderingRegistry.registerEntityRenderingHandler(EntityBarakoanToPlayer.class, RenderBarakoa::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityFrostmaw.class, RenderFrostmaw::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityGrottol.class, RenderGrottol::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityMMLantern.class, RenderMMLantern::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityLantern.class, RenderLantern::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityNaga.class, RenderNaga::new);
+
         RenderingRegistry.registerEntityRenderingHandler(EntityDynamicsTester.class, RenderDynamicsTester::new);
 
         RenderingRegistry.registerEntityRenderingHandler(EntityDart.class, RenderDart::new);

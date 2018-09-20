@@ -52,7 +52,7 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
                 if (entity == caster) continue;
                 if (entity.getIsInvulnerable()) continue;
                 if (entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isCreativeMode) continue;
-                entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(caster, null), 5);
+                entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(caster, null), 3);
                 MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
                 if (property != null) property.freezeProgress += 1;
             }
