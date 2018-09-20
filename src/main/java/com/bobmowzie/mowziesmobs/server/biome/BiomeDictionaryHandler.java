@@ -13,7 +13,7 @@ import net.minecraftforge.common.BiomeDictionary;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
-import com.bobmowzie.mowziesmobs.server.entity.mmlantern.EntityMMLantern;
+import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityLantern;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
 import java.util.Set;
@@ -71,6 +71,6 @@ public enum BiomeDictionaryHandler {
         EntityRegistry.addSpawn(EntityBarakoana.class, MowziesMobs.CONFIG.spawnrateBarakoa, 1, 1, EnumCreatureType.MONSTER, biomesAndTypes.get(BiomeDictionary.Type.SAVANNA).toArray(new Biome[biomesAndTypes.get(BiomeDictionary.Type.SAVANNA).size()]));
         EntityRegistry.addSpawn(EntityFrostmaw.class, MowziesMobs.CONFIG.spawnrateFrostmaw, 1, 1, EnumCreatureType.MONSTER, frostmawBiomes.toArray(new Biome[frostmawBiomes.size()]));
         EntityRegistry.addSpawn(EntityGrottol.class, MowziesMobs.CONFIG.spawnrateGrottol, 1, 1, EnumCreatureType.MONSTER, overworldBiomes.toArray(new Biome[overworldBiomes.size()]));
-        EntityRegistry.addSpawn(EntityMMLantern.class, MowziesMobs.CONFIG.spawnrateLantern, 1, 2, EnumCreatureType.AMBIENT, lanternBiomes.toArray(new Biome[lanternBiomes.size()]));
+        EntityRegistry.addSpawn(EntityLantern.class, MowziesMobs.CONFIG.spawnrateLantern, 1, 2, EnumCreatureType.AMBIENT, lanternBiomes.toArray(new Biome[lanternBiomes.size()]));
     }
 }

@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ExtendedModelRenderer;
-import com.bobmowzie.mowziesmobs.server.entity.mmlantern.EntityMMLantern;
+import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityLantern;
 import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.model.ModelAnimator;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
@@ -13,7 +13,7 @@ import net.minecraft.entity.Entity;
 /**
  * Created by Josh on 7/24/2018.
  */
-public class ModelMMLantern extends AdvancedModelBase {
+public class ModelLantern extends AdvancedModelBase {
     public ExtendedModelRenderer body;
     public ExtendedModelRenderer center;
     public AdvancedModelRenderer bubbles;
@@ -37,7 +37,7 @@ public class ModelMMLantern extends AdvancedModelBase {
 
     private ModelAnimator animator;
 
-    public ModelMMLantern() {
+    public ModelLantern() {
         animator = ModelAnimator.create();
         this.textureWidth = 64;
         this.textureHeight = 64;
@@ -182,14 +182,14 @@ public class ModelMMLantern extends AdvancedModelBase {
     }
 
     public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        EntityMMLantern lantern = (EntityMMLantern) entity;
+        EntityLantern lantern = (EntityLantern) entity;
         animator.update(lantern);
         setRotationAngles(f, f1, f2, f3, f4, f5, lantern);
 
         float frame = lantern.frame + LLibrary.PROXY.getPartialTicks();
 
-        if (lantern.getAnimation() == EntityMMLantern.PUFF_ANIMATION) {
-            animator.setAnimation(EntityMMLantern.PUFF_ANIMATION);
+        if (lantern.getAnimation() == EntityLantern.PUFF_ANIMATION) {
+            animator.setAnimation(EntityLantern.PUFF_ANIMATION);
             animator.startKeyframe(7);
             animator.move(scaleController, 0.4f, -0.4f, 0.4f);
             animator.move(body, 0f, -3f, 0f);
@@ -220,8 +220,8 @@ public class ModelMMLantern extends AdvancedModelBase {
             animator.endKeyframe();
             animator.resetKeyframe(7);
         }
-        if (lantern.getAnimation() == EntityMMLantern.DIE_ANIMATION) {
-            animator.setAnimation(EntityMMLantern.DIE_ANIMATION);
+        if (lantern.getAnimation() == EntityLantern.DIE_ANIMATION) {
+            animator.setAnimation(EntityLantern.DIE_ANIMATION);
             animator.startKeyframe(3);
             animator.move(scaleController, -0.5f, -0.5f, -0.5f);
             animator.move(bottomBits, 0f, -3f, 0f);

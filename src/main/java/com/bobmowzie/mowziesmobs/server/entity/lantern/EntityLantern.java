@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.server.entity.mmlantern;
+package com.bobmowzie.mowziesmobs.server.entity.lantern;
 
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
@@ -16,24 +16,19 @@ import net.minecraft.entity.MoverType;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
-import net.minecraft.pathfinding.PathNavigate;
-import net.minecraft.pathfinding.PathNavigateFlying;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
 import java.util.Random;
 
 /**
  * Created by Josh on 7/24/2018.
  */
-public class EntityMMLantern extends MowzieEntity {
+public class EntityLantern extends MowzieEntity {
     public static final Animation DIE_ANIMATION = Animation.create(25);
     public static final Animation HURT_ANIMATION = Animation.create(10);
     public static final Animation PUFF_ANIMATION = Animation.create(28);
@@ -46,7 +41,7 @@ public class EntityMMLantern extends MowzieEntity {
     public Vec3d dir;
     private int groundDist = 0;
 
-    public EntityMMLantern(World world) {
+    public EntityLantern(World world) {
         super(world);
         setSize(1, 1);
         dir = null;
@@ -219,9 +214,9 @@ public class EntityMMLantern extends MowzieEntity {
 
     static class AIRandomFly extends EntityAIBase
     {
-        private final EntityMMLantern parentEntity;
+        private final EntityLantern parentEntity;
 
-        public AIRandomFly(EntityMMLantern ghast)
+        public AIRandomFly(EntityLantern ghast)
         {
             this.parentEntity = ghast;
             this.setMutexBits(1);
@@ -271,10 +266,10 @@ public class EntityMMLantern extends MowzieEntity {
 
     static class LanternMoveHelper extends EntityMoveHelper
     {
-        private final EntityMMLantern parentEntity;
+        private final EntityLantern parentEntity;
         private int courseChangeCooldown;
 
-        public LanternMoveHelper(EntityMMLantern lantern)
+        public LanternMoveHelper(com.bobmowzie.mowziesmobs.server.entity.lantern.EntityLantern lantern)
         {
             super(lantern);
             this.parentEntity = lantern;
