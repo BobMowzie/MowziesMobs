@@ -1,6 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
 import com.google.common.base.Optional;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.state.IBlockProperties;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
