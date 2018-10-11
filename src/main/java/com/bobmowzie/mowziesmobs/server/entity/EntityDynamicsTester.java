@@ -40,7 +40,7 @@ public class EntityDynamicsTester extends MowzieEntity {
             if (ticksExisted == 1) {
                 dc = new DynamicChain(this);
             }
-            dc.update(0.1f, 0.3f, 0.6f, 1f, true, 0.5f);
+            dc.updateSpringConstraint(0.1f, 0.3f, 0.6f, 1f, true, 0.5f, 1);
             renderYawOffset = rotationYaw;
         }
     }
