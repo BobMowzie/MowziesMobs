@@ -8,6 +8,7 @@ import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.entity.Entity;
+import org.lwjgl.opengl.GL11;
 
 /**
  * Created by Josh on 9/9/2018.
@@ -43,12 +44,15 @@ public class ModelNaga extends AdvancedModelBase{
     public AdvancedModelRenderer spike5joint;
     public AdvancedModelRenderer backWing_L;
     public AdvancedModelRenderer backWing_R;
+    public AdvancedModelRenderer backWing_LReversed;
+    public AdvancedModelRenderer backWing_RReversed;
     public AdvancedModelRenderer backFin3;
     public AdvancedModelRenderer backFin3Reversed;
     public SocketModelRenderer tail4;
     public SocketModelRenderer tail5;
     public SocketModelRenderer tail6;
     public SocketModelRenderer tailFin;
+    public SocketModelRenderer tailFinReversed;
     public AdvancedModelRenderer spike5;
     public AdvancedModelRenderer spike4;
     public AdvancedModelRenderer spike1;
@@ -59,9 +63,11 @@ public class ModelNaga extends AdvancedModelBase{
     public AdvancedModelRenderer upperArm_L;
     public AdvancedModelRenderer lowerArmJoint_L;
     public AdvancedModelRenderer wingWebbing6_L;
+    public AdvancedModelRenderer wingWebbing6_LReversed;
     public AdvancedModelRenderer lowerArm_L;
     public AdvancedModelRenderer handJoint_L;
     public AdvancedModelRenderer wingWebbing5_L;
+    public AdvancedModelRenderer wingWebbing5_LReversed;
     public AdvancedModelRenderer hand_L;
     public AdvancedModelRenderer wingFrame1_L;
     public AdvancedModelRenderer wingFrame2_L;
@@ -72,13 +78,19 @@ public class ModelNaga extends AdvancedModelBase{
     public AdvancedModelRenderer wingWebbing2_L;
     public AdvancedModelRenderer wingWebbing3_L;
     public AdvancedModelRenderer wingWebbing4_L;
+    public AdvancedModelRenderer wingWebbing1_LReversed;
+    public AdvancedModelRenderer wingWebbing2_LReversed;
+    public AdvancedModelRenderer wingWebbing3_LReversed;
+    public AdvancedModelRenderer wingWebbing4_LReversed;
     public AdvancedModelRenderer upperArmJoint_R;
     public AdvancedModelRenderer upperArm_R;
     public AdvancedModelRenderer lowerArmJoint_R;
-    public AdvancedModelRenderer wingWebbing5_R;
+    public AdvancedModelRenderer wingWebbing6_R;
+    public AdvancedModelRenderer wingWebbing6_RReversed;
     public AdvancedModelRenderer lowerArm_R;
     public AdvancedModelRenderer handJoint_R;
-    public AdvancedModelRenderer wingWebbing6_R;
+    public AdvancedModelRenderer wingWebbing5_R;
+    public AdvancedModelRenderer wingWebbing5_RReversed;
     public AdvancedModelRenderer hand_R;
     public AdvancedModelRenderer wingFrame1_R;
     public AdvancedModelRenderer wingFrame2_R;
@@ -89,6 +101,10 @@ public class ModelNaga extends AdvancedModelBase{
     public AdvancedModelRenderer wingWebbing2_R;
     public AdvancedModelRenderer wingWebbing3_R;
     public AdvancedModelRenderer wingWebbing4_R;
+    public AdvancedModelRenderer wingWebbing1_RReversed;
+    public AdvancedModelRenderer wingWebbing2_RReversed;
+    public AdvancedModelRenderer wingWebbing3_RReversed;
+    public AdvancedModelRenderer wingWebbing4_RReversed;
 
     public SocketModelRenderer tailEnd;
 
@@ -134,6 +150,10 @@ public class ModelNaga extends AdvancedModelBase{
         this.wingWebbing5_L = new AdvancedModelRenderer(this, 193, 128);
         this.wingWebbing5_L.setRotationPoint(12.0F, 0.0F, 1.0F);
         this.wingWebbing5_L.addBox(-12.0F, 0.0F, 0.0F, 20, 0, 23, 0.0F);
+        this.wingWebbing5_LReversed = new AdvancedModelRenderer(this, 193, 128);
+        this.wingWebbing5_LReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
+        this.wingWebbing5_LReversed.addBox(-12.0F, 0.0F, 0.0F, 20, 0, 23, 0.0F);
+        wingWebbing5_LReversed.setScale(1, -1, 1);
         this.tail5 = new SocketModelRenderer(this, 162, 30);
         this.tail5.setRotationPoint(0.0F, 0.0F, 14.0F);
         this.tail5.addBox(-1.5F, -1.0F, 0.0F, 3, 2, 13, 0.0F);
@@ -144,6 +164,10 @@ public class ModelNaga extends AdvancedModelBase{
         this.wingWebbing2_L.setRotationPoint(-1.5F, 0.0F, 0.0F);
         this.wingWebbing2_L.addBox(0.0F, 0.0F, -15.0F, 50, 0, 30, 0.0F);
         this.setRotateAngle(wingWebbing2_L, 0.0F, -0.30543261909900765F, 0.0F);
+        this.wingWebbing2_LReversed = new AdvancedModelRenderer(this, 20, 98);
+        this.wingWebbing2_LReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
+        this.wingWebbing2_LReversed.addBox(0.0F, 0.0F, -15.0F, 50, 0, 30, 0.0F);
+        wingWebbing2_LReversed.setScale(1, -1, 1);
         this.root = new AdvancedModelRenderer(this, 0, 0);
         this.root.setRotationPoint(0.0F, 0.0F, -24F);
         this.root.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
@@ -182,10 +206,19 @@ public class ModelNaga extends AdvancedModelBase{
         this.wingWebbing3_R.setRotationPoint(-1.0F, 0.0F, 0.0F);
         this.wingWebbing3_R.addBox(-43.0F, 0.0F, -13.0F, 43, 0, 26, 0.0F);
         this.setRotateAngle(wingWebbing3_R, 0.0F, 0.30543261909900765F, 0.0F);
+        this.wingWebbing3_RReversed = new AdvancedModelRenderer(this, 144, 71);
+        this.wingWebbing3_RReversed.mirror = true;
+        this.wingWebbing3_RReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
+        this.wingWebbing3_RReversed.addBox(-43.0F, 0.0F, -13.0F, 43, 0, 26, 0.0F);
+        wingWebbing3_RReversed.setScale(1, -1, 1);
         this.wingWebbing3_L = new AdvancedModelRenderer(this, 144, 71);
         this.wingWebbing3_L.setRotationPoint(1.0F, 0.0F, 0.0F);
         this.wingWebbing3_L.addBox(0.0F, 0.0F, -13.0F, 43, 0, 26, 0.0F);
         this.setRotateAngle(wingWebbing3_L, 0.0F, -0.30543261909900765F, 0.0F);
+        this.wingWebbing3_LReversed = new AdvancedModelRenderer(this, 144, 71);
+        this.wingWebbing3_LReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
+        this.wingWebbing3_LReversed.addBox(0.0F, 0.0F, -13.0F, 43, 0, 26, 0.0F);
+        wingWebbing3_LReversed.setScale(1, -1, 1);
         this.handJoint_R = new AdvancedModelRenderer(this, 0, 0);
         this.handJoint_R.setRotationPoint(-20.0F, 0.0F, 0.0F);
         this.handJoint_R.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
@@ -206,6 +239,11 @@ public class ModelNaga extends AdvancedModelBase{
         this.wingWebbing1_R.setRotationPoint(2.0F, 0.0F, 0.0F);
         this.wingWebbing1_R.addBox(-53.0F, 0.0F, -16.0F, 53, 0, 31, 0.0F);
         this.setRotateAngle(wingWebbing1_R, 0.0F, 0.30543261909900765F, 0.0F);
+        this.wingWebbing1_RReversed = new AdvancedModelRenderer(this, 119, 97);
+        this.wingWebbing1_RReversed.mirror = true;
+        this.wingWebbing1_RReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
+        this.wingWebbing1_RReversed.addBox(-53.0F, 0.0F, -16.0F, 53, 0, 31, 0.0F);
+        wingWebbing1_RReversed.setScale(1, -1, 1);
         this.upperArmJoint_L = new AdvancedModelRenderer(this, 0, 0);
         this.upperArmJoint_L.setRotationPoint(9.0F, -1.0F, -1.0F);
         this.upperArmJoint_L.addBox(-2.0F, 0.0F, -3.0F, 0, 0, 0, 0.0F);
@@ -213,15 +251,20 @@ public class ModelNaga extends AdvancedModelBase{
         this.tail1 = new SocketModelRenderer(this, 140, 0);
         this.tail1.setRotationPoint(0.0F, 1.5F, 17.0F);
         this.tail1.addBox(-7.5F, -4.5F, -3.0F, 15, 9, 19, 0.0F);
-        this.wingWebbing6_R = new AdvancedModelRenderer(this, 193, 128);
-        this.wingWebbing6_R.mirror = true;
-        this.wingWebbing6_R.setRotationPoint(-12.0F, 0.0F, 1.0F);
-        this.wingWebbing6_R.addBox(-8.0F, 0.0F, 0.0F, 20, 0, 23, 0.0F);
+        this.wingWebbing5_R = new AdvancedModelRenderer(this, 193, 128);
+        this.wingWebbing5_R.mirror = true;
+        this.wingWebbing5_R.setRotationPoint(-12.0F, 0.0F, 1.0F);
+        this.wingWebbing5_R.addBox(-8.0F, 0.0F, 0.0F, 20, 0, 23, 0.0F);
+        this.wingWebbing5_RReversed = new AdvancedModelRenderer(this, 193, 128);
+        this.wingWebbing5_RReversed.mirror = true;
+        this.wingWebbing5_RReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
+        this.wingWebbing5_RReversed.addBox(-8.0F, 0.0F, 0.0F, 20, 0, 23, 0.0F);
+        wingWebbing5_RReversed.setScale(1, -1, 1);
         this.backFin3 = new AdvancedModelRenderer(this, 170, 123);
         this.backFin3.setRotationPoint(0.0F, -3.0F, 0.0F);
         this.backFin3.addBox(0.0F, -9.0F, -3.0F, 0, 9, 19, 0.0F);
         this.backFin3Reversed = new AdvancedModelRenderer(this, 170, 123);
-        this.backFin3Reversed.setRotationPoint(0.0001F, 0.0F, 0.0F);
+        this.backFin3Reversed.setRotationPoint(0.001F, 0.0F, 0.0F);
         this.backFin3Reversed.addBox(0.0F, -9.0F, -3.0F, 0, 9, 19, 0.0F);
         backFin3Reversed.setScale(-1, 1, 1);
         this.handJoint_L = new AdvancedModelRenderer(this, 0, 0);
@@ -231,6 +274,10 @@ public class ModelNaga extends AdvancedModelBase{
         this.wingWebbing4_L.setRotationPoint(0.5F, 0.0F, 0.0F);
         this.wingWebbing4_L.addBox(0.0F, 0.0F, -22.0F, 31, 0, 35, 0.0F);
         this.setRotateAngle(wingWebbing4_L, 0.0F, -0.6544984694978736F, 0.0F);
+        this.wingWebbing4_LReversed = new AdvancedModelRenderer(this, 159, 36);
+        this.wingWebbing4_LReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
+        this.wingWebbing4_LReversed.addBox(0.0F, 0.0F, -22.0F, 31, 0, 35, 0.0F);
+        wingWebbing4_LReversed.setScale(1, -1, 1);
         this.wingFrame3_L = new AdvancedModelRenderer(this, 0, 73);
         this.wingFrame3_L.setRotationPoint(4.0F, 0.0F, 0.0F);
         this.wingFrame3_L.addBox(0.0F, -1.5F, -1.5F, 43, 3, 3, 0.0F);
@@ -239,6 +286,10 @@ public class ModelNaga extends AdvancedModelBase{
         this.wingWebbing1_L.setRotationPoint(-2.0F, 0.0F, 0.0F);
         this.wingWebbing1_L.addBox(0.0F, 0.0F, -16.0F, 53, 0, 31, 0.0F);
         this.setRotateAngle(wingWebbing1_L, 0.0F, -0.30543261909900765F, 0.0F);
+        this.wingWebbing1_LReversed = new AdvancedModelRenderer(this, 119, 97);
+        this.wingWebbing1_LReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
+        this.wingWebbing1_LReversed.addBox(0.0F, 0.0F, -16.0F, 53, 0, 31, 0.0F);
+        wingWebbing1_LReversed.setScale(1, -1, 1);
         this.wingClaw_R = new AdvancedModelRenderer(this, 231, 8);
         this.wingClaw_R.mirror = true;
         this.wingClaw_R.setRotationPoint(0.0F, 0.0F, 0.0F);
@@ -258,6 +309,11 @@ public class ModelNaga extends AdvancedModelBase{
         this.wingWebbing2_R.setRotationPoint(1.5F, 0.0F, 0.0F);
         this.wingWebbing2_R.addBox(-50.0F, 0.0F, -15.0F, 50, 0, 30, 0.0F);
         this.setRotateAngle(wingWebbing2_R, 0.0F, 0.30543261909900765F, 0.0F);
+        this.wingWebbing2_RReversed = new AdvancedModelRenderer(this, 20, 98);
+        this.wingWebbing2_RReversed.mirror = true;
+        this.wingWebbing2_RReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
+        this.wingWebbing2_RReversed.addBox(-50.0F, 0.0F, -15.0F, 50, 0, 30, 0.0F);
+        wingWebbing2_RReversed.setScale(1, -1, 1);
         this.jaw = new AdvancedModelRenderer(this, 116, 62);
         this.jaw.setRotationPoint(0.0F, -1.34F, -4.38F);
         this.jaw.addBox(-4.5F, 0.16F, -9.37F, 9, 4, 8, 0.0F);
@@ -295,10 +351,19 @@ public class ModelNaga extends AdvancedModelBase{
         this.backWing_R.setRotationPoint(-4.0F, 0.0F, 4.0F);
         this.backWing_R.addBox(-30.0F, 0.0F, 0.0F, 30, 0, 25, 0.0F);
         this.setRotateAngle(backWing_R, 0.0F, 0.5235987755982988F, 0.0F);
+        this.backWing_RReversed = new AdvancedModelRenderer(this, 35, 128);
+        this.backWing_RReversed.mirror = true;
+        this.backWing_RReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
+        this.backWing_RReversed.addBox(-30.0F, 0.0F, 0.0F, 30, 0, 25, 0.0F);
+        backWing_RReversed.setScale(1, -1, 1);
         this.tailFin = new SocketModelRenderer(this, -30, 128);
         this.tailFin.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.tailFin.addBox(-5.0F, 0.0F, -5.0F, 30, 0, 30, 0.0F);
         this.setRotateAngle(tailFin, 0.0F, -0.7853981633974483F, 0.0F);
+        this.tailFinReversed = new SocketModelRenderer(this, -30, 128);
+        this.tailFinReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
+        this.tailFinReversed.addBox(-5.0F, 0.0F, -5.0F, 30, 0, 30, 0.0F);
+        tailFinReversed.setScale(1, -1, 1);
         this.lowerArmJoint_L = new AdvancedModelRenderer(this, 0, 0);
         this.lowerArmJoint_L.setRotationPoint(15.0F, 0.0F, -0.5F);
         this.lowerArmJoint_L.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
@@ -340,13 +405,18 @@ public class ModelNaga extends AdvancedModelBase{
         this.backFin1.addBox(0.0F, -15.0F, -4.0F, 0, 15, 25, 0.0F);
         this.backFin1Reversed = new AdvancedModelRenderer(this, 120, 103);
         this.backFin1Reversed.setRotationPoint(0.0F, 0.0F, 0.0F);
-        backFin1Reversed.setScale(-1, 1, 1);
         this.backFin1Reversed.addBox(0.0F, -15.0F, -4.0F, 0, 15, 25, 0.0F);
+        backFin1Reversed.setScale(-1, 1, 1);
         this.wingWebbing4_R = new AdvancedModelRenderer(this, 159, 36);
         this.wingWebbing4_R.mirror = true;
         this.wingWebbing4_R.setRotationPoint(-0.5F, 0.0F, 0.0F);
         this.wingWebbing4_R.addBox(-31.0F, 0.0F, -22.0F, 31, 0, 35, 0.0F);
         this.setRotateAngle(wingWebbing4_R, 0.0F, 0.6544984694978736F, 0.0F);
+        this.wingWebbing4_RReversed = new AdvancedModelRenderer(this, 159, 36);
+        this.wingWebbing4_RReversed.mirror = true;
+        this.wingWebbing4_RReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
+        this.wingWebbing4_RReversed.addBox(-31.0F, 0.0F, -22.0F, 31, 0, 35, 0.0F);
+        wingWebbing4_RReversed.setScale(1, -1, 1);
         this.upperArm_R = new AdvancedModelRenderer(this, 106, 74);
         this.upperArm_R.mirror = true;
         this.upperArm_R.setRotationPoint(0.0F, 2.0F, 0.0F);
@@ -355,14 +425,23 @@ public class ModelNaga extends AdvancedModelBase{
         this.backWing_L.setRotationPoint(4.0F, 0.0F, 4.0F);
         this.backWing_L.addBox(0.0F, 0.0F, 0.0F, 30, 0, 25, 0.0F);
         this.setRotateAngle(backWing_L, 0.0F, -0.5235987755982988F, 0.0F);
+        this.backWing_LReversed = new AdvancedModelRenderer(this, 35, 128);
+        this.backWing_LReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
+        this.backWing_LReversed.addBox(0.0F, 0.0F, 0.0F, 30, 0, 25, 0.0F);
+        backWing_LReversed.setScale(1, -1, 1);
         this.spike3 = new AdvancedModelRenderer(this, 0, 54);
         this.spike3.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.spike3.addBox(0.0F, 0.0F, 0.0F, 15, 4, 15, 0.0F);
         this.setRotateAngle(spike3, 0.0F, -0.7853981633974483F, 0.0F);
-        this.wingWebbing5_R = new AdvancedModelRenderer(this, -24, 94);
-        this.wingWebbing5_R.mirror = true;
-        this.wingWebbing5_R.setRotationPoint(-0.5F, 0.0F, -2.0F);
-        this.wingWebbing5_R.addBox(-14.5F, 0.0F, 0.0F, 25, 0, 24, 0.0F);
+        this.wingWebbing6_R = new AdvancedModelRenderer(this, -24, 94);
+        this.wingWebbing6_R.mirror = true;
+        this.wingWebbing6_R.setRotationPoint(-0.5F, 0.0F, -2.0F);
+        this.wingWebbing6_R.addBox(-14.5F, 0.0F, 0.0F, 25, 0, 24, 0.0F);
+        this.wingWebbing6_RReversed = new AdvancedModelRenderer(this, -24, 94);
+        this.wingWebbing6_RReversed.mirror = true;
+        this.wingWebbing6_RReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
+        this.wingWebbing6_RReversed.addBox(-14.5F, 0.0F, 0.0F, 25, 0, 24, 0.0F);
+        wingWebbing6_RReversed.setScale(1, -1, 1);
         this.spike2joint = new AdvancedModelRenderer(this, 0, 0);
         this.spike2joint.setRotationPoint(0.0F, 1.0F, -4.0F);
         this.spike2joint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
@@ -370,6 +449,10 @@ public class ModelNaga extends AdvancedModelBase{
         this.wingWebbing6_L = new AdvancedModelRenderer(this, -24, 94);
         this.wingWebbing6_L.setRotationPoint(0.5F, 0.0F, -2.0F);
         this.wingWebbing6_L.addBox(-10.5F, 0.0F, 0.0F, 25, 0, 24, 0.0F);
+        this.wingWebbing6_LReversed = new AdvancedModelRenderer(this, -24, 94);
+        this.wingWebbing6_LReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
+        this.wingWebbing6_LReversed.addBox(-10.5F, 0.0F, 0.0F, 25, 0, 24, 0.0F);
+        wingWebbing6_LReversed.setScale(1, -1, 1);
         this.tail6 = new SocketModelRenderer(this, 0, 0);
         this.tail6.setRotationPoint(0.0F, 0.0F, 13.0F);
         this.tail6.addBox(-1.5F, -1.0F, 0.0F, 0, 0, 0, 0.0F);
@@ -421,7 +504,7 @@ public class ModelNaga extends AdvancedModelBase{
         this.wingFrame1_R.addChild(this.wingWebbing1_R);
         this.shoulder1_L.addChild(this.upperArmJoint_L);
         this.body.addChild(this.tail1);
-        this.lowerArm_R.addChild(this.wingWebbing6_R);
+        this.lowerArm_R.addChild(this.wingWebbing5_R);
         this.tail2.addChild(this.backFin3);
         this.lowerArm_L.addChild(this.handJoint_L);
         this.wingFrame4_L.addChild(this.wingWebbing4_L);
@@ -455,7 +538,7 @@ public class ModelNaga extends AdvancedModelBase{
         this.upperArmJoint_R.addChild(this.upperArm_R);
         this.tail2.addChild(this.backWing_L);
         this.spike3joint.addChild(this.spike3);
-        this.upperArm_R.addChild(this.wingWebbing5_R);
+        this.upperArm_R.addChild(this.wingWebbing6_R);
         this.body.addChild(this.spike2joint);
         this.upperArm_L.addChild(this.wingWebbing6_L);
         this.tail5.addChild(this.tail6);
@@ -467,6 +550,21 @@ public class ModelNaga extends AdvancedModelBase{
         this.backFin3.addChild(this.backFin3Reversed);
         this.backFin2.addChild(this.backFin2Reversed);
         this.backFin1.addChild(this.backFin1Reversed);
+        this.backWing_L.addChild(backWing_LReversed);
+        this.backWing_R.addChild(backWing_RReversed);
+        this.wingWebbing1_L.addChild(wingWebbing1_LReversed);
+        this.wingWebbing2_L.addChild(wingWebbing2_LReversed);
+        this.wingWebbing3_L.addChild(wingWebbing3_LReversed);
+        this.wingWebbing4_L.addChild(wingWebbing4_LReversed);
+        this.wingWebbing5_L.addChild(wingWebbing5_LReversed);
+        this.wingWebbing6_L.addChild(wingWebbing6_LReversed);
+        this.wingWebbing1_R.addChild(wingWebbing1_RReversed);
+        this.wingWebbing2_R.addChild(wingWebbing2_RReversed);
+        this.wingWebbing3_R.addChild(wingWebbing3_RReversed);
+        this.wingWebbing4_R.addChild(wingWebbing4_RReversed);
+        this.wingWebbing6_R.addChild(wingWebbing6_RReversed);
+        this.wingWebbing5_R.addChild(wingWebbing5_RReversed);
+        this.tailFin.addChild(tailFinReversed);
 
         updateDefaultPose();
 
@@ -499,7 +597,30 @@ public class ModelNaga extends AdvancedModelBase{
         EntityNaga naga = (EntityNaga) entityIn;
         float frame = entityIn.ticksExisted + LLibrary.PROXY.getPartialTicks();
 
-        float globalSpeed = 0.25f;
+        float globalSpeed = 0.27f;
+
+        backWing_R.rotationPointX -= 2;
+        backWing_L.rotationPointX += 2;
+        teethLower.setScale(1.01f, 1.01f, 1.01f);
+        spike2joint.scaleChildren = true;
+        spike2joint.setScale(0.99f, 1, 1);
+        spike2joint.rotationPointY += 0.28;
+        spike2joint.rotationPointZ -= 0.15;
+        spike3joint.scaleChildren = true;
+        spike3joint.setScale(0.99f, 1, 1);
+        spike3joint.rotationPointY += 0.28;
+        spike3joint.rotationPointZ -= 0.15;
+        spike3Bottom.setScale(1, 1.8f, 1);
+        spike4joint.scaleChildren = true;
+        spike4joint.setScale(0.993f, 1, 1);
+        spike4joint.rotationPointY += 0.35;
+        spike4joint.rotationPointZ += 0.7;
+        spike4.setScale(1, 1.3f, 1);
+        spike5joint.scaleChildren = true;
+        spike5joint.setScale(1.02f, 1, 1);
+        spike5joint.rotationPointY += 0.15;
+        spike5joint.rotationPointZ -= 0.42;
+        tail1.setScale(1.03f, 1, 1);
 
         float wingRFold = 0.9f * (float) (0.5 * Math.cos(frame * globalSpeed + 1.4) + 0.5) + 0.05f;
         shoulder1_R.rotateAngleY += 0.8 * wingRFold;
@@ -531,15 +652,14 @@ public class ModelNaga extends AdvancedModelBase{
 
         flap(backWing_R, globalSpeed, 0.8f, false, -1.5f, -0.2f, frame, 1);
         flap(backWing_L, globalSpeed, 0.8f, true, -1.5f, -0.2f, frame, 1);
-
+//
         bob(root, globalSpeed, 10, false, frame - 0.5f, 1);
-        chainWave(tail, -globalSpeed, 0.1f, 3, frame, 1);
 
 //        jaw.rotateAngleX += 1.5 * (float) (0.5 * Math.cos(entityIn.ticksExisted * 0.2) + 0.5);
         teethUpper.setScale(1, 1, 0.5f + 0.5f * Math.min(jaw.rotateAngleX, 1));
         underHead.setScale(1, 1, 1f - 0.2f * Math.min(jaw.rotateAngleX, 1));
         underHead.rotationPointZ += 1.2 * Math.min(jaw.rotateAngleX, 1);
-        body.rotateAngleX += 0.2f;
+        body.rotateAngleX += 0.1f;
         neck.rotateAngleX += 0.1f;
         headjoint.rotateAngleX += 0.1f;
         for (int i = 0; i < tail.length; i++) {
@@ -568,54 +688,76 @@ public class ModelNaga extends AdvancedModelBase{
     }
 
     private void computeWingWebbing() {
+        wingWebbing1_L.scaleChildren = true;
+        wingWebbing2_L.scaleChildren = true;
+        wingWebbing3_L.scaleChildren = true;
+        wingWebbing4_L.scaleChildren = true;
+        wingWebbing5_L.scaleChildren = true;
+        wingWebbing6_L.scaleChildren = true;
+        wingWebbing1_R.scaleChildren = true;
+        wingWebbing2_R.scaleChildren = true;
+        wingWebbing3_R.scaleChildren = true;
+        wingWebbing4_R.scaleChildren = true;
+        wingWebbing6_R.scaleChildren = true;
+        wingWebbing5_R.scaleChildren = true;
         float webbing1LScale = (float) ((wingFrame1_L.rotateAngleY - wingFrame2_L.rotateAngleY)/(Math.toRadians(35)));
         webbing1LScale = 0.8f * webbing1LScale + 0.2f;
         float webbing1LRot = (float) (-(wingFrame1_L.rotateAngleY - (wingFrame2_L.rotateAngleY + Math.toRadians(35)))/2);
         wingWebbing1_L.rotateAngleY += webbing1LRot;
-        wingWebbing1_L.setScale(1 - webbing1LScale * 0.07f, -1, webbing1LScale);
+        wingWebbing1_L.setScale(1 - webbing1LScale * 0.07f, 1, webbing1LScale);
         float webbing2LScale = (float) ((wingFrame2_L.rotateAngleY - wingFrame3_L.rotateAngleY)/(Math.toRadians(35)));
         webbing2LScale = 0.8f * webbing2LScale + 0.2f;
         float webbing2LRot = (float) (-(wingFrame2_L.rotateAngleY - (wingFrame3_L.rotateAngleY + Math.toRadians(35)))/2);
         wingWebbing2_L.rotateAngleY += webbing2LRot;
-        wingWebbing2_L.setScale(1 - webbing2LScale * 0.07f, -1, webbing2LScale);
+        wingWebbing2_L.setScale(1 - webbing2LScale * 0.07f, 1, webbing2LScale);
         float webbing3LScale = (float) ((wingFrame3_L.rotateAngleY - wingFrame4_L.rotateAngleY)/(Math.toRadians(35)));
         webbing3LScale = 0.8f * webbing3LScale + 0.2f;
         float webbing3LRot = (float) (-(wingFrame3_L.rotateAngleY - (wingFrame4_L.rotateAngleY + Math.toRadians(35)))/2);
         wingWebbing3_L.rotateAngleY += webbing3LRot;
-        wingWebbing3_L.setScale(1 - webbing3LScale * 0.07f, -1, webbing3LScale);
+        wingWebbing3_L.setScale(1 - webbing3LScale * 0.07f, 1, webbing3LScale);
         float webbing4LScale = 1 - (float) (-0.5 * hand_L.rotateAngleY);
-        float webbing4LRot = (float) (-(wingFrame4_L.rotateAngleY + hand_L.rotateAngleY + Math.toRadians(108))/2);
+        float webbing4LRot = (float) (-(wingFrame4_L.rotateAngleY + hand_L.rotateAngleY + Math.toRadians(105))/2);
         wingWebbing4_L.rotateAngleY += webbing4LRot;
-        wingWebbing4_L.setScale(1 - webbing4LScale * 0.02f, -1, webbing4LScale);
+        wingWebbing4_L.setScale(1 - webbing4LScale * 0.02f, 1, webbing4LScale);
         wingWebbing5_L.rotationPointX += 12 * (float) (upperArm_L.rotateAngleY/Math.toRadians(35));
-        wingWebbing5_L.setScale(1, -1, (float) (1 + upperArm_L.rotateAngleY/Math.toRadians(45)));
-        wingWebbing6_L.setScale(1, -1, (float) (1 + upperArm_L.rotateAngleY/Math.toRadians(70)));
+        wingWebbing5_L.setScale((float) (2 - (-shoulder1_L.rotateAngleY + shoulder1_L.defaultRotationY)/1.5), 1, (float) (0.915 - (-shoulder1_L.rotateAngleY + shoulder1_L.defaultRotationY)/1.2));
+        wingWebbing6_L.setScale((float) (1 + (-shoulder1_L.rotateAngleY + shoulder1_L.defaultRotationY)/4), 1, (float) (1 - (-shoulder1_L.rotateAngleY + shoulder1_L.defaultRotationY)/1.6));
+        wingWebbing6_L.rotationPointX += 14 * (-shoulder1_L.rotateAngleY + shoulder1_L.defaultRotationY);
 
         float webbing1RScale = (float) (-(wingFrame1_R.rotateAngleY - wingFrame2_R.rotateAngleY)/(Math.toRadians(35)));
         webbing1RScale = 0.8f * webbing1RScale + 0.2f;
         float webbing1RRot = (float) (-(wingFrame1_R.rotateAngleY - (wingFrame2_R.rotateAngleY - Math.toRadians(35)))/2);
         wingWebbing1_R.rotateAngleY += webbing1RRot;
-        wingWebbing1_R.setScale(1 - webbing1RScale * 0.07f, -1, webbing1RScale);
+        wingWebbing1_R.setScale(1 - webbing1RScale * 0.07f, 1, webbing1RScale);
         float webbing2RScale = (float) (-(wingFrame2_R.rotateAngleY - wingFrame3_R.rotateAngleY)/(Math.toRadians(35)));
         webbing2RScale = 0.8f * webbing2RScale + 0.2f;
         float webbing2RRot = (float) (-(wingFrame2_R.rotateAngleY - (wingFrame3_R.rotateAngleY - Math.toRadians(35)))/2);
         wingWebbing2_R.rotateAngleY += webbing2RRot;
-        wingWebbing2_R.setScale(1 - webbing2RScale * 0.07f, -1, webbing2RScale);
+        wingWebbing2_R.setScale(1 - webbing2RScale * 0.07f, 1, webbing2RScale);
         float webbing3RScale = (float) (-(wingFrame3_R.rotateAngleY - wingFrame4_R.rotateAngleY)/(Math.toRadians(35)));
         webbing3RScale = 0.8f * webbing3RScale + 0.2f;
         float webbing3RRot = (float) (-(wingFrame3_R.rotateAngleY - (wingFrame4_R.rotateAngleY - Math.toRadians(35)))/2);
         wingWebbing3_R.rotateAngleY += webbing3RRot;
-        wingWebbing3_R.setScale(1 - webbing3RScale * 0.07f, -1, webbing3RScale);
+        wingWebbing3_R.setScale(1 - webbing3RScale * 0.07f, 1, webbing3RScale);
         float webbing4RScale = 1 - (float) (0.5 * hand_R.rotateAngleY);
-        float webbing4RRot = (float) (-(wingFrame4_R.rotateAngleY + hand_R.rotateAngleY - Math.toRadians(108))/2);
+        float webbing4RRot = (float) (-(wingFrame4_R.rotateAngleY + hand_R.rotateAngleY - Math.toRadians(105))/2);
         wingWebbing4_R.rotateAngleY += webbing4RRot;
-        wingWebbing4_R.setScale(1 - webbing4RScale * 0.02f, -1, webbing4RScale);
-        wingWebbing6_R.rotationPointX -= 12 * (float) (-upperArm_R.rotateAngleY/Math.toRadians(35));
-        wingWebbing6_R.setScale(1, -1, (float) (1 - upperArm_R.rotateAngleY/Math.toRadians(45)));
-        wingWebbing5_R.setScale(1, -1, (float) (1 - upperArm_R.rotateAngleY/Math.toRadians(70)));
+        wingWebbing4_R.setScale(1 - webbing4RScale * 0.02f, 1, webbing4RScale);
+        wingWebbing5_R.rotationPointX -= 12 * (float) (-upperArm_R.rotateAngleY/Math.toRadians(35));
+        wingWebbing5_R.setScale((float) (2 - (shoulder1_R.rotateAngleY - shoulder1_R.defaultRotationY)/1.5), 1, (float) (0.915 - (shoulder1_R.rotateAngleY - shoulder1_R.defaultRotationY)/1.2));
+        wingWebbing6_R.setScale((float) (1 + (shoulder1_R.rotateAngleY - shoulder1_R.defaultRotationY)/4), 1, (float) (1 - (shoulder1_R.rotateAngleY - shoulder1_R.defaultRotationY)/1.6));
+        wingWebbing6_R.rotationPointX += 14 * (shoulder1_L.rotateAngleY - shoulder1_L.defaultRotationY);
 
-        tailFin.setScale(1, -1, 1);
-        backWing_L.setScale(1, -1, 1);
-        backWing_R.setScale(1, -1, 1);
+//        wingWebbing4_L.rotateAngleX -= 0.9/2 * (lowerArmJoint_L.rotateAngleZ + handJoint_L.rotateAngleZ * 2);
+//        wingWebbing4_L.rotateAngleZ += 0.5/2 * (lowerArmJoint_L.rotateAngleZ + handJoint_L.rotateAngleZ * 2);
+//        wingWebbing4_R.rotateAngleX -= 0.9/2 * (-lowerArmJoint_R.rotateAngleZ - handJoint_R.rotateAngleZ * 2);
+//        wingWebbing4_R.rotateAngleZ -= 0.5/2 * (-lowerArmJoint_R.rotateAngleZ - handJoint_R.rotateAngleZ * 2);
+
+        wingWebbing4_R.rotationPointY -= 0.01f;
+        wingWebbing4_L.rotationPointY -= 0.01f;
+        wingWebbing5_R.rotationPointY += 0.01f;
+        wingWebbing5_L.rotationPointY += 0.01f;
+
+        tailFinReversed.rotationPointY -= 0.02f;
     }
 }

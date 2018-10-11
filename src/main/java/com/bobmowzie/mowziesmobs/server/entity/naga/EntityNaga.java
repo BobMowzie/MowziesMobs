@@ -43,7 +43,7 @@ public class EntityNaga extends MowzieEntity {
                 dc = new DynamicChain(this);
             }
 //            dc.updateSpringConstraint(0.1f, 0.3f, 2f, 100f, true, 0.5f, 1);
-            dc.updateBendConstraint(0.15f, 0.7f, 0.2f, 0.9f, 20);
+            dc.updateBendConstraint(0.15f, 0.7f, 0.2f, 0.95f, 20);
 //            rotationYaw += Math.sin(ticksExisted * 0.2) * 5;
             renderYawOffset = rotationYaw;
         }
@@ -236,7 +236,7 @@ public class EntityNaga extends MowzieEntity {
         {
             Random random = this.parentEntity.getRNG();
             double d0 = this.parentEntity.posX + (double)((random.nextFloat() * 2.0F - 1.0F) * 16.0F);
-            double d1 = this.parentEntity.posY;// + (double)((random.nextFloat() * 2.0F - 1.0F) * 16.0F);
+            double d1 = this.parentEntity.posY + (double)((random.nextFloat() * 2.0F - 1.0F) * 16.0F);
             double d2 = this.parentEntity.posZ + (double)((random.nextFloat() * 2.0F - 1.0F) * 16.0F);
             this.parentEntity.getMoveHelper().setMoveTo(d0, d1, d2, 1.0D);
         }

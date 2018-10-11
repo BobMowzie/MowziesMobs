@@ -173,12 +173,11 @@ public class DynamicChain {
                 dynModelRenderers[i].rotateAngleY = dynModelRenderers[i].defaultRotationY + yaw;
                 dynModelRenderers[i].rotateAngleX = dynModelRenderers[i].defaultRotationZ + pitch;
 
-
                 Vec3d diffRotated = diff;
                 diffRotated = diffRotated.rotateYaw(yaw);
                 diffRotated = diffRotated.rotatePitch(pitch);
 //                System.out.println(diffRotated);
-                dynModelRenderers[i].setScale(1, 1, 1);
+//                dynModelRenderers[i].setScale(1, 1, 1);
 //                dynModelRenderers[i].setScale(1, 1, 1 + (float)diffRotated.z/16);
             }
         }
