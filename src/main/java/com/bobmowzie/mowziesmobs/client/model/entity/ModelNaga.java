@@ -8,7 +8,6 @@ import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.entity.Entity;
-import org.lwjgl.opengl.GL11;
 
 /**
  * Created by Josh on 9/9/2018.
@@ -108,7 +107,8 @@ public class ModelNaga extends AdvancedModelBase{
 
     public SocketModelRenderer tailEnd;
 
-    public SocketModelRenderer[] tail;
+    public SocketModelRenderer[] tailOriginal;
+    public SocketModelRenderer[] tailDynamic;
 
     private ModelAnimator animator;
 
@@ -568,17 +568,20 @@ public class ModelNaga extends AdvancedModelBase{
 
         updateDefaultPose();
 
-        tail = new SocketModelRenderer[]{tail1, tail2, tail3, tail4, tail5, tailEnd};
+        tailOriginal = new SocketModelRenderer[]{tail1, tail2, tail3, tail4, tail5, tailEnd};
+        tailDynamic = new SocketModelRenderer[tailOriginal.length];
     }
 
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         animate((EntityNaga)entity, f, f1, f2, f3, f4, f5);
         this.root.render(f5);
-        if (((EntityNaga)entity).dc != null) ((EntityNaga)entity).dc.render(f5);
-        for (int i = 0; i < tail.length; i++) {
-            tail[i].isHidden = true;
+//        System.out.println(tailDynamic[0].rotationPointY);
+        if (((EntityNaga)entity).dc != null) ((EntityNaga)entity).dc.render(f5, tailDynamic);
+        for (int i = 0; i < tailOriginal.length; i++) {
+            tailOriginal[i].isHidden = true;
         }
+        //System.out.println(tailDynamic.length);
     }
 
     /**
@@ -615,7 +618,7 @@ public class ModelNaga extends AdvancedModelBase{
         spike4joint.setScale(0.993f, 1, 1);
         spike4joint.rotationPointY += 0.35;
         spike4joint.rotationPointZ += 0.7;
-        spike4.setScale(1, 1.3f, 1);
+        spike4.setScale(1, 1f, 1);
         spike5joint.scaleChildren = true;
         spike5joint.setScale(1.02f, 1, 1);
         spike5joint.rotationPointY += 0.15;
@@ -662,7 +665,7 @@ public class ModelNaga extends AdvancedModelBase{
         body.rotateAngleX += 0.1f;
         neck.rotateAngleX += 0.1f;
         headjoint.rotateAngleX += 0.1f;
-        for (int i = 0; i < tail.length; i++) {
+        for (int i = 0; i < tailOriginal.length; i++) {
 //            tail[i].rotateAngleX -= 0.1;
         }
 
@@ -671,10 +674,7 @@ public class ModelNaga extends AdvancedModelBase{
         backFin2.rotationPointX += 0.0005;
         backFin2Reversed.rotationPointX -= 0.001;
 
-        if (naga != null && naga.dc != null) {
-            naga.dc.setChain(tail);
-            naga.dc.updateChain(LLibrary.PROXY.getPartialTicks());
-        }
+        naga.dc.updateChain(LLibrary.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.15f, 0.7f, 0.2f, 0.95f, 20);
     }
 
     public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {

@@ -9,6 +9,7 @@ import net.minecraft.util.math.Vec3d;
 import org.lwjgl.Sys;
 
 import javax.vecmath.Point3d;
+import java.net.Socket;
 
 /**
  * Created by Josh on 8/30/2018.
@@ -28,8 +29,8 @@ public class DynamicChain {
     private Vec3d prevP;
     private Vec3d prevV;
 
-    public SocketModelRenderer[] dynModelRenderers;
-    public SocketModelRenderer[] origModelRenderers;
+    private Vec3d[] pOrig;
+    private int prevUpdateTick;
 
     public DynamicChain(Entity entity) {
         this.entity = entity;
@@ -43,6 +44,8 @@ public class DynamicChain {
         ra = new Vec3d[0];
         rv = new Vec3d[0];
         r = new Vec3d[0];
+        pOrig = new Vec3d[0];
+        prevUpdateTick = -1;
     }
 
     public void updateBendConstraint(float gravityAmount, float stiffness, float stiffnessFalloff, float damping, int numUpdates) {
@@ -55,15 +58,15 @@ public class DynamicChain {
         for (int j = 0; j < numUpdates; j++) {
             for (int i = 0; i < p.length - 1; i++) {
                 if (i == 0) {
-                    Vec3d root = origModelRenderers[i].getWorldPos(entity, LLibrary.PROXY.getPartialTicks());
+                    Vec3d root = pOrig[i]; //origModelRenderers[i].getWorldPos(entity, LLibrary.PROXY.getPartialTicks());
                     p[i] = root;
                     v[i] = p[i].subtract(prevPos[i]);
                     a[i] = v[i].subtract(prevVel[i]);
                 }
 
                 Vec3d target = angleBetween(
-                        origModelRenderers[i].getWorldPos(entity, LLibrary.PROXY.getPartialTicks()),
-                        origModelRenderers[i + 1].getWorldPos(entity, LLibrary.PROXY.getPartialTicks()));
+                        pOrig[i], //origModelRenderers[i].getWorldPos(entity, LLibrary.PROXY.getPartialTicks()),
+                        pOrig[i + 1]); //origModelRenderers[i + 1].getWorldPos(entity, LLibrary.PROXY.getPartialTicks()));
                 float gravity = 1 - (float) Math.pow(1 - gravityAmount, (i + 1));
                 target = new Vec3d(target.x, (1-gravity) * target.y + gravity * Math.PI, target.z);
 
@@ -96,7 +99,7 @@ public class DynamicChain {
 
                 Vec3d disp;
                 if (i == 0) {
-                    Vec3d root = origModelRenderers[i].getWorldPos(entity, LLibrary.PROXY.getPartialTicks());
+                    Vec3d root = pOrig[i]; //origModelRenderers[i].getWorldPos(entity, LLibrary.PROXY.getPartialTicks());
                     disp = p[i].subtract(root);
                 } else {
                     disp = p[i].subtract(p[i - 1]);
@@ -104,7 +107,7 @@ public class DynamicChain {
                 disp = disp.normalize().scale(disp.lengthVector() - d[i]);
                 Vec3d damp = v[i].scale(dampAmount);
                 Vec3d gravity = new Vec3d(0, -gravityAmount, 0);
-                Vec3d attract = origModelRenderers[i].getWorldPos(entity, LLibrary.PROXY.getPartialTicks()).subtract(p[i]);
+                Vec3d attract = pOrig[0].subtract(p[i]); //origModelRenderers[i].getWorldPos(entity, LLibrary.PROXY.getPartialTicks()).subtract(p[i]);
                 F[i] = disp.scale(-stiffness * (disp.lengthVector())).add(gravity.scale(m[i])).subtract(damp);
                 if (i == 0 || doAttract) {
                     F[i] = F[i].add(attract.scale(1 / (1 + i * i * attractFalloff)));
@@ -120,58 +123,77 @@ public class DynamicChain {
         }
     }
 
-    public void setChain(SocketModelRenderer[] chain) {
-        if (origModelRenderers == null) {
-            origModelRenderers = chain;
-            dynModelRenderers = new SocketModelRenderer[chain.length];
-            p = new Vec3d[chain.length];
-            v = new Vec3d[chain.length];
-            a = new Vec3d[chain.length];
-            F = new Vec3d[chain.length];
-            m = new float[chain.length];
-            d = new float[chain.length];
-            T = new Vec3d[chain.length];
-            r = new Vec3d[chain.length];
-            rv = new Vec3d[chain.length];
-            ra = new Vec3d[chain.length];
-            for (int i = 0; i < chain.length; i++) {
-                dynModelRenderers[i] = new SocketModelRenderer(chain[i]);
-                p[i] = chain[i].getWorldPos(entity, 0);
-                v[i] = new Vec3d(0, 0, 0);
-                a[i] = new Vec3d(0, 0, 0);
-                F[i] = new Vec3d(0, 0, 0);
-                T[i] = new Vec3d(0, 0, 0);
-                r[i] = new Vec3d(0, 0, 0);
-                rv[i] = new Vec3d(0, 0, 0);
-                ra[i] = new Vec3d(0, 0, 0);
-                m[i] = 1;
-                if (i > 0) {
-                    d[i] = (float)p[i].distanceTo(p[i-1]);
-                }
-                else {
-                    d[i] = 0;
-                }
-                chain[i].isHidden = true;
+    public void setChain(SocketModelRenderer[] chainOrig, SocketModelRenderer[] chainDynamic) {
+        p = new Vec3d[chainOrig.length];
+        v = new Vec3d[chainOrig.length];
+        a = new Vec3d[chainOrig.length];
+        F = new Vec3d[chainOrig.length];
+        m = new float[chainOrig.length];
+        d = new float[chainOrig.length];
+        T = new Vec3d[chainOrig.length];
+        r = new Vec3d[chainOrig.length];
+        rv = new Vec3d[chainOrig.length];
+        ra = new Vec3d[chainOrig.length];
+        pOrig = new Vec3d[chainOrig.length];
+        for (int i = 0; i < chainOrig.length; i++) {
+            pOrig[i] = chainOrig[i].getWorldPos(entity, 0);
+            p[i] = pOrig[i];
+            v[i] = new Vec3d(0, 0, 0);
+            a[i] = new Vec3d(0, 0, 0);
+            F[i] = new Vec3d(0, 0, 0);
+            T[i] = new Vec3d(0, 0, 0);
+            r[i] = new Vec3d(0, 0, 0);
+            rv[i] = new Vec3d(0, 0, 0);
+            ra[i] = new Vec3d(0, 0, 0);
+            m[i] = 1;
+            if (i > 0) {
+                d[i] = (float)p[i].distanceTo(p[i-1]);
             }
+            else {
+                d[i] = 0;
+            }
+            chainOrig[i].isHidden = true;
+        }
 
-            prevP = p[0];
-            prevV = v[0];
+        prevP = p[0];
+        prevV = v[0];
+
+        for (int i = 0; i < chainOrig.length; i++) {
+            if (chainDynamic[i] == null) {
+                chainDynamic[i] = new SocketModelRenderer(chainOrig[i]);
+            }
         }
     }
 
-    public void updateChain(float delta) {
-        for (int i = dynModelRenderers.length - 1; i >= 0; i--) {
-            Vec3d renderPos = p[i].add(v[i].scale(delta)).add(a[i].scale(0.5 * delta * delta));
-            dynModelRenderers[i].setWorldPos(entity, renderPos, delta);
+    public void updateChain(float delta, SocketModelRenderer[] chainOrig, SocketModelRenderer[] chainDynamic, float gravityAmount, float stiffness, float stiffnessFalloff, float damping, int numUpdates) {
+        if (p.length != chainOrig.length) {
+            setChain(chainOrig, chainDynamic);
+        }
 
-            if (i < dynModelRenderers.length - 1) {
-                Vec3d p1 = new Vec3d(dynModelRenderers[i].rotationPointX, dynModelRenderers[i].rotationPointY, dynModelRenderers[i].rotationPointZ);
-                Vec3d p2 = new Vec3d(dynModelRenderers[i+1].rotationPointX, dynModelRenderers[i+1].rotationPointY, dynModelRenderers[i+1].rotationPointZ);
+        if (prevUpdateTick != entity.ticksExisted) {
+            for (int i = 0; i < chainOrig.length; i++) {
+                pOrig[i] = chainOrig[i].getWorldPos(entity, delta);
+            }
+
+            updateBendConstraint(gravityAmount, stiffness, stiffnessFalloff, damping, numUpdates);
+
+            prevUpdateTick = entity.ticksExisted;
+        }
+
+        if (chainDynamic == null) return;
+        for (int i = chainDynamic.length - 1; i >= 0; i--) {
+            if (chainDynamic[i] == null) return;
+            Vec3d renderPos = p[i].add(v[i].scale(delta)).add(a[i].scale(0.5 * delta * delta));
+            chainDynamic[i].setWorldPos(entity, renderPos, delta);
+
+            if (i < chainDynamic.length - 1) {
+                Vec3d p1 = new Vec3d(chainDynamic[i].rotationPointX, chainDynamic[i].rotationPointY, chainDynamic[i].rotationPointZ);
+                Vec3d p2 = new Vec3d(chainDynamic[i+1].rotationPointX, chainDynamic[i+1].rotationPointY, chainDynamic[i+1].rotationPointZ);
                 Vec3d diff = p2.subtract(p1);
                 float yaw = (float)Math.atan2(diff.x, diff.z);
                 float pitch = -(float)Math.asin(diff.y/diff.lengthVector());
-                dynModelRenderers[i].rotateAngleY = dynModelRenderers[i].defaultRotationY + yaw;
-                dynModelRenderers[i].rotateAngleX = dynModelRenderers[i].defaultRotationZ + pitch;
+                chainDynamic[i].rotateAngleY = chainDynamic[i].defaultRotationY + yaw;
+                chainDynamic[i].rotateAngleX = chainDynamic[i].defaultRotationZ + pitch;
 
                 Vec3d diffRotated = diff;
                 diffRotated = diffRotated.rotateYaw(yaw);
@@ -183,8 +205,10 @@ public class DynamicChain {
         }
     }
 
-    public void render(float f5) {
+    public void render(float f5, SocketModelRenderer[] dynModelRenderers) {
+        if (dynModelRenderers == null) return;
         for (int i = 0; i < dynModelRenderers.length - 1; i++) {
+            if (dynModelRenderers[i] == null) return;
             dynModelRenderers[i].render(f5);
         }
     }

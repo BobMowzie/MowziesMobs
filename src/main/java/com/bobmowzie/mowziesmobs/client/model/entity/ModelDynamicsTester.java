@@ -1,13 +1,11 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.ExtendedModelRenderer;
 import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.EntityDynamicsTester;
 import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.model.ModelAnimator;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
-import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
@@ -24,6 +22,7 @@ public class ModelDynamicsTester extends AdvancedModelBase {
     public SocketModelRenderer body6;
 
     public SocketModelRenderer[] body;
+    public SocketModelRenderer[] bodydynamic;
 
     private ModelAnimator animator;
 
@@ -78,7 +77,7 @@ public class ModelDynamicsTester extends AdvancedModelBase {
         body4.isHidden = true;
         body5.isHidden = true;
         body6.isHidden = true;
-        if (((EntityDynamicsTester)entity).dc != null) ((EntityDynamicsTester)entity).dc.render(f5);
+        if (((EntityDynamicsTester)entity).dc != null) ((EntityDynamicsTester)entity).dc.render(f5, bodydynamic);
         root.render(f5);
         body1.isHidden = false;
         body2.isHidden = false;
@@ -104,10 +103,5 @@ public class ModelDynamicsTester extends AdvancedModelBase {
         resetToDefaultPose();
 //        bob(body1, 0.3f, 16, false, entity.ticksExisted + LLibrary.PROXY.getPartialTicks(), 1F);
         root.rotationPointZ += 16;
-
-        if (dynamicsTester != null && dynamicsTester.dc != null) {
-            dynamicsTester.dc.setChain(body);
-            dynamicsTester.dc.updateChain(LLibrary.PROXY.getPartialTicks());
-        }
     }
 }
