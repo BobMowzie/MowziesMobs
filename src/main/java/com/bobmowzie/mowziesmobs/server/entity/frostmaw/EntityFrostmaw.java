@@ -500,7 +500,7 @@ public class EntityFrostmaw extends MowzieEntity {
         if (iceBallCooldown > 0) iceBallCooldown--;
         if (slamCooldown > 0) slamCooldown--;
         if (shouldDodgeMeasure > 0 && ticksExisted % 7 == 0) shouldDodgeMeasure--;
-        if (dodgeCooldown > 0) slamCooldown--;
+        if (dodgeCooldown > 0) dodgeCooldown--;
         prevRotationYaw = rotationYaw;
     }
 

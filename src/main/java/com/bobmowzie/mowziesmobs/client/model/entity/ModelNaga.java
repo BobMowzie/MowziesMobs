@@ -674,7 +674,9 @@ public class ModelNaga extends AdvancedModelBase{
         backFin2.rotationPointX += 0.0005;
         backFin2Reversed.rotationPointX -= 0.001;
 
-        naga.dc.updateChain(LLibrary.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.15f, 0.7f, 0.2f, 0.95f, 20);
+        naga.dc.updateChain(LLibrary.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.5f, 0.7f, 1f, 0.95f, 40, true);
+//        naga.dc.updateChain(LLibrary.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.2f, 0f, 1f, 0.99f, 40);
+
     }
 
     public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
@@ -759,5 +761,17 @@ public class ModelNaga extends AdvancedModelBase{
         wingWebbing5_L.rotationPointY += 0.01f;
 
         tailFinReversed.rotationPointY -= 0.02f;
+
+        if (tailDynamic[0] != null) {
+            backFin1.setScale(1, 1, 1 - 0.5f * tailDynamic[0].rotateAngleX);
+            backFin1.scaleChildren = true;
+            backFin1.rotationPointX += 0.002;
+            backFin1Reversed.rotationPointX -= 0.004;
+
+            backFin2.setScale(1, 1, 1 - 0.2f * tailDynamic[1].rotateAngleX);
+            backFin2.scaleChildren = true;
+            backFin2.rotationPointX += 0.001;
+            backFin2Reversed.rotationPointX -= 0.002;
+        }
     }
 }
