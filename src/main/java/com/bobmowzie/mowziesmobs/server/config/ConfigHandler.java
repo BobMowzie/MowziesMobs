@@ -27,4 +27,8 @@ public class ConfigHandler {
     public int spawnrateGrottol = 2;
     @ConfigEntry(name = "Lantern Spawn Rate", minValue = "0", maxValue = "100")
     public int spawnrateLantern = 2;
+    @ConfigEntry(name = "Naga Spawn Rate", minValue = "0", maxValue = "100")
+    public int spawnrateNaga = 1;
+    @ConfigEntry(name = "Naga Difficulty Multiplier", minValue = "0", maxValue = "20")
+    public int difficultyScaleNaga = 1;
 }

@@ -1,18 +1,9 @@
 package com.bobmowzie.mowziesmobs.client.model.tools.dynamics;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
-import net.ilexiconn.llibrary.LLibrary;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import org.lwjgl.Sys;
-import org.lwjgl.util.vector.Quaternion;
-import org.lwjgl.util.vector.Vector;
-
-import javax.vecmath.Point3d;
-import javax.vecmath.Quat4d;
-import java.net.Socket;
 
 /**
  * Created by Josh on 8/30/2018.
@@ -75,27 +66,32 @@ public class DynamicChain {
                 //target = new Vec3d(target.x, (1-gravity) * target.y + gravity * Math.PI, target.z);
 
                 r[i] = angleBetween(p[i], p[i + 1]);
-                T[i] = r[i].subtract(target).scale(-stiffness/(Math.pow(i + 1, stiffnessFalloff)));
-                Vec3d gravityVec = new Vec3d(0, gravityAmount * d[i+1] * m[i+1] * (Math.sin(Math.PI/2 - r[i].y + Math.PI/2)), 0);
+                T[i] = wrapAngles(r[i].subtract(target)).scale(-stiffness/(Math.pow(i + 1, stiffnessFalloff)));
+                double down = Math.PI/2;
+                Vec3d gravityVec = wrapAngles(new Vec3d(
+                        0,
+                        gravityAmount * d[i+1] * m[i+1] * (Math.sin(down - r[i].y + down)),
+                        0));
                 Vec3d floorVec = new Vec3d(0, 1 * d[i+1] * m[i+1] * (Math.sin(Math.PI/2 - r[i].y + Math.PI/2)), 0);
-                if (useFloor && p[i+1].y < entity.posY) {
+                if (useFloor && entity.onGround && p[i+1].y < entity.posY) {
                     T[i] = T[i].subtract(floorVec);
                 }
-                T[i] = T[i].add(gravityVec);
+                T[i] = wrapAngles(T[i].add(gravityVec));
                 ra[i] = T[i].scale(1 / (m[i + 1] * d[i + 1] * d[i + 1]));
                 rv[i] = rv[i].add(ra[i].scale(1/((float)numUpdates))).scale(damping);
+                rv[i] = wrapAngles(rv[i]);
                 r[i] = r[i].add(rv[i].scale(1/((float)numUpdates)));
+                r[i] = wrapAngles(r[i]);
 
-                p[i + 1] = Vec3d.fromPitchYaw((float) (Math.toDegrees(r[i].y) - 90), (float) (Math.toDegrees(r[i].x) - 90)).scale(d[i + 1]).add(p[i]);
+                p[i + 1] = fromPitchYaw((float)(r[i].y - Math.PI/2), (float)(r[i].x - Math.PI/2)).scale(d[i + 1]).add(p[i]);
                 v[i + 1] = p[i + 1].subtract(prevPos[i+1]);
                 a[i + 1] = v[i + 1].subtract(prevVel[i+1]);
 
-                r[i] = wrapAngles(r[i]);
-                rv[i] = wrapAngles(rv[i]);
             }
-            if (r != null && r.length > 0) {
-//                System.out.println(r[1]);
-            }
+//            if (r != null && r.length > 0) {
+//                System.out.println(r[0]);
+//                System.out.println(rv[0]);
+//            }
         }
     }
 
@@ -226,6 +222,14 @@ public class DynamicChain {
         }
     }
 
+    private static Vec3d fromPitchYaw(float pitch, float yaw) {
+        float f = MathHelper.cos(-yaw - (float)Math.PI);
+        float f1 = MathHelper.sin(-yaw - (float)Math.PI);
+        float f2 = -MathHelper.cos(-pitch);
+        float f3 = MathHelper.sin(-pitch);
+        return new Vec3d((double)(f1 * f2), (double)f3, (double)(f * f2));
+    }
+
     private static Vec3d angleBetween(Vec3d p1, Vec3d p2) {
 //        Quaternion q = new Quaternion();
 //        Vec3d v1 = p2.subtract(p1);
@@ -332,14 +336,14 @@ public class DynamicChain {
         double y = r.y;
         double z = r.z;
 
-        while (x > 2 * Math.PI) x -= 2 * Math.PI;
-        while (x < -2 * Math.PI) x += 2 * Math.PI;
+        while (x > Math.PI) x -= 2 * Math.PI;
+        while (x < -Math.PI) x += 2 * Math.PI;
 
-        while (y > 2 * Math.PI) y -= 2 * Math.PI;
-        while (y < -2 * Math.PI) y += 2 * Math.PI;
+        while (y > Math.PI) y -= 2 * Math.PI;
+        while (y < -Math.PI) y += 2 * Math.PI;
 
-        while (z > 2 * Math.PI) z -= 2 * Math.PI;
-        while (z < -2 * Math.PI) z += 2 * Math.PI;
+        while (z > Math.PI) z -= 2 * Math.PI;
+        while (z < -Math.PI) z += 2 * Math.PI;
 
         return new Vec3d(x,y,z);
     }

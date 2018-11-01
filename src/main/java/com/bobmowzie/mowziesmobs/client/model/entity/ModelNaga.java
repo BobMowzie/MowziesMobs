@@ -104,6 +104,7 @@ public class ModelNaga extends AdvancedModelBase{
     public AdvancedModelRenderer wingWebbing2_RReversed;
     public AdvancedModelRenderer wingWebbing3_RReversed;
     public AdvancedModelRenderer wingWebbing4_RReversed;
+    public AdvancedModelRenderer wingFolder;
 
     public SocketModelRenderer tailEnd;
 
@@ -169,7 +170,7 @@ public class ModelNaga extends AdvancedModelBase{
         this.wingWebbing2_LReversed.addBox(0.0F, 0.0F, -15.0F, 50, 0, 30, 0.0F);
         wingWebbing2_LReversed.setScale(1, -1, 1);
         this.root = new AdvancedModelRenderer(this, 0, 0);
-        this.root.setRotationPoint(0.0F, 0.0F, -24F);
+        this.root.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.root.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         this.wingFrame1_L = new AdvancedModelRenderer(this, 50, 91);
         this.wingFrame1_L.setRotationPoint(11.0F, 0.0F, -0.5F);
@@ -473,6 +474,7 @@ public class ModelNaga extends AdvancedModelBase{
         this.wingFrame3_R.setRotationPoint(-4.0F, 0.0F, 0.0F);
         this.wingFrame3_R.addBox(-43.0F, -1.5F, -1.5F, 43, 3, 3, 0.0F);
         this.setRotateAngle(wingFrame3_R, 0.0F, 1.2217304763960306F, 0.0F);
+        this.wingFolder = new AdvancedModelRenderer(this, 0, 0);
         this.tailEnd = new SocketModelRenderer(this, 0, 0);
         this.tailEnd.setRotationPoint(0, 0, 5);
         this.eyebrowJoint_L.addChild(this.eyebrow_L);
@@ -598,10 +600,126 @@ public class ModelNaga extends AdvancedModelBase{
         super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
         resetToDefaultPose();
         EntityNaga naga = (EntityNaga) entityIn;
-        float frame = entityIn.ticksExisted + LLibrary.PROXY.getPartialTicks();
 
-        float globalSpeed = 0.27f;
+        modelCorrections();
 
+        float partial = LLibrary.PROXY.getPartialTicks();
+        float frame = entityIn.ticksExisted + partial;
+
+        if (naga.movement == EntityNaga.EnumNagaMovement.HOVERING) {
+            float globalSpeed = 0.27f;
+            float globalDegree = 1f;
+
+            wingFolder.rotationPointX = globalDegree * (0.9f * (float) (0.5 * Math.cos(frame * globalSpeed + 1.4) + 0.5) + 0.05f);
+            wingFolder.rotationPointY = globalDegree * (0.9f * (float) (0.5 * Math.cos(frame * globalSpeed + 1.4) + 0.5) + 0.05f);
+
+            flap(shoulder1_R, globalSpeed, 0.8f * globalDegree, false, 0, 0, frame, 1);
+            flap(lowerArmJoint_R, globalSpeed, 0.7f * globalDegree, false, -0.6f, 0, frame, 1);
+            flap(handJoint_R, globalSpeed, 0.6f * globalDegree, false, -1.2f, 0, frame, 1);
+
+            flap(shoulder1_L, globalSpeed, 0.8f * globalDegree, true, 0, 0, frame, 1);
+            flap(lowerArmJoint_L, globalSpeed, 0.7f * globalDegree, true, -0.6f, 0, frame, 1);
+            flap(handJoint_L, globalSpeed, 0.6f * globalDegree, true, -1.2f, 0, frame, 1);
+
+            flap(backWing_R, globalSpeed, 0.8f * globalDegree, false, -1.5f, -0.2f, frame, 1);
+            flap(backWing_L, globalSpeed, 0.8f * globalDegree, true, -1.5f, -0.2f, frame, 1);
+
+            bob(root, globalSpeed, 10 * globalDegree, false, frame - 0.5f, 1);
+
+            body.rotateAngleX += 0.1f * globalDegree;
+            neck.rotateAngleX += 0.1f * globalDegree;
+            headjoint.rotateAngleX += 0.1f * globalDegree;
+        }
+        else if (naga.movement == EntityNaga.EnumNagaMovement.GLIDING) {
+            float dx = (float) (naga.motionX);
+            float dy = (float) (naga.motionY);
+            float dz = (float) (naga.motionZ);
+            float pitch = -(float)Math.asin(dy/Math.sqrt(dx * dx + dy * dy + dz * dz));
+            root.rotateAngleX += pitch;
+            neck.rotateAngleX -= pitch/2;
+            head.rotateAngleX -= pitch/2;
+            shoulder1_L.rotateAngleX -= Math.min(pitch, 0);
+            shoulder1_R.rotateAngleX -= Math.min(pitch, 0);
+
+            wingFolder.rotationPointX += Math.max(Math.min(pitch * 2, 0.8), 0.1);
+            wingFolder.rotationPointY += Math.max(Math.min(pitch * 2, 0.8), 0.1);
+
+        }
+
+//        root.rotateAngleZ -= Math.toRadians((naga.rotationYaw - naga.prevRotationYaw) * (LLibrary.PROXY.getPartialTicks()));
+
+        naga.dc.updateChain(LLibrary.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.5f, 0.4f, 0.5f, 0.98f, 20, true);
+        //naga.dc.updateChain(LLibrary.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.2f, 0f, 1f, 0.99f, 40, false);
+
+    }
+
+    public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+        EntityNaga naga = (EntityNaga) entity;
+        animator.update(naga);
+        setRotationAngles(f, f1, f2, f3, f4, f5, naga);
+
+        float frame = naga.frame + LLibrary.PROXY.getPartialTicks();
+
+        if (naga.getAnimation() == EntityNaga.FLAP_ANIMATION) {
+            float globalSpeed = 0.27f;
+            float globalDegree = 1.1f;
+
+            animator.setAnimation(EntityNaga.FLAP_ANIMATION);
+            animator.startKeyframe(25);
+            animator.rotate(wingFolder, 1, 0, 0);
+            animator.endKeyframe();
+            animator.resetKeyframe(0);
+
+            float flapFrame = (float) ((wingFolder.rotateAngleX * Math.PI * 2f / globalSpeed) - (Math.PI * 0.5 / globalSpeed));
+            globalDegree *= 1 - Math.pow(Math.sin(wingFolder.rotateAngleX * Math.PI - Math.PI/2), 8);
+
+            wingFolder.rotationPointX += globalDegree * (0.9f * (float) (0.5 * Math.cos(flapFrame * globalSpeed + 1.4) + 0.5) + 0.05f);
+            wingFolder.rotationPointY += globalDegree * (0.9f * (float) (0.5 * Math.cos(flapFrame * globalSpeed + 1.4) + 0.5) + 0.05f);
+
+            flap(shoulder1_R, globalSpeed, 0.8f * globalDegree, false, 0, 0, flapFrame, 1);
+            flap(lowerArmJoint_R, globalSpeed, 0.7f * globalDegree, false, -0.6f, 0, flapFrame, 1);
+            flap(handJoint_R, globalSpeed, 0.6f * globalDegree, false, -1.2f, 0, flapFrame, 1);
+
+            flap(shoulder1_L, globalSpeed, 0.8f * globalDegree, true, 0, 0, flapFrame, 1);
+            flap(lowerArmJoint_L, globalSpeed, 0.7f * globalDegree, true, -0.6f, 0, flapFrame, 1);
+            flap(handJoint_L, globalSpeed, 0.6f * globalDegree, true, -1.2f, 0, flapFrame, 1);
+
+            flap(backWing_R, globalSpeed, 1f * globalDegree, false, -0.5f, -0.2f, flapFrame, 1);
+            flap(backWing_L, globalSpeed, 1f * globalDegree, true, -0.5f, -0.2f, flapFrame, 1);
+        }
+
+        jawControls();
+        wingFoldControls();
+        computeWingWebbing();
+    }
+
+    private void jawControls() {
+        teethUpper.setScale(1, 1, 0.5f + 0.5f * Math.min(jaw.rotateAngleX, 1));
+        underHead.setScale(1, 1, 1f - 0.2f * Math.min(jaw.rotateAngleX, 1));
+        underHead.rotationPointZ += 1.2 * Math.min(jaw.rotateAngleX, 1);
+    }
+
+    private void wingFoldControls() {
+        shoulder1_R.rotateAngleY += 0.8 * wingFolder.rotationPointX;
+        upperArm_R.rotateAngleY += 0.3 * wingFolder.rotationPointX;
+        lowerArm_R.rotateAngleY -= 2.7 * wingFolder.rotationPointX;
+        hand_R.rotateAngleY += 1.8 * wingFolder.rotationPointX;
+        wingFrame1_R.rotateAngleY += 0.8 * wingFolder.rotationPointX;
+        wingFrame2_R.rotateAngleY += 0.3 * wingFolder.rotationPointX;
+        wingFrame3_R.rotateAngleY -= 0.2 * wingFolder.rotationPointX;
+        wingFrame4_R.rotateAngleY -= 0.7 * wingFolder.rotationPointX;
+
+        shoulder1_L.rotateAngleY -= 0.8 * wingFolder.rotationPointY;
+        upperArm_L.rotateAngleY -= 0.3 * wingFolder.rotationPointY;
+        lowerArm_L.rotateAngleY += 2.7 * wingFolder.rotationPointY;
+        hand_L.rotateAngleY -= 1.8 * wingFolder.rotationPointY;
+        wingFrame1_L.rotateAngleY -= 0.8 * wingFolder.rotationPointY;
+        wingFrame2_L.rotateAngleY -= 0.3 * wingFolder.rotationPointY;
+        wingFrame3_L.rotateAngleY += 0.2 * wingFolder.rotationPointY;
+        wingFrame4_L.rotateAngleY += 0.7 * wingFolder.rotationPointY;
+    }
+
+    private void modelCorrections() {
         backWing_R.rotationPointX -= 2;
         backWing_L.rotationPointX += 2;
         teethLower.setScale(1.01f, 1.01f, 1.01f);
@@ -624,69 +742,12 @@ public class ModelNaga extends AdvancedModelBase{
         spike5joint.rotationPointY += 0.15;
         spike5joint.rotationPointZ -= 0.42;
         tail1.setScale(1.03f, 1, 1);
-
-        float wingRFold = 0.9f * (float) (0.5 * Math.cos(frame * globalSpeed + 1.4) + 0.5) + 0.05f;
-        shoulder1_R.rotateAngleY += 0.8 * wingRFold;
-        upperArm_R.rotateAngleY += 0.3 * wingRFold;
-        lowerArm_R.rotateAngleY -= 2.7 * wingRFold;
-        hand_R.rotateAngleY += 1.8 * wingRFold;
-        wingFrame1_R.rotateAngleY += 0.8 * wingRFold;
-        wingFrame2_R.rotateAngleY += 0.3 * wingRFold;
-        wingFrame3_R.rotateAngleY -= 0.2 * wingRFold;
-        wingFrame4_R.rotateAngleY -= 0.7 * wingRFold;
-
-        float wingLFold = 0.9f * (float) (0.5 * Math.cos(frame * globalSpeed + 1.4) + 0.5) + 0.05f;
-        shoulder1_L.rotateAngleY -= 0.8 * wingRFold;
-        upperArm_L.rotateAngleY -= 0.3 * wingLFold;
-        lowerArm_L.rotateAngleY += 2.7 * wingLFold;
-        hand_L.rotateAngleY -= 1.8 * wingLFold;
-        wingFrame1_L.rotateAngleY -= 0.8 * wingLFold;
-        wingFrame2_L.rotateAngleY -= 0.3 * wingLFold;
-        wingFrame3_L.rotateAngleY += 0.2 * wingLFold;
-        wingFrame4_L.rotateAngleY += 0.7 * wingLFold;
-
-        flap(shoulder1_R, globalSpeed, 0.8f, false, 0, 0, frame, 1);
-        flap(lowerArmJoint_R, globalSpeed, 0.7f, false, -0.6f, 0, frame, 1);
-        flap(handJoint_R, globalSpeed, 0.6f, false, -1.2f, 0, frame, 1);
-
-        flap(shoulder1_L, globalSpeed, 0.8f, true, 0, 0, frame, 1);
-        flap(lowerArmJoint_L, globalSpeed, 0.7f, true, -0.6f, 0, frame, 1);
-        flap(handJoint_L, globalSpeed, 0.6f, true, -1.2f, 0, frame, 1);
-
-        flap(backWing_R, globalSpeed, 0.8f, false, -1.5f, -0.2f, frame, 1);
-        flap(backWing_L, globalSpeed, 0.8f, true, -1.5f, -0.2f, frame, 1);
-//
-        bob(root, globalSpeed, 10, false, frame - 0.5f, 1);
-
-//        jaw.rotateAngleX += 1.5 * (float) (0.5 * Math.cos(entityIn.ticksExisted * 0.2) + 0.5);
-        teethUpper.setScale(1, 1, 0.5f + 0.5f * Math.min(jaw.rotateAngleX, 1));
-        underHead.setScale(1, 1, 1f - 0.2f * Math.min(jaw.rotateAngleX, 1));
-        underHead.rotationPointZ += 1.2 * Math.min(jaw.rotateAngleX, 1);
-        body.rotateAngleX += 0.1f;
-        neck.rotateAngleX += 0.1f;
-        headjoint.rotateAngleX += 0.1f;
-        for (int i = 0; i < tailOriginal.length; i++) {
-//            tail[i].rotateAngleX -= 0.1;
-        }
+//        root.rotationPointY += 28;
 
         backFin1.rotationPointX += 0.001;
         backFin1Reversed.rotationPointX -= 0.002;
         backFin2.rotationPointX += 0.0005;
         backFin2Reversed.rotationPointX -= 0.001;
-
-        naga.dc.updateChain(LLibrary.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.5f, 0.7f, 1f, 0.95f, 40, true);
-//        naga.dc.updateChain(LLibrary.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.2f, 0f, 1f, 0.99f, 40);
-
-    }
-
-    public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        EntityNaga naga = (EntityNaga) entity;
-        animator.update(naga);
-        setRotationAngles(f, f1, f2, f3, f4, f5, naga);
-
-        float frame = naga.frame + LLibrary.PROXY.getPartialTicks();
-
-        computeWingWebbing();
     }
 
     private void computeWingWebbing() {

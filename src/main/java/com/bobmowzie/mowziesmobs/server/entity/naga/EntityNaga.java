@@ -1,19 +1,25 @@
 package com.bobmowzie.mowziesmobs.server.entity.naga;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.dynamics.DynamicChain;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import net.ilexiconn.llibrary.client.model.tools.ControlledAnimation;
 import net.ilexiconn.llibrary.server.animation.Animation;
+import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
-import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.entity.ai.EntityAIFollowOwnerFlying;
-import net.minecraft.entity.ai.EntityAIWander;
-import net.minecraft.entity.ai.EntityMoveHelper;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.*;
 import net.minecraft.entity.monster.EntityGhast;
+import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -27,17 +33,57 @@ public class EntityNaga extends MowzieEntity {
     @SideOnly(Side.CLIENT)
     public DynamicChain dc;
 
+    public static final Animation FLAP_ANIMATION = Animation.create(25);
+
+    public ControlledAnimation hoverAnim = new ControlledAnimation(10);
+
+    public EnumNagaMovement movement = EnumNagaMovement.GLIDING;
+
+    public double prevMotionX;
+    public double prevMotionY;
+    public double prevMotionZ;
+
+    public enum EnumNagaMovement {
+        GLIDING,
+        HOVERING,
+        SWIMMING,
+        FALLING,
+        FALLEN
+    }
+
     public EntityNaga(World world) {
         super(world);
-//        this.tasks.addTask(5, new EntityNaga.AIRandomFly(this));
+        this.tasks.addTask(5, new EntityNaga.AIRandomFly(this));
         this.tasks.addTask(7, new EntityNaga.AILookAround(this));
+//        this.targetTasks.addTask(1, new EntityAINearestAttackableTarget(this, EntitySheep.class, 0, true, false, null));
+        this.tasks.addTask(2, new AnimationAI<EntityNaga>(this, FLAP_ANIMATION, false) {
+            @Override
+            public void updateTask() {
+                super.updateTask();
+                if (getAnimationTick() >= 4 && getAnimationTick() <= 9) motionY += 0.12;
+            }
+        });
+
         this.moveHelper = new EntityNaga.GhastMoveHelper(this);
         setSize(3, 1);
         dc = new DynamicChain(this);
     }
 
+    protected void applyEntityAttributes()
+    {
+        super.applyEntityAttributes();
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(50.0D * MowziesMobs.CONFIG.difficultyScaleNaga);
+        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(3.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(9.0D * MowziesMobs.CONFIG.difficultyScaleNaga);
+        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(50);
+    }
+
     @Override
     public void onUpdate() {
+        prevMotionX = motionX;
+        prevMotionY = motionY;
+        prevMotionX = motionZ;
+
         super.onUpdate();
         if (world.isRemote) {
 //            dc.updateSpringConstraint(0.2f, 0.3f, 2f, 100f, true, 0.5f, 1);
@@ -45,6 +91,17 @@ public class EntityNaga extends MowzieEntity {
         }
 //        setDead();
         renderYawOffset = rotationYaw;
+//        posZ += 0.4 * Math.sin(ticksExisted *
+
+//        if (getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(this, FLAP_ANIMATION);
+
+        if (getAttackTarget() != null) {
+            movement = EnumNagaMovement.HOVERING;
+            getNavigator().tryMoveToEntityLiving(getAttackTarget(), 1.0D);
+        }
+        else {
+            movement = EnumNagaMovement.GLIDING;
+        }
     }
 
     @Override
@@ -59,7 +116,7 @@ public class EntityNaga extends MowzieEntity {
 
     @Override
     public Animation[] getAnimations() {
-        return new Animation[0];
+        return new Animation[] {FLAP_ANIMATION};
     }
 
     public void fall(float distance, float damageMultiplier)
@@ -72,30 +129,23 @@ public class EntityNaga extends MowzieEntity {
 //        super.updateFallState(y, onGroundIn, state, pos);
     }
 
-    public void travel(float p_191986_1_, float p_191986_2_, float p_191986_3_)
-    {
-        if (this.isInWater())
-        {
+    public void travel(float p_191986_1_, float p_191986_2_, float p_191986_3_) {
+        if (this.isInWater()) {
             this.moveRelative(p_191986_1_, p_191986_2_, p_191986_3_, 0.02F);
             this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
             this.motionX *= 0.800000011920929D;
             this.motionY *= 0.800000011920929D;
             this.motionZ *= 0.800000011920929D;
-        }
-        else if (this.isInLava())
-        {
+        } else if (this.isInLava()) {
             this.moveRelative(p_191986_1_, p_191986_2_, p_191986_3_, 0.02F);
             this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
             this.motionX *= 0.5D;
             this.motionY *= 0.5D;
             this.motionZ *= 0.5D;
-        }
-        else
-        {
+        } else if (movement == EnumNagaMovement.HOVERING) {
             float f = 0.91F;
 
-            if (this.onGround)
-            {
+            if (this.onGround) {
                 BlockPos underPos = new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(this.getEntityBoundingBox().minY) - 1, MathHelper.floor(this.posZ));
                 IBlockState underState = this.world.getBlockState(underPos);
                 f = underState.getBlock().getSlipperiness(underState, this.world, underPos, this) * 0.91F;
@@ -105,17 +155,70 @@ public class EntityNaga extends MowzieEntity {
             this.moveRelative(p_191986_1_, p_191986_2_, p_191986_3_, this.onGround ? 0.1F * f1 : 0.02F);
             f = 0.91F;
 
-            if (this.onGround)
-            {
+            if (this.onGround) {
                 BlockPos underPos = new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(this.getEntityBoundingBox().minY) - 1, MathHelper.floor(this.posZ));
                 IBlockState underState = this.world.getBlockState(underPos);
                 f = underState.getBlock().getSlipperiness(underState, this.world, underPos, this) * 0.91F;
             }
 
             this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
-            this.motionX *= (double)f;
-            this.motionY *= (double)f;
-            this.motionZ *= (double)f;
+            this.motionX *= (double) f;
+            this.motionY *= (double) f;
+            this.motionZ *= (double) f;
+        }
+        else {
+            if (this.motionY > -0.5D) {
+                this.fallDistance = 1.0F;
+            }
+
+            Vec3d vec3d = this.getLookVec();
+            float f = this.rotationPitch * 0.017453292F;
+            double d6 = Math.sqrt(vec3d.x * vec3d.x + vec3d.z * vec3d.z);
+            double d8 = Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
+            double d1 = vec3d.lengthVector();
+            float f4 = MathHelper.cos(f);
+            f4 = (float) ((double) f4 * (double) f4 * Math.min(1.0D, d1 / 0.4D));
+            this.motionY += -0.08D + (double) f4 * 0.06D;
+
+            if (this.motionY < 0.0D && d6 > 0.0D) {
+                double d2 = this.motionY * -0.1D * (double) f4;
+                this.motionY += d2;
+                this.motionX += vec3d.x * d2 / d6;
+                this.motionZ += vec3d.z * d2 / d6;
+            }
+
+            if (f < 0.0F) {
+                double d10 = d8 * (double) (-MathHelper.sin(f)) * 0.04D;
+                this.motionY += d10 * 3.2D;
+                this.motionX -= vec3d.x * d10 / d6;
+                this.motionZ -= vec3d.z * d10 / d6;
+            }
+
+            if (d6 > 0.0D) {
+                this.motionX += (vec3d.x / d6 * d8 - this.motionX) * 0.1D;
+                this.motionZ += (vec3d.z / d6 * d8 - this.motionZ) * 0.1D;
+            }
+
+            this.motionX *= 0.9900000095367432D;
+            this.motionY *= 0.9800000190734863D;
+            this.motionZ *= 0.9900000095367432D;
+            this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
+            if (getMoveHelper().getY() - posY > 0 && motionY < 0 && getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(this, FLAP_ANIMATION);
+
+            if (this.isCollidedHorizontally && !this.world.isRemote) {
+                double d11 = Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
+                double d3 = d8 - d11;
+                float f5 = (float) (d3 * 10.0D - 3.0D);
+
+                if (f5 > 0.0F) {
+                    this.playSound(this.getFallSound((int) f5), 1.0F, 1.0F);
+                    this.attackEntityFrom(DamageSource.FLY_INTO_WALL, f5);
+                }
+            }
+
+            if (this.onGround && !this.world.isRemote) {
+                this.setFlag(7, false);
+            }
         }
 
         this.prevLimbSwingAmount = this.limbSwingAmount;
@@ -123,8 +226,7 @@ public class EntityNaga extends MowzieEntity {
         double d0 = this.posZ - this.prevPosZ;
         float f2 = MathHelper.sqrt(d1 * d1 + d0 * d0) * 4.0F;
 
-        if (f2 > 1.0F)
-        {
+        if (f2 > 1.0F) {
             f2 = 1.0F;
         }
 
@@ -232,10 +334,10 @@ public class EntityNaga extends MowzieEntity {
         public void startExecuting()
         {
             Random random = this.parentEntity.getRNG();
-            double d0 = this.parentEntity.posX + (double)((random.nextFloat() * 2.0F - 1.0F) * 16.0F);
-            double d1 = this.parentEntity.posY;// + (double)((random.nextFloat() * 2.0F - 1.0F) * 16.0F);
-            double d2 = this.parentEntity.posZ + (double)((random.nextFloat() * 2.0F - 1.0F) * 16.0F);
-            this.parentEntity.getMoveHelper().setMoveTo(d0, d1, d2, 1.0D);
+            double d0 = this.parentEntity.posX + (double)((random.nextFloat() * 2.0F - 1.0F) * 24.0F);
+            double d1 = this.parentEntity.posY + (double)((random.nextFloat() * 2.0F - 1.0F) * 16.0F);
+            double d2 = this.parentEntity.posZ + (double)((random.nextFloat() * 2.0F - 1.0F) * 24.0F);
+            this.parentEntity.getMoveHelper().setMoveTo(d0, d1, d2, 12.0D);
         }
     }
 
@@ -244,10 +346,10 @@ public class EntityNaga extends MowzieEntity {
         private final EntityNaga parentEntity;
         private int courseChangeCooldown;
 
-        public GhastMoveHelper(EntityNaga ghast)
+        public GhastMoveHelper(EntityNaga naga)
         {
-            super(ghast);
-            this.parentEntity = ghast;
+            super(naga);
+            this.parentEntity = naga;
         }
 
         public void onUpdateMoveHelper()
@@ -261,7 +363,7 @@ public class EntityNaga extends MowzieEntity {
 
                 if (this.courseChangeCooldown-- <= 0)
                 {
-                    this.courseChangeCooldown += this.parentEntity.getRNG().nextInt(5) + 2;
+                    this.courseChangeCooldown += this.parentEntity.getRNG().nextInt(7) + 2;
                     d3 = (double) MathHelper.sqrt(d3);
 
                     if (this.isNotColliding(this.posX, this.posY, this.posZ, d3))
