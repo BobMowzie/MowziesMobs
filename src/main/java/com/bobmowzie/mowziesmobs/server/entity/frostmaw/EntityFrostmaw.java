@@ -26,8 +26,10 @@ import net.minecraft.entity.ai.*;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -139,9 +141,9 @@ public class EntityFrostmaw extends MowzieEntity {
     protected void applyEntityAttributes()
     {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(220.0D * MowziesMobs.CONFIG.difficultyScaleFrostmaw);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(250.0D * MowziesMobs.CONFIG.difficultyScaleFrostmaw);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.3D);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(9.0D);
+        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(10.0D);
         this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0D);
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(50);
     }
@@ -657,7 +659,23 @@ public class EntityFrostmaw extends MowzieEntity {
     @Override
     public boolean attackEntityFrom(DamageSource source, float damage) {
         if (source == DamageSource.FALL) return false;
+
+        if (source.getImmediateSource() instanceof EntityArrow) {
+            playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.4F, 2);
+            Entity entity = source.getTrueSource();
+            if (entity != null && entity instanceof EntityLivingBase && (!(entity instanceof EntityPlayer) || !((EntityPlayer)entity).capabilities.isCreativeMode) && getAttackTarget() == null && !(entity instanceof EntityFrostmaw)) setAttackTarget((EntityLivingBase) entity);
+            if (!getActive()) {
+                if (getAnimation() != DIE_ANIMATION) {
+                    if (getHasCrystal()) AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_ANIMATION);
+                    else AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_NO_CRYSTAL_ANIMATION);
+                }
+                setActive(true);
+            }
+            return false;
+        }
+
         boolean attack = super.attackEntityFrom(source, damage);
+
         if (attack) {
             shouldDodgeMeasure += damage;
             Entity entity = source.getTrueSource();
@@ -670,6 +688,7 @@ public class EntityFrostmaw extends MowzieEntity {
                 setActive(true);
             }
         }
+
         return attack;
     }
 

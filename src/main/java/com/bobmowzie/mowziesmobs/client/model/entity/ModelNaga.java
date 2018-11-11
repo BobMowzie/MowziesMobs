@@ -626,9 +626,9 @@ public class ModelNaga extends AdvancedModelBase{
 
             bob(root, globalSpeed, 10 * globalDegree, false, frame - 0.5f, 1);
 
-            body.rotateAngleX += 0.1f * globalDegree;
-            neck.rotateAngleX += 0.1f * globalDegree;
-            headjoint.rotateAngleX += 0.1f * globalDegree;
+            body.rotateAngleX -= 0.2f * globalDegree;
+            neck.rotateAngleX += 0.2f * globalDegree;
+            headjoint.rotateAngleX += 0.2f * globalDegree;
         }
         else if (naga.movement == EntityNaga.EnumNagaMovement.GLIDING) {
             float dx = (float) (naga.motionX);
@@ -648,7 +648,7 @@ public class ModelNaga extends AdvancedModelBase{
 
 //        root.rotateAngleZ -= Math.toRadians((naga.rotationYaw - naga.prevRotationYaw) * (LLibrary.PROXY.getPartialTicks()));
 
-        naga.dc.updateChain(LLibrary.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.5f, 0.4f, 0.5f, 0.98f, 20, true);
+        naga.dc.updateChain(LLibrary.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.5f, 0.4f, 0.5f, 0.97f, 20, true);
         //naga.dc.updateChain(LLibrary.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.2f, 0f, 1f, 0.99f, 40, false);
 
     }

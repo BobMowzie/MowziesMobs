@@ -145,6 +145,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0);
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(MAX_HEALTH * MowziesMobs.CONFIG.difficultyScaleBarako);
+        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(50);
     }
 
     @Override
@@ -471,6 +472,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         for (EntityBarakoa entityBarakoa : barakoa) {
             if (entityBarakoa.isBarakoDevoted()) entityBarakoa.timeUntilDeath = rand.nextInt(20);
         }
+
         super.onDeath(cause);
     }
 
@@ -516,7 +518,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     }
 
     public boolean canTradeWith(EntityPlayer player) {
-        if (isTrading()) {
+        if (isTrading() || getHealth() <= 0) {
             return false;
         }
         ItemStack headStack = player.inventory.armorInventory.get(3);

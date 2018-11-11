@@ -41,6 +41,7 @@ import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityOcelot;
+import net.minecraft.entity.passive.EntityParrot;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -90,6 +91,9 @@ public enum ServerEventHandler {
         }
 
         if (entity instanceof EntityOcelot) {
+            ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity<>((EntityCreature) entity, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
+        }
+        if (entity instanceof EntityParrot) {
             ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity<>((EntityCreature) entity, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
         }
         if (entity instanceof EntityAnimal) {

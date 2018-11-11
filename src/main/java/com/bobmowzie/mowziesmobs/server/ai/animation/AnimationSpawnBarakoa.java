@@ -55,6 +55,7 @@ public class AnimationSpawnBarakoa extends AnimationAI<EntityBarako> {
             barakoa.motionX = 0.7 * Math.sin(-angle * (Math.PI / 180));
             barakoa.motionY = 0.5;
             barakoa.motionZ = 0.7 * Math.cos(-angle * (Math.PI / 180));
+            barakoa.setAttackTarget(entity.getAttackTarget());
         }
     }
 }
