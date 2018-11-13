@@ -2,15 +2,11 @@ package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoTrade;
-import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoayaTrade;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityRing;
 import com.bobmowzie.mowziesmobs.server.gui.GuiHandler;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoTrade;
-import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoayaTrade;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
-import com.google.common.collect.ImmutableSet;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
@@ -35,7 +31,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializer;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
@@ -61,9 +56,7 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationSunStrike;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import com.bobmowzie.mowziesmobs.server.item.ItemTestStructure;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import com.google.common.base.Optional;
 
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
@@ -115,7 +108,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         this.tasks.addTask(2, new AnimationAI<>(this, TALK_ANIMATION, false));
         this.tasks.addTask(2, new AnimationAI<>(this, BLESS_ANIMATION, false));
         this.tasks.addTask(2, new AnimationSunStrike<>(this, SUNSTRIKE_ANIMATION));
-        this.tasks.addTask(2, new AnimationRadiusAttack<>(this, ATTACK_ANIMATION, 4.5f, 5, 3f, 12, true));
+        this.tasks.addTask(2, new AnimationRadiusAttack<>(this, ATTACK_ANIMATION, 4.5f, 5 * MowziesMobs.CONFIG.attackScaleBarako, 3f, 12, true));
         this.tasks.addTask(2, new AnimationSpawnBarakoa(this, SPAWN_ANIMATION));
         this.tasks.addTask(2, new AnimationSolarBeam<>(this, SOLAR_BEAM_ANIMATION));
         this.tasks.addTask(3, new AnimationTakeDamage<>(this));
@@ -144,7 +137,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0);
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(MAX_HEALTH * MowziesMobs.CONFIG.difficultyScaleBarako);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(MAX_HEALTH * MowziesMobs.CONFIG.healthScaleBarako);
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(50);
     }
 

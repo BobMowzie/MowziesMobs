@@ -5,6 +5,7 @@ import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityRing;
+import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
@@ -52,6 +53,7 @@ public class EntityIceBreath extends EntityMagicEffect {
     @Override
     public void onUpdate() {
         super.onUpdate();
+        if (caster != null && caster.getHealth() <= 0) this.setDead();
         if (ticksExisted == 1) playSound(MMSounds.ENTITY_FROSTMAW_ICEBREATH_START, 1, 0.6f);
         if (caster instanceof EntityPlayer) {
             rotationYaw = ((EntityPlayer) caster).rotationYaw;
@@ -96,6 +98,7 @@ public class EntityIceBreath extends EntityMagicEffect {
     public void hitEntities() {
         List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby(RANGE, RANGE, RANGE, RANGE);
         float damage = DAMAGE_PER_HIT;
+        if (caster instanceof EntityFrostmaw) damage *= MowziesMobs.CONFIG.attackScaleFrostmaw;
         for (EntityLivingBase entityHit : entitiesHit) {
             if (entityHit == caster) continue;
             float entityHitYaw = (float) ((Math.atan2(entityHit.posZ - posZ, entityHit.posX - posX) * (180 / Math.PI) - 90) % 360);

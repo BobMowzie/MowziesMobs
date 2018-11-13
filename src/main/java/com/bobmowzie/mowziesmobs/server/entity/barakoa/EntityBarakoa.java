@@ -79,7 +79,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         tasks.addTask(1, new AnimationDieAI<>(this));
         tasks.addTask(1, new EntityAIAvoidEntity<>(this, EntitySunstrike.class, EntitySunstrike::isStriking, 3, 0.7F));
         tasks.addTask(2, new AnimationBlockAI<>(this, BLOCK_ANIMATION));
-        tasks.addTask(2, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_BARAKOA_SWING, null, 1, 3, 1, 9));
+        tasks.addTask(2, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_BARAKOA_SWING, null, 1, 3, MowziesMobs.CONFIG.attackScaleBarakoa, 9));
         tasks.addTask(2, new AnimationProjectileAttackAI<>(this, PROJECTILE_ATTACK_ANIMATION, 9, MMSounds.ENTITY_BARAKOA_BLOWDART));
         tasks.addTask(3, new AnimationTakeDamage<>(this));
         tasks.addTask(4, new AnimationAI<>(this, IDLE_ANIMATION));
@@ -144,7 +144,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
         getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
-        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10  * MowziesMobs.CONFIG.difficultyScaleBarakoa);
+        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10  * MowziesMobs.CONFIG.healthScaleBarakoa);
     }
 
     @Override
@@ -383,6 +383,8 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             dart.setKnockbackStrength(j);
         }
 
+        dart.setDamage(dart.getDamage() * MowziesMobs.CONFIG.attackScaleBarakoa);
+
         this.world.spawnEntity(dart);
         attacking = false;
     }
@@ -411,7 +413,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         }
         if (angleFlag && getMask().canBlock && entity instanceof EntityLivingBase && (getAnimation() == NO_ANIMATION || getAnimation() == HURT_ANIMATION || getAnimation() == BLOCK_ANIMATION)) {
             blockingEntity = (EntityLivingBase) entity;
-            playSound(SoundEvents.ENTITY_ZOMBIE_ATTACK_DOOR_WOOD, 0.3F, 1.5F);
+            playSound(SoundEvents.ITEM_SHIELD_BLOCK, 0.3F, 1.5F);
             AnimationHandler.INSTANCE.sendAnimationMessage(this, BLOCK_ANIMATION);
             return false;
         }

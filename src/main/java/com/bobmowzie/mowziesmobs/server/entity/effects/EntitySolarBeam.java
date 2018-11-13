@@ -87,6 +87,8 @@ public class EntitySolarBeam extends Entity {
             appear.decreaseTimer();
         }
 
+        if (caster != null && caster.getHealth() <= 0) setDead();
+
         if (world.isRemote && ticksExisted <= 10) {
             int particleCount = 8;
             while (--particleCount != 0) {
@@ -115,8 +117,14 @@ public class EntitySolarBeam extends Entity {
                     if (caster instanceof EntityBarako && target instanceof LeaderSunstrikeImmune) {
                         continue;
                     }
-                    target.attackEntityFrom(DamageSource.ON_FIRE, 3f);
-                    target.attackEntityFrom(DamageSource.causeMobDamage(caster), 2f);
+                    float damageFire = 3f;
+                    float damageMob = 2f;
+                    if (caster instanceof EntityBarako) {
+                        damageFire *= MowziesMobs.CONFIG.attackScaleBarako;
+                        damageMob *= MowziesMobs.CONFIG.attackScaleBarako;
+                    }
+                    target.attackEntityFrom(DamageSource.ON_FIRE, damageFire);
+                    target.attackEntityFrom(DamageSource.causeMobDamage(caster), damageMob);
                 }
             } else {
                 for (EntityLivingBase e : hit) {

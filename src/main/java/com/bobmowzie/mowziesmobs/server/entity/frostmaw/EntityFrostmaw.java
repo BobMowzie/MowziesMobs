@@ -11,7 +11,6 @@ import com.bobmowzie.mowziesmobs.server.entity.LegSolverQuadruped;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBall;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
-import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
@@ -37,7 +36,6 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNavigate;
-import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
@@ -107,8 +105,8 @@ public class EntityFrostmaw extends MowzieEntity {
         this.tasks.addTask(7, new EntityAIWanderAvoidWater(this, 1.0D));
         this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
-        this.tasks.addTask(2, new AnimationAreaAttackAI<>(this, SWIPE_ANIMATION, null, null, 2, 7, 6, 120, 1f, 9));
-        this.tasks.addTask(2, new AnimationAreaAttackAI<>(this, SWIPE_TWICE_ANIMATION, null, null, 1, 7, 6, 120, 1f, 9));
+        this.tasks.addTask(2, new AnimationAreaAttackAI<>(this, SWIPE_ANIMATION, null, null, 2, 7, 6, 120, MowziesMobs.CONFIG.attackScaleFrostmaw, 9));
+        this.tasks.addTask(2, new AnimationAreaAttackAI<>(this, SWIPE_TWICE_ANIMATION, null, null, 1, 7, 6, 120, MowziesMobs.CONFIG.attackScaleFrostmaw, 9));
         this.tasks.addTask(2, new AnimationAI<>(this, ICE_BREATH_ANIMATION, true));
         this.tasks.addTask(2, new AnimationAI<>(this, ICE_BALL_ANIMATION, true));
         this.tasks.addTask(2, new AnimationAI<>(this, ROAR_ANIMATION, false));
@@ -141,7 +139,7 @@ public class EntityFrostmaw extends MowzieEntity {
     protected void applyEntityAttributes()
     {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(250.0D * MowziesMobs.CONFIG.difficultyScaleFrostmaw);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(250.0D * MowziesMobs.CONFIG.healthScaleFrostmaw);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.3D);
         this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(10.0D);
         this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0D);
@@ -270,7 +268,7 @@ public class EntityFrostmaw extends MowzieEntity {
                     AxisAlignedBB hitBox = new AxisAlignedBB(new BlockPos(slamPosX - 0.5f, posY, slamPosZ - 0.5f)).grow(3, 3, 3);
                     List<EntityLivingBase> entitiesHit = world.getEntitiesWithinAABB(EntityLivingBase.class, hitBox);
                     for (EntityLivingBase entity: entitiesHit) {
-                        if (entity != this) attackEntityAsMob(entity, 4f);
+                        if (entity != this) attackEntityAsMob(entity, 4f * MowziesMobs.CONFIG.attackScaleFrostmaw);
                     }
                 }
             }

@@ -196,8 +196,14 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
                 if (caster instanceof EntityPlayer && entity == caster) {
                     continue;
                 }
-                entity.attackEntityFrom(DamageSource.ON_FIRE, 4.5f);
-                entity.attackEntityFrom(DamageSource.causeMobDamage(caster), 4.5f);
+                float damageFire = 4.5f;
+                float damageMob = 4.5f;
+                if (caster instanceof EntityBarako) {
+                    damageFire *= MowziesMobs.CONFIG.attackScaleBarako;
+                    damageMob *= MowziesMobs.CONFIG.attackScaleBarako;
+                }
+                entity.attackEntityFrom(DamageSource.ON_FIRE, damageFire);
+                entity.attackEntityFrom(DamageSource.causeMobDamage(caster), damageMob);
                 entity.setFire(5);
             }
         }

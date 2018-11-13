@@ -12,9 +12,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
-import net.minecraft.entity.monster.EntityGhast;
-import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -34,6 +31,12 @@ public class EntityNaga extends MowzieEntity {
     public DynamicChain dc;
 
     public static final Animation FLAP_ANIMATION = Animation.create(25);
+    public static final Animation SPIT_ANIMATION = Animation.create(25);
+    public static final Animation SWOOP_ANIMATION = Animation.create(25);
+    public static final Animation HURT_ANIMATION = Animation.create(25);
+    public static final Animation HURT_TO_FALL_ANIMATION = Animation.create(25);
+    public static final Animation LAND_ANIMATION = Animation.create(25);
+    public static final Animation GET_UP_ANIMTATION = Animation.create(25);
 
     public ControlledAnimation hoverAnim = new ControlledAnimation(10);
 
@@ -72,9 +75,9 @@ public class EntityNaga extends MowzieEntity {
     protected void applyEntityAttributes()
     {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(50.0D * MowziesMobs.CONFIG.difficultyScaleNaga);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(50.0D * MowziesMobs.CONFIG.healthScaleNaga);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(3.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(9.0D * MowziesMobs.CONFIG.difficultyScaleNaga);
+        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(9.0D * MowziesMobs.CONFIG.healthScaleNaga);
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(50);
     }
 

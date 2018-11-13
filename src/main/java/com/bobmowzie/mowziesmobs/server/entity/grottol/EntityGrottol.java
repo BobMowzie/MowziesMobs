@@ -222,7 +222,7 @@ public class EntityGrottol extends MowzieEntity {
     @Override
     public boolean attackEntityFrom(DamageSource source, float amount) {
         Entity entity;
-        if ("player".equals(source.getDamageType()) && (entity = source.getTrueSource()) instanceof EntityPlayer) {
+        if ((entity = source.getTrueSource()) instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) entity;
             if (player.canHarvestBlock(Blocks.DIAMOND_ORE.getDefaultState())) {
                 if (EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, player.getHeldItemMainhand()) > 0) {

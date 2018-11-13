@@ -57,6 +57,7 @@ public class AnimationFWNAttackAI extends AnimationAttackAI<EntityWroughtnaut> {
                 float entityHitDistance = (float) Math.sqrt((entityHit.posZ - entity.posZ) * (entityHit.posZ - entity.posZ) + (entityHit.posX - entity.posX) * (entityHit.posX - entity.posX));
                 if (entityHitDistance <= range && (entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2)) {
                     entityHit.attackEntityFrom(DamageSource.causeMobDamage(entity), damage);
+                    if (entityHit.isActiveItemStackBlocking()) entityHit.getActiveItemStack().damageItem(400, entityHit);
                     entityHit.motionX *= knockback;
                     entityHit.motionZ *= knockback;
                     hit = true;
@@ -85,6 +86,7 @@ public class AnimationFWNAttackAI extends AnimationAttackAI<EntityWroughtnaut> {
                 float entityHitDistance = (float) Math.sqrt((entityHit.posZ - entity.posZ) * (entityHit.posZ - entity.posZ) + (entityHit.posX - entity.posX) * (entityHit.posX - entity.posX));
                 if (entityHitDistance <= range && (entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2)) {
                     entityHit.attackEntityFrom(DamageSource.causeMobDamage(entity), damage);
+                    if (entityHit.isActiveItemStackBlocking()) entityHit.getActiveItemStack().damageItem(400, entityHit);
                     entityHit.motionX *= knockback;
                     entityHit.motionZ *= knockback;
                     hit = true;
@@ -107,6 +109,7 @@ public class AnimationFWNAttackAI extends AnimationAttackAI<EntityWroughtnaut> {
                 float entityHitDistance = (float) Math.sqrt((entityHit.posZ - entity.posZ) * (entityHit.posZ - entity.posZ) + (entityHit.posX - entity.posX) * (entityHit.posX - entity.posX));
                 if (entityHitDistance <= range + 0.4) {
                     entityHit.attackEntityFrom(DamageSource.causeMobDamage(entity), damage);
+                    if (entityHit.isActiveItemStackBlocking()) entityHit.getActiveItemStack().damageItem(400, entityHit);
                     entityHit.motionX *= knockback;
                     entityHit.motionZ *= knockback;
                     hit = true;

@@ -56,6 +56,7 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
                     float entityHitDistance = (float) Math.sqrt((entityHit.posZ - entity.posZ) * (entityHit.posZ - entity.posZ) + (entityHit.posX - entity.posX) * (entityHit.posX - entity.posX));
                     if (entityHitDistance <= range && (entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2)) {
                         entityHit.attackEntityFrom(DamageSource.causeMobDamage(entity), damage * 1.5F);
+                        if (entityHit.isActiveItemStackBlocking()) entityHit.getActiveItemStack().damageItem(400, entityHit);
                         entityHit.motionX *= knockback;
                         entityHit.motionZ *= knockback;
                     }

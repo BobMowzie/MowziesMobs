@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.wroughtnaut;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
@@ -12,6 +13,7 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationFWNAttackAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationFWNStompAttackAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationFWNVerticalAttackAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.SmartBodyHelper;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
@@ -159,7 +161,7 @@ public class EntityWroughtnaut extends MowzieEntity {
 
     @Override
     public int getAttack() {
-        return 30;
+        return 30 * MowziesMobs.CONFIG.attackScaleWroughtnaut;
     }
 
     @Override
@@ -182,7 +184,7 @@ public class EntityWroughtnaut extends MowzieEntity {
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
         getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
-        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(40);
+        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(40 * MowziesMobs.CONFIG.healthScaleWroughtnaut);
     }
 
     @Override
