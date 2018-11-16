@@ -23,11 +23,13 @@ public class BarakoaAttackTargetAI extends EntityAITarget {
     private EntityAINearestAttackableTarget.Sorter attackableTargetSorter;
     private Predicate<Entity> targetEntitySelector;
     private EntityLivingBase targetEntity;
+    private boolean useVerticalDistance;
 
-    public BarakoaAttackTargetAI(EntityCreature entity, Class<? extends Entity> targetClass, int targetChance, boolean shouldCheckSight) {
+    public BarakoaAttackTargetAI(EntityCreature entity, Class<? extends Entity> targetClass, int targetChance, boolean shouldCheckSight, boolean useVerticalDistance) {
         super(entity, shouldCheckSight, false);
         this.targetClass = targetClass;
         this.targetChance = targetChance;
+        this.useVerticalDistance = useVerticalDistance;
         this.attackableTargetSorter = new EntityAINearestAttackableTarget.Sorter(entity);
         this.setMutexBits(1);
         this.targetEntitySelector = target -> {
@@ -47,7 +49,9 @@ public class BarakoaAttackTargetAI extends EntityAITarget {
             return false;
         } else {
             double targetDistance = this.getTargetDistance();
-            List list = this.taskOwner.world.getEntitiesWithinAABB(this.targetClass, this.taskOwner.getEntityBoundingBox().grow(targetDistance, 4.0D, targetDistance), this.targetEntitySelector);
+            double distanceY = 4.0D;
+            if (useVerticalDistance) distanceY = targetDistance;
+            List list = this.taskOwner.world.getEntitiesWithinAABB(this.targetClass, this.taskOwner.getEntityBoundingBox().grow(targetDistance, distanceY, targetDistance), this.targetEntitySelector);
             Collections.sort(list, this.attackableTargetSorter);
 
             if (list.isEmpty()) {

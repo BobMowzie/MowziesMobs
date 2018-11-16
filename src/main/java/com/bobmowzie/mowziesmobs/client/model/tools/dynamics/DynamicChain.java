@@ -66,6 +66,7 @@ public class DynamicChain {
                 //target = new Vec3d(target.x, (1-gravity) * target.y + gravity * Math.PI, target.z);
 
                 r[i] = angleBetween(p[i], p[i + 1]);
+
                 T[i] = wrapAngles(r[i].subtract(target)).scale(-stiffness/(Math.pow(i + 1, stiffnessFalloff)));
                 double down = Math.PI/2;
                 Vec3d gravityVec = wrapAngles(new Vec3d(
@@ -86,12 +87,7 @@ public class DynamicChain {
                 p[i + 1] = fromPitchYaw((float)(r[i].y - Math.PI/2), (float)(r[i].x - Math.PI/2)).scale(d[i + 1]).add(p[i]);
                 v[i + 1] = p[i + 1].subtract(prevPos[i+1]);
                 a[i + 1] = v[i + 1].subtract(prevVel[i+1]);
-
             }
-//            if (r != null && r.length > 0) {
-//                System.out.println(r[0]);
-//                System.out.println(rv[0]);
-//            }
         }
     }
 
@@ -175,7 +171,7 @@ public class DynamicChain {
     }
 
     public void updateChain(float delta, SocketModelRenderer[] chainOrig, SocketModelRenderer[] chainDynamic, float gravityAmount, float stiffness, float stiffnessFalloff, float damping, int numUpdates, boolean useFloor) {
-        if (p.length != chainOrig.length) {
+        if (p.length != chainOrig.length || Double.isNaN(p[1].x)) {
             setChain(chainOrig, chainDynamic);
         }
 
@@ -244,6 +240,7 @@ public class DynamicChain {
         float dz = (float) (p2.z - p1.z);
         float dx = (float) (p2.x - p1.x);
         float dy = (float) (p2.y - p1.y);
+
         float yaw = (float) MathHelper.atan2(dz, dx);
         float pitch = (float) MathHelper.atan2(Math.sqrt(dz * dz + dx * dx), dy);
         return wrapAngles(new Vec3d(yaw, pitch, 0));

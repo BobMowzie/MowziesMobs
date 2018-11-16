@@ -44,7 +44,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
         this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityZombie.class, 0, true, false, null));
         this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntitySkeleton.class, 0, true, false, null));
         this.targetTasks.addTask(6, new EntityAIAvoidEntity(this, EntityCreeper.class, 6.0F, 1.0D, 1.2D));
-        this.targetTasks.addTask(3, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, true));
+        this.targetTasks.addTask(3, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, true, false));
         this.setMask(MaskType.FURY);
         this.experienceValue = 12;
     }

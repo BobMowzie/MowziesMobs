@@ -606,49 +606,59 @@ public class ModelNaga extends AdvancedModelBase{
         float partial = LLibrary.PROXY.getPartialTicks();
         float frame = entityIn.ticksExisted + partial;
 
-        if (naga.movement == EntityNaga.EnumNagaMovement.HOVERING) {
-            float globalSpeed = 0.27f;
-            float globalDegree = 1f;
+        float hoverAnim = naga.prevHoverAnimFrac + (naga.hoverAnimFrac - naga.prevHoverAnimFrac) * partial;
+        float nonHoverAnim = 1f - hoverAnim;
 
-            wingFolder.rotationPointX = globalDegree * (0.9f * (float) (0.5 * Math.cos(frame * globalSpeed + 1.4) + 0.5) + 0.05f);
-            wingFolder.rotationPointY = globalDegree * (0.9f * (float) (0.5 * Math.cos(frame * globalSpeed + 1.4) + 0.5) + 0.05f);
+        //Hover anim
+        float globalSpeed = 0.28f;
+        float globalDegree = 1f * hoverAnim;
+        float flapTimingOffset = -0.5f;
 
-            flap(shoulder1_R, globalSpeed, 0.8f * globalDegree, false, 0, 0, frame, 1);
-            flap(lowerArmJoint_R, globalSpeed, 0.7f * globalDegree, false, -0.6f, 0, frame, 1);
-            flap(handJoint_R, globalSpeed, 0.6f * globalDegree, false, -1.2f, 0, frame, 1);
+        wingFolder.rotationPointX = globalDegree * (0.9f * (float) (0.5 * Math.cos(frame * globalSpeed + 1.4 + flapTimingOffset) + 0.5) + 0.05f);
+        wingFolder.rotationPointY = globalDegree * (0.9f * (float) (0.5 * Math.cos(frame * globalSpeed + 1.4 + flapTimingOffset) + 0.5) + 0.05f);
 
-            flap(shoulder1_L, globalSpeed, 0.8f * globalDegree, true, 0, 0, frame, 1);
-            flap(lowerArmJoint_L, globalSpeed, 0.7f * globalDegree, true, -0.6f, 0, frame, 1);
-            flap(handJoint_L, globalSpeed, 0.6f * globalDegree, true, -1.2f, 0, frame, 1);
+        flap(shoulder1_R, globalSpeed, 1f * globalDegree, false, 0 + flapTimingOffset, -0.05f, frame, 1);
+        flap(lowerArmJoint_R, globalSpeed, 0.7f * globalDegree, false, -0.6f + flapTimingOffset, 0, frame, 1);
+        flap(handJoint_R, globalSpeed, 0.6f * globalDegree, false, -1.2f + flapTimingOffset, 0, frame, 1);
 
-            flap(backWing_R, globalSpeed, 0.8f * globalDegree, false, -1.5f, -0.2f, frame, 1);
-            flap(backWing_L, globalSpeed, 0.8f * globalDegree, true, -1.5f, -0.2f, frame, 1);
+        flap(shoulder1_L, globalSpeed, 1f * globalDegree, true, 0 + flapTimingOffset, -0.05f, frame, 1);
+        flap(lowerArmJoint_L, globalSpeed, 0.7f * globalDegree, true, -0.6f + flapTimingOffset, 0, frame, 1);
+        flap(handJoint_L, globalSpeed, 0.6f * globalDegree, true, -1.2f + flapTimingOffset, 0, frame, 1);
 
-            bob(root, globalSpeed, 10 * globalDegree, false, frame - 0.5f, 1);
+        flap(backWing_R, globalSpeed, 0.8f * globalDegree, false, -1.5f + flapTimingOffset, -0.2f, frame, 1);
+        flap(backWing_L, globalSpeed, 0.8f * globalDegree, true, -1.5f + flapTimingOffset, -0.2f, frame, 1);
 
-            body.rotateAngleX -= 0.2f * globalDegree;
-            neck.rotateAngleX += 0.2f * globalDegree;
-            headjoint.rotateAngleX += 0.2f * globalDegree;
+        bob(root, globalSpeed, 18 * globalDegree, false, frame - 0.5f, 1);
+
+        body.rotateAngleX -= 0.2f * globalDegree;
+        neck.rotateAngleX += 0.2f * globalDegree;
+        headjoint.rotateAngleX += 0.2f * globalDegree;
+
+        faceTarget(netHeadYaw, headPitch, 2, neck, headjoint);
+
+        //Glide anim
+        float dx = (float) (naga.prevMotionX + (naga.motionX - naga.prevMotionX) * partial);
+        float dy = (float) (naga.motionY + (naga.motionY - naga.prevMotionY) * partial);
+        float dz = (float) (naga.motionZ + (naga.motionZ - naga.prevMotionZ) * partial);
+        double d = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        if (d != 0) {
+            double a = dy / d;
+            a = Math.max(-1, Math.min(1, a));
+            float pitch = -(float) Math.asin(a);
+            root.rotateAngleX += pitch * nonHoverAnim;
+            neck.rotateAngleX -= pitch / 2 * nonHoverAnim;
+            head.rotateAngleX -= pitch / 2 * nonHoverAnim;
+            shoulder1_L.rotateAngleX -= Math.min(pitch, 0) * nonHoverAnim;
+            shoulder1_R.rotateAngleX -= Math.min(pitch, 0) * nonHoverAnim;
+
+            wingFolder.rotationPointX += Math.max(Math.min(pitch * 2, 0.8), 0.1) * nonHoverAnim;
+            wingFolder.rotationPointY += Math.max(Math.min(pitch * 2, 0.8), 0.1) * nonHoverAnim;
         }
-        else if (naga.movement == EntityNaga.EnumNagaMovement.GLIDING) {
-            float dx = (float) (naga.motionX);
-            float dy = (float) (naga.motionY);
-            float dz = (float) (naga.motionZ);
-            float pitch = -(float)Math.asin(dy/Math.sqrt(dx * dx + dy * dy + dz * dz));
-            root.rotateAngleX += pitch;
-            neck.rotateAngleX -= pitch/2;
-            head.rotateAngleX -= pitch/2;
-            shoulder1_L.rotateAngleX -= Math.min(pitch, 0);
-            shoulder1_R.rotateAngleX -= Math.min(pitch, 0);
 
-            wingFolder.rotationPointX += Math.max(Math.min(pitch * 2, 0.8), 0.1);
-            wingFolder.rotationPointY += Math.max(Math.min(pitch * 2, 0.8), 0.1);
-
-        }
 
 //        root.rotateAngleZ -= Math.toRadians((naga.rotationYaw - naga.prevRotationYaw) * (LLibrary.PROXY.getPartialTicks()));
 
-        naga.dc.updateChain(LLibrary.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.5f, 0.4f, 0.5f, 0.97f, 20, true);
+        naga.dc.updateChain(LLibrary.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.5f, 0.5f, 0.5f, 0.96f, 20, true);
         //naga.dc.updateChain(LLibrary.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.2f, 0f, 1f, 0.99f, 40, false);
 
     }
@@ -742,7 +752,7 @@ public class ModelNaga extends AdvancedModelBase{
         spike5joint.rotationPointY += 0.15;
         spike5joint.rotationPointZ -= 0.42;
         tail1.setScale(1.03f, 1, 1);
-//        root.rotationPointY += 28;
+        root.rotationPointY += 28;
 
         backFin1.rotationPointX += 0.001;
         backFin1Reversed.rotationPointX -= 0.002;

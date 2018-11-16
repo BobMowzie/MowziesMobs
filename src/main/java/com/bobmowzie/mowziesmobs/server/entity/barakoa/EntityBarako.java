@@ -101,7 +101,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     public EntityBarako(World world) {
         super(world);
         this.targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
-        this.tasks.addTask(4, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, false));
+        this.tasks.addTask(4, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, false, true));
         this.tasks.addTask(4, new EntityAINearestAttackableTarget<>(this, EntityZombie.class, 0, false, false, null));
         this.tasks.addTask(4, new EntityAINearestAttackableTarget<>(this, EntitySkeleton.class, 0, false, false, null));
         this.tasks.addTask(2, new AnimationAI<>(this, BELLY_ANIMATION, false));
@@ -364,7 +364,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         getDataManager().register(DIRECTION, 0);
         getDataManager().register(DIALOGUE, 0);
         getDataManager().register(ANGRY, false);
-        getDataManager().register(DESIRES, new ItemStack(Item.getItemFromBlock(Blocks.GOLD_BLOCK), 10));
+        getDataManager().register(DESIRES, new ItemStack(Item.getItemFromBlock(Blocks.GOLD_BLOCK), 5));
     }
 
     public int getDirection() {

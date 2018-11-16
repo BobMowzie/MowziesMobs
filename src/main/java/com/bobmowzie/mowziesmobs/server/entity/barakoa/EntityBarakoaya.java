@@ -39,11 +39,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, LeaderSunstrikeImmune {
     private static final TradeStore DEFAULT = new TradeStore.Builder()
-        .addTrade(Items.GOLD_NUGGET, 9, ItemHandler.BLOWGUN, 1, 6)
-        .addTrade(Items.DYE, 20, EnumDyeColor.BROWN.getDyeDamage(), ItemHandler.DART, 8, 0, 6)
-        .addTrade(Items.GOLD_NUGGET, 9, ItemHandler.SPEAR, 1, 4)
-        .addTrade(Items.GOLD_INGOT, 1, ItemHandler.SPEAR, 1, 4)
-        .addTrade(Items.GOLD_NUGGET, 3, Item.getItemFromBlock(BlockHandler.PAINTED_ACACIA), 2, 4)
+        .addTrade(Items.GOLD_NUGGET, 5, ItemHandler.BLOWGUN, 1, 6)
+        .addTrade(Items.DYE, 10, EnumDyeColor.BROWN.getDyeDamage(), ItemHandler.DART, 8, 0, 6)
+        .addTrade(Items.GOLD_NUGGET, 5, ItemHandler.SPEAR, 1, 4)
+        .addTrade(Items.GOLD_NUGGET, 1, Item.getItemFromBlock(BlockHandler.PAINTED_ACACIA), 2, 4)
         .addTrade(Items.DYE, 16, EnumDyeColor.BROWN.getDyeDamage(), Item.getItemFromBlock(BlockHandler.PAINTED_ACACIA), 1, 0, 4)
         .addTrade(Items.DYE, 10, EnumDyeColor.BROWN.getDyeDamage(), Items.COOKED_CHICKEN, 2, 0, 2)
         .addTrade(Items.GOLD_NUGGET, 1, Items.COOKED_CHICKEN, 1, 2)
@@ -52,7 +51,7 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
 
         .addTrade(Items.MELON, 3, Items.GOLD_NUGGET, 5, 2)
         .addTrade(Items.CHICKEN, 1, Items.GOLD_NUGGET, 3, 2)
-        .addTrade(Items.IRON_SWORD, 1, Items.GOLD_INGOT, 1, 2)
+        .addTrade(Items.IRON_SWORD, 1, Items.GOLD_INGOT, 2, 2)
         .addTrade(Items.IRON_HELMET, 1, Items.GOLD_INGOT, 4, 2)
         .addTrade(Items.STONE_SWORD, 1, Items.GOLD_NUGGET, 7, 2)
         .build();
@@ -74,7 +73,7 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
         tasks.addTask(1, new EntityAIBarakoayaTrade(this));
         tasks.addTask(1, new EntityAIBarakoayaTradeLook(this));
         targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
-        targetTasks.addTask(3, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, true));
+        targetTasks.addTask(3, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, true, false));
         targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityZombie.class, 0, true, true, null));
         this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntitySkeleton.class, 0, true, false, null));
         setWeapon(0);
