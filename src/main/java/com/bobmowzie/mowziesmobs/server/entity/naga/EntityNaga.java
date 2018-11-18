@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.dynamics.DynamicChain;
 import com.bobmowzie.mowziesmobs.server.ai.MMAINearestAttackableTarget;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationProjectileAttackAI;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import net.ilexiconn.llibrary.client.model.tools.ControlledAnimation;
 import net.ilexiconn.llibrary.server.animation.Animation;
@@ -12,6 +13,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
@@ -35,7 +37,7 @@ import java.util.Random;
 /**
  * Created by Josh on 9/9/2018.
  */
-public class EntityNaga extends MowzieEntity {
+public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
     @SideOnly(Side.CLIENT)
     public DynamicChain dc;
 
@@ -75,7 +77,7 @@ public class EntityNaga extends MowzieEntity {
         this.tasks.addTask(5, new EntityNaga.AIFlyAroundTarget(this));
         this.tasks.addTask(7, new EntityNaga.AILookAround(this));
         this.tasks.addTask(6, new EntityAILookIdle(this));
-//        this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+        this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         this.targetTasks.addTask(1, new MMAINearestAttackableTarget(this, EntityPlayer.class, 0, true, false, true, null));
         this.tasks.addTask(2, new AnimationAI<EntityNaga>(this, FLAP_ANIMATION, false) {
             @Override
@@ -85,6 +87,7 @@ public class EntityNaga extends MowzieEntity {
             }
         });
         this.tasks.addTask(2, new AnimationAI<EntityNaga>(this, DODGE_ANIMATION, false));
+        this.tasks.addTask(2, new AnimationProjectileAttackAI<EntityNaga>(this, SPIT_ANIMATION, 10, null));
 
         this.moveHelper = new NagaMoveHelper(this);
         setSize(3, 1);
@@ -109,7 +112,7 @@ public class EntityNaga extends MowzieEntity {
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(50.0D * MowziesMobs.CONFIG.healthScaleNaga);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(12.0D);
         this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(9.0D * MowziesMobs.CONFIG.healthScaleNaga);
-        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(40);
+        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(45);
     }
 
     @Override
@@ -127,7 +130,7 @@ public class EntityNaga extends MowzieEntity {
 //        if (getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(this, FLAP_ANIMATION);
 
         if (!world.isRemote) {
-            if (getAttackTarget() != null && targetDistance < 25) {
+            if (getAttackTarget() != null && targetDistance < 30) {
                 setAttacking(true);
             } else {
                 setAttacking(false);
@@ -142,17 +145,16 @@ public class EntityNaga extends MowzieEntity {
                 List<EntityArrow> arrowsNearby = getEntitiesNearby(EntityArrow.class, 30);
                 for (EntityArrow a : arrowsNearby) {
                     Vec3d aActualMotion = new Vec3d(a.posX - a.prevPosX, a.posY - a.prevPosY, a.posZ - a.prevPosZ);
-                    if (aActualMotion.lengthVector() < 0.1) {
+                    if (aActualMotion.lengthVector() < 0.1 || a.ticksExisted <= 1) {
                         continue;
                     }
 
                     Vec3d aMotion = new Vec3d(a.motionX, a.motionY, a.motionZ);
                     float dot = (float) aMotion.normalize().dotProduct(this.getPositionVector().subtract(a.getPositionVector()).normalize());
-                    System.out.println(dot);
                     if (dot > 0.96) {
-                        Vec3d dodgeVec = aMotion.crossProduct(new Vec3d(0, 1, 0)).normalize().scale(1);
-                        Vec3d newPosLeft = getPositionVector().add(dodgeVec.scale(3));
-                        Vec3d newPosRight = getPositionVector().add(dodgeVec.scale(-3));
+                        Vec3d dodgeVec = aMotion.crossProduct(new Vec3d(0, 1, 0)).normalize().scale(1.2);
+                        Vec3d newPosLeft = getPositionVector().add(dodgeVec.scale(2));
+                        Vec3d newPosRight = getPositionVector().add(dodgeVec.scale(-2));
                         Vec3d diffLeft = newPosLeft.subtract(a.getPositionVector());
                         Vec3d diffRight = newPosRight.subtract(a.getPositionVector());
                         if (diffRight.dotProduct(aMotion) > diffLeft.dotProduct(aMotion)) {
@@ -174,6 +176,11 @@ public class EntityNaga extends MowzieEntity {
         hoverAnimFrac = hoverAnim.getAnimationProgressSinSqrt();
 
 //        System.out.println("Attacking? " + getAttacking());
+    }
+
+    @Override
+    public void attackEntityWithRangedAttack(EntityLivingBase target, float distanceFactor) {
+
     }
 
     @Override
@@ -332,6 +339,11 @@ public class EntityNaga extends MowzieEntity {
 
     public void setAttacking(boolean attacking) {
         getDataManager().set(ATTACKING, attacking);
+    }
+
+    @Override
+    public void setSwingingArms(boolean swingingArms) {
+
     }
 
 
@@ -496,9 +508,9 @@ public class EntityNaga extends MowzieEntity {
             Random random = this.parentEntity.getRNG();
             EntityLivingBase target = parentEntity.getAttackTarget();
             float yaw = (float) (random.nextFloat() * Math.PI * 2);
-            float radius = 14;
+            float radius = 16;
             double d0 = target.posX + Math.cos(yaw) * radius;
-            double d1 = target.posY + 5 + random.nextFloat() * 5;
+            double d1 = target.posY + 8 + random.nextFloat() * 5;
             double d2 = target.posZ + Math.sin(yaw) * radius;
             double speed = parentEntity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue();
             this.parentEntity.getMoveHelper().setMoveTo(d0, d1, d2, speed);

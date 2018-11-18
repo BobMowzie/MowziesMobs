@@ -28,8 +28,9 @@ public class ExtendedModelRenderer extends ModelRenderer {
     private ExtendedModelRenderer parent;
     private int displayList;
     private boolean compiled;
-    private float opacity;
-    private boolean hasLighting;
+    private float opacity = 1.0f;
+    private boolean hasLighting = true;
+    private boolean doubleSided = true;
 
     public ExtendedModelRenderer(AdvancedModelBase model, String name) {
         super(model, name);
@@ -122,6 +123,11 @@ public class ExtendedModelRenderer extends ModelRenderer {
     public void setHasLighting(boolean hasLighting) {
         this.hasLighting = hasLighting;
     }
+
+    public void setDoubleSided(boolean doubleSided) {
+        this.doubleSided = doubleSided;
+    }
+
 
     /**
      * Sets this ModelRenderer's default pose to the current pose.
@@ -228,9 +234,12 @@ public class ExtendedModelRenderer extends ModelRenderer {
                 if (this.scaleX != 1.0F || this.scaleY != 1.0F || this.scaleZ != 1.0F) {
                     GlStateManager.scale(this.scaleX, this.scaleY, this.scaleZ);
                 }
-//                if (!this.hasLighting) {
-//                    GlStateManager.disableLighting();
-//                }
+                if (!this.doubleSided) {
+                    GlStateManager.enableCull();
+                }
+                if (!this.hasLighting) {
+                    GlStateManager.disableLighting();
+                }
                 if (this.opacity != 1.0F) {
                     GlStateManager.enableBlend();
                     GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
@@ -252,9 +261,12 @@ public class ExtendedModelRenderer extends ModelRenderer {
                         GlStateManager.rotate((float) Math.toDegrees(this.rotateAngleX), 1.0F, 0.0F, 0.0F);
                     }
                 }
-//                if (!this.hasLighting) {
-//                    GlStateManager.enableLighting();
-//                }
+                if (!this.hasLighting) {
+                    GlStateManager.enableLighting();
+                }
+                if (!this.doubleSided) {
+                    GlStateManager.disableCull();
+                }
                 if (this.opacity != 1.0F) {
                     GlStateManager.disableBlend();
                     GlStateManager.color(1F, 1F, 1F, 1F);
