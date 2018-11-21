@@ -2,27 +2,36 @@ package com.bobmowzie.mowziesmobs.server.entity.naga;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.dynamics.DynamicChain;
+import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
+import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
 import com.bobmowzie.mowziesmobs.server.ai.MMAINearestAttackableTarget;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationProjectileAttackAI;
+import com.bobmowzie.mowziesmobs.server.entity.EntityDart;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityPoisonBall;
 import net.ilexiconn.llibrary.client.model.tools.ControlledAnimation;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
+import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.init.Enchantments;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -40,10 +49,12 @@ import java.util.Random;
 public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
     @SideOnly(Side.CLIENT)
     public DynamicChain dc;
+    @SideOnly(Side.CLIENT)
+    public Vec3d mouthPos;
 
     public static final Animation FLAP_ANIMATION = Animation.create(25);
     public static final Animation DODGE_ANIMATION = Animation.create(10);
-    public static final Animation SPIT_ANIMATION = Animation.create(25);
+    public static final Animation SPIT_ANIMATION = Animation.create(44);
     public static final Animation SWOOP_ANIMATION = Animation.create(25);
     public static final Animation HURT_ANIMATION = Animation.create(25);
     public static final Animation HURT_TO_FALL_ANIMATION = Animation.create(25);
@@ -53,8 +64,11 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
     private static final DataParameter<Boolean> ATTACKING = EntityDataManager.createKey(EntityNaga.class, DataSerializers.BOOLEAN);
 
     private ControlledAnimation hoverAnim = new ControlledAnimation(10);
+    private ControlledAnimation flapAnim = new ControlledAnimation(10);
     public float hoverAnimFrac;
     public float prevHoverAnimFrac;
+    public float flapAnimFrac;
+    public float prevFlapAnimFrac;
 
     public enum EnumNagaMovement {
         GLIDING,
@@ -70,6 +84,8 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
     public double prevMotionY;
     public double prevMotionZ;
 
+    public static int SPIT_COOLDOWN_MAX = 120;
+    public int spitCooldown = 0;
 
     public EntityNaga(World world) {
         super(world);
@@ -78,16 +94,45 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
         this.tasks.addTask(7, new EntityNaga.AILookAround(this));
         this.tasks.addTask(6, new EntityAILookIdle(this));
         this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+        this.targetTasks.addTask(1, new MMAINearestAttackableTarget(this, EntitySheep.class, 0, true, false, true, null));
         this.targetTasks.addTask(1, new MMAINearestAttackableTarget(this, EntityPlayer.class, 0, true, false, true, null));
         this.tasks.addTask(2, new AnimationAI<EntityNaga>(this, FLAP_ANIMATION, false) {
             @Override
             public void updateTask() {
                 super.updateTask();
-                if (getAnimationTick() >= 4 && getAnimationTick() <= 9) motionY += 0.12;
+                if (getAnimationTick() >= 4 && getAnimationTick() <= 9) motionY += 0.1;
             }
         });
         this.tasks.addTask(2, new AnimationAI<EntityNaga>(this, DODGE_ANIMATION, false));
-        this.tasks.addTask(2, new AnimationProjectileAttackAI<EntityNaga>(this, SPIT_ANIMATION, 10, null));
+        this.tasks.addTask(2, new AnimationProjectileAttackAI<EntityNaga>(this, SPIT_ANIMATION, 24, null) {
+            @Override
+            public void updateTask() {
+                super.updateTask();
+                if (getAnimationTick() == 24) {
+                    float explodeSpeed = 2.5f;
+                    for (int i = 0; i < 8; i++) {
+                        Vec3d particlePos = new Vec3d(Math.random() * 0.25, 0, 0);
+                        particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
+                        particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                        double value = rand.nextFloat() * 0.15f;
+                        MMParticle.CLOUD.spawn(world, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 0.1d + value, 0.4d, 0.1d + value, 2, 10d + rand.nextDouble() * 20d, 70, ParticleCloud.EnumCloudBehavior.GROW, 0.7d));
+                    }
+                    for (int i = 0; i < 8; i++) {
+                        Vec3d particlePos = new Vec3d(Math.random() * 0.2, 0, 0);
+                        particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
+                        particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                        double value = rand.nextFloat() * 0.15f;
+                        MMParticle.CLOUD.spawn(world, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 0.3d + value, 1d, 0.3d + value, 2, 10d + rand.nextDouble() * 20d, 70, ParticleCloud.EnumCloudBehavior.GROW, 0.7d));
+                    }
+                    for (int i = 0; i < 7; i++) {
+                        Vec3d particlePos = new Vec3d(Math.random() * 0.25, 0, 0);
+                        particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
+                        particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                        MMParticle.CLOUD.spawn(world, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 0.1d, 0.2d, 0.1d, 0, 2d, 30, ParticleCloud.EnumCloudBehavior.CONSTANT, 0.7d));
+                    }
+                }
+            }
+        });
 
         this.moveHelper = new NagaMoveHelper(this);
         setSize(3, 1);
@@ -121,17 +166,22 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
         prevMotionY = motionY;
         prevMotionZ = motionZ;
         prevHoverAnimFrac = hoverAnimFrac;
+        prevFlapAnimFrac = flapAnimFrac;
 
         super.onUpdate();
 //        setDead();
         renderYawOffset = rotationYaw;
 //        posZ += 0.4 * Math.sin(ticksExisted *
 
-//        if (getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(this, FLAP_ANIMATION);
+        if (spitCooldown > 0) spitCooldown--;
 
         if (!world.isRemote) {
             if (getAttackTarget() != null && targetDistance < 30) {
                 setAttacking(true);
+                if (spitCooldown == 0 && rand.nextInt(80) == 0) {
+                    AnimationHandler.INSTANCE.sendAnimationMessage(this, SPIT_ANIMATION);
+                    spitCooldown = SPIT_COOLDOWN_MAX;
+                }
             } else {
                 setAttacking(false);
             }
@@ -140,6 +190,13 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
         if (getAttacking()) {
             movement = EnumNagaMovement.HOVERING;
             hoverAnim.increaseTimer();
+
+            if (getAnimation() == SPIT_ANIMATION) {
+                flapAnim.decreaseTimer();
+            }
+            else {
+                flapAnim.increaseTimer();
+            }
 
             if (getAnimation() == NO_ANIMATION && !world.isRemote) {
                 List<EntityArrow> arrowsNearby = getEntitiesNearby(EntityArrow.class, 30);
@@ -174,13 +231,42 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
         }
 
         hoverAnimFrac = hoverAnim.getAnimationProgressSinSqrt();
+        flapAnimFrac = flapAnim.getAnimationProgressSinSqrt();
 
 //        System.out.println("Attacking? " + getAttacking());
+
+//        setAttacking(true);
+//        posY = 10;
+//        getNavigator().clearPathEntity();
+//        posX = prevPosX;
+//        posZ = prevPosZ;
+//
+//        if (getAnimation() == NO_ANIMATION) {
+//            AnimationHandler.INSTANCE.sendAnimationMessage(this, SPIT_ANIMATION);
+//        }
     }
 
     @Override
     public void attackEntityWithRangedAttack(EntityLivingBase target, float distanceFactor) {
+        Vec3d projectilePos = new Vec3d(1, -0.7, 0);
+        projectilePos = projectilePos.rotateYaw((float)Math.toRadians(-rotationYaw - 90));
+        projectilePos = projectilePos.add(getPositionVector());
+        projectilePos = projectilePos.add(new Vec3d(0, 0, 1).rotatePitch((float)Math.toRadians(-rotationPitch)).rotateYaw((float)Math.toRadians(-rotationYawHead)));
+        EntityPoisonBall poisonBall = new EntityPoisonBall(this.world, this);
+        poisonBall.setPosition(projectilePos.x, projectilePos.y, projectilePos.z);
+        Vec3d look = getLookVec();
+        Vec3d dir = new Vec3d(look.x, 0, look.z).normalize();
+        if (target != null) {
+            float dy = (float) (projectilePos.y - target.posY);
+            float dx = (float) (projectilePos.x - target.posX);
+            float dz = (float) (projectilePos.z - target.posZ);
+            float dist = (float) Math.sqrt(dx * dx + dz * dz);
+            float timeGuess = (float) Math.sqrt(2 * dy / EntityPoisonBall.GRAVITY);
+            float speed = Math.min(dist/timeGuess, 0.9f);
+            poisonBall.setThrowableHeading(dir.x * speed, 0.1, dir.z * speed, 1f, 0);
+        }
 
+        this.world.spawnEntity(poisonBall);
     }
 
     @Override

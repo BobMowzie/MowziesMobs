@@ -315,7 +315,7 @@ public class EntityFrostmaw extends MowzieEntity {
                             particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
                             particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
                             double value = rand.nextFloat() * 0.15f;
-                            MMParticle.CLOUD.spawn(world, mouthPos.x + particlePos.x, mouthPos.y + particlePos.y, mouthPos.z + particlePos.z, ParticleFactory.ParticleArgs.get().withData(-0.1 * particlePos.x, -0.1 * particlePos.y, -0.1 * particlePos.z, 0.75d + value, 0.75d + value, 1d, true, 5d + rand.nextDouble() * 15d, 30, ParticleCloud.EnumCloudBehavior.CONSTANT));
+                            MMParticle.CLOUD.spawn(world, mouthPos.x + particlePos.x, mouthPos.y + particlePos.y, mouthPos.z + particlePos.z, ParticleFactory.ParticleArgs.get().withData(-0.1 * particlePos.x, -0.1 * particlePos.y, -0.1 * particlePos.z, 0.75d + value, 0.75d + value, 1d, 1, 5d + rand.nextDouble() * 15d, 30, ParticleCloud.EnumCloudBehavior.CONSTANT));
                         }
                         for (int i = 0; i < 8; i++) {
                             Vec3d particlePos = new Vec3d(3.5, 0, 0);
@@ -518,14 +518,14 @@ public class EntityFrostmaw extends MowzieEntity {
                 double speed = 0.9;
                 double xSpeed = speed * Math.cos(Math.toRadians(yaw));
                 double zSpeed = speed * Math.sin(Math.toRadians(yaw));
-                MMParticle.CLOUD.spawn(world, posX, posY + 1f, posZ, ParticleFactory.ParticleArgs.get().withData(xSpeed, 0d, zSpeed, 0.75d, 0.75d, 1d, true, 40d, 22, ParticleCloud.EnumCloudBehavior.GROW));
+                MMParticle.CLOUD.spawn(world, posX, posY + 1f, posZ, ParticleFactory.ParticleArgs.get().withData(xSpeed, 0d, zSpeed, 0.75d, 0.75d, 1d, 1, 40d, 22, ParticleCloud.EnumCloudBehavior.GROW));
             }
             for (int i = 1; i <= particleCount; i++) {
                 double yaw = i * 360 / particleCount;
                 double speed = 0.65;
                 double xSpeed = speed * Math.cos(Math.toRadians(yaw));
                 double zSpeed = speed * Math.sin(Math.toRadians(yaw));
-                MMParticle.CLOUD.spawn(world, posX, posY + 1f, posZ, ParticleFactory.ParticleArgs.get().withData(xSpeed, 0d, zSpeed, 0.75d, 0.75d, 1d, true, 35d, 22, ParticleCloud.EnumCloudBehavior.GROW));
+                MMParticle.CLOUD.spawn(world, posX, posY + 1f, posZ, ParticleFactory.ParticleArgs.get().withData(xSpeed, 0d, zSpeed, 0.75d, 0.75d, 1d, 1, 35d, 22, ParticleCloud.EnumCloudBehavior.GROW));
             }
         }
     }
@@ -577,7 +577,7 @@ public class EntityFrostmaw extends MowzieEntity {
                                     float yOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
                                     float zOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
                                     double value = rand.nextFloat() * 0.1f;
-                                    MMParticle.CLOUD.spawn(world, x + xOffset, y + yOffset, z + zOffset, ParticleFactory.ParticleArgs.get().withData(motionX, motionY, motionZ, 0.8d + value, 0.8d + value, 1d, true, 10d + rand.nextDouble() * 10d, 40, ParticleCloud.EnumCloudBehavior.SHRINK));
+                                    MMParticle.CLOUD.spawn(world, x + xOffset, y + yOffset, z + zOffset, ParticleFactory.ParticleArgs.get().withData(motionX, motionY, motionZ, 0.8d + value, 0.8d + value, 1d, 1, 10d + rand.nextDouble() * 10d, 40, ParticleCloud.EnumCloudBehavior.SHRINK));
                                 }
                             }
                         } else {
@@ -598,7 +598,7 @@ public class EntityFrostmaw extends MowzieEntity {
                                     float yOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
                                     float zOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
                                     double value = rand.nextFloat() * 0.1f;
-                                    MMParticle.CLOUD.spawn(world, x + xOffset, y + yOffset, z + zOffset, ParticleFactory.ParticleArgs.get().withData(motionX, motionY, motionZ, 0.8d + value, 0.8d + value, 1d, true, 10d + rand.nextDouble() * 10d, 40, ParticleCloud.EnumCloudBehavior.SHRINK));
+                                    MMParticle.CLOUD.spawn(world, x + xOffset, y + yOffset, z + zOffset, ParticleFactory.ParticleArgs.get().withData(motionX, motionY, motionZ, 0.8d + value, 0.8d + value, 1d, 1, 10d + rand.nextDouble() * 10d, 40, ParticleCloud.EnumCloudBehavior.SHRINK));
                                 }
                             }
                         }
@@ -622,7 +622,7 @@ public class EntityFrostmaw extends MowzieEntity {
                                 float yOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
                                 float zOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
                                 double value = rand.nextFloat() * 0.1f;
-                                MMParticle.CLOUD.spawn(world, x + xOffset, y + yOffset, z + zOffset, ParticleFactory.ParticleArgs.get().withData(motionX, motionY, motionZ, 0.8d + value, 0.8d + value, 1d, true, 10d + rand.nextDouble() * 10d, 40, ParticleCloud.EnumCloudBehavior.SHRINK));
+                                MMParticle.CLOUD.spawn(world, x + xOffset, y + yOffset, z + zOffset, ParticleFactory.ParticleArgs.get().withData(motionX, motionY, motionZ, 0.8d + value, 0.8d + value, 1d, 1, 10d + rand.nextDouble() * 10d, 40, ParticleCloud.EnumCloudBehavior.SHRINK));
                             }
                         }
                     } else if ((!swingWhichArm && getAnimationTick() > 8 && getAnimationTick() < 14) || (swingWhichArm && getAnimationTick() > 19 && getAnimationTick() < 25)) {
@@ -643,7 +643,7 @@ public class EntityFrostmaw extends MowzieEntity {
                                 float yOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
                                 float zOffset = cloudRandomness * (2 * rand.nextFloat() - 1);
                                 double value = rand.nextFloat() * 0.1f;
-                                MMParticle.CLOUD.spawn(world, x + xOffset, y + yOffset, z + zOffset, ParticleFactory.ParticleArgs.get().withData(motionX, motionY, motionZ, 0.8d + value, 0.8d + value, 1d, true, 10d + rand.nextDouble() * 10d, 40, ParticleCloud.EnumCloudBehavior.SHRINK));
+                                MMParticle.CLOUD.spawn(world, x + xOffset, y + yOffset, z + zOffset, ParticleFactory.ParticleArgs.get().withData(motionX, motionY, motionZ, 0.8d + value, 0.8d + value, 1d, 1, 10d + rand.nextDouble() * 10d, 40, ParticleCloud.EnumCloudBehavior.SHRINK));
                             }
                         }
                     }

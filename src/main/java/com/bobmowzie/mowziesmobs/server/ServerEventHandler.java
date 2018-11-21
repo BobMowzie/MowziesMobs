@@ -135,7 +135,7 @@ public enum ServerEventHandler {
                     double cloudX = entity.posX + entity.width * Math.random() - entity.width / 2;
                     double cloudZ = entity.posZ + entity.width * Math.random() - entity.width / 2;
                     double cloudY = entity.posY + entity.height * Math.random();
-                    MMParticle.CLOUD.spawn(entity.world, cloudX, cloudY, cloudZ, ParticleFactory.ParticleArgs.get().withData(0d, -0.01d, 0d, 0.75d, 0.75d, 1d, true, 15d, 25, ParticleCloud.EnumCloudBehavior.CONSTANT));
+                    MMParticle.CLOUD.spawn(entity.world, cloudX, cloudY, cloudZ, ParticleFactory.ParticleArgs.get().withData(0d, -0.01d, 0d, 0.75d, 0.75d, 1d, 1, 15d, 25, ParticleCloud.EnumCloudBehavior.CONSTANT));
 
                     double snowX = entity.posX + entity.width * Math.random() - entity.width / 2;
                     double snowZ = entity.posZ + entity.width * Math.random() - entity.width / 2;

@@ -9,10 +9,7 @@ import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
-
-import java.lang.reflect.Field;
 
 /**
  * Created by Josh on 9/9/2018.
@@ -30,7 +27,7 @@ public class ModelNaga extends AdvancedModelBase{
     public AdvancedModelRenderer shoulder1_R;
     public ExtendedModelRenderer backFin1;
     public ExtendedModelRenderer backFin1Reversed;
-    public AdvancedModelRenderer headjoint;
+    public AdvancedModelRenderer headJoint;
     public AdvancedModelRenderer head;
     public AdvancedModelRenderer jaw;
     public AdvancedModelRenderer underHead;
@@ -110,6 +107,10 @@ public class ModelNaga extends AdvancedModelBase{
     public ExtendedModelRenderer wingWebbing3_RReversed;
     public ExtendedModelRenderer wingWebbing4_RReversed;
     public AdvancedModelRenderer wingFolder;
+    public AdvancedModelRenderer scaler;
+    public AdvancedModelRenderer shoulderLJoint;
+    public AdvancedModelRenderer shoulderRJoint;
+    public SocketModelRenderer mouthSocket;
 
     public SocketModelRenderer tailEnd;
 
@@ -137,10 +138,10 @@ public class ModelNaga extends AdvancedModelBase{
         this.spike3joint.setRotationPoint(0.0F, 1.0F, 4.0F);
         this.spike3joint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         this.setRotateAngle(spike3joint, 0.5235987755982988F, 0.0F, 0.0F);
-        this.headjoint = new AdvancedModelRenderer(this, 0, 0);
-        this.headjoint.setRotationPoint(0.0F, 1.0F, -13.0F);
-        this.headjoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
-        this.setRotateAngle(headjoint, 0.4363323129985824F, 0.0F, 0.0F);
+        this.headJoint = new AdvancedModelRenderer(this, 0, 0);
+        this.headJoint.setRotationPoint(0.0F, 1.0F, -13.0F);
+        this.headJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
+        this.setRotateAngle(headJoint, 0.4363323129985824F, 0.0F, 0.0F);
         this.body = new AdvancedModelRenderer(this, 0, 0);
         this.body.setRotationPoint(0.0F, -9.0F, -9.0F);
         this.body.addBox(-10.5F, -4.0F, -3.0F, 21, 13, 21, 0.0F);
@@ -238,7 +239,7 @@ public class ModelNaga extends AdvancedModelBase{
         this.spike5.addBox(0.0F, 0.0F, 0.0F, 9, 4, 9, 0.0F);
         this.setRotateAngle(spike5, 0.0F, -0.7853981633974483F, 0.0F);
         this.shoulder1_L = new AdvancedModelRenderer(this, 189, 0);
-        this.shoulder1_L.setRotationPoint(8.0F, -2.0F, -1.0F);
+        this.shoulder1_L.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.shoulder1_L.addBox(-2.0F, -3.0F, -7.0F, 12, 6, 9, 0.0F);
         this.setRotateAngle(shoulder1_L, 0.0F, -0.5235987755982988F, 0.0F);
         this.spike5joint = new AdvancedModelRenderer(this, 0, 0);
@@ -349,7 +350,7 @@ public class ModelNaga extends AdvancedModelBase{
         this.lowerArm_L.addBox(0.0F, -2.0F, -2.0F, 22, 4, 4, 0.0F);
         this.shoulder1_R = new AdvancedModelRenderer(this, 189, 0);
         this.shoulder1_R.mirror = true;
-        this.shoulder1_R.setRotationPoint(-8.0F, -2.0F, -1.0F);
+        this.shoulder1_R.setRotationPoint(0, 0, 0);
         this.shoulder1_R.addBox(-10.0F, -3.0F, -7.0F, 12, 6, 9, 0.0F);
         this.setRotateAngle(shoulder1_R, 0.0F, 0.5235987755982988F, 0.0F);
         this.wingFrame1_R = new AdvancedModelRenderer(this, 50, 91);
@@ -492,13 +493,20 @@ public class ModelNaga extends AdvancedModelBase{
         this.wingFrame3_R.setRotationPoint(-4.0F, 0.0F, 0.0F);
         this.wingFrame3_R.addBox(-43.0F, -1.5F, -1.5F, 43, 3, 3, 0.0F);
         this.setRotateAngle(wingFrame3_R, 0.0F, 1.2217304763960306F, 0.0F);
+        this.shoulderLJoint = new AdvancedModelRenderer(this, 0, 0);
+        this.shoulderLJoint.setRotationPoint(8.0F, -2.0F, -1.0F);
+        this.shoulderRJoint = new AdvancedModelRenderer(this, 0, 0);
+        this.shoulder1_R.setRotationPoint(-8.0F, -2.0F, -1.0F);
+        this.mouthSocket = new SocketModelRenderer(this, 0, 0);
+        this.mouthSocket.setRotationPoint(0, 2, -5);
         this.wingFolder = new AdvancedModelRenderer(this, 0, 0);
+        this.scaler = new AdvancedModelRenderer(this, 0, 0);
         this.tailEnd = new SocketModelRenderer(this, 0, 0);
         this.tailEnd.setRotationPoint(0, 0, 5);
         this.eyebrowJoint_L.addChild(this.eyebrow_L);
         this.spike4joint.addChild(this.spike4);
         this.body.addChild(this.spike3joint);
-        this.neck.addChild(this.headjoint);
+        this.neck.addChild(this.headJoint);
         this.root.addChild(this.body);
         this.spike2joint.addChild(this.spike2);
         this.upperArm_R.addChild(this.lowerArmJoint_R);
@@ -510,8 +518,8 @@ public class ModelNaga extends AdvancedModelBase{
         this.hand_L.addChild(this.wingFrame1_L);
         this.handJoint_R.addChild(this.hand_R);
         this.lowerArmJoint_R.addChild(this.lowerArm_R);
-        this.headjoint.addChild(this.head);
-        this.headjoint.addChild(this.eyebrowJoint_L);
+        this.headJoint.addChild(this.head);
+        this.headJoint.addChild(this.eyebrowJoint_L);
         this.upperArmJoint_L.addChild(this.upperArm_L);
         this.hand_L.addChild(this.wingFrame2_L);
         this.eyebrowJoint_R.addChild(this.eyebrow_R);
@@ -519,7 +527,7 @@ public class ModelNaga extends AdvancedModelBase{
         this.wingFrame3_L.addChild(this.wingWebbing3_L);
         this.lowerArm_R.addChild(this.handJoint_R);
         this.spike5joint.addChild(this.spike5);
-        this.body.addChild(this.shoulder1_L);
+        this.body.addChild(this.shoulderLJoint);
         this.tail2.addChild(this.spike5joint);
         this.wingFrame1_R.addChild(this.wingWebbing1_R);
         this.shoulder1_L.addChild(this.upperArmJoint_L);
@@ -531,22 +539,22 @@ public class ModelNaga extends AdvancedModelBase{
         this.hand_L.addChild(this.wingFrame3_L);
         this.wingFrame1_L.addChild(this.wingWebbing1_L);
         this.hand_R.addChild(this.wingClaw_R);
-        this.headjoint.addChild(this.eyebrowJoint_R);
+        this.headJoint.addChild(this.eyebrowJoint_R);
         this.hand_R.addChild(this.wingFrame2_R);
         this.wingFrame2_R.addChild(this.wingWebbing2_R);
-        this.headjoint.addChild(this.jaw);
+        this.headJoint.addChild(this.jaw);
         this.body.addChild(this.neck);
         this.spike3joint.addChild(this.spike3Bottom);
         this.jaw.addChild(this.teethLower);
         this.lowerArmJoint_L.addChild(this.lowerArm_L);
-        this.body.addChild(this.shoulder1_R);
+        this.body.addChild(this.shoulderRJoint);
         this.hand_R.addChild(this.wingFrame1_R);
-        this.headjoint.addChild(this.teethUpper);
+        this.headJoint.addChild(this.teethUpper);
         this.tail2.addChild(this.backWing_R);
         this.tail6.addChild(this.tailFin);
         this.upperArm_L.addChild(this.lowerArmJoint_L);
         this.hand_L.addChild(this.wingFrame4_L);
-        this.headjoint.addChild(this.underHead);
+        this.headJoint.addChild(this.underHead);
         this.tail1.addChild(this.backFin2);
         this.tail1.addChild(this.tail2);
         this.handJoint_L.addChild(this.hand_L);
@@ -567,6 +575,9 @@ public class ModelNaga extends AdvancedModelBase{
         this.tail3.addChild(this.tail4);
         this.hand_R.addChild(this.wingFrame3_R);
         this.tail6.addChild(this.tailEnd);
+        this.shoulderRJoint.addChild(this.shoulder1_R);
+        this.shoulderLJoint.addChild(this.shoulder1_L);
+        this.headJoint.addChild(this.mouthSocket);
         this.backFin3.addChild(this.backFin3Reversed);
         this.backFin2.addChild(this.backFin2Reversed);
         this.backFin1.addChild(this.backFin1Reversed);
@@ -658,6 +669,8 @@ public class ModelNaga extends AdvancedModelBase{
         for (int i = 0; i < tailOriginal.length; i++) {
             tailOriginal[i].isHidden = true;
         }
+
+        ((EntityNaga)entity).mouthPos = mouthSocket.getWorldPos(entity);
         //System.out.println(tailDynamic.length);
     }
 
@@ -685,32 +698,35 @@ public class ModelNaga extends AdvancedModelBase{
         float hoverAnim = naga.prevHoverAnimFrac + (naga.hoverAnimFrac - naga.prevHoverAnimFrac) * partial;
         float nonHoverAnim = 1f - hoverAnim;
 
+        float flapAnim = 1;//naga.prevFlapAnimFrac + (naga.flapAnimFrac - naga.prevFlapAnimFrac) * partial;
+
         //Hover anim
         float globalSpeed = 0.28f;
         float globalDegree = 1f * hoverAnim;
         float flapTimingOffset = -0.5f;
 
-        wingFolder.rotationPointX = globalDegree * (0.9f * (float) (0.5 * Math.cos(frame * globalSpeed + 1.4 + flapTimingOffset) + 0.5) + 0.05f);
-        wingFolder.rotationPointY = globalDegree * (0.9f * (float) (0.5 * Math.cos(frame * globalSpeed + 1.4 + flapTimingOffset) + 0.5) + 0.05f);
+        wingFolder.rotationPointX = globalDegree * flapAnim * (0.9f * (float) (0.5 * Math.cos(frame * globalSpeed + 1.4 + flapTimingOffset) + 0.5) + 0.05f);
+        wingFolder.rotationPointY = globalDegree * flapAnim * (0.9f * (float) (0.5 * Math.cos(frame * globalSpeed + 1.4 + flapTimingOffset) + 0.5) + 0.05f);
 
-        flap(shoulder1_R, globalSpeed, 1f * globalDegree, false, 0 + flapTimingOffset, -0.05f, frame, 1);
-        flap(lowerArmJoint_R, globalSpeed, 0.7f * globalDegree, false, -0.6f + flapTimingOffset, 0, frame, 1);
-        flap(handJoint_R, globalSpeed, 0.6f * globalDegree, false, -1.2f + flapTimingOffset, 0, frame, 1);
+        flap(shoulder1_R, globalSpeed, 1f * globalDegree * flapAnim, false, 0 + flapTimingOffset, -0.05f, frame, 1);
+        flap(lowerArmJoint_R, globalSpeed, 0.7f * globalDegree * flapAnim, false, -0.6f + flapTimingOffset, 0, frame, 1);
+        flap(handJoint_R, globalSpeed, 0.6f * globalDegree * flapAnim, false, -1.2f + flapTimingOffset, 0, frame, 1);
 
-        flap(shoulder1_L, globalSpeed, 1f * globalDegree, true, 0 + flapTimingOffset, -0.05f, frame, 1);
-        flap(lowerArmJoint_L, globalSpeed, 0.7f * globalDegree, true, -0.6f + flapTimingOffset, 0, frame, 1);
-        flap(handJoint_L, globalSpeed, 0.6f * globalDegree, true, -1.2f + flapTimingOffset, 0, frame, 1);
+        flap(shoulder1_L, globalSpeed, 1f * globalDegree * flapAnim, true, 0 + flapTimingOffset, -0.05f, frame, 1);
+        flap(lowerArmJoint_L, globalSpeed, 0.7f * globalDegree * flapAnim, true, -0.6f + flapTimingOffset, 0, frame, 1);
+        flap(handJoint_L, globalSpeed, 0.6f * globalDegree * flapAnim, true, -1.2f + flapTimingOffset, 0, frame, 1);
 
-        backWing_R.flap(globalSpeed, 0.8f * globalDegree, false, -1.5f + flapTimingOffset, -0.2f, frame, 1);
-        backWing_L.flap(globalSpeed, 0.8f * globalDegree, true, -1.5f + flapTimingOffset, -0.2f, frame, 1);
+        backWing_R.flap(globalSpeed, 0.8f * globalDegree * flapAnim, false, -1.5f + flapTimingOffset, -0.2f, frame, 1);
+        backWing_L.flap(globalSpeed, 0.8f * globalDegree * flapAnim, true, -1.5f + flapTimingOffset, -0.2f, frame, 1);
 
-        bob(root, globalSpeed, 18 * globalDegree, false, frame - 0.5f, 1);
+        bob(root, globalSpeed, 18 * globalDegree * flapAnim, false, frame - 0.5f, 1);
+        root.rotationPointY += 18 * globalDegree * flapAnim;
 
         body.rotateAngleX -= 0.2f * globalDegree;
         neck.rotateAngleX += 0.2f * globalDegree;
-        headjoint.rotateAngleX += 0.2f * globalDegree;
+        headJoint.rotateAngleX += 0.2f * globalDegree;
 
-        faceTarget(netHeadYaw, headPitch, 2, neck, headjoint);
+        faceTarget(netHeadYaw, headPitch, 2, neck, headJoint);
 
         //Glide anim
         float dx = (float) (naga.prevMotionX + (naga.motionX - naga.prevMotionX) * partial);
@@ -724,15 +740,14 @@ public class ModelNaga extends AdvancedModelBase{
             root.rotateAngleX += pitch * nonHoverAnim;
             neck.rotateAngleX -= pitch / 2 * nonHoverAnim;
             head.rotateAngleX -= pitch / 2 * nonHoverAnim;
-            shoulder1_L.rotateAngleX -= Math.min(pitch, 0) * nonHoverAnim;
-            shoulder1_R.rotateAngleX -= Math.min(pitch, 0) * nonHoverAnim;
+            shoulderLJoint.rotateAngleX -= Math.min(pitch, 0) * nonHoverAnim;
+            shoulderRJoint.rotateAngleX -= Math.min(pitch, 0) * nonHoverAnim;
 
             wingFolder.rotationPointX += Math.max(Math.min(pitch * 2, 0.8), 0.1) * nonHoverAnim;
             wingFolder.rotationPointY += Math.max(Math.min(pitch * 2, 0.8), 0.1) * nonHoverAnim;
+            //        root.rotateAngleZ -= Math.toRadians((naga.rotationYaw - naga.prevRotationYaw) * (LLibrary.PROXY.getPartialTicks()));
         }
 
-
-//        root.rotateAngleZ -= Math.toRadians((naga.rotationYaw - naga.prevRotationYaw) * (LLibrary.PROXY.getPartialTicks()));
         //naga.dc.updateChain(LLibrary.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.2f, 0f, 1f, 0.99f, 40, false);
 
     }
@@ -745,32 +760,83 @@ public class ModelNaga extends AdvancedModelBase{
         float frame = naga.frame + LLibrary.PROXY.getPartialTicks();
 
         if (naga.getAnimation() == EntityNaga.FLAP_ANIMATION) {
-            float globalSpeed = 0.27f;
-            float globalDegree = 1.1f;
-
             animator.setAnimation(EntityNaga.FLAP_ANIMATION);
             animator.startKeyframe(25);
             animator.rotate(wingFolder, 1, 0, 0);
             animator.endKeyframe();
             animator.resetKeyframe(0);
-
-            float flapFrame = (float) ((wingFolder.rotateAngleX * Math.PI * 2f / globalSpeed) - (Math.PI * 0.5 / globalSpeed));
-            globalDegree *= 1 - Math.pow(Math.sin(wingFolder.rotateAngleX * Math.PI - Math.PI/2), 8);
-
-            wingFolder.rotationPointX += globalDegree * (0.9f * (float) (0.5 * Math.cos(flapFrame * globalSpeed + 1.4) + 0.5) + 0.05f);
-            wingFolder.rotationPointY += globalDegree * (0.9f * (float) (0.5 * Math.cos(flapFrame * globalSpeed + 1.4) + 0.5) + 0.05f);
-
-            flap(shoulder1_R, globalSpeed, 0.8f * globalDegree, false, 0, 0, flapFrame, 1);
-            flap(lowerArmJoint_R, globalSpeed, 0.7f * globalDegree, false, -0.6f, 0, flapFrame, 1);
-            flap(handJoint_R, globalSpeed, 0.6f * globalDegree, false, -1.2f, 0, flapFrame, 1);
-
-            flap(shoulder1_L, globalSpeed, 0.8f * globalDegree, true, 0, 0, flapFrame, 1);
-            flap(lowerArmJoint_L, globalSpeed, 0.7f * globalDegree, true, -0.6f, 0, flapFrame, 1);
-            flap(handJoint_L, globalSpeed, 0.6f * globalDegree, true, -1.2f, 0, flapFrame, 1);
-
-            backWing_R.flap(globalSpeed, 1f * globalDegree, false, -0.5f, -0.2f, flapFrame, 1);
-            backWing_L.flap(globalSpeed, 1f * globalDegree, true, -0.5f, -0.2f, flapFrame, 1);
         }
+
+        if (naga.getAnimation() == EntityNaga.SPIT_ANIMATION) {
+            animator.setAnimation(EntityNaga.SPIT_ANIMATION);
+            animator.startKeyframe(20);
+            animator.rotate(body, -0.9f, 0, 0);
+            animator.rotate(shoulderLJoint, 0.9f, 0, 0);
+            animator.rotate(shoulderRJoint, 0.9f, 0, 0);
+            animator.move(body, 0, -14, 28);
+            animator.rotate(headJoint, 0.3f, 0, 0);
+            animator.rotate(neck, 0.3f, 0, 0);
+            animator.move(scaler, 0.15f, 0, 0);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(4);
+            animator.startKeyframe(6);
+            animator.rotate(body, 0.4f, 0, 0);
+            animator.move(body, 0, 5, -10);
+            animator.rotate(headJoint, -0.7f, 0, 0);
+            animator.rotate(neck, -0.4f, 0, 0);
+            animator.move(scaler, 0, 1, 0);
+            animator.rotate(jaw, 1.8f, 0, 0);
+            animator.endKeyframe();
+            animator.startKeyframe(0);
+            animator.rotate(body, 0.4f, 0, 0);
+            animator.move(body, 0, 5, -10);
+            animator.rotate(headJoint, -0.7f, 0, 0);
+            animator.rotate(neck, -0.4f, 0, 0);
+            animator.move(scaler, 0, 0, 0);
+            animator.rotate(jaw, 1.8f, 0, 0);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(4);
+            animator.resetKeyframe(10);
+
+            body.setScale(1 + scaler.rotationPointX, 1 + scaler.rotationPointX * 5, 1 + scaler.rotationPointX);
+            body.scaleChildren = false;
+            float scaleSpeed = 1f;
+            float neckScaler = 0.6f * (float) Math.max(Math.pow(Math.sin((scaler.rotationPointY * scaleSpeed + (1-scaleSpeed)/2) * Math.PI + 0.4), 3), 0);
+            neck.setScale(1 + neckScaler, 1 + neckScaler * 1.5f, 1 + neckScaler);
+            neck.rotationPointY += neckScaler * 6;
+            headJoint.rotationPointY -= neckScaler * 6;
+            neck.scaleChildren = false;
+            float headScaler = 0.5f * (float) Math.max(Math.pow(Math.sin((scaler.rotationPointY * scaleSpeed + (1-scaleSpeed)/2) * Math.PI - 0.4), 3), 0);
+            headJoint.setScale(1 + headScaler, 1 + headScaler, 1 + headScaler);
+            headJoint.rotationPointY += headScaler * 6;
+            headJoint.rotationPointZ -= headScaler * 6;
+            headJoint.scaleChildren = true;
+        }
+        else {
+            neck.setScale(1, 1, 1);
+            body.setScale(1, 1, 1);
+            headJoint.setScale(1, 1, 1);
+        }
+
+        float globalSpeed = 0.27f;
+        float globalDegree = 1.1f;
+
+        float flapFrame = (float) ((wingFolder.rotateAngleX * Math.PI * 2f / globalSpeed) - (Math.PI * 0.5 / globalSpeed));
+        globalDegree *= 1 - Math.pow(Math.sin(wingFolder.rotateAngleX * Math.PI - Math.PI/2), 8);
+
+        wingFolder.rotationPointX += globalDegree * (0.9f * (float) (0.5 * Math.cos(flapFrame * globalSpeed + 1.4) + 0.5) + 0.05f);
+        wingFolder.rotationPointY += globalDegree * (0.9f * (float) (0.5 * Math.cos(flapFrame * globalSpeed + 1.4) + 0.5) + 0.05f);
+
+        flap(shoulder1_R, globalSpeed, 1f * globalDegree, false, 0, 0, flapFrame, 1);
+        flap(lowerArmJoint_R, globalSpeed, 0.7f * globalDegree, false, -0.6f, 0, flapFrame, 1);
+        flap(handJoint_R, globalSpeed, 0.6f * globalDegree, false, -1.2f, 0, flapFrame, 1);
+
+        flap(shoulder1_L, globalSpeed, 1f * globalDegree, true, 0, 0, flapFrame, 1);
+        flap(lowerArmJoint_L, globalSpeed, 0.7f * globalDegree, true, -0.6f, 0, flapFrame, 1);
+        flap(handJoint_L, globalSpeed, 0.6f * globalDegree, true, -1.2f, 0, flapFrame, 1);
+
+        backWing_R.flap(globalSpeed, 1f * globalDegree, false, -0.5f, -0.2f, flapFrame, 1);
+        backWing_L.flap(globalSpeed, 1f * globalDegree, true, -0.5f, -0.2f, flapFrame, 1);
 
         jawControls();
         wingFoldControls();
@@ -829,7 +895,7 @@ public class ModelNaga extends AdvancedModelBase{
         spike5joint.rotationPointY += 0.15;
         spike5joint.rotationPointZ -= 0.42;
         tail1.setScale(1.03f, 1, 1);
-        root.rotationPointY += 28;
+        root.rotationPointY += 22;
 
         backFin1.rotationPointX += 0.001;
         backFin1Reversed.rotationPointX -= 0.002;

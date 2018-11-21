@@ -8,6 +8,8 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.world.World;
 
+import java.util.List;
+
 /**
  * Created by Josh on 9/2/2018.
  */
@@ -48,5 +50,13 @@ public abstract class EntityMagicEffect extends Entity {
     @Override
     protected void writeEntityToNBT(NBTTagCompound compound) {
 
+    }
+
+    public List<EntityLivingBase> getEntityLivingBaseNearby(double radius) {
+        return getEntitiesNearby(EntityLivingBase.class, radius);
+    }
+
+    public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double r) {
+        return world.getEntitiesWithinAABB(entityClass, getEntityBoundingBox().grow(r, r, r), e -> e != this && getDistanceToEntity(e) <= r);
     }
 }

@@ -67,13 +67,13 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
                 double ySpeed = scale * 0.01 * (rand.nextFloat() * 2 - 1);
                 double zSpeed = scale * 0.01 * (rand.nextFloat() * 2 - 1);
                 double value = rand.nextFloat() * 0.15f;
-                MMParticle.CLOUD.spawn(world, posX + xSpeed, posY + ySpeed, posZ + zSpeed, ParticleFactory.ParticleArgs.get().withData(xSpeed, ySpeed, zSpeed, 0.75d + value, 0.75d + value, 1d, true, scale * (10d + rand.nextDouble() * 20d), 20, ParticleCloud.EnumCloudBehavior.SHRINK));
+                MMParticle.CLOUD.spawn(world, posX + xSpeed, posY + ySpeed, posZ + zSpeed, ParticleFactory.ParticleArgs.get().withData(xSpeed, ySpeed, zSpeed, 0.75d + value, 0.75d + value, 1d, 1, scale * (10d + rand.nextDouble() * 20d), 20, ParticleCloud.EnumCloudBehavior.SHRINK));
             }
             for (int i = 0; i < 1; i++) {
                 double xSpeed = scale * 0.01 * (rand.nextFloat() * 2 - 1);
                 double ySpeed = scale * 0.01 * (rand.nextFloat() * 2 - 1);
                 double zSpeed = scale * 0.01 * (rand.nextFloat() * 2 - 1);
-                MMParticle.CLOUD.spawn(world, posX, posY, posZ, ParticleFactory.ParticleArgs.get().withData(xSpeed, ySpeed, zSpeed, 1d, 1d, 1d, true, scale * (5d + rand.nextDouble() * 10d), 40, ParticleCloud.EnumCloudBehavior.SHRINK));
+                MMParticle.CLOUD.spawn(world, posX, posY, posZ, ParticleFactory.ParticleArgs.get().withData(xSpeed, ySpeed, zSpeed, 1d, 1d, 1d, 1, scale * (5d + rand.nextDouble() * 10d), 40, ParticleCloud.EnumCloudBehavior.SHRINK));
             }
 
             for (int i = 0; i < 5; i++) {
@@ -126,7 +126,7 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
             particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
             particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
             double value = rand.nextFloat() * 0.15f;
-            MMParticle.CLOUD.spawn(world, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x, particlePos.y, particlePos.z, 0.75d + value, 0.75d + value, 1d, true, 10d + rand.nextDouble() * 20d, 40, ParticleCloud.EnumCloudBehavior.GROW));
+            MMParticle.CLOUD.spawn(world, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x, particlePos.y, particlePos.z, 0.75d + value, 0.75d + value, 1d, 1, 10d + rand.nextDouble() * 20d, 40, ParticleCloud.EnumCloudBehavior.GROW));
         }
         for (int i = 0; i < 10; i++) {
             Vec3d particlePos = new Vec3d(Math.random() * 0.2, 0, 0);
@@ -135,13 +135,5 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
             MMParticle.SNOWFLAKE.spawn(world, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x, particlePos.y, particlePos.z));
         }
         setDead();
-    }
-
-    public List<EntityLivingBase> getEntityLivingBaseNearby(double radius) {
-        return getEntitiesNearby(EntityLivingBase.class, radius);
-    }
-
-    public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double r) {
-        return world.getEntitiesWithinAABB(entityClass, getEntityBoundingBox().grow(r, r, r), e -> e != this && getDistanceToEntity(e) <= r);
     }
 }
