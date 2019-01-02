@@ -35,7 +35,6 @@ public class AnimationAreaAttackAI<T extends MowzieEntity & IAnimatedEntity> ext
 
     public void hitEntities() {
         List<EntityLivingBase> entitiesHit = entity.getEntityLivingBaseNearby(range, height, range, range);
-        float damage = (float) entity.getAttack();
         boolean hit = false;
         for (EntityLivingBase entityHit : entitiesHit) {
             float entityHitAngle = (float) ((Math.atan2(entityHit.posZ - entity.posZ, entityHit.posX - entity.posX) * (180 / Math.PI) - 90) % 360);
@@ -49,7 +48,7 @@ public class AnimationAreaAttackAI<T extends MowzieEntity & IAnimatedEntity> ext
             float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
             float entityHitDistance = (float) Math.sqrt((entityHit.posZ - entity.posZ) * (entityHit.posZ - entity.posZ) + (entityHit.posX - entity.posX) * (entityHit.posX - entity.posX));
             if (entityHitDistance <= range && (entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2)) {
-                entity.attackEntityAsMob(entityHit);
+                entity.attackEntityAsMob(entityHit, damageMultiplier);
                 entityHit.motionX *= knockback;
                 entityHit.motionZ *= knockback;
                 hit = true;

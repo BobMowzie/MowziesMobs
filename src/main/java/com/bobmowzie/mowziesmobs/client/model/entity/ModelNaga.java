@@ -107,10 +107,11 @@ public class ModelNaga extends AdvancedModelBase{
     public ExtendedModelRenderer wingWebbing3_RReversed;
     public ExtendedModelRenderer wingWebbing4_RReversed;
     public AdvancedModelRenderer wingFolder;
-    public AdvancedModelRenderer scaler;
     public AdvancedModelRenderer shoulderLJoint;
     public AdvancedModelRenderer shoulderRJoint;
     public SocketModelRenderer mouthSocket;
+    public AdvancedModelRenderer scaler;
+    public AdvancedModelRenderer swooper;
 
     public SocketModelRenderer tailEnd;
 
@@ -498,11 +499,12 @@ public class ModelNaga extends AdvancedModelBase{
         this.shoulderRJoint = new AdvancedModelRenderer(this, 0, 0);
         this.shoulder1_R.setRotationPoint(-8.0F, -2.0F, -1.0F);
         this.mouthSocket = new SocketModelRenderer(this, 0, 0);
-        this.mouthSocket.setRotationPoint(0, 2, -5);
+        this.mouthSocket.setRotationPoint(0, 5, -10);
         this.wingFolder = new AdvancedModelRenderer(this, 0, 0);
-        this.scaler = new AdvancedModelRenderer(this, 0, 0);
         this.tailEnd = new SocketModelRenderer(this, 0, 0);
         this.tailEnd.setRotationPoint(0, 0, 5);
+        this.scaler = new AdvancedModelRenderer(this, 0, 0);
+        this.swooper = new AdvancedModelRenderer(this, 0, 0);
         this.eyebrowJoint_L.addChild(this.eyebrow_L);
         this.spike4joint.addChild(this.spike4);
         this.body.addChild(this.spike3joint);
@@ -698,7 +700,7 @@ public class ModelNaga extends AdvancedModelBase{
         float hoverAnim = naga.prevHoverAnimFrac + (naga.hoverAnimFrac - naga.prevHoverAnimFrac) * partial;
         float nonHoverAnim = 1f - hoverAnim;
 
-        float flapAnim = 1;//naga.prevFlapAnimFrac + (naga.flapAnimFrac - naga.prevFlapAnimFrac) * partial;
+        float flapAnim = naga.prevFlapAnimFrac + (naga.flapAnimFrac - naga.prevFlapAnimFrac) * partial;
 
         //Hover anim
         float globalSpeed = 0.28f;
@@ -757,7 +759,8 @@ public class ModelNaga extends AdvancedModelBase{
         animator.update(naga);
         setRotationAngles(f, f1, f2, f3, f4, f5, naga);
 
-        float frame = naga.frame + LLibrary.PROXY.getPartialTicks();
+        float partial = LLibrary.PROXY.getPartialTicks();
+        float frame = naga.frame + partial;
 
         if (naga.getAnimation() == EntityNaga.FLAP_ANIMATION) {
             animator.setAnimation(EntityNaga.FLAP_ANIMATION);
@@ -769,14 +772,14 @@ public class ModelNaga extends AdvancedModelBase{
 
         if (naga.getAnimation() == EntityNaga.SPIT_ANIMATION) {
             animator.setAnimation(EntityNaga.SPIT_ANIMATION);
-            animator.startKeyframe(20);
-            animator.rotate(body, -0.9f, 0, 0);
+            animator.startKeyframe(26);
+            animator.rotate(body, -1f, 0, 0);
             animator.rotate(shoulderLJoint, 0.9f, 0, 0);
             animator.rotate(shoulderRJoint, 0.9f, 0, 0);
             animator.move(body, 0, -14, 28);
-            animator.rotate(headJoint, 0.3f, 0, 0);
-            animator.rotate(neck, 0.3f, 0, 0);
-            animator.move(scaler, 0.15f, 0, 0);
+            animator.rotate(headJoint, 0.1f, 0, 0);
+            animator.rotate(neck, 0.1f, 0, 0);
+            animator.move(scaler, 0.2f, 0, 0);
             animator.endKeyframe();
             animator.setStaticKeyframe(4);
             animator.startKeyframe(6);
@@ -798,7 +801,7 @@ public class ModelNaga extends AdvancedModelBase{
             animator.setStaticKeyframe(4);
             animator.resetKeyframe(10);
 
-            body.setScale(1 + scaler.rotationPointX, 1 + scaler.rotationPointX * 5, 1 + scaler.rotationPointX);
+            body.setScale(1 + scaler.rotationPointX, 1 + scaler.rotationPointX * 2, 1 + scaler.rotationPointX);
             body.scaleChildren = false;
             float scaleSpeed = 1f;
             float neckScaler = 0.6f * (float) Math.max(Math.pow(Math.sin((scaler.rotationPointY * scaleSpeed + (1-scaleSpeed)/2) * Math.PI + 0.4), 3), 0);
@@ -816,6 +819,139 @@ public class ModelNaga extends AdvancedModelBase{
             neck.setScale(1, 1, 1);
             body.setScale(1, 1, 1);
             headJoint.setScale(1, 1, 1);
+        }
+
+        if (naga.getAnimation() == EntityNaga.SWOOP_ANIMATION) {
+            animator.setAnimation(EntityNaga.SWOOP_ANIMATION);
+            int phase1Time = 15;
+            animator.startKeyframe(3);
+            animator.move(root, -16, -16, 18);
+            animator.rotate(root, 0, -0.2f, 0);
+            animator.rotate(body, -0.4f, 0, 0);
+            animator.rotate(neck, 0.2f, 0, 0);
+            animator.rotate(headJoint, 0.2f, 0, 0);
+            animator.move(wingFolder, 0.1f, 0.1f, 0);
+            animator.rotate(shoulder1_R, 0, 0, -1f);
+            animator.rotate(shoulder1_L, 0, 0, 1f);
+            animator.rotate(lowerArm_L, 0, 0, 0.6f);
+            animator.rotate(lowerArm_R, 0, 0, -0.6f);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(1);
+            animator.startKeyframe(phase1Time);
+            animator.move(swooper, 1, 0, 0);
+            animator.endKeyframe();
+
+            animator.startKeyframe(0);
+            animator.move(root, 0, -10, 10);
+            animator.move(wingFolder, 0.530f - 0.107f, 0.161f - 0.108f , 0);
+            animator.rotate(shoulder1_R, 0, 0, 0.396f - 0.069f);
+            animator.rotate(shoulder1_L, 0, 0.185f, -0.765f + 0.069f);
+            animator.rotate(body, -0.696f + 0.153f, 0.185f, 0.027f);
+            animator.move(body, 9.241f, 0, 0);
+            animator.rotate(neck, 0.497f - 0.195f, 0.092f, 0);
+            animator.rotate(headJoint, 0.497f - 0.195f, 0.092f, 0);
+            animator.rotate(tail1, 0, -0.277f, 0);
+            animator.rotate(tail2, 0, -0.277f, 0);
+            animator.rotate(tail3, 0, -0.277f, 0);
+            animator.rotate(tail4, 0, -0.277f, 0);
+            animator.endKeyframe();
+
+            animator.setStaticKeyframe(5);
+            animator.startKeyframe(8);
+            animator.move(wingFolder, 0.8f, 0.8f, 0);
+            animator.rotate(shoulder1_R, 0, 0, -0.6f);
+            animator.rotate(shoulder1_L, 0, 0, -0.6f);
+            animator.rotate(handJoint_R, -1.0f, 0, 0);
+            animator.rotate(handJoint_L, 1.0f, 0, 0);
+            animator.rotate(jaw, 2f, 0, 0);
+            animator.rotate(headJoint, -1.3f, 0, 0);
+            animator.move(swooper, 0, 1, 0);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(15);
+            animator.startKeyframe(7);
+            animator.rotate(body, 0, 0, (float) (Math.PI * 2));
+            animator.endKeyframe();
+
+
+            root.rotationPointX += 30 * (float) Math.sin(swooper.rotationPointX * Math.PI * 2);
+            root.rotationPointZ -= 10 * (float) (swooper.rotationPointX * (-Math.cos(swooper.rotationPointX * 2 * Math.PI) + 1) - Math.pow(swooper.rotationPointX, 2));
+            root.rotateAngleY += 2 * Math.PI * swooper.rotationPointX * swooper.rotationPointX;
+            root.rotationPointY += 10 * (float) (swooper.rotationPointX * (-Math.cos(swooper.rotationPointX * 2 * Math.PI) + 1) - Math.pow(swooper.rotationPointX, 2));
+            wingFolder.rotationPointX += 0.9 * smoothBlend(swooper.rotationPointX, 0.1f, 20) - 0.4 * smoothBlend(swooper.rotationPointX, 0.95f, 50);
+            wingFolder.rotationPointY += 0.9 * smoothBlend(swooper.rotationPointX, 0.1f, 20) - 0.8 * smoothBlend(swooper.rotationPointX, 0.95f, 50);
+            shoulder1_R.rotateAngleZ += 1.0 * smoothBlend(swooper.rotationPointX, 0.1f, 20) - 0.6 * smoothBlend(swooper.rotationPointX, 0.95f, 50);
+            shoulder1_L.rotateAngleZ -= 1.0 * smoothBlend(swooper.rotationPointX, 0.1f, 20) - 0.2 * smoothBlend(swooper.rotationPointX, 0.95f, 50);
+            shoulder1_L.rotateAngleY += 0.2 * smoothBlend(swooper.rotationPointX, 0.95f, 50);
+            body.rotateAngleX += 1.0 * smoothBlend(swooper.rotationPointX, 0.15f, 20) - 1.5 * smoothBlend(swooper.rotationPointX, 0.7f, 20);
+            body.rotateAngleZ -= 0.6 * smoothBlend(swooper.rotationPointX, 0.15f, 20) - 0.6 * smoothBlend(swooper.rotationPointX, 0.7f, 20);
+            neck.rotateAngleX += -0.8 * smoothBlend(swooper.rotationPointX, 0.25f, 20) + 1.1 * smoothBlend(swooper.rotationPointX, 0.7f, 20);
+            headJoint.rotateAngleX += -0.8 * smoothBlend(swooper.rotationPointX, 0.25f, 20) + 1.1 * smoothBlend(swooper.rotationPointX, 0.7f, 20);
+            body.rotationPointX += 10 * smoothBlend(swooper.rotationPointX, 0.95f, 50);
+            body.rotateAngleY += 0.2 * smoothBlend(swooper.rotationPointX, 0.95f, 50);
+            headJoint.rotateAngleY += 0.1 * smoothBlend(swooper.rotationPointX, 0.95f, 50);
+            neck.rotateAngleY += 0.1 * smoothBlend(swooper.rotationPointX, 0.95f, 50);
+            tail1.rotateAngleY -= 0.3 * smoothBlend(swooper.rotationPointX, 0.95f, 50);
+            tail2.rotateAngleY -= 0.3 * smoothBlend(swooper.rotationPointX, 0.95f, 50);
+            tail3.rotateAngleY -= 0.3 * smoothBlend(swooper.rotationPointX, 0.95f, 50);
+            tail4.rotateAngleY -= 0.3 * smoothBlend(swooper.rotationPointX, 0.95f, 50);
+
+            body.rotateAngleZ += 1f * frame % (Math.PI * 2) * swooper.rotationPointY;
+
+            if (naga.getAnimationTick() >= 23 && naga.getAnimationTick() < 60) {
+                float dx = (float) (naga.prevMotionX + (naga.motionX - naga.prevMotionX) * partial);
+                float dy = (float) (naga.motionY + (naga.motionY - naga.prevMotionY) * partial);
+                float dz = (float) (naga.motionZ + (naga.motionZ - naga.prevMotionZ) * partial);
+                double d = Math.sqrt(dx * dx + dy * dy + dz * dz);
+                if (d != 0) {
+                    double a = dy / d;
+                    a = Math.max(-1, Math.min(1, a));
+                    float pitch = -(float) Math.asin(a);
+                    root.rotateAngleX += pitch * swooper.rotationPointY;
+                }
+            }
+
+        }
+
+        if (naga.getAnimation() == EntityNaga.TAIL_DEMO_ANIMATION) {
+            animator.setAnimation(EntityNaga.TAIL_DEMO_ANIMATION);
+
+            animator.startKeyframe(7);
+            animator.move(root, 40, 0, 0);
+            animator.endKeyframe();
+
+            animator.setStaticKeyframe(10);
+
+            animator.resetKeyframe(7);
+
+            animator.setStaticKeyframe(10);
+
+            animator.startKeyframe(3);
+            animator.move(root, 0, -20, 0);
+            animator.endKeyframe();
+
+            animator.resetKeyframe(3);
+
+            animator.setStaticKeyframe(10);
+
+            animator.startKeyframe(4);
+            animator.rotate(root, 0, 0.5f, 0);
+            animator.endKeyframe();
+
+            animator.startKeyframe(4);
+            animator.rotate(root, 0, -0.5f, 0);
+            animator.endKeyframe();
+
+            animator.startKeyframe(4);
+            animator.rotate(root, 0, 0.5f, 0);
+            animator.endKeyframe();
+
+            animator.startKeyframe(4);
+            animator.rotate(root, 0, -0.5f, 0);
+            animator.endKeyframe();
+
+            animator.resetKeyframe(4);
+
+            animator.setStaticKeyframe(10);
         }
 
         float globalSpeed = 0.27f;
@@ -841,7 +977,7 @@ public class ModelNaga extends AdvancedModelBase{
         jawControls();
         wingFoldControls();
 
-        naga.dc.updateChain(LLibrary.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.5f, 0.5f, 0.5f, 0.96f, 30, true);
+        naga.dc.updateChain(LLibrary.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.5f, 0.5f, 0.5f, 0.97f, 30, true);
 
         computeWingWebbing();
     }
@@ -1033,5 +1169,9 @@ public class ModelNaga extends AdvancedModelBase{
             ExtendedModelRenderer extendedModelRenderer = (ExtendedModelRenderer) modelRenderer;
             extendedModelRenderer.resetToDefaultPose();
         });
+    }
+
+    private float smoothBlend(float x, float center, float speed) {
+        return (float) (1.0 / (1 + Math.exp(-speed * (x - center))));
     }
 }
