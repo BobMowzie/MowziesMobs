@@ -115,8 +115,8 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
             public void updateTask() {
                 super.updateTask();
                 if (interrupted) return;
-                if (getAnimationTick() < 9) motionY += 0.03;
-                if (getAnimationTick() == 28) motionY -= 0.2;
+                if (getAnimationTick() < 9) motionY += 0.015;
+//                if (getAnimationTick() == 28) motionY -= 0.2;
             }
         });
         this.tasks.addTask(2, new AnimationAI<EntityNaga>(this, SWOOP_ANIMATION, true) {
@@ -162,6 +162,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
 
                             List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby(4, 4, 4, 4);
                             for (EntityLivingBase entityHit : entitiesHit) {
+                                if (entityHit instanceof EntityNaga) continue;
                                 attackEntityAsMob(entityHit);
                             }
                         }
@@ -330,28 +331,57 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
             flapAnim.increaseTimer();
         }
 
-        if (getAnimation() == SPIT_ANIMATION && getAnimationTick() == 33 && world.isRemote) {
+        if (getAnimation() == SPIT_ANIMATION && world.isRemote) {
+            if (getAnimationTick() == 33) {
 //            System.out.println(mouthPos);
-            float explodeSpeed = 1.5f;
-            for (int i = 0; i < 15; i++) {
-                Vec3d particlePos = new Vec3d(0.25, 0, 0);
-                particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
-                particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
-                double value = rand.nextFloat() * 0.15f;
-                MMParticle.CLOUD.spawn(world, particlePos.x + mouthPos.x, particlePos.y + mouthPos.y - 2, particlePos.z + mouthPos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 0.1d + value, 0.4d, 0.1d + value, 2, 10d + rand.nextDouble() * 20d, 40, ParticleCloud.EnumCloudBehavior.GROW, 0.7d));
+                float explodeSpeed = 1.5f;
+                for (int i = 0; i < 15; i++) {
+                    Vec3d particlePos = new Vec3d(0.25, 0, 0);
+                    particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
+                    particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                    double value = rand.nextFloat() * 0.15f;
+                    MMParticle.CLOUD.spawn(world, particlePos.x + mouthPos.x, particlePos.y + mouthPos.y - 1, particlePos.z + mouthPos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 0.1d + value, 0.4d, 0.1d + value, 2, 10d + rand.nextDouble() * 20d, 40, ParticleCloud.EnumCloudBehavior.GROW, 0.7d));
+                }
+                for (int i = 0; i < 15; i++) {
+                    Vec3d particlePos = new Vec3d(0.2, 0, 0);
+                    particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
+                    particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                    double value = rand.nextFloat() * 0.15f;
+                    MMParticle.CLOUD.spawn(world, particlePos.x + mouthPos.x, particlePos.y + mouthPos.y - 1, particlePos.z + mouthPos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 0.3d + value, 1d, 0.3d + value, 2, 10d + rand.nextDouble() * 20d, 40, ParticleCloud.EnumCloudBehavior.GROW, 0.7d));
+                }
+                for (int i = 0; i < 13; i++) {
+                    Vec3d particlePos = new Vec3d(0.25, 0, 0);
+                    particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
+                    particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                    MMParticle.CLOUD.spawn(world, particlePos.x + mouthPos.x, particlePos.y + mouthPos.y - 1, particlePos.z + mouthPos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 0.1d, 0.2d, 0.1d, 0, 2d, 30, ParticleCloud.EnumCloudBehavior.CONSTANT, 0.7d));
+                }
             }
-            for (int i = 0; i < 15; i++) {
-                Vec3d particlePos = new Vec3d(0.2, 0, 0);
-                particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
-                particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
-                double value = rand.nextFloat() * 0.15f;
-                MMParticle.CLOUD.spawn(world, particlePos.x + mouthPos.x, particlePos.y + mouthPos.y - 2, particlePos.z + mouthPos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 0.3d + value, 1d, 0.3d + value, 2, 10d + rand.nextDouble() * 20d, 40, ParticleCloud.EnumCloudBehavior.GROW, 0.7d));
-            }
-            for (int i = 0; i < 13; i++) {
-                Vec3d particlePos = new Vec3d(0.25, 0, 0);
-                particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
-                particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
-                MMParticle.CLOUD.spawn(world, particlePos.x + mouthPos.x, particlePos.y + mouthPos.y - 2, particlePos.z + mouthPos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 0.1d, 0.2d, 0.1d, 0, 2d, 30, ParticleCloud.EnumCloudBehavior.CONSTANT, 0.7d));
+
+            if (getAnimationTick() <= 15) {
+//            System.out.println(mouthPos);
+
+                float returnSpeed = -0.03f;
+                int howMany = 2;
+                for (int i = 0; i < howMany; i++) {
+                    Vec3d particlePos = new Vec3d(3, 0, 0);
+                    particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
+                    particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                    double value = rand.nextFloat() * 0.15f;
+                    MMParticle.CLOUD.spawn(world, particlePos.x + mouthPos.x, particlePos.y + mouthPos.y, particlePos.z + mouthPos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x * returnSpeed, particlePos.y * returnSpeed, particlePos.z * returnSpeed, 0.1d + value, 0.4d, 0.1d + value, 2, 10d + rand.nextDouble() * 20d, 27, ParticleCloud.EnumCloudBehavior.SHRINK, 1.2d));
+                }
+                for (int i = 0; i < howMany; i++) {
+                    Vec3d particlePos = new Vec3d(3, 0, 0);
+                    particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
+                    particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                    double value = rand.nextFloat() * 0.15f;
+                    MMParticle.CLOUD.spawn(world, particlePos.x + mouthPos.x, particlePos.y + mouthPos.y, particlePos.z + mouthPos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x * returnSpeed, particlePos.y * returnSpeed, particlePos.z * returnSpeed, 0.3d + value, 1d, 0.3d + value, 2, 10d + rand.nextDouble() * 20d, 27, ParticleCloud.EnumCloudBehavior.SHRINK, 1.2d));
+                }
+                for (int i = 0; i < howMany - 2; i++) {
+                    Vec3d particlePos = new Vec3d(3, 0, 0);
+                    particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
+                    particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                    MMParticle.CLOUD.spawn(world, particlePos.x + mouthPos.x, particlePos.y + mouthPos.y, particlePos.z + mouthPos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x * returnSpeed, particlePos.y * returnSpeed, particlePos.z * returnSpeed, 0.1d, 0.2d, 0.1d, 0, 2d, 18, ParticleCloud.EnumCloudBehavior.CONSTANT, 1.2d));
+                }
             }
         }
 
@@ -375,7 +405,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
 //        posY = 10;
 
 //        if (getAnimation() == NO_ANIMATION) {
-//            AnimationHandler.INSTANCE.sendAnimationMessage(this, LAND_ANIMATION);
+//            AnimationHandler.INSTANCE.sendAnimationMessage(this, SPIT_ANIMATION);
 //        }
     }
 
@@ -383,8 +413,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
     public boolean attackEntityFrom(DamageSource source, float damage) {
         boolean flag = super.attackEntityFrom(source, damage);
         boolean isSpitting = getAnimation() == SPIT_ANIMATION && getAnimationTick() < 30;
-        boolean isSwooping = getAnimation() == SWOOP_ANIMATION && getAnimationTick() < 32;
-        System.out.println(getAnimationTick());
+        boolean isSwooping = getAnimation() == SWOOP_ANIMATION && getAnimationTick() < 25;
         if (flag && movement != EnumNagaMovement.FALLING && (isSpitting || isSwooping)) {
             setAnimationTick(0);
             if (currentAnim != null) currentAnim.resetTask();
@@ -401,7 +430,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
         projectilePos = projectilePos.rotateYaw((float)Math.toRadians(-rotationYaw - 90));
         projectilePos = projectilePos.add(getPositionVector());
         projectilePos = projectilePos.add(new Vec3d(0, 0, 1).rotatePitch((float)Math.toRadians(-rotationPitch)).rotateYaw((float)Math.toRadians(-rotationYawHead)));
-        projectilePos = projectilePos.add(new Vec3d(0, -2, 0));
+        projectilePos = projectilePos.add(new Vec3d(0, 0, 0));
         EntityPoisonBall poisonBall = new EntityPoisonBall(this.world, this);
         poisonBall.setPosition(projectilePos.x, projectilePos.y, projectilePos.z);
         Vec3d look = getLookVec();
