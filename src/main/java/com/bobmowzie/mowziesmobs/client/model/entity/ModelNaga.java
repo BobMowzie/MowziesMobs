@@ -702,6 +702,8 @@ public class ModelNaga extends AdvancedModelBase{
 
         float flapAnim = naga.prevFlapAnimFrac + (naga.flapAnimFrac - naga.prevFlapAnimFrac) * partial;
 
+        //naga.dc.updateChain(LLibrary.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.2f, 0f, 1f, 0.99f, 40, false);
+
         //Hover anim
         float globalSpeed = 0.28f;
         float globalDegree = 1f * hoverAnim;
@@ -750,8 +752,58 @@ public class ModelNaga extends AdvancedModelBase{
             //        root.rotateAngleZ -= Math.toRadians((naga.rotationYaw - naga.prevRotationYaw) * (LLibrary.PROXY.getPartialTicks()));
         }
 
-        //naga.dc.updateChain(LLibrary.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.2f, 0f, 1f, 0.99f, 40, false);
+        // Falling Anim
+        if (naga.movement == EntityNaga.EnumNagaMovement.FALLING && naga.getAnimation() == EntityNaga.NO_ANIMATION) {
+            root.rotateAngleX += Math.PI;
+            root.rotateAngleY += 0.8f;
+            wingFolder.rotationPointX += 0.4f;
+            wingFolder.rotationPointY += 0.2f;
+            shoulder1_R.rotateAngleZ += -1f;
+            shoulder1_L.rotateAngleZ += 1f;
+            lowerArm_L.rotateAngleZ += 0.3f;
+            lowerArm_R.rotateAngleZ += -0.3f;
+            handJoint_L.rotateAngleZ += 0.2f;
+            handJoint_R.rotateAngleZ += -0.2f;
+            neck.rotateAngleX += 0.3f;
+            headJoint.rotateAngleX += 0.3f;
+        }
+        else if (naga.movement == EntityNaga.EnumNagaMovement.FALLEN && naga.getAnimation() == EntityNaga.NO_ANIMATION) {
+            animator.move(root, 0, -16, 0);
+            animator.rotate(root, (float)(Math.PI), 0.8f, 0);
+            animator.rotate(body, 0, 0, (float) Math.PI/2);
+            animator.move(wingFolder, 0.6f, 0.7f, 0);
+            animator.rotate(shoulder1_R, 0, 0, -1.5f);
+            animator.rotate(shoulder1_L, 0, 0, 1f);
+            animator.rotate(upperArm_L, 0.2f, 0, 0.4f);
+            animator.rotate(lowerArmJoint_L, 0.4f, -0.5f, 0);
+            animator.rotate(neck, 0.4f, 0, 0);
+            animator.rotate(headJoint, 0.4f, 0, 0);
+            animator.rotate(tail1, -0.35f, 0, 0);
+            animator.rotate(tail2, -0.35f, 0, 0);
+            animator.rotate(tail3, -0.35f, 0, 0);
+            animator.rotate(tail4, -0.35f, 0, 0);
+            animator.rotate(tail5, -0.35f, 0, 0);
 
+            root.rotationPointY += -16;
+            root.rotateAngleX += Math.PI;
+            root.rotateAngleY += 0.8f;
+            body.rotateAngleZ += Math.PI/2;
+            wingFolder.rotationPointX += 0.6f;
+            wingFolder.rotationPointY += 0.7f;
+            shoulder1_R.rotateAngleZ += -1.5f;
+            shoulder1_L.rotateAngleZ += 1f;
+            upperArm_L.rotateAngleX += 0.2f;
+            upperArm_L.rotateAngleZ += 0.4;
+            lowerArmJoint_L.rotateAngleX += 0.4f;
+            lowerArmJoint_L.rotateAngleY += -0.5f;
+            neck.rotateAngleX += 0.4f;
+            headJoint.rotateAngleX += 0.4f;
+            tail1.rotateAngleX += -0.35f;
+            tail2.rotateAngleX += -0.35f;
+            tail3.rotateAngleX += -0.35f;
+            tail4.rotateAngleX += -0.35f;
+            tail5.rotateAngleX += -0.35f;
+        }
     }
 
     public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
@@ -910,6 +962,135 @@ public class ModelNaga extends AdvancedModelBase{
                 }
             }
 
+        }
+
+        if (naga.getAnimation() == EntityNaga.HURT_TO_FALL_ANIMATION) {
+            animator.setAnimation(EntityNaga.HURT_TO_FALL_ANIMATION);
+            animator.startKeyframe(20);
+            animator.rotate(root, -(float)(2.5 * Math.PI * 2), 0.8f, (float)(Math.PI * 2));
+            animator.move(wingFolder, 0.4f, 0.2f, 0);
+            animator.rotate(shoulder1_R, 0, 0, -1f);
+            animator.rotate(shoulder1_L, 0, 0, 1f);
+            animator.rotate(lowerArm_L, 0, 0, 0.3f);
+            animator.rotate(lowerArm_R, 0, 0, -0.3f);
+            animator.rotate(handJoint_L, 0, 0, 0.2f);
+            animator.rotate(handJoint_R, 0, 0, -0.2f);
+            animator.rotate(neck, 0.5f, 0, 0);
+            animator.rotate(headJoint, 0.4f, 0, 0);
+            animator.endKeyframe();
+            animator.startKeyframe(0);
+            animator.rotate(root, (float)(Math.PI), 0.8f, 0);
+            animator.move(wingFolder, 0.4f, 0.2f, 0);
+            animator.rotate(shoulder1_R, 0, 0, -1f);
+            animator.rotate(shoulder1_L, 0, 0, 1f);
+            animator.rotate(lowerArm_L, 0, 0, 0.3f);
+            animator.rotate(lowerArm_R, 0, 0, -0.3f);
+            animator.rotate(handJoint_L, 0, 0, 0.2f);
+            animator.rotate(handJoint_R, 0, 0, -0.2f);
+            animator.rotate(neck, 0.3f, 0, 0);
+            animator.rotate(headJoint, 0.3f, 0, 0);
+            animator.endKeyframe();
+        }
+
+        if (naga.getAnimation() == EntityNaga.LAND_ANIMATION) {
+            animator.setAnimation(EntityNaga.LAND_ANIMATION);
+            animator.startKeyframe(0);
+            animator.rotate(root, (float)(Math.PI), 0.8f, 0);
+            animator.move(root, 0, -11, 0);
+            animator.move(wingFolder, 0.4f, 0.2f, 0);
+            animator.rotate(shoulder1_R, 0, 0, -1f);
+            animator.rotate(shoulder1_L, 0, 0, 1f);
+            animator.rotate(lowerArm_L, 0, 0, 0.3f);
+            animator.rotate(lowerArm_R, 0, 0, -0.3f);
+            animator.rotate(handJoint_L, 0, 0, 0.2f);
+            animator.rotate(handJoint_R, 0, 0, -0.2f);
+            animator.rotate(neck, 0.3f, 0, 0);
+            animator.rotate(headJoint, 0.3f, 0, 0);
+            animator.endKeyframe();
+
+            animator.startKeyframe(4);
+            animator.move(root, 0, -34, 0);
+            animator.rotate(root, (float)(Math.PI), 0.8f, 0);
+            animator.rotate(body, 0, 0, (float) Math.PI/4);
+            animator.move(wingFolder, 0.6f, 0.6f, 0);
+            animator.rotate(shoulder1_R, 0, 0, -1f);
+            animator.rotate(shoulder1_L, 0, 0, 1f);
+            animator.rotate(lowerArm_L, 0, 0, 0.3f);
+            animator.rotate(lowerArm_R, 0, 0, -0.3f);
+            animator.rotate(handJoint_L, 0, 0, 0.2f);
+            animator.rotate(handJoint_R, 0, 0, -0.2f);
+            animator.rotate(neck, 0.3f, 0, 0);
+            animator.rotate(headJoint, 0.3f, 0, 0);
+            animator.endKeyframe();
+            animator.startKeyframe(4);
+            animator.move(root, 0, -16, 0);
+            animator.rotate(root, (float)(Math.PI), 0.8f, 0);
+            animator.rotate(body, 0, 0, (float) Math.PI/2);
+            animator.move(wingFolder, 0.6f, 0.7f, 0);
+            animator.rotate(shoulder1_R, 0, 0, -1.5f);
+            animator.rotate(shoulder1_L, 0, 0, 1f);
+            animator.rotate(upperArm_L, 0.2f, 0, 0.4f);
+            animator.rotate(lowerArmJoint_L, 0.4f, -0.5f, 0);
+            animator.rotate(neck, 0.4f, 0, 0);
+            animator.rotate(headJoint, 0.4f, 0, 0);
+            animator.rotate(tail1, -0.35f, 0, 0);
+            animator.rotate(tail2, -0.35f, 0, 0);
+            animator.rotate(tail3, -0.35f, 0, 0);
+            animator.rotate(tail4, -0.35f, 0, 0);
+            animator.rotate(tail5, -0.35f, 0, 0);
+            animator.endKeyframe();
+
+        }
+
+        if (naga.getAnimation() == EntityNaga.GET_UP_ANIMATION) {
+            animator.setAnimation(EntityNaga.GET_UP_ANIMATION);
+            animator.startKeyframe(0);
+            animator.move(root, 0, -16, 0);
+            animator.rotate(root, -(float)(Math.PI), 0.8f, 0);
+            animator.rotate(body, 0, 0, (float) Math.PI/2);
+            animator.move(wingFolder, 0.6f, 0.7f, 0);
+            animator.rotate(shoulder1_R, 0, 0, -1.5f);
+            animator.rotate(shoulder1_L, 0, 0, 1f);
+            animator.rotate(upperArm_L, 0.2f, 0, 0.4f);
+            animator.rotate(lowerArmJoint_L, 0.4f, -0.5f, 0);
+            animator.rotate(handJoint_L, 0f, 0, 0);
+            animator.rotate(neck, 0.4f, 0, 0);
+            animator.rotate(headJoint, 0.4f, 0, 0);
+            animator.rotate(tail1, -0.35f, 0, 0);
+            animator.rotate(tail2, -0.35f, 0, 0);
+            animator.rotate(tail3, -0.35f, 0, 0);
+            animator.rotate(tail4, -0.35f, 0, 0);
+            animator.rotate(tail5, -0.35f, 0, 0);
+            animator.endKeyframe();
+            animator.startKeyframe(13);
+            animator.move(wingFolder, 0.3f, 0.3f, 0);
+            animator.move(root, 0, -35, 0);
+            animator.rotate(neck, 0.4f, 0, 0);
+            animator.rotate(headJoint, 0.4f, 0, 0);
+            animator.rotate(body, -0.8f, 0, 0);
+            animator.rotate(shoulder1_R, 0, 0, 1f);
+            animator.rotate(shoulder1_L, 0, 0, -1f);
+            animator.rotate(shoulderRJoint, 0.8f, 0, 0);
+            animator.rotate(shoulderLJoint, 0.8f, 0, 0);
+            animator.rotate(lowerArmJoint_R, 0, 0, 0.3f);
+            animator.rotate(lowerArmJoint_L, 0, 0, -0.3f);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(2);
+            animator.startKeyframe(4);
+            animator.move(wingFolder, 0.1f, 0.1f, 0);
+            animator.move(root, 0, 0, 0);
+            animator.rotate(neck, 0.4f, 0, 0);
+            animator.rotate(headJoint, 0.4f, 0, 0);
+            animator.rotate(body, -0.8f, 0, 0);
+            animator.rotate(shoulder1_R, 0, 0, -1f);
+            animator.rotate(shoulder1_L, 0, 0, 1f);
+            animator.rotate(shoulderRJoint, 0.8f, 0, 0);
+            animator.rotate(shoulderLJoint, 0.8f, 0, 0);
+            animator.rotate(lowerArmJoint_R, 0, 0, -0.3f);
+            animator.rotate(lowerArmJoint_L, 0, 0, 0.3f);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(8);
+            animator.resetKeyframe(6);
         }
 
         if (naga.getAnimation() == EntityNaga.TAIL_DEMO_ANIMATION) {

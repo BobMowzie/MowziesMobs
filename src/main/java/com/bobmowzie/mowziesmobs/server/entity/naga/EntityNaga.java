@@ -22,6 +22,7 @@ import net.minecraft.entity.ai.*;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.init.MobEffects;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -51,9 +52,9 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
     public static final Animation SPIT_ANIMATION = Animation.create(50);
     public static final Animation SWOOP_ANIMATION = Animation.create(54);
     public static final Animation HURT_ANIMATION = Animation.create(25);
-    public static final Animation HURT_TO_FALL_ANIMATION = Animation.create(25);
-    public static final Animation LAND_ANIMATION = Animation.create(25);
-    public static final Animation GET_UP_ANIMTATION = Animation.create(25);
+    public static final Animation HURT_TO_FALL_ANIMATION = Animation.create(20);
+    public static final Animation LAND_ANIMATION = Animation.create(8);
+    public static final Animation GET_UP_ANIMATION = Animation.create(33);
     public static final Animation TAIL_DEMO_ANIMATION = Animation.create(80);
 
     private static final DataParameter<Boolean> ATTACKING = EntityDataManager.createKey(EntityNaga.class, DataSerializers.BOOLEAN);
@@ -87,6 +88,11 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
     public float swoopTargetCorrectY;
     public float swoopTargetCorrectX;
 
+    public static int GROUND_TIMER_MAX = 90;
+    public int onGroundTimer = 0;
+
+    public boolean interrupted = false;
+
     public EntityNaga(World world) {
         super(world);
         this.tasks.addTask(5, new EntityNaga.AIRandomFly(this));
@@ -108,6 +114,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
             @Override
             public void updateTask() {
                 super.updateTask();
+                if (interrupted) return;
                 if (getAnimationTick() < 9) motionY += 0.03;
                 if (getAnimationTick() == 28) motionY -= 0.2;
             }
@@ -116,6 +123,8 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
             @Override
             public void updateTask() {
                 super.updateTask();
+                if (interrupted) return;
+
                 Vec3d v = new Vec3d(0, 0, 0);
 
                 int phase1Length = 15;
@@ -165,10 +174,22 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
                 }
             }
         });
+        this.tasks.addTask(2, new AnimationAI<EntityNaga>(this, HURT_TO_FALL_ANIMATION, true));
+        this.tasks.addTask(2, new AnimationAI<EntityNaga>(this, LAND_ANIMATION, true));
+        this.tasks.addTask(2, new AnimationAI<EntityNaga>(this, GET_UP_ANIMATION, true) {
+            @Override
+            public void updateTask() {
+                super.updateTask();
+                if (getAnimationTick() == 15) {
+                    motionY += 1.6f;
+                }
+            }
+        });
+
         this.moveHelper = new NagaMoveHelper(this);
         setSize(3, 1);
         dc = new DynamicChain(this);
-        setRenderDistanceWeight(2.0D);
+        setRenderDistanceWeight(3.0D);
     }
 
     @Override
@@ -205,15 +226,18 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
 
         if (spitCooldown > 0) spitCooldown--;
         if (swoopCooldown > 0) swoopCooldown--;
+        if (onGroundTimer > 0) onGroundTimer--;
 
         if (!world.isRemote) {
-            if (getAttackTarget() != null && targetDistance < 30) {
+            if (getAttackTarget() != null && targetDistance < 30 && movement != EnumNagaMovement.FALLEN && movement != EnumNagaMovement.FALLING) {
                 setAttacking(true);
-                if (swoopCooldown == 0 && rand.nextInt(80) == 0 && posY - getAttackTarget().posY > 0) {
+                if (getAnimation() == NO_ANIMATION && swoopCooldown == 0 && rand.nextInt(80) == 0 && posY - getAttackTarget().posY > 0) {
+                    interrupted = false;
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, SWOOP_ANIMATION);
                     swoopCooldown = SWOOP_COOLDOWN_MAX;
                 }
-                else if (spitCooldown == 0 && rand.nextInt(80) == 0) {
+                else if (getAnimation() == NO_ANIMATION && spitCooldown == 0 && rand.nextInt(80) == 0) {
+                    interrupted = false;
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, SPIT_ANIMATION);
                     spitCooldown = SPIT_COOLDOWN_MAX;
                 }
@@ -222,48 +246,88 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
             }
         }
 
-        if (getAttacking()) {
-            movement = EnumNagaMovement.HOVERING;
-            hoverAnim.increaseTimer();
+        if (movement != EnumNagaMovement.FALLING && movement != EnumNagaMovement.FALLEN) {
+            if (getAttacking()) {
+                movement = EnumNagaMovement.HOVERING;
+                hoverAnim.increaseTimer();
 
-            if (getAnimation() == SWOOP_ANIMATION && getAnimationTick() < 47) {
-                flapAnim.decreaseTimer();
-            }
-            else {
-                flapAnim.increaseTimer();
-            }
-
-            if (getAnimation() == NO_ANIMATION && !world.isRemote) {
-                List<EntityArrow> arrowsNearby = getEntitiesNearby(EntityArrow.class, 30);
-                for (EntityArrow a : arrowsNearby) {
-                    Vec3d aActualMotion = new Vec3d(a.posX - a.prevPosX, a.posY - a.prevPosY, a.posZ - a.prevPosZ);
-                    if (aActualMotion.lengthVector() < 0.1 || a.ticksExisted <= 1) {
-                        continue;
-                    }
-
-                    Vec3d aMotion = new Vec3d(a.motionX, a.motionY, a.motionZ);
-                    float dot = (float) aMotion.normalize().dotProduct(this.getPositionVector().subtract(a.getPositionVector()).normalize());
-                    if (dot > 0.96) {
-                        Vec3d dodgeVec = aMotion.crossProduct(new Vec3d(0, 1, 0)).normalize().scale(1.2);
-                        Vec3d newPosLeft = getPositionVector().add(dodgeVec.scale(2));
-                        Vec3d newPosRight = getPositionVector().add(dodgeVec.scale(-2));
-                        Vec3d diffLeft = newPosLeft.subtract(a.getPositionVector());
-                        Vec3d diffRight = newPosRight.subtract(a.getPositionVector());
-                        if (diffRight.dotProduct(aMotion) > diffLeft.dotProduct(aMotion)) {
-                            dodgeVec = dodgeVec.scale(-1);
+                if (getAnimation() == NO_ANIMATION && !world.isRemote) {
+                    List<EntityArrow> arrowsNearby = getEntitiesNearby(EntityArrow.class, 30);
+                    for (EntityArrow a : arrowsNearby) {
+                        Vec3d aActualMotion = new Vec3d(a.posX - a.prevPosX, a.posY - a.prevPosY, a.posZ - a.prevPosZ);
+                        if (aActualMotion.lengthVector() < 0.1 || a.ticksExisted <= 1) {
+                            continue;
                         }
-                        motionX += dodgeVec.x;
-                        motionY += dodgeVec.y;
-                        motionZ += dodgeVec.z;
-                        AnimationHandler.INSTANCE.sendAnimationMessage(this, DODGE_ANIMATION);
+
+                        Vec3d aMotion = new Vec3d(a.motionX, a.motionY, a.motionZ);
+                        float dot = (float) aMotion.normalize().dotProduct(this.getPositionVector().subtract(a.getPositionVector()).normalize());
+                        if (dot > 0.96) {
+                            Vec3d dodgeVec = aMotion.crossProduct(new Vec3d(0, 1, 0)).normalize().scale(1.2);
+                            Vec3d newPosLeft = getPositionVector().add(dodgeVec.scale(2));
+                            Vec3d newPosRight = getPositionVector().add(dodgeVec.scale(-2));
+                            Vec3d diffLeft = newPosLeft.subtract(a.getPositionVector());
+                            Vec3d diffRight = newPosRight.subtract(a.getPositionVector());
+                            if (diffRight.dotProduct(aMotion) > diffLeft.dotProduct(aMotion)) {
+                                dodgeVec = dodgeVec.scale(-1);
+                            }
+                            motionX += dodgeVec.x;
+                            motionY += dodgeVec.y;
+                            motionZ += dodgeVec.z;
+                            AnimationHandler.INSTANCE.sendAnimationMessage(this, DODGE_ANIMATION);
+                        }
                     }
                 }
             }
+            else {
+                movement = EnumNagaMovement.GLIDING;
+                hoverAnim.decreaseTimer();
+                flapAnim.decreaseTimer();
+            }
+        }
+        else if (movement == EnumNagaMovement.FALLING) {
+            if (onGround) {
+                AnimationHandler.INSTANCE.sendAnimationMessage(this, EntityNaga.LAND_ANIMATION);
+                movement = EnumNagaMovement.FALLEN;
+                onGroundTimer = GROUND_TIMER_MAX;
+                motionX = motionZ = 0;
+                getNavigator().clearPathEntity();
+            }
+        }
+        else if (movement == EnumNagaMovement.FALLEN) {
+            if (onGroundTimer <= 0 && getAnimation() == NO_ANIMATION) {
+                AnimationHandler.INSTANCE.sendAnimationMessage(this, EntityNaga.GET_UP_ANIMATION);
+            }
+        }
+
+        if (getAnimation() == SWOOP_ANIMATION && getAnimationTick() < 43) {
+            hoverAnim.increaseTimer();
+            flapAnim.decreaseTimer();
+        }
+        else if (getAnimation() == HURT_TO_FALL_ANIMATION) {
+            flapAnim.decreaseTimer();
+            hoverAnim.increaseTimer();
+        }
+        else if (getAnimation() == LAND_ANIMATION) {
+            flapAnim.decreaseTimer();
+            hoverAnim.increaseTimer();
+        }
+        else if (getAnimation() == GET_UP_ANIMATION && getAnimationTick() < 26) {
+            flapAnim.decreaseTimer();
+            hoverAnim.increaseTimer();
+        }
+        else if (movement == EnumNagaMovement.FALLEN) {
+            flapAnim.decreaseTimer();
+            hoverAnim.increaseTimer();
+            rotationYaw = prevRotationYaw;
+            rotationYawHead = prevRotationYawHead;
+            rotationPitch = prevRotationPitch;
+        }
+        else if (movement == EnumNagaMovement.FALLING) {
+            flapAnim.decreaseTimer();
+            hoverAnim.increaseTimer();
         }
         else {
-            movement = EnumNagaMovement.GLIDING;
-            hoverAnim.decreaseTimer();
-            flapAnim.decreaseTimer();
+            flapAnim.increaseTimer();
         }
 
         if (getAnimation() == SPIT_ANIMATION && getAnimationTick() == 33 && world.isRemote) {
@@ -291,20 +355,44 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
             }
         }
 
+        if (getAnimation() == HURT_TO_FALL_ANIMATION && getAnimationTick() == 17) {
+            movement = EnumNagaMovement.FALLING;
+        }
+
+        if (getAnimation() == GET_UP_ANIMATION && getAnimationTick() == 26) {
+            movement = EnumNagaMovement.HOVERING;
+        }
+
         hoverAnimFrac = hoverAnim.getAnimationProgressSinSqrt();
         flapAnimFrac = flapAnim.getAnimationProgressSinSqrt();
-
-//        System.out.println("Attacking? " + getAttacking());
 
 //        setAttacking(true);
 //        getNavigator().clearPathEntity();
 //        posX = prevPosX;
 //        posY = prevPosY;
 //        posZ = prevPosZ;
+//        motionX = motionZ = 0;
+//        posY = 10;
 
 //        if (getAnimation() == NO_ANIMATION) {
-//            AnimationHandler.INSTANCE.sendAnimationMessage(this, SWOOP_ANIMATION);
+//            AnimationHandler.INSTANCE.sendAnimationMessage(this, LAND_ANIMATION);
 //        }
+    }
+
+    @Override
+    public boolean attackEntityFrom(DamageSource source, float damage) {
+        boolean flag = super.attackEntityFrom(source, damage);
+        boolean isSpitting = getAnimation() == SPIT_ANIMATION && getAnimationTick() < 30;
+        boolean isSwooping = getAnimation() == SWOOP_ANIMATION && getAnimationTick() < 32;
+        System.out.println(getAnimationTick());
+        if (flag && movement != EnumNagaMovement.FALLING && (isSpitting || isSwooping)) {
+            setAnimationTick(0);
+            if (currentAnim != null) currentAnim.resetTask();
+            AnimationHandler.INSTANCE.sendAnimationMessage(this, NO_ANIMATION);
+            AnimationHandler.INSTANCE.sendAnimationMessage(this, EntityNaga.HURT_TO_FALL_ANIMATION);
+            interrupted = true;
+        }
+        return flag;
     }
 
     @Override
@@ -343,17 +431,21 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
 
     @Override
     public Animation[] getAnimations() {
-        return new Animation[] {FLAP_ANIMATION, DODGE_ANIMATION, SWOOP_ANIMATION, SPIT_ANIMATION, HURT_ANIMATION, HURT_TO_FALL_ANIMATION, LAND_ANIMATION, TAIL_DEMO_ANIMATION};
+        return new Animation[] {FLAP_ANIMATION, DODGE_ANIMATION, SWOOP_ANIMATION, SPIT_ANIMATION, HURT_ANIMATION, HURT_TO_FALL_ANIMATION, LAND_ANIMATION, GET_UP_ANIMATION, TAIL_DEMO_ANIMATION};
     }
 
     public void fall(float distance, float damageMultiplier)
     {
-//        super.fall(distance, damageMultiplier);
+        if (movement == EnumNagaMovement.FALLING) {
+            super.fall(distance, damageMultiplier);
+        }
     }
 
     protected void updateFallState(double y, boolean onGroundIn, IBlockState state, BlockPos pos)
     {
-//        super.updateFallState(y, onGroundIn, state, pos);
+        if (movement == EnumNagaMovement.FALLING) {
+            super.updateFallState(y, onGroundIn, state, pos);
+        }
     }
 
     public void travel(float strafe, float upward, float forward) {
@@ -404,7 +496,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
                 motionZ = 0;
             }
         }
-        else {
+        else if (movement == EnumNagaMovement.GLIDING) {
             if (this.motionY > -0.5D) {
                 this.fallDistance = 1.0F;
             }
@@ -457,6 +549,87 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
             if (this.onGround && !this.world.isRemote) {
                 this.setFlag(7, false);
             }
+        }
+        else if (movement == EnumNagaMovement.FALLING || movement == EnumNagaMovement.FALLEN) {
+            float f6 = 0.91F;
+            BlockPos.PooledMutableBlockPos blockpos$pooledmutableblockpos = BlockPos.PooledMutableBlockPos.retain(this.posX, this.getEntityBoundingBox().minY - 1.0D, this.posZ);
+
+            if (this.onGround)
+            {
+                IBlockState underState = this.world.getBlockState(blockpos$pooledmutableblockpos);
+                f6 = underState.getBlock().getSlipperiness(underState, this.world, blockpos$pooledmutableblockpos, this) * 0.91F;
+            }
+
+            float f7 = 0.16277136F / (f6 * f6 * f6);
+            float f8;
+
+            if (this.onGround)
+            {
+                f8 = this.getAIMoveSpeed() * f7;
+            }
+            else
+            {
+                f8 = this.jumpMovementFactor;
+            }
+
+//            this.moveRelative(strafe, upward, forward, f8);
+            f6 = 0.91F;
+
+            if (this.onGround)
+            {
+                IBlockState underState = this.world.getBlockState(blockpos$pooledmutableblockpos.setPos(this.posX, this.getEntityBoundingBox().minY - 1.0D, this.posZ));
+                f6 = underState.getBlock().getSlipperiness(underState, this.world, blockpos$pooledmutableblockpos, this) * 0.91F;
+            }
+
+            if (this.isOnLadder())
+            {
+                float f9 = 0.15F;
+                this.motionX = MathHelper.clamp(this.motionX, -0.15000000596046448D, 0.15000000596046448D);
+                this.motionZ = MathHelper.clamp(this.motionZ, -0.15000000596046448D, 0.15000000596046448D);
+                this.fallDistance = 0.0F;
+
+                if (this.motionY < -0.15D)
+                {
+                    this.motionY = -0.15D;
+                }
+            }
+
+            this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
+
+            if (this.isCollidedHorizontally && this.isOnLadder())
+            {
+                this.motionY = 0.2D;
+            }
+
+            if (this.isPotionActive(MobEffects.LEVITATION))
+            {
+                this.motionY += (0.05D * (double)(this.getActivePotionEffect(MobEffects.LEVITATION).getAmplifier() + 1) - this.motionY) * 0.2D;
+            }
+            else
+            {
+                blockpos$pooledmutableblockpos.setPos(this.posX, 0.0D, this.posZ);
+
+                if (!this.world.isRemote || this.world.isBlockLoaded(blockpos$pooledmutableblockpos) && this.world.getChunkFromBlockCoords(blockpos$pooledmutableblockpos).isLoaded())
+                {
+                    if (!this.hasNoGravity())
+                    {
+                        this.motionY -= 0.08D;
+                    }
+                }
+                else if (this.posY > 0.0D)
+                {
+                    this.motionY = -0.1D;
+                }
+                else
+                {
+                    this.motionY = 0.0D;
+                }
+            }
+
+            this.motionY *= 0.9800000190734863D;
+            this.motionX *= (double)f6;
+            this.motionZ *= (double)f6;
+            blockpos$pooledmutableblockpos.release();
         }
 
         this.prevLimbSwingAmount = this.limbSwingAmount;
