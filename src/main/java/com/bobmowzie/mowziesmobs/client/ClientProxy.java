@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.client.render.entity.*;
 import com.bobmowzie.mowziesmobs.client.sound.IceBreathSound;
+import com.bobmowzie.mowziesmobs.client.sound.NagaSwoopSound;
 import com.bobmowzie.mowziesmobs.client.sound.SpawnBoulderChargeSound;
 import com.bobmowzie.mowziesmobs.server.entity.EntityDynamicsTester;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
@@ -82,6 +83,11 @@ public class ClientProxy extends ServerProxy {
     @Override
     public void playBoulderChargeSound(EntityPlayer player) {
         Minecraft.getMinecraft().getSoundHandler().playSound(new SpawnBoulderChargeSound(player));
+    }
+
+    @Override
+    public void playNagaSwoopSound(EntityNaga naga) {
+        Minecraft.getMinecraft().getSoundHandler().playSound(new NagaSwoopSound(naga));
     }
 
     @Override

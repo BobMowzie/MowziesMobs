@@ -19,7 +19,7 @@ public class IceBreathSound extends MovingSound {
     public IceBreathSound(Entity icebreath) {
         super(MMSounds.ENTITY_FROSTMAW_ICEBREATH, SoundCategory.NEUTRAL);
         this.iceBreath = icebreath;
-        volume = 1F;
+        volume = 2F;
         pitch = 1f;
         xPosF = (float) icebreath.posX;
         yPosF = (float) icebreath.posY;

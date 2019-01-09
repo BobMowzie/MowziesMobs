@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBall;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
+import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.google.common.base.Optional;
 
 import net.minecraft.entity.Entity;
@@ -65,6 +66,8 @@ public class ServerProxy {
     public void playIceBreathSound(Entity entity) {}
 
     public void playBoulderChargeSound(EntityPlayer player) {}
+
+    public void playNagaSwoopSound(EntityNaga naga) {}
 
     public void solarBeamHitWroughtnaught(EntityLivingBase caster) {}
 }

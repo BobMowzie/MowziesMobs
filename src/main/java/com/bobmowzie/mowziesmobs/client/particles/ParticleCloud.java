@@ -124,8 +124,8 @@ public class ParticleCloud extends Particle implements ParticleTextureStitcher.I
         }
         else
         {
-            this.particleTextureIndexX = particleTextureIndex % 16;
-            this.particleTextureIndexY = particleTextureIndex / 16;
+            this.particleTextureIndexX = particleTextureIndex / 16;
+            this.particleTextureIndexY = particleTextureIndex % 16;
         }
     }
 

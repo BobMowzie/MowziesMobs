@@ -257,12 +257,63 @@ public final class MMSounds {
     );
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":frostmaw.wakeup")
     public static final SoundEvent ENTITY_FROSTMAW_WAKEUP = NIL;
+
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":grottol.step")
     public static final SoundEvent ENTITY_GROTTOL_STEP = NIL;
+
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":lantern.pop")
     public static final SoundEvent ENTITY_LANTERN_POP = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":lantern.puff")
     public static final SoundEvent ENTITY_LANTERN_PUFF = NIL;
+
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":naga.acidcharge")
+    public static final SoundEvent ENTITY_NAGA_ACID_CHARGE = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":naga.acidhit")
+    public static final SoundEvent ENTITY_NAGA_ACID_HIT = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":naga.acidspit")
+    public static final SoundEvent ENTITY_NAGA_ACID_SPIT = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":naga.acidspithiss")
+    public static final SoundEvent ENTITY_NAGA_ACID_SPIT_HISS = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":naga.flap1")
+    public static final SoundEvent ENTITY_NAGA_FLAP_1 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":naga.growl1")
+    public static final SoundEvent ENTITY_NAGA_GROWL_1 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":naga.growl2")
+    public static final SoundEvent ENTITY_NAGA_GROWL_2 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":naga.growl3")
+    public static final SoundEvent ENTITY_NAGA_GROWL_3 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":naga.grunt1")
+    public static final SoundEvent ENTITY_NAGA_GRUNT_1 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":naga.grunt2")
+    public static final SoundEvent ENTITY_NAGA_GRUNT_2 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":naga.grunt3")
+    public static final SoundEvent ENTITY_NAGA_GRUNT_3 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":naga.roar1")
+    public static final SoundEvent ENTITY_NAGA_ROAR_1 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":naga.roar2")
+    public static final SoundEvent ENTITY_NAGA_ROAR_2 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":naga.roar3")
+    public static final SoundEvent ENTITY_NAGA_ROAR_3 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":naga.roar4")
+    public static final SoundEvent ENTITY_NAGA_ROAR_4 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":naga.swoop")
+    public static final SoundEvent ENTITY_NAGA_SWOOP = NIL;
+    public static final ImmutableList<Supplier<SoundEvent>> ENTITY_NAGA_ROAR = ImmutableList.of(
+            () -> ENTITY_NAGA_ROAR_1,
+            () -> ENTITY_NAGA_ROAR_2,
+            () -> ENTITY_NAGA_ROAR_3,
+            () -> ENTITY_NAGA_ROAR_4
+    );
+    public static final ImmutableList<Supplier<SoundEvent>> ENTITY_NAGA_GRUNT = ImmutableList.of(
+            () -> ENTITY_NAGA_GRUNT_1,
+            () -> ENTITY_NAGA_GRUNT_2,
+            () -> ENTITY_NAGA_GRUNT_3
+    );
+    public static final ImmutableList<Supplier<SoundEvent>> ENTITY_NAGA_GROWL = ImmutableList.of(
+            () -> ENTITY_NAGA_GROWL_1,
+            () -> ENTITY_NAGA_GROWL_2,
+            () -> ENTITY_NAGA_GROWL_3
+    );
 
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.smallcrash")
     public static final SoundEvent EFFECT_GEOMANCY_SMALL_CRASH = NIL;
@@ -318,6 +369,11 @@ public final class MMSounds {
     public static final SoundEvent EFFECT_GEOMANCY_BOULDER_CHARGE = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":geomancy.magicchargesmall")
     public static final SoundEvent EFFECT_GEOMANCY_MAGIC_CHARGE_SMALL = NIL;
+
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":misc.groundhit1")
+    public static final SoundEvent MISC_GROUNDHIT_1 = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":misc.groundhit2")
+    public static final SoundEvent MISC_GROUNDHIT_2 = NIL;
 
     // Easter Eggs
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":music.black_pink")
@@ -429,6 +485,23 @@ public final class MMSounds {
                 create("lantern.puff"),
                 create("lantern.pop"),
 
+                create("naga.acidcharge"),
+                create("naga.acidhit"),
+                create("naga.acidspit"),
+                create("naga.acidspithiss"),
+                create("naga.flap1"),
+                create("naga.growl1"),
+                create("naga.growl2"),
+                create("naga.growl3"),
+                create("naga.grunt1"),
+                create("naga.grunt2"),
+                create("naga.grunt3"),
+                create("naga.roar1"),
+                create("naga.roar2"),
+                create("naga.roar3"),
+                create("naga.roar4"),
+                create("naga.swoop"),
+
                 create("geomancy.smallcrash"),
                 create("geomancy.hitsmall"),
                 create("geomancy.hitbig"),
@@ -449,6 +522,9 @@ public final class MMSounds {
                 create("geomancy.smallrockhit"),
                 create("geomancy.bouldercharge"),
                 create("geomancy.magicchargesmall"),
+
+                create("misc.groundhit1"),
+                create("misc.groundhit2"),
 
                 create("music.black_pink")
         );

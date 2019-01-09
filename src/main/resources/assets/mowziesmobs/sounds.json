@@ -399,7 +399,58 @@
 	"lantern.pop": {
 		"sounds": [ "mowziesmobs:entity/lantern/pop" ]
 	},
-	"lantern.puff": {
-		"sounds": [ "mowziesmobs:entity/lantern/puff" ]
+	"naga.acidcharge": {
+		"sounds": [ "mowziesmobs:entity/naga/acidcharge" ]
+	},
+	"naga.acidhit": {
+		"sounds": [ "mowziesmobs:entity/naga/acidhit" ]
+	},
+	"naga.acidspit": {
+		"sounds": [ "mowziesmobs:entity/naga/acidspit" ]
+	},
+	"naga.acidspithiss": {
+		"sounds": [ "mowziesmobs:entity/naga/acidspithiss" ]
+	},
+	"naga.flap1": {
+		"sounds": [ "mowziesmobs:entity/naga/flap1" ]
+	},
+	"naga.growl1": {
+		"sounds": [ "mowziesmobs:entity/naga/growl1" ]
+	},
+	"naga.growl2": {
+		"sounds": [ "mowziesmobs:entity/naga/growl2" ]
+	},
+	"naga.growl3": {
+		"sounds": [ "mowziesmobs:entity/naga/growl3" ]
+	},
+	"naga.grunt1": {
+		"sounds": [ "mowziesmobs:entity/naga/grunt1" ]
+	},
+	"naga.grunt2": {
+		"sounds": [ "mowziesmobs:entity/naga/grunt2" ]
+	},
+	"naga.grunt3": {
+		"sounds": [ "mowziesmobs:entity/naga/grunt3" ]
+	},
+	"naga.roar1": {
+		"sounds": [ "mowziesmobs:entity/naga/roar1" ]
+	},
+	"naga.roar2": {
+		"sounds": [ "mowziesmobs:entity/naga/roar2" ]
+	},
+	"naga.roar3": {
+		"sounds": [ "mowziesmobs:entity/naga/roar3" ]
+	},
+	"naga.roar4": {
+		"sounds": [ "mowziesmobs:entity/naga/roar4" ]
+	},
+	"naga.swoop": {
+		"sounds": [ "mowziesmobs:entity/naga/swoop" ]
+	},
+	"misc.groundhit1": {
+		"sounds": [ "mowziesmobs:entity/misc/groundhit1" ]
+	},
+	"misc.groundhit2": {
+		"sounds": [ "mowziesmobs:entity/misc/groundhit2" ]
 	}
 }

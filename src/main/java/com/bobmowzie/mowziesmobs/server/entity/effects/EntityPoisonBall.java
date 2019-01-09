@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleRing;
 import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -114,6 +115,8 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
             particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
             MMParticle.CLOUD.spawn(world, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 0.1d, 0.2d, 0.1d, 0, 2d, 30, ParticleCloud.EnumCloudBehavior.CONSTANT, 0.7d));
         }
+
+        playSound(MMSounds.ENTITY_NAGA_ACID_HIT, 1, 1);
 
         List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby(2);
         if (!entitiesHit.isEmpty()) {

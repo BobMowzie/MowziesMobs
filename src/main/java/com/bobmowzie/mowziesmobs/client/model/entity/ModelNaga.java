@@ -1161,6 +1161,8 @@ public class ModelNaga extends AdvancedModelBase{
         naga.dc.updateChain(LLibrary.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.5f, 0.5f, 0.5f, 0.97f, 30, true);
 
         computeWingWebbing();
+
+        naga.shoulderRot = shoulder1_R.rotateAngleZ;
     }
 
     private void jawControls() {
