@@ -80,14 +80,12 @@ public class ParticleCloud extends Particle implements ParticleTextureStitcher.I
 
         if (this.particleTexture != null)
         {
-            int row = (int)(whichTex/2f);
-            int column = (int) whichTex % 2;
-            float uRange = particleTexture.getMaxU() - particleTexture.getMinU();
-            float spriteWidth = uRange/2f;
-            f = particleTexture.getMinU() + (column * spriteWidth);
-            f1 = particleTexture.getMinU() + (spriteWidth * (column + 1));
-            f2 = particleTexture.getMinV() + (row * spriteWidth);
-            f3 = particleTexture.getMinV() + (spriteWidth * (row + 1));
+            int row = whichTex / 2;
+            int column = whichTex % 2;
+            f = particleTexture.getInterpolatedU(row / 2.0F * 16.0F);
+            f1 = particleTexture.getInterpolatedU((row + 1) / 2.0F * 16.0F);
+            f2 = particleTexture.getInterpolatedV(column / 2.0F * 16.0F);
+            f3 = particleTexture.getInterpolatedV((column + 1) / 2.0F * 16.0F);
         }
 
         float f5 = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)partialTicks - interpPosX);
