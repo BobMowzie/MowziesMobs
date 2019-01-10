@@ -1213,19 +1213,19 @@ public class ModelNaga extends AdvancedModelBase{
             animator.setStaticKeyframe(10);
 
             animator.startKeyframe(4);
-            animator.rotate(root, 0, 0, 0.5f);
+            animator.rotate(root, 0, 0, 1f);
             animator.endKeyframe();
 
             animator.startKeyframe(4);
-            animator.rotate(root, 0, 0, -0.5f);
+            animator.rotate(root, 0, 0, -1f);
             animator.endKeyframe();
 
             animator.startKeyframe(4);
-            animator.rotate(root, 0, 0, 0.5f);
+            animator.rotate(root, 0, 0, 1f);
             animator.endKeyframe();
 
             animator.startKeyframe(4);
-            animator.rotate(root, 0, 0, -0.5f);
+            animator.rotate(root, 0, 0, -1f);
             animator.endKeyframe();
 
             animator.resetKeyframe(4);

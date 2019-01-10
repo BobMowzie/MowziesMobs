@@ -199,6 +199,7 @@ public class DynamicChain {
                 float pitch = -(float)Math.asin(diff.y/diff.lengthVector());
                 chainDynamic[i].rotateAngleY = chainDynamic[i].defaultRotationY + yaw;
                 chainDynamic[i].rotateAngleX = chainDynamic[i].defaultRotationZ + pitch;
+                chainDynamic[i].rotateAngleZ = (float) r[i].z;
 
                 Vec3d diffRotated = diff;
                 diffRotated = diffRotated.rotateYaw(yaw);

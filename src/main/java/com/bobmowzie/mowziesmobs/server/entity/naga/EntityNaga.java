@@ -478,9 +478,10 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
 //        posY = prevPosY;
 //        posZ = prevPosZ;
 //        motionX = motionZ = 0;
-
+//        posY = 10;
+//
 //        if (getAnimation() == NO_ANIMATION) {
-//            AnimationHandler.INSTANCE.sendAnimationMessage(this, DIE_GROUND_ANIMATION);
+//            AnimationHandler.INSTANCE.sendAnimationMessage(this, TAIL_DEMO_ANIMATION);
 //        }
     }
 

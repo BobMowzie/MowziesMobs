@@ -53,7 +53,7 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
     public void onUpdate() {
         super.onUpdate();
         motionY -= GRAVITY;
-//        move(MoverType.SELF, motionX, motionY, motionZ);
+        move(MoverType.SELF, motionX, motionY, motionZ);
 
         List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby(1);
         if (!entitiesHit.isEmpty()) {
@@ -89,7 +89,7 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
                 double xSpeed = scale * 0.1 * (rand.nextFloat() * 2 - 1);
                 double ySpeed = scale * 0.1 * (rand.nextFloat() * 2 - 1);
                 double zSpeed = scale * 0.1 * (rand.nextFloat() * 2 - 1);
-                MMParticle.CLOUD.spawn(world, posX + xSpeed, posY + ySpeed, posZ + zSpeed, ParticleFactory.ParticleArgs.get().withData(xSpeed, ySpeed, zSpeed, 0.1d, 0.2d, 0.1d, 0, scale * 2d, 13, ParticleCloud.EnumCloudBehavior.CONSTANT));
+                MMParticle.CLOUD.spawn(world, posX + xSpeed, posY + ySpeed, posZ + zSpeed, ParticleFactory.ParticleArgs.get().withData(xSpeed, ySpeed, zSpeed, 0.08d, 0.16d, 0.08d, 0, scale * 2d, 20, ParticleCloud.EnumCloudBehavior.CONSTANT));
             }
         }
         if (ticksExisted > 50) setDead();
