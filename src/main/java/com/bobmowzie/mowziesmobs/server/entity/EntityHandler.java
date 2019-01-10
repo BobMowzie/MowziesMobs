@@ -45,7 +45,7 @@ public enum EntityHandler {
         registerEntity(EntityFrostmaw.class, "frostmaw", true, 0xf7faff, 0xafcdff, false, 1, 1, 1, EnumCreatureType.MONSTER);
         registerEntity(EntityGrottol.class, "grottol", true, 0x777777, 0xbce0ff, false, 1, 1, 1, EnumCreatureType.MONSTER);
         registerEntity(EntityLantern.class, "lantern", true, 0x6dea00, 0x235a10, false, 1, 1, 1, EnumCreatureType.AMBIENT);
-        registerEntity(EntityNaga.class, "naga", true, 0x6dea00, 0x235a10, false, 1, 1, 1, EnumCreatureType.MONSTER);
+        registerEntity(EntityNaga.class, "naga", true, 0x6dea00, 0x235a10, false, 1, 1, 1, EnumCreatureType.MONSTER, 128);
 
         EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "sunstrike"), EntitySunstrike.class, "sunstrike", nextEntityId(), MowziesMobs.instance(), 64, 1, true);
         EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "solar_beam"), EntitySolarBeam.class, "solar_beam", nextEntityId(), MowziesMobs.instance(), 64, 1, true);
@@ -67,6 +67,18 @@ public enum EntityHandler {
         int entityId = nextEntityId();
         ResourceLocation res = new ResourceLocation(MowziesMobs.MODID, name);
         EntityRegistry.registerModEntity(res, entityClass, name, entityId, MowziesMobs.instance(), 64, 1, true);
+        if (addEgg) {
+            entityEggs.put(res, new MowzieEntityEggInfo(res, entityClass, mainColor, subColor));
+        }
+        if (addSpawn) {
+            EntityRegistry.addSpawn(entityClass, spawnFrequency, minGroup, maxGroup, typeOfCreature, biomes);
+        }
+    }
+
+    public void registerEntity(Class<? extends EntityLiving> entityClass, String name, boolean addEgg, int mainColor, int subColor, boolean addSpawn, int spawnFrequency, int minGroup, int maxGroup, EnumCreatureType typeOfCreature, int trackingDistance, Biome... biomes) {
+        int entityId = nextEntityId();
+        ResourceLocation res = new ResourceLocation(MowziesMobs.MODID, name);
+        EntityRegistry.registerModEntity(res, entityClass, name, entityId, MowziesMobs.instance(), trackingDistance, 1, true);
         if (addEgg) {
             entityEggs.put(res, new MowzieEntityEggInfo(res, entityClass, mainColor, subColor));
         }

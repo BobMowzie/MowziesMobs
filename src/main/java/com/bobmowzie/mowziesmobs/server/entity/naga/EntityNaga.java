@@ -55,11 +55,12 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
     public static final Animation DODGE_ANIMATION = Animation.create(10);
     public static final Animation SPIT_ANIMATION = Animation.create(50);
     public static final Animation SWOOP_ANIMATION = Animation.create(54);
-    public static final Animation HURT_ANIMATION = Animation.create(25);
     public static final Animation HURT_TO_FALL_ANIMATION = Animation.create(20);
     public static final Animation LAND_ANIMATION = Animation.create(8);
     public static final Animation GET_UP_ANIMATION = Animation.create(33);
     public static final Animation TAIL_DEMO_ANIMATION = Animation.create(80);
+    public static final Animation DIE_AIR_ANIMATION = Animation.create(70);
+    public static final Animation DIE_GROUND_ANIMATION = Animation.create(70);
 
     private static final DataParameter<Boolean> ATTACKING = EntityDataManager.createKey(EntityNaga.class, DataSerializers.BOOLEAN);
 
@@ -73,6 +74,9 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
     private boolean hasFlapSoundPlayed = false;
     @SideOnly(Side.CLIENT)
     public float shoulderRot;
+
+    public static final int ROAR_DURATION = 30;
+    public int roarAnimation = 0;
 
     public enum EnumNagaMovement {
         GLIDING,
@@ -96,7 +100,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
     public float swoopTargetCorrectY;
     public float swoopTargetCorrectX;
 
-    public static int GROUND_TIMER_MAX = 90;
+    public static int GROUND_TIMER_MAX = 60;
     public int onGroundTimer = 0;
 
     public boolean interrupted = false;
@@ -231,7 +235,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
 
     @Override
     public boolean isInRangeToRenderDist(double distance) {
-        return super.isInRangeToRenderDist(distance);
+        return distance < 5120;
     }
 
     protected void applyEntityAttributes()
@@ -239,7 +243,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(50.0D * MowziesMobs.CONFIG.healthScaleNaga);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(12.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(9.0D * MowziesMobs.CONFIG.attackScaleNaga);
+        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(4.0D * MowziesMobs.CONFIG.attackScaleNaga);
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(45);
     }
 
@@ -250,6 +254,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
         int r = rand.nextInt(4);
         if (r == 0) {
             playSound(MMSounds.ENTITY_NAGA_ROAR.get(rand.nextInt(4)).get(), 3, 1);
+            roarAnimation = 0;
         }
         else if (r <= 2) {
             playSound(MMSounds.ENTITY_NAGA_GROWL.get(rand.nextInt(3)).get(), 2, 1);
@@ -286,6 +291,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
         if (spitCooldown > 0) spitCooldown--;
         if (swoopCooldown > 0) swoopCooldown--;
         if (onGroundTimer > 0) onGroundTimer--;
+        if (roarAnimation < ROAR_DURATION) roarAnimation++;
 
         if (!world.isRemote) {
             if (getAttackTarget() != null && targetDistance < 30 && movement != EnumNagaMovement.FALLEN && movement != EnumNagaMovement.FALLING) {
@@ -472,11 +478,16 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
 //        posY = prevPosY;
 //        posZ = prevPosZ;
 //        motionX = motionZ = 0;
-//        posY = 10;
 
 //        if (getAnimation() == NO_ANIMATION) {
-//            AnimationHandler.INSTANCE.sendAnimationMessage(this, SPIT_ANIMATION);
+//            AnimationHandler.INSTANCE.sendAnimationMessage(this, DIE_GROUND_ANIMATION);
 //        }
+    }
+
+    @Override
+    protected void onDeathAIUpdate() {
+        super.onDeathAIUpdate();
+        if (deathTime == 15 && movement != EnumNagaMovement.FALLEN) movement = EnumNagaMovement.FALLING;
     }
 
     @Override
@@ -524,7 +535,8 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
 
     @Override
     public Animation getDeathAnimation() {
-        return null;
+        if (movement == EnumNagaMovement.FALLEN) return DIE_GROUND_ANIMATION;
+        else return DIE_AIR_ANIMATION;
     }
 
     @Override
@@ -534,7 +546,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
 
     @Override
     public Animation[] getAnimations() {
-        return new Animation[] {FLAP_ANIMATION, DODGE_ANIMATION, SWOOP_ANIMATION, SPIT_ANIMATION, HURT_ANIMATION, HURT_TO_FALL_ANIMATION, LAND_ANIMATION, GET_UP_ANIMATION, TAIL_DEMO_ANIMATION};
+        return new Animation[] {FLAP_ANIMATION, DODGE_ANIMATION, SWOOP_ANIMATION, SPIT_ANIMATION, HURT_TO_FALL_ANIMATION, LAND_ANIMATION, GET_UP_ANIMATION, DIE_AIR_ANIMATION, DIE_GROUND_ANIMATION, TAIL_DEMO_ANIMATION};
     }
 
     public void fall(float distance, float damageMultiplier)

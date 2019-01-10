@@ -5,6 +5,7 @@ import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleRing;
+import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
@@ -52,7 +53,7 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
     public void onUpdate() {
         super.onUpdate();
         motionY -= GRAVITY;
-        move(MoverType.SELF, motionX, motionY, motionZ);
+//        move(MoverType.SELF, motionX, motionY, motionZ);
 
         List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby(1);
         if (!entitiesHit.isEmpty()) {
@@ -60,6 +61,7 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
                 if (entity == caster) continue;
                 if (entity.getIsInvulnerable()) continue;
                 if (entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isCreativeMode) continue;
+                if (entity instanceof EntityNaga) continue;
                 entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(caster, null), 3 * MowziesMobs.CONFIG.attackScaleNaga);
                 entity.addPotionEffect(new PotionEffect(MobEffects.POISON, 80, 1, false, true));
             }
@@ -124,6 +126,7 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
                 if (entity == caster) continue;
                 if (entity.getIsInvulnerable()) continue;
                 if (entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isCreativeMode) continue;
+                if (entity instanceof EntityNaga) continue;
                 entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(caster, null), 3 * MowziesMobs.CONFIG.attackScaleNaga);
                 entity.addPotionEffect(new PotionEffect(MobEffects.POISON, 80, 1, false, true));
             }
