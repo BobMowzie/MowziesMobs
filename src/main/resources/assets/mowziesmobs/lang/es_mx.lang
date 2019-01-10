@@ -15,6 +15,7 @@ entity.barako.name=Barako, el Jefe Sol
 entity.frostmaw.name=Frostmaw
 entity.grottol.name=Grottol
 entity.lantern.name=Linterna
+entity.naga.name=Naga
 
 # Items
 item.foliaathSeed.name=Semilla de Foliaath
@@ -89,15 +90,20 @@ item.capturedGrottol.name=Grottol Capturado
 item.glowingJelly.name=Gelatina Luminosa
 item.glowingJelly.text.0=Come para ganar brevemente visión nocturna
 
+item.nagaFang.name=Colmillo de Naga
+item.nagaFang.text.0=Úsalo para crear poción de resistencia al veneno.
+
 # Blocks
 tile.campfire.name=Hoguera
 tile.paintedAcacia.name=Madera de Acacia Pintada
 tile.paintedAcaciaSlab.name=Losa de Madera de Acacia Pintada
 
 # Potions
-potion.sunsBlessing=Bendicion del sol
+potion.sunsBlessing=Bendicion del Sol
 potion.geomancy=Geomancia
 potion.frozen=Congelado(a)
+potion.poisonResist=Resistencia al Veneno
+potion.effect.poisonResist=Poción de Resistencia al Veneno
 
 # Tile Entities
 

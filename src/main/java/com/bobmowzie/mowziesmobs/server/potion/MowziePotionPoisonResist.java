@@ -6,7 +6,7 @@ package com.bobmowzie.mowziesmobs.server.potion;
 public class MowziePotionPoisonResist extends MowziePotion {
     public MowziePotionPoisonResist() {
         super(false, 0x66ff33);
-        setPotionName("potion.poison_resist");
+        setPotionName("potion.poisonResist");
         setIconIndex(0, 1);
         setRegistryName("poison_resist");
     }

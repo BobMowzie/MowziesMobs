@@ -23,8 +23,8 @@ public class PotionTypeHandler {
     private PotionTypeHandler() {
     }
 
-    public static final PotionType POISON_RESIST = new PotionType("poison_resist", new PotionEffect[]{new PotionEffect(PotionHandler.POISON_RESIST, 3600)}).setRegistryName("poison_resist");
-    public static final PotionType LONG_POISON_RESIST = new PotionType("poison_resist", new PotionEffect[]{new PotionEffect(PotionHandler.POISON_RESIST, 9600)}).setRegistryName("long_poison_resist");
+    public static final PotionType POISON_RESIST = new PotionType("poisonResist", new PotionEffect[]{new PotionEffect(PotionHandler.POISON_RESIST, 3600)}).setRegistryName("poison_resist");
+    public static final PotionType LONG_POISON_RESIST = new PotionType("poisonResist", new PotionEffect[]{new PotionEffect(PotionHandler.POISON_RESIST, 9600)}).setRegistryName("long_poison_resist");
 
     @SubscribeEvent
     public static void register(RegistryEvent.Register<PotionType> event) {

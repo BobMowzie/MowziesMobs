@@ -399,6 +399,9 @@
 	"lantern.pop": {
 		"sounds": [ "mowziesmobs:entity/lantern/pop" ]
 	},
+	"lantern.puff": {
+		"sounds": [ "mowziesmobs:entity/lantern/puff" ]
+	},
 	"naga.acidcharge": {
 		"sounds": [ "mowziesmobs:entity/naga/acidcharge" ]
 	},

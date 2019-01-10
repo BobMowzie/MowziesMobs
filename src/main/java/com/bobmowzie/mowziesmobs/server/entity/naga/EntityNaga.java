@@ -227,7 +227,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
         dc = new DynamicChain(this);
         setRenderDistanceWeight(3.0D);
 
-        this.experienceValue = 12;
+        this.experienceValue = 14;
     }
 
     @Override

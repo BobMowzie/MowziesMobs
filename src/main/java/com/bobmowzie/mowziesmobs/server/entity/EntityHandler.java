@@ -45,7 +45,7 @@ public enum EntityHandler {
         registerEntity(EntityFrostmaw.class, "frostmaw", true, 0xf7faff, 0xafcdff, false, 1, 1, 1, EnumCreatureType.MONSTER);
         registerEntity(EntityGrottol.class, "grottol", true, 0x777777, 0xbce0ff, false, 1, 1, 1, EnumCreatureType.MONSTER);
         registerEntity(EntityLantern.class, "lantern", true, 0x6dea00, 0x235a10, false, 1, 1, 1, EnumCreatureType.AMBIENT);
-        registerEntity(EntityNaga.class, "naga", true, 0x6dea00, 0x235a10, false, 1, 1, 1, EnumCreatureType.MONSTER, 128);
+        registerEntity(EntityNaga.class, "naga", true, 0x154850, 0x84c251, false, 1, 1, 1, EnumCreatureType.MONSTER, 128);
 
         EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "sunstrike"), EntitySunstrike.class, "sunstrike", nextEntityId(), MowziesMobs.instance(), 64, 1, true);
         EntityRegistry.registerModEntity(new ResourceLocation(MowziesMobs.MODID, "solar_beam"), EntitySolarBeam.class, "solar_beam", nextEntityId(), MowziesMobs.instance(), 64, 1, true);
