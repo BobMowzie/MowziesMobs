@@ -50,6 +50,7 @@ import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -188,6 +189,11 @@ public enum ServerEventHandler {
             if (property.untilAxeSwing > 0) {
                 property.untilAxeSwing--;
             }
+
+            if (player.getActivePotionEffect(PotionHandler.POISON_RESIST) != null && player.getActivePotionEffect(MobEffects.POISON) != null) {
+                player.removeActivePotionEffect(MobEffects.POISON);
+            }
+
             if (event.side == Side.SERVER) {
                 Item headItemStack = event.player.inventory.armorInventory.get(3).getItem();
                 if (headItemStack instanceof ItemBarakoaMask) {

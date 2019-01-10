@@ -112,7 +112,6 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
         this.tasks.addTask(7, new EntityNaga.AILookAround(this));
         this.tasks.addTask(6, new EntityAILookIdle(this));
         this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-        this.targetTasks.addTask(1, new MMAINearestAttackableTarget(this, EntitySheep.class, 0, true, false, true, null));
         this.targetTasks.addTask(1, new MMAINearestAttackableTarget(this, EntityPlayer.class, 0, true, false, true, null));
         this.tasks.addTask(2, new AnimationAI<EntityNaga>(this, FLAP_ANIMATION, false) {
             @Override
