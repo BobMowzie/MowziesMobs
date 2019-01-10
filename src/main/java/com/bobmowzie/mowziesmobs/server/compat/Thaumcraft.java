@@ -59,6 +59,11 @@ public class Thaumcraft {
                     .add(Aspect.LIGHT, 13)
                     .add(Aspect.FLIGHT, 8)
             );
+            registerTCObjectTag("Naga", new AspectList()
+                    .add(Aspect.BEAST, 25)
+                    .add(Aspect.FLIGHT, 23)
+                    .add(Aspect.DEATH, 14)
+            );
             registerTCObjectTag(BlockHandler.PAINTED_ACACIA, 0, new AspectList()
                     .add(Aspect.PLANT, 3)
                     .add(Aspect.CRAFT, 3)
@@ -164,6 +169,11 @@ public class Thaumcraft {
                     .add(Aspect.PLANT, 9)
                     .add(Aspect.LIGHT, 10)
                     .add(Aspect.SENSES, 5)
+            );
+            registerTCObjectTag(ItemHandler.NAGA_FANG, 0, new AspectList()
+                    .add(Aspect.BEAST, 11)
+                    .add(Aspect.DEATH, 10)
+                    .add(Aspect.ALCHEMY, 6)
             );
 
         } catch (Exception e) {
