@@ -10,6 +10,7 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationProjectileAttackAI;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityPoisonBall;
+import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.client.model.tools.ControlledAnimation;
 import net.ilexiconn.llibrary.server.animation.Animation;
@@ -24,6 +25,7 @@ import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.MobEffects;
+import net.minecraft.item.Item;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -224,6 +226,8 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
         setSize(3, 1);
         dc = new DynamicChain(this);
         setRenderDistanceWeight(3.0D);
+
+        this.experienceValue = 12;
     }
 
     @Override
@@ -240,9 +244,9 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
     protected void applyEntityAttributes()
     {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(50.0D * MowziesMobs.CONFIG.healthScaleNaga);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(30.0D * MowziesMobs.CONFIG.healthScaleNaga);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(12.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(4.0D * MowziesMobs.CONFIG.attackScaleNaga);
+        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(3.0D * MowziesMobs.CONFIG.attackScaleNaga);
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(45);
     }
 
@@ -292,16 +296,20 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
         if (onGroundTimer > 0) onGroundTimer--;
         if (roarAnimation < ROAR_DURATION) roarAnimation++;
 
+        if (getAnimation() == null) AnimationHandler.INSTANCE.sendAnimationMessage(this, NO_ANIMATION);
+
         if (!world.isRemote) {
             if (getAttackTarget() != null && targetDistance < 30 && movement != EnumNagaMovement.FALLEN && movement != EnumNagaMovement.FALLING) {
                 setAttacking(true);
                 if (getAnimation() == NO_ANIMATION && swoopCooldown == 0 && rand.nextInt(80) == 0 && posY - getAttackTarget().posY > 0) {
                     interrupted = false;
+                    System.out.println("Swoop");
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, SWOOP_ANIMATION);
                     swoopCooldown = SWOOP_COOLDOWN_MAX;
                 }
                 else if (getAnimation() == NO_ANIMATION && spitCooldown == 0 && rand.nextInt(80) == 0) {
                     interrupted = false;
+                    System.out.println("Spit");
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, SPIT_ANIMATION);
                     spitCooldown = SPIT_COOLDOWN_MAX;
                 }
@@ -542,6 +550,12 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
     @Override
     public Animation getHurtAnimation() {
         return null;
+    }
+
+    @Override
+    protected void dropLoot() {
+        super.dropLoot();
+        if (rand.nextInt(4) == 0) dropItem(ItemHandler.NAGA_FANG, 1);
     }
 
     @Override

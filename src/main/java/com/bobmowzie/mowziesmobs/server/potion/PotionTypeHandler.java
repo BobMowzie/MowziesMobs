@@ -33,7 +33,7 @@ public class PotionTypeHandler {
                 LONG_POISON_RESIST
         );
 
-        PotionHelper.addMix(PotionTypes.AWKWARD, ItemHandler.GLOWING_JELLY, POISON_RESIST);
+        PotionHelper.addMix(PotionTypes.AWKWARD, ItemHandler.NAGA_FANG, POISON_RESIST);
         PotionHelper.addMix(POISON_RESIST, Items.REDSTONE, LONG_POISON_RESIST);
 
     }

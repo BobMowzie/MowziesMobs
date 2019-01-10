@@ -128,7 +128,7 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
                 if (entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isCreativeMode) continue;
                 if (entity instanceof EntityNaga) continue;
                 entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(caster, null), 3 * MowziesMobs.CONFIG.attackScaleNaga);
-                entity.addPotionEffect(new PotionEffect(MobEffects.POISON, 80, 1, false, true));
+                entity.addPotionEffect(new PotionEffect(MobEffects.POISON, 80, 0, false, true));
             }
         }
 
