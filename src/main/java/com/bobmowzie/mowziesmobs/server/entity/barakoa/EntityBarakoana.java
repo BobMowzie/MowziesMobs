@@ -167,7 +167,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
     public boolean getCanSpawnHere() {
         List<EntityLivingBase> nearby = getEntityLivingBaseNearby(20, 4, 20, 20);
         for (EntityLivingBase nearbyEntity : nearby) {
-            if (nearbyEntity instanceof EntityBarakoana || nearbyEntity instanceof EntityVillager || nearbyEntity instanceof EntityBarako) {
+            if (nearbyEntity instanceof EntityBarakoana || nearbyEntity instanceof EntityVillager || nearbyEntity instanceof EntityBarako || nearbyEntity instanceof EntityAnimal) {
                 return false;
             }
         }
