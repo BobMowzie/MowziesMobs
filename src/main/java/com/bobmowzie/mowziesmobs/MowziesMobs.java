@@ -70,7 +70,6 @@ public final class MowziesMobs {
         MinecraftForge.EVENT_BUS.register(ServerEventHandler.INSTANCE);
 
         CreativeTabHandler.INSTANCE.onInit();
-        EntityHandler.INSTANCE.onInit();
 
         MowziesMobs.PROXY.onInit();
 
