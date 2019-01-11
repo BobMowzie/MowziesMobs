@@ -7,6 +7,7 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBlockSwapper;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityRing;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
+import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
@@ -17,6 +18,7 @@ import net.minecraft.block.BlockFence;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -26,6 +28,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.potion.PotionHelper;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -37,6 +40,7 @@ import org.lwjgl.Sys;
 import org.lwjgl.input.Mouse;
 import scala.tools.nsc.interpreter.IMain;
 
+import java.util.List;
 import java.util.Random;
 
 public class PowerGeomancy extends Power {
@@ -79,6 +83,11 @@ public class PowerGeomancy extends Power {
             if (underground) {
                 if (player.isSneaking()) player.setVelocity(tunnelSpeed * lookVec.x, tunnelSpeed * lookVec.y, tunnelSpeed * lookVec.z);
                 else player.setVelocity(tunnelSpeed * 0.5 * lookVec.x, 1, tunnelSpeed * 0.5 * lookVec.z);
+
+                List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby(4, 4, 4, 4);
+                for (EntityLivingBase entityHit : entitiesHit) {
+                    entityHit.attackEntityFrom(DamageSource.causePlayerDamage(player), 6);
+                }
             }
             else player.motionY -= 0.07;
 
@@ -108,7 +117,7 @@ public class PowerGeomancy extends Power {
                 player.world.spawnEntity(ring);
                 player.motionX *= 2;
                 player.motionY *= 2;
-                player.motionY *= 2;
+                player.motionZ *= 2;
             }
             prevUnderground = underground;
         }
