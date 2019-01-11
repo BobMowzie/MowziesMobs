@@ -11,6 +11,7 @@ import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityLantern;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
+import com.google.common.reflect.Reflection;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EnumCreatureType;
@@ -72,6 +73,7 @@ public enum EntityHandler {
     }
 
     public static void registerEntity(IForgeRegistry<EntityEntry> registry, Class<? extends EntityLiving> entityClass, String name, boolean addEgg, int mainColor, int subColor, int trackingDistance, Biome... biomes) {
+        Reflection.initialize(entityClass);
         int entityId = nextEntityId();
         ResourceLocation res = new ResourceLocation(MowziesMobs.MODID, name);
         registry.register(EntityEntryBuilder.create()
