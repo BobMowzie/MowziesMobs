@@ -14,6 +14,7 @@ entity.barako.name=バラコ・ザ・サンチーフ
 entity.frostmaw.name=フロスト・モー
 entity.lantern.name=ランタン
 entity.grottol.name=グロットル
+entity.naga.name=ナーガ
 
 # Items
 item.foliaathSeed.name=フォリアスの種
@@ -76,29 +77,29 @@ item.grantSunsBlessing.text.0=20分間太陽の力が付く
 item.grantSunsBlessing.text.1=素手で右クリックでサン・ストライクを放つ
 item.grantSunsBlessing.text.2=素手でShift+右クリックで太陽光線を放つ(ただし制限時間が縮む)
 
-
 item.earthTalisman.text.0=クリエイティブモードのみ
 item.earthTalisman.text.1=インベントリにあると大地の力が付く
 item.earthTalisman.text.2=地面を右クリックで土が浮き出す
 item.earthTalisman.text.3=土をパンチする事で弾き飛ばす
 item.earthTalisman.text.4=右クリック長押しで大きな土塊が現れる
-
+item.earthTalisman.text.5=空中でダブルクリックしスニークすると回転が始まる
+item.earthTalisman.text.6=採掘したいものに向かって方向を転換する
+item.earthTalisman.text.7=地上でスニークして解除
 
 item.mobRemover.text.0=左クリックで当MODのモブを削除
 
-
 item.wroughtHelm.text.0=耐久値無限
-
 
 item.spear.text.0=3.5ブロック分のリーチを持つ
 item.spear.text.1=攻撃した動物は1/3の確率で即死する
 
-
 item.icecrystal.text.0=右クリックで氷の息吹を放つ
 item.icecrystal.text.1=放置しておけばチャージされる
 
-
 item.glowingJelly.text.0=食べるだけで暗視効果が付く
+
+item.nagaFang.name=ナーガの牙
+item.nagaFang.text.0=毒耐性のポーションの材料
 
 # Blocks
 tile.campfire.name=焚き火
@@ -110,7 +111,9 @@ tile.grottol.name=グロットル
 potion.sunsBlessing=太陽の祝福
 potion.geomancy=大地の力
 potion.frozen=凍結
+potion.poisonResist=毒耐性
 
+potion.effect.poisonResist=耐毒のポーション
 
 # Tile Entities
 
