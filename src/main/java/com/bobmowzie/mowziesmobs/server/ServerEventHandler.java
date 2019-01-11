@@ -48,6 +48,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -125,6 +126,14 @@ public enum ServerEventHandler {
                     property.onFreeze(entity);
                     //if (!entity.world.isRemote) MowziesMobs.NETWORK_WRAPPER.sendToDimension(new MessageFreezeEntity(entity), entity.dimension);
                 }
+
+                if (!entity.world.isRemote) {
+                    Item headItemStack = entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItem();
+                    if (headItemStack instanceof ItemBarakoaMask) {
+                        ItemBarakoaMask mask = (ItemBarakoaMask) headItemStack;
+                        entity.addPotionEffect(new PotionEffect(mask.getPotion(), 45, 0, true, false));
+                    }
+                }
             }
 
             if (entity.isPotionActive(PotionHandler.FROZEN)) {
@@ -195,12 +204,6 @@ public enum ServerEventHandler {
             }
 
             if (event.side == Side.SERVER) {
-                Item headItemStack = event.player.inventory.armorInventory.get(3).getItem();
-                if (headItemStack instanceof ItemBarakoaMask) {
-                    ItemBarakoaMask mask = (ItemBarakoaMask) headItemStack;
-                    event.player.addPotionEffect(new PotionEffect(mask.getPotion(), 45, 0, true, false));
-                }
-
                 for (ItemStack itemStack : event.player.inventory.mainInventory) {
                     if (itemStack.getItem() instanceof ItemEarthTalisman)
                         player.addPotionEffect(new PotionEffect(PotionHandler.GEOMANCY, 0, 0, false, false));
