@@ -750,6 +750,7 @@ public class ModelNaga extends AdvancedModelBase{
 
             wingFolder.rotationPointX += Math.max(Math.min(pitch * 2, 0.8), 0.1) * nonHoverAnim;
             wingFolder.rotationPointY += Math.max(Math.min(pitch * 2, 0.8), 0.1) * nonHoverAnim;
+
             //        root.rotateAngleZ -= Math.toRadians((naga.rotationYaw - naga.prevRotationYaw) * (LLibrary.PROXY.getPartialTicks()));
         }
 

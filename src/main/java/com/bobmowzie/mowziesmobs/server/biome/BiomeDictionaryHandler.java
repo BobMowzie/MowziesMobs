@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.biome;
 
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
+import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
@@ -67,10 +68,20 @@ public enum BiomeDictionaryHandler {
         lanternBiomes.add(Biomes.ROOFED_FOREST);
         lanternBiomes.add(Biomes.MUTATED_ROOFED_FOREST);
 
+        Set<Biome> nagaBiomes = new ObjectArraySet<>();
+        for (Biome b : Biome.REGISTRY)
+        {
+            Set<BiomeDictionary.Type> types = BiomeDictionary.getTypes(b);
+            if (types.contains(BiomeDictionary.Type.BEACH) && (types.contains(BiomeDictionary.Type.HILLS) || types.contains(BiomeDictionary.Type.MOUNTAIN)))
+                lanternBiomes.add(b);
+        }
+        nagaBiomes.add(Biomes.STONE_BEACH);
+
         EntityRegistry.addSpawn(EntityFoliaath.class, MowziesMobs.CONFIG.spawnrateFoliaath, 1, 3, EnumCreatureType.MONSTER, biomesAndTypes.get(BiomeDictionary.Type.JUNGLE).toArray(new Biome[biomesAndTypes.get(BiomeDictionary.Type.JUNGLE).size()]));
         EntityRegistry.addSpawn(EntityBarakoana.class, MowziesMobs.CONFIG.spawnrateBarakoa, 1, 1, EnumCreatureType.MONSTER, biomesAndTypes.get(BiomeDictionary.Type.SAVANNA).toArray(new Biome[biomesAndTypes.get(BiomeDictionary.Type.SAVANNA).size()]));
         EntityRegistry.addSpawn(EntityFrostmaw.class, MowziesMobs.CONFIG.spawnrateFrostmaw, 1, 1, EnumCreatureType.MONSTER, frostmawBiomes.toArray(new Biome[frostmawBiomes.size()]));
         EntityRegistry.addSpawn(EntityGrottol.class, MowziesMobs.CONFIG.spawnrateGrottol, 1, 1, EnumCreatureType.MONSTER, overworldBiomes.toArray(new Biome[overworldBiomes.size()]));
         EntityRegistry.addSpawn(EntityLantern.class, MowziesMobs.CONFIG.spawnrateLantern, 1, 2, EnumCreatureType.AMBIENT, lanternBiomes.toArray(new Biome[lanternBiomes.size()]));
+        EntityRegistry.addSpawn(EntityNaga.class, MowziesMobs.CONFIG.spawnrateNaga, 1, 3, EnumCreatureType.MONSTER, nagaBiomes.toArray(new Biome[nagaBiomes.size()]));
     }
 }

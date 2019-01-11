@@ -161,7 +161,7 @@ public class EntityWroughtnaut extends MowzieEntity {
 
     @Override
     public int getAttack() {
-        return 30 * MowziesMobs.CONFIG.attackScaleWroughtnaut;
+        return (int)(30 * MowziesMobs.CONFIG.attackScaleWroughtnaut);
     }
 
     @Override

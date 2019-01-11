@@ -16,10 +16,7 @@ import net.ilexiconn.llibrary.client.model.tools.ControlledAnimation;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IRangedAttackMob;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
@@ -238,7 +235,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
 
     @Override
     public boolean isInRangeToRenderDist(double distance) {
-        return distance < 5120;
+        return distance < 16600;
     }
 
     protected void applyEntityAttributes()
@@ -246,7 +243,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(30.0D * MowziesMobs.CONFIG.healthScaleNaga);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(12.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(3.0D * MowziesMobs.CONFIG.attackScaleNaga);
+        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(4.0D * MowziesMobs.CONFIG.attackScaleNaga);
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(45);
     }
 
@@ -297,6 +294,10 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
         if (roarAnimation < ROAR_DURATION) roarAnimation++;
 
         if (getAnimation() == null) AnimationHandler.INSTANCE.sendAnimationMessage(this, NO_ANIMATION);
+
+        if (ticksExisted == 1) {
+            System.out.println("Naga at " + getPosition());
+        }
 
         if (!world.isRemote) {
             if (getAttackTarget() != null && targetDistance < 30 && movement != EnumNagaMovement.FALLEN && movement != EnumNagaMovement.FALLING) {
@@ -493,6 +494,29 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
     }
 
     @Override
+    public boolean getCanSpawnHere() {
+        setPosition(posX, posY + 5, posZ);
+        boolean flag = super.getCanSpawnHere();
+        System.out.println("Try spawn " + flag);
+        if (flag) System.out.println(getPosition());
+        return flag;
+    }
+
+    @Override
+    public void setDead() {
+        super.setDead();
+    }
+
+    public boolean isNotColliding()
+    {
+        boolean liquid = !this.world.containsAnyLiquid(this.getEntityBoundingBox());
+        boolean worldCollision = this.world.getCollisionBoxes(this, this.getEntityBoundingBox()).isEmpty();
+        boolean mobCollision = this.world.checkNoEntityCollision(this.getEntityBoundingBox(), this);
+
+        return liquid && worldCollision && mobCollision;
+    }
+
+    @Override
     protected void onDeathAIUpdate() {
         super.onDeathAIUpdate();
         if (deathTime == 15 && movement != EnumNagaMovement.FALLEN) movement = EnumNagaMovement.FALLING;
@@ -511,6 +535,49 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
             interrupted = true;
         }
         return flag;
+    }
+
+    protected void despawnEntity()
+    {
+        net.minecraftforge.fml.common.eventhandler.Event.Result result = null;
+
+        if ((this.idleTime & 0x1F) == 0x1F && (result = net.minecraftforge.event.ForgeEventFactory.canEntityDespawn(this)) != net.minecraftforge.fml.common.eventhandler.Event.Result.DEFAULT)
+        {
+            if (result == net.minecraftforge.fml.common.eventhandler.Event.Result.DENY)
+            {
+                this.idleTime = 0;
+            }
+            else
+            {
+                this.setDead();
+            }
+        }
+        else
+        {
+            Entity entity = this.world.getClosestPlayerToEntity(this, -1.0D);
+
+            if (entity != null)
+            {
+                double d0 = entity.posX - this.posX;
+                double d1 = entity.posY - this.posY;
+                double d2 = entity.posZ - this.posZ;
+                double d3 = d0 * d0 + d1 * d1 + d2 * d2;
+
+                if (this.canDespawn() && d3 > 16384.0D * 2)
+                {
+                    this.setDead();
+                }
+
+                if (this.idleTime > 600 && this.rand.nextInt(800) == 0 && d3 > 1024.0D && this.canDespawn())
+                {
+                    this.setDead();
+                }
+                else if (d3 < 1024.0D)
+                {
+                    this.idleTime = 0;
+                }
+            }
+        }
     }
 
     @Override
