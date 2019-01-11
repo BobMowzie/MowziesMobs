@@ -295,22 +295,22 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
 
         if (getAnimation() == null) AnimationHandler.INSTANCE.sendAnimationMessage(this, NO_ANIMATION);
 
-        if (ticksExisted == 1) {
-            System.out.println("Naga at " + getPosition());
-        }
+//        if (ticksExisted == 1) {
+//            System.out.println("Naga at " + getPosition());
+//        }
 
         if (!world.isRemote) {
             if (getAttackTarget() != null && targetDistance < 30 && movement != EnumNagaMovement.FALLEN && movement != EnumNagaMovement.FALLING) {
                 setAttacking(true);
                 if (getAnimation() == NO_ANIMATION && swoopCooldown == 0 && rand.nextInt(80) == 0 && posY - getAttackTarget().posY > 0) {
                     interrupted = false;
-                    System.out.println("Swoop");
+//                    System.out.println("Swoop");
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, SWOOP_ANIMATION);
                     swoopCooldown = SWOOP_COOLDOWN_MAX;
                 }
                 else if (getAnimation() == NO_ANIMATION && spitCooldown == 0 && rand.nextInt(80) == 0) {
                     interrupted = false;
-                    System.out.println("Spit");
+//                    System.out.println("Spit");
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, SPIT_ANIMATION);
                     spitCooldown = SPIT_COOLDOWN_MAX;
                 }
@@ -497,8 +497,8 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
     public boolean getCanSpawnHere() {
         setPosition(posX, posY + 5, posZ);
         boolean flag = super.getCanSpawnHere();
-        System.out.println("Try spawn " + flag);
-        if (flag) System.out.println(getPosition());
+//        System.out.println("Try spawn " + flag);
+//        if (flag) System.out.println(getPosition());
         return flag;
     }
 

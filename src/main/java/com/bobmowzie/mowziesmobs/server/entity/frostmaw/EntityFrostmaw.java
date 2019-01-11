@@ -426,13 +426,17 @@ public class EntityFrostmaw extends MowzieEntity {
                 setActive(true);
             }
 
-            if (!world.isRemote && crystal != null) {
-                Vec3d rightHandPos = socketPosArray[3];
+            if (crystal != null) {
                 crystal.setNoGravity(true);
                 crystal.motionX = 0;
                 crystal.motionY = 0;
                 crystal.motionZ = 0;
-                crystal.setPosition(rightHandPos.x, rightHandPos.y + 0.1, rightHandPos.z);
+
+                Vec3d crystalPos = new Vec3d(1.6, 0.4, 1.8);
+                crystalPos = crystalPos.rotateYaw((float)Math.toRadians(-rotationYaw - 90));
+                crystalPos = crystalPos.add(getPositionVector());
+
+                crystal.setPosition(crystalPos.x, crystalPos.y, crystalPos.z);
             }
         }
 
