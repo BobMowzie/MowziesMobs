@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.google.common.base.Optional;
@@ -130,6 +131,9 @@ public class EntityBoulder extends Entity {
             damage = 20;
             speed = 0.65f;
         }
+
+        if (caster instanceof EntityPlayer) damage *= MowziesMobs.CONFIG.attackScaleGeomancy;
+
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.google.common.base.Optional;
 import net.minecraft.block.Block;
@@ -63,9 +64,9 @@ public class EntityAxeAttack extends Entity {
         if (caster != null) setPositionAndRotation(caster.posX, caster.posY, caster.posZ, caster.rotationYaw, caster.rotationPitch);
         if (!world.isRemote && ticksExisted == 7) playSound(MMSounds.ENTITY_FROSTMAW_WHOOSH, 1, 0.8f);
             if (!world.isRemote && caster != null) {
-                if (!getVertical() && ticksExisted == swingDurationHoriz/2 - 1) dealDamage(7, 4.5f, 160, 1.2f);
+                if (!getVertical() && ticksExisted == swingDurationHoriz/2 - 1) dealDamage(7 * MowziesMobs.CONFIG.attackScaleWroughtAxe, 4.5f, 160, 1.2f);
                 else if (getVertical() && ticksExisted == swingDurationVert/2 - 1) {
-                    dealDamage(9, 4.5f, 40, 0.8f);
+                    dealDamage(9 * MowziesMobs.CONFIG.attackScaleWroughtAxe, 4.5f, 40, 0.8f);
                     quakeAngle = rotationYaw;
                     quakePos = new BlockPos(posX, posY, posZ);
                     quakeBB = getEntityBoundingBox();
@@ -98,7 +99,7 @@ public class EntityAxeAttack extends Entity {
                             continue;
                         }
                         if (entity instanceof EntityLivingBase) {
-                            entity.attackEntityFrom(DamageSource.FALLING_BLOCK, factor * 5 + 1);
+                            entity.attackEntityFrom(DamageSource.FALLING_BLOCK, (factor * 5 + 1) * MowziesMobs.CONFIG.attackScaleWroughtAxe);
                         }
                         double magnitude = -0.2;
                         entity.motionX += vx * (1 - factor) * magnitude;

@@ -1,5 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.block.state.IBlockState;
@@ -27,6 +29,7 @@ public class ItemWroughtAxe extends ItemAxe {
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
         setUnlocalizedName("wroughtAxe");
         setRegistryName("wrought_axe");
+        damageVsEntity = damageVsEntity * MowziesMobs.CONFIG.attackScaleWroughtAxe;
     }
 
     @Override

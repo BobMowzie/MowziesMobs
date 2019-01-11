@@ -86,7 +86,7 @@ public class PowerGeomancy extends Power {
 
                 List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby(4, 4, 4, 4);
                 for (EntityLivingBase entityHit : entitiesHit) {
-                    entityHit.attackEntityFrom(DamageSource.causePlayerDamage(player), 6);
+                    entityHit.attackEntityFrom(DamageSource.causePlayerDamage(player), 6 * MowziesMobs.CONFIG.attackScaleGeomancy);
                 }
             }
             else player.motionY -= 0.07;

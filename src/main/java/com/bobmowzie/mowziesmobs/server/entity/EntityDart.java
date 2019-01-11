@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import net.minecraft.entity.Entity;
@@ -40,7 +41,7 @@ public class EntityDart extends EntityTippedArrow {
         EntityLivingBase living = (EntityLivingBase)hit;
         if (world.isRemote || (shootingEntity == hit) || (shootingEntity instanceof EntityBarakoa && living instanceof EntityBarakoa && ((EntityBarakoa) shootingEntity).isBarakoDevoted() == ((EntityBarakoa) living).isBarakoDevoted())) return;
         super.onHit(raytraceResultIn);
-        if (shootingEntity instanceof EntityPlayer) living.addPotionEffect(new PotionEffect(MobEffects.POISON, 40, 3, false, true));
+        if (shootingEntity instanceof EntityPlayer) living.addPotionEffect(new PotionEffect(MobEffects.POISON, 40, (int)(3 * MowziesMobs.CONFIG.attackScaleBlowgun), false, true));
         else living.addPotionEffect(new PotionEffect(MobEffects.POISON, 40, 1, false, true));
         living.setArrowCountInEntity(living.getArrowCountInEntity() - 1);
     }

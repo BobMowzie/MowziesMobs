@@ -99,6 +99,7 @@ public class EntityIceBreath extends EntityMagicEffect {
         List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby(RANGE, RANGE, RANGE, RANGE);
         float damage = DAMAGE_PER_HIT;
         if (caster instanceof EntityFrostmaw) damage *= MowziesMobs.CONFIG.attackScaleFrostmaw;
+        if (caster instanceof EntityPlayer) damage *= MowziesMobs.CONFIG.attackScaleIceCrystal;
         for (EntityLivingBase entityHit : entitiesHit) {
             if (entityHit == caster) continue;
             float entityHitYaw = (float) ((Math.atan2(entityHit.posZ - posZ, entityHit.posX - posX) * (180 / Math.PI) - 90) % 360);
