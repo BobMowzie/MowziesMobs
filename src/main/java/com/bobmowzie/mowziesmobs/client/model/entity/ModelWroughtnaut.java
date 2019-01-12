@@ -462,8 +462,8 @@ public class ModelWroughtnaut extends AdvancedModelBase {
         eyeLeft.rotationPointX += 1.9;
         eyeRight.rotationPointY -= 1.5;
         eyeLeft.rotationPointY -= 1.5;
-        wroughtnaut.rightEyePos = eyeRight.getWorldPos(wroughtnaut);
-        wroughtnaut.leftEyePos = eyeLeft.getWorldPos(wroughtnaut);
+//        wroughtnaut.rightEyePos = eyeRight.getWorldPos(wroughtnaut);
+//        wroughtnaut.leftEyePos = eyeLeft.getWorldPos(wroughtnaut);
     }
 
     public void setRotateAngle(AdvancedModelRenderer modelRenderer, float x, float y, float z) {

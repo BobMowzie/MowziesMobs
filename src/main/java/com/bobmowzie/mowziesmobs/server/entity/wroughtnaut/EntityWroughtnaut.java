@@ -113,8 +113,8 @@ public class EntityWroughtnaut extends MowzieEntity {
 
     private CeilingDisturbance disturbance;
 
-    @SideOnly(Side.CLIENT)
-    public Vec3d leftEyePos, rightEyePos;
+//    @SideOnly(Side.CLIENT)
+//    public Vec3d leftEyePos, rightEyePos;
 
     public EntityWroughtnaut(World world) {
         super(world);
@@ -145,8 +145,8 @@ public class EntityWroughtnaut extends MowzieEntity {
         setSize(2.45F, 3.7F);
         active = false;
         stepHeight = 1;
-        rightEyePos = new Vec3d(0, 0, 0);
-        leftEyePos = new Vec3d(0, 0, 0);
+//        rightEyePos = new Vec3d(0, 0, 0);
+//        leftEyePos = new Vec3d(0, 0, 0);
     }
 
     @Override
