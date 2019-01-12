@@ -268,7 +268,10 @@ public class EntityFrostmaw extends MowzieEntity {
                     AxisAlignedBB hitBox = new AxisAlignedBB(new BlockPos(slamPosX - 0.5f, posY, slamPosZ - 0.5f)).grow(3, 3, 3);
                     List<EntityLivingBase> entitiesHit = world.getEntitiesWithinAABB(EntityLivingBase.class, hitBox);
                     for (EntityLivingBase entity: entitiesHit) {
-                        if (entity != this) attackEntityAsMob(entity, 4f * MowziesMobs.CONFIG.attackScaleFrostmaw);
+                        if (entity != this) {
+                            attackEntityAsMob(entity, 4f * MowziesMobs.CONFIG.attackScaleFrostmaw);
+                            if (entity.isActiveItemStackBlocking()) entity.getActiveItemStack().damageItem(400, entity);
+                        }
                     }
                 }
             }
