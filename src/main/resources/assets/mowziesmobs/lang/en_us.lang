@@ -61,7 +61,9 @@ item.dart.text.0=Can only be used with blowgun
 item.dart.text.1=Poisons targets
 
 item.foliaathSeed.text.0=Plant in grass
-item.foliaathSeed.text.1=Feed when hungry for 2 days
+item.foliaathSeed.text.1=Every half-day, the baby foliaath will get hungry
+item.foliaathSeed.text.2=Toss it any meat to feed it
+item.foliaathSeed.text.3=After 2 days, the foliaath will be fully grown
 
 item.grantSunsBlessing.text.0=Grants Sun's Blessing for 20 minutes
 item.grantSunsBlessing.text.1=With empty hand, right-click to call a sunstrike
