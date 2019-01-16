@@ -9,6 +9,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityFallingBlock;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
@@ -99,7 +100,8 @@ public class EntityAxeAttack extends Entity {
                             continue;
                         }
                         if (entity instanceof EntityLivingBase) {
-                            entity.attackEntityFrom(DamageSource.FALLING_BLOCK, (factor * 5 + 1) * MowziesMobs.CONFIG.attackScaleWroughtAxe);
+                            if (caster instanceof EntityPlayer) entity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) caster), (factor * 5 + 1) * MowziesMobs.CONFIG.attackScaleWroughtAxe);
+                            else entity.attackEntityFrom(DamageSource.causeMobDamage(caster), (factor * 5 + 1) * MowziesMobs.CONFIG.attackScaleWroughtAxe);
                         }
                         double magnitude = -0.2;
                         entity.motionX += vx * (1 - factor) * magnitude;

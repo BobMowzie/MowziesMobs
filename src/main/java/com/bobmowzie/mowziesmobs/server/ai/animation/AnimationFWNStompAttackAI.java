@@ -90,7 +90,7 @@ public class AnimationFWNStompAttackAI extends AnimationAI<EntityWroughtnaut> {
                                 continue;
                             }
                             if (entity instanceof EntityLivingBase) {
-                                entity.attackEntityFrom(DamageSource.FALLING_BLOCK, (factor * 5 + 1) * MowziesMobs.CONFIG.attackScaleWroughtnaut);
+                                entity.attackEntityFrom(DamageSource.causeMobDamage(this.entity), (factor * 5 + 1) * MowziesMobs.CONFIG.attackScaleWroughtnaut);
                             }
                             double magnitude = world.rand.nextDouble() * 0.15 + 0.1;
                             entity.motionX += vx * factor * magnitude;
