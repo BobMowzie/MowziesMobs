@@ -121,18 +121,20 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
     }
 
     private void explode() {
-        for (int i = 0; i < 8; i++) {
-            Vec3d particlePos = new Vec3d(Math.random() * 0.2, 0, 0);
-            particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
-            particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
-            double value = rand.nextFloat() * 0.15f;
-            MMParticle.CLOUD.spawn(world, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x, particlePos.y, particlePos.z, 0.75d + value, 0.75d + value, 1d, 1, 10d + rand.nextDouble() * 20d, 40, ParticleCloud.EnumCloudBehavior.GROW));
-        }
-        for (int i = 0; i < 10; i++) {
-            Vec3d particlePos = new Vec3d(Math.random() * 0.2, 0, 0);
-            particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
-            particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
-            MMParticle.SNOWFLAKE.spawn(world, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x, particlePos.y, particlePos.z));
+        if (world.isRemote) {
+            for (int i = 0; i < 8; i++) {
+                Vec3d particlePos = new Vec3d(Math.random() * 0.2, 0, 0);
+                particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
+                particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                double value = rand.nextFloat() * 0.15f;
+                MMParticle.CLOUD.spawn(world, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x, particlePos.y, particlePos.z, 0.75d + value, 0.75d + value, 1d, 1, 10d + rand.nextDouble() * 20d, 40, ParticleCloud.EnumCloudBehavior.GROW));
+            }
+            for (int i = 0; i < 10; i++) {
+                Vec3d particlePos = new Vec3d(Math.random() * 0.2, 0, 0);
+                particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
+                particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                MMParticle.SNOWFLAKE.spawn(world, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x, particlePos.y, particlePos.z));
+            }
         }
         setDead();
     }

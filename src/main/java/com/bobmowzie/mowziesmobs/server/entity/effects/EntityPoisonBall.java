@@ -97,25 +97,27 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
 
     private void explode() {
         float explodeSpeed = 3.5f;
-        for (int i = 0; i < 13; i++) {
-            Vec3d particlePos = new Vec3d(Math.random() * 0.25, 0, 0);
-            particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
-            particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
-            double value = rand.nextFloat() * 0.15f;
-            MMParticle.CLOUD.spawn(world, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 0.1d + value, 0.4d, 0.1d + value, 2, 10d + rand.nextDouble() * 20d, 70, ParticleCloud.EnumCloudBehavior.GROW, 0.7d));
-        }
-        for (int i = 0; i < 13; i++) {
-            Vec3d particlePos = new Vec3d(Math.random() * 0.2, 0, 0);
-            particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
-            particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
-            double value = rand.nextFloat() * 0.15f;
-            MMParticle.CLOUD.spawn(world, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 0.3d + value, 1d, 0.3d + value, 2, 10d + rand.nextDouble() * 20d, 70, ParticleCloud.EnumCloudBehavior.GROW, 0.7d));
-        }
-        for (int i = 0; i < 9; i++) {
-            Vec3d particlePos = new Vec3d(Math.random() * 0.25, 0, 0);
-            particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
-            particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
-            MMParticle.CLOUD.spawn(world, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 0.1d, 0.2d, 0.1d, 0, 2d, 30, ParticleCloud.EnumCloudBehavior.CONSTANT, 0.7d));
+        if (world.isRemote) {
+            for (int i = 0; i < 13; i++) {
+                Vec3d particlePos = new Vec3d(Math.random() * 0.25, 0, 0);
+                particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
+                particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                double value = rand.nextFloat() * 0.15f;
+                MMParticle.CLOUD.spawn(world, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 0.1d + value, 0.4d, 0.1d + value, 2, 10d + rand.nextDouble() * 20d, 70, ParticleCloud.EnumCloudBehavior.GROW, 0.7d));
+            }
+            for (int i = 0; i < 13; i++) {
+                Vec3d particlePos = new Vec3d(Math.random() * 0.2, 0, 0);
+                particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
+                particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                double value = rand.nextFloat() * 0.15f;
+                MMParticle.CLOUD.spawn(world, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 0.3d + value, 1d, 0.3d + value, 2, 10d + rand.nextDouble() * 20d, 70, ParticleCloud.EnumCloudBehavior.GROW, 0.7d));
+            }
+            for (int i = 0; i < 9; i++) {
+                Vec3d particlePos = new Vec3d(Math.random() * 0.25, 0, 0);
+                particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
+                particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                MMParticle.CLOUD.spawn(world, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 0.1d, 0.2d, 0.1d, 0, 2d, 30, ParticleCloud.EnumCloudBehavior.CONSTANT, 0.7d));
+            }
         }
 
         playSound(MMSounds.ENTITY_NAGA_ACID_HIT, 1, 1);
