@@ -11,6 +11,7 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationProjectileAttackAI
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityPoisonBall;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
+import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.client.model.tools.ControlledAnimation;
 import net.ilexiconn.llibrary.server.animation.Animation;
@@ -741,7 +742,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
                 this.setFlag(7, false);
             }
         }
-        else if (movement == EnumNagaMovement.FALLING || movement == EnumNagaMovement.FALLEN) {
+        else if (movement == EnumNagaMovement.FALLING || movement == EnumNagaMovement.FALLEN || isPotionActive(PotionHandler.FROZEN)) {
             float f6 = 0.91F;
             BlockPos.PooledMutableBlockPos blockpos$pooledmutableblockpos = BlockPos.PooledMutableBlockPos.retain(this.posX, this.getEntityBoundingBox().minY - 1.0D, this.posZ);
 
