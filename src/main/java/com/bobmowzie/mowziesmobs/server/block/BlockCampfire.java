@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.block;
 
 import java.util.Random;
 
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -76,7 +77,7 @@ public class BlockCampfire extends Block {
 
     @Override
     public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
-        entity.attackEntityFrom(DamageSource.IN_FIRE, 1);
+        if (!(entity instanceof EntityBarakoa)) entity.attackEntityFrom(DamageSource.IN_FIRE, 1);
     }
 
     @Override
