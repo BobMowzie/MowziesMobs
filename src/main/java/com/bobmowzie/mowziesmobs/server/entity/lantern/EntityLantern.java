@@ -69,16 +69,20 @@ public class EntityLantern extends MowzieEntity {
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (dir != null && getAnimation() == PUFF_ANIMATION && getAnimationTick() == 7) {
-            double l = dir.lengthVector();
-            motionX += dir.x / l * 0.2D;
-            motionY += dir.y / l * 0.2D + 0.2/groundDist;
-            motionZ += dir.z / l * 0.2D;
-            for (int i = 0; i < 3; i++) {
-                MMParticle.CLOUD.spawn(world, posX, posY + 0.3, posZ, ParticleFactory.ParticleArgs.get().withData(-motionX * 0.2 + 0.1 * (rand.nextFloat()-0.5), -motionY * 0.2 + 0.1 * (rand.nextFloat()-0.5), -motionZ * 0.2 + 0.1 * (rand.nextFloat()-0.5), 163d / 256d, 247d / 256d, 74d / 256d, 1, 10d + rand.nextDouble() * 20d, 30, ParticleCloud.EnumCloudBehavior.GROW));
+        if (getAnimation() == PUFF_ANIMATION && getAnimationTick() == 7) {
+            if (dir != null) {
+                double l = dir.lengthVector();
+                motionX += dir.x / l * 0.2D;
+                motionY += dir.y / l * 0.2D + 0.2 / groundDist;
+                motionZ += dir.z / l * 0.2D;
             }
-            for (int i = 0; i < 8; i++) {
-                MMParticle.ORB.spawn(world, posX, posY + 0.3, posZ, ParticleFactory.ParticleArgs.get().withData(-motionX * 0.2 + 0.2 * (rand.nextFloat()-0.5), -motionY * 0.2 + 0.1 * (rand.nextFloat()-0.5), -motionZ * 0.2 + 0.2 * (rand.nextFloat()-0.5), 163d / 256d, 247d / 256d, 74d / 256d, 1.5d, 25));
+            if (world.isRemote) {
+                for (int i = 0; i < 3; i++) {
+                    MMParticle.CLOUD.spawn(world, posX, posY + 0.3, posZ, ParticleFactory.ParticleArgs.get().withData(-motionX * 0.2 + 0.1 * (rand.nextFloat() - 0.5), -motionY * 0.2 + 0.1 * (rand.nextFloat() - 0.5), -motionZ * 0.2 + 0.1 * (rand.nextFloat() - 0.5), 163d / 256d, 247d / 256d, 74d / 256d, 1, 10d + rand.nextDouble() * 20d, 30, ParticleCloud.EnumCloudBehavior.GROW));
+                }
+                for (int i = 0; i < 8; i++) {
+                    MMParticle.ORB.spawn(world, posX, posY + 0.3, posZ, ParticleFactory.ParticleArgs.get().withData(-motionX * 0.2 + 0.2 * (rand.nextFloat() - 0.5), -motionY * 0.2 + 0.1 * (rand.nextFloat() - 0.5), -motionZ * 0.2 + 0.2 * (rand.nextFloat() - 0.5), 163d / 256d, 247d / 256d, 74d / 256d, 1.5d, 25));
+                }
             }
             playSound(MMSounds.ENTITY_LANTERN_PUFF, 0.6f, 1f + rand.nextFloat() * 0.2f);
         }
@@ -104,7 +108,7 @@ public class EntityLantern extends MowzieEntity {
     @Override
     protected void onDeathAIUpdate() {
         super.onDeathAIUpdate();
-        if (getAnimationTick() == 1) {
+        if (getAnimationTick() == 1 && world.isRemote) {
             for (int i = 0; i < 8; i++) {
                 world.spawnParticle(EnumParticleTypes.SLIME, posX, posY, posZ, 0.2 * (rand.nextFloat() - 0.5), 0.2 * (rand.nextFloat() - 0.5), 0.2 * (rand.nextFloat() - 0.5));
                 MMParticle.CLOUD.spawn(world, posX, posY + 0.3, posZ, ParticleFactory.ParticleArgs.get().withData(0.2 * (rand.nextFloat() - 0.5), 0.2 * (rand.nextFloat() - 0.5), 0.2 * (rand.nextFloat() - 0.5), 163d / 256d, 247d / 256d, 74d / 256d, 1, 10d + rand.nextDouble() * 20d, 30, ParticleCloud.EnumCloudBehavior.GROW));
