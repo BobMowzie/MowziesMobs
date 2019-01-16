@@ -23,6 +23,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAISwimming;
@@ -221,8 +223,8 @@ public class EntityGrottol extends MowzieEntity {
 
     @Override
     public boolean attackEntityFrom(DamageSource source, float amount) {
-        Entity entity;
-        if ((entity = source.getTrueSource()) instanceof EntityPlayer) {
+        Entity entity = source.getTrueSource();
+        if (entity instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) entity;
             if (player.canHarvestBlock(Blocks.DIAMOND_ORE.getDefaultState())) {
                 if (EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, player.getHeldItemMainhand()) > 0) {
@@ -235,6 +237,9 @@ public class EntityGrottol extends MowzieEntity {
                 playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.4F, 2.9F);
                 return false;
             }
+        }
+        else if (entity instanceof EntityLiving) {
+            return false;
         }
         return super.attackEntityFrom(source, amount);
     }
