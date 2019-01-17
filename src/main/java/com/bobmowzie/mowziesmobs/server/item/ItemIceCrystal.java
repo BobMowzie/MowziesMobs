@@ -8,6 +8,7 @@ import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -42,20 +43,21 @@ public class ItemIceCrystal extends Item {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
-        ItemStack stack = playerIn.getHeldItem(handIn);
-        MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(playerIn, MowziePlayerProperties.class);
-        if (stack.getItemDamage() + 20 < stack.getMaxDamage()) {
-            if (!property.usingIceBreath) {
-                property.icebreath = new EntityIceBreath(worldIn, playerIn);
-                property.icebreath.setPositionAndRotation(playerIn.posX, playerIn.posY + playerIn.eyeHeight - 0.5f, playerIn.posZ, playerIn.rotationYaw, playerIn.rotationPitch);
-                if (!worldIn.isRemote) worldIn.spawnEntity(property.icebreath);
-                property.usingIceBreath = true;
+        if (playerIn.getHeldItemOffhand().getItem() != Items.SHIELD) {
+            ItemStack stack = playerIn.getHeldItem(handIn);
+            MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(playerIn, MowziePlayerProperties.class);
+            if (stack.getItemDamage() + 20 < stack.getMaxDamage()) {
+                if (!property.usingIceBreath) {
+                    property.icebreath = new EntityIceBreath(worldIn, playerIn);
+                    property.icebreath.setPositionAndRotation(playerIn.posX, playerIn.posY + playerIn.eyeHeight - 0.5f, playerIn.posZ, playerIn.rotationYaw, playerIn.rotationPitch);
+                    if (!worldIn.isRemote) worldIn.spawnEntity(property.icebreath);
+                    property.usingIceBreath = true;
+                }
+                stack.damageItem(20, playerIn);
+                showDurabilityBar(playerIn.getHeldItem(handIn));
+            } else {
+                property.icebreath.setDead();
             }
-            stack.damageItem(20, playerIn);
-            showDurabilityBar(playerIn.getHeldItem(handIn));
-        }
-        else {
-            property.icebreath.setDead();
         }
         return super.onItemRightClick(worldIn, playerIn, handIn);
     }

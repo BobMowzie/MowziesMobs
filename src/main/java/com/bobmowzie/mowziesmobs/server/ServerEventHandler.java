@@ -242,28 +242,28 @@ public enum ServerEventHandler {
             }
 
             if (event.side == Side.CLIENT) {
-                if (Mouse.isButtonDown(0) && !property.mouseLeftDown) {
+                if (Minecraft.getMinecraft().gameSettings.keyBindAttack.isKeyDown() && !property.mouseLeftDown) {
                     property.mouseLeftDown = true;
                     MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageLeftMouseDown());
                     for (int i = 0; i < property.powers.length; i++) {
                         property.powers[i].onLeftMouseDown(player);
                     }
                 }
-                if (Mouse.isButtonDown(1) && !property.mouseRightDown) {
+                if (Minecraft.getMinecraft().gameSettings.keyBindUseItem.isKeyDown() && !property.mouseRightDown) {
                     property.mouseRightDown = true;
                     MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageRightMouseDown());
                     for (int i = 0; i < property.powers.length; i++) {
                         property.powers[i].onRightMouseDown(player);
                     }
                 }
-                if (!Mouse.isButtonDown(0) && property.mouseLeftDown) {
+                if (!Minecraft.getMinecraft().gameSettings.keyBindAttack.isKeyDown()) {
                     property.mouseLeftDown = false;
                     MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageLeftMouseUp());
                     for (int i = 0; i < property.powers.length; i++) {
                         property.powers[i].onLeftMouseUp(player);
                     }
                 }
-                if (!Mouse.isButtonDown(1) && property.mouseRightDown) {
+                if (!Minecraft.getMinecraft().gameSettings.keyBindUseItem.isKeyDown() && property.mouseRightDown) {
                     property.mouseRightDown = false;
                     MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageRightMouseUp());
                     for (int i = 0; i < property.powers.length; i++) {
