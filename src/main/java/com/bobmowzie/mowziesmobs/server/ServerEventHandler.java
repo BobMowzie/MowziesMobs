@@ -31,6 +31,7 @@ import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLiving;
@@ -136,6 +137,10 @@ public enum ServerEventHandler {
                 }
             }
 
+            if (entity.getActivePotionEffect(PotionHandler.POISON_RESIST) != null && entity.getActivePotionEffect(MobEffects.POISON) != null) {
+                entity.removeActivePotionEffect(MobEffects.POISON);
+            }
+
             if (entity.isPotionActive(PotionHandler.FROZEN)) {
                 if (entity.getActivePotionEffect(PotionHandler.FROZEN).getDuration() <= 0) entity.removeActivePotionEffect(PotionHandler.FROZEN);
                 entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, 50, false, false));
@@ -169,11 +174,12 @@ public enum ServerEventHandler {
                             entity.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, particleX, particleY, particleZ, 0, 0, 0, ICE);
                         }
                     }
-                    if (entity instanceof EntityLiving && ((EntityLiving)entity).isAIDisabled() && property != null) {
-                        ((EntityLiving)entity).setNoAI(!property.prevHasAI);
+                    if (entity instanceof EntityLiving && ((EntityLiving)entity).isAIDisabled() && property.prevHasAI) {
+                        ((EntityLiving)entity).setNoAI(false);
                     }
                 }
             }
+
             if (property != null) {
                 property.freezeProgress -= 0.1;
                 if (property.freezeProgress < 0) property.freezeProgress = 0;
@@ -197,10 +203,6 @@ public enum ServerEventHandler {
             }
             if (property.untilAxeSwing > 0) {
                 property.untilAxeSwing--;
-            }
-
-            if (player.getActivePotionEffect(PotionHandler.POISON_RESIST) != null && player.getActivePotionEffect(MobEffects.POISON) != null) {
-                player.removeActivePotionEffect(MobEffects.POISON);
             }
 
             if (event.side == Side.SERVER) {

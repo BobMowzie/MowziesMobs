@@ -14,6 +14,7 @@ import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.ai.EntityAIGrottolIdle;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
+import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
@@ -293,7 +294,7 @@ public class EntityGrottol extends MowzieEntity {
         }
 
         // AI Task
-        if (!world.isRemote && fleeTime >= 70 && getAnimation() == NO_ANIMATION) {
+        if (!world.isRemote && fleeTime >= 70 && getAnimation() == NO_ANIMATION && !isAIDisabled() && !isPotionActive(PotionHandler.FROZEN)) {
             IBlockState blockBeneath = world.getBlockState(getPosition().down());
             Material mat = blockBeneath.getMaterial();
             if (mat == Material.GRASS || mat == Material.GROUND || mat == Material.SAND || mat == Material.CLAY || mat == Material.ROCK) {
