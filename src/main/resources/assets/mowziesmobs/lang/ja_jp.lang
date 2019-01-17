@@ -69,8 +69,10 @@ item.dart.text.0=吹き筒で撃ち出す
 item.dart.text.1=当たったモブは毒に侵される
 
 
-item.foliaathSeed.text.0=草ブロックの上に植える
-item.foliaathSeed.text.1=2日間餌をやり続けよう
+item.foliaathSeed.text.0=草ブロックに植える
+item.foliaathSeed.text.1=半日後、苗は空腹になる
+item.foliaathSeed.text.2=肉を投げると食べて満腹になる
+item.foliaathSeed.text.3=2日後に完全成長するであろう
 
 
 item.grantSunsBlessing.text.0=20分間太陽の力が付く
@@ -82,7 +84,7 @@ item.earthTalisman.text.1=インベントリにあると大地の力が付く
 item.earthTalisman.text.2=地面を右クリックで土が浮き出す
 item.earthTalisman.text.3=土をパンチする事で弾き飛ばす
 item.earthTalisman.text.4=右クリック長押しで大きな土塊が現れる
-item.earthTalisman.text.5=空中でダブルクリックしスニークすると回転が始まる
+item.earthTalisman.text.5=空中で、Shiftを2回押して更に押し続けると回転を始める
 item.earthTalisman.text.6=採掘したいものに向かって方向を転換する
 item.earthTalisman.text.7=地上でスニークして解除
 
