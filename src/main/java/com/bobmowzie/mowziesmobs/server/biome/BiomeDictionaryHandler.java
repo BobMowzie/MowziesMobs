@@ -73,7 +73,7 @@ public enum BiomeDictionaryHandler {
         {
             Set<BiomeDictionary.Type> types = BiomeDictionary.getTypes(b);
             if (types.contains(BiomeDictionary.Type.BEACH) && (types.contains(BiomeDictionary.Type.HILLS) || types.contains(BiomeDictionary.Type.MOUNTAIN)))
-                lanternBiomes.add(b);
+                nagaBiomes.add(b);
         }
         nagaBiomes.add(Biomes.STONE_BEACH);
 

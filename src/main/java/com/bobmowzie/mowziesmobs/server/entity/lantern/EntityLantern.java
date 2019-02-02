@@ -9,6 +9,7 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import com.sun.javaws.exceptions.InvalidArgumentException;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.state.IBlockState;
@@ -24,6 +25,8 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 import java.util.Random;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Created by Josh on 7/24/2018.
@@ -39,7 +42,7 @@ public class EntityLantern extends MowzieEntity {
     };
 
     public Vec3d dir;
-    private int groundDist = 0;
+    private int groundDist = 1;
 
     public EntityLantern(World world) {
         super(world);
@@ -50,11 +53,9 @@ public class EntityLantern extends MowzieEntity {
     @Override
     protected void initEntityAI() {
         super.initEntityAI();
-        this.tasks.addTask(5, new AIRandomFly(this));
         tasks.addTask(2, new AnimationAI<>(this, PUFF_ANIMATION, false));
         this.tasks.addTask(3, new AnimationTakeDamage<>(this));
         this.tasks.addTask(1, new AnimationDieAI<>(this));
-        this.moveHelper = new LanternMoveHelper(this);
     }
 
     protected void applyEntityAttributes()
@@ -70,12 +71,8 @@ public class EntityLantern extends MowzieEntity {
     public void onUpdate() {
         super.onUpdate();
         if (getAnimation() == PUFF_ANIMATION && getAnimationTick() == 7) {
-            if (dir != null) {
-                double l = dir.lengthVector();
-                motionX += dir.x / l * 0.2D;
-                motionY += dir.y / l * 0.2D + 0.2 / groundDist;
-                motionZ += dir.z / l * 0.2D;
-            }
+            if (groundDist == 0) groundDist = 1;
+            motionY += 0.2D + 0.2 / groundDist;
             if (world.isRemote) {
                 for (int i = 0; i < 3; i++) {
                     MMParticle.CLOUD.spawn(world, posX, posY + 0.3, posZ, ParticleFactory.ParticleArgs.get().withData(-motionX * 0.2 + 0.1 * (rand.nextFloat() - 0.5), -motionY * 0.2 + 0.1 * (rand.nextFloat() - 0.5), -motionZ * 0.2 + 0.1 * (rand.nextFloat() - 0.5), 163d / 256d, 247d / 256d, 74d / 256d, 1, 10d + rand.nextDouble() * 20d, 30, ParticleCloud.EnumCloudBehavior.GROW));
@@ -86,8 +83,11 @@ public class EntityLantern extends MowzieEntity {
             }
             playSound(MMSounds.ENTITY_LANTERN_PUFF, 0.6f, 1f + rand.nextFloat() * 0.2f);
         }
-        if (groundDist < 4 && getMoveHelper().action == EntityMoveHelper.Action.WAIT) {
-            getMoveHelper().setMoveTo(posX, posY + 3, posZ, 1.0D);
+
+        if (!world.isRemote && getAnimation() == NO_ANIMATION) {
+            if (groundDist < 5 || rand.nextInt(30) == 0) {
+                AnimationHandler.INSTANCE.sendAnimationMessage(this, PUFF_ANIMATION);
+            }
         }
 
         if (groundDist >= 2) motionY -= 0.0055;
@@ -214,121 +214,6 @@ public class EntityLantern extends MowzieEntity {
     @Override
     public Animation[] getAnimations() {
         return ANIMATIONS;
-    }
-
-    static class AIRandomFly extends EntityAIBase
-    {
-        private final EntityLantern parentEntity;
-
-        public AIRandomFly(EntityLantern ghast)
-        {
-            this.parentEntity = ghast;
-            this.setMutexBits(1);
-        }
-
-        /**
-         * Returns whether the EntityAIBase should begin execution.
-         */
-        public boolean shouldExecute()
-        {
-            EntityMoveHelper entitymovehelper = this.parentEntity.getMoveHelper();
-
-            if (!entitymovehelper.isUpdating())
-            {
-                return true;
-            }
-            else
-            {
-                double d0 = entitymovehelper.getX() - this.parentEntity.posX;
-                double d1 = entitymovehelper.getY() - this.parentEntity.posY;
-                double d2 = entitymovehelper.getZ() - this.parentEntity.posZ;
-                double d3 = d0 * d0 + d1 * d1 + d2 * d2;
-                return d3 < 1.0D || d3 > 3600.0D;
-            }
-        }
-
-        /**
-         * Returns whether an in-progress EntityAIBase should continue executing
-         */
-        public boolean shouldContinueExecuting()
-        {
-            return false;
-        }
-
-        /**
-         * Execute a one shot task or start executing a continuous task
-         */
-        public void startExecuting()
-        {
-            Random random = this.parentEntity.getRNG();
-            double d0 = this.parentEntity.posX + (double)((random.nextFloat() * 2.0F - 1.0F) * 16.0F);
-            double d1 = this.parentEntity.posY + (double)((random.nextFloat() * 2.0F - 1.0F) * 16.0F - parentEntity.groundDist * 0.5);
-            double d2 = this.parentEntity.posZ + (double)((random.nextFloat() * 2.0F - 1.0F) * 16.0F);
-            this.parentEntity.getMoveHelper().setMoveTo(d0, d1, d2, 1.0D);
-        }
-    }
-
-    static class LanternMoveHelper extends EntityMoveHelper
-    {
-        private final EntityLantern parentEntity;
-        private int courseChangeCooldown;
-
-        public LanternMoveHelper(com.bobmowzie.mowziesmobs.server.entity.lantern.EntityLantern lantern)
-        {
-            super(lantern);
-            this.parentEntity = lantern;
-        }
-
-        public void onUpdateMoveHelper()
-        {
-            if (this.action == EntityMoveHelper.Action.MOVE_TO)
-            {
-                double d0 = this.posX - this.parentEntity.posX;
-                double d1 = this.posY - this.parentEntity.posY;
-                double d2 = this.posZ - this.parentEntity.posZ;
-                double d3 = d0 * d0 + d1 * d1 + d2 * d2;
-
-                parentEntity.dir = new Vec3d(d0, d1, d2);
-
-                if (this.courseChangeCooldown-- <= 0)
-                {
-                    this.courseChangeCooldown += this.parentEntity.getRNG().nextInt(5) + 2;
-                    d3 = (double) MathHelper.sqrt(d3);
-
-                    if (this.isNotColliding(this.posX, this.posY, this.posZ, d3))
-                    {
-                        if (parentEntity.getAnimation() == NO_ANIMATION && parentEntity.rand.nextInt(Math.max(parentEntity.groundDist - 3, 1)) == 0) AnimationHandler.INSTANCE.sendAnimationMessage(this.parentEntity, PUFF_ANIMATION);
-                    }
-                    else
-                    {
-                        this.action = EntityMoveHelper.Action.WAIT;
-                    }
-                }
-            }
-        }
-
-        /**
-         * Checks if entity bounding box is not colliding with terrain
-         */
-        private boolean isNotColliding(double x, double y, double z, double p_179926_7_)
-        {
-            double d0 = (x - this.parentEntity.posX) / p_179926_7_;
-            double d1 = (y - this.parentEntity.posY) / p_179926_7_;
-            double d2 = (z - this.parentEntity.posZ) / p_179926_7_;
-            AxisAlignedBB axisalignedbb = this.parentEntity.getEntityBoundingBox();
-
-            for (int i = 1; (double)i < p_179926_7_; ++i)
-            {
-                axisalignedbb = axisalignedbb.offset(d0, d1, d2);
-
-                if (!this.parentEntity.world.getCollisionBoxes(this.parentEntity, axisalignedbb).isEmpty())
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
     }
 
 }
