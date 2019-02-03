@@ -494,7 +494,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
     @Override
     public boolean getCanSpawnHere() {
         setPosition(posX, posY + 5, posZ);
-        boolean flag = super.getCanSpawnHere();
+        boolean flag = super.getCanSpawnHere() && world.canSeeSky(getPosition());
 //        System.out.println("Try spawn " + flag);
 //        if (flag) System.out.println(getPosition());
         return flag;
