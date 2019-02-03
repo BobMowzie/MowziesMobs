@@ -83,7 +83,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
 
     @Override
     public boolean getCanSpawnHere() {
-        boolean flag = world.provider.isSurfaceWorld();
+        boolean flag = world.provider.getDimension() == 0;
         return super.getCanSpawnHere() && flag;
     }
 
