@@ -11,6 +11,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAISwimming;
+import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.MobEffects;
@@ -40,7 +41,7 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 
 import javax.annotation.Nullable;
 
-public class EntityFoliaath extends MowzieEntity {
+public class EntityFoliaath extends MowzieEntity implements IMob {
     public static final Animation DIE_ANIMATION = Animation.create(50);
     public static final Animation HURT_ANIMATION = Animation.create(10);
     public static final Animation ATTACK_ANIMATION = Animation.create(14);

@@ -23,6 +23,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
@@ -52,7 +53,7 @@ import java.util.UUID;
 /**
  * Created by Josh on 5/8/2017.
  */
-public class EntityFrostmaw extends MowzieEntity {
+public class EntityFrostmaw extends MowzieEntity implements IMob {
     public static final Animation DIE_ANIMATION = Animation.create(94);
     public static final Animation HURT_ANIMATION = Animation.create(0);
     public static final Animation ROAR_ANIMATION = Animation.create(76);

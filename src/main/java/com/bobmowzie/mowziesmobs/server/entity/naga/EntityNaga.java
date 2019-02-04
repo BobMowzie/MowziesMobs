@@ -18,6 +18,7 @@ import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.*;
+import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.MobEffects;
@@ -42,7 +43,7 @@ import java.util.Random;
 /**
  * Created by Josh on 9/9/2018.
  */
-public class EntityNaga extends MowzieEntity implements IRangedAttackMob {
+public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
     @SideOnly(Side.CLIENT)
     public DynamicChain dc;
     @SideOnly(Side.CLIENT)
