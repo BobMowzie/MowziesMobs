@@ -81,8 +81,16 @@ public class PowerGeomancy extends Power {
             Vec3d lookVec = player.getLookVec();
             float tunnelSpeed = 0.9f;
             if (underground) {
-                if (player.isSneaking()) player.setVelocity(tunnelSpeed * lookVec.x, tunnelSpeed * lookVec.y, tunnelSpeed * lookVec.z);
-                else player.setVelocity(tunnelSpeed * 0.5 * lookVec.x, 1, tunnelSpeed * 0.5 * lookVec.z);
+                if (player.isSneaking()) {
+                    player.motionX = tunnelSpeed * lookVec.x;
+                    player.motionY = tunnelSpeed * lookVec.y;
+                    player.motionZ = tunnelSpeed * lookVec.z;
+                }
+                else {
+                    player.motionX = tunnelSpeed * 0.5 * lookVec.x;
+                    player.motionY = 1;
+                    player.motionZ = tunnelSpeed * 0.5 * lookVec.z;
+                }
 
                 List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby(4, 4, 4, 4);
                 for (EntityLivingBase entityHit : entitiesHit) {
