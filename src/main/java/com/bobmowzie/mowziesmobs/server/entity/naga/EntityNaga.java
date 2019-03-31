@@ -222,8 +222,8 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
         setSize(3, 1);
         if (world.isRemote) {
             dc = new DynamicChain(this);
+            setRenderDistanceWeight(3.0D);
         }
-        setRenderDistanceWeight(3.0D);
 
         this.experienceValue = 10;
     }
