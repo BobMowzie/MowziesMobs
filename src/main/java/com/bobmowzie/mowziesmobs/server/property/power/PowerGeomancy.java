@@ -212,7 +212,7 @@ public class PowerGeomancy extends Power {
                 spawnBoulderBlock = player.world.getBlockState(spawnBoulderPos);
                 if (event.getFace() != EnumFacing.UP) {
                     IBlockState blockAbove = player.world.getBlockState(spawnBoulderPos.up());
-                    System.out.println(blockAbove.getBlock().getLocalizedName());
+                    //System.out.println(blockAbove.getBlock().getLocalizedName());
                     if (blockAbove.causesSuffocation() || blockAbove == Blocks.AIR.getDefaultState()) return;
                 }
                 if (!isBlockDiggable(spawnBoulderBlock)) return;
