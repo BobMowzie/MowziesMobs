@@ -131,9 +131,11 @@ public class PowerGeomancy extends Power {
                 player.motionY *= 2;
                 player.motionZ *= 2;
 
-                for (int i = 0; i < 6; i++) {
-                    if (justDug == null) justDug = Blocks.DIRT.getDefaultState();
-                    ParticleFallingBlock.spawnFallingBlock(player.world, player.posX, player.posY + 1, player.posZ, 30f, 80, 1, (float)Math.random() * 0.8f - 0.4f, 0.4f + (float)Math.random() * 0.8f, (float)Math.random() * 0.8f - 0.4f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, justDug);
+                if (player.world.isRemote) {
+                    for (int i = 0; i < 6; i++) {
+                        if (justDug == null) justDug = Blocks.DIRT.getDefaultState();
+                        ParticleFallingBlock.spawnFallingBlock(player.world, player.posX, player.posY + 1, player.posZ, 30f, 80, 1, (float) Math.random() * 0.8f - 0.4f, 0.4f + (float) Math.random() * 0.8f, (float) Math.random() * 0.8f - 0.4f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, justDug);
+                    }
                 }
             }
             prevUnderground = underground;
@@ -231,8 +233,10 @@ public class PowerGeomancy extends Power {
     @Override
     public void onSneakDown(EntityPlayer player) {
         super.onSneakDown(player);
-        if (doubleTapTimer > 0 && canUse(player) && !player.onGround) tunneling = true;
-        doubleTapTimer = 5;
+        if (doubleTapTimer > 0 && canUse(player) && !player.onGround) {
+            tunneling = true;
+        }
+        doubleTapTimer = 8;
     }
 
     @Override

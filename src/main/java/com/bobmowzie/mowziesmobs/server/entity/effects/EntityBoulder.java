@@ -266,24 +266,28 @@ public class EntityBoulder extends Entity {
             playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG, 1.5f, 1f);
             playSound(MMSounds.EFFECT_GEOMANCY_BREAK_MEDIUM_1, 1.5f, 0.9f);
 
-            for (int i = 0; i < 3; i++) {
-                Vec3d particlePos = new Vec3d(Math.random() * 1, 0, 0);
-                particlePos = particlePos.rotateYaw((float)(Math.random() * 2 * Math.PI));
-                particlePos = particlePos.rotatePitch((float)(Math.random() * 2 * Math.PI));
-                particlePos = particlePos.add(new Vec3d(0, height/4, 0));
-                ParticleFallingBlock.spawnFallingBlock(world,  posX + particlePos.x, posY + 0.5 + particlePos.y, posZ + particlePos.z, 10.f, 70, 1, (float)particlePos.x * 0.3f, 0.2f + (float)Math.random() * 0.6f, (float)particlePos.z * 0.3f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, getBlock());
+            if (world.isRemote) {
+                for (int i = 0; i < 3; i++) {
+                    Vec3d particlePos = new Vec3d(Math.random() * 1, 0, 0);
+                    particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
+                    particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                    particlePos = particlePos.add(new Vec3d(0, height / 4, 0));
+                    ParticleFallingBlock.spawnFallingBlock(world, posX + particlePos.x, posY + 0.5 + particlePos.y, posZ + particlePos.z, 10.f, 70, 1, (float) particlePos.x * 0.3f, 0.2f + (float) Math.random() * 0.6f, (float) particlePos.z * 0.3f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, getBlock());
+                }
             }
         }
         else if (boulderSize == 3) {
             playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG, 1.5f, 0.5f);
             playSound(MMSounds.EFFECT_GEOMANCY_BREAK_LARGE_1, 1.5f, 0.5f);
 
-            for (int i = 0; i < 5; i++) {
-                Vec3d particlePos = new Vec3d(Math.random() * 1.5, 0, 0);
-                particlePos = particlePos.rotateYaw((float)(Math.random() * 2 * Math.PI));
-                particlePos = particlePos.rotatePitch((float)(Math.random() * 2 * Math.PI));
-                particlePos = particlePos.add(new Vec3d(0, height/4, 0));
-                ParticleFallingBlock.spawnFallingBlock(world,  posX + particlePos.x, posY + 0.5 + particlePos.y, posZ + particlePos.z, 10.f, 70, 1, (float)particlePos.x * 0.3f, 0.2f + (float)Math.random() * 0.6f, (float)particlePos.z * 0.3f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, getBlock());
+            if (world.isRemote) {
+                for (int i = 0; i < 5; i++) {
+                    Vec3d particlePos = new Vec3d(Math.random() * 1.5, 0, 0);
+                    particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
+                    particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                    particlePos = particlePos.add(new Vec3d(0, height / 4, 0));
+                    ParticleFallingBlock.spawnFallingBlock(world, posX + particlePos.x, posY + 0.5 + particlePos.y, posZ + particlePos.z, 10.f, 70, 1, (float) particlePos.x * 0.3f, 0.2f + (float) Math.random() * 0.6f, (float) particlePos.z * 0.3f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, getBlock());
+                }
             }
         }
     }
