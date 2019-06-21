@@ -110,7 +110,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
         this.tasks.addTask(7, new EntityNaga.AILookAround(this));
         this.tasks.addTask(6, new EntityAILookIdle(this));
         this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-        this.targetTasks.addTask(1, new MMAINearestAttackableTarget(this, EntityPlayer.class, 0, true, false, true, null));
+        this.targetTasks.addTask(1, new MMAINearestAttackableTarget<>(this, EntityPlayer.class, 0, true, false, true, null));
         this.tasks.addTask(2, new AnimationAI<EntityNaga>(this, FLAP_ANIMATION, false) {
             @Override
             public void updateTask() {
@@ -222,7 +222,6 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
         setSize(3, 1);
         if (world.isRemote) {
             dc = new DynamicChain(this);
-            setRenderDistanceWeight(3.0D);
         }
 
         this.experienceValue = 10;
@@ -237,6 +236,12 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
     @Override
     public boolean isInRangeToRenderDist(double distance) {
         return distance < 16600;
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public AxisAlignedBB getRenderBoundingBox() {
+        return super.getRenderBoundingBox().grow(12.0D);
     }
 
     protected void applyEntityAttributes()
