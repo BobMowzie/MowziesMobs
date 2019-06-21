@@ -20,6 +20,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by Josh on 7/24/2018.
@@ -58,6 +61,12 @@ public class EntityLantern extends MowzieEntity {
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(4.0D);
         this.getEntityAttribute(SharedMonsterAttributes.FLYING_SPEED).setBaseValue(0.3D);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.20000000298023224D);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public int getBrightnessForRender() {
+        return 0xF000F0;
     }
 
     @Override
