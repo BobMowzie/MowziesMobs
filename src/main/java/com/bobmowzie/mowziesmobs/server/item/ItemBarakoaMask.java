@@ -28,7 +28,7 @@ public class ItemBarakoaMask extends ItemArmor implements BarakoaMask {
     public ItemBarakoaMask(MaskType type) {
         super(ArmorMaterial.LEATHER, 2, EntityEquipmentSlot.HEAD);
         this.type = type;
-        setUnlocalizedName("barakoaMask." + type.name);
+        setTranslationKey("barakoaMask." + type.name);
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
         setRegistryName("barakoa_mask_" + type.name);
     }

@@ -44,7 +44,7 @@ public final class EntityAIAvoidEntity<T extends Entity> extends EntityAIBase {
                 return e.isEntityAlive() && entity.getEntitySenses().canSee(e);
             }
         };
-        this.predicate = Predicates.and(EntitySelectors.CAN_AI_TARGET, visible, predicate);
+        this.predicate = Predicates.<T>and(EntitySelectors.CAN_AI_TARGET, visible, predicate);
         this.speed = speed;
         navigator = entity.getNavigator();
         setMutexBits(1);
@@ -61,7 +61,7 @@ public final class EntityAIAvoidEntity<T extends Entity> extends EntityAIBase {
         if (pos == null) {
             return false;
         }
-        if (avoiding.getDistanceSq(pos.x, pos.y, pos.z) < avoiding.getDistanceSqToEntity(entity)) {
+        if (avoiding.getDistanceSq(pos.x, pos.y, pos.z) < avoiding.getDistanceSq(entity)) {
             return false;
         }
         path = navigator.getPathToXYZ(pos.x, pos.y, pos.z);

@@ -27,9 +27,9 @@ public class ItemWroughtAxe extends ItemAxe {
     public ItemWroughtAxe() {
         super(Item.ToolMaterial.IRON);
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setUnlocalizedName("wroughtAxe");
+        setTranslationKey("wroughtAxe");
         setRegistryName("wrought_axe");
-        damageVsEntity = damageVsEntity * MowziesMobs.CONFIG.attackScaleWroughtAxe;
+        attackDamage = attackDamage * MowziesMobs.CONFIG.attackScaleWroughtAxe;
     }
 
     @Override
@@ -70,7 +70,7 @@ public class ItemWroughtAxe extends ItemAxe {
     }
 
     @Override
-    public float getStrVsBlock(ItemStack itemStack, IBlockState block) {
+    public float getDestroySpeed(ItemStack itemStack, IBlockState block) {
         return 1.0F;
     }
 

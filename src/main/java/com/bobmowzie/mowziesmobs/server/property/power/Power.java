@@ -102,13 +102,13 @@ public abstract class Power {
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double r) {
         EntityPlayer player = properties.getEntity();
         if (player == null) return Lists.<T>newArrayList();
-        return player.world.getEntitiesWithinAABB(entityClass, player.getEntityBoundingBox().grow(r, r, r), e -> e != player && player.getDistanceToEntity(e) <= r);
+        return player.world.getEntitiesWithinAABB(entityClass, player.getEntityBoundingBox().grow(r, r, r), e -> e != player && player.getDistance(e) <= r);
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double dX, double dY, double dZ, double r) {
         EntityPlayer player = properties.getEntity();
         if (player == null) return Lists.<T>newArrayList();
-        return player.world.getEntitiesWithinAABB(entityClass, player.getEntityBoundingBox().grow(dX, dY, dZ), e -> e != player && player.getDistanceToEntity(e) <= r);
+        return player.world.getEntitiesWithinAABB(entityClass, player.getEntityBoundingBox().grow(dX, dY, dZ), e -> e != player && player.getDistance(e) <= r);
     }
 
 }

@@ -20,13 +20,13 @@ public final class EntityAIBarakoayaTrade extends EntityAIBase {
             return false;
         } else {
             EntityPlayer plyr = barakoaya.getCustomer();
-            return plyr != null && barakoaya.getDistanceSqToEntity(plyr) <= 16 && plyr.openContainer instanceof Container;
+            return plyr != null && barakoaya.getDistanceSq(plyr) <= 16 && plyr.openContainer instanceof Container;
         }
     }
 
     @Override
     public void startExecuting() {
-        barakoaya.getNavigator().clearPathEntity();
+        barakoaya.getNavigator().clearPath();
     }
 
     @Override

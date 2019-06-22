@@ -73,7 +73,7 @@ public class EntityBoulder extends Entity {
             Material mat = block.getMaterial();
             if (mat == Material.GRASS || mat == Material.GROUND) newBlock = Blocks.DIRT.getDefaultState();
             else if (mat == Material.ROCK) {
-                if (block.getBlock().getUnlocalizedName().contains("ore")) newBlock = Blocks.STONE.getDefaultState();
+                if (block.getBlock().getTranslationKey().contains("ore")) newBlock = Blocks.STONE.getDefaultState();
                 if (block.getBlock() == Blocks.QUARTZ_ORE) newBlock = Blocks.NETHERRACK.getDefaultState();
                 if (block.getBlock() == Blocks.FURNACE
                         || block.getBlock() == Blocks.LIT_FURNACE
@@ -424,7 +424,7 @@ public class EntityBoulder extends Entity {
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double r) {
-        return world.getEntitiesWithinAABB(entityClass, getEntityBoundingBox().grow(r, r, r), e -> e != this && getDistanceToEntity(e) <= r);
+        return world.getEntitiesWithinAABB(entityClass, getEntityBoundingBox().grow(r, r, r), e -> e != this && getDistance(e) <= r);
     }
 
 

@@ -19,7 +19,7 @@ import javax.annotation.Nullable;
 public class ItemBarakoMask extends ItemArmor implements BarakoaMask {
         public ItemBarakoMask() {
         super(ItemArmor.ArmorMaterial.GOLD, 2, EntityEquipmentSlot.HEAD);
-        setUnlocalizedName("barakoMask");
+        setTranslationKey("barakoMask");
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
         setRegistryName("barako_mask");
     }

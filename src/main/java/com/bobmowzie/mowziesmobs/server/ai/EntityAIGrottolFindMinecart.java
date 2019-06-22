@@ -23,7 +23,7 @@ public final class EntityAIGrottolFindMinecart extends EntityAIBase {
 
     public EntityAIGrottolFindMinecart(EntityGrottol grottol) {
         this.grottol = grottol;
-        this.sorter = Comparator.comparing(grottol::getDistanceSqToEntity);
+        this.sorter = Comparator.comparing(grottol::getDistanceSq);
         this.predicate = minecart -> minecart != null && minecart.isEntityAlive() && !minecart.isBeingRidden() && EntityGrottol.isBlockRail(minecart.world.getBlockState(minecart.getPosition()).getBlock());
         setMutexBits(3);
     }
@@ -53,12 +53,12 @@ public final class EntityAIGrottolFindMinecart extends EntityAIBase {
 
     @Override
     public void resetTask() {
-        grottol.getNavigator().clearPathEntity();
+        grottol.getNavigator().clearPath();
     }
 
     @Override
     public void updateTask() {
-        if (grottol.getDistanceSqToEntity(minecart) > 1.45D * 1.45D) {
+        if (grottol.getDistanceSq(minecart) > 1.45D * 1.45D) {
             grottol.getLookHelper().setLookPositionWithEntity(minecart, 10.0F, grottol.getVerticalFaceSpeed());
             if (++time % 40 == 0) {
                 grottol.getNavigator().tryMoveToEntityLiving(minecart, 0.5D);

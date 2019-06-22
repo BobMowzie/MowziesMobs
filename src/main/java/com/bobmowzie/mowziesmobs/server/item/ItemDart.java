@@ -21,7 +21,7 @@ import com.bobmowzie.mowziesmobs.server.entity.EntityDart;
 public class ItemDart extends ItemArrow {
     public ItemDart() {
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setUnlocalizedName("dart");
+        setTranslationKey("dart");
         setRegistryName("dart");
     }
 

@@ -52,7 +52,7 @@ public class ParticleSnowFlake extends Particle implements ParticleTextureStitch
         if (swirls) {
             Vec3d motionVec = new Vec3d(motionX, motionY, motionZ).normalize();
             float yaw = (float) Math.atan2(motionVec.x, motionVec.z);
-            float xzDistance = (float) motionVec.lengthVector();
+            float xzDistance = (float) motionVec.length();
             float pitch = (float) Math.atan2(motionVec.y, xzDistance);
             float swirlRadius = 4f * (particleAge / (float) particleMaxAge) * spread;
             Point3d point = new Point3d(swirlRadius * Math.cos(swirlTick * 0.2), swirlRadius * Math.sin(swirlTick * 0.2), 0);

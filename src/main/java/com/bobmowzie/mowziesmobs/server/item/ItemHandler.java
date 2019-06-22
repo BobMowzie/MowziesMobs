@@ -58,7 +58,7 @@ public final class ItemHandler {
                 new ItemEarthTalisman(),
                 new ItemCapturedGrottol()
                     .setRegistryName("captured_grottol")
-                    .setUnlocalizedName("capturedGrottol"),
+                    .setTranslationKey("capturedGrottol"),
                 new ItemGlowingJelly(1, 0.1f, false),
                 new ItemNagaFang(),
                 new ItemBlock(BlockHandler.PAINTED_ACACIA).setRegistryName(BlockHandler.PAINTED_ACACIA.getRegistryName()),
@@ -70,7 +70,7 @@ public final class ItemHandler {
     }
 
     public static void addItemText(Item item, List<String> lines) {
-        String keyStart = item.getUnlocalizedName() + ".text.";
+        String keyStart = item.getTranslationKey() + ".text.";
         for (int line = 0;; line++) {
             String key = keyStart + line;
             if (I18n.canTranslate(key)) {

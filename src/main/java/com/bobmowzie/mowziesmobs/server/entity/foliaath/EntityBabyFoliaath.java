@@ -208,7 +208,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
         List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(distanceX, distanceY, distanceZ));
         ArrayList<EntityItem> listEntityItem = new ArrayList<>();
         for (Entity entityNeighbor : list) {
-            if (entityNeighbor instanceof EntityItem && getDistanceToEntity(entityNeighbor) <= radius) {
+            if (entityNeighbor instanceof EntityItem && getDistance(entityNeighbor) <= radius) {
                 if (getMeat().contains(((EntityItem) entityNeighbor).getItem().getItem())) {
                     listEntityItem.add((EntityItem) entityNeighbor);
                 }

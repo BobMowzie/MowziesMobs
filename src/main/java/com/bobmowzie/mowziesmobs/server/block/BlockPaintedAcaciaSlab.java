@@ -30,7 +30,7 @@ public abstract class BlockPaintedAcaciaSlab extends BlockSlab {
         setHardness(2.0F);
         setResistance(5.0F);
         setSoundType(SoundType.WOOD);
-        setUnlocalizedName("paintedAcaciaSlab");
+        setTranslationKey("paintedAcaciaSlab");
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
         useNeighborBrightness = true;
     }
@@ -65,8 +65,8 @@ public abstract class BlockPaintedAcaciaSlab extends BlockSlab {
     }
 
     @Override
-    public String getUnlocalizedName(int meta) {
-        return super.getUnlocalizedName();
+    public String getTranslationKey(int meta) {
+        return super.getTranslationKey();
     }
 
     @Override

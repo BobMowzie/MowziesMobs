@@ -39,10 +39,10 @@ public class RenderBoulder extends Render<EntityBoulder> {
         super(mgr);
         model = new ModelBoulder();
         texMap = new TreeMap<String, ResourceLocation>();
-        texMap.put(Blocks.STONE.getUnlocalizedName(), TEXTURE_STONE);
-        texMap.put(Blocks.DIRT.getUnlocalizedName(), TEXTURE_DIRT);
-        texMap.put(Blocks.CLAY.getUnlocalizedName(), TEXTURE_CLAY);
-        texMap.put(Blocks.SANDSTONE.getUnlocalizedName(), TEXTURE_SANDSTONE);
+        texMap.put(Blocks.STONE.getTranslationKey(), TEXTURE_STONE);
+        texMap.put(Blocks.DIRT.getTranslationKey(), TEXTURE_DIRT);
+        texMap.put(Blocks.CLAY.getTranslationKey(), TEXTURE_CLAY);
+        texMap.put(Blocks.SANDSTONE.getTranslationKey(), TEXTURE_SANDSTONE);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class RenderBoulder extends Render<EntityBoulder> {
 //        }
 //        else return TEXTURE_DIRT;
         if (entity.storedBlock != null) {
-            ResourceLocation tex = texMap.get(entity.storedBlock.getBlock().getUnlocalizedName());
+            ResourceLocation tex = texMap.get(entity.storedBlock.getBlock().getTranslationKey());
             if (tex != null) return tex;
         }
         return TEXTURE_DIRT;

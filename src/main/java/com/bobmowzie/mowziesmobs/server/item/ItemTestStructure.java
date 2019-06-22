@@ -16,7 +16,7 @@ import java.util.Random;
 
 public class ItemTestStructure extends Item {
     public ItemTestStructure() {
-        this.setUnlocalizedName("testStructure");
+        this.setTranslationKey("testStructure");
         setRegistryName("test_structure");
     }
 

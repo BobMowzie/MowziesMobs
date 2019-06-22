@@ -1261,7 +1261,7 @@ public class ModelNaga extends AdvancedModelBase{
             jawControls();
             wingFoldControls();
 
-            naga.dc.updateChain(LLibrary.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.5f, 0.5f, 0.5f, 0.97f, 30, true);
+//            naga.dc.updateChain(LLibrary.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.5f, 0.5f, 0.5f, 0.97f, 30, true);
 
             computeWingWebbing();
 

@@ -223,7 +223,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         }
         active = getActive();
         if (!active) {
-            getNavigator().clearPathEntity();
+            getNavigator().clearPath();
             rotationYaw = prevRotationYaw;
             renderYawOffset = rotationYaw;
             if (onGround && getAnimation() == NO_ANIMATION) {
@@ -234,7 +234,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         }
         updateAttackAI();
         if (getAnimation() != NO_ANIMATION) {
-            getNavigator().clearPathEntity();
+            getNavigator().clearPath();
         }
 
         if (getDancing()) {
@@ -371,10 +371,10 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         double dy = target.getEntityBoundingBox().minY + (double)(target.height / 3.0F) - dart.posY;
         double dz = target.posZ - this.posZ;
         double dist = (double)MathHelper.sqrt(dx * dx + dz * dz);
-        dart.setThrowableHeading(dx, dy + dist * 0.2D, dz, 1.6F, 1);
+        dart.shoot(dx, dy + dist * 0.2D, dz, 1.6F, 1);
         int i = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, this.getHeldItem(EnumHand.MAIN_HAND));
         int j = EnchantmentHelper.getEnchantmentLevel(Enchantments.PUNCH, this.getHeldItem(EnumHand.MAIN_HAND));
-        dart.setDamage((double) (p_82196_2_ * 2.0F) + this.rand.nextGaussian() * 0.25D + (double) ((float) this.world.getDifficulty().getDifficultyId() * 0.11F));
+        dart.setDamage((double) (p_82196_2_ * 2.0F) + this.rand.nextGaussian() * 0.25D + (double) ((float) this.world.getDifficulty().getId() * 0.11F));
 
         if (i > 0) {
             dart.setDamage(dart.getDamage() + (double) i * 0.5D + 0.5D);

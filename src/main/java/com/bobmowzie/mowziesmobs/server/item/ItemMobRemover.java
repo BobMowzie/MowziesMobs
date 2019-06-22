@@ -15,7 +15,7 @@ import javax.annotation.Nullable;
 public class ItemMobRemover extends Item {
     public ItemMobRemover() {
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setUnlocalizedName("mobRemover");
+        setTranslationKey("mobRemover");
         setRegistryName("mob_remover");
     }
 

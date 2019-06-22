@@ -105,18 +105,18 @@ public class DynamicChain {
                 } else {
                     disp = p[i].subtract(p[i - 1]);
                 }
-                disp = disp.normalize().scale(disp.lengthVector() - d[i]);
+                disp = disp.normalize().scale(disp.length() - d[i]);
                 Vec3d damp = v[i].scale(dampAmount);
                 Vec3d gravity = new Vec3d(0, -gravityAmount, 0);
                 Vec3d attract = pOrig[0].subtract(p[i]); //origModelRenderers[i].getWorldPos(entity, LLibrary.PROXY.getPartialTicks()).subtract(p[i]);
-                F[i] = disp.scale(-stiffness * (disp.lengthVector())).add(gravity.scale(m[i])).subtract(damp);
+                F[i] = disp.scale(-stiffness * (disp.length())).add(gravity.scale(m[i])).subtract(damp);
                 if (i == 0 || doAttract) {
                     F[i] = F[i].add(attract.scale(1 / (1 + i * i * attractFalloff)));
                 }
-                if (F[i].lengthVector() > maxForce) F[i].normalize().scale(maxForce);
+                if (F[i].length() > maxForce) F[i].normalize().scale(maxForce);
 
-//            if (disp.lengthVector() > 0 && F[i].dotProduct(disp) > 0) {
-//                Vec3d antiStretch = disp.normalize().scale(1.5 * F[i].dotProduct(disp) / (disp.lengthVector()));
+//            if (disp.length() > 0 && F[i].dotProduct(disp) > 0) {
+//                Vec3d antiStretch = disp.normalize().scale(1.5 * F[i].dotProduct(disp) / (disp.length()));
 //                F[i] = F[i].add(antiStretch);
 //                System.out.println(antiStretch);
 //            }
@@ -196,7 +196,7 @@ public class DynamicChain {
                 Vec3d p2 = new Vec3d(chainDynamic[i+1].rotationPointX, chainDynamic[i+1].rotationPointY, chainDynamic[i+1].rotationPointZ);
                 Vec3d diff = p2.subtract(p1);
                 float yaw = (float)Math.atan2(diff.x, diff.z);
-                float pitch = -(float)Math.asin(diff.y/diff.lengthVector());
+                float pitch = -(float)Math.asin(diff.y/diff.length());
                 chainDynamic[i].rotateAngleY = chainDynamic[i].defaultRotationY + yaw;
                 chainDynamic[i].rotateAngleX = chainDynamic[i].defaultRotationZ + pitch;
                 chainDynamic[i].rotateAngleZ = (float) r[i].z;
@@ -235,7 +235,7 @@ public class DynamicChain {
 //        q.setX((float) a.x);
 //        q.setY((float) a.y);
 //        q.setZ((float) a.z);
-//        q.setW((float)(Math.sqrt(Math.pow(v1.lengthVector(), 2) * Math.pow(v2.lengthVector(), 2)) + v1.dotProduct(v2)));
+//        q.setW((float)(Math.sqrt(Math.pow(v1.length(), 2) * Math.pow(v2.length(), 2)) + v1.dotProduct(v2)));
 //        return q;
 
         float dz = (float) (p2.z - p1.z);
@@ -250,13 +250,13 @@ public class DynamicChain {
 //        Vec3d vec2 = new Vec3d(1, 0, 0);
 //        Vec3d vec1YawCalc = new Vec3d(vec1.x, vec2.y, vec1.z);
 //        Vec3d vec1PitchCalc = new Vec3d(vec2.x, vec1.y, vec2.z);
-//        float yaw = (float) Math.acos((vec1YawCalc.dotProduct(vec2))/(vec1YawCalc.lengthVector() * vec2.lengthVector()));
-//        float pitch = (float) Math.acos((vec1PitchCalc.dotProduct(vec2))/(vec1PitchCalc.lengthVector() * vec2.lengthVector()));
+//        float yaw = (float) Math.acos((vec1YawCalc.dotProduct(vec2))/(vec1YawCalc.length() * vec2.length()));
+//        float pitch = (float) Math.acos((vec1PitchCalc.dotProduct(vec2))/(vec1PitchCalc.length() * vec2.length()));
 //        return new Vec3d(yaw, pitch, 0);
 
 //        Vec3d vec1 = p2.subtract(p1).normalize();
 //        Vec3d vec2 = new Vec3d(0, 0, -1);
-//        return toEuler(vec1.crossProduct(vec2).normalize(), Math.acos(vec1.dotProduct(vec2)/(vec1.lengthVector() * vec2.lengthVector())));
+//        return toEuler(vec1.crossProduct(vec2).normalize(), Math.acos(vec1.dotProduct(vec2)/(vec1.length() * vec2.length())));
 
 //        Vec3d vec1 = p2.subtract(p1);
 //        Vec3d vec2 = new Vec3d(0, 0, -1);

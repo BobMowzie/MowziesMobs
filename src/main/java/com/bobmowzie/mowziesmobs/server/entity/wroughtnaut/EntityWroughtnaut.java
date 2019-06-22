@@ -273,7 +273,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
             if (getAnimation() == NO_ANIMATION) {
                 getNavigator().tryMoveToEntityLiving(getAttackTarget(), 0.2);
             } else {
-                getNavigator().clearPathEntity();
+                getNavigator().clearPath();
             }
             if (getAttackTarget().posY - posY >= -1 && getAttackTarget().posY - posY <= 3 && getAnimation() == NO_ANIMATION && !isAIDisabled()) {
                 boolean couldStomp = targetDistance < 6 && ticksSinceLastStomp > 600;

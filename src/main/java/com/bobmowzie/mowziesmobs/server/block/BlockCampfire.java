@@ -25,7 +25,7 @@ public class BlockCampfire extends Block {
 
     public BlockCampfire() {
         super(Material.WOOD, MapColor.TNT);
-        setUnlocalizedName("campfire");
+        setTranslationKey("campfire");
         setRegistryName("campfire");
         setLightLevel(0.8125F);
         useNeighborBrightness = true;
@@ -76,12 +76,12 @@ public class BlockCampfire extends Block {
     }
 
     @Override
-    public void onEntityCollidedWithBlock(World world, BlockPos pos, IBlockState state, Entity entity) {
+    public void onEntityCollision(World world, BlockPos pos, IBlockState state, Entity entity) {
         if (!(entity instanceof EntityBarakoa)) entity.attackEntityFrom(DamageSource.IN_FIRE, 1);
     }
 
     @Override
-    public BlockRenderLayer getBlockLayer() {
+    public BlockRenderLayer getRenderLayer() {
         return BlockRenderLayer.CUTOUT;
     }
 }

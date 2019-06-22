@@ -73,7 +73,7 @@ public class MMAIAvoidEntity<U extends EntityCreature, T extends Entity> extends
         entityEvading = entities.get(0);
         for (int n = 0; n < numChecks; n++) {
             Vec3d pos = RandomPositionGenerator.findRandomTargetBlockAwayFrom(entity, horizontalEvasion, verticalEvasion, entityEvading.getPositionVector());
-            if (pos != null && !(entityEvading.getDistanceSq(pos.x, pos.y, pos.z) < entityEvading.getDistanceSqToEntity(entity))) {
+            if (pos != null && !(entityEvading.getDistanceSq(pos.x, pos.y, pos.z) < entityEvading.getDistanceSq(entity))) {
                 entityPathEntity = entity.getNavigator().getPathToXYZ(pos.x, pos.y, pos.z);
                 if (entityPathEntity != null) {
                     return true;
@@ -105,6 +105,6 @@ public class MMAIAvoidEntity<U extends EntityCreature, T extends Entity> extends
 
     @Override
     public void updateTask() {
-        entity.getNavigator().setSpeed(entity.getDistanceSqToEntity(entityEvading) < NEAR_DISTANCE * NEAR_DISTANCE ? nearSpeed : farSpeed);
+        entity.getNavigator().setSpeed(entity.getDistanceSq(entityEvading) < NEAR_DISTANCE * NEAR_DISTANCE ? nearSpeed : farSpeed);
     }
 }

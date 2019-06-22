@@ -22,7 +22,7 @@ sourceCompatibility = targetCompatibility = "1.8"
 minecraft {
     version = "1.12.2-14.23.3.2655"
     runDir = "run"
-	mappings = "snapshot_20170627"
+	mappings = "stable_39"
 }
 
 repositories {
@@ -41,7 +41,7 @@ repositories {
 }
 
 dependencies {
-    compile "net.ilexiconn:llibrary:1.7.9-1.12.2:dev"
+    deobfCompile "net.ilexiconn:llibrary:1.7.9-1.12.2"
     deobfCompile "com.azanor.baubles:Baubles:1.12-1.5.2"
     deobfCompile "thaumcraft:Thaumcraft:1.12.2:6.1.BETA16"
 }

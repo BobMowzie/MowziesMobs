@@ -17,7 +17,7 @@ public class ItemWroughtHelm extends ItemArmor {
     public ItemWroughtHelm() {
         super(ArmorMaterial.IRON, 2, EntityEquipmentSlot.HEAD);
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setUnlocalizedName("wroughtHelmet");
+        setTranslationKey("wroughtHelmet");
         setRegistryName("wrought_helmet");
     }
 
