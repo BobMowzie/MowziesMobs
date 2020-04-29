@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoayaTrade;
 import com.bobmowzie.mowziesmobs.server.ServerProxy;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
+import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
 import com.bobmowzie.mowziesmobs.server.ai.EntityAIBarakoayaTrade;
 import com.bobmowzie.mowziesmobs.server.ai.EntityAIBarakoayaTradeLook;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
@@ -72,7 +73,7 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
         super(world);
         tasks.addTask(1, new EntityAIBarakoayaTrade(this));
         tasks.addTask(1, new EntityAIBarakoayaTradeLook(this));
-        targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
+        this.targetTasks.addTask(3, new BarakoaHurtByTargetAI(this, true));
         targetTasks.addTask(3, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, true, false));
         targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityZombie.class, 0, true, true, null));
         this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntitySkeleton.class, 0, true, false, null));

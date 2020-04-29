@@ -49,6 +49,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
+import java.util.List;
+
 public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttackMob, IMob {
     public static final Animation DIE_ANIMATION = Animation.create(70);
     public static final Animation HURT_ANIMATION = Animation.create(10);
@@ -410,7 +412,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
                 entityAttackingAngle += 360;
             }
             float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
-            angleFlag = (entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -arc + 90 / 2);
+            angleFlag = (entityRelativeAngle <= arc / 2.0 && entityRelativeAngle >= -arc / 2.0) || (entityRelativeAngle >= 360 - arc / 2.0 || entityRelativeAngle <= -arc + 90 / 2.0);
         }
         if (angleFlag && getMask().canBlock && entity instanceof EntityLivingBase && (getAnimation() == NO_ANIMATION || getAnimation() == HURT_ANIMATION || getAnimation() == BLOCK_ANIMATION)) {
             blockingEntity = (EntityLivingBase) entity;

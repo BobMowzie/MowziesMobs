@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
 
+import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import net.minecraft.entity.Entity;
@@ -36,7 +37,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
 
     public EntityBarakoana(World world) {
         super(world);
-        this.targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
+        this.targetTasks.addTask(3, new BarakoaHurtByTargetAI(this, true));
         this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityCow.class, 0, true, false, null));
         this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityPig.class, 0, true, false, null));
         this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntitySheep.class, 0, true, false, null));
@@ -97,12 +98,12 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
 
     @Override
     public boolean attackEntityFrom(DamageSource source, float damage) {
-        Entity entity = source.getTrueSource();
+        /*Entity entity = source.getTrueSource();
         if (entity != null && entity instanceof EntityLivingBase) {
             if (!(entity instanceof EntityPlayer) || !(((EntityPlayer) entity).capabilities.isCreativeMode)) {
                 setAttackTarget((EntityLivingBase) entity);
             }
-        }
+        }*/
         return super.attackEntityFrom(source, damage);
     }
 
