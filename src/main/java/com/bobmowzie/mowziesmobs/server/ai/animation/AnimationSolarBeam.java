@@ -31,16 +31,18 @@ public class AnimationSolarBeam<T extends MowzieEntity & IAnimatedEntity> extend
             entity.world.spawnEntity(solarBeam);
         }
         if (entity.getAnimationTick() >= 4) {
-            float radius2 = 1.2f;
-            double x = entity.posX + radius1 * Math.sin(-entity.rotationYaw * Math.PI / 180) + radius2 * Math.sin(-entity.rotationYawHead * Math.PI / 180) * Math.cos(-entity.rotationPitch * Math.PI / 180);
-            double y = entity.posY + 1.4 + radius2 * Math.sin(-entity.rotationPitch * Math.PI / 180);
-            double z = entity.posZ + radius1 * Math.cos(-entity.rotationYaw * Math.PI / 180) + radius2 * Math.cos(-entity.rotationYawHead * Math.PI / 180) * Math.cos(-entity.rotationPitch * Math.PI / 180);
-            solarBeam.setPosition(x, y, z);
+            if (solarBeam != null) {
+                float radius2 = 1.2f;
+                double x = entity.posX + radius1 * Math.sin(-entity.rotationYaw * Math.PI / 180) + radius2 * Math.sin(-entity.rotationYawHead * Math.PI / 180) * Math.cos(-entity.rotationPitch * Math.PI / 180);
+                double y = entity.posY + 1.4 + radius2 * Math.sin(-entity.rotationPitch * Math.PI / 180);
+                double z = entity.posZ + radius1 * Math.cos(-entity.rotationYaw * Math.PI / 180) + radius2 * Math.cos(-entity.rotationYawHead * Math.PI / 180) * Math.cos(-entity.rotationPitch * Math.PI / 180);
+                solarBeam.setPosition(x, y, z);
 
-            float yaw = entity.rotationYawHead + 90;
-            float pitch = -entity.rotationPitch;
-            solarBeam.setYaw((float) (yaw * Math.PI / 180));
-            solarBeam.setPitch((float) (pitch * Math.PI / 180));
+                float yaw = entity.rotationYawHead + 90;
+                float pitch = -entity.rotationPitch;
+                solarBeam.setYaw((float) (yaw * Math.PI / 180));
+                solarBeam.setPitch((float) (pitch * Math.PI / 180));
+            }
         }
         if (entity.getAnimationTick() >= 22) {
             if (entityTarget != null) {
