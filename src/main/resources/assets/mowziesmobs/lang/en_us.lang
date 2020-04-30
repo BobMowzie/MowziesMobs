@@ -45,6 +45,7 @@ item.wroughtAxe.text.2=Shift-right-click to slam the ground and create a shockwa
 item.barakoMask.text.0=Never breaks
 item.barakoMask.text.1=Equip, then right-click with Barakoa mask
 item.barakoMask.text.2=to spawn followers
+item.barakoMask.text.3=Right-click a follower to return it to its mask
 
 item.barakoaMask.fear.text.0=Grants swiftness
 item.barakoaMask.fear.text.1=I wonder if...?

@@ -80,6 +80,8 @@ public final class MMSounds {
     public static final SoundEvent ENTITY_BARAKOA_SWING = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.emerge")
     public static final SoundEvent ENTITY_BARAKOA_EMERGE = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.retract")
+    public static final SoundEvent ENTITY_BARAKOA_RETRACT = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.hurt")
     public static final SoundEvent ENTITY_BARAKOA_HURT = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.die")
@@ -413,6 +415,7 @@ public final class MMSounds {
                 create("barakoa.battlecry2"),
                 create("barakoa.swing"),
                 create("barakoa.emerge"),
+                create("barakoa.retract"),
                 create("barakoa.hurt"),
                 create("barakoa.die"),
                 create("barakoa.shout"),

@@ -1,10 +1,15 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.IEntityOwnable;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -24,6 +29,27 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<EntityPlayer> impleme
     public void onUpdate() {
         super.onUpdate();
         if (!world.isRemote && getAttackTarget() != null && getAttackTarget().isDead) setAttackTarget(null);
+    }
+
+    @Override
+    protected boolean processInteract(EntityPlayer player, EnumHand hand) {
+        if (player == leader && getActive()) {
+            AnimationHandler.INSTANCE.sendAnimationMessage(this, DEACTIVATE_ANIMATION);
+            playSound(MMSounds.ENTITY_BARAKOA_RETRACT, 1, 1);
+        }
+        return super.processInteract(player, hand);
+    }
+
+    @Override
+    protected void applyEntityAttributes() {
+        super.applyEntityAttributes();
+        getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
+        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20 * MowziesMobs.CONFIG.healthScaleBarakoa);
+    }
+
+    @Override
+    public int getAttack() {
+        return 7;
     }
 
     @Override
@@ -55,6 +81,11 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<EntityPlayer> impleme
     @Override
     public boolean isBarakoDevoted() {
         return false;
+    }
+
+    @Override
+    protected void dropLoot() {
+        return;
     }
 
     @Nullable
