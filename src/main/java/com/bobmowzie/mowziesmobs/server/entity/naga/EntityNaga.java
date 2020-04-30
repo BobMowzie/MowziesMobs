@@ -821,8 +821,6 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
 
     }
 
-
-
     static class AILookAround extends EntityAIBase
     {
         private final EntityNaga parentEntity;

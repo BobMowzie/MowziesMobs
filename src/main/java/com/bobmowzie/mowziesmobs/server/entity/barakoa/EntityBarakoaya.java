@@ -136,7 +136,7 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
 
     @Override
     protected boolean processInteract(EntityPlayer player, EnumHand hand) {
-        if (canTradeWith(player)) {
+        if (canTradeWith(player) && getAttackTarget() == null && !isDead) {
             setCustomer(player);
             if (!world.isRemote) {
                 GuiHandler.open(GuiHandler.BARAKOA_TRADE, player, this);

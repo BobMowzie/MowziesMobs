@@ -508,7 +508,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 
     @Override
     protected boolean processInteract(EntityPlayer player, EnumHand hand) {
-        if (canTradeWith(player)) {
+        if (canTradeWith(player) && getAttackTarget() == null && !isDead) {
             setCustomer(player);
             if (!world.isRemote) {
                 GuiHandler.open(GuiHandler.BARAKO_TRADE, player, this, hasTradedWith(player) ? 1 : 0);
