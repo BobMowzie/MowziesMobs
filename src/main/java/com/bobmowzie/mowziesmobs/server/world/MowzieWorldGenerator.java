@@ -2,9 +2,11 @@ package com.bobmowzie.mowziesmobs.server.world;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.world.structure.StructureBarakoaVillage;
 import com.bobmowzie.mowziesmobs.server.world.structure.StructureWroughtnautRoom;
 import net.minecraft.init.Biomes;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -33,6 +35,41 @@ public class MowzieWorldGenerator implements IWorldGenerator {
 
     public static void generatePrePopulate(World world, Random random, int chunkX, int chunkZ) {
         if (canSpawnVillageAtCoords(chunkX, chunkZ, world)) StructureBarakoaVillage.generateVillage(world, random, chunkX * 16 + 8, chunkZ * 16 + 8, 1);
+        if (canSpawnFrostmawAtCoords(chunkX, chunkZ, world)) {
+            EntityFrostmaw frostmaw = new EntityFrostmaw(world);
+            frostmaw.spawnInWorld(world, random, chunkX * 16 + 8, chunkZ * 16 + 8);
+        }
+    }
+
+    private static boolean canSpawnFrostmawAtCoords(int chunkX, int chunkZ, World world)
+    {
+        if (MowziesMobs.CONFIG.spawnrateFrostmaw <= 0) return false;
+        int maxDistanceBetweenFrostmaws = MowziesMobs.CONFIG.spawnrateFrostmaw + 8;
+
+        int i = chunkX;
+        int j = chunkZ;
+
+        if (chunkX < 0)
+        {
+            chunkX -= maxDistanceBetweenFrostmaws - 1;
+        }
+
+        if (chunkZ < 0)
+        {
+            chunkZ -= maxDistanceBetweenFrostmaws - 1;
+        }
+
+        int k = chunkX / maxDistanceBetweenFrostmaws;
+        int l = chunkZ / maxDistanceBetweenFrostmaws;
+        Random random = world.setRandomSeed(k, l, 14357617);
+        k = k * maxDistanceBetweenFrostmaws;
+        l = l * maxDistanceBetweenFrostmaws;
+        k = k + random.nextInt(maxDistanceBetweenFrostmaws - 8);
+        l = l + random.nextInt(maxDistanceBetweenFrostmaws - 8);
+
+        if (i == k && j == l) return true;
+
+        return false;
     }
 
     private static boolean canSpawnVillageAtCoords(int chunkX, int chunkZ, World world)
@@ -77,5 +114,15 @@ public class MowzieWorldGenerator implements IWorldGenerator {
     }
 
     private void generateNether(World world, Random random, int i, int i1) {
+    }
+
+    public static int findGenHeight(World world, BlockPos pos) {
+        for (int y = 70 - pos.getY(); y > 50 - pos.getY(); y--) {
+            if (!(world.getBlockState(pos.add(0, y, 0)).isFullBlock())) continue;
+            if (world.getBlockState(pos.add(0, y, 0)) != Blocks.GRASS.getDefaultState()) break;
+            return y;
+        }
+        //System.out.println("Failed to find height");
+        return -1;
     }
 }

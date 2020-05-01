@@ -14,6 +14,7 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
 import com.google.common.base.Optional;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
@@ -45,9 +46,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
+import net.minecraftforge.common.BiomeDictionary;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -219,6 +224,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                 if (getAnimationTick() == 6) {
                     playSound(MMSounds.ENTITY_FROSTMAW_WHOOSH, 2, 0.8f);
                 }
+                if (getAttackTarget() != null) getLookHelper().setLookPositionWithEntity(getAttackTarget(), 30, 30);
             }
 
             if (getAnimation() == SWIPE_TWICE_ANIMATION && currentAnim instanceof AnimationAreaAttackAI<?>) {
@@ -231,6 +237,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                 if (getAnimationTick() == 6) {
                     playSound(MMSounds.ENTITY_FROSTMAW_WHOOSH, 2, 0.8f);
                 }
+                if (getAttackTarget() != null) getLookHelper().setLookPositionWithEntity(getAttackTarget(), 30, 30);
             }
 
             if (getAnimation() == ROAR_ANIMATION) {
@@ -291,7 +298,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
             }
 
             if (getAnimation() == ICE_BREATH_ANIMATION) {
-                if (getAttackTarget() != null) getLookHelper().setLookPositionWithEntity(getAttackTarget(), 15, 15);
+                if (getAttackTarget() != null) getLookHelper().setLookPositionWithEntity(getAttackTarget(), 30, 30);
                 Vec3d mouthPos = new Vec3d(2.3, 2.65, 0);
                 mouthPos = mouthPos.rotateYaw((float)Math.toRadians(-rotationYaw - 90));
                 mouthPos = mouthPos.add(getPositionVector());
@@ -401,7 +408,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, ICE_BREATH_ANIMATION);
                     iceBreathCooldown = ICE_BREATH_COOLDOWN;
                 }
-                if (targetDistance >= 12 && getAnimation() == NO_ANIMATION && iceBallCooldown <= 0 && getHasCrystal() && onGround) {
+                if (targetDistance >= 15 && getAnimation() == NO_ANIMATION && iceBallCooldown <= 0 && getHasCrystal() && onGround) {
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, ICE_BALL_ANIMATION);
                     iceBallCooldown = ICE_BALL_COOLDOWN;
                 }
@@ -904,6 +911,17 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
 
     @Override
     protected boolean canDespawn() {
-        return true;
+        return false;
+    }
+
+    public void spawnInWorld(World world, Random rand, int x, int z) {
+        Biome biome = world.getBiome(new BlockPos(x, 50, z));
+        Set<BiomeDictionary.Type> types = BiomeDictionary.getTypes(biome);
+        if(!types.contains(BiomeDictionary.Type.SNOWY)) return;
+        BlockPos pos = new BlockPos(x, 0, z);
+        int y = MowzieWorldGenerator.findGenHeight(world, pos) + 1;
+        if (y == -1) return;
+        setPositionAndRotation(x, y, z, rand.nextFloat() * 360.0f, 0);
+        world.spawnEntity(this);
     }
 }

@@ -32,7 +32,7 @@ public class ConfigHandler {
     public float attackScaleBarako = 1;
 
     @ConfigEntry(name = "Frostmaw Spawn Rate", minValue = "0", maxValue = "100", comment = "Frostmaw Spawnrate: Larger number causes more spawning, 0 to disable spawning")
-    public int spawnrateFrostmaw = 1;
+    public int spawnrateFrostmaw = 15;
     @ConfigEntry(name = "Frostmaw Health Multiplier", minValue = "0", maxValue = "100")
     public float healthScaleFrostmaw = 1;
     @ConfigEntry(name = "Frostmaw Attack Multiplier", minValue = "0", maxValue = "100")

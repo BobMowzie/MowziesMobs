@@ -53,7 +53,7 @@ public class EntityIceBreath extends EntityMagicEffect {
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (caster != null && caster.getHealth() <= 0) this.setDead();
+        if (caster != null && caster.isDead) this.setDead();
         if (ticksExisted == 1) playSound(MMSounds.ENTITY_FROSTMAW_ICEBREATH_START, 1, 0.6f);
         if (caster instanceof EntityPlayer) {
             rotationYaw = ((EntityPlayer) caster).rotationYaw;

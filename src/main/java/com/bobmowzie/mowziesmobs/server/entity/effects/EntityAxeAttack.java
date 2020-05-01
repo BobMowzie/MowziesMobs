@@ -62,6 +62,7 @@ public class EntityAxeAttack extends Entity {
     @Override
     public void onUpdate() {
         super.onUpdate();
+        if (caster != null && caster.isDead) setDead();
         if (caster != null) setPositionAndRotation(caster.posX, caster.posY, caster.posZ, caster.rotationYaw, caster.rotationPitch);
         if (!world.isRemote && ticksExisted == 7) playSound(MMSounds.ENTITY_FROSTMAW_WHOOSH, 1, 0.8f);
             if (!world.isRemote && caster != null) {

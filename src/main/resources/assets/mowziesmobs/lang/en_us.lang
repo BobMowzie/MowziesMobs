@@ -43,9 +43,8 @@ item.wroughtAxe.text.1=Right-click to attack in an large arc
 item.wroughtAxe.text.2=Shift-right-click to slam the ground and create a shockwave
 
 item.barakoMask.text.0=Never breaks
-item.barakoMask.text.1=Equip, then right-click with Barakoa mask
-item.barakoMask.text.2=to spawn followers
-item.barakoMask.text.3=Right-click a follower to return it to its mask
+item.barakoMask.text.1=Equip, then right-click with Barakoa mask to spawn followers
+item.barakoMask.text.2=Right-click a follower to return it to its mask
 
 item.barakoaMask.fear.text.0=Grants swiftness
 item.barakoaMask.fear.text.1=I wonder if...?
@@ -68,7 +67,7 @@ item.foliaathSeed.text.3=After 2 days, the foliaath will be fully grown
 
 item.grantSunsBlessing.text.0=Grants Sun's Blessing for 20 minutes
 item.grantSunsBlessing.text.1=With empty hand, right-click to call a sunstrike
-item.grantSunsBlessing.text.2=With empty hand, shift-right-click to fire a solar beam (costs 2 minutes)
+item.grantSunsBlessing.text.2=With empty hand, sneak-right-click to fire a solar beam (costs 2 minutes)
 
 item.earthTalisman.text.0=Creative mode only
 item.earthTalisman.text.1=Place in inventory to wield geomancy

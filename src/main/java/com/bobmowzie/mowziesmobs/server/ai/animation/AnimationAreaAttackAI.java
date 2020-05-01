@@ -11,11 +11,20 @@ import net.minecraft.util.SoundEvent;
 public class AnimationAreaAttackAI<T extends MowzieEntity & IAnimatedEntity> extends AnimationAttackAI<T> {
     private float arc;
     private float height;
+    private boolean lookAtTarget;
 
     public AnimationAreaAttackAI(T entity, Animation animation, SoundEvent attackSound, SoundEvent hitSound, float knockback, float range, float height, float arc, float damageMultiplier, int damageFrame) {
         super(entity, animation, attackSound, hitSound, knockback, range, damageMultiplier, damageFrame);
         this.arc = arc;
         this.height = height;
+        this.lookAtTarget = true;
+    }
+
+    public AnimationAreaAttackAI(T entity, Animation animation, SoundEvent attackSound, SoundEvent hitSound, float knockback, float range, float height, float arc, float damageMultiplier, int damageFrame, boolean lookAtTarget) {
+        super(entity, animation, attackSound, hitSound, knockback, range, damageMultiplier, damageFrame);
+        this.arc = arc;
+        this.height = height;
+        this.lookAtTarget = lookAtTarget;
     }
 
     @Override
@@ -25,7 +34,7 @@ public class AnimationAreaAttackAI<T extends MowzieEntity & IAnimatedEntity> ext
 
     @Override
     public void updateTask() {
-        if (entity.getAnimationTick() < damageFrame && entityTarget != null) {
+        if (lookAtTarget && entity.getAnimationTick() < damageFrame && entityTarget != null) {
             entity.getLookHelper().setLookPositionWithEntity(entityTarget, 30, 30);
         }
         else if (entity.getAnimationTick() == damageFrame) {

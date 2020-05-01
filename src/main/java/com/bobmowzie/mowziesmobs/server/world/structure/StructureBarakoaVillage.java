@@ -5,6 +5,7 @@ import com.bobmowzie.mowziesmobs.server.block.BlockPaintedAcacia;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaya;
+import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
 import net.ilexiconn.llibrary.server.structure.StructureBuilder;
 import net.minecraft.block.*;
 import net.minecraft.init.Biomes;
@@ -692,7 +693,7 @@ public class StructureBarakoaVillage {
 
             //System.out.println("Passes chance test");
             BlockPos pos = new BlockPos(x, 0, z);
-            int y = findGenHeight(world, pos);
+            int y = MowzieWorldGenerator.findGenHeight(world, pos);
             if (y == -1) return;
             //System.out.println("Found height at " + y);
             pos = new BlockPos(pos.getX(), y, pos.getZ());
@@ -704,7 +705,7 @@ public class StructureBarakoaVillage {
                 int throneX = x + 9 * (throneFacing == EnumFacing.WEST ? 1:0) - 9 * (throneFacing == EnumFacing.EAST ? 1:0);
                 int throneZ = z + 9 * (throneFacing == EnumFacing.NORTH ? 1:0) - 9 * (throneFacing == EnumFacing.SOUTH ? 1:0);
                 int throneY = y;
-                y = findGenHeight(world, new BlockPos(throneX, y, throneZ));
+                y = MowzieWorldGenerator.findGenHeight(world, new BlockPos(throneX, y, throneZ));
                 if (y != -1) {
                     generateThrone(world, rand, new BlockPos(throneX, throneY + y, throneZ), throneFacing);
                     break;
@@ -719,7 +720,7 @@ public class StructureBarakoaVillage {
                     distance = rand.nextInt(15) + 6;
                     angle = rand.nextInt(360);
                     BlockPos skullPos = new BlockPos(pos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, pos.getZ() + distance * Math.cos(Math.toRadians(angle)));
-                    y = findGenHeight(world, skullPos);
+                    y = MowzieWorldGenerator.findGenHeight(world, skullPos);
                     //System.out.println("Attempting at " + skullPos.add(0, y, 0).toString());
                     AxisAlignedBB box = new AxisAlignedBB(skullPos.add(-2, y + 1, -2), skullPos.add(2, y + 2, 2));
                     if (world.getCollisionBoxes(null, box).isEmpty() && y != -1) {
@@ -737,7 +738,7 @@ public class StructureBarakoaVillage {
                     distance = rand.nextInt(15) + 5;
                     angle = rand.nextInt(360);
                     BlockPos polePos = new BlockPos(pos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, pos.getZ() + distance * Math.cos(Math.toRadians(angle)));
-                    y = findGenHeight(world, polePos);
+                    y = MowzieWorldGenerator.findGenHeight(world, polePos);
 //                    System.out.println("Attempting at " + polePos.add(0, y, 0).toString());
                     AxisAlignedBB box = new AxisAlignedBB(polePos.add(0, y + 1, 0), polePos.add(1, y + 2, 1));
                     if (world.getCollisionBoxes(null, box).isEmpty() && y != -1) {
@@ -757,7 +758,7 @@ public class StructureBarakoaVillage {
                     distance = rand.nextInt(8) + 10;
                     angle = rand.nextInt(360);
                     BlockPos housePos = new BlockPos(pos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, pos.getZ() + distance * Math.cos(Math.toRadians(angle)));
-                    y = findGenHeight(world, housePos);
+                    y = MowzieWorldGenerator.findGenHeight(world, housePos);
                     //System.out.println("Attempting at " + housePos.add(0, y, 0).toString());
                     AxisAlignedBB box = new AxisAlignedBB(housePos.add(-5, y + 3, -5), housePos.add(5, y + 9, 5));
                     if (world.getCollisionBoxes(null, box).isEmpty() && y != -1) {
@@ -787,16 +788,6 @@ public class StructureBarakoaVillage {
                 }
             }
         }
-    }
-
-    private static int findGenHeight(World world, BlockPos pos) {
-        for (int y = 70 - pos.getY(); y > 50 - pos.getY(); y--) {
-            if (!(world.getBlockState(pos.add(0, y, 0)).isFullBlock())) continue;
-            if (world.getBlockState(pos.add(0, y, 0)) != Blocks.GRASS.getDefaultState()) break;
-            return y;
-        }
-        //System.out.println("Failed to find height");
-        return -1;
     }
 
     private static int findGenHeightBarakoa(World world, BlockPos pos) {
