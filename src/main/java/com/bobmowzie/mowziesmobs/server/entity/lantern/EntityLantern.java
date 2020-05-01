@@ -12,6 +12,8 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.init.Blocks;
@@ -44,6 +46,12 @@ public class EntityLantern extends MowzieEntity {
         super(world);
         setSize(1, 1);
         dir = null;
+    }
+
+    @Override
+    public boolean isCreatureType(EnumCreatureType type, boolean forSpawnCount) {
+        if (forSpawnCount && isNoDespawnRequired()) return false;
+        return type == EnumCreatureType.AMBIENT;
     }
 
     @Override
