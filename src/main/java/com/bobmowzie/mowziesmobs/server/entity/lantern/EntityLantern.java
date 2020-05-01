@@ -11,6 +11,7 @@ import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EnumCreatureType;
@@ -200,6 +201,16 @@ public class EntityLantern extends MowzieEntity {
 
         this.limbSwingAmount += (f2 - this.limbSwingAmount) * 0.4F;
         this.limbSwing += this.limbSwingAmount;
+    }
+
+    public boolean getCanSpawnHere()
+    {
+        int i = MathHelper.floor(this.posX);
+        int j = MathHelper.floor(this.getEntityBoundingBox().minY);
+        int k = MathHelper.floor(this.posZ);
+        BlockPos blockpos = new BlockPos(i, j, k);
+        Block spawnBlock = this.world.getBlockState(blockpos.down()).getBlock();
+        return (spawnBlock == Blocks.GRASS || spawnBlock == Blocks.LEAVES || spawnBlock == Blocks.LEAVES2) && super.getCanSpawnHere();
     }
 
     /**
