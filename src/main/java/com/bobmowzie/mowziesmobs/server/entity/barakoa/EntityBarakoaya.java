@@ -95,7 +95,10 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
     }
 
     public boolean isOfferingTrade() {
-        return getDataManager().get(TRADE).isPresent();
+        if (getDataManager().get(TRADE) instanceof Optional) {
+            return getDataManager().get(TRADE).isPresent();
+        }
+        else return false;
     }
 
     public void setCustomer(EntityPlayer customer) {
