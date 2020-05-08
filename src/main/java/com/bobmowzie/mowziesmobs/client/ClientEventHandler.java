@@ -4,7 +4,6 @@ import com.bobmowzie.mowziesmobs.client.render.entity.FrozenRenderHandler;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
-import javafx.scene.input.MouseDragEvent;
 import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.event.PlayerModelEvent;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
@@ -25,6 +24,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.MouseHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -46,6 +46,7 @@ import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemWroughtAxe;
 import com.bobmowzie.mowziesmobs.server.item.ItemWroughtHelm;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
@@ -175,11 +176,13 @@ public enum ClientEventHandler {
                 float dPitch = ((float)(pitch * 180/Math.PI) - player.rotationPitch)/2f;
                 player.rotationYaw += dYaw;
                 player.rotationPitch += dPitch;
+                stopMouseMove();
             }
             MowzieLivingProperties propertyLiving = EntityPropertiesHandler.INSTANCE.getProperties(player, MowzieLivingProperties.class);
             if (player.isPotionActive(PotionHandler.FROZEN)) {
                 player.rotationYaw = propertyLiving.frozenYaw;
                 player.rotationPitch = propertyLiving.frozenPitch;
+                stopMouseMove();
             }
         }
     }
@@ -251,13 +254,6 @@ public enum ClientEventHandler {
         }
     }
 
-    @SubscribeEvent
-    public void onMouseMove(InputEvent.MouseInputEvent event) {
-        if (Minecraft.getMinecraft().player.isPotionActive(PotionHandler.FROZEN)) {
-            event.setResult(Event.Result.DENY);
-        }
-    }
-
     // Remove frozen overlay
     @SubscribeEvent
     public void onRenderHUD(RenderGameOverlayEvent.Pre event) {
@@ -279,5 +275,11 @@ public enum ClientEventHandler {
             int digit = value % 10;
             Gui.drawModalRectWithCustomSizedTexture(x + 8 * (length - n - 1), y, digit * 8 % 64, digit / 8 * 8, 8, 7, 64, 64);
         }
+    }
+
+    public static void stopMouseMove() {
+        Mouse.getDX();
+        Mouse.getDY();
+        Minecraft.getMinecraft().mouseHelper.deltaX = Minecraft.getMinecraft().mouseHelper.deltaY = 0;
     }
 }

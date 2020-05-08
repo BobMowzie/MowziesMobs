@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.property;
 
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
+import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.power.Power;
 import com.bobmowzie.mowziesmobs.server.property.power.PowerGeomancy;
 import net.ilexiconn.llibrary.server.entity.EntityProperties;
