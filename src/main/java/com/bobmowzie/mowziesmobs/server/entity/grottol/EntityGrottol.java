@@ -295,7 +295,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
         }
 
         // AI Task
-        if (!world.isRemote && fleeTime >= 70 && getAnimation() == NO_ANIMATION && !isAIDisabled() && !isPotionActive(PotionHandler.FROZEN)) {
+        if (!world.isRemote && fleeTime >= 55 && getAnimation() == NO_ANIMATION && !isAIDisabled() && !isPotionActive(PotionHandler.FROZEN)) {
             IBlockState blockBeneath = world.getBlockState(getPosition().down());
             Material mat = blockBeneath.getMaterial();
             if (mat == Material.GRASS || mat == Material.GROUND || mat == Material.SAND || mat == Material.CLAY || mat == Material.ROCK) {
@@ -319,9 +319,13 @@ public class EntityGrottol extends MowzieEntity implements IMob {
                     );
                 }
             }
-            if (getAnimationTick() == 18) {
-                setDead();
-            }
+        }
+    }
+
+    @Override
+    protected void onAnimationFinish(Animation animation) {
+        if (animation == BURROW_ANIMATION) {
+            setDead();
         }
     }
 

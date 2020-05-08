@@ -1,13 +1,16 @@
 package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.client.render.entity.FrozenRenderHandler;
+import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
+import javafx.scene.input.MouseDragEvent;
 import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.event.PlayerModelEvent;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.model.ModelBiped;
@@ -29,8 +32,10 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.settings.KeyBindingMap;
+import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -247,9 +252,25 @@ public enum ClientEventHandler {
     }
 
     @SubscribeEvent
-    public void onMouseMove(MouseEvent event) {
+    public void onMouseMove(InputEvent.MouseInputEvent event) {
         if (Minecraft.getMinecraft().player.isPotionActive(PotionHandler.FROZEN)) {
-            event.setCanceled(true);
+            event.setResult(Event.Result.DENY);
+        }
+    }
+
+    // Remove frozen overlay
+    @SubscribeEvent
+    public void onRenderHUD(RenderGameOverlayEvent.Pre event) {
+        EntityPlayerSP player = Minecraft.getMinecraft().player;
+        if (player != null && player.isRiding()) {
+            if (player.getRidingEntity() instanceof EntityFrozenController) {
+                if (event.getType().equals(RenderGameOverlayEvent.ElementType.HEALTHMOUNT)) {
+                    event.setCanceled(true);
+                }
+                if (event.getType().equals(RenderGameOverlayEvent.ElementType.ALL)) {
+                    Minecraft.getMinecraft().ingameGUI.setOverlayMessage("", false);
+                }
+            }
         }
     }
 
