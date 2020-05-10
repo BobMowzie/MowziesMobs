@@ -47,18 +47,15 @@ public class ItemWroughtAxe extends ItemAxe {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
-        if (!world.isRemote) {
+        if (player != null) {
             MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
-            if (property.untilAxeSwing <= 0) {
-                if (player.isSneaking() && player.onGround) {
-                    EntityAxeAttack axeAttack = new EntityAxeAttack(world, player, true);
-                    world.spawnEntity(axeAttack);
-                }
-                else {
-                    EntityAxeAttack axeAttack = new EntityAxeAttack(world, player, false);
-                    world.spawnEntity(axeAttack);
-                }
-                property.untilAxeSwing = property.SWING_COOLDOWN;
+            if (property != null && property.untilAxeSwing <= 0) {
+                boolean verticalAttack = player.isSneaking() && player.onGround;
+                EntityAxeAttack axeAttack = new EntityAxeAttack(world, player, verticalAttack);
+                axeAttack.setPositionAndRotation(player.posX, player.posY, player.posZ, player.rotationYaw, player.rotationPitch);
+                if (!world.isRemote) world.spawnEntity(axeAttack);
+                property.verticalSwing = verticalAttack;
+                property.untilAxeSwing = MowziePlayerProperties.SWING_COOLDOWN;
             }
         }
         return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));

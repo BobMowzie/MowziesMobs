@@ -1,13 +1,14 @@
 package com.bobmowzie.mowziesmobs.client;
 
-import com.bobmowzie.mowziesmobs.client.render.entity.FrozenRenderHandler;
+
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
 import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.event.PlayerModelEvent;
+import net.ilexiconn.llibrary.client.event.RenderArmEvent;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
-import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
@@ -15,27 +16,15 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.client.renderer.entity.RenderLivingBase;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.MobEffects;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.MouseHelper;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.client.settings.KeyBindingMap;
-import net.minecraftforge.fml.common.eventhandler.Event;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -47,7 +36,6 @@ import com.bobmowzie.mowziesmobs.server.item.ItemWroughtAxe;
 import com.bobmowzie.mowziesmobs.server.item.ItemWroughtHelm;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public enum ClientEventHandler {
@@ -75,6 +63,15 @@ public enum ClientEventHandler {
         } else if (event.getItem().getItem() instanceof ItemBarakoMask) {
             GlStateManager.scale(0.85f, 0.85f, 0.85f);
             GlStateManager.translate(0.32f, -0.4f, -0.25f);
+        }
+    }
+
+    @SubscribeEvent
+    public void onHandRender(RenderSpecificHandEvent event) {
+        EntityPlayer player = Minecraft.getMinecraft().player;
+        MowziePlayerProperties propertyPlayer = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
+        if (propertyPlayer != null && propertyPlayer.untilAxeSwing > 0) {
+            event.setCanceled(true);
         }
     }
 
@@ -127,6 +124,43 @@ public enum ClientEventHandler {
             event.getModel().bipedRightLeg.rotateAngleY = spin;
             event.getModel().bipedRightLeg.rotateAngleZ = 0;
             event.getModel().bipedRightLeg.setRotationPoint(-1.9F * (float)Math.sin(spin + Math.PI/2), 12.0F, -1.9f * (float)Math.cos(spin + Math.PI/2));*/
+        }
+
+        // Axe of a thousand metals attack animations
+        if (propertyPlayer != null && propertyPlayer.untilAxeSwing > 0) {
+            float frame = (MowziePlayerProperties.SWING_COOLDOWN - propertyPlayer.untilAxeSwing) + delta;
+            if (player.getActiveHand() == EnumHand.MAIN_HAND) {
+                ModelRenderer arm = event.getModel().bipedRightArm;
+                if (propertyPlayer.verticalSwing) {
+                    float swingArc = 3f;
+                    arm.rotateAngleX = -2.7f + (float) (swingArc * 1 / (1 + Math.exp(1.3f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 2f))));
+                    arm.rotateAngleX = Math.min(arm.rotateAngleX, -0.1f);
+                    if (!event.getModel().isSneak) {
+                        GlStateManager.translate(0.0F, 0.3F, 0.0F);
+                    }
+                    event.getModel().isSneak = true;
+                } else {
+                    float swingArc = 2.5f;
+                    arm.rotateAngleX = -1.75f + (float) (swingArc * 1 / (1 + Math.exp(1.3f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 2f))));
+                    arm.rotateAngleZ = 1.5f;
+                }
+            }
+            else {
+                ModelRenderer arm = event.getModel().bipedLeftArm;
+                if (propertyPlayer.verticalSwing) {
+                    float swingArc = 3f;
+                    arm.rotateAngleX = -2.7f + (float) (swingArc * 1 / (1 + Math.exp(1.3f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 2f))));
+                    arm.rotateAngleX = Math.min(arm.rotateAngleX, -0.1f);
+                    if (!event.getModel().isSneak) {
+                        GlStateManager.translate(0.0F, 0.3F, 0.0F);
+                    }
+                    event.getModel().isSneak = true;
+                } else {
+                    float swingArc = 2.5f;
+                    arm.rotateAngleX = -1.75f + (float) (swingArc * 1 / (1 + Math.exp(1.3f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 2f))));
+                    arm.rotateAngleZ = -1.5f;
+                }
+            }
         }
     }
 

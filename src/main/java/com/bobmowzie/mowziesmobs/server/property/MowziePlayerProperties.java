@@ -9,7 +9,9 @@ import net.ilexiconn.llibrary.server.entity.EntityProperties;
 import net.ilexiconn.llibrary.server.nbt.NBTHandler;
 import net.ilexiconn.llibrary.server.nbt.NBTProperty;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.MobEffects;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.input.Mouse;
 
@@ -18,6 +20,7 @@ import java.util.List;
 
 public class MowziePlayerProperties extends EntityProperties<EntityPlayer> {
     public static final int SWING_COOLDOWN = 30;
+    public boolean verticalSwing = false;
     @NBTProperty
     public int untilSunstrike = 0;
     @NBTProperty

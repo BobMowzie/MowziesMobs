@@ -1,9 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.BlockModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
-import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 
@@ -101,14 +98,14 @@ public class ModelAxeAttack extends AdvancedModelBase {
 
         if (!entity.getVertical()) {
             float swingArc = 2;
-            float scale = (float) ((1 / (1 + Math.exp(2f * (-frame + entity.swingDurationHoriz / 5)))) - (1 / (1 + Math.exp(2f * (-frame + 4 * entity.swingDurationHoriz / 5)))));
-            axeBase.rotateAngleY += swingArc * 1 / (1 + Math.exp(1.3f * (-frame + entity.swingDurationHoriz / 2)));
+            float scale = (float) ((1 / (1 + Math.exp(2f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 5f)))) - (1 / (1 + Math.exp(2f * (-frame + 4 * EntityAxeAttack.SWING_DURATION_HOR / 5f)))));
+            axeBase.rotateAngleY += swingArc * 1 / (1 + Math.exp(1.3f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 2f)));
             axeBase.rotateAngleY -= swingArc / 2;
             axeBase.setScale(scale, scale, scale);
         }
         else {
             float swingArc = 2;
-            float scale = (float) ((1 / (1 + Math.exp(2f * (-frame + entity.swingDurationVert / 5)))) - (1 / (1 + Math.exp(2f * (-frame + 4 * entity.swingDurationVert / 5)))));
+            float scale = (float) ((1 / (1 + Math.exp(2f * (-frame + EntityAxeAttack.SWING_DURATION_VER / 5f)))) - (1 / (1 + Math.exp(2f * (-frame + 4 * EntityAxeAttack.SWING_DURATION_VER / 5f)))));
             float animCurve = (float) Math.min(1, Math.pow(0.06 * frame, 5));
             axeHandle.rotateAngleY -= Math.PI/2;
             axeBase.rotateAngleX += -2 + 2 * animCurve;
