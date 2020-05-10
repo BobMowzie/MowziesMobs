@@ -28,9 +28,6 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
     public EntityIceBall(World worldIn) {
         super(worldIn);
         setSize(0, 0);
-        if (world.isRemote) {
-            MowziesMobs.PROXY.playIceBreathSound(this);
-        }
     }
 
     public EntityIceBall(World worldIn, EntityLivingBase caster) {
@@ -46,13 +43,19 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
         super.onUpdate();
         move(MoverType.SELF, motionX, motionY, motionZ);
 
+        if (ticksExisted == 1) {
+            if (world.isRemote) {
+                MowziesMobs.PROXY.playIceBreathSound(this);
+            }
+        }
+
         List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby(3);
         if (!entitiesHit.isEmpty()) {
             for (Entity entity : entitiesHit) {
                 if (entity == caster) continue;
                 if (entity.getIsInvulnerable()) continue;
                 if (entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isCreativeMode) continue;
-                entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(caster, null), 3 * MowziesMobs.CONFIG.attackScaleFrostmaw);
+                entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(caster, null), 1 * MowziesMobs.CONFIG.attackScaleFrostmaw);
                 MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
                 if (property != null) property.freezeProgress += 1;
             }

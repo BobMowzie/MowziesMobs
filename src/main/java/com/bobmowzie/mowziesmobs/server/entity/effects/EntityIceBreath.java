@@ -37,9 +37,6 @@ public class EntityIceBreath extends EntityMagicEffect {
     public EntityIceBreath(World world) {
         super(world);
         setSize(0, 0);
-        if (world.isRemote) {
-            MowziesMobs.PROXY.playIceBreathSound(this);
-        }
     }
 
     public EntityIceBreath(World world, EntityLivingBase caster) {
@@ -53,6 +50,11 @@ public class EntityIceBreath extends EntityMagicEffect {
     @Override
     public void onUpdate() {
         super.onUpdate();
+        if (ticksExisted == 1) {
+            if (world.isRemote) {
+                MowziesMobs.PROXY.playIceBreathSound(this);
+            }
+        }
         if (caster != null && caster.isDead) this.setDead();
         if (ticksExisted == 1) playSound(MMSounds.ENTITY_FROSTMAW_ICEBREATH_START, 1, 0.6f);
         if (caster instanceof EntityPlayer) {
