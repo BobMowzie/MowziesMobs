@@ -14,6 +14,7 @@ entity.frostmaw.name=Frostmaw
 entity.grottol.name=Grottol
 entity.lantern.name=Lantern
 entity.naga.name=Naga
+entity.boulder.name=Boulder
 
 # Items
 item.foliaathSeed.name=Foliaath Seed
@@ -108,6 +109,9 @@ potion.geomancy=Geomancy
 potion.frozen=Frozen
 potion.poisonResist=Poison Resistance
 potion.effect.poisonResist=Potion of Poison Resistance
+splash_potion.effect.poisonResist=Splash Potion of Poison Resistance
+lingering_potion.effect.poisonResist=Lingering Potion of Poison Resistance
+tipped_arrow.effect.poisonResist=Poison Resistance Tipped Arrow
 
 # Tile Entities
 
