@@ -170,7 +170,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
             float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
             float entityHitDistance = (float) Math.sqrt((entityHit.posZ - posZ) * (entityHit.posZ - posZ) + (entityHit.posX - posX) * (entityHit.posX - posX));
             if (entityHit != caster && entityHitDistance <= range && entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2 || entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2) {
-                if (caster instanceof EntityPlayer) entityHit.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) caster), damage);
+                if (caster instanceof EntityPlayer) ((EntityPlayer)caster).attackTargetEntityWithCurrentItem(entityHit);
                 else entityHit.attackEntityFrom(DamageSource.causeMobDamage(caster), damage);
                 entityHit.motionX *= knockback;
                 entityHit.motionZ *= knockback;
