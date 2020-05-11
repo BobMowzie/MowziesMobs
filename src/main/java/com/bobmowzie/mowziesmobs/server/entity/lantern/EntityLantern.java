@@ -96,7 +96,7 @@ public class EntityLantern extends MowzieEntity {
         }
 
         if (!world.isRemote && getAnimation() == NO_ANIMATION) {
-            if (groundDist < 5 || rand.nextInt(30) == 0) {
+            if (groundDist < 5 || (rand.nextInt(13) == 0 && groundDist < 16)) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, PUFF_ANIMATION);
             }
         }
