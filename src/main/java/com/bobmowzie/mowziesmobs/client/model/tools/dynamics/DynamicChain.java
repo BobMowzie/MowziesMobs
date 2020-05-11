@@ -293,7 +293,7 @@ public class DynamicChain {
     }
 
     private static Vec3d toEuler(Vec3d axis, double angle) {
-        System.out.println(axis + ", " + angle);
+        //System.out.println(axis + ", " + angle);
         double s=Math.sin(angle);
         double c=Math.cos(angle);
         double t=1-c;

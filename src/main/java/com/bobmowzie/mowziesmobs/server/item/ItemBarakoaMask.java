@@ -95,7 +95,7 @@ public class ItemBarakoaMask extends ItemArmor implements BarakoaMask {
                 barakoa.motionX = 0.5 * Math.sin(-angle * Math.PI / 180);
                 barakoa.motionY = 0.5;
                 barakoa.motionZ = 0.5 * Math.cos(-angle * Math.PI / 180);
-                System.out.println((1.0f - durability) * barakoa.getMaxHealth());
+                //System.out.println((1.0f - durability) * barakoa.getMaxHealth());
                 barakoa.setHealth((1.0f - durability) * barakoa.getMaxHealth());
             }
         }

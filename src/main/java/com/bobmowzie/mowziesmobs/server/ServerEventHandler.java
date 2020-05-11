@@ -31,6 +31,8 @@ import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.BlockFaceShape;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
@@ -54,8 +56,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -221,7 +225,7 @@ public enum ServerEventHandler {
                     if (barakoan.getAttackTarget() == null && barakoan.getAnimation() != barakoan.DEACTIVATE_ANIMATION) {
                         barakoan.getNavigator().tryMoveToXYZ(player.posX + property.tribePackRadius * MathHelper.cos(theta * i), player.posY, player.posZ + property.tribePackRadius * MathHelper.sin(theta * i), 0.45);
                         if (player.getDistance(barakoan) > 20 && player.onGround) {
-                            barakoan.setPosition(player.posX + property.tribePackRadius * MathHelper.cos(theta * i), player.posY, player.posZ + property.tribePackRadius * MathHelper.sin(theta * i));
+                            tryTeleportBarakoan(player, barakoan);
                         }
                     }
                 }
@@ -286,6 +290,22 @@ public enum ServerEventHandler {
 
             for (int i = 0; i < property.powers.length; i++) {
                 property.powers[i].onUpdate(event);
+            }
+        }
+    }
+
+    private void tryTeleportBarakoan(EntityPlayer player, EntityBarakoanToPlayer barakoan) {
+        int x = MathHelper.floor(player.posX) - 2;
+        int z = MathHelper.floor(player.posZ) - 2;
+        int y = MathHelper.floor(player.getEntityBoundingBox().minY);
+
+        for (int l = 0; l <= 4; ++l) {
+            for (int i1 = 0; i1 <= 4; ++i1) {
+                if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && barakoan.isTeleportFriendlyBlock(x, z, y, l, i1)) {
+                    barakoan.setLocationAndAngles((double) ((float) (x + l) + 0.5F), (double) y, (double) ((float) (z + i1) + 0.5F), barakoan.rotationYaw, barakoan.rotationPitch);
+                    barakoan.getNavigator().clearPath();
+                    return;
+                }
             }
         }
     }
