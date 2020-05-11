@@ -366,6 +366,14 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
 
             spawnSwipeParticles();
 
+            if ((fallDistance > 0.2 && !onGround) || getAnimation() == DODGE_ANIMATION) shouldPlayLandAnimation = true;
+            if (onGround && shouldPlayLandAnimation && getAnimation() != DODGE_ANIMATION) {
+                if (!world.isRemote && getAnimation() == NO_ANIMATION) {
+                    AnimationHandler.INSTANCE.sendAnimationMessage(this, LAND_ANIMATION);
+                }
+                shouldPlayLandAnimation = false;
+            }
+
             if (getAttackTarget() != null) {
                 timeWithoutTarget = 0;
 
@@ -495,14 +503,6 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         if (frame % 118 == 1 && !active) {
             int i = MathHelper.getInt(rand, 0, 1);
             playSound(MMSounds.ENTITY_FROSTMAW_BREATH.get(i).get(), 1.5F, 1.1F + rand.nextFloat() * 0.1f);
-        }
-
-        if ((fallDistance > 0.2 && !onGround) || getAnimation() == DODGE_ANIMATION) shouldPlayLandAnimation = true;
-        if (onGround && shouldPlayLandAnimation && getAnimation() != DODGE_ANIMATION) {
-            if (!world.isRemote && getAnimation() == NO_ANIMATION) {
-                AnimationHandler.INSTANCE.sendAnimationMessage(this, LAND_ANIMATION);
-            }
-            shouldPlayLandAnimation = false;
         }
 
 //        if (getAnimation() == NO_ANIMATION && onGround) {
