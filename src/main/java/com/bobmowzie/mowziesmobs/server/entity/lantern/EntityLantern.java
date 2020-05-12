@@ -17,7 +17,9 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -26,6 +28,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by Josh on 7/24/2018.
@@ -130,9 +134,8 @@ public class EntityLantern extends MowzieEntity {
     }
 
     @Override
-    protected void dropLoot() {
-        super.dropLoot();
-        dropItem(ItemHandler.GLOWING_JELLY, 1 + rand.nextInt(2));
+    protected Item getDropItem() {
+        return ItemHandler.GLOWING_JELLY;
     }
 
     public void fall(float distance, float damageMultiplier)

@@ -93,6 +93,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         frame += rand.nextInt(50);
         experienceValue = 8;
         active = true;
+        usesVanillaDropSystem = false;
     }
 
     @Override

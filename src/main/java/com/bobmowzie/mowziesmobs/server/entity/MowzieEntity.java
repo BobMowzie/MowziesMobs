@@ -46,6 +46,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     private List<IntermittentAnimation> intermittentAnimations = new ArrayList<>();
     public Vec3d moveVec = new Vec3d(0, 0, 0);
     public boolean playsHurtAnimation = true;
+    protected boolean usesVanillaDropSystem = true;
 
     public Vec3d[] socketPosArray = new Vec3d[]{};
 
@@ -279,7 +280,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
                 }
             }
 
-            if (!world.isRemote && world.getGameRules().getBoolean("doMobLoot")) {
+            if (!world.isRemote && !usesVanillaDropSystem && world.getGameRules().getBoolean("doMobLoot")) {
                 dropLoot();
             }
 
@@ -299,13 +300,19 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     protected final void onDeathUpdate() {}
 
     @Override
-    protected final void dropLoot(boolean isPlayerKill, int lootingModifier, DamageSource source) {}
+    protected final void dropLoot(boolean isPlayerKill, int lootingModifier, DamageSource source) {
+        if (usesVanillaDropSystem) super.dropLoot(isPlayerKill, lootingModifier, source);
+    }
 
     @Override
-    protected final void dropFewItems(boolean isPlayerKill, int lootingModifier) {}
+    protected final void dropFewItems(boolean isPlayerKill, int lootingModifier) {
+        if (usesVanillaDropSystem) super.dropFewItems(isPlayerKill, lootingModifier);
+    }
 
     @Override
-    protected final void dropEquipment(boolean isPlayerKill, int lootingModifier) {}
+    protected final void dropEquipment(boolean isPlayerKill, int lootingModifier) {
+        if (usesVanillaDropSystem) super.dropEquipment(isPlayerKill, lootingModifier);
+    }
 
     @Override
     public boolean attackEntityFrom(DamageSource source, float damage) {

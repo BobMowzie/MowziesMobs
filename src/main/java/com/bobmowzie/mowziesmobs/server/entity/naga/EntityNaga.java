@@ -22,6 +22,7 @@ import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.MobEffects;
+import net.minecraft.item.Item;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -583,9 +584,8 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
     }
 
     @Override
-    protected void dropLoot() {
-        super.dropLoot();
-        if (rand.nextInt(4) == 0) dropItem(ItemHandler.NAGA_FANG, 1);
+    protected Item getDropItem() {
+        return rand.nextBoolean() ? ItemHandler.NAGA_FANG : null;
     }
 
     @Override

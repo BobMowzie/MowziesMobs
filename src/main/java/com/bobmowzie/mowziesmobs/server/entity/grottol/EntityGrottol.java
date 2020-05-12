@@ -90,6 +90,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
         setSize(0.9F, 1.2F);
 
         moveHelper = new MMEntityMoveHelper(this, 45);
+        usesVanillaDropSystem = false;
     }
 
     @Override

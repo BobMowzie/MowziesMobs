@@ -133,6 +133,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         playsHurtAnimation = false;
         rotationYaw = renderYawOffset = rand.nextFloat() * 360;
         experienceValue = 60;
+        usesVanillaDropSystem = false;
 
         moveHelper = new MMEntityMoveHelper(this, 7);
     }

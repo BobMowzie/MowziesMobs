@@ -148,6 +148,8 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         stepHeight = 1;
 //        rightEyePos = new Vec3d(0, 0, 0);
 //        leftEyePos = new Vec3d(0, 0, 0);
+
+        usesVanillaDropSystem = false;
     }
 
     @Override
