@@ -32,7 +32,6 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<EntityPlayer> impleme
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (!world.isRemote && getAttackTarget() != null && getAttackTarget().isDead) setAttackTarget(null);
     }
 
     @Override

@@ -157,6 +157,8 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     }
 
     protected void updateAttackAI() {
+        if (!world.isRemote && getAttackTarget() != null && getAttackTarget().isDead) setAttackTarget(null);
+
         if (timeSinceAttack < 80) {
             timeSinceAttack++;
         }

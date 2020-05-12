@@ -57,7 +57,7 @@ public class ItemSpear extends ItemSword {
             collidePosZ = result.blockHit.hitVec.z;
         }
         else {
-            Vec3d end = player.getLookVec().scale(range);
+            Vec3d end = player.getLookVec().scale(range).add(pos);
             collidePosX = end.x;
             collidePosY = end.y;
             collidePosZ = end.z;

@@ -371,13 +371,15 @@ public enum ServerEventHandler {
 
     @SubscribeEvent
     public void onPlayerLeftClick(PlayerInteractEvent.LeftClickEmpty event) {
-        double range = 7;
+        double range = 6.5;
         EntityPlayer player = event.getEntityPlayer();
         MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
         if (property != null) {
             if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == ItemHandler.SPEAR) {
                 EntityLivingBase entityHit = ItemSpear.raytraceEntities(player.getEntityWorld(), player, range);
-                if (entityHit != null) MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerAttackMob(entityHit));
+                if (entityHit != null) {
+                    MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerAttackMob(entityHit));
+                }
             }
 
             for (int i = 0; i < property.powers.length; i++) {
@@ -400,14 +402,6 @@ public enum ServerEventHandler {
         if (event.getEntity() instanceof EntityPlayer) {
             MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
             if (property != null) {
-                if (event.getEntity() instanceof EntityPlayer) {
-                    if (event.getSource().getTrueSource() != null) {
-                        for (int i = 0; i < property.getPackSize(); i++)
-                            if (property.tribePack.get(i).getAttackTarget() == null)
-                                property.tribePack.get(i).setAttackTarget((EntityLivingBase) event.getSource().getTrueSource());
-                    }
-                }
-
                 for (int i = 0; i < property.powers.length; i++) {
                     property.powers[i].onTakeDamage(event);
                 }
