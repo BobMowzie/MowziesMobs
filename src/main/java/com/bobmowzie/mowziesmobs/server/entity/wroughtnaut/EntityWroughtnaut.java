@@ -220,6 +220,9 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
                 playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.4F, 2);
             }
         }
+        else if (source.canHarmInCreative()) {
+            return super.attackEntityFrom(source, amount);
+        }
         return false;
     }
 
