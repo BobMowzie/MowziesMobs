@@ -56,6 +56,8 @@ public class AnimationAreaAttackAI<T extends MowzieEntity & IAnimatedEntity> ext
             }
             float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
             float entityHitDistance = (float) Math.sqrt((entityHit.posZ - entity.posZ) * (entityHit.posZ - entity.posZ) + (entityHit.posX - entity.posX) * (entityHit.posX - entity.posX));
+            System.out.println(entityRelativeAngle);
+            System.out.println(entityHitDistance);
             if (entityHitDistance <= range && (entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2)) {
                 entity.attackEntityAsMob(entityHit, damageMultiplier);
                 entityHit.motionX *= knockback;

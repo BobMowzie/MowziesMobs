@@ -111,8 +111,8 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         this.tasks.addTask(7, new EntityAIWanderAvoidWater(this, 1.0D));
         this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
-        this.tasks.addTask(2, new AnimationAreaAttackAI<>(this, SWIPE_ANIMATION, null, null, 2, 7, 6, 120, MowziesMobs.CONFIG.attackScaleFrostmaw, 9));
-        this.tasks.addTask(2, new AnimationAreaAttackAI<>(this, SWIPE_TWICE_ANIMATION, null, null, 1, 7, 6, 120, MowziesMobs.CONFIG.attackScaleFrostmaw, 9));
+        this.tasks.addTask(2, new AnimationAreaAttackAI<>(this, SWIPE_ANIMATION, null, null, 2, 7, 6, 135, MowziesMobs.CONFIG.attackScaleFrostmaw, 9));
+        this.tasks.addTask(2, new AnimationAreaAttackAI<>(this, SWIPE_TWICE_ANIMATION, null, null, 1, 7, 6, 135, MowziesMobs.CONFIG.attackScaleFrostmaw, 9));
         this.tasks.addTask(2, new AnimationAI<>(this, ICE_BREATH_ANIMATION, true));
         this.tasks.addTask(2, new AnimationAI<>(this, ICE_BALL_ANIMATION, true));
         this.tasks.addTask(2, new AnimationAI<>(this, ROAR_ANIMATION, false));
