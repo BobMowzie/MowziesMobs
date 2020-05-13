@@ -24,7 +24,7 @@ import javax.annotation.Nullable;
 public class ItemFoliaathSeed extends Item {
     public ItemFoliaathSeed() {
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setUnlocalizedName("foliaathSeed");
+        setTranslationKey("foliaathSeed");
         setRegistryName("foliaath_seed");
     }
 

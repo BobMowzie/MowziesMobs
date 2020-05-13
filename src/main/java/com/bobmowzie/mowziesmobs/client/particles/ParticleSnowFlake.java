@@ -52,7 +52,7 @@ public class ParticleSnowFlake extends Particle implements ParticleTextureStitch
         if (swirls) {
             Vec3d motionVec = new Vec3d(motionX, motionY, motionZ).normalize();
             float yaw = (float) Math.atan2(motionVec.x, motionVec.z);
-            float xzDistance = (float) motionVec.lengthVector();
+            float xzDistance = (float) motionVec.length();
             float pitch = (float) Math.atan2(motionVec.y, xzDistance);
             float swirlRadius = 4f * (particleAge / (float) particleMaxAge) * spread;
             Point3d point = new Point3d(swirlRadius * Math.cos(swirlTick * 0.2), swirlRadius * Math.sin(swirlTick * 0.2), 0);
@@ -89,15 +89,12 @@ public class ParticleSnowFlake extends Particle implements ParticleTextureStitch
 
         if (this.particleTexture != null)
         {
-            int row = (int)(whichTex/4f);
-            int column = (int) whichTex % 4;
-            float uRange = particleTexture.getMaxU() - particleTexture.getMinU();
-            float spriteWidth = uRange/4f;
-            float pixelWidth = uRange/32f;
-            f = particleTexture.getMinU() + (column * spriteWidth);
-            f1 = particleTexture.getMinU() + (spriteWidth * (column + 1)) - pixelWidth;
-            f2 = particleTexture.getMinV() + (row * spriteWidth);
-            f3 = particleTexture.getMinV() + (spriteWidth * (row + 1)) - pixelWidth;
+            int row = whichTex / 4;
+            int column = whichTex % 4;
+            f = particleTexture.getInterpolatedU(row / 4.0F * 16.0F);
+            f1 = particleTexture.getInterpolatedU((row + 1) / 4.0F * 16.0F);
+            f2 = particleTexture.getInterpolatedV(column / 4.0F * 16.0F);
+            f3 = particleTexture.getInterpolatedV((column + 1) / 4.0F * 16.0F);
         }
 
         float f5 = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)partialTicks - interpPosX);

@@ -28,7 +28,7 @@ public class ItemBarakoaMask extends ItemArmor implements BarakoaMask {
     public ItemBarakoaMask(MaskType type) {
         super(ArmorMaterial.LEATHER, 2, EntityEquipmentSlot.HEAD);
         this.type = type;
-        setUnlocalizedName("barakoaMask." + type.name);
+        setTranslationKey("barakoaMask." + type.name);
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
         setRegistryName("barakoa_mask_" + type.name);
     }
@@ -62,7 +62,7 @@ public class ItemBarakoaMask extends ItemArmor implements BarakoaMask {
         ItemStack stack = player.getHeldItem(hand);
         ItemStack headStack = player.inventory.armorInventory.get(3);
         if (headStack.getItem() instanceof ItemBarakoMask) {
-            spawnBarakoa(type, player);
+            spawnBarakoa(type, player, (float)stack.getItemDamage() / (float)stack.getMaxDamage());
             if (!player.capabilities.isCreativeMode) {
                 stack.shrink(1);
             }
@@ -71,7 +71,7 @@ public class ItemBarakoaMask extends ItemArmor implements BarakoaMask {
         else return super.onItemRightClick(world, player, hand);
     }
 
-    private void spawnBarakoa(MaskType mask, EntityPlayer player) {
+    private void spawnBarakoa(MaskType mask, EntityPlayer player, float durability) {
         MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
         if (property.getPackSize() < 10) {
             player.playSound(MMSounds.ENTITY_BARAKO_BELLY, 1.5f, 1);
@@ -95,6 +95,8 @@ public class ItemBarakoaMask extends ItemArmor implements BarakoaMask {
                 barakoa.motionX = 0.5 * Math.sin(-angle * Math.PI / 180);
                 barakoa.motionY = 0.5;
                 barakoa.motionZ = 0.5 * Math.cos(-angle * Math.PI / 180);
+                //System.out.println((1.0f - durability) * barakoa.getMaxHealth());
+                barakoa.setHealth((1.0f - durability) * barakoa.getMaxHealth());
             }
         }
     }

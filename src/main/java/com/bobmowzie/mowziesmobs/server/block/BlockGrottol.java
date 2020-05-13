@@ -102,7 +102,7 @@ public class BlockGrottol extends BlockHorizontal {
     public IBlockState getStateFromMeta(int meta) {
         return getDefaultState()
             .withProperty(VARIANT, Variant.valueOf((meta & 0b1100) >> 2))
-            .withProperty(FACING, EnumFacing.getHorizontal(meta & 0b0011));
+            .withProperty(FACING, EnumFacing.byHorizontalIndex(meta & 0b0011));
     }
 
     @Override

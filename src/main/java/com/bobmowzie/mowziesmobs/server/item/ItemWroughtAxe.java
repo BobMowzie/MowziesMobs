@@ -27,9 +27,9 @@ public class ItemWroughtAxe extends ItemAxe {
     public ItemWroughtAxe() {
         super(Item.ToolMaterial.IRON);
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setUnlocalizedName("wroughtAxe");
+        setTranslationKey("wroughtAxe");
         setRegistryName("wrought_axe");
-        damageVsEntity = damageVsEntity * MowziesMobs.CONFIG.attackScaleWroughtAxe;
+        attackDamage = attackDamage * MowziesMobs.CONFIG.attackScaleWroughtAxe;
     }
 
     @Override
@@ -47,21 +47,19 @@ public class ItemWroughtAxe extends ItemAxe {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
-        if (!world.isRemote) {
+        if (player != null && hand == EnumHand.MAIN_HAND) {
             MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
-            if (property.untilAxeSwing <= 0) {
-                if (player.isSneaking() && player.onGround) {
-                    EntityAxeAttack axeAttack = new EntityAxeAttack(world, player, true);
-                    world.spawnEntity(axeAttack);
-                }
-                else {
-                    EntityAxeAttack axeAttack = new EntityAxeAttack(world, player, false);
-                    world.spawnEntity(axeAttack);
-                }
-                property.untilAxeSwing = property.SWING_COOLDOWN;
+            if (property != null && property.untilAxeSwing <= 0) {
+                boolean verticalAttack = player.isSneaking() && player.onGround;
+                EntityAxeAttack axeAttack = new EntityAxeAttack(world, player, verticalAttack);
+                axeAttack.setPositionAndRotation(player.posX, player.posY, player.posZ, player.rotationYaw, player.rotationPitch);
+                if (!world.isRemote) world.spawnEntity(axeAttack);
+                property.verticalSwing = verticalAttack;
+                property.untilAxeSwing = MowziePlayerProperties.SWING_COOLDOWN;
             }
+            return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
         }
-        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
+        return super.onItemRightClick(world, player, hand);
     }
 
     @Override
@@ -70,7 +68,7 @@ public class ItemWroughtAxe extends ItemAxe {
     }
 
     @Override
-    public float getStrVsBlock(ItemStack itemStack, IBlockState block) {
+    public float getDestroySpeed(ItemStack itemStack, IBlockState block) {
         return 1.0F;
     }
 

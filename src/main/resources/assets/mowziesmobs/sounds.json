@@ -198,6 +198,9 @@
 	"barakoa.emerge": {
 		"sounds": [ "mowziesmobs:entity/barakoa/emerge" ]
 	},
+	"barakoa.retract": {
+		"sounds": [ "mowziesmobs:entity/barakoa/retract" ]
+	},
 	"barako.belly": {
 		"sounds": [ "mowziesmobs:entity/barako/belly" ]
 	},

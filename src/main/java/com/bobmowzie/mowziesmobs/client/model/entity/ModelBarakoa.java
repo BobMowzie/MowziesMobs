@@ -770,6 +770,34 @@ public class ModelBarakoa extends AdvancedModelBase {
         animator.endKeyframe();
         animator.setStaticKeyframe(5);
 
+        animator.setAnimation(EntityBarakoa.DEACTIVATE_ANIMATION);
+        animator.startKeyframe(5);
+        animator.rotate(head, -0.8f, 0, 0);
+        animator.move(flailer, 1, 0, 0);
+        animator.endKeyframe();
+        animator.setStaticKeyframe(10);
+        animator.startKeyframe(10);
+        animator.move(scaler, 0.999f, 0, 0);
+        animator.rotate(head, -0.8f, 0, 0);
+        animator.move(body, 0, -22f, -5f);
+        animator.endKeyframe();
+        animator.startKeyframe(4);
+        animator.move(scaler, 0.999f, 0, 0);
+        animator.rotate(head, -0.8f, 0, 0);
+        animator.move(body, 0, 7, 0);
+        animator.endKeyframe();
+        animator.startKeyframe(2);
+        animator.move(scaler, 0.999f, 0, 0);
+        animator.rotate(head, -1.6f, 0, 0);
+        animator.move(body, 0, -3, 5);
+        animator.endKeyframe();
+        animator.startKeyframe(2);
+        animator.move(scaler, 0.999f, 0, 0);
+        animator.rotate(head, -1.58f, 0, 0);
+        animator.move(body, 0, 9f, 5);
+        animator.endKeyframe();
+        animator.setStaticKeyframe(4);
+
         //Inactive
         if (!barakoa.active) {
             scaler.rotationPointX += 0.999f;

@@ -35,14 +35,19 @@ public class EntityDart extends EntityTippedArrow {
     }
 
     @Override
+    protected void arrowHit(EntityLivingBase living) {
+        super.arrowHit(living);
+        if (shootingEntity instanceof EntityPlayer) living.addPotionEffect(new PotionEffect(MobEffects.POISON, 40, (int)(3 * MowziesMobs.CONFIG.attackScaleBlowgun), false, true));
+        else living.addPotionEffect(new PotionEffect(MobEffects.POISON, 40, 1, false, true));
+        living.setArrowCountInEntity(living.getArrowCountInEntity() - 1);
+    }
+
+    @Override
     protected void onHit(RayTraceResult raytraceResultIn) {
         Entity hit = raytraceResultIn.entityHit;
         if (hit == null || !(hit instanceof EntityLivingBase)) return;
         EntityLivingBase living = (EntityLivingBase)hit;
         if (world.isRemote || (shootingEntity == hit) || (shootingEntity instanceof EntityBarakoa && living instanceof EntityBarakoa && ((EntityBarakoa) shootingEntity).isBarakoDevoted() == ((EntityBarakoa) living).isBarakoDevoted())) return;
         super.onHit(raytraceResultIn);
-        if (shootingEntity instanceof EntityPlayer) living.addPotionEffect(new PotionEffect(MobEffects.POISON, 40, (int)(3 * MowziesMobs.CONFIG.attackScaleBlowgun), false, true));
-        else living.addPotionEffect(new PotionEffect(MobEffects.POISON, 40, 1, false, true));
-        living.setArrowCountInEntity(living.getArrowCountInEntity() - 1);
     }
 }

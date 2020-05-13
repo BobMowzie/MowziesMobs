@@ -88,7 +88,7 @@ public class EntitySolarBeam extends Entity {
             appear.decreaseTimer();
         }
 
-        if (caster != null && caster.getHealth() <= 0) setDead();
+        if (caster != null && caster.isDead) setDead();
 
         if (world.isRemote && ticksExisted <= 10) {
             int particleCount = 8;

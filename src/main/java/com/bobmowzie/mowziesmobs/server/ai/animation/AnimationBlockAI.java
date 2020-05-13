@@ -13,7 +13,9 @@ public class AnimationBlockAI<T extends MowzieEntity & IAnimatedEntity> extends 
     @Override
     public void updateTask() {
         super.updateTask();
-        entity.faceEntity(entity.blockingEntity, 100, 100);
-        entity.getLookHelper().setLookPositionWithEntity(entity.blockingEntity, 200F, 30F);
+        if (entity != null && entity.blockingEntity != null) {
+            entity.faceEntity(entity.blockingEntity, 100, 100);
+            entity.getLookHelper().setLookPositionWithEntity(entity.blockingEntity, 200F, 30F);
+        }
     }
 }

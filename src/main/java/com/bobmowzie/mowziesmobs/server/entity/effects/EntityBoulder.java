@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.particles.ParticleFallingBlock;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.google.common.base.Optional;
@@ -72,7 +73,7 @@ public class EntityBoulder extends Entity {
             Material mat = block.getMaterial();
             if (mat == Material.GRASS || mat == Material.GROUND) newBlock = Blocks.DIRT.getDefaultState();
             else if (mat == Material.ROCK) {
-                if (block.getBlock().getUnlocalizedName().contains("ore")) newBlock = Blocks.STONE.getDefaultState();
+                if (block.getBlock().getTranslationKey().contains("ore")) newBlock = Blocks.STONE.getDefaultState();
                 if (block.getBlock() == Blocks.QUARTZ_ORE) newBlock = Blocks.NETHERRACK.getDefaultState();
                 if (block.getBlock() == Blocks.FURNACE
                         || block.getBlock() == Blocks.LIT_FURNACE
@@ -178,8 +179,8 @@ public class EntityBoulder extends Entity {
                 if (world.isRemote) continue;
                 if (entity == caster) continue;
                 if (ridingEntities.contains(entity)) continue;
-                if (caster instanceof EntityPlayer)  entity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) caster), damage);
-                else entity.attackEntityFrom(DamageSource.causeMobDamage(caster), damage);
+                if (caster != null) entity.attackEntityFrom(DamageSource.causeIndirectDamage(this, caster), damage);
+                else entity.attackEntityFrom(DamageSource.GENERIC, damage); // TODO: Magic damage goes through armor, but no other damage type fits. Create new damage type
                 if (!isDead && boulderSize != 3) setShouldExplode(true);
             }
         }
@@ -264,10 +265,30 @@ public class EntityBoulder extends Entity {
         else if (boulderSize == 2) {
             playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG, 1.5f, 1f);
             playSound(MMSounds.EFFECT_GEOMANCY_BREAK_MEDIUM_1, 1.5f, 0.9f);
+
+            if (world.isRemote) {
+                for (int i = 0; i < 3; i++) {
+                    Vec3d particlePos = new Vec3d(Math.random() * 1, 0, 0);
+                    particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
+                    particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                    particlePos = particlePos.add(new Vec3d(0, height / 4, 0));
+                    ParticleFallingBlock.spawnFallingBlock(world, posX + particlePos.x, posY + 0.5 + particlePos.y, posZ + particlePos.z, 10.f, 70, 1, (float) particlePos.x * 0.3f, 0.2f + (float) Math.random() * 0.6f, (float) particlePos.z * 0.3f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, getBlock());
+                }
+            }
         }
         else if (boulderSize == 3) {
             playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG, 1.5f, 0.5f);
             playSound(MMSounds.EFFECT_GEOMANCY_BREAK_LARGE_1, 1.5f, 0.5f);
+
+            if (world.isRemote) {
+                for (int i = 0; i < 5; i++) {
+                    Vec3d particlePos = new Vec3d(Math.random() * 1.5, 0, 0);
+                    particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
+                    particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                    particlePos = particlePos.add(new Vec3d(0, height / 4, 0));
+                    ParticleFallingBlock.spawnFallingBlock(world, posX + particlePos.x, posY + 0.5 + particlePos.y, posZ + particlePos.z, 10.f, 70, 1, (float) particlePos.x * 0.3f, 0.2f + (float) Math.random() * 0.6f, (float) particlePos.z * 0.3f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, getBlock());
+                }
+            }
         }
     }
 
@@ -403,7 +424,7 @@ public class EntityBoulder extends Entity {
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double r) {
-        return world.getEntitiesWithinAABB(entityClass, getEntityBoundingBox().grow(r, r, r), e -> e != this && getDistanceToEntity(e) <= r);
+        return world.getEntitiesWithinAABB(entityClass, getEntityBoundingBox().grow(r, r, r), e -> e != this && getDistance(e) <= r);
     }
 
 

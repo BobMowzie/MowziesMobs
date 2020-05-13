@@ -31,6 +31,8 @@ import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.BlockFaceShape;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
@@ -54,8 +56,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -159,6 +163,7 @@ public enum ServerEventHandler {
                 }
             }
             else {
+
                 if (property != null && property.frozenController != null && !property.frozenController.isDead) {
                     entity.dismountEntity(property.frozenController);
                     entity.setPosition(property.frozenController.posX, property.frozenController.posY, property.frozenController.posZ);
@@ -218,10 +223,10 @@ public enum ServerEventHandler {
                 for (int i = 0; i < pack.size(); i++) {
                     EntityBarakoanToPlayer barakoan = pack.get(i);
                     barakoan.index = i;
-                    if (barakoan.getAttackTarget() == null) {
+                    if (barakoan.getAttackTarget() == null && barakoan.getAnimation() != barakoan.DEACTIVATE_ANIMATION) {
                         barakoan.getNavigator().tryMoveToXYZ(player.posX + property.tribePackRadius * MathHelper.cos(theta * i), player.posY, player.posZ + property.tribePackRadius * MathHelper.sin(theta * i), 0.45);
-                        if (player.getDistanceToEntity(barakoan) > 20 && player.onGround) {
-                            barakoan.setPosition(player.posX + property.tribePackRadius * MathHelper.cos(theta * i), player.posY, player.posZ + property.tribePackRadius * MathHelper.sin(theta * i));
+                        if (player.getDistance(barakoan) > 20 && player.onGround) {
+                            tryTeleportBarakoan(player, barakoan);
                         }
                     }
                 }
@@ -290,9 +295,25 @@ public enum ServerEventHandler {
         }
     }
 
+    private void tryTeleportBarakoan(EntityPlayer player, EntityBarakoanToPlayer barakoan) {
+        int x = MathHelper.floor(player.posX) - 2;
+        int z = MathHelper.floor(player.posZ) - 2;
+        int y = MathHelper.floor(player.getEntityBoundingBox().minY);
+
+        for (int l = 0; l <= 4; ++l) {
+            for (int i1 = 0; i1 <= 4; ++i1) {
+                if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && barakoan.isTeleportFriendlyBlock(x, z, y, l, i1)) {
+                    barakoan.setLocationAndAngles((double) ((float) (x + l) + 0.5F), (double) y, (double) ((float) (z + i1) + 0.5F), barakoan.rotationYaw, barakoan.rotationPitch);
+                    barakoan.getNavigator().clearPath();
+                    return;
+                }
+            }
+        }
+    }
+
     private List<EntityLivingBase> getEntityLivingBaseNearby(EntityLivingBase user, double distanceX, double distanceY, double distanceZ, double radius) {
         List<Entity> list = user.world.getEntitiesWithinAABBExcludingEntity(user, user.getEntityBoundingBox().grow(distanceX, distanceY, distanceZ));
-        ArrayList<EntityLivingBase> nearEntities = list.stream().filter(entityNeighbor -> entityNeighbor instanceof EntityLivingBase && user.getDistanceToEntity(entityNeighbor) <= radius).map(entityNeighbor -> (EntityLivingBase) entityNeighbor).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<EntityLivingBase> nearEntities = list.stream().filter(entityNeighbor -> entityNeighbor instanceof EntityLivingBase && user.getDistance(entityNeighbor) <= radius).map(entityNeighbor -> (EntityLivingBase) entityNeighbor).collect(Collectors.toCollection(ArrayList::new));
         return nearEntities;
     }
 
@@ -350,13 +371,15 @@ public enum ServerEventHandler {
 
     @SubscribeEvent
     public void onPlayerLeftClick(PlayerInteractEvent.LeftClickEmpty event) {
-        double range = 7;
+        double range = 6.5;
         EntityPlayer player = event.getEntityPlayer();
         MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
         if (property != null) {
             if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == ItemHandler.SPEAR) {
                 EntityLivingBase entityHit = ItemSpear.raytraceEntities(player.getEntityWorld(), player, range);
-                if (entityHit != null) MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerAttackMob(entityHit));
+                if (entityHit != null) {
+                    MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerAttackMob(entityHit));
+                }
             }
 
             for (int i = 0; i < property.powers.length; i++) {
@@ -379,14 +402,6 @@ public enum ServerEventHandler {
         if (event.getEntity() instanceof EntityPlayer) {
             MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
             if (property != null) {
-                if (event.getEntity() instanceof EntityPlayer) {
-                    if (event.getSource().getTrueSource() != null) {
-                        for (int i = 0; i < property.getPackSize(); i++)
-                            if (property.tribePack.get(i).getAttackTarget() == null)
-                                property.tribePack.get(i).setAttackTarget((EntityLivingBase) event.getSource().getTrueSource());
-                    }
-                }
-
                 for (int i = 0; i < property.powers.length; i++) {
                     property.powers[i].onTakeDamage(event);
                 }

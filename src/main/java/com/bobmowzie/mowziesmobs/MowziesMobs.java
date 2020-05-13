@@ -20,6 +20,8 @@ import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
 import net.ilexiconn.llibrary.server.config.Config;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.ilexiconn.llibrary.server.network.NetworkWrapper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.MouseHelper;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -37,7 +39,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public final class MowziesMobs {
     public static final String MODID = "mowziesmobs";
     public static final String NAME = "Mowzie's Mobs";
-    public static final String VERSION = "1.5.2";
+    public static final String VERSION = "1.5.4";
     public static final String LLIBRARY_VERSION = "1.7.9";
     public static final String DEPENDENCIES = "required-after:llibrary@[" + MowziesMobs.LLIBRARY_VERSION + ",)";
 

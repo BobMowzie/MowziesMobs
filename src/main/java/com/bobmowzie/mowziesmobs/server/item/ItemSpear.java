@@ -26,13 +26,13 @@ public class ItemSpear extends ItemSword {
     public ItemSpear() {
         super(ToolMaterial.STONE);
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setUnlocalizedName("spear");
+        setTranslationKey("spear");
         setRegistryName("spear");
     }
 
     @Override
-    public float getDamageVsEntity() {
-        return super.getDamageVsEntity() * MowziesMobs.CONFIG.attackScaleSpear;
+    public float getAttackDamage() {
+        return super.getAttackDamage() * MowziesMobs.CONFIG.attackScaleSpear;
     }
 
     @Override
@@ -48,7 +48,7 @@ public class ItemSpear extends ItemSword {
         ItemSpear.HitResult result = new ItemSpear.HitResult();
         Vec3d pos = new Vec3d(player.posX, player.posY + player.getEyeHeight(), player.posZ);
         Vec3d segment = player.getLookVec();
-        segment = pos.addVector(segment.x * range, segment.y * range, segment.z * range);
+        segment = pos.add(segment.x * range, segment.y * range, segment.z * range);
         result.setBlockHit(world.rayTraceBlocks(pos, segment, false, true, true));
         double collidePosX, collidePosY, collidePosZ;
         if (result.blockHit != null) {
@@ -57,7 +57,7 @@ public class ItemSpear extends ItemSword {
             collidePosZ = result.blockHit.hitVec.z;
         }
         else {
-            Vec3d end = player.getLookVec().scale(range);
+            Vec3d end = player.getLookVec().scale(range).add(pos);
             collidePosX = end.x;
             collidePosY = end.y;
             collidePosZ = end.z;
@@ -74,7 +74,7 @@ public class ItemSpear extends ItemSword {
             RayTraceResult hit = aabb.calculateIntercept(pos, segment);
             if (aabb.contains(pos) || hit != null) {
                 result.addEntityHit(entity);
-                if (closest == null || player.getDistanceToEntity(closest) > player.getDistanceToEntity(entity)) closest = entity;
+                if (closest == null || player.getDistance(closest) > player.getDistance(entity)) closest = entity;
             }
         }
         return closest;

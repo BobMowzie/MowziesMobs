@@ -29,7 +29,7 @@ public class ItemBlowgun extends ItemBow {
     public ItemBlowgun() {
         super();
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setUnlocalizedName("blowgun");
+        setTranslationKey("blowgun");
         setRegistryName("blowgun");
     }
 
@@ -95,7 +95,7 @@ public class ItemBlowgun extends ItemBow {
                     {
                         ItemDart itemdart = (ItemDart)(itemstack.getItem() instanceof ItemDart ? itemstack.getItem() : ItemHandler.DART);
                         EntityArrow entityarrow = itemdart.createArrow(worldIn, itemstack, entityplayer);
-                        entityarrow.setAim(entityplayer, entityplayer.rotationPitch, entityplayer.rotationYaw, 0.0F, f * 1.2f, 1.0F);
+                        entityarrow.shoot(entityplayer, entityplayer.rotationPitch, entityplayer.rotationYaw, 0.0F, f * 1.2f, 1.0F);
 
                         if (f == 1.0F)
                         {

@@ -27,7 +27,7 @@ public class MessagePlayerSummonSunstrike extends AbstractMessage<MessagePlayerS
     private static RayTraceResult rayTrace(EntityLivingBase entity, double reach) {
         Vec3d pos = new Vec3d(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
         Vec3d segment = entity.getLookVec();
-        segment = pos.addVector(segment.x * reach, segment.y * reach, segment.z * reach);
+        segment = pos.add(segment.x * reach, segment.y * reach, segment.z * reach);
         return entity.world.rayTraceBlocks(pos, segment, false, true, true);
     }
 

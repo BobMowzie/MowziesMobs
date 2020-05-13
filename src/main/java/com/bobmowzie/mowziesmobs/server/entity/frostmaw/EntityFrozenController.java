@@ -17,7 +17,7 @@ public class EntityFrozenController extends Entity {
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (ticksExisted >= 70) setDead();
+        if (!world.isRemote && ticksExisted >= 70 && !isBeingRidden()) setDead();
     }
 
     @Override

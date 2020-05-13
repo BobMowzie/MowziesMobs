@@ -37,9 +37,6 @@ public class EntityIceBreath extends EntityMagicEffect {
     public EntityIceBreath(World world) {
         super(world);
         setSize(0, 0);
-        if (world.isRemote) {
-            MowziesMobs.PROXY.playIceBreathSound(this);
-        }
     }
 
     public EntityIceBreath(World world, EntityLivingBase caster) {
@@ -53,7 +50,12 @@ public class EntityIceBreath extends EntityMagicEffect {
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (caster != null && caster.getHealth() <= 0) this.setDead();
+        if (ticksExisted == 1) {
+            if (world.isRemote) {
+                MowziesMobs.PROXY.playIceBreathSound(this);
+            }
+        }
+        if (caster != null && caster.isDead) this.setDead();
         if (ticksExisted == 1) playSound(MMSounds.ENTITY_FROSTMAW_ICEBREATH_START, 1, 0.6f);
         if (caster instanceof EntityPlayer) {
             rotationYaw = ((EntityPlayer) caster).rotationYaw;
@@ -126,8 +128,8 @@ public class EntityIceBreath extends EntityMagicEffect {
             float entityHitDistance = (float) Math.sqrt((entityHit.posZ - posZ) * (entityHit.posZ - posZ) + (entityHit.posX - posX) * (entityHit.posX - posX) + (entityHit.posY - posY) * (entityHit.posY - posY));
 
             boolean inRange = entityHitDistance <= RANGE;
-            boolean yawCheck = (entityRelativeYaw <= ARC / 2 && entityRelativeYaw >= -ARC / 2) || (entityRelativeYaw >= 360 - ARC / 2 || entityRelativeYaw <= -360 + ARC / 2);
-            boolean pitchCheck = (entityRelativePitch <= ARC / 2 && entityRelativePitch >= -ARC / 2) || (entityRelativePitch >= 360 - ARC / 2 || entityRelativePitch <= -360 + ARC / 2);
+            boolean yawCheck = (entityRelativeYaw <= ARC / 2f && entityRelativeYaw >= -ARC / 2f) || (entityRelativeYaw >= 360 - ARC / 2f || entityRelativeYaw <= -360 + ARC / 2f);
+            boolean pitchCheck = (entityRelativePitch <= ARC / 2f && entityRelativePitch >= -ARC / 2f) || (entityRelativePitch >= 360 - ARC / 2f || entityRelativePitch <= -360 + ARC / 2f);
             if (inRange && yawCheck && pitchCheck) {
                 entityHit.attackEntityFrom(DamageSource.causeIndirectMagicDamage(caster, null), damage);
                 MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entityHit, MowzieLivingProperties.class);
@@ -141,7 +143,7 @@ public class EntityIceBreath extends EntityMagicEffect {
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double dX, double dY, double dZ, double r) {
-        return world.getEntitiesWithinAABB(entityClass, getEntityBoundingBox().grow(dX, dY, dZ), e -> e != this && getDistanceToEntity(e) <= r && e.posY <= posY + dY);
+        return world.getEntitiesWithinAABB(entityClass, getEntityBoundingBox().grow(dX, dY, dZ), e -> e != this && getDistance(e) <= r && e.posY <= posY + dY);
     }
 
     @Override

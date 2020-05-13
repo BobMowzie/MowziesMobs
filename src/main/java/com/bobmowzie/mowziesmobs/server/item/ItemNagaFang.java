@@ -15,7 +15,7 @@ import java.util.List;
 public class ItemNagaFang extends Item {
     public ItemNagaFang() {
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setUnlocalizedName("nagaFang");
+        setTranslationKey("nagaFang");
         setRegistryName("naga_fang");
     }
 

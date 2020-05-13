@@ -13,7 +13,8 @@ public enum MMParticle {
     SNOWFLAKE(new ParticleSnowFlake.SnowFlakeFactory()),
     RING(new ParticleRing.RingFactory()),
     CLOUD(new ParticleCloud.CloudFactory()),
-    SPARKLE(new ParticleSparkle.SparkleFactory());
+    SPARKLE(new ParticleSparkle.SparkleFactory()),
+    FALLING_BLOCK(new ParticleFallingBlock.FallingBlockFactory());
 
     private ParticleFactory factory;
 

@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.server.config;
 import net.ilexiconn.llibrary.server.config.ConfigEntry;
 
 public class ConfigHandler {
-    @ConfigEntry(name = "Foliaath Spawn Rate", minValue = "0", maxValue = "100")
+    @ConfigEntry(name = "Foliaath Spawn Rate", minValue = "0", maxValue = "100", comment = "Foliaath Spawnrate: Larger number causes more spawning, 0 to disable spawning")
     public int spawnrateFoliaath = 20;
     @ConfigEntry(name = "Foliaath Health Multiplier", minValue = "0", maxValue = "100")
     public float healthScaleFoliaath = 1;
@@ -17,7 +17,7 @@ public class ConfigHandler {
     @ConfigEntry(name = "Wroughtnaut Attack Multiplier", minValue = "0", maxValue = "100")
     public float attackScaleWroughtnaut = 1;
 
-    @ConfigEntry(name = "Barakoa Spawn Rate", minValue = "0", maxValue = "100")
+    @ConfigEntry(name = "Barakoa Spawn Rate", minValue = "0", maxValue = "100", comment = "Barakoa Spawnrate: Larger number causes more spawning, 0 to disable spawning")
     public int spawnrateBarakoa = 4;
     @ConfigEntry(name = "Barakoa Health Multiplier", minValue = "0", maxValue = "100")
     public float healthScaleBarakoa = 1;
@@ -31,20 +31,20 @@ public class ConfigHandler {
     @ConfigEntry(name = "Barako Attack Multiplier", minValue = "0", maxValue = "100")
     public float attackScaleBarako = 1;
 
-    @ConfigEntry(name = "Frostmaw Spawn Rate", minValue = "0", maxValue = "100")
-    public int spawnrateFrostmaw = 1;
+    @ConfigEntry(name = "Frostmaw Spawn Rate", minValue = "0", maxValue = "100", comment = "Frostmaw Spawnrate: Larger number causes more spawning, 0 to disable spawning")
+    public int spawnrateFrostmaw = 15;
     @ConfigEntry(name = "Frostmaw Health Multiplier", minValue = "0", maxValue = "100")
     public float healthScaleFrostmaw = 1;
     @ConfigEntry(name = "Frostmaw Attack Multiplier", minValue = "0", maxValue = "100")
     public float attackScaleFrostmaw = 1;
 
-    @ConfigEntry(name = "Grottol Spawn Rate", minValue = "0", maxValue = "100")
+    @ConfigEntry(name = "Grottol Spawn Rate", minValue = "0", maxValue = "100", comment = "Grottol Spawnrate: Larger number causes more spawning, 0 to disable spawning")
     public int spawnrateGrottol = 2;
 
-    @ConfigEntry(name = "Lantern Spawn Rate", minValue = "0", maxValue = "100")
+    @ConfigEntry(name = "Lantern Spawn Rate", minValue = "0", maxValue = "100", comment = "Lantern Spawnrate: Larger number causes more spawning, 0 to disable spawning")
     public int spawnrateLantern = 2;
 
-    @ConfigEntry(name = "Naga Spawn Rate", minValue = "0", maxValue = "100")
+    @ConfigEntry(name = "Naga Spawn Rate", minValue = "0", maxValue = "100", comment = "Naga Spawnrate: Larger number causes more spawning, 0 to disable spawning")
     public int spawnrateNaga = 5;
     @ConfigEntry(name = "Naga Health Multiplier", minValue = "0", maxValue = "100")
     public float healthScaleNaga = 1;

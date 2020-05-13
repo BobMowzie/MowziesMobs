@@ -63,7 +63,8 @@ public class ClientProxy extends ServerProxy {
     @Override
     public void onLateInit() {
         Minecraft.getMinecraft().getItemColors().registerItemColorHandler(new IItemColor() {
-            public int getColorFromItemstack(ItemStack stack, int tintIndex) {
+            @Override
+            public int colorMultiplier(ItemStack stack, int tintIndex) {
                 MowzieEntityEggInfo info = EntityHandler.INSTANCE.getEntityEggInfo(ItemSpawnEgg.getEntityIdFromItem(stack));
                 return info == null ? -1 : (tintIndex == 0 ? info.primaryColor : info.secondaryColor);
             }

@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
+import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -23,6 +24,7 @@ public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> i
 
     public EntityBarakoanToBarakoana(World world, EntityBarakoana leader) {
         super(world, EntityBarakoana.class, leader);
+        this.targetTasks.addTask(3, new BarakoaHurtByTargetAI(this, true));
     }
 
     @Override
@@ -59,7 +61,7 @@ public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> i
 
     @Override
     public boolean attackEntityFrom(DamageSource source, float damage) {
-        Entity entity = source.getTrueSource();
+        /*Entity entity = source.getTrueSource();
         if (entity != null && entity instanceof EntityLivingBase) {
             if (!(entity instanceof EntityPlayer) || !(((EntityPlayer) entity).capabilities.isCreativeMode)) {
                 if (leader != null) {
@@ -68,7 +70,7 @@ public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> i
                     this.setAttackTarget((EntityLivingBase) entity);
                 }
             }
-        }
+        }*/
         return super.attackEntityFrom(source, damage);
     }
 
@@ -76,7 +78,6 @@ public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> i
         this.setLeaderUUID(ABSENT_LEADER);
         this.leader = null;
         this.setAttackTarget(null);
-        this.targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
         this.targetTasks.addTask(4, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, true, false));
         this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityCow.class, 0, true, false, null));
         this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityPig.class, 0, true, false, null));

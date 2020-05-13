@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 public class ItemGrantSunsBlessing extends Item {
     public ItemGrantSunsBlessing() {
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setUnlocalizedName("grantSunsBlessing");
+        setTranslationKey("grantSunsBlessing");
         setRegistryName("grant_suns_blessing");
     }
 

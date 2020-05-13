@@ -33,6 +33,7 @@ import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.item.EntityMinecartEmpty;
+import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
@@ -52,7 +53,7 @@ import net.minecraft.world.WorldServer;
 /**
  * Created by Josh on 7/3/2018.
  */
-public class EntityGrottol extends MowzieEntity {
+public class EntityGrottol extends MowzieEntity implements IMob {
     public static final Animation DIE_ANIMATION = Animation.create(73);
     public static final Animation HURT_ANIMATION = Animation.create(10);
     public static final Animation IDLE_ANIMATION = EntityAIGrottolIdle.animation();
@@ -89,6 +90,7 @@ public class EntityGrottol extends MowzieEntity {
         setSize(0.9F, 1.2F);
 
         moveHelper = new MMEntityMoveHelper(this, 45);
+        usesVanillaDropSystem = false;
     }
 
     @Override
@@ -294,7 +296,7 @@ public class EntityGrottol extends MowzieEntity {
         }
 
         // AI Task
-        if (!world.isRemote && fleeTime >= 70 && getAnimation() == NO_ANIMATION && !isAIDisabled() && !isPotionActive(PotionHandler.FROZEN)) {
+        if (!world.isRemote && fleeTime >= 55 && getAnimation() == NO_ANIMATION && !isAIDisabled() && !isPotionActive(PotionHandler.FROZEN)) {
             IBlockState blockBeneath = world.getBlockState(getPosition().down());
             Material mat = blockBeneath.getMaterial();
             if (mat == Material.GRASS || mat == Material.GROUND || mat == Material.SAND || mat == Material.CLAY || mat == Material.ROCK) {
@@ -318,9 +320,13 @@ public class EntityGrottol extends MowzieEntity {
                     );
                 }
             }
-            if (getAnimationTick() == 18) {
-                setDead();
-            }
+        }
+    }
+
+    @Override
+    protected void onAnimationFinish(Animation animation) {
+        if (animation == BURROW_ANIMATION) {
+            setDead();
         }
     }
 

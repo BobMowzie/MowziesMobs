@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoTrade;
+import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityRing;
 import com.bobmowzie.mowziesmobs.server.gui.GuiHandler;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoTrade;
@@ -13,6 +14,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
@@ -75,7 +77,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     public static final Animation SPAWN_ANIMATION = Animation.create(20);
     public static final Animation SOLAR_BEAM_ANIMATION = Animation.create(100);
     public static final Animation BLESS_ANIMATION = Animation.create(60);
-    private static final int MAX_HEALTH = 80;
+    private static final int MAX_HEALTH = 100;
     private static final int SUNSTRIKE_PAUSE_MAX = 40;
     private static final int SUNSTRIKE_PAUSE_MIN = 15;
     private static final int LASER_PAUSE = 230;
@@ -98,13 +100,15 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     private int timeUntilLaser = 0;
     private int timeUntilBarakoa = 0;
     private EntityPlayer blessingPlayer;
+    private BarakoaHurtByTargetAI hurtByTargetAI;
 
     public EntityBarako(World world) {
         super(world);
-        this.targetTasks.addTask(3, new EntityAIHurtByTarget(this, false));
-        this.tasks.addTask(4, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, false, true));
-        this.tasks.addTask(4, new EntityAINearestAttackableTarget<>(this, EntityZombie.class, 0, false, false, null));
-        this.tasks.addTask(4, new EntityAINearestAttackableTarget<>(this, EntitySkeleton.class, 0, false, false, null));
+        hurtByTargetAI = new BarakoaHurtByTargetAI(this, true);
+        this.targetTasks.addTask(3, hurtByTargetAI);
+        this.targetTasks.addTask(4, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, false, true));
+        this.targetTasks.addTask(4, new EntityAINearestAttackableTarget<>(this, EntityZombie.class, 0, false, false, null));
+        this.targetTasks.addTask(4, new EntityAINearestAttackableTarget<>(this, EntitySkeleton.class, 0, false, false, null));
         this.tasks.addTask(2, new AnimationAI<>(this, BELLY_ANIMATION, false));
         this.tasks.addTask(2, new AnimationAI<>(this, TALK_ANIMATION, false));
         this.tasks.addTask(2, new AnimationAI<>(this, BLESS_ANIMATION, false));
@@ -122,6 +126,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             this.setDirection(rand.nextInt(4) + 1);
         }
         experienceValue = 45;
+        usesVanillaDropSystem = false;
     }
 
     public EntityBarako(World world, int direction) {
@@ -215,6 +220,9 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && timeUntilSunstrike <= 0 && targetDistance > 5) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SUNSTRIKE_ANIMATION);
                 timeUntilSunstrike = getTimeUntilSunstrike();
+            }
+            if (!hurtByTargetAI.shouldContinueExecuting()) {
+                hurtByTargetAI.resetTask();
             }
         } else {
             if (!world.isRemote) {
@@ -501,7 +509,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 
     @Override
     protected boolean processInteract(EntityPlayer player, EnumHand hand) {
-        if (canTradeWith(player)) {
+        if (canTradeWith(player) && getAttackTarget() == null && !isDead) {
             setCustomer(player);
             if (!world.isRemote) {
                 GuiHandler.open(GuiHandler.BARAKO_TRADE, player, this, hasTradedWith(player) ? 1 : 0);

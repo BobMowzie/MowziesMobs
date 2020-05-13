@@ -9,24 +9,27 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.*;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.Item;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.Random;
-import java.util.Set;
-import java.util.TreeSet;
+import javax.annotation.Nullable;
 
 /**
  * Created by Josh on 7/24/2018.
@@ -51,6 +54,12 @@ public class EntityLantern extends MowzieEntity {
     }
 
     @Override
+    public boolean isCreatureType(EnumCreatureType type, boolean forSpawnCount) {
+        if (forSpawnCount && isNoDespawnRequired()) return false;
+        return type == EnumCreatureType.AMBIENT;
+    }
+
+    @Override
     protected void initEntityAI() {
         super.initEntityAI();
         tasks.addTask(2, new AnimationAI<>(this, PUFF_ANIMATION, false));
@@ -65,6 +74,12 @@ public class EntityLantern extends MowzieEntity {
         this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(4.0D);
         this.getEntityAttribute(SharedMonsterAttributes.FLYING_SPEED).setBaseValue(0.3D);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.20000000298023224D);
+    }
+
+    @SideOnly(Side.CLIENT)
+    @Override
+    public int getBrightnessForRender() {
+        return 0xF000F0;
     }
 
     @Override
@@ -85,7 +100,7 @@ public class EntityLantern extends MowzieEntity {
         }
 
         if (!world.isRemote && getAnimation() == NO_ANIMATION) {
-            if (groundDist < 5 || rand.nextInt(30) == 0) {
+            if (groundDist < 5 || (rand.nextInt(13) == 0 && groundDist < 16)) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, PUFF_ANIMATION);
             }
         }
@@ -119,9 +134,8 @@ public class EntityLantern extends MowzieEntity {
     }
 
     @Override
-    protected void dropLoot() {
-        super.dropLoot();
-        dropItem(ItemHandler.GLOWING_JELLY, 1 + rand.nextInt(2));
+    protected Item getDropItem() {
+        return ItemHandler.GLOWING_JELLY;
     }
 
     public void fall(float distance, float damageMultiplier)
@@ -190,6 +204,16 @@ public class EntityLantern extends MowzieEntity {
 
         this.limbSwingAmount += (f2 - this.limbSwingAmount) * 0.4F;
         this.limbSwing += this.limbSwingAmount;
+    }
+
+    public boolean getCanSpawnHere()
+    {
+        int i = MathHelper.floor(this.posX);
+        int j = MathHelper.floor(this.getEntityBoundingBox().minY);
+        int k = MathHelper.floor(this.posZ);
+        BlockPos blockpos = new BlockPos(i, j, k);
+        Block spawnBlock = this.world.getBlockState(blockpos.down()).getBlock();
+        return (spawnBlock == Blocks.GRASS || spawnBlock == Blocks.LEAVES || spawnBlock == Blocks.LEAVES2) && super.getCanSpawnHere();
     }
 
     /**

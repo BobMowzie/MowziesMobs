@@ -28,9 +28,6 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
     public EntityIceBall(World worldIn) {
         super(worldIn);
         setSize(0, 0);
-        if (world.isRemote) {
-            MowziesMobs.PROXY.playIceBreathSound(this);
-        }
     }
 
     public EntityIceBall(World worldIn, EntityLivingBase caster) {
@@ -45,6 +42,12 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
     public void onUpdate() {
         super.onUpdate();
         move(MoverType.SELF, motionX, motionY, motionZ);
+
+        if (ticksExisted == 1) {
+            if (world.isRemote) {
+                MowziesMobs.PROXY.playIceBreathSound(this);
+            }
+        }
 
         List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby(3);
         if (!entitiesHit.isEmpty()) {
@@ -114,7 +117,7 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
     }
 
     @Override
-    public void setThrowableHeading(double x, double y, double z, float velocity, float inaccuracy) {
+    public void shoot(double x, double y, double z, float velocity, float inaccuracy) {
         motionX = x * velocity;
         motionY = y * velocity;
         motionZ = z * velocity;

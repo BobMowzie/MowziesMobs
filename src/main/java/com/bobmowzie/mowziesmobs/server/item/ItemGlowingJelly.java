@@ -24,7 +24,7 @@ public class ItemGlowingJelly extends ItemFood {
         super(amount, saturation, isWolfFood);
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
         setRegistryName("glowing_jelly");
-        setUnlocalizedName("glowingJelly");
+        setTranslationKey("glowingJelly");
     }
 
     @Override

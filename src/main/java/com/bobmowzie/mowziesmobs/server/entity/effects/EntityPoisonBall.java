@@ -43,7 +43,7 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
     }
 
     @Override
-    public void setThrowableHeading(double x, double y, double z, float velocity, float inaccuracy) {
+    public void shoot(double x, double y, double z, float velocity, float inaccuracy) {
         motionX = x * velocity;
         motionY = y * velocity;
         motionZ = z * velocity;

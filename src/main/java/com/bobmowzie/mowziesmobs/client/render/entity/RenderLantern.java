@@ -31,26 +31,4 @@ public class RenderLantern extends RenderLiving<EntityLantern> {
     public ResourceLocation getEntityTexture(EntityLantern entity) {
         return RenderLantern.TEXTURE;
     }
-
-    @Override
-    public void doRender(EntityLantern entity, double x, double y, double z, float yaw, float delta) {
-
-        int i = 65680;
-        int j = i % 65536;
-        int k = i / 65536;
-
-        GlStateManager.disableLighting();
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j, (float)k);
-        Minecraft.getMinecraft().entityRenderer.setupFogColor(true);
-
-        super.doRender(entity, x, y, z, yaw, delta);
-
-        i = entity.getBrightnessForRender();
-        j = i % 65536;
-        k = i / 65536;
-
-        Minecraft.getMinecraft().entityRenderer.setupFogColor(false);
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j, (float)k);
-        GlStateManager.enableLighting();
-    }
 }

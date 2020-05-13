@@ -1,0 +1,130 @@
+# Creative Tabs
+itemGroup.mowziesmobs.creativeTab=Mowzie's Mobs
+
+# Entities
+entity.foliaath.name=Фолиаф
+entity.ferrous_wroughtnaut.name=Железный Кованый
+entity.baby_foliaath.name=Малый Фолиаф
+entity.barakoan_barakoana.name=Баракоа
+entity.barakoan_player.name=Баракоа
+entity.barakoana.name=Баракоана
+entity.barakoaya.name=Баракоа
+entity.barako.name=Барако, вождь Солнца
+entity.frostmaw.name=Ледочрев
+entity.grottol.name=Гроттул
+entity.lantern.name=Фонар
+entity.naga.name=Нага
+
+# Items
+item.foliaathSeed.name=Зерно Фолиафа
+item.mobRemover.name=Съёмник существ
+item.wroughtAxe.name=Топор Тысячи Металлов
+item.wroughtHelmet.name=Шлем Кованого
+item.barakoaMask.fury.name=Маска Ярости
+item.barakoaMask.fear.name=Маска Страха
+item.barakoaMask.rage.name=Маска Буйства
+item.barakoaMask.bliss.name=Маска Блаженства
+item.barakoaMask.misery.name=Маска Несчастья
+item.barakoMask.name=Лик Солнца
+item.dart.name=Дротик
+item.spear.name=Копьё
+item.blowgun.name=Духовая трубка
+item.grantSunsBlessing.name=Получить благословение Солнца
+item.testStructure.name=Проверка структур
+item.iceCrystal.name=Кристалл Льда
+item.earthTalisman.name=Талисман Земли
+
+item.blowgun.text.0=Быстро заряжается
+item.blowgun.text.1=Короткая дистанция
+item.blowgun.text.2=Стреляет дротиками
+
+item.wroughtAxe.text.0=Не ломается
+item.wroughtAxe.text.1=ПКМ: Рассекающий удар
+item.wroughtAxe.text.2="Красться"+ПКМ: Ударная волна
+
+item.barakoMask.text.0=Не ломается
+item.barakoMask.text.1=Если экипирован, ПКМ с маской Баракоа в руке:
+item.barakoMask.text.2=Призвать приспешника
+
+item.barakoaMask.fear.text.0=Дарует скорость
+item.barakoaMask.fear.text.1=А что если...?
+item.barakoaMask.rage.text.0=Дарует спешку
+item.barakoaMask.rage.text.1=А что если...?
+item.barakoaMask.misery.text.0=Дарует сопротивление
+item.barakoaMask.misery.text.1=А что если...?
+item.barakoaMask.bliss.text.0=Дарует прыгучесть
+item.barakoaMask.bliss.text.1=А что если...?
+item.barakoaMask.fury.text.0=Дарует силу
+item.barakoaMask.fury.text.1=А что если...?
+
+item.dart.text.0=Только для Духовой трубки
+item.dart.text.1=Отравляет цель
+
+item.foliaathSeed.text.0=Посади его в траву
+item.foliaathSeed.text.1=Проголодается за половину дня
+item.foliaathSeed.text.2=Кормится броском любого мяса
+item.foliaathSeed.text.3=Полностью вырастает за 2 дня
+
+item.grantSunsBlessing.text.0=Дарует благословение Солнца на 20 минут
+item.grantSunsBlessing.text.1=ПКМ с пустой рукой: Солнечный удар
+item.grantSunsBlessing.text.2="Красться"+ПКМ с пустой рукой: Солнечный луч (перезарядка: 2 минуты)
+
+item.earthTalisman.text.0=Только для творческого режима
+item.earthTalisman.text.1=Если в инвентаре: Даёт Геомантию
+item.earthTalisman.text.2=ПКМ с пустой рукой по земле: Призвать глыбу
+item.earthTalisman.text.3=Зажать ПКМ с пустой рукой по земле: Призвать больше глыб
+item.earthTalisman.text.4=Удар по глыбе пускает её вперёд
+item.earthTalisman.text.5=Двойное нажатие "Красться" в воздухе:
+item.earthTalisman.text.6=Туннелирование в сторону взгляда. (Пока что не работает на многопользовательских серверах)
+item.earthTalisman.text.7=Отпустить для остановки и приземления
+
+item.mobRemover.text.0=ЛКМ: убрать существо из мода Mowzie's Mobs
+
+item.wroughtHelmet.text.0=Не ломается
+
+item.spear.text.0=Продлевает атаку на 3,5 метра
+item.spear.text.1=Шанс 1/3: Мгновенно убить большинство животных
+
+item.icecrystal.text.0=Зажать ПКМ: Морозящее дыхание
+item.icecrystal.text.1=Перезаряжается в инвентаре
+
+item.capturedGrottol.name=Пойманный Гроттул
+
+item.glowingJelly.name=Светящееся желе
+item.glowingJelly.text.0=Ночное зрение (0:30)
+
+item.nagaFang.name=Клык Наги
+item.nagaFang.text.0=Используется в изготовлении Зелья ядостойкости
+
+# Blocks
+tile.campfire.name=Костёр
+tile.paintedAcacia.name=Окрашенная древесина акации
+tile.paintedAcaciaSlab.name=Окрашенная плита из акации
+tile.grottol.name=Гроттул
+
+# Potions
+potion.sunsBlessing=Благословение Солнца
+potion.geomancy=Геомантия
+potion.frozen=Замерзание
+potion.poisonResist=Ядостойкость
+potion.effect.poisonResist=Зелье ядостойкости
+
+# Tile Entities
+
+
+# Containers
+entity.barakoaya.trade=Баракоа
+entity.barako.trade=Барако, вождь Солнца
+entity.barako.trade.button.text=Обмен
+entity.barako.trade.button.hover=Вернитесь позже для бесплатного восполнения
+entity.barako.replenish.button.text=Восполнить
+entity.barako.replenish.button.hover=Бесплатно восполняет благословение (бесплатно)
+
+# Death Messages
+death.attack.dart=%2$s застрелил %1$s
+
+#Strings which are not contained in source .lang file
+entity.boulder.name=Глыба
+splash_potion.effect.poisonResist=Взрывное зелье ядостойкости
+lingering_potion.effect.poisonResist=Туманное зелье ядостойкости
+tipped_arrow.effect.poisonResist=Стрела ядостойкости

@@ -18,7 +18,7 @@ import javax.annotation.Nullable;
 public class ItemEarthTalisman extends Item {
     public ItemEarthTalisman() {
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setUnlocalizedName("earthTalisman");
+        setTranslationKey("earthTalisman");
         setRegistryName("earth_talisman");
         maxStackSize = 1;
     }

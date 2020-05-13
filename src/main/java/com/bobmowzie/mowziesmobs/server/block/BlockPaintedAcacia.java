@@ -15,7 +15,7 @@ public class BlockPaintedAcacia extends Block {
         setHardness(2.0F);
         setResistance(5.0F);
         setSoundType(SoundType.WOOD);
-        setUnlocalizedName("paintedAcacia");
+        setTranslationKey("paintedAcacia");
         setRegistryName("painted_acacia");
     }
 }

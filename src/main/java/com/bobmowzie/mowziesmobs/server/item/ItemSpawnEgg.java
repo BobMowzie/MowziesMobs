@@ -45,7 +45,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 public class ItemSpawnEgg extends Item {
     public ItemSpawnEgg() {
-        setUnlocalizedName("monsterPlacer");
+        setTranslationKey("monsterPlacer");
         setRegistryName("spawn_egg");
         setHasSubtypes(true);
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
@@ -66,10 +66,10 @@ public class ItemSpawnEgg extends Item {
 
     @Override
     public String getItemStackDisplayName(ItemStack stack) {
-        String name = I18n.translateToLocal(getUnlocalizedName() + ".name").trim();
+        String name = I18n.translateToLocal(getTranslationKey() + ".name").trim();
         ResourceLocation entityName = getEntityIdFromItem(stack);
         if (entityName != null) {
-            name = name + " " + I18n.translateToLocal("entity." + entityName.getResourcePath() + ".name");
+            name = name + " " + I18n.translateToLocal("entity." + entityName.getPath() + ".name");
         }
         return name;
     }
