@@ -179,8 +179,8 @@ public class EntityBoulder extends Entity {
                 if (world.isRemote) continue;
                 if (entity == caster) continue;
                 if (ridingEntities.contains(entity)) continue;
-                if (caster instanceof EntityPlayer)  entity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) caster), damage);
-                else entity.attackEntityFrom(DamageSource.causeMobDamage(caster), damage);
+                if (caster != null) entity.attackEntityFrom(DamageSource.causeIndirectDamage(this, caster), damage);
+                else entity.attackEntityFrom(DamageSource.GENERIC, damage); // TODO: Magic damage goes through armor, but no other damage type fits. Create new damage type
                 if (!isDead && boulderSize != 3) setShouldExplode(true);
             }
         }

@@ -206,7 +206,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
                     entityAttackingAngle += 360;
                 }
                 float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
-                if ((entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -arc + 90 / 2)) {
+                if ((entityRelativeAngle <= arc / 2f && entityRelativeAngle >= -arc / 2f) || (entityRelativeAngle >= 360 - arc / 2f || entityRelativeAngle <= -arc + 90f / 2f)) {
                     playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.4F, 2);
                     return false;
                 } else {
@@ -268,10 +268,10 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
             posZ = prevPosZ;
             rotationYaw = prevRotationYaw;
         }
-        else if (world.isRemote) {
+//        else if (world.isRemote) {
 //            MMParticle.ORB.spawn(world, leftEyePos.x, leftEyePos.y, leftEyePos.z, ParticleFactory.ParticleArgs.get().withData(0d, 0d, 0d, 247d / 256d, 94d / 256d, 74d / 256d, 1d, 25));
 //            MMParticle.ORB.spawn(world, rightEyePos.x, rightEyePos.y, rightEyePos.z, ParticleFactory.ParticleArgs.get().withData(0d, 0d, 0d, 247d / 256d, 94d / 256d, 74d / 256d, 1d, 25));
-        }
+//        }
         renderYawOffset = rotationYaw;
 
         if (getAttackTarget() != null && isActive()) {
