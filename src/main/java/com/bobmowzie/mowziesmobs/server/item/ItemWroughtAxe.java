@@ -47,7 +47,7 @@ public class ItemWroughtAxe extends ItemAxe {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
-        if (player != null) {
+        if (player != null && hand == EnumHand.MAIN_HAND) {
             MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
             if (property != null && property.untilAxeSwing <= 0) {
                 boolean verticalAttack = player.isSneaking() && player.onGround;
@@ -57,8 +57,9 @@ public class ItemWroughtAxe extends ItemAxe {
                 property.verticalSwing = verticalAttack;
                 property.untilAxeSwing = MowziePlayerProperties.SWING_COOLDOWN;
             }
+            return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
         }
-        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
+        return super.onItemRightClick(world, player, hand);
     }
 
     @Override

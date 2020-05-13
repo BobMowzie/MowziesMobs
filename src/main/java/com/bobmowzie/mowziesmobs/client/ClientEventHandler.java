@@ -70,7 +70,7 @@ public enum ClientEventHandler {
     public void onHandRender(RenderSpecificHandEvent event) {
         EntityPlayer player = Minecraft.getMinecraft().player;
         MowziePlayerProperties propertyPlayer = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
-        if (propertyPlayer != null && propertyPlayer.untilAxeSwing > 0) {
+        if (event.getHand() == EnumHand.MAIN_HAND && propertyPlayer != null && propertyPlayer.untilAxeSwing > 0) {
             event.setCanceled(true);
         }
     }
@@ -129,37 +129,19 @@ public enum ClientEventHandler {
         // Axe of a thousand metals attack animations
         if (propertyPlayer != null && propertyPlayer.untilAxeSwing > 0) {
             float frame = (MowziePlayerProperties.SWING_COOLDOWN - propertyPlayer.untilAxeSwing) + delta;
-            if (player.getActiveHand() == EnumHand.MAIN_HAND) {
-                ModelRenderer arm = event.getModel().bipedRightArm;
-                if (propertyPlayer.verticalSwing) {
-                    float swingArc = 3f;
-                    arm.rotateAngleX = -2.7f + (float) (swingArc * 1 / (1 + Math.exp(1.3f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 2f))));
-                    arm.rotateAngleX = Math.min(arm.rotateAngleX, -0.1f);
-                    if (!event.getModel().isSneak) {
-                        GlStateManager.translate(0.0F, 0.3F, 0.0F);
-                    }
-                    event.getModel().isSneak = true;
-                } else {
-                    float swingArc = 2.5f;
-                    arm.rotateAngleX = -1.75f + (float) (swingArc * 1 / (1 + Math.exp(1.3f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 2f))));
-                    arm.rotateAngleZ = 1.5f;
+            ModelRenderer arm = event.getModel().bipedRightArm;
+            if (propertyPlayer.verticalSwing) {
+                float swingArc = 3f;
+                arm.rotateAngleX = -2.7f + (float) (swingArc * 1 / (1 + Math.exp(1.3f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 2f))));
+                arm.rotateAngleX = Math.min(arm.rotateAngleX, -0.1f);
+                if (!event.getModel().isSneak) {
+                    GlStateManager.translate(0.0F, 0.3F, 0.0F);
                 }
-            }
-            else {
-                ModelRenderer arm = event.getModel().bipedLeftArm;
-                if (propertyPlayer.verticalSwing) {
-                    float swingArc = 3f;
-                    arm.rotateAngleX = -2.7f + (float) (swingArc * 1 / (1 + Math.exp(1.3f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 2f))));
-                    arm.rotateAngleX = Math.min(arm.rotateAngleX, -0.1f);
-                    if (!event.getModel().isSneak) {
-                        GlStateManager.translate(0.0F, 0.3F, 0.0F);
-                    }
-                    event.getModel().isSneak = true;
-                } else {
-                    float swingArc = 2.5f;
-                    arm.rotateAngleX = -1.75f + (float) (swingArc * 1 / (1 + Math.exp(1.3f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 2f))));
-                    arm.rotateAngleZ = -1.5f;
-                }
+                event.getModel().isSneak = true;
+            } else {
+                float swingArc = 2.5f;
+                arm.rotateAngleX = -1.75f + (float) (swingArc * 1 / (1 + Math.exp(1.3f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 2f))));
+                arm.rotateAngleZ = 1.5f;
             }
         }
     }

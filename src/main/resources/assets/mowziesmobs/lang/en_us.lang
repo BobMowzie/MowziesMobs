@@ -111,7 +111,7 @@ potion.poisonResist=Poison Resistance
 potion.effect.poisonResist=Potion of Poison Resistance
 splash_potion.effect.poisonResist=Splash Potion of Poison Resistance
 lingering_potion.effect.poisonResist=Lingering Potion of Poison Resistance
-tipped_arrow.effect.poisonResist=Poison Resistance Tipped Arrow
+tipped_arrow.effect.poisonResist=Arrow of Poison Resistance
 
 # Tile Entities
 
