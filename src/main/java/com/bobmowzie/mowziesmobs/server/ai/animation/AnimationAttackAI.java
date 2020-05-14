@@ -39,7 +39,7 @@ public class AnimationAttackAI<T extends MowzieEntity & IAnimatedEntity> extends
     public void updateTask() {
         super.updateTask();
         if (entity.getAnimationTick() < damageFrame && entityTarget != null) {
-            entity.getLookHelper().setLookPositionWithEntity(entityTarget, 30F, 30F);
+            entity.faceEntity(entityTarget, 30F, 30F);
         }
         if (entity.getAnimationTick() == damageFrame) {
             float damage = (float) entity.getAttack();
