@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.IntermittentAnimation;
@@ -17,8 +18,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
-import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemAxe;
@@ -30,6 +31,9 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.storage.loot.LootContext;
+import net.minecraft.world.storage.loot.LootTable;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 public abstract class MowzieEntity extends EntityCreature implements IEntityAdditionalSpawnData, IAnimatedEntity, IntermittentAnimatableEntity {
@@ -46,13 +50,18 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     private List<IntermittentAnimation> intermittentAnimations = new ArrayList<>();
     public Vec3d moveVec = new Vec3d(0, 0, 0);
     public boolean playsHurtAnimation = true;
-    protected boolean usesVanillaDropSystem = true;
+    protected boolean dropAfterDeathAnim = true;
 
     public Vec3d[] socketPosArray = new Vec3d[]{};
 
     protected boolean prevOnGround;
     protected boolean prevPrevOnGround;
     protected boolean willLandSoon;
+    
+    private boolean killDataRecentlyHitFlag;
+    private int killDataLootingLevel;
+    private DamageSource killDataCause;
+    private EntityPlayer killDataAttackingPlayer;
 
     public MowzieEntity(World world) {
         super(world);
@@ -280,8 +289,9 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
                 }
             }
 
-            if (!world.isRemote && !usesVanillaDropSystem && world.getGameRules().getBoolean("doMobLoot")) {
-                dropLoot();
+            if (!world.isRemote && dropAfterDeathAnim && world.getGameRules().getBoolean("doMobLoot")) {
+                attackingPlayer = killDataAttackingPlayer;
+                dropLoot(killDataRecentlyHitFlag, killDataLootingLevel, killDataCause);
             }
 
             setDead();
@@ -300,18 +310,61 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     protected final void onDeathUpdate() {}
 
     @Override
-    protected final void dropLoot(boolean isPlayerKill, int lootingModifier, DamageSource source) {
-        if (usesVanillaDropSystem) super.dropLoot(isPlayerKill, lootingModifier, source);
-    }
+    public void onDeath(DamageSource cause)
+    {
+        if (net.minecraftforge.common.ForgeHooks.onLivingDeath(this, cause)) return;
+        if (!this.dead)
+        {
+            Entity entity = cause.getTrueSource();
+            EntityLivingBase entitylivingbase = this.getAttackingEntity();
 
-    @Override
-    protected final void dropFewItems(boolean isPlayerKill, int lootingModifier) {
-        if (usesVanillaDropSystem) super.dropFewItems(isPlayerKill, lootingModifier);
-    }
+            if (this.scoreValue >= 0 && entitylivingbase != null)
+            {
+                entitylivingbase.awardKillScore(this, this.scoreValue, cause);
+            }
 
-    @Override
-    protected final void dropEquipment(boolean isPlayerKill, int lootingModifier) {
-        if (usesVanillaDropSystem) super.dropEquipment(isPlayerKill, lootingModifier);
+            if (entity != null)
+            {
+                entity.onKillEntity(this);
+            }
+
+            this.dead = true;
+            this.getCombatTracker().reset();
+
+            if (!this.world.isRemote)
+            {
+                int i = net.minecraftforge.common.ForgeHooks.getLootingLevel(this, entity, cause);
+
+                captureDrops = true;
+                capturedDrops.clear();
+
+                if (this.canDropLoot() && this.world.getGameRules().getBoolean("doMobLoot"))
+                {
+                    boolean flag = this.recentlyHit > 0;
+                    if (dropAfterDeathAnim) {
+                        killDataRecentlyHitFlag = flag;
+                        killDataLootingLevel = i;
+                        killDataCause = cause;
+                        killDataAttackingPlayer = this.attackingPlayer;
+                    }
+                    else {
+                        this.dropLoot(flag, i, cause);
+                    }
+                }
+
+                captureDrops = false;
+
+                if (!net.minecraftforge.common.ForgeHooks.onLivingDrops(this, cause, capturedDrops, i, recentlyHit > 0))
+                {
+                    for (EntityItem item : capturedDrops)
+                    {
+                        world.spawnEntity(item);
+                    }
+                }
+            }
+
+            this.world.setEntityState(this, (byte)3);
+        }
     }
 
     @Override
@@ -361,10 +414,6 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
             entity.motionX = -0.1 * Math.cos(angle);
             entity.motionZ = -0.1 * Math.sin(angle);
         }
-    }
-
-    protected void dropLoot() {
-
     }
 
     @Override

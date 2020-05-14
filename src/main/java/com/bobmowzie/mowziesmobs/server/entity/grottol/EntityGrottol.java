@@ -389,16 +389,6 @@ public class EntityGrottol extends MowzieEntity implements IMob {
         }
     }
 
-    @Override
-    protected void dropLoot() {
-        super.dropLoot();
-        if (death == KillType.PICKAXE) {
-            dropItem(Items.DIAMOND, 1);
-        } else if (death == KillType.FORTUNE_PICKAXE) {
-            dropItem(Items.DIAMOND, 2);
-        } 
-    }
-
     @Nullable
     @Override
     protected ResourceLocation getLootTable() {
