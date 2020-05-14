@@ -1,0 +1,26 @@
+{
+  "pools": [
+    {
+      "name": "grottol",
+      "rolls": 1,
+      "conditions": [
+        {
+          "condition": "killed_by_player"
+        }
+      ],
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:diamond",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

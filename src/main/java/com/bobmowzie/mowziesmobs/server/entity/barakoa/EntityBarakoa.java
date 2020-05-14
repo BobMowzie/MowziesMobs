@@ -10,6 +10,7 @@ import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.SmartBodyHelper;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
+import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 
 import net.ilexiconn.llibrary.server.animation.Animation;
@@ -39,11 +40,13 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttackMob, IMob {
@@ -92,8 +95,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         circleTick += rand.nextInt(200);
         frame += rand.nextInt(50);
         experienceValue = 8;
-        active = true;
-        usesVanillaDropSystem = false;
+        active = false;
     }
 
     @Override
@@ -454,30 +456,22 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         return super.attackEntityFrom(source, damage);
     }
 
+    @Nullable
     @Override
-    protected void dropLoot() {
-        super.dropLoot();
-        if (rand.nextInt(3) == 0){
-            ItemBarakoaMask mask = ItemHandler.BARAKOA_MASK_FURY;
-            switch (getMask()) {
-                case BLISS:
-                    mask = ItemHandler.BARAKOA_MASK_BLISS;
-                    break;
-                case FEAR:
-                    mask = ItemHandler.BARAKOA_MASK_FEAR;
-                    break;
-                case FURY:
-                    mask = ItemHandler.BARAKOA_MASK_FURY;
-                    break;
-                case MISERY:
-                    mask = ItemHandler.BARAKOA_MASK_MISERY;
-                    break;
-                case RAGE:
-                    mask = ItemHandler.BARAKOA_MASK_RAGE;
-                    break;
-            }
-            dropItem(mask, 1);
+    protected ResourceLocation getLootTable() {
+        switch (getMask()) {
+            case BLISS:
+                return LootTableHandler.BARAKOA_BLISS;
+            case FEAR:
+                return LootTableHandler.BARAKOA_FEAR;
+            case FURY:
+                return LootTableHandler.BARAKOA_FURY;
+            case MISERY:
+                return LootTableHandler.BARAKOA_MISERY;
+            case RAGE:
+                return LootTableHandler.BARAKOA_RAGE;
         }
+        return LootTableHandler.BARAKOA_FURY;
     }
 
     @Override

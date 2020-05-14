@@ -1,0 +1,36 @@
+{
+  "pools": [
+    {
+      "name": "ferrous_wroughtnaut",
+      "rolls": 1,
+      "conditions": [
+        {
+          "condition": "killed_by_player"
+        }
+      ],
+      "entries": [
+        {
+          "type": "item",
+          "name": "mowziesmobs:wrought_helmet",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "name": "ferrous_wroughtnaut",
+      "rolls": 1,
+      "conditions": [
+        {
+          "condition": "killed_by_player"
+        }
+      ],
+      "entries": [
+        {
+          "type": "item",
+          "name": "mowziesmobs:wrought_axe",
+          "weight": 1
+        }
+      ]
+    }
+  ]
+}

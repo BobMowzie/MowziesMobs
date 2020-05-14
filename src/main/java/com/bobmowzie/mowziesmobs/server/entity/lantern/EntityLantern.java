@@ -8,6 +8,7 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
+import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
@@ -21,6 +22,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -135,7 +137,13 @@ public class EntityLantern extends MowzieEntity {
 
     @Override
     protected Item getDropItem() {
-        return ItemHandler.GLOWING_JELLY;
+        return null;//ItemHandler.GLOWING_JELLY;
+    }
+
+    @Nullable
+    @Override
+    protected ResourceLocation getLootTable() {
+        return LootTableHandler.LANTERN;
     }
 
     public void fall(float distance, float damageMultiplier)

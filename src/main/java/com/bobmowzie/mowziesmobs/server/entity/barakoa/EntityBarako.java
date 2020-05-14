@@ -8,6 +8,7 @@ import com.bobmowzie.mowziesmobs.server.gui.GuiHandler;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoTrade;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
+import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
@@ -36,10 +37,7 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -65,6 +63,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune, GuiHandler.ContainerHolder, IMob {
@@ -126,7 +125,6 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             this.setDirection(rand.nextInt(4) + 1);
         }
         experienceValue = 45;
-        usesVanillaDropSystem = false;
     }
 
     public EntityBarako(World world, int direction) {
@@ -478,10 +476,10 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         super.onDeath(cause);
     }
 
+    @Nullable
     @Override
-    protected void dropLoot() {
-        super.dropLoot();
-        dropItem(ItemHandler.BARAKO_MASK, 1);
+    protected ResourceLocation getLootTable() {
+        return LootTableHandler.BARAKO;
     }
 
     public boolean isTrading() {

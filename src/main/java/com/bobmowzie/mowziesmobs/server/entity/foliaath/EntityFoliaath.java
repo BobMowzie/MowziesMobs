@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.entity.foliaath;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
@@ -23,6 +24,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -333,9 +335,10 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         this.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 300, 1, true, true));
     }
 
+    @Nullable
     @Override
-    protected Item getDropItem() {
-        return rand.nextBoolean() ? ItemHandler.FOLIAATH_SEED : null;
+    protected ResourceLocation getLootTable() {
+        return LootTableHandler.FOLIAATH;
     }
 
     @Override

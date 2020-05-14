@@ -11,6 +11,7 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationProjectileAttackAI
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityPoisonBall;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
+import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import net.ilexiconn.llibrary.server.animation.Animation;
@@ -27,6 +28,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -583,9 +585,10 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
         return null;
     }
 
+    @Nullable
     @Override
-    protected Item getDropItem() {
-        return rand.nextBoolean() ? ItemHandler.NAGA_FANG : null;
+    protected ResourceLocation getLootTable() {
+        return LootTableHandler.NAGA;
     }
 
     @Override

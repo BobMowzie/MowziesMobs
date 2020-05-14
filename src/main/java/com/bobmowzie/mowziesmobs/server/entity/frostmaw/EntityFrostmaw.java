@@ -12,6 +12,7 @@ import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBall;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
+import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
@@ -40,6 +41,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -133,7 +135,6 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         playsHurtAnimation = false;
         rotationYaw = renderYawOffset = rand.nextFloat() * 360;
         experienceValue = 60;
-        usesVanillaDropSystem = false;
 
         moveHelper = new MMEntityMoveHelper(this, 7);
     }
@@ -907,10 +908,10 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         }
     }
 
+    @Nullable
     @Override
-    protected void dropLoot() {
-        super.dropLoot();
-        if (getHasCrystal()) dropItem(ItemHandler.ICE_CRYSTAL, 1);
+    protected ResourceLocation getLootTable() {
+        return LootTableHandler.FROSTMAW;
     }
 
     @Override

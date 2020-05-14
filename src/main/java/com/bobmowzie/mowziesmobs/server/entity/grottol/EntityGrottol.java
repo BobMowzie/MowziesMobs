@@ -14,6 +14,7 @@ import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.ai.EntityAIGrottolIdle;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
+import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.animation.Animation;
@@ -43,12 +44,15 @@ import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by Josh on 7/3/2018.
@@ -90,7 +94,6 @@ public class EntityGrottol extends MowzieEntity implements IMob {
         setSize(0.9F, 1.2F);
 
         moveHelper = new MMEntityMoveHelper(this, 45);
-        usesVanillaDropSystem = false;
     }
 
     @Override
@@ -394,6 +397,12 @@ public class EntityGrottol extends MowzieEntity implements IMob {
         } else if (death == KillType.FORTUNE_PICKAXE) {
             dropItem(Items.DIAMOND, 2);
         } 
+    }
+
+    @Nullable
+    @Override
+    protected ResourceLocation getLootTable() {
+        return LootTableHandler.GROTTOL;
     }
 
     @Override

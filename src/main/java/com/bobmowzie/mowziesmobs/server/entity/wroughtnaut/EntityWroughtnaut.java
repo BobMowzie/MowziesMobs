@@ -17,6 +17,7 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.SmartBodyHelper;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
+import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.google.common.base.Optional;
 import net.ilexiconn.llibrary.server.animation.Animation;
@@ -42,11 +43,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.PooledMutableBlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -56,6 +53,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nullable;
 
 public class EntityWroughtnaut extends MowzieEntity implements IMob {
     public static final Animation DIE_ANIMATION = Animation.create(130);
@@ -149,7 +148,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 //        rightEyePos = new Vec3d(0, 0, 0);
 //        leftEyePos = new Vec3d(0, 0, 0);
 
-        usesVanillaDropSystem = false;
+        usesVanillaDropSystem = true;
     }
 
     @Override
@@ -539,17 +538,16 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     }
 
     @Override
-    protected void dropLoot() {
-        super.dropLoot();
-        dropItem(ItemHandler.WROUGHT_AXE, 1);
-        dropItem(ItemHandler.WROUGHT_HELMET, 1);
-    }
-
-    @Override
     protected void playStepSound(BlockPos pos, Block block) {}
 
     @Override
     public Animation[] getAnimations() {
         return ANIMATIONS;
+    }
+
+    @Nullable
+    @Override
+    protected ResourceLocation getLootTable() {
+        return LootTableHandler.FERROUS_WROUGHTNAUT;
     }
 }

@@ -1,0 +1,20 @@
+{
+  "pools": [
+    {
+      "name": "barako",
+      "rolls": 1,
+      "conditions": [
+        {
+          "condition": "killed_by_player"
+        }
+      ],
+      "entries": [
+        {
+          "type": "item",
+          "name": "mowziesmobs:barako_mask",
+          "weight": 1
+        }
+      ]
+    }
+  ]
+}
