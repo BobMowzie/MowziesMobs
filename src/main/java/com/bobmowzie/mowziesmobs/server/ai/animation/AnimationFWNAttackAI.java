@@ -33,7 +33,10 @@ public class AnimationFWNAttackAI extends AnimationAttackAI<EntityWroughtnaut> {
         entity.motionX = 0;
         entity.motionZ = 0;
         if (entity.getAnimationTick() < 27 && entityTarget != null) {
-            entity.getLookHelper().setLookPositionWithEntity(entityTarget, 30, 30);
+            entity.faceEntity(entityTarget, 30F, 30F);
+        }
+        else {
+            entity.rotationYaw = entity.prevRotationYaw;
         }
         if (entity.getAnimationTick() == 6) {
             entity.playSound(MMSounds.ENTITY_WROUGHT_CREAK, 0.5F, 1);

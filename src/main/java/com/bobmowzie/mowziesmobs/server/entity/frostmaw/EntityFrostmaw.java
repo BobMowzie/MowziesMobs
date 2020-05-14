@@ -299,7 +299,10 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
             }
 
             if (getAnimation() == ICE_BREATH_ANIMATION) {
-                if (getAttackTarget() != null) getLookHelper().setLookPositionWithEntity(getAttackTarget(), 30, 30);
+                if (getAttackTarget() != null) {
+                    getLookHelper().setLookPositionWithEntity(getAttackTarget(), 30, 30);
+                    faceEntity(getAttackTarget(), 30, 30);
+                }
                 Vec3d mouthPos = new Vec3d(2.3, 2.65, 0);
                 mouthPos = mouthPos.rotateYaw((float)Math.toRadians(-rotationYaw - 90));
                 mouthPos = mouthPos.add(getPositionVector());

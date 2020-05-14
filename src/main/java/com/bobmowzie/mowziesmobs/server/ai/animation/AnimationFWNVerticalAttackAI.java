@@ -30,9 +30,11 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
         if (entity.getAnimation() == getAnimation()) {
             entity.motionX = 0;
             entity.motionZ = 0;
-            entity.rotationYaw = entity.prevRotationYaw;
-            if (entity.getAnimationTick() < 26 && entityTarget != null) {
-                entity.getLookHelper().setLookPositionWithEntity(entityTarget, 30F, 30F);
+            if (entity.getAnimationTick() < 22 && entityTarget != null) {
+                entity.faceEntity(entityTarget, 30F, 30F);
+            }
+            else {
+                entity.rotationYaw = entity.prevRotationYaw;
             }
 
             if (entity.getAnimationTick() == 6) {

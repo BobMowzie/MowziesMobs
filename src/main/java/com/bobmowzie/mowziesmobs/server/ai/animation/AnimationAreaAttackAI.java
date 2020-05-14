@@ -11,20 +11,20 @@ import net.minecraft.util.SoundEvent;
 public class AnimationAreaAttackAI<T extends MowzieEntity & IAnimatedEntity> extends AnimationAttackAI<T> {
     private float arc;
     private float height;
-    private boolean lookAtTarget;
+    private boolean faceTarget;
 
     public AnimationAreaAttackAI(T entity, Animation animation, SoundEvent attackSound, SoundEvent hitSound, float knockback, float range, float height, float arc, float damageMultiplier, int damageFrame) {
         super(entity, animation, attackSound, hitSound, knockback, range, damageMultiplier, damageFrame);
         this.arc = arc;
         this.height = height;
-        this.lookAtTarget = true;
+        this.faceTarget = true;
     }
 
-    public AnimationAreaAttackAI(T entity, Animation animation, SoundEvent attackSound, SoundEvent hitSound, float knockback, float range, float height, float arc, float damageMultiplier, int damageFrame, boolean lookAtTarget) {
+    public AnimationAreaAttackAI(T entity, Animation animation, SoundEvent attackSound, SoundEvent hitSound, float knockback, float range, float height, float arc, float damageMultiplier, int damageFrame, boolean faceTarget) {
         super(entity, animation, attackSound, hitSound, knockback, range, damageMultiplier, damageFrame);
         this.arc = arc;
         this.height = height;
-        this.lookAtTarget = lookAtTarget;
+        this.faceTarget = faceTarget;
     }
 
     @Override
@@ -34,8 +34,8 @@ public class AnimationAreaAttackAI<T extends MowzieEntity & IAnimatedEntity> ext
 
     @Override
     public void updateTask() {
-        if (lookAtTarget && entity.getAnimationTick() < damageFrame && entityTarget != null) {
-            entity.getLookHelper().setLookPositionWithEntity(entityTarget, 30, 30);
+        if (faceTarget && entity.getAnimationTick() < damageFrame && entityTarget != null) {
+            entity.faceEntity(entityTarget, 30F, 30F);
         }
         else if (entity.getAnimationTick() == damageFrame) {
             hitEntities();
@@ -56,8 +56,6 @@ public class AnimationAreaAttackAI<T extends MowzieEntity & IAnimatedEntity> ext
             }
             float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
             float entityHitDistance = (float) Math.sqrt((entityHit.posZ - entity.posZ) * (entityHit.posZ - entity.posZ) + (entityHit.posX - entity.posX) * (entityHit.posX - entity.posX));
-            System.out.println(entityRelativeAngle);
-            System.out.println(entityHitDistance);
             if (entityHitDistance <= range && (entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2)) {
                 entity.attackEntityAsMob(entityHit, damageMultiplier);
                 entityHit.motionX *= knockback;
