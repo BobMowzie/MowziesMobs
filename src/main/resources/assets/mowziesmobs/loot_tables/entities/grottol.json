@@ -1,11 +1,20 @@
 {
   "pools": [
     {
-      "name": "grottol",
+      "name": "grottol_pickaxe",
       "rolls": 1,
       "conditions": [
         {
           "condition": "killed_by_player"
+        },
+        {
+          "condition": "entity_properties",
+          "entity": "this",
+          "properties": {
+            "mowziesmobs:grottol_death_type": {
+              "type": "pickaxe"
+            }
+          }
         }
       ],
       "entries": [
@@ -17,6 +26,37 @@
             {
               "function": "set_count",
               "count": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "grottol_fortune_pickaxe",
+      "rolls": 1,
+      "conditions": [
+        {
+          "condition": "killed_by_player"
+        },
+        {
+          "condition": "entity_properties",
+          "entity": "this",
+          "properties": {
+            "mowziesmobs:grottol_death_type": {
+              "type": "fortune_pickaxe"
+            }
+          }
+        }
+      ],
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:diamond",
+          "weight": 1,
+          "functions": [
+            {
+              "function": "set_count",
+              "count": 2
             }
           ]
         }

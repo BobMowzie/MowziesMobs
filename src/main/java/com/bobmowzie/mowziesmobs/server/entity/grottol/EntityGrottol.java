@@ -26,7 +26,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAISwimming;
@@ -38,7 +37,6 @@ import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
-import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNodeType;
@@ -74,13 +72,13 @@ public class EntityGrottol extends MowzieEntity implements IMob {
 
     private final BlackPinkRailLine reader = BlackPinkRailLine.create();
 
-    public enum KillType {
+    public enum EnumDeathType {
         NORMAL,
         PICKAXE,
         FORTUNE_PICKAXE
     }
 
-    private KillType death = KillType.NORMAL;
+    private EnumDeathType death = EnumDeathType.NORMAL;
 
     public EntityGrottol(World world) {
         super(world);
@@ -234,11 +232,11 @@ public class EntityGrottol extends MowzieEntity implements IMob {
             EntityPlayer player = (EntityPlayer) entity;
             if (player.canHarvestBlock(Blocks.DIAMOND_ORE.getDefaultState())) {
                 if (EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, player.getHeldItemMainhand()) > 0) {
-                    death = KillType.FORTUNE_PICKAXE;
+                    death = EnumDeathType.FORTUNE_PICKAXE;
                 } else {
-                    death = KillType.PICKAXE;
+                    death = EnumDeathType.PICKAXE;
                 }
-                return super.attackEntityFrom(source, 20);
+                return super.attackEntityFrom(source, getHealth());
             } else {
                 playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.4F, 2.9F);
                 return false;
@@ -414,5 +412,9 @@ public class EntityGrottol extends MowzieEntity implements IMob {
     @Override
     public Animation[] getAnimations() {
         return ANIMATIONS;
+    }
+
+    public EnumDeathType getDeathType() {
+        return death;
     }
 }

@@ -25,6 +25,9 @@ public class LootTableHandler {
     public static final ResourceLocation BARAKOA_FEAR = register("entities/barakoa_fear");
     public static final ResourceLocation BARAKO = register("entities/barako");
 
+    public static final ResourceLocation ENTITY_PROPERTY_FROSTMAW_HAS_CRYSTAL = register(new EntityPropertyFrostmawHasCrystal.Serializer());
+    public static final ResourceLocation ENTITY_PROPERTY_GROTTOL_DEATH_TYPE = register(new EntityPropertyGrottolDeathType.Serializer());
+
     private static ResourceLocation register(String id) {
         return LootTableList.register(new ResourceLocation(MowziesMobs.MODID, id));
     }
