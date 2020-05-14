@@ -20,7 +20,7 @@ public class ParticleSparkle extends Particle implements ParticleTextureStitcher
 
     public ParticleSparkle(World world, double x, double y, double z, double vx, double vy, double vz, double r, double g, double b, double scale, int duration) {
         super(world, x, y, z);
-        this.scale = (float) scale * 0.5f;
+        this.scale = (float) scale * 1f;
         particleMaxAge = duration;
         motionX = vx;
         motionY = vy;

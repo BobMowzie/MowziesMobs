@@ -29,7 +29,7 @@ public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
         super(world, x, y, z);
         this.targetX = targetX;
         this.targetZ = targetZ;
-        particleScale = 1.5F + rand.nextFloat() * 0.5F;
+        particleScale = 3F + rand.nextFloat() * 1F;
         particleMaxAge = 120;
         signX = Math.signum(targetX - posX);
         signZ = Math.signum(targetZ - posZ);
@@ -51,7 +51,7 @@ public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
 
     public ParticleOrb(World world, double x, double y, double z, double vx, double vy, double vz, double r, double g, double b, double scale, int duration) {
         super(world, x, y, z);
-        particleScale = (float) scale * 0.5f;
+        particleScale = (float) scale * 1f;
         particleMaxAge = duration;
         this.duration = duration;
         motionX = vx;
