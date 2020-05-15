@@ -5,21 +5,22 @@ itemGroup.mowziesmobs.creativeTab=Mowzie的怪物
 entity.foliaath.name=巨噬叶
 entity.ferrous_wroughtnaut.name=钢铁守护者
 entity.baby_foliaath.name=巨噬叶幼苗
-entity.barakoan_barakoana.name=游猎原始人
-entity.barakoan_player.name=仆从原始人
-entity.barakoana.name=游猎原始人首领
-entity.barakoaya.name=聚居原始人
+entity.barakoan_barakoana.name=巴阳卡护卫
+entity.barakoan_player.name=巴阳卡护卫
+entity.barakoana.name=巴阳卡精英
+entity.barakoaya.name=巴阳卡护卫
 entity.barako.name=太阳酋长
 entity.frostmaw.name=霜冻巨兽
-entity.grottol.name=岩窟
+entity.grottol.name=岩壳
 entity.lantern.name=灯笼
-entity.naga.name=纳加
+entity.naga.name=娜迦
+entity.boulder.name=漂砾
 
 # Items
-item.foliaathSeed.name=巨噬叶种子
+item.foliaathSeed.name=巨噬叶芽
 item.mobRemover.name=生物移除器
 item.wroughtAxe.name=千锻巨斧
-item.wroughtHelmet.name=千锻头盔
+item.wroughtHelmet.name=精炼头盔
 item.barakoaMask.fury.name=复仇面具
 item.barakoaMask.fear.name=恐惧面具
 item.barakoaMask.rage.name=狂暴面具
@@ -36,26 +37,26 @@ item.earthTalisman.name=大地护符
 
 item.blowgun.text.0=快速装填
 item.blowgun.text.1=快速装填
-item.blowgun.text.2=仅发射吹镖
+item.blowgun.text.2=仅能发射吹镖
 
 item.wroughtAxe.text.0=无法破坏
-item.wroughtAxe.text.1=右键以释放横扫攻击
-item.wroughtAxe.text.2=潜行右键点击地面以释放冲击波
+item.wroughtAxe.text.1=右键横扫攻击
+item.wroughtAxe.text.2=潜行右键震撼大地并释放冲击波
 
 item.barakoMask.text.0=无法破坏
 item.barakoMask.text.1=空手右键地面以召唤太阳光束进行攻击
-item.barakoMask.text.2=空手潜行右键持续发射太阳光束（需消耗 2min 时间）
+item.barakoMask.text.2=空手潜行右键持续发射太阳光束（需消耗 2分 时间）
 
 item.barakoaMask.fear.text.0=穿戴后获得 速度
-item.barakoaMask.fear.text.1=我想知道如果…？
+item.barakoaMask.fear.text.1=或许还有什么用......?
 item.barakoaMask.rage.text.0=穿戴后获得 急迫
-item.barakoaMask.rage.text.1=我想知道如果…？
+item.barakoaMask.rage.text.1=或许还有什么用......?
 item.barakoaMask.misery.text.0=穿戴后获得 抗性提升
-item.barakoaMask.misery.text.1=我想知道如果…？
+item.barakoaMask.misery.text.1=或许还有什么用......?
 item.barakoaMask.bliss.text.0=穿戴后获得 跳跃提升
-item.barakoaMask.bliss.text.1=我想知道如果…？
+item.barakoaMask.bliss.text.1=或许还有什么用......?
 item.barakoaMask.fury.text.0=穿戴后获得 力量
-item.barakoaMask.fury.text.1=我想知道如果…？
+item.barakoaMask.fury.text.1=或许还有什么用......?
 
 item.dart.text.0=仅用于吹筒
 item.dart.text.1=使目标中毒
@@ -65,63 +66,58 @@ item.foliaathSeed.text.1=每隔半天，巨噬叶幼苗就会变得饥饿
 item.foliaathSeed.text.2=向它丢掷肉来喂食它
 item.foliaathSeed.text.3=经过两天，巨噬叶就会完全长大
 
-item.grantSunsBlessing.text.0=右键获得 20min 太阳祝福
+item.grantSunsBlessing.text.0=右键获得 20分 太阳祝福
 item.grantSunsBlessing.text.1=空手右键地面以召唤太阳光束进行攻击
-item.grantSunsBlessing.text.2=空手潜行右键持续发射太阳光束（需消耗 2min 时间）
+item.grantSunsBlessing.text.2=空手潜行右键持续发射太阳光束（需消耗 2分 时间）
 
 item.earthTalisman.text.0=仅限创造模式
 item.earthTalisman.text.1=放置此物品至背包即可获得 大地祝福
-item.earthTalisman.text.2=空手右键地面唤起石块
-item.earthTalisman.text.3=左键点击方块以发射
-item.earthTalisman.text.4=长按右键以唤起巨石
-item.earthTalisman.text.5=在空中双击并保持潜行以开始挖掘
-item.earthTalisman.text.6=将十字准星对准想要挖掘的方向
-item.earthTalisman.text.7=释放潜行停止挖掘
+item.earthTalisman.text.2=空手右击地面唤起漂砾
+item.earthTalisman.text.3=单击以发射漂砾
+item.earthTalisman.text.4=长时间右击地面唤起更大的漂砾
+item.earthTalisman.text.5=在空中双击并保持潜行以开始挖掘（服务器中暂时无效）
+item.earthTalisman.text.6=将准星对准想要挖掘的方向
+item.earthTalisman.text.7=停止潜行以停止挖掘
 
-item.mobRemover.text.0=左击移除Mowzie的怪物模组生物
+item.mobRemover.text.0=左击移除 Mowzie的怪物 模组生物
 
 item.wroughtHelmet.text.0=无法破坏
 
-item.spear.text.0=3.5 攻击距离
+item.spear.text.0=3.5 攻击范围
 item.spear.text.1=1/3 概率秒杀大部分动物
 
-item.icecrystal.text.0=按住右键以释放冰霜旋风
+item.icecrystal.text.0=长时间右击以释放冰霜旋风
 item.icecrystal.text.1=在背包中自动恢复耐久度
 
-item.capturedGrottol.name=捕获的钻石居蟹
+item.capturedGrottol.name=捕获的岩壳
 
 item.glowingJelly.name=荧光胶冻
 item.glowingJelly.text.0=吃下能获得短暂的 夜视 效果
 
-item.nagaFang.name=纳迦的毒牙
+item.nagaFang.name=娜迦毒牙
 item.nagaFang.text.0=用于酿造抗毒药水
-
-item.capturedGrottol.name=被捕获的岩窟
-
-item.glowingJelly.name=发光果冻
-item.glowingJelly.text.0=食用后获得短暂的夜视
-
-item.nagaFang.name=纳加的牙齿
-item.nagaFang.text.0=用于配制抗毒药水
 
 # Blocks
 tile.campfire.name=篝火
 tile.paintedAcacia.name=彩绘金合欢木板
 tile.paintedAcaciaSlab.name=彩绘金合欢木台阶
-tile.grottol.name=钻石居蟹
+tile.grottol.name=岩壳
 
 # Potions
 potion.sunsBlessing=太阳祝福
 potion.geomancy=大地祝福
 potion.frozen=冰冻
-potion.poisonResist=剧毒抗性
+potion.poisonResist=抗毒
 potion.effect.poisonResist=抗毒药水
+splash_potion.effect.poisonResist=喷溅型抗毒药水
+lingering_potion.effect.poisonResist=滞留型抗毒药水
+tipped_arrow.effect.poisonResist=抗毒之箭
 
 # Tile Entities
 
 
 # Containers
-entity.barakoaya.trade=聚居原始人
+entity.barakoaya.trade=巴阳卡人
 entity.barako.trade=太阳酋长
 entity.barako.trade.button.text=交易
 entity.barako.trade.button.hover=交易后回来免费补充
