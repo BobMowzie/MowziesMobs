@@ -195,7 +195,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
         if (entity instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) entity;
             if (EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, player.getHeldItemMainhand()) > 0) {
-                if (!world.isRemote) {
+                if (!world.isRemote && !isDead) {
                     entityDropItem(ItemHandler.CAPTURED_GROTTOL.create(this), 0.0F);
                     IBlockState state = BlockHandler.GROTTOL.getDefaultState();
                     SoundType sound = state.getBlock().getSoundType(state, world, new BlockPos(this), entity);
