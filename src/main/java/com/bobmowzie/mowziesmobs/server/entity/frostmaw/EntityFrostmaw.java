@@ -19,6 +19,8 @@ import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
 import com.google.common.base.Optional;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -47,6 +49,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
@@ -428,7 +431,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
             }
             else if (!world.isRemote) {
                 timeWithoutTarget++;
-                if (timeWithoutTarget > 1200) {
+                if (timeWithoutTarget > 1200 || Minecraft.getMinecraft().gameSettings.difficulty == EnumDifficulty.PEACEFUL) {
                     timeWithoutTarget = 0;
                     if (getAnimation() == NO_ANIMATION) {
                         AnimationHandler.INSTANCE.sendAnimationMessage(this, DEACTIVATE_ANIMATION);
@@ -699,7 +702,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
             Entity entity = source.getTrueSource();
             if (entity != null && entity instanceof EntityLivingBase && (!(entity instanceof EntityPlayer) || !((EntityPlayer)entity).capabilities.isCreativeMode) && getAttackTarget() == null && !(entity instanceof EntityFrostmaw)) setAttackTarget((EntityLivingBase) entity);
             if (!getActive()) {
-                if (getAnimation() != DIE_ANIMATION) {
+                if (getAnimation() != DIE_ANIMATION && Minecraft.getMinecraft().gameSettings.difficulty != EnumDifficulty.PEACEFUL) {
                     if (getHasCrystal()) AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_ANIMATION);
                     else AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_NO_CRYSTAL_ANIMATION);
                 }

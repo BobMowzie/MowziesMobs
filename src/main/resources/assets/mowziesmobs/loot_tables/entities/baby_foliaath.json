@@ -1,0 +1,136 @@
+{
+  "pools":[
+    {
+      "name": "porkchop",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:porkchop",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "name": "cooked_porkchop",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:cooked_porkchop",
+          "weight": 1
+        }
+      ]
+    },
+    {
+      "name": "beef",
+      "rolls": 1,
+      "entries": [
+        {
+          "type":"item",
+          "name":"minecraft:beef",
+          "weight":1
+        }
+      ]
+    },
+    {
+      "name": "cooked_beef",
+      "rolls": 1,
+      "entries": [
+        {
+          "type":"item",
+          "name":"minecraft:cooked_beef",
+          "weight":1
+        }
+      ]
+    },
+    {
+      "name": "chicken",
+      "rolls": 1,
+      "entries": [
+        {
+          "type":"item",
+          "name":"minecraft:chicken",
+          "weight":1
+        }
+      ]
+    },
+    {
+      "name": "cooked_chicken",
+      "rolls": 1,
+      "entries": [
+        {
+          "type":"item",
+          "name":"minecraft:cooked_chicken",
+          "weight":1
+        }
+      ]
+    },
+    {
+      "name": "fish",
+      "rolls": 1,
+      "entries": [
+        {
+          "type":"item",
+          "name":"minecraft:fish",
+          "weight":1
+        }
+      ]
+    },
+    {
+      "name": "cooked_fish",
+      "rolls": 1,
+      "entries": [
+        {
+          "type":"item",
+          "name":"minecraft:cooked_fish",
+          "weight":1
+        }
+      ]
+    },
+    {
+      "name": "rabbit",
+      "rolls": 1,
+      "entries": [
+        {
+          "type":"item",
+          "name":"minecraft:rabbit",
+          "weight":1
+        }
+      ]
+    },
+    {
+      "name": "cooked_rabbit",
+      "rolls": 1,
+      "entries": [
+        {
+          "type":"item",
+          "name":"minecraft:cooked_rabbit",
+          "weight":1
+        }
+      ]
+    },
+    {
+      "name": "mutton",
+      "rolls": 1,
+      "entries": [
+        {
+          "type":"item",
+          "name":"minecraft:mutton",
+          "weight":1
+        }
+      ]
+    },
+    {
+      "name": "cooked_mutton",
+      "rolls": 1,
+      "entries": [
+        {
+          "type":"item",
+          "name":"minecraft:cooked_mutton",
+          "weight":1
+        }
+      ]
+    }
+  ]
+}

@@ -17,6 +17,7 @@ import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.monster.IMob;
@@ -35,6 +36,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -505,7 +507,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
     @Override
     public boolean getCanSpawnHere() {
         setPosition(posX, posY + 5, posZ);
-        boolean flag = super.getCanSpawnHere() && world.canSeeSky(getPosition());
+        boolean flag = super.getCanSpawnHere() && world.canSeeSky(getPosition()) && Minecraft.getMinecraft().gameSettings.difficulty != EnumDifficulty.PEACEFUL;
 //        System.out.println("Try spawn " + flag);
 //        if (flag) System.out.println(getPosition());
         return flag;

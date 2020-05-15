@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
@@ -15,15 +16,16 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -34,6 +36,9 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationBabyFoliaathEatAI;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.google.common.collect.Sets;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.storage.loot.LootContext;
+import net.minecraft.world.storage.loot.LootTable;
 
 public class EntityBabyFoliaath extends MowzieEntity {
     private static final int JUNGLE_LEAVES = Block.getStateId(Blocks.LEAVES.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.JUNGLE));
@@ -49,12 +54,13 @@ public class EntityBabyFoliaath extends MowzieEntity {
     private Item eatingItemID;
     private double prevActivate;
 
-    private static Set<Item> meat;
+    private static Set<Item> meatTypes;
 
     public EntityBabyFoliaath(World world) {
         super(world);
         tasks.addTask(1, new AnimationBabyFoliaathEatAI<>(this, EAT_ANIMATION));
         setSize(0.4F, 0.4F);
+        getMeatList();
     }
 
     @Override
@@ -149,7 +155,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
     private boolean arePlayersCarryingMeat(List<EntityPlayer> players) {
         if (players.size() > 0) {
             for (EntityPlayer player : players) {
-                if (getMeat().contains(player.getHeldItemMainhand().getItem())) {
+                if (getMeatList().contains(player.getHeldItemMainhand().getItem())) {
                     return true;
                 }
             }
@@ -157,11 +163,23 @@ public class EntityBabyFoliaath extends MowzieEntity {
         return false;
     }
 
-    private Set<Item> getMeat() {
-        if (meat == null) {
-            meat = Sets.newHashSet(Items.PORKCHOP, Items.COOKED_PORKCHOP, Items.COOKED_BEEF, Items.COOKED_CHICKEN, Items.COOKED_FISH, Items.RABBIT, Items.COOKED_RABBIT, Items.MUTTON, Items.COOKED_MUTTON, Items.BEEF, Items.CHICKEN, Items.FISH, Items.SPIDER_EYE);
+    private Set<Item> getMeatList() {
+        if (meatTypes == null) {
+            meatTypes = Sets.newHashSet();
+            LootTable lootTable = getEntityWorld().getLootTableManager().getLootTableFromLocation(getFoodLootTable());
+            if (lootTable != null) {
+                LootContext.Builder lootBuilder = (new LootContext.Builder((WorldServer) this.world)).withLootedEntity(this);
+                List<ItemStack> loot = lootTable.generateLootForPools(world.rand, lootBuilder.build());
+                for (ItemStack itemStack : loot) {
+                    meatTypes.add(itemStack.getItem());
+                }
+            }
         }
-        return meat;
+        return meatTypes;
+    }
+
+    protected ResourceLocation getFoodLootTable() {
+        return LootTableHandler.BABY_FOLIAATH_FOOD;
     }
 
     @Override
@@ -209,7 +227,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
         ArrayList<EntityItem> listEntityItem = new ArrayList<>();
         for (Entity entityNeighbor : list) {
             if (entityNeighbor instanceof EntityItem && getDistance(entityNeighbor) <= radius) {
-                if (getMeat().contains(((EntityItem) entityNeighbor).getItem().getItem())) {
+                if (getMeatList().contains(((EntityItem) entityNeighbor).getItem().getItem())) {
                     listEntityItem.add((EntityItem) entityNeighbor);
                 }
             }
