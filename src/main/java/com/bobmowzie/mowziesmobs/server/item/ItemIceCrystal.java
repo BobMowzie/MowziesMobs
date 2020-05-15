@@ -12,6 +12,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
@@ -55,6 +56,7 @@ public class ItemIceCrystal extends Item {
                 }
                 stack.damageItem(20, playerIn);
                 showDurabilityBar(playerIn.getHeldItem(handIn));
+                return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, playerIn.getHeldItem(handIn));
             } else {
                 property.icebreath.setDead();
             }

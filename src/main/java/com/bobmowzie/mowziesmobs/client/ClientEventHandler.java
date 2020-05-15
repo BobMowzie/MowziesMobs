@@ -6,8 +6,6 @@ import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
 import net.ilexiconn.llibrary.LLibrary;
-import net.ilexiconn.llibrary.client.event.PlayerModelEvent;
-import net.ilexiconn.llibrary.client.event.RenderArmEvent;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -76,16 +74,17 @@ public enum ClientEventHandler {
     }
 
     @SubscribeEvent
-    public void onRenderPlayerPre(PlayerModelEvent.SetRotationAngles event) {
+    public void onRenderPlayerPre(RenderPlayerEvent.Pre event) {
         if (event.getEntityPlayer() == null) {
             return;
         }
         EntityPlayer player = event.getEntityPlayer();
+        ModelBiped model = event.getRenderer().getMainModel();
         player.getHeldItem(EnumHand.MAIN_HAND);
         MowziePlayerProperties propertyPlayer = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
         float delta = LLibrary.PROXY.getPartialTicks();
         if (propertyPlayer != null && propertyPlayer.geomancy.tunneling) {
-            event.getModel().isSneak = false;
+            model.isSneak = false;
             Vec3d moveVec = new Vec3d(player.motionX, player.motionY, player.motionZ);
             moveVec = moveVec.normalize();
             GlStateManager.rotate(45 - 45 * (float)moveVec.y, 1.0F, 0.0F, 0.0F);
@@ -129,15 +128,15 @@ public enum ClientEventHandler {
         // Axe of a thousand metals attack animations
         if (propertyPlayer != null && propertyPlayer.untilAxeSwing > 0) {
             float frame = (MowziePlayerProperties.SWING_COOLDOWN - propertyPlayer.untilAxeSwing) + delta;
-            ModelRenderer arm = event.getModel().bipedRightArm;
+            ModelRenderer arm = model.bipedRightArm;
             if (propertyPlayer.verticalSwing) {
                 float swingArc = 3f;
                 arm.rotateAngleX = -2.7f + (float) (swingArc * 1 / (1 + Math.exp(1.3f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 2f))));
                 arm.rotateAngleX = Math.min(arm.rotateAngleX, -0.1f);
-                if (!event.getModel().isSneak) {
+                if (!model.isSneak) {
                     GlStateManager.translate(0.0F, 0.3F, 0.0F);
                 }
-                event.getModel().isSneak = true;
+                model.isSneak = true;
             } else {
                 float swingArc = 2.5f;
                 arm.rotateAngleX = -1.75f + (float) (swingArc * 1 / (1 + Math.exp(1.3f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 2f))));
