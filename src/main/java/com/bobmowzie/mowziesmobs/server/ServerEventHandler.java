@@ -40,6 +40,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIAvoidEntity;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.entity.ai.EntityAITarget;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityAnimal;
@@ -63,11 +64,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
+import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.terraingen.PopulateChunkEvent;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -309,6 +313,75 @@ public enum ServerEventHandler {
                 }
             }
         }
+    }
+
+    @SubscribeEvent
+    public void onUseItem(LivingEntityUseItemEvent event) {
+        System.out.println("Use item");
+        EntityLivingBase living = event.getEntityLiving();
+        if (living instanceof EntityPlayer) {
+            EntityPlayer player = (EntityPlayer) living;
+            ItemStack item = event.getItem();
+            if (item.getItem() == Items.LAVA_BUCKET || item.getItem() == Items.FLINT_AND_STEEL) {
+                List<EntityBarako> barakos = getEntitiesNearby(player, EntityBarako.class, 20);
+                for (EntityBarako barako : barakos) {
+                    if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof EntityPlayer)) {
+                        if (EntityAITarget.isSuitableTarget(barako, player, false, false))
+                            barako.setAttackTarget(player);
+                    }
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlaceBlock(BlockEvent.PlaceEvent event) {
+        EntityPlayer player  = event.getPlayer();
+        IBlockState block = event.getPlacedBlock();
+        if (block == Blocks.FIRE.getDefaultState()) {
+            List<EntityBarako> barakos = getEntitiesNearby(player, EntityBarako.class, 20);
+            for (EntityBarako barako : barakos) {
+                if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof EntityPlayer)) {
+                    if (EntityAITarget.isSuitableTarget(barako, player, false, false)) barako.setAttackTarget(player);
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onFillBucket(FillBucketEvent event) {
+        EntityPlayer player  = event.getEntityPlayer();
+        if (player != null) {
+            if (event.getEmptyBucket() != null) {
+                if (event.getEmptyBucket().getItem() == Items.LAVA_BUCKET) {
+                    List<EntityBarako> barakos = getEntitiesNearby(player, EntityBarako.class, 20);
+                    for (EntityBarako barako : barakos) {
+                        if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof EntityPlayer)) {
+                            if (EntityAITarget.isSuitableTarget(barako, player, false, false))
+                                barako.setAttackTarget(player);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onBreakBlock(BlockEvent.BreakEvent event) {
+        EntityPlayer player  = event.getPlayer();
+        IBlockState block = event.getState();
+        if (block == Blocks.GOLD_BLOCK.getDefaultState()) {
+            List<EntityBarako> barakos = getEntitiesNearby(player, EntityBarako.class, 10);
+            for (EntityBarako barako : barakos) {
+                if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof EntityPlayer)) {
+                    if (EntityAITarget.isSuitableTarget(barako, player, false, false)) barako.setAttackTarget(player);
+                }
+            }
+        }
+    }
+
+    public <T extends Entity> List<T> getEntitiesNearby(EntityLivingBase startEntity, Class<T> entityClass, double r) {
+        return startEntity.world.getEntitiesWithinAABB(entityClass, startEntity.getEntityBoundingBox().grow(r, r, r), e -> e != startEntity && startEntity.getDistance(e) <= r);
     }
 
     private List<EntityLivingBase> getEntityLivingBaseNearby(EntityLivingBase user, double distanceX, double distanceY, double distanceZ, double radius) {
