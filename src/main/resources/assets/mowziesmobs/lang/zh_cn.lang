@@ -40,12 +40,12 @@ item.blowgun.text.1=快速装填
 item.blowgun.text.2=仅能发射吹镖
 
 item.wroughtAxe.text.0=无法破坏
-item.wroughtAxe.text.1=右键横扫攻击
-item.wroughtAxe.text.2=潜行右键震撼大地并释放冲击波
+item.wroughtAxe.text.1=右击横扫攻击
+item.wroughtAxe.text.2=潜行右击震撼大地并释放冲击波
 
 item.barakoMask.text.0=无法破坏
-item.barakoMask.text.1=空手右键地面以召唤太阳光束进行攻击
-item.barakoMask.text.2=空手潜行右键持续发射太阳光束（需消耗 2分 时间）
+item.barakoMask.text.1=空手右击地面以召唤太阳光束进行攻击
+item.barakoMask.text.2=空手潜行右击持续发射太阳光束（需消耗 2分 时间）
 
 item.barakoaMask.fear.text.0=穿戴后获得 速度
 item.barakoaMask.fear.text.1=或许还有什么用......?
@@ -63,12 +63,12 @@ item.dart.text.1=使目标中毒
 
 item.foliaathSeed.text.0=种植在草方块上
 item.foliaathSeed.text.1=每隔半天，巨噬叶幼苗就会变得饥饿
-item.foliaathSeed.text.2=向它丢掷肉来喂食它
+item.foliaathSeed.text.2=向它丢掷肉来喂养它
 item.foliaathSeed.text.3=经过两天，巨噬叶就会完全长大
 
 item.grantSunsBlessing.text.0=右键获得 20分 太阳祝福
 item.grantSunsBlessing.text.1=空手右键地面以召唤太阳光束进行攻击
-item.grantSunsBlessing.text.2=空手潜行右键持续发射太阳光束（需消耗 2分 时间）
+item.grantSunsBlessing.text.2=空手潜行右击持续发射太阳光束（冷却时间 2分）
 
 item.earthTalisman.text.0=仅限创造模式
 item.earthTalisman.text.1=放置此物品至背包即可获得 大地祝福
