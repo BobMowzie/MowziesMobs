@@ -11,12 +11,14 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.block.BlockGrottol;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.ai.EntityAIGrottolIdle;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import com.sun.deploy.config.Config;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
@@ -181,7 +183,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
     @Override
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
-        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20);
+        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20 * ConfigHandler.GROTTOL.healthMultiplier);
         getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
     }
 
