@@ -11,11 +11,13 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationFWNAttackAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationFWNStompAttackAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationFWNVerticalAttackAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.SmartBodyHelper;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.google.common.base.Optional;
+import com.sun.deploy.config.Config;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
@@ -156,7 +158,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 
     @Override
     public int getAttack() {
-        return (int)(30 * MowziesMobs.CONFIG.attackScaleWroughtnaut);
+        return (int)(30 * ConfigHandler.FERROUS_WROUGHTNAUT.COMBAT_DATA.attackMultiplier);
     }
 
     @Override
@@ -179,7 +181,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
         getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
-        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(40 * MowziesMobs.CONFIG.healthScaleWroughtnaut);
+        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(40 * ConfigHandler.FERROUS_WROUGHTNAUT.COMBAT_DATA.healthMultiplier);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoTrade;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityRing;
 import com.bobmowzie.mowziesmobs.server.gui.GuiHandler;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoTrade;
@@ -112,7 +113,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         this.tasks.addTask(2, new AnimationAI<>(this, TALK_ANIMATION, false));
         this.tasks.addTask(2, new AnimationAI<>(this, BLESS_ANIMATION, false));
         this.tasks.addTask(2, new AnimationSunStrike<>(this, SUNSTRIKE_ANIMATION));
-        this.tasks.addTask(2, new AnimationRadiusAttack<>(this, ATTACK_ANIMATION, 4.5f, (int)(5 * MowziesMobs.CONFIG.attackScaleBarako), 3f, 12, true));
+        this.tasks.addTask(2, new AnimationRadiusAttack<>(this, ATTACK_ANIMATION, 4.5f, (int)(5 * ConfigHandler.BARAKO.COMBAT_DATA.attackMultiplier), 3f, 12, true));
         this.tasks.addTask(2, new AnimationSpawnBarakoa(this, SPAWN_ANIMATION));
         this.tasks.addTask(2, new AnimationSolarBeam<>(this, SOLAR_BEAM_ANIMATION));
         this.tasks.addTask(3, new AnimationTakeDamage<>(this));
@@ -141,7 +142,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0);
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(MAX_HEALTH * MowziesMobs.CONFIG.healthScaleBarako);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(MAX_HEALTH * ConfigHandler.BARAKO.COMBAT_DATA.healthMultiplier);
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(50);
     }
 

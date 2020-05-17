@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
@@ -32,7 +33,7 @@ public class ItemSpear extends ItemSword {
 
     @Override
     public float getAttackDamage() {
-        return super.getAttackDamage() * MowziesMobs.CONFIG.attackScaleSpear;
+        return super.getAttackDamage() * ConfigHandler.TOOLS_AND_ABILITIES.spearAttackMultiplier;
     }
 
     @Override

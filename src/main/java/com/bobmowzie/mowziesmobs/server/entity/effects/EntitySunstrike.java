@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import io.netty.buffer.ByteBuf;
 
@@ -199,12 +200,12 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
                 float damageFire = 4.5f;
                 float damageMob = 4.5f;
                 if (caster instanceof EntityBarako) {
-                    damageFire *= MowziesMobs.CONFIG.attackScaleBarako;
-                    damageMob *= MowziesMobs.CONFIG.attackScaleBarako;
+                    damageFire *= ConfigHandler.BARAKO.COMBAT_DATA.attackMultiplier;
+                    damageMob *= ConfigHandler.BARAKO.COMBAT_DATA.attackMultiplier;
                 }
                 if (caster instanceof EntityPlayer) {
-                    damageFire *= MowziesMobs.CONFIG.attackScaleSunsBlessing;
-                    damageMob *= MowziesMobs.CONFIG.attackScaleSunsBlessing;
+                    damageFire *= ConfigHandler.TOOLS_AND_ABILITIES.sunsBlessingAttackMultiplier;
+                    damageMob *= ConfigHandler.TOOLS_AND_ABILITIES.sunsBlessingAttackMultiplier;
                 }
                 entity.attackEntityFrom(DamageSource.ON_FIRE, damageFire);
                 entity.attackEntityFrom(DamageSource.causeMobDamage(caster), damageMob);

@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -68,9 +69,9 @@ public class EntityAxeAttack extends EntityMagicEffect {
         }
         if (!world.isRemote && ticksExisted == 7) playSound(MMSounds.ENTITY_FROSTMAW_WHOOSH, 1, 0.8f);
             if (!world.isRemote && caster != null) {
-                if (!getVertical() && ticksExisted == SWING_DURATION_HOR /2 - 1) dealDamage(7 * MowziesMobs.CONFIG.attackScaleWroughtAxe, 4.5f, 160, 1.2f);
+                if (!getVertical() && ticksExisted == SWING_DURATION_HOR /2 - 1) dealDamage(7 * ConfigHandler.TOOLS_AND_ABILITIES.axeAttackMultiplier, 4.5f, 160, 1.2f);
                 else if (getVertical() && ticksExisted == SWING_DURATION_VER /2 - 1) {
-                    dealDamage(9 * MowziesMobs.CONFIG.attackScaleWroughtAxe, 4.5f, 40, 0.8f);
+                    dealDamage(9 * ConfigHandler.TOOLS_AND_ABILITIES.axeAttackMultiplier, 4.5f, 40, 0.8f);
                     quakeAngle = rotationYaw;
                     quakeBB = getEntityBoundingBox();
                     playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.3F, 0.5F);
@@ -102,8 +103,8 @@ public class EntityAxeAttack extends EntityMagicEffect {
                             continue;
                         }
                         if (entity instanceof EntityLivingBase) {
-                            if (caster instanceof EntityPlayer) entity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) caster), (factor * 5 + 1) * MowziesMobs.CONFIG.attackScaleWroughtAxe);
-                            else entity.attackEntityFrom(DamageSource.causeMobDamage(caster), (factor * 5 + 1) * MowziesMobs.CONFIG.attackScaleWroughtAxe);
+                            if (caster instanceof EntityPlayer) entity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) caster), (factor * 5 + 1) * ConfigHandler.TOOLS_AND_ABILITIES.axeAttackMultiplier);
+                            else entity.attackEntityFrom(DamageSource.causeMobDamage(caster), (factor * 5 + 1) * ConfigHandler.TOOLS_AND_ABILITIES.axeAttackMultiplier);
                         }
                         double magnitude = -0.2;
                         entity.motionX += vx * (1 - factor) * magnitude;

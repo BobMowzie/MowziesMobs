@@ -5,6 +5,7 @@ import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleRing;
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
@@ -55,7 +56,7 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
                 if (entity == caster) continue;
                 if (entity.getIsInvulnerable()) continue;
                 if (entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isCreativeMode) continue;
-                entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(caster, null), 3 * MowziesMobs.CONFIG.attackScaleFrostmaw);
+                entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(caster, null), 3 * ConfigHandler.FROSTMAW.COMBAT_DATA.attackMultiplier);
                 MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
                 if (property != null) property.freezeProgress += 1;
             }

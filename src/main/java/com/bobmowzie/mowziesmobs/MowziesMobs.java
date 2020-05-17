@@ -64,8 +64,6 @@ public final class MowziesMobs {
             MessageBlackPinkInYourArea.class
     })
     public static SimpleNetworkWrapper NETWORK_WRAPPER;
-    @Config
-    public static ConfigHandler CONFIG;
 
     @EventHandler
     public void init(FMLPreInitializationEvent event) {

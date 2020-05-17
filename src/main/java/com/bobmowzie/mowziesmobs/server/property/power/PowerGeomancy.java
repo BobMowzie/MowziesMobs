@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleFallingBlock;
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBlockSwapper;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityRing;
@@ -81,7 +82,7 @@ public class PowerGeomancy extends Power {
 
                 List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby(4, 4, 4, 4);
                 for (EntityLivingBase entityHit : entitiesHit) {
-                    entityHit.attackEntityFrom(DamageSource.causePlayerDamage(player), 6 * MowziesMobs.CONFIG.attackScaleGeomancy);
+                    entityHit.attackEntityFrom(DamageSource.causePlayerDamage(player), 6 * ConfigHandler.TOOLS_AND_ABILITIES.geomancyAttackMultiplier);
                 }
             }
             else player.motionY -= 0.07;

@@ -43,8 +43,8 @@ public class MowzieWorldGenerator implements IWorldGenerator {
 
     private static boolean canSpawnFrostmawAtCoords(int chunkX, int chunkZ, World world)
     {
-        if (MowziesMobs.CONFIG.spawnrateFrostmaw <= 0) return false;
-        int maxDistanceBetweenFrostmaws = MowziesMobs.CONFIG.spawnrateFrostmaw + 8;
+        if (ConfigHandler.FROSTMAW.GENERATION_DATA.generationFrequency <= 0) return false;
+        int maxDistanceBetweenFrostmaws = ConfigHandler.FROSTMAW.GENERATION_DATA.generationFrequency + 8;
 
         int i = chunkX;
         int j = chunkZ;
@@ -74,8 +74,8 @@ public class MowzieWorldGenerator implements IWorldGenerator {
 
     private static boolean canSpawnVillageAtCoords(int chunkX, int chunkZ, World world)
     {
-        if (MowziesMobs.CONFIG.spawnrateBarako <= 0) return false;
-        int maxDistanceBetweenVillages = MowziesMobs.CONFIG.spawnrateBarako + 8;
+        if (ConfigHandler.BARAKO.GENERATION_DATA.generationFrequency <= 0) return false;
+        int maxDistanceBetweenVillages = ConfigHandler.BARAKO.GENERATION_DATA.generationFrequency + 8;
 
         int i = chunkX;
         int j = chunkZ;
@@ -105,7 +105,7 @@ public class MowzieWorldGenerator implements IWorldGenerator {
 
     private void generateSurface(World world, Random random, int x, int z) {
         if (world.getWorldInfo().isMapFeaturesEnabled()) {
-            StructureWroughtnautRoom.tryWroughtChamber(world, random, x, z, MowziesMobs.CONFIG.spawnrateWroughtnaut);
+            StructureWroughtnautRoom.tryWroughtChamber(world, random, x, z, ConfigHandler.FERROUS_WROUGHTNAUT.GENERATION_DATA.generationFrequency);
 //            System.out.println("Trying wroughtnaut chamber at " + x + ", " + z);
         }
     }

@@ -1,6 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.biome;
 
-import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.google.common.collect.HashMultimap;
@@ -11,7 +11,6 @@ import net.minecraft.init.Biomes;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
 import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityLantern;
@@ -22,16 +21,10 @@ import java.util.Set;
 public enum BiomeDictionaryHandler {
     INSTANCE;
 
-    public void onInit() {
-//        Biome.SpawnListEntry foliaathSpawn = new Biome.SpawnListEntry(EntityFoliaath.class, MowziesMobs.CONFIG.spawnrateFoliaath, 3, 1);
-//        Biome.SpawnListEntry tribeEliteSpawn = new Biome.SpawnListEntry(EntityBarakoana.class, MowziesMobs.CONFIG.spawnrateBarakoa, 0, 0);
-//        for (Biome jungleBiome : BiomeDictionary.getBiomes(BiomeDictionary.Type.JUNGLE)) {
-//            jungleBiome.getSpawnableList(EnumCreatureType.MONSTER).add(foliaathSpawn);
-//        }
-//        for (Biome savannaBiome : BiomeDictionary.getBiomes(BiomeDictionary.Type.SAVANNA)) {
-//            savannaBiome.getSpawnableList(EnumCreatureType.MONSTER).add(tribeEliteSpawn);
-//        }
+    public static Set<Biome> FROSTMAW_BIOMES;
+    public static Set<Biome> BARAKO_BIOMES;
 
+    public void onInit() {
         Multimap<BiomeDictionary.Type, Biome> biomesAndTypes = HashMultimap.create();
         for (Biome b : Biome.REGISTRY)
         {
@@ -42,12 +35,12 @@ public enum BiomeDictionaryHandler {
             }
         }
 
-        Set<Biome> frostmawBiomes = new ObjectArraySet<>();
+        FROSTMAW_BIOMES = new ObjectArraySet<>();
         for (Biome b : Biome.REGISTRY)
         {
             Set<BiomeDictionary.Type> types = BiomeDictionary.getTypes(b);
             if (types.contains(BiomeDictionary.Type.SNOWY) && !types.contains(BiomeDictionary.Type.BEACH) && !types.contains(BiomeDictionary.Type.OCEAN) && !types.contains(BiomeDictionary.Type.RIVER))
-                frostmawBiomes.add(b);
+                FROSTMAW_BIOMES.add(b);
         }
 
         Set<Biome> overworldBiomes = new ObjectArraySet<>();
@@ -77,11 +70,20 @@ public enum BiomeDictionaryHandler {
         }
         nagaBiomes.add(Biomes.STONE_BEACH);
 
-        EntityRegistry.addSpawn(EntityFoliaath.class, MowziesMobs.CONFIG.spawnrateFoliaath, 1, 3, EnumCreatureType.MONSTER, biomesAndTypes.get(BiomeDictionary.Type.JUNGLE).toArray(new Biome[biomesAndTypes.get(BiomeDictionary.Type.JUNGLE).size()]));
-        EntityRegistry.addSpawn(EntityBarakoana.class, MowziesMobs.CONFIG.spawnrateBarakoa, 1, 1, EnumCreatureType.MONSTER, biomesAndTypes.get(BiomeDictionary.Type.SAVANNA).toArray(new Biome[biomesAndTypes.get(BiomeDictionary.Type.SAVANNA).size()]));
-        //EntityRegistry.addSpawn(EntityFrostmaw.class, MowziesMobs.CONFIG.spawnrateFrostmaw, 1, 1, EnumCreatureType.MONSTER, frostmawBiomes.toArray(new Biome[frostmawBiomes.size()]));
-        EntityRegistry.addSpawn(EntityGrottol.class, MowziesMobs.CONFIG.spawnrateGrottol, 1, 1, EnumCreatureType.MONSTER, overworldBiomes.toArray(new Biome[overworldBiomes.size()]));
-        EntityRegistry.addSpawn(EntityLantern.class, MowziesMobs.CONFIG.spawnrateLantern, 1, 2, EnumCreatureType.AMBIENT, lanternBiomes.toArray(new Biome[lanternBiomes.size()]));
-        EntityRegistry.addSpawn(EntityNaga.class, MowziesMobs.CONFIG.spawnrateNaga, 1, 3, EnumCreatureType.MONSTER, nagaBiomes.toArray(new Biome[nagaBiomes.size()]));
+        if (ConfigHandler.FOLIAATH.SPAWN_DATA.spawnRate > 0) {
+            EntityRegistry.addSpawn(EntityFoliaath.class, ConfigHandler.FOLIAATH.SPAWN_DATA.spawnRate, ConfigHandler.FOLIAATH.SPAWN_DATA.minGroupSize, ConfigHandler.FOLIAATH.SPAWN_DATA.maxGroupSize, EnumCreatureType.MONSTER, biomesAndTypes.get(BiomeDictionary.Type.JUNGLE).toArray(new Biome[biomesAndTypes.get(BiomeDictionary.Type.JUNGLE).size()]));
+        }
+        if (ConfigHandler.BARAKOA.SPAWN_DATA.spawnRate > 0) {
+            EntityRegistry.addSpawn(EntityBarakoana.class, ConfigHandler.BARAKOA.SPAWN_DATA.spawnRate, ConfigHandler.BARAKOA.SPAWN_DATA.minGroupSize, ConfigHandler.BARAKOA.SPAWN_DATA.maxGroupSize, EnumCreatureType.MONSTER, biomesAndTypes.get(BiomeDictionary.Type.SAVANNA).toArray(new Biome[biomesAndTypes.get(BiomeDictionary.Type.SAVANNA).size()]));
+        }
+        if (ConfigHandler.GROTTOL.SPAWN_DATA.spawnRate > 0) {
+            EntityRegistry.addSpawn(EntityGrottol.class, ConfigHandler.GROTTOL.SPAWN_DATA.spawnRate, ConfigHandler.GROTTOL.SPAWN_DATA.minGroupSize, ConfigHandler.GROTTOL.SPAWN_DATA.maxGroupSize, EnumCreatureType.MONSTER, overworldBiomes.toArray(new Biome[overworldBiomes.size()]));
+        }
+        if (ConfigHandler.LANTERN.SPAWN_DATA.spawnRate > 0) {
+            EntityRegistry.addSpawn(EntityLantern.class, ConfigHandler.LANTERN.SPAWN_DATA.spawnRate, ConfigHandler.LANTERN.SPAWN_DATA.minGroupSize, ConfigHandler.LANTERN.SPAWN_DATA.maxGroupSize, EnumCreatureType.AMBIENT, lanternBiomes.toArray(new Biome[lanternBiomes.size()]));
+        }
+        if (ConfigHandler.NAGA.SPAWN_DATA.spawnRate > 0) {
+            EntityRegistry.addSpawn(EntityNaga.class, ConfigHandler.NAGA.SPAWN_DATA.spawnRate, ConfigHandler.NAGA.SPAWN_DATA.minGroupSize, ConfigHandler.NAGA.SPAWN_DATA.maxGroupSize, EnumCreatureType.MONSTER, nagaBiomes.toArray(new Biome[nagaBiomes.size()]));
+        }
     }
 }

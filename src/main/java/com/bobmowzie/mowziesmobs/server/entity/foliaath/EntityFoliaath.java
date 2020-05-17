@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.entity.foliaath;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
@@ -64,7 +65,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         super(world);
         setPathPriority(PathNodeType.WATER, 0);
         this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(1, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_FOLIAATH_BITE_1, null, 2, 4.5F, MowziesMobs.CONFIG.attackScaleFoliaath, 3));
+        this.tasks.addTask(1, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_FOLIAATH_BITE_1, null, 2, 4.5F, ConfigHandler.FOLIAATH.COMBAT_DATA.attackMultiplier, 3));
         this.tasks.addTask(1, new AnimationTakeDamage<>(this));
         this.tasks.addTask(1, new AnimationDieAI<>(this));
         this.tasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityLivingBase.class, 0, true, false, e ->
@@ -91,7 +92,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10 * MowziesMobs.CONFIG.healthScaleFoliaath);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10 * ConfigHandler.FOLIAATH.COMBAT_DATA.healthMultiplier);
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
 import net.ilexiconn.llibrary.LLibrary;
+import net.ilexiconn.llibrary.client.event.PlayerModelEvent;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -74,12 +75,12 @@ public enum ClientEventHandler {
     }
 
     @SubscribeEvent
-    public void onRenderPlayerPre(RenderPlayerEvent.Pre event) {
+    public void onRenderPlayerPre(PlayerModelEvent.SetRotationAngles event) {
         if (event.getEntityPlayer() == null) {
             return;
         }
         EntityPlayer player = event.getEntityPlayer();
-        ModelBiped model = event.getRenderer().getMainModel();
+        ModelBiped model = event.getModel();
         player.getHeldItem(EnumHand.MAIN_HAND);
         MowziePlayerProperties propertyPlayer = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
         float delta = LLibrary.PROXY.getPartialTicks();

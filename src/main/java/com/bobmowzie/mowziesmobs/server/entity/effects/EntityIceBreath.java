@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityRing;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
@@ -100,8 +101,8 @@ public class EntityIceBreath extends EntityMagicEffect {
     public void hitEntities() {
         List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby(RANGE, RANGE, RANGE, RANGE);
         float damage = DAMAGE_PER_HIT;
-        if (caster instanceof EntityFrostmaw) damage *= MowziesMobs.CONFIG.attackScaleFrostmaw;
-        if (caster instanceof EntityPlayer) damage *= MowziesMobs.CONFIG.attackScaleIceCrystal;
+        if (caster instanceof EntityFrostmaw) damage *= ConfigHandler.FROSTMAW.COMBAT_DATA.attackMultiplier;
+        if (caster instanceof EntityPlayer) damage *= ConfigHandler.TOOLS_AND_ABILITIES.iceCrystalAttackMultiplier;
         for (EntityLivingBase entityHit : entitiesHit) {
             if (entityHit == caster) continue;
             float entityHitYaw = (float) ((Math.atan2(entityHit.posZ - posZ, entityHit.posX - posX) * (180 / Math.PI) - 90) % 360);

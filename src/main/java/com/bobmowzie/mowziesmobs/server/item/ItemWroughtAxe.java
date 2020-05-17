@@ -29,7 +29,7 @@ public class ItemWroughtAxe extends ItemAxe {
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
         setTranslationKey("wroughtAxe");
         setRegistryName("wrought_axe");
-        attackDamage = attackDamage * MowziesMobs.CONFIG.attackScaleWroughtAxe;
+        attackDamage = attackDamage * ConfigHandler.TOOLS_AND_ABILITIES.axeAttackMultiplier;
     }
 
     @Override

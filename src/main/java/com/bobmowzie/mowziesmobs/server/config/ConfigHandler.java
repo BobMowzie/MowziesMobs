@@ -1,66 +1,222 @@
 package com.bobmowzie.mowziesmobs.server.config;
 
+import java.io.File;
+
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import net.ilexiconn.llibrary.server.config.ConfigEntry;
+import net.minecraftforge.common.config.Config;
+import net.minecraftforge.common.config.Config.Comment;
+import net.minecraftforge.common.config.Config.Ignore;
+import net.minecraftforge.common.config.Config.LangKey;
+import net.minecraftforge.common.config.Config.Name;
+import net.minecraftforge.common.config.Config.RequiresMcRestart;
+import net.minecraftforge.common.config.Config.RequiresWorldRestart;
 
+@Config(modid = MowziesMobs.MODID, category = "", name = MowziesMobs.MODID)
 public class ConfigHandler {
-    @ConfigEntry(name = "Foliaath Spawn Rate", minValue = "0", maxValue = "100", comment = "Foliaath Spawnrate: Larger number causes more spawning, 0 to disable spawning")
-    public int spawnrateFoliaath = 20;
-    @ConfigEntry(name = "Foliaath Health Multiplier", minValue = "0", maxValue = "100")
-    public float healthScaleFoliaath = 1;
-    @ConfigEntry(name = "Foliaath Attack Multiplier", minValue = "0", maxValue = "100")
-    public float attackScaleFoliaath = 1;
+    @Ignore
+    public static File configDir;
 
-    @ConfigEntry(name = "Wroughtnaut Spawn Rate", minValue = "0", maxValue = "100", comment = "Wroughtnaut Spawnrate: Smaller number causes more spawning, 0 to disable spawning")
-    public int spawnrateWroughtnaut = 40;
-    @ConfigEntry(name = "Wroughtnaut Health Multiplier", minValue = "0", maxValue = "100")
-    public float healthScaleWroughtnaut = 1;
-    @ConfigEntry(name = "Wroughtnaut Attack Multiplier", minValue = "0", maxValue = "100")
-    public float attackScaleWroughtnaut = 1;
+    @Ignore
+    private static final String LANG_PREFIX = "config." + MowziesMobs.MODID + ".";
 
-    @ConfigEntry(name = "Barakoa Spawn Rate", minValue = "0", maxValue = "100", comment = "Barakoa Spawnrate: Larger number causes more spawning, 0 to disable spawning")
-    public int spawnrateBarakoa = 4;
-    @ConfigEntry(name = "Barakoa Health Multiplier", minValue = "0", maxValue = "100")
-    public float healthScaleBarakoa = 1;
-    @ConfigEntry(name = "Barakoa Attack Multiplier", minValue = "0", maxValue = "100")
-    public float attackScaleBarakoa = 1;
+    public static class SpawnData {
+        SpawnData(int spawnRate, int minGroupSize, int maxGroupSize) {
+            this.spawnRate = spawnRate;
+            this.minGroupSize = minGroupSize;
+            this.maxGroupSize = maxGroupSize;
+        }
 
-    @ConfigEntry(name = "Barako Spawn Rate", minValue = "0", maxValue = "100", comment = "Barako Spawnrate: Smaller number causes more spawning, 0 to disable spawning")
-    public int spawnrateBarako = 15;
-    @ConfigEntry(name = "Barako Health Multiplier", minValue = "0", maxValue = "100")
-    public float healthScaleBarako = 1;
-    @ConfigEntry(name = "Barako Attack Multiplier", minValue = "0", maxValue = "100")
-    public float attackScaleBarako = 1;
+        @Name("spawn_rate")
+        @LangKey(LANG_PREFIX + "spawn_rate")
+        @Comment("Smaller number causes less spawning, 0 to disable spawning")
+        @RequiresMcRestart
+        public int spawnRate = 20;
 
-    @ConfigEntry(name = "Frostmaw Spawn Rate", minValue = "0", maxValue = "100", comment = "Frostmaw Spawnrate: Larger number causes more spawning, 0 to disable spawning")
-    public int spawnrateFrostmaw = 15;
-    @ConfigEntry(name = "Frostmaw Health Multiplier", minValue = "0", maxValue = "100")
-    public float healthScaleFrostmaw = 1;
-    @ConfigEntry(name = "Frostmaw Attack Multiplier", minValue = "0", maxValue = "100")
-    public float attackScaleFrostmaw = 1;
+        @Name("spawn_rate")
+        @LangKey(LANG_PREFIX + "spawn_rate")
+        @Comment("Smaller number causes less spawning, 0 to disable spawning")
+        @RequiresMcRestart
+        public int minGroupSize = 1;
 
-    @ConfigEntry(name = "Grottol Spawn Rate", minValue = "0", maxValue = "100", comment = "Grottol Spawnrate: Larger number causes more spawning, 0 to disable spawning")
-    public int spawnrateGrottol = 2;
+        @Name("spawn_rate")
+        @LangKey(LANG_PREFIX + "spawn_rate")
+        @Comment("Smaller number causes less spawning, 0 to disable spawning")
+        @RequiresMcRestart
+        public int maxGroupSize = 3;
+    }
 
-    @ConfigEntry(name = "Lantern Spawn Rate", minValue = "0", maxValue = "100", comment = "Lantern Spawnrate: Larger number causes more spawning, 0 to disable spawning")
-    public int spawnrateLantern = 2;
+    public static class GenerationData {
+        GenerationData(int generationFrequency) {
+            this.generationFrequency = generationFrequency;
+        }
 
-    @ConfigEntry(name = "Naga Spawn Rate", minValue = "0", maxValue = "100", comment = "Naga Spawnrate: Larger number causes more spawning, 0 to disable spawning")
-    public int spawnrateNaga = 5;
-    @ConfigEntry(name = "Naga Health Multiplier", minValue = "0", maxValue = "100")
-    public float healthScaleNaga = 1;
-    @ConfigEntry(name = "Naga Attack Multiplier", minValue = "0", maxValue = "100")
-    public float attackScaleNaga = 1;
+        @Name("generation_frequency")
+        @LangKey(LANG_PREFIX + "generation_frequency")
+        @Comment({"Smaller number causes more generation, 0 to disable spawning", "Minimum number of chunks between placements of this structure"})
+        public int generationFrequency = 15;
+    }
 
-    @ConfigEntry(name = "Axe of a Thousand Metals Attack Multiplier", minValue = "0", maxValue = "100")
-    public float attackScaleWroughtAxe = 1;
-    @ConfigEntry(name = "Sun's Blessing Attack Multiplier", minValue = "0", maxValue = "100")
-    public float attackScaleSunsBlessing = 1;
-    @ConfigEntry(name = "Spear Attack Multiplier", minValue = "0", maxValue = "100")
-    public float attackScaleSpear = 1;
-    @ConfigEntry(name = "Blowgun Attack Multiplier", minValue = "0", maxValue = "100")
-    public float attackScaleBlowgun = 1;
-    @ConfigEntry(name = "Geomancy Attack Multiplier", minValue = "0", maxValue = "100")
-    public float attackScaleGeomancy = 1;
-    @ConfigEntry(name = "Ice Crystal Attack Multiplier", minValue = "0", maxValue = "100")
-    public float attackScaleIceCrystal = 1;
+    public static class CombatData {
+        CombatData(float healthMultiplier, float attackMultiplier) {
+            this.healthMultiplier = healthMultiplier;
+            this.attackMultiplier = attackMultiplier;
+        }
+
+        @Name("health_multiplier")
+        @LangKey(LANG_PREFIX + "health_multiplier")
+        @Comment("Scale mob health by this value")
+        @RequiresWorldRestart
+        public float healthMultiplier = 1;
+
+        @Name("attack_multiplier")
+        @LangKey(LANG_PREFIX + "attack_multiplier")
+        @Comment("Scale mob attack by this value")
+        @RequiresWorldRestart
+        public float attackMultiplier = 1;
+    }
+
+    @Name("foliaath")
+    @LangKey(LANG_PREFIX + "foliaath")
+    public static final Foliaath FOLIAATH = new Foliaath();
+    public static class Foliaath {
+        @Name("spawn_data")
+        @LangKey(LANG_PREFIX + "spawn_data")
+        @Comment({"Controls for vanilla-style mob spawning"})
+        public SpawnData SPAWN_DATA = new SpawnData(20, 1, 3);
+
+        @Name("combat_data")
+        @LangKey(LANG_PREFIX + "combat_data")
+        public CombatData COMBAT_DATA = new CombatData(1, 1);
+    }
+
+    @Name("barakoa")
+    @LangKey(LANG_PREFIX + "barakoa")
+    public static final Barakoa BARAKOA = new Barakoa();
+    public static class Barakoa {
+        @Name("spawn_data")
+        @LangKey(LANG_PREFIX + "spawn_data")
+        @Comment({"Controls for vanilla-style mob spawning", "Controls spawning for Barakoana hunting groups", "Group size controls how many elites spawn, not followers", "See Barako config for village controls"})
+        public SpawnData SPAWN_DATA = new SpawnData(4, 1, 1);
+
+        @Name("combat_data")
+        @LangKey(LANG_PREFIX + "combat_data")
+        public CombatData COMBAT_DATA = new CombatData(1, 1);
+    }
+
+    @Name("naga")
+    @LangKey(LANG_PREFIX + "naga")
+    public static final Naga NAGA = new Naga();
+    public static class Naga {
+        @Name("spawn_data")
+        @LangKey(LANG_PREFIX + "spawn_data")
+        @Comment({"Controls for vanilla-style mob spawning"})
+        public SpawnData SPAWN_DATA = new SpawnData(3, 1, 3);
+
+        @Name("combat_data")
+        @LangKey(LANG_PREFIX + "combat_data")
+        public CombatData COMBAT_DATA = new CombatData(1, 1);
+    }
+
+    @Name("lantern")
+    @LangKey(LANG_PREFIX + "lantern")
+    public static final Lantern LANTERN = new Lantern();
+    public static class Lantern {
+        @Name("spawn_data")
+        @LangKey(LANG_PREFIX + "spawn_data")
+        @Comment({"Controls for vanilla-style mob spawning"})
+        public SpawnData SPAWN_DATA = new SpawnData(4, 1, 2);
+
+        @Name("health_multiplier")
+        @LangKey(LANG_PREFIX + "health_multiplier")
+        @Comment("Scale mob health by this value")
+        public float healthMultiplier = 1;
+    }
+
+    @Name("grottol")
+    @LangKey(LANG_PREFIX + "grottol")
+    public static final Grottol GROTTOL = new Grottol();
+    public static class Grottol {
+        @Name("spawn_data")
+        @LangKey(LANG_PREFIX + "spawn_data")
+        @Comment({"Controls for vanilla-style mob spawning"})
+        public SpawnData SPAWN_DATA = new SpawnData(1, 1, 1);
+
+        @Name("health_multiplier")
+        @LangKey(LANG_PREFIX + "health_multiplier")
+        @Comment("Scale mob health by this value")
+        public float healthMultiplier = 1;
+    }
+
+    @Name("ferrous_wroughtnaut")
+    @LangKey(LANG_PREFIX + "ferrous_wroughtnaut")
+    public static final Ferrous_Wroughtnaut FERROUS_WROUGHTNAUT = new Ferrous_Wroughtnaut();
+    public static class Ferrous_Wroughtnaut {
+        @Name("ferrous_wroughtnaut")
+        @LangKey(LANG_PREFIX + "ferrous_wroughtnaut")
+        @Comment({"Controls for spawning mob/structure with world generation"})
+        public GenerationData GENERATION_DATA = new GenerationData(40);
+
+        @Name("combat_data")
+        @LangKey(LANG_PREFIX + "combat_data")
+        public CombatData COMBAT_DATA = new CombatData(1, 1);
+    }
+
+    @Name("barako")
+    @LangKey(LANG_PREFIX + "barako")
+    public static final Barako BARAKO = new Barako();
+    public static class Barako {
+        @Name("generation_data")
+        @LangKey(LANG_PREFIX + "generation_data")
+        @Comment({"Controls for spawning mob/structure with world generation", "Generation controls for Barakoa villages"})
+        public GenerationData GENERATION_DATA = new GenerationData(15);
+
+        @Name("combat_data")
+        @LangKey(LANG_PREFIX + "combat_data")
+        public CombatData COMBAT_DATA = new CombatData(1, 1);
+    }
+
+    @Name("frostmaw")
+    @LangKey(LANG_PREFIX + "frostmaw")
+    public static final Frostmaw FROSTMAW = new Frostmaw();
+    public static class Frostmaw {
+        @Name("generation_data")
+        @LangKey(LANG_PREFIX + "generation_data")
+        @Comment({"Controls for spawning mob/structure with world generation"})
+        public GenerationData GENERATION_DATA = new GenerationData(15);
+
+        @Name("combat_data")
+        @LangKey(LANG_PREFIX + "combat_data")
+        public CombatData COMBAT_DATA = new CombatData(1, 1);
+    }
+
+    @Name("tools_and_abilities")
+    @LangKey(LANG_PREFIX + "tools_and_abilities")
+    @Comment("Controls for mob drops, weapons, powers, and other offense used by players")
+    public static final ToolsAndAbilities TOOLS_AND_ABILITIES = new ToolsAndAbilities();
+    public static class ToolsAndAbilities {
+        @Name("axe_attack_multiplier")
+        @LangKey(LANG_PREFIX + "axe_attack_multiplier")
+        public float axeAttackMultiplier = 1;
+
+        @Name("suns_blessing_attack_multiplier")
+        @LangKey(LANG_PREFIX + "suns_blessing_attack_multiplier")
+        public float sunsBlessingAttackMultiplier = 1;
+
+        @Name("spear_attack_multiplier")
+        @LangKey(LANG_PREFIX + "spear_attack_multiplier")
+        public float spearAttackMultiplier = 1;
+
+        @Name("blowgun_attack_multiplier")
+        @LangKey(LANG_PREFIX + "blowgun_attack_multiplier")
+        public float blowgunAttackMultiplier = 1;
+
+        @Name("geomancy_attack_multiplier")
+        @LangKey(LANG_PREFIX + "geomancy_attack_multiplier")
+        public float geomancyAttackMultiplier = 1;
+
+        @Name("ice_crystal_attack_multiplier")
+        @LangKey(LANG_PREFIX + "ice_crystal_attack_multiplier")
+        public float iceCrystalAttackMultiplier = 1;
+    }
 }

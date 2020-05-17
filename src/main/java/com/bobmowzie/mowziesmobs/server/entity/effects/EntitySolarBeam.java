@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.entity.effects;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -121,12 +122,12 @@ public class EntitySolarBeam extends Entity {
                     float damageFire = 3f;
                     float damageMob = 2f;
                     if (caster instanceof EntityBarako) {
-                        damageFire *= MowziesMobs.CONFIG.attackScaleBarako;
-                        damageMob *= MowziesMobs.CONFIG.attackScaleBarako;
+                        damageFire *= ConfigHandler.BARAKO.COMBAT_DATA.attackMultiplier;
+                        damageMob *= ConfigHandler.BARAKO.COMBAT_DATA.attackMultiplier;
                     }
                     if (caster instanceof EntityPlayer) {
-                        damageFire *= MowziesMobs.CONFIG.attackScaleSunsBlessing;
-                        damageMob *= MowziesMobs.CONFIG.attackScaleSunsBlessing;
+                        damageFire *= ConfigHandler.TOOLS_AND_ABILITIES.sunsBlessingAttackMultiplier;
+                        damageMob *= ConfigHandler.TOOLS_AND_ABILITIES.sunsBlessingAttackMultiplier;
                     }
                     target.attackEntityFrom(DamageSource.ON_FIRE, damageFire);
                     target.attackEntityFrom(DamageSource.causeMobDamage(caster), damageMob);
