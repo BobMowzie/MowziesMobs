@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.world.structure;
 
+import com.bobmowzie.mowziesmobs.server.biome.BiomeDictionaryHandler;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import net.ilexiconn.llibrary.server.structure.StructureBuilder;
 import net.minecraft.block.BlockStairs;
@@ -10,6 +11,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 import org.lwjgl.Sys;
 
 import java.util.Random;
@@ -120,6 +122,8 @@ public class StructureWroughtnautRoom {
     }
 
     public static void tryWroughtChamber(World world, Random random, int x, int z, int chance) {
+        Biome biome = world.getBiome(new BlockPos(x, 50, z));
+        if (!BiomeDictionaryHandler.FERROUS_WROUGHTNAUT_BIOMES.contains(biome)) return;
         if (chance <= 0) {
             return;
         }

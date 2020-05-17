@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.world.structure;
 
+import com.bobmowzie.mowziesmobs.server.biome.BiomeDictionaryHandler;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.block.BlockPaintedAcacia;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
@@ -681,15 +682,7 @@ public class StructureBarakoaVillage {
         }
         if (rand.nextInt(chance) == 0) {
             Biome biome = world.getBiome(new BlockPos(x, 50, z));
-            Set<BiomeDictionary.Type> types = BiomeDictionary.getTypes(biome);
-            boolean isSavanna = types.contains(BiomeDictionary.Type.SAVANNA);
-//            for (Biome savannaBiome : BiomeDictionary.getBiomes(BiomeDictionary.Type.SAVANNA)) {
-//                if (world.getBiome(new BlockPos(x, 0, z)) == savannaBiome) {
-//                    isSavanna = true;
-//                    break;
-//                }
-//            }
-            if (!isSavanna) return;
+            if (!BiomeDictionaryHandler.BARAKO_BIOMES.contains(biome)) return;
 
             //System.out.println("Passes chance test");
             BlockPos pos = new BlockPos(x, 0, z);
