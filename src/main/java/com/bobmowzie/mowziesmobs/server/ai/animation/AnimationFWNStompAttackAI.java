@@ -2,7 +2,6 @@ package com.bobmowzie.mowziesmobs.server.ai.animation;
 
 import java.util.List;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.minecraft.block.Block;
@@ -91,7 +90,7 @@ public class AnimationFWNStompAttackAI extends AnimationAI<EntityWroughtnaut> {
                                 continue;
                             }
                             if (entity instanceof EntityLivingBase) {
-                                entity.attackEntityFrom(DamageSource.causeMobDamage(this.entity), (factor * 5 + 1) * ConfigHandler.FERROUS_WROUGHTNAUT.COMBAT_DATA.attackMultiplier);
+                                entity.attackEntityFrom(DamageSource.causeMobDamage(this.entity), (factor * 5 + 1) * ConfigHandler.FERROUS_WROUGHTNAUT.combatData.attackMultiplier);
                             }
                             double magnitude = world.rand.nextDouble() * 0.15 + 0.1;
                             entity.motionX += vx * factor * magnitude;

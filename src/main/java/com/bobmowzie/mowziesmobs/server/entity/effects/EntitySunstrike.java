@@ -200,8 +200,8 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
                 float damageFire = 4.5f;
                 float damageMob = 4.5f;
                 if (caster instanceof EntityBarako) {
-                    damageFire *= ConfigHandler.BARAKO.COMBAT_DATA.attackMultiplier;
-                    damageMob *= ConfigHandler.BARAKO.COMBAT_DATA.attackMultiplier;
+                    damageFire *= ConfigHandler.BARAKO.combatData.attackMultiplier;
+                    damageMob *= ConfigHandler.BARAKO.combatData.attackMultiplier;
                 }
                 if (caster instanceof EntityPlayer) {
                     damageFire *= ConfigHandler.TOOLS_AND_ABILITIES.sunsBlessingAttackMultiplier;

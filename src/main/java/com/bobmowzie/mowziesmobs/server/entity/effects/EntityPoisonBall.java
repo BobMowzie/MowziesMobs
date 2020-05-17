@@ -1,16 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
-import com.bobmowzie.mowziesmobs.client.particles.ParticleRing;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
-import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.MoverType;
@@ -63,7 +58,7 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
                 if (entity.getIsInvulnerable()) continue;
                 if (entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isCreativeMode) continue;
                 if (entity instanceof EntityNaga) continue;
-                entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(caster, null), 3 * ConfigHandler.NAGA.COMBAT_DATA.attackMultiplier);
+                entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(caster, null), 3 * ConfigHandler.NAGA.combatData.attackMultiplier);
                 entity.addPotionEffect(new PotionEffect(MobEffects.POISON, 80, 1, false, true));
             }
         }
@@ -130,7 +125,7 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
                 if (entity.getIsInvulnerable()) continue;
                 if (entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isCreativeMode) continue;
                 if (entity instanceof EntityNaga) continue;
-                entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(caster, null), 3 * ConfigHandler.NAGA.COMBAT_DATA.attackMultiplier);
+                entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(caster, null), 3 * ConfigHandler.NAGA.combatData.attackMultiplier);
                 entity.addPotionEffect(new PotionEffect(MobEffects.POISON, 80, 0, false, true));
             }
         }

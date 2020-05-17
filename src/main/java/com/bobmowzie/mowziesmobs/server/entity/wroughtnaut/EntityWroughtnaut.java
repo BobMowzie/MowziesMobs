@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.entity.wroughtnaut;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.server.ai.MMPathNavigateGround;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
@@ -17,7 +16,6 @@ import com.bobmowzie.mowziesmobs.server.entity.SmartBodyHelper;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.google.common.base.Optional;
-import com.sun.deploy.config.Config;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
@@ -158,7 +156,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 
     @Override
     public int getAttack() {
-        return (int)(30 * ConfigHandler.FERROUS_WROUGHTNAUT.COMBAT_DATA.attackMultiplier);
+        return (int)(30 * ConfigHandler.FERROUS_WROUGHTNAUT.combatData.attackMultiplier);
     }
 
     @Override
@@ -181,7 +179,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
         getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
-        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(40 * ConfigHandler.FERROUS_WROUGHTNAUT.COMBAT_DATA.healthMultiplier);
+        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(40 * ConfigHandler.FERROUS_WROUGHTNAUT.combatData.healthMultiplier);
     }
 
     @Override
@@ -468,7 +466,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
                     int stateId = Block.getStateId(block);
                     world.spawnParticle(EnumParticleTypes.BLOCK_DUST, x, y, z, 0, 0, 0, stateId);
                     if (playSound && rand.nextFloat() < 0.075F) {
-                        SoundType sound = block.getBlock().getSoundType();
+                        SoundType sound = block.getBlock().getSoundType(block, world, pos, null);
                         world.playSound(posX, posY, posZ, sound.getBreakSound(), SoundCategory.BLOCKS, sound.getVolume() * 2, sound.getPitch() * 0.6F, false);
                         playSound = false;
                     }

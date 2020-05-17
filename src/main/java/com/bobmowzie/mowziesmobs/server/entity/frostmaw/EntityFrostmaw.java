@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.entity.frostmaw;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
@@ -22,7 +21,6 @@ import com.google.common.base.Optional;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.GameSettings;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -54,12 +52,10 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraftforge.common.BiomeDictionary;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -118,8 +114,8 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         this.tasks.addTask(7, new EntityAIWanderAvoidWater(this, 1.0D));
         this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
-        this.tasks.addTask(2, new AnimationAreaAttackAI<>(this, SWIPE_ANIMATION, null, null, 2, 7, 6, 135, ConfigHandler.FROSTMAW.COMBAT_DATA.attackMultiplier, 9));
-        this.tasks.addTask(2, new AnimationAreaAttackAI<>(this, SWIPE_TWICE_ANIMATION, null, null, 1, 7, 6, 135, ConfigHandler.FROSTMAW.COMBAT_DATA.attackMultiplier, 9));
+        this.tasks.addTask(2, new AnimationAreaAttackAI<>(this, SWIPE_ANIMATION, null, null, 2, 7, 6, 135, ConfigHandler.FROSTMAW.combatData.attackMultiplier, 9));
+        this.tasks.addTask(2, new AnimationAreaAttackAI<>(this, SWIPE_TWICE_ANIMATION, null, null, 1, 7, 6, 135, ConfigHandler.FROSTMAW.combatData.attackMultiplier, 9));
         this.tasks.addTask(2, new AnimationAI<>(this, ICE_BREATH_ANIMATION, true));
         this.tasks.addTask(2, new AnimationAI<>(this, ICE_BALL_ANIMATION, true));
         this.tasks.addTask(2, new AnimationAI<>(this, ROAR_ANIMATION, false));
@@ -152,7 +148,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
     protected void applyEntityAttributes()
     {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(250.0D * ConfigHandler.FROSTMAW.COMBAT_DATA.healthMultiplier);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(250.0D * ConfigHandler.FROSTMAW.combatData.healthMultiplier);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.3D);
         this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(10.0D);
         this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0D);
@@ -284,7 +280,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                     List<EntityLivingBase> entitiesHit = world.getEntitiesWithinAABB(EntityLivingBase.class, hitBox);
                     for (EntityLivingBase entity: entitiesHit) {
                         if (entity != this) {
-                            attackEntityAsMob(entity, 4f * ConfigHandler.FROSTMAW.COMBAT_DATA.attackMultiplier);
+                            attackEntityAsMob(entity, 4f * ConfigHandler.FROSTMAW.combatData.attackMultiplier);
                             if (entity.isActiveItemStackBlocking()) entity.getActiveItemStack().damageItem(400, entity);
                         }
                     }

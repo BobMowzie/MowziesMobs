@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.entity.foliaath;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import net.ilexiconn.llibrary.server.animation.Animation;
@@ -17,7 +16,6 @@ import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.MobEffects;
-import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -39,7 +37,6 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAttackAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 
 import javax.annotation.Nullable;
@@ -65,7 +62,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         super(world);
         setPathPriority(PathNodeType.WATER, 0);
         this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(1, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_FOLIAATH_BITE_1, null, 2, 4.5F, ConfigHandler.FOLIAATH.COMBAT_DATA.attackMultiplier, 3));
+        this.tasks.addTask(1, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_FOLIAATH_BITE_1, null, 2, 4.5F, ConfigHandler.FOLIAATH.combatData.attackMultiplier, 3));
         this.tasks.addTask(1, new AnimationTakeDamage<>(this));
         this.tasks.addTask(1, new AnimationDieAI<>(this));
         this.tasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityLivingBase.class, 0, true, false, e ->
@@ -92,7 +89,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10 * ConfigHandler.FOLIAATH.COMBAT_DATA.healthMultiplier);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10 * ConfigHandler.FOLIAATH.combatData.healthMultiplier);
     }
 
     @Override

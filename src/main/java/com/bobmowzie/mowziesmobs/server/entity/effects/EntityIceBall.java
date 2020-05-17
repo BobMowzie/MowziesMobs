@@ -7,7 +7,6 @@ import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleRing;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
-import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -16,7 +15,6 @@ import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -56,7 +54,7 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
                 if (entity == caster) continue;
                 if (entity.getIsInvulnerable()) continue;
                 if (entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isCreativeMode) continue;
-                entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(caster, null), 3 * ConfigHandler.FROSTMAW.COMBAT_DATA.attackMultiplier);
+                entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(caster, null), 3 * ConfigHandler.FROSTMAW.combatData.attackMultiplier);
                 MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
                 if (property != null) property.freezeProgress += 1;
             }

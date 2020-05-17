@@ -122,8 +122,8 @@ public class EntitySolarBeam extends Entity {
                     float damageFire = 3f;
                     float damageMob = 2f;
                     if (caster instanceof EntityBarako) {
-                        damageFire *= ConfigHandler.BARAKO.COMBAT_DATA.attackMultiplier;
-                        damageMob *= ConfigHandler.BARAKO.COMBAT_DATA.attackMultiplier;
+                        damageFire *= ConfigHandler.BARAKO.combatData.attackMultiplier;
+                        damageMob *= ConfigHandler.BARAKO.combatData.attackMultiplier;
                     }
                     if (caster instanceof EntityPlayer) {
                         damageFire *= ConfigHandler.TOOLS_AND_ABILITIES.sunsBlessingAttackMultiplier;

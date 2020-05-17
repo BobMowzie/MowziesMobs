@@ -1,16 +1,12 @@
 package com.bobmowzie.mowziesmobs.server.world;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.world.structure.StructureBarakoaVillage;
 import com.bobmowzie.mowziesmobs.server.world.structure.StructureWroughtnautRoom;
-import net.minecraft.init.Biomes;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeSavanna;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.fml.common.IWorldGenerator;
@@ -43,8 +39,8 @@ public class MowzieWorldGenerator implements IWorldGenerator {
 
     private static boolean canSpawnFrostmawAtCoords(int chunkX, int chunkZ, World world)
     {
-        if (ConfigHandler.FROSTMAW.GENERATION_DATA.generationFrequency <= 0) return false;
-        int maxDistanceBetweenFrostmaws = ConfigHandler.FROSTMAW.GENERATION_DATA.generationFrequency + 8;
+        if (ConfigHandler.FROSTMAW.generationData.generationFrequency <= 0) return false;
+        int maxDistanceBetweenFrostmaws = ConfigHandler.FROSTMAW.generationData.generationFrequency + 8;
 
         int i = chunkX;
         int j = chunkZ;
@@ -74,8 +70,8 @@ public class MowzieWorldGenerator implements IWorldGenerator {
 
     private static boolean canSpawnVillageAtCoords(int chunkX, int chunkZ, World world)
     {
-        if (ConfigHandler.BARAKO.GENERATION_DATA.generationFrequency <= 0) return false;
-        int maxDistanceBetweenVillages = ConfigHandler.BARAKO.GENERATION_DATA.generationFrequency + 8;
+        if (ConfigHandler.BARAKO.generationData.generationFrequency <= 0) return false;
+        int maxDistanceBetweenVillages = ConfigHandler.BARAKO.generationData.generationFrequency + 8;
 
         int i = chunkX;
         int j = chunkZ;
@@ -105,7 +101,7 @@ public class MowzieWorldGenerator implements IWorldGenerator {
 
     private void generateSurface(World world, Random random, int x, int z) {
         if (world.getWorldInfo().isMapFeaturesEnabled()) {
-            StructureWroughtnautRoom.tryWroughtChamber(world, random, x, z, ConfigHandler.FERROUS_WROUGHTNAUT.GENERATION_DATA.generationFrequency);
+            StructureWroughtnautRoom.tryWroughtChamber(world, random, x, z, ConfigHandler.FERROUS_WROUGHTNAUT.generationData.generationFrequency);
 //            System.out.println("Trying wroughtnaut chamber at " + x + ", " + z);
         }
     }
