@@ -102,7 +102,10 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     public boolean getCanSpawnHere() {
         ConfigHandler.SpawnData spawnData = getSpawnConfig();
         if (spawnData != null) {
-            BlockPos pos = getPosition();
+            int i = MathHelper.floor(this.posX);
+            int j = MathHelper.floor(this.getEntityBoundingBox().minY);
+            int k = MathHelper.floor(this.posZ);
+            BlockPos pos = new BlockPos(i, j, k);
 
             // Dimension check
             List<Integer> dimensionIDs = Ints.asList(spawnData.dimensions);

@@ -24,6 +24,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.item.EntityItem;
@@ -49,6 +50,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -911,6 +913,12 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
 
     @Nullable
     @Override
+    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata) {
+        return super.onInitialSpawn(difficulty, livingdata);
+    }
+
+    @Nullable
+    @Override
     protected ResourceLocation getLootTable() {
         return LootTableHandler.FROSTMAW;
     }
@@ -922,13 +930,17 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
 
     public void spawnInWorld(World world, Random rand, int x, int z) {
         Biome biome = world.getBiome(new BlockPos(x, 50, z));
+        if (rand.nextFloat() > ConfigHandler.FROSTMAW.generationData.generationChance) return;
         if(!BiomeDictionaryHandler.FROSTMAW_BIOMES.contains(biome)) return;
         BlockPos pos = new BlockPos(x, 0, z);
-        int y = MowzieWorldGenerator.findGenHeight(world, pos) + 1;
-        if (y == -1) return;
-        if (y > ConfigHandler.FROSTMAW.generationData.heightMax && ConfigHandler.FROSTMAW.generationData.heightMax > -1) return;
-        if (y < ConfigHandler.FROSTMAW.generationData.heightMin) return;
+        int heightMax = (int) ConfigHandler.FROSTMAW.generationData.heightMax;
+        int heightMin = (int) ConfigHandler.FROSTMAW.generationData.heightMin;
+        if (heightMax == -1) heightMax = world.getHeight();
+        if (heightMin == -1) heightMin = 0;
+        int y = MowzieWorldGenerator.findGenHeight(world, pos, heightMax, heightMin) + 1;
+        if (y == 0) return;
         setPositionAndRotation(x, y, z, rand.nextFloat() * 360.0f, 0);
         world.spawnEntity(this);
+        onInitialSpawn(world.getDifficultyForLocation(new BlockPos(x, y, z)), (IEntityLivingData)null);
     }
 }

@@ -151,8 +151,20 @@ config.mowziesmobs.spawn_data=Spawn Controls
 config.mowziesmobs.spawn_rate=Spawn Rate
 config.mowziesmobs.min_group_size=Min Group Size
 config.mowziesmobs.max_group_size=Max Group Size
+config.mowziesmobs.biome_data=Allowed Biomes
+config.mowziesmobs.biome_type=Biome Types
+config.mowziesmobs.biome_whitelist=Biome Whitelist Override
+config.mowziesmobs.biome_blacklist=Biome Blacklist Override
+config.mowziesmobs.dimensions=Allowed Dimensions
+config.mowziesmobs.height_min=Minimum Height
+config.mowziesmobs.height_max=Maximum Height
+config.mowziesmobs.needs_darkness=Needs Darkness
+config.mowziesmobs.requires_see_sky=Needs to See Sky
+config.mowziesmobs.requires_cant_see_sky=Needs to Not See Sky
+config.mowziesmobs.allowed_blocks=Allowed Blocks
 
 config.mowziesmobs.generation_data=Generation Controls
+config.mowziesmobs.generation_chance=Generation Frequency
 config.mowziesmobs.generation_frequency=Generation Frequency
 
 config.mowziesmobs.combat_data=Combat Controls

@@ -122,92 +122,96 @@ public class StructureWroughtnautRoom {
 //        System.out.println("Wroughtnaut chamber at " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
     }
 
-    public static void tryWroughtChamber(World world, Random random, int x, int z, int chance) {
+    public static void tryWroughtChamber(World world, Random random, int x, int z) {
+        if (!world.getWorldInfo().isMapFeaturesEnabled()) return;
+
         Biome biome = world.getBiome(new BlockPos(x, 50, z));
         if (!BiomeDictionaryHandler.FERROUS_WROUGHTNAUT_BIOMES.contains(biome)) return;
-        if (chance <= 0) {
-            return;
-        }
+
         int xzCheckDistance = 10;
-        if (random.nextInt(chance) == 0) {
-            for (int y = (int) ConfigHandler.FERROUS_WROUGHTNAUT.generationData.heightMax; y >= (int) ConfigHandler.FERROUS_WROUGHTNAUT.generationData.heightMin; y--) {
-                if (world.getBlockState(new BlockPos(x, y, z)).getBlock().isAir(world.getBlockState(new BlockPos(x, y, z)), world, new BlockPos(x, y, z))) {
-                    for (int y2 = 1; y2 <= 30; y2++) {
-                        if (world.getBlockState(new BlockPos(x, y - y2, z)).isBlockNormalCube()) {
-                            int y4 = 0;
-                            int y5 = 0;
-                            for (int x2 = 0; x2 <= xzCheckDistance; x2++) {
-                                if (world.getBlockState(new BlockPos(x - x2, y - y2 + y4 + 1, z)).isBlockNormalCube()) {
-                                    Boolean wall = true;
-                                    for (int y3 = 1; y3 <= 4; y3++) {
-                                        if (!world.getBlockState(new BlockPos(x - x2, y - y2 + y4 + 1 + y3, z)).isNormalCube()) {
-                                            wall = false;
-                                            y4 += y3;
-                                            break;
-                                        }
-                                    }
-                                    if (wall) {
-                                        if (world.getBlockState(new BlockPos(x - x2, y - y2 + y4, z)).isNormalCube()) {
-                                            StructureWroughtnautRoom.generate(world, new BlockPos(x - x2, y - y2 + y4, z), random, EnumFacing.SOUTH);
-                                        }
-                                        return;
+        if (random.nextFloat() > ConfigHandler.FROSTMAW.generationData.generationChance) return;
+
+        int heightMax = (int) ConfigHandler.FERROUS_WROUGHTNAUT.generationData.heightMax;
+        int heightMin = (int) ConfigHandler.FERROUS_WROUGHTNAUT.generationData.heightMin;
+        if (heightMax == -1) heightMax = world.getHeight();
+        if (heightMin == -1) heightMin = 0;
+        for (int y = heightMax; y >= heightMin; y--) {
+            if (world.getBlockState(new BlockPos(x, y, z)).getBlock().isAir(world.getBlockState(new BlockPos(x, y, z)), world, new BlockPos(x, y, z))) {
+                for (int y2 = 1; y2 <= 30; y2++) {
+                    if (world.getBlockState(new BlockPos(x, y - y2, z)).isBlockNormalCube()) {
+                        int y4 = 0;
+                        int y5 = 0;
+                        for (int x2 = 0; x2 <= xzCheckDistance; x2++) {
+                            if (world.getBlockState(new BlockPos(x - x2, y - y2 + y4 + 1, z)).isBlockNormalCube()) {
+                                Boolean wall = true;
+                                for (int y3 = 1; y3 <= 4; y3++) {
+                                    if (!world.getBlockState(new BlockPos(x - x2, y - y2 + y4 + 1 + y3, z)).isNormalCube()) {
+                                        wall = false;
+                                        y4 += y3;
+                                        break;
                                     }
                                 }
-                                if (world.getBlockState(new BlockPos(x + x2, y - y2 + y5 + 1, z)).isBlockNormalCube()) {
-                                    Boolean wall = true;
-                                    for (int y3 = 1; y3 <= 4; y3++) {
-                                        if (!world.getBlockState(new BlockPos(x + x2, y - y2 + y5 + 1 + y3, z)).isBlockNormalCube()) {
-                                            wall = false;
-                                            y5 += y3;
-                                            break;
-                                        }
+                                if (wall) {
+                                    if (world.getBlockState(new BlockPos(x - x2, y - y2 + y4, z)).isNormalCube()) {
+                                        StructureWroughtnautRoom.generate(world, new BlockPos(x - x2, y - y2 + y4, z), random, EnumFacing.SOUTH);
                                     }
-                                    if (wall) {
-                                        if (world.getBlockState(new BlockPos(x + x2, y - y2 + y5, z)).isNormalCube()) {
-                                            StructureWroughtnautRoom.generate(world, new BlockPos(x + x2, y - y2 + y5, z), random, EnumFacing.NORTH);
-                                        }
-                                        return;
-                                    }
+                                    return;
                                 }
                             }
-                            y4 = 0;
-                            y5 = 0;
-                            for (int z2 = 0; z2 <= xzCheckDistance; z2++) {
-                                if (world.getBlockState(new BlockPos(x, y - y2 + y4 + 1, z - z2)).isOpaqueCube()) {
-                                    Boolean wall = true;
-                                    for (int y3 = 1; y3 <= 4; y3++) {
-                                        if (!world.getBlockState(new BlockPos(x, y - y2 + y4 + 1 + y3, z - z2)).isBlockNormalCube()) {
-                                            wall = false;
-                                            y4 += y3;
-                                            break;
-                                        }
-                                    }
-                                    if (wall) {
-                                        if (world.getBlockState(new BlockPos(x, y - y2 + y4, z - z2)).isNormalCube()) {
-                                            StructureWroughtnautRoom.generate(world, new BlockPos(x, y - y2 + y4, z - z2), random, EnumFacing.WEST);
-                                        }
-                                        return;
+                            if (world.getBlockState(new BlockPos(x + x2, y - y2 + y5 + 1, z)).isBlockNormalCube()) {
+                                Boolean wall = true;
+                                for (int y3 = 1; y3 <= 4; y3++) {
+                                    if (!world.getBlockState(new BlockPos(x + x2, y - y2 + y5 + 1 + y3, z)).isBlockNormalCube()) {
+                                        wall = false;
+                                        y5 += y3;
+                                        break;
                                     }
                                 }
-                                if (world.getBlockState(new BlockPos(x, y - y2 + y5 + 1, z + z2)).isBlockNormalCube()) {
-                                    Boolean wall = true;
-                                    for (int y3 = 1; y3 <= 4; y3++) {
-                                        if (!world.getBlockState(new BlockPos(x, y - y2 + y5 + 1 + y3, z + z2)).isBlockNormalCube()) {
-                                            wall = false;
-                                            y5 += y3;
-                                            break;
-                                        }
+                                if (wall) {
+                                    if (world.getBlockState(new BlockPos(x + x2, y - y2 + y5, z)).isNormalCube()) {
+                                        StructureWroughtnautRoom.generate(world, new BlockPos(x + x2, y - y2 + y5, z), random, EnumFacing.NORTH);
                                     }
-                                    if (wall) {
-                                        if (world.getBlockState(new BlockPos(x, y - y2 + y5, z + z2)).isNormalCube()) {
-                                            StructureWroughtnautRoom.generate(world, new BlockPos(x, y - y2 + y5, z + z2), random, EnumFacing.EAST);
-                                        }
-                                        return;
-                                    }
+                                    return;
                                 }
                             }
-                            break;
                         }
+                        y4 = 0;
+                        y5 = 0;
+                        for (int z2 = 0; z2 <= xzCheckDistance; z2++) {
+                            if (world.getBlockState(new BlockPos(x, y - y2 + y4 + 1, z - z2)).isOpaqueCube()) {
+                                Boolean wall = true;
+                                for (int y3 = 1; y3 <= 4; y3++) {
+                                    if (!world.getBlockState(new BlockPos(x, y - y2 + y4 + 1 + y3, z - z2)).isBlockNormalCube()) {
+                                        wall = false;
+                                        y4 += y3;
+                                        break;
+                                    }
+                                }
+                                if (wall) {
+                                    if (world.getBlockState(new BlockPos(x, y - y2 + y4, z - z2)).isNormalCube()) {
+                                        StructureWroughtnautRoom.generate(world, new BlockPos(x, y - y2 + y4, z - z2), random, EnumFacing.WEST);
+                                    }
+                                    return;
+                                }
+                            }
+                            if (world.getBlockState(new BlockPos(x, y - y2 + y5 + 1, z + z2)).isBlockNormalCube()) {
+                                Boolean wall = true;
+                                for (int y3 = 1; y3 <= 4; y3++) {
+                                    if (!world.getBlockState(new BlockPos(x, y - y2 + y5 + 1 + y3, z + z2)).isBlockNormalCube()) {
+                                        wall = false;
+                                        y5 += y3;
+                                        break;
+                                    }
+                                }
+                                if (wall) {
+                                    if (world.getBlockState(new BlockPos(x, y - y2 + y5, z + z2)).isNormalCube()) {
+                                        StructureWroughtnautRoom.generate(world, new BlockPos(x, y - y2 + y5, z + z2), random, EnumFacing.EAST);
+                                    }
+                                    return;
+                                }
+                            }
+                        }
+                        break;
                     }
                 }
             }

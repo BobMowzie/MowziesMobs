@@ -124,14 +124,15 @@ public class ConfigHandler {
 
         @Name("allowed_blocks")
         @LangKey(LANG_PREFIX + "allowed_blocks")
-        @Comment("Names of blocks this mob is allowed to spawn on. Leave blank for any block.")
+        @Comment("Names of blocks this mob is allowed to spawn on. Leave blank to allow any block.")
         @RequiresMcRestart
         public String[] allowedBlocks = {};
     }
 
     public static class GenerationData {
-        GenerationData(int generationFrequency, BiomeData biomeData, float heightMin, float heightMax) {
+        GenerationData(int generationFrequency, float generationChance, BiomeData biomeData, float heightMin, float heightMax) {
             this.generationFrequency = generationFrequency;
+            this.generationChance = generationChance;
             this.biomeData = biomeData;
             this.heightMax = heightMax;
             this.heightMin = heightMin;
@@ -139,9 +140,15 @@ public class ConfigHandler {
 
         @Name("generation_frequency")
         @LangKey(LANG_PREFIX + "generation_frequency")
-        @Comment({"Smaller number causes more generation, 0 to disable spawning", "Minimum number of chunks between placements of this mob/structure"})
+        @Comment({"Smaller number causes more generation, 0 to disable spawning", "Maximum number of chunks between placements of this mob/structure"})
         @RangeInt(min = 1, max = 1000)
         public int generationFrequency = 15;
+
+        @Name("generation_chance")
+        @LangKey(LANG_PREFIX + "generation_chance")
+        @Comment({"Probability that generation succeeds.", "For example, set to 0.5 to randomly not generate half of these structures in the world.", "Set to 1 to allow all generation attempts to succeed."})
+        @RangeDouble(min = 0, max = 1)
+        public float generationChance = 1;
 
         @Name("biome_data")
         @LangKey(LANG_PREFIX + "biome_data")
@@ -295,7 +302,7 @@ public class ConfigHandler {
         @Name("ferrous_wroughtnaut")
         @LangKey(LANG_PREFIX + "ferrous_wroughtnaut")
         @Comment({"Controls for spawning mob/structure with world generation"})
-        public GenerationData generationData = new GenerationData(40,
+        public GenerationData generationData = new GenerationData(2, 0.5f,
                 new BiomeData(new String[] {""}, new String[] {}, new String[] {}),
                 30, 55
                 );
@@ -312,9 +319,9 @@ public class ConfigHandler {
         @Name("generation_data")
         @LangKey(LANG_PREFIX + "generation_data")
         @Comment({"Controls for spawning mob/structure with world generation", "Generation controls for Barakoa villages"})
-        public GenerationData generationData = new GenerationData(15,
+        public GenerationData generationData = new GenerationData(12, 0.8f,
                 new BiomeData(new String[] {"SAVANNA"}, new String[] {}, new String[] {}),
-                60, -1
+                50, 100
                 );
 
         @Name("combat_data")
@@ -329,9 +336,9 @@ public class ConfigHandler {
         @Name("generation_data")
         @LangKey(LANG_PREFIX + "generation_data")
         @Comment({"Controls for spawning mob/structure with world generation"})
-        public GenerationData generationData = new GenerationData(15,
+        public GenerationData generationData = new GenerationData(12, 0.8f,
                 new BiomeData(new String[] {"SNOWY,!OCEAN,!RIVER,!BEACH"}, new String[] {}, new String[] {}),
-                60, -1
+                50, 100
                 );
 
         @Name("combat_data")

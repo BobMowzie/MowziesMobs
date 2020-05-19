@@ -676,112 +676,113 @@ public class StructureBarakoaVillage {
         world.setBlockState(new BlockPos(pos.getX(), pos.getY() + 2, pos.getZ()), Blocks.TORCH.getDefaultState());
     }
 
-    public static void generateVillage(World world, Random rand, int x, int z, int chance) {
+    public static void generateVillage(World world, Random rand, int x, int z) {
 //        System.out.println("Beginning generation");
-        if (chance <= 0) {
-            return;
-        }
-        if (rand.nextInt(chance) == 0) {
-            Biome biome = world.getBiome(new BlockPos(x, 50, z));
-            if (!BiomeDictionaryHandler.BARAKO_BIOMES.contains(biome)) return;
+        if (!world.getWorldInfo().isMapFeaturesEnabled()) return;
 
-            //System.out.println("Passes chance test");
-            BlockPos pos = new BlockPos(x, 0, z);
-            int y = MowzieWorldGenerator.findGenHeight(world, pos);
-            if (y == -1) return;
-            if (y > ConfigHandler.BARAKO.generationData.heightMax && ConfigHandler.BARAKO.generationData.heightMax > -1) return;
-            if (y < ConfigHandler.BARAKO.generationData.heightMin) return;
-            //System.out.println("Found height at " + y);
-            pos = new BlockPos(pos.getX(), y, pos.getZ());
-            generateFirepit(world, rand, pos);
-            //System.out.println("Generated firepit at " + pos.toString());
-            int initDir = rand.nextInt(4);
-            for (int i = 0; i < 4; i++) {
-                EnumFacing throneFacing = EnumFacing.HORIZONTALS[(initDir + i) % 4];
-                int throneX = x + 9 * (throneFacing == EnumFacing.WEST ? 1:0) - 9 * (throneFacing == EnumFacing.EAST ? 1:0);
-                int throneZ = z + 9 * (throneFacing == EnumFacing.NORTH ? 1:0) - 9 * (throneFacing == EnumFacing.SOUTH ? 1:0);
-                int throneY = y;
-                y = MowzieWorldGenerator.findGenHeight(world, new BlockPos(throneX, y, throneZ));
-                if (y != -1) {
-                    generateThrone(world, rand, new BlockPos(throneX, throneY + y, throneZ), throneFacing);
+        if (rand.nextFloat() > ConfigHandler.BARAKO.generationData.generationChance) return;
+
+        Biome biome = world.getBiome(new BlockPos(x, 50, z));
+        if (!BiomeDictionaryHandler.BARAKO_BIOMES.contains(biome)) return;
+
+        //System.out.println("Passes chance test");
+        int heightMax = (int) ConfigHandler.BARAKO.generationData.heightMax;
+        int heightMin = (int) ConfigHandler.BARAKO.generationData.heightMin;
+        if (heightMax == -1) heightMax = world.getHeight();
+        if (heightMin == -1) heightMin = 0;
+        BlockPos pos = new BlockPos(x, 0, z);
+        int y = MowzieWorldGenerator.findGenHeight(world, pos, heightMax, heightMin);
+        if (y == -1) return;
+        //System.out.println("Found height at " + y);
+        pos = new BlockPos(pos.getX(), y, pos.getZ());
+        generateFirepit(world, rand, pos);
+        //System.out.println("Generated firepit at " + pos.toString());
+        int initDir = rand.nextInt(4);
+        for (int i = 0; i < 4; i++) {
+            EnumFacing throneFacing = EnumFacing.HORIZONTALS[(initDir + i) % 4];
+            int throneX = x + 9 * (throneFacing == EnumFacing.WEST ? 1:0) - 9 * (throneFacing == EnumFacing.EAST ? 1:0);
+            int throneZ = z + 9 * (throneFacing == EnumFacing.NORTH ? 1:0) - 9 * (throneFacing == EnumFacing.SOUTH ? 1:0);
+            int throneY = y;
+            y = MowzieWorldGenerator.findGenHeight(world, new BlockPos(throneX, y, throneZ), heightMax, heightMin);
+            if (y != -1) {
+                generateThrone(world, rand, new BlockPos(throneX, throneY + y, throneZ), throneFacing);
+                break;
+            }
+        }
+        //System.out.println("Generating Skulls");
+        int numSkulls = rand.nextInt(3) + 2;
+        for (int i = 1; i <= numSkulls; i++) {
+            int distance;
+            int angle;
+            for (int j = 1; j <= 25; j++) {
+                distance = rand.nextInt(15) + 6;
+                angle = rand.nextInt(360);
+                BlockPos skullPos = new BlockPos(pos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, pos.getZ() + distance * Math.cos(Math.toRadians(angle)));
+                y = MowzieWorldGenerator.findGenHeight(world, skullPos, heightMax, heightMin);
+                //System.out.println("Attempting at " + skullPos.add(0, y, 0).toString());
+                AxisAlignedBB box = new AxisAlignedBB(skullPos.add(-2, y + 1, -2), skullPos.add(2, y + 2, 2));
+                if (world.getCollisionBoxes(null, box).isEmpty() && y != -1) {
+                    generateSkulls(world, rand, skullPos.add(0, y, 0), EnumFacing.HORIZONTALS[rand.nextInt(4)]);
                     break;
                 }
             }
-            //System.out.println("Generating Skulls");
-            int numSkulls = rand.nextInt(3) + 2;
-            for (int i = 1; i <= numSkulls; i++) {
-                int distance;
-                int angle;
-                for (int j = 1; j <= 25; j++) {
-                    distance = rand.nextInt(15) + 6;
-                    angle = rand.nextInt(360);
-                    BlockPos skullPos = new BlockPos(pos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, pos.getZ() + distance * Math.cos(Math.toRadians(angle)));
-                    y = MowzieWorldGenerator.findGenHeight(world, skullPos);
-                    //System.out.println("Attempting at " + skullPos.add(0, y, 0).toString());
-                    AxisAlignedBB box = new AxisAlignedBB(skullPos.add(-2, y + 1, -2), skullPos.add(2, y + 2, 2));
-                    if (world.getCollisionBoxes(null, box).isEmpty() && y != -1) {
-                        generateSkulls(world, rand, skullPos.add(0, y, 0), EnumFacing.HORIZONTALS[rand.nextInt(4)]);
-                        break;
-                    }
-                }
-            }
-            //System.out.println("Generating Poles");
-            int numPoles = rand.nextInt(12) + 5;
-            for (int i = 1; i <= numPoles; i++) {
-                int distance;
-                int angle;
-                for (int j = 1; j <= 10; j++) {
-                    distance = rand.nextInt(15) + 5;
-                    angle = rand.nextInt(360);
-                    BlockPos polePos = new BlockPos(pos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, pos.getZ() + distance * Math.cos(Math.toRadians(angle)));
-                    y = MowzieWorldGenerator.findGenHeight(world, polePos);
+        }
+        //System.out.println("Generating Poles");
+        int numPoles = rand.nextInt(12) + 5;
+        for (int i = 1; i <= numPoles; i++) {
+            int distance;
+            int angle;
+            for (int j = 1; j <= 10; j++) {
+                distance = rand.nextInt(15) + 5;
+                angle = rand.nextInt(360);
+                BlockPos polePos = new BlockPos(pos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, pos.getZ() + distance * Math.cos(Math.toRadians(angle)));
+                y = MowzieWorldGenerator.findGenHeight(world, polePos, heightMax, heightMin);
 //                    System.out.println("Attempting at " + polePos.add(0, y, 0).toString());
-                    AxisAlignedBB box = new AxisAlignedBB(polePos.add(0, y + 1, 0), polePos.add(1, y + 2, 1));
-                    if (world.getCollisionBoxes(null, box).isEmpty() && y != -1) {
-                        if (rand.nextBoolean()) generateTorch(world, polePos.add(0, y, 0));
-                        else generateSkull(world, rand, polePos.add(0, y, 0));
-                        break;
-                    }
+                AxisAlignedBB box = new AxisAlignedBB(polePos.add(0, y + 1, 0), polePos.add(1, y + 2, 1));
+                if (world.getCollisionBoxes(null, box).isEmpty() && y != -1) {
+                    if (rand.nextBoolean()) generateTorch(world, polePos.add(0, y, 0));
+                    else generateSkull(world, rand, polePos.add(0, y, 0));
+                    break;
                 }
             }
+        }
 
-            //System.out.println("Generating houses");
-            int numHouses = rand.nextInt(4) + 3;
-            for (int i = 1; i <= numHouses; i++) {
-                int distance;
-                int angle;
-                for (int j = 1; j <= 30; j++) {
-                    distance = rand.nextInt(8) + 10;
-                    angle = rand.nextInt(360);
-                    BlockPos housePos = new BlockPos(pos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, pos.getZ() + distance * Math.cos(Math.toRadians(angle)));
-                    y = MowzieWorldGenerator.findGenHeight(world, housePos);
-                    //System.out.println("Attempting at " + housePos.add(0, y, 0).toString());
-                    AxisAlignedBB box = new AxisAlignedBB(housePos.add(-5, y + 3, -5), housePos.add(5, y + 9, 5));
-                    if (world.getCollisionBoxes(null, box).isEmpty() && y != -1) {
-                        generateHouse(world, rand, housePos.add(0, y + rand.nextInt(2), 0), EnumFacing.HORIZONTALS[rand.nextInt(4)]);
-                        break;
-                    }
-                    //else System.out.println("No space");
+        //System.out.println("Generating houses");
+        int numHouses = rand.nextInt(4) + 3;
+        for (int i = 1; i <= numHouses; i++) {
+            int distance;
+            int angle;
+            for (int j = 1; j <= 30; j++) {
+                distance = rand.nextInt(8) + 10;
+                angle = rand.nextInt(360);
+                BlockPos housePos = new BlockPos(pos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, pos.getZ() + distance * Math.cos(Math.toRadians(angle)));
+                y = MowzieWorldGenerator.findGenHeight(world, housePos, heightMax, heightMin);
+                //System.out.println("Attempting at " + housePos.add(0, y, 0).toString());
+                AxisAlignedBB box = new AxisAlignedBB(housePos.add(-5, y + 3, -5), housePos.add(5, y + 9, 5));
+                if (world.getCollisionBoxes(null, box).isEmpty() && y != -1) {
+                    generateHouse(world, rand, housePos.add(0, y + rand.nextInt(2), 0), EnumFacing.HORIZONTALS[rand.nextInt(4)]);
+                    break;
                 }
+                //else System.out.println("No space");
             }
-            int numBarakoa = rand.nextInt(12) + 5;
-            for (int i = 1; i <= numBarakoa; i++) {
-                int distance;
-                int angle;
-                EntityBarakoaya barakoa = new EntityBarakoaya(world);
-                for (int j = 1; j <= 20; j++) {
-                    distance = rand.nextInt(10) + 5;
-                    angle = rand.nextInt(360);
-                    BlockPos bPos = pos.add(distance * Math.sin(Math.toRadians(angle)), 0, distance * Math.cos(Math.toRadians(angle)));
-                    y = findGenHeightBarakoa(world, bPos);
-                    barakoa.setPosition(bPos.getX(), bPos.getY() + y + 1, bPos.getZ());
-                    if(y != -1 && barakoa.getCanSpawnHere() && world.getCollisionBoxes(null, barakoa.getEntityBoundingBox()).isEmpty()) {
-                        world.spawnEntity(barakoa);
-                        barakoa.onInitialSpawn(world.getDifficultyForLocation(barakoa.getPosition()), null);
-                        break;
-                    }
-//                    else System.out.println("No space");
+        }
+        int numBarakoa = rand.nextInt(12) + 5;
+        for (int i = 1; i <= numBarakoa; i++) {
+            int distance;
+            int angle;
+            EntityBarakoaya barakoa = new EntityBarakoaya(world);
+            for (int j = 1; j <= 20; j++) {
+                distance = rand.nextInt(10) + 5;
+                angle = rand.nextInt(360);
+                BlockPos bPos = pos.add(distance * Math.sin(Math.toRadians(angle)), 0, distance * Math.cos(Math.toRadians(angle)));
+                y = findGenHeightBarakoa(world, bPos);
+                barakoa.setPosition(bPos.getX(), bPos.getY() + y + 1, bPos.getZ());
+                if(y != -1 && barakoa.getCanSpawnHere() && world.getCollisionBoxes(null, barakoa.getEntityBoundingBox()).isEmpty()) {
+                    world.spawnEntity(barakoa);
+                    barakoa.onInitialSpawn(world.getDifficultyForLocation(barakoa.getPosition()), null);
+                    break;
                 }
+//                    else System.out.println("No space");
             }
         }
     }

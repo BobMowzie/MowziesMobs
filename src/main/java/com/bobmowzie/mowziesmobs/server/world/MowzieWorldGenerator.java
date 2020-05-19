@@ -4,6 +4,8 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.world.structure.StructureBarakoaVillage;
 import com.bobmowzie.mowziesmobs.server.world.structure.StructureWroughtnautRoom;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -30,70 +32,38 @@ public class MowzieWorldGenerator implements IWorldGenerator {
     }
 
     public static void generatePrePopulate(World world, Random random, int chunkX, int chunkZ) {
-        if (canSpawnVillageAtCoords(chunkX, chunkZ, world)) StructureBarakoaVillage.generateVillage(world, random, chunkX * 16 + 8, chunkZ * 16 + 8, 1);
-        if (canSpawnFrostmawAtCoords(chunkX, chunkZ, world)) {
+        if (canSpawnStructureAtCoords(chunkX, chunkZ, world, ConfigHandler.BARAKO.generationData.generationFrequency)) StructureBarakoaVillage.generateVillage(world, random, chunkX * 16 + 8, chunkZ * 16 + 8);
+        if (canSpawnStructureAtCoords(chunkX, chunkZ, world, ConfigHandler.FROSTMAW.generationData.generationFrequency)) {
             EntityFrostmaw frostmaw = new EntityFrostmaw(world);
             frostmaw.spawnInWorld(world, random, chunkX * 16 + 8, chunkZ * 16 + 8);
         }
     }
 
-    private static boolean canSpawnFrostmawAtCoords(int chunkX, int chunkZ, World world)
+    private static boolean canSpawnStructureAtCoords(int chunkX, int chunkZ, World world, int genFrequency)
     {
-        if (ConfigHandler.FROSTMAW.generationData.generationFrequency <= 0) return false;
-        int maxDistanceBetweenFrostmaws = ConfigHandler.FROSTMAW.generationData.generationFrequency + 8;
+        if (genFrequency <= 0) return false;
+        int maxDistanceBetween = genFrequency + 8;
 
         int i = chunkX;
         int j = chunkZ;
 
         if (chunkX < 0)
         {
-            chunkX -= maxDistanceBetweenFrostmaws - 1;
+            chunkX -= maxDistanceBetween - 1;
         }
 
         if (chunkZ < 0)
         {
-            chunkZ -= maxDistanceBetweenFrostmaws - 1;
+            chunkZ -= maxDistanceBetween - 1;
         }
 
-        int k = chunkX / maxDistanceBetweenFrostmaws;
-        int l = chunkZ / maxDistanceBetweenFrostmaws;
+        int k = chunkX / maxDistanceBetween;
+        int l = chunkZ / maxDistanceBetween;
         Random random = world.setRandomSeed(k, l, 14357617);
-        k = k * maxDistanceBetweenFrostmaws;
-        l = l * maxDistanceBetweenFrostmaws;
-        k = k + random.nextInt(maxDistanceBetweenFrostmaws - 8);
-        l = l + random.nextInt(maxDistanceBetweenFrostmaws - 8);
-
-        if (i == k && j == l) return true;
-
-        return false;
-    }
-
-    private static boolean canSpawnVillageAtCoords(int chunkX, int chunkZ, World world)
-    {
-        if (!world.getWorldInfo().isMapFeaturesEnabled()) return false;
-        if (ConfigHandler.BARAKO.generationData.generationFrequency <= 0) return false;
-        int maxDistanceBetweenVillages = ConfigHandler.BARAKO.generationData.generationFrequency + 8;
-
-        int i = chunkX;
-        int j = chunkZ;
-
-        if (chunkX < 0)
-        {
-            chunkX -= maxDistanceBetweenVillages - 1;
-        }
-
-        if (chunkZ < 0)
-        {
-            chunkZ -= maxDistanceBetweenVillages - 1;
-        }
-
-        int k = chunkX / maxDistanceBetweenVillages;
-        int l = chunkZ / maxDistanceBetweenVillages;
-        Random random = world.setRandomSeed(k, l, 14357617);
-        k = k * maxDistanceBetweenVillages;
-        l = l * maxDistanceBetweenVillages;
-        k = k + random.nextInt(maxDistanceBetweenVillages - 8);
-        l = l + random.nextInt(maxDistanceBetweenVillages - 8);
+        k = k * maxDistanceBetween;
+        l = l * maxDistanceBetween;
+        k = k + random.nextInt(maxDistanceBetween - 8);
+        l = l + random.nextInt(maxDistanceBetween - 8);
 
         if (i == k && j == l) return true;
 
@@ -101,10 +71,8 @@ public class MowzieWorldGenerator implements IWorldGenerator {
     }
 
     private void generateSurface(World world, Random random, int x, int z) {
-        if (world.getWorldInfo().isMapFeaturesEnabled()) {
-            StructureWroughtnautRoom.tryWroughtChamber(world, random, x, z, ConfigHandler.FERROUS_WROUGHTNAUT.generationData.generationFrequency);
-//            System.out.println("Trying wroughtnaut chamber at " + x + ", " + z);
-        }
+        if (canSpawnStructureAtCoords(x, z, world, ConfigHandler.FERROUS_WROUGHTNAUT.generationData.generationFrequency))
+            StructureWroughtnautRoom.tryWroughtChamber(world, random, x, z);
     }
 
     private void generateEnd(World world, Random random, int i, int i1) {
@@ -113,10 +81,14 @@ public class MowzieWorldGenerator implements IWorldGenerator {
     private void generateNether(World world, Random random, int i, int i1) {
     }
 
-    public static int findGenHeight(World world, BlockPos pos) {
-        for (int y = 70 - pos.getY(); y > 50 - pos.getY(); y--) {
+    public static int findGenHeight(World world, BlockPos pos, int heightMax, int heightMin) {
+        IBlockState topBlock = world.getBiome(pos).topBlock;
+        IBlockState fillerBlock = world.getBiome(pos).fillerBlock;
+        IBlockState stone = Blocks.STONE.getDefaultState();
+        for (int y = heightMax - pos.getY(); y > heightMin - pos.getY(); y--) {
             if (!(world.getBlockState(pos.add(0, y, 0)).isFullBlock())) continue;
-            if (world.getBlockState(pos.add(0, y, 0)) != Blocks.GRASS.getDefaultState()) break;
+            IBlockState firstFullBlock = world.getBlockState(pos.add(0, y, 0));
+            if (firstFullBlock != topBlock && firstFullBlock != fillerBlock && firstFullBlock != stone) break;
             return y;
         }
         //System.out.println("Failed to find height");
