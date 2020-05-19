@@ -50,11 +50,17 @@ public class ConfigHandler {
     }
 
     public static class SpawnData {
-        SpawnData(int spawnRate, int minGroupSize, int maxGroupSize, BiomeData biomeData) {
+        SpawnData(int spawnRate, int minGroupSize, int maxGroupSize, BiomeData biomeData, String[] allowedBlocks, int heightMax, int heightMin, boolean needsDarkness, boolean needsSeeSky, boolean needsCantSeeSky) {
             this.spawnRate = spawnRate;
             this.minGroupSize = minGroupSize;
             this.maxGroupSize = maxGroupSize;
             this.biomeData = biomeData;
+            this.allowedBlocks = allowedBlocks;
+            this.heightMax = heightMax;
+            this.heightMin = heightMin;
+            this.needsDarkness = needsDarkness;
+            this.needsSeeSky = needsSeeSky;
+            this.needsCantSeeSky = needsCantSeeSky;
         }
 
         @Name("spawn_rate")
@@ -83,12 +89,52 @@ public class ConfigHandler {
         @Comment("Control which biomes this spawn is allowed in")
         @RequiresMcRestart
         public BiomeData biomeData;
+
+        @Name("dimensions")
+        @LangKey(LANG_PREFIX + "dimensions")
+        @Comment("IDs of dimensions this mob can spawn in")
+        public int[] dimensions = {0};
+
+        @Name("height_min")
+        @LangKey(LANG_PREFIX + "height_min")
+        @RangeDouble(min = -1, max = 255)
+        @Comment("Minimum height for this spawn. -1 to ignore.")
+        public float heightMin = 0;
+
+        @Name("height_max")
+        @LangKey(LANG_PREFIX + "height_max")
+        @RangeDouble(min = -1, max = 255)
+        @Comment("Maximum height for this spawn. -1 to ignore.")
+        public float heightMax = 255;
+
+        @Name("needs_darkness")
+        @LangKey(LANG_PREFIX + "needs_darkness")
+        @Comment("Set to true to only allow this mob to spawn in the dark, like zombies and skeletons")
+        public boolean needsDarkness;
+
+        @Name("requires_see_sky")
+        @LangKey(LANG_PREFIX + "requires_see_sky")
+        @Comment("Set to true to only spawn mob if it can see the sky")
+        public boolean needsSeeSky;
+
+        @Name("requires_cant_see_sky")
+        @LangKey(LANG_PREFIX + "requires_cant_see_sky")
+        @Comment("Set to true to only spawn mob if it can't see the sky")
+        public boolean needsCantSeeSky;
+
+        @Name("allowed_blocks")
+        @LangKey(LANG_PREFIX + "allowed_blocks")
+        @Comment("Names of blocks this mob is allowed to spawn on. Leave blank for any block.")
+        @RequiresMcRestart
+        public String[] allowedBlocks = {};
     }
 
     public static class GenerationData {
-        GenerationData(int generationFrequency, BiomeData biomeData) {
+        GenerationData(int generationFrequency, BiomeData biomeData, float heightMin, float heightMax) {
             this.generationFrequency = generationFrequency;
             this.biomeData = biomeData;
+            this.heightMax = heightMax;
+            this.heightMin = heightMin;
         }
 
         @Name("generation_frequency")
@@ -102,6 +148,23 @@ public class ConfigHandler {
         @Comment("Control which biomes this generation is allowed in")
         @RequiresMcRestart
         public BiomeData biomeData;
+
+        @Name("dimensions")
+        @LangKey(LANG_PREFIX + "dimensions")
+        @Comment("IDs of dimensions this mob/structure can generate in")
+        public int[] dimensions = {0};
+
+        @Name("height_min")
+        @LangKey(LANG_PREFIX + "height_min")
+        @RangeDouble(min = -1, max = 255)
+        @Comment("Minimum height for generation placement. -1 to ignore")
+        public float heightMin = 0;
+
+        @Name("height_max")
+        @LangKey(LANG_PREFIX + "height_max")
+        @RangeDouble(min = -1, max = 255)
+        @Comment("Maximum height for generation placement. -1 to ignore")
+        public float heightMax = 255;
     }
 
     public static class CombatData {
@@ -133,9 +196,12 @@ public class ConfigHandler {
         @Name("spawn_data")
         @LangKey(LANG_PREFIX + "spawn_data")
         @Comment({"Controls for vanilla-style mob spawning"})
-        public SpawnData spawnData = new SpawnData(20, 1, 3, new BiomeData(
-                new String[] {"JUNGLE"}, new String[] {}, new String[] {}
-        ));
+        public SpawnData spawnData = new SpawnData(
+                20, 1, 3,
+                new BiomeData(new String[] {"JUNGLE"}, new String[] {}, new String[] {}),
+                new String[] {"grass", "leaves", "leaves2", "log", "log2"},
+                -1, 60, false, false, false
+                );
 
         @Name("combat_data")
         @LangKey(LANG_PREFIX + "combat_data")
@@ -149,9 +215,12 @@ public class ConfigHandler {
         @Name("spawn_data")
         @LangKey(LANG_PREFIX + "spawn_data")
         @Comment({"Controls for vanilla-style mob spawning", "Controls spawning for Barakoana hunting groups", "Group size controls how many elites spawn, not followers", "See Barako config for village controls"})
-        public SpawnData spawnData = new SpawnData(4, 1, 1, new BiomeData(
-                new String[] {"SAVANNA"}, new String[] {}, new String[] {}
-        ));
+        public SpawnData spawnData = new SpawnData(
+                4, 1, 1,
+                new BiomeData(new String[] {"SAVANNA"}, new String[] {}, new String[] {}),
+                new String[] {"grass", "stone", "sand"},
+                -1, 60, false, false, false
+        );
 
         @Name("combat_data")
         @LangKey(LANG_PREFIX + "combat_data")
@@ -165,9 +234,12 @@ public class ConfigHandler {
         @Name("spawn_data")
         @LangKey(LANG_PREFIX + "spawn_data")
         @Comment({"Controls for vanilla-style mob spawning"})
-        public SpawnData spawnData = new SpawnData(3, 1, 3, new BiomeData(
-                new String[] {"BEACH,MOUNTAIN", "BEACH,HILLS"}, new String[] {"Stone Beach"}, new String[] {}
-        ));
+        public SpawnData spawnData = new SpawnData(
+                3, 1, 3,
+                new BiomeData(new String[] {"BEACH,MOUNTAIN", "BEACH,HILLS"}, new String[] {"Stone Beach"}, new String[] {}),
+                new String[] {"grass", "stone", "sand"},
+                -1, -1, false, true, false
+        );
 
         @Name("combat_data")
         @LangKey(LANG_PREFIX + "combat_data")
@@ -181,9 +253,12 @@ public class ConfigHandler {
         @Name("spawn_data")
         @LangKey(LANG_PREFIX + "spawn_data")
         @Comment({"Controls for vanilla-style mob spawning"})
-        public SpawnData spawnData = new SpawnData(4, 1, 2, new BiomeData(
-                new String[] {"FOREST,MAGICAL"}, new String[] {"Roofed Forest", "Roofed Forest M"}, new String[] {}
-        ));
+        public SpawnData spawnData = new SpawnData(
+                4, 1, 2,
+                new BiomeData(new String[] {"FOREST,MAGICAL,!SNOWY"}, new String[] {"Roofed Forest", "Roofed Forest M"}, new String[] {}),
+                new String[] {"grass", "leaves", "leaves2", "log", "log2"},
+                -1, 60, true, false, false
+        );
 
         @Name("health_multiplier")
         @LangKey(LANG_PREFIX + "health_multiplier")
@@ -199,9 +274,12 @@ public class ConfigHandler {
         @Name("spawn_data")
         @LangKey(LANG_PREFIX + "spawn_data")
         @Comment({"Controls for vanilla-style mob spawning"})
-        public SpawnData spawnData = new SpawnData(1, 1, 1, new BiomeData(
-                new String[] {""}, new String[] {}, new String[] {}
-        ));
+        public SpawnData spawnData = new SpawnData(
+                2, 1, 1,
+                new BiomeData(new String[] {""}, new String[] {}, new String[] {}),
+                new String[] {},
+                55, -1, false, false, true
+        );
 
         @Name("health_multiplier")
         @LangKey(LANG_PREFIX + "health_multiplier")
@@ -217,9 +295,10 @@ public class ConfigHandler {
         @Name("ferrous_wroughtnaut")
         @LangKey(LANG_PREFIX + "ferrous_wroughtnaut")
         @Comment({"Controls for spawning mob/structure with world generation"})
-        public GenerationData generationData = new GenerationData(40, new BiomeData(
-                new String[] {""}, new String[] {}, new String[] {}
-        ));
+        public GenerationData generationData = new GenerationData(40,
+                new BiomeData(new String[] {""}, new String[] {}, new String[] {}),
+                30, 55
+                );
 
         @Name("combat_data")
         @LangKey(LANG_PREFIX + "combat_data")
@@ -233,9 +312,10 @@ public class ConfigHandler {
         @Name("generation_data")
         @LangKey(LANG_PREFIX + "generation_data")
         @Comment({"Controls for spawning mob/structure with world generation", "Generation controls for Barakoa villages"})
-        public GenerationData generationData = new GenerationData(15, new BiomeData(
-                new String[] {"SAVANNA"}, new String[] {}, new String[] {}
-        ));
+        public GenerationData generationData = new GenerationData(15,
+                new BiomeData(new String[] {"SAVANNA"}, new String[] {}, new String[] {}),
+                60, -1
+                );
 
         @Name("combat_data")
         @LangKey(LANG_PREFIX + "combat_data")
@@ -249,9 +329,10 @@ public class ConfigHandler {
         @Name("generation_data")
         @LangKey(LANG_PREFIX + "generation_data")
         @Comment({"Controls for spawning mob/structure with world generation"})
-        public GenerationData generationData = new GenerationData(15, new BiomeData(
-                new String[] {"SNOWY,!OCEAN,!RIVER,!BEACH"}, new String[] {}, new String[] {}
-        ));
+        public GenerationData generationData = new GenerationData(15,
+                new BiomeData(new String[] {"SNOWY,!OCEAN,!RIVER,!BEACH"}, new String[] {}, new String[] {}),
+                60, -1
+                );
 
         @Name("combat_data")
         @LangKey(LANG_PREFIX + "combat_data")

@@ -70,6 +70,7 @@ public class MowzieWorldGenerator implements IWorldGenerator {
 
     private static boolean canSpawnVillageAtCoords(int chunkX, int chunkZ, World world)
     {
+        if (!world.getWorldInfo().isMapFeaturesEnabled()) return false;
         if (ConfigHandler.BARAKO.generationData.generationFrequency <= 0) return false;
         int maxDistanceBetweenVillages = ConfigHandler.BARAKO.generationData.generationFrequency + 8;
 

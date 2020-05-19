@@ -188,8 +188,13 @@ public class EntityGrottol extends MowzieEntity implements IMob {
     }
 
     @Override
+    protected ConfigHandler.SpawnData getSpawnConfig() {
+        return ConfigHandler.GROTTOL.spawnData;
+    }
+
+    @Override
     public boolean getCanSpawnHere() {
-        return posY <= 50 && !world.canSeeSky(getPosition()) && getEntitiesNearby(EntityGrottol.class, 20, 20, 20, 20).isEmpty() && super.getCanSpawnHere();
+        return getEntitiesNearby(EntityGrottol.class, 20, 20, 20, 20).isEmpty() && super.getCanSpawnHere();
     }
 
     @Override

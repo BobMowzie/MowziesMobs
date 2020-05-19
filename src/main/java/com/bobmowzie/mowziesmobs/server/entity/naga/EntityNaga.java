@@ -504,12 +504,14 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
     }
 
     @Override
+    protected ConfigHandler.SpawnData getSpawnConfig() {
+        return ConfigHandler.NAGA.spawnData;
+    }
+
+    @Override
     public boolean getCanSpawnHere() {
         setPosition(posX, posY + 5, posZ);
-        boolean flag = super.getCanSpawnHere() && world.canSeeSky(getPosition()) && Minecraft.getMinecraft().gameSettings.difficulty != EnumDifficulty.PEACEFUL;
-//        System.out.println("Try spawn " + flag);
-//        if (flag) System.out.println(getPosition());
-        return flag;
+        return super.getCanSpawnHere() && Minecraft.getMinecraft().gameSettings.difficulty != EnumDifficulty.PEACEFUL;
     }
 
     @Override

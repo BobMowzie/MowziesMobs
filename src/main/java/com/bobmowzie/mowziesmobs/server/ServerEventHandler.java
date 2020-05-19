@@ -317,12 +317,11 @@ public enum ServerEventHandler {
 
     @SubscribeEvent
     public void onUseItem(LivingEntityUseItemEvent event) {
-        System.out.println("Use item");
         EntityLivingBase living = event.getEntityLiving();
         if (living instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) living;
             ItemStack item = event.getItem();
-            if (item.getItem() == Items.LAVA_BUCKET || item.getItem() == Items.FLINT_AND_STEEL) {
+            if (item.getItem() == Items.FLINT_AND_STEEL) {
                 List<EntityBarako> barakos = getEntitiesNearby(player, EntityBarako.class, 20);
                 for (EntityBarako barako : barakos) {
                     if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof EntityPlayer)) {

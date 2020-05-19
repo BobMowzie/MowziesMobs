@@ -1,18 +1,21 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.IntermittentAnimation;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemSpawnEgg;
+import com.google.common.primitives.Ints;
 import io.netty.buffer.ByteBuf;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
 import net.minecraft.entity.item.EntityItem;
@@ -24,13 +27,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootTable;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 import javax.annotation.Nullable;
@@ -91,10 +94,77 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
         this.getAttributeMap().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE);
     }
 
+    protected ConfigHandler.SpawnData getSpawnConfig() {
+        return null;
+    }
+
     @Override
     public boolean getCanSpawnHere() {
-        boolean flag = world.provider.getDimension() == 0;
-        return super.getCanSpawnHere() && flag;
+        ConfigHandler.SpawnData spawnData = getSpawnConfig();
+        if (spawnData != null) {
+            BlockPos pos = getPosition();
+
+            // Dimension check
+            List<Integer> dimensionIDs = Ints.asList(spawnData.dimensions);
+            if (!dimensionIDs.contains(world.provider.getDimension())) {
+                return false;
+            }
+
+            // Height check
+            float heightMax = spawnData.heightMax;
+            float heightMin = spawnData.heightMin;
+            if (posY > heightMax && heightMax >= 0) {
+                return false;
+            }
+            if (posY < heightMin) {
+                return false;
+            }
+
+            // Light level check
+            if (spawnData.needsDarkness && !isValidLightLevel()) {
+                return false;
+            }
+
+            // Block check
+            ResourceLocation blockName = world.getBlockState(pos.down()).getBlock().getRegistryName();
+            List<String> allowedBlocks = Arrays.asList(spawnData.allowedBlocks);
+            if (blockName == null) return false;
+            if (!allowedBlocks.isEmpty() && !allowedBlocks.contains(blockName.getPath())) return false;
+
+            // See sky
+            if (spawnData.needsSeeSky && !world.canSeeSky(pos)) {
+                return false;
+            }
+            if (spawnData.needsCantSeeSky && world.canSeeSky(pos)) {
+                return false;
+            }
+        }
+
+        return super.getCanSpawnHere();
+    }
+
+    protected boolean isValidLightLevel()
+    {
+        BlockPos blockpos = new BlockPos(this.posX, this.getEntityBoundingBox().minY, this.posZ);
+
+        if (this.world.getLightFor(EnumSkyBlock.SKY, blockpos) > this.rand.nextInt(32))
+        {
+            return false;
+        }
+        else
+        {
+            int i = this.world.getLightFromNeighbors(blockpos);
+
+            if (this.world.isThundering())
+            {
+                int j = this.world.getSkylightSubtracted();
+                this.world.setSkylightSubtracted(10);
+                i = this.world.getLightFromNeighbors(blockpos);
+                this.world.setSkylightSubtracted(j);
+            }
+
+            return i <= this.rand.nextInt(8);
+        }
     }
 
     @Override
@@ -183,6 +253,13 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
         }
 
         return flag;
+    }
+
+    @Nullable
+    @Override
+    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata) {
+        System.out.println("Spawned " + getName() + " at " + getPosition());
+        return super.onInitialSpawn(difficulty, livingdata);
     }
 
     public boolean attackEntityAsMob(Entity entityIn, float damageMultiplier) {

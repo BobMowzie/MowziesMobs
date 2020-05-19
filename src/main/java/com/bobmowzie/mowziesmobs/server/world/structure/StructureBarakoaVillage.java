@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.world.structure;
 import com.bobmowzie.mowziesmobs.server.biome.BiomeDictionaryHandler;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.block.BlockPaintedAcacia;
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaya;
@@ -688,6 +689,8 @@ public class StructureBarakoaVillage {
             BlockPos pos = new BlockPos(x, 0, z);
             int y = MowzieWorldGenerator.findGenHeight(world, pos);
             if (y == -1) return;
+            if (y > ConfigHandler.BARAKO.generationData.heightMax && ConfigHandler.BARAKO.generationData.heightMax > -1) return;
+            if (y < ConfigHandler.BARAKO.generationData.heightMin) return;
             //System.out.println("Found height at " + y);
             pos = new BlockPos(pos.getX(), y, pos.getZ());
             generateFirepit(world, rand, pos);

@@ -215,14 +215,14 @@ public class EntityLantern extends MowzieEntity {
         this.limbSwing += this.limbSwingAmount;
     }
 
+    @Override
+    protected ConfigHandler.SpawnData getSpawnConfig() {
+        return ConfigHandler.LANTERN.spawnData;
+    }
+
     public boolean getCanSpawnHere()
     {
-        int i = MathHelper.floor(this.posX);
-        int j = MathHelper.floor(this.getEntityBoundingBox().minY);
-        int k = MathHelper.floor(this.posZ);
-        BlockPos blockpos = new BlockPos(i, j, k);
-        Block spawnBlock = this.world.getBlockState(blockpos.down()).getBlock();
-        return (spawnBlock == Blocks.GRASS || spawnBlock == Blocks.LEAVES || spawnBlock == Blocks.LEAVES2) && super.getCanSpawnHere();
+        return super.getCanSpawnHere();
     }
 
     /**

@@ -1,11 +1,13 @@
 package com.bobmowzie.mowziesmobs.server.entity.foliaath;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
@@ -13,6 +15,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.monster.IMob;
+import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.MobEffects;
@@ -281,51 +284,13 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
     }
 
     @Override
-    public boolean getCanSpawnHere() {
-        if (world.checkNoEntityCollision(getEntityBoundingBox()) && world.getCollisionBoxes(this, getEntityBoundingBox()).isEmpty() && !world.containsAnyLiquid(getEntityBoundingBox())) {
-            BlockPos ground = new BlockPos(
-                MathHelper.floor(posX),
-                MathHelper.floor(getEntityBoundingBox().minY) - 1,
-                MathHelper.floor(posZ)
-             );
-            if (ground.getY() < 64) {
-                return false;
-            }
-            IBlockState block = world.getBlockState(ground);
-            if (block.getBlock() == Blocks.GRASS || block.getBlock().isLeaves(block, world, ground)) {
-                if (this.world.getDifficulty() != EnumDifficulty.PEACEFUL && this.isValidLightLevel()) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    protected ConfigHandler.SpawnData getSpawnConfig() {
+        return ConfigHandler.FOLIAATH.spawnData;
     }
 
-    /**
-     * Checks to make sure the light is not too bright where the mob is spawning
-     */
-    protected boolean isValidLightLevel()
-    {
-        BlockPos blockpos = new BlockPos(this.posX, this.getEntityBoundingBox().minY, this.posZ);
-
-        if (this.world.getLightFor(EnumSkyBlock.SKY, blockpos) > this.rand.nextInt(32))
-        {
-            return false;
-        }
-        else
-        {
-            int i = this.world.getLightFromNeighbors(blockpos);
-
-            if (this.world.isThundering())
-            {
-                int j = this.world.getSkylightSubtracted();
-                this.world.setSkylightSubtracted(10);
-                i = this.world.getLightFromNeighbors(blockpos);
-                this.world.setSkylightSubtracted(j);
-            }
-
-            return i <= this.rand.nextInt(8);
-        }
+    @Override
+    public boolean getCanSpawnHere() {
+        return super.getCanSpawnHere() && getEntitiesNearby(EntityAnimal.class, 10, 10, 10, 10).isEmpty() && Minecraft.getMinecraft().gameSettings.difficulty != EnumDifficulty.PEACEFUL;
     }
 
     @Override

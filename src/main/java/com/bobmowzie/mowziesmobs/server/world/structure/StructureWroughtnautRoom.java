@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.world.structure;
 
 import com.bobmowzie.mowziesmobs.server.biome.BiomeDictionaryHandler;
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import net.ilexiconn.llibrary.server.structure.StructureBuilder;
 import net.minecraft.block.BlockStairs;
@@ -129,7 +130,7 @@ public class StructureWroughtnautRoom {
         }
         int xzCheckDistance = 10;
         if (random.nextInt(chance) == 0) {
-            for (int y = 55; y >= 30; y--) {
+            for (int y = (int) ConfigHandler.FERROUS_WROUGHTNAUT.generationData.heightMax; y >= (int) ConfigHandler.FERROUS_WROUGHTNAUT.generationData.heightMin; y--) {
                 if (world.getBlockState(new BlockPos(x, y, z)).getBlock().isAir(world.getBlockState(new BlockPos(x, y, z)), world, new BlockPos(x, y, z))) {
                     for (int y2 = 1; y2 <= 30; y2++) {
                         if (world.getBlockState(new BlockPos(x, y - y2, z)).isBlockNormalCube()) {

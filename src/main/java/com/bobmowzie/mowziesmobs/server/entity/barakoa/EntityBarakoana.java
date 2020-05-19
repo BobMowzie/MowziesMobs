@@ -6,8 +6,10 @@ import java.util.List;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
 
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
@@ -25,6 +27,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -165,6 +168,11 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
     }
 
     @Override
+    protected ConfigHandler.SpawnData getSpawnConfig() {
+        return ConfigHandler.BARAKOA.spawnData;
+    }
+
+    @Override
     public boolean getCanSpawnHere() {
         List<EntityLivingBase> nearby = getEntityLivingBaseNearby(20, 4, 20, 20);
         for (EntityLivingBase nearbyEntity : nearby) {
@@ -172,16 +180,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
                 return false;
             }
         }
-        if (world.checkNoEntityCollision(getEntityBoundingBox()) && world.getCollisionBoxes(this, getEntityBoundingBox()).isEmpty() && !world.containsAnyLiquid(getEntityBoundingBox())) {
-            BlockPos ground = new BlockPos(
-                MathHelper.floor(posX),
-                MathHelper.floor(getEntityBoundingBox().minY) - 1,
-                MathHelper.floor(posZ)
-            );
-            boolean result = ground.getY() >= 64 && world.getBlockState(ground).getBlock() == Blocks.GRASS;
-            return result;
-        }
-        return false;
+        return super.getCanSpawnHere() && Minecraft.getMinecraft().gameSettings.difficulty != EnumDifficulty.PEACEFUL;
     }
 
     public int getMaxSpawnedInChunk()

@@ -926,6 +926,8 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         BlockPos pos = new BlockPos(x, 0, z);
         int y = MowzieWorldGenerator.findGenHeight(world, pos) + 1;
         if (y == -1) return;
+        if (y > ConfigHandler.FROSTMAW.generationData.heightMax && ConfigHandler.FROSTMAW.generationData.heightMax > -1) return;
+        if (y < ConfigHandler.FROSTMAW.generationData.heightMin) return;
         setPositionAndRotation(x, y, z, rand.nextFloat() * 360.0f, 0);
         world.spawnEntity(this);
     }
