@@ -73,7 +73,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     public static final Animation SPAWN_ANIMATION = Animation.create(20);
     public static final Animation SOLAR_BEAM_ANIMATION = Animation.create(100);
     public static final Animation BLESS_ANIMATION = Animation.create(60);
-    private static final int MAX_HEALTH = 100;
+    private static final int MAX_HEALTH = 140;
     private static final int SUNSTRIKE_PAUSE_MAX = 40;
     private static final int SUNSTRIKE_PAUSE_MIN = 15;
     private static final int LASER_PAUSE = 230;
@@ -204,7 +204,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 entityAttackingAngle += 360;
             }
             float entityRelativeAngle = Math.abs(entityHitAngle - entityAttackingAngle);
-            if (getAnimation() == NO_ANIMATION && !isAIDisabled() && getHealth() <= 60 && timeUntilLaser <= 0 && (entityRelativeAngle < 60 || entityRelativeAngle > 300)) {
+            if (getAnimation() == NO_ANIMATION && !isAIDisabled() && getHealth() / getMaxHealth() <= 0.6 && timeUntilLaser <= 0 && (entityRelativeAngle < 60 || entityRelativeAngle > 300)) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SOLAR_BEAM_ANIMATION);
                 timeUntilLaser = LASER_PAUSE;
             } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && targetDistance <= 5) {
@@ -450,11 +450,11 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     protected void playStepSound(BlockPos pos, Block block) {}
 
     private int getTimeUntilSunstrike() {
-        int damageTaken = (int) (MAX_HEALTH - getHealth());
-        if (damageTaken > 60) {
-            damageTaken = 60;
+        float damageRatio = (getMaxHealth() - getHealth()) / getMaxHealth();
+        if (damageRatio > 0.6) {
+            damageRatio = 0.6f;
         }
-        return (int) (SUNSTRIKE_PAUSE_MAX - (damageTaken / 60f) * (SUNSTRIKE_PAUSE_MAX - SUNSTRIKE_PAUSE_MIN));
+        return (int) (SUNSTRIKE_PAUSE_MAX - (damageRatio / 0.6f) * (SUNSTRIKE_PAUSE_MAX - SUNSTRIKE_PAUSE_MIN));
     }
 
     @Override
