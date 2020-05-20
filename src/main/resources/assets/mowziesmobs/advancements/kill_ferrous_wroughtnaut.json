@@ -1,0 +1,24 @@
+{
+  "display": {
+    "icon": {
+      "item": "mowziesmobs:wrought_helmet"
+    },
+    "title": {
+      "translate": "advancements.mowziesmobs.kill_ferrous_wroughtnaut.title"
+    },
+    "description": {
+      "translate": "advancements.mowziesmobs.kill_ferrous_wroughtnaut.description"
+    }
+  },
+  "parent": "mowziesmobs:root",
+  "criteria": {
+    "ferrous_wroughtnaut": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": {
+          "type": "mowziesmobs:ferrous_wroughtnaut"
+        }
+      }
+    }
+  }
+}

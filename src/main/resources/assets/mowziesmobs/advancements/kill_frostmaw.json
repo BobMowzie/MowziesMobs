@@ -1,0 +1,24 @@
+{
+  "display": {
+    "icon": {
+      "item": "mowziesmobs:ice_crystal"
+    },
+    "title": {
+      "translate": "advancements.mowziesmobs.kill_frostmaw.title"
+    },
+    "description": {
+      "translate": "advancements.mowziesmobs.kill_frostmaw.description"
+    }
+  },
+  "parent": "mowziesmobs:root",
+  "criteria": {
+    "frostmaw": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": {
+          "type": "mowziesmobs:frostmaw"
+        }
+      }
+    }
+  }
+}

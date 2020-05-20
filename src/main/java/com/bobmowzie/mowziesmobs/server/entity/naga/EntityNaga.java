@@ -809,6 +809,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
         this.limbSwing += this.limbSwingAmount;
     }
 
+    /*
     protected void despawnEntity()
     {
         net.minecraftforge.fml.common.eventhandler.Event.Result result = null;
@@ -854,6 +855,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
             }
         }
     }
+     */
 
     /**
      * Returns true if this entity should move as if it were on a ladder (either because it's actually on a ladder, or

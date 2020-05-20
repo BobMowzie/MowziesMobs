@@ -1,0 +1,24 @@
+{
+  "display": {
+    "icon": {
+      "item": "minecraft:diamond"
+    },
+    "title": {
+      "translate": "advancements.mowziesmobs.kill_grottol.title"
+    },
+    "description": {
+      "translate": "advancements.mowziesmobs.kill_grottol.description"
+    }
+  },
+  "parent": "mowziesmobs:root",
+  "criteria": {
+    "grottol": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": {
+          "type": "mowziesmobs:grottol"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "display": {
+    "icon": {
+      "item": "mowziesmobs:barakoa_mask_fury"
+    },
+    "title": {
+      "translate": "advancements.mowziesmobs.kill_barakoana.title"
+    },
+    "description": {
+      "translate": "advancements.mowziesmobs.kill_barakoana.description"
+    }
+  },
+  "parent": "mowziesmobs:root",
+  "criteria": {
+    "barakoana": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": {
+          "type": "mowziesmobs:barakoana"
+        }
+      }
+    }
+  }
+}

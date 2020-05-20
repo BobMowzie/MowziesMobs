@@ -3,13 +3,13 @@
         "modid": "mowziesmobs",
         "name": "Mowzie's Mobs",
         "description": "Mowzie's Mobs adds a variety of high-quality fantasy creatures to your Minecraft world.",
-        "version": "${version}",
+        "version": "1.5.5",
         "mcversion": "1.12.2",
+        "logoFile": "banner.png",
         "authorList": [
             "BobMowzie",
-            "pau101",
-            "iLexiconn"
+            "pau101"
         ],
-        "credits": "RafaMv"
+        "credits": "iLexiconn, RafaMv"
     }
 ]

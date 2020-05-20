@@ -1,0 +1,27 @@
+{
+  "display": {
+    "icon": {
+      "item": "mowziesmobs:grant_suns_blessing"
+    },
+    "title": {
+      "translate": "advancements.mowziesmobs.suns_blessing.title"
+    },
+    "description": {
+      "translate": "advancements.mowziesmobs.suns_blessing.description"
+    },
+    "hidden": true
+  },
+  "parent": "mowziesmobs:root",
+  "criteria": {
+    "get_suns_blessing": {
+      "trigger": "minecraft:effects_changed",
+      "conditions": {
+        "effects": {
+          "mowziesmobs:suns_blessing": {
+
+          }
+        }
+      }
+    }
+  }
+}

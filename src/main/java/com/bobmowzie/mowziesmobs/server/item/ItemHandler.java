@@ -39,6 +39,7 @@ public final class ItemHandler {
     public static final ItemCapturedGrottol CAPTURED_GROTTOL = null;
     public static final ItemGlowingJelly GLOWING_JELLY = null;
     public static final ItemNagaFang NAGA_FANG = null;
+    public static final ItemLogo LOGO = null;
 
     @SubscribeEvent
     public static void register(RegistryEvent.Register<Item> event) {
@@ -61,6 +62,7 @@ public final class ItemHandler {
                     .setTranslationKey("capturedGrottol"),
                 new ItemGlowingJelly(1, 0.1f, false),
                 new ItemNagaFang(),
+                new ItemLogo(),
                 new ItemBlock(BlockHandler.PAINTED_ACACIA).setRegistryName(BlockHandler.PAINTED_ACACIA.getRegistryName()),
                 new ItemBlock(BlockHandler.PAINTED_ACACIA_SLAB).setRegistryName(BlockHandler.PAINTED_ACACIA_SLAB.getRegistryName())
         );

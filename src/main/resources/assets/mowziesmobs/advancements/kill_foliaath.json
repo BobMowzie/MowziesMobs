@@ -1,0 +1,24 @@
+{
+  "display": {
+    "icon": {
+      "item": "mowziesmobs:foliaath_seed"
+    },
+    "title": {
+      "translate": "advancements.mowziesmobs.kill_foliaath.title"
+    },
+    "description": {
+      "translate": "advancements.mowziesmobs.kill_foliaath.description"
+    }
+  },
+  "parent": "mowziesmobs:root",
+  "criteria": {
+    "foliaath": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": {
+          "type": "mowziesmobs:foliaath"
+        }
+      }
+    }
+  }
+}

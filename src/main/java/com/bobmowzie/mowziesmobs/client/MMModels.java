@@ -56,6 +56,7 @@ public final class MMModels {
         registerItemModel(ItemHandler.CAPTURED_GROTTOL, "captured_grottol");
         registerItemModel(ItemHandler.GLOWING_JELLY, "glowing_jelly");
         registerItemModel(ItemHandler.NAGA_FANG, "naga_fang");
+        registerItemModel(ItemHandler.LOGO, "logo");
 
         registerItemModel(ItemHandler.BARAKO_MASK, "barako_mask.tbl");
 

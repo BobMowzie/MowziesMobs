@@ -19,7 +19,7 @@ public enum CreativeTabHandler {
             @Override
             @SideOnly(Side.CLIENT)
             public ItemStack createIcon() {
-                return new ItemStack(ItemHandler.BARAKOA_MASK_FURY);
+                return new ItemStack(ItemHandler.LOGO);
             }
         };
     }
