@@ -27,6 +27,7 @@ import net.minecraft.init.MobEffects;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
@@ -109,6 +110,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
 
     public EntityNaga(World world) {
         super(world);
+        setPathPriority(PathNodeType.WATER, 0);
         this.tasks.addTask(5, new EntityNaga.AIRandomFly(this));
         this.tasks.addTask(5, new EntityNaga.AIFlyAroundTarget(this));
         this.tasks.addTask(7, new EntityNaga.AILookAround(this));
@@ -263,11 +265,11 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
         if (getAnimation() != NO_ANIMATION) return null;
         int r = rand.nextInt(4);
         if (r == 0) {
-            playSound(MMSounds.ENTITY_NAGA_ROAR.get(rand.nextInt(4)).get(), 3, 1);
+            playSound(MMSounds.ENTITY_NAGA_ROAR.get(rand.nextInt(4)).get(), 5, 1);
             roarAnimation = 0;
         }
         else if (r <= 2) {
-            playSound(MMSounds.ENTITY_NAGA_GROWL.get(rand.nextInt(3)).get(), 2, 1);
+            playSound(MMSounds.ENTITY_NAGA_GROWL.get(rand.nextInt(3)).get(), 4, 1);
         }
         return null;
     }
@@ -618,6 +620,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
         if (this.isInWater()) {
             this.moveRelative(strafe, upward, forward, 0.02F);
             this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
+            motionY = 1;
             this.motionX *= 0.800000011920929D;
             this.motionY *= 0.800000011920929D;
             this.motionZ *= 0.800000011920929D;
@@ -699,7 +702,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
             this.motionY *= 0.9800000190734863D;
             this.motionZ *= 0.9900000095367432D;
             this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
-            if (getMoveHelper().getY() - posY > 0 && motionY < 0 && getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(this, FLAP_ANIMATION);
+            if (getMoveHelper().getY() - posY > 0 && getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(this, FLAP_ANIMATION);
 
             if (this.collidedHorizontally && !this.world.isRemote) {
                 double d11 = Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);
@@ -804,6 +807,52 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
 
         this.limbSwingAmount += (f2 - this.limbSwingAmount) * 0.4F;
         this.limbSwing += this.limbSwingAmount;
+    }
+
+    protected void despawnEntity()
+    {
+        net.minecraftforge.fml.common.eventhandler.Event.Result result = null;
+
+        if ((this.idleTime & 0x1F) == 0x1F && (result = net.minecraftforge.event.ForgeEventFactory.canEntityDespawn(this)) != net.minecraftforge.fml.common.eventhandler.Event.Result.DEFAULT)
+        {
+            if (result == net.minecraftforge.fml.common.eventhandler.Event.Result.DENY)
+            {
+                this.idleTime = 0;
+            }
+            else
+            {
+                this.setDead();
+            }
+        }
+        else
+        {
+            if (hasCustomName()) {
+                return;
+            }
+            Entity entity = this.world.getClosestPlayerToEntity(this, -1.0D);
+
+            if (entity != null)
+            {
+                double d0 = entity.posX - this.posX;
+                double d1 = entity.posY - this.posY;
+                double d2 = entity.posZ - this.posZ;
+                double d3 = d0 * d0 + d1 * d1 + d2 * d2;
+
+                if (this.canDespawn() && d3 > 16384.0D * 2)
+                {
+                    this.setDead();
+                }
+
+                if (this.idleTime > 600 && this.rand.nextInt(800) == 0 && d3 > 1024.0D * 2 && this.canDespawn())
+                {
+                    this.setDead();
+                }
+                else if (d3 < 1024.0D * 2)
+                {
+                    this.idleTime = 0;
+                }
+            }
+        }
     }
 
     /**
@@ -1050,7 +1099,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
             {
                 axisalignedbb = axisalignedbb.offset(d0, d1, d2);
 
-                if (!this.parentEntity.world.getCollisionBoxes(this.parentEntity, axisalignedbb).isEmpty())
+                if (!this.parentEntity.world.getCollisionBoxes(this.parentEntity, axisalignedbb).isEmpty() || this.parentEntity.world.containsAnyLiquid(axisalignedbb))
                 {
                     return false;
                 }
