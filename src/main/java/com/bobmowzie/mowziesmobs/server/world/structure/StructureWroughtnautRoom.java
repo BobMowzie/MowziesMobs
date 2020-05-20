@@ -1,19 +1,15 @@
 package com.bobmowzie.mowziesmobs.server.world.structure;
 
-import com.bobmowzie.mowziesmobs.server.biome.BiomeDictionaryHandler;
+import com.bobmowzie.mowziesmobs.server.spawn.SpawnHandler;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import net.ilexiconn.llibrary.server.structure.StructureBuilder;
 import net.minecraft.block.BlockStairs;
-import net.minecraft.block.BlockStone;
-import net.minecraft.block.BlockTorch;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import org.lwjgl.Sys;
 
 import java.util.Random;
 
@@ -126,7 +122,7 @@ public class StructureWroughtnautRoom {
         if (!world.getWorldInfo().isMapFeaturesEnabled()) return;
 
         Biome biome = world.getBiome(new BlockPos(x, 50, z));
-        if (!BiomeDictionaryHandler.FERROUS_WROUGHTNAUT_BIOMES.contains(biome)) return;
+        if (!SpawnHandler.FERROUS_WROUGHTNAUT_BIOMES.contains(biome)) return;
 
         int xzCheckDistance = 10;
         if (random.nextFloat() > ConfigHandler.FROSTMAW.generationData.generationChance) return;

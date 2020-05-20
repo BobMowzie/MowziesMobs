@@ -1,16 +1,13 @@
 package com.bobmowzie.mowziesmobs.server.world.structure;
 
-import com.bobmowzie.mowziesmobs.server.biome.BiomeDictionaryHandler;
+import com.bobmowzie.mowziesmobs.server.spawn.SpawnHandler;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
-import com.bobmowzie.mowziesmobs.server.block.BlockPaintedAcacia;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaya;
 import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
 import net.ilexiconn.llibrary.server.structure.StructureBuilder;
 import net.minecraft.block.*;
-import net.minecraft.init.Biomes;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.tileentity.TileEntitySkull;
@@ -19,14 +16,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeSavanna;
-import net.minecraft.world.gen.structure.StructureMineshaftPieces;
-import net.minecraftforge.common.BiomeDictionary;
-import org.lwjgl.Sys;
 
-import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 /**
  * Created by Josh on 10/9/2016.
@@ -683,7 +674,7 @@ public class StructureBarakoaVillage {
         if (rand.nextFloat() > ConfigHandler.BARAKO.generationData.generationChance) return;
 
         Biome biome = world.getBiome(new BlockPos(x, 50, z));
-        if (!BiomeDictionaryHandler.BARAKO_BIOMES.contains(biome)) return;
+        if (!SpawnHandler.BARAKO_BIOMES.contains(biome)) return;
 
         //System.out.println("Passes chance test");
         int heightMax = (int) ConfigHandler.BARAKO.generationData.heightMax;

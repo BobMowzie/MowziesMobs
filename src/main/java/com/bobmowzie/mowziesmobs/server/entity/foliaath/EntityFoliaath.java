@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -41,6 +42,7 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import net.minecraft.world.biome.Biome;
 
 import javax.annotation.Nullable;
 
@@ -290,7 +292,17 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
 
     @Override
     public boolean getCanSpawnHere() {
-        return super.getCanSpawnHere() && getEntitiesNearby(EntityAnimal.class, 10, 10, 10, 10).isEmpty() && Minecraft.getMinecraft().gameSettings.difficulty != EnumDifficulty.PEACEFUL;
+        Biome biome = world.getBiome(getPosition());
+        int i = MathHelper.floor(this.posX);
+        int j = MathHelper.floor(this.getEntityBoundingBox().minY);
+        int k = MathHelper.floor(this.posZ);
+        BlockPos pos = new BlockPos(i, j, k);
+        Block floor = world.getBlockState(pos.down()).getBlock();
+        IBlockState floorDown1 = world.getBlockState(pos.down(2));
+        IBlockState floorDown2 = world.getBlockState(pos.down(3));
+        boolean notInTree = true;
+        if (floor instanceof BlockLeaves && floorDown1 != biome.topBlock && floorDown2 != biome.topBlock) notInTree = false;
+        return super.getCanSpawnHere() && notInTree && getEntitiesNearby(EntityAnimal.class, 10, 10, 10, 10).isEmpty() && Minecraft.getMinecraft().gameSettings.difficulty != EnumDifficulty.PEACEFUL;
     }
 
     @Override

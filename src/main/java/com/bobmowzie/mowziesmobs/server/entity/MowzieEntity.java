@@ -258,10 +258,16 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
         return flag;
     }
 
+    @Override
+    public boolean isNotColliding() {
+        return !this.world.containsAnyLiquid(this.getEntityBoundingBox()) && this.world.checkNoEntityCollision(this.getEntityBoundingBox(), this);
+    }
+
     @Nullable
     @Override
     public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata) {
         System.out.println("Spawned " + getName() + " at " + getPosition());
+        System.out.println("Block " + world.getBlockState(getPosition().down()).toString());
         return super.onInitialSpawn(difficulty, livingdata);
     }
 
@@ -522,6 +528,5 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     public abstract Animation getDeathAnimation();
 
     public abstract Animation getHurtAnimation();
-
 
 }

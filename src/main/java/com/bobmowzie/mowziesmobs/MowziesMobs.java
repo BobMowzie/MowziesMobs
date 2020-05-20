@@ -2,11 +2,9 @@ package com.bobmowzie.mowziesmobs;
 
 import com.bobmowzie.mowziesmobs.server.ServerEventHandler;
 import com.bobmowzie.mowziesmobs.server.ServerProxy;
-import com.bobmowzie.mowziesmobs.server.biome.BiomeDictionaryHandler;
+import com.bobmowzie.mowziesmobs.server.spawn.SpawnHandler;
 import com.bobmowzie.mowziesmobs.server.compat.Thaumcraft;
-import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
-import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.gui.GuiHandler;
 import com.bobmowzie.mowziesmobs.server.message.*;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseDown;
@@ -17,11 +15,8 @@ import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
 
-import net.ilexiconn.llibrary.server.config.Config;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.ilexiconn.llibrary.server.network.NetworkWrapper;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.MouseHelper;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -77,6 +72,8 @@ public final class MowziesMobs {
         EntityPropertiesHandler.INSTANCE.registerProperties(MowzieLivingProperties.class);
         GameRegistry.registerWorldGenerator(new MowzieWorldGenerator(), 0);
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
+
+        SpawnHandler.INSTANCE.registerSpawnPlacementTypes();
     }
 
     @Optional.Method(modid = "thaumcraft")
@@ -91,7 +88,7 @@ public final class MowziesMobs {
 
     @EventHandler
     public void init(FMLPostInitializationEvent event) {
-        BiomeDictionaryHandler.INSTANCE.onInit();
+        SpawnHandler.INSTANCE.registerSpawns();
         if (Loader.isModLoaded("thaumcraft")) {
             loadThaumcraft();
         }

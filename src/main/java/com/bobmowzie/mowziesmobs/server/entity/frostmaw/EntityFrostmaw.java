@@ -6,7 +6,7 @@ import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
 import com.bobmowzie.mowziesmobs.server.ai.MMEntityMoveHelper;
 import com.bobmowzie.mowziesmobs.server.ai.MMPathNavigateGround;
 import com.bobmowzie.mowziesmobs.server.ai.animation.*;
-import com.bobmowzie.mowziesmobs.server.biome.BiomeDictionaryHandler;
+import com.bobmowzie.mowziesmobs.server.spawn.SpawnHandler;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LegSolverQuadruped;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
@@ -931,7 +931,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
     public void spawnInWorld(World world, Random rand, int x, int z) {
         Biome biome = world.getBiome(new BlockPos(x, 50, z));
         if (rand.nextFloat() > ConfigHandler.FROSTMAW.generationData.generationChance) return;
-        if(!BiomeDictionaryHandler.FROSTMAW_BIOMES.contains(biome)) return;
+        if(!SpawnHandler.FROSTMAW_BIOMES.contains(biome)) return;
         BlockPos pos = new BlockPos(x, 0, z);
         int heightMax = (int) ConfigHandler.FROSTMAW.generationData.heightMax;
         int heightMin = (int) ConfigHandler.FROSTMAW.generationData.heightMin;

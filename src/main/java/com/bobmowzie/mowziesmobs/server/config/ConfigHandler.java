@@ -261,7 +261,7 @@ public class ConfigHandler {
         @LangKey(LANG_PREFIX + "spawn_data")
         @Comment({"Controls for vanilla-style mob spawning"})
         public SpawnData spawnData = new SpawnData(
-                4, 1, 2,
+                5, 1, 2,
                 new BiomeData(new String[] {"FOREST,MAGICAL,!SNOWY"}, new String[] {"Roofed Forest", "Roofed Forest M"}, new String[] {}),
                 new String[] {"grass", "leaves", "leaves2", "log", "log2"},
                 -1, 60, true, false, false
@@ -282,7 +282,7 @@ public class ConfigHandler {
         @LangKey(LANG_PREFIX + "spawn_data")
         @Comment({"Controls for vanilla-style mob spawning"})
         public SpawnData spawnData = new SpawnData(
-                2, 1, 1,
+                4, 1, 1,
                 new BiomeData(new String[] {""}, new String[] {}, new String[] {}),
                 new String[] {},
                 55, -1, false, false, true
