@@ -9,9 +9,10 @@
     "description": {
       "translate": "advancements.mowziesmobs.suns_blessing.description"
     },
-    "hidden": true
+    "hidden": true,
+    "frame": "goal"
   },
-  "parent": "mowziesmobs:root",
+  "parent": "mowziesmobs:kill_barako",
   "criteria": {
     "get_suns_blessing": {
       "trigger": "minecraft:effects_changed",

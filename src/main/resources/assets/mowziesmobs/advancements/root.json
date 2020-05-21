@@ -14,8 +14,8 @@
     "announce_to_chat": false
   },
   "criteria": {
-    "impossible": {
-      "trigger": "minecraft:impossible"
+    "custom_test_name": {
+      "trigger": "minecraft:tick"
     }
   }
 }

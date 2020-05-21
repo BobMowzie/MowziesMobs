@@ -8,7 +8,8 @@
     },
     "description": {
       "translate": "advancements.mowziesmobs.kill_ferrous_wroughtnaut.description"
-    }
+    },
+    "frame": "challenge"
   },
   "parent": "mowziesmobs:root",
   "criteria": {

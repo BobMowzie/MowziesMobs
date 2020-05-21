@@ -177,3 +177,23 @@ config.mowziesmobs.spear_attack_multiplier=Spear Attack Damage Multiplier
 config.mowziesmobs.blowgun_attack_multiplier=Blowgun Attack Damage Multiplier
 config.mowziesmobs.geomancy_attack_multiplier=Geomancy Attack Damage Multiplier
 config.mowziesmobs.ice_crystal_attack_multiplier=Ice Crystal Attack Damage Multiplier
+
+# Advancements
+advancements.mowziesmobs.root.title=Mowzie's Mobs
+advancements.mowziesmobs.root.description=Welcome to Mowzie's Mobs!
+advancements.mowziesmobs.kill_barako.title=Usurper
+advancements.mowziesmobs.kill_barako.description=Kill Barako, the Sun Chief
+advancements.mowziesmobs.kill_ferrous_wroughtnaut.title=The bigger they are...
+advancements.mowziesmobs.kill_ferrous_wroughtnaut.description=Kill a ferrous wroughtnaut
+advancements.mowziesmobs.kill_foliaath.title=Jennifer dumped me
+advancements.mowziesmobs.kill_foliaath.description=Kill a foliaath
+advancements.mowziesmobs.kill_barakoana.title=Masquerade
+advancements.mowziesmobs.kill_barakoana.description=Kill a barakoana
+advancements.mowziesmobs.kill_frostmaw.title=Rude Awakening
+advancements.mowziesmobs.kill_frostmaw.description=Kill a frostmaw
+advancements.mowziesmobs.kill_naga.title=Wingin' it
+advancements.mowziesmobs.kill_naga.description=Kill a naga
+advancements.mowziesmobs.kill_grottol.title=You monster...
+advancements.mowziesmobs.kill_grottol.description=Kill a Grottol
+advancements.mowziesmobs.suns_blessing.title=Heliomancer
+advancements.mowziesmobs.suns_blessing.description=Receive the Sun's Blessing

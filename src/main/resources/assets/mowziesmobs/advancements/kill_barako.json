@@ -8,7 +8,8 @@
     },
     "description": {
       "translate": "advancements.mowziesmobs.kill_barako.description"
-    }
+    },
+    "frame": "challenge"
   },
   "parent": "mowziesmobs:root",
   "criteria": {
