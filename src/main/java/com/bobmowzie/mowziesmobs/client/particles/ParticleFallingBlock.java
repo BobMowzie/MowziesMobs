@@ -123,7 +123,7 @@ public class ParticleFallingBlock extends Particle implements ParticleTextureSti
 //                    OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j, (float)k);
 //
                     bufferbuilder.begin(7, DefaultVertexFormats.BLOCK);
-                    BlockPos blockpos = new BlockPos(0, 0, 0);
+                    BlockPos blockpos = new BlockPos(posX, posY, posZ);
 
                     GlStateManager.translate(0, 0.5, 0);
 
@@ -133,7 +133,7 @@ public class ParticleFallingBlock extends Particle implements ParticleTextureSti
 
                     GlStateManager.rotate(f8, rotAxis.x, rotAxis.y, rotAxis.z);
 
-                    GlStateManager.translate(-0.5, -0.5, -0.5);
+                    GlStateManager.translate(-0.5 - posX, -0.5 - posY, -0.5 - posZ);
 
                     BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
                     blockrendererdispatcher.getBlockModelRenderer().renderModelFlat(world, blockrendererdispatcher.getModelForState(storedBlock), storedBlock, blockpos, bufferbuilder, false, MathHelper.getPositionRandom(new BlockPos(0, 0, 0)));
