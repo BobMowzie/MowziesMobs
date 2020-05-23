@@ -114,14 +114,8 @@ public class ParticleFallingBlock extends Particle implements ParticleTextureSti
                     float f8 = (float)(this.prevRotAngle + (this.rotAngle - this.prevRotAngle) * (double)partialTicks);
 
                     GlStateManager.pushMatrix();
-//                    GlStateManager.enableLighting();
                     BufferBuilder bufferbuilder = tessellator.getBuffer();
 
-//                    int i = entityIn.getBrightnessForRender();
-//                    int j = i % 65536;
-//                    int k = i / 65536;
-//                    OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j, (float)k);
-//
                     bufferbuilder.begin(7, DefaultVertexFormats.BLOCK);
                     BlockPos blockpos = new BlockPos(posX, posY, posZ);
 
@@ -133,7 +127,7 @@ public class ParticleFallingBlock extends Particle implements ParticleTextureSti
 
                     GlStateManager.rotate(f8, rotAxis.x, rotAxis.y, rotAxis.z);
 
-                    GlStateManager.translate(-0.5 - posX, -0.5 - posY, -0.5 - posZ);
+                    GlStateManager.translate(-0.5 - blockpos.getX(), -0.5 - blockpos.getY(), -0.5 - blockpos.getZ());
 
                     BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
                     blockrendererdispatcher.getBlockModelRenderer().renderModelFlat(world, blockrendererdispatcher.getModelForState(storedBlock), storedBlock, blockpos, bufferbuilder, false, MathHelper.getPositionRandom(new BlockPos(0, 0, 0)));

@@ -268,12 +268,12 @@ public class EntityBoulder extends Entity {
             playSound(MMSounds.EFFECT_GEOMANCY_BREAK_MEDIUM_1, 1.5f, 0.9f);
 
             if (world.isRemote) {
-                for (int i = 0; i < 3; i++) {
-                    Vec3d particlePos = new Vec3d(Math.random() * 1, 0, 0);
+                for (int i = 0; i < 5; i++) {
+                    Vec3d particlePos = new Vec3d(Math.random() * 2, 0, 0);
                     particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
                     particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
                     particlePos = particlePos.add(new Vec3d(0, height / 4, 0));
-                    ParticleFallingBlock.spawnFallingBlock(world, posX + particlePos.x, posY + 0.5 + particlePos.y, posZ + particlePos.z, 10.f, 70, 1, (float) particlePos.x * 0.3f, 0.2f + (float) Math.random() * 0.6f, (float) particlePos.z * 0.3f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, getBlock());
+                    ParticleFallingBlock.spawnFallingBlock(world, posX + particlePos.x, posY + 0.5 + particlePos.y, posZ + particlePos.z, 10.f, 90, 1, (float) particlePos.x * 0.3f, 0.2f + (float) Math.random() * 0.6f, (float) particlePos.z * 0.3f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, getBlock());
                 }
             }
         }
@@ -282,8 +282,8 @@ public class EntityBoulder extends Entity {
             playSound(MMSounds.EFFECT_GEOMANCY_BREAK_LARGE_1, 1.5f, 0.5f);
 
             if (world.isRemote) {
-                for (int i = 0; i < 5; i++) {
-                    Vec3d particlePos = new Vec3d(Math.random() * 1.5, 0, 0);
+                for (int i = 0; i < 7; i++) {
+                    Vec3d particlePos = new Vec3d(Math.random() * 3, 0, 0);
                     particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
                     particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
                     particlePos = particlePos.add(new Vec3d(0, height / 4, 0));

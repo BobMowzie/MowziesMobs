@@ -106,12 +106,12 @@ public class PowerGeomancy extends Power {
             }
             if (!prevUnderground && underground) {
                 player.playSound(MMSounds.EFFECT_GEOMANCY_BREAK_MEDIUM.get(rand.nextInt(3)).get(), 1f, 0.9f + rand.nextFloat() * 0.1f);
-                EntityRing ring = new EntityRing(player.world, (float) player.posX, (float) player.posY, (float) player.posZ, new Vec3d(0, 1, 0), 10, 0.83f, 1, 0.39f, 1f, 3f, false);
+                EntityRing ring = new EntityRing(player.world, (float) player.posX, (float) player.posY + 0.02f, (float) player.posZ, new Vec3d(0, 1, 0), 10, 0.83f, 1, 0.39f, 1f, 3f, false);
                 player.world.spawnEntity(ring);
             }
             if (prevUnderground && !underground) {
                 player.playSound(MMSounds.EFFECT_GEOMANCY_BREAK, 1f, 0.9f + rand.nextFloat() * 0.1f);
-                EntityRing ring = new EntityRing(player.world, (float) player.posX, (float) player.posY, (float) player.posZ, new Vec3d(0, 1, 0), 10, 0.83f, 1, 0.39f, 1f, 3f, false);
+                EntityRing ring = new EntityRing(player.world, (float) player.posX, (float) player.posY + 0.02f, (float) player.posZ, new Vec3d(0, 1, 0), 10, 0.83f, 1, 0.39f, 1f, 3f, false);
                 player.world.spawnEntity(ring);
                 player.motionX *= 2;
                 player.motionY *= 2;
