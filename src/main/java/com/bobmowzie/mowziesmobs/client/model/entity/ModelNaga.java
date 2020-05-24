@@ -674,7 +674,7 @@ public class ModelNaga extends AdvancedModelBase{
             tailOriginal[i].isHidden = true;
         }
 
-        ((EntityNaga)entity).mouthPos = mouthSocket.getWorldPos(entity);
+        ((EntityNaga)entity).mouthPos[0] = mouthSocket.getWorldPos(entity);
         //System.out.println(tailDynamic.length);
     }
 

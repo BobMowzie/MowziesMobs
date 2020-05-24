@@ -3,6 +3,8 @@ package com.bobmowzie.mowziesmobs.server.entity.effects;
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
+import com.bobmowzie.mowziesmobs.client.particles.ParticleVanillaCloudExtended;
+import com.bobmowzie.mowziesmobs.client.particles.util.MowzieParticleBase;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
@@ -13,6 +15,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -25,14 +29,16 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
 
     public static float GRAVITY = 0.05f;
 
+    public double prevMotionX, prevMotionY, prevMotionZ;
+
     public EntityPoisonBall(World worldIn) {
         super(worldIn);
-        setSize(0, 0);
+        setSize(0.5f, 0.5f);
     }
 
     public EntityPoisonBall(World worldIn, EntityLivingBase caster) {
         super(worldIn);
-        setSize(0, 0);
+        setSize(0.5f, 0.5f);
         if (!world.isRemote) {
             this.setCasterID(caster.getEntityId());
         }
@@ -47,9 +53,15 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
 
     @Override
     public void onUpdate() {
+        prevMotionX = motionX;
+        prevMotionY = motionY;
+        prevMotionZ = motionZ;
+
         super.onUpdate();
         motionY -= GRAVITY;
         move(MoverType.SELF, motionX, motionY, motionZ);
+
+        rotationYaw = -((float) MathHelper.atan2(motionX, motionZ)) * (180F / (float)Math.PI);
 
         List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby(1);
         if (!entitiesHit.isEmpty()) {
@@ -63,29 +75,39 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
             }
         }
 
-        if (world.collidesWithAnyBlock(getEntityBoundingBox().grow(1,1,1))) explode();
+        if (world.collidesWithAnyBlock(getEntityBoundingBox().grow(0.1,0.1,0.1))) explode();
 
         if (world.isRemote) {
             float scale = 1f;
-            for (int i = 0; i < 4; i++) {
-                double xSpeed = scale * 0.01 * (rand.nextFloat() * 2 - 1);
-                double ySpeed = scale * 0.01 * (rand.nextFloat() * 2 - 1);
-                double zSpeed = scale * 0.01 * (rand.nextFloat() * 2 - 1);
-                double value = rand.nextFloat() * 0.1f;
-                MMParticle.CLOUD.spawn(world, posX + xSpeed, posY + ySpeed, posZ + zSpeed, ParticleFactory.ParticleArgs.get().withData(xSpeed, ySpeed, zSpeed, 0.1d + value, 0.4d, 0.1d + value, 2, scale * (10d + rand.nextDouble() * 20d), 20, ParticleCloud.EnumCloudBehavior.GROW));
-            }
-            for (int i = 0; i < 4; i++) {
-                double xSpeed = scale * 0.01 * (rand.nextFloat() * 2 - 1);
-                double ySpeed = scale * 0.01 * (rand.nextFloat() * 2 - 1);
-                double zSpeed = scale * 0.01 * (rand.nextFloat() * 2 - 1);
-                double value = rand.nextFloat() * 0.15f;
-                MMParticle.CLOUD.spawn(world, posX + xSpeed, posY + ySpeed, posZ + zSpeed, ParticleFactory.ParticleArgs.get().withData(xSpeed, ySpeed, zSpeed, 0.3d + value, 1d, 0.3d + value, 2, scale * (3d + rand.nextDouble() * 20d), 13, ParticleCloud.EnumCloudBehavior.GROW));
-            }
-            for (int i = 0; i < 3; i++) {
-                double xSpeed = scale * 0.1 * (rand.nextFloat() * 2 - 1);
-                double ySpeed = scale * 0.1 * (rand.nextFloat() * 2 - 1);
-                double zSpeed = scale * 0.1 * (rand.nextFloat() * 2 - 1);
-                MMParticle.CLOUD.spawn(world, posX + xSpeed, posY + ySpeed, posZ + zSpeed, ParticleFactory.ParticleArgs.get().withData(xSpeed, ySpeed, zSpeed, 0.08d, 0.16d, 0.08d, 0, scale * 2d, 20, ParticleCloud.EnumCloudBehavior.CONSTANT));
+            int steps = 4;
+            for (int step = 0; step < steps; step++) {
+                double x = prevPosX + step * (posX - prevPosX) / (double)steps;
+                double y = prevPosY + step * (posY - prevPosY) / (double)steps + height / 2f;
+                double z = prevPosZ + step * (posZ - prevPosZ) / (double)steps;
+                for (int i = 0; i < 1; i++) {
+                    double xSpeed = scale * 0.02 * (rand.nextFloat() * 2 - 1);
+                    double ySpeed = scale * 0.02 * (rand.nextFloat() * 2 - 1);
+                    double zSpeed = scale * 0.02 * (rand.nextFloat() * 2 - 1);
+                    double value = rand.nextFloat() * 0.1f;
+                    double life = rand.nextFloat() * 10f + 15f;
+                    ParticleVanillaCloudExtended.spawnVanillaCloud(world, x, y, z, xSpeed, ySpeed, zSpeed, scale, 0.25d + value, 0.75d + value, 0.25d + value, 0.99, life);
+                }
+                for (int i = 0; i < 2; i++) {
+                    double xSpeed = scale * 0.06 * (rand.nextFloat() * 2 - 1);
+                    double ySpeed = scale * 0.06 * (rand.nextFloat() * 2 - 1);
+                    double zSpeed = scale * 0.06 * (rand.nextFloat() * 2 - 1);
+                    double value = rand.nextFloat() * 0.1f;
+                    double life = rand.nextFloat() * 10f + 15f;
+                    MowzieParticleBase.spawnParticle(world, MMParticle.PIXEL, x + xSpeed - motionX * 0.5, y + ySpeed - motionY * 0.5, z + zSpeed - motionZ * 0.5, xSpeed, ySpeed, zSpeed, scale * 3f, 0.07d + value, 0.25d + value, 0.07d + value, 1d, 0.99, life * 0.9, true);
+                }
+                for (int i = 0; i < 1; i++) {
+                    double xSpeed = scale * 0.06 * (rand.nextFloat() * 2 - 1);
+                    double ySpeed = scale * 0.06 * (rand.nextFloat() * 2 - 1);
+                    double zSpeed = scale * 0.06 * (rand.nextFloat() * 2 - 1);
+                    double value = rand.nextFloat() * 0.1f;
+                    double life = rand.nextFloat() * 10f + 15f;
+                    MowzieParticleBase.spawnParticle(world, MMParticle.BUBBLE, x - motionX * 0.5, y - motionY * 0.5, z - motionZ * 0.5, xSpeed, ySpeed, zSpeed, 3f, 0.25d + value, 0.75d + value, 0.25d + value, 1d, 0.85, life, true);
+                }
             }
         }
         if (ticksExisted > 50) setDead();
@@ -94,25 +116,29 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
     private void explode() {
         float explodeSpeed = 3.5f;
         if (world.isRemote) {
+            for (int i = 0; i < 26; i++) {
+                Vec3d particlePos = new Vec3d(Math.random() * 0.25, 0, 0);
+                particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
+                particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                double value = rand.nextFloat() * 0.1f;
+                double life = rand.nextFloat() * 10f + 20f;
+                ParticleVanillaCloudExtended.spawnVanillaCloud(world, posX, posY, posZ, particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 1, 0.25d + value, 0.75d + value, 0.25d + value, 0.6, life);
+            }
+            for (int i = 0; i < 26; i++) {
+                Vec3d particlePos = new Vec3d(Math.random() * 0.25, 0, 0);
+                particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
+                particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                double value = rand.nextFloat() * 0.1f;
+                double life = rand.nextFloat() * 10f + 20f;
+                MowzieParticleBase.spawnParticle(world, MMParticle.PIXEL, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 3f, 0.07d + value, 0.25d + value, 0.07d + value, 1d, 0.6, life * 0.95, true);
+            }
             for (int i = 0; i < 13; i++) {
                 Vec3d particlePos = new Vec3d(Math.random() * 0.25, 0, 0);
                 particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
                 particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
-                double value = rand.nextFloat() * 0.15f;
-                MMParticle.CLOUD.spawn(world, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 0.1d + value, 0.4d, 0.1d + value, 2, 10d + rand.nextDouble() * 20d, 70, ParticleCloud.EnumCloudBehavior.GROW, 0.7d));
-            }
-            for (int i = 0; i < 13; i++) {
-                Vec3d particlePos = new Vec3d(Math.random() * 0.2, 0, 0);
-                particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
-                particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
-                double value = rand.nextFloat() * 0.15f;
-                MMParticle.CLOUD.spawn(world, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 0.3d + value, 1d, 0.3d + value, 2, 10d + rand.nextDouble() * 20d, 70, ParticleCloud.EnumCloudBehavior.GROW, 0.7d));
-            }
-            for (int i = 0; i < 9; i++) {
-                Vec3d particlePos = new Vec3d(Math.random() * 0.25, 0, 0);
-                particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
-                particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
-                MMParticle.CLOUD.spawn(world, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 0.1d, 0.2d, 0.1d, 0, 2d, 30, ParticleCloud.EnumCloudBehavior.CONSTANT, 0.7d));
+                double value = rand.nextFloat() * 0.1f;
+                double life = rand.nextFloat() * 10f + 20f;
+                MowzieParticleBase.spawnParticle(world, MMParticle.BUBBLE, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 3f, 0.25d + value, 0.75d + value, 0.25d + value, 1d, 0.6, life * 0.95, true);
             }
         }
 

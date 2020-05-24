@@ -31,6 +31,6 @@ public class RenderFoliaath extends RenderLiving<EntityFoliaath> {
     @Override
     public void doRender(EntityFoliaath entity, double x, double y, double z, float entityYaw, float partialTicks) {
         super.doRender(entity, x, y, z, entityYaw, partialTicks);
-        entity.world.getBiome(entity.getPosition()).getGrassColorAtPos(entity.getPosition());
+        //int biomeColor = entity.world.getBiome(entity.getPosition()).getGrassColorAtPos(entity.getPosition());
     }
 }
