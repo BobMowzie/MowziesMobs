@@ -74,7 +74,7 @@ public class SocketModelRenderer extends AdvancedModelRenderer{
         float dy = (float) (entity.prevPosY + (entity.posY - entity.prevPosY) * delta);
         float dz = (float) (entity.prevPosZ + (entity.posZ - entity.prevPosZ) * delta);
         entityTranslate.set(new Vector3d(dx, dy, dz));
-        entityRotate.rotY(-Math.toRadians(entity.rotationYaw));
+        entityRotate.rotY(-Math.toRadians(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * delta));
         Point3d rendererPos = new Point3d(x, y, z);
         entityRotate.transform(rendererPos);
         entityTranslate.transform(rendererPos);
@@ -112,6 +112,31 @@ public class SocketModelRenderer extends AdvancedModelRenderer{
         return new Vec3d(rendererPos.getX(), rendererPos.getY(), rendererPos.getZ());
     }
 
+    public Vec3d getWorldRotation(Entity entity, float delta) {
+        Vec3d modelRot = getModelRotation(this, new Vec3d(rotateAngleX, -rotateAngleY, -rotateAngleZ));
+        double x = modelRot.x;
+        double y = modelRot.y;
+        double z = modelRot.z;
+        y += -Math.toRadians(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * delta);
+        return new Vec3d(x, y, z);
+    }
+
+    public Vec3d getModelRotation(AdvancedModelRenderer modelRenderer, Vec3d recurseValue) {
+        double x = recurseValue.x;
+        double y = recurseValue.y;
+        double z = recurseValue.z;
+
+        AdvancedModelRenderer parent = modelRenderer.getParent();
+        if (parent != null) {
+            x += parent.rotateAngleX;
+            y += -parent.rotateAngleY;
+            z += -parent.rotateAngleZ;
+
+            return getModelRotation(parent, new Vec3d(x, y, z));
+        }
+        return new Vec3d(x, y, z);
+    }
+
     public void setWorldPos(Entity entity, Vec3d pos, float delta) {
         Matrix4d entityTranslate = new Matrix4d();
         Matrix4d entityRotate = new Matrix4d();
@@ -119,7 +144,7 @@ public class SocketModelRenderer extends AdvancedModelRenderer{
         float dy = (float) (entity.prevPosY + (entity.posY - entity.prevPosY) * delta);
         float dz = (float) (entity.prevPosZ + (entity.posZ - entity.prevPosZ) * delta);
         entityTranslate.set(new Vector3d(dx, dy, dz));
-        entityRotate.rotY(-Math.toRadians(entity.rotationYaw));
+        entityRotate.rotY(-Math.toRadians(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * delta));
         entityTranslate.invert();
         entityRotate.invert();
         Point3d rendererPos = new Point3d(pos.x, pos.y, pos.z);

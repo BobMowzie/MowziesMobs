@@ -1,6 +1,9 @@
 package com.bobmowzie.mowziesmobs.server.entity.wroughtnaut;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
+import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
+import com.bobmowzie.mowziesmobs.client.particles.util.MowzieParticleBase;
+import com.bobmowzie.mowziesmobs.client.particles.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.server.ai.MMPathNavigateGround;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationActivateAI;
@@ -43,9 +46,12 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.PooledMutableBlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 
@@ -108,6 +114,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 
 //    @SideOnly(Side.CLIENT)
 //    public Vec3d leftEyePos, rightEyePos;
+//    public Vec3d leftEyeRot, rightEyeRot;
 
     public EntityWroughtnaut(World world) {
         super(world);
@@ -140,6 +147,8 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         stepHeight = 1;
 //        rightEyePos = new Vec3d(0, 0, 0);
 //        leftEyePos = new Vec3d(0, 0, 0);
+//        rightEyeRot = new Vec3d(0, 0, 0);
+//        leftEyeRot = new Vec3d(0, 0, 0);
 
         dropAfterDeathAnim = true;
     }
@@ -261,8 +270,8 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
             rotationYaw = prevRotationYaw;
         }
 //        else if (world.isRemote) {
-//            MMParticle.ORB.spawn(world, leftEyePos.x, leftEyePos.y, leftEyePos.z, ParticleFactory.ParticleArgs.get().withData(0d, 0d, 0d, 247d / 256d, 94d / 256d, 74d / 256d, 1d, 25));
-//            MMParticle.ORB.spawn(world, rightEyePos.x, rightEyePos.y, rightEyePos.z, ParticleFactory.ParticleArgs.get().withData(0d, 0d, 0d, 247d / 256d, 94d / 256d, 74d / 256d, 1d, 25));
+//            MowzieParticleBase.spawnParticle(world, MMParticle.EYE, leftEyePos.x, leftEyePos.y, leftEyePos.z, 0, 0, 0, leftEyeRot.y - 0.785, leftEyeRot.x, leftEyeRot.z, 5f, 0.8f, 0.1f, 0.1f, 1f, 1, 20, false, new ParticleComponent[]{new ParticleComponent.AlphaControl(1f, 0f)});
+//            MowzieParticleBase.spawnParticle(world, MMParticle.EYE, rightEyePos.x, rightEyePos.y, rightEyePos.z, 0, 0, 0, rightEyeRot.y + 0.785, rightEyeRot.x, rightEyeRot.z,5f, 0.8f, 0.1f, 0.1f, 1f, 1, 20, false, new ParticleComponent[]{new ParticleComponent.AlphaControl(1f, 0f)});
 //        }
         renderYawOffset = rotationYaw;
 
@@ -299,7 +308,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
                 }
             }
         } else {
-            updateRestPos();
+            if (getNavigator().noPath() && !isAtRestPos() && isActive()) updateRestPos();
         }
 
         if (getAnimation() == ATTACK_ANIMATION && getAnimationTick() == 1) {

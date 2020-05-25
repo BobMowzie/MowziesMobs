@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.ExtendedModelRenderer;
 import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
 import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.model.ModelAnimator;
@@ -85,8 +86,8 @@ public class ModelWroughtnaut extends AdvancedModelBase {
     public AdvancedModelRenderer swordJoint;
     public AdvancedModelRenderer rootBox;
     public AdvancedModelRenderer waistBendController;
-    public SocketModelRenderer eyeRight;
-    public SocketModelRenderer eyeLeft;
+    public ExtendedModelRenderer eyeRight;
+    public ExtendedModelRenderer eyeLeft;
     private ModelAnimator animator;
 
     public ModelWroughtnaut() {
@@ -367,10 +368,12 @@ public class ModelWroughtnaut extends AdvancedModelBase {
         this.rootBox.setRotationPoint(0.0F, -1.0F, 0.0F);
         this.rootBox.addBox(0F, 0F, 0F, 0, 0, 0, 0.0F);
         this.setRotateAngle(rootBox, 0.0F, 0F, 0.0F);
-        this.eyeLeft = new SocketModelRenderer(this);
+        this.eyeLeft = new ExtendedModelRenderer(this, 0, 0);
         this.eyeLeft.setRotationPoint(-4, -4, 4);
-        this.eyeRight = new SocketModelRenderer(this);
+        this.eyeLeft.addBox(-1, -0.5F, 0, 2, 1, 0, 0.0F);
+        this.eyeRight = new ExtendedModelRenderer(this, 0, 0);
         this.eyeRight.setRotationPoint(4, -4, 4);
+        this.eyeRight.addBox(-1, -0.5F, 0, 2, 1, 0, 0.0F);
 
         rootBox.addChild(waist);
         this.waist.addChild(this.groinJoint);
@@ -445,6 +448,13 @@ public class ModelWroughtnaut extends AdvancedModelBase {
 
         //Corrections
         groin.rotateAngleY -= 45 * Math.PI / 180;
+        eyeRight.rotationPointZ -= 7.2;
+        eyeLeft.rotationPointZ -= 4;
+        eyeRight.rotationPointX -= 4;
+        eyeLeft.rotationPointX += 7.2;
+        eyeRight.rotationPointY -= 1;
+        eyeLeft.rotationPointY -= 1;
+        eyeLeft.rotateAngleY -= Math.PI / 2f;
 
         updateDefaultPose();
     }
@@ -452,18 +462,19 @@ public class ModelWroughtnaut extends AdvancedModelBase {
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         animate(f, f1, f2, f3, f4, f5, entity);
+
+        eyeLeft.setHasLighting(false);
+        eyeRight.setHasLighting(false);
+
         this.rootBox.render(f5);
         EntityWroughtnaut wroughtnaut = (EntityWroughtnaut)entity;
 //        eyeRight.rotationPointZ -= 5;
 //        eyeLeft.rotationPointZ += 5;
-        eyeRight.rotationPointZ -= 7.5;
-        eyeLeft.rotationPointZ -= 7.5;
-        eyeRight.rotationPointX -= 1.9;
-        eyeLeft.rotationPointX += 1.9;
-        eyeRight.rotationPointY -= 1.5;
-        eyeLeft.rotationPointY -= 1.5;
-//        wroughtnaut.rightEyePos = eyeRight.getWorldPos(wroughtnaut);
-//        wroughtnaut.leftEyePos = eyeLeft.getWorldPos(wroughtnaut);
+//        float delta = LLibrary.PROXY.getPartialTicks();
+//        wroughtnaut.rightEyePos = eyeRight.getWorldPos(wroughtnaut, delta);
+//        wroughtnaut.leftEyePos = eyeLeft.getWorldPos(wroughtnaut, delta);
+//        wroughtnaut.rightEyeRot = eyeRight.getWorldRotation(wroughtnaut, delta);
+//        wroughtnaut.leftEyeRot = eyeLeft.getWorldRotation(wroughtnaut, delta);
     }
 
     public void setRotateAngle(AdvancedModelRenderer modelRenderer, float x, float y, float z) {
@@ -475,6 +486,16 @@ public class ModelWroughtnaut extends AdvancedModelBase {
     public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, EntityWroughtnaut entity) {
         super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
         resetToDefaultPose();
+
+        if (entity.isActive()) {
+            eyeLeft.isHidden = false;
+            eyeRight.isHidden = false;
+        }
+        else {
+            eyeLeft.isHidden = true;
+            eyeRight.isHidden = true;
+        }
+
         if (entity.getAnimation() != EntityWroughtnaut.ACTIVATE_ANIMATION && entity.getAnimation() != EntityWroughtnaut.DEACTIVATE_ANIMATION) {
             if (entity.isActive()) {
                 shoulderLeft.rotateAngleZ -= 0.4;

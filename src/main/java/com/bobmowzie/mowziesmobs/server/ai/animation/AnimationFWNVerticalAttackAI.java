@@ -30,7 +30,7 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
         if (entity.getAnimation() == getAnimation()) {
             entity.motionX = 0;
             entity.motionZ = 0;
-            if (entity.getAnimationTick() < 22 && entityTarget != null) {
+            if (entity.getAnimationTick() < 21 && entityTarget != null) {
                 entity.faceEntity(entityTarget, 30F, 30F);
             }
             else {

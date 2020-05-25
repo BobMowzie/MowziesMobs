@@ -32,7 +32,7 @@ public class AnimationFWNAttackAI extends AnimationAttackAI<EntityWroughtnaut> {
     public void updateTask() {
         entity.motionX = 0;
         entity.motionZ = 0;
-        if (entity.getAnimationTick() < 27 && entityTarget != null) {
+        if (entity.getAnimationTick() < 25 && entityTarget != null) {
             entity.faceEntity(entityTarget, 30F, 30F);
         }
         else {
