@@ -26,7 +26,7 @@ import java.util.List;
 public class EntityIceBall extends EntityMagicEffect implements IProjectile {
     public EntityIceBall(World worldIn) {
         super(worldIn);
-        setSize(0, 0);
+        setSize(2, 2);
     }
 
     public EntityIceBall(World worldIn, EntityLivingBase caster) {
@@ -48,13 +48,13 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
             }
         }
 
-        List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby(3);
+        List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby(2);
         if (!entitiesHit.isEmpty()) {
             for (Entity entity : entitiesHit) {
                 if (entity == caster) continue;
                 if (entity.getIsInvulnerable()) continue;
                 if (entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isCreativeMode) continue;
-                entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(caster, null), 3 * ConfigHandler.FROSTMAW.combatData.attackMultiplier);
+                entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(this, caster), 3f * ConfigHandler.FROSTMAW.combatData.attackMultiplier);
                 MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
                 if (property != null) property.freezeProgress += 1;
             }
@@ -64,37 +64,40 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
 
         if (world.isRemote) {
             float scale = 2f;
+            double x = posX;
+            double y = posY + height / 2;
+            double z = posZ;
             for (int i = 0; i < 4; i++) {
                 double xSpeed = scale * 0.01 * (rand.nextFloat() * 2 - 1);
                 double ySpeed = scale * 0.01 * (rand.nextFloat() * 2 - 1);
                 double zSpeed = scale * 0.01 * (rand.nextFloat() * 2 - 1);
                 double value = rand.nextFloat() * 0.15f;
-                MMParticle.CLOUD.spawn(world, posX + xSpeed, posY + ySpeed, posZ + zSpeed, ParticleFactory.ParticleArgs.get().withData(xSpeed, ySpeed, zSpeed, 0.75d + value, 0.75d + value, 1d, 1, scale * (10d + rand.nextDouble() * 20d), 20, ParticleCloud.EnumCloudBehavior.SHRINK));
+                MMParticle.CLOUD.spawn(world, x + xSpeed, y + ySpeed, z + zSpeed, ParticleFactory.ParticleArgs.get().withData(xSpeed, ySpeed, zSpeed, 0.75d + value, 0.75d + value, 1d, 1, scale * (10d + rand.nextDouble() * 20d), 20, ParticleCloud.EnumCloudBehavior.SHRINK));
             }
             for (int i = 0; i < 1; i++) {
                 double xSpeed = scale * 0.01 * (rand.nextFloat() * 2 - 1);
                 double ySpeed = scale * 0.01 * (rand.nextFloat() * 2 - 1);
                 double zSpeed = scale * 0.01 * (rand.nextFloat() * 2 - 1);
-                MMParticle.CLOUD.spawn(world, posX, posY, posZ, ParticleFactory.ParticleArgs.get().withData(xSpeed, ySpeed, zSpeed, 1d, 1d, 1d, 1, scale * (5d + rand.nextDouble() * 10d), 40, ParticleCloud.EnumCloudBehavior.SHRINK));
+                MMParticle.CLOUD.spawn(world, x, y, z, ParticleFactory.ParticleArgs.get().withData(xSpeed, ySpeed, zSpeed, 1d, 1d, 1d, 1, scale * (5d + rand.nextDouble() * 10d), 40, ParticleCloud.EnumCloudBehavior.SHRINK));
             }
 
             for (int i = 0; i < 5; i++) {
                 double xSpeed = scale * 0.05 * (rand.nextFloat() * 2 - 1);
                 double ySpeed = scale * 0.05 * (rand.nextFloat() * 2 - 1);
                 double zSpeed = scale * 0.05 * (rand.nextFloat() * 2 - 1);
-                MMParticle.SNOWFLAKE.spawn(world, posX - 20 * (xSpeed) + motionX, posY - 20 * ySpeed + motionY, posZ - 20 * zSpeed + motionZ, ParticleFactory.ParticleArgs.get().withData(xSpeed, ySpeed, zSpeed));
+                MMParticle.SNOWFLAKE.spawn(world, x - 20 * (xSpeed) + motionX, y - 20 * ySpeed + motionY, z - 20 * zSpeed + motionZ, ParticleFactory.ParticleArgs.get().withData(xSpeed, ySpeed, zSpeed));
             }
 
             if (ticksExisted % 3 == 0) {
                 float yaw = (float) Math.atan2(motionX, motionZ);
                 float pitch = (float) (Math.acos(motionY / Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ)) + Math.PI / 2);
-                MMParticle.RING.spawn(world, posX + scale * motionX * 1.5, posY + motionY * 2, posZ + motionZ * 2, ParticleFactory.ParticleArgs.get().withData(yaw, pitch, 40, 0.9f, 0.9f, 1f, 0.4f, scale * 16f, false, 0f, 0f, 0f, ParticleRing.EnumRingBehavior.GROW_THEN_SHRINK));
+                MMParticle.RING.spawn(world, x + 1.5f * motionX, y + 1.5f *motionY, z + 1.5f * motionZ, ParticleFactory.ParticleArgs.get().withData(yaw, pitch, 40, 0.9f, 0.9f, 1f, 0.4f, scale * 16f, false, 0f, 0f, 0f, ParticleRing.EnumRingBehavior.GROW_THEN_SHRINK));
             }
 
             if (ticksExisted == 1) {
                 float yaw = (float) Math.atan2(motionX, motionZ);
                 float pitch = (float) (Math.acos(motionY / Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ)) + Math.PI / 2);
-                MMParticle.RING.spawn(world, posX, posY, posZ, ParticleFactory.ParticleArgs.get().withData(yaw, pitch, 20, 0.9f, 0.9f, 1f, 0.4f, scale * 16f, false, 0f, 0f, 0f, ParticleRing.EnumRingBehavior.GROW));
+                MMParticle.RING.spawn(world, x, y, z, ParticleFactory.ParticleArgs.get().withData(yaw, pitch, 20, 0.9f, 0.9f, 1f, 0.4f, scale * 16f, false, 0f, 0f, 0f, ParticleRing.EnumRingBehavior.GROW));
             }
         }
         if (ticksExisted > 50) setDead();

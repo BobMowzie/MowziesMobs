@@ -4,13 +4,23 @@ import com.bobmowzie.mowziesmobs.client.render.entity.*;
 import com.bobmowzie.mowziesmobs.client.sound.IceBreathSound;
 import com.bobmowzie.mowziesmobs.client.sound.NagaSwoopSound;
 import com.bobmowzie.mowziesmobs.client.sound.SpawnBoulderChargeSound;
+import com.bobmowzie.mowziesmobs.client.sound.SunstrikeSound;
+import com.bobmowzie.mowziesmobs.server.ServerProxy;
+import com.bobmowzie.mowziesmobs.server.entity.EntityDart;
 import com.bobmowzie.mowziesmobs.server.entity.EntityDynamicsTester;
-import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieEntityEggInfo;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.*;
 import com.bobmowzie.mowziesmobs.server.entity.effects.*;
+import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityBabyFoliaath;
+import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
+import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityLantern;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
+import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
+import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
+import com.bobmowzie.mowziesmobs.server.item.ItemSpawnEgg;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.entity.Entity;
@@ -20,17 +30,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import com.bobmowzie.mowziesmobs.client.sound.SunstrikeSound;
-import com.bobmowzie.mowziesmobs.server.ServerProxy;
-import com.bobmowzie.mowziesmobs.server.entity.EntityDart;
-import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
-import com.bobmowzie.mowziesmobs.server.entity.MowzieEntityEggInfo;
-import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityBabyFoliaath;
-import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
-import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
-import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
-import com.bobmowzie.mowziesmobs.server.item.ItemSpawnEgg;
 
 @SideOnly(Side.CLIENT)
 public class ClientProxy extends ServerProxy {
@@ -59,6 +58,7 @@ public class ClientProxy extends ServerProxy {
         RenderingRegistry.registerEntityRenderingHandler(EntityAxeAttack.class, RenderAxeAttack::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityRing.class, RenderRing::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityPoisonBall.class, RenderPoisonBall::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityIceBall.class, RenderIceBall::new);
     }
 
     @Override

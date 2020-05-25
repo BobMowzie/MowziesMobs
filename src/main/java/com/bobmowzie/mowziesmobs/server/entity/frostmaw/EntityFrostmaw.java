@@ -322,7 +322,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
 
             if (getAnimation() == ICE_BALL_ANIMATION) {
                 if (getAttackTarget() != null) getLookHelper().setLookPositionWithEntity(getAttackTarget(), 15, 15);
-                Vec3d projectilePos = new Vec3d(2.3, 2.65, 0);
+                Vec3d projectilePos = new Vec3d(2.0, 1.7, 0);
                 projectilePos = projectilePos.rotateYaw((float)Math.toRadians(-rotationYaw - 90));
                 projectilePos = projectilePos.add(getPositionVector());
                 projectilePos = projectilePos.add(new Vec3d(0, 0, 1).rotatePitch((float)Math.toRadians(-rotationPitch)).rotateYaw((float)Math.toRadians(-rotationYawHead)));
@@ -355,7 +355,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
 
                     EntityIceBall iceBall = new EntityIceBall(world, this);
                     iceBall.setPositionAndRotation(projectilePos.x, projectilePos.y, projectilePos.z, rotationYawHead, rotationPitch + 10);
-                    float projSpeed = 1.7f;
+                    float projSpeed = 1.6f;
                     if (getAttackTarget() != null) {
                         float ticksUntilHit = targetDistance / projSpeed;
                         Vec3d targetPos = getAttackTarget().getPositionVector().add(new Vec3d(0f, getAttackTarget().getEyeHeight(), 0f));
