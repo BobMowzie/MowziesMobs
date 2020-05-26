@@ -30,7 +30,6 @@ public class MowzieLivingProperties extends EntityProperties<EntityLivingBase> {
     @NBTProperty
     public boolean prevHasAI;
 
-
     public boolean prevFrozen = false;
     public EntityFrozenController frozenController;
 

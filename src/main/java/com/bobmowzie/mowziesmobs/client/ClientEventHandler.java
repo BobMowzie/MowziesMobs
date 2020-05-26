@@ -195,7 +195,7 @@ public enum ClientEventHandler {
                 stopMouseMove();
             }
             MowzieLivingProperties propertyLiving = EntityPropertiesHandler.INSTANCE.getProperties(player, MowzieLivingProperties.class);
-            if (player.isPotionActive(PotionHandler.FROZEN)) {
+            if (player.isPotionActive(PotionHandler.FROZEN) && propertyLiving.prevFrozen) {
                 player.rotationYaw = propertyLiving.frozenYaw;
                 player.rotationPitch = propertyLiving.frozenPitch;
                 stopMouseMove();
