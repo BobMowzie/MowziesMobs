@@ -2,13 +2,12 @@ package com.bobmowzie.mowziesmobs.client.model.tools;
 
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import net.ilexiconn.llibrary.client.model.tools.Model3DTexture;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.model.TextureOffset;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -31,6 +30,7 @@ public class ExtendedModelRenderer extends ModelRenderer {
     private float opacity = 1.0f;
     private boolean hasLighting = true;
     private boolean doubleSided = true;
+    private int defaultBrightness;
 
     public ExtendedModelRenderer(AdvancedModelBase model, String name) {
         super(model, name);
@@ -128,6 +128,10 @@ public class ExtendedModelRenderer extends ModelRenderer {
         this.doubleSided = doubleSided;
     }
 
+    // Must call this before rendering a glowing model renderer (hasLighting = false)
+    public void setDefaultBrightness(Entity entity) {
+        defaultBrightness = entity.getBrightnessForRender();
+    }
 
     /**
      * Sets this ModelRenderer's default pose to the current pose.
@@ -239,6 +243,7 @@ public class ExtendedModelRenderer extends ModelRenderer {
                 }
                 if (!this.hasLighting) {
                     GlStateManager.disableLighting();
+                    OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 61680.0F, 0.0F);
                 }
                 if (this.opacity != 1.0F) {
                     GlStateManager.enableBlend();
@@ -262,6 +267,10 @@ public class ExtendedModelRenderer extends ModelRenderer {
                     }
                 }
                 if (!this.hasLighting) {
+                    int i = defaultBrightness;
+                    int j = i % 65536;
+                    int k = i / 65536;
+                    OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j, (float)k);
                     GlStateManager.enableLighting();
                 }
                 if (!this.doubleSided) {

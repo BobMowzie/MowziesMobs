@@ -440,8 +440,8 @@ public class ModelWroughtnaut extends AdvancedModelBase {
         this.helmet.addChild(this.hornRight1);
         this.axeBladeRight.addChild(this.axeBladeRight1);
         this.upperArmLeft.addChild(this.lowerArmLeftJoint);
-        this.neck.addChild(eyeLeft);
-        this.neck.addChild(eyeRight);
+        this.head.addChild(eyeLeft);
+        this.head.addChild(eyeRight);
         groin.addChild(groinJoint);
         stomach.addChild(swordJoint);
         swordJoint.addChild(sword);
@@ -465,9 +465,11 @@ public class ModelWroughtnaut extends AdvancedModelBase {
 
         eyeLeft.setHasLighting(false);
         eyeRight.setHasLighting(false);
+        eyeLeft.setDefaultBrightness(entity);
+        eyeRight.setDefaultBrightness(entity);
 
         this.rootBox.render(f5);
-        EntityWroughtnaut wroughtnaut = (EntityWroughtnaut)entity;
+        //EntityWroughtnaut wroughtnaut = (EntityWroughtnaut)entity;
 //        eyeRight.rotationPointZ -= 5;
 //        eyeLeft.rotationPointZ += 5;
 //        float delta = LLibrary.PROXY.getPartialTicks();
