@@ -95,7 +95,11 @@ item.glowingJelly.name=Luminous Jelly
 item.glowingJelly.text.0=Eat to briefly gain night vision
 
 item.nagaFang.name=Naga Fang
-item.nagaFang.text.0=Used to brew Potion of Poison Resistance
+item.nagaFang.text.0=Used to brew Potion of Poison Resistance or craft a Naga Fang Dagger
+
+item.nagaFangDagger.name=Naga Fang Dagger
+item.nagaFangDagger.text.0=Poisons targets
+item.nagaFangDagger.text.1=Deals +3 damage from behind
 
 # Blocks
 tile.campfire.name=Campfire
@@ -177,6 +181,7 @@ config.mowziesmobs.spear_attack_multiplier=Spear Attack Damage Multiplier
 config.mowziesmobs.blowgun_attack_multiplier=Blowgun Attack Damage Multiplier
 config.mowziesmobs.geomancy_attack_multiplier=Geomancy Attack Damage Multiplier
 config.mowziesmobs.ice_crystal_attack_multiplier=Ice Crystal Attack Damage Multiplier
+config.mowziesmobs.naga_fang_dagger_attack_multiplier=Naga Fang Dagger Attack Damage Multiplier
 
 # Advancements
 advancements.mowziesmobs.root.title=Mowzie's Mobs

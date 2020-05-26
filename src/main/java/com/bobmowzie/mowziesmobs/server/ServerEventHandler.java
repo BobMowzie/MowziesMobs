@@ -14,10 +14,7 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
-import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
-import com.bobmowzie.mowziesmobs.server.item.ItemEarthTalisman;
-import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
-import com.bobmowzie.mowziesmobs.server.item.ItemSpear;
+import com.bobmowzie.mowziesmobs.server.item.*;
 import com.bobmowzie.mowziesmobs.server.message.*;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseDown;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseUp;
@@ -57,6 +54,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -69,6 +67,7 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.terraingen.PopulateChunkEvent;
 import net.minecraftforge.event.world.BlockEvent;
@@ -479,6 +478,29 @@ public enum ServerEventHandler {
                 }
             }
         }
+
+        if (event.getSource() instanceof EntityDamageSource && event.getSource().getTrueSource() instanceof EntityLivingBase)
+        {
+            EntityLivingBase attacker = (EntityLivingBase) event.getSource().getTrueSource();
+            EntityLivingBase target = event.getEntityLiving();
+            ItemStack weapon = attacker.getHeldItemMainhand();
+            if (weapon != null && weapon.getItem() instanceof ItemNagaFangDagger) {
+                int arc = 220;
+                float entityHitAngle = (float) ((Math.atan2(attacker.posZ - target.posZ, attacker.posX - target.posX) * (180 / Math.PI) - 90) % 360);
+                float entityAttackingAngle = target.rotationYaw % 360;
+                if (entityHitAngle < 0) {
+                    entityHitAngle += 360;
+                }
+                if (entityAttackingAngle < 0) {
+                    entityAttackingAngle += 360;
+                }
+                float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
+                boolean angleFlag = (entityRelativeAngle <= arc / 2.0 && entityRelativeAngle >= -arc / 2.0) || (entityRelativeAngle >= 360 - arc / 2.0 || entityRelativeAngle <= -arc + 90 / 2.0);
+                if (!angleFlag) {
+                    event.setAmount(event.getAmount() + 3);
+                }
+            }
+        }
     }
 
     @SubscribeEvent
@@ -524,7 +546,7 @@ public enum ServerEventHandler {
     }
 
     @SubscribeEvent
-    public void onEntityAttack(AttackEntityEvent event) {
+    public void onPlayerAttack(AttackEntityEvent event) {
         if (event.getEntityLiving().isPotionActive(PotionHandler.FROZEN)) {
             event.setCanceled(true);    //TODO: doesn't work
         }

@@ -38,8 +38,8 @@ public class EntityDart extends EntityTippedArrow {
     @Override
     protected void arrowHit(EntityLivingBase living) {
         super.arrowHit(living);
-        if (shootingEntity instanceof EntityPlayer) living.addPotionEffect(new PotionEffect(MobEffects.POISON, 40, (int)(3 * ConfigHandler.TOOLS_AND_ABILITIES.blowgunAttackMultiplier), false, true));
-        else living.addPotionEffect(new PotionEffect(MobEffects.POISON, 40, 1, false, true));
+        if (shootingEntity instanceof EntityPlayer) living.addPotionEffect(new PotionEffect(MobEffects.POISON, (int)(40 * ConfigHandler.TOOLS_AND_ABILITIES.blowgunAttackMultiplier), 3, false, true));
+        else living.addPotionEffect(new PotionEffect(MobEffects.POISON, 30, 1, false, true));
         living.setArrowCountInEntity(living.getArrowCountInEntity() - 1);
     }
 

@@ -2,17 +2,24 @@ package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
+import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
+import net.minecraft.item.ItemTool;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -23,17 +30,12 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-public class ItemSpear extends ItemSword {
+public class ItemSpear extends ItemTool {
     public ItemSpear() {
-        super(ToolMaterial.STONE);
+        super(3 * ConfigHandler.TOOLS_AND_ABILITIES.spearAttackMultiplier, 1.6f, ToolMaterial.STONE, Sets.newHashSet());
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
         setTranslationKey("spear");
         setRegistryName("spear");
-    }
-
-    @Override
-    public float getAttackDamage() {
-        return super.getAttackDamage() * ConfigHandler.TOOLS_AND_ABILITIES.spearAttackMultiplier;
     }
 
     @Override

@@ -379,5 +379,10 @@ public class ConfigHandler {
         @LangKey(LANG_PREFIX + "ice_crystal_attack_multiplier")
         @RangeDouble(min = 0, max = 100)
         public float iceCrystalAttackMultiplier = 1;
+
+        @Name("naga_fang_dagger_attack_multiplier")
+        @LangKey(LANG_PREFIX + "naga_fang_dagger_attack_multiplier")
+        @RangeDouble(min = 0, max = 100)
+        public float nagaDaggerAttackMultiplier = 1;
     }
 }

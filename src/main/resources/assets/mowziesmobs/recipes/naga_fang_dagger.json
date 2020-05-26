@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+
+  "pattern":
+  [
+    "F",
+    "I",
+    "S"
+  ],
+
+  "key":
+  {
+    "S":
+    {
+      "item": "minecraft:stick"
+    },
+    "I":
+    {
+      "item": "minecraft:iron_ingot"
+    },
+    "F":
+    {
+      "item": "mowziesmobs:naga_fang"
+    }
+  },
+
+  "result":
+  {
+    "item": "mowziesmobs:naga_fang_dagger",
+    "count": 1
+  }
+}
