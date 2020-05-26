@@ -9,11 +9,14 @@ import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -85,6 +88,7 @@ public class EntityIceBreath extends EntityMagicEffect {
             }
         }
         if (ticksExisted > 10) hitEntities();
+        if (ticksExisted > 10) freezeBlocks();
 
         if (ticksExisted > 65 && !(caster instanceof EntityPlayer)) setDead();
     }
@@ -126,6 +130,53 @@ public class EntityIceBreath extends EntityMagicEffect {
                 entityHit.attackEntityFrom(DamageSource.causeIndirectMagicDamage(caster, null), damage);
                 MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entityHit, MowzieLivingProperties.class);
                 if (property != null) property.freezeProgress += 0.13;
+            }
+        }
+    }
+
+    public void freezeBlocks() {
+        int checkDist = 10;
+        for (int i = (int)posX - checkDist; i < (int)posX + checkDist; i++) {
+            for (int j = (int)posY - checkDist; j < (int)posY + checkDist; j++) {
+                for (int k = (int)posZ - checkDist; k < (int)posZ + checkDist; k++) {
+                    BlockPos pos = new BlockPos(i, j, k);
+
+                    IBlockState blockState = world.getBlockState(pos);
+                    IBlockState blockStateAbove = world.getBlockState(pos.up());
+                    if (blockState.getBlock() != Blocks.WATER || blockStateAbove.getBlock() != Blocks.AIR) {
+                        continue;
+                    }
+
+                    float blockHitYaw = (float) ((Math.atan2(pos.getZ() - posZ, pos.getX() - posX) * (180 / Math.PI) - 90) % 360);
+                    float entityAttackingYaw = rotationYaw % 360;
+                    if (blockHitYaw < 0) {
+                        blockHitYaw += 360;
+                    }
+                    if (entityAttackingYaw < 0) {
+                        entityAttackingYaw += 360;
+                    }
+                    float blockRelativeYaw = blockHitYaw - entityAttackingYaw;
+
+                    float xzDistance = (float) Math.sqrt((pos.getZ() - posZ) * (pos.getZ() - posZ) + (pos.getX() - posX) * (pos.getX() - posX));
+                    float blockHitPitch = (float) ((Math.atan2((pos.getY() - posY), xzDistance) * (180 / Math.PI)) % 360);
+                    float entityAttackingPitch = -rotationPitch % 360;
+                    if (blockHitPitch < 0) {
+                        blockHitPitch += 360;
+                    }
+                    if (entityAttackingPitch < 0) {
+                        entityAttackingPitch += 360;
+                    }
+                    float blockRelativePitch = blockHitPitch - entityAttackingPitch;
+
+                    float blockHitDistance = (float) Math.sqrt((pos.getZ() - posZ) * (pos.getZ() - posZ) + (pos.getX() - posX) * (pos.getX() - posX) + (pos.getY() - posY) * (pos.getY() - posY));
+
+                    boolean inRange = blockHitDistance <= RANGE;
+                    boolean yawCheck = (blockRelativeYaw <= ARC / 2f && blockRelativeYaw >= -ARC / 2f) || (blockRelativeYaw >= 360 - ARC / 2f || blockRelativeYaw <= -360 + ARC / 2f);
+                    boolean pitchCheck = (blockRelativePitch <= ARC / 2f && blockRelativePitch >= -ARC / 2f) || (blockRelativePitch >= 360 - ARC / 2f || blockRelativePitch <= -360 + ARC / 2f);
+                    if (inRange && yawCheck && pitchCheck) {
+                        EntityBlockSwapper.swapBlock(world, pos, Blocks.ICE.getDefaultState(), 140, false, false);
+                    }
+                }
             }
         }
     }
