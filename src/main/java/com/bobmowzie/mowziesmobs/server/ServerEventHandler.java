@@ -60,18 +60,17 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.client.event.InputUpdateEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.player.AttackEntityEvent;
-import net.minecraftforge.event.entity.player.FillBucketEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.*;
 import net.minecraftforge.event.terraingen.PopulateChunkEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.input.Mouse;
@@ -366,7 +365,7 @@ public enum ServerEventHandler {
 
     @SubscribeEvent
     public void onBreakBlock(BlockEvent.BreakEvent event) {
-        EntityPlayer player  = event.getPlayer();
+        EntityPlayer player = event.getPlayer();
         IBlockState block = event.getState();
         if (block == Blocks.GOLD_BLOCK.getDefaultState()) {
             List<EntityBarako> barakos = getEntitiesNearby(player, EntityBarako.class, 10);
@@ -390,6 +389,9 @@ public enum ServerEventHandler {
 
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.RightClickEmpty event) {
+        if (event.isCancelable() && event.getEntityLiving().isPotionActive(PotionHandler.FROZEN)) {
+            event.setCanceled(true);
+        }
         EntityPlayer player = event.getEntityPlayer();
         MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
         if (property != null) {
@@ -411,6 +413,9 @@ public enum ServerEventHandler {
 
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.EntityInteract event) {
+        if (event.isCancelable() && event.getEntityLiving().isPotionActive(PotionHandler.FROZEN)) {
+            event.setCanceled(true);
+        }
         MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
         if (property != null) {
             for (int i = 0; i < property.powers.length; i++) {
@@ -515,6 +520,9 @@ public enum ServerEventHandler {
 
     @SubscribeEvent
     public void onPlayerLeftClick(PlayerInteractEvent.LeftClickBlock event) {
+        if (event.isCancelable() && event.getEntityPlayer().isPotionActive(PotionHandler.FROZEN)) {
+            event.setCanceled(true);
+        }
         MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
         if (property != null) {
             for (int i = 0; i < property.powers.length; i++) {
@@ -547,8 +555,8 @@ public enum ServerEventHandler {
 
     @SubscribeEvent
     public void onPlayerAttack(AttackEntityEvent event) {
-        if (event.getEntityLiving().isPotionActive(PotionHandler.FROZEN)) {
-            event.setCanceled(true);    //TODO: doesn't work
+        if (event.isCancelable() && event.getEntityLiving().isPotionActive(PotionHandler.FROZEN)) {
+            event.setCanceled(true);
         }
         if (event.getEntity() instanceof EntityPlayer) {
             MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
