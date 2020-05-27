@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.model.ModelAnimator;
@@ -64,6 +65,7 @@ public class ModelBarako extends AdvancedModelBase {
     public AdvancedModelRenderer mouthScalerX;
     public AdvancedModelRenderer mouthScalerY;
     public AdvancedModelRenderer bellyScaler;
+    public SocketModelRenderer betweenHands;
 
     private ModelAnimator animator;
 
@@ -118,7 +120,6 @@ public class ModelBarako extends AdvancedModelBase {
         this.lowerLip.setRotationPoint(0.0F, 4.0F, 0.0F);
         this.lowerLip.addBox(-6.0F, 0.0F, -2.0F, 12, 2, 2, 0.0F);
         this.lowerLip.scaleChildren = true;
-        lowerLip.scaleChildren = true;
         this.setRotateAngle(lowerLip, 0.0F, 0.0F, 3.141592653589793F);
         this.rightFoot = new AdvancedModelRenderer(this, 83, 27);
         this.rightFoot.setRotationPoint(0.0F, 11.0F, 5.0F);
@@ -183,7 +184,7 @@ public class ModelBarako extends AdvancedModelBase {
         this.leftCalf.addBox(-3.0F, 0.0F, 0.0F, 6, 10, 6, 0.0F);
         leftCalf.scaleChildren = true;
         this.setRotateAngle(leftCalf, 1.1838568316277536F, 0.0F, 0.0F);
-        this.rightHand = new AdvancedModelRenderer(this, 0, 43);
+        this.rightHand = new SocketModelRenderer(this, 0, 43);
         this.rightHand.setRotationPoint(2.5F, 11.0F, 0.0F);
         this.rightHand.addBox(-3.0F, 0.0F, -1.5F, 6, 8, 3, 0.0F);
         this.setRotateAngle(rightHand, 1.0471975511965976F, 0.6981317007977318F, 0.0F);
@@ -236,7 +237,7 @@ public class ModelBarako extends AdvancedModelBase {
         this.upperLip.setRotationPoint(0.0F, 0.0F, -2.0F);
         this.upperLip.addBox(-6.0F, -2.0F, 0.0F, 12, 2, 2, 0.0F);
         upperLip.scaleChildren = true;
-        this.leftHand = new AdvancedModelRenderer(this, 0, 43);
+        this.leftHand = new SocketModelRenderer(this, 0, 43);
         this.leftHand.mirror = true;
         this.leftHand.setRotationPoint(-2.5F, 11.0F, 0.0F);
         this.leftHand.addBox(-3.0F, 0.0F, -1.5F, 6, 8, 3, 0.0F);
@@ -282,6 +283,8 @@ public class ModelBarako extends AdvancedModelBase {
         mouthScalerY.setRotationPoint(1, 0, 0);
         bellyScaler = new AdvancedModelRenderer(this, 0, 0);
         bellyScaler.setRotationPoint(1, 0, 0);
+        betweenHands = new SocketModelRenderer(this, 0, 0);
+        betweenHands.setRotationPoint(0F, 9F, -20F);
         this.upperLip.addChild(this.teethTop);
         this.head.addChild(this.maskBase);
         this.maskBase.addChild(this.leftEar);
@@ -331,6 +334,10 @@ public class ModelBarako extends AdvancedModelBase {
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         animate((IAnimatedEntity) entity, f, f1, f2, f3, f4, f5);
+
+        EntityBarako barako = (EntityBarako) entity;
+        if (barako.betweenHandPos.length > 0) barako.betweenHandPos[0] = betweenHands.getWorldPos(entity, LLibrary.PROXY.getPartialTicks());
+
         GlStateManager.enableNormalize();
         this.body.render(f5);
         GlStateManager.disableNormalize();
@@ -1134,6 +1141,82 @@ public class ModelBarako extends AdvancedModelBase {
             animator.rotate(rightThigh, -0.3f * (1 - liftLegs), 0, 0);
             animator.endKeyframe();
             animator.resetKeyframe(10);
+        }
+
+        if (tribeleader.getAnimation() == EntityBarako.SUPERNOVA_ANIMATION) {
+            animator.setAnimation(EntityBarako.SUPERNOVA_ANIMATION);
+            animator.startKeyframe(21);
+            animator.rotate(neck, -0.2f, 0, 0);
+            animator.rotate(head, -0.2f, 0, 0);
+            animator.rotate(rightUpperArm, -0.2f, 0, -1.9f);
+            animator.rotate(rightArmJoint, -0.5f, 1.5f, 1.5f);
+            animator.rotate(rightLowerArm, -0.1f, 0, 0.8f);
+            animator.rotate(rightHand, -2f, 0.5f, 0);
+            animator.rotate(leftUpperArm, -0.2f, 0, 1.9f);
+            animator.rotate(leftArmJoint, -0.5f, -1.5f, -1.5f);
+            animator.rotate(leftLowerArm, -0.1f, 0, -0.8f);
+            animator.rotate(leftHand, -2f, -0.5f, 0);
+            animator.rotate(body, -0.15f, 0, 0);
+            animator.rotate(leftThigh, 0, -0.15f * liftLegs, 0);
+            animator.rotate(rightThigh, 0, 0.15f * liftLegs, 0);
+            animator.rotate(leftThigh, 0.15f * (1 - liftLegs), 0, 0);
+            animator.rotate(rightThigh, 0.15f * (1 - liftLegs), 0, 0);
+            animator.move(betweenHands, 0, -45, 15);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(9);
+            animator.startKeyframe(6);
+            animator.move(bellyScaler, -0.2f, 0, 0);
+            animator.rotate(neck, 0.3f, 0, 0);
+            animator.rotate(head, 0.3f, 0, 0);
+            animator.rotate(rightArmJoint, 0, -0.6f, 0.2f);
+            animator.rotate(rightLowerArm, -0.1f, 0, -0.2f);
+            animator.rotate(rightHand, -2.3f, -0.5f, -0.1f);
+            animator.rotate(leftArmJoint, 0, 0.6f, -0.2f);
+            animator.rotate(leftLowerArm, -0.1f, 0, 0.2f);
+            animator.rotate(leftHand, -2.3f, 0.5f, 0.1f);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(9);
+            animator.startKeyframe(3);
+            animator.move(bellyScaler, -0.1f, 0, 0);
+            animator.move(jiggleController, 0.5f, 1, 0);
+            animator.move(mouthScalerX, 0.2f, 0, 0);
+            animator.move(jawScaler, 1f, 0, 0);
+            animator.rotate(neckJoint, 0.3f, 0, 0);
+            animator.rotate(headJoint, -0.6f, 0, 0);
+            animator.rotate(body, 0.1f, 0, 0);
+            animator.rotate(leftThigh, 0, 0.1f * liftLegs, 0);
+            animator.rotate(rightThigh, 0, -0.1f * liftLegs, 0);
+            animator.rotate(leftThigh, -0.1f * (1 - liftLegs), 0, 0);
+            animator.rotate(rightThigh, -0.1f * (1 - liftLegs), 0, 0);
+            animator.rotate(leftArmJoint, -0.3f, -0.4f, -0.2f);
+            animator.rotate(leftLowerArm, 0, -0.5f, -0.8f);
+            animator.rotate(leftHand, -2.4f, 0.7f, 0);
+            animator.rotate(rightArmJoint, -0.3f, 0.4f, 0.2f);
+            animator.rotate(rightLowerArm, 0, 0.5f, 0.8f);
+            animator.rotate(rightHand, -2.4f, -0.7f, 0);
+            animator.endKeyframe();
+            animator.setStaticKeyframe(32);
+            animator.startKeyframe(10);
+            animator.move(bellyScaler, -0.1f, 0, 0);
+            animator.move(mouthScalerX, 0.2f, 0, 0);
+            animator.move(jawScaler, 1f, 0, 0);
+            animator.rotate(neckJoint, 0.3f, 0, 0);
+            animator.rotate(headJoint, -0.6f, 0, 0);
+            animator.rotate(body, 0.1f, 0, 0);
+            animator.rotate(leftThigh, 0, 0.1f * liftLegs, 0);
+            animator.rotate(rightThigh, 0, -0.1f * liftLegs, 0);
+            animator.rotate(leftThigh, -0.1f * (1 - liftLegs), 0, 0);
+            animator.rotate(rightThigh, -0.1f * (1 - liftLegs), 0, 0);
+            animator.rotate(leftArmJoint, -0.3f, -0.4f, -0.2f);
+            animator.rotate(leftLowerArm, 0, -0.5f, -0.8f);
+            animator.rotate(leftHand, -2.4f, 0.7f, 0);
+            animator.rotate(rightArmJoint, -0.3f, 0.4f, 0.2f);
+            animator.rotate(rightLowerArm, 0, 0.5f, 0.8f);
+            animator.rotate(rightHand, -2.4f, -0.7f, 0);
+            animator.endKeyframe();
+            animator.resetKeyframe(10);
+
+            jawScaler.rotationPointX += 0.1 * jiggleController.rotationPointY * Math.cos(frame * 2.5);
         }
 
         float jiggleSpeed = 2.5f;

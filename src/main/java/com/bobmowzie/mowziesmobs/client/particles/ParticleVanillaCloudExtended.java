@@ -19,11 +19,11 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ParticleVanillaCloudExtended extends Particle implements ParticleTextureStitcher.IParticleSpriteReceiver {
-    float oSize;
+    private float oSize;
     private float airDrag;
     private float red, green, blue;
 
-    private Vec3d destination[];
+    private Vec3d[] destination;
 
     protected ParticleVanillaCloudExtended(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double motionX, double motionY, double motionZ, double scale, double r, double g, double b, double drag, double duration) {
         super(worldIn, xCoordIn, yCoordIn, zCoordIn, 0.0D, 0.0D, 0.0D);

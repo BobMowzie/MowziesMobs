@@ -1,6 +1,9 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
 import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoTrade;
+import com.bobmowzie.mowziesmobs.client.particles.util.MowzieParticleBase;
+import com.bobmowzie.mowziesmobs.client.particles.util.ParticleComponent;
+import com.bobmowzie.mowziesmobs.client.particles.util.ParticleComponent.PropertyControl.EnumParticleProperty;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityRing;
@@ -73,6 +76,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     public static final Animation SPAWN_ANIMATION = Animation.create(20);
     public static final Animation SOLAR_BEAM_ANIMATION = Animation.create(100);
     public static final Animation BLESS_ANIMATION = Animation.create(60);
+    public static final Animation SUPERNOVA_ANIMATION = Animation.create(100);
     private static final int MAX_HEALTH = 140;
     private static final int SUNSTRIKE_PAUSE_MAX = 40;
     private static final int SUNSTRIKE_PAUSE_MIN = 15;
@@ -98,6 +102,15 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     private EntityPlayer blessingPlayer;
     private BarakoaHurtByTargetAI hurtByTargetAI;
 
+    @SideOnly(Side.CLIENT)
+    public Vec3d[] betweenHandPos;
+
+    private static ParticleComponent.KeyTrack superNovaKeyTrack1 = new ParticleComponent.KeyTrack(
+            new float[]{0, 20f, 20f, 0},
+            new float[]{0, 0.5f, 0.9f, 1}
+    );
+    private static ParticleComponent.KeyTrack superNovaKeyTrack2 = ParticleComponent.KeyTrack.oscillate(0, 1, 30);
+
     public EntityBarako(World world) {
         super(world);
         hurtByTargetAI = new BarakoaHurtByTargetAI(this, true);
@@ -108,6 +121,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         this.tasks.addTask(2, new AnimationAI<>(this, BELLY_ANIMATION, false));
         this.tasks.addTask(2, new AnimationAI<>(this, TALK_ANIMATION, false));
         this.tasks.addTask(2, new AnimationAI<>(this, BLESS_ANIMATION, false));
+        this.tasks.addTask(2, new AnimationAI<>(this, SUPERNOVA_ANIMATION, false));
         this.tasks.addTask(2, new AnimationSunStrike<>(this, SUNSTRIKE_ANIMATION));
         this.tasks.addTask(2, new AnimationRadiusAttack<>(this, ATTACK_ANIMATION, 4.5f, (int)(5 * ConfigHandler.BARAKO.combatData.attackMultiplier), 3f, 12, true));
         this.tasks.addTask(2, new AnimationSpawnBarakoa(this, SPAWN_ANIMATION));
@@ -122,6 +136,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             this.setDirection(rand.nextInt(4) + 1);
         }
         experienceValue = 45;
+        betweenHandPos = new Vec3d[] {new Vec3d(0, 0, 0)};
     }
 
     public EntityBarako(World world, int direction) {
@@ -305,8 +320,33 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             }
         }
 
+        if (getAnimation() == SUPERNOVA_ANIMATION) {
+            if (world.isRemote && betweenHandPos.length > 0 && getAnimationTick() == 1) {
+                superNovaKeyTrack1 = new ParticleComponent.KeyTrack(
+                        new float[]{0, 25f, 32f, 5},
+                        new float[]{0, 0.6f, 0.9f, 1}
+                );
+                superNovaKeyTrack2 = ParticleComponent.KeyTrack.oscillate(0, 7, 26);
+                MowzieParticleBase.spawnParticle(world, MMParticle.SUN, betweenHandPos[0].x, betweenHandPos[0].y, betweenHandPos[0].z, 0, 0, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 65, true, true, new ParticleComponent[]{
+                        new ParticleComponent.PinLocation(betweenHandPos),
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, superNovaKeyTrack1, false),
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, superNovaKeyTrack2, true)
+                });
+            }
+            if (world.isRemote && betweenHandPos.length > 0 && getAnimationTick() == 32) {
+                MowzieParticleBase.spawnParticle(world, MMParticle.SUN_NOVA, betweenHandPos[0].x, betweenHandPos[0].y, betweenHandPos[0].z, 0, 0, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 27, true, true, new ParticleComponent[]{
+                        new ParticleComponent.PinLocation(betweenHandPos),
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
+                                new float[]{0, 8f, 6f, 30},
+                                new float[]{0, 0.1f, 0.95f, 1}
+                        ), false),
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.ROLL, ParticleComponent.KeyTrack.startAndEnd(0f, 6f), false)
+                });
+            }
+        }
+
         if (!world.isRemote && getAttackTarget() == null && getAnimation() != SOLAR_BEAM_ANIMATION) {
-            heal(0.1f);
+            heal(0.2f);
         }
         if (timeUntilSunstrike > 0) {
             timeUntilSunstrike--;
@@ -316,6 +356,10 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         }
         if (timeUntilBarakoa > 0) {
             timeUntilBarakoa--;
+        }
+
+        if (getAnimation() == NO_ANIMATION) {
+            AnimationHandler.INSTANCE.sendAnimationMessage(this, SUPERNOVA_ANIMATION);
         }
     }
 
@@ -459,7 +503,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 
     @Override
     public Animation[] getAnimations() {
-        return new Animation[]{DIE_ANIMATION, HURT_ANIMATION, BELLY_ANIMATION, TALK_ANIMATION, SUNSTRIKE_ANIMATION, ATTACK_ANIMATION, SPAWN_ANIMATION, SOLAR_BEAM_ANIMATION, BLESS_ANIMATION};
+        return new Animation[]{DIE_ANIMATION, HURT_ANIMATION, BELLY_ANIMATION, TALK_ANIMATION, SUNSTRIKE_ANIMATION, ATTACK_ANIMATION, SPAWN_ANIMATION, SOLAR_BEAM_ANIMATION, BLESS_ANIMATION, SUPERNOVA_ANIMATION};
     }
 
     @Override

@@ -20,6 +20,8 @@ public enum MMParticle {
     PIXEL(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/pixel"))),
     EYE(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/eye"))),
     BUBBLE(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/bubble"))),
+    SUN(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/sun"))),
+    SUN_NOVA(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/sun_nova"))),
     SPARKLE(new ParticleSparkle.SparkleFactory()),
     FALLING_BLOCK(new ParticleFallingBlock.FallingBlockFactory());
 
