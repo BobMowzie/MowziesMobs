@@ -2,8 +2,12 @@ package com.bobmowzie.mowziesmobs.client.particles.util;
 
 import net.minecraft.util.math.Vec3d;
 
-public class ParticleComponent {
+public abstract class ParticleComponent {
     public ParticleComponent() {
+
+    }
+
+    public void init(MowzieParticleBase particle) {
 
     }
 
@@ -11,7 +15,13 @@ public class ParticleComponent {
 
     }
 
-    public static class KeyTrack {
+    public abstract static class AnimData {
+        public float evaluate(float t) {
+            return 0;
+        }
+    }
+
+    public static class KeyTrack extends AnimData {
         float[] values;
         float[] times;
 
@@ -21,6 +31,7 @@ public class ParticleComponent {
             if (values.length != times.length) System.out.println("Malformed key track. Must have same number of keys and values or key track will evaluate to 0.");
         }
 
+        @Override
         public float evaluate(float t) {
             if (values.length != times.length) return 0;
             for (int i = 0; i < times.length; i++) {
@@ -36,6 +47,10 @@ public class ParticleComponent {
                 }
             }
             return 0;
+        }
+
+        public static KeyTrack constant(float value) {
+            return new KeyTrack(new float[] {value}, new float[] {0});
         }
 
         public static KeyTrack startAndEnd(float startValue, float endValue) {
@@ -56,29 +71,59 @@ public class ParticleComponent {
         }
     }
 
+    public static class Oscillator extends AnimData {
+        float value1, value2;
+        float frequency;
+        float phaseShift;
+
+        public Oscillator(float value1, float value2, float frequency, float phaseShift) {
+            this.value1 = value1;
+            this.value2 = value2;
+            this.frequency = frequency;
+            this.phaseShift = phaseShift;
+        }
+
+        @Override
+        public float evaluate(float t) {
+            float a = (value2 - value1) / 2f;
+            return (float) (value1 + a + a * Math.cos(t * frequency + phaseShift));
+        }
+    }
+
     public static class PropertyControl extends ParticleComponent {
         public enum EnumParticleProperty {
             POS_X, POS_Y, POS_Z,
             MOTION_X, MOTION_Y, MOTION_Z,
             RED, GREEN, BLUE, ALPHA,
             SCALE,
-            YAW, PITCH, ROLL,
+            YAW, PITCH, ROLL, // For not facing camera
+            PARTICLE_ANGLE, // For facing camera
             AIR_DRAG
         }
 
-        private KeyTrack keyTrack;
+        private AnimData animData;
         private EnumParticleProperty property;
         private boolean additive;
-        public PropertyControl(EnumParticleProperty property, KeyTrack keyTrack, boolean additive) {
+        public PropertyControl(EnumParticleProperty property, AnimData animData, boolean additive) {
             this.property = property;
-            this.keyTrack = keyTrack;
+            this.animData = animData;
             this.additive = additive;
+        }
+
+        @Override
+        public void init(MowzieParticleBase particle) {
+            float value = animData.evaluate(0);
+            apply(particle, value);
         }
 
         @Override
         public void update(MowzieParticleBase particle) {
             float ageFrac = particle.getAge() / particle.getMaxAge();
-            float value = keyTrack.evaluate(ageFrac);
+            float value = animData.evaluate(ageFrac);
+            apply(particle, value);
+        }
+
+        private void apply(MowzieParticleBase particle, float value) {
             if (property == EnumParticleProperty.POS_X) {
                 if (additive) particle.setPosX(particle.getPosX() + value);
                 else particle.setPosX(value);
@@ -135,38 +180,14 @@ public class ParticleComponent {
                 if (additive) particle.roll += value;
                 else particle.roll = value;
             }
+            else if (property == EnumParticleProperty.PARTICLE_ANGLE) {
+                if (additive) particle.setAngle(particle.getAngle() + value);
+                else particle.setAngle(value);
+            }
             else if (property == EnumParticleProperty.AIR_DRAG) {
                 if (additive) particle.airDrag += value;
                 else particle.airDrag = value;
             }
-        }
-    }
-
-    public static class AlphaControl extends ParticleComponent {
-        float startAlpha, endAlpha;
-        public AlphaControl(float startAlpha, float endAlpha) {
-            this.startAlpha = startAlpha;
-            this.endAlpha = endAlpha;
-        }
-
-        @Override
-        public void update(MowzieParticleBase particle) {
-            float ageFrac = particle.getAge() / particle.getMaxAge();
-            particle.alpha = startAlpha * (1f - ageFrac) + endAlpha * ageFrac;
-        }
-    }
-
-    public static class SizeControl extends ParticleComponent {
-        float startAlpha, endAlpha;
-        public SizeControl(float startAlpha, float endAlpha) {
-            this.startAlpha = startAlpha;
-            this.endAlpha = endAlpha;
-        }
-
-        @Override
-        public void update(MowzieParticleBase particle) {
-            float ageFrac = particle.getAge() / particle.getMaxAge();
-            particle.alpha = startAlpha * (1f - ageFrac) + endAlpha * ageFrac;
         }
     }
 
@@ -178,9 +199,68 @@ public class ParticleComponent {
         }
 
         @Override
+        public void init(MowzieParticleBase particle) {
+            if (location.length > 0) {
+                particle.setPosition(location[0].x, location[0].y, location[0].z);
+            }
+        }
+
+        @Override
         public void update(MowzieParticleBase particle) {
             if (location.length > 0) {
                 particle.setPosition(location[0].x, location[0].y, location[0].z);
+            }
+        }
+    }
+
+    public static class Attractor extends ParticleComponent {
+        public enum EnumAttractorBehavior {
+            LINEAR,
+            EXPONENTIAL,
+            SIMULATED,
+        }
+
+        private Vec3d[] location;
+        private float strength;
+        private float killDist;
+        private EnumAttractorBehavior behavior;
+        private Vec3d startLocation;
+
+        public Attractor(Vec3d[] location, float strength, float killDist, EnumAttractorBehavior behavior) {
+            this.location = location;
+            this.strength = strength;
+            this.killDist = killDist;
+            this.behavior = behavior;
+        }
+
+        @Override
+        public void init(MowzieParticleBase particle) {
+            startLocation = new Vec3d(particle.getPosX(), particle.getPosY(), particle.getPosZ());
+        }
+
+        @Override
+        public void update(MowzieParticleBase particle) {
+            float ageFrac = particle.getAge() / particle.getMaxAge();
+            if (location.length > 0) {
+                Vec3d destinationVec = location[0];
+                Vec3d currPos = new Vec3d(particle.getPosX(), particle.getPosY(), particle.getPosZ());
+                Vec3d diff = destinationVec.subtract(currPos);
+                if (diff.length() < killDist) particle.setExpired();
+                if (behavior == EnumAttractorBehavior.EXPONENTIAL) {
+                    Vec3d path = destinationVec.subtract(startLocation).scale(Math.pow(ageFrac, strength)).add(startLocation).subtract(currPos);
+                    particle.move(path.x, path.y, path.z);
+                }
+                else if (behavior == EnumAttractorBehavior.LINEAR) {
+                    Vec3d path = destinationVec.subtract(startLocation).scale(ageFrac).add(startLocation).subtract(currPos);
+                    particle.move(path.x, path.y, path.z);
+                }
+                else {
+                    double dist = Math.max(diff.length(), 0.001);
+                    diff = diff.normalize().scale(strength / (dist * dist));
+                    particle.setMotionX(Math.min(particle.getMotionX() + diff.x, 5));
+                    particle.setMotionY(Math.min(particle.getMotionY() + diff.y, 5));
+                    particle.setMotionZ(Math.min(particle.getMotionZ() + diff.z, 5));
+                }
             }
         }
     }

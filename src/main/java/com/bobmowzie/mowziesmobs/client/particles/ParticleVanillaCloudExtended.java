@@ -152,7 +152,6 @@ public class ParticleVanillaCloudExtended extends Particle implements ParticleTe
             Vec3d diff = destinationVec.subtract(new Vec3d(posX, posY, posZ));
             if (diff.length() < 0.5) this.setExpired();
             float attractScale = 0.7f * ((float)this.particleAge / (float)this.particleMaxAge) * ((float)this.particleAge / (float)this.particleMaxAge);
-            diff = diff;
             motionX = diff.x * attractScale;
             motionY = diff.y * attractScale;
             motionZ = diff.z * attractScale;

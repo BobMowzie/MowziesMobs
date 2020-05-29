@@ -320,27 +320,92 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             }
         }
 
-        if (getAnimation() == SUPERNOVA_ANIMATION) {
-            if (world.isRemote && betweenHandPos.length > 0 && getAnimationTick() == 1) {
+        if (getAnimation() == SUPERNOVA_ANIMATION && world.isRemote && betweenHandPos.length > 0) {
+            if (getAnimationTick() == 1) {
                 superNovaKeyTrack1 = new ParticleComponent.KeyTrack(
-                        new float[]{0, 25f, 32f, 5},
-                        new float[]{0, 0.6f, 0.9f, 1}
+                        new float[]{0, 25f, 32f, 0},
+                        new float[]{0, 0.6f, 0.85f, 1}
                 );
-                superNovaKeyTrack2 = ParticleComponent.KeyTrack.oscillate(0, 7, 26);
-                MowzieParticleBase.spawnParticle(world, MMParticle.SUN, betweenHandPos[0].x, betweenHandPos[0].y, betweenHandPos[0].z, 0, 0, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 65, true, true, new ParticleComponent[]{
+                superNovaKeyTrack2 = ParticleComponent.KeyTrack.oscillate(0, 7, 24);
+                MowzieParticleBase.spawnParticle(world, MMParticle.SUN, 0, 0, 0, 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 33, true, new ParticleComponent[]{
                         new ParticleComponent.PinLocation(betweenHandPos),
                         new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, superNovaKeyTrack1, false),
                         new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, superNovaKeyTrack2, true)
                 });
             }
-            if (world.isRemote && betweenHandPos.length > 0 && getAnimationTick() == 32) {
-                MowzieParticleBase.spawnParticle(world, MMParticle.SUN_NOVA, betweenHandPos[0].x, betweenHandPos[0].y, betweenHandPos[0].z, 0, 0, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 27, true, true, new ParticleComponent[]{
+            if (getAnimationTick() == 33) {
+                MowzieParticleBase.spawnParticle(world, MMParticle.SUN_NOVA, 0, 0, 0, 0, 0, 0, true, 0, 0, 0, 0, 20F, 1, 1, 1, 0, 1, 13, true, new ParticleComponent[]{
                         new ParticleComponent.PinLocation(betweenHandPos),
                         new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
-                                new float[]{0, 8f, 6f, 30},
-                                new float[]{0, 0.1f, 0.95f, 1}
+                                new float[]{11f, 7f, 5.5f, 1f, 30},
+                                new float[]{0, 0.15f, 0.8f, 0.89f, 1}
                         ), false),
-                        new ParticleComponent.PropertyControl(EnumParticleProperty.ROLL, ParticleComponent.KeyTrack.startAndEnd(0f, 6f), false)
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, new ParticleComponent.KeyTrack(
+                                new float[]{0f, 1f, 1f, 0f},
+                                new float[]{0, 0.15f, 0.89f, 1}
+                        ), false),
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.PARTICLE_ANGLE, ParticleComponent.KeyTrack.startAndEnd(0f, -6f), false)
+                });
+            }
+            if (getAnimationTick() == 32) {
+                MowzieParticleBase.spawnParticle(world, MMParticle.FLARE,  0, 0, 0, 0, 0, 0, true, 0, 0, 0, 0, 5F, 1,1,1, 0.7, 1, 3, true, new ParticleComponent[]{
+                        new ParticleComponent.PinLocation(betweenHandPos),
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.POS_Y, ParticleComponent.KeyTrack.constant(-0.15f), true),
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
+                                new float[]{0f, 22f, 0f},
+                                new float[]{0, 0.2f, 1}
+                        ), false)
+                });
+            }
+            if (getAnimationTick() > 30 && getAnimationTick() < 41) {
+                for (int i = 0; i < 8; i++) {
+                    Vec3d particlePos = new Vec3d(Math.random() * 1.5, 0, 0);
+                    particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
+                    particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                    particlePos = particlePos.add(betweenHandPos[0]);
+                    double value = rand.nextDouble() * 0.5 + 0.1;
+                    MowzieParticleBase.spawnParticle(world, MMParticle.PIXEL, particlePos.x, particlePos.y, particlePos.z, 0, 0, 0, true, 0, 0, 0, 0, 5F, value, value, value, 1, 1, 4, false, new ParticleComponent[]{
+                            new ParticleComponent.Attractor(betweenHandPos, 1.4f, 0.2f, ParticleComponent.Attractor.EnumAttractorBehavior.EXPONENTIAL),
+                            new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
+                                    new float[]{0f, 3.5f},
+                                    new float[]{0, 0.2f}
+                            ), false),
+                    });
+                }
+            }
+            if (getAnimationTick() > 1 && getAnimationTick() < 27) {
+                for (int i = 0; i < 6; i++) {
+                    Vec3d particlePos = new Vec3d(Math.random() * 5, 0, 0);
+                    particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
+                    particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                    particlePos = particlePos.add(betweenHandPos[0]);
+                    double value = rand.nextDouble() * 0.5 + 0.1;
+                    MowzieParticleBase.spawnParticle(world, MMParticle.PIXEL, particlePos.x, particlePos.y, particlePos.z, 0, 0, 0, true, 0, 0, 0, 0, 5F, value, value, value, 1, 1, 7, false, new ParticleComponent[]{
+                            new ParticleComponent.Attractor(betweenHandPos, 1.1f, 1f, ParticleComponent.Attractor.EnumAttractorBehavior.EXPONENTIAL),
+                            new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
+                                    new float[]{0f, 3.5f},
+                                    new float[]{0, 0.2f}
+                            ), false)
+                    });
+                }
+            }
+            float timeFrac = Math.min((float)getAnimationTick() / 20f, 1f);
+            if (getAnimationTick() > 1 && getAnimationTick() < 25 && getAnimationTick() % (int)(4 * (1 - timeFrac) + 1) == 0) {
+                MowzieParticleBase.spawnParticle(world, MMParticle.RING_SPARKS, 0, 0, 0, 0, 0, 0, true, 0, 0, 0, rand.nextFloat() * (float)Math.PI * 2, 5F, 1, 1, 1, 1, 1, 6 + rand.nextFloat() * 3, true, new ParticleComponent[]{
+                        new ParticleComponent.PinLocation(betweenHandPos),
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(10f + 20f * timeFrac * timeFrac + 10f * rand.nextFloat() * timeFrac, 0f), false),
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0f, 0.7f), false)
+                });
+            }
+            if (getAnimationTick() == 14) {
+                MowzieParticleBase.spawnParticle(world, MMParticle.FLARE, 0, 0, 0, 0, 0, 0, true, 0, 0, 0, 0, 5F, 1, 1, 1, 1, 1, 18, true, new ParticleComponent[]{
+                        new ParticleComponent.PinLocation(betweenHandPos),
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.POS_Y, ParticleComponent.KeyTrack.constant(-0.15f), true),
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
+                                new float[]{0f, 35f, 0f},
+                                new float[]{0, 0.8f, 1}
+                        ), false),
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.Oscillator(-5, 5, 42, 0), true)
                 });
             }
         }

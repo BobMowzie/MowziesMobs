@@ -65,6 +65,7 @@ public class ModelBarako extends AdvancedModelBase {
     public AdvancedModelRenderer mouthScalerX;
     public AdvancedModelRenderer mouthScalerY;
     public AdvancedModelRenderer bellyScaler;
+    public AdvancedModelRenderer lookController;
     public SocketModelRenderer betweenHands;
 
     private ModelAnimator animator;
@@ -283,6 +284,8 @@ public class ModelBarako extends AdvancedModelBase {
         mouthScalerY.setRotationPoint(1, 0, 0);
         bellyScaler = new AdvancedModelRenderer(this, 0, 0);
         bellyScaler.setRotationPoint(1, 0, 0);
+        lookController = new AdvancedModelRenderer(this, 0, 0);
+        lookController.setRotationPoint(1, 0, 0);
         betweenHands = new SocketModelRenderer(this, 0, 0);
         betweenHands.setRotationPoint(0F, 9F, -20F);
         this.upperLip.addChild(this.teethTop);
@@ -359,13 +362,6 @@ public class ModelBarako extends AdvancedModelBase {
         EntityBarako tribeLeader = (EntityBarako) entity;
         float liftLegs = tribeLeader.legsUp.getAnimationProgressSinSqrt();
         float frame = tribeLeader.frame + LLibrary.PROXY.getPartialTicks();
-
-        if (tribeLeader.getAnimation() != EntityBarako.SOLAR_BEAM_ANIMATION) {
-            faceTarget(f3, f4, 2.0F, neckJoint);
-            faceTarget(f3, f4, 2.0F, headJoint);
-        } else {
-            faceTarget(f3, f4, 1.0F, head);
-        }
 
         if (tribeLeader.getAnimation() != EntityBarako.DIE_ANIMATION && !tribeLeader.isPotionActive(PotionHandler.FROZEN)) {
             walk(body, 0.06f, 0.05f, true, 0, -0.05f, frame, 1f);
@@ -1013,6 +1009,7 @@ public class ModelBarako extends AdvancedModelBase {
             animator.rotate(leftHand, -0.5f, 0.7f, 0);
             animator.rotate(leftThigh, -0.3f * (1 - liftLegs), 0, 0);
             animator.rotate(rightThigh, -0.3f * (1 - liftLegs), 0, 0);
+            animator.move(lookController, -1, 0, 0);
             animator.endKeyframe();
             animator.resetKeyframe(5);
             animator.startKeyframe(5);
@@ -1029,6 +1026,7 @@ public class ModelBarako extends AdvancedModelBase {
             animator.rotate(leftLowerArm, -0.1f, 0, -0.2f);
             animator.rotate(leftHand, -0.5f, -0.5f, 0);
             animator.move(jiggleController, 0, 1, 0);
+            animator.move(lookController, -1, 0, 0);
             animator.endKeyframe();
             animator.setStaticKeyframe(25);
             animator.startKeyframe(10);
@@ -1044,6 +1042,7 @@ public class ModelBarako extends AdvancedModelBase {
             animator.rotate(leftArmJoint, -0.5f, -0.9f, 0.5f);
             animator.rotate(leftLowerArm, -0.1f, 0, -0.2f);
             animator.rotate(leftHand, -0.5f, -0.5f, 0);
+            animator.move(lookController, -1, 0, 0);
             animator.endKeyframe();
             animator.setStaticKeyframe(8);
             animator.startKeyframe(15);
@@ -1059,6 +1058,7 @@ public class ModelBarako extends AdvancedModelBase {
             animator.rotate(leftHand, -0.5f, -0.5f, 0);
             animator.move(bellyScaler, 0, 0.9999f, 0);
             animator.move(body, 0, -36, 4);
+            animator.move(lookController, -1, 0, 0);
             animator.endKeyframe();
             animator.setStaticKeyframe(17);
             animator.startKeyframe(3);
@@ -1066,6 +1066,7 @@ public class ModelBarako extends AdvancedModelBase {
             animator.rotate(headJoint, -0.4f, 0, 0);
             animator.move(bellyScaler, 0, 0.9999f, 0);
             animator.move(body, 0, -10, 4);
+            animator.move(lookController, -1, 0, 0);
             animator.endKeyframe();
             animator.startKeyframe(2);
             animator.rotate(neckJoint, -0.3f, 0, 0);
@@ -1079,6 +1080,7 @@ public class ModelBarako extends AdvancedModelBase {
             animator.rotate(headdress7, -0.25f, 0, 0);
             animator.move(bellyScaler, 0, 0.9999f, 0);
             animator.move(body, 0, -5, 10);
+            animator.move(lookController, -1, 0, 0);
             animator.endKeyframe();
             animator.setStaticKeyframe(100);
 
@@ -1147,7 +1149,7 @@ public class ModelBarako extends AdvancedModelBase {
             animator.setAnimation(EntityBarako.SUPERNOVA_ANIMATION);
             animator.startKeyframe(21);
             animator.rotate(neck, -0.2f, 0, 0);
-            animator.rotate(head, -0.2f, 0, 0);
+            animator.rotate(head, -0.3f, 0, 0);
             animator.rotate(rightUpperArm, -0.2f, 0, -1.9f);
             animator.rotate(rightArmJoint, -0.5f, 1.5f, 1.5f);
             animator.rotate(rightLowerArm, -0.1f, 0, 0.8f);
@@ -1161,21 +1163,38 @@ public class ModelBarako extends AdvancedModelBase {
             animator.rotate(rightThigh, 0, 0.15f * liftLegs, 0);
             animator.rotate(leftThigh, 0.15f * (1 - liftLegs), 0, 0);
             animator.rotate(rightThigh, 0.15f * (1 - liftLegs), 0, 0);
-            animator.move(betweenHands, 0, -45, 15);
+            animator.move(betweenHands, 0, -45, 8);
+            animator.move(lookController, -1, 0, 0);
             animator.endKeyframe();
             animator.setStaticKeyframe(9);
             animator.startKeyframe(6);
             animator.move(bellyScaler, -0.2f, 0, 0);
             animator.rotate(neck, 0.3f, 0, 0);
             animator.rotate(head, 0.3f, 0, 0);
+            animator.rotate(rightArmJoint, 0, -0.4f, 0.2f);
+            animator.rotate(rightLowerArm, -0.1f, 0, -0.3f);
+            animator.rotate(rightHand, -2.5f, -0.5f, -0.1f);
+            animator.rotate(leftArmJoint, 0, 0.4f, -0.2f);
+            animator.rotate(leftLowerArm, -0.1f, 0, 0.3f);
+            animator.rotate(leftHand, -2.5f, 0.5f, 0.1f);
+            animator.move(lookController, -1, 0, 0);
+            animator.move(betweenHands, 0, -2, 2);
+            animator.move(jiggleController, 0f, 0, 1f);
+            animator.endKeyframe();
+            animator.startKeyframe(9);
+            animator.move(bellyScaler, -0.2f, 0, 0);
+            animator.rotate(neck, 0.3f, 0, 0);
+            animator.rotate(head, 0.3f, 0, 0);
             animator.rotate(rightArmJoint, 0, -0.6f, 0.2f);
-            animator.rotate(rightLowerArm, -0.1f, 0, -0.2f);
-            animator.rotate(rightHand, -2.3f, -0.5f, -0.1f);
+            animator.rotate(rightLowerArm, -0.1f, 0f, -0.2f);
+            animator.rotate(rightHand, -2.6f, -0.4f, -0.3f);
             animator.rotate(leftArmJoint, 0, 0.6f, -0.2f);
             animator.rotate(leftLowerArm, -0.1f, 0, 0.2f);
-            animator.rotate(leftHand, -2.3f, 0.5f, 0.1f);
+            animator.rotate(leftHand, -2.6f, 0.4f, 0.3f);
+            animator.move(lookController, -1, 0, 0);
+            animator.move(betweenHands, 0, -2, 2);
+            animator.move(jiggleController, 0f, 0, 0.6f);
             animator.endKeyframe();
-            animator.setStaticKeyframe(9);
             animator.startKeyframe(3);
             animator.move(bellyScaler, -0.1f, 0, 0);
             animator.move(jiggleController, 0.5f, 1, 0);
@@ -1194,6 +1213,7 @@ public class ModelBarako extends AdvancedModelBase {
             animator.rotate(rightArmJoint, -0.3f, 0.4f, 0.2f);
             animator.rotate(rightLowerArm, 0, 0.5f, 0.8f);
             animator.rotate(rightHand, -2.4f, -0.7f, 0);
+            animator.move(betweenHands, 0, 0, 2);
             animator.endKeyframe();
             animator.setStaticKeyframe(32);
             animator.startKeyframe(10);
@@ -1217,6 +1237,14 @@ public class ModelBarako extends AdvancedModelBase {
             animator.resetKeyframe(10);
 
             jawScaler.rotationPointX += 0.1 * jiggleController.rotationPointY * Math.cos(frame * 2.5);
+
+            animator.rotate(rightArmJoint, 0, -0.5f, 0.2f);
+            animator.rotate(rightLowerArm, -0.1f, 0, -0.3f);
+            animator.rotate(rightHand, -2.5f, -0.5f, -0.1f);
+            rightArmJoint.rotateAngleY -= 0.07 * jiggleController.rotationPointZ * Math.cos(frame * 3.2);
+            rightLowerArm.rotateAngleZ += 0.07 * jiggleController.rotationPointZ * Math.cos(frame * 3.2);
+            leftArmJoint.rotateAngleY += 0.07 * jiggleController.rotationPointZ * Math.cos(frame * 3.2);
+            leftLowerArm.rotateAngleZ -= 0.07 * jiggleController.rotationPointZ * Math.cos(frame * 3.2);
         }
 
         float jiggleSpeed = 2.5f;
@@ -1243,6 +1271,13 @@ public class ModelBarako extends AdvancedModelBase {
             chest.setScale(1, 1, 1);
             rightThigh.setScale(1, 1, 1);
             leftThigh.setScale(1, 1, 1);
+        }
+
+        if (tribeleader.getAnimation() != EntityBarako.SOLAR_BEAM_ANIMATION) {
+            faceTarget(f3 * lookController.rotationPointX, f4 * lookController.rotationPointX, 2.0F, neckJoint);
+            faceTarget(f3 * lookController.rotationPointX, f4 * lookController.rotationPointX, 2.0F, headJoint);
+        } else {
+            faceTarget(f3, f4, 1.0F, head);
         }
 
         chest.rotationPointY += jiggleController.rotationPointX * 1.5 * Math.cos(jiggleSpeed * frame);

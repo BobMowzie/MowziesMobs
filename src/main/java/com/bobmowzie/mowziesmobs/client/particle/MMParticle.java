@@ -18,10 +18,17 @@ public enum MMParticle {
     CLOUD(new ParticleCloud.CloudFactory()),
     VANILLA_CLOUD(new ParticleVanillaCloudExtended.CloudFactory()),
     PIXEL(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/pixel"))),
+    ORB2(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/orb"))),
     EYE(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/eye"))),
     BUBBLE(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/bubble"))),
     SUN(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/sun"))),
     SUN_NOVA(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/sun_nova"))),
+    FLARE(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/flare"))),
+    FLARE_RADIAL(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/flare_radial"))),
+    BURST_IN(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/ring1"))),
+    BURST_MESSY(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/burst_messy"))),
+    RING_SPARKS(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/sparks_ring"))),
+    BURST_OUT(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/ring2"))),
     SPARKLE(new ParticleSparkle.SparkleFactory()),
     FALLING_BLOCK(new ParticleFallingBlock.FallingBlockFactory());
 
