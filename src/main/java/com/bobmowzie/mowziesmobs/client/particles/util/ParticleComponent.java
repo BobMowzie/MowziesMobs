@@ -15,6 +15,14 @@ public abstract class ParticleComponent {
 
     }
 
+    public void preRender(MowzieParticleBase particle, float partialTicks) {
+
+    }
+
+    public void postRender(MowzieParticleBase particle, float partialTicks) {
+
+    }
+
     public abstract static class AnimData {
         public float evaluate(float t) {
             return 0;
@@ -113,17 +121,25 @@ public abstract class ParticleComponent {
         @Override
         public void init(MowzieParticleBase particle) {
             float value = animData.evaluate(0);
-            apply(particle, value);
+            applyUpdate(particle, value);
+            applyRender(particle, value);
+        }
+
+        @Override
+        public void preRender(MowzieParticleBase particle, float partialTicks) {
+            float ageFrac = (particle.getAge() + partialTicks) / particle.getMaxAge();
+            float value = animData.evaluate(ageFrac);
+            applyRender(particle, value);
         }
 
         @Override
         public void update(MowzieParticleBase particle) {
             float ageFrac = particle.getAge() / particle.getMaxAge();
             float value = animData.evaluate(ageFrac);
-            apply(particle, value);
+            applyUpdate(particle, value);
         }
 
-        private void apply(MowzieParticleBase particle, float value) {
+        private void applyUpdate(MowzieParticleBase particle, float value) {
             if (property == EnumParticleProperty.POS_X) {
                 if (additive) particle.setPosX(particle.getPosX() + value);
                 else particle.setPosX(value);
@@ -148,7 +164,14 @@ public abstract class ParticleComponent {
                 if (additive) particle.setMotionZ(particle.getMotionZ() + value);
                 else particle.setMotionZ(value);
             }
-            else if (property == EnumParticleProperty.RED) {
+            else if (property == EnumParticleProperty.AIR_DRAG) {
+                if (additive) particle.airDrag += value;
+                else particle.airDrag = value;
+            }
+        }
+
+        private void applyRender(MowzieParticleBase particle, float value) {
+            if (property == EnumParticleProperty.RED) {
                 if (additive) particle.red += value;
                 else particle.red = value;
             }
@@ -183,10 +206,6 @@ public abstract class ParticleComponent {
             else if (property == EnumParticleProperty.PARTICLE_ANGLE) {
                 if (additive) particle.setAngle(particle.getAngle() + value);
                 else particle.setAngle(value);
-            }
-            else if (property == EnumParticleProperty.AIR_DRAG) {
-                if (additive) particle.airDrag += value;
-                else particle.airDrag = value;
             }
         }
     }

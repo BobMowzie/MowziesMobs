@@ -455,6 +455,8 @@ public class ModelWroughtnaut extends AdvancedModelBase {
         eyeRight.rotationPointY -= 1;
         eyeLeft.rotationPointY -= 1;
         eyeLeft.rotateAngleY -= Math.PI / 2f;
+        eyeLeft.setHasLighting(false);
+        eyeRight.setHasLighting(false);
 
         updateDefaultPose();
     }
@@ -463,8 +465,6 @@ public class ModelWroughtnaut extends AdvancedModelBase {
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         animate(f, f1, f2, f3, f4, f5, entity);
 
-        eyeLeft.setHasLighting(false);
-        eyeRight.setHasLighting(false);
         eyeLeft.setDefaultBrightness(entity);
         eyeRight.setDefaultBrightness(entity);
 

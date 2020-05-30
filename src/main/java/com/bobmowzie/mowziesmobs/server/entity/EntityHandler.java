@@ -69,6 +69,7 @@ public enum EntityHandler {
         registerEntity(registry, EntityRing.class, "ring", 64);
         registerEntity(registry, EntityDart.class, "dart", 64);
         registerEntity(registry, EntityPoisonBall.class, "poison_ball", 64);
+        registerEntity(registry, EntitySuperNova.class, "super_nova", 64);
         registerEntity(registry, EntityBlockSwapper.class, "block_swapper", 64);
     }
 

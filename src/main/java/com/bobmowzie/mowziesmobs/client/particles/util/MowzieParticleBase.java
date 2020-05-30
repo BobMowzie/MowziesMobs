@@ -127,6 +127,10 @@ public class MowzieParticleBase extends Particle implements ParticleTextureStitc
         particleBlue = prevBlue + (blue - prevBlue) * partialTicks;
         particleScale = prevScale + (scale - prevScale) * partialTicks;
 
+        for (ParticleComponent component : components) {
+            component.preRender(this, partialTicks);
+        }
+
         if (!faceCamera) {
             rotationX = 1;
             rotationZ = 1;

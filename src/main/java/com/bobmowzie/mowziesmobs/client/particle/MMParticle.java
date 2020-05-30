@@ -15,6 +15,8 @@ public enum MMParticle {
     ORB(new ParticleOrb.OrbFactory()),
     SNOWFLAKE(new ParticleSnowFlake.SnowFlakeFactory()),
     RING(new ParticleRing.RingFactory()),
+    RING2(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/ring"))),
+    RING_BIG(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/ring_big"))),
     CLOUD(new ParticleCloud.CloudFactory()),
     VANILLA_CLOUD(new ParticleVanillaCloudExtended.CloudFactory()),
     PIXEL(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/pixel"))),
@@ -29,6 +31,7 @@ public enum MMParticle {
     BURST_MESSY(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/burst_messy"))),
     RING_SPARKS(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/sparks_ring"))),
     BURST_OUT(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/ring2"))),
+    GLOW(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/glow"))),
     SPARKLE(new ParticleSparkle.SparkleFactory()),
     FALLING_BLOCK(new ParticleFallingBlock.FallingBlockFactory());
 
