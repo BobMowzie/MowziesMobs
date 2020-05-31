@@ -55,7 +55,6 @@ public class RenderSuperNova extends Render<EntitySuperNova> {
         GlStateManager.disableLighting();
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);
-        GlStateManager.rotate(entityYaw, 0, -1, 0);
         int i = entity.getBrightnessForRender();
         int k = i >> 16 & 255;
         i = 240 | k << 16;

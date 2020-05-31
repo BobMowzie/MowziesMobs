@@ -1,7 +1,11 @@
 package com.bobmowzie.mowziesmobs.client.particles.util;
 
+import javafx.scene.chart.Axis;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.util.math.Vec3d;
+
+import javax.vecmath.*;
 
 public abstract class ParticleComponent {
     public ParticleComponent() {
@@ -62,10 +66,6 @@ public abstract class ParticleComponent {
             return 0;
         }
 
-        public static KeyTrack constant(float value) {
-            return new KeyTrack(new float[] {value}, new float[] {0});
-        }
-
         public static KeyTrack startAndEnd(float startValue, float endValue) {
             return new KeyTrack(new float[] {startValue, endValue}, new float[] {0, 1});
         }
@@ -101,6 +101,23 @@ public abstract class ParticleComponent {
             float a = (value2 - value1) / 2f;
             return (float) (value1 + a + a * Math.cos(t * frequency + phaseShift));
         }
+    }
+
+    public static class Constant extends AnimData {
+        float value;
+
+        public Constant(float value) {
+            this.value = value;
+        }
+
+        @Override
+        public float evaluate(float t) {
+            return value;
+        }
+    }
+
+    public static Constant constant(float value) {
+        return new Constant(value);
     }
 
     public static class PropertyControl extends ParticleComponent {
@@ -286,6 +303,70 @@ public abstract class ParticleComponent {
                     particle.setMotionZ(Math.min(particle.getMotionZ() + diff.z, 5));
                 }
             }
+        }
+    }
+
+    public static class Orbit extends ParticleComponent {
+        private Vec3d[] location;
+        private AnimData phase;
+        private AnimData radius;
+        private AnimData axisX;
+        private AnimData axisY;
+        private AnimData axisZ;
+        private boolean faceCamera;
+
+        public Orbit(Vec3d[] location, AnimData phase, AnimData radius, AnimData axisX, AnimData axisY, AnimData axisZ, boolean faceCamera) {
+            this.location = location;
+            this.phase = phase;
+            this.radius = radius;
+            this.axisX = axisX;
+            this.axisY = axisY;
+            this.axisZ = axisZ;
+            this.faceCamera = faceCamera;
+        }
+
+        @Override
+        public void init(MowzieParticleBase particle) {
+            apply(particle, 0);
+        }
+
+        @Override
+        public void preUpdate(MowzieParticleBase particle) {
+            float ageFrac = particle.getAge() / particle.getMaxAge();
+            apply(particle, ageFrac);
+        }
+
+        private void apply(MowzieParticleBase particle, float t) {
+            float p = phase.evaluate(t);
+            float r = radius.evaluate(t);
+            Vec3d axis;
+            if (faceCamera) {
+                axis = Particle.cameraViewDir;
+            }
+            else {
+                axis = new Vec3d(axisX.evaluate(t), axisY.evaluate(t), axisZ.evaluate(t));
+                axis = axis.normalize();
+            }
+
+            Matrix4d quat = new Matrix4d();
+            quat.setIdentity();
+            AxisAngle4d axisAngle = new AxisAngle4d(axis.x, axis.y,axis.z, p * (float) Math.PI * 2);
+            quat.setRotation(axisAngle);
+            Vec3d up = new Vec3d(0, 1, 0);
+            Vec3d start = axis.crossProduct(up).normalize();
+            if (axis == up) {
+                start = new Vec3d(1, 0, 0);
+            }
+            Point3d newPos = new Point3d(start.x, start.y, start.z);
+            quat.transform(newPos);
+            newPos.scale(r);
+
+            if (location.length > 0 && location[0] != null) {
+                newPos.x += location[0].x;
+                newPos.y += location[0].y;
+                newPos.z += location[0].z;
+            }
+            particle.setPosition(newPos.x, newPos.y, newPos.z);
         }
     }
 }

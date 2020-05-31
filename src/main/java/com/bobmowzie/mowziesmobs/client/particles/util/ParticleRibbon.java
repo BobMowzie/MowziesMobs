@@ -3,6 +3,8 @@ package com.bobmowzie.mowziesmobs.client.particles.util;
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher;
+import com.bobmowzie.mowziesmobs.client.particles.util.RibbonComponent.PropertyOverLength;
+import com.bobmowzie.mowziesmobs.client.particles.util.RibbonComponent.PropertyOverLength.EnumRibbonProperty;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
@@ -69,12 +71,75 @@ public class ParticleRibbon extends MowzieParticleBase {
         int j = i >> 16 & 65535;
         int k = i & 65535;
 
+        float r =  particleRed;
+        float g = particleGreen;
+        float b = particleBlue;
+        float a = particleAlpha;
+        float scale = particleScale;
+        float prevR = r;
+        float prevG = g;
+        float prevB = b;
+        float prevA = a;
+        float prevScale = scale;
+
+        for (ParticleComponent component : components) {
+            if (component instanceof PropertyOverLength) {
+                PropertyOverLength pOverLength = (PropertyOverLength) component;
+                float value = pOverLength.evaluate(0);
+                if (pOverLength.getProperty() == EnumRibbonProperty.SCALE) {
+                    prevScale *= value;
+                }
+                else if (pOverLength.getProperty() == EnumRibbonProperty.RED) {
+                    prevR *= value;
+                }
+                else if (pOverLength.getProperty() == EnumRibbonProperty.GREEN) {
+                    prevG *= value;
+                }
+                else if (pOverLength.getProperty() == EnumRibbonProperty.BLUE) {
+                    prevB *= value;
+                }
+                else if (pOverLength.getProperty() == EnumRibbonProperty.ALPHA) {
+                    prevA *= value;
+                }
+            }
+        }
+
         Vec3d offsetDir = new Vec3d(0, 0, 0);
         for (int index = 0; index < positions.length - 1; index++) {
             if (positions[index] == null || positions[index + 1] == null) continue;
+
+            r = particleRed;
+            g = particleGreen;
+            b = particleBlue;
+            scale = particleScale;
+            float t = ((float)index + 1) / ((float)positions.length - 1);
+
+            for (ParticleComponent component : components) {
+                if (component instanceof PropertyOverLength) {
+                    PropertyOverLength pOverLength = (PropertyOverLength) component;
+                    float value = pOverLength.evaluate(t);
+                    if (pOverLength.getProperty() == EnumRibbonProperty.SCALE) {
+                        scale *= value;
+                    }
+                    else if (pOverLength.getProperty() == EnumRibbonProperty.RED) {
+                        r *= value;
+                    }
+                    else if (pOverLength.getProperty() == EnumRibbonProperty.GREEN) {
+                        g *= value;
+                    }
+                    else if (pOverLength.getProperty() == EnumRibbonProperty.BLUE) {
+                        b *= value;
+                    }
+                    else if (pOverLength.getProperty() == EnumRibbonProperty.ALPHA) {
+                        a *= value;
+                    }
+                }
+            }
+
             Vec3d interpPos = new Vec3d(interpPosX, interpPosY, interpPosZ);
             Vec3d p1 = prevPositions[index].add(positions[index].subtract(prevPositions[index]).scale(partialTicks)).subtract(interpPos);
             Vec3d p2 = prevPositions[index + 1].add(positions[index + 1].subtract(prevPositions[index + 1]).scale(partialTicks)).subtract(interpPos);
+
             if (index == 0) {
                 Vec3d moveDir = p2.subtract(p1).normalize();
                 if (faceCamera) {
@@ -82,7 +147,7 @@ public class ParticleRibbon extends MowzieParticleBase {
                 } else {
                     offsetDir = moveDir.crossProduct(new Vec3d(0, 1, 0)).normalize();
                 }
-                offsetDir.scale(particleScale);
+                offsetDir = offsetDir.scale(prevScale);
             }
 
             Vec3d[] avec3d2 = new Vec3d[] {offsetDir.scale(-1), offsetDir, null, null};
@@ -93,7 +158,7 @@ public class ParticleRibbon extends MowzieParticleBase {
             else {
                 offsetDir = moveDir.crossProduct(new Vec3d(0, 1, 0)).normalize();
             }
-            offsetDir.scale(particleScale);
+            offsetDir = offsetDir.scale(scale);
             avec3d2[2] = offsetDir;
             avec3d2[3] = offsetDir.scale(-1);
 
@@ -111,10 +176,15 @@ public class ParticleRibbon extends MowzieParticleBase {
             boxTranslate.transform(vertices2[2]);
             boxTranslate.transform(vertices2[3]);
 
-            buffer.pos(vertices2[0].getX(), vertices2[0].getY(), vertices2[0].getZ()).tex((double) f1, (double) f3).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-            buffer.pos(vertices2[1].getX(), vertices2[1].getY(), vertices2[1].getZ()).tex((double) f1, (double) f2).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-            buffer.pos(vertices2[2].getX(), vertices2[2].getY(), vertices2[2].getZ()).tex((double) f, (double) f2).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-            buffer.pos(vertices2[3].getX(), vertices2[3].getY(), vertices2[3].getZ()).tex((double) f, (double) f3).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
+            buffer.pos(vertices2[0].getX(), vertices2[0].getY(), vertices2[0].getZ()).tex((double) f1, (double) f3).color(prevR, prevG, prevB, prevA).lightmap(j, k).endVertex();
+            buffer.pos(vertices2[1].getX(), vertices2[1].getY(), vertices2[1].getZ()).tex((double) f1, (double) f2).color(prevR, prevG, prevB, prevA).lightmap(j, k).endVertex();
+            buffer.pos(vertices2[2].getX(), vertices2[2].getY(), vertices2[2].getZ()).tex((double) f, (double) f2).color(r, g, b, a).lightmap(j, k).endVertex();
+            buffer.pos(vertices2[3].getX(), vertices2[3].getY(), vertices2[3].getZ()).tex((double) f, (double) f3).color(r, g, b, a).lightmap(j, k).endVertex();
+
+            prevR = r;
+            prevG = g;
+            prevB = b;
+            prevA = a;
         }
 
         for (ParticleComponent component : components) {

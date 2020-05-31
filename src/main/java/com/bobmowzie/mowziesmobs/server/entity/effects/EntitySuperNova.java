@@ -7,6 +7,7 @@ import com.bobmowzie.mowziesmobs.client.particles.util.ParticleComponent.Propert
 import com.bobmowzie.mowziesmobs.client.particles.util.ParticleComponent.KeyTrack;
 import com.bobmowzie.mowziesmobs.client.particles.util.ParticleRibbon;
 import com.bobmowzie.mowziesmobs.client.particles.util.RibbonComponent;
+import com.bobmowzie.mowziesmobs.client.particles.util.RibbonComponent.PropertyOverLength;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import net.minecraft.entity.EntityLiving;
@@ -42,11 +43,21 @@ public class EntitySuperNova extends EntityMagicEffect {
         super.onUpdate();
 
         if (world.isRemote && ticksExisted == 1) {
-            MowzieParticleBase.spawnParticle(world, MMParticle.FLARE_RADIAL,posX + 6, posY + 6, posZ, 0.3, 0, 0, true, 0, 0, 0, 0,4F, 1,1,1, 1, 1, 60, true, new ParticleComponent[]{
-                    new ParticleComponent.PropertyControl(EnumParticleProperty.MOTION_X, new ParticleComponent.Oscillator(-0.5f, 0.5f, 4, 0), false),
-                    new ParticleComponent.PropertyControl(EnumParticleProperty.MOTION_Z, new ParticleComponent.Oscillator(-0.5f, 0.5f, 4, (float) (Math.PI/2)), false),
-                    new RibbonComponent(10, MMParticle.RIBBON_GLOW)
-            });
+            float scale = 8.2f;
+            for (int i = 0; i < 13; i++) {
+                float phaseOffset = rand.nextFloat();
+                MowzieParticleBase.spawnParticle(world, MMParticle.FLARE_RADIAL, posX + 6, posY + 6, posZ, 0.3, 0, 0, true, 0, 0, 0, 0, 10F, 0.95, 0.9,0.35, 1, 1, 30, true, new ParticleComponent[]{
+                        new ParticleComponent.Orbit(new Vec3d[]{getPositionVector().add(0, height / 2, 0)}, KeyTrack.startAndEnd(0 + phaseOffset, 1.6f + phaseOffset), new ParticleComponent.KeyTrack(
+                                new float[]{0.2f * scale, 0.59f * scale, 0.87f * scale, 0.974f * scale, 0.998f * scale, 1f * scale},
+                                new float[]{0, 0.15f, 0.3f, 0.45f, 0.6f, 75f}
+                        ), KeyTrack.startAndEnd(rand.nextFloat() * 2 - 1, rand.nextFloat() * 2 - 1), KeyTrack.startAndEnd(rand.nextFloat() * 2 - 1, rand.nextFloat() * 2 - 1), KeyTrack.startAndEnd(rand.nextFloat() * 2 - 1, rand.nextFloat() * 2 - 1), false),
+                        new RibbonComponent(MMParticle.RIBBON_FLAT, 10, 0, 0, 0, 0.2F, 0.95, 0.9,0.35, 1, true, true, new ParticleComponent[]{
+                                new PropertyOverLength(PropertyOverLength.EnumRibbonProperty.SCALE, KeyTrack.startAndEnd(1, 0)),
+                                new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, KeyTrack.startAndEnd(1, 0), false)
+                        }),
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, KeyTrack.startAndEnd(1, 0), false)
+                });
+            }
         }
 
         if (caster != null && caster instanceof EntityLiving && (ticksExisted + 7) % 8 == 0) {

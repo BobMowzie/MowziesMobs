@@ -411,7 +411,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         if (getAnimationTick() == 32) {
             MowzieParticleBase.spawnParticle(world, MMParticle.FLARE,  0, 0, 0, 0, 0, 0, true, 0, 0, 0, 0, 5F, 1,1,1, 0.7, 1, 3, true, new ParticleComponent[]{
                     new ParticleComponent.PinLocation(betweenHandPos),
-                    new ParticleComponent.PropertyControl(EnumParticleProperty.POS_Y, ParticleComponent.KeyTrack.constant(-0.15f), true),
+                    new ParticleComponent.PropertyControl(EnumParticleProperty.POS_Y, ParticleComponent.constant(-0.15f), true),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
                             new float[]{0f, 22f, 0f},
                             new float[]{0, 0.2f, 1}
@@ -461,7 +461,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         if (getAnimationTick() == 14) {
             MowzieParticleBase.spawnParticle(world, MMParticle.FLARE, 0, 0, 0, 0, 0, 0, true, 0, 0, 0, 0, 5F, 1, 1, 1, 1, 1, 18, true, new ParticleComponent[]{
                     new ParticleComponent.PinLocation(betweenHandPos),
-                    new ParticleComponent.PropertyControl(EnumParticleProperty.POS_Y, ParticleComponent.KeyTrack.constant(-0.1f), true),
+                    new ParticleComponent.PropertyControl(EnumParticleProperty.POS_Y, ParticleComponent.constant(-0.1f), true),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
                             new float[]{0f, 35f, 0f},
                             new float[]{0, 0.8f, 1}
@@ -488,8 +488,8 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                     ), false),
                     new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
             });
-            scale = 110f;
-            MowzieParticleBase.spawnParticle(world, MMParticle.GLOW, betweenHandPos[0].x, betweenHandPos[0].y, betweenHandPos[0].z, 0, 0, 0, true, 0, 0, 0, 0, 5F, 0.9,0.8,0.05, 1, 1, 40, true, new ParticleComponent[]{
+            scale = 120f;
+            MowzieParticleBase.spawnParticle(world, MMParticle.GLOW, betweenHandPos[0].x, betweenHandPos[0].y, betweenHandPos[0].z, 0, 0, 0, true, 0, 0, 0, 0, 5F, 0.95, 0.9,0.35, 1, 1, 40, true, new ParticleComponent[]{
                     new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
                             new float[]{0.0f * scale, 0.59f * scale, 0.87f * scale, 0.974f * scale, 0.998f * scale, 1f * scale},
                             new float[]{0, 0.2f, 0.4f, 0.6f, 0.8f, 1f}
