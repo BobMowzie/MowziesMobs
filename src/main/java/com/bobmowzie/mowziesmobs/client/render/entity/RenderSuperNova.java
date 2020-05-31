@@ -51,7 +51,7 @@ public class RenderSuperNova extends Render<EntitySuperNova> {
     @Override
     public void doRender(EntitySuperNova entity, double x, double y, double z, float entityYaw, float partialTicks) {
         float ageFrac = (entity.ticksExisted + partialTicks) / (float)(EntitySuperNova.DURATION);
-
+        GlStateManager.disableCull();
         GlStateManager.disableLighting();
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);
@@ -68,5 +68,6 @@ public class RenderSuperNova extends Render<EntitySuperNova> {
 
         GlStateManager.popMatrix();
         GlStateManager.enableLighting();
+        GlStateManager.enableCull();
     }
 }

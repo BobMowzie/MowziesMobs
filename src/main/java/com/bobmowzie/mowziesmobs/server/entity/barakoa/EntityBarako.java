@@ -130,7 +130,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             public void updateTask() {
                 super.updateTask();
                 if (!entity.world.isRemote) {
-                    if (entity.getAnimationTick() == 42) {
+                    if (entity.getAnimationTick() == 44) {
                         Vec3d offset = new Vec3d(1.1f, 0, 0);
                         offset = offset.rotateYaw((float) Math.toRadians(-entity.rotationYaw - 90));
                         EntitySuperNova superNova = new EntitySuperNova(entity.world, entity, entity.posX + offset.x, entity.posY + 0.05, entity.posZ + offset.z);
@@ -239,7 +239,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             if (getAnimation() == NO_ANIMATION && !isAIDisabled() && getHealth() / getMaxHealth() <= 0.6 && timeUntilLaser <= 0 && (entityRelativeAngle < 60 || entityRelativeAngle > 300) && getEntitySenses().canSee(target)) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SOLAR_BEAM_ANIMATION);
                 timeUntilLaser = LASER_PAUSE;
-            } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && getHealth() / getMaxHealth() <= 0.6 && timeUntilSupernova <= 0 && targetDistance <= 11) {
+            } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && getHealth() / getMaxHealth() <= 0.6 && timeUntilSupernova <= 0 && targetDistance <= 14) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SUPERNOVA_ANIMATION);
                 timeUntilSupernova = SUPERNOVA_PAUSE;
             } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && targetDistance <= 5) {
@@ -476,6 +476,25 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                     new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(25f, 0f), false),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0f, 1f), false),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.Oscillator(-2, 2, 42, 0), true),
+            });
+        }
+
+        if (getAnimationTick() == 44) {
+            float scale = 85f;
+            MowzieParticleBase.spawnParticle(world, MMParticle.RING_BIG, betweenHandPos[0].x, betweenHandPos[0].y, betweenHandPos[0].z, 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 5F, 1,1,1, 1, 1, 40, true, new ParticleComponent[]{
+                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
+                            new float[]{0.0f * scale, 0.59f * scale, 0.87f * scale, 0.974f * scale, 0.998f * scale, 1f * scale},
+                            new float[]{0, 0.2f, 0.4f, 0.6f, 0.8f, 1f}
+                    ), false),
+                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
+            });
+            scale = 110f;
+            MowzieParticleBase.spawnParticle(world, MMParticle.GLOW, betweenHandPos[0].x, betweenHandPos[0].y, betweenHandPos[0].z, 0, 0, 0, true, 0, 0, 0, 0, 5F, 0.9,0.8,0.05, 1, 1, 40, true, new ParticleComponent[]{
+                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
+                            new float[]{0.0f * scale, 0.59f * scale, 0.87f * scale, 0.974f * scale, 0.998f * scale, 1f * scale},
+                            new float[]{0, 0.2f, 0.4f, 0.6f, 0.8f, 1f}
+                    ), false),
+                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
             });
         }
     }

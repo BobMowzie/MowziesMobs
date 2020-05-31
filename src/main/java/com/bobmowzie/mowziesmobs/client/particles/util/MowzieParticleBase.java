@@ -27,6 +27,8 @@ public class MowzieParticleBase extends Particle implements ParticleTextureStitc
 
     ParticleComponent[] components;
 
+    ParticleRibbon ribbon;
+
     protected MowzieParticleBase(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double motionX, double motionY, double motionZ, double yaw, double pitch, double roll, double scale, double r, double g, double b, double a, double drag, double duration, boolean faceCamera, boolean emissive, float faceCameraAngle, ParticleComponent[] components) {
         super(worldIn, xCoordIn, yCoordIn, zCoordIn, 0.0D, 0.0D, 0.0D);
         this.motionX = motionX;
@@ -46,6 +48,7 @@ public class MowzieParticleBase extends Particle implements ParticleTextureStitc
         this.components = components;
         this.emissive = emissive;
         this.particleAngle = faceCameraAngle;
+        this.ribbon = null;
 
         for (ParticleComponent component : components) {
             component.init(this);
@@ -96,7 +99,7 @@ public class MowzieParticleBase extends Particle implements ParticleTextureStitc
         this.prevPosZ = this.posZ;
 
         for (ParticleComponent component : components) {
-            component.update(this);
+            component.preUpdate(this);
         }
 
         if (this.particleAge++ >= this.particleMaxAge)
@@ -116,6 +119,16 @@ public class MowzieParticleBase extends Particle implements ParticleTextureStitc
         this.motionX *= airDrag;
         this.motionY *= airDrag;
         this.motionZ *= airDrag;
+
+        for (ParticleComponent component : components) {
+            component.postUpdate(this);
+        }
+
+        if (ribbon != null) {
+            ribbon.setPosition(posX, posY, posZ);
+            ribbon.positions[0] = new Vec3d(posX, posY, posZ);
+            ribbon.prevPositions[0] = getPrevPos();
+        }
     }
 
     public void renderParticle(BufferBuilder buffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ)
@@ -203,6 +216,10 @@ public class MowzieParticleBase extends Particle implements ParticleTextureStitc
         buffer.pos(vertices[1].getX(), vertices[1].getY(), vertices[1].getZ()).tex((double) f1, (double) f2).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
         buffer.pos(vertices[2].getX(), vertices[2].getY(), vertices[2].getZ()).tex((double) f, (double) f2).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
         buffer.pos(vertices[3].getX(), vertices[3].getY(), vertices[3].getZ()).tex((double) f, (double) f3).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
+
+        for (ParticleComponent component : components) {
+            component.postRender(this, buffer, partialTicks, j, k);
+        }
     }
 
     @Override
@@ -272,6 +289,14 @@ public class MowzieParticleBase extends Particle implements ParticleTextureStitc
 
     public void setAngle(float angle) {
         this.particleAngle = angle;
+    }
+
+    public Vec3d getPrevPos() {
+        return new Vec3d(prevPosX, prevPosY, prevPosZ);
+    }
+
+    public World getWorld() {
+        return world;
     }
 
     public static final class ParticleBaseFactory extends ParticleFactory<ParticleBaseFactory, MowzieParticleBase> {

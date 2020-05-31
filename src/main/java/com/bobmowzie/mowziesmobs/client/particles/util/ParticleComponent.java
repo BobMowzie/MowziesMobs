@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.particles.util;
 
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.util.math.Vec3d;
 
 public abstract class ParticleComponent {
@@ -11,7 +12,11 @@ public abstract class ParticleComponent {
 
     }
 
-    public void update(MowzieParticleBase particle) {
+    public void preUpdate(MowzieParticleBase particle) {
+
+    }
+
+    public void postUpdate(MowzieParticleBase particle) {
 
     }
 
@@ -19,7 +24,7 @@ public abstract class ParticleComponent {
 
     }
 
-    public void postRender(MowzieParticleBase particle, float partialTicks) {
+    public void postRender(MowzieParticleBase particle, BufferBuilder buffer, float partialTicks, int lightmapJ, int lightmapK) {
 
     }
 
@@ -133,7 +138,7 @@ public abstract class ParticleComponent {
         }
 
         @Override
-        public void update(MowzieParticleBase particle) {
+        public void preUpdate(MowzieParticleBase particle) {
             float ageFrac = particle.getAge() / particle.getMaxAge();
             float value = animData.evaluate(ageFrac);
             applyUpdate(particle, value);
@@ -225,7 +230,7 @@ public abstract class ParticleComponent {
         }
 
         @Override
-        public void update(MowzieParticleBase particle) {
+        public void preUpdate(MowzieParticleBase particle) {
             if (location.length > 0) {
                 particle.setPosition(location[0].x, location[0].y, location[0].z);
             }
@@ -258,7 +263,7 @@ public abstract class ParticleComponent {
         }
 
         @Override
-        public void update(MowzieParticleBase particle) {
+        public void preUpdate(MowzieParticleBase particle) {
             float ageFrac = particle.getAge() / particle.getMaxAge();
             if (location.length > 0) {
                 Vec3d destinationVec = location[0];

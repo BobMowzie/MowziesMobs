@@ -24,7 +24,7 @@ public class ModelSuperNova extends AdvancedModelBase {
 		body1.rotateAngleX = 0;
 		body1.rotateAngleY = 0;
 		float ageFrac = (entity.ticksExisted + delta) / (float)(EntitySuperNova.DURATION);
-		float scale = (float) (Math.pow(ageFrac, 0.5) * 2 + 0.05 * Math.cos((entity.ticksExisted + delta) * 3));
+		float scale = (float) (Math.pow(ageFrac, 0.5) * 3 + 0.05 * Math.cos((entity.ticksExisted + delta) * 3));
 		body1.setHasLighting(true);
 		body1.setOpacity((float) (1.0 - Math.pow(ageFrac, 4f)) * 0.4f);
 

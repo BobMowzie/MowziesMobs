@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particles.*;
 import com.bobmowzie.mowziesmobs.client.particles.util.MowzieParticleBase;
+import com.bobmowzie.mowziesmobs.client.particles.util.ParticleRibbon;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -32,6 +33,9 @@ public enum MMParticle {
     RING_SPARKS(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/sparks_ring"))),
     BURST_OUT(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/ring2"))),
     GLOW(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/glow"))),
+    RIBBON_FLAT(new ParticleRibbon.ParticleRibbonFactory(new ResourceLocation(MowziesMobs.MODID, "particles/trail_flat"))),
+    RIBBON_STREAKS(new ParticleRibbon.ParticleRibbonFactory(new ResourceLocation(MowziesMobs.MODID, "particles/trail_streaks"))),
+    RIBBON_GLOW(new ParticleRibbon.ParticleRibbonFactory(new ResourceLocation(MowziesMobs.MODID, "particles/trail_glow"))),
     SPARKLE(new ParticleSparkle.SparkleFactory()),
     FALLING_BLOCK(new ParticleFallingBlock.FallingBlockFactory());
 
