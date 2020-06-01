@@ -33,6 +33,7 @@ public enum MMParticle {
     RING_SPARKS(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/sparks_ring"))),
     BURST_OUT(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/ring2"))),
     GLOW(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/glow"))),
+    ARROW_HEAD(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/arrow_head"))),
     RIBBON_FLAT(new ParticleRibbon.ParticleRibbonFactory(new ResourceLocation(MowziesMobs.MODID, "particles/trail_flat"))),
     RIBBON_STREAKS(new ParticleRibbon.ParticleRibbonFactory(new ResourceLocation(MowziesMobs.MODID, "particles/trail_streaks"))),
     RIBBON_GLOW(new ParticleRibbon.ParticleRibbonFactory(new ResourceLocation(MowziesMobs.MODID, "particles/trail_glow"))),

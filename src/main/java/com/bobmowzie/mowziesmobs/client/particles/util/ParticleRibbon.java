@@ -24,10 +24,8 @@ public class ParticleRibbon extends MowzieParticleBase {
         positions = new Vec3d[length];
         prevPositions = new Vec3d[length];
         Vec3d pos = new Vec3d(getPosX(), getPosY(), getPosZ());
-        for (int i = 0; i < positions.length; i++) {
-            positions[i] = pos;
-            prevPositions[i] = pos;
-        }
+        positions[0] = new Vec3d(getPosX(), getPosY(), getPosZ());
+        prevPositions[0] = getPrevPos();
     }
 
     @Override

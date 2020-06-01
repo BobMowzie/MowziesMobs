@@ -24,6 +24,7 @@ public class MowzieParticleBase extends Particle implements ParticleTextureStitc
     public float yaw, pitch, roll;
     public float prevYaw, prevPitch, prevRoll;
     public boolean emissive;
+    public double prevMotionX, prevMotionY, prevMotionZ;
 
     ParticleComponent[] components;
 
@@ -97,6 +98,9 @@ public class MowzieParticleBase extends Particle implements ParticleTextureStitc
         this.prevPosX = this.posX;
         this.prevPosY = this.posY;
         this.prevPosZ = this.posZ;
+        prevMotionX = motionX;
+        prevMotionY = motionY;
+        prevMotionZ = motionZ;
 
         for (ParticleComponent component : components) {
             component.preUpdate(this);
@@ -205,9 +209,9 @@ public class MowzieParticleBase extends Particle implements ParticleTextureStitc
         };
         for (Point3d vertex: vertices) {
             if (!faceCamera) {
-                boxRotateX.transform(vertex);
-                boxRotateY.transform(vertex);
                 boxRotateZ.transform(vertex);
+                boxRotateY.transform(vertex);
+                boxRotateX.transform(vertex);
             }
             boxTranslate.transform(vertex);
         }
@@ -293,6 +297,18 @@ public class MowzieParticleBase extends Particle implements ParticleTextureStitc
 
     public Vec3d getPrevPos() {
         return new Vec3d(prevPosX, prevPosY, prevPosZ);
+    }
+
+    public double getPrevPosX() {
+        return prevPosX;
+    }
+
+    public double getPrevPosY() {
+        return prevPosY;
+    }
+
+    public double getPrevPosZ() {
+        return prevPosZ;
     }
 
     public World getWorld() {

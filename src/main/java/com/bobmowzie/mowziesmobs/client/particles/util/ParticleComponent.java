@@ -369,4 +369,28 @@ public abstract class ParticleComponent {
             particle.setPosition(newPos.x, newPos.y, newPos.z);
         }
     }
+
+    public static class FaceMotion extends ParticleComponent {
+        public FaceMotion() {
+
+        }
+
+        @Override
+        public void preRender(MowzieParticleBase particle, float partialTicks) {
+            super.preRender(particle, partialTicks);
+            double dx = particle.getPosX() - particle.getPrevPosX();
+            double dy = particle.getPosY() - particle.getPrevPosY();
+            double dz = particle.getPosZ() - particle.getPrevPosZ();
+            double d = Math.sqrt(dx * dx + dy * dy + dz * dz);
+            if (d != 0) {
+                double a = dy / d;
+                a = Math.max(-1, Math.min(1, a));
+                float pitch = -(float) Math.asin(a);
+                float yaw = -(float) (Math.atan2(dz, dx) + Math.PI);
+                particle.roll = pitch;
+                particle.yaw = yaw;
+//                particle.roll = (float) Math.PI / 2;
+            }
+        }
+    }
 }

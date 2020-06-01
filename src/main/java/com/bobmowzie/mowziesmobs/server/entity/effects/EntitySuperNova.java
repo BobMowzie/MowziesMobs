@@ -46,7 +46,7 @@ public class EntitySuperNova extends EntityMagicEffect {
             float scale = 8.2f;
             for (int i = 0; i < 13; i++) {
                 float phaseOffset = rand.nextFloat();
-                MowzieParticleBase.spawnParticle(world, MMParticle.FLARE_RADIAL, posX + 6, posY + 6, posZ, 0.3, 0, 0, true, 0, 0, 0, 0, 10F, 0.95, 0.9,0.35, 1, 1, 30, true, new ParticleComponent[]{
+                MowzieParticleBase.spawnParticle(world, MMParticle.ARROW_HEAD, posX, posY, posZ, 0, 0, 0, false, 0, 0, 0, 0, 8F, 0.95, 0.9,0.35, 1, 1, 30, true, new ParticleComponent[]{
                         new ParticleComponent.Orbit(new Vec3d[]{getPositionVector().add(0, height / 2, 0)}, KeyTrack.startAndEnd(0 + phaseOffset, 1.6f + phaseOffset), new ParticleComponent.KeyTrack(
                                 new float[]{0.2f * scale, 0.59f * scale, 0.87f * scale, 0.974f * scale, 0.998f * scale, 1f * scale},
                                 new float[]{0, 0.15f, 0.3f, 0.45f, 0.6f, 75f}
@@ -55,7 +55,8 @@ public class EntitySuperNova extends EntityMagicEffect {
                                 new PropertyOverLength(PropertyOverLength.EnumRibbonProperty.SCALE, KeyTrack.startAndEnd(1, 0)),
                                 new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, KeyTrack.startAndEnd(1, 0), false)
                         }),
-                        new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, KeyTrack.startAndEnd(1, 0), false)
+                        new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, KeyTrack.startAndEnd(1, 0), false),
+                        new ParticleComponent.FaceMotion()
                 });
             }
         }
