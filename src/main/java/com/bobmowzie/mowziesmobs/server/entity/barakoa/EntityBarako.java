@@ -19,7 +19,6 @@ import net.minecraft.block.BlockAir;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.MoverType;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
@@ -129,6 +128,16 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             @Override
             public void updateTask() {
                 super.updateTask();
+                if (entity.getAnimationTick() == 1) {
+                    playSound(MMSounds.ENTITY_SUPERNOVA_START, 3f, 1f);
+                }
+                if (entity.getAnimationTick() == 30) {
+                    playSound(MMSounds.ENTITY_SUPERNOVA_BLACKHOLE, 2f, 1f);
+                }
+                if (entity.getAnimationTick() == 40) {
+                    playSound(MMSounds.ENTITY_BARAKO_SCREAM, 1.5f, 1f);
+                }
+
                 if (!entity.world.isRemote) {
                     if (entity.getAnimationTick() == 44) {
                         Vec3d offset = new Vec3d(1.1f, 0, 0);
@@ -342,7 +351,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 
         if (getAnimation() == SUPERNOVA_ANIMATION) {
             if (world.isRemote && betweenHandPos.length > 0) {
-                superNovaParticles();
+                superNovaEffects();
             }
             if (getAnimationTick() < 30) {
                 List<EntityLivingBase> entities = getEntityLivingBaseNearby(16, 16, 16, 16);
@@ -381,7 +390,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         }
     }
 
-    private void superNovaParticles() {
+    private void superNovaEffects() {
         if (getAnimationTick() == 1) {
             superNovaKeyTrack1 = new ParticleComponent.KeyTrack(
                     new float[]{0, 25f, 32f, 0},

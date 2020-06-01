@@ -119,8 +119,8 @@ public class EntitySolarBeam extends Entity {
                     if (caster instanceof EntityBarako && target instanceof LeaderSunstrikeImmune) {
                         continue;
                     }
-                    float damageFire = 3f;
-                    float damageMob = 2f;
+                    float damageFire = 1.5f;
+                    float damageMob = 3f;
                     if (caster instanceof EntityBarako) {
                         damageFire *= ConfigHandler.BARAKO.combatData.attackMultiplier;
                         damageMob *= ConfigHandler.BARAKO.combatData.attackMultiplier;
@@ -129,8 +129,8 @@ public class EntitySolarBeam extends Entity {
                         damageFire *= ConfigHandler.TOOLS_AND_ABILITIES.sunsBlessingAttackMultiplier;
                         damageMob *= ConfigHandler.TOOLS_AND_ABILITIES.sunsBlessingAttackMultiplier;
                     }
+                    if (target.attackEntityFrom(DamageSource.causeMobDamage(caster), damageMob)) target.hurtResistantTime = 0;
                     target.attackEntityFrom(DamageSource.ON_FIRE, damageFire);
-                    target.attackEntityFrom(DamageSource.causeMobDamage(caster), damageMob);
                 }
             } else {
                 for (EntityLivingBase e : hit) {

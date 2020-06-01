@@ -136,6 +136,14 @@ public final class MMSounds {
     public static final SoundEvent ENTITY_BARAKO_BELLY = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barako.burst")
     public static final SoundEvent ENTITY_BARAKO_BURST = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barako.scream")
+    public static final SoundEvent ENTITY_BARAKO_SCREAM = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":supernova.start")
+    public static final SoundEvent ENTITY_SUPERNOVA_START = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":supernova.blackhole")
+    public static final SoundEvent ENTITY_SUPERNOVA_BLACKHOLE = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":supernova.end")
+    public static final SoundEvent ENTITY_SUPERNOVA_END = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barako.attack")
     public static final SoundEvent ENTITY_BARAKO_ATTACK = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barako.hurt")
@@ -435,6 +443,10 @@ public final class MMSounds {
 
                 create("barako.belly"),
                 create("barako.burst"),
+                create("barako.scream"),
+                create("supernova.start"),
+                create("supernova.blackhole"),
+                create("supernova.end"),
                 create("barako.attack"),
                 create("barako.hurt"),
                 create("barako.die"),

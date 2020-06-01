@@ -269,6 +269,18 @@
 	"laser": {
 		"sounds": [ "mowziesmobs:laser/laser" ]
 	},
+	"barako.scream": {
+		"sounds": [ "mowziesmobs:entity/barako/scream" ]
+	},
+	"supernova.start": {
+		"sounds": [ "mowziesmobs:entity/barako/supernova_start" ]
+	},
+	"supernova.blackhole": {
+		"sounds": [ "mowziesmobs:entity/barako/black_hole" ]
+	},
+	"supernova.end": {
+		"sounds": [ "mowziesmobs:entity/barako/supernova_end" ]
+	},
 	"geomancy.smallcrash": {
 		"sounds": [ "mowziesmobs:effects/geomancy/small_rock_crash" ]
 	},
