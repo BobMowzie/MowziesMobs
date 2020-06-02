@@ -264,8 +264,8 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     @Nullable
     @Override
     public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata) {
-        System.out.println("Spawned " + getName() + " at " + getPosition());
-        System.out.println("Block " + world.getBlockState(getPosition().down()).toString());
+//        System.out.println("Spawned " + getName() + " at " + getPosition());
+//        System.out.println("Block " + world.getBlockState(getPosition().down()).toString());
         return super.onInitialSpawn(difficulty, livingdata);
     }
 
