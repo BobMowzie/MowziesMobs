@@ -1,9 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
-
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import com.google.common.collect.Sets;
 import net.minecraft.entity.ai.EntityAITasks;
@@ -18,6 +14,10 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
 
 public class ItemCapturedGrottol extends Item {
     public ItemCapturedGrottol() {

@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.JsonUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.properties.EntityProperty;
+
 import java.util.Random;
 
 public class EntityPropertyFrostmawHasCrystal implements EntityProperty {

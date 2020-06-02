@@ -2,9 +2,6 @@ package com.bobmowzie.mowziesmobs.server.recipe;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
-import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
-import net.minecraft.block.Block;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;

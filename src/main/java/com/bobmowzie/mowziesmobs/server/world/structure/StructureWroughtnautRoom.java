@@ -1,8 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.world.structure;
 
-import com.bobmowzie.mowziesmobs.server.spawn.SpawnHandler;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
+import com.bobmowzie.mowziesmobs.server.spawn.SpawnHandler;
 import net.ilexiconn.llibrary.server.structure.StructureBuilder;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.init.Blocks;

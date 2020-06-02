@@ -1,12 +1,12 @@
 package com.bobmowzie.mowziesmobs.server.ai.animation;
 
-import java.util.List;
-
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.SoundEvent;
+
+import java.util.List;
 
 public class AnimationAreaAttackAI<T extends MowzieEntity & IAnimatedEntity> extends AnimationAttackAI<T> {
     private float arc;

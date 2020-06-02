@@ -1,11 +1,10 @@
 package com.bobmowzie.mowziesmobs.client.particle;
 
-import java.util.Arrays;
-
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
-
 import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.Arrays;
 
 public final class VanillaParticleFactory<T extends Particle> extends ParticleFactory<VanillaParticleFactory<T>, T> {
     private final IParticleFactory factory;

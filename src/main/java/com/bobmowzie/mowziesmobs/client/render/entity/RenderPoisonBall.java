@@ -1,14 +1,12 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.model.entity.ModelPoisonBall;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityPoisonBall;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
-import com.bobmowzie.mowziesmobs.client.model.entity.ModelPoisonBall;
-
-import javax.annotation.Nullable;
 
 public class RenderPoisonBall extends Render<EntityPoisonBall> {
     public static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/effects/poison_ball.png");

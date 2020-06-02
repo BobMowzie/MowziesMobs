@@ -1,8 +1,10 @@
 package com.bobmowzie.mowziesmobs.server.spawn;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
+import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
+import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityLantern;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLiving;
@@ -15,10 +17,6 @@ import net.minecraft.world.WorldEntitySpawner;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
-
-import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
-import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityLantern;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 

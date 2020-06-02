@@ -1,11 +1,12 @@
 package com.bobmowzie.mowziesmobs.client.particles.util;
 
-import javafx.scene.chart.Axis;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.util.math.Vec3d;
 
-import javax.vecmath.*;
+import javax.vecmath.AxisAngle4d;
+import javax.vecmath.Matrix4d;
+import javax.vecmath.Point3d;
 
 public abstract class ParticleComponent {
     public ParticleComponent() {

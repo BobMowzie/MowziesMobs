@@ -2,6 +2,8 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.model.ModelAnimator;
@@ -13,9 +15,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 
 @SideOnly(Side.CLIENT)
 public class ModelBarakoa extends AdvancedModelBase {

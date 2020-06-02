@@ -1,8 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.ai.animation;
 
-import java.util.List;
-
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -21,8 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.WorldServer;
 
-import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
-import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import java.util.List;
 
 public class AnimationFWNStompAttackAI extends AnimationAI<EntityWroughtnaut> {
     public AnimationFWNStompAttackAI(EntityWroughtnaut entity, Animation animation) {

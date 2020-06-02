@@ -1,12 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.ai.animation;
 
+import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.util.SoundEvent;
-
-import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 
 public class AnimationProjectileAttackAI<T extends MowzieEntity & IAnimatedEntity & IRangedAttackMob> extends AnimationAI<T> {
     private EntityLivingBase entityTarget;

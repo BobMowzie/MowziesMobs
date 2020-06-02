@@ -1,18 +1,10 @@
 package com.bobmowzie.mowziesmobs.server.config;
 
-import java.io.File;
-
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.config.Config;
-import net.minecraftforge.common.config.Config.Comment;
-import net.minecraftforge.common.config.Config.Ignore;
-import net.minecraftforge.common.config.Config.LangKey;
-import net.minecraftforge.common.config.Config.Name;
-import net.minecraftforge.common.config.Config.RequiresMcRestart;
-import net.minecraftforge.common.config.Config.RequiresWorldRestart;
-import net.minecraftforge.common.config.Config.RangeInt;
-import net.minecraftforge.common.config.Config.RangeDouble;
+import net.minecraftforge.common.config.Config.*;
+
+import java.io.File;
 
 @Config(modid = MowziesMobs.MODID, category = "", name = MowziesMobs.MODID)
 public class ConfigHandler {

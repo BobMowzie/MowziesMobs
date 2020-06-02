@@ -1,24 +1,17 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
-import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
+import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.entity.projectile.EntityTippedArrow;
 import net.minecraft.init.MobEffects;
-import net.minecraft.init.PotionTypes;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.potion.PotionType;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-
-import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 
 public class EntityDart extends EntityTippedArrow {
     public EntityDart(World world) {

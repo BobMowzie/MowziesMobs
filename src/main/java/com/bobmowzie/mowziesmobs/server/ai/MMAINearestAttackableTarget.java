@@ -2,10 +2,6 @@ package com.bobmowzie.mowziesmobs.server.ai;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import javax.annotation.Nullable;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
@@ -20,6 +16,11 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.math.AxisAlignedBB;
+
+import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class MMAINearestAttackableTarget<T extends EntityLivingBase> extends EntityAITarget
 {

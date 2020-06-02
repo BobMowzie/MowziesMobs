@@ -2,18 +2,14 @@ package com.bobmowzie.mowziesmobs.server.property;
 
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
-import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.power.Power;
 import com.bobmowzie.mowziesmobs.server.property.power.PowerGeomancy;
 import net.ilexiconn.llibrary.server.entity.EntityProperties;
 import net.ilexiconn.llibrary.server.nbt.NBTHandler;
 import net.ilexiconn.llibrary.server.nbt.NBTProperty;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.MobEffects;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.MathHelper;
-import org.lwjgl.input.Mouse;
 
 import java.util.ArrayList;
 import java.util.List;

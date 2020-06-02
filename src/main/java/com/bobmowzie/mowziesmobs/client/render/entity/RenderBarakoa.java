@@ -1,6 +1,9 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.model.entity.ModelBarakoa;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
@@ -8,11 +11,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.EnumMap;
-
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.entity.ModelBarakoa;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 
 @SideOnly(Side.CLIENT)
 public class RenderBarakoa extends RenderLiving<EntityBarakoa> {

@@ -1,15 +1,14 @@
 package com.bobmowzie.mowziesmobs.server.ai.animation;
 
-import java.util.List;
-
+import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 
-import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
-import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
+import java.util.List;
 
 public class AnimationRadiusAttack<T extends MowzieEntity & IAnimatedEntity> extends AnimationAI<T> {
     private float radius;

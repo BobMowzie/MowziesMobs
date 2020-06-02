@@ -1,26 +1,15 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBoulder;
-import com.bobmowzie.mowziesmobs.client.model.entity.ModelFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySolarBeam;
-import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
-import net.minecraft.block.BlockDirt;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 import java.util.Map;
 import java.util.TreeMap;

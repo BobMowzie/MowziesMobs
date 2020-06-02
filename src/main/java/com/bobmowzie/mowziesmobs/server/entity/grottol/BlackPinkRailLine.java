@@ -1,12 +1,12 @@
 package com.bobmowzie.mowziesmobs.server.entity.grottol;
 
-import java.util.function.Consumer;
-
 import net.minecraft.block.BlockRailBase;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
+
+import java.util.function.Consumer;
 
 public final class BlackPinkRailLine implements Consumer<EntityMinecart> {
     private final BlackPinkInYourArea action;

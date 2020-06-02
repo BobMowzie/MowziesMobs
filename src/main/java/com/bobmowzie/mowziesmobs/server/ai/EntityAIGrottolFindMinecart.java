@@ -1,14 +1,13 @@
 package com.bobmowzie.mowziesmobs.server.ai;
 
-import java.util.Comparator;
-import java.util.List;
-
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import com.google.common.base.Predicate;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.item.EntityMinecartEmpty;
-import net.minecraft.init.Blocks;
+
+import java.util.Comparator;
+import java.util.List;
 
 public final class EntityAIGrottolFindMinecart extends EntityAIBase {
     private final EntityGrottol grottol;

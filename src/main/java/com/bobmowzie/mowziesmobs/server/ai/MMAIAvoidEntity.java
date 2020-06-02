@@ -1,7 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.ai;
 
-import java.util.List;
-
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import net.minecraft.entity.Entity;
@@ -11,6 +9,8 @@ import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.math.Vec3d;
+
+import java.util.List;
 
 public class MMAIAvoidEntity<U extends EntityCreature, T extends Entity> extends EntityAIBase {
     private static final double NEAR_DISTANCE = 7.0D;

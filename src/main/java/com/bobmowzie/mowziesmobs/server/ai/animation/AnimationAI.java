@@ -1,9 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.ai.animation;
 
+import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
-
-import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 
 public class AnimationAI<T extends MowzieEntity & IAnimatedEntity> extends net.ilexiconn.llibrary.server.animation.AnimationAI<T> {
     protected Animation animation;

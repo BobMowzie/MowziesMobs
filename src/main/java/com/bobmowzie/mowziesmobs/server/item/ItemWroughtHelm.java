@@ -1,17 +1,14 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
+import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
-
-import java.util.List;
-
 import javax.annotation.Nullable;
+import java.util.List;
 
 public class ItemWroughtHelm extends ItemArmor {
     public ItemWroughtHelm() {

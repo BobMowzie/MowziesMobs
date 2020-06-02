@@ -1,12 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
-import java.util.EnumMap;
-import java.util.Locale;
-
 import com.google.common.base.Defaults;
-
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.Potion;
+
+import java.util.EnumMap;
+import java.util.Locale;
 
 public enum MaskType {
     FURY(MobEffects.STRENGTH, 0.7F, 2F, true),

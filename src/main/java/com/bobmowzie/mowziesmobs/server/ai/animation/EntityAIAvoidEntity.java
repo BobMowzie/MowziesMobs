@@ -1,10 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.ai.animation;
 
-import java.util.List;
-
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.ai.EntityAIBase;
@@ -13,6 +10,8 @@ import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.math.Vec3d;
+
+import java.util.List;
 
 public final class EntityAIAvoidEntity<T extends Entity> extends EntityAIBase {
     private EntityCreature entity;

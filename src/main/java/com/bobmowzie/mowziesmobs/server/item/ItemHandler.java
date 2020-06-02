@@ -1,7 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
-import java.util.List;
-
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
@@ -12,6 +10,8 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+
+import java.util.List;
 
 @GameRegistry.ObjectHolder(MowziesMobs.MODID)
 @Mod.EventBusSubscriber(modid = MowziesMobs.MODID)

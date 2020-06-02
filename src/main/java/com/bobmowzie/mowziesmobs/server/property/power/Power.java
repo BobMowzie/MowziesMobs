@@ -13,8 +13,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.List;
 
-import static sun.audio.AudioPlayer.player;
-
 public abstract class Power {
 
     private MowziePlayerProperties properties;

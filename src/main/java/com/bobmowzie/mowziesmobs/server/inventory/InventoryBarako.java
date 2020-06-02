@@ -1,15 +1,14 @@
 package com.bobmowzie.mowziesmobs.server.inventory;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class InventoryBarako implements IInventory {
     private final EntityBarako barako;

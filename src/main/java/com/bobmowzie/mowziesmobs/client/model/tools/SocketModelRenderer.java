@@ -9,7 +9,6 @@ import net.minecraft.util.math.Vec3d;
 import javax.vecmath.Matrix4d;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector3d;
-import java.awt.*;
 
 
 /**

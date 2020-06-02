@@ -1,10 +1,14 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
+import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory.ParticleArgs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
+import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,13 +25,8 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
-import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
-import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory.ParticleArgs;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
-import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
-import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EntitySolarBeam extends Entity {
     private final double RADIUS = 20;

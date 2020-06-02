@@ -1,14 +1,19 @@
 package com.bobmowzie.mowziesmobs.server.entity.foliaath;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
+import com.bobmowzie.mowziesmobs.client.model.tools.IntermittentAnimation;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAttackAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
@@ -18,7 +23,6 @@ import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.MobEffects;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -32,16 +36,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.EnumDifficulty;
-import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
-
-import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
-import com.bobmowzie.mowziesmobs.client.model.tools.IntermittentAnimation;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAttackAI;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
-import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.world.biome.Biome;
 
 import javax.annotation.Nullable;

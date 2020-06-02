@@ -1,10 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.entity.foliaath;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
+import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationBabyFoliaathEatAI;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import com.google.common.collect.Sets;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
@@ -30,15 +31,13 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-
-import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationBabyFoliaathEatAI;
-import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import com.google.common.collect.Sets;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootTable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class EntityBabyFoliaath extends MowzieEntity {
     private static final int JUNGLE_LEAVES = Block.getStateId(Blocks.LEAVES.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.JUNGLE));

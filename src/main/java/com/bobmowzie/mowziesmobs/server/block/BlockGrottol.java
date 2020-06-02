@@ -1,9 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.block;
 
-import java.util.Random;
-import java.util.stream.Collector;
-import java.util.stream.Stream;
-
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -26,6 +22,10 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+
+import java.util.Random;
+import java.util.stream.Collector;
+import java.util.stream.Stream;
 
 public class BlockGrottol extends BlockHorizontal {
     public static final PropertyEnum<Variant> VARIANT = PropertyEnum.create("variant", Variant.class);

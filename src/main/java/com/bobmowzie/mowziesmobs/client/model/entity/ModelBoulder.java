@@ -4,7 +4,6 @@ import com.bobmowzie.mowziesmobs.client.model.tools.BlockModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
-import org.lwjgl.Sys;
 
 /**
  * Created by Josh on 4/14/2017.

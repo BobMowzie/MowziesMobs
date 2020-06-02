@@ -1,11 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.inventory;
 
-import java.util.Arrays;
-import java.util.List;
-
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaya;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
@@ -14,6 +10,8 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
+
+import java.util.List;
 
 public final class InventoryBarakoaya implements IInventory {
     private final EntityBarakoaya barakoaya;

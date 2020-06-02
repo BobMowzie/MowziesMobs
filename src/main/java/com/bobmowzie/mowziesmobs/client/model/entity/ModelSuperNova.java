@@ -5,7 +5,6 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySuperNova;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 
 public class ModelSuperNova extends AdvancedModelBase {

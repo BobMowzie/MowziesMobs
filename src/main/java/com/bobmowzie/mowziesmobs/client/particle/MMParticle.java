@@ -1,8 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.particle;
 
-import javax.annotation.Nullable;
-
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory.ParticleArgs;
 import com.bobmowzie.mowziesmobs.client.particles.*;
 import com.bobmowzie.mowziesmobs.client.particles.util.MowzieParticleBase;
 import com.bobmowzie.mowziesmobs.client.particles.util.ParticleRibbon;
@@ -10,7 +9,7 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory.ParticleArgs;
+import javax.annotation.Nullable;
 
 public enum MMParticle {
     ORB(new ParticleOrb.OrbFactory()),

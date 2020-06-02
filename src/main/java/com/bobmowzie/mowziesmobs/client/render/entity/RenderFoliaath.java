@@ -1,14 +1,13 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.model.entity.ModelFoliaath;
+import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.entity.ModelFoliaath;
-import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 
 @SideOnly(Side.CLIENT)
 public class RenderFoliaath extends RenderLiving<EntityFoliaath> {

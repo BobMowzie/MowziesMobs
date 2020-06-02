@@ -1,11 +1,13 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
+import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory.ParticleArgs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import io.netty.buffer.ByteBuf;
-
-import java.util.List;
-
 import net.minecraft.block.BlockSlab;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -28,11 +30,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
-import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
-import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory.ParticleArgs;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
+import java.util.List;
 
 public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnData {
     public static final int STRIKE_EXPLOSION = 35;

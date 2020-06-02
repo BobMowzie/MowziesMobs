@@ -1,14 +1,13 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa.trade;
 
-import java.util.Random;
-
 import com.google.common.collect.ImmutableSet;
-
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants.NBT;
+
+import java.util.Random;
 
 public final class TradeStore {
     public static final TradeStore EMPTY = new TradeStore(ImmutableSet.of(), 0);

@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelDynamicsTester;
 import com.bobmowzie.mowziesmobs.server.entity.EntityDynamicsTester;
 import net.minecraft.client.renderer.entity.RenderLiving;

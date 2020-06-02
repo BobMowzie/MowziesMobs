@@ -1,10 +1,16 @@
 package com.bobmowzie.mowziesmobs.client;
 
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
+import com.bobmowzie.mowziesmobs.server.item.ItemBarakoMask;
+import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
+import com.bobmowzie.mowziesmobs.server.item.ItemWroughtAxe;
+import com.bobmowzie.mowziesmobs.server.item.ItemWroughtHelm;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
+import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.event.PlayerModelEvent;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
@@ -21,20 +27,15 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.client.event.*;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.client.event.RenderItemInFrameEvent;
+import net.minecraftforge.client.event.RenderLivingEvent;
+import net.minecraftforge.client.event.RenderSpecificHandEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.item.ItemBarakoMask;
-import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
-import com.bobmowzie.mowziesmobs.server.item.ItemWroughtAxe;
-import com.bobmowzie.mowziesmobs.server.item.ItemWroughtHelm;
-import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import org.lwjgl.input.Mouse;
 
 @SideOnly(Side.CLIENT)

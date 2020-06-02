@@ -1,11 +1,10 @@
 package com.bobmowzie.mowziesmobs.client.model.tools;
 
-import java.util.Random;
-
+import com.bobmowzie.mowziesmobs.server.entity.IntermittentAnimatableEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
-import com.bobmowzie.mowziesmobs.server.entity.IntermittentAnimatableEntity;
+import java.util.Random;
 
 /**
  * This is a timer that can be used to easily animate models with intermittent poses. You have to set the

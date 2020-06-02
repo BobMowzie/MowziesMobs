@@ -1,7 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.block;
 
-import java.util.Random;
-
+import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import net.minecraft.block.BlockSlab;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -15,7 +14,7 @@ import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
+import java.util.Random;
 
 public abstract class BlockPaintedAcaciaSlab extends BlockSlab {
     public static final PropertyEnum<Variant> VARIANT = PropertyEnum.create("variant", Variant.class);

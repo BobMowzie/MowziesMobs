@@ -1,15 +1,14 @@
 package com.bobmowzie.mowziesmobs.server.ai.animation;
 
-import java.util.List;
-
+import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 
-import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
-import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import java.util.List;
 
 public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWroughtnaut> {
     private float arc;

@@ -1,17 +1,26 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
 import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoTrade;
+import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
+import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
+import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory.ParticleArgs;
 import com.bobmowzie.mowziesmobs.client.particles.util.MowzieParticleBase;
 import com.bobmowzie.mowziesmobs.client.particles.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particles.util.ParticleComponent.PropertyControl.EnumParticleProperty;
+import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.*;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityRing;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySuperNova;
 import com.bobmowzie.mowziesmobs.server.gui.GuiHandler;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoTrade;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
@@ -43,29 +52,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-
-import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
-import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
-import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
-import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory.ParticleArgs;
-import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationRadiusAttack;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationSolarBeam;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationSpawnBarakoa;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationSunStrike;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
-import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
-import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune, GuiHandler.ContainerHolder, IMob {
     public static final Animation DIE_ANIMATION = Animation.create(130);

@@ -1,14 +1,9 @@
 package com.bobmowzie.mowziesmobs.server;
 
-import java.io.IOException;
-
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBall;
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.google.common.base.Optional;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,6 +12,8 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializer;
 import net.minecraft.network.datasync.DataSerializers;
+
+import java.io.IOException;
 
 public class ServerProxy {
     public static final DataSerializer<Optional<Trade>> OPTIONAL_TRADE = new DataSerializer<Optional<Trade>>() {

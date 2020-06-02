@@ -1,18 +1,16 @@
 package com.bobmowzie.mowziesmobs.server.potion;
 
-import org.lwjgl.opengl.GL11;
-
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import com.bobmowzie.mowziesmobs.MowziesMobs;
+import org.lwjgl.opengl.GL11;
 
 public class MowziePotion extends Potion {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/gui/container/potions.png");

@@ -1,21 +1,18 @@
 package com.bobmowzie.mowziesmobs.server.message;
 
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
+import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import io.netty.buffer.ByteBuf;
 import net.ilexiconn.llibrary.server.network.AbstractMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
-import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 
 public class MessagePlayerSummonSunstrike extends AbstractMessage<MessagePlayerSummonSunstrike> {
     private static final double REACH = 15;
