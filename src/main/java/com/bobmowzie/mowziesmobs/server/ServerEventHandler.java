@@ -60,6 +60,7 @@ import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.InputUpdateEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -490,20 +491,10 @@ public enum ServerEventHandler {
             EntityLivingBase target = event.getEntityLiving();
             ItemStack weapon = attacker.getHeldItemMainhand();
             if (weapon != null && weapon.getItem() instanceof ItemNagaFangDagger) {
-                int arc = 220;
-                float entityHitAngle = (float) ((Math.atan2(attacker.posZ - target.posZ, attacker.posX - target.posX) * (180 / Math.PI) - 90) % 360);
-                float entityAttackingAngle = target.rotationYaw % 360;
-                if (entityHitAngle < 0) {
-                    entityHitAngle += 360;
-                }
-                if (entityAttackingAngle < 0) {
-                    entityAttackingAngle += 360;
-                }
-                float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
-                boolean angleFlag = (entityRelativeAngle <= arc / 2.0 && entityRelativeAngle >= -arc / 2.0) || (entityRelativeAngle >= 360 - arc / 2.0 || entityRelativeAngle <= -arc + 90 / 2.0);
-                if (!angleFlag) {
-                    event.setAmount(event.getAmount() + 3);
-                }
+                Vec3d lookDir = new Vec3d(target.getLookVec().x, 0, target.getLookVec().z).normalize();
+                Vec3d vecBetween = new Vec3d(target.posX - attacker.posX, 0, target.posZ - attacker.posZ).normalize();
+                double dot = lookDir.dotProduct(vecBetween);
+                if (dot > 0.7) event.setAmount(event.getAmount() + 3);
             }
         }
     }

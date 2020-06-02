@@ -22,6 +22,7 @@ import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityLantern;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.BiPredicate;
 
@@ -137,6 +138,15 @@ public enum SpawnHandler {
     }
 
     private Set<Biome> getBiomesFromConfig(ConfigHandler.BiomeData biomeData) {
+        Field f = null;
+        try {
+            f = Biome.class.getDeclaredField("biomeName");
+            f.setAccessible(true);
+        }
+        catch (Exception e) {
+            System.out.println("Reflection failed");
+        }
+
         Set<String> biomeWhitelistNames = new HashSet<>(Arrays.asList(biomeData.biomeWhitelist));
         Set<String> biomeBlacklistNames = new HashSet<>(Arrays.asList(biomeData.biomeBlacklist));
         Set<String> whiteOrBlacklistedBiomes = new HashSet<>();
@@ -148,7 +158,14 @@ public enum SpawnHandler {
 
         Set<Biome> toReturn = new HashSet<>();
         for (Biome b : Biome.REGISTRY) {
-            String biomeName = b.getBiomeName();
+            String biomeName = "";
+            try {
+                biomeName = (String) f.get(b);
+            }
+            catch (Exception e) {
+                System.out.println("Reflection failed");
+            }
+
             if (biomeWhitelistNames.contains(biomeName)) {
                 toReturn.add(b);
                 whiteOrBlacklistedBiomes.add(biomeName);

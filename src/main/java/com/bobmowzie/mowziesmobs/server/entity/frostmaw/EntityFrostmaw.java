@@ -431,7 +431,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
             }
             else if (!world.isRemote) {
                 timeWithoutTarget++;
-                if (timeWithoutTarget > 1200 || Minecraft.getMinecraft().gameSettings.difficulty == EnumDifficulty.PEACEFUL) {
+                if (timeWithoutTarget > 1200 || world.getDifficulty() == EnumDifficulty.PEACEFUL) {
                     timeWithoutTarget = 0;
                     if (getAnimation() == NO_ANIMATION) {
                         AnimationHandler.INSTANCE.sendAnimationMessage(this, DEACTIVATE_ANIMATION);
@@ -448,9 +448,11 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                 setAttackTarget(null);
             }
             if (!getAttackableEntityLivingBaseNearby(8, 8, 8, 8).isEmpty() && getAttackTarget() != null && getAnimation() == NO_ANIMATION) {
-                if (getHasCrystal()) AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_ANIMATION);
-                else AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_NO_CRYSTAL_ANIMATION);
-                setActive(true);
+                if (world.getDifficulty() != EnumDifficulty.PEACEFUL) {
+                    if (getHasCrystal()) AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_ANIMATION);
+                    else AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_NO_CRYSTAL_ANIMATION);
+                    setActive(true);
+                }
             }
 
             if (crystal != null) {
@@ -687,8 +689,10 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
             if (entity != null && entity instanceof EntityLivingBase && (!(entity instanceof EntityPlayer) || !((EntityPlayer)entity).capabilities.isCreativeMode) && getAttackTarget() == null && !(entity instanceof EntityFrostmaw)) setAttackTarget((EntityLivingBase) entity);
             if (!getActive()) {
                 if (getAnimation() != DIE_ANIMATION) {
-                    if (getHasCrystal()) AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_ANIMATION);
-                    else AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_NO_CRYSTAL_ANIMATION);
+                    if (world.getDifficulty() != EnumDifficulty.PEACEFUL) {
+                        if (getHasCrystal()) AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_ANIMATION);
+                        else AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_NO_CRYSTAL_ANIMATION);
+                    }
                 }
                 setActive(true);
             }
@@ -702,7 +706,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
             Entity entity = source.getTrueSource();
             if (entity != null && entity instanceof EntityLivingBase && (!(entity instanceof EntityPlayer) || !((EntityPlayer)entity).capabilities.isCreativeMode) && getAttackTarget() == null && !(entity instanceof EntityFrostmaw)) setAttackTarget((EntityLivingBase) entity);
             if (!getActive()) {
-                if (getAnimation() != DIE_ANIMATION && Minecraft.getMinecraft().gameSettings.difficulty != EnumDifficulty.PEACEFUL) {
+                if (getAnimation() != DIE_ANIMATION && world.getDifficulty() != EnumDifficulty.PEACEFUL) {
                     if (getHasCrystal()) AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_ANIMATION);
                     else AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_NO_CRYSTAL_ANIMATION);
                 }

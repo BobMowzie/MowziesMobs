@@ -282,7 +282,7 @@ public class ConfigHandler {
         @LangKey(LANG_PREFIX + "spawn_data")
         @Comment({"Controls for vanilla-style mob spawning"})
         public SpawnData spawnData = new SpawnData(
-                4, 1, 1,
+                2, 1, 1,
                 new BiomeData(new String[] {""}, new String[] {}, new String[] {}),
                 new String[] {},
                 55, -1, false, false, true

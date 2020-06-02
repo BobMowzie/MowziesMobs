@@ -302,7 +302,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         IBlockState floorDown2 = world.getBlockState(pos.down(3));
         boolean notInTree = true;
         if (floor instanceof BlockLeaves && floorDown1 != biome.topBlock && floorDown2 != biome.topBlock) notInTree = false;
-        return super.getCanSpawnHere() && notInTree && getEntitiesNearby(EntityAnimal.class, 10, 10, 10, 10).isEmpty() && Minecraft.getMinecraft().gameSettings.difficulty != EnumDifficulty.PEACEFUL;
+        return super.getCanSpawnHere() && notInTree && getEntitiesNearby(EntityAnimal.class, 10, 10, 10, 10).isEmpty() && world.getDifficulty() != EnumDifficulty.PEACEFUL;
     }
 
     @Override

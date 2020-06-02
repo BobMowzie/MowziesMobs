@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.google.common.base.Predicate;
+import net.minecraft.world.EnumDifficulty;
 
 public class BarakoaAttackTargetAI extends EntityAITarget {
     private Class<? extends Entity> targetClass;
@@ -34,6 +35,7 @@ public class BarakoaAttackTargetAI extends EntityAITarget {
         this.setMutexBits(1);
         this.targetEntitySelector = target -> {
             if (target instanceof EntityPlayer) {
+                if (entity.world.getDifficulty() == EnumDifficulty.PEACEFUL) return false;
                 ItemStack headArmorStack = ((EntityPlayer) target).inventory.armorInventory.get(3);
                 if (headArmorStack.getItem() instanceof BarakoaMask) {
                     return false;

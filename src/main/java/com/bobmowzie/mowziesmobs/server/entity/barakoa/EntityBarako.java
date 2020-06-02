@@ -162,7 +162,10 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             this.setDirection(rand.nextInt(4) + 1);
         }
         experienceValue = 45;
-        betweenHandPos = new Vec3d[] {new Vec3d(0, 0, 0)};
+
+        if (world.isRemote) {
+            betweenHandPos = new Vec3d[]{new Vec3d(0, 0, 0)};
+        }
     }
 
     public EntityBarako(World world, int direction) {

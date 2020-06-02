@@ -229,8 +229,8 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
         setSize(3, 1);
         if (world.isRemote) {
             dc = new DynamicChain(this);
+            mouthPos = new Vec3d[] {new Vec3d(0, 0, 0)};
         }
-        mouthPos = new Vec3d[] {new Vec3d(0, 0, 0)};
 
         this.experienceValue = 10;
     }
@@ -490,7 +490,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
     public boolean getCanSpawnHere() {
         boolean flag = super.getCanSpawnHere();
         setPosition(posX, posY + 5, posZ);
-        return flag && Minecraft.getMinecraft().gameSettings.difficulty != EnumDifficulty.PEACEFUL;
+        return flag && world.getDifficulty() != EnumDifficulty.PEACEFUL;
     }
 
     @Override

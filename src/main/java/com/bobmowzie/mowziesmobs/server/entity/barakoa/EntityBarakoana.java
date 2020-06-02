@@ -180,7 +180,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
                 return false;
             }
         }
-        return super.getCanSpawnHere() && Minecraft.getMinecraft().gameSettings.difficulty != EnumDifficulty.PEACEFUL;
+        return super.getCanSpawnHere() && world.getDifficulty() != EnumDifficulty.PEACEFUL;
     }
 
     public int getMaxSpawnedInChunk()
