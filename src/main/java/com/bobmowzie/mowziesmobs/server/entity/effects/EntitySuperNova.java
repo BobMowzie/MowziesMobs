@@ -51,7 +51,7 @@ public class EntitySuperNova extends EntityMagicEffect {
                     MowzieParticleBase.spawnParticle(world, MMParticle.ARROW_HEAD, posX, posY, posZ, 0, 0, 0, false, 0, 0, 0, 0, 8F, 0.95, 0.9, 0.35, 1, 1, 30, true, new ParticleComponent[]{
                             new ParticleComponent.Orbit(new Vec3d[]{getPositionVector().add(0, height / 2, 0)}, KeyTrack.startAndEnd(0 + phaseOffset, 1.6f + phaseOffset), new ParticleComponent.KeyTrack(
                                     new float[]{0.2f * scale, 0.63f * scale, 0.87f * scale, 0.974f * scale, 0.998f * scale, 1f * scale},
-                                    new float[]{0, 0.15f, 0.3f, 0.45f, 0.6f, 75f}
+                                    new float[]{0, 0.15f, 0.3f, 0.45f, 0.6f, 0.75f}
                             ), KeyTrack.startAndEnd(rand.nextFloat() * 2 - 1, rand.nextFloat() * 2 - 1), KeyTrack.startAndEnd(rand.nextFloat() * 2 - 1, rand.nextFloat() * 2 - 1), KeyTrack.startAndEnd(rand.nextFloat() * 2 - 1, rand.nextFloat() * 2 - 1), false),
                             new RibbonComponent(MMParticle.RIBBON_FLAT, 10, 0, 0, 0, 0.2F, 0.95, 0.9, 0.35, 1, true, true, new ParticleComponent[]{
                                     new PropertyOverLength(PropertyOverLength.EnumRibbonProperty.SCALE, KeyTrack.startAndEnd(1, 0)),
@@ -77,13 +77,15 @@ public class EntitySuperNova extends EntityMagicEffect {
                     float damageMob = 3f;
                     damageFire *= ConfigHandler.BARAKO.combatData.attackMultiplier;
                     damageMob *= ConfigHandler.BARAKO.combatData.attackMultiplier;
-                    if (entity.attackEntityFrom(DamageSource.causeMobDamage(caster), damageMob)) {
+                    boolean hitWithFire = entity.attackEntityFrom(DamageSource.ON_FIRE, damageFire);
+                    if (hitWithFire) {
                         entity.hurtResistantTime = 0;
                         Vec3d diff = entity.getPositionVector().subtract(getPositionVector());
                         diff = diff.normalize();
                         entity.knockBack(this, 0.4f, -diff.x, -diff.z);
                     }
-                    entity.attackEntityFrom(DamageSource.ON_FIRE, damageFire);
+                    entity.attackEntityFrom(DamageSource.causeMobDamage(caster), damageMob);
+                    if (hitWithFire) entity.hurtResistantTime = entity.maxHurtResistantTime;
                     entity.setFire(5);
                 }
             }

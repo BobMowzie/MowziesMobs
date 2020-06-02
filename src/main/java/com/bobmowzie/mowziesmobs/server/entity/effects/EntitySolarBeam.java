@@ -129,8 +129,10 @@ public class EntitySolarBeam extends Entity {
                         damageFire *= ConfigHandler.TOOLS_AND_ABILITIES.sunsBlessingAttackMultiplier;
                         damageMob *= ConfigHandler.TOOLS_AND_ABILITIES.sunsBlessingAttackMultiplier;
                     }
-                    if (target.attackEntityFrom(DamageSource.causeMobDamage(caster), damageMob)) target.hurtResistantTime = 0;
-                    target.attackEntityFrom(DamageSource.ON_FIRE, damageFire);
+                    boolean hitWithFire = target.attackEntityFrom(DamageSource.ON_FIRE, damageFire);
+                    if (hitWithFire) target.hurtResistantTime = 0;
+                    target.attackEntityFrom(DamageSource.causeMobDamage(caster), damageMob);
+                    if (hitWithFire) target.hurtResistantTime = target.maxHurtResistantTime;
                 }
             } else {
                 for (EntityLivingBase e : hit) {

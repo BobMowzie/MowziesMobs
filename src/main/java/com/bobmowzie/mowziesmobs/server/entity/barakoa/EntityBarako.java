@@ -132,7 +132,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                     playSound(MMSounds.ENTITY_SUPERNOVA_START, 3f, 1f);
                 }
                 if (entity.getAnimationTick() == 30) {
-                    playSound(MMSounds.ENTITY_SUPERNOVA_BLACKHOLE, 2f, 1f);
+                    playSound(MMSounds.ENTITY_SUPERNOVA_BLACKHOLE, 2f, 1.2f);
                 }
                 if (entity.getAnimationTick() == 40) {
                     playSound(MMSounds.ENTITY_BARAKO_SCREAM, 1.5f, 1f);
@@ -245,17 +245,17 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 entityAttackingAngle += 360;
             }
             float entityRelativeAngle = Math.abs(entityHitAngle - entityAttackingAngle);
-            if (getAnimation() == NO_ANIMATION && !isAIDisabled() && getHealth() / getMaxHealth() <= 0.6 && timeUntilLaser <= 0 && (entityRelativeAngle < 60 || entityRelativeAngle > 300) && getEntitySenses().canSee(target)) {
+            if (getAnimation() == NO_ANIMATION && !isAIDisabled() && rand.nextInt(80) == 0 && getEntitiesNearby(EntityBarakoa.class, 25).size() < 5 && targetDistance > 5 && timeUntilBarakoa <= 0) {
+                AnimationHandler.INSTANCE.sendAnimationMessage(this, SPAWN_ANIMATION);
+                timeUntilBarakoa = BARAKOA_PAUSE;
+            } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && getHealth() / getMaxHealth() <= 0.6 && timeUntilLaser <= 0 && (entityRelativeAngle < 60 || entityRelativeAngle > 300) && getEntitySenses().canSee(target)) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SOLAR_BEAM_ANIMATION);
                 timeUntilLaser = LASER_PAUSE;
-            } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && getHealth() / getMaxHealth() <= 0.6 && timeUntilSupernova <= 0 && targetDistance <= 14) {
+            } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && getHealth() / getMaxHealth() <= 0.6 && timeUntilSupernova <= 0 && targetDistance <= 11) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SUPERNOVA_ANIMATION);
                 timeUntilSupernova = SUPERNOVA_PAUSE;
             } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && targetDistance <= 5) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, ATTACK_ANIMATION);
-            } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && rand.nextInt(80) == 0 && getEntitiesNearby(EntityBarakoa.class, 25).size() < 5 && targetDistance > 5 && timeUntilBarakoa <= 0) {
-                AnimationHandler.INSTANCE.sendAnimationMessage(this, SPAWN_ANIMATION);
-                timeUntilBarakoa = BARAKOA_PAUSE;
             } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && timeUntilSunstrike <= 0 && targetDistance > 5) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SUNSTRIKE_ANIMATION);
                 timeUntilSunstrike = getTimeUntilSunstrike();
@@ -385,9 +385,9 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             timeUntilSupernova--;
         }
 
-        if (getAnimation() == NO_ANIMATION) {
-            AnimationHandler.INSTANCE.sendAnimationMessage(this, SUPERNOVA_ANIMATION);
-        }
+//        if (getAnimation() == NO_ANIMATION) {
+//            AnimationHandler.INSTANCE.sendAnimationMessage(this, SUPERNOVA_ANIMATION);
+//        }
     }
 
     private void superNovaEffects() {
@@ -428,18 +428,15 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             });
         }
         if (getAnimationTick() > 30 && getAnimationTick() < 41) {
-            for (int i = 0; i < 8; i++) {
-                Vec3d particlePos = new Vec3d(Math.random() * 1.5, 0, 0);
-                particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
-                particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
-                particlePos = particlePos.add(betweenHandPos[0]);
-                double value = rand.nextDouble() * 0.5 + 0.1;
-                MowzieParticleBase.spawnParticle(world, MMParticle.PIXEL, particlePos.x, particlePos.y, particlePos.z, 0, 0, 0, true, 0, 0, 0, 0, 5F, value, value, value, 1, 1, 4, false, new ParticleComponent[]{
-                        new ParticleComponent.Attractor(betweenHandPos, 1.4f, 0.2f, ParticleComponent.Attractor.EnumAttractorBehavior.EXPONENTIAL),
+            for (int i = 0; i < 6; i++) {
+                float phaseOffset = rand.nextFloat();
+                double value = rand.nextDouble() * 0.3 + 0.05;
+                MowzieParticleBase.spawnParticle(world, MMParticle.PIXEL, betweenHandPos[0].x, betweenHandPos[0].y, betweenHandPos[0].z, 0, 0, 0, true, 0, 0, 0, 0, 5F, value, value, value, 1, 1, 6, false, new ParticleComponent[]{
                         new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
-                                new float[]{0f, 3.5f},
+                                new float[]{0f, 3f},
                                 new float[]{0, 0.2f}
                         ), false),
+                        new ParticleComponent.Orbit(betweenHandPos, ParticleComponent.KeyTrack.startAndEnd(0 + phaseOffset, -0.4f + phaseOffset), ParticleComponent.KeyTrack.startAndEnd(0.5f + rand.nextFloat(), 0), ParticleComponent.constant(0), ParticleComponent.constant(0), ParticleComponent.constant(0), true),
                 });
             }
         }
