@@ -69,7 +69,7 @@ public class MessageBarakoTrade extends AbstractMessage<MessageBarakoTrade> {
             }
         }
         if (satisfied) {
-            player.addPotionEffect(new PotionEffect(PotionHandler.SUNS_BLESSING, 24000, 0, false, false));
+            player.addPotionEffect(new PotionEffect(PotionHandler.SUNS_BLESSING, 24000 * 3, 0, false, false));
             if (barako.getAnimation() != barako.BLESS_ANIMATION) {
                 barako.setAnimationTick(0);
                 AnimationHandler.INSTANCE.sendAnimationMessage(barako, barako.BLESS_ANIMATION);
