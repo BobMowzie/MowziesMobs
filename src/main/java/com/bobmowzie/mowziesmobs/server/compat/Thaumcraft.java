@@ -175,6 +175,11 @@ public class Thaumcraft {
                     .add(Aspect.DEATH, 10)
                     .add(Aspect.ALCHEMY, 6)
             );
+            registerTCObjectTag(ItemHandler.NAGA_FANG_DAGGER, 0, new AspectList()
+                    .add(Aspect.BEAST, 11)
+                    .add(Aspect.DEATH, 10)
+                    .add(Aspect.AVERSION, 8)
+            );
 
         } catch (Exception e) {
 
