@@ -197,7 +197,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, ATTACK_ANIMATION);
             }
 
-            if (targetDistance <= 11) {
+            if (targetDistance <= 11 && getAttackTarget().posY - posY >= -1.5 && getAttackTarget().posY - posY <= 2) {
                 setActivateTarget(ACTIVATE_DURATION);
                 lastTimeDecrease = 0;
             } else if (lastTimeDecrease <= 30 && getAnimation() == NO_ANIMATION) {
