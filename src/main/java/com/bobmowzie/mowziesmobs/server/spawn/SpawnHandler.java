@@ -11,6 +11,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.WorldEntitySpawner;
@@ -92,7 +93,7 @@ public enum SpawnHandler {
         }
         if (ConfigHandler.NAGA.spawnData.spawnRate > 0) {
             Set<Biome> nagaBiomes = getBiomesFromConfig(ConfigHandler.NAGA.spawnData.biomeData);
-            //System.out.println("Naga biomes " + nagaBiomes);
+//            System.out.println("Naga biomes " + nagaBiomes);
             EntityRegistry.addSpawn(EntityNaga.class, ConfigHandler.NAGA.spawnData.spawnRate, ConfigHandler.NAGA.spawnData.minGroupSize, ConfigHandler.NAGA.spawnData.maxGroupSize, EnumCreatureType.MONSTER, nagaBiomes.toArray(new Biome[nagaBiomes.size()]));
         }
     }
@@ -156,25 +157,21 @@ public enum SpawnHandler {
 
         Set<Biome> toReturn = new HashSet<>();
         for (Biome b : Biome.REGISTRY) {
-            String biomeName = "";
-            try {
-                biomeName = (String) f.get(b);
-            }
-            catch (Exception e) {
-                System.out.println("Reflection failed");
-            }
-
-            if (biomeWhitelistNames.contains(biomeName)) {
-                toReturn.add(b);
-                whiteOrBlacklistedBiomes.add(biomeName);
-                continue;
-            }
-            if (biomeBlacklistNames.contains(biomeName)) {
-                whiteOrBlacklistedBiomes.add(biomeName);
-                continue;
-            }
-            for (BiomeCombo biomeCombo : biomeCombos) {
-                if (biomeCombo.acceptsBiome(b)) toReturn.add(b);
+            ResourceLocation biomeRegistryName = b.getRegistryName();
+            if (biomeRegistryName != null) {
+                String biomeName = biomeRegistryName.getPath();
+                if (biomeWhitelistNames.contains(biomeName)) {
+                    toReturn.add(b);
+                    whiteOrBlacklistedBiomes.add(biomeName);
+                    continue;
+                }
+                if (biomeBlacklistNames.contains(biomeName)) {
+                    whiteOrBlacklistedBiomes.add(biomeName);
+                    continue;
+                }
+                for (BiomeCombo biomeCombo : biomeCombos) {
+                    if (biomeCombo.acceptsBiome(b)) toReturn.add(b);
+                }
             }
         }
 

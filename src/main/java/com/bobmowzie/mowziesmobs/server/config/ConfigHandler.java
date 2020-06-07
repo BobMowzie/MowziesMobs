@@ -235,7 +235,7 @@ public class ConfigHandler {
         @Comment({"Controls for vanilla-style mob spawning"})
         public SpawnData spawnData = new SpawnData(
                 3, 1, 3,
-                new BiomeData(new String[] {"BEACH,MOUNTAIN", "BEACH,HILLS"}, new String[] {"Stone Beach"}, new String[] {}),
+                new BiomeData(new String[] {"BEACH,MOUNTAIN", "BEACH,HILLS"}, new String[] {"stone_beach"}, new String[] {}),
                 new String[] {"grass", "stone", "sand"},
                 -1, -1, false, true, false
         );
@@ -254,7 +254,7 @@ public class ConfigHandler {
         @Comment({"Controls for vanilla-style mob spawning"})
         public SpawnData spawnData = new SpawnData(
                 5, 1, 2,
-                new BiomeData(new String[] {"FOREST,MAGICAL,!SNOWY"}, new String[] {"Roofed Forest", "Roofed Forest M"}, new String[] {}),
+                new BiomeData(new String[] {"FOREST,MAGICAL,!SNOWY"}, new String[] {"roofed_forest", "mutated_roofed_forest"}, new String[] {}),
                 new String[] {"grass", "leaves", "leaves2", "log", "log2"},
                 -1, 60, true, false, false
         );
