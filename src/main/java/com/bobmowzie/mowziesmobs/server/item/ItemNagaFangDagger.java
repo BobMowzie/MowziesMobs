@@ -4,6 +4,8 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.google.common.collect.Sets;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.MobEffects;
 import net.minecraft.item.Item;
@@ -21,6 +23,11 @@ public class ItemNagaFangDagger extends ItemTool {
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
         setTranslationKey("nagaFangDagger");
         setRegistryName("naga_fang_dagger");
+    }
+
+    @Override
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        return enchantment.type == EnumEnchantmentType.WEAPON || enchantment.type == EnumEnchantmentType.BREAKABLE || enchantment.type == EnumEnchantmentType.ALL;
     }
 
     @Override
