@@ -20,7 +20,7 @@ import java.util.List;
 
 public class ItemSpear extends ItemTool {
     public ItemSpear() {
-        super(3 * ConfigHandler.TOOLS_AND_ABILITIES.spearAttackMultiplier, 1.6f, ToolMaterial.STONE, Sets.newHashSet());
+        super(3 * ConfigHandler.TOOLS_AND_ABILITIES.spearAttackMultiplier, -4f + 1.6f, ToolMaterial.STONE, Sets.newHashSet());
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
         setTranslationKey("spear");
         setRegistryName("spear");

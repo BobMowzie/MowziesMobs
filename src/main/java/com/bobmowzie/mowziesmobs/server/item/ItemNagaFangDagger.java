@@ -17,7 +17,7 @@ import java.util.List;
 
 public class ItemNagaFangDagger extends ItemTool {
     public ItemNagaFangDagger() {
-        super(1 * ConfigHandler.TOOLS_AND_ABILITIES.nagaDaggerAttackMultiplier, 1.5f, ToolMaterial.STONE, Sets.newHashSet());
+        super(1 * ConfigHandler.TOOLS_AND_ABILITIES.nagaDaggerAttackMultiplier, -4f + 2f, ToolMaterial.STONE, Sets.newHashSet());
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
         setTranslationKey("nagaFangDagger");
         setRegistryName("naga_fang_dagger");
