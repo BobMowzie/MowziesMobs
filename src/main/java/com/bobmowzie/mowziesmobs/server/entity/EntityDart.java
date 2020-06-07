@@ -39,9 +39,11 @@ public class EntityDart extends EntityTippedArrow {
     @Override
     protected void onHit(RayTraceResult raytraceResultIn) {
         Entity hit = raytraceResultIn.entityHit;
-        if (hit == null || !(hit instanceof EntityLivingBase)) return;
-        EntityLivingBase living = (EntityLivingBase)hit;
-        if (world.isRemote || (shootingEntity == hit) || (shootingEntity instanceof EntityBarakoa && living instanceof EntityBarakoa && ((EntityBarakoa) shootingEntity).isBarakoDevoted() == ((EntityBarakoa) living).isBarakoDevoted())) return;
+        if (hit != null && hit instanceof EntityLivingBase) {
+            EntityLivingBase living = (EntityLivingBase) hit;
+            if (world.isRemote || (shootingEntity == hit) || (shootingEntity instanceof EntityBarakoa && living instanceof EntityBarakoa && ((EntityBarakoa) shootingEntity).isBarakoDevoted() == ((EntityBarakoa) living).isBarakoDevoted()))
+                return;
+        }
         super.onHit(raytraceResultIn);
     }
 }
