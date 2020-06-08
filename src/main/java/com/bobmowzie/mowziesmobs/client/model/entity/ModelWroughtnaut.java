@@ -1,11 +1,13 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ExtendedModelRenderer;
+import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.model.ModelAnimator;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
+import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -85,6 +87,8 @@ public class ModelWroughtnaut extends AdvancedModelBase {
     public AdvancedModelRenderer waistBendController;
     public ExtendedModelRenderer eyeRight;
     public ExtendedModelRenderer eyeLeft;
+    public SocketModelRenderer eyeRightSocket;
+    public SocketModelRenderer eyeLeftSocket;
     private ModelAnimator animator;
 
     public ModelWroughtnaut() {
@@ -371,6 +375,8 @@ public class ModelWroughtnaut extends AdvancedModelBase {
         this.eyeRight = new ExtendedModelRenderer(this, 0, 0);
         this.eyeRight.setRotationPoint(4, -4, 4);
         this.eyeRight.addBox(-1, -0.5F, 0, 2, 1, 0, 0.0F);
+        eyeRightSocket = new SocketModelRenderer(this, 0, 0);
+        eyeLeftSocket = new SocketModelRenderer(this, 0, 0);
 
         rootBox.addChild(waist);
         this.waist.addChild(this.groinJoint);
@@ -442,6 +448,8 @@ public class ModelWroughtnaut extends AdvancedModelBase {
         groin.addChild(groinJoint);
         stomach.addChild(swordJoint);
         swordJoint.addChild(sword);
+        head.addChild(eyeRightSocket);
+        head.addChild(eyeLeftSocket);
 
         //Corrections
         groin.rotateAngleY -= 45 * Math.PI / 180;
@@ -454,6 +462,11 @@ public class ModelWroughtnaut extends AdvancedModelBase {
         eyeLeft.rotateAngleY -= Math.PI / 2f;
         eyeLeft.setHasLighting(false);
         eyeRight.setHasLighting(false);
+        
+        eyeLeftSocket.setRotationPoint(eyeLeft.rotationPointX, eyeLeft.rotationPointY, eyeLeft.rotationPointZ);
+        setRotateAngle(eyeLeft, eyeLeft.rotateAngleX, eyeLeft.rotateAngleY, eyeLeft.rotateAngleZ);
+        eyeRightSocket.setRotationPoint(eyeRight.rotationPointX, eyeRight.rotationPointY, eyeRight.rotationPointZ);
+        setRotateAngle(eyeRight, eyeRight.rotateAngleX, eyeRight.rotateAngleY, eyeRight.rotateAngleZ);
 
         updateDefaultPose();
     }
@@ -466,17 +479,16 @@ public class ModelWroughtnaut extends AdvancedModelBase {
         eyeRight.setDefaultBrightness(entity);
 
         this.rootBox.render(f5);
-        //EntityWroughtnaut wroughtnaut = (EntityWroughtnaut)entity;
-//        eyeRight.rotationPointZ -= 5;
-//        eyeLeft.rotationPointZ += 5;
-//        float delta = LLibrary.PROXY.getPartialTicks();
-//        wroughtnaut.rightEyePos = eyeRight.getWorldPos(wroughtnaut, delta);
-//        wroughtnaut.leftEyePos = eyeLeft.getWorldPos(wroughtnaut, delta);
-//        wroughtnaut.rightEyeRot = eyeRight.getWorldRotation(wroughtnaut, delta);
-//        wroughtnaut.leftEyeRot = eyeLeft.getWorldRotation(wroughtnaut, delta);
+        EntityWroughtnaut wroughtnaut = (EntityWroughtnaut)entity;
+
+        float delta = LLibrary.PROXY.getPartialTicks();
+//        wroughtnaut.rightEyePos = eyeRightSocket.getWorldPos(wroughtnaut, delta);
+//        wroughtnaut.leftEyePos = eyeLeftSocket.getWorldPos(wroughtnaut, delta);
+//        wroughtnaut.rightEyeRot = eyeRightSocket.getWorldRotation(wroughtnaut, delta);
+//        wroughtnaut.leftEyeRot = eyeLeftSocket.getWorldRotation(wroughtnaut, delta);
     }
 
-    public void setRotateAngle(AdvancedModelRenderer modelRenderer, float x, float y, float z) {
+    public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;

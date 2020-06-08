@@ -394,4 +394,9 @@ public abstract class ParticleComponent {
             }
         }
     }
+
+    public class AlphaControl extends ParticleComponent {
+        public AlphaControl(float v, float v1) {
+        }
+    }
 }

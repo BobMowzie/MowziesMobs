@@ -1,6 +1,10 @@
 package com.bobmowzie.mowziesmobs.server.entity.wroughtnaut;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
+import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
+import com.bobmowzie.mowziesmobs.client.particles.util.MowzieParticleBase;
+import com.bobmowzie.mowziesmobs.client.particles.util.ParticleComponent;
+import com.bobmowzie.mowziesmobs.client.particles.util.ParticleComponent.PropertyControl.EnumParticleProperty;
 import com.bobmowzie.mowziesmobs.server.ai.MMPathNavigateGround;
 import com.bobmowzie.mowziesmobs.server.ai.animation.*;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
@@ -36,9 +40,12 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.PooledMutableBlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 
@@ -99,9 +106,9 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 
     private CeilingDisturbance disturbance;
 
-//    @SideOnly(Side.CLIENT)
-//    public Vec3d leftEyePos, rightEyePos;
-//    public Vec3d leftEyeRot, rightEyeRot;
+    @SideOnly(Side.CLIENT)
+    public Vec3d leftEyePos, rightEyePos;
+    public Vec3d leftEyeRot, rightEyeRot;
 
     public EntityWroughtnaut(World world) {
         super(world);
@@ -261,9 +268,9 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
             posZ = prevPosZ;
             rotationYaw = prevRotationYaw;
         }
-//        else if (world.isRemote) {
-//            MowzieParticleBase.spawnParticle(world, MMParticle.EYE, leftEyePos.x, leftEyePos.y, leftEyePos.z, 0, 0, 0, leftEyeRot.y - 0.785, leftEyeRot.x, leftEyeRot.z, 5f, 0.8f, 0.1f, 0.1f, 1f, 1, 20, false, new ParticleComponent[]{new ParticleComponent.AlphaControl(1f, 0f)});
-//            MowzieParticleBase.spawnParticle(world, MMParticle.EYE, rightEyePos.x, rightEyePos.y, rightEyePos.z, 0, 0, 0, rightEyeRot.y + 0.785, rightEyeRot.x, rightEyeRot.z,5f, 0.8f, 0.1f, 0.1f, 1f, 1, 20, false, new ParticleComponent[]{new ParticleComponent.AlphaControl(1f, 0f)});
+//        else if (world.isRemote && leftEyePos != null && rightEyePos != null) {
+//            MowzieParticleBase.spawnParticle(world, MMParticle.EYE, leftEyePos.x, leftEyePos.y, leftEyePos.z, 0, 0, 0, false, leftEyeRot.y + 1.5708, 0, 0, 0, 5f, 0.8f, 0.1f, 0.1f, 1f, 1, 10, false, new ParticleComponent[]{new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1, 0), false)});
+//            MowzieParticleBase.spawnParticle(world, MMParticle.EYE, rightEyePos.x, rightEyePos.y, rightEyePos.z, 0, 0, 0, false, rightEyeRot.y, 0, 0, 0, 5f, 0.8f, 0.1f, 0.1f, 1f, 1, 10, false, new ParticleComponent[]{new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1, 0), false)});
 //        }
         renderYawOffset = rotationYaw;
 
