@@ -44,6 +44,7 @@ import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -79,14 +80,12 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
 
     private static final DataParameter<Boolean> ACTIVE = EntityDataManager.createKey(EntityFrostmaw.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> HAS_CRYSTAL = EntityDataManager.createKey(EntityFrostmaw.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Optional<UUID>> CRYSTAL = EntityDataManager.createKey(EntityFrostmaw.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 
     public static final int ICE_BREATH_COOLDOWN = 260;
     public static final int ICE_BALL_COOLDOWN = 200;
     public static final int SLAM_COOLDOWN = 500;
     public static final int DODGE_COOLDOWN = 200;
 
-    public EntityItem crystal;
     public EntityIceBreath iceBreath;
 
     public boolean swingWhichArm = false;
@@ -161,7 +160,6 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         super.entityInit();
         getDataManager().register(ACTIVE, false);
         getDataManager().register(HAS_CRYSTAL, true);
-        getDataManager().register(CRYSTAL, Optional.absent());
     }
 
     @Override
@@ -189,27 +187,6 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         this.repelEntities(3.8f, 3.8f, 3.8f, 3.8f);
 
         if (getAttackTarget() != null && (getAttackTarget().isDead || getAttackTarget().getHealth() <= 0)) setAttackTarget(null);
-
-        if (ticksExisted == 1) {
-//            System.out.println("Frostmaw at " + getPosition());
-            if (getHasCrystal()) {
-                Optional<UUID> crystalID = getCrystalID();
-                if (!getCrystalID().isPresent() && !world.isRemote && crystal == null && !getActive()) {
-                    crystal = dropItem(ItemHandler.ICE_CRYSTAL, 1);
-                    setCrystalID(Optional.of(crystal.getUniqueID()));
-                }
-                crystal = getCrystal();
-                if (crystal != null) {
-                    crystal.setNoDespawn();
-                    crystal.setNoGravity(true);
-                }
-            }
-        }
-
-        if (!world.isRemote && crystal != null && crystal.isDead && !getActive() && getAnimation() != DEACTIVATE_ANIMATION) {
-            setHasCrystal(false);
-            setCrystalID(Optional.absent());
-        }
 
         if (getActive() && getAnimation() != ACTIVATE_ANIMATION && getAnimation() != ACTIVATE_NO_CRYSTAL_ANIMATION) {
             legSolver.update(this);
@@ -393,7 +370,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                     entityAttackingAngle += 360;
                 }
                 float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
-                if (getNavigator().noPath() && !((entityRelativeAngle <= 30 / 2 && entityRelativeAngle >= -30 / 2) || (entityRelativeAngle >= 360 - 30 / 2 || entityRelativeAngle <= -360 + 30 / 2))) {
+                if (getNavigator().noPath() && !((entityRelativeAngle <= 30 / 2f && entityRelativeAngle >= -30 / 2f) || (entityRelativeAngle >= 360 - 30 / 2f || entityRelativeAngle <= -360 + 30 / 2f))) {
                     getNavigator().tryMoveToEntityLiving(getAttackTarget(), 0.85);
                 }
 
@@ -454,49 +431,38 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                 }
             }
 
-            if (crystal != null) {
-                crystal.setNoGravity(true);
-                crystal.motionX = 0;
-                crystal.motionY = 0;
-                crystal.motionZ = 0;
-
+            if (ConfigHandler.FROSTMAW.stealableIceCrystal && getHasCrystal()) {
                 Vec3d crystalPos = new Vec3d(1.6, 0.4, 1.8);
-                crystalPos = crystalPos.rotateYaw((float)Math.toRadians(-rotationYaw - 90));
+                crystalPos = crystalPos.rotateYaw((float) Math.toRadians(-rotationYaw - 90));
                 crystalPos = crystalPos.add(getPositionVector());
+                for (EntityPlayer player : getPlayersNearby(8, 8, 8, 8)) {
+                    if (player.getPositionVector().subtract(crystalPos).length() <= 1.6 && (player.capabilities.isCreativeMode || player.isInvisible())) {
+                        ItemStack crystalStack = new ItemStack(ItemHandler.ICE_CRYSTAL);
+                        boolean flag = player.inventory.addItemStackToInventory(crystalStack);
 
-                crystal.setPosition(crystalPos.x, crystalPos.y, crystalPos.z);
+                        if (flag) {
+                            player.world.playSound((EntityPlayer) null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((player.getRNG().nextFloat() - player.getRNG().nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                            player.inventoryContainer.detectAndSendChanges();
+                            setHasCrystal(false);
+                            if (world.getDifficulty() != EnumDifficulty.PEACEFUL) {
+                                AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_NO_CRYSTAL_ANIMATION);
+                                setActive(true);
+                            }
+                            break;
+                        }
+                    }
+                }
             }
         }
 
         if (getAnimation() == ACTIVATE_ANIMATION || getAnimation() == ACTIVATE_NO_CRYSTAL_ANIMATION) {
             if (getAnimationTick() == 1) playSound(MMSounds.ENTITY_FROSTMAW_WAKEUP, 1, 1);
             if (getAnimation() == ACTIVATE_ANIMATION && getAnimationTick() == 18) playSound(MMSounds.ENTITY_FROSTMAW_ATTACK.get(0).get(), 1.5f, 1);
-            if (!world.isRemote && crystal != null) {
-                crystal.setDead();
-                setCrystalID(Optional.absent());
-            }
             if ((getAnimation() == ACTIVATE_ANIMATION && getAnimationTick() == 52) || (getAnimation() == ACTIVATE_NO_CRYSTAL_ANIMATION && getAnimationTick() == 34)) {
                 playSound(MMSounds.ENTITY_FROSTMAW_ROAR, 4, 1);
             }
             if ((getAnimation() == ACTIVATE_ANIMATION && getAnimationTick() >= 51 && getAnimationTick() < 108) || (getAnimation() == ACTIVATE_NO_CRYSTAL_ANIMATION && getAnimationTick() >= 33 && getAnimationTick() < 90)) {
                 doRoarEffects();
-            }
-        }
-
-        if (getAnimation() == DEACTIVATE_ANIMATION) {
-            if (getAnimationTick() == 10) {
-                if (getHasCrystal()) {
-                    Optional<UUID> crystalID = getCrystalID();
-                    if (!getCrystalID().isPresent() && !world.isRemote && (crystal == null || crystal.isDead)) {
-                        crystal = dropItem(ItemHandler.ICE_CRYSTAL, 1);
-                        setCrystalID(Optional.of(crystal.getUniqueID()));
-                    }
-                    crystal = getCrystal();
-                    if (crystal != null) {
-                        crystal.setNoDespawn();
-                        crystal.setNoGravity(true);
-                    }
-                }
             }
         }
 
@@ -858,36 +824,9 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         return getDataManager().get(HAS_CRYSTAL);
     }
 
-    public void setCrystalID(Optional<UUID> crystalID) {
-        getDataManager().set(CRYSTAL, crystalID);
-    }
-
-    public Optional<UUID> getCrystalID() {
-        return getDataManager().get(CRYSTAL);
-    }
-
-    public EntityItem getCrystal() {
-        Optional<UUID> uuid = getCrystalID();
-        if (uuid.isPresent()) {
-            List<EntityItem> potentialCrystals = world.getEntitiesWithinAABB(EntityItem.class, getEntityBoundingBox().grow(32, 32, 32));
-            for (EntityItem entity : potentialCrystals) {
-                if (uuid.get().equals(entity.getUniqueID())) {
-                    return entity;
-                }
-            }
-        }
-        return null;
-    }
-
     @Override
     public Animation[] getAnimations() {
         return new Animation[] {DIE_ANIMATION, HURT_ANIMATION, ROAR_ANIMATION, SWIPE_ANIMATION, SWIPE_TWICE_ANIMATION, ICE_BREATH_ANIMATION, ICE_BALL_ANIMATION, ACTIVATE_ANIMATION, ACTIVATE_NO_CRYSTAL_ANIMATION, DEACTIVATE_ANIMATION, SLAM_ANIMATION, LAND_ANIMATION, DODGE_ANIMATION};
-    }
-
-    @Override
-    public void setDead() {
-        super.setDead();
-        if (crystal != null) crystal.setDead();
     }
 
     @Override
@@ -895,12 +834,6 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         super.readEntityFromNBT(compound);
         setHasCrystal(compound.getBoolean("has_crystal"));
         setActive(compound.getBoolean("active"));
-        String uuid = compound.getString("crystalUUID");
-        if (uuid.isEmpty()) {
-            setCrystalID(Optional.absent());
-        } else {
-            setCrystalID(Optional.of(UUID.fromString(uuid)));
-        }
     }
 
     @Override
@@ -908,10 +841,6 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         super.writeEntityToNBT(compound);
         compound.setBoolean("has_crystal", getHasCrystal());
         compound.setBoolean("active", getActive());
-        Optional<UUID> crystalUUID = getCrystalID();
-        if (crystalUUID.isPresent()) {
-            compound.setString("crystalUUID", crystalUUID.get().toString());
-        }
     }
 
     @Nullable

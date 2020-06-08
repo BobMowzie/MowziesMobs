@@ -84,6 +84,7 @@ public class ModelFrostmaw extends AdvancedModelBase {
     public SocketModelRenderer crystalSocket;
     public AdvancedModelRenderer iceCrystal;
     public AdvancedModelRenderer iceCrystalJoint;
+    public AdvancedModelRenderer iceCrystalHand;
     public AdvancedModelRenderer standUpController;
 
     private ModelAnimator animator;
@@ -313,6 +314,10 @@ public class ModelFrostmaw extends AdvancedModelBase {
         this.iceCrystal.add3DTexture(-8, -8, 0, 16, 16);
         this.iceCrystalJoint = new AdvancedModelRenderer(this, 0, 0);
         this.iceCrystalJoint.setRotationPoint(0, 20, -20);
+        this.iceCrystalHand = new AdvancedModelRenderer(this, 0, 0);
+        this.iceCrystalHand.add3DTexture(-8, -8, 0, 16, 16);
+        this.iceCrystalHand.setScale(0.5f, 0.5f, 0.5f);
+        this.iceCrystalHand.setRotationPoint(-28.5f, 10, -25.5f);
         handController = new AdvancedModelRenderer(this, 0, 0);
         swingOffsetController = new AdvancedModelRenderer(this, 0, 0);
         roarController = new AdvancedModelRenderer(this, 0, 0);
@@ -407,8 +412,11 @@ public class ModelFrostmaw extends AdvancedModelBase {
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
         EntityFrostmaw frostmaw = (EntityFrostmaw) entity;
         animate(frostmaw, f, f1, f2, f3, f4, f5);
+
         this.root.render(f5);
+        this.iceCrystalHand.render(f5);
         mouthSocket.setRotationPoint(0, -10, 8);
+
         if (frostmaw.getAnimation() == frostmaw.SWIPE_ANIMATION || frostmaw.getAnimation() == frostmaw.SWIPE_TWICE_ANIMATION || frostmaw.getAnimation() == frostmaw.ICE_BREATH_ANIMATION || frostmaw.getAnimation() == frostmaw.ICE_BALL_ANIMATION || !frostmaw.getActive()) {
             Vec3d rightHandPos = rightHandSocket.getWorldPos(frostmaw);
             Vec3d leftHandPos = leftHandSocket.getWorldPos(frostmaw);
@@ -1652,7 +1660,19 @@ public class ModelFrostmaw extends AdvancedModelBase {
         iceCrystal.rotateAngleY += (float)Math.PI/2;
         iceCrystal.rotationPointY += 2 * Math.cos(0.15f * frame);
 
-        if (frostmaw.getHasCrystal() && (frostmaw.getAnimation() != frostmaw.ACTIVATE_ANIMATION || frostmaw.getAnimationTick() > 28)) iceCrystal.isHidden = false;
-        else iceCrystal.isHidden = true;
+        iceCrystalHand.rotationPointY -= 1.7f * Math.cos(0.1f * frame);
+        iceCrystalHand.rotateAngleY -= frame * 0.05f;
+
+        if (frostmaw.getHasCrystal()) {
+            if (frostmaw.getAnimation() != frostmaw.ACTIVATE_ANIMATION || frostmaw.getAnimationTick() > 28) iceCrystal.isHidden = false;
+            else iceCrystal.isHidden = true;
+
+            if (!frostmaw.active) iceCrystalHand.isHidden = false;
+            else iceCrystalHand.isHidden = true;
+        }
+        else {
+            iceCrystal.isHidden = true;
+            iceCrystalHand.isHidden = true;
+        }
     }
 }

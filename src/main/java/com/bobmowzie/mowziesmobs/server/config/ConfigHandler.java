@@ -336,6 +336,11 @@ public class ConfigHandler {
         @Name("combat_data")
         @LangKey(LANG_PREFIX + "combat_data")
         public CombatData combatData = new CombatData(1, 1);
+
+        @Name("stealable_ice_crystal")
+        @LangKey(LANG_PREFIX + "stealable_ice_crystal")
+        @Comment({"Allow players to steal frostmaws' ice crystals (only using specific means!)"})
+        public boolean stealableIceCrystal = true;
     }
 
     @Name("tools_and_abilities")

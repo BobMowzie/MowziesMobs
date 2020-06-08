@@ -363,6 +363,8 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     }
 
     private void onDeathUpdate(int deathDuration) {
+        onDeathAIUpdate();
+
         attackingPlayer = killDataAttackingPlayer;
         ++this.deathTime;
 
