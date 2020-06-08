@@ -675,6 +675,14 @@ public class StructureBarakoaVillage {
 
         Biome biome = world.getBiome(new BlockPos(x, 50, z));
         if (!SpawnHandler.BARAKO_BIOMES.contains(biome)) return;
+        boolean flag = false;
+        for (int dimensionAllowed : ConfigHandler.BARAKO.generationData.dimensions) {
+            if (dimensionAllowed == world.provider.getDimension()) {
+                flag = true;
+                break;
+            }
+        }
+        if (!flag) return;
 
         //System.out.println("Passes chance test");
         int heightMax = (int) ConfigHandler.BARAKO.generationData.heightMax;

@@ -935,6 +935,14 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         Biome biome = world.getBiome(new BlockPos(x, 50, z));
         if (rand.nextFloat() > ConfigHandler.FROSTMAW.generationData.generationChance) return;
         if(!SpawnHandler.FROSTMAW_BIOMES.contains(biome)) return;
+        boolean flag = false;
+        for (int dimensionAllowed : ConfigHandler.BARAKO.generationData.dimensions) {
+            if (dimensionAllowed == world.provider.getDimension()) {
+                flag = true;
+                break;
+            }
+        }
+        if (!flag) return;
         BlockPos pos = new BlockPos(x, 0, z);
         int heightMax = (int) ConfigHandler.FROSTMAW.generationData.heightMax;
         int heightMin = (int) ConfigHandler.FROSTMAW.generationData.heightMin;
