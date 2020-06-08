@@ -363,26 +363,49 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     }
 
     private void onDeathUpdate(int deathDuration) {
-        onDeathAIUpdate();
-        if (++deathTime >= deathDuration) {
-            boolean isPlayerKill = recentlyHit > 0;
-            if (!world.isRemote && isPlayerKill && canDropLoot() && world.getGameRules().getBoolean("doMobLoot")) {
-                for (int remaining = getExperiencePoints(attackingPlayer), value; remaining > 0; remaining -= value) {
-                    world.spawnEntity(new EntityXPOrb(world, posX, posY, posZ, value = EntityXPOrb.getXPSplit(remaining)));
+        attackingPlayer = killDataAttackingPlayer;
+        ++this.deathTime;
+
+        if (this.deathTime == deathDuration)
+        {
+            if (!this.world.isRemote && (this.isPlayer() || killDataRecentlyHitFlag && this.canDropLoot() && this.world.getGameRules().getBoolean("doMobLoot")))
+            {
+                int i = this.getExperiencePoints(this.attackingPlayer);
+                i = net.minecraftforge.event.ForgeEventFactory.getExperienceDrop(this, this.attackingPlayer, i);
+                while (i > 0)
+                {
+                    int j = EntityXPOrb.getXPSplit(i);
+                    i -= j;
+                    this.world.spawnEntity(new EntityXPOrb(this.world, this.posX, this.posY, this.posZ, j));
                 }
             }
 
-            if (!world.isRemote && dropAfterDeathAnim && world.getGameRules().getBoolean("doMobLoot")) {
-                attackingPlayer = killDataAttackingPlayer;
-                dropLoot(killDataRecentlyHitFlag, killDataLootingLevel, killDataCause);
+            if (!this.world.isRemote && dropAfterDeathAnim) {
+                if (killDataCause == null) killDataCause = DamageSource.GENERIC;
+                captureDrops = true;
+                capturedDrops.clear();
+
+                if (this.canDropLoot() && this.world.getGameRules().getBoolean("doMobLoot")) {
+                    this.dropLoot(killDataRecentlyHitFlag, killDataLootingLevel, killDataCause);
+                }
+
+                captureDrops = false;
+
+                if (!net.minecraftforge.common.ForgeHooks.onLivingDrops(this, killDataCause, capturedDrops, killDataLootingLevel, killDataRecentlyHitFlag)) {
+                    for (EntityItem item : capturedDrops) {
+                        world.spawnEntity(item);
+                    }
+                }
             }
 
-            setDead();
-            for (int n = 0; n < 20; n++) {
-                double d2 = rand.nextGaussian() * 0.02D;
-                double d0 = rand.nextGaussian() * 0.02D;
-                double d1 = rand.nextGaussian() * 0.02D;
-                world.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, posX + (double) (rand.nextFloat() * width * 2.0F) - (double) width, posY + (double) (rand.nextFloat() * height), posZ + (double) (rand.nextFloat() * width * 2.0F) - (double) width, d2, d0, d1);
+            this.setDead();
+
+            for (int k = 0; k < 20; ++k)
+            {
+                double d2 = this.rand.nextGaussian() * 0.02D;
+                double d0 = this.rand.nextGaussian() * 0.02D;
+                double d1 = this.rand.nextGaussian() * 0.02D;
+                this.world.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL, this.posX + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, this.posY + (double)(this.rand.nextFloat() * this.height), this.posZ + (double)(this.rand.nextFloat() * this.width * 2.0F) - (double)this.width, d2, d0, d1);
             }
         }
     }
@@ -414,36 +437,30 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
             this.dead = true;
             this.getCombatTracker().reset();
 
-            if (!this.world.isRemote)
-            {
+            if (!this.world.isRemote) {
                 int i = net.minecraftforge.common.ForgeHooks.getLootingLevel(this, entity, cause);
+                if (!dropAfterDeathAnim) {
 
-                captureDrops = true;
-                capturedDrops.clear();
+                    captureDrops = true;
+                    capturedDrops.clear();
 
-                if (this.canDropLoot() && this.world.getGameRules().getBoolean("doMobLoot"))
-                {
-                    boolean flag = this.recentlyHit > 0;
-                    if (dropAfterDeathAnim) {
-                        killDataRecentlyHitFlag = flag;
-                        killDataLootingLevel = i;
-                        killDataCause = cause;
-                        killDataAttackingPlayer = this.attackingPlayer;
-                    }
-                    else {
+                    if (this.canDropLoot() && this.world.getGameRules().getBoolean("doMobLoot")) {
+                        boolean flag = this.recentlyHit > 0;
                         this.dropLoot(flag, i, cause);
                     }
-                }
 
-                captureDrops = false;
+                    captureDrops = false;
 
-                if (!net.minecraftforge.common.ForgeHooks.onLivingDrops(this, cause, capturedDrops, i, recentlyHit > 0))
-                {
-                    for (EntityItem item : capturedDrops)
-                    {
-                        world.spawnEntity(item);
+                    if (!net.minecraftforge.common.ForgeHooks.onLivingDrops(this, cause, capturedDrops, i, recentlyHit > 0)) {
+                        for (EntityItem item : capturedDrops) {
+                            world.spawnEntity(item);
+                        }
                     }
                 }
+                killDataLootingLevel = i;
+                killDataCause = cause;
+                killDataRecentlyHitFlag = this.recentlyHit > 0;
+                killDataAttackingPlayer = attackingPlayer;
             }
 
             this.world.setEntityState(this, (byte)3);

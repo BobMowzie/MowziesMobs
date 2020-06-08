@@ -225,6 +225,11 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     }
 
     @Override
+    public boolean canRenderOnFire() {
+        return false;
+    }
+
+    @Override
     public void onUpdate() {
         super.onUpdate();
 
