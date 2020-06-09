@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.entity.frostmaw;
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
+import com.bobmowzie.mowziesmobs.server.advancement.AdvancementHandler;
 import com.bobmowzie.mowziesmobs.server.ai.MMEntityMoveHelper;
 import com.bobmowzie.mowziesmobs.server.ai.MMPathNavigateGround;
 import com.bobmowzie.mowziesmobs.server.ai.animation.*;
@@ -30,6 +31,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
@@ -448,6 +450,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                                 AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_NO_CRYSTAL_ANIMATION);
                                 setActive(true);
                             }
+                            if (player instanceof EntityPlayerMP) AdvancementHandler.STEAL_ICE_CRYSTAL_TRIGGER.trigger((EntityPlayerMP)player);
                             break;
                         }
                     }

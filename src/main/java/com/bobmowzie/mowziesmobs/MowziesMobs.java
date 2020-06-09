@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs;
 
 import com.bobmowzie.mowziesmobs.server.ServerEventHandler;
 import com.bobmowzie.mowziesmobs.server.ServerProxy;
+import com.bobmowzie.mowziesmobs.server.advancement.AdvancementHandler;
 import com.bobmowzie.mowziesmobs.server.compat.Thaumcraft;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.gui.GuiHandler;
@@ -73,6 +74,8 @@ public final class MowziesMobs {
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 
         SpawnHandler.INSTANCE.registerSpawnPlacementTypes();
+
+        AdvancementHandler.preInit();
     }
 
     @Optional.Method(modid = "thaumcraft")
