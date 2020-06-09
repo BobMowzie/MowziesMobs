@@ -232,6 +232,11 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         } else if (activateTime < activateTarget && activate.canIncreaseTimer() || activateTime > activateTarget && activate.canDecreaseTimer()) {
             activate.increaseTimer(activateTime < activateTarget ? 1 : -2);
         }
+
+        if (!this.world.isRemote && this.world.getDifficulty() == EnumDifficulty.PEACEFUL)
+        {
+            this.setDead();
+        }
     }
 
     @Override

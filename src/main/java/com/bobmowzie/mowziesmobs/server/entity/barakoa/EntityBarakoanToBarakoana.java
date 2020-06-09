@@ -11,6 +11,7 @@ import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.DamageSource;
+import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 
 public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> implements LeaderSunstrikeImmune {
@@ -28,6 +29,11 @@ public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> i
         super.onUpdate();
         if (leader != null) {
             setAttackTarget(leader.getAttackTarget());
+        }
+
+        if (!this.world.isRemote && this.world.getDifficulty() == EnumDifficulty.PEACEFUL)
+        {
+            this.setDead();
         }
     }
 

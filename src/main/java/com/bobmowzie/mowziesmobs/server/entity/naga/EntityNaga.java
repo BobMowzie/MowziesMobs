@@ -470,6 +470,11 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
         hoverAnimFrac = hoverAnim.getAnimationProgressSinSqrt();
         flapAnimFrac = flapAnim.getAnimationProgressSinSqrt();
 
+        if (!this.world.isRemote && this.world.getDifficulty() == EnumDifficulty.PEACEFUL)
+        {
+            this.setDead();
+        }
+
         /*setAttacking(true);
         getNavigator().clearPath();
         posX = prevPosX;

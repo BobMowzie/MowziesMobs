@@ -69,6 +69,11 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
                 }
             }
         }
+
+        if (!this.world.isRemote && this.world.getDifficulty() == EnumDifficulty.PEACEFUL)
+        {
+            this.setDead();
+        }
     }
 
     @Override

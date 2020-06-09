@@ -189,7 +189,7 @@ public class PowerGeomancy extends Power {
         super.onRightClickBlock(event);
         EntityPlayer player = event.getEntityPlayer();
         if (canUse(player)) {
-            if (!tunneling && !spawningBoulder && liftedMouse && spawnBoulderCooldown <= 0) {
+            if (event.getHitVec() != null && !tunneling && !spawningBoulder && liftedMouse && spawnBoulderCooldown <= 0) {
                 int x = MathHelper.floor(event.getHitVec().x);
                 int y = MathHelper.floor(event.getHitVec().y);
                 int z = MathHelper.floor(event.getHitVec().z);
