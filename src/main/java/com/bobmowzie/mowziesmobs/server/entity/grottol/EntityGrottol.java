@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.entity.grottol;
 
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
+import com.bobmowzie.mowziesmobs.server.advancement.AdvancementHandler;
 import com.bobmowzie.mowziesmobs.server.ai.EntityAIGrottolFindMinecart;
 import com.bobmowzie.mowziesmobs.server.ai.MMAIAvoidEntity;
 import com.bobmowzie.mowziesmobs.server.ai.MMEntityMoveHelper;
@@ -36,6 +37,7 @@ import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.item.EntityMinecartEmpty;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.SoundEvents;
@@ -224,6 +226,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
                         );
                     }
                     setDead();
+                    if (player instanceof EntityPlayerMP) AdvancementHandler.GROTTOL_KILL_SILK_TOUCH_TRIGGER.trigger((EntityPlayerMP) player);
                 }
                 return true;
             }
@@ -239,6 +242,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
             if (player.canHarvestBlock(Blocks.DIAMOND_ORE.getDefaultState())) {
                 if (EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, player.getHeldItemMainhand()) > 0) {
                     death = EnumDeathType.FORTUNE_PICKAXE;
+                    if (player instanceof EntityPlayerMP) AdvancementHandler.GROTTOL_KILL_FORTUNE_TRIGGER.trigger((EntityPlayerMP) player);
                 } else {
                     death = EnumDeathType.PICKAXE;
                 }

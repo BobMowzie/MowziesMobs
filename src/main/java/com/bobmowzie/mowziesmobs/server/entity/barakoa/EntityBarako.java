@@ -8,6 +8,7 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory.ParticleArgs;
 import com.bobmowzie.mowziesmobs.client.particles.util.MowzieParticleBase;
 import com.bobmowzie.mowziesmobs.client.particles.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particles.util.ParticleComponent.PropertyControl.EnumParticleProperty;
+import com.bobmowzie.mowziesmobs.server.advancement.AdvancementHandler;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.*;
@@ -31,11 +32,13 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.entity.ai.EntityAITarget;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -363,6 +366,15 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                     inRange.motionY += -diff.y;
 
                     if (inRange.posY < posY + 3) inRange.motionY += 0.075;
+                }
+            }
+        }
+
+        if (ticksExisted % 40 == 0) {
+            for (EntityPlayer player : getPlayersNearby(15, 15, 15, 15)) {
+                ItemStack headArmorStack = player.inventory.armorInventory.get(3);
+                if (getAttackTarget() != player && EntityAITarget.isSuitableTarget(this, player, false, false) && headArmorStack.getItem() instanceof BarakoaMask) {
+                    if (player instanceof EntityPlayerMP) AdvancementHandler.SNEAK_VILLAGE_TRIGGER.trigger((EntityPlayerMP) player);
                 }
             }
         }

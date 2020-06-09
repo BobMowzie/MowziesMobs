@@ -12,7 +12,7 @@
     "hidden": true,
     "frame": "goal"
   },
-  "parent": "mowziesmobs:kill_barako",
+  "parent": "mowziesmobs:sneak_village",
   "criteria": {
     "get_suns_blessing": {
       "trigger": "minecraft:effects_changed",

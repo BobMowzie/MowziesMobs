@@ -1,0 +1,21 @@
+{
+  "display": {
+    "icon": {
+      "item": "mowziesmobs:captured_grottol"
+    },
+    "title": {
+      "translate": "advancements.mowziesmobs.kill_grottol_silk_touch.title"
+    },
+    "description": {
+      "translate": "advancements.mowziesmobs.kill_grottol_silk_touch.description"
+    },
+    "hidden": true
+  },
+  "parent": "mowziesmobs:kill_grottol",
+  "criteria": {
+    "steal_crystal": {
+      "trigger": "mowziesmobs:kill_grottol_silk_touch"
+      }
+    }
+  }
+}

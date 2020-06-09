@@ -1,0 +1,20 @@
+{
+  "display": {
+    "icon": {
+      "item": "minecraft:diamond_pickaxe"
+    },
+    "title": {
+      "translate": "advancements.mowziesmobs.kill_grottol_fortune.title"
+    },
+    "description": {
+      "translate": "advancements.mowziesmobs.kill_grottol_fortune.description"
+    },
+    "hidden": true
+  },
+  "parent": "mowziesmobs:kill_grottol",
+  "criteria": {
+    "steal_crystal": {
+      "trigger": "mowziesmobs:kill_grottol_fortune"
+    }
+  }
+}
