@@ -124,7 +124,7 @@ public class StructureWroughtnautRoom {
         Biome biome = world.getBiome(new BlockPos(x, 50, z));
         if (!SpawnHandler.FERROUS_WROUGHTNAUT_BIOMES.contains(biome)) return;
         boolean flag = false;
-        for (int dimensionAllowed : ConfigHandler.BARAKO.generationData.dimensions) {
+        for (int dimensionAllowed : ConfigHandler.FERROUS_WROUGHTNAUT.generationData.dimensions) {
             if (dimensionAllowed == world.provider.getDimension()) {
                 flag = true;
                 break;
@@ -133,7 +133,7 @@ public class StructureWroughtnautRoom {
         if (!flag) return;
 
         int xzCheckDistance = 10;
-        if (random.nextFloat() > ConfigHandler.FROSTMAW.generationData.generationChance) return;
+        if (random.nextFloat() > ConfigHandler.FERROUS_WROUGHTNAUT.generationData.generationChance) return;
 
         int heightMax = (int) ConfigHandler.FERROUS_WROUGHTNAUT.generationData.heightMax;
         int heightMin = (int) ConfigHandler.FERROUS_WROUGHTNAUT.generationData.heightMin;
