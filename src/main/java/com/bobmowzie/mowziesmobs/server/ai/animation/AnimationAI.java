@@ -37,6 +37,11 @@ public class AnimationAI<T extends MowzieEntity & IAnimatedEntity> extends net.i
     }
 
     @Override
+    public boolean shouldContinueExecuting() {
+        return this.entity.getAnimation() == this.getAnimation() && this.entity.getAnimationTick() < this.getAnimation().getDuration();
+    }
+
+    @Override
     public void resetTask() {
         super.resetTask();
         entity.currentAnim = null;

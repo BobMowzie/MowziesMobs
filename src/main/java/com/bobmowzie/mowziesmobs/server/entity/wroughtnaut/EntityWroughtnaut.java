@@ -1,10 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.wroughtnaut;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
-import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
-import com.bobmowzie.mowziesmobs.client.particles.util.MowzieParticleBase;
-import com.bobmowzie.mowziesmobs.client.particles.util.ParticleComponent;
-import com.bobmowzie.mowziesmobs.client.particles.util.ParticleComponent.PropertyControl.EnumParticleProperty;
 import com.bobmowzie.mowziesmobs.server.ai.MMPathNavigateGround;
 import com.bobmowzie.mowziesmobs.server.ai.animation.*;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
@@ -205,10 +201,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
                     playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.4F, 2);
                     return false;
                 } else {
-                    if (currentAnim != null) {
-                        currentAnim.resetTask();
-                        AnimationHandler.INSTANCE.sendAnimationMessage(this, NO_ANIMATION);
-                    }
+                    setAnimation(NO_ANIMATION);
                     return super.attackEntityFrom(source, amount);
                 }
             } else {
