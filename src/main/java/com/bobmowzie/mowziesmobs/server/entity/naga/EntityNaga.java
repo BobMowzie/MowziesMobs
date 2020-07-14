@@ -20,6 +20,7 @@ import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAILookIdle;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.ai.EntityMoveHelper;
@@ -119,7 +120,8 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
         this.tasks.addTask(7, new EntityNaga.AILookAround(this));
         this.tasks.addTask(6, new EntityAILookIdle(this));
         this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-        this.targetTasks.addTask(1, new MMAINearestAttackableTarget<>(this, EntityPlayer.class, 0, true, false, true, null));
+        this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, false));
+        this.targetTasks.addTask(2, new MMAINearestAttackableTarget<>(this, EntityPlayer.class, 0, true, false, true, null));
         this.tasks.addTask(2, new AnimationAI<EntityNaga>(this, FLAP_ANIMATION, false) {
             @Override
             public void updateTask() {
