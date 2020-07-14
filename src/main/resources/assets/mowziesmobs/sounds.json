@@ -418,16 +418,16 @@
 		"sounds": [ "mowziesmobs:entity/lantern/puff" ]
 	},
 	"naga.acidcharge": {
-		"sounds": [ "mowziesmobs:entity/naga/acidcharge" ]
+		"sounds": [ "mowziesmobs:entity/naga/acid_charge" ]
 	},
 	"naga.acidhit": {
-		"sounds": [ "mowziesmobs:entity/naga/acidhit" ]
+		"sounds": [ "mowziesmobs:entity/naga/acid_hit" ]
 	},
 	"naga.acidspit": {
-		"sounds": [ "mowziesmobs:entity/naga/acidspit" ]
+		"sounds": [ "mowziesmobs:entity/naga/acid_spit" ]
 	},
 	"naga.acidspithiss": {
-		"sounds": [ "mowziesmobs:entity/naga/acidspithiss" ]
+		"sounds": [ "mowziesmobs:entity/naga/acid_spit_hiss" ]
 	},
 	"naga.flap1": {
 		"sounds": [ "mowziesmobs:entity/naga/flap1" ]
@@ -466,9 +466,9 @@
 		"sounds": [ "mowziesmobs:entity/naga/swoop" ]
 	},
 	"misc.groundhit1": {
-		"sounds": [ "mowziesmobs:entity/misc/groundhit1" ]
+		"sounds": [ "mowziesmobs:entity/misc/ground_hit1" ]
 	},
 	"misc.groundhit2": {
-		"sounds": [ "mowziesmobs:entity/misc/groundhit2" ]
+		"sounds": [ "mowziesmobs:entity/misc/ground_hit2" ]
 	}
 }
