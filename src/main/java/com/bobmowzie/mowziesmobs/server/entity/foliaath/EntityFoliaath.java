@@ -65,7 +65,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         this.tasks.addTask(1, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_FOLIAATH_BITE_1, null, 2, 4.5F, ConfigHandler.FOLIAATH.combatData.attackMultiplier, 3));
         this.tasks.addTask(1, new AnimationTakeDamage<>(this));
         this.tasks.addTask(1, new AnimationDieAI<>(this));
-        this.tasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityLivingBase.class, 0, true, false, e ->
+        this.targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityLivingBase.class, 0, true, false, e ->
             EntityPlayer.class.isAssignableFrom(e.getClass()) || EntityCreature.class.isAssignableFrom(e.getClass())) {
 
             @Override

@@ -133,8 +133,8 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
                 entity.motionZ = 0;
             }
         });
-        tasks.addTask(2, new EntityAINearestAttackableTarget<>(this, EntityPlayer.class, 0, true, false, null));
-        tasks.addTask(2, new EntityAIAttackMelee(this, 1, true));
+        targetTasks.addTask(2, new EntityAINearestAttackableTarget<>(this, EntityPlayer.class, 0, true, false, null));
+        targetTasks.addTask(2, new EntityAIAttackMelee(this, 1, true));
         experienceValue = 30;
         setSize(2.45F, 3.7F);
         active = false;
