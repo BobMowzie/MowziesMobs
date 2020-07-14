@@ -21,6 +21,7 @@ import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -188,13 +189,10 @@ public class PowerGeomancy extends Power {
     public void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         super.onRightClickBlock(event);
         EntityPlayer player = event.getEntityPlayer();
-        if (canUse(player)) {
+        if (event.getHand() == EnumHand.MAIN_HAND && canUse(player)) {
             if (event.getHitVec() != null && !tunneling && !spawningBoulder && liftedMouse && spawnBoulderCooldown <= 0) {
-                int x = MathHelper.floor(event.getHitVec().x);
-                int y = MathHelper.floor(event.getHitVec().y);
-                int z = MathHelper.floor(event.getHitVec().z);
                 lookPos = new Vec3d(event.getHitVec().x, event.getHitVec().y, event.getHitVec().z);
-                spawnBoulderPos = new BlockPos(x, y - 1, z);
+                spawnBoulderPos = event.getPos();
                 spawnBoulderBlock = player.world.getBlockState(spawnBoulderPos);
                 if (event.getFace() != EnumFacing.UP) {
                     IBlockState blockAbove = player.world.getBlockState(spawnBoulderPos.up());
@@ -203,6 +201,7 @@ public class PowerGeomancy extends Power {
                 }
                 if (!isBlockDiggable(spawnBoulderBlock)) return;
                 spawningBoulder = true;
+                event.setCanceled(true);
             }
         }
     }
@@ -257,7 +256,7 @@ public class PowerGeomancy extends Power {
 
     @Override
     public boolean canUse(EntityPlayer player) {
-        return player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(PotionHandler.GEOMANCY);
+        return player.getHeldItemMainhand().isEmpty() && player.isPotionActive(PotionHandler.GEOMANCY);
     }
 
     public int getSpawnBoulderCharge() {
