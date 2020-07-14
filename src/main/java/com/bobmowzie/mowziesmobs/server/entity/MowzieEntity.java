@@ -476,9 +476,6 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
             if (getHealth() > 0.0F && getAnimation() == NO_ANIMATION && playsHurtAnimation) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, getHurtAnimation());
             } else if (getHealth() <= 0.0F) {
-                if (currentAnim != null) {
-                    currentAnim.resetTask();
-                }
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, getDeathAnimation());
             }
         }
