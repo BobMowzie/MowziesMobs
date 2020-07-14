@@ -5,18 +5,16 @@ import net.minecraft.potion.Potion;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 
-@GameRegistry.ObjectHolder(MowziesMobs.MODID)
 @Mod.EventBusSubscriber(modid = MowziesMobs.MODID)
 public final class PotionHandler {
     private PotionHandler() {
     }
 
-    public static final MowziePotionSunsBlessing SUNS_BLESSING = new MowziePotionSunsBlessing();
-    public static final MowziePotionGeomancy GEOMANCY = new MowziePotionGeomancy();
-    public static final MowziePotionFrozen FROZEN = new MowziePotionFrozen();
-    public static final MowziePotionPoisonResist POISON_RESIST = new MowziePotionPoisonResist();
+    public static final Potion SUNS_BLESSING = new MowziePotionSunsBlessing().setRegistryName(MowziesMobs.MODID, "suns_blessing");
+    public static final Potion GEOMANCY = new MowziePotionGeomancy().setRegistryName(MowziesMobs.MODID, "geomancy");
+    public static final Potion FROZEN = new MowziePotionFrozen().setRegistryName(MowziesMobs.MODID, "frozen");
+    public static final Potion POISON_RESIST = new MowziePotionPoisonResist().setRegistryName(MowziesMobs.MODID, "poison_resist");
 
     @SubscribeEvent
     public static void register(RegistryEvent.Register<Potion> event) {

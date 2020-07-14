@@ -8,6 +8,5 @@ public class MowziePotionFrozen extends MowziePotion {
         super(false, 0xd8e7ff);
         setPotionName("potion.frozen");
         setIconIndex(1, 0);
-        setRegistryName("frozen");
     }
 }

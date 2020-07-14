@@ -8,6 +8,5 @@ public class MowziePotionPoisonResist extends MowziePotion {
         super(false, 0x66ff33);
         setPotionName("potion.poisonResist");
         setIconIndex(0, 1);
-        setRegistryName("poison_resist");
     }
 }

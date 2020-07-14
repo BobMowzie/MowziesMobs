@@ -22,18 +22,20 @@ public class PotionTypeHandler {
     private PotionTypeHandler() {
     }
 
-    public static final PotionType POISON_RESIST = new PotionType("poisonResist", new PotionEffect[]{new PotionEffect(PotionHandler.POISON_RESIST, 3600)}).setRegistryName("poison_resist");
-    public static final PotionType LONG_POISON_RESIST = new PotionType("poisonResist", new PotionEffect[]{new PotionEffect(PotionHandler.POISON_RESIST, 9600)}).setRegistryName("long_poison_resist");
+    public static final PotionType POISON_RESIST = null;
+    public static final PotionType LONG_POISON_RESIST = null;
 
     @SubscribeEvent
     public static void register(RegistryEvent.Register<PotionType> event) {
+        PotionType resist = new PotionType("poisonResist", new PotionEffect[]{new PotionEffect(PotionHandler.POISON_RESIST, 3600)}).setRegistryName("poison_resist");
+        PotionType longResist = new PotionType("poisonResist", new PotionEffect[]{new PotionEffect(PotionHandler.POISON_RESIST, 9600)}).setRegistryName("long_poison_resist");
         event.getRegistry().registerAll(
-                POISON_RESIST,
-                LONG_POISON_RESIST
+                resist,
+                longResist
         );
 
-        PotionHelper.addMix(PotionTypes.AWKWARD, ItemHandler.NAGA_FANG, POISON_RESIST);
-        PotionHelper.addMix(POISON_RESIST, Items.REDSTONE, LONG_POISON_RESIST);
+        PotionHelper.addMix(PotionTypes.AWKWARD, ItemHandler.NAGA_FANG, resist);
+        PotionHelper.addMix(resist, Items.REDSTONE, longResist);
 
     }
 }

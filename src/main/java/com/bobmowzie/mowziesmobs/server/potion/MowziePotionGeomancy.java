@@ -5,6 +5,5 @@ public class MowziePotionGeomancy extends MowziePotion {
         super(false, 0xCDFF78);
         setPotionName("potion.geomancy");
         setIconIndex(2, 0);
-        setRegistryName("geomancy");
     }
 }
