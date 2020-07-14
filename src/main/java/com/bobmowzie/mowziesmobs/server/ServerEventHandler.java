@@ -263,7 +263,7 @@ public enum ServerEventHandler {
                         property.powers[i].onRightMouseDown(player);
                     }
                 }
-                if (!Minecraft.getMinecraft().gameSettings.keyBindAttack.isKeyDown()) {
+                if (!Minecraft.getMinecraft().gameSettings.keyBindAttack.isKeyDown() && property.mouseLeftDown) {
                     property.mouseLeftDown = false;
                     MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageLeftMouseUp());
                     for (int i = 0; i < property.powers.length; i++) {
