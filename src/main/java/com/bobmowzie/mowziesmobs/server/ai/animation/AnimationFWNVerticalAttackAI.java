@@ -4,7 +4,6 @@ import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 
@@ -63,7 +62,7 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
                     }
                 }
             } else if (entity.getAnimationTick() == 28) {
-                entity.playSound(SoundEvents.BLOCK_ANVIL_LAND, 1, 0.5F);
+                entity.playSound(MMSounds.ENTITY_WROUGHT_AXE_LAND, 1, 0.5F);
             } else if (entity.getAnimationTick() == 43) {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_PULL_1, 1, 1F);
                 entity.playSound(MMSounds.ENTITY_WROUGHT_CREAK, 0.5F, 1F);

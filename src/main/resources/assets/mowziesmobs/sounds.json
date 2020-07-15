@@ -118,6 +118,19 @@
 	"wroughtnaut.swing3": {
 		"sounds": [ "mowziesmobs:entity/wroughtnaut/swing3" ]
 	},
+	"wroughtnaut.step": {
+		"sounds": [
+			"minecraft:mob/zombie/metal1",
+			"minecraft:mob/zombie/metal2",
+			"minecraft:mob/zombie/metal3"
+		]
+	},
+	"wroughtnaut.undamaged": {
+		"sounds": [ "minecraft:random/anvil_land" ]
+	},
+	"wroughtnaut.axe_land": {
+		"sounds": [ "minecraft:random/anvil_land" ]
+	},
 	"barakoa.angry1": {
 		"sounds": [ "mowziesmobs:entity/barakoa/angry1" ]
 	},

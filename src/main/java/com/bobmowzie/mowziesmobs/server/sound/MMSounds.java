@@ -66,6 +66,12 @@ public final class MMSounds {
     public static final SoundEvent ENTITY_WROUGHT_GRUNT_3 = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.ambient")
     public static final SoundEvent ENTITY_WROUGHT_AMBIENT = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.step")
+    public static final SoundEvent ENTITY_WROUGHT_STEP = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.undamaged")
+    public static final SoundEvent ENTITY_WROUGHT_UNDAMAGED = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.axe_land")
+    public static final SoundEvent ENTITY_WROUGHT_AXE_LAND = NIL;
 
     // Barakoa
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.inhale")
@@ -416,6 +422,9 @@ public final class MMSounds {
                 create("wroughtnaut.grunt2"),
                 create("wroughtnaut.grunt3"),
                 create("wroughtnaut.ambient"),
+                create("wroughtnaut.step"),
+                create("wroughtnaut.undamaged"),
+                create("wroughtnaut.axe_land"),
 
                 create("barakoa.inhale"),
                 create("barakoa.blowdart"),

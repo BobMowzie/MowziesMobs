@@ -44,7 +44,7 @@ public class AnimationFWNStompAttackAI extends AnimationAI<EntityWroughtnaut> {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_SHOUT_2, 1, 1);
             } else if (tick > 9 && tick < 17) {
                 if (tick == 10) {
-                    entity.playSound(SoundEvents.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 1.2F, 0.5F + entity.getRNG().nextFloat() * 0.1F);
+                    entity.playSound(MMSounds.ENTITY_WROUGHT_STEP, 1.2F, 0.5F + entity.getRNG().nextFloat() * 0.1F);
                     final double infront = 1.47, side = -0.21;
                     double vx = Math.cos(facingAngle) * infront;
                     double vz = Math.sin(facingAngle) * infront;

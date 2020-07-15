@@ -30,7 +30,6 @@ import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.MobEffects;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.datasync.DataParameter;
@@ -212,14 +211,14 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
                 }
                 float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
                 if ((entityRelativeAngle <= arc / 2f && entityRelativeAngle >= -arc / 2f) || (entityRelativeAngle >= 360 - arc / 2f || entityRelativeAngle <= -arc + 90f / 2f)) {
-                    playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.4F, 2);
+                    playSound(MMSounds.ENTITY_WROUGHT_UNDAMAGED, 0.4F, 2);
                     return false;
                 } else {
                     setAnimation(NO_ANIMATION);
                     return super.attackEntityFrom(source, amount);
                 }
             } else {
-                playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.4F, 2);
+                playSound(MMSounds.ENTITY_WROUGHT_UNDAMAGED, 0.4F, 2);
             }
         }
         else if (source.canHarmInCreative()) {
@@ -325,7 +324,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
             if (tick == 1) {
                 playSound(MMSounds.ENTITY_WROUGHT_GRUNT_2, 1, 1);
             } else if (tick == 27 || tick == 44) {
-                playSound(SoundEvents.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 0.5F, 0.5F);
+                playSound(MMSounds.ENTITY_WROUGHT_STEP, 0.5F, 0.5F);
             }
         } else if (getAnimation() == VERTICAL_ATTACK_ANIMATION && getAnimationTick() == 29) {
             doVerticalAttackHitFX();
@@ -346,7 +345,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         }
 
         if (this.world.isRemote && frame % 20 == 1 && speed > 0.03 && getAnimation() == NO_ANIMATION && isActive()) {
-            this.world.playSound(this.posX, this.posY, this.posZ, SoundEvents.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, this.getSoundCategory(), 0.5F, 0.5F, false);
+            this.world.playSound(this.posX, this.posY, this.posZ, MMSounds.ENTITY_WROUGHT_STEP, this.getSoundCategory(), 0.5F, 0.5F, false);
         }
 
         repelEntities(2.2F, 4, 2.2F, 2.2F);
