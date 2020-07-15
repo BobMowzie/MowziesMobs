@@ -2,19 +2,14 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
-import net.ilexiconn.llibrary.LLibrary;
-import net.ilexiconn.llibrary.client.model.ModelAnimator;
-import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
-import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class ModelFoliaath extends AdvancedModelBase {
+public class ModelFoliaath extends MowzieEntityModel<EntityFoliaath> {
     public AdvancedModelRenderer bigLeaf2Base;
     public AdvancedModelRenderer bigLeaf1Base;
     public AdvancedModelRenderer bigLeaf4Base;
@@ -57,12 +52,9 @@ public class ModelFoliaath extends AdvancedModelBase {
     public AdvancedModelRenderer[] leafParts4;
     private float activeProgress;
 
-    private ModelAnimator animator;
-
     public ModelFoliaath() {
         textureWidth = 128;
         textureHeight = 64;
-        animator = ModelAnimator.create();
 
         headBase = new AdvancedModelRenderer(this, 80, 15);
         headBase.setRotationPoint(0.0F, -10.0F, 0.0F);
@@ -237,8 +229,7 @@ public class ModelFoliaath extends AdvancedModelBase {
     }
 
     @Override
-    public void render(Entity foliaath, float f, float f1, float f2, float f3, float f4, float f5) {
-        animate((IAnimatedEntity) foliaath, f, f1, f2, f3, f4, f5);
+    protected void render(EntityFoliaath entity, float scale) {
         float leafScale = 1.25F;
         bigLeaf2Base.rotationPointY -= 3.5;
         bigLeaf1Base.rotationPointY -= 3.5;
@@ -246,41 +237,32 @@ public class ModelFoliaath extends AdvancedModelBase {
         bigLeaf4Base.rotationPointY -= 3.5;
         GlStateManager.pushMatrix();
         GlStateManager.scale(leafScale, leafScale, leafScale);
-        bigLeaf2Base.render(f5);
-        bigLeaf1Base.render(f5);
-        bigLeaf3Base.render(f5);
-        bigLeaf4Base.render(f5);
+        bigLeaf2Base.render(scale);
+        bigLeaf1Base.render(scale);
+        bigLeaf3Base.render(scale);
+        bigLeaf4Base.render(scale);
         GlStateManager.popMatrix();
         GlStateManager.pushMatrix();
         GlStateManager.translate(0, 1.4F - 1.4F * activeProgress, 0);
         GlStateManager.scale(activeProgress, activeProgress, activeProgress);
-        stem1Joint.render(f5);
+        stem1Joint.render(scale);
         GlStateManager.popMatrix();
     }
 
-    public void setRotateAngle(AdvancedModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-    public void setRotationAngles(EntityFoliaath foliaath, float f, float f1, float f2, float f3, float f4, float f5) {
-        super.setRotationAngles(f, f1, f2, f3, f4, f5, foliaath);
-
-        animator.update(foliaath);
+    public void setDefaultAngles(EntityFoliaath entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
         resetToDefaultPose();
 
-        stem1Joint.rotateAngleY += (f3 / (180f / (float) Math.PI));
+        stem1Joint.rotateAngleY += (headYaw / (180f / (float) Math.PI));
 
-        activeProgress = foliaath.activate.getAnimationProgressSinSqrt();
-        float activeIntermittent = foliaath.activate.getAnimationProgressSinSqrt() - foliaath.activate.getAnimationProgressSinToTenWithoutReturn();
+        activeProgress = entity.activate.getAnimationProgressSinSqrt();
+        float activeIntermittent = entity.activate.getAnimationProgressSinSqrt() - entity.activate.getAnimationProgressSinToTenWithoutReturn();
         float activeComplete = activeProgress - activeIntermittent;
-        float stopDance = foliaath.stopDance.getAnimationProgressSinSqrt() - (foliaath.stopDance.getAnimationProgressSinSqrt() - foliaath.stopDance.getAnimationProgressSinToTenWithoutReturn());
-        float frame = foliaath.frame + LLibrary.PROXY.getPartialTicks();
+        float stopDance = entity.stopDance.getAnimationProgressSinSqrt() - (entity.stopDance.getAnimationProgressSinSqrt() - entity.stopDance.getAnimationProgressSinToTenWithoutReturn());
+        float frame = entity.frame + delta;
 
         float globalSpeed = 0.9f;
 
-        if (!foliaath.isPotionActive(PotionHandler.FROZEN)) {
+        if (!entity.isPotionActive(PotionHandler.FROZEN)) {
             flap(stem1Base, 0.25F * globalSpeed, 0.15F * (activeComplete - stopDance), false, 0F, 0F, frame, 1F);
             walk(stem1Base, 0.5F * globalSpeed, 0.05F * (activeComplete - stopDance), false, 0F, 0F, frame, 1F);
             walk(stem2, 0.5F * globalSpeed, 0.05F * (activeComplete - stopDance), false, 0.5F, 0F, frame, 1F);
@@ -302,8 +284,8 @@ public class ModelFoliaath extends AdvancedModelBase {
             chainWave(leafParts4, 0.5F * globalSpeed, 0.13F * (activeComplete - stopDance), 2, frame, 1F);
 
             //Open Mouth Animation
-            float openMouthProgress = foliaath.openMouth.getAnimationProgressSinSqrt();
-            float openMouthIntermittent = foliaath.openMouth.getAnimationProgressSinSqrt() - foliaath.openMouth.getAnimationProgressSinToTenWithoutReturn();
+            float openMouthProgress = entity.openMouth.getAnimationProgressSinSqrt();
+            float openMouthIntermittent = entity.openMouth.getAnimationProgressSinSqrt() - entity.openMouth.getAnimationProgressSinToTenWithoutReturn();
             float headLeafRotation = 0.2F * openMouthProgress - 0.8F * openMouthIntermittent;
             mouthTop1.rotateAngleX -= 0.3 * openMouthIntermittent;
             mouthBottom1.rotateAngleX -= 0.3 * openMouthIntermittent;
@@ -352,10 +334,9 @@ public class ModelFoliaath extends AdvancedModelBase {
         mouthBottom1.rotateAngleX += 0.4 * 2 * activeIntermittent;
     }
 
-    public void animate(IAnimatedEntity foliaath, float f, float f1, float f2, float f3, float f4, float f5) {
-        EntityFoliaath entityfoliaath = (EntityFoliaath) foliaath;
-        setRotationAngles(entityfoliaath, f, f1, f2, f3, f4, f5);
-
+    @Override
+    protected void animate(EntityFoliaath entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
+        this.setDefaultAngles(entity, limbSwing, limbSwingAmount, headYaw, headPitch, delta);
         //Bite
         animator.setAnimation(EntityFoliaath.ATTACK_ANIMATION);
         animator.startKeyframe(3);
@@ -403,13 +384,13 @@ public class ModelFoliaath extends AdvancedModelBase {
         animator.endKeyframe();
         animator.resetKeyframe(7);
 
-        float deathFlailProgress = entityfoliaath.deathFlail.getAnimationProgressSinSqrt();
-        chainFlap(stemParts, 0.7F, 0.2F * deathFlailProgress, 2F, entityfoliaath.frame, 1F);
-        chainSwing(tongueParts, 0.7F, 0.6F * deathFlailProgress, -2F, entityfoliaath.frame, 1F);
-        chainWave(leafParts1, 1.5F, 0.1F * deathFlailProgress, 0, entityfoliaath.frame, 1F);
-        chainWave(leafParts2, 1.5F, 0.1F * deathFlailProgress, 0, entityfoliaath.frame, 1F);
-        chainWave(leafParts3, 1.5F, 0.1F * deathFlailProgress, 0, entityfoliaath.frame, 1F);
-        chainWave(leafParts4, 1.5F, 0.1F * deathFlailProgress, 0, entityfoliaath.frame, 1F);
+        float deathFlailProgress = entity.deathFlail.getAnimationProgressSinSqrt();
+        chainFlap(stemParts, 0.7F, 0.2F * deathFlailProgress, 2F, entity.frame, 1F);
+        chainSwing(tongueParts, 0.7F, 0.6F * deathFlailProgress, -2F, entity.frame, 1F);
+        chainWave(leafParts1, 1.5F, 0.1F * deathFlailProgress, 0, entity.frame, 1F);
+        chainWave(leafParts2, 1.5F, 0.1F * deathFlailProgress, 0, entity.frame, 1F);
+        chainWave(leafParts3, 1.5F, 0.1F * deathFlailProgress, 0, entity.frame, 1F);
+        chainWave(leafParts4, 1.5F, 0.1F * deathFlailProgress, 0, entity.frame, 1F);
         animator.setAnimation(EntityFoliaath.DIE_ANIMATION);
         animator.startKeyframe(4);
         animator.rotate(stem1Base, -0.1F, 0, 0);

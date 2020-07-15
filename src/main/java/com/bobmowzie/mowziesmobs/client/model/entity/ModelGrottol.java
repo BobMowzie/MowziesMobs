@@ -1,20 +1,15 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.MMModelAnimator;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
-import net.ilexiconn.llibrary.LLibrary;
-import net.ilexiconn.llibrary.client.model.ModelAnimator;
-import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
-import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 
 /**
  * Created by Josh on 7/3/2018.
  */
 
 
-public class ModelGrottol extends AdvancedModelBase {
+public class ModelGrottol extends MowzieEntityModel<EntityGrottol> {
     public AdvancedModelRenderer body;
     public AdvancedModelRenderer head;
     public AdvancedModelRenderer crystal1;
@@ -60,10 +55,10 @@ public class ModelGrottol extends AdvancedModelBase {
     public AdvancedModelRenderer foot3Right;
     public AdvancedModelRenderer dieAnimController;
 
-    private ModelAnimator animator;
+    private MMModelAnimator animator;
 
     public ModelGrottol() {
-        animator = ModelAnimator.create();
+        animator = MMModelAnimator.create();
         this.textureWidth = 64;
         this.textureHeight = 64;
         this.crystal7 = new AdvancedModelRenderer(this, 0, 17);
@@ -287,73 +282,57 @@ public class ModelGrottol extends AdvancedModelBase {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        animate((IAnimatedEntity) entity, f, f1, f2, f3, f4, f5);
-        this.body.render(f5);
+    protected void render(EntityGrottol entity, float scale) {
+        this.body.render(scale);
     }
 
-    /**
-     * This is a helper function from Tabula to set the rotation of model parts
-     */
-    public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
+    public void setDefaultAngles(EntityGrottol entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
+        resetToDefaultPose();
+
+        headYaw = Math.min(headYaw, 30f);
+        headYaw = Math.max(headYaw, -30f);
+        faceTarget(headYaw, headPitch, 1, head);
+
+        if (limbSwingAmount > 0.5) limbSwingAmount = 0.5f;
+        float globalSpeed = 1.5f;
+        float globalDegree = 0.5f;
+        swing(leg1LeftJoint, globalSpeed, globalDegree * 1.2f, false, 0, 0.1f, limbSwing, limbSwingAmount);
+        flap(leg1LeftUpper, globalSpeed, globalDegree * 0.5f, true, 1.57f, 0.2f, limbSwing, limbSwingAmount);
+        flap(leg1LeftLower, globalSpeed, globalDegree * 0.8f, true, 1.57f, 0f, limbSwing, limbSwingAmount);
+        flap(foot1Left, globalSpeed, globalDegree * 1.3f, false, 1.57f, 0f, limbSwing, limbSwingAmount);
+
+        swing(leg2LeftJoint, globalSpeed, globalDegree * 1.2f, false, 0 + 1.57f, 0.1f, limbSwing, limbSwingAmount);
+        flap(leg2LeftUpper, globalSpeed, globalDegree * 0.5f, true, 1.57f + 1.57f, 0.2f, limbSwing, limbSwingAmount);
+        flap(leg2LeftLower, globalSpeed, globalDegree * 0.8f, true, 1.57f + 1.57f, 0f, limbSwing, limbSwingAmount);
+        flap(foot2Left, globalSpeed, globalDegree * 1.3f, false, 1.57f + 1.57f, 0f, limbSwing, limbSwingAmount);
+
+        swing(leg3LeftJoint, globalSpeed, globalDegree * 1.2f, false, 0 + 1.57f*2, 0.1f, limbSwing, limbSwingAmount);
+        flap(leg3LeftUpper, globalSpeed, globalDegree * 0.5f, true, 1.57f + 1.57f*2, 0.2f, limbSwing, limbSwingAmount);
+        flap(leg3LeftLower, globalSpeed, globalDegree * 0.8f, true, 1.57f + 1.57f*2, 0f, limbSwing, limbSwingAmount);
+        flap(foot3Left, globalSpeed, globalDegree * 1.3f, false, 1.57f + 1.57f*2, 0f, limbSwing, limbSwingAmount);
+
+        swing(leg1RightJoint, globalSpeed, globalDegree * 1.2f, false, 0, -0.1f, limbSwing, limbSwingAmount);
+        flap(leg1RightUpper, globalSpeed, globalDegree * 0.5f, true, 1.57f, -0.2f, limbSwing, limbSwingAmount);
+        flap(leg1RightLower, globalSpeed, globalDegree * 0.8f, true, 1.57f, 0f, limbSwing, limbSwingAmount);
+        flap(foot1Right, globalSpeed, globalDegree * 1.3f, false, 1.57f, 0f, limbSwing, limbSwingAmount);
+
+        swing(leg2RightJoint, globalSpeed, globalDegree * 1.2f, false, 0 + 1.57f, -0.1f, limbSwing, limbSwingAmount);
+        flap(leg2RightUpper, globalSpeed, globalDegree * 0.5f, true, 1.57f + 1.57f, -0.2f, limbSwing, limbSwingAmount);
+        flap(leg2RightLower, globalSpeed, globalDegree * 0.8f, true, 1.57f + 1.57f, 0f, limbSwing, limbSwingAmount);
+        flap(foot2Right, globalSpeed, globalDegree * 1.3f, false, 1.57f + 1.57f, 0f, limbSwing, limbSwingAmount);
+
+        swing(leg3RightJoint, globalSpeed, globalDegree * 1.2f, false, 0 + 1.57f*2, -0.1f, limbSwing, limbSwingAmount);
+        flap(leg3RightUpper, globalSpeed, globalDegree * 0.5f, true, 1.57f + 1.57f*2, -0.2f, limbSwing, limbSwingAmount);
+        flap(leg3RightLower, globalSpeed, globalDegree * 0.8f, true, 1.57f + 1.57f*2, 0f, limbSwing, limbSwingAmount);
+        flap(foot3Right, globalSpeed, globalDegree * 1.3f, false, 1.57f + 1.57f*2, 0f, limbSwing, limbSwingAmount);
     }
 
     @Override
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity entity) {
-        super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-        resetToDefaultPose();
-//        f = entity.ticksExisted + LLibrary.PROXY.getPartialTicks();
-//        f1 = 0.5f;
+    protected void animate(EntityGrottol entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
+        setDefaultAngles(entity, limbSwing, limbSwingAmount, headYaw, headPitch, delta);
+        float frame = entity.frame + delta;
 
-        f3 = Math.min(f3, 30f);
-        f3 = Math.max(f3, -30f);
-        faceTarget(f3, f4, 1, head);
-
-        if (f1 > 0.5) f1 = 0.5f;
-        float globalSpeed = 1.5f;
-        float globalDegree = 0.5f;
-        swing(leg1LeftJoint, globalSpeed, globalDegree * 1.2f, false, 0, 0.1f, f, f1);
-        flap(leg1LeftUpper, globalSpeed, globalDegree * 0.5f, true, 1.57f, 0.2f, f, f1);
-        flap(leg1LeftLower, globalSpeed, globalDegree * 0.8f, true, 1.57f, 0f, f, f1);
-        flap(foot1Left, globalSpeed, globalDegree * 1.3f, false, 1.57f, 0f, f, f1);
-
-        swing(leg2LeftJoint, globalSpeed, globalDegree * 1.2f, false, 0 + 1.57f, 0.1f, f, f1);
-        flap(leg2LeftUpper, globalSpeed, globalDegree * 0.5f, true, 1.57f + 1.57f, 0.2f, f, f1);
-        flap(leg2LeftLower, globalSpeed, globalDegree * 0.8f, true, 1.57f + 1.57f, 0f, f, f1);
-        flap(foot2Left, globalSpeed, globalDegree * 1.3f, false, 1.57f + 1.57f, 0f, f, f1);
-
-        swing(leg3LeftJoint, globalSpeed, globalDegree * 1.2f, false, 0 + 1.57f*2, 0.1f, f, f1);
-        flap(leg3LeftUpper, globalSpeed, globalDegree * 0.5f, true, 1.57f + 1.57f*2, 0.2f, f, f1);
-        flap(leg3LeftLower, globalSpeed, globalDegree * 0.8f, true, 1.57f + 1.57f*2, 0f, f, f1);
-        flap(foot3Left, globalSpeed, globalDegree * 1.3f, false, 1.57f + 1.57f*2, 0f, f, f1);
-
-        swing(leg1RightJoint, globalSpeed, globalDegree * 1.2f, false, 0, -0.1f, f, f1);
-        flap(leg1RightUpper, globalSpeed, globalDegree * 0.5f, true, 1.57f, -0.2f, f, f1);
-        flap(leg1RightLower, globalSpeed, globalDegree * 0.8f, true, 1.57f, 0f, f, f1);
-        flap(foot1Right, globalSpeed, globalDegree * 1.3f, false, 1.57f, 0f, f, f1);
-
-        swing(leg2RightJoint, globalSpeed, globalDegree * 1.2f, false, 0 + 1.57f, -0.1f, f, f1);
-        flap(leg2RightUpper, globalSpeed, globalDegree * 0.5f, true, 1.57f + 1.57f, -0.2f, f, f1);
-        flap(leg2RightLower, globalSpeed, globalDegree * 0.8f, true, 1.57f + 1.57f, 0f, f, f1);
-        flap(foot2Right, globalSpeed, globalDegree * 1.3f, false, 1.57f + 1.57f, 0f, f, f1);
-
-        swing(leg3RightJoint, globalSpeed, globalDegree * 1.2f, false, 0 + 1.57f*2, -0.1f, f, f1);
-        flap(leg3RightUpper, globalSpeed, globalDegree * 0.5f, true, 1.57f + 1.57f*2, -0.2f, f, f1);
-        flap(leg3RightLower, globalSpeed, globalDegree * 0.8f, true, 1.57f + 1.57f*2, 0f, f, f1);
-        flap(foot3Right, globalSpeed, globalDegree * 1.3f, false, 1.57f + 1.57f*2, 0f, f, f1);
-    }
-
-    public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        EntityGrottol grottol = (EntityGrottol) entity;
-        animator.update(grottol);
-        setRotationAngles(f, f1, f2, f3, f4, f5, grottol);
-
-        float frame = grottol.frame + LLibrary.PROXY.getPartialTicks();
-
-        if (grottol.getAnimation() == EntityGrottol.IDLE_ANIMATION) {
+        if (entity.getAnimation() == EntityGrottol.IDLE_ANIMATION) {
             animator.setAnimation(EntityGrottol.IDLE_ANIMATION);
 
             animator.startKeyframe(6);//6
@@ -469,7 +448,7 @@ public class ModelGrottol extends AdvancedModelBase {
             animator.resetKeyframe(4);
         }
 
-        if (grottol.getAnimation() == EntityGrottol.DIE_ANIMATION) {
+        if (entity.getAnimation() == EntityGrottol.DIE_ANIMATION) {
             animator.setAnimation(EntityGrottol.DIE_ANIMATION);
 
             animator.startKeyframe(7);
@@ -547,7 +526,7 @@ public class ModelGrottol extends AdvancedModelBase {
             flap(clawRightLower, globalSpeed, globalDegree * 0.5f, true, 0.5f, 0, frame, 1);
         }
 
-        if (grottol.getAnimation() == EntityGrottol.BURROW_ANIMATION) {
+        if (entity.getAnimation() == EntityGrottol.BURROW_ANIMATION) {
             animator.setAnimation(EntityGrottol.BURROW_ANIMATION);
 
             animator.startKeyframe(4);

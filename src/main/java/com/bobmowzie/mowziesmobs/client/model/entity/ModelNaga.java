@@ -5,18 +5,13 @@ import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import net.ilexiconn.llibrary.LLibrary;
-import net.ilexiconn.llibrary.client.model.ModelAnimator;
-import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
-import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 
 /**
  * Created by Josh on 9/9/2018.
  */
 
-public class ModelNaga extends AdvancedModelBase{
+public class ModelNaga extends MowzieEntityModel<EntityNaga> {
     public AdvancedModelRenderer root;
     public AdvancedModelRenderer body;
     public AdvancedModelRenderer neck;
@@ -121,43 +116,39 @@ public class ModelNaga extends AdvancedModelBase{
 
     public ExtendedModelRenderer[] reversePlanes;
 
-    private ModelAnimator animator;
-
     public ModelNaga() {
-        animator = ModelAnimator.create();
-
         this.textureWidth = 256;
         this.textureHeight = 256;
         this.eyebrow_L = new AdvancedModelRenderer(this, 63, 0);
         this.eyebrow_L.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.eyebrow_L.addBox(-3.5F, 0.0F, 0.0F, 9, 7, 3, 0.0F);
-        this.setRotateAngle(eyebrow_L, 0.0F, 0.0F, 0.12217304763960307F);
+        setRotateAngle(eyebrow_L, 0.0F, 0.0F, 0.12217304763960307F);
         this.spike4 = new AdvancedModelRenderer(this, 45, 52);
         this.spike4.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.spike4.addBox(0.0F, 0.0F, 0.0F, 11, 6, 11, 0.0F);
-        this.setRotateAngle(spike4, 0.0F, -0.7853981633974483F, 0.0F);
+        setRotateAngle(spike4, 0.0F, -0.7853981633974483F, 0.0F);
         this.spike3joint = new AdvancedModelRenderer(this, 0, 0);
         this.spike3joint.setRotationPoint(0.0F, 1.0F, 4.0F);
         this.spike3joint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
-        this.setRotateAngle(spike3joint, 0.5235987755982988F, 0.0F, 0.0F);
+        setRotateAngle(spike3joint, 0.5235987755982988F, 0.0F, 0.0F);
         this.headJoint = new AdvancedModelRenderer(this, 0, 0);
         this.headJoint.setRotationPoint(0.0F, 1.0F, -13.0F);
         this.headJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
-        this.setRotateAngle(headJoint, 0.4363323129985824F, 0.0F, 0.0F);
+        setRotateAngle(headJoint, 0.4363323129985824F, 0.0F, 0.0F);
         this.body = new AdvancedModelRenderer(this, 0, 0);
         this.body.setRotationPoint(0.0F, -9.0F, -9.0F);
         this.body.addBox(-10.5F, -4.0F, -3.0F, 21, 13, 21, 0.0F);
         this.spike2 = new AdvancedModelRenderer(this, 0, 54);
         this.spike2.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.spike2.addBox(0.0F, 0.0F, 0.0F, 15, 4, 15, 0.0F);
-        this.setRotateAngle(spike2, 0.0F, -0.7853981633974483F, 0.0F);
+        setRotateAngle(spike2, 0.0F, -0.7853981633974483F, 0.0F);
         this.lowerArmJoint_R = new AdvancedModelRenderer(this, 0, 0);
         this.lowerArmJoint_R.setRotationPoint(-15.0F, 0.0F, -0.5F);
         this.lowerArmJoint_R.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         this.spike1 = new AdvancedModelRenderer(this, 0, 54);
         this.spike1.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.spike1.addBox(0.0F, 0.0F, 0.0F, 15, 4, 15, 0.0F);
-        this.setRotateAngle(spike1, 0.0F, -0.7853981633974483F, 0.0F);
+        setRotateAngle(spike1, 0.0F, -0.7853981633974483F, 0.0F);
         this.wingWebbing5_L = new ExtendedModelRenderer(this, 193, 128);
         this.wingWebbing5_L.setRotationPoint(12.0F, 0.0F, 1.0F);
         this.wingWebbing5_L.addBox(-12.0F, 0.0F, 0.0F, 20, 0, 23, 0.0F);
@@ -175,7 +166,7 @@ public class ModelNaga extends AdvancedModelBase{
         this.wingWebbing2_L = new ExtendedModelRenderer(this, 20, 98);
         this.wingWebbing2_L.setRotationPoint(-1.5F, 0.0F, 0.0F);
         this.wingWebbing2_L.addBox(0.0F, 0.0F, -15.0F, 50, 0, 30, 0.0F);
-        this.setRotateAngle(wingWebbing2_L, 0.0F, -0.30543261909900765F, 0.0F);
+        setRotateAngle(wingWebbing2_L, 0.0F, -0.30543261909900765F, 0.0F);
         this.wingWebbing2_LReversed = new ExtendedModelRenderer(this, 20, 98);
         this.wingWebbing2_LReversed.mirror = true;
         this.wingWebbing2_LReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
@@ -197,28 +188,28 @@ public class ModelNaga extends AdvancedModelBase{
         this.head = new AdvancedModelRenderer(this, 68, 23);
         this.head.setRotationPoint(0.0F, -2.0F, -1.0F);
         this.head.addBox(-8.0F, -3.7F, -8.0F, 16, 6, 16, 0.0F);
-        this.setRotateAngle(head, 0.0F, 0.7853981633974483F, 0.0F);
+        setRotateAngle(head, 0.0F, 0.7853981633974483F, 0.0F);
         this.eyebrowJoint_L = new AdvancedModelRenderer(this, 0, 0);
         this.eyebrowJoint_L.setRotationPoint(4.95F, -5.0F, -7.36F);
         this.eyebrowJoint_L.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
-        this.setRotateAngle(eyebrowJoint_L, 1.0344566476570392F, -0.3179989897133668F, -0.5363396791378574F);
+        setRotateAngle(eyebrowJoint_L, 1.0344566476570392F, -0.3179989897133668F, -0.5363396791378574F);
         this.upperArm_L = new AdvancedModelRenderer(this, 106, 74);
         this.upperArm_L.setRotationPoint(0.0F, 2.0F, 0.0F);
         this.upperArm_L.addBox(-2.0F, -2.0F, -3.0F, 18, 4, 5, 0.0F);
         this.wingFrame2_L = new AdvancedModelRenderer(this, 0, 79);
         this.wingFrame2_L.setRotationPoint(7.0F, 0.0F, 0.0F);
         this.wingFrame2_L.addBox(0.0F, -1.5F, -1.5F, 50, 3, 3, 0.0F);
-        this.setRotateAngle(wingFrame2_L, 0.0F, -0.6108652381980153F, 0.0F);
+        setRotateAngle(wingFrame2_L, 0.0F, -0.6108652381980153F, 0.0F);
         this.eyebrow_R = new AdvancedModelRenderer(this, 63, 0);
         this.eyebrow_R.mirror = true;
         this.eyebrow_R.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.eyebrow_R.addBox(-5.5F, 0.0F, 0.0F, 9, 7, 3, 0.0F);
-        this.setRotateAngle(eyebrow_R, 0.0F, 0.0F, -0.12217304763960307F);
+        setRotateAngle(eyebrow_R, 0.0F, 0.0F, -0.12217304763960307F);
         this.wingWebbing3_R = new ExtendedModelRenderer(this, 144, 71);
         this.wingWebbing3_R.mirror = true;
         this.wingWebbing3_R.setRotationPoint(-1.0F, 0.0F, 0.0F);
         this.wingWebbing3_R.addBox(-43.0F, 0.0F, -13.0F, 43, 0, 26, 0.0F);
-        this.setRotateAngle(wingWebbing3_R, 0.0F, 0.30543261909900765F, 0.0F);
+        setRotateAngle(wingWebbing3_R, 0.0F, 0.30543261909900765F, 0.0F);
         this.wingWebbing3_RReversed = new ExtendedModelRenderer(this, 144, 71);
         this.wingWebbing3_RReversed.mirror = false;
         this.wingWebbing3_RReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
@@ -227,7 +218,7 @@ public class ModelNaga extends AdvancedModelBase{
         this.wingWebbing3_L = new ExtendedModelRenderer(this, 144, 71);
         this.wingWebbing3_L.setRotationPoint(1.0F, 0.0F, 0.0F);
         this.wingWebbing3_L.addBox(0.0F, 0.0F, -13.0F, 43, 0, 26, 0.0F);
-        this.setRotateAngle(wingWebbing3_L, 0.0F, -0.30543261909900765F, 0.0F);
+        setRotateAngle(wingWebbing3_L, 0.0F, -0.30543261909900765F, 0.0F);
         this.wingWebbing3_LReversed = new ExtendedModelRenderer(this, 144, 71);
         this.wingWebbing3_LReversed.mirror = true;
         this.wingWebbing3_LReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
@@ -239,20 +230,20 @@ public class ModelNaga extends AdvancedModelBase{
         this.spike5 = new AdvancedModelRenderer(this, 38, 36);
         this.spike5.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.spike5.addBox(0.0F, 0.0F, 0.0F, 9, 4, 9, 0.0F);
-        this.setRotateAngle(spike5, 0.0F, -0.7853981633974483F, 0.0F);
+        setRotateAngle(spike5, 0.0F, -0.7853981633974483F, 0.0F);
         this.shoulder1_L = new AdvancedModelRenderer(this, 189, 0);
         this.shoulder1_L.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.shoulder1_L.addBox(-2.0F, -3.0F, -7.0F, 12, 6, 9, 0.0F);
-        this.setRotateAngle(shoulder1_L, 0.0F, -0.5235987755982988F, 0.0F);
+        setRotateAngle(shoulder1_L, 0.0F, -0.5235987755982988F, 0.0F);
         this.spike5joint = new AdvancedModelRenderer(this, 0, 0);
         this.spike5joint.setRotationPoint(0.0F, 0.0F, -4.05F);
         this.spike5joint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
-        this.setRotateAngle(spike5joint, 0.5235987755982988F, 0.0F, 0.0F);
+        setRotateAngle(spike5joint, 0.5235987755982988F, 0.0F, 0.0F);
         this.wingWebbing1_R = new ExtendedModelRenderer(this, 119, 97);
         this.wingWebbing1_R.mirror = true;
         this.wingWebbing1_R.setRotationPoint(2.0F, 0.0F, 0.0F);
         this.wingWebbing1_R.addBox(-53.0F, 0.0F, -16.0F, 53, 0, 31, 0.0F);
-        this.setRotateAngle(wingWebbing1_R, 0.0F, 0.30543261909900765F, 0.0F);
+        setRotateAngle(wingWebbing1_R, 0.0F, 0.30543261909900765F, 0.0F);
         this.wingWebbing1_RReversed = new ExtendedModelRenderer(this, 119, 97);
         this.wingWebbing1_RReversed.mirror = false;
         this.wingWebbing1_RReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
@@ -261,7 +252,7 @@ public class ModelNaga extends AdvancedModelBase{
         this.upperArmJoint_L = new AdvancedModelRenderer(this, 0, 0);
         this.upperArmJoint_L.setRotationPoint(9.0F, -1.0F, -1.0F);
         this.upperArmJoint_L.addBox(-2.0F, 0.0F, -3.0F, 0, 0, 0, 0.0F);
-        this.setRotateAngle(upperArmJoint_L, 0.0F, 0.5235987755982988F, 0.0F);
+        setRotateAngle(upperArmJoint_L, 0.0F, 0.5235987755982988F, 0.0F);
         this.tail1 = new SocketModelRenderer(this, 140, 0);
         this.tail1.setRotationPoint(0.0F, 1.5F, 17.0F);
         this.tail1.addBox(-7.5F, -4.5F, -3.0F, 15, 9, 19, 0.0F);
@@ -288,7 +279,7 @@ public class ModelNaga extends AdvancedModelBase{
         this.wingWebbing4_L = new ExtendedModelRenderer(this, 159, 36);
         this.wingWebbing4_L.setRotationPoint(0.5F, 0.0F, 0.0F);
         this.wingWebbing4_L.addBox(0.0F, 0.0F, -22.0F, 31, 0, 35, 0.0F);
-        this.setRotateAngle(wingWebbing4_L, 0.0F, -0.6544984694978736F, 0.0F);
+        setRotateAngle(wingWebbing4_L, 0.0F, -0.6544984694978736F, 0.0F);
         this.wingWebbing4_LReversed = new ExtendedModelRenderer(this, 159, 36);
         this.wingWebbing4_LReversed.mirror = true;
         this.wingWebbing4_LReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
@@ -297,11 +288,11 @@ public class ModelNaga extends AdvancedModelBase{
         this.wingFrame3_L = new AdvancedModelRenderer(this, 0, 73);
         this.wingFrame3_L.setRotationPoint(4.0F, 0.0F, 0.0F);
         this.wingFrame3_L.addBox(0.0F, -1.5F, -1.5F, 43, 3, 3, 0.0F);
-        this.setRotateAngle(wingFrame3_L, 0.0F, -1.2217304763960306F, 0.0F);
+        setRotateAngle(wingFrame3_L, 0.0F, -1.2217304763960306F, 0.0F);
         this.wingWebbing1_L = new ExtendedModelRenderer(this, 119, 97);
         this.wingWebbing1_L.setRotationPoint(-2.0F, 0.0F, 0.0F);
         this.wingWebbing1_L.addBox(0.0F, 0.0F, -16.0F, 53, 0, 31, 0.0F);
-        this.setRotateAngle(wingWebbing1_L, 0.0F, -0.30543261909900765F, 0.0F);
+        setRotateAngle(wingWebbing1_L, 0.0F, -0.30543261909900765F, 0.0F);
         this.wingWebbing1_LReversed = new ExtendedModelRenderer(this, 119, 97);
         this.wingWebbing1_LReversed.mirror = true;
         this.wingWebbing1_LReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
@@ -311,21 +302,21 @@ public class ModelNaga extends AdvancedModelBase{
         this.wingClaw_R.mirror = true;
         this.wingClaw_R.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.wingClaw_R.addBox(-9.0F, -2.0F, -2.0F, 9, 3, 3, 0.0F);
-        this.setRotateAngle(wingClaw_R, 0.0F, -0.5235987755982988F, 0.0F);
+        setRotateAngle(wingClaw_R, 0.0F, -0.5235987755982988F, 0.0F);
         this.eyebrowJoint_R = new AdvancedModelRenderer(this, 0, 0);
         this.eyebrowJoint_R.setRotationPoint(-4.95F, -5.0F, -7.36F);
         this.eyebrowJoint_R.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
-        this.setRotateAngle(eyebrowJoint_R, 1.0344566476570392F, 0.3179989897133668F, 0.5363396791378574F);
+        setRotateAngle(eyebrowJoint_R, 1.0344566476570392F, 0.3179989897133668F, 0.5363396791378574F);
         this.wingFrame2_R = new AdvancedModelRenderer(this, 0, 79);
         this.wingFrame2_R.mirror = true;
         this.wingFrame2_R.setRotationPoint(-7.0F, 0.0F, 0.0F);
         this.wingFrame2_R.addBox(-50.0F, -1.5F, -1.5F, 50, 3, 3, 0.0F);
-        this.setRotateAngle(wingFrame2_R, 0.0F, 0.6108652381980153F, 0.0F);
+        setRotateAngle(wingFrame2_R, 0.0F, 0.6108652381980153F, 0.0F);
         this.wingWebbing2_R = new ExtendedModelRenderer(this, 20, 98);
         this.wingWebbing2_R.mirror = true;
         this.wingWebbing2_R.setRotationPoint(1.5F, 0.0F, 0.0F);
         this.wingWebbing2_R.addBox(-50.0F, 0.0F, -15.0F, 50, 0, 30, 0.0F);
-        this.setRotateAngle(wingWebbing2_R, 0.0F, 0.30543261909900765F, 0.0F);
+        setRotateAngle(wingWebbing2_R, 0.0F, 0.30543261909900765F, 0.0F);
         this.wingWebbing2_RReversed = new ExtendedModelRenderer(this, 20, 98);
         this.wingWebbing2_RReversed.mirror = false;
         this.wingWebbing2_RReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
@@ -334,19 +325,19 @@ public class ModelNaga extends AdvancedModelBase{
         this.jaw = new AdvancedModelRenderer(this, 116, 62);
         this.jaw.setRotationPoint(0.0F, -1.34F, -4.38F);
         this.jaw.addBox(-4.5F, 0.16F, -9.37F, 9, 4, 8, 0.0F);
-        this.setRotateAngle(jaw, -0.17453292519943295F, 0.0F, -0.005235987755982988F);
+        setRotateAngle(jaw, -0.17453292519943295F, 0.0F, -0.005235987755982988F);
         this.neck = new AdvancedModelRenderer(this, 84, 0);
         this.neck.setRotationPoint(0.0F, 1.0F, -1.0F);
         this.neck.addBox(-6.5F, -4.0F, -12.2F, 13, 8, 15, 0.0F);
-        this.setRotateAngle(neck, 0.17453292519943295F, 0.0F, 0.0F);
+        setRotateAngle(neck, 0.17453292519943295F, 0.0F, 0.0F);
         this.spike3Bottom = new AdvancedModelRenderer(this, 78, 45);
         this.spike3Bottom.setRotationPoint(0.0F, 2.69F, 5.66F);
         this.spike3Bottom.addBox(0.0F, 0.0F, 0.0F, 11, 4, 11, 0.0F);
-        this.setRotateAngle(spike3Bottom, 0.0F, -0.7853981633974483F, 0.0F);
+        setRotateAngle(spike3Bottom, 0.0F, -0.7853981633974483F, 0.0F);
         this.teethLower = new AdvancedModelRenderer(this, 125, 0);
         this.teethLower.setRotationPoint(0.0F, 0.14F, -9.4F);
         this.teethLower.addBox(-4.5F, -6.0F, 0.0F, 9, 6, 7, 0.0F);
-        this.setRotateAngle(teethLower, -0.5009094953223726F, 0.0F, 0.0F);
+        setRotateAngle(teethLower, -0.5009094953223726F, 0.0F, 0.0F);
         this.lowerArm_L = new AdvancedModelRenderer(this, 102, 83);
         this.lowerArm_L.setRotationPoint(0.0F, 0.0F, -0.5F);
         this.lowerArm_L.addBox(0.0F, -2.0F, -2.0F, 22, 4, 4, 0.0F);
@@ -354,7 +345,7 @@ public class ModelNaga extends AdvancedModelBase{
         this.shoulder1_R.mirror = true;
         this.shoulder1_R.setRotationPoint(0, 0, 0);
         this.shoulder1_R.addBox(-10.0F, -3.0F, -7.0F, 12, 6, 9, 0.0F);
-        this.setRotateAngle(shoulder1_R, 0.0F, 0.5235987755982988F, 0.0F);
+        setRotateAngle(shoulder1_R, 0.0F, 0.5235987755982988F, 0.0F);
         this.wingFrame1_R = new AdvancedModelRenderer(this, 50, 91);
         this.wingFrame1_R.mirror = true;
         this.wingFrame1_R.setRotationPoint(-11.0F, 0.0F, -0.5F);
@@ -362,12 +353,12 @@ public class ModelNaga extends AdvancedModelBase{
         this.teethUpper = new AdvancedModelRenderer(this, 171, 56);
         this.teethUpper.setRotationPoint(0.0F, 0.3F, -6.65F);
         this.teethUpper.addBox(-4.0F, -4.0F, -3.0F, 8, 8, 3, 0.0F);
-        this.setRotateAngle(teethUpper, 1.5707963267948966F, 0.7853981633974483F, 0.0F);
+        setRotateAngle(teethUpper, 1.5707963267948966F, 0.7853981633974483F, 0.0F);
         this.backWing_R = new ExtendedModelRenderer(this, 35, 128);
         this.backWing_R.mirror = true;
         this.backWing_R.setRotationPoint(-4.0F, 0.0F, 4.0F);
         this.backWing_R.addBox(-30.0F, 0.0F, 0.0F, 30, 0, 25, 0.0F);
-        this.setRotateAngle(backWing_R, 0.0F, 0.5235987755982988F, 0.0F);
+        setRotateAngle(backWing_R, 0.0F, 0.5235987755982988F, 0.0F);
         this.backWing_RReversed = new ExtendedModelRenderer(this, 35, 128);
         this.backWing_RReversed.mirror = false;
         this.backWing_RReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
@@ -376,7 +367,7 @@ public class ModelNaga extends AdvancedModelBase{
         this.tailFin = new ExtendedModelRenderer(this, -30, 128);
         this.tailFin.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.tailFin.addBox(-5.0F, 0.0F, -5.0F, 30, 0, 30, 0.0F);
-        this.setRotateAngle(tailFin, 0.0F, -0.7853981633974483F, 0.0F);
+        setRotateAngle(tailFin, 0.0F, -0.7853981633974483F, 0.0F);
         this.tailFinReversed = new ExtendedModelRenderer(this, -30, 128);
         this.tailFinReversed.mirror = true;
         this.tailFinReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
@@ -388,11 +379,11 @@ public class ModelNaga extends AdvancedModelBase{
         this.wingFrame4_L = new AdvancedModelRenderer(this, 0, 85);
         this.wingFrame4_L.setRotationPoint(2.0F, 0.0F, 0.0F);
         this.wingFrame4_L.addBox(0.0F, -1.5F, -1.5F, 38, 3, 3, 0.0F);
-        this.setRotateAngle(wingFrame4_L, 0.0F, -1.8325957145940461F, 0.0F);
+        setRotateAngle(wingFrame4_L, 0.0F, -1.8325957145940461F, 0.0F);
         this.underHead = new AdvancedModelRenderer(this, 122, 51);
         this.underHead.setRotationPoint(0.0F, -1.82F, -1.59F);
         this.underHead.addBox(-4.5F, 1.12F, -4.03F, 9, 4, 7, 0.0F);
-        this.setRotateAngle(underHead, -0.17453292519943295F, 0.0F, 0.0F);
+        setRotateAngle(underHead, -0.17453292519943295F, 0.0F, 0.0F);
         this.backFin2 = new ExtendedModelRenderer(this, 170, 109);
         this.backFin2.setRotationPoint(0.0F, -4.5F, 0.0F);
         this.backFin2.addBox(0.0F, -14.0F, -3.0F, 0, 14, 19, 0.0F);
@@ -410,15 +401,15 @@ public class ModelNaga extends AdvancedModelBase{
         this.spike4joint = new AdvancedModelRenderer(this, 0, 0);
         this.spike4joint.setRotationPoint(0.0F, -1.0F, 0.55F);
         this.spike4joint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
-        this.setRotateAngle(spike4joint, 0.5235987755982988F, 0.0F, 0.0F);
+        setRotateAngle(spike4joint, 0.5235987755982988F, 0.0F, 0.0F);
         this.upperArmJoint_R = new AdvancedModelRenderer(this, 0, 0);
         this.upperArmJoint_R.setRotationPoint(-9.0F, -1.0F, -1.0F);
         this.upperArmJoint_R.addBox(-2.0F, 0.0F, -3.0F, 0, 0, 0, 0.0F);
-        this.setRotateAngle(upperArmJoint_R, 0.0F, -0.5235987755982988F, 0.0F);
+        setRotateAngle(upperArmJoint_R, 0.0F, -0.5235987755982988F, 0.0F);
         this.spike1joint = new AdvancedModelRenderer(this, 0, 0);
         this.spike1joint.setRotationPoint(0.0F, 1.0F, -12.0F);
         this.spike1joint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
-        this.setRotateAngle(spike1joint, 0.5235987755982988F, 0.0F, 0.0F);
+        setRotateAngle(spike1joint, 0.5235987755982988F, 0.0F, 0.0F);
         this.backFin1 = new ExtendedModelRenderer(this, 120, 103);
         this.backFin1.setRotationPoint(0.0F, -4.0F, -3.0F);
         this.backFin1.addBox(0.0F, -15.0F, -4.0F, 0, 15, 25, 0.0F);
@@ -431,7 +422,7 @@ public class ModelNaga extends AdvancedModelBase{
         this.wingWebbing4_R.mirror = true;
         this.wingWebbing4_R.setRotationPoint(-0.5F, 0.0F, 0.0F);
         this.wingWebbing4_R.addBox(-31.0F, 0.0F, -22.0F, 31, 0, 35, 0.0F);
-        this.setRotateAngle(wingWebbing4_R, 0.0F, 0.6544984694978736F, 0.0F);
+        setRotateAngle(wingWebbing4_R, 0.0F, 0.6544984694978736F, 0.0F);
         this.wingWebbing4_RReversed = new ExtendedModelRenderer(this, 159, 36);
         this.wingWebbing4_RReversed.mirror = false;
         this.wingWebbing4_RReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
@@ -444,7 +435,7 @@ public class ModelNaga extends AdvancedModelBase{
         this.backWing_L = new ExtendedModelRenderer(this, 35, 128);
         this.backWing_L.setRotationPoint(4.0F, 0.0F, 4.0F);
         this.backWing_L.addBox(0.0F, 0.0F, 0.0F, 30, 0, 25, 0.0F);
-        this.setRotateAngle(backWing_L, 0.0F, -0.5235987755982988F, 0.0F);
+        setRotateAngle(backWing_L, 0.0F, -0.5235987755982988F, 0.0F);
         this.backWing_LReversed = new ExtendedModelRenderer(this, 35, 128);
         this.backWing_LReversed.mirror = true;
         this.backWing_LReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
@@ -453,7 +444,7 @@ public class ModelNaga extends AdvancedModelBase{
         this.spike3 = new AdvancedModelRenderer(this, 0, 54);
         this.spike3.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.spike3.addBox(0.0F, 0.0F, 0.0F, 15, 4, 15, 0.0F);
-        this.setRotateAngle(spike3, 0.0F, -0.7853981633974483F, 0.0F);
+        setRotateAngle(spike3, 0.0F, -0.7853981633974483F, 0.0F);
         this.wingWebbing6_R = new ExtendedModelRenderer(this, -24, 94);
         this.wingWebbing6_R.mirror = true;
         this.wingWebbing6_R.setRotationPoint(-0.5F, 0.0F, -2.0F);
@@ -466,7 +457,7 @@ public class ModelNaga extends AdvancedModelBase{
         this.spike2joint = new AdvancedModelRenderer(this, 0, 0);
         this.spike2joint.setRotationPoint(0.0F, 1.0F, -4.0F);
         this.spike2joint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
-        this.setRotateAngle(spike2joint, 0.5235987755982988F, 0.0F, 0.0F);
+        setRotateAngle(spike2joint, 0.5235987755982988F, 0.0F, 0.0F);
         this.wingWebbing6_L = new ExtendedModelRenderer(this, -24, 94);
         this.wingWebbing6_L.setRotationPoint(0.5F, 0.0F, -2.0F);
         this.wingWebbing6_L.addBox(-10.5F, 0.0F, 0.0F, 25, 0, 24, 0.0F);
@@ -481,12 +472,12 @@ public class ModelNaga extends AdvancedModelBase{
         this.wingClaw_L = new AdvancedModelRenderer(this, 231, 8);
         this.wingClaw_L.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.wingClaw_L.addBox(0.0F, -2.0F, -2.0F, 9, 3, 3, 0.0F);
-        this.setRotateAngle(wingClaw_L, 0.0F, 0.5235987755982988F, 0.0F);
+        setRotateAngle(wingClaw_L, 0.0F, 0.5235987755982988F, 0.0F);
         this.wingFrame4_R = new AdvancedModelRenderer(this, 0, 85);
         this.wingFrame4_R.mirror = true;
         this.wingFrame4_R.setRotationPoint(-2.0F, 0.0F, 0.0F);
         this.wingFrame4_R.addBox(-38.0F, -1.5F, -1.5F, 38, 3, 3, 0.0F);
-        this.setRotateAngle(wingFrame4_R, 0.0F, 1.8325957145940461F, 0.0F);
+        setRotateAngle(wingFrame4_R, 0.0F, 1.8325957145940461F, 0.0F);
         this.tail4 = new SocketModelRenderer(this, 142, 52);
         this.tail4.setRotationPoint(0.0F, -0.5F, 15.0F);
         this.tail4.addBox(-3.5F, -1.5F, 0.0F, 7, 3, 15, 0.0F);
@@ -494,7 +485,7 @@ public class ModelNaga extends AdvancedModelBase{
         this.wingFrame3_R.mirror = true;
         this.wingFrame3_R.setRotationPoint(-4.0F, 0.0F, 0.0F);
         this.wingFrame3_R.addBox(-43.0F, -1.5F, -1.5F, 43, 3, 3, 0.0F);
-        this.setRotateAngle(wingFrame3_R, 0.0F, 1.2217304763960306F, 0.0F);
+        setRotateAngle(wingFrame3_R, 0.0F, 1.2217304763960306F, 0.0F);
         this.shoulderLJoint = new AdvancedModelRenderer(this, 0, 0);
         this.shoulderLJoint.setRotationPoint(8.0F, -2.0F, -1.0F);
         this.shoulderRJoint = new AdvancedModelRenderer(this, 0, 0);
@@ -663,49 +654,32 @@ public class ModelNaga extends AdvancedModelBase{
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        animate((EntityNaga)entity, f, f1, f2, f3, f4, f5);
-
-        this.root.render(f5);
-//        System.out.println(tailDynamic[0].rotationPointY);
-        if (((EntityNaga)entity).dc != null) ((EntityNaga)entity).dc.render(f5, tailDynamic);
-        for (int i = 0; i < tailOriginal.length; i++) {
-            tailOriginal[i].isHidden = true;
+    protected void render(EntityNaga entity, float scale) {
+        this.root.render(scale);
+        if (entity.dc != null) entity.dc.render(scale, tailDynamic);
+        for (SocketModelRenderer socketModelRenderer : tailOriginal) {
+            socketModelRenderer.isHidden = true;
         }
-
-        ((EntityNaga)entity).mouthPos[0] = mouthSocket.getWorldPos(entity);
-        //System.out.println(tailDynamic.length);
+        entity.mouthPos[0] = mouthSocket.getWorldPos(entity);
     }
 
-    /**
-     * This is a helper function from Tabula to set the rotation of model parts
-     */
-    public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor, Entity entityIn) {
-        super.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor, entityIn);
+    public void setDefaultAngle(EntityNaga entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
         resetToDefaultPose();
         resetToDefaultPoseExtendeds();
-        EntityNaga naga = (EntityNaga) entityIn;
 
         modelCorrections();
 
         float partial = LLibrary.PROXY.getPartialTicks();
-        float frame = entityIn.ticksExisted + partial;
+        float frame = entity.ticksExisted + partial;
 
-        float hoverAnim = naga.prevHoverAnimFrac + (naga.hoverAnimFrac - naga.prevHoverAnimFrac) * partial;
+        float hoverAnim = entity.prevHoverAnimFrac + (entity.hoverAnimFrac - entity.prevHoverAnimFrac) * partial;
         float nonHoverAnim = 1f - hoverAnim;
 
-        float flapAnim = naga.prevFlapAnimFrac + (naga.flapAnimFrac - naga.prevFlapAnimFrac) * partial;
+        float flapAnim = entity.prevFlapAnimFrac + (entity.flapAnimFrac - entity.prevFlapAnimFrac) * partial;
 
-        //naga.dc.updateChain(LLibrary.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.2f, 0f, 1f, 0.99f, 40, false);
+        //entity.dc.updateChain(LLibrary.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.2f, 0f, 1f, 0.99f, 40, false);
 
-        if (!naga.isPotionActive(PotionHandler.FROZEN)) {
+        if (!entity.isPotionActive(PotionHandler.FROZEN)) {
             //Hover anim
             float globalSpeed = 0.28f;
             float globalDegree = 1f * hoverAnim;
@@ -732,14 +706,14 @@ public class ModelNaga extends AdvancedModelBase{
             neck.rotateAngleX += 0.2f * globalDegree;
             headJoint.rotateAngleX += 0.2f * globalDegree;
 
-            faceTarget(netHeadYaw, headPitch, 2, neck, headJoint);
+            faceTarget(headYaw, headPitch, 2, neck, headJoint);
 
             //Glide anim
-            float dx = (float) (naga.prevMotionX + (naga.motionX - naga.prevMotionX) * partial);
-            float dy = (float) (naga.motionY + (naga.motionY - naga.prevMotionY) * partial);
-            float dz = (float) (naga.motionZ + (naga.motionZ - naga.prevMotionZ) * partial);
+            float dx = (float) (entity.prevMotionX + (entity.motionX - entity.prevMotionX) * partial);
+            float dy = (float) (entity.motionY + (entity.motionY - entity.prevMotionY) * partial);
+            float dz = (float) (entity.motionZ + (entity.motionZ - entity.prevMotionZ) * partial);
             double d = Math.sqrt(dx * dx + dy * dy + dz * dz);
-            if (d != 0 && naga.getAnimation() != EntityNaga.DIE_AIR_ANIMATION) {
+            if (d != 0 && entity.getAnimation() != EntityNaga.DIE_AIR_ANIMATION) {
                 double a = dy / d;
                 a = Math.max(-1, Math.min(1, a));
                 float pitch = -(float) Math.asin(a);
@@ -752,11 +726,11 @@ public class ModelNaga extends AdvancedModelBase{
                 wingFolder.rotationPointX += Math.max(Math.min(pitch * 2, 0.8), 0.1) * nonHoverAnim;
                 wingFolder.rotationPointY += Math.max(Math.min(pitch * 2, 0.8), 0.1) * nonHoverAnim;
 
-                //        root.rotateAngleZ -= Math.toRadians((naga.rotationYaw - naga.prevRotationYaw) * (LLibrary.PROXY.getPartialTicks()));
+                //        root.rotateAngleZ -= Math.toRadians((entity.rotationYaw - entity.prevRotationYaw) * (LLibrary.PROXY.getPartialTicks()));
             }
 
             // Falling Anim
-            if (naga.movement == EntityNaga.EnumNagaMovement.FALLING && naga.getAnimation() == EntityNaga.NO_ANIMATION) {
+            if (entity.movement == EntityNaga.EnumNagaMovement.FALLING && entity.getAnimation() == EntityNaga.NO_ANIMATION) {
                 root.rotateAngleX += Math.PI;
                 root.rotateAngleY += 0.8f;
                 wingFolder.rotationPointX += 0.4f;
@@ -769,7 +743,7 @@ public class ModelNaga extends AdvancedModelBase{
                 handJoint_R.rotateAngleZ += -0.2f;
                 neck.rotateAngleX += 0.3f;
                 headJoint.rotateAngleX += 0.3f;
-            } else if (naga.movement == EntityNaga.EnumNagaMovement.FALLEN && naga.getAnimation() == EntityNaga.NO_ANIMATION) {
+            } else if (entity.movement == EntityNaga.EnumNagaMovement.FALLEN && entity.getAnimation() == EntityNaga.NO_ANIMATION) {
                 animator.move(root, 0, -16, 0);
                 animator.rotate(root, (float) (Math.PI), 0.8f, 0);
                 animator.rotate(body, 0, 0, (float) Math.PI / 2);
@@ -807,23 +781,20 @@ public class ModelNaga extends AdvancedModelBase{
                 tail5.rotateAngleX += -0.35f;
             }
 
-//        float roarFrac = (float)naga.roarAnimation/(float)EntityNaga.ROAR_DURATION;
+//        float roarFrac = (float)entity.roarAnimation/(float)EntityNaga.ROAR_DURATION;
 //        jaw.rotateAngleX += 1.6f * (smoothBlend(roarFrac, 0.2f, 30) - smoothBlend(roarFrac, 0.8f, 30));
         }
     }
 
-    public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        EntityNaga naga = (EntityNaga) entity;
-        animator.update(naga);
-        setRotationAngles(f, f1, f2, f3, f4, f5, naga);
+    @Override
+    protected void animate(EntityNaga entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
+        this.setDefaultAngle(entity, limbSwing, limbSwingAmount, headYaw, headPitch, delta);
+        float frame = entity.frame + delta;
 
-        float partial = LLibrary.PROXY.getPartialTicks();
-        float frame = naga.frame + partial;
-
-        if (!naga.isPotionActive(PotionHandler.FROZEN)) {
+        if (!entity.isPotionActive(PotionHandler.FROZEN)) {
 
 
-            if (naga.getAnimation() == EntityNaga.FLAP_ANIMATION) {
+            if (entity.getAnimation() == EntityNaga.FLAP_ANIMATION) {
                 animator.setAnimation(EntityNaga.FLAP_ANIMATION);
                 animator.startKeyframe(25);
                 animator.rotate(wingFolder, 1, 0, 0);
@@ -831,7 +802,7 @@ public class ModelNaga extends AdvancedModelBase{
                 animator.resetKeyframe(0);
             }
 
-            if (naga.getAnimation() == EntityNaga.SPIT_ANIMATION) {
+            if (entity.getAnimation() == EntityNaga.SPIT_ANIMATION) {
                 animator.setAnimation(EntityNaga.SPIT_ANIMATION);
                 animator.startKeyframe(26);
                 animator.rotate(body, -1f, 0, 0);
@@ -881,7 +852,7 @@ public class ModelNaga extends AdvancedModelBase{
                 headJoint.setScale(1, 1, 1);
             }
 
-            if (naga.getAnimation() == EntityNaga.SWOOP_ANIMATION) {
+            if (entity.getAnimation() == EntityNaga.SWOOP_ANIMATION) {
                 animator.setAnimation(EntityNaga.SWOOP_ANIMATION);
                 int phase1Time = 15;
                 animator.startKeyframe(3);
@@ -957,10 +928,10 @@ public class ModelNaga extends AdvancedModelBase{
 
                 body.rotateAngleZ += 1f * frame % (Math.PI * 2) * swooper.rotationPointY;
 
-                if (naga.getAnimationTick() >= 23 && naga.getAnimationTick() < 60) {
-                    float dx = (float) (naga.prevMotionX + (naga.motionX - naga.prevMotionX) * partial);
-                    float dy = (float) (naga.motionY + (naga.motionY - naga.prevMotionY) * partial);
-                    float dz = (float) (naga.motionZ + (naga.motionZ - naga.prevMotionZ) * partial);
+                if (entity.getAnimationTick() >= 23 && entity.getAnimationTick() < 60) {
+                    float dx = (float) (entity.prevMotionX + (entity.motionX - entity.prevMotionX) * delta);
+                    float dy = (float) (entity.motionY + (entity.motionY - entity.prevMotionY) * delta);
+                    float dz = (float) (entity.motionZ + (entity.motionZ - entity.prevMotionZ) * delta);
                     double d = Math.sqrt(dx * dx + dy * dy + dz * dz);
                     if (d != 0) {
                         double a = dy / d;
@@ -972,7 +943,7 @@ public class ModelNaga extends AdvancedModelBase{
 
             }
 
-            if (naga.getAnimation() == EntityNaga.HURT_TO_FALL_ANIMATION) {
+            if (entity.getAnimation() == EntityNaga.HURT_TO_FALL_ANIMATION) {
                 animator.setAnimation(EntityNaga.HURT_TO_FALL_ANIMATION);
                 animator.startKeyframe(20);
                 animator.rotate(root, -(float) (2.5 * Math.PI * 2), 0.8f, (float) (Math.PI * 2));
@@ -1000,7 +971,7 @@ public class ModelNaga extends AdvancedModelBase{
                 animator.endKeyframe();
             }
 
-            if (naga.getAnimation() == EntityNaga.LAND_ANIMATION) {
+            if (entity.getAnimation() == EntityNaga.LAND_ANIMATION) {
                 animator.setAnimation(EntityNaga.LAND_ANIMATION);
                 animator.startKeyframe(0);
                 animator.rotate(root, (float) (Math.PI), 0.8f, 0);
@@ -1050,7 +1021,7 @@ public class ModelNaga extends AdvancedModelBase{
 
             }
 
-            if (naga.getAnimation() == EntityNaga.GET_UP_ANIMATION) {
+            if (entity.getAnimation() == EntityNaga.GET_UP_ANIMATION) {
                 animator.setAnimation(EntityNaga.GET_UP_ANIMATION);
                 animator.startKeyframe(0);
                 animator.move(root, 0, -16, 0);
@@ -1101,7 +1072,7 @@ public class ModelNaga extends AdvancedModelBase{
                 animator.resetKeyframe(6);
             }
 
-            if (naga.getAnimation() == EntityNaga.DIE_AIR_ANIMATION) {
+            if (entity.getAnimation() == EntityNaga.DIE_AIR_ANIMATION) {
                 animator.setAnimation(EntityNaga.DIE_AIR_ANIMATION);
                 animator.startKeyframe(20);
                 animator.rotate(root, -(float) (2.5 * Math.PI * 2), 0.8f, (float) (Math.PI * 2));
@@ -1130,7 +1101,7 @@ public class ModelNaga extends AdvancedModelBase{
                 animator.setStaticKeyframe(30);
             }
 
-            if (naga.getAnimation() == EntityNaga.DIE_GROUND_ANIMATION) {
+            if (entity.getAnimation() == EntityNaga.DIE_GROUND_ANIMATION) {
                 animator.setAnimation(EntityNaga.DIE_GROUND_ANIMATION);
                 animator.startKeyframe(0);
                 animator.move(root, 0, -16, 0);
@@ -1195,7 +1166,7 @@ public class ModelNaga extends AdvancedModelBase{
                 animator.setStaticKeyframe(16);
             }
 
-            if (naga.getAnimation() == EntityNaga.TAIL_DEMO_ANIMATION) {
+            if (entity.getAnimation() == EntityNaga.TAIL_DEMO_ANIMATION) {
                 animator.setAnimation(EntityNaga.TAIL_DEMO_ANIMATION);
 
                 animator.startKeyframe(7);
@@ -1260,11 +1231,11 @@ public class ModelNaga extends AdvancedModelBase{
             jawControls();
             wingFoldControls();
 
-            naga.dc.updateChain(LLibrary.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.5f, 0.5f, 0.5f, 0.97f, 30, true);
+            entity.dc.updateChain(LLibrary.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.5f, 0.5f, 0.5f, 0.97f, 30, true);
 
             computeWingWebbing();
 
-            naga.shoulderRot = shoulder1_R.rotateAngleZ;
+            entity.shoulderRot = shoulder1_R.rotateAngleZ;
         }
     }
 
@@ -1383,7 +1354,7 @@ public class ModelNaga extends AdvancedModelBase{
         wingWebbing4_L.setScale(1 - webbing4LScale * 0.02f, 1, webbing4LScale);
         wingWebbing5_L.rotationPointX += 12 * (float) (upperArm_L.rotateAngleY/Math.toRadians(35));
         wingWebbing5_L.setScale((float) (2 - (-shoulder1_L.rotateAngleY + shoulder1_L.defaultRotationY)/1.5), 1, (float) (0.915 - (-shoulder1_L.rotateAngleY + shoulder1_L.defaultRotationY)/1.2));
-        wingWebbing6_L.setScale((float) (1 + (-shoulder1_L.rotateAngleY + shoulder1_L.defaultRotationY)/4), 1, (float) (1 - (-shoulder1_L.rotateAngleY + shoulder1_L.defaultRotationY)/1.6));
+        wingWebbing6_L.setScale(1 + (-shoulder1_L.rotateAngleY + shoulder1_L.defaultRotationY)/4, 1, (float) (1 - (-shoulder1_L.rotateAngleY + shoulder1_L.defaultRotationY)/1.6));
         wingWebbing6_L.rotationPointX += 14 * (-shoulder1_L.rotateAngleY + shoulder1_L.defaultRotationY);
 
         float webbing1RScale = (float) (-(wingFrame1_R.rotateAngleY - wingFrame2_R.rotateAngleY)/(Math.toRadians(35)));
@@ -1407,7 +1378,7 @@ public class ModelNaga extends AdvancedModelBase{
         wingWebbing4_R.setScale(1 - webbing4RScale * 0.02f, 1, webbing4RScale);
         wingWebbing5_R.rotationPointX -= 12 * (float) (-upperArm_R.rotateAngleY/Math.toRadians(35));
         wingWebbing5_R.setScale((float) (2 - (shoulder1_R.rotateAngleY - shoulder1_R.defaultRotationY)/1.5), 1, (float) (0.915 - (shoulder1_R.rotateAngleY - shoulder1_R.defaultRotationY)/1.2));
-        wingWebbing6_R.setScale((float) (1 + (shoulder1_R.rotateAngleY - shoulder1_R.defaultRotationY)/4), 1, (float) (1 - (shoulder1_R.rotateAngleY - shoulder1_R.defaultRotationY)/1.6));
+        wingWebbing6_R.setScale(1 + (shoulder1_R.rotateAngleY - shoulder1_R.defaultRotationY)/4, 1, (float) (1 - (shoulder1_R.rotateAngleY - shoulder1_R.defaultRotationY)/1.6));
         wingWebbing6_R.rotationPointX += 14 * (shoulder1_L.rotateAngleY - shoulder1_L.defaultRotationY);
 
 //        wingWebbing4_L.rotateAngleX -= 0.9/2 * (lowerArmJoint_L.rotateAngleZ + handJoint_L.rotateAngleZ * 2);

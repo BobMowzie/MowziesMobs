@@ -3,19 +3,13 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
-import net.ilexiconn.llibrary.LLibrary;
-import net.ilexiconn.llibrary.client.model.ModelAnimator;
-import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
-import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class ModelBarako extends AdvancedModelBase {
+public class ModelBarako extends MowzieEntityModel<EntityBarako> {
     public AdvancedModelRenderer body;
     public AdvancedModelRenderer chest;
     public AdvancedModelRenderer rightThigh;
@@ -67,12 +61,9 @@ public class ModelBarako extends AdvancedModelBase {
     public AdvancedModelRenderer lookController;
     public SocketModelRenderer betweenHands;
 
-    private ModelAnimator animator;
-
     public ModelBarako() {
         this.textureWidth = 128;
         this.textureHeight = 128;
-        animator = ModelAnimator.create();
         this.body = new AdvancedModelRenderer(this, 0, 0);
         this.body.setRotationPoint(0.0F, 24.0F, -3.0F);
         this.body.addBox(-12.5F, -16.0F, -11.0F, 25, 16, 22, 0.0F);
@@ -334,35 +325,18 @@ public class ModelBarako extends AdvancedModelBase {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        animate((IAnimatedEntity) entity, f, f1, f2, f3, f4, f5);
-
-        EntityBarako barako = (EntityBarako) entity;
-        if (barako.betweenHandPos.length > 0) barako.betweenHandPos[0] = betweenHands.getWorldPos(entity, LLibrary.PROXY.getPartialTicks());
-
+    protected void render(EntityBarako entity, float scale) {
         GlStateManager.enableNormalize();
-        this.body.render(f5);
+        this.body.render(scale);
         GlStateManager.disableNormalize();
     }
 
-    /**
-     * This is a helper function from Tabula to set the rotation of model parts
-     */
-    public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity entity) {
-        super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
+    public void setDefaultAngles(EntityBarako entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
         resetToDefaultPose();
-        EntityBarako tribeLeader = (EntityBarako) entity;
-        float liftLegs = tribeLeader.legsUp.getAnimationProgressSinSqrt();
-        float frame = tribeLeader.frame + LLibrary.PROXY.getPartialTicks();
+        float liftLegs = entity.legsUp.getAnimationProgressSinSqrt();
+        float frame = entity.frame + delta;
 
-        if (tribeLeader.getAnimation() != EntityBarako.DIE_ANIMATION && !tribeLeader.isPotionActive(PotionHandler.FROZEN)) {
+        if (entity.getAnimation() != EntityBarako.DIE_ANIMATION && !entity.isPotionActive(PotionHandler.FROZEN)) {
             walk(body, 0.06f, 0.05f, true, 0, -0.05f, frame, 1f);
             walk(neck, 0.06f, 0.05f, false, 0.5f, -0.05f, frame, 1f);
             swing(rightThigh, 0.06f, 0.05f * liftLegs, false, 0, 0, frame, 1f);
@@ -375,26 +349,25 @@ public class ModelBarako extends AdvancedModelBase {
         rightThigh.rotateAngleZ -= 1.5 * liftLegs;
         leftThigh.rotateAngleY += 0.55 * liftLegs;
         rightThigh.rotateAngleY -= 0.55 * liftLegs;
+        if (entity.betweenHandPos.length > 0) entity.betweenHandPos[0] = betweenHands.getWorldPos(entity, delta);
     }
 
-    public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        EntityBarako tribeleader = (EntityBarako) entity;
-        animator.update(tribeleader);
-
-        if (f3 > 70) {
-            f3 = 70f;
+    @Override
+    protected void animate(EntityBarako entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
+        if (headYaw > 70) {
+            headYaw = 70f;
         }
-        if (f3 < -70) {
-            f3 = -70f;
+        if (headYaw < -70) {
+            headYaw = -70f;
         }
-        setRotationAngles(f, f1, f2, f3, f4, f5, tribeleader);
+        this.setDefaultAngles(entity, limbSwing, limbSwingAmount, headYaw, headPitch, delta);
 
-        float eyebrows = tribeleader.angryEyebrow.getAnimationProgressSinSqrt();
-        float liftLegs = tribeleader.legsUp.getAnimationProgressSinSqrt();
+        float eyebrows = entity.angryEyebrow.getAnimationProgressSinSqrt();
+        float liftLegs = entity.legsUp.getAnimationProgressSinSqrt();
 
-        float frame = tribeleader.frame + LLibrary.PROXY.getPartialTicks();
+        float frame = entity.frame + delta;
 
-        if (tribeleader.getAnimation() == EntityBarako.BELLY_ANIMATION) {
+        if (entity.getAnimation() == EntityBarako.BELLY_ANIMATION) {
             animator.setAnimation(EntityBarako.BELLY_ANIMATION);
             animator.startKeyframe(6);
             animator.rotate(rightArmJoint, -0.7f, 0.5f, 0);
@@ -425,8 +398,8 @@ public class ModelBarako extends AdvancedModelBase {
             animator.endKeyframe();
             animator.resetKeyframe(10);
         }
-        if (tribeleader.getAnimation() == EntityBarako.TALK_ANIMATION) {
-            if (tribeleader.whichDialogue == 1) {
+        if (entity.getAnimation() == EntityBarako.TALK_ANIMATION) {
+            if (entity.whichDialogue == 1) {
                 animator.setAnimation(EntityBarako.TALK_ANIMATION);
                 animator.startKeyframe(4);
                 animator.move(jawScaler, 0.2f, 0, 0);
@@ -487,7 +460,7 @@ public class ModelBarako extends AdvancedModelBase {
                 animator.setStaticKeyframe(6);
                 animator.resetKeyframe(4);
             }
-            if (tribeleader.whichDialogue == 2) {
+            if (entity.whichDialogue == 2) {
                 animator.setAnimation(EntityBarako.TALK_ANIMATION);
                 animator.startKeyframe(4);
                 animator.move(jawScaler, 0.2f, 0, 0);
@@ -514,7 +487,7 @@ public class ModelBarako extends AdvancedModelBase {
                 animator.setStaticKeyframe(6);
                 animator.resetKeyframe(4);
             }
-            if (tribeleader.whichDialogue == 3) {
+            if (entity.whichDialogue == 3) {
                 animator.setAnimation(EntityBarako.TALK_ANIMATION);
                 animator.startKeyframe(4);
                 animator.move(jawScaler, -0.5f, 0, 0);
@@ -561,7 +534,7 @@ public class ModelBarako extends AdvancedModelBase {
                 animator.setStaticKeyframe(4);
                 animator.resetKeyframe(4);
             }
-            if (tribeleader.whichDialogue == 4) {
+            if (entity.whichDialogue == 4) {
                 animator.setAnimation(EntityBarako.TALK_ANIMATION);
                 animator.startKeyframe(3);
                 animator.move(jawScaler, 0.4f, 0, 0);
@@ -614,7 +587,7 @@ public class ModelBarako extends AdvancedModelBase {
                 animator.setStaticKeyframe(4);
                 animator.resetKeyframe(4);
             }
-            if (tribeleader.whichDialogue == 5) {
+            if (entity.whichDialogue == 5) {
                 animator.setAnimation(EntityBarako.TALK_ANIMATION);
                 animator.startKeyframe(2);//q
                 animator.move(jawScaler, 0f, 0, 0);
@@ -675,7 +648,7 @@ public class ModelBarako extends AdvancedModelBase {
                 animator.setStaticKeyframe(10);
                 animator.resetKeyframe(8);
             }
-            if (tribeleader.whichDialogue == 6) {
+            if (entity.whichDialogue == 6) {
                 animator.setAnimation(EntityBarako.TALK_ANIMATION);
                 animator.startKeyframe(2);//q
                 animator.move(jawScaler, 0f, 0, 0);
@@ -738,8 +711,8 @@ public class ModelBarako extends AdvancedModelBase {
             }
         }
 
-        /*if (tribeleader.getAnimation() == 3) {
-            if (tribeleader.whichDialogue == 1) {
+        /*if (entity.getAnimation() == 3) {
+            if (entity.whichDialogue == 1) {
                 animator.setAnimation(2);
                 animator.startKeyframe(4);
                 animator.move(jawScaler, 0.2f, 0, 0);
@@ -802,7 +775,7 @@ public class ModelBarako extends AdvancedModelBase {
             }
         }*/
 
-        if (tribeleader.getAnimation() == EntityBarako.SUNSTRIKE_ANIMATION) {
+        if (entity.getAnimation() == EntityBarako.SUNSTRIKE_ANIMATION) {
             animator.setAnimation(EntityBarako.SUNSTRIKE_ANIMATION);
             animator.startKeyframe(4);
             animator.rotate(rightArmJoint, -0.9f, 0.5f, 0);
@@ -817,7 +790,7 @@ public class ModelBarako extends AdvancedModelBase {
             animator.endKeyframe();
             animator.setStaticKeyframe(3);
             animator.startKeyframe(2);
-            animator.rotate(rightUpperArm, -0.1f, (float) (-0.5f + (f3 * Math.PI / 180)), 0);
+            animator.rotate(rightUpperArm, -0.1f, (float) (-0.5f + (headYaw * Math.PI / 180)), 0);
             animator.rotate(rightLowerArm, 0, 0f, 1.1f);
             animator.rotate(rightHand, -1f, -0.7f, 0);
             animator.rotate(chest, 0, -0.5f, 0);
@@ -832,7 +805,7 @@ public class ModelBarako extends AdvancedModelBase {
             animator.resetKeyframe(4);
         }
 
-        if (tribeleader.getAnimation() == EntityBarako.ATTACK_ANIMATION) {
+        if (entity.getAnimation() == EntityBarako.ATTACK_ANIMATION) {
             animator.setAnimation(EntityBarako.ATTACK_ANIMATION);
             animator.startKeyframe(8);
             animator.move(bellyScaler, -0.2f, 0, 0);
@@ -878,7 +851,7 @@ public class ModelBarako extends AdvancedModelBase {
             animator.resetKeyframe(6);
         }
 
-        if (tribeleader.getAnimation() == EntityBarako.SPAWN_ANIMATION) {
+        if (entity.getAnimation() == EntityBarako.SPAWN_ANIMATION) {
             animator.setAnimation(EntityBarako.SPAWN_ANIMATION);
             animator.startKeyframe(5);
             animator.move(bellyScaler, 0.1f, 0, 0);
@@ -928,7 +901,7 @@ public class ModelBarako extends AdvancedModelBase {
             animator.resetKeyframe(4);
         }
 
-        if (tribeleader.getAnimation() == EntityBarako.SOLAR_BEAM_ANIMATION) {
+        if (entity.getAnimation() == EntityBarako.SOLAR_BEAM_ANIMATION) {
             animator.setAnimation(EntityBarako.SOLAR_BEAM_ANIMATION);
             animator.startKeyframe(18);
             animator.move(bellyScaler, 0.1f, 0, 0);
@@ -992,7 +965,7 @@ public class ModelBarako extends AdvancedModelBase {
             animator.resetKeyframe(10);
         }
 
-        if (tribeleader.getAnimation() == EntityBarako.DIE_ANIMATION) {
+        if (entity.getAnimation() == EntityBarako.DIE_ANIMATION) {
             animator.setAnimation(EntityBarako.DIE_ANIMATION);
             animator.startKeyframe(2);
             animator.move(jiggleController, 1, 0, 0);
@@ -1095,7 +1068,7 @@ public class ModelBarako extends AdvancedModelBase {
             jawScaler.rotationPointX += 0.1 * jiggleController.rotationPointY * Math.cos(frame * 2);
         }
 
-        if (tribeleader.getAnimation() == EntityBarako.BLESS_ANIMATION) {
+        if (entity.getAnimation() == EntityBarako.BLESS_ANIMATION) {
             animator.setAnimation(EntityBarako.BLESS_ANIMATION);
             animator.startKeyframe(15);
             animator.move(mouthScalerX, -0.4f, 0, 0);
@@ -1124,7 +1097,7 @@ public class ModelBarako extends AdvancedModelBase {
             jawScaler.rotationPointX += 0.1 * jiggleController.rotationPointY * Math.cos(frame * 1.5);
         }
 
-        if (tribeleader.getAnimation() == EntityBarako.HURT_ANIMATION) {
+        if (entity.getAnimation() == EntityBarako.HURT_ANIMATION) {
             animator.setAnimation(EntityBarako.HURT_ANIMATION);
             animator.startKeyframe(2);
             animator.move(jiggleController, 1, 0, 0);
@@ -1144,7 +1117,7 @@ public class ModelBarako extends AdvancedModelBase {
             animator.resetKeyframe(10);
         }
 
-        if (tribeleader.getAnimation() == EntityBarako.SUPERNOVA_ANIMATION) {
+        if (entity.getAnimation() == EntityBarako.SUPERNOVA_ANIMATION) {
             animator.setAnimation(EntityBarako.SUPERNOVA_ANIMATION);
             animator.startKeyframe(21);
             animator.rotate(neck, -0.2f, 0, 0);
@@ -1250,7 +1223,7 @@ public class ModelBarako extends AdvancedModelBase {
         float jiggleScale = (float) (jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame));
         float breathScale = (float) (0.05 + 0.02 * Math.cos(0.06 * frame));
         float scaler = bellyScaler.rotationPointX + jiggleScale + breathScale;
-        if (tribeleader.getAnimation() == EntityBarako.ATTACK_ANIMATION || tribeleader.getAnimation() == EntityBarako.SOLAR_BEAM_ANIMATION) {
+        if (entity.getAnimation() == EntityBarako.ATTACK_ANIMATION || entity.getAnimation() == EntityBarako.SOLAR_BEAM_ANIMATION) {
             headdress1.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame);
             headdress2.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame);
             headdress3.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame);
@@ -1259,7 +1232,7 @@ public class ModelBarako extends AdvancedModelBase {
             headdress6.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame);
             headdress7.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame);
         }
-        if (!tribeleader.isPotionActive(PotionHandler.FROZEN)) {
+        if (!entity.isPotionActive(PotionHandler.FROZEN)) {
             body.setScale(scaler * (1 - bellyScaler.rotationPointY), scaler * (1 - bellyScaler.rotationPointY), scaler * (1 - bellyScaler.rotationPointY));
             chest.setScale(1 / scaler, 1 / scaler, 1 / scaler);
             rightThigh.setScale(1 / scaler, 1 / scaler, 1 / scaler);
@@ -1272,11 +1245,11 @@ public class ModelBarako extends AdvancedModelBase {
             leftThigh.setScale(1, 1, 1);
         }
 
-        if (tribeleader.getAnimation() != EntityBarako.SOLAR_BEAM_ANIMATION) {
-            faceTarget(f3 * lookController.rotationPointX, f4 * lookController.rotationPointX, 2.0F, neckJoint);
-            faceTarget(f3 * lookController.rotationPointX, f4 * lookController.rotationPointX, 2.0F, headJoint);
+        if (entity.getAnimation() != EntityBarako.SOLAR_BEAM_ANIMATION) {
+            faceTarget(headYaw * lookController.rotationPointX, headPitch * lookController.rotationPointX, 2.0F, neckJoint);
+            faceTarget(headYaw * lookController.rotationPointX, headPitch * lookController.rotationPointX, 2.0F, headJoint);
         } else {
-            faceTarget(f3, f4, 1.0F, head);
+            faceTarget(headYaw, headPitch, 1.0F, head);
         }
 
         chest.rotationPointY += jiggleController.rotationPointX * 1.5 * Math.cos(jiggleSpeed * frame);

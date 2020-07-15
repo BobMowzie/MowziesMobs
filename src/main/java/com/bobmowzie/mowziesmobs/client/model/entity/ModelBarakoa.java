@@ -5,19 +5,13 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
-import net.ilexiconn.llibrary.LLibrary;
-import net.ilexiconn.llibrary.client.model.ModelAnimator;
-import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
-import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class ModelBarakoa extends AdvancedModelBase {
+public class ModelBarakoa extends MowzieEntityModel<EntityBarakoa> {
     public AdvancedModelRenderer modelCore;
     public AdvancedModelRenderer body;
     public AdvancedModelRenderer chest;
@@ -60,10 +54,7 @@ public class ModelBarakoa extends AdvancedModelBase {
     public AdvancedModelRenderer flailer;
     public AdvancedModelRenderer talker;
 
-    private ModelAnimator animator;
-
     public ModelBarakoa() {
-        animator = ModelAnimator.create();
         this.textureWidth = 128;
         this.textureHeight = 64;
         this.footLeft = new AdvancedModelRenderer(this, 21, 53);
@@ -305,59 +296,48 @@ public class ModelBarakoa extends AdvancedModelBase {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        animate((IAnimatedEntity) entity, f, f1, f2, f3, f4, f5);
+    protected void render(EntityBarakoa entity, float scale) {
         GlStateManager.pushMatrix();
-        if (((EntityBarakoa) entity).getMask() == MaskType.FURY) {
+        if (entity.getMask() == MaskType.FURY) {
             GlStateManager.scale(0.85f, 0.85f, 0.85f);
             GlStateManager.translate(0, 0.25f, 0);
         } else {
             GlStateManager.scale(0.75f, 0.75f, 0.75f);
             GlStateManager.translate(0, 0.5f, 0);
         }
-        this.modelCore.render(f5);
+        this.modelCore.render(scale);
         GlStateManager.popMatrix();
     }
 
-    public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-
-    @Override
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity entity) {
-        super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-        EntityBarakoa barakoa = (EntityBarakoa) entity;
+    public void setDefaultAngles(EntityBarakoa entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
         resetToDefaultPose();
 //                f = entity.ticksExisted;
 //                f1 = 0.5f;
-        if (barakoa.getWeapon() == 0) {
+        if (entity.getWeapon() == 0) {
             spear.isHidden = false;
             blowgun.isHidden = true;
         } else {
             spear.isHidden = true;
             blowgun.isHidden = false;
         }
-        if (!barakoa.active) {
+        if (!entity.active) {
             return;
         }
-        float doWalk = barakoa.doWalk.getAnimationProgressSinSqrt();
-        float dance = barakoa.dancing.getAnimationProgressSinSqrt();
-        if (f1 > 0.55f) {
-            f1 = 0.55f;
+        float doWalk = entity.doWalk.getAnimationProgressSinSqrt();
+        float dance = entity.dancing.getAnimationProgressSinSqrt();
+        if (limbSwingAmount > 0.55f) {
+            limbSwingAmount = 0.55f;
         }
         float globalSpeed = 1.5f;
         float globalHeight = 1 * doWalk;
         float globalDegree = 1 * doWalk * (1 - dance);
-        if (barakoa.getAnimation() != EntityBarakoa.PROJECTILE_ATTACK_ANIMATION) {
-            faceTarget(f3, f4, 2.0F, neck);
-            faceTarget(f3, f4, 2.0F, head);
+        if (entity.getAnimation() != EntityBarakoa.PROJECTILE_ATTACK_ANIMATION) {
+            faceTarget(headYaw, headPitch, 2.0F, neck);
+            faceTarget(headYaw, headPitch, 2.0F, head);
         }
-        float frame = barakoa.frame + LLibrary.PROXY.getPartialTicks();
+        float frame = entity.frame + delta;
 
-        if (barakoa.getMask() == MaskType.FURY) {
+        if (entity.getMask() == MaskType.FURY) {
             armLeftJoint.rotateAngleX -= 0.2;
             armLeftJoint.rotateAngleY += 1.3;
             armLowerLeft.rotateAngleX -= 0.2;
@@ -365,52 +345,52 @@ public class ModelBarakoa extends AdvancedModelBase {
             armLowerLeft.rotateAngleZ += 1;
             spearBase.setScale(spearBase.scaleX, -1, 1.5f);
 
-            if (!barakoa.isPotionActive(PotionHandler.FROZEN)) {
-                flap(armUpperLeft, 1 * globalSpeed, 0.1f * globalHeight, false, 0.5f, 0, f, f1);
-                walk(armUpperLeft, 0.5f * globalSpeed, 0.3f * globalDegree, true, 0, 1, f, f1);
+            if (!entity.isPotionActive(PotionHandler.FROZEN)) {
+                flap(armUpperLeft, 1 * globalSpeed, 0.1f * globalHeight, false, 0.5f, 0, limbSwing, limbSwingAmount);
+                walk(armUpperLeft, 0.5f * globalSpeed, 0.3f * globalDegree, true, 0, 1, limbSwing, limbSwingAmount);
             }
         } else {
-            if (!barakoa.isPotionActive(PotionHandler.FROZEN)) {
-                flap(armUpperLeft, 1 * globalSpeed, 0.3f * globalHeight, false, 0.5f, 0, f, f1);
-                walk(armUpperLeft, 0.5f * globalSpeed, 0.7f * globalDegree, true, 0, 0, f, f1);
+            if (!entity.isPotionActive(PotionHandler.FROZEN)) {
+                flap(armUpperLeft, 1 * globalSpeed, 0.3f * globalHeight, false, 0.5f, 0, limbSwing, limbSwingAmount);
+                walk(armUpperLeft, 0.5f * globalSpeed, 0.7f * globalDegree, true, 0, 0, limbSwing, limbSwingAmount);
             }
         }
 
-        if (!barakoa.isPotionActive(PotionHandler.FROZEN)) {
-            bob(body, 1 * globalSpeed, 2.5f * globalHeight, false, f, f1);
-            walk(loinClothFront, 1 * globalSpeed, 0.5f * globalHeight, false, 2, 0, f, f1);
-            walk(loinClothBack, 1 * globalSpeed, 0.5f * globalHeight, true, 2, 0, f, f1);
-            walk(body, 1 * globalSpeed, 0.2f * globalHeight, false, 1, 0.2f * globalHeight, f, f1);
-            walk(thighLeft, 1 * globalSpeed, 0.2f * globalHeight, true, 1, 0.4f * globalHeight, f, f1);
-            walk(thighRight, 1 * globalSpeed, 0.2f * globalHeight, true, 1, 0.4f * globalHeight, f, f1);
-            swing(body, 0.5f * globalSpeed, 0.7f * globalDegree, true, 0, 0, f, f1);
-            swing(thighLeft, 0.5f * globalSpeed, 0.7f * globalDegree, false, 0, 0, f, f1);
-            swing(thighRight, 0.5f * globalSpeed, 0.7f * globalDegree, false, 0, 0, f, f1);
-            swing(chest, 0.5f * globalSpeed, 1.4f * globalDegree, false, 0, 0, f, f1);
-            swing(neck, 0.5f * globalSpeed, 0.7f * globalDegree, true, 0, 0, f, f1);
-            flap(modelCore, 0.5f * globalSpeed, 0.3f * globalHeight, false, 0, 0, f, f1);
-            flap(neck, 0.5f * globalSpeed, 0.15f * globalHeight, true, 0, 0, f, f1);
-            flap(head, 0.5f * globalSpeed, 0.15f * globalHeight, true, 0, 0, f, f1);
-            walk(thighLeft, 0.5f * globalSpeed, 1.4f * globalDegree, false, 0, 1f * globalHeight, f, f1);
-            walk(thighRight, 0.5f * globalSpeed, 1.4f * globalDegree, true, 0, -1f * globalHeight, f, f1);
-            walk(calfLeft, 0.5f * globalSpeed, 1.2f * globalDegree, false, -1.5f, 0.3f * globalDegree, f, f1);
-            walk(calfRight, 0.5f * globalSpeed, 1.2f * globalDegree, true, -1.5f, -0.3f * globalDegree, f, f1);
-            walk(footLeft, 0.5f * globalSpeed, 1.2f * globalDegree, false, -3f, 0.15f * globalDegree, f, f1);
-            walk(footRight, 0.5f * globalSpeed, 1.2f * globalDegree, true, -3f, -0.15f * globalDegree, f, f1);
-            thighLeft.rotateAngleY += 1f * f1 * globalDegree;
-            thighRight.rotateAngleY -= 1f * f1 * globalDegree;
-            walk(neck, 1 * globalSpeed, 0.2f * globalHeight, true, 0.5f, 0.5f * globalDegree, f, f1);
-            walk(head, 1 * globalSpeed, 0f * globalHeight, true, 0.5f, -0.5f * globalDegree, f, f1);
-            flap(armUpperRight, 1 * globalSpeed, 0.3f * globalHeight, true, 0.5f, 0, f, f1);
-            walk(armUpperRight, 0.5f * globalSpeed, 0.7f * globalDegree, false, 0, 0, f, f1);
-            walk(armLowerRight, 0.5f * globalSpeed, 1 * globalDegree, false, -1, 0, f, f1);
-            walk(armLowerLeft, 0.5f * globalSpeed, 1 * globalDegree, true, -1, 0, f, f1);
-            walk(handRight, 0.5f * globalSpeed, 1 * globalDegree, false, -2, 0.8f * globalDegree, f, f1);
-            swing(handRight, 0.5f * globalSpeed, 1f * globalDegree, true, 0, 0, f, f1);
-            walk(handLeft, 0.5f * globalSpeed, 1 * globalDegree, true, -2, 0.4f * globalDegree, f, f1);
+        if (!entity.isPotionActive(PotionHandler.FROZEN)) {
+            bob(body, 1 * globalSpeed, 2.5f * globalHeight, false, limbSwing, limbSwingAmount);
+            walk(loinClothFront, 1 * globalSpeed, 0.5f * globalHeight, false, 2, 0, limbSwing, limbSwingAmount);
+            walk(loinClothBack, 1 * globalSpeed, 0.5f * globalHeight, true, 2, 0, limbSwing, limbSwingAmount);
+            walk(body, 1 * globalSpeed, 0.2f * globalHeight, false, 1, 0.2f * globalHeight, limbSwing, limbSwingAmount);
+            walk(thighLeft, 1 * globalSpeed, 0.2f * globalHeight, true, 1, 0.4f * globalHeight, limbSwing, limbSwingAmount);
+            walk(thighRight, 1 * globalSpeed, 0.2f * globalHeight, true, 1, 0.4f * globalHeight, limbSwing, limbSwingAmount);
+            swing(body, 0.5f * globalSpeed, 0.7f * globalDegree, true, 0, 0, limbSwing, limbSwingAmount);
+            swing(thighLeft, 0.5f * globalSpeed, 0.7f * globalDegree, false, 0, 0, limbSwing, limbSwingAmount);
+            swing(thighRight, 0.5f * globalSpeed, 0.7f * globalDegree, false, 0, 0, limbSwing, limbSwingAmount);
+            swing(chest, 0.5f * globalSpeed, 1.4f * globalDegree, false, 0, 0, limbSwing, limbSwingAmount);
+            swing(neck, 0.5f * globalSpeed, 0.7f * globalDegree, true, 0, 0, limbSwing, limbSwingAmount);
+            flap(modelCore, 0.5f * globalSpeed, 0.3f * globalHeight, false, 0, 0, limbSwing, limbSwingAmount);
+            flap(neck, 0.5f * globalSpeed, 0.15f * globalHeight, true, 0, 0, limbSwing, limbSwingAmount);
+            flap(head, 0.5f * globalSpeed, 0.15f * globalHeight, true, 0, 0, limbSwing, limbSwingAmount);
+            walk(thighLeft, 0.5f * globalSpeed, 1.4f * globalDegree, false, 0, 1f * globalHeight, limbSwing, limbSwingAmount);
+            walk(thighRight, 0.5f * globalSpeed, 1.4f * globalDegree, true, 0, -1f * globalHeight, limbSwing, limbSwingAmount);
+            walk(calfLeft, 0.5f * globalSpeed, 1.2f * globalDegree, false, -1.5f, 0.3f * globalDegree, limbSwing, limbSwingAmount);
+            walk(calfRight, 0.5f * globalSpeed, 1.2f * globalDegree, true, -1.5f, -0.3f * globalDegree, limbSwing, limbSwingAmount);
+            walk(footLeft, 0.5f * globalSpeed, 1.2f * globalDegree, false, -3f, 0.15f * globalDegree, limbSwing, limbSwingAmount);
+            walk(footRight, 0.5f * globalSpeed, 1.2f * globalDegree, true, -3f, -0.15f * globalDegree, limbSwing, limbSwingAmount);
+            thighLeft.rotateAngleY += 1f * limbSwingAmount * globalDegree;
+            thighRight.rotateAngleY -= 1f * limbSwingAmount * globalDegree;
+            walk(neck, 1 * globalSpeed, 0.2f * globalHeight, true, 0.5f, 0.5f * globalDegree, limbSwing, limbSwingAmount);
+            walk(head, 1 * globalSpeed, 0f * globalHeight, true, 0.5f, -0.5f * globalDegree, limbSwing, limbSwingAmount);
+            flap(armUpperRight, 1 * globalSpeed, 0.3f * globalHeight, true, 0.5f, 0, limbSwing, limbSwingAmount);
+            walk(armUpperRight, 0.5f * globalSpeed, 0.7f * globalDegree, false, 0, 0, limbSwing, limbSwingAmount);
+            walk(armLowerRight, 0.5f * globalSpeed, 1 * globalDegree, false, -1, 0, limbSwing, limbSwingAmount);
+            walk(armLowerLeft, 0.5f * globalSpeed, 1 * globalDegree, true, -1, 0, limbSwing, limbSwingAmount);
+            walk(handRight, 0.5f * globalSpeed, 1 * globalDegree, false, -2, 0.8f * globalDegree, limbSwing, limbSwingAmount);
+            swing(handRight, 0.5f * globalSpeed, 1f * globalDegree, true, 0, 0, limbSwing, limbSwingAmount);
+            walk(handLeft, 0.5f * globalSpeed, 1 * globalDegree, true, -2, 0.4f * globalDegree, limbSwing, limbSwingAmount);
         }
 
-        if (barakoa.getAnimation() != EntityBarakoa.DIE_ANIMATION && !barakoa.isPotionActive(PotionHandler.FROZEN)) {
+        if (entity.getAnimation() != EntityBarakoa.DIE_ANIMATION && !entity.isPotionActive(PotionHandler.FROZEN)) {
             walk(body, 0.2f, 0.05f, false, 0, 0, frame, 1f);
             walk(thighLeftJoint, 0.2f, 0.05f, true, 0, 0, frame, 1f);
             walk(thighRightJoint, 0.2f, 0.05f, true, 0, 0, frame, 1f);
@@ -443,7 +423,7 @@ public class ModelBarakoa extends AdvancedModelBase {
         flap(head, 1.2f * danceSpeed, 0.4f * dance, true, 0, 0, frame, 1f);
         walk(loinClothFront, 0.6f * danceSpeed, 0.6f * dance, true, 1, 0.4f * dance, frame, 1f);
         walk(loinClothBack, 0.6f * danceSpeed, 0.6f * dance, false, 1, 0.4f * dance, frame, 1f);
-        if (barakoa.getMask() == MaskType.FURY) {
+        if (entity.getMask() == MaskType.FURY) {
             armLeftJoint.rotateAngleX += 0.2 * dance;
             armLeftJoint.rotateAngleY -= 1.3 * dance;
             armLowerLeft.rotateAngleX += 0.2 * dance;
@@ -452,14 +432,12 @@ public class ModelBarakoa extends AdvancedModelBase {
         }
     }
 
-    public void animate(IAnimatedEntity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        EntityBarakoa barakoa = (EntityBarakoa) entity;
-        animator.update(barakoa);
-        setRotationAngles(f, f1, f2, f3, f4, f5, barakoa);
+    @Override
+    protected void animate(EntityBarakoa entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
+        this.setDefaultAngles(entity, limbSwing, limbSwingAmount, headYaw, headPitch, delta);
+        float frame = entity.frame + delta;
 
-        float frame = barakoa.frame + LLibrary.PROXY.getPartialTicks();
-
-        if (barakoa.getMask() == MaskType.FURY) {
+        if (entity.getMask() == MaskType.FURY) {
             animator.setAnimation(EntityBarakoa.ATTACK_ANIMATION);
             animator.setStaticKeyframe(3);
             animator.startKeyframe(4);
@@ -798,12 +776,12 @@ public class ModelBarakoa extends AdvancedModelBase {
         animator.setStaticKeyframe(4);
 
         //Inactive
-        if (!barakoa.active) {
+        if (!entity.active) {
             scaler.rotationPointX += 0.999f;
             head.rotateAngleX -= 1.58f;
             body.rotationPointY += 9f;
             body.rotationPointZ += 5f;
-            if (!barakoa.onGround) {
+            if (!entity.onGround) {
                 body.rotateAngleX += 0.4f * frame;
             }
         }
@@ -830,7 +808,7 @@ public class ModelBarakoa extends AdvancedModelBase {
 
 
         float talk = talker.rotationPointX;
-        if (!barakoa.isPotionActive(PotionHandler.FROZEN)) {
+        if (!entity.isPotionActive(PotionHandler.FROZEN)) {
             walk(head, 1.5f, 0.1f * talk, false, 0, -0.5f * talk, frame, 1f);
             walk(neck, 0, 0, false, 0, 0.5f * talk, frame, 1f);
             walk(armUpperRight, 0.5f, 0.2f * talk, false, 0, -0.7f * talk, frame, 1f);
@@ -841,7 +819,7 @@ public class ModelBarakoa extends AdvancedModelBase {
             flap(armUpperLeft, 0.4f, 0.2f * talk, true, 2, 0, frame, 1f);
             walk(armLowerLeft, 0.5f, 0.2f * talk, false, -1, 0.3f * talk, frame, 1f);
             swing(handLeft, 0.5f, 0.2f * talk, false, -2, -1.8f * talk, frame, 1f);
-            if (barakoa.getMask() == MaskType.FURY) {
+            if (entity.getMask() == MaskType.FURY) {
                 armLeftJoint.rotateAngleX += 0.2 * talk;
                 armLeftJoint.rotateAngleY -= 1.3 * talk;
                 armLowerLeft.rotateAngleX += 0.2 * talk;

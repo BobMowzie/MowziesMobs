@@ -12,7 +12,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class ModelFoliaathBaby extends AdvancedModelBase {
+public class ModelFoliaathBaby extends MowzieEntityModel<EntityBabyFoliaath> {
     public AdvancedModelRenderer infantBase;
     public AdvancedModelRenderer juvenileBase;
     public AdvancedModelRenderer infantLeaf1;
@@ -29,10 +29,8 @@ public class ModelFoliaathBaby extends AdvancedModelBase {
     public AdvancedModelRenderer mouthCover;
     public AdvancedModelRenderer teeth1;
     public AdvancedModelRenderer teeth2;
-    private ModelAnimator animator;
 
     public ModelFoliaathBaby() {
-        animator = ModelAnimator.create();
         textureWidth = 64;
         textureHeight = 16;
         juvenileLeaf3 = new AdvancedModelRenderer(this, 27, 0);
@@ -113,25 +111,15 @@ public class ModelFoliaathBaby extends AdvancedModelBase {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        animate(f, f1, f2, f3, f4, f5, (IAnimatedEntity) entity);
-        infantBase.render(f5);
-        juvenileBase.render(f5);
+    protected void render(EntityBabyFoliaath entity, float scale) {
+        infantBase.render(scale);
+        juvenileBase.render(scale);
     }
 
-    public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-    @Override
-    public void setLivingAnimations(EntityLivingBase entity, float f, float f1, float partialTicks) {
-        EntityBabyFoliaath foliaath = (EntityBabyFoliaath) entity;
-        animator.update(foliaath);
+    public void setDefaultAngles(EntityBabyFoliaath entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
         resetToDefaultPose();
-        float frame = foliaath.frame + partialTicks;
-        float openMouthProgress = foliaath.activate.getAnimationProgressSinSqrt();
+        float frame = entity.frame + delta;
+        float openMouthProgress = entity.activate.getAnimationProgressSinSqrt();
         mouth1.rotateAngleZ += 0.5 * openMouthProgress;
         mouth2.rotateAngleZ -= 0.5 * openMouthProgress;
         walk(juvenileLeaf1, 1F, 0.07F * openMouthProgress, false, 0, 0, frame, 1F);
@@ -140,16 +128,12 @@ public class ModelFoliaathBaby extends AdvancedModelBase {
         walk(juvenileLeaf4, 1F, 0.07F * openMouthProgress, false, 0, 0, frame, 1F);
         flap(mouth1, 1F, 0.07F * openMouthProgress, false, -1, 0, frame, 1F);
         flap(mouth2, 1F, -0.07F * openMouthProgress, false, -1, 0, frame, 1F);
+        infantBase.isHidden = !(juvenileBase.isHidden = entity.getInfant());
     }
 
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, EntityBabyFoliaath foliaath) {
-        infantBase.isHidden = !(juvenileBase.isHidden = foliaath.getInfant());
-    }
-
-    public void animate(float f, float f1, float f2, float f3, float f4, float f5, IAnimatedEntity entity) {
-        EntityBabyFoliaath foliaath = (EntityBabyFoliaath) entity;
-        setRotationAngles(f, f1, f2, f3, f4, f5, foliaath);
-
+    @Override
+    protected void animate(EntityBabyFoliaath entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
+        this.setDefaultAngles(entity, limbSwing, limbSwingAmount, headYaw, headPitch, delta);
         animator.setAnimation(EntityBabyFoliaath.EAT_ANIMATION);
         animator.startKeyframe(2);
         animator.rotate(mouth1, 0, 0, 0.5F);
