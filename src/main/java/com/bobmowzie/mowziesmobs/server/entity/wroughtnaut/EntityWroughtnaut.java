@@ -2,7 +2,6 @@ package com.bobmowzie.mowziesmobs.server.entity.wroughtnaut;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.server.ai.MMPathNavigateGround;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationActivateAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDeactivateAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
@@ -73,8 +72,6 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 
     public static final Animation DEACTIVATE_ANIMATION = Animation.create(15);
 
-    public static final Animation DAB_ANIMATION = Animation.create(18);
-
     private static final Animation[] ANIMATIONS = {
         DIE_ANIMATION,
         HURT_ANIMATION,
@@ -83,7 +80,6 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         ATTACK_THRICE_ANIMATION,
         VERTICAL_ATTACK_ANIMATION,
         STOMP_ATTACK_ANIMATION,
-        DAB_ANIMATION,
         ACTIVATE_ANIMATION,
         DEACTIVATE_ANIMATION
     };
@@ -126,17 +122,6 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         tasks.addTask(1, new AnimationDieAI<>(this));
         tasks.addTask(1, new AnimationActivateAI<>(this, ACTIVATE_ANIMATION));
         tasks.addTask(1, new AnimationDeactivateAI<>(this, DEACTIVATE_ANIMATION));
-        tasks.addTask(1, new AnimationAI<EntityWroughtnaut>(this, DAB_ANIMATION) {
-            {
-                setMutexBits(8);
-            }
-
-            @Override
-            public void updateTask() {
-                entity.motionX = 0;
-                entity.motionZ = 0;
-            }
-        });
         targetTasks.addTask(2, new EntityAINearestAttackableTarget<>(this, EntityPlayer.class, 0, true, false, null));
         targetTasks.addTask(2, new EntityAIAttackMelee(this, 1, true));
         experienceValue = 30;

@@ -1910,21 +1910,6 @@ public class ModelWroughtnaut extends MowzieEntityModel<EntityWroughtnaut> {
             animator.rotate(groinBack, -0.2F, 0, 0);
             animator.endKeyframe();
             animator.resetKeyframe(5);
-        } else if (entity.getAnimation() == EntityWroughtnaut.DAB_ANIMATION) {
-            animator.setAnimation(EntityWroughtnaut.DAB_ANIMATION);
-            animator.startKeyframe(10);
-            animator.rotate(neck, 0, 0.7F, -1.3F);
-            animator.move(neck, -2.8F, 0, 0);
-            animator.rotate(shoulderRightJoint, 0, -0.35F, 0);
-            animator.rotate(upperArmRightJoint, 0, -0.5F, -0.5F);
-            animator.rotate(lowerArmRightJoint, 0.35F, -1.3F, -0.3F);
-            animator.rotate(handRightJoint, 0, -0.3F, 0);
-            animator.rotate(shoulderLeftJoint, 0, 0.35F, 0);
-            animator.rotate(upperArmLeftJoint, 0.6F, -0.6F, 0.3F);
-            animator.rotate(lowerArmLeftJoint, -0.6F, -0.1F, -0.2F);
-            animator.rotate(handLeftJoint, -1.2F, -0.5F, 0.3F);
-            animator.endKeyframe();
-            animator.resetKeyframe(8);
         }
     }
 }
