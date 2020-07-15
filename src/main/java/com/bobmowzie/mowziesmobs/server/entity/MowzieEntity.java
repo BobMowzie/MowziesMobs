@@ -11,7 +11,11 @@ import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,6 +33,7 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -191,12 +196,18 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
 
     @Override
     public void writeSpawnData(ByteBuf buf) {
+        buf.writeInt(ArrayUtils.indexOf(this.getAnimations(), this.getAnimation()));
+        buf.writeInt(this.getAnimationTick());
     }
 
     @Override
     public void readSpawnData(ByteBuf buf) {
         prevRotationYaw = rotationYaw;
         prevRenderYawOffset = renderYawOffset = prevRotationYawHead = rotationYawHead;
+        int animOrdinal = buf.readInt();
+        int animTick = buf.readInt();
+        this.setAnimation(animOrdinal == -1 ? IAnimatedEntity.NO_ANIMATION : this.getAnimations()[animOrdinal]);
+        this.setAnimationTick(animTick);
     }
 
     public int getAttack() {
