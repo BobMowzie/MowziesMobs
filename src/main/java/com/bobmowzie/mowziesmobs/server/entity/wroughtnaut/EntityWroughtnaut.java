@@ -345,8 +345,8 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
             walkAnim.decreaseTimer(2);
         }
 
-        if (frame % 20 == 5 && speed > 0.03 && getAnimation() == NO_ANIMATION && active) {
-            playSound(SoundEvents.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, 0.5F, 0.5F);
+        if (this.world.isRemote && frame % 20 == 1 && speed > 0.03 && getAnimation() == NO_ANIMATION && isActive()) {
+            this.world.playSound(this.posX, this.posY, this.posZ, SoundEvents.ENTITY_ZOMBIE_ATTACK_IRON_DOOR, this.getSoundCategory(), 0.5F, 0.5F, false);
         }
 
         repelEntities(2.2F, 4, 2.2F, 2.2F);
