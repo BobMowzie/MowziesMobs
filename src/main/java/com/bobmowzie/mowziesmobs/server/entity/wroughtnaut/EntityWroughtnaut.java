@@ -2,7 +2,14 @@ package com.bobmowzie.mowziesmobs.server.entity.wroughtnaut;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.server.ai.MMPathNavigateGround;
-import com.bobmowzie.mowziesmobs.server.ai.animation.*;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationActivateAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDeactivateAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationFWNAttackAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationFWNStompAttackAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationFWNVerticalAttackAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.SmartBodyHelper;
@@ -32,7 +39,12 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.PooledMutableBlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -40,8 +52,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 
@@ -102,7 +112,6 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 
     private CeilingDisturbance disturbance;
 
-    @SideOnly(Side.CLIENT)
     public Vec3d leftEyePos, rightEyePos;
     public Vec3d leftEyeRot, rightEyeRot;
 
@@ -141,6 +150,11 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 //        leftEyeRot = new Vec3d(0, 0, 0);
 
         dropAfterDeathAnim = true;
+    }
+
+    @Override
+    public float getEyeHeight() {
+        return this.height * 0.98F;
     }
 
     @Override
@@ -270,6 +284,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         if (getAttackTarget() != null && isActive()) {
             if (getAnimation() == NO_ANIMATION) {
                 getNavigator().tryMoveToEntityLiving(getAttackTarget(), 0.2);
+                this.getLookHelper().setLookPositionWithEntity(this.getAttackTarget(), 30.0F, 30.0F);
             } else {
                 getNavigator().clearPath();
             }
