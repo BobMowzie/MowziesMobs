@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.ai.animation;
 
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import net.ilexiconn.llibrary.server.animation.Animation;
+import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 
 public class AnimationAI<T extends MowzieEntity & IAnimatedEntity> extends net.ilexiconn.llibrary.server.animation.AnimationAI<T> {
@@ -43,7 +44,11 @@ public class AnimationAI<T extends MowzieEntity & IAnimatedEntity> extends net.i
 
     @Override
     public void resetTask() {
-        super.resetTask();
-        entity.currentAnim = null;
+        if (this.entity.getAnimation() == this.getAnimation()) {
+            AnimationHandler.INSTANCE.sendAnimationMessage(this.entity, IAnimatedEntity.NO_ANIMATION);
+        }
+        if (entity.currentAnim == this) {
+            entity.currentAnim = null;
+        }
     }
 }
