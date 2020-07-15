@@ -51,7 +51,6 @@ public final class MowziesMobs {
             MessageBarakoTrade.class,
             MessageFreezeEntity.class,
             MessageUnfreezeEntity.class,
-            MessageSendSocketPos.class,
             MessageLeftMouseDown.class,
             MessageLeftMouseUp.class,
             MessageRightMouseDown.class,

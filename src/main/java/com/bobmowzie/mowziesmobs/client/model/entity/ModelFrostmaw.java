@@ -1,17 +1,10 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.LegArticulator;
 import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
-import com.bobmowzie.mowziesmobs.server.message.MessageSendSocketPos;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
-import net.ilexiconn.llibrary.LLibrary;
-import net.ilexiconn.llibrary.client.model.ModelAnimator;
-import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
-import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 
 /**
@@ -422,10 +415,6 @@ public class ModelFrostmaw extends MowzieEntityModel<EntityFrostmaw> {
             entity.socketPosArray[1] = leftHandPos;
             entity.socketPosArray[2] = mouthPos;
             entity.socketPosArray[3] = crystalPos;
-            MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageSendSocketPos(entity, 0, rightHandPos));
-            MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageSendSocketPos(entity, 1, leftHandPos));
-//            MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageSendSocketPos(entity, 2, mouthPos));
-            MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageSendSocketPos(entity, 3, crystalPos));
         }
     }
 
