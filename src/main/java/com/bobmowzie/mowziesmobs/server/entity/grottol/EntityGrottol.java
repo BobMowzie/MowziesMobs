@@ -40,7 +40,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
@@ -248,7 +247,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
                 }
                 return super.attackEntityFrom(source, getHealth());
             } else {
-                playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.4F, 2.9F);
+                playSound(MMSounds.ENTITY_GROTTOL_UNDAMAGED, 0.4F, 2.0F);
                 return false;
             }
         }
@@ -316,7 +315,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
         }
         if (!world.isRemote && getAnimation() == BURROW_ANIMATION) {
             if (getAnimationTick() % 4 == 3) {
-                playSound(SoundEvents.BLOCK_SAND_PLACE, 1, 0.8f + rand.nextFloat() * 0.4f);
+                playSound(MMSounds.ENTITY_GROTTOL_BURROW, 1, 0.8f + rand.nextFloat() * 0.4f);
                 IBlockState blockBeneath = world.getBlockState(getPosition().down());
                 Material mat = blockBeneath.getMaterial();
                 if (mat == Material.GRASS || mat == Material.GROUND || mat == Material.SAND || mat == Material.CLAY || mat == Material.ROCK) {
@@ -405,7 +404,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
 
     @Override
     protected SoundEvent getDeathSound() {
-        playSound(MMSounds.EFFECT_GEOMANCY_BREAK, 1f, 1.3f);
+        playSound(MMSounds.ENTITY_GROTTOL_DIE, 1f, 1.3f);
         return null;
     }
 

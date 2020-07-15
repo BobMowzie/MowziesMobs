@@ -131,6 +131,9 @@
 	"wroughtnaut.axe_land": {
 		"sounds": [ "minecraft:random/anvil_land" ]
 	},
+	"wroughtnaut.axe_hit": {
+		"sounds": [ "minecraft:random/anvil_land" ]
+	},
 	"barakoa.angry1": {
 		"sounds": [ "mowziesmobs:entity/barakoa/angry1" ]
 	},
@@ -418,6 +421,20 @@
 			"mowziesmobs:entity/grottol/step3",
 			"mowziesmobs:entity/grottol/step4"
 		]
+	},
+	"grottol.undamaged": {
+		"sounds": [ "minecraft:random/anvil_land" ]
+	},
+	"grottol.burrow": {
+		"sounds": [
+			"minecraft:dig/sand1",
+			"minecraft:dig/sand2",
+			"minecraft:dig/sand3",
+			"minecraft:dig/sand4"
+		]
+	},
+	"grottol.die": {
+		"sounds": [ "mowziesmobs:effects/geomancy/rock_break" ]
 	},
 	"music.black_pink": {
 		"sounds": [

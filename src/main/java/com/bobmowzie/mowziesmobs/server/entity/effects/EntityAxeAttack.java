@@ -65,14 +65,14 @@ public class EntityAxeAttack extends EntityMagicEffect {
             prevRotationYaw = rotationYaw;
             prevRotationPitch = rotationPitch;
         }
-        if (!world.isRemote && ticksExisted == 7) playSound(MMSounds.ENTITY_FROSTMAW_WHOOSH, 1, 0.8f);
+        if (!world.isRemote && ticksExisted == 7) playSound(MMSounds.ENTITY_WROUGHT_WHOOSH, 0.7F, 1.1f);
             if (!world.isRemote && caster != null) {
                 if (!getVertical() && ticksExisted == SWING_DURATION_HOR /2 - 1) dealDamage(7 * ConfigHandler.TOOLS_AND_ABILITIES.axeAttackMultiplier, 4.5f, 160, 1.2f);
                 else if (getVertical() && ticksExisted == SWING_DURATION_VER /2 - 1) {
                     dealDamage(9 * ConfigHandler.TOOLS_AND_ABILITIES.axeAttackMultiplier, 4.5f, 40, 0.8f);
                     quakeAngle = rotationYaw;
                     quakeBB = getEntityBoundingBox();
-                    playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.3F, 0.5F);
+                    playSound(MMSounds.ENTITY_WROUGHT_AXE_LAND, 0.3F, 0.5F);
                     playSound(SoundEvents.ENTITY_GENERIC_EXPLODE, 2, 0.9F + rand.nextFloat() * 0.1F);                }
             }
 
@@ -177,7 +177,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
             }
         }
         if (hit) {
-            playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.3F, 0.5F);
+            playSound(MMSounds.ENTITY_WROUGHT_AXE_HIT, 0.3F, 0.5F);
         }
     }
 

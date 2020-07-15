@@ -95,7 +95,7 @@ public class AnimationFWNAttackAI extends AnimationAttackAI<EntityWroughtnaut> {
                 }
             }
             if (hit) {
-                entity.playSound(SoundEvents.BLOCK_ANVIL_LAND, 1, 0.5F);
+                entity.playSound(MMSounds.ENTITY_WROUGHT_AXE_HIT, 1, 0.5F);
             }
         } else if (times > 2 && entity.getAnimationTick() == 67) {
             entity.playSound(MMSounds.ENTITY_WROUGHT_PRE_SWING_3, 1.2F, 1f);
@@ -118,7 +118,7 @@ public class AnimationFWNAttackAI extends AnimationAttackAI<EntityWroughtnaut> {
                 }
             }
             if (hit) {
-                entity.playSound(SoundEvents.BLOCK_ANVIL_LAND, 1, 0.5F);
+                entity.playSound(MMSounds.ENTITY_WROUGHT_AXE_HIT, 1, 0.5F);
             }
         }
     }

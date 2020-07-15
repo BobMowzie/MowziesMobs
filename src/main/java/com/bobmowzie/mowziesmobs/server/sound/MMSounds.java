@@ -72,6 +72,8 @@ public final class MMSounds {
     public static final SoundEvent ENTITY_WROUGHT_UNDAMAGED = NIL;
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.axe_land")
     public static final SoundEvent ENTITY_WROUGHT_AXE_LAND = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":wroughtnaut.axe_hit")
+    public static final SoundEvent ENTITY_WROUGHT_AXE_HIT = NIL;
 
     // Barakoa
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":barakoa.inhale")
@@ -276,6 +278,12 @@ public final class MMSounds {
 
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":grottol.step")
     public static final SoundEvent ENTITY_GROTTOL_STEP = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":grottol.undamaged")
+    public static final SoundEvent ENTITY_GROTTOL_UNDAMAGED = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":grottol.burrow")
+    public static final SoundEvent ENTITY_GROTTOL_BURROW = NIL;
+    @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":grottol.die")
+    public static final SoundEvent ENTITY_GROTTOL_DIE = NIL;
 
     @GameRegistry.ObjectHolder(MowziesMobs.MODID + ":lantern.pop")
     public static final SoundEvent ENTITY_LANTERN_POP = NIL;
@@ -425,6 +433,7 @@ public final class MMSounds {
                 create("wroughtnaut.step"),
                 create("wroughtnaut.undamaged"),
                 create("wroughtnaut.axe_land"),
+                create("wroughtnaut.axe_hit"),
 
                 create("barakoa.inhale"),
                 create("barakoa.blowdart"),
@@ -505,6 +514,9 @@ public final class MMSounds {
                 create("frostmaw.wakeup"),
 
                 create("grottol.step"),
+                create("grottol.undamaged"),
+                create("grottol.burrow"),
+                create("grottol.die"),
 
                 create("lantern.puff"),
                 create("lantern.pop"),
