@@ -6,7 +6,12 @@ import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
 import com.bobmowzie.mowziesmobs.server.advancement.AdvancementHandler;
 import com.bobmowzie.mowziesmobs.server.ai.MMEntityMoveHelper;
 import com.bobmowzie.mowziesmobs.server.ai.MMPathNavigateGround;
-import com.bobmowzie.mowziesmobs.server.ai.animation.*;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationActivateAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAreaAttackAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDeactivateAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LegSolverQuadruped;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
@@ -18,7 +23,6 @@ import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.bobmowzie.mowziesmobs.server.spawn.SpawnHandler;
 import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
-import com.google.common.base.Optional;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -26,8 +30,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.*;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.ai.EntityAILookIdle;
+import net.minecraft.entity.ai.EntityAIMoveTowardsRestriction;
+import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.entity.ai.EntityAISwimming;
+import net.minecraft.entity.ai.EntityAIWanderAvoidWater;
+import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
@@ -56,11 +64,11 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
-import java.util.UUID;
 
 /**
  * Created by Josh on 5/8/2017.
@@ -439,20 +447,14 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                 crystalPos = crystalPos.add(getPositionVector());
                 for (EntityPlayer player : getPlayersNearby(8, 8, 8, 8)) {
                     if (player.getPositionVector().subtract(crystalPos).length() <= 1.6 && (player.capabilities.isCreativeMode || player.isInvisible())) {
-                        ItemStack crystalStack = new ItemStack(ItemHandler.ICE_CRYSTAL);
-                        boolean flag = player.inventory.addItemStackToInventory(crystalStack);
-
-                        if (flag) {
-                            player.world.playSound((EntityPlayer) null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, ((player.getRNG().nextFloat() - player.getRNG().nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                            player.inventoryContainer.detectAndSendChanges();
-                            setHasCrystal(false);
-                            if (world.getDifficulty() != EnumDifficulty.PEACEFUL) {
-                                AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_NO_CRYSTAL_ANIMATION);
-                                setActive(true);
-                            }
-                            if (player instanceof EntityPlayerMP) AdvancementHandler.STEAL_ICE_CRYSTAL_TRIGGER.trigger((EntityPlayerMP)player);
-                            break;
+                        ItemHandlerHelper.giveItemToPlayer(player, new ItemStack(ItemHandler.ICE_CRYSTAL));
+                        setHasCrystal(false);
+                        if (world.getDifficulty() != EnumDifficulty.PEACEFUL) {
+                            AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_NO_CRYSTAL_ANIMATION);
+                            setActive(true);
                         }
+                        if (player instanceof EntityPlayerMP) AdvancementHandler.STEAL_ICE_CRYSTAL_TRIGGER.trigger((EntityPlayerMP)player);
+                        break;
                     }
                 }
             }
