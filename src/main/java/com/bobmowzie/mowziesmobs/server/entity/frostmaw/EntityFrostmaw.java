@@ -429,7 +429,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         else {
             getNavigator().clearPath();
             renderYawOffset = prevRenderYawOffset;
-            addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 20, 1, true, true));
+            if (!world.isRemote) heal(0.3f);
             if (getAttackTarget() != null && getAttackTarget().isPotionActive(MobEffects.INVISIBILITY)) {
                 setAttackTarget(null);
             }

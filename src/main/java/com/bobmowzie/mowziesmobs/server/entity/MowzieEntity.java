@@ -53,7 +53,6 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     private int animationTick;
     private Animation animation = NO_ANIMATION;
     private List<IntermittentAnimation> intermittentAnimations = new ArrayList<>();
-    public Vec3d moveVec = new Vec3d(0, 0, 0);
     public boolean playsHurtAnimation = true;
     protected boolean dropAfterDeathAnim = true;
 

@@ -60,9 +60,9 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 
     public static final Animation ATTACK_ANIMATION = Animation.create(50);
 
-    public static final Animation ATTACK_TWICE_ANIMATION = Animation.create(76);
+    public static final Animation ATTACK_TWICE_ANIMATION = Animation.create(36);
 
-    public static final Animation ATTACK_THRICE_ANIMATION = Animation.create(125);
+    public static final Animation ATTACK_THRICE_ANIMATION = Animation.create(59);
 
     public static final Animation VERTICAL_ATTACK_ANIMATION = Animation.create(105);
 
@@ -101,7 +101,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 
     public boolean vulnerable;
 
-    private int attacksWithoutVertical;
+    public int attacksWithoutVertical;
 
     private int ticksSinceLastStomp;
 
@@ -114,7 +114,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         super(world);
         setPathPriority(PathNodeType.WATER, 0);
         tasks.addTask(1, new AnimationFWNAttackAI(this, ATTACK_ANIMATION, MMSounds.ENTITY_WROUGHT_WHOOSH, 4F, 5.5F, 100F, 1));
-        tasks.addTask(1, new AnimationFWNAttackAI(this, ATTACK_TWICE_ANIMATION, MMSounds.ENTITY_WROUGHT_WHOOSH, 4F, 5.5F, 100F, 2));
+        tasks.addTask(1, new AnimationFWNAttackAI(this, ATTACK_TWICE_ANIMATION, MMSounds.ENTITY_WROUGHT_WHOOSH, 4F, 5.2F, 100F, 2));
         tasks.addTask(1, new AnimationFWNAttackAI(this, ATTACK_THRICE_ANIMATION, MMSounds.ENTITY_WROUGHT_WHOOSH, 4F, 5.5F, 100F, 3));
         tasks.addTask(1, new AnimationFWNVerticalAttackAI(this, VERTICAL_ATTACK_ANIMATION, MMSounds.ENTITY_WROUGHT_WHOOSH, 1F, 5.5F, 40F));
         tasks.addTask(1, new AnimationFWNStompAttackAI(this, STOMP_ATTACK_ANIMATION));
@@ -233,8 +233,8 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 
 //        if (getAnimation() == NO_ANIMATION) {
 //            setActive(true);
-//            swingDirection = false;
-//            AnimationHandler.INSTANCE.sendAnimationMessage(this, ATTACK_THRICE_ANIMATION);
+//            swingDirection = true;
+//            AnimationHandler.INSTANCE.sendAnimationMessage(this, ATTACK_TWICE_ANIMATION);
 //        }
 
         if (getAttackTarget() != null && (getAttackTarget().isDead || getAttackTarget().getHealth() <= 0)) setAttackTarget(null);
@@ -279,18 +279,18 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
                         AnimationHandler.INSTANCE.sendAnimationMessage(this, VERTICAL_ATTACK_ANIMATION);
                         attacksWithoutVertical = 0;
                     } else {
-                        if (getHealth()/getMaxHealth() <= 0.6 && rand.nextInt(2) == 0) {
-                            AnimationHandler.INSTANCE.sendAnimationMessage(this, ATTACK_THRICE_ANIMATION);
-                            attacksWithoutVertical += 3;
-                        }
-                        else if (getHealth()/getMaxHealth() <= 0.9 && rand.nextInt(2) == 0) {
-                            AnimationHandler.INSTANCE.sendAnimationMessage(this, ATTACK_TWICE_ANIMATION);
-                            attacksWithoutVertical += 2;
-                        }
-                        else {
+//                        if (getHealth()/getMaxHealth() <= 0.6 && rand.nextInt(2) == 0) {
+//                            AnimationHandler.INSTANCE.sendAnimationMessage(this, ATTACK_THRICE_ANIMATION);
+//                            attacksWithoutVertical += 3;
+//                        }
+//                        else if (getHealth()/getMaxHealth() <= 0.9 && rand.nextInt(2) == 0) {
+//                            AnimationHandler.INSTANCE.sendAnimationMessage(this, ATTACK_TWICE_ANIMATION);
+//                            attacksWithoutVertical += 2;
+//                        }
+//                        else {
                             AnimationHandler.INSTANCE.sendAnimationMessage(this, ATTACK_ANIMATION);
                             attacksWithoutVertical += 1;
-                        }
+//                        }
                     }
                 } else if (couldStomp) {
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, STOMP_ATTACK_ANIMATION);
@@ -335,8 +335,8 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 
         repelEntities(2.2F, 4, 2.2F, 2.2F);
 
-        if (!active) {
-            addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 20, 2, true, true));
+        if (!active && !world.isRemote) {
+            heal(0.3f);
         }
 
         if (disturbance != null) {
