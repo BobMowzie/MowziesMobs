@@ -26,7 +26,7 @@ public class ItemGlowingJelly extends ItemFood {
     @Override
     protected void onFoodEaten(ItemStack stack, World worldIn, EntityPlayer player) {
         super.onFoodEaten(stack, worldIn, player);
-        player.addPotionEffect(new PotionEffect(MobEffects.NIGHT_VISION, 600, 0, false, false));
+        player.addPotionEffect(new PotionEffect(MobEffects.NIGHT_VISION, 1200, 0, false, false));
     }
 
     @Override
