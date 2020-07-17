@@ -344,11 +344,12 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                     float projSpeed = 1.6f;
                     if (getAttackTarget() != null) {
                         float ticksUntilHit = targetDistance / projSpeed;
-                        Vec3d targetPos = getAttackTarget().getPositionVector().add(new Vec3d(0f, getAttackTarget().getEyeHeight(), 0f));
+                        Vec3d targetPos = getAttackTarget().getPositionVector().add(new Vec3d(0f, getAttackTarget().height / 2.0, 0f));
                         Vec3d targetMovement = targetPos.subtract(prevTargetPos).scale(ticksUntilHit * 0.95);
                         targetMovement = targetMovement.subtract(0, targetMovement.y, 0);
                         Vec3d futureTargetPos = targetPos.add(targetMovement);
-                        Vec3d shootVec = futureTargetPos.subtract(projectilePos).normalize();
+                        Vec3d projectileMid = projectilePos.add(new Vec3d(0, iceBall.height / 2.0, 0));
+                        Vec3d shootVec = futureTargetPos.subtract(projectileMid).normalize();
                         iceBall.shoot(shootVec.x, shootVec.y, shootVec.z, projSpeed, 0);
                     }
                     else {
