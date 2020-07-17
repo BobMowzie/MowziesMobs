@@ -48,9 +48,10 @@ public class EntityBabyFoliaath extends MowzieEntity {
 
     private static final DataParameter<Boolean> HUNGRY = EntityDataManager.createKey(EntityBabyFoliaath.class, DataSerializers.BOOLEAN);
 
+    private static final DataParameter<ItemStack> EATING = EntityDataManager.createKey(EntityBabyFoliaath.class, DataSerializers.ITEM_STACK);
+
     public static final Animation EAT_ANIMATION = Animation.create(20);
     public ControlledAnimation activate = new ControlledAnimation(5);
-    private Item eatingItemID;
     private double prevActivate;
 
     private static Set<Item> meatTypes;
@@ -87,24 +88,22 @@ public class EntityBabyFoliaath extends MowzieEntity {
         }
         prevActivate = activate.getTimer();
 
-        List<EntityItem> meats = getMeatsNearby(0.4, 0.2, 0.4, 0.4);
-        if (getHungry() && meats.size() != 0 && getAnimation() == NO_ANIMATION) {
-            AnimationHandler.INSTANCE.sendAnimationMessage(this, EAT_ANIMATION);
-            eatingItemID = meats.get(0).getItem().getItem();
-            meats.get(0).setDead();
-            playSound(MMSounds.ENTITY_FOLIAATH_BABY_EAT, 0.5F, 1.2F);
-            if (!world.isRemote) {
-                incrementGrowth();
-                setHungry(false);
+        if (!world.isRemote && getHungry() && getAnimation() == NO_ANIMATION) {
+            for (EntityItem meat : getMeatsNearby(0.4, 0.2, 0.4, 0.4)) {
+                ItemStack stack = meat.getItem().splitStack(1);
+                if (!stack.isEmpty()) {
+                    setEating(stack);
+                    AnimationHandler.INSTANCE.sendAnimationMessage(this, EAT_ANIMATION);
+                    playSound(MMSounds.ENTITY_FOLIAATH_BABY_EAT, 0.5F, 1.2F);
+                    incrementGrowth();
+                    setHungry(false);
+                    break;
+                }
             }
         }
-
-        if (getAnimationTick() == 3 || getAnimationTick() == 7 || getAnimationTick() == 11 || getAnimationTick() == 15 || getAnimationTick() == 19) {
-            try {
-                for (int i = 0; i <= 5; i++) {
-                    world.spawnParticle(EnumParticleTypes.ITEM_CRACK, posX, posY + 0.2, posZ, Math.random() * 0.2 - 0.1, Math.random() * 0.2, Math.random() * 0.2 - 0.1, Item.getIdFromItem(eatingItemID));
-                }
-            } catch (Exception ignored) {
+        if (world.isRemote && getAnimation() == EAT_ANIMATION && (getAnimationTick() == 3 || getAnimationTick() == 7 || getAnimationTick() == 11 || getAnimationTick() == 15 || getAnimationTick() == 19)) {
+            for (int i = 0; i <= 5; i++) {
+                world.spawnParticle(EnumParticleTypes.ITEM_CRACK, posX, posY + 0.2, posZ, Math.random() * 0.2 - 0.1, Math.random() * 0.2, Math.random() * 0.2 - 0.1, Item.getIdFromItem(getEating().getItem()));
             }
         }
 
@@ -166,7 +165,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
         if (meatTypes == null) {
             meatTypes = Sets.newHashSet();
             LootTable lootTable = getEntityWorld().getLootTableManager().getLootTableFromLocation(getFoodLootTable());
-            if (lootTable != null) {
+            if (lootTable != LootTable.EMPTY_LOOT_TABLE) {
                 LootContext.Builder lootBuilder = (new LootContext.Builder((WorldServer) this.world)).withLootedEntity(this);
                 List<ItemStack> loot = lootTable.generateLootForPools(world.rand, lootBuilder.build());
                 for (ItemStack itemStack : loot) {
@@ -257,6 +256,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
         getDataManager().register(GROWTH, 0);
         getDataManager().register(INFANT, false);
         getDataManager().register(HUNGRY, false);
+        getDataManager().register(EATING, ItemStack.EMPTY);
     }
 
     public int getGrowth() {
@@ -285,6 +285,14 @@ public class EntityBabyFoliaath extends MowzieEntity {
 
     public void setHungry(boolean hungry) {
         getDataManager().set(HUNGRY, hungry);
+    }
+
+    public void setEating(ItemStack stack) {
+        getDataManager().set(EATING, stack);
+    }
+
+    public ItemStack getEating() {
+        return getDataManager().get(EATING);
     }
 
     @Override
