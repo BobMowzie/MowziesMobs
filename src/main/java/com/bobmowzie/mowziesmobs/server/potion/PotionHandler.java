@@ -11,10 +11,10 @@ public final class PotionHandler {
     private PotionHandler() {
     }
 
-    public static final Potion SUNS_BLESSING = new MowziePotionSunsBlessing().setRegistryName(MowziesMobs.MODID, "suns_blessing");
-    public static final Potion GEOMANCY = new MowziePotionGeomancy().setRegistryName(MowziesMobs.MODID, "geomancy");
-    public static final Potion FROZEN = new MowziePotionFrozen().setRegistryName(MowziesMobs.MODID, "frozen");
-    public static final Potion POISON_RESIST = new MowziePotionPoisonResist().setRegistryName(MowziesMobs.MODID, "poison_resist");
+    public static final MowziePotionSunsBlessing SUNS_BLESSING = (MowziePotionSunsBlessing) new MowziePotionSunsBlessing().setRegistryName(MowziesMobs.MODID, "suns_blessing");
+    public static final MowziePotionGeomancy GEOMANCY = (MowziePotionGeomancy) new MowziePotionGeomancy().setRegistryName(MowziesMobs.MODID, "geomancy");
+    public static final MowziePotionFrozen FROZEN = (MowziePotionFrozen) new MowziePotionFrozen().setRegistryName(MowziesMobs.MODID, "frozen");
+    public static final MowziePotionPoisonResist POISON_RESIST = (MowziePotionPoisonResist) new MowziePotionPoisonResist().setRegistryName(MowziesMobs.MODID, "poison_resist");
 
     @SubscribeEvent
     public static void register(RegistryEvent.Register<Potion> event) {
