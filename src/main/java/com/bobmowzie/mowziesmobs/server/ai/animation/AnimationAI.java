@@ -7,6 +7,7 @@ import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 
 public class AnimationAI<T extends MowzieEntity & IAnimatedEntity> extends net.ilexiconn.llibrary.server.animation.AnimationAI<T> {
     protected Animation animation;
+    protected boolean hurtInterruptsAnimation = false;
 
     public AnimationAI(T entity, Animation animation) {
         super(entity);
@@ -19,6 +20,15 @@ public class AnimationAI<T extends MowzieEntity & IAnimatedEntity> extends net.i
         if (!interruptsAI) {
             setMutexBits(8);
         }
+    }
+
+    public AnimationAI(T entity, Animation animation, boolean interruptsAI, boolean hurtInterruptsAnimation) {
+        super(entity);
+        this.animation = animation;
+        if (!interruptsAI) {
+            setMutexBits(8);
+        }
+        this.hurtInterruptsAnimation = hurtInterruptsAnimation;
     }
 
     @Override
@@ -35,6 +45,7 @@ public class AnimationAI<T extends MowzieEntity & IAnimatedEntity> extends net.i
     public void startExecuting() {
         super.startExecuting();
         entity.currentAnim = this;
+        entity.hurtInterruptsAnimation = hurtInterruptsAnimation;
     }
 
     @Override

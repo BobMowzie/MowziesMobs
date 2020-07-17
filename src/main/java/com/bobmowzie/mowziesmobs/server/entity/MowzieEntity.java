@@ -55,6 +55,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     private List<IntermittentAnimation> intermittentAnimations = new ArrayList<>();
     public boolean playsHurtAnimation = true;
     protected boolean dropAfterDeathAnim = true;
+    public boolean hurtInterruptsAnimation = false;
 
     public Vec3d[] socketPosArray = new Vec3d[]{};
 
@@ -483,7 +484,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     public boolean attackEntityFrom(DamageSource source, float damage) {
         boolean attack = super.attackEntityFrom(source, damage);
         if (attack) {
-            if (getHealth() > 0.0F && getAnimation() == NO_ANIMATION && playsHurtAnimation) {
+            if (getHealth() > 0.0F && (getAnimation() == NO_ANIMATION || hurtInterruptsAnimation) && playsHurtAnimation) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, getHurtAnimation());
             } else if (getHealth() <= 0.0F) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, getDeathAnimation());

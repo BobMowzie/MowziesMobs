@@ -29,6 +29,11 @@ public class AnimationAttackAI<T extends MowzieEntity & IAnimatedEntity> extends
         this.hitSound = hitSound;
     }
 
+    public AnimationAttackAI(T entity, Animation animation, SoundEvent attackSound, SoundEvent hitSound, float knockback, float range, float damageMultiplier, int damageFrame, boolean hurtInterrupts) {
+        this(entity, animation, attackSound, hitSound, knockback, range, damageMultiplier, damageFrame);
+        this.hurtInterruptsAnimation = hurtInterrupts;
+    }
+
     @Override
     public void startExecuting() {
         super.startExecuting();
