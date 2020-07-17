@@ -505,8 +505,8 @@ public class ModelWroughtnaut extends MowzieEntityModel<EntityWroughtnaut> {
 
                 head.rotateAngleY += headYaw / (180f / (float) Math.PI);
                 neck.rotateAngleX += (headPitch > 0.0F ? headPitch * 1.4F : headPitch) / (180f / (float) Math.PI);
-                while (head.rotateAngleY < -180.0F) head.rotateAngleY += 360.0F;
-                while (head.rotateAngleY > 180.0F) head.rotateAngleY -= 360.0F;
+                while (head.rotateAngleY < (float) -Math.PI) head.rotateAngleY += 2.0F * (float) Math.PI;
+                while (head.rotateAngleY > (float) Math.PI) head.rotateAngleY -= 2.0F * (float) Math.PI;
                 head.rotateAngleY = MathHelper.clamp(head.rotateAngleY, (float) -Math.PI / 4, (float) Math.PI / 4);
             } else {
                 shoulderLeft.rotateAngleZ -= 0.4;
