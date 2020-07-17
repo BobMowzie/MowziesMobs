@@ -564,7 +564,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         getDataManager().register(DIRECTION, 0);
         getDataManager().register(DIALOGUE, 0);
         getDataManager().register(ANGRY, false);
-        getDataManager().register(DESIRES, new ItemStack(Item.getItemFromBlock(Blocks.GOLD_BLOCK), 5));
+        getDataManager().register(DESIRES, new ItemStack(Item.getItemFromBlock(Blocks.GOLD_BLOCK), 7));
     }
 
     public int getDirection() {

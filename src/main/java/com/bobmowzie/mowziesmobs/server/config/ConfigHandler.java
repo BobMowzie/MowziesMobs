@@ -264,6 +264,11 @@ public class ConfigHandler {
         @Comment("Scale mob health by this value")
         @RangeDouble(min = 0, max = 100)
         public float healthMultiplier = 1;
+
+        @Name("glow_effect")
+        @LangKey(LANG_PREFIX + "glow_effect")
+        @Comment("Enable/disable the glow effect around lanterns")
+        public boolean glowEffect = true;
     }
 
     @Name("grottol")

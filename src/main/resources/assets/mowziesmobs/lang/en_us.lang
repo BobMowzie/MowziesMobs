@@ -147,6 +147,7 @@ config.mowziesmobs.grottol=Grottol
 config.mowziesmobs.grottol.tooltip=
 config.mowziesmobs.lantern=Lantern
 config.mowziesmobs.lantern.tooltip=
+config.mowziesmobs.glow_effect=Glow effect
 config.mowziesmobs.naga=Naga
 config.mowziesmobs.naga.tooltip=
 config.mowziesmobs.tools_and_abilities=Tools and Abilities

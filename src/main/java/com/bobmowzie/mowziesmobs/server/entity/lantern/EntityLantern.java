@@ -130,7 +130,7 @@ public class EntityLantern extends MowzieEntity {
             groundDist = i;
         }
 
-        if (world.isRemote) {
+        if (world.isRemote && ConfigHandler.LANTERN.glowEffect) {
             pos[0] = getPositionVector().add(0, height * 0.8, 0);
             if (ticksExisted % 70 == 0) {
                 MowzieParticleBase.spawnParticle(world, MMParticle.GLOW, pos[0].x, pos[0].y, pos[0].z, 0, 0, 0, true, 0, 0, 0, 0, 20F, 0.8, 0.95, 0.35, 1, 1, 70, true, new ParticleComponent[]{
