@@ -307,17 +307,6 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
                 disturbance = null;
             }
         }
-
-        if (!this.world.isRemote) {
-            Path path = this.getNavigator().getPath();
-            if (path != null) {
-                for (int i = 0; i < path.getCurrentPathLength(); i++) {
-                    PathPoint point = path.getPathPointFromIndex(i);
-                    Vec3d p = path.getVectorFromIndex(this, i);
-                    ((WorldServer) this.world).spawnParticle(EnumParticleTypes.BLOCK_DUST, p.x, p.y + 0.1D, p.z, 1, 0.1D, 0.0D, 0.1D, 0.01D, Block.getIdFromBlock(i < path.getCurrentPathIndex() ? Blocks.GOLD_BLOCK : i == path.getCurrentPathIndex() ? Blocks.DIAMOND_BLOCK : Blocks.DIRT));
-                }
-            }
-        }
     }
 
     private boolean isAtRestPos() {
