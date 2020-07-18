@@ -46,8 +46,11 @@ public class MMPathNavigateGround extends PathNavigateGround {
                 Math.abs(entity.posY - pathPos.y) < 1.0D) {
             path.setCurrentPathIndex(path.getCurrentPathIndex() + 1);
         }
+        final Vec3d base = entityPos.add(-entity.width * 0.5F, 0.0F, -entity.width * 0.5F);
+        final Vec3d max = base.add(entity.width, entity.height, entity.width);
         for (int i = pathLength; i-- > path.getCurrentPathIndex(); ) {
-            if (this.isDirectPathBetweenPoints(entityPos, path.getVectorFromIndex(entity, i), sizeX, sizeY, sizeX)) {
+            final Vec3d vec = path.getVectorFromIndex(entity, i).subtract(entityPos);
+            if (this.sweep(vec, base, max)) {
                 path.setCurrentPathIndex(i);
                 break;
             }
@@ -57,81 +60,73 @@ public class MMPathNavigateGround extends PathNavigateGround {
 
     @Override
     protected boolean isDirectPathBetweenPoints(Vec3d start, Vec3d end, int sizeX, int sizeY, int sizeZ) {
-        int x0 = MathHelper.floor(start.x);
-        int z0 = MathHelper.floor(start.z);
-        double vx = end.x - start.x;
-        double vz = end.z - start.z;
-        double dist = vx * vx + vz * vz;
-        if (dist < 1.0E-8D) {
-            return false;
-        }
-        double invDist = 1.0D / Math.sqrt(dist);
-        vx = vx * invDist;
-        vz = vz * invDist;
-        /*sizeX = sizeX + 2;
-        sizeZ = sizeZ + 2;*/
-        if (!this.isSafeToStandAt(x0, (int) start.y, z0, sizeX, sizeY, sizeZ, start, vx, vz)) {
-            return false;
-        }
-        /*sizeX = sizeX - 2;
-        sizeZ = sizeZ - 2;*/
-        double d4 = 1.0D / Math.abs(vx);
-        double d5 = 1.0D / Math.abs(vz);
-        double d6 = (double) x0 - start.x;
-        double d7 = (double) z0 - start.z;
-        if (vx >= 0.0D) {
-            ++d6;
-        }
-        if (vz >= 0.0D) {
-            ++d7;
-        }
-        d6 = d6 / vx;
-        d7 = d7 / vz;
-        int sx = vx < 0.0D ? -1 : 1;
-        int sz = vz < 0.0D ? -1 : 1;
-        int x1 = MathHelper.floor(end.x);
-        int z1 = MathHelper.floor(end.z);
-        int dx = x1 - x0;
-        int dz = z1 - z0;
-        while (dx * sx > 0 || dz * sz > 0) {
-            if (d6 < d7) {
-                d6 += d4;
-                x0 += sx;
-                dx = x1 - x0;
-            } else {
-                d7 += d5;
-                z0 += sz;
-                dz = z1 - z0;
-            }
-            if (!this.isSafeToStandAt(x0, (int) start.y, z0, sizeX, sizeY, sizeZ, start, vx, vz)) {
-                return false;
-            }
-        }
         return true;
     }
 
-    private boolean isSafeToStandAt(int x, int y, int z, int sizeX, int sizeY, int sizeZ, Vec3d origin, double dx, double dz) {
-        int minX = x - sizeX / 2;
-        int minY = z - sizeZ / 2;
-        if (!this.isPositionClear(minX, y, minY, sizeX, sizeY, sizeZ, origin, dx, dz)) {
-            return false;
+    static final float EPSILON = 1.0E-8F;
+
+    // Based off of https://github.com/andyhall/voxel-aabb-sweep/blob/d3ef85b19c10e4c9d2395c186f9661b052c50dc7/index.js
+    private boolean sweep(Vec3d vec, Vec3d base, Vec3d max) {
+        float t = 0.0F;
+        float max_t = (float) vec.length();
+        if (max_t < EPSILON) return true;
+        final float[] tr = new float[3];
+        final int[] ldi = new int[3];
+        final int[] tri = new int[3];
+        final int[] step = new int[3];
+        final float[] tDelta = new float[3];
+        final float[] tNext = new float[3];
+        final float[] normed = new float[3];
+        for (int i = 0; i < 3; i++) {
+            float value = element(vec, i);
+            boolean dir = value >= 0.0F;
+            step[i] = dir ? 1 : -1;
+            float lead = element(dir ? max : base, i);
+            tr[i] = element(dir ? base : max, i);
+            ldi[i] = leadEdgeToInt(lead, step[i]);
+            tri[i] = trailEdgeToInt(tr[i], step[i]);
+            normed[i] = value / max_t;
+            tDelta[i] = MathHelper.abs(max_t / value);
+            float dist = dir ? (ldi[i] + 1 - lead) : (lead - ldi[i]);
+            tNext[i] = tDelta[i] < Float.POSITIVE_INFINITY ? tDelta[i] * dist : Float.POSITIVE_INFINITY;
         }
-        for (int k = minX; k < minX + sizeX; k++) {
-            for (int l = minY; l < minY + sizeZ; l++) {
-                double d0 = (double) k + 0.5D - origin.x;
-                double d1 = (double) l + 0.5D - origin.z;
-                if (d0 * dx + d1 * dz >= 0.0D) {
-                    PathNodeType below = this.nodeProcessor.getPathNodeType(this.world, k, y - 1, l, this.entity, sizeX, sizeY, sizeZ, true, true);
-                    if (below == PathNodeType.WATER) {
+        final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+        do {
+            // stepForward
+            int axis = (tNext[0] < tNext[1]) ?
+                    ((tNext[0] < tNext[2]) ? 0 : 2) :
+                    ((tNext[1] < tNext[2]) ? 1 : 2);
+            float dt = tNext[axis] - t;
+            t = tNext[axis];
+            ldi[axis] += step[axis];
+            tNext[axis] += tDelta[axis];
+            for (int i = 0; i < 3; i++) {
+                tr[i] += dt * normed[i];
+                tri[i] = trailEdgeToInt(tr[i], step[i]);
+            }
+            // checkCollision
+            int stepx = step[0];
+            int x0 = (axis == 0) ? ldi[0] : tri[0];
+            int x1 = ldi[0] + stepx;
+            int stepy = step[1];
+            int y0 = (axis == 1) ? ldi[1] : tri[1];
+            int y1 = ldi[1] + stepy;
+            int stepz = step[2];
+            int z0 = (axis == 2) ? ldi[2] : tri[2];
+            int z1 = ldi[2] + stepz;
+            for (int x = x0; x != x1; x += stepx) {
+                for (int z = z0; z != z1; z += stepz) {
+                    for (int y = y0; y != y1; y += stepy) {
+                        Block block = this.world.getBlockState(pos.setPos(x, y, z)).getBlock();
+                        if (!block.isPassable(this.world, pos)) {
+                            return false;
+                        }
+                    }
+                    PathNodeType below = this.nodeProcessor.getPathNodeType(this.world, x, y0 - 1, z, this.entity, 1, 1, 1, true, true);
+                    if (below == PathNodeType.WATER || below == PathNodeType.LAVA || below == PathNodeType.OPEN) {
                         return false;
                     }
-                    if (below == PathNodeType.LAVA) {
-                        return false;
-                    }
-                    if (below == PathNodeType.OPEN) {
-                        return false;
-                    }
-                    PathNodeType in = this.nodeProcessor.getPathNodeType(this.world, k, y, l, this.entity, sizeX, sizeY, sizeZ, true, true);
+                    PathNodeType in = this.nodeProcessor.getPathNodeType(this.world, x, y0, z, this.entity, 1, y1 - y0, 1, true, true);
                     float priority = this.entity.getPathPriority(in);
                     if (priority < 0.0F || priority >= 8.0F) {
                         return false;
@@ -141,21 +136,23 @@ public class MMPathNavigateGround extends PathNavigateGround {
                     }
                 }
             }
-        }
+        } while (t <= max_t);
         return true;
     }
 
-    private boolean isPositionClear(int x, int y, int z, int sizeX, int sizeY, int sizeZ, Vec3d p_179692_7_, double p_179692_8_, double p_179692_10_) {
-        for (BlockPos pos : BlockPos.getAllInBox(new BlockPos(x, y, z), new BlockPos(x + sizeX - 1, y + sizeY - 1, z + sizeZ - 1))) {
-            double d0 = (double) pos.getX() + 0.5D - p_179692_7_.x;
-            double d1 = (double) pos.getZ() + 0.5D - p_179692_7_.z;
-            if (d0 * p_179692_8_ + d1 * p_179692_10_ >= 0.0D) {
-                Block block = this.world.getBlockState(pos).getBlock();
-                if (!block.isPassable(this.world, pos)) {
-                    return false;
-                }
-            }
+    static int leadEdgeToInt(float coord, int step) {
+        return MathHelper.floor(coord - step * EPSILON);
+    }
+    static int trailEdgeToInt(float coord, int step) {
+        return MathHelper.floor(coord + step * EPSILON);
+    }
+
+    static float element(Vec3d v, int i) {
+        switch (i) {
+            case 0: return (float) v.x;
+            case 1: return (float) v.y;
+            case 2: return (float) v.z;
+            default: return 0.0F;
         }
-        return true;
     }
 }
