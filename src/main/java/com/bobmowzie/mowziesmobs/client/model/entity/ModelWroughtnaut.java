@@ -503,11 +503,11 @@ public class ModelWroughtnaut extends MowzieEntityModel<EntityWroughtnaut> {
                 handLeftJoint.rotateAngleZ -= 0.5;
                 axeHandle.rotateAngleY += 0.8;
 
-                head.rotateAngleY += headYaw / (180f / (float) Math.PI);
+                float y = headYaw / (180f / (float) Math.PI);
+                while (y < (float) -Math.PI) y += 2.0F * (float) Math.PI;
+                while (y> (float) Math.PI) y -= 2.0F * (float) Math.PI;
+                head.rotateAngleY += MathHelper.clamp(y, (float) -Math.PI / 4, (float) Math.PI / 4);
                 neck.rotateAngleX += (headPitch > 0.0F ? headPitch * 1.4F : headPitch) / (180f / (float) Math.PI);
-                while (head.rotateAngleY < (float) -Math.PI) head.rotateAngleY += 2.0F * (float) Math.PI;
-                while (head.rotateAngleY > (float) Math.PI) head.rotateAngleY -= 2.0F * (float) Math.PI;
-                head.rotateAngleY = MathHelper.clamp(head.rotateAngleY, (float) -Math.PI / 4, (float) Math.PI / 4);
             } else {
                 shoulderLeft.rotateAngleZ -= 0.4;
                 shoulderRight.rotateAngleZ += 0.4;
