@@ -35,13 +35,13 @@ public class SmartBodyHelper extends EntityBodyHelper {
         double dx = delta(histPosX);
         double dz = delta(histPosZ);
         double distSq = dx * dx + dz * dz;
-        double moveAngle = entity.renderYawOffset;
-        if (distSq > 2.5e-7) {
-            moveAngle = (float) MathHelper.atan2(dz, dx) * (180 / (float) Math.PI) - 90;
-            entity.renderYawOffset += MathHelper.wrapDegrees(moveAngle - entity.renderYawOffset) * 0.6F;
-            if (!entity.getNavigator().noPath()) {
-                entity.rotationYaw += MathHelper.wrapDegrees(moveAngle - entity.rotationYaw) * 0.4F;	
-            }
+		if (distSq > 2.5e-7) {
+			double moveAngle = (float) MathHelper.atan2(dz, dx) * (180 / (float) Math.PI) - 90;
+			entity.renderYawOffset += MathHelper.wrapDegrees(moveAngle - entity.renderYawOffset) * 0.6F;
+//			this.entity.renderYawOffset = this.entity.rotationYaw;
+//			this.entity.rotationYawHead = approach(this.entity.renderYawOffset, this.entity.rotationYawHead, 75.0F);
+			this.targetYawHead = this.entity.rotationYawHead;
+			this.rotateTime = 0;
         } else if (entity.getPassengers().isEmpty() || !(entity.getPassengers().get(0) instanceof EntityLiving)) {
 			float limit = MAX_ROTATE;
 			if (Math.abs(entity.rotationYawHead - targetYawHead) > 15) {

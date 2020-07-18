@@ -85,7 +85,6 @@ public class AnimationFWNAttackAI extends AnimationAttackAI<EntityWroughtnaut> {
                 }
             } else if (entity.getAnimationTick() == 37 && shouldFollowUp() && entity.getHealth()/entity.getMaxHealth() <= 0.9 && Math.random() < 0.5) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityWroughtnaut.ATTACK_TWICE_ANIMATION);
-                entity.attacksWithoutVertical += 1;
             }
         }
         else if (times == 2) {
@@ -127,7 +126,6 @@ public class AnimationFWNAttackAI extends AnimationAttackAI<EntityWroughtnaut> {
                 }
             } else if (entity.getAnimationTick() == 23 && shouldFollowUp() && entity.swingDirection && entity.getHealth()/entity.getMaxHealth() <= 0.6 && Math.random() < 0.25) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityWroughtnaut.ATTACK_THRICE_ANIMATION);
-                entity.attacksWithoutVertical += 1;
             }
         }
         else if (times == 3) {

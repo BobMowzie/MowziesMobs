@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.entity.wroughtnaut;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.server.ai.MMPathNavigateGround;
+import com.bobmowzie.mowziesmobs.server.ai.WroughtnautAttackAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationActivateAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDeactivateAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
@@ -21,22 +22,23 @@ import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityBodyHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAIAttackMelee;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.MobEffects;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNodeType;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumParticleTypes;
@@ -49,6 +51,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nullable;
@@ -101,10 +104,6 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 
     public boolean vulnerable;
 
-    public int attacksWithoutVertical;
-
-    private int ticksSinceLastStomp;
-
     private CeilingDisturbance disturbance;
 
     public Vec3d leftEyePos, rightEyePos;
@@ -122,10 +121,10 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         tasks.addTask(1, new AnimationDieAI<>(this));
         tasks.addTask(1, new AnimationActivateAI<>(this, ACTIVATE_ANIMATION));
         tasks.addTask(1, new AnimationDeactivateAI<>(this, DEACTIVATE_ANIMATION));
+        tasks.addTask(2, new WroughtnautAttackAI(this));
         targetTasks.addTask(2, new EntityAINearestAttackableTarget<>(this, EntityPlayer.class, 0, true, false, null));
-        targetTasks.addTask(2, new EntityAIAttackMelee(this, 1, true));
         experienceValue = 30;
-        setSize(2.45F, 3.7F);
+        setSize(2.5F, 3.5F);
         active = false;
         stepHeight = 1;
 //        rightEyePos = new Vec3d(0, 0, 0);
@@ -147,7 +146,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     }
 
     @Override
-    protected SmartBodyHelper createBodyHelper() {
+    protected EntityBodyHelper createBodyHelper() {
         return new SmartBodyHelper(this);
     }
 
@@ -251,7 +250,6 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
                     setActive(true);
                 }
             }
-            ticksSinceLastStomp++;
         }
 
         if (!isActive()) {
@@ -265,42 +263,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 //        }
         renderYawOffset = rotationYaw;
 
-        if (getAttackTarget() != null && isActive()) {
-            if (getAnimation() == NO_ANIMATION) {
-                getNavigator().tryMoveToEntityLiving(getAttackTarget(), 0.2);
-                this.getLookHelper().setLookPositionWithEntity(this.getAttackTarget(), 30.0F, 30.0F);
-            } else {
-                getNavigator().clearPath();
-            }
-            if (getAttackTarget().posY - posY >= -1 && getAttackTarget().posY - posY <= 3 && getAnimation() == NO_ANIMATION && !isAIDisabled()) {
-                boolean couldStomp = targetDistance < 6 && ticksSinceLastStomp > 600;
-                if (targetDistance < 3.5 && Math.abs(MathHelper.wrapDegrees(getAngleBetweenEntities(getAttackTarget(), this) - rotationYaw)) < 35 && (!couldStomp || rand.nextInt(3) > 0)) {
-                    if (attacksWithoutVertical >= 4 || rand.nextInt(4) == 0) {
-                        AnimationHandler.INSTANCE.sendAnimationMessage(this, VERTICAL_ATTACK_ANIMATION);
-                        attacksWithoutVertical = 0;
-                    } else {
-//                        if (getHealth()/getMaxHealth() <= 0.6 && rand.nextInt(2) == 0) {
-//                            AnimationHandler.INSTANCE.sendAnimationMessage(this, ATTACK_THRICE_ANIMATION);
-//                            attacksWithoutVertical += 3;
-//                        }
-//                        else if (getHealth()/getMaxHealth() <= 0.9 && rand.nextInt(2) == 0) {
-//                            AnimationHandler.INSTANCE.sendAnimationMessage(this, ATTACK_TWICE_ANIMATION);
-//                            attacksWithoutVertical += 2;
-//                        }
-//                        else {
-                            AnimationHandler.INSTANCE.sendAnimationMessage(this, ATTACK_ANIMATION);
-                            attacksWithoutVertical += 1;
-//                        }
-                    }
-                } else if (couldStomp) {
-                    AnimationHandler.INSTANCE.sendAnimationMessage(this, STOMP_ATTACK_ANIMATION);
-                    ticksSinceLastStomp = 0;
-                    attacksWithoutVertical++;
-                }
-            }
-        } else {
-            if (getNavigator().noPath() && !isAtRestPos() && isActive()) updateRestPos();
-        }
+        if (getAttackTarget() == null && getNavigator().noPath() && !isAtRestPos() && isActive()) updateRestPos();
 
         if (getAnimation() == ATTACK_ANIMATION && getAnimationTick() == 1) {
             swingDirection = rand.nextBoolean();
@@ -342,6 +305,17 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         if (disturbance != null) {
             if (disturbance.update()) {
                 disturbance = null;
+            }
+        }
+
+        if (!this.world.isRemote) {
+            Path path = this.getNavigator().getPath();
+            if (path != null) {
+                for (int i = 0; i < path.getCurrentPathLength(); i++) {
+                    PathPoint point = path.getPathPointFromIndex(i);
+                    Vec3d p = path.getVectorFromIndex(this, i);
+                    ((WorldServer) this.world).spawnParticle(EnumParticleTypes.BLOCK_DUST, p.x, p.y + 0.1D, p.z, 1, 0.1D, 0.0D, 0.1D, 0.01D, Block.getIdFromBlock(i < path.getCurrentPathIndex() ? Blocks.GOLD_BLOCK : i == path.getCurrentPathIndex() ? Blocks.DIAMOND_BLOCK : Blocks.DIRT));
+                }
             }
         }
     }
