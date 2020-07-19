@@ -4,62 +4,53 @@ import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
+import net.minecraft.entity.ai.EntityAIBase;
 
-public class AnimationAI<T extends MowzieEntity & IAnimatedEntity> extends net.ilexiconn.llibrary.server.animation.AnimationAI<T> {
-    protected Animation animation;
-    protected boolean hurtInterruptsAnimation = false;
+public abstract class AnimationAI<T extends MowzieEntity & IAnimatedEntity> extends EntityAIBase {
+    protected final T entity;
 
-    public AnimationAI(T entity, Animation animation) {
-        super(entity);
-        this.animation = animation;
+    protected final boolean hurtInterruptsAnimation;
+
+    protected AnimationAI(T entity) {
+        this(entity, true, false);
     }
 
-    public AnimationAI(T entity, Animation animation, boolean interruptsAI) {
-        super(entity);
-        this.animation = animation;
-        if (!interruptsAI) {
-            setMutexBits(8);
-        }
+    protected AnimationAI(T entity, boolean interruptsAI) {
+        this(entity, interruptsAI, false);
     }
 
-    public AnimationAI(T entity, Animation animation, boolean interruptsAI, boolean hurtInterruptsAnimation) {
-        super(entity);
-        this.animation = animation;
-        if (!interruptsAI) {
-            setMutexBits(8);
-        }
+    protected AnimationAI(T entity, boolean interruptsAI, boolean hurtInterruptsAnimation) {
+        this.entity = entity;
+        this.setMutexBits(interruptsAI ? 7 : 8);
         this.hurtInterruptsAnimation = hurtInterruptsAnimation;
     }
 
     @Override
-    public Animation getAnimation() {
-        return animation;
-    }
-
-    @Override
-    public boolean isAutomatic() {
-        return true;
+    public boolean shouldExecute() {
+        return this.test(this.entity.getAnimation());
     }
 
     @Override
     public void startExecuting() {
-        super.startExecuting();
-        entity.currentAnim = this;
-        entity.hurtInterruptsAnimation = hurtInterruptsAnimation;
+        this.entity.setAnimationTick(0);
+        this.entity.currentAnim = this;
+        this.entity.hurtInterruptsAnimation = this.hurtInterruptsAnimation;
     }
 
     @Override
     public boolean shouldContinueExecuting() {
-        return this.entity.getAnimation() == this.getAnimation() && this.entity.getAnimationTick() < this.getAnimation().getDuration();
+        return this.test(this.entity.getAnimation()) && this.entity.getAnimationTick() < this.entity.getAnimation().getDuration();
     }
 
     @Override
     public void resetTask() {
-        if (this.entity.getAnimation() == this.getAnimation()) {
+        if (this.test(this.entity.getAnimation())) {
             AnimationHandler.INSTANCE.sendAnimationMessage(this.entity, IAnimatedEntity.NO_ANIMATION);
         }
-        if (entity.currentAnim == this) {
-            entity.currentAnim = null;
+        if (this.entity.currentAnim == this) {
+            this.entity.currentAnim = null;
         }
     }
+
+    protected abstract boolean test(Animation animation);
 }

@@ -6,7 +6,7 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 
-public class AnimationSpawnBarakoa extends AnimationAI<EntityBarako> {
+public class AnimationSpawnBarakoa extends SimpleAnimationAI<EntityBarako> {
     public AnimationSpawnBarakoa(EntityBarako entity, Animation animation) {
         super(entity, animation);
         setMutexBits(8);

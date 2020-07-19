@@ -74,7 +74,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         tasks.addTask(2, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_BARAKOA_SWING, null, 1, 3, ConfigHandler.BARAKOA.combatData.attackMultiplier, 9, true));
         tasks.addTask(2, new AnimationProjectileAttackAI<>(this, PROJECTILE_ATTACK_ANIMATION, 9, MMSounds.ENTITY_BARAKOA_BLOWDART, true));
         tasks.addTask(3, new AnimationTakeDamage<>(this));
-        tasks.addTask(4, new AnimationAI<>(this, IDLE_ANIMATION, false, true));
+        tasks.addTask(4, new SimpleAnimationAI<>(this, IDLE_ANIMATION, false, true));
         tasks.addTask(4, new EntityAIAttackMelee(this, 0.5D, false));
         tasks.addTask(5, new EntityAIWander(this, 0.4));
         tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));

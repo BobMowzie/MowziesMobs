@@ -111,9 +111,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     public EntityWroughtnaut(World world) {
         super(world);
         setPathPriority(PathNodeType.WATER, 0);
-        tasks.addTask(1, new AnimationFWNAttackAI(this, ATTACK_ANIMATION, MMSounds.ENTITY_WROUGHT_WHOOSH, 4F, 5.5F, 100F, 1));
-        tasks.addTask(1, new AnimationFWNAttackAI(this, ATTACK_TWICE_ANIMATION, MMSounds.ENTITY_WROUGHT_WHOOSH, 4F, 5.2F, 100F, 2));
-        tasks.addTask(1, new AnimationFWNAttackAI(this, ATTACK_THRICE_ANIMATION, MMSounds.ENTITY_WROUGHT_WHOOSH, 4F, 5.5F, 100F, 3));
+        tasks.addTask(1, new AnimationFWNAttackAI(this, 4F, 5.5F, 100F));
         tasks.addTask(1, new AnimationFWNVerticalAttackAI(this, VERTICAL_ATTACK_ANIMATION, MMSounds.ENTITY_WROUGHT_WHOOSH, 1F, 5.5F, 40F));
         tasks.addTask(1, new AnimationFWNStompAttackAI(this, STOMP_ATTACK_ANIMATION));
         tasks.addTask(1, new AnimationTakeDamage<>(this));
@@ -500,6 +498,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
             setRestPos(NBTUtil.getPosFromTag(compound.getCompoundTag("restPos")));   
         }
         setActive(compound.getBoolean("active"));
+        active = isActive();
     }
 
     @Override

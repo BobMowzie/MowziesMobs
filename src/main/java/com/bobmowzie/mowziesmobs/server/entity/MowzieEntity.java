@@ -47,7 +47,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     public int frame;
     public float targetDistance;
     public float targetAngle;
-    public AnimationAI currentAnim = null;
+    public AnimationAI<?> currentAnim = null;
     public boolean active;
     public EntityLivingBase blockingEntity = null;
     private int animationTick;

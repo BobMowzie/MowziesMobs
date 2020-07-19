@@ -7,7 +7,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 
-public class AnimationAttackAI<T extends MowzieEntity & IAnimatedEntity> extends AnimationAI<T> {
+public class AnimationAttackAI<T extends MowzieEntity & IAnimatedEntity> extends SimpleAnimationAI<T> {
     protected EntityLivingBase entityTarget;
     protected SoundEvent attackSound;
     protected float knockback = 1;
@@ -17,9 +17,11 @@ public class AnimationAttackAI<T extends MowzieEntity & IAnimatedEntity> extends
     protected SoundEvent hitSound;
 
     public AnimationAttackAI(T entity, Animation animation, SoundEvent attackSound, SoundEvent hitSound, float knockback, float range, float damageMultiplier, int damageFrame) {
-        super(entity, animation);
-        setMutexBits(8);
-        this.entity = entity;
+        this(entity, animation, attackSound, hitSound, knockback, range, damageMultiplier, damageFrame, false);
+    }
+
+    public AnimationAttackAI(T entity, Animation animation, SoundEvent attackSound, SoundEvent hitSound, float knockback, float range, float damageMultiplier, int damageFrame, boolean hurtInterrupts) {
+        super(entity, animation, false, hurtInterrupts);
         this.entityTarget = null;
         this.attackSound = attackSound;
         this.knockback = knockback;
@@ -27,11 +29,6 @@ public class AnimationAttackAI<T extends MowzieEntity & IAnimatedEntity> extends
         this.damageMultiplier = damageMultiplier;
         this.damageFrame = damageFrame;
         this.hitSound = hitSound;
-    }
-
-    public AnimationAttackAI(T entity, Animation animation, SoundEvent attackSound, SoundEvent hitSound, float knockback, float range, float damageMultiplier, int damageFrame, boolean hurtInterrupts) {
-        this(entity, animation, attackSound, hitSound, knockback, range, damageMultiplier, damageFrame);
-        this.hurtInterruptsAnimation = hurtInterrupts;
     }
 
     @Override

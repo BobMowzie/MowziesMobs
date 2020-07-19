@@ -10,7 +10,7 @@ import net.minecraft.util.DamageSource;
 
 import java.util.List;
 
-public class AnimationRadiusAttack<T extends MowzieEntity & IAnimatedEntity> extends AnimationAI<T> {
+public class AnimationRadiusAttack<T extends MowzieEntity & IAnimatedEntity> extends SimpleAnimationAI<T> {
     private float radius;
     private int damage;
     private float knockBack;

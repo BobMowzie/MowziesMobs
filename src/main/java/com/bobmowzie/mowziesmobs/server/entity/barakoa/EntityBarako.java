@@ -119,10 +119,10 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         this.targetTasks.addTask(4, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, false, true));
         this.targetTasks.addTask(4, new EntityAINearestAttackableTarget<>(this, EntityZombie.class, 0, true, false, null));
         this.targetTasks.addTask(4, new EntityAINearestAttackableTarget<>(this, EntitySkeleton.class, 0, true, false, null));
-        this.tasks.addTask(2, new AnimationAI<>(this, BELLY_ANIMATION, false));
-        this.tasks.addTask(2, new AnimationAI<>(this, TALK_ANIMATION, false));
-        this.tasks.addTask(2, new AnimationAI<>(this, BLESS_ANIMATION, false));
-        this.tasks.addTask(2, new AnimationAI<EntityBarako>(this, SUPERNOVA_ANIMATION, false) {
+        this.tasks.addTask(2, new SimpleAnimationAI<>(this, BELLY_ANIMATION, false));
+        this.tasks.addTask(2, new SimpleAnimationAI<>(this, TALK_ANIMATION, false));
+        this.tasks.addTask(2, new SimpleAnimationAI<>(this, BLESS_ANIMATION, false));
+        this.tasks.addTask(2, new SimpleAnimationAI<EntityBarako>(this, SUPERNOVA_ANIMATION, false) {
             @Override
             public void updateTask() {
                 super.updateTask();

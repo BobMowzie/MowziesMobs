@@ -5,7 +5,7 @@ import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.client.model.tools.dynamics.DynamicChain;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleVanillaCloudExtended;
 import com.bobmowzie.mowziesmobs.server.ai.MMAINearestAttackableTarget;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.SimpleAnimationAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationProjectileAttackAI;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
@@ -122,7 +122,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
         this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, false));
         this.targetTasks.addTask(2, new MMAINearestAttackableTarget<>(this, EntityPlayer.class, 0, true, false, true, null));
-        this.tasks.addTask(2, new AnimationAI<EntityNaga>(this, FLAP_ANIMATION, false) {
+        this.tasks.addTask(2, new SimpleAnimationAI<EntityNaga>(this, FLAP_ANIMATION, false) {
             @Override
             public void updateTask() {
                 super.updateTask();
@@ -132,7 +132,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
                 }
             }
         });
-        this.tasks.addTask(2, new AnimationAI<EntityNaga>(this, DODGE_ANIMATION, false));
+        this.tasks.addTask(2, new SimpleAnimationAI<EntityNaga>(this, DODGE_ANIMATION, false));
         this.tasks.addTask(2, new AnimationProjectileAttackAI<EntityNaga>(this, SPIT_ANIMATION, 30, null) {
             @Override
             public void updateTask() {
@@ -143,7 +143,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
 //                if (getAnimationTick() == 28) motionY -= 0.2;
             }
         });
-        this.tasks.addTask(2, new AnimationAI<EntityNaga>(this, SWOOP_ANIMATION, true) {
+        this.tasks.addTask(2, new SimpleAnimationAI<EntityNaga>(this, SWOOP_ANIMATION, true) {
             @Override
             public void updateTask() {
                 super.updateTask();
@@ -205,19 +205,19 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
                 if (getAnimationTick() == 22) playSound(MMSounds.ENTITY_NAGA_ROAR_1, 3, 1f);
             }
         });
-        this.tasks.addTask(2, new AnimationAI<EntityNaga>(this, HURT_TO_FALL_ANIMATION, true) {
+        this.tasks.addTask(2, new SimpleAnimationAI<EntityNaga>(this, HURT_TO_FALL_ANIMATION, true) {
             @Override
             public void updateTask() {
 
             }
         });
-        this.tasks.addTask(2, new AnimationAI<EntityNaga>(this, LAND_ANIMATION, true) {
+        this.tasks.addTask(2, new SimpleAnimationAI<EntityNaga>(this, LAND_ANIMATION, true) {
             @Override
             public void updateTask() {
                 if (getAnimationTick() == 1) playSound(MMSounds.MISC_GROUNDHIT_2, 1.5f, 1);
             }
         });
-        this.tasks.addTask(1, new AnimationAI<EntityNaga>(this, GET_UP_ANIMATION, true) {
+        this.tasks.addTask(1, new SimpleAnimationAI<EntityNaga>(this, GET_UP_ANIMATION, true) {
             @Override
             public void updateTask() {
                 super.updateTask();

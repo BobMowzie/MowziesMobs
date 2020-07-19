@@ -6,7 +6,7 @@ import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.entity.EntityLivingBase;
 
-public class AnimationSolarBeam<T extends MowzieEntity & IAnimatedEntity> extends AnimationAI<T> {
+public class AnimationSolarBeam<T extends MowzieEntity & IAnimatedEntity> extends SimpleAnimationAI<T> {
     protected EntityLivingBase entityTarget;
 
     private EntitySolarBeam solarBeam;

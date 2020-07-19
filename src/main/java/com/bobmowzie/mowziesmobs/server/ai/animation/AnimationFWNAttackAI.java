@@ -7,29 +7,44 @@ import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.List;
 
-public class AnimationFWNAttackAI extends AnimationAttackAI<EntityWroughtnaut> {
+public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
+    protected float knockback = 1;
+    protected float range;
     private float arc;
-    private int times;
 
-    public AnimationFWNAttackAI(EntityWroughtnaut entity, Animation animation, SoundEvent sound, float knockback, float range, float arc, int times) {
-        super(entity, animation, sound, null, knockback, range, 0, 0);
+    public AnimationFWNAttackAI(EntityWroughtnaut entity, float knockback, float range, float arc) {
+        super(entity);
+        this.knockback = knockback;
+        this.range = range;
         this.arc = arc;
-        this.times = times;
+    }
+
+    @Override
+    protected boolean test(Animation animation) {
+        return animation == EntityWroughtnaut.ATTACK_ANIMATION || animation == EntityWroughtnaut.ATTACK_TWICE_ANIMATION || animation == EntityWroughtnaut.ATTACK_THRICE_ANIMATION;
     }
 
     @Override
     public void startExecuting() {
         super.startExecuting();
-        if (times == 1) entity.playSound(MMSounds.ENTITY_WROUGHT_PRE_SWING_1, 1.5F, 1F);
+        if (entity.getAnimation() == EntityWroughtnaut.ATTACK_ANIMATION) entity.playSound(MMSounds.ENTITY_WROUGHT_PRE_SWING_1, 1.5F, 1F);
+        LogManager.getLogger().info("start attack");
+    }
+
+    @Override
+    public void resetTask() {
+        super.resetTask();
+        LogManager.getLogger().info("stop attack");
     }
 
     private boolean shouldFollowUp() {
-        if (entityTarget != null && entityTarget.getHealth() > 0) {
+        EntityLivingBase entityTarget = entity.getAttackTarget();
+        if (entityTarget != null && entityTarget.isEntityAlive()) {
             Vec3d targetMoveVec = new Vec3d(entityTarget.motionX, entityTarget.motionY, entityTarget.motionZ);
             Vec3d betweenEntitiesVec = entity.getPositionVector().subtract(entityTarget.getPositionVector());
             boolean targetComingCloser = targetMoveVec.dotProduct(betweenEntitiesVec) > 0.1;
@@ -42,9 +57,10 @@ public class AnimationFWNAttackAI extends AnimationAttackAI<EntityWroughtnaut> {
 
     @Override
     public void updateTask() {
+        EntityLivingBase entityTarget = entity.getAttackTarget();
         entity.motionX = 0;
         entity.motionZ = 0;
-        if (times == 1) {
+        if (entity.getAnimation() == EntityWroughtnaut.ATTACK_ANIMATION) {
             if (entity.getAnimationTick() < 23 && entityTarget != null) {
                 entity.faceEntity(entityTarget, 30F, 30F);
             } else {
@@ -53,7 +69,7 @@ public class AnimationFWNAttackAI extends AnimationAttackAI<EntityWroughtnaut> {
             if (entity.getAnimationTick() == 6) {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_CREAK, 0.5F, 1);
             } else if (entity.getAnimationTick() == 25) {
-                entity.playSound(attackSound, 1.2F, 1);
+                entity.playSound(MMSounds.ENTITY_WROUGHT_WHOOSH, 1.2F, 1);
             } else if (entity.getAnimationTick() == 27) {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_SWING_1, 1.5F, 1);
                 List<EntityLivingBase> entitiesHit = entity.getEntityLivingBaseNearby(range, 3, range, range);
@@ -86,14 +102,14 @@ public class AnimationFWNAttackAI extends AnimationAttackAI<EntityWroughtnaut> {
                 AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityWroughtnaut.ATTACK_TWICE_ANIMATION);
             }
         }
-        else if (times == 2) {
+        else if (entity.getAnimation() == EntityWroughtnaut.ATTACK_TWICE_ANIMATION) {
             if (entity.getAnimationTick() < 7 && entityTarget != null) {
                 entity.faceEntity(entityTarget, 30F, 30F);
             } else {
                 entity.rotationYaw = entity.prevRotationYaw;
             }
             if (entity.getAnimationTick() == 7) {
-                entity.playSound(attackSound, 1.2F, 1);
+                entity.playSound(MMSounds.ENTITY_WROUGHT_WHOOSH, 1.2F, 1);
             }
             else if (entity.getAnimationTick() == 9) {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_SWING_3, 1.5F, 1);
@@ -127,7 +143,7 @@ public class AnimationFWNAttackAI extends AnimationAttackAI<EntityWroughtnaut> {
                 AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityWroughtnaut.ATTACK_THRICE_ANIMATION);
             }
         }
-        else if (times == 3) {
+        else if (entity.getAnimation() == EntityWroughtnaut.ATTACK_THRICE_ANIMATION) {
             if (entity.getAnimationTick() < 22 && entityTarget != null) {
                 entity.faceEntity(entityTarget, 30F, 30F);
             } else {
@@ -136,7 +152,7 @@ public class AnimationFWNAttackAI extends AnimationAttackAI<EntityWroughtnaut> {
             if (entity.getAnimationTick() == 0) {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_PRE_SWING_3, 1.2F, 1f);
             } else if (entity.getAnimationTick() == 20) {
-                entity.playSound(attackSound, 1.2F, 0.9f);
+                entity.playSound(MMSounds.ENTITY_WROUGHT_WHOOSH, 1.2F, 0.9f);
             } else if (entity.getAnimationTick() == 24) {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_GRUNT_3, 1.5F, 1.13f);
                 entity.move(MoverType.SELF, Math.cos(Math.toRadians(entity.rotationYaw + 90)), 0, Math.sin(Math.toRadians(entity.rotationYaw + 90)));

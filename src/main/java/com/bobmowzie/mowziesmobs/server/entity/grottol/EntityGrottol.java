@@ -7,7 +7,7 @@ import com.bobmowzie.mowziesmobs.server.ai.EntityAIGrottolFindMinecart;
 import com.bobmowzie.mowziesmobs.server.ai.MMAIAvoidEntity;
 import com.bobmowzie.mowziesmobs.server.ai.MMEntityMoveHelper;
 import com.bobmowzie.mowziesmobs.server.ai.MMPathNavigateGround;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.SimpleAnimationAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.block.BlockGrottol;
@@ -137,7 +137,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
         tasks.addTask(1, new AnimationTakeDamage<>(this));
         tasks.addTask(1, new AnimationDieAI<>(this));
         tasks.addTask(5, new EntityAIGrottolIdle(this));
-        tasks.addTask(2, new AnimationAI<>(this, BURROW_ANIMATION, false));
+        tasks.addTask(2, new SimpleAnimationAI<>(this, BURROW_ANIMATION, false));
     }
 
     @Override

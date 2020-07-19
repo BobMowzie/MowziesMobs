@@ -6,7 +6,7 @@ import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleVanillaCloudExtended;
 import com.bobmowzie.mowziesmobs.client.particles.util.MowzieParticleBase;
 import com.bobmowzie.mowziesmobs.client.particles.util.ParticleComponent;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
+import com.bobmowzie.mowziesmobs.server.ai.animation.SimpleAnimationAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
@@ -70,7 +70,7 @@ public class EntityLantern extends MowzieEntity {
     @Override
     protected void initEntityAI() {
         super.initEntityAI();
-        tasks.addTask(2, new AnimationAI<>(this, PUFF_ANIMATION, false));
+        tasks.addTask(2, new SimpleAnimationAI<>(this, PUFF_ANIMATION, false));
         this.tasks.addTask(3, new AnimationTakeDamage<>(this));
         this.tasks.addTask(1, new AnimationDieAI<>(this));
     }
