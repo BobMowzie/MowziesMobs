@@ -23,7 +23,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -121,7 +120,7 @@ public class PowerGeomancy extends Power {
                 if (player.world.isRemote) {
                     for (int i = 0; i < 6; i++) {
                         if (justDug == null) justDug = Blocks.DIRT.getDefaultState();
-                        ParticleFallingBlock.spawnFallingBlock(player.world, player.posX, player.posY + 1, player.posZ, 30f, 80, 1, (float) Math.random() * 0.8f - 0.4f, 0.4f + (float) Math.random() * 0.8f, (float) Math.random() * 0.8f - 0.4f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, justDug);
+                        ParticleFallingBlock.spawnFallingBlock(player.world, player.posX, player.posY + 1, player.posZ, 30f, 80, 1, player.getRNG().nextFloat() * 0.8f - 0.4f, 0.4f + player.getRNG().nextFloat() * 0.8f, player.getRNG().nextFloat() * 0.8f - 0.4f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, justDug);
                     }
                 }
             }
@@ -155,8 +154,8 @@ public class PowerGeomancy extends Power {
                     int particleCount = 4;
                     while (--particleCount != 0) {
                         double radius = 0.5f + 1.5f * spawnBoulderCharge/30f;
-                        double yaw = Math.random() * 2 * Math.PI;
-                        double pitch = Math.random() * 2 * Math.PI;
+                        double yaw = player.getRNG().nextFloat() * 2 * Math.PI;
+                        double pitch = player.getRNG().nextFloat() * 2 * Math.PI;
                         double ox = radius * Math.sin(yaw) * Math.sin(pitch);
                         double oy = radius * Math.cos(pitch);
                         double oz = radius * Math.cos(yaw) * Math.sin(pitch);

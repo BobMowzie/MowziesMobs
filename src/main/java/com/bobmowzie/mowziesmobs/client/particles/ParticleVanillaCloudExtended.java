@@ -27,7 +27,7 @@ public class ParticleVanillaCloudExtended extends Particle implements ParticleTe
         this.motionX += motionX;
         this.motionY += motionY;
         this.motionZ += motionZ;
-        float f1 = 1.0F - (float)(Math.random() * 0.30000001192092896D);
+        float f1 = 1.0F - this.rand.nextFloat() * 0.3F;
         this.red = (float) (f1 * r);
         this.green = (float) (f1 * g);
         this.blue = (float) (f1 * b);
@@ -47,7 +47,7 @@ public class ParticleVanillaCloudExtended extends Particle implements ParticleTe
         this.motionX += motionX;
         this.motionY += motionY;
         this.motionZ += motionZ;
-        float f1 = 1.0F - (float)(Math.random() * 0.30000001192092896D);
+        float f1 = 1.0F - this.rand.nextFloat() * 0.3F;
         this.red = (float) (f1 * r);
         this.green = (float) (f1 * g);
         this.blue = (float) (f1 * b);

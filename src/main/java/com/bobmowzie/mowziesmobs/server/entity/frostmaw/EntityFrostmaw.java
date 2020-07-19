@@ -51,10 +51,8 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNavigate;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -317,15 +315,15 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                     if (getAnimationTick() < 12) {
                         for (int i = 0; i < 6; i++) {
                             Vec3d particlePos = new Vec3d(3.5, 0, 0);
-                            particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
-                            particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                            particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
+                            particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                             double value = rand.nextFloat() * 0.15f;
                             MMParticle.CLOUD.spawn(world, mouthPos.x + particlePos.x, mouthPos.y + particlePos.y, mouthPos.z + particlePos.z, ParticleFactory.ParticleArgs.get().withData(-0.1 * particlePos.x, -0.1 * particlePos.y, -0.1 * particlePos.z, 0.75d + value, 0.75d + value, 1d, 1, 5d + rand.nextDouble() * 15d, 30, ParticleCloud.EnumCloudBehavior.CONSTANT));
                         }
                         for (int i = 0; i < 8; i++) {
                             Vec3d particlePos = new Vec3d(3.5, 0, 0);
-                            particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
-                            particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                            particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
+                            particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                             MMParticle.SNOWFLAKE.spawn(world, mouthPos.x + particlePos.x, mouthPos.y + particlePos.y, mouthPos.z + particlePos.z, ParticleFactory.ParticleArgs.get().withData(-0.07 * particlePos.x, -0.07 * particlePos.y, -0.07 * particlePos.z));
                         }
                     }

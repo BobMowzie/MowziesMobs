@@ -126,7 +126,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
             @Override
             public void updateTask() {
                 super.updateTask();
-                if (getAnimationTick() == 1) playSound(MMSounds.ENTITY_NAGA_FLAP_1, 2, (float) (0.85 + Math.random() * 0.2));
+                if (getAnimationTick() == 1) playSound(MMSounds.ENTITY_NAGA_FLAP_1, 2, (float) (0.85 + rand.nextFloat() * 0.2));
                 if (getAnimationTick() >= 4 && getAnimationTick() <= 9) {
                     motionY += 0.1;
                 }
@@ -429,8 +429,8 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
                 float explodeSpeed = 2.4f;
                 for (int i = 0; i < 25; i++) {
                     Vec3d particlePos = new Vec3d(0.25, 0, 0);
-                    particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
-                    particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                    particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
+                    particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                     double value = rand.nextFloat() * 0.1f;
                     double life = rand.nextFloat() * 10f + 20f;
                     ParticleVanillaCloudExtended.spawnVanillaCloud(world, particlePos.x + mouthPos[0].x, particlePos.y + mouthPos[0].y, particlePos.z + mouthPos[0].z, particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 1, 0.25d + value, 0.75d + value, 0.25d + value, 0.6, life);
@@ -443,8 +443,8 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
                 int howMany = 4;
                 for (int i = 0; i < howMany; i++) {
                     Vec3d particlePos = new Vec3d(3, 0, 0);
-                    particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
-                    particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                    particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
+                    particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                     double value = rand.nextFloat() * 0.15f;
                     ParticleVanillaCloudExtended.spawnVanillaCloudDestination(world, particlePos.x + mouthPos[0].x, particlePos.y + mouthPos[0].y, particlePos.z + mouthPos[0].z, 0, 0, 0, 1, 0.25d + value, 0.75d + value, 0.25d + value, 0.9, 15, mouthPos);
                 }
@@ -464,7 +464,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
             if (shoulderRot > 0.9) hasFlapSoundPlayed = false;
 
             if (shoulderRot <= 0.7 && !hasFlapSoundPlayed) {
-                world.playSound(posX, posY, posZ, MMSounds.ENTITY_NAGA_FLAP_1, SoundCategory.HOSTILE, 2, (float) (0.85 + Math.random() * 0.2), false);
+                world.playSound(posX, posY, posZ, MMSounds.ENTITY_NAGA_FLAP_1, SoundCategory.HOSTILE, 2, (float) (0.85 + rand.nextFloat() * 0.2), false);
                 hasFlapSoundPlayed = true;
             }
         }

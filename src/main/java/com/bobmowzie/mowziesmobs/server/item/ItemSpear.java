@@ -36,7 +36,7 @@ public class ItemSpear extends ItemTool {
     @Override
     public boolean hitEntity(ItemStack heldItemStack, EntityLivingBase entityHit, EntityLivingBase player) {
         heldItemStack.damageItem(1, player);
-        if (entityHit instanceof EntityAnimal && entityHit.getMaxHealth() <= 30 && Math.random() <= 0.33) {
+        if (entityHit instanceof EntityAnimal && entityHit.getMaxHealth() <= 30 && itemRand.nextFloat() <= 0.33) {
             entityHit.setHealth(0);
         }
         return true;

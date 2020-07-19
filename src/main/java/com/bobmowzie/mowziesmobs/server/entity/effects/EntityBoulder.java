@@ -57,7 +57,7 @@ public class EntityBoulder extends Entity {
         travelling = false;
         damage = 8;
         finishedRisingTick = 4;
-        animationOffset = (float) (Math.random() * 8);
+        animationOffset = rand.nextFloat() * 8;
         this.setOrigin(new BlockPos(this));
     }
 
@@ -198,8 +198,8 @@ public class EntityBoulder extends Entity {
 
         if (ticksExisted == 1) {
             for (int i = 0; i < 20 * width; i++) {
-                Vec3d particlePos = new Vec3d(Math.random() * 1.3 * width, 0, 0);
-                particlePos = particlePos.rotateYaw((float)(Math.random() * 2 * Math.PI));
+                Vec3d particlePos = new Vec3d(rand.nextFloat() * 1.3 * width, 0, 0);
+                particlePos = particlePos.rotateYaw((float)(rand.nextFloat() * 2 * Math.PI));
                 world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, posX + particlePos.x, posY - 1, posZ + particlePos.z, particlePos.x, 2, particlePos.z, blockId);
             }
             if (boulderSize == 0) {
@@ -229,13 +229,13 @@ public class EntityBoulder extends Entity {
         if (boulderSize == 3) dripTick -= 20;
         int dripNumber = (int)(width * 6 * Math.pow(1.03 + 0.04 * 1/width, -(dripTick)));
         if (dripNumber >= 1 && dripTick > 0) {
-            dripNumber *= Math.random();
+            dripNumber *= rand.nextFloat();
             for (int i = 0; i < dripNumber; i++) {
-                Vec3d particlePos = new Vec3d(Math.random() * 0.6 * width, 0, 0);
-                particlePos = particlePos.rotateYaw((float)(Math.random() * 2 * Math.PI));
+                Vec3d particlePos = new Vec3d(rand.nextFloat() * 0.6 * width, 0, 0);
+                particlePos = particlePos.rotateYaw((float)(rand.nextFloat() * 2 * Math.PI));
                 float offsetY;
-                if (boulderSize == 3 && ticksExisted < finishedRisingTick) offsetY = (float) (Math.random() * (height-1) - height * (finishedRisingTick - ticksExisted)/finishedRisingTick);
-                else offsetY = (float) (Math.random() * (height-1));
+                if (boulderSize == 3 && ticksExisted < finishedRisingTick) offsetY = (float) (rand.nextFloat() * (height-1) - height * (finishedRisingTick - ticksExisted)/finishedRisingTick);
+                else offsetY = (float) (rand.nextFloat() * (height-1));
                 world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, posX + particlePos.x, posY + offsetY, posZ + particlePos.z, 0, -1, 0, blockId);
             }
         }
@@ -247,9 +247,9 @@ public class EntityBoulder extends Entity {
     private void explode() {
         setDead();
         for (int i = 0; i < 40 * width; i++) {
-            Vec3d particlePos = new Vec3d(Math.random() * 0.7 * width, 0, 0);
-            particlePos = particlePos.rotateYaw((float)(Math.random() * 2 * Math.PI));
-            particlePos = particlePos.rotatePitch((float)(Math.random() * 2 * Math.PI));
+            Vec3d particlePos = new Vec3d(rand.nextFloat() * 0.7 * width, 0, 0);
+            particlePos = particlePos.rotateYaw((float)(rand.nextFloat() * 2 * Math.PI));
+            particlePos = particlePos.rotatePitch((float)(rand.nextFloat() * 2 * Math.PI));
             world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, posX + particlePos.x, posY + 0.5 + particlePos.y, posZ + particlePos.z, particlePos.x, particlePos.y, particlePos.z, blockId);
         }
         if (boulderSize == 0) {
@@ -266,11 +266,11 @@ public class EntityBoulder extends Entity {
 
             if (world.isRemote) {
                 for (int i = 0; i < 5; i++) {
-                    Vec3d particlePos = new Vec3d(Math.random() * 2, 0, 0);
-                    particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
-                    particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                    Vec3d particlePos = new Vec3d(rand.nextFloat() * 2, 0, 0);
+                    particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
+                    particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                     particlePos = particlePos.add(new Vec3d(0, height / 4, 0));
-                    ParticleFallingBlock.spawnFallingBlock(world, posX + particlePos.x, posY + 0.5 + particlePos.y, posZ + particlePos.z, 10.f, 90, 1, (float) particlePos.x * 0.3f, 0.2f + (float) Math.random() * 0.6f, (float) particlePos.z * 0.3f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, getBlock());
+                    ParticleFallingBlock.spawnFallingBlock(world, posX + particlePos.x, posY + 0.5 + particlePos.y, posZ + particlePos.z, 10.f, 90, 1, (float) particlePos.x * 0.3f, 0.2f + (float) rand.nextFloat() * 0.6f, (float) particlePos.z * 0.3f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, getBlock());
                 }
             }
         }
@@ -280,11 +280,11 @@ public class EntityBoulder extends Entity {
 
             if (world.isRemote) {
                 for (int i = 0; i < 7; i++) {
-                    Vec3d particlePos = new Vec3d(Math.random() * 3, 0, 0);
-                    particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
-                    particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                    Vec3d particlePos = new Vec3d(rand.nextFloat() * 3, 0, 0);
+                    particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
+                    particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                     particlePos = particlePos.add(new Vec3d(0, height / 4, 0));
-                    ParticleFallingBlock.spawnFallingBlock(world, posX + particlePos.x, posY + 0.5 + particlePos.y, posZ + particlePos.z, 10.f, 70, 1, (float) particlePos.x * 0.3f, 0.2f + (float) Math.random() * 0.6f, (float) particlePos.z * 0.3f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, getBlock());
+                    ParticleFallingBlock.spawnFallingBlock(world, posX + particlePos.x, posY + 0.5 + particlePos.y, posZ + particlePos.z, 10.f, 70, 1, (float) particlePos.x * 0.3f, 0.2f + (float) rand.nextFloat() * 0.6f, (float) particlePos.z * 0.3f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, getBlock());
                 }
             }
         }
@@ -432,6 +432,6 @@ public class EntityBoulder extends Entity {
 
     @Override
     public void playSound(SoundEvent soundIn, float volume, float pitch) {
-        super.playSound(soundIn, volume, pitch + (float)Math.random() * 0.25f - 0.125f);
+        super.playSound(soundIn, volume, pitch + rand.nextFloat() * 0.25f - 0.125f);
     }
 }

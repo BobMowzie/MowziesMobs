@@ -38,7 +38,6 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.pathfinding.PathNodeType;
-import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumParticleTypes;
@@ -305,6 +304,16 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         if (disturbance != null) {
             if (disturbance.update()) {
                 disturbance = null;
+            }
+        }
+
+        if (!this.world.isRemote) {
+            Path path = this.getNavigator().getPath();
+            if (path != null) {
+                for (int i = 0; i < path.getCurrentPathLength(); i++) {
+                    Vec3d p = path.getVectorFromIndex(this, i);
+                    ((WorldServer) this.world).spawnParticle(EnumParticleTypes.BLOCK_DUST, p.x, p.y + 0.1D, p.z, 1, 0.1D, 0.0D, 0.1D, 0.01D, Block.getIdFromBlock(i < path.getCurrentPathIndex() ? Blocks.GOLD_BLOCK : i == path.getCurrentPathIndex() ? Blocks.DIAMOND_BLOCK : Blocks.DIRT));
+                }
             }
         }
     }

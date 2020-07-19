@@ -116,25 +116,25 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
         float explodeSpeed = 3.5f;
         if (world.isRemote) {
             for (int i = 0; i < 26; i++) {
-                Vec3d particlePos = new Vec3d(Math.random() * 0.25, 0, 0);
-                particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
-                particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                Vec3d particlePos = new Vec3d(rand.nextFloat() * 0.25, 0, 0);
+                particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
+                particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                 double value = rand.nextFloat() * 0.1f;
                 double life = rand.nextFloat() * 17f + 30f;
                 ParticleVanillaCloudExtended.spawnVanillaCloud(world, posX, posY, posZ, particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 1, 0.25d + value, 0.75d + value, 0.25d + value, 0.6, life);
             }
             for (int i = 0; i < 26; i++) {
-                Vec3d particlePos = new Vec3d(Math.random() * 0.25, 0, 0);
-                particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
-                particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                Vec3d particlePos = new Vec3d(rand.nextFloat() * 0.25, 0, 0);
+                particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
+                particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                 double value = rand.nextFloat() * 0.1f;
                 double life = rand.nextFloat() * 5f + 10f;
                 MowzieParticleBase.spawnParticle(world, MMParticle.PIXEL, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, true, 0, 0, 0, 0, 3f, 0.07d + value, 0.25d + value, 0.07d + value, 1d, 0.6, life * 0.95, false);
             }
             for (int i = 0; i < 23; i++) {
-                Vec3d particlePos = new Vec3d(Math.random() * 0.25, 0, 0);
-                particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
-                particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                Vec3d particlePos = new Vec3d(rand.nextFloat() * 0.25, 0, 0);
+                particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
+                particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                 double value = rand.nextFloat() * 0.1f;
                 double life = rand.nextFloat() * 10f + 20f;
                 MowzieParticleBase.spawnParticle(world, MMParticle.BUBBLE, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, true, 0, 0, 0, 0, 3f, 0.25d + value, 0.75d + value, 0.25d + value, 1d, 0.6, life * 0.95, false);

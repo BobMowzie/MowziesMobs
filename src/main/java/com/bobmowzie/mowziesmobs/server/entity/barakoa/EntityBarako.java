@@ -452,9 +452,9 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         }
         if (getAnimationTick() > 1 && getAnimationTick() < 27) {
             for (int i = 0; i < 6; i++) {
-                Vec3d particlePos = new Vec3d(Math.random() * 5, 0, 0);
-                particlePos = particlePos.rotateYaw((float) (Math.random() * 2 * Math.PI));
-                particlePos = particlePos.rotatePitch((float) (Math.random() * 2 * Math.PI));
+                Vec3d particlePos = new Vec3d(rand.nextFloat() * 5, 0, 0);
+                particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
+                particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.add(betweenHandPos[0]);
                 double value = rand.nextDouble() * 0.5 + 0.1;
                 MowzieParticleBase.spawnParticle(world, MMParticle.PIXEL, particlePos.x, particlePos.y, particlePos.z, 0, 0, 0, true, 0, 0, 0, 0, 5F, value, value, value, 1, 1, 7, false, new ParticleComponent[]{

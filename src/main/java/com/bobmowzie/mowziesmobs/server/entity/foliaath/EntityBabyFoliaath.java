@@ -103,7 +103,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
         }
         if (world.isRemote && getAnimation() == EAT_ANIMATION && (getAnimationTick() == 3 || getAnimationTick() == 7 || getAnimationTick() == 11 || getAnimationTick() == 15 || getAnimationTick() == 19)) {
             for (int i = 0; i <= 5; i++) {
-                world.spawnParticle(EnumParticleTypes.ITEM_CRACK, posX, posY + 0.2, posZ, Math.random() * 0.2 - 0.1, Math.random() * 0.2, Math.random() * 0.2 - 0.1, Item.getIdFromItem(getEating().getItem()));
+                world.spawnParticle(EnumParticleTypes.ITEM_CRACK, posX, posY + 0.2, posZ, rand.nextFloat() * 0.2 - 0.1, rand.nextFloat() * 0.2, rand.nextFloat() * 0.2 - 0.1, Item.getIdFromItem(getEating().getItem()));
             }
         }
 

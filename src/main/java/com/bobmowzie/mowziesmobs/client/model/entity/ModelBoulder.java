@@ -5,6 +5,8 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 
+import java.util.Random;
+
 /**
  * Created by Josh on 4/14/2017.
  */
@@ -290,8 +292,9 @@ public class ModelBoulder extends AdvancedModelBase {
         blockModels = new BlockModelRenderer[]{boulder0block1, boulder1block1, boulder1block2, boulder1block3, boulder1block4, boulder1block5, boulder1block6, boulder2block1, boulder2block2, boulder2block3, boulder2block4, boulder2block5, boulder2block6, boulder2block7, boulder2block8, boulder2block9, boulder2block10, boulder2block11, boulder2block12, boulder2block13, boulder2block14, boulder2block15, boulder2block16,
             boulder3block1, boulder3block2, boulder3block3, boulder3block4, boulder3block5, boulder3block6, boulder3block7, boulder3block8, boulder3block9, boulder3block10, boulder3block11, boulder3block12, boulder3block13, boulder3block14, boulder3block15, boulder3block16, boulder3block17, boulder3block18, boulder3block19, boulder3block20, boulder3block21, boulder3block22, boulder3block23, boulder3block24, boulder3block25, boulder3block26, boulder3block27, boulder3block28
         };
+        Random rng = new Random(0x11c08b85b1943001L);
         for (BlockModelRenderer blockModel: blockModels) {
-            float scale = (float) (Math.random() * 0.01f - 0.005f);
+            float scale = rng.nextFloat() * 0.01f - 0.005f;
             blockModel.setScale(1 + scale, 1 + scale, 1 + scale);
         }
         updateDefaultPose();

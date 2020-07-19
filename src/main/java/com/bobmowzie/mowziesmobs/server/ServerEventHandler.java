@@ -152,14 +152,14 @@ public enum ServerEventHandler {
                 entity.setSneaking(false);
 
                 if (entity.world.isRemote && entity.ticksExisted % 2 == 0) {
-                    double cloudX = entity.posX + entity.width * Math.random() - entity.width / 2;
-                    double cloudZ = entity.posZ + entity.width * Math.random() - entity.width / 2;
-                    double cloudY = entity.posY + entity.height * Math.random();
+                    double cloudX = entity.posX + entity.width * entity.getRNG().nextFloat() - entity.width / 2;
+                    double cloudZ = entity.posZ + entity.width * entity.getRNG().nextFloat() - entity.width / 2;
+                    double cloudY = entity.posY + entity.height * entity.getRNG().nextFloat();
                     MMParticle.CLOUD.spawn(entity.world, cloudX, cloudY, cloudZ, ParticleFactory.ParticleArgs.get().withData(0d, -0.01d, 0d, 0.75d, 0.75d, 1d, 1, 15d, 25, ParticleCloud.EnumCloudBehavior.CONSTANT));
 
-                    double snowX = entity.posX + entity.width * Math.random() - entity.width / 2;
-                    double snowZ = entity.posZ + entity.width * Math.random() - entity.width / 2;
-                    double snowY = entity.posY + entity.height * Math.random();
+                    double snowX = entity.posX + entity.width * entity.getRNG().nextFloat() - entity.width / 2;
+                    double snowZ = entity.posZ + entity.width * entity.getRNG().nextFloat() - entity.width / 2;
+                    double snowY = entity.posY + entity.height * entity.getRNG().nextFloat();
                     MMParticle.SNOWFLAKE.spawn(entity.world, snowX, snowY, snowZ, ParticleFactory.ParticleArgs.get().withData(0d, -0.01d, 0d));
                 }
             }
@@ -174,9 +174,9 @@ public enum ServerEventHandler {
                     if (entity.world.isRemote) {
                         int particleCount = (int) (10 + 1 * entity.height * entity.width * entity.width);
                         for (int i = 0; i < particleCount; i++) {
-                            double particleX = entity.posX + entity.width * Math.random() - entity.width / 2;
-                            double particleZ = entity.posZ + entity.width * Math.random() - entity.width / 2;
-                            double particleY = entity.posY + entity.height * Math.random() + 0.3f;
+                            double particleX = entity.posX + entity.width * entity.getRNG().nextFloat() - entity.width / 2;
+                            double particleZ = entity.posZ + entity.width * entity.getRNG().nextFloat() - entity.width / 2;
+                            double particleY = entity.posY + entity.height * entity.getRNG().nextFloat() + 0.3f;
                             entity.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, particleX, particleY, particleZ, 0, 0, 0, ICE);
                         }
                     }
