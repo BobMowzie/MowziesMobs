@@ -28,8 +28,8 @@ public class MMPathNavigateGround extends PathNavigateGround {
 
     @Override
     protected void pathFollow() {
-        Path path = Objects.requireNonNull(currentPath);
-        Vec3d entityPos = getEntityPosition();
+        Path path = Objects.requireNonNull(this.currentPath);
+        Vec3d entityPos = this.getEntityPosition();
         int pathLength = path.getCurrentPathLength();
         for (int i = path.getCurrentPathIndex(); i < path.getCurrentPathLength(); i++) {
             if (path.getPathPointFromIndex(i).y != Math.floor(entityPos.y)) {
@@ -37,25 +37,24 @@ public class MMPathNavigateGround extends PathNavigateGround {
                 break;
             }
         }
-        final int sizeX = MathHelper.floor(entity.width + 1.0F);
-        final int sizeY = MathHelper.floor(entity.height + 1.0F);
-        final float threshold = (sizeX - entity.width) * 0.5F;
-        Vec3d pathPos = path.getPosition(entity);
-        if (MathHelper.abs((float) (entity.posX - pathPos.x)) < threshold &&
-                MathHelper.abs((float) (entity.posZ - pathPos.z)) < threshold &&
-                Math.abs(entity.posY - pathPos.y) < 1.0D) {
+        final int sizeX = MathHelper.floor(this.entity.width + 1.0F);
+        final float threshold = (sizeX - this.entity.width) * 0.5F;
+        Vec3d pathPos = path.getPosition(this.entity);
+        if (MathHelper.abs((float) (this.entity.posX - pathPos.x)) < threshold &&
+                MathHelper.abs((float) (this.entity.posZ - pathPos.z)) < threshold &&
+                Math.abs(this.entity.posY - pathPos.y) < 1.0D) {
             path.setCurrentPathIndex(path.getCurrentPathIndex() + 1);
         }
-        final Vec3d base = entityPos.add(-entity.width * 0.5F, 0.0F, -entity.width * 0.5F);
-        final Vec3d max = base.add(entity.width, entity.height, entity.width);
+        final Vec3d base = entityPos.add(-this.entity.width * 0.5F, 0.0F, -this.entity.width * 0.5F);
+        final Vec3d max = base.add(this.entity.width, this.entity.height, this.entity.width);
         for (int i = pathLength; i-- > path.getCurrentPathIndex(); ) {
-            final Vec3d vec = path.getVectorFromIndex(entity, i).subtract(entityPos);
+            final Vec3d vec = path.getVectorFromIndex(this.entity, i).subtract(entityPos);
             if (this.sweep(vec, base, max)) {
                 path.setCurrentPathIndex(i);
                 break;
             }
         }
-        checkForStuck(entityPos);
+        this.checkForStuck(entityPos);
     }
 
     @Override
@@ -118,22 +117,14 @@ public class MMPathNavigateGround extends PathNavigateGround {
                 for (int z = z0; z != z1; z += stepz) {
                     for (int y = y0; y != y1; y += stepy) {
                         Block block = this.world.getBlockState(pos.setPos(x, y, z)).getBlock();
-                        if (!block.isPassable(this.world, pos)) {
-                            return false;
-                        }
+                        if (!block.isPassable(this.world, pos)) return false;
                     }
                     PathNodeType below = this.nodeProcessor.getPathNodeType(this.world, x, y0 - 1, z, this.entity, 1, 1, 1, true, true);
-                    if (below == PathNodeType.WATER || below == PathNodeType.LAVA || below == PathNodeType.OPEN) {
-                        return false;
-                    }
+                    if (below == PathNodeType.WATER || below == PathNodeType.LAVA || below == PathNodeType.OPEN) return false;
                     PathNodeType in = this.nodeProcessor.getPathNodeType(this.world, x, y0, z, this.entity, 1, y1 - y0, 1, true, true);
                     float priority = this.entity.getPathPriority(in);
-                    if (priority < 0.0F || priority >= 8.0F) {
-                        return false;
-                    }
-                    if (in == PathNodeType.DAMAGE_FIRE || in == PathNodeType.DANGER_FIRE || in == PathNodeType.DAMAGE_OTHER) {
-                        return false;
-                    }
+                    if (priority < 0.0F || priority >= 8.0F) return false;
+                    if (in == PathNodeType.DAMAGE_FIRE || in == PathNodeType.DANGER_FIRE || in == PathNodeType.DAMAGE_OTHER) return false;
                 }
             }
         } while (t <= max_t);
