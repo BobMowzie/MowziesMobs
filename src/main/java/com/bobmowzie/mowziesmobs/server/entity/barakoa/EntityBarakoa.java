@@ -319,7 +319,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             }
             if (!world.isRemote) {
                 ItemStack item = dropItem(mask, 1).getItem();
-                item.setItemDamage((int) Math.ceil((1.0f - getHealth() / getMaxHealth()) * item.getMaxDamage()));
+                item.setItemDamage((int) Math.ceil((1.0f - getHealthRatio()) * item.getMaxDamage()));
             }
         }
     }

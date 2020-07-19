@@ -249,10 +249,10 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             if (getAnimation() == NO_ANIMATION && !isAIDisabled() && rand.nextInt(80) == 0 && getEntitiesNearby(EntityBarakoa.class, 25).size() < 5 && targetDistance > 5 && timeUntilBarakoa <= 0) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SPAWN_ANIMATION);
                 timeUntilBarakoa = BARAKOA_PAUSE;
-            } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && getHealth() / getMaxHealth() <= 0.6 && timeUntilLaser <= 0 && (entityRelativeAngle < 60 || entityRelativeAngle > 300) && getEntitySenses().canSee(target)) {
+            } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && getHealthRatio() <= 0.6 && timeUntilLaser <= 0 && (entityRelativeAngle < 60 || entityRelativeAngle > 300) && getEntitySenses().canSee(target)) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SOLAR_BEAM_ANIMATION);
                 timeUntilLaser = LASER_PAUSE;
-            } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && getHealth() / getMaxHealth() <= 0.6 && timeUntilSupernova <= 0 && targetDistance <= 11) {
+            } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && getHealthRatio() <= 0.6 && timeUntilSupernova <= 0 && targetDistance <= 11) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SUPERNOVA_ANIMATION);
                 timeUntilSupernova = SUPERNOVA_PAUSE;
             } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && targetDistance <= 5) {
@@ -646,7 +646,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     protected void playStepSound(BlockPos pos, Block block) {}
 
     private int getTimeUntilSunstrike() {
-        float damageRatio = (getMaxHealth() - getHealth()) / getMaxHealth();
+        float damageRatio = 1 - getHealthRatio();
         if (damageRatio > 0.6) {
             damageRatio = 0.6f;
         }

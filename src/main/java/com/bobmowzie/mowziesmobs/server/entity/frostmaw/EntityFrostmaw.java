@@ -396,7 +396,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                     else getNavigator().tryMoveToEntityLiving(getAttackTarget(), 0.95);
                 }
                 else getNavigator().clearPath();
-                if (targetDistance <= 9 && getAnimation() == NO_ANIMATION && slamCooldown <= 0 && rand.nextInt(4) == 0 && !getAttackTarget().isPotionActive(PotionHandler.FROZEN) && getHealth()/getMaxHealth() < 0.6) {
+                if (targetDistance <= 9 && getAnimation() == NO_ANIMATION && slamCooldown <= 0 && rand.nextInt(4) == 0 && !getAttackTarget().isPotionActive(PotionHandler.FROZEN) && getHealthRatio() < 0.6) {
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, SLAM_ANIMATION);
                     slamCooldown = SLAM_COOLDOWN;
                 }

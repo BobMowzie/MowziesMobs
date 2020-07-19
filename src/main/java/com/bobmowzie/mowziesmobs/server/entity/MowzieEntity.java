@@ -332,6 +332,10 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
         return flag;
     }
 
+    public float getHealthRatio() {
+        return this.getHealth() / this.getMaxHealth();
+    }
+
     public double getAngleBetweenEntities(Entity first, Entity second) {
         return Math.atan2(second.posZ - first.posZ, second.posX - first.posX) * (180 / Math.PI) + 90;
     }
