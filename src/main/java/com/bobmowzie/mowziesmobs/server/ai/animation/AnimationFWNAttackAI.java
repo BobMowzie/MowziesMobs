@@ -8,7 +8,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.Vec3d;
-import org.apache.logging.log4j.LogManager;
 
 import java.util.List;
 
@@ -33,13 +32,11 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
     public void startExecuting() {
         super.startExecuting();
         if (entity.getAnimation() == EntityWroughtnaut.ATTACK_ANIMATION) entity.playSound(MMSounds.ENTITY_WROUGHT_PRE_SWING_1, 1.5F, 1F);
-        LogManager.getLogger().info("start attack");
     }
 
     @Override
     public void resetTask() {
         super.resetTask();
-        LogManager.getLogger().info("stop attack");
     }
 
     private boolean shouldFollowUp() {
