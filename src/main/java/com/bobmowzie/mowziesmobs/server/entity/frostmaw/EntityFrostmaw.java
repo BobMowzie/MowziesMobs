@@ -123,7 +123,22 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
         this.tasks.addTask(2, new AnimationAreaAttackAI<>(this, SWIPE_ANIMATION, null, null, 2, 7, 6, 135, ConfigHandler.FROSTMAW.combatData.attackMultiplier, 9));
-        this.tasks.addTask(2, new AnimationAreaAttackAI<>(this, SWIPE_TWICE_ANIMATION, null, null, 1, 7, 6, 135, ConfigHandler.FROSTMAW.combatData.attackMultiplier, 9));
+        this.tasks.addTask(2, new AnimationAreaAttackAI<EntityFrostmaw>(this, SWIPE_TWICE_ANIMATION, null, null, 1, 7, 6, 135, ConfigHandler.FROSTMAW.combatData.attackMultiplier, 9) {
+            @Override
+            public void updateTask() {
+                super.updateTask();
+                if (getAnimationTick() == 21) {
+                    hitEntities();
+                }
+                if (getAnimationTick() == 16) {
+                    playSound(MMSounds.ENTITY_FROSTMAW_WHOOSH, 2, 0.7f);
+                }
+                if (getAnimationTick() == 6) {
+                    playSound(MMSounds.ENTITY_FROSTMAW_WHOOSH, 2, 0.8f);
+                }
+                if (getAttackTarget() != null) getLookHelper().setLookPositionWithEntity(getAttackTarget(), 30, 30);
+            }
+        });
         this.tasks.addTask(2, new SimpleAnimationAI<>(this, ICE_BREATH_ANIMATION, true));
         this.tasks.addTask(2, new SimpleAnimationAI<>(this, ICE_BALL_ANIMATION, true));
         this.tasks.addTask(2, new SimpleAnimationAI<>(this, ROAR_ANIMATION, false));
@@ -210,19 +225,6 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
             }
 
             if (getAnimation() == SWIPE_ANIMATION) {
-                if (getAnimationTick() == 6) {
-                    playSound(MMSounds.ENTITY_FROSTMAW_WHOOSH, 2, 0.8f);
-                }
-                if (getAttackTarget() != null) getLookHelper().setLookPositionWithEntity(getAttackTarget(), 30, 30);
-            }
-
-            if (getAnimation() == SWIPE_TWICE_ANIMATION && currentAnim instanceof AnimationAreaAttackAI<?>) {
-                if (getAnimationTick() == 21) {
-                    ((AnimationAreaAttackAI<?>) currentAnim).hitEntities();
-                }
-                if (getAnimationTick() == 16) {
-                    playSound(MMSounds.ENTITY_FROSTMAW_WHOOSH, 2, 0.7f);
-                }
                 if (getAnimationTick() == 6) {
                     playSound(MMSounds.ENTITY_FROSTMAW_WHOOSH, 2, 0.8f);
                 }

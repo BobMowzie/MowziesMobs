@@ -32,7 +32,6 @@ public abstract class AnimationAI<T extends MowzieEntity & IAnimatedEntity> exte
 
     @Override
     public void startExecuting() {
-        this.entity.currentAnim = this;
         this.entity.hurtInterruptsAnimation = this.hurtInterruptsAnimation;
     }
 
@@ -45,9 +44,6 @@ public abstract class AnimationAI<T extends MowzieEntity & IAnimatedEntity> exte
     public void resetTask() {
         if (this.test(this.entity.getAnimation())) {
             AnimationHandler.INSTANCE.sendAnimationMessage(this.entity, IAnimatedEntity.NO_ANIMATION);
-        }
-        if (this.entity.currentAnim == this) {
-            this.entity.currentAnim = null;
         }
     }
 
