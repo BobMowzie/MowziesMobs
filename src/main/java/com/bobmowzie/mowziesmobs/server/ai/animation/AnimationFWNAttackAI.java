@@ -6,7 +6,6 @@ import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
@@ -81,9 +80,9 @@ public class AnimationFWNAttackAI extends AnimationAttackAI<EntityWroughtnaut> {
                     }
                 }
                 if (hit) {
-                    entity.playSound(SoundEvents.BLOCK_ANVIL_LAND, 1, 0.5F);
+                    entity.playSound(MMSounds.ENTITY_WROUGHT_AXE_HIT, 1, 0.5F);
                 }
-            } else if (entity.getAnimationTick() == 37 && shouldFollowUp() && entity.getHealth()/entity.getMaxHealth() <= 0.9 && Math.random() < 0.5) {
+            } else if (entity.getAnimationTick() == 37 && shouldFollowUp() && entity.getHealth()/entity.getMaxHealth() <= 0.9 && entity.getRNG().nextFloat() < 0.5F) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityWroughtnaut.ATTACK_TWICE_ANIMATION);
             }
         }
@@ -124,7 +123,7 @@ public class AnimationFWNAttackAI extends AnimationAttackAI<EntityWroughtnaut> {
                 if (hit) {
                     entity.playSound(MMSounds.ENTITY_WROUGHT_AXE_HIT, 1, 0.5F);
                 }
-            } else if (entity.getAnimationTick() == 23 && shouldFollowUp() && entity.swingDirection && entity.getHealth()/entity.getMaxHealth() <= 0.6 && Math.random() < 0.25) {
+            } else if (entity.getAnimationTick() == 23 && shouldFollowUp() && entity.swingDirection && entity.getHealth()/entity.getMaxHealth() <= 0.6 && entity.getRNG().nextFloat() < 0.25F) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityWroughtnaut.ATTACK_THRICE_ANIMATION);
             }
         }
