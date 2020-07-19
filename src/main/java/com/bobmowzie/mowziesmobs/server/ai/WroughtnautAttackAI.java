@@ -47,8 +47,8 @@ public class WroughtnautAttackAI extends EntityAIBase {
         this.wroughtnaut.getLookHelper().setLookPositionWithEntity(target, 30.0F, 30.0F);
         if (--this.repath <= 0 && (
             this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D ||
-            target.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D ||
-            this.wroughtnaut.getRNG().nextFloat() < 0.05F)
+            target.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D) ||
+            this.wroughtnaut.getNavigator().noPath()
         ) {
             this.targetX = target.posX;
             this.targetY = target.posY;
