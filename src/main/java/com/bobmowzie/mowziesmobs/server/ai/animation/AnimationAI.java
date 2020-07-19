@@ -32,7 +32,6 @@ public abstract class AnimationAI<T extends MowzieEntity & IAnimatedEntity> exte
 
     @Override
     public void startExecuting() {
-        this.entity.setAnimationTick(0);
         this.entity.currentAnim = this;
         this.entity.hurtInterruptsAnimation = this.hurtInterruptsAnimation;
     }
