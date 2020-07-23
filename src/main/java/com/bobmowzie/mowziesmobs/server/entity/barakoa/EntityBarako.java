@@ -124,11 +124,14 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         this.tasks.addTask(2, new SimpleAnimationAI<>(this, BLESS_ANIMATION, false));
         this.tasks.addTask(2, new SimpleAnimationAI<EntityBarako>(this, SUPERNOVA_ANIMATION, false) {
             @Override
+            public void startExecuting() {
+                super.startExecuting();
+                playSound(MMSounds.ENTITY_SUPERNOVA_START, 3f, 1f);
+            }
+
+            @Override
             public void updateTask() {
                 super.updateTask();
-                if (entity.getAnimationTick() == 1) {
-                    playSound(MMSounds.ENTITY_SUPERNOVA_START, 3f, 1f);
-                }
                 if (entity.getAnimationTick() == 30) {
                     playSound(MMSounds.ENTITY_SUPERNOVA_BLACKHOLE, 2f, 1.2f);
                 }
@@ -395,9 +398,9 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             timeUntilSupernova--;
         }
 
-//        if (getAnimation() == NO_ANIMATION) {
-//            AnimationHandler.INSTANCE.sendAnimationMessage(this, SUPERNOVA_ANIMATION);
-//        }
+        if (getAnimation() == NO_ANIMATION) {
+            AnimationHandler.INSTANCE.sendAnimationMessage(this, SUPERNOVA_ANIMATION);
+        }
     }
 
     private void superNovaEffects() {

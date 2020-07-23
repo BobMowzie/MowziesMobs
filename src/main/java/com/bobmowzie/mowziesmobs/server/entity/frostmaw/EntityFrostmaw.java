@@ -122,8 +122,20 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         this.tasks.addTask(7, new EntityAIWanderAvoidWater(this, 1.0D));
         this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
-        this.tasks.addTask(2, new AnimationAreaAttackAI<>(this, SWIPE_ANIMATION, null, null, 2, 7, 6, 135, ConfigHandler.FROSTMAW.combatData.attackMultiplier, 9));
+        this.tasks.addTask(2, new AnimationAreaAttackAI<EntityFrostmaw>(this, SWIPE_ANIMATION, null, null, 2, 7, 6, 135, ConfigHandler.FROSTMAW.combatData.attackMultiplier, 9) {
+            @Override
+            public void startExecuting() {
+                super.startExecuting();
+                swingWhichArm = rand.nextBoolean();
+            }
+        });
         this.tasks.addTask(2, new AnimationAreaAttackAI<EntityFrostmaw>(this, SWIPE_TWICE_ANIMATION, null, null, 1, 7, 6, 135, ConfigHandler.FROSTMAW.combatData.attackMultiplier, 9) {
+            @Override
+            public void startExecuting() {
+                super.startExecuting();
+                swingWhichArm = rand.nextBoolean();
+            }
+
             @Override
             public void updateTask() {
                 super.updateTask();
@@ -140,10 +152,28 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
             }
         });
         this.tasks.addTask(2, new SimpleAnimationAI<>(this, ICE_BREATH_ANIMATION, true));
-        this.tasks.addTask(2, new SimpleAnimationAI<>(this, ICE_BALL_ANIMATION, true));
+        this.tasks.addTask(2, new SimpleAnimationAI<EntityFrostmaw>(this, ICE_BALL_ANIMATION, true) {
+            @Override
+            public void startExecuting() {
+                super.startExecuting();
+                playSound(MMSounds.ENTITY_FROSTMAW_ICEBALL_CHARGE, 2, 0.9f);
+            }
+        });
         this.tasks.addTask(2, new SimpleAnimationAI<>(this, ROAR_ANIMATION, false));
-        this.tasks.addTask(2, new AnimationActivateAI<>(this, ACTIVATE_ANIMATION));
-        this.tasks.addTask(2, new AnimationActivateAI<>(this, ACTIVATE_NO_CRYSTAL_ANIMATION));
+        this.tasks.addTask(2, new AnimationActivateAI<EntityFrostmaw>(this, ACTIVATE_ANIMATION) {
+            @Override
+            public void startExecuting() {
+                super.startExecuting();
+                playSound(MMSounds.ENTITY_FROSTMAW_WAKEUP, 1, 1);
+            }
+        });
+        this.tasks.addTask(2, new AnimationActivateAI<EntityFrostmaw>(this, ACTIVATE_NO_CRYSTAL_ANIMATION) {
+            @Override
+            public void startExecuting() {
+                super.startExecuting();
+                playSound(MMSounds.ENTITY_FROSTMAW_WAKEUP, 1, 1);
+            }
+        });
         this.tasks.addTask(2, new AnimationDeactivateAI<>(this, DEACTIVATE_ANIMATION));
         this.tasks.addTask(2, new SimpleAnimationAI<>(this, LAND_ANIMATION, false));
         this.tasks.addTask(2, new SimpleAnimationAI<>(this, SLAM_ANIMATION, false));
@@ -215,7 +245,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
             legSolver.update(this);
 
             if (getAnimation() == SWIPE_ANIMATION || getAnimation() == SWIPE_TWICE_ANIMATION) {
-                if (getAnimationTick() == 1) swingWhichArm = rand.nextBoolean();
+//                if (getAnimationTick() == 1) swingWhichArm = rand.nextBoolean();
                 if (getAnimationTick() == 3) {
                     int i = MathHelper.getInt(rand, 0, MMSounds.ENTITY_FROSTMAW_ATTACK.size());
                     if (i < MMSounds.ENTITY_FROSTMAW_ATTACK.size()) {
@@ -330,9 +360,9 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                         }
                     }
                 }
-                if (getAnimationTick() == 1) {
-                    playSound(MMSounds.ENTITY_FROSTMAW_ICEBALL_CHARGE, 2, 0.9f);
-                }
+//                if (getAnimationTick() == 1) {
+//                    playSound(MMSounds.ENTITY_FROSTMAW_ICEBALL_CHARGE, 2, 0.9f);
+//                }
                 if (getAnimationTick() == 32) {
                     if (getAttackTarget() != null) prevTargetPos = getAttackTarget().getPositionVector().add(new Vec3d(0f, getAttackTarget().height / 2.0, 0f));
                 }
@@ -462,7 +492,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         }
 
         if (getAnimation() == ACTIVATE_ANIMATION || getAnimation() == ACTIVATE_NO_CRYSTAL_ANIMATION) {
-            if (getAnimationTick() == 1) playSound(MMSounds.ENTITY_FROSTMAW_WAKEUP, 1, 1);
+            //if (getAnimationTick() == 1) playSound(MMSounds.ENTITY_FROSTMAW_WAKEUP, 1, 1);
             if (getAnimation() == ACTIVATE_ANIMATION && getAnimationTick() == 18) playSound(MMSounds.ENTITY_FROSTMAW_ATTACK.get(0).get(), 1.5f, 1);
             if ((getAnimation() == ACTIVATE_ANIMATION && getAnimationTick() == 52) || (getAnimation() == ACTIVATE_NO_CRYSTAL_ANIMATION && getAnimationTick() == 34)) {
                 playSound(MMSounds.ENTITY_FROSTMAW_ROAR, 4, 1);
@@ -486,10 +516,10 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
             playSound(MMSounds.ENTITY_FROSTMAW_BREATH.get(i).get(), 1.5F, 1.1F + rand.nextFloat() * 0.1f);
         }
 
-        if (getAnimation() == NO_ANIMATION && onGround) {
-            AnimationHandler.INSTANCE.sendAnimationMessage(this, ICE_BALL_ANIMATION);
-            setActive(true);
-        }
+//        if (getAnimation() == NO_ANIMATION && onGround) {
+//            AnimationHandler.INSTANCE.sendAnimationMessage(this, SWIPE_ANIMATION);
+//            setActive(true);
+//        }
 
         if (iceBreathCooldown > 0) iceBreathCooldown--;
         if (iceBallCooldown > 0) iceBallCooldown--;
