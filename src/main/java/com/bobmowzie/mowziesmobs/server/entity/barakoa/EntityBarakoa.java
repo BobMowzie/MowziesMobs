@@ -72,7 +72,13 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         tasks.addTask(1, new EntityAIAvoidEntity<>(this, EntitySunstrike.class, EntitySunstrike::isStriking, 3, 0.7F));
         tasks.addTask(2, new AnimationBlockAI<>(this, BLOCK_ANIMATION));
         tasks.addTask(2, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_BARAKOA_SWING, null, 1, 3, ConfigHandler.BARAKOA.combatData.attackMultiplier, 9, true));
-        tasks.addTask(2, new AnimationProjectileAttackAI<>(this, PROJECTILE_ATTACK_ANIMATION, 9, MMSounds.ENTITY_BARAKOA_BLOWDART, true));
+        tasks.addTask(2, new AnimationProjectileAttackAI<EntityBarakoa>(this, PROJECTILE_ATTACK_ANIMATION, 9, MMSounds.ENTITY_BARAKOA_BLOWDART, true) {
+            @Override
+            public void startExecuting() {
+                super.startExecuting();
+                playSound(MMSounds.ENTITY_BARAKOA_INHALE, 0.7f, 1.2f);
+            }
+        });
         tasks.addTask(3, new AnimationTakeDamage<>(this));
         tasks.addTask(4, new SimpleAnimationAI<>(this, IDLE_ANIMATION, false, true));
         tasks.addTask(4, new EntityAIAttackMelee(this, 0.5D, false));
@@ -272,9 +278,9 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         if (getAnimation() == ATTACK_ANIMATION && getAnimationTick() == 5) {
             playSound(MMSounds.ENTITY_BARAKOA_SHOUT, 1, 1.1f);
         }
-        if (getAnimation() == PROJECTILE_ATTACK_ANIMATION && getAnimationTick() == 1) {
-            playSound(MMSounds.ENTITY_BARAKOA_INHALE, 0.7f, 1.2f);
-        }
+//        if (getAnimation() == PROJECTILE_ATTACK_ANIMATION && getAnimationTick() == 1) {
+//            playSound(MMSounds.ENTITY_BARAKOA_INHALE, 0.7f, 1.2f);
+//        }
 
         if (getAttackTarget() == null) {
             ticksWithoutTarget++;

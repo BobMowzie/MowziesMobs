@@ -124,9 +124,14 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
         this.targetTasks.addTask(2, new MMAINearestAttackableTarget<>(this, EntityPlayer.class, 0, true, false, true, null));
         this.tasks.addTask(2, new SimpleAnimationAI<EntityNaga>(this, FLAP_ANIMATION, false) {
             @Override
+            public void startExecuting() {
+                super.startExecuting();
+                playSound(MMSounds.ENTITY_NAGA_FLAP_1, 2, (float) (0.85 + rand.nextFloat() * 0.2));
+            }
+
+            @Override
             public void updateTask() {
                 super.updateTask();
-                if (getAnimationTick() == 1) playSound(MMSounds.ENTITY_NAGA_FLAP_1, 2, (float) (0.85 + rand.nextFloat() * 0.2));
                 if (getAnimationTick() >= 4 && getAnimationTick() <= 9) {
                     motionY += 0.1;
                 }
@@ -150,6 +155,12 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
             }
         });
         this.tasks.addTask(2, new SimpleAnimationAI<EntityNaga>(this, SWOOP_ANIMATION, true) {
+            @Override
+            public void startExecuting() {
+                super.startExecuting();
+                playSound(MMSounds.ENTITY_NAGA_FLAP_1, 2, 0.7f);
+            }
+
             @Override
             public void updateTask() {
                 super.updateTask();
@@ -205,7 +216,6 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
                 }
 
                 if (getAnimationTick() == 22) MowziesMobs.PROXY.playNagaSwoopSound(entity);
-                if (getAnimationTick() == 1) playSound(MMSounds.ENTITY_NAGA_FLAP_1, 2, 0.7f);
 
                 if (getAnimationTick() == 7) playSound(MMSounds.ENTITY_NAGA_GRUNT_3, 2, 1f);
                 if (getAnimationTick() == 22) playSound(MMSounds.ENTITY_NAGA_ROAR_1, 3, 1f);
@@ -219,8 +229,9 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
         });
         this.tasks.addTask(2, new SimpleAnimationAI<EntityNaga>(this, LAND_ANIMATION, true) {
             @Override
-            public void updateTask() {
-                if (getAnimationTick() == 1) playSound(MMSounds.MISC_GROUNDHIT_2, 1.5f, 1);
+            public void startExecuting() {
+                super.startExecuting();
+                playSound(MMSounds.MISC_GROUNDHIT_2, 1.5f, 1);
             }
         });
         this.tasks.addTask(1, new SimpleAnimationAI<EntityNaga>(this, GET_UP_ANIMATION, true) {
