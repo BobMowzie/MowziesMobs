@@ -32,6 +32,7 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
     public void startExecuting() {
         super.startExecuting();
         if (entity.getAnimation() == EntityWroughtnaut.ATTACK_ANIMATION) entity.playSound(MMSounds.ENTITY_WROUGHT_PRE_SWING_1, 1.5F, 1F);
+        if (entity.getAnimation() == EntityWroughtnaut.ATTACK_THRICE_ANIMATION) entity.playSound(MMSounds.ENTITY_WROUGHT_PRE_SWING_3, 1.2F, 1f);
     }
 
     @Override
@@ -44,8 +45,8 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
         if (entityTarget != null && entityTarget.isEntityAlive()) {
             Vec3d targetMoveVec = new Vec3d(entityTarget.motionX, entityTarget.motionY, entityTarget.motionZ);
             Vec3d betweenEntitiesVec = entity.getPositionVector().subtract(entityTarget.getPositionVector());
-            boolean targetComingCloser = targetMoveVec.dotProduct(betweenEntitiesVec) > 0.1;
-            if (entity.targetDistance < range + 1 || (entity.targetDistance < range + 5 && targetComingCloser)) {
+            boolean targetComingCloser = targetMoveVec.dotProduct(betweenEntitiesVec) > 0;
+            if (entity.targetDistance < range + 2 || (entity.targetDistance < range + 5 && targetComingCloser)) {
                 return true;
             }
         }
@@ -105,12 +106,12 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
             } else {
                 entity.rotationYaw = entity.prevRotationYaw;
             }
-            if (entity.getAnimationTick() == 7) {
+            if (entity.getAnimationTick() == 10) {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_WHOOSH, 1.2F, 1);
             }
-            else if (entity.getAnimationTick() == 9) {
+            else if (entity.getAnimationTick() == 12) {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_SWING_3, 1.5F, 1);
-                List<EntityLivingBase> entitiesHit = entity.getEntityLivingBaseNearby(range, 3, range, range);
+                List<EntityLivingBase> entitiesHit = entity.getEntityLivingBaseNearby(range - 0.3, 3, range - 0.3, range - 0.3);
                 float damage = (float) entity.getAttack();
                 boolean hit = false;
                 for (EntityLivingBase entityHit : entitiesHit) {
@@ -124,7 +125,7 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
                     }
                     float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
                     float entityHitDistance = (float) Math.sqrt((entityHit.posZ - entity.posZ) * (entityHit.posZ - entity.posZ) + (entityHit.posX - entity.posX) * (entityHit.posX - entity.posX));
-                    if (entityHitDistance <= range && (entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2)) {
+                    if (entityHitDistance <= range - 0.3 && (entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2)) {
                         entityHit.attackEntityFrom(DamageSource.causeMobDamage(entity), damage);
                         if (entityHit.isActiveItemStackBlocking())
                             entityHit.getActiveItemStack().damageItem(400, entityHit);
@@ -146,19 +147,17 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
             } else {
                 entity.rotationYaw = entity.prevRotationYaw;
             }
-            if (entity.getAnimationTick() == 0) {
-                entity.playSound(MMSounds.ENTITY_WROUGHT_PRE_SWING_3, 1.2F, 1f);
-            } else if (entity.getAnimationTick() == 20) {
+            if (entity.getAnimationTick() == 20) {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_WHOOSH, 1.2F, 0.9f);
             } else if (entity.getAnimationTick() == 24) {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_GRUNT_3, 1.5F, 1.13f);
                 entity.move(MoverType.SELF, Math.cos(Math.toRadians(entity.rotationYaw + 90)), 0, Math.sin(Math.toRadians(entity.rotationYaw + 90)));
-                List<EntityLivingBase> entitiesHit = entity.getEntityLivingBaseNearby(range + 0.4, 3, range + 0.4, range + 0.4);
+                List<EntityLivingBase> entitiesHit = entity.getEntityLivingBaseNearby(range + 0.2, 3, range + 0.2, range + 0.2);
                 float damage = (float) entity.getAttack();
                 boolean hit = false;
                 for (EntityLivingBase entityHit : entitiesHit) {
                     float entityHitDistance = (float) Math.sqrt((entityHit.posZ - entity.posZ) * (entityHit.posZ - entity.posZ) + (entityHit.posX - entity.posX) * (entityHit.posX - entity.posX));
-                    if (entityHitDistance <= range + 0.4) {
+                    if (entityHitDistance <= range + 0.2) {
                         entityHit.attackEntityFrom(DamageSource.causeMobDamage(entity), damage);
                         if (entityHit.isActiveItemStackBlocking())
                             entityHit.getActiveItemStack().damageItem(400, entityHit);
