@@ -11,8 +11,8 @@ import net.minecraft.util.math.MathHelper;
 
 public class AnimationSunStrike<T extends MowzieEntity & IAnimatedEntity> extends SimpleAnimationAI<T> {
     protected EntityLivingBase entityTarget;
-    private double prevX;
-    private double prevZ;
+    public double prevX;
+    public double prevZ;
     private int newX;
     private int newZ;
     private int y;
@@ -37,10 +37,10 @@ public class AnimationSunStrike<T extends MowzieEntity & IAnimatedEntity> extend
             entity.getLookHelper().setLookPositionWithEntity(entityTarget, 30, 30);
         }
 
-        if (entity.getAnimationTick() == 1) {
-            prevX = entityTarget.posX;
-            prevZ = entityTarget.posZ;
-        }
+//        if (entity.getAnimationTick() == 1) {
+//            prevX = entityTarget.posX;
+//            prevZ = entityTarget.posZ;
+//        }
         if (entity.getAnimationTick() == 7) {
             double x = entityTarget.posX;
             y = MathHelper.floor(entityTarget.posY - 1);

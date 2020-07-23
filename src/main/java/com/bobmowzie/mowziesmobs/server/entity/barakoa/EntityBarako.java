@@ -120,8 +120,20 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         this.targetTasks.addTask(4, new EntityAINearestAttackableTarget<>(this, EntityZombie.class, 0, true, false, null));
         this.targetTasks.addTask(4, new EntityAINearestAttackableTarget<>(this, EntitySkeleton.class, 0, true, false, null));
         this.tasks.addTask(2, new SimpleAnimationAI<>(this, BELLY_ANIMATION, false));
-        this.tasks.addTask(2, new SimpleAnimationAI<>(this, TALK_ANIMATION, false));
-        this.tasks.addTask(2, new SimpleAnimationAI<>(this, BLESS_ANIMATION, false));
+        this.tasks.addTask(2, new SimpleAnimationAI<EntityBarako>(this, TALK_ANIMATION, false) {
+            @Override
+            public void startExecuting() {
+                super.startExecuting();
+                whichDialogue = getWhichDialogue();
+            }
+        });
+        this.tasks.addTask(2, new SimpleAnimationAI<EntityBarako>(this, BLESS_ANIMATION, false) {
+            @Override
+            public void startExecuting() {
+                super.startExecuting();
+                blessingPlayer = getCustomer();
+            }
+        });
         this.tasks.addTask(2, new SimpleAnimationAI<EntityBarako>(this, SUPERNOVA_ANIMATION, false) {
             @Override
             public void startExecuting() {
@@ -149,8 +161,21 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 }
             }
         });
-        this.tasks.addTask(2, new AnimationSunStrike<>(this, SUNSTRIKE_ANIMATION));
-        this.tasks.addTask(2, new AnimationRadiusAttack<>(this, ATTACK_ANIMATION, 4.5f, (int)(5 * ConfigHandler.BARAKO.combatData.attackMultiplier), 3f, 12, true));
+        this.tasks.addTask(2, new AnimationSunStrike<EntityBarako>(this, SUNSTRIKE_ANIMATION) {
+            @Override
+            public void startExecuting() {
+                super.startExecuting();
+                prevX = entityTarget.posX;
+                prevZ = entityTarget.posZ;
+            }
+        });
+        this.tasks.addTask(2, new AnimationRadiusAttack<EntityBarako>(this, ATTACK_ANIMATION, 4.5f, (int)(5 * ConfigHandler.BARAKO.combatData.attackMultiplier), 3f, 12, true){
+            @Override
+            public void startExecuting() {
+                super.startExecuting();
+                playSound(MMSounds.ENTITY_BARAKO_BURST, 1.7f, 1.5f);
+            }
+        });
         this.tasks.addTask(2, new AnimationSpawnBarakoa(this, SPAWN_ANIMATION));
         this.tasks.addTask(2, new AnimationSolarBeam<>(this, SOLAR_BEAM_ANIMATION));
         this.tasks.addTask(3, new AnimationTakeDamage<>(this));
@@ -297,15 +322,15 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             this.playSound(MMSounds.ENTITY_BARAKO_BELLY, 3f, 1f);
         }
 
-        if (getAnimation() == TALK_ANIMATION && getAnimationTick() == 1) {
-            whichDialogue = getWhichDialogue();
-        }
+//        if (getAnimation() == TALK_ANIMATION && getAnimationTick() == 1) {
+//            whichDialogue = getWhichDialogue();
+//        }
 
         if (getAnimation() == ATTACK_ANIMATION) {
             rotationYawHead = rotationYaw;
-            if (getAnimationTick() == 1) {
-                this.playSound(MMSounds.ENTITY_BARAKO_BURST, 1.7f, 1.5f);
-            }
+//            if (getAnimationTick() == 1) {
+//                this.playSound(MMSounds.ENTITY_BARAKO_BURST, 1.7f, 1.5f);
+//            }
             if (getAnimationTick() == 10) {
                 if (world.isRemote) {
                     spawnExplosionParticles(30);
@@ -332,9 +357,9 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         if (getAnimation() == BLESS_ANIMATION) {
             rotationYawHead = rotationYaw;
 
-            if (getAnimationTick() == 1) {
-                blessingPlayer = getCustomer();
-            }
+//            if (getAnimationTick() == 1) {
+//                blessingPlayer = getCustomer();
+//            }
             if (getAnimationTick() > 5 && getAnimationTick() < 40 && world.isRemote && blessingPlayer != null) {
                 int particleCount = 2;
                 while (--particleCount != 0) {
