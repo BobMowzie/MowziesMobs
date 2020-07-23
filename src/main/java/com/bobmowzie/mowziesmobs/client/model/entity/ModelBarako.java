@@ -328,6 +328,7 @@ public class ModelBarako extends MowzieEntityModel<EntityBarako> {
     protected void render(EntityBarako entity, float scale) {
         GlStateManager.enableNormalize();
         this.body.render(scale);
+        this.betweenHands.render(scale);
         GlStateManager.disableNormalize();
     }
 
@@ -349,7 +350,6 @@ public class ModelBarako extends MowzieEntityModel<EntityBarako> {
         rightThigh.rotateAngleZ -= 1.5 * liftLegs;
         leftThigh.rotateAngleY += 0.55 * liftLegs;
         rightThigh.rotateAngleY -= 0.55 * liftLegs;
-        if (entity.betweenHandPos.length > 0) entity.betweenHandPos[0] = betweenHands.getWorldPos(entity, delta);
     }
 
     @Override
@@ -1279,5 +1279,7 @@ public class ModelBarako extends MowzieEntityModel<EntityBarako> {
         maskMouth.setScale(mouthScaleX, mouthScaleY, maskMouth.scaleZ);
         forehead.setScale(forehead.scaleX, foreheadScale, forehead.scaleZ);
         maskBase.setScale(1 / (1 - bellyScaler.rotationPointY), 1 / (1 - bellyScaler.rotationPointY), 1 / (1 - bellyScaler.rotationPointY));
+
+        if (entity.betweenHandPos.length > 0) entity.betweenHandPos[0] = betweenHands.getWorldPos(entity, delta);
     }
 }
