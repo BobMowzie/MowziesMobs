@@ -7,6 +7,7 @@ import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleRing;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -26,12 +27,11 @@ import java.util.List;
 public class EntityIceBall extends EntityMagicEffect implements IProjectile {
     public EntityIceBall(World worldIn) {
         super(worldIn);
-        setSize(2, 2);
+        setSize(0.5f, 0.5f);
     }
 
     public EntityIceBall(World worldIn, EntityLivingBase caster) {
-        super(worldIn);
-        setSize(0, 0);
+        this(worldIn);
         if (!world.isRemote) {
             this.setCasterID(caster.getEntityId());
         }
@@ -60,7 +60,9 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
             }
         }
 
-        if (world.collidesWithAnyBlock(getEntityBoundingBox().grow(1,1,1))) explode();
+        if (world.collidesWithAnyBlock(getEntityBoundingBox().grow(0.15))) {
+            explode();
+        }
 
         if (world.isRemote) {
             float scale = 2f;
@@ -128,14 +130,14 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
     private void explode() {
         if (world.isRemote) {
             for (int i = 0; i < 8; i++) {
-                Vec3d particlePos = new Vec3d(rand.nextFloat() * 0.2, 0, 0);
+                Vec3d particlePos = new Vec3d(rand.nextFloat() * 0.3, 0, 0);
                 particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                 double value = rand.nextFloat() * 0.15f;
                 MMParticle.CLOUD.spawn(world, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x, particlePos.y, particlePos.z, 0.75d + value, 0.75d + value, 1d, 1, 10d + rand.nextDouble() * 20d, 40, ParticleCloud.EnumCloudBehavior.GROW));
             }
             for (int i = 0; i < 10; i++) {
-                Vec3d particlePos = new Vec3d(rand.nextFloat() * 0.2, 0, 0);
+                Vec3d particlePos = new Vec3d(rand.nextFloat() * 0.3, 0, 0);
                 particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                 MMParticle.SNOWFLAKE.spawn(world, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x, particlePos.y, particlePos.z));

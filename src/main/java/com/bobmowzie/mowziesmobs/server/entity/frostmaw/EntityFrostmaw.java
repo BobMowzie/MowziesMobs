@@ -308,7 +308,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
 
             if (getAnimation() == ICE_BALL_ANIMATION) {
                 if (getAttackTarget() != null) getLookHelper().setLookPositionWithEntity(getAttackTarget(), 15, 15);
-                Vec3d projectilePos = new Vec3d(2.0, 1.7, 0);
+                Vec3d projectilePos = new Vec3d(2.0, 1.9, 0);
                 projectilePos = projectilePos.rotateYaw((float)Math.toRadians(-rotationYaw - 90));
                 projectilePos = projectilePos.add(getPositionVector());
                 projectilePos = projectilePos.add(new Vec3d(0, 0, 1).rotatePitch((float)Math.toRadians(-rotationPitch)).rotateYaw((float)Math.toRadians(-rotationYawHead)));
@@ -334,7 +334,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                     playSound(MMSounds.ENTITY_FROSTMAW_ICEBALL_CHARGE, 2, 0.9f);
                 }
                 if (getAnimationTick() == 32) {
-                    if (getAttackTarget() != null) prevTargetPos = getAttackTarget().getPositionVector().add(new Vec3d(0f, getAttackTarget().getEyeHeight(), 0f));
+                    if (getAttackTarget() != null) prevTargetPos = getAttackTarget().getPositionVector().add(new Vec3d(0f, getAttackTarget().height / 2.0, 0f));
                 }
                 if (getAnimationTick() == 33) {
                     playSound(MMSounds.ENTITY_FROSTMAW_ICEBALL_SHOOT, 2, 0.7f);
@@ -486,10 +486,10 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
             playSound(MMSounds.ENTITY_FROSTMAW_BREATH.get(i).get(), 1.5F, 1.1F + rand.nextFloat() * 0.1f);
         }
 
-//        if (getAnimation() == NO_ANIMATION && onGround) {
-//            AnimationHandler.INSTANCE.sendAnimationMessage(this, ICE_BALL_ANIMATION);
-//            setActive(true);
-//        }
+        if (getAnimation() == NO_ANIMATION && onGround) {
+            AnimationHandler.INSTANCE.sendAnimationMessage(this, ICE_BALL_ANIMATION);
+            setActive(true);
+        }
 
         if (iceBreathCooldown > 0) iceBreathCooldown--;
         if (iceBallCooldown > 0) iceBallCooldown--;
