@@ -29,6 +29,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.DifficultyInstance;
@@ -55,6 +56,8 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
         .build();
 
     private static final DataParameter<Optional<Trade>> TRADE = EntityDataManager.createKey(EntityBarakoaya.class, ServerProxy.OPTIONAL_TRADE);
+//    private static final DataParameter<Integer> NUM_SALES = EntityDataManager.createKey(EntityBarakoaya.class, DataSerializers.VARINT);
+    //TODO: Sale limits. After X sales, go out of stock and change trade.
 
     private static final int MIN_OFFER_TIME = 5 * 60 * 20;
 
@@ -63,6 +66,9 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
     private TradeStore tradeStore = TradeStore.EMPTY;
 
     private int timeOffering;
+
+//    private static final int SOLD_OUT_TIME = 5 * 60 * 20;
+//    private static final int MAX_SALES = 5;
 
     private EntityPlayer customer;
 
@@ -75,12 +81,14 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
         targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityZombie.class, 0, true, true, null));
         this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntitySkeleton.class, 0, true, false, null));
         setWeapon(0);
+//        setNumSales(MAX_SALES);
     }
 
     @Override
     protected void entityInit() {
         super.entityInit();
         getDataManager().register(TRADE, Optional.absent());
+//        getDataManager().register(NUM_SALES, MAX_SALES);
     }
 
     public void setOfferingTrade(Trade trade) {
@@ -90,6 +98,14 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
     public Trade getOfferingTrade() {
         return getDataManager().get(TRADE).orNull();
     }
+
+//    public int getNumSales() {
+//        return getDataManager().get(NUM_SALES);
+//    }
+//
+//    public void setNumSales(int numSales) {
+//        getDataManager().set(NUM_SALES, numSales);
+//    }
 
     public boolean isOfferingTrade() {
         if (getDataManager().get(TRADE) instanceof Optional) {
@@ -173,6 +189,7 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
             compound.setTag("offeringTrade", getOfferingTrade().serialize());
         }
         compound.setInteger("timeOffering", timeOffering);
+//        compound.setInteger("numSales", getNumSales());
     }
 
     @Override
@@ -181,5 +198,6 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
         tradeStore = TradeStore.deserialize(compound.getCompoundTag("tradeStore"));
         setOfferingTrade(Trade.deserialize(compound.getCompoundTag("offeringTrade")));
         timeOffering = compound.getInteger("timeOffering");
+//        setNumSales(compound.getInteger("numSales"));
     }
 }

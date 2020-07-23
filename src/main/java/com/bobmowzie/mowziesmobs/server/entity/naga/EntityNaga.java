@@ -135,10 +135,16 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
         this.tasks.addTask(2, new SimpleAnimationAI<EntityNaga>(this, DODGE_ANIMATION, false));
         this.tasks.addTask(2, new AnimationProjectileAttackAI<EntityNaga>(this, SPIT_ANIMATION, 30, null) {
             @Override
+            public void startExecuting() {
+                super.startExecuting();
+                playSound(MMSounds.ENTITY_NAGA_ACID_CHARGE, 2, 1);
+            }
+
+            @Override
             public void updateTask() {
                 super.updateTask();
                 if (interrupted) return;
-                if (getAnimationTick() == 1) playSound(MMSounds.ENTITY_NAGA_ACID_CHARGE, 2, 1);
+                //if (getAnimationTick() == 1) playSound(MMSounds.ENTITY_NAGA_ACID_CHARGE, 2, 1);
                 if (getAnimationTick() < 9) motionY += 0.015;
 //                if (getAnimationTick() == 28) motionY -= 0.2;
             }
