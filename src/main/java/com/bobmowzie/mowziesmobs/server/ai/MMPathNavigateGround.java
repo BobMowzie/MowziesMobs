@@ -37,8 +37,8 @@ public class MMPathNavigateGround extends PathNavigateGround {
                 break;
             }
         }
-        final int sizeX = MathHelper.floor(this.entity.width + 1.0F);
-        final float threshold = (sizeX - this.entity.width) * 0.5F;
+        final int size = MathHelper.floor(this.entity.width + 1.0F);
+        final float threshold = this.onFlatGround(path, size) ? (size - this.entity.width) * 0.5F : this.entity.width * 0.5F;
         Vec3d pathPos = path.getPosition(this.entity);
         if (MathHelper.abs((float) (this.entity.posX - pathPos.x)) < threshold &&
                 MathHelper.abs((float) (this.entity.posZ - pathPos.z)) < threshold &&
@@ -55,6 +55,20 @@ public class MMPathNavigateGround extends PathNavigateGround {
             }
         }
         this.checkForStuck(entityPos);
+    }
+
+    private boolean onFlatGround(Path path, int size) {
+        final int current = path.getCurrentPathIndex();
+        if (!(current < path.getCurrentPathLength())) {
+            return false;
+        }
+        for (int i = 1 - size; i < size; i++) {
+            final int pos = current + i;
+            if (pos >= 0 && pos < path.getCurrentPathLength() && path.getPathPointFromIndex(pos).y != path.getPathPointFromIndex(current).y) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
