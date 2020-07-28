@@ -1,105 +1,139 @@
 {
 	"foliaath.bite1": {
-		"sounds": [ "mowziesmobs:entity/foliaath/bite1" ]
+		"sounds": [ "mowziesmobs:entity/foliaath/bite1" ],
+		"subtitle": "subtitles.mowziesmobs.foliaath.bite"
 	},
 	"foliaath.bite2": {
-		"sounds": [ "mowziesmobs:entity/foliaath/bite2" ]
+		"sounds": [ "mowziesmobs:entity/foliaath/bite2" ],
+		"subtitle": "subtitles.mowziesmobs.foliaath.bite"
 	},
 	"foliaath.emerge":{
-		"sounds": [ "mowziesmobs:entity/foliaath/emerge" ]
+		"sounds": [ "mowziesmobs:entity/foliaath/emerge" ],
+		"subtitle": "subtitles.mowziesmobs.foliaath.emerge"
 	},
 	"foliaath.grunt": {
-		"sounds": [ "mowziesmobs:entity/foliaath/grunt" ]
+		"sounds": [ "mowziesmobs:entity/foliaath/grunt" ],
+		"subtitle": "subtitles.mowziesmobs.foliaath.grunt"
 	},
 	"foliaath.pant1": {
-		"sounds": [ "mowziesmobs:entity/foliaath/pant1" ]
+		"sounds": [ "mowziesmobs:entity/foliaath/pant1" ],
+		"subtitle": "subtitles.mowziesmobs.foliaath.pant"
 	},
 	"foliaath.pant2": {
-		"sounds": [ "mowziesmobs:entity/foliaath/pant2" ]
+		"sounds": [ "mowziesmobs:entity/foliaath/pant2" ],
+		"subtitle": "subtitles.mowziesmobs.foliaath.pant"
 	},
 	"foliaath.retreat": {
-		"sounds": [ "mowziesmobs:entity/foliaath/retreat" ]
+		"sounds": [ "mowziesmobs:entity/foliaath/retreat" ],
+		"subtitle": "subtitles.mowziesmobs.foliaath.retreat"
 	},
 	"foliaath.die": {
-		"sounds": [ "mowziesmobs:entity/foliaath/die" ]
+		"sounds": [ "mowziesmobs:entity/foliaath/die" ],
+		"subtitle": "subtitles.mowziesmobs.foliaath.die"
 	},
 	"foliaath.hurt": {
-		"sounds": [ "mowziesmobs:entity/foliaath/hurt" ]
+		"sounds": [ "mowziesmobs:entity/foliaath/hurt" ],
+		"subtitle": "subtitles.mowziesmobs.foliaath.hurt"
 	},
 	"foliaath.rustle": {
-		"sounds": [ "mowziesmobs:entity/foliaath/rustle" ]
+		"sounds": [ "mowziesmobs:entity/foliaath/rustle" ],
+		"subtitle": "subtitles.mowziesmobs.foliaath.rustle"
 	},
 	"dirtimpact": {
-		"sounds": [ "mowziesmobs:random/dirt_impact" ]
+		"sounds": [ "mowziesmobs:random/dirt_impact" ],
+		"subtitle": "subtitles.mowziesmobs.ground_hit"
 	},
 	"foliaath.baby.eat": {
-		"sounds": [ "mowziesmobs:entity/foliaath/baby_eat" ]
+		"sounds": [ "mowziesmobs:entity/foliaath/baby_eat" ],
+		"subtitle": "subtitles.mowziesmobs.foliaath.baby_eat"
 	},
 	"wroughtnaut.whoosh": {
-		"sounds": [ "mowziesmobs:entity/wroughtnaut/whoosh" ]
+		"sounds": [ "mowziesmobs:entity/wroughtnaut/whoosh" ],
+		"subtitle": "subtitles.mowziesmobs.wroughtnaut.whoosh"
 	},
 	"wroughtnaut.creak": {
-		"sounds": [ "mowziesmobs:entity/wroughtnaut/creak" ]
+		"sounds": [ "mowziesmobs:entity/wroughtnaut/creak" ],
+		"subtitle": "subtitles.mowziesmobs.wroughtnaut.creak"
 	},
 	"wroughtnaut.die": {
-		"sounds": [ "mowziesmobs:entity/wroughtnaut/die" ]
+		"sounds": [ "mowziesmobs:entity/wroughtnaut/die" ],
+		"subtitle": "subtitles.mowziesmobs.wroughtnaut.die"
 	},
 	"wroughtnaut.grunt1": {
-		"sounds": [ "mowziesmobs:entity/wroughtnaut/grunt1" ]
+		"sounds": [ "mowziesmobs:entity/wroughtnaut/grunt1" ],
+		"subtitle": "subtitles.mowziesmobs.wroughtnaut.grunt"
 	},
 	"wroughtnaut.grunt2": {
-		"sounds": [ "mowziesmobs:entity/wroughtnaut/grunt2" ]
+		"sounds": [ "mowziesmobs:entity/wroughtnaut/grunt2" ],
+		"subtitle": "subtitles.mowziesmobs.wroughtnaut.grunt"
 	},
 	"wroughtnaut.grunt3": {
-		"sounds": [ "mowziesmobs:entity/wroughtnaut/grunt3" ]
+		"sounds": [ "mowziesmobs:entity/wroughtnaut/grunt3" ],
+		"subtitle": "subtitles.mowziesmobs.wroughtnaut.grunt"
 	},
 	"wroughtnaut.hurt1": {
-		"sounds": [ "mowziesmobs:entity/wroughtnaut/hurt1" ]
+		"sounds": [ "mowziesmobs:entity/wroughtnaut/hurt1" ],
+		"subtitle": "subtitles.mowziesmobs.wroughtnaut.hurt"
 	},
 	"wroughtnaut.preSwing1": {
-		"sounds": [ "mowziesmobs:entity/wroughtnaut/pre_swing1" ]
+		"sounds": [ "mowziesmobs:entity/wroughtnaut/pre_swing1" ],
+		"subtitle": "subtitles.mowziesmobs.wroughtnaut.pre_swing"
 	},
 	"wroughtnaut.preSwing2": {
-		"sounds": [ "mowziesmobs:entity/wroughtnaut/pre_swing2" ]
+		"sounds": [ "mowziesmobs:entity/wroughtnaut/pre_swing2" ],
+		"subtitle": "subtitles.mowziesmobs.wroughtnaut.pre_swing"
 	},
 	"wroughtnaut.preSwing3": {
-		"sounds": [ "mowziesmobs:entity/wroughtnaut/pre_swing3" ]
+		"sounds": [ "mowziesmobs:entity/wroughtnaut/pre_swing3" ],
+		"subtitle": "subtitles.mowziesmobs.wroughtnaut.pre_swing"
 	},
 	"wroughtnaut.pull1": {
-		"sounds": [ "mowziesmobs:entity/wroughtnaut/pull1" ]
+		"sounds": [ "mowziesmobs:entity/wroughtnaut/pull1" ],
+		"subtitle": "subtitles.mowziesmobs.wroughtnaut.pull"
 	},
 	"wroughtnaut.pull2": {
-		"sounds": [ "mowziesmobs:entity/wroughtnaut/pull2" ]
+		"sounds": [ "mowziesmobs:entity/wroughtnaut/pull2" ],
+		"subtitle": "subtitles.mowziesmobs.wroughtnaut.pull"
 	},
 	"wroughtnaut.pull3": {
-		"sounds": [ "mowziesmobs:entity/wroughtnaut/pull3" ]
+		"sounds": [ "mowziesmobs:entity/wroughtnaut/pull3" ],
+		"subtitle": "subtitles.mowziesmobs.wroughtnaut.pull"
 	},
 	"wroughtnaut.pull4": {
-		"sounds": [ "mowziesmobs:entity/wroughtnaut/pull4" ]
+		"sounds": [ "mowziesmobs:entity/wroughtnaut/pull4" ],
+		"subtitle": "subtitles.mowziesmobs.wroughtnaut.pull"
 	},
 	"wroughtnaut.pull5": {
-		"sounds": [ "mowziesmobs:entity/wroughtnaut/pull5" ]
+		"sounds": [ "mowziesmobs:entity/wroughtnaut/pull5" ],
+		"subtitle": "subtitles.mowziesmobs.wroughtnaut.pull"
 	},
 	"wroughtnaut.pull6": {
-		"sounds": [ "mowziesmobs:entity/wroughtnaut/pull6" ]
+		"sounds": [ "mowziesmobs:entity/wroughtnaut/pull6" ],
+		"subtitle": "subtitles.mowziesmobs.wroughtnaut.pull"
 	},
 	"wroughtnaut.release1": {
-		"sounds": [ "mowziesmobs:entity/wroughtnaut/release1" ]
+		"sounds": [ "mowziesmobs:entity/wroughtnaut/release1" ],
+		"subtitle": "subtitles.mowziesmobs.wroughtnaut.release"
 	},
 	"wroughtnaut.release2": {
-		"sounds": [ "mowziesmobs:entity/wroughtnaut/release2" ]
+		"sounds": [ "mowziesmobs:entity/wroughtnaut/release2" ],
+		"subtitle": "subtitles.mowziesmobs.wroughtnaut.release"
 	},
 	"wroughtnaut.scream": {
-		"sounds": [ "mowziesmobs:entity/wroughtnaut/scream" ]
+		"sounds": [ "mowziesmobs:entity/wroughtnaut/scream" ],
+		"subtitle": "subtitles.mowziesmobs.wroughtnaut.scream"
 	},
 	"wroughtnaut.shout1": {
-		"sounds": [ "mowziesmobs:entity/wroughtnaut/shout1" ]
+		"sounds": [ "mowziesmobs:entity/wroughtnaut/shout1" ],
+		"subtitle": "subtitles.mowziesmobs.wroughtnaut.shout"
 	},
 	"wroughtnaut.shout2": {
-		"sounds": [ "mowziesmobs:entity/wroughtnaut/shout2" ]
+		"sounds": [ "mowziesmobs:entity/wroughtnaut/shout2" ],
+		"subtitle": "subtitles.mowziesmobs.wroughtnaut.shout"
 	},
 	"wroughtnaut.shout3": {
-		"sounds": [ "mowziesmobs:entity/wroughtnaut/shout3" ]
+		"sounds": [ "mowziesmobs:entity/wroughtnaut/shout3" ],
+		"subtitle": "subtitles.mowziesmobs.wroughtnaut.shout"
 	},
 	"wroughtnaut.ambient": {
 		"sounds": [
@@ -107,62 +141,79 @@
 			"mowziesmobs:entity/wroughtnaut/grunt2",
 			"mowziesmobs:entity/wroughtnaut/shout1",
 			"mowziesmobs:entity/wroughtnaut/shout2"
-		]
+		],
+		"subtitle": "subtitles.mowziesmobs.wroughtnaut.grunt"
 	},
 	"wroughtnaut.swing1": {
-		"sounds": [ "mowziesmobs:entity/wroughtnaut/swing1" ]
+		"sounds": [ "mowziesmobs:entity/wroughtnaut/swing1" ],
+		"subtitle": "subtitles.mowziesmobs.wroughtnaut.swing"
 	},
 	"wroughtnaut.swing2": {
-		"sounds": [ "mowziesmobs:entity/wroughtnaut/swing2" ]
+		"sounds": [ "mowziesmobs:entity/wroughtnaut/swing2" ],
+		"subtitle": "subtitles.mowziesmobs.wroughtnaut.swing"
 	},
 	"wroughtnaut.swing3": {
-		"sounds": [ "mowziesmobs:entity/wroughtnaut/swing3" ]
+		"sounds": [ "mowziesmobs:entity/wroughtnaut/swing3" ],
+		"subtitle": "subtitles.mowziesmobs.wroughtnaut.swing"
 	},
 	"wroughtnaut.step": {
 		"sounds": [
 			"minecraft:mob/zombie/metal1",
 			"minecraft:mob/zombie/metal2",
 			"minecraft:mob/zombie/metal3"
-		]
+		],
+		"subtitle": "subtitles.mowziesmobs.wroughtnaut.footstep"
 	},
 	"wroughtnaut.undamaged": {
-		"sounds": [ "minecraft:random/anvil_land" ]
+		"sounds": [ "minecraft:random/anvil_land" ],
+		"subtitle": "subtitles.mowziesmobs.clink"
 	},
 	"wroughtnaut.axe_land": {
-		"sounds": [ "minecraft:random/anvil_land" ]
+		"sounds": [ "minecraft:random/anvil_land" ],
+		"subtitle": "subtitles.mowziesmobs.wroughtnaut.axe_clang"
 	},
 	"wroughtnaut.axe_hit": {
-		"sounds": [ "minecraft:random/anvil_land" ]
+		"sounds": [ "minecraft:random/anvil_land" ],
+		"subtitle": "subtitles.mowziesmobs.wroughtnaut.axe_clang"
 	},
 	"barakoa.angry1": {
-		"sounds": [ "mowziesmobs:entity/barakoa/angry1" ]
+		"sounds": [ "mowziesmobs:entity/barakoa/angry1" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.shout"
 	},
 	"barakoa.angry2": {
-		"sounds": [ "mowziesmobs:entity/barakoa/angry2" ]
+		"sounds": [ "mowziesmobs:entity/barakoa/angry2" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.shout"
 	},
 	"barakoa.angry3": {
-		"sounds": [ "mowziesmobs:entity/barakoa/angry3" ]
+		"sounds": [ "mowziesmobs:entity/barakoa/angry3" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.shout"
 	},
 	"barakoa.angry4": {
-		"sounds": [ "mowziesmobs:entity/barakoa/angry4" ]
+		"sounds": [ "mowziesmobs:entity/barakoa/angry4" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.shout"
 	},
 	"barakoa.angry5": {
-		"sounds": [ "mowziesmobs:entity/barakoa/angry5" ]
+		"sounds": [ "mowziesmobs:entity/barakoa/angry5" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.shout"
 	},
 	"barakoa.angry6": {
-		"sounds": [ "mowziesmobs:entity/barakoa/angry6" ]
+		"sounds": [ "mowziesmobs:entity/barakoa/angry6" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.shout"
 	},
 	"barakoa.battlecry": {
-		"sounds": [ "mowziesmobs:entity/barakoa/battlecry" ]
+		"sounds": [ "mowziesmobs:entity/barakoa/battlecry" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.battlecry"
 	},
 	"barakoa.battlecry2": {
-		"sounds": [ "mowziesmobs:entity/barakoa/battlecry2" ]
+		"sounds": [ "mowziesmobs:entity/barakoa/battlecry2" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.battlecry"
 	},
 	"barakoa.die": {
 		"sounds": [
 			"mowziesmobs:entity/barakoa/die1",
 			"mowziesmobs:entity/barakoa/die2"
-		]
+		],
+		"subtitle": "subtitles.mowziesmobs.barakoa.die"
 	},
 	"barakoa.hurt": {
 		"sounds": [
@@ -170,249 +221,327 @@
 			"mowziesmobs:entity/barakoa/hurt2",
 			"mowziesmobs:entity/barakoa/hurt3",
 			"mowziesmobs:entity/barakoa/hurt4"
-		]
+		],
+		"subtitle": "subtitles.mowziesmobs.barakoa.hurt"
 	},
 	"barakoa.talk1": {
-		"sounds": [ "mowziesmobs:entity/barakoa/talk1" ]
+		"sounds": [ "mowziesmobs:entity/barakoa/talk1" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.talk"
 	},
 	"barakoa.talk2": {
-		"sounds": [ "mowziesmobs:entity/barakoa/talk2" ]
+		"sounds": [ "mowziesmobs:entity/barakoa/talk2" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.talk"
 	},
 	"barakoa.talk3": {
-		"sounds": [ "mowziesmobs:entity/barakoa/talk3" ]
+		"sounds": [ "mowziesmobs:entity/barakoa/talk3" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.talk"
 	},
 	"barakoa.talk4": {
-		"sounds": [ "mowziesmobs:entity/barakoa/talk4" ]
+		"sounds": [ "mowziesmobs:entity/barakoa/talk4" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.talk"
 	},
 	"barakoa.talk5": {
-		"sounds": [ "mowziesmobs:entity/barakoa/talk5" ]
+		"sounds": [ "mowziesmobs:entity/barakoa/talk5" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.talk"
 	},
 	"barakoa.talk6": {
-		"sounds": [ "mowziesmobs:entity/barakoa/talk6" ]
+		"sounds": [ "mowziesmobs:entity/barakoa/talk6" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.talk"
 	},
 	"barakoa.talk7": {
-		"sounds": [ "mowziesmobs:entity/barakoa/talk7" ]
+		"sounds": [ "mowziesmobs:entity/barakoa/talk7" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.talk"
 	},
 	"barakoa.talk8": {
-		"sounds": [ "mowziesmobs:entity/barakoa/talk8" ]
+		"sounds": [ "mowziesmobs:entity/barakoa/talk8" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.talk"
 	},
 	"barakoa.talk9": {
-		"sounds": [ "mowziesmobs:entity/barakoa/talk9" ]
+		"sounds": [ "mowziesmobs:entity/barakoa/talk9" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.talk"
 	},
 	"barakoa.blowdart": {
-		"sounds": [ "mowziesmobs:entity/barakoa/blowdart" ]
+		"sounds": [ "mowziesmobs:entity/barakoa/blowdart" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.blowdart"
 	},
 	"barakoa.inhale": {
-		"sounds": [ "mowziesmobs:entity/barakoa/inhale" ]
+		"sounds": [ "mowziesmobs:entity/barakoa/inhale" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.inhale"
 	},
 	"barakoa.shout": {
-		"sounds": [ "mowziesmobs:entity/barakoa/shout" ]
+		"sounds": [ "mowziesmobs:entity/barakoa/shout" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.shout"
 	},
 	"barakoa.swing": {
-		"sounds": [ "mowziesmobs:entity/barakoa/swing" ]
+		"sounds": [ "mowziesmobs:entity/barakoa/swing" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.swing"
 	},
 	"barakoa.emerge": {
-		"sounds": [ "mowziesmobs:entity/barakoa/emerge" ]
+		"sounds": [ "mowziesmobs:entity/barakoa/emerge" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.emerge"
 	},
 	"barakoa.retract": {
-		"sounds": [ "mowziesmobs:entity/barakoa/retract" ]
+		"sounds": [ "mowziesmobs:entity/barakoa/retract" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.retract"
 	},
 	"barako.belly": {
-		"sounds": [ "mowziesmobs:entity/barako/belly" ]
+		"sounds": [ "mowziesmobs:entity/barako/belly" ],
+		"subtitle": "subtitles.mowziesmobs.barako.belly"
 	},
 	"barako.angry1": {
-		"sounds": [ "mowziesmobs:entity/barako/angry1" ]
+		"sounds": [ "mowziesmobs:entity/barako/angry1" ],
+		"subtitle": "subtitles.mowziesmobs.barako.shout"
 	},
 	"barako.angry2": {
-		"sounds": [ "mowziesmobs:entity/barako/angry2" ]
+		"sounds": [ "mowziesmobs:entity/barako/angry2" ],
+		"subtitle": "subtitles.mowziesmobs.barako.shout"
 	},
 	"barako.angry3": {
-		"sounds": [ "mowziesmobs:entity/barako/angry3" ]
+		"sounds": [ "mowziesmobs:entity/barako/angry3" ],
+		"subtitle": "subtitles.mowziesmobs.barako.shout"
 	},
 	"barako.angry4": {
-		"sounds": [ "mowziesmobs:entity/barako/angry4" ]
+		"sounds": [ "mowziesmobs:entity/barako/angry4" ],
+		"subtitle": "subtitles.mowziesmobs.barako.shout"
 	},
 	"barako.angry5": {
-		"sounds": [ "mowziesmobs:entity/barako/angry5" ]
+		"sounds": [ "mowziesmobs:entity/barako/angry5" ],
+		"subtitle": "subtitles.mowziesmobs.barako.shout"
 	},
 	"barako.angry6": {
-		"sounds": [ "mowziesmobs:entity/barako/angry6" ]
+		"sounds": [ "mowziesmobs:entity/barako/angry6" ],
+		"subtitle": "subtitles.mowziesmobs.barako.shout"
 	},
 	"barako.talk1": {
-		"sounds": [ "mowziesmobs:entity/barako/talk1" ]
+		"sounds": [ "mowziesmobs:entity/barako/talk1" ],
+		"subtitle": "subtitles.mowziesmobs.barako.talk"
 	},
 	"barako.talk2": {
-		"sounds": [ "mowziesmobs:entity/barako/talk2" ]
+		"sounds": [ "mowziesmobs:entity/barako/talk2" ],
+		"subtitle": "subtitles.mowziesmobs.barako.talk"
 	},
 	"barako.talk3": {
-		"sounds": [ "mowziesmobs:entity/barako/talk3" ]
+		"sounds": [ "mowziesmobs:entity/barako/talk3" ],
+		"subtitle": "subtitles.mowziesmobs.barako.talk"
 	},
 	"barako.talk4": {
-		"sounds": [ "mowziesmobs:entity/barako/talk4" ]
+		"sounds": [ "mowziesmobs:entity/barako/talk4" ],
+		"subtitle": "subtitles.mowziesmobs.barako.talk"
 	},
 	"barako.talk5": {
-		"sounds": [ "mowziesmobs:entity/barako/talk5" ]
+		"sounds": [ "mowziesmobs:entity/barako/talk5" ],
+		"subtitle": "subtitles.mowziesmobs.barako.talk"
 	},
 	"barako.talk6": {
-		"sounds": [ "mowziesmobs:entity/barako/talk6" ]
+		"sounds": [ "mowziesmobs:entity/barako/talk6" ],
+		"subtitle": "subtitles.mowziesmobs.barako.talk"
 	},
 	"barako.die": {
-		"sounds": [ "mowziesmobs:entity/barako/die" ]
+		"sounds": [ "mowziesmobs:entity/barako/die" ],
+		"subtitle": "subtitles.mowziesmobs.barako.die"
 	},
 	"barako.hurt": {
 		"sounds": [
 			"mowziesmobs:entity/barako/hurt1",
 			"mowziesmobs:entity/barako/hurt2",
 			"mowziesmobs:entity/barako/hurt3"
-		]
+		],
+		"subtitle": "subtitles.mowziesmobs.barako.hurt"
 	},
 	"barako.attack": {
 		"sounds": [
 			"mowziesmobs:entity/barako/attack1",
 			"mowziesmobs:entity/barako/attack2",
 			"mowziesmobs:entity/barako/attack3"
-		]
+		],
+		"subtitle": "subtitles.mowziesmobs.barako.attack"
 	},
 	"barako.burst": {
-		"sounds": [ "mowziesmobs:entity/barako/burst" ]
+		"sounds": [ "mowziesmobs:entity/barako/burst" ],
+		"subtitle": "subtitles.mowziesmobs.barako.burst"
 	},
 	"barako.bless": {
-		"sounds": [ "mowziesmobs:entity/barako/bless" ]
+		"sounds": [ "mowziesmobs:entity/barako/bless" ],
+		"subtitle": "subtitles.mowziesmobs.barako.bless"
 	},
 	"sunstrike": {
-		"sounds": [ "mowziesmobs:random/sunstrike" ]
+		"sounds": [ "mowziesmobs:random/sunstrike" ],
+		"subtitle": "subtitles.mowziesmobs.sunstrike"
 	},
 	"laser": {
-		"sounds": [ "mowziesmobs:laser/laser" ]
+		"sounds": [ "mowziesmobs:laser/laser" ],
+		"subtitle": "subtitles.mowziesmobs.laser"
 	},
 	"barako.scream": {
-		"sounds": [ "mowziesmobs:entity/barako/scream" ]
+		"sounds": [ "mowziesmobs:entity/barako/scream" ],
+		"subtitle": "subtitles.mowziesmobs.barako.scream"
 	},
 	"supernova.start": {
-		"sounds": [ "mowziesmobs:entity/barako/supernova_start" ]
+		"sounds": [ "mowziesmobs:entity/barako/supernova_start" ],
+		"subtitle": "subtitles.mowziesmobs.barako.supernova_start"
 	},
 	"supernova.blackhole": {
-		"sounds": [ "mowziesmobs:entity/barako/black_hole" ]
+		"sounds": [ "mowziesmobs:entity/barako/black_hole" ],
+		"subtitle": "subtitles.mowziesmobs.barako.black_hole"
 	},
 	"supernova.end": {
-		"sounds": [ "mowziesmobs:entity/barako/supernova_end" ]
+		"sounds": [ "mowziesmobs:entity/barako/supernova_end" ],
+		"subtitle": "subtitles.mowziesmobs.barako.supernova_end"
 	},
 	"geomancy.smallcrash": {
-		"sounds": [ "mowziesmobs:effects/geomancy/small_rock_crash" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/small_rock_crash" ],
+		"subtitle": "subtitles.mowziesmobs.geomancy.small_rock"
 	},
 	"geomancy.hitsmall": {
-		"sounds": [ "mowziesmobs:effects/geomancy/magic_hit_small" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/magic_hit_small" ],
+		"subtitle": "subtitles.mowziesmobs.geomancy.small_hit"
 	},
 	"geomancy.hitbig": {
-		"sounds": [ "mowziesmobs:effects/geomancy/magic_hit_big" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/magic_hit_big" ],
+		"subtitle": "subtitles.mowziesmobs.geomancy.big_hit"
 	},
 	"geomancy.breakLarge": {
-		"sounds": [ "mowziesmobs:effects/geomancy/break_large" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/break_large" ],
+		"subtitle": "subtitles.mowziesmobs.geomancy.big_break"
 	},
 	"geomancy.breaklarge2": {
-		"sounds": [ "mowziesmobs:effects/geomancy/break_large_2" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/break_large_2" ],
+		"subtitle": "subtitles.mowziesmobs.geomancy.big_break"
 	},
 	"geomancy.breakmedium": {
-		"sounds": [ "mowziesmobs:effects/geomancy/break_medium" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/break_medium" ],
+		"subtitle": "subtitles.mowziesmobs.geomancy.medium_break"
 	},
 	"geomancy.breakmedium2": {
-		"sounds": [ "mowziesmobs:effects/geomancy/break_medium_2" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/break_medium_2" ],
+		"subtitle": "subtitles.mowziesmobs.geomancy.medium_break"
 	},
 	"geomancy.breakmedium3": {
-		"sounds": [ "mowziesmobs:effects/geomancy/break_medium_3" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/break_medium_3" ],
+		"subtitle": "subtitles.mowziesmobs.geomancy.medium_break"
 	},
 	"geomancy.hit": {
-		"sounds": [ "mowziesmobs:effects/geomancy/hit" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/hit" ],
+		"subtitle": "subtitles.mowziesmobs.geomancy.hit"
 	},
 	"geomancy.hitmedium": {
-		"sounds": [ "mowziesmobs:effects/geomancy/hit_medium" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/hit_medium" ],
+		"subtitle": "subtitles.mowziesmobs.geomancy.medium_hit"
 	},
 	"geomancy.hitmedium2": {
-		"sounds": [ "mowziesmobs:effects/geomancy/hit_medium_2" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/hit_medium_2" ],
+		"subtitle": "subtitles.mowziesmobs.geomancy.medium_hit"
 	},
 	"geomancy.rockbreak": {
-		"sounds": [ "mowziesmobs:effects/geomancy/rock_break" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/rock_break" ],
+		"subtitle": "subtitles.mowziesmobs.geomancy.break"
 	},
 	"geomancy.rockcrash1": {
-		"sounds": [ "mowziesmobs:effects/geomancy/rock_crash_1" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/rock_crash_1" ],
+		"subtitle": "subtitles.mowziesmobs.geomancy.crash"
 	},
 	"geomancy.rockcrumble": {
-		"sounds": [ "mowziesmobs:effects/geomancy/rock_crumble" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/rock_crumble" ],
+		"subtitle": "subtitles.mowziesmobs.geomancy.crumble"
 	},
 	"geomancy.rumble1": {
-		"sounds": [ "mowziesmobs:effects/geomancy/rumble_1" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/rumble_1" ],
+		"subtitle": "subtitles.mowziesmobs.geomancy.rumble"
 	},
 	"geomancy.rumble2": {
-		"sounds": [ "mowziesmobs:effects/geomancy/rumble_2" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/rumble_2" ],
+		"subtitle": "subtitles.mowziesmobs.geomancy.rumble"
 	},
 	"geomancy.rumble3": {
-		"sounds": [ "mowziesmobs:effects/geomancy/rumble_3" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/rumble_3" ],
+		"subtitle": "subtitles.mowziesmobs.geomancy.rumble"
 	},
 	"geomancy.smallrockhit": {
-		"sounds": [ "mowziesmobs:effects/geomancy/small_rock_hit" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/small_rock_hit" ],
+		"subtitle": "subtitles.mowziesmobs.geomancy.small_hit"
 	},
 	"geomancy.bouldercharge": {
-		"sounds": [ "mowziesmobs:effects/geomancy/boulder_spawn_charge" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/boulder_spawn_charge" ],
+		"subtitle": "subtitles.mowziesmobs.geomancy.boulder_charge"
 	},
 	"geomancy.magicchargesmall": {
 		"sounds": [ "mowziesmobs:effects/geomancy/magic_charge_small" ]
 	},
 	"frostmaw.roar": {
-		"sounds": [ "mowziesmobs:entity/frostmaw/roar" ]
+		"sounds": [ "mowziesmobs:entity/frostmaw/roar" ],
+		"subtitle": "subtitles.mowziesmobs.frostmaw.roar"
 	},
 	"frostmaw.whoosh": {
-		"sounds": [ "mowziesmobs:entity/frostmaw/whoosh" ]
+		"sounds": [ "mowziesmobs:entity/frostmaw/whoosh" ],
+		"subtitle": "subtitles.mowziesmobs.frostmaw.whoosh"
 	},
 	"frostmaw.icebreath": {
-		"sounds": [ "mowziesmobs:entity/frostmaw/icebreath" ]
+		"sounds": [ "mowziesmobs:entity/frostmaw/icebreath" ],
+		"subtitle": "subtitles.mowziesmobs.frostmaw.icebreath"
 	},
 	"frostmaw.icebreathstart": {
-		"sounds": [ "mowziesmobs:entity/frostmaw/icebreathstart" ]
+		"sounds": [ "mowziesmobs:entity/frostmaw/icebreathstart" ],
+		"subtitle": "subtitles.mowziesmobs.frostmaw.icebreath.start"
 	},
 	"frostmaw.iceballcharge": {
-		"sounds": [ "mowziesmobs:entity/frostmaw/iceballcharge" ]
+		"sounds": [ "mowziesmobs:entity/frostmaw/iceballcharge" ],
+		"subtitle": "subtitles.mowziesmobs.frostmaw.iceball.charge"
 	},
 	"frostmaw.iceballshoot": {
-		"sounds": [ "mowziesmobs:entity/frostmaw/iceballshoot" ]
+		"sounds": [ "mowziesmobs:entity/frostmaw/iceballshoot" ],
+		"subtitle": "subtitles.mowziesmobs.frostmaw.iceball.shoot"
 	},
 	"frostmaw.step": {
-		"sounds": [ "mowziesmobs:entity/frostmaw/step" ]
+		"sounds": [ "mowziesmobs:entity/frostmaw/step" ],
+		"subtitle": "subtitles.mowziesmobs.frostmaw.footstep"
 	},
 	"frostmaw.land": {
-		"sounds": [ "mowziesmobs:entity/frostmaw/land" ]
+		"sounds": [ "mowziesmobs:entity/frostmaw/land" ],
+		"subtitle": "subtitles.mowziesmobs.frostmaw.land"
 	},
 	"frostmaw.attack1": {
-		"sounds": [ "mowziesmobs:entity/frostmaw/attack1" ]
+		"sounds": [ "mowziesmobs:entity/frostmaw/attack1" ],
+		"subtitle": "subtitles.mowziesmobs.frostmaw.attack"
 	},
 	"frostmaw.attack2": {
-		"sounds": [ "mowziesmobs:entity/frostmaw/attack2" ]
+		"sounds": [ "mowziesmobs:entity/frostmaw/attack2" ],
+		"subtitle": "subtitles.mowziesmobs.frostmaw.attack"
 	},
 	"frostmaw.attack3": {
-		"sounds": [ "mowziesmobs:entity/frostmaw/attack3" ]
+		"sounds": [ "mowziesmobs:entity/frostmaw/attack3" ],
+		"subtitle": "subtitles.mowziesmobs.frostmaw.attack"
 	},
 	"frostmaw.attack4": {
-		"sounds": [ "mowziesmobs:entity/frostmaw/attack4" ]
+		"sounds": [ "mowziesmobs:entity/frostmaw/attack4" ],
+		"subtitle": "subtitles.mowziesmobs.frostmaw.attack"
 	},
 	"frostmaw.die": {
-		"sounds": [ "mowziesmobs:entity/frostmaw/die" ]
+		"sounds": [ "mowziesmobs:entity/frostmaw/die" ],
+		"subtitle": "subtitles.mowziesmobs.frostmaw.die"
 	},
 	"frostmaw.breath1": {
-		"sounds": [ "mowziesmobs:entity/frostmaw/breath" ]
+		"sounds": [ "mowziesmobs:entity/frostmaw/breath" ],
+		"subtitle": "subtitles.mowziesmobs.frostmaw.breath"
 	},
 	"frostmaw.breath2": {
-		"sounds": [ "mowziesmobs:entity/frostmaw/breath2" ]
+		"sounds": [ "mowziesmobs:entity/frostmaw/breath2" ],
+		"subtitle": "subtitles.mowziesmobs.frostmaw.breath"
 	},
 	"frostmaw.living1": {
-		"sounds": [ "mowziesmobs:entity/frostmaw/living1" ]
+		"sounds": [ "mowziesmobs:entity/frostmaw/living1" ],
+		"subtitle": "subtitles.mowziesmobs.frostmaw.growl"
 	},
 	"frostmaw.living2": {
-		"sounds": [ "mowziesmobs:entity/frostmaw/living2" ]
+		"sounds": [ "mowziesmobs:entity/frostmaw/living2" ],
+		"subtitle": "subtitles.mowziesmobs.frostmaw.growl"
 	},
 	"frostmaw.wakeup": {
-		"sounds": [ "mowziesmobs:entity/frostmaw/wakeup" ]
+		"sounds": [ "mowziesmobs:entity/frostmaw/wakeup" ],
+		"subtitle": "subtitles.mowziesmobs.frostmaw.wakeup"
 	},
 	"frostmaw.frozencrash": {
-		"sounds": [ "mowziesmobs:entity/frostmaw/icecrash" ]
+		"sounds": [ "mowziesmobs:entity/frostmaw/icecrash" ],
+		"subtitle": "subtitles.mowziesmobs.ice.crash"
 	},
 	"grottol.step": {
 		"sounds": [
@@ -420,10 +549,12 @@
 			"mowziesmobs:entity/grottol/step2",
 			"mowziesmobs:entity/grottol/step3",
 			"mowziesmobs:entity/grottol/step4"
-		]
+		],
+		"subtitle": "subtitles.mowziesmobs.grottol.step"
 	},
 	"grottol.undamaged": {
-		"sounds": [ "minecraft:random/anvil_land" ]
+		"sounds": [ "minecraft:random/anvil_land" ],
+		"subtitle": "subtitles.mowziesmobs.clink"
 	},
 	"grottol.burrow": {
 		"sounds": [
@@ -431,74 +562,97 @@
 			"minecraft:dig/sand2",
 			"minecraft:dig/sand3",
 			"minecraft:dig/sand4"
-		]
+		],
+		"subtitle": "subtitles.mowziesmobs.grottol.dig"
 	},
 	"grottol.die": {
-		"sounds": [ "mowziesmobs:effects/geomancy/rock_break" ]
+		"sounds": [ "mowziesmobs:effects/geomancy/rock_break" ],
+		"subtitle": "subtitles.mowziesmobs.grottol.die"
 	},
 	"music.black_pink": {
 		"sounds": [
 			"mowziesmobs:music/black_pink"
-		]
+		],
+		"subtitle": "subtitles.mowziesmobs.black_pink"
 	},
 	"lantern.pop": {
-		"sounds": [ "mowziesmobs:entity/lantern/pop" ]
+		"sounds": [ "mowziesmobs:entity/lantern/pop" ],
+		"subtitle": "subtitles.mowziesmobs.lantern.pop"
 	},
 	"lantern.puff": {
-		"sounds": [ "mowziesmobs:entity/lantern/puff" ]
+		"sounds": [ "mowziesmobs:entity/lantern/puff" ],
+		"subtitle": "subtitles.mowziesmobs.lantern.puff"
 	},
 	"naga.acidcharge": {
-		"sounds": [ "mowziesmobs:entity/naga/acid_charge" ]
+		"sounds": [ "mowziesmobs:entity/naga/acid_charge" ],
+		"subtitle": "subtitles.mowziesmobs.naga.acid.charge"
 	},
 	"naga.acidhit": {
-		"sounds": [ "mowziesmobs:entity/naga/acid_hit" ]
+		"sounds": [ "mowziesmobs:entity/naga/acid_hit" ],
+		"subtitle": "subtitles.mowziesmobs.naga.acid.hit"
 	},
 	"naga.acidspit": {
-		"sounds": [ "mowziesmobs:entity/naga/acid_spit" ]
+		"sounds": [ "mowziesmobs:entity/naga/acid_spit" ],
+		"subtitle": "subtitles.mowziesmobs.naga.acid.spit"
 	},
 	"naga.acidspithiss": {
-		"sounds": [ "mowziesmobs:entity/naga/acid_spit_hiss" ]
+		"sounds": [ "mowziesmobs:entity/naga/acid_spit_hiss" ],
+		"subtitle": "subtitles.mowziesmobs.naga.acid.hiss"
 	},
 	"naga.flap1": {
-		"sounds": [ "mowziesmobs:entity/naga/flap1" ]
+		"sounds": [ "mowziesmobs:entity/naga/flap1" ],
+		"subtitle": "subtitles.mowziesmobs.naga.flap"
 	},
 	"naga.growl1": {
-		"sounds": [ "mowziesmobs:entity/naga/growl1" ]
+		"sounds": [ "mowziesmobs:entity/naga/growl1" ],
+		"subtitle": "subtitles.mowziesmobs.naga.growl"
 	},
 	"naga.growl2": {
-		"sounds": [ "mowziesmobs:entity/naga/growl2" ]
+		"sounds": [ "mowziesmobs:entity/naga/growl2" ],
+		"subtitle": "subtitles.mowziesmobs.naga.growl"
 	},
 	"naga.growl3": {
-		"sounds": [ "mowziesmobs:entity/naga/growl3" ]
+		"sounds": [ "mowziesmobs:entity/naga/growl3" ],
+		"subtitle": "subtitles.mowziesmobs.naga.growl"
 	},
 	"naga.grunt1": {
-		"sounds": [ "mowziesmobs:entity/naga/grunt1" ]
+		"sounds": [ "mowziesmobs:entity/naga/grunt1" ],
+		"subtitle": "subtitles.mowziesmobs.naga.grunt"
 	},
 	"naga.grunt2": {
-		"sounds": [ "mowziesmobs:entity/naga/grunt2" ]
+		"sounds": [ "mowziesmobs:entity/naga/grunt2" ],
+		"subtitle": "subtitles.mowziesmobs.naga.grunt"
 	},
 	"naga.grunt3": {
-		"sounds": [ "mowziesmobs:entity/naga/grunt3" ]
+		"sounds": [ "mowziesmobs:entity/naga/grunt3" ],
+		"subtitle": "subtitles.mowziesmobs.naga.grunt"
 	},
 	"naga.roar1": {
-		"sounds": [ "mowziesmobs:entity/naga/roar1" ]
+		"sounds": [ "mowziesmobs:entity/naga/roar1" ],
+		"subtitle": "subtitles.mowziesmobs.naga.roar"
 	},
 	"naga.roar2": {
-		"sounds": [ "mowziesmobs:entity/naga/roar2" ]
+		"sounds": [ "mowziesmobs:entity/naga/roar2" ],
+		"subtitle": "subtitles.mowziesmobs.naga.roar"
 	},
 	"naga.roar3": {
-		"sounds": [ "mowziesmobs:entity/naga/roar3" ]
+		"sounds": [ "mowziesmobs:entity/naga/roar3" ],
+		"subtitle": "subtitles.mowziesmobs.naga.roar"
 	},
 	"naga.roar4": {
-		"sounds": [ "mowziesmobs:entity/naga/roar4" ]
+		"sounds": [ "mowziesmobs:entity/naga/roar4" ],
+		"subtitle": "subtitles.mowziesmobs.naga.roar"
 	},
 	"naga.swoop": {
-		"sounds": [ "mowziesmobs:entity/naga/swoop" ]
+		"sounds": [ "mowziesmobs:entity/naga/swoop" ],
+		"subtitle": "subtitles.mowziesmobs.naga.swoop"
 	},
 	"misc.groundhit1": {
-		"sounds": [ "mowziesmobs:entity/misc/ground_hit1" ]
+		"sounds": [ "mowziesmobs:entity/misc/ground_hit1" ],
+		"subtitle": "subtitles.mowziesmobs.ground_hit"
 	},
 	"misc.groundhit2": {
-		"sounds": [ "mowziesmobs:entity/misc/ground_hit2" ]
+		"sounds": [ "mowziesmobs:entity/misc/ground_hit2" ],
+		"subtitle": "subtitles.mowziesmobs.ground_hit"
 	}
 }
