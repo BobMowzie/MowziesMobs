@@ -67,7 +67,7 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
                 if (entity.getIsInvulnerable()) continue;
                 if (entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isCreativeMode) continue;
                 if (entity instanceof EntityNaga) continue;
-                entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(caster, null), 3 * ConfigHandler.NAGA.combatData.attackMultiplier);
+                entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(this, caster), 3 * ConfigHandler.NAGA.combatData.attackMultiplier);
                 entity.addPotionEffect(new PotionEffect(MobEffects.POISON, 80, 1, false, true));
             }
         }
@@ -150,7 +150,7 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
                 if (entity.getIsInvulnerable()) continue;
                 if (entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isCreativeMode) continue;
                 if (entity instanceof EntityNaga) continue;
-                entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(caster, null), 3 * ConfigHandler.NAGA.combatData.attackMultiplier);
+                entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(this, caster), 3 * ConfigHandler.NAGA.combatData.attackMultiplier);
                 entity.addPotionEffect(new PotionEffect(MobEffects.POISON, 80, 0, false, true));
             }
         }
