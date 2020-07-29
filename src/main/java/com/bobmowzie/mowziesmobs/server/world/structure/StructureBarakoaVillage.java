@@ -10,6 +10,7 @@ import net.ilexiconn.llibrary.server.structure.StructureBuilder;
 import net.minecraft.block.*;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -266,7 +267,8 @@ public class StructureBarakoaVillage {
             }
             if (tableContent == 2) {
                 world.setBlockState(pos.add(-1, 5, 1), Blocks.SKULL.getDefaultState().withProperty(BlockSkull.FACING, EnumFacing.UP));
-                ((TileEntitySkull)world.getTileEntity(pos.add(-1, 5, 1))).setSkullRotation(2);
+                TileEntity tile = world.getTileEntity(pos.add(-1, 5, 1));
+                if (tile instanceof TileEntitySkull) ((TileEntitySkull)tile).setSkullRotation(2);
             }
         }
         if (tableCorner == 1) {
@@ -276,7 +278,8 @@ public class StructureBarakoaVillage {
             }
             if (tableContent == 2) {
                 world.setBlockState(pos.add(1, 5, 1), Blocks.SKULL.getDefaultState().withProperty(BlockSkull.FACING, EnumFacing.UP));
-                ((TileEntitySkull)world.getTileEntity(pos.add(1, 5, 1))).setSkullRotation(14);
+                TileEntity tile = world.getTileEntity(pos.add(1, 5, 1));
+                if (tile instanceof TileEntitySkull) ((TileEntitySkull)tile).setSkullRotation(14);
             }
         }
         if (tableCorner == 2) {
@@ -286,7 +289,8 @@ public class StructureBarakoaVillage {
             }
             if (tableContent == 2) {
                 world.setBlockState(pos.add(-1, 5, -1), Blocks.SKULL.getDefaultState().withProperty(BlockSkull.FACING, EnumFacing.UP));
-                ((TileEntitySkull)world.getTileEntity(pos.add(-1, 5, -1))).setSkullRotation(6);
+                TileEntity tile = world.getTileEntity(pos.add(-1, 5, -1));
+                if (tile instanceof TileEntitySkull) ((TileEntitySkull)tile).setSkullRotation(6);
             }
         }
         if (tableCorner == 3) {
@@ -296,7 +300,8 @@ public class StructureBarakoaVillage {
             }
             if (tableContent == 2) {
                 world.setBlockState(pos.add(1, 5, -1), Blocks.SKULL.getDefaultState().withProperty(BlockSkull.FACING, EnumFacing.UP));
-                ((TileEntitySkull)world.getTileEntity(pos.add(1, 5, -1))).setSkullRotation(10);
+                TileEntity tile = world.getTileEntity(pos.add(1, 5, -1));
+                if (tile instanceof TileEntitySkull) ((TileEntitySkull)tile).setSkullRotation(10);
             }
         }
 
@@ -581,10 +586,12 @@ public class StructureBarakoaVillage {
         }
 
         for (BlockPos skull : skullPosL) {
-            ((TileEntitySkull)world.getTileEntity(skull)).setSkullRotation(skullRot);
+            TileEntity tile = world.getTileEntity(skull);
+            if (tile instanceof TileEntitySkull) ((TileEntitySkull)tile).setSkullRotation(skullRot);
         }
         for (BlockPos skull : skullPosR) {
-            ((TileEntitySkull)world.getTileEntity(skull)).setSkullRotation(skullRot - 8);
+            TileEntity tile = world.getTileEntity(skull);
+            if (tile instanceof TileEntitySkull) ((TileEntitySkull)tile).setSkullRotation(skullRot - 8);
         }
         for (BlockPos pole : polePos) {
             for (int i = 0; i < 20; i++) {
@@ -644,14 +651,16 @@ public class StructureBarakoaVillage {
             }
             else {
                 world.setBlockState(poslist1[i].add(0,1,0), Blocks.SKULL.getDefaultState().withProperty(BlockSkull.FACING, EnumFacing.UP));
-                ((TileEntitySkull)world.getTileEntity(poslist1[i].add(0,1,0))).setSkullRotation(rand.nextInt(21) - 10);
+                TileEntity tile = world.getTileEntity(poslist1[i].add(0,1,0));
+                if (tile instanceof TileEntitySkull) ((TileEntitySkull)tile).setSkullRotation(rand.nextInt(21) - 10);
                 lastOnFence = false;
             }
         }
         for (int i = 0; i < poslist2.length; i++) {
             if (rand.nextInt(5) == 0) {
                 world.setBlockState(poslist2[i].add(0, 1, 0), Blocks.SKULL.getDefaultState().withProperty(BlockSkull.FACING, EnumFacing.UP));
-                ((TileEntitySkull) world.getTileEntity(poslist2[i].add(0, 1, 0))).setSkullRotation(rand.nextInt(21) - 10);
+                TileEntity tile = world.getTileEntity(poslist2[i].add(0,1,0));
+                if (tile instanceof TileEntitySkull) ((TileEntitySkull)tile).setSkullRotation(rand.nextInt(21) - 10);
             }
         }
     }
@@ -659,7 +668,8 @@ public class StructureBarakoaVillage {
     public static void generateSkull(World world, Random rand, BlockPos pos) {
         world.setBlockState(pos.add(0,1,0), Blocks.OAK_FENCE.getDefaultState());
         world.setBlockState(pos.add(0,2,0), Blocks.SKULL.getDefaultState().withProperty(BlockSkull.FACING, EnumFacing.UP));
-        ((TileEntitySkull)world.getTileEntity(pos.add(0,2,0))).setSkullRotation(rand.nextInt(21) - 10);
+        TileEntity tile = world.getTileEntity(pos.add(0,2,0));
+        if (tile instanceof TileEntitySkull) ((TileEntitySkull)tile).setSkullRotation(rand.nextInt(21) - 10);
     }
 
     public static void generateTorch(World world, BlockPos pos) {
