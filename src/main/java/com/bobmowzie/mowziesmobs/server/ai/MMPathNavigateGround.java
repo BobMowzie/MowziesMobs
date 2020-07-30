@@ -37,34 +37,40 @@ public class MMPathNavigateGround extends PathNavigateGround {
                 break;
             }
         }
-        final int size = MathHelper.floor(this.entity.width + 1.0F);
-        final float threshold = this.onFlatGround(path, size) ? (size - this.entity.width) * 0.5F : this.entity.width * 0.5F;
-        Vec3d pathPos = path.getPosition(this.entity);
-        if (MathHelper.abs((float) (this.entity.posX - pathPos.x)) < threshold &&
-                MathHelper.abs((float) (this.entity.posZ - pathPos.z)) < threshold &&
-                Math.abs(this.entity.posY - pathPos.y) < 1.0D) {
-            path.setCurrentPathIndex(path.getCurrentPathIndex() + 1);
-        }
         final Vec3d base = entityPos.add(-this.entity.width * 0.5F, 0.0F, -this.entity.width * 0.5F);
         final Vec3d max = base.add(this.entity.width, this.entity.height, this.entity.width);
-        for (int i = pathLength; i-- > path.getCurrentPathIndex(); ) {
-            final Vec3d vec = path.getVectorFromIndex(this.entity, i).subtract(entityPos);
-            if (this.sweep(vec, base, max)) {
-                path.setCurrentPathIndex(i);
-                break;
+        if (this.tryShortcut(path, new Vec3d(this.entity.posX, this.entity.posY, this.entity.posZ), pathLength, base, max)) {
+            if (this.isAt(path, 0.5F) || this.atElevationChange(path) && this.isAt(path, this.entity.width * 0.5F)) {
+                path.setCurrentPathIndex(path.getCurrentPathIndex() + 1);
             }
         }
         this.checkForStuck(entityPos);
     }
 
-    private boolean onFlatGround(Path path, int size) {
-        final int current = path.getCurrentPathIndex();
-        if (!(current < path.getCurrentPathLength())) {
-            return false;
+    private boolean isAt(Path path, float threshold) {
+        final Vec3d pathPos = path.getPosition(this.entity);
+        return MathHelper.abs((float) (this.entity.posX - pathPos.x)) < threshold &&
+                MathHelper.abs((float) (this.entity.posZ - pathPos.z)) < threshold &&
+                Math.abs(this.entity.posY - pathPos.y) < 1.0D;
+    }
+
+    private boolean atElevationChange(Path path) {
+        final int curr = path.getCurrentPathIndex();
+        final int end = Math.min(path.getCurrentPathLength(), curr + MathHelper.ceil(this.entity.width * 0.5F) + 1);
+        final int currY = path.getPathPointFromIndex(curr).y;
+        for (int i = curr + 1; i < end; i++) {
+            if (path.getPathPointFromIndex(i).y != currY) {
+                return true;
+            }
         }
-        for (int i = 1 - size; i < size; i++) {
-            final int pos = current + i;
-            if (pos >= 0 && pos < path.getCurrentPathLength() && path.getPathPointFromIndex(pos).y != path.getPathPointFromIndex(current).y) {
+        return false;
+    }
+
+    private boolean tryShortcut(Path path, Vec3d entityPos, int pathLength, Vec3d base, Vec3d max) {
+        for (int i = pathLength; --i > path.getCurrentPathIndex(); ) {
+            final Vec3d vec = path.getVectorFromIndex(this.entity, i).subtract(entityPos);
+            if (this.sweep(vec, base, max)) {
+                path.setCurrentPathIndex(i);
                 return false;
             }
         }
@@ -148,6 +154,7 @@ public class MMPathNavigateGround extends PathNavigateGround {
     static int leadEdgeToInt(float coord, int step) {
         return MathHelper.floor(coord - step * EPSILON);
     }
+
     static int trailEdgeToInt(float coord, int step) {
         return MathHelper.floor(coord + step * EPSILON);
     }
