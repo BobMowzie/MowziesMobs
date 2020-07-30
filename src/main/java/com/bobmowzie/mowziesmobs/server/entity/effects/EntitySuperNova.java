@@ -85,8 +85,10 @@ public class EntitySuperNova extends EntityMagicEffect {
                         entity.knockBack(this, 0.4f, -diff.x, -diff.z);
                     }
                     entity.attackEntityFrom(DamageSource.causeMobDamage(caster), damageMob);
-                    if (hitWithFire) entity.hurtResistantTime = entity.maxHurtResistantTime;
-                    entity.setFire(5);
+                    if (hitWithFire) {
+                        entity.hurtResistantTime = entity.maxHurtResistantTime;
+                        entity.setFire(5);
+                    }
                 }
             }
         }
