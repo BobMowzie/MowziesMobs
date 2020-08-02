@@ -206,8 +206,9 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
                     damageMob *= ConfigHandler.TOOLS_AND_ABILITIES.sunsBlessingAttackMultiplier;
                 }
                 if (entity.attackEntityFrom(DamageSource.causeMobDamage(caster), damageMob)) entity.hurtResistantTime = 0;
-                entity.attackEntityFrom(DamageSource.ON_FIRE, damageFire);
-                entity.setFire(5);
+                if (entity.attackEntityFrom(DamageSource.ON_FIRE, damageFire)) {
+                    entity.setFire(5);
+                }
             }
         }
     }
