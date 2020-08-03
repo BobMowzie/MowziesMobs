@@ -16,16 +16,16 @@ import java.util.HashMap;
  */
 @SideOnly(Side.CLIENT)
 public class MMModelAnimator {
-    private int tempTick;
-    private int prevTempTick;
-    private float delta;
-    private boolean correctAnimation;
-    private IAnimatedEntity entity;
-    private HashMap<ModelRenderer, Transform> transformMap;
-    private HashMap<ModelRenderer, Transform> prevTransformMap;
+    protected int endFrame;
+    protected int startFrame;
+    protected float delta;
+    protected boolean correctAnimation;
+    protected IAnimatedEntity entity;
+    protected HashMap<ModelRenderer, Transform> transformMap;
+    protected HashMap<ModelRenderer, Transform> prevTransformMap;
 
-    private MMModelAnimator() {
-        this.tempTick = 0;
+    protected MMModelAnimator() {
+        this.endFrame = 0;
         this.correctAnimation = false;
         this.transformMap = new HashMap<>();
         this.prevTransformMap = new HashMap<>();
@@ -52,7 +52,7 @@ public class MMModelAnimator {
      * @param delta the frame delta for interpolation
      */
     public void update(IAnimatedEntity entity, float delta) {
-        this.tempTick = this.prevTempTick = 0;
+        this.endFrame = this.startFrame = 0;
         this.delta = delta;
         this.correctAnimation = false;
         this.entity = entity;
@@ -67,7 +67,7 @@ public class MMModelAnimator {
      * @return true if it's the current animation
      */
     public boolean setAnimation(Animation animation) {
-        this.tempTick = this.prevTempTick = 0;
+        this.endFrame = this.startFrame = 0;
         this.correctAnimation = this.entity.getAnimation() == animation;
         return this.correctAnimation;
     }
@@ -81,8 +81,8 @@ public class MMModelAnimator {
         if (!this.correctAnimation) {
             return;
         }
-        this.prevTempTick = this.tempTick;
-        this.tempTick += duration;
+        this.startFrame = this.endFrame;
+        this.endFrame += duration;
     }
 
     /**
@@ -152,7 +152,7 @@ public class MMModelAnimator {
         }
         int animationTick = this.entity.getAnimationTick();
 
-        if (animationTick >= this.prevTempTick && animationTick < this.tempTick) {
+        if (animationTick >= this.startFrame && animationTick < this.endFrame) {
             if (stationary) {
                 for (ModelRenderer box : this.prevTransformMap.keySet()) {
                     Transform transform = this.prevTransformMap.get(box);
@@ -164,7 +164,7 @@ public class MMModelAnimator {
                     box.rotationPointZ += transform.getOffsetZ();
                 }
             } else {
-                float tick = (animationTick - this.prevTempTick + this.delta) / (this.tempTick - this.prevTempTick);
+                float tick = (animationTick - this.startFrame + this.delta) / (this.endFrame - this.startFrame);
                 float inc = MathHelper.sin((float) (tick * Math.PI / 2.0F)), dec = 1.0F - inc;
                 for (ModelRenderer box : this.prevTransformMap.keySet()) {
                     Transform transform = this.prevTransformMap.get(box);
