@@ -468,7 +468,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                 }
             }
 
-            if (ConfigHandler.FROSTMAW.stealableIceCrystal && getHasCrystal()) {
+            if (ConfigHandler.FROSTMAW.stealableIceCrystal && getHasCrystal() && ticksExisted > 20) {
                 Vec3d crystalPos = new Vec3d(1.6, 0.4, 1.8);
                 crystalPos = crystalPos.rotateYaw((float) Math.toRadians(-rotationYaw - 90));
                 crystalPos = crystalPos.add(getPositionVector());
