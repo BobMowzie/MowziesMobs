@@ -126,14 +126,12 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
             @Override
             public void startExecuting() {
                 super.startExecuting();
-                swingWhichArm = rand.nextBoolean();
             }
         });
         this.tasks.addTask(2, new AnimationAreaAttackAI<EntityFrostmaw>(this, SWIPE_TWICE_ANIMATION, null, null, 1, 7, 6, 135, ConfigHandler.FROSTMAW.combatData.attackMultiplier, 9) {
             @Override
             public void startExecuting() {
                 super.startExecuting();
-                swingWhichArm = rand.nextBoolean();
             }
 
             @Override
@@ -360,9 +358,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                         }
                     }
                 }
-//                if (getAnimationTick() == 1) {
-//                    playSound(MMSounds.ENTITY_FROSTMAW_ICEBALL_CHARGE, 2, 0.9f);
-//                }
+
                 if (getAnimationTick() == 32) {
                     if (getAttackTarget() != null) prevTargetPos = getAttackTarget().getPositionVector().add(new Vec3d(0f, getAttackTarget().height / 2.0, 0f));
                 }
@@ -502,6 +498,12 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
             }
         }
 
+        if (world.isRemote) {
+            if ((getAnimation() == SWIPE_ANIMATION || getAnimation() == SWIPE_TWICE_ANIMATION) && getAnimationTick() == 1) {
+                swingWhichArm = rand.nextBoolean();
+            }
+        }
+
         //Footstep Sounds
         float moveX = (float) (posX - prevPosX);
         float moveZ = (float) (posZ - prevPosZ);
@@ -517,7 +519,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         }
 
 //        if (getAnimation() == NO_ANIMATION && onGround) {
-//            AnimationHandler.INSTANCE.sendAnimationMessage(this, SWIPE_ANIMATION);
+//            AnimationHandler.INSTANCE.sendAnimationMessage(this, SLAM_ANIMATION);
 //            setActive(true);
 //        }
 

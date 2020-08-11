@@ -20,10 +20,6 @@ public class ModelFrostmaw extends MowzieEntityModel<EntityFrostmaw> {
     public AdvancedModelRenderer armLeftJoint;
     public AdvancedModelRenderer armRightJoint;
     public AdvancedModelRenderer headRotator;
-    public AdvancedModelRenderer antlerLeft;
-    public AdvancedModelRenderer antlerRight;
-    public AdvancedModelRenderer antlerLeftJoint;
-    public AdvancedModelRenderer antlerRightJoint;
     public AdvancedModelRenderer head;
     public AdvancedModelRenderer jawJoint;
     public AdvancedModelRenderer teethUpper;
@@ -80,6 +76,29 @@ public class ModelFrostmaw extends MowzieEntityModel<EntityFrostmaw> {
     public AdvancedModelRenderer iceCrystalHand;
     public AdvancedModelRenderer standUpController;
 
+    public AdvancedModelRenderer headHair;
+    public AdvancedModelRenderer hornR1;
+    public AdvancedModelRenderer hornR2;
+    public AdvancedModelRenderer hornR6;
+    public AdvancedModelRenderer hornR7;
+    public AdvancedModelRenderer hornR3;
+    public AdvancedModelRenderer hornR5;
+    public AdvancedModelRenderer hornR4;
+    public AdvancedModelRenderer hornL1;
+    public AdvancedModelRenderer hornL2;
+    public AdvancedModelRenderer hornL3;
+    public AdvancedModelRenderer hornL4;
+    public AdvancedModelRenderer hornL5;
+    public AdvancedModelRenderer hornL6;
+    public AdvancedModelRenderer hornL7;
+    public AdvancedModelRenderer backHair;
+    public AdvancedModelRenderer armRight2FurClump1;
+    public AdvancedModelRenderer armRight2FurClump2;
+    public AdvancedModelRenderer armLeft2FurClump1;
+    public AdvancedModelRenderer armLeft2FurClump2;
+    public AdvancedModelRenderer earL;
+    public AdvancedModelRenderer earR;
+
     public ModelFrostmaw() {
         this.textureWidth = 512;
         this.textureHeight = 256;
@@ -102,9 +121,9 @@ public class ModelFrostmaw extends MowzieEntityModel<EntityFrostmaw> {
         this.legRight1.addBox(-4.5F, -4.5F, -17.0F, 9, 11, 21, 0.0F);
         this.setRotateAngle(legRight1, 0.7853981633974483F, 0.6981317007977318F, 0.0F);
         this.tuskRight2 = new AdvancedModelRenderer(this, 0, 80);
-        this.tuskRight2.setRotationPoint(1.0F, -7.0F, 0.0F);
+        this.tuskRight2.setRotationPoint(0.0F, -6.0F, 0.0F);
         this.tuskRight2.addBox(-10.0F, -2.0F, -2.0F, 11, 4, 4, 0.0F);
-        this.setRotateAngle(tuskRight2, 0.0F, 0.0F, 0.5235987755982988F);
+        this.setRotateAngle(tuskRight2, -0.8727F, 1.0908F, 0.5236F);
         this.jawRotator = new AdvancedModelRenderer(this, 0, 0);
         this.jawRotator.setRotationPoint(0.0F, 7.353768176172814F, -12.24856180331474F);
         this.jawRotator.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
@@ -130,14 +149,6 @@ public class ModelFrostmaw extends MowzieEntityModel<EntityFrostmaw> {
         this.jawSpikes2 = new AdvancedModelRenderer(this, 212, 104);
         this.jawSpikes2.setRotationPoint(0.0F, 14.0F, 0.0F);
         this.jawSpikes2.addBox(-19.0F, 0.0F, -19.0F, 38, 9, 38, 0.0F);
-        this.antlerLeft = new AdvancedModelRenderer(this, 208, 77);
-        this.antlerLeft.mirror = true;
-        this.antlerLeft.setRotationPoint(0, 0, 0);
-        this.antlerLeft.add3DTexture(-15.0F, -3.0F, 0.0F, 30, 43);
-        this.setRotateAngle(antlerLeft, 0, -(float)Math.PI/2, 0);
-        this.antlerLeftJoint = new AdvancedModelRenderer(this, 208, 77);
-        this.antlerLeftJoint.setRotationPoint(22.0F, -6.0F, -15.0F);
-        this.setRotateAngle(antlerLeftJoint, -0.9599310885968813F, 0.3490658503988659F, 0.08726646259971647F);
         this.rightHand = new AdvancedModelRenderer(this, 240, 0);
         this.rightHand.setRotationPoint(2.0F, 1.0F, -4.5F);
         this.rightHand.addBox(-10.0F, -2.0F, -7.52F, 20, 20, 9, 0.0F);
@@ -188,13 +199,6 @@ public class ModelFrostmaw extends MowzieEntityModel<EntityFrostmaw> {
         this.tuskRightJoint.setRotationPoint(-12.0F, 0.0F, -19.0F);
         this.tuskRightJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         this.setRotateAngle(tuskRightJoint, 0.0F, 1.5707963267948966F, 0.0F);
-        this.antlerRight = new AdvancedModelRenderer(this, 208, 77);
-        this.antlerRight.setRotationPoint(0, 0, 0);
-        this.antlerRight.add3DTexture(-15.0F, -3.0F, 0.0F, 30, 43);
-        this.setRotateAngle(antlerRight, 0, (float)Math.PI/2, 0);
-        this.antlerRightJoint = new AdvancedModelRenderer(this, 208, 77);
-        this.antlerRightJoint.setRotationPoint(-22.0F, -6.0F, -15.0F);
-        this.setRotateAngle(antlerRightJoint, -0.9599310885968813F, -0.3490658503988659F, -0.08726646259971647F);
         this.armRight2Fur = new AdvancedModelRenderer(this, 326, 113);
         this.armRight2Fur.setRotationPoint(0.0F, 28.0F, 0.0F);
         this.armRight2Fur.addBox(-11.0F, -5.0F, -11.0F, 22, 7, 22, 0.0F);
@@ -203,9 +207,9 @@ public class ModelFrostmaw extends MowzieEntityModel<EntityFrostmaw> {
         this.legRightFur.setRotationPoint(0.0F, 0.0F, -3.0F);
         this.legRightFur.addBox(-7.0F, -6.0F, -12.0F, 14, 14, 3, 0.0F);
         this.tuskLeft2 = new AdvancedModelRenderer(this, 0, 80);
-        this.tuskLeft2.setRotationPoint(1.0F, -7.0F, 0.0F);
+        this.tuskLeft2.setRotationPoint(0.0F, -6.0F, 0.0F);
         this.tuskLeft2.addBox(-10.0F, -2.0F, -2.0F, 11, 4, 4, 0.0F);
-        this.setRotateAngle(tuskLeft2, 0.0F, 0.0F, 0.5235987755982988F);
+        this.setRotateAngle(tuskLeft2, 0.8727F, -1.0908F, 0.5236F);
         this.legRightJoint = new AdvancedModelRenderer(this, 0, 0);
         this.legRightJoint.setRotationPoint(-9.0F, 3.14F, 0.0F);
         this.legRightJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
@@ -253,11 +257,11 @@ public class ModelFrostmaw extends MowzieEntityModel<EntityFrostmaw> {
         this.armLeft2 = new AdvancedModelRenderer(this, 112, 109);
         this.armLeft2.mirror = true;
         this.armLeft2.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.armLeft2.addBox(-11.0F, -5.0F, -11.0F, 22, 28, 22, 0.0F);
+        this.armLeft2.addBox(-11.0F, -15.0F, -11.0F, 22, 38, 22, 0.0F);
         this.setRotateAngle(armLeft2, -0.8726646259971648F, 0.4363323129985824F, -0.08726646259971647F);
         this.armRight2 = new AdvancedModelRenderer(this, 112, 109);
         this.armRight2.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.armRight2.addBox(-11.0F, -5.0F, -11.0F, 22, 28, 22, 0.0F);
+        this.armRight2.addBox(-11.0F, -15.0F, -11.0F, 22, 38, 22, 0.0F);
         this.setRotateAngle(armRight2, -0.8726646259971648F, -0.4363323129985824F, 0.08726646259971647F);
         this.waist = new AdvancedModelRenderer(this, 0, 0);
         this.waist.setRotationPoint(0.0F, -30.0F, 5.0F);
@@ -286,6 +290,7 @@ public class ModelFrostmaw extends MowzieEntityModel<EntityFrostmaw> {
         this.leftRightJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         this.setRotateAngle(leftRightJoint, 0.8726646259971648F, 0.3490658503988659F, 0.2617993877991494F);
         this.rightFoot = new AdvancedModelRenderer(this, 80, 12);
+        this.rightFoot.mirror = true;
         this.rightFoot.setRotationPoint(0.0F, 0.2F, -12.0F);
         this.rightFoot.addBox(-6.5F, -14.75F, -6.3F, 13, 20, 6, 0.0F);
         this.setRotateAngle(rightFoot, -0.4363323129985824F, 0.0F, 0.0F);
@@ -308,6 +313,140 @@ public class ModelFrostmaw extends MowzieEntityModel<EntityFrostmaw> {
         this.iceCrystalHand.add3DTexture(-8, -8, 0, 16, 16);
         this.iceCrystalHand.setScale(0.5f, 0.5f, 0.5f);
         this.iceCrystalHand.setRotationPoint(-28.5f, 10, -25.5f);
+        
+        headHair = new AdvancedModelRenderer(this);
+        headHair.setRotationPoint(0.0F, -3.0F, -24.0F);
+        headJoint.addChild(headHair);
+        setRotateAngle(headHair, 0.2182F, 0.0F, 0.0F);
+        headHair.setTextureOffset(266, 192).addBox(-9.0F, -9.0F, -1.0F, 18, 23, 36, false);
+        headHair.setScale(0.999f, 1, 1);
+
+        hornR1 = new AdvancedModelRenderer(this);
+        hornR1.setRotationPoint(8.5F, 0.0F, -10.5F);
+        headJoint.addChild(hornR1);
+        setRotateAngle(hornR1, -0.2327F, 0.7396F, 0.5849F);
+        hornR1.setTextureOffset(72, 177).addBox(-7.5F, -21.0F, -9.5F, 17, 23, 17, false);
+
+        hornR2 = new AdvancedModelRenderer(this);
+        hornR2.setRotationPoint(0.0F, -14.0F, 2.0F);
+        hornR1.addChild(hornR2);
+        setRotateAngle(hornR2, -0.3286F, -0.0089F, -0.665F);
+        hornR2.setTextureOffset(140, 169).addBox(-4.5F, -20.0F, -9.5F, 14, 22, 14, false);
+
+        hornR6 = new AdvancedModelRenderer(this);
+        hornR6.setRotationPoint(0.2003F, 0.5395F, 3.3145F);
+        hornR2.addChild(hornR6);
+        setRotateAngle(hornR6, -0.397F, 0.3402F, 0.428F);
+        hornR6.setTextureOffset(0, 226).addBox(-0.5F, -16.0F, -9.5F, 10, 19, 10, false);
+
+        hornR7 = new AdvancedModelRenderer(this);
+        hornR7.setRotationPoint(6.0F, -13.0F, -5.0F);
+        hornR6.addChild(hornR7);
+        setRotateAngle(hornR7, 0.546F, 0.0303F, 0.2416F);
+        hornR7.setTextureOffset(455, 0).addBox(-4.6263F, -15.3903F, -1.6013F, 6, 18, 6, false);
+
+        hornR3 = new AdvancedModelRenderer(this);
+        hornR3.setRotationPoint(-3.0F, -14.0F, 2.0F);
+        hornR2.addChild(hornR3);
+        setRotateAngle(hornR3, -0.3356F, -0.0462F, -0.1705F);
+        hornR3.setTextureOffset(0, 226).addBox(-0.5F, -20.0F, -9.5F, 10, 20, 10, false);
+
+        hornR5 = new AdvancedModelRenderer(this);
+        hornR5.setRotationPoint(4.0F, -9.0F, -9.0F);
+        hornR3.addChild(hornR5);
+        setRotateAngle(hornR5, 0.8134F, 0.4571F, -0.1047F);
+        hornR5.setTextureOffset(405, 193).addBox(-4.6263F, -12.3903F, -0.6013F, 5, 17, 5, false);
+
+        hornR4 = new AdvancedModelRenderer(this);
+        hornR4.setRotationPoint(6.0F, -15.0F, -5.0F);
+        hornR3.addChild(hornR4);
+        setRotateAngle(hornR4, 0.4363F, -0.3927F, 0.2618F);
+        hornR4.setTextureOffset(455, 0).addBox(-4.6263F, -19.3903F, -0.6013F, 6, 18, 6, false);
+
+        hornL1 = new AdvancedModelRenderer(this);
+        hornL1.setRotationPoint(-8.5F, 0.0F, -10.5F);
+        headJoint.addChild(hornL1);
+        setRotateAngle(hornL1, -0.2327F, -0.7396F, -0.5849F);
+        hornL1.setTextureOffset(72, 177).addBox(-9.5F, -21.0F, -9.5F, 17, 23, 17, true);
+
+        hornL2 = new AdvancedModelRenderer(this);
+        hornL2.setRotationPoint(0.0F, -14.0F, 2.0F);
+        hornL1.addChild(hornL2);
+        setRotateAngle(hornL2, -0.3286F, 0.0089F, 0.665F);
+        hornL2.setTextureOffset(140, 169).addBox(-9.5F, -20.0F, -9.5F, 14, 22, 14, true);
+
+        hornL3 = new AdvancedModelRenderer(this);
+        hornL3.setRotationPoint(3.0F, -14.0F, 2.0F);
+        hornL2.addChild(hornL3);
+        setRotateAngle(hornL3, -0.3356F, 0.0462F, 0.1705F);
+        hornL3.setTextureOffset(0, 226).addBox(-9.5F, -20.0F, -9.5F, 10, 20, 10, true);
+
+        hornL4 = new AdvancedModelRenderer(this);
+        hornL4.setRotationPoint(-6.0F, -15.0F, -5.0F);
+        hornL3.addChild(hornL4);
+        setRotateAngle(hornL4, 0.4363F, 0.3927F, -0.2618F);
+        hornL4.setTextureOffset(455, 0).addBox(-1.3737F, -19.3903F, -0.6013F, 6, 18, 6, true);
+
+        hornL5 = new AdvancedModelRenderer(this);
+        hornL5.setRotationPoint(-4.0F, -9.0F, -9.0F);
+        hornL3.addChild(hornL5);
+        setRotateAngle(hornL5, 0.8134F, -0.4571F, 0.1047F);
+        hornL5.setTextureOffset(405, 193).addBox(-0.3737F, -12.3903F, -0.6013F, 5, 17, 5, true);
+
+        hornL6 = new AdvancedModelRenderer(this);
+        hornL6.setRotationPoint(-0.2003F, 0.5395F, 3.3145F);
+        hornL2.addChild(hornL6);
+        setRotateAngle(hornL6, -0.397F, -0.3402F, -0.428F);
+        hornL6.setTextureOffset(0, 226).addBox(-9.5F, -16.0F, -9.5F, 10, 19, 10, true);
+
+        hornL7 = new AdvancedModelRenderer(this);
+        hornL7.setRotationPoint(-6.0F, -13.0F, -5.0F);
+        hornL6.addChild(hornL7);
+        setRotateAngle(hornL7, 0.546F, -0.0303F, -0.2416F);
+        hornL7.setTextureOffset(455, 0).addBox(-1.3737F, -15.3903F, -1.6013F, 6, 18, 6, true);
+
+        earL = new AdvancedModelRenderer(this);
+        earL.setRotationPoint(-19.0F, 0.0F, -14.0F);
+        headJoint.addChild(earL);
+        setRotateAngle(earL, -0.3831F, 0.4174F, -0.3721F);
+        earL.setTextureOffset(396, 102).addBox(-23.0F, -2.0F, -1.0F, 23, 17, 0, false);
+
+        earR = new AdvancedModelRenderer(this);
+        earR.setRotationPoint(19.0F, 0.0F, -14.0F);
+        headJoint.addChild(earR);
+        setRotateAngle(earR, -0.3831F, -0.4174F, 0.3721F);
+        earR.setTextureOffset(396, 102).addBox(0.0F, -2.0F, -1.0F, 23, 17, 0, true);
+
+        armLeft2FurClump1 = new AdvancedModelRenderer(this);
+        armLeft2FurClump1.setRotationPoint(10.0F, 23.96F, 10.0F);
+        armLeft2.addChild(armLeft2FurClump1);
+        setRotateAngle(armLeft2FurClump1, -0.1571F, 0.0F, 0.2269F);
+        armLeft2FurClump1.setTextureOffset(0, 179).addBox(-18.0F, -26.0F, -18.0F, 18, 26, 18, false);
+
+        armLeft2FurClump2 = new AdvancedModelRenderer(this);
+        armLeft2FurClump2.setRotationPoint(-10.0F, 23.96F, 10.0F);
+        armLeft2.addChild(armLeft2FurClump2);
+        setRotateAngle(armLeft2FurClump2, -0.3054F, -0.0436F, -0.2531F);
+        armLeft2FurClump2.setTextureOffset(40, 223).addBox(0.0F, -16.0F, -18.0F, 18, 15, 18, false);
+
+        armRight2FurClump1 = new AdvancedModelRenderer(this);
+        armRight2FurClump1.setRotationPoint(-10.0F, 23.96F, 10.0F);
+        armRight2.addChild(armRight2FurClump1);
+        setRotateAngle(armRight2FurClump1, -0.1571F, 0.0F, -0.2269F);
+        armRight2FurClump1.setTextureOffset(0, 179).addBox(0.0F, -26.0F, -18.0F, 18, 26, 18, true);
+
+        armRight2FurClump2 = new AdvancedModelRenderer(this);
+        armRight2FurClump2.setRotationPoint(10.0F, 23.96F, 10.0F);
+        armRight2.addChild(armRight2FurClump2);
+        setRotateAngle(armRight2FurClump2, -0.3054F, 0.0436F, 0.2531F);
+        armRight2FurClump2.setTextureOffset(40, 223).addBox(-18.0F, -16.0F, -18.0F, 18, 15, 18, true);
+
+        backHair = new AdvancedModelRenderer(this);
+        backHair.setRotationPoint(0.5F, -24.5373F, -33.3434F);
+        chest.addChild(backHair);
+        setRotateAngle(backHair, -0.1309F, 0.0F, 0.0F);
+        backHair.setTextureOffset(374, 180).addBox(-9.5F, -8.2441F, -4.8728F, 18, 25, 51, false);
+
         handController = new AdvancedModelRenderer(this, 0, 0);
         swingOffsetController = new AdvancedModelRenderer(this, 0, 0);
         roarController = new AdvancedModelRenderer(this, 0, 0);
@@ -330,7 +469,6 @@ public class ModelFrostmaw extends MowzieEntityModel<EntityFrostmaw> {
         this.head.addChild(this.teethUpper);
         this.armLeft2.addChild(this.leftHandJoint);
         this.jaw.addChild(this.jawSpikes2);
-        this.headJoint.addChild(this.antlerLeftJoint);
         this.leftRightJoint.addChild(this.rightHand);
         this.armLeftJoint.addChild(this.armLeft1);
         this.legLeft2.addChild(this.leftFoot);
@@ -344,7 +482,6 @@ public class ModelFrostmaw extends MowzieEntityModel<EntityFrostmaw> {
         this.head.addChild(this.eyeLidLeft);
         this.jaw.addChild(this.jawSpikes1);
         this.jaw.addChild(this.tuskRightJoint);
-        this.headJoint.addChild(this.antlerRightJoint);
         this.armRight2.addChild(this.armRight2Fur);
         this.legRight2.addChild(this.legRightFur);
         this.tuskLeft1.addChild(this.tuskLeft2);
@@ -378,11 +515,7 @@ public class ModelFrostmaw extends MowzieEntityModel<EntityFrostmaw> {
         leftHand.addChild(leftHandSocket);
         headJoint.addChild(mouthSocket);
         rightHand.addChild(crystalSocket);
-        antlerLeftJoint.addChild(antlerLeft);
-        antlerRightJoint.addChild(antlerRight);
 
-        antlerLeft.setScale(1, 1, -1);
-        antlerRight.setScale(1, 1, -1);
         eyeLidLeft.isHidden = true;
         eyeLidRight.isHidden = true;
         leftHand.setScale(1.001f, 1.001f, 1.001f);
@@ -1611,6 +1744,8 @@ public class ModelFrostmaw extends MowzieEntityModel<EntityFrostmaw> {
             chest.scaleChildren = false;
             float chestScale = (float) (1.05 + 0.05f * Math.cos(frame * 0.05f));
             chest.setScale(chestScale, chestScale, chestScale);
+            backHair.setScale(chestScale, chestScale, chestScale);
+            backHair.rotationPointZ -= (chestScale - 1.05) * 20f;
             headJoint.rotateAngleX += (float) (0.04f * Math.cos(frame * 0.05f - 1));
         }
 
