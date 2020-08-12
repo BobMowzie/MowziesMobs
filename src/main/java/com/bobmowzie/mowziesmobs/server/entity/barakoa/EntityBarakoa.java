@@ -80,10 +80,31 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             }
         });
         tasks.addTask(3, new AnimationTakeDamage<>(this));
-        tasks.addTask(4, new SimpleAnimationAI<>(this, IDLE_ANIMATION, false, true));
+        tasks.addTask(4, new SimpleAnimationAI<EntityBarakoa>(this, IDLE_ANIMATION, false, true) {
+            private EntityLivingBase talkTarget;
+
+            @Override
+            public void startExecuting() {
+                super.startExecuting();
+                EntityLivingBase player = this.entity.world.findNearestEntityWithinAABB(EntityPlayer.class, this.entity.getEntityBoundingBox().grow(8.0D, 3.0D, 8.0D), this.entity);
+                EntityLivingBase barakoa = this.entity.world.findNearestEntityWithinAABB(EntityBarakoa.class, this.entity.getEntityBoundingBox().grow(8.0D, 3.0D, 8.0D), this.entity);
+                if (player == null) talkTarget = barakoa;
+                else if (barakoa == null) talkTarget = player;
+                else if (rand.nextBoolean()) talkTarget = player;
+                else talkTarget = barakoa;
+            }
+
+            @Override
+            public void updateTask() {
+                super.updateTask();
+                if (talkTarget != null) this.entity.getLookHelper().setLookPosition(this.talkTarget.posX, this.talkTarget.posY + (double)this.talkTarget.getEyeHeight(), this.talkTarget.posZ, (float)this.entity.getHorizontalFaceSpeed(), (float)this.entity.getVerticalFaceSpeed());
+            }
+        });
         tasks.addTask(4, new EntityAIAttackMelee(this, 0.5D, false));
         tasks.addTask(5, new EntityAIWander(this, 0.4));
         tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
+        tasks.addTask(8, new EntityAIWatchClosest(this, EntityBarakoa.class, 8.0F));
+        tasks.addTask(8, new EntityAIWatchClosest(this, EntityBarako.class, 8.0F));
         tasks.addTask(8, new EntityAILookIdle(this));
         setMask(MaskType.from(MathHelper.getInt(rand, 1, 4)));
         stepHeight = 1;

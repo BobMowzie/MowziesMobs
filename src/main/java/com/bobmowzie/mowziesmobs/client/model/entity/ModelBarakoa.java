@@ -57,6 +57,8 @@ public class ModelBarakoa extends MowzieEntityModel<EntityBarakoa> {
     public AdvancedModelRenderer hair2;
     public AdvancedModelRenderer hair3;
     public AdvancedModelRenderer hair4;
+    public AdvancedModelRenderer mouthLeft;
+    public AdvancedModelRenderer mouthRight;
     public AdvancedModelRenderer scaler;
     public AdvancedModelRenderer flailer;
     public AdvancedModelRenderer talker;
@@ -262,6 +264,15 @@ public class ModelBarakoa extends MowzieEntityModel<EntityBarakoa> {
         setRotateAngle(hair4, -1.2217F, 0.0F, 0.0F);
         hair4.cubeList.add(new ModelBox(hair4, 87, 50, -7.0F, 0.0F, 0.0F, 14, 0, 7, 0.0F, false));
 
+        mouthLeft = new AdvancedModelRenderer(this);
+        mouthLeft.setRotationPoint(0.0F, -1.0F, 0.0F);
+        maskLeft.addChild(mouthLeft);
+        mouthLeft.setTextureOffset(58, 34).addBox(-7.0F, 0.0F, -0.0005F, 7, 7, 0, false);
+
+        mouthRight = new AdvancedModelRenderer(this);
+        mouthRight.setRotationPoint(0.0F, -1.0F, 0.0F);
+        maskRight.addChild(mouthRight);
+        mouthRight.setTextureOffset(58, 34).addBox(0.0F, 0.0F, -0.0005F, 7, 7, 0, true);
 
         this.calfLeft.addChild(this.footLeft);
         this.body.addChild(this.thighLeftJoint);
@@ -856,6 +867,7 @@ public class ModelBarakoa extends MowzieEntityModel<EntityBarakoa> {
 
 
         float talk = talker.rotationPointX;
+        float dance = entity.dancing.getAnimationProgressSinSqrt();
         if (!entity.isPotionActive(PotionHandler.FROZEN)) {
             walk(head, 1.5f, 0.1f * talk, false, 0, -0.5f * talk, frame, 1f);
             walk(neck, 0, 0, false, 0, 0.5f * talk, frame, 1f);
@@ -867,6 +879,14 @@ public class ModelBarakoa extends MowzieEntityModel<EntityBarakoa> {
             flap(armUpperLeft, 0.4f, 0.2f * talk, true, 2, 0, frame, 1f);
             walk(armLowerLeft, 0.5f, 0.2f * talk, false, -1, 0.3f * talk, frame, 1f);
             swing(handLeft, 0.5f, 0.2f * talk, false, -2, -1.8f * talk, frame, 1f);
+            if (Math.sin(frame * 1.8f) * (talk + dance) > 0.1f) {
+                mouthLeft.isHidden = false;
+                mouthRight.isHidden = false;
+            }
+            else {
+                mouthLeft.isHidden = true;
+                mouthRight.isHidden = true;
+            }
             if (entity.getMask() == MaskType.FURY) {
                 armLeftJoint.rotateAngleX += 0.2 * talk;
                 armLeftJoint.rotateAngleY -= 1.3 * talk;
