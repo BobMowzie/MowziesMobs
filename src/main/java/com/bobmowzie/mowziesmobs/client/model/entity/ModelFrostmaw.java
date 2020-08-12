@@ -160,6 +160,7 @@ public class ModelFrostmaw extends MowzieEntityModel<EntityFrostmaw> {
         this.setRotateAngle(armLeft1, 0.22759093446006054F, 0.0F, -0.7285004297824331F);
         this.leftFoot = new AdvancedModelRenderer(this, 80, 12);
         this.leftFoot.setRotationPoint(0.0F, 0.2F, -12.0F);
+        this.leftFoot.mirror = true;
         this.leftFoot.addBox(-6.5F, -14.75F, -6.3F, 13, 20, 6, 0.0F);
         this.setRotateAngle(leftFoot, -0.4363323129985824F, 0.0F, 0.0F);
         this.rightFingers = new AdvancedModelRenderer(this, 0, 62);
@@ -290,7 +291,7 @@ public class ModelFrostmaw extends MowzieEntityModel<EntityFrostmaw> {
         this.leftRightJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         this.setRotateAngle(leftRightJoint, 0.8726646259971648F, 0.3490658503988659F, 0.2617993877991494F);
         this.rightFoot = new AdvancedModelRenderer(this, 80, 12);
-        this.rightFoot.mirror = true;
+        this.rightFoot.mirror = false;
         this.rightFoot.setRotationPoint(0.0F, 0.2F, -12.0F);
         this.rightFoot.addBox(-6.5F, -14.75F, -6.3F, 13, 20, 6, 0.0F);
         this.setRotateAngle(rightFoot, -0.4363323129985824F, 0.0F, 0.0F);
