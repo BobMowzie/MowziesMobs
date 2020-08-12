@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
+import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -50,6 +51,12 @@ public class ModelBarakoa extends MowzieEntityModel<EntityBarakoa> {
     public AdvancedModelRenderer footRight;
     public AdvancedModelRenderer thighLeftJoint;
     public AdvancedModelRenderer thighRightJoint;
+    public AdvancedModelRenderer earPointLeft;
+    public AdvancedModelRenderer earPointRight;
+    public AdvancedModelRenderer hair1;
+    public AdvancedModelRenderer hair2;
+    public AdvancedModelRenderer hair3;
+    public AdvancedModelRenderer hair4;
     public AdvancedModelRenderer scaler;
     public AdvancedModelRenderer flailer;
     public AdvancedModelRenderer talker;
@@ -216,6 +223,46 @@ public class ModelBarakoa extends MowzieEntityModel<EntityBarakoa> {
         this.setRotateAngle(blowgun, 2.356194490192345F, 0.0F, 0);
         this.talker = new AdvancedModelRenderer(this, 0, 0);
         this.talker.setRotationPoint(0, 0, 0);
+
+        earPointLeft = new AdvancedModelRenderer(this);
+        earPointLeft.setRotationPoint(3.0F, 0.0F, 0.9995F);
+        earPointLeft.setScale(1f, 1f, 0.999f);
+        earLeft.addChild(earPointLeft);
+        setRotateAngle(earPointLeft, 0.0F, 0.0F, -0.1745F);
+        earPointLeft.cubeList.add(new ModelBox(earPointLeft, 48, 7, 0.5F, -1.9F, -1.0F, 3, 2, 1, 0.0F, false));
+
+        earPointRight = new AdvancedModelRenderer(this);
+        earPointRight.setRotationPoint(-3.0F, 0.0F, 0.9995F);
+        earPointRight.setScale(1f, 1f, 0.999f);
+        earRight.addChild(earPointRight);
+        setRotateAngle(earPointRight, 0.0F, 0.0F, 0.1745F);
+        earPointRight.cubeList.add(new ModelBox(earPointRight, 48, 7, -3.5F, -1.9F, -1.0F, 3, 2, 1, 0.0F, false));
+
+        hair1 = new AdvancedModelRenderer(this);
+        hair1.setRotationPoint(0.0F, -7.0F, -4.0F);
+        head.addChild(hair1);
+        setRotateAngle(hair1, 0.3491F, 0.0F, 0.0F);
+        hair1.cubeList.add(new ModelBox(hair1, 87, 50, -7.0F, 0.0F, 0.0F, 14, 0, 7, 0.0F, false));
+
+        hair2 = new AdvancedModelRenderer(this);
+        hair2.setRotationPoint(0.0F, -7.0F, -1.5F);
+        head.addChild(hair2);
+        setRotateAngle(hair2, 0.0436F, 0.0F, 0.0F);
+        hair2.cubeList.add(new ModelBox(hair2, 87, 57, -7.0F, 0.0F, 0.0F, 14, 0, 7, 0.0F, false));
+
+        hair3 = new AdvancedModelRenderer(this);
+        hair3.setRotationPoint(0.0F, -7.0F, 1.0F);
+        head.addChild(hair3);
+        setRotateAngle(hair3, -0.7418F, 0.0F, 0.0F);
+        hair3.cubeList.add(new ModelBox(hair3, 87, 50, -7.0F, 0.0F, 0.0F, 14, 0, 7, 0.0F, false));
+
+        hair4 = new AdvancedModelRenderer(this);
+        hair4.setRotationPoint(0.0F, -6.0F, 1.0F);
+        head.addChild(hair4);
+        setRotateAngle(hair4, -1.2217F, 0.0F, 0.0F);
+        hair4.cubeList.add(new ModelBox(hair4, 87, 50, -7.0F, 0.0F, 0.0F, 14, 0, 7, 0.0F, false));
+
+
         this.calfLeft.addChild(this.footLeft);
         this.body.addChild(this.thighLeftJoint);
         this.handRight.addChild(this.spearBase);
@@ -307,6 +354,7 @@ public class ModelBarakoa extends MowzieEntityModel<EntityBarakoa> {
         }
         this.modelCore.render(scale);
         GlStateManager.popMatrix();
+        //this.earPointLeft.render(scale);
     }
 
     public void setDefaultAngles(EntityBarakoa entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
