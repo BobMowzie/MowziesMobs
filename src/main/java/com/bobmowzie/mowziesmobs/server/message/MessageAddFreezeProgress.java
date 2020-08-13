@@ -45,8 +45,10 @@ public class MessageAddFreezeProgress extends AbstractMessage<MessageAddFreezePr
         if (entity instanceof EntityLivingBase) {
             EntityLivingBase living = (EntityLivingBase) entity;
             MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(living, MowzieLivingProperties.class);
-            property.freezeProgress += amount;
-            property.freezeDecayDelay = MowzieLivingProperties.MAX_FREEZE_DECAY_DELAY;
+            if (property != null) {
+                property.freezeProgress += amount;
+                property.freezeDecayDelay = MowzieLivingProperties.MAX_FREEZE_DECAY_DELAY;
+            }
         }
     }
 

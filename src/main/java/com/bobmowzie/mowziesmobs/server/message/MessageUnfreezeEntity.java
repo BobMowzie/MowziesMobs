@@ -46,8 +46,7 @@ public class MessageUnfreezeEntity extends AbstractMessage<MessageUnfreezeEntity
         Entity entity = player.world.getEntityByID(message.entityID);
         if (entity instanceof EntityLivingBase) {
             EntityLivingBase living = (EntityLivingBase) entity;
-            MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
-            property.onUnfreeze(living);
+            living.removeActivePotionEffect(PotionHandler.FROZEN);
         }
     }
 
