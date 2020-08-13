@@ -18,6 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 
 import java.util.List;
 
@@ -127,9 +128,14 @@ public class EntityIceBreath extends EntityMagicEffect {
             boolean yawCheck = (entityRelativeYaw <= ARC / 2f && entityRelativeYaw >= -ARC / 2f) || (entityRelativeYaw >= 360 - ARC / 2f || entityRelativeYaw <= -360 + ARC / 2f);
             boolean pitchCheck = (entityRelativePitch <= ARC / 2f && entityRelativePitch >= -ARC / 2f) || (entityRelativePitch >= 360 - ARC / 2f || entityRelativePitch <= -360 + ARC / 2f);
             if (inRange && yawCheck && pitchCheck) {
-                if (entityHit.attackEntityFrom(DamageSource.causeIndirectMagicDamage(this, caster), damage)) {
+                DamageSource damageSource = DamageSource.causeIndirectMagicDamage(this, caster);
+                boolean shouldBeHit = ForgeHooks.onLivingAttack(entityHit, damageSource, damage);
+                if (shouldBeHit) {
                     MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entityHit, MowzieLivingProperties.class);
-                    if (property != null) property.freezeProgress += 0.13;
+                    entityHit.attackEntityFrom(damageSource, damage);
+                    if (property != null) {
+                        property.freezeProgress += 0.13;
+                    }
                 }
             }
         }
