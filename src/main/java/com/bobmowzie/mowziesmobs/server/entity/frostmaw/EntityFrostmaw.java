@@ -307,7 +307,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                 if (getAnimationTick() == 2) {
                     dodgeYaw = (float) Math.toRadians(targetAngle + 90 + rand.nextFloat() * 150 - 75);
                 }
-                if (getAnimationTick() == 6 && onGround) {
+                if (getAnimationTick() == 6 && (onGround || isInLava())) {
                     motionY = 0.6;
                     float speed = 1.7f;
                     motionX += (float) (speed * Math.cos(dodgeYaw));
@@ -685,6 +685,12 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
     @Override
     public boolean attackEntityFrom(DamageSource source, float damage) {
         if (source == DamageSource.FALL) return false;
+        if (source == DamageSource.LAVA && getAnimation() == NO_ANIMATION) {
+            AnimationHandler.INSTANCE.sendAnimationMessage(this, DODGE_ANIMATION);
+            System.out.println("Ddge");
+        }
+
+        if (source.isFireDamage()) damage *= 1.25;
 
         if (source.getImmediateSource() instanceof EntityArrow) {
             playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.4F, 2);
