@@ -198,8 +198,6 @@ public enum ClientEventHandler {
             }
             MowzieLivingProperties propertyLiving = EntityPropertiesHandler.INSTANCE.getProperties(player, MowzieLivingProperties.class);
             if (player.isPotionActive(PotionHandler.FROZEN) && propertyLiving.prevFrozen) {
-                player.rotationYaw = propertyLiving.frozenYaw;
-                player.rotationPitch = propertyLiving.frozenPitch;
                 stopMouseMove();
             }
         }
@@ -209,17 +207,13 @@ public enum ClientEventHandler {
     public void onRenderLiving(RenderLivingEvent.Pre event) {
         EntityLivingBase entity = event.getEntity();
         MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
-        if (entity.isPotionActive(PotionHandler.FROZEN)) {
-//            entity.motionX = 0;
-//            entity.motionZ = 0;
-//            entity.posX = entity.prevPosX;
-//            entity.posZ = entity.prevPosZ;
-            entity.rotationYaw = property.frozenYaw;
-            entity.rotationPitch = property.frozenPitch;
-            entity.rotationYawHead = property.frozenYawHead;
-            entity.renderYawOffset = property.frozenRenderYawOffset;
-            entity.swingProgress = property.frozenSwingProgress;
-            entity.limbSwingAmount = property.frozenLimbSwingAmount;
+        if (entity.isPotionActive(PotionHandler.FROZEN) && property.prevFrozen) {
+            entity.rotationYaw = entity.prevRotationYaw = property.frozenYaw;
+            entity.rotationPitch = entity.prevRotationPitch = property.frozenPitch;
+            entity.rotationYawHead = entity.prevRotationYawHead = property.frozenYawHead;
+            entity.renderYawOffset = entity.prevRenderYawOffset = property.frozenRenderYawOffset;
+            entity.swingProgress = entity.prevSwingProgress = property.frozenSwingProgress;
+            entity.limbSwingAmount = entity.prevLimbSwingAmount = property.frozenLimbSwingAmount;
             entity.setSneaking(false);
         }
     }

@@ -49,7 +49,7 @@ public final class MowziesMobs {
             MessagePlayerSolarBeam.class,
             MessagePlayerAttackMob.class,
             MessageBarakoTrade.class,
-            MessageFreezeEntity.class,
+            MessageAddFreezeProgress.class,
             MessageUnfreezeEntity.class,
             MessageLeftMouseDown.class,
             MessageLeftMouseUp.class,

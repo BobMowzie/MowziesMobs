@@ -128,8 +128,10 @@ public class EntityIceBreath extends EntityMagicEffect {
             boolean pitchCheck = (entityRelativePitch <= ARC / 2f && entityRelativePitch >= -ARC / 2f) || (entityRelativePitch >= 360 - ARC / 2f || entityRelativePitch <= -360 + ARC / 2f);
             if (inRange && yawCheck && pitchCheck) {
                 if (entityHit.attackEntityFrom(DamageSource.causeIndirectMagicDamage(this, caster), damage)) {
+                    entityHit.motionZ *= 0.5;
+                    entityHit.motionX *= 0.5;
                     MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entityHit, MowzieLivingProperties.class);
-                    if (property != null) property.freezeProgress += 0.13;
+                    if (property != null) property.addFreezeProgress(entityHit, 0.23f);
                 }
             }
         }

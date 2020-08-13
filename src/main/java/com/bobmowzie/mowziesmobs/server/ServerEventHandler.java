@@ -15,10 +15,7 @@ import com.bobmowzie.mowziesmobs.server.item.ItemEarthTalisman;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemNagaFangDagger;
 import com.bobmowzie.mowziesmobs.server.item.ItemSpear;
-import com.bobmowzie.mowziesmobs.server.message.MessagePlayerAttackMob;
-import com.bobmowzie.mowziesmobs.server.message.MessagePlayerSolarBeam;
-import com.bobmowzie.mowziesmobs.server.message.MessagePlayerSummonSunstrike;
-import com.bobmowzie.mowziesmobs.server.message.MessageUnfreezeEntity;
+import com.bobmowzie.mowziesmobs.server.message.*;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseDown;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseUp;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseDown;
@@ -26,7 +23,6 @@ import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseUp;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
-import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.block.Block;
@@ -34,7 +30,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIAvoidEntity;
 import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
@@ -54,7 +49,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EntityDamageSource;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -122,7 +116,7 @@ public enum ServerEventHandler {
 
             if (property != null) {
                 if (property.freezeProgress >= 1) {
-                    entity.addPotionEffect(new PotionEffect(PotionHandler.FROZEN, 50, 1, false, false));
+                    entity.addPotionEffect(new PotionEffect(PotionHandler.FROZEN, 50, 0, false, false));
                     property.freezeProgress = 1f;
                 } else if (property.freezeProgress > 0) {
                     entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, MathHelper.floor(property.freezeProgress * 5 + 1), false, false));
@@ -130,7 +124,6 @@ public enum ServerEventHandler {
 
                 if (entity.isPotionActive(PotionHandler.FROZEN) && !property.prevFrozen) {
                     property.onFreeze(entity);
-                    //if (!entity.world.isRemote) MowziesMobs.NETWORK_WRAPPER.sendToDimension(new MessageFreezeEntity(entity), entity.dimension);
                 }
 
                 if (!entity.world.isRemote) {
@@ -148,7 +141,7 @@ public enum ServerEventHandler {
 
             if (entity.isPotionActive(PotionHandler.FROZEN)) {
                 if (entity.getActivePotionEffect(PotionHandler.FROZEN).getDuration() <= 0) entity.removeActivePotionEffect(PotionHandler.FROZEN);
-                entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, 50, false, false));
+                entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 2, 50, false, false));
                 entity.setSneaking(false);
 
                 if (entity.world.isRemote && entity.ticksExisted % 2 == 0) {
@@ -164,31 +157,19 @@ public enum ServerEventHandler {
                 }
             }
             else {
-
                 if (property != null && property.frozenController != null && !property.frozenController.isDead) {
-                    entity.dismountEntity(property.frozenController);
-                    entity.setPosition(property.frozenController.posX, property.frozenController.posY, property.frozenController.posZ);
-                    property.frozenController.setDead();
-                    entity.playSound(MMSounds.ENTITY_FROSTMAW_FROZEN_CRASH, 1, 0.5f);
-
-                    if (entity.world.isRemote) {
-                        int particleCount = (int) (10 + 1 * entity.height * entity.width * entity.width);
-                        for (int i = 0; i < particleCount; i++) {
-                            double particleX = entity.posX + entity.width * entity.getRNG().nextFloat() - entity.width / 2;
-                            double particleZ = entity.posZ + entity.width * entity.getRNG().nextFloat() - entity.width / 2;
-                            double particleY = entity.posY + entity.height * entity.getRNG().nextFloat() + 0.3f;
-                            entity.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, particleX, particleY, particleZ, 0, 0, 0, ICE);
-                        }
-                    }
-                    if (entity instanceof EntityLiving && ((EntityLiving)entity).isAIDisabled() && property.prevHasAI) {
-                        ((EntityLiving)entity).setNoAI(false);
-                    }
+                    property.onUnfreeze(entity);
                 }
             }
 
             if (property != null) {
-                property.freezeProgress -= 0.1;
-                if (property.freezeProgress < 0) property.freezeProgress = 0;
+                if (property.freezeDecayDelay <= 0) {
+                    property.freezeProgress -= 0.1;
+                    if (property.freezeProgress < 0) property.freezeProgress = 0;
+                }
+                else {
+                    property.freezeDecayDelay--;
+                }
                 property.prevFrozen = entity.isPotionActive(PotionHandler.FROZEN);
             }
         }
