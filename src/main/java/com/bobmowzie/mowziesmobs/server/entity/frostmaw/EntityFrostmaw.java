@@ -176,7 +176,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         this.tasks.addTask(2, new SimpleAnimationAI<>(this, DODGE_ANIMATION, true));
         this.tasks.addTask(3, new AnimationTakeDamage<>(this));
         this.tasks.addTask(1, new AnimationDieAI<>(this));
-        this.targetTasks.addTask(1, new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true, false, null));
+        this.targetTasks.addTask(1, new EntityAINearestAttackableTarget<>(this, EntityPlayer.class, 0, true, false, null));
         stepHeight = 1;
         frame += rand.nextInt(50);
         legSolver = new LegSolverQuadruped(1f, 2f, -1, 1.5f);
