@@ -58,9 +58,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.EnumDifficulty;
-import net.minecraft.world.World;
+import net.minecraft.world.*;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -926,5 +924,20 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         setPositionAndRotation(x, y, z, rand.nextFloat() * 360.0f, 0);
         world.spawnEntity(this);
         onInitialSpawn(world.getDifficultyForLocation(new BlockPos(x, y, z)), (IEntityLivingData)null);
+    }
+
+    @Override
+    public void setInWeb() {
+
+    }
+
+    @Override
+    protected boolean hasBossBar() {
+        return true;
+    }
+
+    @Override
+    protected BossInfo.Color bossBarColor() {
+        return BossInfo.Color.WHITE;
     }
 }

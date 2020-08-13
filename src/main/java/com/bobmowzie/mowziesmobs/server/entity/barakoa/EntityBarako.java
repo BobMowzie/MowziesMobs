@@ -54,6 +54,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.BossInfo;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
@@ -748,5 +749,15 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 
     private static boolean canPayFor(ItemStack stack, ItemStack worth) {
         return stack.getItem() == worth.getItem() && stack.getCount() >= worth.getCount();
+    }
+
+    @Override
+    protected boolean hasBossBar() {
+        return true;
+    }
+
+    @Override
+    protected BossInfo.Color bossBarColor() {
+        return BossInfo.Color.YELLOW;
     }
 }
