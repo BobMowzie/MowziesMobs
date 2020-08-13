@@ -5,20 +5,27 @@ import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.EntityEntry;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -100,6 +107,11 @@ public class EntityIceBreath extends EntityMagicEffect {
         if (caster instanceof EntityPlayer) damage *= ConfigHandler.TOOLS_AND_ABILITIES.iceCrystalAttackMultiplier;
         for (EntityLivingBase entityHit : entitiesHit) {
             if (entityHit == caster) continue;
+
+            List<String> freezeImmune = Arrays.asList(ConfigHandler.GENERAL.freeze_blacklist);
+            ResourceLocation mobName = EntityList.getKey(entityHit);
+            if (mobName != null && freezeImmune.contains(mobName.toString())) continue;
+
             float entityHitYaw = (float) ((Math.atan2(entityHit.posZ - posZ, entityHit.posX - posX) * (180 / Math.PI) - 90) % 360);
             float entityAttackingYaw = rotationYaw % 360;
             if (entityHitYaw < 0) {

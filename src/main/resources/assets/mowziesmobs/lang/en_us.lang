@@ -185,6 +185,9 @@ config.mowziesmobs.geomancy_attack_multiplier=Geomancy Attack Damage Multiplier
 config.mowziesmobs.ice_crystal_attack_multiplier=Ice Crystal Attack Damage Multiplier
 config.mowziesmobs.naga_fang_dagger_attack_multiplier=Naga Fang Dagger Attack Damage Multiplier
 
+config.mowziesmobs.general=General
+config.mowziesmobs.freeze_blacklist=Freeze-Immune Mobs
+
 # Advancements
 advancements.mowziesmobs.root.title=Mowzie's Mobs
 advancements.mowziesmobs.root.description=Welcome to Mowzie's Mobs!

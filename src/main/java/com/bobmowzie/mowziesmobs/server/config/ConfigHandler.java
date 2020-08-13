@@ -387,4 +387,14 @@ public class ConfigHandler {
         @RangeDouble(min = 0, max = 100)
         public float nagaDaggerAttackMultiplier = 1;
     }
+
+    @Name("general")
+    @LangKey(LANG_PREFIX + "general")
+    public static final General GENERAL = new General();
+    public static class General {
+        @Name("freeze_blacklist")
+        @LangKey(LANG_PREFIX + "freeze_blacklist")
+        @Comment({"Add a mob's full name here to prevent it from being frozen or taking damage from ice magic."})
+        public String[] freeze_blacklist = {"mowziesmobs:frostmaw", "minecraft:ender_dragon"};
+    }
 }
