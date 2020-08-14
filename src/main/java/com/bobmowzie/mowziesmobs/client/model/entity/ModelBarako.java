@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
+import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -53,6 +54,10 @@ public class ModelBarako extends MowzieEntityModel<EntityBarako> {
     public AdvancedModelRenderer rightFoot;
     public AdvancedModelRenderer leftCalf;
     public AdvancedModelRenderer leftFoot;
+    public AdvancedModelRenderer hair1;
+    public AdvancedModelRenderer hair2;
+    public AdvancedModelRenderer hair3;
+    public AdvancedModelRenderer hair4;
     public AdvancedModelRenderer jiggleController;
     public AdvancedModelRenderer jawScaler;
     public AdvancedModelRenderer mouthScalerX;
@@ -264,6 +269,30 @@ public class ModelBarako extends MowzieEntityModel<EntityBarako> {
         this.head.setRotationPoint(0.0F, 0.0F, -1.0F);
         this.head.addBox(-4.5F, -9.0F, -4.5F, 9, 9, 9, 0.0F);
         head.scaleChildren = true;
+        
+        hair1 = new AdvancedModelRenderer(this);
+        hair1.setRotationPoint(0.0F, -9.0F, -1.0F);
+        head.addChild(hair1);
+        setRotateAngle(hair1, 0.3491F, 0.0F, 0.0F);
+        hair1.cubeList.add(new ModelBox(hair1, 79, 121, -9.0F, 0.0F, 0.0F, 18, 0, 7, 0.0F, false));
+
+        hair2 = new AdvancedModelRenderer(this);
+        hair2.setRotationPoint(0.0F, -9.0F, 2.0F);
+        head.addChild(hair2);
+        hair2.cubeList.add(new ModelBox(hair2, 79, 121, -9.0F, 0.0F, 0.0F, 18, 0, 7, 0.0F, false));
+
+        hair3 = new AdvancedModelRenderer(this);
+        hair3.setRotationPoint(0.0F, -9.0F, 4.5F);
+        head.addChild(hair3);
+        setRotateAngle(hair3, -0.7854F, 0.0F, 0.0F);
+        hair3.cubeList.add(new ModelBox(hair3, 79, 121, -9.0F, 0.0F, 0.0F, 18, 0, 7, 0.0F, false));
+
+        hair4 = new AdvancedModelRenderer(this);
+        hair4.setRotationPoint(0.0F, -7.0F, 4.5F);
+        head.addChild(hair4);
+        setRotateAngle(hair4, -1.2654F, 0.0F, 0.0F);
+        hair4.cubeList.add(new ModelBox(hair4, 79, 121, -9.0F, 0.0F, 0.0F, 18, 0, 7, 0.0F, false));
+
         jiggleController = new AdvancedModelRenderer(this, 0, 0);
         jiggleController.setRotationPoint(0, 0, 0);
         jawScaler = new AdvancedModelRenderer(this, 0, 0);
@@ -399,7 +428,7 @@ public class ModelBarako extends MowzieEntityModel<EntityBarako> {
             animator.resetKeyframe(10);
         }
         if (entity.getAnimation() == EntityBarako.TALK_ANIMATION) {
-            if (entity.whichDialogue == 1) {
+            if (entity.getWhichDialogue() == 1) {
                 animator.setAnimation(EntityBarako.TALK_ANIMATION);
                 animator.startKeyframe(4);
                 animator.move(jawScaler, 0.2f, 0, 0);
@@ -460,7 +489,7 @@ public class ModelBarako extends MowzieEntityModel<EntityBarako> {
                 animator.setStaticKeyframe(6);
                 animator.resetKeyframe(4);
             }
-            if (entity.whichDialogue == 2) {
+            if (entity.getWhichDialogue() == 2) {
                 animator.setAnimation(EntityBarako.TALK_ANIMATION);
                 animator.startKeyframe(4);
                 animator.move(jawScaler, 0.2f, 0, 0);
@@ -487,7 +516,7 @@ public class ModelBarako extends MowzieEntityModel<EntityBarako> {
                 animator.setStaticKeyframe(6);
                 animator.resetKeyframe(4);
             }
-            if (entity.whichDialogue == 3) {
+            if (entity.getWhichDialogue() == 3) {
                 animator.setAnimation(EntityBarako.TALK_ANIMATION);
                 animator.startKeyframe(4);
                 animator.move(jawScaler, -0.5f, 0, 0);
@@ -534,7 +563,7 @@ public class ModelBarako extends MowzieEntityModel<EntityBarako> {
                 animator.setStaticKeyframe(4);
                 animator.resetKeyframe(4);
             }
-            if (entity.whichDialogue == 4) {
+            if (entity.getWhichDialogue() == 4) {
                 animator.setAnimation(EntityBarako.TALK_ANIMATION);
                 animator.startKeyframe(3);
                 animator.move(jawScaler, 0.4f, 0, 0);
@@ -587,7 +616,7 @@ public class ModelBarako extends MowzieEntityModel<EntityBarako> {
                 animator.setStaticKeyframe(4);
                 animator.resetKeyframe(4);
             }
-            if (entity.whichDialogue == 5) {
+            if (entity.getWhichDialogue() == 5) {
                 animator.setAnimation(EntityBarako.TALK_ANIMATION);
                 animator.startKeyframe(2);//q
                 animator.move(jawScaler, 0f, 0, 0);
@@ -648,7 +677,7 @@ public class ModelBarako extends MowzieEntityModel<EntityBarako> {
                 animator.setStaticKeyframe(10);
                 animator.resetKeyframe(8);
             }
-            if (entity.whichDialogue == 6) {
+            if (entity.getWhichDialogue() == 6) {
                 animator.setAnimation(EntityBarako.TALK_ANIMATION);
                 animator.startKeyframe(2);//q
                 animator.move(jawScaler, 0f, 0, 0);

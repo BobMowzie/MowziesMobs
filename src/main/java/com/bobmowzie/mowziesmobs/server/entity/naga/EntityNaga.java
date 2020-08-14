@@ -32,6 +32,8 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNodeType;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
@@ -329,6 +331,8 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
         if (roarAnimation < ROAR_DURATION) roarAnimation++;
 
         if (getAnimation() == null) AnimationHandler.INSTANCE.sendAnimationMessage(this, NO_ANIMATION);
+
+        if (isPotionActive(MobEffects.POISON)) removeActivePotionEffect(MobEffects.POISON);
 
 //        if (ticksExisted == 1) {
 //            System.out.println("Naga at " + getPosition());

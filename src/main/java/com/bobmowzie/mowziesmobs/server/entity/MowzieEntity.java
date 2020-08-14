@@ -1,7 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.IntermittentAnimation;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAI;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemSpawnEgg;
@@ -19,9 +18,10 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
-import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
@@ -29,6 +29,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.BossInfo;
+import net.minecraft.world.BossInfoServer;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
@@ -51,7 +53,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     public EntityLivingBase blockingEntity = null;
     private int animationTick;
     private Animation animation = NO_ANIMATION;
-    private List<IntermittentAnimation> intermittentAnimations = new ArrayList<>();
+    private final List<IntermittentAnimation<?>> intermittentAnimations = new ArrayList<>();
     public boolean playsHurtAnimation = true;
     protected boolean dropAfterDeathAnim = true;
     public boolean hurtInterruptsAnimation = false;
@@ -67,8 +69,12 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     private DamageSource killDataCause;
     private EntityPlayer killDataAttackingPlayer;
 
+    private final BossInfoServer bossInfo = (BossInfoServer)(new BossInfoServer(this.getDisplayName(), BossInfo.Color.PURPLE, BossInfo.Overlay.PROGRESS));
+
     public MowzieEntity(World world) {
         super(world);
+        bossInfo.setColor(bossBarColor());
+        bossInfo.setVisible(hasBossBar());
     }
 
     @Override
@@ -191,6 +197,12 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
         willLandSoon = !onGround && world.collidesWithAnyBlock(getEntityBoundingBox().offset(new Vec3d(motionX, motionY, motionZ)));
     }
 
+    @Override
+    protected void updateAITasks() {
+        super.updateAITasks();
+        this.bossInfo.setPercent(this.getHealth() / this.getMaxHealth());
+    }
+
     protected void onAnimationFinish(Animation animation) {}
 
     @Override
@@ -215,55 +227,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
 
     @Override
     public boolean attackEntityAsMob(Entity entityIn) {
-        float f = (float)this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue();
-        int i = 0;
-
-        if (entityIn instanceof EntityLivingBase)
-        {
-            f += EnchantmentHelper.getModifierForCreature(this.getHeldItemMainhand(), ((EntityLivingBase)entityIn).getCreatureAttribute());
-            i += EnchantmentHelper.getKnockbackModifier(this);
-        }
-
-        boolean flag = entityIn.attackEntityFrom(DamageSource.causeMobDamage(this), f);
-
-        if (flag)
-        {
-            if (i > 0 && entityIn instanceof EntityLivingBase)
-            {
-                ((EntityLivingBase)entityIn).knockBack(this, (float)i * 0.5F, (double) MathHelper.sin(this.rotationYaw * 0.017453292F), (double)(-MathHelper.cos(this.rotationYaw * 0.017453292F)));
-                this.motionX *= 0.6D;
-                this.motionZ *= 0.6D;
-            }
-
-            int j = EnchantmentHelper.getFireAspectModifier(this);
-
-            if (j > 0)
-            {
-                entityIn.setFire(j * 4);
-            }
-
-            if (entityIn instanceof EntityPlayer)
-            {
-                EntityPlayer entityplayer = (EntityPlayer)entityIn;
-                ItemStack itemstack = this.getHeldItemMainhand();
-                ItemStack itemstack1 = entityplayer.isHandActive() ? entityplayer.getActiveItemStack() : ItemStack.EMPTY;
-
-                if (!itemstack.isEmpty() && !itemstack1.isEmpty() && itemstack.getItem() instanceof ItemAxe && itemstack1.getItem() == Items.SHIELD)
-                {
-                    float f1 = 0.25F + (float)EnchantmentHelper.getEfficiencyModifier(this) * 0.05F;
-
-                    if (this.rand.nextFloat() < f1)
-                    {
-                        entityplayer.getCooldownTracker().setCooldown(Items.SHIELD, 100);
-                        this.world.setEntityState(entityplayer, (byte)30);
-                    }
-                }
-            }
-
-            this.applyEnchantments(this, entityIn);
-        }
-
-        return flag;
+        return this.attackEntityAsMob(entityIn, 1.0F);
     }
 
     @Override
@@ -313,7 +277,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
                 ItemStack itemstack = this.getHeldItemMainhand();
                 ItemStack itemstack1 = entityplayer.isHandActive() ? entityplayer.getActiveItemStack() : ItemStack.EMPTY;
 
-                if (!itemstack.isEmpty() && !itemstack1.isEmpty() && itemstack.getItem() instanceof ItemAxe && itemstack1.getItem() == Items.SHIELD)
+                if (!itemstack.isEmpty() && !itemstack1.isEmpty() && itemstack.getItem().canDisableShield(itemstack, itemstack1, entityplayer, this) && itemstack1.getItem().isShield(itemstack1, entityplayer))
                 {
                     float f1 = 0.25F + (float)EnchantmentHelper.getEfficiencyModifier(this) * 0.05F;
 
@@ -557,4 +521,49 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
 
     public abstract Animation getHurtAnimation();
 
+    /**
+     * Add the given player to the list of players tracking this entity. For instance, a player may track a boss in
+     * order to view its associated boss bar.
+     */
+    @Override
+    public void addTrackingPlayer(EntityPlayerMP player)
+    {
+        super.addTrackingPlayer(player);
+        this.bossInfo.addPlayer(player);
+    }
+
+    /**
+     * Removes the given player from the list of players tracking this entity. See {@link Entity#addTrackingPlayer} for
+     * more information on tracking.
+     */
+    @Override
+    public void removeTrackingPlayer(EntityPlayerMP player)
+    {
+        super.removeTrackingPlayer(player);
+        this.bossInfo.removePlayer(player);
+    }
+
+    @Override
+    public void readEntityFromNBT(NBTTagCompound compound) {
+        super.readEntityFromNBT(compound);
+
+        if (this.hasCustomName())
+        {
+            this.bossInfo.setName(this.getDisplayName());
+        }
+    }
+
+    public void setCustomNameTag(String name)
+    {
+        super.setCustomNameTag(name);
+        this.bossInfo.setName(this.getDisplayName());
+    }
+
+    protected boolean hasBossBar() {
+        return false;
+    }
+
+    protected BossInfo.Color bossBarColor() {
+        return BossInfo.Color.PURPLE;
+    }
 }

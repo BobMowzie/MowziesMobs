@@ -54,6 +54,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.BossInfo;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
@@ -124,7 +125,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             @Override
             public void startExecuting() {
                 super.startExecuting();
-                whichDialogue = getWhichDialogue();
+//                whichDialogue = getWhichDialogue();
             }
         });
         this.tasks.addTask(2, new SimpleAnimationAI<EntityBarako>(this, BLESS_ANIMATION, false) {
@@ -139,16 +140,6 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             public void startExecuting() {
                 super.startExecuting();
                 playSound(MMSounds.ENTITY_SUPERNOVA_START, 3f, 1f);
-                superNovaKeyTrack1 = new ParticleComponent.KeyTrack(
-                        new float[]{0, 25f, 32f, 0},
-                        new float[]{0, 0.6f, 0.85f, 1}
-                );
-                superNovaKeyTrack2 = ParticleComponent.KeyTrack.oscillate(0, 7, 24);
-                MowzieParticleBase.spawnParticle(world, MMParticle.SUN, 0, 0, 0, 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 33, true, new ParticleComponent[]{
-                        new ParticleComponent.PinLocation(betweenHandPos),
-                        new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, superNovaKeyTrack1, false),
-                        new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, superNovaKeyTrack2, true)
-                });
             }
 
             @Override
@@ -433,24 +424,24 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             timeUntilSupernova--;
         }
 
-        if (getAnimation() == NO_ANIMATION) {
-            AnimationHandler.INSTANCE.sendAnimationMessage(this, SUPERNOVA_ANIMATION);
-        }
+//        if (getAnimation() == NO_ANIMATION) {
+//            AnimationHandler.INSTANCE.sendAnimationMessage(this, SUPERNOVA_ANIMATION);
+//        }
     }
 
     private void superNovaEffects() {
-//        if (getAnimationTick() == 1) {
-//            superNovaKeyTrack1 = new ParticleComponent.KeyTrack(
-//                    new float[]{0, 25f, 32f, 0},
-//                    new float[]{0, 0.6f, 0.85f, 1}
-//            );
-//            superNovaKeyTrack2 = ParticleComponent.KeyTrack.oscillate(0, 7, 24);
-//            MowzieParticleBase.spawnParticle(world, MMParticle.SUN, 0, 0, 0, 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 33, true, new ParticleComponent[]{
-//                    new ParticleComponent.PinLocation(betweenHandPos),
-//                    new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, superNovaKeyTrack1, false),
-//                    new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, superNovaKeyTrack2, true)
-//            });
-//        }
+        if (getAnimationTick() == 1) {
+            superNovaKeyTrack1 = new ParticleComponent.KeyTrack(
+                    new float[]{0, 25f, 32f, 0},
+                    new float[]{0, 0.6f, 0.85f, 1}
+            );
+            superNovaKeyTrack2 = ParticleComponent.KeyTrack.oscillate(0, 7, 24);
+            MowzieParticleBase.spawnParticle(world, MMParticle.SUN, 0, 0, 0, 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 33, true, new ParticleComponent[]{
+                    new ParticleComponent.PinLocation(betweenHandPos),
+                    new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, superNovaKeyTrack1, false),
+                    new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, superNovaKeyTrack2, true)
+            });
+        }
         if (getAnimationTick() == 33) {
             MowzieParticleBase.spawnParticle(world, MMParticle.SUN_NOVA, 0, 0, 0, 0, 0, 0, true, 0, 0, 0, 0, 20F, 1, 1, 1, 0, 1, 13, true, new ParticleComponent[]{
                     new ParticleComponent.PinLocation(betweenHandPos),
@@ -758,5 +749,15 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 
     private static boolean canPayFor(ItemStack stack, ItemStack worth) {
         return stack.getItem() == worth.getItem() && stack.getCount() >= worth.getCount();
+    }
+
+    @Override
+    protected boolean hasBossBar() {
+        return true;
+    }
+
+    @Override
+    protected BossInfo.Color bossBarColor() {
+        return BossInfo.Color.YELLOW;
     }
 }

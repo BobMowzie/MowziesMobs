@@ -68,7 +68,7 @@ public class MMModelAnimator {
      */
     public boolean setAnimation(Animation animation) {
         this.tempTick = this.prevTempTick = 0;
-        this.correctAnimation = this.entity.getAnimation() == animation;
+        if (entity != null) this.correctAnimation = this.entity.getAnimation() == animation;
         return this.correctAnimation;
     }
 

@@ -46,6 +46,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockPos.PooledMutableBlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.BossInfo;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -510,5 +511,20 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     @Override
     protected ResourceLocation getLootTable() {
         return LootTableHandler.FERROUS_WROUGHTNAUT;
+    }
+
+    @Override
+    public void setInWeb() {
+
+    }
+
+    @Override
+    protected boolean hasBossBar() {
+        return true;
+    }
+
+    @Override
+    protected BossInfo.Color bossBarColor() {
+        return BossInfo.Color.RED;
     }
 }

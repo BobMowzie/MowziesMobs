@@ -242,14 +242,14 @@ public abstract class ParticleComponent {
 
         @Override
         public void init(MowzieParticleBase particle) {
-            if (location.length > 0) {
+            if (location != null && location.length > 0) {
                 particle.setPosition(location[0].x, location[0].y, location[0].z);
             }
         }
 
         @Override
         public void preUpdate(MowzieParticleBase particle) {
-            if (location.length > 0) {
+            if (location != null && location.length > 0) {
                 particle.setPosition(location[0].x, location[0].y, location[0].z);
             }
         }

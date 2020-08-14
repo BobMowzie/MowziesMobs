@@ -165,13 +165,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     @Override
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
-        getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
         getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10  * ConfigHandler.BARAKOA.combatData.healthMultiplier);
-    }
-
-    @Override
-    public boolean attackEntityAsMob(Entity entity) {
-        return super.attackEntityAsMob(entity);
     }
 
     protected void updateAttackAI() {
