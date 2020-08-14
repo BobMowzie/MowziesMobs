@@ -471,7 +471,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                 crystalPos = crystalPos.rotateYaw((float) Math.toRadians(-rotationYaw - 90));
                 crystalPos = crystalPos.add(getPositionVector());
                 for (EntityPlayer player : getPlayersNearby(8, 8, 8, 8)) {
-                    if (player.getPositionVector().subtract(crystalPos).length() <= 1.6 && (player.capabilities.isCreativeMode || player.isInvisible())) {
+                    if (player.getPositionVector().distanceTo(crystalPos) <= 1.6 && (player.capabilities.isCreativeMode || player.isInvisible())) {
                         ItemHandlerHelper.giveItemToPlayer(player, new ItemStack(ItemHandler.ICE_CRYSTAL));
                         setHasCrystal(false);
                         if (world.getDifficulty() != EnumDifficulty.PEACEFUL) {
