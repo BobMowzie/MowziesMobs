@@ -30,7 +30,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BossInfo;
-import net.minecraft.world.BossInfoServer;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.World;
@@ -69,12 +68,10 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     private DamageSource killDataCause;
     private EntityPlayer killDataAttackingPlayer;
 
-    private final BossInfoServer bossInfo = new BossInfoServer(this.getDisplayName(), BossInfo.Color.PURPLE, BossInfo.Overlay.PROGRESS);
+    private final MMBossInfoServer bossInfo = new MMBossInfoServer(this);
 
     public MowzieEntity(World world) {
         super(world);
-        bossInfo.setColor(bossBarColor());
-        bossInfo.setVisible(hasBossBar());
     }
 
     @Override
@@ -200,7 +197,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     @Override
     protected void updateAITasks() {
         super.updateAITasks();
-        this.bossInfo.setPercent(this.getHealth() / this.getMaxHealth());
+        this.bossInfo.update();
     }
 
     protected void onAnimationFinish(Animation animation) {}
