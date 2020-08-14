@@ -69,7 +69,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     private DamageSource killDataCause;
     private EntityPlayer killDataAttackingPlayer;
 
-    private final BossInfoServer bossInfo = (BossInfoServer)(new BossInfoServer(this.getDisplayName(), BossInfo.Color.PURPLE, BossInfo.Overlay.PROGRESS));
+    private final BossInfoServer bossInfo = new BossInfoServer(this.getDisplayName(), BossInfo.Color.PURPLE, BossInfo.Overlay.PROGRESS);
 
     public MowzieEntity(World world) {
         super(world);
@@ -521,24 +521,14 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
 
     public abstract Animation getHurtAnimation();
 
-    /**
-     * Add the given player to the list of players tracking this entity. For instance, a player may track a boss in
-     * order to view its associated boss bar.
-     */
     @Override
-    public void addTrackingPlayer(EntityPlayerMP player)
-    {
+    public void addTrackingPlayer(EntityPlayerMP player) {
         super.addTrackingPlayer(player);
         this.bossInfo.addPlayer(player);
     }
 
-    /**
-     * Removes the given player from the list of players tracking this entity. See {@link Entity#addTrackingPlayer} for
-     * more information on tracking.
-     */
     @Override
-    public void removeTrackingPlayer(EntityPlayerMP player)
-    {
+    public void removeTrackingPlayer(EntityPlayerMP player) {
         super.removeTrackingPlayer(player);
         this.bossInfo.removePlayer(player);
     }
@@ -546,15 +536,13 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     @Override
     public void readEntityFromNBT(NBTTagCompound compound) {
         super.readEntityFromNBT(compound);
-
-        if (this.hasCustomName())
-        {
+        if (this.hasCustomName()) {
             this.bossInfo.setName(this.getDisplayName());
         }
     }
 
-    public void setCustomNameTag(String name)
-    {
+    @Override
+    public void setCustomNameTag(String name) {
         super.setCustomNameTag(name);
         this.bossInfo.setName(this.getDisplayName());
     }
