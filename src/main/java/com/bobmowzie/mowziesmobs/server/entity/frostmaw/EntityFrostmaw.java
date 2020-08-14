@@ -6,12 +6,12 @@ import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
 import com.bobmowzie.mowziesmobs.server.advancement.AdvancementHandler;
 import com.bobmowzie.mowziesmobs.server.ai.MMEntityMoveHelper;
 import com.bobmowzie.mowziesmobs.server.ai.MMPathNavigateGround;
-import com.bobmowzie.mowziesmobs.server.ai.animation.SimpleAnimationAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationActivateAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationAreaAttackAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDeactivateAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
+import com.bobmowzie.mowziesmobs.server.ai.animation.SimpleAnimationAI;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LegSolverQuadruped;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
@@ -25,7 +25,6 @@ import com.bobmowzie.mowziesmobs.server.spawn.SpawnHandler;
 import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityLivingData;
@@ -41,10 +40,8 @@ import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.init.Items;
 import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -58,7 +55,10 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.*;
+import net.minecraft.world.BossInfo;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.EnumDifficulty;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -722,111 +722,6 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         }
 
         return attack;
-    }
-
-    @Override
-    public boolean attackEntityAsMob(Entity entityIn) {
-        float f = (float)this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue();
-        int i = 0;
-
-        if (entityIn instanceof EntityLivingBase)
-        {
-            f += EnchantmentHelper.getModifierForCreature(this.getHeldItemMainhand(), ((EntityLivingBase)entityIn).getCreatureAttribute());
-            i += EnchantmentHelper.getKnockbackModifier(this);
-        }
-
-        boolean flag = entityIn.attackEntityFrom(DamageSource.causeMobDamage(this), f);
-
-        if (flag)
-        {
-            if (i > 0 && entityIn instanceof EntityLivingBase)
-            {
-                ((EntityLivingBase)entityIn).knockBack(this, (float)i * 0.5F, (double)MathHelper.sin(this.rotationYaw * 0.017453292F), (double)(-MathHelper.cos(this.rotationYaw * 0.017453292F)));
-                this.motionX *= 0.6D;
-                this.motionZ *= 0.6D;
-            }
-
-            int j = EnchantmentHelper.getFireAspectModifier(this);
-
-            if (j > 0)
-            {
-                entityIn.setFire(j * 4);
-            }
-
-            if (entityIn instanceof EntityPlayer)
-            {
-                EntityPlayer entityplayer = (EntityPlayer)entityIn;
-                ItemStack itemstack = this.getHeldItemMainhand();
-                ItemStack itemstack1 = entityplayer.isHandActive() ? entityplayer.getActiveItemStack() : ItemStack.EMPTY;
-
-                if (!itemstack.isEmpty() && !itemstack1.isEmpty() && itemstack.getItem() instanceof ItemAxe && itemstack1.getItem() == Items.SHIELD)
-                {
-                    float f1 = 0.25F + (float)EnchantmentHelper.getEfficiencyModifier(this) * 0.05F;
-
-                    if (this.rand.nextFloat() < f1)
-                    {
-                        entityplayer.getCooldownTracker().setCooldown(Items.SHIELD, 100);
-                        this.world.setEntityState(entityplayer, (byte)30);
-                    }
-                }
-            }
-
-            this.applyEnchantments(this, entityIn);
-        }
-
-        return flag;
-    }
-
-    public boolean attackEntityAsMob(Entity entityIn, float damageMultiplier) {
-        float f = (float)this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue() * damageMultiplier;
-        int i = 0;
-
-        if (entityIn instanceof EntityLivingBase)
-        {
-            f += EnchantmentHelper.getModifierForCreature(this.getHeldItemMainhand(), ((EntityLivingBase)entityIn).getCreatureAttribute());
-            i += EnchantmentHelper.getKnockbackModifier(this);
-        }
-
-        boolean flag = entityIn.attackEntityFrom(DamageSource.causeMobDamage(this), f);
-
-        if (flag)
-        {
-            if (i > 0 && entityIn instanceof EntityLivingBase)
-            {
-                ((EntityLivingBase)entityIn).knockBack(this, (float)i * 0.5F, (double)MathHelper.sin(this.rotationYaw * 0.017453292F), (double)(-MathHelper.cos(this.rotationYaw * 0.017453292F)));
-                this.motionX *= 0.6D;
-                this.motionZ *= 0.6D;
-            }
-
-            int j = EnchantmentHelper.getFireAspectModifier(this);
-
-            if (j > 0)
-            {
-                entityIn.setFire(j * 4);
-            }
-
-            if (entityIn instanceof EntityPlayer)
-            {
-                EntityPlayer entityplayer = (EntityPlayer)entityIn;
-                ItemStack itemstack = this.getHeldItemMainhand();
-                ItemStack itemstack1 = entityplayer.isHandActive() ? entityplayer.getActiveItemStack() : ItemStack.EMPTY;
-
-                if (!itemstack.isEmpty() && !itemstack1.isEmpty() && itemstack.getItem() instanceof ItemAxe && itemstack1.getItem() == Items.SHIELD)
-                {
-                    float f1 = 0.25F + (float)EnchantmentHelper.getEfficiencyModifier(this) * 0.05F;
-
-                    if (this.rand.nextFloat() < f1)
-                    {
-                        entityplayer.getCooldownTracker().setCooldown(Items.SHIELD, 100);
-                        this.world.setEntityState(entityplayer, (byte)30);
-                    }
-                }
-            }
-
-            this.applyEnchantments(this, entityIn);
-        }
-
-        return flag;
     }
 
     @Override
