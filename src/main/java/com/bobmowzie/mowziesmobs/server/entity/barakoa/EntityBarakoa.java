@@ -71,7 +71,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         tasks.addTask(1, new AnimationDieAI<>(this));
         tasks.addTask(1, new EntityAIAvoidEntity<>(this, EntitySunstrike.class, EntitySunstrike::isStriking, 3, 0.7F));
         tasks.addTask(2, new AnimationBlockAI<>(this, BLOCK_ANIMATION));
-        tasks.addTask(2, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_BARAKOA_SWING, null, 1, 3, ConfigHandler.BARAKOA.combatData.attackMultiplier, 9, true));
+        tasks.addTask(2, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_BARAKOA_SWING, null, 1, 2.5f, ConfigHandler.BARAKOA.combatData.attackMultiplier, 9, true));
         tasks.addTask(2, new AnimationProjectileAttackAI<EntityBarakoa>(this, PROJECTILE_ATTACK_ANIMATION, 9, MMSounds.ENTITY_BARAKOA_BLOWDART, true) {
             @Override
             public void startExecuting() {
@@ -175,7 +175,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             timeSinceAttack++;
         }
         if (getAttackTarget() != null) {
-            if (targetDistance > 7) {
+            if (targetDistance > 6.5) {
                 getNavigator().tryMoveToXYZ(getAttackTarget().posX, getAttackTarget().posY, getAttackTarget().posZ, 0.6);
             } else {
                 if (!attacking) {
@@ -189,7 +189,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
                 }
             }
             if (attacking && getAnimation() == NO_ANIMATION && getEntitySenses().canSee(getAttackTarget())) {
-                if (targetDistance <= 3 && getWeapon() == 0) {
+                if (targetDistance <= 2.5 && getWeapon() == 0) {
                     attacking = false;
                     timeSinceAttack = 0;
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, ATTACK_ANIMATION);
@@ -224,7 +224,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         } else {
             circleTick--;
         }
-        if (!attacking && targetDistance < 5) {
+        if (!attacking && targetDistance < 4.5) {
             circleEntity(getAttackTarget(), 7, 0.3f, true, circleTick, 0, 1.75f);
         } else {
             circleEntity(getAttackTarget(), 7, 0.3f, true, circleTick, 0, 1);

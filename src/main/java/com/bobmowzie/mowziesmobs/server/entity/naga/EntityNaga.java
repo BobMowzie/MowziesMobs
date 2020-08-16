@@ -339,7 +339,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
 //        }
 
         if (!world.isRemote) {
-            if (getAttackTarget() != null && targetDistance < 30 && movement != EnumNagaMovement.FALLEN && movement != EnumNagaMovement.FALLING) {
+            if (getAttackTarget() != null && targetDistance < 29.5 && movement != EnumNagaMovement.FALLEN && movement != EnumNagaMovement.FALLING) {
                 setAttacking(true);
                 if (getAnimation() == NO_ANIMATION && swoopCooldown == 0 && rand.nextInt(80) == 0 && posY - getAttackTarget().posY > 0) {
                     interrupted = false;

@@ -62,7 +62,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         super(world);
         setPathPriority(PathNodeType.WATER, 0);
         this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(1, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_FOLIAATH_BITE_1, null, 2, 4.5F, ConfigHandler.FOLIAATH.combatData.attackMultiplier, 3));
+        this.tasks.addTask(1, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_FOLIAATH_BITE_1, null, 2, 4F, ConfigHandler.FOLIAATH.combatData.attackMultiplier, 3));
         this.tasks.addTask(1, new AnimationTakeDamage<>(this));
         this.tasks.addTask(1, new AnimationDieAI<>(this));
         this.targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityLivingBase.class, 0, true, false, e ->
@@ -193,11 +193,11 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         if (getAttackTarget() != null) {
             rotationYawHead = targetAngle;
 
-            if (targetDistance <= 4.5 && getAttackTarget().posY - posY >= -1 && getAttackTarget().posY - posY <= 2 && getAnimation() == NO_ANIMATION && active) {
+            if (targetDistance <= 4 && getAttackTarget().posY - posY >= -1 && getAttackTarget().posY - posY <= 2 && getAnimation() == NO_ANIMATION && active) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, ATTACK_ANIMATION);
             }
 
-            if (targetDistance <= 11 && getAttackTarget().posY - posY >= -1.5 && getAttackTarget().posY - posY <= 2) {
+            if (targetDistance <= 10.5 && getAttackTarget().posY - posY >= -1.5 && getAttackTarget().posY - posY <= 2) {
                 setActivateTarget(ACTIVATE_DURATION);
                 lastTimeDecrease = 0;
             } else if (lastTimeDecrease <= 30 && getAnimation() == NO_ANIMATION) {

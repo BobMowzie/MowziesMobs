@@ -109,8 +109,8 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     public EntityWroughtnaut(World world) {
         super(world);
         setPathPriority(PathNodeType.WATER, 0);
-        tasks.addTask(1, new AnimationFWNAttackAI(this, 4F, 5.5F, 100F));
-        tasks.addTask(1, new AnimationFWNVerticalAttackAI(this, VERTICAL_ATTACK_ANIMATION, MMSounds.ENTITY_WROUGHT_WHOOSH, 1F, 5.5F, 40F));
+        tasks.addTask(1, new AnimationFWNAttackAI(this, 4F, 5F, 100F));
+        tasks.addTask(1, new AnimationFWNVerticalAttackAI(this, VERTICAL_ATTACK_ANIMATION, MMSounds.ENTITY_WROUGHT_WHOOSH, 1F, 5F, 40F));
         tasks.addTask(1, new AnimationFWNStompAttackAI(this, STOMP_ATTACK_ANIMATION));
         tasks.addTask(1, new AnimationTakeDamage<>(this));
         tasks.addTask(1, new AnimationDieAI<>(this));
@@ -240,7 +240,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
                         AnimationHandler.INSTANCE.sendAnimationMessage(this, DEACTIVATE_ANIMATION);
                         setActive(false);
                     }
-                } else if (getAttackTarget() != null && targetDistance <= 5) {
+                } else if (getAttackTarget() != null && targetDistance <= 4.5) {
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_ANIMATION);
                     setActive(true);
                 }
