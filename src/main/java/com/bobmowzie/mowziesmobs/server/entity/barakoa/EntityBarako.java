@@ -166,8 +166,10 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             @Override
             public void startExecuting() {
                 super.startExecuting();
-                prevX = entityTarget.posX;
-                prevZ = entityTarget.posZ;
+                if (entityTarget != null) {
+                    prevX = entityTarget.posX;
+                    prevZ = entityTarget.posZ;
+                }
             }
         });
         this.tasks.addTask(2, new AnimationRadiusAttack<EntityBarako>(this, ATTACK_ANIMATION, 4f, (int)(5 * ConfigHandler.BARAKO.combatData.attackMultiplier), 3f, 12, true){
