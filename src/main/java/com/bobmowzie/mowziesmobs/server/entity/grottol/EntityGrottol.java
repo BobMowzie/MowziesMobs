@@ -260,10 +260,6 @@ public class EntityGrottol extends MowzieEntity implements IMob {
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (getAnimation() == NO_ANIMATION) {
-            AnimationHandler.INSTANCE.sendAnimationMessage(this, BURROW_ANIMATION);
-        }
-
         if (!world.isRemote) {
             Entity e = getRidingEntity();
             if (isMinecart(e)) {

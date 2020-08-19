@@ -55,10 +55,7 @@ public class ModelGrottol extends MowzieEntityModel<EntityGrottol> {
     public AdvancedModelRenderer foot3Right;
     public AdvancedModelRenderer dieAnimController;
 
-    private MMModelAnimator animator;
-
     public ModelGrottol() {
-        animator = MMModelAnimator.create();
         this.textureWidth = 64;
         this.textureHeight = 64;
         this.crystal7 = new AdvancedModelRenderer(this, 0, 17);
