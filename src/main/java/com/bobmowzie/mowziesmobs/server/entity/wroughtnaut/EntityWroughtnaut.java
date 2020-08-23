@@ -225,11 +225,12 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     public void onUpdate() {
         super.onUpdate();
 
-        /*if (getAnimation() == NO_ANIMATION) {
-            setActive(true);
-            swingDirection = false;
-            AnimationHandler.INSTANCE.sendAnimationMessage(this, VERTICAL_ATTACK_ANIMATION);
-        }*/
+//        if (getAnimation() == NO_ANIMATION) {
+//            setActive(true);
+//            swingDirection = true;
+//            AnimationHandler.INSTANCE.sendAnimationMessage(this, ATTACK_THRICE_ANIMATION);
+//            getNavigator().clearPath();
+//        }
 
         if (getAttackTarget() != null && (getAttackTarget().isDead || getAttackTarget().getHealth() <= 0)) setAttackTarget(null);
 
@@ -293,7 +294,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 
         repelEntities(2.2F, 4, 2.2F, 2.2F);
 
-        if (!active && !world.isRemote) {
+        if (!active && !world.isRemote && getAnimation() != ACTIVATE_ANIMATION) {
             heal(0.3f);
         }
 

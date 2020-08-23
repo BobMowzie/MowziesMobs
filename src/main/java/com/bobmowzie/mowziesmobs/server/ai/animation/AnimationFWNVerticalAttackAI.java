@@ -62,12 +62,12 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
             }
         } else if (entity.getAnimationTick() == 28) {
             entity.playSound(MMSounds.ENTITY_WROUGHT_AXE_LAND, 1, 0.5F);
-        } else if (entity.getAnimationTick() == 43) {
+        } else if (entity.getAnimationTick() == 44) {
             entity.playSound(MMSounds.ENTITY_WROUGHT_PULL_1, 1, 1F);
             entity.playSound(MMSounds.ENTITY_WROUGHT_CREAK, 0.5F, 1F);
-        } else if (entity.getAnimationTick() == 72) {
+        } else if (entity.getAnimationTick() == 75) {
             entity.playSound(MMSounds.ENTITY_WROUGHT_PULL_5, 1, 1F);
-        } else if (entity.getAnimationTick() == 81) {
+        } else if (entity.getAnimationTick() == 83) {
             entity.playSound(MMSounds.ENTITY_WROUGHT_RELEASE_2, 1, 1F);
         }
         if (entity.getAnimationTick() > 26 && entity.getAnimationTick() < 85) {
