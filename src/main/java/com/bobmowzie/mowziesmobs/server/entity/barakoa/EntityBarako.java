@@ -8,6 +8,8 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory.ParticleArgs;
 import com.bobmowzie.mowziesmobs.client.particles.util.MowzieParticleBase;
 import com.bobmowzie.mowziesmobs.client.particles.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particles.util.ParticleComponent.PropertyControl.EnumParticleProperty;
+import com.bobmowzie.mowziesmobs.client.particles.util.ParticleRibbon;
+import com.bobmowzie.mowziesmobs.client.particles.util.RibbonComponent;
 import com.bobmowzie.mowziesmobs.server.advancement.AdvancementHandler;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
@@ -106,6 +108,8 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 
     @SideOnly(Side.CLIENT)
     public Vec3d[] betweenHandPos;
+    @SideOnly(Side.CLIENT)
+    public Vec3d[] blessingPlayerPos;
 
     private static ParticleComponent.KeyTrack superNovaKeyTrack1 = new ParticleComponent.KeyTrack(
             new float[]{0, 20f, 20f, 0},
@@ -194,6 +198,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 
         if (world.isRemote) {
             betweenHandPos = new Vec3d[]{new Vec3d(0, 0, 0)};
+            blessingPlayerPos = new Vec3d[]{new Vec3d(0, 0, 0)};
         }
     }
 
@@ -277,6 +282,9 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 entityAttackingAngle += 360;
             }
             float entityRelativeAngle = Math.abs(entityHitAngle - entityAttackingAngle);
+            Vec3d targetMoveVec = new Vec3d(target.motionX, target.motionY, target.motionZ);
+            Vec3d betweenEntitiesVec = getPositionVector().subtract(target.getPositionVector());
+            boolean targetComingCloser = targetMoveVec.dotProduct(betweenEntitiesVec) > 0;
             if (getAnimation() == NO_ANIMATION && !isAIDisabled() && rand.nextInt(80) == 0 && getEntitiesNearby(EntityBarakoa.class, 25).size() < 5 && targetDistance > 4.5 && timeUntilBarakoa <= 0) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SPAWN_ANIMATION);
                 timeUntilBarakoa = BARAKOA_PAUSE;
@@ -286,9 +294,9 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && getHealthRatio() <= 0.6 && timeUntilSupernova <= 0 && targetDistance <= 10.5) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SUPERNOVA_ANIMATION);
                 timeUntilSupernova = SUPERNOVA_PAUSE;
-            } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && targetDistance <= 4.5) {
+            } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && (targetDistance <= 6f && targetComingCloser || targetDistance < 4.f)) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, ATTACK_ANIMATION);
-            } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && timeUntilSunstrike <= 0 && targetDistance > 4.5) {
+            } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && timeUntilSunstrike <= 0) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SUNSTRIKE_ANIMATION);
                 timeUntilSunstrike = getTimeUntilSunstrike();
             }
@@ -360,19 +368,31 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         if (getAnimation() == BLESS_ANIMATION) {
             rotationYawHead = rotationYaw;
 
-//            if (getAnimationTick() == 1) {
-//                blessingPlayer = getCustomer();
-//            }
-            if (getAnimationTick() > 5 && getAnimationTick() < 40 && world.isRemote && blessingPlayer != null) {
-                int particleCount = 2;
-                while (--particleCount != 0) {
-                    double radius = 0.7f;
-                    double yaw = rand.nextFloat() * 2 * Math.PI;
-                    double pitch = rand.nextFloat() * 2 * Math.PI;
-                    double ox = radius * Math.sin(yaw) * Math.sin(pitch);
-                    double oy = radius * Math.cos(pitch);
-                    double oz = radius * Math.cos(yaw) * Math.sin(pitch);
-                    MMParticle.ORB.spawn(world, posX + ox, posY + 0.8f + oy, posZ + oz, ParticleArgs.get().withData(blessingPlayer.posX, blessingPlayer.posY + blessingPlayer.height/2, blessingPlayer.posZ, 20));
+            if (getAnimationTick() == 1) {
+                blessingPlayer = getCustomer();
+            }
+            if (world.isRemote && blessingPlayer != null) {
+                blessingPlayerPos[0] = blessingPlayer.getPositionVector().add(new Vec3d(0, blessingPlayer.height / 2f, 0));
+                if (getAnimationTick() > 5 && getAnimationTick() < 40) {
+                    int particleCount = 2;
+                    while (--particleCount != 0) {
+                        double radius = 0.7f;
+                        double yaw = rand.nextFloat() * 2 * Math.PI;
+                        double pitch = rand.nextFloat() * 2 * Math.PI;
+                        double ox = radius * Math.sin(yaw) * Math.sin(pitch);
+                        double oy = radius * Math.cos(pitch);
+                        double oz = radius * Math.cos(yaw) * Math.sin(pitch);
+                        MowzieParticleBase.spawnParticle(world, MMParticle.ORB2, posX + ox, posY + 0.8f + oy, posZ + oz, 0, 0, 0, true, 0, 0, 0, 0, 5F, 1, 1, 1, 1, 1, 20, true, new ParticleComponent[]{
+                                new ParticleComponent.Attractor(blessingPlayerPos, 0.5f, 0.2f, ParticleComponent.Attractor.EnumAttractorBehavior.LINEAR),
+                                new ParticleComponent.PropertyControl(EnumParticleProperty.POS_X, new ParticleComponent.Oscillator(0, (float) ox, 6f, 2.5f), true),
+                                new ParticleComponent.PropertyControl(EnumParticleProperty.POS_Y, new ParticleComponent.Oscillator(0, (float) oy, 6f, 2.5f), true),
+                                new ParticleComponent.PropertyControl(EnumParticleProperty.POS_Z, new ParticleComponent.Oscillator(0, (float) oz, 6f, 2.5f), true),
+                                new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, new ParticleComponent.KeyTrack(
+                                        new float[]{0f, 1f},
+                                        new float[]{0, 0.8f}
+                                ), false)
+                        });
+                    }
                 }
             }
             if (getAnimationTick() % 15 == 0) {
@@ -427,7 +447,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         }
 
 //        if (getAnimation() == NO_ANIMATION) {
-//            AnimationHandler.INSTANCE.sendAnimationMessage(this, SUPERNOVA_ANIMATION);
+//            AnimationHandler.INSTANCE.sendAnimationMessage(this, SOLAR_BEAM_ANIMATION);
 //        }
     }
 

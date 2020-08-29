@@ -28,7 +28,7 @@ public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
         super(world, x, y, z);
         this.targetX = targetX;
         this.targetZ = targetZ;
-        particleScale = 3F + rand.nextFloat() * 1F;
+        particleScale = 4.5F + rand.nextFloat() * 1.5F;
         particleMaxAge = 120;
         signX = Math.signum(targetX - posX);
         signZ = Math.signum(targetZ - posZ);
