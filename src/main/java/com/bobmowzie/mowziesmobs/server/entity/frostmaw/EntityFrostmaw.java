@@ -802,7 +802,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         if (rand.nextFloat() > ConfigHandler.FROSTMAW.generationData.generationChance) return;
         if(!SpawnHandler.FROSTMAW_BIOMES.contains(biome)) return;
         boolean flag = false;
-        for (int dimensionAllowed : ConfigHandler.BARAKO.generationData.dimensions) {
+        for (int dimensionAllowed : ConfigHandler.FROSTMAW.generationData.dimensions) {
             if (dimensionAllowed == world.provider.getDimension()) {
                 flag = true;
                 break;
