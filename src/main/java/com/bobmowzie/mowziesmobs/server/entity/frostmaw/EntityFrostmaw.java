@@ -794,7 +794,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
 
     @Override
     protected boolean canDespawn() {
-        return false;
+        return !getHasCrystal();
     }
 
     public void spawnInWorld(World world, Random rand, int x, int z) {
