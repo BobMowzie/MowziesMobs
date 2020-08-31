@@ -38,14 +38,14 @@ public class MowzieLivingProperties extends EntityProperties<EntityLivingBase> {
     public boolean prevHasAI;
 
     // After taking freeze progress, this timer needs to reach zero before freeze progress starts to fade
+    @NBTProperty
     public int freezeDecayDelay;
     public static int MAX_FREEZE_DECAY_DELAY = 10;
 
     public boolean prevFrozen = false;
     public EntityFrozenController frozenController;
 
-    @NBTProperty
-    private int frozenEntityID = -1;
+    public float lastDamage = 0;
 
     public void addFreezeProgress(EntityLivingBase entity, float amount) {
         if (!entity.world.isRemote && !entity.isPotionActive(PotionHandler.FROZEN)) {

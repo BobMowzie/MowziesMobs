@@ -8,6 +8,7 @@ import com.bobmowzie.mowziesmobs.client.particles.util.ParticleComponent.Propert
 import com.bobmowzie.mowziesmobs.client.particles.util.RibbonComponent;
 import com.bobmowzie.mowziesmobs.client.particles.util.RibbonComponent.PropertyOverLength;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.damage.DamageUtil;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.entity.EntityLiving;
@@ -77,16 +78,11 @@ public class EntitySuperNova extends EntityMagicEffect {
                     float damageMob = 3f;
                     damageFire *= ConfigHandler.BARAKO.combatData.attackMultiplier;
                     damageMob *= ConfigHandler.BARAKO.combatData.attackMultiplier;
-                    boolean hitWithFire = entity.attackEntityFrom(DamageSource.ON_FIRE, damageFire);
+                    boolean hitWithFire = DamageUtil.dealMixedDamage(entity, DamageSource.causeMobDamage(caster), damageMob, DamageSource.ON_FIRE, damageFire).getValue();
                     if (hitWithFire) {
-                        entity.hurtResistantTime = 0;
                         Vec3d diff = entity.getPositionVector().subtract(getPositionVector());
                         diff = diff.normalize();
                         entity.knockBack(this, 0.4f, -diff.x, -diff.z);
-                    }
-                    entity.attackEntityFrom(DamageSource.causeMobDamage(caster), damageMob);
-                    if (hitWithFire) {
-                        entity.hurtResistantTime = entity.maxHurtResistantTime;
                         entity.setFire(5);
                     }
                 }

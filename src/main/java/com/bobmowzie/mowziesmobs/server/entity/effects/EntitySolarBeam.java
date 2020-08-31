@@ -5,6 +5,7 @@ import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory.ParticleArgs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.damage.DamageUtil;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
@@ -128,10 +129,7 @@ public class EntitySolarBeam extends Entity {
                         damageFire *= ConfigHandler.TOOLS_AND_ABILITIES.sunsBlessingAttackMultiplier;
                         damageMob *= ConfigHandler.TOOLS_AND_ABILITIES.sunsBlessingAttackMultiplier;
                     }
-                    boolean hitWithFire = target.attackEntityFrom(DamageSource.ON_FIRE, damageFire);
-                    if (hitWithFire) target.hurtResistantTime = 0;
-                    target.attackEntityFrom(DamageSource.causeMobDamage(caster), damageMob);
-                    if (hitWithFire) target.hurtResistantTime = target.maxHurtResistantTime;
+                    DamageUtil.dealMixedDamage(target, DamageSource.causeMobDamage(caster), damageMob, DamageSource.ON_FIRE, damageFire);
                 }
             } else {
                 for (EntityLivingBase e : hit) {

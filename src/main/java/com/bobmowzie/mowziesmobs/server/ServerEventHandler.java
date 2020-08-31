@@ -118,6 +118,7 @@ public enum ServerEventHandler {
             MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
 
             if (property != null) {
+                // Freeze logic
                 if (property.freezeProgress >= 1) {
                     entity.addPotionEffect(new PotionEffect(PotionHandler.FROZEN, 50, 0, false, false));
                     property.freezeProgress = 1f;
@@ -472,6 +473,14 @@ public enum ServerEventHandler {
                 Vec3d vecBetween = new Vec3d(target.posX - attacker.posX, 0, target.posZ - attacker.posZ).normalize();
                 double dot = lookDir.dotProduct(vecBetween);
                 if (dot > 0.7) event.setAmount(event.getAmount() + 3 * ConfigHandler.TOOLS_AND_ABILITIES.nagaDaggerAttackMultiplier);
+            }
+        }
+
+        if (event.getEntityLiving() != null) {
+            EntityLivingBase living = event.getEntityLiving();
+            MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(living, MowzieLivingProperties.class);
+            if (property != null) {
+                property.lastDamage = event.getAmount();
             }
         }
     }
