@@ -269,6 +269,8 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         this.renderYawOffset = rotationYaw;
         this.posX = prevPosX;
         this.posZ = prevPosZ;
+        motionX = 0;
+        motionZ = 0;
 
         if (getAttackTarget() != null) {
             EntityLivingBase target = getAttackTarget();
@@ -446,9 +448,9 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             timeUntilSupernova--;
         }
 
-        if (getAnimation() == NO_ANIMATION) {
-            AnimationHandler.INSTANCE.sendAnimationMessage(this, SUPERNOVA_ANIMATION);
-        }
+//        if (getAnimation() == NO_ANIMATION) {
+//            AnimationHandler.INSTANCE.sendAnimationMessage(this, SUPERNOVA_ANIMATION);
+//        }
     }
 
     private void superNovaEffects() {

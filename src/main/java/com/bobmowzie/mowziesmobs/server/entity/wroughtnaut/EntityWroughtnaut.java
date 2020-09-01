@@ -251,6 +251,8 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         if (!isActive()) {
             posX = prevPosX;
             posZ = prevPosZ;
+            motionX = 0;
+            motionZ = 0;
             rotationYaw = prevRotationYaw;
         }
 //        else if (world.isRemote && leftEyePos != null && rightEyePos != null) {

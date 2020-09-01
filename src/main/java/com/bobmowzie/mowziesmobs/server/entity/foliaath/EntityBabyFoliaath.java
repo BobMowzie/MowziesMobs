@@ -193,6 +193,8 @@ public class EntityBabyFoliaath extends MowzieEntity {
     public void applyEntityCollision(Entity collider) {
         posX = prevPosX;
         posZ = prevPosZ;
+        motionX = 0;
+        motionZ = 0;
     }
 
     @Override

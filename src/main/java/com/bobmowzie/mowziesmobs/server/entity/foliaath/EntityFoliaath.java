@@ -112,6 +112,8 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         super.onUpdate();
         this.posX = prevPosX;
         this.posZ = prevPosZ;
+        motionX = 0;
+        motionZ = 0;
         // Open mouth animation
         if (getAnimation() == NO_ANIMATION && !activate.canIncreaseTimer()) {
             openMouth.update();
