@@ -40,7 +40,7 @@ public class ItemWroughtAxe extends ItemAxe {
     }
 
     @Override
-    public boolean hitEntity(ItemStack heldItemStack, EntityLivingBase attacker, EntityLivingBase entityHit) {
+    public boolean hitEntity(ItemStack heldItemStack, EntityLivingBase entityHit, EntityLivingBase attacker) {
         if (ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable) heldItemStack.damageItem(2, attacker);
         if (!entityHit.world.isRemote) {
             entityHit.playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.3F, 0.5F);
