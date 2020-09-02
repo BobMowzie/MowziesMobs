@@ -66,6 +66,7 @@ public class ItemBarakoaMask extends ItemArmor implements BarakoaMask {
         ItemStack stack = player.getHeldItem(hand);
         ItemStack headStack = player.inventory.armorInventory.get(3);
         if (headStack.getItem() instanceof ItemBarakoMask) {
+            if (ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable && !player.capabilities.isCreativeMode) headStack.damageItem(2, player);
             spawnBarakoa(type, player, (float)stack.getItemDamage() / (float)stack.getMaxDamage());
             if (!player.capabilities.isCreativeMode) {
                 stack.shrink(1);

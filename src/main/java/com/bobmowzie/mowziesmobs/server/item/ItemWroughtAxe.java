@@ -59,7 +59,7 @@ public class ItemWroughtAxe extends ItemAxe {
                 if (!world.isRemote) world.spawnEntity(axeAttack);
                 property.verticalSwing = verticalAttack;
                 property.untilAxeSwing = MowziePlayerProperties.SWING_COOLDOWN;
-                if (ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable) player.getHeldItem(hand).damageItem(2, player);
+                if (ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable && !player.capabilities.isCreativeMode) player.getHeldItem(hand).damageItem(2, player);
             }
             return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
         }
@@ -84,7 +84,6 @@ public class ItemWroughtAxe extends ItemAxe {
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
-        if (ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable) tooltip.remove(0);
         ItemHandler.addItemText(this, tooltip);
     }
 }

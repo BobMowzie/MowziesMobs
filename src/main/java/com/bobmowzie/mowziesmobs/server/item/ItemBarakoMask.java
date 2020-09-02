@@ -43,23 +43,22 @@ public class ItemBarakoMask extends ItemArmor implements BarakoaMask {
 
     @Override
     public boolean isDamageable() {
-        return !ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable;
+        return ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable;
     }
 
     @Override
     public int getDamage(ItemStack stack) {
-        return !ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable ? super.getDamage(stack): 0;
+        return ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable ? super.getDamage(stack): 0;
     }
 
     @Override
     public void setDamage(ItemStack stack, int damage) {
-        if (!ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable) super.setDamage(stack, damage);
+        if (ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable) super.setDamage(stack, damage);
     }
 
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
-        if (ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable) tooltip.remove(0);
         ItemHandler.addItemText(this, tooltip);
     }
 }

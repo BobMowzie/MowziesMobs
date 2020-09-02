@@ -86,8 +86,8 @@ item.wroughtHelmet.text.0=Never breaks
 item.spear.text.0=Extends attack range by 3.5 blocks
 item.spear.text.1=1/3 chance to instantly kill animals with less than 30 health
 
-item.iceCrystal.text.0=Recharges while in inventory
-item.iceCrystal.text.1=Hold right-click to channel an icy whirlwind
+item.iceCrystal.text.0=Hold right-click to channel an icy whirlwind
+item.iceCrystal.text.1=Recharges while in inventory
 
 item.capturedGrottol.name=Captured Grottol
 
