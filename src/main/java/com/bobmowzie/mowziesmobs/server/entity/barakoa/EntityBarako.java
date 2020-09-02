@@ -176,7 +176,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 }
             }
         });
-        this.tasks.addTask(2, new AnimationRadiusAttack<EntityBarako>(this, ATTACK_ANIMATION, 4f, (int)(5 * ConfigHandler.BARAKO.combatData.attackMultiplier), 3f, 12, true){
+        this.tasks.addTask(2, new AnimationRadiusAttack<EntityBarako>(this, ATTACK_ANIMATION, 4f, (int)(5 * ConfigHandler.MOBS.BARAKO.combatData.attackMultiplier), 3f, 12, true){
             @Override
             public void startExecuting() {
                 super.startExecuting();
@@ -216,7 +216,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0);
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(MAX_HEALTH * ConfigHandler.BARAKO.combatData.healthMultiplier);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(MAX_HEALTH * ConfigHandler.MOBS.BARAKO.combatData.healthMultiplier);
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(50);
     }
 
@@ -433,7 +433,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         }
 
         if (!world.isRemote && getAttackTarget() == null && getAnimation() != SOLAR_BEAM_ANIMATION && getAnimation() != SUPERNOVA_ANIMATION) {
-            heal(0.3f);
+            if (ConfigHandler.MOBS.BARAKO.healsOutOfBattle) heal(0.3f);
         }
         if (timeUntilSunstrike > 0) {
             timeUntilSunstrike--;
@@ -777,7 +777,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 
     @Override
     protected boolean hasBossBar() {
-        return true;
+        return ConfigHandler.MOBS.BARAKO.hasBossBar;
     }
 
     @Override

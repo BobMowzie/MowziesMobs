@@ -120,13 +120,13 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         this.tasks.addTask(7, new EntityAIWanderAvoidWater(this, 1.0D));
         this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
         this.tasks.addTask(8, new EntityAILookIdle(this));
-        this.tasks.addTask(2, new AnimationAreaAttackAI<EntityFrostmaw>(this, SWIPE_ANIMATION, null, null, 2, 6.5f, 6, 135, ConfigHandler.FROSTMAW.combatData.attackMultiplier, 9) {
+        this.tasks.addTask(2, new AnimationAreaAttackAI<EntityFrostmaw>(this, SWIPE_ANIMATION, null, null, 2, 6.5f, 6, 135, ConfigHandler.MOBS.FROSTMAW.combatData.attackMultiplier, 9) {
             @Override
             public void startExecuting() {
                 super.startExecuting();
             }
         });
-        this.tasks.addTask(2, new AnimationAreaAttackAI<EntityFrostmaw>(this, SWIPE_TWICE_ANIMATION, null, null, 1, 6.5f, 6, 135, ConfigHandler.FROSTMAW.combatData.attackMultiplier, 9) {
+        this.tasks.addTask(2, new AnimationAreaAttackAI<EntityFrostmaw>(this, SWIPE_TWICE_ANIMATION, null, null, 1, 6.5f, 6, 135, ConfigHandler.MOBS.FROSTMAW.combatData.attackMultiplier, 9) {
             @Override
             public void startExecuting() {
                 super.startExecuting();
@@ -197,7 +197,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
     protected void applyEntityAttributes()
     {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(250.0D * ConfigHandler.FROSTMAW.combatData.healthMultiplier);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(250.0D * ConfigHandler.MOBS.FROSTMAW.combatData.healthMultiplier);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.3D);
         this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(10.0D);
         this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0D);
@@ -294,7 +294,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                     List<EntityLivingBase> entitiesHit = world.getEntitiesWithinAABB(EntityLivingBase.class, hitBox);
                     for (EntityLivingBase entity: entitiesHit) {
                         if (entity != this) {
-                            attackEntityAsMob(entity, 4f * ConfigHandler.FROSTMAW.combatData.attackMultiplier);
+                            attackEntityAsMob(entity, 4f * ConfigHandler.MOBS.FROSTMAW.combatData.attackMultiplier);
                             if (entity.isActiveItemStackBlocking()) entity.getActiveItemStack().damageItem(400, entity);
                         }
                     }
@@ -454,7 +454,9 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         else {
             getNavigator().clearPath();
             renderYawOffset = prevRenderYawOffset;
-            if (!world.isRemote && getAnimation() != ACTIVATE_ANIMATION) heal(0.3f);
+            if (!world.isRemote && getAnimation() != ACTIVATE_ANIMATION) {
+                if (ConfigHandler.MOBS.FROSTMAW.healsOutOfBattle) heal(0.3f);
+            }
             if (getAttackTarget() != null && getAttackTarget().isPotionActive(MobEffects.INVISIBILITY)) {
                 setAttackTarget(null);
             }
@@ -466,7 +468,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                 }
             }
 
-            if (ConfigHandler.FROSTMAW.stealableIceCrystal && getHasCrystal() && ticksExisted > 20) {
+            if (ConfigHandler.MOBS.FROSTMAW.stealableIceCrystal && getHasCrystal() && ticksExisted > 20) {
                 Vec3d crystalPos = new Vec3d(1.6, 0.4, 1.8);
                 crystalPos = crystalPos.rotateYaw((float) Math.toRadians(-rotationYaw - 90));
                 crystalPos = crystalPos.add(getPositionVector());
@@ -799,10 +801,10 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
 
     public void spawnInWorld(World world, Random rand, int x, int z) {
         Biome biome = world.getBiome(new BlockPos(x, 50, z));
-        if (rand.nextFloat() > ConfigHandler.FROSTMAW.generationData.generationChance) return;
+        if (rand.nextFloat() > ConfigHandler.MOBS.FROSTMAW.generationData.generationChance) return;
         if(!SpawnHandler.FROSTMAW_BIOMES.contains(biome)) return;
         boolean flag = false;
-        for (int dimensionAllowed : ConfigHandler.FROSTMAW.generationData.dimensions) {
+        for (int dimensionAllowed : ConfigHandler.MOBS.FROSTMAW.generationData.dimensions) {
             if (dimensionAllowed == world.provider.getDimension()) {
                 flag = true;
                 break;
@@ -810,8 +812,8 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         }
         if (!flag) return;
         BlockPos pos = new BlockPos(x, 0, z);
-        int heightMax = (int) ConfigHandler.FROSTMAW.generationData.heightMax;
-        int heightMin = (int) ConfigHandler.FROSTMAW.generationData.heightMin;
+        int heightMax = (int) ConfigHandler.MOBS.FROSTMAW.generationData.heightMax;
+        int heightMin = (int) ConfigHandler.MOBS.FROSTMAW.generationData.heightMin;
         if (heightMax == -1) heightMax = world.getHeight();
         if (heightMin == -1) heightMin = 0;
         int y = MowzieWorldGenerator.findGenHeight(world, pos, heightMax, heightMin) + 1;
@@ -828,7 +830,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
 
     @Override
     protected boolean hasBossBar() {
-        return true;
+        return ConfigHandler.MOBS.FROSTMAW.hasBossBar;
     }
 
     @Override

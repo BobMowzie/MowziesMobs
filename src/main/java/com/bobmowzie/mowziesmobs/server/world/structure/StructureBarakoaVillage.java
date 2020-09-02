@@ -681,12 +681,12 @@ public class StructureBarakoaVillage {
 //        System.out.println("Beginning generation");
         if (!world.getWorldInfo().isMapFeaturesEnabled()) return;
 
-        if (rand.nextFloat() > ConfigHandler.BARAKO.generationData.generationChance) return;
+        if (rand.nextFloat() > ConfigHandler.MOBS.BARAKO.generationData.generationChance) return;
 
         Biome biome = world.getBiome(new BlockPos(x, 50, z));
         if (!SpawnHandler.BARAKO_BIOMES.contains(biome)) return;
         boolean flag = false;
-        for (int dimensionAllowed : ConfigHandler.BARAKO.generationData.dimensions) {
+        for (int dimensionAllowed : ConfigHandler.MOBS.BARAKO.generationData.dimensions) {
             if (dimensionAllowed == world.provider.getDimension()) {
                 flag = true;
                 break;
@@ -695,8 +695,8 @@ public class StructureBarakoaVillage {
         if (!flag) return;
 
         //System.out.println("Passes chance test");
-        int heightMax = (int) ConfigHandler.BARAKO.generationData.heightMax;
-        int heightMin = (int) ConfigHandler.BARAKO.generationData.heightMin;
+        int heightMax = (int) ConfigHandler.MOBS.BARAKO.generationData.heightMax;
+        int heightMin = (int) ConfigHandler.MOBS.BARAKO.generationData.heightMin;
         if (heightMax == -1) heightMax = world.getHeight();
         if (heightMin == -1) heightMin = 0;
         BlockPos pos = new BlockPos(x, 0, z);

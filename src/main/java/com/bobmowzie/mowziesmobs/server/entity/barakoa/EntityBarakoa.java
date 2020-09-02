@@ -71,7 +71,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         tasks.addTask(1, new AnimationDieAI<>(this));
         tasks.addTask(1, new EntityAIAvoidEntity<>(this, EntitySunstrike.class, EntitySunstrike::isStriking, 3, 0.7F));
         tasks.addTask(2, new AnimationBlockAI<>(this, BLOCK_ANIMATION));
-        tasks.addTask(2, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_BARAKOA_SWING, null, 1, 2.5f, ConfigHandler.BARAKOA.combatData.attackMultiplier, 9, true));
+        tasks.addTask(2, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_BARAKOA_SWING, null, 1, 2.5f, ConfigHandler.MOBS.BARAKOA.combatData.attackMultiplier, 9, true));
         tasks.addTask(2, new AnimationProjectileAttackAI<EntityBarakoa>(this, PROJECTILE_ATTACK_ANIMATION, 9, MMSounds.ENTITY_BARAKOA_BLOWDART, true) {
             @Override
             public void startExecuting() {
@@ -165,7 +165,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     @Override
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
-        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10  * ConfigHandler.BARAKOA.combatData.healthMultiplier);
+        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10  * ConfigHandler.MOBS.BARAKOA.combatData.healthMultiplier);
     }
 
     protected void updateAttackAI() {
@@ -426,7 +426,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             dart.setKnockbackStrength(j);
         }
 
-        dart.setDamage(dart.getDamage() * ConfigHandler.BARAKOA.combatData.attackMultiplier);
+        dart.setDamage(dart.getDamage() * ConfigHandler.MOBS.BARAKOA.combatData.attackMultiplier);
 
         this.world.spawnEntity(dart);
         attacking = false;

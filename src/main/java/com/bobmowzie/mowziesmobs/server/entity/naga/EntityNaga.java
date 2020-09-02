@@ -278,9 +278,9 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
     protected void applyEntityAttributes()
     {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(30.0D * ConfigHandler.NAGA.combatData.healthMultiplier);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(30.0D * ConfigHandler.MOBS.NAGA.combatData.healthMultiplier);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(12.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(4.0D * ConfigHandler.NAGA.combatData.attackMultiplier);
+        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(4.0D * ConfigHandler.MOBS.NAGA.combatData.attackMultiplier);
         this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(45);
     }
 
@@ -513,7 +513,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
 
     @Override
     protected ConfigHandler.SpawnData getSpawnConfig() {
-        return ConfigHandler.NAGA.spawnData;
+        return ConfigHandler.MOBS.NAGA.spawnData;
     }
 
     @Override

@@ -20,7 +20,7 @@ public class EntityDart extends EntityTippedArrow {
 
     public EntityDart(World world, EntityLivingBase shooter) {
         super(world, shooter);
-        setDamage(1);
+        setDamage(ConfigHandler.TOOLS_AND_ABILITIES.BLOW_GUN.attackDamage);
     }
 
     @Override
@@ -31,8 +31,8 @@ public class EntityDart extends EntityTippedArrow {
     @Override
     protected void arrowHit(EntityLivingBase living) {
         super.arrowHit(living);
-        if (shootingEntity instanceof EntityPlayer) living.addPotionEffect(new PotionEffect(MobEffects.POISON, (int)(40 * ConfigHandler.TOOLS_AND_ABILITIES.blowgunAttackMultiplier), 3, false, true));
-        else living.addPotionEffect(new PotionEffect(MobEffects.POISON, 30, 1, false, true));
+        if (shootingEntity instanceof EntityPlayer) living.addPotionEffect(new PotionEffect(MobEffects.POISON, ConfigHandler.TOOLS_AND_ABILITIES.BLOW_GUN.poisonDuration, 3, false, true));
+        else living.addPotionEffect(new PotionEffect(MobEffects.POISON, 20, 1, false, true));
         living.setArrowCountInEntity(living.getArrowCountInEntity() - 1);
     }
 

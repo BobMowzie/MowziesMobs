@@ -1,6 +1,9 @@
 package com.bobmowzie.mowziesmobs.server.config;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemArmor.ArmorMaterial;
+import net.minecraft.item.Item.ToolMaterial;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.Config.*;
 
@@ -187,10 +190,47 @@ public class ConfigHandler {
         public float attackMultiplier = 1;
     }
 
+    public static class ToolData {
+        ToolData(float attackDamage, float attackSpeed) {
+            this.attackDamage = attackDamage;
+            this.attackSpeed = attackSpeed;
+        }
+
+        @Name("attack_damage")
+        @LangKey(LANG_PREFIX + "attack_damage")
+        @RangeDouble(min = 0, max = 100000)
+        @RequiresMcRestart
+        public float attackDamage = 1;
+
+        @Name("attack_speed")
+        @LangKey(LANG_PREFIX + "attack_speed")
+        @RangeDouble(min = 0, max = 100000)
+        @RequiresMcRestart
+        public float attackSpeed = 1;
+    }
+
+    public static class ArmorData {
+        ArmorData(int damageReduction, float toughness) {
+            this.damageReduction = damageReduction;
+            this.toughness = toughness;
+        }
+
+        @Name("damage_reduction")
+        @LangKey(LANG_PREFIX + "damage_reduction")
+        @Comment("See official Minecraft Wiki for an explanation of how armor damage reduction works.")
+        @RangeInt(min = 0, max = 10000)
+        @RequiresMcRestart
+        public int damageReduction = 1;
+
+        @Name("toughness")
+        @LangKey(LANG_PREFIX + "toughness")
+        @Comment("See official Minecraft Wiki for an explanation of how armor toughness works.")
+        @RangeDouble(min = 0, max = 10000)
+        @RequiresMcRestart
+        public float toughness = 1;
+    }
+
     // Mob configuration
-    @Name("foliaath")
-    @LangKey(LANG_PREFIX + "foliaath")
-    public static final Foliaath FOLIAATH = new Foliaath();
     public static class Foliaath {
         @Name("spawn_data")
         @LangKey(LANG_PREFIX + "spawn_data")
@@ -207,9 +247,6 @@ public class ConfigHandler {
         public CombatData combatData = new CombatData(1, 1);
     }
 
-    @Name("barakoa")
-    @LangKey(LANG_PREFIX + "barakoa")
-    public static final Barakoa BARAKOA = new Barakoa();
     public static class Barakoa {
         @Name("spawn_data")
         @LangKey(LANG_PREFIX + "spawn_data")
@@ -226,9 +263,6 @@ public class ConfigHandler {
         public CombatData combatData = new CombatData(1, 1);
     }
 
-    @Name("naga")
-    @LangKey(LANG_PREFIX + "naga")
-    public static final Naga NAGA = new Naga();
     public static class Naga {
         @Name("spawn_data")
         @LangKey(LANG_PREFIX + "spawn_data")
@@ -245,9 +279,6 @@ public class ConfigHandler {
         public CombatData combatData = new CombatData(1, 1);
     }
 
-    @Name("lantern")
-    @LangKey(LANG_PREFIX + "lantern")
-    public static final Lantern LANTERN = new Lantern();
     public static class Lantern {
         @Name("spawn_data")
         @LangKey(LANG_PREFIX + "spawn_data")
@@ -267,13 +298,9 @@ public class ConfigHandler {
 
         @Name("glow_effect")
         @LangKey(LANG_PREFIX + "glow_effect")
-        @Comment("Enable/disable the glow effect around lanterns")
         public boolean glowEffect = true;
     }
 
-    @Name("grottol")
-    @LangKey(LANG_PREFIX + "grottol")
-    public static final Grottol GROTTOL = new Grottol();
     public static class Grottol {
         @Name("spawn_data")
         @LangKey(LANG_PREFIX + "spawn_data")
@@ -292,12 +319,9 @@ public class ConfigHandler {
         public float healthMultiplier = 1;
     }
 
-    @Name("ferrous_wroughtnaut")
-    @LangKey(LANG_PREFIX + "ferrous_wroughtnaut")
-    public static final Ferrous_Wroughtnaut FERROUS_WROUGHTNAUT = new Ferrous_Wroughtnaut();
     public static class Ferrous_Wroughtnaut {
-        @Name("ferrous_wroughtnaut")
-        @LangKey(LANG_PREFIX + "ferrous_wroughtnaut")
+        @Name("generation_data")
+        @LangKey(LANG_PREFIX + "generation_data")
         @Comment({"Controls for spawning mob/structure with world generation"})
         public GenerationData generationData = new GenerationData(2, 0.5f,
                 new BiomeData(new String[] {""}, new String[] {}, new String[] {}),
@@ -307,11 +331,19 @@ public class ConfigHandler {
         @Name("combat_data")
         @LangKey(LANG_PREFIX + "combat_data")
         public CombatData combatData = new CombatData(1, 1);
+
+        @Name("has_boss_bar")
+        @LangKey(LANG_PREFIX + "has_boss_bar")
+        @Comment({"Disable/enable Ferrous Wroughtnauts' boss health bar"})
+        @RequiresWorldRestart
+        public boolean hasBossBar = true;
+
+        @Name("heals_out_of_battle")
+        @LangKey(LANG_PREFIX + "heals_out_of_battle")
+        @Comment({"Disable/enable Ferrous Wroughtnaut healing while not active"})
+        public boolean healsOutOfBattle = true;
     }
 
-    @Name("barako")
-    @LangKey(LANG_PREFIX + "barako")
-    public static final Barako BARAKO = new Barako();
     public static class Barako {
         @Name("generation_data")
         @LangKey(LANG_PREFIX + "generation_data")
@@ -324,11 +356,19 @@ public class ConfigHandler {
         @Name("combat_data")
         @LangKey(LANG_PREFIX + "combat_data")
         public CombatData combatData = new CombatData(1, 1);
+
+        @Name("has_boss_bar")
+        @LangKey(LANG_PREFIX + "has_boss_bar")
+        @Comment({"Disable/enable Barako's boss health bar"})
+        @RequiresWorldRestart
+        public boolean hasBossBar = true;
+
+        @Name("heals_out_of_battle")
+        @LangKey(LANG_PREFIX + "heals_out_of_battle")
+        @Comment({"Disable/enable Barako healing while not in combat"})
+        public boolean healsOutOfBattle = true;
     }
 
-    @Name("frostmaw")
-    @LangKey(LANG_PREFIX + "frostmaw")
-    public static final Frostmaw FROSTMAW = new Frostmaw();
     public static class Frostmaw {
         @Name("generation_data")
         @LangKey(LANG_PREFIX + "generation_data")
@@ -346,46 +386,209 @@ public class ConfigHandler {
         @LangKey(LANG_PREFIX + "stealable_ice_crystal")
         @Comment({"Allow players to steal frostmaws' ice crystals (only using specific means!)"})
         public boolean stealableIceCrystal = true;
+
+        @Name("has_boss_bar")
+        @LangKey(LANG_PREFIX + "has_boss_bar")
+        @Comment({"Disable/enable frostmaws' boss health bar"})
+        @RequiresWorldRestart
+        public boolean hasBossBar = true;
+
+        @Name("heals_out_of_battle")
+        @LangKey(LANG_PREFIX + "heals_out_of_battle")
+        @Comment({"Disable/enable frostmaw healing while asleep"})
+        public boolean healsOutOfBattle = true;
+    }
+
+    public static class WroughtHelm {
+        @Name("armor_data")
+        @LangKey(LANG_PREFIX + "armor_data")
+        @Comment({"Shared controls for armor"})
+        public ArmorData armorData = new ArmorData(ArmorMaterial.IRON.getDamageReductionAmount(EntityEquipmentSlot.HEAD), ArmorMaterial.IRON.getToughness());
+
+        @Name("breakable")
+        @LangKey(LANG_PREFIX + "breakable")
+        @Comment({"Set to true for the Wrought Helm to have limited durability."})
+        @RequiresMcRestart
+        public boolean breakable = false;
+    }
+
+    public static class AxeOfAThousandMetals {
+        @Name("tool_data")
+        @LangKey(LANG_PREFIX + "tool_data")
+        @Comment({"Shared controls for melee weapons and tools"})
+        public ToolData toolData = new ToolData(9, 0.9f);
+
+        @Name("breakable")
+        @LangKey(LANG_PREFIX + "breakable")
+        @Comment({"Set to true for the Axe of a Thousand Metals to have limited durability."})
+        @RequiresMcRestart
+        public boolean breakable = false;
+    }
+
+    public static class SolVisage {
+        @Name("armor_data")
+        @LangKey(LANG_PREFIX + "armor_data")
+        @Comment({"Shared controls for armor"})
+        public ArmorData armorData = new ArmorData(ArmorMaterial.GOLD.getDamageReductionAmount(EntityEquipmentSlot.HEAD), ArmorMaterial.GOLD.getToughness());
+
+        @Name("breakable")
+        @LangKey(LANG_PREFIX + "breakable")
+        @Comment({"Set to true for the Sol Visage to have limited durability."})
+        @RequiresMcRestart
+        public boolean breakable = false;
+    }
+
+    public static class BarakoaMask {
+        @Name("armor_data")
+        @LangKey(LANG_PREFIX + "armor_data")
+        @Comment({"Shared controls for armor"})
+        public ArmorData armorData = new ArmorData(ArmorMaterial.LEATHER.getDamageReductionAmount(EntityEquipmentSlot.HEAD), ArmorMaterial.LEATHER.getToughness());
+    }
+
+    public static class IceCrystal {
+        @Name("ice_crystal_attack_multiplier")
+        @LangKey(LANG_PREFIX + "ice_crystal_attack_multiplier")
+        @Comment({"Multiply all damage done with the ice crystal by this amount."})
+        @RangeDouble(min = 0, max = 100)
+        public float attackMultiplier = 1;
+
+        @Name("ice_crystal_breakable")
+        @LangKey(LANG_PREFIX + "ice_crystal_breakable")
+        @Comment({"Set to true for the ice crystal to have limited durability.", "Prevents regeneration in inventory."})
+        @RequiresMcRestart
+        public boolean breakable = false;
+
+        @Name("durability")
+        @LangKey(LANG_PREFIX + "durability")
+        @Comment({"Ice crystal durability"})
+        @RangeInt(min = 1, max = 100000000)
+        @RequiresMcRestart
+        public int durability = 600;
+    }
+
+    public static class BarakoaSpear {
+        @Name("tool_data")
+        @LangKey(LANG_PREFIX + "tool_data")
+        @Comment({"Shared controls for melee weapons and tools"})
+        public ToolData toolData = new ToolData(5, 1.6f);
+    }
+
+    public static class NagaFangDagger {
+        @Name("tool_data")
+        @LangKey(LANG_PREFIX + "tool_data")
+        @Comment({"Shared controls for melee weapons and tools"})
+        public ToolData toolData = new ToolData(3, 2);
+
+        @Name("poison_duration")
+        @LangKey(LANG_PREFIX + "poison_duration")
+        @Comment({"Duration in ticks of the poison effect (20 ticks = 1 second)."})
+        @RangeInt(min = 0, max = 100000)
+        public int poisonDuration = 40;
+
+        @Name("bonus_damage")
+        @LangKey(LANG_PREFIX + "bonus_damage")
+        @Comment({"Bonus damage when attacking from behind"})
+        @RangeDouble(min = 0, max = 100000)
+        public float bonusDamage = 3;
+    }
+
+    public static class BlowGun {
+        @Name("attack_damage")
+        @LangKey(LANG_PREFIX + "attack_damage")
+        @RangeDouble(min = 0, max = 100000)
+        @RequiresMcRestart
+        public float attackDamage = 1;
+
+        @Name("poison_duration")
+        @LangKey(LANG_PREFIX + "poison_duration")
+        @Comment({"Duration in ticks of the poison effect (20 ticks = 1 second)."})
+        @RangeInt(min = 0, max = 100000)
+        public int poisonDuration = 40;
+    }
+
+    @Name("mobs")
+    @LangKey(LANG_PREFIX + "mobs")
+    public static final Mobs MOBS = new Mobs();
+    public static class Mobs {
+        @Name("frostmaw")
+        @LangKey(LANG_PREFIX + "frostmaw")
+        public Frostmaw FROSTMAW = new Frostmaw();
+
+        @Name("barako")
+        @LangKey(LANG_PREFIX + "barako")
+        public Barako BARAKO = new Barako();
+
+        @Name("ferrous_wroughtnaut")
+        @LangKey(LANG_PREFIX + "ferrous_wroughtnaut")
+        public Ferrous_Wroughtnaut FERROUS_WROUGHTNAUT = new Ferrous_Wroughtnaut();
+
+        @Name("grottol")
+        @LangKey(LANG_PREFIX + "grottol")
+        public Grottol GROTTOL = new Grottol();
+
+        @Name("lantern")
+        @LangKey(LANG_PREFIX + "lantern")
+        public Lantern LANTERN = new Lantern();
+
+        @Name("barakoa")
+        @LangKey(LANG_PREFIX + "barakoa")
+        public Barakoa BARAKOA = new Barakoa();
+
+        @Name("naga")
+        @LangKey(LANG_PREFIX + "naga")
+        public Naga NAGA = new Naga();
+
+        @Name("foliaath")
+        @LangKey(LANG_PREFIX + "foliaath")
+        public Foliaath FOLIAATH = new Foliaath();
     }
 
     @Name("tools_and_abilities")
     @LangKey(LANG_PREFIX + "tools_and_abilities")
     public static final ToolsAndAbilities TOOLS_AND_ABILITIES = new ToolsAndAbilities();
     public static class ToolsAndAbilities {
-        @Name("axe_attack_multiplier")
-        @LangKey(LANG_PREFIX + "axe_attack_multiplier")
-        @RangeDouble(min = 0, max = 100)
-        public float axeAttackMultiplier = 1;
 
         @Name("suns_blessing_attack_multiplier")
         @LangKey(LANG_PREFIX + "suns_blessing_attack_multiplier")
         @RangeDouble(min = 0, max = 100)
         public float sunsBlessingAttackMultiplier = 1;
 
-        @Name("spear_attack_multiplier")
-        @LangKey(LANG_PREFIX + "spear_attack_multiplier")
-        @RangeDouble(min = 0, max = 100)
-        public float spearAttackMultiplier = 1;
-
-        @Name("blowgun_attack_multiplier")
-        @LangKey(LANG_PREFIX + "blowgun_attack_multiplier")
-        @RangeDouble(min = 0, max = 100)
-        public float blowgunAttackMultiplier = 1;
-
         @Name("geomancy_attack_multiplier")
         @LangKey(LANG_PREFIX + "geomancy_attack_multiplier")
         @RangeDouble(min = 0, max = 100)
         public float geomancyAttackMultiplier = 1;
 
-        @Name("ice_crystal_attack_multiplier")
-        @LangKey(LANG_PREFIX + "ice_crystal_attack_multiplier")
-        @RangeDouble(min = 0, max = 100)
-        public float iceCrystalAttackMultiplier = 1;
+        @Name("wrought_helm")
+        @LangKey(LANG_PREFIX + "wrought_helm")
+        public WroughtHelm WROUGHT_HELM = new WroughtHelm();
 
-        @Name("naga_fang_dagger_attack_multiplier")
-        @LangKey(LANG_PREFIX + "naga_fang_dagger_attack_multiplier")
-        @RangeDouble(min = 0, max = 100)
-        public float nagaDaggerAttackMultiplier = 1;
+        @Name("axe_of_a_thousand_metals")
+        @LangKey(LANG_PREFIX + "axe_of_a_thousand_metals")
+        public AxeOfAThousandMetals AXE_OF_A_THOUSAND_METALS = new AxeOfAThousandMetals();
+
+        @Name("sol_visage")
+        @LangKey(LANG_PREFIX + "sol_visage")
+        public SolVisage SOL_VISAGE = new SolVisage();
+
+        @Name("ice_crystal")
+        @LangKey(LANG_PREFIX + "ice_crystal")
+        public IceCrystal ICE_CRYSTAL = new IceCrystal();
+
+        @Name("barakoa_mask")
+        @LangKey(LANG_PREFIX + "barakoa_mask")
+        public BarakoaMask BARAKOA_MASK = new BarakoaMask();
+
+        @Name("barakoa_spear")
+        @LangKey(LANG_PREFIX + "barakoa_spear")
+        public BarakoaSpear BARAKOA_SPEAR = new BarakoaSpear();
+
+        @Name("naga_fang_dagger")
+        @LangKey(LANG_PREFIX + "naga_fang_dagger")
+        public NagaFangDagger NAGA_FANG_DAGGER = new NagaFangDagger();
+
+        @Name("blow_gun")
+        @LangKey(LANG_PREFIX + "blow_gun")
+        public BlowGun BLOW_GUN = new BlowGun();
     }
 
     @Name("general")

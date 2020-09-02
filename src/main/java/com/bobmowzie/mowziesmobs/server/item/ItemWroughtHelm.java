@@ -1,18 +1,25 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.EnumHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemWroughtHelm extends ItemArmor {
+    private static int d = ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorData.damageReduction;
+    private static ArmorMaterial ARMOR_WROUGHT_HELM = EnumHelper.addArmorMaterial("WROUGHT_HELM", "iron", 15, new int[] {d, d, d, d}, ArmorMaterial.IRON.getEnchantability(), ArmorMaterial.IRON.getSoundEvent(), ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorData.toughness);
+
     public ItemWroughtHelm() {
-        super(ArmorMaterial.IRON, 2, EntityEquipmentSlot.HEAD);
+        super(ARMOR_WROUGHT_HELM, 2, EntityEquipmentSlot.HEAD);
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
         setTranslationKey("wroughtHelmet");
         setRegistryName("wrought_helmet");
@@ -25,26 +32,31 @@ public class ItemWroughtHelm extends ItemArmor {
     }
 
     @Override
-    public boolean getIsRepairable(ItemStack stack, ItemStack material) {
-        return false;
+    public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
+        if (!ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable) return false;
+        ItemStack mat = Items.IRON_INGOT.getDefaultInstance();
+        if (!mat.isEmpty() && net.minecraftforge.oredict.OreDictionary.itemMatches(mat,repair,false)) return true;
+        return super.getIsRepairable(toRepair, repair);
     }
 
     @Override
     public boolean isDamageable() {
-        return false;
+        return ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.breakable;
     }
 
     @Override
     public int getDamage(ItemStack stack) {
-        return 0;
+        return ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.breakable ? super.getDamage(stack): 0;
     }
 
     @Override
-    public void setDamage(ItemStack stack, int damage) {}
+    public void setDamage(ItemStack stack, int damage) {
+        if (ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.breakable) super.setDamage(stack, damage);
+    }
 
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
-        ItemHandler.addItemText(this, tooltip);
+        if (ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.breakable) tooltip.remove(0);
     }
 }

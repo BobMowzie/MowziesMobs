@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
@@ -25,7 +26,7 @@ public class ItemIceCrystal extends Item {
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
         setTranslationKey("iceCrystal");
         setRegistryName("ice_crystal");
-        setMaxDamage(600);
+        setMaxDamage(ConfigHandler.TOOLS_AND_ABILITIES.ICE_CRYSTAL.durability);
         setMaxStackSize(1);
     }
 
@@ -44,7 +45,7 @@ public class ItemIceCrystal extends Item {
         if (playerIn.getHeldItemOffhand().getItem() != Items.SHIELD) {
             ItemStack stack = playerIn.getHeldItem(handIn);
             MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(playerIn, MowziePlayerProperties.class);
-            if (stack.getItemDamage() + 20 < stack.getMaxDamage()) {
+            if (stack.getItemDamage() + 20 < stack.getMaxDamage() || ConfigHandler.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable) {
                 if (!property.usingIceBreath) {
                     property.icebreath = new EntityIceBreath(worldIn, playerIn);
                     property.icebreath.setPositionAndRotation(playerIn.posX, playerIn.posY + playerIn.eyeHeight - 0.5f, playerIn.posZ, playerIn.rotationYaw, playerIn.rotationPitch);
@@ -64,6 +65,7 @@ public class ItemIceCrystal extends Item {
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
+        if (ConfigHandler.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable) tooltip.remove(0);
         ItemHandler.addItemText(this, tooltip);
     }
 }

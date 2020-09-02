@@ -79,7 +79,7 @@ public class EntityLantern extends MowzieEntity {
     {
         super.applyEntityAttributes();
         this.getAttributeMap().registerAttribute(SharedMonsterAttributes.FLYING_SPEED);
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(4.0D * ConfigHandler.LANTERN.healthMultiplier);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(4.0D * ConfigHandler.MOBS.LANTERN.healthMultiplier);
         this.getEntityAttribute(SharedMonsterAttributes.FLYING_SPEED).setBaseValue(0.3D);
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.20000000298023224D);
     }
@@ -130,7 +130,7 @@ public class EntityLantern extends MowzieEntity {
             groundDist = i;
         }
 
-        if (world.isRemote && ConfigHandler.LANTERN.glowEffect) {
+        if (world.isRemote && ConfigHandler.MOBS.LANTERN.glowEffect) {
             pos[0] = getPositionVector().add(0, height * 0.8, 0);
             if (ticksExisted % 70 == 0) {
                 MowzieParticleBase.spawnParticle(world, MMParticle.GLOW, pos[0].x, pos[0].y, pos[0].z, 0, 0, 0, true, 0, 0, 0, 0, 20F, 0.8, 0.95, 0.35, 1, 1, 70, true, new ParticleComponent[]{
@@ -240,7 +240,7 @@ public class EntityLantern extends MowzieEntity {
 
     @Override
     protected ConfigHandler.SpawnData getSpawnConfig() {
-        return ConfigHandler.LANTERN.spawnData;
+        return ConfigHandler.MOBS.LANTERN.spawnData;
     }
 
     public boolean getCanSpawnHere()

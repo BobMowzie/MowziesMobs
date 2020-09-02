@@ -88,7 +88,7 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                             continue;
                         }
                         if (entity instanceof EntityLivingBase) {
-                            entity.attackEntityFrom(DamageSource.causeMobDamage(this.entity), (factor * 5 + 1) * ConfigHandler.FERROUS_WROUGHTNAUT.combatData.attackMultiplier);
+                            entity.attackEntityFrom(DamageSource.causeMobDamage(this.entity), (factor * 5 + 1) * ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.combatData.attackMultiplier);
                         }
                         double magnitude = world.rand.nextDouble() * 0.15 + 0.1;
                         entity.motionX += vx * factor * magnitude;

@@ -61,40 +61,40 @@ public enum SpawnHandler {
             BY_NAME.put(type.getName(), type);
         }
 
-        if (ConfigHandler.FROSTMAW.generationData.generationFrequency > 0) {
-            FROSTMAW_BIOMES = getBiomesFromConfig(ConfigHandler.FROSTMAW.generationData.biomeData);
+        if (ConfigHandler.MOBS.FROSTMAW.generationData.generationFrequency > 0) {
+            FROSTMAW_BIOMES = getBiomesFromConfig(ConfigHandler.MOBS.FROSTMAW.generationData.biomeData);
             //System.out.println("Frostmaw biomes " + FROSTMAW_BIOMES);
         }
-        if (ConfigHandler.BARAKO.generationData.generationFrequency > 0) {
-            BARAKO_BIOMES = getBiomesFromConfig(ConfigHandler.BARAKO.generationData.biomeData);
+        if (ConfigHandler.MOBS.BARAKO.generationData.generationFrequency > 0) {
+            BARAKO_BIOMES = getBiomesFromConfig(ConfigHandler.MOBS.BARAKO.generationData.biomeData);
             //System.out.println("Barako biomes " + BARAKO_BIOMES);
         }
-        if (ConfigHandler.FERROUS_WROUGHTNAUT.generationData.generationFrequency > 0) {
-            FERROUS_WROUGHTNAUT_BIOMES = getBiomesFromConfig(ConfigHandler.FERROUS_WROUGHTNAUT.generationData.biomeData);
+        if (ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationData.generationFrequency > 0) {
+            FERROUS_WROUGHTNAUT_BIOMES = getBiomesFromConfig(ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationData.biomeData);
             //System.out.println("Ferrous Wroughtnaut biomes " + FERROUS_WROUGHTNAUT_BIOMES);
         }
 
-        if (ConfigHandler.FOLIAATH.spawnData.spawnRate > 0) {
-            Set<Biome> foliaathBiomes = getBiomesFromConfig(ConfigHandler.FOLIAATH.spawnData.biomeData);
+        if (ConfigHandler.MOBS.FOLIAATH.spawnData.spawnRate > 0) {
+            Set<Biome> foliaathBiomes = getBiomesFromConfig(ConfigHandler.MOBS.FOLIAATH.spawnData.biomeData);
             //System.out.println("Foliaath biomes " + foliaathBiomes);
-            EntityRegistry.addSpawn(EntityFoliaath.class, ConfigHandler.FOLIAATH.spawnData.spawnRate, ConfigHandler.FOLIAATH.spawnData.minGroupSize, ConfigHandler.FOLIAATH.spawnData.maxGroupSize, EnumCreatureType.MONSTER, foliaathBiomes.toArray(new Biome[foliaathBiomes.size()]));
+            EntityRegistry.addSpawn(EntityFoliaath.class, ConfigHandler.MOBS.FOLIAATH.spawnData.spawnRate, ConfigHandler.MOBS.FOLIAATH.spawnData.minGroupSize, ConfigHandler.MOBS.FOLIAATH.spawnData.maxGroupSize, EnumCreatureType.MONSTER, foliaathBiomes.toArray(new Biome[foliaathBiomes.size()]));
         }
-        if (ConfigHandler.BARAKOA.spawnData.spawnRate > 0) {
-            Set<Biome> barakoaBiomes = getBiomesFromConfig(ConfigHandler.BARAKOA.spawnData.biomeData);
-            EntityRegistry.addSpawn(EntityBarakoana.class, ConfigHandler.BARAKOA.spawnData.spawnRate, ConfigHandler.BARAKOA.spawnData.minGroupSize, ConfigHandler.BARAKOA.spawnData.maxGroupSize, EnumCreatureType.MONSTER, barakoaBiomes.toArray(new Biome[barakoaBiomes.size()]));
+        if (ConfigHandler.MOBS.BARAKOA.spawnData.spawnRate > 0) {
+            Set<Biome> barakoaBiomes = getBiomesFromConfig(ConfigHandler.MOBS.BARAKOA.spawnData.biomeData);
+            EntityRegistry.addSpawn(EntityBarakoana.class, ConfigHandler.MOBS.BARAKOA.spawnData.spawnRate, ConfigHandler.MOBS.BARAKOA.spawnData.minGroupSize, ConfigHandler.MOBS.BARAKOA.spawnData.maxGroupSize, EnumCreatureType.MONSTER, barakoaBiomes.toArray(new Biome[barakoaBiomes.size()]));
         }
-        if (ConfigHandler.GROTTOL.spawnData.spawnRate > 0) {
-            Set<Biome> grottolBiomes = getBiomesFromConfig(ConfigHandler.GROTTOL.spawnData.biomeData);
-            EntityRegistry.addSpawn(EntityGrottol.class, ConfigHandler.GROTTOL.spawnData.spawnRate, ConfigHandler.GROTTOL.spawnData.minGroupSize, ConfigHandler.GROTTOL.spawnData.maxGroupSize, EnumCreatureType.MONSTER, grottolBiomes.toArray(new Biome[grottolBiomes.size()]));
+        if (ConfigHandler.MOBS.GROTTOL.spawnData.spawnRate > 0) {
+            Set<Biome> grottolBiomes = getBiomesFromConfig(ConfigHandler.MOBS.GROTTOL.spawnData.biomeData);
+            EntityRegistry.addSpawn(EntityGrottol.class, ConfigHandler.MOBS.GROTTOL.spawnData.spawnRate, ConfigHandler.MOBS.GROTTOL.spawnData.minGroupSize, ConfigHandler.MOBS.GROTTOL.spawnData.maxGroupSize, EnumCreatureType.MONSTER, grottolBiomes.toArray(new Biome[grottolBiomes.size()]));
         }
-        if (ConfigHandler.LANTERN.spawnData.spawnRate > 0) {
-            Set<Biome> lanternBiomes = getBiomesFromConfig(ConfigHandler.LANTERN.spawnData.biomeData);
-            EntityRegistry.addSpawn(EntityLantern.class, ConfigHandler.LANTERN.spawnData.spawnRate, ConfigHandler.LANTERN.spawnData.minGroupSize, ConfigHandler.LANTERN.spawnData.maxGroupSize, EnumCreatureType.AMBIENT, lanternBiomes.toArray(new Biome[lanternBiomes.size()]));
+        if (ConfigHandler.MOBS.LANTERN.spawnData.spawnRate > 0) {
+            Set<Biome> lanternBiomes = getBiomesFromConfig(ConfigHandler.MOBS.LANTERN.spawnData.biomeData);
+            EntityRegistry.addSpawn(EntityLantern.class, ConfigHandler.MOBS.LANTERN.spawnData.spawnRate, ConfigHandler.MOBS.LANTERN.spawnData.minGroupSize, ConfigHandler.MOBS.LANTERN.spawnData.maxGroupSize, EnumCreatureType.AMBIENT, lanternBiomes.toArray(new Biome[lanternBiomes.size()]));
         }
-        if (ConfigHandler.NAGA.spawnData.spawnRate > 0) {
-            Set<Biome> nagaBiomes = getBiomesFromConfig(ConfigHandler.NAGA.spawnData.biomeData);
+        if (ConfigHandler.MOBS.NAGA.spawnData.spawnRate > 0) {
+            Set<Biome> nagaBiomes = getBiomesFromConfig(ConfigHandler.MOBS.NAGA.spawnData.biomeData);
 //            System.out.println("Naga biomes " + nagaBiomes);
-            EntityRegistry.addSpawn(EntityNaga.class, ConfigHandler.NAGA.spawnData.spawnRate, ConfigHandler.NAGA.spawnData.minGroupSize, ConfigHandler.NAGA.spawnData.maxGroupSize, EnumCreatureType.MONSTER, nagaBiomes.toArray(new Biome[nagaBiomes.size()]));
+            EntityRegistry.addSpawn(EntityNaga.class, ConfigHandler.MOBS.NAGA.spawnData.spawnRate, ConfigHandler.MOBS.NAGA.spawnData.minGroupSize, ConfigHandler.MOBS.NAGA.spawnData.maxGroupSize, EnumCreatureType.MONSTER, nagaBiomes.toArray(new Biome[nagaBiomes.size()]));
         }
     }
 

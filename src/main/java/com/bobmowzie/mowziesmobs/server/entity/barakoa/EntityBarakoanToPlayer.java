@@ -48,7 +48,7 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<EntityPlayer> impleme
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
         getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
-        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20 * ConfigHandler.BARAKOA.combatData.healthMultiplier);
+        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20 * ConfigHandler.MOBS.BARAKOA.combatData.healthMultiplier);
     }
 
     @Override

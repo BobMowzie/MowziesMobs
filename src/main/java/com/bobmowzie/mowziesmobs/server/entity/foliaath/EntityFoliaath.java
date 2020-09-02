@@ -62,7 +62,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         super(world);
         setPathPriority(PathNodeType.WATER, 0);
         this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(1, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_FOLIAATH_BITE_1, null, 2, 4F, ConfigHandler.FOLIAATH.combatData.attackMultiplier, 3));
+        this.tasks.addTask(1, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_FOLIAATH_BITE_1, null, 2, 4F, ConfigHandler.MOBS.FOLIAATH.combatData.attackMultiplier, 3));
         this.tasks.addTask(1, new AnimationTakeDamage<>(this));
         this.tasks.addTask(1, new AnimationDieAI<>(this));
         this.targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityLivingBase.class, 0, true, false, e ->
@@ -89,7 +89,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
         this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10 * ConfigHandler.FOLIAATH.combatData.healthMultiplier);
+        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10 * ConfigHandler.MOBS.FOLIAATH.combatData.healthMultiplier);
     }
 
     @Override
@@ -289,7 +289,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
 
     @Override
     protected ConfigHandler.SpawnData getSpawnConfig() {
-        return ConfigHandler.FOLIAATH.spawnData;
+        return ConfigHandler.MOBS.FOLIAATH.spawnData;
     }
 
     @Override

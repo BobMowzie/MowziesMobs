@@ -24,23 +24,26 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemWroughtAxe extends ItemAxe {
+
     public ItemWroughtAxe() {
         super(Item.ToolMaterial.IRON);
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
         setTranslationKey("wroughtAxe");
         setRegistryName("wrought_axe");
-        attackDamage = attackDamage * ConfigHandler.TOOLS_AND_ABILITIES.axeAttackMultiplier;
+        attackDamage = -1 + ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolData.attackDamage;
+        attackSpeed = -4f + ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolData.attackSpeed;
     }
 
     @Override
     public boolean getIsRepairable(ItemStack itemStack, ItemStack itemStackMaterial) {
-        return false;
+        return ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable && super.getIsRepairable(itemStack, itemStackMaterial);
     }
 
     @Override
-    public boolean hitEntity(ItemStack heldItemStack, EntityLivingBase player, EntityLivingBase entityHit) {
-        if (!player.world.isRemote) {
-            player.playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.3F, 0.5F);
+    public boolean hitEntity(ItemStack heldItemStack, EntityLivingBase attacker, EntityLivingBase entityHit) {
+        if (ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable) heldItemStack.damageItem(2, attacker);
+        if (!entityHit.world.isRemote) {
+            entityHit.playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.3F, 0.5F);
         }
         return true;
     }
@@ -56,6 +59,7 @@ public class ItemWroughtAxe extends ItemAxe {
                 if (!world.isRemote) world.spawnEntity(axeAttack);
                 property.verticalSwing = verticalAttack;
                 property.untilAxeSwing = MowziePlayerProperties.SWING_COOLDOWN;
+                if (ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable) player.getHeldItem(hand).damageItem(2, player);
             }
             return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
         }
@@ -80,6 +84,7 @@ public class ItemWroughtAxe extends ItemAxe {
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
+        if (ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable) tooltip.remove(0);
         ItemHandler.addItemText(this, tooltip);
     }
 }

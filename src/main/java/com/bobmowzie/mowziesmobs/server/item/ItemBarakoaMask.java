@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
@@ -8,6 +9,7 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
@@ -16,6 +18,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.EnumHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -23,8 +26,11 @@ import java.util.List;
 public class ItemBarakoaMask extends ItemArmor implements BarakoaMask {
     private final MaskType type;
 
+    private static int d = ConfigHandler.TOOLS_AND_ABILITIES.BARAKOA_MASK.armorData.damageReduction;
+    private static ArmorMaterial ARMOR_BARAKOA_MASK = EnumHelper.addArmorMaterial("BARAKOA_MASK", "leather", 5, new int[]{d, d, d, d}, 15, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, ConfigHandler.TOOLS_AND_ABILITIES.BARAKOA_MASK.armorData.toughness);
+
     public ItemBarakoaMask(MaskType type) {
-        super(ArmorMaterial.LEATHER, 2, EntityEquipmentSlot.HEAD);
+        super(ARMOR_BARAKOA_MASK, 2, EntityEquipmentSlot.HEAD);
         this.type = type;
         setTranslationKey("barakoaMask." + type.name);
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
@@ -52,7 +58,7 @@ public class ItemBarakoaMask extends ItemArmor implements BarakoaMask {
 
     @Override
     public ArmorMaterial getArmorMaterial() {
-        return ArmorMaterial.CHAIN;
+        return ARMOR_BARAKOA_MASK;
     }
 
     @Override

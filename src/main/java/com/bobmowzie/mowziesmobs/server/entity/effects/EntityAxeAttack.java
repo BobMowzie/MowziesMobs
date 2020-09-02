@@ -67,9 +67,9 @@ public class EntityAxeAttack extends EntityMagicEffect {
         }
         if (!world.isRemote && ticksExisted == 7) playSound(MMSounds.ENTITY_WROUGHT_WHOOSH, 0.7F, 1.1f);
             if (!world.isRemote && caster != null) {
-                if (!getVertical() && ticksExisted == SWING_DURATION_HOR /2 - 1) dealDamage(7 * ConfigHandler.TOOLS_AND_ABILITIES.axeAttackMultiplier, 4.5f, 160, 1.2f);
+                if (!getVertical() && ticksExisted == SWING_DURATION_HOR /2 - 1) dealDamage(7 * ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolData.attackDamage, 4.5f, 160, 1.2f);
                 else if (getVertical() && ticksExisted == SWING_DURATION_VER /2 - 1) {
-                    dealDamage(9 * ConfigHandler.TOOLS_AND_ABILITIES.axeAttackMultiplier, 4.5f, 40, 0.8f);
+                    dealDamage(ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolData.attackDamage, 4.5f, 40, 0.8f);
                     quakeAngle = rotationYaw;
                     quakeBB = getEntityBoundingBox();
                     playSound(MMSounds.ENTITY_WROUGHT_AXE_LAND, 0.3F, 0.5F);
@@ -101,8 +101,8 @@ public class EntityAxeAttack extends EntityMagicEffect {
                             continue;
                         }
                         if (entity instanceof EntityLivingBase) {
-                            if (caster instanceof EntityPlayer) entity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) caster), (factor * 5 + 1) * ConfigHandler.TOOLS_AND_ABILITIES.axeAttackMultiplier);
-                            else entity.attackEntityFrom(DamageSource.causeMobDamage(caster), (factor * 5 + 1) * ConfigHandler.TOOLS_AND_ABILITIES.axeAttackMultiplier);
+                            if (caster instanceof EntityPlayer) entity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) caster), (factor * 5 + 1) * (ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolData.attackDamage / 9.0f));
+                            else entity.attackEntityFrom(DamageSource.causeMobDamage(caster), (factor * 5 + 1) * (ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolData.attackDamage / 9.0f));
                         }
                         double magnitude = -0.2;
                         entity.motionX += vx * (1 - factor) * magnitude;

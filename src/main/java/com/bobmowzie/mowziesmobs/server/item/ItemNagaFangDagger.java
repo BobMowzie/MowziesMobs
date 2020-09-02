@@ -19,7 +19,7 @@ import java.util.List;
 
 public class ItemNagaFangDagger extends ItemTool {
     public ItemNagaFangDagger() {
-        super(1 * ConfigHandler.TOOLS_AND_ABILITIES.nagaDaggerAttackMultiplier, -4f + 2f, ToolMaterial.STONE, Sets.newHashSet());
+        super(-2 + ConfigHandler.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.toolData.attackDamage, -4f + ConfigHandler.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.toolData.attackSpeed, ToolMaterial.STONE, Sets.newHashSet());
         setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
         setTranslationKey("nagaFangDagger");
         setRegistryName("naga_fang_dagger");
@@ -33,7 +33,7 @@ public class ItemNagaFangDagger extends ItemTool {
     @Override
     public boolean hitEntity(ItemStack stack, EntityLivingBase target, EntityLivingBase attacker) {
         if (super.hitEntity(stack, target, attacker)) {
-            target.addPotionEffect(new PotionEffect(MobEffects.POISON, (int)(40 * ConfigHandler.TOOLS_AND_ABILITIES.nagaDaggerAttackMultiplier), 3, false, true));
+            target.addPotionEffect(new PotionEffect(MobEffects.POISON, ConfigHandler.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.poisonDuration, 3, false, true));
             return true;
         }
         return false;

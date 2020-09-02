@@ -31,8 +31,8 @@ public class MowzieWorldGenerator implements IWorldGenerator {
     }
 
     public static void generatePrePopulate(World world, Random random, int chunkX, int chunkZ) {
-        if (canSpawnStructureAtCoords(chunkX, chunkZ, world, ConfigHandler.BARAKO.generationData.generationFrequency)) StructureBarakoaVillage.generateVillage(world, random, chunkX * 16 + 8, chunkZ * 16 + 8);
-        if (canSpawnStructureAtCoords(chunkX, chunkZ, world, ConfigHandler.FROSTMAW.generationData.generationFrequency)) {
+        if (canSpawnStructureAtCoords(chunkX, chunkZ, world, ConfigHandler.MOBS.BARAKO.generationData.generationFrequency)) StructureBarakoaVillage.generateVillage(world, random, chunkX * 16 + 8, chunkZ * 16 + 8);
+        if (canSpawnStructureAtCoords(chunkX, chunkZ, world, ConfigHandler.MOBS.FROSTMAW.generationData.generationFrequency)) {
             EntityFrostmaw frostmaw = new EntityFrostmaw(world);
             frostmaw.spawnInWorld(world, random, chunkX * 16 + 8, chunkZ * 16 + 8);
         }
@@ -70,7 +70,7 @@ public class MowzieWorldGenerator implements IWorldGenerator {
     }
 
     private void generateSurface(World world, Random random, int x, int z) {
-        if (canSpawnStructureAtCoords(x, z, world, ConfigHandler.FERROUS_WROUGHTNAUT.generationData.generationFrequency))
+        if (canSpawnStructureAtCoords(x, z, world, ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationData.generationFrequency))
             StructureWroughtnautRoom.tryWroughtChamber(world, random, x, z);
     }
 
