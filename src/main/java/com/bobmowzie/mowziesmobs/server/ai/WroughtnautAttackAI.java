@@ -65,9 +65,9 @@ public class WroughtnautAttackAI extends EntityAIBase {
         }
         dist = this.wroughtnaut.getDistanceSq(this.targetX, this.targetY, this.targetZ);
         if (target.posY - this.wroughtnaut.posY >= -1 && target.posY - this.wroughtnaut.posY <= 3) {
-            boolean couldStomp = dist < 6.0D * 6.0D && this.timeSinceStomp > 600;
+            boolean couldStomp = dist < 6.0D * 6.0D && this.timeSinceStomp > 200;
             if (dist < 3.5D * 3.5D && Math.abs(MathHelper.wrapDegrees(this.wroughtnaut.getAngleBetweenEntities(target, this.wroughtnaut) - this.wroughtnaut.rotationYaw)) < 35.0D && (!couldStomp || this.wroughtnaut.getRNG().nextFloat() < 0.667F)) {
-                if (this.attacksSinceVertical > 3 || this.wroughtnaut.getRNG().nextFloat() < 0.18F) {
+                if (this.attacksSinceVertical > 3 + 2 * (1 - wroughtnaut.getHealthRatio()) || this.wroughtnaut.getRNG().nextFloat() < 0.18F) {
                     AnimationHandler.INSTANCE.sendAnimationMessage(this.wroughtnaut, EntityWroughtnaut.VERTICAL_ATTACK_ANIMATION);
                     this.attacksSinceVertical = 0;
                 } else {

@@ -95,7 +95,7 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
                 if (hit) {
                     entity.playSound(MMSounds.ENTITY_WROUGHT_AXE_HIT, 1, 0.5F);
                 }
-            } else if (entity.getAnimationTick() == 37 && shouldFollowUp(1) && entity.getHealthRatio() <= 0.9 && entity.getRNG().nextFloat() < 0.6F) {
+            } else if (entity.getAnimationTick() == 37 && shouldFollowUp(2.5f) && entity.getHealthRatio() <= 0.9 && entity.getRNG().nextFloat() < 0.6F) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityWroughtnaut.ATTACK_TWICE_ANIMATION);
             }
         }
@@ -136,7 +136,7 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
                 if (hit) {
                     entity.playSound(MMSounds.ENTITY_WROUGHT_AXE_HIT, 1, 0.5F);
                 }
-            } else if (entity.getAnimationTick() == 23 && shouldFollowUp(3) && entity.getHealthRatio() <= 0.6 && entity.getRNG().nextFloat() < 0.6f) {
+            } else if (entity.getAnimationTick() == 23 && shouldFollowUp(3.5f) && entity.getHealthRatio() <= 0.6 && entity.getRNG().nextFloat() < 0.6f) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityWroughtnaut.ATTACK_THRICE_ANIMATION);
             }
         }
