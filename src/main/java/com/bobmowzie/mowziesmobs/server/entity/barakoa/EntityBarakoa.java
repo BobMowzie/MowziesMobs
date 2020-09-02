@@ -45,7 +45,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     public static final Animation PROJECTILE_ATTACK_ANIMATION = Animation.create(20);
     public static final Animation IDLE_ANIMATION = Animation.create(35);
     public static final Animation ACTIVATE_ANIMATION = Animation.create(25);
-    public static final Animation DEACTIVATE_ANIMATION = Animation.create(37);
+    public static final Animation DEACTIVATE_ANIMATION = Animation.create(26);
     public static final Animation BLOCK_ANIMATION = Animation.create(10);
     private static final DataParameter<Boolean> DANCING = EntityDataManager.createKey(EntityBarakoa.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Integer> MASK = EntityDataManager.createKey(EntityBarakoa.class, DataSerializers.VARINT);
@@ -339,7 +339,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
                     break;
             }
             if (!world.isRemote) {
-                ItemStack item = dropItem(mask, 1).getItem();
+                ItemStack item = dropItemWithOffset(mask, 1, 1.5f).getItem();
                 item.setItemDamage((int) Math.ceil((1.0f - getHealthRatio()) * item.getMaxDamage()));
             }
         }

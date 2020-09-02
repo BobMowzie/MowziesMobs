@@ -817,22 +817,7 @@ public class ModelBarakoa extends MowzieEntityModel<EntityBarakoa> {
         animator.rotate(head, -0.8f, 0, 0);
         animator.move(body, 0, -22f, -5f);
         animator.endKeyframe();
-        animator.startKeyframe(4);
-        animator.move(scaler, 0.999f, 0, 0);
-        animator.rotate(head, -0.8f, 0, 0);
-        animator.move(body, 0, 7, 0);
-        animator.endKeyframe();
-        animator.startKeyframe(2);
-        animator.move(scaler, 0.999f, 0, 0);
-        animator.rotate(head, -1.6f, 0, 0);
-        animator.move(body, 0, -3, 5);
-        animator.endKeyframe();
-        animator.startKeyframe(2);
-        animator.move(scaler, 0.999f, 0, 0);
-        animator.rotate(head, -1.58f, 0, 0);
-        animator.move(body, 0, 9f, 5);
-        animator.endKeyframe();
-        animator.setStaticKeyframe(4);
+        animator.setStaticKeyframe(1);
 
         //Inactive
         if (!entity.active) {

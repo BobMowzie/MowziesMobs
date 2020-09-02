@@ -37,7 +37,7 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<EntityPlayer> impleme
 
     @Override
     protected boolean processInteract(EntityPlayer player, EnumHand hand) {
-        if (player == leader && getActive()) {
+        if (player == leader && getActive() && getAnimation() != DEACTIVATE_ANIMATION) {
             AnimationHandler.INSTANCE.sendAnimationMessage(this, DEACTIVATE_ANIMATION);
             playSound(MMSounds.ENTITY_BARAKOA_RETRACT, 1, 1);
         }
