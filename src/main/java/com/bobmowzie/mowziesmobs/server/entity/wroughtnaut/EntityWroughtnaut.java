@@ -249,8 +249,8 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         }
 
         if (!isActive()) {
-            posX = prevPosX;
-            posZ = prevPosZ;
+//            posX = prevPosX;
+//            posZ = prevPosZ;
             motionX = 0;
             motionZ = 0;
             rotationYaw = prevRotationYaw;
@@ -315,6 +315,11 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 //                }
 //            }
 //        }
+    }
+
+    @Override
+    public boolean canBePushed() {
+        return isActive();
     }
 
     private boolean isAtRestPos() {

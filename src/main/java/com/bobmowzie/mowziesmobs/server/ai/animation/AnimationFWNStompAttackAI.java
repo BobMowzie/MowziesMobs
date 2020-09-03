@@ -9,6 +9,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -87,15 +88,17 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                         if (entity == this.entity || entity instanceof EntityFallingBlock) {
                             continue;
                         }
+                        float knockbackResistance = 0;
                         if (entity instanceof EntityLivingBase) {
                             entity.attackEntityFrom(DamageSource.causeMobDamage(this.entity), (factor * 5 + 1) * ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.combatData.attackMultiplier);
+                            knockbackResistance = (float) ((EntityLivingBase)entity).getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).getAttributeValue();
                         }
                         double magnitude = world.rand.nextDouble() * 0.15 + 0.1;
-                        entity.motionX += vx * factor * magnitude;
+                        entity.motionX += vx * factor * magnitude * (1 - knockbackResistance);
                         if (entity.onGround) {
-                            entity.motionY += 0.1 + factor * 0.15;
+                            entity.motionY += 0.1 * (1 - knockbackResistance) + factor * 0.15 * (1 - knockbackResistance);
                         }
-                        entity.motionZ += vz * factor * magnitude;
+                        entity.motionZ += vz * factor * magnitude * (1 - knockbackResistance);
                         if (entity instanceof EntityPlayerMP) {
                             ((EntityPlayerMP) entity).connection.sendPacket(new SPacketEntityVelocity(entity));
                         }

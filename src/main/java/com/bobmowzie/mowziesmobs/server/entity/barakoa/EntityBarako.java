@@ -259,6 +259,11 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     }
 
     @Override
+    public boolean canBePushed() {
+        return false;
+    }
+
+    @Override
     public void onUpdate() {
         super.onUpdate();
         if (ticksExisted == 1) {
@@ -267,8 +272,8 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         if (!(getAnimation() == ATTACK_ANIMATION && getAnimationTick() >= 12 && getAnimationTick() <= 14)) this.repelEntities(2.2f, 2.5f, 2.2f, 2.2f);
         this.rotationYaw = (direction - 1) * 90;
         this.renderYawOffset = rotationYaw;
-        this.posX = prevPosX;
-        this.posZ = prevPosZ;
+//        this.posX = prevPosX;
+//        this.posZ = prevPosZ;
         motionX = 0;
         motionZ = 0;
 

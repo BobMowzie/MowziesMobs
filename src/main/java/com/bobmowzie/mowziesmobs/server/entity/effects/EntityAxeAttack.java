@@ -7,6 +7,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -100,16 +101,18 @@ public class EntityAxeAttack extends EntityMagicEffect {
                         if (entity == this || entity instanceof EntityFallingBlock || entity == caster) {
                             continue;
                         }
+                        float knockbackResistance = 0;
                         if (entity instanceof EntityLivingBase) {
                             if (caster instanceof EntityPlayer) entity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) caster), (factor * 5 + 1) * (ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolData.attackDamage / 9.0f));
                             else entity.attackEntityFrom(DamageSource.causeMobDamage(caster), (factor * 5 + 1) * (ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolData.attackDamage / 9.0f));
+                            knockbackResistance = (float) ((EntityLivingBase)entity).getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).getAttributeValue();
                         }
                         double magnitude = -0.2;
-                        entity.motionX += vx * (1 - factor) * magnitude;
+                        entity.motionX += vx * (1 - factor) * magnitude * (1 - knockbackResistance);
                         if (entity.onGround) {
-                            entity.motionY += 0.15;
+                            entity.motionY += 0.15 * (1 - knockbackResistance);
                         }
-                        entity.motionZ += vz * (1 - factor) * magnitude;
+                        entity.motionZ += vz * (1 - factor) * magnitude * (1 - knockbackResistance);
                         if (entity instanceof EntityPlayerMP) {
                             ((EntityPlayerMP) entity).connection.sendPacket(new SPacketEntityVelocity(entity));
                         }

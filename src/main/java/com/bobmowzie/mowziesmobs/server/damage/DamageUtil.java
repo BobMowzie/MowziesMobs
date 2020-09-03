@@ -1,9 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.damage;
 
 import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
-import javafx.util.Pair;
+
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
-import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,7 +11,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.client.event.sound.PlaySoundSourceEvent;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class DamageUtil {
     // TODO: Works for current use cases, but possibly not for future edge cases. Use reflection to get hurt sound for onHit2?
@@ -33,9 +32,9 @@ public class DamageUtil {
                     target.playSound(sound, 1F, getSoundPitch(target));
                 }
             }
-            return new Pair<>(hit1, hit2);
+            return Pair.of(hit1, hit2);
         }
-        return new Pair<>(false, false);
+        return Pair.of(false, false);
     }
 
     private static float getSoundPitch(EntityLivingBase target) {

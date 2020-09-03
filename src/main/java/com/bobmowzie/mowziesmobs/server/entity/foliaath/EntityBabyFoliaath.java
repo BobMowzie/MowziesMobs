@@ -190,9 +190,14 @@ public class EntityBabyFoliaath extends MowzieEntity {
     }
 
     @Override
+    public boolean canBePushed() {
+        return false;
+    }
+
+    @Override
     public void applyEntityCollision(Entity collider) {
-        posX = prevPosX;
-        posZ = prevPosZ;
+//        posX = prevPosX;
+//        posZ = prevPosZ;
         motionX = 0;
         motionZ = 0;
     }

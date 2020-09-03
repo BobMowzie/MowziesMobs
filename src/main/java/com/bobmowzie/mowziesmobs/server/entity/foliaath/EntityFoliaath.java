@@ -108,10 +108,15 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
     }
 
     @Override
+    public boolean canBePushed() {
+        return false;
+    }
+
+    @Override
     public void onUpdate() {
         super.onUpdate();
-        this.posX = prevPosX;
-        this.posZ = prevPosZ;
+//        this.posX = prevPosX;
+//        this.posZ = prevPosZ;
         motionX = 0;
         motionZ = 0;
         // Open mouth animation
