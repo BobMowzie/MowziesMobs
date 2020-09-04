@@ -1,83 +1,75 @@
 buildscript {
     repositories {
-        jcenter()
         maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-		}
+            url "http://files.minecraftforge.net/maven"
+        }
+        jcenter()
+        mavenCentral()
     }
     dependencies {
-        classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
+        classpath group: "net.minecraftforge.gradle", name: "ForgeGradle", version: "3.+", changing: true
     }
 }
 
-apply plugin: "net.minecraftforge.gradle.forge"
+apply plugin: "net.minecraftforge.gradle"
 
-version = getVersion("VERSION")
-def llibrary_version = getVersion("LLIBRARY_VERSION")
-group = "com.bobmowzie"
+version = "1.5.8"
+group = "com.bobmowzie.mowziesmobs"
 archivesBaseName = "mowziesmobs"
-sourceCompatibility = targetCompatibility = "1.8"
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 minecraft {
-    version = "1.12.2-14.23.5.2773"
-    runDir = "run"
-	mappings = "stable_39"
+    mappings channel: "stable", version: "58-1.14.4"
+    runs {
+        client {
+            workingDirectory project.file("run")
+            property "forge.logging.console.level", "debug"
+            mods {
+                mowziesmobs {
+                    source sourceSets.main
+                }
+            }
+        }
+        server {
+            workingDirectory project.file("run-server")
+            property "forge.logging.console.level", "debug"
+            mods {
+                mowziesmobs {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
 }
 
-repositories {
-    mavenCentral()
-    maven {
-	name = "mcmoddev"
-	url = "http://maven.mcmoddev.com/"
-    }
-    maven {
-        name 'Curseforge Maven' // Baubles + Thaumcraft
-        url 'http://minecraft.curseforge.com/api/maven/'
-    }
-    maven {
-        url = "http://maven.thiakil.com"
+jar {
+    manifest {
+        attributes([
+            "Specification-Title": "mowziesmobs",
+            "Specification-Vendor": "BobMowzie",
+            "Specification-Version": "1",
+            "Implementation-Title": "mowziesmobs",
+            "Implementation-Version": "${project.version}",
+            "Implementation-Vendor" : "BobMowzie",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
     }
 }
 
 dependencies {
-    deobfCompile "net.ilexiconn:llibrary:1.7.9-1.12.2"
-    deobfCompile "com.azanor.baubles:Baubles:1.12-1.5.2"
-    deobfCompile "thaumcraft:Thaumcraft:1.12.2:6.1.BETA26"
+    minecraft "net.minecraftforge:forge:1.14.4-28.2.0"
 }
 
 processResources {
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
-    inputs.property "llibrary_version", llibrary_version
-
-    from (sourceSets.main.resources.srcDirs) {
-        include "mcmod.info"
-        expand "version": project.version, "mcversion": project.minecraft.version, "llibrary_version": llibrary_version
+    def vars = [
+        "version": project.version
+    ]
+    inputs.properties(vars)
+    from(sourceSets.main.resources.srcDirs) {
+        include("META-INF/mods.toml")
+        expand(vars)
     }
-        
-    from (sourceSets.main.resources.srcDirs) {
-        exclude "mcmod.info"
+    from(sourceSets.main.resources.srcDirs) {
+        exclude("META-INF/mods.toml")
     }
-}
-
-String getVersion(String type) {
-    String major = "0";
-    String revision = "0";
-    String patch = "0";
-    String prefix = "public static final String $type = \"";
-    File file = file("src/main/java/com/bobmowzie/mowziesmobs/MowziesMobs.java")
-    file.eachLine { String s ->
-        s = s.trim();
-        if (s.startsWith(prefix)) {
-            s = s.substring(prefix.length(), s.length() - 2);
-            String[] pts = s.split("\\.");
-
-            major = pts[0];
-            revision = pts[1];
-            patch = pts[2];
-        }
-    }
-
-    return "$major.$revision.$patch";
 }
