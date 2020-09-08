@@ -10,10 +10,12 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.AxeItem;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemTier;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
@@ -23,15 +25,10 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemWroughtAxe extends ItemAxe {
+public class ItemWroughtAxe extends AxeItem {
 
-    public ItemWroughtAxe() {
-        super(Item.ToolMaterial.IRON);
-        setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setTranslationKey("wroughtAxe");
-        setRegistryName("wrought_axe");
-        attackDamage = -1 + ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolData.attackDamage;
-        attackSpeed = -4f + ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolData.attackSpeed;
+    public ItemWroughtAxe(Item.Properties properties) {
+        super(ItemTier.IRON, -1 + ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolData.attackDamage, -4f + ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolData.attackSpeed, properties);
     }
 
     @Override

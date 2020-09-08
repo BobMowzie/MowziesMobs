@@ -2,19 +2,23 @@ package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
+import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.registries.ObjectHolder;
 
 import java.util.List;
 
-@GameRegistry.ObjectHolder(MowziesMobs.MODID)
-@Mod.EventBusSubscriber(modid = MowziesMobs.MODID)
+@ObjectHolder(MowziesMobs.MODID)
+@Mod.EventBusSubscriber(modid = MowziesMobs.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class ItemHandler {
     private ItemHandler() {}
 
@@ -45,28 +49,27 @@ public final class ItemHandler {
     @SubscribeEvent
     public static void register(RegistryEvent.Register<Item> event) {
         event.getRegistry().registerAll(
-                new ItemFoliaathSeed(),
-                new ItemTestStructure(),
-                new ItemMobRemover(),
-                new ItemWroughtAxe(),
+                new ItemFoliaathSeed(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("foliaath_seed"),
+                //new ItemTestStructure(),
+                new ItemMobRemover(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("mob_remover"),
+                new ItemWroughtAxe(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("wrought_axe"),
                 new ItemWroughtHelm(),
                 new ItemBarakoMask(),
-                new ItemDart(),
-                new ItemSpear(),
+                new ItemDart(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("dart"),
+                new ItemSpear(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("spear"),
                 new ItemBlowgun(),
                 new ItemSpawnEgg(),
                 new ItemGrantSunsBlessing(),
                 new ItemIceCrystal(),
                 new ItemEarthTalisman(),
                 new ItemCapturedGrottol()
-                    .setRegistryName("captured_grottol")
-                    .setTranslationKey("capturedGrottol"),
+                    .setRegistryName("captured_grottol"),
                 new ItemGlowingJelly(1, 0.1f, false),
                 new ItemNagaFang(),
                 new ItemNagaFangDagger(),
                 new ItemLogo(),
-                new ItemBlock(BlockHandler.PAINTED_ACACIA).setRegistryName(BlockHandler.PAINTED_ACACIA.getRegistryName()),
-                new ItemBlock(BlockHandler.PAINTED_ACACIA_SLAB).setRegistryName(BlockHandler.PAINTED_ACACIA_SLAB.getRegistryName())
+                new BlockItem(BlockHandler.PAINTED_ACACIA).setRegistryName(BlockHandler.PAINTED_ACACIA.getRegistryName()),
+                new BlockItem(BlockHandler.PAINTED_ACACIA_SLAB).setRegistryName(BlockHandler.PAINTED_ACACIA_SLAB.getRegistryName())
         );
         for (MaskType mask : MaskType.values()) {
             event.getRegistry().register(new ItemBarakoaMask(mask));

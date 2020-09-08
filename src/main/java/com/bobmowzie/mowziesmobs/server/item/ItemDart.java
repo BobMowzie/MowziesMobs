@@ -6,6 +6,8 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.item.ArrowItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
@@ -15,11 +17,9 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemDart extends ItemArrow {
-    public ItemDart() {
-        setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setTranslationKey("dart");
-        setRegistryName("dart");
+public class ItemDart extends ArrowItem {
+    public ItemDart(Item.Properties properties) {
+        super(properties);
     }
 
     @Override

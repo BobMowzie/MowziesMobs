@@ -9,8 +9,11 @@ import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemTier;
 import net.minecraft.item.ItemTool;
+import net.minecraft.item.ToolItem;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
@@ -20,12 +23,9 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ItemSpear extends ItemTool {
-    public ItemSpear() {
-        super(-2 + ConfigHandler.TOOLS_AND_ABILITIES.BARAKOA_SPEAR.toolData.attackDamage, -4f + ConfigHandler.TOOLS_AND_ABILITIES.BARAKOA_SPEAR.toolData.attackSpeed, ToolMaterial.STONE, Sets.newHashSet());
-        setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setTranslationKey("spear");
-        setRegistryName("spear");
+public class ItemSpear extends ToolItem {
+    public ItemSpear(Item.Properties properties) {
+        super(-2 + ConfigHandler.TOOLS_AND_ABILITIES.BARAKOA_SPEAR.toolData.attackDamage, -4f + ConfigHandler.TOOLS_AND_ABILITIES.BARAKOA_SPEAR.toolData.attackSpeed, ItemTier.STONE, Sets.newHashSet(), properties);
     }
 
     @Override

@@ -13,10 +13,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemMobRemover extends Item {
-    public ItemMobRemover() {
-        setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setTranslationKey("mobRemover");
-        setRegistryName("mob_remover");
+    public ItemMobRemover(Item.Properties properties) {
+        super(properties);
     }
 
     @Override

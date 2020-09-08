@@ -20,10 +20,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemFoliaathSeed extends Item {
-    public ItemFoliaathSeed() {
-        setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setTranslationKey("foliaathSeed");
-        setRegistryName("foliaath_seed");
+    public ItemFoliaathSeed(Item.Properties properties) {
+        super(properties);
     }
 
     public Entity spawnCreature(World world, EntityLiving entity, double x, double y, double z) {

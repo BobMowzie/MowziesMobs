@@ -1,20 +1,20 @@
 package com.bobmowzie.mowziesmobs.server.creativetab;
 
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public enum CreativeTabHandler {
     INSTANCE;
 
-    public CreativeTabs creativeTab;
+    public ItemGroup creativeTab;
 
     public void onInit() {
-        creativeTab = new CreativeTabs("mowziesmobs.creativeTab") {
+        creativeTab = new ItemGroup("mowziesmobs.creativeTab") {
             @Override
-            @SideOnly(Side.CLIENT)
+            @OnlyIn(Dist.CLIENT)
             public ItemStack createIcon() {
                 return new ItemStack(ItemHandler.LOGO);
             }
