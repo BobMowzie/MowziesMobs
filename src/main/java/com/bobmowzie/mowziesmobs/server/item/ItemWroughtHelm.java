@@ -5,7 +5,10 @@ import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ArmorItem;
+import net.minecraft.item.ArmorMaterial;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -14,20 +17,17 @@ import net.minecraftforge.common.util.EnumHelper;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemWroughtHelm extends ItemArmor {
+public class ItemWroughtHelm extends ArmorItem {
     private static int d = ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorData.damageReduction;
     private static ArmorMaterial ARMOR_WROUGHT_HELM = EnumHelper.addArmorMaterial("WROUGHT_HELM", "iron", 15, new int[] {d, d, d, d}, ArmorMaterial.IRON.getEnchantability(), ArmorMaterial.IRON.getSoundEvent(), ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorData.toughness);
 
-    public ItemWroughtHelm() {
-        super(ARMOR_WROUGHT_HELM, 2, EntityEquipmentSlot.HEAD);
-        setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setTranslationKey("wroughtHelmet");
-        setRegistryName("wrought_helmet");
+    public ItemWroughtHelm(Item.Properties properties) {
+        super(ARMOR_WROUGHT_HELM, 2, EquipmentSlotType.HEAD, properties);
     }
 
     // Dirty trick to get our item to render as the item model
     @Override
-    public EntityEquipmentSlot getEquipmentSlot() {
+    public EquipmentSlotType getEquipmentSlot() {
         return null;
     }
 

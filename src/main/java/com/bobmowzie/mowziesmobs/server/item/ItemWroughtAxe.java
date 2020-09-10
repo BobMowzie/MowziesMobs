@@ -8,6 +8,7 @@ import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.AxeItem;
@@ -37,7 +38,7 @@ public class ItemWroughtAxe extends AxeItem {
     }
 
     @Override
-    public boolean hitEntity(ItemStack heldItemStack, EntityLivingBase entityHit, EntityLivingBase attacker) {
+    public boolean hitEntity(ItemStack heldItemStack, LivingEntity entityHit, LivingEntity attacker) {
         if (ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable) heldItemStack.damageItem(2, attacker);
         if (!entityHit.world.isRemote) {
             entityHit.playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.3F, 0.5F);

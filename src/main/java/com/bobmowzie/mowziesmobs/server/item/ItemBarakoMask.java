@@ -5,7 +5,10 @@ import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ArmorItem;
+import net.minecraft.item.ArmorMaterial;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -17,15 +20,12 @@ import java.util.List;
 /**
  * Created by Josh on 8/15/2016.
  */
-public class ItemBarakoMask extends ItemArmor implements BarakoaMask {
+public class ItemBarakoMask extends ArmorItem implements BarakoaMask {
     private static int d = ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.armorData.damageReduction;
     private static ArmorMaterial ARMOR_SOL_VISAGE = EnumHelper.addArmorMaterial("SOL_VISAGE", "gold", 7, new int[]{d, d, d, d}, ArmorMaterial.GOLD.getEnchantability(), ArmorMaterial.GOLD.getSoundEvent(), ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.armorData.toughness);
 
-    public ItemBarakoMask() {
-        super(ARMOR_SOL_VISAGE, 2, EntityEquipmentSlot.HEAD);
-        setTranslationKey("barakoMask");
-        setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setRegistryName("barako_mask");
+    public ItemBarakoMask(Item.Properties properties) {
+        super(ARMOR_SOL_VISAGE, 2, EquipmentSlotType.HEAD, properties);
     }
 
     @Override

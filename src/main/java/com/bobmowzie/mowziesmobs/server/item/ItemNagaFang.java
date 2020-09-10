@@ -13,10 +13,8 @@ import java.util.List;
  * Created by Josh on 1/10/2019.
  */
 public class ItemNagaFang extends Item {
-    public ItemNagaFang() {
-        setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setTranslationKey("nagaFang");
-        setRegistryName("naga_fang");
+    public ItemNagaFang(Item.Properties properties) {
+        super(properties);
     }
 
     @Override

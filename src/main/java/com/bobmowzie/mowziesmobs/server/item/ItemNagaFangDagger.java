@@ -18,11 +18,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class ItemNagaFangDagger extends ItemTool {
-    public ItemNagaFangDagger() {
-        super(-2 + ConfigHandler.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.toolData.attackDamage, -4f + ConfigHandler.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.toolData.attackSpeed, ToolMaterial.STONE, Sets.newHashSet());
-        setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setTranslationKey("nagaFangDagger");
-        setRegistryName("naga_fang_dagger");
+    public ItemNagaFangDagger(Item.Properties properties) {
+        super(-2 + ConfigHandler.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.toolData.attackDamage, -4f + ConfigHandler.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.toolData.attackSpeed, ToolMaterial.STONE, Sets.newHashSet(), properties);
     }
 
     @Override

@@ -22,10 +22,8 @@ import java.util.List;
  * Created by Josh on 6/6/2017.
  */
 public class ItemIceCrystal extends Item {
-    public ItemIceCrystal() {
-        setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setTranslationKey("iceCrystal");
-        setRegistryName("ice_crystal");
+    public ItemIceCrystal(Item.Properties properties) {
+        super(properties);
         setMaxDamage(ConfigHandler.TOOLS_AND_ABILITIES.ICE_CRYSTAL.durability);
         setMaxStackSize(1);
     }

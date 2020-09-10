@@ -8,7 +8,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemBow;
+import net.minecraft.item.BowItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
 import net.minecraft.util.EnumHand;
@@ -18,12 +19,9 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemBlowgun extends ItemBow {
-    public ItemBlowgun() {
-        super();
-        setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setTranslationKey("blowgun");
-        setRegistryName("blowgun");
+public class ItemBlowgun extends BowItem {
+    public ItemBlowgun(Item.Properties properties) {
+        super(properties);
     }
 
     @Override

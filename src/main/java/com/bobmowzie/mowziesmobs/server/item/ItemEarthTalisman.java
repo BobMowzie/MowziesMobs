@@ -14,9 +14,6 @@ import java.util.List;
  */
 public class ItemEarthTalisman extends Item {
     public ItemEarthTalisman() {
-        setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setTranslationKey("earthTalisman");
-        setRegistryName("earth_talisman");
         maxStackSize = 1;
     }
 

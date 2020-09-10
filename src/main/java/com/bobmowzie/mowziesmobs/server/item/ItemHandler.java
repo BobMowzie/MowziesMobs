@@ -53,26 +53,25 @@ public final class ItemHandler {
                 //new ItemTestStructure(),
                 new ItemMobRemover(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("mob_remover"),
                 new ItemWroughtAxe(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("wrought_axe"),
-                new ItemWroughtHelm(),
-                new ItemBarakoMask(),
+                new ItemWroughtHelm(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("wrought_helmet"),
+                new ItemBarakoMask(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barako_mask"),
                 new ItemDart(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("dart"),
                 new ItemSpear(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("spear"),
-                new ItemBlowgun(),
-                new ItemSpawnEgg(),
-                new ItemGrantSunsBlessing(),
-                new ItemIceCrystal(),
-                new ItemEarthTalisman(),
-                new ItemCapturedGrottol()
-                    .setRegistryName("captured_grottol"),
-                new ItemGlowingJelly(1, 0.1f, false),
-                new ItemNagaFang(),
-                new ItemNagaFangDagger(),
-                new ItemLogo(),
+                new ItemBlowgun(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("blowgun"),
+                new ItemSpawnEgg(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("spawn_egg"),
+                new ItemGrantSunsBlessing(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("grant_suns_blessing"),
+                new ItemIceCrystal(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("ice_crystal"),
+                new ItemEarthTalisman(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("earth_talisman"),
+                new ItemCapturedGrottol(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("captured_grottol"),
+                new ItemGlowingJelly( new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab).food(ItemGlowingJelly.GLOWING_JELLY_FOOD)).setRegistryName("glowing_jelly"),
+                new ItemNagaFang(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("naga_fang"),
+                new ItemNagaFangDagger(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("naga_fang_dagger"),
+                new ItemLogo(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("logo"),
                 new BlockItem(BlockHandler.PAINTED_ACACIA).setRegistryName(BlockHandler.PAINTED_ACACIA.getRegistryName()),
                 new BlockItem(BlockHandler.PAINTED_ACACIA_SLAB).setRegistryName(BlockHandler.PAINTED_ACACIA_SLAB.getRegistryName())
         );
         for (MaskType mask : MaskType.values()) {
-            event.getRegistry().register(new ItemBarakoaMask(mask));
+            event.getRegistry().register(new ItemBarakoaMask(mask, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoa_mask_" + mask.name));
         }
     }
 

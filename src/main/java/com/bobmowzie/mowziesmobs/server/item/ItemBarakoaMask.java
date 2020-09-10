@@ -8,10 +8,12 @@ import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.ItemArmor;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ArmorItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ArmorMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.ActionResult;
@@ -23,18 +25,15 @@ import net.minecraftforge.common.util.EnumHelper;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemBarakoaMask extends ItemArmor implements BarakoaMask {
+public class ItemBarakoaMask extends ArmorItem implements BarakoaMask {
     private final MaskType type;
 
     private static int d = ConfigHandler.TOOLS_AND_ABILITIES.BARAKOA_MASK.armorData.damageReduction;
     private static ArmorMaterial ARMOR_BARAKOA_MASK = EnumHelper.addArmorMaterial("BARAKOA_MASK", "leather", 5, new int[]{d, d, d, d}, 15, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, ConfigHandler.TOOLS_AND_ABILITIES.BARAKOA_MASK.armorData.toughness);
 
-    public ItemBarakoaMask(MaskType type) {
-        super(ARMOR_BARAKOA_MASK, 2, EntityEquipmentSlot.HEAD);
+    public ItemBarakoaMask(MaskType type, Item.Properties properties) {
+        super(ARMOR_BARAKOA_MASK, 2, EquipmentSlotType.HEAD, properties);
         this.type = type;
-        setTranslationKey("barakoaMask." + type.name);
-        setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setRegistryName("barakoa_mask_" + type.name);
     }
 
     public Potion getPotion() {
@@ -42,7 +41,7 @@ public class ItemBarakoaMask extends ItemArmor implements BarakoaMask {
     }
 
     @Override
-    public EntityEquipmentSlot getEquipmentSlot() {
+    public EquipmentSlotType getEquipmentSlot() {
         return null;
     }
 

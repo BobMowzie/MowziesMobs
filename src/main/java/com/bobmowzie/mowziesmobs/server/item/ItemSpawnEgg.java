@@ -34,11 +34,9 @@ import java.util.Iterator;
 import java.util.UUID;
 
 public class ItemSpawnEgg extends Item {
-    public ItemSpawnEgg() {
-        setTranslationKey("monsterPlacer");
-        setRegistryName("spawn_egg");
+    public ItemSpawnEgg(Item.Properties properties) {
+        super(properties);
         setHasSubtypes(true);
-        setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
     }
 
     @Override

@@ -18,10 +18,9 @@ import java.util.List;
  * Created by Josh on 10/31/2016.
  */
 public class ItemGrantSunsBlessing extends Item {
-    public ItemGrantSunsBlessing() {
-        setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
+    public ItemGrantSunsBlessing(Item.Properties properties) {
+        super(properties);
         setTranslationKey("grantSunsBlessing");
-        setRegistryName("grant_suns_blessing");
     }
 
     @Override

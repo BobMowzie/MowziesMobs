@@ -20,7 +20,8 @@ import java.util.Set;
 import java.util.UUID;
 
 public class ItemCapturedGrottol extends Item {
-    public ItemCapturedGrottol() {
+    public ItemCapturedGrottol(Item.Properties properties) {
+        super(properties);
         setMaxStackSize(1);
     }
 

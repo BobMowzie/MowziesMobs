@@ -10,9 +10,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class ItemTestStructure extends Item {
-    public ItemTestStructure() {
-        this.setTranslationKey("testStructure");
-        setRegistryName("test_structure");
+    public ItemTestStructure(Item.Properties properties) {
+        super(properties);
     }
 
     @Override
