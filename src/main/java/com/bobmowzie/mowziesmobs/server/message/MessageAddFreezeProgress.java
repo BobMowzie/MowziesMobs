@@ -6,8 +6,8 @@ import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.ilexiconn.llibrary.server.network.AbstractMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
@@ -22,7 +22,7 @@ public class MessageAddFreezeProgress extends AbstractMessage<MessageAddFreezePr
 
     }
 
-    public MessageAddFreezeProgress(EntityLivingBase entity, float amount) {
+    public MessageAddFreezeProgress(LivingEntity entity, float amount) {
         entityID = entity.getEntityId();
         this.amount = amount;
     }
@@ -40,10 +40,10 @@ public class MessageAddFreezeProgress extends AbstractMessage<MessageAddFreezePr
     }
 
     @Override
-    public void onClientReceived(Minecraft client, MessageAddFreezeProgress message, EntityPlayer player, MessageContext messageContext) {
+    public void onClientReceived(Minecraft client, MessageAddFreezeProgress message, PlayerEntity player, MessageContext messageContext) {
         Entity entity = player.world.getEntityByID(message.entityID);
-        if (entity instanceof EntityLivingBase) {
-            EntityLivingBase living = (EntityLivingBase) entity;
+        if (entity instanceof LivingEntity) {
+            LivingEntity living = (LivingEntity) entity;
             MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(living, MowzieLivingProperties.class);
             if (property != null) {
                 property.freezeProgress += amount;
@@ -53,7 +53,7 @@ public class MessageAddFreezeProgress extends AbstractMessage<MessageAddFreezePr
     }
 
     @Override
-    public void onServerReceived(MinecraftServer server, MessageAddFreezeProgress message, EntityPlayer player, MessageContext messageContext) {
+    public void onServerReceived(MinecraftServer server, MessageAddFreezeProgress message, PlayerEntity player, MessageContext messageContext) {
 
     }
 }

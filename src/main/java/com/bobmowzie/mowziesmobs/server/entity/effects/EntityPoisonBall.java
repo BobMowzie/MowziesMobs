@@ -6,12 +6,11 @@ import com.bobmowzie.mowziesmobs.client.particles.util.MowzieParticleBase;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.MoverType;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.MobEffects;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -33,7 +32,7 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
         setSize(0.5f, 0.5f);
     }
 
-    public EntityPoisonBall(World worldIn, EntityLivingBase caster) {
+    public EntityPoisonBall(World worldIn, LivingEntity caster) {
         super(worldIn);
         setSize(0.5f, 0.5f);
         if (!world.isRemote) {
@@ -60,13 +59,13 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
 
         rotationYaw = -((float) MathHelper.atan2(motionX, motionZ)) * (180F / (float)Math.PI);
 
-        List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby(1);
+        List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(1);
         if (!entitiesHit.isEmpty()) {
-            for (EntityLivingBase entity : entitiesHit) {
+            for (LivingEntity entity : entitiesHit) {
                 if (entity == caster) continue;
                 if (entity instanceof EntityNaga) continue;
                 if (entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(this, caster), 3 * ConfigHandler.MOBS.NAGA.combatData.attackMultiplier)) {
-                    entity.addPotionEffect(new PotionEffect(MobEffects.POISON, 80, 1, false, true));
+                    entity.addPotionEffect(new EffectInstance(Effects.POISON, 80, 1, false, true));
                 }
             }
         }
@@ -142,13 +141,13 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
 
         playSound(MMSounds.ENTITY_NAGA_ACID_HIT, 1, 1);
 
-        List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby(2);
+        List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(2);
         if (!entitiesHit.isEmpty()) {
-            for (EntityLivingBase entity : entitiesHit) {
+            for (LivingEntity entity : entitiesHit) {
                 if (entity == caster) continue;
                 if (entity instanceof EntityNaga) continue;
                 if (entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(this, caster), 3 * ConfigHandler.MOBS.NAGA.combatData.attackMultiplier)) {
-                    entity.addPotionEffect(new PotionEffect(MobEffects.POISON, 80, 0, false, true));
+                    entity.addPotionEffect(new EffectInstance(Effects.POISON, 80, 0, false, true));
                 }
             }
         }

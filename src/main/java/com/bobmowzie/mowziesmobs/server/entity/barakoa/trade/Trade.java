@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa.trade;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 public final class Trade {
     private final ItemStack input;
@@ -49,15 +49,15 @@ public final class Trade {
         return 961 * input.hashCode() + 31 * output.hashCode() + weight;
     }
 
-    public NBTTagCompound serialize() {
-        NBTTagCompound compound = new NBTTagCompound();
-        compound.setTag("input", input.writeToNBT(new NBTTagCompound()));
-        compound.setTag("output", output.writeToNBT(new NBTTagCompound()));
+    public CompoundNBT serialize() {
+        CompoundNBT compound = new CompoundNBT();
+        compound.setTag("input", input.writeToNBT(new CompoundNBT()));
+        compound.setTag("output", output.writeToNBT(new CompoundNBT()));
         compound.setInteger("weight", weight);
         return compound;
     }
 
-    public static Trade deserialize(NBTTagCompound compound) {
+    public static Trade deserialize(CompoundNBT compound) {
         ItemStack input = new ItemStack(compound.getCompoundTag("input"));
         ItemStack output = new ItemStack(compound.getCompoundTag("output"));
         int weight = compound.getInteger("weight");

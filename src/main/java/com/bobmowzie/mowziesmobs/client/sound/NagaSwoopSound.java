@@ -1,14 +1,14 @@
 package com.bobmowzie.mowziesmobs.client.sound;
 
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import net.minecraft.client.audio.MovingSound;
+import net.minecraft.client.audio.TickableSound;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.SoundCategory;
 
 /**
  * Created by Josh on 1/9/2019.
  */
-public class NagaSwoopSound extends MovingSound {
+public class NagaSwoopSound extends TickableSound {
     private Entity naga;
     int ticksExisted = 0;
     boolean active = true;

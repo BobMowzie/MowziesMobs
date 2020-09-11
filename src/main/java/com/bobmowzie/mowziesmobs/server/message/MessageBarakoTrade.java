@@ -9,10 +9,10 @@ import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.network.AbstractMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
@@ -26,7 +26,7 @@ public class MessageBarakoTrade extends AbstractMessage<MessageBarakoTrade> {
 
     }
 
-    public MessageBarakoTrade(EntityLivingBase sender) {
+    public MessageBarakoTrade(LivingEntity sender) {
         entityID = sender.getEntityId();
     }
 
@@ -41,10 +41,10 @@ public class MessageBarakoTrade extends AbstractMessage<MessageBarakoTrade> {
     }
 
     @Override
-    public void onClientReceived(Minecraft minecraft, MessageBarakoTrade msg, EntityPlayer player, MessageContext ctx) {}
+    public void onClientReceived(Minecraft minecraft, MessageBarakoTrade msg, PlayerEntity player, MessageContext ctx) {}
 
     @Override
-    public void onServerReceived(MinecraftServer server, MessageBarakoTrade msg, EntityPlayer player, MessageContext ctx) {
+    public void onServerReceived(MinecraftServer server, MessageBarakoTrade msg, PlayerEntity player, MessageContext ctx) {
         Entity entity = player.world.getEntityByID(msg.entityID);
         if (!(entity instanceof EntityBarako)) {
             return;
@@ -65,7 +65,7 @@ public class MessageBarakoTrade extends AbstractMessage<MessageBarakoTrade> {
             }
         }
         if (satisfied) {
-            player.addPotionEffect(new PotionEffect(PotionHandler.SUNS_BLESSING, 24000 * 3, 0, false, false));
+            player.addPotionEffect(new EffectInstance(PotionHandler.SUNS_BLESSING, 24000 * 3, 0, false, false));
             if (barako.getAnimation() != barako.BLESS_ANIMATION) {
                 barako.setAnimationTick(0);
                 AnimationHandler.INSTANCE.sendAnimationMessage(barako, barako.BLESS_ANIMATION);

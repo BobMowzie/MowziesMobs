@@ -1,18 +1,18 @@
 package com.bobmowzie.mowziesmobs.server.ai;
 
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityMoveHelper;
+import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.pathfinding.NodeProcessor;
-import net.minecraft.pathfinding.PathNavigate;
+import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.math.MathHelper;
 
-public class MMEntityMoveHelper extends EntityMoveHelper
+public class MMEntityMoveHelper extends MovementController
 {
     private float maxRotate = 90;
 
-    public MMEntityMoveHelper(EntityLiving entitylivingIn, float maxRotate)
+    public MMEntityMoveHelper(MobEntity entitylivingIn, float maxRotate)
     {
         super(entitylivingIn);
         this.maxRotate = maxRotate;
@@ -40,7 +40,7 @@ public class MMEntityMoveHelper extends EntityMoveHelper
             float f6 = MathHelper.cos(this.entity.rotationYaw * 0.017453292F);
             float f7 = f2 * f6 - f3 * f5;
             float f8 = f3 * f6 + f2 * f5;
-            PathNavigate pathnavigate = this.entity.getNavigator();
+            PathNavigator pathnavigate = this.entity.getNavigator();
 
             if (pathnavigate != null)
             {

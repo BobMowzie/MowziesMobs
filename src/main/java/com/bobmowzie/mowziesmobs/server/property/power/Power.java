@@ -3,8 +3,8 @@ package com.bobmowzie.mowziesmobs.server.property.power;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import com.google.common.collect.Lists;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
@@ -61,31 +61,31 @@ public abstract class Power {
 
     }
 
-    public void onRightMouseDown(EntityPlayer player) {
+    public void onRightMouseDown(PlayerEntity player) {
 
     }
 
-    public void onLeftMouseDown(EntityPlayer player) {
+    public void onLeftMouseDown(PlayerEntity player) {
 
     }
 
-    public void onRightMouseUp(EntityPlayer player) {
+    public void onRightMouseUp(PlayerEntity player) {
 
     }
 
-    public void onLeftMouseUp(EntityPlayer player) {
+    public void onLeftMouseUp(PlayerEntity player) {
 
     }
 
-    public void onSneakDown(EntityPlayer player) {
+    public void onSneakDown(PlayerEntity player) {
 
     }
 
-    public void onSneakUp(EntityPlayer player) {
+    public void onSneakUp(PlayerEntity player) {
 
     }
 
-    public boolean canUse(EntityPlayer player) {
+    public boolean canUse(PlayerEntity player) {
         return true;
     }
 
@@ -93,18 +93,18 @@ public abstract class Power {
         return properties;
     }
 
-    public List<EntityLivingBase> getEntityLivingBaseNearby(double distanceX, double distanceY, double distanceZ, double radius) {
-        return getEntitiesNearby(EntityLivingBase.class, distanceX, distanceY, distanceZ, radius);
+    public List<LivingEntity> getEntityLivingBaseNearby(double distanceX, double distanceY, double distanceZ, double radius) {
+        return getEntitiesNearby(LivingEntity.class, distanceX, distanceY, distanceZ, radius);
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double r) {
-        EntityPlayer player = properties.getEntity();
+        PlayerEntity player = properties.getEntity();
         if (player == null) return Lists.<T>newArrayList();
         return player.world.getEntitiesWithinAABB(entityClass, player.getEntityBoundingBox().grow(r, r, r), e -> e != player && player.getDistance(e) <= r);
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double dX, double dY, double dZ, double r) {
-        EntityPlayer player = properties.getEntity();
+        PlayerEntity player = properties.getEntity();
         if (player == null) return Lists.<T>newArrayList();
         return player.world.getEntitiesWithinAABB(entityClass, player.getEntityBoundingBox().grow(dX, dY, dZ), e -> e != player && player.getDistance(e) <= r);
     }

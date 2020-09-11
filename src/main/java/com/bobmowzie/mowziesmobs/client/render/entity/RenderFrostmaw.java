@@ -3,17 +3,17 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelFrostmaw;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
 
 /**
  * Created by Josh on 5/8/2017.
  */
-public class RenderFrostmaw extends RenderLiving<EntityFrostmaw> {
+public class RenderFrostmaw extends MobRenderer<EntityFrostmaw> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/frostmaw.png");
 
-    public RenderFrostmaw(RenderManager mgr) {
+    public RenderFrostmaw(EntityRendererManager mgr) {
         super(mgr, new ModelFrostmaw(), 3.5f);
     }
 

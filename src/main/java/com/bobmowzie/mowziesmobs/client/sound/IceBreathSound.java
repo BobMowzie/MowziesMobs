@@ -2,11 +2,11 @@ package com.bobmowzie.mowziesmobs.client.sound;
 
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.client.model.tools.ControlledAnimation;
-import net.minecraft.client.audio.MovingSound;
+import net.minecraft.client.audio.TickableSound;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.SoundCategory;
 
-public class IceBreathSound extends MovingSound {
+public class IceBreathSound extends TickableSound {
     private Entity iceBreath;
     int ticksExisted = 0;
     ControlledAnimation volumeControl;

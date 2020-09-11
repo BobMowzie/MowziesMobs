@@ -6,13 +6,13 @@ import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoTrade;
 import com.bobmowzie.mowziesmobs.server.inventory.InventoryBarako;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.message.MessageBarakoTrade;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.gui.inventory.GuiInventory;
+import net.minecraft.client.gui.screen.inventory.InventoryScreen;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -21,7 +21,7 @@ import net.minecraft.world.World;
 import java.util.Collections;
 import java.util.List;
 
-public final class GuiBarakoTrade extends GuiContainer implements InventoryBarako.ChangeListener {
+public final class GuiBarakoTrade extends ContainerScreen implements InventoryBarako.ChangeListener {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/gui/container/barako.png");
 
     private final EntityBarako barako;
@@ -30,15 +30,15 @@ public final class GuiBarakoTrade extends GuiContainer implements InventoryBarak
 
     private final ItemStack output = new ItemStack(ItemHandler.GRANT_SUNS_BLESSING);
 
-    private GuiButton grantButton;
+    private Button grantButton;
 
     private boolean hasTraded;
 
-    public GuiBarakoTrade(EntityBarako barako, InventoryPlayer playerInv, World world, boolean hasTraded) {
+    public GuiBarakoTrade(EntityBarako barako, PlayerInventory playerInv, World world, boolean hasTraded) {
         this(barako, new InventoryBarako(barako), playerInv, world, hasTraded);
     }
 
-    public GuiBarakoTrade(EntityBarako barako, InventoryBarako inventory, InventoryPlayer playerInv, World world, boolean hasTraded) {
+    public GuiBarakoTrade(EntityBarako barako, InventoryBarako inventory, PlayerInventory playerInv, World world, boolean hasTraded) {
         super(new ContainerBarakoTrade(barako, inventory, playerInv, world));
         this.barako = barako;
         this.inventory = inventory;
@@ -51,13 +51,13 @@ public final class GuiBarakoTrade extends GuiContainer implements InventoryBarak
     	super.initGui();
     	buttonList.clear();
         String text = I18n.format(hasTraded ? "entity.barako.replenish.button.text" : "entity.barako.trade.button.text");
-        grantButton = addButton(new GuiButton(0, guiLeft + 114, guiTop + 52, 57, 20, text));
+        grantButton = addButton(new Button(0, guiLeft + 114, guiTop + 52, 57, 20, text));
         grantButton.enabled = hasTraded;
         updateButtonText();
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) {
+    protected void actionPerformed(Button button) {
     	if (button == grantButton) {
             hasTraded = true;
             updateButtonText();
@@ -70,7 +70,7 @@ public final class GuiBarakoTrade extends GuiContainer implements InventoryBarak
         GlStateManager.color(1, 1, 1);
         mc.getTextureManager().bindTexture(TEXTURE);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
-        GuiInventory.drawEntityOnScreen(guiLeft + 33, guiTop + 56, 14, 0, 0, barako);
+        InventoryScreen.drawEntityOnScreen(guiLeft + 33, guiTop + 56, 14, 0, 0, barako);
     }
 
     @Override

@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.server.ai.animation;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.animation.Animation;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 
@@ -40,9 +40,9 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
             entity.playSound(attackSound, 1.2F, 1);
         } else if (entity.getAnimationTick() == 27) {
             entity.playSound(MMSounds.ENTITY_WROUGHT_SWING_2, 1.5F, 1F);
-            List<EntityLivingBase> entitiesHit = entity.getEntityLivingBaseNearby(range, 3, range, range);
+            List<LivingEntity> entitiesHit = entity.getEntityLivingBaseNearby(range, 3, range, range);
             float damage = (float) entity.getAttack();
-            for (EntityLivingBase entityHit : entitiesHit) {
+            for (LivingEntity entityHit : entitiesHit) {
                 float entityHitAngle = (float) ((Math.atan2(entityHit.posZ - entity.posZ, entityHit.posX - entity.posX) * (180 / Math.PI) - 90) % 360);
                 float entityAttackingAngle = entity.renderYawOffset % 360;
                 if (entityHitAngle < 0) {

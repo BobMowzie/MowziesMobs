@@ -9,13 +9,13 @@ import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -37,7 +37,7 @@ public class EntityIceBreath extends EntityMagicEffect {
         setSize(0, 0);
     }
 
-    public EntityIceBreath(World world, EntityLivingBase caster) {
+    public EntityIceBreath(World world, LivingEntity caster) {
         super(world);
         setSize(0, 0);
         if (!world.isRemote) {
@@ -55,12 +55,12 @@ public class EntityIceBreath extends EntityMagicEffect {
         }
         if (caster != null && caster.isDead) this.setDead();
         if (ticksExisted == 1) playSound(MMSounds.ENTITY_FROSTMAW_ICEBREATH_START, 1, 0.6f);
-        if (caster instanceof EntityPlayer) {
-            rotationYaw = ((EntityPlayer) caster).rotationYaw;
-            rotationPitch = ((EntityPlayer) caster).rotationPitch;
-            posX = ((EntityPlayer) caster).posX;
-            posY = ((EntityPlayer) caster).posY + ((EntityPlayer) caster).eyeHeight - 0.5f;
-            posZ = ((EntityPlayer) caster).posZ;
+        if (caster instanceof PlayerEntity) {
+            rotationYaw = ((PlayerEntity) caster).rotationYaw;
+            rotationPitch = ((PlayerEntity) caster).rotationPitch;
+            posX = ((PlayerEntity) caster).posX;
+            posY = ((PlayerEntity) caster).posY + ((PlayerEntity) caster).eyeHeight - 0.5f;
+            posZ = ((PlayerEntity) caster).posZ;
         }
 
         float yaw = (float) Math.toRadians(-rotationYaw);
@@ -93,15 +93,15 @@ public class EntityIceBreath extends EntityMagicEffect {
         if (ticksExisted > 10) hitEntities();
         if (ticksExisted > 10) freezeBlocks();
 
-        if (ticksExisted > 65 && !(caster instanceof EntityPlayer)) setDead();
+        if (ticksExisted > 65 && !(caster instanceof PlayerEntity)) setDead();
     }
 
     public void hitEntities() {
-        List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby(RANGE, RANGE, RANGE, RANGE);
+        List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(RANGE, RANGE, RANGE, RANGE);
         float damage = DAMAGE_PER_HIT;
         if (caster instanceof EntityFrostmaw) damage *= ConfigHandler.MOBS.FROSTMAW.combatData.attackMultiplier;
-        if (caster instanceof EntityPlayer) damage *= ConfigHandler.TOOLS_AND_ABILITIES.ICE_CRYSTAL.attackMultiplier;
-        for (EntityLivingBase entityHit : entitiesHit) {
+        if (caster instanceof PlayerEntity) damage *= ConfigHandler.TOOLS_AND_ABILITIES.ICE_CRYSTAL.attackMultiplier;
+        for (LivingEntity entityHit : entitiesHit) {
             if (entityHit == caster) continue;
 
             List<String> freezeImmune = Arrays.asList(ConfigHandler.GENERAL.freeze_blacklist);
@@ -152,8 +152,8 @@ public class EntityIceBreath extends EntityMagicEffect {
                 for (int k = (int)posZ - checkDist; k < (int)posZ + checkDist; k++) {
                     BlockPos pos = new BlockPos(i, j, k);
 
-                    IBlockState blockState = world.getBlockState(pos);
-                    IBlockState blockStateAbove = world.getBlockState(pos.up());
+                    BlockState blockState = world.getBlockState(pos);
+                    BlockState blockStateAbove = world.getBlockState(pos.up());
                     if (blockState.getBlock() != Blocks.WATER || blockStateAbove.getBlock() != Blocks.AIR) {
                         continue;
                     }
@@ -192,8 +192,8 @@ public class EntityIceBreath extends EntityMagicEffect {
         }
     }
 
-    public  List<EntityLivingBase> getEntityLivingBaseNearby(double distanceX, double distanceY, double distanceZ, double radius) {
-        return getEntitiesNearby(EntityLivingBase.class, distanceX, distanceY, distanceZ, radius);
+    public  List<LivingEntity> getEntityLivingBaseNearby(double distanceX, double distanceY, double distanceZ, double radius) {
+        return getEntitiesNearby(LivingEntity.class, distanceX, distanceY, distanceZ, radius);
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double dX, double dY, double dZ, double r) {
@@ -201,12 +201,12 @@ public class EntityIceBreath extends EntityMagicEffect {
     }
 
     @Override
-    protected void readEntityFromNBT(NBTTagCompound compound) {
+    protected void readEntityFromNBT(CompoundNBT compound) {
 
     }
 
     @Override
-    protected void writeEntityToNBT(NBTTagCompound compound) {
+    protected void writeEntityToNBT(CompoundNBT compound) {
 
     }
 }

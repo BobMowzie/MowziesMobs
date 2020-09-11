@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.ilexiconn.llibrary.server.network.AbstractMessage;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
@@ -28,12 +28,12 @@ public class MessageLeftMouseUp extends AbstractMessage<MessageLeftMouseUp> {
     }
 
     @Override
-    public void onClientReceived(Minecraft client, MessageLeftMouseUp message, EntityPlayer player, MessageContext messageContext) {
+    public void onClientReceived(Minecraft client, MessageLeftMouseUp message, PlayerEntity player, MessageContext messageContext) {
 
     }
 
     @Override
-    public void onServerReceived(MinecraftServer server, MessageLeftMouseUp message, EntityPlayer player, MessageContext messageContext) {
+    public void onServerReceived(MinecraftServer server, MessageLeftMouseUp message, PlayerEntity player, MessageContext messageContext) {
         MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
         property.mouseLeftDown = false;
         for (int i = 0; i < property.powers.length; i++) {

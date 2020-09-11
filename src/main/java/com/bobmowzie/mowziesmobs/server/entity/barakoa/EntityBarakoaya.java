@@ -16,22 +16,20 @@ import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoayaTrade;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.google.common.base.Optional;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.entity.IEntityLivingData;
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.EntityZombie;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.Container;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.entity.monster.SkeletonEntity;
+import net.minecraft.entity.monster.ZombieEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.item.*;
+import net.minecraft.item.DyeColor;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -40,13 +38,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, LeaderSunstrikeImmune {
     private static final TradeStore DEFAULT = new TradeStore.Builder()
         .addTrade(Items.GOLD_INGOT, 2, ItemHandler.BLOWGUN, 1, 6)
-        .addTrade(Items.DYE, 10, EnumDyeColor.BROWN.getDyeDamage(), ItemHandler.DART, 8, 0, 6)
+        .addTrade(Items.DYE, 10, DyeColor.BROWN.getDyeDamage(), ItemHandler.DART, 8, 0, 6)
         .addTrade(Items.GOLD_INGOT, 3, ItemHandler.SPEAR, 1, 4)
         .addTrade(Items.GOLD_NUGGET, 5, Item.getItemFromBlock(BlockHandler.PAINTED_ACACIA), 2, 4)
-        .addTrade(Items.DYE, 16, EnumDyeColor.BROWN.getDyeDamage(), Item.getItemFromBlock(BlockHandler.PAINTED_ACACIA), 1, 0, 4)
-        .addTrade(Items.DYE, 10, EnumDyeColor.BROWN.getDyeDamage(), Items.COOKED_CHICKEN, 2, 0, 2)
+        .addTrade(Items.DYE, 16, DyeColor.BROWN.getDyeDamage(), Item.getItemFromBlock(BlockHandler.PAINTED_ACACIA), 1, 0, 4)
+        .addTrade(Items.DYE, 10, DyeColor.BROWN.getDyeDamage(), Items.COOKED_CHICKEN, 2, 0, 2)
         .addTrade(Items.GOLD_NUGGET, 8, Items.COOKED_CHICKEN, 1, 2)
-        .addTrade(Items.DYE, 14, EnumDyeColor.BROWN.getDyeDamage(), Items.COOKED_PORKCHOP, 2, 0, 2)
+        .addTrade(Items.DYE, 14, DyeColor.BROWN.getDyeDamage(), Items.COOKED_PORKCHOP, 2, 0, 2)
         .addTrade(Items.GOLD_NUGGET, 9, Items.COOKED_PORKCHOP, 1, 2)
 
         .addTrade(Items.MELON, 3, Items.GOLD_NUGGET, 5, 2)
@@ -70,16 +68,16 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
 //    private static final int SOLD_OUT_TIME = 5 * 60 * 20;
 //    private static final int MAX_SALES = 5;
 
-    private EntityPlayer customer;
+    private PlayerEntity customer;
 
     public EntityBarakoaya(World world) {
         super(world);
         tasks.addTask(1, new EntityAIBarakoayaTrade(this));
         tasks.addTask(1, new EntityAIBarakoayaTradeLook(this));
         this.targetTasks.addTask(3, new BarakoaHurtByTargetAI(this, true));
-        targetTasks.addTask(3, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, true, false));
-        targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityZombie.class, 0, true, true, null));
-        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntitySkeleton.class, 0, true, false, null));
+        targetTasks.addTask(3, new BarakoaAttackTargetAI(this, PlayerEntity.class, 0, true, false));
+        targetTasks.addTask(5, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, true, true, null));
+        this.targetTasks.addTask(5, new NearestAttackableTargetGoal<>(this, SkeletonEntity.class, 0, true, false, null));
         setWeapon(0);
 //        setNumSales(MAX_SALES);
     }
@@ -114,11 +112,11 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
         else return false;
     }
 
-    public void setCustomer(EntityPlayer customer) {
+    public void setCustomer(PlayerEntity customer) {
         this.customer = customer;
     }
 
-    public EntityPlayer getCustomer() {
+    public PlayerEntity getCustomer() {
         return customer;
     }
 
@@ -131,13 +129,13 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
     }
 
     @Override
-    public Container createContainer(World world, EntityPlayer player, int x, int y, int z) {
+    public Container createContainer(World world, PlayerEntity player, int x, int y, int z) {
         return new ContainerBarakoayaTrade(this, player.inventory, world);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public GuiContainer createGui(World world, EntityPlayer player, int x, int y, int z) {
+    public ContainerScreen createGui(World world, PlayerEntity player, int x, int y, int z) {
         return new GuiBarakoayaTrade(this, player.inventory, world);
     }
 
@@ -151,7 +149,7 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
     }
 
     @Override
-    protected boolean processInteract(EntityPlayer player, EnumHand hand) {
+    protected boolean processInteract(PlayerEntity player, Hand hand) {
         if (canTradeWith(player) && getAttackTarget() == null && !isDead) {
             setCustomer(player);
             if (!world.isRemote) {
@@ -162,7 +160,7 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
         return false;
     }
 
-    public boolean canTradeWith(EntityPlayer player) {
+    public boolean canTradeWith(PlayerEntity player) {
         if (isTrading()) {
             return false;
         }
@@ -171,7 +169,7 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
     }
 
     @Override
-    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, IEntityLivingData data) {
+    public ILivingEntityData onInitialSpawn(DifficultyInstance difficulty, ILivingEntityData data) {
         tradeStore = DEFAULT;
         return super.onInitialSpawn(difficulty, data);
     }
@@ -182,7 +180,7 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound compound) {
+    public void writeEntityToNBT(CompoundNBT compound) {
         super.writeEntityToNBT(compound);
         compound.setTag("tradeStore", tradeStore.serialize());
         if (isOfferingTrade()) {
@@ -193,7 +191,7 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound compound) {
+    public void readEntityFromNBT(CompoundNBT compound) {
         super.readEntityFromNBT(compound);
         tradeStore = TradeStore.deserialize(compound.getCompoundTag("tradeStore"));
         setOfferingTrade(Trade.deserialize(compound.getCompoundTag("offeringTrade")));

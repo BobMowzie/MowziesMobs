@@ -6,15 +6,15 @@ import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityLantern;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
-import net.minecraft.entity.EnumCreatureType;
-import net.minecraft.init.Blocks;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.WorldEntitySpawner;
+import net.minecraft.world.spawner.WorldEntitySpawner;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.BiomeDictionary.Type;
@@ -38,17 +38,17 @@ public enum SpawnHandler {
         EnumHelper.addSpawnPlacementType("MMSPAWN", new BiPredicate<IBlockAccess, BlockPos>(){
             @Override
             public boolean test(IBlockAccess t, BlockPos pos) {
-                IBlockState block = t.getBlockState(pos.down());
+                BlockState block = t.getBlockState(pos.down());
                 boolean flag = block.getBlock() != Blocks.BEDROCK && block.getBlock() != Blocks.BARRIER && block.getMaterial().blocksMovement();
-                IBlockState iblockstateUp = t.getBlockState(pos);
-                IBlockState iblockstateUp2 = t.getBlockState(pos.up());
+                BlockState iblockstateUp = t.getBlockState(pos);
+                BlockState iblockstateUp2 = t.getBlockState(pos.up());
                 flag = flag && WorldEntitySpawner.isValidEmptySpawnBlock(iblockstateUp) && WorldEntitySpawner.isValidEmptySpawnBlock(iblockstateUp2);
                 return flag;
             }});
     }
 
     public void registerSpawns() {
-        EntityLiving.SpawnPlacementType mmSpawn = EntityLiving.SpawnPlacementType.valueOf("MMSPAWN");
+        MobEntity.SpawnPlacementType mmSpawn = MobEntity.SpawnPlacementType.valueOf("MMSPAWN");
         if(mmSpawn != null) {
             EntitySpawnPlacementRegistry.setPlacementType(EntityFoliaath.class, mmSpawn);
             EntitySpawnPlacementRegistry.setPlacementType(EntityLantern.class, mmSpawn);
@@ -77,24 +77,24 @@ public enum SpawnHandler {
         if (ConfigHandler.MOBS.FOLIAATH.spawnData.spawnRate > 0) {
             Set<Biome> foliaathBiomes = getBiomesFromConfig(ConfigHandler.MOBS.FOLIAATH.spawnData.biomeData);
             //System.out.println("Foliaath biomes " + foliaathBiomes);
-            EntityRegistry.addSpawn(EntityFoliaath.class, ConfigHandler.MOBS.FOLIAATH.spawnData.spawnRate, ConfigHandler.MOBS.FOLIAATH.spawnData.minGroupSize, ConfigHandler.MOBS.FOLIAATH.spawnData.maxGroupSize, EnumCreatureType.MONSTER, foliaathBiomes.toArray(new Biome[foliaathBiomes.size()]));
+            EntityRegistry.addSpawn(EntityFoliaath.class, ConfigHandler.MOBS.FOLIAATH.spawnData.spawnRate, ConfigHandler.MOBS.FOLIAATH.spawnData.minGroupSize, ConfigHandler.MOBS.FOLIAATH.spawnData.maxGroupSize, EntityClassification.MONSTER, foliaathBiomes.toArray(new Biome[foliaathBiomes.size()]));
         }
         if (ConfigHandler.MOBS.BARAKOA.spawnData.spawnRate > 0) {
             Set<Biome> barakoaBiomes = getBiomesFromConfig(ConfigHandler.MOBS.BARAKOA.spawnData.biomeData);
-            EntityRegistry.addSpawn(EntityBarakoana.class, ConfigHandler.MOBS.BARAKOA.spawnData.spawnRate, ConfigHandler.MOBS.BARAKOA.spawnData.minGroupSize, ConfigHandler.MOBS.BARAKOA.spawnData.maxGroupSize, EnumCreatureType.MONSTER, barakoaBiomes.toArray(new Biome[barakoaBiomes.size()]));
+            EntityRegistry.addSpawn(EntityBarakoana.class, ConfigHandler.MOBS.BARAKOA.spawnData.spawnRate, ConfigHandler.MOBS.BARAKOA.spawnData.minGroupSize, ConfigHandler.MOBS.BARAKOA.spawnData.maxGroupSize, EntityClassification.MONSTER, barakoaBiomes.toArray(new Biome[barakoaBiomes.size()]));
         }
         if (ConfigHandler.MOBS.GROTTOL.spawnData.spawnRate > 0) {
             Set<Biome> grottolBiomes = getBiomesFromConfig(ConfigHandler.MOBS.GROTTOL.spawnData.biomeData);
-            EntityRegistry.addSpawn(EntityGrottol.class, ConfigHandler.MOBS.GROTTOL.spawnData.spawnRate, ConfigHandler.MOBS.GROTTOL.spawnData.minGroupSize, ConfigHandler.MOBS.GROTTOL.spawnData.maxGroupSize, EnumCreatureType.MONSTER, grottolBiomes.toArray(new Biome[grottolBiomes.size()]));
+            EntityRegistry.addSpawn(EntityGrottol.class, ConfigHandler.MOBS.GROTTOL.spawnData.spawnRate, ConfigHandler.MOBS.GROTTOL.spawnData.minGroupSize, ConfigHandler.MOBS.GROTTOL.spawnData.maxGroupSize, EntityClassification.MONSTER, grottolBiomes.toArray(new Biome[grottolBiomes.size()]));
         }
         if (ConfigHandler.MOBS.LANTERN.spawnData.spawnRate > 0) {
             Set<Biome> lanternBiomes = getBiomesFromConfig(ConfigHandler.MOBS.LANTERN.spawnData.biomeData);
-            EntityRegistry.addSpawn(EntityLantern.class, ConfigHandler.MOBS.LANTERN.spawnData.spawnRate, ConfigHandler.MOBS.LANTERN.spawnData.minGroupSize, ConfigHandler.MOBS.LANTERN.spawnData.maxGroupSize, EnumCreatureType.AMBIENT, lanternBiomes.toArray(new Biome[lanternBiomes.size()]));
+            EntityRegistry.addSpawn(EntityLantern.class, ConfigHandler.MOBS.LANTERN.spawnData.spawnRate, ConfigHandler.MOBS.LANTERN.spawnData.minGroupSize, ConfigHandler.MOBS.LANTERN.spawnData.maxGroupSize, EntityClassification.AMBIENT, lanternBiomes.toArray(new Biome[lanternBiomes.size()]));
         }
         if (ConfigHandler.MOBS.NAGA.spawnData.spawnRate > 0) {
             Set<Biome> nagaBiomes = getBiomesFromConfig(ConfigHandler.MOBS.NAGA.spawnData.biomeData);
 //            System.out.println("Naga biomes " + nagaBiomes);
-            EntityRegistry.addSpawn(EntityNaga.class, ConfigHandler.MOBS.NAGA.spawnData.spawnRate, ConfigHandler.MOBS.NAGA.spawnData.minGroupSize, ConfigHandler.MOBS.NAGA.spawnData.maxGroupSize, EnumCreatureType.MONSTER, nagaBiomes.toArray(new Biome[nagaBiomes.size()]));
+            EntityRegistry.addSpawn(EntityNaga.class, ConfigHandler.MOBS.NAGA.spawnData.spawnRate, ConfigHandler.MOBS.NAGA.spawnData.minGroupSize, ConfigHandler.MOBS.NAGA.spawnData.maxGroupSize, EntityClassification.MONSTER, nagaBiomes.toArray(new Biome[nagaBiomes.size()]));
         }
     }
 

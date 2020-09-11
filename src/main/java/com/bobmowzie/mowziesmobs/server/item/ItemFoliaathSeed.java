@@ -1,18 +1,17 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
-import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityBabyFoliaath;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -24,7 +23,7 @@ public class ItemFoliaathSeed extends Item {
         super(properties);
     }
 
-    public Entity spawnCreature(World world, EntityLiving entity, double x, double y, double z) {
+    public Entity spawnCreature(World world, MobEntity entity, double x, double y, double z) {
         if (entity != null) {
             entity.setLocationAndAngles(x + 0.5, y, z + 0.5, world.rand.nextFloat() * 360 - 180, 0);
             entity.rotationYawHead = entity.rotationYaw;
@@ -39,24 +38,24 @@ public class ItemFoliaathSeed extends Item {
     }
 
     @Override
-    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+    public ActionResultType onItemUse(PlayerEntity player, World world, BlockPos pos, Hand hand, Direction facing, float hitX, float hitY, float hitZ) {
         ItemStack stack = player.getHeldItem(hand);
         if (world.isRemote) {
-            return EnumActionResult.SUCCESS;
+            return ActionResultType.SUCCESS;
         } else if (!player.canPlayerEdit(pos.offset(facing), facing, stack)) {
-            return EnumActionResult.FAIL;
+            return ActionResultType.FAIL;
         }
-        IBlockState block = world.getBlockState(pos);
+        BlockState block = world.getBlockState(pos);
         Entity entity = spawnCreature(world, new EntityBabyFoliaath(world), pos.getX(), pos.getY() + 1, pos.getZ());
         if (entity != null) {
-            if (entity instanceof EntityLivingBase && stack.hasDisplayName()) {
-                ((EntityLiving) entity).setCustomNameTag(stack.getDisplayName());
+            if (entity instanceof LivingEntity && stack.hasDisplayName()) {
+                ((MobEntity) entity).setCustomNameTag(stack.getDisplayName());
             }
             if (!player.capabilities.isCreativeMode) {
                 stack.shrink(1);
             }
         }
-        return EnumActionResult.SUCCESS;
+        return ActionResultType.SUCCESS;
     }
 
     @Override

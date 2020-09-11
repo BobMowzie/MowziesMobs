@@ -4,9 +4,9 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.spawn.SpawnHandler;
 import net.ilexiconn.llibrary.server.structure.StructureBuilder;
-import net.minecraft.block.BlockStairs;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.StairsBlock;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -17,7 +17,7 @@ import java.util.Random;
  * Created by Josh on 10/8/2016.
  */
 public class StructureWroughtnautRoom {
-    public static void generate(World world, BlockPos pos, Random rand, EnumFacing dir) {
+    public static void generate(World world, BlockPos pos, Random rand, Direction dir) {
         StructureBuilder structure = new StructureBuilder().startComponent()
                 .cube(0 - 9, 0, 0, 19, 7, 19, Blocks.STONE)
                 .fillCube(1 - 9, 1, 1, 17, 5, 17, Blocks.AIR)
@@ -35,18 +35,18 @@ public class StructureWroughtnautRoom {
                 .fillCube(12 - 9, 1, 1, 6, 5, 2, Blocks.STONE)
                 .fillCube(7 - 9, 1, 3, 1, 5, 1, Blocks.COBBLESTONE)
                 .fillCube(11 - 9, 1, 3, 1, 5, 1, Blocks.COBBLESTONE)
-                .setBlock(8 - 9, 5, 0, Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.WEST).withProperty(BlockStairs.HALF, BlockStairs.EnumHalf.TOP))
-                .setBlock(10 - 9, 5, 0, Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.EAST).withProperty(BlockStairs.HALF, BlockStairs.EnumHalf.TOP))
-                .setBlock(7 - 9, 5, 2, Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.SOUTH).withProperty(BlockStairs.HALF, BlockStairs.EnumHalf.TOP))
-                .setBlock(11 - 9, 5, 2, Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.SOUTH).withProperty(BlockStairs.HALF, BlockStairs.EnumHalf.TOP))
-                .setBlock(7 - 9, 5, 1, Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.NORTH).withProperty(BlockStairs.HALF, BlockStairs.EnumHalf.TOP))
-                .setBlock(11 - 9, 5, 1,Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.NORTH).withProperty(BlockStairs.HALF, BlockStairs.EnumHalf.TOP))
-                .setBlock(8 - 9, 5, 3, Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.WEST).withProperty(BlockStairs.HALF, BlockStairs.EnumHalf.TOP))
-                .setBlock(10 - 9, 5, 3, Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.EAST).withProperty(BlockStairs.HALF, BlockStairs.EnumHalf.TOP))
-                .setBlock(7 - 9, 5, 4, Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.NORTH).withProperty(BlockStairs.HALF, BlockStairs.EnumHalf.TOP))
-                .setBlock(11 - 9, 5, 4, Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.NORTH).withProperty(BlockStairs.HALF, BlockStairs.EnumHalf.TOP))
-                .setBlock(6 - 9, 5, 3, Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.EAST).withProperty(BlockStairs.HALF, BlockStairs.EnumHalf.TOP))
-                .setBlock(12 - 9, 5, 3, Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.WEST).withProperty(BlockStairs.HALF, BlockStairs.EnumHalf.TOP))
+                .setBlock(8 - 9, 5, 0, Blocks.STONE_STAIRS.getDefaultState().withProperty(StairsBlock.FACING, Direction.WEST).withProperty(StairsBlock.HALF, StairsBlock.EnumHalf.TOP))
+                .setBlock(10 - 9, 5, 0, Blocks.STONE_STAIRS.getDefaultState().withProperty(StairsBlock.FACING, Direction.EAST).withProperty(StairsBlock.HALF, StairsBlock.EnumHalf.TOP))
+                .setBlock(7 - 9, 5, 2, Blocks.STONE_STAIRS.getDefaultState().withProperty(StairsBlock.FACING, Direction.SOUTH).withProperty(StairsBlock.HALF, StairsBlock.EnumHalf.TOP))
+                .setBlock(11 - 9, 5, 2, Blocks.STONE_STAIRS.getDefaultState().withProperty(StairsBlock.FACING, Direction.SOUTH).withProperty(StairsBlock.HALF, StairsBlock.EnumHalf.TOP))
+                .setBlock(7 - 9, 5, 1, Blocks.STONE_STAIRS.getDefaultState().withProperty(StairsBlock.FACING, Direction.NORTH).withProperty(StairsBlock.HALF, StairsBlock.EnumHalf.TOP))
+                .setBlock(11 - 9, 5, 1,Blocks.STONE_STAIRS.getDefaultState().withProperty(StairsBlock.FACING, Direction.NORTH).withProperty(StairsBlock.HALF, StairsBlock.EnumHalf.TOP))
+                .setBlock(8 - 9, 5, 3, Blocks.STONE_STAIRS.getDefaultState().withProperty(StairsBlock.FACING, Direction.WEST).withProperty(StairsBlock.HALF, StairsBlock.EnumHalf.TOP))
+                .setBlock(10 - 9, 5, 3, Blocks.STONE_STAIRS.getDefaultState().withProperty(StairsBlock.FACING, Direction.EAST).withProperty(StairsBlock.HALF, StairsBlock.EnumHalf.TOP))
+                .setBlock(7 - 9, 5, 4, Blocks.STONE_STAIRS.getDefaultState().withProperty(StairsBlock.FACING, Direction.NORTH).withProperty(StairsBlock.HALF, StairsBlock.EnumHalf.TOP))
+                .setBlock(11 - 9, 5, 4, Blocks.STONE_STAIRS.getDefaultState().withProperty(StairsBlock.FACING, Direction.NORTH).withProperty(StairsBlock.HALF, StairsBlock.EnumHalf.TOP))
+                .setBlock(6 - 9, 5, 3, Blocks.STONE_STAIRS.getDefaultState().withProperty(StairsBlock.FACING, Direction.EAST).withProperty(StairsBlock.HALF, StairsBlock.EnumHalf.TOP))
+                .setBlock(12 - 9, 5, 3, Blocks.STONE_STAIRS.getDefaultState().withProperty(StairsBlock.FACING, Direction.WEST).withProperty(StairsBlock.HALF, StairsBlock.EnumHalf.TOP))
                 .fillCube(3 - 9, 1, 3, 1, 5, 1, Blocks.COBBLESTONE)
                 .fillCube(3 - 9, 1, 7, 1, 5, 1, Blocks.COBBLESTONE)
                 .fillCube(3 - 9, 1, 11, 1, 5, 1, Blocks.COBBLESTONE)
@@ -61,10 +61,10 @@ public class StructureWroughtnautRoom {
                 .fillCube(16 - 9, 1, 3, 2, 5, 15, Blocks.STONE)
                 .fillCube(3 - 9, 1, 16, 13, 5, 2, Blocks.STONE)
                 .fillCube(8 - 9, 0, 1, 3, 1, 2, Blocks.DOUBLE_STONE_SLAB)
-                .setBlock(4 - 9, 5, 3, Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.WEST).withProperty(BlockStairs.HALF, BlockStairs.EnumHalf.TOP))
-                .setBlock(3 - 9, 5, 4, Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.NORTH).withProperty(BlockStairs.HALF, BlockStairs.EnumHalf.TOP))
-                .setBlock(14 - 9, 5, 3, Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.EAST).withProperty(BlockStairs.HALF, BlockStairs.EnumHalf.TOP))
-                .setBlock(15 - 9, 5, 4, Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.NORTH).withProperty(BlockStairs.HALF, BlockStairs.EnumHalf.TOP))
+                .setBlock(4 - 9, 5, 3, Blocks.STONE_STAIRS.getDefaultState().withProperty(StairsBlock.FACING, Direction.WEST).withProperty(StairsBlock.HALF, StairsBlock.EnumHalf.TOP))
+                .setBlock(3 - 9, 5, 4, Blocks.STONE_STAIRS.getDefaultState().withProperty(StairsBlock.FACING, Direction.NORTH).withProperty(StairsBlock.HALF, StairsBlock.EnumHalf.TOP))
+                .setBlock(14 - 9, 5, 3, Blocks.STONE_STAIRS.getDefaultState().withProperty(StairsBlock.FACING, Direction.EAST).withProperty(StairsBlock.HALF, StairsBlock.EnumHalf.TOP))
+                .setBlock(15 - 9, 5, 4, Blocks.STONE_STAIRS.getDefaultState().withProperty(StairsBlock.FACING, Direction.NORTH).withProperty(StairsBlock.HALF, StairsBlock.EnumHalf.TOP))
                 .fillCube(5 - 9, 2, 1, 1, 1, 2, Blocks.AIR)
                 .setBlock(5 - 9, 2, 1, Blocks.TORCH)
                 .setBlock(5 - 9, 2, 2, Blocks.IRON_BARS)
@@ -75,30 +75,30 @@ public class StructureWroughtnautRoom {
             for (int j = 0; j < 3; j++) {
                 structure.fillCube(4 - 9 + i * 4, 0, 4 + j * 4, 3, 1, 3, Blocks.DOUBLE_STONE_SLAB);
                 if (i == 0) { //left
-                    structure.setBlock(3 - 9, 5, 6 + j * 4,Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.SOUTH).withProperty(BlockStairs.HALF, BlockStairs.EnumHalf.TOP));
-                    structure.setBlock(4 - 9, 5, 7 + j * 4, Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.WEST).withProperty(BlockStairs.HALF, BlockStairs.EnumHalf.TOP));
+                    structure.setBlock(3 - 9, 5, 6 + j * 4,Blocks.STONE_STAIRS.getDefaultState().withProperty(StairsBlock.FACING, Direction.SOUTH).withProperty(StairsBlock.HALF, StairsBlock.EnumHalf.TOP));
+                    structure.setBlock(4 - 9, 5, 7 + j * 4, Blocks.STONE_STAIRS.getDefaultState().withProperty(StairsBlock.FACING, Direction.WEST).withProperty(StairsBlock.HALF, StairsBlock.EnumHalf.TOP));
                     if (j != 2) {
-                        structure.setBlock(3 - 9, 5, 8 + j * 4, Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.NORTH).withProperty(BlockStairs.HALF, BlockStairs.EnumHalf.TOP));
+                        structure.setBlock(3 - 9, 5, 8 + j * 4, Blocks.STONE_STAIRS.getDefaultState().withProperty(StairsBlock.FACING, Direction.NORTH).withProperty(StairsBlock.HALF, StairsBlock.EnumHalf.TOP));
                     }
                     structure.fillCube(1 - 9, 2, 5 + 4 * j, 2, 1, 1, Blocks.AIR);
                     structure.setBlock(1 - 9, 2, 5 + 4 * j, Blocks.TORCH);
                     structure.setBlock(2 - 9, 2, 5 + 4 * j, Blocks.IRON_BARS);
                 } else if (i == 1) { //right
-                    structure.setBlock(15 - 9, 5, 6 + j * 4, Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.SOUTH).withProperty(BlockStairs.HALF, BlockStairs.EnumHalf.TOP));
-                    structure.setBlock(14 - 9, 5, 7 + j * 4, Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.EAST).withProperty(BlockStairs.HALF, BlockStairs.EnumHalf.TOP));
+                    structure.setBlock(15 - 9, 5, 6 + j * 4, Blocks.STONE_STAIRS.getDefaultState().withProperty(StairsBlock.FACING, Direction.SOUTH).withProperty(StairsBlock.HALF, StairsBlock.EnumHalf.TOP));
+                    structure.setBlock(14 - 9, 5, 7 + j * 4, Blocks.STONE_STAIRS.getDefaultState().withProperty(StairsBlock.FACING, Direction.EAST).withProperty(StairsBlock.HALF, StairsBlock.EnumHalf.TOP));
                     if (j != 2) {
-                        structure.setBlock(15 - 9, 5, 8 + j * 4, Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.NORTH).withProperty(BlockStairs.HALF, BlockStairs.EnumHalf.TOP));
+                        structure.setBlock(15 - 9, 5, 8 + j * 4, Blocks.STONE_STAIRS.getDefaultState().withProperty(StairsBlock.FACING, Direction.NORTH).withProperty(StairsBlock.HALF, StairsBlock.EnumHalf.TOP));
                     }
                     structure.fillCube(16 - 9, 2, 5 + 4 * j, 2, 1, 1, Blocks.AIR);
                     structure.setBlock(17 - 9, 2, 5 + 4 * j, Blocks.TORCH);
                     structure.setBlock(16 - 9, 2, 5 + 4 * j, Blocks.IRON_BARS);
                 } else { //back
-                    structure.setBlock(12 - 9, 5, 15, Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.WEST).withProperty(BlockStairs.HALF, BlockStairs.EnumHalf.TOP));
-                    structure.setBlock(11 - 9, 5, 14, Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.SOUTH).withProperty(BlockStairs.HALF, BlockStairs.EnumHalf.TOP));
-                    structure.setBlock(10 - 9, 5, 15, Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.EAST).withProperty(BlockStairs.HALF, BlockStairs.EnumHalf.TOP));
-                    structure.setBlock(8 - 9, 5, 15, Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.WEST).withProperty(BlockStairs.HALF, BlockStairs.EnumHalf.TOP));
-                    structure.setBlock(7 - 9, 5, 14, Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.SOUTH).withProperty(BlockStairs.HALF, BlockStairs.EnumHalf.TOP));
-                    structure.setBlock(6 - 9, 5, 15, Blocks.STONE_STAIRS.getDefaultState().withProperty(BlockStairs.FACING, EnumFacing.EAST).withProperty(BlockStairs.HALF, BlockStairs.EnumHalf.TOP));
+                    structure.setBlock(12 - 9, 5, 15, Blocks.STONE_STAIRS.getDefaultState().withProperty(StairsBlock.FACING, Direction.WEST).withProperty(StairsBlock.HALF, StairsBlock.EnumHalf.TOP));
+                    structure.setBlock(11 - 9, 5, 14, Blocks.STONE_STAIRS.getDefaultState().withProperty(StairsBlock.FACING, Direction.SOUTH).withProperty(StairsBlock.HALF, StairsBlock.EnumHalf.TOP));
+                    structure.setBlock(10 - 9, 5, 15, Blocks.STONE_STAIRS.getDefaultState().withProperty(StairsBlock.FACING, Direction.EAST).withProperty(StairsBlock.HALF, StairsBlock.EnumHalf.TOP));
+                    structure.setBlock(8 - 9, 5, 15, Blocks.STONE_STAIRS.getDefaultState().withProperty(StairsBlock.FACING, Direction.WEST).withProperty(StairsBlock.HALF, StairsBlock.EnumHalf.TOP));
+                    structure.setBlock(7 - 9, 5, 14, Blocks.STONE_STAIRS.getDefaultState().withProperty(StairsBlock.FACING, Direction.SOUTH).withProperty(StairsBlock.HALF, StairsBlock.EnumHalf.TOP));
+                    structure.setBlock(6 - 9, 5, 15, Blocks.STONE_STAIRS.getDefaultState().withProperty(StairsBlock.FACING, Direction.EAST).withProperty(StairsBlock.HALF, StairsBlock.EnumHalf.TOP));
                     structure.fillCube(5 - 9 + 4 * j, 2, 16, 1, 1, 2, Blocks.AIR);
                     structure.setBlock(5 - 9 + 4 * j, 2, 17, Blocks.TORCH);
                     structure.setBlock(5 - 9 + 4 * j, 2, 16, Blocks.IRON_BARS);
@@ -106,11 +106,11 @@ public class StructureWroughtnautRoom {
             }
         }
         structure.endComponent();
-        structure.rotate(dir, EnumFacing.UP).generate(world, pos, rand);
+        structure.rotate(dir, Direction.UP).generate(world, pos, rand);
         EntityWroughtnaut wroughtnaut = new EntityWroughtnaut(world);
-        if (dir == EnumFacing.NORTH) wroughtnaut.setPositionAndRotation(pos.getX()+9.5, pos.getY()+1, pos.getZ()+0.5, 90, 0);
-        else if (dir == EnumFacing.EAST) wroughtnaut.setPositionAndRotation(pos.getX()+0.5, pos.getY()+1, pos.getZ()+9.5, 180, 0);
-        else if (dir == EnumFacing.SOUTH) wroughtnaut.setPositionAndRotation(pos.getX()-8.5, pos.getY()+1, pos.getZ()+0.5, 270, 0);
+        if (dir == Direction.NORTH) wroughtnaut.setPositionAndRotation(pos.getX()+9.5, pos.getY()+1, pos.getZ()+0.5, 90, 0);
+        else if (dir == Direction.EAST) wroughtnaut.setPositionAndRotation(pos.getX()+0.5, pos.getY()+1, pos.getZ()+9.5, 180, 0);
+        else if (dir == Direction.SOUTH) wroughtnaut.setPositionAndRotation(pos.getX()-8.5, pos.getY()+1, pos.getZ()+0.5, 270, 0);
         else wroughtnaut.setPositionAndRotation(pos.getX()-0.5, pos.getY()+1, pos.getZ()-9.5, 0, 0);
         if (!world.isRemote) world.spawnEntity(wroughtnaut);
         wroughtnaut.onInitialSpawn(world.getDifficultyForLocation(wroughtnaut.getPosition()), null);
@@ -157,7 +157,7 @@ public class StructureWroughtnautRoom {
                                 }
                                 if (wall) {
                                     if (world.getBlockState(new BlockPos(x - x2, y - y2 + y4, z)).isNormalCube()) {
-                                        StructureWroughtnautRoom.generate(world, new BlockPos(x - x2, y - y2 + y4, z), random, EnumFacing.SOUTH);
+                                        StructureWroughtnautRoom.generate(world, new BlockPos(x - x2, y - y2 + y4, z), random, Direction.SOUTH);
                                     }
                                     return;
                                 }
@@ -173,7 +173,7 @@ public class StructureWroughtnautRoom {
                                 }
                                 if (wall) {
                                     if (world.getBlockState(new BlockPos(x + x2, y - y2 + y5, z)).isNormalCube()) {
-                                        StructureWroughtnautRoom.generate(world, new BlockPos(x + x2, y - y2 + y5, z), random, EnumFacing.NORTH);
+                                        StructureWroughtnautRoom.generate(world, new BlockPos(x + x2, y - y2 + y5, z), random, Direction.NORTH);
                                     }
                                     return;
                                 }
@@ -193,7 +193,7 @@ public class StructureWroughtnautRoom {
                                 }
                                 if (wall) {
                                     if (world.getBlockState(new BlockPos(x, y - y2 + y4, z - z2)).isNormalCube()) {
-                                        StructureWroughtnautRoom.generate(world, new BlockPos(x, y - y2 + y4, z - z2), random, EnumFacing.WEST);
+                                        StructureWroughtnautRoom.generate(world, new BlockPos(x, y - y2 + y4, z - z2), random, Direction.WEST);
                                     }
                                     return;
                                 }
@@ -209,7 +209,7 @@ public class StructureWroughtnautRoom {
                                 }
                                 if (wall) {
                                     if (world.getBlockState(new BlockPos(x, y - y2 + y5, z + z2)).isNormalCube()) {
-                                        StructureWroughtnautRoom.generate(world, new BlockPos(x, y - y2 + y5, z + z2), random, EnumFacing.EAST);
+                                        StructureWroughtnautRoom.generate(world, new BlockPos(x, y - y2 + y5, z + z2), random, Direction.EAST);
                                     }
                                     return;
                                 }

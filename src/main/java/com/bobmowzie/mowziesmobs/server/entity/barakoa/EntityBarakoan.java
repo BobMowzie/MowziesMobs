@@ -3,8 +3,8 @@ package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.google.common.base.Optional;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -14,7 +14,7 @@ import net.minecraft.world.World;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class EntityBarakoan<L extends EntityLivingBase> extends EntityBarakoa {
+public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarakoa {
     protected static final Optional<UUID> ABSENT_LEADER = Optional.absent();
 
     private static final DataParameter<Optional<UUID>> LEADER = EntityDataManager.createKey(EntityBarakoan.class, DataSerializers.OPTIONAL_UNIQUE_ID);
@@ -135,7 +135,7 @@ public abstract class EntityBarakoan<L extends EntityLivingBase> extends EntityB
     protected abstract void removeAsPackMember();
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound compound) {
+    public void writeEntityToNBT(CompoundNBT compound) {
         super.writeEntityToNBT(compound);
         Optional<UUID> leader = getLeaderUUID();
         if (leader.isPresent()) {
@@ -144,7 +144,7 @@ public abstract class EntityBarakoan<L extends EntityLivingBase> extends EntityB
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound compound) {
+    public void readEntityFromNBT(CompoundNBT compound) {
         super.readEntityFromNBT(compound);
         String uuid = compound.getString("leaderUUID");
         if (uuid.isEmpty()) {

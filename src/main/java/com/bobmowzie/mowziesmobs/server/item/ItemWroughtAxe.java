@@ -1,25 +1,19 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.*;
+import net.minecraft.util.*;
+import net.minecraft.item.UseAction;
 import net.minecraft.item.AxeItem;
-import net.minecraft.item.EnumAction;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemAxe;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTier;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -47,8 +41,8 @@ public class ItemWroughtAxe extends AxeItem {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
-        if (player != null && hand == EnumHand.MAIN_HAND) {
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
+        if (player != null && hand == Hand.MAIN_HAND) {
             MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
             if (property != null && property.untilAxeSwing <= 0) {
                 boolean verticalAttack = player.isSneaking() && player.onGround;
@@ -59,24 +53,24 @@ public class ItemWroughtAxe extends AxeItem {
                 property.untilAxeSwing = MowziePlayerProperties.SWING_COOLDOWN;
                 if (ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable && !player.capabilities.isCreativeMode) player.getHeldItem(hand).damageItem(2, player);
             }
-            return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
+            return new ActionResult<ItemStack>(ActionResultType.SUCCESS, player.getHeldItem(hand));
         }
         return super.onItemRightClick(world, player, hand);
     }
 
     @Override
-    public boolean onBlockDestroyed(ItemStack itemStack, World world, IBlockState block, BlockPos pos, EntityLivingBase destroyer) {
+    public boolean onBlockDestroyed(ItemStack itemStack, World world, BlockState block, BlockPos pos, LivingEntity destroyer) {
         return true;
     }
 
     @Override
-    public float getDestroySpeed(ItemStack itemStack, IBlockState block) {
+    public float getDestroySpeed(ItemStack itemStack, BlockState block) {
         return 1.0F;
     }
 
     @Override
-    public EnumAction getItemUseAction(ItemStack itemStack) {
-        return EnumAction.BOW;
+    public UseAction getItemUseAction(ItemStack itemStack) {
+        return UseAction.BOW;
     }
 
     @Override

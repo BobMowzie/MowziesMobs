@@ -5,7 +5,7 @@ import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.DamageSource;
 
 import java.util.List;
@@ -31,8 +31,8 @@ public class AnimationRadiusAttack<T extends MowzieEntity & IAnimatedEntity> ext
     public void updateTask() {
         super.updateTask();
         if (entity.getAnimationTick() == damageFrame) {
-            List<EntityLivingBase> hit = entity.getEntityLivingBaseNearby(radius, 2 * radius, radius, radius);
-            for (EntityLivingBase aHit : hit) {
+            List<LivingEntity> hit = entity.getEntityLivingBaseNearby(radius, 2 * radius, radius, radius);
+            for (LivingEntity aHit : hit) {
                 if (entity instanceof EntityBarako && aHit instanceof LeaderSunstrikeImmune) {
                     continue;
                 }

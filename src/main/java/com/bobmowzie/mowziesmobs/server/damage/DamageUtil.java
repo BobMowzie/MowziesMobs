@@ -4,9 +4,9 @@ import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
 
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.SoundEvent;
@@ -15,7 +15,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class DamageUtil {
     // TODO: Works for current use cases, but possibly not for future edge cases. Use reflection to get hurt sound for onHit2?
-    public static Pair<Boolean, Boolean> dealMixedDamage(EntityLivingBase target, DamageSource source1, float amount1, DamageSource source2, float amount2) {
+    public static Pair<Boolean, Boolean> dealMixedDamage(LivingEntity target, DamageSource source1, float amount1, DamageSource source2, float amount2) {
         MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(target, MowzieLivingProperties.class);
         if (property != null) {
             property.lastDamage = -1;
@@ -25,7 +25,7 @@ public class DamageUtil {
             boolean hit2 = target.attackEntityFrom(source2, amount2 + property.lastDamage);
             if (hit2 && hit1Registered) {
                 onHit2(target, source2);
-                if (target instanceof EntityPlayer) {
+                if (target instanceof PlayerEntity) {
                     SoundEvent sound = SoundEvents.ENTITY_PLAYER_HURT;
                     if (source2 == DamageSource.ON_FIRE) sound = SoundEvents.ENTITY_PLAYER_HURT_ON_FIRE;
                     else if (source2 == DamageSource.DROWN) sound = SoundEvents.ENTITY_PLAYER_HURT_DROWN;
@@ -37,11 +37,11 @@ public class DamageUtil {
         return Pair.of(false, false);
     }
 
-    private static float getSoundPitch(EntityLivingBase target) {
+    private static float getSoundPitch(LivingEntity target) {
         return (target.getRNG().nextFloat() - target.getRNG().nextFloat()) * 0.2F + 1.0F;
     }
 
-    private static void onHit2(EntityLivingBase target, DamageSource source) {
+    private static void onHit2(LivingEntity target, DamageSource source) {
         if (source instanceof EntityDamageSource && ((EntityDamageSource)source).getIsThornsDamage())
         {
             target.world.setEntityState(target, (byte)33);

@@ -2,9 +2,9 @@ package com.bobmowzie.mowziesmobs.server.ai;
 
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import net.minecraft.block.Block;
+import net.minecraft.pathfinding.GroundPathNavigator;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathFinder;
-import net.minecraft.pathfinding.PathNavigateGround;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -13,7 +13,7 @@ import net.minecraft.world.World;
 
 import java.util.Objects;
 
-public class MMPathNavigateGround extends PathNavigateGround {
+public class MMPathNavigateGround extends GroundPathNavigator {
     public MMPathNavigateGround(MowzieEntity entity, World world) {
         super(entity, world);
     }

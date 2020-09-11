@@ -1,15 +1,15 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
-import net.minecraft.entity.EntityBodyHelper;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.ai.controller.BodyController;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.util.math.MathHelper;
 
-public class SmartBodyHelper extends EntityBodyHelper {
+public class SmartBodyHelper extends BodyController {
 	private static final float MAX_ROTATE = 75;
 
 	private static final int HISTORY_SIZE = 10;
 
-	private final EntityLiving entity;
+	private final MobEntity entity;
 
 	private int rotateTime;
 
@@ -19,7 +19,7 @@ public class SmartBodyHelper extends EntityBodyHelper {
 
     private double[] histPosZ = new double[HISTORY_SIZE];
 
-	public SmartBodyHelper(EntityLiving entity) {
+	public SmartBodyHelper(MobEntity entity) {
 		super(entity);
 		this.entity = entity;
 	}
@@ -42,7 +42,7 @@ public class SmartBodyHelper extends EntityBodyHelper {
 //			this.entity.rotationYawHead = approach(this.entity.renderYawOffset, this.entity.rotationYawHead, 75.0F);
 			this.targetYawHead = this.entity.rotationYawHead;
 			this.rotateTime = 0;
-        } else if (entity.getPassengers().isEmpty() || !(entity.getPassengers().get(0) instanceof EntityLiving)) {
+        } else if (entity.getPassengers().isEmpty() || !(entity.getPassengers().get(0) instanceof MobEntity)) {
 			float limit = MAX_ROTATE;
 			if (Math.abs(entity.rotationYawHead - targetYawHead) > 15) {
 				rotateTime = 0;

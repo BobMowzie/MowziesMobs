@@ -1,28 +1,28 @@
 package com.bobmowzie.mowziesmobs.server.inventory;
 
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public final class ContainerBarakoTrade extends Container {
     private final EntityBarako barako;
 
-    private final EntityPlayer player;
+    private final PlayerEntity player;
 
     private final World world;
 
     private InventoryBarako inventory;
 
-    public ContainerBarakoTrade(EntityBarako barako, InventoryPlayer playerInv, World world) {
+    public ContainerBarakoTrade(EntityBarako barako, PlayerInventory playerInv, World world) {
         this(barako, new InventoryBarako(barako), playerInv, world);
     }
 
-    public ContainerBarakoTrade(EntityBarako Barako, InventoryBarako inventory, InventoryPlayer playerInv, World world) {
+    public ContainerBarakoTrade(EntityBarako Barako, InventoryBarako inventory, PlayerInventory playerInv, World world) {
         this.barako = Barako;
         this.player = playerInv.player;
         this.world = world;
@@ -39,12 +39,12 @@ public final class ContainerBarakoTrade extends Container {
     }
 
     @Override
-    public boolean canInteractWith(EntityPlayer player) {
+    public boolean canInteractWith(PlayerEntity player) {
         return inventory.isUsableByPlayer(player);
     }
 
     @Override
-    public ItemStack transferStackInSlot(EntityPlayer player, int index) {
+    public ItemStack transferStackInSlot(PlayerEntity player, int index) {
         ItemStack stack = ItemStack.EMPTY;
         Slot slot = inventorySlots.get(index);
         if (slot != null && slot.getHasStack()) {
@@ -75,13 +75,13 @@ public final class ContainerBarakoTrade extends Container {
     }
 
     @Override
-    public void onContainerClosed(EntityPlayer player) {
+    public void onContainerClosed(PlayerEntity player) {
         super.onContainerClosed(player);
         barako.setCustomer(null);
         if (!world.isRemote) {
             ItemStack stack = inventory.removeStackFromSlot(0);
             if (stack != ItemStack.EMPTY) {
-                EntityItem dropped = player.dropItem(stack, false);
+                ItemEntity dropped = player.dropItem(stack, false);
                 if (dropped != null) {
                     dropped.motionX *= 0.5;
                     dropped.motionZ *= 0.5;

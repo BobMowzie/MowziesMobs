@@ -5,7 +5,7 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.PlayerAdvancements;
 import net.minecraft.advancements.critereon.AbstractCriterionInstance;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
 
 public class GrottolKillSilkTouchTrigger extends MMTrigger<AbstractCriterionInstance, GrottolKillSilkTouchTrigger.Listener> {
@@ -29,7 +29,7 @@ public class GrottolKillSilkTouchTrigger extends MMTrigger<AbstractCriterionInst
         return new AbstractCriterionInstance(ID);
     }
 
-    public void trigger(EntityPlayerMP player) {
+    public void trigger(ServerPlayerEntity player) {
         GrottolKillSilkTouchTrigger.Listener listeners = this.listeners.get(player.getAdvancements());
 
         if (listeners != null) {

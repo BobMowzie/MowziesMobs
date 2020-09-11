@@ -7,7 +7,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.JsonUtils;
+import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.properties.EntityProperty;
 
@@ -37,7 +37,7 @@ public class EntityPropertyFrostmawHasCrystal implements EntityProperty {
 
         @Override
         public EntityPropertyFrostmawHasCrystal deserialize(JsonElement element, JsonDeserializationContext deserializationContext) {
-            return new EntityPropertyFrostmawHasCrystal(JsonUtils.getBoolean(element, this.getName().getPath()));
+            return new EntityPropertyFrostmawHasCrystal(JSONUtils.getBoolean(element, this.getName().getPath()));
         }
     }
 }

@@ -3,14 +3,14 @@ package com.bobmowzie.mowziesmobs.client.model.tools;
 import com.bobmowzie.mowziesmobs.server.block.MowzieBlockAccess;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
-import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
@@ -20,7 +20,7 @@ import org.lwjgl.opengl.GL11;
  * Created by Josh on 5/1/2017.
  */
 public class BlockModelRenderer extends AdvancedModelRenderer {
-    private IBlockState blockState;
+    private BlockState blockState;
     private MowzieBlockAccess access;
     private Entity entity;
     private BlockPos origin;
@@ -35,7 +35,7 @@ public class BlockModelRenderer extends AdvancedModelRenderer {
         setEntity(null);
     }
 
-    public void setBlockState(IBlockState blockState) {
+    public void setBlockState(BlockState blockState) {
         this.blockState = blockState;
         access.setBlockState(blockState);
     }

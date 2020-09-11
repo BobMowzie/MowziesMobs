@@ -3,18 +3,18 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGrottol;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
-import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
 /**
  * Created by Josh on 5/8/2017.
  */
-public class RenderGrottol extends RenderLiving<EntityGrottol> {
+public class RenderGrottol extends MobRenderer<EntityGrottol> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/grottol.png");
 
-    public RenderGrottol(RenderManager mgr) {
+    public RenderGrottol(EntityRendererManager mgr) {
         super(mgr, new ModelGrottol(), 0.6f);
     }
 

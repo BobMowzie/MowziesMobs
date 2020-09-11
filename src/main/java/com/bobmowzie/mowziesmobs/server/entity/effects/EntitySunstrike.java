@@ -8,26 +8,26 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.block.BlockSlab;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.SlabBlock;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.network.play.server.SPacketEntityTeleport;
+import net.minecraft.network.play.server.SEntityTeleportPacket;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 import java.util.List;
@@ -43,7 +43,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
 
     private int strikeTime;
 
-    private EntityLivingBase caster;
+    private LivingEntity caster;
 
     private static final DataParameter<Integer> VARIANT_LEAST = EntityDataManager.createKey(EntitySunstrike.class, DataSerializers.VARINT);
 
@@ -55,7 +55,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         ignoreFrustumCheck = true;
     }
 
-    public EntitySunstrike(World world, EntityLivingBase caster, int x, int y, int z) {
+    public EntitySunstrike(World world, LivingEntity caster, int x, int y, int z) {
         this(world);
         this.caster = caster;
         this.setPosition(x + 0.5F, y + 1.0625F, z + 0.5F);
@@ -167,18 +167,18 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
 
     public void moveDownToGround() {
         RayTraceResult rayTrace = rayTrace(this);
-        if (rayTrace != null && rayTrace.typeOfHit == RayTraceResult.Type.BLOCK && rayTrace.sideHit == EnumFacing.UP) {
-            IBlockState hitBlock = world.getBlockState(rayTrace.getBlockPos());
+        if (rayTrace != null && rayTrace.typeOfHit == RayTraceResult.Type.BLOCK && rayTrace.sideHit == Direction.UP) {
+            BlockState hitBlock = world.getBlockState(rayTrace.getBlockPos());
             if (strikeTime > STRIKE_LENGTH && hitBlock != world.getBlockState(getPosition().down())) {
                 this.setDead();
             }
-            if (hitBlock instanceof BlockSlab && hitBlock.getValue(BlockSlab.HALF) == BlockSlab.EnumBlockHalf.BOTTOM) {
+            if (hitBlock instanceof SlabBlock && hitBlock.getValue(SlabBlock.HALF) == SlabBlock.EnumBlockHalf.BOTTOM) {
                 this.setPosition(posX, rayTrace.getBlockPos().getY() + 1.0625F - 0.5f, posZ);
             } else {
                 this.setPosition(posX, rayTrace.getBlockPos().getY() + 1.0625F, posZ);
             }
-            for (EntityPlayer entityPlayer : ((WorldServer) world).getEntityTracker().getTrackingPlayers(this)) {
-                ((EntityPlayerMP) entityPlayer).connection.sendPacket(new SPacketEntityTeleport(this));
+            for (PlayerEntity entityPlayer : ((ServerWorld) world).getEntityTracker().getTrackingPlayers(this)) {
+                ((ServerPlayerEntity) entityPlayer).connection.sendPacket(new SEntityTeleportPacket(this));
             }
         }
     }
@@ -188,11 +188,11 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         List<Entity> entities = world.getEntitiesWithinAABBExcludingEntity(this, region);
         double radiusSq = radius * radius;
         for (Entity entity : entities) {
-            if (entity instanceof EntityLivingBase && getDistanceSqXZToEntity(entity) < radiusSq) {
+            if (entity instanceof LivingEntity && getDistanceSqXZToEntity(entity) < radiusSq) {
                 if (caster instanceof EntityBarako && (entity instanceof LeaderSunstrikeImmune)) {
                     continue;
                 }
-                if (caster instanceof EntityPlayer && entity == caster) {
+                if (caster instanceof PlayerEntity && entity == caster) {
                     continue;
                 }
                 float damageFire = 2.5f;
@@ -201,7 +201,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
                     damageFire *= ConfigHandler.MOBS.BARAKO.combatData.attackMultiplier;
                     damageMob *= ConfigHandler.MOBS.BARAKO.combatData.attackMultiplier;
                 }
-                if (caster instanceof EntityPlayer) {
+                if (caster instanceof PlayerEntity) {
                     damageFire *= ConfigHandler.TOOLS_AND_ABILITIES.sunsBlessingAttackMultiplier;
                     damageMob *= ConfigHandler.TOOLS_AND_ABILITIES.sunsBlessingAttackMultiplier;
                 }
@@ -258,13 +258,13 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound compound) {
+    public void writeEntityToNBT(CompoundNBT compound) {
         compound.setInteger("strikeTime", strikeTime);
         compound.setLong("variant", getVariant());
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound compound) {
+    public void readEntityFromNBT(CompoundNBT compound) {
         setStrikeTime(compound.getInteger("strikeTime"));
         setVariant(compound.getLong("variant"));
     }

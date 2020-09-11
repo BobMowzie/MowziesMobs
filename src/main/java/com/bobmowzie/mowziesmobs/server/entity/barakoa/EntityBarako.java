@@ -8,8 +8,6 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory.ParticleArgs;
 import com.bobmowzie.mowziesmobs.client.particles.util.MowzieParticleBase;
 import com.bobmowzie.mowziesmobs.client.particles.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particles.util.ParticleComponent.PropertyControl.EnumParticleProperty;
-import com.bobmowzie.mowziesmobs.client.particles.util.ParticleRibbon;
-import com.bobmowzie.mowziesmobs.client.particles.util.RibbonComponent;
 import com.bobmowzie.mowziesmobs.server.advancement.AdvancementHandler;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
@@ -26,28 +24,28 @@ import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
+import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockAir;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAILookIdle;
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
-import net.minecraft.entity.ai.EntityAITarget;
-import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.LookRandomlyGoal;
+import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.entity.monster.SkeletonEntity;
+import net.minecraft.entity.monster.ZombieEntity;
 import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.Slot;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.block.Blocks;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -92,7 +90,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     private final Set<UUID> tradedPlayers = new HashSet<>();
     public ControlledAnimation legsUp = new ControlledAnimation(15);
     public ControlledAnimation angryEyebrow = new ControlledAnimation(5);
-    private EntityPlayer customer;
+    private PlayerEntity customer;
     // TODO: Enum!
     public int whichDialogue = 0;
     public int barakoaSpawnCount = 0;
@@ -103,7 +101,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     private int timeUntilLaser = 0;
     private int timeUntilBarakoa = 0;
     private int timeUntilSupernova = 0;
-    private EntityPlayer blessingPlayer;
+    private PlayerEntity blessingPlayer;
     private BarakoaHurtByTargetAI hurtByTargetAI;
 
     @SideOnly(Side.CLIENT)
@@ -121,9 +119,9 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         super(world);
         hurtByTargetAI = new BarakoaHurtByTargetAI(this, true);
         this.targetTasks.addTask(3, hurtByTargetAI);
-        this.targetTasks.addTask(4, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, false, true));
-        this.targetTasks.addTask(4, new EntityAINearestAttackableTarget<>(this, EntityZombie.class, 0, true, false, null));
-        this.targetTasks.addTask(4, new EntityAINearestAttackableTarget<>(this, EntitySkeleton.class, 0, true, false, null));
+        this.targetTasks.addTask(4, new BarakoaAttackTargetAI(this, PlayerEntity.class, 0, false, true));
+        this.targetTasks.addTask(4, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, true, false, null));
+        this.targetTasks.addTask(4, new NearestAttackableTargetGoal<>(this, SkeletonEntity.class, 0, true, false, null));
         this.tasks.addTask(2, new SimpleAnimationAI<>(this, BELLY_ANIMATION, false));
         this.tasks.addTask(2, new SimpleAnimationAI<EntityBarako>(this, TALK_ANIMATION, false) {
             @Override
@@ -187,9 +185,9 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         this.tasks.addTask(2, new AnimationSolarBeam<>(this, SOLAR_BEAM_ANIMATION));
         this.tasks.addTask(3, new AnimationTakeDamage<>(this));
         this.tasks.addTask(1, new AnimationDieAI<>(this));
-        this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-        this.tasks.addTask(7, new EntityAIWatchClosest(this, EntityBarakoa.class, 8.0F));
-        this.tasks.addTask(8, new EntityAILookIdle(this));
+        this.tasks.addTask(6, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        this.tasks.addTask(7, new LookAtGoal(this, EntityBarakoa.class, 8.0F));
+        this.tasks.addTask(8, new LookRandomlyGoal(this));
         this.setSize(1.5f, 2.4f);
         if (getDirection() == 0) {
             this.setDirection(rand.nextInt(4) + 1);
@@ -278,7 +276,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         motionZ = 0;
 
         if (getAttackTarget() != null) {
-            EntityLivingBase target = getAttackTarget();
+            LivingEntity target = getAttackTarget();
             this.setAngry(true);
             float entityHitAngle = (float) ((Math.atan2(target.posZ - posZ, target.posX - posX) * (180 / Math.PI) - 90) % 360);
             float entityAttackingAngle = rotationYaw % 360;
@@ -413,10 +411,10 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 superNovaEffects();
             }
             if (getAnimationTick() < 30) {
-                List<EntityLivingBase> entities = getEntityLivingBaseNearby(16, 16, 16, 16);
-                for (EntityLivingBase inRange : entities) {
+                List<LivingEntity> entities = getEntityLivingBaseNearby(16, 16, 16, 16);
+                for (LivingEntity inRange : entities) {
                     if (inRange instanceof LeaderSunstrikeImmune) continue;
-                    if (inRange instanceof EntityPlayer && ((EntityPlayer)inRange).capabilities.disableDamage) continue;
+                    if (inRange instanceof PlayerEntity && ((PlayerEntity)inRange).capabilities.disableDamage) continue;
                     Vec3d diff = inRange.getPositionVector().subtract(getPositionVector().add(0, 3, 0));
                     diff = diff.normalize().scale(0.03);
                     inRange.motionX += -diff.x;
@@ -429,10 +427,10 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         }
 
         if (ticksExisted % 40 == 0) {
-            for (EntityPlayer player : getPlayersNearby(15, 15, 15, 15)) {
+            for (PlayerEntity player : getPlayersNearby(15, 15, 15, 15)) {
                 ItemStack headArmorStack = player.inventory.armorInventory.get(3);
-                if (getAttackTarget() != player && EntityAITarget.isSuitableTarget(this, player, false, false) && headArmorStack.getItem() instanceof BarakoaMask) {
-                    if (player instanceof EntityPlayerMP) AdvancementHandler.SNEAK_VILLAGE_TRIGGER.trigger((EntityPlayerMP) player);
+                if (getAttackTarget() != player && TargetGoal.isSuitableTarget(this, player, false, false) && headArmorStack.getItem() instanceof BarakoaMask) {
+                    if (player instanceof ServerPlayerEntity) AdvancementHandler.SNEAK_VILLAGE_TRIGGER.trigger((ServerPlayerEntity) player);
                 }
             }
         }
@@ -584,8 +582,8 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     }
 
     private boolean checkBlocksByFeet() {
-        IBlockState blockLeft;
-        IBlockState blockRight;
+        BlockState blockLeft;
+        BlockState blockRight;
         if (direction == 1) {
             blockLeft = world.getBlockState(new BlockPos(MathHelper.floor(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) + 1));
             blockRight = world.getBlockState(new BlockPos(MathHelper.floor(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) + 1));
@@ -602,7 +600,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             return false;
         }
 //        System.out.println(direction + ", " + (MathHelper.floor(posX) - 1) + ", " + Math.round((float) (posY - 1)) + ", " + MathHelper.floor(posZ) + 1);
-        return !(blockLeft.getBlock() instanceof BlockAir && blockRight.getBlock() instanceof BlockAir);
+        return !(blockLeft.getBlock() instanceof AirBlock && blockRight.getBlock() instanceof AirBlock);
     }
 
     private void spawnExplosionParticles(int amount) {
@@ -670,19 +668,19 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         return false;
     }
 
-    public boolean hasTradedWith(EntityPlayer player) {
-        return tradedPlayers.contains(EntityPlayer.getUUID(player.getGameProfile()));
+    public boolean hasTradedWith(PlayerEntity player) {
+        return tradedPlayers.contains(PlayerEntity.getUUID(player.getGameProfile()));
     }
 
-    public void rememberTrade(EntityPlayer player) {
-        tradedPlayers.add(EntityPlayer.getUUID(player.getGameProfile()));
+    public void rememberTrade(PlayerEntity player) {
+        tradedPlayers.add(PlayerEntity.getUUID(player.getGameProfile()));
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound compound) {
+    public void writeEntityToNBT(CompoundNBT compound) {
         super.writeEntityToNBT(compound);
         compound.setInteger("direction", getDirection());
-        NBTTagList players = new NBTTagList();
+        ListNBT players = new ListNBT();
         for (UUID uuid : tradedPlayers) {
             players.appendTag(NBTUtil.createUUIDTag(uuid));
         }
@@ -690,11 +688,11 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound compound) {
+    public void readEntityFromNBT(CompoundNBT compound) {
         super.readEntityFromNBT(compound);
         setDirection(compound.getInteger("direction"));
         tradedPlayers.clear();
-        NBTTagList players = compound.getTagList("players", Constants.NBT.TAG_COMPOUND);
+        ListNBT players = compound.getTagList("players", Constants.NBT.TAG_COMPOUND);
         for (int i = 0; i < players.tagCount(); i++) {
             tradedPlayers.add(NBTUtil.getUUIDFromTag(players.getCompoundTagAt(i)));
         }
@@ -737,27 +735,27 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         return customer != null;
     }
 
-    public EntityPlayer getCustomer() {
+    public PlayerEntity getCustomer() {
         return customer;
     }
 
-    public void setCustomer(EntityPlayer customer) {
+    public void setCustomer(PlayerEntity customer) {
         this.customer = customer;
     }
 
     @Override
-    public Container createContainer(World world, EntityPlayer player, int x, int y, int z) {
+    public Container createContainer(World world, PlayerEntity player, int x, int y, int z) {
         return new ContainerBarakoTrade(this, player.inventory, world);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public GuiContainer createGui(World world, EntityPlayer player, int x, int y, int z) {
+    public ContainerScreen createGui(World world, PlayerEntity player, int x, int y, int z) {
         return new GuiBarakoTrade(this, player.inventory, world, y != 0);
     }
 
     @Override
-    protected boolean processInteract(EntityPlayer player, EnumHand hand) {
+    protected boolean processInteract(PlayerEntity player, Hand hand) {
         if (canTradeWith(player) && getAttackTarget() == null && !isDead) {
             setCustomer(player);
             if (!world.isRemote) {
@@ -768,7 +766,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         return false;
     }
 
-    public boolean canTradeWith(EntityPlayer player) {
+    public boolean canTradeWith(PlayerEntity player) {
         if (isTrading() || getHealth() <= 0) {
             return false;
         }

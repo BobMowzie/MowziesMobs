@@ -26,28 +26,28 @@ import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.ai.EntityAIAvoidEntity;
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
-import net.minecraft.entity.ai.EntityAITarget;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.EntityZombie;
-import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.entity.passive.EntityOcelot;
-import net.minecraft.entity.passive.EntityParrot;
-import net.minecraft.entity.passive.EntityVillager;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.init.MobEffects;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.goal.TargetGoal;
+import net.minecraft.entity.ai.goal.AvoidEntityGoal;
+import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.entity.monster.SkeletonEntity;
+import net.minecraft.entity.monster.ZombieEntity;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.passive.OcelotEntity;
+import net.minecraft.entity.passive.ParrotEntity;
+import net.minecraft.entity.merchant.villager.VillagerEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Items;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -85,45 +85,45 @@ public enum ServerEventHandler {
             return;
         }
         Entity entity = event.getEntity();
-        if (entity instanceof EntityZombie) {
-            ((EntityCreature) entity).targetTasks.addTask(2, new EntityAINearestAttackableTarget<>((EntityCreature) entity, EntityFoliaath.class, 0, true, false, null));
-            ((EntityCreature) entity).targetTasks.addTask(3, new EntityAINearestAttackableTarget<>((EntityCreature) entity, EntityBarakoa.class, 0, true, false, null));
-            ((EntityCreature) entity).targetTasks.addTask(2, new EntityAINearestAttackableTarget<>((EntityCreature) entity, EntityBarako.class, 0, true, false, null));
+        if (entity instanceof ZombieEntity) {
+            ((CreatureEntity) entity).targetTasks.addTask(2, new NearestAttackableTargetGoal<>((CreatureEntity) entity, EntityFoliaath.class, 0, true, false, null));
+            ((CreatureEntity) entity).targetTasks.addTask(3, new NearestAttackableTargetGoal<>((CreatureEntity) entity, EntityBarakoa.class, 0, true, false, null));
+            ((CreatureEntity) entity).targetTasks.addTask(2, new NearestAttackableTargetGoal<>((CreatureEntity) entity, EntityBarako.class, 0, true, false, null));
         }
-        if (entity instanceof EntitySkeleton) {
-            ((EntityCreature) entity).targetTasks.addTask(3, new EntityAINearestAttackableTarget<>((EntityCreature) entity, EntityBarakoa.class, 0, true, false, null));
-            ((EntityCreature) entity).targetTasks.addTask(2, new EntityAINearestAttackableTarget<>((EntityCreature) entity, EntityBarako.class, 0, true, false, null));
+        if (entity instanceof SkeletonEntity) {
+            ((CreatureEntity) entity).targetTasks.addTask(3, new NearestAttackableTargetGoal<>((CreatureEntity) entity, EntityBarakoa.class, 0, true, false, null));
+            ((CreatureEntity) entity).targetTasks.addTask(2, new NearestAttackableTargetGoal<>((CreatureEntity) entity, EntityBarako.class, 0, true, false, null));
         }
 
-        if (entity instanceof EntityOcelot) {
-            ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity<>((EntityCreature) entity, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
+        if (entity instanceof OcelotEntity) {
+            ((CreatureEntity) entity).tasks.addTask(3, new AvoidEntityGoal<>((CreatureEntity) entity, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
         }
-        if (entity instanceof EntityParrot) {
-            ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity<>((EntityCreature) entity, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
+        if (entity instanceof ParrotEntity) {
+            ((CreatureEntity) entity).tasks.addTask(3, new AvoidEntityGoal<>((CreatureEntity) entity, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
         }
-        if (entity instanceof EntityAnimal) {
-            ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity<>((EntityCreature) entity, EntityBarakoa.class, 6.0F, 1.0D, 1.2D));
-            ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity<>((EntityCreature) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
+        if (entity instanceof AnimalEntity) {
+            ((CreatureEntity) entity).tasks.addTask(3, new AvoidEntityGoal<>((CreatureEntity) entity, EntityBarakoa.class, 6.0F, 1.0D, 1.2D));
+            ((CreatureEntity) entity).tasks.addTask(3, new AvoidEntityGoal<>((CreatureEntity) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
         }
-        if (entity instanceof EntityVillager) {
-            ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity<>((EntityCreature) entity, EntityBarakoa.class, 6.0F, 1.0D, 1.2D));
-            ((EntityCreature) entity).tasks.addTask(3, new EntityAIAvoidEntity<>((EntityCreature) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
+        if (entity instanceof VillagerEntity) {
+            ((CreatureEntity) entity).tasks.addTask(3, new AvoidEntityGoal<>((CreatureEntity) entity, EntityBarakoa.class, 6.0F, 1.0D, 1.2D));
+            ((CreatureEntity) entity).tasks.addTask(3, new AvoidEntityGoal<>((CreatureEntity) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
         }
     }
 
     @SubscribeEvent
     public void onLivingTick(LivingEvent.LivingUpdateEvent event) {
-        if (event.getEntity() instanceof EntityLivingBase) {
-            EntityLivingBase entity = (EntityLivingBase) event.getEntity();
+        if (event.getEntity() instanceof LivingEntity) {
+            LivingEntity entity = (LivingEntity) event.getEntity();
             MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
 
             if (property != null) {
                 // Freeze logic
                 if (property.freezeProgress >= 1) {
-                    entity.addPotionEffect(new PotionEffect(PotionHandler.FROZEN, 50, 0, false, false));
+                    entity.addPotionEffect(new EffectInstance(PotionHandler.FROZEN, 50, 0, false, false));
                     property.freezeProgress = 1f;
                 } else if (property.freezeProgress > 0) {
-                    entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 9, MathHelper.floor(property.freezeProgress * 5 + 1), false, false));
+                    entity.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 9, MathHelper.floor(property.freezeProgress * 5 + 1), false, false));
                 }
 
                 if (entity.isPotionActive(PotionHandler.FROZEN) && !property.prevFrozen) {
@@ -131,21 +131,21 @@ public enum ServerEventHandler {
                 }
 
                 if (!entity.world.isRemote) {
-                    Item headItemStack = entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItem();
+                    Item headItemStack = entity.getItemStackFromSlot(EquipmentSlotType.HEAD).getItem();
                     if (headItemStack instanceof ItemBarakoaMask) {
                         ItemBarakoaMask mask = (ItemBarakoaMask) headItemStack;
-                        entity.addPotionEffect(new PotionEffect(mask.getPotion(), 45, 0, true, false));
+                        entity.addPotionEffect(new EffectInstance(mask.getPotion(), 45, 0, true, false));
                     }
                 }
             }
 
-            if (entity.getActivePotionEffect(PotionHandler.POISON_RESIST) != null && entity.getActivePotionEffect(MobEffects.POISON) != null) {
-                entity.removeActivePotionEffect(MobEffects.POISON);
+            if (entity.getActivePotionEffect(PotionHandler.POISON_RESIST) != null && entity.getActivePotionEffect(Effects.POISON) != null) {
+                entity.removeActivePotionEffect(Effects.POISON);
             }
 
             if (entity.isPotionActive(PotionHandler.FROZEN)) {
                 if (entity.getActivePotionEffect(PotionHandler.FROZEN).getDuration() <= 0) entity.removeActivePotionEffect(PotionHandler.FROZEN);
-                entity.addPotionEffect(new PotionEffect(MobEffects.SLOWNESS, 2, 50, false, false));
+                entity.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 2, 50, false, false));
                 entity.setSneaking(false);
 
                 if (entity.world.isRemote && entity.ticksExisted % 2 == 0) {
@@ -184,7 +184,7 @@ public enum ServerEventHandler {
         if (event.phase == TickEvent.Phase.START || event.player == null) {
             return;
         }
-        EntityPlayer player = event.player;
+        PlayerEntity player = event.player;
         MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
         if (property != null) {
             property.update();
@@ -199,10 +199,10 @@ public enum ServerEventHandler {
             if (event.side == Side.SERVER) {
                 for (ItemStack itemStack : event.player.inventory.mainInventory) {
                     if (itemStack.getItem() instanceof ItemEarthTalisman)
-                        player.addPotionEffect(new PotionEffect(PotionHandler.GEOMANCY, 0, 0, false, false));
+                        player.addPotionEffect(new EffectInstance(PotionHandler.GEOMANCY, 0, 0, false, false));
                 }
                 if (player.getHeldItemOffhand().getItem() instanceof ItemEarthTalisman)
-                    player.addPotionEffect(new PotionEffect(PotionHandler.GEOMANCY, 0, 0, false, false));
+                    player.addPotionEffect(new EffectInstance(PotionHandler.GEOMANCY, 0, 0, false, false));
 
                 List<EntityBarakoanToPlayer> pack = property.tribePack;
                 float theta = (2 * (float) Math.PI / pack.size());
@@ -283,7 +283,7 @@ public enum ServerEventHandler {
         }
     }
 
-    private void tryTeleportBarakoan(EntityPlayer player, EntityBarakoanToPlayer barakoan) {
+    private void tryTeleportBarakoan(PlayerEntity player, EntityBarakoanToPlayer barakoan) {
         int x = MathHelper.floor(player.posX) - 2;
         int z = MathHelper.floor(player.posZ) - 2;
         int y = MathHelper.floor(player.getEntityBoundingBox().minY);
@@ -301,15 +301,15 @@ public enum ServerEventHandler {
 
     @SubscribeEvent
     public void onUseItem(LivingEntityUseItemEvent event) {
-        EntityLivingBase living = event.getEntityLiving();
-        if (living instanceof EntityPlayer) {
-            EntityPlayer player = (EntityPlayer) living;
+        LivingEntity living = event.getEntityLiving();
+        if (living instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) living;
             ItemStack item = event.getItem();
             if (item.getItem() == Items.FLINT_AND_STEEL) {
                 List<EntityBarako> barakos = getEntitiesNearby(player, EntityBarako.class, 20);
                 for (EntityBarako barako : barakos) {
-                    if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof EntityPlayer)) {
-                        if (EntityAITarget.isSuitableTarget(barako, player, false, false))
+                    if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
+                        if (TargetGoal.isSuitableTarget(barako, player, false, false))
                             barako.setAttackTarget(player);
                     }
                 }
@@ -319,13 +319,13 @@ public enum ServerEventHandler {
 
     @SubscribeEvent
     public void onPlaceBlock(BlockEvent.PlaceEvent event) {
-        EntityPlayer player  = event.getPlayer();
-        IBlockState block = event.getPlacedBlock();
+        PlayerEntity player  = event.getPlayer();
+        BlockState block = event.getPlacedBlock();
         if (block == Blocks.FIRE.getDefaultState()) {
             List<EntityBarako> barakos = getEntitiesNearby(player, EntityBarako.class, 20);
             for (EntityBarako barako : barakos) {
-                if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof EntityPlayer)) {
-                    if (EntityAITarget.isSuitableTarget(barako, player, false, false)) barako.setAttackTarget(player);
+                if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
+                    if (TargetGoal.isSuitableTarget(barako, player, false, false)) barako.setAttackTarget(player);
                 }
             }
         }
@@ -333,14 +333,14 @@ public enum ServerEventHandler {
 
     @SubscribeEvent
     public void onFillBucket(FillBucketEvent event) {
-        EntityPlayer player  = event.getEntityPlayer();
+        PlayerEntity player  = event.getEntityPlayer();
         if (player != null) {
             if (event.getEmptyBucket() != null) {
                 if (event.getEmptyBucket().getItem() == Items.LAVA_BUCKET) {
                     List<EntityBarako> barakos = getEntitiesNearby(player, EntityBarako.class, 20);
                     for (EntityBarako barako : barakos) {
-                        if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof EntityPlayer)) {
-                            if (EntityAITarget.isSuitableTarget(barako, player, false, false))
+                        if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
+                            if (TargetGoal.isSuitableTarget(barako, player, false, false))
                                 barako.setAttackTarget(player);
                         }
                     }
@@ -351,25 +351,25 @@ public enum ServerEventHandler {
 
     @SubscribeEvent
     public void onBreakBlock(BlockEvent.BreakEvent event) {
-        EntityPlayer player = event.getPlayer();
-        IBlockState block = event.getState();
+        PlayerEntity player = event.getPlayer();
+        BlockState block = event.getState();
         if (block == Blocks.GOLD_BLOCK.getDefaultState()) {
             List<EntityBarako> barakos = getEntitiesNearby(player, EntityBarako.class, 10);
             for (EntityBarako barako : barakos) {
-                if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof EntityPlayer)) {
-                    if (EntityAITarget.isSuitableTarget(barako, player, false, false)) barako.setAttackTarget(player);
+                if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
+                    if (TargetGoal.isSuitableTarget(barako, player, false, false)) barako.setAttackTarget(player);
                 }
             }
         }
     }
 
-    public <T extends Entity> List<T> getEntitiesNearby(EntityLivingBase startEntity, Class<T> entityClass, double r) {
+    public <T extends Entity> List<T> getEntitiesNearby(LivingEntity startEntity, Class<T> entityClass, double r) {
         return startEntity.world.getEntitiesWithinAABB(entityClass, startEntity.getEntityBoundingBox().grow(r, r, r), e -> e != startEntity && startEntity.getDistance(e) <= r);
     }
 
-    private List<EntityLivingBase> getEntityLivingBaseNearby(EntityLivingBase user, double distanceX, double distanceY, double distanceZ, double radius) {
+    private List<LivingEntity> getEntityLivingBaseNearby(LivingEntity user, double distanceX, double distanceY, double distanceZ, double radius) {
         List<Entity> list = user.world.getEntitiesWithinAABBExcludingEntity(user, user.getEntityBoundingBox().grow(distanceX, distanceY, distanceZ));
-        ArrayList<EntityLivingBase> nearEntities = list.stream().filter(entityNeighbor -> entityNeighbor instanceof EntityLivingBase && user.getDistance(entityNeighbor) <= radius).map(entityNeighbor -> (EntityLivingBase) entityNeighbor).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<LivingEntity> nearEntities = list.stream().filter(entityNeighbor -> entityNeighbor instanceof LivingEntity && user.getDistance(entityNeighbor) <= radius).map(entityNeighbor -> (LivingEntity) entityNeighbor).collect(Collectors.toCollection(ArrayList::new));
         return nearEntities;
     }
 
@@ -378,7 +378,7 @@ public enum ServerEventHandler {
         if (event.isCancelable() && event.getEntityLiving().isPotionActive(PotionHandler.FROZEN)) {
             event.setCanceled(true);
         }
-        EntityPlayer player = event.getEntityPlayer();
+        PlayerEntity player = event.getEntityPlayer();
         MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
         if (property != null) {
             if (event.getWorld().isRemote && player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(PotionHandler.SUNS_BLESSING) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
@@ -412,7 +412,7 @@ public enum ServerEventHandler {
 
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event) {
-        EntityPlayer player = event.getEntityPlayer();
+        PlayerEntity player = event.getEntityPlayer();
         MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
         if (property != null) {
             if (event.getWorld().isRemote && player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(PotionHandler.SUNS_BLESSING) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
@@ -434,11 +434,11 @@ public enum ServerEventHandler {
     @SubscribeEvent
     public void onPlayerLeftClick(PlayerInteractEvent.LeftClickEmpty event) {
         double range = 6.5;
-        EntityPlayer player = event.getEntityPlayer();
+        PlayerEntity player = event.getEntityPlayer();
         MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
         if (property != null) {
             if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == ItemHandler.SPEAR) {
-                EntityLivingBase entityHit = ItemSpear.raytraceEntities(player.getEntityWorld(), player, range);
+                LivingEntity entityHit = ItemSpear.raytraceEntities(player.getEntityWorld(), player, range);
                 if (entityHit != null) {
                     MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerAttackMob(entityHit));
                 }
@@ -456,7 +456,7 @@ public enum ServerEventHandler {
                 event.getEntityLiving().removeActivePotionEffect(PotionHandler.FROZEN);
                 MowziesMobs.NETWORK_WRAPPER.sendToDimension(new MessageUnfreezeEntity(event.getEntityLiving()), event.getEntityLiving().dimension);
         }
-        if (event.getEntity() instanceof EntityPlayer) {
+        if (event.getEntity() instanceof PlayerEntity) {
             MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
             if (property != null) {
                 for (int i = 0; i < property.powers.length; i++) {
@@ -465,10 +465,10 @@ public enum ServerEventHandler {
             }
         }
 
-        if (event.getSource() instanceof EntityDamageSource && event.getSource().getTrueSource() instanceof EntityLivingBase)
+        if (event.getSource() instanceof EntityDamageSource && event.getSource().getTrueSource() instanceof LivingEntity)
         {
-            EntityLivingBase attacker = (EntityLivingBase) event.getSource().getTrueSource();
-            EntityLivingBase target = event.getEntityLiving();
+            LivingEntity attacker = (LivingEntity) event.getSource().getTrueSource();
+            LivingEntity target = event.getEntityLiving();
             ItemStack weapon = attacker.getHeldItemMainhand();
             if (weapon != null && weapon.getItem() instanceof ItemNagaFangDagger) {
                 Vec3d lookDir = new Vec3d(target.getLookVec().x, 0, target.getLookVec().z).normalize();
@@ -479,7 +479,7 @@ public enum ServerEventHandler {
         }
 
         if (event.getEntityLiving() != null) {
-            EntityLivingBase living = event.getEntityLiving();
+            LivingEntity living = event.getEntityLiving();
             MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(living, MowzieLivingProperties.class);
             if (property != null) {
                 property.lastDamage = event.getAmount();
@@ -512,8 +512,8 @@ public enum ServerEventHandler {
 
     @SubscribeEvent
     public void onLivingJump(LivingEvent.LivingJumpEvent event) {
-        if (event.getEntity() instanceof EntityLivingBase) {
-            EntityLivingBase entity = (EntityLivingBase) event.getEntity();
+        if (event.getEntity() instanceof LivingEntity) {
+            LivingEntity entity = (LivingEntity) event.getEntity();
             MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
             if (property != null) {
                 if (entity.isPotionActive(PotionHandler.FROZEN) && entity.onGround) {
@@ -522,7 +522,7 @@ public enum ServerEventHandler {
             }
         }
 
-        if (event.getEntity() instanceof EntityPlayer) {
+        if (event.getEntity() instanceof PlayerEntity) {
             MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
             if (property != null) {
                 for (int i = 0; i < property.powers.length; i++) {
@@ -537,17 +537,17 @@ public enum ServerEventHandler {
         if (event.isCancelable() && event.getEntityLiving().isPotionActive(PotionHandler.FROZEN)) {
             event.setCanceled(true);
         }
-        if (event.getEntity() instanceof EntityPlayer) {
+        if (event.getEntity() instanceof PlayerEntity) {
             MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
             if (property != null) {
                 for (int i = 0; i < property.powers.length; i++) {
                     property.powers[i].onLeftClickEntity(event);
                 }
 
-                if (!(event.getTarget() instanceof EntityLivingBase)) return;
+                if (!(event.getTarget() instanceof LivingEntity)) return;
                 if (event.getTarget() instanceof EntityBarakoanToPlayer) return;
                 for (int i = 0; i < property.getPackSize(); i++)
-                    property.tribePack.get(i).setAttackTarget((EntityLivingBase) event.getTarget());
+                    property.tribePack.get(i).setAttackTarget((LivingEntity) event.getTarget());
             }
         }
     }

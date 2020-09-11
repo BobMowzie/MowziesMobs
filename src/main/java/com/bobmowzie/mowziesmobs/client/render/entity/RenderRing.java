@@ -5,8 +5,8 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.EntityRing;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -15,10 +15,10 @@ import org.lwjgl.opengl.GL11;
 /**
  * Created by Josh on 4/15/2017.
  */
-public class RenderRing extends Render<EntityRing> {
+public class RenderRing extends EntityRenderer<EntityRing> {
     public static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/effects/ring.png");
 
-    public RenderRing(RenderManager mgr) {
+    public RenderRing(EntityRendererManager mgr) {
         super(mgr);
     }
 

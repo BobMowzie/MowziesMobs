@@ -5,18 +5,18 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.google.common.base.Optional;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializer;
+import net.minecraft.network.datasync.IDataSerializer;
 import net.minecraft.network.datasync.DataSerializers;
 
 import java.io.IOException;
 
 public class ServerProxy {
-    public static final DataSerializer<Optional<Trade>> OPTIONAL_TRADE = new DataSerializer<Optional<Trade>>() {
+    public static final IDataSerializer<Optional<Trade>> OPTIONAL_TRADE = new IDataSerializer<Optional<Trade>>() {
         @Override
         public void write(PacketBuffer buf, Optional<Trade> value) {
             if (value.isPresent()) {
@@ -62,9 +62,9 @@ public class ServerProxy {
 
     public void playIceBreathSound(Entity entity) {}
 
-    public void playBoulderChargeSound(EntityPlayer player) {}
+    public void playBoulderChargeSound(PlayerEntity player) {}
 
     public void playNagaSwoopSound(EntityNaga naga) {}
 
-    public void solarBeamHitWroughtnaught(EntityLivingBase caster) {}
+    public void solarBeamHitWroughtnaught(LivingEntity caster) {}
 }

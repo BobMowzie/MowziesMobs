@@ -2,13 +2,13 @@ package com.bobmowzie.mowziesmobs.server.ai;
 
 import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.pathfinding.WalkNodeProcessor;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -67,10 +67,10 @@ public class MMWalkNodeProcessor extends WalkNodeProcessor {
         }
         BlockPos under = (new BlockPos(currentPoint.x, currentPoint.y, currentPoint.z)).down();
         double floor = currentPoint.y - (1.0D - this.blockaccess.getBlockState(under).getBoundingBox(this.blockaccess, under).maxY);
-        PathPoint south = this.getNode(currentPoint.x, currentPoint.y, currentPoint.z + 1, step, floor, EnumFacing.SOUTH);
-        PathPoint west = this.getNode(currentPoint.x - 1, currentPoint.y, currentPoint.z, step, floor, EnumFacing.WEST);
-        PathPoint east = this.getNode(currentPoint.x + 1, currentPoint.y, currentPoint.z, step, floor, EnumFacing.EAST);
-        PathPoint north = this.getNode(currentPoint.x, currentPoint.y, currentPoint.z - 1, step, floor, EnumFacing.NORTH);
+        PathPoint south = this.getNode(currentPoint.x, currentPoint.y, currentPoint.z + 1, step, floor, Direction.SOUTH);
+        PathPoint west = this.getNode(currentPoint.x - 1, currentPoint.y, currentPoint.z, step, floor, Direction.WEST);
+        PathPoint east = this.getNode(currentPoint.x + 1, currentPoint.y, currentPoint.z, step, floor, Direction.EAST);
+        PathPoint north = this.getNode(currentPoint.x, currentPoint.y, currentPoint.z - 1, step, floor, Direction.NORTH);
         if (south != null && !south.visited && south.distanceTo(targetPoint) < maxDistance) {
             pathOptions[optionCount++] = south;
         }
@@ -88,25 +88,25 @@ public class MMWalkNodeProcessor extends WalkNodeProcessor {
         boolean eastPassable = east == null || east.nodeType == PathNodeType.OPEN || east.costMalus != 0.0F;
         boolean westPassable = west == null || west.nodeType == PathNodeType.OPEN || west.costMalus != 0.0F;
         if (northPassable && westPassable) {
-            PathPoint northwest = this.getNode(currentPoint.x - 1, currentPoint.y, currentPoint.z - 1, step, floor, EnumFacing.NORTH);
+            PathPoint northwest = this.getNode(currentPoint.x - 1, currentPoint.y, currentPoint.z - 1, step, floor, Direction.NORTH);
             if (northwest != null && !northwest.visited && northwest.distanceTo(targetPoint) < maxDistance) {
                 pathOptions[optionCount++] = northwest;
             }
         }
         if (northPassable && eastPassable) {
-            PathPoint northeast = this.getNode(currentPoint.x + 1, currentPoint.y, currentPoint.z - 1, step, floor, EnumFacing.NORTH);
+            PathPoint northeast = this.getNode(currentPoint.x + 1, currentPoint.y, currentPoint.z - 1, step, floor, Direction.NORTH);
             if (northeast != null && !northeast.visited && northeast.distanceTo(targetPoint) < maxDistance) {
                 pathOptions[optionCount++] = northeast;
             }
         }
         if (southPassable && westPassable) {
-            PathPoint southwest = this.getNode(currentPoint.x - 1, currentPoint.y, currentPoint.z + 1, step, floor, EnumFacing.SOUTH);
+            PathPoint southwest = this.getNode(currentPoint.x - 1, currentPoint.y, currentPoint.z + 1, step, floor, Direction.SOUTH);
             if (southwest != null && !southwest.visited && southwest.distanceTo(targetPoint) < maxDistance) {
                 pathOptions[optionCount++] = southwest;
             }
         }
         if (southPassable && eastPassable) {
-            PathPoint southeast = this.getNode(currentPoint.x + 1, currentPoint.y, currentPoint.z + 1, step, floor, EnumFacing.SOUTH);
+            PathPoint southeast = this.getNode(currentPoint.x + 1, currentPoint.y, currentPoint.z + 1, step, floor, Direction.SOUTH);
             if (southeast != null && !southeast.visited && southeast.distanceTo(targetPoint) < maxDistance) {
                 pathOptions[optionCount++] = southeast;
             }
@@ -115,7 +115,7 @@ public class MMWalkNodeProcessor extends WalkNodeProcessor {
     }
 
     @Nullable
-    private PathPoint getNode(int x, int y, int z, int step, double floor, EnumFacing dir) {
+    private PathPoint getNode(int x, int y, int z, int step, double floor, Direction dir) {
         PathPoint result = null;
         BlockPos pos = new BlockPos(x, y, z);
         BlockPos under = pos.down();
@@ -186,7 +186,7 @@ public class MMWalkNodeProcessor extends WalkNodeProcessor {
         return result;
     }
 
-    private PathNodeType getPathType(EntityLiving living, int x, int y, int z) {
+    private PathNodeType getPathType(MobEntity living, int x, int y, int z) {
         return this.getPathNodeType(this.blockaccess, x, y, z, living, this.entitySizeX, this.entitySizeY, this.entitySizeZ, this.getCanOpenDoors(), this.getCanEnterDoors());
     }
 }

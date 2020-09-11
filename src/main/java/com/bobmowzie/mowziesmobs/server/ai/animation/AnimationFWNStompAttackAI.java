@@ -5,22 +5,22 @@ import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.item.EntityFallingBlock;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.network.play.server.SPacketEntityVelocity;
+import net.minecraft.entity.item.FallingBlockEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.play.server.SEntityVelocityPacket;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.ServerWorld;
 
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
         int hitY = MathHelper.floor(entity.getEntityBoundingBox().minY - 0.5);
         int tick = entity.getAnimationTick();
         final int maxDistance = 6;
-        WorldServer world = (WorldServer) entity.world;
+        ServerWorld world = (ServerWorld) entity.world;
         if (tick == 6) {
             entity.playSound(MMSounds.ENTITY_WROUGHT_SHOUT_2, 1, 1);
         } else if (tick > 9 && tick < 17) {
@@ -85,13 +85,13 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                     AxisAlignedBB selection = new AxisAlignedBB(px - 1.5, minY, pz - 1.5, px + 1.5, maxY, pz + 1.5);
                     List<Entity> hit = world.getEntitiesWithinAABB(Entity.class, selection);
                     for (Entity entity : hit) {
-                        if (entity == this.entity || entity instanceof EntityFallingBlock) {
+                        if (entity == this.entity || entity instanceof FallingBlockEntity) {
                             continue;
                         }
                         float knockbackResistance = 0;
-                        if (entity instanceof EntityLivingBase) {
+                        if (entity instanceof LivingEntity) {
                             entity.attackEntityFrom(DamageSource.causeMobDamage(this.entity), (factor * 5 + 1) * ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.combatData.attackMultiplier);
-                            knockbackResistance = (float) ((EntityLivingBase)entity).getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).getAttributeValue();
+                            knockbackResistance = (float) ((LivingEntity)entity).getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).getAttributeValue();
                         }
                         double magnitude = world.rand.nextDouble() * 0.15 + 0.1;
                         entity.motionX += vx * factor * magnitude * (1 - knockbackResistance);
@@ -99,8 +99,8 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                             entity.motionY += 0.1 * (1 - knockbackResistance) + factor * 0.15 * (1 - knockbackResistance);
                         }
                         entity.motionZ += vz * factor * magnitude * (1 - knockbackResistance);
-                        if (entity instanceof EntityPlayerMP) {
-                            ((EntityPlayerMP) entity).connection.sendPacket(new SPacketEntityVelocity(entity));
+                        if (entity instanceof ServerPlayerEntity) {
+                            ((ServerPlayerEntity) entity).connection.sendPacket(new SEntityVelocityPacket(entity));
                         }
                     }
                     if (world.rand.nextBoolean()) {
@@ -110,9 +110,9 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                         BlockPos abovePos = new BlockPos(pos).up();
                         BlockPos belowPos = new BlockPos(pos).down();
                         if (world.isAirBlock(abovePos) && !world.isAirBlock(belowPos)) {
-                            IBlockState block = world.getBlockState(pos);
+                            BlockState block = world.getBlockState(pos);
                             if (block.getMaterial() != Material.AIR && block.isBlockNormalCube() && block != Blocks.BEDROCK && !block.getBlock().hasTileEntity(block)) {
-                                EntityFallingBlock fallingBlock = new EntityFallingBlock(world, hitX + 0.5, hitY + 0.5, hitZ + 0.5, block);
+                                FallingBlockEntity fallingBlock = new FallingBlockEntity(world, hitX + 0.5, hitY + 0.5, hitZ + 0.5, block);
                                 fallingBlock.motionX = 0;
                                 fallingBlock.motionY = 0.4 + factor * 0.2;
                                 fallingBlock.motionZ = 0;

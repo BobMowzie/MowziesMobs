@@ -1,18 +1,13 @@
 package com.bobmowzie.mowziesmobs.server.message;
 
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
-import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
-import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import io.netty.buffer.ByteBuf;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.ilexiconn.llibrary.server.network.AbstractMessage;
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -27,7 +22,7 @@ public class MessageUnfreezeEntity extends AbstractMessage<MessageUnfreezeEntity
 
     }
 
-    public MessageUnfreezeEntity(EntityLivingBase entity) {
+    public MessageUnfreezeEntity(LivingEntity entity) {
         entityID = entity.getEntityId();
     }
 
@@ -42,16 +37,16 @@ public class MessageUnfreezeEntity extends AbstractMessage<MessageUnfreezeEntity
     }
 
     @Override
-    public void onClientReceived(Minecraft client, MessageUnfreezeEntity message, EntityPlayer player, MessageContext messageContext) {
+    public void onClientReceived(Minecraft client, MessageUnfreezeEntity message, PlayerEntity player, MessageContext messageContext) {
         Entity entity = player.world.getEntityByID(message.entityID);
-        if (entity instanceof EntityLivingBase) {
-            EntityLivingBase living = (EntityLivingBase) entity;
+        if (entity instanceof LivingEntity) {
+            LivingEntity living = (LivingEntity) entity;
             living.removeActivePotionEffect(PotionHandler.FROZEN);
         }
     }
 
     @Override
-    public void onServerReceived(MinecraftServer server, MessageUnfreezeEntity message, EntityPlayer player, MessageContext messageContext) {
+    public void onServerReceived(MinecraftServer server, MessageUnfreezeEntity message, PlayerEntity player, MessageContext messageContext) {
 
     }
 }

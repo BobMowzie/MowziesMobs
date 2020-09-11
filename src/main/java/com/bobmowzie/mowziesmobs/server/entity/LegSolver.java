@@ -4,8 +4,8 @@ package com.bobmowzie.mowziesmobs.server.entity;
  * Created by pau101
  */
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -17,7 +17,7 @@ public class LegSolver {
         this.legs = legs;
     }
 
-    public final void update(EntityLivingBase entity) {
+    public final void update(LivingEntity entity) {
         double sideTheta = entity.renderYawOffset / (180 / Math.PI);
         double sideX = Math.cos(sideTheta);
         double sideZ = Math.sin(sideTheta);
@@ -47,12 +47,12 @@ public class LegSolver {
             return this.prevHeight + (this.height - this.prevHeight) * delta;
         }
 
-        public void update(EntityLivingBase entity, double sideX, double sideZ, double forwardX, double forwardZ) {
+        public void update(LivingEntity entity, double sideX, double sideZ, double forwardX, double forwardZ) {
             this.prevHeight = this.height;
             this.height = settle(entity, entity.posX + sideX * this.side + forwardX * this.forward, entity.posY, entity.posZ + sideZ * this.side + forwardZ * this.forward, this.height);
         }
 
-        private float settle(EntityLivingBase entity, double x, double y, double z, float height) {
+        private float settle(LivingEntity entity, double x, double y, double z, float height) {
             BlockPos pos = new BlockPos(x, y + 1e-3, z);
             float dist = getDistance(entity.world, pos);
             if (1 - dist < 1e-3) {
@@ -69,7 +69,7 @@ public class LegSolver {
         }
 
         private float getDistance(World world, BlockPos pos) {
-            IBlockState state = world.getBlockState(pos);
+            BlockState state = world.getBlockState(pos);
             AxisAlignedBB aabb = state.getCollisionBoundingBox(world, pos);
             return aabb == null ? 1 : 1 - Math.min((float) aabb.maxY, 1);
         }

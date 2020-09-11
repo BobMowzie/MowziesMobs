@@ -2,11 +2,11 @@ package com.bobmowzie.mowziesmobs.server.potion;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
-import net.minecraft.init.Items;
-import net.minecraft.init.PotionTypes;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.item.Items;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.Potions;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.PotionHelper;
-import net.minecraft.potion.PotionType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -22,19 +22,19 @@ public class PotionTypeHandler {
     private PotionTypeHandler() {
     }
 
-    public static final PotionType POISON_RESIST = null;
-    public static final PotionType LONG_POISON_RESIST = null;
+    public static final Potion POISON_RESIST = null;
+    public static final Potion LONG_POISON_RESIST = null;
 
     @SubscribeEvent
-    public static void register(RegistryEvent.Register<PotionType> event) {
-        PotionType resist = new PotionType("poisonResist", new PotionEffect[]{new PotionEffect(PotionHandler.POISON_RESIST, 3600)}).setRegistryName("poison_resist");
-        PotionType longResist = new PotionType("poisonResist", new PotionEffect[]{new PotionEffect(PotionHandler.POISON_RESIST, 9600)}).setRegistryName("long_poison_resist");
+    public static void register(RegistryEvent.Register<Potion> event) {
+        Potion resist = new Potion("poisonResist", new EffectInstance[]{new EffectInstance(PotionHandler.POISON_RESIST, 3600)}).setRegistryName("poison_resist");
+        Potion longResist = new Potion("poisonResist", new EffectInstance[]{new EffectInstance(PotionHandler.POISON_RESIST, 9600)}).setRegistryName("long_poison_resist");
         event.getRegistry().registerAll(
                 resist,
                 longResist
         );
 
-        PotionHelper.addMix(PotionTypes.AWKWARD, ItemHandler.NAGA_FANG, resist);
+        PotionHelper.addMix(Potions.AWKWARD, ItemHandler.NAGA_FANG, resist);
         PotionHelper.addMix(resist, Items.REDSTONE, longResist);
 
     }

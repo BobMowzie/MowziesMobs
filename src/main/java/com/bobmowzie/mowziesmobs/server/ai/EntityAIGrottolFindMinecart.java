@@ -3,20 +3,20 @@ package com.bobmowzie.mowziesmobs.server.ai;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import com.google.common.base.Predicate;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.entity.item.EntityMinecartEmpty;
+import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.entity.item.minecart.MinecartEntity;
 
 import java.util.Comparator;
 import java.util.List;
 
-public final class EntityAIGrottolFindMinecart extends EntityAIBase {
+public final class EntityAIGrottolFindMinecart extends Goal {
     private final EntityGrottol grottol;
 
     private final Comparator<Entity> sorter;
 
-    private final Predicate<EntityMinecartEmpty> predicate;
+    private final Predicate<MinecartEntity> predicate;
 
-    private EntityMinecartEmpty minecart;
+    private MinecartEntity minecart;
 
     private int time;
 
@@ -30,7 +30,7 @@ public final class EntityAIGrottolFindMinecart extends EntityAIBase {
     @Override
     public boolean shouldExecute() {
         if (grottol.fleeTime <= 1) return false;
-        List<EntityMinecartEmpty> minecarts = grottol.world.getEntitiesWithinAABB(EntityMinecartEmpty.class, grottol.getEntityBoundingBox().grow(8.0D, 4.0D, 8.0D), predicate);
+        List<MinecartEntity> minecarts = grottol.world.getEntitiesWithinAABB(MinecartEntity.class, grottol.getEntityBoundingBox().grow(8.0D, 4.0D, 8.0D), predicate);
         minecarts.sort(sorter);
         if (minecarts.isEmpty()) {
             return false;

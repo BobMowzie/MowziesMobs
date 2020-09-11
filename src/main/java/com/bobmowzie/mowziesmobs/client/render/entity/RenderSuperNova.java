@@ -5,11 +5,11 @@ import com.bobmowzie.mowziesmobs.client.model.entity.ModelSuperNova;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySuperNova;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
 
-public class RenderSuperNova extends Render<EntitySuperNova> {
+public class RenderSuperNova extends EntityRenderer<EntitySuperNova> {
     public static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/effects/super_nova.png");
     public static final ResourceLocation[] TEXTURES = new ResourceLocation[] {
             new ResourceLocation(MowziesMobs.MODID, "textures/effects/super_nova_1.png"),
@@ -31,7 +31,7 @@ public class RenderSuperNova extends Render<EntitySuperNova> {
     };
     public ModelSuperNova model;
 
-    public RenderSuperNova(RenderManager mgr) {
+    public RenderSuperNova(EntityRendererManager mgr) {
         super(mgr);
         model = new ModelSuperNova();
     }

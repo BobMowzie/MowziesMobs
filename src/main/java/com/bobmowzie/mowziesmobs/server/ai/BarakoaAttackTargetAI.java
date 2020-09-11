@@ -2,42 +2,42 @@ package com.bobmowzie.mowziesmobs.server.ai;
 
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.google.common.base.Predicate;
+import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
-import net.minecraft.entity.ai.EntityAITarget;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.entity.ai.goal.TargetGoal;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.EnumDifficulty;
+import net.minecraft.world.Difficulty;
 
 import java.util.Collections;
 import java.util.List;
 
-public class BarakoaAttackTargetAI extends EntityAITarget {
+public class BarakoaAttackTargetAI extends TargetGoal {
     private Class<? extends Entity> targetClass;
     private int targetChance;
-    private EntityAINearestAttackableTarget.Sorter attackableTargetSorter;
+    private NearestAttackableTargetGoal.Sorter attackableTargetSorter;
     private Predicate<Entity> targetEntitySelector;
-    private EntityLivingBase targetEntity;
+    private LivingEntity targetEntity;
     private boolean useVerticalDistance;
 
-    public BarakoaAttackTargetAI(EntityCreature entity, Class<? extends Entity> targetClass, int targetChance, boolean shouldCheckSight, boolean useVerticalDistance) {
+    public BarakoaAttackTargetAI(CreatureEntity entity, Class<? extends Entity> targetClass, int targetChance, boolean shouldCheckSight, boolean useVerticalDistance) {
         super(entity, shouldCheckSight, false);
         this.targetClass = targetClass;
         this.targetChance = targetChance;
         this.useVerticalDistance = useVerticalDistance;
-        this.attackableTargetSorter = new EntityAINearestAttackableTarget.Sorter(entity);
+        this.attackableTargetSorter = new NearestAttackableTargetGoal.Sorter(entity);
         this.setMutexBits(1);
         this.targetEntitySelector = target -> {
-            if (target instanceof EntityPlayer) {
-                if (entity.world.getDifficulty() == EnumDifficulty.PEACEFUL) return false;
-                ItemStack headArmorStack = ((EntityPlayer) target).inventory.armorInventory.get(3);
+            if (target instanceof PlayerEntity) {
+                if (entity.world.getDifficulty() == Difficulty.PEACEFUL) return false;
+                ItemStack headArmorStack = ((PlayerEntity) target).inventory.armorInventory.get(3);
                 if (headArmorStack.getItem() instanceof BarakoaMask) {
                     return false;
                 }
             }
-            return target instanceof EntityLivingBase && BarakoaAttackTargetAI.this.isSuitableTarget((EntityLivingBase) target, false);
+            return target instanceof LivingEntity && BarakoaAttackTargetAI.this.isSuitableTarget((LivingEntity) target, false);
         };
     }
 
@@ -55,7 +55,7 @@ public class BarakoaAttackTargetAI extends EntityAITarget {
             if (list.isEmpty()) {
                 return false;
             } else {
-                this.targetEntity = (EntityLivingBase) list.get(0);
+                this.targetEntity = (LivingEntity) list.get(0);
                 return true;
             }
         }

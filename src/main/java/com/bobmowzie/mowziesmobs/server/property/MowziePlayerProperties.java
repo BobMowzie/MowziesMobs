@@ -7,14 +7,14 @@ import com.bobmowzie.mowziesmobs.server.property.power.PowerGeomancy;
 import net.ilexiconn.llibrary.server.entity.EntityProperties;
 import net.ilexiconn.llibrary.server.nbt.NBTHandler;
 import net.ilexiconn.llibrary.server.nbt.NBTProperty;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MowziePlayerProperties extends EntityProperties<EntityPlayer> {
+public class MowziePlayerProperties extends EntityProperties<PlayerEntity> {
     public static final int SWING_COOLDOWN = 30;
     public boolean verticalSwing = false;
     @NBTProperty
@@ -62,17 +62,17 @@ public class MowziePlayerProperties extends EntityProperties<EntityPlayer> {
     }
 
     @Override
-    public Class<EntityPlayer> getEntityClass() {
-        return EntityPlayer.class;
+    public Class<PlayerEntity> getEntityClass() {
+        return PlayerEntity.class;
     }
 
     @Override
-    public void saveNBTData(NBTTagCompound compound) {
+    public void saveNBTData(CompoundNBT compound) {
         NBTHandler.INSTANCE.saveNBTData(this, compound);
     }
 
     @Override
-    public void loadNBTData(NBTTagCompound compound) {
+    public void loadNBTData(CompoundNBT compound) {
         NBTHandler.INSTANCE.loadNBTData(this, compound);
     }
 

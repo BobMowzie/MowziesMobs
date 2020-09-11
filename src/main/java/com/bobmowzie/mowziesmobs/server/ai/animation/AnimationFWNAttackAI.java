@@ -4,7 +4,7 @@ import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.Vec3d;
@@ -40,7 +40,7 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
     }
 
     private boolean shouldFollowUp(float bonusRange) {
-        EntityLivingBase entityTarget = entity.getAttackTarget();
+        LivingEntity entityTarget = entity.getAttackTarget();
         if (entityTarget != null && entityTarget.isEntityAlive()) {
             Vec3d targetMoveVec = new Vec3d(entityTarget.motionX, entityTarget.motionY, entityTarget.motionZ);
             Vec3d betweenEntitiesVec = entity.getPositionVector().subtract(entityTarget.getPositionVector());
@@ -54,7 +54,7 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
 
     @Override
     public void updateTask() {
-        EntityLivingBase entityTarget = entity.getAttackTarget();
+        LivingEntity entityTarget = entity.getAttackTarget();
         entity.motionX = 0;
         entity.motionZ = 0;
         if (entity.getAnimation() == EntityWroughtnaut.ATTACK_ANIMATION) {
@@ -69,10 +69,10 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_WHOOSH, 1.2F, 1);
             } else if (entity.getAnimationTick() == 27) {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_SWING_1, 1.5F, 1);
-                List<EntityLivingBase> entitiesHit = entity.getEntityLivingBaseNearby(range, 3, range, range);
+                List<LivingEntity> entitiesHit = entity.getEntityLivingBaseNearby(range, 3, range, range);
                 float damage = (float) entity.getAttack();
                 boolean hit = false;
-                for (EntityLivingBase entityHit : entitiesHit) {
+                for (LivingEntity entityHit : entitiesHit) {
                     float entityHitAngle = (float) ((Math.atan2(entityHit.posZ - entity.posZ, entityHit.posX - entity.posX) * (180 / Math.PI) - 90) % 360);
                     float entityAttackingAngle = entity.renderYawOffset % 360;
                     if (entityHitAngle < 0) {
@@ -110,10 +110,10 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
             }
             else if (entity.getAnimationTick() == 12) {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_SWING_3, 1.5F, 1);
-                List<EntityLivingBase> entitiesHit = entity.getEntityLivingBaseNearby(range - 0.3, 3, range - 0.3, range - 0.3);
+                List<LivingEntity> entitiesHit = entity.getEntityLivingBaseNearby(range - 0.3, 3, range - 0.3, range - 0.3);
                 float damage = (float) entity.getAttack();
                 boolean hit = false;
-                for (EntityLivingBase entityHit : entitiesHit) {
+                for (LivingEntity entityHit : entitiesHit) {
                     float entityHitAngle = (float) ((Math.atan2(entityHit.posZ - entity.posZ, entityHit.posX - entity.posX) * (180 / Math.PI) - 90) % 360);
                     float entityAttackingAngle = entity.renderYawOffset % 360;
                     if (entityHitAngle < 0) {
@@ -152,10 +152,10 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
             } else if (entity.getAnimationTick() == 24) {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_GRUNT_3, 1.5F, 1.13f);
                 entity.move(MoverType.SELF, Math.cos(Math.toRadians(entity.rotationYaw + 90)), 0, Math.sin(Math.toRadians(entity.rotationYaw + 90)));
-                List<EntityLivingBase> entitiesHit = entity.getEntityLivingBaseNearby(range + 0.2, 3, range + 0.2, range + 0.2);
+                List<LivingEntity> entitiesHit = entity.getEntityLivingBaseNearby(range + 0.2, 3, range + 0.2, range + 0.2);
                 float damage = (float) entity.getAttack();
                 boolean hit = false;
-                for (EntityLivingBase entityHit : entitiesHit) {
+                for (LivingEntity entityHit : entitiesHit) {
                     float entityHitDistance = (float) Math.sqrt((entityHit.posZ - entity.posZ) * (entityHit.posZ - entity.posZ) + (entityHit.posX - entity.posX) * (entityHit.posX - entity.posX));
                     if (entityHitDistance <= range + 0.2) {
                         entityHit.attackEntityFrom(DamageSource.causeMobDamage(entity), damage);

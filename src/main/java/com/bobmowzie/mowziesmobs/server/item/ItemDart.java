@@ -1,17 +1,15 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
-import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityDart;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.item.ArrowItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntityDamageSourceIndirect;
+import net.minecraft.util.IndirectEntityDamageSource;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -23,7 +21,7 @@ public class ItemDart extends ArrowItem {
     }
 
     @Override
-    public EntityArrow createArrow(World world, ItemStack stack, EntityLivingBase shooter) {
+    public AbstractArrowEntity createArrow(World world, ItemStack stack, LivingEntity shooter) {
         return new EntityDart(world, shooter);
     }
 
@@ -34,6 +32,6 @@ public class ItemDart extends ArrowItem {
     }
 
     public static DamageSource causeArrowDamage(EntityDart entitydart, Entity entity) {
-        return new EntityDamageSourceIndirect("dart", entitydart, entity).setProjectile();
+        return new IndirectEntityDamageSource("dart", entitydart, entity).setProjectile();
     }
 }

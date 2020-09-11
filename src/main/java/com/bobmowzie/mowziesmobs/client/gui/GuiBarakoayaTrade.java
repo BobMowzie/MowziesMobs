@@ -6,18 +6,18 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoayaTrade;
 import com.bobmowzie.mowziesmobs.server.inventory.InventoryBarakoaya;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.gui.inventory.GuiInventory;
+import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import org.lwjgl.input.Mouse;
 
-public final class GuiBarakoayaTrade extends GuiContainer {
+public final class GuiBarakoayaTrade extends ContainerScreen {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/gui/container/barakoa.png");
 
     private final EntityBarakoaya barakoaya;
@@ -26,11 +26,11 @@ public final class GuiBarakoayaTrade extends GuiContainer {
 
     private int cursorHit;
 
-    public GuiBarakoayaTrade(EntityBarakoaya barakoaya, InventoryPlayer playerInv, World world) {
+    public GuiBarakoayaTrade(EntityBarakoaya barakoaya, PlayerInventory playerInv, World world) {
         this(barakoaya, new InventoryBarakoaya(barakoaya), playerInv, world);
     }
 
-    private GuiBarakoayaTrade(EntityBarakoaya barakoaya, InventoryBarakoaya inventory, InventoryPlayer playerInv, World world) {
+    private GuiBarakoayaTrade(EntityBarakoaya barakoaya, InventoryBarakoaya inventory, PlayerInventory playerInv, World world) {
         super(new ContainerBarakoayaTrade(barakoaya, inventory, playerInv, world));
         this.barakoaya = barakoaya;
         this.inventory = inventory;
@@ -64,7 +64,7 @@ public final class GuiBarakoayaTrade extends GuiContainer {
         GlStateManager.color(1, 1, 1);
         mc.getTextureManager().bindTexture(TEXTURE);
         drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
-        GuiInventory.drawEntityOnScreen(guiLeft + 33, guiTop + 61, 22, guiLeft + 33 - mouseX, guiTop + 21 - mouseY, barakoaya);
+        InventoryScreen.drawEntityOnScreen(guiLeft + 33, guiTop + 61, 22, guiLeft + 33 - mouseX, guiTop + 21 - mouseY, barakoaya);
     }
 
     @Override

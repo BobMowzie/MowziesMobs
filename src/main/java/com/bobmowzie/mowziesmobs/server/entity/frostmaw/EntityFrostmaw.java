@@ -25,29 +25,26 @@ import com.bobmowzie.mowziesmobs.server.spawn.SpawnHandler;
 import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IEntityLivingData;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAILookIdle;
-import net.minecraft.entity.ai.EntityAIMoveTowardsRestriction;
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
-import net.minecraft.entity.ai.EntityAISwimming;
-import net.minecraft.entity.ai.EntityAIWanderAvoidWater;
-import net.minecraft.entity.ai.EntityAIWatchClosest;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
+import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.LookRandomlyGoal;
+import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.passive.EntityVillager;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.init.MobEffects;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.pathfinding.PathNavigator;
+import net.minecraft.potion.Effects;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -56,8 +53,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BossInfo;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -115,11 +112,11 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
     public EntityFrostmaw(World world) {
         super(world);
         setSize(4f, 4f);
-        this.tasks.addTask(0, new EntityAISwimming(this));
-        this.tasks.addTask(5, new EntityAIMoveTowardsRestriction(this, 1.0D));
-        this.tasks.addTask(7, new EntityAIWanderAvoidWater(this, 1.0D));
-        this.tasks.addTask(8, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-        this.tasks.addTask(8, new EntityAILookIdle(this));
+        this.tasks.addTask(0, new SwimGoal(this));
+        this.tasks.addTask(5, new MoveTowardsRestrictionGoal(this, 1.0D));
+        this.tasks.addTask(7, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
+        this.tasks.addTask(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        this.tasks.addTask(8, new LookRandomlyGoal(this));
         this.tasks.addTask(2, new AnimationAreaAttackAI<EntityFrostmaw>(this, SWIPE_ANIMATION, null, null, 2, 6.5f, 6, 135, ConfigHandler.MOBS.FROSTMAW.combatData.attackMultiplier, 9) {
             @Override
             public void startExecuting() {
@@ -176,7 +173,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         this.tasks.addTask(2, new SimpleAnimationAI<>(this, DODGE_ANIMATION, true));
         this.tasks.addTask(3, new AnimationTakeDamage<>(this));
         this.tasks.addTask(1, new AnimationDieAI<>(this));
-        this.targetTasks.addTask(1, new EntityAINearestAttackableTarget<>(this, EntityPlayer.class, 0, true, false, null));
+        this.targetTasks.addTask(1, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 0, true, false, null));
         stepHeight = 1;
         frame += rand.nextInt(50);
         legSolver = new LegSolverQuadruped(1f, 2f, -1, 1.5f);
@@ -190,7 +187,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
     }
 
     @Override
-    protected PathNavigate createNavigator(World world) {
+    protected PathNavigator createNavigator(World world) {
         return new MMPathNavigateGround(this, world);
     }
 
@@ -291,8 +288,8 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                     float slamPosZ = (float) (posZ + radius * Math.sin(Math.toRadians(rotationYaw + 90)));
                     if (world.isRemote) MMParticle.RING.spawn(world, slamPosX, posY + 0.2f, slamPosZ, ParticleFactory.ParticleArgs.get().withData(0f, (float)Math.PI/2f, 17, 1f, 1f, 1f, 1f, 60f, false, 0f, 0f, 0f));
                     AxisAlignedBB hitBox = new AxisAlignedBB(new BlockPos(slamPosX - 0.5f, posY, slamPosZ - 0.5f)).grow(3, 3, 3);
-                    List<EntityLivingBase> entitiesHit = world.getEntitiesWithinAABB(EntityLivingBase.class, hitBox);
-                    for (EntityLivingBase entity: entitiesHit) {
+                    List<LivingEntity> entitiesHit = world.getEntitiesWithinAABB(LivingEntity.class, hitBox);
+                    for (LivingEntity entity: entitiesHit) {
                         if (entity != this) {
                             attackEntityAsMob(entity, 4f * ConfigHandler.MOBS.FROSTMAW.combatData.attackMultiplier);
                             if (entity.isActiveItemStackBlocking()) entity.getActiveItemStack().damageItem(400, entity);
@@ -442,7 +439,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
             }
             else if (!world.isRemote) {
                 timeWithoutTarget++;
-                if (timeWithoutTarget > 1200 || world.getDifficulty() == EnumDifficulty.PEACEFUL) {
+                if (timeWithoutTarget > 1200 || world.getDifficulty() == Difficulty.PEACEFUL) {
                     timeWithoutTarget = 0;
                     if (getAnimation() == NO_ANIMATION) {
                         AnimationHandler.INSTANCE.sendAnimationMessage(this, DEACTIVATE_ANIMATION);
@@ -457,11 +454,11 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
             if (!world.isRemote && getAnimation() != ACTIVATE_ANIMATION) {
                 if (ConfigHandler.MOBS.FROSTMAW.healsOutOfBattle) heal(0.3f);
             }
-            if (getAttackTarget() != null && getAttackTarget().isPotionActive(MobEffects.INVISIBILITY)) {
+            if (getAttackTarget() != null && getAttackTarget().isPotionActive(Effects.INVISIBILITY)) {
                 setAttackTarget(null);
             }
             if (!getAttackableEntityLivingBaseNearby(8, 8, 8, 8).isEmpty() && getAttackTarget() != null && getAnimation() == NO_ANIMATION) {
-                if (world.getDifficulty() != EnumDifficulty.PEACEFUL) {
+                if (world.getDifficulty() != Difficulty.PEACEFUL) {
                     if (getHasCrystal()) AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_ANIMATION);
                     else AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_NO_CRYSTAL_ANIMATION);
                     setActive(true);
@@ -472,15 +469,15 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                 Vec3d crystalPos = new Vec3d(1.6, 0.4, 1.8);
                 crystalPos = crystalPos.rotateYaw((float) Math.toRadians(-rotationYaw - 90));
                 crystalPos = crystalPos.add(getPositionVector());
-                for (EntityPlayer player : getPlayersNearby(8, 8, 8, 8)) {
+                for (PlayerEntity player : getPlayersNearby(8, 8, 8, 8)) {
                     if (player.getPositionVector().distanceTo(crystalPos) <= 1.6 && (player.capabilities.isCreativeMode || player.isInvisible())) {
                         ItemHandlerHelper.giveItemToPlayer(player, new ItemStack(ItemHandler.ICE_CRYSTAL));
                         setHasCrystal(false);
-                        if (world.getDifficulty() != EnumDifficulty.PEACEFUL) {
+                        if (world.getDifficulty() != Difficulty.PEACEFUL) {
                             AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_NO_CRYSTAL_ANIMATION);
                             setActive(true);
                         }
-                        if (player instanceof EntityPlayerMP) AdvancementHandler.STEAL_ICE_CRYSTAL_TRIGGER.trigger((EntityPlayerMP)player);
+                        if (player instanceof ServerPlayerEntity) AdvancementHandler.STEAL_ICE_CRYSTAL_TRIGGER.trigger((ServerPlayerEntity)player);
                         break;
                     }
                 }
@@ -532,8 +529,8 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
     }
 
     private void doRoarEffects() {
-        List<EntityLivingBase> entities = getEntityLivingBaseNearby(10, 3, 10, 10);
-        for (EntityLivingBase entity:entities) {
+        List<LivingEntity> entities = getEntityLivingBaseNearby(10, 3, 10, 10);
+        for (LivingEntity entity:entities) {
             double angle = (getAngleBetweenEntities(this, entity) + 90) * Math.PI / 180;
             double distance = getDistance(entity) - 4;
             entity.motionX += Math.min(1/(distance * distance), 1) * -1 * Math.cos(angle);
@@ -560,9 +557,9 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
 
     @Override
     public boolean getCanSpawnHere() {
-        List<EntityLivingBase> nearby = getEntityLivingBaseNearby(100, 100, 100, 100);
-        for (EntityLivingBase nearbyEntity : nearby) {
-            if (nearbyEntity instanceof EntityFrostmaw || nearbyEntity instanceof EntityVillager) {
+        List<LivingEntity> nearby = getEntityLivingBaseNearby(100, 100, 100, 100);
+        for (LivingEntity nearbyEntity : nearby) {
+            if (nearbyEntity instanceof EntityFrostmaw || nearbyEntity instanceof VillagerEntity) {
 //                System.out.println("Could not spawn");
                 return false;
             }
@@ -692,13 +689,13 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
 
         if (source.isFireDamage()) damage *= 1.25;
 
-        if (source.getImmediateSource() instanceof EntityArrow) {
+        if (source.getImmediateSource() instanceof AbstractArrowEntity) {
             playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.4F, 2);
             Entity entity = source.getTrueSource();
-            if (entity != null && entity instanceof EntityLivingBase && (!(entity instanceof EntityPlayer) || !((EntityPlayer)entity).capabilities.isCreativeMode) && getAttackTarget() == null && !(entity instanceof EntityFrostmaw)) setAttackTarget((EntityLivingBase) entity);
+            if (entity != null && entity instanceof LivingEntity && (!(entity instanceof PlayerEntity) || !((PlayerEntity)entity).capabilities.isCreativeMode) && getAttackTarget() == null && !(entity instanceof EntityFrostmaw)) setAttackTarget((LivingEntity) entity);
             if (!getActive()) {
                 if (getAnimation() != DIE_ANIMATION) {
-                    if (world.getDifficulty() != EnumDifficulty.PEACEFUL) {
+                    if (world.getDifficulty() != Difficulty.PEACEFUL) {
                         if (getHasCrystal()) AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_ANIMATION);
                         else AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_NO_CRYSTAL_ANIMATION);
                     }
@@ -713,9 +710,9 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         if (attack) {
             shouldDodgeMeasure += damage;
             Entity entity = source.getTrueSource();
-            if (entity != null && entity instanceof EntityLivingBase && (!(entity instanceof EntityPlayer) || !((EntityPlayer)entity).capabilities.isCreativeMode) && getAttackTarget() == null && !(entity instanceof EntityFrostmaw)) setAttackTarget((EntityLivingBase) entity);
+            if (entity != null && entity instanceof LivingEntity && (!(entity instanceof PlayerEntity) || !((PlayerEntity)entity).capabilities.isCreativeMode) && getAttackTarget() == null && !(entity instanceof EntityFrostmaw)) setAttackTarget((LivingEntity) entity);
             if (!getActive()) {
-                if (getAnimation() != DIE_ANIMATION && world.getDifficulty() != EnumDifficulty.PEACEFUL) {
+                if (getAnimation() != DIE_ANIMATION && world.getDifficulty() != Difficulty.PEACEFUL) {
                     if (getHasCrystal()) AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_ANIMATION);
                     else AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_NO_CRYSTAL_ANIMATION);
                 }
@@ -769,14 +766,14 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound compound) {
+    public void readEntityFromNBT(CompoundNBT compound) {
         super.readEntityFromNBT(compound);
         setHasCrystal(compound.getBoolean("has_crystal"));
         setActive(compound.getBoolean("active"));
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound compound) {
+    public void writeEntityToNBT(CompoundNBT compound) {
         super.writeEntityToNBT(compound);
         compound.setBoolean("has_crystal", getHasCrystal());
         compound.setBoolean("active", getActive());
@@ -784,7 +781,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
 
     @Nullable
     @Override
-    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata) {
+    public ILivingEntityData onInitialSpawn(DifficultyInstance difficulty, @Nullable ILivingEntityData livingdata) {
         return super.onInitialSpawn(difficulty, livingdata);
     }
 
@@ -820,7 +817,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         if (y == 0) return;
         setPositionAndRotation(x, y, z, rand.nextFloat() * 360.0f, 0);
         world.spawnEntity(this);
-        onInitialSpawn(world.getDifficultyForLocation(new BlockPos(x, y, z)), (IEntityLivingData)null);
+        onInitialSpawn(world.getDifficultyForLocation(new BlockPos(x, y, z)), (ILivingEntityData)null);
     }
 
     @Override

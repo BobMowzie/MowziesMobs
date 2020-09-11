@@ -4,15 +4,15 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelIceBall;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBall;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
 
-public class RenderIceBall extends Render<EntityIceBall> {
+public class RenderIceBall extends EntityRenderer<EntityIceBall> {
     public static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/effects/ice_ball.png");
     public ModelIceBall model;
 
-    public RenderIceBall(RenderManager mgr) {
+    public RenderIceBall(EntityRendererManager mgr) {
         super(mgr);
         model = new ModelIceBall();
     }

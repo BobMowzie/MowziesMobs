@@ -1,11 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.ai;
 
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaya;
-import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
+import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Container;
 
-public final class EntityAIBarakoayaTrade extends EntityAIBase {
+public final class EntityAIBarakoayaTrade extends Goal {
     private final EntityBarakoaya barakoaya;
 
     public EntityAIBarakoayaTrade(EntityBarakoaya barakoaya) {
@@ -18,7 +18,7 @@ public final class EntityAIBarakoayaTrade extends EntityAIBase {
         if (!barakoaya.isEntityAlive() || barakoaya.isInWater() || !barakoaya.onGround || barakoaya.velocityChanged) {
             return false;
         } else {
-            EntityPlayer plyr = barakoaya.getCustomer();
+            PlayerEntity plyr = barakoaya.getCustomer();
             return plyr != null && barakoaya.getDistanceSq(plyr) <= 16 && plyr.openContainer instanceof Container;
         }
     }

@@ -4,20 +4,20 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.render.RenderHelper;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderLivingBase;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.entity.*;
+import net.minecraft.client.renderer.entity.LivingRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumHandSide;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Hand;
+import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.RenderLivingEvent;
@@ -36,16 +36,16 @@ public enum FrozenRenderHandler {
 
     private static final ResourceLocation FROZEN_TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/frozen.png");
 
-    public static class LayerFrozen implements LayerRenderer<EntityLivingBase> {
-        private final RenderLivingBase<EntityLivingBase> renderer;
+    public static class LayerFrozen implements LayerRenderer<LivingEntity> {
+        private final LivingRenderer<LivingEntity> renderer;
         private final Predicate<ModelRenderer> modelExclusions;
 
-        public LayerFrozen(RenderLivingBase<EntityLivingBase> renderer, Predicate<ModelRenderer> modelExclusions) {
+        public LayerFrozen(LivingRenderer<LivingEntity> renderer, Predicate<ModelRenderer> modelExclusions) {
             this.renderer = renderer;
             this.modelExclusions = modelExclusions;
         }
 
-        public LayerFrozen(RenderLivingBase<EntityLivingBase> renderer) {
+        public LayerFrozen(LivingRenderer<LivingEntity> renderer) {
             this(renderer, box -> {
 //                if(renderer instanceof RenderPlayer) {
 //                    RenderPlayer renderPlayer = (RenderPlayer) renderer;
@@ -59,7 +59,7 @@ public enum FrozenRenderHandler {
         }
 
         @Override
-        public void doRenderLayer(EntityLivingBase living, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        public void doRenderLayer(LivingEntity living, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
             if (living.isPotionActive(PotionHandler.FROZEN)) {
                 ModelBase model = this.renderer.getMainModel();
                 Map<ModelRenderer, Boolean> visibilities = new HashMap<>();
@@ -95,7 +95,7 @@ public enum FrozenRenderHandler {
 
     @SubscribeEvent
     public void onPreRenderEntityLivingBase(RenderLivingEvent.Pre event) {
-        EntityLivingBase player = event.getEntity();
+        LivingEntity player = event.getEntity();
 
         if(player.isPotionActive(PotionHandler.FROZEN)) {
             if(!RenderHelper.doesRendererHaveLayer(event.getRenderer(), LayerFrozen.class, false)) {
@@ -108,13 +108,13 @@ public enum FrozenRenderHandler {
     public void onRenderHand(RenderSpecificHandEvent event) {
         GlStateManager.pushMatrix();
 
-        EntityPlayer player = Minecraft.getMinecraft().player;
+        PlayerEntity player = Minecraft.getMinecraft().player;
 
         if(player != null && player.isPotionActive(PotionHandler.FROZEN)) {
             if(player.isPotionActive(PotionHandler.FROZEN)) {
-                boolean isMainHand = event.getHand() == EnumHand.MAIN_HAND;
+                boolean isMainHand = event.getHand() == Hand.MAIN_HAND;
                 if(isMainHand && !player.isInvisible() && event.getItemStack().isEmpty()) {
-                    EnumHandSide enumhandside = isMainHand ? player.getPrimaryHand() : player.getPrimaryHand().opposite();
+                    HandSide enumhandside = isMainHand ? player.getPrimaryHand() : player.getPrimaryHand().opposite();
                     renderArmFirstPersonFrozen(event.getEquipProgress(), event.getSwingProgress(), enumhandside);
                     event.setCanceled(true);
                 }
@@ -131,10 +131,10 @@ public enum FrozenRenderHandler {
      * @param handSide
      * @param decay
      */
-    private void renderArmFirstPersonFrozen(float swingProgress, float equipProgress, EnumHandSide handSide) {
+    private void renderArmFirstPersonFrozen(float swingProgress, float equipProgress, HandSide handSide) {
         Minecraft mc = Minecraft.getMinecraft();
-        RenderManager renderManager = mc.getRenderManager();
-        boolean flag = handSide != EnumHandSide.LEFT;
+        EntityRendererManager renderManager = mc.getRenderManager();
+        boolean flag = handSide != HandSide.LEFT;
         float f = flag ? 1.0F : -1.0F;
         float f1 = MathHelper.sqrt(equipProgress);
         float f2 = -0.3F * MathHelper.sin(f1 * (float)Math.PI);
@@ -146,14 +146,14 @@ public enum FrozenRenderHandler {
         float f6 = MathHelper.sin(f1 * (float)Math.PI);
         GlStateManager.rotate(f * f6 * 70.0F, 0.0F, 1.0F, 0.0F);
         GlStateManager.rotate(f * f5 * -20.0F, 0.0F, 0.0F, 1.0F);
-        AbstractClientPlayer abstractclientplayer = mc.player;
+        AbstractClientPlayerEntity abstractclientplayer = mc.player;
         mc.getTextureManager().bindTexture(abstractclientplayer.getLocationSkin());
         GlStateManager.translate(f * -1.0F, 3.6F, 3.5F);
         GlStateManager.rotate(f * 120.0F, 0.0F, 0.0F, 1.0F);
         GlStateManager.rotate(200.0F, 1.0F, 0.0F, 0.0F);
         GlStateManager.rotate(f * -135.0F, 0.0F, 1.0F, 0.0F);
         GlStateManager.translate(f * 5.6F, 0.0F, 0.0F);
-        RenderPlayer renderplayer = (RenderPlayer) (Render<?>) renderManager.getEntityRenderObject(abstractclientplayer);
+        PlayerRenderer renderplayer = (PlayerRenderer) (EntityRenderer<?>) renderManager.getEntityRenderObject(abstractclientplayer);
         GlStateManager.disableCull();
 
         if (flag) {

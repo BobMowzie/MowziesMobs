@@ -1,16 +1,16 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.world.BossInfoServer;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.ServerBossInfo;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-public class MMBossInfoServer extends BossInfoServer {
+public class MMBossInfoServer extends ServerBossInfo {
     private final MowzieEntity entity;
 
-    private final Set<EntityPlayerMP> unseen = new HashSet<>();
+    private final Set<ServerPlayerEntity> unseen = new HashSet<>();
 
     public MMBossInfoServer(MowzieEntity entity) {
         super(entity.getDisplayName(), entity.bossBarColor(), Overlay.PROGRESS);
@@ -20,9 +20,9 @@ public class MMBossInfoServer extends BossInfoServer {
 
     public void update() {
         this.setPercent(this.entity.getHealth() / this.entity.getMaxHealth());
-        Iterator<EntityPlayerMP> it = this.unseen.iterator();
+        Iterator<ServerPlayerEntity> it = this.unseen.iterator();
         while (it.hasNext()) {
-            EntityPlayerMP player = it.next();
+            ServerPlayerEntity player = it.next();
             if (this.entity.getEntitySenses().canSee(player)) {
                 super.addPlayer(player);
                 it.remove();
@@ -31,7 +31,7 @@ public class MMBossInfoServer extends BossInfoServer {
     }
 
     @Override
-    public void addPlayer(EntityPlayerMP player) {
+    public void addPlayer(ServerPlayerEntity player) {
         if (this.entity.getEntitySenses().canSee(player)) {
             super.addPlayer(player);
         } else {
@@ -40,7 +40,7 @@ public class MMBossInfoServer extends BossInfoServer {
     }
 
     @Override
-    public void removePlayer(EntityPlayerMP player) {
+    public void removePlayer(ServerPlayerEntity player) {
         super.removePlayer(player);
         this.unseen.remove(player);
     }

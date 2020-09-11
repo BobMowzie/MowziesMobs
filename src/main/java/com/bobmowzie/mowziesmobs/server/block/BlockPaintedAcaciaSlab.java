@@ -1,13 +1,13 @@
 package com.bobmowzie.mowziesmobs.server.block;
 
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
-import net.minecraft.block.BlockSlab;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.SlabBlock;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IStringSerializable;
@@ -16,12 +16,12 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
-public abstract class BlockPaintedAcaciaSlab extends BlockSlab {
+public abstract class BlockPaintedAcaciaSlab extends SlabBlock {
     public static final PropertyEnum<Variant> VARIANT = PropertyEnum.create("variant", Variant.class);
 
     public BlockPaintedAcaciaSlab() {
         super(Material.WOOD);
-        IBlockState state = blockState.getBaseState();
+        BlockState state = blockState.getBaseState();
         if (!isDouble()) {
             state = state.withProperty(HALF, EnumBlockHalf.BOTTOM);
         }
@@ -35,18 +35,18 @@ public abstract class BlockPaintedAcaciaSlab extends BlockSlab {
     }
 
     @Override
-    public Item getItemDropped(IBlockState state, Random rng, int fortune) {
+    public Item getItemDropped(BlockState state, Random rng, int fortune) {
         return Item.getItemFromBlock(BlockHandler.PAINTED_ACACIA_SLAB);
     }
 
     @Override
-    public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) {
+    public ItemStack getItem(World worldIn, BlockPos pos, BlockState state) {
         return new ItemStack(BlockHandler.PAINTED_ACACIA_SLAB);
     }
 
     @Override
-    public IBlockState getStateFromMeta(int meta) {
-        IBlockState iblockstate = getDefaultState().withProperty(VARIANT, Variant.DEFAULT);
+    public BlockState getStateFromMeta(int meta) {
+        BlockState iblockstate = getDefaultState().withProperty(VARIANT, Variant.DEFAULT);
         if (!isDouble()) {
             iblockstate = iblockstate.withProperty(HALF, (meta & 8) == 0 ? EnumBlockHalf.BOTTOM : EnumBlockHalf.TOP);
         }
@@ -54,7 +54,7 @@ public abstract class BlockPaintedAcaciaSlab extends BlockSlab {
     }
 
     @Override
-    public int getMetaFromState(IBlockState state) {
+    public int getMetaFromState(BlockState state) {
         return !isDouble() && state.getValue(HALF) == EnumBlockHalf.TOP ? 8 : 0;
     }
 

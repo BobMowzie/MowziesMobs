@@ -2,10 +2,10 @@ package com.bobmowzie.mowziesmobs.server.loot;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootTableList;
-import net.minecraft.world.storage.loot.conditions.LootCondition;
+import net.minecraft.world.storage.loot.LootTables;
+import net.minecraft.world.storage.loot.conditions.ILootCondition;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
-import net.minecraft.world.storage.loot.functions.LootFunction;
+import net.minecraft.world.storage.loot.functions.ILootFunction;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
 import net.minecraft.world.storage.loot.properties.EntityProperty;
 import net.minecraft.world.storage.loot.properties.EntityPropertyManager;
@@ -33,7 +33,7 @@ public class LootTableHandler {
     public static final ResourceLocation ENTITY_PROPERTY_GROTTOL_DEATH_TYPE = register(new EntityPropertyGrottolDeathType.Serializer());
 
     private static ResourceLocation register(String id) {
-        return LootTableList.register(new ResourceLocation(MowziesMobs.MODID, id));
+        return LootTables.register(new ResourceLocation(MowziesMobs.MODID, id));
     }
 
     private static ResourceLocation register(EntityProperty.Serializer<?> serializer) {
@@ -41,12 +41,12 @@ public class LootTableHandler {
         return serializer.getName();
     }
 
-    private static ResourceLocation register(LootCondition.Serializer<?> serializer) {
+    private static ResourceLocation register(ILootCondition.Serializer<?> serializer) {
         LootConditionManager.registerCondition(serializer);
         return serializer.getLootTableLocation();
     }
 
-    private static ResourceLocation register(LootFunction.Serializer<?> serializer) {
+    private static ResourceLocation register(ILootFunction.Serializer<?> serializer) {
         LootFunctionManager.registerFunction(serializer);
         return serializer.getFunctionName();
     }

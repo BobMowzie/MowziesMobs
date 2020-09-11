@@ -1,14 +1,14 @@
 package com.bobmowzie.mowziesmobs.client.sound;
 
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import net.minecraft.client.audio.MovingSound;
-import net.minecraft.entity.item.EntityMinecart;
+import net.minecraft.client.audio.TickableSound;
+import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.util.SoundCategory;
 
-public final class BlackPinkSound extends MovingSound {
-    private final EntityMinecart minecart;
+public final class BlackPinkSound extends TickableSound {
+    private final AbstractMinecartEntity minecart;
 
-    public BlackPinkSound(EntityMinecart minecart) {
+    public BlackPinkSound(AbstractMinecartEntity minecart) {
         super(MMSounds.MUSIC_BLACK_PINK, SoundCategory.NEUTRAL);
         this.minecart = minecart;
     }

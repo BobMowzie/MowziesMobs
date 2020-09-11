@@ -7,11 +7,9 @@ import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleRing;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
-import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.entity.*;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
@@ -29,7 +27,7 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
         setSize(0.5f, 0.5f);
     }
 
-    public EntityIceBall(World worldIn, EntityLivingBase caster) {
+    public EntityIceBall(World worldIn, LivingEntity caster) {
         this(worldIn);
         if (!world.isRemote) {
             this.setCasterID(caster.getEntityId());
@@ -47,9 +45,9 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
             }
         }
 
-        List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby(2);
+        List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(2);
         if (!entitiesHit.isEmpty()) {
-            for (EntityLivingBase entity : entitiesHit) {
+            for (LivingEntity entity : entitiesHit) {
                 if (entity == caster) continue;
                 List<String> freezeImmune = Arrays.asList(ConfigHandler.GENERAL.freeze_blacklist);
                 ResourceLocation mobName = EntityList.getKey(entity);
@@ -112,12 +110,12 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
     }
 
     @Override
-    protected void readEntityFromNBT(NBTTagCompound compound) {
+    protected void readEntityFromNBT(CompoundNBT compound) {
 
     }
 
     @Override
-    protected void writeEntityToNBT(NBTTagCompound compound) {
+    protected void writeEntityToNBT(CompoundNBT compound) {
 
     }
 

@@ -4,17 +4,17 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockHorizontal;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.HorizontalBlock;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.Items;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.Items;
 import net.minecraft.item.Item;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
@@ -27,7 +27,7 @@ import java.util.Random;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
-public class BlockGrottol extends BlockHorizontal {
+public class BlockGrottol extends HorizontalBlock {
     public static final PropertyEnum<Variant> VARIANT = PropertyEnum.create("variant", Variant.class);
 
     private static final AxisAlignedBB BOUNDS = new AxisAlignedBB(
@@ -38,7 +38,7 @@ public class BlockGrottol extends BlockHorizontal {
     public BlockGrottol() {
         super(Material.ROCK, MapColor.DIAMOND);
         setDefaultState(blockState.getBaseState()
-            .withProperty(FACING, EnumFacing.NORTH)
+            .withProperty(FACING, Direction.NORTH)
             .withProperty(VARIANT, Variant.DIAMOND)
         );
         setLightOpacity(0);
@@ -46,22 +46,22 @@ public class BlockGrottol extends BlockHorizontal {
     }
 
     @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+    public AxisAlignedBB getBoundingBox(BlockState state, IBlockAccess source, BlockPos pos) {
         return BOUNDS;
     }
 
     @Override
-    public boolean isOpaqueCube(IBlockState state) {
+    public boolean isOpaqueCube(BlockState state) {
         return false;
     }
 
     @Override
-    public boolean isFullCube(IBlockState state) {
+    public boolean isFullCube(BlockState state) {
         return false;
     }
 
     @Override
-    public BlockFaceShape getBlockFaceShape(IBlockAccess world, IBlockState state, BlockPos pos, EnumFacing facing) {
+    public BlockFaceShape getBlockFaceShape(IBlockAccess world, BlockState state, BlockPos pos, Direction facing) {
         return BlockFaceShape.UNDEFINED;
     }
 
@@ -71,7 +71,7 @@ public class BlockGrottol extends BlockHorizontal {
     }
 
     @Override
-    public Item getItemDropped(IBlockState state, Random rng, int fortune) {
+    public Item getItemDropped(BlockState state, Random rng, int fortune) {
         return Items.AIR;
     }
 
@@ -81,28 +81,28 @@ public class BlockGrottol extends BlockHorizontal {
     }
 
     @Override
-    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos fromPos) {
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos) {
         if (hasSupport(world, pos)) {
             world.setBlockToAir(pos);
         }
     }
 
     @Override
-    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
+    public BlockState getStateForPlacement(World world, BlockPos pos, Direction facing, float hitX, float hitY, float hitZ, int meta, LivingEntity placer) {
         return getDefaultState().withProperty(FACING, placer.getHorizontalFacing().getOpposite());
     }
 
     @Override
-    public int getMetaFromState(IBlockState state) {
+    public int getMetaFromState(BlockState state) {
         return ((state.getValue(VARIANT).getIndex() << 2) & 0b1100) |
             (state.getValue(FACING).getHorizontalIndex() & 0b0011);
     }
 
     @Override
-    public IBlockState getStateFromMeta(int meta) {
+    public BlockState getStateFromMeta(int meta) {
         return getDefaultState()
             .withProperty(VARIANT, Variant.valueOf((meta & 0b1100) >> 2))
-            .withProperty(FACING, EnumFacing.byHorizontalIndex(meta & 0b0011));
+            .withProperty(FACING, Direction.byHorizontalIndex(meta & 0b0011));
     }
 
     @Override
@@ -111,12 +111,12 @@ public class BlockGrottol extends BlockHorizontal {
     }
 
     @Override
-    public IBlockState withRotation(IBlockState state, Rotation rot) {
+    public BlockState withRotation(BlockState state, Rotation rot) {
         return state.withProperty(FACING, rot.rotate(state.getValue(FACING)));
     }
 
     @Override
-    public IBlockState withMirror(IBlockState state, Mirror mirror) {
+    public BlockState withMirror(BlockState state, Mirror mirror) {
         return state.withRotation(mirror.toRotation(state.getValue(FACING)));
     }
 

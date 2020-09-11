@@ -1,14 +1,14 @@
 package com.bobmowzie.mowziesmobs.server.ai;
 
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaya;
-import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.player.PlayerEntity;
 
-public class EntityAIBarakoayaTradeLook extends EntityAIWatchClosest {
+public class EntityAIBarakoayaTradeLook extends LookAtGoal {
     private final EntityBarakoaya barakoaya;
 
     public EntityAIBarakoayaTradeLook(EntityBarakoaya barakoaya) {
-        super(barakoaya, EntityPlayer.class, 8);
+        super(barakoaya, PlayerEntity.class, 8);
         this.barakoaya = barakoaya;
     }
 

@@ -4,20 +4,20 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.item.EntityFallingBlock;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.item.FallingBlockEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.block.Blocks;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.network.play.server.SPacketEntityVelocity;
+import net.minecraft.network.play.server.SEntityVelocityPacket;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -43,7 +43,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
         super(world);
     }
 
-    public EntityAxeAttack(World world, EntityLivingBase caster, boolean vertical) {
+    public EntityAxeAttack(World world, LivingEntity caster, boolean vertical) {
         this(world);
         if (!world.isRemote) {
             this.setCasterID(caster.getEntityId());
@@ -98,14 +98,14 @@ public class EntityAxeAttack extends EntityMagicEffect {
                     AxisAlignedBB selection = new AxisAlignedBB(px - 1.5, minY, pz - 1.5, px + 1.5, maxY, pz + 1.5);
                     List<Entity> hit = world.getEntitiesWithinAABB(Entity.class, selection);
                     for (Entity entity : hit) {
-                        if (entity == this || entity instanceof EntityFallingBlock || entity == caster) {
+                        if (entity == this || entity instanceof FallingBlockEntity || entity == caster) {
                             continue;
                         }
                         float knockbackResistance = 0;
-                        if (entity instanceof EntityLivingBase) {
-                            if (caster instanceof EntityPlayer) entity.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer) caster), (factor * 5 + 1) * (ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolData.attackDamage / 9.0f));
+                        if (entity instanceof LivingEntity) {
+                            if (caster instanceof PlayerEntity) entity.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) caster), (factor * 5 + 1) * (ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolData.attackDamage / 9.0f));
                             else entity.attackEntityFrom(DamageSource.causeMobDamage(caster), (factor * 5 + 1) * (ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolData.attackDamage / 9.0f));
-                            knockbackResistance = (float) ((EntityLivingBase)entity).getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).getAttributeValue();
+                            knockbackResistance = (float) ((LivingEntity)entity).getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).getAttributeValue();
                         }
                         double magnitude = -0.2;
                         entity.motionX += vx * (1 - factor) * magnitude * (1 - knockbackResistance);
@@ -113,8 +113,8 @@ public class EntityAxeAttack extends EntityMagicEffect {
                             entity.motionY += 0.15 * (1 - knockbackResistance);
                         }
                         entity.motionZ += vz * (1 - factor) * magnitude * (1 - knockbackResistance);
-                        if (entity instanceof EntityPlayerMP) {
-                            ((EntityPlayerMP) entity).connection.sendPacket(new SPacketEntityVelocity(entity));
+                        if (entity instanceof ServerPlayerEntity) {
+                            ((ServerPlayerEntity) entity).connection.sendPacket(new SEntityVelocityPacket(entity));
                         }
                     }
                     if (world.rand.nextBoolean()) {
@@ -124,9 +124,9 @@ public class EntityAxeAttack extends EntityMagicEffect {
                         BlockPos abovePos = new BlockPos(pos).up();
                         BlockPos belowPos = new BlockPos(pos).down();
                         if (world.isAirBlock(abovePos) && !world.isAirBlock(belowPos)) {
-                            IBlockState block = world.getBlockState(pos);
+                            BlockState block = world.getBlockState(pos);
                             if (block.getMaterial() != Material.AIR && block.isBlockNormalCube() && block != Blocks.BEDROCK && !block.getBlock().hasTileEntity(block)) {
-                                EntityFallingBlock fallingBlock = new EntityFallingBlock(world, hitX + 0.5, hitY + 0.5, hitZ + 0.5, block);
+                                FallingBlockEntity fallingBlock = new FallingBlockEntity(world, hitX + 0.5, hitY + 0.5, hitZ + 0.5, block);
                                 fallingBlock.motionX = 0;
                                 fallingBlock.motionY = 0.1;
                                 fallingBlock.motionZ = 0;
@@ -159,8 +159,8 @@ public class EntityAxeAttack extends EntityMagicEffect {
 
     private void dealDamage(float damage, float range, float arc, float knockback) {
         boolean hit = false;
-        List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby(range, 2, range, range);
-        for (EntityLivingBase entityHit : entitiesHit) {
+        List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(range, 2, range, range);
+        for (LivingEntity entityHit : entitiesHit) {
             float entityHitAngle = (float) ((Math.atan2(entityHit.posZ - posZ, entityHit.posX - posX) * (180 / Math.PI) - 90) % 360);
             float entityAttackingAngle = rotationYaw % 360;
             if (entityHitAngle < 0) {
@@ -172,7 +172,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
             float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
             float entityHitDistance = (float) Math.sqrt((entityHit.posZ - posZ) * (entityHit.posZ - posZ) + (entityHit.posX - posX) * (entityHit.posX - posX));
             if (entityHit != caster && entityHitDistance <= range && entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2 || entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2) {
-                if (caster instanceof EntityPlayer) ((EntityPlayer)caster).attackTargetEntityWithCurrentItem(entityHit);
+                if (caster instanceof PlayerEntity) ((PlayerEntity)caster).attackTargetEntityWithCurrentItem(entityHit);
                 else entityHit.attackEntityFrom(DamageSource.causeMobDamage(caster), damage);
                 entityHit.motionX *= knockback;
                 entityHit.motionZ *= knockback;
@@ -185,12 +185,12 @@ public class EntityAxeAttack extends EntityMagicEffect {
     }
 
     @Override
-    protected void readEntityFromNBT(NBTTagCompound compound) {
+    protected void readEntityFromNBT(CompoundNBT compound) {
 
     }
 
     @Override
-    protected void writeEntityToNBT(NBTTagCompound compound) {
+    protected void writeEntityToNBT(CompoundNBT compound) {
 
     }
 
@@ -202,13 +202,13 @@ public class EntityAxeAttack extends EntityMagicEffect {
         return getDataManager().get(VERTICAL);
     }
 
-    private List<EntityLivingBase> getEntityLivingBaseNearby(double distanceX, double distanceY, double distanceZ, double radius) {
+    private List<LivingEntity> getEntityLivingBaseNearby(double distanceX, double distanceY, double distanceZ, double radius) {
         List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(distanceX, distanceY, distanceZ));
-        ArrayList<EntityLivingBase> nearEntities = list.stream().filter(entityNeighbor -> entityNeighbor instanceof EntityLivingBase && getDistance(entityNeighbor) <= radius).map(entityNeighbor -> (EntityLivingBase) entityNeighbor).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<LivingEntity> nearEntities = list.stream().filter(entityNeighbor -> entityNeighbor instanceof LivingEntity && getDistance(entityNeighbor) <= radius).map(entityNeighbor -> (LivingEntity) entityNeighbor).collect(Collectors.toCollection(ArrayList::new));
         return nearEntities;
     }
 
-    public EntityLivingBase getCaster() {
+    public LivingEntity getCaster() {
         return caster;
     }
 }

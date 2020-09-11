@@ -4,9 +4,9 @@ import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
-import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.ai.goal.Goal;
 
-public abstract class AnimationAI<T extends MowzieEntity & IAnimatedEntity> extends EntityAIBase {
+public abstract class AnimationAI<T extends MowzieEntity & IAnimatedEntity> extends Goal {
     protected final T entity;
 
     protected final boolean hurtInterruptsAnimation;

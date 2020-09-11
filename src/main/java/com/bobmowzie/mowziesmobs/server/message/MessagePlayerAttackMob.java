@@ -4,8 +4,8 @@ import io.netty.buffer.ByteBuf;
 import net.ilexiconn.llibrary.server.network.AbstractMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
@@ -19,7 +19,7 @@ public class MessagePlayerAttackMob extends AbstractMessage<MessagePlayerAttackM
 
     }
 
-    public MessagePlayerAttackMob(EntityLivingBase target) {
+    public MessagePlayerAttackMob(LivingEntity target) {
         entityID = target.getEntityId();
     }
 
@@ -34,12 +34,12 @@ public class MessagePlayerAttackMob extends AbstractMessage<MessagePlayerAttackM
     }
 
     @Override
-    public void onClientReceived(Minecraft minecraft, MessagePlayerAttackMob messagePlayerAttackMob, EntityPlayer entityPlayer, MessageContext messageContext) {
+    public void onClientReceived(Minecraft minecraft, MessagePlayerAttackMob messagePlayerAttackMob, PlayerEntity entityPlayer, MessageContext messageContext) {
 
     }
 
     @Override
-    public void onServerReceived(MinecraftServer minecraftServer, MessagePlayerAttackMob messagePlayerAttackMob, EntityPlayer entityPlayer, MessageContext messageContext) {
+    public void onServerReceived(MinecraftServer minecraftServer, MessagePlayerAttackMob messagePlayerAttackMob, PlayerEntity entityPlayer, MessageContext messageContext) {
         Entity entity = entityPlayer.world.getEntityByID(messagePlayerAttackMob.entityID);
         if (entity != null) entityPlayer.attackTargetEntityWithCurrentItem(entity);
     }

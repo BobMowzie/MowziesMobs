@@ -2,16 +2,16 @@ package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import com.google.common.collect.Sets;
-import net.minecraft.entity.ai.EntityAITasks;
-import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.ai.EntityLookHelper;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.ai.controller.LookController;
+import net.minecraft.entity.ai.goal.GoalSelector;
+import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -26,18 +26,18 @@ public class ItemCapturedGrottol extends Item {
     }
 
     @Override
-    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
-        if (facing == EnumFacing.DOWN) {
-            return EnumActionResult.FAIL;
+    public ActionResultType onItemUse(PlayerEntity player, World world, BlockPos pos, Hand hand, Direction facing, float hitX, float hitY, float hitZ) {
+        if (facing == Direction.DOWN) {
+            return ActionResultType.FAIL;
         }
         BlockPos location = pos.offset(facing);
         ItemStack stack = player.getHeldItem(hand);
         if (!player.canPlayerEdit(location, facing, stack)) {
-            return EnumActionResult.FAIL;
+            return ActionResultType.FAIL;
         }
         if (!world.isRemote) {
             EntityGrottol grottol = new EntityGrottol(world);
-            NBTTagCompound compound = stack.getSubCompound("EntityTag");
+            CompoundNBT compound = stack.getSubCompound("EntityTag");
             if (compound != null) {
                 setData(grottol, compound);
             }
@@ -49,24 +49,24 @@ public class ItemCapturedGrottol extends Item {
                 stack.shrink(1);
             }
         }
-        return EnumActionResult.SUCCESS;
+        return ActionResultType.SUCCESS;
     }
 
-    private void setData(EntityGrottol grottol, NBTTagCompound compound) {
-        NBTTagCompound data = grottol.writeToNBT(new NBTTagCompound());
+    private void setData(EntityGrottol grottol, CompoundNBT compound) {
+        CompoundNBT data = grottol.writeToNBT(new CompoundNBT());
         UUID id = grottol.getUniqueID();
         data.merge(compound);
         grottol.readFromNBT(data);
         grottol.setUniqueId(id);
     }
 
-    private void lookAtPlayer(EntityGrottol grottol, EntityPlayer player) {
-        EntityLookHelper helper = new EntityLookHelper(grottol);
+    private void lookAtPlayer(EntityGrottol grottol, PlayerEntity player) {
+        LookController helper = new LookController(grottol);
         helper.setLookPositionWithEntity(player, 180, 90);
         helper.onUpdateLook();
-        EntityAITasks ai = grottol.tasks;
-        Set<EntityAITasks.EntityAITaskEntry> tasks = Sets.newLinkedHashSet(ai.taskEntries);
-        ai.taskEntries.removeIf(entry -> !(entry.action instanceof EntityAIWatchClosest));
+        GoalSelector ai = grottol.tasks;
+        Set<GoalSelector.EntityAITaskEntry> tasks = Sets.newLinkedHashSet(ai.taskEntries);
+        ai.taskEntries.removeIf(entry -> !(entry.action instanceof LookAtGoal));
         grottol.getRNG().setSeed("IS MATh RElatEd tO ScIENCe?".hashCode());
         ai.onUpdateTasks();
         grottol.getRNG().setSeed(new Random().nextLong());
@@ -76,7 +76,7 @@ public class ItemCapturedGrottol extends Item {
 
     public ItemStack create(EntityGrottol grottol) {
         ItemStack stack = new ItemStack(this);
-        stack.setTagInfo("EntityTag", grottol.writeToNBT(new NBTTagCompound()));
+        stack.setTagInfo("EntityTag", grottol.writeToNBT(new CompoundNBT()));
         return stack;
     }
 }

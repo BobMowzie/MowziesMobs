@@ -1,18 +1,16 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.google.common.collect.Sets;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnumEnchantmentType;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.enchantment.EnchantmentType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTier;
-import net.minecraft.item.ItemTool;
 import net.minecraft.item.ToolItem;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
@@ -30,19 +28,19 @@ public class ItemSpear extends ToolItem {
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        return enchantment.type == EnumEnchantmentType.WEAPON || enchantment.type == EnumEnchantmentType.BREAKABLE || enchantment.type == EnumEnchantmentType.ALL;
+        return enchantment.type == EnchantmentType.WEAPON || enchantment.type == EnchantmentType.BREAKABLE || enchantment.type == EnchantmentType.ALL;
     }
 
     @Override
-    public boolean hitEntity(ItemStack heldItemStack, EntityLivingBase entityHit, EntityLivingBase player) {
+    public boolean hitEntity(ItemStack heldItemStack, LivingEntity entityHit, LivingEntity player) {
         heldItemStack.damageItem(1, player);
-        if (entityHit instanceof EntityAnimal && entityHit.getMaxHealth() <= 30 && itemRand.nextFloat() <= 0.33) {
+        if (entityHit instanceof AnimalEntity && entityHit.getMaxHealth() <= 30 && itemRand.nextFloat() <= 0.33) {
             entityHit.setHealth(0);
         }
         return true;
     }
 
-    public static EntityLivingBase raytraceEntities(World world, EntityPlayer player, double range) {
+    public static LivingEntity raytraceEntities(World world, PlayerEntity player, double range) {
         ItemSpear.HitResult result = new ItemSpear.HitResult();
         Vec3d pos = new Vec3d(player.posX, player.posY + player.getEyeHeight(), player.posZ);
         Vec3d segment = player.getLookVec();
@@ -61,9 +59,9 @@ public class ItemSpear extends ToolItem {
             collidePosZ = end.z;
         }
 
-        List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(Math.min(pos.x, collidePosX), Math.min(pos.y, collidePosY), Math.min(pos.z, collidePosZ), Math.max(pos.x, collidePosX), Math.max(pos.y, collidePosY), Math.max(pos.z, collidePosZ)).grow(1, 1, 1));
-        EntityLivingBase closest = null;
-        for (EntityLivingBase entity : entities) {
+        List<LivingEntity> entities = world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(Math.min(pos.x, collidePosX), Math.min(pos.y, collidePosY), Math.min(pos.z, collidePosZ), Math.max(pos.x, collidePosX), Math.max(pos.y, collidePosY), Math.max(pos.z, collidePosZ)).grow(1, 1, 1));
+        LivingEntity closest = null;
+        for (LivingEntity entity : entities) {
             if (entity == player) {
                 continue;
             }
@@ -87,7 +85,7 @@ public class ItemSpear extends ToolItem {
     public static class HitResult {
         private RayTraceResult blockHit;
 
-        private List<EntityLivingBase> entities = new ArrayList<>();
+        private List<LivingEntity> entities = new ArrayList<>();
 
         public RayTraceResult getBlockHit() {
             return blockHit;
@@ -97,7 +95,7 @@ public class ItemSpear extends ToolItem {
             this.blockHit = blockHit;
         }
 
-        public void addEntityHit(EntityLivingBase entity) {
+        public void addEntityHit(LivingEntity entity) {
             entities.add(entity);
         }
     }

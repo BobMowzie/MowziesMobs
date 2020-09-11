@@ -5,21 +5,20 @@ import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.message.MessageAddFreezeProgress;
-import com.bobmowzie.mowziesmobs.server.potion.MowziePotion;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.entity.EntityProperties;
 import net.ilexiconn.llibrary.server.nbt.NBTHandler;
 import net.ilexiconn.llibrary.server.nbt.NBTProperty;
 import net.minecraft.block.Block;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.Blocks;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.Vec3d;
 
-public class MowzieLivingProperties extends EntityProperties<EntityLivingBase> {
+public class MowzieLivingProperties extends EntityProperties<LivingEntity> {
     @NBTProperty
     public float freezeProgress = 0;
     @NBTProperty
@@ -47,7 +46,7 @@ public class MowzieLivingProperties extends EntityProperties<EntityLivingBase> {
 
     public float lastDamage = 0;
 
-    public void addFreezeProgress(EntityLivingBase entity, float amount) {
+    public void addFreezeProgress(LivingEntity entity, float amount) {
         if (!entity.world.isRemote && !entity.isPotionActive(PotionHandler.FROZEN)) {
             freezeProgress += amount;
             freezeDecayDelay = MAX_FREEZE_DECAY_DELAY;
@@ -55,7 +54,7 @@ public class MowzieLivingProperties extends EntityProperties<EntityLivingBase> {
         }
     }
 
-    public void onFreeze(EntityLivingBase entity) {
+    public void onFreeze(LivingEntity entity) {
         if (entity != null) {
             frozenController = new EntityFrozenController(entity.world);
             frozenController.setPositionAndRotation(entity.posX, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
@@ -69,8 +68,8 @@ public class MowzieLivingProperties extends EntityProperties<EntityLivingBase> {
             frozenSwingProgress = entity.swingProgress;
             entity.startRiding(frozenController, true);
 
-            if (entity instanceof EntityLiving) prevHasAI = !((EntityLiving)entity).isAIDisabled();
-            if (entity instanceof EntityLiving) ((EntityLiving)entity).setNoAI(true);
+            if (entity instanceof MobEntity) prevHasAI = !((MobEntity)entity).isAIDisabled();
+            if (entity instanceof MobEntity) ((MobEntity)entity).setNoAI(true);
 
             if (entity.world.isRemote) {
                 int particleCount = (int) (10 + 1 * entity.height * entity.width * entity.width);
@@ -86,7 +85,7 @@ public class MowzieLivingProperties extends EntityProperties<EntityLivingBase> {
         }
     }
 
-    public void onUnfreeze(EntityLivingBase entity) {
+    public void onUnfreeze(LivingEntity entity) {
         if (entity != null && frozenController != null) {
             entity.dismountEntity(frozenController);
             entity.setPosition(frozenController.posX, frozenController.posY, frozenController.posZ);
@@ -102,8 +101,8 @@ public class MowzieLivingProperties extends EntityProperties<EntityLivingBase> {
                     entity.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, particleX, particleY, particleZ, 0, 0, 0, Block.getStateId(Blocks.ICE.getDefaultState()));
                 }
             }
-            if (entity instanceof EntityLiving && ((EntityLiving) entity).isAIDisabled() && prevHasAI) {
-                ((EntityLiving) entity).setNoAI(false);
+            if (entity instanceof MobEntity && ((MobEntity) entity).isAIDisabled() && prevHasAI) {
+                ((MobEntity) entity).setNoAI(false);
             }
         }
     }
@@ -119,17 +118,17 @@ public class MowzieLivingProperties extends EntityProperties<EntityLivingBase> {
     }
 
     @Override
-    public Class<EntityLivingBase> getEntityClass() {
-        return EntityLivingBase.class;
+    public Class<LivingEntity> getEntityClass() {
+        return LivingEntity.class;
     }
 
     @Override
-    public void saveNBTData(NBTTagCompound compound) {
+    public void saveNBTData(CompoundNBT compound) {
         NBTHandler.INSTANCE.saveNBTData(this, compound);
     }
 
     @Override
-    public void loadNBTData(NBTTagCompound compound) {
+    public void loadNBTData(CompoundNBT compound) {
         NBTHandler.INSTANCE.loadNBTData(this, compound);
     }
 }

@@ -6,12 +6,12 @@ import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import io.netty.buffer.ByteBuf;
 import net.ilexiconn.llibrary.server.network.AbstractMessage;
 import net.minecraft.block.SoundType;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.ParticleDigging;
+import net.minecraft.client.particle.DiggingParticle;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityMinecart;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -24,7 +24,7 @@ public final class MessageBlackPinkInYourArea extends AbstractMessage<MessageBla
 
     public MessageBlackPinkInYourArea() {}
 
-    public MessageBlackPinkInYourArea(EntityMinecart minecart) {
+    public MessageBlackPinkInYourArea(AbstractMinecartEntity minecart) {
         this(minecart.getEntityId());
     }
 
@@ -44,13 +44,13 @@ public final class MessageBlackPinkInYourArea extends AbstractMessage<MessageBla
 
     @SideOnly(Side.CLIENT)
     @Override
-    public void onClientReceived(Minecraft client, MessageBlackPinkInYourArea message, EntityPlayer player, MessageContext messageContext) {
+    public void onClientReceived(Minecraft client, MessageBlackPinkInYourArea message, PlayerEntity player, MessageContext messageContext) {
         World world = client.world;
         Entity entity = world.getEntityByID(message.entityId);
-        if (entity instanceof EntityMinecart) {
-            EntityMinecart minecart = (EntityMinecart) entity;
+        if (entity instanceof AbstractMinecartEntity) {
+            AbstractMinecartEntity minecart = (AbstractMinecartEntity) entity;
             client.getSoundHandler().playSound(new BlackPinkSound(minecart));
-            IBlockState state = BlockHandler.GROTTOL.getDefaultState()
+            BlockState state = BlockHandler.GROTTOL.getDefaultState()
                 .withProperty(BlockGrottol.VARIANT, BlockGrottol.Variant.BLACK_PINK);
             BlockPos pos = new BlockPos(minecart);
             final float scale = 0.75F;
@@ -74,7 +74,7 @@ public final class MessageBlackPinkInYourArea extends AbstractMessage<MessageBla
                         double dx = (double) ix / size * scale;
                         double dy = (double) iy / size * scale;
                         double dz = (double) iz / size * scale;
-                        client.effectRenderer.addEffect(new ParticleDigging(
+                        client.effectRenderer.addEffect(new DiggingParticle(
                             world,
                             x + dx + offset, y + dy + offset, z + dz + offset,
                             dx + minecart.motionX, dy + minecart.motionY, dz + minecart.motionZ,
@@ -87,5 +87,5 @@ public final class MessageBlackPinkInYourArea extends AbstractMessage<MessageBla
     }
 
     @Override
-    public void onServerReceived(MinecraftServer server, MessageBlackPinkInYourArea message, EntityPlayer player, MessageContext messageContext) {}
+    public void onServerReceived(MinecraftServer server, MessageBlackPinkInYourArea message, PlayerEntity player, MessageContext messageContext) {}
 }

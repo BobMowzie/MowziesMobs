@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.server.ai.animation;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.SoundEvent;
 
 import java.util.List;
@@ -43,9 +43,9 @@ public class AnimationAreaAttackAI<T extends MowzieEntity & IAnimatedEntity> ext
     }
 
     public void hitEntities() {
-        List<EntityLivingBase> entitiesHit = entity.getEntityLivingBaseNearby(range, height, range, range);
+        List<LivingEntity> entitiesHit = entity.getEntityLivingBaseNearby(range, height, range, range);
         boolean hit = false;
-        for (EntityLivingBase entityHit : entitiesHit) {
+        for (LivingEntity entityHit : entitiesHit) {
             float entityHitAngle = (float) ((Math.atan2(entityHit.posZ - entity.posZ, entityHit.posX - entity.posX) * (180 / Math.PI) - 90) % 360);
             float entityAttackingAngle = entity.renderYawOffset % 360;
             if (entityHitAngle < 0) {

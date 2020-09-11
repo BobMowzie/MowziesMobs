@@ -1,18 +1,17 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
-import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.init.Enchantments;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.stats.Stats;
+import net.minecraft.util.Hand;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.item.BowItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.stats.StatList;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 
@@ -29,15 +28,15 @@ public class ItemBlowgun extends BowItem {
         return stack.getItem() == ItemHandler.DART;
     }
 
-    private ItemStack findAmmo(EntityPlayer player)
+    private ItemStack findAmmo(PlayerEntity player)
     {
-        if (this.isArrow(player.getHeldItem(EnumHand.OFF_HAND)))
+        if (this.isArrow(player.getHeldItem(Hand.OFF_HAND)))
         {
-            return player.getHeldItem(EnumHand.OFF_HAND);
+            return player.getHeldItem(Hand.OFF_HAND);
         }
-        else if (this.isArrow(player.getHeldItem(EnumHand.MAIN_HAND)))
+        else if (this.isArrow(player.getHeldItem(Hand.MAIN_HAND)))
         {
-            return player.getHeldItem(EnumHand.MAIN_HAND);
+            return player.getHeldItem(Hand.MAIN_HAND);
         }
         else
         {
@@ -56,17 +55,17 @@ public class ItemBlowgun extends BowItem {
     }
 
     @Override
-    public void onPlayerStoppedUsing(ItemStack stack, World worldIn, EntityLivingBase entityLiving, int timeLeft)
+    public void onPlayerStoppedUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft)
     {
         timeLeft -= 10;
-        if (entityLiving instanceof EntityPlayer)
+        if (entityLiving instanceof PlayerEntity)
         {
-            EntityPlayer entityplayer = (EntityPlayer)entityLiving;
+            PlayerEntity entityplayer = (PlayerEntity)entityLiving;
             boolean flag = entityplayer.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, stack) > 0;
             ItemStack itemstack = this.findAmmo(entityplayer);
 
             int i = this.getMaxItemUseDuration(stack) - timeLeft;
-            i = net.minecraftforge.event.ForgeEventFactory.onArrowLoose(stack, worldIn, (EntityPlayer)entityLiving, i, itemstack != null || flag);
+            i = net.minecraftforge.event.ForgeEventFactory.onArrowLoose(stack, worldIn, (PlayerEntity)entityLiving, i, itemstack != null || flag);
             if (i < 0) return;
 
             if (itemstack != null || flag)
@@ -85,7 +84,7 @@ public class ItemBlowgun extends BowItem {
                     if (!worldIn.isRemote)
                     {
                         ItemDart itemdart = (ItemDart)(itemstack.getItem() instanceof ItemDart ? itemstack.getItem() : ItemHandler.DART);
-                        EntityArrow entityarrow = itemdart.createArrow(worldIn, itemstack, entityplayer);
+                        AbstractArrowEntity entityarrow = itemdart.createArrow(worldIn, itemstack, entityplayer);
                         entityarrow.shoot(entityplayer, entityplayer.rotationPitch, entityplayer.rotationYaw, 0.0F, f * 1.2f, 1.0F);
 
                         if (f == 1.0F)
@@ -116,13 +115,13 @@ public class ItemBlowgun extends BowItem {
 
                         if (flag1)
                         {
-                            entityarrow.pickupStatus = EntityArrow.PickupStatus.CREATIVE_ONLY;
+                            entityarrow.pickupStatus = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
                         }
 
                         worldIn.spawnEntity(entityarrow);
                     }
 
-                    worldIn.playSound((EntityPlayer)null, entityplayer.posX, entityplayer.posY, entityplayer.posZ, SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
+                    worldIn.playSound((PlayerEntity)null, entityplayer.posX, entityplayer.posY, entityplayer.posZ, SoundEvents.ENTITY_ARROW_SHOOT, SoundCategory.NEUTRAL, 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
 
                     if (!flag1)
                     {
@@ -134,7 +133,7 @@ public class ItemBlowgun extends BowItem {
                         }
                     }
 
-                    entityplayer.addStat(StatList.getObjectUseStats(this));
+                    entityplayer.addStat(Stats.getObjectUseStats(this));
                 }
             }
         }

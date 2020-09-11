@@ -4,12 +4,12 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.world.structure.StructureBarakoaVillage;
 import com.bobmowzie.mowziesmobs.server.world.structure.StructureWroughtnautRoom;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.IChunkProvider;
-import net.minecraft.world.gen.IChunkGenerator;
+import net.minecraft.world.chunk.AbstractChunkProvider;
+import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraftforge.fml.common.IWorldGenerator;
 
 import java.util.Random;
@@ -17,7 +17,7 @@ import java.util.Random;
 public class MowzieWorldGenerator implements IWorldGenerator {
 
     @Override
-    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
+    public void generate(Random random, int chunkX, int chunkZ, World world, ChunkGenerator chunkGenerator, AbstractChunkProvider chunkProvider) {
         switch (world.provider.getDimension()) {
             case 0: //surface GENERATOR
                 generateSurface(world, random, chunkX * 16, chunkZ * 16);
@@ -81,12 +81,12 @@ public class MowzieWorldGenerator implements IWorldGenerator {
     }
 
     public static int findGenHeight(World world, BlockPos pos, int heightMax, int heightMin) {
-        IBlockState topBlock = world.getBiome(pos).topBlock;
-        IBlockState fillerBlock = world.getBiome(pos).fillerBlock;
-        IBlockState stone = Blocks.STONE.getDefaultState();
+        BlockState topBlock = world.getBiome(pos).topBlock;
+        BlockState fillerBlock = world.getBiome(pos).fillerBlock;
+        BlockState stone = Blocks.STONE.getDefaultState();
         for (int y = heightMax - pos.getY(); y > heightMin - pos.getY(); y--) {
             if (!(world.getBlockState(pos.add(0, y, 0)).isFullBlock())) continue;
-            IBlockState firstFullBlock = world.getBlockState(pos.add(0, y, 0));
+            BlockState firstFullBlock = world.getBlockState(pos.add(0, y, 0));
             if (firstFullBlock != topBlock && firstFullBlock != fillerBlock && firstFullBlock != stone) break;
             return y;
         }

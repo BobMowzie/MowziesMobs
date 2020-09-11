@@ -4,19 +4,20 @@ import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IEntityLivingData;
-import net.minecraft.entity.ai.EntityAIAvoidEntity;
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
-import net.minecraft.entity.monster.EntityCreeper;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.ai.goal.AvoidEntityGoal;
+import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.entity.merchant.villager.VillagerEntity;
+import net.minecraft.entity.monster.CreeperEntity;
+import net.minecraft.entity.monster.SkeletonEntity;
+import net.minecraft.entity.monster.ZombieEntity;
 import net.minecraft.entity.passive.*;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -32,14 +33,14 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
     public EntityBarakoana(World world) {
         super(world);
         this.targetTasks.addTask(3, new BarakoaHurtByTargetAI(this, true));
-        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityCow.class, 0, true, false, null));
-        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityPig.class, 0, true, false, null));
-        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntitySheep.class, 0, true, false, null));
-        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityChicken.class, 0, true, false, null));
-        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntityZombie.class, 0, true, false, null));
-        this.targetTasks.addTask(5, new EntityAINearestAttackableTarget<>(this, EntitySkeleton.class, 0, true, false, null));
-        this.targetTasks.addTask(6, new EntityAIAvoidEntity(this, EntityCreeper.class, 6.0F, 1.0D, 1.2D));
-        this.targetTasks.addTask(3, new BarakoaAttackTargetAI(this, EntityPlayer.class, 0, true, false));
+        this.targetTasks.addTask(5, new NearestAttackableTargetGoal<>(this, CowEntity.class, 0, true, false, null));
+        this.targetTasks.addTask(5, new NearestAttackableTargetGoal<>(this, PigEntity.class, 0, true, false, null));
+        this.targetTasks.addTask(5, new NearestAttackableTargetGoal<>(this, SheepEntity.class, 0, true, false, null));
+        this.targetTasks.addTask(5, new NearestAttackableTargetGoal<>(this, ChickenEntity.class, 0, true, false, null));
+        this.targetTasks.addTask(5, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, true, false, null));
+        this.targetTasks.addTask(5, new NearestAttackableTargetGoal<>(this, SkeletonEntity.class, 0, true, false, null));
+        this.targetTasks.addTask(6, new AvoidEntityGoal(this, CreeperEntity.class, 6.0F, 1.0D, 1.2D));
+        this.targetTasks.addTask(3, new BarakoaAttackTargetAI(this, PlayerEntity.class, 0, true, false));
         this.setMask(MaskType.FURY);
         this.experienceValue = 12;
     }
@@ -70,7 +71,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
             }
         }
 
-        if (!this.world.isRemote && this.world.getDifficulty() == EnumDifficulty.PEACEFUL)
+        if (!this.world.isRemote && this.world.getDifficulty() == Difficulty.PEACEFUL)
         {
             this.setDead();
         }
@@ -144,7 +145,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
     }
 
     @Override
-    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, IEntityLivingData data) {
+    public ILivingEntityData onInitialSpawn(DifficultyInstance difficulty, ILivingEntityData data) {
         int size = rand.nextInt(2) + 3;
         float theta = (2 * (float) Math.PI / size);
         for (int i = 0; i <= size; i++) {
@@ -170,13 +171,13 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
 
     @Override
     public boolean getCanSpawnHere() {
-        List<EntityLivingBase> nearby = getEntityLivingBaseNearby(20, 4, 20, 20);
-        for (EntityLivingBase nearbyEntity : nearby) {
-            if (nearbyEntity instanceof EntityBarakoana || nearbyEntity instanceof EntityVillager || nearbyEntity instanceof EntityBarako || nearbyEntity instanceof EntityAnimal) {
+        List<LivingEntity> nearby = getEntityLivingBaseNearby(20, 4, 20, 20);
+        for (LivingEntity nearbyEntity : nearby) {
+            if (nearbyEntity instanceof EntityBarakoana || nearbyEntity instanceof VillagerEntity || nearbyEntity instanceof EntityBarako || nearbyEntity instanceof AnimalEntity) {
                 return false;
             }
         }
-        return super.getCanSpawnHere() && world.getDifficulty() != EnumDifficulty.PEACEFUL;
+        return super.getCanSpawnHere() && world.getDifficulty() != Difficulty.PEACEFUL;
     }
 
     public int getMaxSpawnedInChunk()
@@ -197,7 +198,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
                 setDead();
             }
         } else {
-            EntityPlayer closestPlayer = world.getClosestPlayerToEntity(this, -1);
+            PlayerEntity closestPlayer = world.getClosestPlayerToEntity(this, -1);
             if (closestPlayer != null) {
                 double dX = closestPlayer.posX - posX;
                 double dY = closestPlayer.posY - posY;

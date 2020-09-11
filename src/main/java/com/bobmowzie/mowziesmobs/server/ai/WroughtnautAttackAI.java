@@ -3,11 +3,11 @@ package com.bobmowzie.mowziesmobs.server.ai;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.math.MathHelper;
 
-public class WroughtnautAttackAI extends EntityAIBase {
+public class WroughtnautAttackAI extends Goal {
     private final EntityWroughtnaut wroughtnaut;
 
     private int repath;
@@ -25,7 +25,7 @@ public class WroughtnautAttackAI extends EntityAIBase {
 
     @Override
     public boolean shouldExecute() {
-        EntityLivingBase target = this.wroughtnaut.getAttackTarget();
+        LivingEntity target = this.wroughtnaut.getAttackTarget();
         return target != null && target.isEntityAlive() && this.wroughtnaut.isActive() && this.wroughtnaut.getAnimation() == IAnimatedEntity.NO_ANIMATION;
     }
 
@@ -41,7 +41,7 @@ public class WroughtnautAttackAI extends EntityAIBase {
 
     @Override
     public void updateTask() {
-        EntityLivingBase target = this.wroughtnaut.getAttackTarget();
+        LivingEntity target = this.wroughtnaut.getAttackTarget();
         if (target == null) return;
         double dist = this.wroughtnaut.getDistanceSq(this.targetX, this.targetY, this.targetZ);
         this.wroughtnaut.getLookHelper().setLookPositionWithEntity(target, 30.0F, 30.0F);

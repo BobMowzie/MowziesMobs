@@ -2,12 +2,12 @@ package com.bobmowzie.mowziesmobs.server.block;
 
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.init.Items;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.item.Items;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.DamageSource;
@@ -32,17 +32,17 @@ public class BlockCampfire extends Block {
     }
 
     @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+    public AxisAlignedBB getBoundingBox(BlockState state, IBlockAccess source, BlockPos pos) {
         return BOUNDS;
     }
 
     @Override
-    public boolean isOpaqueCube(IBlockState state) {
+    public boolean isOpaqueCube(BlockState state) {
         return false;
     }
 
     @Override
-    public boolean isFullCube(IBlockState state) {
+    public boolean isFullCube(BlockState state) {
         return false;
     }
 
@@ -52,12 +52,12 @@ public class BlockCampfire extends Block {
     }
 
     @Override
-    public Item getItemDropped(IBlockState state, Random rng, int fortune) {
+    public Item getItemDropped(BlockState state, Random rng, int fortune) {
         return Items.STICK;
     }
 
     @Override
-    public void randomDisplayTick(IBlockState state, World world, BlockPos pos, Random rng) {
+    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random rng) {
         if (rng.nextFloat() < 1 / 12F) {
             world.playSound(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.BLOCK_FIRE_AMBIENT, SoundCategory.BLOCKS, 1 + rng.nextFloat(), rng.nextFloat() * 0.7F + 0.3F, false);
         }
@@ -76,7 +76,7 @@ public class BlockCampfire extends Block {
     }
 
     @Override
-    public void onEntityCollision(World world, BlockPos pos, IBlockState state, Entity entity) {
+    public void onEntityCollision(World world, BlockPos pos, BlockState state, Entity entity) {
         if (!(entity instanceof EntityBarakoa)) entity.attackEntityFrom(DamageSource.IN_FIRE, 1);
     }
 

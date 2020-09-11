@@ -12,30 +12,30 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockLeaves;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.LeavesBlock;
+import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
-import net.minecraft.entity.ai.EntityAISwimming;
+import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.MobEffects;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.potion.Effects;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNodeType;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.EnumDifficulty;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
@@ -61,15 +61,15 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
     public EntityFoliaath(World world) {
         super(world);
         setPathPriority(PathNodeType.WATER, 0);
-        this.tasks.addTask(0, new EntityAISwimming(this));
+        this.tasks.addTask(0, new SwimGoal(this));
         this.tasks.addTask(1, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_FOLIAATH_BITE_1, null, 2, 4F, ConfigHandler.MOBS.FOLIAATH.combatData.attackMultiplier, 3));
         this.tasks.addTask(1, new AnimationTakeDamage<>(this));
         this.tasks.addTask(1, new AnimationDieAI<>(this));
-        this.targetTasks.addTask(3, new EntityAINearestAttackableTarget(this, EntityLivingBase.class, 0, true, false, e ->
-            EntityPlayer.class.isAssignableFrom(e.getClass()) || EntityCreature.class.isAssignableFrom(e.getClass())) {
+        this.targetTasks.addTask(3, new NearestAttackableTargetGoal(this, LivingEntity.class, 0, true, false, e ->
+            PlayerEntity.class.isAssignableFrom(e.getClass()) || CreatureEntity.class.isAssignableFrom(e.getClass())) {
 
             @Override
-            protected boolean isSuitableTarget(@Nullable EntityLivingBase target, boolean includeInvincibles) {
+            protected boolean isSuitableTarget(@Nullable LivingEntity target, boolean includeInvincibles) {
                 return !(target instanceof EntityFoliaath) && !(target instanceof EntityBabyFoliaath) && !target.isInvisible() && !target.getIsInvulnerable() && super.isSuitableTarget(target, includeInvincibles);
             }
         });
@@ -240,7 +240,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
             activate.increaseTimer(activateTime < activateTarget ? 1 : -2);
         }
 
-        if (!this.world.isRemote && this.world.getDifficulty() == EnumDifficulty.PEACEFUL)
+        if (!this.world.isRemote && this.world.getDifficulty() == Difficulty.PEACEFUL)
         {
             this.setDead();
         }
@@ -305,16 +305,16 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         int k = MathHelper.floor(this.posZ);
         BlockPos pos = new BlockPos(i, j, k);
         Block floor = world.getBlockState(pos.down()).getBlock();
-        IBlockState floorDown1 = world.getBlockState(pos.down(2));
-        IBlockState floorDown2 = world.getBlockState(pos.down(3));
+        BlockState floorDown1 = world.getBlockState(pos.down(2));
+        BlockState floorDown2 = world.getBlockState(pos.down(3));
         boolean notInTree = true;
-        if (floor instanceof BlockLeaves && floorDown1 != biome.topBlock && floorDown2 != biome.topBlock) notInTree = false;
-        return super.getCanSpawnHere() && notInTree && getEntitiesNearby(EntityAnimal.class, 10, 10, 10, 10).isEmpty() && world.getDifficulty() != EnumDifficulty.PEACEFUL;
+        if (floor instanceof LeavesBlock && floorDown1 != biome.topBlock && floorDown2 != biome.topBlock) notInTree = false;
+        return super.getCanSpawnHere() && notInTree && getEntitiesNearby(AnimalEntity.class, 10, 10, 10, 10).isEmpty() && world.getDifficulty() != Difficulty.PEACEFUL;
     }
 
     @Override
-    public void onKillEntity(EntityLivingBase entity) {
-        this.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 300, 1, true, true));
+    public void onKillEntity(LivingEntity entity) {
+        this.addPotionEffect(new EffectInstance(Effects.REGENERATION, 300, 1, true, true));
     }
 
     @Nullable
@@ -341,13 +341,13 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound compound) {
+    public void writeEntityToNBT(CompoundNBT compound) {
         super.writeEntityToNBT(compound);
         compound.setBoolean("canDespawn", canDespawn());
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound compound) {
+    public void readEntityFromNBT(CompoundNBT compound) {
         super.readEntityFromNBT(compound);
         setCanDespawn(compound.getBoolean("canDespawn"));
     }

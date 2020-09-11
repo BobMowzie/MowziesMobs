@@ -1,11 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
 import com.google.common.base.Optional;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -19,7 +19,7 @@ import java.util.List;
  * Created by Josh on 7/8/2018.
  */
 public class EntityBlockSwapper extends Entity {
-    private static final DataParameter<Optional<IBlockState>> ORIG_BLOCK_STATE = EntityDataManager.createKey(EntityBlockSwapper.class, DataSerializers.OPTIONAL_BLOCK_STATE);
+    private static final DataParameter<Optional<BlockState>> ORIG_BLOCK_STATE = EntityDataManager.createKey(EntityBlockSwapper.class, DataSerializers.OPTIONAL_BLOCK_STATE);
     private static final DataParameter<Integer> RESTORE_TIME = EntityDataManager.createKey(EntityBlockSwapper.class, DataSerializers.VARINT);
     private static final DataParameter<BlockPos> POS = EntityDataManager.createKey(EntityBlockSwapper.class, DataSerializers.BLOCK_POS);
     private int duration;
@@ -30,7 +30,7 @@ public class EntityBlockSwapper extends Entity {
         this(world, new BlockPos(0, 0, 0), Blocks.AIR.getDefaultState(), 20, false, false);
     }
 
-    public EntityBlockSwapper(World world, BlockPos pos, IBlockState newBlock, int duration, boolean breakParticlesStart, boolean breakParticlesEnd) {
+    public EntityBlockSwapper(World world, BlockPos pos, BlockState newBlock, int duration, boolean breakParticlesStart, boolean breakParticlesEnd) {
         super(world);
         setStorePos(pos);
         setRestoreTime(duration);
@@ -50,7 +50,7 @@ public class EntityBlockSwapper extends Entity {
         }
     }
 
-    public static void swapBlock(World world, BlockPos pos, IBlockState newBlock, int duration, boolean breakParticlesStart, boolean breakParticlesEnd) {
+    public static void swapBlock(World world, BlockPos pos, BlockState newBlock, int duration, boolean breakParticlesStart, boolean breakParticlesEnd) {
         if (!world.isRemote) {
             EntityBlockSwapper swapper = new EntityBlockSwapper(world, pos, newBlock, duration, breakParticlesStart, breakParticlesEnd);
             world.spawnEntity(swapper);
@@ -87,11 +87,11 @@ public class EntityBlockSwapper extends Entity {
         pos = bpos;
     }
 
-    public IBlockState getOrigBlock() {
+    public BlockState getOrigBlock() {
         return getDataManager().get(ORIG_BLOCK_STATE).get();
     }
 
-    public void setOrigBlock(IBlockState block) {
+    public void setOrigBlock(BlockState block) {
         getDataManager().set(ORIG_BLOCK_STATE, Optional.of(block));
     }
 
@@ -106,14 +106,14 @@ public class EntityBlockSwapper extends Entity {
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (ticksExisted > duration && world.getEntitiesWithinAABB(EntityPlayer.class, getEntityBoundingBox()).isEmpty()) restoreBlock();
+        if (ticksExisted > duration && world.getEntitiesWithinAABB(PlayerEntity.class, getEntityBoundingBox()).isEmpty()) restoreBlock();
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound compound) {
-        Optional<IBlockState> blockOption = Optional.of(getOrigBlock());
+    public void writeEntityToNBT(CompoundNBT compound) {
+        Optional<BlockState> blockOption = Optional.of(getOrigBlock());
         if (blockOption.isPresent()) {
-            compound.setTag("block", NBTUtil.writeBlockState(new NBTTagCompound(), blockOption.get()));
+            compound.setTag("block", NBTUtil.writeBlockState(new CompoundNBT(), blockOption.get()));
         }
         compound.setInteger("restoreTime", getRestoreTime());
         compound.setInteger("storePosX", getStorePos().getX());
@@ -122,8 +122,8 @@ public class EntityBlockSwapper extends Entity {
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound compound) {
-        IBlockState blockState = NBTUtil.readBlockState((NBTTagCompound) compound.getTag("block"));
+    public void readEntityFromNBT(CompoundNBT compound) {
+        BlockState blockState = NBTUtil.readBlockState((CompoundNBT) compound.getTag("block"));
         setOrigBlock(blockState);
         setRestoreTime(compound.getInteger("restoreTime"));
         setStorePos(new BlockPos(

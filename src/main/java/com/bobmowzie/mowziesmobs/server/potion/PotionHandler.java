@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.potion;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import net.minecraft.potion.Potion;
+import net.minecraft.potion.Effect;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -17,7 +17,7 @@ public final class PotionHandler {
     public static final MowziePotionPoisonResist POISON_RESIST = (MowziePotionPoisonResist) new MowziePotionPoisonResist().setRegistryName(MowziesMobs.MODID, "poison_resist");
 
     @SubscribeEvent
-    public static void register(RegistryEvent.Register<Potion> event) {
+    public static void register(RegistryEvent.Register<Effect> event) {
         event.getRegistry().registerAll(
                 SUNS_BLESSING,
                 GEOMANCY,

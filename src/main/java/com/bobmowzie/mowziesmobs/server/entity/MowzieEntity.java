@@ -10,18 +10,17 @@ import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IEntityLivingData;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.item.EntityXPOrb;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Items;
+import net.minecraft.entity.*;
+import net.minecraft.entity.CreatureEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.item.ExperienceOrbEntity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
@@ -31,7 +30,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BossInfo;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.EnumSkyBlock;
+import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import org.apache.commons.lang3.ArrayUtils;
@@ -42,14 +41,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class MowzieEntity extends EntityCreature implements IEntityAdditionalSpawnData, IAnimatedEntity, IntermittentAnimatableEntity {
+public abstract class MowzieEntity extends CreatureEntity implements IEntityAdditionalSpawnData, IAnimatedEntity, IntermittentAnimatableEntity {
     private static final byte START_IA_HEALTH_UPDATE_ID = 4;
 
     public int frame;
     public float targetDistance;
     public float targetAngle;
     public boolean active;
-    public EntityLivingBase blockingEntity = null;
+    public LivingEntity blockingEntity = null;
     private int animationTick;
     private Animation animation = NO_ANIMATION;
     private final List<IntermittentAnimation<?>> intermittentAnimations = new ArrayList<>();
@@ -66,7 +65,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     private boolean killDataRecentlyHitFlag;
     private int killDataLootingLevel;
     private DamageSource killDataCause;
-    private EntityPlayer killDataAttackingPlayer;
+    private PlayerEntity killDataAttackingPlayer;
 
     private final MMBossInfoServer bossInfo = new MMBossInfoServer(this);
 
@@ -155,7 +154,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     {
         BlockPos blockpos = new BlockPos(this.posX, this.getEntityBoundingBox().minY, this.posZ);
 
-        if (this.world.getLightFor(EnumSkyBlock.SKY, blockpos) > this.rand.nextInt(32))
+        if (this.world.getLightFor(LightType.SKY, blockpos) > this.rand.nextInt(32))
         {
             return false;
         }
@@ -234,7 +233,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
 
     @Nullable
     @Override
-    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, @Nullable IEntityLivingData livingdata) {
+    public ILivingEntityData onInitialSpawn(DifficultyInstance difficulty, @Nullable ILivingEntityData livingdata) {
 //        System.out.println("Spawned " + getName() + " at " + getPosition());
 //        System.out.println("Block " + world.getBlockState(getPosition().down()).toString());
         return super.onInitialSpawn(difficulty, livingdata);
@@ -244,9 +243,9 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
         float f = (float)this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getAttributeValue() * damageMultiplier;
         int i = 0;
 
-        if (entityIn instanceof EntityLivingBase)
+        if (entityIn instanceof LivingEntity)
         {
-            f += EnchantmentHelper.getModifierForCreature(this.getHeldItemMainhand(), ((EntityLivingBase)entityIn).getCreatureAttribute());
+            f += EnchantmentHelper.getModifierForCreature(this.getHeldItemMainhand(), ((LivingEntity)entityIn).getCreatureAttribute());
             i += EnchantmentHelper.getKnockbackModifier(this);
         }
 
@@ -254,9 +253,9 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
 
         if (flag)
         {
-            if (i > 0 && entityIn instanceof EntityLivingBase)
+            if (i > 0 && entityIn instanceof LivingEntity)
             {
-                ((EntityLivingBase)entityIn).knockBack(this, (float)i * 0.5F, (double)MathHelper.sin(this.rotationYaw * 0.017453292F), (double)(-MathHelper.cos(this.rotationYaw * 0.017453292F)));
+                ((LivingEntity)entityIn).knockBack(this, (float)i * 0.5F, (double)MathHelper.sin(this.rotationYaw * 0.017453292F), (double)(-MathHelper.cos(this.rotationYaw * 0.017453292F)));
                 this.motionX *= 0.6D;
                 this.motionZ *= 0.6D;
             }
@@ -268,9 +267,9 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
                 entityIn.setFire(j * 4);
             }
 
-            if (entityIn instanceof EntityPlayer)
+            if (entityIn instanceof PlayerEntity)
             {
-                EntityPlayer entityplayer = (EntityPlayer)entityIn;
+                PlayerEntity entityplayer = (PlayerEntity)entityIn;
                 ItemStack itemstack = this.getHeldItemMainhand();
                 ItemStack itemstack1 = entityplayer.isHandActive() ? entityplayer.getActiveItemStack() : ItemStack.EMPTY;
 
@@ -300,20 +299,20 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
         return Math.atan2(second.posZ - first.posZ, second.posX - first.posX) * (180 / Math.PI) + 90;
     }
 
-    public List<EntityPlayer> getPlayersNearby(double distanceX, double distanceY, double distanceZ, double radius) {
+    public List<PlayerEntity> getPlayersNearby(double distanceX, double distanceY, double distanceZ, double radius) {
         List<Entity> nearbyEntities = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(distanceX, distanceY, distanceZ));
-        List<EntityPlayer> listEntityPlayers = nearbyEntities.stream().filter(entityNeighbor -> entityNeighbor instanceof EntityPlayer && getDistance(entityNeighbor) <= radius + entityNeighbor.width / 2f).map(entityNeighbor -> (EntityPlayer) entityNeighbor).collect(Collectors.toList());
+        List<PlayerEntity> listEntityPlayers = nearbyEntities.stream().filter(entityNeighbor -> entityNeighbor instanceof PlayerEntity && getDistance(entityNeighbor) <= radius + entityNeighbor.width / 2f).map(entityNeighbor -> (PlayerEntity) entityNeighbor).collect(Collectors.toList());
         return listEntityPlayers;
     }
 
-    public List<EntityLivingBase> getAttackableEntityLivingBaseNearby(double distanceX, double distanceY, double distanceZ, double radius) {
+    public List<LivingEntity> getAttackableEntityLivingBaseNearby(double distanceX, double distanceY, double distanceZ, double radius) {
         List<Entity> nearbyEntities = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(distanceX, distanceY, distanceZ));
-        List<EntityLivingBase> listEntityLivingBase = nearbyEntities.stream().filter(entityNeighbor -> entityNeighbor instanceof EntityLivingBase && ((EntityLivingBase)entityNeighbor).attackable() && (!(entityNeighbor instanceof EntityPlayer) || !((EntityPlayer)entityNeighbor).isCreative()) && getDistance(entityNeighbor) <= radius + entityNeighbor.width / 2f).map(entityNeighbor -> (EntityLivingBase) entityNeighbor).collect(Collectors.toList());
+        List<LivingEntity> listEntityLivingBase = nearbyEntities.stream().filter(entityNeighbor -> entityNeighbor instanceof LivingEntity && ((LivingEntity)entityNeighbor).attackable() && (!(entityNeighbor instanceof PlayerEntity) || !((PlayerEntity)entityNeighbor).isCreative()) && getDistance(entityNeighbor) <= radius + entityNeighbor.width / 2f).map(entityNeighbor -> (LivingEntity) entityNeighbor).collect(Collectors.toList());
         return listEntityLivingBase;
     }
 
-    public  List<EntityLivingBase> getEntityLivingBaseNearby(double distanceX, double distanceY, double distanceZ, double radius) {
-        return getEntitiesNearby(EntityLivingBase.class, distanceX, distanceY, distanceZ, radius);
+    public  List<LivingEntity> getEntityLivingBaseNearby(double distanceX, double distanceY, double distanceZ, double radius) {
+        return getEntitiesNearby(LivingEntity.class, distanceX, distanceY, distanceZ, radius);
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double r) {
@@ -351,9 +350,9 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
                 i = net.minecraftforge.event.ForgeEventFactory.getExperienceDrop(this, this.attackingPlayer, i);
                 while (i > 0)
                 {
-                    int j = EntityXPOrb.getXPSplit(i);
+                    int j = ExperienceOrbEntity.getXPSplit(i);
                     i -= j;
-                    this.world.spawnEntity(new EntityXPOrb(this.world, this.posX, this.posY, this.posZ, j));
+                    this.world.spawnEntity(new ExperienceOrbEntity(this.world, this.posX, this.posY, this.posZ, j));
                 }
             }
 
@@ -369,7 +368,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
                 captureDrops = false;
 
                 if (!net.minecraftforge.common.ForgeHooks.onLivingDrops(this, killDataCause, capturedDrops, killDataLootingLevel, killDataRecentlyHitFlag)) {
-                    for (EntityItem item : capturedDrops) {
+                    for (ItemEntity item : capturedDrops) {
                         world.spawnEntity(item);
                     }
                 }
@@ -399,7 +398,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
         if (!this.dead)
         {
             Entity entity = cause.getTrueSource();
-            EntityLivingBase entitylivingbase = this.getAttackingEntity();
+            LivingEntity entitylivingbase = this.getAttackingEntity();
 
             if (this.scoreValue >= 0 && entitylivingbase != null)
             {
@@ -429,7 +428,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
                     captureDrops = false;
 
                     if (!net.minecraftforge.common.ForgeHooks.onLivingDrops(this, cause, capturedDrops, i, recentlyHit > 0)) {
-                        for (EntityItem item : capturedDrops) {
+                        for (ItemEntity item : capturedDrops) {
                             world.spawnEntity(item);
                         }
                     }
@@ -482,7 +481,7 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     }
 
     protected void repelEntities(float x, float y, float z, float radius) {
-        List<EntityLivingBase> nearbyEntities = getEntityLivingBaseNearby(x, y, z, radius);
+        List<LivingEntity> nearbyEntities = getEntityLivingBaseNearby(x, y, z, radius);
         for (Entity entity : nearbyEntities) {
             double angle = (getAngleBetweenEntities(this, entity) + 90) * Math.PI / 180;
             entity.motionX = -0.1 * Math.cos(angle);
@@ -519,19 +518,19 @@ public abstract class MowzieEntity extends EntityCreature implements IEntityAddi
     public abstract Animation getHurtAnimation();
 
     @Override
-    public void addTrackingPlayer(EntityPlayerMP player) {
+    public void addTrackingPlayer(ServerPlayerEntity player) {
         super.addTrackingPlayer(player);
         this.bossInfo.addPlayer(player);
     }
 
     @Override
-    public void removeTrackingPlayer(EntityPlayerMP player) {
+    public void removeTrackingPlayer(ServerPlayerEntity player) {
         super.removeTrackingPlayer(player);
         this.bossInfo.removePlayer(player);
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound compound) {
+    public void readEntityFromNBT(CompoundNBT compound) {
         super.readEntityFromNBT(compound);
         if (this.hasCustomName()) {
             this.bossInfo.setName(this.getDisplayName());

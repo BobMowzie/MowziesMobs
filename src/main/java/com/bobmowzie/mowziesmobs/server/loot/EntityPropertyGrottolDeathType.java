@@ -7,7 +7,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.JsonUtils;
+import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.properties.EntityProperty;
 
@@ -49,8 +49,8 @@ public class EntityPropertyGrottolDeathType implements EntityProperty {
 
         @Override
         public EntityPropertyGrottolDeathType deserialize(JsonElement element, JsonDeserializationContext deserializationContext) {
-            JsonObject obj = JsonUtils.getJsonObject(element, this.getName().getPath());
-            return new EntityPropertyGrottolDeathType(JsonUtils.getString(obj.get("type"), "type"));
+            JsonObject obj = JSONUtils.getJsonObject(element, this.getName().getPath());
+            return new EntityPropertyGrottolDeathType(JSONUtils.getString(obj.get("type"), "type"));
         }
     }
 }

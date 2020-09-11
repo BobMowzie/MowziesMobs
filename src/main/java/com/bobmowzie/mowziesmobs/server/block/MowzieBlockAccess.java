@@ -1,10 +1,10 @@
 package com.bobmowzie.mowziesmobs.server.block;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.init.Biomes;
+import net.minecraft.util.Direction;
+import net.minecraft.world.biome.Biomes;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.WorldType;
@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
  * Created by Josh on 5/1/2017.
  */
 public class MowzieBlockAccess implements IBlockAccess {
-    private IBlockState accessState;
+    private BlockState accessState;
     private Biome biome = Biomes.PLAINS;
 
     @Nullable
@@ -30,12 +30,12 @@ public class MowzieBlockAccess implements IBlockAccess {
         return 0;
     }
 
-    public void setBlockState(IBlockState state) {
+    public void setBlockState(BlockState state) {
         this.accessState = state;
     }
 
     @Override
-    public IBlockState getBlockState(BlockPos pos) {
+    public BlockState getBlockState(BlockPos pos) {
         return accessState;
     }
 
@@ -54,7 +54,7 @@ public class MowzieBlockAccess implements IBlockAccess {
     }
 
     @Override
-    public int getStrongPower(BlockPos pos, EnumFacing direction) {
+    public int getStrongPower(BlockPos pos, Direction direction) {
         return 0;
     }
 
@@ -64,7 +64,7 @@ public class MowzieBlockAccess implements IBlockAccess {
     }
 
     @Override
-    public boolean isSideSolid(BlockPos pos, EnumFacing side, boolean _default) {
+    public boolean isSideSolid(BlockPos pos, Direction side, boolean _default) {
         return true;
     }
 }

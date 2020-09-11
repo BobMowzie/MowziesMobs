@@ -11,16 +11,16 @@ import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockOldLeaf;
 import net.minecraft.block.BlockPlanks;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.SoundEvents;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.block.Blocks;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -30,8 +30,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootTable;
 
@@ -89,7 +89,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
         prevActivate = activate.getTimer();
 
         if (!world.isRemote && getHungry() && getAnimation() == NO_ANIMATION) {
-            for (EntityItem meat : getMeatsNearby(0.4, 0.2, 0.4, 0.4)) {
+            for (ItemEntity meat : getMeatsNearby(0.4, 0.2, 0.4, 0.4)) {
                 ItemStack stack = meat.getItem().splitStack(1);
                 if (!stack.isEmpty()) {
                     setEating(stack);
@@ -150,9 +150,9 @@ public class EntityBabyFoliaath extends MowzieEntity {
         return null;
     }
 
-    private boolean arePlayersCarryingMeat(List<EntityPlayer> players) {
+    private boolean arePlayersCarryingMeat(List<PlayerEntity> players) {
         if (players.size() > 0) {
-            for (EntityPlayer player : players) {
+            for (PlayerEntity player : players) {
                 if (getMeatList().contains(player.getHeldItemMainhand().getItem())) {
                     return true;
                 }
@@ -166,7 +166,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
             meatTypes = Sets.newHashSet();
             LootTable lootTable = getEntityWorld().getLootTableManager().getLootTableFromLocation(getFoodLootTable());
             if (lootTable != LootTable.EMPTY_LOOT_TABLE) {
-                LootContext.Builder lootBuilder = (new LootContext.Builder((WorldServer) this.world)).withLootedEntity(this);
+                LootContext.Builder lootBuilder = (new LootContext.Builder((ServerWorld) this.world)).withLootedEntity(this);
                 List<ItemStack> loot = lootTable.generateLootForPools(world.rand, lootBuilder.build());
                 for (ItemStack itemStack : loot) {
                     meatTypes.add(itemStack.getItem());
@@ -217,7 +217,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
                 MathHelper.floor(posZ)
             );
 
-            IBlockState block = world.getBlockState(ground);
+            BlockState block = world.getBlockState(ground);
 
             if (block.getBlock() == Blocks.GRASS || block.getBlock() == Blocks.DIRT || block.getBlock().isLeaves(block, world, ground)) {
                 playSound(SoundEvents.BLOCK_GRASS_HIT, 1, 0.8F);
@@ -227,13 +227,13 @@ public class EntityBabyFoliaath extends MowzieEntity {
         return false;
     }
 
-    public List<EntityItem> getMeatsNearby(double distanceX, double distanceY, double distanceZ, double radius) {
+    public List<ItemEntity> getMeatsNearby(double distanceX, double distanceY, double distanceZ, double radius) {
         List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(distanceX, distanceY, distanceZ));
-        ArrayList<EntityItem> listEntityItem = new ArrayList<>();
+        ArrayList<ItemEntity> listEntityItem = new ArrayList<>();
         for (Entity entityNeighbor : list) {
-            if (entityNeighbor instanceof EntityItem && getDistance(entityNeighbor) <= radius) {
-                if (getMeatList().contains(((EntityItem) entityNeighbor).getItem().getItem())) {
-                    listEntityItem.add((EntityItem) entityNeighbor);
+            if (entityNeighbor instanceof ItemEntity && getDistance(entityNeighbor) <= radius) {
+                if (getMeatList().contains(((ItemEntity) entityNeighbor).getItem().getItem())) {
+                    listEntityItem.add((ItemEntity) entityNeighbor);
                 }
             }
         }
@@ -241,13 +241,13 @@ public class EntityBabyFoliaath extends MowzieEntity {
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound compound) {
+    public void writeEntityToNBT(CompoundNBT compound) {
         super.writeEntityToNBT(compound);
         compound.setInteger("tickGrowth", getGrowth());
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound compound) {
+    public void readEntityFromNBT(CompoundNBT compound) {
         super.readEntityFromNBT(compound);
         setGrowth(compound.getInteger("tickGrowth"));
     }

@@ -1,8 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.entity.frostmaw;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 
 /**
@@ -26,12 +26,12 @@ public class EntityFrozenController extends Entity {
     }
 
     @Override
-    protected void readEntityFromNBT(NBTTagCompound compound) {
+    protected void readEntityFromNBT(CompoundNBT compound) {
 
     }
 
     @Override
-    protected void writeEntityToNBT(NBTTagCompound compound) {
+    protected void writeEntityToNBT(CompoundNBT compound) {
 
     }
 
@@ -59,7 +59,7 @@ public class EntityFrozenController extends Entity {
     public void updatePassenger(Entity passenger) {
         if (this.isPassenger(passenger))
         {
-            if (passenger instanceof EntityPlayer) passenger.setPosition(this.posX, this.posY, this.posZ);
+            if (passenger instanceof PlayerEntity) passenger.setPosition(this.posX, this.posY, this.posZ);
             else passenger.setPositionAndRotation(this.posX, this.posY, this.posZ, this.rotationYaw, this.rotationPitch);
         }
     }

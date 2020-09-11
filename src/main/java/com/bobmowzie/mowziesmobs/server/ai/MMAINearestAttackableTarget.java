@@ -2,19 +2,19 @@ package com.bobmowzie.mowziesmobs.server.ai;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.ai.EntityAITarget;
-import net.minecraft.entity.monster.EntityCreeper;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.EntityZombie;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.goal.TargetGoal;
+import net.minecraft.entity.monster.CreeperEntity;
+import net.minecraft.entity.monster.SkeletonEntity;
+import net.minecraft.entity.monster.ZombieEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EntitySelectors;
+import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.math.AxisAlignedBB;
 
 import javax.annotation.Nullable;
@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class MMAINearestAttackableTarget<T extends EntityLivingBase> extends EntityAITarget
+public class MMAINearestAttackableTarget<T extends LivingEntity> extends TargetGoal
 {
     protected final Class<T> targetClass;
     private final int targetChance;
@@ -32,17 +32,17 @@ public class MMAINearestAttackableTarget<T extends EntityLivingBase> extends Ent
     protected T targetEntity;
     protected boolean useVerticalDistance;
 
-    public MMAINearestAttackableTarget(EntityCreature creature, Class<T> classTarget, boolean checkSight)
+    public MMAINearestAttackableTarget(CreatureEntity creature, Class<T> classTarget, boolean checkSight)
     {
         this(creature, classTarget, checkSight, false, false);
     }
 
-    public MMAINearestAttackableTarget(EntityCreature creature, Class<T> classTarget, boolean checkSight, boolean onlyNearby, boolean useVerticalDistance)
+    public MMAINearestAttackableTarget(CreatureEntity creature, Class<T> classTarget, boolean checkSight, boolean onlyNearby, boolean useVerticalDistance)
     {
         this(creature, classTarget, 10, checkSight, onlyNearby, useVerticalDistance, (Predicate)null);
     }
 
-    public MMAINearestAttackableTarget(EntityCreature creature, Class<T> classTarget, int chance, boolean checkSight, boolean onlyNearby, boolean useVerticalDistance, @Nullable final Predicate <? super T > targetSelector)
+    public MMAINearestAttackableTarget(CreatureEntity creature, Class<T> classTarget, int chance, boolean checkSight, boolean onlyNearby, boolean useVerticalDistance, @Nullable final Predicate <? super T > targetSelector)
     {
         super(creature, checkSight, onlyNearby);
         this.targetClass = classTarget;
@@ -64,7 +64,7 @@ public class MMAINearestAttackableTarget<T extends EntityLivingBase> extends Ent
                 }
                 else
                 {
-                    return !EntitySelectors.NOT_SPECTATING.apply(p_apply_1_) ? false : MMAINearestAttackableTarget.this.isSuitableTarget(p_apply_1_, false);
+                    return !EntityPredicates.NOT_SPECTATING.apply(p_apply_1_) ? false : MMAINearestAttackableTarget.this.isSuitableTarget(p_apply_1_, false);
                 }
             }
         };
@@ -79,7 +79,7 @@ public class MMAINearestAttackableTarget<T extends EntityLivingBase> extends Ent
         {
             return false;
         }
-        else if (this.targetClass != EntityPlayer.class && this.targetClass != EntityPlayerMP.class)
+        else if (this.targetClass != PlayerEntity.class && this.targetClass != ServerPlayerEntity.class)
         {
             List<T> list = this.taskOwner.world.<T>getEntitiesWithinAABB(this.targetClass, this.getTargetableArea(this.getTargetDistance()), this.targetEntitySelector);
 
@@ -96,19 +96,19 @@ public class MMAINearestAttackableTarget<T extends EntityLivingBase> extends Ent
         }
         else
         {
-            this.targetEntity = (T)this.taskOwner.world.getNearestAttackablePlayer(this.taskOwner.posX, this.taskOwner.posY + (double)this.taskOwner.getEyeHeight(), this.taskOwner.posZ, this.getTargetDistance(), this.getTargetDistance(), new Function<EntityPlayer, Double>()
+            this.targetEntity = (T)this.taskOwner.world.getNearestAttackablePlayer(this.taskOwner.posX, this.taskOwner.posY + (double)this.taskOwner.getEyeHeight(), this.taskOwner.posZ, this.getTargetDistance(), this.getTargetDistance(), new Function<PlayerEntity, Double>()
             {
                 @Nullable
-                public Double apply(@Nullable EntityPlayer p_apply_1_)
+                public Double apply(@Nullable PlayerEntity p_apply_1_)
                 {
-                    ItemStack itemstack = p_apply_1_.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
+                    ItemStack itemstack = p_apply_1_.getItemStackFromSlot(EquipmentSlotType.HEAD);
 
                     if (itemstack.getItem() == Items.SKULL)
                     {
                         int i = itemstack.getItemDamage();
-                        boolean flag = MMAINearestAttackableTarget.this.taskOwner instanceof EntitySkeleton && i == 0;
-                        boolean flag1 = MMAINearestAttackableTarget.this.taskOwner instanceof EntityZombie && i == 2;
-                        boolean flag2 = MMAINearestAttackableTarget.this.taskOwner instanceof EntityCreeper && i == 4;
+                        boolean flag = MMAINearestAttackableTarget.this.taskOwner instanceof SkeletonEntity && i == 0;
+                        boolean flag1 = MMAINearestAttackableTarget.this.taskOwner instanceof ZombieEntity && i == 2;
+                        boolean flag2 = MMAINearestAttackableTarget.this.taskOwner instanceof CreeperEntity && i == 4;
 
                         if (flag || flag1 || flag2)
                         {
@@ -118,7 +118,7 @@ public class MMAINearestAttackableTarget<T extends EntityLivingBase> extends Ent
 
                     return 1.0D;
                 }
-            }, (Predicate<EntityPlayer>)this.targetEntitySelector);
+            }, (Predicate<PlayerEntity>)this.targetEntitySelector);
             return this.targetEntity != null;
         }
     }

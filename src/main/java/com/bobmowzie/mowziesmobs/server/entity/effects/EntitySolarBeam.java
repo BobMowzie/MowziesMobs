@@ -11,14 +11,14 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
@@ -31,14 +31,14 @@ import java.util.List;
 
 public class EntitySolarBeam extends Entity {
     private final double RADIUS = 20;
-    public EntityLivingBase caster;
+    public LivingEntity caster;
     public double endPosX, endPosY, endPosZ;
     public double collidePosX, collidePosY, collidePosZ;
     public ControlledAnimation appear = new ControlledAnimation(3);
 
     public boolean on = true;
 
-    public EnumFacing blockSide = null;
+    public Direction blockSide = null;
 
     private static final DataParameter<Float> YAW = EntityDataManager.createKey(EntitySolarBeam.class, DataSerializers.FLOAT);
 
@@ -56,7 +56,7 @@ public class EntitySolarBeam extends Entity {
         ignoreFrustumCheck = true;
     }
 
-    public EntitySolarBeam(World world, EntityLivingBase caster, double x, double y, double z, float yaw, float pitch, int duration) {
+    public EntitySolarBeam(World world, LivingEntity caster, double x, double y, double z, float yaw, float pitch, int duration) {
         this(world);
         this.caster = caster;
         this.setYaw(yaw);
@@ -74,7 +74,7 @@ public class EntitySolarBeam extends Entity {
     public void onUpdate() {
         super.onUpdate();
         if (ticksExisted == 1 && world.isRemote) {
-            caster = (EntityLivingBase) world.getEntityByID(getCasterID());
+            caster = (LivingEntity) world.getEntityByID(getCasterID());
         }
         if (!world.isRemote && getHasPlayer()) {
             this.updateWithPlayer();
@@ -110,12 +110,12 @@ public class EntitySolarBeam extends Entity {
         }
         if (ticksExisted > 20) {
             this.calculateEndPos();
-            List<EntityLivingBase> hit = raytraceEntities(world, new Vec3d(posX, posY, posZ), new Vec3d(endPosX, endPosY, endPosZ), false, true, true).entities;
+            List<LivingEntity> hit = raytraceEntities(world, new Vec3d(posX, posY, posZ), new Vec3d(endPosX, endPosY, endPosZ), false, true, true).entities;
             if (blockSide != null) {
                 spawnExplosionParticles(2);
             }
             if (!world.isRemote) {
-                for (EntityLivingBase target : hit) {
+                for (LivingEntity target : hit) {
                     if (caster instanceof EntityBarako && target instanceof LeaderSunstrikeImmune) {
                         continue;
                     }
@@ -125,14 +125,14 @@ public class EntitySolarBeam extends Entity {
                         damageFire *= ConfigHandler.MOBS.BARAKO.combatData.attackMultiplier;
                         damageMob *= ConfigHandler.MOBS.BARAKO.combatData.attackMultiplier;
                     }
-                    if (caster instanceof EntityPlayer) {
+                    if (caster instanceof PlayerEntity) {
                         damageFire *= ConfigHandler.TOOLS_AND_ABILITIES.sunsBlessingAttackMultiplier;
                         damageMob *= ConfigHandler.TOOLS_AND_ABILITIES.sunsBlessingAttackMultiplier;
                     }
                     DamageUtil.dealMixedDamage(target, DamageSource.causeMobDamage(caster), damageMob, DamageSource.ON_FIRE, damageFire);
                 }
             } else {
-                for (EntityLivingBase e : hit) {
+                for (LivingEntity e : hit) {
                     if (e instanceof EntityWroughtnaut) {
                         MowziesMobs.PROXY.solarBeamHitWroughtnaught(caster);
                         break;
@@ -237,15 +237,15 @@ public class EntitySolarBeam extends Entity {
     }
 
     @Override
-    public boolean writeToNBTOptional(NBTTagCompound compound) {
+    public boolean writeToNBTOptional(CompoundNBT compound) {
         return false;
     }
 
     @Override
-    protected void readEntityFromNBT(NBTTagCompound nbt) {}
+    protected void readEntityFromNBT(CompoundNBT nbt) {}
 
     @Override
-    protected void writeEntityToNBT(NBTTagCompound nbt) {}
+    protected void writeEntityToNBT(CompoundNBT nbt) {}
 
     private void calculateEndPos() {
         endPosX = posX + RADIUS * Math.cos(getYaw()) * Math.cos(getPitch());
@@ -267,8 +267,8 @@ public class EntitySolarBeam extends Entity {
             collidePosZ = endPosZ;
             blockSide = null;
         }
-        List<EntityLivingBase> entities = world.getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(Math.min(posX, collidePosX), Math.min(posY, collidePosY), Math.min(posZ, collidePosZ), Math.max(posX, collidePosX), Math.max(posY, collidePosY), Math.max(posZ, collidePosZ)).grow(1, 1, 1));
-        for (EntityLivingBase entity : entities) {
+        List<LivingEntity> entities = world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(Math.min(posX, collidePosX), Math.min(posY, collidePosY), Math.min(posZ, collidePosZ), Math.max(posX, collidePosX), Math.max(posY, collidePosY), Math.max(posZ, collidePosZ)).grow(1, 1, 1));
+        for (LivingEntity entity : entities) {
             if (entity == caster) {
                 continue;
             }
@@ -308,7 +308,7 @@ public class EntitySolarBeam extends Entity {
     public static class HitResult {
         private RayTraceResult blockHit;
 
-        private List<EntityLivingBase> entities = new ArrayList<>();
+        private List<LivingEntity> entities = new ArrayList<>();
 
         public RayTraceResult getBlockHit() {
             return blockHit;
@@ -318,7 +318,7 @@ public class EntitySolarBeam extends Entity {
             this.blockHit = blockHit;
         }
 
-        public void addEntityHit(EntityLivingBase entity) {
+        public void addEntityHit(LivingEntity entity) {
             entities.add(entity);
         }
     }

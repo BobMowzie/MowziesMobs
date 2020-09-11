@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.server.ai.animation;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.util.SoundEvent;
 
@@ -24,7 +24,7 @@ public class AnimationProjectileAttackAI<T extends MowzieEntity & IAnimatedEntit
     @Override
     public void updateTask() {
         super.updateTask();
-        EntityLivingBase entityTarget = entity.getAttackTarget();
+        LivingEntity entityTarget = entity.getAttackTarget();
         if (entityTarget != null) {
             entity.faceEntity(entityTarget, 100, 100);
             entity.getLookHelper().setLookPositionWithEntity(entityTarget, 30F, 30F);

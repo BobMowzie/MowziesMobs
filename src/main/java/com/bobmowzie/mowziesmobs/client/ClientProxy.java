@@ -24,8 +24,8 @@ import com.bobmowzie.mowziesmobs.server.item.ItemSpawnEgg;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -84,7 +84,7 @@ public class ClientProxy extends ServerProxy {
     }
 
     @Override
-    public void playBoulderChargeSound(EntityPlayer player) {
+    public void playBoulderChargeSound(PlayerEntity player) {
         Minecraft.getMinecraft().getSoundHandler().playSound(new SpawnBoulderChargeSound(player));
     }
 
@@ -94,7 +94,7 @@ public class ClientProxy extends ServerProxy {
     }
 
     @Override
-    public void solarBeamHitWroughtnaught(EntityLivingBase caster) {
+    public void solarBeamHitWroughtnaught(LivingEntity caster) {
         if (caster == Minecraft.getMinecraft().player) {
             long now = System.currentTimeMillis();
             if (now - ClientEventHandler.INSTANCE.lastWroughtnautHitTime > 500) {

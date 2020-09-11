@@ -1,8 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.config;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.ItemArmor.ArmorMaterial;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.ArmorItem.ArmorMaterial;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.Config.*;
@@ -403,7 +403,7 @@ public class ConfigHandler {
         @Name("armor_data")
         @LangKey(LANG_PREFIX + "armor_data")
         @Comment({"Shared controls for armor"})
-        public ArmorData armorData = new ArmorData(ArmorMaterial.IRON.getDamageReductionAmount(EntityEquipmentSlot.HEAD), ArmorMaterial.IRON.getToughness());
+        public ArmorData armorData = new ArmorData(ArmorMaterial.IRON.getDamageReductionAmount(EquipmentSlotType.HEAD), ArmorMaterial.IRON.getToughness());
 
         @Name("breakable")
         @LangKey(LANG_PREFIX + "breakable")
@@ -429,7 +429,7 @@ public class ConfigHandler {
         @Name("armor_data")
         @LangKey(LANG_PREFIX + "armor_data")
         @Comment({"Shared controls for armor"})
-        public ArmorData armorData = new ArmorData(ArmorMaterial.GOLD.getDamageReductionAmount(EntityEquipmentSlot.HEAD), ArmorMaterial.GOLD.getToughness());
+        public ArmorData armorData = new ArmorData(ArmorMaterial.GOLD.getDamageReductionAmount(EquipmentSlotType.HEAD), ArmorMaterial.GOLD.getToughness());
 
         @Name("breakable")
         @LangKey(LANG_PREFIX + "breakable")
@@ -442,7 +442,7 @@ public class ConfigHandler {
         @Name("armor_data")
         @LangKey(LANG_PREFIX + "armor_data")
         @Comment({"Shared controls for armor"})
-        public ArmorData armorData = new ArmorData(ArmorMaterial.LEATHER.getDamageReductionAmount(EntityEquipmentSlot.HEAD), ArmorMaterial.LEATHER.getToughness());
+        public ArmorData armorData = new ArmorData(ArmorMaterial.LEATHER.getDamageReductionAmount(EquipmentSlotType.HEAD), ArmorMaterial.LEATHER.getToughness());
     }
 
     public static class IceCrystal {

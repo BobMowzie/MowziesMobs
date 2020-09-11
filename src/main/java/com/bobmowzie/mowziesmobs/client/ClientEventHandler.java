@@ -15,15 +15,15 @@ import net.ilexiconn.llibrary.LLibrary;
 import net.ilexiconn.llibrary.client.event.PlayerModelEvent;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumHand;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -69,9 +69,9 @@ public enum ClientEventHandler {
 
     @SubscribeEvent
     public void onHandRender(RenderSpecificHandEvent event) {
-        EntityPlayer player = Minecraft.getMinecraft().player;
+        PlayerEntity player = Minecraft.getMinecraft().player;
         MowziePlayerProperties propertyPlayer = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
-        if (event.getHand() == EnumHand.MAIN_HAND && propertyPlayer != null && propertyPlayer.untilAxeSwing > 0) {
+        if (event.getHand() == Hand.MAIN_HAND && propertyPlayer != null && propertyPlayer.untilAxeSwing > 0) {
             event.setCanceled(true);
         }
     }
@@ -81,9 +81,9 @@ public enum ClientEventHandler {
         if (event.getEntityPlayer() == null) {
             return;
         }
-        EntityPlayer player = event.getEntityPlayer();
+        PlayerEntity player = event.getEntityPlayer();
         ModelBiped model = event.getModel();
-        player.getHeldItem(EnumHand.MAIN_HAND);
+        player.getHeldItem(Hand.MAIN_HAND);
         MowziePlayerProperties propertyPlayer = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
         float delta = LLibrary.PROXY.getPartialTicks();
         if (propertyPlayer != null && propertyPlayer.geomancy.tunneling) {
@@ -181,7 +181,7 @@ public enum ClientEventHandler {
 
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event) {
-        EntityPlayer player = Minecraft.getMinecraft().player;
+        PlayerEntity player = Minecraft.getMinecraft().player;
         if (player != null) {
             MowziePlayerProperties propertyPlayer = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
             if (propertyPlayer != null && propertyPlayer.geomancy.canUse(player) && propertyPlayer.geomancy.isSpawningBoulder() && propertyPlayer.geomancy.getSpawnBoulderCharge() > 2) {
@@ -205,7 +205,7 @@ public enum ClientEventHandler {
 
     @SubscribeEvent
     public void onRenderLiving(RenderLivingEvent.Pre event) {
-        EntityLivingBase entity = event.getEntity();
+        LivingEntity entity = event.getEntity();
         MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
         if (entity.isPotionActive(PotionHandler.FROZEN) && property.prevFrozen) {
             entity.rotationYaw = entity.prevRotationYaw = property.frozenYaw;
@@ -241,27 +241,27 @@ public enum ClientEventHandler {
                 int col = res.getScaledWidth() / 4;
                 // MARIO
                 int marioOffsetX = col / 2 - 18;
-                Gui.drawModalRectWithCustomSizedTexture(marioOffsetX, offsetY, 0, 16, 39, 7, 64, 64);
+                AbstractGui.drawModalRectWithCustomSizedTexture(marioOffsetX, offsetY, 0, 16, 39, 7, 64, 64);
                 // points
                 drawMarioNumber(marioOffsetX, offsetY + 8, points, 6);
                 // Coin
                 int coinOffsetX = col + col / 2 - 15;
                 int coinU = 40 + ((int) (Math.max(0, MathHelper.sin(t * 0.005F)) * 2 + 0.5F)) * 6;
-                Gui.drawModalRectWithCustomSizedTexture(coinOffsetX, offsetY + 8, coinU, 8, 5, 8, 64, 64);
+                AbstractGui.drawModalRectWithCustomSizedTexture(coinOffsetX, offsetY + 8, coinU, 8, 5, 8, 64, 64);
                 // x02
-                Gui.drawModalRectWithCustomSizedTexture(coinOffsetX + 9, offsetY + 8, 16, 8, 23, 7, 64, 64);
+                AbstractGui.drawModalRectWithCustomSizedTexture(coinOffsetX + 9, offsetY + 8, 16, 8, 23, 7, 64, 64);
                 // WORLD 1-1
-                Gui.drawModalRectWithCustomSizedTexture(col * 2 + col / 2 - 19, offsetY, 0, 24, 39, 15, 64, 64);
+                AbstractGui.drawModalRectWithCustomSizedTexture(col * 2 + col / 2 - 19, offsetY, 0, 24, 39, 15, 64, 64);
                 // TIME
                 int timeOffsetX = col * 3 + col / 2 - 15;
-                Gui.drawModalRectWithCustomSizedTexture(timeOffsetX, offsetY, 0, 40, 30, 7, 64, 64);
+                AbstractGui.drawModalRectWithCustomSizedTexture(timeOffsetX, offsetY, 0, 40, 30, 7, 64, 64);
                 // Time
                 drawMarioNumber(timeOffsetX + 8, offsetY + 8, time, 3);
             }
             if (Minecraft.getMinecraft().player.isPotionActive(PotionHandler.FROZEN) && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0) {
                 Minecraft.getMinecraft().getTextureManager().bindTexture(FROZEN_BLUR);
                 ScaledResolution res = e.getResolution();
-                Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, res.getScaledWidth(), res.getScaledHeight(), res.getScaledWidth(), res.getScaledHeight());
+                AbstractGui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, res.getScaledWidth(), res.getScaledHeight(), res.getScaledWidth(), res.getScaledHeight());
             }
         }
     }
@@ -269,7 +269,7 @@ public enum ClientEventHandler {
     // Remove frozen overlay
     @SubscribeEvent
     public void onRenderHUD(RenderGameOverlayEvent.Pre event) {
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
+        ClientPlayerEntity player = Minecraft.getMinecraft().player;
         if (player != null && player.isRiding()) {
             if (player.getRidingEntity() instanceof EntityFrozenController) {
                 if (event.getType().equals(RenderGameOverlayEvent.ElementType.HEALTHMOUNT)) {
@@ -285,7 +285,7 @@ public enum ClientEventHandler {
     private static void drawMarioNumber(int x, int y, int value, int length) {
         for (int n = 0; n < length; n++, value /= 10) {
             int digit = value % 10;
-            Gui.drawModalRectWithCustomSizedTexture(x + 8 * (length - n - 1), y, digit * 8 % 64, digit / 8 * 8, 8, 7, 64, 64);
+            AbstractGui.drawModalRectWithCustomSizedTexture(x + 8 * (length - n - 1), y, digit * 8 % 64, digit / 8 * 8, 8, 7, 64, 64);
         }
     }
 

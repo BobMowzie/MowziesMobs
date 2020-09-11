@@ -2,19 +2,19 @@ package com.bobmowzie.mowziesmobs.server.ai.animation;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
+import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.pathfinding.Path;
-import net.minecraft.pathfinding.PathNavigate;
-import net.minecraft.util.EntitySelectors;
+import net.minecraft.pathfinding.PathNavigator;
+import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.List;
 
-public final class EntityAIAvoidEntity<T extends Entity> extends EntityAIBase {
-    private EntityCreature entity;
+public final class EntityAIAvoidEntity<T extends Entity> extends Goal {
+    private CreatureEntity entity;
 
     private final Class<T> avoidClass;
 
@@ -24,17 +24,17 @@ public final class EntityAIAvoidEntity<T extends Entity> extends EntityAIBase {
 
     private final double speed;
 
-    private final PathNavigate navigator;
+    private final PathNavigator navigator;
 
     private T avoiding;
 
     private Path path;
 
-    public EntityAIAvoidEntity(EntityCreature entity, Class<T> avoidClass, float distance, double speed) {
+    public EntityAIAvoidEntity(CreatureEntity entity, Class<T> avoidClass, float distance, double speed) {
         this(entity, avoidClass, Predicates.<T> alwaysTrue(), distance, speed);
     }
 
-    public EntityAIAvoidEntity(EntityCreature entity, Class<T> avoidClass, Predicate<? super T> predicate, float distance, double speed) {
+    public EntityAIAvoidEntity(CreatureEntity entity, Class<T> avoidClass, Predicate<? super T> predicate, float distance, double speed) {
         this.entity = entity;
         this.avoidClass = avoidClass;
         this.distance = distance;
@@ -43,7 +43,7 @@ public final class EntityAIAvoidEntity<T extends Entity> extends EntityAIBase {
                 return e.isEntityAlive() && entity.getEntitySenses().canSee(e);
             }
         };
-        this.predicate = Predicates.<T>and(EntitySelectors.CAN_AI_TARGET, visible, predicate);
+        this.predicate = Predicates.<T>and(EntityPredicates.CAN_AI_TARGET, visible, predicate);
         this.speed = speed;
         navigator = entity.getNavigator();
         setMutexBits(1);

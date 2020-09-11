@@ -4,15 +4,15 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelPoisonBall;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityPoisonBall;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
 
-public class RenderPoisonBall extends Render<EntityPoisonBall> {
+public class RenderPoisonBall extends EntityRenderer<EntityPoisonBall> {
     public static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/effects/poison_ball.png");
     public ModelPoisonBall model;
 
-    public RenderPoisonBall(RenderManager mgr) {
+    public RenderPoisonBall(EntityRendererManager mgr) {
         super(mgr);
         model = new ModelPoisonBall();
     }

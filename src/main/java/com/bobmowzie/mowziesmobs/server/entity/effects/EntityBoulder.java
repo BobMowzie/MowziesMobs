@@ -6,14 +6,14 @@ import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.google.common.base.Optional;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -35,10 +35,10 @@ import java.util.List;
  */
 public class EntityBoulder extends Entity {
     int blockId;
-    private EntityLivingBase caster;
+    private LivingEntity caster;
     private boolean travelling;
-    public IBlockState storedBlock;
-    private static final DataParameter<Optional<IBlockState>> BLOCK_STATE = EntityDataManager.createKey(EntityBoulder.class, DataSerializers.OPTIONAL_BLOCK_STATE);
+    public BlockState storedBlock;
+    private static final DataParameter<Optional<BlockState>> BLOCK_STATE = EntityDataManager.createKey(EntityBoulder.class, DataSerializers.OPTIONAL_BLOCK_STATE);
     private static final DataParameter<Boolean> SHOULD_EXPLODE = EntityDataManager.createKey(EntityBoulder.class, DataSerializers.BOOLEAN);
     private static final DataParameter<BlockPos> ORIGIN = EntityDataManager.createKey(EntityBoulder.class, DataSerializers.BLOCK_POS);
     private static final DataParameter<Integer> DEATH_TIME = EntityDataManager.createKey(EntityBoulder.class, DataSerializers.VARINT);
@@ -61,13 +61,13 @@ public class EntityBoulder extends Entity {
         this.setOrigin(new BlockPos(this));
     }
 
-    public EntityBoulder(World world, EntityLivingBase caster, int size, IBlockState block) {
+    public EntityBoulder(World world, LivingEntity caster, int size, BlockState block) {
         this(world);
         this.caster = caster;
         setBoulderSize(size);
         setSizeParams();
         if (!world.isRemote && block != null) {
-            IBlockState newBlock = block;
+            BlockState newBlock = block;
             Material mat = block.getMaterial();
             if (mat == Material.GRASS || mat == Material.GROUND) newBlock = Blocks.DIRT.getDefaultState();
             else if (mat == Material.ROCK) {
@@ -131,7 +131,7 @@ public class EntityBoulder extends Entity {
             speed = 0.65f;
         }
 
-        if (caster instanceof EntityPlayer) damage *= ConfigHandler.TOOLS_AND_ABILITIES.geomancyAttackMultiplier;
+        if (caster instanceof PlayerEntity) damage *= ConfigHandler.TOOLS_AND_ABILITIES.geomancyAttackMultiplier;
 
     }
 
@@ -171,7 +171,7 @@ public class EntityBoulder extends Entity {
                 }
             }
         }
-        List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby(1.7);
+        List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(1.7);
         if (travelling && !entitiesHit.isEmpty()) {
             for (Entity entity : entitiesHit) {
                 if (world.isRemote) continue;
@@ -296,11 +296,11 @@ public class EntityBoulder extends Entity {
         return getEntityBoundingBox();
     }
 
-    public IBlockState getBlock() {
+    public BlockState getBlock() {
         return getDataManager().get(BLOCK_STATE).get();
     }
 
-    public void setBlock(IBlockState block) {
+    public void setBlock(BlockState block) {
         getDataManager().set(BLOCK_STATE, Optional.of(block));
         this.storedBlock = block;
     }
@@ -339,18 +339,18 @@ public class EntityBoulder extends Entity {
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound compound) {
-        Optional<IBlockState> blockOption = Optional.of(getBlock());
+    public void writeEntityToNBT(CompoundNBT compound) {
+        Optional<BlockState> blockOption = Optional.of(getBlock());
         if (blockOption.isPresent()) {
-            compound.setTag("block", NBTUtil.writeBlockState(new NBTTagCompound(), blockOption.get()));
+            compound.setTag("block", NBTUtil.writeBlockState(new CompoundNBT(), blockOption.get()));
         }
         compound.setInteger("deathTime", getDeathTime());
         compound.setInteger("size", getBoulderSize());
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound compound) {
-        IBlockState blockState = NBTUtil.readBlockState((NBTTagCompound) compound.getTag("block"));
+    public void readEntityFromNBT(CompoundNBT compound) {
+        BlockState blockState = NBTUtil.readBlockState((CompoundNBT) compound.getTag("block"));
         setBlock(blockState);
         setDeathTime(compound.getInteger("deathTime"));
         setBoulderSize(compound.getInteger("size"));
@@ -364,10 +364,10 @@ public class EntityBoulder extends Entity {
     @Override
     public boolean hitByEntity(Entity entityIn) {
         if (ticksExisted > finishedRisingTick - 1) {
-            if (entityIn instanceof EntityPlayer
-                    && ((EntityPlayer)entityIn).inventory.getCurrentItem().isEmpty()
-                    && ((EntityPlayer) entityIn).isPotionActive(PotionHandler.GEOMANCY)) {
-                EntityPlayer player = (EntityPlayer) entityIn;
+            if (entityIn instanceof PlayerEntity
+                    && ((PlayerEntity)entityIn).inventory.getCurrentItem().isEmpty()
+                    && ((PlayerEntity) entityIn).isPotionActive(PotionHandler.GEOMANCY)) {
+                PlayerEntity player = (PlayerEntity) entityIn;
                 if (ridingEntities.contains(player)) {
                     Vec3d lateralLookVec = Vec3d.fromPitchYaw(0, player.rotationYaw).normalize();
                     motionX = speed * 0.5 * lateralLookVec.x;
@@ -417,8 +417,8 @@ public class EntityBoulder extends Entity {
         return super.hitByEntity(entityIn);
     }
 
-    public List<EntityLivingBase> getEntityLivingBaseNearby(double radius) {
-        return getEntitiesNearby(EntityLivingBase.class, radius);
+    public List<LivingEntity> getEntityLivingBaseNearby(double radius) {
+        return getEntitiesNearby(LivingEntity.class, radius);
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double r) {

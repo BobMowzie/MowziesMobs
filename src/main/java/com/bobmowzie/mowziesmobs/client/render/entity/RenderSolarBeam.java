@@ -8,12 +8,12 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -21,7 +21,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
-public class RenderSolarBeam extends Render<EntitySolarBeam> {
+public class RenderSolarBeam extends EntityRenderer<EntitySolarBeam> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/effects/solar_beam.png");
     private static final double TEXTURE_WIDTH = 256;
     private static final double TEXTURE_HEIGHT = 32;
@@ -29,7 +29,7 @@ public class RenderSolarBeam extends Render<EntitySolarBeam> {
     private static final double BEAM_RADIUS = 1;
     private boolean clearerView = false;
 
-    public RenderSolarBeam(RenderManager mgr) {
+    public RenderSolarBeam(EntityRendererManager mgr) {
         super(mgr);
     }
 
@@ -40,7 +40,7 @@ public class RenderSolarBeam extends Render<EntitySolarBeam> {
 
     @Override
     public void doRender(EntitySolarBeam solarBeam, double x, double y, double z, float yaw, float delta) {
-        clearerView = solarBeam.caster instanceof EntityPlayer && Minecraft.getMinecraft().player == solarBeam.caster && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0;
+        clearerView = solarBeam.caster instanceof PlayerEntity && Minecraft.getMinecraft().player == solarBeam.caster && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0;
 
         double length = Math.sqrt(Math.pow(solarBeam.collidePosX - solarBeam.posX, 2) + Math.pow(solarBeam.collidePosY - solarBeam.posY, 2) + Math.pow(solarBeam.collidePosZ - solarBeam.posZ, 2));
         int frame = MathHelper.floor((solarBeam.appear.getTimer() - 1 + delta) * 2);
@@ -100,7 +100,7 @@ public class RenderSolarBeam extends Render<EntitySolarBeam> {
         .addElement(DefaultVertexFormats.TEX_2F)
         .addElement(DefaultVertexFormats.TEX_2S);
 
-    private void renderEnd(int frame, EnumFacing side) {
+    private void renderEnd(int frame, Direction side) {
         GlStateManager.rotate(-renderManager.playerViewY, 0, 1, 0);
         GlStateManager.rotate(renderManager.playerViewX, 1, 0, 0);
         double minU = 0 + 16D / TEXTURE_WIDTH * frame;

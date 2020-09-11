@@ -2,23 +2,23 @@ package com.bobmowzie.mowziesmobs.server.ai;
 
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
-import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.ai.EntityAITarget;
-import net.minecraft.entity.passive.EntityTameable;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.CreatureEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.goal.TargetGoal;
+import net.minecraft.entity.passive.TameableEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 
 import java.util.List;
 
-public class BarakoaHurtByTargetAI extends EntityAITarget
+public class BarakoaHurtByTargetAI extends TargetGoal
 {
     private final boolean entityCallsForHelp;
     /** Store the previous revengeTimer value */
     private int revengeTimerOld;
     private final Class<?>[] excludedReinforcementTypes;
 
-    public BarakoaHurtByTargetAI(EntityCreature creatureIn, boolean entityCallsForHelpIn, Class<?>... excludedReinforcementTypes)
+    public BarakoaHurtByTargetAI(CreatureEntity creatureIn, boolean entityCallsForHelpIn, Class<?>... excludedReinforcementTypes)
     {
         super(creatureIn, true);
         this.entityCallsForHelp = entityCallsForHelpIn;
@@ -32,7 +32,7 @@ public class BarakoaHurtByTargetAI extends EntityAITarget
     public boolean shouldExecute()
     {
         int i = this.taskOwner.getRevengeTimer();
-        EntityLivingBase entitylivingbase = this.taskOwner.getRevengeTarget();
+        LivingEntity entitylivingbase = this.taskOwner.getRevengeTarget();
         return i != this.revengeTimerOld && entitylivingbase != null && this.isSuitableTarget(entitylivingbase, false);
     }
 
@@ -58,19 +58,19 @@ public class BarakoaHurtByTargetAI extends EntityAITarget
     {
         double d0 = this.getTargetDistance();
 
-        List<EntityCreature> nearby = this.taskOwner.world.getEntitiesWithinAABB(EntityBarakoa.class, (new AxisAlignedBB(this.taskOwner.posX, this.taskOwner.posY, this.taskOwner.posZ, this.taskOwner.posX + 1.0D, this.taskOwner.posY + 1.0D, this.taskOwner.posZ + 1.0D)).grow(d0, 10.0D, d0), e ->
+        List<CreatureEntity> nearby = this.taskOwner.world.getEntitiesWithinAABB(EntityBarakoa.class, (new AxisAlignedBB(this.taskOwner.posX, this.taskOwner.posY, this.taskOwner.posZ, this.taskOwner.posX + 1.0D, this.taskOwner.posY + 1.0D, this.taskOwner.posZ + 1.0D)).grow(d0, 10.0D, d0), e ->
                 ((EntityBarakoa)e).isBarakoDevoted());
         nearby.addAll(this.taskOwner.world.getEntitiesWithinAABB(EntityBarako.class, (new AxisAlignedBB(this.taskOwner.posX, this.taskOwner.posY, this.taskOwner.posZ, this.taskOwner.posX + 1.0D, this.taskOwner.posY + 1.0D, this.taskOwner.posZ + 1.0D)).grow(d0, 10.0D, d0)));
-        for (EntityCreature entitycreature : nearby)
+        for (CreatureEntity entitycreature : nearby)
         {
-            if (this.taskOwner != entitycreature && !(entitycreature.getAttackTarget() instanceof EntityPlayer) && (!(this.taskOwner instanceof EntityTameable) || ((EntityTameable)this.taskOwner).getOwner() == ((EntityTameable)entitycreature).getOwner()) && !entitycreature.isOnSameTeam(this.taskOwner.getRevengeTarget()))
+            if (this.taskOwner != entitycreature && !(entitycreature.getAttackTarget() instanceof PlayerEntity) && (!(this.taskOwner instanceof TameableEntity) || ((TameableEntity)this.taskOwner).getOwner() == ((TameableEntity)entitycreature).getOwner()) && !entitycreature.isOnSameTeam(this.taskOwner.getRevengeTarget()))
             {
                     this.setEntityAttackTarget(entitycreature, this.taskOwner.getRevengeTarget());
             }
         }
     }
 
-    protected void setEntityAttackTarget(EntityCreature creatureIn, EntityLivingBase entityLivingBaseIn)
+    protected void setEntityAttackTarget(CreatureEntity creatureIn, LivingEntity entityLivingBaseIn)
     {
         creatureIn.setAttackTarget(entityLivingBaseIn);
     }

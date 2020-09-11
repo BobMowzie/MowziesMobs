@@ -11,9 +11,9 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.damage.DamageUtil;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.ai.EntityAITarget;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -30,7 +30,7 @@ public class EntitySuperNova extends EntityMagicEffect {
         this.setSize(1, 1);
     }
 
-    public EntitySuperNova(World world, EntityLivingBase caster, double x, double y, double z) {
+    public EntitySuperNova(World world, LivingEntity caster, double x, double y, double z) {
         this(world);
         if (!world.isRemote) {
             this.setCasterID(caster.getEntityId());
@@ -65,15 +65,15 @@ public class EntitySuperNova extends EntityMagicEffect {
             }
         }
 
-        if (caster != null && caster instanceof EntityLiving) {
+        if (caster != null && caster instanceof MobEntity) {
             float ageFrac = ticksExisted / (float)(EntitySuperNova.DURATION);
             float scale = (float) Math.pow(ageFrac, 0.5) * 5f;
             setSize(scale, scale);
             setPosition(prevPosX, prevPosY, prevPosZ);
-            List<EntityLivingBase> hitList = getEntitiesNearbyCube(EntityLivingBase.class, scale);
-            for (EntityLivingBase entity : hitList) {
+            List<LivingEntity> hitList = getEntitiesNearbyCube(LivingEntity.class, scale);
+            for (LivingEntity entity : hitList) {
                 if (entity instanceof LeaderSunstrikeImmune) continue;
-                if (EntityAITarget.isSuitableTarget((EntityLiving) caster, entity, false, false)) {
+                if (TargetGoal.isSuitableTarget((MobEntity) caster, entity, false, false)) {
                     float damageFire = 2.5f;
                     float damageMob = 3f;
                     damageFire *= ConfigHandler.MOBS.BARAKO.combatData.attackMultiplier;

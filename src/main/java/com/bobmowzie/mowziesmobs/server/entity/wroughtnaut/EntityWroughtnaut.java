@@ -20,24 +20,24 @@ import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityBodyHelper;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.ai.controller.BodyController;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
+import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.pathfinding.PathNavigate;
+import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
@@ -117,7 +117,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         tasks.addTask(1, new AnimationActivateAI<>(this, ACTIVATE_ANIMATION));
         tasks.addTask(1, new AnimationDeactivateAI<>(this, DEACTIVATE_ANIMATION));
         tasks.addTask(2, new WroughtnautAttackAI(this));
-        targetTasks.addTask(2, new EntityAINearestAttackableTarget<>(this, EntityPlayer.class, 0, true, false, null));
+        targetTasks.addTask(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 0, true, false, null));
         experienceValue = 30;
         setSize(2.5F, 3.5F);
         active = false;
@@ -136,12 +136,12 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     }
 
     @Override
-    protected PathNavigate createNavigator(World world) {
+    protected PathNavigator createNavigator(World world) {
         return new MMPathNavigateGround(this, world);
     }
 
     @Override
-    protected EntityBodyHelper createBodyHelper() {
+    protected BodyController createBodyHelper() {
         return new SmartBodyHelper(this);
     }
 
@@ -177,7 +177,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     public boolean attackEntityFrom(DamageSource source, float amount) {
         Entity entitySource = source.getTrueSource();
         if (entitySource != null) {
-            if ((!active || getAttackTarget() == null) && entitySource instanceof EntityLivingBase && !(entitySource instanceof EntityPlayer && ((EntityPlayer) entitySource).capabilities.isCreativeMode) && !(entitySource instanceof EntityWroughtnaut)) setAttackTarget((EntityLivingBase) entitySource);
+            if ((!active || getAttackTarget() == null) && entitySource instanceof LivingEntity && !(entitySource instanceof PlayerEntity && ((PlayerEntity) entitySource).capabilities.isCreativeMode) && !(entitySource instanceof EntityWroughtnaut)) setAttackTarget((LivingEntity) entitySource);
             if (vulnerable) {
                 int arc = 220;
                 float entityHitAngle = (float) ((Math.atan2(entitySource.posZ - posZ, entitySource.posX - posX) * (180 / Math.PI) - 90) % 360);
@@ -359,8 +359,8 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
             int hitX = MathHelper.floor(x + ox);
             int hitZ = MathHelper.floor(z + oy);
             BlockPos hit = new BlockPos(hitX, hitY, hitZ);
-            IBlockState block = world.getBlockState(hit);
-            if (block.getRenderType() != EnumBlockRenderType.INVISIBLE) {
+            BlockState block = world.getBlockState(hit);
+            if (block.getRenderType() != BlockRenderType.INVISIBLE) {
                 int stateId = Block.getStateId(block);
                 for (int n = 0; n < 6; n++) {
                     double pa = rand.nextDouble() * 2 * Math.PI;
@@ -437,8 +437,8 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
                 int blockX = MathHelper.floor(x);
                 int blockZ = MathHelper.floor(z);
                 pos.setPos(blockX, ceilY, blockZ);
-                IBlockState block = world.getBlockState(pos);
-                if (block.getRenderType() != EnumBlockRenderType.INVISIBLE) {
+                BlockState block = world.getBlockState(pos);
+                if (block.getRenderType() != BlockRenderType.INVISIBLE) {
                     int stateId = Block.getStateId(block);
                     world.spawnParticle(EnumParticleTypes.BLOCK_DUST, x, y, z, 0, 0, 0, stateId);
                     if (playSound && rand.nextFloat() < 0.075F) {
@@ -454,7 +454,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     }
 
     @Override
-    public IEntityLivingData onInitialSpawn(DifficultyInstance difficulty, IEntityLivingData data) {
+    public ILivingEntityData onInitialSpawn(DifficultyInstance difficulty, ILivingEntityData data) {
         setRestPos(getPosition());
         return super.onInitialSpawn(difficulty, data);
     }
@@ -488,7 +488,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     }
 
     @Override
-    public void writeEntityToNBT(NBTTagCompound compound) {
+    public void writeEntityToNBT(CompoundNBT compound) {
         super.writeEntityToNBT(compound);
         Optional<BlockPos> restPos = getRestPos();
         if (restPos.isPresent()) {
@@ -498,7 +498,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     }
 
     @Override
-    public void readEntityFromNBT(NBTTagCompound compound) {
+    public void readEntityFromNBT(CompoundNBT compound) {
         super.readEntityFromNBT(compound);
         if (compound.hasKey("restPos", NBT.TAG_COMPOUND)) {
             setRestPos(NBTUtil.getPosFromTag(compound.getCompoundTag("restPos")));   

@@ -5,14 +5,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.Effect;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
-public class MowziePotion extends Potion {
+public class MowziePotion extends Effect {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/gui/container/potions.png");
     private static final float TEXTURE_SIZE = 64;
     private static final int ICON_SIZE = 18;
@@ -40,13 +40,13 @@ public class MowziePotion extends Potion {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void renderInventoryEffect(int x, int y, PotionEffect effect, Minecraft mc) {
+    public void renderInventoryEffect(int x, int y, EffectInstance effect, Minecraft mc) {
         drawEffect(x + 6, y + 7);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void renderHUDEffect(int x, int y, PotionEffect effect, Minecraft mc, float alpha) {
+    public void renderHUDEffect(int x, int y, EffectInstance effect, Minecraft mc, float alpha) {
         drawEffect(x + 3, y + 3);
     }
 

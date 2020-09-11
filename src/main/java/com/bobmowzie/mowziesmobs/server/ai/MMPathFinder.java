@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.ai;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.pathfinding.NodeProcessor;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathFinder;
@@ -26,18 +26,18 @@ public class MMPathFinder extends PathFinder {
 
     @Nullable
     @Override
-    public Path findPath(IBlockAccess worldIn, EntityLiving living, Entity targetEntity, float maxDistance) {
+    public Path findPath(IBlockAccess worldIn, MobEntity living, Entity targetEntity, float maxDistance) {
         return this.findPath(worldIn, living, targetEntity.posX, targetEntity.getEntityBoundingBox().minY, targetEntity.posZ, maxDistance);
     }
 
     @Nullable
     @Override
-    public Path findPath(IBlockAccess worldIn, EntityLiving living, BlockPos targetPos, float maxDistance) {
+    public Path findPath(IBlockAccess worldIn, MobEntity living, BlockPos targetPos, float maxDistance) {
         return this.findPath(worldIn, living, targetPos.getX() + 0.5F, targetPos.getY() + 0.5F, targetPos.getZ() + 0.5F, maxDistance);
     }
 
     @Nullable
-    private Path findPath(IBlockAccess worldIn, EntityLiving living, double x, double y, double z, float maxDistance) {
+    private Path findPath(IBlockAccess worldIn, MobEntity living, double x, double y, double z, float maxDistance) {
         this.path.clearPath();
         this.nodeProcessor.init(worldIn, living);
         PathPoint start = this.nodeProcessor.getStart();

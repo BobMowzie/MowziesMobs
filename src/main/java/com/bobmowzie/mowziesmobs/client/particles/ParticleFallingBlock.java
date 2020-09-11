@@ -3,17 +3,17 @@ package com.bobmowzie.mowziesmobs.client.particles;
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -28,7 +28,7 @@ public class ParticleFallingBlock extends Particle implements ParticleTextureSti
     public float rotationSpeed;
     public float prevRotAngle;
     public float size;
-    public IBlockState storedBlock;
+    public BlockState storedBlock;
 
     private EnumScaleBehavior behavior;
 
@@ -39,7 +39,7 @@ public class ParticleFallingBlock extends Particle implements ParticleTextureSti
         GROW_THEN_SHRINK
     }
 
-    public ParticleFallingBlock(World world, double x, double y, double z, float rotationSpeed, int duration, float size, float motionX, float motionY, float motionZ, EnumScaleBehavior behavior, IBlockState blockState) {
+    public ParticleFallingBlock(World world, double x, double y, double z, float rotationSpeed, int duration, float size, float motionX, float motionY, float motionZ, EnumScaleBehavior behavior, BlockState blockState) {
         super(world, x, y, z);
         particleScale = 1;
         this.size = size;
@@ -106,10 +106,10 @@ public class ParticleFallingBlock extends Particle implements ParticleTextureSti
         if (storedBlock != null)
         {
 
-            if (storedBlock.getRenderType() == EnumBlockRenderType.MODEL)
+            if (storedBlock.getRenderType() == BlockRenderType.MODEL)
             {
 
-                if (storedBlock != world.getBlockState(new BlockPos(entityIn)) && storedBlock.getRenderType() != EnumBlockRenderType.INVISIBLE)
+                if (storedBlock != world.getBlockState(new BlockPos(entityIn)) && storedBlock.getRenderType() != BlockRenderType.INVISIBLE)
                 {
                     float f5 = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)partialTicks - interpPosX);
                     float f6 = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)partialTicks - interpPosY);
@@ -149,16 +149,16 @@ public class ParticleFallingBlock extends Particle implements ParticleTextureSti
 
     public static final class FallingBlockFactory extends ParticleFactory<ParticleFallingBlock.FallingBlockFactory, ParticleFallingBlock> {
         public FallingBlockFactory() {
-            super(ParticleFallingBlock.class, ParticleTextureStitcher.create(ParticleFallingBlock.class, TextureMap.LOCATION_BLOCKS_TEXTURE));
+            super(ParticleFallingBlock.class, ParticleTextureStitcher.create(ParticleFallingBlock.class, AtlasTexture.LOCATION_BLOCKS_TEXTURE));
         }
 
         @Override
         public ParticleFallingBlock createParticle(ImmutableParticleArgs args) {
-            return new ParticleFallingBlock(args.world, args.x, args.y, args.z, (float) args.data[0], (int) args.data[1], (float) args.data[2], (float) args.data[3], (float) args.data[4], (float) args.data[5], (EnumScaleBehavior) args.data[6], (IBlockState) args.data[7]);
+            return new ParticleFallingBlock(args.world, args.x, args.y, args.z, (float) args.data[0], (int) args.data[1], (float) args.data[2], (float) args.data[3], (float) args.data[4], (float) args.data[5], (EnumScaleBehavior) args.data[6], (BlockState) args.data[7]);
         }
     }
 
-    public static void spawnFallingBlock(World world, double x, double y, double z, float rotationSpeed, int duration, float size, float motionX, float motionY, float motionZ, EnumScaleBehavior behavior, IBlockState blockState) {
+    public static void spawnFallingBlock(World world, double x, double y, double z, float rotationSpeed, int duration, float size, float motionX, float motionY, float motionZ, EnumScaleBehavior behavior, BlockState blockState) {
         MMParticle.FALLING_BLOCK.spawn(world, x, y, z, ParticleFactory.ParticleArgs.get().withData(rotationSpeed, duration, size, motionX, motionY, motionZ, behavior, blockState));
     }
 }

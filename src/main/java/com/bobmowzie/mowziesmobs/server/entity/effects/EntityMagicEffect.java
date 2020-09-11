@@ -1,8 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -14,7 +14,7 @@ import java.util.List;
  * Created by Josh on 9/2/2018.
  */
 public abstract class EntityMagicEffect extends Entity {
-    public EntityLivingBase caster;
+    public LivingEntity caster;
     private static final DataParameter<Integer> CASTER = EntityDataManager.createKey(EntityMagicEffect.class, DataSerializers.VARINT);
 
     public EntityMagicEffect(World worldIn) {
@@ -38,22 +38,22 @@ public abstract class EntityMagicEffect extends Entity {
     public void onUpdate() {
         super.onUpdate();
         if (ticksExisted == 1) {
-            caster = (EntityLivingBase) world.getEntityByID(getCasterID());
+            caster = (LivingEntity) world.getEntityByID(getCasterID());
         }
     }
 
     @Override
-    protected void readEntityFromNBT(NBTTagCompound compound) {
+    protected void readEntityFromNBT(CompoundNBT compound) {
 
     }
 
     @Override
-    protected void writeEntityToNBT(NBTTagCompound compound) {
+    protected void writeEntityToNBT(CompoundNBT compound) {
 
     }
 
-    public List<EntityLivingBase> getEntityLivingBaseNearby(double radius) {
-        return getEntitiesNearby(EntityLivingBase.class, radius);
+    public List<LivingEntity> getEntityLivingBaseNearby(double radius) {
+        return getEntitiesNearby(LivingEntity.class, radius);
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double r) {

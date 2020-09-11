@@ -2,8 +2,8 @@ package com.bobmowzie.mowziesmobs.server.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.dynamics.DynamicChain;
 import net.ilexiconn.llibrary.server.animation.Animation;
-import net.minecraft.entity.ai.EntityAILookIdle;
-import net.minecraft.entity.ai.EntityAIWander;
+import net.minecraft.entity.ai.goal.LookRandomlyGoal;
+import net.minecraft.entity.ai.goal.RandomWalkingGoal;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -14,8 +14,8 @@ public class EntityDynamicsTester extends MowzieEntity {
 
     public EntityDynamicsTester(World world) {
         super(world);
-        tasks.addTask(4, new EntityAIWander(this, 0.3));
-        tasks.addTask(8, new EntityAILookIdle(this));
+        tasks.addTask(4, new RandomWalkingGoal(this, 0.3));
+        tasks.addTask(8, new LookRandomlyGoal(this));
     }
 
     @Override

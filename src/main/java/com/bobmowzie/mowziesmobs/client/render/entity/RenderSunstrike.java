@@ -2,15 +2,15 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
 import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -24,7 +24,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.Random;
 
 @SideOnly(Side.CLIENT)
-public class RenderSunstrike extends Render<EntitySunstrike> {
+public class RenderSunstrike extends EntityRenderer<EntitySunstrike> {
     public static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/effects/sunstrike.png");
     private static final Random RANDOMIZER = new Random(0);
     private static final double TEXTURE_WIDTH = 256;
@@ -49,7 +49,7 @@ public class RenderSunstrike extends Render<EntitySunstrike> {
     private static final double SCORCH_MIN_V = 16 / TEXTURE_HEIGHT;
     private static final double SCORCH_MAX_V = SCORCH_MIN_V + RING_FRAME_SIZE / TEXTURE_HEIGHT;
 
-    public RenderSunstrike(RenderManager mgr) {
+    public RenderSunstrike(EntityRendererManager mgr) {
         super(mgr);
     }
 
@@ -98,7 +98,7 @@ public class RenderSunstrike extends Render<EntitySunstrike> {
         byte mirrorX = (byte) (RANDOMIZER.nextBoolean() ? -1 : 1);
         byte mirrorZ = (byte) (RANDOMIZER.nextBoolean() ? -1 : 1);
         for (BlockPos pos : BlockPos.getAllInBoxMutable(new BlockPos(minX, minY, minZ), new BlockPos(maxX, maxY, maxZ))) {
-            IBlockState block = world.getBlockState(pos.down());
+            BlockState block = world.getBlockState(pos.down());
             if (block.getMaterial() != Material.AIR && world.getLight(pos) > 3) {
                 drawScorchBlock(world, block, pos, ex, ey, ez, opacityMultiplier, mirrorX, mirrorZ);
             }
@@ -108,7 +108,7 @@ public class RenderSunstrike extends Render<EntitySunstrike> {
         GlStateManager.depthMask(true);
     }
 
-    private void drawScorchBlock(World world, IBlockState block, BlockPos pos, double ex, double ey, double ez, float opacityMultiplier, byte mirrorX, byte mirrorZ) {
+    private void drawScorchBlock(World world, BlockState block, BlockPos pos, double ex, double ey, double ez, float opacityMultiplier, byte mirrorX, byte mirrorZ) {
         Tessellator t = Tessellator.getInstance();
         BufferBuilder buf = t.getBuffer();
         if (block.isBlockNormalCube()) {

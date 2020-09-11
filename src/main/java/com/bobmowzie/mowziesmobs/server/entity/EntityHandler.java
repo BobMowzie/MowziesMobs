@@ -13,7 +13,7 @@ import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.google.common.reflect.Reflection;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.MobEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -68,7 +68,7 @@ public enum EntityHandler {
         registerEntity(registry, EntityBlockSwapper.class, "block_swapper", 64);
     }
 
-    public static void registerEntity(IForgeRegistry<EntityEntry> registry, Class<? extends EntityLiving> entityClass, String name, boolean addEgg, int mainColor, int subColor, int trackingDistance, Biome... biomes) {
+    public static void registerEntity(IForgeRegistry<EntityEntry> registry, Class<? extends MobEntity> entityClass, String name, boolean addEgg, int mainColor, int subColor, int trackingDistance, Biome... biomes) {
         Reflection.initialize(entityClass);
         int entityId = nextEntityId();
         ResourceLocation res = new ResourceLocation(MowziesMobs.MODID, name);
@@ -107,10 +107,10 @@ public enum EntityHandler {
         return entityEggs.containsKey(name);
     }
 
-    public EntityLiving createEntity(ResourceLocation id, World world) {
-        EntityLiving entity = null;
+    public MobEntity createEntity(ResourceLocation id, World world) {
+        MobEntity entity = null;
         try {
-            Class<? extends EntityLiving> clazz = entityEggs.get(id).clazz;
+            Class<? extends MobEntity> clazz = entityEggs.get(id).clazz;
             if (clazz != null) {
                 entity = clazz.getConstructor(World.class).newInstance(world);
             }

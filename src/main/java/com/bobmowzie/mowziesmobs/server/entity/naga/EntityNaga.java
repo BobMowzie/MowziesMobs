@@ -14,26 +14,24 @@ import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.animation.Animation;
 import net.ilexiconn.llibrary.server.animation.AnimationHandler;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.EntityAIBase;
-import net.minecraft.entity.ai.EntityAIHurtByTarget;
-import net.minecraft.entity.ai.EntityAILookIdle;
-import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.ai.EntityMoveHelper;
+import net.minecraft.entity.ai.controller.MovementController;
+import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.entity.ai.goal.HurtByTargetGoal;
+import net.minecraft.entity.ai.goal.LookRandomlyGoal;
+import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.init.MobEffects;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.potion.Effects;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNodeType;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
@@ -42,7 +40,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.EnumDifficulty;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -120,10 +118,10 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
         this.tasks.addTask(5, new EntityNaga.AIRandomFly(this));
         this.tasks.addTask(5, new EntityNaga.AIFlyAroundTarget(this));
         this.tasks.addTask(7, new EntityNaga.AILookAround(this));
-        this.tasks.addTask(6, new EntityAILookIdle(this));
-        this.tasks.addTask(6, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0F));
-        this.targetTasks.addTask(1, new EntityAIHurtByTarget(this, false));
-        this.targetTasks.addTask(2, new MMAINearestAttackableTarget<>(this, EntityPlayer.class, 0, true, false, true, null));
+        this.tasks.addTask(6, new LookRandomlyGoal(this));
+        this.tasks.addTask(6, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        this.targetTasks.addTask(1, new HurtByTargetGoal(this, false));
+        this.targetTasks.addTask(2, new MMAINearestAttackableTarget<>(this, PlayerEntity.class, 0, true, false, true, null));
         this.tasks.addTask(2, new SimpleAnimationAI<EntityNaga>(this, FLAP_ANIMATION, false) {
             @Override
             public void startExecuting() {
@@ -173,7 +171,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
                 int phase1Length = 15;
                 int phase2Length = 21;
                 if (getAnimationTick() < 23 + phase2Length) {
-                    EntityLivingBase target = getAttackTarget();
+                    LivingEntity target = getAttackTarget();
                     if (getAnimationTick() >= 1 && getAnimationTick() < 1 + phase1Length) {
                         float frame = (getAnimationTick() - 1) / (float) phase1Length;
                         v = v.add(new Vec3d(
@@ -203,8 +201,8 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
                                     0
                             ));
 
-                            List<EntityLivingBase> entitiesHit = getEntityLivingBaseNearby(4, 4, 4, 4);
-                            for (EntityLivingBase entityHit : entitiesHit) {
+                            List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(4, 4, 4, 4);
+                            for (LivingEntity entityHit : entitiesHit) {
                                 if (entityHit instanceof EntityNaga) continue;
                                 attackEntityAsMob(entityHit);
                             }
@@ -332,7 +330,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
 
         if (getAnimation() == null) AnimationHandler.INSTANCE.sendAnimationMessage(this, NO_ANIMATION);
 
-        if (isPotionActive(MobEffects.POISON)) removeActivePotionEffect(MobEffects.POISON);
+        if (isPotionActive(Effects.POISON)) removeActivePotionEffect(Effects.POISON);
 
 //        if (ticksExisted == 1) {
 //            System.out.println("Naga at " + getPosition());
@@ -364,8 +362,8 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
                 hoverAnim.increaseTimer();
 
                 if (getAnimation() == NO_ANIMATION && !world.isRemote) {
-                    List<EntityArrow> arrowsNearby = getEntitiesNearby(EntityArrow.class, 30);
-                    for (EntityArrow a : arrowsNearby) {
+                    List<AbstractArrowEntity> arrowsNearby = getEntitiesNearby(AbstractArrowEntity.class, 30);
+                    for (AbstractArrowEntity a : arrowsNearby) {
                         Vec3d aActualMotion = new Vec3d(a.posX - a.prevPosX, a.posY - a.prevPosY, a.posZ - a.prevPosZ);
                         if (aActualMotion.length() < 0.1 || a.ticksExisted <= 1) {
                             continue;
@@ -493,7 +491,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
         hoverAnimFrac = hoverAnim.getAnimationProgressSinSqrt();
         flapAnimFrac = flapAnim.getAnimationProgressSinSqrt();
 
-        if (!this.world.isRemote && this.world.getDifficulty() == EnumDifficulty.PEACEFUL)
+        if (!this.world.isRemote && this.world.getDifficulty() == Difficulty.PEACEFUL)
         {
             this.setDead();
         }
@@ -520,7 +518,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
     public boolean getCanSpawnHere() {
         boolean flag = super.getCanSpawnHere();
         setPosition(posX, posY + 5, posZ);
-        return flag && world.getDifficulty() != EnumDifficulty.PEACEFUL;
+        return flag && world.getDifficulty() != Difficulty.PEACEFUL;
     }
 
     @Override
@@ -556,7 +554,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
     }
 
     @Override
-    public void attackEntityWithRangedAttack(EntityLivingBase target, float distanceFactor) {
+    public void attackEntityWithRangedAttack(LivingEntity target, float distanceFactor) {
         if (interrupted) return;
         Vec3d projectilePos = new Vec3d(1, -0.7, 0);
         projectilePos = projectilePos.rotateYaw((float)Math.toRadians(-rotationYaw - 90));
@@ -612,7 +610,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
         }
     }
 
-    protected void updateFallState(double y, boolean onGroundIn, IBlockState state, BlockPos pos)
+    protected void updateFallState(double y, boolean onGroundIn, BlockState state, BlockPos pos)
     {
         if (movement == EnumNagaMovement.FALLING) {
             super.updateFallState(y, onGroundIn, state, pos);
@@ -638,7 +636,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
 
             if (this.onGround) {
                 BlockPos underPos = new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(this.getEntityBoundingBox().minY) - 1, MathHelper.floor(this.posZ));
-                IBlockState underState = this.world.getBlockState(underPos);
+                BlockState underState = this.world.getBlockState(underPos);
                 f = underState.getBlock().getSlipperiness(underState, this.world, underPos, this) * 0.91F;
             }
 
@@ -648,7 +646,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
 
             if (this.onGround) {
                 BlockPos underPos = new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(this.getEntityBoundingBox().minY) - 1, MathHelper.floor(this.posZ));
-                IBlockState underState = this.world.getBlockState(underPos);
+                BlockState underState = this.world.getBlockState(underPos);
                 f = underState.getBlock().getSlipperiness(underState, this.world, underPos, this) * 0.91F;
             }
 
@@ -657,7 +655,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
             this.motionY *= (double) f;
             this.motionZ *= (double) f;
 
-            EntityMoveHelper entitymovehelper = this.getMoveHelper();
+            MovementController entitymovehelper = this.getMoveHelper();
             double dx = entitymovehelper.getX() - this.posX;
             double dy = entitymovehelper.getY() - this.posY;
             double dz = entitymovehelper.getZ() - this.posZ;
@@ -723,7 +721,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
 
             if (this.onGround)
             {
-                IBlockState underState = this.world.getBlockState(blockpos$pooledmutableblockpos);
+                BlockState underState = this.world.getBlockState(blockpos$pooledmutableblockpos);
                 f6 = underState.getBlock().getSlipperiness(underState, this.world, blockpos$pooledmutableblockpos, this) * 0.91F;
             }
 
@@ -744,7 +742,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
 
             if (this.onGround)
             {
-                IBlockState underState = this.world.getBlockState(blockpos$pooledmutableblockpos.setPos(this.posX, this.getEntityBoundingBox().minY - 1.0D, this.posZ));
+                BlockState underState = this.world.getBlockState(blockpos$pooledmutableblockpos.setPos(this.posX, this.getEntityBoundingBox().minY - 1.0D, this.posZ));
                 f6 = underState.getBlock().getSlipperiness(underState, this.world, blockpos$pooledmutableblockpos, this) * 0.91F;
             }
 
@@ -768,9 +766,9 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
                 this.motionY = 0.2D;
             }
 
-            if (this.isPotionActive(MobEffects.LEVITATION))
+            if (this.isPotionActive(Effects.LEVITATION))
             {
-                this.motionY += (0.05D * (double)(this.getActivePotionEffect(MobEffects.LEVITATION).getAmplifier() + 1) - this.motionY) * 0.2D;
+                this.motionY += (0.05D * (double)(this.getActivePotionEffect(Effects.LEVITATION).getAmplifier() + 1) - this.motionY) * 0.2D;
             }
             else
             {
@@ -882,7 +880,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
 
     }
 
-    static class AILookAround extends EntityAIBase
+    static class AILookAround extends Goal
     {
         private final EntityNaga parentEntity;
 
@@ -912,7 +910,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
             }
             else
             {
-                EntityLivingBase entitylivingbase = this.parentEntity.getAttackTarget();
+                LivingEntity entitylivingbase = this.parentEntity.getAttackTarget();
                 double d0 = 64.0D;
 
                 if (entitylivingbase.getDistanceSq(this.parentEntity) < 4096.0D)
@@ -926,7 +924,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
         }
     }
 
-    static class AIRandomFly extends EntityAIBase
+    static class AIRandomFly extends Goal
     {
         private final EntityNaga parentEntity;
 
@@ -941,7 +939,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
          */
         public boolean shouldExecute()
         {
-            EntityMoveHelper entitymovehelper = this.parentEntity.getMoveHelper();
+            MovementController entitymovehelper = this.parentEntity.getMoveHelper();
 
             if (parentEntity.getAttacking()) return false;
 
@@ -980,7 +978,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
         }
     }
 
-    static class AIFlyAroundTarget extends EntityAIBase
+    static class AIFlyAroundTarget extends Goal
     {
         private final EntityNaga parentEntity;
 
@@ -995,7 +993,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
          */
         public boolean shouldExecute()
         {
-            EntityMoveHelper entitymovehelper = this.parentEntity.getMoveHelper();
+            MovementController entitymovehelper = this.parentEntity.getMoveHelper();
 
             if (parentEntity.getAttackTarget() != null) {
                 if (!entitymovehelper.isUpdating()) {
@@ -1006,7 +1004,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
                     double dz = entitymovehelper.getZ() - this.parentEntity.posZ;
                     double distanceToDest = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
-                    EntityLivingBase target = parentEntity.getAttackTarget();
+                    LivingEntity target = parentEntity.getAttackTarget();
                     double dx2 = entitymovehelper.getX() - target.posX;
                     double dy2 = entitymovehelper.getY() - target.posY;
                     double dz2 = entitymovehelper.getZ() - target.posZ;
@@ -1040,7 +1038,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
         public void startExecuting()
         {
             Random random = this.parentEntity.getRNG();
-            EntityLivingBase target = parentEntity.getAttackTarget();
+            LivingEntity target = parentEntity.getAttackTarget();
             float yaw = (float) (random.nextFloat() * Math.PI * 2);
             float radius = 16;
             double d0 = target.posX + Math.cos(yaw) * radius;
@@ -1051,7 +1049,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
         }
     }
 
-    static class NagaMoveHelper extends EntityMoveHelper
+    static class NagaMoveHelper extends MovementController
     {
         private final EntityNaga parentEntity;
         private int courseChangeCooldown;
@@ -1064,7 +1062,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
 
         public void onUpdateMoveHelper()
         {
-            if (this.action == EntityMoveHelper.Action.MOVE_TO)
+            if (this.action == MovementController.Action.MOVE_TO)
             {
                 double d0 = this.posX - this.parentEntity.posX;
                 double d1 = this.posY - this.parentEntity.posY;
@@ -1084,7 +1082,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
                     }
                     else
                     {
-                        this.action = EntityMoveHelper.Action.WAIT;
+                        this.action = MovementController.Action.WAIT;
                     }
                 }
             }

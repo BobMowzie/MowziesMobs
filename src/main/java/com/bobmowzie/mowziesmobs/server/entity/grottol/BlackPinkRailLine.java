@@ -1,14 +1,14 @@
 package com.bobmowzie.mowziesmobs.server.entity.grottol;
 
-import net.minecraft.block.BlockRailBase;
-import net.minecraft.entity.item.EntityMinecart;
+import net.minecraft.block.AbstractRailBlock;
+import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 
 import java.util.function.Consumer;
 
-public final class BlackPinkRailLine implements Consumer<EntityMinecart> {
+public final class BlackPinkRailLine implements Consumer<AbstractMinecartEntity> {
     private final BlackPinkInYourArea action;
 
     private State state = new StateAcquireVertex();
@@ -18,13 +18,13 @@ public final class BlackPinkRailLine implements Consumer<EntityMinecart> {
     }
 
     @Override
-    public void accept(EntityMinecart minecart) {
+    public void accept(AbstractMinecartEntity minecart) {
         state = next(minecart.world, minecart);
     }
 
-    private State next(World world, EntityMinecart minecart) {
+    private State next(World world, AbstractMinecartEntity minecart) {
         BlockPos pos = getRailPosition(world, new BlockPos(minecart));
-        if (BlockRailBase.isRailBlock(world.getBlockState(pos))) {
+        if (AbstractRailBlock.isRailBlock(world.getBlockState(pos))) {
             return state.apply(world, minecart, pos);
         }
         return state.derail();
@@ -32,7 +32,7 @@ public final class BlackPinkRailLine implements Consumer<EntityMinecart> {
 
     private static BlockPos getRailPosition(World world, BlockPos pos) {
         BlockPos below = pos.down();
-        return BlockRailBase.isRailBlock(world, below) ? below : pos;
+        return AbstractRailBlock.isRailBlock(world, below) ? below : pos;
     }
 
     public static BlackPinkRailLine create() {
@@ -40,14 +40,14 @@ public final class BlackPinkRailLine implements Consumer<EntityMinecart> {
     }
 
     private abstract class State {
-        abstract State apply(World world, EntityMinecart minecart, BlockPos pos);
+        abstract State apply(World world, AbstractMinecartEntity minecart, BlockPos pos);
 
         abstract State derail();
     }
 
     private final class StateAcquireVertex extends State {
         @Override
-        public State apply(World world, EntityMinecart minecart, BlockPos vertex) {
+        public State apply(World world, AbstractMinecartEntity minecart, BlockPos vertex) {
             return new StateAcquireEdge(vertex);
         }
 
@@ -65,7 +65,7 @@ public final class BlackPinkRailLine implements Consumer<EntityMinecart> {
         }
 
         @Override
-        public State apply(World world, EntityMinecart minecart, BlockPos vertex) {
+        public State apply(World world, AbstractMinecartEntity minecart, BlockPos vertex) {
             return new StateSearch(vertex.subtract(this.vertex), vertex);
         }
 
@@ -99,7 +99,7 @@ public final class BlackPinkRailLine implements Consumer<EntityMinecart> {
         }
 
         @Override
-        public State apply(World world, EntityMinecart minecart, BlockPos vertex) {
+        public State apply(World world, AbstractMinecartEntity minecart, BlockPos vertex) {
             if (!this.vertex.equals(vertex)) {
                 Vec3i edge = vertex.subtract(this.vertex);
                 int ordinal = getOrdinal(this.edge, edge);
