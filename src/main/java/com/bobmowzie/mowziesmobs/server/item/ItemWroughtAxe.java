@@ -33,11 +33,16 @@ public class ItemWroughtAxe extends AxeItem {
 
     @Override
     public boolean hitEntity(ItemStack heldItemStack, LivingEntity entityHit, LivingEntity attacker) {
-        if (ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable) heldItemStack.damageItem(2, attacker);
+        if (ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable) heldItemStack.damageItem(2, attacker, p -> p.sendBreakAnimation(Hand.MAIN_HAND));
         if (!entityHit.world.isRemote) {
             entityHit.playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.3F, 0.5F);
         }
         return true;
+    }
+
+    @Override
+    public boolean isDamageable() {
+        return ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable;
     }
 
     @Override
@@ -48,34 +53,13 @@ public class ItemWroughtAxe extends AxeItem {
                 boolean verticalAttack = player.isSneaking() && player.onGround;
                 EntityAxeAttack axeAttack = new EntityAxeAttack(world, player, verticalAttack);
                 axeAttack.setPositionAndRotation(player.posX, player.posY, player.posZ, player.rotationYaw, player.rotationPitch);
-                if (!world.isRemote) world.spawnEntity(axeAttack);
+                if (!world.isRemote) world.addEntity(axeAttack);
                 property.verticalSwing = verticalAttack;
                 property.untilAxeSwing = MowziePlayerProperties.SWING_COOLDOWN;
-                if (ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable && !player.capabilities.isCreativeMode) player.getHeldItem(hand).damageItem(2, player);
+                if (ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable && !player.abilities.isCreativeMode) player.getHeldItem(hand).damageItem(2, player, p -> p.sendBreakAnimation(hand));
             }
             return new ActionResult<ItemStack>(ActionResultType.SUCCESS, player.getHeldItem(hand));
         }
         return super.onItemRightClick(world, player, hand);
-    }
-
-    @Override
-    public boolean onBlockDestroyed(ItemStack itemStack, World world, BlockState block, BlockPos pos, LivingEntity destroyer) {
-        return true;
-    }
-
-    @Override
-    public float getDestroySpeed(ItemStack itemStack, BlockState block) {
-        return 1.0F;
-    }
-
-    @Override
-    public UseAction getItemUseAction(ItemStack itemStack) {
-        return UseAction.BOW;
-    }
-
-    @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
-        ItemHandler.addItemText(this, tooltip);
     }
 }

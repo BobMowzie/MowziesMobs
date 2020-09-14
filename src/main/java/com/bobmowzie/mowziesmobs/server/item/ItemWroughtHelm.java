@@ -6,18 +6,14 @@ import net.minecraft.item.Items;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.*;
 import net.minecraft.item.ArmorItem;
-import net.minecraft.world.World;
-import net.minecraftforge.common.util.EnumHelper;
-
-import javax.annotation.Nullable;
-import java.util.List;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.SoundEvent;
 
 public class ItemWroughtHelm extends ArmorItem {
-    private static int d = ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorData.damageReduction;
-    private static ArmorMaterial ARMOR_WROUGHT_HELM = EnumHelper.addArmorMaterial("WROUGHT_HELM", "iron", 15, new int[] {d, d, d, d}, ArmorMaterial.IRON.getEnchantability(), ArmorMaterial.IRON.getSoundEvent(), ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorData.toughness);
+    private static final WroughtHelmMaterial ARMOR_WROUGHT_HELM = new WroughtHelmMaterial();
 
     public ItemWroughtHelm(Item.Properties properties) {
-        super(ARMOR_WROUGHT_HELM, 2, EquipmentSlotType.HEAD, properties);
+        super(ARMOR_WROUGHT_HELM, EquipmentSlotType.HEAD, properties);
     }
 
     // Dirty trick to get our item to render as the item model
@@ -28,10 +24,8 @@ public class ItemWroughtHelm extends ArmorItem {
 
     @Override
     public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
-        if (!ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable) return false;
-        ItemStack mat = Items.IRON_INGOT.getDefaultInstance();
-        if (!mat.isEmpty() && net.minecraftforge.oredict.OreDictionary.itemMatches(mat,repair,false)) return true;
-        return super.getIsRepairable(toRepair, repair);
+        if (ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.breakable) return super.getIsRepairable(toRepair, repair);
+        return false;
     }
 
     @Override
@@ -49,8 +43,41 @@ public class ItemWroughtHelm extends ArmorItem {
         if (ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.breakable) super.setDamage(stack, damage);
     }
 
-    @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
+    private static class WroughtHelmMaterial implements IArmorMaterial {
+
+        @Override
+        public int getDurability(EquipmentSlotType equipmentSlotType) {
+            return ArmorMaterial.IRON.getDurability(equipmentSlotType);
+        }
+
+        @Override
+        public int getDamageReductionAmount(EquipmentSlotType equipmentSlotType) {
+            return ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorData.damageReduction;
+        }
+
+        @Override
+        public int getEnchantability() {
+            return ArmorMaterial.IRON.getEnchantability();
+        }
+
+        @Override
+        public SoundEvent getSoundEvent() {
+            return ArmorMaterial.IRON.getSoundEvent();
+        }
+
+        @Override
+        public Ingredient getRepairMaterial() {
+            return ArmorMaterial.IRON.getRepairMaterial();
+        }
+
+        @Override
+        public String getName() {
+            return "wrought_helm";
+        }
+
+        @Override
+        public float getToughness() {
+            return ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorData.toughness;
+        }
     }
 }

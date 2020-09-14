@@ -25,12 +25,6 @@ public class ItemDart extends ArrowItem {
         return new EntityDart(world, shooter);
     }
 
-    @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
-        ItemHandler.addItemText(this, tooltip);
-    }
-
     public static DamageSource causeArrowDamage(EntityDart entitydart, Entity entity) {
         return new IndirectEntityDamageSource("dart", entitydart, entity).setProjectile();
     }

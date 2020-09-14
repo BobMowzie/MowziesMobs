@@ -6,9 +6,11 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
@@ -28,39 +30,38 @@ public class ItemFoliaathSeed extends Item {
             entity.setLocationAndAngles(x + 0.5, y, z + 0.5, world.rand.nextFloat() * 360 - 180, 0);
             entity.rotationYawHead = entity.rotationYaw;
             entity.renderYawOffset = entity.rotationYaw;
-            entity.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(entity)), null);
-            if (!entity.getCanSpawnHere()) {
+            entity.onInitialSpawn(world, world.getDifficultyForLocation(new BlockPos(entity)), SpawnReason.MOB_SUMMONED, null, null);
+            if (!entity.canSpawn(world, SpawnReason.MOB_SUMMONED)) {
                 return null;
             }
-            world.spawnEntity(entity);
+            world.addEntity(entity);
         }
         return entity;
     }
 
     @Override
-    public ActionResultType onItemUse(PlayerEntity player, World world, BlockPos pos, Hand hand, Direction facing, float hitX, float hitY, float hitZ) {
+    public ActionResultType onItemUse(ItemUseContext context) {
+        PlayerEntity player = context.getPlayer();
+        if (player == null) return ActionResultType.FAIL;
+        Hand hand = context.getHand();
+        Direction facing = context.getFace();
         ItemStack stack = player.getHeldItem(hand);
+        BlockPos pos = context.getPos();
+        World world = context.getWorld();
         if (world.isRemote) {
             return ActionResultType.SUCCESS;
         } else if (!player.canPlayerEdit(pos.offset(facing), facing, stack)) {
             return ActionResultType.FAIL;
         }
-        BlockState block = world.getBlockState(pos);
         Entity entity = spawnCreature(world, new EntityBabyFoliaath(world), pos.getX(), pos.getY() + 1, pos.getZ());
         if (entity != null) {
             if (entity instanceof LivingEntity && stack.hasDisplayName()) {
-                ((MobEntity) entity).setCustomNameTag(stack.getDisplayName());
+                entity.setCustomName(stack.getDisplayName());
             }
-            if (!player.capabilities.isCreativeMode) {
+            if (!player.isCreative()) {
                 stack.shrink(1);
             }
         }
         return ActionResultType.SUCCESS;
-    }
-
-    @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
-        ItemHandler.addItemText(this, tooltip);
     }
 }

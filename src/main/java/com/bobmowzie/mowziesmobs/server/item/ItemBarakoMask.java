@@ -2,14 +2,11 @@ package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.Items;
+import net.minecraft.item.*;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ArmorMaterial;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.EnumHelper;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -18,23 +15,20 @@ import java.util.List;
  * Created by Josh on 8/15/2016.
  */
 public class ItemBarakoMask extends ArmorItem implements BarakoaMask {
-    private static int d = ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.armorData.damageReduction;
-    private static ArmorMaterial ARMOR_SOL_VISAGE = EnumHelper.addArmorMaterial("SOL_VISAGE", "gold", 7, new int[]{d, d, d, d}, ArmorMaterial.GOLD.getEnchantability(), ArmorMaterial.GOLD.getSoundEvent(), ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.armorData.toughness);
+    private static SolVisageMaterial SOL_VISAGE_MATERIAL = new SolVisageMaterial();
 
     public ItemBarakoMask(Item.Properties properties) {
-        super(ARMOR_SOL_VISAGE, 2, EquipmentSlotType.HEAD, properties);
+        super(SOL_VISAGE_MATERIAL, EquipmentSlotType.HEAD, properties);
     }
 
     @Override
     public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
-        if (!ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable) return false;
-        ItemStack mat = Items.GOLD_INGOT.getDefaultInstance();
-        if (!mat.isEmpty() && net.minecraftforge.oredict.OreDictionary.itemMatches(mat,repair,false)) return true;
-        return super.getIsRepairable(toRepair, repair);
+        if (ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable) return super.getIsRepairable(toRepair, repair);
+        return false;
     }
 
     @Override
-    public EntityEquipmentSlot getEquipmentSlot() {
+    public EquipmentSlotType getEquipmentSlot() {
         return null;
     }
 
@@ -53,9 +47,41 @@ public class ItemBarakoMask extends ArmorItem implements BarakoaMask {
         if (ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable) super.setDamage(stack, damage);
     }
 
-    @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
-        ItemHandler.addItemText(this, tooltip);
+    private static class SolVisageMaterial implements IArmorMaterial {
+
+        @Override
+        public int getDurability(EquipmentSlotType equipmentSlotType) {
+            return ArmorMaterial.GOLD.getDamageReductionAmount(equipmentSlotType);
+        }
+
+        @Override
+        public int getDamageReductionAmount(EquipmentSlotType equipmentSlotType) {
+            return ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.armorData.damageReduction;
+        }
+
+        @Override
+        public int getEnchantability() {
+            return ArmorMaterial.GOLD.getEnchantability();
+        }
+
+        @Override
+        public SoundEvent getSoundEvent() {
+            return ArmorMaterial.GOLD.getSoundEvent();
+        }
+
+        @Override
+        public Ingredient getRepairMaterial() {
+            return ArmorMaterial.GOLD.getRepairMaterial();
+        }
+
+        @Override
+        public String getName() {
+            return "sol_visage";
+        }
+
+        @Override
+        public float getToughness() {
+            return ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.armorData.toughness;
+        }
     }
 }

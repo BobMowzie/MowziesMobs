@@ -20,16 +20,10 @@ public class ItemMobRemover extends Item {
     public boolean onLeftClickEntity(ItemStack stack, PlayerEntity player, Entity entity) {
         if (entity instanceof MowzieEntity) {
             if (!entity.world.isRemote) {
-                entity.setDead();   
+                entity.remove();
             }
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
-        ItemHandler.addItemText(this, tooltip);
     }
 }

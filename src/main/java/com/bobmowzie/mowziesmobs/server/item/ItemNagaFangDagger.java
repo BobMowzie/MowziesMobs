@@ -40,10 +40,4 @@ public class ItemNagaFangDagger extends ToolItem {
         Item item = repair.getItem();
         return item instanceof ItemNagaFang;
     }
-
-    @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
-        ItemHandler.addItemText(this, tooltip);
-    }
 }

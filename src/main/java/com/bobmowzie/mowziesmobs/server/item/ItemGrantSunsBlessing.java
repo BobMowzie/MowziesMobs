@@ -19,18 +19,11 @@ import java.util.List;
 public class ItemGrantSunsBlessing extends Item {
     public ItemGrantSunsBlessing(Item.Properties properties) {
         super(properties);
-        setTranslationKey("grantSunsBlessing");
     }
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand hand) {
         playerIn.addPotionEffect(new EffectInstance(PotionHandler.SUNS_BLESSING, 24000 * 3, 0, false, false));
         return super.onItemRightClick(worldIn, playerIn, hand);
-    }
-
-    @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
-        ItemHandler.addItemText(this, tooltip);
     }
 }

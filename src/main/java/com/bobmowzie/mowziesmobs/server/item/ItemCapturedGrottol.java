@@ -44,7 +44,7 @@ public class ItemCapturedGrottol extends Item {
             grottol.moveToBlockPosAndAngles(location, 0, 0);
             lookAtPlayer(grottol, player);
             grottol.onInitialSpawn(world.getDifficultyForLocation(location), null);
-            world.spawnEntity(grottol);
+            world.addEntity(grottol);
             if (!player.capabilities.isCreativeMode) {
                 stack.shrink(1);
             }

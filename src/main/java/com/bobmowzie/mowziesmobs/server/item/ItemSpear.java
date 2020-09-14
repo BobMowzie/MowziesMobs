@@ -8,6 +8,7 @@ import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTier;
@@ -33,8 +34,10 @@ public class ItemSpear extends ToolItem {
 
     @Override
     public boolean hitEntity(ItemStack heldItemStack, LivingEntity entityHit, LivingEntity player) {
-        heldItemStack.damageItem(1, player);
-        if (entityHit instanceof AnimalEntity && entityHit.getMaxHealth() <= 30 && itemRand.nextFloat() <= 0.33) {
+        heldItemStack.damageItem(2, player, (p) -> {
+            p.sendBreakAnimation(EquipmentSlotType.MAINHAND);
+        });
+        if (entityHit instanceof AnimalEntity && entityHit.getMaxHealth() <= 30 && random.nextFloat() <= 0.33) {
             entityHit.setHealth(0);
         }
         return true;
@@ -66,7 +69,7 @@ public class ItemSpear extends ToolItem {
                 continue;
             }
             float pad = entity.getCollisionBorderSize();
-            AxisAlignedBB aabb = entity.getEntityBoundingBox().grow(pad, pad, pad);
+            AxisAlignedBB aabb = entity.getBoundingBox().grow(pad, pad, pad);
             RayTraceResult hit = aabb.calculateIntercept(pos, segment);
             if (aabb.contains(pos) || hit != null) {
                 result.addEntityHit(entity);

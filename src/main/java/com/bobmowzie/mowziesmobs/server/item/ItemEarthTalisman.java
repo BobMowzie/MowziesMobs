@@ -13,13 +13,7 @@ import java.util.List;
  * Created by Josh on 7/26/2017.
  */
 public class ItemEarthTalisman extends Item {
-    public ItemEarthTalisman() {
-        maxStackSize = 1;
-    }
-
-    @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
-        ItemHandler.addItemText(this, tooltip);
+    public ItemEarthTalisman(Item.Properties properties) {
+        super(properties);
     }
 }

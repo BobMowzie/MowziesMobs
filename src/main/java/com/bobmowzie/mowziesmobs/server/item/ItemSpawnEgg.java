@@ -2,12 +2,11 @@ package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntityEggInfo;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FenceBlock;
+import net.minecraft.block.*;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,6 +24,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.pipeline.BlockInfo;
 import net.minecraftforge.common.util.Constants.NBT;
 import org.apache.commons.lang3.StringUtils;
 
@@ -77,7 +77,7 @@ public class ItemSpawnEgg extends Item {
                     spawner.setEntityId(getEntityIdFromItem(stack));
                     blockEntity.markDirty();
                     worldIn.notifyBlockUpdate(pos, state, state, 3);
-                    if (!playerIn.capabilities.isCreativeMode) {
+                    if (!playerIn.abilities.isCreativeMode) {
                         stack.shrink(1);
                     }
                     return ActionResultType.SUCCESS;
@@ -91,10 +91,10 @@ public class ItemSpawnEgg extends Item {
             Entity entity = spawnCreature(worldIn, getEntityIdFromItem(stack), pos.getX() + 0.5D, pos.getY() + d0, pos.getZ() + 0.5D);
             if (entity != null) {
                 if (entity instanceof LivingEntity && stack.hasDisplayName()) {
-                    entity.setCustomNameTag(stack.getDisplayName());
+                    entity.setCustomName(stack.getDisplayName());
                 }
                 applyItemEntityDataToEntity(worldIn, playerIn, stack, entity);
-                if (!playerIn.capabilities.isCreativeMode) {
+                if (!playerIn.abilities.isCreativeMode) {
                     stack.shrink(1);
                 }
             }
@@ -106,39 +106,40 @@ public class ItemSpawnEgg extends Item {
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand hand) {
         ItemStack itemStackIn = playerIn.getHeldItem(hand);
         if (worldIn.isRemote) {
-            return new ActionResult(ActionResultType.PASS, itemStackIn);
+            return new ActionResult<>(ActionResultType.PASS, itemStackIn);
         } else {
             RayTraceResult raytraceresult = rayTrace(worldIn, playerIn, true);
-            if (raytraceresult != null && raytraceresult.typeOfHit == RayTraceResult.Type.BLOCK) {
-                BlockPos blockpos = raytraceresult.getBlockPos();
-                if (!(worldIn.getBlockState(blockpos).getBlock() instanceof BlockLiquid)) {
-                    return new ActionResult(ActionResultType.PASS, itemStackIn);
-                } else if (worldIn.isBlockModifiable(playerIn, blockpos) && playerIn.canPlayerEdit(blockpos, raytraceresult.sideHit, itemStackIn)) {
+            if (raytraceresult.getType() == RayTraceResult.Type.BLOCK) {
+                BlockInfo hitInfo = (BlockInfo)raytraceresult.hitInfo;
+                BlockPos blockpos = hitInfo.getBlockPos();
+                if (!(worldIn.getBlockState(blockpos).getBlock() instanceof FlowingFluidBlock)) {
+                    return new ActionResult<>(ActionResultType.PASS, itemStackIn);
+                } else if (worldIn.isBlockModifiable(playerIn, blockpos) && playerIn.canPlayerEdit(blockpos, hitInfo., itemStackIn)) {
                     Entity entity = spawnCreature(worldIn, getEntityIdFromItem(itemStackIn), blockpos.getX() + 0.5D, blockpos.getY() + 0.5D, blockpos.getZ() + 0.5D);
                     if (entity == null) {
-                        return new ActionResult(ActionResultType.PASS, itemStackIn);
+                        return new ActionResult<>(ActionResultType.PASS, itemStackIn);
                     } else {
                         if (entity instanceof LivingEntity && itemStackIn.hasDisplayName()) {
-                            entity.setCustomNameTag(itemStackIn.getDisplayName());
+                            entity.setCustomName(itemStackIn.getDisplayName());
                         }
                         applyItemEntityDataToEntity(worldIn, playerIn, itemStackIn, entity);
-                        if (!playerIn.capabilities.isCreativeMode) {
+                        if (!playerIn.abilities.isCreativeMode) {
                             itemStackIn.shrink(1);
                         }
                         playerIn.addStat(Stats.getObjectUseStats(this));
-                        return new ActionResult(ActionResultType.SUCCESS, itemStackIn);
+                        return new ActionResult<>(ActionResultType.SUCCESS, itemStackIn);
                     }
                 } else {
-                    return new ActionResult(ActionResultType.FAIL, itemStackIn);
+                    return new ActionResult<>(ActionResultType.FAIL, itemStackIn);
                 }
             } else {
-                return new ActionResult(ActionResultType.PASS, itemStackIn);
+                return new ActionResult<>(ActionResultType.PASS, itemStackIn);
             }
         }
     }
 
     public static void applyItemEntityDataToEntity(World entityWorld, @Nullable PlayerEntity player, ItemStack stack, @Nullable Entity targetEntity) {
-        MinecraftServer server = entityWorld.getMinecraftServer();
+        MinecraftServer server = entityWorld.getServer();
         if (server != null && targetEntity != null) {
             CompoundNBT compound = stack.getTagCompound();
             if (compound != null && compound.hasKey("EntityTag", 10)) {
@@ -163,9 +164,9 @@ public class ItemSpawnEgg extends Item {
                 entity.setLocationAndAngles(x, y, z, MathHelper.wrapDegrees(world.rand.nextFloat() * 360), 0.0F);
                 entityLiving.rotationYawHead = entityLiving.rotationYaw;
                 entityLiving.renderYawOffset = entityLiving.rotationYaw;
-                entityLiving.onInitialSpawn(world.getDifficultyForLocation(new BlockPos(entityLiving)), null);
-                world.spawnEntity(entity);
-                entityLiving.playLivingSound();
+                entityLiving.onInitialSpawn(world, world.getDifficultyForLocation(new BlockPos(entityLiving)), SpawnReason.SPAWN_EGG,null, null);
+                world.addEntity(entity);
+                entityLiving.playAmbientSound();
             }
             return entity;
         }

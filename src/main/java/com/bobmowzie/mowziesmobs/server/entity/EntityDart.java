@@ -10,6 +10,7 @@ import net.minecraft.entity.projectile.ArrowEntity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
@@ -31,19 +32,22 @@ public class EntityDart extends ArrowEntity {
     @Override
     protected void arrowHit(LivingEntity living) {
         super.arrowHit(living);
-        if (shootingEntity instanceof PlayerEntity) living.addPotionEffect(new EffectInstance(Effects.POISON, ConfigHandler.TOOLS_AND_ABILITIES.BLOW_GUN.poisonDuration, 3, false, true));
+        if (getShooter() instanceof PlayerEntity) living.addPotionEffect(new EffectInstance(Effects.POISON, ConfigHandler.TOOLS_AND_ABILITIES.BLOW_GUN.poisonDuration, 3, false, true));
         else living.addPotionEffect(new EffectInstance(Effects.POISON, 20, 1, false, true));
         living.setArrowCountInEntity(living.getArrowCountInEntity() - 1);
     }
 
     @Override
     protected void onHit(RayTraceResult raytraceResultIn) {
-        Entity hit = raytraceResultIn.entityHit;
-        if (hit != null && hit instanceof LivingEntity) {
-            LivingEntity living = (LivingEntity) hit;
-            if (world.isRemote || (shootingEntity == hit) || (shootingEntity instanceof EntityBarakoa && living instanceof EntityBarakoa && ((EntityBarakoa) shootingEntity).isBarakoDevoted() == ((EntityBarakoa) living).isBarakoDevoted()))
-                return;
+        if (raytraceResultIn.getType() == RayTraceResult.Type.ENTITY) {
+            Entity hit = ((EntityRayTraceResult) raytraceResultIn).getEntity();
+            Entity shooter = getShooter();
+            if (hit instanceof LivingEntity) {
+                LivingEntity living = (LivingEntity) hit;
+                if (world.isRemote || (shooter == hit) || (shooter instanceof EntityBarakoa && living instanceof EntityBarakoa && ((EntityBarakoa) shooter).isBarakoDevoted() == ((EntityBarakoa) living).isBarakoDevoted()))
+                    return;
+            }
+            super.onHit(raytraceResultIn);
         }
-        super.onHit(raytraceResultIn);
     }
 }

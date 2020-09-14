@@ -16,10 +16,4 @@ public class ItemNagaFang extends Item {
     public ItemNagaFang(Item.Properties properties) {
         super(properties);
     }
-
-    @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
-        ItemHandler.addItemText(this, tooltip);
-    }
 }

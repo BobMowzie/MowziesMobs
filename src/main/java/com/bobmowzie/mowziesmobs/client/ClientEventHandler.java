@@ -21,12 +21,15 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderItemInFrameEvent;
@@ -34,11 +37,9 @@ import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Mouse;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public enum ClientEventHandler {
     INSTANCE;
 
@@ -69,7 +70,7 @@ public enum ClientEventHandler {
 
     @SubscribeEvent
     public void onHandRender(RenderSpecificHandEvent event) {
-        PlayerEntity player = Minecraft.getMinecraft().player;
+        PlayerEntity player = Minecraft.getInstance().player;
         MowziePlayerProperties propertyPlayer = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
         if (event.getHand() == Hand.MAIN_HAND && propertyPlayer != null && propertyPlayer.untilAxeSwing > 0) {
             event.setCanceled(true);
@@ -148,7 +149,7 @@ public enum ClientEventHandler {
         }
     }
 
-    private void toDefaultBiped(ModelBiped model) {
+    private void toDefaultBiped(BipedModel model) {
         model.bipedHead.setRotationPoint(0.0F, 0.0F, 0.0F);
         model.bipedHead.rotateAngleX = 0;
         model.bipedHead.rotateAngleY = 0;

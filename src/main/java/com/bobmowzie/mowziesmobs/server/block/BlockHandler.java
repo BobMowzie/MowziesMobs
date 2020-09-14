@@ -27,7 +27,6 @@ public final class BlockHandler {
                 new BlockCampfire(),
                 new BlockGrottol()
                     .setRegistryName("grottol")
-                    .setTranslationKey("grottol")
         );
     }
 }

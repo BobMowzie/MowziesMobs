@@ -23,8 +23,6 @@ import java.util.List;
 public class ItemIceCrystal extends Item {
     public ItemIceCrystal(Item.Properties properties) {
         super(properties);
-        setMaxDamage(ConfigHandler.TOOLS_AND_ABILITIES.ICE_CRYSTAL.durability);
-        setMaxStackSize(1);
     }
 
     @Override
@@ -42,26 +40,20 @@ public class ItemIceCrystal extends Item {
         if (playerIn.getHeldItemOffhand().getItem() != Items.SHIELD) {
             ItemStack stack = playerIn.getHeldItem(handIn);
             MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(playerIn, MowziePlayerProperties.class);
-            if (stack.getItemDamage() + 20 < stack.getMaxDamage() || ConfigHandler.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable) {
+            if (stack.getDamage() + 20 < stack.getMaxDamage() || ConfigHandler.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable) {
                 if (!property.usingIceBreath) {
                     property.icebreath = new EntityIceBreath(worldIn, playerIn);
                     property.icebreath.setPositionAndRotation(playerIn.posX, playerIn.posY + playerIn.eyeHeight - 0.5f, playerIn.posZ, playerIn.rotationYaw, playerIn.rotationPitch);
-                    if (!worldIn.isRemote) worldIn.spawnEntity(property.icebreath);
+                    if (!worldIn.isRemote) worldIn.addEntity(property.icebreath);
                     property.usingIceBreath = true;
                 }
-                stack.damageItem(20, playerIn);
+                stack.damageItem(20, playerIn, p -> p.sendBreakAnimation(handIn));
                 showDurabilityBar(playerIn.getHeldItem(handIn));
                 return new ActionResult<ItemStack>(ActionResultType.SUCCESS, playerIn.getHeldItem(handIn));
             } else {
-                property.icebreath.setDead();
+                property.icebreath.remove();
             }
         }
         return super.onItemRightClick(worldIn, playerIn, handIn);
-    }
-
-    @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
-        ItemHandler.addItemText(this, tooltip);
     }
 }

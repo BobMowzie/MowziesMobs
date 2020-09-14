@@ -6,31 +6,20 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
-import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.*;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.potion.Effect;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.util.*;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ArmorMaterial;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.EnumHelper;
-
-import javax.annotation.Nullable;
-import java.util.List;
 
 public class ItemBarakoaMask extends ArmorItem implements BarakoaMask {
     private final MaskType type;
-
-    private static int d = ConfigHandler.TOOLS_AND_ABILITIES.BARAKOA_MASK.armorData.damageReduction;
-    private static ArmorMaterial ARMOR_BARAKOA_MASK = EnumHelper.addArmorMaterial("BARAKOA_MASK", "leather", 5, new int[]{d, d, d, d}, 15, SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, ConfigHandler.TOOLS_AND_ABILITIES.BARAKOA_MASK.armorData.toughness);
+    private static final BarakoaMaskMaterial BARAKOA_MASK_MATERIAL = new BarakoaMaskMaterial();
 
     public ItemBarakoaMask(MaskType type, Item.Properties properties) {
-        super(ARMOR_BARAKOA_MASK, 2, EquipmentSlotType.HEAD, properties);
+        super(BARAKOA_MASK_MATERIAL, EquipmentSlotType.HEAD, properties);
         this.type = type;
     }
 
@@ -49,23 +38,13 @@ public class ItemBarakoaMask extends ArmorItem implements BarakoaMask {
     }
 
     @Override
-    public int getColor(ItemStack itemStack) {
-        return 0xFFFFFFFF;
-    }
-
-    @Override
-    public ArmorMaterial getArmorMaterial() {
-        return ARMOR_BARAKOA_MASK;
-    }
-
-    @Override
-    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, Hand hand) {
+    public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         ItemStack stack = player.getHeldItem(hand);
         ItemStack headStack = player.inventory.armorInventory.get(3);
         if (headStack.getItem() instanceof ItemBarakoMask) {
-            if (ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable && !player.capabilities.isCreativeMode) headStack.damageItem(2, player);
-            spawnBarakoa(type, player, (float)stack.getItemDamage() / (float)stack.getMaxDamage());
-            if (!player.capabilities.isCreativeMode) {
+            if (ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable && !player.isCreative()) headStack.damageItem(2, player, p -> p.sendBreakAnimation(hand));
+            spawnBarakoa(type, player, (float)stack.getDamage() / (float)stack.getMaxDamage());
+            if (!player.isCreative()) {
                 stack.shrink(1);
             }
             return new ActionResult<>(ActionResultType.SUCCESS, stack);
@@ -73,7 +52,7 @@ public class ItemBarakoaMask extends ArmorItem implements BarakoaMask {
         else return super.onItemRightClick(world, player, hand);
     }
 
-    private void spawnBarakoa(MaskType mask, EntityPlayer player, float durability) {
+    private void spawnBarakoa(MaskType mask, PlayerEntity player, float durability) {
         MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
         if (property.getPackSize() < 10) {
             player.playSound(MMSounds.ENTITY_BARAKO_BELLY, 1.5f, 1);
@@ -93,19 +72,51 @@ public class ItemBarakoaMask extends ArmorItem implements BarakoaMask {
                 barakoa.setPositionAndRotation(player.posX + 1 * Math.sin(-angle * (Math.PI / 180)), player.posY + 1.5, player.posZ + 1 * Math.cos(-angle * (Math.PI / 180)), (float) angle, 0);
                 barakoa.setActive(false);
                 barakoa.active = false;
-                player.world.spawnEntity(barakoa);
-                barakoa.motionX = 0.5 * Math.sin(-angle * Math.PI / 180);
-                barakoa.motionY = 0.5;
-                barakoa.motionZ = 0.5 * Math.cos(-angle * Math.PI / 180);
-                //System.out.println((1.0f - durability) * barakoa.getMaxHealth());
+                player.world.addEntity(barakoa);
+                double vx = 0.5 * Math.sin(-angle * Math.PI / 180);
+                double vy = 0.5;
+                double vz = 0.5 * Math.cos(-angle * Math.PI / 180);
+                barakoa.setMotion(vx, vy, vz);
                 barakoa.setHealth((1.0f - durability) * barakoa.getMaxHealth());
             }
         }
     }
 
-    @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
-        ItemHandler.addItemText(this, tooltip);
+    private static class BarakoaMaskMaterial implements IArmorMaterial {
+
+        @Override
+        public int getDurability(EquipmentSlotType equipmentSlotType) {
+            return ArmorMaterial.LEATHER.getDurability(equipmentSlotType);
+        }
+
+        @Override
+        public int getDamageReductionAmount(EquipmentSlotType equipmentSlotType) {
+            return ConfigHandler.TOOLS_AND_ABILITIES.BARAKOA_MASK.armorData.damageReduction;
+        }
+
+        @Override
+        public int getEnchantability() {
+            return ArmorMaterial.LEATHER.getEnchantability();
+        }
+
+        @Override
+        public SoundEvent getSoundEvent() {
+            return ArmorMaterial.LEATHER.getSoundEvent();
+        }
+
+        @Override
+        public Ingredient getRepairMaterial() {
+            return null;
+        }
+
+        @Override
+        public String getName() {
+            return "barakoa_mask";
+        }
+
+        @Override
+        public float getToughness() {
+            return ConfigHandler.TOOLS_AND_ABILITIES.BARAKOA_MASK.armorData.damageReduction;
+        }
     }
 }
