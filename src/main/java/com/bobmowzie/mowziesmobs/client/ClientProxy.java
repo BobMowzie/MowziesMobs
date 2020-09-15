@@ -27,15 +27,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
 public class ClientProxy extends ServerProxy {
     @Override
-    public void onInit() {
-        super.onInit();
+    public void init(final IEventBus modbus) {
+        super.init(modbus);
         RenderingRegistry.registerEntityRenderingHandler(EntityBabyFoliaath.class, RenderFoliaathBaby::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityFoliaath.class, RenderFoliaath::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityWroughtnaut.class, RenderWroughtnaut::new);
@@ -63,10 +61,10 @@ public class ClientProxy extends ServerProxy {
     }
 
     @Override
-    public void onLateInit() {
-        Minecraft.getMinecraft().getItemColors().registerItemColorHandler(new IItemColor() {
+    public void onLateInit(final IEventBus modbus) {
+        Minecraft.getInstance().getItemColors().register(new IItemColor() {
             @Override
-            public int colorMultiplier(ItemStack stack, int tintIndex) {
+            public int getColor(ItemStack stack, int tintIndex) {
                 MowzieEntityEggInfo info = EntityHandler.INSTANCE.getEntityEggInfo(ItemSpawnEgg.getEntityIdFromItem(stack));
                 return info == null ? -1 : (tintIndex == 0 ? info.primaryColor : info.secondaryColor);
             }
@@ -75,27 +73,27 @@ public class ClientProxy extends ServerProxy {
 
     @Override
     public void playSunstrikeSound(EntitySunstrike strike) {
-        Minecraft.getMinecraft().getSoundHandler().playSound(new SunstrikeSound(strike));
+        Minecraft.getInstance().getSoundHandler().play(new SunstrikeSound(strike));
     }
 
     @Override
     public void playIceBreathSound(Entity entity) {
-        Minecraft.getMinecraft().getSoundHandler().playSound(new IceBreathSound(entity));
+        Minecraft.getInstance().getSoundHandler().play(new IceBreathSound(entity));
     }
 
     @Override
     public void playBoulderChargeSound(PlayerEntity player) {
-        Minecraft.getMinecraft().getSoundHandler().playSound(new SpawnBoulderChargeSound(player));
+        Minecraft.getInstance().getSoundHandler().play(new SpawnBoulderChargeSound(player));
     }
 
     @Override
     public void playNagaSwoopSound(EntityNaga naga) {
-        Minecraft.getMinecraft().getSoundHandler().playSound(new NagaSwoopSound(naga));
+        Minecraft.getInstance().getSoundHandler().play(new NagaSwoopSound(naga));
     }
 
     @Override
     public void solarBeamHitWroughtnaught(LivingEntity caster) {
-        if (caster == Minecraft.getMinecraft().player) {
+        if (caster == Minecraft.getInstance().player) {
             long now = System.currentTimeMillis();
             if (now - ClientEventHandler.INSTANCE.lastWroughtnautHitTime > 500) {
                 ClientEventHandler.INSTANCE.startWroughtnautHitTime = now;

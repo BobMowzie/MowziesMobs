@@ -6,13 +6,7 @@ import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 
 public class BlockPaintedAcacia extends Block {
-    public BlockPaintedAcacia() {
-        super(Material.WOOD);
-        setCreativeTab(CreativeTabHandler.INSTANCE.creativeTab);
-        setHardness(2.0F);
-        setResistance(5.0F);
-        setSoundType(SoundType.WOOD);
-        setTranslationKey("paintedAcacia");
-        setRegistryName("painted_acacia");
+    public BlockPaintedAcacia(Block.Properties properties) {
+        super(properties);
     }
 }

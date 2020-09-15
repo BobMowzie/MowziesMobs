@@ -12,6 +12,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.IDataSerializer;
 import net.minecraft.network.datasync.DataSerializers;
+import net.minecraftforge.eventbus.api.IEventBus;
 
 import java.io.IOException;
 
@@ -30,7 +31,7 @@ public class ServerProxy {
         }
 
         @Override
-        public Optional<Trade> read(PacketBuffer buf) throws IOException {
+        public Optional<Trade> read(PacketBuffer buf) {
             ItemStack input = buf.readItemStack();
             if (input == ItemStack.EMPTY) {
                 return Optional.absent();
@@ -52,11 +53,11 @@ public class ServerProxy {
         }
     };
 
-    public void onInit() {
+    public void init(final IEventBus modbus) {
         DataSerializers.registerSerializer(OPTIONAL_TRADE);
     }
 
-    public void onLateInit() {}
+    public void onLateInit(final IEventBus modbus) {}
 
     public void playSunstrikeSound(EntitySunstrike strike) {}
 

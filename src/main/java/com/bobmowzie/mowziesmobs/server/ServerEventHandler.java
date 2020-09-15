@@ -71,9 +71,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public enum ServerEventHandler {
-    INSTANCE;
-
+public final class ServerEventHandler {
     private static final int ICE = Block.getStateId(Blocks.ICE.getDefaultState());
 
     private final static int SUNSTRIKE_COOLDOWN = 55;

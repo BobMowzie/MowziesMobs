@@ -16,6 +16,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.stats.Stats;
 import net.minecraft.tileentity.MobSpawnerTileEntity;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.spawner.AbstractSpawner;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
@@ -110,11 +111,11 @@ public class ItemSpawnEgg extends Item {
         } else {
             RayTraceResult raytraceresult = rayTrace(worldIn, playerIn, true);
             if (raytraceresult.getType() == RayTraceResult.Type.BLOCK) {
-                BlockInfo hitInfo = (BlockInfo)raytraceresult.hitInfo;
-                BlockPos blockpos = hitInfo.getBlockPos();
+                BlockRayTraceResult hitInfo = (BlockRayTraceResult)raytraceresult.hitInfo;
+                BlockPos blockpos = hitInfo.getPos();
                 if (!(worldIn.getBlockState(blockpos).getBlock() instanceof FlowingFluidBlock)) {
                     return new ActionResult<>(ActionResultType.PASS, itemStackIn);
-                } else if (worldIn.isBlockModifiable(playerIn, blockpos) && playerIn.canPlayerEdit(blockpos, hitInfo., itemStackIn)) {
+                } else if (worldIn.isBlockModifiable(playerIn, blockpos) && playerIn.canPlayerEdit(blockpos, hitInfo.getFace(), itemStackIn)) {
                     Entity entity = spawnCreature(worldIn, getEntityIdFromItem(itemStackIn), blockpos.getX() + 0.5D, blockpos.getY() + 0.5D, blockpos.getZ() + 0.5D);
                     if (entity == null) {
                         return new ActionResult<>(ActionResultType.PASS, itemStackIn);

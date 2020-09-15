@@ -96,12 +96,12 @@ public class EntityGrottol extends MowzieEntity implements IMob {
     }
 
     @Override
-    protected void initEntityAI() {
-        super.initEntityAI();
-        tasks.addTask(3, new SwimGoal(this));
-        tasks.addTask(4, new RandomWalkingGoal(this, 0.3));
-        tasks.addTask(1, new EntityAIGrottolFindMinecart(this));
-        tasks.addTask(2, new MMAIAvoidEntity<EntityGrottol, PlayerEntity>(this, PlayerEntity.class, 16f, 0.5, 0.7) {
+    protected void registerGoals() {
+        super.registerGoals();
+        goalSelector.addGoal(3, new SwimGoal(this));
+        goalSelector.addGoal(4, new RandomWalkingGoal(this, 0.3));
+        goalSelector.addGoal(1, new EntityAIGrottolFindMinecart(this));
+        goalSelector.addGoal(2, new MMAIAvoidEntity<EntityGrottol, PlayerEntity>(this, PlayerEntity.class, 16f, 0.5, 0.7) {
             private int fleeCheckCounter = 0;
 
             @Override
@@ -131,12 +131,12 @@ public class EntityGrottol extends MowzieEntity implements IMob {
                 fleeCheckCounter = 0;
             }
         });
-        tasks.addTask(8, new LookRandomlyGoal(this));
-        tasks.addTask(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
-        tasks.addTask(1, new AnimationTakeDamage<>(this));
-        tasks.addTask(1, new AnimationDieAI<>(this));
-        tasks.addTask(5, new EntityAIGrottolIdle(this));
-        tasks.addTask(2, new SimpleAnimationAI<>(this, BURROW_ANIMATION, false));
+        goalSelector.addGoal(8, new LookRandomlyGoal(this));
+        goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        goalSelector.addGoal(1, new AnimationTakeDamage<>(this));
+        goalSelector.addGoal(1, new AnimationDieAI<>(this));
+        goalSelector.addGoal(5, new EntityAIGrottolIdle(this));
+        goalSelector.addGoal(2, new SimpleAnimationAI<>(this, BURROW_ANIMATION, false));
     }
 
     @Override
@@ -182,8 +182,8 @@ public class EntityGrottol extends MowzieEntity implements IMob {
     @Override
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
-        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20 * ConfigHandler.MOBS.GROTTOL.healthMultiplier);
-        getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
+        getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20 * ConfigHandler.MOBS.GROTTOL.healthMultiplier);
+        getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
     }
 
     @Override
@@ -308,7 +308,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
         if (!world.isRemote && fleeTime >= 55 && getAnimation() == NO_ANIMATION && !isAIDisabled() && !isPotionActive(PotionHandler.FROZEN)) {
             BlockState blockBeneath = world.getBlockState(getPosition().down());
             Material mat = blockBeneath.getMaterial();
-            if (mat == Material.GRASS || mat == Material.GROUND || mat == Material.SAND || mat == Material.CLAY || mat == Material.ROCK) {
+            if (mat == Material.EARTH || mat == Material.SAND || mat == Material.CLAY || mat == Material.ROCK) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, BURROW_ANIMATION);
             }
         }
@@ -317,7 +317,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
                 playSound(MMSounds.ENTITY_GROTTOL_BURROW, 1, 0.8f + rand.nextFloat() * 0.4f);
                 BlockState blockBeneath = world.getBlockState(getPosition().down());
                 Material mat = blockBeneath.getMaterial();
-                if (mat == Material.GRASS || mat == Material.GROUND || mat == Material.SAND || mat == Material.CLAY || mat == Material.ROCK) {
+                if (mat == Material.EARTH || mat == Material.SAND || mat == Material.CLAY || mat == Material.ROCK) {
                     Vec3d pos = new Vec3d(0.7D, 0.05D, 0.0D).rotateYaw((float) Math.toRadians(-renderYawOffset - 90));
                     ((ServerWorld) world).spawnParticle(
                         EnumParticleTypes.BLOCK_DUST,
@@ -335,12 +335,12 @@ public class EntityGrottol extends MowzieEntity implements IMob {
     @Override
     protected void onAnimationFinish(Animation animation) {
         if (animation == BURROW_ANIMATION) {
-            setDead();
+            remove();
         }
     }
 
     public static boolean isBlockRail(Block block) {
-        return block == Blocks.RAIL || block == Blocks.ACTIVATOR_RAIL || block == Blocks.GOLDEN_RAIL || block == Blocks.DETECTOR_RAIL;
+        return block == Blocks.RAIL || block == Blocks.ACTIVATOR_RAIL || block == Blocks.POWERED_RAIL || block == Blocks.DETECTOR_RAIL;
     }
 
     private boolean isBlackPinkInYourArea() {
