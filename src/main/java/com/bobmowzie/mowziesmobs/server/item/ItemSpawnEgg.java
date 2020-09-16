@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntityEggInfo;
 import net.minecraft.block.*;
 import net.minecraft.block.BlockLiquid;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SpawnReason;
@@ -12,11 +13,15 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.stats.Stats;
 import net.minecraft.tileentity.MobSpawnerTileEntity;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.TextComponentUtils;
 import net.minecraft.world.spawner.AbstractSpawner;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
@@ -36,12 +41,10 @@ import java.util.UUID;
 public class ItemSpawnEgg extends Item {
     public ItemSpawnEgg(Item.Properties properties) {
         super(properties);
-        setHasSubtypes(true);
     }
 
-    @Override
     public void getSubItems(ItemGroup tab, NonNullList<ItemStack> subItems) {
-        if (isInCreativeTab(tab)) {
+        if (this.getCreativeTabs().contains(tab)) {
             Iterator<MowzieEntityEggInfo> iterator = EntityHandler.INSTANCE.getEntityEggInfoIterator();
             while (iterator.hasNext()) {
                 MowzieEntityEggInfo info = iterator.next();
@@ -52,30 +55,36 @@ public class ItemSpawnEgg extends Item {
         }
     }
 
-    @Override
-    public String getItemStackDisplayName(ItemStack stack) {
-        String name = I18n.translateToLocal(getTranslationKey() + ".name").trim();
-        ResourceLocation entityName = getEntityIdFromItem(stack);
-        if (entityName != null) {
-            name = name + " " + I18n.translateToLocal("entity." + entityName.getPath() + ".name");
-        }
-        return name;
-    }
+//    @Override
+//    public ITextComponent getDisplayName(ItemStack stack) {
+//        String name = I18n.format(getTranslationKey() + ".name").trim();
+//        ResourceLocation entityName = getEntityIdFromItem(stack);
+//        if (entityName != null) {
+//            name = name + " " + I18n.format("entity." + entityName.getPath() + ".name");
+//        }
+//        return name;
+//    }
+
 
     @Override
-    public ActionResultType onItemUse(PlayerEntity playerIn, World worldIn, BlockPos pos, Hand hand, Direction facing, float hitX, float hitY, float hitZ) {
+    public ActionResultType onItemUse(ItemUseContext context) {
+        PlayerEntity playerIn = context.getPlayer();
+        Hand hand = context.getHand();
+        Direction facing = context.getFace();
         ItemStack stack = playerIn.getHeldItem(hand);
+        BlockPos pos = context.getPos();
+        World worldIn = context.getWorld();
         if (worldIn.isRemote) {
             return ActionResultType.SUCCESS;
         } else if (!playerIn.canPlayerEdit(pos.offset(facing), facing, stack)) {
             return ActionResultType.FAIL;
         } else {
             BlockState state = worldIn.getBlockState(pos);
-            if (state.getBlock() == Blocks.MOB_SPAWNER) {
+            if (state.getBlock() == Blocks.SPAWNER) {
                 TileEntity blockEntity = worldIn.getTileEntity(pos);
                 if (blockEntity instanceof MobSpawnerTileEntity) {
                     AbstractSpawner spawner = ((MobSpawnerTileEntity) blockEntity).getSpawnerBaseLogic();
-                    spawner.setEntityId(getEntityIdFromItem(stack));
+                    spawner.setEntityType(getEntityIdFromItem(stack));
                     blockEntity.markDirty();
                     worldIn.notifyBlockUpdate(pos, state, state, 3);
                     if (!playerIn.abilities.isCreativeMode) {
@@ -127,7 +136,7 @@ public class ItemSpawnEgg extends Item {
                         if (!playerIn.abilities.isCreativeMode) {
                             itemStackIn.shrink(1);
                         }
-                        playerIn.addStat(Stats.getObjectUseStats(this));
+                        playerIn.addStat(Stats.ITEM_USED.get(this));
                         return new ActionResult<>(ActionResultType.SUCCESS, itemStackIn);
                     }
                 } else {
@@ -142,16 +151,16 @@ public class ItemSpawnEgg extends Item {
     public static void applyItemEntityDataToEntity(World entityWorld, @Nullable PlayerEntity player, ItemStack stack, @Nullable Entity targetEntity) {
         MinecraftServer server = entityWorld.getServer();
         if (server != null && targetEntity != null) {
-            CompoundNBT compound = stack.getTagCompound();
-            if (compound != null && compound.hasKey("EntityTag", 10)) {
+            CompoundNBT compound = stack.getTag();
+            if (compound != null && compound.contains("EntityTag", 10)) {
                 if (!entityWorld.isRemote && targetEntity.ignoreItemEntityData() && (player == null || !server.getPlayerList().canSendCommands(player.getGameProfile()))) {
                     return;
                 }
-                CompoundNBT nbttagcompound1 = targetEntity.writeToNBT(new CompoundNBT());
+                CompoundNBT nbttagcompound1 = targetEntity.writeWithoutTypeId(new CompoundNBT());
                 UUID uuid = targetEntity.getUniqueID();
-                nbttagcompound1.merge(compound.getCompoundTag("EntityTag"));
+                nbttagcompound1.merge(compound.getCompound("EntityTag"));
                 targetEntity.setUniqueId(uuid);
-                targetEntity.readFromNBT(nbttagcompound1);
+                targetEntity.read(nbttagcompound1);
             }
         }
     }
@@ -176,11 +185,11 @@ public class ItemSpawnEgg extends Item {
 
     @Nullable
     public static ResourceLocation getEntityIdFromItem(ItemStack stack) {
-        CompoundNBT compound = stack.getTagCompound();
-        if (compound == null || !compound.hasKey("EntityTag", NBT.TAG_COMPOUND)) {
+        CompoundNBT compound = stack.getTag();
+        if (compound == null || !compound.contains("EntityTag", NBT.TAG_COMPOUND)) {
             return null;
         } else {
-            CompoundNBT nbttagcompound1 = compound.getCompoundTag("EntityTag");
+            CompoundNBT nbttagcompound1 = compound.getCompound("EntityTag");
             String id = nbttagcompound1.getString("id");
             ResourceLocation res = new ResourceLocation(id);
             return StringUtils.equals(id, res.toString()) ? res : null;
@@ -188,10 +197,10 @@ public class ItemSpawnEgg extends Item {
     }
 
     public static void applyEntityIdToItemStack(ItemStack stack, ResourceLocation id) {
-        CompoundNBT compound = stack.hasTagCompound() ? stack.getTagCompound() : new CompoundNBT();
+        CompoundNBT compound = stack.hasTag() ? stack.getTag() : new CompoundNBT();
         CompoundNBT entityCompound = new CompoundNBT();
-        entityCompound.setString("id", id.toString());
-        compound.setTag("EntityTag", entityCompound);
-        stack.setTagCompound(compound);
+        entityCompound.putString("id", id.toString());
+        compound.put("EntityTag", entityCompound);
+        stack.setTag(compound);
     }
 }

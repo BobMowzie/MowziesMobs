@@ -10,6 +10,7 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 import java.util.Objects;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 

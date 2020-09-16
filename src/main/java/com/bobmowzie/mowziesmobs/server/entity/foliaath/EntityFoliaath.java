@@ -9,15 +9,12 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import net.ilexiconn.llibrary.server.animation.Animation;
-import net.ilexiconn.llibrary.server.animation.AnimationHandler;
+import com.ilexiconn.llibrary.server.animation.Animation;
+import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LeavesBlock;
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.monster.IMob;
@@ -53,29 +50,33 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
     public ControlledAnimation deathFlail = new ControlledAnimation(5);
     public ControlledAnimation stopDance = new ControlledAnimation(10);
     public int lastTimeDecrease = 0;
-    int resettingTargetTimer = 0;
+    private int resettingTargetTimer = 0;
     private double prevOpenMouth;
     private double prevActivate;
     private int activateTarget;
 
-    public EntityFoliaath(World world) {
-        super(world);
+    public EntityFoliaath(EntityType<? extends EntityFoliaath> type, World world) {
+        super(type, world);
+        this.experienceValue = 10;
+        this.addIntermittentAnimation(openMouth);
+    }
+
+    @Override
+    protected void registerGoals() {
+        super.registerGoals();
         setPathPriority(PathNodeType.WATER, 0);
-        this.tasks.addTask(0, new SwimGoal(this));
-        this.tasks.addTask(1, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_FOLIAATH_BITE_1, null, 2, 4F, ConfigHandler.MOBS.FOLIAATH.combatData.attackMultiplier, 3));
-        this.tasks.addTask(1, new AnimationTakeDamage<>(this));
-        this.tasks.addTask(1, new AnimationDieAI<>(this));
-        this.targetTasks.addTask(3, new NearestAttackableTargetGoal(this, LivingEntity.class, 0, true, false, e ->
-            PlayerEntity.class.isAssignableFrom(e.getClass()) || CreatureEntity.class.isAssignableFrom(e.getClass())) {
+        this.goalSelector.addGoal(0, new SwimGoal(this));
+        this.goalSelector.addGoal(1, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_FOLIAATH_BITE_1, null, 2, 4F, ConfigHandler.MOBS.FOLIAATH.combatData.attackMultiplier, 3));
+        this.goalSelector.addGoal(1, new AnimationTakeDamage<>(this));
+        this.goalSelector.addGoal(1, new AnimationDieAI<>(this));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, LivingEntity.class, 0, true, false, e ->
+                PlayerEntity.class.isAssignableFrom(e.getClass()) || CreatureEntity.class.isAssignableFrom(e.getClass())) {
 
             @Override
             protected boolean isSuitableTarget(@Nullable LivingEntity target, boolean includeInvincibles) {
                 return !(target instanceof EntityFoliaath) && !(target instanceof EntityBabyFoliaath) && !target.isInvisible() && !target.getIsInvulnerable() && super.isSuitableTarget(target, includeInvincibles);
             }
         });
-        this.setSize(0.5F, 2.5F);
-        this.experienceValue = 10;
-        this.addIntermittentAnimation(openMouth);
     }
 
     @Override
@@ -242,7 +243,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
 
         if (!this.world.isRemote && this.world.getDifficulty() == Difficulty.PEACEFUL)
         {
-            this.setDead();
+            this.remove();
         }
     }
 
@@ -341,7 +342,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
     }
 
     @Override
-    public void writeEntityToNBT(CompoundNBT compound) {
+    public void writeSpawnData(CompoundNBT compound) {
         super.writeEntityToNBT(compound);
         compound.setBoolean("canDespawn", canDespawn());
     }

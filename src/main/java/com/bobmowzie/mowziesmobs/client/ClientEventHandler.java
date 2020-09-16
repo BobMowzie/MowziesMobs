@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.client;
 
-
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
@@ -12,8 +11,6 @@ import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import com.mojang.blaze3d.platform.GlStateManager;
-import net.ilexiconn.llibrary.LLibrary;
-import com.ilexiconn.llibrary.client.event.PlayerModelEvent;
 import com.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -32,6 +29,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderItemInFrameEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 @OnlyIn(Dist.CLIENT)
@@ -72,7 +70,7 @@ public enum ClientEventHandler {
         }
     }
 
-    @SubscribeEvent
+    /*@SubscribeEvent
     public void onRenderPlayerPre(PlayerModelEvent.SetRotationAngles event) {
         if (event.getEntityPlayer() == null) {
             return;
@@ -87,8 +85,8 @@ public enum ClientEventHandler {
             Vec3d moveVec = new Vec3d(player.motionX, player.motionY, player.motionZ);
             moveVec = moveVec.normalize();
             GlStateManager.rotate(45 - 45 * (float)moveVec.y, 1.0F, 0.0F, 0.0F);
-
-            /*toDefaultBiped(event.getModel());
+/* DEAD CODE
+            toDefaultBiped(event.getModel());
 
             float spin = 1f * (player.ticksExisted + delta);
             event.getModel().bipedHead.rotateAngleX = 1.57f * Math.min(0f, (float)moveVec.y);
@@ -122,7 +120,7 @@ public enum ClientEventHandler {
             event.getModel().bipedRightLeg.rotateAngleY = spin;
             event.getModel().bipedRightLeg.rotateAngleZ = 0;
             event.getModel().bipedRightLeg.setRotationPoint(-1.9F * (float)Math.sin(spin + Math.PI/2), 12.0F, -1.9f * (float)Math.cos(spin + Math.PI/2));*/
-        }
+        /*}
 
         // Axe of a thousand metals attack animations
         if (propertyPlayer != null && propertyPlayer.untilAxeSwing > 0) {
@@ -142,7 +140,7 @@ public enum ClientEventHandler {
                 arm.rotateAngleZ = 1.5f;
             }
         }
-    }
+    }*/
 
     private void toDefaultBiped(BipedModel model) {
         model.bipedHead.setRotationPoint(0.0F, 0.0F, 0.0F);
@@ -177,12 +175,12 @@ public enum ClientEventHandler {
 
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event) {
-        PlayerEntity player = Minecraft.getMinecraft().player;
+        PlayerEntity player = Minecraft.getInstance().player;
         if (player != null) {
             MowziePlayerProperties propertyPlayer = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
             if (propertyPlayer != null && propertyPlayer.geomancy.canUse(player) && propertyPlayer.geomancy.isSpawningBoulder() && propertyPlayer.geomancy.getSpawnBoulderCharge() > 2) {
                 Vec3d lookPos = propertyPlayer.geomancy.getLookPos();
-                Vec3d playerEyes = player.getPositionEyes(LLibrary.PROXY.getPartialTicks());
+                Vec3d playerEyes = player.getEyePosition(MowziesMobs.PROXY.getPartialTicks());
                 Vec3d vec = playerEyes.subtract(lookPos).normalize();
                 float yaw = (float) Math.atan2(vec.z, vec.x);
                 float pitch = (float) Math.asin(vec.y);

@@ -88,7 +88,7 @@ public class ConfigHandler {
         @Name("dimensions")
         @LangKey(LANG_PREFIX + "dimensions")
         @Comment("IDs of dimensions this mob can spawn in")
-        public int[] dimensions = {0};
+        public String[] dimensions = {"minecraft:overworld"};
 
         @Name("height_min")
         @LangKey(LANG_PREFIX + "height_min")
@@ -154,7 +154,7 @@ public class ConfigHandler {
         @Name("dimensions")
         @LangKey(LANG_PREFIX + "dimensions")
         @Comment("IDs of dimensions this mob/structure can generate in")
-        public int[] dimensions = {0};
+        public String[] dimensions = {"minecraft:overworld"};
 
         @Name("height_min")
         @LangKey(LANG_PREFIX + "height_min")

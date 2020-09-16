@@ -13,15 +13,16 @@ import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.google.common.reflect.Reflection;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.EntityEntry;
-import net.minecraftforge.fml.common.registry.EntityEntryBuilder;
 import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.Iterator;
@@ -38,9 +39,10 @@ public enum EntityHandler {
 
     private static int nextEntityId;
 
-    @SubscribeEvent
-    public static void register(RegistryEvent.Register<EntityEntry> event) {
-        IForgeRegistry<EntityEntry> registry = event.getRegistry();
+    public static final EntityType<EntityFoliaath> FOLIAATH = register("foliaath", EntityType.Builder.create(EntityFoliaath::new, EntityClassification.MONSTER).size(0.5f, 2.5f));
+
+    public static void register(RegistryEvent.Register<EntityType<?>> event) {
+        IForgeRegistry<EntityType<?>> registry = event.getRegistry();
         registerEntity(registry, EntityFoliaath.class, "foliaath", true, 0x47CC3B, 0xC03BCC, 64);
         registerEntity(registry, EntityBabyFoliaath.class, "baby_foliaath", false, 0x47CC3B, 0xC03BCC, 64);
         registerEntity(registry, EntityWroughtnaut.class, "ferrous_wroughtnaut", true, 0x8C8C8C, 0xFFFFFF, 64);
@@ -68,7 +70,11 @@ public enum EntityHandler {
         registerEntity(registry, EntityBlockSwapper.class, "block_swapper", 64);
     }
 
-    public static void registerEntity(IForgeRegistry<EntityEntry> registry, Class<? extends MobEntity> entityClass, String name, boolean addEgg, int mainColor, int subColor, int trackingDistance, Biome... biomes) {
+    private static <T extends Entity> EntityType<T> register(String key, EntityType.Builder<T> builder) {
+        return Registry.register(Registry.ENTITY_TYPE, key, builder.build(key));
+    }
+
+    public static void registerEntity(IForgeRegistry<EntityType<?>> registry, Class<? extends MobEntity> entityClass, String name, boolean addEgg, int mainColor, int subColor, int trackingDistance, Biome... biomes) {
         Reflection.initialize(entityClass);
         int entityId = nextEntityId();
         ResourceLocation res = new ResourceLocation(MowziesMobs.MODID, name);
@@ -84,7 +90,7 @@ public enum EntityHandler {
         }
     }
 
-    public static void registerEntity(IForgeRegistry<EntityEntry> registry, Class<? extends Entity> entityClass, String name, int trackingDistance) {
+    public static void registerEntity(IForgeRegistry<EntityType<?>> registry, Class<? extends Entity> entityClass, String name, int trackingDistance) {
         int entityId = nextEntityId();
         ResourceLocation res = new ResourceLocation(MowziesMobs.MODID, name);
         registry.register(EntityEntryBuilder.create()

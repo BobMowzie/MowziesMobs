@@ -53,6 +53,7 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 @Mod(MowziesMobs.MODID)
 public final class MowziesMobs {
     public static final String MODID = "mowziesmobs";
+    public static ServerProxy PROXY;
 
     @SuppressWarnings("Convert2MethodRef")
     public static final SimpleChannel NETWORK = new NetBuilder(new ResourceLocation(MODID, "net"))
@@ -85,8 +86,8 @@ public final class MowziesMobs {
 //        RecipeHandler.REG.register(bus);
 //        PotionHandler.REG.register(bus);
 //        LootTableHandler.REG.register(bus);
-        final ServerProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
-        proxy.init(bus);
+        PROXY = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
+        PROXY.init(bus);
     }
 
     public void init(FMLCommonSetupEvent event) {

@@ -57,6 +57,10 @@ public class ServerProxy {
         DataSerializers.registerSerializer(OPTIONAL_TRADE);
     }
 
+    public float getPartialTicks() {
+        return 0.0F;
+    }
+
     public void onLateInit(final IEventBus modbus) {}
 
     public void playSunstrikeSound(EntitySunstrike strike) {}
