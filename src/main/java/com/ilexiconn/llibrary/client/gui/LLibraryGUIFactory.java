@@ -1,6 +1,6 @@
 package com.ilexiconn.llibrary.client.gui;
 
-import net.ilexiconn.llibrary.client.gui.config.LLibraryConfigGUI;
+import com.ilexiconn.llibrary.client.gui.config.LLibraryConfigGUI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.client.IModGuiFactory;

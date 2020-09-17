@@ -1,7 +1,7 @@
 package com.ilexiconn.llibrary.server.property.wrapper;
 
-import net.ilexiconn.llibrary.server.property.IBooleanProperty;
-import net.ilexiconn.llibrary.server.property.IStringSelectionProperty;
+import com.ilexiconn.llibrary.server.property.IBooleanProperty;
+import com.ilexiconn.llibrary.server.property.IStringSelectionProperty;
 
 import java.util.HashSet;
 import java.util.Set;

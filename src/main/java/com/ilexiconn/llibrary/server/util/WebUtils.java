@@ -3,7 +3,7 @@ package com.ilexiconn.llibrary.server.util;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
-import net.ilexiconn.llibrary.LLibrary;
+import com.ilexiconn.llibrary.LLibrary;
 import net.minecraft.crash.CrashReport;
 import org.apache.commons.io.IOUtils;
 

@@ -6,7 +6,7 @@ import com.bobmowzie.mowziesmobs.client.render.entity.FrozenRenderHandler;
 import com.bobmowzie.mowziesmobs.server.block.BlockGrottol;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
-import net.ilexiconn.llibrary.client.model.tabula.TabulaModelHandler;
+import com.ilexiconn.llibrary.client.model.tabula.TabulaModelHandler;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.block.statemap.StateMap;

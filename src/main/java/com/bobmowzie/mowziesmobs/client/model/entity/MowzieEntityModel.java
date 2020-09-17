@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.MMModelAnimator;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
+import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 

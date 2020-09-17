@@ -1,7 +1,7 @@
 package com.ilexiconn.llibrary.server.network;
 
 import io.netty.buffer.ByteBuf;
-import net.ilexiconn.llibrary.server.event.SurvivalTabClickEvent;
+import com.ilexiconn.llibrary.server.event.SurvivalTabClickEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;

@@ -5,7 +5,7 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
+import com.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.item.crafting.Ingredient;

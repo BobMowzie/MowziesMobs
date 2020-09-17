@@ -1,8 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.ai.animation;
 
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import net.ilexiconn.llibrary.server.animation.Animation;
-import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
+import com.ilexiconn.llibrary.server.animation.Animation;
+import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.IRangedAttackMob;
 import net.minecraft.util.SoundEvent;

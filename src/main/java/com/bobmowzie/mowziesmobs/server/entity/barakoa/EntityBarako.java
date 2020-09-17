@@ -13,6 +13,7 @@ import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.*;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.entity.EntityDart;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityRing;
@@ -22,12 +23,13 @@ import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoTrade;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import net.ilexiconn.llibrary.server.animation.Animation;
-import net.ilexiconn.llibrary.server.animation.AnimationHandler;
+import com.ilexiconn.llibrary.server.animation.Animation;
+import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.goal.*;
@@ -56,6 +58,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BossInfo;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -104,9 +108,9 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     private PlayerEntity blessingPlayer;
     private BarakoaHurtByTargetAI hurtByTargetAI;
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public Vec3d[] betweenHandPos;
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public Vec3d[] blessingPlayerPos;
 
     private static ParticleComponent.KeyTrack superNovaKeyTrack1 = new ParticleComponent.KeyTrack(
@@ -115,8 +119,8 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     );
     private static ParticleComponent.KeyTrack superNovaKeyTrack2 = ParticleComponent.KeyTrack.oscillate(0, 1, 30);
 
-    public EntityBarako(World world) {
-        super(world);
+    public EntityBarako(EntityType<? extends EntityBarako> type, World world) {
+        super(type, world);
         hurtByTargetAI = new BarakoaHurtByTargetAI(this, true);
         this.targetTasks.addTask(3, hurtByTargetAI);
         this.targetTasks.addTask(4, new BarakoaAttackTargetAI(this, PlayerEntity.class, 0, false, true));

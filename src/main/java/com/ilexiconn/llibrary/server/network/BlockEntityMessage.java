@@ -1,7 +1,7 @@
 package com.ilexiconn.llibrary.server.network;
 
 import io.netty.buffer.ByteBuf;
-import net.ilexiconn.llibrary.server.entity.block.BlockEntity;
+import com.ilexiconn.llibrary.server.entity.block.BlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;

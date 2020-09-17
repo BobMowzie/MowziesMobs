@@ -6,13 +6,14 @@ import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.google.common.collect.Sets;
-import net.ilexiconn.llibrary.server.animation.Animation;
-import net.ilexiconn.llibrary.server.animation.AnimationHandler;
+import com.ilexiconn.llibrary.server.animation.Animation;
+import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockOldLeaf;
 import net.minecraft.block.BlockPlanks;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -56,11 +57,15 @@ public class EntityBabyFoliaath extends MowzieEntity {
 
     private static Set<Item> meatTypes;
 
-    public EntityBabyFoliaath(World world) {
-        super(world);
-        tasks.addTask(1, new AnimationBabyFoliaathEatAI<>(this, EAT_ANIMATION));
-        setSize(0.4F, 0.4F);
+    public EntityBabyFoliaath(EntityType<? extends EntityBabyFoliaath> type, World world) {
+        super(type, world);
         getMeatList();
+    }
+
+    @Override
+    protected void registerGoals() {
+        super.registerGoals();
+        this.goalSelector.addGoal(1, new AnimationBabyFoliaathEatAI<EntityBabyFoliaath>(this, EAT_ANIMATION));
     }
 
     @Override

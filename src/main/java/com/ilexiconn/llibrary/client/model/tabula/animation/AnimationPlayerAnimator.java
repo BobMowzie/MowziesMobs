@@ -1,14 +1,14 @@
 package com.ilexiconn.llibrary.client.model.tabula.animation;
 
-import net.ilexiconn.llibrary.LLibrary;
-import net.ilexiconn.llibrary.client.model.tabula.ITabulaModelAnimator;
-import net.ilexiconn.llibrary.client.model.tabula.TabulaModel;
-import net.ilexiconn.llibrary.client.model.tabula.container.TabulaAnimationComponentContainer;
-import net.ilexiconn.llibrary.client.model.tabula.container.TabulaAnimationContainer;
-import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
-import net.ilexiconn.llibrary.server.animation.Animation;
-import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
-import net.ilexiconn.llibrary.server.animation.NamedAnimation;
+import com.ilexiconn.llibrary.LLibrary;
+import com.ilexiconn.llibrary.client.model.tabula.ITabulaModelAnimator;
+import com.ilexiconn.llibrary.client.model.tabula.TabulaModel;
+import com.ilexiconn.llibrary.client.model.tabula.container.TabulaAnimationComponentContainer;
+import com.ilexiconn.llibrary.client.model.tabula.container.TabulaAnimationContainer;
+import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
+import com.ilexiconn.llibrary.server.animation.Animation;
+import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
+import com.ilexiconn.llibrary.server.animation.NamedAnimation;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 

@@ -1,14 +1,14 @@
 package com.ilexiconn.llibrary.server;
 
-import net.ilexiconn.llibrary.LLibrary;
-import net.ilexiconn.llibrary.server.capability.EntityDataCapabilityImplementation;
-import net.ilexiconn.llibrary.server.capability.EntityDataCapabilityStorage;
-import net.ilexiconn.llibrary.server.capability.IEntityDataCapability;
-import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
-import net.ilexiconn.llibrary.server.network.AbstractMessage;
-import net.ilexiconn.llibrary.server.network.SnackbarMessage;
-import net.ilexiconn.llibrary.server.snackbar.Snackbar;
-import net.ilexiconn.llibrary.server.update.UpdateHandler;
+import com.ilexiconn.llibrary.LLibrary;
+import com.ilexiconn.llibrary.server.capability.EntityDataCapabilityImplementation;
+import com.ilexiconn.llibrary.server.capability.EntityDataCapabilityStorage;
+import com.ilexiconn.llibrary.server.capability.IEntityDataCapability;
+import com.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
+import com.ilexiconn.llibrary.server.network.AbstractMessage;
+import com.ilexiconn.llibrary.server.network.SnackbarMessage;
+import com.ilexiconn.llibrary.server.snackbar.Snackbar;
+import com.ilexiconn.llibrary.server.update.UpdateHandler;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;

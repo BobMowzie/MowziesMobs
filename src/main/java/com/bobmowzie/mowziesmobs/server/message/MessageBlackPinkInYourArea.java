@@ -4,7 +4,7 @@ import com.bobmowzie.mowziesmobs.client.sound.BlackPinkSound;
 import com.bobmowzie.mowziesmobs.server.block.BlockGrottol;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import io.netty.buffer.ByteBuf;
-import net.ilexiconn.llibrary.server.network.AbstractMessage;
+import com.ilexiconn.llibrary.server.network.AbstractMessage;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;

@@ -3,8 +3,8 @@ package com.bobmowzie.mowziesmobs.server.ai.animation;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaya;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import net.ilexiconn.llibrary.server.animation.Animation;
-import net.ilexiconn.llibrary.server.animation.AnimationHandler;
+import com.ilexiconn.llibrary.server.animation.Animation;
+import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 
 public class AnimationSpawnBarakoa extends SimpleAnimationAI<EntityBarako> {
     public AnimationSpawnBarakoa(EntityBarako entity, Animation animation) {

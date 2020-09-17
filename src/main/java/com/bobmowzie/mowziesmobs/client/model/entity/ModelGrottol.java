@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.MMModelAnimator;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
-import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
+import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 
 /**
  * Created by Josh on 7/3/2018.

@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
-import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
+import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;

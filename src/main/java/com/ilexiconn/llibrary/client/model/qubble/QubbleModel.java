@@ -1,6 +1,6 @@
 package com.ilexiconn.llibrary.client.model.qubble;
 
-import net.ilexiconn.llibrary.LLibrary;
+import com.ilexiconn.llibrary.LLibrary;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.util.Constants;

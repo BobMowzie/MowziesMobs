@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.server.item;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
-import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
+import com.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;

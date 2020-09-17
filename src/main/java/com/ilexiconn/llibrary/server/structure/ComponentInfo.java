@@ -1,7 +1,7 @@
 package com.ilexiconn.llibrary.server.structure;
 
-import net.ilexiconn.llibrary.server.structure.rule.PlaceRule;
-import net.ilexiconn.llibrary.server.structure.rule.RepeatRule;
+import com.ilexiconn.llibrary.server.structure.rule.PlaceRule;
+import com.ilexiconn.llibrary.server.structure.rule.RepeatRule;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 

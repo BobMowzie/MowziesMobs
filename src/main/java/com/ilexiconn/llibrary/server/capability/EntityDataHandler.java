@@ -1,6 +1,6 @@
 package com.ilexiconn.llibrary.server.capability;
 
-import net.ilexiconn.llibrary.LLibrary;
+import com.ilexiconn.llibrary.LLibrary;
 import net.minecraft.entity.Entity;
 
 import javax.annotation.Nullable;
@@ -26,7 +26,7 @@ public enum EntityDataHandler {
      * @param entityData the data manager
      * @param <T> the entity type
      *
-     * @deprecated Use {@link net.ilexiconn.llibrary.server.event.CollectEntityDataEvent} to register data
+     * @deprecated Use {@link com.ilexiconn.llibrary.server.event.CollectEntityDataEvent} to register data
      */
     @Deprecated
     public <T extends Entity> void registerExtendedEntityData(T entity, IEntityData<T> entityData) {

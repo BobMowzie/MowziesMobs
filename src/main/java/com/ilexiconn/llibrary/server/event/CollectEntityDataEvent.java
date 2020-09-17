@@ -1,6 +1,6 @@
 package com.ilexiconn.llibrary.server.event;
 
-import net.ilexiconn.llibrary.server.capability.IEntityData;
+import com.ilexiconn.llibrary.server.capability.IEntityData;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.common.eventhandler.Event;
 

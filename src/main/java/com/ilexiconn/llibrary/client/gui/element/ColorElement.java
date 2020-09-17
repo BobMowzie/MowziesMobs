@@ -1,7 +1,7 @@
 package com.ilexiconn.llibrary.client.gui.element;
 
-import net.ilexiconn.llibrary.LLibrary;
-import net.ilexiconn.llibrary.server.property.IIntProperty;
+import com.ilexiconn.llibrary.LLibrary;
+import com.ilexiconn.llibrary.server.property.IIntProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 

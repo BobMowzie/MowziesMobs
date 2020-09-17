@@ -1,8 +1,10 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.entity.EntityDart;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.google.common.base.Optional;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
@@ -27,12 +29,12 @@ public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarak
 
     public boolean shouldSetDead;
 
-    public EntityBarakoan(World world, Class<L> leaderClass) {
-        this(world, leaderClass, null);
+    public EntityBarakoan(EntityType<? extends EntityBarakoan> type, World world, Class<L> leaderClass) {
+        this(type, world, leaderClass, null);
     }
 
-    public EntityBarakoan(World world, Class<L> leaderClass, L leader) {
-        super(world);
+    public EntityBarakoan(EntityType<? extends EntityBarakoan> type, World world, Class<L> leaderClass, L leader) {
+        super(type, world);
         this.leaderClass = leaderClass;
         if (leader != null) {
             setLeaderUUID(leader.getUniqueID());

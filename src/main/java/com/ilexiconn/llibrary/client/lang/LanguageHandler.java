@@ -2,7 +2,7 @@ package com.ilexiconn.llibrary.client.lang;
 
 import com.google.common.base.Charsets;
 import com.google.gson.Gson;
-import net.ilexiconn.llibrary.server.core.plugin.LLibraryPlugin;
+import com.ilexiconn.llibrary.server.core.plugin.LLibraryPlugin;
 import net.minecraft.util.text.translation.LanguageMap;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;

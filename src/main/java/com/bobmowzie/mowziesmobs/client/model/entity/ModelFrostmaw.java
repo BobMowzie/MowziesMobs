@@ -4,7 +4,7 @@ import com.bobmowzie.mowziesmobs.client.model.tools.LegArticulator;
 import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
-import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
+import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import net.minecraft.util.math.Vec3d;
 
 /**

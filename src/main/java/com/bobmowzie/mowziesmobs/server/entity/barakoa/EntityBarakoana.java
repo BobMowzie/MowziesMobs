@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.ai.goal.AvoidEntityGoal;
@@ -30,8 +31,8 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
 
     private int packRadius = 3;
 
-    public EntityBarakoana(World world) {
-        super(world);
+    public EntityBarakoana(EntityType<? extends EntityBarakoana> type, World world) {
+        super(type, world);
         this.targetTasks.addTask(3, new BarakoaHurtByTargetAI(this, true));
         this.targetTasks.addTask(5, new NearestAttackableTargetGoal<>(this, CowEntity.class, 0, true, false, null));
         this.targetTasks.addTask(5, new NearestAttackableTargetGoal<>(this, PigEntity.class, 0, true, false, null));

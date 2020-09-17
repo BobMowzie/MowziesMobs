@@ -1,9 +1,9 @@
 package com.ilexiconn.llibrary.client.gui.element;
 
-import net.ilexiconn.llibrary.LLibrary;
-import net.ilexiconn.llibrary.client.ClientProxy;
-import net.ilexiconn.llibrary.server.property.IFloatRangeProperty;
-import net.ilexiconn.llibrary.server.property.IStringProperty;
+import com.ilexiconn.llibrary.LLibrary;
+import com.ilexiconn.llibrary.client.ClientProxy;
+import com.ilexiconn.llibrary.server.property.IFloatRangeProperty;
+import com.ilexiconn.llibrary.server.property.IStringProperty;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.math.MathHelper;

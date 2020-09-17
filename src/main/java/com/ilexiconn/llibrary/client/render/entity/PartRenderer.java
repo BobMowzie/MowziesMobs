@@ -1,6 +1,6 @@
 package com.ilexiconn.llibrary.client.render.entity;
 
-import net.ilexiconn.llibrary.server.entity.multipart.PartEntity;
+import com.ilexiconn.llibrary.server.entity.multipart.PartEntity;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.util.ResourceLocation;

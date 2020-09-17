@@ -1,8 +1,8 @@
 package com.ilexiconn.llibrary.client.gui.survivaltab;
 
-import net.ilexiconn.llibrary.LLibrary;
-import net.ilexiconn.llibrary.server.event.SurvivalTabClickEvent;
-import net.ilexiconn.llibrary.server.network.SurvivalTabMessage;
+import com.ilexiconn.llibrary.LLibrary;
+import com.ilexiconn.llibrary.server.event.SurvivalTabClickEvent;
+import com.ilexiconn.llibrary.server.network.SurvivalTabMessage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SoundHandler;
 import net.minecraft.client.gui.GuiButton;

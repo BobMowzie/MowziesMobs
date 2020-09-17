@@ -1,7 +1,7 @@
 package com.ilexiconn.llibrary.client.gui.element;
 
-import net.ilexiconn.llibrary.LLibrary;
-import net.ilexiconn.llibrary.server.property.IStringSelectionProperty;
+import com.ilexiconn.llibrary.LLibrary;
+import com.ilexiconn.llibrary.server.property.IStringSelectionProperty;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

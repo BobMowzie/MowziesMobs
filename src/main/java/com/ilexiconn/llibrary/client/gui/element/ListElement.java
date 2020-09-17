@@ -1,7 +1,7 @@
 package com.ilexiconn.llibrary.client.gui.element;
 
-import net.ilexiconn.llibrary.LLibrary;
-import net.ilexiconn.llibrary.client.ClientProxy;
+import com.ilexiconn.llibrary.LLibrary;
+import com.ilexiconn.llibrary.client.ClientProxy;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.fml.relauncher.Side;

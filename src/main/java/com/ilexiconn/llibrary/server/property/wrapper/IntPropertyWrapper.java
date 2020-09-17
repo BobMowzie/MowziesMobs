@@ -1,6 +1,6 @@
 package com.ilexiconn.llibrary.server.property.wrapper;
 
-import net.ilexiconn.llibrary.server.property.IIntProperty;
+import com.ilexiconn.llibrary.server.property.IIntProperty;
 
 import java.text.NumberFormat;
 

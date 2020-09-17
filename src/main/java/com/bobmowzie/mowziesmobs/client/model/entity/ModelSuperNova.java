@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ExtendedModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySuperNova;
-import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
+import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;

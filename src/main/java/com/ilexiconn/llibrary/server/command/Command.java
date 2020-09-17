@@ -1,11 +1,11 @@
 package com.ilexiconn.llibrary.server.command;
 
 import com.google.common.collect.Lists;
-import net.ilexiconn.llibrary.LLibrary;
-import net.ilexiconn.llibrary.server.command.argument.Argument;
-import net.ilexiconn.llibrary.server.command.argument.CommandArguments;
-import net.ilexiconn.llibrary.server.command.argument.IArgumentParser;
-import net.ilexiconn.llibrary.server.util.ListHashMap;
+import com.ilexiconn.llibrary.LLibrary;
+import com.ilexiconn.llibrary.server.command.argument.Argument;
+import com.ilexiconn.llibrary.server.command.argument.CommandArguments;
+import com.ilexiconn.llibrary.server.command.argument.IArgumentParser;
+import com.ilexiconn.llibrary.server.util.ListHashMap;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;

@@ -1,9 +1,9 @@
 package com.ilexiconn.llibrary.server.property.wrapper;
 
-import net.ilexiconn.llibrary.server.property.IDoubleProperty;
-import net.ilexiconn.llibrary.server.property.IFloatProperty;
-import net.ilexiconn.llibrary.server.property.IIntProperty;
-import net.ilexiconn.llibrary.server.property.IStringProperty;
+import com.ilexiconn.llibrary.server.property.IDoubleProperty;
+import com.ilexiconn.llibrary.server.property.IFloatProperty;
+import com.ilexiconn.llibrary.server.property.IIntProperty;
+import com.ilexiconn.llibrary.server.property.IStringProperty;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;

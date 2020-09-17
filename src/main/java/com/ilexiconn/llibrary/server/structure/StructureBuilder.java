@@ -1,7 +1,7 @@
 package com.ilexiconn.llibrary.server.structure;
 
-import net.ilexiconn.llibrary.server.structure.rule.FixedRule;
-import net.ilexiconn.llibrary.server.structure.rule.RepeatRule;
+import com.ilexiconn.llibrary.server.structure.rule.FixedRule;
+import com.ilexiconn.llibrary.server.structure.rule.RepeatRule;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLog;
 import net.minecraft.block.BlockLog.EnumAxis;

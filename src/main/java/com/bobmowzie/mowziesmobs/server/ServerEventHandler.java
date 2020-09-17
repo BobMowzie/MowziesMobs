@@ -24,7 +24,7 @@ import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
-import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
+import com.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;

@@ -10,15 +10,13 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationProjectileAttackAI
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityPoisonBall;
+import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import net.ilexiconn.llibrary.server.animation.Animation;
-import net.ilexiconn.llibrary.server.animation.AnimationHandler;
+import com.ilexiconn.llibrary.server.animation.Animation;
+import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.IRangedAttackMob;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.HurtByTargetGoal;
@@ -112,8 +110,8 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
 
     public boolean interrupted = false;
 
-    public EntityNaga(World world) {
-        super(world);
+    public EntityNaga(EntityType<? extends EntityNaga> type, World world) {
+        super(type, world);
         setPathPriority(PathNodeType.WATER, 0);
         this.tasks.addTask(5, new EntityNaga.AIRandomFly(this));
         this.tasks.addTask(5, new EntityNaga.AIFlyAroundTarget(this));

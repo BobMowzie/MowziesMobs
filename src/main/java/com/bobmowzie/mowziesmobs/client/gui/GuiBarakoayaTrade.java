@@ -5,7 +5,7 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaya;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoayaTrade;
 import com.bobmowzie.mowziesmobs.server.inventory.InventoryBarakoaya;
-import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
+import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.renderer.GlStateManager;

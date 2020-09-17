@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.dynamics.DynamicChain;
-import net.ilexiconn.llibrary.server.animation.Animation;
+import com.ilexiconn.llibrary.server.animation.Animation;
 import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.entity.ai.goal.RandomWalkingGoal;
 import net.minecraft.world.World;

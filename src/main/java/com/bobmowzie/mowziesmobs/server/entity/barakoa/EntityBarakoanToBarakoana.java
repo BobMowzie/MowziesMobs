@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.monster.ZombieEntity;
 import net.minecraft.entity.passive.*;
@@ -14,12 +15,12 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 
 public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> implements LeaderSunstrikeImmune {
-    public EntityBarakoanToBarakoana(World world) {
-        this(world, null);
+    public EntityBarakoanToBarakoana(EntityType<? extends EntityBarakoanToBarakoana> type, World world) {
+        this(type, world, null);
     }
 
-    public EntityBarakoanToBarakoana(World world, EntityBarakoana leader) {
-        super(world, EntityBarakoana.class, leader);
+    public EntityBarakoanToBarakoana(EntityType<? extends EntityBarakoanToBarakoana> type, World world, EntityBarakoana leader) {
+        super(type, world, EntityBarakoana.class, leader);
         this.targetTasks.addTask(3, new BarakoaHurtByTargetAI(this, true));
     }
 

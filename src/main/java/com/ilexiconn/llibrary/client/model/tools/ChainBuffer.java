@@ -1,7 +1,7 @@
 package com.ilexiconn.llibrary.client.model.tools;
 
-import net.ilexiconn.llibrary.LLibrary;
-import net.ilexiconn.llibrary.client.util.ClientUtils;
+import com.ilexiconn.llibrary.LLibrary;
+import com.ilexiconn.llibrary.client.util.ClientUtils;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.math.MathHelper;

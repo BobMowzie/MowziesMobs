@@ -14,18 +14,20 @@ import com.bobmowzie.mowziesmobs.server.block.BlockGrottol;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.ai.EntityAIGrottolIdle;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import net.ilexiconn.llibrary.server.animation.Animation;
-import net.ilexiconn.llibrary.server.animation.AnimationHandler;
+import com.ilexiconn.llibrary.server.animation.Animation;
+import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.goal.*;
@@ -81,8 +83,8 @@ public class EntityGrottol extends MowzieEntity implements IMob {
 
     private EnumDeathType death = EnumDeathType.NORMAL;
 
-    public EntityGrottol(World world) {
-        super(world);
+    public EntityGrottol(EntityType<? extends EntityGrottol> type, World world) {
+        super(type, world);
         setPathPriority(PathNodeType.DANGER_OTHER, 1);
         setPathPriority(PathNodeType.WATER, 3);
         setPathPriority(PathNodeType.LAVA, 1);
@@ -90,7 +92,6 @@ public class EntityGrottol extends MowzieEntity implements IMob {
         setPathPriority(PathNodeType.DANGER_CACTUS, 1);
         experienceValue = 20;
         stepHeight = 1.15F;
-        setSize(0.9F, 1.2F);
 
         moveHelper = new MMEntityMoveHelper(this, 45);
     }

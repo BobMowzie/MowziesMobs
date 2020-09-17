@@ -1,8 +1,8 @@
 package com.ilexiconn.llibrary.server.animation;
 
-import net.ilexiconn.llibrary.LLibrary;
-import net.ilexiconn.llibrary.server.event.AnimationEvent;
-import net.ilexiconn.llibrary.server.network.AnimationMessage;
+import com.ilexiconn.llibrary.LLibrary;
+import com.ilexiconn.llibrary.server.event.AnimationEvent;
+import com.ilexiconn.llibrary.server.network.AnimationMessage;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

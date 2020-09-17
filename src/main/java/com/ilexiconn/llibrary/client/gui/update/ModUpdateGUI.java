@@ -1,7 +1,7 @@
 package com.ilexiconn.llibrary.client.gui.update;
 
-import net.ilexiconn.llibrary.server.update.UpdateContainer;
-import net.ilexiconn.llibrary.server.update.UpdateHandler;
+import com.ilexiconn.llibrary.server.update.UpdateContainer;
+import com.ilexiconn.llibrary.server.update.UpdateHandler;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreen;

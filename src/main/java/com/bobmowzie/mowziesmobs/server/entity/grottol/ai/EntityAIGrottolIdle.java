@@ -2,9 +2,9 @@ package com.bobmowzie.mowziesmobs.server.entity.grottol.ai;
 
 import com.bobmowzie.mowziesmobs.server.ai.animation.SimpleAnimationAI;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
-import net.ilexiconn.llibrary.server.animation.Animation;
-import net.ilexiconn.llibrary.server.animation.AnimationHandler;
-import net.ilexiconn.llibrary.server.animation.IAnimatedEntity;
+import com.ilexiconn.llibrary.server.animation.Animation;
+import com.ilexiconn.llibrary.server.animation.AnimationHandler;
+import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.util.SoundEvents;
 
 public class EntityAIGrottolIdle extends SimpleAnimationAI<EntityGrottol> {

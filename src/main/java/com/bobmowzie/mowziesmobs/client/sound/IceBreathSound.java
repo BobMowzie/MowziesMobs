@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.sound;
 
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import net.ilexiconn.llibrary.client.model.tools.ControlledAnimation;
+import com.ilexiconn.llibrary.client.model.tools.ControlledAnimation;
 import net.minecraft.client.audio.TickableSound;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.SoundCategory;

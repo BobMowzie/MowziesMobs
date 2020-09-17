@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ExtendedModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityLantern;
-import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
+import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 
 /**
  * Created by Josh on 7/24/2018.

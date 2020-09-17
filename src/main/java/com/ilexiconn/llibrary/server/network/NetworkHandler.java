@@ -1,7 +1,7 @@
 package com.ilexiconn.llibrary.server.network;
 
 import com.google.common.collect.SetMultimap;
-import net.ilexiconn.llibrary.LLibrary;
+import com.ilexiconn.llibrary.LLibrary;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.discovery.ASMDataTable;

@@ -1,11 +1,11 @@
 package com.ilexiconn.llibrary.client.model.tabula;
 
-import net.ilexiconn.llibrary.client.model.tabula.container.TabulaAnimationContainer;
-import net.ilexiconn.llibrary.client.model.tabula.container.TabulaCubeContainer;
-import net.ilexiconn.llibrary.client.model.tabula.container.TabulaCubeGroupContainer;
-import net.ilexiconn.llibrary.client.model.tabula.container.TabulaModelContainer;
-import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
-import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
+import com.ilexiconn.llibrary.client.model.tabula.container.TabulaAnimationContainer;
+import com.ilexiconn.llibrary.client.model.tabula.container.TabulaCubeContainer;
+import com.ilexiconn.llibrary.client.model.tabula.container.TabulaCubeGroupContainer;
+import com.ilexiconn.llibrary.client.model.tabula.container.TabulaModelContainer;
+import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
+import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.relauncher.Side;

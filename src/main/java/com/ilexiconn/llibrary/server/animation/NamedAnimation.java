@@ -1,7 +1,7 @@
 package com.ilexiconn.llibrary.server.animation;
 
 /**
- * Animation that can be referred by name. Essential to use {@link net.ilexiconn.llibrary.client.model.tabula.animation.AnimationPlayerAnimator AnimationPlayerAnimator}
+ * Animation that can be referred by name. Essential to use {@link com.ilexiconn.llibrary.client.model.tabula.animation.AnimationPlayerAnimator AnimationPlayerAnimator}
  * @author jglrxavpok
  */
 public class NamedAnimation extends Animation {

@@ -1,8 +1,8 @@
 package com.bobmowzie.mowziesmobs.client.model.tools;
 
 import com.bobmowzie.mowziesmobs.server.block.MowzieBlockAccess;
-import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
-import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
+import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
+import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;

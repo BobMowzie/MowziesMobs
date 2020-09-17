@@ -2,8 +2,8 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.BlockModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
-import net.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
-import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
+import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
+import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 
 import java.util.Random;
 

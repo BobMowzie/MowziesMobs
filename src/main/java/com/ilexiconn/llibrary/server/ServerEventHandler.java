@@ -1,16 +1,16 @@
 package com.ilexiconn.llibrary.server;
 
-import net.ilexiconn.llibrary.LLibrary;
-import net.ilexiconn.llibrary.server.capability.EntityDataCapabilityImplementation;
-import net.ilexiconn.llibrary.server.capability.EntityDataHandler;
-import net.ilexiconn.llibrary.server.capability.IEntityData;
-import net.ilexiconn.llibrary.server.capability.IEntityDataCapability;
-import net.ilexiconn.llibrary.server.entity.EntityProperties;
-import net.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
-import net.ilexiconn.llibrary.server.entity.PropertiesTracker;
-import net.ilexiconn.llibrary.server.event.CollectEntityDataEvent;
-import net.ilexiconn.llibrary.server.network.PropertiesMessage;
-import net.ilexiconn.llibrary.server.world.WorldDataHandler;
+import com.ilexiconn.llibrary.LLibrary;
+import com.ilexiconn.llibrary.server.capability.EntityDataCapabilityImplementation;
+import com.ilexiconn.llibrary.server.capability.EntityDataHandler;
+import com.ilexiconn.llibrary.server.capability.IEntityData;
+import com.ilexiconn.llibrary.server.capability.IEntityDataCapability;
+import com.ilexiconn.llibrary.server.entity.EntityProperties;
+import com.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
+import com.ilexiconn.llibrary.server.entity.PropertiesTracker;
+import com.ilexiconn.llibrary.server.event.CollectEntityDataEvent;
+import com.ilexiconn.llibrary.server.network.PropertiesMessage;
+import com.ilexiconn.llibrary.server.world.WorldDataHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;

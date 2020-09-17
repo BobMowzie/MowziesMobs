@@ -1,10 +1,10 @@
 package com.ilexiconn.llibrary.server.config;
 
-import net.ilexiconn.llibrary.LLibrary;
-import net.ilexiconn.llibrary.client.gui.element.color.ColorMode;
-import net.ilexiconn.llibrary.server.nbt.NBTHandler;
-import net.ilexiconn.llibrary.server.nbt.NBTMutatorProperty;
-import net.ilexiconn.llibrary.server.nbt.NBTProperty;
+import com.ilexiconn.llibrary.LLibrary;
+import com.ilexiconn.llibrary.client.gui.element.color.ColorMode;
+import com.ilexiconn.llibrary.server.nbt.NBTHandler;
+import com.ilexiconn.llibrary.server.nbt.NBTMutatorProperty;
+import com.ilexiconn.llibrary.server.nbt.NBTProperty;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;

@@ -4,8 +4,8 @@ import com.bobmowzie.mowziesmobs.client.model.tools.ExtendedModelRenderer;
 import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
-import net.ilexiconn.llibrary.LLibrary;
-import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
+import com.ilexiconn.llibrary.LLibrary;
+import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 
 /**
  * Created by Josh on 9/9/2018.

@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.client.model.tools;
 import com.bobmowzie.mowziesmobs.server.entity.LegSolverBiped;
 import com.bobmowzie.mowziesmobs.server.entity.LegSolverQuadruped;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import net.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
+import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import net.minecraft.util.math.MathHelper;
 
 public final class LegArticulator {

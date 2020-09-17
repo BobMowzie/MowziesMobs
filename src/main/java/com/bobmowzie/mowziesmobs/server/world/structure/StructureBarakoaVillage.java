@@ -6,7 +6,7 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaya;
 import com.bobmowzie.mowziesmobs.server.spawn.SpawnHandler;
 import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
-import net.ilexiconn.llibrary.server.structure.StructureBuilder;
+import com.ilexiconn.llibrary.server.structure.StructureBuilder;
 import net.minecraft.block.*;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.DyeColor;

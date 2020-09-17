@@ -11,13 +11,16 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
+import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import net.ilexiconn.llibrary.server.animation.Animation;
-import net.ilexiconn.llibrary.server.animation.AnimationHandler;
+import com.ilexiconn.llibrary.server.animation.Animation;
+import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.item.Item;
@@ -51,8 +54,8 @@ public class EntityLantern extends MowzieEntity {
     @SideOnly(Side.CLIENT)
     private Vec3d[] pos;
 
-    public EntityLantern(World world) {
-        super(world);
+    public EntityLantern(EntityType<? extends EntityGrottol> type, World world) {
+        super(type, world);
         setSize(1, 1);
         dir = null;
 

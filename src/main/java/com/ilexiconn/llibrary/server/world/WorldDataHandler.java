@@ -1,6 +1,6 @@
 package com.ilexiconn.llibrary.server.world;
 
-import net.ilexiconn.llibrary.LLibrary;
+import com.ilexiconn.llibrary.LLibrary;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;

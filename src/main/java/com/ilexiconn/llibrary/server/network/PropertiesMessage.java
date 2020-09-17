@@ -1,10 +1,10 @@
 package com.ilexiconn.llibrary.server.network;
 
 import io.netty.buffer.ByteBuf;
-import net.ilexiconn.llibrary.server.capability.EntityDataHandler;
-import net.ilexiconn.llibrary.server.capability.IEntityData;
-import net.ilexiconn.llibrary.server.entity.EntityProperties;
-import net.ilexiconn.llibrary.server.entity.PropertiesTracker;
+import com.ilexiconn.llibrary.server.capability.EntityDataHandler;
+import com.ilexiconn.llibrary.server.capability.IEntityData;
+import com.ilexiconn.llibrary.server.entity.EntityProperties;
+import com.ilexiconn.llibrary.server.entity.PropertiesTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;

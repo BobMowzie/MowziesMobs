@@ -1,7 +1,7 @@
 package com.ilexiconn.llibrary.client.util;
 
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import net.ilexiconn.llibrary.client.ClientProxy;
+import com.ilexiconn.llibrary.client.ClientProxy;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.util.ResourceLocation;

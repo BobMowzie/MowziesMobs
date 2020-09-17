@@ -1,6 +1,6 @@
 package com.ilexiconn.llibrary.server.entity;
 
-import net.ilexiconn.llibrary.server.capability.IEntityData;
+import com.ilexiconn.llibrary.server.capability.IEntityData;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;

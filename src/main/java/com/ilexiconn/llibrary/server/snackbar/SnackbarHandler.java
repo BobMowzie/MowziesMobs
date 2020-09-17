@@ -1,6 +1,6 @@
 package com.ilexiconn.llibrary.server.snackbar;
 
-import net.ilexiconn.llibrary.LLibrary;
+import com.ilexiconn.llibrary.LLibrary;
 
 /**
  * @author iLexiconn

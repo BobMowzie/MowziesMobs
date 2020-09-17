@@ -1,6 +1,6 @@
 package com.ilexiconn.llibrary.server.property.wrapper;
 
-import net.ilexiconn.llibrary.server.property.IFloatProperty;
+import com.ilexiconn.llibrary.server.property.IFloatProperty;
 
 import java.text.DecimalFormat;
 

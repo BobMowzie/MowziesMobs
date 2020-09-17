@@ -1,7 +1,7 @@
 package com.ilexiconn.llibrary.server.entity.block;
 
-import net.ilexiconn.llibrary.LLibrary;
-import net.ilexiconn.llibrary.server.network.BlockEntityMessage;
+import com.ilexiconn.llibrary.LLibrary;
+import com.ilexiconn.llibrary.server.network.BlockEntityMessage;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;

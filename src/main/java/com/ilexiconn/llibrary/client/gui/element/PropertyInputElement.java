@@ -1,6 +1,6 @@
 package com.ilexiconn.llibrary.client.gui.element;
 
-import net.ilexiconn.llibrary.server.property.IStringProperty;
+import com.ilexiconn.llibrary.server.property.IStringProperty;
 
 public class PropertyInputElement<T extends IElementGUI> extends InputElementBase<T> {
     private final IStringProperty property;

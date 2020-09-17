@@ -1,9 +1,9 @@
 package com.ilexiconn.llibrary.server.network;
 
 import io.netty.buffer.ByteBuf;
-import net.ilexiconn.llibrary.LLibrary;
-import net.ilexiconn.llibrary.server.snackbar.Snackbar;
-import net.ilexiconn.llibrary.server.snackbar.SnackbarPosition;
+import com.ilexiconn.llibrary.LLibrary;
+import com.ilexiconn.llibrary.server.snackbar.Snackbar;
+import com.ilexiconn.llibrary.server.snackbar.SnackbarPosition;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;

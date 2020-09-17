@@ -1,9 +1,9 @@
 package com.ilexiconn.llibrary.client.gui;
 
-import net.ilexiconn.llibrary.client.ClientEventHandler;
-import net.ilexiconn.llibrary.client.ClientProxy;
-import net.ilexiconn.llibrary.client.util.ClientUtils;
-import net.ilexiconn.llibrary.server.snackbar.Snackbar;
+import com.ilexiconn.llibrary.client.ClientEventHandler;
+import com.ilexiconn.llibrary.client.ClientProxy;
+import com.ilexiconn.llibrary.client.util.ClientUtils;
+import com.ilexiconn.llibrary.server.snackbar.Snackbar;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;

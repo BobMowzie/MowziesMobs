@@ -1,8 +1,8 @@
 package com.ilexiconn.llibrary.client.gui.element;
 
-import net.ilexiconn.llibrary.LLibrary;
-import net.ilexiconn.llibrary.client.ClientProxy;
-import net.ilexiconn.llibrary.client.gui.element.color.ColorScheme;
+import com.ilexiconn.llibrary.LLibrary;
+import com.ilexiconn.llibrary.client.ClientProxy;
+import com.ilexiconn.llibrary.client.gui.element.color.ColorScheme;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;

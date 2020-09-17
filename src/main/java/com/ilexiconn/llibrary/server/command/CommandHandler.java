@@ -1,7 +1,7 @@
 package com.ilexiconn.llibrary.server.command;
 
-import net.ilexiconn.llibrary.server.command.argument.ArgumentParsers;
-import net.ilexiconn.llibrary.server.command.argument.IArgumentParser;
+import com.ilexiconn.llibrary.server.command.argument.ArgumentParsers;
+import com.ilexiconn.llibrary.server.command.argument.IArgumentParser;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;

@@ -1,6 +1,6 @@
 package com.ilexiconn.llibrary.server.network;
 
-import net.ilexiconn.llibrary.LLibrary;
+import com.ilexiconn.llibrary.LLibrary;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
@@ -48,7 +48,7 @@ public abstract class AbstractMessage<T extends AbstractMessage<T>> implements I
 
     /**
      * @param side the current side
-     * @return whether this message should be registered on the given side. Only used for messages registered with {@link net.ilexiconn.llibrary.server.network.NetworkHandler#registerMessage(SimpleNetworkWrapper, Class)}
+     * @return whether this message should be registered on the given side. Only used for messages registered with {@link com.ilexiconn.llibrary.server.network.NetworkHandler#registerMessage(SimpleNetworkWrapper, Class)}
      */
     // TODO: 1.13: Make abstract and rename to canSideReceive
     public boolean registerOnSide(Side side) {

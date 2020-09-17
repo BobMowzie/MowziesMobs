@@ -13,19 +13,17 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.SmartBodyHelper;
+import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.google.common.base.Optional;
-import net.ilexiconn.llibrary.server.animation.Animation;
-import net.ilexiconn.llibrary.server.animation.AnimationHandler;
+import com.ilexiconn.llibrary.server.animation.Animation;
+import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.controller.BodyController;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.PlayerEntity;
@@ -106,8 +104,8 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     public Vec3d leftEyePos, rightEyePos;
     public Vec3d leftEyeRot, rightEyeRot;
 
-    public EntityWroughtnaut(World world) {
-        super(world);
+    public EntityWroughtnaut(EntityType<? extends EntityFrostmaw> type, World world) {
+        super(type, world);
         setPathPriority(PathNodeType.WATER, 0);
         tasks.addTask(1, new AnimationFWNAttackAI(this, 4F, 5F, 100F));
         tasks.addTask(1, new AnimationFWNVerticalAttackAI(this, VERTICAL_ATTACK_ANIMATION, MMSounds.ENTITY_WROUGHT_WHOOSH, 1F, 5F, 40F));

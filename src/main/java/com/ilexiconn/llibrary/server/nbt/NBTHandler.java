@@ -1,8 +1,8 @@
 package com.ilexiconn.llibrary.server.nbt;
 
-import net.ilexiconn.llibrary.LLibrary;
-import net.ilexiconn.llibrary.server.nbt.parser.INBTParser;
-import net.ilexiconn.llibrary.server.nbt.parser.NBTParsers;
+import com.ilexiconn.llibrary.LLibrary;
+import com.ilexiconn.llibrary.server.nbt.parser.INBTParser;
+import com.ilexiconn.llibrary.server.nbt.parser.NBTParsers;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;

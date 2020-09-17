@@ -12,8 +12,8 @@ import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import net.ilexiconn.llibrary.server.animation.Animation;
-import net.ilexiconn.llibrary.server.animation.AnimationHandler;
+import com.ilexiconn.llibrary.server.animation.Animation;
+import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.*;
@@ -59,8 +59,8 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     private int ticksWithoutTarget;
     public int timeUntilDeath = -1;
 
-    public EntityBarakoa(World world) {
-        super(world);
+    public EntityBarakoa(EntityType<? extends EntityBarakoa> type, World world) {
+        super(type, world);
         setPathPriority(PathNodeType.WATER, 0);
         tasks.addTask(0, new SwimGoal(this));
         tasks.addTask(0, new AnimationActivateAI<>(this, ACTIVATE_ANIMATION));

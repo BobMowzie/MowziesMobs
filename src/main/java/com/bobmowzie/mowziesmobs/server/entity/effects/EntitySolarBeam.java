@@ -50,9 +50,8 @@ public class EntitySolarBeam extends Entity {
 
     private static final DataParameter<Integer> CASTER = EntityDataManager.createKey(EntitySolarBeam.class, DataSerializers.VARINT);
 
-    public EntitySolarBeam(World world) {
+    public EntitySolarBeam(IWorld world) {
         super(world);
-        setSize(0.1F, 0.1F);
         ignoreFrustumCheck = true;
     }
 

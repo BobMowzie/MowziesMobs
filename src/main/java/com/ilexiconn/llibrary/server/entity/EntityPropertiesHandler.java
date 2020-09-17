@@ -1,8 +1,8 @@
 package com.ilexiconn.llibrary.server.entity;
 
-import net.ilexiconn.llibrary.LLibrary;
-import net.ilexiconn.llibrary.server.capability.EntityDataHandler;
-import net.ilexiconn.llibrary.server.capability.IEntityData;
+import com.ilexiconn.llibrary.LLibrary;
+import com.ilexiconn.llibrary.server.capability.EntityDataHandler;
+import com.ilexiconn.llibrary.server.capability.IEntityData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;

@@ -1,10 +1,10 @@
 package com.ilexiconn.llibrary.client.gui;
 
 import com.google.common.collect.Lists;
-import net.ilexiconn.llibrary.LLibrary;
-import net.ilexiconn.llibrary.client.ClientProxy;
-import net.ilexiconn.llibrary.client.gui.element.Element;
-import net.ilexiconn.llibrary.client.gui.element.IElementGUI;
+import com.ilexiconn.llibrary.LLibrary;
+import com.ilexiconn.llibrary.client.ClientProxy;
+import com.ilexiconn.llibrary.client.gui.element.Element;
+import com.ilexiconn.llibrary.client.gui.element.IElementGUI;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;

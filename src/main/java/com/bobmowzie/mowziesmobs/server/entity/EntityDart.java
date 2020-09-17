@@ -2,8 +2,10 @@ package com.bobmowzie.mowziesmobs.server.entity;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
+import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ArrowEntity;
@@ -15,8 +17,8 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 public class EntityDart extends ArrowEntity {
-    public EntityDart(World world) {
-        super(world);
+    public EntityDart(EntityType<? extends EntityDart> type, World world) {
+        super(type, world);
     }
 
     public EntityDart(World world, LivingEntity shooter) {

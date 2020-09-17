@@ -1,8 +1,8 @@
 package com.ilexiconn.llibrary.server.property.wrapper;
 
-import net.ilexiconn.llibrary.server.property.IDoubleRangeProperty;
-import net.ilexiconn.llibrary.server.property.IFloatRangeProperty;
-import net.ilexiconn.llibrary.server.property.IIntRangeProperty;
+import com.ilexiconn.llibrary.server.property.IDoubleRangeProperty;
+import com.ilexiconn.llibrary.server.property.IFloatRangeProperty;
+import com.ilexiconn.llibrary.server.property.IIntRangeProperty;
 
 import java.text.NumberFormat;
 

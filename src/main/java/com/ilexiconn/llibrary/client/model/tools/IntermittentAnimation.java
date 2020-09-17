@@ -1,6 +1,6 @@
 package com.ilexiconn.llibrary.client.model.tools;
 
-import net.ilexiconn.llibrary.server.entity.IIntermittentEntity;
+import com.ilexiconn.llibrary.server.entity.IIntermittentEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;

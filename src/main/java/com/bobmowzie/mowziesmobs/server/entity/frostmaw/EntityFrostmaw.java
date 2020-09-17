@@ -17,14 +17,15 @@ import com.bobmowzie.mowziesmobs.server.entity.LegSolverQuadruped;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBall;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
+import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.bobmowzie.mowziesmobs.server.spawn.SpawnHandler;
 import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
-import net.ilexiconn.llibrary.server.animation.Animation;
-import net.ilexiconn.llibrary.server.animation.AnimationHandler;
+import com.ilexiconn.llibrary.server.animation.Animation;
+import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.LivingEntity;
@@ -109,9 +110,8 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
 
     public LegSolverQuadruped legSolver;
 
-    public EntityFrostmaw(World world) {
-        super(world);
-        setSize(4f, 4f);
+    public EntityFrostmaw(EntityType<? extends EntityFrostmaw> type, World world) {
+        super(type, world);
         this.tasks.addTask(0, new SwimGoal(this));
         this.tasks.addTask(5, new MoveTowardsRestrictionGoal(this, 1.0D));
         this.tasks.addTask(7, new WaterAvoidingRandomWalkingGoal(this, 1.0D));

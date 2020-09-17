@@ -2,9 +2,9 @@ package com.ilexiconn.llibrary.server.update;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import net.ilexiconn.llibrary.LLibrary;
-import net.ilexiconn.llibrary.server.ServerProxy;
-import net.ilexiconn.llibrary.server.util.WebUtils;
+import com.ilexiconn.llibrary.LLibrary;
+import com.ilexiconn.llibrary.server.ServerProxy;
+import com.ilexiconn.llibrary.server.util.WebUtils;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ModContainer;
