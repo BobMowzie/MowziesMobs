@@ -59,7 +59,7 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
             }
         }
 
-        if (world.collidesWithAnyBlock(getEntityBoundingBox().grow(0.15))) {
+        if (world.collidesWithAnyBlock(getBoundingBox().grow(0.15))) {
             explode();
         }
 

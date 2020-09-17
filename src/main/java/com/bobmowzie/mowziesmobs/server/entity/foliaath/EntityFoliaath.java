@@ -89,8 +89,8 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
     @Override
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10 * ConfigHandler.MOBS.FOLIAATH.combatData.healthMultiplier);
+        this.getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
+        this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10 * ConfigHandler.MOBS.FOLIAATH.combatData.healthMultiplier);
     }
 
     @Override
@@ -302,7 +302,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
     public boolean getCanSpawnHere() {
         Biome biome = world.getBiome(getPosition());
         int i = MathHelper.floor(this.posX);
-        int j = MathHelper.floor(this.getEntityBoundingBox().minY);
+        int j = MathHelper.floor(this.getBoundingBox().minY);
         int k = MathHelper.floor(this.posZ);
         BlockPos pos = new BlockPos(i, j, k);
         Block floor = world.getBlockState(pos.down()).getBlock();

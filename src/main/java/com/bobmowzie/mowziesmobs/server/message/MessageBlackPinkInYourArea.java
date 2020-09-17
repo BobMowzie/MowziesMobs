@@ -42,7 +42,7 @@ public final class MessageBlackPinkInYourArea extends AbstractMessage<MessageBla
         entityId = buf.readInt();
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public void onClientReceived(Minecraft client, MessageBlackPinkInYourArea message, PlayerEntity player, MessageContext messageContext) {
         World world = client.world;

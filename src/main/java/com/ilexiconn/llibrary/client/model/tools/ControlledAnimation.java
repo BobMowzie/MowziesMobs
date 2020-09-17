@@ -11,7 +11,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author RafaMv
  * @since 1.4.0
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ControlledAnimation {
     /**
      * It is the timer used to animate

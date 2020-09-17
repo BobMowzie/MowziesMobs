@@ -93,8 +93,8 @@ public class EntityBoulder extends Entity {
     }
 
     public boolean checkCanSpawn() {
-        if (!world.getEntitiesWithinAABB(EntityBoulder.class, getEntityBoundingBox()).isEmpty()) return false;
-        if (world.collidesWithAnyBlock(getEntityBoundingBox())) return false;
+        if (!world.getEntitiesWithinAABB(EntityBoulder.class, getBoundingBox()).isEmpty()) return false;
+        if (world.collidesWithAnyBlock(getBoundingBox())) return false;
         else return true;
     }
 
@@ -151,7 +151,7 @@ public class EntityBoulder extends Entity {
         super.onUpdate();
         move(MoverType.SELF, motionX, motionY, motionZ);
         if (ridingEntities != null) ridingEntities.clear();
-        List<Entity> onTopOfEntities = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().contract(0, height - 1, 0).offset(new Vec3d(0, height - 0.5, 0)).grow(0.6,0.5,0.6));
+        List<Entity> onTopOfEntities = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().contract(0, height - 1, 0).offset(new Vec3d(0, height - 0.5, 0)).grow(0.6,0.5,0.6));
         for (Entity entity : onTopOfEntities) {
             if (entity != null && entity.canBeCollidedWith() && !(entity instanceof EntityBoulder) && entity.posY >= this.posY + 0.2) ridingEntities.add(entity);
         }
@@ -163,7 +163,7 @@ public class EntityBoulder extends Entity {
         if (boulderSize == 3) setSize(width, Math.min(ticksExisted/(float)finishedRisingTick * 3.5f, 3.5f));
 
         if (ticksExisted < finishedRisingTick) {
-            List<Entity> popUpEntities = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox());
+            List<Entity> popUpEntities = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox());
             for (Entity entity:popUpEntities) {
                 if (entity.canBeCollidedWith() && !(entity instanceof EntityBoulder)) {
                     if (boulderSize != 3) entity.move(MoverType.SHULKER_BOX, 0, 2 * (Math.pow(2, -ticksExisted * (0.6 - 0.1 * boulderSize))), 0);
@@ -182,7 +182,7 @@ public class EntityBoulder extends Entity {
                 if (!isDead && boulderSize != 3) setShouldExplode(true);
             }
         }
-        List<EntityBoulder> bouldersHit = world.getEntitiesWithinAABB(EntityBoulder.class, getEntityBoundingBox().grow(0.2, 0.2, 0.2).offset(new Vec3d(motionX, motionY, motionZ).normalize().scale(0.5)));
+        List<EntityBoulder> bouldersHit = world.getEntitiesWithinAABB(EntityBoulder.class, getBoundingBox().grow(0.2, 0.2, 0.2).offset(new Vec3d(motionX, motionY, motionZ).normalize().scale(0.5)));
         if (travelling && !bouldersHit.isEmpty()) {
             for (EntityBoulder entity : bouldersHit) {
                 if (!entity.travelling) {
@@ -192,7 +192,7 @@ public class EntityBoulder extends Entity {
             }
         }
 
-        if (travelling && world.collidesWithAnyBlock(getEntityBoundingBox().grow(0.1,0.1,0.1))) setShouldExplode(true);
+        if (travelling && world.collidesWithAnyBlock(getBoundingBox().grow(0.1,0.1,0.1))) setShouldExplode(true);
 
         blockId = Block.getStateId(storedBlock);
 
@@ -293,7 +293,7 @@ public class EntityBoulder extends Entity {
     @Nullable
     @Override
     public AxisAlignedBB getCollisionBoundingBox() {
-        return getEntityBoundingBox();
+        return getBoundingBox();
     }
 
     public BlockState getBlock() {
@@ -422,7 +422,7 @@ public class EntityBoulder extends Entity {
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double r) {
-        return world.getEntitiesWithinAABB(entityClass, getEntityBoundingBox().grow(r, r, r), e -> e != this && getDistance(e) <= r + e.width / 2f);
+        return world.getEntitiesWithinAABB(entityClass, getBoundingBox().grow(r, r, r), e -> e != this && getDistance(e) <= r + e.width / 2f);
     }
 
 

@@ -6,7 +6,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class DropdownButtonElement<T extends IElementGUI> extends Element<T> {
     private IStringSelectionProperty selected;
     private boolean dropped;

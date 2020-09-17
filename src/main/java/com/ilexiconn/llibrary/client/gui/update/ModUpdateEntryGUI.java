@@ -17,7 +17,7 @@ import java.util.List;
  * @author iLexiconn
  * @since 1.0.0
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ModUpdateEntryGUI extends GuiScrollingList {
     private ModUpdateGUI parent;
     private List<ITextComponent> textList = null;

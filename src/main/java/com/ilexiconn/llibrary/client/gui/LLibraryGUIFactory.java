@@ -9,7 +9,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Set;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class LLibraryGUIFactory implements IModGuiFactory {
     @Override
     public void initialize(Minecraft mc) {

@@ -20,7 +20,7 @@ import java.util.Map;
  * @author gegy1000
  * @since 1.0.0
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class TabulaModel extends AdvancedModelBase {
     protected Map<String, AdvancedModelRenderer> cubes = new HashMap<>();
     protected List<AdvancedModelRenderer> rootBoxes = new ArrayList<>();

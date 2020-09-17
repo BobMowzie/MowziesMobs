@@ -20,7 +20,7 @@ import java.util.List;
  * @author iLexiconn
  * @since 1.4.0
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class Element<T extends IElementGUI> {
     public static final ColorScheme DEFAULT = ColorScheme.create(() -> LLibrary.CONFIG.getPrimaryColor(), () -> LLibrary.CONFIG.getSecondaryColor());
 

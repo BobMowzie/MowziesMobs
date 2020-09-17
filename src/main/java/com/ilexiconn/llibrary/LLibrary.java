@@ -106,19 +106,19 @@ public class LLibrary {
 
     static class CoreAPIHandler implements LLibraryCoreAPI {
         @Override
-        @SideOnly(Side.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         public void addRemoteLocalizations(String language, Map<String, String> properties) {
             LanguageHandler.INSTANCE.addRemoteLocalizations(language, properties);
         }
 
         @Override
-        @SideOnly(Side.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         public void provideStackContext(@Nonnull ItemStack stack) {
             ItemTESRContext.INSTANCE.provideStackContext(stack);
         }
 
         @Override
-        @SideOnly(Side.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         public void providePerspectiveContext(@Nonnull ItemCameraTransforms.TransformType transform) {
             ItemTESRContext.INSTANCE.providePerspectiveContext(transform);
         }

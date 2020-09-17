@@ -25,7 +25,7 @@ import java.util.Map;
  * @author iLexiconn
  * @since 1.0.0
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ModUpdateListGUI extends GuiScrollingList {
     private ModUpdateGUI parent;
     private Map<Integer, ResourceLocation> cachedLogo;

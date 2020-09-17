@@ -42,7 +42,7 @@ import java.util.zip.ZipInputStream;
  * @author pau101
  * @since 1.0.0
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public enum TabulaModelHandler implements ICustomModelLoader, JsonDeserializationContext {
     INSTANCE;
 

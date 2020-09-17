@@ -35,7 +35,7 @@ import org.lwjgl.util.Rectangle;
 
 import java.util.UUID;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public enum ClientEventHandler {
     INSTANCE;
 

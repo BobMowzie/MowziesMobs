@@ -40,6 +40,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -51,9 +53,9 @@ import java.util.Random;
  * Created by Josh on 9/9/2018.
  */
 public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public DynamicChain dc;
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public Vec3d[] mouthPos;
 
     public static final Animation FLAP_ANIMATION = Animation.create(25);
@@ -77,7 +79,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
     public float prevFlapAnimFrac;
 
     private boolean hasFlapSoundPlayed = false;
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public float shoulderRot;
 
     public static final int ROAR_DURATION = 30;
@@ -112,15 +114,23 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
 
     public EntityNaga(EntityType<? extends EntityNaga> type, World world) {
         super(type, world);
+
+
+        this.experienceValue = 10;
+    }
+
+    @Override
+    protected void registerGoals() {
+        super.registerGoals();
         setPathPriority(PathNodeType.WATER, 0);
-        this.tasks.addTask(5, new EntityNaga.AIRandomFly(this));
-        this.tasks.addTask(5, new EntityNaga.AIFlyAroundTarget(this));
-        this.tasks.addTask(7, new EntityNaga.AILookAround(this));
-        this.tasks.addTask(6, new LookRandomlyGoal(this));
-        this.tasks.addTask(6, new LookAtGoal(this, PlayerEntity.class, 8.0F));
-        this.targetTasks.addTask(1, new HurtByTargetGoal(this, false));
-        this.targetTasks.addTask(2, new MMAINearestAttackableTarget<>(this, PlayerEntity.class, 0, true, false, true, null));
-        this.tasks.addTask(2, new SimpleAnimationAI<EntityNaga>(this, FLAP_ANIMATION, false) {
+        this.goalSelector.addGoal(5, new EntityNaga.AIRandomFly(this));
+        this.goalSelector.addGoal(5, new EntityNaga.AIFlyAroundTarget(this));
+        this.goalSelector.addGoal(7, new EntityNaga.AILookAround(this));
+        this.goalSelector.addGoal(6, new LookRandomlyGoal(this));
+        this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        this.targetSelector.addGoal(1, new HurtByTargetGoal(this, false));
+        this.targetSelector.addGoal(2, new MMAINearestAttackableTarget<>(this, PlayerEntity.class, 0, true, false, true, null));
+        this.goalSelector.addGoal(2, new SimpleAnimationAI<EntityNaga>(this, FLAP_ANIMATION, false) {
             @Override
             public void startExecuting() {
                 super.startExecuting();
@@ -128,15 +138,15 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
             }
 
             @Override
-            public void updateTask() {
-                super.updateTask();
+            public void tick() {
+                super.tick();
                 if (getAnimationTick() >= 4 && getAnimationTick() <= 9) {
                     motionY += 0.1;
                 }
             }
         });
-        this.tasks.addTask(2, new SimpleAnimationAI<EntityNaga>(this, DODGE_ANIMATION, false));
-        this.tasks.addTask(2, new AnimationProjectileAttackAI<EntityNaga>(this, SPIT_ANIMATION, 30, null) {
+        this.goalSelector.addGoal(2, new SimpleAnimationAI<EntityNaga>(this, DODGE_ANIMATION, false));
+        this.goalSelector.addGoal(2, new AnimationProjectileAttackAI<EntityNaga>(this, SPIT_ANIMATION, 30, null) {
             @Override
             public void startExecuting() {
                 super.startExecuting();
@@ -152,7 +162,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
 //                if (getAnimationTick() == 28) motionY -= 0.2;
             }
         });
-        this.tasks.addTask(2, new SimpleAnimationAI<EntityNaga>(this, SWOOP_ANIMATION, true) {
+        this.goalSelector.addGoal(2, new SimpleAnimationAI<EntityNaga>(this, SWOOP_ANIMATION, true) {
             @Override
             public void startExecuting() {
                 super.startExecuting();
@@ -160,8 +170,8 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
             }
 
             @Override
-            public void updateTask() {
-                super.updateTask();
+            public void tick() {
+                super.tick();
                 if (interrupted) return;
 
                 Vec3d v = new Vec3d(0, 0, 0);
@@ -179,7 +189,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
                         ));
                     } else if (getAnimationTick() >= 16) {
                         if (target != null)
-                            entity.getLookHelper().setLookPositionWithEntity(target, 30F, 30F);
+                            entity.lookController.setLookPositionWithEntity(target, 30F, 30F);
                         if (getAnimationTick() == 23) {
                             if (target != null) {
                                 swoopTargetCorrectY = 0.09f * (float) Math.abs(posY - target.posY);
@@ -219,23 +229,23 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
                 if (getAnimationTick() == 22) playSound(MMSounds.ENTITY_NAGA_ROAR_1, 3, 1f);
             }
         });
-        this.tasks.addTask(2, new SimpleAnimationAI<EntityNaga>(this, HURT_TO_FALL_ANIMATION, true) {
+        this.goalSelector.addGoal(2, new SimpleAnimationAI<EntityNaga>(this, HURT_TO_FALL_ANIMATION, true) {
             @Override
-            public void updateTask() {
+            public void tick() {
 
             }
         });
-        this.tasks.addTask(2, new SimpleAnimationAI<EntityNaga>(this, LAND_ANIMATION, true) {
+        this.goalSelector.addGoal(2, new SimpleAnimationAI<EntityNaga>(this, LAND_ANIMATION, true) {
             @Override
             public void startExecuting() {
                 super.startExecuting();
                 playSound(MMSounds.MISC_GROUNDHIT_2, 1.5f, 1);
             }
         });
-        this.tasks.addTask(1, new SimpleAnimationAI<EntityNaga>(this, GET_UP_ANIMATION, true) {
+        this.goalSelector.addGoal(1, new SimpleAnimationAI<EntityNaga>(this, GET_UP_ANIMATION, true) {
             @Override
-            public void updateTask() {
-                super.updateTask();
+            public void tick() {
+                super.tick();
                 if (getAnimationTick() == 13) playSound(MMSounds.ENTITY_NAGA_FLAP_1, 2f, 1);
 
                 if (getAnimationTick() == 15) {
@@ -244,14 +254,11 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
             }
         });
 
-        this.moveHelper = new NagaMoveHelper(this);
-        setSize(3, 1);
+        this.moveController = new NagaMoveHelper(this);
         if (world.isRemote) {
             dc = new DynamicChain(this);
             mouthPos = new Vec3d[] {new Vec3d(0, 0, 0)};
         }
-
-        this.experienceValue = 10;
     }
 
     @Override
@@ -265,7 +272,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
         return distance < 16600;
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public AxisAlignedBB getRenderBoundingBox() {
         return super.getRenderBoundingBox().grow(12.0D);
@@ -274,10 +281,10 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
     protected void applyEntityAttributes()
     {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(30.0D * ConfigHandler.MOBS.NAGA.combatData.healthMultiplier);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(12.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(4.0D * ConfigHandler.MOBS.NAGA.combatData.attackMultiplier);
-        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(45);
+        this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(30.0D * ConfigHandler.MOBS.NAGA.combatData.healthMultiplier);
+        this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(12.0D);
+        this.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(4.0D * ConfigHandler.MOBS.NAGA.combatData.attackMultiplier);
+        this.getAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(45);
     }
 
     @Nullable
@@ -526,9 +533,9 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
 
     public boolean isNotColliding()
     {
-        boolean liquid = !this.world.containsAnyLiquid(this.getEntityBoundingBox());
-        boolean worldCollision = this.world.getCollisionBoxes(this, this.getEntityBoundingBox()).isEmpty();
-        boolean mobCollision = this.world.checkNoEntityCollision(this.getEntityBoundingBox(), this);
+        boolean liquid = !this.world.containsAnyLiquid(this.getBoundingBox());
+        boolean worldCollision = this.world.getCollisionBoxes(this, this.getBoundingBox()).isEmpty();
+        boolean mobCollision = this.world.checkNoEntityCollision(this.getBoundingBox(), this);
 
         return liquid && worldCollision && mobCollision;
     }
@@ -633,7 +640,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
             float f = 0.91F;
 
             if (this.onGround) {
-                BlockPos underPos = new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(this.getEntityBoundingBox().minY) - 1, MathHelper.floor(this.posZ));
+                BlockPos underPos = new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(this.getBoundingBox().minY) - 1, MathHelper.floor(this.posZ));
                 BlockState underState = this.world.getBlockState(underPos);
                 f = underState.getBlock().getSlipperiness(underState, this.world, underPos, this) * 0.91F;
             }
@@ -643,7 +650,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
             f = 0.91F;
 
             if (this.onGround) {
-                BlockPos underPos = new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(this.getEntityBoundingBox().minY) - 1, MathHelper.floor(this.posZ));
+                BlockPos underPos = new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(this.getBoundingBox().minY) - 1, MathHelper.floor(this.posZ));
                 BlockState underState = this.world.getBlockState(underPos);
                 f = underState.getBlock().getSlipperiness(underState, this.world, underPos, this) * 0.91F;
             }
@@ -715,7 +722,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
         }
         else if (movement == EnumNagaMovement.FALLING || movement == EnumNagaMovement.FALLEN || isAIDisabled()) {
             float f6 = 0.91F;
-            BlockPos.PooledMutableBlockPos blockpos$pooledmutableblockpos = BlockPos.PooledMutableBlockPos.retain(this.posX, this.getEntityBoundingBox().minY - 1.0D, this.posZ);
+            BlockPos.PooledMutableBlockPos blockpos$pooledmutableblockpos = BlockPos.PooledMutableBlockPos.retain(this.posX, this.getBoundingBox().minY - 1.0D, this.posZ);
 
             if (this.onGround)
             {
@@ -740,7 +747,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
 
             if (this.onGround)
             {
-                BlockState underState = this.world.getBlockState(blockpos$pooledmutableblockpos.setPos(this.posX, this.getEntityBoundingBox().minY - 1.0D, this.posZ));
+                BlockState underState = this.world.getBlockState(blockpos$pooledmutableblockpos.setPos(this.posX, this.getBoundingBox().minY - 1.0D, this.posZ));
                 f6 = underState.getBlock().getSlipperiness(underState, this.world, blockpos$pooledmutableblockpos, this) * 0.91F;
             }
 
@@ -972,7 +979,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
             double d0 = this.parentEntity.posX + (double)((random.nextFloat() * 2.0F - 1.0F) * 24.0F);
             double d1 = this.parentEntity.posY + (double)((random.nextFloat() * 2.0F - 1.0F) * 16.0F);
             double d2 = this.parentEntity.posZ + (double)((random.nextFloat() * 2.0F - 1.0F) * 24.0F);
-            this.parentEntity.getMoveHelper().setMoveTo(d0, d1, d2, parentEntity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue());
+            this.parentEntity.getMoveHelper().setMoveTo(d0, d1, d2, parentEntity.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue());
         }
     }
 
@@ -1042,7 +1049,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
             double d0 = target.posX + Math.cos(yaw) * radius;
             double d1 = target.posY + 8 + random.nextFloat() * 5;
             double d2 = target.posZ + Math.sin(yaw) * radius;
-            double speed = parentEntity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue();
+            double speed = parentEntity.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue();
             this.parentEntity.getMoveHelper().setMoveTo(d0, d1, d2, speed);
         }
     }
@@ -1094,7 +1101,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob {
             double d0 = (x - this.parentEntity.posX) / p_179926_7_;
             double d1 = (y - this.parentEntity.posY) / p_179926_7_;
             double d2 = (z - this.parentEntity.posZ) / p_179926_7_;
-            AxisAlignedBB axisalignedbb = this.parentEntity.getEntityBoundingBox();
+            AxisAlignedBB axisalignedbb = this.parentEntity.getBoundingBox();
 
             for (int i = 1; (double)i < p_179926_7_; ++i)
             {

@@ -166,8 +166,8 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     @Override
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
-        getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
-        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(40 * ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.combatData.healthMultiplier);
+        getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
+        getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(40 * ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.combatData.healthMultiplier);
     }
 
     @Override
@@ -348,7 +348,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         double vecX = Math.cos(theta);
         double vecZ = Math.sin(theta);
         double x = posX + 4.2 * vecX;
-        double y = getEntityBoundingBox().minY + 0.1;
+        double y = getBoundingBox().minY + 0.1;
         double z = posZ + 4.2 * vecZ;
         int hitY = MathHelper.floor(posY - 0.2);
         for (int t = 0; t < VERTICAL_ATTACK_BLOCK_OFFSETS.length; t++) {
@@ -377,7 +377,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
             }
         }
         int hitX = MathHelper.floor(x);
-        int ceilY = MathHelper.floor(getEntityBoundingBox().maxY);
+        int ceilY = MathHelper.floor(getBoundingBox().maxY);
         int hitZ = MathHelper.floor(z);
         final int maxHeight = 5;
         int height = maxHeight;

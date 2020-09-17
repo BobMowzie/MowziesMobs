@@ -14,7 +14,7 @@ public class AnimationBlockAI<T extends MowzieEntity & IAnimatedEntity> extends 
         super.updateTask();
         if (entity != null && entity.blockingEntity != null) {
             entity.faceEntity(entity.blockingEntity, 100, 100);
-            entity.getLookHelper().setLookPositionWithEntity(entity.blockingEntity, 200F, 30F);
+            entity.lookController.setLookPositionWithEntity(entity.blockingEntity, 200F, 30F);
         }
     }
 }

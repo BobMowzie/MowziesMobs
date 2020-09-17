@@ -197,7 +197,7 @@ public class EntityIceBreath extends EntityMagicEffect {
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double dX, double dY, double dZ, double r) {
-        return world.getEntitiesWithinAABB(entityClass, getEntityBoundingBox().grow(dX, dY, dZ), e -> e != this && getDistance(e) <= r + e.width / 2f && e.posY <= posY + dY);
+        return world.getEntitiesWithinAABB(entityClass, getBoundingBox().grow(dX, dY, dZ), e -> e != this && getDistance(e) <= r + e.width / 2f && e.posY <= posY + dY);
     }
 
     @Override

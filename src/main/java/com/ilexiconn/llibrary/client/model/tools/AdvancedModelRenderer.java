@@ -23,7 +23,7 @@ import javax.vecmath.Vector3d;
  * @author gegy1000
  * @since 1.0.0
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class AdvancedModelRenderer extends ModelRenderer {
     public float defaultRotationX, defaultRotationY, defaultRotationZ;
     public float defaultOffsetX, defaultOffsetY, defaultOffsetZ;

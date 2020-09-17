@@ -14,7 +14,7 @@ import java.util.HashMap;
  * @author iLexiconn
  * @since 1.0.0
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class MMModelAnimator {
     private int tempTick;
     private int prevTempTick;

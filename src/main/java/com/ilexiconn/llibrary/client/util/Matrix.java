@@ -17,7 +17,7 @@ import java.util.Stack;
  * @author pau101
  * @since 1.0.0
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class Matrix {
     public Stack<Matrix4d> matrixStack;
 

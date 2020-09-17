@@ -91,7 +91,7 @@ public class EntitySuperNova extends EntityMagicEffect {
         if (ticksExisted > DURATION) setDead();
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public int getBrightnessForRender()
     {
         return 15728880;

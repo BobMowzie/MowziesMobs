@@ -42,7 +42,7 @@ public class EntityBlockSwapper extends Entity {
             if (breakParticlesStart) world.destroyBlock(pos, false);
             world.setBlockState(pos, newBlock);
         }
-        List<EntityBlockSwapper> swappers = world.getEntitiesWithinAABB(EntityBlockSwapper.class, getEntityBoundingBox());
+        List<EntityBlockSwapper> swappers = world.getEntitiesWithinAABB(EntityBlockSwapper.class, getBoundingBox());
         if (!swappers.isEmpty()) {
             EntityBlockSwapper swapper = swappers.get(0);
             setOrigBlock(swapper.getOrigBlock());
@@ -106,7 +106,7 @@ public class EntityBlockSwapper extends Entity {
     @Override
     public void onUpdate() {
         super.onUpdate();
-        if (ticksExisted > duration && world.getEntitiesWithinAABB(PlayerEntity.class, getEntityBoundingBox()).isEmpty()) restoreBlock();
+        if (ticksExisted > duration && world.getEntitiesWithinAABB(PlayerEntity.class, getBoundingBox()).isEmpty()) restoreBlock();
     }
 
     @Override

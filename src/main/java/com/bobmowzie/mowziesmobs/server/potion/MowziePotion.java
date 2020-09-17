@@ -39,13 +39,13 @@ public class MowziePotion extends Effect {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void renderInventoryEffect(int x, int y, EffectInstance effect, Minecraft mc) {
         drawEffect(x + 6, y + 7);
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void renderHUDEffect(int x, int y, EffectInstance effect, Minecraft mc, float alpha) {
         drawEffect(x + 3, y + 3);
     }

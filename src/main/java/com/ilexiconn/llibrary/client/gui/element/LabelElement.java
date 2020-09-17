@@ -4,7 +4,7 @@ import com.ilexiconn.llibrary.LLibrary;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class LabelElement<T extends IElementGUI> extends Element<T> {
     private String text;
 

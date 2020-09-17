@@ -24,7 +24,7 @@ public class SnackbarMessage extends AbstractMessage<SnackbarMessage> {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void onClientReceived(Minecraft client, SnackbarMessage message, EntityPlayer player, MessageContext messageContext) {
         LLibrary.PROXY.showSnackbar(message.snackbar);
     }

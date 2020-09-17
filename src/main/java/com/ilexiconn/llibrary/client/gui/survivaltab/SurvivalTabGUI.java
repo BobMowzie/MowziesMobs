@@ -14,7 +14,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class SurvivalTabGUI extends GuiButton {
     public static final ResourceLocation TABS_TEXTURE = new ResourceLocation("com/ilexiconn/llibrary", "textures/gui/survival_tab.png");
 

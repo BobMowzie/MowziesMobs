@@ -30,7 +30,7 @@ public final class EntityAIGrottolFindMinecart extends Goal {
     @Override
     public boolean shouldExecute() {
         if (grottol.fleeTime <= 1) return false;
-        List<MinecartEntity> minecarts = grottol.world.getEntitiesWithinAABB(MinecartEntity.class, grottol.getEntityBoundingBox().grow(8.0D, 4.0D, 8.0D), predicate);
+        List<MinecartEntity> minecarts = grottol.world.getEntitiesWithinAABB(MinecartEntity.class, grottol.getBoundingBox().grow(8.0D, 4.0D, 8.0D), predicate);
         minecarts.sort(sorter);
         if (minecarts.isEmpty()) {
             return false;
@@ -58,7 +58,7 @@ public final class EntityAIGrottolFindMinecart extends Goal {
     @Override
     public void updateTask() {
         if (grottol.getDistanceSq(minecart) > 1.45D * 1.45D) {
-            grottol.getLookHelper().setLookPositionWithEntity(minecart, 10.0F, grottol.getVerticalFaceSpeed());
+            grottol.lookController.setLookPositionWithEntity(minecart, 10.0F, grottol.getVerticalFaceSpeed());
             if (++time % 40 == 0) {
                 grottol.getNavigator().tryMoveToEntityLiving(minecart, 0.5D);
             }

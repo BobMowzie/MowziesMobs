@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ModelBarakoa extends MowzieEntityModel<EntityBarakoa> {
     public AdvancedModelRenderer modelCore;
     public AdvancedModelRenderer body;

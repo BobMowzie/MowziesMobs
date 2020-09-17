@@ -6,7 +6,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class InputElement<T extends IElementGUI> extends InputElementBase<T> {
     private Consumer<InputElementBase<T>> onSubmit;
     private Function<Integer, Boolean> allowKey;

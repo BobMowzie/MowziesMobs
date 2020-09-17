@@ -71,8 +71,8 @@ public class EntityBabyFoliaath extends MowzieEntity {
     @Override
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
-        getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0);
-        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(1);
+        getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0);
+        getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(1);
     }
 
     @Override
@@ -215,10 +215,10 @@ public class EntityBabyFoliaath extends MowzieEntity {
 
     @Override
     public boolean getCanSpawnHere() {
-        if (world.checkNoEntityCollision(getEntityBoundingBox()) && world.getCollisionBoxes(this, getEntityBoundingBox()).isEmpty() && !world.containsAnyLiquid(getEntityBoundingBox())) {
+        if (world.checkNoEntityCollision(getBoundingBox()) && world.getCollisionBoxes(this, getBoundingBox()).isEmpty() && !world.containsAnyLiquid(getBoundingBox())) {
             BlockPos ground = new BlockPos(
                 MathHelper.floor(posX),
-                MathHelper.floor(getEntityBoundingBox().minY) - 1,
+                MathHelper.floor(getBoundingBox().minY) - 1,
                 MathHelper.floor(posZ)
             );
 
@@ -233,7 +233,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
     }
 
     public List<ItemEntity> getMeatsNearby(double distanceX, double distanceY, double distanceZ, double radius) {
-        List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(this, getEntityBoundingBox().grow(distanceX, distanceY, distanceZ));
+        List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(distanceX, distanceY, distanceZ));
         ArrayList<ItemEntity> listEntityItem = new ArrayList<>();
         for (Entity entityNeighbor : list) {
             if (entityNeighbor instanceof ItemEntity && getDistance(entityNeighbor) <= radius) {

@@ -6,7 +6,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.List;
 import java.util.function.Function;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class StateButtonElement<T extends IElementGUI> extends ButtonElement<T> {
     private List<String> states;
     private int state;

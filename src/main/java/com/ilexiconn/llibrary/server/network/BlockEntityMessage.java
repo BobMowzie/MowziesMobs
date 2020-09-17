@@ -27,7 +27,7 @@ public class BlockEntityMessage extends AbstractMessage<BlockEntityMessage> {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void onClientReceived(Minecraft client, BlockEntityMessage message, EntityPlayer player, MessageContext messageContext) {
         BlockPos pos = message.pos;
         if (player.world.isBlockLoaded(pos)) {

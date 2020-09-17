@@ -6,7 +6,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.function.Supplier;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ScrollbarElement<T extends IElementGUI> extends Element<T> {
     private int maxScroll;
     private float scrollPerEntry;

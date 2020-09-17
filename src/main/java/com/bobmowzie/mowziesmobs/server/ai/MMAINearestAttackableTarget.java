@@ -127,7 +127,7 @@ public class MMAINearestAttackableTarget<T extends LivingEntity> extends TargetG
     {
         double verticalDistance = 4.0D;
         if (useVerticalDistance) verticalDistance = targetDistance;
-        return this.taskOwner.getEntityBoundingBox().grow(targetDistance, verticalDistance, targetDistance);
+        return this.taskOwner.getBoundingBox().grow(targetDistance, verticalDistance, targetDistance);
     }
 
     /**

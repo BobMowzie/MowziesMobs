@@ -32,7 +32,7 @@ public abstract class AbstractMessage<T extends AbstractMessage<T>> implements I
      * @param player         The client player entity.
      * @param messageContext the message context.
      */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public abstract void onClientReceived(Minecraft client, T message, EntityPlayer player, MessageContext messageContext);
 
     /**

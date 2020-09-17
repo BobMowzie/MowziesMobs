@@ -70,7 +70,7 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
             }
         }
 
-        if (world.collidesWithAnyBlock(getEntityBoundingBox().grow(0.1,0.1,0.1))) explode();
+        if (world.collidesWithAnyBlock(getBoundingBox().grow(0.1,0.1,0.1))) explode();
 
         if (world.isRemote) {
             float scale = 1f;

@@ -112,18 +112,18 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
 
     public EntityFrostmaw(EntityType<? extends EntityFrostmaw> type, World world) {
         super(type, world);
-        this.tasks.addTask(0, new SwimGoal(this));
-        this.tasks.addTask(5, new MoveTowardsRestrictionGoal(this, 1.0D));
-        this.tasks.addTask(7, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
-        this.tasks.addTask(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
-        this.tasks.addTask(8, new LookRandomlyGoal(this));
-        this.tasks.addTask(2, new AnimationAreaAttackAI<EntityFrostmaw>(this, SWIPE_ANIMATION, null, null, 2, 6.5f, 6, 135, ConfigHandler.MOBS.FROSTMAW.combatData.attackMultiplier, 9) {
+        this.goalSelector.addGoal(0, new SwimGoal(this));
+        this.goalSelector.addGoal(5, new MoveTowardsRestrictionGoal(this, 1.0D));
+        this.goalSelector.addGoal(7, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
+        this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
+        this.goalSelector.addGoal(2, new AnimationAreaAttackAI<EntityFrostmaw>(this, SWIPE_ANIMATION, null, null, 2, 6.5f, 6, 135, ConfigHandler.MOBS.FROSTMAW.combatData.attackMultiplier, 9) {
             @Override
             public void startExecuting() {
                 super.startExecuting();
             }
         });
-        this.tasks.addTask(2, new AnimationAreaAttackAI<EntityFrostmaw>(this, SWIPE_TWICE_ANIMATION, null, null, 1, 6.5f, 6, 135, ConfigHandler.MOBS.FROSTMAW.combatData.attackMultiplier, 9) {
+        this.goalSelector.addGoal(2, new AnimationAreaAttackAI<EntityFrostmaw>(this, SWIPE_TWICE_ANIMATION, null, null, 1, 6.5f, 6, 135, ConfigHandler.MOBS.FROSTMAW.combatData.attackMultiplier, 9) {
             @Override
             public void startExecuting() {
                 super.startExecuting();
@@ -141,38 +141,38 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                 if (getAnimationTick() == 6) {
                     playSound(MMSounds.ENTITY_FROSTMAW_WHOOSH, 2, 0.8f);
                 }
-                if (getAttackTarget() != null) getLookHelper().setLookPositionWithEntity(getAttackTarget(), 30, 30);
+                if (getAttackTarget() != null) lookController.setLookPositionWithEntity(getAttackTarget(), 30, 30);
             }
         });
-        this.tasks.addTask(2, new SimpleAnimationAI<>(this, ICE_BREATH_ANIMATION, true));
-        this.tasks.addTask(2, new SimpleAnimationAI<EntityFrostmaw>(this, ICE_BALL_ANIMATION, true) {
+        this.goalSelector.addGoal(2, new SimpleAnimationAI<>(this, ICE_BREATH_ANIMATION, true));
+        this.goalSelector.addGoal(2, new SimpleAnimationAI<EntityFrostmaw>(this, ICE_BALL_ANIMATION, true) {
             @Override
             public void startExecuting() {
                 super.startExecuting();
                 playSound(MMSounds.ENTITY_FROSTMAW_ICEBALL_CHARGE, 2, 0.9f);
             }
         });
-        this.tasks.addTask(2, new SimpleAnimationAI<>(this, ROAR_ANIMATION, false));
-        this.tasks.addTask(2, new AnimationActivateAI<EntityFrostmaw>(this, ACTIVATE_ANIMATION) {
+        this.goalSelector.addGoal(2, new SimpleAnimationAI<>(this, ROAR_ANIMATION, false));
+        this.goalSelector.addGoal(2, new AnimationActivateAI<EntityFrostmaw>(this, ACTIVATE_ANIMATION) {
             @Override
             public void startExecuting() {
                 super.startExecuting();
                 playSound(MMSounds.ENTITY_FROSTMAW_WAKEUP, 1, 1);
             }
         });
-        this.tasks.addTask(2, new AnimationActivateAI<EntityFrostmaw>(this, ACTIVATE_NO_CRYSTAL_ANIMATION) {
+        this.goalSelector.addGoal(2, new AnimationActivateAI<EntityFrostmaw>(this, ACTIVATE_NO_CRYSTAL_ANIMATION) {
             @Override
             public void startExecuting() {
                 super.startExecuting();
                 playSound(MMSounds.ENTITY_FROSTMAW_WAKEUP, 1, 1);
             }
         });
-        this.tasks.addTask(2, new AnimationDeactivateAI<>(this, DEACTIVATE_ANIMATION));
-        this.tasks.addTask(2, new SimpleAnimationAI<>(this, LAND_ANIMATION, false));
-        this.tasks.addTask(2, new SimpleAnimationAI<>(this, SLAM_ANIMATION, false));
-        this.tasks.addTask(2, new SimpleAnimationAI<>(this, DODGE_ANIMATION, true));
-        this.tasks.addTask(3, new AnimationTakeDamage<>(this));
-        this.tasks.addTask(1, new AnimationDieAI<>(this));
+        this.goalSelector.addGoal(2, new AnimationDeactivateAI<>(this, DEACTIVATE_ANIMATION));
+        this.goalSelector.addGoal(2, new SimpleAnimationAI<>(this, LAND_ANIMATION, false));
+        this.goalSelector.addGoal(2, new SimpleAnimationAI<>(this, SLAM_ANIMATION, false));
+        this.goalSelector.addGoal(2, new SimpleAnimationAI<>(this, DODGE_ANIMATION, true));
+        this.goalSelector.addGoal(3, new AnimationTakeDamage<>(this));
+        this.goalSelector.addGoal(1, new AnimationDieAI<>(this));
         this.targetTasks.addTask(1, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 0, true, false, null));
         stepHeight = 1;
         frame += rand.nextInt(50);
@@ -183,7 +183,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         rotationYaw = renderYawOffset = rand.nextFloat() * 360;
         experienceValue = 60;
 
-        moveHelper = new MMEntityMoveHelper(this, 7);
+        moveController = new MMEntityMoveHelper(this, 7);
     }
 
     @Override
@@ -194,11 +194,11 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
     protected void applyEntityAttributes()
     {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(250.0D * ConfigHandler.MOBS.FROSTMAW.combatData.healthMultiplier);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.3D);
-        this.getEntityAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(10.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0D);
-        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(50);
+        this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(250.0D * ConfigHandler.MOBS.FROSTMAW.combatData.healthMultiplier);
+        this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.3D);
+        this.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(10.0D);
+        this.getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0D);
+        this.getAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(50);
     }
 
     @Override
@@ -251,7 +251,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                 if (getAnimationTick() == 6) {
                     playSound(MMSounds.ENTITY_FROSTMAW_WHOOSH, 2, 0.8f);
                 }
-                if (getAttackTarget() != null) getLookHelper().setLookPositionWithEntity(getAttackTarget(), 30, 30);
+                if (getAttackTarget() != null) lookController.setLookPositionWithEntity(getAttackTarget(), 30, 30);
             }
 
             if (getAnimation() == ROAR_ANIMATION) {
@@ -273,7 +273,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                 if (getAnimationTick() == 82) {
                     playSound(MMSounds.ENTITY_FROSTMAW_LIVING_1, 2, 1);
                 }
-                if (getAttackTarget() != null) getLookHelper().setLookPositionWithEntity(getAttackTarget(), 30, 30);
+                if (getAttackTarget() != null) lookController.setLookPositionWithEntity(getAttackTarget(), 30, 30);
                 if (getAnimationTick() == 82) {
                     int i = MathHelper.getInt(rand, 0, MMSounds.ENTITY_FROSTMAW_ATTACK.size() - 1);
                     if (i < MMSounds.ENTITY_FROSTMAW_ATTACK.size()) {
@@ -308,12 +308,12 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                     motionX += (float) (speed * Math.cos(dodgeYaw));
                     motionZ += (float) (speed * Math.sin(dodgeYaw));
                 }
-                if (getAttackTarget() != null) getLookHelper().setLookPositionWithEntity(getAttackTarget(), 30, 30);
+                if (getAttackTarget() != null) lookController.setLookPositionWithEntity(getAttackTarget(), 30, 30);
             }
 
             if (getAnimation() == ICE_BREATH_ANIMATION) {
                 if (getAttackTarget() != null) {
-                    getLookHelper().setLookPositionWithEntity(getAttackTarget(), 30, 30);
+                    lookController.setLookPositionWithEntity(getAttackTarget(), 30, 30);
                     faceEntity(getAttackTarget(), 30, 30);
                 }
                 Vec3d mouthPos = new Vec3d(2.3, 2.65, 0);
@@ -330,7 +330,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
             }
 
             if (getAnimation() == ICE_BALL_ANIMATION) {
-                if (getAttackTarget() != null) getLookHelper().setLookPositionWithEntity(getAttackTarget(), 15, 15);
+                if (getAttackTarget() != null) lookController.setLookPositionWithEntity(getAttackTarget(), 15, 15);
                 Vec3d projectilePos = new Vec3d(2.0, 1.9, 0);
                 projectilePos = projectilePos.rotateYaw((float)Math.toRadians(-rotationYaw - 90));
                 projectilePos = projectilePos.add(getPositionVector());

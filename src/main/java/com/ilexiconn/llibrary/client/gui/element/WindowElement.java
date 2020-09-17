@@ -9,7 +9,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.ArrayList;
 import java.util.List;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class WindowElement<T extends IElementGUI> extends Element<T> {
     private String name;
     private float dragOffsetX;

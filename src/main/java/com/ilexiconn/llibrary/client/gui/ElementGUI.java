@@ -27,7 +27,7 @@ import java.util.List;
  * @author iLexiconn
  * @since 1.4.0
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public abstract class ElementGUI extends GuiScreen implements IElementGUI {
     private final Object elementLock = new Object();
 

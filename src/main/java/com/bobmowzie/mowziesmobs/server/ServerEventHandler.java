@@ -284,7 +284,7 @@ public final class ServerEventHandler {
     private void tryTeleportBarakoan(PlayerEntity player, EntityBarakoanToPlayer barakoan) {
         int x = MathHelper.floor(player.posX) - 2;
         int z = MathHelper.floor(player.posZ) - 2;
-        int y = MathHelper.floor(player.getEntityBoundingBox().minY);
+        int y = MathHelper.floor(player.getBoundingBox().minY);
 
         for (int l = 0; l <= 4; ++l) {
             for (int i1 = 0; i1 <= 4; ++i1) {
@@ -362,11 +362,11 @@ public final class ServerEventHandler {
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(LivingEntity startEntity, Class<T> entityClass, double r) {
-        return startEntity.world.getEntitiesWithinAABB(entityClass, startEntity.getEntityBoundingBox().grow(r, r, r), e -> e != startEntity && startEntity.getDistance(e) <= r);
+        return startEntity.world.getEntitiesWithinAABB(entityClass, startEntity.getBoundingBox().grow(r, r, r), e -> e != startEntity && startEntity.getDistance(e) <= r);
     }
 
     private List<LivingEntity> getEntityLivingBaseNearby(LivingEntity user, double distanceX, double distanceY, double distanceZ, double radius) {
-        List<Entity> list = user.world.getEntitiesWithinAABBExcludingEntity(user, user.getEntityBoundingBox().grow(distanceX, distanceY, distanceZ));
+        List<Entity> list = user.world.getEntitiesWithinAABBExcludingEntity(user, user.getBoundingBox().grow(distanceX, distanceY, distanceZ));
         ArrayList<LivingEntity> nearEntities = list.stream().filter(entityNeighbor -> entityNeighbor instanceof LivingEntity && user.getDistance(entityNeighbor) <= radius).map(entityNeighbor -> (LivingEntity) entityNeighbor).collect(Collectors.toCollection(ArrayList::new));
         return nearEntities;
     }

@@ -5,7 +5,7 @@ import com.ilexiconn.llibrary.server.property.IBooleanProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class CheckboxElement<T extends IElementGUI> extends Element<T> {
     public final IBooleanProperty selected;
 

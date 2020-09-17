@@ -14,7 +14,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.Map;
 import java.util.TreeMap;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class RenderBoulder extends EntityRenderer<EntityBoulder> {
     private static final ResourceLocation TEXTURE_DIRT = new ResourceLocation("textures/blocks/dirt.png");
     private static final ResourceLocation TEXTURE_STONE = new ResourceLocation("textures/blocks/stone.png");

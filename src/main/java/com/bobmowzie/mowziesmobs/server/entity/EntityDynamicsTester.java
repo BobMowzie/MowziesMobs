@@ -9,7 +9,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class EntityDynamicsTester extends MowzieEntity {
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public DynamicChain dc;
 
     public EntityDynamicsTester(World world) {

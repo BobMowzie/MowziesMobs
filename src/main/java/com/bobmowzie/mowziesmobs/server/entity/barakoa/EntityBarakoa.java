@@ -83,8 +83,8 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             @Override
             public void startExecuting() {
                 super.startExecuting();
-                LivingEntity player = this.entity.world.findNearestEntityWithinAABB(PlayerEntity.class, this.entity.getEntityBoundingBox().grow(8.0D, 3.0D, 8.0D), this.entity);
-                LivingEntity barakoa = this.entity.world.findNearestEntityWithinAABB(EntityBarakoa.class, this.entity.getEntityBoundingBox().grow(8.0D, 3.0D, 8.0D), this.entity);
+                LivingEntity player = this.entity.world.findNearestEntityWithinAABB(PlayerEntity.class, this.entity.getBoundingBox().grow(8.0D, 3.0D, 8.0D), this.entity);
+                LivingEntity barakoa = this.entity.world.findNearestEntityWithinAABB(EntityBarakoa.class, this.entity.getBoundingBox().grow(8.0D, 3.0D, 8.0D), this.entity);
                 if (player == null) talkTarget = barakoa;
                 else if (barakoa == null) talkTarget = player;
                 else if (rand.nextBoolean()) talkTarget = player;
@@ -94,7 +94,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             @Override
             public void updateTask() {
                 super.updateTask();
-                if (talkTarget != null) this.entity.getLookHelper().setLookPosition(this.talkTarget.posX, this.talkTarget.posY + (double)this.talkTarget.getEyeHeight(), this.talkTarget.posZ, (float)this.entity.getHorizontalFaceSpeed(), (float)this.entity.getVerticalFaceSpeed());
+                if (talkTarget != null) this.entity.lookController.setLookPosition(this.talkTarget.posX, this.talkTarget.posY + (double)this.talkTarget.getEyeHeight(), this.talkTarget.posZ, (float)this.entity.getHorizontalFaceSpeed(), (float)this.entity.getVerticalFaceSpeed());
             }
         });
         tasks.addTask(4, new MeleeAttackGoal(this, 0.5D, false));
@@ -162,7 +162,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     @Override
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
-        getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10  * ConfigHandler.MOBS.BARAKOA.combatData.healthMultiplier);
+        getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10  * ConfigHandler.MOBS.BARAKOA.combatData.healthMultiplier);
     }
 
     protected void updateAttackAI() {
@@ -407,7 +407,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     public void attackEntityWithRangedAttack(LivingEntity target, float p_82196_2_) {
         AbstractArrowEntity dart = new EntityDart(this.world, this);
         double dx = target.posX - this.posX;
-        double dy = target.getEntityBoundingBox().minY + (double)(target.height / 3.0F) - dart.posY;
+        double dy = target.getBoundingBox().minY + (double)(target.height / 3.0F) - dart.posY;
         double dz = target.posZ - this.posZ;
         double dist = (double)MathHelper.sqrt(dx * dx + dz * dz);
         dart.shoot(dx, dy + dist * 0.2D, dz, 1.6F, 1);

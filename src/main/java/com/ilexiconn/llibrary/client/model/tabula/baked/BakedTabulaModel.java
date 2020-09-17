@@ -23,7 +23,7 @@ import java.util.List;
  * @author pau101
  * @since 1.0.0
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class BakedTabulaModel implements IBakedModel {
     private ImmutableList<BakedQuad> quads;
     private TextureAtlasSprite particle;

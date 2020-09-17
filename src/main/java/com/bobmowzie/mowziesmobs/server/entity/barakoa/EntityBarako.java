@@ -126,22 +126,22 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         this.targetTasks.addTask(4, new BarakoaAttackTargetAI(this, PlayerEntity.class, 0, false, true));
         this.targetTasks.addTask(4, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, true, false, null));
         this.targetTasks.addTask(4, new NearestAttackableTargetGoal<>(this, SkeletonEntity.class, 0, true, false, null));
-        this.tasks.addTask(2, new SimpleAnimationAI<>(this, BELLY_ANIMATION, false));
-        this.tasks.addTask(2, new SimpleAnimationAI<EntityBarako>(this, TALK_ANIMATION, false) {
+        this.goalSelector.addGoal(2, new SimpleAnimationAI<>(this, BELLY_ANIMATION, false));
+        this.goalSelector.addGoal(2, new SimpleAnimationAI<EntityBarako>(this, TALK_ANIMATION, false) {
             @Override
             public void startExecuting() {
                 super.startExecuting();
 //                whichDialogue = getWhichDialogue();
             }
         });
-        this.tasks.addTask(2, new SimpleAnimationAI<EntityBarako>(this, BLESS_ANIMATION, false) {
+        this.goalSelector.addGoal(2, new SimpleAnimationAI<EntityBarako>(this, BLESS_ANIMATION, false) {
             @Override
             public void startExecuting() {
                 super.startExecuting();
                 blessingPlayer = getCustomer();
             }
         });
-        this.tasks.addTask(2, new SimpleAnimationAI<EntityBarako>(this, SUPERNOVA_ANIMATION, false) {
+        this.goalSelector.addGoal(2, new SimpleAnimationAI<EntityBarako>(this, SUPERNOVA_ANIMATION, false) {
             @Override
             public void startExecuting() {
                 super.startExecuting();
@@ -168,7 +168,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 }
             }
         });
-        this.tasks.addTask(2, new AnimationSunStrike<EntityBarako>(this, SUNSTRIKE_ANIMATION) {
+        this.goalSelector.addGoal(2, new AnimationSunStrike<EntityBarako>(this, SUNSTRIKE_ANIMATION) {
             @Override
             public void startExecuting() {
                 super.startExecuting();
@@ -178,20 +178,20 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 }
             }
         });
-        this.tasks.addTask(2, new AnimationRadiusAttack<EntityBarako>(this, ATTACK_ANIMATION, 4f, (int)(5 * ConfigHandler.MOBS.BARAKO.combatData.attackMultiplier), 3f, 12, true){
+        this.goalSelector.addGoal(2, new AnimationRadiusAttack<EntityBarako>(this, ATTACK_ANIMATION, 4f, (int)(5 * ConfigHandler.MOBS.BARAKO.combatData.attackMultiplier), 3f, 12, true){
             @Override
             public void startExecuting() {
                 super.startExecuting();
                 playSound(MMSounds.ENTITY_BARAKO_BURST, 1.7f, 1.5f);
             }
         });
-        this.tasks.addTask(2, new AnimationSpawnBarakoa(this, SPAWN_ANIMATION));
-        this.tasks.addTask(2, new AnimationSolarBeam<>(this, SOLAR_BEAM_ANIMATION));
-        this.tasks.addTask(3, new AnimationTakeDamage<>(this));
-        this.tasks.addTask(1, new AnimationDieAI<>(this));
-        this.tasks.addTask(6, new LookAtGoal(this, PlayerEntity.class, 8.0F));
-        this.tasks.addTask(7, new LookAtGoal(this, EntityBarakoa.class, 8.0F));
-        this.tasks.addTask(8, new LookRandomlyGoal(this));
+        this.goalSelector.addGoal(2, new AnimationSpawnBarakoa(this, SPAWN_ANIMATION));
+        this.goalSelector.addGoal(2, new AnimationSolarBeam<>(this, SOLAR_BEAM_ANIMATION));
+        this.goalSelector.addGoal(3, new AnimationTakeDamage<>(this));
+        this.goalSelector.addGoal(1, new AnimationDieAI<>(this));
+        this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        this.goalSelector.addGoal(7, new LookAtGoal(this, EntityBarakoa.class, 8.0F));
+        this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
         if (getDirection() == 0) {
             this.setDirection(rand.nextInt(4) + 1);
         }
@@ -216,9 +216,9 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     @Override
     protected void applyEntityAttributes() {
         super.applyEntityAttributes();
-        this.getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0);
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(MAX_HEALTH * ConfigHandler.MOBS.BARAKO.combatData.healthMultiplier);
-        this.getEntityAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(50);
+        this.getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0);
+        this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(MAX_HEALTH * ConfigHandler.MOBS.BARAKO.combatData.healthMultiplier);
+        this.getAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(50);
     }
 
     @Override
@@ -752,7 +752,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public ContainerScreen createGui(World world, PlayerEntity player, int x, int y, int z) {
         return new GuiBarakoTrade(this, player.inventory, world, y != 0);
     }

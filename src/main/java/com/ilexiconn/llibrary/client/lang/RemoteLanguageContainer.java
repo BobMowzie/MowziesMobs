@@ -7,7 +7,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author gegy1000
  * @since 1.1.0
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class RemoteLanguageContainer {
     public LangContainer[] languages;
 

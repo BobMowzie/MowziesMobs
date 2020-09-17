@@ -13,7 +13,7 @@ import javax.annotation.Nonnull;
  * @author gegy1000
  * @since 1.7.7
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public enum ItemTESRContext {
     INSTANCE;
 

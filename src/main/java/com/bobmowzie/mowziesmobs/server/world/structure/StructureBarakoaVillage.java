@@ -786,7 +786,7 @@ public class StructureBarakoaVillage {
                 BlockPos bPos = pos.add(distance * Math.sin(Math.toRadians(angle)), 0, distance * Math.cos(Math.toRadians(angle)));
                 y = findGenHeightBarakoa(world, bPos);
                 barakoa.setPosition(bPos.getX(), bPos.getY() + y + 1, bPos.getZ());
-                if(y != -1 && barakoa.getCanSpawnHere() && world.getCollisionBoxes(null, barakoa.getEntityBoundingBox()).isEmpty()) {
+                if(y != -1 && barakoa.getCanSpawnHere() && world.getCollisionBoxes(null, barakoa.getBoundingBox()).isEmpty()) {
                     world.spawnEntity(barakoa);
                     barakoa.onInitialSpawn(world.getDifficultyForLocation(barakoa.getPosition()), null);
                     break;

@@ -9,7 +9,7 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ModelFoliaathBaby extends MowzieEntityModel<EntityBabyFoliaath> {
     public AdvancedModelRenderer infantBase;
     public AdvancedModelRenderer juvenileBase;

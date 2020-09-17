@@ -20,7 +20,7 @@ public class MMWalkNodeProcessor extends WalkNodeProcessor {
     @Override
     public PathPoint getStart() {
         int y;
-        AxisAlignedBB bounds = this.entity.getEntityBoundingBox();
+        AxisAlignedBB bounds = this.entity.getBoundingBox();
         if (this.getCanSwim() && this.entity.isInWater()) {
             y = (int) bounds.minY;
             BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(MathHelper.floor(this.entity.posX), y, MathHelper.floor(this.entity.posZ));

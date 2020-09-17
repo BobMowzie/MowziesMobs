@@ -7,7 +7,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author pau101
  * @since 1.0.0
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class StackUnderflowError extends Error {
     public StackUnderflowError() {
         super();

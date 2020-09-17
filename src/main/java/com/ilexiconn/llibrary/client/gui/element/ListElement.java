@@ -12,7 +12,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.List;
 import java.util.function.Function;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ListElement<T extends IElementGUI> extends Element<T> {
     private List<String> entries;
     private Function<ListElement<T>, Boolean> function;

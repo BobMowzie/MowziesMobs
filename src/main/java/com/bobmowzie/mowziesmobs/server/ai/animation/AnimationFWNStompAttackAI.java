@@ -36,7 +36,7 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
         entity.motionZ = 0;
         double perpFacing = entity.renderYawOffset * (Math.PI / 180);
         double facingAngle = perpFacing + Math.PI / 2;
-        int hitY = MathHelper.floor(entity.getEntityBoundingBox().minY - 0.5);
+        int hitY = MathHelper.floor(entity.getBoundingBox().minY - 0.5);
         int tick = entity.getAnimationTick();
         final int maxDistance = 6;
         ServerWorld world = (ServerWorld) entity.world;
@@ -51,7 +51,7 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                 double perpX = Math.cos(perpFacing);
                 double perpZ = Math.sin(perpFacing);
                 double fx = entity.posX + vx + perpX * side;
-                double fy = entity.getEntityBoundingBox().minY + 0.1;
+                double fy = entity.getBoundingBox().minY + 0.1;
                 double fz = entity.posZ + vz + perpZ * side;
                 int bx = MathHelper.floor(fx);
                 int bz = MathHelper.floor(fz);
@@ -73,8 +73,8 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                 int distance = tick / 2 - 2;
                 double spread = Math.PI * 2;
                 int arcLen = MathHelper.ceil(distance * spread);
-                double minY = entity.getEntityBoundingBox().minY;
-                double maxY = entity.getEntityBoundingBox().maxY;
+                double minY = entity.getBoundingBox().minY;
+                double maxY = entity.getBoundingBox().maxY;
                 for (int i = 0; i < arcLen; i++) {
                     double theta = (i / (arcLen - 1.0) - 0.5) * spread + facingAngle;
                     double vx = Math.cos(theta);
@@ -91,7 +91,7 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                         float knockbackResistance = 0;
                         if (entity instanceof LivingEntity) {
                             entity.attackEntityFrom(DamageSource.causeMobDamage(this.entity), (factor * 5 + 1) * ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.combatData.attackMultiplier);
-                            knockbackResistance = (float) ((LivingEntity)entity).getEntityAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).getAttributeValue();
+                            knockbackResistance = (float) ((LivingEntity)entity).getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).getAttributeValue();
                         }
                         double magnitude = world.rand.nextDouble() * 0.15 + 0.1;
                         entity.motionX += vx * factor * magnitude * (1 - knockbackResistance);
@@ -123,7 +123,7 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                                 int stateId = Block.getStateId(block);
                                 while (amount --> 0) {
                                     double cx = px + world.rand.nextFloat() * 2 - 1;
-                                    double cy = entity.getEntityBoundingBox().minY + 0.1 + world.rand.nextFloat() * 0.3;
+                                    double cy = entity.getBoundingBox().minY + 0.1 + world.rand.nextFloat() * 0.3;
                                     double cz = pz + world.rand.nextFloat() * 2 - 1;
                                     world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, cx, cy, cz, 0, vx, 0.4 + world.rand.nextFloat() * 0.2F, vz, 1, stateId);
                                 }
@@ -136,7 +136,7 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                             double velX = vx * 0.075;
                             double velY = factor * 0.3 + 0.025;
                             double velZ = vz * 0.075;
-                            world.spawnParticle(EnumParticleTypes.CLOUD, px + world.rand.nextFloat() * 2 - 1, entity.getEntityBoundingBox().minY + 0.1 + world.rand.nextFloat() * 1.5, pz + world.rand.nextFloat() * 2 - 1, 0, velX, velY, velZ, 1);
+                            world.spawnParticle(EnumParticleTypes.CLOUD, px + world.rand.nextFloat() * 2 - 1, entity.getBoundingBox().minY + 0.1 + world.rand.nextFloat() * 1.5, pz + world.rand.nextFloat() * 2 - 1, 0, velX, velY, velZ, 1);
                         }
                     }
                 }

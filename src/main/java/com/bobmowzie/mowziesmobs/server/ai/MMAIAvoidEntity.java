@@ -65,7 +65,7 @@ public class MMAIAvoidEntity<U extends CreatureEntity, T extends Entity> extends
 
     @Override
     public boolean shouldExecute() {
-        List<T> entities = entity.world.getEntitiesWithinAABB(avoidedEntityType, entity.getEntityBoundingBox().grow(evadeDistance, 3.0D, evadeDistance), selector);
+        List<T> entities = entity.world.getEntitiesWithinAABB(avoidedEntityType, entity.getBoundingBox().grow(evadeDistance, 3.0D, evadeDistance), selector);
         if (entities.isEmpty()) {
             onSafe();
             return false;

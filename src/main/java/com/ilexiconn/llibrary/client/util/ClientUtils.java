@@ -12,7 +12,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author iLexiconn
  * @since 1.0.0
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ClientUtils {
     private static long lastUpdate = System.currentTimeMillis();
 

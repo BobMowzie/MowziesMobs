@@ -8,7 +8,7 @@ import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.math.MathHelper;
 
-public class MMEntityMoveHelper extends MovementController
+public class MMEntitymoveController extends MovementController
 {
     private float maxRotate = 90;
 
@@ -22,7 +22,7 @@ public class MMEntityMoveHelper extends MovementController
     {
         if (this.action == MMEntityMoveHelper.Action.STRAFE)
         {
-            float f = (float)this.entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue();
+            float f = (float)this.entity.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue();
             float f1 = (float)this.speed * f;
             float f2 = this.moveForward;
             float f3 = this.moveStrafe;
@@ -75,7 +75,7 @@ public class MMEntityMoveHelper extends MovementController
 
             float f9 = (float)(MathHelper.atan2(d1, d0) * (180D / Math.PI)) - 90.0F;
             this.entity.rotationYaw = this.limitAngle(this.entity.rotationYaw, f9, maxRotate);
-            this.entity.setAIMoveSpeed((float)(this.speed * this.entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue()));
+            this.entity.setAIMoveSpeed((float)(this.speed * this.entity.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue()));
 
             if (d2 > (double)this.entity.stepHeight && d0 * d0 + d1 * d1 < (double)Math.max(1.0F, this.entity.width))
             {
@@ -85,7 +85,7 @@ public class MMEntityMoveHelper extends MovementController
         }
         else if (this.action == MMEntityMoveHelper.Action.JUMPING)
         {
-            this.entity.setAIMoveSpeed((float)(this.speed * this.entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue()));
+            this.entity.setAIMoveSpeed((float)(this.speed * this.entity.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue()));
 
             if (this.entity.onGround)
             {

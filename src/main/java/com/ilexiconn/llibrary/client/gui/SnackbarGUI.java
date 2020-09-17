@@ -16,7 +16,7 @@ import org.lwjgl.opengl.GL11;
  * @author iLexiconn
  * @since 1.0.0
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class SnackbarGUI extends Gui {
     private Snackbar snackbar;
     private int maxAge;

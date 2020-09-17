@@ -23,7 +23,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.Random;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class RenderSunstrike extends EntityRenderer<EntitySunstrike> {
     public static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/effects/sunstrike.png");
     private static final Random RANDOMIZER = new Random(0);

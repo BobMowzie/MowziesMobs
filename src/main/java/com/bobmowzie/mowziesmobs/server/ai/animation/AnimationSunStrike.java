@@ -34,7 +34,7 @@ public class AnimationSunStrike<T extends MowzieEntity & IAnimatedEntity> extend
             return;
         }
         if (entity.getAnimationTick() < 9) {
-            entity.getLookHelper().setLookPositionWithEntity(entityTarget, 30, 30);
+            entity.lookController.setLookPositionWithEntity(entityTarget, 30, 30);
         }
 
 //        if (entity.getAnimationTick() == 1) {
@@ -65,7 +65,7 @@ public class AnimationSunStrike<T extends MowzieEntity & IAnimatedEntity> extend
             entity.world.spawnEntity(sunstrike);
         }
         if (entity.getAnimationTick() > 6) {
-            entity.getLookHelper().setLookPosition(newX, y, newZ, 20, 20);
+            entity.lookController.setLookPosition(newX, y, newZ, 20, 20);
         }
     }
 }

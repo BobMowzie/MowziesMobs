@@ -5,7 +5,7 @@ import com.ilexiconn.llibrary.server.property.IIntProperty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ColorElement<T extends IElementGUI> extends Element<T> {
     public static final int[] COLORS = {0xFFFEBA01, 0xFFFF8B00, 0xFFF7620E, 0xFFCA500F, 0xFFDA3B01, 0xFFEF6950, 0xFFD03438, 0xFFFF4244, 0xFFE64856, 0xFFE81123, 0xFFEA005F, 0xFFC40052, 0xFFE3008B, 0xFFBE0177, 0xFFC339B3, 0xFF9B008A, 0xFF0177D7, 0xFF0063B1, 0xFF928FD6, 0xFF6B69D6, 0xFF8764B8, 0xFF744DA8, 0xFFB046C2, 0xFF871797, 0xFF0099BB, 0xFF2D7C9A, 0xFF01B7C4, 0xFF038288, 0xFF00B294, 0xFF018675, 0xFF00CE70, 0xFF10883E, 0xFF7A7474, 0xFF5E5A57, 0xFF677689, 0xFF505C6A, 0xFF577C74, 0xFF496860, 0xFF4A8205, 0xFF107C0F, 0xFF767676, 0xFF4B4A48, 0xFF6A797E, 0xFF4C535B, 0xFF647C64, 0xFF535D54, 0xFF837544, 0xFF7E735F};
     private final IIntProperty selectedColor;

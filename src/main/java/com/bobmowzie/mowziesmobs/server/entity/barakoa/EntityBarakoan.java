@@ -113,7 +113,7 @@ public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarak
     public L getLeader() {
         Optional<UUID> uuid = getLeaderUUID();
         if (uuid.isPresent()) {
-            List<L> potentialLeaders = world.getEntitiesWithinAABB(leaderClass, getEntityBoundingBox().grow(32, 32, 32));
+            List<L> potentialLeaders = world.getEntitiesWithinAABB(leaderClass, getBoundingBox().grow(32, 32, 32));
             for (L entity : potentialLeaders) {
                 if (uuid.get().equals(entity.getUniqueID())) {
                     return entity;

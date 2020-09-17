@@ -44,7 +44,7 @@ public class WroughtnautAttackAI extends Goal {
         LivingEntity target = this.wroughtnaut.getAttackTarget();
         if (target == null) return;
         double dist = this.wroughtnaut.getDistanceSq(this.targetX, this.targetY, this.targetZ);
-        this.wroughtnaut.getLookHelper().setLookPositionWithEntity(target, 30.0F, 30.0F);
+        this.wroughtnaut.lookController().setLookPositionWithEntity(target, 30.0F, 30.0F);
         if (--this.repath <= 0 && (
             this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D ||
             target.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D) ||

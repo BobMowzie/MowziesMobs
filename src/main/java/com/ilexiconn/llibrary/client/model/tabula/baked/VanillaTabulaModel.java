@@ -33,7 +33,7 @@ import java.util.function.Function;
  * @author pau101
  * @since 1.0.0
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class VanillaTabulaModel implements IModel {
     private TabulaModelContainer model;
     private ResourceLocation particle;

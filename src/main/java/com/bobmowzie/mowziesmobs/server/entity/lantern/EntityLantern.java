@@ -24,14 +24,13 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.item.Item;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
@@ -51,12 +50,11 @@ public class EntityLantern extends MowzieEntity {
     public Vec3d dir;
     private int groundDist = 1;
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private Vec3d[] pos;
 
     public EntityLantern(EntityType<? extends EntityGrottol> type, World world) {
         super(type, world);
-        setSize(1, 1);
         dir = null;
 
         if (world.isRemote) {
@@ -65,42 +63,40 @@ public class EntityLantern extends MowzieEntity {
     }
 
     @Override
-    public boolean isCreatureType(EntityClassification type, boolean forSpawnCount) {
-        if (forSpawnCount && isNoDespawnRequired()) return false;
-        return type == EntityClassification.AMBIENT;
+    public EntityType<?> getType() {
+        return super.getType();
     }
 
     @Override
-    protected void initEntityAI() {
-        super.initEntityAI();
-        tasks.addTask(2, new SimpleAnimationAI<>(this, PUFF_ANIMATION, false));
-        this.tasks.addTask(3, new AnimationTakeDamage<>(this));
-        this.tasks.addTask(1, new AnimationDieAI<>(this));
+    protected void registerGoals() {
+        super.registerGoals();
+        this.goalSelector.addGoal(2, new SimpleAnimationAI<>(this, PUFF_ANIMATION, false));
+        this.goalSelector.addGoal(3, new AnimationTakeDamage<>(this));
+        this.goalSelector.addGoal(1, new AnimationDieAI<>(this));
     }
 
-    protected void applyEntityAttributes()
-    {
-        super.applyEntityAttributes();
-        this.getAttributeMap().registerAttribute(SharedMonsterAttributes.FLYING_SPEED);
-        this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(4.0D * ConfigHandler.MOBS.LANTERN.healthMultiplier);
-        this.getEntityAttribute(SharedMonsterAttributes.FLYING_SPEED).setBaseValue(0.3D);
-        this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.20000000298023224D);
+    @Override
+    protected void registerAttributes() {
+        super.registerAttributes();
+        this.getAttributes().registerAttribute(SharedMonsterAttributes.FLYING_SPEED);
+        this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(4.0D * ConfigHandler.MOBS.LANTERN.healthMultiplier);
+        this.getAttribute(SharedMonsterAttributes.FLYING_SPEED).setBaseValue(0.3D);
+        this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.20000000298023224D);
     }
-
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
     public int getBrightnessForRender() {
         return 0xF000F0;
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
         if (getAnimation() == PUFF_ANIMATION && getAnimationTick() == 7) {
             if (groundDist == 0) groundDist = 1;
-            motionY += 0.2D + 0.2 / groundDist;
+            setMotion(getMotion().add(0, 0.2d + 0.2d / groundDist, 0));
             if (world.isRemote) {
-                for (int i = 0; i < 5; i++) {
+                /*for (int i = 0; i < 5; i++) {
                     ParticleVanillaCloudExtended.spawnVanillaCloud(world, posX, posY + 0.3, posZ, -motionX * 0.2 + 0.1 * (rand.nextFloat() - 0.5), -motionY * 0.2 + 0.1 * (rand.nextFloat() - 0.5), -motionZ * 0.2 + 0.1 * (rand.nextFloat() - 0.5), 0.8d + rand.nextDouble() * 1d, 163d / 256d, 247d / 256d, 74d / 256d, 0.95, 30);
                 }
                 for (int i = 0; i < 8; i++) {
@@ -110,7 +106,7 @@ public class EntityLantern extends MowzieEntity {
                                     new float[] {0.8f, 1}
                             ), false)
                     });
-                }
+                }*/
             }
             playSound(MMSounds.ENTITY_LANTERN_PUFF, 0.6f, 1f + rand.nextFloat() * 0.2f);
         }
@@ -121,7 +117,7 @@ public class EntityLantern extends MowzieEntity {
             }
         }
 
-        if (groundDist >= 2) motionY -= 0.0055;
+        if (groundDist >= 2) setMotion(getMotion().add(0, -0.0055d, 0));
 
         if (ticksExisted % 5 == 0) {
             BlockPos checkPos = getPosition();
@@ -134,7 +130,7 @@ public class EntityLantern extends MowzieEntity {
         }
 
         if (world.isRemote && ConfigHandler.MOBS.LANTERN.glowEffect) {
-            pos[0] = getPositionVector().add(0, height * 0.8, 0);
+            pos[0] = getPositionVector().add(0, getHeight() * 0.8, 0);
             if (ticksExisted % 70 == 0) {
                 MowzieParticleBase.spawnParticle(world, MMParticle.GLOW, pos[0].x, pos[0].y, pos[0].z, 0, 0, 0, true, 0, 0, 0, 0, 20F, 0.8, 0.95, 0.35, 1, 1, 70, true, new ParticleComponent[]{
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, new ParticleComponent.KeyTrack(
@@ -154,17 +150,12 @@ public class EntityLantern extends MowzieEntity {
         super.onDeathAIUpdate();
         if (getAnimationTick() == 1 && world.isRemote) {
             for (int i = 0; i < 8; i++) {
-                world.spawnParticle(EnumParticleTypes.SLIME, posX, posY, posZ, 0.2 * (rand.nextFloat() - 0.5), 0.2 * (rand.nextFloat() - 0.5), 0.2 * (rand.nextFloat() - 0.5));
+//                world.spawnParticle(EnumParticleTypes.SLIME, posX, posY, posZ, 0.2 * (rand.nextFloat() - 0.5), 0.2 * (rand.nextFloat() - 0.5), 0.2 * (rand.nextFloat() - 0.5));
                 MMParticle.CLOUD.spawn(world, posX, posY + 0.3, posZ, ParticleFactory.ParticleArgs.get().withData(0.2 * (rand.nextFloat() - 0.5), 0.2 * (rand.nextFloat() - 0.5), 0.2 * (rand.nextFloat() - 0.5), 163d / 256d, 247d / 256d, 74d / 256d, 1, 10d + rand.nextDouble() * 20d, 30, ParticleCloud.EnumCloudBehavior.GROW));
                 MMParticle.ORB.spawn(world, posX, posY + 0.3, posZ, ParticleFactory.ParticleArgs.get().withData(0.2 * (rand.nextFloat() - 0.5), 0.2 * (rand.nextFloat() - 0.5), 0.2 * (rand.nextFloat() - 0.5), 163d / 256d, 247d / 256d, 74d / 256d, 1.5d, 25));
             }
         }
         if (getAnimationTick() == 2) playSound(MMSounds.ENTITY_LANTERN_POP, 1f, 0.8f + rand.nextFloat() * 0.4f);
-    }
-
-    @Override
-    protected Item getDropItem() {
-        return null;//ItemHandler.GLOWING_JELLY;
     }
 
     @Nullable
@@ -181,59 +172,40 @@ public class EntityLantern extends MowzieEntity {
     {
     }
 
-    public void travel(float p_191986_1_, float p_191986_2_, float p_191986_3_)
+    @Override
+    public void travel(Vec3d movement)
     {
-        if (this.isInWater())
-        {
-            this.moveRelative(p_191986_1_, p_191986_2_, p_191986_3_, 0.02F);
-            this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
-            this.motionX *= 0.800000011920929D;
-            this.motionY *= 0.800000011920929D;
-            this.motionZ *= 0.800000011920929D;
-        }
-        else if (this.isInLava())
-        {
-            this.moveRelative(p_191986_1_, p_191986_2_, p_191986_3_, 0.02F);
-            this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
-            this.motionX *= 0.5D;
-            this.motionY *= 0.5D;
-            this.motionZ *= 0.5D;
-        }
-        else
-        {
+        if (this.isInWater()) {
+            this.moveRelative(0.02F, movement);
+            this.move(MoverType.SELF, this.getMotion());
+            this.setMotion(this.getMotion().scale((double)0.8F));
+        } else if (this.isInLava()) {
+            this.moveRelative(0.02F, movement);
+            this.move(MoverType.SELF, this.getMotion());
+            this.setMotion(this.getMotion().scale(0.5D));
+        } else {
+            BlockPos ground = new BlockPos(this.posX, this.getBoundingBox().minY - 1.0D, this.posZ);
             float f = 0.91F;
-
-            if (this.onGround)
-            {
-                BlockPos underPos = new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(this.getEntityBoundingBox().minY) - 1, MathHelper.floor(this.posZ));
-                BlockState underState = this.world.getBlockState(underPos);
-                f = underState.getBlock().getSlipperiness(underState, this.world, underPos, this) * 0.91F;
+            if (this.onGround) {
+                f = this.world.getBlockState(ground).getSlipperiness(world, ground, this) * 0.91F;
             }
 
-            float f1 = 0.16277136F / (f * f * f);
-            this.moveRelative(p_191986_1_, p_191986_2_, p_191986_3_, this.onGround ? 0.1F * f1 : 0.02F);
+            float f1 = 0.16277137F / (f * f * f);
             f = 0.91F;
-
-            if (this.onGround)
-            {
-                BlockPos underPos = new BlockPos(MathHelper.floor(this.posX), MathHelper.floor(this.getEntityBoundingBox().minY) - 1, MathHelper.floor(this.posZ));
-                BlockState underState = this.world.getBlockState(underPos);
-                f = underState.getBlock().getSlipperiness(underState, this.world, underPos, this) * 0.91F;
+            if (this.onGround) {
+                f = this.world.getBlockState(ground).getSlipperiness(world, ground, this) * 0.91F;
             }
 
-            this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
-            this.motionX *= (double)f;
-            this.motionY *= (double)f;
-            this.motionZ *= (double)f;
+            this.moveRelative(this.onGround ? 0.1F * f1 : 0.02F, movement);
+            this.move(MoverType.SELF, this.getMotion());
+            this.setMotion(this.getMotion().scale((double)f));
         }
 
         this.prevLimbSwingAmount = this.limbSwingAmount;
         double d1 = this.posX - this.prevPosX;
         double d0 = this.posZ - this.prevPosZ;
         float f2 = MathHelper.sqrt(d1 * d1 + d0 * d0) * 4.0F;
-
-        if (f2 > 1.0F)
-        {
+        if (f2 > 1.0F) {
             f2 = 1.0F;
         }
 
@@ -244,11 +216,6 @@ public class EntityLantern extends MowzieEntity {
     @Override
     protected ConfigHandler.SpawnData getSpawnConfig() {
         return ConfigHandler.MOBS.LANTERN.spawnData;
-    }
-
-    public boolean getCanSpawnHere()
-    {
-        return super.getCanSpawnHere();
     }
 
     /**

@@ -214,7 +214,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
 
 //    @Override
 //    public boolean isNotColliding() {
-//        return !this.world.containsAnyLiquid(this.getEntityBoundingBox()) && this.world.checkNoEntityCollision(this.getEntityBoundingBox(), this);
+//        return !this.world.containsAnyLiquid(this.getBoundingBox()) && this.world.checkNoEntityCollision(this.getBoundingBox(), this);
 //    }
 
     @Nullable

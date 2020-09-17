@@ -11,7 +11,7 @@ import java.util.List;
  * @author iLexiconn
  * @since 1.4.0
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public enum SurvivalTabHandler {
     INSTANCE;
 

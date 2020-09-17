@@ -27,7 +27,7 @@ public class MMPathFinder extends PathFinder {
     @Nullable
     @Override
     public Path findPath(IBlockAccess worldIn, MobEntity living, Entity targetEntity, float maxDistance) {
-        return this.findPath(worldIn, living, targetEntity.posX, targetEntity.getEntityBoundingBox().minY, targetEntity.posZ, maxDistance);
+        return this.findPath(worldIn, living, targetEntity.posX, targetEntity.getBoundingBox().minY, targetEntity.posZ, maxDistance);
     }
 
     @Nullable

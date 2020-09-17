@@ -22,7 +22,7 @@ import java.util.List;
  * @author iLexiconn
  * @since 1.0.0
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ModUpdateGUI extends GuiScreen {
     private GuiMainMenu parent;
     private ModUpdateListGUI modList;

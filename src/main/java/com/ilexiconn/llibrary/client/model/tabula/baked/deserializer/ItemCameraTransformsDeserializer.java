@@ -17,7 +17,7 @@ import java.lang.reflect.Type;
  * @since 1.0.0
  */
 @SuppressWarnings("deprecation")
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ItemCameraTransformsDeserializer implements JsonDeserializer<ItemCameraTransforms> {
     @Override
     public ItemCameraTransforms deserialize(JsonElement element, Type type, JsonDeserializationContext context) throws JsonParseException {

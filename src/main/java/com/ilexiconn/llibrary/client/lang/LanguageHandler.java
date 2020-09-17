@@ -24,7 +24,7 @@ import java.util.Map;
  * @author gegy1000
  * @since 1.1.0
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public enum LanguageHandler {
     INSTANCE;
 

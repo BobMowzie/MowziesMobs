@@ -16,7 +16,7 @@ import java.util.Random;
  * @author RafaMv
  * @author Paul Fulham
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class IntermittentAnimation<T extends Entity & IIntermittentEntity> {
     /**
      * It is the random used to randomize the movement.

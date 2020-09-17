@@ -20,7 +20,7 @@ import java.lang.reflect.Type;
  * @since 1.0.0
  */
 @SuppressWarnings("deprecation")
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ItemTransformVec3fDeserializer implements JsonDeserializer<ItemTransformVec3f> {
     private static final Vector3f ROTATION_DEFAULT = new Vector3f(0.0F, 0.0F, 0.0F);
     private static final Vector3f TRANSLATION_DEFAULT = new Vector3f(0.0F, 0.0F, 0.0F);

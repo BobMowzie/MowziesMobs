@@ -93,7 +93,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
         experienceValue = 20;
         stepHeight = 1.15F;
 
-        moveHelper = new MMEntityMoveHelper(this, 45);
+        moveController = new MMEntityMoveHelper(this, 45);
     }
 
     @Override

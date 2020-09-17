@@ -51,7 +51,7 @@ public final class EntityAIAvoidEntity<T extends Entity> extends Goal {
 
     @Override
     public boolean shouldExecute() {
-        List<T> entities = entity.world.getEntitiesWithinAABB(avoidClass, entity.getEntityBoundingBox().grow(distance, 3, distance), predicate);
+        List<T> entities = entity.world.getEntitiesWithinAABB(avoidClass, entity.getBoundingBox().grow(distance, 3, distance), predicate);
         if (entities.isEmpty()) {
             return false;
         }

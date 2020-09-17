@@ -64,7 +64,7 @@ public class PowerGeomancy extends Power {
         if (tunneling) {
             player.fallDistance = 0;
             player.capabilities.isFlying = false;
-            boolean underground = !player.world.getEntitiesWithinAABB(EntityBlockSwapper.class, player.getEntityBoundingBox()).isEmpty();
+            boolean underground = !player.world.getEntitiesWithinAABB(EntityBlockSwapper.class, player.getBoundingBox()).isEmpty();
             if (player.onGround && !underground) tunneling = false;
             Vec3d lookVec = player.getLookVec();
             float tunnelSpeed = 0.9f;

@@ -14,7 +14,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Created by Josh on 7/24/2018.
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ExtendedModelRenderer extends ModelRenderer {
     public float defaultRotationX, defaultRotationY, defaultRotationZ;
     public float defaultOffsetX, defaultOffsetY, defaultOffsetZ;

@@ -11,7 +11,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author gegy1000
  * @since 1.0.0
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class AdvancedModelBase extends ModelBase {
     private float movementScale = 1.0F;
 

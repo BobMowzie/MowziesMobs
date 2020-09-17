@@ -8,7 +8,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ModelWroughtnaut extends MowzieEntityModel<EntityWroughtnaut> {
     public AdvancedModelRenderer waist;
     public AdvancedModelRenderer groin;

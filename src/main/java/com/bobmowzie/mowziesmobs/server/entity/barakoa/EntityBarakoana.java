@@ -90,10 +90,10 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
     public boolean isNotColliding()
     {
         if (ticksExisted == 0) {
-            return !this.world.containsAnyLiquid(this.getEntityBoundingBox()) && this.world.getCollisionBoxes(this, this.getEntityBoundingBox()).isEmpty();
+            return !this.world.containsAnyLiquid(this.getBoundingBox()) && this.world.getCollisionBoxes(this, this.getBoundingBox()).isEmpty();
         }
         else {
-            return !this.world.containsAnyLiquid(this.getEntityBoundingBox()) && this.world.getCollisionBoxes(this, this.getEntityBoundingBox()).isEmpty() && this.world.checkNoEntityCollision(this.getEntityBoundingBox(), this);
+            return !this.world.containsAnyLiquid(this.getBoundingBox()) && this.world.getCollisionBoxes(this, this.getBoundingBox()).isEmpty() && this.world.checkNoEntityCollision(this.getBoundingBox(), this);
         }
     }
 

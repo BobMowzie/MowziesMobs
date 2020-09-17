@@ -17,6 +17,7 @@ import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.google.common.base.Optional;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.monster.SkeletonEntity;
@@ -70,8 +71,8 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
 
     private PlayerEntity customer;
 
-    public EntityBarakoaya(World world) {
-        super(world);
+    public EntityBarakoaya(EntityType<? extends EntityBarakoaya> type, World world) {
+        super(type, world);
         tasks.addTask(1, new EntityAIBarakoayaTrade(this));
         tasks.addTask(1, new EntityAIBarakoayaTradeLook(this));
         this.targetTasks.addTask(3, new BarakoaHurtByTargetAI(this, true));
@@ -134,7 +135,7 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public ContainerScreen createGui(World world, PlayerEntity player, int x, int y, int z) {
         return new GuiBarakoayaTrade(this, player.inventory, world);
     }

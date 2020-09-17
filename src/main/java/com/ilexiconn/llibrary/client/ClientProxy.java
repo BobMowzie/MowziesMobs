@@ -31,7 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ClientProxy extends ServerProxy {
     public static final Minecraft MINECRAFT = Minecraft.getMinecraft();
     public static final int UPDATE_BUTTON_ID = "UPDATE_BUTTON_ID".hashCode();

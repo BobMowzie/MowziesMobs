@@ -14,7 +14,7 @@ import org.lwjgl.opengl.GL11;
  * @author pau101
  * @since 1.4.0
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class Model3DTexture extends ModelBox {
     private int width;
     private int height;

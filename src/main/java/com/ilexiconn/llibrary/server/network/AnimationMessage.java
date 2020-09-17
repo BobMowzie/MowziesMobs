@@ -23,7 +23,7 @@ public class AnimationMessage extends AbstractMessage<AnimationMessage> {
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public void onClientReceived(Minecraft client, AnimationMessage message, EntityPlayer player, MessageContext messageContext) {
         IAnimatedEntity entity = (IAnimatedEntity) player.world.getEntityByID(message.entityID);
         if (entity != null) {
