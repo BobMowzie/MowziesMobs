@@ -8,6 +8,7 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.entity.Entity;
@@ -15,6 +16,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -22,12 +24,10 @@ import net.minecraft.network.play.server.SEntityTeleportPacket;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.ServerWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 
 import java.util.List;
@@ -128,8 +128,8 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
         prevStrikeTime = strikeTime;
 
         if (world.isRemote) {
@@ -157,7 +157,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         } else {
             this.moveDownToGround();
             if (strikeTime >= STRIKE_LINGER || !world.canBlockSeeSky(getPosition())) {
-                this.setDead();
+                this.remove();
             } else if (strikeTime == STRIKE_EXPLOSION) {
                 this.damageEntityLivingBaseNearby(3);
             }
@@ -167,18 +167,22 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
 
     public void moveDownToGround() {
         RayTraceResult rayTrace = rayTrace(this);
-        if (rayTrace != null && rayTrace.typeOfHit == RayTraceResult.Type.BLOCK && rayTrace.sideHit == Direction.UP) {
-            BlockState hitBlock = world.getBlockState(rayTrace.getBlockPos());
-            if (strikeTime > STRIKE_LENGTH && hitBlock != world.getBlockState(getPosition().down())) {
-                this.setDead();
-            }
-            if (hitBlock instanceof SlabBlock && hitBlock.getValue(SlabBlock.HALF) == SlabBlock.EnumBlockHalf.BOTTOM) {
-                this.setPosition(posX, rayTrace.getBlockPos().getY() + 1.0625F - 0.5f, posZ);
-            } else {
-                this.setPosition(posX, rayTrace.getBlockPos().getY() + 1.0625F, posZ);
-            }
-            for (PlayerEntity entityPlayer : ((ServerWorld) world).getEntityTracker().getTrackingPlayers(this)) {
-                ((ServerPlayerEntity) entityPlayer).connection.sendPacket(new SEntityTeleportPacket(this));
+        if (rayTrace != null && rayTrace.getType() == RayTraceResult.Type.BLOCK) {
+            BlockRayTraceResult hitResult = (BlockRayTraceResult) rayTrace.hitInfo;
+            if (hitResult.getFace() == Direction.UP) {
+                BlockState hitBlock = world.getBlockState(hitResult.getPos());
+                if (strikeTime > STRIKE_LENGTH && hitBlock != world.getBlockState(getPosition().down())) {
+                    this.remove();
+                }
+//                if (hitBlock instanceof SlabBlock && hitBlock.getValue(SlabBlock.HALF) == SlabBlock..EnumBlockHalf.BOTTOM) {
+                if (hitBlock.getBlock() instanceof SlabBlock && hitBlock.getValue(SlabBlock.HALF) == SlabBlock.EnumBlockHalf.BOTTOM) {
+                    this.setPosition(posX, hitResult.getPos().getY() + 1.0625F - 0.5f, posZ);
+                } else {
+                    this.setPosition(posX, hitResult.getPos().getY() + 1.0625F, posZ);
+                }
+                for (PlayerEntity entityPlayer : ((ServerWorld) world).getEntityTracker().getTrackingPlayers(this)) {
+                    ((ServerPlayerEntity) entityPlayer).connection.sendPacket(new SEntityTeleportPacket(this));
+                }
             }
         }
     }
@@ -258,24 +262,24 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     }
 
     @Override
-    public void writeEntityToNBT(CompoundNBT compound) {
-        compound.setInteger("strikeTime", strikeTime);
-        compound.setLong("variant", getVariant());
+    public void writeAdditional(CompoundNBT compound) {
+        compound.putInt("strikeTime", strikeTime);
+        compound.putLong("variant", getVariant());
     }
 
     @Override
-    public void readEntityFromNBT(CompoundNBT compound) {
-        setStrikeTime(compound.getInteger("strikeTime"));
+    public void readAdditional(CompoundNBT compound) {
+        setStrikeTime(compound.getInt("strikeTime"));
         setVariant(compound.getLong("variant"));
     }
 
     @Override
-    public void writeSpawnData(ByteBuf buffer) {
+    public void writeSpawnData(PacketBuffer buffer) {
         buffer.writeInt(strikeTime);
     }
 
     @Override
-    public void readSpawnData(ByteBuf buffer) {
+    public void readSpawnData(PacketBuffer buffer) {
         setStrikeTime(buffer.readInt());
     }
 }

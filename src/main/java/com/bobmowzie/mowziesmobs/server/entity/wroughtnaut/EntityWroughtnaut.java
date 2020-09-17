@@ -119,7 +119,6 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         tasks.addTask(2, new WroughtnautAttackAI(this));
         targetTasks.addTask(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 0, true, false, null));
         experienceValue = 30;
-        setSize(2.5F, 3.5F);
         active = false;
         stepHeight = 1;
 //        rightEyePos = new Vec3d(0, 0, 0);

@@ -188,7 +188,6 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         this.tasks.addTask(6, new LookAtGoal(this, PlayerEntity.class, 8.0F));
         this.tasks.addTask(7, new LookAtGoal(this, EntityBarakoa.class, 8.0F));
         this.tasks.addTask(8, new LookRandomlyGoal(this));
-        this.setSize(1.5f, 2.4f);
         if (getDirection() == 0) {
             this.setDirection(rand.nextInt(4) + 1);
         }
