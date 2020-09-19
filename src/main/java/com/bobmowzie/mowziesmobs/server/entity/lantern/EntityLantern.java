@@ -53,7 +53,7 @@ public class EntityLantern extends MowzieEntity {
     @OnlyIn(Dist.CLIENT)
     private Vec3d[] pos;
 
-    public EntityLantern(EntityType<? extends EntityGrottol> type, World world) {
+    public EntityLantern(EntityType<? extends EntityLantern> type, World world) {
         super(type, world);
         dir = null;
 

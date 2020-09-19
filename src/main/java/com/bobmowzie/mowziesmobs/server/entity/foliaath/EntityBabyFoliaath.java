@@ -69,8 +69,8 @@ public class EntityBabyFoliaath extends MowzieEntity {
     }
 
     @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
+    protected void registerAttributes() {
+        super.registerAttributes();
         getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0);
         getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(1);
     }

@@ -96,7 +96,7 @@ public class MMAINearestAttackableTarget<T extends LivingEntity> extends TargetG
         }
         else
         {
-            this.targetEntity = (T)this.taskOwner.world.getNearestAttackablePlayer(this.taskOwner.posX, this.taskOwner.posY + (double)this.taskOwner.getEyeHeight(), this.taskOwner.posZ, this.getTargetDistance(), this.getTargetDistance(), new Function<PlayerEntity, Double>()
+            this.targetEntity = (T)this.taskOwner.world.getNearestAttackablePlayer(this.taskOwner.posX, this.taskOwner.posY + (double)this.taskOwner.getStandingEyeHeight(), this.taskOwner.posZ, this.getTargetDistance(), this.getTargetDistance(), new Function<PlayerEntity, Double>()
             {
                 @Nullable
                 public Double apply(@Nullable PlayerEntity p_apply_1_)

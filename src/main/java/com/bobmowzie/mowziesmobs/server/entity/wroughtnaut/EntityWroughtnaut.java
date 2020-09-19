@@ -164,8 +164,8 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     }
 
     @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
+    protected void registerAttributes() {
+        super.registerAttributes();
         getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
         getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(40 * ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.combatData.healthMultiplier);
     }

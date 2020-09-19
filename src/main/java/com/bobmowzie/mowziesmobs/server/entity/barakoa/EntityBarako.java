@@ -29,9 +29,7 @@ import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.LookRandomlyGoal;
@@ -61,8 +59,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
@@ -122,10 +118,10 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     public EntityBarako(EntityType<? extends EntityBarako> type, World world) {
         super(type, world);
         hurtByTargetAI = new BarakoaHurtByTargetAI(this, true);
-        this.targetTasks.addTask(3, hurtByTargetAI);
-        this.targetTasks.addTask(4, new BarakoaAttackTargetAI(this, PlayerEntity.class, 0, false, true));
-        this.targetTasks.addTask(4, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, true, false, null));
-        this.targetTasks.addTask(4, new NearestAttackableTargetGoal<>(this, SkeletonEntity.class, 0, true, false, null));
+        this.targetSelector.addGoal(3, hurtByTargetAI);
+        this.targetSelector.addGoal(4, new BarakoaAttackTargetAI(this, PlayerEntity.class, 0, false, true));
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, true, false, null));
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, SkeletonEntity.class, 0, true, false, null));
         this.goalSelector.addGoal(2, new SimpleAnimationAI<>(this, BELLY_ANIMATION, false));
         this.goalSelector.addGoal(2, new SimpleAnimationAI<EntityBarako>(this, TALK_ANIMATION, false) {
             @Override
@@ -203,27 +199,27 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         }
     }
 
-    public EntityBarako(World world, int direction) {
-        this(world);
-        this.setDirection(direction);
-    }
+//    public EntityBarako(World world, int direction) {
+//        this(world);
+//        this.setDirection(direction);
+//    }
 
     @Override
-    public float getEyeHeight() {
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return 1.4f;
     }
 
     @Override
-    protected void applyEntityAttributes() {
-        super.applyEntityAttributes();
+    protected void registerAttributes() {
+        super.registerAttributes();
         this.getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0);
         this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(MAX_HEALTH * ConfigHandler.MOBS.BARAKO.combatData.healthMultiplier);
         this.getAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(50);
     }
 
     @Override
-    protected boolean canDespawn() {
-        return false;
+    public boolean preventDespawn() {
+        return true;
     }
 
     @Override
@@ -265,8 +261,8 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
         if (ticksExisted == 1) {
             direction = getDirection();
         }
@@ -275,8 +271,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         this.renderYawOffset = rotationYaw;
 //        this.posX = prevPosX;
 //        this.posZ = prevPosZ;
-        motionX = 0;
-        motionZ = 0;
+        setMotion(0, getMotion().y, 0);
 
         if (getAttackTarget() != null) {
             LivingEntity target = getAttackTarget();
@@ -290,9 +285,8 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 entityAttackingAngle += 360;
             }
             float entityRelativeAngle = Math.abs(entityHitAngle - entityAttackingAngle);
-            Vec3d targetMoveVec = new Vec3d(target.motionX, target.motionY, target.motionZ);
             Vec3d betweenEntitiesVec = getPositionVector().subtract(target.getPositionVector());
-            boolean targetComingCloser = targetMoveVec.dotProduct(betweenEntitiesVec) > 0;
+            boolean targetComingCloser = target.getMotion().dotProduct(betweenEntitiesVec) > 0;
             if (getAnimation() == NO_ANIMATION && !isAIDisabled() && rand.nextInt(80) == 0 && getEntitiesNearby(EntityBarakoa.class, 25).size() < 5 && targetDistance > 4.5 && timeUntilBarakoa <= 0) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SPAWN_ANIMATION);
                 timeUntilBarakoa = BARAKOA_PAUSE;
@@ -380,7 +374,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 blessingPlayer = getCustomer();
             }
             if (world.isRemote && blessingPlayer != null) {
-                blessingPlayerPos[0] = blessingPlayer.getPositionVector().add(new Vec3d(0, blessingPlayer.height / 2f, 0));
+                blessingPlayerPos[0] = blessingPlayer.getPositionVector().add(new Vec3d(0, blessingPlayer.getHeight() / 2f, 0));
                 if (getAnimationTick() > 5 && getAnimationTick() < 40) {
                     int particleCount = 2;
                     while (--particleCount != 0) {
@@ -405,7 +399,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             }
             if (getAnimationTick() % 15 == 0) {
                 EntityRing ring = new EntityRing(world, (float)posX, (float)posY + 0.8f, (float)posZ, new Vec3d(0, 0, 0), 15, 1, 223/255f, 66/255f, 1, 3.5f, true);
-                world.spawnEntity(ring);
+                world.addEntity(ring);
             }
         }
 
