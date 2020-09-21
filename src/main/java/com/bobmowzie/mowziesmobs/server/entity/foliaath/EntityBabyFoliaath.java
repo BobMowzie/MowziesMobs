@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.entity.foliaath;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationBabyFoliaathEatAI;
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
@@ -9,15 +10,16 @@ import com.google.common.collect.Sets;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockOldLeaf;
-import net.minecraft.block.BlockPlanks;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.block.Blocks;
+import net.minecraft.item.Food;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -26,22 +28,17 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.ServerWorld;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootTable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class EntityBabyFoliaath extends MowzieEntity {
-    private static final int JUNGLE_LEAVES = Block.getStateId(Blocks.LEAVES.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.JUNGLE));
+//    private static final int JUNGLE_LEAVES = Block.getStateId(Blocks.LEAVES.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.JUNGLE));
 
     private static final DataParameter<Integer> GROWTH = EntityDataManager.createKey(EntityBabyFoliaath.class, DataSerializers.VARINT);
 
@@ -49,17 +46,14 @@ public class EntityBabyFoliaath extends MowzieEntity {
 
     private static final DataParameter<Boolean> HUNGRY = EntityDataManager.createKey(EntityBabyFoliaath.class, DataSerializers.BOOLEAN);
 
-    private static final DataParameter<ItemStack> EATING = EntityDataManager.createKey(EntityBabyFoliaath.class, DataSerializers.ITEM_STACK);
+    private static final DataParameter<ItemStack> EATING = EntityDataManager.createKey(EntityBabyFoliaath.class, DataSerializers.ITEMSTACK);
 
     public static final Animation EAT_ANIMATION = Animation.create(20);
     public ControlledAnimation activate = new ControlledAnimation(5);
     private double prevActivate;
 
-    private static Set<Item> meatTypes;
-
     public EntityBabyFoliaath(EntityType<? extends EntityBabyFoliaath> type, World world) {
         super(type, world);
-        getMeatList();
     }
 
     @Override
@@ -76,10 +70,9 @@ public class EntityBabyFoliaath extends MowzieEntity {
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
-        motionX = 0;
-        motionZ = 0;
+    public void tick() {
+        super.tick();
+        setMotion(0, getMotion().y, 0);
         renderYawOffset = 0;
 
         if (arePlayersCarryingMeat(getPlayersNearby(3, 3, 3, 3)) && getAnimation() == NO_ANIMATION && getHungry()) {
@@ -95,7 +88,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
 
         if (!world.isRemote && getHungry() && getAnimation() == NO_ANIMATION) {
             for (ItemEntity meat : getMeatsNearby(0.4, 0.2, 0.4, 0.4)) {
-                ItemStack stack = meat.getItem().splitStack(1);
+                ItemStack stack = meat.getItem().split(1);
                 if (!stack.isEmpty()) {
                     setEating(stack);
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, EAT_ANIMATION);
@@ -108,7 +101,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
         }
         if (world.isRemote && getAnimation() == EAT_ANIMATION && (getAnimationTick() == 3 || getAnimationTick() == 7 || getAnimationTick() == 11 || getAnimationTick() == 15 || getAnimationTick() == 19)) {
             for (int i = 0; i <= 5; i++) {
-                world.spawnParticle(EnumParticleTypes.ITEM_CRACK, posX, posY + 0.2, posZ, rand.nextFloat() * 0.2 - 0.1, rand.nextFloat() * 0.2, rand.nextFloat() * 0.2 - 0.1, Item.getIdFromItem(getEating().getItem()));
+//                world.spawnParticle(EnumParticleTypes.ITEM_CRACK, posX, posY + 0.2, posZ, rand.nextFloat() * 0.2 - 0.1, rand.nextFloat() * 0.2, rand.nextFloat() * 0.2 - 0.1, Item.getIdFromItem(getEating().getItem()));
             }
         }
 
@@ -136,11 +129,11 @@ public class EntityBabyFoliaath extends MowzieEntity {
                 setHungry(true);
             }
             if (getGrowth() == 2400) {
-                EntityFoliaath adultFoliaath = new EntityFoliaath(world);
+                EntityFoliaath adultFoliaath = new EntityFoliaath(EntityHandler.FOLIAATH, world);
                 adultFoliaath.setPosition(posX, posY, posZ);
                 adultFoliaath.setCanDespawn(false);
-                world.spawnEntity(adultFoliaath);
-                setDead();
+                world.addEntity(adultFoliaath);
+                remove();
             }
         }
     }
@@ -158,7 +151,8 @@ public class EntityBabyFoliaath extends MowzieEntity {
     private boolean arePlayersCarryingMeat(List<PlayerEntity> players) {
         if (players.size() > 0) {
             for (PlayerEntity player : players) {
-                if (getMeatList().contains(player.getHeldItemMainhand().getItem())) {
+                Food food = player.getHeldItemMainhand().getItem().getFood();
+                if (food != null && food.isMeat()) {
                     return true;
                 }
             }
@@ -166,32 +160,13 @@ public class EntityBabyFoliaath extends MowzieEntity {
         return false;
     }
 
-    private Set<Item> getMeatList() {
-        if (meatTypes == null) {
-            meatTypes = Sets.newHashSet();
-            LootTable lootTable = getEntityWorld().getLootTableManager().getLootTableFromLocation(getFoodLootTable());
-            if (lootTable != LootTable.EMPTY_LOOT_TABLE) {
-                LootContext.Builder lootBuilder = (new LootContext.Builder((ServerWorld) this.world)).withLootedEntity(this);
-                List<ItemStack> loot = lootTable.generateLootForPools(world.rand, lootBuilder.build());
-                for (ItemStack itemStack : loot) {
-                    meatTypes.add(itemStack.getItem());
-                }
-            }
-        }
-        return meatTypes;
-    }
-
-    protected ResourceLocation getFoodLootTable() {
-        return LootTableHandler.BABY_FOLIAATH_FOOD;
-    }
-
     @Override
     public void onDeath(DamageSource source) {
         super.onDeath(source);
         for (int i = 0; i < 10; i++) {
-            world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, posX, posY + 0.2, posZ, 0, 0, 0, JUNGLE_LEAVES);
+//            world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, posX, posY + 0.2, posZ, 0, 0, 0, JUNGLE_LEAVES);
         }
-        setDead();
+        remove();
     }
 
     @Override
@@ -201,10 +176,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
 
     @Override
     public void applyEntityCollision(Entity collider) {
-//        posX = prevPosX;
-//        posZ = prevPosZ;
-        motionX = 0;
-        motionZ = 0;
+        setMotion(0, getMotion().y, 0);
     }
 
     @Override
@@ -214,17 +186,17 @@ public class EntityBabyFoliaath extends MowzieEntity {
     }
 
     @Override
-    public boolean getCanSpawnHere() {
-        if (world.checkNoEntityCollision(getBoundingBox()) && world.getCollisionBoxes(this, getBoundingBox()).isEmpty() && !world.containsAnyLiquid(getBoundingBox())) {
+    public boolean canSpawn(IWorld world, SpawnReason reason) {
+        if (world.checkNoEntityCollision(this) && world.areCollisionShapesEmpty(this) && !world.containsAnyLiquid(getBoundingBox())) {
             BlockPos ground = new BlockPos(
-                MathHelper.floor(posX),
-                MathHelper.floor(getBoundingBox().minY) - 1,
-                MathHelper.floor(posZ)
+                    MathHelper.floor(posX),
+                    MathHelper.floor(getBoundingBox().minY) - 1,
+                    MathHelper.floor(posZ)
             );
 
             BlockState block = world.getBlockState(ground);
 
-            if (block.getBlock() == Blocks.GRASS || block.getBlock() == Blocks.DIRT || block.getBlock().isLeaves(block, world, ground)) {
+            if (block.getBlock() == Blocks.GRASS || block.getMaterial() == Material.EARTH || block.getMaterial() == Material.LEAVES) {
                 playSound(SoundEvents.BLOCK_GRASS_HIT, 1, 0.8F);
                 return true;
             }
@@ -237,7 +209,8 @@ public class EntityBabyFoliaath extends MowzieEntity {
         ArrayList<ItemEntity> listEntityItem = new ArrayList<>();
         for (Entity entityNeighbor : list) {
             if (entityNeighbor instanceof ItemEntity && getDistance(entityNeighbor) <= radius) {
-                if (getMeatList().contains(((ItemEntity) entityNeighbor).getItem().getItem())) {
+                Food food = ((ItemEntity) entityNeighbor).getItem().getItem().getFood();
+                if (food != null && food.isMeat()) {
                     listEntityItem.add((ItemEntity) entityNeighbor);
                 }
             }
@@ -246,25 +219,25 @@ public class EntityBabyFoliaath extends MowzieEntity {
     }
 
     @Override
-    public void writeEntityToNBT(CompoundNBT compound) {
-        super.writeEntityToNBT(compound);
-        compound.setInteger("tickGrowth", getGrowth());
+    public void writeAdditional(CompoundNBT compound) {
+        super.writeAdditional(compound);
+        compound.putInt("tickGrowth", getGrowth());
     }
 
     @Override
-    public void readEntityFromNBT(CompoundNBT compound) {
-        super.readEntityFromNBT(compound);
-        setGrowth(compound.getInteger("tickGrowth"));
+    public void readAdditional(CompoundNBT compound) {
+        super.readAdditional(compound);
+        setGrowth(compound.getInt("tickGrowth"));
     }
 
     @Override
-    protected boolean canDespawn() {
-        return false;
+    public boolean preventDespawn() {
+        return true;
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         getDataManager().register(GROWTH, 0);
         getDataManager().register(INFANT, false);
         getDataManager().register(HUNGRY, false);
