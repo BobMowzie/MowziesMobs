@@ -7,6 +7,8 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.util.math.MathHelper;
 
+import java.util.EnumSet;
+
 public class WroughtnautAttackAI extends Goal {
     private final EntityWroughtnaut wroughtnaut;
 
@@ -20,13 +22,13 @@ public class WroughtnautAttackAI extends Goal {
 
     public WroughtnautAttackAI(EntityWroughtnaut wroughtnaut) {
         this.wroughtnaut = wroughtnaut;
-        this.setMutexBits(3);
+        this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.JUMP, Flag.LOOK));
     }
 
     @Override
     public boolean shouldExecute() {
         LivingEntity target = this.wroughtnaut.getAttackTarget();
-        return target != null && target.isEntityAlive() && this.wroughtnaut.isActive() && this.wroughtnaut.getAnimation() == IAnimatedEntity.NO_ANIMATION;
+        return target != null && target.isAlive() && this.wroughtnaut.isActive() && this.wroughtnaut.getAnimation() == IAnimatedEntity.NO_ANIMATION;
     }
 
     @Override
@@ -40,11 +42,11 @@ public class WroughtnautAttackAI extends Goal {
     }
 
     @Override
-    public void updateTask() {
+    public void tick() {
         LivingEntity target = this.wroughtnaut.getAttackTarget();
         if (target == null) return;
         double dist = this.wroughtnaut.getDistanceSq(this.targetX, this.targetY, this.targetZ);
-        this.wroughtnaut.lookController().setLookPositionWithEntity(target, 30.0F, 30.0F);
+        this.wroughtnaut.getLookController().setLookPositionWithEntity(target, 30.0F, 30.0F);
         if (--this.repath <= 0 && (
             this.targetX == 0.0D && this.targetY == 0.0D && this.targetZ == 0.0D ||
             target.getDistanceSq(this.targetX, this.targetY, this.targetZ) >= 1.0D) ||

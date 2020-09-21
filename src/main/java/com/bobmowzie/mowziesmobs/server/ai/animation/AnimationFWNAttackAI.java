@@ -41,8 +41,8 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
 
     private boolean shouldFollowUp(float bonusRange) {
         LivingEntity entityTarget = entity.getAttackTarget();
-        if (entityTarget != null && entityTarget.isEntityAlive()) {
-            Vec3d targetMoveVec = new Vec3d(entityTarget.motionX, entityTarget.motionY, entityTarget.motionZ);
+        if (entityTarget != null && entityTarget.isAlive()) {
+            Vec3d targetMoveVec = entityTarget.getMotion();
             Vec3d betweenEntitiesVec = entity.getPositionVector().subtract(entityTarget.getPositionVector());
             boolean targetComingCloser = targetMoveVec.dotProduct(betweenEntitiesVec) > 0;
             if (entity.targetDistance < range + bonusRange || (entity.targetDistance < range + 5 + bonusRange && targetComingCloser)) {
@@ -53,10 +53,9 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
     }
 
     @Override
-    public void updateTask() {
+    public void tick() {
         LivingEntity entityTarget = entity.getAttackTarget();
-        entity.motionX = 0;
-        entity.motionZ = 0;
+        entity.setMotion(0, entity.getMotion().y, 0);
         if (entity.getAnimation() == EntityWroughtnaut.ATTACK_ANIMATION) {
             if (entity.getAnimationTick() < 23 && entityTarget != null) {
                 entity.faceEntity(entityTarget, 30F, 30F);
@@ -82,13 +81,12 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
                         entityAttackingAngle += 360;
                     }
                     float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
-                    float entityHitDistance = (float) Math.sqrt((entityHit.posZ - entity.posZ) * (entityHit.posZ - entity.posZ) + (entityHit.posX - entity.posX) * (entityHit.posX - entity.posX)) - entityHit.width / 2f;
+                    float entityHitDistance = (float) Math.sqrt((entityHit.posZ - entity.posZ) * (entityHit.posZ - entity.posZ) + (entityHit.posX - entity.posX) * (entityHit.posX - entity.posX)) - entityHit.getWidth() / 2f;
                     if (entityHitDistance <= range && (entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2)) {
                         entityHit.attackEntityFrom(DamageSource.causeMobDamage(entity), damage);
                         if (entityHit.isActiveItemStackBlocking())
-                            entityHit.getActiveItemStack().damageItem(400, entityHit);
-                        entityHit.motionX *= knockback;
-                        entityHit.motionZ *= knockback;
+                            entityHit.getActiveItemStack().damageItem(400, entityHit, player -> player.sendBreakAnimation(entityHit.getActiveHand()));
+                        entityHit.setMotion(entityHit.getMotion().x * knockback, entityHit.getMotion().y, entityHit.getMotion().z * knockback);
                         hit = true;
                     }
                 }
@@ -127,9 +125,8 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
                     if (entityHitDistance <= range - 0.3 && (entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2)) {
                         entityHit.attackEntityFrom(DamageSource.causeMobDamage(entity), damage);
                         if (entityHit.isActiveItemStackBlocking())
-                            entityHit.getActiveItemStack().damageItem(400, entityHit);
-                        entityHit.motionX *= knockback;
-                        entityHit.motionZ *= knockback;
+                            entityHit.getActiveItemStack().damageItem(400, entityHit, player -> player.sendBreakAnimation(entityHit.getActiveHand()));
+                        entityHit.setMotion(entityHit.getMotion().x * knockback, entityHit.getMotion().y, entityHit.getMotion().z * knockback);
                         hit = true;
                     }
                 }
@@ -151,7 +148,7 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_WHOOSH, 1.2F, 0.9f);
             } else if (entity.getAnimationTick() == 24) {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_GRUNT_3, 1.5F, 1.13f);
-                entity.move(MoverType.SELF, Math.cos(Math.toRadians(entity.rotationYaw + 90)), 0, Math.sin(Math.toRadians(entity.rotationYaw + 90)));
+                entity.move(MoverType.SELF, new Vec3d(Math.cos(Math.toRadians(entity.rotationYaw + 90)), 0, Math.sin(Math.toRadians(entity.rotationYaw + 90))));
                 List<LivingEntity> entitiesHit = entity.getEntityLivingBaseNearby(range + 0.2, 3, range + 0.2, range + 0.2);
                 float damage = (float) entity.getAttack();
                 boolean hit = false;
@@ -160,9 +157,8 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
                     if (entityHitDistance <= range + 0.2) {
                         entityHit.attackEntityFrom(DamageSource.causeMobDamage(entity), damage);
                         if (entityHit.isActiveItemStackBlocking())
-                            entityHit.getActiveItemStack().damageItem(400, entityHit);
-                        entityHit.motionX *= knockback;
-                        entityHit.motionZ *= knockback;
+                            entityHit.getActiveItemStack().damageItem(400, entityHit, player -> player.sendBreakAnimation(entityHit.getActiveHand()));
+                        entityHit.setMotion(entityHit.getMotion().x * knockback, entityHit.getMotion().y, entityHit.getMotion().z * knockback);
                         hit = true;
                     }
                 }

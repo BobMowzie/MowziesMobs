@@ -16,7 +16,6 @@ import com.bobmowzie.mowziesmobs.server.entity.SmartBodyHelper;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import com.google.common.base.Optional;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.Block;
@@ -29,6 +28,7 @@ import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -36,7 +36,6 @@ import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.block.BlockRenderType;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -46,10 +45,12 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BossInfo;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 public class EntityWroughtnaut extends MowzieEntity implements IMob {
     public static final Animation DIE_ANIMATION = Animation.create(130);
@@ -106,16 +107,6 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 
     public EntityWroughtnaut(EntityType<? extends EntityFrostmaw> type, World world) {
         super(type, world);
-        setPathPriority(PathNodeType.WATER, 0);
-        tasks.addTask(1, new AnimationFWNAttackAI(this, 4F, 5F, 100F));
-        tasks.addTask(1, new AnimationFWNVerticalAttackAI(this, VERTICAL_ATTACK_ANIMATION, MMSounds.ENTITY_WROUGHT_WHOOSH, 1F, 5F, 40F));
-        tasks.addTask(1, new AnimationFWNStompAttackAI(this, STOMP_ATTACK_ANIMATION));
-        tasks.addTask(1, new AnimationTakeDamage<>(this));
-        tasks.addTask(1, new AnimationDieAI<>(this));
-        tasks.addTask(1, new AnimationActivateAI<>(this, ACTIVATE_ANIMATION));
-        tasks.addTask(1, new AnimationDeactivateAI<>(this, DEACTIVATE_ANIMATION));
-        tasks.addTask(2, new WroughtnautAttackAI(this));
-        targetTasks.addTask(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 0, true, false, null));
         experienceValue = 30;
         active = false;
         stepHeight = 1;
@@ -128,8 +119,24 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     }
 
     @Override
-    public float getEyeHeight() {
-        return this.height * 0.98F;
+    protected void registerGoals() {
+        super.registerGoals();
+        setPathPriority(PathNodeType.WATER, 0);
+        goalSelector.addGoal(1, new AnimationFWNAttackAI(this, 4F, 5F, 100F));
+        goalSelector.addGoal(1, new AnimationFWNVerticalAttackAI(this, VERTICAL_ATTACK_ANIMATION, MMSounds.ENTITY_WROUGHT_WHOOSH, 1F, 5F, 40F));
+        goalSelector.addGoal(1, new AnimationFWNStompAttackAI(this, STOMP_ATTACK_ANIMATION));
+        goalSelector.addGoal(1, new AnimationTakeDamage<>(this));
+        goalSelector.addGoal(1, new AnimationDieAI<>(this));
+        goalSelector.addGoal(1, new AnimationActivateAI<>(this, ACTIVATE_ANIMATION));
+        goalSelector.addGoal(1, new AnimationDeactivateAI<>(this, DEACTIVATE_ANIMATION));
+        goalSelector.addGoal(2, new WroughtnautAttackAI(this));
+        targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 0, true, false, null));
+
+    }
+
+    @Override
+    protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
+        return sizeIn.height * 0.98F;
     }
 
     @Override
@@ -138,7 +145,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     }
 
     @Override
-    protected BodyController createBodyHelper() {
+    protected BodyController createBodyController() {
         return new SmartBodyHelper(this);
     }
 
@@ -174,7 +181,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     public boolean attackEntityFrom(DamageSource source, float amount) {
         Entity entitySource = source.getTrueSource();
         if (entitySource != null) {
-            if ((!active || getAttackTarget() == null) && entitySource instanceof LivingEntity && !(entitySource instanceof PlayerEntity && ((PlayerEntity) entitySource).capabilities.isCreativeMode) && !(entitySource instanceof EntityWroughtnaut)) setAttackTarget((LivingEntity) entitySource);
+            if ((!active || getAttackTarget() == null) && entitySource instanceof LivingEntity && !(entitySource instanceof PlayerEntity && ((PlayerEntity) entitySource).isCreative()) && !(entitySource instanceof EntityWroughtnaut)) setAttackTarget((LivingEntity) entitySource);
             if (vulnerable) {
                 int arc = 220;
                 float entityHitAngle = (float) ((Math.atan2(entitySource.posZ - posZ, entitySource.posX - posX) * (180 / Math.PI) - 90) % 360);
@@ -219,8 +226,8 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
 
 //        if (getAnimation() == NO_ANIMATION) {
 //            setActive(true);
@@ -229,7 +236,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 //            getNavigator().clearPath();
 //        }
 
-        if (getAttackTarget() != null && (getAttackTarget().isDead || getAttackTarget().getHealth() <= 0)) setAttackTarget(null);
+        if (getAttackTarget() != null && (!getAttackTarget().isAlive() || getAttackTarget().getHealth() <= 0)) setAttackTarget(null);
 
         if (!world.isRemote) {
             if (getAnimation() == NO_ANIMATION && !isAIDisabled()) {
@@ -248,8 +255,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         if (!isActive()) {
 //            posX = prevPosX;
 //            posZ = prevPosZ;
-            motionX = 0;
-            motionZ = 0;
+            setMotion(0, getMotion().y, 0);
             rotationYaw = prevRotationYaw;
         }
 //        else if (world.isRemote && leftEyePos != null && rightEyePos != null) {
@@ -372,7 +378,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
                         velX = -velX;
                         velZ = -velZ;
                     }
-                    world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, px, y, pz, velX, velY, velZ, stateId);
+//                    world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, px, y, pz, velX, velY, velZ, stateId);
                 }
             }
         }
@@ -388,7 +394,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
                 break;
             }
         }
-        pos.release();
+        pos.close();
         float strength = height / (float) maxHeight;
         if (strength >= 0) {
             int radius = MathHelper.ceil(MathHelper.sqrt(1 - strength * strength) * maxHeight);
@@ -437,7 +443,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
                 BlockState block = world.getBlockState(pos);
                 if (block.getRenderType() != BlockRenderType.INVISIBLE) {
                     int stateId = Block.getStateId(block);
-                    world.spawnParticle(EnumParticleTypes.BLOCK_DUST, x, y, z, 0, 0, 0, stateId);
+//                    world.spawnParticle(EnumParticleTypes.BLOCK_DUST, x, y, z, 0, 0, 0, stateId);
                     if (playSound && rand.nextFloat() < 0.075F) {
                         SoundType sound = block.getBlock().getSoundType(block, world, pos, null);
                         world.playSound(posX, posY, posZ, sound.getBreakSound(), SoundCategory.BLOCKS, sound.getVolume() * 2, sound.getPitch() * 0.6F, false);
@@ -445,26 +451,27 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
                     }
                 }
             }
-            pos.release();
+            pos.close();
             return --remainingTicks <= 0;
         }
     }
 
+    @Nullable
     @Override
-    public ILivingEntityData onInitialSpawn(DifficultyInstance difficulty, ILivingEntityData data) {
+    public ILivingEntityData onInitialSpawn(IWorld world, DifficultyInstance difficulty, SpawnReason reason, @Nullable ILivingEntityData livingData, @Nullable CompoundNBT compound) {
         setRestPos(getPosition());
-        return super.onInitialSpawn(difficulty, data);
+        return super.onInitialSpawn(world, difficulty, reason, livingData, compound);
     }
 
     @Override
-    protected boolean canDespawn() {
-        return false;
+    public boolean preventDespawn() {
+        return true;
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
-        getDataManager().register(REST_POSITION, Optional.absent());
+    protected void registerData() {
+        super.registerData();
+        getDataManager().register(REST_POSITION, Optional.empty());
         getDataManager().register(ACTIVE, false);
     }
 
@@ -485,27 +492,32 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     }
 
     @Override
-    public void writeEntityToNBT(CompoundNBT compound) {
-        super.writeEntityToNBT(compound);
-        Optional<BlockPos> restPos = getRestPos();
-        if (restPos.isPresent()) {
-            compound.setTag("restPos", NBTUtil.createPosTag(getRestPos().get()));   
-        }
-        compound.setBoolean("active", isActive());
+    public void writeSpawnData(PacketBuffer buf) {
+        super.writeSpawnData(buf);
     }
 
     @Override
-    public void readEntityFromNBT(CompoundNBT compound) {
-        super.readEntityFromNBT(compound);
-        if (compound.hasKey("restPos", NBT.TAG_COMPOUND)) {
-            setRestPos(NBTUtil.getPosFromTag(compound.getCompoundTag("restPos")));   
+    public void writeAdditional(CompoundNBT compound) {
+        super.writeAdditional(compound);
+        Optional<BlockPos> restPos = getRestPos();
+        if (restPos.isPresent()) {
+            compound.put("restPos", NBTUtil.writeBlockPos(getRestPos().get()));
+        }
+        compound.putBoolean("active", isActive());
+    }
+
+    @Override
+    public void readAdditional(CompoundNBT compound) {
+        super.readAdditional(compound);
+        if (compound.contains("restPos", NBT.TAG_COMPOUND)) {
+            setRestPos(NBTUtil.readBlockPos(compound.getCompound("restPos")));
         }
         setActive(compound.getBoolean("active"));
         active = isActive();
     }
 
     @Override
-    protected void playStepSound(BlockPos pos, Block block) {}
+    protected void playStepSound(BlockPos pos, BlockState state) {}
 
     @Override
     public Animation[] getAnimations() {
@@ -516,11 +528,6 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     @Override
     protected ResourceLocation getLootTable() {
         return LootTableHandler.FERROUS_WROUGHTNAUT;
-    }
-
-    @Override
-    public void setInWeb() {
-
     }
 
     @Override

@@ -25,8 +25,7 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
 
     @Override
     public void updateTask() {
-        entity.motionX = 0;
-        entity.motionZ = 0;
+        entity.setMotion(0, entity.getMotion().y, 0);
         if (entity.getAnimationTick() < 21 && entityTarget != null) {
             entity.faceEntity(entityTarget, 30F, 30F);
         }
@@ -55,9 +54,8 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
                 float entityHitDistance = (float) Math.sqrt((entityHit.posZ - entity.posZ) * (entityHit.posZ - entity.posZ) + (entityHit.posX - entity.posX) * (entityHit.posX - entity.posX));
                 if (entityHitDistance <= range && (entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2)) {
                     entityHit.attackEntityFrom(DamageSource.causeMobDamage(entity), damage * 1.5F);
-                    if (entityHit.isActiveItemStackBlocking()) entityHit.getActiveItemStack().damageItem(400, entityHit);
-                    entityHit.motionX *= knockback;
-                    entityHit.motionZ *= knockback;
+                    if (entityHit.isActiveItemStackBlocking()) entityHit.getActiveItemStack().damageItem(400, entityHit, player -> player.sendBreakAnimation(entityHit.getActiveHand()));
+                    entityHit.setMotion(entityHit.getMotion().x * knockback, entityHit.getMotion().y, entityHit.getMotion().z * knockback);
                 }
             }
         } else if (entity.getAnimationTick() == 28) {

@@ -16,24 +16,21 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.play.server.SEntityVelocityPacket;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.ServerWorld;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.List;
 
 public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtnaut> {
     public AnimationFWNStompAttackAI(EntityWroughtnaut entity, Animation animation) {
-        super(entity, animation);
-        setMutexBits(8);
+        super(entity, animation, true);
     }
 
     @Override
-    public void updateTask() {
-        entity.motionX = 0;
-        entity.motionZ = 0;
+    public void tick() {
+        entity.setMotion(0, entity.getMotion().y, 0);
         double perpFacing = entity.renderYawOffset * (Math.PI / 180);
         double facingAngle = perpFacing + Math.PI / 2;
         int hitY = MathHelper.floor(entity.getBoundingBox().minY - 0.5);
@@ -64,7 +61,7 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                     double px = fx + sx * dist;
                     double py = fy + world.rand.nextDouble() * 0.1;
                     double pz = fz + sz * dist;
-                    world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, px, py, pz, 0, sx * 0.065, 0, sz * 0.065, 1);
+//                    world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, px, py, pz, 0, sx * 0.065, 0, sz * 0.065, 1);
                 }
             } else if (tick == 12) {
                 entity.playSound(SoundEvents.ENTITY_GENERIC_EXPLODE, 2, 1F + entity.getRNG().nextFloat() * 0.1F);
@@ -91,14 +88,16 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                         float knockbackResistance = 0;
                         if (entity instanceof LivingEntity) {
                             entity.attackEntityFrom(DamageSource.causeMobDamage(this.entity), (factor * 5 + 1) * ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.combatData.attackMultiplier);
-                            knockbackResistance = (float) ((LivingEntity)entity).getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).getAttributeValue();
+                            knockbackResistance = (float) ((LivingEntity)entity).getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).getValue();
                         }
                         double magnitude = world.rand.nextDouble() * 0.15 + 0.1;
-                        entity.motionX += vx * factor * magnitude * (1 - knockbackResistance);
+                        float x = 0, y = 0, z = 0;
+                        x += vx * factor * magnitude * (1 - knockbackResistance);
                         if (entity.onGround) {
-                            entity.motionY += 0.1 * (1 - knockbackResistance) + factor * 0.15 * (1 - knockbackResistance);
+                            y += 0.1 * (1 - knockbackResistance) + factor * 0.15 * (1 - knockbackResistance);
                         }
-                        entity.motionZ += vz * factor * magnitude * (1 - knockbackResistance);
+                        z += vz * factor * magnitude * (1 - knockbackResistance);
+                        entity.setMotion(entity.getMotion().add(x, y, z));
                         if (entity instanceof ServerPlayerEntity) {
                             ((ServerPlayerEntity) entity).connection.sendPacket(new SEntityVelocityPacket(entity));
                         }
@@ -111,21 +110,19 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                         BlockPos belowPos = new BlockPos(pos).down();
                         if (world.isAirBlock(abovePos) && !world.isAirBlock(belowPos)) {
                             BlockState block = world.getBlockState(pos);
-                            if (block.getMaterial() != Material.AIR && block.isBlockNormalCube() && block != Blocks.BEDROCK && !block.getBlock().hasTileEntity(block)) {
+                            if (block.getMaterial() != Material.AIR && block.isNormalCube(world, pos) && block.getBlock() != Blocks.BEDROCK && !block.getBlock().hasTileEntity(block)) {
                                 FallingBlockEntity fallingBlock = new FallingBlockEntity(world, hitX + 0.5, hitY + 0.5, hitZ + 0.5, block);
-                                fallingBlock.motionX = 0;
-                                fallingBlock.motionY = 0.4 + factor * 0.2;
-                                fallingBlock.motionZ = 0;
+                                fallingBlock.setMotion(0, 0.4 + factor * 0.2, 0);
                                 fallingBlock.fallTime = 2;
-                                world.spawnEntity(fallingBlock);
-                                world.setBlockToAir(pos);
+                                world.addEntity(fallingBlock);
+                                world.removeBlock(pos, false);
                                 int amount = 6 + world.rand.nextInt(10);
                                 int stateId = Block.getStateId(block);
                                 while (amount --> 0) {
                                     double cx = px + world.rand.nextFloat() * 2 - 1;
                                     double cy = entity.getBoundingBox().minY + 0.1 + world.rand.nextFloat() * 0.3;
                                     double cz = pz + world.rand.nextFloat() * 2 - 1;
-                                    world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, cx, cy, cz, 0, vx, 0.4 + world.rand.nextFloat() * 0.2F, vz, 1, stateId);
+//                                    world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, cx, cy, cz, 0, vx, 0.4 + world.rand.nextFloat() * 0.2F, vz, 1, stateId);
                                 }
                             }
                         }
@@ -136,7 +133,7 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                             double velX = vx * 0.075;
                             double velY = factor * 0.3 + 0.025;
                             double velZ = vz * 0.075;
-                            world.spawnParticle(EnumParticleTypes.CLOUD, px + world.rand.nextFloat() * 2 - 1, entity.getBoundingBox().minY + 0.1 + world.rand.nextFloat() * 1.5, pz + world.rand.nextFloat() * 2 - 1, 0, velX, velY, velZ, 1);
+//                            world.spawnParticle(EnumParticleTypes.CLOUD, px + world.rand.nextFloat() * 2 - 1, entity.getBoundingBox().minY + 0.1 + world.rand.nextFloat() * 1.5, pz + world.rand.nextFloat() * 2 - 1, 0, velX, velY, velZ, 1);
                         }
                     }
                 }

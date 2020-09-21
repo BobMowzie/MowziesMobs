@@ -6,6 +6,8 @@ import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.entity.ai.goal.Goal;
 
+import java.util.EnumSet;
+
 public abstract class AnimationAI<T extends MowzieEntity & IAnimatedEntity> extends Goal {
     protected final T entity;
 
@@ -21,7 +23,7 @@ public abstract class AnimationAI<T extends MowzieEntity & IAnimatedEntity> exte
 
     protected AnimationAI(T entity, boolean interruptsAI, boolean hurtInterruptsAnimation) {
         this.entity = entity;
-        this.setMutexBits(interruptsAI ? 7 : 8);
+        if (interruptsAI) this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.JUMP, Flag.LOOK));
         this.hurtInterruptsAnimation = hurtInterruptsAnimation;
     }
 
