@@ -33,6 +33,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
@@ -73,15 +74,15 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
                 PlayerEntity.class.isAssignableFrom(e.getClass()) || CreatureEntity.class.isAssignableFrom(e.getClass())) {
 
             @Override
-            protected boolean isSuitableTarget(@Nullable LivingEntity target, boolean includeInvincibles) {
-                return !(target instanceof EntityFoliaath) && !(target instanceof EntityBabyFoliaath) && !target.isInvisible() && !target.getIsInvulnerable() && super.isSuitableTarget(target, includeInvincibles);
+            protected boolean isSuitableTarget(@Nullable LivingEntity target, EntityPredicate predicate) {
+                return !(target instanceof EntityFoliaath) && !(target instanceof EntityBabyFoliaath) && !target.isInvisible() && !target.isInvulnerable() && super.isSuitableTarget(target, predicate);
             }
         });
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         getDataManager().register(CAN_DESPAWN, true);
         getDataManager().register(ACTIVATE_TARGET, 0);
     }
@@ -114,12 +115,11 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
 //        this.posX = prevPosX;
 //        this.posZ = prevPosZ;
-        motionX = 0;
-        motionZ = 0;
+        setMotion(0, getMotion().y, 0);
         // Open mouth animation
         if (getAnimation() == NO_ANIMATION && !activate.canIncreaseTimer()) {
             openMouth.update();
@@ -299,7 +299,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
     }
 
     @Override
-    public boolean getCanSpawnHere() {
+    public boolean canSpawn(IWorld world, SpawnReason reason) {
         Biome biome = world.getBiome(getPosition());
         int i = MathHelper.floor(this.posX);
         int j = MathHelper.floor(this.getBoundingBox().minY);
@@ -309,8 +309,8 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         BlockState floorDown1 = world.getBlockState(pos.down(2));
         BlockState floorDown2 = world.getBlockState(pos.down(3));
         boolean notInTree = true;
-        if (floor instanceof LeavesBlock && floorDown1 != biome.topBlock && floorDown2 != biome.topBlock) notInTree = false;
-        return super.getCanSpawnHere() && notInTree && getEntitiesNearby(AnimalEntity.class, 10, 10, 10, 10).isEmpty() && world.getDifficulty() != Difficulty.PEACEFUL;
+        if (floor instanceof LeavesBlock && floorDown1 != biome.getSurfaceBuilder().config.getTop() && floorDown2 != biome.getSurfaceBuilder().config.getTop()) notInTree = false;
+        return super.canSpawn(world, reason) && notInTree && getEntitiesNearby(AnimalEntity.class, 10, 10, 10, 10).isEmpty() && world.getDifficulty() != Difficulty.PEACEFUL;
     }
 
     @Override
@@ -325,8 +325,8 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
     }
 
     @Override
-    public boolean canDespawn() {
-        return getDataManager().get(CAN_DESPAWN);
+    public boolean preventDespawn() {
+        return !getDataManager().get(CAN_DESPAWN);
     }
 
     public void setCanDespawn(boolean canDespawn) {
@@ -342,19 +342,21 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
     }
 
     @Override
-    public void writeSpawnData(CompoundNBT compound) {
-        super.writeEntityToNBT(compound);
-        compound.setBoolean("canDespawn", canDespawn());
+    public void writeAdditional(CompoundNBT compound) {
+        super.writeAdditional(compound);
+        compound.putBoolean("canDespawn", getDataManager().get(CAN_DESPAWN));
     }
 
     @Override
-    public void readEntityFromNBT(CompoundNBT compound) {
-        super.readEntityFromNBT(compound);
+    public void readAdditional(CompoundNBT compound) {
+        super.readAdditional(compound);
         setCanDespawn(compound.getBoolean("canDespawn"));
     }
 
     @Override
-    protected void playStepSound(BlockPos pos, Block block) {}
+    protected void playStepSound(BlockPos p_180429_1_, BlockState p_180429_2_) {
+
+    }
 
     @Override
     public Animation[] getAnimations() {

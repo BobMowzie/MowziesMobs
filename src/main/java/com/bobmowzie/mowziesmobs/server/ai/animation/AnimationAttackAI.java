@@ -38,8 +38,8 @@ public class AnimationAttackAI<T extends MowzieEntity & IAnimatedEntity> extends
     }
 
     @Override
-    public void updateTask() {
-        super.updateTask();
+    public void tick() {
+        super.tick();
         if (entity.getAnimationTick() < damageFrame && entityTarget != null) {
             entity.faceEntity(entityTarget, 30F, 30F);
         }
@@ -47,8 +47,7 @@ public class AnimationAttackAI<T extends MowzieEntity & IAnimatedEntity> extends
             float damage = (float) entity.getAttack();
             if (entityTarget != null && entity.targetDistance <= range) {
                 entityTarget.attackEntityFrom(DamageSource.causeMobDamage(entity), damage * damageMultiplier);
-                entityTarget.motionX *= knockback;
-                entityTarget.motionZ *= knockback;
+                entityTarget.setMotion(entityTarget.getMotion().x * knockback, entityTarget.getMotion().y, entityTarget.getMotion().z * knockback);
                 if (hitSound != null) {
                     entity.playSound(hitSound, 1, 1);   
                 }
