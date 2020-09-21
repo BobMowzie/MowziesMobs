@@ -263,32 +263,6 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
     }
 
     @Override
-    public void applyEntityCollision(Entity entity) {
-        if (!entity.getPassengers().contains(this) && entity.getRidingEntity() != this) {
-            double deltaX = entity.posX - posX;
-            double deltaZ = entity.posZ - posZ;
-            double majorAxis = MathHelper.absMax(deltaX, deltaZ);
-            if (majorAxis >= 0.009999999) {
-                majorAxis = MathHelper.sqrt(majorAxis);
-                deltaX /= majorAxis;
-                deltaZ /= majorAxis;
-                double reciprocal = 1 / majorAxis;
-                if (reciprocal > 1) {
-                    reciprocal = 1;
-                }
-                deltaX *= reciprocal;
-                deltaZ *= reciprocal;
-                deltaX *= 0.05;
-                deltaZ *= 0.05;
-                deltaX *= 1 - entityCollisionReduction;
-                deltaZ *= 1 - entityCollisionReduction;
-                this.addVelocity(deltaX, 0, deltaZ);
-                entity.addVelocity(deltaX, 0, deltaZ);
-            }
-        }
-    }
-
-    @Override
     public boolean canBeCollidedWith() {
         return true;
     }

@@ -14,7 +14,6 @@ import com.bobmowzie.mowziesmobs.server.block.BlockGrottol;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.ai.EntityAIGrottolIdle;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
@@ -26,10 +25,7 @@ import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.goal.RandomWalkingGoal;
 import net.minecraft.entity.ai.goal.LookAtGoal;
@@ -44,14 +40,13 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.ServerWorld;
 
 import javax.annotation.Nullable;
 
@@ -85,11 +80,6 @@ public class EntityGrottol extends MowzieEntity implements IMob {
 
     public EntityGrottol(EntityType<? extends EntityGrottol> type, World world) {
         super(type, world);
-        setPathPriority(PathNodeType.DANGER_OTHER, 1);
-        setPathPriority(PathNodeType.WATER, 3);
-        setPathPriority(PathNodeType.LAVA, 1);
-        setPathPriority(PathNodeType.DANGER_FIRE, 1);
-        setPathPriority(PathNodeType.DANGER_CACTUS, 1);
         experienceValue = 20;
         stepHeight = 1.15F;
 
@@ -99,6 +89,11 @@ public class EntityGrottol extends MowzieEntity implements IMob {
     @Override
     protected void registerGoals() {
         super.registerGoals();
+        setPathPriority(PathNodeType.DANGER_OTHER, 1);
+        setPathPriority(PathNodeType.WATER, 3);
+        setPathPriority(PathNodeType.LAVA, 1);
+        setPathPriority(PathNodeType.DANGER_FIRE, 1);
+        setPathPriority(PathNodeType.DANGER_CACTUS, 1);
         goalSelector.addGoal(3, new SwimGoal(this));
         goalSelector.addGoal(4, new RandomWalkingGoal(this, 0.3));
         goalSelector.addGoal(1, new EntityAIGrottolFindMinecart(this));
@@ -152,7 +147,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
 
     @Override
     public float getBlockPathWeight(BlockPos pos) {
-        return (float) getDistanceSqToCenter(pos);
+        return (float) pos.distanceSq(this.getPositionVec(), true);
     }
 
     @Override
@@ -193,8 +188,8 @@ public class EntityGrottol extends MowzieEntity implements IMob {
     }
 
     @Override
-    public boolean getCanSpawnHere() {
-        return getEntitiesNearby(EntityGrottol.class, 20, 20, 20, 20).isEmpty() && super.getCanSpawnHere();
+    public boolean canSpawn(IWorld world, SpawnReason reason) {
+        return getEntitiesNearby(EntityGrottol.class, 20, 20, 20, 20).isEmpty() && super.canSpawn(world, reason);
     }
 
     @Override
@@ -202,7 +197,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
         if (entity instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) entity;
             if (EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, player.getHeldItemMainhand()) > 0) {
-                if (!world.isRemote && !isDead) {
+                if (!world.isRemote && isAlive()) {
                     entityDropItem(ItemHandler.CAPTURED_GROTTOL.create(this), 0.0F);
                     BlockState state = BlockHandler.GROTTOL.getDefaultState();
                     SoundType sound = state.getBlock().getSoundType(state, world, new BlockPos(this), entity);
@@ -214,7 +209,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
                         (sound.getVolume() + 1.0F) / 2.0F,
                         sound.getPitch() * 0.8F
                     );
-                    if (world instanceof ServerWorld) {
+                    /*if (world instanceof ServerWorld) {
                         ((ServerWorld) world).spawnParticle(
                             EnumParticleTypes.BLOCK_DUST,
                             posX, posY + height / 2.0D, posZ,
@@ -223,8 +218,8 @@ public class EntityGrottol extends MowzieEntity implements IMob {
                             0.05D,
                             Block.getStateId(state)
                         );
-                    }
-                    setDead();
+                    }*/
+                    remove();
                     if (player instanceof ServerPlayerEntity) AdvancementHandler.GROTTOL_KILL_SILK_TOUCH_TRIGGER.trigger((ServerPlayerEntity) player);
                 }
                 return true;
@@ -258,8 +253,8 @@ public class EntityGrottol extends MowzieEntity implements IMob {
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
         if (!world.isRemote) {
             Entity e = getRidingEntity();
             if (isMinecart(e)) {
@@ -267,25 +262,24 @@ public class EntityGrottol extends MowzieEntity implements IMob {
                 setMoveForward(1);
                 timeSinceMinecart++;
                 boolean onRail = isBlockRail(world.getBlockState(e.getPosition()).getBlock());
-                if ((timeSinceMinecart > 3 && Math.abs(e.motionX) <= 0.001 && Math.abs(e.motionY) <= 0.001 && Math.abs(e.motionZ) <= 0.001) || !onRail) {
-                    dismountRidingEntity();
+                if ((timeSinceMinecart > 3 && e.getMotion().length() < 0.001) || !onRail) {
+                    dismountEntity(e);
                     timeSinceMinecart = 0;
                 }
                 else if (onRail) {
-                    e.motionX *= 2.7;
-                    e.motionZ *= 2.7;
+                    e.setMotion(e.getMotion().x * 2.7, 0, e.getMotion().z * 2.7);
                 }
             }
         }
 //        if (ticksExisted == 1) System.out.println("Grottle at " + getPosition());
 
         //Sparkle particles
-        if (world.isRemote && isEntityAlive() && rand.nextInt(15) == 0) {
+        if (world.isRemote && isAlive() && rand.nextInt(15) == 0) {
             double x = posX + 0.5f * (2 * rand.nextFloat() - 1f);
             double y = posY + 0.8f + 0.3f * (2 * rand.nextFloat() - 1f);
             double z = posZ + 0.5f * (2 * rand.nextFloat() - 1f);
             if (isBlackPinkInYourArea()) {
-                world.spawnParticle(EnumParticleTypes.NOTE, x, y, z, rand.nextDouble() / 2, 0, 0);
+//                world.spawnParticle(EnumParticleTypes.NOTE, x, y, z, rand.nextDouble() / 2, 0, 0);
             } else {
                 MMParticle.SPARKLE.spawn(world, x, y, z, ParticleFactory.ParticleArgs.get().withData(0d, 0d, 0d, 1d, 1d, 1d, 4d, 22));   
             }
@@ -320,14 +314,14 @@ public class EntityGrottol extends MowzieEntity implements IMob {
                 Material mat = blockBeneath.getMaterial();
                 if (mat == Material.EARTH || mat == Material.SAND || mat == Material.CLAY || mat == Material.ROCK) {
                     Vec3d pos = new Vec3d(0.7D, 0.05D, 0.0D).rotateYaw((float) Math.toRadians(-renderYawOffset - 90));
-                    ((ServerWorld) world).spawnParticle(
+                    /*((ServerWorld) world).spawnParticle(
                         EnumParticleTypes.BLOCK_DUST,
                         posX + pos.x, posY + pos.y, posZ + pos.z,
                         8,
                         0.25D, 0.025D, 0.25D,
                         0.1D,
                         Block.getStateId(blockBeneath)
-                    );
+                    );*/
                 }
             }
         }
@@ -348,7 +342,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
         Entity e = getRidingEntity();
         if (isMinecart(e)) {
             BlockState state = ((AbstractMinecartEntity) e).getDisplayTile();
-            return state.getBlock() == BlockHandler.GROTTOL && state.getValue(BlockGrottol.VARIANT) == BlockGrottol.Variant.BLACK_PINK;
+            return state.getBlock() == BlockHandler.GROTTOL && state.get(BlockGrottol.VARIANT) == BlockGrottol.Variant.BLACK_PINK;
         }
         return false;
     }

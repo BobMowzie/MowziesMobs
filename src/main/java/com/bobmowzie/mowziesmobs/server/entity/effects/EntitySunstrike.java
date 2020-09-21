@@ -178,7 +178,6 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
                 if (strikeTime > STRIKE_LENGTH && hitBlock != world.getBlockState(getPosition().down())) {
                     this.remove();
                 }
-//                if (hitBlock instanceof SlabBlock && hitBlock.getValue(SlabBlock.HALF) == SlabBlock..EnumBlockHalf.BOTTOM) {
                 if (hitBlock.getBlock() instanceof SlabBlock && hitBlock.get(BlockStateProperties.SLAB_TYPE) == SlabType.BOTTOM) {
                     this.setPosition(posX, hitResult.getPos().getY() + 1.0625F - 0.5f, posZ);
                 } else {
