@@ -32,6 +32,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.Hand;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -87,7 +88,16 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
         goalSelector.addGoal(1, new EntityAIBarakoayaTrade(this));
         goalSelector.addGoal(1, new EntityAIBarakoayaTradeLook(this));
         targetSelector.addGoal(3, new BarakoaHurtByTargetAI(this, true));
-        targetSelector.addGoal(3, new BarakoaAttackTargetAI(this, PlayerEntity.class, 0, true, false));
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 0, true, true, target -> {
+            if (target instanceof PlayerEntity) {
+                if (this.world.getDifficulty() == Difficulty.PEACEFUL) return false;
+                ItemStack headArmorStack = ((PlayerEntity) target).inventory.armorInventory.get(3);
+                if (headArmorStack.getItem() instanceof BarakoaMask) {
+                    return false;
+                }
+            }
+            return true;
+        }));
         targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, true, true, null));
         targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, SkeletonEntity.class, 0, true, false, null));
     }

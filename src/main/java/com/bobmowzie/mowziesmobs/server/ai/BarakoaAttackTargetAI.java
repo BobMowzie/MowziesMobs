@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.google.common.base.Predicate;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.ai.goal.TargetGoal;
@@ -11,10 +12,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.Difficulty;
 
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
-public class BarakoaAttackTargetAI extends TargetGoal {
+public class BarakoaAttackTargetAI extends NearestAttackableTargetGoal {
     private Class<? extends Entity> targetClass;
     private int targetChance;
     private NearestAttackableTargetGoal.Sorter attackableTargetSorter;
@@ -42,28 +44,14 @@ public class BarakoaAttackTargetAI extends TargetGoal {
     }
 
     @Override
-    public boolean shouldExecute() {
-        if (this.targetChance > 0 && this.taskOwner.getRNG().nextInt(this.targetChance) != 0) {
-            return false;
-        } else {
-            double targetDistance = this.getTargetDistance();
-            double distanceY = 4.0D;
-            if (useVerticalDistance) distanceY = targetDistance;
-            List list = this.taskOwner.world.getEntitiesWithinAABB(this.targetClass, this.taskOwner.getBoundingBox().grow(targetDistance, distanceY, targetDistance), this.targetEntitySelector);
-            Collections.sort(list, this.attackableTargetSorter);
-
-            if (list.isEmpty()) {
+    protected boolean isSuitableTarget(@Nullable LivingEntity entity, EntityPredicate predicate) {
+        if (target instanceof PlayerEntity) {
+            if (entity.world.getDifficulty() == Difficulty.PEACEFUL) return false;
+            ItemStack headArmorStack = ((PlayerEntity) target).inventory.armorInventory.get(3);
+            if (headArmorStack.getItem() instanceof BarakoaMask) {
                 return false;
-            } else {
-                this.targetEntity = (LivingEntity) list.get(0);
-                return true;
             }
         }
-    }
-
-    @Override
-    public void startExecuting() {
-        this.taskOwner.setAttackTarget(this.targetEntity);
-        super.startExecuting();
+        return super.isSuitableTarget(entity, predicate);
     }
 }

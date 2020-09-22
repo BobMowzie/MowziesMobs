@@ -50,11 +50,11 @@ public final class TradeStore {
     }
 
     public static TradeStore deserialize(CompoundNBT compound) {
-        ListNBT tradesList = compound.getTagList("trades", NBT.TAG_COMPOUND);
+        ListNBT tradesList = compound.getList("trades", NBT.TAG_COMPOUND);
         int totalWeight = 0;
         ImmutableSet.Builder<Trade> trades = new ImmutableSet.Builder<>();
-        for (int i = 0; i < tradesList.tagCount(); i++) {
-            Trade trade = Trade.deserialize(tradesList.getCompoundTagAt(i));
+        for (int i = 0; i < tradesList.size(); i++) {
+            Trade trade = Trade.deserialize(tradesList.getCompound(i));
             if (trade != null) {
                 trades.add(trade);
                 totalWeight += trade.getWeight();

@@ -5,6 +5,7 @@ import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
+import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
@@ -14,6 +15,7 @@ import net.minecraft.entity.monster.SkeletonEntity;
 import net.minecraft.entity.monster.ZombieEntity;
 import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.MathHelper;
@@ -45,7 +47,16 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
         this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, true, false, null));
         this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, SkeletonEntity.class, 0, true, false, null));
         this.targetSelector.addGoal(6, new AvoidEntityGoal<>(this, CreeperEntity.class, 6.0F, 1.0D, 1.2D));
-        this.targetSelector.addGoal(3, new BarakoaAttackTargetAI(this, PlayerEntity.class, 0, true, false));
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 0, true, true, target -> {
+            if (target instanceof PlayerEntity) {
+                if (this.world.getDifficulty() == Difficulty.PEACEFUL) return false;
+                ItemStack headArmorStack = ((PlayerEntity) target).inventory.armorInventory.get(3);
+                if (headArmorStack.getItem() instanceof BarakoaMask) {
+                    return false;
+                }
+            }
+            return true;
+        }));
     }
 
     @Override

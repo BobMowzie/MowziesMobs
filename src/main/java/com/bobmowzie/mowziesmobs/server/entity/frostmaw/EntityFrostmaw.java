@@ -173,7 +173,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         this.goalSelector.addGoal(2, new SimpleAnimationAI<>(this, DODGE_ANIMATION, true));
         this.goalSelector.addGoal(3, new AnimationTakeDamage<>(this));
         this.goalSelector.addGoal(1, new AnimationDieAI<>(this));
-        this.targetTasks.addTask(1, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 0, true, false, null));
+        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 0, true, false, null));
         stepHeight = 1;
         frame += rand.nextInt(50);
         legSolver = new LegSolverQuadruped(1f, 2f, -1, 1.5f);

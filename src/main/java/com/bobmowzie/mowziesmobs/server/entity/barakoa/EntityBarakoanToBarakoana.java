@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
+import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.monster.ZombieEntity;
@@ -10,6 +11,7 @@ import net.minecraft.entity.passive.*;
 import net.minecraft.entity.passive.ChickenEntity;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
@@ -85,7 +87,16 @@ public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> i
         this.setLeaderUUID(ABSENT_LEADER);
         this.leader = null;
         this.setAttackTarget(null);
-        this.goalSelector.addGoal(4, new BarakoaAttackTargetAI(this, PlayerEntity.class, 0, true, false));
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 0, true, true, target -> {
+            if (target instanceof PlayerEntity) {
+                if (this.world.getDifficulty() == Difficulty.PEACEFUL) return false;
+                ItemStack headArmorStack = ((PlayerEntity) target).inventory.armorInventory.get(3);
+                if (headArmorStack.getItem() instanceof BarakoaMask) {
+                    return false;
+                }
+            }
+            return true;
+        }));
         this.goalSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, CowEntity.class, 0, true, false, null));
         this.goalSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, PigEntity.class, 0, true, false, null));
         this.goalSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, SheepEntity.class, 0, true, false, null));

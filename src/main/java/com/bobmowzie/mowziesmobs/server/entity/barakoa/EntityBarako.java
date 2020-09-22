@@ -55,6 +55,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BossInfo;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -86,7 +87,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     private static final DataParameter<Integer> DIRECTION = EntityDataManager.createKey(EntityBarako.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> DIALOGUE = EntityDataManager.createKey(EntityBarako.class, DataSerializers.VARINT);
     private static final DataParameter<Boolean> ANGRY = EntityDataManager.createKey(EntityBarako.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<ItemStack> DESIRES = EntityDataManager.createKey(EntityBarako.class, DataSerializers.ITEM_STACK);
+    private static final DataParameter<ItemStack> DESIRES = EntityDataManager.createKey(EntityBarako.class, DataSerializers.ITEMSTACK);
     private final Set<UUID> tradedPlayers = new HashSet<>();
     public ControlledAnimation legsUp = new ControlledAnimation(15);
     public ControlledAnimation angryEyebrow = new ControlledAnimation(5);
@@ -109,6 +110,8 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     @OnlyIn(Dist.CLIENT)
     public Vec3d[] blessingPlayerPos;
 
+    private static EntityPredicate GIVE_ACHIEVEMENT_PRED = new EntityPredicate().setLineOfSiteRequired().setUseInvisibilityCheck();
+
     private static ParticleComponent.KeyTrack superNovaKeyTrack1 = new ParticleComponent.KeyTrack(
             new float[]{0, 20f, 20f, 0},
             new float[]{0, 0.5f, 0.9f, 1}
@@ -117,9 +120,32 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 
     public EntityBarako(EntityType<? extends EntityBarako> type, World world) {
         super(type, world);
+        if (getDirection() == 0) {
+            this.setDirection(rand.nextInt(4) + 1);
+        }
+        experienceValue = 45;
+
+        if (world.isRemote) {
+            betweenHandPos = new Vec3d[]{new Vec3d(0, 0, 0)};
+            blessingPlayerPos = new Vec3d[]{new Vec3d(0, 0, 0)};
+        }
+    }
+
+    @Override
+    protected void registerGoals() {
+        super.registerGoals();
         hurtByTargetAI = new BarakoaHurtByTargetAI(this, true);
         this.targetSelector.addGoal(3, hurtByTargetAI);
-        this.targetSelector.addGoal(4, new BarakoaAttackTargetAI(this, PlayerEntity.class, 0, false, true));
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 0, false, true, target -> {
+                if (target instanceof PlayerEntity) {
+                    if (this.world.getDifficulty() == Difficulty.PEACEFUL) return false;
+                    ItemStack headArmorStack = ((PlayerEntity) target).inventory.armorInventory.get(3);
+                    if (headArmorStack.getItem() instanceof BarakoaMask) {
+                        return false;
+                    }
+                }
+                return true;
+            }));
         this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, true, false, null));
         this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, SkeletonEntity.class, 0, true, false, null));
         this.goalSelector.addGoal(2, new SimpleAnimationAI<>(this, BELLY_ANIMATION, false));
@@ -145,8 +171,8 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             }
 
             @Override
-            public void updateTask() {
-                super.updateTask();
+            public void tick() {
+                super.tick();
                 if (entity.getAnimationTick() == 30) {
                     playSound(MMSounds.ENTITY_SUPERNOVA_BLACKHOLE, 2f, 1.2f);
                 }
@@ -159,7 +185,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                         Vec3d offset = new Vec3d(1.1f, 0, 0);
                         offset = offset.rotateYaw((float) Math.toRadians(-entity.rotationYaw - 90));
                         EntitySuperNova superNova = new EntitySuperNova(entity.world, entity, entity.posX + offset.x, entity.posY + 0.05, entity.posZ + offset.z);
-                        world.spawnEntity(superNova);
+                        world.addEntity(superNova);
                     }
                 }
             }
@@ -188,18 +214,9 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 8.0F));
         this.goalSelector.addGoal(7, new LookAtGoal(this, EntityBarakoa.class, 8.0F));
         this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
-        if (getDirection() == 0) {
-            this.setDirection(rand.nextInt(4) + 1);
-        }
-        experienceValue = 45;
-
-        if (world.isRemote) {
-            betweenHandPos = new Vec3d[]{new Vec3d(0, 0, 0)};
-            blessingPlayerPos = new Vec3d[]{new Vec3d(0, 0, 0)};
-        }
     }
 
-//    public EntityBarako(World world, int direction) {
+    //    public EntityBarako(World world, int direction) {
 //        this(world);
 //        this.setDirection(direction);
 //    }
@@ -226,14 +243,14 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     protected SoundEvent getAmbientSound() {
         if (getAnimation() == NO_ANIMATION) {
             if (getAttackTarget() == null && !isAIDisabled()) {
-                int soundType = MathHelper.getInt(this.rand, 0, 9);
+                int soundType = MathHelper.nextInt(rand, 0, 9);
                 if (soundType < MMSounds.ENTITY_BARAKO_TALK.size()) {
                     this.playSound(MMSounds.ENTITY_BARAKO_TALK.get(soundType).get(), 2F, 1.0F);
                     this.setWhichDialogue(soundType + 1);
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, TALK_ANIMATION);
                 }
             } else {
-                int soundType = MathHelper.getInt(rand, 1, 10);
+                int soundType = MathHelper.nextInt(rand, 1, 10);
                 if (soundType < 7) {
                     this.playSound(MMSounds.ENTITY_BARAKO_ANGRY.get(soundType - 1).get(), 2F, 1.0F);
 //                    setWhichDialogue(soundType);
@@ -411,14 +428,12 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 List<LivingEntity> entities = getEntityLivingBaseNearby(16, 16, 16, 16);
                 for (LivingEntity inRange : entities) {
                     if (inRange instanceof LeaderSunstrikeImmune) continue;
-                    if (inRange instanceof PlayerEntity && ((PlayerEntity)inRange).capabilities.disableDamage) continue;
+                    if (inRange instanceof PlayerEntity && inRange.isInvulnerable()) continue;
                     Vec3d diff = inRange.getPositionVector().subtract(getPositionVector().add(0, 3, 0));
                     diff = diff.normalize().scale(0.03);
-                    inRange.motionX += -diff.x;
-                    inRange.motionZ += -diff.z;
-                    inRange.motionY += -diff.y;
+                    inRange.setMotion(getMotion().subtract(diff));
 
-                    if (inRange.posY < posY + 3) inRange.motionY += 0.075;
+                    if (inRange.posY < posY + 3) inRange.setMotion(inRange.getMotion().add(0, 0.075, 0));
                 }
             }
         }
@@ -426,7 +441,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         if (ticksExisted % 40 == 0) {
             for (PlayerEntity player : getPlayersNearby(15, 15, 15, 15)) {
                 ItemStack headArmorStack = player.inventory.armorInventory.get(3);
-                if (getAttackTarget() != player && TargetGoal.isSuitableTarget(this, player, false, false) && headArmorStack.getItem() instanceof BarakoaMask) {
+                if (getAttackTarget() != player && canAttack(player, GIVE_ACHIEVEMENT_PRED) && headArmorStack.getItem() instanceof BarakoaMask) {
                     if (player instanceof ServerPlayerEntity) AdvancementHandler.SNEAK_VILLAGE_TRIGGER.trigger((ServerPlayerEntity) player);
                 }
             }
@@ -581,23 +596,33 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     private boolean checkBlocksByFeet() {
         BlockState blockLeft;
         BlockState blockRight;
+        BlockPos posLeft;
+        BlockPos posRight;
         if (direction == 1) {
-            blockLeft = world.getBlockState(new BlockPos(MathHelper.floor(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) + 1));
-            blockRight = world.getBlockState(new BlockPos(MathHelper.floor(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) + 1));
+            posLeft = new BlockPos(MathHelper.floor(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) + 1);
+            posRight = new BlockPos(MathHelper.floor(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) + 1);
+            blockLeft = world.getBlockState(posLeft);
+            blockRight = world.getBlockState(posRight);
         } else if (direction == 2) {
-            blockLeft = world.getBlockState(new BlockPos(MathHelper.floor(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) + 1));
-            blockRight = world.getBlockState(new BlockPos(MathHelper.floor(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) - 1));
+            posLeft = new BlockPos(MathHelper.floor(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) + 1);
+            posRight = new BlockPos(MathHelper.floor(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) - 1);
+            blockLeft = world.getBlockState(posLeft);
+            blockRight = world.getBlockState(posRight);
         } else if (direction == 3) {
-            blockLeft = world.getBlockState(new BlockPos(MathHelper.floor(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) - 1));
-            blockRight = world.getBlockState(new BlockPos(MathHelper.floor(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) - 1));
+            posLeft = new BlockPos(MathHelper.floor(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) - 1);
+            posRight = new BlockPos(MathHelper.floor(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) - 1);
+            blockLeft = world.getBlockState(posLeft);
+            blockRight = world.getBlockState(posRight);
         } else if (direction == 4) {
-            blockLeft = world.getBlockState(new BlockPos(MathHelper.floor(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) - 1));
-            blockRight = world.getBlockState(new BlockPos(MathHelper.floor(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) + 1));
+            posLeft = new BlockPos(MathHelper.floor(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) - 1);
+            posRight = new BlockPos(MathHelper.floor(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) + 1);
+            blockLeft = world.getBlockState(posLeft);
+            blockRight = world.getBlockState(posRight);
         } else {
             return false;
         }
 //        System.out.println(direction + ", " + (MathHelper.floor(posX) - 1) + ", " + Math.round((float) (posY - 1)) + ", " + MathHelper.floor(posZ) + 1);
-        return !(blockLeft.getBlock() instanceof AirBlock && blockRight.getBlock() instanceof AirBlock);
+        return !(blockLeft.getBlock().isAir(blockLeft, world, posLeft) && blockRight.getBlock().isAir(blockRight, world, posRight));
     }
 
     private void spawnExplosionParticles(int amount) {
@@ -607,13 +632,13 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             float vy = rand.nextFloat() * 0.1F - 0.05f;
             float vx = velocity * MathHelper.cos(yaw);
             float vz = velocity * MathHelper.sin(yaw);
-            world.spawnParticle(EnumParticleTypes.FLAME, posX, posY + 1, posZ, vx, vy, vz);
+//            world.spawnParticle(EnumParticleTypes.FLAME, posX, posY + 1, posZ, vx, vy, vz);
         }
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         getDataManager().register(DIRECTION, 0);
         getDataManager().register(DIALOGUE, 0);
         getDataManager().register(ANGRY, false);
@@ -674,29 +699,30 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     }
 
     @Override
-    public void writeEntityToNBT(CompoundNBT compound) {
-        super.writeEntityToNBT(compound);
-        compound.setInteger("direction", getDirection());
+    public void writeAdditional(CompoundNBT compound) {
+        super.writeAdditional(compound);
+        compound.putInt("direction", getDirection());
         ListNBT players = new ListNBT();
         for (UUID uuid : tradedPlayers) {
-            players.appendTag(NBTUtil.createUUIDTag(uuid));
+            players.add(NBTUtil.writeUniqueId(uuid));
         }
-        compound.setTag("players", players);
+        compound.put("players", players);
     }
 
     @Override
-    public void readEntityFromNBT(CompoundNBT compound) {
-        super.readEntityFromNBT(compound);
-        setDirection(compound.getInteger("direction"));
+    public void readAdditional(CompoundNBT compound) {
+        super.readAdditional(compound);
+        setDirection(compound.getInt("direction"));
         tradedPlayers.clear();
-        ListNBT players = compound.getTagList("players", Constants.NBT.TAG_COMPOUND);
-        for (int i = 0; i < players.tagCount(); i++) {
-            tradedPlayers.add(NBTUtil.getUUIDFromTag(players.getCompoundTagAt(i)));
+        ListNBT players = compound.getList("players", Constants.NBT.TAG_COMPOUND);
+        for (int i = 0; i < players.size(); i++) {
+            tradedPlayers.add(NBTUtil.readUniqueId(players.getCompound(i)));
         }
     }
 
+
     @Override
-    protected void playStepSound(BlockPos pos, Block block) {}
+    protected void playStepSound(BlockPos pos, BlockState blockState) {}
 
     private int getTimeUntilSunstrike() {
         float damageRatio = 1 - getHealthRatio();
@@ -753,7 +779,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 
     @Override
     protected boolean processInteract(PlayerEntity player, Hand hand) {
-        if (canTradeWith(player) && getAttackTarget() == null && !isDead) {
+        if (canTradeWith(player) && getAttackTarget() == null && isAlive()) {
             setCustomer(player);
             if (!world.isRemote) {
                 GuiHandler.open(GuiHandler.BARAKO_TRADE, player, this, hasTradedWith(player) ? 1 : 0);
