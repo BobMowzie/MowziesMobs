@@ -17,6 +17,7 @@ import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.*;
+import net.minecraft.entity.ai.controller.BodyController;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.PlayerEntity;
@@ -31,6 +32,7 @@ import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -61,49 +63,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
 
     public EntityBarakoa(EntityType<? extends EntityBarakoa> type, World world) {
         super(type, world);
-        setPathPriority(PathNodeType.WATER, 0);
-        tasks.addTask(0, new SwimGoal(this));
-        tasks.addTask(0, new AnimationActivateAI<>(this, ACTIVATE_ANIMATION));
-        tasks.addTask(0, new AnimationDeactivateAI<>(this, DEACTIVATE_ANIMATION));
-        tasks.addTask(1, new AnimationDieAI<>(this));
-        tasks.addTask(1, new EntityAIAvoidEntity<>(this, EntitySunstrike.class, EntitySunstrike::isStriking, 3, 0.7F));
-        tasks.addTask(2, new AnimationBlockAI<>(this, BLOCK_ANIMATION));
-        tasks.addTask(2, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_BARAKOA_SWING, null, 1, 2.5f, ConfigHandler.MOBS.BARAKOA.combatData.attackMultiplier, 9, true));
-        tasks.addTask(2, new AnimationProjectileAttackAI<EntityBarakoa>(this, PROJECTILE_ATTACK_ANIMATION, 9, MMSounds.ENTITY_BARAKOA_BLOWDART, true) {
-            @Override
-            public void startExecuting() {
-                super.startExecuting();
-                playSound(MMSounds.ENTITY_BARAKOA_INHALE, 0.7f, 1.2f);
-            }
-        });
-        tasks.addTask(3, new AnimationTakeDamage<>(this));
-        tasks.addTask(4, new SimpleAnimationAI<EntityBarakoa>(this, IDLE_ANIMATION, false, true) {
-            private LivingEntity talkTarget;
-
-            @Override
-            public void startExecuting() {
-                super.startExecuting();
-                LivingEntity player = this.entity.world.findNearestEntityWithinAABB(PlayerEntity.class, this.entity.getBoundingBox().grow(8.0D, 3.0D, 8.0D), this.entity);
-                LivingEntity barakoa = this.entity.world.findNearestEntityWithinAABB(EntityBarakoa.class, this.entity.getBoundingBox().grow(8.0D, 3.0D, 8.0D), this.entity);
-                if (player == null) talkTarget = barakoa;
-                else if (barakoa == null) talkTarget = player;
-                else if (rand.nextBoolean()) talkTarget = player;
-                else talkTarget = barakoa;
-            }
-
-            @Override
-            public void updateTask() {
-                super.updateTask();
-                if (talkTarget != null) this.entity.lookController.setLookPosition(this.talkTarget.posX, this.talkTarget.posY + (double)this.talkTarget.getEyeHeight(), this.talkTarget.posZ, (float)this.entity.getHorizontalFaceSpeed(), (float)this.entity.getVerticalFaceSpeed());
-            }
-        });
-        tasks.addTask(4, new MeleeAttackGoal(this, 0.5D, false));
-        tasks.addTask(5, new RandomWalkingGoal(this, 0.4));
-        tasks.addTask(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
-        tasks.addTask(8, new LookAtGoal(this, EntityBarakoa.class, 8.0F));
-        tasks.addTask(8, new LookAtGoal(this, EntityBarako.class, 8.0F));
-        tasks.addTask(8, new LookRandomlyGoal(this));
-        setMask(MaskType.from(MathHelper.getInt(rand, 1, 4)));
+        setMask(MaskType.from(MathHelper.nextInt(rand, 1, 4)));
         stepHeight = 1;
         circleTick += rand.nextInt(200);
         frame += rand.nextInt(50);
@@ -112,7 +72,55 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     }
 
     @Override
-    protected SmartBodyHelper createBodyHelper() {
+    protected void registerGoals() {
+        super.registerGoals();
+        setPathPriority(PathNodeType.WATER, 0);
+        goalSelector.addGoal(0, new SwimGoal(this));
+        goalSelector.addGoal(0, new AnimationActivateAI<>(this, ACTIVATE_ANIMATION));
+        goalSelector.addGoal(0, new AnimationDeactivateAI<>(this, DEACTIVATE_ANIMATION));
+        goalSelector.addGoal(1, new AnimationDieAI<>(this));
+        goalSelector.addGoal(1, new EntityAIAvoidEntity<>(this, EntitySunstrike.class, EntitySunstrike::isStriking, 3, 0.7F));
+        goalSelector.addGoal(2, new AnimationBlockAI<>(this, BLOCK_ANIMATION));
+        goalSelector.addGoal(2, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_BARAKOA_SWING, null, 1, 2.5f, ConfigHandler.MOBS.BARAKOA.combatData.attackMultiplier, 9, true));
+        goalSelector.addGoal(2, new AnimationProjectileAttackAI<EntityBarakoa>(this, PROJECTILE_ATTACK_ANIMATION, 9, MMSounds.ENTITY_BARAKOA_BLOWDART, true) {
+            @Override
+            public void startExecuting() {
+                super.startExecuting();
+                playSound(MMSounds.ENTITY_BARAKOA_INHALE, 0.7f, 1.2f);
+            }
+        });
+        goalSelector.addGoal(3, new AnimationTakeDamage<>(this));
+        goalSelector.addGoal(4, new SimpleAnimationAI<EntityBarakoa>(this, IDLE_ANIMATION, false, true) {
+            private LivingEntity talkTarget;
+            private final EntityPredicate pred = new EntityPredicate().allowFriendlyFire().allowInvulnerable().setLineOfSiteRequired().setDistance(8).setUseInvisibilityCheck();
+
+            @Override
+            public void startExecuting() {
+                super.startExecuting();
+                LivingEntity player = this.entity.world.func_225318_b(PlayerEntity.class, pred, entity, entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ, this.entity.getBoundingBox().grow(8.0D, 3.0D, 8.0D));
+                LivingEntity barakoa = this.entity.world.func_225318_b(EntityBarakoa.class, pred, this.entity, entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ, this.entity.getBoundingBox().grow(8.0D, 3.0D, 8.0D));
+                if (player == null) talkTarget = barakoa;
+                else if (barakoa == null) talkTarget = player;
+                else if (rand.nextBoolean()) talkTarget = player;
+                else talkTarget = barakoa;
+            }
+
+            @Override
+            public void tick() {
+                super.tick();
+                if (talkTarget != null) this.entity.lookController.setLookPosition(this.talkTarget.posX, this.talkTarget.posY + (double)this.talkTarget.getEyeHeight(), this.talkTarget.posZ, (float)this.entity.getHorizontalFaceSpeed(), (float)this.entity.getVerticalFaceSpeed());
+            }
+        });
+        goalSelector.addGoal(4, new MeleeAttackGoal(this, 0.5D, false));
+        goalSelector.addGoal(5, new RandomWalkingGoal(this, 0.4));
+        goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        goalSelector.addGoal(8, new LookAtGoal(this, EntityBarakoa.class, 8.0F));
+        goalSelector.addGoal(8, new LookAtGoal(this, EntityBarako.class, 8.0F));
+        goalSelector.addGoal(8, new LookRandomlyGoal(this));
+    }
+
+    @Override
+    protected BodyController createBodyController() {
         return new SmartBodyHelper(this);
     }
 
@@ -140,13 +148,13 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             return null;
         }
         if (getAttackTarget() == null) {
-            int i = MathHelper.getInt(rand, 0, 11);
+            int i = MathHelper.nextInt(rand, 0, 11);
             if (i < MMSounds.ENTITY_BARAKOA_TALK.size()) {
                 playSound(MMSounds.ENTITY_BARAKOA_TALK.get(i).get(), 1, 1.5f);
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, IDLE_ANIMATION);
             }
         } else {
-            int i = MathHelper.getInt(rand, 0, 7);
+            int i = MathHelper.nextInt(rand, 0, 7);
             if (i < MMSounds.ENTITY_BARAKOA_ANGRY.size()) {
                 playSound(MMSounds.ENTITY_BARAKOA_ANGRY.get(i).get(), 1, 1.6f);
             }
@@ -166,7 +174,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     }
 
     protected void updateAttackAI() {
-        if (!world.isRemote && getAttackTarget() != null && getAttackTarget().isDead) setAttackTarget(null);
+        if (!world.isRemote && getAttackTarget() != null && !getAttackTarget().isAlive()) setAttackTarget(null);
 
         if (timeSinceAttack < 80) {
             timeSinceAttack++;
@@ -200,12 +208,13 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         }
     }
 
+    @Nullable
     @Override
-    public ILivingEntityData onInitialSpawn(DifficultyInstance difficulty, ILivingEntityData data) {
+    public ILivingEntityData onInitialSpawn(IWorld world, DifficultyInstance difficulty, SpawnReason reason, @Nullable ILivingEntityData livingData, @Nullable CompoundNBT compound) {
         if (canHoldVaryingWeapons()) {
             setWeapon(rand.nextInt(3) == 0 ? 1 : 0);
         }
-        return super.onInitialSpawn(difficulty, data);
+        return super.onInitialSpawn(world, difficulty, reason, livingData, compound);
     }
 
     protected boolean canHoldVaryingWeapons() {
@@ -213,25 +222,28 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     }
 
     protected void updateCircling() {
-        if (rand.nextInt(200) == 0) {
-            circleDirection = !circleDirection;
+        LivingEntity target = getAttackTarget();
+        if (target != null) {
+            if (rand.nextInt(200) == 0) {
+                circleDirection = !circleDirection;
+            }
+            if (circleDirection) {
+                circleTick++;
+            } else {
+                circleTick--;
+            }
+            if (!attacking && targetDistance < 4.5) {
+                circleEntity(target, 7, 0.3f, true, circleTick, 0, 1.75f);
+            } else {
+                circleEntity(target, 7, 0.3f, true, circleTick, 0, 1);
+            }
+            attacking = false;
         }
-        if (circleDirection) {
-            circleTick++;
-        } else {
-            circleTick--;
-        }
-        if (!attacking && targetDistance < 4.5) {
-            circleEntity(getAttackTarget(), 7, 0.3f, true, circleTick, 0, 1.75f);
-        } else {
-            circleEntity(getAttackTarget(), 7, 0.3f, true, circleTick, 0, 1);
-        }
-        attacking = false;
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
         if (!world.isRemote && active && !getActive()) {
             setActive(true);
         }
@@ -284,7 +296,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             playSound(MMSounds.ENTITY_BARAKOA_BATTLECRY, 1.5f, 1.5f);
         }
         if (getAttackTarget() != null && ticksWithoutTarget > 3) {
-            cryDelay = MathHelper.getInt(rand, -15, 30);
+            cryDelay = MathHelper.nextInt(rand, -15, 30);
         }
 
         if (getAnimation() == ATTACK_ANIMATION && getAnimationTick() == 5) {
@@ -316,7 +328,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             active = true;
         }
         if (animation == DEACTIVATE_ANIMATION) {
-            setDead();
+            remove();
             ItemBarakoaMask mask = ItemHandler.BARAKOA_MASK_FURY;
             switch (getMask()) {
                 case BLISS:
@@ -336,8 +348,8 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
                     break;
             }
             if (!world.isRemote) {
-                ItemStack item = dropItemWithOffset(mask, 1, 1.5f).getItem();
-                item.setItemDamage((int) Math.ceil((1.0f - getHealthRatio()) * item.getMaxDamage()));
+                ItemStack item = entityDropItem(new ItemStack(mask), 1.5f).getItem();
+                item.setDamage((int) Math.ceil((1.0f - getHealthRatio()) * item.getMaxDamage()));
             }
         }
     }
@@ -348,8 +360,8 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         getDataManager().register(DANCING, false);
         getDataManager().register(MASK, 0);
         getDataManager().register(WEAPON, 0);
@@ -370,7 +382,6 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
 
     public void setMask(MaskType type) {
         getDataManager().set(MASK, type.ordinal());
-        setSize(type.entityWidth, type.entityHeight);
     }
 
     public int getWeapon() {
@@ -390,24 +401,24 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     }
 
     @Override
-    public void writeEntityToNBT(CompoundNBT compound) {
-        super.writeEntityToNBT(compound);
-        compound.setInteger("mask", getMask().ordinal());
-        compound.setInteger("weapon", getWeapon());
+    public void writeAdditional(CompoundNBT compound) {
+        super.writeAdditional(compound);
+        compound.putInt("mask", getMask().ordinal());
+        compound.putInt("weapon", getWeapon());
     }
 
     @Override
-    public void readEntityFromNBT(CompoundNBT compound) {
-        super.readEntityFromNBT(compound);
-        setMask(MaskType.from(compound.getInteger("mask")));
-        setWeapon(compound.getInteger("weapon"));
+    public void readAdditional(CompoundNBT compound) {
+        super.readAdditional(compound);
+        setMask(MaskType.from(compound.getInt("mask")));
+        setWeapon(compound.getInt("weapon"));
     }
 
     @Override
     public void attackEntityWithRangedAttack(LivingEntity target, float p_82196_2_) {
         AbstractArrowEntity dart = new EntityDart(this.world, this);
         double dx = target.posX - this.posX;
-        double dy = target.getBoundingBox().minY + (double)(target.height / 3.0F) - dart.posY;
+        double dy = target.getBoundingBox().minY + (double)(target.getHeight() / 3.0F) - dart.posY;
         double dz = target.posZ - this.posZ;
         double dist = (double)MathHelper.sqrt(dx * dx + dz * dz);
         dart.shoot(dx, dy + dist * 0.2D, dz, 1.6F, 1);
@@ -425,13 +436,8 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
 
         dart.setDamage(dart.getDamage() * ConfigHandler.MOBS.BARAKOA.combatData.attackMultiplier);
 
-        this.world.spawnEntity(dart);
+        this.world.addEntity(dart);
         attacking = false;
-    }
-
-    @Override
-    public void setSwingingArms(boolean swingingArms) {
-    	// TODO
     }
 
     @Override

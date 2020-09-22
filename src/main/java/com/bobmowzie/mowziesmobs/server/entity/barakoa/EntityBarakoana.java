@@ -3,10 +3,9 @@ package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaAttackTargetAI;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
@@ -15,14 +14,12 @@ import net.minecraft.entity.monster.SkeletonEntity;
 import net.minecraft.entity.monster.ZombieEntity;
 import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.World;
-import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraft.world.*;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,17 +30,22 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
 
     public EntityBarakoana(EntityType<? extends EntityBarakoana> type, World world) {
         super(type, world);
-        this.targetTasks.addTask(3, new BarakoaHurtByTargetAI(this, true));
-        this.targetTasks.addTask(5, new NearestAttackableTargetGoal<>(this, CowEntity.class, 0, true, false, null));
-        this.targetTasks.addTask(5, new NearestAttackableTargetGoal<>(this, PigEntity.class, 0, true, false, null));
-        this.targetTasks.addTask(5, new NearestAttackableTargetGoal<>(this, SheepEntity.class, 0, true, false, null));
-        this.targetTasks.addTask(5, new NearestAttackableTargetGoal<>(this, ChickenEntity.class, 0, true, false, null));
-        this.targetTasks.addTask(5, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, true, false, null));
-        this.targetTasks.addTask(5, new NearestAttackableTargetGoal<>(this, SkeletonEntity.class, 0, true, false, null));
-        this.targetTasks.addTask(6, new AvoidEntityGoal(this, CreeperEntity.class, 6.0F, 1.0D, 1.2D));
-        this.targetTasks.addTask(3, new BarakoaAttackTargetAI(this, PlayerEntity.class, 0, true, false));
         this.setMask(MaskType.FURY);
         this.experienceValue = 12;
+    }
+
+    @Override
+    protected void registerGoals() {
+        super.registerGoals();
+        this.targetSelector.addGoal(3, new BarakoaHurtByTargetAI(this, true));
+        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, CowEntity.class, 0, true, false, null));
+        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, PigEntity.class, 0, true, false, null));
+        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, SheepEntity.class, 0, true, false, null));
+        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, ChickenEntity.class, 0, true, false, null));
+        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, true, false, null));
+        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, SkeletonEntity.class, 0, true, false, null));
+        this.targetSelector.addGoal(6, new AvoidEntityGoal<>(this, CreeperEntity.class, 6.0F, 1.0D, 1.2D));
+        this.targetSelector.addGoal(3, new BarakoaAttackTargetAI(this, PlayerEntity.class, 0, true, false));
     }
 
     @Override
@@ -52,8 +54,8 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
 
         for (int i = 0; i < pack.size(); i++) {
             pack.get(i).index = i;
@@ -74,26 +76,25 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
 
         if (!this.world.isRemote && this.world.getDifficulty() == Difficulty.PEACEFUL)
         {
-            this.setDead();
+            this.remove();
         }
     }
 
     @Override
-    public void setDead() {
+    public void remove() {
         if (ticksExisted == 0) {
             pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
         }
-        super.setDead();
+        super.remove();
     }
 
     @Override
-    public boolean isNotColliding()
-    {
+    public boolean isNotColliding(IWorldReader worldReader) {
         if (ticksExisted == 0) {
-            return !this.world.containsAnyLiquid(this.getBoundingBox()) && this.world.getCollisionBoxes(this, this.getBoundingBox()).isEmpty();
+            return !worldReader.containsAnyLiquid(this.getBoundingBox()) && worldReader.areCollisionShapesEmpty(this);
         }
         else {
-            return !this.world.containsAnyLiquid(this.getBoundingBox()) && this.world.getCollisionBoxes(this, this.getBoundingBox()).isEmpty() && this.world.checkNoEntityCollision(this.getBoundingBox(), this);
+            return !worldReader.containsAnyLiquid(this.getBoundingBox()) && worldReader.areCollisionShapesEmpty(this) && this.world.checkNoEntityCollision(this);
         }
     }
 
@@ -145,18 +146,19 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
         return pack.size();
     }
 
+    @Nullable
     @Override
-    public ILivingEntityData onInitialSpawn(DifficultyInstance difficulty, ILivingEntityData data) {
+    public ILivingEntityData onInitialSpawn(IWorld world, DifficultyInstance difficulty, SpawnReason reason, @Nullable ILivingEntityData livingData, @Nullable CompoundNBT compound) {
         int size = rand.nextInt(2) + 3;
         float theta = (2 * (float) Math.PI / size);
         for (int i = 0; i <= size; i++) {
-            EntityBarakoanToBarakoana tribeHunter = new EntityBarakoanToBarakoana(world, this);
+            EntityBarakoanToBarakoana tribeHunter = new EntityBarakoanToBarakoana(EntityHandler.BARAKOAN_TO_BARAKOANA, this.world, this);
             tribeHunter.setPosition(posX + 0.1 * MathHelper.cos(theta * i), posY, posZ + 0.1 * MathHelper.sin(theta * i));
             int weapon = rand.nextInt(3) == 0 ? 1 : 0;
             tribeHunter.setWeapon(weapon);
-            world.spawnEntity(tribeHunter);
+            world.addEntity(tribeHunter);
         }
-        return super.onInitialSpawn(difficulty, data);
+        return super.onInitialSpawn(world, difficulty, reason, livingData, compound);
     }
 
     @Override
@@ -171,14 +173,14 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
     }
 
     @Override
-    public boolean getCanSpawnHere() {
+    public boolean canSpawn(IWorld world, SpawnReason reason) {
         List<LivingEntity> nearby = getEntityLivingBaseNearby(20, 4, 20, 20);
         for (LivingEntity nearbyEntity : nearby) {
             if (nearbyEntity instanceof EntityBarakoana || nearbyEntity instanceof VillagerEntity || nearbyEntity instanceof EntityBarako || nearbyEntity instanceof AnimalEntity) {
                 return false;
             }
         }
-        return super.getCanSpawnHere() && world.getDifficulty() != Difficulty.PEACEFUL;
+        return super.canSpawn(world, reason) && world.getDifficulty() != Difficulty.PEACEFUL;
     }
 
     public int getMaxSpawnedInChunk()
@@ -187,33 +189,29 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
     }
 
     @Override
-    protected void despawnEntity() {
-        Event.Result result;
-        if (isNoDespawnRequired()) {
-        	idleTime = 0;
-        } else if ((idleTime & 0x1F) == 0x1F && (result = ForgeEventFactory.canEntityDespawn(this)) != Event.Result.DEFAULT) {
-            if (result == Event.Result.DENY) {
-            	idleTime = 0;
-            } else {
-                pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
-                setDead();
+    protected void checkDespawn() {
+        if (!this.isNoDespawnRequired() && !this.preventDespawn()) {
+            Entity entity = this.world.getClosestPlayer(this, -1.0D);
+            net.minecraftforge.eventbus.api.Event.Result result = net.minecraftforge.event.ForgeEventFactory.canEntityDespawn(this);
+            if (result == net.minecraftforge.eventbus.api.Event.Result.DENY) {
+                idleTime = 0;
+                entity = null;
+            } else if (result == net.minecraftforge.eventbus.api.Event.Result.ALLOW) {
+                this.remove();
+                entity = null;
             }
-        } else {
-            PlayerEntity closestPlayer = world.getClosestPlayerToEntity(this, -1);
-            if (closestPlayer != null) {
-                double dX = closestPlayer.posX - posX;
-                double dY = closestPlayer.posY - posY;
-                double dZ = closestPlayer.posZ - posZ;
-                double distance = dX * dX + dY * dY + dZ * dZ;
-                if (canDespawn() && distance > 16384) {
+            if (entity != null) {
+                double d0 = entity.getDistanceSq(this);
+                if (d0 > 16384.0D && this.canDespawn(d0)) {
                     pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
-                    setDead();
+                    this.remove();
                 }
-                if (idleTime > 600 && rand.nextInt(800) == 0 && distance > 1024 && canDespawn()) {
+
+                if (this.idleTime > 600 && this.rand.nextInt(800) == 0 && d0 > 1024.0D && this.canDespawn(d0)) {
                     pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
-                    setDead();
-                } else if (distance < 1024) {
-                	idleTime = 0;
+                    this.remove();
+                } else if (d0 < 1024.0D) {
+                    this.idleTime = 0;
                 }
             }
         }

@@ -3,7 +3,6 @@ package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.EntityDart;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
-import com.google.common.base.Optional;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -14,10 +13,11 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarakoa {
-    protected static final Optional<UUID> ABSENT_LEADER = Optional.absent();
+    protected static final Optional<UUID> ABSENT_LEADER = Optional.empty();
 
     private static final DataParameter<Optional<UUID>> LEADER = EntityDataManager.createKey(EntityBarakoan.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 
@@ -43,8 +43,8 @@ public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarak
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         getDataManager().register(LEADER, ABSENT_LEADER);
     }
 
@@ -66,24 +66,25 @@ public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarak
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
         if (leader == null && getLeaderUUID().isPresent()) {
             leader = getLeader();
             if (leader != null) {
                 addAsPackMember();
             }
         }
-        if (shouldSetDead) setDead();
+        if (shouldSetDead) remove();
     }
 
     @Override
     protected void updateCircling() {
-        if (leader != null) {
+        LivingEntity target = getAttackTarget();
+        if (leader != null && target != null) {
             if (!attacking && targetDistance < 5) {
-                this.circleEntity(getAttackTarget(), 7, 0.3f, true, getTribeCircleTick(), (float) ((index + 1) * (Math.PI * 2) / (getPackSize() + 1)), 1.75f);
+                this.circleEntity(target, 7, 0.3f, true, getTribeCircleTick(), (float) ((index + 1) * (Math.PI * 2) / (getPackSize() + 1)), 1.75f);
             } else {
-                this.circleEntity(getAttackTarget(), 7, 0.3f, true, getTribeCircleTick(), (float) ((index + 1) * (Math.PI * 2) / (getPackSize() + 1)), 1);
+                this.circleEntity(target, 7, 0.3f, true, getTribeCircleTick(), (float) ((index + 1) * (Math.PI * 2) / (getPackSize() + 1)), 1);
             }
         } else {
             super.updateCircling();
@@ -103,11 +104,11 @@ public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarak
     }
 
     @Override
-    public void setDead() {
+    public void remove() {
         if (leader != null) {
             removeAsPackMember();
         }
-        super.setDead();
+        super.remove();
     }
 
     public L getLeader() {
@@ -124,8 +125,8 @@ public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarak
     }
 
     @Override
-    protected boolean canDespawn() {
-        return leader == null;
+    public boolean preventDespawn() {
+        return leader != null;
     }
 
     protected abstract int getTribeCircleTick();
@@ -137,17 +138,17 @@ public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarak
     protected abstract void removeAsPackMember();
 
     @Override
-    public void writeEntityToNBT(CompoundNBT compound) {
-        super.writeEntityToNBT(compound);
+    public void writeAdditional(CompoundNBT compound) {
+        super.writeAdditional(compound);
         Optional<UUID> leader = getLeaderUUID();
         if (leader.isPresent()) {
-            compound.setString("leaderUUID", leader.get().toString());
+            compound.putString("leaderUUID", leader.get().toString());
         }
     }
 
     @Override
-    public void readEntityFromNBT(CompoundNBT compound) {
-        super.readEntityFromNBT(compound);
+    public void readAdditional(CompoundNBT compound) {
+        super.readAdditional(compound);
         String uuid = compound.getString("leaderUUID");
         if (uuid.isEmpty()) {
             setLeaderUUID(ABSENT_LEADER);

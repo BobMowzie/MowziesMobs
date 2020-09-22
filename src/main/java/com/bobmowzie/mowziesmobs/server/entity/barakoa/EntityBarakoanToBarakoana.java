@@ -21,19 +21,24 @@ public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> i
 
     public EntityBarakoanToBarakoana(EntityType<? extends EntityBarakoanToBarakoana> type, World world, EntityBarakoana leader) {
         super(type, world, EntityBarakoana.class, leader);
-        this.targetTasks.addTask(3, new BarakoaHurtByTargetAI(this, true));
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    protected void registerGoals() {
+        super.registerGoals();
+        this.goalSelector.addGoal(3, new BarakoaHurtByTargetAI(this, true));
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
         if (leader != null) {
             setAttackTarget(leader.getAttackTarget());
         }
 
         if (!this.world.isRemote && this.world.getDifficulty() == Difficulty.PEACEFUL)
         {
-            this.setDead();
+            this.remove();
         }
     }
 
@@ -80,11 +85,11 @@ public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> i
         this.setLeaderUUID(ABSENT_LEADER);
         this.leader = null;
         this.setAttackTarget(null);
-        this.targetTasks.addTask(4, new BarakoaAttackTargetAI(this, PlayerEntity.class, 0, true, false));
-        this.targetTasks.addTask(5, new NearestAttackableTargetGoal<>(this, CowEntity.class, 0, true, false, null));
-        this.targetTasks.addTask(5, new NearestAttackableTargetGoal<>(this, PigEntity.class, 0, true, false, null));
-        this.targetTasks.addTask(5, new NearestAttackableTargetGoal<>(this, SheepEntity.class, 0, true, false, null));
-        this.targetTasks.addTask(5, new NearestAttackableTargetGoal<>(this, ChickenEntity.class, 0, true, false, null));
-        this.targetTasks.addTask(5, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, true, false, null));
+        this.goalSelector.addGoal(4, new BarakoaAttackTargetAI(this, PlayerEntity.class, 0, true, false));
+        this.goalSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, CowEntity.class, 0, true, false, null));
+        this.goalSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, PigEntity.class, 0, true, false, null));
+        this.goalSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, SheepEntity.class, 0, true, false, null));
+        this.goalSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, ChickenEntity.class, 0, true, false, null));
+        this.goalSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, true, false, null));
     }
 }

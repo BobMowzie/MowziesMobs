@@ -7,10 +7,8 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import com.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.IEntityOwnable;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
@@ -22,7 +20,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> implements IEntityOwnable {
+public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
     public EntityBarakoanToPlayer(EntityType<? extends EntityBarakoanToPlayer> type, World world) {
         this(type, world, null);
     }
@@ -33,8 +31,8 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> impleme
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
     }
 
     @Override
@@ -96,13 +94,11 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> impleme
     }
 
     @Nullable
-    @Override
     public UUID getOwnerId() {
         return getLeader() == null ? null : getLeader().getUniqueID();
     }
 
     @Nullable
-    @Override
     public Entity getOwner() {
         return leader;
     }
@@ -111,6 +107,6 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> impleme
     {
         BlockPos blockpos = new BlockPos(x + xOffset, y - 1, z + zOffset);
         BlockState iblockstate = this.world.getBlockState(blockpos);
-        return iblockstate.getBlockFaceShape(this.world, blockpos, Direction.DOWN) == BlockFaceShape.SOLID && iblockstate.canEntitySpawn(this) && this.world.isAirBlock(blockpos.up()) && this.world.isAirBlock(blockpos.up(2));
+        return iblockstate.canEntitySpawn(this.world, blockpos, this.getType()) && this.world.isAirBlock(blockpos.up()) && this.world.isAirBlock(blockpos.up(2));
     }
 }

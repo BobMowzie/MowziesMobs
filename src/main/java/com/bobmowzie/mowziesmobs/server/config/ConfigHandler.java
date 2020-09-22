@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.server.config;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArmorItem.ArmorMaterial;
+import net.minecraft.item.ArmorItem.IArmorMaterial;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.Config.*;
