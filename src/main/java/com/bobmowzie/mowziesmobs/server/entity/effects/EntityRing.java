@@ -1,8 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MoverType;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.IPacket;
+import net.minecraft.network.play.server.SSpawnObjectPacket;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -17,12 +20,12 @@ public class EntityRing extends Entity {
     public Vec3d facing;
     public int duration;
 
-    public EntityRing(World world) {
-        super(world);
+    public EntityRing(EntityType<? extends EntityRing> type, World world) {
+        super(type, world);
     }
 
-    public EntityRing(World world, float x, float y, float z, Vec3d facing, int duration, float r, float g, float b, float opacity, float size, boolean facesCamera) {
-        this(world);
+    public EntityRing(EntityType<? extends EntityRing> type, World world, float x, float y, float z, Vec3d facing, int duration, float r, float g, float b, float opacity, float size, boolean facesCamera) {
+        this(type, world);
         this.setPosition(x, y, z);
         this.facing = facing;
         this.duration = duration;
@@ -40,25 +43,30 @@ public class EntityRing extends Entity {
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
-        if (ticksExisted >= duration) setDead();
-        move(MoverType.SELF, motionX, motionY, motionZ);
+    public void tick() {
+        super.tick();
+        if (ticksExisted >= duration) remove();
+        move(MoverType.SELF, getMotion());
     }
 
     @Override
-    protected void entityInit() {
-
-    }
-
-    @Override
-    protected void readEntityFromNBT(CompoundNBT compound) {
+    protected void registerData() {
 
     }
 
     @Override
-    protected void writeEntityToNBT(CompoundNBT compound) {
+    protected void readAdditional(CompoundNBT compound) {
 
+    }
+
+    @Override
+    protected void writeAdditional(CompoundNBT compound) {
+
+    }
+
+    @Override
+    public IPacket<?> createSpawnPacket() {
+        return new SSpawnObjectPacket();
     }
 
     public float interpolate(float delta) {

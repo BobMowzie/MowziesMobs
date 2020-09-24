@@ -11,19 +11,18 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.network.play.server.SSpawnObjectPacket;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -50,13 +49,13 @@ public class EntitySolarBeam extends Entity {
 
     private static final DataParameter<Integer> CASTER = EntityDataManager.createKey(EntitySolarBeam.class, DataSerializers.VARINT);
 
-    public EntitySolarBeam(IWorld world) {
-        super(world);
+    public EntitySolarBeam(EntityType<? extends EntitySolarBeam> type, World world) {
+        super(type, world);
         ignoreFrustumCheck = true;
     }
 
-    public EntitySolarBeam(World world, LivingEntity caster, double x, double y, double z, float yaw, float pitch, int duration) {
-        this(world);
+    public EntitySolarBeam(EntityType<? extends EntitySolarBeam> type, World world, LivingEntity caster, double x, double y, double z, float yaw, float pitch, int duration) {
+        this(type, world);
         this.caster = caster;
         this.setYaw(yaw);
         this.setPitch(pitch);
@@ -70,8 +69,8 @@ public class EntitySolarBeam extends Entity {
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
         if (ticksExisted == 1 && world.isRemote) {
             caster = (LivingEntity) world.getEntityByID(getCasterID());
         }
@@ -80,7 +79,7 @@ public class EntitySolarBeam extends Entity {
         }
 
         if (!on && appear.getTimer() == 0) {
-            this.setDead();
+            this.remove();
         }
         if (on && ticksExisted > 20) {
             appear.increaseTimer();
@@ -88,7 +87,7 @@ public class EntitySolarBeam extends Entity {
             appear.decreaseTimer();
         }
 
-        if (caster != null && caster.isDead) setDead();
+        if (caster != null && !caster.isAlive()) remove();
 
         if (world.isRemote && ticksExisted <= 10) {
             int particleCount = 8;
@@ -179,15 +178,15 @@ public class EntitySolarBeam extends Entity {
             float motionY = rand.nextFloat() * 0.08F;
             float motionX = velocity * MathHelper.cos(yaw);
             float motionZ = velocity * MathHelper.sin(yaw);
-            world.spawnParticle(EnumParticleTypes.FLAME, collidePosX, collidePosY + 0.1, collidePosZ, motionX, motionY, motionZ);
+//            world.spawnParticle(EnumParticleTypes.FLAME, collidePosX, collidePosY + 0.1, collidePosZ, motionX, motionY, motionZ);
         }
         for (int i = 0; i < amount / 2; i++) {
-            world.spawnParticle(EnumParticleTypes.LAVA, collidePosX, collidePosY + 0.1, collidePosZ, 0, 0, 0);
+//            world.spawnParticle(EnumParticleTypes.LAVA, collidePosX, collidePosY + 0.1, collidePosZ, 0, 0, 0);
         }
     }
 
     @Override
-    protected void entityInit() {
+    protected void registerData() {
         getDataManager().register(YAW, 0F);
         getDataManager().register(PITCH, 0F);
         getDataManager().register(DURATION, 0);
@@ -236,15 +235,15 @@ public class EntitySolarBeam extends Entity {
     }
 
     @Override
-    public boolean writeToNBTOptional(CompoundNBT compound) {
-        return false;
+    protected void readAdditional(CompoundNBT nbt) {}
+
+    @Override
+    protected void writeAdditional(CompoundNBT nbt) {}
+
+    @Override
+    public IPacket<?> createSpawnPacket() {
+        return new SSpawnObjectPacket();
     }
-
-    @Override
-    protected void readEntityFromNBT(CompoundNBT nbt) {}
-
-    @Override
-    protected void writeEntityToNBT(CompoundNBT nbt) {}
 
     private void calculateEndPos() {
         endPosX = posX + RADIUS * Math.cos(getYaw()) * Math.cos(getPitch());
@@ -254,12 +253,13 @@ public class EntitySolarBeam extends Entity {
 
     public HitResult raytraceEntities(World world, Vec3d from, Vec3d to, boolean stopOnLiquid, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock) {
         HitResult result = new HitResult();
-        result.setBlockHit(world.rayTraceBlocks(new Vec3d(from.x, from.y, from.z), to, stopOnLiquid, ignoreBlockWithoutBoundingBox, returnLastUncollidableBlock));
+        result.setBlockHit(world.rayTraceBlocks(new RayTraceContext(from, to, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this)));
         if (result.blockHit != null) {
-            collidePosX = result.blockHit.hitVec.x;
-            collidePosY = result.blockHit.hitVec.y;
-            collidePosZ = result.blockHit.hitVec.z;
-            blockSide = result.getBlockHit().sideHit;
+            Vec3d hitVec = result.blockHit.getHitVec();
+            collidePosX = hitVec.x;
+            collidePosY = hitVec.y;
+            collidePosZ = hitVec.z;
+            blockSide = result.blockHit.getFace();
         } else {
             collidePosX = endPosX;
             collidePosY = endPosY;
@@ -273,10 +273,10 @@ public class EntitySolarBeam extends Entity {
             }
             float pad = entity.getCollisionBorderSize() + 0.5f;
             AxisAlignedBB aabb = entity.getBoundingBox().grow(pad, pad, pad);
-            RayTraceResult hit = aabb.calculateIntercept(from, to);
+            boolean hit = aabb.intersects(from, to);
             if (aabb.contains(from)) {
                 result.addEntityHit(entity);
-            } else if (hit != null) {
+            } else if (hit) {
                 result.addEntityHit(entity);
             }
         }
@@ -305,16 +305,17 @@ public class EntitySolarBeam extends Entity {
     }
 
     public static class HitResult {
-        private RayTraceResult blockHit;
+        private BlockRayTraceResult blockHit;
 
         private List<LivingEntity> entities = new ArrayList<>();
 
-        public RayTraceResult getBlockHit() {
+        public BlockRayTraceResult getBlockHit() {
             return blockHit;
         }
 
-        public void setBlockHit(RayTraceResult blockHit) {
-            this.blockHit = blockHit;
+        public void setBlockHit(RayTraceResult rayTraceResult) {
+            if (rayTraceResult.getType() == RayTraceResult.Type.BLOCK)
+                this.blockHit = (BlockRayTraceResult) rayTraceResult.hitInfo;
         }
 
         public void addEntityHit(LivingEntity entity) {

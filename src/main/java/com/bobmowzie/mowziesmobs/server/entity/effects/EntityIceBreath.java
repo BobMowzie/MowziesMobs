@@ -12,7 +12,7 @@ import com.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -32,35 +32,34 @@ public class EntityIceBreath extends EntityMagicEffect {
     private static final int ARC = 45;
     private static final int DAMAGE_PER_HIT = 1;
 
-    public EntityIceBreath(World world) {
-        super(world);
-        setSize(0, 0);
+    public EntityIceBreath(EntityType<? extends EntityIceBall> type, World world) {
+        super(type, world);
     }
 
-    public EntityIceBreath(World world, LivingEntity caster) {
-        super(world);
-        setSize(0, 0);
+    public EntityIceBreath(EntityType<? extends EntityIceBall> type, World world, LivingEntity caster) {
+        super(type, world);
         if (!world.isRemote) {
             this.setCasterID(caster.getEntityId());
         }
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
         if (ticksExisted == 1) {
             if (world.isRemote) {
                 MowziesMobs.PROXY.playIceBreathSound(this);
             }
         }
-        if (caster != null && caster.isDead) this.setDead();
+        if (caster != null && !caster.isAlive()) this.remove();
         if (ticksExisted == 1) playSound(MMSounds.ENTITY_FROSTMAW_ICEBREATH_START, 1, 0.6f);
         if (caster instanceof PlayerEntity) {
-            rotationYaw = ((PlayerEntity) caster).rotationYaw;
-            rotationPitch = ((PlayerEntity) caster).rotationPitch;
-            posX = ((PlayerEntity) caster).posX;
-            posY = ((PlayerEntity) caster).posY + ((PlayerEntity) caster).eyeHeight - 0.5f;
-            posZ = ((PlayerEntity) caster).posZ;
+            PlayerEntity player = (PlayerEntity) caster;
+            rotationYaw = player.rotationYaw;
+            rotationPitch = player.rotationPitch;
+            posX = player.posX;
+            posY = player.posY + player.getStandingEyeHeight(player.getPose(), player.getSize(player.getPose())) - 0.5f;
+            posZ = player.posZ;
         }
 
         float yaw = (float) Math.toRadians(-rotationYaw);
@@ -72,8 +71,7 @@ public class EntityIceBreath extends EntityMagicEffect {
         float zComp = (float) (Math.cos(yaw) * Math.cos(pitch));
         if (world.isRemote) {
             if (ticksExisted % 8 == 0) {
-                if (world.isRemote)
-                    MMParticle.RING.spawn(world, posX, posY, posZ, ParticleFactory.ParticleArgs.get().withData(yaw, -pitch, 40, 1f, 1f, 1f, 1f, 110f * spread, false, 0.5f * xComp, 0.5f * yComp, 0.5f * zComp));
+                MMParticle.RING.spawn(world, posX, posY, posZ, ParticleFactory.ParticleArgs.get().withData(yaw, -pitch, 40, 1f, 1f, 1f, 1f, 110f * spread, false, 0.5f * xComp, 0.5f * yComp, 0.5f * zComp));
             }
 
             for (int i = 0; i < 6; i++) {
@@ -93,7 +91,7 @@ public class EntityIceBreath extends EntityMagicEffect {
         if (ticksExisted > 10) hitEntities();
         if (ticksExisted > 10) freezeBlocks();
 
-        if (ticksExisted > 65 && !(caster instanceof PlayerEntity)) setDead();
+        if (ticksExisted > 65 && !(caster instanceof PlayerEntity)) remove();
     }
 
     public void hitEntities() {
@@ -105,8 +103,8 @@ public class EntityIceBreath extends EntityMagicEffect {
             if (entityHit == caster) continue;
 
             List<String> freezeImmune = Arrays.asList(ConfigHandler.GENERAL.freeze_blacklist);
-            ResourceLocation mobName = EntityList.getKey(entityHit);
-            if (mobName != null && freezeImmune.contains(mobName.toString())) continue;
+            ResourceLocation mobName = EntityType.getKey(entityHit.getType());
+            if (freezeImmune.contains(mobName.toString())) continue;
 
             float entityHitYaw = (float) ((Math.atan2(entityHit.posZ - posZ, entityHit.posX - posX) * (180 / Math.PI) - 90) % 360);
             float entityAttackingYaw = rotationYaw % 360;
@@ -136,8 +134,7 @@ public class EntityIceBreath extends EntityMagicEffect {
             boolean pitchCheck = (entityRelativePitch <= ARC / 2f && entityRelativePitch >= -ARC / 2f) || (entityRelativePitch >= 360 - ARC / 2f || entityRelativePitch <= -360 + ARC / 2f);
             if (inRange && yawCheck && pitchCheck) {
                 if (entityHit.attackEntityFrom(DamageSource.causeIndirectMagicDamage(this, caster), damage)) {
-                    entityHit.motionZ *= 0.5;
-                    entityHit.motionX *= 0.5;
+                    entityHit.setMotion(entityHit.getMotion().mul(0.5, 1, 0.5));
                     MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entityHit, MowzieLivingProperties.class);
                     if (property != null) property.addFreezeProgress(entityHit, 0.23f);
                 }
@@ -197,16 +194,16 @@ public class EntityIceBreath extends EntityMagicEffect {
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double dX, double dY, double dZ, double r) {
-        return world.getEntitiesWithinAABB(entityClass, getBoundingBox().grow(dX, dY, dZ), e -> e != this && getDistance(e) <= r + e.width / 2f && e.posY <= posY + dY);
+        return world.getEntitiesWithinAABB(entityClass, getBoundingBox().grow(dX, dY, dZ), e -> e != this && getDistance(e) <= r + e.getWidth() / 2f && e.posY <= posY + dY);
     }
 
     @Override
-    protected void readEntityFromNBT(CompoundNBT compound) {
+    protected void readAdditional(CompoundNBT compound) {
 
     }
 
     @Override
-    protected void writeEntityToNBT(CompoundNBT compound) {
+    protected void writeAdditional(CompoundNBT compound) {
 
     }
 }

@@ -6,6 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.FallingBlockEntity;
@@ -13,6 +14,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.IPacket;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -39,12 +41,12 @@ public class EntityAxeAttack extends EntityMagicEffect {
     private float quakeAngle = 0;
     private AxisAlignedBB quakeBB = new AxisAlignedBB(0, 0, 0, 1, 1, 1);
 
-    public EntityAxeAttack(World world) {
-        super(world);
+    public EntityAxeAttack(EntityType<? extends EntityAxeAttack> type, World world) {
+        super(type, world);
     }
 
-    public EntityAxeAttack(World world, LivingEntity caster, boolean vertical) {
-        this(world);
+    public EntityAxeAttack(EntityType<? extends EntityAxeAttack> type, World world, LivingEntity caster, boolean vertical) {
+        this(type, world);
         if (!world.isRemote) {
             this.setCasterID(caster.getEntityId());
         }
@@ -52,15 +54,15 @@ public class EntityAxeAttack extends EntityMagicEffect {
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
         getDataManager().register(VERTICAL, false);
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
-        if (caster != null && caster.isDead) setDead();
+    public void tick() {
+        super.tick();
+        if (caster != null && !caster.isAlive()) remove();
         if (caster != null) {
             setPositionAndRotation(caster.posX, caster.posY, caster.posZ, caster.rotationYaw, caster.rotationPitch);
             prevRotationYaw = rotationYaw;
@@ -105,14 +107,16 @@ public class EntityAxeAttack extends EntityMagicEffect {
                         if (entity instanceof LivingEntity) {
                             if (caster instanceof PlayerEntity) entity.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) caster), (factor * 5 + 1) * (ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolData.attackDamage / 9.0f));
                             else entity.attackEntityFrom(DamageSource.causeMobDamage(caster), (factor * 5 + 1) * (ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolData.attackDamage / 9.0f));
-                            knockbackResistance = (float) ((LivingEntity)entity).getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).getAttributeValue();
+                            knockbackResistance = (float) ((LivingEntity)entity).getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).getValue();
                         }
                         double magnitude = -0.2;
-                        entity.motionX += vx * (1 - factor) * magnitude * (1 - knockbackResistance);
+                        double x = vx * (1 - factor) * magnitude * (1 - knockbackResistance);
+                        double y = 0;
                         if (entity.onGround) {
-                            entity.motionY += 0.15 * (1 - knockbackResistance);
+                            y += 0.15 * (1 - knockbackResistance);
                         }
-                        entity.motionZ += vz * (1 - factor) * magnitude * (1 - knockbackResistance);
+                        double z = vz * (1 - factor) * magnitude * (1 - knockbackResistance);
+                        entity.setMotion(entity.getMotion().add(x, y, z));
                         if (entity instanceof ServerPlayerEntity) {
                             ((ServerPlayerEntity) entity).connection.sendPacket(new SEntityVelocityPacket(entity));
                         }
@@ -125,20 +129,19 @@ public class EntityAxeAttack extends EntityMagicEffect {
                         BlockPos belowPos = new BlockPos(pos).down();
                         if (world.isAirBlock(abovePos) && !world.isAirBlock(belowPos)) {
                             BlockState block = world.getBlockState(pos);
-                            if (block.getMaterial() != Material.AIR && block.isBlockNormalCube() && block != Blocks.BEDROCK && !block.getBlock().hasTileEntity(block)) {
+                            if (block.getMaterial() != Material.AIR && block.isNormalCube(world, pos) && block.getBlock() != Blocks.BEDROCK && !block.getBlock().hasTileEntity(block)) {
                                 FallingBlockEntity fallingBlock = new FallingBlockEntity(world, hitX + 0.5, hitY + 0.5, hitZ + 0.5, block);
-                                fallingBlock.motionX = 0;
-                                fallingBlock.motionY = 0.1;
-                                fallingBlock.motionZ = 0;
+                                fallingBlock.setMotion(0, 0.1, 0);
                                 fallingBlock.fallTime = 2;
-                                world.spawnEntity(fallingBlock);
-                                world.setBlockToAir(pos);
+                                world.addEntity(fallingBlock);
+                                world.removeBlock(pos, false);
                                 int amount = 6 + world.rand.nextInt(10);
                                 int stateId = Block.getStateId(block);
                                 while (amount-- > 0) {
                                     double cx = px + world.rand.nextFloat() * 2 - 1;
                                     double cy = getBoundingBox().minY + 0.1 + world.rand.nextFloat() * 0.3;
                                     double cz = pz + world.rand.nextFloat() * 2 - 1;
+//                                    world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, cx, cy, cz, 0, vx, 0.4 + world.rand.nextFloat() * 0.2F, vz, 1, stateId);
                                 }
                             }
                         }
@@ -149,12 +152,13 @@ public class EntityAxeAttack extends EntityMagicEffect {
                             double velX = vx * 0.075;
                             double velY = factor * 0.3 + 0.025;
                             double velZ = vz * 0.075;
+//                            world.spawnParticle(EnumParticleTypes.CLOUD, px + world.rand.nextFloat() * 2 - 1, entity.getBoundingBox().minY + 0.1 + world.rand.nextFloat() * 1.5, pz + world.rand.nextFloat() * 2 - 1, 0, velX, velY, velZ, 1);
                         }
                     }
                 }
             }
         }
-        if (ticksExisted > SWING_DURATION_HOR) setDead();
+        if (ticksExisted > SWING_DURATION_HOR) remove();
     }
 
     private void dealDamage(float damage, float range, float arc, float knockback) {
@@ -174,24 +178,13 @@ public class EntityAxeAttack extends EntityMagicEffect {
             if (entityHit != caster && entityHitDistance <= range && entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2 || entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2) {
                 if (caster instanceof PlayerEntity) ((PlayerEntity)caster).attackTargetEntityWithCurrentItem(entityHit);
                 else entityHit.attackEntityFrom(DamageSource.causeMobDamage(caster), damage);
-                entityHit.motionX *= knockback;
-                entityHit.motionZ *= knockback;
+                entityHit.setMotion(entityHit.getMotion().x * knockback, entityHit.getMotion().y, entityHit.getMotion().z * knockback);
                 hit = true;
             }
         }
         if (hit) {
             playSound(MMSounds.ENTITY_WROUGHT_AXE_HIT, 0.3F, 0.5F);
         }
-    }
-
-    @Override
-    protected void readEntityFromNBT(CompoundNBT compound) {
-
-    }
-
-    @Override
-    protected void writeEntityToNBT(CompoundNBT compound) {
-
     }
 
     public void setVertical(boolean vertical) {

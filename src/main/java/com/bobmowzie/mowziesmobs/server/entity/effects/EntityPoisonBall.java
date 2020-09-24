@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.client.particles.util.MowzieParticleBase;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.MoverType;
@@ -27,14 +28,12 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
 
     public double prevMotionX, prevMotionY, prevMotionZ;
 
-    public EntityPoisonBall(World worldIn) {
-        super(worldIn);
-        setSize(0.5f, 0.5f);
+    public EntityPoisonBall(EntityType<? extends EntityPoisonBall> type, World worldIn) {
+        super(type, worldIn);
     }
 
-    public EntityPoisonBall(World worldIn, LivingEntity caster) {
-        super(worldIn);
-        setSize(0.5f, 0.5f);
+    public EntityPoisonBall(EntityType<? extends EntityPoisonBall> type, World worldIn, LivingEntity caster) {
+        super(type, worldIn);
         if (!world.isRemote) {
             this.setCasterID(caster.getEntityId());
         }
@@ -42,22 +41,20 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
 
     @Override
     public void shoot(double x, double y, double z, float velocity, float inaccuracy) {
-        motionX = x * velocity;
-        motionY = y * velocity;
-        motionZ = z * velocity;
+        setMotion(x * velocity, y * velocity, z * velocity);
     }
 
     @Override
-    public void onUpdate() {
-        prevMotionX = motionX;
-        prevMotionY = motionY;
-        prevMotionZ = motionZ;
+    public void tick() {
+        prevMotionX = getMotion().x;
+        prevMotionY = getMotion().y;
+        prevMotionZ = getMotion().z;
 
-        super.onUpdate();
-        motionY -= GRAVITY;
-        move(MoverType.SELF, motionX, motionY, motionZ);
+        super.tick();
+        setMotion(getMotion().subtract(0, GRAVITY, 0));
+        move(MoverType.SELF, getMotion());
 
-        rotationYaw = -((float) MathHelper.atan2(motionX, motionZ)) * (180F / (float)Math.PI);
+        rotationYaw = -((float) MathHelper.atan2(getMotion().x, getMotion().z)) * (180F / (float)Math.PI);
 
         List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(1);
         if (!entitiesHit.isEmpty()) {
@@ -70,14 +67,17 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
             }
         }
 
-        if (world.collidesWithAnyBlock(getBoundingBox().grow(0.1,0.1,0.1))) explode();
+        if (world.checkBlockCollision(getBoundingBox().grow(0.1,0.1,0.1))) explode();
 
         if (world.isRemote) {
             float scale = 1f;
             int steps = 4;
+            double motionX = getMotion().x;
+            double motionY = getMotion().y;
+            double motionZ = getMotion().z;
             for (int step = 0; step < steps; step++) {
                 double x = prevPosX + step * (posX - prevPosX) / (double)steps;
-                double y = prevPosY + step * (posY - prevPosY) / (double)steps + height / 2f;
+                double y = prevPosY + step * (posY - prevPosY) / (double)steps + getHeight() / 2f;
                 double z = prevPosZ + step * (posZ - prevPosZ) / (double)steps;
                 for (int i = 0; i < 1; i++) {
                     double xSpeed = scale * 0.02 * (rand.nextFloat() * 2 - 1);
@@ -107,7 +107,7 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
                 }
             }
         }
-        if (ticksExisted > 50) setDead();
+        if (ticksExisted > 50) remove();
     }
 
     private void explode() {
@@ -152,6 +152,6 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
             }
         }
 
-        setDead();
+        remove();
     }
 }

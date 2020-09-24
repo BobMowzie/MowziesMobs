@@ -14,6 +14,7 @@ import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.*;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityDart;
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityRing;
@@ -184,7 +185,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                     if (entity.getAnimationTick() == 44) {
                         Vec3d offset = new Vec3d(1.1f, 0, 0);
                         offset = offset.rotateYaw((float) Math.toRadians(-entity.rotationYaw - 90));
-                        EntitySuperNova superNova = new EntitySuperNova(entity.world, entity, entity.posX + offset.x, entity.posY + 0.05, entity.posZ + offset.z);
+                        EntitySuperNova superNova = new EntitySuperNova(EntityHandler.SUPER_NOVA, entity.world, entity, entity.posX + offset.x, entity.posY + 0.05, entity.posZ + offset.z);
                         world.addEntity(superNova);
                     }
                 }
@@ -415,7 +416,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 }
             }
             if (getAnimationTick() % 15 == 0) {
-                EntityRing ring = new EntityRing(world, (float)posX, (float)posY + 0.8f, (float)posZ, new Vec3d(0, 0, 0), 15, 1, 223/255f, 66/255f, 1, 3.5f, true);
+                EntityRing ring = new EntityRing(EntityHandler.RING, world, (float)posX, (float)posY + 0.8f, (float)posZ, new Vec3d(0, 0, 0), 15, 1, 223/255f, 66/255f, 1, 3.5f, true);
                 world.addEntity(ring);
             }
         }

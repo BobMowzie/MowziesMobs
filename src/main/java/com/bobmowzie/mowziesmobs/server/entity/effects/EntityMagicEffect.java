@@ -1,11 +1,14 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.network.play.server.SSpawnObjectPacket;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -17,12 +20,12 @@ public abstract class EntityMagicEffect extends Entity {
     public LivingEntity caster;
     private static final DataParameter<Integer> CASTER = EntityDataManager.createKey(EntityMagicEffect.class, DataSerializers.VARINT);
 
-    public EntityMagicEffect(World worldIn) {
-        super(worldIn);
+    public EntityMagicEffect(EntityType<? extends EntityMagicEffect> type, World worldIn) {
+        super(type, worldIn);
     }
 
     @Override
-    protected void entityInit() {
+    protected void registerData() {
         getDataManager().register(CASTER, -1);
     }
 
@@ -35,20 +38,20 @@ public abstract class EntityMagicEffect extends Entity {
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
         if (ticksExisted == 1) {
             caster = (LivingEntity) world.getEntityByID(getCasterID());
         }
     }
 
     @Override
-    protected void readEntityFromNBT(CompoundNBT compound) {
+    protected void readAdditional(CompoundNBT compound) {
 
     }
 
     @Override
-    protected void writeEntityToNBT(CompoundNBT compound) {
+    protected void writeAdditional(CompoundNBT compound) {
 
     }
 
@@ -57,10 +60,15 @@ public abstract class EntityMagicEffect extends Entity {
     }
 
     public <T extends Entity> List<T> getEntitiesNearby(Class<T> entityClass, double r) {
-        return world.getEntitiesWithinAABB(entityClass, getBoundingBox().grow(r, r, r), e -> e != this && getDistance(e) <= r + e.width / 2f);
+        return world.getEntitiesWithinAABB(entityClass, getBoundingBox().grow(r, r, r), e -> e != this && getDistance(e) <= r + e.getWidth() / 2f);
     }
 
     public <T extends Entity> List<T> getEntitiesNearbyCube(Class<T> entityClass, double r) {
         return world.getEntitiesWithinAABB(entityClass, getBoundingBox().grow(r, r, r), e -> e != this);
+    }
+
+    @Override
+    public IPacket<?> createSpawnPacket() {
+        return new SSpawnObjectPacket(this);
     }
 }

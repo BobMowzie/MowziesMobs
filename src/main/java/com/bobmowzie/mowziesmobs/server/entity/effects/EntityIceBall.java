@@ -22,22 +22,21 @@ import java.util.List;
  * Created by Josh on 9/2/2018.
  */
 public class EntityIceBall extends EntityMagicEffect implements IProjectile {
-    public EntityIceBall(World worldIn) {
-        super(worldIn);
-        setSize(0.5f, 0.5f);
+    public EntityIceBall(EntityType<? extends EntityIceBall> type, World worldIn) {
+        super(type, worldIn);
     }
 
-    public EntityIceBall(World worldIn, LivingEntity caster) {
-        this(worldIn);
+    public EntityIceBall(EntityType<? extends EntityIceBall> type, World worldIn, LivingEntity caster) {
+        this(type, worldIn);
         if (!world.isRemote) {
             this.setCasterID(caster.getEntityId());
         }
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
-        move(MoverType.SELF, motionX, motionY, motionZ);
+    public void tick() {
+        super.tick();
+        move(MoverType.SELF, getMotion());
 
         if (ticksExisted == 1) {
             if (world.isRemote) {
@@ -50,8 +49,8 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
             for (LivingEntity entity : entitiesHit) {
                 if (entity == caster) continue;
                 List<String> freezeImmune = Arrays.asList(ConfigHandler.GENERAL.freeze_blacklist);
-                ResourceLocation mobName = EntityList.getKey(entity);
-                if (mobName != null && freezeImmune.contains(mobName.toString())) continue;
+                ResourceLocation mobName = EntityType.getKey(entity.getType());
+                if (freezeImmune.contains(mobName.toString())) continue;
                 if (entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(this, caster), 3f * ConfigHandler.MOBS.FROSTMAW.combatData.attackMultiplier)) {
                     MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
                     if (property != null) property.addFreezeProgress(entity, 1);
@@ -59,15 +58,18 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
             }
         }
 
-        if (world.collidesWithAnyBlock(getBoundingBox().grow(0.15))) {
+        if (world.checkBlockCollision(getBoundingBox().grow(0.15))) {
             explode();
         }
 
         if (world.isRemote) {
             float scale = 2f;
             double x = posX;
-            double y = posY + height / 2;
+            double y = posY + getHeight() / 2;
             double z = posZ;
+            double motionX = getMotion().x;
+            double motionY = getMotion().y;
+            double motionZ = getMotion().z;
             for (int i = 0; i < 4; i++) {
                 double xSpeed = scale * 0.01 * (rand.nextFloat() * 2 - 1);
                 double ySpeed = scale * 0.01 * (rand.nextFloat() * 2 - 1);
@@ -101,29 +103,27 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
                 MMParticle.RING.spawn(world, x, y, z, ParticleFactory.ParticleArgs.get().withData(yaw, pitch, 20, 0.9f, 0.9f, 1f, 0.4f, scale * 16f, false, 0f, 0f, 0f, ParticleRing.EnumRingBehavior.GROW));
             }
         }
-        if (ticksExisted > 50) setDead();
+        if (ticksExisted > 50) remove();
     }
 
     @Override
-    protected void entityInit() {
-        super.entityInit();
+    protected void registerData() {
+        super.registerData();
     }
 
     @Override
-    protected void readEntityFromNBT(CompoundNBT compound) {
+    protected void writeAdditional(CompoundNBT compound) {
 
     }
 
     @Override
-    protected void writeEntityToNBT(CompoundNBT compound) {
+    protected void readAdditional(CompoundNBT compound) {
 
     }
 
     @Override
     public void shoot(double x, double y, double z, float velocity, float inaccuracy) {
-        motionX = x * velocity;
-        motionY = y * velocity;
-        motionZ = z * velocity;
+        setMotion(x * velocity, y * velocity, z * velocity);
     }
 
     private void explode() {
@@ -142,6 +142,6 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
                 MMParticle.SNOWFLAKE.spawn(world, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x, particlePos.y, particlePos.z));
             }
         }
-        setDead();
+        remove();
     }
 }

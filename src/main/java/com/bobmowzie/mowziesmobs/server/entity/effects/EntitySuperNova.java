@@ -11,27 +11,27 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.damage.DamageUtil;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.List;
 
 public class EntitySuperNova extends EntityMagicEffect {
     public static int DURATION = 40;
 
-    public EntitySuperNova(World world) {
-        super(world);
-        this.setSize(1, 1);
+    public EntitySuperNova(EntityType<? extends EntitySuperNova> type, World world) {
+        super(type, world);
     }
 
-    public EntitySuperNova(World world, LivingEntity caster, double x, double y, double z) {
-        this(world);
+    public EntitySuperNova(EntityType<? extends EntitySuperNova> type, World world, LivingEntity caster, double x, double y, double z) {
+        this(type, world);
         if (!world.isRemote) {
             this.setCasterID(caster.getEntityId());
         }
@@ -39,9 +39,9 @@ public class EntitySuperNova extends EntityMagicEffect {
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
-        if (caster == null || caster.isDead || caster.getHealth() <= 0) this.setDead();
+    public void tick() {
+        super.tick();
+        if (caster == null || !caster.isAlive()) this.remove();
 
         if (ticksExisted == 1) {
             playSound(MMSounds.ENTITY_SUPERNOVA_END, 3f, 1f);
@@ -50,7 +50,7 @@ public class EntitySuperNova extends EntityMagicEffect {
                 for (int i = 0; i < 15; i++) {
                     float phaseOffset = rand.nextFloat();
                     MowzieParticleBase.spawnParticle(world, MMParticle.ARROW_HEAD, posX, posY, posZ, 0, 0, 0, false, 0, 0, 0, 0, 8F, 0.95, 0.9, 0.35, 1, 1, 30, true, new ParticleComponent[]{
-                            new ParticleComponent.Orbit(new Vec3d[]{getPositionVector().add(0, height / 2, 0)}, KeyTrack.startAndEnd(0 + phaseOffset, 1.6f + phaseOffset), new ParticleComponent.KeyTrack(
+                            new ParticleComponent.Orbit(new Vec3d[]{getPositionVector().add(0, getHeight() / 2, 0)}, KeyTrack.startAndEnd(0 + phaseOffset, 1.6f + phaseOffset), new ParticleComponent.KeyTrack(
                                     new float[]{0.2f * scale, 0.63f * scale, 0.87f * scale, 0.974f * scale, 0.998f * scale, 1f * scale},
                                     new float[]{0, 0.15f, 0.3f, 0.45f, 0.6f, 0.75f}
                             ), KeyTrack.startAndEnd(rand.nextFloat() * 2 - 1, rand.nextFloat() * 2 - 1), KeyTrack.startAndEnd(rand.nextFloat() * 2 - 1, rand.nextFloat() * 2 - 1), KeyTrack.startAndEnd(rand.nextFloat() * 2 - 1, rand.nextFloat() * 2 - 1), false),
@@ -68,12 +68,13 @@ public class EntitySuperNova extends EntityMagicEffect {
         if (caster != null && caster instanceof MobEntity) {
             float ageFrac = ticksExisted / (float)(EntitySuperNova.DURATION);
             float scale = (float) Math.pow(ageFrac, 0.5) * 5f;
-            setSize(scale, scale);
+//            setSize(scale, scale); //TODO
+            setBoundingBox(getBoundingBox().grow(scale));   // Will this work instead?
             setPosition(prevPosX, prevPosY, prevPosZ);
             List<LivingEntity> hitList = getEntitiesNearbyCube(LivingEntity.class, scale);
             for (LivingEntity entity : hitList) {
                 if (entity instanceof LeaderSunstrikeImmune) continue;
-                if (TargetGoal.isSuitableTarget((MobEntity) caster, entity, false, false)) {
+                if (caster.canAttack(entity)) {
                     float damageFire = 2.5f;
                     float damageMob = 3f;
                     damageFire *= ConfigHandler.MOBS.BARAKO.combatData.attackMultiplier;
@@ -88,7 +89,7 @@ public class EntitySuperNova extends EntityMagicEffect {
                 }
             }
         }
-        if (ticksExisted > DURATION) setDead();
+        if (ticksExisted > DURATION) remove();
     }
 
     @OnlyIn(Dist.CLIENT)
