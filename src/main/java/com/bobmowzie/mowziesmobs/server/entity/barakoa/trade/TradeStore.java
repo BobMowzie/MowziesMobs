@@ -43,9 +43,9 @@ public final class TradeStore {
         CompoundNBT compound = new CompoundNBT();
         ListNBT tradesList = new ListNBT();
         for (Trade trade : trades) {
-            tradesList.appendTag(trade.serialize());
+            tradesList.add(trade.serialize());
         }
-        compound.setTag("trades", tradesList);
+        compound.put("trades", tradesList);
         return compound;
     }
 
@@ -69,10 +69,10 @@ public final class TradeStore {
         private int totalWeight;
 
         public Builder addTrade(Item input, int inputCount, Item output, int outputCount, int weight) {
-            return addTrade(input, inputCount, 0, output, outputCount, 0, weight);
+            return addTrade(input, inputCount, null, output, outputCount, null, weight);
         }
 
-        public Builder addTrade(Item input, int inputCount, int inputMeta, Item output, int outputCount, int outputMeta, int weight) {
+        public Builder addTrade(Item input, int inputCount, CompoundNBT inputMeta, Item output, int outputCount, CompoundNBT outputMeta, int weight) {
             return addTrade(new ItemStack(input, inputCount, inputMeta), new ItemStack(output, outputCount, outputMeta), weight);
         }
 
