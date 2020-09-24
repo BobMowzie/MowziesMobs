@@ -13,6 +13,7 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.ai.animation.SimpleAnimationAI;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LegSolverQuadruped;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBall;
@@ -322,7 +323,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                 mouthPos = mouthPos.add(getPositionVector());
                 mouthPos = mouthPos.add(new Vec3d(0, 0, 1).rotatePitch((float)Math.toRadians(-rotationPitch)).rotateYaw((float)Math.toRadians(-rotationYawHead)));
                 if (getAnimationTick() == 13) {
-                    iceBreath = new EntityIceBreath(world, this);
+                    iceBreath = new EntityIceBreath(EntityHandler.ICE_BREATH, world, this);
                     iceBreath.setPositionAndRotation(mouthPos.x, mouthPos.y, mouthPos.z, rotationYawHead, rotationPitch + 10);
                     if (!world.isRemote) world.addEntity(iceBreath);
                 }
@@ -361,7 +362,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                 if (getAnimationTick() == 33) {
                     playSound(MMSounds.ENTITY_FROSTMAW_ICEBALL_SHOOT, 2, 0.7f);
 
-                    EntityIceBall iceBall = new EntityIceBall(world, this);
+                    EntityIceBall iceBall = new EntityIceBall(EntityHandler.ICE_BALL, world, this);
                     iceBall.setPositionAndRotation(projectilePos.x, projectilePos.y, projectilePos.z, rotationYawHead, rotationPitch + 10);
                     float projSpeed = 1.6f;
                     if (getAttackTarget() != null) {

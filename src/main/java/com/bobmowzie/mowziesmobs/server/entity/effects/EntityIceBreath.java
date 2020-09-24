@@ -32,11 +32,11 @@ public class EntityIceBreath extends EntityMagicEffect {
     private static final int ARC = 45;
     private static final int DAMAGE_PER_HIT = 1;
 
-    public EntityIceBreath(EntityType<? extends EntityIceBall> type, World world) {
+    public EntityIceBreath(EntityType<? extends EntityIceBreath> type, World world) {
         super(type, world);
     }
 
-    public EntityIceBreath(EntityType<? extends EntityIceBall> type, World world, LivingEntity caster) {
+    public EntityIceBreath(EntityType<? extends EntityIceBreath> type, World world, LivingEntity caster) {
         super(type, world);
         if (!world.isRemote) {
             this.setCasterID(caster.getEntityId());

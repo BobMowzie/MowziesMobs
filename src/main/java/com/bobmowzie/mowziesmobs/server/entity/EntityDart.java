@@ -8,6 +8,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.entity.projectile.ArrowEntity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
@@ -21,8 +22,13 @@ public class EntityDart extends ArrowEntity {
         super(type, world);
     }
 
-    public EntityDart(World world, LivingEntity shooter) {
-        super(world, shooter);
+    public EntityDart(EntityType<? extends EntityDart> type, World world, LivingEntity shooter) {
+        super(type, world);
+        this.setPosition(shooter.posX,shooter.posY + (double)shooter.getEyeHeight() - (double)0.1F, shooter.posZ);
+        this.setShooter(shooter);
+        if (shooter instanceof PlayerEntity) {
+            this.pickupStatus = AbstractArrowEntity.PickupStatus.ALLOWED;
+        }
         setDamage(ConfigHandler.TOOLS_AND_ABILITIES.BLOW_GUN.attackDamage);
     }
 

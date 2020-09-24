@@ -8,6 +8,7 @@ import com.bobmowzie.mowziesmobs.server.ai.MMAINearestAttackableTarget;
 import com.bobmowzie.mowziesmobs.server.ai.animation.SimpleAnimationAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationProjectileAttackAI;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityPoisonBall;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
@@ -558,7 +559,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
         projectilePos = projectilePos.add(getPositionVector());
         projectilePos = projectilePos.add(new Vec3d(0, 0, 1).rotatePitch((float)Math.toRadians(-rotationPitch)).rotateYaw((float)Math.toRadians(-rotationYawHead)));
         projectilePos = projectilePos.add(new Vec3d(0, 0, 0));
-        EntityPoisonBall poisonBall = new EntityPoisonBall(this.world, this);
+        EntityPoisonBall poisonBall = new EntityPoisonBall(EntityHandler.POISON_BALL, this.world, this);
         poisonBall.setPosition(projectilePos.x, projectilePos.y, projectilePos.z);
         Vec3d look = getLookVec();
         Vec3d dir = new Vec3d(look.x, 0, look.z).normalize();

@@ -7,6 +7,7 @@ import com.bobmowzie.mowziesmobs.server.message.MessageBlackPinkInYourArea;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import java.util.function.BiConsumer;
 
@@ -20,8 +21,8 @@ public final class BlackPinkInYourArea implements BiConsumer<World, AbstractMine
             state = BlockHandler.GROTTOL.getDefaultState();
             minecart.setDisplayTileOffset(minecart.getDefaultDisplayTileOffset());
         }
-        minecart.setDisplayTile(state.withProperty(BlockGrottol.VARIANT, BlockGrottol.Variant.BLACK_PINK));
-        MowziesMobs.NETWORK_WRAPPER.sendToAllTracking(new MessageBlackPinkInYourArea(minecart), minecart);
+        minecart.setDisplayTile(state.with(BlockGrottol.VARIANT, BlockGrottol.Variant.BLACK_PINK));
+        ((ServerWorld) minecart.world).getChunkProvider().sendToAllTracking(minecart, new MessageBlackPinkInYourArea(minecart));
     }
 
     public static BlackPinkInYourArea create() {

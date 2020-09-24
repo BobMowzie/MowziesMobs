@@ -70,8 +70,8 @@ public class LegSolver {
 
         private float getDistance(World world, BlockPos pos) {
             BlockState state = world.getBlockState(pos);
-            AxisAlignedBB aabb = state.getCollisionBoundingBox(world, pos);
-            return aabb == null ? 1 : 1 - Math.min((float) aabb.maxY, 1);
+            AxisAlignedBB aabb = state.getCollisionShape(world, pos).getBoundingBox();
+            return 1 - Math.min((float) aabb.maxY, 1);
         }
     }
 }

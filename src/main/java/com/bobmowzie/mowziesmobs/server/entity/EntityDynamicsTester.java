@@ -2,20 +2,26 @@ package com.bobmowzie.mowziesmobs.server.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.dynamics.DynamicChain;
 import com.ilexiconn.llibrary.server.animation.Animation;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.entity.ai.goal.RandomWalkingGoal;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class EntityDynamicsTester extends MowzieEntity {
     @OnlyIn(Dist.CLIENT)
     public DynamicChain dc;
 
     public EntityDynamicsTester(World world) {
-        super(world);
-        tasks.addTask(4, new RandomWalkingGoal(this, 0.3));
-        tasks.addTask(8, new LookRandomlyGoal(this));
+        super(EntityHandler.NAGA, world);
+    }
+
+    @Override
+    protected void registerGoals() {
+        super.registerGoals();
+        goalSelector.addGoal(4, new RandomWalkingGoal(this, 0.3));
+        goalSelector.addGoal(8, new LookRandomlyGoal(this));
     }
 
     @Override
@@ -34,8 +40,8 @@ public class EntityDynamicsTester extends MowzieEntity {
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
         if (world.isRemote) {
             if (ticksExisted == 1) {
                 dc = new DynamicChain(this);
