@@ -225,9 +225,9 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         return super.onInitialSpawn(world, difficulty, reason, livingData, compound);
     }
 
-    public boolean attackEntityAsMob(Entity entityIn, float damageMultiplier) {
+    public boolean attackEntityAsMob(Entity entityIn, float damageMultiplier, float knockbackMultiplier) {
         float f = (float)this.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getValue() * damageMultiplier;
-        float f1 = (float)this.getAttribute(SharedMonsterAttributes.ATTACK_KNOCKBACK).getValue();
+        float f1 = (float)this.getAttribute(SharedMonsterAttributes.ATTACK_KNOCKBACK).getValue() * knockbackMultiplier;
         if (entityIn instanceof LivingEntity) {
             f += EnchantmentHelper.getModifierForCreature(this.getHeldItemMainhand(), ((LivingEntity)entityIn).getCreatureAttribute());
             f1 += (float)EnchantmentHelper.getKnockbackModifier(this);

@@ -33,7 +33,7 @@ public class AnimationAreaAttackAI<T extends MowzieEntity & IAnimatedEntity> ext
     }
 
     @Override
-    public void updateTask() {
+    public void tick() {
         if (faceTarget && entity.getAnimationTick() < damageFrame && entityTarget != null) {
             entity.faceEntity(entityTarget, 30F, 30F);
         }
@@ -55,11 +55,9 @@ public class AnimationAreaAttackAI<T extends MowzieEntity & IAnimatedEntity> ext
                 entityAttackingAngle += 360;
             }
             float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
-            float entityHitDistance = (float) Math.sqrt((entityHit.posZ - entity.posZ) * (entityHit.posZ - entity.posZ) + (entityHit.posX - entity.posX) * (entityHit.posX - entity.posX)) - entityHit.width / 2f;
+            float entityHitDistance = (float) Math.sqrt((entityHit.posZ - entity.posZ) * (entityHit.posZ - entity.posZ) + (entityHit.posX - entity.posX) * (entityHit.posX - entity.posX)) - entityHit.getWidth() / 2f;
             if (entityHitDistance <= range && (entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2)) {
-                entity.attackEntityAsMob(entityHit, damageMultiplier);
-                entityHit.motionX *= knockback;
-                entityHit.motionZ *= knockback;
+                entity.attackEntityAsMob(entityHit, damageMultiplier, knockbackMultiplier);
                 hit = true;
             }
         }

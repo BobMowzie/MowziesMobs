@@ -8,43 +8,41 @@ import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.DamageSource;
 
+import java.util.EnumSet;
 import java.util.List;
 
 public class AnimationRadiusAttack<T extends MowzieEntity & IAnimatedEntity> extends SimpleAnimationAI<T> {
     private float radius;
-    private int damage;
-    private float knockBack;
+    private float damageMultiplier;
+    private float knockBackMultiplier;
     private int damageFrame;
     private boolean pureKnockback;
 
-    public AnimationRadiusAttack(T entity, Animation animation, float radius, int damage, float knockBack, int damageFrame, boolean pureKnockback) {
+    public AnimationRadiusAttack(T entity, Animation animation, float radius, float damageMultiplier, float knockBackMultiplier, int damageFrame, boolean pureKnockback) {
         super(entity, animation);
         this.radius = radius;
-        this.damage = damage;
-        this.knockBack = knockBack;
+        this.damageMultiplier = damageMultiplier;
+        this.knockBackMultiplier = knockBackMultiplier;
         this.damageFrame = damageFrame;
         this.pureKnockback = pureKnockback;
-        setMutexBits(8);
+        this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.JUMP, Flag.LOOK));
     }
 
     @Override
-    public void updateTask() {
-        super.updateTask();
+    public void tick() {
+        super.tick();
         if (entity.getAnimationTick() == damageFrame) {
             List<LivingEntity> hit = entity.getEntityLivingBaseNearby(radius, 2 * radius, radius, radius);
             for (LivingEntity aHit : hit) {
                 if (entity instanceof EntityBarako && aHit instanceof LeaderSunstrikeImmune) {
                     continue;
                 }
-                aHit.attackEntityFrom(DamageSource.causeMobDamage(entity), damage);
+                entity.attackEntityAsMob(aHit, damageMultiplier, knockBackMultiplier);
                 if (pureKnockback) {
                     double angle = entity.getAngleBetweenEntities(entity, aHit);
-                    aHit.motionX = knockBack * Math.cos(Math.toRadians(angle - 90));
-                    aHit.motionZ = knockBack * Math.sin(Math.toRadians(angle - 90));
-                }
-                else {
-                    aHit.motionX *= knockBack;
-                    aHit.motionZ *= knockBack;
+                    double x = knockBackMultiplier * Math.cos(Math.toRadians(angle - 90));
+                    double z = knockBackMultiplier * Math.sin(Math.toRadians(angle - 90));
+                    aHit.setMotion(x, aHit.getMotion().y, z);
                 }
             }
         }

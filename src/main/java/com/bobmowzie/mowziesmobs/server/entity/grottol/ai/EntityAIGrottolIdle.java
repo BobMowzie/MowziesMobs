@@ -26,8 +26,8 @@ public class EntityAIGrottolIdle extends SimpleAnimationAI<EntityGrottol> {
     }
 
     @Override
-    public void updateTask() {
-        super.updateTask();
+    public void tick() {
+        super.tick();
         if (entity.getAnimationTick() == 28 || entity.getAnimationTick() == 33) {
             entity.playSound(SoundEvents.BLOCK_STONE_STEP, 0.5F, 1.4F);
         }

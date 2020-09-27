@@ -4,13 +4,12 @@ import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 
 public class AnimationAttackAI<T extends MowzieEntity & IAnimatedEntity> extends SimpleAnimationAI<T> {
     protected LivingEntity entityTarget;
     protected SoundEvent attackSound;
-    protected float knockback = 1;
+    protected float knockbackMultiplier = 1;
     protected float range;
     protected float damageMultiplier;
     protected int damageFrame;
@@ -20,11 +19,11 @@ public class AnimationAttackAI<T extends MowzieEntity & IAnimatedEntity> extends
         this(entity, animation, attackSound, hitSound, knockback, range, damageMultiplier, damageFrame, false);
     }
 
-    public AnimationAttackAI(T entity, Animation animation, SoundEvent attackSound, SoundEvent hitSound, float knockback, float range, float damageMultiplier, int damageFrame, boolean hurtInterrupts) {
+    public AnimationAttackAI(T entity, Animation animation, SoundEvent attackSound, SoundEvent hitSound, float knockbackMultiplier, float range, float damageMultiplier, int damageFrame, boolean hurtInterrupts) {
         super(entity, animation, false, hurtInterrupts);
         this.entityTarget = null;
         this.attackSound = attackSound;
-        this.knockback = knockback;
+        this.knockbackMultiplier = knockbackMultiplier;
         this.range = range;
         this.damageMultiplier = damageMultiplier;
         this.damageFrame = damageFrame;
@@ -46,8 +45,7 @@ public class AnimationAttackAI<T extends MowzieEntity & IAnimatedEntity> extends
         if (entity.getAnimationTick() == damageFrame) {
             float damage = (float) entity.getAttack();
             if (entityTarget != null && entity.targetDistance <= range) {
-                entityTarget.attackEntityFrom(DamageSource.causeMobDamage(entity), damage * damageMultiplier);
-                entityTarget.setMotion(entityTarget.getMotion().x * knockback, entityTarget.getMotion().y, entityTarget.getMotion().z * knockback);
+                entity.attackEntityAsMob(entityTarget, damageMultiplier, knockbackMultiplier);
                 if (hitSound != null) {
                     entity.playSound(hitSound, 1, 1);   
                 }
