@@ -5,6 +5,7 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.EntityAIAvoidEntity;
 import com.bobmowzie.mowziesmobs.server.ai.animation.*;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityDart;
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.SmartBodyHelper;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
@@ -416,7 +417,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
 
     @Override
     public void attackEntityWithRangedAttack(LivingEntity target, float p_82196_2_) {
-        AbstractArrowEntity dart = new EntityDart(this.world, this);
+        AbstractArrowEntity dart = new EntityDart(EntityHandler.DART, this.world, this);
         double dx = target.posX - this.posX;
         double dy = target.getBoundingBox().minY + (double)(target.getHeight() / 3.0F) - dart.posY;
         double dz = target.posZ - this.posZ;

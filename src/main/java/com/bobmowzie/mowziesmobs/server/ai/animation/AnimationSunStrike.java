@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.ai.animation;
 
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
@@ -28,13 +29,13 @@ public class AnimationSunStrike<T extends MowzieEntity & IAnimatedEntity> extend
     }
 
     @Override
-    public void updateTask() {
-        super.updateTask();
+    public void tick() {
+        super.tick();
         if (entityTarget == null) {
             return;
         }
         if (entity.getAnimationTick() < 9) {
-            entity.lookController.setLookPositionWithEntity(entityTarget, 30, 30);
+            entity.getLookController().setLookPositionWithEntity(entityTarget, 30, 30);
         }
 
 //        if (entity.getAnimationTick() == 1) {
@@ -60,12 +61,12 @@ public class AnimationSunStrike<T extends MowzieEntity & IAnimatedEntity> extend
         }
         if (!entity.world.isRemote && entity.getAnimationTick() == 9) {
             entity.playSound(MMSounds.ENTITY_BARAKO_ATTACK, 1.4f, 1);
-            EntitySunstrike sunstrike = new EntitySunstrike(entity.world, entity, newX, y, newZ);
+            EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE, entity.world, entity, newX, y, newZ);
             sunstrike.onSummon();
-            entity.world.spawnEntity(sunstrike);
+            entity.world.addEntity(sunstrike);
         }
         if (entity.getAnimationTick() > 6) {
-            entity.lookController.setLookPosition(newX, y, newZ, 20, 20);
+            entity.getLookController().setLookPosition(newX, y, newZ, 20, 20);
         }
     }
 }

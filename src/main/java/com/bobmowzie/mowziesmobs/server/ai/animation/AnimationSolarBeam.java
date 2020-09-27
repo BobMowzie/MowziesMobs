@@ -1,10 +1,13 @@
 package com.bobmowzie.mowziesmobs.server.ai.animation;
 
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySolarBeam;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.entity.LivingEntity;
+
+import java.util.EnumSet;
 
 public class AnimationSolarBeam<T extends MowzieEntity & IAnimatedEntity> extends SimpleAnimationAI<T> {
     protected LivingEntity entityTarget;
@@ -13,6 +16,7 @@ public class AnimationSolarBeam<T extends MowzieEntity & IAnimatedEntity> extend
 
     public AnimationSolarBeam(T entity, Animation animation) {
         super(entity, animation);
+        this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.JUMP, Flag.LOOK));
     }
 
     @Override
@@ -22,12 +26,12 @@ public class AnimationSolarBeam<T extends MowzieEntity & IAnimatedEntity> extend
     }
 
     @Override
-    public void updateTask() {
-        super.updateTask();
+    public void tick() {
+        super.tick();
         float radius1 = 1.7f;
         if (entity.getAnimationTick() == 4 && !entity.world.isRemote) {
-            solarBeam = new EntitySolarBeam(entity.world, entity, entity.posX + radius1 * Math.sin(-entity.rotationYaw * Math.PI / 180), entity.posY + 1.4, entity.posZ + radius1 * Math.cos(-entity.rotationYaw * Math.PI / 180), (float) ((entity.rotationYawHead + 90) * Math.PI / 180), (float) (-entity.rotationPitch * Math.PI / 180), 55);
-            entity.world.spawnEntity(solarBeam);
+            solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM, entity.world, entity, entity.posX + radius1 * Math.sin(-entity.rotationYaw * Math.PI / 180), entity.posY + 1.4, entity.posZ + radius1 * Math.cos(-entity.rotationYaw * Math.PI / 180), (float) ((entity.rotationYawHead + 90) * Math.PI / 180), (float) (-entity.rotationPitch * Math.PI / 180), 55);
+            entity.world.addEntity(solarBeam);
         }
         if (entity.getAnimationTick() >= 4) {
             if (solarBeam != null) {
@@ -45,7 +49,7 @@ public class AnimationSolarBeam<T extends MowzieEntity & IAnimatedEntity> extend
         }
         if (entity.getAnimationTick() >= 22) {
             if (entityTarget != null) {
-                entity.lookController.setLookPosition(entityTarget.posX, entityTarget.posY + entityTarget.height / 2, entityTarget.posZ, 2, 90);
+                entity.getLookController().setLookPosition(entityTarget.posX, entityTarget.posY + entityTarget.getHeight() / 2, entityTarget.posZ, 2, 90);
             }
         }
     }

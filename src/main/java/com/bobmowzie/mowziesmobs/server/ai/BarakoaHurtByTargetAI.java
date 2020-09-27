@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.ai;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import net.minecraft.entity.CreatureEntity;
+import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.passive.TameableEntity;
@@ -23,7 +24,6 @@ public class BarakoaHurtByTargetAI extends TargetGoal
         super(creatureIn, true);
         this.entityCallsForHelp = entityCallsForHelpIn;
         this.excludedReinforcementTypes = excludedReinforcementTypes;
-        this.setMutexBits(1);
     }
 
     /**
@@ -31,9 +31,9 @@ public class BarakoaHurtByTargetAI extends TargetGoal
      */
     public boolean shouldExecute()
     {
-        int i = this.taskOwner.getRevengeTimer();
-        LivingEntity entitylivingbase = this.taskOwner.getRevengeTarget();
-        return i != this.revengeTimerOld && entitylivingbase != null && this.isSuitableTarget(entitylivingbase, false);
+        int i = this.goalOwner.getRevengeTimer();
+        LivingEntity entitylivingbase = this.goalOwner.getRevengeTarget();
+        return i != this.revengeTimerOld && entitylivingbase != null && this.isSuitableTarget(entitylivingbase, EntityPredicate.DEFAULT);
     }
 
     /**
@@ -41,9 +41,9 @@ public class BarakoaHurtByTargetAI extends TargetGoal
      */
     public void startExecuting()
     {
-        this.taskOwner.setAttackTarget(this.taskOwner.getRevengeTarget());
-        this.target = this.taskOwner.getAttackTarget();
-        this.revengeTimerOld = this.taskOwner.getRevengeTimer();
+        this.goalOwner.setAttackTarget(this.goalOwner.getRevengeTarget());
+        this.target = this.goalOwner.getAttackTarget();
+        this.revengeTimerOld = this.goalOwner.getRevengeTimer();
         this.unseenMemoryTicks = 300;
 
         if (this.entityCallsForHelp)
@@ -58,14 +58,14 @@ public class BarakoaHurtByTargetAI extends TargetGoal
     {
         double d0 = this.getTargetDistance();
 
-        List<CreatureEntity> nearby = this.taskOwner.world.getEntitiesWithinAABB(EntityBarakoa.class, (new AxisAlignedBB(this.taskOwner.posX, this.taskOwner.posY, this.taskOwner.posZ, this.taskOwner.posX + 1.0D, this.taskOwner.posY + 1.0D, this.taskOwner.posZ + 1.0D)).grow(d0, 10.0D, d0), e ->
+        List<CreatureEntity> nearby = this.goalOwner.world.getEntitiesWithinAABB(EntityBarakoa.class, (new AxisAlignedBB(this.goalOwner.posX, this.goalOwner.posY, this.goalOwner.posZ, this.goalOwner.posX + 1.0D, this.goalOwner.posY + 1.0D, this.goalOwner.posZ + 1.0D)).grow(d0, 10.0D, d0), e ->
                 ((EntityBarakoa)e).isBarakoDevoted());
-        nearby.addAll(this.taskOwner.world.getEntitiesWithinAABB(EntityBarako.class, (new AxisAlignedBB(this.taskOwner.posX, this.taskOwner.posY, this.taskOwner.posZ, this.taskOwner.posX + 1.0D, this.taskOwner.posY + 1.0D, this.taskOwner.posZ + 1.0D)).grow(d0, 10.0D, d0)));
+        nearby.addAll(this.goalOwner.world.getEntitiesWithinAABB(EntityBarako.class, (new AxisAlignedBB(this.goalOwner.posX, this.goalOwner.posY, this.goalOwner.posZ, this.goalOwner.posX + 1.0D, this.goalOwner.posY + 1.0D, this.goalOwner.posZ + 1.0D)).grow(d0, 10.0D, d0)));
         for (CreatureEntity entitycreature : nearby)
         {
-            if (this.taskOwner != entitycreature && !(entitycreature.getAttackTarget() instanceof PlayerEntity) && (!(this.taskOwner instanceof TameableEntity) || ((TameableEntity)this.taskOwner).getOwner() == ((TameableEntity)entitycreature).getOwner()) && !entitycreature.isOnSameTeam(this.taskOwner.getRevengeTarget()))
+            if (this.goalOwner != entitycreature && !(entitycreature.getAttackTarget() instanceof PlayerEntity) && (!(this.goalOwner instanceof TameableEntity) || ((TameableEntity)this.goalOwner).getOwner() == ((TameableEntity)entitycreature).getOwner()) && !entitycreature.isOnSameTeam(this.goalOwner.getRevengeTarget()))
             {
-                    this.setEntityAttackTarget(entitycreature, this.taskOwner.getRevengeTarget());
+                    this.setEntityAttackTarget(entitycreature, this.goalOwner.getRevengeTarget());
             }
         }
     }

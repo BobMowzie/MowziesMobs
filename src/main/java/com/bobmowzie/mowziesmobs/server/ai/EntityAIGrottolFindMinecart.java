@@ -7,6 +7,7 @@ import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.item.minecart.MinecartEntity;
 
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.List;
 
 public final class EntityAIGrottolFindMinecart extends Goal {
@@ -23,8 +24,8 @@ public final class EntityAIGrottolFindMinecart extends Goal {
     public EntityAIGrottolFindMinecart(EntityGrottol grottol) {
         this.grottol = grottol;
         this.sorter = Comparator.comparing(grottol::getDistanceSq);
-        this.predicate = minecart -> minecart != null && minecart.isEntityAlive() && !minecart.isBeingRidden() && EntityGrottol.isBlockRail(minecart.world.getBlockState(minecart.getPosition()).getBlock());
-        setMutexBits(3);
+        this.predicate = minecart -> minecart != null && minecart.isAlive() && !minecart.isBeingRidden() && EntityGrottol.isBlockRail(minecart.world.getBlockState(minecart.getPosition()).getBlock());
+        setMutexFlags(EnumSet.of(Flag.LOOK, Flag.MOVE));
     }
 
     @Override
@@ -56,9 +57,9 @@ public final class EntityAIGrottolFindMinecart extends Goal {
     }
 
     @Override
-    public void updateTask() {
+    public void tick() {
         if (grottol.getDistanceSq(minecart) > 1.45D * 1.45D) {
-            grottol.lookController.setLookPositionWithEntity(minecart, 10.0F, grottol.getVerticalFaceSpeed());
+            grottol.getLookController().setLookPositionWithEntity(minecart, 10.0F, grottol.getVerticalFaceSpeed());
             if (++time % 40 == 0) {
                 grottol.getNavigator().tryMoveToEntityLiving(minecart, 0.5D);
             }

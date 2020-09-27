@@ -10,6 +10,7 @@ import net.minecraft.pathfinding.Path;
 import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.math.Vec3d;
 
+import java.util.EnumSet;
 import java.util.List;
 
 public class MMAIAvoidEntity<U extends CreatureEntity, T extends Entity> extends Goal {
@@ -49,7 +50,7 @@ public class MMAIAvoidEntity<U extends CreatureEntity, T extends Entity> extends
         this.entity = entity;
         this.selector = e -> e != null &&
             EntityPredicates.CAN_AI_TARGET.test(e) &&
-            e.isEntityAlive() &&
+            e.isAlive() &&
             entity.getEntitySenses().canSee(e) &&
             !entity.isOnSameTeam(e) &&
             predicate.test(e);
@@ -60,7 +61,7 @@ public class MMAIAvoidEntity<U extends CreatureEntity, T extends Entity> extends
         this.numChecks = numChecks;
         this.horizontalEvasion = horizontalEvasion;
         this.verticalEvasion = verticalEvasion;
-        setMutexBits(1);
+        setMutexFlags(EnumSet.of(Flag.MOVE));
     }
 
     @Override
@@ -74,7 +75,7 @@ public class MMAIAvoidEntity<U extends CreatureEntity, T extends Entity> extends
         for (int n = 0; n < numChecks; n++) {
             Vec3d pos = RandomPositionGenerator.findRandomTargetBlockAwayFrom(entity, horizontalEvasion, verticalEvasion, entityEvading.getPositionVector());
             if (pos != null && !(entityEvading.getDistanceSq(pos.x, pos.y, pos.z) < entityEvading.getDistanceSq(entity))) {
-                entityPathEntity = entity.getNavigator().getPathToXYZ(pos.x, pos.y, pos.z);
+                entityPathEntity = entity.getNavigator().func_225466_a(pos.x, pos.y, pos.z, 0);
                 if (entityPathEntity != null) {
                     return true;
                 }
@@ -104,7 +105,7 @@ public class MMAIAvoidEntity<U extends CreatureEntity, T extends Entity> extends
     }
 
     @Override
-    public void updateTask() {
+    public void tick() {
         entity.getNavigator().setSpeed(entity.getDistanceSq(entityEvading) < NEAR_DISTANCE * NEAR_DISTANCE ? nearSpeed : farSpeed);
     }
 }

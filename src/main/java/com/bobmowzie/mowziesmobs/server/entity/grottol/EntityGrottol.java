@@ -115,14 +115,14 @@ public class EntityGrottol extends MowzieEntity implements IMob {
             }
 
             @Override
-            public void updateTask() {
-                super.updateTask();
+            public void tick() {
+                super.tick();
                 entity.fleeTime++;
             }
 
             @Override
             public void resetTask() {
-                super.updateTask();
+                super.resetTask();
                 entity.timeSinceFlee = 0;
                 fleeCheckCounter = 0;
             }

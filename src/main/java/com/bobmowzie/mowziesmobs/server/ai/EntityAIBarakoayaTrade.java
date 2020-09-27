@@ -5,21 +5,23 @@ import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
 
+import java.util.EnumSet;
+
 public final class EntityAIBarakoayaTrade extends Goal {
     private final EntityBarakoaya barakoaya;
 
     public EntityAIBarakoayaTrade(EntityBarakoaya barakoaya) {
         this.barakoaya = barakoaya;
-        setMutexBits(5);
+        setMutexFlags(EnumSet.of(Flag.MOVE, Flag.JUMP, Flag.TARGET));
     }
 
     @Override
     public boolean shouldExecute() {
-        if (!barakoaya.isEntityAlive() || barakoaya.isInWater() || !barakoaya.onGround || barakoaya.velocityChanged) {
+        if (!barakoaya.isAlive() || barakoaya.isInWater() || !barakoaya.onGround || barakoaya.velocityChanged) {
             return false;
         } else {
             PlayerEntity plyr = barakoaya.getCustomer();
-            return plyr != null && barakoaya.getDistanceSq(plyr) <= 16 && plyr.openContainer instanceof Container;
+            return plyr != null && barakoaya.getDistanceSq(plyr) <= 16 && plyr.openContainer != null;
         }
     }
 
