@@ -2,11 +2,12 @@ package com.bobmowzie.mowziesmobs.server.block;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.fluid.IFluidState;
 import net.minecraft.util.Direction;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.WorldType;
 import net.minecraft.world.biome.Biome;
 
@@ -15,7 +16,7 @@ import javax.annotation.Nullable;
 /**
  * Created by Josh on 5/1/2017.
  */
-public class MowzieBlockAccess implements IBlockAccess {
+public class MowzieBlockAccess implements IBlockReader {
     private BlockState accessState;
     private Biome biome = Biomes.PLAINS;
 
@@ -26,7 +27,7 @@ public class MowzieBlockAccess implements IBlockAccess {
     }
 
     @Override
-    public int getCombinedLight(BlockPos pos, int lightValue) {
+    public int getLightValue(BlockPos pos) {
         return 0;
     }
 
@@ -40,6 +41,11 @@ public class MowzieBlockAccess implements IBlockAccess {
     }
 
     @Override
+    public IFluidState getFluidState(BlockPos blockPos) {
+        return null;
+    }
+
+    /*@Override
     public boolean isAirBlock(BlockPos pos) {
         return false;
     }
@@ -48,8 +54,7 @@ public class MowzieBlockAccess implements IBlockAccess {
         this.biome = biome;
     }
 
-    @Override
-    public Biome getBiome(BlockPos pos) {
+    public Biome getBiome() {
         return biome;
     }
 
@@ -60,11 +65,11 @@ public class MowzieBlockAccess implements IBlockAccess {
 
     @Override
     public WorldType getWorldType() {
-        return Minecraft.getMinecraft().world.getWorldType();
+        return Minecraft.getInstance().world.getWorldType();
     }
 
     @Override
     public boolean isSideSolid(BlockPos pos, Direction side, boolean _default) {
         return true;
-    }
+    }*/ // TODO
 }

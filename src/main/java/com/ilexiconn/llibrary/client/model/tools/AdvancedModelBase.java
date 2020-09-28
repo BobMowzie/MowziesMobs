@@ -1,9 +1,9 @@
 package com.ilexiconn.llibrary.client.model.tools;
 
-import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * An enhanced ModelBase
@@ -12,7 +12,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @since 1.0.0
  */
 @OnlyIn(Dist.CLIENT)
-public class AdvancedModelBase extends ModelBase {
+public class AdvancedModelBase extends EntityModel {
     private float movementScale = 1.0F;
 
     /**

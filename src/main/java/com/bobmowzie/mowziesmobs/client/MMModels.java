@@ -8,19 +8,18 @@ import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.ilexiconn.llibrary.client.model.tabula.TabulaModelHandler;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.block.statemap.StateMap;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.item.Item;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 @OnlyIn(Dist.CLIENT)
-@EventBusSubscriber(value = Side.CLIENT, modid = MowziesMobs.MODID)
+@EventBusSubscriber(value = Dist.CLIENT, modid = MowziesMobs.MODID)
 public final class MMModels {
     private MMModels() {}
 
@@ -31,11 +30,11 @@ public final class MMModels {
         registerBlockModel(BlockHandler.PAINTED_ACACIA, "painted_acacia");
         registerBlockModel(BlockHandler.PAINTED_ACACIA_SLAB, "painted_acacia_slab");
 
-        ModelLoader.setCustomStateMapper(BlockHandler.GROTTOL, new StateMap.Builder()
-            .withName(BlockGrottol.VARIANT)
-            .withSuffix("_grottol")
-            .build()
-        );
+//        ModelLoader.addSpecialModel(BlockHandler.GROTTOL, new State.Builder() // TODO
+//            .withName(BlockGrottol.VARIANT)
+//            .withSuffix("_grottol")
+//            .build()
+//        );
 
         registerItemModel(ItemHandler.FOLIAATH_SEED, "foliaath_seed");
         registerItemModel(ItemHandler.MOB_REMOVER, "mob_remover");
@@ -61,7 +60,7 @@ public final class MMModels {
 
         registerItemModel(ItemHandler.BARAKO_MASK, "barako_mask.tbl");
 
-        ModelLoader.setCustomModelResourceLocation(ItemHandler.TEST_STRUCTURE, 0, new ModelResourceLocation("apple"));
+//        ModelLoader.setCustomModelResourceLocation(ItemHandler.TEST_STRUCTURE, 0, new ModelResourceLocation("apple"));
 
         MinecraftForge.EVENT_BUS.register(ClientEventHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(ParticleTextureStitcher.Stitcher.INSTANCE);
@@ -78,7 +77,7 @@ public final class MMModels {
 
     private static ModelResourceLocation registerItemModel(Item item, int id, String name) {
         ModelResourceLocation resource = new ModelResourceLocation(MowziesMobs.MODID + ':' + name, "inventory");
-        ModelLoader.setCustomModelResourceLocation(item, id, resource);
+//        ModelLoader.setCustomModelResourceLocation(item, id, resource);
         return resource;
     }
 }

@@ -6,10 +6,10 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
-import net.minecraft.client.model.ModelBox;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.renderer.model.ModelBox;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class ModelBarakoa extends MowzieEntityModel<EntityBarakoa> {
@@ -122,7 +122,7 @@ public class ModelBarakoa extends MowzieEntityModel<EntityBarakoa> {
         this.setRotateAngle(armUpperLeft, 0.0F, 0.0F, -0.9599310885968813F);
         this.spear = new AdvancedModelRenderer(this, 66, 0);
         this.spear.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.spear.add3DTexture(-4, -4, 0.5F, 15, 15);
+//        this.spear.add3DTexture(-4, -4, 0.5F, 15, 15);
         this.setRotateAngle(spear, 2.356194490192345F, 0.0F, 3.141592653589793F);
         this.earLeft = new AdvancedModelRenderer(this, 48, 0);
         this.earLeft.setRotationPoint(4.0F, -4.0F, -3.0F);
@@ -221,7 +221,7 @@ public class ModelBarakoa extends MowzieEntityModel<EntityBarakoa> {
         this.flailer.setRotationPoint(0.0F, 0, 0F);
         this.blowgun = new AdvancedModelRenderer(this, 82, 0);
         this.blowgun.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.blowgun.add3DTexture(-4, -4, 0.5F, 15, 15);
+//        this.blowgun.add3DTexture(-4, -4, 0.5F, 15, 15);
         this.setRotateAngle(blowgun, 2.356194490192345F, 0.0F, 0);
         this.talker = new AdvancedModelRenderer(this, 0, 0);
         this.talker.setRotationPoint(0, 0, 0);
@@ -357,11 +357,11 @@ public class ModelBarakoa extends MowzieEntityModel<EntityBarakoa> {
     protected void render(EntityBarakoa entity, float scale) {
         GlStateManager.pushMatrix();
         if (entity.getMask() == MaskType.FURY) {
-            GlStateManager.scale(0.85f, 0.85f, 0.85f);
-            GlStateManager.translate(0, 0.25f, 0);
+            GlStateManager.scalef(0.85f, 0.85f, 0.85f);
+            GlStateManager.translatef(0, 0.25f, 0);
         } else {
-            GlStateManager.scale(0.75f, 0.75f, 0.75f);
-            GlStateManager.translate(0, 0.5f, 0);
+            GlStateManager.scalef(0.75f, 0.75f, 0.75f);
+            GlStateManager.translatef(0, 0.5f, 0);
         }
         this.modelCore.render(scale);
         GlStateManager.popMatrix();

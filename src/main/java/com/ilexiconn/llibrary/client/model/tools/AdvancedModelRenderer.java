@@ -1,17 +1,17 @@
 package com.ilexiconn.llibrary.client.model.tools;
 
-import net.minecraft.client.model.ModelBox;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.model.TextureOffset;
+
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.ModelBox;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.vecmath.Matrix4d;
 import javax.vecmath.Point3d;
@@ -24,7 +24,7 @@ import javax.vecmath.Vector3d;
  * @since 1.0.0
  */
 @OnlyIn(Dist.CLIENT)
-public class AdvancedModelRenderer extends ModelRenderer {
+public class AdvancedModelRenderer extends RendererModel {
     public float defaultRotationX, defaultRotationY, defaultRotationZ;
     public float defaultOffsetX, defaultOffsetY, defaultOffsetZ;
     public float defaultPositionX, defaultPositionY, defaultPositionZ;
@@ -51,28 +51,19 @@ public class AdvancedModelRenderer extends ModelRenderer {
         this.setTextureOffset(textureOffsetX, textureOffsetY);
     }
 
-    public AdvancedModelRenderer add3DTexture(float posX, float posY, float posZ, int width, int height) {
-        this.cubeList.add(new Model3DTexture(this, this.textureOffsetX, this.textureOffsetY, posX, posY, posZ, width, height));
-        return this;
-    }
+//    public AdvancedModelRenderer add3DTexture(float posX, float posY, float posZ, int width, int height) {
+//        this.cubeList.add(new Model3DTexture(this, this.textureOffsetX, this.textureOffsetY, posX, posY, posZ, width, height));
+//        return this;
+//    }
 
     @Override
-    public ModelRenderer addBox(String partName, float offX, float offY, float offZ, int width, int height, int depth) {
-        partName = this.boxName + "." + partName;
-        TextureOffset textureoffset = this.model.getTextureOffset(partName);
-        this.setTextureOffset(textureoffset.textureOffsetX, textureoffset.textureOffsetY);
-        this.cubeList.add((new ModelBox(this, this.textureOffsetX, this.textureOffsetY, offX, offY, offZ, width, height, depth, 0.0F)).setBoxName(partName));
-        return this;
-    }
-
-    @Override
-    public ModelRenderer addBox(float offX, float offY, float offZ, int width, int height, int depth) {
+    public RendererModel addBox(float offX, float offY, float offZ, int width, int height, int depth) {
         this.cubeList.add(new ModelBox(this, this.textureOffsetX, this.textureOffsetY, offX, offY, offZ, width, height, depth, 0.0F));
         return this;
     }
 
     @Override
-    public ModelRenderer addBox(float offX, float offY, float offZ, int width, int height, int depth, boolean mirrored) {
+    public RendererModel addBox(float offX, float offY, float offZ, int width, int height, int depth, boolean mirrored) {
         this.cubeList.add(new ModelBox(this, this.textureOffsetX, this.textureOffsetY, offX, offY, offZ, width, height, depth, 0.0F, mirrored));
         return this;
     }
@@ -160,7 +151,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
     }
 
     @Override
-    public void addChild(ModelRenderer child) {
+    public void addChild(RendererModel child) {
         super.addChild(child);
         if (child instanceof AdvancedModelRenderer) {
             AdvancedModelRenderer advancedChild = (AdvancedModelRenderer) child;
@@ -216,47 +207,47 @@ public class AdvancedModelRenderer extends ModelRenderer {
                 if (!this.compiled) {
                     this.compileDisplayList(scale);
                 }
-                GlStateManager.translate(this.offsetX, this.offsetY, this.offsetZ);
-                GlStateManager.translate(this.rotationPointX * scale, this.rotationPointY * scale, this.rotationPointZ * scale);
+                GlStateManager.translatef(this.offsetX, this.offsetY, this.offsetZ);
+                GlStateManager.translatef(this.rotationPointX * scale, this.rotationPointY * scale, this.rotationPointZ * scale);
                 if (this.rotateAngleZ != 0.0F) {
-                    GlStateManager.rotate((float) Math.toDegrees(this.rotateAngleZ), 0.0F, 0.0F, 1.0F);
+                    GlStateManager.rotatef((float) Math.toDegrees(this.rotateAngleZ), 0.0F, 0.0F, 1.0F);
                 }
                 if (this.rotateAngleY != 0.0F) {
-                    GlStateManager.rotate((float) Math.toDegrees(this.rotateAngleY), 0.0F, 1.0F, 0.0F);
+                    GlStateManager.rotatef((float) Math.toDegrees(this.rotateAngleY), 0.0F, 1.0F, 0.0F);
                 }
                 if (this.rotateAngleX != 0.0F) {
-                    GlStateManager.rotate((float) Math.toDegrees(this.rotateAngleX), 1.0F, 0.0F, 0.0F);
+                    GlStateManager.rotatef((float) Math.toDegrees(this.rotateAngleX), 1.0F, 0.0F, 0.0F);
                 }
                 if (this.scaleX != 1.0F || this.scaleY != 1.0F || this.scaleZ != 1.0F) {
-                    GlStateManager.scale(this.scaleX, this.scaleY, this.scaleZ);
+                    GlStateManager.scalef(this.scaleX, this.scaleY, this.scaleZ);
                 }
                 if (this.opacity != 1.0F) {
                     GlStateManager.enableBlend();
                     GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-                    GlStateManager.color(1F, 1F, 1F, this.opacity);
+                    GlStateManager.color4f(1F, 1F, 1F, this.opacity);
                 }
                 GlStateManager.callList(this.displayList);
                 if (this.opacity != 1.0F) {
                     GlStateManager.disableBlend();
-                    GlStateManager.color(1F, 1F, 1F, 1F);
+                    GlStateManager.color4f(1F, 1F, 1F, 1F);
                 }
                 if (!this.scaleChildren && (this.scaleX != 1.0F || this.scaleY != 1.0F || this.scaleZ != 1.0F)) {
                     GlStateManager.popMatrix();
                     GlStateManager.pushMatrix();
-                    GlStateManager.translate(this.offsetX, this.offsetY, this.offsetZ);
-                    GlStateManager.translate(this.rotationPointX * scale, this.rotationPointY * scale, this.rotationPointZ * scale);
+                    GlStateManager.translatef(this.offsetX, this.offsetY, this.offsetZ);
+                    GlStateManager.translatef(this.rotationPointX * scale, this.rotationPointY * scale, this.rotationPointZ * scale);
                     if (this.rotateAngleZ != 0.0F) {
-                        GlStateManager.rotate((float) Math.toDegrees(this.rotateAngleZ), 0.0F, 0.0F, 1.0F);
+                        GlStateManager.rotatef((float) Math.toDegrees(this.rotateAngleZ), 0.0F, 0.0F, 1.0F);
                     }
                     if (this.rotateAngleY != 0.0F) {
-                        GlStateManager.rotate((float) Math.toDegrees(this.rotateAngleY), 0.0F, 1.0F, 0.0F);
+                        GlStateManager.rotatef((float) Math.toDegrees(this.rotateAngleY), 0.0F, 1.0F, 0.0F);
                     }
                     if (this.rotateAngleX != 0.0F) {
-                        GlStateManager.rotate((float) Math.toDegrees(this.rotateAngleX), 1.0F, 0.0F, 0.0F);
+                        GlStateManager.rotatef((float) Math.toDegrees(this.rotateAngleX), 1.0F, 0.0F, 0.0F);
                     }
                 }
                 if (this.childModels != null) {
-                    for (ModelRenderer childModel : this.childModels) {
+                    for (RendererModel childModel : this.childModels) {
                         childModel.render(scale);
                     }
                 }
@@ -267,12 +258,12 @@ public class AdvancedModelRenderer extends ModelRenderer {
 
     private void compileDisplayList(float scale) {
         this.displayList = GLAllocation.generateDisplayLists(1);
-        GlStateManager.glNewList(this.displayList, 4864);
+        GlStateManager.newList(this.displayList, 4864);
         BufferBuilder buffer = Tessellator.getInstance().getBuffer();
         for (ModelBox box : this.cubeList) {
             box.render(buffer, scale);
         }
-        GlStateManager.glEndList();
+        GlStateManager.endList();
         this.compiled = true;
     }
 

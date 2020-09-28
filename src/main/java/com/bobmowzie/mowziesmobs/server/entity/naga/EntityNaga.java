@@ -153,8 +153,8 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
             }
 
             @Override
-            public void updateTask() {
-                super.updateTask();
+            public void tick() {
+                super.tick();
                 if (interrupted) return;
                 //if (getAnimationTick() == 1) playSound(MMSounds.ENTITY_NAGA_ACID_CHARGE, 2, 1);
                 if (getAnimationTick() < 9) setMotion(getMotion().add(0, 0.015, 0));

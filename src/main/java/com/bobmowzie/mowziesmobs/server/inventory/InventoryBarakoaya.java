@@ -25,21 +25,6 @@ public final class InventoryBarakoaya implements IInventory {
     }
 
     @Override
-    public String getName() {
-        return "entity.barakoaya.trade";
-    }
-
-    @Override
-    public boolean hasCustomName() {
-        return false;
-    }
-
-    @Override
-    public ITextComponent getDisplayName() {
-        return new TranslationTextComponent(getName());
-    }
-
-    @Override
     public int getSizeInventory() {
         return slots.size();
     }
@@ -108,19 +93,6 @@ public final class InventoryBarakoaya implements IInventory {
     }
 
     @Override
-    public int getField(int id) {
-        return 0;
-    }
-
-    @Override
-    public void setField(int id, int value) {}
-
-    @Override
-    public int getFieldCount() {
-        return 0;
-    }
-
-    @Override
     public void clear() {
         slots.clear(); // NonNullList.clear fills with default value
     }
@@ -153,6 +125,6 @@ public final class InventoryBarakoaya implements IInventory {
     }
 
     private static boolean areItemsEqual(ItemStack s1, ItemStack s2) {
-        return ItemStack.areItemsEqual(s1, s2) && (!s2.hasTagCompound() || s1.hasTagCompound() && NBTUtil.areNBTEquals(s2.getTagCompound(), s1.getTagCompound(), false));
+        return ItemStack.areItemsEqual(s1, s2) && (!s2.hasTag() || s1.hasTag() && NBTUtil.areNBTEquals(s2.getTag(), s1.getTag(), false));
     }
 }

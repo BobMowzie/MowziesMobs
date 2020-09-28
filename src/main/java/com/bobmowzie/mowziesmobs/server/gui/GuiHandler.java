@@ -7,6 +7,7 @@ import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -15,7 +16,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.IGuiHandler;
 
 public final class GuiHandler implements IGuiHandler {
-    private static final SimpleRegistry<ResourceLocation, GuiType> GUIS = new SimpleRegistry<>();
+    private static final SimpleRegistry<GuiType> GUIS = new SimpleRegistry<>();
 
     public static final GuiTypeEntity<EntityBarakoaya> BARAKOA_TRADE = new GuiTypeEntity(EntityBarakoaya.class);
     public static final GuiTypeEntity<EntityBarako> BARAKO_TRADE = new GuiTypeEntity(EntityBarako.class);
@@ -27,7 +28,7 @@ public final class GuiHandler implements IGuiHandler {
 
     @Override
     public Object getServerGuiElement(int id, PlayerEntity player, World world, int x, int y, int z) {
-        GuiType type = GUIS.getObjectById(id);
+        GuiType type = GUIS.getByValue(id);
         if (type != null) {
             return type.createContainer(world, player, x, y, z);
         }
@@ -36,7 +37,7 @@ public final class GuiHandler implements IGuiHandler {
 
     @Override
     public Object getClientGuiElement(int id, PlayerEntity player, World world, int x, int y, int z) {
-        GuiType type = GUIS.getObjectById(id);
+        GuiType type = GUIS.getByValue(id);
         if (type != null) {
             return type.createGui(world, player, x, y, z);
         }
@@ -123,6 +124,6 @@ public final class GuiHandler implements IGuiHandler {
     }
 
     public static void open(GuiHandler.GuiType type, PlayerEntity player, int x, int y, int z) {
-        player.openGui(MowziesMobs.instance(), GUIS.getIDForObject(type), player.world, x, y, z);
+        player.openContainer((INamedContainerProvider) type.createContainer(player.world, player, x, y, z));
     }
 }
