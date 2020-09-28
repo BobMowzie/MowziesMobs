@@ -307,11 +307,11 @@ public class ModelFrostmaw extends MowzieEntityModel<EntityFrostmaw> {
         this.setRotateAngle(legLeftJoint, -0.6981317007977318F, 0.0F, 0.0F);
         this.iceCrystal = new AdvancedModelRenderer(this, 0, 0);
         this.iceCrystal.setRotationPoint(0, 0, 0);
-        this.iceCrystal.add3DTexture(-8, -8, 0, 16, 16);
+//        this.iceCrystal.add3DTexture(-8, -8, 0, 16, 16);
         this.iceCrystalJoint = new AdvancedModelRenderer(this, 0, 0);
         this.iceCrystalJoint.setRotationPoint(0, 20, -20);
         this.iceCrystalHand = new AdvancedModelRenderer(this, 0, 0);
-        this.iceCrystalHand.add3DTexture(-8, -8, 0, 16, 16);
+//        this.iceCrystalHand.add3DTexture(-8, -8, 0, 16, 16);
         this.iceCrystalHand.setScale(0.5f, 0.5f, 0.5f);
         this.iceCrystalHand.setRotationPoint(-28.5f, 10, -25.5f);
         

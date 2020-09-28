@@ -2,8 +2,8 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ExtendedModelRenderer;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
-import net.minecraft.client.model.ModelBox;
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.ModelBox;
 import net.minecraft.entity.Entity;
 
 public class ModelIceBall extends AdvancedModelBase {
@@ -17,16 +17,16 @@ public class ModelIceBall extends AdvancedModelBase {
 
 		body1 = new ExtendedModelRenderer(this, 32, 0);
 		body1.setRotationPoint(0.0F, 16.0F, 0.0F);
-		body1.cubeList.add(new ModelBox(body1, 8, 0, -12.0F, -12.0F, -12.0F, 24, 24, 24, 0.0F, false));
+		body1.addBox(new ModelBox(body1, 8, 0, -12.0F, -12.0F, -12.0F, 24, 24, 24, 0.0F, false));
 
 		body2 = new ExtendedModelRenderer(this, 32, 0);
 		body2.setRotationPoint(0.0F, 16.0F, 0.0F);
 		setRotationAngle(body2, 0.7854F, 0.0F, 0.7854F);
-		body2.cubeList.add(new ModelBox(body2, 8, 0, -12.0F, -12.0F, -12.0F, 24, 24, 24, 0.0F, false));
+		body2.addBox(new ModelBox(body2, 8, 0, -12.0F, -12.0F, -12.0F, 24, 24, 24, 0.0F, false));
 
 		core = new ExtendedModelRenderer(this, 8, 0);
 		core.setRotationPoint(0.0F, 16.0F, 0.0F);
-		core.cubeList.add(new ModelBox(core, 0, 0, -4.0F, -4.0F, -4.0F, 8, 8, 8, 0.0F, false));
+		core.addBox(new ModelBox(core, 0, 0, -4.0F, -4.0F, -4.0F, 8, 8, 8, 0.0F, false));
 
 		body1.setOpacity(0.65f);
 		body2.setOpacity(0.65f);
@@ -48,7 +48,7 @@ public class ModelIceBall extends AdvancedModelBase {
 		body2.render(f5);
 	}
 
-	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+	public void setRotationAngle(RendererModel modelRenderer, float x, float y, float z) {
 		modelRenderer.rotateAngleX = x;
 		modelRenderer.rotateAngleY = y;
 		modelRenderer.rotateAngleZ = z;

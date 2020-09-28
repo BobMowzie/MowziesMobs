@@ -3,10 +3,10 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class ModelFoliaath extends MowzieEntityModel<EntityFoliaath> {
@@ -236,15 +236,15 @@ public class ModelFoliaath extends MowzieEntityModel<EntityFoliaath> {
         bigLeaf3Base.rotationPointY -= 3.5;
         bigLeaf4Base.rotationPointY -= 3.5;
         GlStateManager.pushMatrix();
-        GlStateManager.scale(leafScale, leafScale, leafScale);
+        GlStateManager.scalef(leafScale, leafScale, leafScale);
         bigLeaf2Base.render(scale);
         bigLeaf1Base.render(scale);
         bigLeaf3Base.render(scale);
         bigLeaf4Base.render(scale);
         GlStateManager.popMatrix();
         GlStateManager.pushMatrix();
-        GlStateManager.translate(0, 1.4F - 1.4F * activeProgress, 0);
-        GlStateManager.scale(activeProgress, activeProgress, activeProgress);
+        GlStateManager.translatef(0, 1.4F - 1.4F * activeProgress, 0);
+        GlStateManager.scalef(activeProgress, activeProgress, activeProgress);
         stem1Joint.render(scale);
         GlStateManager.popMatrix();
     }

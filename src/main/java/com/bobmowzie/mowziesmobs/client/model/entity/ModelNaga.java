@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.ilexiconn.llibrary.LLibrary;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
+import net.minecraft.util.math.Vec3d;
 
 /**
  * Created by Josh on 9/9/2018.
@@ -709,12 +710,11 @@ public class ModelNaga extends MowzieEntityModel<EntityNaga> {
             faceTarget(headYaw, headPitch, 2, neck, headJoint);
 
             //Glide anim
-            float dx = (float) (entity.prevMotionX + (entity.motionX - entity.prevMotionX) * partial);
-            float dy = (float) (entity.motionY + (entity.motionY - entity.prevMotionY) * partial);
-            float dz = (float) (entity.motionZ + (entity.motionZ - entity.prevMotionZ) * partial);
-            double d = Math.sqrt(dx * dx + dy * dy + dz * dz);
+            Vec3d prevV = new Vec3d(entity.prevMotionX, entity.prevMotionY, entity.prevMotionZ);
+            Vec3d dv = prevV.add(entity.getMotion().subtract(prevV).scale(delta));
+            double d = Math.sqrt(dv.x * dv.x + dv.y * dv.y + dv.z * dv.z);
             if (d != 0 && entity.getAnimation() != EntityNaga.DIE_AIR_ANIMATION) {
-                double a = dy / d;
+                double a = dv.y / d;
                 a = Math.max(-1, Math.min(1, a));
                 float pitch = -(float) Math.asin(a);
                 root.rotateAngleX += pitch * nonHoverAnim;
@@ -929,12 +929,11 @@ public class ModelNaga extends MowzieEntityModel<EntityNaga> {
                 body.rotateAngleZ += 1f * frame % (Math.PI * 2) * swooper.rotationPointY;
 
                 if (entity.getAnimationTick() >= 23 && entity.getAnimationTick() < 60) {
-                    float dx = (float) (entity.prevMotionX + (entity.motionX - entity.prevMotionX) * delta);
-                    float dy = (float) (entity.motionY + (entity.motionY - entity.prevMotionY) * delta);
-                    float dz = (float) (entity.motionZ + (entity.motionZ - entity.prevMotionZ) * delta);
-                    double d = Math.sqrt(dx * dx + dy * dy + dz * dz);
+                    Vec3d prevV = new Vec3d(entity.prevMotionX, entity.prevMotionY, entity.prevMotionZ);
+                    Vec3d dv = prevV.add(entity.getMotion().subtract(prevV).scale(delta));
+                    double d = Math.sqrt(dv.x * dv.x + dv.y * dv.y + dv.z * dv.z);
                     if (d != 0) {
-                        double a = dy / d;
+                        double a = dv.y / d;
                         a = Math.max(-1, Math.min(1, a));
                         float pitch = -(float) Math.asin(a);
                         root.rotateAngleX += pitch * swooper.rotationPointY;

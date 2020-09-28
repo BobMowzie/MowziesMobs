@@ -5,8 +5,8 @@ import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class ModelWroughtnaut extends MowzieEntityModel<EntityWroughtnaut> {
@@ -356,7 +356,7 @@ public class ModelWroughtnaut extends MowzieEntityModel<EntityWroughtnaut> {
         setRotateAngle(swordJoint, 0.0F, -0.7853981633974483F, 0.0F);
         this.sword = new AdvancedModelRenderer(this, 82, 10);
         this.sword.setRotationPoint(0F, 0F, 0F);
-        this.sword.add3DTexture(-11f, 0, -11f, 11, 11);
+//        this.sword.add3DTexture(-11f, 0, -11f, 11, 11);
         setRotateAngle(sword, 0.0F, 0F, 0.0F);
         this.rootBox = new AdvancedModelRenderer(this, 0, 0);
         this.rootBox.setRotationPoint(0.0F, -1.0F, 0.0F);

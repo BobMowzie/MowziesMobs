@@ -3,10 +3,10 @@ package com.ilexiconn.llibrary.client.model;
 import com.ilexiconn.llibrary.LLibrary;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.HashMap;
 
@@ -20,8 +20,8 @@ public class ModelAnimator {
     private int prevTempTick;
     private boolean correctAnimation;
     private IAnimatedEntity entity;
-    private HashMap<ModelRenderer, Transform> transformMap;
-    private HashMap<ModelRenderer, Transform> prevTransformMap;
+    private HashMap<RendererModel, Transform> transformMap;
+    private HashMap<RendererModel, Transform> prevTransformMap;
 
     private ModelAnimator() {
         this.tempTick = 0;
@@ -110,7 +110,7 @@ public class ModelAnimator {
      * @param y   the y rotation
      * @param z   the z rotation
      */
-    public void rotate(ModelRenderer box, float x, float y, float z) {
+    public void rotate(RendererModel box, float x, float y, float z) {
         if (!this.correctAnimation) {
             return;
         }
@@ -125,14 +125,14 @@ public class ModelAnimator {
      * @param y   the y offset
      * @param z   the z offset
      */
-    public void move(ModelRenderer box, float x, float y, float z) {
+    public void move(RendererModel box, float x, float y, float z) {
         if (!this.correctAnimation) {
             return;
         }
         this.getTransform(box).addOffset(x, y, z);
     }
 
-    private Transform getTransform(ModelRenderer box) {
+    private Transform getTransform(RendererModel box) {
         return this.transformMap.computeIfAbsent(box, b -> new Transform());
     }
 
@@ -151,7 +151,7 @@ public class ModelAnimator {
 
         if (animationTick >= this.prevTempTick && animationTick < this.tempTick) {
             if (stationary) {
-                for (ModelRenderer box : this.prevTransformMap.keySet()) {
+                for (RendererModel box : this.prevTransformMap.keySet()) {
                     Transform transform = this.prevTransformMap.get(box);
                     box.rotateAngleX += transform.getRotationX();
                     box.rotateAngleY += transform.getRotationY();
@@ -163,7 +163,7 @@ public class ModelAnimator {
             } else {
                 float tick = (animationTick - this.prevTempTick + LLibrary.PROXY.getPartialTicks()) / (this.tempTick - this.prevTempTick);
                 float inc = MathHelper.sin((float) (tick * Math.PI / 2.0F)), dec = 1.0F - inc;
-                for (ModelRenderer box : this.prevTransformMap.keySet()) {
+                for (RendererModel box : this.prevTransformMap.keySet()) {
                     Transform transform = this.prevTransformMap.get(box);
                     box.rotateAngleX += dec * transform.getRotationX();
                     box.rotateAngleY += dec * transform.getRotationY();
@@ -172,7 +172,7 @@ public class ModelAnimator {
                     box.rotationPointY += dec * transform.getOffsetY();
                     box.rotationPointZ += dec * transform.getOffsetZ();
                 }
-                for (ModelRenderer box : this.transformMap.keySet()) {
+                for (RendererModel box : this.transformMap.keySet()) {
                     Transform transform = this.transformMap.get(box);
                     box.rotateAngleX += inc * transform.getRotationX();
                     box.rotateAngleY += inc * transform.getRotationY();

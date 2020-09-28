@@ -5,7 +5,7 @@ import com.bobmowzie.mowziesmobs.server.entity.EntityDynamicsTester;
 import com.ilexiconn.llibrary.client.model.ModelAnimator;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
-import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.entity.Entity;
 
 /**
@@ -89,15 +89,15 @@ public class ModelDynamicsTester extends AdvancedModelBase {
     /**
      * This is a helper function from Tabula to set the rotation of model parts
      */
-    public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
+    public void setRotateAngle(RendererModel modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;
     }
 
     @Override
-    public void setRotationAngles(float f, float f1, float f2, float f3, float f4, float f5, Entity entity) {
-        super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
+    public void setRotationAngles(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+        super.setRotationAngles(entity, f, f1, f2, f3, f4, f5);
         EntityDynamicsTester dynamicsTester = (EntityDynamicsTester) entity;
         resetToDefaultPose();
 //        bob(body1, 0.3f, 16, false, entity.ticksExisted + LLibrary.PROXY.getPartialTicks(), 1F);
