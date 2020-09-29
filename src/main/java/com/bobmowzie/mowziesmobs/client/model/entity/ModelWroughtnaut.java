@@ -9,7 +9,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class ModelWroughtnaut extends MowzieEntityModel<EntityWroughtnaut> {
+public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityModel<T> {
     public AdvancedModelRenderer waist;
     public AdvancedModelRenderer groin;
     public AdvancedModelRenderer stomachJoint;

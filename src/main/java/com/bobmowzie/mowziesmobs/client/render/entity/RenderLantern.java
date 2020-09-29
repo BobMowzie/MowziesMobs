@@ -10,11 +10,11 @@ import net.minecraft.util.ResourceLocation;
 /**
  * Created by Josh on 5/8/2017.
  */
-public class RenderLantern extends MobRenderer<EntityLantern> {
+public class RenderLantern extends MobRenderer<EntityLantern, ModelLantern<EntityLantern>> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/mmlantern.png");
 
     public RenderLantern(EntityRendererManager mgr) {
-        super(mgr, new ModelLantern(), 0.6f);
+        super(mgr, new ModelLantern<>(), 0.6f);
     }
 
     @Override

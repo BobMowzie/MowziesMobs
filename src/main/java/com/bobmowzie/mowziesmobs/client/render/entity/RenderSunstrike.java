@@ -2,12 +2,10 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.GlStateManager.DestFactor;
-import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -17,8 +15,8 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Random;
@@ -68,7 +66,7 @@ public class RenderSunstrike extends EntityRenderer<EntitySunstrike> {
         boolean isLingering = sunstrike.isLingering(delta);
         boolean isStriking = sunstrike.isStriking(delta);
         GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y, z);
+        GlStateManager.translated(x, y, z);
         setupGL();
         bindEntityTexture(sunstrike);
         if (isLingering) {
@@ -94,7 +92,7 @@ public class RenderSunstrike extends EntityRenderer<EntitySunstrike> {
         Tessellator t = Tessellator.getInstance();
         BufferBuilder buf = t.getBuffer();
         buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
-        float opacityMultiplier = (0.6F + RANDOMIZER.nextFloat() * 0.2F) * renderManager.world.getLightBrightness(new BlockPos(ex, ey, ez));
+        float opacityMultiplier = (0.6F + RANDOMIZER.nextFloat() * 0.2F) * renderManager.world.getLight(new BlockPos(ex, ey, ez));
         byte mirrorX = (byte) (RANDOMIZER.nextBoolean() ? -1 : 1);
         byte mirrorZ = (byte) (RANDOMIZER.nextBoolean() ? -1 : 1);
         for (BlockPos pos : BlockPos.getAllInBoxMutable(new BlockPos(minX, minY, minZ), new BlockPos(maxX, maxY, maxZ))) {
@@ -111,14 +109,14 @@ public class RenderSunstrike extends EntityRenderer<EntitySunstrike> {
     private void drawScorchBlock(World world, BlockState block, BlockPos pos, double ex, double ey, double ez, float opacityMultiplier, byte mirrorX, byte mirrorZ) {
         Tessellator t = Tessellator.getInstance();
         BufferBuilder buf = t.getBuffer();
-        if (block.isBlockNormalCube()) {
+        if (block.isNormalCube(world, pos)) {
             int bx = pos.getX(), by = pos.getY(), bz = pos.getZ();
             float opacity = (float) ((1 - (ey - by) / 2) * opacityMultiplier);
             if (opacity >= 0) {
                 if (opacity > 1) {
                     opacity = 1;
                 }
-                AxisAlignedBB aabb = block.getBoundingBox(world, pos);
+                AxisAlignedBB aabb = block.getCollisionShape(world, pos).getBoundingBox();
                 double minX = bx + aabb.minX - ex;
                 double maxX = bx + aabb.maxX - ex;
                 double y = by + aabb.minY - ey + 0.015625;
@@ -145,7 +143,7 @@ public class RenderSunstrike extends EntityRenderer<EntitySunstrike> {
             opacity *= DRAW_OPACITY_MULTIPLER;
         }
         drawRing(drawing, drawTime, strikeTime, opacity);
-        GlStateManager.rotate(-renderManager.playerViewY, 0, 1, 0);
+        GlStateManager.rotatef(-renderManager.playerViewY, 0, 1, 0);
         drawBeam(drawing, drawTime, strikeTime, opacity, maxY);
     }
 
@@ -193,7 +191,7 @@ public class RenderSunstrike extends EntityRenderer<EntitySunstrike> {
     }
 
     private void setupGL() {
-        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         GlStateManager.enableBlend();
         GlStateManager.disableLighting();
         GlStateManager.alphaFunc(GL11.GL_GREATER, 0);

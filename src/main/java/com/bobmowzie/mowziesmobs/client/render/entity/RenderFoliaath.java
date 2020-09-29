@@ -6,15 +6,15 @@ import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderFoliaath extends MobRenderer<EntityFoliaath> {
+public class RenderFoliaath extends MobRenderer<EntityFoliaath, ModelFoliaath<EntityFoliaath>> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/foliaath.png");
 
     public RenderFoliaath(EntityRendererManager mgr) {
-        super(mgr, new ModelFoliaath(), 0);
+        super(mgr, new ModelFoliaath<>(), 0);
     }
 
     @Override

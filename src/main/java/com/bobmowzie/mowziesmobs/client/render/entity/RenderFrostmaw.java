@@ -10,11 +10,11 @@ import net.minecraft.util.ResourceLocation;
 /**
  * Created by Josh on 5/8/2017.
  */
-public class RenderFrostmaw extends MobRenderer<EntityFrostmaw> {
+public class RenderFrostmaw extends MobRenderer<EntityFrostmaw, ModelFrostmaw<EntityFrostmaw>> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/frostmaw.png");
 
     public RenderFrostmaw(EntityRendererManager mgr) {
-        super(mgr, new ModelFrostmaw(), 3.5f);
+        super(mgr, new ModelFrostmaw<>(), 3.5f);
     }
 
     @Override

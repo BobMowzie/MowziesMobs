@@ -11,11 +11,11 @@ import net.minecraft.util.ResourceLocation;
 /**
  * Created by Josh on 5/8/2017.
  */
-public class RenderGrottol extends MobRenderer<EntityGrottol> {
+public class RenderGrottol extends MobRenderer<EntityGrottol, ModelGrottol<EntityGrottol>> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/grottol.png");
 
     public RenderGrottol(EntityRendererManager mgr) {
-        super(mgr, new ModelGrottol(), 0.6f);
+        super(mgr, new ModelGrottol<>(), 0.6f);
     }
 
     @Override

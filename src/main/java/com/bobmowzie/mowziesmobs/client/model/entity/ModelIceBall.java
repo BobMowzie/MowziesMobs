@@ -1,12 +1,13 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ExtendedModelRenderer;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBall;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.client.renderer.model.ModelBox;
 import net.minecraft.entity.Entity;
 
-public class ModelIceBall extends AdvancedModelBase {
+public class ModelIceBall<T extends EntityIceBall> extends AdvancedModelBase<T> {
 	private final ExtendedModelRenderer body1;
 	private final ExtendedModelRenderer body2;
 	private final ExtendedModelRenderer core;

@@ -3,28 +3,26 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.GlStateManager.DestFactor;
-import net.minecraft.client.renderer.GlStateManager.SourceFactor;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
 @OnlyIn(Dist.CLIENT)
-public class RenderBarako extends MobRenderer<EntityBarako> {
+public class RenderBarako extends MobRenderer<EntityBarako, ModelBarako<EntityBarako>> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/barako.png");
     private static final double BURST_RADIUS = 3.5;
     private static final int BURST_FRAME_COUNT = 10;
     private static final int BURST_START_FRAME = 12;
 
     public RenderBarako(EntityRendererManager mgr) {
-        super(mgr, new ModelBarako(), 1.0F);
+        super(mgr, new ModelBarako<>(), 1.0F);
     }
 
     @Override
@@ -41,14 +39,14 @@ public class RenderBarako extends MobRenderer<EntityBarako> {
     public void doRender(EntityBarako barako, double x, double y, double z, float yaw, float delta) {
         if (barako.getAnimation() == EntityBarako.ATTACK_ANIMATION && barako.getAnimationTick() > BURST_START_FRAME && barako.getAnimationTick() < BURST_START_FRAME + BURST_FRAME_COUNT - 1) {
             GlStateManager.pushMatrix();
-            GlStateManager.translate(x, y + 1.1, z);
+            GlStateManager.translated(x, y + 1.1, z);
             setupGL();
             bindTexture(RenderSunstrike.TEXTURE);
-            GlStateManager.rotate(-renderManager.playerViewY, 0, 1, 0);
-            GlStateManager.rotate(renderManager.playerViewX, 1, 0, 0);
-            GlStateManager.disableDepth();
+            GlStateManager.rotatef(-renderManager.playerViewY, 0, 1, 0);
+            GlStateManager.rotatef(renderManager.playerViewX, 1, 0, 0);
+            GlStateManager.disableDepthTest();
             drawBurst(barako.getAnimationTick() - BURST_START_FRAME + delta);
-            GlStateManager.enableDepth();
+            GlStateManager.enableDepthTest();
             revertGL();
             GlStateManager.popMatrix();
         }
@@ -76,13 +74,13 @@ public class RenderBarako extends MobRenderer<EntityBarako> {
         buf.pos(-BURST_RADIUS + offset, BURST_RADIUS + offset, 0).tex(minU, maxV).lightmap(0, 240).color(1, 1, 1, opacity).endVertex();
         buf.pos(BURST_RADIUS + offset, BURST_RADIUS + offset, 0).tex(maxU, maxV).lightmap(0, 240).color(1, 1, 1, opacity).endVertex();
         buf.pos(BURST_RADIUS + offset, -BURST_RADIUS + offset, 0).tex(maxU, minV).lightmap(0, 240).color(1, 1, 1, opacity).endVertex();
-        GlStateManager.disableDepth();
+        GlStateManager.disableDepthTest();
         t.draw();
-        GlStateManager.enableDepth();
+        GlStateManager.enableDepthTest();
     }
 
     private void setupGL() {
-        GlStateManager.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         GlStateManager.enableBlend();
         GlStateManager.disableLighting();
         GlStateManager.alphaFunc(GL11.GL_GREATER, 0);

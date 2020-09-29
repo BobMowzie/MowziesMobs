@@ -6,11 +6,11 @@ import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.entity.Entity;
 
-public abstract class MowzieEntityModel<T extends MowzieEntity> extends AdvancedModelBase {
+public abstract class MowzieEntityModel<T extends MowzieEntity> extends AdvancedModelBase<T> {
     protected final MMModelAnimator animator = MMModelAnimator.create();
 
     @Override
-    public final void render(Entity entity, float limbSwing, float limbSwingAmount, float age, float headYaw, float headPitch, float scale) {
+    public final void render(T entity, float limbSwing, float limbSwingAmount, float age, float headYaw, float headPitch, float scale) {
         T mowzie = this.cast(entity);
         float delta = age - entity.ticksExisted;
         this.animator.update(mowzie, delta);

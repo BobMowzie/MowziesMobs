@@ -11,7 +11,7 @@ import net.minecraft.entity.Entity;
 /**
  * Created by Josh on 8/30/2018.
  */
-public class ModelDynamicsTester extends AdvancedModelBase {
+public class ModelDynamicsTester<T extends EntityDynamicsTester> extends AdvancedModelBase<T> {
     public AdvancedModelRenderer root;
     public SocketModelRenderer body1;
     public SocketModelRenderer body2;
@@ -69,14 +69,14 @@ public class ModelDynamicsTester extends AdvancedModelBase {
     }
 
     @Override
-    public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void render(T entity, float f, float f1, float f2, float f3, float f4, float f5) {
         body1.isHidden = true;
         body2.isHidden = true;
         body3.isHidden = true;
         body4.isHidden = true;
         body5.isHidden = true;
         body6.isHidden = true;
-        if (((EntityDynamicsTester)entity).dc != null) ((EntityDynamicsTester)entity).dc.render(f5, bodydynamic);
+        if (entity.dc != null) entity.dc.render(f5, bodydynamic);
         root.render(f5);
         body1.isHidden = false;
         body2.isHidden = false;
@@ -96,9 +96,8 @@ public class ModelDynamicsTester extends AdvancedModelBase {
     }
 
     @Override
-    public void setRotationAngles(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
+    public void setRotationAngles(T entity, float f, float f1, float f2, float f3, float f4, float f5) {
         super.setRotationAngles(entity, f, f1, f2, f3, f4, f5);
-        EntityDynamicsTester dynamicsTester = (EntityDynamicsTester) entity;
         resetToDefaultPose();
 //        bob(body1, 0.3f, 16, false, entity.ticksExisted + LLibrary.PROXY.getPartialTicks(), 1F);
         root.rotationPointZ += 16;

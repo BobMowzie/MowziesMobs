@@ -6,18 +6,18 @@ import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Created by Josh on 9/9/2018.
  */
 @OnlyIn(Dist.CLIENT)
-public class RenderNaga extends MobRenderer<EntityNaga> {
+public class RenderNaga extends MobRenderer<EntityNaga, ModelNaga<EntityNaga>> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/naga.png");
 
     public RenderNaga(EntityRendererManager mgr) {
-        super(mgr, new ModelNaga(), 0);
+        super(mgr, new ModelNaga<>(), 0);
     }
 
     @Override

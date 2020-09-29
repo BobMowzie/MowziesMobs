@@ -12,7 +12,7 @@ import net.minecraft.util.math.Vec3d;
  * Created by Josh on 9/9/2018.
  */
 
-public class ModelNaga extends MowzieEntityModel<EntityNaga> {
+public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
     public AdvancedModelRenderer root;
     public AdvancedModelRenderer body;
     public AdvancedModelRenderer neck;

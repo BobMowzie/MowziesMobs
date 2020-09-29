@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.client.renderer.model.ModelBox;
 import net.minecraft.entity.Entity;
 
-public class ModelSuperNova extends AdvancedModelBase {
+public class ModelSuperNova<T extends EntitySuperNova> extends AdvancedModelBase<T> {
 	private final ExtendedModelRenderer body1;
 	private final ExtendedModelRenderer body2;
 	private final ExtendedModelRenderer body3;

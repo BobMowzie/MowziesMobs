@@ -9,11 +9,11 @@ import net.minecraft.util.ResourceLocation;
 /**
  * Created by Josh on 8/30/2018.
  */
-public class RenderDynamicsTester extends MobRenderer<EntityDynamicsTester> {
+public class RenderDynamicsTester extends MobRenderer<EntityDynamicsTester, ModelDynamicsTester<EntityDynamicsTester>> {
     private static final ResourceLocation TEXTURE_STONE = new ResourceLocation("textures/blocks/stone.png");
 
     public RenderDynamicsTester(EntityRendererManager mgr) {
-        super(mgr, new ModelDynamicsTester(), 0.5f);
+        super(mgr, new ModelDynamicsTester<>(), 0.5f);
     }
 
     @Override

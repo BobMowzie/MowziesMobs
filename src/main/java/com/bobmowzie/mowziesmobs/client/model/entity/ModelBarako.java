@@ -10,7 +10,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class ModelBarako extends MowzieEntityModel<EntityBarako> {
+public class ModelBarako<T extends EntityBarako> extends MowzieEntityModel<T> {
     public AdvancedModelRenderer body;
     public AdvancedModelRenderer chest;
     public AdvancedModelRenderer rightThigh;

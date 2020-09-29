@@ -3,17 +3,17 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.render.RenderHelper;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelPlayer;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
@@ -22,7 +22,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,16 +36,17 @@ public enum FrozenRenderHandler {
 
     private static final ResourceLocation FROZEN_TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/frozen.png");
 
-    public static class LayerFrozen implements LayerRenderer<LivingEntity> {
-        private final LivingRenderer<LivingEntity> renderer;
-        private final Predicate<ModelRenderer> modelExclusions;
+    public static class LayerFrozen extends LayerRenderer<LivingEntity, EntityModel<LivingEntity>> {
+        private final LivingRenderer<LivingEntity, EntityModel<LivingEntity>> renderer;
+        private final Predicate<RendererModel> modelExclusions;
 
-        public LayerFrozen(LivingRenderer<LivingEntity> renderer, Predicate<ModelRenderer> modelExclusions) {
+        public LayerFrozen(LivingRenderer<LivingEntity, EntityModel<LivingEntity>> renderer, Predicate<RendererModel> modelExclusions) {
+            super(renderer);
             this.renderer = renderer;
             this.modelExclusions = modelExclusions;
         }
 
-        public LayerFrozen(LivingRenderer<LivingEntity> renderer) {
+        public LayerFrozen(LivingRenderer<LivingEntity, EntityModel<LivingEntity>> renderer) {
             this(renderer, box -> {
 //                if(renderer instanceof RenderPlayer) {
 //                    RenderPlayer renderPlayer = (RenderPlayer) renderer;
@@ -59,11 +60,11 @@ public enum FrozenRenderHandler {
         }
 
         @Override
-        public void doRenderLayer(LivingEntity living, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        public void render(LivingEntity living, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
             if (living.isPotionActive(PotionHandler.FROZEN)) {
-                ModelBase model = this.renderer.getMainModel();
-                Map<ModelRenderer, Boolean> visibilities = new HashMap<>();
-                for(ModelRenderer box : model.boxList) {
+                EntityModel model = this.renderer.getEntityModel();
+                Map<RendererModel, Boolean> visibilities = new HashMap<>();
+                for(RendererModel box : model.boxList) {
                     if(this.modelExclusions.test(box)) {
                         visibilities.put(box, box.showModel);
                         box.showModel = false;
@@ -75,11 +76,11 @@ public enum FrozenRenderHandler {
                 GlStateManager.enableBlend();
                 GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
                 this.renderer.bindTexture(FROZEN_TEXTURE);
-                GlStateManager.color(1, 1, 1, transparency);
+                GlStateManager.color4f(1, 1, 1, transparency);
                 model.render(living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-                GlStateManager.color(1, 1, 1, 1);
+                GlStateManager.color4f(1, 1, 1, 1);
 
-                for(Map.Entry<ModelRenderer, Boolean> entry : visibilities.entrySet()) {
+                for(Map.Entry<RendererModel, Boolean> entry : visibilities.entrySet()) {
                     entry.getKey().showModel = entry.getValue();
                 }
 
@@ -108,7 +109,7 @@ public enum FrozenRenderHandler {
     public void onRenderHand(RenderSpecificHandEvent event) {
         GlStateManager.pushMatrix();
 
-        PlayerEntity player = Minecraft.getMinecraft().player;
+        PlayerEntity player = Minecraft.getInstance().player;
 
         if(player != null && player.isPotionActive(PotionHandler.FROZEN)) {
             if(player.isPotionActive(PotionHandler.FROZEN)) {
@@ -129,10 +130,9 @@ public enum FrozenRenderHandler {
      * @param swingProgress
      * @param equipProgress
      * @param handSide
-     * @param decay
      */
     private void renderArmFirstPersonFrozen(float swingProgress, float equipProgress, HandSide handSide) {
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = Minecraft.getInstance();
         EntityRendererManager renderManager = mc.getRenderManager();
         boolean flag = handSide != HandSide.LEFT;
         float f = flag ? 1.0F : -1.0F;
@@ -140,36 +140,36 @@ public enum FrozenRenderHandler {
         float f2 = -0.3F * MathHelper.sin(f1 * (float)Math.PI);
         float f3 = 0.4F * MathHelper.sin(f1 * ((float)Math.PI * 2F));
         float f4 = -0.4F * MathHelper.sin(equipProgress * (float)Math.PI);
-        GlStateManager.translate(f * (f2 + 0.64000005F), f3 + -0.6F + swingProgress * -0.6F, f4 + -0.71999997F);
-        GlStateManager.rotate(f * 45.0F, 0.0F, 1.0F, 0.0F);
+        GlStateManager.translatef(f * (f2 + 0.64000005F), f3 + -0.6F + swingProgress * -0.6F, f4 + -0.71999997F);
+        GlStateManager.rotatef(f * 45.0F, 0.0F, 1.0F, 0.0F);
         float f5 = MathHelper.sin(equipProgress * equipProgress * (float)Math.PI);
         float f6 = MathHelper.sin(f1 * (float)Math.PI);
-        GlStateManager.rotate(f * f6 * 70.0F, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate(f * f5 * -20.0F, 0.0F, 0.0F, 1.0F);
+        GlStateManager.rotatef(f * f6 * 70.0F, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotatef(f * f5 * -20.0F, 0.0F, 0.0F, 1.0F);
         AbstractClientPlayerEntity abstractclientplayer = mc.player;
         mc.getTextureManager().bindTexture(abstractclientplayer.getLocationSkin());
-        GlStateManager.translate(f * -1.0F, 3.6F, 3.5F);
-        GlStateManager.rotate(f * 120.0F, 0.0F, 0.0F, 1.0F);
-        GlStateManager.rotate(200.0F, 1.0F, 0.0F, 0.0F);
-        GlStateManager.rotate(f * -135.0F, 0.0F, 1.0F, 0.0F);
-        GlStateManager.translate(f * 5.6F, 0.0F, 0.0F);
-        PlayerRenderer renderplayer = (PlayerRenderer) (EntityRenderer<?>) renderManager.getEntityRenderObject(abstractclientplayer);
+        GlStateManager.translatef(f * -1.0F, 3.6F, 3.5F);
+        GlStateManager.rotatef(f * 120.0F, 0.0F, 0.0F, 1.0F);
+        GlStateManager.rotatef(200.0F, 1.0F, 0.0F, 0.0F);
+        GlStateManager.rotatef(f * -135.0F, 0.0F, 1.0F, 0.0F);
+        GlStateManager.translatef(f * 5.6F, 0.0F, 0.0F);
+        PlayerRenderer renderplayer = (PlayerRenderer) (EntityRenderer<?>) renderManager.getRenderer(abstractclientplayer);
         GlStateManager.disableCull();
 
         if (flag) {
             renderplayer.renderRightArm(abstractclientplayer);
 
-            mc.renderEngine.bindTexture(FROZEN_TEXTURE);
+            mc.getTextureManager().bindTexture(FROZEN_TEXTURE);
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             float transparency = 1;
-            GlStateManager.color(1, 1, 1, transparency);
+            GlStateManager.color4f(1, 1, 1, transparency);
 
             //From RenderPlayer#renderRightArm
-            ModelPlayer modelplayer = renderplayer.getMainModel();
+            PlayerModel modelplayer = renderplayer.getEntityModel();
             GlStateManager.enableBlend();
             modelplayer.swingProgress = 0.0F;
             modelplayer.isSneak = false;
-            modelplayer.setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, abstractclientplayer);
+            modelplayer.setRotationAngles(abstractclientplayer, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F);
             modelplayer.bipedRightArm.rotateAngleX = 0.0F;
             modelplayer.bipedRightArm.render(0.0625F);
             modelplayer.bipedRightArmwear.rotateAngleX = 0.0F;
@@ -178,17 +178,17 @@ public enum FrozenRenderHandler {
         } else {
             renderplayer.renderLeftArm(abstractclientplayer);
 
-            mc.renderEngine.bindTexture(FROZEN_TEXTURE);
+            mc.getTextureManager().bindTexture(FROZEN_TEXTURE);
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
             float transparency = 1;
-            GlStateManager.color(1, 1, 1, transparency);
+            GlStateManager.color4f(1, 1, 1, transparency);
 
             //From RenderPlayer#renderLeftArm
-            ModelPlayer modelplayer = renderplayer.getMainModel();
+            PlayerModel modelplayer = renderplayer.getEntityModel();
             GlStateManager.enableBlend();
             modelplayer.isSneak = false;
             modelplayer.swingProgress = 0.0F;
-            modelplayer.setRotationAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, abstractclientplayer);
+            modelplayer.setRotationAngles(abstractclientplayer, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F);
             modelplayer.bipedLeftArm.rotateAngleX = 0.0F;
             modelplayer.bipedLeftArm.render(0.0625F);
             modelplayer.bipedLeftArmwear.rotateAngleX = 0.0F;
@@ -196,7 +196,7 @@ public enum FrozenRenderHandler {
             GlStateManager.disableBlend();
         }
 
-        GlStateManager.color(1, 1, 1, 1);
+        GlStateManager.color4f(1, 1, 1, 1);
 
         GlStateManager.enableCull();
     }

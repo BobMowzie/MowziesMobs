@@ -6,7 +6,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class ModelFoliaathBaby extends MowzieEntityModel<EntityBabyFoliaath> {
+public class ModelFoliaathBaby<T extends EntityBabyFoliaath> extends MowzieEntityModel<T> {
     public AdvancedModelRenderer infantBase;
     public AdvancedModelRenderer juvenileBase;
     public AdvancedModelRenderer infantLeaf1;

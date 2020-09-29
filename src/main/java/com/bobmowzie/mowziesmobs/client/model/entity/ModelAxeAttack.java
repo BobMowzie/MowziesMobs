@@ -7,7 +7,7 @@ import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 /**
  * Created by Josh on 4/14/2017.
  */
-public class ModelAxeAttack extends AdvancedModelBase {
+public class ModelAxeAttack<T extends EntityAxeAttack> extends AdvancedModelBase<T> {
     public AdvancedModelRenderer axeBase;
     public AdvancedModelRenderer axeHandle;
     public AdvancedModelRenderer axeBladeRight;

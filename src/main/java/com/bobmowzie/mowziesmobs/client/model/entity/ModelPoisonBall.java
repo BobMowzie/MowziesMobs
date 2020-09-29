@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.model.ModelBox;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 
-public class ModelPoisonBall extends AdvancedModelBase {
+public class ModelPoisonBall<T extends EntityPoisonBall> extends AdvancedModelBase<T> {
 	private final ExtendedModelRenderer inner;
 	private final ExtendedModelRenderer outer;
 

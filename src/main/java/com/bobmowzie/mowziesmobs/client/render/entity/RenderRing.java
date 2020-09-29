@@ -2,8 +2,8 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityRing;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -30,23 +30,23 @@ public class RenderRing extends EntityRenderer<EntityRing> {
     @Override
     public void doRender(EntityRing entity, double x, double y, double z, float entityYaw, float partialTicks) {
         GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y, z);
+        GlStateManager.translated(x, y, z);
         setupGL();
         bindTexture(getEntityTexture(entity));
         if (entity.facesCamera) {
-            GlStateManager.rotate(-renderManager.playerViewY, 0, 1, 0);
-            GlStateManager.rotate(renderManager.playerViewX, 1, 0, 0);
+            GlStateManager.rotatef(-renderManager.playerViewY, 0, 1, 0);
+            GlStateManager.rotatef(renderManager.playerViewX, 1, 0, 0);
         }
         else {
             if (entity.facing != null) {
                 float pitch = (float) Math.toDegrees(Math.asin(-entity.facing.y));
                 float yaw = (float) Math.toDegrees(MathHelper.atan2(entity.facing.x, entity.facing.z));
-                GlStateManager.rotate(yaw, 0, 1, 0);
-                GlStateManager.rotate(pitch, 1, 0, 0);
+                GlStateManager.rotatef(yaw, 0, 1, 0);
+                GlStateManager.rotatef(pitch, 1, 0, 0);
             }
         }
         renderRing(entity, partialTicks);
-        GlStateManager.rotate(180, 0, 1, 0);
+        GlStateManager.rotatef(180, 0, 1, 0);
         renderRing(entity, partialTicks);
         revertGL();
         GlStateManager.popMatrix();

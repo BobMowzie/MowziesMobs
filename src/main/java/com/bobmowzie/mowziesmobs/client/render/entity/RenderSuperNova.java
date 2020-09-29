@@ -3,8 +3,7 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelSuperNova;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySuperNova;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
@@ -48,13 +47,13 @@ public class RenderSuperNova extends EntityRenderer<EntitySuperNova> {
         GlStateManager.disableCull();
         GlStateManager.disableLighting();
         GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y, z);
+        GlStateManager.translated(x, y, z);
         int i = entity.getBrightnessForRender();
         int k = i >> 16 & 255;
         i = 240 | k << 16;
         int j = i >> 16 & 65535;
         k = i & 65535;
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j, (float)k);
+//        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j, (float)k); // TODO
 
         bindTexture(getEntityTexture(entity));
         model.render(entity, 0.0725F, partialTicks);

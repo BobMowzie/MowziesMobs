@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.MMModelAnimator;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 
@@ -9,7 +8,7 @@ import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
  */
 
 
-public class ModelGrottol extends MowzieEntityModel<EntityGrottol> {
+public class ModelGrottol<T extends EntityGrottol> extends MowzieEntityModel<T> {
     public AdvancedModelRenderer body;
     public AdvancedModelRenderer head;
     public AdvancedModelRenderer crystal1;

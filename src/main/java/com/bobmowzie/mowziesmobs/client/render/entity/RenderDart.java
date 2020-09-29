@@ -2,17 +2,16 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.EntityDart;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderDart extends EntityRenderer<EntityDart> {
@@ -29,55 +28,73 @@ public class RenderDart extends EntityRenderer<EntityDart> {
 
     @Override
     public void doRender(EntityDart dart, double x, double y, double z, float yaw, float delta) {
-        bindEntityTexture(dart);
-        GlStateManager.color(1, 1, 1);
+        this.bindEntityTexture(dart);
+        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y, z);
-        GlStateManager.rotate(dart.prevRotationYaw + (dart.rotationYaw - dart.prevRotationYaw) * delta - 90, 0, 1, 0);
-        GlStateManager.rotate(dart.prevRotationPitch + (dart.rotationPitch - dart.prevRotationPitch) * delta, 0, 0, 1);
-        Tessellator tes = Tessellator.getInstance();
-        BufferBuilder buf = tes.getBuffer();
+        GlStateManager.disableLighting();
+        GlStateManager.translatef((float)x, (float)y, (float)z);
+        GlStateManager.rotatef(MathHelper.lerp(delta, dart.prevRotationYaw, dart.rotationYaw) - 90.0F, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotatef(MathHelper.lerp(delta, dart.prevRotationPitch, dart.rotationPitch), 0.0F, 0.0F, 1.0F);
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        int i = 0;
+        float f = 0.0F;
+        float f1 = 0.5F;
+        float f2 = 0.0F;
+        float f3 = 0.15625F;
+        float f4 = 0.0F;
+        float f5 = 0.15625F;
+        float f6 = 0.15625F;
+        float f7 = 0.3125F;
+        float f8 = 0.05625F;
         GlStateManager.enableRescaleNormal();
-        float shake = dart.arrowShake - delta;
-        if (shake > 0) {
-            GlStateManager.rotate(-MathHelper.sin(shake * 3) * shake, 0, 0, 1);
+        float f9 = (float)dart.arrowShake - delta;
+        if (f9 > 0.0F) {
+            float f10 = -MathHelper.sin(f9 * 3.0F) * f9;
+            GlStateManager.rotatef(f10, 0.0F, 0.0F, 1.0F);
         }
-        GlStateManager.rotate(45, 1, 0, 0);
-        GlStateManager.scale(0.05625F, 0.05625F, 0.05625F);
-        GlStateManager.translate(-4, 0, 0);
-        if (renderOutlines) {
+
+        GlStateManager.rotatef(45.0F, 1.0F, 0.0F, 0.0F);
+        GlStateManager.scalef(0.05625F, 0.05625F, 0.05625F);
+        GlStateManager.translatef(-4.0F, 0.0F, 0.0F);
+        if (this.renderOutlines) {
             GlStateManager.enableColorMaterial();
-            GlStateManager.enableOutlineMode(getTeamColor(dart));
+            GlStateManager.setupSolidRenderingTextureCombine(this.getTeamColor(dart));
         }
-        GlStateManager.glNormal3f(0.05625F, 0, 0);
-        buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        buf.pos(-7, -2, -2).tex(0, 0.15625D).endVertex();
-        buf.pos(-7, -2, 2).tex(0.15625D, 0.15625D).endVertex();
-        buf.pos(-7, 2, 2).tex(0.15625D, 0.3125D).endVertex();
-        buf.pos(-7, 2, -2).tex(0, 0.3125D).endVertex();
-        tes.draw();
-        GlStateManager.glNormal3f(-0.05625F, 0, 0);
-        buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        buf.pos(-7, 2, -2).tex(0, 0.15625D).endVertex();
-        buf.pos(-7, 2, 2).tex(0.15625D, 0.15625D).endVertex();
-        buf.pos(-7, -2, 2).tex(0.15625D, 0.3125D).endVertex();
-        buf.pos(-7, -2, -2).tex(0, 0.3125D).endVertex();
-        tes.draw();
-        for (int i = 0; i < 4; ++i) {
-            GlStateManager.rotate(90, 1, 0, 0);
-            GlStateManager.glNormal3f(0, 0, 0.05625F);
-            buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-            buf.pos(-8, -2, 0).tex(0, 0).endVertex();
-            buf.pos(8, -2, 0).tex(0.5D, 0).endVertex();
-            buf.pos(8, 2, 0).tex(0.5D, 0.15625D).endVertex();
-            buf.pos(-8, 2, 0).tex(0, 0.15625D).endVertex();
-            tes.draw();
+
+        GlStateManager.normal3f(0.05625F, 0.0F, 0.0F);
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+        bufferbuilder.pos(-7.0D, -2.0D, -2.0D).tex(0.0D, 0.15625D).endVertex();
+        bufferbuilder.pos(-7.0D, -2.0D, 2.0D).tex(0.15625D, 0.15625D).endVertex();
+        bufferbuilder.pos(-7.0D, 2.0D, 2.0D).tex(0.15625D, 0.3125D).endVertex();
+        bufferbuilder.pos(-7.0D, 2.0D, -2.0D).tex(0.0D, 0.3125D).endVertex();
+        tessellator.draw();
+        GlStateManager.normal3f(-0.05625F, 0.0F, 0.0F);
+        bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+        bufferbuilder.pos(-7.0D, 2.0D, -2.0D).tex(0.0D, 0.15625D).endVertex();
+        bufferbuilder.pos(-7.0D, 2.0D, 2.0D).tex(0.15625D, 0.15625D).endVertex();
+        bufferbuilder.pos(-7.0D, -2.0D, 2.0D).tex(0.15625D, 0.3125D).endVertex();
+        bufferbuilder.pos(-7.0D, -2.0D, -2.0D).tex(0.0D, 0.3125D).endVertex();
+        tessellator.draw();
+
+        for(int j = 0; j < 4; ++j) {
+            GlStateManager.rotatef(90.0F, 1.0F, 0.0F, 0.0F);
+            GlStateManager.normal3f(0.0F, 0.0F, 0.05625F);
+            bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
+            bufferbuilder.pos(-8.0D, -2.0D, 0.0D).tex(0.0D, 0.0D).endVertex();
+            bufferbuilder.pos(8.0D, -2.0D, 0.0D).tex(0.5D, 0.0D).endVertex();
+            bufferbuilder.pos(8.0D, 2.0D, 0.0D).tex(0.5D, 0.15625D).endVertex();
+            bufferbuilder.pos(-8.0D, 2.0D, 0.0D).tex(0.0D, 0.15625D).endVertex();
+            tessellator.draw();
         }
-        if (renderOutlines) {
-            GlStateManager.disableOutlineMode();
+
+        if (this.renderOutlines) {
+            GlStateManager.tearDownSolidRenderingTextureCombine();
             GlStateManager.disableColorMaterial();
         }
+
         GlStateManager.disableRescaleNormal();
+        GlStateManager.enableLighting();
         GlStateManager.popMatrix();
         super.doRender(dart, x, y, z, yaw, delta);
     }

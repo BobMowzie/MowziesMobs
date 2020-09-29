@@ -1,6 +1,7 @@
 package com.ilexiconn.llibrary.client.model.tools;
 
 import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -12,7 +13,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * @since 1.0.0
  */
 @OnlyIn(Dist.CLIENT)
-public class AdvancedModelBase extends EntityModel {
+public class AdvancedModelBase<T extends Entity> extends EntityModel<T> {
     private float movementScale = 1.0F;
 
     /**

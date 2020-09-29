@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelIceBall;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBall;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
@@ -25,8 +25,8 @@ public class RenderIceBall extends EntityRenderer<EntityIceBall> {
     @Override
     public void doRender(EntityIceBall entity, double x, double y, double z, float entityYaw, float partialTicks) {
         GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y - 1, z);
-        GlStateManager.rotate(entityYaw, 0, -1, 0);
+        GlStateManager.translated(x, y - 1, z);
+        GlStateManager.rotatef(entityYaw, 0, -1, 0);
         bindTexture(TEXTURE);
         model.render(entity, 0.0725F, partialTicks);
         GlStateManager.popMatrix();

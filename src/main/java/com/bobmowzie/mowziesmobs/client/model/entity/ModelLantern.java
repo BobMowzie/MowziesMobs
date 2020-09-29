@@ -7,7 +7,7 @@ import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 /**
  * Created by Josh on 7/24/2018.
  */
-public class ModelLantern extends MowzieEntityModel<EntityLantern> {
+public class ModelLantern<T extends EntityLantern> extends MowzieEntityModel<T> {
     public ExtendedModelRenderer body;
     public ExtendedModelRenderer center;
     public AdvancedModelRenderer bubbles;

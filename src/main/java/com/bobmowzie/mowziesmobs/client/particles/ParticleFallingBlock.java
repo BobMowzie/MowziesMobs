@@ -3,21 +3,18 @@ package com.bobmowzie.mowziesmobs.client.particles;
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import org.lwjgl.util.vector.Vector3f;
 
 /**
  * Created by Josh on 6/2/2017.
@@ -29,6 +26,7 @@ public class ParticleFallingBlock extends Particle implements ParticleTextureSti
     public float prevRotAngle;
     public float size;
     public BlockState storedBlock;
+    public float particleScale = 1;
 
     private EnumScaleBehavior behavior;
 
@@ -43,7 +41,7 @@ public class ParticleFallingBlock extends Particle implements ParticleTextureSti
         super(world, x, y, z);
         particleScale = 1;
         this.size = size;
-        particleMaxAge = duration;
+        maxAge = duration;
         particleAlpha = 1;
         this.motionX = motionX;
         this.motionY = motionY;
@@ -52,12 +50,9 @@ public class ParticleFallingBlock extends Particle implements ParticleTextureSti
         this.behavior = behavior;
         this.storedBlock = blockState;
 
-        rotAxis = Vector3f.cross(new Vector3f(motionX, motionY, motionZ), new Vector3f(0, 1, 0), null);
-    }
-
-    @Override
-    public int getFXLayer() {
-        return 1;
+        Vector3f motionVec = new Vector3f(motionX, motionY, motionZ);
+        motionVec.cross(new Vector3f(0, 1, 0));
+        rotAxis = motionVec;
     }
 
     @Override
@@ -66,12 +61,12 @@ public class ParticleFallingBlock extends Particle implements ParticleTextureSti
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
-        if (particleAge >= particleMaxAge) {
+    public void tick() {
+        super.tick();
+        if (age >= maxAge) {
             setExpired();
         }
-        particleAge++;
+        age++;
 
         motionY -= 0.2;
 
@@ -81,7 +76,7 @@ public class ParticleFallingBlock extends Particle implements ParticleTextureSti
     }
 
     @Override
-    public void renderParticle(BufferBuilder buffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+    public void renderParticle(BufferBuilder buffer, ActiveRenderInfo activeRenderInfo, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         Tessellator tessellator = Tessellator.getInstance();
         tessellator.draw();
 
@@ -89,7 +84,7 @@ public class ParticleFallingBlock extends Particle implements ParticleTextureSti
         GlStateManager.disableBlend();
         GlStateManager.alphaFunc(516, 0.1F);
 
-        float var = (particleAge + partialTicks)/particleMaxAge;
+        float var = (age + partialTicks)/maxAge;
         if (behavior == EnumScaleBehavior.GROW) {
             particleScale = size * var;
         }
@@ -109,7 +104,7 @@ public class ParticleFallingBlock extends Particle implements ParticleTextureSti
             if (storedBlock.getRenderType() == BlockRenderType.MODEL)
             {
 
-                if (storedBlock != world.getBlockState(new BlockPos(entityIn)) && storedBlock.getRenderType() != BlockRenderType.INVISIBLE)
+                if (storedBlock != world.getBlockState(new BlockPos(activeRenderInfo.getRenderViewEntity())) && storedBlock.getRenderType() != BlockRenderType.INVISIBLE)
                 {
                     float f5 = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)partialTicks - interpPosX);
                     float f6 = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)partialTicks - interpPosY);
@@ -122,18 +117,18 @@ public class ParticleFallingBlock extends Particle implements ParticleTextureSti
                     bufferbuilder.begin(7, DefaultVertexFormats.BLOCK);
                     BlockPos blockpos = new BlockPos(posX, posY, posZ);
 
-                    GlStateManager.translate(0, 0.5, 0);
+                    GlStateManager.translatef(0, 0.5f, 0);
 
-                    GlStateManager.translate(f5, f6, f7);
+                    GlStateManager.translatef(f5, f6, f7);
 
-                    GlStateManager.scale(particleScale, particleScale, particleScale);
+                    GlStateManager.scalef(particleScale, particleScale, particleScale);
 
-                    GlStateManager.rotate(f8, rotAxis.x, rotAxis.y, rotAxis.z);
+                    GlStateManager.rotatef(f8, rotAxis.getX(), rotAxis.getY(), rotAxis.getZ());
 
-                    GlStateManager.translate(-0.5 - blockpos.getX(), -0.5 - blockpos.getY(), -0.5 - blockpos.getZ());
+                    GlStateManager.translated(-0.5 - blockpos.getX(), -0.5 - blockpos.getY(), -0.5 - blockpos.getZ());
 
-                    BlockRendererDispatcher blockrendererdispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
-                    blockrendererdispatcher.getBlockModelRenderer().renderModelFlat(world, blockrendererdispatcher.getModelForState(storedBlock), storedBlock, blockpos, bufferbuilder, false, MathHelper.getPositionRandom(new BlockPos(0, 0, 0)));
+                    BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
+                    blockrendererdispatcher.getBlockModelRenderer().renderModelFlat(world, blockrendererdispatcher.getModelForState(storedBlock), storedBlock, blockpos, bufferbuilder, false, rand, MathHelper.getPositionRandom(new BlockPos(0, 0, 0)));
                     tessellator.draw();
 
 //                    GlStateManager.disableLighting();
@@ -142,9 +137,14 @@ public class ParticleFallingBlock extends Particle implements ParticleTextureSti
             }
         }
 
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+    }
+
+    @Override
+    public IParticleRenderType getRenderType() {
+        return IParticleRenderType.TERRAIN_SHEET;
     }
 
     public static final class FallingBlockFactory extends ParticleFactory<ParticleFallingBlock.FallingBlockFactory, ParticleFallingBlock> {

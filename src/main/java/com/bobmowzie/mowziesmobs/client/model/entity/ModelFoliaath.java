@@ -9,7 +9,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class ModelFoliaath extends MowzieEntityModel<EntityFoliaath> {
+public class ModelFoliaath<T extends EntityFoliaath> extends MowzieEntityModel<T> {
     public AdvancedModelRenderer bigLeaf2Base;
     public AdvancedModelRenderer bigLeaf1Base;
     public AdvancedModelRenderer bigLeaf4Base;

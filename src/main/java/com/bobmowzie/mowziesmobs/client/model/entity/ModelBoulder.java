@@ -10,7 +10,7 @@ import java.util.Random;
 /**
  * Created by Josh on 4/14/2017.
  */
-public class ModelBoulder extends AdvancedModelBase {
+public class ModelBoulder<T extends EntityBoulder> extends AdvancedModelBase {
 
     public BlockModelRenderer boulder0block1;
     public AdvancedModelRenderer boulder1;

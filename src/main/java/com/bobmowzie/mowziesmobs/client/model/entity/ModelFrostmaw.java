@@ -10,7 +10,7 @@ import net.minecraft.util.math.Vec3d;
 /**
  * Created by Josh on 5/8/2017.
  */
-public class ModelFrostmaw extends MowzieEntityModel<EntityFrostmaw> {
+public class ModelFrostmaw<T extends EntityFrostmaw> extends MowzieEntityModel<T> {
     public AdvancedModelRenderer root;
     public AdvancedModelRenderer waist;
     public AdvancedModelRenderer chest;

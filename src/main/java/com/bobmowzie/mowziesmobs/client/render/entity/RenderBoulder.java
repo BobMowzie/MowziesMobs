@@ -2,14 +2,14 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBoulder;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -50,7 +50,7 @@ public class RenderBoulder extends EntityRenderer<EntityBoulder> {
     @Override
     public void doRender(EntityBoulder entity, double x, double y, double z, float yaw, float delta) {
         GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y, z);
+        GlStateManager.translated(x, y, z);
         bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         model.render(entity, 0.0625F, delta);
         GlStateManager.popMatrix();
