@@ -4,11 +4,11 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.PlayerAdvancements;
-import net.minecraft.advancements.critereon.AbstractCriterionInstance;
+import net.minecraft.advancements.criterion.CriterionInstance;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
 
-public class StealIceCrystalTrigger extends MMTrigger<AbstractCriterionInstance, StealIceCrystalTrigger.Listener> {
+public class StealIceCrystalTrigger extends MMTrigger<CriterionInstance, StealIceCrystalTrigger.Listener> {
     public static final ResourceLocation ID = new ResourceLocation(MowziesMobs.MODID, "steal_ice_crystal");
 
     public StealIceCrystalTrigger() {
@@ -25,8 +25,8 @@ public class StealIceCrystalTrigger extends MMTrigger<AbstractCriterionInstance,
     }
 
     @Override
-    public AbstractCriterionInstance deserializeInstance(JsonObject json, JsonDeserializationContext context) {
-        return new AbstractCriterionInstance(ID);
+    public CriterionInstance deserializeInstance(JsonObject json, JsonDeserializationContext context) {
+        return new CriterionInstance(ID);
     }
 
     public void trigger(ServerPlayerEntity player) {
@@ -37,7 +37,7 @@ public class StealIceCrystalTrigger extends MMTrigger<AbstractCriterionInstance,
         }
     }
 
-    static class Listener extends MMTrigger.Listener<AbstractCriterionInstance> {
+    static class Listener extends MMTrigger.Listener<CriterionInstance> {
 
         public Listener(PlayerAdvancements playerAdvancementsIn) {
             super(playerAdvancementsIn);

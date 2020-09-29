@@ -3,6 +3,7 @@ package com.ilexiconn.llibrary.server.network;
 import com.ilexiconn.llibrary.LLibrary;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.IPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -15,9 +16,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * @author iLexiconn
  * @since 1.0.0
  */
-public abstract class AbstractMessage<T extends AbstractMessage<T>> implements IMessage, IMessageHandler<T, IMessage> {
+public abstract class AbstractMessage<T extends AbstractMessage<T>> implements IPacket, IMessageHandler<T, IPacket> {
     @Override
-    public IMessage onMessage(T message, MessageContext messageContext) {
+    public IPacket onMessage(T message, MessageContext messageContext) {
         LLibrary.PROXY.handleMessage(message, messageContext);
 
         return null;

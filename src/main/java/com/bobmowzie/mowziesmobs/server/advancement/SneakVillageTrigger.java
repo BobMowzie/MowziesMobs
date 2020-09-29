@@ -4,11 +4,11 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.PlayerAdvancements;
-import net.minecraft.advancements.critereon.AbstractCriterionInstance;
+import net.minecraft.advancements.criterion.CriterionInstance;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.ResourceLocation;
 
-public class SneakVillageTrigger extends MMTrigger<AbstractCriterionInstance, SneakVillageTrigger.Listener> {
+public class SneakVillageTrigger extends MMTrigger<CriterionInstance, SneakVillageTrigger.Listener> {
     public static final ResourceLocation ID = new ResourceLocation(MowziesMobs.MODID, "sneak_village");
 
     public SneakVillageTrigger() {
@@ -25,8 +25,8 @@ public class SneakVillageTrigger extends MMTrigger<AbstractCriterionInstance, Sn
     }
 
     @Override
-    public AbstractCriterionInstance deserializeInstance(JsonObject json, JsonDeserializationContext context) {
-        return new AbstractCriterionInstance(ID);
+    public CriterionInstance deserializeInstance(JsonObject json, JsonDeserializationContext context) {
+        return new CriterionInstance(ID);
     }
 
     public void trigger(ServerPlayerEntity player) {
@@ -37,7 +37,7 @@ public class SneakVillageTrigger extends MMTrigger<AbstractCriterionInstance, Sn
         }
     }
 
-    static class Listener extends MMTrigger.Listener<AbstractCriterionInstance> {
+    static class Listener extends MMTrigger.Listener<CriterionInstance> {
 
         public Listener(PlayerAdvancements playerAdvancementsIn) {
             super(playerAdvancementsIn);

@@ -5,7 +5,6 @@ import com.google.common.collect.Sets;
 import net.minecraft.advancements.ICriterionInstance;
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.advancements.PlayerAdvancements;
-import net.minecraft.advancements.critereon.AbstractCriterionInstance;
 
 import java.util.Map;
 import java.util.Set;

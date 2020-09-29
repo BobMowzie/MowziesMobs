@@ -10,6 +10,7 @@ import com.ilexiconn.llibrary.server.network.SnackbarMessage;
 import com.ilexiconn.llibrary.server.snackbar.Snackbar;
 import com.ilexiconn.llibrary.server.update.UpdateHandler;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -32,7 +33,7 @@ public class ServerProxy {
     }
 
     public <T extends AbstractMessage<T>> void handleMessage(final T message, final MessageContext messageContext) {
-        WorldServer world = (WorldServer) messageContext.getServerHandler().player.world;
+        ServerWorld world = (ServerWorld) messageContext.getServerHandler().player.world;
         world.addScheduledTask(() -> message.onServerReceived(FMLCommonHandler.instance().getMinecraftServerInstance(), message, messageContext.getServerHandler().player, messageContext));
     }
 
