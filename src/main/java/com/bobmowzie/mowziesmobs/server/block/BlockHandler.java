@@ -2,29 +2,17 @@ package com.bobmowzie.mowziesmobs.server.block;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import net.minecraft.block.Block;
+import net.minecraft.block.SlabBlock;
 import net.minecraft.block.material.Material;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
-@GameRegistry.ObjectHolder(MowziesMobs.MODID)
-@Mod.EventBusSubscriber(modid = MowziesMobs.MODID)
 public final class BlockHandler {
-    public static final BlockPaintedAcacia PAINTED_ACACIA = null;
-    public static final BlockPaintedAcaciaSlab PAINTED_ACACIA_SLAB = null;
-    public static final BlockPaintedAcaciaSlab PAINTED_ACACIA_DOUBLE_SLAB = null;
-    public static final BlockGrottol GROTTOL = null;
-
     private BlockHandler() {}
 
-    public static void register(RegistryEvent.Register<Block> event) {
-        event.getRegistry().registerAll(
-                new BlockPaintedAcacia(Block.Properties.create(Material.WOOD)).setRegistryName("painted_acacia"),
-                new BlockPaintedAcaciaSlab.Half(),
-                new BlockPaintedAcaciaSlab.Double(),
-                new BlockGrottol()
-                    .setRegistryName("grottol")
-        );
-    }
+    public static final DeferredRegister<Block> REG = new DeferredRegister<>(ForgeRegistries.BLOCKS, MowziesMobs.MODID);
+    public static final RegistryObject<Block> PAINTED_ACACIA = REG.register("painted_acacia", () -> new Block(Block.Properties.create(Material.WOOD)));
+    public static final RegistryObject<SlabBlock> PAINTED_ACACIA_SLAB = REG.register("painted_acacia_slab", () -> new SlabBlock(Block.Properties.from(PAINTED_ACACIA.get())));
+    public static final RegistryObject<BlockGrottol> GROTTOL = REG.register("grottol", () -> new BlockGrottol(Block.Properties.create(Material.ROCK).noDrops()));
 }
