@@ -51,8 +51,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.common.config.Config;
-import net.minecraftforge.common.config.ConfigManager;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -60,17 +60,17 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.terraingen.PopulateChunkEvent;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.common.Mod;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Mod.EventBusSubscriber(modid = MowziesMobs.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class ServerEventHandler {
     private static final int ICE = Block.getStateId(Blocks.ICE.getDefaultState());
 
@@ -84,28 +84,28 @@ public final class ServerEventHandler {
         }
         Entity entity = event.getEntity();
         if (entity instanceof ZombieEntity) {
-            ((CreatureEntity) entity).targetTasks.addTask(2, new NearestAttackableTargetGoal<>((CreatureEntity) entity, EntityFoliaath.class, 0, true, false, null));
-            ((CreatureEntity) entity).targetTasks.addTask(3, new NearestAttackableTargetGoal<>((CreatureEntity) entity, EntityBarakoa.class, 0, true, false, null));
-            ((CreatureEntity) entity).targetTasks.addTask(2, new NearestAttackableTargetGoal<>((CreatureEntity) entity, EntityBarako.class, 0, true, false, null));
+            ((CreatureEntity) entity).targetSelector.addGoal(2, new NearestAttackableTargetGoal<>((CreatureEntity) entity, EntityFoliaath.class, 0, true, false, null));
+            ((CreatureEntity) entity).targetSelector.addGoal(3, new NearestAttackableTargetGoal<>((CreatureEntity) entity, EntityBarakoa.class, 0, true, false, null));
+            ((CreatureEntity) entity).targetSelector.addGoal(2, new NearestAttackableTargetGoal<>((CreatureEntity) entity, EntityBarako.class, 0, true, false, null));
         }
         if (entity instanceof SkeletonEntity) {
-            ((CreatureEntity) entity).targetTasks.addTask(3, new NearestAttackableTargetGoal<>((CreatureEntity) entity, EntityBarakoa.class, 0, true, false, null));
-            ((CreatureEntity) entity).targetTasks.addTask(2, new NearestAttackableTargetGoal<>((CreatureEntity) entity, EntityBarako.class, 0, true, false, null));
+            ((CreatureEntity) entity).targetSelector.addGoal(3, new NearestAttackableTargetGoal<>((CreatureEntity) entity, EntityBarakoa.class, 0, true, false, null));
+            ((CreatureEntity) entity).targetSelector.addGoal(2, new NearestAttackableTargetGoal<>((CreatureEntity) entity, EntityBarako.class, 0, true, false, null));
         }
 
         if (entity instanceof OcelotEntity) {
-            ((CreatureEntity) entity).tasks.addTask(3, new AvoidEntityGoal<>((CreatureEntity) entity, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
+            ((CreatureEntity) entity).goalSelector.addGoal(3, new AvoidEntityGoal<>((CreatureEntity) entity, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
         }
         if (entity instanceof ParrotEntity) {
-            ((CreatureEntity) entity).tasks.addTask(3, new AvoidEntityGoal<>((CreatureEntity) entity, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
+            ((CreatureEntity) entity).goalSelector.addGoal(3, new AvoidEntityGoal<>((CreatureEntity) entity, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
         }
         if (entity instanceof AnimalEntity) {
-            ((CreatureEntity) entity).tasks.addTask(3, new AvoidEntityGoal<>((CreatureEntity) entity, EntityBarakoa.class, 6.0F, 1.0D, 1.2D));
-            ((CreatureEntity) entity).tasks.addTask(3, new AvoidEntityGoal<>((CreatureEntity) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
+            ((CreatureEntity) entity).goalSelector.addGoal(3, new AvoidEntityGoal<>((CreatureEntity) entity, EntityBarakoa.class, 6.0F, 1.0D, 1.2D));
+            ((CreatureEntity) entity).goalSelector.addGoal(3, new AvoidEntityGoal<>((CreatureEntity) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
         }
         if (entity instanceof VillagerEntity) {
-            ((CreatureEntity) entity).tasks.addTask(3, new AvoidEntityGoal<>((CreatureEntity) entity, EntityBarakoa.class, 6.0F, 1.0D, 1.2D));
-            ((CreatureEntity) entity).tasks.addTask(3, new AvoidEntityGoal<>((CreatureEntity) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
+            ((CreatureEntity) entity).goalSelector.addGoal(3, new AvoidEntityGoal<>((CreatureEntity) entity, EntityBarakoa.class, 6.0F, 1.0D, 1.2D));
+            ((CreatureEntity) entity).goalSelector.addGoal(3, new AvoidEntityGoal<>((CreatureEntity) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
         }
     }
 
@@ -147,14 +147,14 @@ public final class ServerEventHandler {
                 entity.setSneaking(false);
 
                 if (entity.world.isRemote && entity.ticksExisted % 2 == 0) {
-                    double cloudX = entity.posX + entity.width * entity.getRNG().nextFloat() - entity.width / 2;
-                    double cloudZ = entity.posZ + entity.width * entity.getRNG().nextFloat() - entity.width / 2;
-                    double cloudY = entity.posY + entity.height * entity.getRNG().nextFloat();
+                    double cloudX = entity.posX + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
+                    double cloudZ = entity.posZ + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
+                    double cloudY = entity.posY + entity.getHeight() * entity.getRNG().nextFloat();
                     MMParticle.CLOUD.spawn(entity.world, cloudX, cloudY, cloudZ, ParticleFactory.ParticleArgs.get().withData(0d, -0.01d, 0d, 0.75d, 0.75d, 1d, 1, 15d, 25, ParticleCloud.EnumCloudBehavior.CONSTANT));
 
-                    double snowX = entity.posX + entity.width * entity.getRNG().nextFloat() - entity.width / 2;
-                    double snowZ = entity.posZ + entity.width * entity.getRNG().nextFloat() - entity.width / 2;
-                    double snowY = entity.posY + entity.height * entity.getRNG().nextFloat();
+                    double snowX = entity.posX + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
+                    double snowZ = entity.posZ + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
+                    double snowY = entity.posY + entity.getHeight() * entity.getRNG().nextFloat();
                     MMParticle.SNOWFLAKE.spawn(entity.world, snowX, snowY, snowZ, ParticleFactory.ParticleArgs.get().withData(0d, -0.01d, 0d));
                 }
             }
@@ -194,7 +194,7 @@ public final class ServerEventHandler {
                 property.untilAxeSwing--;
             }
 
-            if (event.side == Side.SERVER) {
+            if (event.side == LogicalSide.SERVER) {
                 for (ItemStack itemStack : event.player.inventory.mainInventory) {
                     if (itemStack.getItem() instanceof ItemEarthTalisman)
                         player.addPotionEffect(new EffectInstance(PotionHandler.GEOMANCY, 0, 0, false, false));
@@ -224,39 +224,39 @@ public final class ServerEventHandler {
             if (!ConfigHandler.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable) {
                 for (ItemStack stack : player.inventory.mainInventory) {
                     if (!property.usingIceBreath && stack.getItem() == ItemHandler.ICE_CRYSTAL)
-                        stack.setItemDamage(Math.max(stack.getItemDamage() - 1, 0));
+                        stack.setDamage(Math.max(stack.getDamage() - 1, 0));
                 }
                 for (ItemStack stack : player.inventory.offHandInventory) {
                     if (!property.usingIceBreath && stack.getItem() == ItemHandler.ICE_CRYSTAL)
-                        stack.setItemDamage(Math.max(stack.getItemDamage() - 1, 0));
+                        stack.setDamage(Math.max(stack.getDamage() - 1, 0));
                 }
             }
 
-            if (event.side == Side.CLIENT) {
-                if (Minecraft.getMinecraft().gameSettings.keyBindAttack.isKeyDown() && !property.mouseLeftDown) {
+            if (event.side == LogicalSide.CLIENT) {
+                if (Minecraft.getInstance().gameSettings.keyBindAttack.isKeyDown() && !property.mouseLeftDown) {
                     property.mouseLeftDown = true;
-                    MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageLeftMouseDown());
+                    MowziesMobs.NETWORK.sendToServer(new MessageLeftMouseDown());
                     for (int i = 0; i < property.powers.length; i++) {
                         property.powers[i].onLeftMouseDown(player);
                     }
                 }
-                if (Minecraft.getMinecraft().gameSettings.keyBindUseItem.isKeyDown() && !property.mouseRightDown) {
+                if (Minecraft.getInstance().gameSettings.keyBindUseItem.isKeyDown() && !property.mouseRightDown) {
                     property.mouseRightDown = true;
-                    MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageRightMouseDown());
+                    MowziesMobs.NETWORK.sendToServer(new MessageRightMouseDown());
                     for (int i = 0; i < property.powers.length; i++) {
                         property.powers[i].onRightMouseDown(player);
                     }
                 }
-                if (!Minecraft.getMinecraft().gameSettings.keyBindAttack.isKeyDown() && property.mouseLeftDown) {
+                if (!Minecraft.getInstance().gameSettings.keyBindAttack.isKeyDown() && property.mouseLeftDown) {
                     property.mouseLeftDown = false;
-                    MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageLeftMouseUp());
+                    MowziesMobs.NETWORK.sendToServer(new MessageLeftMouseUp());
                     for (int i = 0; i < property.powers.length; i++) {
                         property.powers[i].onLeftMouseUp(player);
                     }
                 }
-                if (!Minecraft.getMinecraft().gameSettings.keyBindUseItem.isKeyDown() && property.mouseRightDown) {
+                if (!Minecraft.getInstance().gameSettings.keyBindUseItem.isKeyDown() && property.mouseRightDown) {
                     property.mouseRightDown = false;
-                    MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessageRightMouseUp());
+                    MowziesMobs.NETWORK.sendToServer(new MessageRightMouseUp());
                     for (int i = 0; i < property.powers.length; i++) {
                         property.powers[i].onRightMouseUp(player);
                     }
@@ -316,14 +316,15 @@ public final class ServerEventHandler {
     }
 
     @SubscribeEvent
-    public void onPlaceBlock(BlockEvent.PlaceEvent event) {
-        PlayerEntity player  = event.getPlayer();
+    public void onPlaceBlock(BlockEvent.EntityPlaceEvent event) {
+        Entity entity  = event.getEntity();
         BlockState block = event.getPlacedBlock();
-        if (block == Blocks.FIRE.getDefaultState()) {
-            List<EntityBarako> barakos = getEntitiesNearby(player, EntityBarako.class, 20);
+        if (entity instanceof LivingEntity && block == Blocks.FIRE.getDefaultState()) {
+            LivingEntity living = (LivingEntity)entity;
+            List<EntityBarako> barakos = getEntitiesNearby(entity, EntityBarako.class, 20);
             for (EntityBarako barako : barakos) {
                 if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
-                    if (TargetGoal.isSuitableTarget(barako, player, false, false)) barako.setAttackTarget(player);
+                    if (barako.canAttack(living) barako.setAttackTarget(living);
                 }
             }
         }
@@ -361,7 +362,7 @@ public final class ServerEventHandler {
         }
     }
 
-    public <T extends Entity> List<T> getEntitiesNearby(LivingEntity startEntity, Class<T> entityClass, double r) {
+    public <T extends Entity> List<T> getEntitiesNearby(Entity startEntity, Class<T> entityClass, double r) {
         return startEntity.world.getEntitiesWithinAABB(entityClass, startEntity.getBoundingBox().grow(r, r, r), e -> e != startEntity && startEntity.getDistance(e) <= r);
     }
 

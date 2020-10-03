@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
@@ -32,11 +33,11 @@ public final class GuiBarakoTrade extends ContainerScreen implements InventoryBa
 
     private boolean hasTraded;
 
-    public GuiBarakoTrade(EntityBarako barako, ContainerBarakoTrade container, PlayerInventory playerInv, ITextComponent title, boolean hasTraded) {
+    public GuiBarakoTrade(EntityBarako barako, Container container, PlayerInventory playerInv, ITextComponent title, boolean hasTraded) {
         this(barako, new InventoryBarako(barako), container, playerInv, title, hasTraded);
     }
 
-    public GuiBarakoTrade(EntityBarako barako, InventoryBarako inventory, ContainerBarakoTrade container, PlayerInventory playerInv, ITextComponent title, boolean hasTraded) {
+    public GuiBarakoTrade(EntityBarako barako, InventoryBarako inventory, Container container, PlayerInventory playerInv, ITextComponent title, boolean hasTraded) {
         super(container, playerInv, title);
         this.barako = barako;
         this.inventory = inventory;

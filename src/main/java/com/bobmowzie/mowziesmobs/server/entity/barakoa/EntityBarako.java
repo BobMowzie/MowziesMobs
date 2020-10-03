@@ -770,7 +770,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     @Override
     @OnlyIn(Dist.CLIENT)
     public ContainerScreen createGui(World world, PlayerEntity player, int x, int y, int z) {
-        return new GuiBarakoTrade(this, player.inventory, world, y != 0);
+        return new GuiBarakoTrade(this, createContainer(world, player, x, y, z), player.inventory, getDisplayName(), y != 0);
     }
 
     @Override
