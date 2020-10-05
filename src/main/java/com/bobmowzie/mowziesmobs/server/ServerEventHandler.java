@@ -159,7 +159,7 @@ public final class ServerEventHandler {
                 }
             }
             else {
-                if (property != null && property.frozenController != null && !property.frozenController.isDead) {
+                if (property != null && property.frozenController != null && property.frozenController.isAlive()) {
                     property.onUnfreeze(entity);
                 }
             }
@@ -218,7 +218,7 @@ public final class ServerEventHandler {
 
             if (!(player.getHeldItemMainhand().getItem() == ItemHandler.ICE_CRYSTAL || player.getHeldItemOffhand().getItem() == ItemHandler.ICE_CRYSTAL) && property.usingIceBreath && property.icebreath != null) {
                 property.usingIceBreath = false;
-                property.icebreath.setDead();
+                property.icebreath.remove();
             }
 
             if (!ConfigHandler.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable) {
@@ -307,8 +307,9 @@ public final class ServerEventHandler {
                 List<EntityBarako> barakos = getEntitiesNearby(player, EntityBarako.class, 20);
                 for (EntityBarako barako : barakos) {
                     if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
-                        if (TargetGoal.isSuitableTarget(barako, player, false, false))
-                            barako.setAttackTarget(player);
+                        if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
+                            if (barako.canAttack(living)) barako.setAttackTarget(living);
+                        }
                     }
                 }
             }
@@ -324,7 +325,7 @@ public final class ServerEventHandler {
             List<EntityBarako> barakos = getEntitiesNearby(entity, EntityBarako.class, 20);
             for (EntityBarako barako : barakos) {
                 if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
-                    if (barako.canAttack(living) barako.setAttackTarget(living);
+                    if (barako.canAttack(living)) barako.setAttackTarget(living);
                 }
             }
         }
@@ -332,15 +333,14 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onFillBucket(FillBucketEvent event) {
-        PlayerEntity player  = event.getEntityPlayer();
-        if (player != null) {
-            if (event.getEmptyBucket() != null) {
-                if (event.getEmptyBucket().getItem() == Items.LAVA_BUCKET) {
-                    List<EntityBarako> barakos = getEntitiesNearby(player, EntityBarako.class, 20);
-                    for (EntityBarako barako : barakos) {
+        LivingEntity living  = event.getEntityLiving();
+        if (living != null) {
+            if (event.getEmptyBucket().getItem() == Items.LAVA_BUCKET) {
+                List<EntityBarako> barakos = getEntitiesNearby(living, EntityBarako.class, 20);
+                for (EntityBarako barako : barakos) {
+                    if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
                         if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
-                            if (TargetGoal.isSuitableTarget(barako, player, false, false))
-                                barako.setAttackTarget(player);
+                            if (barako.canAttack(living)) barako.setAttackTarget(living);
                         }
                     }
                 }
@@ -356,7 +356,7 @@ public final class ServerEventHandler {
             List<EntityBarako> barakos = getEntitiesNearby(player, EntityBarako.class, 10);
             for (EntityBarako barako : barakos) {
                 if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
-                    if (TargetGoal.isSuitableTarget(barako, player, false, false)) barako.setAttackTarget(player);
+                    if (barako.canAttack(player)) barako.setAttackTarget(player);
                 }
             }
         }
@@ -382,10 +382,10 @@ public final class ServerEventHandler {
         if (property != null) {
             if (event.getWorld().isRemote && player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(PotionHandler.SUNS_BLESSING) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
                 if (player.isSneaking()) {
-                    MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSolarBeam());
+                    MowziesMobs.NETWORK.sendToServer(new MessagePlayerSolarBeam());
                     property.untilSunstrike = SOLARBEAM_COOLDOWN;
                 } else {
-                    MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSummonSunstrike());
+                    MowziesMobs.NETWORK.sendToServer(new MessagePlayerSummonSunstrike());
                     property.untilSunstrike = SUNSTRIKE_COOLDOWN;
                 }
             }
@@ -416,10 +416,10 @@ public final class ServerEventHandler {
         if (property != null) {
             if (event.getWorld().isRemote && player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(PotionHandler.SUNS_BLESSING) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
                 if (player.isSneaking()) {
-                    MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSolarBeam());
+                    MowziesMobs.NETWORK.sendToServer(new MessagePlayerSolarBeam());
                     property.untilSunstrike = SOLARBEAM_COOLDOWN;
                 } else {
-                    MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerSummonSunstrike());
+                    MowziesMobs.NETWORK.sendToServer(new MessagePlayerSummonSunstrike());
                     property.untilSunstrike = SUNSTRIKE_COOLDOWN;
                 }
             }
@@ -439,7 +439,7 @@ public final class ServerEventHandler {
             if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == ItemHandler.SPEAR) {
                 LivingEntity entityHit = ItemSpear.raytraceEntities(player.getEntityWorld(), player, range);
                 if (entityHit != null) {
-                    MowziesMobs.NETWORK_WRAPPER.sendToServer(new MessagePlayerAttackMob(entityHit));
+                    MowziesMobs.NETWORK.sendToServer(new MessagePlayerAttackMob(entityHit));
                 }
             }
 
@@ -453,7 +453,7 @@ public final class ServerEventHandler {
     public void onLivingDamage(LivingHurtEvent event) {
         if (event.getSource().isFireDamage() && event.getEntityLiving().isPotionActive(PotionHandler.FROZEN)) {
                 event.getEntityLiving().removeActivePotionEffect(PotionHandler.FROZEN);
-                MowziesMobs.NETWORK_WRAPPER.sendToDimension(new MessageUnfreezeEntity(event.getEntityLiving()), event.getEntityLiving().dimension);
+//                MowziesMobs.NETWORK.sendToDimension(new MessageUnfreezeEntity(event.getEntityLiving()), event.getEntityLiving().dimension); TODO
         }
         if (event.getEntity() instanceof PlayerEntity) {
             MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
@@ -516,7 +516,7 @@ public final class ServerEventHandler {
             MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
             if (property != null) {
                 if (entity.isPotionActive(PotionHandler.FROZEN) && entity.onGround) {
-                    entity.motionY = 0;
+                    entity.setMotion(entity.getMotion().mul(1, 0, 1));
                 }
             }
         }
@@ -551,15 +551,15 @@ public final class ServerEventHandler {
         }
     }
 
-    @SubscribeEvent
-    public void prePopulateWorld(PopulateChunkEvent.Pre event) {
+    /*@SubscribeEvent
+    public void prePopulateWorld(.Pre event) {
         MowzieWorldGenerator.generatePrePopulate(event.getWorld(), event.getRand(), event.getChunkX(), event.getChunkZ());
-    }
+    }*/ // TODO
 
-    @SubscribeEvent
+    /*@SubscribeEvent
     public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
         if (event.getModID().equals(MowziesMobs.MODID)) {
             ConfigManager.sync(MowziesMobs.MODID, Config.Type.INSTANCE);
         }
-    }
+    }*/ // TODO
 }
