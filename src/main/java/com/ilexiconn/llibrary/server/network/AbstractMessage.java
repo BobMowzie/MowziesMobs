@@ -1,16 +1,13 @@
 package com.ilexiconn.llibrary.server.network;
 
 import com.ilexiconn.llibrary.LLibrary;
+import javafx.geometry.Side;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.IPacket;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * @author iLexiconn
@@ -34,7 +31,7 @@ public abstract class AbstractMessage<T extends AbstractMessage<T>> implements I
      * @param messageContext the message context.
      */
     @OnlyIn(Dist.CLIENT)
-    public abstract void onClientReceived(Minecraft client, T message, EntityPlayer player, MessageContext messageContext);
+    public abstract void onClientReceived(Minecraft client, T message, PlayerEntity player, MessageContext messageContext);
 
     /**
      * Executes when the message is received on SERVER side. Never use fields directly from the class you're in, but
@@ -45,7 +42,7 @@ public abstract class AbstractMessage<T extends AbstractMessage<T>> implements I
      * @param player         The player who sent the message to the server.
      * @param messageContext the message context.
      */
-    public abstract void onServerReceived(MinecraftServer server, T message, EntityPlayer player, MessageContext messageContext);
+    public abstract void onServerReceived(MinecraftServer server, T message, PlayerEntity player, MessageContext messageContext);
 
     /**
      * @param side the current side

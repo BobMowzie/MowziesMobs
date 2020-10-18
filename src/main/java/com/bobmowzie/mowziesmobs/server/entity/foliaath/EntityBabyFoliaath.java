@@ -82,7 +82,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
         }
 
         if (activate.getTimer() == 1 && prevActivate - activate.getTimer() < 0) {
-            playSound(MMSounds.ENTITY_FOLIAATH_GRUNT, 0.5F, 1.5F);
+            playSound(MMSounds.ENTITY_FOLIAATH_GRUNT.get(), 0.5F, 1.5F);
         }
         prevActivate = activate.getTimer();
 
@@ -92,7 +92,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
                 if (!stack.isEmpty()) {
                     setEating(stack);
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, EAT_ANIMATION);
-                    playSound(MMSounds.ENTITY_FOLIAATH_BABY_EAT, 0.5F, 1.2F);
+                    playSound(MMSounds.ENTITY_FOLIAATH_BABY_EAT.get(), 0.5F, 1.2F);
                     incrementGrowth();
                     setHungry(false);
                     break;

@@ -60,7 +60,7 @@ public class AnimationSunStrike<T extends MowzieEntity & IAnimatedEntity> extend
             }
         }
         if (!entity.world.isRemote && entity.getAnimationTick() == 9) {
-            entity.playSound(MMSounds.ENTITY_BARAKO_ATTACK, 1.4f, 1);
+            entity.playSound(MMSounds.ENTITY_BARAKO_ATTACK.get(), 1.4f, 1);
             EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE, entity.world, entity, newX, y, newZ);
             sunstrike.onSummon();
             entity.world.addEntity(sunstrike);

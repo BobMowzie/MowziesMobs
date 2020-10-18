@@ -9,11 +9,10 @@ import com.google.gson.JsonSerializationContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.properties.EntityProperty;
 
 import java.util.Random;
 
-public class EntityPropertyFrostmawHasCrystal implements EntityProperty {
+public class EntityPropertyFrostmawHasCrystal implements EntityHasProperty {
     private final boolean hasCrystal;
 
     public EntityPropertyFrostmawHasCrystal(boolean hasCrystal) {

@@ -67,7 +67,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         super.registerGoals();
         setPathPriority(PathNodeType.WATER, 0);
         this.goalSelector.addGoal(0, new SwimGoal(this));
-        this.goalSelector.addGoal(1, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_FOLIAATH_BITE_1, null, 2, 4F, ConfigHandler.MOBS.FOLIAATH.combatData.attackMultiplier, 3));
+        this.goalSelector.addGoal(1, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_FOLIAATH_BITE_1.get(), null, 2, 4F, ConfigHandler.MOBS.FOLIAATH.combatData.attackMultiplier, 3));
         this.goalSelector.addGoal(1, new AnimationTakeDamage<>(this));
         this.goalSelector.addGoal(1, new AnimationDieAI<>(this));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, LivingEntity.class, 0, true, false, e ->
@@ -101,12 +101,12 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MMSounds.ENTITY_FOLIAATH_HURT;
+        return MMSounds.ENTITY_FOLIAATH_HURT.get();
     }
 
     @Override
     public SoundEvent getDeathSound() {
-        return MMSounds.ENTITY_FOLIAATH_DIE;
+        return MMSounds.ENTITY_FOLIAATH_DIE.get();
     }
 
     @Override
@@ -140,18 +140,18 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         // Sounds
         if (frame % 13 == 3 && getAnimation() != DIE_ANIMATION) {
             if (openMouth.getTimeRunning() >= 10) {
-                playSound(MMSounds.ENTITY_FOLIAATH_PANT_1, 1, 1);
+                playSound(MMSounds.ENTITY_FOLIAATH_PANT_1.get(), 1, 1);
             } else if (activate.getTimer() >= 25) {
-                playSound(MMSounds.ENTITY_FOLIAATH_PANT_2, 1, 1);
+                playSound(MMSounds.ENTITY_FOLIAATH_PANT_2.get(), 1, 1);
             }
         }
 
         int openMouthTime = openMouth.getTimeRunning();
         if (prevOpenMouth - openMouthTime < 0) {
             if (openMouthTime == 1) {
-                playSound(MMSounds.ENTITY_FOLIAATH_RUSTLE, 1, 1);
+                playSound(MMSounds.ENTITY_FOLIAATH_RUSTLE.get(), 1, 1);
             } else if (openMouthTime == 13) {
-                playSound(MMSounds.ENTITY_FOLIAATH_GRUNT, 1, 1);
+                playSound(MMSounds.ENTITY_FOLIAATH_GRUNT.get(), 1, 1);
             }
         }
 
@@ -163,19 +163,19 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
             if (prevActivate - activateTime < 0) {
                 switch (activateTime) {
                     case 1:
-                        sound = MMSounds.ENTITY_FOLIAATH_RUSTLE;
+                        sound = MMSounds.ENTITY_FOLIAATH_RUSTLE.get();
                         break;
                     case 5:
-                        sound = MMSounds.ENTITY_FOLIAATH_MERGE;
+                        sound = MMSounds.ENTITY_FOLIAATH_MERGE.get();
                         break;
                 }
             } else if (prevActivate - activateTime > 0) {
                 switch (activateTime) {
                     case 24:
-                        sound = MMSounds.ENTITY_FOLIAATH_RETREAT;
+                        sound = MMSounds.ENTITY_FOLIAATH_RETREAT.get();
                         break;
                     case 28:
-                        sound = MMSounds.ENTITY_FOLIAATH_RUSTLE;
+                        sound = MMSounds.ENTITY_FOLIAATH_RUSTLE.get();
                         break;
                 }
             }

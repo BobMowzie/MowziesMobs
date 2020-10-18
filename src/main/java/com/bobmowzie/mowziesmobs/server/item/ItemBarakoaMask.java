@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
@@ -55,13 +56,13 @@ public class ItemBarakoaMask extends ArmorItem implements BarakoaMask {
     private void spawnBarakoa(MaskType mask, PlayerEntity player, float durability) {
         MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
         if (property.getPackSize() < 10) {
-            player.playSound(MMSounds.ENTITY_BARAKO_BELLY, 1.5f, 1);
-            player.playSound(MMSounds.ENTITY_BARAKOA_BLOWDART, 1.5f, 0.5f);
+            player.playSound(MMSounds.ENTITY_BARAKO_BELLY.get(), 1.5f, 1);
+            player.playSound(MMSounds.ENTITY_BARAKOA_BLOWDART.get(), 1.5f, 0.5f);
             double angle = player.getRotationYawHead();
             if (angle < 0) {
                 angle = angle + 360;
             }
-            EntityBarakoanToPlayer barakoa = new EntityBarakoanToPlayer(player.world, player);
+            EntityBarakoanToPlayer barakoa = new EntityBarakoanToPlayer(EntityHandler.BARAKOAN_TO_PLAYER, player.world, player);
             barakoa.setMask(mask);
 //            property.addPackMember(barakoa);
             if (!player.world.isRemote) {

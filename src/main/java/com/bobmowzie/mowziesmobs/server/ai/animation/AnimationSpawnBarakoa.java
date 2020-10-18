@@ -20,7 +20,7 @@ public class AnimationSpawnBarakoa extends SimpleAnimationAI<EntityBarako> {
     public void startExecuting() {
         super.startExecuting();
         entity.barakoaSpawnCount++;
-        entity.playSound(MMSounds.ENTITY_BARAKOA_INHALE, 1.2f, 0.5f);
+        entity.playSound(MMSounds.ENTITY_BARAKOA_INHALE.get(), 1.2f, 0.5f);
     }
 
     @Override
@@ -39,8 +39,8 @@ public class AnimationSpawnBarakoa extends SimpleAnimationAI<EntityBarako> {
 //        if (entity.getAnimationTick() == 1) {
 //            entity.playSound(MMSounds.ENTITY_BARAKOA_INHALE, 1.2f, 0.5f);
         if (entity.getAnimationTick() == 7) {
-            entity.playSound(MMSounds.ENTITY_BARAKO_BELLY, 1.5f, 1);
-            entity.playSound(MMSounds.ENTITY_BARAKOA_BLOWDART, 1.5f, 0.5f);
+            entity.playSound(MMSounds.ENTITY_BARAKO_BELLY.get(), 1.5f, 1);
+            entity.playSound(MMSounds.ENTITY_BARAKOA_BLOWDART.get(), 1.5f, 0.5f);
             double angle = entity.rotationYawHead;
             if (angle < 0) {
                 angle = angle + 360;

@@ -20,11 +20,11 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
     @Override
     public void startExecuting() {
         super.startExecuting();
-        entity.playSound(MMSounds.ENTITY_WROUGHT_PRE_SWING_2, 1.5F, 1F);
+        entity.playSound(MMSounds.ENTITY_WROUGHT_PRE_SWING_2.get(), 1.5F, 1F);
     }
 
     @Override
-    public void updateTask() {
+    public void tick() {
         entity.setMotion(0, entity.getMotion().y, 0);
         if (entity.getAnimationTick() < 21 && entityTarget != null) {
             entity.faceEntity(entityTarget, 30F, 30F);
@@ -34,11 +34,11 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
         }
 
         if (entity.getAnimationTick() == 6) {
-            entity.playSound(MMSounds.ENTITY_WROUGHT_CREAK, 0.5F, 1F);
+            entity.playSound(MMSounds.ENTITY_WROUGHT_CREAK.get(), 0.5F, 1F);
         } else if (entity.getAnimationTick() == 25) {
             entity.playSound(attackSound, 1.2F, 1);
         } else if (entity.getAnimationTick() == 27) {
-            entity.playSound(MMSounds.ENTITY_WROUGHT_SWING_2, 1.5F, 1F);
+            entity.playSound(MMSounds.ENTITY_WROUGHT_SWING_2.get(), 1.5F, 1F);
             List<LivingEntity> entitiesHit = entity.getEntityLivingBaseNearby(range, 3, range, range);
             float damage = (float) entity.getAttack();
             for (LivingEntity entityHit : entitiesHit) {
@@ -59,14 +59,14 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
                 }
             }
         } else if (entity.getAnimationTick() == 28) {
-            entity.playSound(MMSounds.ENTITY_WROUGHT_AXE_LAND, 1, 0.5F);
+            entity.playSound(MMSounds.ENTITY_WROUGHT_AXE_LAND.get(), 1, 0.5F);
         } else if (entity.getAnimationTick() == 44) {
-            entity.playSound(MMSounds.ENTITY_WROUGHT_PULL_1, 1, 1F);
-            entity.playSound(MMSounds.ENTITY_WROUGHT_CREAK, 0.5F, 1F);
+            entity.playSound(MMSounds.ENTITY_WROUGHT_PULL_1.get(), 1, 1F);
+            entity.playSound(MMSounds.ENTITY_WROUGHT_CREAK.get(), 0.5F, 1F);
         } else if (entity.getAnimationTick() == 75) {
-            entity.playSound(MMSounds.ENTITY_WROUGHT_PULL_5, 1, 1F);
+            entity.playSound(MMSounds.ENTITY_WROUGHT_PULL_5.get(), 1, 1F);
         } else if (entity.getAnimationTick() == 83) {
-            entity.playSound(MMSounds.ENTITY_WROUGHT_RELEASE_2, 1, 1F);
+            entity.playSound(MMSounds.ENTITY_WROUGHT_RELEASE_2.get(), 1, 1F);
         }
         if (entity.getAnimationTick() > 26 && entity.getAnimationTick() < 85) {
             entity.vulnerable = true;

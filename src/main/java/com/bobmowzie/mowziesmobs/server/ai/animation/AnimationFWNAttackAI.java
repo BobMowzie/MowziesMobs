@@ -31,7 +31,7 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
     @Override
     public void startExecuting() {
         super.startExecuting();
-        if (entity.getAnimation() == EntityWroughtnaut.ATTACK_ANIMATION) entity.playSound(MMSounds.ENTITY_WROUGHT_PRE_SWING_1, 1.5F, 1F);
+        if (entity.getAnimation() == EntityWroughtnaut.ATTACK_ANIMATION) entity.playSound(MMSounds.ENTITY_WROUGHT_PRE_SWING_1.get(), 1.5F, 1F);
     }
 
     @Override
@@ -63,11 +63,11 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
                 entity.rotationYaw = entity.prevRotationYaw;
             }
             if (entity.getAnimationTick() == 6) {
-                entity.playSound(MMSounds.ENTITY_WROUGHT_CREAK, 0.5F, 1);
+                entity.playSound(MMSounds.ENTITY_WROUGHT_CREAK.get(), 0.5F, 1);
             } else if (entity.getAnimationTick() == 25) {
-                entity.playSound(MMSounds.ENTITY_WROUGHT_WHOOSH, 1.2F, 1);
+                entity.playSound(MMSounds.ENTITY_WROUGHT_WHOOSH.get(), 1.2F, 1);
             } else if (entity.getAnimationTick() == 27) {
-                entity.playSound(MMSounds.ENTITY_WROUGHT_SWING_1, 1.5F, 1);
+                entity.playSound(MMSounds.ENTITY_WROUGHT_SWING_1.get(), 1.5F, 1);
                 List<LivingEntity> entitiesHit = entity.getEntityLivingBaseNearby(range, 3, range, range);
                 float damage = (float) entity.getAttack();
                 boolean hit = false;
@@ -91,7 +91,7 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
                     }
                 }
                 if (hit) {
-                    entity.playSound(MMSounds.ENTITY_WROUGHT_AXE_HIT, 1, 0.5F);
+                    entity.playSound(MMSounds.ENTITY_WROUGHT_AXE_HIT.get(), 1, 0.5F);
                 }
             } else if (entity.getAnimationTick() == 37 && shouldFollowUp(2.5f) && entity.getHealthRatio() <= 0.9 && entity.getRNG().nextFloat() < 0.6F) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityWroughtnaut.ATTACK_TWICE_ANIMATION);
@@ -104,10 +104,10 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
                 entity.rotationYaw = entity.prevRotationYaw;
             }
             if (entity.getAnimationTick() == 10) {
-                entity.playSound(MMSounds.ENTITY_WROUGHT_WHOOSH, 1.2F, 1);
+                entity.playSound(MMSounds.ENTITY_WROUGHT_WHOOSH.get(), 1.2F, 1);
             }
             else if (entity.getAnimationTick() == 12) {
-                entity.playSound(MMSounds.ENTITY_WROUGHT_SWING_3, 1.5F, 1);
+                entity.playSound(MMSounds.ENTITY_WROUGHT_SWING_3.get(), 1.5F, 1);
                 List<LivingEntity> entitiesHit = entity.getEntityLivingBaseNearby(range - 0.3, 3, range - 0.3, range - 0.3);
                 float damage = (float) entity.getAttack();
                 boolean hit = false;
@@ -131,23 +131,23 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
                     }
                 }
                 if (hit) {
-                    entity.playSound(MMSounds.ENTITY_WROUGHT_AXE_HIT, 1, 0.5F);
+                    entity.playSound(MMSounds.ENTITY_WROUGHT_AXE_HIT.get(), 1, 0.5F);
                 }
             } else if (entity.getAnimationTick() == 23 && shouldFollowUp(3.5f) && entity.getHealthRatio() <= 0.6 && entity.getRNG().nextFloat() < 0.6f) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityWroughtnaut.ATTACK_THRICE_ANIMATION);
             }
         }
         else if (entity.getAnimation() == EntityWroughtnaut.ATTACK_THRICE_ANIMATION) {
-            if (entity.getAnimationTick() == 1) entity.playSound(MMSounds.ENTITY_WROUGHT_PRE_SWING_3, 1.2F, 1f);
+            if (entity.getAnimationTick() == 1) entity.playSound(MMSounds.ENTITY_WROUGHT_PRE_SWING_3.get(), 1.2F, 1f);
             if (entity.getAnimationTick() < 22 && entityTarget != null) {
                 entity.faceEntity(entityTarget, 30F, 30F);
             } else {
                 entity.rotationYaw = entity.prevRotationYaw;
             }
             if (entity.getAnimationTick() == 20) {
-                entity.playSound(MMSounds.ENTITY_WROUGHT_WHOOSH, 1.2F, 0.9f);
+                entity.playSound(MMSounds.ENTITY_WROUGHT_WHOOSH.get(), 1.2F, 0.9f);
             } else if (entity.getAnimationTick() == 24) {
-                entity.playSound(MMSounds.ENTITY_WROUGHT_GRUNT_3, 1.5F, 1.13f);
+                entity.playSound(MMSounds.ENTITY_WROUGHT_GRUNT_3.get(), 1.5F, 1.13f);
                 entity.move(MoverType.SELF, new Vec3d(Math.cos(Math.toRadians(entity.rotationYaw + 90)), 0, Math.sin(Math.toRadians(entity.rotationYaw + 90))));
                 List<LivingEntity> entitiesHit = entity.getEntityLivingBaseNearby(range + 0.2, 3, range + 0.2, range + 0.2);
                 float damage = (float) entity.getAttack();
@@ -163,7 +163,7 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
                     }
                 }
                 if (hit) {
-                    entity.playSound(MMSounds.ENTITY_WROUGHT_AXE_HIT, 1, 0.5F);
+                    entity.playSound(MMSounds.ENTITY_WROUGHT_AXE_HIT.get(), 1, 0.5F);
                 }
             }
         }

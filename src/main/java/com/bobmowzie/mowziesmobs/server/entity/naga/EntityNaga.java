@@ -133,7 +133,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
             @Override
             public void startExecuting() {
                 super.startExecuting();
-                playSound(MMSounds.ENTITY_NAGA_FLAP_1, 2, (float) (0.85 + rand.nextFloat() * 0.2));
+                playSound(MMSounds.ENTITY_NAGA_FLAP_1.get(), 2, (float) (0.85 + rand.nextFloat() * 0.2));
             }
 
             @Override
@@ -149,7 +149,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
             @Override
             public void startExecuting() {
                 super.startExecuting();
-                playSound(MMSounds.ENTITY_NAGA_ACID_CHARGE, 2, 1);
+                playSound(MMSounds.ENTITY_NAGA_ACID_CHARGE.get(), 2, 1);
             }
 
             @Override
@@ -165,7 +165,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
             @Override
             public void startExecuting() {
                 super.startExecuting();
-                playSound(MMSounds.ENTITY_NAGA_FLAP_1, 2, 0.7f);
+                playSound(MMSounds.ENTITY_NAGA_FLAP_1.get(), 2, 0.7f);
             }
 
             @Override
@@ -222,8 +222,8 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
 
                 if (getAnimationTick() == 22) MowziesMobs.PROXY.playNagaSwoopSound(entity);
 
-                if (getAnimationTick() == 7) playSound(MMSounds.ENTITY_NAGA_GRUNT_3, 2, 1f);
-                if (getAnimationTick() == 22) playSound(MMSounds.ENTITY_NAGA_ROAR_1, 3, 1f);
+                if (getAnimationTick() == 7) playSound(MMSounds.ENTITY_NAGA_GRUNT_3.get(), 2, 1f);
+                if (getAnimationTick() == 22) playSound(MMSounds.ENTITY_NAGA_ROAR_1.get(), 3, 1f);
             }
         });
         this.goalSelector.addGoal(2, new SimpleAnimationAI<EntityNaga>(this, HURT_TO_FALL_ANIMATION, true) {
@@ -236,14 +236,14 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
             @Override
             public void startExecuting() {
                 super.startExecuting();
-                playSound(MMSounds.MISC_GROUNDHIT_2, 1.5f, 1);
+                playSound(MMSounds.MISC_GROUNDHIT_2.get(), 1.5f, 1);
             }
         });
         this.goalSelector.addGoal(1, new SimpleAnimationAI<EntityNaga>(this, GET_UP_ANIMATION, true) {
             @Override
             public void tick() {
                 super.tick();
-                if (getAnimationTick() == 13) playSound(MMSounds.ENTITY_NAGA_FLAP_1, 2f, 1);
+                if (getAnimationTick() == 13) playSound(MMSounds.ENTITY_NAGA_FLAP_1.get(), 2f, 1);
 
                 if (getAnimationTick() == 15) {
                     setMotion(getMotion().add(0, 1.6, 0));
@@ -482,7 +482,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
             if (shoulderRot > 0.9) hasFlapSoundPlayed = false;
 
             if (shoulderRot <= 0.7 && !hasFlapSoundPlayed) {
-                world.playSound(posX, posY, posZ, MMSounds.ENTITY_NAGA_FLAP_1, SoundCategory.HOSTILE, 2, (float) (0.85 + rand.nextFloat() * 0.2), false);
+                world.playSound(posX, posY, posZ, MMSounds.ENTITY_NAGA_FLAP_1.get(), SoundCategory.HOSTILE, 2, (float) (0.85 + rand.nextFloat() * 0.2), false);
                 hasFlapSoundPlayed = true;
             }
         }
@@ -570,8 +570,8 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
         }
         this.world.addEntity(poisonBall);
 
-        playSound(MMSounds.ENTITY_NAGA_ACID_SPIT, 2, 1);
-        playSound(MMSounds.ENTITY_NAGA_ACID_SPIT_HISS, 2, 1);
+        playSound(MMSounds.ENTITY_NAGA_ACID_SPIT.get(), 2, 1);
+        playSound(MMSounds.ENTITY_NAGA_ACID_SPIT_HISS.get(), 2, 1);
     }
 
     @Override

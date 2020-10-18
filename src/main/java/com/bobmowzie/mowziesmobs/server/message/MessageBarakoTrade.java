@@ -69,7 +69,7 @@ public class MessageBarakoTrade extends AbstractMessage<MessageBarakoTrade> {
             if (barako.getAnimation() != barako.BLESS_ANIMATION) {
                 barako.setAnimationTick(0);
                 AnimationHandler.INSTANCE.sendAnimationMessage(barako, barako.BLESS_ANIMATION);
-                barako.playSound(MMSounds.ENTITY_BARAKO_BLESS, 2, 1);
+                barako.playSound(MMSounds.ENTITY_BARAKO_BLESS.get(), 2, 1);
             }
         }
     }

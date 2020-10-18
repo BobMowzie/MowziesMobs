@@ -82,12 +82,12 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         goalSelector.addGoal(1, new AnimationDieAI<>(this));
         goalSelector.addGoal(1, new EntityAIAvoidEntity<>(this, EntitySunstrike.class, EntitySunstrike::isStriking, 3, 0.7F));
         goalSelector.addGoal(2, new AnimationBlockAI<>(this, BLOCK_ANIMATION));
-        goalSelector.addGoal(2, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_BARAKOA_SWING, null, 1, 2.5f, ConfigHandler.MOBS.BARAKOA.combatData.attackMultiplier, 9, true));
-        goalSelector.addGoal(2, new AnimationProjectileAttackAI<EntityBarakoa>(this, PROJECTILE_ATTACK_ANIMATION, 9, MMSounds.ENTITY_BARAKOA_BLOWDART, true) {
+        goalSelector.addGoal(2, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_BARAKOA_SWING.get(), null, 1, 2.5f, ConfigHandler.MOBS.BARAKOA.combatData.attackMultiplier, 9, true));
+        goalSelector.addGoal(2, new AnimationProjectileAttackAI<EntityBarakoa>(this, PROJECTILE_ATTACK_ANIMATION, 9, MMSounds.ENTITY_BARAKOA_BLOWDART.get(), true) {
             @Override
             public void startExecuting() {
                 super.startExecuting();
-                playSound(MMSounds.ENTITY_BARAKOA_INHALE, 0.7f, 1.2f);
+                playSound(MMSounds.ENTITY_BARAKOA_INHALE.get(), 0.7f, 1.2f);
             }
         });
         goalSelector.addGoal(3, new AnimationTakeDamage<>(this));
@@ -165,7 +165,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return active ? MMSounds.ENTITY_BARAKOA_HURT : null;
+        return active ? MMSounds.ENTITY_BARAKOA_HURT.get() : null;
     }
 
     @Override
@@ -255,7 +255,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             renderYawOffset = rotationYaw;
             if (onGround && getAnimation() == NO_ANIMATION) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_ANIMATION);
-                playSound(MMSounds.ENTITY_BARAKOA_EMERGE, 1, 1);
+                playSound(MMSounds.ENTITY_BARAKOA_EMERGE.get(), 1, 1);
             }
             return;
         }
@@ -284,7 +284,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         }
         if (!world.isRemote && getAnimation() == NO_ANIMATION && danceTimer == 0 && rand.nextInt(800) == 0) {
             setDancing(true);
-            playSound(MMSounds.ENTITY_BARAKOA_BATTLECRY_2, 1.2f, 1.3f);
+            playSound(MMSounds.ENTITY_BARAKOA_BATTLECRY_2.get(), 1.2f, 1.3f);
         }
         if (getAnimation() != NO_ANIMATION) {
             danceTimer = 0;
@@ -294,14 +294,14 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             cryDelay--;
         }
         if (cryDelay == 0) {
-            playSound(MMSounds.ENTITY_BARAKOA_BATTLECRY, 1.5f, 1.5f);
+            playSound(MMSounds.ENTITY_BARAKOA_BATTLECRY.get(), 1.5f, 1.5f);
         }
         if (getAttackTarget() != null && ticksWithoutTarget > 3) {
             cryDelay = MathHelper.nextInt(rand, -15, 30);
         }
 
         if (getAnimation() == ATTACK_ANIMATION && getAnimationTick() == 5) {
-            playSound(MMSounds.ENTITY_BARAKOA_SHOUT, 1, 1.1f);
+            playSound(MMSounds.ENTITY_BARAKOA_SHOUT.get(), 1, 1.1f);
         }
 //        if (getAnimation() == PROJECTILE_ATTACK_ANIMATION && getAnimationTick() == 1) {
 //            playSound(MMSounds.ENTITY_BARAKOA_INHALE, 0.7f, 1.2f);
@@ -357,7 +357,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MMSounds.ENTITY_BARAKOA_DIE;
+        return MMSounds.ENTITY_BARAKOA_DIE.get();
     }
 
     @Override

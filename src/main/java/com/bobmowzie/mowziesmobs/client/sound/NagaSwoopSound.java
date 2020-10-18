@@ -14,7 +14,7 @@ public class NagaSwoopSound extends TickableSound {
     boolean active = true;
 
     public NagaSwoopSound(Entity naga) {
-        super(MMSounds.ENTITY_NAGA_SWOOP, SoundCategory.HOSTILE);
+        super(MMSounds.ENTITY_NAGA_SWOOP.get(), SoundCategory.HOSTILE);
         this.naga = naga;
         volume = 2F;
         pitch = 1.2f;

@@ -44,7 +44,7 @@ public class EntitySuperNova extends EntityMagicEffect {
         if (caster == null || !caster.isAlive()) this.remove();
 
         if (ticksExisted == 1) {
-            playSound(MMSounds.ENTITY_SUPERNOVA_END, 3f, 1f);
+            playSound(MMSounds.ENTITY_SUPERNOVA_END.get(), 3f, 1f);
             if (world.isRemote) {
                 float scale = 8.2f;
                 for (int i = 0; i < 15; i++) {

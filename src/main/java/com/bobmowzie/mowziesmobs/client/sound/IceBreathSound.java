@@ -13,7 +13,7 @@ public class IceBreathSound extends TickableSound {
     boolean active = true;
 
     public IceBreathSound(Entity icebreath) {
-        super(MMSounds.ENTITY_FROSTMAW_ICEBREATH, SoundCategory.NEUTRAL);
+        super(MMSounds.ENTITY_FROSTMAW_ICEBREATH.get(), SoundCategory.NEUTRAL);
         this.iceBreath = icebreath;
         volume = 2F;
         pitch = 1f;

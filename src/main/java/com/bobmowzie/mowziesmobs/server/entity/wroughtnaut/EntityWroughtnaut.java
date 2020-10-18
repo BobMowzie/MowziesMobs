@@ -105,7 +105,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     public Vec3d leftEyePos, rightEyePos;
     public Vec3d leftEyeRot, rightEyeRot;
 
-    public EntityWroughtnaut(EntityType<? extends EntityFrostmaw> type, World world) {
+    public EntityWroughtnaut(EntityType<? extends EntityWroughtnaut> type, World world) {
         super(type, world);
         experienceValue = 30;
         active = false;
@@ -123,7 +123,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         super.registerGoals();
         setPathPriority(PathNodeType.WATER, 0);
         goalSelector.addGoal(1, new AnimationFWNAttackAI(this, 4F, 5F, 100F));
-        goalSelector.addGoal(1, new AnimationFWNVerticalAttackAI(this, VERTICAL_ATTACK_ANIMATION, MMSounds.ENTITY_WROUGHT_WHOOSH, 1F, 5F, 40F));
+        goalSelector.addGoal(1, new AnimationFWNVerticalAttackAI(this, VERTICAL_ATTACK_ANIMATION, MMSounds.ENTITY_WROUGHT_WHOOSH.get(), 1F, 5F, 40F));
         goalSelector.addGoal(1, new AnimationFWNStompAttackAI(this, STOMP_ATTACK_ANIMATION));
         goalSelector.addGoal(1, new AnimationTakeDamage<>(this));
         goalSelector.addGoal(1, new AnimationDieAI<>(this));
@@ -156,18 +156,18 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MMSounds.ENTITY_WROUGHT_HURT_1;
+        return MMSounds.ENTITY_WROUGHT_HURT_1.get();
     }
 
     @Override
     public SoundEvent getDeathSound() {
-        playSound(MMSounds.ENTITY_WROUGHT_SCREAM, 1f, 1f);
+        playSound(MMSounds.ENTITY_WROUGHT_SCREAM.get(), 1f, 1f);
         return null;
     }
 
     @Override
     protected SoundEvent getAmbientSound() {
-        return getAnimation() == NO_ANIMATION && isActive() ? MMSounds.ENTITY_WROUGHT_AMBIENT : null;
+        return getAnimation() == NO_ANIMATION && isActive() ? MMSounds.ENTITY_WROUGHT_AMBIENT.get() : null;
     }
 
     @Override
@@ -194,14 +194,14 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
                 }
                 float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
                 if ((entityRelativeAngle <= arc / 2f && entityRelativeAngle >= -arc / 2f) || (entityRelativeAngle >= 360 - arc / 2f || entityRelativeAngle <= -arc + 90f / 2f)) {
-                    playSound(MMSounds.ENTITY_WROUGHT_UNDAMAGED, 0.4F, 2);
+                    playSound(MMSounds.ENTITY_WROUGHT_UNDAMAGED.get(), 0.4F, 2);
                     return false;
                 } else {
                     setAnimation(NO_ANIMATION);
                     return super.attackEntityFrom(source, amount);
                 }
             } else {
-                playSound(MMSounds.ENTITY_WROUGHT_UNDAMAGED, 0.4F, 2);
+                playSound(MMSounds.ENTITY_WROUGHT_UNDAMAGED.get(), 0.4F, 2);
             }
         }
         else if (source.canHarmInCreative()) {
@@ -271,9 +271,9 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         } else if (getAnimation() == ACTIVATE_ANIMATION) {
             int tick = getAnimationTick();
             if (tick == 1) {
-                playSound(MMSounds.ENTITY_WROUGHT_GRUNT_2, 1, 1);
+                playSound(MMSounds.ENTITY_WROUGHT_GRUNT_2.get(), 1, 1);
             } else if (tick == 27 || tick == 44) {
-                playSound(MMSounds.ENTITY_WROUGHT_STEP, 0.5F, 0.5F);
+                playSound(MMSounds.ENTITY_WROUGHT_STEP.get(), 0.5F, 0.5F);
             }
         } else if (getAnimation() == VERTICAL_ATTACK_ANIMATION && getAnimationTick() == 29) {
             doVerticalAttackHitFX();
@@ -294,7 +294,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         }
 
         if (this.world.isRemote && frame % 20 == 1 && speed > 0.03 && getAnimation() == NO_ANIMATION && isActive()) {
-            this.world.playSound(this.posX, this.posY, this.posZ, MMSounds.ENTITY_WROUGHT_STEP, this.getSoundCategory(), 0.5F, 0.5F, false);
+            this.world.playSound(this.posX, this.posY, this.posZ, MMSounds.ENTITY_WROUGHT_STEP.get(), this.getSoundCategory(), 0.5F, 0.5F, false);
         }
 
         repelEntities(2.2F, 4, 2.2F, 2.2F);

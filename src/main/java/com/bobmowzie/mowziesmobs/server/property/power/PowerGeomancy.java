@@ -110,7 +110,7 @@ public class PowerGeomancy extends Power {
                 player.world.spawnEntity(ring);
             }
             if (prevUnderground && !underground) {
-                player.playSound(MMSounds.EFFECT_GEOMANCY_BREAK, 1f, 0.9f + rand.nextFloat() * 0.1f);
+                player.playSound(MMSounds.EFFECT_GEOMANCY_BREAK.get(), 1f, 0.9f + rand.nextFloat() * 0.1f);
                 EntityRing ring = new EntityRing(player.world, (float) player.posX, (float) player.posY + 0.02f, (float) player.posZ, new Vec3d(0, 1, 0), 10, 0.83f, 1, 0.39f, 1f, 3f, false);
                 player.world.spawnEntity(ring);
                 player.motionX *= 2;
@@ -148,7 +148,7 @@ public class PowerGeomancy extends Power {
                 if (spawnBoulderCharge == 50) {
                     EntityRing ring = new EntityRing(player.world, (float)player.posX, (float)player.posY + player.height/2f, (float)player.posZ, new Vec3d(0, 1, 0), 20, 0.83f, 1, 0.39f, 0.7f, 4, true);
                     if (player.world.isRemote) player.world.spawnEntity(ring);
-                    player.playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL, 1, 1f);
+                    player.playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL.get(), 1, 1f);
                 }
                 if (player.world.isRemote && spawnBoulderCharge > 5 && spawnBoulderCharge < 30) {
                     int particleCount = 4;

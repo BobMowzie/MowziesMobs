@@ -139,7 +139,7 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
             }
         }
 
-        playSound(MMSounds.ENTITY_NAGA_ACID_HIT, 1, 1);
+        playSound(MMSounds.ENTITY_NAGA_ACID_HIT.get(), 1, 1);
 
         List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(2);
         if (!entitiesHit.isEmpty()) {

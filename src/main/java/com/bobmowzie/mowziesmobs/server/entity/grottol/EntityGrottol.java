@@ -199,7 +199,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
             if (EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, player.getHeldItemMainhand()) > 0) {
                 if (!world.isRemote && isAlive()) {
                     entityDropItem(ItemHandler.CAPTURED_GROTTOL.create(this), 0.0F);
-                    BlockState state = BlockHandler.GROTTOL.getDefaultState();
+                    BlockState state = BlockHandler.GROTTOL.get().getDefaultState();
                     SoundType sound = state.getBlock().getSoundType(state, world, new BlockPos(this), entity);
                     world.playSound(
                         null,
@@ -242,7 +242,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
                 }
                 return super.attackEntityFrom(source, getHealth());
             } else {
-                playSound(MMSounds.ENTITY_GROTTOL_UNDAMAGED, 0.4F, 2.0F);
+                playSound(MMSounds.ENTITY_GROTTOL_UNDAMAGED.get(), 0.4F, 2.0F);
                 return false;
             }
         }
@@ -290,7 +290,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
         float moveZ = (float) (posZ - prevPosZ);
         float speed = MathHelper.sqrt(moveX * moveX + moveZ * moveZ);
         if (frame % 6 == 0 && speed > 0.05) {
-            playSound(MMSounds.ENTITY_GROTTOL_STEP, 1F, 1.8f);
+            playSound(MMSounds.ENTITY_GROTTOL_STEP.get(), 1F, 1.8f);
         }
 
         if (timeSinceFlee < 50) {
@@ -309,7 +309,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
         }
         if (!world.isRemote && getAnimation() == BURROW_ANIMATION) {
             if (getAnimationTick() % 4 == 3) {
-                playSound(MMSounds.ENTITY_GROTTOL_BURROW, 1, 0.8f + rand.nextFloat() * 0.4f);
+                playSound(MMSounds.ENTITY_GROTTOL_BURROW.get(), 1, 0.8f + rand.nextFloat() * 0.4f);
                 BlockState blockBeneath = world.getBlockState(getPosition().down());
                 Material mat = blockBeneath.getMaterial();
                 if (mat == Material.EARTH || mat == Material.SAND || mat == Material.CLAY || mat == Material.ROCK) {
@@ -342,7 +342,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
         Entity e = getRidingEntity();
         if (isMinecart(e)) {
             BlockState state = ((AbstractMinecartEntity) e).getDisplayTile();
-            return state.getBlock() == BlockHandler.GROTTOL && state.get(BlockGrottol.VARIANT) == BlockGrottol.Variant.BLACK_PINK;
+            return state.getBlock() == BlockHandler.GROTTOL.get() && state.get(BlockGrottol.VARIANT) == BlockGrottol.Variant.BLACK_PINK;
         }
         return false;
     }
@@ -353,7 +353,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
 
     public boolean hasMinecartBlockDisplay() {
         Entity entity = getRidingEntity();
-        return isMinecart(entity) && ((AbstractMinecartEntity) entity).getDisplayTile().getBlock() == BlockHandler.GROTTOL;
+        return isMinecart(entity) && ((AbstractMinecartEntity) entity).getDisplayTile().getBlock() == BlockHandler.GROTTOL.get();
     }
 
     private static boolean isMinecart(Entity entity) {
@@ -372,8 +372,8 @@ public class EntityGrottol extends MowzieEntity implements IMob {
         if (super.startRiding(entity, force)) {
             if (isMinecart(entity)) {
                 AbstractMinecartEntity minecart = (AbstractMinecartEntity) entity;
-                if (minecart.getDisplayTile().getBlock() != BlockHandler.GROTTOL) {
-                    minecart.setDisplayTile(BlockHandler.GROTTOL.getDefaultState());
+                if (minecart.getDisplayTile().getBlock() != BlockHandler.GROTTOL.get()) {
+                    minecart.setDisplayTile(BlockHandler.GROTTOL.get().getDefaultState());
                     minecart.setDisplayTileOffset(minecart.getDefaultDisplayTileOffset());
                 }
             }
@@ -398,7 +398,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
 
     @Override
     protected SoundEvent getDeathSound() {
-        playSound(MMSounds.ENTITY_GROTTOL_DIE, 1f, 1.3f);
+        playSound(MMSounds.ENTITY_GROTTOL_DIE.get(), 1f, 1.3f);
         return null;
     }
 

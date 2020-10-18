@@ -4,12 +4,12 @@ import com.ilexiconn.llibrary.client.ClientEventHandler;
 import com.ilexiconn.llibrary.client.ClientProxy;
 import com.ilexiconn.llibrary.client.util.ClientUtils;
 import com.ilexiconn.llibrary.server.snackbar.Snackbar;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.client.gui.AbstractGui;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -17,7 +17,7 @@ import org.lwjgl.opengl.GL11;
  * @since 1.0.0
  */
 @OnlyIn(Dist.CLIENT)
-public class SnackbarGUI extends Gui {
+public class SnackbarGUI extends AbstractGui {
     private Snackbar snackbar;
     private int maxAge;
     private int age;
@@ -38,16 +38,16 @@ public class SnackbarGUI extends Gui {
     public void drawSnackbar() {
         GlStateManager.pushMatrix();
         GL11.glTranslatef(0.0F, 0.0F, 500.0F);
-        ScaledResolution resolution = new ScaledResolution(Minecraft.getMinecraft());
+        MainWindow resolution = Minecraft.getInstance().mainWindow;
         switch (this.snackbar.getPosition()) {
             case UP:
-                GlStateManager.translate(0.0F, -this.yOffset, 0.0F);
-                Gui.drawRect(0, 20, resolution.getScaledWidth(), 0, this.snackbar.getColor());
+                GlStateManager.translatef(0.0F, -this.yOffset, 0.0F);
+                fill(0, 20, resolution.getScaledWidth(), 0, this.snackbar.getColor());
                 ClientProxy.MINECRAFT.fontRenderer.drawString(this.snackbar.getMessage(), 10, 6, 0xFFFFFFFF);
                 break;
             case DOWN:
-                GlStateManager.translate(0.0F, this.yOffset, 0.0F);
-                drawRect(0, resolution.getScaledHeight() - 20, resolution.getScaledWidth(), resolution.getScaledHeight(), this.snackbar.getColor());
+                GlStateManager.translatef(0.0F, this.yOffset, 0.0F);
+                fill(0, resolution.getScaledHeight() - 20, resolution.getScaledWidth(), resolution.getScaledHeight(), this.snackbar.getColor());
                 ClientProxy.MINECRAFT.fontRenderer.drawString(this.snackbar.getMessage(), 10, resolution.getScaledHeight() - 14, 0xFFFFFFFF);
                 break;
         }

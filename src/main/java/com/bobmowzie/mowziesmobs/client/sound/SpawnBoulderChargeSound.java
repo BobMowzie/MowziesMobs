@@ -11,7 +11,7 @@ public class SpawnBoulderChargeSound extends TickableSound {
     private PlayerEntity player;
 
     public SpawnBoulderChargeSound(PlayerEntity player) {
-        super(MMSounds.EFFECT_GEOMANCY_BOULDER_CHARGE, SoundCategory.PLAYERS);
+        super(MMSounds.EFFECT_GEOMANCY_BOULDER_CHARGE.get(), SoundCategory.PLAYERS);
         this.player = player;
         volume = 1F;
         pitch = 0.95f;

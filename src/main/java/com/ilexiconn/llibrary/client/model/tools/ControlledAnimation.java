@@ -1,8 +1,8 @@
 package com.ilexiconn.llibrary.client.model.tools;
 
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * This is a timer that can be used to easily animate models between poses. You have to set the number of

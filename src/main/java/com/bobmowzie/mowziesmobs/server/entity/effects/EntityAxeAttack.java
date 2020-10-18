@@ -68,14 +68,14 @@ public class EntityAxeAttack extends EntityMagicEffect {
             prevRotationYaw = rotationYaw;
             prevRotationPitch = rotationPitch;
         }
-        if (!world.isRemote && ticksExisted == 7) playSound(MMSounds.ENTITY_WROUGHT_WHOOSH, 0.7F, 1.1f);
+        if (!world.isRemote && ticksExisted == 7) playSound(MMSounds.ENTITY_WROUGHT_WHOOSH.get(), 0.7F, 1.1f);
             if (!world.isRemote && caster != null) {
                 if (!getVertical() && ticksExisted == SWING_DURATION_HOR /2 - 1) dealDamage(7 * ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolData.attackDamage, 4.5f, 160, 1.2f);
                 else if (getVertical() && ticksExisted == SWING_DURATION_VER /2 - 1) {
                     dealDamage(ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolData.attackDamage, 4.5f, 40, 0.8f);
                     quakeAngle = rotationYaw;
                     quakeBB = getBoundingBox();
-                    playSound(MMSounds.ENTITY_WROUGHT_AXE_LAND, 0.3F, 0.5F);
+                    playSound(MMSounds.ENTITY_WROUGHT_AXE_LAND.get(), 0.3F, 0.5F);
                     playSound(SoundEvents.ENTITY_GENERIC_EXPLODE, 2, 0.9F + rand.nextFloat() * 0.1F);                }
             }
 
@@ -183,7 +183,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
             }
         }
         if (hit) {
-            playSound(MMSounds.ENTITY_WROUGHT_AXE_HIT, 0.3F, 0.5F);
+            playSound(MMSounds.ENTITY_WROUGHT_AXE_HIT.get(), 0.3F, 0.5F);
         }
     }
 

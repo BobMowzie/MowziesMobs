@@ -163,17 +163,17 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             @Override
             public void startExecuting() {
                 super.startExecuting();
-                playSound(MMSounds.ENTITY_SUPERNOVA_START, 3f, 1f);
+                playSound(MMSounds.ENTITY_SUPERNOVA_START.get(), 3f, 1f);
             }
 
             @Override
             public void tick() {
                 super.tick();
                 if (entity.getAnimationTick() == 30) {
-                    playSound(MMSounds.ENTITY_SUPERNOVA_BLACKHOLE, 2f, 1.2f);
+                    playSound(MMSounds.ENTITY_SUPERNOVA_BLACKHOLE.get(), 2f, 1.2f);
                 }
                 if (entity.getAnimationTick() == 40) {
-                    playSound(MMSounds.ENTITY_BARAKO_SCREAM, 1.5f, 1f);
+                    playSound(MMSounds.ENTITY_BARAKO_SCREAM.get(), 1.5f, 1f);
                 }
 
                 if (!entity.world.isRemote) {
@@ -200,7 +200,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             @Override
             public void startExecuting() {
                 super.startExecuting();
-                playSound(MMSounds.ENTITY_BARAKO_BURST, 1.7f, 1.5f);
+                playSound(MMSounds.ENTITY_BARAKO_BURST.get(), 1.7f, 1.5f);
             }
         });
         this.goalSelector.addGoal(2, new AnimationSpawnBarakoa(this, SPAWN_ANIMATION));
@@ -259,12 +259,12 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 
     @Override
     protected SoundEvent getHurtSound(DamageSource source) {
-        return MMSounds.ENTITY_BARAKO_HURT;
+        return MMSounds.ENTITY_BARAKO_HURT.get();
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        this.playSound(MMSounds.ENTITY_BARAKO_DIE, 2f, 1);
+        this.playSound(MMSounds.ENTITY_BARAKO_DIE.get(), 2f, 1);
         return null;
     }
 
@@ -345,7 +345,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         }
 
         if (getAnimation() == BELLY_ANIMATION && (getAnimationTick() == 9 || getAnimationTick() == 29)) {
-            this.playSound(MMSounds.ENTITY_BARAKO_BELLY, 3f, 1f);
+            this.playSound(MMSounds.ENTITY_BARAKO_BELLY.get(), 3f, 1f);
         }
 
 //        if (getAnimation() == TALK_ANIMATION && getAnimationTick() == 1) {
@@ -361,7 +361,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 if (world.isRemote) {
                     spawnExplosionParticles(30);
                 }
-                this.playSound(MMSounds.ENTITY_BARAKO_ATTACK, 1.7f, 0.9f);
+                this.playSound(MMSounds.ENTITY_BARAKO_ATTACK.get(), 1.7f, 0.9f);
             }
             if (getAnimationTick() <= 6 && world.isRemote) {
                 int particleCount = 8;

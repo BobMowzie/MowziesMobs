@@ -52,7 +52,7 @@ public class EntityIceBreath extends EntityMagicEffect {
             }
         }
         if (caster != null && !caster.isAlive()) this.remove();
-        if (ticksExisted == 1) playSound(MMSounds.ENTITY_FROSTMAW_ICEBREATH_START, 1, 0.6f);
+        if (ticksExisted == 1) playSound(MMSounds.ENTITY_FROSTMAW_ICEBREATH_START.get(), 1, 0.6f);
         if (caster instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) caster;
             rotationYaw = player.rotationYaw;

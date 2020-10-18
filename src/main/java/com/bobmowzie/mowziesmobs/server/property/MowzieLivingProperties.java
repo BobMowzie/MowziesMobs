@@ -81,7 +81,7 @@ public class MowzieLivingProperties extends EntityProperties<LivingEntity> {
                     MMParticle.SNOWFLAKE.spawn(entity.world, snowX, snowY, snowZ, ParticleFactory.ParticleArgs.get().withData(0.1d * motion.x, 0.1d * motion.y, 0.1d * motion.z));
                 }
             }
-            entity.playSound(MMSounds.ENTITY_FROSTMAW_FROZEN_CRASH, 1, 1);
+            entity.playSound(MMSounds.ENTITY_FROSTMAW_FROZEN_CRASH.get(), 1, 1);
         }
     }
 
@@ -90,7 +90,7 @@ public class MowzieLivingProperties extends EntityProperties<LivingEntity> {
             entity.dismountEntity(frozenController);
             entity.setPosition(frozenController.posX, frozenController.posY, frozenController.posZ);
             frozenController.setDead();
-            entity.playSound(MMSounds.ENTITY_FROSTMAW_FROZEN_CRASH, 1, 0.5f);
+            entity.playSound(MMSounds.ENTITY_FROSTMAW_FROZEN_CRASH.get(), 1, 0.5f);
 
             if (entity.world.isRemote) {
                 int particleCount = (int) (10 + 1 * entity.height * entity.width * entity.width);
