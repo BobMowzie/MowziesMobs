@@ -14,25 +14,27 @@ import com.ilexiconn.llibrary.server.event.SurvivalTabClickEvent;
 import com.ilexiconn.llibrary.server.snackbar.Snackbar;
 import com.ilexiconn.llibrary.server.snackbar.SnackbarHandler;
 import com.ilexiconn.llibrary.server.update.UpdateHandler;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.gui.inventory.GuiInventory;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.gui.screen.MainMenuScreen;
+import net.minecraft.client.gui.screen.inventory.InventoryScreen;
+import net.minecraft.client.gui.widget.Widget;
+import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.util.Rectangle;
 
+import java.awt.*;
 import java.util.UUID;
 
 @OnlyIn(Dist.CLIENT)
@@ -41,7 +43,7 @@ public enum ClientEventHandler {
 
     private SnackbarGUI snackbarGUI;
     private boolean checkedForUpdates;
-    private ModelBase voxelModel = new VoxelModel();
+    private EntityModel voxelModel = new VoxelModel();
 
     public void setOpenSnackbar(SnackbarGUI snackbarGUI) {
         this.snackbarGUI = snackbarGUI;
@@ -49,7 +51,7 @@ public enum ClientEventHandler {
 
     @SubscribeEvent
     public void onInitGuiPost(GuiScreenEvent.InitGuiEvent.Post event) {
-        if (event.getGui() instanceof GuiMainMenu) {
+        if (event.getGui() instanceof MainMenuScreen) {
             int offsetX = 0;
             int offsetY = 0;
             int buttonX = event.getGui().width / 2 - 124 + offsetX;
@@ -70,10 +72,10 @@ public enum ClientEventHandler {
 
                 Rectangle rectangle = new Rectangle(buttonX, buttonY, 20, 20);
                 boolean intersects = false;
-                for (int i = 0; i < event.getButtonList().size(); i++) {
-                    GuiButton button = event.getButtonList().get(i);
+                for (int i = 0; i < event.getWidgetList().size(); i++) {
+                    Widget button = event.getWidgetList().get(i);
                     if (!intersects) {
-                        intersects = rectangle.intersects(new Rectangle(button.x, button.y, button.width, button.height));
+                        intersects = rectangle.intersects(new Rectangle(button.x, button.y, button.getWidth(), button.getHeight()));
                     }
                 }
 
@@ -85,12 +87,12 @@ public enum ClientEventHandler {
             }
 
             if (!this.checkedForUpdates && !UpdateHandler.INSTANCE.getOutdatedModList().isEmpty()) {
-                event.getButtonList().add(new GuiButton(ClientProxy.UPDATE_BUTTON_ID, buttonX, buttonY, 20, 20, "U"));
+                event.getWidgetList().add(new Button(buttonX, buttonY, 20, 20, "U", ClientProxy.UPDATE_BUTTON_ID));
                 this.checkedForUpdates = true;
                 SnackbarHandler.INSTANCE.showSnackbar(Snackbar.create(I18n.format("snackbar.com.ilexiconn.llibrary.updates_found")));
             }
-        } else if (event.getGui() instanceof GuiContainer && (LLibrary.CONFIG.areTabsAlwaysVisible() || SurvivalTabHandler.INSTANCE.getSurvivalTabList().size() > 1)) {
-            GuiContainer container = (GuiContainer) event.getGui();
+        } else if (event.getGui() instanceof Container && (LLibrary.CONFIG.areTabsAlwaysVisible() || SurvivalTabHandler.INSTANCE.getSurvivalTabList().size() > 1)) {
+            Container container = (Container) event.getGui();
             boolean flag = false;
             for (SurvivalTab survivalTab : SurvivalTabHandler.INSTANCE.getSurvivalTabList()) {
                 if (survivalTab.getContainer() != null && survivalTab.getContainer().isInstance(event.getGui())) {
@@ -102,18 +104,18 @@ public enum ClientEventHandler {
                 int count = 2;
                 for (SurvivalTab tab : SurvivalTabHandler.INSTANCE.getSurvivalTabList()) {
                     if (tab.getPage() == SurvivalTabHandler.INSTANCE.getCurrentPage()) {
-                        event.getButtonList().add(new SurvivalTabGUI(count, tab));
+                        event.getWidgetList().add(new SurvivalTabGUI(count, tab));
                     }
                     count++;
                 }
                 if (count > 7) {
                     int offsetY = (container.ySize - 136) / 2 - 10;
                     if (LLibrary.CONFIG.areTabsLeftSide()) {
-                        event.getButtonList().add(new PageButtonGUI(-1, container.guiLeft - 82, container.guiTop + 136 + offsetY, container));
-                        event.getButtonList().add(new PageButtonGUI(-2, container.guiLeft - 22, container.guiTop + 136 + offsetY, container));
+                        event.addWidget(new PageButtonGUI(-1, container..guiLeft - 82, container.guiTop + 136 + offsetY, container));
+                        event.addWidget(new PageButtonGUI(-2, container.guiLeft - 22, container.guiTop + 136 + offsetY, container));
                     } else {
-                        event.getButtonList().add(new PageButtonGUI(-1, container.guiLeft + container.xSize + 2, container.guiTop + 136 + offsetY, container));
-                        event.getButtonList().add(new PageButtonGUI(-2, container.guiLeft + container.xSize + 62, container.guiTop + 136 + offsetY, container));
+                        event.addWidget(new PageButtonGUI(-1, container.guiLeft + container.xSize + 2, container.guiTop + 136 + offsetY, container));
+                        event.addWidget(new PageButtonGUI(-2, container.guiLeft + container.xSize + 62, container.guiTop + 136 + offsetY, container));
                     }
                 }
             }
@@ -122,8 +124,8 @@ public enum ClientEventHandler {
 
     @SubscribeEvent
     public void onButtonPressPre(GuiScreenEvent.ActionPerformedEvent.Pre event) {
-        if (event.getGui() instanceof GuiMainMenu && event.getButton().id == ClientProxy.UPDATE_BUTTON_ID) {
-            ClientProxy.MINECRAFT.displayGuiScreen(new ModUpdateGUI((GuiMainMenu) event.getGui()));
+        if (event.getGui() instanceof MainMenuScreen && event.getButton().id == ClientProxy.UPDATE_BUTTON_ID) {
+            ClientProxy.MINECRAFT.displayGuiScreen(new ModUpdateGUI((MainMenuScreen) event.getGui()));
             event.setCanceled(true);
         }
     }
@@ -160,19 +162,19 @@ public enum ClientEventHandler {
 
     @SubscribeEvent
     public void onRenderPlayer(RenderPlayerEvent.Post event) {
-        EntityPlayer player = event.getEntityPlayer();
+        PlayerEntity player = event.getEntityPlayer();
         if (LLibrary.CONFIG.hasPatreonEffects() && ClientProxy.PATRONS != null && (ClientProxy.MINECRAFT.gameSettings.thirdPersonView != 0 || player != ClientProxy.MINECRAFT.player)) {
             UUID id = player.getGameProfile().getId();
             if (id != null && ClientProxy.PATRONS.contains(id.toString())) {
                 GlStateManager.pushMatrix();
-                GlStateManager.translate(event.getX(), event.getY(), event.getZ());
+                GlStateManager.translated(event.getX(), event.getY(), event.getZ());
                 GlStateManager.depthMask(false);
                 GlStateManager.disableLighting();
-                GlStateManager.translate(0.0F, 1.37F, 0.0F);
+                GlStateManager.translatef(0.0F, 1.37F, 0.0F);
                 this.renderVoxel(event, 1.1F, 0.23F);
                 GlStateManager.depthMask(true);
                 GlStateManager.enableLighting();
-                GlStateManager.translate(0.0F, 0.128F, 0.0F);
+                GlStateManager.translatef(0.0F, 0.128F, 0.0F);
                 this.renderVoxel(event, 1.0F, 1.0F);
                 GlStateManager.popMatrix();
             }
@@ -180,21 +182,21 @@ public enum ClientEventHandler {
     }
 
     private void renderVoxel(RenderPlayerEvent.Post event, float scale, float color) {
-        EntityPlayer player = event.getEntityPlayer();
+        PlayerEntity player = event.getEntityPlayer();
         int ticksExisted = player.ticksExisted;
         float partialTicks = LLibrary.PROXY.getPartialTicks();
         float bob = MathHelper.sin(((float) ticksExisted + partialTicks) / 15.0F) * 0.1F;
         GlStateManager.pushMatrix();
-        GlStateManager.disableTexture2D();
-        GlStateManager.rotate(-ClientUtils.interpolateRotation(player.prevRenderYawOffset, player.renderYawOffset, partialTicks), 0, 1.0F, 0);
-        GlStateManager.color(color, color, color, 1.0F);
-        GlStateManager.translate(0.0F, -0.6F + bob, 0.0F);
-        GlStateManager.rotate((ticksExisted + partialTicks) % 360, 0.0F, 1.0F, 0.0F);
-        GlStateManager.translate(0.75F, 0.0F, 0.0F);
-        GlStateManager.rotate((ticksExisted + partialTicks) % 360, 0.0F, 1.0F, 0.0F);
-        GlStateManager.scale(scale, scale, scale);
+        GlStateManager.disableTexture();
+        GlStateManager.rotatef(-ClientUtils.interpolateRotation(player.prevRenderYawOffset, player.renderYawOffset, partialTicks), 0, 1.0F, 0);
+        GlStateManager.color4f(color, color, color, 1.0F);
+        GlStateManager.translatef(0.0F, -0.6F + bob, 0.0F);
+        GlStateManager.rotatef((ticksExisted + partialTicks) % 360, 0.0F, 1.0F, 0.0F);
+        GlStateManager.translatef(0.75F, 0.0F, 0.0F);
+        GlStateManager.rotatef((ticksExisted + partialTicks) % 360, 0.0F, 1.0F, 0.0F);
+        GlStateManager.scalef(scale, scale, scale);
         this.voxelModel.render(player, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F);
-        GlStateManager.enableTexture2D();
+        GlStateManager.enableTexture();
         GlStateManager.popMatrix();
     }
 
@@ -207,7 +209,7 @@ public enum ClientEventHandler {
     @SubscribeEvent
     public void onSurvivalTabClick(SurvivalTabClickEvent event) {
         if (event.getLabel().equals("container.inventory")) {
-            ClientProxy.MINECRAFT.displayGuiScreen(new GuiInventory(ClientProxy.MINECRAFT.player));
+            ClientProxy.MINECRAFT.displayGuiScreen(new InventoryScreen(ClientProxy.MINECRAFT.player));
         }
     }
 }

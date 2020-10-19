@@ -209,7 +209,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
 
     @Override
     public boolean attackEntityAsMob(Entity entityIn) {
-        return this.attackEntityAsMob(entityIn, 1.0F);
+        return this.attackEntityAsMob(entityIn, 1.0F, 1.0f);
     }
 
 //    @Override

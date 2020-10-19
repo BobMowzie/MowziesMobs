@@ -15,6 +15,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 public class ServerProxy {
     public void onPreInit() {
@@ -32,8 +33,8 @@ public class ServerProxy {
         }
     }
 
-    public <T extends AbstractMessage<T>> void handleMessage(final T message, final MessageContext messageContext) {
-        ServerWorld world = (ServerWorld) messageContext.getServerHandler().player.world;
+    public <T extends AbstractMessage<T>> void handleMessage(final T message, final NetworkEvent.Context messageContext) {
+        ServerWorld world = (ServerWorld) messageContext.getNetworkManager().player.world;
         world.addScheduledTask(() -> message.onServerReceived(FMLCommonHandler.instance().getMinecraftServerInstance(), message, messageContext.getServerHandler().player, messageContext));
     }
 

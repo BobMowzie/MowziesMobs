@@ -2,11 +2,16 @@ package com.ilexiconn.llibrary.client.gui.update;
 
 import com.ilexiconn.llibrary.server.update.UpdateContainer;
 import com.ilexiconn.llibrary.server.update.UpdateHandler;
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.Button;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.MainMenuScreen;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
@@ -23,15 +28,15 @@ import java.util.List;
  * @since 1.0.0
  */
 @OnlyIn(Dist.CLIENT)
-public class ModUpdateGUI extends GuiScreen {
-    private GuiMainMenu parent;
+public class ModUpdateGUI extends Screen {
+    private MainMenuScreen parent;
     private ModUpdateListGUI modList;
     private ModUpdateEntryGUI modInfo;
     private int selected = -1;
-    private GuiButton buttonUpdate;
-    private GuiButton buttonDone;
+    private Button buttonUpdate;
+    private Button buttonDone;
 
-    public ModUpdateGUI(GuiMainMenu parent) {
+    public ModUpdateGUI(MainMenuScreen parent) {
         this.parent = parent;
     }
 
@@ -44,23 +49,23 @@ public class ModUpdateGUI extends GuiScreen {
     }
 
     @Override
-    public void initGui() {
+    protected void init() {
         int width = 0;
         for (UpdateContainer mod : UpdateHandler.INSTANCE.getOutdatedModList()) {
-            width = Math.max(width, this.fontRenderer.getStringWidth(mod.getModContainer().getName()) + 47);
-            width = Math.max(width, this.fontRenderer.getStringWidth(mod.getModContainer().getVersion()) + 47);
+            width = Math.max(width, this.font.getStringWidth(mod.getModContainer().getName()) + 47);
+            width = Math.max(width, this.font.getStringWidth(mod.getModContainer().getVersion()) + 47);
         }
         width = Math.min(width, 150);
         this.modList = new ModUpdateListGUI(this, width);
 
-        this.buttonList.add(this.buttonDone = new GuiButton(6, ((this.modList.getRight() + this.width) / 2) - 100, this.height - 38, I18n.format("gui.done")));
-        this.buttonList.add(this.buttonUpdate = new GuiButton(20, 10, this.height - 38, this.modList.getWidth(), 20, I18n.format("gui.com.ilexiconn.llibrary.update")));
+        this.buttons.add(this.buttonDone = new Button(6, ((this.modList.getRight() + this.width) / 2f) - 100, this.height - 38, I18n.format("gui.done")));
+        this.buttons.add(this.buttonUpdate = new Button(20, 10, this.height - 38, this.modList.getWidth(), 20, I18n.format("gui.com.ilexiconn.llibrary.update")));
 
         this.updateModInfo();
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) throws IOException {
+    protected void actionPerformed(Button button) throws IOException {
         if (button.enabled) {
             switch (button.id) {
                 case 6: {
@@ -90,8 +95,8 @@ public class ModUpdateGUI extends GuiScreen {
             int j = this.height / 2;
             this.buttonDone.x = this.width / 2 - 100;
             this.buttonDone.y = this.height - 38;
-            this.buttonList.clear();
-            this.buttonList.add(this.buttonDone);
+            this.buttons.clear();
+            this.buttons.add(this.buttonDone);
             this.drawScaledString(I18n.format("gui.com.ilexiconn.llibrary.updated.1"), i, j - 40, 0xFFFFFF, 2.0F);
             this.drawScaledString(I18n.format("gui.com.ilexiconn.llibrary.updated.2"), i, j - 15, 0xFFFFFF, 1.0F);
         } else {
@@ -101,7 +106,7 @@ public class ModUpdateGUI extends GuiScreen {
             }
 
             int left = ((this.width - this.modList.getWidth() - 38) / 2) + this.modList.getWidth() + 30;
-            this.drawCenteredString(this.fontRenderer, I18n.format("gui.com.ilexiconn.llibrary.update.title"), left, 16, 0xFFFFFF);
+            this.drawCenteredString(this.font, I18n.format("gui.com.ilexiconn.llibrary.update.title"), left, 16, 0xFFFFFF);
         }
 
         super.drawScreen(mouseX, mouseY, partialTicks);

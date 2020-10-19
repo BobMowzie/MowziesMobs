@@ -102,7 +102,7 @@ public class EntityIceBreath extends EntityMagicEffect {
         for (LivingEntity entityHit : entitiesHit) {
             if (entityHit == caster) continue;
 
-            List<String> freezeImmune = Arrays.asList(ConfigHandler.GENERAL.freeze_blacklist);
+            List<String> freezeImmune = Arrays.asList(ConfigHandler.getFreezeBlacklist());
             ResourceLocation mobName = EntityType.getKey(entityHit.getType());
             if (freezeImmune.contains(mobName.toString())) continue;
 

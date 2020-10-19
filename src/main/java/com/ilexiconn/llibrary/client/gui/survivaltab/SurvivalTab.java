@@ -1,16 +1,16 @@
 package com.ilexiconn.llibrary.client.gui.survivaltab;
 
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.inventory.container.Container;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class SurvivalTab {
     private int index;
     private String label;
-    private Class<? extends GuiContainer> container;
+    private Class<? extends Container> container;
 
-    SurvivalTab(int index, String label, Class<? extends GuiContainer> container) {
+    SurvivalTab(int index, String label, Class<? extends Container> container) {
         this.index = index;
         this.label = label;
         this.container = container;
@@ -40,7 +40,7 @@ public class SurvivalTab {
         return this.label;
     }
 
-    public Class<? extends GuiContainer> getContainer() {
+    public Class<? extends Container> getContainer() {
         return this.container;
     }
 }

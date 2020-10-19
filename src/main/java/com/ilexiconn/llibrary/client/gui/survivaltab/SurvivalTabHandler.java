@@ -1,8 +1,8 @@
 package com.ilexiconn.llibrary.client.gui.survivaltab;
 
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.inventory.container.Container;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ public enum SurvivalTabHandler {
      * @param container the container class
      * @return the new survival tab instance
      */
-    public SurvivalTab create(String label, Class<? extends GuiContainer> container) {
+    public SurvivalTab create(String label, Class<? extends Container> container) {
         SurvivalTab survivalTab = new SurvivalTab(this.survivalTabList.size(), label, container);
         this.survivalTabList.add(survivalTab);
         return survivalTab;

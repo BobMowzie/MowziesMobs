@@ -7,8 +7,6 @@ import net.minecraft.world.storage.loot.conditions.ILootCondition;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
 import net.minecraft.world.storage.loot.functions.ILootFunction;
 import net.minecraft.world.storage.loot.functions.LootFunctionManager;
-import net.minecraft.world.storage.loot.properties.EntityProperty;
-import net.minecraft.world.storage.loot.properties.EntityPropertyManager;
 
 public class LootTableHandler {
     // Mob drops
@@ -35,7 +33,7 @@ public class LootTableHandler {
         return LootTables.register(new ResourceLocation(MowziesMobs.MODID, id));
     }
 
-    private static ResourceLocation register(EntityProperty.Serializer<?> serializer) {
+    private static ResourceLocation register(PropertyEnt.Serializer<?> serializer) {
         EntityPropertyManager.registerProperty(serializer);
         return serializer.getName();
     }
