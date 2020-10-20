@@ -26,8 +26,8 @@ public class PotionTypeHandler {
     private PotionTypeHandler() {
     }
 
-    public static Potion POISON_RESIST = null;
-    public static Potion LONG_POISON_RESIST = null;
+    public static final Potion POISON_RESIST = new Potion("poisonResist", new EffectInstance[]{new EffectInstance(PotionHandler.POISON_RESIST, 3600)}).setRegistryName("poison_resist");
+    public static final Potion LONG_POISON_RESIST = new Potion("poisonResist", new EffectInstance[]{new EffectInstance(PotionHandler.POISON_RESIST, 9600)}).setRegistryName("long_poison_resist");;
 
     private static Method brewing_mixes;
     private static void addMix(Potion start, Item ingredient, Potion result) {
@@ -45,15 +45,11 @@ public class PotionTypeHandler {
 
     @SubscribeEvent
     public static void register(RegistryEvent.Register<Potion> event) {
-        POISON_RESIST = new Potion("poisonResist", new EffectInstance[]{new EffectInstance(PotionHandler.POISON_RESIST, 3600)}).setRegistryName("poison_resist");
-        LONG_POISON_RESIST = new Potion("poisonResist", new EffectInstance[]{new EffectInstance(PotionHandler.POISON_RESIST, 9600)}).setRegistryName("long_poison_resist");
         event.getRegistry().registerAll(
                 POISON_RESIST,
                 LONG_POISON_RESIST
         );
-
         addMix(Potions.AWKWARD, ItemHandler.NAGA_FANG, POISON_RESIST);
         addMix(POISON_RESIST, Items.REDSTONE, LONG_POISON_RESIST);
-
     }
 }
