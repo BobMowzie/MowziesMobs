@@ -3,7 +3,9 @@ package com.bobmowzie.mowziesmobs.client.particles.util;
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher;
+import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
@@ -20,7 +22,7 @@ public class MowzieParticleBase extends Particle implements ParticleTextureStitc
     public float red, green, blue, alpha;
     public float prevRed, prevGreen, prevBlue, prevAlpha;
     public boolean faceCamera;
-    public float scale, prevScale;
+    public float scale, prevScale, particleScale;
     public float yaw, pitch, roll;
     public float prevYaw, prevPitch, prevRoll;
     public boolean emissive;
@@ -40,7 +42,7 @@ public class MowzieParticleBase extends Particle implements ParticleTextureStitc
         this.blue = (float) (b);
         this.alpha = (float) (a);
         this.scale = (float)scale;
-        this.particleMaxAge = (int)duration;
+        this.maxAge = (int)duration;
         airDrag = (float)drag;
         this.faceCamera = faceCamera;
         this.yaw = (float) (yaw);
@@ -70,8 +72,8 @@ public class MowzieParticleBase extends Particle implements ParticleTextureStitc
     }
 
     @Override
-    public int getFXLayer() {
-        return 1;
+    public IParticleRenderType getRenderType() {
+        return IParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
     public int getBrightnessForRender(float partialTick)
@@ -85,7 +87,7 @@ public class MowzieParticleBase extends Particle implements ParticleTextureStitc
     }
 
     @Override
-    public void onUpdate() {
+    public void tick() {
         prevRed = red;
         prevGreen = green;
         prevBlue = blue;
@@ -106,7 +108,7 @@ public class MowzieParticleBase extends Particle implements ParticleTextureStitc
             component.preUpdate(this);
         }
 
-        if (this.particleAge++ >= this.particleMaxAge)
+        if (this.age++ >= this.maxAge)
         {
             this.setExpired();
         }
@@ -135,8 +137,8 @@ public class MowzieParticleBase extends Particle implements ParticleTextureStitc
         }
     }
 
-    public void renderParticle(BufferBuilder buffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ)
-    {
+    @Override
+    public void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         particleAlpha = prevAlpha + (alpha - prevAlpha) * partialTicks;
         if (particleAlpha < 0.01) particleAlpha = 0.01f;
         particleRed = prevRed + (red - prevRed) * partialTicks;
@@ -156,19 +158,19 @@ public class MowzieParticleBase extends Particle implements ParticleTextureStitc
             rotationYZ = 0;
         }
 
-        float f = (float)this.particleTextureIndexX / 16.0F;
-        float f1 = f + 0.0624375F;
-        float f2 = (float)this.particleTextureIndexY / 16.0F;
-        float f3 = f2 + 0.0624375F;
-        float f4 = 0.1F * this.particleScale;
+        float f = 0;//(float)this.particleTextureIndexX / 16.0F;
+        float f1 = 0;//f + 0.0624375F;
+        float f2 = 0;//(float)this.particleTextureIndexY / 16.0F;
+        float f3 = 0;//f2 + 0.0624375F;
+        float f4 = 0;//0.1F * this.particleScale;
 
-        if (this.particleTexture != null)
-        {
-            f = this.particleTexture.getMinU();
-            f1 = this.particleTexture.getMaxU();
-            f2 = this.particleTexture.getMinV();
-            f3 = this.particleTexture.getMaxV();
-        }
+//        if (this.particleTexture != null)
+//        {
+//            f = this.particleTexture.getMinU();
+//            f1 = this.particleTexture.getMaxU();
+//            f2 = this.particleTexture.getMinV();
+//            f3 = this.particleTexture.getMaxV();
+//        }
 
         float f5 = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)partialTicks - interpPosX);
         float f6 = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)partialTicks - interpPosY);
@@ -178,20 +180,20 @@ public class MowzieParticleBase extends Particle implements ParticleTextureStitc
         int k = i & 65535;
         Vec3d[] avec3d = new Vec3d[] {new Vec3d((double)(-rotationX * f4 - rotationXY * f4), (double)(-rotationZ * f4), (double)(-rotationYZ * f4 - rotationXZ * f4)), new Vec3d((double)(-rotationX * f4 + rotationXY * f4), (double)(rotationZ * f4), (double)(-rotationYZ * f4 + rotationXZ * f4)), new Vec3d((double)(rotationX * f4 + rotationXY * f4), (double)(rotationZ * f4), (double)(rotationYZ * f4 + rotationXZ * f4)), new Vec3d((double)(rotationX * f4 - rotationXY * f4), (double)(-rotationZ * f4), (double)(rotationYZ * f4 - rotationXZ * f4))};
 
-        if (faceCamera && this.particleAngle != 0.0F)
-        {
-            float f8 = this.particleAngle + (this.particleAngle - this.prevParticleAngle) * partialTicks;
-            float f9 = MathHelper.cos(f8 * 0.5F);
-            float f10 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.x;
-            float f11 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.y;
-            float f12 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.z;
-            Vec3d vec3d = new Vec3d((double)f10, (double)f11, (double)f12);
-
-            for (int l = 0; l < 4; ++l)
-            {
-                avec3d[l] = vec3d.scale(2.0D * avec3d[l].dotProduct(vec3d)).add(avec3d[l].scale((double)(f9 * f9) - vec3d.dotProduct(vec3d))).add(vec3d.crossProduct(avec3d[l]).scale((double)(2.0F * f9)));
-            }
-        }
+//        if (faceCamera && this.particleAngle != 0.0F)
+//        {
+//            float f8 = this.particleAngle + (this.particleAngle - this.prevParticleAngle) * partialTicks;
+//            float f9 = MathHelper.cos(f8 * 0.5F);
+//            float f10 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.x;
+//            float f11 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.y;
+//            float f12 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.z;
+//            Vec3d vec3d = new Vec3d((double)f10, (double)f11, (double)f12);
+//
+//            for (int l = 0; l < 4; ++l)
+//            {
+//                avec3d[l] = vec3d.scale(2.0D * avec3d[l].dotProduct(vec3d)).add(avec3d[l].scale((double)(f9 * f9) - vec3d.dotProduct(vec3d))).add(vec3d.crossProduct(avec3d[l]).scale((double)(2.0F * f9)));
+//            }
+//        }
         Matrix4d boxTranslate = new Matrix4d();
         Matrix4d boxRotateX = new Matrix4d();
         Matrix4d boxRotateY = new Matrix4d();
@@ -226,17 +228,13 @@ public class MowzieParticleBase extends Particle implements ParticleTextureStitc
         }
     }
 
-    @Override
-    public boolean shouldDisableDepth() {
-        return true;
-    }
+//    @Override
+//    public boolean shouldDisableDepth() {
+//        return true;
+//    }
 
     public float getAge() {
-        return particleAge;
-    }
-
-    public float getMaxAge() {
-        return particleMaxAge;
+        return age;
     }
 
     public double getPosX() {

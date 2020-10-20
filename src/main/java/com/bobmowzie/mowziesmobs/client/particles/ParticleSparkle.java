@@ -3,7 +3,9 @@ package com.bobmowzie.mowziesmobs.client.particles;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher;
+import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
@@ -19,7 +21,7 @@ public class ParticleSparkle extends Particle implements ParticleTextureStitcher
     public ParticleSparkle(World world, double x, double y, double z, double vx, double vy, double vz, double r, double g, double b, double scale, int duration) {
         super(world, x, y, z);
         this.scale = (float) scale * 1f;
-        particleMaxAge = duration;
+        maxAge = duration;
         motionX = vx;
         motionY = vy;
         motionZ = vz;
@@ -29,40 +31,25 @@ public class ParticleSparkle extends Particle implements ParticleTextureStitcher
     }
 
     @Override
-    public int getFXLayer() {
-        return 1;
-    }
-
-    @Override
-    public void onUpdate() {
-        super.onUpdate();
-        if (particleAge >= particleMaxAge) {
+    public void tick() {
+        super.tick();
+        if (age >= maxAge) {
             setExpired();
         }
-        particleAge++;
+        age++;
     }
 
     @Override
-    public void renderParticle(BufferBuilder buffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-        float a = ((float)particleAge + partialTicks)/particleMaxAge;
+    public void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+        float a = ((float)age + partialTicks)/maxAge;
         particleAlpha = -4 * a * a + 4 * a;
         if (particleAlpha < 0.01) particleAlpha = 0.01f;
-        particleScale = (-4 * a * a + 4 * a) * scale;
-
-        //TODO: Override rendering to support rgb parameters
-        super.renderParticle(buffer, entityIn, partialTicks, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
+        setSize((-4 * a * a + 4 * a) * scale, (-4 * a * a + 4 * a) * scale);
     }
 
     @Override
-    public void setParticleTextureIndex(int particleTextureIndex) {
-        if (this.getFXLayer() != 0)
-        {
-        }
-        else
-        {
-            this.particleTextureIndexX = particleTextureIndex % 16;
-            this.particleTextureIndexY = particleTextureIndex / 16;
-        }
+    public IParticleRenderType getRenderType() {
+        return IParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     public static final class SparkleFactory extends ParticleFactory<ParticleSparkle.SparkleFactory, ParticleSparkle> {
@@ -75,10 +62,5 @@ public class ParticleSparkle extends Particle implements ParticleTextureStitcher
             if (args.data.length >= 8) return new ParticleSparkle(args.world, args.x, args.y, args.z, (double) args.data[0], (double) args.data[1], (double) args.data[2], (double) args.data[3], (double) args.data[4], (double) args.data[5], (double) args.data[6], (int) args.data[7]);
             return new ParticleSparkle(args.world, args.x, args.y, args.z, 0, 0, 0, 1, 1, 1, 10, 40);
         }
-    }
-
-    @Override
-    public boolean shouldDisableDepth() {
-        return true;
     }
 }

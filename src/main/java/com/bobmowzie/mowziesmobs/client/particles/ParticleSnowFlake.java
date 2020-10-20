@@ -3,7 +3,9 @@ package com.bobmowzie.mowziesmobs.client.particles;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher;
+import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
@@ -26,32 +28,32 @@ public class ParticleSnowFlake extends Particle implements ParticleTextureStitch
 
     public ParticleSnowFlake(World world, double x, double y, double z, double vX, double vY, double vZ, double duration, double swirls) {
         super(world, x, y, z);
-        particleScale = 1;
+        setSize(1, 1);
         whichTex = rand.nextInt(8);
         motionX = vX;
         motionY = vY;
         motionZ = vZ;
-        particleMaxAge = (int) duration;
+        maxAge = (int) duration;
         swirlTick = rand.nextInt(120);
         spread = rand.nextFloat();
         this.swirls = swirls == 1;
     }
 
     @Override
-    public int getFXLayer() {
-        return 1;
+    public IParticleRenderType getRenderType() {
+        return IParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
 
         if (swirls) {
             Vec3d motionVec = new Vec3d(motionX, motionY, motionZ).normalize();
             float yaw = (float) Math.atan2(motionVec.x, motionVec.z);
             float xzDistance = (float) motionVec.length();
             float pitch = (float) Math.atan2(motionVec.y, xzDistance);
-            float swirlRadius = 4f * (particleAge / (float) particleMaxAge) * spread;
+            float swirlRadius = 4f * (age / (float) maxAge) * spread;
             Point3d point = new Point3d(swirlRadius * Math.cos(swirlTick * 0.2), swirlRadius * Math.sin(swirlTick * 0.2), 0);
             Matrix4d boxRotateX = new Matrix4d();
             Matrix4d boxRotateY = new Matrix4d();
@@ -65,34 +67,34 @@ public class ParticleSnowFlake extends Particle implements ParticleTextureStitch
 //            posY += swirlRadius * Math.cos(swirlTick * 0.2) * (Math.sqrt(1 - y * y)) * (Math.sqrt(1 - z * z));
         }
 
-        if (particleAge >= particleMaxAge) {
+        if (age >= maxAge) {
             setExpired();
         }
-        particleAge++;
+        age++;
         swirlTick++;
     }
 
     @Override
-    public void renderParticle(BufferBuilder buffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-        float var = (particleAge + partialTicks)/(float)particleMaxAge;
+    public void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+        float var = (age + partialTicks)/(float)maxAge;
         particleAlpha = (float) (1 - Math.exp(10 * (var - 1)) - Math.pow(2000, -var));
         if (particleAlpha < 0.1) particleAlpha = 0.1f;
 
-        float f = (float)this.particleTextureIndexX / 16.0F;
-        float f1 = f + 0.0624375F;
-        float f2 = (float)this.particleTextureIndexY / 16.0F;
-        float f3 = f2 + 0.0624375F;
-        float f4 = 0.1F * this.particleScale;
+        float f = 0;//(float)this.particleTextureIndexX / 16.0F;
+        float f1 = 0;//f + 0.0624375F;
+        float f2 = 0;//(float)this.particleTextureIndexY / 16.0F;
+        float f3 = 0;//f2 + 0.0624375F;
+        float f4 = 0;//0.1F * this.particleScale;
 
-        if (this.particleTexture != null)
-        {
-            int row = whichTex / 4;
-            int column = whichTex % 4;
-            f = particleTexture.getInterpolatedU(row / 4.0F * 16.0F);
-            f1 = particleTexture.getInterpolatedU((row + 1) / 4.0F * 16.0F);
-            f2 = particleTexture.getInterpolatedV(column / 4.0F * 16.0F);
-            f3 = particleTexture.getInterpolatedV((column + 1) / 4.0F * 16.0F);
-        }
+//        if (this.particleTexture != null)
+//        {
+//            int row = whichTex / 4;
+//            int column = whichTex % 4;
+//            f = particleTexture.getInterpolatedU(row / 4.0F * 16.0F);
+//            f1 = particleTexture.getInterpolatedU((row + 1) / 4.0F * 16.0F);
+//            f2 = particleTexture.getInterpolatedV(column / 4.0F * 16.0F);
+//            f3 = particleTexture.getInterpolatedV((column + 1) / 4.0F * 16.0F);
+//        }
 
         float f5 = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)partialTicks - interpPosX);
         float f6 = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)partialTicks - interpPosY);
@@ -102,20 +104,20 @@ public class ParticleSnowFlake extends Particle implements ParticleTextureStitch
         int k = i & 65535;
         Vec3d[] avec3d = new Vec3d[] {new Vec3d((double)(-rotationX * f4 - rotationXY * f4), (double)(-rotationZ * f4), (double)(-rotationYZ * f4 - rotationXZ * f4)), new Vec3d((double)(-rotationX * f4 + rotationXY * f4), (double)(rotationZ * f4), (double)(-rotationYZ * f4 + rotationXZ * f4)), new Vec3d((double)(rotationX * f4 + rotationXY * f4), (double)(rotationZ * f4), (double)(rotationYZ * f4 + rotationXZ * f4)), new Vec3d((double)(rotationX * f4 - rotationXY * f4), (double)(-rotationZ * f4), (double)(rotationYZ * f4 - rotationXZ * f4))};
 
-        if (this.particleAngle != 0.0F)
-        {
-            float f8 = this.particleAngle + (this.particleAngle - this.prevParticleAngle) * partialTicks;
-            float f9 = MathHelper.cos(f8 * 0.5F);
-            float f10 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.x;
-            float f11 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.y;
-            float f12 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.z;
-            Vec3d vec3d = new Vec3d((double)f10, (double)f11, (double)f12);
-
-            for (int l = 0; l < 4; ++l)
-            {
-                avec3d[l] = vec3d.scale(2.0D * avec3d[l].dotProduct(vec3d)).add(avec3d[l].scale((double)(f9 * f9) - vec3d.dotProduct(vec3d))).add(vec3d.crossProduct(avec3d[l]).scale((double)(2.0F * f9)));
-            }
-        }
+//        if (this.particleAngle != 0.0F)
+//        {
+//            float f8 = this.particleAngle + (this.particleAngle - this.prevParticleAngle) * partialTicks;
+//            float f9 = MathHelper.cos(f8 * 0.5F);
+//            float f10 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.x;
+//            float f11 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.y;
+//            float f12 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.z;
+//            Vec3d vec3d = new Vec3d((double)f10, (double)f11, (double)f12);
+//
+//            for (int l = 0; l < 4; ++l)
+//            {
+//                avec3d[l] = vec3d.scale(2.0D * avec3d[l].dotProduct(vec3d)).add(avec3d[l].scale((double)(f9 * f9) - vec3d.dotProduct(vec3d))).add(vec3d.crossProduct(avec3d[l]).scale((double)(2.0F * f9)));
+//            }
+//        }
 
         buffer.pos((double)f5 + avec3d[0].x, (double)f6 + avec3d[0].y, (double)f7 + avec3d[0].z).tex((double)f1, (double)f3).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
         buffer.pos((double)f5 + avec3d[1].x, (double)f6 + avec3d[1].y, (double)f7 + avec3d[1].z).tex((double)f1, (double)f2).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
@@ -141,10 +143,5 @@ public class ParticleSnowFlake extends Particle implements ParticleTextureStitch
             }
             return new ParticleSnowFlake(args.world, args.x, args.y, args.z, 0, 0, 0, 40, 0);
         }
-    }
-
-    @Override
-    public boolean shouldDisableDepth() {
-        return true;
     }
 }

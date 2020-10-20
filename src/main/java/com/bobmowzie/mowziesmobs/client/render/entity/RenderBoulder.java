@@ -37,7 +37,7 @@ public class RenderBoulder extends EntityRenderer<EntityBoulder> {
     @Override
     protected ResourceLocation getEntityTexture(EntityBoulder entity) {
 //        if (entity.storedBlock != null) {
-//            return Minecraft.getMinecraft().getBlockRendererDispatcher().getModelForState(entity.storedBlock).;
+//            return Minecraft.getInstance().getBlockRendererDispatcher().getModelForState(entity.storedBlock).;
 //        }
 //        else return TEXTURE_DIRT;
         if (entity.storedBlock != null) {

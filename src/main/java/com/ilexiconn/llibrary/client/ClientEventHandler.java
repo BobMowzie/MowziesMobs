@@ -111,7 +111,7 @@ public enum ClientEventHandler {
                 if (count > 7) {
                     int offsetY = (container.ySize - 136) / 2 - 10;
                     if (LLibrary.CONFIG.areTabsLeftSide()) {
-                        event.addWidget(new PageButtonGUI(-1, container..guiLeft - 82, container.guiTop + 136 + offsetY, container));
+                        event.addWidget(new PageButtonGUI(-1, container.guiLeft - 82, container.guiTop + 136 + offsetY, container));
                         event.addWidget(new PageButtonGUI(-2, container.guiLeft - 22, container.guiTop + 136 + offsetY, container));
                     } else {
                         event.addWidget(new PageButtonGUI(-1, container.guiLeft + container.xSize + 2, container.guiTop + 136 + offsetY, container));

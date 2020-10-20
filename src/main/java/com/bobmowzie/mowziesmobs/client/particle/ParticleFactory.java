@@ -388,8 +388,8 @@ public abstract class ParticleFactory<F extends ParticleFactory<?, T>, T extends
 	 * @param color
 	 */
 	public static final void setParticleColor(Particle particle, int color) {
-		particle.setRBGColorF((float)(color >> 16 & 0xff) / 255F, (float)(color >> 8 & 0xff) / 255F, (float)(color & 0xff) / 255F);
-		particle.setAlphaF((float)(color >> 24 & 0xff) / 255F);
+		particle.setColor((float)(color >> 16 & 0xff) / 255F, (float)(color >> 8 & 0xff) / 255F, (float)(color & 0xff) / 255F);
+//		particle.setAlphaF((float)(color >> 24 & 0xff) / 255F);
 	}
 
 	/**
@@ -520,7 +520,7 @@ public abstract class ParticleFactory<F extends ParticleFactory<?, T>, T extends
 	public final T spawn(World world, double x, double y, double z, @Nullable ParticleArgs args) {
 		T particle = this.create(world, x, y, z, args);
 		if(particle != null)
-			Minecraft.getMinecraft().effectRenderer.addEffect(particle);
+//			Minecraft.getInstance().effectRenderer.addEffect(particle); // TODO
 		return particle;
 	}
 }

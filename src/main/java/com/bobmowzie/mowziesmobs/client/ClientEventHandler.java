@@ -229,7 +229,7 @@ public enum ClientEventHandler {
                     time = startTime;
                 }
                 int points = pointStart + progress * 50;
-                Minecraft.getMinecraft().getTextureManager().bindTexture(MARIO);
+                Minecraft.getInstance().getTextureManager().bindTexture(MARIO);
                 ScaledResolution res = e.getResolution();
                 int offsetY = 16;
                 int col = res.getScaledWidth() / 4;
@@ -252,8 +252,8 @@ public enum ClientEventHandler {
                 // Time
                 drawMarioNumber(timeOffsetX + 8, offsetY + 8, time, 3);
             }
-            if (Minecraft.getMinecraft().player.isPotionActive(PotionHandler.FROZEN) && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0) {
-                Minecraft.getMinecraft().getTextureManager().bindTexture(FROZEN_BLUR);
+            if (Minecraft.getInstance().player.isPotionActive(PotionHandler.FROZEN) && Minecraft.getInstance().gameSettings.thirdPersonView == 0) {
+                Minecraft.getInstance().getTextureManager().bindTexture(FROZEN_BLUR);
                 ScaledResolution res = e.getResolution();
                 AbstractGui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, res.getScaledWidth(), res.getScaledHeight(), res.getScaledWidth(), res.getScaledHeight());
             }
@@ -263,14 +263,14 @@ public enum ClientEventHandler {
     // Remove frozen overlay
     @SubscribeEvent
     public void onRenderHUD(RenderGameOverlayEvent.Pre event) {
-        ClientPlayerEntity player = Minecraft.getMinecraft().player;
+        ClientPlayerEntity player = Minecraft.getInstance().player;
         if (player != null && player.isRiding()) {
             if (player.getRidingEntity() instanceof EntityFrozenController) {
                 if (event.getType().equals(RenderGameOverlayEvent.ElementType.HEALTHMOUNT)) {
                     event.setCanceled(true);
                 }
                 if (event.getType().equals(RenderGameOverlayEvent.ElementType.ALL)) {
-                    Minecraft.getMinecraft().ingameGUI.setOverlayMessage("", false);
+                    Minecraft.getInstance().ingameGUI.setOverlayMessage("", false);
                 }
             }
         }
@@ -286,6 +286,6 @@ public enum ClientEventHandler {
     public static void stopMouseMove() {
         Mouse.getDX();
         Mouse.getDY();
-        Minecraft.getMinecraft().mouseHelper.deltaX = Minecraft.getMinecraft().mouseHelper.deltaY = 0;
+        Minecraft.getInstance().mouseHelper.deltaX = Minecraft.getInstance().mouseHelper.deltaY = 0;
     }
 }

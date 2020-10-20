@@ -5,7 +5,9 @@ import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher.IParticleSpriteReceiver;
+import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
@@ -28,8 +30,9 @@ public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
         super(world, x, y, z);
         this.targetX = targetX;
         this.targetZ = targetZ;
-        particleScale = 4.5F + rand.nextFloat() * 1.5F;
-        particleMaxAge = 120;
+        float size = 4.5F + rand.nextFloat() * 1.5F;
+        setSize(size, size);
+        maxAge = 120;
         signX = Math.signum(targetX - posX);
         signZ = Math.signum(targetZ - posZ);
         mode = 0;
@@ -50,8 +53,8 @@ public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
 
     public ParticleOrb(World world, double x, double y, double z, double vx, double vy, double vz, double r, double g, double b, double scale, int duration) {
         super(world, x, y, z);
-        particleScale = (float) scale * 1f;
-        particleMaxAge = duration;
+        setSize((float) scale, (float) scale);
+        maxAge = duration;
         this.duration = duration;
         motionX = vx;
         motionY = vy;
@@ -62,10 +65,9 @@ public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
         mode = 2;
     }
 
-
     @Override
-    public int getFXLayer() {
-        return 1;
+    public IParticleRenderType getRenderType() {
+        return IParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     @Override
@@ -74,7 +76,7 @@ public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
     }
 
     @Override
-    public void onUpdate() {
+    public void tick() {
         particleAlpha = 0.1f;
         prevPosX = posX;
         prevPosY = posY;
@@ -83,7 +85,7 @@ public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
             double vecX = targetX - posX;
             double vecZ = targetZ - posZ;
             double dist = Math.sqrt(vecX * vecX + vecZ * vecZ);
-            if (dist > 2 || Math.signum(vecX) != signX || Math.signum(vecZ) != signZ || particleAge > particleMaxAge) {
+            if (dist > 2 || Math.signum(vecX) != signX || Math.signum(vecZ) != signZ || age > maxAge) {
                 setExpired();
                 return;
             }
@@ -99,32 +101,31 @@ public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
             motionZ = vecZ;
             move(motionX, motionY, motionZ);
         } else if (mode == 1) {
-            particleAlpha = ((float)particleAge/(float)duration);//(float) (1 * Math.sqrt(Math.pow(posX - startX, 2) + Math.pow(posY - startY, 2) + Math.pow(posZ - startZ, 2)) / Math.sqrt(Math.pow(targetX - startX, 2) + Math.pow(targetY - startY, 2) + Math.pow(targetZ - startZ, 2)));
-            posX = startX + (targetX - startX) / (1 + Math.exp(-(8 / duration) * (particleAge - duration / 2)));
-            posY = startY + (targetY - startY) / (1 + Math.exp(-(8 / duration) * (particleAge - duration / 2)));
-            posZ = startZ + (targetZ - startZ) / (1 + Math.exp(-(8 / duration) * (particleAge - duration / 2)));
-            if (particleAge == duration) {
+            particleAlpha = ((float)age/(float)duration);//(float) (1 * Math.sqrt(Math.pow(posX - startX, 2) + Math.pow(posY - startY, 2) + Math.pow(posZ - startZ, 2)) / Math.sqrt(Math.pow(targetX - startX, 2) + Math.pow(targetY - startY, 2) + Math.pow(targetZ - startZ, 2)));
+            posX = startX + (targetX - startX) / (1 + Math.exp(-(8 / duration) * (age - duration / 2)));
+            posY = startY + (targetY - startY) / (1 + Math.exp(-(8 / duration) * (age - duration / 2)));
+            posZ = startZ + (targetZ - startZ) / (1 + Math.exp(-(8 / duration) * (age - duration / 2)));
+            if (age == duration) {
                 setExpired();
             }
         }
         else if (mode == 2) {
-            super.onUpdate();
-//            particleAlpha = ((float)particleAge/(float)particleMaxAge);
-            if (particleAge >= particleMaxAge) {
+            super.tick();
+//            particleAlpha = ((float)age/(float)maxAge);
+            if (age >= maxAge) {
                 setExpired();
             }
         }
-        particleAge++;
+        age++;
     }
 
     @Override
-    public void renderParticle(BufferBuilder buffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-        if (mode == 2) particleAlpha = Math.max(1 - ((float)particleAge + partialTicks)/(float)duration, 0.001f);
-        else particleAlpha = ((float)particleAge + partialTicks)/(float)duration;
+    public void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+        if (mode == 2) particleAlpha = Math.max(1 - ((float)age + partialTicks)/(float)duration, 0.001f);
+        else particleAlpha = ((float)age + partialTicks)/(float)duration;
         particleRed = red;
         particleGreen = green;
         particleBlue = blue;
-        super.renderParticle(buffer, entityIn, partialTicks, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
     }
 
     public static final class OrbFactory extends ParticleFactory<OrbFactory, ParticleOrb> {
@@ -142,10 +143,5 @@ public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
                 return new ParticleOrb(args.world, args.x, args.y, args.z, (double) args.data[0], (double) args.data[1], (double) args.data[2], (double) args.data[3], (double) args.data[4], (double) args.data[5], (double) args.data[6], (int) args.data[7]);
             }
         }
-    }
-
-    @Override
-    public boolean shouldDisableDepth() {
-        return true;
     }
 }

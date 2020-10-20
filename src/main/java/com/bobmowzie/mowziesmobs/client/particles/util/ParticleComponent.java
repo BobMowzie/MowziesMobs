@@ -341,13 +341,13 @@ public abstract class ParticleComponent {
             float p = phase.evaluate(t);
             float r = radius.evaluate(t);
             Vec3d axis;
-            if (faceCamera) {
-                axis = Particle.cameraViewDir;
-            }
-            else {
+//            if (faceCamera) {
+//                axis = Particle.cameraViewDir;
+//            }
+//            else {
                 axis = new Vec3d(axisX.evaluate(t), axisY.evaluate(t), axisZ.evaluate(t));
                 axis = axis.normalize();
-            }
+//            }
 
             Matrix4d quat = new Matrix4d();
             quat.setIdentity();

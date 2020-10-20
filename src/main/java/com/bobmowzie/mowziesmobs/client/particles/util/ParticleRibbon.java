@@ -5,6 +5,7 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher;
 import com.bobmowzie.mowziesmobs.client.particles.util.RibbonComponent.PropertyOverLength;
 import com.bobmowzie.mowziesmobs.client.particles.util.RibbonComponent.PropertyOverLength.EnumRibbonProperty;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
@@ -29,8 +30,8 @@ public class ParticleRibbon extends MowzieParticleBase {
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
+    public void tick() {
+        super.tick();
         for (int i = positions.length - 1; i > 0; i--) {
             positions[i] = positions[i - 1];
             prevPositions[i] = prevPositions[i - 1];
@@ -40,7 +41,7 @@ public class ParticleRibbon extends MowzieParticleBase {
     }
 
     @Override
-    public void renderParticle(BufferBuilder buffer, Entity entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+    public void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         particleAlpha = prevAlpha + (alpha - prevAlpha) * partialTicks;
         if (particleAlpha < 0.01) particleAlpha = 0.01f;
         particleRed = prevRed + (red - prevRed) * partialTicks;
@@ -52,18 +53,18 @@ public class ParticleRibbon extends MowzieParticleBase {
             component.preRender(this, partialTicks);
         }
 
-        float f = (float)this.particleTextureIndexX / 16.0F;
-        float f1 = f + 0.0624375F;
-        float f2 = (float)this.particleTextureIndexY / 16.0F;
-        float f3 = f2 + 0.0624375F;
-
-        if (this.particleTexture != null)
-        {
-            f = this.particleTexture.getMinU();
-            f1 = this.particleTexture.getMaxU();
-            f2 = this.particleTexture.getMinV();
-            f3 = this.particleTexture.getMaxV();
-        }
+        float f = 0;//(float)this.particleTextureIndexX / 16.0F;
+        float f1 = 0;//f + 0.0624375F;
+        float f2 = 0;//(float)this.particleTextureIndexY / 16.0F;
+        float f3 = 0;//f2 + 0.0624375F;
+//
+//        if (this.particleTexture != null)
+//        {
+//            f = this.particleTexture.getMinU();
+//            f1 = this.particleTexture.getMaxU();
+//            f2 = this.particleTexture.getMinV();
+//            f3 = this.particleTexture.getMaxV();
+//        }
 
         int i = this.getBrightnessForRender(partialTicks);
         int j = i >> 16 & 65535;
@@ -141,7 +142,7 @@ public class ParticleRibbon extends MowzieParticleBase {
             if (index == 0) {
                 Vec3d moveDir = p2.subtract(p1).normalize();
                 if (faceCamera) {
-                    offsetDir = moveDir.crossProduct(cameraViewDir).normalize();
+//                    offsetDir = moveDir.crossProduct(cameraViewDir).normalize();
                 } else {
                     offsetDir = moveDir.crossProduct(new Vec3d(0, 1, 0)).normalize();
                 }
@@ -151,7 +152,7 @@ public class ParticleRibbon extends MowzieParticleBase {
             Vec3d[] avec3d2 = new Vec3d[] {offsetDir.scale(-1), offsetDir, null, null};
             Vec3d moveDir = p2.subtract(p1).normalize();
             if (faceCamera) {
-                offsetDir = moveDir.crossProduct(cameraViewDir).normalize();
+//                offsetDir = moveDir.crossProduct(cameraViewDir).normalize();
             }
             else {
                 offsetDir = moveDir.crossProduct(new Vec3d(0, 1, 0)).normalize();

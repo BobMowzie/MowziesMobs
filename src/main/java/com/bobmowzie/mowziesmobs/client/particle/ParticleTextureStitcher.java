@@ -70,7 +70,6 @@ public final class ParticleTextureStitcher<T> {
 
     /**
      * Any particle that uses stitched textures must implement this interface.
-     * {@link Particle#getFXLayer()} must return 1 in order for this to work.
      */
     public static interface IParticleSpriteReceiver {
         /**
@@ -79,7 +78,7 @@ public final class ParticleTextureStitcher<T> {
          * @param sprites
          */
         default void setStitchedSprites(TextureAtlasSprite[] sprites) {
-            ((Particle) this).setParticleTexture(sprites[0]);
+//            ((Particle) this).setParticleTexture(sprites[0]);
         }
     }
 
@@ -96,7 +95,7 @@ public final class ParticleTextureStitcher<T> {
                     ResourceLocation[] textures = stitcher.getTextures();
                     TextureAtlasSprite[] sprites = new TextureAtlasSprite[textures.length];
                     for (int i = 0; i < textures.length; i++) {
-                        sprites[i] = map.registerSprite(textures[i]);
+//                        sprites[i] = map.registerSprite(textures[i]);
                     }
                     stitcher.setSprites(sprites);
                 }
