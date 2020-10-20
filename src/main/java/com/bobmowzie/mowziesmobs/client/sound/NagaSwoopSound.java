@@ -18,20 +18,20 @@ public class NagaSwoopSound extends TickableSound {
         this.naga = naga;
         volume = 2F;
         pitch = 1.2f;
-        xPosF = (float) naga.posX;
-        yPosF = (float) naga.posY;
-        zPosF = (float) naga.posZ;
+        x = (float) naga.posX;
+        y = (float) naga.posY;
+        z = (float) naga.posZ;
         repeat = false;
     }
 
     @Override
-    public void update() {
+    public void tick() {
         if (naga != null) {
             active = true;
-            xPosF = (float) naga.posX;
-            yPosF = (float) naga.posY;
-            zPosF = (float) naga.posZ;
-            if (naga.isDead) {
+            x = (float) naga.posX;
+            y = (float) naga.posY;
+            z = (float) naga.posZ;
+            if (!naga.isAlive()) {
                 active = false;
                 donePlaying = true;
             }

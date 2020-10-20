@@ -9,18 +9,18 @@ public class SunstrikeSound extends TickableSound {
     private EntitySunstrike sunstrike;
 
     public SunstrikeSound(EntitySunstrike sunstrike) {
-        super(MMSounds.SUNSTRIKE, SoundCategory.NEUTRAL);
+        super(MMSounds.SUNSTRIKE.get(), SoundCategory.NEUTRAL);
         this.sunstrike = sunstrike;
         volume = 1.5F;
         pitch = 1.1F;
-        xPosF = (float) sunstrike.posX;
-        yPosF = (float) sunstrike.posY;
-        zPosF = (float) sunstrike.posZ;
+        x = (float) sunstrike.posX;
+        y = (float) sunstrike.posY;
+        z = (float) sunstrike.posZ;
     }
 
     @Override
-    public void update() {
-        if (sunstrike.isDead) {
+    public void tick() {
+        if (!sunstrike.isAlive()) {
             this.donePlaying = true;
         }
     }

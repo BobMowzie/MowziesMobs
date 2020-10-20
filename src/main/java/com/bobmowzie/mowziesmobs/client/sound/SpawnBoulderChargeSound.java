@@ -15,13 +15,13 @@ public class SpawnBoulderChargeSound extends TickableSound {
         this.player = player;
         volume = 1F;
         pitch = 0.95f;
-        xPosF = (float) player.posX;
-        yPosF = (float) player.posY;
-        zPosF = (float) player.posZ;
+        x = (float) player.posX;
+        y = (float) player.posY;
+        z = (float) player.posZ;
     }
 
     @Override
-    public void update() {
+    public void tick() {
         MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
         if (!property.geomancy.isSpawningBoulder()) {
             this.donePlaying = true;
