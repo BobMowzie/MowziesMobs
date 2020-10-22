@@ -45,10 +45,10 @@ public class MowzieBlockAccess implements IBlockReader {
         return null;
     }
 
-    /*@Override
-    public boolean isAirBlock(BlockPos pos) {
-        return false;
-    }
+//    @Override
+//    public boolean isAirBlock(BlockPos pos) {
+//        return false;
+//    }
 
     public void setBiome(Biome biome) {
         this.biome = biome;
@@ -58,7 +58,7 @@ public class MowzieBlockAccess implements IBlockReader {
         return biome;
     }
 
-    @Override
+    /*@Override
     public int getStrongPower(BlockPos pos, Direction direction) {
         return 0;
     }
