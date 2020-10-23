@@ -4,7 +4,7 @@ import com.ilexiconn.llibrary.LLibrary;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 
@@ -103,12 +103,12 @@ public class EntityDataCapabilityImplementation implements IEntityDataCapability
     }
 
     @Override
-    public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
+    public boolean hasCapability(Capability<?> capability, Direction facing) {
         return LLibrary.ENTITY_DATA_CAPABILITY == capability;
     }
 
     @Override
-    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+    public <T> T getCapability(Capability<T> capability, Direction facing) {
         if (capability == LLibrary.ENTITY_DATA_CAPABILITY) {
             return LLibrary.ENTITY_DATA_CAPABILITY.cast(this);
         }

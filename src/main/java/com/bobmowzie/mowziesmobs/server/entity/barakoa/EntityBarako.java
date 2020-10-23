@@ -91,7 +91,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     // TODO: Enum!
     public int whichDialogue = 0;
     public int barakoaSpawnCount = 0;
-    // TODO: use EnumFacing!
+    // TODO: use Direction!
     private int direction = 0;
     private boolean blocksByFeet = true;
     private int timeUntilSunstrike = 0;

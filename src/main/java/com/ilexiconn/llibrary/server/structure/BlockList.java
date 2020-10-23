@@ -1,6 +1,6 @@
 package com.ilexiconn.llibrary.server.structure;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -11,20 +11,20 @@ import java.util.Random;
  */
 public class BlockList {
     private final float[] probabilities;
-    private final IBlockState[] states;
+    private final BlockState[] states;
 
-    public BlockList(IBlockState blockState) {
-        this(new IBlockState[]{blockState}, new float[]{1f});
+    public BlockList(BlockState blockState) {
+        this(new BlockState[]{blockState}, new float[]{1f});
     }
 
-    public BlockList(IBlockState[] blockStates, float[] probabilities) {
+    public BlockList(BlockState[] blockStates, float[] probabilities) {
         this.states = blockStates;
         this.probabilities = probabilities;
     }
 
-    public IBlockState getRandom(Random rand) {
+    public BlockState getRandom(Random rand) {
         float chosen = rand.nextFloat();
-        IBlockState result = null;
+        BlockState result = null;
         int index = 0;
         while (chosen >= 0f) {
             if (index >= this.states.length) {
@@ -38,12 +38,12 @@ public class BlockList {
     }
 
     public BlockList copy() {
-        IBlockState[] newStates = Arrays.copyOf(this.states, this.states.length);
+        BlockState[] newStates = Arrays.copyOf(this.states, this.states.length);
         float[] newProbabilities = Arrays.copyOf(this.probabilities, this.probabilities.length);
         return new BlockList(newStates, newProbabilities);
     }
 
-    public IBlockState[] getStates() {
+    public BlockState[] getStates() {
         return this.states;
     }
 

@@ -1,7 +1,7 @@
 package com.ilexiconn.llibrary.client.model.qubble.vanilla;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.INBTSerializable;
 
 /**
@@ -9,8 +9,8 @@ import net.minecraftforge.common.util.INBTSerializable;
  * @since 1.7.5
  */
 public class QubbleVanillaFace implements INBTSerializable<NBTTagCompound> {
-    private EnumFacing facing;
-    private EnumFacing cullface;
+    private Direction facing;
+    private Direction cullface;
     private String texture;
     private float minU;
     private float minV;
@@ -18,14 +18,14 @@ public class QubbleVanillaFace implements INBTSerializable<NBTTagCompound> {
     private float maxV;
     private boolean enabled = true;
 
-    private QubbleVanillaFace(EnumFacing facing) {
+    private QubbleVanillaFace(Direction facing) {
         this.facing = facing;
     }
 
     private QubbleVanillaFace() {
     }
 
-    public static QubbleVanillaFace create(EnumFacing facing, String texture, float minU, float minV, float maxU, float maxV) {
+    public static QubbleVanillaFace create(Direction facing, String texture, float minU, float minV, float maxU, float maxV) {
         QubbleVanillaFace face = new QubbleVanillaFace(facing);
         face.setTexture(texture);
         face.setUV(minU, minV, maxU, maxV);
@@ -42,7 +42,7 @@ public class QubbleVanillaFace implements INBTSerializable<NBTTagCompound> {
         this.texture = texture;
     }
 
-    public void setCullface(EnumFacing cullface) {
+    public void setCullface(Direction cullface) {
         this.cullface = cullface;
     }
 
@@ -73,7 +73,7 @@ public class QubbleVanillaFace implements INBTSerializable<NBTTagCompound> {
         this.enabled = enabled;
     }
 
-    public EnumFacing getFacing() {
+    public Direction getFacing() {
         return this.facing;
     }
 
@@ -97,7 +97,7 @@ public class QubbleVanillaFace implements INBTSerializable<NBTTagCompound> {
         return this.maxV;
     }
 
-    public EnumFacing getCullface() {
+    public Direction getCullface() {
         return this.cullface;
     }
 
@@ -125,9 +125,9 @@ public class QubbleVanillaFace implements INBTSerializable<NBTTagCompound> {
 
     @Override
     public void deserializeNBT(NBTTagCompound compound) {
-        this.facing = EnumFacing.values()[compound.getByte("facing")];
+        this.facing = Direction.values()[compound.getByte("facing")];
         if (compound.hasKey("cullface")) {
-            this.setCullface(EnumFacing.values()[compound.getByte("cullface")]);
+            this.setCullface(Direction.values()[compound.getByte("cullface")]);
         }
         if (compound.hasKey("texture")) {
             this.setTexture(compound.getString("texture"));

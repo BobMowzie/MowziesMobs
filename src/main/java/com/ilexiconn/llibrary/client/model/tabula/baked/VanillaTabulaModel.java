@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
@@ -218,7 +218,7 @@ public class VanillaTabulaModel implements IModel {
         normal.cross(v21, v01);
         normal.normalize();
         UnpackedBakedQuad.Builder quadBuilder = new UnpackedBakedQuad.Builder(format);
-        EnumFacing quadFacing = EnumFacing.getFacingFromVector(normal.x, normal.y, normal.z);
+        Direction quadFacing = Direction.getFacingFromVector(normal.x, normal.y, normal.z);
         quadBuilder.setQuadOrientation(quadFacing);
         quadBuilder.setTexture(sprite);
         quadBuilder.setQuadTint(layer);

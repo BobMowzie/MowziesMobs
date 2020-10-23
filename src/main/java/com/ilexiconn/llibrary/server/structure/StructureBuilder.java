@@ -3,17 +3,10 @@ package com.ilexiconn.llibrary.server.structure;
 import com.ilexiconn.llibrary.server.structure.rule.FixedRule;
 import com.ilexiconn.llibrary.server.structure.rule.RepeatRule;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockLog;
-import net.minecraft.block.BlockLog.EnumAxis;
-import net.minecraft.block.BlockSlab;
-import net.minecraft.block.BlockStairs;
-import net.minecraft.block.BlockStairs.EnumHalf;
-import net.minecraft.block.BlockVine;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.block.BlockState;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
@@ -36,8 +29,8 @@ public class StructureBuilder extends StructureGenerator {
     private final List<RepeatRule> repeats = new ArrayList<>();
     private final List<ComponentInfo> components = new ArrayList<>();
     private ComponentInfo currentLayer;
-    private EnumFacing front = EnumFacing.EAST;
-    private EnumFacing top = EnumFacing.UP;
+    private Direction front = Direction.EAST;
+    private Direction top = Direction.UP;
 
     @Override
     public void generate(World world, BlockPos pos, Random random) {
@@ -64,11 +57,11 @@ public class StructureBuilder extends StructureGenerator {
                 }
             }
         }
-        pooledPos.release();
+        pooledPos.close();
     }
 
     @Override
-    public StructureBuilder rotate(EnumFacing front, EnumFacing top) {
+    public StructureBuilder rotate(Direction front, Direction top) {
         if (front == top || front.getOpposite() == top) {
             throw new IllegalArgumentException("Invalid rotation: " + front + " & " + top);
         }
@@ -84,63 +77,18 @@ public class StructureBuilder extends StructureGenerator {
             newComp.front = transform(oldComp.front, frontVec, topVec, perpVec);
             newComp.top = transform(oldComp.top, frontVec, topVec, perpVec);
             HashMap<BlockPos, BlockList> blocks = newComp.blocks;
-            boolean inverted = top == EnumFacing.DOWN;
+            boolean inverted = top == Direction.DOWN;
             for (BlockPos coords : oldComp.blocks.keySet()) {
                 BlockPos newCoords = transform(coords, frontVec, topVec, perpVec);
                 BlockList newList = oldComp.blocks.get(coords).copy();
-                IBlockState[] states = newList.getStates();
+                BlockState[] states = newList.getStates();
                 for (int i = 0; i < states.length; i++) {
-                    IBlockState state = states[i];
-                    if (state.getBlock() instanceof BlockStairs) {
-                        EnumFacing facing = transform(state.getValue(BlockStairs.FACING), frontVec, topVec, perpVec);
-                        EnumFacing perp = transform(EnumFacing.UP, frontVec, topVec, perpVec);
-                        if (facing.getAxis() == Axis.Y) {
-                            if (state.getValue(BlockStairs.HALF) == EnumHalf.BOTTOM) {
-                                perp = perp.getOpposite();
-                                if (facing == EnumFacing.UP) {
-                                    state = state.cycleProperty(BlockStairs.HALF);
-                                }
-                            } else if (facing == EnumFacing.DOWN) {
-                                state = state.cycleProperty(BlockStairs.HALF);
-                            }
-                            state = state.withProperty(BlockStairs.FACING, perp);
-                        } else {
-                            state = state.withProperty(BlockStairs.FACING, facing);
-                        }
-                        if (inverted) {
-                            state = state.cycleProperty(BlockStairs.HALF);
-                        }
-                    } else if (state.getBlock() instanceof BlockSlab) {
-                        if (inverted) {
-                            state = state.cycleProperty(BlockSlab.HALF);
-                        }
-                    } else if (state.getBlock() instanceof BlockVine) {
-                        EnumFacing facing = transform(state.getValue(BlockVine.NORTH) ? EnumFacing.NORTH : state.getValue(BlockVine.EAST) ? EnumFacing.EAST : state.getValue(BlockVine.SOUTH) ? EnumFacing.SOUTH : EnumFacing.WEST, frontVec, topVec, perpVec);
-                        if (inverted) {
-                            facing = facing.getOpposite();
-                        }
-                        state = state.withProperty(BlockVine.NORTH, facing == EnumFacing.NORTH);
-                        state = state.withProperty(BlockVine.EAST, facing == EnumFacing.EAST);
-                        state = state.withProperty(BlockVine.SOUTH, facing == EnumFacing.SOUTH);
-                        state = state.withProperty(BlockVine.WEST, facing == EnumFacing.WEST);
-                    } else if (state.getBlock() instanceof BlockLog) {
-                        EnumAxis axis = state.getValue(BlockLog.LOG_AXIS);
-                        EnumFacing facing = axis == EnumAxis.X ? EnumFacing.EAST : axis == EnumAxis.Y ? EnumFacing.UP : EnumFacing.SOUTH;
-                        EnumFacing transformed = transform(facing, frontVec, topVec, perpVec);
-                        state = state.withProperty(BlockLog.LOG_AXIS, EnumAxis.fromFacingAxis(transformed.getAxis()));
-                    } else {
-                        for (IProperty prop : state.getPropertyKeys()) {
-                            if (prop instanceof PropertyDirection) {
-                                PropertyDirection propDir = (PropertyDirection) prop;
-                                EnumFacing facing = state.getValue(propDir);
-                                EnumFacing newFacing = transform(facing, frontVec, topVec, perpVec);
-                                if (propDir.getAllowedValues().contains(newFacing)) {
-                                    state = state.withProperty(propDir, newFacing);
-                                }
-                            }
-                        }
-                    }
-                    states[i] = state;
+                    BlockState state = states[i];
+                    Rotation rot = Rotation.NONE;
+                    if (front.rotateYCCW() == Direction.NORTH) rot = Rotation.CLOCKWISE_90;
+                    else if (front.getOpposite() == Direction.NORTH) rot = Rotation.CLOCKWISE_180;
+                    else if (front.rotateY() == Direction.NORTH) rot = Rotation.COUNTERCLOCKWISE_90;
+                    states[i] = state.rotate(rot);
                 }
                 blocks.put(newCoords, newList);
             }
@@ -157,19 +105,19 @@ public class StructureBuilder extends StructureGenerator {
         );
     }
 
-    private static EnumFacing transform(EnumFacing facing, Vec3i vec3i, Vec3i vec3i1, Vec3i vec3i2) {
+    private static Direction transform(Direction facing, Vec3i vec3i, Vec3i vec3i1, Vec3i vec3i2) {
         BlockPos vec = transform(facing.getDirectionVec(), vec3i, vec3i1, vec3i2);
-        return EnumFacing.getFacingFromVector(vec.getX(), vec.getY(), vec.getZ());
+        return Direction.getFacingFromVector(vec.getX(), vec.getY(), vec.getZ());
     }
 
     @Override
-    public StructureBuilder rotateTowards(EnumFacing facing) {
-        if (facing.getAxis() == Axis.Y) {
+    public StructureBuilder rotateTowards(Direction facing) {
+        if (facing.getAxis() == Direction.Axis.Y) {
             throw new IllegalArgumentException("Must be horizontal facing: " + facing);
         }
         int idx = facing.getHorizontalIndex() - (this.front.getAxis() == Axis.Y ? this.top.getHorizontalIndex() : this.front.getHorizontalIndex()) - 1;
-        idx = (idx % EnumFacing.HORIZONTALS.length + EnumFacing.HORIZONTALS.length) % EnumFacing.HORIZONTALS.length;
-        return this.rotate(EnumFacing.HORIZONTALS[idx], EnumFacing.UP);
+        idx = (idx % 4 + 4) % 4;
+        return this.rotate(Direction.byHorizontalIndex(idx), Direction.UP);
     }
 
     public StructureBuilder startComponent() {
@@ -182,7 +130,7 @@ public class StructureBuilder extends StructureGenerator {
         return this;
     }
 
-    public StructureBuilder setOrientation(EnumFacing front, EnumFacing top) {
+    public StructureBuilder setOrientation(Direction front, Direction top) {
         this.currentLayer.front = front;
         this.currentLayer.top = top;
         return this;
@@ -213,7 +161,7 @@ public class StructureBuilder extends StructureGenerator {
         return this.setBlock(x, y, z, block.getDefaultState());
     }
 
-    public StructureBuilder setBlock(int x, int y, int z, IBlockState block) {
+    public StructureBuilder setBlock(int x, int y, int z, BlockState block) {
         return this.setBlock(x, y, z, new BlockList(block));
     }
 
@@ -222,7 +170,7 @@ public class StructureBuilder extends StructureGenerator {
         return this;
     }
 
-    public StructureBuilder cube(int startX, int startY, int startZ, int width, int height, int depth, IBlockState block) {
+    public StructureBuilder cube(int startX, int startY, int startZ, int width, int height, int depth, BlockState block) {
         return this.cube(startX, startY, startZ, width, height, depth, new BlockList(block));
     }
 
@@ -244,7 +192,7 @@ public class StructureBuilder extends StructureGenerator {
         return this;
     }
 
-    public StructureBuilder fillCube(int startX, int startY, int startZ, int width, int height, int depth, IBlockState block) {
+    public StructureBuilder fillCube(int startX, int startY, int startZ, int width, int height, int depth, BlockState block) {
         return this.fillCube(startX, startY, startZ, width, height, depth, new BlockList(block));
     }
 
@@ -285,7 +233,7 @@ public class StructureBuilder extends StructureGenerator {
         return this.wireCube(startX, startY, startZ, width, height, depth, block.getDefaultState());
     }
 
-    public StructureBuilder wireCube(int startX, int startY, int startZ, int width, int height, int depth, IBlockState state) {
+    public StructureBuilder wireCube(int startX, int startY, int startZ, int width, int height, int depth, BlockState state) {
         return this.wireCube(startX, startY, startZ, width, height, depth, new BlockList(state));
     }
 

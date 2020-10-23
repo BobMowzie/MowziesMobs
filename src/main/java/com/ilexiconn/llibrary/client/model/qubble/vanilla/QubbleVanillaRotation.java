@@ -1,8 +1,8 @@
 package com.ilexiconn.llibrary.client.model.qubble.vanilla;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -11,7 +11,7 @@ import net.minecraftforge.common.util.INBTSerializable;
  * @since 1.7.5
  */
 public class QubbleVanillaRotation implements INBTSerializable<NBTTagCompound> {
-    private EnumFacing.Axis axis;
+    private Direction.Axis axis;
     private float originX = 8.0F;
     private float originY = 8.0F;
     private float originZ = 8.0F;
@@ -20,7 +20,7 @@ public class QubbleVanillaRotation implements INBTSerializable<NBTTagCompound> {
     private QubbleVanillaRotation() {
     }
 
-    public static QubbleVanillaRotation create(EnumFacing.Axis axis, float originX, float originY, float originZ, float angle) {
+    public static QubbleVanillaRotation create(Direction.Axis axis, float originX, float originY, float originZ, float angle) {
         QubbleVanillaRotation rotation = new QubbleVanillaRotation();
         rotation.setAxis(axis);
         rotation.setOrigin(originX, originY, originZ);
@@ -47,12 +47,12 @@ public class QubbleVanillaRotation implements INBTSerializable<NBTTagCompound> {
 
     @Override
     public void deserializeNBT(NBTTagCompound compound) {
-        this.setAxis(EnumFacing.Axis.values()[compound.getByte("axis")]);
+        this.setAxis(Direction.Axis.values()[compound.getByte("axis")]);
         this.setOrigin(compound.getFloat("originX"), compound.getFloat("originY"), compound.getFloat("originZ"));
         this.setAngle(compound.getFloat("angle"));
     }
 
-    public void setAxis(EnumFacing.Axis axis) {
+    public void setAxis(Direction.Axis axis) {
         this.axis = axis;
     }
 

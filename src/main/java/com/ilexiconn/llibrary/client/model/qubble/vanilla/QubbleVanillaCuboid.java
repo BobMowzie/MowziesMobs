@@ -2,7 +2,7 @@ package com.ilexiconn.llibrary.client.model.qubble.vanilla;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.INBTSerializable;
 
@@ -19,13 +19,13 @@ public class QubbleVanillaCuboid implements INBTSerializable<NBTTagCompound> {
     private float toY;
     private float toZ;
     private QubbleVanillaRotation rotation;
-    private QubbleVanillaFace[] faces = new QubbleVanillaFace[EnumFacing.values().length];
+    private QubbleVanillaFace[] faces = new QubbleVanillaFace[Direction.values().length];
     private boolean shade = true;
 
     private QubbleVanillaCuboid(String name, String texture) {
         this.name = name;
         for (int i = 0; i < this.faces.length; i++) {
-            this.faces[i] = QubbleVanillaFace.create(EnumFacing.values()[i], texture, 0.0F, 0.0F, 1.0F, 1.0F);
+            this.faces[i] = QubbleVanillaFace.create(Direction.values()[i], texture, 0.0F, 0.0F, 1.0F, 1.0F);
         }
     }
 
@@ -138,7 +138,7 @@ public class QubbleVanillaCuboid implements INBTSerializable<NBTTagCompound> {
         return this.rotation;
     }
 
-    public QubbleVanillaFace getFace(EnumFacing facing) {
+    public QubbleVanillaFace getFace(Direction facing) {
         return this.faces[facing.ordinal()];
     }
 
