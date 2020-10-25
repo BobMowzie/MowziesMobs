@@ -56,8 +56,6 @@ public class LLibrary {
     public static ServerProxy PROXY;
     @Mod.Instance("com/ilexiconn/llibrary")
     public static LLibrary INSTANCE;
-    @CapabilityInject(IEntityDataCapability.class)
-    public static Capability<IEntityDataCapability> ENTITY_DATA_CAPABILITY;
     public static LLibraryConfig CONFIG = new LLibraryConfig();
     @NetworkWrapper({ AnimationMessage.class, PropertiesMessage.class, SnackbarMessage.class, BlockEntityMessage.class, SurvivalTabMessage.class })
     public static SimpleNetworkWrapper NETWORK_WRAPPER;

@@ -5,9 +5,11 @@ import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleRing;
+import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
+import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability.IFrozenCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
-import com.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import net.minecraft.entity.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
@@ -22,6 +24,10 @@ import java.util.List;
  * Created by Josh on 9/2/2018.
  */
 public class EntityIceBall extends EntityMagicEffect implements IProjectile {
+    public EntityIceBall(World world) {
+        super(EntityHandler.ICE_BALL, world);
+    }
+
     public EntityIceBall(EntityType<? extends EntityIceBall> type, World worldIn) {
         super(type, worldIn);
     }
@@ -48,12 +54,12 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
         if (!entitiesHit.isEmpty()) {
             for (LivingEntity entity : entitiesHit) {
                 if (entity == caster) continue;
-                List<String> freezeImmune = Arrays.asList(ConfigHandler.GENERAL.freeze_blacklist);
+                List<String> freezeImmune = Arrays.asList(ConfigHandler.getFreezeBlacklist());
                 ResourceLocation mobName = EntityType.getKey(entity.getType());
                 if (freezeImmune.contains(mobName.toString())) continue;
                 if (entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(this, caster), 3f * ConfigHandler.MOBS.FROSTMAW.combatData.attackMultiplier)) {
-                    MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
-                    if (property != null) property.addFreezeProgress(entity, 1);
+                    IFrozenCapability capability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+                    capability.addFreezeProgress(entity, 1);
                 }
             }
         }

@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.message.mouse;
 
-import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import io.netty.buffer.ByteBuf;
 import com.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import com.ilexiconn.llibrary.server.network.AbstractMessage;

@@ -1,8 +1,6 @@
 package com.ilexiconn.llibrary.server;
 
 import com.ilexiconn.llibrary.LLibrary;
-import com.ilexiconn.llibrary.server.capability.EntityDataCapabilityImplementation;
-import com.ilexiconn.llibrary.server.capability.EntityDataCapabilityStorage;
 import com.ilexiconn.llibrary.server.capability.IEntityDataCapability;
 import com.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import com.ilexiconn.llibrary.server.network.AbstractMessage;

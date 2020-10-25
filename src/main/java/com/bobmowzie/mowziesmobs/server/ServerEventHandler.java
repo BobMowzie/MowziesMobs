@@ -1,16 +1,16 @@
 package com.bobmowzie.mowziesmobs.server;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
-import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
-import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
+import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
+import com.bobmowzie.mowziesmobs.server.capability.LastDamageCapability;
+import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
-import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemEarthTalisman;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemNagaFangDagger;
@@ -21,9 +21,7 @@ import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseUp;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseDown;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseUp;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
-import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
-import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
-import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
+import com.bobmowzie.mowziesmobs.server.power.Power;
 import com.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -32,7 +30,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.monster.SkeletonEntity;
@@ -45,13 +42,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
@@ -63,7 +57,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import java.util.ArrayList;
@@ -113,67 +106,14 @@ public final class ServerEventHandler {
     public void onLivingTick(LivingEvent.LivingUpdateEvent event) {
         if (event.getEntity() instanceof LivingEntity) {
             LivingEntity entity = (LivingEntity) event.getEntity();
-            MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
-
-            if (property != null) {
-                // Freeze logic
-                if (property.freezeProgress >= 1) {
-                    entity.addPotionEffect(new EffectInstance(PotionHandler.FROZEN, 50, 0, false, false));
-                    property.freezeProgress = 1f;
-                } else if (property.freezeProgress > 0) {
-                    entity.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 9, MathHelper.floor(property.freezeProgress * 5 + 1), false, false));
-                }
-
-                if (entity.isPotionActive(PotionHandler.FROZEN) && !property.prevFrozen) {
-                    property.onFreeze(entity);
-                }
-
-                if (!entity.world.isRemote) {
-                    Item headItemStack = entity.getItemStackFromSlot(EquipmentSlotType.HEAD).getItem();
-                    if (headItemStack instanceof ItemBarakoaMask) {
-                        ItemBarakoaMask mask = (ItemBarakoaMask) headItemStack;
-                        entity.addPotionEffect(new EffectInstance(mask.getPotion(), 45, 0, true, false));
-                    }
-                }
-            }
 
             if (entity.getActivePotionEffect(PotionHandler.POISON_RESIST) != null && entity.getActivePotionEffect(Effects.POISON) != null) {
                 entity.removeActivePotionEffect(Effects.POISON);
             }
 
-            if (entity.isPotionActive(PotionHandler.FROZEN)) {
-                if (entity.getActivePotionEffect(PotionHandler.FROZEN).getDuration() <= 0) entity.removeActivePotionEffect(PotionHandler.FROZEN);
-                entity.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 2, 50, false, false));
-                entity.setSneaking(false);
-
-                if (entity.world.isRemote && entity.ticksExisted % 2 == 0) {
-                    double cloudX = entity.posX + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                    double cloudZ = entity.posZ + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                    double cloudY = entity.posY + entity.getHeight() * entity.getRNG().nextFloat();
-                    MMParticle.CLOUD.spawn(entity.world, cloudX, cloudY, cloudZ, ParticleFactory.ParticleArgs.get().withData(0d, -0.01d, 0d, 0.75d, 0.75d, 1d, 1, 15d, 25, ParticleCloud.EnumCloudBehavior.CONSTANT));
-
-                    double snowX = entity.posX + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                    double snowZ = entity.posZ + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                    double snowY = entity.posY + entity.getHeight() * entity.getRNG().nextFloat();
-                    MMParticle.SNOWFLAKE.spawn(entity.world, snowX, snowY, snowZ, ParticleFactory.ParticleArgs.get().withData(0d, -0.01d, 0d));
-                }
-            }
-            else {
-                if (property != null && property.frozenController != null && property.frozenController.isAlive()) {
-                    property.onUnfreeze(entity);
-                }
-            }
-
-            if (property != null) {
-                if (property.freezeDecayDelay <= 0) {
-                    property.freezeProgress -= 0.1;
-                    if (property.freezeProgress < 0) property.freezeProgress = 0;
-                }
-                else {
-                    property.freezeDecayDelay--;
-                }
-                property.prevFrozen = entity.isPotionActive(PotionHandler.FROZEN);
-            }
+//            MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
+            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+            frozenCapability.tick(entity);
         }
     }
 
@@ -183,117 +123,11 @@ public final class ServerEventHandler {
             return;
         }
         PlayerEntity player = event.player;
-        MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
-        if (property != null) {
-            property.update();
-
-            if (property.untilSunstrike > 0) {
-                property.untilSunstrike--;
-            }
-            if (property.untilAxeSwing > 0) {
-                property.untilAxeSwing--;
-            }
-
-            if (event.side == LogicalSide.SERVER) {
-                for (ItemStack itemStack : event.player.inventory.mainInventory) {
-                    if (itemStack.getItem() instanceof ItemEarthTalisman)
-                        player.addPotionEffect(new EffectInstance(PotionHandler.GEOMANCY, 0, 0, false, false));
-                }
-                if (player.getHeldItemOffhand().getItem() instanceof ItemEarthTalisman)
-                    player.addPotionEffect(new EffectInstance(PotionHandler.GEOMANCY, 0, 0, false, false));
-
-                List<EntityBarakoanToPlayer> pack = property.tribePack;
-                float theta = (2 * (float) Math.PI / pack.size());
-                for (int i = 0; i < pack.size(); i++) {
-                    EntityBarakoanToPlayer barakoan = pack.get(i);
-                    barakoan.index = i;
-                    if (barakoan.getAttackTarget() == null && barakoan.getAnimation() != barakoan.DEACTIVATE_ANIMATION) {
-                        barakoan.getNavigator().tryMoveToXYZ(player.posX + property.tribePackRadius * MathHelper.cos(theta * i), player.posY, player.posZ + property.tribePackRadius * MathHelper.sin(theta * i), 0.45);
-                        if (player.getDistance(barakoan) > 20 && player.onGround) {
-                            tryTeleportBarakoan(player, barakoan);
-                        }
-                    }
-                }
-            }
-
-            if (!(player.getHeldItemMainhand().getItem() == ItemHandler.ICE_CRYSTAL || player.getHeldItemOffhand().getItem() == ItemHandler.ICE_CRYSTAL) && property.usingIceBreath && property.icebreath != null) {
-                property.usingIceBreath = false;
-                property.icebreath.remove();
-            }
-
-            if (!ConfigHandler.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable) {
-                for (ItemStack stack : player.inventory.mainInventory) {
-                    if (!property.usingIceBreath && stack.getItem() == ItemHandler.ICE_CRYSTAL)
-                        stack.setDamage(Math.max(stack.getDamage() - 1, 0));
-                }
-                for (ItemStack stack : player.inventory.offHandInventory) {
-                    if (!property.usingIceBreath && stack.getItem() == ItemHandler.ICE_CRYSTAL)
-                        stack.setDamage(Math.max(stack.getDamage() - 1, 0));
-                }
-            }
-
-            if (event.side == LogicalSide.CLIENT) {
-                if (Minecraft.getInstance().gameSettings.keyBindAttack.isKeyDown() && !property.mouseLeftDown) {
-                    property.mouseLeftDown = true;
-                    MowziesMobs.NETWORK.sendToServer(new MessageLeftMouseDown());
-                    for (int i = 0; i < property.powers.length; i++) {
-                        property.powers[i].onLeftMouseDown(player);
-                    }
-                }
-                if (Minecraft.getInstance().gameSettings.keyBindUseItem.isKeyDown() && !property.mouseRightDown) {
-                    property.mouseRightDown = true;
-                    MowziesMobs.NETWORK.sendToServer(new MessageRightMouseDown());
-                    for (int i = 0; i < property.powers.length; i++) {
-                        property.powers[i].onRightMouseDown(player);
-                    }
-                }
-                if (!Minecraft.getInstance().gameSettings.keyBindAttack.isKeyDown() && property.mouseLeftDown) {
-                    property.mouseLeftDown = false;
-                    MowziesMobs.NETWORK.sendToServer(new MessageLeftMouseUp());
-                    for (int i = 0; i < property.powers.length; i++) {
-                        property.powers[i].onLeftMouseUp(player);
-                    }
-                }
-                if (!Minecraft.getInstance().gameSettings.keyBindUseItem.isKeyDown() && property.mouseRightDown) {
-                    property.mouseRightDown = false;
-                    MowziesMobs.NETWORK.sendToServer(new MessageRightMouseUp());
-                    for (int i = 0; i < property.powers.length; i++) {
-                        property.powers[i].onRightMouseUp(player);
-                    }
-                }
-            }
-
-            if (player.isSneaking() && !property.prevSneaking) {
-                for (int i = 0; i < property.powers.length; i++) {
-                    property.powers[i].onSneakDown(player);
-                }
-            }
-            else if (!player.isSneaking() && property.prevSneaking) {
-                for (int i = 0; i < property.powers.length; i++) {
-                    property.powers[i].onSneakUp(player);
-                }
-            }
-            property.prevSneaking = player.isSneaking();
-
-            for (int i = 0; i < property.powers.length; i++) {
-                property.powers[i].onUpdate(event);
-            }
-        }
-    }
-
-    private void tryTeleportBarakoan(PlayerEntity player, EntityBarakoanToPlayer barakoan) {
-        int x = MathHelper.floor(player.posX) - 2;
-        int z = MathHelper.floor(player.posZ) - 2;
-        int y = MathHelper.floor(player.getBoundingBox().minY);
-
-        for (int l = 0; l <= 4; ++l) {
-            for (int i1 = 0; i1 <= 4; ++i1) {
-                if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && barakoan.isTeleportFriendlyBlock(x, z, y, l, i1)) {
-                    barakoan.setLocationAndAngles((double) ((float) (x + l) + 0.5F), (double) y, (double) ((float) (z + i1) + 0.5F), barakoan.rotationYaw, barakoan.rotationPitch);
-                    barakoan.getNavigator().clearPath();
-                    return;
-                }
-            }
+        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        playerCapability.tick(event);
+        Power[] powers = playerCapability.getPowers();
+        for (int i = 0; i < powers.length; i++) {
+            powers[i].tick(event);
         }
     }
 
@@ -377,22 +211,21 @@ public final class ServerEventHandler {
         if (event.isCancelable() && event.getEntityLiving().isPotionActive(PotionHandler.FROZEN)) {
             event.setCanceled(true);
         }
-        PlayerEntity player = event.getEntityPlayer();
-        MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
-        if (property != null) {
-            if (event.getWorld().isRemote && player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(PotionHandler.SUNS_BLESSING) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
-                if (player.isSneaking()) {
-                    MowziesMobs.NETWORK.sendToServer(new MessagePlayerSolarBeam());
-                    property.untilSunstrike = SOLARBEAM_COOLDOWN;
-                } else {
-                    MowziesMobs.NETWORK.sendToServer(new MessagePlayerSummonSunstrike());
-                    property.untilSunstrike = SUNSTRIKE_COOLDOWN;
-                }
+        PlayerEntity player = event.getPlayer();
+        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        if (event.getWorld().isRemote && player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(PotionHandler.SUNS_BLESSING) && playerCapability.getUntilSunstrike() <= 0) {
+            if (player.isSneaking()) {
+                MowziesMobs.NETWORK.sendToServer(new MessagePlayerSolarBeam());
+                playerCapability.setUntilSunstrike(SOLARBEAM_COOLDOWN);
+            } else {
+                MowziesMobs.NETWORK.sendToServer(new MessagePlayerSummonSunstrike());
+                playerCapability.setUntilSunstrike(SUNSTRIKE_COOLDOWN);
             }
+        }
 
-            for (int i = 0; i < property.powers.length; i++) {
-                property.powers[i].onRightClickEmpty(event);
-            }
+        Power[] powers = playerCapability.getPowers();
+        for (int i = 0; i < powers.length; i++) {
+            powers[i].onRightClickEmpty(event);
         }
     }
 
@@ -401,51 +234,46 @@ public final class ServerEventHandler {
         if (event.isCancelable() && event.getEntityLiving().isPotionActive(PotionHandler.FROZEN)) {
             event.setCanceled(true);
         }
-        MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
-        if (property != null) {
-            for (int i = 0; i < property.powers.length; i++) {
-                property.powers[i].onRightClickEntity(event);
-            }
+        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getPlayer(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        Power[] powers = playerCapability.getPowers();
+        for (int i = 0; i < powers.length; i++) {
+            powers[i].onRightClickEntity(event);
         }
     }
 
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event) {
-        PlayerEntity player = event.getEntityPlayer();
-        MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
-        if (property != null) {
-            if (event.getWorld().isRemote && player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(PotionHandler.SUNS_BLESSING) && EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class).untilSunstrike <= 0) {
-                if (player.isSneaking()) {
-                    MowziesMobs.NETWORK.sendToServer(new MessagePlayerSolarBeam());
-                    property.untilSunstrike = SOLARBEAM_COOLDOWN;
-                } else {
-                    MowziesMobs.NETWORK.sendToServer(new MessagePlayerSummonSunstrike());
-                    property.untilSunstrike = SUNSTRIKE_COOLDOWN;
-                }
+        PlayerEntity player = event.getPlayer();
+        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        if (event.getSide() == LogicalSide.CLIENT && player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(PotionHandler.SUNS_BLESSING) && playerCapability.getUntilSunstrike() <= 0) {
+            if (player.isSneaking()) {
+                MowziesMobs.NETWORK.sendToServer(new MessagePlayerSolarBeam());
+                playerCapability.setUntilSunstrike(SOLARBEAM_COOLDOWN);
+            } else {
+                MowziesMobs.NETWORK.sendToServer(new MessagePlayerSummonSunstrike());
+                playerCapability.setUntilSunstrike(SUNSTRIKE_COOLDOWN);
             }
-
-            for (int i = 0; i < property.powers.length; i++) {
-                property.powers[i].onRightClickBlock(event);
-            }
+        }
+        Power[] powers = playerCapability.getPowers();
+        for (int i = 0; i < powers.length; i++) {
+            powers[i].onRightClickBlock(event);
         }
     }
 
     @SubscribeEvent
     public void onPlayerLeftClick(PlayerInteractEvent.LeftClickEmpty event) {
         double range = 6.5;
-        PlayerEntity player = event.getEntityPlayer();
-        MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
-        if (property != null) {
-            if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == ItemHandler.SPEAR) {
-                LivingEntity entityHit = ItemSpear.raytraceEntities(player.getEntityWorld(), player, range);
-                if (entityHit != null) {
-                    MowziesMobs.NETWORK.sendToServer(new MessagePlayerAttackMob(entityHit));
-                }
+        PlayerEntity player = event.getPlayer();
+        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == ItemHandler.SPEAR) {
+            LivingEntity entityHit = ItemSpear.raytraceEntities(player.getEntityWorld(), player, range);
+            if (entityHit != null) {
+                MowziesMobs.NETWORK.sendToServer(new MessagePlayerAttackMob(entityHit));
             }
-
-            for (int i = 0; i < property.powers.length; i++) {
-                property.powers[i].onLeftClickEmpty(event);
-            }
+        }
+        Power[] powers = playerCapability.getPowers();
+        for (int i = 0; i < powers.length; i++) {
+            powers[i].onLeftClickEmpty(event);
         }
     }
 
@@ -456,11 +284,10 @@ public final class ServerEventHandler {
 //                MowziesMobs.NETWORK.sendToDimension(new MessageUnfreezeEntity(event.getEntityLiving()), event.getEntityLiving().dimension); TODO
         }
         if (event.getEntity() instanceof PlayerEntity) {
-            MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
-            if (property != null) {
-                for (int i = 0; i < property.powers.length; i++) {
-                    property.powers[i].onTakeDamage(event);
-                }
+            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getEntity(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+            Power[] powers = playerCapability.getPowers();
+            for (int i = 0; i < powers.length; i++) {
+                powers[i].onTakeDamage(event);
             }
         }
 
@@ -479,33 +306,32 @@ public final class ServerEventHandler {
 
         if (event.getEntityLiving() != null) {
             LivingEntity living = event.getEntityLiving();
-            MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(living, MowzieLivingProperties.class);
-            if (property != null) {
-                property.lastDamage = event.getAmount();
+            LastDamageCapability.ILastDamageCapability capability = CapabilityHandler.getCapability(living, LastDamageCapability.LastDamageProvider.LAST_DAMAGE_CAPABILITY);
+            if (capability != null) {
+                capability.setLastDamage(event.getAmount());
             }
         }
     }
 
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.RightClickItem event) {
-        MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
-        if (property != null) {
-            for (int i = 0; i < property.powers.length; i++) {
-                property.powers[i].onRightClickWithItem(event);
-            }
+        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getPlayer(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        Power[] powers = playerCapability.getPowers();
+        for (int i = 0; i < powers.length; i++) {
+            powers[i].onRightClickWithItem(event);
         }
     }
 
     @SubscribeEvent
     public void onPlayerLeftClick(PlayerInteractEvent.LeftClickBlock event) {
-        if (event.isCancelable() && event.getEntityPlayer().isPotionActive(PotionHandler.FROZEN)) {
+        PlayerEntity player = event.getPlayer();
+        if (event.isCancelable() && player.isPotionActive(PotionHandler.FROZEN)) {
             event.setCanceled(true);
         }
-        MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
-        if (property != null) {
-            for (int i = 0; i < property.powers.length; i++) {
-                property.powers[i].onLeftClickBlock(event);
-            }
+        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        Power[] powers = playerCapability.getPowers();
+        for (int i = 0; i < powers.length; i++) {
+            powers[i].onLeftClickBlock(event);
         }
     }
 
@@ -513,20 +339,16 @@ public final class ServerEventHandler {
     public void onLivingJump(LivingEvent.LivingJumpEvent event) {
         if (event.getEntity() instanceof LivingEntity) {
             LivingEntity entity = (LivingEntity) event.getEntity();
-            MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
-            if (property != null) {
-                if (entity.isPotionActive(PotionHandler.FROZEN) && entity.onGround) {
-                    entity.setMotion(entity.getMotion().mul(1, 0, 1));
-                }
+            if (entity.isPotionActive(PotionHandler.FROZEN) && entity.onGround) {
+                entity.setMotion(entity.getMotion().mul(1, 0, 1));
             }
         }
 
         if (event.getEntity() instanceof PlayerEntity) {
-            MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
-            if (property != null) {
-                for (int i = 0; i < property.powers.length; i++) {
-                    property.powers[i].onJump(event);
-                }
+            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getEntity(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+            Power[] powers = playerCapability.getPowers();
+            for (int i = 0; i < powers.length; i++) {
+                powers[i].onJump(event);
             }
         }
     }
@@ -537,17 +359,16 @@ public final class ServerEventHandler {
             event.setCanceled(true);
         }
         if (event.getEntity() instanceof PlayerEntity) {
-            MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(event.getEntity(), MowziePlayerProperties.class);
-            if (property != null) {
-                for (int i = 0; i < property.powers.length; i++) {
-                    property.powers[i].onLeftClickEntity(event);
-                }
-
-                if (!(event.getTarget() instanceof LivingEntity)) return;
-                if (event.getTarget() instanceof EntityBarakoanToPlayer) return;
-                for (int i = 0; i < property.getPackSize(); i++)
-                    property.tribePack.get(i).setAttackTarget((LivingEntity) event.getTarget());
+            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getPlayer(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+            Power[] powers = playerCapability.getPowers();
+            for (int i = 0; i < powers.length; i++) {
+                powers[i].onLeftClickEntity(event);
             }
+
+            if (!(event.getTarget() instanceof LivingEntity)) return;
+            if (event.getTarget() instanceof EntityBarakoanToPlayer) return;
+            for (int i = 0; i < playerCapability.getPackSize(); i++)
+                playerCapability.getTribePack().get(i).setAttackTarget((LivingEntity) event.getTarget());
         }
     }
 

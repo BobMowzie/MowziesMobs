@@ -1,15 +1,12 @@
 package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemWroughtAxe;
 import com.bobmowzie.mowziesmobs.server.item.ItemWroughtHelm;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
-import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
-import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.client.Minecraft;

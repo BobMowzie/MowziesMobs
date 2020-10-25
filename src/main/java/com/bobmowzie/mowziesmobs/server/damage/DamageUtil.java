@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.damage;
 
-import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
-
+import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.LastDamageCapability;
 import com.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -16,25 +16,22 @@ import org.apache.commons.lang3.tuple.Pair;
 public class DamageUtil {
     // TODO: Works for current use cases, but possibly not for future edge cases. Use reflection to get hurt sound for onHit2?
     public static Pair<Boolean, Boolean> dealMixedDamage(LivingEntity target, DamageSource source1, float amount1, DamageSource source2, float amount2) {
-        MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(target, MowzieLivingProperties.class);
-        if (property != null) {
-            property.lastDamage = -1;
-            boolean hit1 = target.attackEntityFrom(source1, amount1);
-            boolean hit1Registered = hit1;
-            if (property.lastDamage != -1) hit1Registered = true;
-            boolean hit2 = target.attackEntityFrom(source2, amount2 + property.lastDamage);
-            if (hit2 && hit1Registered) {
-                onHit2(target, source2);
-                if (target instanceof PlayerEntity) {
-                    SoundEvent sound = SoundEvents.ENTITY_PLAYER_HURT;
-                    if (source2 == DamageSource.ON_FIRE) sound = SoundEvents.ENTITY_PLAYER_HURT_ON_FIRE;
-                    else if (source2 == DamageSource.DROWN) sound = SoundEvents.ENTITY_PLAYER_HURT_DROWN;
-                    target.playSound(sound, 1F, getSoundPitch(target));
-                }
+        LastDamageCapability.ILastDamageCapability lastDamageCapability = CapabilityHandler.getCapability(target, LastDamageCapability.LastDamageProvider.LAST_DAMAGE_CAPABILITY);
+        lastDamageCapability.setLastDamage(-1);
+        boolean hit1 = target.attackEntityFrom(source1, amount1);
+        boolean hit1Registered = hit1;
+        if (lastDamageCapability.getLastDamage() != -1) hit1Registered = true;
+        boolean hit2 = target.attackEntityFrom(source2, amount2 + lastDamageCapability.getLastDamage());
+        if (hit2 && hit1Registered) {
+            onHit2(target, source2);
+            if (target instanceof PlayerEntity) {
+                SoundEvent sound = SoundEvents.ENTITY_PLAYER_HURT;
+                if (source2 == DamageSource.ON_FIRE) sound = SoundEvents.ENTITY_PLAYER_HURT_ON_FIRE;
+                else if (source2 == DamageSource.DROWN) sound = SoundEvents.ENTITY_PLAYER_HURT_DROWN;
+                target.playSound(sound, 1F, getSoundPitch(target));
             }
-            return Pair.of(hit1, hit2);
         }
-        return Pair.of(false, false);
+        return Pair.of(hit1, hit2);
     }
 
     private static float getSoundPitch(LivingEntity target) {

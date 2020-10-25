@@ -4,9 +4,11 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
+import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
-import com.bobmowzie.mowziesmobs.server.property.MowzieLivingProperties;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.block.BlockState;
@@ -31,6 +33,10 @@ public class EntityIceBreath extends EntityMagicEffect {
     private static final int RANGE = 10;
     private static final int ARC = 45;
     private static final int DAMAGE_PER_HIT = 1;
+
+    public EntityIceBreath(World world) {
+        super(EntityHandler.ICE_BREATH, world);
+    }
 
     public EntityIceBreath(EntityType<? extends EntityIceBreath> type, World world) {
         super(type, world);
@@ -135,8 +141,8 @@ public class EntityIceBreath extends EntityMagicEffect {
             if (inRange && yawCheck && pitchCheck) {
                 if (entityHit.attackEntityFrom(DamageSource.causeIndirectMagicDamage(this, caster), damage)) {
                     entityHit.setMotion(entityHit.getMotion().mul(0.5, 1, 0.5));
-                    MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entityHit, MowzieLivingProperties.class);
-                    if (property != null) property.addFreezeProgress(entityHit, 0.23f);
+                    FrozenCapability.IFrozenCapability capability = CapabilityHandler.getCapability(entityHit, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+                    capability.addFreezeProgress(entityHit, 0.23f);
                 }
             }
         }

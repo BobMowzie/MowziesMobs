@@ -1,15 +1,16 @@
-package com.bobmowzie.mowziesmobs.server.property.power;
+package com.bobmowzie.mowziesmobs.server.power;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleFallingBlock;
+import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBlockSwapper;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityRing;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
-import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FenceBlock;
@@ -24,8 +25,8 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.List;
 import java.util.Random;
@@ -48,14 +49,14 @@ public class PowerGeomancy extends Power {
     public boolean prevUnderground;
     public BlockState justDug = Blocks.DIRT.getDefaultState();
 
-    public PowerGeomancy(MowziePlayerProperties properties) {
-        super(properties);
+    public PowerGeomancy(PlayerCapability.PlayerCapabilityImp capability) {
+        super(capability);
         rand = new Random();
     }
 
     @Override
-    public void onUpdate(TickEvent.PlayerTickEvent event) {
-        super.onUpdate(event);
+    public void tick(TickEvent.PlayerTickEvent event) {
+        super.tick(event);
         PlayerEntity player = event.player;
         spawnBoulderCooldown -= 1;
         if (doubleTapTimer > 0) doubleTapTimer--;
@@ -63,29 +64,25 @@ public class PowerGeomancy extends Power {
         //Tunneling
         if (tunneling) {
             player.fallDistance = 0;
-            player.capabilities.isFlying = false;
+            player.abilities.isFlying = false;
             boolean underground = !player.world.getEntitiesWithinAABB(EntityBlockSwapper.class, player.getBoundingBox()).isEmpty();
             if (player.onGround && !underground) tunneling = false;
             Vec3d lookVec = player.getLookVec();
             float tunnelSpeed = 0.9f;
             if (underground) {
                 if (player.isSneaking()) {
-                    player.motionX = tunnelSpeed * lookVec.x;
-                    player.motionY = tunnelSpeed * lookVec.y;
-                    player.motionZ = tunnelSpeed * lookVec.z;
+                    player.setMotion(tunnelSpeed * 0.5 * lookVec.x, tunnelSpeed * lookVec.y, tunnelSpeed * 0.5 * lookVec.z);
                 }
                 else {
-                    player.motionX = tunnelSpeed * 0.5 * lookVec.x;
-                    player.motionY = 1;
-                    player.motionZ = tunnelSpeed * 0.5 * lookVec.z;
+                    player.setMotion(tunnelSpeed * 0.5 * lookVec.x, 1, tunnelSpeed * 0.5 * lookVec.z);
                 }
 
-                List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(4, 4, 4, 4);
+                List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(player,4, 4, 4, 4);
                 for (LivingEntity entityHit : entitiesHit) {
                     entityHit.attackEntityFrom(DamageSource.causePlayerDamage(player), 6 * ConfigHandler.TOOLS_AND_ABILITIES.geomancyAttackMultiplier);
                 }
             }
-            else player.motionY -= 0.07;
+            else player.setMotion(player.getMotion().subtract(0, 0.07, 0));
 
 
             if ((player.isSneaking() && lookVec.y < 0) || underground) {
@@ -94,7 +91,7 @@ public class PowerGeomancy extends Power {
                     for (double y = -1.5; y <= 2; y++) {
                         for (double z = -1.5; z <= 2; z++) {
                             if (Math.sqrt(x * x + y * y + z * z) > 2) continue;
-                            BlockPos pos = new BlockPos(player.posX + x + player.motionX, player.posY + y + player.motionY + 0.5, player.posZ + z + player.motionZ);
+                            BlockPos pos = new BlockPos(player.posX + x + player.getMotion().getX(), player.posY + y + player.getMotion().getY() + 0.5, player.posZ + z + player.getMotion().getZ());
                             BlockState blockState = player.world.getBlockState(pos);
                             if (isBlockDiggable(blockState) && blockState.getBlock() != Blocks.BEDROCK) {
                                 justDug = blockState;
@@ -106,16 +103,14 @@ public class PowerGeomancy extends Power {
             }
             if (!prevUnderground && underground) {
                 player.playSound(MMSounds.EFFECT_GEOMANCY_BREAK_MEDIUM.get(rand.nextInt(3)).get(), 1f, 0.9f + rand.nextFloat() * 0.1f);
-                EntityRing ring = new EntityRing(player.world, (float) player.posX, (float) player.posY + 0.02f, (float) player.posZ, new Vec3d(0, 1, 0), 10, 0.83f, 1, 0.39f, 1f, 3f, false);
-                player.world.spawnEntity(ring);
+                EntityRing ring = new EntityRing(EntityHandler.RING, player.world, (float) player.posX, (float) player.posY + 0.02f, (float) player.posZ, new Vec3d(0, 1, 0), 10, 0.83f, 1, 0.39f, 1f, 3f, false);
+                player.world.addEntity(ring);
             }
             if (prevUnderground && !underground) {
                 player.playSound(MMSounds.EFFECT_GEOMANCY_BREAK.get(), 1f, 0.9f + rand.nextFloat() * 0.1f);
-                EntityRing ring = new EntityRing(player.world, (float) player.posX, (float) player.posY + 0.02f, (float) player.posZ, new Vec3d(0, 1, 0), 10, 0.83f, 1, 0.39f, 1f, 3f, false);
-                player.world.spawnEntity(ring);
-                player.motionX *= 2;
-                player.motionY *= 2;
-                player.motionZ *= 2;
+                EntityRing ring = new EntityRing(EntityHandler.RING, player.world, (float) player.posX, (float) player.posY + 0.02f, (float) player.posZ, new Vec3d(0, 1, 0), 10, 0.83f, 1, 0.39f, 1f, 3f, false);
+                player.world.addEntity(ring);
+                player.setMotion(player.getMotion().scale(2f));
 
                 if (player.world.isRemote) {
                     for (int i = 0; i < 6; i++) {
@@ -129,7 +124,7 @@ public class PowerGeomancy extends Power {
 
         //Spawning boulder
         if (spawningBoulder) {
-            if (player.getDistance(spawnBoulderPos.getX(), spawnBoulderPos.getY(), spawnBoulderPos.getZ()) > 6 || !canUse(player)) {
+            if (player.getDistanceSq(spawnBoulderPos.getX(), spawnBoulderPos.getY(), spawnBoulderPos.getZ()) > 36 || !canUse(player)) {
                 spawningBoulder = false;
                 spawnBoulderCharge = 0;
             }
@@ -138,16 +133,16 @@ public class PowerGeomancy extends Power {
                 if (spawnBoulderCharge > 2) player.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 0, 2, false, false));
                 if (spawnBoulderCharge == 1 && player.world.isRemote) MowziesMobs.PROXY.playBoulderChargeSound(player);
                 if ((spawnBoulderCharge + 10) % 10 == 0 && spawnBoulderCharge < 40) {
-                    EntityRing ring = new EntityRing(player.world, (float)player.posX, (float)player.posY + player.height/2f, (float)player.posZ, new Vec3d(0, 1, 0), 10, 0.83f, 1, 0.39f, 0.7f, 0.8f + 2.7f * spawnBoulderCharge/60f, false) {
+                    EntityRing ring = new EntityRing(EntityHandler.RING, player.world, (float)player.posX, (float)player.posY + player.getHeight()/2f, (float)player.posZ, new Vec3d(0, 1, 0), 10, 0.83f, 1, 0.39f, 0.7f, 0.8f + 2.7f * spawnBoulderCharge/60f, false) {
                         public float interpolate(float delta) {
                             return 1 - (ticksExisted + delta)/duration;
                         }
                     };
-                    if (player.world.isRemote) player.world.spawnEntity(ring);
+                    if (player.world.isRemote) player.world.addEntity(ring);
                 }
                 if (spawnBoulderCharge == 50) {
-                    EntityRing ring = new EntityRing(player.world, (float)player.posX, (float)player.posY + player.height/2f, (float)player.posZ, new Vec3d(0, 1, 0), 20, 0.83f, 1, 0.39f, 0.7f, 4, true);
-                    if (player.world.isRemote) player.world.spawnEntity(ring);
+                    EntityRing ring = new EntityRing(EntityHandler.RING, player.world, (float)player.posX, (float)player.posY + player.getHeight()/2f, (float)player.posZ, new Vec3d(0, 1, 0), 20, 0.83f, 1, 0.39f, 0.7f, 4, true);
+                    if (player.world.isRemote) player.world.addEntity(ring);
                     player.playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL.get(), 1, 1f);
                 }
                 if (player.world.isRemote && spawnBoulderCharge > 5 && spawnBoulderCharge < 30) {
@@ -159,7 +154,7 @@ public class PowerGeomancy extends Power {
                         double ox = radius * Math.sin(yaw) * Math.sin(pitch);
                         double oy = radius * Math.cos(pitch);
                         double oz = radius * Math.cos(yaw) * Math.sin(pitch);
-                        MMParticle.ORB.spawn(player.world, player.posX + ox, player.posY + oy + player.height/2, player.posZ + oz, ParticleFactory.ParticleArgs.get().withData(player.posX, player.posY + player.height/2, player.posZ, 14));
+                        MMParticle.ORB.spawn(player.world, player.posX + ox, player.posY + oy + player.getHeight()/2, player.posZ + oz, ParticleFactory.ParticleArgs.get().withData(player.posX, player.posY + player.getHeight()/2, player.posZ, 14));
                     }
                 }
             }
@@ -175,7 +170,7 @@ public class PowerGeomancy extends Power {
     public void onRightMouseUp(PlayerEntity player) {
         super.onRightMouseUp(player);
         liftedMouse = true;
-        if (spawningBoulder && player.getDistance(spawnBoulderPos.getX(), spawnBoulderPos.getY(), spawnBoulderPos.getZ()) < 6) {
+        if (spawningBoulder && player.getDistanceSq(spawnBoulderPos.getX(), spawnBoulderPos.getY(), spawnBoulderPos.getZ()) < 36) {
             spawnBoulder(player);
         }
         else {
@@ -187,16 +182,16 @@ public class PowerGeomancy extends Power {
     @Override
     public void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         super.onRightClickBlock(event);
-        PlayerEntity player = event.getEntityPlayer();
+        PlayerEntity player = event.getPlayer();
         if (event.getHand() == Hand.MAIN_HAND && canUse(player)) {
-            if (event.getHitVec() != null && !tunneling && !spawningBoulder && liftedMouse && spawnBoulderCooldown <= 0) {
-                lookPos = new Vec3d(event.getHitVec().x, event.getHitVec().y, event.getHitVec().z);
+            if (!tunneling && !spawningBoulder && liftedMouse && spawnBoulderCooldown <= 0) {
+                lookPos = new Vec3d(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
                 spawnBoulderPos = event.getPos();
                 spawnBoulderBlock = player.world.getBlockState(spawnBoulderPos);
                 if (event.getFace() != Direction.UP) {
                     BlockState blockAbove = player.world.getBlockState(spawnBoulderPos.up());
                     //System.out.println(blockAbove.getBlock().getLocalizedName());
-                    if (blockAbove.causesSuffocation() || blockAbove == Blocks.AIR.getDefaultState()) return;
+                    if (blockAbove.causesSuffocation(player.world, spawnBoulderPos.up()) || blockAbove.isAir(player.world, spawnBoulderPos.up())) return;
                 }
                 if (!isBlockDiggable(spawnBoulderBlock)) return;
                 spawningBoulder = true;
@@ -243,10 +238,10 @@ public class PowerGeomancy extends Power {
     private void spawnBoulder(PlayerEntity player) {
         int size = (int)Math.min(Math.max(0, Math.floor(spawnBoulderCharge/10.f) - 1), 2);
         if (spawnBoulderCharge >= 60) size = 3;
-        EntityBoulder boulder = new EntityBoulder(player.world, player, size, spawnBoulderBlock);
+        EntityBoulder boulder = new EntityBoulder(EntityHandler.BOULDER, player.world, player, size, spawnBoulderBlock);
         boulder.setPosition(spawnBoulderPos.getX() + 0.5F, spawnBoulderPos.getY() + 2, spawnBoulderPos.getZ() + 0.5F);
         if (!player.world.isRemote && boulder.checkCanSpawn()) {
-            player.world.spawnEntity(boulder);
+            player.world.addEntity(boulder);
         }
         spawnBoulderCooldown = 10;
         spawnBoulderCharge = 0;
@@ -264,23 +259,25 @@ public class PowerGeomancy extends Power {
 
     public boolean isBlockDiggable(BlockState blockState) {
         Material mat = blockState.getMaterial();
-        if (mat != Material.GRASS
-                && mat != Material.GROUND
+        if (mat != Material.ORGANIC
+                && mat != Material.EARTH
                 && mat != Material.ROCK
                 && mat != Material.CLAY
                 && mat != Material.SAND
                 ) {
             return false;
         }
-        if (blockState == Blocks.HAY_BLOCK
+        if (blockState.getBlock() == Blocks.HAY_BLOCK
                 || blockState.getBlock() == Blocks.NETHER_WART_BLOCK
                 || blockState.getBlock() instanceof FenceBlock
-                || blockState.getBlock() == Blocks.MOB_SPAWNER
+                || blockState.getBlock() == Blocks.SPAWNER
                 || blockState.getBlock() == Blocks.BONE_BLOCK
                 || blockState.getBlock() == Blocks.ENCHANTING_TABLE
                 || blockState.getBlock() == Blocks.END_PORTAL_FRAME
                 || blockState.getBlock() == Blocks.ENDER_CHEST
                 || blockState.getBlock() == Blocks.SLIME_BLOCK
+                || blockState.getBlock() == Blocks.HOPPER
+                || blockState.hasTileEntity()
                 ) {
             return false;
         }

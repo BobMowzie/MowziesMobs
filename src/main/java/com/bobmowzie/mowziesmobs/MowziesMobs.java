@@ -3,11 +3,15 @@ package com.bobmowzie.mowziesmobs;
 import com.bobmowzie.mowziesmobs.client.ClientProxy;
 import com.bobmowzie.mowziesmobs.server.ServerProxy;
 import com.bobmowzie.mowziesmobs.server.advancement.AdvancementHandler;
+import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.net.NetBuilder;
 import com.bobmowzie.mowziesmobs.server.spawn.SpawnHandler;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -55,12 +59,13 @@ public final class MowziesMobs {
         PROXY.init(bus);
     }
 
+    @SubscribeEvent
     public void init(FMLCommonSetupEvent event) {
 //        EntityPropertiesHandler.INSTANCE.registerProperties(MowziePlayerProperties.class);
 //        EntityPropertiesHandler.INSTANCE.registerProperties(MowzieLivingProperties.class);
 //        GameRegistry.registerWorldGenerator(new MowzieWorldGenerator(), 0);
 //        NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
-
+        CapabilityHandler.register();
         SpawnHandler.INSTANCE.registerSpawnPlacementTypes();
 
         AdvancementHandler.preInit();

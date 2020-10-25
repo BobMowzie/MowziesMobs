@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.client.sound;
 
-import com.bobmowzie.mowziesmobs.server.property.MowziePlayerProperties;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.client.audio.TickableSound;
