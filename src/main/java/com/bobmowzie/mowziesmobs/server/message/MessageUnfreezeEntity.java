@@ -1,21 +1,19 @@
 package com.bobmowzie.mowziesmobs.server.message;
 
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
-import io.netty.buffer.ByteBuf;
-import com.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
-import com.ilexiconn.llibrary.server.network.AbstractMessage;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 /**
  * Created by Josh on 5/31/2017.
  */
-public class MessageUnfreezeEntity extends AbstractMessage<MessageUnfreezeEntity> {
+public class MessageUnfreezeEntity {
     private int entityID;
 
     public MessageUnfreezeEntity() {
@@ -26,27 +24,32 @@ public class MessageUnfreezeEntity extends AbstractMessage<MessageUnfreezeEntity
         entityID = entity.getEntityId();
     }
 
-    @Override
-    public void toBytes(ByteBuf buf) {
-        buf.writeInt(entityID);
+
+    public static void serialize(final MessageUnfreezeEntity message, final PacketBuffer buf) {
+        buf.writeInt(message.entityID);
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf) {
-        entityID = buf.readInt();
+    public static MessageUnfreezeEntity deserialize(final PacketBuffer buf) {
+        final MessageUnfreezeEntity message = new MessageUnfreezeEntity();
+        message.entityID = buf.readVarInt();
+        return message;
     }
 
-    @Override
-    public void onClientReceived(Minecraft client, MessageUnfreezeEntity message, PlayerEntity player, MessageContext messageContext) {
-        Entity entity = player.world.getEntityByID(message.entityID);
-        if (entity instanceof LivingEntity) {
-            LivingEntity living = (LivingEntity) entity;
-            living.removeActivePotionEffect(PotionHandler.FROZEN);
+    public static class Handler implements BiConsumer<MessageUnfreezeEntity, Supplier<NetworkEvent.Context>> {
+        @Override
+        public void accept(final MessageUnfreezeEntity message, final Supplier<NetworkEvent.Context> contextSupplier) {
+            final NetworkEvent.Context context = contextSupplier.get();
+            final ServerPlayerEntity player = context.getSender();
+            context.enqueueWork(() -> {
+                if (player != null) {
+                    Entity entity = player.world.getEntityByID(message.entityID);
+                    if (entity instanceof LivingEntity) {
+                        LivingEntity living = (LivingEntity) entity;
+                        living.removeActivePotionEffect(PotionHandler.FROZEN);
+                    }
+                }
+            });
+            context.setPacketHandled(true);
         }
-    }
-
-    @Override
-    public void onServerReceived(MinecraftServer server, MessageUnfreezeEntity message, PlayerEntity player, MessageContext messageContext) {
-
     }
 }

@@ -8,6 +8,7 @@ import net.minecraft.network.IPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 /**
  * @author iLexiconn
@@ -15,7 +16,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  */
 public abstract class AbstractMessage<T extends AbstractMessage<T>> implements IPacket, IMessageHandler<T, IPacket> {
     @Override
-    public IPacket onMessage(T message, MessageContext messageContext) {
+    public IPacket onMessage(T message, NetworkEvent.Context messageContext) {
         LLibrary.PROXY.handleMessage(message, messageContext);
 
         return null;
@@ -31,7 +32,7 @@ public abstract class AbstractMessage<T extends AbstractMessage<T>> implements I
      * @param messageContext the message context.
      */
     @OnlyIn(Dist.CLIENT)
-    public abstract void onClientReceived(Minecraft client, T message, PlayerEntity player, MessageContext messageContext);
+    public abstract void onClientReceived(Minecraft client, T message, PlayerEntity player, NetworkEvent.Context messageContext);
 
     /**
      * Executes when the message is received on SERVER side. Never use fields directly from the class you're in, but
@@ -42,7 +43,7 @@ public abstract class AbstractMessage<T extends AbstractMessage<T>> implements I
      * @param player         The player who sent the message to the server.
      * @param messageContext the message context.
      */
-    public abstract void onServerReceived(MinecraftServer server, T message, PlayerEntity player, MessageContext messageContext);
+    public abstract void onServerReceived(MinecraftServer server, T message, PlayerEntity player, NetworkEvent.Context messageContext);
 
     /**
      * @param side the current side

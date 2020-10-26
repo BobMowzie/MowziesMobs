@@ -62,7 +62,7 @@ public class EntitySolarBeam extends Entity {
         this.setDuration(duration);
         this.setPosition(x, y, z);
         this.calculateEndPos();
-        this.playSound(MMSounds.LASER, 2f, 1);
+        this.playSound(MMSounds.LASER.get(), 2f, 1);
         if (!world.isRemote) {
             this.setCasterID(caster.getEntityId());
         }

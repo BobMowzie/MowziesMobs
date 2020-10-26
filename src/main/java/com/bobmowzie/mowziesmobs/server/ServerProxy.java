@@ -1,8 +1,14 @@
 package com.bobmowzie.mowziesmobs.server;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
+import com.bobmowzie.mowziesmobs.server.message.*;
+import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseDown;
+import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseUp;
+import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseDown;
+import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseUp;
 import com.google.common.base.Optional;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -12,11 +18,19 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.IDataSerializer;
 import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fml.network.NetworkRegistry;
 
 import java.io.IOException;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class ServerProxy {
+    private int nextMessageId;
+
     public static final IDataSerializer<Optional<Trade>> OPTIONAL_TRADE = new IDataSerializer<Optional<Trade>>() {
         @Override
         public void write(PacketBuffer buf, Optional<Trade> value) {
@@ -72,4 +86,32 @@ public class ServerProxy {
     public void playNagaSwoopSound(EntityNaga naga) {}
 
     public void solarBeamHitWroughtnaught(LivingEntity caster) {}
+
+    public void initNetwork() {
+        final String version = "1";
+        MowziesMobs.network = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(MowziesMobs.MODID, "net"))
+                .networkProtocolVersion(() -> version)
+                .clientAcceptedVersions(version::equals)
+                .serverAcceptedVersions(version::equals)
+                .simpleChannel();
+        this.registerMessage(MessageLeftMouseDown.class, MessageLeftMouseDown::serialize, MessageLeftMouseDown::deserialize, new MessageLeftMouseDown.Handler());
+        this.registerMessage(MessageLeftMouseUp.class, MessageLeftMouseUp::serialize, MessageLeftMouseUp::deserialize, new MessageLeftMouseUp.Handler());
+        this.registerMessage(MessageRightMouseDown.class, MessageRightMouseDown::serialize, MessageRightMouseDown::deserialize, new MessageRightMouseDown.Handler());
+        this.registerMessage(MessageRightMouseUp.class, MessageRightMouseUp::serialize, MessageRightMouseUp::deserialize, new MessageRightMouseUp.Handler());
+        this.registerMessage(MessageAddFreezeProgress.class, MessageAddFreezeProgress::serialize, MessageAddFreezeProgress::deserialize, new MessageAddFreezeProgress.Handler());
+        this.registerMessage(MessageBarakoTrade.class, MessageBarakoTrade::serialize, MessageBarakoTrade::deserialize, new MessageBarakoTrade.Handler());
+        this.registerMessage(MessageBlackPinkInYourArea.class, MessageBlackPinkInYourArea::serialize, MessageBlackPinkInYourArea::deserialize, new MessageBlackPinkInYourArea.Handler());
+        this.registerMessage(MessagePlayerAttackMob.class, MessagePlayerAttackMob::serialize, MessagePlayerAttackMob::deserialize, new MessagePlayerAttackMob.Handler());
+        this.registerMessage(MessagePlayerSolarBeam.class, MessagePlayerSolarBeam::serialize, MessagePlayerSolarBeam::deserialize, new MessagePlayerSolarBeam.Handler());
+        this.registerMessage(MessagePlayerSummonSunstrike.class, MessagePlayerSummonSunstrike::serialize, MessagePlayerSummonSunstrike::deserialize, new MessagePlayerSummonSunstrike.Handler());
+        this.registerMessage(MessageUnfreezeEntity.class, MessageUnfreezeEntity::serialize, MessageUnfreezeEntity::deserialize, new MessageUnfreezeEntity.Handler());
+
+    }
+
+    private <MSG> void registerMessage(final Class<MSG> clazz, final BiConsumer<MSG, PacketBuffer> encoder, final Function<PacketBuffer, MSG> decoder, final BiConsumer<MSG, Supplier<NetworkEvent.Context>> consumer) {
+        MowziesMobs.network.messageBuilder(clazz, this.nextMessageId++)
+                .encoder(encoder).decoder(decoder)
+                .consumer(consumer)
+                .add();
+    }
 }

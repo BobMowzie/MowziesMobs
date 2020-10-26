@@ -88,6 +88,10 @@ public class PlayerCapability {
         public void setUsingIceBreath(boolean usingIceBreath);
 
         public int getPackSize();
+
+        void removePackMember(EntityBarakoanToPlayer tribePlayer);
+
+        void addPackMember(EntityBarakoanToPlayer tribePlayer);
     }
 
     public static class PlayerCapabilityImp implements IPlayerCapability {
@@ -251,28 +255,28 @@ public class PlayerCapability {
             if (event.side == LogicalSide.CLIENT) {
                 if (Minecraft.getInstance().gameSettings.keyBindAttack.isKeyDown() && !mouseLeftDown) {
                     mouseLeftDown = true;
-                    MowziesMobs.NETWORK.sendToServer(new MessageLeftMouseDown());
+                    MowziesMobs.network.sendToServer(new MessageLeftMouseDown());
                     for (int i = 0; i < powers.length; i++) {
                         powers[i].onLeftMouseDown(player);
                     }
                 }
                 if (Minecraft.getInstance().gameSettings.keyBindUseItem.isKeyDown() && !mouseRightDown) {
                     mouseRightDown = true;
-                    MowziesMobs.NETWORK.sendToServer(new MessageRightMouseDown());
+                    MowziesMobs.network.sendToServer(new MessageRightMouseDown());
                     for (int i = 0; i < powers.length; i++) {
                         powers[i].onRightMouseDown(player);
                     }
                 }
                 if (!Minecraft.getInstance().gameSettings.keyBindAttack.isKeyDown() && mouseLeftDown) {
                     mouseLeftDown = false;
-                    MowziesMobs.NETWORK.sendToServer(new MessageLeftMouseUp());
+                    MowziesMobs.network.sendToServer(new MessageLeftMouseUp());
                     for (int i = 0; i < powers.length; i++) {
                         powers[i].onLeftMouseUp(player);
                     }
                 }
                 if (!Minecraft.getInstance().gameSettings.keyBindUseItem.isKeyDown() && mouseRightDown) {
                     mouseRightDown = false;
-                    MowziesMobs.NETWORK.sendToServer(new MessageRightMouseUp());
+                    MowziesMobs.network.sendToServer(new MessageRightMouseUp());
                     for (int i = 0; i < powers.length; i++) {
                         powers[i].onRightMouseUp(player);
                     }

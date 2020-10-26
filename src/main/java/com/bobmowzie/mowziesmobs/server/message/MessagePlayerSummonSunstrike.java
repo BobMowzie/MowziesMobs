@@ -1,20 +1,19 @@
 package com.bobmowzie.mowziesmobs.server.message;
 
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
-import io.netty.buffer.ByteBuf;
-import com.ilexiconn.llibrary.server.network.AbstractMessage;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.util.math.*;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class MessagePlayerSummonSunstrike extends AbstractMessage<MessagePlayerSummonSunstrike> {
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
+
+public class MessagePlayerSummonSunstrike {
     private static final double REACH = 15;
 
     public MessagePlayerSummonSunstrike() {
@@ -25,32 +24,35 @@ public class MessagePlayerSummonSunstrike extends AbstractMessage<MessagePlayerS
         Vec3d pos = new Vec3d(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
         Vec3d segment = entity.getLookVec();
         segment = pos.add(segment.x * reach, segment.y * reach, segment.z * reach);
-        return entity.world.rayTraceBlocks(pos, segment, false, true, true);
+        return entity.world.rayTraceBlocks(new RayTraceContext(pos, segment, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, entity));
     }
 
-    @Override
-    public void toBytes(ByteBuf buf) {
-
+    public static void serialize(final MessagePlayerSummonSunstrike message, final PacketBuffer buf) {
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf) {
-
+    public static MessagePlayerSummonSunstrike deserialize(final PacketBuffer buf) {
+        final MessagePlayerSummonSunstrike message = new MessagePlayerSummonSunstrike();
+        return message;
     }
 
-    @Override
-    public void onClientReceived(Minecraft client, MessagePlayerSummonSunstrike message, PlayerEntity player, MessageContext messageContext) {
-
-    }
-
-    @Override
-    public void onServerReceived(MinecraftServer server, MessagePlayerSummonSunstrike message, PlayerEntity player, MessageContext messageContext) {
-        RayTraceResult raytrace = rayTrace(player, REACH);
-        if (raytrace != null && raytrace.typeOfHit == RayTraceResult.Type.BLOCK && raytrace.sideHit == Direction.UP && player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(PotionHandler.SUNS_BLESSING)) {
-            BlockPos hit = raytrace.getBlockPos();
-            EntitySunstrike sunstrike = new EntitySunstrike(player.world, player, hit.getX(), hit.getY(), hit.getZ());
-            sunstrike.onSummon();
-            player.world.spawnEntity(sunstrike);
+    public static class Handler implements BiConsumer<MessagePlayerSummonSunstrike, Supplier<NetworkEvent.Context>> {
+        @Override
+        public void accept(final MessagePlayerSummonSunstrike message, final Supplier<NetworkEvent.Context> contextSupplier) {
+            final NetworkEvent.Context context = contextSupplier.get();
+            final ServerPlayerEntity player = context.getSender();
+            context.enqueueWork(() -> {
+                RayTraceResult raytrace = rayTrace(player, REACH);
+                if (raytrace.getType() == RayTraceResult.Type.BLOCK) {
+                    BlockRayTraceResult result = (BlockRayTraceResult) raytrace.hitInfo;
+                    if (result.getFace() == Direction.UP && player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(PotionHandler.SUNS_BLESSING)) {
+                        BlockPos hit = result.getPos();
+                        EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE, player.world, player, hit.getX(), hit.getY(), hit.getZ());
+                        sunstrike.onSummon();
+                        player.world.addEntity(sunstrike);
+                    }
+                }
+            });
+            context.setPacketHandled(true);
         }
     }
 }

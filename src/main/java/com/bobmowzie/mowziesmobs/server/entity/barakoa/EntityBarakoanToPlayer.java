@@ -1,9 +1,10 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
+import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
-import com.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -36,7 +37,7 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
     protected boolean processInteract(PlayerEntity player, Hand hand) {
         if (player == leader && getActive() && getAnimation() != DEACTIVATE_ANIMATION) {
             AnimationHandler.INSTANCE.sendAnimationMessage(this, DEACTIVATE_ANIMATION);
-            playSound(MMSounds.ENTITY_BARAKOA_RETRACT, 1, 1);
+            playSound(MMSounds.ENTITY_BARAKOA_RETRACT.get(), 1, 1);
         }
         return super.processInteract(player, hand);
     }
@@ -55,28 +56,26 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
 
     @Override
     protected int getTribeCircleTick() {
-        return getPlayerProps().tribeCircleTick;
+        return getPlayerCapability().getTribeCircleTick();
     }
 
     @Override
     protected int getPackSize() {
-        return getPlayerProps().getPackSize();
+        return getPlayerCapability().getPackSize();
     }
 
     @Override
     protected void addAsPackMember() {
-        getPlayerProps().addPackMember(this);
+        getPlayerCapability().addPackMember(this);
     }
 
     @Override
     protected void removeAsPackMember() {
-//        System.out.println(getPlayerProps().getPackSize());
-        getPlayerProps().removePackMember(this);
-//        System.out.println(getPlayerProps().getPackSize());
+        getPlayerCapability().removePackMember(this);
     }
 
-    private MowziePlayerProperties getPlayerProps() {
-        return EntityPropertiesHandler.INSTANCE.getProperties(leader, MowziePlayerProperties.class);
+    private PlayerCapability.IPlayerCapability getPlayerCapability() {
+        return CapabilityHandler.getCapability(leader, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
     }
 
     @Override

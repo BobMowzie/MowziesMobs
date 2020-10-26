@@ -1,46 +1,48 @@
 package com.bobmowzie.mowziesmobs.server.message.mouse;
 
-import io.netty.buffer.ByteBuf;
-import com.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
-import com.ilexiconn.llibrary.server.network.AbstractMessage;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
+import com.bobmowzie.mowziesmobs.server.power.Power;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 /**
  * Created by Josh on 5/25/2017.
  */
-public class MessageRightMouseUp extends AbstractMessage<MessageRightMouseUp> {
-    public MessageRightMouseUp() {
+public class MessageRightMouseUp {
+    public MessageRightMouseUp() {}
+
+    public static void serialize(final MessageRightMouseUp message, final PacketBuffer buf) {
 
     }
 
-    @Override
-    public void toBytes(ByteBuf buf) {
-
+    public static MessageRightMouseUp deserialize(final PacketBuffer buf) {
+        final MessageRightMouseUp message = new MessageRightMouseUp();
+        return message;
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf) {
-
-    }
-
-    @Override
-    public void onClientReceived(Minecraft client, MessageRightMouseUp message, PlayerEntity player, MessageContext messageContext) {
-
-    }
-
-    @Override
-    public void onServerReceived(MinecraftServer server, MessageRightMouseUp message, PlayerEntity player, MessageContext messageContext) {
-        MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
-        property.mouseRightDown = false;
-        if (property.usingIceBreath && property.icebreath != null) {
-            property.usingIceBreath = false;
-            property.icebreath.setDead();
+    public static final class Handler implements BiConsumer<MessageRightMouseUp, Supplier<NetworkEvent.Context>> {
+        @Override
+        public void accept(final MessageRightMouseUp message, final Supplier<NetworkEvent.Context> contextSupplier) {
+            final NetworkEvent.Context context = contextSupplier.get();
+            final ServerPlayerEntity player = context.getSender();
+            context.enqueueWork(() -> this.accept(message, player));
+            context.setPacketHandled(true);
         }
-        for (int i = 0; i < property.powers.length; i++) {
-            property.powers[i].onRightMouseUp(player);
+
+        private void accept(final MessageRightMouseUp message, final ServerPlayerEntity player) {
+            if (player != null) {
+                PlayerCapability.IPlayerCapability capability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+                capability.setMouseRightDown(false);
+                Power[] powers = capability.getPowers();
+                for (int i = 0; i < powers.length; i++) {
+                    powers[i].onRightMouseUp(player);
+                }
+            }
         }
     }
 }
