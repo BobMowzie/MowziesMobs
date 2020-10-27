@@ -112,4 +112,8 @@ public class ClientProxy extends ServerProxy {
             ClientEventHandler.INSTANCE.lastWroughtnautHitTime = now;
         }
     }
+
+    public void setTPS(float tickRate) {
+
+    }
 }

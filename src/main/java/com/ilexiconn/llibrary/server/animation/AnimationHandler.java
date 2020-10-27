@@ -1,12 +1,9 @@
 package com.ilexiconn.llibrary.server.animation;
 
-import com.ilexiconn.llibrary.LLibrary;
 import com.ilexiconn.llibrary.server.event.AnimationEvent;
 import com.ilexiconn.llibrary.server.network.AnimationMessage;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -29,9 +26,7 @@ public enum AnimationHandler {
             return;
         }
         entity.setAnimation(animation);
-        for (EntityPlayer trackingPlayer : ((WorldServer) entity.world).getEntityTracker().getTrackingPlayers(entity)) {
-            LLibrary.NETWORK_WRAPPER.sendTo(new AnimationMessage(entity.getEntityId(), ArrayUtils.indexOf(entity.getAnimations(), animation)), (EntityPlayerMP) trackingPlayer);
-        }
+        ((ServerWorld) entity.world).getChunkProvider().sendToAllTracking(entity, new AnimationMessage(entity.getEntityId(), ArrayUtils.indexOf(entity.getAnimations(), animation)));
     }
 
     /**

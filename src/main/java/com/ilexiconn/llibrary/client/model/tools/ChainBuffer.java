@@ -1,12 +1,11 @@
 package com.ilexiconn.llibrary.client.model.tools;
 
-import com.ilexiconn.llibrary.LLibrary;
 import com.ilexiconn.llibrary.client.util.ClientUtils;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * @author rafa_mv
@@ -40,7 +39,7 @@ public class ChainBuffer {
      * @param divisor        the amount to divide the swing amount by
      * @param entity         the entity with this ChainBuffer
      */
-    public void calculateChainSwingBuffer(float maxAngle, int bufferTime, float angleDecrement, float divisor, EntityLivingBase entity) {
+    public void calculateChainSwingBuffer(float maxAngle, int bufferTime, float angleDecrement, float divisor, LivingEntity entity) {
         this.prevYawVariation = this.yawVariation;
         if (entity.renderYawOffset != entity.prevRenderYawOffset && MathHelper.abs(this.yawVariation) < maxAngle) {
             this.yawVariation += (entity.prevRenderYawOffset - entity.renderYawOffset) / divisor;
@@ -77,7 +76,7 @@ public class ChainBuffer {
      * @param divisor        the amount to divide the wave amount by
      * @param entity         the entity with this ChainBuffer
      */
-    public void calculateChainWaveBuffer(float maxAngle, int bufferTime, float angleDecrement, float divisor, EntityLivingBase entity) {
+    public void calculateChainWaveBuffer(float maxAngle, int bufferTime, float angleDecrement, float divisor, LivingEntity entity) {
         this.prevPitchVariation = this.pitchVariation;
         if (entity.rotationPitch != entity.prevRotationPitch && MathHelper.abs(this.pitchVariation) < maxAngle) {
             this.pitchVariation += (entity.prevRotationPitch - entity.rotationPitch) / divisor;
@@ -113,7 +112,7 @@ public class ChainBuffer {
      * @param angleDecrement the angle to decrement by for each model piece
      * @param entity         the entity with this ChainBuffer
      */
-    public void calculateChainSwingBuffer(float maxAngle, int bufferTime, float angleDecrement, EntityLivingBase entity) {
+    public void calculateChainSwingBuffer(float maxAngle, int bufferTime, float angleDecrement, LivingEntity entity) {
         this.calculateChainSwingBuffer(maxAngle, bufferTime, angleDecrement, 1.0F, entity);
     }
 
@@ -125,7 +124,7 @@ public class ChainBuffer {
      * @param angleDecrement the angle to decrement by for each model piece
      * @param entity         the entity with this ChainBuffer
      */
-    public void calculateChainWaveBuffer(float maxAngle, int bufferTime, float angleDecrement, EntityLivingBase entity) {
+    public void calculateChainWaveBuffer(float maxAngle, int bufferTime, float angleDecrement, LivingEntity entity) {
         this.calculateChainWaveBuffer(maxAngle, bufferTime, angleDecrement, 1.0F, entity);
     }
 
@@ -134,9 +133,9 @@ public class ChainBuffer {
      *
      * @param boxes the box array
      */
-    public void applyChainSwingBuffer(ModelRenderer... boxes) {
+    public void applyChainSwingBuffer(RendererModel... boxes) {
         float rotateAmount = 0.01745329251F * ClientUtils.interpolate(this.prevYawVariation, this.yawVariation, LLibrary.PROXY.getPartialTicks()) / boxes.length;
-        for (ModelRenderer box : boxes) {
+        for (RendererModel box : boxes) {
             box.rotateAngleY += rotateAmount;
         }
     }
@@ -146,9 +145,9 @@ public class ChainBuffer {
      *
      * @param boxes the box array
      */
-    public void applyChainWaveBuffer(ModelRenderer... boxes) {
+    public void applyChainWaveBuffer(RendererModel... boxes) {
         float rotateAmount = 0.01745329251F * ClientUtils.interpolate(this.prevPitchVariation, this.pitchVariation, LLibrary.PROXY.getPartialTicks()) / boxes.length;
-        for (ModelRenderer box : boxes) {
+        for (RendererModel box : boxes) {
             box.rotateAngleX += rotateAmount;
         }
     }

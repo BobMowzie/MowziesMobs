@@ -1,15 +1,23 @@
 package com.ilexiconn.llibrary.server.network;
 
-import io.netty.buffer.ByteBuf;
+import com.bobmowzie.mowziesmobs.server.message.MessageUnfreezeEntity;
+import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.INetHandler;
+import net.minecraft.network.IPacket;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class AnimationMessage extends AbstractMessage<AnimationMessage> {
+import java.io.IOException;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
+
+public class AnimationMessage implements IPacket {
     private int entityID;
     private int index;
 
@@ -23,33 +31,27 @@ public class AnimationMessage extends AbstractMessage<AnimationMessage> {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public void onClientReceived(Minecraft client, AnimationMessage message, EntityPlayer player, MessageContext messageContext) {
-        IAnimatedEntity entity = (IAnimatedEntity) player.world.getEntityByID(message.entityID);
+    public void readPacketData(PacketBuffer buf) throws IOException {
+        this.entityID = buf.readInt();
+        this.index = buf.readInt();
+    }
+
+    @Override
+    public void writePacketData(PacketBuffer buf) throws IOException {
+        buf.writeInt(this.entityID);
+        buf.writeInt(this.index);
+    }
+
+    @Override
+    public void processPacket(INetHandler handler) {
+        IAnimatedEntity entity = (IAnimatedEntity) Minecraft.getInstance().world.getEntityByID(entityID);
         if (entity != null) {
-            if (message.index == -1) {
+            if (index == -1) {
                 entity.setAnimation(IAnimatedEntity.NO_ANIMATION);
             } else {
-                entity.setAnimation(entity.getAnimations()[message.index]);
+                entity.setAnimation(entity.getAnimations()[index]);
             }
             entity.setAnimationTick(0);
         }
-    }
-
-    @Override
-    public void onServerReceived(MinecraftServer server, AnimationMessage message, EntityPlayer player, MessageContext messageContext) {
-
-    }
-
-    @Override
-    public void fromBytes(ByteBuf byteBuf) {
-        this.entityID = byteBuf.readInt();
-        this.index = byteBuf.readInt();
-    }
-
-    @Override
-    public void toBytes(ByteBuf byteBuf) {
-        byteBuf.writeInt(this.entityID);
-        byteBuf.writeInt(this.index);
     }
 }

@@ -8,7 +8,6 @@ import com.bobmowzie.mowziesmobs.server.item.ItemWroughtAxe;
 import com.bobmowzie.mowziesmobs.server.item.ItemWroughtHelm;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
-import com.ilexiconn.llibrary.server.entity.EntityPropertiesHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;

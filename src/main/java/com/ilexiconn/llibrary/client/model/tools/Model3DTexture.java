@@ -1,13 +1,13 @@
 package com.ilexiconn.llibrary.client.model.tools;
 
-import net.minecraft.client.model.ModelBox;
-import net.minecraft.client.model.ModelRenderer;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.ModelBox;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -24,7 +24,7 @@ public class Model3DTexture extends ModelBox {
     private float u2;
     private float v2;
 
-    public Model3DTexture(ModelRenderer model, int textureOffsetX, int textureOffsetY, float posX, float posY, float posZ, int width, int height) {
+    public Model3DTexture(RendererModel model, int textureOffsetX, int textureOffsetY, float posX, float posY, float posZ, int width, int height) {
         super(model, 0, 0, posX, posY, posZ, 0, 0, 0, 0);
         this.width = width;
         this.height = height;
@@ -34,7 +34,7 @@ public class Model3DTexture extends ModelBox {
         this.v2 = (textureOffsetY + height) / model.textureHeight;
     }
 
-    public Model3DTexture(ModelRenderer model, int textureOffsetX, int textureOffsetY, int width, int height) {
+    public Model3DTexture(RendererModel model, int textureOffsetX, int textureOffsetY, int width, int height) {
         this(model, textureOffsetX, textureOffsetY, 0, 0, 0, width, height);
     }
 
@@ -42,10 +42,10 @@ public class Model3DTexture extends ModelBox {
     public void render(BufferBuilder BufferBuilder, float scale) {
         Tessellator tessellator = Tessellator.getInstance();
         GlStateManager.pushMatrix();
-        GlStateManager.rotate(90, 0, 1, 0);
-        GlStateManager.rotate(180, 0, 0, 1);
-        GlStateManager.translate(this.posX1 * scale, this.posY1 * scale, this.posZ1 * scale);
-        GlStateManager.scale(this.width / 16F, this.height / 16F, 1);
+        GlStateManager.rotatef(90, 0, 1, 0);
+        GlStateManager.rotatef(180, 0, 0, 1);
+        GlStateManager.translatef(this.posX1 * scale, this.posY1 * scale, this.posZ1 * scale);
+        GlStateManager.scalef(this.width / 16F, this.height / 16F, 1);
         float depth = 0.0625F;
         BufferBuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_NORMAL);
         BufferBuilder.pos(0.0D, 0.0D, 0.0D).tex(this.u1, this.v2).normal(0.0F, 0.0F, 1.0F).endVertex();

@@ -6,10 +6,10 @@ import com.ilexiconn.llibrary.client.model.tabula.container.TabulaCubeGroupConta
 import com.ilexiconn.llibrary.client.model.tabula.container.TabulaModelContainer;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.entity.Entity;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -91,9 +91,9 @@ public class TabulaModel extends AdvancedModelBase {
 
     @Override
     public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float rotationYaw, float rotationPitch, float scale) {
-        this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, rotationYaw, rotationPitch, scale, entity);
+        this.setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, rotationYaw, rotationPitch, scale);
         GlStateManager.pushMatrix();
-        GlStateManager.scale(this.scale[0], this.scale[1], this.scale[2]);
+        GlStateManager.scaled(this.scale[0], this.scale[1], this.scale[2]);
         for (AdvancedModelRenderer box : this.rootBoxes) {
             box.render(scale);
         }
@@ -101,10 +101,10 @@ public class TabulaModel extends AdvancedModelBase {
     }
 
     @Override
-    public void setRotationAngles(float limbSwing, float limbSwingAmount, float ageInTicks, float rotationYaw, float rotationPitch, float scale, Entity entity) {
+    public void setRotationAngles(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
         this.resetToDefaultPose();
         if (this.tabulaAnimator != null) {
-            this.tabulaAnimator.setRotationAngles(this, entity, limbSwing, limbSwingAmount, ageInTicks, rotationYaw, rotationPitch, scale);
+            this.tabulaAnimator.setRotationAngles(this, entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
         }
     }
 

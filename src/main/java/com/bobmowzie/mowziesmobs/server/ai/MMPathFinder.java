@@ -10,7 +10,6 @@ import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
 
 import javax.annotation.Nullable;
 
@@ -118,9 +117,9 @@ public class MMPathFinder extends PathFinder {
         @Override
         public Vec3d getVectorFromIndex(Entity entity, int index) {
             PathPoint point = this.getPathPointFromIndex(index);
-            double d0 = point.x + MathHelper.floor(entity.width + 1.0F) * 0.5D;
+            double d0 = point.x + MathHelper.floor(entity.getWidth() + 1.0F) * 0.5D;
             double d1 = point.y;
-            double d2 = point.z + MathHelper.floor(entity.width + 1.0F) * 0.5D;
+            double d2 = point.z + MathHelper.floor(entity.getWidth() + 1.0F) * 0.5D;
             return new Vec3d(d0, d1, d2);
         }
     }

@@ -1,6 +1,6 @@
 package com.ilexiconn.llibrary.server.world;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 
 /**
@@ -21,7 +21,7 @@ public interface IWorldDataAdapter {
      * @param compound the compound tag
      * @param world    the world instance
      */
-    void loadNBTData(NBTTagCompound compound, World world);
+    void loadNBTData(CompoundNBT compound, World world);
 
     /**
      * Save data to the world.
@@ -29,5 +29,5 @@ public interface IWorldDataAdapter {
      * @param compound the compound tag
      * @param world    the world instance
      */
-    void saveNBTData(NBTTagCompound compound, World world);
+    void saveNBTData(CompoundNBT compound, World world);
 }

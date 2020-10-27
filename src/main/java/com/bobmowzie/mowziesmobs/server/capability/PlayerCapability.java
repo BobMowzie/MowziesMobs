@@ -92,6 +92,8 @@ public class PlayerCapability {
         void removePackMember(EntityBarakoanToPlayer tribePlayer);
 
         void addPackMember(EntityBarakoanToPlayer tribePlayer);
+
+        PowerGeomancy getGeomancy();
     }
 
     public static class PlayerCapabilityImp implements IPlayerCapability {
@@ -196,6 +198,10 @@ public class PlayerCapability {
 
         public void setUsingIceBreath(boolean usingIceBreath) {
             this.usingIceBreath = usingIceBreath;
+        }
+
+        public PowerGeomancy getGeomancy() {
+            return geomancy;
         }
 
         public boolean usingIceBreath;

@@ -1,6 +1,5 @@
 package com.ilexiconn.llibrary.client.model;
 
-import com.ilexiconn.llibrary.LLibrary;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.client.renderer.entity.model.RendererModel;

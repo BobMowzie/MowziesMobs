@@ -1,12 +1,7 @@
 package com.ilexiconn.llibrary.client.util;
 
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import com.ilexiconn.llibrary.client.ClientProxy;
-import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * @author iLexiconn
@@ -65,7 +60,7 @@ public class ClientUtils {
      * @param type the type of texture to apply
      * @param texture the texture to apply
      */
-    public static void setPlayerTexture(AbstractClientPlayer player, MinecraftProfileTexture.Type type, ResourceLocation texture) {
+    /*public static void setPlayerTexture(AbstractClientPlayerEntity player, MinecraftProfileTexture.Type type, ResourceLocation texture) {
         if (player.hasPlayerInfo() && texture != null) {
             player.getPlayerInfo().playerTextures.put(type, texture);
         }
@@ -77,5 +72,5 @@ public class ClientUtils {
 
     public static void addPlayerSkinTypeRenderer(String type, RenderPlayer renderPlayer) {
         ClientProxy.MINECRAFT.getRenderManager().getSkinMap().put(type, renderPlayer);
-    }
+    }*/
 }

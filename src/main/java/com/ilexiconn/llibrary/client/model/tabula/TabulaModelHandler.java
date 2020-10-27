@@ -7,24 +7,23 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
-import com.ilexiconn.llibrary.LLibrary;
 import com.ilexiconn.llibrary.client.model.tabula.baked.VanillaTabulaModel;
 import com.ilexiconn.llibrary.client.model.tabula.baked.deserializer.ItemCameraTransformsDeserializer;
 import com.ilexiconn.llibrary.client.model.tabula.baked.deserializer.ItemTransformVec3fDeserializer;
 import com.ilexiconn.llibrary.client.model.tabula.container.TabulaCubeContainer;
 import com.ilexiconn.llibrary.client.model.tabula.container.TabulaCubeGroupContainer;
 import com.ilexiconn.llibrary.client.model.tabula.container.TabulaModelContainer;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemTransformVec3f;
-import net.minecraft.client.renderer.block.model.ModelBlock;
-import net.minecraft.client.resources.IResource;
-import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.client.renderer.model.BlockModel;
+import net.minecraft.client.renderer.model.IUnbakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemTransformVec3f;
+import net.minecraft.resources.IResource;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.ICustomModelLoader;
-import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.PerspectiveMapWrapper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,13 +47,12 @@ public enum TabulaModelHandler implements ICustomModelLoader, JsonDeserializatio
 
     private Gson gson = new GsonBuilder().registerTypeAdapter(ItemTransformVec3f.class, new ItemTransformVec3fDeserializer()).registerTypeAdapter(ItemCameraTransforms.class, new ItemCameraTransformsDeserializer()).create();
     private JsonParser parser = new JsonParser();
-    private ModelBlock.Deserializer modelBlockDeserializer = new ModelBlock.Deserializer();
+    private BlockModel.Deserializer modelBlockDeserializer = new BlockModel.Deserializer();
     private IResourceManager manager;
     private final Set<String> enabledDomains = new HashSet<>();
     
     public void addDomain(String domain) {
         this.enabledDomains.add(domain.toLowerCase(Locale.ROOT));
-        LLibrary.LOGGER.info("TabulaModelHandler: Domain {} has been added.", domain.toLowerCase(Locale.ROOT));
     }
     
     /**
@@ -174,14 +172,14 @@ public enum TabulaModelHandler implements ICustomModelLoader, JsonDeserializatio
     }
 
     @Override
-    public IModel loadModel(ResourceLocation modelLocation) throws IOException {
+    public IUnbakedModel loadModel(ResourceLocation modelLocation) throws IOException {
         String modelPath = modelLocation.getPath();
         modelPath = modelPath.substring(0, modelPath.lastIndexOf('.')) + ".json";
         IResource resource = this.manager.getResource(new ResourceLocation(modelLocation.getNamespace(), modelPath));
         InputStreamReader jsonStream = new InputStreamReader(resource.getInputStream());
         JsonElement json = this.parser.parse(jsonStream);
         jsonStream.close();
-        ModelBlock modelBlock = this.modelBlockDeserializer.deserialize(json, ModelBlock.class, this);
+        BlockModel modelBlock = this.modelBlockDeserializer.deserialize(json, BlockModel.class, this);
         String tblLocationStr = json.getAsJsonObject().get("tabula").getAsString() + ".tbl";
         ResourceLocation tblLocation = new ResourceLocation(tblLocationStr);
         IResource tblResource = this.manager.getResource(tblLocation);

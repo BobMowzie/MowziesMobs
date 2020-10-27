@@ -6,19 +6,18 @@ import com.google.common.collect.Lists;
 import com.ilexiconn.llibrary.client.model.tabula.container.TabulaCubeContainer;
 import com.ilexiconn.llibrary.client.model.tabula.container.TabulaModelContainer;
 import com.ilexiconn.llibrary.client.util.Matrix;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.*;
+import net.minecraft.client.renderer.texture.ISprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.common.model.TRSRTransformation;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.vecmath.Point2f;
 import javax.vecmath.Point2i;
@@ -27,6 +26,7 @@ import javax.vecmath.Vector3f;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -34,7 +34,7 @@ import java.util.function.Function;
  * @since 1.0.0
  */
 @OnlyIn(Dist.CLIENT)
-public class VanillaTabulaModel implements IModel {
+public class VanillaTabulaModel implements IUnbakedModel {
     private TabulaModelContainer model;
     private ResourceLocation particle;
     private ImmutableList<ResourceLocation> textures;
@@ -53,12 +53,12 @@ public class VanillaTabulaModel implements IModel {
     }
 
     @Override
-    public Collection<ResourceLocation> getTextures() {
+    public Collection<ResourceLocation> getTextures(Function<ResourceLocation, IUnbakedModel> modelGetter, Set<String> missingTextureErrors) {
         return this.textures;
     }
 
     @Override
-    public IBakedModel bake(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
+    public IBakedModel bake(ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> texFunction, ISprite sprite) {
         List<ResourceLocation> locations = Lists.newArrayList(this.textures);
         if(locations.isEmpty()) {
             locations.add(new ResourceLocation("missingno"));
@@ -158,8 +158,8 @@ public class VanillaTabulaModel implements IModel {
     private boolean hasTransparency(TabulaCubeContainer cube, TextureAtlasSprite sprite) {
         int textureWidth = this.model.getTextureWidth();
         int textureHeight = this.model.getTextureHeight();
-        int width = sprite.getIconWidth();
-        int height = sprite.getIconHeight();
+        int width = sprite.getWidth();
+        int height = sprite.getHeight();
         int frameCount = sprite.getFrameCount();
         if (frameCount > 0) {
             for (int i = 0; i < frameCount; i++) {

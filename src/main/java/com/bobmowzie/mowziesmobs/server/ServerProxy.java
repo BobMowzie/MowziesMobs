@@ -10,6 +10,7 @@ import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseUp;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseDown;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseUp;
 import com.google.common.base.Optional;
+import com.ilexiconn.llibrary.server.network.AnimationMessage;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -105,7 +106,6 @@ public class ServerProxy {
         this.registerMessage(MessagePlayerSolarBeam.class, MessagePlayerSolarBeam::serialize, MessagePlayerSolarBeam::deserialize, new MessagePlayerSolarBeam.Handler());
         this.registerMessage(MessagePlayerSummonSunstrike.class, MessagePlayerSummonSunstrike::serialize, MessagePlayerSummonSunstrike::deserialize, new MessagePlayerSummonSunstrike.Handler());
         this.registerMessage(MessageUnfreezeEntity.class, MessageUnfreezeEntity::serialize, MessageUnfreezeEntity::deserialize, new MessageUnfreezeEntity.Handler());
-
     }
 
     private <MSG> void registerMessage(final Class<MSG> clazz, final BiConsumer<MSG, PacketBuffer> encoder, final Function<PacketBuffer, MSG> decoder, final BiConsumer<MSG, Supplier<NetworkEvent.Context>> consumer) {
@@ -113,5 +113,8 @@ public class ServerProxy {
                 .encoder(encoder).decoder(decoder)
                 .consumer(consumer)
                 .add();
+    }
+
+    public void setTPS(float tickRate) {
     }
 }

@@ -1,6 +1,5 @@
 package com.ilexiconn.llibrary.client.model.tabula.animation;
 
-import com.ilexiconn.llibrary.LLibrary;
 import com.ilexiconn.llibrary.client.model.tabula.ITabulaModelAnimator;
 import com.ilexiconn.llibrary.client.model.tabula.TabulaModel;
 import com.ilexiconn.llibrary.client.model.tabula.container.TabulaAnimationComponentContainer;

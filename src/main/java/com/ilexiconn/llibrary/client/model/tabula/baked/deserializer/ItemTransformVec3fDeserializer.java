@@ -1,17 +1,12 @@
 package com.ilexiconn.llibrary.client.model.tabula.baked.deserializer;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import net.minecraft.client.renderer.block.model.ItemTransformVec3f;
-import net.minecraft.util.JsonUtils;
+import com.google.gson.*;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.model.ItemTransformVec3f;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.util.vector.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.JsonUtils;
 
 import java.lang.reflect.Type;
 
@@ -31,14 +26,13 @@ public class ItemTransformVec3fDeserializer implements JsonDeserializer<ItemTran
         JsonObject object = element.getAsJsonObject();
         Vector3f rotation = this.parseVector3f(object, "rotation", ROTATION_DEFAULT);
         Vector3f translation = this.parseVector3f(object, "translation", TRANSLATION_DEFAULT);
-        translation.scale(0.0625F);
-        translation.x = MathHelper.clamp(translation.x, -5.0F, 5.0F);
-        translation.y = MathHelper.clamp(translation.y, -5.0F, 5.0F);
-        translation.z = MathHelper.clamp(translation.z, -5.0F, 5.0F);
+        translation.mul(0.0625F);
+        float x = MathHelper.clamp(translation.getX(), -5.0F, 5.0F);
+        float y = MathHelper.clamp(translation.getY(), -5.0F, 5.0F);
+        float z = MathHelper.clamp(translation.getZ(), -5.0F, 5.0F);
+        translation.set(x, y, z);
         Vector3f scale = this.parseVector3f(object, "scale", SCALE_DEFAULT);
-        scale.x = MathHelper.clamp(scale.x, -4.0F, 4.0F);
-        scale.y = MathHelper.clamp(scale.y, -4.0F, 4.0F);
-        scale.z = MathHelper.clamp(scale.z, -4.0F, 4.0F);
+        scale.clamp(-4.0f, 4.0f);
         return new ItemTransformVec3f(rotation, translation, scale);
     }
 
