@@ -1,6 +1,9 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
+import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -38,15 +41,15 @@ public class ItemWroughtAxe extends AxeItem {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-        if (player != null && hand == Hand.MAIN_HAND) {
-            MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
-            if (property != null && property.untilAxeSwing <= 0) {
+        if (hand == Hand.MAIN_HAND) {
+            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+            if (playerCapability.getUntilAxeSwing() <= 0) {
                 boolean verticalAttack = player.isSneaking() && player.onGround;
-                EntityAxeAttack axeAttack = new EntityAxeAttack(world, player, verticalAttack);
+                EntityAxeAttack axeAttack = new EntityAxeAttack(EntityHandler.AXE_ATTACK, world, player, verticalAttack);
                 axeAttack.setPositionAndRotation(player.posX, player.posY, player.posZ, player.rotationYaw, player.rotationPitch);
                 if (!world.isRemote) world.addEntity(axeAttack);
-                property.verticalSwing = verticalAttack;
-                property.untilAxeSwing = MowziePlayerProperties.SWING_COOLDOWN;
+                playerCapability.setVerticalSwing(verticalAttack);
+                playerCapability.setUntilAxeSwing(PlayerCapability.SWING_COOLDOWN);
                 if (ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable && !player.abilities.isCreativeMode) player.getHeldItem(hand).damageItem(2, player, p -> p.sendBreakAnimation(hand));
             }
             return new ActionResult<ItemStack>(ActionResultType.SUCCESS, player.getHeldItem(hand));

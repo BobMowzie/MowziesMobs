@@ -1,5 +1,6 @@
 package com.ilexiconn.llibrary.client.model;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.client.renderer.entity.model.RendererModel;
@@ -160,7 +161,7 @@ public class ModelAnimator {
                     box.rotationPointZ += transform.getOffsetZ();
                 }
             } else {
-                float tick = (animationTick - this.prevTempTick + LLibrary.PROXY.getPartialTicks()) / (this.tempTick - this.prevTempTick);
+                float tick = (animationTick - this.prevTempTick + MowziesMobs.PROXY.getPartialTicks()) / (this.tempTick - this.prevTempTick);
                 float inc = MathHelper.sin((float) (tick * Math.PI / 2.0F)), dec = 1.0F - inc;
                 for (RendererModel box : this.prevTransformMap.keySet()) {
                     Transform transform = this.prevTransformMap.get(box);

@@ -90,7 +90,7 @@ public class ServerProxy {
 
     public void initNetwork() {
         final String version = "1";
-        MowziesMobs.network = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(MowziesMobs.MODID, "net"))
+        MowziesMobs.NETWORK = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(MowziesMobs.MODID, "net"))
                 .networkProtocolVersion(() -> version)
                 .clientAcceptedVersions(version::equals)
                 .serverAcceptedVersions(version::equals)
@@ -109,7 +109,7 @@ public class ServerProxy {
     }
 
     private <MSG> void registerMessage(final Class<MSG> clazz, final BiConsumer<MSG, PacketBuffer> encoder, final Function<PacketBuffer, MSG> decoder, final BiConsumer<MSG, Supplier<NetworkEvent.Context>> consumer) {
-        MowziesMobs.network.messageBuilder(clazz, this.nextMessageId++)
+        MowziesMobs.NETWORK.messageBuilder(clazz, this.nextMessageId++)
                 .encoder(encoder).decoder(decoder)
                 .consumer(consumer)
                 .add();

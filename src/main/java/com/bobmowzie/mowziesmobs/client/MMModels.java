@@ -27,8 +27,8 @@ public final class MMModels {
     public static void register(ModelRegistryEvent event) {
         TabulaModelHandler.INSTANCE.addDomain(MowziesMobs.MODID);
 
-        registerBlockModel(BlockHandler.PAINTED_ACACIA, "painted_acacia");
-        registerBlockModel(BlockHandler.PAINTED_ACACIA_SLAB, "painted_acacia_slab");
+//        registerBlockModel(BlockHandler.PAINTED_ACACIA, "painted_acacia");
+//        registerBlockModel(BlockHandler.PAINTED_ACACIA_SLAB, "painted_acacia_slab"); // TODO
 
 //        ModelLoader.addSpecialModel(BlockHandler.GROTTOL, new State.Builder() // TODO
 //            .withName(BlockGrottol.VARIANT)

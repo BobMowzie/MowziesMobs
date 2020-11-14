@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityBabyFoliaath;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
@@ -53,7 +54,7 @@ public class ItemFoliaathSeed extends Item {
         } else if (!player.canPlayerEdit(pos.offset(facing), facing, stack)) {
             return ActionResultType.FAIL;
         }
-        Entity entity = spawnCreature(world, new EntityBabyFoliaath(world), pos.getX(), pos.getY() + 1, pos.getZ());
+        Entity entity = spawnCreature(world, new EntityBabyFoliaath(EntityHandler.BABY_FOLIAATH, world), pos.getX(), pos.getY() + 1, pos.getZ());
         if (entity != null) {
             if (entity instanceof LivingEntity && stack.hasDisplayName()) {
                 entity.setCustomName(stack.getDisplayName());

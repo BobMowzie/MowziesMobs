@@ -18,12 +18,12 @@ public class MMPathFinder extends PathFinder {
     private final PathPoint[] pathOptions = new PathPoint[32];
     private final NodeProcessor nodeProcessor;
 
-    public MMPathFinder(NodeProcessor processor) {
-        super(processor);
+    public MMPathFinder(NodeProcessor processor, int i) {
+        super(processor, i);
         this.nodeProcessor = processor;
     }
 
-    @Nullable
+    /*@Nullable
     @Override
     public Path findPath(IBlockAccess worldIn, MobEntity living, Entity targetEntity, float maxDistance) {
         return this.findPath(worldIn, living, targetEntity.posX, targetEntity.getBoundingBox().minY, targetEntity.posZ, maxDistance);
@@ -122,5 +122,5 @@ public class MMPathFinder extends PathFinder {
             double d2 = point.z + MathHelper.floor(entity.getWidth() + 1.0F) * 0.5D;
             return new Vec3d(d0, d1, d2);
         }
-    }
+    }*/
 }

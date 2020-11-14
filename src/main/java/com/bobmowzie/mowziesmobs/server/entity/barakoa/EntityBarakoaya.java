@@ -12,6 +12,8 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.TradeStore;
 import com.bobmowzie.mowziesmobs.server.gui.GuiHandler;
 import com.bobmowzie.mowziesmobs.server.gui.GuiHandler.ContainerHolder;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoayaTrade;
+import com.bobmowzie.mowziesmobs.server.inventory.InventoryBarako;
+import com.bobmowzie.mowziesmobs.server.inventory.InventoryBarakoaya;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.google.common.base.Optional;
@@ -147,14 +149,14 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
     }
 
     @Override
-    public Container createContainer(World world, PlayerEntity player, int x, int y, int z) {
-        return new ContainerBarakoayaTrade(this, player.inventory, world);
+    public ContainerBarakoayaTrade createContainer(World world, PlayerEntity player, int x, int y, int z) {
+        return new ContainerBarakoayaTrade(0,this, player.inventory);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public ContainerScreen createGui(World world, PlayerEntity player, int x, int y, int z) {
-        return new GuiBarakoayaTrade(this, player.inventory, world);
+        return new GuiBarakoayaTrade(this, new InventoryBarakoaya(this), createContainer(world, player, x, y, z), player.inventory, getDisplayName());
     }
 
     @Override

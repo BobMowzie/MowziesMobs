@@ -11,10 +11,7 @@ import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityLantern;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
@@ -30,7 +27,7 @@ public enum EntityHandler {
 
     public static final String BARAKOAYA_ID = "barakoaya";
 
-    private static final Map<ResourceLocation, MowzieEntityEggInfo> entityEggs = new LinkedHashMap<>();
+    private static final Map<EntityType<LivingEntity>, MowzieEntityEggInfo> entityEggs = new LinkedHashMap<>();
 
     private static int nextEntityId;
 
@@ -64,9 +61,9 @@ public enum EntityHandler {
         FOLIAATH = register("foliaath", EntityType.Builder.create(EntityFoliaath::new, EntityClassification.MONSTER).size(0.4f, 0.4f), true, 0x47CC3B, 0xC03BCC);
         BABY_FOLIAATH = register("baby_foliaath", EntityType.Builder.create(EntityBabyFoliaath::new, EntityClassification.MONSTER).size(0.5f, 2.5f));
         WROUGHTNAUT = register("ferrous_wroughtnaut", EntityType.Builder.create(EntityWroughtnaut::new, EntityClassification.MONSTER).size(2.5f, 3.5f), true, 0x8C8C8C, 0xFFFFFF);
-        BARAKOAN_TO_BARAKOANA = register("barakoan_barakoana", EntityType.Builder.create(EntityBarakoanToBarakoana::new, EntityClassification.MONSTER).size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityWidth));
-        BARAKOAN_TO_PLAYER = register("barakoan_player", EntityType.Builder.create(EntityBarakoanToPlayer::new, EntityClassification.MONSTER).size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityWidth));
-        BARAKOAYA = register("barakoaya", EntityType.Builder.create(EntityBarakoaya::new, EntityClassification.MONSTER).size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityWidth), true, 0xBA6656, 0xFAFA78);
+//        BARAKOAN_TO_BARAKOANA = register("barakoan_barakoana", EntityType.Builder.create(EntityBarakoanToBarakoana::new, EntityClassification.MONSTER).size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityWidth));
+//        BARAKOAN_TO_PLAYER = register("barakoan_player", EntityType.Builder.create(EntityBarakoanToPlayer::new, EntityClassification.MONSTER).size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityWidth));
+        BARAKOAYA = register("barakoaya", EntityType.Builder.create(EntityBarakoaya::new, EntityClassification.MONSTER).size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight), true, 0xBA6656, 0xFAFA78);
         BARAKOANA = register("barakoana", EntityType.Builder.create(EntityBarakoana::new, EntityClassification.MONSTER).size(MaskType.FURY.entityWidth, MaskType.FURY.entityHeight), true, 0xBA6656, 0xFAFA78);
         BARAKO = register("barako", EntityType.Builder.create(EntityBarako::new, EntityClassification.MONSTER).size(1.5f, 2.4f), true, 0xBA6656, 0xFFFF00);
         FROSTMAW = register("frostmaw", EntityType.Builder.create(EntityFrostmaw::new, EntityClassification.MONSTER).size(4f, 4f), true, 0xf7faff, 0xafcdff);
@@ -74,7 +71,7 @@ public enum EntityHandler {
         LANTERN = register("lantern", EntityType.Builder.create(EntityLantern::new, EntityClassification.AMBIENT).size(1.0f, 1.0f), true, 0x6dea00, 0x235a10);
         NAGA = register("naga", EntityType.Builder.create(EntityNaga::new, EntityClassification.MONSTER).size(3.0f, 1.0f).setTrackingRange(128), true, 0x154850, 0x8dd759);
 
-        SUNSTRIKE = register("sunstrike", EntityType.Builder.create(EntitySunstrike::new, EntityClassification.MISC).disableSummoning().size(0.1F, 0.1F));
+        /*SUNSTRIKE = register("sunstrike", EntityType.Builder.create(EntitySunstrike::new, EntityClassification.MISC).disableSummoning().size(0.1F, 0.1F));
         SOLAR_BEAM = register("solar_beam", EntityType.Builder.create(EntitySolarBeam::new, EntityClassification.MISC).disableSummoning().size(0.1F, 0.1F));
         BOULDER = register("boulder", EntityType.Builder.create(EntityBoulder::new, EntityClassification.MISC).disableSummoning().size(10, 10));
         AXE_ATTACK = register("axe_attack", EntityType.Builder.create(EntityAxeAttack::new, EntityClassification.MISC).disableSummoning().size(1f, 1f));
@@ -85,7 +82,7 @@ public enum EntityHandler {
         DART = register("dart", EntityType.Builder.create(EntityDart::new, EntityClassification.MISC).disableSummoning().size(0.5F, 0.5F));
         POISON_BALL = register("poison_ball", EntityType.Builder.create(EntityPoisonBall::new, EntityClassification.MISC).disableSummoning().size(0.5F, 0.5F));
         SUPER_NOVA = register("super_nova", EntityType.Builder.create(EntitySuperNova::new, EntityClassification.MISC).disableSummoning().size(1, 1));
-        BLOCK_SWAPPER = register("block_swapper", EntityType.Builder.create(EntityBlockSwapper::new, EntityClassification.MISC).disableSummoning().size(1, 1));
+        BLOCK_SWAPPER = register("block_swapper", EntityType.Builder.create(EntityBlockSwapper::new, EntityClassification.MISC).disableSummoning().size(1, 1));*/
     }
 
     private static <T extends Entity> EntityType<T> register(String key, EntityType.Builder<T> builder) {
@@ -94,7 +91,7 @@ public enum EntityHandler {
 
     private static <T extends Entity> EntityType<T> register(String key, EntityType.Builder<T> builder, boolean addEgg, int mainColor, int subColor) {
         if (addEgg) {
-//            entityEggs.put(res, new MowzieEntityEggInfo(res, entityClass, mainColor, subColor));
+//            entityEggs.put(res, new MowzieEntityEggInfo(res, entityClass, mainColor, subColor)); TODO
         }
         return Registry.register(Registry.ENTITY_TYPE, key, builder.build(key));
     }
@@ -103,18 +100,18 @@ public enum EntityHandler {
         return nextEntityId++;
     }
 
-    public MowzieEntityEggInfo getEntityEggInfo(ResourceLocation id) {
+    public MowzieEntityEggInfo getEntityEggInfo(EntityType<?> id) {
         return entityEggs.get(id);
     }
 
-    public boolean hasEntityEggInfo(ResourceLocation name) {
-        return entityEggs.containsKey(name);
+    public boolean hasEntityEggInfo(EntityType<?> type) {
+        return entityEggs.containsKey(type);
     }
 
-    public MobEntity createEntity(ResourceLocation id, World world) {
+    public MobEntity createEntity(EntityType<?> type, World world) {
         MobEntity entity = null;
         try {
-            Class<? extends MobEntity> clazz = entityEggs.get(id).clazz;
+            Class<? extends MobEntity> clazz = entityEggs.get(type).clazz;
             if (clazz != null) {
                 entity = clazz.getConstructor(World.class).newInstance(world);
             }

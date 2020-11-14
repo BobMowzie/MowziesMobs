@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaya;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
@@ -11,32 +12,35 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public final class ContainerBarakoayaTrade extends Container {
+
     private final EntityBarakoaya barakoaya;
 
     private final InventoryBarakoaya inventory;
 
     private final PlayerEntity player;
 
-    private final World world;
-
-    public ContainerBarakoayaTrade(EntityBarakoaya barakoaya, PlayerInventory playerInv, World world) {
-        this(barakoaya, new InventoryBarakoaya(barakoaya), playerInv, world);
+    public ContainerBarakoayaTrade(int id, PlayerInventory playerInventory) {
+        this(id, null, playerInventory);
     }
 
-    public ContainerBarakoayaTrade(EntityBarakoaya barakoaya, InventoryBarakoaya inventory, PlayerInventory playerInv, World world) {
+    public ContainerBarakoayaTrade(int id, EntityBarakoaya barakoaya, PlayerInventory playerInv) {
+        this(id, barakoaya, new InventoryBarakoaya(barakoaya), playerInv);
+    }
+
+    public ContainerBarakoayaTrade(int id, EntityBarakoaya barakoaya, InventoryBarakoaya inventory, PlayerInventory playerInv) {
+        super(ContainerHandler.CONTAINER_BARAKOAYA_TRADE, id);
         this.barakoaya = barakoaya;
         this.inventory = inventory;
         this.player = playerInv.player;
-        this.world = world;
-        addSlotToContainer(new Slot(inventory, 0, 80, 54));
-        addSlotToContainer(new SlotResult(inventory, 1, 133, 54));
+        addSlot(new Slot(inventory, 0, 80, 54));
+        addSlot(new SlotResult(inventory, 1, 133, 54));
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 9; col++) {
-                addSlotToContainer(new Slot(playerInv, col + row * 9 + 9, 8 + col * 18, 84 + row * 18));
+                addSlot(new Slot(playerInv, col + row * 9 + 9, 8 + col * 18, 84 + row * 18));
             }
         }
         for (int col = 0; col < 9; col++) {
-            addSlotToContainer(new Slot(playerInv, col, 8 + col * 18, 142));
+            addSlot(new Slot(playerInv, col, 8 + col * 18, 142));
         }
     }
 
@@ -91,7 +95,7 @@ public final class ContainerBarakoayaTrade extends Container {
     public void onContainerClosed(PlayerEntity player) {
         super.onContainerClosed(player);
         barakoaya.setCustomer(null);
-        if (!world.isRemote) {
+        if (!player.world.isRemote) {
             ItemStack stack = inventory.removeStackFromSlot(0);
             if (stack != ItemStack.EMPTY) {
                 player.dropItem(stack, false);

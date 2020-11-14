@@ -36,10 +36,7 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class MowzieEntity extends CreatureEntity implements IEntityAdditionalSpawnData, IAnimatedEntity, IntermittentAnimatableEntity {
@@ -80,10 +77,10 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         if (id == null) {
             return ItemStack.EMPTY;
         }
-        ResourceLocation res = new ResourceLocation(id);
-        if (EntityHandler.INSTANCE.hasEntityEggInfo(res)) {
+        Optional<EntityType<?>> type = EntityType.byKey(id);
+        if (type.isPresent() && EntityHandler.INSTANCE.hasEntityEggInfo(type.get())) {
             ItemStack stack = new ItemStack(ItemHandler.SPAWN_EGG);
-            ItemSpawnEgg.applyEntityIdToItemStack(stack, res);
+            ItemSpawnEgg.applyEntityIdToItemStack(stack, type.get());
             return stack;
         }
         return ItemStack.EMPTY;

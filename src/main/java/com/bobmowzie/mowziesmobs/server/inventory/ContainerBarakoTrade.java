@@ -14,27 +14,29 @@ public final class ContainerBarakoTrade extends Container {
 
     private final PlayerEntity player;
 
-    private final World world;
-
     private InventoryBarako inventory;
 
-    public ContainerBarakoTrade(EntityBarako barako, PlayerInventory playerInv, World world) {
-        this(barako, new InventoryBarako(barako), playerInv, world);
+    public ContainerBarakoTrade(int id, PlayerInventory playerInventory) {
+        this(id, null, playerInventory);
     }
 
-    public ContainerBarakoTrade(EntityBarako Barako, InventoryBarako inventory, PlayerInventory playerInv, World world) {
+    public ContainerBarakoTrade(int id, EntityBarako barako, PlayerInventory playerInv) {
+        this(id, barako, new InventoryBarako(barako), playerInv);
+    }
+
+    public ContainerBarakoTrade(int id, EntityBarako Barako, InventoryBarako inventory, PlayerInventory playerInv) {
+        super(ContainerHandler.CONTAINER_BARAKO_TRADE, id);
         this.barako = Barako;
         this.player = playerInv.player;
-        this.world = world;
         this.inventory = inventory;
-        addSlotToContainer(new Slot(inventory, 0, 69, 54));
+        addSlot(new Slot(inventory, 0, 69, 54));
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 9; col++) {
-                addSlotToContainer(new Slot(playerInv, col + row * 9 + 9, 8 + col * 18, 84 + row * 18));
+                addSlot(new Slot(playerInv, col + row * 9 + 9, 8 + col * 18, 84 + row * 18));
             }
         }
         for (int col = 0; col < 9; col++) {
-            addSlotToContainer(new Slot(playerInv, col, 8 + col * 18, 142));
+            addSlot(new Slot(playerInv, col, 8 + col * 18, 142));
         }
     }
 
@@ -78,13 +80,12 @@ public final class ContainerBarakoTrade extends Container {
     public void onContainerClosed(PlayerEntity player) {
         super.onContainerClosed(player);
         barako.setCustomer(null);
-        if (!world.isRemote) {
+        if (!player.world.isRemote) {
             ItemStack stack = inventory.removeStackFromSlot(0);
             if (stack != ItemStack.EMPTY) {
                 ItemEntity dropped = player.dropItem(stack, false);
                 if (dropped != null) {
-                    dropped.motionX *= 0.5;
-                    dropped.motionZ *= 0.5;
+                    dropped.setMotion(dropped.getMotion().scale(0.5));
                 }
             }
         }

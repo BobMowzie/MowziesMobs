@@ -24,6 +24,7 @@ import com.bobmowzie.mowziesmobs.server.item.ItemSpawnEgg;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -70,7 +71,7 @@ public class ClientProxy extends ServerProxy {
         Minecraft.getInstance().getItemColors().register(new IItemColor() {
             @Override
             public int getColor(ItemStack stack, int tintIndex) {
-                MowzieEntityEggInfo info = EntityHandler.INSTANCE.getEntityEggInfo(ItemSpawnEgg.getEntityIdFromItem(stack));
+                MowzieEntityEggInfo info = EntityHandler.INSTANCE.getEntityEggInfo(ItemSpawnEgg.getEntityIdFromItem(stack).orElseGet(() -> EntityHandler.LANTERN));
                 return info == null ? -1 : (tintIndex == 0 ? info.primaryColor : info.secondaryColor);
             }
         }, ItemHandler.SPAWN_EGG);

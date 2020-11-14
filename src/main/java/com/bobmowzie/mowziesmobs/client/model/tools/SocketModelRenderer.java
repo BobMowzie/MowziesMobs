@@ -14,7 +14,7 @@ import javax.vecmath.Vector3d;
 /**
  * Created by Josh on 5/8/2017.
  */
-public class SocketModelRenderer extends AdvancedModelRenderer{
+public class SocketModelRenderer extends AdvancedModelRenderer {
     public SocketModelRenderer(AdvancedModelBase model, String name) {
         super(model, name);
     }
@@ -54,7 +54,7 @@ public class SocketModelRenderer extends AdvancedModelRenderer{
         this.textureHeight = modelRenderer.textureHeight;
         this.textureWidth = modelRenderer.textureWidth;
 
-        this.cubeList = modelRenderer.cubeList;
+        this.cubeList.addAll(modelRenderer.cubeList);
         this.scaleChildren = modelRenderer.scaleChildren;
         this.childModels = modelRenderer.childModels;
 

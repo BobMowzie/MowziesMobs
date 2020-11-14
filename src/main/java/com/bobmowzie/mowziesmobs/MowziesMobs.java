@@ -23,7 +23,7 @@ public final class MowziesMobs {
     public static final String MODID = "mowziesmobs";
     public static ServerProxy PROXY;
 
-    public static SimpleChannel network;
+    public static SimpleChannel NETWORK;
 
     public MowziesMobs() {
         final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();

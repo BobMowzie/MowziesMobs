@@ -261,28 +261,28 @@ public class PlayerCapability {
             if (event.side == LogicalSide.CLIENT) {
                 if (Minecraft.getInstance().gameSettings.keyBindAttack.isKeyDown() && !mouseLeftDown) {
                     mouseLeftDown = true;
-                    MowziesMobs.network.sendToServer(new MessageLeftMouseDown());
+                    MowziesMobs.NETWORK.sendToServer(new MessageLeftMouseDown());
                     for (int i = 0; i < powers.length; i++) {
                         powers[i].onLeftMouseDown(player);
                     }
                 }
                 if (Minecraft.getInstance().gameSettings.keyBindUseItem.isKeyDown() && !mouseRightDown) {
                     mouseRightDown = true;
-                    MowziesMobs.network.sendToServer(new MessageRightMouseDown());
+                    MowziesMobs.NETWORK.sendToServer(new MessageRightMouseDown());
                     for (int i = 0; i < powers.length; i++) {
                         powers[i].onRightMouseDown(player);
                     }
                 }
                 if (!Minecraft.getInstance().gameSettings.keyBindAttack.isKeyDown() && mouseLeftDown) {
                     mouseLeftDown = false;
-                    MowziesMobs.network.sendToServer(new MessageLeftMouseUp());
+                    MowziesMobs.NETWORK.sendToServer(new MessageLeftMouseUp());
                     for (int i = 0; i < powers.length; i++) {
                         powers[i].onLeftMouseUp(player);
                     }
                 }
                 if (!Minecraft.getInstance().gameSettings.keyBindUseItem.isKeyDown() && mouseRightDown) {
                     mouseRightDown = false;
-                    MowziesMobs.network.sendToServer(new MessageRightMouseUp());
+                    MowziesMobs.NETWORK.sendToServer(new MessageRightMouseUp());
                     for (int i = 0; i < powers.length; i++) {
                         powers[i].onRightMouseUp(player);
                     }

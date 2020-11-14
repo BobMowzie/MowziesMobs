@@ -26,7 +26,7 @@ public final class GuiBarakoayaTrade extends ContainerScreen {
 
     private int cursorHit;
 
-    private GuiBarakoayaTrade(EntityBarakoaya barakoaya, InventoryBarakoaya inventory, ContainerBarakoayaTrade container, PlayerInventory playerInv, ITextComponent title) {
+    public GuiBarakoayaTrade(EntityBarakoaya barakoaya, InventoryBarakoaya inventory, ContainerBarakoayaTrade container, PlayerInventory playerInv, ITextComponent title) {
         super(container, playerInv, title);
         this.barakoaya = barakoaya;
         this.inventory = inventory;

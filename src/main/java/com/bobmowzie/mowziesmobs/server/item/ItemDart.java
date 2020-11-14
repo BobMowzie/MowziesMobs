@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.server.entity.EntityDart;
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -22,7 +23,7 @@ public class ItemDart extends ArrowItem {
 
     @Override
     public AbstractArrowEntity createArrow(World world, ItemStack stack, LivingEntity shooter) {
-        return new EntityDart(world, shooter);
+        return new EntityDart(EntityHandler.DART, world, shooter);
     }
 
     public static DamageSource causeArrowDamage(EntityDart entitydart, Entity entity) {

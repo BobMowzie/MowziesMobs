@@ -18,7 +18,7 @@ public class MMPathNavigateGround extends GroundPathNavigator {
         super(entity, world);
     }
 
-    @Override
+    /*@Override
     protected PathFinder getPathFinder() {
         this.nodeProcessor = new MMWalkNodeProcessor();
         this.nodeProcessor.setCanEnterDoors(true);
@@ -165,5 +165,5 @@ public class MMPathNavigateGround extends GroundPathNavigator {
             case 2: return (float) v.z;
             default: return 0.0F;
         }
-    }
+    }*/
 }

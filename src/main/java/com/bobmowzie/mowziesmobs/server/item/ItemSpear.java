@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTier;
 import net.minecraft.item.ToolItem;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -48,12 +49,12 @@ public class ItemSpear extends ToolItem {
         Vec3d pos = new Vec3d(player.posX, player.posY + player.getEyeHeight(), player.posZ);
         Vec3d segment = player.getLookVec();
         segment = pos.add(segment.x * range, segment.y * range, segment.z * range);
-        result.setBlockHit(world.rayTraceBlocks(pos, segment, false, true, true));
+        result.setBlockHit(world.rayTraceBlocks(new RayTraceContext(pos, segment, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, player)));
         double collidePosX, collidePosY, collidePosZ;
         if (result.blockHit != null) {
-            collidePosX = result.blockHit.hitVec.x;
-            collidePosY = result.blockHit.hitVec.y;
-            collidePosZ = result.blockHit.hitVec.z;
+            collidePosX = result.blockHit.getHitVec().x;
+            collidePosY = result.blockHit.getHitVec().y;
+            collidePosZ = result.blockHit.getHitVec().z;
         }
         else {
             Vec3d end = player.getLookVec().scale(range).add(pos);
@@ -70,19 +71,13 @@ public class ItemSpear extends ToolItem {
             }
             float pad = entity.getCollisionBorderSize();
             AxisAlignedBB aabb = entity.getBoundingBox().grow(pad, pad, pad);
-            RayTraceResult hit = aabb.calculateIntercept(pos, segment);
-            if (aabb.contains(pos) || hit != null) {
+            boolean hit = aabb.intersects(pos, segment);
+            if (aabb.contains(pos) || hit) {
                 result.addEntityHit(entity);
                 if (closest == null || player.getDistance(closest) > player.getDistance(entity)) closest = entity;
             }
         }
         return closest;
-    }
-
-    @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        super.addInformation(stack, worldIn, tooltip, flagIn);
-        ItemHandler.addItemText(this, tooltip);
     }
 
     public static class HitResult {

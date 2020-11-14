@@ -1,13 +1,16 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import com.google.common.collect.Sets;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.controller.LookController;
 import net.minecraft.entity.ai.goal.GoalSelector;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -22,12 +25,21 @@ import java.util.UUID;
 public class ItemCapturedGrottol extends Item {
     public ItemCapturedGrottol(Item.Properties properties) {
         super(properties);
-        setMaxStackSize(1);
     }
 
     @Override
-    public ActionResultType onItemUse(PlayerEntity player, World world, BlockPos pos, Hand hand, Direction facing, float hitX, float hitY, float hitZ) {
-        if (facing == Direction.DOWN) {
+    public int getItemStackLimit(ItemStack stack) {
+        return 1;
+    }
+
+    @Override
+    public ActionResultType onItemUse(ItemUseContext context) {
+        PlayerEntity player = context.getPlayer();
+        BlockPos pos = context.getPos();
+        Direction facing = context.getFace();
+        Hand hand = context.getHand();
+        World world = context.getWorld();
+        if (context.getFace() == Direction.DOWN) {
             return ActionResultType.FAIL;
         }
         BlockPos location = pos.offset(facing);
@@ -36,16 +48,16 @@ public class ItemCapturedGrottol extends Item {
             return ActionResultType.FAIL;
         }
         if (!world.isRemote) {
-            EntityGrottol grottol = new EntityGrottol(world);
-            CompoundNBT compound = stack.getSubCompound("EntityTag");
+            EntityGrottol grottol = new EntityGrottol(EntityHandler.GROTTOL, world);
+            CompoundNBT compound = stack.getChildTag("EntityTag");
             if (compound != null) {
                 setData(grottol, compound);
             }
             grottol.moveToBlockPosAndAngles(location, 0, 0);
             lookAtPlayer(grottol, player);
-            grottol.onInitialSpawn(world.getDifficultyForLocation(location), null);
+            grottol.onInitialSpawn(world, world.getDifficultyForLocation(location), SpawnReason.MOB_SUMMONED, null, null);
             world.addEntity(grottol);
-            if (!player.capabilities.isCreativeMode) {
+            if (!player.abilities.isCreativeMode) {
                 stack.shrink(1);
             }
         }
@@ -53,30 +65,30 @@ public class ItemCapturedGrottol extends Item {
     }
 
     private void setData(EntityGrottol grottol, CompoundNBT compound) {
-        CompoundNBT data = grottol.writeToNBT(new CompoundNBT());
+        /*CompoundNBT data = grottol.writeToNBT(new CompoundNBT());
         UUID id = grottol.getUniqueID();
         data.merge(compound);
         grottol.readFromNBT(data);
-        grottol.setUniqueId(id);
+        grottol.setUniqueId(id);*/ // TODO
     }
 
     private void lookAtPlayer(EntityGrottol grottol, PlayerEntity player) {
         LookController helper = new LookController(grottol);
         helper.setLookPositionWithEntity(player, 180, 90);
-        helper.onUpdateLook();
-        GoalSelector ai = grottol.tasks;
-        Set<GoalSelector.EntityAITaskEntry> tasks = Sets.newLinkedHashSet(ai.taskEntries);
+        helper.tick();
+        /*GoalSelector ai = grottol.goalSelector;
+        Set<GoalSelector.EntityAITaskEntry> tasks = Sets.newLinkedHashSet(ai..taskEntries);
         ai.taskEntries.removeIf(entry -> !(entry.action instanceof LookAtGoal));
         grottol.getRNG().setSeed("IS MATh RElatEd tO ScIENCe?".hashCode());
         ai.onUpdateTasks();
         grottol.getRNG().setSeed(new Random().nextLong());
         ai.taskEntries.clear();
-        ai.taskEntries.addAll(tasks);
+        ai.taskEntries.addAll(tasks);*/
     }
 
     public ItemStack create(EntityGrottol grottol) {
         ItemStack stack = new ItemStack(this);
-        stack.setTagInfo("EntityTag", grottol.writeToNBT(new CompoundNBT()));
+        stack.setTagInfo("EntityTag", grottol.serializeNBT());
         return stack;
     }
 }

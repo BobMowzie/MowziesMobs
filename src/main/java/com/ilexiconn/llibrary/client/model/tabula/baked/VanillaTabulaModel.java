@@ -58,19 +58,19 @@ public class VanillaTabulaModel implements IUnbakedModel {
     }
 
     @Override
-    public IBakedModel bake(ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> texFunction, ISprite sprite) {
+    public IBakedModel bake(ModelBakery bakery, Function<ResourceLocation, TextureAtlasSprite> texFunction, ISprite spriteIn, VertexFormat format) {
         List<ResourceLocation> locations = Lists.newArrayList(this.textures);
         if(locations.isEmpty()) {
             locations.add(new ResourceLocation("missingno"));
         }
         ImmutableList.Builder<BakedQuad> builder = ImmutableList.builder();
-        TextureAtlasSprite particleSprite = bakedTextureGetter.apply(this.particle == null ? locations.get(0) : this.particle);
+        TextureAtlasSprite particleSprite = texFunction.apply(this.particle == null ? locations.get(0) : this.particle);
         int layer = 0;
         for(ResourceLocation resourceLocation : locations) {
             Matrix matrix = new Matrix();
-            TextureAtlasSprite sprite = bakedTextureGetter.apply(resourceLocation);
-            TRSRTransformation transformation = state.apply(Optional.empty()).orElse(TRSRTransformation.identity());
-            matrix.multiply(transformation.getMatrix());
+            TextureAtlasSprite sprite = texFunction.apply(resourceLocation);
+            TRSRTransformation transformation = TRSRTransformation.identity();
+            matrix.multiply(transformation.getMatrix(Direction.NORTH));
             matrix.translate(0.5F, 1.5F, 0.5F);
             matrix.scale(-0.0625F, -0.0625F, 0.0625F);
             this.build(matrix, builder, format, this.model.getCubes(), sprite, layer++);
@@ -156,7 +156,7 @@ public class VanillaTabulaModel implements IUnbakedModel {
     }
 
     private boolean hasTransparency(TabulaCubeContainer cube, TextureAtlasSprite sprite) {
-        int textureWidth = this.model.getTextureWidth();
+        /*int textureWidth = this.model.getTextureWidth();
         int textureHeight = this.model.getTextureHeight();
         int width = sprite.getWidth();
         int height = sprite.getHeight();
@@ -178,6 +178,7 @@ public class VanillaTabulaModel implements IUnbakedModel {
                 }
             }
         }
+        return false;*/ // TODO
         return false;
     }
 

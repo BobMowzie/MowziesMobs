@@ -1,6 +1,9 @@
 package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
+import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
@@ -8,6 +11,7 @@ import com.bobmowzie.mowziesmobs.server.item.ItemWroughtAxe;
 import com.bobmowzie.mowziesmobs.server.item.ItemWroughtHelm;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
@@ -60,8 +64,8 @@ public enum ClientEventHandler {
     @SubscribeEvent
     public void onHandRender(RenderSpecificHandEvent event) {
         PlayerEntity player = Minecraft.getInstance().player;
-        MowziePlayerProperties propertyPlayer = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
-        if (event.getHand() == Hand.MAIN_HAND && propertyPlayer != null && propertyPlayer.untilAxeSwing > 0) {
+        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        if (event.getHand() == Hand.MAIN_HAND && playerCapability.getUntilAxeSwing() > 0) {
             event.setCanceled(true);
         }
     }
@@ -173,9 +177,9 @@ public enum ClientEventHandler {
     public void onRenderTick(TickEvent.RenderTickEvent event) {
         PlayerEntity player = Minecraft.getInstance().player;
         if (player != null) {
-            MowziePlayerProperties propertyPlayer = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
-            if (propertyPlayer != null && propertyPlayer.geomancy.canUse(player) && propertyPlayer.geomancy.isSpawningBoulder() && propertyPlayer.geomancy.getSpawnBoulderCharge() > 2) {
-                Vec3d lookPos = propertyPlayer.geomancy.getLookPos();
+            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+            if (playerCapability.getGeomancy().canUse(player) && playerCapability.getGeomancy().isSpawningBoulder() && playerCapability.getGeomancy().getSpawnBoulderCharge() > 2) {
+                Vec3d lookPos = playerCapability.getGeomancy().getLookPos();
                 Vec3d playerEyes = player.getEyePosition(MowziesMobs.PROXY.getPartialTicks());
                 Vec3d vec = playerEyes.subtract(lookPos).normalize();
                 float yaw = (float) Math.atan2(vec.z, vec.x);
@@ -186,8 +190,8 @@ public enum ClientEventHandler {
                 player.rotationPitch += dPitch;
                 stopMouseMove();
             }
-            MowzieLivingProperties propertyLiving = EntityPropertiesHandler.INSTANCE.getProperties(player, MowzieLivingProperties.class);
-            if (player.isPotionActive(PotionHandler.FROZEN) && propertyLiving.prevFrozen) {
+            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(player, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+            if (player.isPotionActive(PotionHandler.FROZEN) && frozenCapability.getPrevFrozen()) {
                 stopMouseMove();
             }
         }
@@ -196,14 +200,14 @@ public enum ClientEventHandler {
     @SubscribeEvent
     public void onRenderLiving(RenderLivingEvent.Pre event) {
         LivingEntity entity = event.getEntity();
-        MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
-        if (entity.isPotionActive(PotionHandler.FROZEN) && property.prevFrozen) {
-            entity.rotationYaw = entity.prevRotationYaw = property.frozenYaw;
-            entity.rotationPitch = entity.prevRotationPitch = property.frozenPitch;
-            entity.rotationYawHead = entity.prevRotationYawHead = property.frozenYawHead;
-            entity.renderYawOffset = entity.prevRenderYawOffset = property.frozenRenderYawOffset;
-            entity.swingProgress = entity.prevSwingProgress = property.frozenSwingProgress;
-            entity.limbSwingAmount = entity.prevLimbSwingAmount = property.frozenLimbSwingAmount;
+        FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+        if (entity.isPotionActive(PotionHandler.FROZEN) && frozenCapability.getPrevFrozen()) {
+            entity.rotationYaw = entity.prevRotationYaw = frozenCapability.getFrozenYaw();
+            entity.rotationPitch = entity.prevRotationPitch = frozenCapability.getFrozenPitch();
+            entity.rotationYawHead = entity.prevRotationYawHead = frozenCapability.getFrozenYawHead();
+            entity.renderYawOffset = entity.prevRenderYawOffset = frozenCapability.getFrozenRenderYawOffset();
+            entity.swingProgress = entity.prevSwingProgress = frozenCapability.getFrozenSwingProgress();
+            entity.limbSwingAmount = entity.prevLimbSwingAmount = frozenCapability.getFrozenLimbSwingAmount();
             entity.setSneaking(false);
         }
     }
@@ -226,32 +230,32 @@ public enum ClientEventHandler {
                 }
                 int points = pointStart + progress * 50;
                 Minecraft.getInstance().getTextureManager().bindTexture(MARIO);
-                ScaledResolution res = e.getResolution();
+                MainWindow res = e.getWindow();
                 int offsetY = 16;
                 int col = res.getScaledWidth() / 4;
                 // MARIO
                 int marioOffsetX = col / 2 - 18;
-                AbstractGui.drawModalRectWithCustomSizedTexture(marioOffsetX, offsetY, 0, 16, 39, 7, 64, 64);
+                AbstractGui.blit(marioOffsetX, offsetY, 0, 16, 39, 7, 64, 64);
                 // points
                 drawMarioNumber(marioOffsetX, offsetY + 8, points, 6);
                 // Coin
                 int coinOffsetX = col + col / 2 - 15;
                 int coinU = 40 + ((int) (Math.max(0, MathHelper.sin(t * 0.005F)) * 2 + 0.5F)) * 6;
-                AbstractGui.drawModalRectWithCustomSizedTexture(coinOffsetX, offsetY + 8, coinU, 8, 5, 8, 64, 64);
+                AbstractGui.blit(coinOffsetX, offsetY + 8, coinU, 8, 5, 8, 64, 64);
                 // x02
-                AbstractGui.drawModalRectWithCustomSizedTexture(coinOffsetX + 9, offsetY + 8, 16, 8, 23, 7, 64, 64);
+                AbstractGui.blit(coinOffsetX + 9, offsetY + 8, 16, 8, 23, 7, 64, 64);
                 // WORLD 1-1
-                AbstractGui.drawModalRectWithCustomSizedTexture(col * 2 + col / 2 - 19, offsetY, 0, 24, 39, 15, 64, 64);
+                AbstractGui.blit(col * 2 + col / 2 - 19, offsetY, 0, 24, 39, 15, 64, 64);
                 // TIME
                 int timeOffsetX = col * 3 + col / 2 - 15;
-                AbstractGui.drawModalRectWithCustomSizedTexture(timeOffsetX, offsetY, 0, 40, 30, 7, 64, 64);
+                AbstractGui.blit(timeOffsetX, offsetY, 0, 40, 30, 7, 64, 64);
                 // Time
                 drawMarioNumber(timeOffsetX + 8, offsetY + 8, time, 3);
             }
             if (Minecraft.getInstance().player.isPotionActive(PotionHandler.FROZEN) && Minecraft.getInstance().gameSettings.thirdPersonView == 0) {
                 Minecraft.getInstance().getTextureManager().bindTexture(FROZEN_BLUR);
-                ScaledResolution res = e.getResolution();
-                AbstractGui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, res.getScaledWidth(), res.getScaledHeight(), res.getScaledWidth(), res.getScaledHeight());
+                MainWindow res = e.getWindow();
+                AbstractGui.blit(0, 0, 0, 0, res.getScaledWidth(), res.getScaledHeight(), res.getScaledWidth(), res.getScaledHeight());
             }
         }
     }
@@ -260,7 +264,7 @@ public enum ClientEventHandler {
     @SubscribeEvent
     public void onRenderHUD(RenderGameOverlayEvent.Pre event) {
         ClientPlayerEntity player = Minecraft.getInstance().player;
-        if (player != null && player.isRiding()) {
+        if (player != null && player.isPassenger()) {
             if (player.getRidingEntity() instanceof EntityFrozenController) {
                 if (event.getType().equals(RenderGameOverlayEvent.ElementType.HEALTHMOUNT)) {
                     event.setCanceled(true);
@@ -275,13 +279,14 @@ public enum ClientEventHandler {
     private static void drawMarioNumber(int x, int y, int value, int length) {
         for (int n = 0; n < length; n++, value /= 10) {
             int digit = value % 10;
-            AbstractGui.drawModalRectWithCustomSizedTexture(x + 8 * (length - n - 1), y, digit * 8 % 64, digit / 8 * 8, 8, 7, 64, 64);
+            AbstractGui.blit(x + 8 * (length - n - 1), y, digit * 8 % 64, digit / 8 * 8, 8, 7, 64, 64);
         }
     }
 
     public static void stopMouseMove() {
-        Mouse.getDX();
-        Mouse.getDY();
-        Minecraft.getInstance().mouseHelper.deltaX = Minecraft.getInstance().mouseHelper.deltaY = 0;
+        // TODO
+//        Mouse.getDX();
+//        Mouse.getDY();
+//        Minecraft.getInstance().mouseHelper.deltaX = Minecraft.getInstance().mouseHelper.deltaY = 0;
     }
 }

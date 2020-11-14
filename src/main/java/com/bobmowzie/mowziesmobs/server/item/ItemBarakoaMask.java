@@ -1,5 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
+import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
@@ -52,8 +54,8 @@ public class ItemBarakoaMask extends ArmorItem implements BarakoaMask {
     }
 
     private void spawnBarakoa(MaskType mask, PlayerEntity player, float durability) {
-        MowziePlayerProperties property = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
-        if (property.getPackSize() < 10) {
+        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        if (playerCapability.getPackSize() < 10) {
             player.playSound(MMSounds.ENTITY_BARAKO_BELLY.get(), 1.5f, 1);
             player.playSound(MMSounds.ENTITY_BARAKOA_BLOWDART.get(), 1.5f, 0.5f);
             double angle = player.getRotationYawHead();

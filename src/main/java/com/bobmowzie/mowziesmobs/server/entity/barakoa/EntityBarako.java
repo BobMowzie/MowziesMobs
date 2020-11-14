@@ -764,7 +764,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 
     @Override
     public Container createContainer(World world, PlayerEntity player, int x, int y, int z) {
-        return new ContainerBarakoTrade(this, player.inventory, world);
+        return new ContainerBarakoTrade(0,this, player.inventory);
     }
 
     @Override

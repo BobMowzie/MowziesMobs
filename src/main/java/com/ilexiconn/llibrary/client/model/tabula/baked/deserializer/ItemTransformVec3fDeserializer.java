@@ -37,7 +37,7 @@ public class ItemTransformVec3fDeserializer implements JsonDeserializer<ItemTran
     }
 
     private Vector3f parseVector3f(JsonObject object, String key, Vector3f defaultValue) {
-        if (!object.has(key)) {
+        /*if (!object.has(key)) {
             return defaultValue;
         } else {
             JsonArray jsonarray = JsonUtils.getJsonArray(object, key);
@@ -53,6 +53,6 @@ public class ItemTransformVec3fDeserializer implements JsonDeserializer<ItemTran
 
                 return new Vector3f(xyz[0], xyz[1], xyz[2]);
             }
-        }
+        }*/ return new Vector3f(0, 0, 0);
     }
 }

@@ -9,16 +9,16 @@ public final class BlackPinkSound extends TickableSound {
     private final AbstractMinecartEntity minecart;
 
     public BlackPinkSound(AbstractMinecartEntity minecart) {
-        super(MMSounds.MUSIC_BLACK_PINK, SoundCategory.NEUTRAL);
+        super(MMSounds.MUSIC_BLACK_PINK.get(), SoundCategory.NEUTRAL);
         this.minecart = minecart;
     }
 
     @Override
-    public void update() {
-        if (minecart.isEntityAlive()) {
-            xPosF = (float) minecart.posX;
-            yPosF = (float) minecart.posY;
-            zPosF = (float) minecart.posZ;
+    public void tick() {
+        if (minecart.isAlive()) {
+            x = (float) minecart.posX;
+            y = (float) minecart.posY;
+            z = (float) minecart.posZ;
         } else {
             donePlaying = true;
         }

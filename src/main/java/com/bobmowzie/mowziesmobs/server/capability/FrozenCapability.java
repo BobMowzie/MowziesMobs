@@ -64,7 +64,7 @@ public class FrozenCapability {
 
         void setFreezeDecayDelay(int freezeDecayDelay);
 
-        boolean isPrevFrozen();
+        boolean getPrevFrozen();
 
         void setPrevFrozen(boolean prevFrozen);
 
@@ -192,7 +192,7 @@ public class FrozenCapability {
         }
 
         @Override
-        public boolean isPrevFrozen() {
+        public boolean getPrevFrozen() {
             return prevFrozen;
         }
 

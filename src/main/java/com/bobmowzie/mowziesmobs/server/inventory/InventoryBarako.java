@@ -4,8 +4,6 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,21 +27,6 @@ public final class InventoryBarako implements IInventory {
     }
 
     @Override
-    public String getName() {
-        return "entity.barako.trade";
-    }
-
-    @Override
-    public boolean hasCustomName() {
-        return false;
-    }
-
-    @Override
-    public ITextComponent getDisplayName() {
-        return new TranslationTextComponent(getName());
-    }
-
-    @Override
     public int getSizeInventory() {
         return 1;
     }
@@ -57,7 +40,7 @@ public final class InventoryBarako implements IInventory {
     public ItemStack decrStackSize(int index, int count) {
         ItemStack stack;
         if (index == 0 && input != ItemStack.EMPTY && count > 0) {
-            ItemStack split = input.splitStack(count);
+            ItemStack split = input.split(count);
             if (input.getCount() == 0) {
                 input = ItemStack.EMPTY;
             }
@@ -119,19 +102,6 @@ public final class InventoryBarako implements IInventory {
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
         return true;
-    }
-
-    @Override
-    public int getField(int id) {
-        return 0;
-    }
-
-    @Override
-    public void setField(int id, int value) {}
-
-    @Override
-    public int getFieldCount() {
-        return 0;
     }
 
     @Override

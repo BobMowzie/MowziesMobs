@@ -52,7 +52,6 @@ public class EntityAxeAttack extends EntityMagicEffect {
         }
         setVertical(vertical);
     }
-
     @Override
     protected void registerData() {
         super.registerData();

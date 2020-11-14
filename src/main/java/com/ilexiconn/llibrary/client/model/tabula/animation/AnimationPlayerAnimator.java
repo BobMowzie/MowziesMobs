@@ -1,5 +1,6 @@
 package com.ilexiconn.llibrary.client.model.tabula.animation;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.ilexiconn.llibrary.client.model.tabula.ITabulaModelAnimator;
 import com.ilexiconn.llibrary.client.model.tabula.TabulaModel;
 import com.ilexiconn.llibrary.client.model.tabula.container.TabulaAnimationComponentContainer;
@@ -19,7 +20,7 @@ import net.minecraft.util.math.MathHelper;
 public class AnimationPlayerAnimator<T extends Entity&IAnimatedEntity> implements ITabulaModelAnimator<T> {
     @Override
     public void setRotationAngles(TabulaModel model, T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float rotationYaw, float rotationPitch, float scale) {
-        float partialTicks = LLibrary.PROXY.getPartialTicks();
+        float partialTicks = MowziesMobs.PROXY.getPartialTicks();
         Animation anim = entity.getAnimation();
         TabulaAnimationContainer animation;
         if(anim instanceof NamedAnimation) {

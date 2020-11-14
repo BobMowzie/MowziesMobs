@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
 import java.util.Set;
 
 public class MMWalkNodeProcessor extends WalkNodeProcessor {
-    @Override
+    /*@Override
     public PathPoint getStart() {
         int y;
         AxisAlignedBB bounds = this.entity.getBoundingBox();
@@ -188,5 +188,5 @@ public class MMWalkNodeProcessor extends WalkNodeProcessor {
 
     private PathNodeType getPathType(MobEntity living, int x, int y, int z) {
         return this.getPathNodeType(this.blockaccess, x, y, z, living, this.entitySizeX, this.entitySizeY, this.entitySizeZ, this.getCanOpenDoors(), this.getCanEnterDoors());
-    }
+    }*/
 }
