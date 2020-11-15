@@ -33,10 +33,6 @@ public class EntityIceBreath extends EntityMagicEffect {
     private static final int ARC = 45;
     private static final int DAMAGE_PER_HIT = 1;
 
-    public EntityIceBreath(World world) {
-        super(EntityHandler.ICE_BREATH, world);
-    }
-
     public EntityIceBreath(EntityType<? extends EntityIceBreath> type, World world) {
         super(type, world);
     }

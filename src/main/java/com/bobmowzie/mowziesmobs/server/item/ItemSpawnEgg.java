@@ -37,7 +37,7 @@ public class ItemSpawnEgg extends Item {
             while (iterator.hasNext()) {
                 MowzieEntityEggInfo info = iterator.next();
                 ItemStack stack = new ItemStack(this);
-                applyEntityIdToItemStack(stack, EntityType.byKey(info.id.toString()).orElseGet(() -> EntityHandler.LANTERN));
+                applyEntityIdToItemStack(stack, info.type);
                 subItems.add(stack);
             }
         }

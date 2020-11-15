@@ -20,7 +20,7 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
     @Override
     public void startExecuting() {
         super.startExecuting();
-        entity.playSound(MMSounds.ENTITY_WROUGHT_PRE_SWING_2.get(), 1.5F, 1F);
+//        entity.playSound(MMSounds.ENTITY_WROUGHT_PRE_SWING_2.get(), 1.5F, 1F);
     }
 
     @Override
