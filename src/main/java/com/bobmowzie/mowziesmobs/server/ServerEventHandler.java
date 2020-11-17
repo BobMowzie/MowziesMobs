@@ -36,7 +36,9 @@ import net.minecraft.item.Items;
 import net.minecraft.potion.Effects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EntityDamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
@@ -54,7 +56,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Mod.EventBusSubscriber(modid = MowziesMobs.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class ServerEventHandler {
     private static final int ICE = Block.getStateId(Blocks.ICE.getDefaultState());
 
@@ -328,7 +329,7 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onLivingJump(LivingEvent.LivingJumpEvent event) {
-        if (event.getEntity() instanceof LivingEntity) {
+         if (event.getEntity() instanceof LivingEntity) {
             LivingEntity entity = (LivingEntity) event.getEntity();
             if (entity.isPotionActive(PotionHandler.FROZEN) && entity.onGround) {
                 entity.setMotion(entity.getMotion().mul(1, 0, 1));
@@ -360,6 +361,17 @@ public final class ServerEventHandler {
             if (event.getTarget() instanceof EntityBarakoanToPlayer) return;
             for (int i = 0; i < playerCapability.getPackSize(); i++)
                 playerCapability.getTribePack().get(i).setAttackTarget((LivingEntity) event.getTarget());
+        }
+    }
+
+    @SubscribeEvent
+    public void onAttachCapabilities(AttachCapabilitiesEvent<Entity> event) {
+        if (event.getObject() instanceof LivingEntity) {
+            event.addCapability(new ResourceLocation(MowziesMobs.MODID, "frozen"), new FrozenCapability.FrozenProvider());
+            event.addCapability(new ResourceLocation(MowziesMobs.MODID, "last_damage"), new LastDamageCapability.LastDamageProvider());
+        }
+        if (event.getObject() instanceof PlayerEntity) {
+            event.addCapability(new ResourceLocation(MowziesMobs.MODID, "player"), new PlayerCapability.PlayerProvider());
         }
     }
 
