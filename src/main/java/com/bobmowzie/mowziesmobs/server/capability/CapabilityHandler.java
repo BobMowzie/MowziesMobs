@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.capability;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -23,6 +24,9 @@ public class CapabilityHandler {
         if (event.getObject() instanceof LivingEntity) {
             event.addCapability(new ResourceLocation(MowziesMobs.MODID, "frozen"), new FrozenCapability.FrozenProvider());
             event.addCapability(new ResourceLocation(MowziesMobs.MODID, "lastDamage"), new LastDamageCapability.LastDamageProvider());
+        }
+        if (event.getObject() instanceof PlayerEntity) {
+            event.addCapability(new ResourceLocation(MowziesMobs.MODID, "player"), new PlayerCapability.PlayerProvider());
         }
     }
 

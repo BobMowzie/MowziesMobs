@@ -101,7 +101,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
         }
         if (world.isRemote && getAnimation() == EAT_ANIMATION && (getAnimationTick() == 3 || getAnimationTick() == 7 || getAnimationTick() == 11 || getAnimationTick() == 15 || getAnimationTick() == 19)) {
             for (int i = 0; i <= 5; i++) {
-//                world.spawnParticle(EnumParticleTypes.ITEM_CRACK, posX, posY + 0.2, posZ, rand.nextFloat() * 0.2 - 0.1, rand.nextFloat() * 0.2, rand.nextFloat() * 0.2 - 0.1, Item.getIdFromItem(getEating().getItem()));
+//                world.spawnParticle(EnumParticleTypes.ITEM_CRACK, posX, posY + 0.2, posZ, rand.nextFloat() * 0.2 - 0.1, rand.nextFloat() * 0.2, rand.nextFloat() * 0.2 - 0.1, Item.getIdFromItem(getEating().getItem())); TODO
             }
         }
 
@@ -196,7 +196,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
 
             BlockState block = world.getBlockState(ground);
 
-            if (block.getBlock() == Blocks.GRASS || block.getMaterial() == Material.EARTH || block.getMaterial() == Material.LEAVES) {
+            if (block.getBlock() == Blocks.GRASS_BLOCK || block.getMaterial() == Material.EARTH || block.getMaterial() == Material.LEAVES) {
                 playSound(SoundEvents.BLOCK_GRASS_HIT, 1, 0.8F);
                 return true;
             }
