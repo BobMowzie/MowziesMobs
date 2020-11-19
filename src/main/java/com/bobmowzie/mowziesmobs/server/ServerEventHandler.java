@@ -46,11 +46,11 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.common.Mod;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,7 +105,9 @@ public final class ServerEventHandler {
 
 //            MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
             FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
-            frozenCapability.tick(entity);
+            if (frozenCapability != null) {
+                frozenCapability.tick(entity);
+            }
         }
     }
 
@@ -116,10 +118,12 @@ public final class ServerEventHandler {
         }
         PlayerEntity player = event.player;
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-        playerCapability.tick(event);
-        Power[] powers = playerCapability.getPowers();
-        for (int i = 0; i < powers.length; i++) {
-            powers[i].tick(event);
+        if (playerCapability != null) {
+            playerCapability.tick(event);
+            Power[] powers = playerCapability.getPowers();
+            for (Power power : powers) {
+                power.tick(event);
+            }
         }
     }
 
@@ -205,19 +209,21 @@ public final class ServerEventHandler {
         }
         PlayerEntity player = event.getPlayer();
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-        if (event.getWorld().isRemote && player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(PotionHandler.SUNS_BLESSING) && playerCapability.getUntilSunstrike() <= 0) {
-            if (player.isSneaking()) {
-                MowziesMobs.NETWORK.sendToServer(new MessagePlayerSolarBeam());
-                playerCapability.setUntilSunstrike(SOLARBEAM_COOLDOWN);
-            } else {
-                MowziesMobs.NETWORK.sendToServer(new MessagePlayerSummonSunstrike());
-                playerCapability.setUntilSunstrike(SUNSTRIKE_COOLDOWN);
+        if (playerCapability != null) {
+            if (event.getWorld().isRemote && player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(PotionHandler.SUNS_BLESSING) && playerCapability.getUntilSunstrike() <= 0) {
+                if (player.isSneaking()) {
+                    MowziesMobs.NETWORK.sendToServer(new MessagePlayerSolarBeam());
+                    playerCapability.setUntilSunstrike(SOLARBEAM_COOLDOWN);
+                } else {
+                    MowziesMobs.NETWORK.sendToServer(new MessagePlayerSummonSunstrike());
+                    playerCapability.setUntilSunstrike(SUNSTRIKE_COOLDOWN);
+                }
             }
-        }
 
-        Power[] powers = playerCapability.getPowers();
-        for (int i = 0; i < powers.length; i++) {
-            powers[i].onRightClickEmpty(event);
+            Power[] powers = playerCapability.getPowers();
+            for (Power power : powers) {
+                power.onRightClickEmpty(event);
+            }
         }
     }
 
@@ -227,9 +233,11 @@ public final class ServerEventHandler {
             event.setCanceled(true);
         }
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getPlayer(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-        Power[] powers = playerCapability.getPowers();
-        for (int i = 0; i < powers.length; i++) {
-            powers[i].onRightClickEntity(event);
+        if (playerCapability != null) {
+            Power[] powers = playerCapability.getPowers();
+            for (Power power : powers) {
+                power.onRightClickEntity(event);
+            }
         }
     }
 
@@ -246,9 +254,11 @@ public final class ServerEventHandler {
                 playerCapability.setUntilSunstrike(SUNSTRIKE_COOLDOWN);
             }
         }
-        Power[] powers = playerCapability.getPowers();
-        for (int i = 0; i < powers.length; i++) {
-            powers[i].onRightClickBlock(event);
+        if (playerCapability != null) {
+            Power[] powers = playerCapability.getPowers();
+            for (Power power : powers) {
+                power.onRightClickBlock(event);
+            }
         }
     }
 
@@ -263,9 +273,11 @@ public final class ServerEventHandler {
                 MowziesMobs.NETWORK.sendToServer(new MessagePlayerAttackMob(entityHit));
             }
         }
-        Power[] powers = playerCapability.getPowers();
-        for (int i = 0; i < powers.length; i++) {
-            powers[i].onLeftClickEmpty(event);
+        if (playerCapability != null) {
+            Power[] powers = playerCapability.getPowers();
+            for (Power power : powers) {
+                power.onLeftClickEmpty(event);
+            }
         }
     }
 
@@ -277,9 +289,11 @@ public final class ServerEventHandler {
         }
         if (event.getEntity() instanceof PlayerEntity) {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getEntity(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-            Power[] powers = playerCapability.getPowers();
-            for (int i = 0; i < powers.length; i++) {
-                powers[i].onTakeDamage(event);
+            if (playerCapability != null) {
+                Power[] powers = playerCapability.getPowers();
+                for (Power power : powers) {
+                    power.onTakeDamage(event);
+                }
             }
         }
 
@@ -308,9 +322,11 @@ public final class ServerEventHandler {
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.RightClickItem event) {
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getPlayer(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-        Power[] powers = playerCapability.getPowers();
-        for (int i = 0; i < powers.length; i++) {
-            powers[i].onRightClickWithItem(event);
+        if (playerCapability != null) {
+            Power[] powers = playerCapability.getPowers();
+            for (Power power : powers) {
+                power.onRightClickWithItem(event);
+            }
         }
     }
 
@@ -321,9 +337,11 @@ public final class ServerEventHandler {
             event.setCanceled(true);
         }
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-        Power[] powers = playerCapability.getPowers();
-        for (int i = 0; i < powers.length; i++) {
-            powers[i].onLeftClickBlock(event);
+        if (playerCapability != null) {
+            Power[] powers = playerCapability.getPowers();
+            for (Power power : powers) {
+                power.onLeftClickBlock(event);
+            }
         }
     }
 
@@ -338,9 +356,11 @@ public final class ServerEventHandler {
 
         if (event.getEntity() instanceof PlayerEntity) {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getEntity(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-            Power[] powers = playerCapability.getPowers();
-            for (int i = 0; i < powers.length; i++) {
-                powers[i].onJump(event);
+            if (playerCapability != null) {
+                Power[] powers = playerCapability.getPowers();
+                for (Power power : powers) {
+                    power.onJump(event);
+                }
             }
         }
     }
@@ -352,15 +372,17 @@ public final class ServerEventHandler {
         }
         if (event.getEntity() instanceof PlayerEntity) {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getPlayer(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-            Power[] powers = playerCapability.getPowers();
-            for (int i = 0; i < powers.length; i++) {
-                powers[i].onLeftClickEntity(event);
-            }
+            if (playerCapability != null) {
+                Power[] powers = playerCapability.getPowers();
+                for (Power power : powers) {
+                    power.onLeftClickEntity(event);
+                }
 
-            if (!(event.getTarget() instanceof LivingEntity)) return;
-            if (event.getTarget() instanceof EntityBarakoanToPlayer) return;
-            for (int i = 0; i < playerCapability.getPackSize(); i++)
-                playerCapability.getTribePack().get(i).setAttackTarget((LivingEntity) event.getTarget());
+                if (!(event.getTarget() instanceof LivingEntity)) return;
+                if (event.getTarget() instanceof EntityBarakoanToPlayer) return;
+                for (int i = 0; i < playerCapability.getPackSize(); i++)
+                    playerCapability.getTribePack().get(i).setAttackTarget((LivingEntity) event.getTarget());
+            }
         }
     }
 

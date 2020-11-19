@@ -1,15 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.capability;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+
+import javax.annotation.Nullable;
 
 public final class CapabilityHandler {
     public static void register() {
@@ -18,7 +14,9 @@ public final class CapabilityHandler {
         CapabilityManager.INSTANCE.register(PlayerCapability.IPlayerCapability.class, new PlayerCapability.PlayerStorage(), PlayerCapability.PlayerCapabilityImp::new);
     }
 
+    @Nullable
     public static <T> T getCapability(Entity entity, Capability<T> capability) {
-        return entity.getCapability(capability).orElseThrow(() -> new IllegalArgumentException("Lazy optional must not be empty"));
+        if (!entity.isAlive()) return null;
+        return entity.getCapability(capability).isPresent() ? entity.getCapability(capability).orElseThrow(() -> new IllegalArgumentException("Lazy optional must not be empty")) : null;
     }
 }

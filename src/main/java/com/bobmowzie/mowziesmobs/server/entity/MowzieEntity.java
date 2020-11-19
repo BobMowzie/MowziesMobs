@@ -2,8 +2,6 @@ package com.bobmowzie.mowziesmobs.server.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.IntermittentAnimation;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
-import com.bobmowzie.mowziesmobs.server.item.ItemSpawnEgg;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
@@ -28,7 +26,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.*;
@@ -71,7 +68,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         super(type, world);
     }
 
-    @Override
+    /*@Override
     public ItemStack getPickedResult(RayTraceResult target) {
         String id = getPickedEntityId();
         if (id == null) {
@@ -84,7 +81,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
             return stack;
         }
         return ItemStack.EMPTY;
-    }
+    }*/
 
     protected String getPickedEntityId() {
         return getEntityString();

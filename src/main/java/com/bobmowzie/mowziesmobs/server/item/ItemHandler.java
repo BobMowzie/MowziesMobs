@@ -1,18 +1,16 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
-import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.SpawnEggItem;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ObjectHolder;
 
-import java.util.List;
 
 @Mod.EventBusSubscriber(modid = MowziesMobs.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class ItemHandler {
@@ -32,7 +30,6 @@ public final class ItemHandler {
     public static final ItemDart DART = (ItemDart) new ItemDart(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("dart");
     public static final ItemSpear SPEAR = (ItemSpear) new ItemSpear(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("spear");
     public static final ItemBlowgun BLOWGUN = (ItemBlowgun) new ItemBlowgun(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("blowgun");
-    public static final ItemSpawnEgg SPAWN_EGG = (ItemSpawnEgg) new ItemSpawnEgg(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("spawn_egg");
     public static final ItemGrantSunsBlessing GRANT_SUNS_BLESSING = (ItemGrantSunsBlessing) new ItemGrantSunsBlessing(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab).maxStackSize(1)).setRegistryName("grant_suns_blessing");
     public static final ItemIceCrystal ICE_CRYSTAL = (ItemIceCrystal) new ItemIceCrystal(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab).defaultMaxDamage(ConfigHandler.TOOLS_AND_ABILITIES.ICE_CRYSTAL.durability)).setRegistryName("ice_crystal");
     public static final ItemEarthTalisman EARTH_TALISMAN = (ItemEarthTalisman) new ItemEarthTalisman(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab).maxStackSize(1)).setRegistryName("earth_talisman");
@@ -41,6 +38,16 @@ public final class ItemHandler {
     public static final ItemNagaFang NAGA_FANG = (ItemNagaFang) new ItemNagaFang(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("naga_fang");
     public static final ItemNagaFangDagger NAGA_FANG_DAGGER = (ItemNagaFangDagger) new ItemNagaFangDagger(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("naga_fang_dagger");
     public static final ItemLogo LOGO = (ItemLogo) new ItemLogo(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("logo");
+
+    public static final SpawnEggItem FOLIAATH_SPAWN_EGG = (SpawnEggItem) new SpawnEggItem(EntityHandler.FOLIAATH, 0x47CC3B, 0xC03BCC, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("foliaath_spawn_egg");
+    public static final SpawnEggItem WROUGHTNAUT_SPAWN_EGG = (SpawnEggItem) new SpawnEggItem(EntityHandler.WROUGHTNAUT, 0x8C8C8C, 0xFFFFFF, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("wroughtnaut_spawn_egg");
+    public static final SpawnEggItem BARAKOA_SPAWN_EGG = (SpawnEggItem) new SpawnEggItem(EntityHandler.BARAKOAYA, 0xBA6656, 0xFAFA78, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoa_spawn_egg");
+    public static final SpawnEggItem BARAKOANA_SPAWN_EGG = (SpawnEggItem) new SpawnEggItem(EntityHandler.BARAKOANA, 0xBA6656, 0xFAFA78, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoana_spawn_egg");
+    public static final SpawnEggItem BARAKO_SPAWN_EGG = (SpawnEggItem) new SpawnEggItem(EntityHandler.BARAKO, 0xBA6656, 0xFFFF00, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barako_spawn_egg");
+    public static final SpawnEggItem FROSTMAW_SPAWN_EGG = (SpawnEggItem) new SpawnEggItem(EntityHandler.FROSTMAW, 0xf7faff, 0xafcdff, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("frostmaw_spawn_egg");
+    public static final SpawnEggItem GROTTOL_SPAWN_EGG = (SpawnEggItem) new SpawnEggItem(EntityHandler.GROTTOL, 0x777777, 0xbce0ff, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("grottol_spawn_egg");
+    public static final SpawnEggItem LANTERN_SPAWN_EGG = (SpawnEggItem) new SpawnEggItem(EntityHandler.LANTERN, 0x6dea00, 0x235a10, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("lantern_spawn_egg");
+    public static final SpawnEggItem NAGA_SPAWN_EGG = (SpawnEggItem) new SpawnEggItem(EntityHandler.NAGA, 0x154850, 0x8dd759, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("naga_spawn_egg");
 
     @SubscribeEvent
     public static void register(RegistryEvent.Register<Item> event) {
@@ -59,7 +66,6 @@ public final class ItemHandler {
                 DART,
                 SPEAR,
                 BLOWGUN,
-                SPAWN_EGG,
                 GRANT_SUNS_BLESSING,
                 ICE_CRYSTAL,
                 EARTH_TALISMAN,
@@ -67,7 +73,16 @@ public final class ItemHandler {
                 GLOWING_JELLY,
                 NAGA_FANG,
                 NAGA_FANG_DAGGER,
-                LOGO
+                LOGO,
+                FOLIAATH_SPAWN_EGG,
+                WROUGHTNAUT_SPAWN_EGG,
+                BARAKOA_SPAWN_EGG,
+                BARAKOANA_SPAWN_EGG,
+                BARAKO_SPAWN_EGG,
+                FROSTMAW_SPAWN_EGG,
+                GROTTOL_SPAWN_EGG,
+                LANTERN_SPAWN_EGG,
+                NAGA_SPAWN_EGG
                 //new BlockItem(BlockHandler.PAINTED_ACACIA, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.PAINTED_ACACIA.getRegistryName()),
                 //new BlockItem(BlockHandler.PAINTED_ACACIA_SLAB, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.PAINTED_ACACIA_SLAB.getRegistryName())
         );

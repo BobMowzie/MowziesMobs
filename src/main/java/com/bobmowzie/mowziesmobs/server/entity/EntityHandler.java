@@ -12,11 +12,9 @@ import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityLantern;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import net.minecraft.entity.*;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Mod;
-import org.apache.http.client.entity.EntityBuilder;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -27,8 +25,6 @@ public enum EntityHandler {
     INSTANCE;
 
     public static final String BARAKOAYA_ID = "barakoaya";
-
-    private static final Map<EntityType<? extends MobEntity>, MowzieEntityEggInfo> entityEggs = new LinkedHashMap<>();
 
     private static int nextEntityId;
 
@@ -61,12 +57,10 @@ public enum EntityHandler {
     public static void register() {
         // Mobs
         FOLIAATH = register("foliaath", EntityType.Builder.create(EntityFoliaath::new, EntityClassification.MONSTER).size(0.4f, 0.4f));
-        addEgg(FOLIAATH, EntityFoliaath.class, 0x47CC3B, 0xC03BCC);
 
         BABY_FOLIAATH = register("baby_foliaath", EntityType.Builder.create(EntityBabyFoliaath::new, EntityClassification.MONSTER).size(0.5f, 2.5f));
 
         WROUGHTNAUT = register("ferrous_wroughtnaut", EntityType.Builder.create(EntityWroughtnaut::new, EntityClassification.MONSTER).size(2.5f, 3.5f));
-        addEgg(WROUGHTNAUT, EntityWroughtnaut.class, 0x8C8C8C, 0xFFFFFF);
 
         EntityType.Builder<EntityBarakoanToBarakoana> barakoanToBarakoanaBuilder = EntityType.Builder.create(EntityBarakoanToBarakoana::new, EntityClassification.MONSTER);
         BARAKOAN_TO_BARAKOANA = register("barakoan_barakoana", barakoanToBarakoanaBuilder.size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight));
@@ -75,25 +69,18 @@ public enum EntityHandler {
         BARAKOAN_TO_PLAYER = register("barakoan_player", barakoanToPlayerBuilder.size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight));
 
         BARAKOAYA = register("barakoaya", EntityType.Builder.create(EntityBarakoaya::new, EntityClassification.MONSTER).size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight));
-        addEgg(BARAKOAYA, EntityBarakoaya.class, 0xBA6656, 0xFAFA78);
 
         BARAKOANA = register("barakoana", EntityType.Builder.create(EntityBarakoana::new, EntityClassification.MONSTER).size(MaskType.FURY.entityWidth, MaskType.FURY.entityHeight));
-        addEgg(BARAKOANA, EntityBarakoana.class, 0xBA6656, 0xFAFA78);
 
         BARAKO = register("barako", EntityType.Builder.create(EntityBarako::new, EntityClassification.MONSTER).size(1.5f, 2.4f));
-        addEgg(BARAKO, EntityBarako.class, 0xBA6656, 0xFFFF00);
 
         FROSTMAW = register("frostmaw", EntityType.Builder.create(EntityFrostmaw::new, EntityClassification.MONSTER).size(4f, 4f));
-        addEgg(FROSTMAW, EntityFrostmaw.class, 0xf7faff, 0xafcdff);
 
         GROTTOL = register("grottol", EntityType.Builder.create(EntityGrottol::new, EntityClassification.MONSTER).size(0.9F, 1.2F));
-        addEgg(GROTTOL, EntityGrottol.class, 0x777777, 0xbce0ff);
 
         LANTERN = register("lantern", EntityType.Builder.create(EntityLantern::new, EntityClassification.AMBIENT).size(1.0f, 1.0f));
-        addEgg(LANTERN, EntityLantern.class, 0x6dea00, 0x235a10);
 
         NAGA = register("naga", EntityType.Builder.create(EntityNaga::new, EntityClassification.MONSTER).size(3.0f, 1.0f).setTrackingRange(128));
-        addEgg(NAGA, EntityNaga.class, 0x154850, 0x8dd759);
 
         // Non-mobs
         EntityType.Builder<EntitySunstrike> sunstrikeBuilder = EntityType.Builder.create(EntitySunstrike::new, EntityClassification.MISC);
@@ -137,36 +124,7 @@ public enum EntityHandler {
         return Registry.register(Registry.ENTITY_TYPE, key, builder.build(key));
     }
 
-    private static void addEgg(EntityType<? extends MobEntity> type, Class<? extends MobEntity> clazz, int mainColor, int subColor) {
-        entityEggs.put(type, new MowzieEntityEggInfo(type, clazz, mainColor, subColor));
-    }
-
     private static int nextEntityId() {
         return nextEntityId++;
-    }
-
-    public MowzieEntityEggInfo getEntityEggInfo(EntityType<?> id) {
-        return entityEggs.get(id);
-    }
-
-    public boolean hasEntityEggInfo(EntityType<?> type) {
-        return entityEggs.containsKey(type);
-    }
-
-    public MobEntity createEntity(EntityType<?> type, World world) {
-        MobEntity entity = null;
-        try {
-            Class<? extends MobEntity> clazz = entityEggs.get(type).clazz;
-            if (clazz != null) {
-                entity = clazz.getConstructor(EntityType.class, World.class).newInstance(type, world);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return entity;
-    }
-
-    public Iterator<MowzieEntityEggInfo> getEntityEggInfoIterator() {
-        return entityEggs.values().iterator();
     }
 }
