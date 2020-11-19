@@ -8,6 +8,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.World;
 
 public class LegSolver {
@@ -70,8 +71,13 @@ public class LegSolver {
 
         private float getDistance(World world, BlockPos pos) {
             BlockState state = world.getBlockState(pos);
-            AxisAlignedBB aabb = state.getCollisionShape(world, pos).getBoundingBox();
-            return 1 - Math.min((float) aabb.maxY, 1);
+            VoxelShape shape = state.getCollisionShape(world, pos);
+            float f = 0;
+            if (!shape.isEmpty()) {
+                AxisAlignedBB aabb = shape.getBoundingBox();
+                f = (float) aabb.maxY;
+            }
+            return 1 - Math.min(f, 1);
         }
     }
 }

@@ -533,9 +533,10 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
     private void doRoarEffects() {
         List<LivingEntity> entities = getEntityLivingBaseNearby(10, 3, 10, 10);
         for (LivingEntity entity:entities) {
+            if (entity == this) continue;
             double angle = (getAngleBetweenEntities(this, entity) + 90) * Math.PI / 180;
             double distance = getDistance(entity) - 4;
-            setMotion(getMotion().add(Math.min(1/(distance * distance), 1) * -1 * Math.cos(angle), 0, Math.min(1/ (distance * distance), 1) * -1 * Math.sin(angle)));
+            entity.setMotion(entity.getMotion().add(Math.min(1/(distance * distance), 1) * -1 * Math.cos(angle), 0, Math.min(1/ (distance * distance), 1) * -1 * Math.sin(angle)));
         }
         if (getAnimationTick() % 12 == 0 && world.isRemote) {
             int particleCount = 15;
