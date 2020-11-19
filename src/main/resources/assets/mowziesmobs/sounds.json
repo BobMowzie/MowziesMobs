@@ -400,7 +400,7 @@
 		"sounds": [ "mowziesmobs:effects/geomancy/magic_hit_big" ],
 		"subtitle": "subtitles.mowziesmobs.geomancy.big_hit"
 	},
-	"geomancy.breakLarge": {
+	"geomancy.breaklarge": {
 		"sounds": [ "mowziesmobs:effects/geomancy/break_large" ],
 		"subtitle": "subtitles.mowziesmobs.geomancy.big_break"
 	},
