@@ -315,7 +315,7 @@ public class EntitySolarBeam extends Entity {
 
         public void setBlockHit(RayTraceResult rayTraceResult) {
             if (rayTraceResult.getType() == RayTraceResult.Type.BLOCK)
-                this.blockHit = (BlockRayTraceResult) rayTraceResult.hitInfo;
+                this.blockHit = (BlockRayTraceResult) rayTraceResult;
         }
 
         public void addEntityHit(LivingEntity entity) {

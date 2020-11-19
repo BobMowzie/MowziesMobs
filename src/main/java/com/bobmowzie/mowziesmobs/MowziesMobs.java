@@ -8,6 +8,7 @@ import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
+import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.bobmowzie.mowziesmobs.server.spawn.SpawnHandler;
 import net.minecraftforge.client.event.ModelRegistryEvent;

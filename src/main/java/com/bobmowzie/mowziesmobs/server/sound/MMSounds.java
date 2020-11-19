@@ -24,9 +24,9 @@ public final class MMSounds {
     public static final RegistryObject<SoundEvent> SUNSTRIKE = create("sunstrike");
 
     // Wroughtnaut
-//    public static final RegistryObject<SoundEvent> ENTITY_WROUGHT_PRE_SWING_1 = create("wroughtnaut.preSwing1");
-//    public static final RegistryObject<SoundEvent> ENTITY_WROUGHT_PRE_SWING_2 = create("wroughtnaut.preSwing2");
-//    public static final RegistryObject<SoundEvent> ENTITY_WROUGHT_PRE_SWING_3 = create("wroughtnaut.preSwing3");
+    public static final RegistryObject<SoundEvent> ENTITY_WROUGHT_PRE_SWING_1 = create("wroughtnaut.pre_swing1");
+    public static final RegistryObject<SoundEvent> ENTITY_WROUGHT_PRE_SWING_2 = create("wroughtnaut.pre_swing2");
+    public static final RegistryObject<SoundEvent> ENTITY_WROUGHT_PRE_SWING_3 = create("wroughtnaut.pre_swing3");
     public static final RegistryObject<SoundEvent> ENTITY_WROUGHT_CREAK = create("wroughtnaut.creak");
     public static final RegistryObject<SoundEvent> ENTITY_WROUGHT_SWING_1 = create("wroughtnaut.swing1");
     public static final RegistryObject<SoundEvent> ENTITY_WROUGHT_SWING_2 = create("wroughtnaut.swing2");

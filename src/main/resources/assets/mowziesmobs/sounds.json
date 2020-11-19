@@ -75,15 +75,15 @@
 		"sounds": [ "mowziesmobs:entity/wroughtnaut/hurt1" ],
 		"subtitle": "subtitles.mowziesmobs.wroughtnaut.hurt"
 	},
-	"wroughtnaut.preSwing1": {
+	"wroughtnaut.pre_swing1": {
 		"sounds": [ "mowziesmobs:entity/wroughtnaut/pre_swing1" ],
 		"subtitle": "subtitles.mowziesmobs.wroughtnaut.pre_swing"
 	},
-	"wroughtnaut.preSwing2": {
+	"wroughtnaut.pre_swing2": {
 		"sounds": [ "mowziesmobs:entity/wroughtnaut/pre_swing2" ],
 		"subtitle": "subtitles.mowziesmobs.wroughtnaut.pre_swing"
 	},
-	"wroughtnaut.preSwing3": {
+	"wroughtnaut.pre_swing3": {
 		"sounds": [ "mowziesmobs:entity/wroughtnaut/pre_swing3" ],
 		"subtitle": "subtitles.mowziesmobs.wroughtnaut.pre_swing"
 	},

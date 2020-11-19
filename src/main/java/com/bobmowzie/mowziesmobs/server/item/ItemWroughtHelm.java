@@ -16,12 +16,6 @@ public class ItemWroughtHelm extends ArmorItem {
         super(ARMOR_WROUGHT_HELM, EquipmentSlotType.HEAD, properties);
     }
 
-    // Dirty trick to get our item to render as the item model
-    @Override
-    public EquipmentSlotType getEquipmentSlot() {
-        return null;
-    }
-
     @Override
     public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
         if (ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.breakable) return super.getIsRepairable(toRepair, repair);

@@ -29,11 +29,6 @@ public class ItemBarakoaMask extends ArmorItem implements BarakoaMask {
     }
 
     @Override
-    public EquipmentSlotType getEquipmentSlot() {
-        return null;
-    }
-
-    @Override
     public boolean getIsRepairable(ItemStack itemStack, ItemStack materialItemStack) {
         return false;
     }

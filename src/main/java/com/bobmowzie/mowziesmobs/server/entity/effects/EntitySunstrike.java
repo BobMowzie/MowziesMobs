@@ -172,7 +172,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     public void moveDownToGround() {
         RayTraceResult rayTrace = rayTrace(this);
         if (rayTrace.getType() == RayTraceResult.Type.BLOCK) {
-            BlockRayTraceResult hitResult = (BlockRayTraceResult) rayTrace.hitInfo;
+            BlockRayTraceResult hitResult = (BlockRayTraceResult) rayTrace;
             if (hitResult.getFace() == Direction.UP) {
                 BlockState hitBlock = world.getBlockState(hitResult.getPos());
                 if (strikeTime > STRIKE_LENGTH && hitBlock != world.getBlockState(getPosition().down())) {

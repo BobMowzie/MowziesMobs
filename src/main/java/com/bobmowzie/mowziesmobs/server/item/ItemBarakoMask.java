@@ -28,11 +28,6 @@ public class ItemBarakoMask extends ArmorItem implements BarakoaMask {
     }
 
     @Override
-    public EquipmentSlotType getEquipmentSlot() {
-        return null;
-    }
-
-    @Override
     public boolean isDamageable() {
         return ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable;
     }
