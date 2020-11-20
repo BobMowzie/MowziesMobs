@@ -14,8 +14,10 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.server.SSpawnObjectPacket;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -53,6 +55,12 @@ public class EntityBlockSwapper extends Entity {
             setOrigBlock(swapper.getOrigBlock());
             swapper.remove();
         }
+    }
+
+    @Nullable
+    @Override
+    public AxisAlignedBB getCollisionBoundingBox() {
+        return this.getBoundingBox();
     }
 
     public static void swapBlock(World world, BlockPos pos, BlockState newBlock, int duration, boolean breakParticlesStart, boolean breakParticlesEnd) {
@@ -143,6 +151,6 @@ public class EntityBlockSwapper extends Entity {
 
     @Override
     public IPacket<?> createSpawnPacket() {
-        return new SSpawnObjectPacket(this);
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

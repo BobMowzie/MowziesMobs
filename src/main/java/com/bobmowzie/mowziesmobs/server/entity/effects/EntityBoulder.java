@@ -28,6 +28,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -419,7 +420,7 @@ public class EntityBoulder extends Entity {
 
     @Override
     public IPacket<?> createSpawnPacket() {
-        return new SSpawnObjectPacket();
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     public List<LivingEntity> getEntityLivingBaseNearby(double radius) {

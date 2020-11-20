@@ -25,7 +25,9 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,6 +58,12 @@ public class EntityAxeAttack extends EntityMagicEffect {
     protected void registerData() {
         super.registerData();
         getDataManager().register(VERTICAL, false);
+    }
+
+    @Nullable
+    @Override
+    public AxisAlignedBB getCollisionBoundingBox() {
+        return this.getBoundingBox();
     }
 
     @Override

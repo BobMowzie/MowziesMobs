@@ -34,7 +34,9 @@ import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fml.network.NetworkHooks;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnData {
@@ -63,6 +65,12 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         this(type, world);
         this.caster = caster;
         this.setPosition(x + 0.5F, y + 1.0625F, z + 0.5F);
+    }
+
+    @Nullable
+    @Override
+    public AxisAlignedBB getCollisionBoundingBox() {
+        return this.getBoundingBox();
     }
 
     @Override
@@ -272,7 +280,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
 
     @Override
     public IPacket<?> createSpawnPacket() {
-        return new SSpawnObjectPacket(this);
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override

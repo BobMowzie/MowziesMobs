@@ -6,8 +6,12 @@ import net.minecraft.entity.MoverType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.play.server.SSpawnObjectPacket;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
+
+import javax.annotation.Nullable;
 
 /**
  * Created by Josh on 4/15/2017.
@@ -35,6 +39,12 @@ public class EntityRing extends Entity {
         this.opacity = opacity;
         this.size = size;
         this.facesCamera = facesCamera;
+    }
+
+    @Nullable
+    @Override
+    public AxisAlignedBB getCollisionBoundingBox() {
+        return this.getBoundingBox();
     }
 
     @Override
@@ -66,7 +76,7 @@ public class EntityRing extends Entity {
 
     @Override
     public IPacket<?> createSpawnPacket() {
-        return new SSpawnObjectPacket();
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     public float interpolate(float delta) {

@@ -7,6 +7,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.play.server.SSpawnObjectPacket;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 /**
  * Created by Josh on 7/20/2017.
@@ -54,7 +55,7 @@ public class EntityFrozenController extends Entity {
 
     @Override
     public IPacket<?> createSpawnPacket() {
-        return new SSpawnObjectPacket();
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override

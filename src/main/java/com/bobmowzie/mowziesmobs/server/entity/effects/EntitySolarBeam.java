@@ -24,7 +24,9 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.*;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,6 +68,12 @@ public class EntitySolarBeam extends Entity {
         if (!world.isRemote) {
             this.setCasterID(caster.getEntityId());
         }
+    }
+
+    @Nullable
+    @Override
+    public AxisAlignedBB getCollisionBoundingBox() {
+        return this.getBoundingBox();
     }
 
     @Override
@@ -242,7 +250,7 @@ public class EntitySolarBeam extends Entity {
 
     @Override
     public IPacket<?> createSpawnPacket() {
-        return new SSpawnObjectPacket();
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     private void calculateEndPos() {

@@ -47,7 +47,7 @@ public class ItemWroughtAxe extends AxeItem {
                 boolean verticalAttack = player.isSneaking() && player.onGround;
                 EntityAxeAttack axeAttack = new EntityAxeAttack(EntityHandler.AXE_ATTACK, world, player, verticalAttack);
                 axeAttack.setPositionAndRotation(player.posX, player.posY, player.posZ, player.rotationYaw, player.rotationPitch);
-                if (!world.isRemote) world.addEntity(axeAttack);
+                world.addEntity(axeAttack);
                 playerCapability.setVerticalSwing(verticalAttack);
                 playerCapability.setUntilAxeSwing(PlayerCapability.SWING_COOLDOWN);
                 if (ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable && !player.abilities.isCreativeMode) player.getHeldItem(hand).damageItem(2, player, p -> p.sendBreakAnimation(hand));

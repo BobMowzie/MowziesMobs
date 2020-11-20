@@ -9,8 +9,11 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.server.SSpawnObjectPacket;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -37,12 +40,23 @@ public abstract class EntityMagicEffect extends Entity {
         getDataManager().set(CASTER, id);
     }
 
+    @Nullable
+    @Override
+    public AxisAlignedBB getCollisionBoundingBox() {
+        return this.getBoundingBox();
+    }
+
     @Override
     public void tick() {
         super.tick();
         if (ticksExisted == 1) {
             caster = (LivingEntity) world.getEntityByID(getCasterID());
         }
+    }
+
+    @Override
+    public IPacket<?> createSpawnPacket() {
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
@@ -65,10 +79,5 @@ public abstract class EntityMagicEffect extends Entity {
 
     public <T extends Entity> List<T> getEntitiesNearbyCube(Class<T> entityClass, double r) {
         return world.getEntitiesWithinAABB(entityClass, getBoundingBox().grow(r, r, r), e -> e != this);
-    }
-
-    @Override
-    public IPacket<?> createSpawnPacket() {
-        return new SSpawnObjectPacket(this);
     }
 }

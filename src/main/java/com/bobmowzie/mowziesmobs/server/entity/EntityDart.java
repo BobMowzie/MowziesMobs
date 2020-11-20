@@ -10,12 +10,14 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.entity.projectile.ArrowEntity;
+import net.minecraft.network.IPacket;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 public class EntityDart extends ArrowEntity {
     public EntityDart(EntityType<? extends EntityDart> type, World world) {
@@ -43,6 +45,11 @@ public class EntityDart extends ArrowEntity {
         if (getShooter() instanceof PlayerEntity) living.addPotionEffect(new EffectInstance(Effects.POISON, ConfigHandler.TOOLS_AND_ABILITIES.BLOW_GUN.poisonDuration, 3, false, true));
         else living.addPotionEffect(new EffectInstance(Effects.POISON, 20, 1, false, true));
         living.setArrowCountInEntity(living.getArrowCountInEntity() - 1);
+    }
+
+    @Override
+    public IPacket<?> createSpawnPacket() {
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
