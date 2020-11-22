@@ -22,6 +22,8 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.server.SSpawnObjectPacket;
+import net.minecraft.particles.BlockParticleData;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -198,13 +200,11 @@ public class EntityBoulder extends Entity {
 
         if (travelling && world.checkBlockCollision(getBoundingBox().grow(0.1,0.1,0.1))) setShouldExplode(true);
 
-        blockId = Block.getStateId(storedBlock);
-
         if (ticksExisted == 1) {
             for (int i = 0; i < 20 * getWidth(); i++) {
                 Vec3d particlePos = new Vec3d(rand.nextFloat() * 1.3 * getWidth(), 0, 0);
                 particlePos = particlePos.rotateYaw((float)(rand.nextFloat() * 2 * Math.PI));
-//                world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, posX + particlePos.x, posY - 1, posZ + particlePos.z, particlePos.x, 2, particlePos.z, blockId);
+                world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, storedBlock), posX + particlePos.x, posY - 1, posZ + particlePos.z, particlePos.x, 2, particlePos.z);
             }
             if (boulderSize == 0) {
                 playSound(MMSounds.EFFECT_GEOMANCY_SMALL_CRASH.get(), 1.5f, 1.3f);
@@ -240,7 +240,7 @@ public class EntityBoulder extends Entity {
                 float offsetY;
                 if (boulderSize == 3 && ticksExisted < finishedRisingTick) offsetY = (float) (rand.nextFloat() * (getHeight()-1) - getHeight() * (finishedRisingTick - ticksExisted)/finishedRisingTick);
                 else offsetY = (float) (rand.nextFloat() * (getHeight()-1));
-//                world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, posX + particlePos.x, posY + offsetY, posZ + particlePos.z, 0, -1, 0, blockId);
+                world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, storedBlock), posX + particlePos.x, posY + offsetY, posZ + particlePos.z, 0, -1, 0);
             }
         }
         int newDeathTime = getDeathTime() - 1;
@@ -254,7 +254,7 @@ public class EntityBoulder extends Entity {
             Vec3d particlePos = new Vec3d(rand.nextFloat() * 0.7 * getWidth(), 0, 0);
             particlePos = particlePos.rotateYaw((float)(rand.nextFloat() * 2 * Math.PI));
             particlePos = particlePos.rotatePitch((float)(rand.nextFloat() * 2 * Math.PI));
-//            world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, posX + particlePos.x, posY + 0.5 + particlePos.y, posZ + particlePos.z, particlePos.x, particlePos.y, particlePos.z, blockId);
+            world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, storedBlock), posX + particlePos.x, posY + 0.5 + particlePos.y, posZ + particlePos.z, particlePos.x, particlePos.y, particlePos.z);
         }
         if (boulderSize == 0) {
             playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL.get(), 1.5f, 0.9f);

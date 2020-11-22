@@ -20,6 +20,9 @@ import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Food;
+import net.minecraft.particles.BlockParticleData;
+import net.minecraft.particles.ItemParticleData;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -101,7 +104,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
         }
         if (world.isRemote && getAnimation() == EAT_ANIMATION && (getAnimationTick() == 3 || getAnimationTick() == 7 || getAnimationTick() == 11 || getAnimationTick() == 15 || getAnimationTick() == 19)) {
             for (int i = 0; i <= 5; i++) {
-//                world.spawnParticle(EnumParticleTypes.ITEM_CRACK, posX, posY + 0.2, posZ, rand.nextFloat() * 0.2 - 0.1, rand.nextFloat() * 0.2, rand.nextFloat() * 0.2 - 0.1, Item.getIdFromItem(getEating().getItem())); TODO
+                world.addParticle(new ItemParticleData(ParticleTypes.ITEM, getEating()), posX, posY + 0.2, posZ, rand.nextFloat() * 0.2 - 0.1, rand.nextFloat() * 0.2, rand.nextFloat() * 0.2 - 0.1);
             }
         }
 
@@ -164,7 +167,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
     public void onDeath(DamageSource source) {
         super.onDeath(source);
         for (int i = 0; i < 10; i++) {
-//            world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, posX, posY + 0.2, posZ, 0, 0, 0, JUNGLE_LEAVES);
+            world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, Blocks.JUNGLE_LEAVES.getDefaultState()), posX, posY + 0.2, posZ, 0, 0, 0);
         }
         remove();
     }
@@ -181,7 +184,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
 
     @Override
     protected SoundEvent getDeathSound() {
-        playSound(SoundEvents.BLOCK_GRASS_HIT, 1, 0.8F);
+        playSound(SoundEvents.BLOCK_GRASS_BREAK, 1, 0.8F);
         return null;
     }
 

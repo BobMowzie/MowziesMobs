@@ -15,6 +15,8 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.block.Blocks;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
+import net.minecraft.particles.BlockParticleData;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -143,12 +145,11 @@ public class EntityAxeAttack extends EntityMagicEffect {
                                 world.addEntity(fallingBlock);
                                 world.removeBlock(pos, false);
                                 int amount = 6 + world.rand.nextInt(10);
-                                int stateId = Block.getStateId(block);
                                 while (amount-- > 0) {
                                     double cx = px + world.rand.nextFloat() * 2 - 1;
                                     double cy = getBoundingBox().minY + 0.1 + world.rand.nextFloat() * 0.3;
                                     double cz = pz + world.rand.nextFloat() * 2 - 1;
-//                                    world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, cx, cy, cz, 0, vx, 0.4 + world.rand.nextFloat() * 0.2F, vz, 1, stateId);
+                                    world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, block), cx, cy, cz, vx, 0.4 + world.rand.nextFloat() * 0.2F, vz);
                                 }
                             }
                         }
@@ -159,7 +160,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
                             double velX = vx * 0.075;
                             double velY = factor * 0.3 + 0.025;
                             double velZ = vz * 0.075;
-//                            world.spawnParticle(EnumParticleTypes.CLOUD, px + world.rand.nextFloat() * 2 - 1, entity.getBoundingBox().minY + 0.1 + world.rand.nextFloat() * 1.5, pz + world.rand.nextFloat() * 2 - 1, 0, velX, velY, velZ, 1);
+                            world.addParticle(ParticleTypes.CLOUD, px + world.rand.nextFloat() * 2 - 1, caster.getBoundingBox().minY + 0.1 + world.rand.nextFloat() * 1.5, pz + world.rand.nextFloat() * 2 - 1, velX, velY, velZ);
                         }
                     }
                 }

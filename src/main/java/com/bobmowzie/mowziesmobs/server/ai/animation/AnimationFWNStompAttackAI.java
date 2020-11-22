@@ -14,6 +14,8 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.item.FallingBlockEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.play.server.SEntityVelocityPacket;
+import net.minecraft.particles.BlockParticleData;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -61,7 +63,7 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                     double px = fx + sx * dist;
                     double py = fy + world.rand.nextDouble() * 0.1;
                     double pz = fz + sz * dist;
-//                    world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, px, py, pz, 0, sx * 0.065, 0, sz * 0.065, 1);
+                    world.addParticle(ParticleTypes.SMOKE, px, py, pz, sx * 0.065, 0, sz * 0.065);
                 }
             } else if (tick == 12) {
                 entity.playSound(SoundEvents.ENTITY_GENERIC_EXPLODE, 2, 1F + entity.getRNG().nextFloat() * 0.1F);
@@ -122,7 +124,7 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                                     double cx = px + world.rand.nextFloat() * 2 - 1;
                                     double cy = entity.getBoundingBox().minY + 0.1 + world.rand.nextFloat() * 0.3;
                                     double cz = pz + world.rand.nextFloat() * 2 - 1;
-//                                    world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, cx, cy, cz, 0, vx, 0.4 + world.rand.nextFloat() * 0.2F, vz, 1, stateId);
+                                    world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, block), cx, cy, cz, vx, 0.4 + world.rand.nextFloat() * 0.2F, vz);
                                 }
                             }
                         }
@@ -133,7 +135,7 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                             double velX = vx * 0.075;
                             double velY = factor * 0.3 + 0.025;
                             double velZ = vz * 0.075;
-//                            world.spawnParticle(EnumParticleTypes.CLOUD, px + world.rand.nextFloat() * 2 - 1, entity.getBoundingBox().minY + 0.1 + world.rand.nextFloat() * 1.5, pz + world.rand.nextFloat() * 2 - 1, 0, velX, velY, velZ, 1);
+                            world.addParticle(ParticleTypes.CLOUD, px + world.rand.nextFloat() * 2 - 1, entity.getBoundingBox().minY + 0.1 + world.rand.nextFloat() * 1.5, pz + world.rand.nextFloat() * 2 - 1, velX, velY, velZ);
                         }
                     }
                 }

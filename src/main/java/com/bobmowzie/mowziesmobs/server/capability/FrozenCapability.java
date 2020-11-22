@@ -8,12 +8,15 @@ import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
+import net.minecraft.particles.BlockParticleData;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.Direction;
@@ -266,7 +269,7 @@ public class FrozenCapability {
                         double particleX = entity.posX + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
                         double particleZ = entity.posZ + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
                         double particleY = entity.posY + entity.getHeight() * entity.getRNG().nextFloat() + 0.3f;
-//                        entity.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, particleX, particleY, particleZ, 0, 0, 0, Block.getStateId(Blocks.ICE.getDefaultState())); TODO
+                        entity.world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, Blocks.ICE.getDefaultState()), particleX, particleY, particleZ, 0, 0, 0);
                     }
                 }
                 if (entity instanceof MobEntity && ((MobEntity) entity).isAIDisabled() && prevHasAI) {

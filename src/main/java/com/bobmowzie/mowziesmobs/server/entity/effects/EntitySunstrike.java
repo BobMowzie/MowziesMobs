@@ -25,6 +25,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.server.SAnimateHandPacket;
 import net.minecraft.network.play.server.SEntityTeleportPacket;
 import net.minecraft.network.play.server.SSpawnObjectPacket;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.SlabType;
 import net.minecraft.util.DamageSource;
@@ -243,7 +244,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
                 float r = rand.nextFloat() * 0.7F;
                 float x = r * MathHelper.cos(theta);
                 float z = r * MathHelper.sin(theta);
-//                world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, posX + x, posY + 0.1, posZ + z, 0, 0, 0);
+                world.addParticle(ParticleTypes.LARGE_SMOKE, posX + x, posY + 0.1, posZ + z, 0, 0, 0);
             }
         }
     }
@@ -255,10 +256,10 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
             float vy = rand.nextFloat() * 0.08F;
             float vx = velocity * MathHelper.cos(yaw);
             float vz = velocity * MathHelper.sin(yaw);
-//            world.spawnParticle(EnumParticleTypes.FLAME, posX, posY + 0.1, posZ, vx, vy, vz);
+            world.addParticle(ParticleTypes.FLAME, posX, posY + 0.1, posZ, vx, vy, vz);
         }
         for (int i = 0; i < amount / 2; i++) {
-//            world.spawnParticle(EnumParticleTypes.LAVA, posX, posY + 0.1, posZ, 0, 0, 0);
+            world.addParticle(ParticleTypes.LAVA, posX, posY + 0.1, posZ, 0, 0, 0);
         }
     }
 

@@ -37,6 +37,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.Enchantments;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
@@ -279,7 +280,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
             double y = posY + 0.8f + 0.3f * (2 * rand.nextFloat() - 1f);
             double z = posZ + 0.5f * (2 * rand.nextFloat() - 1f);
             if (isBlackPinkInYourArea()) {
-//                world.spawnParticle(EnumParticleTypes.NOTE, x, y, z, rand.nextDouble() / 2, 0, 0);
+                world.addParticle(ParticleTypes.NOTE, x, y, z, rand.nextDouble() / 2, 0, 0);
             } else {
                 MMParticle.SPARKLE.spawn(world, x, y, z, ParticleFactory.ParticleArgs.get().withData(0d, 0d, 0d, 1d, 1d, 1d, 4d, 22));   
             }

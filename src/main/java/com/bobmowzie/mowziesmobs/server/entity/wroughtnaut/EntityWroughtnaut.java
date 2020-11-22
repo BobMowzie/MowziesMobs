@@ -32,6 +32,8 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.particles.BlockParticleData;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
@@ -364,7 +366,6 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
             BlockPos hit = new BlockPos(hitX, hitY, hitZ);
             BlockState block = world.getBlockState(hit);
             if (block.getRenderType() != BlockRenderType.INVISIBLE) {
-                int stateId = Block.getStateId(block);
                 for (int n = 0; n < 6; n++) {
                     double pa = rand.nextDouble() * 2 * Math.PI;
                     double pd = rand.nextDouble() * 0.6 + 0.1;
@@ -378,7 +379,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
                         velX = -velX;
                         velZ = -velZ;
                     }
-//                    world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, px, y, pz, velX, velY, velZ, stateId);
+                    world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, block), px, y, pz, velX, velY, velZ);
                 }
             }
         }
@@ -442,8 +443,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
                 pos.setPos(blockX, ceilY, blockZ);
                 BlockState block = world.getBlockState(pos);
                 if (block.getRenderType() != BlockRenderType.INVISIBLE) {
-                    int stateId = Block.getStateId(block);
-//                    world.spawnParticle(EnumParticleTypes.BLOCK_DUST, x, y, z, 0, 0, 0, stateId);
+                    world.addParticle(new BlockParticleData(ParticleTypes.FALLING_DUST, block), x, y, z, 0, 0, 0);
                     if (playSound && rand.nextFloat() < 0.075F) {
                         SoundType sound = block.getBlock().getSoundType(block, world, pos, null);
                         world.playSound(posX, posY, posZ, sound.getBreakSound(), SoundCategory.BLOCKS, sound.getVolume() * 2, sound.getPitch() * 0.6F, false);
