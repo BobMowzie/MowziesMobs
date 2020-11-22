@@ -159,12 +159,6 @@ public class EntityLantern extends MowzieEntity {
         if (getAnimationTick() == 2) playSound(MMSounds.ENTITY_LANTERN_POP.get(), 1f, 0.8f + rand.nextFloat() * 0.4f);
     }
 
-    @Nullable
-    @Override
-    protected ResourceLocation getLootTable() {
-        return LootTableHandler.LANTERN;
-    }
-
     public void fall(float distance, float damageMultiplier)
     {
     }

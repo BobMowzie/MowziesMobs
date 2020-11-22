@@ -12,9 +12,11 @@ import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityLantern;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import net.minecraft.entity.*;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -25,8 +27,6 @@ public enum EntityHandler {
     INSTANCE;
 
     public static final String BARAKOAYA_ID = "barakoaya";
-
-    private static int nextEntityId;
 
     public static EntityType<EntityFoliaath> FOLIAATH;
     public static EntityType<EntityBabyFoliaath> BABY_FOLIAATH;
@@ -118,13 +118,37 @@ public enum EntityHandler {
 
         EntityType.Builder<EntityBlockSwapper> blockSwapperBuilder = EntityType.Builder.create(EntityBlockSwapper::new, EntityClassification.MISC);
         BLOCK_SWAPPER = register("block_swapper", blockSwapperBuilder.disableSummoning().size(1, 1));
+
+        ForgeRegistries.ENTITIES.registerAll(
+            FOLIAATH,
+            BABY_FOLIAATH,
+            WROUGHTNAUT,
+            BARAKOAN_TO_BARAKOANA,
+            BARAKOAN_TO_PLAYER,
+            BARAKOAYA,
+            BARAKOANA,
+            BARAKO,
+            FROSTMAW,
+            GROTTOL,
+            LANTERN,
+            NAGA,
+            SUNSTRIKE,
+            SOLAR_BEAM,
+            BOULDER,
+            AXE_ATTACK,
+            ICE_BREATH,
+            ICE_BALL,
+            FROZEN_CONTROLLER,
+            RING,
+            DART,
+            POISON_BALL,
+            SUPER_NOVA,
+            BLOCK_SWAPPER
+        );
     }
 
-    private static <T extends Entity> EntityType<T> register(String key, EntityType.Builder<T> builder) {
-        return Registry.register(Registry.ENTITY_TYPE, key, builder.build(key));
-    }
-
-    private static int nextEntityId() {
-        return nextEntityId++;
+    private static <T extends Entity> EntityType<T> register(String name, EntityType.Builder<T> builder) {
+        ResourceLocation regName = new ResourceLocation(MowziesMobs.MODID, name);
+        return (EntityType<T>) builder.build(name).setRegistryName(regName);
     }
 }

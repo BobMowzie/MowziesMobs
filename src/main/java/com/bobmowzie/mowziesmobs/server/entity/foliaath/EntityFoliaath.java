@@ -287,12 +287,6 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         this.addPotionEffect(new EffectInstance(Effects.REGENERATION, 300, 1, true, true));
     }
 
-    @Nullable
-    @Override
-    protected ResourceLocation getLootTable() {
-        return LootTableHandler.FOLIAATH;
-    }
-
     @Override
     public boolean preventDespawn() {
         return !getDataManager().get(CAN_DESPAWN);

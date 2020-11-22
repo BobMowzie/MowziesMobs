@@ -585,12 +585,6 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
         return null;
     }
 
-    @Nullable
-    @Override
-    protected ResourceLocation getLootTable() {
-        return LootTableHandler.NAGA;
-    }
-
     @Override
     public Animation[] getAnimations() {
         return new Animation[] {FLAP_ANIMATION, DODGE_ANIMATION, SWOOP_ANIMATION, SPIT_ANIMATION, HURT_TO_FALL_ANIMATION, LAND_ANIMATION, GET_UP_ANIMATION, DIE_AIR_ANIMATION, DIE_GROUND_ANIMATION, TAIL_DEMO_ANIMATION};

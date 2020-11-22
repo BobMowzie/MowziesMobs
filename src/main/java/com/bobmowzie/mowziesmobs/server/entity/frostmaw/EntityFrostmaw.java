@@ -780,12 +780,6 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         compound.putBoolean("active", getActive());
     }
 
-    @Nullable
-    @Override
-    protected ResourceLocation getLootTable() {
-        return LootTableHandler.FROSTMAW;
-    }
-
     @Override
     public boolean preventDespawn() {
         return getHasCrystal();

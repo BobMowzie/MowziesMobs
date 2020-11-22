@@ -391,12 +391,6 @@ public class EntityGrottol extends MowzieEntity implements IMob {
         }
     }
 
-    @Nullable
-    @Override
-    protected ResourceLocation getLootTable() {
-        return LootTableHandler.GROTTOL;
-    }
-
     @Override
     protected SoundEvent getDeathSound() {
         playSound(MMSounds.ENTITY_GROTTOL_DIE.get(), 1f, 1.3f);

@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.storage.loot.LootTable;
+import net.minecraft.world.storage.loot.LootTableManager;
 import net.minecraft.world.storage.loot.LootTables;
 import net.minecraft.world.storage.loot.conditions.ILootCondition;
 import net.minecraft.world.storage.loot.conditions.LootConditionManager;
@@ -16,7 +17,7 @@ public class LootTableHandler {
     public static final ResourceLocation FERROUS_WROUGHTNAUT = null;//register("entities/ferrous_wroughtnaut");
     public static final ResourceLocation LANTERN = null;//register("entities/lantern");
     public static final ResourceLocation NAGA = null;//register("entities/naga");
-    public static final ResourceLocation FOLIAATH = null;//register("entities/foliaath");
+    public static final ResourceLocation FOLIAATH = null;
     public static final ResourceLocation GROTTOL = null;//register("entities/grottol");
     public static final ResourceLocation FROSTMAW = null;//register("entities/frostmaw");
     public static final ResourceLocation BARAKOA_FURY = null;//register("entities/barakoa_fury");

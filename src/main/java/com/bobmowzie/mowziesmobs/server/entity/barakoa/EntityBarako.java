@@ -745,12 +745,6 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         super.onDeath(cause);
     }
 
-    @Nullable
-    @Override
-    protected ResourceLocation getLootTable() {
-        return LootTableHandler.BARAKO;
-    }
-
     public boolean isTrading() {
         return customer != null;
     }
