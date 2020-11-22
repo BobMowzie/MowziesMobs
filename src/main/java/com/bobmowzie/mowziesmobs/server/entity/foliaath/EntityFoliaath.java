@@ -71,13 +71,8 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         this.goalSelector.addGoal(1, new AnimationTakeDamage<>(this));
         this.goalSelector.addGoal(1, new AnimationDieAI<>(this));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, LivingEntity.class, 0, true, false, e ->
-                PlayerEntity.class.isAssignableFrom(e.getClass()) || CreatureEntity.class.isAssignableFrom(e.getClass())) {
-
-            @Override
-            protected boolean isSuitableTarget(@Nullable LivingEntity target, EntityPredicate predicate) {
-                return !(target instanceof EntityFoliaath) && !(target instanceof EntityBabyFoliaath) && !target.isInvisible() && !target.isInvulnerable() && super.isSuitableTarget(target, predicate);
-            }
-        });
+                (PlayerEntity.class.isAssignableFrom(e.getClass()) || CreatureEntity.class.isAssignableFrom(e.getClass())) && !(e instanceof EntityFoliaath || e instanceof EntityBabyFoliaath))
+        );
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.model.armor.BarakoaMaskModel;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
@@ -7,6 +9,9 @@ import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import net.minecraft.client.renderer.entity.model.BipedModel;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.item.crafting.Ingredient;
@@ -14,6 +19,8 @@ import net.minecraft.potion.Effect;
 import net.minecraft.util.*;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.world.World;
+
+import javax.annotation.Nullable;
 
 public class ItemBarakoaMask extends ArmorItem implements BarakoaMask {
     private final MaskType type;
@@ -76,6 +83,27 @@ public class ItemBarakoaMask extends ArmorItem implements BarakoaMask {
                 barakoa.setHealth((1.0f - durability) * barakoa.getMaxHealth());
             }
         }
+    }
+
+    @Nullable
+    @Override
+    public <A extends BipedModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, A _default) {
+        BarakoaMaskModel<?> model = new BarakoaMaskModel<>();
+        model.bipedHeadwear.showModel = armorSlot == EquipmentSlotType.HEAD;
+
+        model.isChild = _default.isChild;
+        model.isSneak = _default.isSneak;
+        model.isSitting = _default.isSitting;
+        model.rightArmPose = _default.rightArmPose;
+        model.leftArmPose = _default.leftArmPose;
+
+        return (A) model;
+    }
+
+    @Nullable
+    @Override
+    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
+        return new ResourceLocation(MowziesMobs.MODID, "textures/entity/barakoa_" + this.type.name + ".png").toString();
     }
 
     private static class BarakoaMaskMaterial implements IArmorMaterial {

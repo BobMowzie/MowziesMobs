@@ -1,10 +1,12 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.SpawnEggItem;
 import net.minecraftforge.event.RegistryEvent;
@@ -37,7 +39,7 @@ public final class ItemHandler {
     public static final ItemGlowingJelly GLOWING_JELLY = (ItemGlowingJelly) new ItemGlowingJelly( new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab).food(ItemGlowingJelly.GLOWING_JELLY_FOOD)).setRegistryName("glowing_jelly");
     public static final ItemNagaFang NAGA_FANG = (ItemNagaFang) new ItemNagaFang(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("naga_fang");
     public static final ItemNagaFangDagger NAGA_FANG_DAGGER = (ItemNagaFangDagger) new ItemNagaFangDagger(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("naga_fang_dagger");
-    public static final ItemLogo LOGO = (ItemLogo) new ItemLogo(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("logo");
+    public static final ItemLogo LOGO = (ItemLogo) new ItemLogo(new Item.Properties()).setRegistryName("logo");
 
     public static final SpawnEggItem FOLIAATH_SPAWN_EGG = (SpawnEggItem) new SpawnEggItem(EntityHandler.FOLIAATH, 0x47CC3B, 0xC03BCC, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("foliaath_spawn_egg");
     public static final SpawnEggItem WROUGHTNAUT_SPAWN_EGG = (SpawnEggItem) new SpawnEggItem(EntityHandler.WROUGHTNAUT, 0x8C8C8C, 0xFFFFFF, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("wroughtnaut_spawn_egg");
@@ -82,9 +84,10 @@ public final class ItemHandler {
                 FROSTMAW_SPAWN_EGG,
                 GROTTOL_SPAWN_EGG,
                 LANTERN_SPAWN_EGG,
-                NAGA_SPAWN_EGG
-                //new BlockItem(BlockHandler.PAINTED_ACACIA, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.PAINTED_ACACIA.getRegistryName()),
-                //new BlockItem(BlockHandler.PAINTED_ACACIA_SLAB, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.PAINTED_ACACIA_SLAB.getRegistryName())
+                NAGA_SPAWN_EGG,
+
+                new BlockItem(BlockHandler.PAINTED_ACACIA.get(), new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.PAINTED_ACACIA.get().getRegistryName()),
+                new BlockItem(BlockHandler.PAINTED_ACACIA_SLAB.get(), new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.PAINTED_ACACIA_SLAB.get().getRegistryName())
         );
     }
 

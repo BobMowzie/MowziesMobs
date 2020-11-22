@@ -1,13 +1,22 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.model.armor.SolVisageModel;
+import com.bobmowzie.mowziesmobs.client.model.armor.WroughtHelmModel;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Items;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.*;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+
+import javax.annotation.Nullable;
 
 public class ItemWroughtHelm extends ArmorItem {
     private static final WroughtHelmMaterial ARMOR_WROUGHT_HELM = new WroughtHelmMaterial();
@@ -35,6 +44,27 @@ public class ItemWroughtHelm extends ArmorItem {
     @Override
     public void setDamage(ItemStack stack, int damage) {
         if (ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.breakable) super.setDamage(stack, damage);
+    }
+
+    @Nullable
+    @Override
+    public <A extends BipedModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, A _default) {
+        WroughtHelmModel<?> model = new WroughtHelmModel<>();
+        model.bipedHeadwear.showModel = armorSlot == EquipmentSlotType.HEAD;
+
+        model.isChild = _default.isChild;
+        model.isSneak = _default.isSneak;
+        model.isSitting = _default.isSitting;
+        model.rightArmPose = _default.rightArmPose;
+        model.leftArmPose = _default.leftArmPose;
+
+        return (A) model;
+    }
+
+    @Nullable
+    @Override
+    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
+        return new ResourceLocation(MowziesMobs.MODID, "textures/items/wrought_helmet.png").toString();
     }
 
     private static class WroughtHelmMaterial implements IArmorMaterial {
