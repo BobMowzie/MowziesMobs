@@ -7,13 +7,10 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.LeavesBlock;
+import net.minecraft.block.*;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
@@ -27,17 +24,19 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
 import javax.annotation.Nullable;
+import java.util.Random;
 
 public class EntityFoliaath extends MowzieEntity implements IMob {
     public static final Animation DIE_ANIMATION = Animation.create(50);
@@ -280,6 +279,12 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         boolean notInTree = true;
         if (floor instanceof LeavesBlock && floorDown1 != biome.getSurfaceBuilder().config.getTop() && floorDown2 != biome.getSurfaceBuilder().config.getTop()) notInTree = false;
         return super.canSpawn(world, reason) && notInTree && getEntitiesNearby(AnimalEntity.class, 10, 10, 10, 10).isEmpty() && world.getDifficulty() != Difficulty.PEACEFUL;
+    }
+
+    @Override
+    public ILivingEntityData onInitialSpawn(IWorld world, DifficultyInstance difficulty, SpawnReason reason, @Nullable ILivingEntityData livingData, @Nullable CompoundNBT compound) {
+//        System.out.println("Foliaath at: " + getPosition().toString());
+        return super.onInitialSpawn(world, difficulty, reason, livingData, compound);
     }
 
     @Override

@@ -259,7 +259,7 @@ public final class ConfigHandler {
         public SpawnData spawnData = new SpawnData(
                 20, 1, 3,
                 new BiomeData(new String[] {"JUNGLE"}, new String[] {}, new String[] {}),
-                new String[] {"grass", "leaves", "leaves2", "log", "log2"},
+                new String[] {"grass_block", "jungle_leaves", "oak_leaves", "oak_log", "jungle_log"},
                 -1, 60, false, false, false
                 );
 

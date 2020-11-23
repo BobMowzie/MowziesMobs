@@ -53,11 +53,11 @@ public enum SpawnHandler {
 
     public void registerSpawns() {
         EntitySpawnPlacementRegistry.PlacementType mmSpawn = EntitySpawnPlacementRegistry.PlacementType.valueOf("MMSPAWN");
-        if(mmSpawn != null) {
-            EntitySpawnPlacementRegistry.register(EntityHandler.FOLIAATH, mmSpawn, Heightmap.Type.MOTION_BLOCKING, MowzieEntity::canSpawnOn);
-            EntitySpawnPlacementRegistry.register(EntityHandler.LANTERN, mmSpawn, Heightmap.Type.MOTION_BLOCKING, MowzieEntity::canSpawnOn);
-            EntitySpawnPlacementRegistry.register(EntityHandler.BARAKOANA, mmSpawn, Heightmap.Type.WORLD_SURFACE, MowzieEntity::canSpawnOn);
-            EntitySpawnPlacementRegistry.register(EntityHandler.NAGA, mmSpawn, Heightmap.Type.WORLD_SURFACE, MowzieEntity::canSpawnOn);
+        if (mmSpawn != null) {
+            EntitySpawnPlacementRegistry.register(EntityHandler.FOLIAATH, mmSpawn, Heightmap.Type.MOTION_BLOCKING, MowzieEntity::spawnPredicate);
+            EntitySpawnPlacementRegistry.register(EntityHandler.LANTERN, mmSpawn, Heightmap.Type.MOTION_BLOCKING, MowzieEntity::spawnPredicate);
+            EntitySpawnPlacementRegistry.register(EntityHandler.BARAKOANA, mmSpawn, Heightmap.Type.WORLD_SURFACE, MowzieEntity::spawnPredicate);
+            EntitySpawnPlacementRegistry.register(EntityHandler.NAGA, mmSpawn, Heightmap.Type.WORLD_SURFACE, MowzieEntity::spawnPredicate);
         }
 
         for (Type type : BiomeDictionary.Type.getAll()) {
@@ -79,7 +79,7 @@ public enum SpawnHandler {
 
         if (ConfigHandler.MOBS.FOLIAATH.spawnData.spawnRate > 0) {
             Set<Biome> foliaathBiomes = getBiomesFromConfig(ConfigHandler.MOBS.FOLIAATH.spawnData.biomeData);
-            //System.out.println("Foliaath biomes " + foliaathBiomes);
+            System.out.println("Foliaath biomes " + foliaathBiomes);
             registerEntityWorldSpawn(EntityHandler.FOLIAATH, ConfigHandler.MOBS.FOLIAATH.spawnData.spawnRate, ConfigHandler.MOBS.FOLIAATH.spawnData.minGroupSize, ConfigHandler.MOBS.FOLIAATH.spawnData.maxGroupSize, EntityClassification.MONSTER, foliaathBiomes.toArray(new Biome[foliaathBiomes.size()]));
         }
         if (ConfigHandler.MOBS.BARAKOA.spawnData.spawnRate > 0) {
