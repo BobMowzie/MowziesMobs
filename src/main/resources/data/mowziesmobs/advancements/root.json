@@ -9,7 +9,7 @@
     "description": {
       "translate": "advancements.mowziesmobs.root.description"
     },
-    "background": "minecraft:textures/blocks/stone.png",
+    "background": "minecraft:textures/block/stone.png",
     "show_toast": false,
     "announce_to_chat": false
   },

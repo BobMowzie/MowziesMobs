@@ -1,6 +1,6 @@
 {
 	"parent": "item/generated",
 	"textures": {
-		"layer0": "mowziesmobs:items/mob_remover"
+		"layer0": "mowziesmobs:item/mob_remover"
 	}
 }

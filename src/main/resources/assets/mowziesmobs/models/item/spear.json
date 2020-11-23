@@ -1,7 +1,7 @@
 {
       "parent": "item/handheld",
       "textures": {
-          "layer0": "mowziesmobs:items/spear"
+          "layer0": "mowziesmobs:item/spear"
       },
     "display": {
       "thirdperson_righthand": {

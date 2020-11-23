@@ -1,6 +1,6 @@
 {
 	"parent": "item/generated",
 	"textures": {
-		"layer0": "mowziesmobs:items/icecrystal"
+		"layer0": "mowziesmobs:item/icecrystal"
 	}
 }

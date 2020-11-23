@@ -1,6 +1,6 @@
 {
 	"parent": "item/generated",
 	"textures": {
-		"layer0": "mowziesmobs:items/earth_talisman"
+		"layer0": "mowziesmobs:item/earth_talisman"
 	}
 }

@@ -1,6 +1,6 @@
 {
 	"parent": "item/generated",
 	"textures": {
-		"layer0": "mowziesmobs:items/glowing_jelly"
+		"layer0": "mowziesmobs:item/glowing_jelly"
 	}
 }

@@ -1,7 +1,7 @@
 {
 	"parent": "builtin/generated",
 	"textures": {
-		"layer0": "mowziesmobs:items/wrought_axe"
+		"layer0": "mowziesmobs:item/wrought_axe"
 	},
 	"tabula": "mowziesmobs:models/item/wrought_axe",
 	"display": {

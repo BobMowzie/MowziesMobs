@@ -1,7 +1,7 @@
 {
 	"parent": "item/generated",
 	"textures": {
-		"layer0": "mowziesmobs:items/naga_fang_dagger"
+		"layer0": "mowziesmobs:item/naga_fang_dagger"
 	},
 	"display": {
 		"thirdperson_righthand": {
