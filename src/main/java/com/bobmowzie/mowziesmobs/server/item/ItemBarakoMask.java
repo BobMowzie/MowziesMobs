@@ -12,6 +12,8 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -66,7 +68,14 @@ public class ItemBarakoMask extends ArmorItem implements BarakoaMask {
     @Nullable
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
-        return new ResourceLocation(MowziesMobs.MODID, "textures/items/barako_mask.png").toString();
+        return new ResourceLocation(MowziesMobs.MODID, "textures/item/barako_mask.png").toString();
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.addInformation(stack, worldIn, tooltip, flagIn);
+        tooltip.add(new TranslationTextComponent("item.modid.registry_name.tooltip.line1"));
+        tooltip.add(new TranslationTextComponent("item.modid.registry_name.tooltip.line2"));
     }
 
     private static class SolVisageMaterial implements IArmorMaterial {

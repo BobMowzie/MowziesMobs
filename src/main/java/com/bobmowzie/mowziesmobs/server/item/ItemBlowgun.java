@@ -11,6 +11,8 @@ import net.minecraft.stats.Stats;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -92,5 +94,13 @@ public class ItemBlowgun extends BowItem {
     @Override
     public int getUseDuration(ItemStack p_77626_1_) {
         return 72000;
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        super.addInformation(stack, worldIn, tooltip, flagIn);
+        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.0"));
+        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.1"));
+        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.2"));
     }
 }
