@@ -34,6 +34,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.*;
+import net.minecraft.world.dimension.Dimension;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -86,7 +88,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
             return stack;
         }
         return ItemStack.EMPTY;
-    }*/
+    }*/ // TODO
 
     protected String getPickedEntityId() {
         return getEntityString();
@@ -115,11 +117,12 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
             int k = MathHelper.floor(this.posZ);
             BlockPos pos = new BlockPos(i, j, k);
 
-            // Dimension check // TODO: Update with new string-based dimension config
-            /*List<Dimension> dimensionIDs = spawnData.dimensions;
-            if (!dimensionIDs.contains(world.getDimension())) {
+            // Dimension check
+            List<String> dimensionNames = Arrays.asList(spawnData.dimensions);
+            ResourceLocation currDimensionName = world.getDimension().getType().getRegistryName();
+            if (currDimensionName == null || !dimensionNames.contains(currDimensionName.toString())) {
                 return false;
-            }*/
+            }
 
             // Height check
             float heightMax = spawnData.heightMax;

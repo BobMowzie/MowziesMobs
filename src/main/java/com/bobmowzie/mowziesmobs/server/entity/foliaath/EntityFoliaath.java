@@ -282,12 +282,6 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
     }
 
     @Override
-    public ILivingEntityData onInitialSpawn(IWorld world, DifficultyInstance difficulty, SpawnReason reason, @Nullable ILivingEntityData livingData, @Nullable CompoundNBT compound) {
-//        System.out.println("Foliaath at: " + getPosition().toString());
-        return super.onInitialSpawn(world, difficulty, reason, livingData, compound);
-    }
-
-    @Override
     public void onKillEntity(LivingEntity entity) {
         this.addPotionEffect(new EffectInstance(Effects.REGENERATION, 300, 1, true, true));
     }

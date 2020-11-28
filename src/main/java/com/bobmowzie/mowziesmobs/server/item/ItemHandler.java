@@ -18,8 +18,9 @@ import net.minecraftforge.fml.common.Mod;
 public final class ItemHandler {
     private ItemHandler() {}
 
+    public static final ItemTestStructure TEST_STRUCTURE = (ItemTestStructure) new ItemTestStructure(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("test_structure");
+
     public static final ItemFoliaathSeed FOLIAATH_SEED = (ItemFoliaathSeed) new ItemFoliaathSeed(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("foliaath_seed");
-//    public static final ItemTestStructure TEST_STRUCTURE = new ItemTestStructure(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab));
     public static final ItemMobRemover MOB_REMOVER = (ItemMobRemover) new ItemMobRemover(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("mob_remover");
     public static final ItemWroughtAxe WROUGHT_AXE = (ItemWroughtAxe) new ItemWroughtAxe(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("wrought_axe");
     public static final ItemWroughtHelm WROUGHT_HELMET = (ItemWroughtHelm) new ItemWroughtHelm(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("wrought_helmet");
@@ -54,8 +55,8 @@ public final class ItemHandler {
     @SubscribeEvent
     public static void register(RegistryEvent.Register<Item> event) {
         event.getRegistry().registerAll(
+                TEST_STRUCTURE,
                 FOLIAATH_SEED,
-                //TEST_STRUCTURE,
                 MOB_REMOVER,
                 WROUGHT_AXE,
                 WROUGHT_HELMET,
@@ -90,16 +91,4 @@ public final class ItemHandler {
                 new BlockItem(BlockHandler.PAINTED_ACACIA_SLAB.get(), new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.PAINTED_ACACIA_SLAB.get().getRegistryName())
         );
     }
-
-    /*public static void addItemText(Item item, List<String> lines) {
-        String keyStart = item.getTranslationKey() + ".text.";
-        for (int line = 0;; line++) {
-            String key = keyStart + line;
-            if (I18n.canTranslate(key)) {
-                lines.add(I18n.translateToLocal(key));
-            } else {
-                break;
-            }
-        }
-    }*/ // TODO
 }

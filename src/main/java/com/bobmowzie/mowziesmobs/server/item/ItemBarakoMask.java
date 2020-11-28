@@ -74,8 +74,9 @@ public class ItemBarakoMask extends ArmorItem implements BarakoaMask {
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
-        tooltip.add(new TranslationTextComponent("item.modid.registry_name.tooltip.line1"));
-        tooltip.add(new TranslationTextComponent("item.modid.registry_name.tooltip.line2"));
+        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.0"));
+        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.1"));
+        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.2"));
     }
 
     private static class SolVisageMaterial implements IArmorMaterial {

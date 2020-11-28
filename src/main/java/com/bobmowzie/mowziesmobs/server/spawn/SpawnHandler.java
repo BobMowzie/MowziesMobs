@@ -17,6 +17,7 @@ import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
+import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.spawner.WorldEntitySpawner;
 import net.minecraft.world.biome.Biome;
@@ -79,7 +80,7 @@ public enum SpawnHandler {
 
         if (ConfigHandler.MOBS.FOLIAATH.spawnData.spawnRate > 0) {
             Set<Biome> foliaathBiomes = getBiomesFromConfig(ConfigHandler.MOBS.FOLIAATH.spawnData.biomeData);
-            System.out.println("Foliaath biomes " + foliaathBiomes);
+//            System.out.println("Foliaath biomes " + foliaathBiomes);
             registerEntityWorldSpawn(EntityHandler.FOLIAATH, ConfigHandler.MOBS.FOLIAATH.spawnData.spawnRate, ConfigHandler.MOBS.FOLIAATH.spawnData.minGroupSize, ConfigHandler.MOBS.FOLIAATH.spawnData.maxGroupSize, EntityClassification.MONSTER, foliaathBiomes.toArray(new Biome[foliaathBiomes.size()]));
         }
         if (ConfigHandler.MOBS.BARAKOA.spawnData.spawnRate > 0) {
