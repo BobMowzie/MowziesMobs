@@ -2,7 +2,12 @@ package com.bobmowzie.mowziesmobs.client.particle;
 
 import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher.IParticleSpriteReceiver;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.IAnimatedSprite;
+import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.SpriteTexturedParticle;
+import net.minecraft.particles.BasicParticleType;
+import net.minecraft.particles.IParticleData;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -12,7 +17,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
 
-public abstract class ParticleFactory<F extends ParticleFactory<?, T>, T extends Particle> {
+public abstract class ParticleFactory<F extends ParticleFactory<?, T>, T extends SpriteTexturedParticle> implements IParticleFactory<BasicParticleType> {
 	/**
 	 * Immutable particle arguments
 	 */
@@ -340,27 +345,16 @@ public abstract class ParticleFactory<F extends ParticleFactory<?, T>, T extends
 		}
 	}
 
-	private final ParticleTextureStitcher<T> stitcher;
-	private final Class<T> type;
+	private final IAnimatedSprite spriteSet;
 	private final ParticleArgs baseArgs;
 	private final ParticleArgs defaultArgs;
 
 	/**
-	 * Creates a new particle factory for the specified particle type
-	 * @param type
-	 */
-	public ParticleFactory(Class<T> type) {
-		this(type, null);
-	}
-
-	/**
 	 * Creates a new particle factory for the specified particle and adds a particle texture stitcher
-	 * @param type
 	 * @param stitcher
 	 */
-	public ParticleFactory(Class<T> type, @Nullable ParticleTextureStitcher<T> stitcher) {
-		this.stitcher = stitcher;
-		this.type = type;
+	public ParticleFactory(IAnimatedSprite spriteSet) {
+		this.spriteSet = spriteSet;
 		this.baseArgs = new ParticleArgs();
 		this.setBaseArguments(this.baseArgs);
 		this.defaultArgs = new ParticleArgs();
@@ -370,16 +364,8 @@ public abstract class ParticleFactory<F extends ParticleFactory<?, T>, T extends
 	 * Returns the particle texture stitcher
 	 * @return
 	 */
-	public final ParticleTextureStitcher<? extends Particle> getStitcher() {
-		return this.stitcher;
-	}
-
-	/**
-	 * Returns the particle type
-	 * @return
-	 */
-	public final Class<T> getType() {
-		return this.type;
+	public final IAnimatedSprite getSprites() {
+		return this.spriteSet;
 	}
 
 	/**
@@ -399,11 +385,16 @@ public abstract class ParticleFactory<F extends ParticleFactory<?, T>, T extends
 	 */
 	protected final T getParticle(ImmutableParticleArgs args) {
 		T particle = this.createParticle(args);
-		if(this.getStitcher() != null) {
-			((IParticleSpriteReceiver)particle).setStitchedSprites(this.getStitcher().getSprites());
+		if(getSprites() != null) {
+			particle.selectSpriteRandomly(getSprites());
 		}
 		setParticleColor(particle, args.color);
 		return particle;
+	}
+
+	@Override
+	public Particle makeParticle(BasicParticleType typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+		return null;
 	}
 
 	/**
@@ -509,7 +500,6 @@ public abstract class ParticleFactory<F extends ParticleFactory<?, T>, T extends
 	/**
 	 * Spawns a particle.
 	 * The specified {@link ParticleArgs} overrides the default arguments set by {@link ParticleFactory#setDefaultArguments(World, ParticleArgs)}
-	 * @param type
 	 * @param world
 	 * @param x
 	 * @param y
@@ -519,8 +509,8 @@ public abstract class ParticleFactory<F extends ParticleFactory<?, T>, T extends
 	 */
 	public final T spawn(World world, double x, double y, double z, @Nullable ParticleArgs args) {
 		T particle = this.create(world, x, y, z, args);
-//		if(particle != null)
-//			Minecraft.getInstance().effectRenderer.addEffect(particle); // TODO
+		if(particle != null)
+			Minecraft.getInstance().particles.addEffect(particle);
 		return particle;
 	}
 }

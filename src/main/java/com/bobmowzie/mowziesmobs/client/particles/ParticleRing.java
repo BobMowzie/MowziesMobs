@@ -3,8 +3,10 @@ package com.bobmowzie.mowziesmobs.client.particles;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher;
+import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
@@ -20,7 +22,7 @@ import javax.vecmath.Vector3d;
 /**
  * Created by Josh on 6/2/2017.
  */
-public class ParticleRing extends Particle implements ParticleTextureStitcher.IParticleSpriteReceiver {
+public class ParticleRing extends SpriteTexturedParticle {
     public float r, g, b;
     public float opacity;
     public boolean facesCamera;
@@ -171,8 +173,9 @@ public class ParticleRing extends Particle implements ParticleTextureStitcher.IP
     }
 
     public static final class RingFactory extends ParticleFactory<ParticleRing.RingFactory, ParticleRing> {
-        public RingFactory() {
-            super(ParticleRing.class, ParticleTextureStitcher.create(ParticleRing.class, new ResourceLocation(MowziesMobs.MODID, "particles/ring")));
+
+        public RingFactory(IAnimatedSprite spriteSet) {
+            super(spriteSet);
         }
 
         @Override

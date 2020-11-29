@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.client.particles.util;
 
-import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.util.math.Vec3d;
 
@@ -13,23 +12,23 @@ public abstract class ParticleComponent {
 
     }
 
-    public void init(MowzieParticleBase particle) {
+    public void init(AdvancedParticleBase particle) {
 
     }
 
-    public void preUpdate(MowzieParticleBase particle) {
+    public void preUpdate(AdvancedParticleBase particle) {
 
     }
 
-    public void postUpdate(MowzieParticleBase particle) {
+    public void postUpdate(AdvancedParticleBase particle) {
 
     }
 
-    public void preRender(MowzieParticleBase particle, float partialTicks) {
+    public void preRender(AdvancedParticleBase particle, float partialTicks) {
 
     }
 
-    public void postRender(MowzieParticleBase particle, BufferBuilder buffer, float partialTicks, int lightmapJ, int lightmapK) {
+    public void postRender(AdvancedParticleBase particle, BufferBuilder buffer, float partialTicks, int lightmapJ, int lightmapK) {
 
     }
 
@@ -142,27 +141,27 @@ public abstract class ParticleComponent {
         }
 
         @Override
-        public void init(MowzieParticleBase particle) {
+        public void init(AdvancedParticleBase particle) {
             float value = animData.evaluate(0);
             applyUpdate(particle, value);
             applyRender(particle, value);
         }
 
         @Override
-        public void preRender(MowzieParticleBase particle, float partialTicks) {
+        public void preRender(AdvancedParticleBase particle, float partialTicks) {
             float ageFrac = (particle.getAge() + partialTicks) / particle.getMaxAge();
             float value = animData.evaluate(ageFrac);
             applyRender(particle, value);
         }
 
         @Override
-        public void preUpdate(MowzieParticleBase particle) {
+        public void preUpdate(AdvancedParticleBase particle) {
             float ageFrac = particle.getAge() / particle.getMaxAge();
             float value = animData.evaluate(ageFrac);
             applyUpdate(particle, value);
         }
 
-        private void applyUpdate(MowzieParticleBase particle, float value) {
+        private void applyUpdate(AdvancedParticleBase particle, float value) {
             if (property == EnumParticleProperty.POS_X) {
                 if (additive) particle.setPosX(particle.getPosX() + value);
                 else particle.setPosX(value);
@@ -193,7 +192,7 @@ public abstract class ParticleComponent {
             }
         }
 
-        private void applyRender(MowzieParticleBase particle, float value) {
+        private void applyRender(AdvancedParticleBase particle, float value) {
             if (property == EnumParticleProperty.RED) {
                 if (additive) particle.red += value;
                 else particle.red = value;
@@ -241,14 +240,14 @@ public abstract class ParticleComponent {
         }
 
         @Override
-        public void init(MowzieParticleBase particle) {
+        public void init(AdvancedParticleBase particle) {
             if (location != null && location.length > 0) {
                 particle.setPosition(location[0].x, location[0].y, location[0].z);
             }
         }
 
         @Override
-        public void preUpdate(MowzieParticleBase particle) {
+        public void preUpdate(AdvancedParticleBase particle) {
             if (location != null && location.length > 0) {
                 particle.setPosition(location[0].x, location[0].y, location[0].z);
             }
@@ -276,12 +275,12 @@ public abstract class ParticleComponent {
         }
 
         @Override
-        public void init(MowzieParticleBase particle) {
+        public void init(AdvancedParticleBase particle) {
             startLocation = new Vec3d(particle.getPosX(), particle.getPosY(), particle.getPosZ());
         }
 
         @Override
-        public void preUpdate(MowzieParticleBase particle) {
+        public void preUpdate(AdvancedParticleBase particle) {
             float ageFrac = particle.getAge() / particle.getMaxAge();
             if (location.length > 0) {
                 Vec3d destinationVec = location[0];
@@ -327,17 +326,17 @@ public abstract class ParticleComponent {
         }
 
         @Override
-        public void init(MowzieParticleBase particle) {
+        public void init(AdvancedParticleBase particle) {
             apply(particle, 0);
         }
 
         @Override
-        public void preUpdate(MowzieParticleBase particle) {
+        public void preUpdate(AdvancedParticleBase particle) {
             float ageFrac = particle.getAge() / particle.getMaxAge();
             apply(particle, ageFrac);
         }
 
-        private void apply(MowzieParticleBase particle, float t) {
+        private void apply(AdvancedParticleBase particle, float t) {
             float p = phase.evaluate(t);
             float r = radius.evaluate(t);
             Vec3d axis;
@@ -377,7 +376,7 @@ public abstract class ParticleComponent {
         }
 
         @Override
-        public void preRender(MowzieParticleBase particle, float partialTicks) {
+        public void preRender(AdvancedParticleBase particle, float partialTicks) {
             super.preRender(particle, partialTicks);
             double dx = particle.getPosX() - particle.getPrevPosX();
             double dy = particle.getPosY() - particle.getPrevPosY();

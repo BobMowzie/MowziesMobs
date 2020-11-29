@@ -2,22 +2,23 @@ package com.bobmowzie.mowziesmobs.client.particles.util;
 
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
-import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher;
-import net.minecraft.client.particle.IParticleRenderType;
-import net.minecraft.client.particle.Particle;
+import com.bobmowzie.mowziesmobs.client.particle.SparkleParticle;
+import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.entity.Entity;
+import net.minecraft.particles.ParticleType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.vecmath.Matrix4d;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector3d;
 
-public class MowzieParticleBase extends Particle implements ParticleTextureStitcher.IParticleSpriteReceiver {
+public class AdvancedParticleBase extends SpriteTexturedParticle {
     public float airDrag;
     public float red, green, blue, alpha;
     public float prevRed, prevGreen, prevBlue, prevAlpha;
@@ -32,7 +33,7 @@ public class MowzieParticleBase extends Particle implements ParticleTextureStitc
 
     ParticleRibbon ribbon;
 
-    protected MowzieParticleBase(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double motionX, double motionY, double motionZ, double yaw, double pitch, double roll, double scale, double r, double g, double b, double a, double drag, double duration, boolean faceCamera, boolean emissive, float faceCameraAngle, ParticleComponent[] components) {
+    protected AdvancedParticleBase(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double motionX, double motionY, double motionZ, double yaw, double pitch, double roll, double scale, double r, double g, double b, double a, double drag, double duration, boolean faceCamera, boolean emissive, float faceCameraAngle, ParticleComponent[] components) {
         super(worldIn, xCoordIn, yCoordIn, zCoordIn, 0.0D, 0.0D, 0.0D);
         this.motionX = motionX;
         this.motionY = motionY;
@@ -73,7 +74,7 @@ public class MowzieParticleBase extends Particle implements ParticleTextureStitc
 
     @Override
     public IParticleRenderType getRenderType() {
-        return IParticleRenderType.PARTICLE_SHEET_OPAQUE;
+        return IParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     public int getBrightnessForRender(float partialTick)
@@ -158,19 +159,11 @@ public class MowzieParticleBase extends Particle implements ParticleTextureStitc
             rotationYZ = 0;
         }
 
-        float f = 0;//(float)this.particleTextureIndexX / 16.0F;
-        float f1 = 0;//f + 0.0624375F;
-        float f2 = 0;//(float)this.particleTextureIndexY / 16.0F;
-        float f3 = 0;//f2 + 0.0624375F;
-        float f4 = 0;//0.1F * this.particleScale;
-
-//        if (this.particleTexture != null)
-//        {
-//            f = this.particleTexture.getMinU();
-//            f1 = this.particleTexture.getMaxU();
-//            f2 = this.particleTexture.getMinV();
-//            f3 = this.particleTexture.getMaxV();
-//        }
+        float f = this.getMinU();
+        float f1 = this.getMaxU();
+        float f2 = this.getMinV();
+        float f3 = this.getMaxV();
+        float f4 = 0.1F * this.particleScale;
 
         float f5 = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)partialTicks - interpPosX);
         float f6 = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)partialTicks - interpPosY);
@@ -180,20 +173,21 @@ public class MowzieParticleBase extends Particle implements ParticleTextureStitc
         int k = i & 65535;
         Vec3d[] avec3d = new Vec3d[] {new Vec3d((double)(-rotationX * f4 - rotationXY * f4), (double)(-rotationZ * f4), (double)(-rotationYZ * f4 - rotationXZ * f4)), new Vec3d((double)(-rotationX * f4 + rotationXY * f4), (double)(rotationZ * f4), (double)(-rotationYZ * f4 + rotationXZ * f4)), new Vec3d((double)(rotationX * f4 + rotationXY * f4), (double)(rotationZ * f4), (double)(rotationYZ * f4 + rotationXZ * f4)), new Vec3d((double)(rotationX * f4 - rotationXY * f4), (double)(-rotationZ * f4), (double)(rotationYZ * f4 - rotationXZ * f4))};
 
-//        if (faceCamera && this.particleAngle != 0.0F)
-//        {
-//            float f8 = this.particleAngle + (this.particleAngle - this.prevParticleAngle) * partialTicks;
-//            float f9 = MathHelper.cos(f8 * 0.5F);
-//            float f10 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.x;
-//            float f11 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.y;
-//            float f12 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.z;
-//            Vec3d vec3d = new Vec3d((double)f10, (double)f11, (double)f12);
-//
-//            for (int l = 0; l < 4; ++l)
-//            {
-//                avec3d[l] = vec3d.scale(2.0D * avec3d[l].dotProduct(vec3d)).add(avec3d[l].scale((double)(f9 * f9) - vec3d.dotProduct(vec3d))).add(vec3d.crossProduct(avec3d[l]).scale((double)(2.0F * f9)));
-//            }
-//        }
+        if (faceCamera && this.particleAngle != 0.0F)
+        {
+            float f8 = this.particleAngle + (this.particleAngle - this.prevParticleAngle) * partialTicks;
+            float f9 = MathHelper.cos(f8 * 0.5F);
+            float f10 = MathHelper.sin(f8 * 0.5F) * (float)entityIn.getLookDirection().x;
+            float f11 = MathHelper.sin(f8 * 0.5F) * (float)entityIn.getLookDirection().y;
+            float f12 = MathHelper.sin(f8 * 0.5F) * (float)entityIn.getLookDirection().z;
+            Vec3d vec3d = new Vec3d((double)f10, (double)f11, (double)f12);
+
+            for (int l = 0; l < 4; ++l)
+            {
+                avec3d[l] = vec3d.scale(2.0D * avec3d[l].dotProduct(vec3d)).add(avec3d[l].scale((double)(f9 * f9) - vec3d.dotProduct(vec3d))).add(vec3d.crossProduct(avec3d[l]).scale((double)(2.0F * f9)));
+            }
+        }
+
         Matrix4d boxTranslate = new Matrix4d();
         Matrix4d boxRotateX = new Matrix4d();
         Matrix4d boxRotateY = new Matrix4d();
@@ -227,11 +221,6 @@ public class MowzieParticleBase extends Particle implements ParticleTextureStitc
             component.postRender(this, buffer, partialTicks, j, k);
         }
     }
-
-//    @Override
-//    public boolean shouldDisableDepth() {
-//        return true;
-//    }
 
     public float getAge() {
         return age;
@@ -313,22 +302,28 @@ public class MowzieParticleBase extends Particle implements ParticleTextureStitc
         return world;
     }
 
-    public static final class ParticleBaseFactory extends ParticleFactory<ParticleBaseFactory, MowzieParticleBase> {
-        public ParticleBaseFactory(ResourceLocation texture) {
-            super(MowzieParticleBase.class, ParticleTextureStitcher.create(MowzieParticleBase.class, texture));
+    @OnlyIn(Dist.CLIENT)
+    public static class Factory implements IParticleFactory<AdvancedParticleData> {
+        private final IAnimatedSprite spriteSet;
+
+        public Factory(IAnimatedSprite sprite) {
+            this.spriteSet = sprite;
         }
 
         @Override
-        public MowzieParticleBase createParticle(ImmutableParticleArgs args) {
-            return new MowzieParticleBase(args.world, args.x, args.y, args.z, (double) args.data[0], (double) args.data[1], (double) args.data[2], (double) args.data[3], (double) args.data[4], (double) args.data[5], (double) args.data[6], (double) args.data[7], (double) args.data[8], (double) args.data[9], (double) args.data[10], (double) args.data[11], (double) args.data[12], (boolean) args.data[13], (boolean) args.data[14], (float) args.data[15], (ParticleComponent[]) args.data[16]);
+        public Particle makeParticle(AdvancedParticleData typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+            AdvancedParticleBase particle = new AdvancedParticleBase(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn.getYaw(), typeIn.getPitch(), typeIn.getRoll(), typeIn.getScale(), typeIn.getRed(), typeIn.getGreen(), typeIn.getBlue(), typeIn.getAlpha(), typeIn.getAirDrag(), typeIn.getDuration(), typeIn.isFaceCamera(), typeIn.isEmissive(), (float) typeIn.getFaceCameraAngle(), typeIn.getComponents());
+            particle.setColor((float) typeIn.getRed(), (float) typeIn.getGreen(), (float) typeIn.getBlue());
+            particle.selectSpriteRandomly(spriteSet);
+            return particle;
         }
     }
 
-    public static void spawnParticle(World world, MMParticle particle, double x, double y, double z, double motionX, double motionY, double motionZ, boolean faceCamera, double yaw, double pitch, double roll, float faceCameraAngle, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive) {
-        particle.spawn(world, x, y, z, ParticleFactory.ParticleArgs.get().withData(motionX, motionY, motionZ, yaw, pitch, roll, scale, r, g, b, a, drag, duration, faceCamera, emissive, faceCameraAngle, new ParticleComponent[] {}));
+    public static void spawnParticle(World world, ParticleType<AdvancedParticleData> particle, double x, double y, double z, double motionX, double motionY, double motionZ, boolean faceCamera, double yaw, double pitch, double roll, double faceCameraAngle, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive) {
+       world.addParticle(new AdvancedParticleData(particle, faceCamera, yaw, pitch, roll, faceCameraAngle, scale, r, g, b, a, drag, duration, emissive), x, y, z, motionX, motionY, motionZ);
     }
 
-    public static void spawnParticle(World world, MMParticle particle, double x, double y, double z, double motionX, double motionY, double motionZ, boolean faceCamera, double yaw, double pitch, double roll, float faceCameraAngle, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, ParticleComponent[] components) {
-        particle.spawn(world, x, y, z, ParticleFactory.ParticleArgs.get().withData(motionX, motionY, motionZ, yaw, pitch, roll, scale, r, g, b, a, drag, duration, faceCamera, emissive, faceCameraAngle, components));
+    public static void spawnParticle(World world, ParticleType<AdvancedParticleData> particle, double x, double y, double z, double motionX, double motionY, double motionZ, boolean faceCamera, double yaw, double pitch, double roll, double faceCameraAngle, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, ParticleComponent[] components) {
+        world.addParticle(new AdvancedParticleData(particle, faceCamera, yaw, pitch, roll, faceCameraAngle, scale, r, g, b, a, drag, duration, emissive, components), x, y, z, motionX, motionY, motionZ);
     }
 }

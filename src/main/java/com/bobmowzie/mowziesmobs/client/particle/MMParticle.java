@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.client.particle;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory.ParticleArgs;
 import com.bobmowzie.mowziesmobs.client.particles.*;
-import com.bobmowzie.mowziesmobs.client.particles.util.MowzieParticleBase;
+import com.bobmowzie.mowziesmobs.client.particles.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particles.util.ParticleRibbon;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.util.ResourceLocation;
@@ -12,32 +12,16 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 
 public enum MMParticle {
-    ORB(new ParticleOrb.OrbFactory()),
-    SNOWFLAKE(new ParticleSnowFlake.SnowFlakeFactory()),
-    RING(new ParticleRing.RingFactory()),
-    RING2(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/ring"))),
-    RING_BIG(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/ring_big"))),
-    CLOUD(new ParticleCloud.CloudFactory()),
-    VANILLA_CLOUD(new ParticleVanillaCloudExtended.CloudFactory()),
-    PIXEL(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/pixel"))),
-    ORB2(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/orb"))),
-    EYE(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/eye"))),
-    BUBBLE(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/bubble"))),
-    SUN(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/sun"))),
-    SUN_NOVA(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/sun_nova"))),
-    FLARE(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/flare"))),
-    FLARE_RADIAL(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/flare_radial"))),
-    BURST_IN(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/ring1"))),
-    BURST_MESSY(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/burst_messy"))),
-    RING_SPARKS(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/sparks_ring"))),
-    BURST_OUT(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/ring2"))),
-    GLOW(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/glow"))),
-    ARROW_HEAD(new MowzieParticleBase.ParticleBaseFactory(new ResourceLocation(MowziesMobs.MODID, "particles/arrow_head"))),
+    ORB(new ParticleOrb.OrbFactory(null)),
+    SNOWFLAKE(new ParticleSnowFlake.SnowFlakeFactory(null)),
+    RING(new ParticleRing.RingFactory(null)),
+    CLOUD(new ParticleCloud.CloudFactory(null)),
+    VANILLA_CLOUD(new ParticleVanillaCloudExtended.CloudFactory(null)),
     RIBBON_FLAT(new ParticleRibbon.ParticleRibbonFactory(new ResourceLocation(MowziesMobs.MODID, "particles/trail_flat"))),
     RIBBON_STREAKS(new ParticleRibbon.ParticleRibbonFactory(new ResourceLocation(MowziesMobs.MODID, "particles/trail_streaks"))),
     RIBBON_GLOW(new ParticleRibbon.ParticleRibbonFactory(new ResourceLocation(MowziesMobs.MODID, "particles/trail_glow"))),
-    SPARKLE(new ParticleSparkle.SparkleFactory()),
-    FALLING_BLOCK(new ParticleFallingBlock.FallingBlockFactory());
+    SPARKLE(new ParticleSparkle.SparkleFactory(null)),
+    FALLING_BLOCK(new ParticleFallingBlock.FallingBlockFactory(null));
 
     private ParticleFactory factory;
 

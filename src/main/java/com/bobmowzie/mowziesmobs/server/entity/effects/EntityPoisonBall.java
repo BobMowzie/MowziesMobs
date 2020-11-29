@@ -1,8 +1,9 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleVanillaCloudExtended;
-import com.bobmowzie.mowziesmobs.client.particles.util.MowzieParticleBase;
+import com.bobmowzie.mowziesmobs.client.particles.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
@@ -93,7 +94,7 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
                     double zSpeed = scale * 0.06 * (rand.nextFloat() * 2 - 1);
                     double value = rand.nextFloat() * 0.1f;
                     double life = rand.nextFloat() * 5f + 10f;
-                    MowzieParticleBase.spawnParticle(world, MMParticle.PIXEL, x + xSpeed - motionX * 0.5, y + ySpeed - motionY * 0.5, z + zSpeed - motionZ * 0.5, xSpeed, ySpeed, zSpeed, true, 0, 0, 0, 0, scale * 3f, 0.07d + value, 0.25d + value, 0.07d + value, 1d, 0.99, life * 0.9, false);
+                    AdvancedParticleBase.spawnParticle(world, ParticleHandler.PIXEL.get(), x + xSpeed - motionX * 0.5, y + ySpeed - motionY * 0.5, z + zSpeed - motionZ * 0.5, xSpeed, ySpeed, zSpeed, true, 0, 0, 0, 0, scale * 3f, 0.07d + value, 0.25d + value, 0.07d + value, 1d, 0.99, life * 0.9, false);
                 }
                 for (int i = 0; i < 1; i++) {
                     if (rand.nextFloat() < 0.9f) {
@@ -102,7 +103,7 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
                         double zSpeed = scale * 0.06 * (rand.nextFloat() * 2 - 1);
                         double value = rand.nextFloat() * 0.1f;
                         double life = rand.nextFloat() * 5f + 10f;
-                        MowzieParticleBase.spawnParticle(world, MMParticle.BUBBLE, x - motionX * 0.5, y - motionY * 0.5, z - motionZ * 0.5, xSpeed, ySpeed, zSpeed, true, 0, 0, 0, 0, 3f, 0.25d + value, 0.75d + value, 0.25d + value, 1d, 0.85, life, false);
+                        AdvancedParticleBase.spawnParticle(world, ParticleHandler.BUBBLE.get(), x - motionX * 0.5, y - motionY * 0.5, z - motionZ * 0.5, xSpeed, ySpeed, zSpeed, true, 0, 0, 0, 0, 3f, 0.25d + value, 0.75d + value, 0.25d + value, 1d, 0.85, life, false);
                     }
                 }
             }
@@ -127,7 +128,7 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
                 particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                 double value = rand.nextFloat() * 0.1f;
                 double life = rand.nextFloat() * 5f + 10f;
-                MowzieParticleBase.spawnParticle(world, MMParticle.PIXEL, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, true, 0, 0, 0, 0, 3f, 0.07d + value, 0.25d + value, 0.07d + value, 1d, 0.6, life * 0.95, false);
+                AdvancedParticleBase.spawnParticle(world, ParticleHandler.PIXEL.get(), posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, true, 0, 0, 0, 0, 3f, 0.07d + value, 0.25d + value, 0.07d + value, 1d, 0.6, life * 0.95, false);
             }
             for (int i = 0; i < 23; i++) {
                 Vec3d particlePos = new Vec3d(rand.nextFloat() * 0.25, 0, 0);
@@ -135,7 +136,7 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
                 particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                 double value = rand.nextFloat() * 0.1f;
                 double life = rand.nextFloat() * 10f + 20f;
-                MowzieParticleBase.spawnParticle(world, MMParticle.BUBBLE, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, true, 0, 0, 0, 0, 3f, 0.25d + value, 0.75d + value, 0.25d + value, 1d, 0.6, life * 0.95, false);
+                AdvancedParticleBase.spawnParticle(world, ParticleHandler.BUBBLE.get(), posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, true, 0, 0, 0, 0, 3f, 0.25d + value, 0.75d + value, 0.25d + value, 1d, 0.6, life * 0.95, false);
             }
         }
 

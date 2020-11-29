@@ -2,12 +2,10 @@ package com.bobmowzie.mowziesmobs.client.particles.util;
 
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
-import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher;
 import com.bobmowzie.mowziesmobs.client.particles.util.RibbonComponent.PropertyOverLength;
 import com.bobmowzie.mowziesmobs.client.particles.util.RibbonComponent.PropertyOverLength.EnumRibbonProperty;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -16,7 +14,7 @@ import javax.vecmath.Matrix4d;
 import javax.vecmath.Point3d;
 import javax.vecmath.Vector3d;
 
-public class ParticleRibbon extends MowzieParticleBase {
+public class ParticleRibbon extends AdvancedParticleBase {
     public Vec3d[] positions;
     public Vec3d[] prevPositions;
 
@@ -193,7 +191,7 @@ public class ParticleRibbon extends MowzieParticleBase {
 
     public static final class ParticleRibbonFactory extends ParticleFactory<ParticleRibbon.ParticleRibbonFactory, ParticleRibbon> {
         public ParticleRibbonFactory(ResourceLocation texture) {
-            super(ParticleRibbon.class, ParticleTextureStitcher.create(ParticleRibbon.class, texture));
+            super(null);
         }
 
         @Override

@@ -1,7 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
-import com.bobmowzie.mowziesmobs.client.particles.util.MowzieParticleBase;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
+import com.bobmowzie.mowziesmobs.client.particles.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particles.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particles.util.ParticleComponent.KeyTrack;
 import com.bobmowzie.mowziesmobs.client.particles.util.ParticleComponent.PropertyControl.EnumParticleProperty;
@@ -14,7 +15,6 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -49,7 +49,7 @@ public class EntitySuperNova extends EntityMagicEffect {
                 float scale = 8.2f;
                 for (int i = 0; i < 15; i++) {
                     float phaseOffset = rand.nextFloat();
-                    MowzieParticleBase.spawnParticle(world, MMParticle.ARROW_HEAD, posX, posY, posZ, 0, 0, 0, false, 0, 0, 0, 0, 8F, 0.95, 0.9, 0.35, 1, 1, 30, true, new ParticleComponent[]{
+                    AdvancedParticleBase.spawnParticle(world, ParticleHandler.ARROW_HEAD.get(), posX, posY, posZ, 0, 0, 0, false, 0, 0, 0, 0, 8F, 0.95, 0.9, 0.35, 1, 1, 30, true, new ParticleComponent[]{
                             new ParticleComponent.Orbit(new Vec3d[]{getPositionVector().add(0, getHeight() / 2, 0)}, KeyTrack.startAndEnd(0 + phaseOffset, 1.6f + phaseOffset), new ParticleComponent.KeyTrack(
                                     new float[]{0.2f * scale, 0.63f * scale, 0.87f * scale, 0.974f * scale, 0.998f * scale, 1f * scale},
                                     new float[]{0, 0.15f, 0.3f, 0.45f, 0.6f, 0.75f}

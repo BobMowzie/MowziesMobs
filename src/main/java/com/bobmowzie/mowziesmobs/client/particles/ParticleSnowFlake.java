@@ -3,8 +3,10 @@ package com.bobmowzie.mowziesmobs.client.particles;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher;
+import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
@@ -19,7 +21,7 @@ import javax.vecmath.Point3d;
 /**
  * Created by Josh on 6/2/2017.
  */
-public class ParticleSnowFlake extends Particle implements ParticleTextureStitcher.IParticleSpriteReceiver {
+public class ParticleSnowFlake extends SpriteTexturedParticle {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "particles/snowflake");
     private int whichTex;
     private int swirlTick;
@@ -126,8 +128,9 @@ public class ParticleSnowFlake extends Particle implements ParticleTextureStitch
     }
 
     public static final class SnowFlakeFactory extends ParticleFactory<ParticleSnowFlake.SnowFlakeFactory, ParticleSnowFlake> {
-        public SnowFlakeFactory() {
-            super(ParticleSnowFlake.class, ParticleTextureStitcher.create(ParticleSnowFlake.class, new ResourceLocation(MowziesMobs.MODID, "particles/snowflake")));
+
+        public SnowFlakeFactory(IAnimatedSprite spriteSet) {
+            super(spriteSet);
         }
 
         @Override

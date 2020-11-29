@@ -90,7 +90,7 @@ public final class ParticleTextureStitcher<T> {
             AtlasTexture map = event.getMap();
             MMParticle[] particles = MMParticle.values();
             for (MMParticle particle : particles) {
-                ParticleTextureStitcher stitcher = particle.getFactory().getStitcher();
+                ParticleTextureStitcher stitcher = null;//particle.getFactory().getStitcher();
                 if (stitcher != null) {
                     ResourceLocation[] textures = stitcher.getTextures();
                     TextureAtlasSprite[] sprites = new TextureAtlasSprite[textures.length];

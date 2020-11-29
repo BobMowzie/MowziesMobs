@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs;
 
 import com.bobmowzie.mowziesmobs.client.ClientProxy;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.server.ServerEventHandler;
 import com.bobmowzie.mowziesmobs.server.ServerProxy;
 import com.bobmowzie.mowziesmobs.server.advancement.AdvancementHandler;
@@ -37,10 +38,8 @@ public final class MowziesMobs {
         MMSounds.REG.register(bus);
         BlockHandler.REG.register(bus);
         EntityHandler.register();
-//        ItemHandler.register();
-//        RecipeHandler.REG.register(bus);
-//        PotionHandler.register();
-//        LootTableHandler.REG.register(bus);
+        ParticleHandler.REG.register(bus);
+
         PROXY.init(bus);
         bus.<FMLCommonSetupEvent>addListener(this::init);
         bus.<ModelRegistryEvent>addListener(this::init);

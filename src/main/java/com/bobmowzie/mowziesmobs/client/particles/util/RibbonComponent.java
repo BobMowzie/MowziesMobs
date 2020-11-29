@@ -34,7 +34,7 @@ public class RibbonComponent extends ParticleComponent {
     }
 
     @Override
-    public void init(MowzieParticleBase particle) {
+    public void init(AdvancedParticleBase particle) {
         super.init(particle);
         if (particle != null) {
 
@@ -49,14 +49,14 @@ public class RibbonComponent extends ParticleComponent {
     }
 
     private static class AttachToParticle extends ParticleComponent {
-        MowzieParticleBase attachedParticle;
+        AdvancedParticleBase attachedParticle;
 
-        public AttachToParticle(MowzieParticleBase attachedParticle) {
+        public AttachToParticle(AdvancedParticleBase attachedParticle) {
             this.attachedParticle = attachedParticle;
         }
 
         @Override
-        public void init(MowzieParticleBase particle) {
+        public void init(AdvancedParticleBase particle) {
             super.init(particle);
             attachedParticle.ribbon = (ParticleRibbon) particle;
         }

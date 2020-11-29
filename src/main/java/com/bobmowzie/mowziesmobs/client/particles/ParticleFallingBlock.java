@@ -7,8 +7,10 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -19,7 +21,7 @@ import net.minecraft.world.World;
 /**
  * Created by Josh on 6/2/2017.
  */
-public class ParticleFallingBlock extends Particle implements ParticleTextureStitcher.IParticleSpriteReceiver {
+public class ParticleFallingBlock extends SpriteTexturedParticle implements ParticleTextureStitcher.IParticleSpriteReceiver {
     public Vector3f rotAxis;
     public float rotAngle;
     public float rotationSpeed;
@@ -148,8 +150,8 @@ public class ParticleFallingBlock extends Particle implements ParticleTextureSti
     }
 
     public static final class FallingBlockFactory extends ParticleFactory<ParticleFallingBlock.FallingBlockFactory, ParticleFallingBlock> {
-        public FallingBlockFactory() {
-            super(ParticleFallingBlock.class, ParticleTextureStitcher.create(ParticleFallingBlock.class, AtlasTexture.LOCATION_BLOCKS_TEXTURE));
+        public FallingBlockFactory(IAnimatedSprite spriteSet) {
+            super(spriteSet);
         }
 
         @Override

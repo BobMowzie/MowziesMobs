@@ -4,8 +4,10 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher;
+import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
@@ -14,7 +16,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-public class ParticleVanillaCloudExtended extends Particle implements ParticleTextureStitcher.IParticleSpriteReceiver {
+public class ParticleVanillaCloudExtended extends SpriteTexturedParticle implements ParticleTextureStitcher.IParticleSpriteReceiver {
     private float oSize;
     private float airDrag;
     private float red, green, blue;
@@ -166,8 +168,9 @@ public class ParticleVanillaCloudExtended extends Particle implements ParticleTe
     }
 
     public static final class CloudFactory extends ParticleFactory<ParticleVanillaCloudExtended.CloudFactory, ParticleVanillaCloudExtended> {
-        public CloudFactory() {
-            super(ParticleVanillaCloudExtended.class, ParticleTextureStitcher.create(ParticleVanillaCloudExtended.class, new ResourceLocation(MowziesMobs.MODID, "particles/cloud_vanilla")));
+
+        public CloudFactory(IAnimatedSprite spriteSet) {
+            super(spriteSet);
         }
 
         @Override

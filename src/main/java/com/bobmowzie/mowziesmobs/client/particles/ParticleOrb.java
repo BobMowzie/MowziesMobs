@@ -5,15 +5,17 @@ import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher.IParticleSpriteReceiver;
+import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
+public class ParticleOrb extends SpriteTexturedParticle {
     private double targetX;
     private double targetY;
     private double targetZ;
@@ -129,8 +131,9 @@ public class ParticleOrb extends Particle implements IParticleSpriteReceiver {
     }
 
     public static final class OrbFactory extends ParticleFactory<OrbFactory, ParticleOrb> {
-        public OrbFactory() {
-            super(ParticleOrb.class, ParticleTextureStitcher.create(ParticleOrb.class, new ResourceLocation(MowziesMobs.MODID, "particles/orb")));
+
+        public OrbFactory(IAnimatedSprite spriteSet) {
+            super(spriteSet);
         }
 
         @Override

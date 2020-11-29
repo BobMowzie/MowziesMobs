@@ -2,6 +2,8 @@ package com.bobmowzie.mowziesmobs.server.entity.grottol;
 
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
+import com.bobmowzie.mowziesmobs.client.particles.util.AdvancedParticleData;
 import com.bobmowzie.mowziesmobs.server.advancement.AdvancementHandler;
 import com.bobmowzie.mowziesmobs.server.ai.EntityAIGrottolFindMinecart;
 import com.bobmowzie.mowziesmobs.server.ai.MMAIAvoidEntity;
@@ -16,7 +18,6 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.ai.EntityAIGrottolIdle;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
-import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
@@ -37,19 +38,18 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.Enchantments;
+import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
+import net.minecraft.world.server.ServerWorld;
 
 /**
  * Created by Josh on 7/3/2018.
@@ -210,16 +210,14 @@ public class EntityGrottol extends MowzieEntity implements IMob {
                         (sound.getVolume() + 1.0F) / 2.0F,
                         sound.getPitch() * 0.8F
                     );
-                    /*if (world instanceof ServerWorld) {
-                        ((ServerWorld) world).spawnParticle(
-                            EnumParticleTypes.BLOCK_DUST,
-                            posX, posY + height / 2.0D, posZ,
+                    if (world instanceof ServerWorld) {
+                        ((ServerWorld) world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, state),
+                            posX, posY + getHeight() / 2.0D, posZ,
                             32,
-                            width / 4.0F, height / 4.0F, width / 4.0F,
-                            0.05D,
-                            Block.getStateId(state)
+                            getWidth() / 4.0F, getHeight() / 4.0F, getWidth() / 4.0F,
+                            0.05D
                         );
-                    }*/
+                    }
                     remove();
                     if (player instanceof ServerPlayerEntity) AdvancementHandler.GROTTOL_KILL_SILK_TOUCH_TRIGGER.trigger((ServerPlayerEntity) player);
                 }
@@ -282,7 +280,8 @@ public class EntityGrottol extends MowzieEntity implements IMob {
             if (isBlackPinkInYourArea()) {
                 world.addParticle(ParticleTypes.NOTE, x, y, z, rand.nextDouble() / 2, 0, 0);
             } else {
-                MMParticle.SPARKLE.spawn(world, x, y, z, ParticleFactory.ParticleArgs.get().withData(0d, 0d, 0d, 1d, 1d, 1d, 4d, 22));   
+                MMParticle.SPARKLE.spawn(world, x, y, z, ParticleFactory.ParticleArgs.get().withData(0d, 0d, 0d, 1d, 1d, 1d, 4d, 22));
+//                world.addParticle(new AdvancedParticleData(ParticleHandler.SPARKLE.get(), 0.2f, 0.4f, 0.0f, 1f), x, y, z, 0, 0, 0);
             }
         }
 

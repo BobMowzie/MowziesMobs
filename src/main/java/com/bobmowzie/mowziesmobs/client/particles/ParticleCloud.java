@@ -3,8 +3,10 @@ package com.bobmowzie.mowziesmobs.client.particles;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher;
+import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
@@ -16,7 +18,7 @@ import net.minecraft.world.World;
 /**
  * Created by Josh on 6/2/2017.
  */
-public class ParticleCloud extends Particle implements ParticleTextureStitcher.IParticleSpriteReceiver {
+public class ParticleCloud extends SpriteTexturedParticle {
     private int whichTex;
     private float red, green, blue;
     private float scale;
@@ -132,8 +134,9 @@ public class ParticleCloud extends Particle implements ParticleTextureStitcher.I
 //    }
 
     public static final class CloudFactory extends ParticleFactory<ParticleCloud.CloudFactory, ParticleCloud> {
-        public CloudFactory() {
-            super(ParticleCloud.class, ParticleTextureStitcher.create(ParticleCloud.class, new ResourceLocation(MowziesMobs.MODID, "particles/cloud")));
+
+        public CloudFactory(IAnimatedSprite spriteSet) {
+            super(spriteSet);
         }
 
         @Override

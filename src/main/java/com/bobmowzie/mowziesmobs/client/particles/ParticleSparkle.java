@@ -3,8 +3,10 @@ package com.bobmowzie.mowziesmobs.client.particles;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher;
+import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
@@ -14,7 +16,7 @@ import net.minecraft.world.World;
 /**
  * Created by Josh on 6/2/2017.
  */
-public class ParticleSparkle extends Particle implements ParticleTextureStitcher.IParticleSpriteReceiver {
+public class ParticleSparkle extends SpriteTexturedParticle {
     private float red, green, blue;
     private float scale;
 
@@ -44,7 +46,9 @@ public class ParticleSparkle extends Particle implements ParticleTextureStitcher
         float a = ((float)age + partialTicks)/maxAge;
         particleAlpha = -4 * a * a + 4 * a;
         if (particleAlpha < 0.01) particleAlpha = 0.01f;
-        setSize((-4 * a * a + 4 * a) * scale, (-4 * a * a + 4 * a) * scale);
+        particleScale = (-4 * a * a + 4 * a) * scale;
+
+        super.renderParticle(buffer, entityIn, partialTicks, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
     }
 
     @Override
@@ -53,8 +57,9 @@ public class ParticleSparkle extends Particle implements ParticleTextureStitcher
     }
 
     public static final class SparkleFactory extends ParticleFactory<ParticleSparkle.SparkleFactory, ParticleSparkle> {
-        public SparkleFactory() {
-            super(ParticleSparkle.class, ParticleTextureStitcher.create(ParticleSparkle.class, new ResourceLocation(MowziesMobs.MODID, "particles/sparkle")));
+
+        public SparkleFactory(IAnimatedSprite spriteSet) {
+            super(spriteSet);
         }
 
         @Override
