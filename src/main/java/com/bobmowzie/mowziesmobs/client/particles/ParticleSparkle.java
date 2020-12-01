@@ -1,17 +1,12 @@
 package com.bobmowzie.mowziesmobs.client.particles;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
-import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher;
-import net.minecraft.client.particle.IAnimatedSprite;
-import net.minecraft.client.particle.IParticleRenderType;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.SpriteTexturedParticle;
+import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.particles.BasicParticleType;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Created by Josh on 6/2/2017.
@@ -30,15 +25,17 @@ public class ParticleSparkle extends SpriteTexturedParticle {
         red = (float) r;
         green = (float) g;
         blue = (float) b;
+        canCollide = false;
     }
 
     @Override
-    public void tick() {
-        super.tick();
-        if (age >= maxAge) {
-            setExpired();
-        }
-        age++;
+    protected float getMaxU() {
+        return super.getMaxU() - (super.getMaxU() - super.getMinU())/16f;
+    }
+
+    @Override
+    protected float getMaxV() {
+        return super.getMaxV() - (super.getMaxV() - super.getMinV())/16f;
     }
 
     @Override
@@ -56,16 +53,20 @@ public class ParticleSparkle extends SpriteTexturedParticle {
         return IParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
-    public static final class SparkleFactory extends ParticleFactory<ParticleSparkle.SparkleFactory, ParticleSparkle> {
+    @OnlyIn(Dist.CLIENT)
+    public static final class SparkleFactory implements IParticleFactory<BasicParticleType> {
 
-        public SparkleFactory(IAnimatedSprite spriteSet) {
-            super(spriteSet);
+        private final IAnimatedSprite spriteSet;
+
+        public SparkleFactory(IAnimatedSprite sprite) {
+            this.spriteSet = sprite;
         }
 
         @Override
-        public ParticleSparkle createParticle(ImmutableParticleArgs args) {
-            if (args.data.length >= 8) return new ParticleSparkle(args.world, args.x, args.y, args.z, (double) args.data[0], (double) args.data[1], (double) args.data[2], (double) args.data[3], (double) args.data[4], (double) args.data[5], (double) args.data[6], (int) args.data[7]);
-            return new ParticleSparkle(args.world, args.x, args.y, args.z, 0, 0, 0, 1, 1, 1, 10, 40);
+        public Particle makeParticle(BasicParticleType typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+            ParticleSparkle particle = new ParticleSparkle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, 1, 1, 1, 0.4d, 13);
+            particle.selectSpriteRandomly(spriteSet);
+            return particle;
         }
     }
 }

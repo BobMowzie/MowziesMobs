@@ -280,8 +280,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
             if (isBlackPinkInYourArea()) {
                 world.addParticle(ParticleTypes.NOTE, x, y, z, rand.nextDouble() / 2, 0, 0);
             } else {
-                MMParticle.SPARKLE.spawn(world, x, y, z, ParticleFactory.ParticleArgs.get().withData(0d, 0d, 0d, 1d, 1d, 1d, 4d, 22));
-//                world.addParticle(new AdvancedParticleData(ParticleHandler.SPARKLE.get(), 0.2f, 0.4f, 0.0f, 1f), x, y, z, 0, 0, 0);
+                world.addParticle(ParticleHandler.SPARKLE.get(), x, y, z, 0, 0, 0);
             }
         }
 
@@ -314,14 +313,14 @@ public class EntityGrottol extends MowzieEntity implements IMob {
                 Material mat = blockBeneath.getMaterial();
                 if (mat == Material.EARTH || mat == Material.SAND || mat == Material.CLAY || mat == Material.ROCK) {
                     Vec3d pos = new Vec3d(0.7D, 0.05D, 0.0D).rotateYaw((float) Math.toRadians(-renderYawOffset - 90));
-                    /*((ServerWorld) world).spawnParticle(
-                        EnumParticleTypes.BLOCK_DUST,
-                        posX + pos.x, posY + pos.y, posZ + pos.z,
-                        8,
-                        0.25D, 0.025D, 0.25D,
-                        0.1D,
-                        Block.getStateId(blockBeneath)
-                    );*/
+                    if (world instanceof ServerWorld) {
+                        ((ServerWorld) world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, blockBeneath),
+                                posX + pos.x, posY + pos.y, posZ + pos.z,
+                                8,
+                                0.25D, 0.025D, 0.25D,
+                                0.1D
+                        );
+                    }
                 }
             }
         }

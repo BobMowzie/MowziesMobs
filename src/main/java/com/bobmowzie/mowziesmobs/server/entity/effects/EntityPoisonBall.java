@@ -86,7 +86,7 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
                     double zSpeed = scale * 0.02 * (rand.nextFloat() * 2 - 1);
                     double value = rand.nextFloat() * 0.1f;
                     double life = rand.nextFloat() * 10f + 15f;
-                    ParticleVanillaCloudExtended.spawnVanillaCloud(world, x, y, z, xSpeed, ySpeed, zSpeed, scale, 0.25d + value, 0.75d + value, 0.25d + value, 0.99, life);
+                    ParticleVanillaCloudExtended.spawnVanillaCloud(world, x - motionX * 0.5, y - motionY * 0.5, z - motionZ * 0.5, xSpeed, ySpeed, zSpeed, scale, 0.25d + value, 0.75d + value, 0.25d + value, 0.99, life);
                 }
                 for (int i = 0; i < 2; i++) {
                     double xSpeed = scale * 0.06 * (rand.nextFloat() * 2 - 1);

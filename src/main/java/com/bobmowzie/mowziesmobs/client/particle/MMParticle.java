@@ -13,14 +13,11 @@ import javax.annotation.Nullable;
 
 public enum MMParticle {
     ORB(new ParticleOrb.OrbFactory(null)),
-    SNOWFLAKE(new ParticleSnowFlake.SnowFlakeFactory(null)),
     RING(new ParticleRing.RingFactory(null)),
     CLOUD(new ParticleCloud.CloudFactory(null)),
-    VANILLA_CLOUD(new ParticleVanillaCloudExtended.CloudFactory(null)),
     RIBBON_FLAT(new ParticleRibbon.ParticleRibbonFactory(new ResourceLocation(MowziesMobs.MODID, "particles/trail_flat"))),
     RIBBON_STREAKS(new ParticleRibbon.ParticleRibbonFactory(new ResourceLocation(MowziesMobs.MODID, "particles/trail_streaks"))),
     RIBBON_GLOW(new ParticleRibbon.ParticleRibbonFactory(new ResourceLocation(MowziesMobs.MODID, "particles/trail_glow"))),
-    SPARKLE(new ParticleSparkle.SparkleFactory(null)),
     FALLING_BLOCK(new ParticleFallingBlock.FallingBlockFactory(null));
 
     private ParticleFactory factory;

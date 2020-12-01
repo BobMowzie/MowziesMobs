@@ -5,6 +5,7 @@ import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleRing;
+import com.bobmowzie.mowziesmobs.client.particles.ParticleSnowFlake;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability.IFrozenCapability;
@@ -94,7 +95,7 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
                 double xSpeed = scale * 0.05 * (rand.nextFloat() * 2 - 1);
                 double ySpeed = scale * 0.05 * (rand.nextFloat() * 2 - 1);
                 double zSpeed = scale * 0.05 * (rand.nextFloat() * 2 - 1);
-                MMParticle.SNOWFLAKE.spawn(world, x - 20 * (xSpeed) + motionX, y - 20 * ySpeed + motionY, z - 20 * zSpeed + motionZ, ParticleFactory.ParticleArgs.get().withData(xSpeed, ySpeed, zSpeed));
+                world.addParticle(new ParticleSnowFlake.SnowflakeData(40, false), x - 20 * (xSpeed) + motionX, y - 20 * ySpeed + motionY, z - 20 * zSpeed + motionZ, xSpeed, ySpeed, zSpeed);
             }
 
             if (ticksExisted % 3 == 0) {
@@ -145,7 +146,7 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
                 Vec3d particlePos = new Vec3d(rand.nextFloat() * 0.3, 0, 0);
                 particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
-                MMParticle.SNOWFLAKE.spawn(world, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x, particlePos.y, particlePos.z));
+                world.addParticle(new ParticleSnowFlake.SnowflakeData(40, false), posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, particlePos.x, particlePos.y, particlePos.z);
             }
         }
         remove();

@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
+import com.bobmowzie.mowziesmobs.client.particles.ParticleVanillaCloudExtended;
 import com.bobmowzie.mowziesmobs.client.particles.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particles.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.server.ai.animation.SimpleAnimationAI;
@@ -89,17 +90,17 @@ public class EntityLantern extends MowzieEntity {
             if (groundDist == 0) groundDist = 1;
             setMotion(getMotion().add(0, 0.2d + 0.2d / groundDist, 0));
             if (world.isRemote) {
-                /*for (int i = 0; i < 5; i++) {
-                    ParticleVanillaCloudExtended.spawnVanillaCloud(world, posX, posY + 0.3, posZ, -motionX * 0.2 + 0.1 * (rand.nextFloat() - 0.5), -motionY * 0.2 + 0.1 * (rand.nextFloat() - 0.5), -motionZ * 0.2 + 0.1 * (rand.nextFloat() - 0.5), 0.8d + rand.nextDouble() * 1d, 163d / 256d, 247d / 256d, 74d / 256d, 0.95, 30);
+                for (int i = 0; i < 5; i++) {
+                    ParticleVanillaCloudExtended.spawnVanillaCloud(world, posX, posY + 0.3, posZ, -getMotion().getX() * 0.2 + 0.1 * (rand.nextFloat() - 0.5), -getMotion().getY() * 0.2 + 0.1 * (rand.nextFloat() - 0.5), -getMotion().getZ() * 0.2 + 0.1 * (rand.nextFloat() - 0.5), 0.8d + rand.nextDouble() * 1d, 163d / 256d, 247d / 256d, 74d / 256d, 0.95, 30);
                 }
                 for (int i = 0; i < 8; i++) {
-                    MowzieParticleBase.spawnParticle(world, MMParticle.PIXEL, posX, posY + 0.3, posZ, -motionX * 0.2 + 0.2 * (rand.nextFloat() - 0.5), -motionY * 0.2 + 0.1 * (rand.nextFloat() - 0.5), -motionZ * 0.2 + 0.2 * (rand.nextFloat() - 0.5), true, 0, 0, 0, 0, 4f, 163d / 256d, 247d / 256d, 74d / 256d, 1, 0.9, 17 + rand.nextFloat() * 10, true, new ParticleComponent[] {
+                    AdvancedParticleBase.spawnParticle(world, ParticleHandler.PIXEL.get(), posX, posY + 0.3, posZ, -getMotion().getX() * 0.2 + 0.2 * (rand.nextFloat() - 0.5), -getMotion().getY() * 0.2 + 0.1 * (rand.nextFloat() - 0.5), -getMotion().getZ() * 0.2 + 0.2 * (rand.nextFloat() - 0.5), true, 0, 0, 0, 0, 4f, 163d / 256d, 247d / 256d, 74d / 256d, 1, 0.9, 17 + rand.nextFloat() * 10, true, new ParticleComponent[] {
                             new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
                                     new float[] {4f, 0},
                                     new float[] {0.8f, 1}
                             ), false)
                     });
-                }*/
+                }
             }
             playSound(MMSounds.ENTITY_LANTERN_PUFF.get(), 0.6f, 1f + rand.nextFloat() * 0.2f);
         }

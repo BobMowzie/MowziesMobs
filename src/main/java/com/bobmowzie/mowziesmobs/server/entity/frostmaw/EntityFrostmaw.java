@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.entity.frostmaw;
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
+import com.bobmowzie.mowziesmobs.client.particles.ParticleSnowFlake;
 import com.bobmowzie.mowziesmobs.server.advancement.AdvancementHandler;
 import com.bobmowzie.mowziesmobs.server.ai.MMEntityMoveHelper;
 import com.bobmowzie.mowziesmobs.server.ai.MMPathNavigateGround;
@@ -351,7 +352,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                             Vec3d particlePos = new Vec3d(3.5, 0, 0);
                             particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                             particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
-                            MMParticle.SNOWFLAKE.spawn(world, mouthPos.x + particlePos.x, mouthPos.y + particlePos.y, mouthPos.z + particlePos.z, ParticleFactory.ParticleArgs.get().withData(-0.07 * particlePos.x, -0.07 * particlePos.y, -0.07 * particlePos.z));
+                            world.addParticle(new ParticleSnowFlake.SnowflakeData(40, false), mouthPos.x + particlePos.x, mouthPos.y + particlePos.y, mouthPos.z + particlePos.z, -0.07 * particlePos.x, -0.07 * particlePos.y, -0.07 * particlePos.z);
                         }
                     }
                 }
