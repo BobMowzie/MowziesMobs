@@ -3,7 +3,9 @@ package com.bobmowzie.mowziesmobs.server.entity.effects;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
+import com.bobmowzie.mowziesmobs.client.particles.ParticleRing;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleSnowFlake;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
@@ -73,7 +75,7 @@ public class EntityIceBreath extends EntityMagicEffect {
         float zComp = (float) (Math.cos(yaw) * Math.cos(pitch));
         if (world.isRemote) {
             if (ticksExisted % 8 == 0) {
-                MMParticle.RING.spawn(world, posX, posY, posZ, ParticleFactory.ParticleArgs.get().withData(yaw, -pitch, 40, 1f, 1f, 1f, 1f, 110f * spread, false, 0.5f * xComp, 0.5f * yComp, 0.5f * zComp));
+                world.addParticle(new ParticleRing.RingData(yaw, -pitch, 40, 1f, 1f, 1f, 1f, 110f * spread, false, ParticleRing.EnumRingBehavior.GROW), posX, posY, posZ, 0.5f * xComp, 0.5f * yComp, 0.5f * zComp);
             }
 
             for (int i = 0; i < 6; i++) {
@@ -86,8 +88,8 @@ public class EntityIceBreath extends EntityMagicEffect {
                 double xSpeed = speed * xComp + (spread * 0.7 * (rand.nextFloat() * 2 - 1) * (Math.sqrt(1 - xComp * xComp)));
                 double ySpeed = speed * yComp + (spread * 0.7 * (rand.nextFloat() * 2 - 1) * (Math.sqrt(1 - yComp * yComp)));
                 double zSpeed = speed * zComp + (spread * 0.7 * (rand.nextFloat() * 2 - 1) * (Math.sqrt(1 - zComp * zComp)));
-                double value = rand.nextFloat() * 0.15f;
-                MMParticle.CLOUD.spawn(world, posX, posY, posZ, ParticleFactory.ParticleArgs.get().withData(xSpeed, ySpeed, zSpeed, 0.75d + value, 0.75d + value, 1d, 1, 10d + rand.nextDouble() * 20d, 40, ParticleCloud.EnumCloudBehavior.GROW));
+                float value = rand.nextFloat() * 0.15f;
+                world.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f + value, 0.75f + value,1f, 10f + rand.nextFloat() * 20f, 40, ParticleCloud.EnumCloudBehavior.GROW, 1f), posX, posY, posZ, xSpeed, ySpeed, zSpeed);
             }
         }
         if (ticksExisted > 10) hitEntities();

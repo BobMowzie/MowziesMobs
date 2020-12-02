@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleFallingBlock;
+import com.bobmowzie.mowziesmobs.client.particles.ParticleOrb;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
@@ -154,7 +155,7 @@ public class PowerGeomancy extends Power {
                         double ox = radius * Math.sin(yaw) * Math.sin(pitch);
                         double oy = radius * Math.cos(pitch);
                         double oz = radius * Math.cos(yaw) * Math.sin(pitch);
-                        MMParticle.ORB.spawn(player.world, player.posX + ox, player.posY + oy + player.getHeight()/2, player.posZ + oz, ParticleFactory.ParticleArgs.get().withData(player.posX, player.posY + player.getHeight()/2, player.posZ, 14));
+                        player.world.addParticle(new ParticleOrb.OrbData((float) player.posX, (float) player.posY + (float) player.getHeight()/2f, (float) player.posZ, 14), player.posX + ox, player.posY + oy + player.getHeight()/2, player.posZ + oz, 0, 0, 0);
                     }
                 }
             }

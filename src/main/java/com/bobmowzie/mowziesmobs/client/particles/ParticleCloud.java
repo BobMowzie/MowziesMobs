@@ -2,24 +2,32 @@ package com.bobmowzie.mowziesmobs.client.particles;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher;
-import net.minecraft.client.particle.IAnimatedSprite;
-import net.minecraft.client.particle.IParticleRenderType;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.SpriteTexturedParticle;
+import com.bobmowzie.mowziesmobs.client.particles.util.AdvancedParticleData;
+import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.particles.IParticleData;
+import net.minecraft.particles.ParticleType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.util.Locale;
 
 /**
  * Created by Josh on 6/2/2017.
  */
 public class ParticleCloud extends SpriteTexturedParticle {
-    private int whichTex;
     private float red, green, blue;
     private float scale;
     private EnumCloudBehavior behavior;
@@ -31,14 +39,13 @@ public class ParticleCloud extends SpriteTexturedParticle {
         CONSTANT
     }
 
-    public ParticleCloud(World world, double x, double y, double z, double vx, double vy, double vz, double r, double g, double b, int sprite, double scale, int duration, EnumCloudBehavior behavior, double airDrag) {
+    public ParticleCloud(World world, double x, double y, double z, double vx, double vy, double vz, double r, double g, double b, double scale, int duration, EnumCloudBehavior behavior, double airDrag) {
         super(world, x, y, z);
-        this.scale = (float) scale * 0.5f;
+        this.scale = (float) scale * 0.5f * 0.1f;
         maxAge = duration;
-        whichTex = sprite;
-        motionX = vx;
-        motionY = vy;
-        motionZ = vz;
+        motionX = vx * 0.5;
+        motionY = vy * 0.5;
+        motionZ = vz * 0.5;
         red = (float) r;
         green = (float) g;
         blue = (float) b;
@@ -55,13 +62,9 @@ public class ParticleCloud extends SpriteTexturedParticle {
     @Override
     public void tick() {
         super.tick();
-        if (age >= maxAge) {
-            setExpired();
-        }
         motionX *= airDrag;
         motionY *= airDrag;
         motionZ *= airDrag;
-        age++;
     }
 
     @Override
@@ -69,86 +72,129 @@ public class ParticleCloud extends SpriteTexturedParticle {
         float var = (age + partialTicks)/(float)maxAge;
         particleAlpha = 0.2f * ((float) (1 - Math.exp(5 * (var - 1)) - Math.pow(2000, -var)));
         if (particleAlpha < 0.01) particleAlpha = 0.01f;
-        particleRed = red;
-        particleGreen = green;
-        particleBlue = blue;
-        if (behavior == EnumCloudBehavior.SHRINK) this.scale = scale * ((1 - 0.7f * var) + 0.3f);
-        else if (behavior == EnumCloudBehavior.GROW) this.scale = scale * ((0.7f * var) + 0.3f);
-        else this.scale = scale;
+        if (behavior == EnumCloudBehavior.SHRINK) this.particleScale = scale * ((1 - 0.7f * var) + 0.3f);
+        else if (behavior == EnumCloudBehavior.GROW) this.particleScale = scale * ((0.7f * var) + 0.3f);
+        else this.particleScale = scale;
 
-        float f = 0;//(float)this.particleTextureIndexX / 16.0F;
-        float f1 = 0;//f + 0.0624375F;
-        float f2 = 0;//(float)this.particleTextureIndexY / 16.0F;
-        float f3 = 0;//f2 + 0.0624375F;
-        float f4 = 0;//0.1F * this.particleScale;
-
-//        if (this.particleTexture != null)
-//        {
-//            int row = whichTex / 2;
-//            int column = whichTex % 2;
-//            f = particleTexture.getInterpolatedU(row / 2.0F * 16.0F);
-//            f1 = particleTexture.getInterpolatedU((row + 1) / 2.0F * 16.0F);
-//            f2 = particleTexture.getInterpolatedV(column / 2.0F * 16.0F);
-//            f3 = particleTexture.getInterpolatedV((column + 1) / 2.0F * 16.0F);
-//        }
-
-        float f5 = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)partialTicks - interpPosX);
-        float f6 = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)partialTicks - interpPosY);
-        float f7 = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * (double)partialTicks - interpPosZ);
-        int i = this.getBrightnessForRender(partialTicks);
-        int j = i >> 16 & 65535;
-        int k = i & 65535;
-        Vec3d[] avec3d = new Vec3d[] {new Vec3d((double)(-rotationX * f4 - rotationXY * f4), (double)(-rotationZ * f4), (double)(-rotationYZ * f4 - rotationXZ * f4)), new Vec3d((double)(-rotationX * f4 + rotationXY * f4), (double)(rotationZ * f4), (double)(-rotationYZ * f4 + rotationXZ * f4)), new Vec3d((double)(rotationX * f4 + rotationXY * f4), (double)(rotationZ * f4), (double)(rotationYZ * f4 + rotationXZ * f4)), new Vec3d((double)(rotationX * f4 - rotationXY * f4), (double)(-rotationZ * f4), (double)(rotationYZ * f4 - rotationXZ * f4))};
-
-//        if (this.particleAngle != 0.0F)
-//        {
-//            float f8 = this.particleAngle + (this.particleAngle - this.prevParticleAngle) * partialTicks;
-//            float f9 = MathHelper.cos(f8 * 0.5F);
-//            float f10 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.x;
-//            float f11 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.y;
-//            float f12 = MathHelper.sin(f8 * 0.5F) * (float)cameraViewDir.z;
-//            Vec3d vec3d = new Vec3d((double)f10, (double)f11, (double)f12);
-//
-//            for (int l = 0; l < 4; ++l)
-//            {
-//                avec3d[l] = vec3d.scale(2.0D * avec3d[l].dotProduct(vec3d)).add(avec3d[l].scale((double)(f9 * f9) - vec3d.dotProduct(vec3d))).add(vec3d.crossProduct(avec3d[l]).scale((double)(2.0F * f9)));
-//            }
-//        }
-
-        buffer.pos((double)f5 + avec3d[0].x, (double)f6 + avec3d[0].y, (double)f7 + avec3d[0].z).tex((double)f1, (double)f3).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-        buffer.pos((double)f5 + avec3d[1].x, (double)f6 + avec3d[1].y, (double)f7 + avec3d[1].z).tex((double)f1, (double)f2).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-        buffer.pos((double)f5 + avec3d[2].x, (double)f6 + avec3d[2].y, (double)f7 + avec3d[2].z).tex((double)f, (double)f2).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-        buffer.pos((double)f5 + avec3d[3].x, (double)f6 + avec3d[3].y, (double)f7 + avec3d[3].z).tex((double)f, (double)f3).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
+        super.renderParticle(buffer, entityIn, partialTicks, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
     }
 
-//    @Override
-//    public void setParticleTextureIndex(int particleTextureIndex) {
-//        if (this.getFXLayer() != 0)
-//        {
-//        }
-//        else
-//        {
-//            this.particleTextureIndexX = particleTextureIndex / 16;
-//            this.particleTextureIndexY = particleTextureIndex % 16;
-//        }
-//    }
+    @OnlyIn(Dist.CLIENT)
+    public static final class CloudFactory implements IParticleFactory<CloudData> {
+        private final IAnimatedSprite spriteSet;
 
-    public static final class CloudFactory extends ParticleFactory<ParticleCloud.CloudFactory, ParticleCloud> {
-
-        public CloudFactory(IAnimatedSprite spriteSet) {
-            super(spriteSet);
+        public CloudFactory(IAnimatedSprite sprite) {
+            this.spriteSet = sprite;
         }
 
         @Override
-        public ParticleCloud createParticle(ImmutableParticleArgs args) {
-            if (args.data.length >= 11) return new ParticleCloud(args.world, args.x, args.y, args.z, (double) args.data[0], (double) args.data[1], (double) args.data[2], (double) args.data[3], (double) args.data[4], (double) args.data[5], (int) args.data[6], (double) args.data[7], (int) args.data[8], (EnumCloudBehavior) args.data[9], (double) args.data[10]);
-            else if (args.data.length >= 10) return new ParticleCloud(args.world, args.x, args.y, args.z, (double) args.data[0], (double) args.data[1], (double) args.data[2], (double) args.data[3], (double) args.data[4], (double) args.data[5], (int) args.data[6], (double) args.data[7], (int) args.data[8], (EnumCloudBehavior) args.data[9], 1d);
-            return new ParticleCloud(args.world, args.x, args.y, args.z, 0, 0, 0, 1, 1, 1, 0, 10, 40, EnumCloudBehavior.CONSTANT, 1d);
+        public Particle makeParticle(CloudData typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+            ParticleCloud particleCloud = new ParticleCloud(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn.getR(), typeIn.getG(), typeIn.getB(), typeIn.getScale(), typeIn.getDuration(), typeIn.getBehavior(), typeIn.getAirDrag());
+            particleCloud.selectSpriteWithAge(spriteSet);
+            particleCloud.setColor(typeIn.getR(), typeIn.getG(), typeIn.getB());
+            return particleCloud;
         }
     }
 
-//    @Override
-//    public boolean shouldDisableDepth() {
-//        return true;
-//    }
+    public static class CloudData implements IParticleData {
+        public static final IParticleData.IDeserializer<ParticleCloud.CloudData> DESERIALIZER = new IParticleData.IDeserializer<ParticleCloud.CloudData>() {
+            public ParticleCloud.CloudData deserialize(ParticleType<ParticleCloud.CloudData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
+                reader.expect(' ');
+                float r = (float) reader.readDouble();
+                reader.expect(' ');
+                float g = (float) reader.readDouble();
+                reader.expect(' ');
+                float b = (float) reader.readDouble();
+                reader.expect(' ');
+                float scale = (float) reader.readDouble();
+                reader.expect(' ');
+                int duration = reader.readInt();
+                reader.expect(' ');
+                float airDrag = (float) reader.readDouble();
+                return new ParticleCloud.CloudData(particleTypeIn, r, g, b, scale, duration, EnumCloudBehavior.CONSTANT, airDrag);
+            }
+
+            public ParticleCloud.CloudData read(ParticleType<ParticleCloud.CloudData> particleTypeIn, PacketBuffer buffer) {
+                return new ParticleCloud.CloudData(particleTypeIn, buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readInt(), EnumCloudBehavior.CONSTANT, buffer.readFloat());
+            }
+        };
+
+        private final ParticleType<ParticleCloud.CloudData> type;
+
+        private final float r;
+        private final float g;
+        private final float b;
+        private final float scale;
+        private final int duration;
+        private final EnumCloudBehavior behavior;
+        private final float airDrag;
+
+        public CloudData(ParticleType<ParticleCloud.CloudData> type, float r, float g, float b, float scale, int duration, EnumCloudBehavior behavior, float airDrag) {
+            this.type = type;
+            this.r = r;
+            this.g = g;
+            this.b = b;
+            this.scale = scale;
+            this.behavior = behavior;
+            this.airDrag = airDrag;
+            this.duration = duration;
+        }
+
+        @Override
+        public void write(PacketBuffer buffer) {
+            buffer.writeFloat(this.r);
+            buffer.writeFloat(this.g);
+            buffer.writeFloat(this.b);
+            buffer.writeFloat(this.scale);
+            buffer.writeInt(this.duration);
+            buffer.writeFloat(this.airDrag);
+        }
+
+        @SuppressWarnings("deprecation")
+        @Override
+        public String getParameters() {
+            return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f %d %.2f", Registry.PARTICLE_TYPE.getKey(this.getType()),
+                    this.r, this.g, this.b, this.scale, this.duration, this.airDrag);
+        }
+
+        @Override
+        public ParticleType<ParticleCloud.CloudData> getType() {
+            return type;
+        }
+
+        @OnlyIn(Dist.CLIENT)
+        public float getR() {
+            return this.r;
+        }
+
+        @OnlyIn(Dist.CLIENT)
+        public float getG() {
+            return this.g;
+        }
+
+        @OnlyIn(Dist.CLIENT)
+        public float getB() {
+            return this.b;
+        }
+
+        @OnlyIn(Dist.CLIENT)
+        public float getScale() {
+            return this.scale;
+        }
+
+        @OnlyIn(Dist.CLIENT)
+        public EnumCloudBehavior getBehavior() {
+            return this.behavior;
+        }
+
+        @OnlyIn(Dist.CLIENT)
+        public int getDuration() {
+            return this.duration;
+        }
+
+        @OnlyIn(Dist.CLIENT)
+        public float getAirDrag() {
+            return this.airDrag;
+        }
+    }
 }

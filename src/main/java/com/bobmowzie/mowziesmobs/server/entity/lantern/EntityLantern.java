@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
+import com.bobmowzie.mowziesmobs.client.particles.ParticleOrb;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleVanillaCloudExtended;
 import com.bobmowzie.mowziesmobs.client.particles.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particles.util.ParticleComponent;
@@ -145,8 +146,8 @@ public class EntityLantern extends MowzieEntity {
         if (getAnimationTick() == 1 && world.isRemote) {
             for (int i = 0; i < 8; i++) {
                 world.addParticle(ParticleTypes.ITEM_SLIME, posX, posY, posZ, 0.2 * (rand.nextFloat() - 0.5), 0.2 * (rand.nextFloat() - 0.5), 0.2 * (rand.nextFloat() - 0.5));
-                MMParticle.CLOUD.spawn(world, posX, posY + 0.3, posZ, ParticleFactory.ParticleArgs.get().withData(0.2 * (rand.nextFloat() - 0.5), 0.2 * (rand.nextFloat() - 0.5), 0.2 * (rand.nextFloat() - 0.5), 163d / 256d, 247d / 256d, 74d / 256d, 1, 10d + rand.nextDouble() * 20d, 30, ParticleCloud.EnumCloudBehavior.GROW));
-                MMParticle.ORB.spawn(world, posX, posY + 0.3, posZ, ParticleFactory.ParticleArgs.get().withData(0.2 * (rand.nextFloat() - 0.5), 0.2 * (rand.nextFloat() - 0.5), 0.2 * (rand.nextFloat() - 0.5), 163d / 256d, 247d / 256d, 74d / 256d, 1.5d, 25));
+                world.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 163f / 256f, 247f / 256f, 74f / 256f, 10f + rand.nextFloat() * 20f, 30, ParticleCloud.EnumCloudBehavior.GROW, 0.9f), posX, posY + 0.3, posZ, 0.25 * (rand.nextFloat() - 0.5), 0.25 * (rand.nextFloat() - 0.5), 0.25 * (rand.nextFloat() - 0.5));
+                world.addParticle(new ParticleOrb.OrbData(163f / 256f, 247f / 256f, 74f / 256f, 1.5f, 25), posX, posY + 0.3, posZ, 0.2f * (rand.nextFloat() - 0.5f), 0.2f * (rand.nextFloat() - 0.5f), 0.2f * (rand.nextFloat() - 0.5f));
             }
         }
         if (getAnimationTick() == 2) playSound(MMSounds.ENTITY_LANTERN_POP.get(), 1f, 0.8f + rand.nextFloat() * 0.4f);

@@ -2,21 +2,31 @@ package com.bobmowzie.mowziesmobs.client.particles;
 
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.IAnimatedSprite;
-import net.minecraft.client.particle.IParticleRenderType;
-import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.SpriteTexturedParticle;
+import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.command.arguments.BlockStateParser;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.particles.IParticleData;
+import net.minecraft.particles.ParticleType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.util.Locale;
 
 /**
  * Created by Josh on 6/2/2017.
@@ -28,7 +38,6 @@ public class ParticleFallingBlock extends SpriteTexturedParticle implements Part
     public float prevRotAngle;
     public float size;
     public BlockState storedBlock;
-    public float particleScale = 1;
 
     private EnumScaleBehavior behavior;
 
@@ -39,8 +48,9 @@ public class ParticleFallingBlock extends SpriteTexturedParticle implements Part
         GROW_THEN_SHRINK
     }
 
-    public ParticleFallingBlock(World world, double x, double y, double z, float rotationSpeed, int duration, float size, float motionX, float motionY, float motionZ, EnumScaleBehavior behavior, BlockState blockState) {
+    public ParticleFallingBlock(World world, double x, double y, double z, float motionX, float motionY, float motionZ, float rotationSpeed, int duration, float size, EnumScaleBehavior behavior, BlockState blockState) {
         super(world, x, y, z);
+        this.setSprite(Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getTexture(blockState));
         particleScale = 1;
         this.size = size;
         maxAge = duration;
@@ -149,18 +159,101 @@ public class ParticleFallingBlock extends SpriteTexturedParticle implements Part
         return IParticleRenderType.TERRAIN_SHEET;
     }
 
-    public static final class FallingBlockFactory extends ParticleFactory<ParticleFallingBlock.FallingBlockFactory, ParticleFallingBlock> {
+    @OnlyIn(Dist.CLIENT)
+    public static final class FallingBlockFactory implements IParticleFactory<FallingBlockData> {
+        private IAnimatedSprite spriteSet;
+
         public FallingBlockFactory(IAnimatedSprite spriteSet) {
-            super(spriteSet);
+            this.spriteSet = spriteSet;
         }
 
         @Override
-        public ParticleFallingBlock createParticle(ImmutableParticleArgs args) {
-            return new ParticleFallingBlock(args.world, args.x, args.y, args.z, (float) args.data[0], (int) args.data[1], (float) args.data[2], (float) args.data[3], (float) args.data[4], (float) args.data[5], (EnumScaleBehavior) args.data[6], (BlockState) args.data[7]);
+        public Particle makeParticle(FallingBlockData typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+            BlockState blockstate = typeIn.getBlockState();
+            return !blockstate.isAir() && blockstate.getBlock() != Blocks.MOVING_PISTON ? new ParticleFallingBlock(worldIn, x, y, z, (float) xSpeed, (float) ySpeed, (float) zSpeed, typeIn.getRotationSpeed(), typeIn.getDuration(), typeIn.getScale(), typeIn.getBehavior(), blockstate) : null;
         }
     }
 
     public static void spawnFallingBlock(World world, double x, double y, double z, float rotationSpeed, int duration, float size, float motionX, float motionY, float motionZ, EnumScaleBehavior behavior, BlockState blockState) {
-        MMParticle.FALLING_BLOCK.spawn(world, x, y, z, ParticleFactory.ParticleArgs.get().withData(rotationSpeed, duration, size, motionX, motionY, motionZ, behavior, blockState));
+        world.addParticle(new FallingBlockData(rotationSpeed, duration, size, behavior, blockState), x, y, z, motionX, motionY, motionZ);
+    }
+
+    public static class FallingBlockData implements IParticleData {
+        public static final IParticleData.IDeserializer<FallingBlockData> DESERIALIZER = new IParticleData.IDeserializer<FallingBlockData>() {
+            public FallingBlockData deserialize(ParticleType<FallingBlockData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
+                reader.expect(' ');
+                float rotationSpeed = (float) reader.readDouble();
+                reader.expect(' ');
+                int duration = reader.readInt();
+                reader.expect(' ');
+                float scale = (float) reader.readDouble();
+                reader.expect(' ');
+                BlockState state = (new BlockStateParser(reader, false)).parse(false).getState();
+                return new FallingBlockData(rotationSpeed, duration, scale,  EnumScaleBehavior.CONSTANT, state);
+            }
+
+            public FallingBlockData read(ParticleType<FallingBlockData> particleTypeIn, PacketBuffer buffer) {
+                return new FallingBlockData(buffer.readFloat(), buffer.readInt(), buffer.readFloat(), EnumScaleBehavior.CONSTANT, Block.BLOCK_STATE_IDS.getByValue(buffer.readVarInt()));
+            }
+        };
+
+        private final float rotationSpeed;
+        private final int duration;
+        private final float scale;
+        private final EnumScaleBehavior behavior;
+        private final BlockState blockState;
+
+        public FallingBlockData(float rotationSpeed, int duration, float size, EnumScaleBehavior behavior, BlockState blockState) {
+            this.rotationSpeed = rotationSpeed;
+            this.duration = duration;
+            this.scale = size;
+            this.behavior = behavior;
+            this.blockState = blockState;
+        }
+
+        @Override
+        public void write(PacketBuffer buffer) {
+            buffer.writeFloat(this.rotationSpeed);
+            buffer.writeInt(this.duration);
+            buffer.writeFloat(this.scale);
+            buffer.writeVarInt(Block.BLOCK_STATE_IDS.get(this.blockState));
+        }
+
+        @SuppressWarnings("deprecation")
+        @Override
+        public String getParameters() {
+            return String.format(Locale.ROOT, "%s %.2f %d %.2f %s", Registry.PARTICLE_TYPE.getKey(this.getType()),
+                    this.rotationSpeed, this.duration, this.scale, this.duration, BlockStateParser.toString(this.blockState));
+        }
+
+        @Override
+        public ParticleType<FallingBlockData> getType() {
+            return ParticleHandler.FALLING_BLOCK.get();
+        }
+
+        @OnlyIn(Dist.CLIENT)
+        public float getRotationSpeed() {
+            return this.rotationSpeed;
+        }
+
+        @OnlyIn(Dist.CLIENT)
+        public float getScale() {
+            return this.scale;
+        }
+
+        @OnlyIn(Dist.CLIENT)
+        public int getDuration() {
+            return this.duration;
+        }
+
+        @OnlyIn(Dist.CLIENT)
+        public EnumScaleBehavior getBehavior() {
+            return this.behavior;
+        }
+
+        @OnlyIn(Dist.CLIENT)
+        public BlockState getBlockState() {
+            return this.blockState;
+        }
     }
 }

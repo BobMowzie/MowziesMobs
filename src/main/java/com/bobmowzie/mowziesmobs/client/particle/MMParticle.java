@@ -12,13 +12,9 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 
 public enum MMParticle {
-    ORB(new ParticleOrb.OrbFactory(null)),
-    RING(new ParticleRing.RingFactory(null)),
-    CLOUD(new ParticleCloud.CloudFactory(null)),
     RIBBON_FLAT(new ParticleRibbon.ParticleRibbonFactory(new ResourceLocation(MowziesMobs.MODID, "particles/trail_flat"))),
     RIBBON_STREAKS(new ParticleRibbon.ParticleRibbonFactory(new ResourceLocation(MowziesMobs.MODID, "particles/trail_streaks"))),
-    RIBBON_GLOW(new ParticleRibbon.ParticleRibbonFactory(new ResourceLocation(MowziesMobs.MODID, "particles/trail_glow"))),
-    FALLING_BLOCK(new ParticleFallingBlock.FallingBlockFactory(null));
+    RIBBON_GLOW(new ParticleRibbon.ParticleRibbonFactory(new ResourceLocation(MowziesMobs.MODID, "particles/trail_glow")));
 
     private ParticleFactory factory;
 

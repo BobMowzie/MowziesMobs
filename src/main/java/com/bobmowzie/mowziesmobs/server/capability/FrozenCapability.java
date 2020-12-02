@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.capability;
 
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleSnowFlake;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
@@ -310,7 +311,7 @@ public class FrozenCapability {
                     double cloudX = entity.posX + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
                     double cloudZ = entity.posZ + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
                     double cloudY = entity.posY + entity.getHeight() * entity.getRNG().nextFloat();
-                    MMParticle.CLOUD.spawn(entity.world, cloudX, cloudY, cloudZ, ParticleFactory.ParticleArgs.get().withData(0d, -0.01d, 0d, 0.75d, 0.75d, 1d, 1, 15d, 25, ParticleCloud.EnumCloudBehavior.CONSTANT));
+                    entity.world.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f, 0.75f, 1f, 15f, 25, ParticleCloud.EnumCloudBehavior.CONSTANT, 1f), cloudX, cloudY, cloudZ, 0f, -0.01f, 0f);
 
                     double snowX = entity.posX + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
                     double snowZ = entity.posZ + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;

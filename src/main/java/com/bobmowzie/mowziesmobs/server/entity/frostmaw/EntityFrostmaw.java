@@ -2,7 +2,9 @@ package com.bobmowzie.mowziesmobs.server.entity.frostmaw;
 
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
+import com.bobmowzie.mowziesmobs.client.particles.ParticleRing;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleSnowFlake;
 import com.bobmowzie.mowziesmobs.server.advancement.AdvancementHandler;
 import com.bobmowzie.mowziesmobs.server.ai.MMEntityMoveHelper;
@@ -290,7 +292,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                     float radius = 4;
                     float slamPosX = (float) (posX + radius * Math.cos(Math.toRadians(rotationYaw + 90)));
                     float slamPosZ = (float) (posZ + radius * Math.sin(Math.toRadians(rotationYaw + 90)));
-                    if (world.isRemote) MMParticle.RING.spawn(world, slamPosX, posY + 0.2f, slamPosZ, ParticleFactory.ParticleArgs.get().withData(0f, (float)Math.PI/2f, 17, 1f, 1f, 1f, 1f, 60f, false, 0f, 0f, 0f));
+                    if (world.isRemote) world.addParticle(new ParticleRing.RingData(0f, (float)Math.PI/2f, 17, 1f, 1f, 1f, 1f, 60f, false, ParticleRing.EnumRingBehavior.GROW), slamPosX, posY + 0.2f, slamPosZ, 0, 0, 0);
                     AxisAlignedBB hitBox = new AxisAlignedBB(new BlockPos(slamPosX - 0.5f, posY, slamPosZ - 0.5f)).grow(3, 3, 3);
                     List<LivingEntity> entitiesHit = world.getEntitiesWithinAABB(LivingEntity.class, hitBox);
                     for (LivingEntity entity: entitiesHit) {
@@ -345,8 +347,8 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                             Vec3d particlePos = new Vec3d(3.5, 0, 0);
                             particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                             particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
-                            double value = rand.nextFloat() * 0.15f;
-                            MMParticle.CLOUD.spawn(world, mouthPos.x + particlePos.x, mouthPos.y + particlePos.y, mouthPos.z + particlePos.z, ParticleFactory.ParticleArgs.get().withData(-0.1 * particlePos.x, -0.1 * particlePos.y, -0.1 * particlePos.z, 0.75d + value, 0.75d + value, 1d, 1, 5d + rand.nextDouble() * 15d, 30, ParticleCloud.EnumCloudBehavior.CONSTANT));
+                            float value = rand.nextFloat() * 0.15f;
+                            world.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f + value, 0.75f + value, 1f, 5f + rand.nextFloat() * 15f, 30, ParticleCloud.EnumCloudBehavior.CONSTANT, 1f), mouthPos.x + particlePos.x, mouthPos.y + particlePos.y, mouthPos.z + particlePos.z, -0.1 * particlePos.x, -0.1 * particlePos.y, -0.1 * particlePos.z);
                         }
                         for (int i = 0; i < 8; i++) {
                             Vec3d particlePos = new Vec3d(3.5, 0, 0);
@@ -546,14 +548,14 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                 double speed = 0.9;
                 double xSpeed = speed * Math.cos(Math.toRadians(yaw));
                 double zSpeed = speed * Math.sin(Math.toRadians(yaw));
-                MMParticle.CLOUD.spawn(world, posX, posY + 1f, posZ, ParticleFactory.ParticleArgs.get().withData(xSpeed, 0d, zSpeed, 0.75d, 0.75d, 1d, 1, 40d, 22, ParticleCloud.EnumCloudBehavior.GROW));
+                world.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f, 0.75f,1f, 40f, 22, ParticleCloud.EnumCloudBehavior.GROW, 1f), posX, posY + 1f, posZ, xSpeed, 0, zSpeed);
             }
             for (int i = 1; i <= particleCount; i++) {
                 double yaw = i * 360.f / particleCount;
                 double speed = 0.65;
                 double xSpeed = speed * Math.cos(Math.toRadians(yaw));
                 double zSpeed = speed * Math.sin(Math.toRadians(yaw));
-                MMParticle.CLOUD.spawn(world, posX, posY + 1f, posZ, ParticleFactory.ParticleArgs.get().withData(xSpeed, 0d, zSpeed, 0.75d, 0.75d, 1d, 1, 35d, 22, ParticleCloud.EnumCloudBehavior.GROW));
+                world.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f, 0.75f,1f, 35f, 22, ParticleCloud.EnumCloudBehavior.GROW, 1f), posX, posY + 1f, posZ, xSpeed, 0, zSpeed);
             }
         }
     }

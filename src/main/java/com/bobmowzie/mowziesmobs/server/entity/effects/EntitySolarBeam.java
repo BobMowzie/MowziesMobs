@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory.ParticleArgs;
+import com.bobmowzie.mowziesmobs.client.particles.ParticleOrb;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.damage.DamageUtil;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
@@ -107,12 +108,12 @@ public class EntitySolarBeam extends Entity {
                 double ox = radius * Math.sin(yaw) * Math.sin(pitch);
                 double oy = radius * Math.cos(pitch);
                 double oz = radius * Math.cos(yaw) * Math.sin(pitch);
-                double offsetX = -2 * Math.cos(getYaw());
-                double offsetZ = -2 * Math.sin(getYaw());
+                float offsetX = (float) (-2 * Math.cos(getYaw()));
+                float offsetZ = (float) (-2 * Math.sin(getYaw()));
                 if (getHasPlayer()) {
                     offsetX = offsetZ = 0;
                 }
-                MMParticle.ORB.spawn(world, posX + ox + offsetX, posY + oy + 0.3, posZ + oz + offsetZ, ParticleArgs.get().withData(posX + offsetX, posY + 0.3, posZ + offsetZ, 10));
+                world.addParticle(new ParticleOrb.OrbData((float) posX + offsetX, (float) posY + 0.3f, (float) posZ + offsetZ, 10), posX + ox + offsetX, posY + oy + 0.3, posZ + oz + offsetZ, 0, 0, 0);
             }
         }
         if (ticksExisted > 20) {
@@ -149,15 +150,15 @@ public class EntitySolarBeam extends Entity {
                     int particleCount = 4;
                     while (particleCount --> 0) {
                         double radius = 1f;
-                        double yaw = rand.nextFloat() * 2 * Math.PI;
-                        double pitch = rand.nextFloat() * 2 * Math.PI;
-                        double ox = radius * Math.sin(yaw) * Math.sin(pitch);
-                        double oy = radius * Math.cos(pitch);
-                        double oz = radius * Math.cos(yaw) * Math.sin(pitch);
-                        double o2x = -1 * Math.cos(getYaw()) * Math.cos(getPitch());
-                        double o2y = -1 * Math.sin(getPitch());
-                        double o2z = -1 * Math.sin(getYaw()) * Math.cos(getPitch());
-                        MMParticle.ORB.spawn(world, posX + o2x + ox, posY + o2y + oy, posZ + o2z + oz, ParticleArgs.get().withData(collidePosX + o2x + ox, collidePosY + o2y + oy, collidePosZ + o2z + oz, 15));
+                        double yaw = (float) (rand.nextFloat() * 2 * Math.PI);
+                        double pitch = (float) (rand.nextFloat() * 2 * Math.PI);
+                        double ox = (float) (radius * Math.sin(yaw) * Math.sin(pitch));
+                        double oy = (float) (radius * Math.cos(pitch));
+                        double oz = (float) (radius * Math.cos(yaw) * Math.sin(pitch));
+                        double o2x = (float) (-1 * Math.cos(getYaw()) * Math.cos(getPitch()));
+                        double o2y = (float) (-1 * Math.sin(getPitch()));
+                        double o2z = (float) (-1 * Math.sin(getYaw()) * Math.cos(getPitch()));
+                        world.addParticle(new ParticleOrb.OrbData((float) (collidePosX + o2x + ox), (float) (collidePosY + o2y + oy), (float) (collidePosZ + o2z + oz), 15), posX + o2x + ox, posY + o2y + oy, posZ + o2z + oz, 0, 0, 0);
                     }
                     particleCount = 4;
                     while (particleCount --> 0) {
@@ -170,7 +171,7 @@ public class EntitySolarBeam extends Entity {
                         double o2x = -1 * Math.cos(getYaw()) * Math.cos(getPitch());
                         double o2y = -1 * Math.sin(getPitch());
                         double o2z = -1 * Math.sin(getYaw()) * Math.cos(getPitch());
-                        MMParticle.ORB.spawn(world, collidePosX + o2x, collidePosY + o2y, collidePosZ + o2z, ParticleArgs.get().withData(collidePosX + o2x + ox, collidePosY + o2y + oy, collidePosZ + o2z + oz, 20));
+                        world.addParticle(new ParticleOrb.OrbData((float) (collidePosX + o2x + ox), (float) (collidePosY + o2y + oy), (float) (collidePosZ + o2z + oz), 20), collidePosX + o2x, collidePosY + o2y, collidePosZ + o2z, 0, 0, 0);
                     }
                 }
             }

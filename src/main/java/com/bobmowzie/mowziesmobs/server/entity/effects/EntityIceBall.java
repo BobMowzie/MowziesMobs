@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.entity.effects;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleRing;
 import com.bobmowzie.mowziesmobs.client.particles.ParticleSnowFlake;
@@ -60,7 +61,7 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
                 if (freezeImmune.contains(mobName.toString())) continue;
                 if (entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(this, caster), 3f * ConfigHandler.MOBS.FROSTMAW.combatData.attackMultiplier)) {
                     IFrozenCapability capability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
-                    capability.addFreezeProgress(entity, 1);
+                    if (capability != null) capability.addFreezeProgress(entity, 1);
                 }
             }
         }
@@ -81,14 +82,14 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
                 double xSpeed = scale * 0.01 * (rand.nextFloat() * 2 - 1);
                 double ySpeed = scale * 0.01 * (rand.nextFloat() * 2 - 1);
                 double zSpeed = scale * 0.01 * (rand.nextFloat() * 2 - 1);
-                double value = rand.nextFloat() * 0.15f;
-                MMParticle.CLOUD.spawn(world, x + xSpeed, y + ySpeed, z + zSpeed, ParticleFactory.ParticleArgs.get().withData(xSpeed, ySpeed, zSpeed, 0.75d + value, 0.75d + value, 1d, 1, scale * (10d + rand.nextDouble() * 20d), 20, ParticleCloud.EnumCloudBehavior.SHRINK));
+                float value = rand.nextFloat() * 0.15f;
+                world.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f + value, 0.75f + value,1f, scale * (10f + rand.nextFloat() * 20f), 20, ParticleCloud.EnumCloudBehavior.SHRINK, 1f), x + xSpeed, y + ySpeed, z + zSpeed, xSpeed, ySpeed, zSpeed);
             }
             for (int i = 0; i < 1; i++) {
                 double xSpeed = scale * 0.01 * (rand.nextFloat() * 2 - 1);
                 double ySpeed = scale * 0.01 * (rand.nextFloat() * 2 - 1);
                 double zSpeed = scale * 0.01 * (rand.nextFloat() * 2 - 1);
-                MMParticle.CLOUD.spawn(world, x, y, z, ParticleFactory.ParticleArgs.get().withData(xSpeed, ySpeed, zSpeed, 1d, 1d, 1d, 1, scale * (5d + rand.nextDouble() * 10d), 40, ParticleCloud.EnumCloudBehavior.SHRINK));
+                world.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 1f, 1f, 1f, scale * (5f + rand.nextFloat() * 10f), 40, ParticleCloud.EnumCloudBehavior.SHRINK, 1f), x, y, z, xSpeed, ySpeed, zSpeed);
             }
 
             for (int i = 0; i < 5; i++) {
@@ -98,16 +99,14 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
                 world.addParticle(new ParticleSnowFlake.SnowflakeData(40, false), x - 20 * (xSpeed) + motionX, y - 20 * ySpeed + motionY, z - 20 * zSpeed + motionZ, xSpeed, ySpeed, zSpeed);
             }
 
+            float yaw = (float) Math.atan2(motionX, motionZ);
+            float pitch = (float) (Math.acos(motionY / Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ)) + Math.PI / 2);
             if (ticksExisted % 3 == 0) {
-                float yaw = (float) Math.atan2(motionX, motionZ);
-                float pitch = (float) (Math.acos(motionY / Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ)) + Math.PI / 2);
-                MMParticle.RING.spawn(world, x + 1.5f * motionX, y + 1.5f *motionY, z + 1.5f * motionZ, ParticleFactory.ParticleArgs.get().withData(yaw, pitch, 40, 0.9f, 0.9f, 1f, 0.4f, scale * 16f, false, 0f, 0f, 0f, ParticleRing.EnumRingBehavior.GROW_THEN_SHRINK));
+                world.addParticle(new ParticleRing.RingData(yaw, pitch, 40, 0.9f, 0.9f, 1f, 0.4f, scale * 16f, false, ParticleRing.EnumRingBehavior.GROW_THEN_SHRINK), x + 1.5f * motionX, y + 1.5f *motionY, z + 1.5f * motionZ, 0, 0, 0);
             }
 
             if (ticksExisted == 1) {
-                float yaw = (float) Math.atan2(motionX, motionZ);
-                float pitch = (float) (Math.acos(motionY / Math.sqrt(motionX * motionX + motionY * motionY + motionZ * motionZ)) + Math.PI / 2);
-                MMParticle.RING.spawn(world, x, y, z, ParticleFactory.ParticleArgs.get().withData(yaw, pitch, 20, 0.9f, 0.9f, 1f, 0.4f, scale * 16f, false, 0f, 0f, 0f, ParticleRing.EnumRingBehavior.GROW));
+                world.addParticle(new ParticleRing.RingData(yaw, pitch, 20, 0.9f, 0.9f, 1f, 0.4f, scale * 16f, false, ParticleRing.EnumRingBehavior.GROW), x, y, z, 0, 0, 0);
             }
         }
         if (ticksExisted > 50) remove();
@@ -139,8 +138,8 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
                 Vec3d particlePos = new Vec3d(rand.nextFloat() * 0.3, 0, 0);
                 particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
-                double value = rand.nextFloat() * 0.15f;
-                MMParticle.CLOUD.spawn(world, posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, ParticleFactory.ParticleArgs.get().withData(particlePos.x, particlePos.y, particlePos.z, 0.75d + value, 0.75d + value, 1d, 1, 10d + rand.nextDouble() * 20d, 40, ParticleCloud.EnumCloudBehavior.GROW));
+                float value = rand.nextFloat() * 0.15f;
+                world.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f + value, 0.75f + value, 1f, 10f + rand.nextFloat() * 20f, 40, ParticleCloud.EnumCloudBehavior.GROW, 1f), posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, particlePos.x, particlePos.y, particlePos.z);
             }
             for (int i = 0; i < 10; i++) {
                 Vec3d particlePos = new Vec3d(rand.nextFloat() * 0.3, 0, 0);

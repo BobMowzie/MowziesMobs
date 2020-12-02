@@ -7,6 +7,7 @@ import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory.ParticleArgs;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
+import com.bobmowzie.mowziesmobs.client.particles.ParticleOrb;
 import com.bobmowzie.mowziesmobs.client.particles.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particles.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particles.util.ParticleComponent.PropertyControl.EnumParticleProperty;
@@ -373,10 +374,10 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                     double ox = radius * Math.sin(yaw) * Math.sin(pitch);
                     double oy = radius * Math.cos(pitch);
                     double oz = radius * Math.cos(yaw) * Math.sin(pitch);
-                    double offsetX = -0.3 * Math.sin(rotationYaw * Math.PI / 180);
-                    double offsetZ = -0.3 * Math.cos(rotationYaw * Math.PI / 180);
-                    double offsetY = 1;
-                    MMParticle.ORB.spawn(world, posX + ox + offsetX, posY + offsetY + oy, posZ + oz + offsetZ, ParticleArgs.get().withData(posX + offsetX, posY + offsetY, posZ + offsetZ, 6));
+                    float offsetX = (float) (-0.3 * Math.sin(rotationYaw * Math.PI / 180));
+                    float offsetZ = (float) (-0.3 * Math.cos(rotationYaw * Math.PI / 180));
+                    float offsetY = 1;
+                    world.addParticle(new ParticleOrb.OrbData((float) posX + offsetX, (float) posY + offsetY, (float) posZ + offsetZ, 6), posX + ox + offsetX, posY + offsetY + oy, posZ + oz + offsetZ, 0, 0, 0);
                 }
             }
         }

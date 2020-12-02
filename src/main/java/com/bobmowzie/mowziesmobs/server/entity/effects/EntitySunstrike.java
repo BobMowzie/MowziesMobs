@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory.ParticleArgs;
+import com.bobmowzie.mowziesmobs.client.particles.ParticleOrb;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
@@ -160,7 +161,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
                     float oz = r * MathHelper.sin(theta);
                     final float minY = 0.1F;
                     float oy = rand.nextFloat() * (time * 6 - minY) + minY;
-                    MMParticle.ORB.spawn(world, posX + ox, posY + oy, posZ + oz, ParticleArgs.get().withData(posX, posZ));
+                    world.addParticle(new ParticleOrb.OrbData((float) posX, (float) posZ), posX + ox, posY + oy, posZ + oz, 0, 0, 0);
                 }
             } else if (strikeTime > STRIKE_EXPLOSION) {
                 this.smolder();

@@ -1,13 +1,12 @@
 package com.bobmowzie.mowziesmobs.client.particle;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.particles.ParticleSnowFlake;
-import com.bobmowzie.mowziesmobs.client.particles.ParticleSparkle;
-import com.bobmowzie.mowziesmobs.client.particles.ParticleVanillaCloudExtended;
+import com.bobmowzie.mowziesmobs.client.particles.*;
 import com.bobmowzie.mowziesmobs.client.particles.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particles.util.AdvancedParticleData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.particles.BasicParticleType;
+import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleType;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -25,6 +24,10 @@ public class ParticleHandler {
     public static final RegistryObject<BasicParticleType> SPARKLE = REG.register("sparkle", () -> new BasicParticleType(false));
     public static final RegistryObject<ParticleType<ParticleVanillaCloudExtended.VanillaCloudData>> VANILLA_CLOUD_EXTENDED = REG.register("vanilla_cloud_extended", () -> new ParticleType<ParticleVanillaCloudExtended.VanillaCloudData>(false, ParticleVanillaCloudExtended.VanillaCloudData.DESERIALIZER));
     public static final RegistryObject<ParticleType<ParticleSnowFlake.SnowflakeData>> SNOWFLAKE = REG.register("snowflake", () -> new ParticleType<ParticleSnowFlake.SnowflakeData>(false, ParticleSnowFlake.SnowflakeData.DESERIALIZER));
+    public static final RegistryObject<ParticleType<ParticleCloud.CloudData>> CLOUD = REG.register("cloud_soft", () -> new ParticleType<ParticleCloud.CloudData>(false, ParticleCloud.CloudData.DESERIALIZER));
+    public static final RegistryObject<ParticleType<ParticleOrb.OrbData>> ORB = REG.register("orb_0", () -> new ParticleType<ParticleOrb.OrbData>(false, ParticleOrb.OrbData.DESERIALIZER));
+    public static final RegistryObject<ParticleType<ParticleRing.RingData>> RING = REG.register("ring_0", () -> new ParticleType<ParticleRing.RingData>(false, ParticleRing.RingData.DESERIALIZER));
+    public static final RegistryObject<ParticleType<ParticleFallingBlock.FallingBlockData>> FALLING_BLOCK = REG.register("falling_block", () -> new ParticleType<ParticleFallingBlock.FallingBlockData>(false, ParticleFallingBlock.FallingBlockData.DESERIALIZER));
 
     public static final RegistryObject<ParticleType<AdvancedParticleData>> RING2 = REG.register("ring", () -> new ParticleType<AdvancedParticleData>(false, AdvancedParticleData.DESERIALIZER));
     public static final RegistryObject<ParticleType<AdvancedParticleData>> RING_BIG = REG.register("ring_big", () -> new ParticleType<AdvancedParticleData>(false, AdvancedParticleData.DESERIALIZER));
@@ -48,6 +51,10 @@ public class ParticleHandler {
         Minecraft.getInstance().particles.registerFactory(ParticleHandler.SPARKLE.get(), ParticleSparkle.SparkleFactory::new);
         Minecraft.getInstance().particles.registerFactory(ParticleHandler.VANILLA_CLOUD_EXTENDED.get(), ParticleVanillaCloudExtended.CloudFactory::new);
         Minecraft.getInstance().particles.registerFactory(ParticleHandler.SNOWFLAKE.get(), ParticleSnowFlake.SnowFlakeFactory::new);
+        Minecraft.getInstance().particles.registerFactory(ParticleHandler.CLOUD.get(), ParticleCloud.CloudFactory::new);
+        Minecraft.getInstance().particles.registerFactory(ParticleHandler.ORB.get(), ParticleOrb.OrbFactory::new);
+        Minecraft.getInstance().particles.registerFactory(ParticleHandler.RING.get(), ParticleRing.RingFactory::new);
+        Minecraft.getInstance().particles.registerFactory(ParticleHandler.FALLING_BLOCK.get(), ParticleFallingBlock.FallingBlockFactory::new);
 
         Minecraft.getInstance().particles.registerFactory(ParticleHandler.RING2.get(), AdvancedParticleBase.Factory::new);
         Minecraft.getInstance().particles.registerFactory(ParticleHandler.RING_BIG.get(), AdvancedParticleBase.Factory::new);
