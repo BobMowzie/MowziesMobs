@@ -1,14 +1,20 @@
-package com.bobmowzie.mowziesmobs.client.particles.util;
+package com.bobmowzie.mowziesmobs.client.particle;
 
-import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
-import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
-import com.bobmowzie.mowziesmobs.client.particles.util.RibbonComponent.PropertyOverLength;
-import com.bobmowzie.mowziesmobs.client.particles.util.RibbonComponent.PropertyOverLength.EnumRibbonProperty;
+import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
+import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
+import com.bobmowzie.mowziesmobs.client.particle.util.RibbonComponent.PropertyOverLength;
+import com.bobmowzie.mowziesmobs.client.particle.util.RibbonComponent.PropertyOverLength.EnumRibbonProperty;
+import com.bobmowzie.mowziesmobs.client.particle.util.RibbonParticleData;
+import net.minecraft.client.particle.IAnimatedSprite;
+import net.minecraft.client.particle.IParticleFactory;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.particles.ParticleType;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.vecmath.Matrix4d;
 import javax.vecmath.Point3d;
@@ -51,18 +57,10 @@ public class ParticleRibbon extends AdvancedParticleBase {
             component.preRender(this, partialTicks);
         }
 
-        float f = 0;//(float)this.particleTextureIndexX / 16.0F;
-        float f1 = 0;//f + 0.0624375F;
-        float f2 = 0;//(float)this.particleTextureIndexY / 16.0F;
-        float f3 = 0;//f2 + 0.0624375F;
-//
-//        if (this.particleTexture != null)
-//        {
-//            f = this.particleTexture.getMinU();
-//            f1 = this.particleTexture.getMaxU();
-//            f2 = this.particleTexture.getMinV();
-//            f3 = this.particleTexture.getMaxV();
-//        }
+        float f = this.getMinU();
+        float f1 = this.getMaxU();
+        float f2 = this.getMinV();
+        float f3 = this.getMaxV();
 
         int i = this.getBrightnessForRender(partialTicks);
         int j = i >> 16 & 65535;
@@ -140,7 +138,7 @@ public class ParticleRibbon extends AdvancedParticleBase {
             if (index == 0) {
                 Vec3d moveDir = p2.subtract(p1).normalize();
                 if (faceCamera) {
-//                    offsetDir = moveDir.crossProduct(cameraViewDir).normalize();
+                    offsetDir = moveDir.crossProduct(entityIn.getLookDirection()).normalize();
                 } else {
                     offsetDir = moveDir.crossProduct(new Vec3d(0, 1, 0)).normalize();
                 }
@@ -150,7 +148,7 @@ public class ParticleRibbon extends AdvancedParticleBase {
             Vec3d[] avec3d2 = new Vec3d[] {offsetDir.scale(-1), offsetDir, null, null};
             Vec3d moveDir = p2.subtract(p1).normalize();
             if (faceCamera) {
-//                offsetDir = moveDir.crossProduct(cameraViewDir).normalize();
+                offsetDir = moveDir.crossProduct(entityIn.getLookDirection()).normalize();
             }
             else {
                 offsetDir = moveDir.crossProduct(new Vec3d(0, 1, 0)).normalize();
@@ -189,22 +187,27 @@ public class ParticleRibbon extends AdvancedParticleBase {
         }
     }
 
-    public static final class ParticleRibbonFactory extends ParticleFactory<ParticleRibbon.ParticleRibbonFactory, ParticleRibbon> {
-        public ParticleRibbonFactory(ResourceLocation texture) {
-            super(null);
+    @OnlyIn(Dist.CLIENT)
+    public static final class Factory implements IParticleFactory<RibbonParticleData> {
+        private final IAnimatedSprite spriteSet;
+
+        public Factory(IAnimatedSprite spriteSet) {
+            this.spriteSet = spriteSet;
         }
 
         @Override
-        public ParticleRibbon createParticle(ImmutableParticleArgs args) {
-            return new ParticleRibbon(args.world, args.x, args.y, args.z, (double) args.data[0], (double) args.data[1], (double) args.data[2], (double) args.data[3], (double) args.data[4], (double) args.data[5], (double) args.data[6], (double) args.data[7], (double) args.data[8], (double) args.data[9], (double) args.data[10], (double) args.data[11], (double) args.data[12], (boolean) args.data[13], (boolean) args.data[14], (int) args.data[15], (ParticleComponent[]) args.data[16]);
+        public Particle makeParticle(RibbonParticleData typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+            ParticleRibbon particle = new ParticleRibbon(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn.getYaw(), typeIn.getPitch(), typeIn.getRoll(), typeIn.getScale(), typeIn.getRed(), typeIn.getGreen(), typeIn.getBlue(), typeIn.getAlpha(), typeIn.getAirDrag(), typeIn.getDuration(), typeIn.isFaceCamera(), typeIn.isEmissive(), typeIn.getLength(), typeIn.getComponents());
+            particle.selectSpriteWithAge(spriteSet);
+            return particle;
         }
     }
 
-    public static void spawnRibbon(World world, MMParticle particle, int length, double x, double y, double z, double motionX, double motionY, double motionZ, boolean faceCamera, double yaw, double pitch, double roll, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive) {
-        particle.spawn(world, x, y, z, ParticleRibbonFactory.ParticleArgs.get().withData(motionX, motionY, motionZ, yaw, pitch, roll, scale, r, g, b, a, drag, duration, faceCamera, emissive, length, new ParticleComponent[] {}));
+    public static void spawnRibbon(World world, ParticleType<? extends RibbonParticleData> particle, int length, double x, double y, double z, double motionX, double motionY, double motionZ, boolean faceCamera, double yaw, double pitch, double roll, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive) {
+        world.addParticle(new RibbonParticleData(particle, faceCamera, yaw, pitch, roll, scale, r, g, b, a, drag, duration, emissive, length, new ParticleComponent[] {}), x, y, z, motionX, motionY, motionZ);
     }
 
-    public static void spawnRibbon(World world, MMParticle particle, int length, double x, double y, double z, double motionX, double motionY, double motionZ, boolean faceCamera, double yaw, double pitch, double roll, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, ParticleComponent[] components) {
-        particle.spawn(world, x, y, z, ParticleRibbonFactory.ParticleArgs.get().withData(motionX, motionY, motionZ, yaw, pitch, roll, scale, r, g, b, a, drag, duration, faceCamera, emissive, length, components));
+    public static void spawnRibbon(World world, ParticleType<? extends RibbonParticleData> particle, int length, double x, double y, double z, double motionX, double motionY, double motionZ, boolean faceCamera, double yaw, double pitch, double roll, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, ParticleComponent[] components) {
+        world.addParticle(new RibbonParticleData(particle, faceCamera, yaw, pitch, roll, scale, r, g, b, a, drag, duration, emissive, length, components), x, y, z, motionX, motionY, motionZ);
     }
 }

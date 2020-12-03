@@ -1,16 +1,17 @@
-package com.bobmowzie.mowziesmobs.client.particles.util;
+package com.bobmowzie.mowziesmobs.client.particle.util;
 
-import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleRibbon;
+import net.minecraft.particles.ParticleType;
 
 public class RibbonComponent extends ParticleComponent {
     int length;
-    MMParticle ribbon;
+    ParticleType<? extends RibbonParticleData> ribbon;
     double yaw, pitch, roll, scale, r, g, b, a;
     boolean faceCamera;
     boolean emissive;
     ParticleComponent[] components;
 
-    public RibbonComponent(MMParticle particle, int length, double yaw, double pitch, double roll, double scale, double r, double g, double b, double a, boolean faceCamera, boolean emissive, ParticleComponent[] components) {
+    public RibbonComponent(ParticleType<? extends RibbonParticleData> particle, int length, double yaw, double pitch, double roll, double scale, double r, double g, double b, double a, boolean faceCamera, boolean emissive, ParticleComponent[] components) {
         this.length = length;
         this.yaw = yaw;
         this.pitch = pitch;
@@ -23,14 +24,7 @@ public class RibbonComponent extends ParticleComponent {
         this.emissive = emissive;
         this.faceCamera = faceCamera;
         this.components = components;
-
-        if (particle.getFactory() instanceof ParticleRibbon.ParticleRibbonFactory) {
-            this.ribbon = particle;
-        }
-        else {
-            System.out.println("Specified non-ribbon particle for ribbon component");
-            this.ribbon = null;
-        }
+        this.ribbon = particle;
     }
 
     @Override
@@ -39,9 +33,7 @@ public class RibbonComponent extends ParticleComponent {
         if (particle != null) {
 
             ParticleComponent[] newComponents = new ParticleComponent[components.length + 1];
-            for (int i = 0; i < components.length; i++) {
-                newComponents[i] = components[i];
-            }
+            System.arraycopy(components, 0, newComponents, 0, components.length);
             newComponents[components.length] = new AttachToParticle(particle);
 
             ParticleRibbon.spawnRibbon(particle.getWorld(), ribbon, length, particle.getPosX(), particle.getPosY(), particle.getPosZ(), 0, 0, 0, faceCamera, yaw, pitch, roll, scale, r, g, b, a, 0, particle.getMaxAge() + length, emissive, newComponents);

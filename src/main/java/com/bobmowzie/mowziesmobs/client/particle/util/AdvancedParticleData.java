@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.client.particles.util;
+package com.bobmowzie.mowziesmobs.client.particle.util;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.network.PacketBuffer;
@@ -61,24 +61,24 @@ public class AdvancedParticleData implements IParticleData {
         }
     };
 
-    private final ParticleType<AdvancedParticleData> type;
+    private final ParticleType<? extends AdvancedParticleData> type;
 
-    private float airDrag;
-    private float red, green, blue, alpha;
-    private boolean faceCamera;
-    private float scale;
-    private float yaw, pitch, roll;
-    private boolean emissive;
-    private float duration;
-    private float faceCameraAngle;
+    private final float airDrag;
+    private final float red, green, blue, alpha;
+    private final boolean faceCamera;
+    private final float scale;
+    private final float yaw, pitch, roll;
+    private final boolean emissive;
+    private final float duration;
+    private final float faceCameraAngle;
 
-    ParticleComponent[] components;
+    private final ParticleComponent[] components;
 
-    public AdvancedParticleData(ParticleType<AdvancedParticleData> type, boolean faceCamera, double yaw, double pitch, double roll, double faceCameraAngle, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive) {
+    public AdvancedParticleData(ParticleType<? extends AdvancedParticleData> type, boolean faceCamera, double yaw, double pitch, double roll, double faceCameraAngle, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive) {
         this(type, faceCamera, yaw, pitch, roll, faceCameraAngle, scale, r, g, b, a, drag, duration, emissive, new ParticleComponent[]{});
     }
 
-    public AdvancedParticleData(ParticleType<AdvancedParticleData> type, boolean faceCamera, double yaw, double pitch, double roll, double faceCameraAngle, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, ParticleComponent[] components) {
+    public AdvancedParticleData(ParticleType<? extends AdvancedParticleData> type, boolean faceCamera, double yaw, double pitch, double roll, double faceCameraAngle, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, ParticleComponent[] components) {
         this.type = type;
 
         this.faceCamera = faceCamera;
@@ -128,7 +128,7 @@ public class AdvancedParticleData implements IParticleData {
     }
 
     @Override
-    public ParticleType<AdvancedParticleData> getType() {
+    public ParticleType<? extends AdvancedParticleData> getType() {
         return type;
     }
 

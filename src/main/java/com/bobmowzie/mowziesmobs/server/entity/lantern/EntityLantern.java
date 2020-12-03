@@ -1,13 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.entity.lantern;
 
-import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
-import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
-import com.bobmowzie.mowziesmobs.client.particles.ParticleCloud;
-import com.bobmowzie.mowziesmobs.client.particles.ParticleOrb;
-import com.bobmowzie.mowziesmobs.client.particles.ParticleVanillaCloudExtended;
-import com.bobmowzie.mowziesmobs.client.particles.util.AdvancedParticleBase;
-import com.bobmowzie.mowziesmobs.client.particles.util.ParticleComponent;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleCloud;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleOrb;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleVanillaCloudExtended;
+import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
+import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.server.ai.animation.SimpleAnimationAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationDieAI;
 import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;

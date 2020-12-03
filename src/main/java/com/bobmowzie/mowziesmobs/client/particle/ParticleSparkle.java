@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.client.particles;
+package com.bobmowzie.mowziesmobs.client.particle;
 
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.ActiveRenderInfo;

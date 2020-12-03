@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.client.particles.util;
+package com.bobmowzie.mowziesmobs.client.particle.util;
 
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.util.math.Vec3d;

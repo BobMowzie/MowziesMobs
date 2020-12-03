@@ -1,12 +1,11 @@
 package com.bobmowzie.mowziesmobs.client.particle;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.particles.*;
-import com.bobmowzie.mowziesmobs.client.particles.util.AdvancedParticleBase;
-import com.bobmowzie.mowziesmobs.client.particles.util.AdvancedParticleData;
+import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
+import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleData;
+import com.bobmowzie.mowziesmobs.client.particle.util.RibbonParticleData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.particles.BasicParticleType;
-import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleType;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -23,28 +22,32 @@ public class ParticleHandler {
 
     public static final RegistryObject<BasicParticleType> SPARKLE = REG.register("sparkle", () -> new BasicParticleType(false));
     public static final RegistryObject<ParticleType<ParticleVanillaCloudExtended.VanillaCloudData>> VANILLA_CLOUD_EXTENDED = REG.register("vanilla_cloud_extended", () -> new ParticleType<ParticleVanillaCloudExtended.VanillaCloudData>(false, ParticleVanillaCloudExtended.VanillaCloudData.DESERIALIZER));
-    public static final RegistryObject<ParticleType<ParticleSnowFlake.SnowflakeData>> SNOWFLAKE = REG.register("snowflake", () -> new ParticleType<ParticleSnowFlake.SnowflakeData>(false, ParticleSnowFlake.SnowflakeData.DESERIALIZER));
-    public static final RegistryObject<ParticleType<ParticleCloud.CloudData>> CLOUD = REG.register("cloud_soft", () -> new ParticleType<ParticleCloud.CloudData>(false, ParticleCloud.CloudData.DESERIALIZER));
-    public static final RegistryObject<ParticleType<ParticleOrb.OrbData>> ORB = REG.register("orb_0", () -> new ParticleType<ParticleOrb.OrbData>(false, ParticleOrb.OrbData.DESERIALIZER));
-    public static final RegistryObject<ParticleType<ParticleRing.RingData>> RING = REG.register("ring_0", () -> new ParticleType<ParticleRing.RingData>(false, ParticleRing.RingData.DESERIALIZER));
-    public static final RegistryObject<ParticleType<ParticleFallingBlock.FallingBlockData>> FALLING_BLOCK = REG.register("falling_block", () -> new ParticleType<ParticleFallingBlock.FallingBlockData>(false, ParticleFallingBlock.FallingBlockData.DESERIALIZER));
+    public static final RegistryObject<ParticleType<ParticleSnowFlake.SnowflakeData>> SNOWFLAKE = REG.register("snowflake", () -> new ParticleType<>(false, ParticleSnowFlake.SnowflakeData.DESERIALIZER));
+    public static final RegistryObject<ParticleType<ParticleCloud.CloudData>> CLOUD = REG.register("cloud_soft", () -> new ParticleType<>(false, ParticleCloud.CloudData.DESERIALIZER));
+    public static final RegistryObject<ParticleType<ParticleOrb.OrbData>> ORB = REG.register("orb_0", () -> new ParticleType<>(false, ParticleOrb.OrbData.DESERIALIZER));
+    public static final RegistryObject<ParticleType<ParticleRing.RingData>> RING = REG.register("ring_0", () -> new ParticleType<>(false, ParticleRing.RingData.DESERIALIZER));
+    public static final RegistryObject<ParticleType<ParticleFallingBlock.FallingBlockData>> FALLING_BLOCK = REG.register("falling_block", () -> new ParticleType<>(false, ParticleFallingBlock.FallingBlockData.DESERIALIZER));
 
-    public static final RegistryObject<ParticleType<AdvancedParticleData>> RING2 = REG.register("ring", () -> new ParticleType<AdvancedParticleData>(false, AdvancedParticleData.DESERIALIZER));
-    public static final RegistryObject<ParticleType<AdvancedParticleData>> RING_BIG = REG.register("ring_big", () -> new ParticleType<AdvancedParticleData>(false, AdvancedParticleData.DESERIALIZER));
-    public static final RegistryObject<ParticleType<AdvancedParticleData>> PIXEL = REG.register("pixel", () -> new ParticleType<AdvancedParticleData>(false, AdvancedParticleData.DESERIALIZER));
-    public static final RegistryObject<ParticleType<AdvancedParticleData>> ORB2 = REG.register("orb", () -> new ParticleType<AdvancedParticleData>(false, AdvancedParticleData.DESERIALIZER));
-    public static final RegistryObject<ParticleType<AdvancedParticleData>> EYE = REG.register("eye", () -> new ParticleType<AdvancedParticleData>(false, AdvancedParticleData.DESERIALIZER));
-    public static final RegistryObject<ParticleType<AdvancedParticleData>> BUBBLE = REG.register("bubble", () -> new ParticleType<AdvancedParticleData>(false, AdvancedParticleData.DESERIALIZER));
-    public static final RegistryObject<ParticleType<AdvancedParticleData>> SUN = REG.register("sun", () -> new ParticleType<AdvancedParticleData>(false, AdvancedParticleData.DESERIALIZER));
-    public static final RegistryObject<ParticleType<AdvancedParticleData>> SUN_NOVA = REG.register("sun_nova", () -> new ParticleType<AdvancedParticleData>(false, AdvancedParticleData.DESERIALIZER));
-    public static final RegistryObject<ParticleType<AdvancedParticleData>> FLARE = REG.register("flare", () -> new ParticleType<AdvancedParticleData>(false, AdvancedParticleData.DESERIALIZER));
-    public static final RegistryObject<ParticleType<AdvancedParticleData>> FLARE_RADIAL = REG.register("flare_radial", () -> new ParticleType<AdvancedParticleData>(false, AdvancedParticleData.DESERIALIZER));
-    public static final RegistryObject<ParticleType<AdvancedParticleData>> BURST_IN = REG.register("ring1", () -> new ParticleType<AdvancedParticleData>(false, AdvancedParticleData.DESERIALIZER));
-    public static final RegistryObject<ParticleType<AdvancedParticleData>> BURST_MESSY = REG.register("burst_messy", () -> new ParticleType<AdvancedParticleData>(false, AdvancedParticleData.DESERIALIZER));
-    public static final RegistryObject<ParticleType<AdvancedParticleData>> RING_SPARKS = REG.register("sparks_ring", () -> new ParticleType<AdvancedParticleData>(false, AdvancedParticleData.DESERIALIZER));
-    public static final RegistryObject<ParticleType<AdvancedParticleData>> BURST_OUT = REG.register("ring2", () -> new ParticleType<AdvancedParticleData>(false, AdvancedParticleData.DESERIALIZER));
-    public static final RegistryObject<ParticleType<AdvancedParticleData>> GLOW = REG.register("glow", () -> new ParticleType<AdvancedParticleData>(false, AdvancedParticleData.DESERIALIZER));
-    public static final RegistryObject<ParticleType<AdvancedParticleData>> ARROW_HEAD = REG.register("arrow_head", () -> new ParticleType<AdvancedParticleData>(false, AdvancedParticleData.DESERIALIZER));
+    public static final RegistryObject<ParticleType<AdvancedParticleData>> RING2 = REG.register("ring", () -> new ParticleType<>(false, AdvancedParticleData.DESERIALIZER));
+    public static final RegistryObject<ParticleType<AdvancedParticleData>> RING_BIG = REG.register("ring_big", () -> new ParticleType<>(false, AdvancedParticleData.DESERIALIZER));
+    public static final RegistryObject<ParticleType<AdvancedParticleData>> PIXEL = REG.register("pixel", () -> new ParticleType<>(false, AdvancedParticleData.DESERIALIZER));
+    public static final RegistryObject<ParticleType<AdvancedParticleData>> ORB2 = REG.register("orb", () -> new ParticleType<>(false, AdvancedParticleData.DESERIALIZER));
+    public static final RegistryObject<ParticleType<AdvancedParticleData>> EYE = REG.register("eye", () -> new ParticleType<>(false, AdvancedParticleData.DESERIALIZER));
+    public static final RegistryObject<ParticleType<AdvancedParticleData>> BUBBLE = REG.register("bubble", () -> new ParticleType<>(false, AdvancedParticleData.DESERIALIZER));
+    public static final RegistryObject<ParticleType<AdvancedParticleData>> SUN = REG.register("sun", () -> new ParticleType<>(false, AdvancedParticleData.DESERIALIZER));
+    public static final RegistryObject<ParticleType<AdvancedParticleData>> SUN_NOVA = REG.register("sun_nova", () -> new ParticleType<>(false, AdvancedParticleData.DESERIALIZER));
+    public static final RegistryObject<ParticleType<AdvancedParticleData>> FLARE = REG.register("flare", () -> new ParticleType<>(false, AdvancedParticleData.DESERIALIZER));
+    public static final RegistryObject<ParticleType<AdvancedParticleData>> FLARE_RADIAL = REG.register("flare_radial", () -> new ParticleType<>(false, AdvancedParticleData.DESERIALIZER));
+    public static final RegistryObject<ParticleType<AdvancedParticleData>> BURST_IN = REG.register("ring1", () -> new ParticleType<>(false, AdvancedParticleData.DESERIALIZER));
+    public static final RegistryObject<ParticleType<AdvancedParticleData>> BURST_MESSY = REG.register("burst_messy", () -> new ParticleType<>(false, AdvancedParticleData.DESERIALIZER));
+    public static final RegistryObject<ParticleType<AdvancedParticleData>> RING_SPARKS = REG.register("sparks_ring", () -> new ParticleType<>(false, AdvancedParticleData.DESERIALIZER));
+    public static final RegistryObject<ParticleType<AdvancedParticleData>> BURST_OUT = REG.register("ring2", () -> new ParticleType<>(false, AdvancedParticleData.DESERIALIZER));
+    public static final RegistryObject<ParticleType<AdvancedParticleData>> GLOW = REG.register("glow", () -> new ParticleType<>(false, AdvancedParticleData.DESERIALIZER));
+    public static final RegistryObject<ParticleType<AdvancedParticleData>> ARROW_HEAD = REG.register("arrow_head", () -> new ParticleType<>(false, AdvancedParticleData.DESERIALIZER));
+
+    public static final RegistryObject<ParticleType<RibbonParticleData>> RIBBON_FLAT = REG.register("ribbon_flat", () -> new ParticleType<>(false, RibbonParticleData.DESERIALIZER));
+    public static final RegistryObject<ParticleType<RibbonParticleData>> RIBBON_STREAKS = REG.register("ribbon_streaks", () -> new ParticleType<>(false, RibbonParticleData.DESERIALIZER));
+    public static final RegistryObject<ParticleType<RibbonParticleData>> RIBBON_GLOW = REG.register("ribbon_glow", () -> new ParticleType<>(false, RibbonParticleData.DESERIALIZER));
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void registerParticles(ParticleFactoryRegisterEvent event) {
@@ -72,5 +75,9 @@ public class ParticleHandler {
         Minecraft.getInstance().particles.registerFactory(ParticleHandler.BURST_OUT.get(), AdvancedParticleBase.Factory::new);
         Minecraft.getInstance().particles.registerFactory(ParticleHandler.GLOW.get(), AdvancedParticleBase.Factory::new);
         Minecraft.getInstance().particles.registerFactory(ParticleHandler.ARROW_HEAD.get(), AdvancedParticleBase.Factory::new);
+
+        Minecraft.getInstance().particles.registerFactory(ParticleHandler.RIBBON_FLAT.get(), ParticleRibbon.Factory::new);
+        Minecraft.getInstance().particles.registerFactory(ParticleHandler.RIBBON_STREAKS.get(), ParticleRibbon.Factory::new);
+        Minecraft.getInstance().particles.registerFactory(ParticleHandler.RIBBON_GLOW.get(), ParticleRibbon.Factory::new);
     }
 }

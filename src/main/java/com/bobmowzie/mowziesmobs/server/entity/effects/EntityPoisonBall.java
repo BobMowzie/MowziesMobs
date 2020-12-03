@@ -1,9 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
-import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
-import com.bobmowzie.mowziesmobs.client.particles.ParticleVanillaCloudExtended;
-import com.bobmowzie.mowziesmobs.client.particles.util.AdvancedParticleBase;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleVanillaCloudExtended;
+import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;

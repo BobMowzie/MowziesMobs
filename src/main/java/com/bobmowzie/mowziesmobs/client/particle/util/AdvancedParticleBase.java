@@ -1,5 +1,6 @@
-package com.bobmowzie.mowziesmobs.client.particles.util;
+package com.bobmowzie.mowziesmobs.client.particle.util;
 
+import com.bobmowzie.mowziesmobs.client.particle.ParticleRibbon;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -25,9 +26,9 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
     public boolean emissive;
     public double prevMotionX, prevMotionY, prevMotionZ;
 
-    ParticleComponent[] components;
+    public ParticleComponent[] components;
 
-    ParticleRibbon ribbon;
+    public ParticleRibbon ribbon;
 
     protected AdvancedParticleBase(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double motionX, double motionY, double motionZ, double yaw, double pitch, double roll, double scale, double r, double g, double b, double a, double drag, double duration, boolean faceCamera, boolean emissive, float faceCameraAngle, ParticleComponent[] components) {
         super(worldIn, xCoordIn, yCoordIn, zCoordIn, 0.0D, 0.0D, 0.0D);

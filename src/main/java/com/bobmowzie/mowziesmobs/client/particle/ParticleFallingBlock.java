@@ -1,9 +1,5 @@
-package com.bobmowzie.mowziesmobs.client.particles;
+package com.bobmowzie.mowziesmobs.client.particle;
 
-import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
-import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
-import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
-import com.bobmowzie.mowziesmobs.client.particle.ParticleTextureStitcher;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -31,7 +27,7 @@ import java.util.Locale;
 /**
  * Created by Josh on 6/2/2017.
  */
-public class ParticleFallingBlock extends SpriteTexturedParticle implements ParticleTextureStitcher.IParticleSpriteReceiver {
+public class ParticleFallingBlock extends SpriteTexturedParticle {
     public Vector3f rotAxis;
     public float rotAngle;
     public float rotationSpeed;

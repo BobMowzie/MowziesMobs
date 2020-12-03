@@ -1,10 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.power;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.particle.MMParticle;
-import com.bobmowzie.mowziesmobs.client.particle.ParticleFactory;
-import com.bobmowzie.mowziesmobs.client.particles.ParticleFallingBlock;
-import com.bobmowzie.mowziesmobs.client.particles.ParticleOrb;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleFallingBlock;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleOrb;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;

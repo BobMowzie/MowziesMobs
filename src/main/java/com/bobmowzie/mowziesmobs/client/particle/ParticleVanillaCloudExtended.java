@@ -1,16 +1,11 @@
-package com.bobmowzie.mowziesmobs.client.particles;
+package com.bobmowzie.mowziesmobs.client.particle;
 
-import com.bobmowzie.mowziesmobs.client.particle.*;
-import com.bobmowzie.mowziesmobs.client.particles.util.AdvancedParticleData;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
@@ -19,7 +14,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Locale;
 
-public class ParticleVanillaCloudExtended extends SpriteTexturedParticle implements ParticleTextureStitcher.IParticleSpriteReceiver {
+public class ParticleVanillaCloudExtended extends SpriteTexturedParticle {
     private final IAnimatedSprite animatedSprite;
 
     private float oSize;
