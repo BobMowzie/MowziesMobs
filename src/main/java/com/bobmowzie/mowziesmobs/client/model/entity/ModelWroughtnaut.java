@@ -1,9 +1,12 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ExtendedModelRenderer;
+import com.bobmowzie.mowziesmobs.client.model.tools.ItemModelRenderer;
 import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
+import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
+import net.minecraft.item.Items;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -76,7 +79,7 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
     public AdvancedModelRenderer calfLeft;
     public AdvancedModelRenderer footLeftJoint;
     public AdvancedModelRenderer footLeft;
-    public AdvancedModelRenderer sword;
+    public ItemModelRenderer sword;
     public AdvancedModelRenderer swordJoint;
     public AdvancedModelRenderer rootBox;
     public AdvancedModelRenderer waistBendController;
@@ -354,9 +357,9 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
         this.swordJoint.setRotationPoint(0F, -3F, 10F);
         this.swordJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(swordJoint, 0.0F, -0.7853981633974483F, 0.0F);
-        this.sword = new AdvancedModelRenderer(this, 82, 10);
+        this.sword = new ItemModelRenderer(this);
         this.sword.setRotationPoint(0F, 0F, 0F);
-//        this.sword.add3DTexture(-11f, 0, -11f, 11, 11);
+        this.sword.setItemStack(Items.DIAMOND_SWORD.getDefaultInstance());
         setRotateAngle(sword, 0.0F, 0F, 0.0F);
         this.rootBox = new AdvancedModelRenderer(this, 0, 0);
         this.rootBox.setRotationPoint(0.0F, -1.0F, 0.0F);
@@ -473,6 +476,7 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
 
     public void setDefaultAngles(EntityWroughtnaut entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
         resetToDefaultPose();
+        sword.setEntity(entity);
 
         if (entity.isActive()) {
             eyeLeft.isHidden = false;
@@ -593,6 +597,16 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
 //        sword.rotationPointX += 10;
         sword.rotationPointZ -= 22;
         sword.rotationPointY += 10;
+
+// Other method
+//        sword.rotationPointZ -= 6.85;
+//        sword.rotationPointX -= 9;
+//        sword.rotationPointY += 3;
+//        swordJoint.rotationPointX += 2;
+//        swordJoint.rotationPointY -= 5;
+//        swordJoint.rotateAngleY += 1.3;
+//        swordJoint.rotateAngleX -= 0.5;
+//        swordJoint.rotateAngleZ -= 0.5;
     }
 
     @Override

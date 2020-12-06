@@ -1,10 +1,15 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.ItemModelRenderer;
 import com.bobmowzie.mowziesmobs.client.model.tools.LegArticulator;
 import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
+import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.util.math.Vec3d;
 
 /**
@@ -71,9 +76,9 @@ public class ModelFrostmaw<T extends EntityFrostmaw> extends MowzieEntityModel<T
     public SocketModelRenderer leftHandSocket;
     public SocketModelRenderer mouthSocket;
     public SocketModelRenderer crystalSocket;
-    public AdvancedModelRenderer iceCrystal;
+    public ItemModelRenderer iceCrystal;
     public AdvancedModelRenderer iceCrystalJoint;
-    public AdvancedModelRenderer iceCrystalHand;
+    public ItemModelRenderer iceCrystalHand;
     public AdvancedModelRenderer standUpController;
 
     public AdvancedModelRenderer headHair;
@@ -305,15 +310,15 @@ public class ModelFrostmaw<T extends EntityFrostmaw> extends MowzieEntityModel<T
         this.legLeftJoint.setRotationPoint(9.0F, 3.14F, 0.0F);
         this.legLeftJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         this.setRotateAngle(legLeftJoint, -0.6981317007977318F, 0.0F, 0.0F);
-        this.iceCrystal = new AdvancedModelRenderer(this, 0, 0);
+        this.iceCrystal = new ItemModelRenderer(this);
         this.iceCrystal.setRotationPoint(0, 0, 0);
-//        this.iceCrystal.add3DTexture(-8, -8, 0, 16, 16);
+        this.iceCrystal.setItemStack(ItemHandler.ICE_CRYSTAL.getDefaultInstance());
         this.iceCrystalJoint = new AdvancedModelRenderer(this, 0, 0);
         this.iceCrystalJoint.setRotationPoint(0, 20, -20);
-        this.iceCrystalHand = new AdvancedModelRenderer(this, 0, 0);
-//        this.iceCrystalHand.add3DTexture(-8, -8, 0, 16, 16);
-        this.iceCrystalHand.setScale(0.5f, 0.5f, 0.5f);
+        this.iceCrystalHand = new ItemModelRenderer(this);
+        this.iceCrystalHand.setItemStack(ItemHandler.ICE_CRYSTAL.getDefaultInstance());
         this.iceCrystalHand.setRotationPoint(-28.5f, 10, -25.5f);
+        this.iceCrystalHand.setTransformType(ItemCameraTransforms.TransformType.GROUND);
         
         headHair = new AdvancedModelRenderer(this);
         headHair.setRotationPoint(0.0F, -3.0F, -24.0F);
@@ -561,6 +566,9 @@ public class ModelFrostmaw<T extends EntityFrostmaw> extends MowzieEntityModel<T
         );
         legLeftJoint.rotateAngleX -= waist.rotateAngleX - waist.defaultRotationX;
         legRightJoint.rotateAngleX -= waist.rotateAngleX - waist.defaultRotationX;
+
+        iceCrystalHand.setEntity(entity);
+        iceCrystal.setEntity(entity);
     }
 
     @Override

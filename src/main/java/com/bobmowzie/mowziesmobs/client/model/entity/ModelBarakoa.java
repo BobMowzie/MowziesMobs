@@ -1,14 +1,17 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.ItemModelRenderer;
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
+import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.model.ModelBox;
+import net.minecraft.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -28,8 +31,8 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
     public AdvancedModelRenderer armLowerRight;
     public AdvancedModelRenderer handRight;
     public AdvancedModelRenderer spearBase;
-    public AdvancedModelRenderer spear;
-    public AdvancedModelRenderer blowgun;
+    public ItemModelRenderer spear;
+    public ItemModelRenderer blowgun;
     public AdvancedModelRenderer armUpperLeft;
     public AdvancedModelRenderer armLowerLeft;
     public AdvancedModelRenderer handLeft;
@@ -121,9 +124,8 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         this.armUpperLeft.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.armUpperLeft.addBox(-1.0F, 0.0F, -1.0F, 2, 8, 2, 0.0F);
         this.setRotateAngle(armUpperLeft, 0.0F, 0.0F, -0.9599310885968813F);
-        this.spear = new AdvancedModelRenderer(this, 66, 0);
+        this.spear = new ItemModelRenderer(this);
         this.spear.setRotationPoint(0.0F, 0.0F, 0.0F);
-//        this.spear.add3DTexture(-4, -4, 0.5F, 15, 15);
         this.setRotateAngle(spear, 2.356194490192345F, 0.0F, 3.141592653589793F);
         this.earLeft = new AdvancedModelRenderer(this, 48, 0);
         this.earLeft.setRotationPoint(4.0F, -4.0F, -3.0F);
@@ -220,9 +222,9 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         this.scaler.setRotationPoint(0.0F, 0, 0F);
         this.flailer = new AdvancedModelRenderer(this, 0, 0);
         this.flailer.setRotationPoint(0.0F, 0, 0F);
-        this.blowgun = new AdvancedModelRenderer(this, 82, 0);
+        this.blowgun = new ItemModelRenderer(this);
+        this.blowgun.setItemStack(ItemHandler.BLOWGUN.getDefaultInstance());
         this.blowgun.setRotationPoint(0.0F, 0.0F, 0.0F);
-//        this.blowgun.add3DTexture(-4, -4, 0.5F, 15, 15);
         this.setRotateAngle(blowgun, 2.356194490192345F, 0.0F, 0);
         this.talker = new AdvancedModelRenderer(this, 0, 0);
         this.talker.setRotationPoint(0, 0, 0);
@@ -366,13 +368,15 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         }
         this.modelCore.render(scale);
         GlStateManager.popMatrix();
-        //this.earPointLeft.render(scale);
     }
 
     public void setDefaultAngles(EntityBarakoa entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
         resetToDefaultPose();
 //                f = entity.ticksExisted;
 //                f1 = 0.5f;
+        blowgun.setEntity(entity);
+        spear.setEntity(entity);
+
         if (entity.getWeapon() == 0) {
             spear.isHidden = false;
             blowgun.isHidden = true;
@@ -403,13 +407,15 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
             armLowerLeft.rotateAngleX -= 0.2;
             armLowerLeft.rotateAngleY += 0.2;
             armLowerLeft.rotateAngleZ += 1;
-            spearBase.setScale(spearBase.scaleX, -1, 1.5f);
+            spearBase.setScale(spearBase.scaleX, -1, spearBase.scaleZ);
+            this.spear.setItemStack(ItemHandler.SPEAR.getDefaultInstance());
 
             if (!entity.isPotionActive(PotionHandler.FROZEN)) {
                 flap(armUpperLeft, 1 * globalSpeed, 0.1f * globalHeight, false, 0.5f, 0, limbSwing, limbSwingAmount);
                 walk(armUpperLeft, 0.5f * globalSpeed, 0.3f * globalDegree, true, 0, 1, limbSwing, limbSwingAmount);
             }
         } else {
+            this.spear.setItemStack(Items.BONE.getDefaultInstance());
             if (!entity.isPotionActive(PotionHandler.FROZEN)) {
                 flap(armUpperLeft, 1 * globalSpeed, 0.3f * globalHeight, false, 0.5f, 0, limbSwing, limbSwingAmount);
                 walk(armUpperLeft, 0.5f * globalSpeed, 0.7f * globalDegree, true, 0, 0, limbSwing, limbSwingAmount);
