@@ -51,10 +51,10 @@ public class AdvancedModelRenderer extends RendererModel {
         this.setTextureOffset(textureOffsetX, textureOffsetY);
     }
 
-//    public AdvancedModelRenderer add3DTexture(float posX, float posY, float posZ, int width, int height) {
-//        this.cubeList.add(new Model3DTexture(this, this.textureOffsetX, this.textureOffsetY, posX, posY, posZ, width, height));
-//        return this;
-//    }
+    public AdvancedModelRenderer add3DTexture(float posX, float posY, float posZ, int width, int height) {
+        this.cubeList.add(new Model3DTexture(this, this.textureOffsetX, this.textureOffsetY, posX, posY, posZ, width, height));
+        return this;
+    }
 
     @Override
     public RendererModel addBox(float offX, float offY, float offZ, int width, int height, int depth) {
