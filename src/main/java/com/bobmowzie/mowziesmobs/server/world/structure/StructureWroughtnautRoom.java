@@ -138,10 +138,10 @@ public class StructureWroughtnautRoom {
         if (!flag) return;
 
         int xzCheckDistance = 10;
-        if (random.nextFloat() > ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationData.generationChance) return;
+        if (random.nextFloat() > ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationConfig.generationChance.get()) return;
 
-        int heightMax = (int) ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationData.heightMax;
-        int heightMin = (int) ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationData.heightMin;
+        int heightMax = ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationConfig.heightMax.get().intValue();
+        int heightMin = ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationConfig.heightMin.get().intValue();
         if (heightMax == -1) heightMax = world.getHeight();
         if (heightMin == -1) heightMin = 0;
         for (int y = heightMax; y >= heightMin; y--) {

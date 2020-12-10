@@ -2,14 +2,11 @@ package com.bobmowzie.mowziesmobs.server.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.IntermittentAnimation;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.LogBlock;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
 import net.minecraft.entity.CreatureEntity;
@@ -18,7 +15,6 @@ import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.passive.ParrotEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Items;
@@ -26,7 +22,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -34,8 +29,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.*;
-import net.minecraft.world.dimension.Dimension;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -100,7 +93,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         this.getAttributes().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE);
     }
 
-    protected ConfigHandler.SpawnData getSpawnConfig() {
+    protected ConfigHandler.SpawnConfig getSpawnConfig() {
         return null;
     }
 
@@ -110,23 +103,23 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
 
     @Override
     public boolean canSpawn(IWorld world, SpawnReason reason) {
-        ConfigHandler.SpawnData spawnData = getSpawnConfig();
-        if (spawnData != null) {
+        ConfigHandler.SpawnConfig spawnConfig = getSpawnConfig();
+        if (spawnConfig != null) {
             int i = MathHelper.floor(this.posX);
             int j = MathHelper.floor(this.getBoundingBox().minY);
             int k = MathHelper.floor(this.posZ);
             BlockPos pos = new BlockPos(i, j, k);
 
             // Dimension check
-            List<String> dimensionNames = Arrays.asList(spawnData.dimensions);
+            List<String> dimensionNames = spawnConfig.dimensions.get();
             ResourceLocation currDimensionName = world.getDimension().getType().getRegistryName();
             if (currDimensionName == null || !dimensionNames.contains(currDimensionName.toString())) {
                 return false;
             }
 
             // Height check
-            float heightMax = spawnData.heightMax;
-            float heightMin = spawnData.heightMin;
+            float heightMax = spawnConfig.heightMax.get();
+            float heightMin = spawnConfig.heightMin.get();
             if (posY > heightMax && heightMax >= 0) {
                 return false;
             }
@@ -135,21 +128,21 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
             }
 
             // Light level check
-            if (spawnData.needsDarkness && !isValidLightLevel(world, pos, rand)) {
+            if (spawnConfig.needsDarkness.get() && !isValidLightLevel(world, pos, rand)) {
                 return false;
             }
 
             // Block check
             ResourceLocation blockName = world.getBlockState(pos.down()).getBlock().getRegistryName();
-            List<String> allowedBlocks = Arrays.asList(spawnData.allowedBlocks);
+            List<String> allowedBlocks = spawnConfig.allowedBlocks.get();
             if (blockName == null) return false;
             if (!allowedBlocks.isEmpty() && !allowedBlocks.contains(blockName.getPath())) return false;
 
             // See sky
-            if (spawnData.needsSeeSky && !world.canBlockSeeSky(pos)) {
+            if (spawnConfig.needsSeeSky.get() && !world.canBlockSeeSky(pos)) {
                 return false;
             }
-            if (spawnData.needsCantSeeSky && world.canBlockSeeSky(pos)) {
+            if (spawnConfig.needsCantSeeSky.get() && world.canBlockSeeSky(pos)) {
                 return false;
             }
         }

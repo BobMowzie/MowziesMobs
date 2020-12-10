@@ -22,7 +22,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -98,12 +97,12 @@ public class EntityIceBreath extends EntityMagicEffect {
     public void hitEntities() {
         List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(RANGE, RANGE, RANGE, RANGE);
         float damage = DAMAGE_PER_HIT;
-        if (caster instanceof EntityFrostmaw) damage *= ConfigHandler.MOBS.FROSTMAW.combatData.attackMultiplier;
-        if (caster instanceof PlayerEntity) damage *= ConfigHandler.TOOLS_AND_ABILITIES.ICE_CRYSTAL.attackMultiplier;
+        if (caster instanceof EntityFrostmaw) damage *= ConfigHandler.MOBS.FROSTMAW.combatConfig.attackMultiplier.get();
+        if (caster instanceof PlayerEntity) damage *= ConfigHandler.TOOLS_AND_ABILITIES.ICE_CRYSTAL.attackMultiplier.get();
         for (LivingEntity entityHit : entitiesHit) {
             if (entityHit == caster) continue;
 
-            List<String> freezeImmune = Arrays.asList(ConfigHandler.getFreezeBlacklist());
+            List<String> freezeImmune = ConfigHandler.GENERAL.freeze_blacklist.get();
             ResourceLocation mobName = EntityType.getKey(entityHit.getType());
             if (freezeImmune.contains(mobName.toString())) continue;
 

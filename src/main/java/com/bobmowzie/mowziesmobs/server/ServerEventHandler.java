@@ -309,7 +309,7 @@ public final class ServerEventHandler {
                 Vec3d lookDir = new Vec3d(target.getLookVec().x, 0, target.getLookVec().z).normalize();
                 Vec3d vecBetween = new Vec3d(target.posX - attacker.posX, 0, target.posZ - attacker.posZ).normalize();
                 double dot = lookDir.dotProduct(vecBetween);
-                if (dot > 0.7) event.setAmount(event.getAmount() + ConfigHandler.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.bonusDamage);
+                if (dot > 0.7) event.setAmount(event.getAmount() + ConfigHandler.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.bonusDamage.get());
             }
         }
 

@@ -3,10 +3,7 @@ package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
-import com.google.common.collect.ImmutableMap;
-import jdk.nashorn.internal.ir.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.RedstoneBlock;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.ResourceLocation;
@@ -15,10 +12,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.IChunk;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
 import net.minecraft.world.gen.feature.structure.TemplateStructurePiece;
 import net.minecraft.world.gen.feature.template.PlacementSettings;
@@ -28,7 +21,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 public class WroughtnautChamberPieces {
@@ -120,8 +112,8 @@ public class WroughtnautChamberPieces {
         public static Pair<BlockPos, Rotation> tryWroughtChamber(IWorld world, int x, int surfaceY, int z) {
             int xzCheckDistance = 6; // Always starts at chunk center, so it can safely check 6 blocks in any direction
 
-            int heightMax = (int) ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationData.heightMax;
-            int heightMin = (int) ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationData.heightMin;
+            int heightMax = ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationConfig.heightMax.get().intValue();
+            int heightMin = ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationConfig.heightMin.get().intValue();
             if (heightMax == -1) heightMax = surfaceY;
             if (heightMin == -1) heightMin = 0;
             for (int y = heightMax; y >= heightMin; y--) {

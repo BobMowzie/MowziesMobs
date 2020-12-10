@@ -76,8 +76,8 @@ public class EntitySuperNova extends EntityMagicEffect {
                 if (caster.canAttack(entity)) {
                     float damageFire = 2.5f;
                     float damageMob = 3f;
-                    damageFire *= ConfigHandler.MOBS.BARAKO.combatData.attackMultiplier;
-                    damageMob *= ConfigHandler.MOBS.BARAKO.combatData.attackMultiplier;
+                    damageFire *= ConfigHandler.MOBS.BARAKO.combatConfig.attackMultiplier.get();
+                    damageMob *= ConfigHandler.MOBS.BARAKO.combatConfig.attackMultiplier.get();
                     boolean hitWithFire = DamageUtil.dealMixedDamage(entity, DamageSource.causeMobDamage(caster), damageMob, DamageSource.ON_FIRE, damageFire).getRight();
                     if (hitWithFire) {
                         Vec3d diff = entity.getPositionVector().subtract(getPositionVector());

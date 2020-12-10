@@ -11,12 +11,9 @@ import com.ilexiconn.llibrary.server.structure.StructureBuilder;
 import net.minecraft.block.*;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.item.DyeColor;
-import net.minecraft.state.IntegerProperty;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.Half;
 import net.minecraft.state.properties.SlabType;
-import net.minecraft.tileentity.SkullTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -692,7 +689,7 @@ public class StructureBarakoaVillage {
 //        System.out.println("Beginning generation");
         if (!world.getWorldInfo().isMapFeaturesEnabled()) return;
 
-        if (rand.nextFloat() > ConfigHandler.MOBS.BARAKO.generationData.generationChance) return;
+        if (rand.nextFloat() > ConfigHandler.MOBS.BARAKO.generationConfig.generationChance.get()) return;
 
         Biome biome = world.getBiome(new BlockPos(x, 50, z));
         if (!SpawnHandler.BARAKO_BIOMES.contains(biome)) return;
@@ -706,8 +703,8 @@ public class StructureBarakoaVillage {
         if (!flag) return;
 
         //System.out.println("Passes chance test");
-        int heightMax = (int) ConfigHandler.MOBS.BARAKO.generationData.heightMax;
-        int heightMin = (int) ConfigHandler.MOBS.BARAKO.generationData.heightMin;
+        int heightMax = ConfigHandler.MOBS.BARAKO.generationConfig.heightMax.get().intValue();
+        int heightMin = ConfigHandler.MOBS.BARAKO.generationConfig.heightMin.get().intValue();
         if (heightMax == -1) heightMax = world.getHeight();
         if (heightMin == -1) heightMin = 0;
         BlockPos pos = new BlockPos(x, 0, z);

@@ -31,23 +31,23 @@ public class ItemBarakoMask extends ArmorItem implements BarakoaMask {
 
     @Override
     public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
-        if (ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable) return super.getIsRepairable(toRepair, repair);
+        if (ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable.get()) return super.getIsRepairable(toRepair, repair);
         return false;
     }
 
     @Override
     public boolean isDamageable() {
-        return ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable;
+        return ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable.get();
     }
 
     @Override
     public int getDamage(ItemStack stack) {
-        return ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable ? super.getDamage(stack): 0;
+        return ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable.get() ? super.getDamage(stack): 0;
     }
 
     @Override
     public void setDamage(ItemStack stack, int damage) {
-        if (ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable) super.setDamage(stack, damage);
+        if (ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable.get()) super.setDamage(stack, damage);
     }
 
     @Nullable
@@ -88,7 +88,7 @@ public class ItemBarakoMask extends ArmorItem implements BarakoaMask {
 
         @Override
         public int getDamageReductionAmount(EquipmentSlotType equipmentSlotType) {
-            return ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.armorData.damageReduction;
+            return ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.armorConfig.damageReduction.get();
         }
 
         @Override
@@ -113,7 +113,7 @@ public class ItemBarakoMask extends ArmorItem implements BarakoaMask {
 
         @Override
         public float getToughness() {
-            return ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.armorData.toughness;
+            return ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.armorConfig.toughness.get();
         }
     }
 }

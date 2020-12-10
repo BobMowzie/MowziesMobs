@@ -7,6 +7,7 @@ import com.bobmowzie.mowziesmobs.server.ServerProxy;
 import com.bobmowzie.mowziesmobs.server.advancement.AdvancementHandler;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
@@ -18,11 +19,16 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
+
+import java.nio.file.Path;
 
 @Mod(MowziesMobs.MODID)
 public final class MowziesMobs {
@@ -55,6 +61,13 @@ public final class MowziesMobs {
         SpawnHandler.INSTANCE.registerSpawnPlacementTypes();
         PROXY.initNetwork();
         AdvancementHandler.preInit();
+
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigHandler.CLIENT_CONFIG);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHandler.COMMON_CONFIG);
+        Path path = FMLPaths.CONFIGDIR.get().resolve("mowziesmobs-common.toml");
+        ConfigHandler.loadConfig(ConfigHandler.COMMON_CONFIG, path);
+        path = FMLPaths.CONFIGDIR.get().resolve("mowziesmobs-client.toml");
+        ConfigHandler.loadConfig(ConfigHandler.CLIENT_CONFIG, path);
     }
 
     private void init(ModelRegistryEvent modelRegistryEvent) {

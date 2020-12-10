@@ -1,14 +1,12 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.armor.SolVisageModel;
 import com.bobmowzie.mowziesmobs.client.model.armor.WroughtHelmModel;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.Items;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.*;
 import net.minecraft.item.ArmorItem;
@@ -31,23 +29,23 @@ public class ItemWroughtHelm extends ArmorItem {
 
     @Override
     public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
-        if (ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.breakable) return super.getIsRepairable(toRepair, repair);
+        if (ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.breakable.get()) return super.getIsRepairable(toRepair, repair);
         return false;
     }
 
     @Override
     public boolean isDamageable() {
-        return ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.breakable;
+        return ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.breakable.get();
     }
 
     @Override
     public int getDamage(ItemStack stack) {
-        return ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.breakable ? super.getDamage(stack): 0;
+        return ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.breakable.get() ? super.getDamage(stack): 0;
     }
 
     @Override
     public void setDamage(ItemStack stack, int damage) {
-        if (ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.breakable) super.setDamage(stack, damage);
+        if (ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.breakable.get()) super.setDamage(stack, damage);
     }
 
     @Nullable
@@ -86,7 +84,7 @@ public class ItemWroughtHelm extends ArmorItem {
 
         @Override
         public int getDamageReductionAmount(EquipmentSlotType equipmentSlotType) {
-            return ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorData.damageReduction;
+            return ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorConfig.damageReduction.get();
         }
 
         @Override
@@ -111,7 +109,7 @@ public class ItemWroughtHelm extends ArmorItem {
 
         @Override
         public float getToughness() {
-            return ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorData.toughness;
+            return ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorConfig.toughness.get();
         }
     }
 }

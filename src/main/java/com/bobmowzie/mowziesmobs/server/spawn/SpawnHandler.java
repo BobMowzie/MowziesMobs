@@ -3,11 +3,6 @@ package com.bobmowzie.mowziesmobs.server.spawn;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
-import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
-import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
-import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityLantern;
-import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityClassification;
@@ -17,7 +12,6 @@ import net.minecraft.entity.EntitySpawnPlacementRegistry;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
-import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.spawner.WorldEntitySpawner;
 import net.minecraft.world.biome.Biome;
@@ -65,40 +59,41 @@ public enum SpawnHandler {
             BY_NAME.put(type.getName(), type);
         }
 
-        if (ConfigHandler.MOBS.FROSTMAW.generationData.generationFrequency > 0) {
-            FROSTMAW_BIOMES = getBiomesFromConfig(ConfigHandler.MOBS.FROSTMAW.generationData.biomeData);
+        if (ConfigHandler.MOBS.FROSTMAW.generationConfig.generationFrequency.get() > 0) {
+            FROSTMAW_BIOMES = getBiomesFromConfig(ConfigHandler.MOBS.FROSTMAW.generationConfig.biomeConfig);
             //System.out.println("Frostmaw biomes " + FROSTMAW_BIOMES);
         }
-        if (ConfigHandler.MOBS.BARAKO.generationData.generationFrequency > 0) {
-            BARAKO_BIOMES = getBiomesFromConfig(ConfigHandler.MOBS.BARAKO.generationData.biomeData);
+        if (ConfigHandler.MOBS.BARAKO.generationConfig.generationFrequency.get() > 0) {
+            BARAKO_BIOMES = getBiomesFromConfig(ConfigHandler.MOBS.BARAKO.generationConfig.biomeConfig);
             //System.out.println("Barako biomes " + BARAKO_BIOMES);
         }
-        if (ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationData.generationFrequency > 0) {
-            FERROUS_WROUGHTNAUT_BIOMES = getBiomesFromConfig(ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationData.biomeData);
+        if (ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationConfig.generationFrequency.get() > 0) {
+            FERROUS_WROUGHTNAUT_BIOMES = getBiomesFromConfig(ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationConfig.biomeConfig);
             //System.out.println("Ferrous Wroughtnaut biomes " + FERROUS_WROUGHTNAUT_BIOMES);
         }
 
-        if (ConfigHandler.MOBS.FOLIAATH.spawnData.spawnRate > 0) {
-            Set<Biome> foliaathBiomes = getBiomesFromConfig(ConfigHandler.MOBS.FOLIAATH.spawnData.biomeData);
+        if (ConfigHandler.MOBS.FOLIAATH.spawnConfig.spawnRate.get() > 0) {
+            Set<Biome> foliaathBiomes = getBiomesFromConfig(ConfigHandler.MOBS.FOLIAATH.spawnConfig.biomeConfig);
 //            System.out.println("Foliaath biomes " + foliaathBiomes);
-            registerEntityWorldSpawn(EntityHandler.FOLIAATH, ConfigHandler.MOBS.FOLIAATH.spawnData.spawnRate, ConfigHandler.MOBS.FOLIAATH.spawnData.minGroupSize, ConfigHandler.MOBS.FOLIAATH.spawnData.maxGroupSize, EntityClassification.MONSTER, foliaathBiomes.toArray(new Biome[foliaathBiomes.size()]));
+            Integer spawnrate = ConfigHandler.MOBS.FOLIAATH.spawnConfig.spawnRate.get();
+            registerEntityWorldSpawn(EntityHandler.FOLIAATH, ConfigHandler.MOBS.FOLIAATH.spawnConfig.spawnRate.get(), ConfigHandler.MOBS.FOLIAATH.spawnConfig.minGroupSize.get(), ConfigHandler.MOBS.FOLIAATH.spawnConfig.maxGroupSize.get(), EntityClassification.MONSTER, foliaathBiomes.toArray(new Biome[foliaathBiomes.size()]));
         }
-        if (ConfigHandler.MOBS.BARAKOA.spawnData.spawnRate > 0) {
-            Set<Biome> barakoaBiomes = getBiomesFromConfig(ConfigHandler.MOBS.BARAKOA.spawnData.biomeData);
-            registerEntityWorldSpawn(EntityHandler.BARAKOANA, ConfigHandler.MOBS.BARAKOA.spawnData.spawnRate, ConfigHandler.MOBS.BARAKOA.spawnData.minGroupSize, ConfigHandler.MOBS.BARAKOA.spawnData.maxGroupSize, EntityClassification.MONSTER, barakoaBiomes.toArray(new Biome[barakoaBiomes.size()]));
+        if (ConfigHandler.MOBS.BARAKOA.spawnConfig.spawnRate.get() > 0) {
+            Set<Biome> barakoaBiomes = getBiomesFromConfig(ConfigHandler.MOBS.BARAKOA.spawnConfig.biomeConfig);
+            registerEntityWorldSpawn(EntityHandler.BARAKOANA, ConfigHandler.MOBS.BARAKOA.spawnConfig.spawnRate.get(), ConfigHandler.MOBS.BARAKOA.spawnConfig.minGroupSize.get(), ConfigHandler.MOBS.BARAKOA.spawnConfig.maxGroupSize.get(), EntityClassification.MONSTER, barakoaBiomes.toArray(new Biome[barakoaBiomes.size()]));
         }
-        if (ConfigHandler.MOBS.GROTTOL.spawnData.spawnRate > 0) {
-            Set<Biome> grottolBiomes = getBiomesFromConfig(ConfigHandler.MOBS.GROTTOL.spawnData.biomeData);
-            registerEntityWorldSpawn(EntityHandler.GROTTOL, ConfigHandler.MOBS.GROTTOL.spawnData.spawnRate, ConfigHandler.MOBS.GROTTOL.spawnData.minGroupSize, ConfigHandler.MOBS.GROTTOL.spawnData.maxGroupSize, EntityClassification.MONSTER, grottolBiomes.toArray(new Biome[grottolBiomes.size()]));
+        if (ConfigHandler.MOBS.GROTTOL.spawnConfig.spawnRate.get() > 0) {
+            Set<Biome> grottolBiomes = getBiomesFromConfig(ConfigHandler.MOBS.GROTTOL.spawnConfig.biomeConfig);
+            registerEntityWorldSpawn(EntityHandler.GROTTOL, ConfigHandler.MOBS.GROTTOL.spawnConfig.spawnRate.get(), ConfigHandler.MOBS.GROTTOL.spawnConfig.minGroupSize.get(), ConfigHandler.MOBS.GROTTOL.spawnConfig.maxGroupSize.get(), EntityClassification.MONSTER, grottolBiomes.toArray(new Biome[grottolBiomes.size()]));
         }
-        if (ConfigHandler.MOBS.LANTERN.spawnData.spawnRate > 0) {
-            Set<Biome> lanternBiomes = getBiomesFromConfig(ConfigHandler.MOBS.LANTERN.spawnData.biomeData);
-            registerEntityWorldSpawn(EntityHandler.LANTERN, ConfigHandler.MOBS.LANTERN.spawnData.spawnRate, ConfigHandler.MOBS.LANTERN.spawnData.minGroupSize, ConfigHandler.MOBS.LANTERN.spawnData.maxGroupSize, EntityClassification.AMBIENT, lanternBiomes.toArray(new Biome[lanternBiomes.size()]));
+        if (ConfigHandler.MOBS.LANTERN.spawnConfig.spawnRate.get() > 0) {
+            Set<Biome> lanternBiomes = getBiomesFromConfig(ConfigHandler.MOBS.LANTERN.spawnConfig.biomeConfig);
+            registerEntityWorldSpawn(EntityHandler.LANTERN, ConfigHandler.MOBS.LANTERN.spawnConfig.spawnRate.get(), ConfigHandler.MOBS.LANTERN.spawnConfig.minGroupSize.get(), ConfigHandler.MOBS.LANTERN.spawnConfig.maxGroupSize.get(), EntityClassification.AMBIENT, lanternBiomes.toArray(new Biome[lanternBiomes.size()]));
         }
-        if (ConfigHandler.MOBS.NAGA.spawnData.spawnRate > 0) {
-            Set<Biome> nagaBiomes = getBiomesFromConfig(ConfigHandler.MOBS.NAGA.spawnData.biomeData);
+        if (ConfigHandler.MOBS.NAGA.spawnConfig.spawnRate.get() > 0) {
+            Set<Biome> nagaBiomes = getBiomesFromConfig(ConfigHandler.MOBS.NAGA.spawnConfig.biomeConfig);
 //            System.out.println("Naga biomes " + nagaBiomes);
-            registerEntityWorldSpawn(EntityHandler.NAGA, ConfigHandler.MOBS.NAGA.spawnData.spawnRate, ConfigHandler.MOBS.NAGA.spawnData.minGroupSize, ConfigHandler.MOBS.NAGA.spawnData.maxGroupSize, EntityClassification.MONSTER, nagaBiomes.toArray(new Biome[nagaBiomes.size()]));
+            registerEntityWorldSpawn(EntityHandler.NAGA, ConfigHandler.MOBS.NAGA.spawnConfig.spawnRate.get(), ConfigHandler.MOBS.NAGA.spawnConfig.minGroupSize.get(), ConfigHandler.MOBS.NAGA.spawnConfig.maxGroupSize.get(), EntityClassification.MONSTER, nagaBiomes.toArray(new Biome[nagaBiomes.size()]));
         }
     }
 
@@ -148,7 +143,7 @@ public enum SpawnHandler {
         }
     }
 
-    private Set<Biome> getBiomesFromConfig(ConfigHandler.BiomeData biomeData) {
+    private Set<Biome> getBiomesFromConfig(ConfigHandler.BiomeConfig biomeConfig) {
         Field f = null;
         try {
             f = Biome.class.getDeclaredField("biomeName");
@@ -158,11 +153,11 @@ public enum SpawnHandler {
             System.out.println("Reflection failed");
         }
 
-        Set<String> biomeWhitelistNames = new HashSet<>(Arrays.asList(biomeData.biomeWhitelist));
-        Set<String> biomeBlacklistNames = new HashSet<>(Arrays.asList(biomeData.biomeBlacklist));
+        Set<String> biomeWhitelistNames = new HashSet<>(biomeConfig.biomeWhitelist.get());
+        Set<String> biomeBlacklistNames = new HashSet<>(biomeConfig.biomeBlacklist.get());
         Set<String> whiteOrBlacklistedBiomes = new HashSet<>();
         Set<BiomeCombo> biomeCombos = new HashSet<>();
-        for (String biomeComboString : biomeData.biomeTypes) {
+        for (String biomeComboString : biomeConfig.biomeTypes.get()) {
             BiomeCombo biomeCombo = new BiomeCombo(biomeComboString);
             biomeCombos.add(biomeCombo);
         }

@@ -176,13 +176,13 @@ public class EntityGrottol extends MowzieEntity implements IMob {
     @Override
     protected void registerAttributes() {
         super.registerAttributes();
-        getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20 * ConfigHandler.MOBS.GROTTOL.healthMultiplier);
+        getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20 * ConfigHandler.MOBS.GROTTOL.healthMultiplier.get());
         getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
     }
 
     @Override
-    protected ConfigHandler.SpawnData getSpawnConfig() {
-        return ConfigHandler.MOBS.GROTTOL.spawnData;
+    protected ConfigHandler.SpawnConfig getSpawnConfig() {
+        return ConfigHandler.MOBS.GROTTOL.spawnConfig;
     }
 
     @Override

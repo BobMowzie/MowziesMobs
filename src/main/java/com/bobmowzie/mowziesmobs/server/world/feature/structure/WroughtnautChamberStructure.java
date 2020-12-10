@@ -2,20 +2,12 @@ package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.spawn.SpawnHandler;
-import com.bobmowzie.mowziesmobs.server.world.structure.StructureWroughtnautRoom;
 import com.mojang.datafixers.Dynamic;
-import net.minecraft.block.Blocks;
-import org.apache.commons.lang3.tuple.Pair;
-import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationSettings;
@@ -25,9 +17,7 @@ import net.minecraft.world.gen.feature.structure.ScatteredStructure;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.feature.template.TemplateManager;
-import net.minecraftforge.common.BiomeManager;
 
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -76,7 +66,7 @@ public class WroughtnautChamberStructure extends ScatteredStructure<NoFeatureCon
 
     @Override
     public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
-        List<String> dimensionNames = Arrays.asList(ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationData.dimensions);
+        List<String> dimensionNames = ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationConfig.dimensions.get();
         ResourceLocation currDimensionName = worldIn.getDimension().getType().getRegistryName();
         if (currDimensionName == null || !dimensionNames.contains(currDimensionName.toString())) {
             return false;

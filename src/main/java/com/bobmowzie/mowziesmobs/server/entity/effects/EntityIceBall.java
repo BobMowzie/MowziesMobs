@@ -17,7 +17,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -54,10 +53,10 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
         if (!entitiesHit.isEmpty()) {
             for (LivingEntity entity : entitiesHit) {
                 if (entity == caster) continue;
-                List<String> freezeImmune = Arrays.asList(ConfigHandler.getFreezeBlacklist());
+                List<String> freezeImmune = ConfigHandler.GENERAL.freeze_blacklist.get();
                 ResourceLocation mobName = EntityType.getKey(entity.getType());
                 if (freezeImmune.contains(mobName.toString())) continue;
-                if (entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(this, caster), 3f * ConfigHandler.MOBS.FROSTMAW.combatData.attackMultiplier)) {
+                if (entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(this, caster), 3f * ConfigHandler.MOBS.FROSTMAW.combatConfig.attackMultiplier.get())) {
                     IFrozenCapability capability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
                     if (capability != null) capability.addFreezeProgress(entity, 1);
                 }

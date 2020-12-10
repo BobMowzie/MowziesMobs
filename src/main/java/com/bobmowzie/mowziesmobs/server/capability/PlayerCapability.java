@@ -247,7 +247,7 @@ public class PlayerCapability {
                 icebreath.remove();
             }
 
-            if (!ConfigHandler.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable) {
+            if (!ConfigHandler.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable.get()) {
                 for (ItemStack stack : player.inventory.mainInventory) {
                     if (!usingIceBreath && stack.getItem() == ItemHandler.ICE_CRYSTAL)
                         stack.setDamage(Math.max(stack.getDamage() - 1, 0));

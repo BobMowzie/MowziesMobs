@@ -13,12 +13,10 @@ import com.bobmowzie.mowziesmobs.server.ai.animation.AnimationTakeDamage;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.SmartBodyHelper;
-import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
-import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
@@ -153,7 +151,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 
     @Override
     public int getAttack() {
-        return (int)(30 * ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.combatData.attackMultiplier);
+        return (int)(30 * ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.combatConfig.attackMultiplier.get());
     }
 
     @Override
@@ -176,7 +174,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     protected void registerAttributes() {
         super.registerAttributes();
         getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
-        getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(40 * ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.combatData.healthMultiplier);
+        getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(40 * ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.combatConfig.healthMultiplier.get());
     }
 
     @Override
@@ -302,7 +300,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         repelEntities(2.2F, 4, 2.2F, 2.2F);
 
         if (!active && !world.isRemote && getAnimation() != ACTIVATE_ANIMATION) {
-            if (ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.healsOutOfBattle) heal(0.3f);
+            if (ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.healsOutOfBattle.get()) heal(0.3f);
         }
 
         if (disturbance != null) {
@@ -532,7 +530,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 
     @Override
     protected boolean hasBossBar() {
-        return ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.hasBossBar;
+        return ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.hasBossBar.get();
     }
 
     @Override
