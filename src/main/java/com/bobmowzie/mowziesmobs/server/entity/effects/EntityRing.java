@@ -44,7 +44,7 @@ public class EntityRing extends Entity {
     @Nullable
     @Override
     public AxisAlignedBB getCollisionBoundingBox() {
-        return this.getBoundingBox();
+        return null;
     }
 
     @Override

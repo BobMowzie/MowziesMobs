@@ -11,6 +11,7 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.*;
+import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
@@ -54,6 +55,11 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         super(type, world);
         this.experienceValue = 10;
         this.addIntermittentAnimation(openMouth);
+    }
+
+    @Override
+    public PushReaction getPushReaction() {
+        return PushReaction.IGNORE;
     }
 
     @Override

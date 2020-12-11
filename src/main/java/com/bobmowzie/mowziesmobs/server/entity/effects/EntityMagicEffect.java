@@ -1,8 +1,10 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
+import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
@@ -28,6 +30,11 @@ public abstract class EntityMagicEffect extends Entity {
     }
 
     @Override
+    public PushReaction getPushReaction() {
+        return PushReaction.IGNORE;
+    }
+
+    @Override
     protected void registerData() {
         getDataManager().register(CASTER, -1);
     }
@@ -43,7 +50,16 @@ public abstract class EntityMagicEffect extends Entity {
     @Nullable
     @Override
     public AxisAlignedBB getCollisionBoundingBox() {
-        return this.getBoundingBox();
+        return null;
+    }
+
+    @Override
+    public boolean canBeCollidedWith() {
+        return false;
+    }
+
+    @Override
+    public void applyEntityCollision(Entity entityIn) {
     }
 
     @Override

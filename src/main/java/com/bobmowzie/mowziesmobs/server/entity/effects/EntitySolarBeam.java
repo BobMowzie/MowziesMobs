@@ -9,6 +9,7 @@ import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -69,10 +70,15 @@ public class EntitySolarBeam extends Entity {
         }
     }
 
+    @Override
+    public PushReaction getPushReaction() {
+        return PushReaction.IGNORE;
+    }
+
     @Nullable
     @Override
     public AxisAlignedBB getCollisionBoundingBox() {
-        return this.getBoundingBox();
+        return null;
     }
 
     @Override
@@ -288,6 +294,10 @@ public class EntitySolarBeam extends Entity {
             }
         }
         return result;
+    }
+
+    @Override
+    public void applyEntityCollision(Entity entityIn) {
     }
 
     @Override

@@ -64,7 +64,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     @Nullable
     @Override
     public AxisAlignedBB getCollisionBoundingBox() {
-        return this.getBoundingBox();
+        return null;
     }
 
     @Override
