@@ -14,6 +14,7 @@ import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.bobmowzie.mowziesmobs.server.spawn.SpawnHandler;
+import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -76,5 +77,6 @@ public final class MowziesMobs {
 
     private void init(FMLLoadCompleteEvent event) {
         SpawnHandler.INSTANCE.registerSpawns();
+        FeatureHandler.addStructureGeneration();
     }
 }

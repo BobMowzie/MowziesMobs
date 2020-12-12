@@ -1,6 +1,9 @@
 package com.bobmowzie.mowziesmobs.server.world.feature;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.spawn.SpawnHandler;
+import com.bobmowzie.mowziesmobs.server.world.feature.structure.BarakoaVillagePieces;
+import com.bobmowzie.mowziesmobs.server.world.feature.structure.BarakoaVillageStructure;
 import com.bobmowzie.mowziesmobs.server.world.feature.structure.WroughtnautChamberPieces;
 import com.bobmowzie.mowziesmobs.server.world.feature.structure.WroughtnautChamberStructure;
 import net.minecraft.util.registry.Registry;
@@ -20,20 +23,24 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Locale;
+import java.util.Set;
 
 @Mod.EventBusSubscriber(modid = MowziesMobs.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class FeatureHandler {
     public static Structure<NoFeatureConfig> WROUGHTNAUT_CHAMBER = (Structure<NoFeatureConfig>) new WroughtnautChamberStructure(NoFeatureConfig::deserialize).setRegistryName(MowziesMobs.MODID, "wroughtnaut_chamber");
     public static IStructurePieceType WROUGHTNAUT_CHAMBER_PIECE = WroughtnautChamberPieces.Piece::new;
 
+    public static Structure<NoFeatureConfig> BARAKOA_VILLAGE = (Structure<NoFeatureConfig>) new BarakoaVillageStructure(NoFeatureConfig::deserialize).setRegistryName(MowziesMobs.MODID, "barakoa_village");
+    public static IStructurePieceType BARAKOA_VILLAGE_PIECE = BarakoaVillagePieces.Piece::new;
+
     @SubscribeEvent
     public static void register(RegistryEvent.Register<Feature<?>> event) {
         event.getRegistry().registerAll(
-                WROUGHTNAUT_CHAMBER
+                WROUGHTNAUT_CHAMBER,
+                BARAKOA_VILLAGE
         );
         registerPiece(WROUGHTNAUT_CHAMBER_PIECE, "WROUGHTNAUT_CHAMBER_PIECE");
-
-        addStructureGeneration(WROUGHTNAUT_CHAMBER);
+        registerPiece(BARAKOA_VILLAGE_PIECE, "BARAKOA_VILLAGE_PIECE");
     }
 
     static IStructurePieceType registerPiece(IStructurePieceType structurePiece, String key)
@@ -41,11 +48,21 @@ public class FeatureHandler {
         return Registry.register(Registry.STRUCTURE_PIECE, key.toLowerCase(Locale.ROOT), structurePiece);
     }
 
-    public static void addStructureGeneration(Structure<NoFeatureConfig> structure) {
+    public static void addStructureGeneration() {
         for (Biome biome : ForgeRegistries.BIOMES) {
-            biome.addStructure(structure, IFeatureConfig.NO_FEATURE_CONFIG);
-            ConfiguredFeature configuredFeature = Biome.createDecoratedFeature(structure, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG);
-            biome.addFeature(GenerationStage.Decoration.SURFACE_STRUCTURES, configuredFeature);
+
+            if (SpawnHandler.FERROUS_WROUGHTNAUT_BIOMES.contains(biome)) {
+                biome.addStructure(WROUGHTNAUT_CHAMBER, IFeatureConfig.NO_FEATURE_CONFIG);
+                ConfiguredFeature configuredFeature = Biome.createDecoratedFeature(WROUGHTNAUT_CHAMBER, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG);
+                biome.addFeature(GenerationStage.Decoration.UNDERGROUND_STRUCTURES, configuredFeature);
+            }
+
+            if (SpawnHandler.BARAKO_BIOMES.contains(biome)) {
+                biome.addStructure(BARAKOA_VILLAGE, IFeatureConfig.NO_FEATURE_CONFIG);
+                ConfiguredFeature configuredFeature = Biome.createDecoratedFeature(BARAKOA_VILLAGE, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG);
+                biome.addFeature(GenerationStage.Decoration.SURFACE_STRUCTURES, configuredFeature);
+            }
+
         }
     }
 }

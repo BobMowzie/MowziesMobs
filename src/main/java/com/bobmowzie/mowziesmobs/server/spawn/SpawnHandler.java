@@ -144,15 +144,6 @@ public enum SpawnHandler {
     }
 
     private Set<Biome> getBiomesFromConfig(ConfigHandler.BiomeConfig biomeConfig) {
-        Field f = null;
-        try {
-            f = Biome.class.getDeclaredField("biomeName");
-            f.setAccessible(true);
-        }
-        catch (Exception e) {
-            System.out.println("Reflection failed");
-        }
-
         Set<String> biomeWhitelistNames = new HashSet<>(biomeConfig.biomeWhitelist.get());
         Set<String> biomeBlacklistNames = new HashSet<>(biomeConfig.biomeBlacklist.get());
         Set<String> whiteOrBlacklistedBiomes = new HashSet<>();
