@@ -20,7 +20,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -218,7 +217,7 @@ public enum ClientEventHandler {
         final int pointStart = 1200;
         final int timePerMillis = 22;
         if (e.getType() == ElementType.POTION_ICONS) {
-            long now = System.currentTimeMillis();
+            /*long now = System.currentTimeMillis();
             if (now - lastWroughtnautHitTime < 500) {
                 int t = (int) (now - startWroughtnautHitTime);
                 int progress = t / timePerMillis;
@@ -251,7 +250,7 @@ public enum ClientEventHandler {
                 AbstractGui.blit(timeOffsetX, offsetY, 0, 40, 30, 7, 64, 64);
                 // Time
                 drawMarioNumber(timeOffsetX + 8, offsetY + 8, time, 3);
-            }
+            }*/
             if (Minecraft.getInstance().player.isPotionActive(PotionHandler.FROZEN) && Minecraft.getInstance().gameSettings.thirdPersonView == 0) {
                 Minecraft.getInstance().getTextureManager().bindTexture(FROZEN_BLUR);
                 MainWindow res = e.getWindow();
@@ -279,7 +278,7 @@ public enum ClientEventHandler {
     private static void drawMarioNumber(int x, int y, int value, int length) {
         for (int n = 0; n < length; n++, value /= 10) {
             int digit = value % 10;
-            AbstractGui.blit(x + 8 * (length - n - 1), y, digit * 8 % 64, digit / 8 * 8, 8, 7, 64, 64);
+            AbstractGui.blit(x + 8 * (length - n - 1), y, digit * 8 % 64, digit / 8f * 8, 8, 7, 64, 64);
         }
     }
 

@@ -25,7 +25,9 @@ import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.monster.SkeletonEntity;
 import net.minecraft.entity.monster.ZombieEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.*;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -41,7 +43,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
-public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, LeaderSunstrikeImmune {
+public class EntityBarakoaya extends EntityBarakoa implements INamedContainerProvider, LeaderSunstrikeImmune {
     private static final TradeStore DEFAULT = new TradeStore.Builder()
         .addTrade(Items.GOLD_INGOT, 2, ItemHandler.BLOWGUN, 1, 6)
         .addTrade(Items.COCOA_BEANS, 10, ItemHandler.DART, 8, 6)
@@ -148,16 +150,16 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
         return false;
     }
 
-    @Override
-    public ContainerBarakoayaTrade createContainer(World world, PlayerEntity player, int x, int y, int z) {
-        return new ContainerBarakoayaTrade(0,this, player.inventory);
-    }
+//    @Override
+//    public ContainerBarakoayaTrade createContainer(World world, PlayerEntity player, int x, int y, int z) {
+//        return
+//    }
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public ContainerScreen createGui(World world, PlayerEntity player, int x, int y, int z) {
-        return new GuiBarakoayaTrade(this, new InventoryBarakoaya(this), createContainer(world, player, x, y, z), player.inventory, getDisplayName());
-    }
+//    @Override
+//    @OnlyIn(Dist.CLIENT)
+//    public ContainerScreen createGui(World world, PlayerEntity player, int x, int y, int z) {
+//        return new GuiBarakoayaTrade(this, new InventoryBarakoaya(this), createContainer(world, player, x, y, z), player.inventory, getDisplayName());
+//    }
 
     @Override
     public void tick() {
@@ -172,9 +174,7 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
     protected boolean processInteract(PlayerEntity player, Hand hand) {
         if (canTradeWith(player) && getAttackTarget() == null && isAlive()) {
             setCustomer(player);
-            if (!world.isRemote) {
-                GuiHandler.open(GuiHandler.BARAKOA_TRADE, player, this);
-            }
+            player.openContainer(this);
             return true;
         }
         return false;
@@ -218,5 +218,10 @@ public class EntityBarakoaya extends EntityBarakoa implements ContainerHolder, L
         setOfferingTrade(Trade.deserialize(compound.getCompound("offeringTrade")));
         timeOffering = compound.getInt("timeOffering");
 //        setNumSales(compound.getInteger("numSales"));
+    }
+
+    @Override
+    public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
+        return new ContainerBarakoayaTrade(id,this, playerInventory);
     }
 }

@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client;
 
+import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoayaTrade;
 import com.bobmowzie.mowziesmobs.client.render.entity.*;
 import com.bobmowzie.mowziesmobs.client.sound.IceBreathSound;
 import com.bobmowzie.mowziesmobs.client.sound.NagaSwoopSound;
@@ -17,11 +18,14 @@ import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityLantern;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
+import com.bobmowzie.mowziesmobs.server.inventory.ContainerHandler;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Timer;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -33,6 +37,10 @@ public class ClientProxy extends ServerProxy {
     @Override
     public void init(final IEventBus modbus) {
         super.init(modbus);
+
+        MinecraftForge.EVENT_BUS.register(ClientEventHandler.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(FrozenRenderHandler.INSTANCE);
+
         RenderingRegistry.registerEntityRenderingHandler(EntityBabyFoliaath.class, RenderFoliaathBaby::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityFoliaath.class, RenderFoliaath::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityWroughtnaut.class, RenderWroughtnaut::new);
@@ -57,6 +65,8 @@ public class ClientProxy extends ServerProxy {
         RenderingRegistry.registerEntityRenderingHandler(EntityPoisonBall.class, RenderPoisonBall::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityIceBall.class, RenderIceBall::new);
         RenderingRegistry.registerEntityRenderingHandler(EntitySuperNova.class, RenderSuperNova::new);
+
+        ScreenManager.registerFactory(ContainerHandler.CONTAINER_BARAKOAYA_TRADE, GuiBarakoayaTrade::new);
     }
 
     @Override

@@ -27,9 +27,6 @@ public final class MMModels {
 //            .withSuffix("_grottol")
 //            .build()
 //        );
-
-        MinecraftForge.EVENT_BUS.register(ClientEventHandler.INSTANCE);
-        MinecraftForge.EVENT_BUS.register(FrozenRenderHandler.INSTANCE);
     }
 
     private static ModelResourceLocation registerBlockModel(Block block, String name) {

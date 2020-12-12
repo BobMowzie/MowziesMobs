@@ -103,6 +103,14 @@ public final class ContainerBarakoayaTrade extends Container {
         }
     }
 
+    public EntityBarakoaya getBarakoaya() {
+        return barakoaya;
+    }
+
+    public InventoryBarakoaya getInventoryBarakoaya() {
+        return inventory;
+    }
+
     private class SlotResult extends Slot {
         private int removeCount;
 

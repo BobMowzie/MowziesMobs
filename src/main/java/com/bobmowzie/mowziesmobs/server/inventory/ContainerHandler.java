@@ -12,9 +12,9 @@ public class ContainerHandler {
     public static final ContainerType<ContainerBarakoTrade> CONTAINER_BARAKO_TRADE = new ContainerType<>(ContainerBarakoTrade::new);
 
     @SubscribeEvent
-    public void registerAll(RegistryEvent.Register<ContainerType<?>> event) {
+    public static void registerAll(RegistryEvent.Register<ContainerType<?>> event) {
         event.getRegistry().registerAll(
-                CONTAINER_BARAKO_TRADE.setRegistryName("barakoaya_trade"),
+                CONTAINER_BARAKOAYA_TRADE.setRegistryName("barakoaya_trade"),
                 CONTAINER_BARAKO_TRADE.setRegistryName("barako_trade")
         );
     }

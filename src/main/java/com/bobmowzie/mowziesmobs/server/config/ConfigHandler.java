@@ -280,7 +280,7 @@ public final class  ConfigHandler {
             builder.push("naga");
             spawnConfig = new SpawnConfig(builder,
                     3, 1, 3,
-                    new BiomeConfig(builder, Arrays.asList("BEACH,MOUNTAIN", "BEACH,HILLS"),  Arrays.asList("stone_beach"), new ArrayList<>()),
+                    new BiomeConfig(builder, Arrays.asList("BEACH,MOUNTAIN", "BEACH,HILLS"),  Arrays.asList("minecraft:stone_beach"), new ArrayList<>()),
                     Arrays.asList("grass", "stone", "sand"),
                     -1, -1, false, true, false
             );
@@ -298,7 +298,7 @@ public final class  ConfigHandler {
             builder.push("lantern");
             spawnConfig = new SpawnConfig(builder,
                     5, 1, 2,
-                    new BiomeConfig(builder, Arrays.asList("FOREST,MAGICAL,!SNOWY"),  Arrays.asList("roofed_forest", "mutated_roofed_forest"), new ArrayList<>()),
+                    new BiomeConfig(builder, Arrays.asList("FOREST,MAGICAL,!SNOWY"),  Arrays.asList("minecraft:roofed_forest", "minecraft:mutated_roofed_forest"), new ArrayList<>()),
                     Arrays.asList("grass", "leaves", "leaves2", "log", "log2"),
                     -1, 60, true, false, false
             );
@@ -625,7 +625,7 @@ public final class  ConfigHandler {
     public static class Client {
         private Client(final ForgeConfigSpec.Builder builder) {
             builder.push("client");
-            this.glowEffect = builder.comment("Scale mob health by this value")
+            this.glowEffect = builder.comment("Toggles the lantern glow effect, which may look bad with certain shaders")
                     .translation(LANG_PREFIX + "glow_effect")
                     .define("glow_effect", true);
             builder.pop();

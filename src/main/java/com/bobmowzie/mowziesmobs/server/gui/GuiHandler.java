@@ -18,11 +18,11 @@ import net.minecraftforge.fml.common.network.IGuiHandler;
 public final class GuiHandler implements IGuiHandler {
     private static final SimpleRegistry<GuiType> GUIS = new SimpleRegistry<>();
 
-    public static final GuiTypeEntity<EntityBarakoaya> BARAKOA_TRADE = new GuiTypeEntity(EntityBarakoaya.class);
+//    public static final GuiTypeEntity<EntityBarakoaya> BARAKOA_TRADE = new GuiTypeEntity(EntityBarakoaya.class);
     public static final GuiTypeEntity<EntityBarako> BARAKO_TRADE = new GuiTypeEntity(EntityBarako.class);
 
     static {
-        GUIS.register(0, new ResourceLocation(MowziesMobs.MODID, "barakoa"), BARAKOA_TRADE);
+//        GUIS.register(0, new ResourceLocation(MowziesMobs.MODID, "barakoa"), BARAKOA_TRADE);
         GUIS.register(1, new ResourceLocation(MowziesMobs.MODID, "barako"), BARAKO_TRADE);
     }
 
