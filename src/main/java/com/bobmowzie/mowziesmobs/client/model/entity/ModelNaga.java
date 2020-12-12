@@ -661,7 +661,7 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         for (SocketModelRenderer socketModelRenderer : tailOriginal) {
             socketModelRenderer.isHidden = true;
         }
-//        entity.mouthPos[0] = mouthSocket.getWorldPos(entity);
+        entity.mouthPos[0] = mouthSocket.getWorldPos(entity);
     }
 
     public void setDefaultAngle(EntityNaga entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
@@ -677,8 +677,6 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         float nonHoverAnim = 1f - hoverAnim;
 
         float flapAnim = entity.prevFlapAnimFrac + (entity.flapAnimFrac - entity.prevFlapAnimFrac) * partial;
-
-        //entity.dc.updateChain(LLibrary.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.2f, 0f, 1f, 0.99f, 40, false);
 
         if (!entity.isPotionActive(PotionHandler.FROZEN)) {
             //Hover anim
@@ -1230,7 +1228,7 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
             jawControls();
             wingFoldControls();
 
-//            entity.dc.updateChain(MowziesMobs.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.5f, 0.5f, 0.5f, 0.97f, 30, true);
+            entity.dc.updateChain(MowziesMobs.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.5f, 0.5f, 0.5f, 0.97f, 30, true);
 
             computeWingWebbing();
 

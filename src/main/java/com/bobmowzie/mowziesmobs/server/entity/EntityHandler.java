@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-@Mod.EventBusSubscriber(modid = MowziesMobs.MODID)
 public enum EntityHandler {
     INSTANCE;
 

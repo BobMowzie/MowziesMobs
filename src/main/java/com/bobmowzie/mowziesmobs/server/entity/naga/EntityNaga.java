@@ -111,8 +111,10 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
 
     public EntityNaga(EntityType<? extends EntityNaga> type, World world) {
         super(type, world);
-
-
+        if (world.isRemote) {
+            dc = new DynamicChain(this);
+            mouthPos = new Vec3d[] {new Vec3d(0, 0, 0)};
+        }
         this.experienceValue = 10;
     }
 
@@ -250,10 +252,6 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
         });
 
         this.moveController = new NagaMoveHelper(this);
-        if (world.isRemote) {
-            dc = new DynamicChain(this);
-            mouthPos = new Vec3d[] {new Vec3d(0, 0, 0)};
-        }
     }
 
     @Override
