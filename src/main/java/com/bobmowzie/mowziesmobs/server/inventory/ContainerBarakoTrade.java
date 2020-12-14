@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.inventory;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -17,7 +18,7 @@ public final class ContainerBarakoTrade extends Container {
     private InventoryBarako inventory;
 
     public ContainerBarakoTrade(int id, PlayerInventory playerInventory) {
-        this(id, null, playerInventory);
+        this(id, (EntityBarako) MowziesMobs.PROXY.getReferencedMob(), playerInventory);
     }
 
     public ContainerBarakoTrade(int id, EntityBarako barako, PlayerInventory playerInv) {
@@ -42,7 +43,7 @@ public final class ContainerBarakoTrade extends Container {
 
     @Override
     public boolean canInteractWith(PlayerEntity player) {
-        return inventory.isUsableByPlayer(player);
+        return inventory.isUsableByPlayer(player) && barako.isAlive() && barako.getDistance(player) < 5;
     }
 
     @Override
@@ -89,6 +90,10 @@ public final class ContainerBarakoTrade extends Container {
                 }
             }
         }
+    }
+
+    public EntityBarako getBarako() {
+        return barako;
     }
 
     public InventoryBarako getInventoryBarako() {

@@ -1309,6 +1309,6 @@ public class ModelBarako<T extends EntityBarako> extends MowzieEntityModel<T> {
         forehead.setScale(forehead.scaleX, foreheadScale, forehead.scaleZ);
         maskBase.setScale(1 / (1 - bellyScaler.rotationPointY), 1 / (1 - bellyScaler.rotationPointY), 1 / (1 - bellyScaler.rotationPointY));
 
-        if (entity.betweenHandPos.length > 0) entity.betweenHandPos[0] = betweenHands.getWorldPos(entity, delta);
+        if (entity.betweenHandPos != null && entity.betweenHandPos.length > 0) entity.betweenHandPos[0] = betweenHands.getWorldPos(entity, delta);
     }
 }

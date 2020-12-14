@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.inventory;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaya;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
 import net.minecraft.entity.player.PlayerEntity;
@@ -11,6 +12,8 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import java.lang.reflect.Proxy;
+
 public final class ContainerBarakoayaTrade extends Container {
 
     private final EntityBarakoaya barakoaya;
@@ -20,7 +23,7 @@ public final class ContainerBarakoayaTrade extends Container {
     private final PlayerEntity player;
 
     public ContainerBarakoayaTrade(int id, PlayerInventory playerInventory) {
-        this(id, null, playerInventory);
+        this(id, (EntityBarakoaya) MowziesMobs.PROXY.getReferencedMob(), playerInventory);
     }
 
     public ContainerBarakoayaTrade(int id, EntityBarakoaya barakoaya, PlayerInventory playerInv) {
@@ -46,7 +49,7 @@ public final class ContainerBarakoayaTrade extends Container {
 
     @Override
     public boolean canInteractWith(PlayerEntity player) {
-        return inventory.isUsableByPlayer(player);
+        return inventory.isUsableByPlayer(player) && barakoaya.isAlive() && barakoaya.getDistance(player) < 5;
     }
 
     @Override

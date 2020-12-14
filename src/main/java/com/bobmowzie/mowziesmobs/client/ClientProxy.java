@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client;
 
+import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoTrade;
 import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoayaTrade;
 import com.bobmowzie.mowziesmobs.client.render.entity.*;
 import com.bobmowzie.mowziesmobs.client.sound.IceBreathSound;
@@ -34,6 +35,8 @@ public class ClientProxy extends ServerProxy {
     public static final Minecraft MINECRAFT = Minecraft.getInstance();
     public static final Timer TIMER = ObfuscationReflectionHelper.getPrivateValue(Minecraft.class, MINECRAFT, "timer"); // TODO: Is this correct?
 
+    private Entity referencedMob = null;
+
     @Override
     public void init(final IEventBus modbus) {
         super.init(modbus);
@@ -67,6 +70,7 @@ public class ClientProxy extends ServerProxy {
         RenderingRegistry.registerEntityRenderingHandler(EntitySuperNova.class, RenderSuperNova::new);
 
         ScreenManager.registerFactory(ContainerHandler.CONTAINER_BARAKOAYA_TRADE, GuiBarakoayaTrade::new);
+        ScreenManager.registerFactory(ContainerHandler.CONTAINER_BARAKO_TRADE, GuiBarakoTrade::new);
     }
 
     @Override
@@ -113,5 +117,13 @@ public class ClientProxy extends ServerProxy {
 
     public void setTPS(float tickRate) {
 
+    }
+
+    public Entity getReferencedMob() {
+        return referencedMob;
+    }
+
+    public void setReferencedMob(Entity referencedMob) {
+        this.referencedMob = referencedMob;
     }
 }

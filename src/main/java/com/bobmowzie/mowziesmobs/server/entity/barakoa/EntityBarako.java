@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoTrade;
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
@@ -19,6 +20,7 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.EntityRing;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySuperNova;
 import com.bobmowzie.mowziesmobs.server.gui.GuiHandler;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoTrade;
+import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoayaTrade;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
@@ -33,9 +35,11 @@ import net.minecraft.entity.monster.SkeletonEntity;
 import net.minecraft.entity.monster.ZombieEntity;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.block.Blocks;
 import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -62,7 +66,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune, GuiHandler.ContainerHolder, IMob {
+public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune, INamedContainerProvider, IMob {
     public static final Animation DIE_ANIMATION = Animation.create(130);
     public static final Animation HURT_ANIMATION = Animation.create(13);
     public static final Animation BELLY_ANIMATION = Animation.create(40);
@@ -756,23 +760,16 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     }
 
     @Override
-    public Container createContainer(World world, PlayerEntity player, int x, int y, int z) {
-        return new ContainerBarakoTrade(0,this, player.inventory);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public ContainerScreen createGui(World world, PlayerEntity player, int x, int y, int z) {
-        return new GuiBarakoTrade(this, createContainer(world, player, x, y, z), player.inventory, getDisplayName(), y != 0);
+    public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
+        MowziesMobs.PROXY.setReferencedMob(this);
+        return new ContainerBarakoTrade(id,this, playerInventory);
     }
 
     @Override
     protected boolean processInteract(PlayerEntity player, Hand hand) {
         if (canTradeWith(player) && getAttackTarget() == null && isAlive()) {
             setCustomer(player);
-            if (!world.isRemote) {
-                GuiHandler.open(GuiHandler.BARAKO_TRADE, player, this, hasTradedWith(player) ? 1 : 0);
-            }
+            player.openContainer(this);
             return true;
         }
         return false;
@@ -799,4 +796,5 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     protected BossInfo.Color bossBarColor() {
         return BossInfo.Color.YELLOW;
     }
+
 }

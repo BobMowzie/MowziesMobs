@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.client.gui;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoTrade;
+import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoayaTrade;
 import com.bobmowzie.mowziesmobs.server.inventory.InventoryBarako;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.message.MessageBarakoTrade;
@@ -20,7 +21,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
-public final class GuiBarakoTrade extends ContainerScreen implements InventoryBarako.ChangeListener {
+public final class GuiBarakoTrade extends ContainerScreen<ContainerBarakoTrade> implements InventoryBarako.ChangeListener {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/gui/container/barako.png");
 
     private final EntityBarako barako;
@@ -33,15 +34,11 @@ public final class GuiBarakoTrade extends ContainerScreen implements InventoryBa
 
     private boolean hasTraded;
 
-    public GuiBarakoTrade(EntityBarako barako, Container container, PlayerInventory playerInv, ITextComponent title, boolean hasTraded) {
-        this(barako, new InventoryBarako(barako), container, playerInv, title, hasTraded);
-    }
-
-    public GuiBarakoTrade(EntityBarako barako, InventoryBarako inventory, Container container, PlayerInventory playerInv, ITextComponent title, boolean hasTraded) {
-        super(container, playerInv, title);
-        this.barako = barako;
-        this.inventory = inventory;
-        this.hasTraded = hasTraded;
+    public GuiBarakoTrade(ContainerBarakoTrade screenContainer, PlayerInventory inv, ITextComponent titleIn) {
+        super(screenContainer, inv, titleIn);
+        this.barako = screenContainer.getBarako();
+        this.inventory = screenContainer.getInventoryBarako();
+        this.hasTraded = false;
         inventory.addListener(this);
     }
 
@@ -50,7 +47,7 @@ public final class GuiBarakoTrade extends ContainerScreen implements InventoryBa
         super.init();
         buttons.clear();
         String text = I18n.format(hasTraded ? "entity.barako.replenish.button.text" : "entity.barako.trade.button.text");
-//        grantButton = addButton(new Button(0, guiLeft + 114, guiTop + 52, 57, text, )); // TODO: Last parameter?
+        grantButton = addButton(new Button(0, guiLeft + 114, guiTop + 52, 57, text, this::actionPerformed));
         grantButton.active = hasTraded;
         updateButtonText();
     }

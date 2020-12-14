@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoayaTrade;
 import com.bobmowzie.mowziesmobs.server.ServerProxy;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
@@ -222,6 +223,7 @@ public class EntityBarakoaya extends EntityBarakoa implements INamedContainerPro
 
     @Override
     public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
+        MowziesMobs.PROXY.setReferencedMob(this);
         return new ContainerBarakoayaTrade(id,this, playerInventory);
     }
 }

@@ -16,8 +16,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-public final class GuiBarakoayaTrade extends ContainerScreen {
+@OnlyIn(Dist.CLIENT)
+public final class GuiBarakoayaTrade extends ContainerScreen<ContainerBarakoayaTrade> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/gui/container/barakoa.png");
 
     private final EntityBarakoaya barakoaya;
@@ -26,10 +29,10 @@ public final class GuiBarakoayaTrade extends ContainerScreen {
 
     private int cursorHit;
 
-    public GuiBarakoayaTrade(EntityBarakoaya barakoaya, InventoryBarakoaya inventory, ContainerBarakoayaTrade container, PlayerInventory playerInv, ITextComponent title) {
-        super(container, playerInv, title);
-        this.barakoaya = barakoaya;
-        this.inventory = inventory;
+    public GuiBarakoayaTrade(ContainerBarakoayaTrade screenContainer, PlayerInventory inv, ITextComponent titleIn) {
+        super(screenContainer, inv, titleIn);
+        this.barakoaya = screenContainer.getBarakoaya();
+        this.inventory = screenContainer.getInventoryBarakoaya();
     }
 
     @Override
