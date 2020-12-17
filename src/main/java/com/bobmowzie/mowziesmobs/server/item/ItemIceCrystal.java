@@ -6,10 +6,9 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -33,11 +32,6 @@ public class ItemIceCrystal extends Item {
         return true;
     }
 
-//    @Override
-//    public int getMaxItemUseDuration(ItemStack stack) {
-//        return 40;
-//    }
-
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
         if (playerIn.getHeldItemOffhand().getItem() != Items.SHIELD) {
@@ -52,12 +46,30 @@ public class ItemIceCrystal extends Item {
                 }
                 stack.damageItem(20, playerIn, p -> p.sendBreakAnimation(handIn));
                 showDurabilityBar(playerIn.getHeldItem(handIn));
+                playerIn.setActiveHand(handIn);
                 return new ActionResult<ItemStack>(ActionResultType.SUCCESS, playerIn.getHeldItem(handIn));
             } else {
                 playerCapability.getIcebreath().remove();
             }
         }
         return super.onItemRightClick(worldIn, playerIn, handIn);
+    }
+
+    @Override
+    public void onPlayerStoppedUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft) {
+        if (entityLiving instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) entityLiving;
+            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+            if (playerCapability != null && playerCapability.isUsingIceBreath() && playerCapability.getIcebreath() != null) {
+                playerCapability.setUsingIceBreath(false);
+                playerCapability.getIcebreath().remove();
+            }
+        }
+        super.onPlayerStoppedUsing(stack, worldIn, entityLiving, timeLeft);
+    }
+
+    public int getUseDuration(ItemStack stack) {
+        return 72000;
     }
 
     @Override
