@@ -282,7 +282,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         if (ticksExisted == 1) {
             direction = getDirection();
         }
-        if (!(getAnimation() == ATTACK_ANIMATION && getAnimationTick() >= 12 && getAnimationTick() <= 14)) this.repelEntities(2.2f, 2.5f, 2.2f, 2.2f);
+        if (!(getAnimation() == ATTACK_ANIMATION && getAnimationTick() >= 12 && getAnimationTick() <= 14)) this.repelEntities(1.8f, 1.8f, 1.8f, 1.8f);
         this.rotationYaw = (direction - 1) * 90;
         this.renderYawOffset = rotationYaw;
 //        this.posX = prevPosX;

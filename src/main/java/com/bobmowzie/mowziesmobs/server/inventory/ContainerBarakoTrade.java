@@ -30,7 +30,7 @@ public final class ContainerBarakoTrade extends Container {
         this.barako = Barako;
         this.player = playerInv.player;
         this.inventory = inventory;
-        addSlot(new Slot(inventory, 0, 69, 54));
+        if (!barako.hasTradedWith(playerInv.player)) addSlot(new Slot(inventory, 0, 69, 54));
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 9; col++) {
                 addSlot(new Slot(playerInv, col + row * 9 + 9, 8 + col * 18, 84 + row * 18));

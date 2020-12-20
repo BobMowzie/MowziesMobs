@@ -66,6 +66,7 @@ public class MessageBarakoTrade {
                     if (!satisfied) {
                         if (satisfied = barako.fulfillDesire(container.getSlot(0))) {
                             barako.rememberTrade(player);
+                            player.closeScreen();
                             container.detectAndSendChanges();
                         }
                     }
