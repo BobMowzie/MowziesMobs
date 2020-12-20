@@ -61,7 +61,7 @@ public enum ClientEventHandler {
     public void onHandRender(RenderSpecificHandEvent event) {
         PlayerEntity player = Minecraft.getInstance().player;
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-        if (event.getHand() == Hand.MAIN_HAND && playerCapability.getUntilAxeSwing() > 0) {
+        if (playerCapability != null && event.getHand() == Hand.MAIN_HAND && playerCapability.getUntilAxeSwing() > 0) {
             event.setCanceled(true);
         }
     }
@@ -171,33 +171,14 @@ public enum ClientEventHandler {
 
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event) {
-        PlayerEntity player = Minecraft.getInstance().player;
-        if (player != null) {
-            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-            if (playerCapability.getGeomancy().canUse(player) && playerCapability.getGeomancy().isSpawningBoulder() && playerCapability.getGeomancy().getSpawnBoulderCharge() > 2) {
-                Vec3d lookPos = playerCapability.getGeomancy().getLookPos();
-                Vec3d playerEyes = player.getEyePosition(MowziesMobs.PROXY.getPartialTicks());
-                Vec3d vec = playerEyes.subtract(lookPos).normalize();
-                float yaw = (float) Math.atan2(vec.z, vec.x);
-                float pitch = (float) Math.asin(vec.y);
-                float dYaw = ((float) (yaw * 180/Math.PI + 90) - player.rotationYaw)/2f;
-                float dPitch = ((float)(pitch * 180/Math.PI) - player.rotationPitch)/2f;
-                player.rotationYaw += dYaw;
-                player.rotationPitch += dPitch;
-                stopMouseMove();
-            }
-            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(player, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
-            if (player.isPotionActive(PotionHandler.FROZEN) && frozenCapability.getPrevFrozen()) {
-                stopMouseMove();
-            }
-        }
+
     }
 
     @SubscribeEvent
     public void onRenderLiving(RenderLivingEvent.Pre event) {
         LivingEntity entity = event.getEntity();
         FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
-        if (entity.isPotionActive(PotionHandler.FROZEN) && frozenCapability.getPrevFrozen()) {
+        if (frozenCapability != null && entity.isPotionActive(PotionHandler.FROZEN) && frozenCapability.getPrevFrozen()) {
             entity.rotationYaw = entity.prevRotationYaw = frozenCapability.getFrozenYaw();
             entity.rotationPitch = entity.prevRotationPitch = frozenCapability.getFrozenPitch();
             entity.rotationYawHead = entity.prevRotationYawHead = frozenCapability.getFrozenYawHead();
@@ -279,11 +260,28 @@ public enum ClientEventHandler {
         }
     }
 
-    public static void stopMouseMove() {
-        // TODO
-//        Mouse.getDX();
-//        Mouse.getDY();
-//        Minecraft.getInstance().mouseHelper.deltaX = Minecraft.getInstance().mouseHelper.deltaY = 0;
+    @SubscribeEvent
+    public void updateView(EntityViewRenderEvent.CameraSetup event) {
+        PlayerEntity player = Minecraft.getInstance().player;
+        if (player != null) {
+            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+            if (playerCapability != null && playerCapability.getGeomancy().canUse(player) && playerCapability.getGeomancy().isSpawningBoulder() && playerCapability.getGeomancy().getSpawnBoulderCharge() > 2) {
+                Vec3d lookPos = playerCapability.getGeomancy().getLookPos();
+                Vec3d playerEyes = player.getEyePosition(MowziesMobs.PROXY.getPartialTicks());
+                Vec3d vec = playerEyes.subtract(lookPos).normalize();
+                float yaw = (float) Math.atan2(vec.z, vec.x);
+                float pitch = (float) Math.asin(vec.y);
+                float dYaw = ((float) (yaw * 180/Math.PI + 90) - player.rotationYaw)/2f;
+                float dPitch = ((float)(pitch * 180/Math.PI) - player.rotationPitch)/2f;
+                event.setYaw(event.getYaw() + dYaw);
+                event.setPitch(event.getPitch() + dPitch);
+            }
+            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(player, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+            if (frozenCapability != null && player.isPotionActive(PotionHandler.FROZEN) && frozenCapability.getPrevFrozen()) {
+                event.setYaw(frozenCapability.getFrozenYaw());
+                event.setPitch(frozenCapability.getFrozenPitch());
+            }
+        }
     }
 
     @SubscribeEvent
