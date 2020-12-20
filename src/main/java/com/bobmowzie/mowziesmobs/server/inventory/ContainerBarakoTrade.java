@@ -43,7 +43,7 @@ public final class ContainerBarakoTrade extends Container {
 
     @Override
     public boolean canInteractWith(PlayerEntity player) {
-        return inventory.isUsableByPlayer(player) && barako.isAlive() && barako.getDistance(player) < 5;
+        return inventory.isUsableByPlayer(player) && barako.isAlive() && barako.getDistance(player) < 8;
     }
 
     @Override

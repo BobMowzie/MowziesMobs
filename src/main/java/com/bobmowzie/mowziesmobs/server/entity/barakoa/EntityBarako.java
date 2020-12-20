@@ -412,10 +412,12 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                         });
                     }
                 }
-            }
-            if (getAnimationTick() % 15 == 0) {
-                EntityRing ring = new EntityRing(EntityHandler.RING, world, (float)posX, (float)posY + 0.8f, (float)posZ, new Vec3d(0, 0, 0), 15, 1, 223/255f, 66/255f, 1, 3.5f, true);
-                world.addEntity(ring);
+                if (getAnimationTick() % 15 == 0) {
+                    AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING2.get(), posX, posY + 0.8f, posZ, 0, 0, 0, true, 0, 0, 0, 0, 3.5F, 1, 223/255f, 66/255f, 1, 1, 15, true, new ParticleComponent[]{
+                            new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
+                            new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(5f, 35f), false)
+                    });
+                }
             }
         }
 

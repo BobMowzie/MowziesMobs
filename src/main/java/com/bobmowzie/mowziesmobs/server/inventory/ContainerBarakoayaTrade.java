@@ -49,7 +49,7 @@ public final class ContainerBarakoayaTrade extends Container {
 
     @Override
     public boolean canInteractWith(PlayerEntity player) {
-        return inventory.isUsableByPlayer(player) && barakoaya.isAlive() && barakoaya.getDistance(player) < 5;
+        return inventory.isUsableByPlayer(player) && barakoaya.isAlive() && barakoaya.getDistance(player) < 8;
     }
 
     @Override
