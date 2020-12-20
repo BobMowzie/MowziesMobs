@@ -23,11 +23,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.client.event.RenderItemInFrameEvent;
-import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.client.event.RenderSpecificHandEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -287,5 +284,21 @@ public enum ClientEventHandler {
 //        Mouse.getDX();
 //        Mouse.getDY();
 //        Minecraft.getInstance().mouseHelper.deltaX = Minecraft.getInstance().mouseHelper.deltaY = 0;
+    }
+
+    @SubscribeEvent
+    public void updateFOV(FOVUpdateEvent event) {
+        PlayerEntity player = event.getEntity();
+        if (player.isHandActive() && player.getActiveItemStack().getItem() instanceof net.minecraft.item.BowItem) {
+            int i = player.getItemInUseMaxCount();
+            float f1 = (float)i / 5.0F;
+            if (f1 > 1.0F) {
+                f1 = 1.0F;
+            } else {
+                f1 = f1 * f1;
+            }
+
+            event.setNewfov(1.0F - f1 * 0.15F);
+        }
     }
 }

@@ -62,7 +62,7 @@ public class EntityDart extends ArrowEntity {
                 if (world.isRemote || (shooter == hit) || (shooter instanceof EntityBarakoa && living instanceof EntityBarakoa && ((EntityBarakoa) shooter).isBarakoDevoted() == ((EntityBarakoa) living).isBarakoDevoted()))
                     return;
             }
-            super.onHit(raytraceResultIn);
         }
+        super.onHit(raytraceResultIn);
     }
 }
