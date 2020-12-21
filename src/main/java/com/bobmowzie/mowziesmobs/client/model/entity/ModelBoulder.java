@@ -302,10 +302,10 @@ public class ModelBoulder<T extends EntityBoulder> extends AdvancedModelBase {
 
     public void render(EntityBoulder entity, float f5, float delta) {
         setRotationAngles(entity, f5, delta);
-        int size = entity.getBoulderSize();
-        if (size == 0) boulder0block1.render(f5);
-        else  if (size == 1) boulder1.render(f5);
-        else  if (size == 2) boulder2.render(f5);
+        EntityBoulder.BoulderSizeEnum size = entity.getBoulderSize();
+        if (size == EntityBoulder.BoulderSizeEnum.SMALL) boulder0block1.render(f5);
+        else  if (size == EntityBoulder.BoulderSizeEnum.MEDIUM) boulder1.render(f5);
+        else  if (size == EntityBoulder.BoulderSizeEnum.LARGE) boulder2.render(f5);
         else boulder3.render(f5);
     }
 

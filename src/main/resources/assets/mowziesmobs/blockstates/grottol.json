@@ -1,0 +1,12 @@
+{
+    "variants": {
+        "facing=north,variant=diamond": { "model": "mowziesmobs:diamond_grottol.tbl", "y": 90 },
+        "facing=south,variant=diamond": { "model": "mowziesmobs:diamond_grottol.tbl" },
+        "facing=west,variant=diamond":  { "model": "mowziesmobs:diamond_grottol.tbl", "y": 180 },
+        "facing=east,variant=diamond":  { "model": "mowziesmobs:diamond_grottol.tbl", "y": 270 },
+        "facing=north,variant=black_pink": { "model": "mowziesmobs:black_pink_grottol.tbl", "y": 90 },
+        "facing=south,variant=black_pink": { "model": "mowziesmobs:black_pink_grottol.tbl" },
+        "facing=west,variant=black_pink":  { "model": "mowziesmobs:black_pink_grottol.tbl", "y": 180 },
+        "facing=east,variant=black_pink":  { "model": "mowziesmobs:black_pink_grottol.tbl", "y": 270 }
+    }
+}

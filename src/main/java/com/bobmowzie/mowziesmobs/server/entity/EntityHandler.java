@@ -42,7 +42,11 @@ public enum EntityHandler {
 
     public static EntityType<EntitySunstrike> SUNSTRIKE;
     public static EntityType<EntitySolarBeam> SOLAR_BEAM;
-    public static EntityType<EntityBoulder> BOULDER;
+    public static EntityType<EntityBoulder> BOULDER_SMALL;
+    public static EntityType<EntityBoulder> BOULDER_MEDIUM;
+    public static EntityType<EntityBoulder> BOULDER_LARGE;
+    public static EntityType<EntityBoulder> BOULDER_HUGE;
+    public static EntityType<EntityBoulder>[] BOULDERS;
     public static EntityType<EntityAxeAttack> AXE_ATTACK;
     public static EntityType<EntityIceBreath> ICE_BREATH;
     public static EntityType<EntityIceBall> ICE_BALL;
@@ -89,7 +93,11 @@ public enum EntityHandler {
         SOLAR_BEAM = register("solar_beam", solarBeamBuilder.disableSummoning().size(0.1F, 0.1F));
 
         EntityType.Builder<EntityBoulder> boulderBuilder = EntityType.Builder.create(EntityBoulder::new, EntityClassification.MISC);
-        BOULDER = register("boulder", boulderBuilder.disableSummoning().size(10, 10));
+        BOULDER_SMALL = register("boulder_small", boulderBuilder.disableSummoning().size(1, 1));
+        BOULDER_MEDIUM = register("boulder_medium", boulderBuilder.disableSummoning().size(2, 1.5f));
+        BOULDER_LARGE = register("boulder_large", boulderBuilder.disableSummoning().size(3, 2.5f));
+        BOULDER_HUGE = register("boulder_huge", boulderBuilder.disableSummoning().size(4, 3.5f));
+        BOULDERS = new EntityType[] {BOULDER_SMALL, BOULDER_MEDIUM, BOULDER_LARGE, BOULDER_HUGE};
 
         EntityType.Builder<EntityAxeAttack> axeAttackBuilder = EntityType.Builder.create(EntityAxeAttack::new, EntityClassification.MISC);
         AXE_ATTACK = register("axe_attack", axeAttackBuilder.disableSummoning().size(1f, 1f));
@@ -133,7 +141,10 @@ public enum EntityHandler {
             NAGA,
             SUNSTRIKE,
             SOLAR_BEAM,
-            BOULDER,
+            BOULDER_SMALL,
+            BOULDER_MEDIUM,
+            BOULDER_LARGE,
+            BOULDER_HUGE,
             AXE_ATTACK,
             ICE_BREATH,
             ICE_BALL,

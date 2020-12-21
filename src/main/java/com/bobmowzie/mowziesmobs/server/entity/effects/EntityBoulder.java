@@ -8,10 +8,7 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MoverType;
+import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
@@ -39,7 +36,6 @@ import java.util.Optional;
  * Created by Josh on 4/14/2017.
  */
 public class EntityBoulder extends Entity {
-    int blockId;
     private LivingEntity caster;
     private boolean travelling;
     public BlockState storedBlock;
@@ -50,11 +46,18 @@ public class EntityBoulder extends Entity {
     private static final DataParameter<Integer> SIZE = EntityDataManager.createKey(EntityBoulder.class, DataSerializers.VARINT);
     public float animationOffset = 0;
     private List<Entity> ridingEntities = new ArrayList<Entity>();
-    public int boulderSize = 0;
+    public BoulderSizeEnum boulderSize = BoulderSizeEnum.SMALL;
 
     private float speed = 1.5f;
     private int damage = 8;
     private int finishedRisingTick = 4;
+
+    public enum BoulderSizeEnum {
+        SMALL,
+        MEDIUM,
+        LARGE,
+        HUGE
+    }
 
     public EntityBoulder(EntityType<? extends EntityBoulder> type, World world) {
         super(type, world);
@@ -65,10 +68,13 @@ public class EntityBoulder extends Entity {
         this.setOrigin(new BlockPos(this));
     }
 
-    public EntityBoulder(EntityType<? extends EntityBoulder> type, World world, LivingEntity caster, int size, BlockState block) {
+    public EntityBoulder(EntityType<? extends EntityBoulder> type, World world, LivingEntity caster, BlockState block) {
         this(type, world);
         this.caster = caster;
-        setBoulderSize(size);
+        if (type == EntityHandler.BOULDER_SMALL) setBoulderSize(BoulderSizeEnum.SMALL);
+        else if (type == EntityHandler.BOULDER_MEDIUM) setBoulderSize(BoulderSizeEnum.MEDIUM);
+        else if (type == EntityHandler.BOULDER_LARGE) setBoulderSize(BoulderSizeEnum.LARGE);
+        else if (type == EntityHandler.BOULDER_HUGE) setBoulderSize(BoulderSizeEnum.HUGE);
         setSizeParams();
         if (!world.isRemote && block != null) {
             BlockState newBlock = block;
@@ -112,17 +118,17 @@ public class EntityBoulder extends Entity {
 
     public void setSizeParams() {
         //TODO
-        int size = getBoulderSize();
-        if (size == 0) {
+        BoulderSizeEnum size = getBoulderSize();
+        if (size == BoulderSizeEnum.SMALL) {
 //            setSize(1, 1);
         }
-        else if (size == 1) {
+        else if (size == BoulderSizeEnum.MEDIUM) {
 //            setSize(2, 1.5f);
             finishedRisingTick = 8;
             damage = 12;
             speed = 1.2f;
         }
-        else if (size == 2) {
+        else if (size == BoulderSizeEnum.LARGE) {
 //            setSize(3, 2.5f);
             finishedRisingTick = 12;
             damage = 16;
@@ -170,7 +176,7 @@ public class EntityBoulder extends Entity {
             List<Entity> popUpEntities = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox());
             for (Entity entity:popUpEntities) {
                 if (entity.canBeCollidedWith() && !(entity instanceof EntityBoulder)) {
-                    if (boulderSize != 3) entity.move(MoverType.SHULKER_BOX, new Vec3d(0, 2 * (Math.pow(2, -ticksExisted * (0.6 - 0.1 * boulderSize))), 0));
+                    if (boulderSize != BoulderSizeEnum.HUGE) entity.move(MoverType.SHULKER_BOX, new Vec3d(0, 2 * (Math.pow(2, -ticksExisted * (0.6 - 0.1 * boulderSize.ordinal()))), 0));
                     else entity.move(MoverType.SHULKER_BOX, new Vec3d(0, 0.6f, 0));
                 }
             }
@@ -183,7 +189,7 @@ public class EntityBoulder extends Entity {
                 if (ridingEntities.contains(entity)) continue;
                 if (caster != null) entity.attackEntityFrom(DamageSource.causeIndirectDamage(this, caster), damage);
                 else entity.attackEntityFrom(DamageSource.GENERIC, damage); // TODO: Magic damage goes through armor, but no other damage type fits. Create new damage type
-                if (isAlive() && boulderSize != 3) setShouldExplode(true);
+                if (isAlive() && boulderSize != BoulderSizeEnum.HUGE) setShouldExplode(true);
             }
         }
         List<EntityBoulder> bouldersHit = world.getEntitiesWithinAABB(EntityBoulder.class, getBoundingBox().grow(0.2, 0.2, 0.2).offset(getMotion().normalize().scale(0.5)));
@@ -204,31 +210,31 @@ public class EntityBoulder extends Entity {
                 particlePos = particlePos.rotateYaw((float)(rand.nextFloat() * 2 * Math.PI));
                 world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, storedBlock), posX + particlePos.x, posY - 1, posZ + particlePos.z, particlePos.x, 2, particlePos.z);
             }
-            if (boulderSize == 0) {
+            if (boulderSize == BoulderSizeEnum.SMALL) {
                 playSound(MMSounds.EFFECT_GEOMANCY_SMALL_CRASH.get(), 1.5f, 1.3f);
                 playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL.get(), 1.5f, 1f);
             }
-            else if (boulderSize == 1) {
+            else if (boulderSize == BoulderSizeEnum.MEDIUM) {
                 playSound(MMSounds.EFFECT_GEOMANCY_HIT_MEDIUM_2.get(), 1.5f, 1.5f);
                 playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL.get(), 1.5f, 0.8f);
             }
-            else if (boulderSize == 2) {
+            else if (boulderSize == BoulderSizeEnum.LARGE) {
                 playSound(MMSounds.EFFECT_GEOMANCY_HIT_MEDIUM_1.get(), 1.5f, 0.9f);
                 playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG.get(), 1.5f, 1.5f);
             }
-            else if (boulderSize == 3) {
+            else if (boulderSize == BoulderSizeEnum.HUGE) {
                 playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG.get(), 2f, 0.5f);
                 playSound(MMSounds.EFFECT_GEOMANCY_RUMBLE_1.get(), 2, 0.8f);
             }
             EntityRing ring = new EntityRing(EntityHandler.RING, world, (float)posX, (float)posY - 0.9f, (float)posZ, new Vec3d(0,1,0), (int) (5 + 2 * getWidth()), 0.83f, 1, 0.39f, 1f, 1.0f + 0.5f * getWidth(), false);
             world.addEntity(ring);
         }
-        if (ticksExisted == 30 && boulderSize == 3) {
+        if (ticksExisted == 30 && boulderSize == BoulderSizeEnum.HUGE) {
             playSound(MMSounds.EFFECT_GEOMANCY_RUMBLE_2.get(), 2, 0.7f);
         }
 
         int dripTick = ticksExisted - 2;
-        if (boulderSize == 3) dripTick -= 20;
+        if (boulderSize == BoulderSizeEnum.HUGE) dripTick -= 20;
         int dripNumber = (int)(getWidth() * 6 * Math.pow(1.03 + 0.04 * 1/getWidth(), -(dripTick)));
         if (dripNumber >= 1 && dripTick > 0) {
             dripNumber *= rand.nextFloat();
@@ -236,7 +242,7 @@ public class EntityBoulder extends Entity {
                 Vec3d particlePos = new Vec3d(rand.nextFloat() * 0.6 * getWidth(), 0, 0);
                 particlePos = particlePos.rotateYaw((float)(rand.nextFloat() * 2 * Math.PI));
                 float offsetY;
-                if (boulderSize == 3 && ticksExisted < finishedRisingTick) offsetY = (float) (rand.nextFloat() * (getHeight()-1) - getHeight() * (finishedRisingTick - ticksExisted)/finishedRisingTick);
+                if (boulderSize == BoulderSizeEnum.HUGE && ticksExisted < finishedRisingTick) offsetY = (float) (rand.nextFloat() * (getHeight()-1) - getHeight() * (finishedRisingTick - ticksExisted)/finishedRisingTick);
                 else offsetY = (float) (rand.nextFloat() * (getHeight()-1));
                 world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, storedBlock), posX + particlePos.x, posY + offsetY, posZ + particlePos.z, 0, -1, 0);
             }
@@ -254,15 +260,15 @@ public class EntityBoulder extends Entity {
             particlePos = particlePos.rotatePitch((float)(rand.nextFloat() * 2 * Math.PI));
             world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, storedBlock), posX + particlePos.x, posY + 0.5 + particlePos.y, posZ + particlePos.z, particlePos.x, particlePos.y, particlePos.z);
         }
-        if (boulderSize == 0) {
+        if (boulderSize == BoulderSizeEnum.SMALL) {
             playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL.get(), 1.5f, 0.9f);
             playSound(MMSounds.EFFECT_GEOMANCY_BREAK.get(), 1.5f, 1f);
         }
-        else if (boulderSize == 1) {
+        else if (boulderSize == BoulderSizeEnum.MEDIUM) {
             playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL.get(), 1.5f, 0.7f);
             playSound(MMSounds.EFFECT_GEOMANCY_BREAK_MEDIUM_3.get(), 1.5f, 1.5f);
         }
-        else if (boulderSize == 2) {
+        else if (boulderSize == BoulderSizeEnum.LARGE) {
             playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG.get(), 1.5f, 1f);
             playSound(MMSounds.EFFECT_GEOMANCY_BREAK_MEDIUM_1.get(), 1.5f, 0.9f);
 
@@ -276,13 +282,13 @@ public class EntityBoulder extends Entity {
                 }
             }
         }
-        else if (boulderSize == 3) {
+        else if (boulderSize == BoulderSizeEnum.HUGE) {
             playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG.get(), 1.5f, 0.5f);
             playSound(MMSounds.EFFECT_GEOMANCY_BREAK_LARGE_1.get(), 1.5f, 0.5f);
 
             if (world.isRemote) {
                 for (int i = 0; i < 7; i++) {
-                    Vec3d particlePos = new Vec3d(rand.nextFloat() * 3, 0, 0);
+                    Vec3d particlePos = new Vec3d(rand.nextFloat() * 2.5f, 0, 0);
                     particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                     particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                     particlePos = particlePos.add(new Vec3d(0, getHeight() / 4, 0));
@@ -332,12 +338,12 @@ public class EntityBoulder extends Entity {
         dataManager.set(DEATH_TIME, deathTime);
     }
 
-    public int getBoulderSize() {
-        return dataManager.get(SIZE);
+    public BoulderSizeEnum getBoulderSize() {
+        return BoulderSizeEnum.values()[dataManager.get(SIZE)];
     }
 
-    public void setBoulderSize(int size) {
-        dataManager.set(SIZE, size);
+    public void setBoulderSize(BoulderSizeEnum size) {
+        dataManager.set(SIZE, size.ordinal());
         boulderSize = size;
     }
 
@@ -346,7 +352,7 @@ public class EntityBoulder extends Entity {
         BlockState blockState = getBlock();
         if (blockState != null) compound.put("block", NBTUtil.writeBlockState(blockState));
         compound.putInt("deathTime", getDeathTime());
-        compound.putInt("size", getBoulderSize());
+        compound.putInt("size", getBoulderSize().ordinal());
     }
 
     @Override
@@ -357,7 +363,7 @@ public class EntityBoulder extends Entity {
             setBlock(blockState);
         }
         setDeathTime(compound.getInt("deathTime"));
-        setBoulderSize(compound.getInt("size"));
+        setBoulderSize(BoulderSizeEnum.values()[compound.getInt("size")]);
     }
 
     @Override
@@ -392,19 +398,19 @@ public class EntityBoulder extends Entity {
             if (!travelling) setDeathTime(60);
             travelling = true;
 
-            if (boulderSize == 0) {
+            if (boulderSize == BoulderSizeEnum.SMALL) {
                 playSound(MMSounds.EFFECT_GEOMANCY_HIT_SMALL.get(), 1.5f, 1.3f);
                 playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL.get(), 1.5f, 0.9f);
             }
-            else if (boulderSize == 1) {
+            else if (boulderSize == BoulderSizeEnum.MEDIUM) {
                 playSound(MMSounds.EFFECT_GEOMANCY_HIT_SMALL.get(), 1.5f, 0.9f);
                 playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL.get(), 1.5f, 0.5f);
             }
-            else if (boulderSize == 2) {
+            else if (boulderSize == BoulderSizeEnum.LARGE) {
                 playSound(MMSounds.EFFECT_GEOMANCY_HIT_SMALL.get(), 1.5f, 0.5f);
                 playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG.get(), 1.5f, 1.3f);
             }
-            else if (boulderSize == 3) {
+            else if (boulderSize == BoulderSizeEnum.HUGE) {
                 playSound(MMSounds.EFFECT_GEOMANCY_HIT_MEDIUM_1.get(), 1.5f, 1f);
                 playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG.get(), 1.5f, 0.9f);
             }
