@@ -260,6 +260,8 @@ public class FrozenCapability {
             if (entity != null && frozenController != null) {
                 entity.dismountEntity(frozenController);
                 entity.setPosition(frozenController.posX, frozenController.posY, frozenController.posZ);
+                entity.rotationYaw = getFrozenYaw();
+                entity.rotationPitch = getFrozenPitch();
                 frozenController.remove();
                 entity.playSound(MMSounds.ENTITY_FROSTMAW_FROZEN_CRASH.get(), 1, 0.5f);
 

@@ -206,9 +206,9 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
         };
         for (Point3d vertex: vertices) {
             if (!(rotation instanceof ParticleRotation.FaceCamera)) {
-                boxRotateZ.transform(vertex);
                 boxRotateX.transform(vertex);
                 boxRotateY.transform(vertex);
+                boxRotateZ.transform(vertex);
             }
             boxTranslate.transform(vertex);
         }

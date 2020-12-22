@@ -39,7 +39,7 @@ public class PowerGeomancy extends Power {
 
     protected Random rand;
 
-    private int spawnBoulderCooldown = 10;
+    private int spawnBoulderCooldown = 8;
     private boolean spawningBoulder = false;
     private boolean liftedMouse = true;
     private int spawnBoulderCharge = 0;
@@ -263,6 +263,14 @@ public class PowerGeomancy extends Power {
         spawnBoulderCooldown = 10;
         spawnBoulderCharge = 0;
         spawningBoulder = false;
+
+        Vec3d lookPos = getLookPos().add(0.5, 1, 0.5);
+        Vec3d playerEyes = player.getEyePosition(MowziesMobs.PROXY.getPartialTicks());
+        Vec3d vec = playerEyes.subtract(lookPos).normalize();
+        float yaw = (float) Math.atan2(vec.z, vec.x);
+        float pitch = (float) Math.asin(vec.y);
+        player.rotationYaw = (float) (yaw * 180f/Math.PI + 90);
+        player.rotationPitch = (float) (pitch * 180f/Math.PI);
     }
 
     @Override
