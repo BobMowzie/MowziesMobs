@@ -4,6 +4,7 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.ParticleType;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -21,7 +22,7 @@ public class RibbonParticleData extends AdvancedParticleData {
             reader.expect(' ');
             double alpha = (double) reader.readDouble();
             reader.expect(' ');
-            boolean faceCamera = reader.readBoolean();
+            String rotationMode = reader.readString();
             reader.expect(' ');
             double scale = (double) reader.readDouble();
             reader.expect(' ');
@@ -38,7 +39,11 @@ public class RibbonParticleData extends AdvancedParticleData {
             reader.readDouble();
             reader.expect(' ');
             int length = reader.readInt();
-            return new RibbonParticleData(particleTypeIn, faceCamera, yaw, pitch, roll, scale, red, green, blue, alpha, airDrag, duration, emissive, length);
+            ParticleRotation rotation;
+            if (rotationMode.equals("face_camera")) rotation = new ParticleRotation.FaceCamera((float) 0);
+            else if (rotationMode.equals("euler")) rotation = new ParticleRotation.EulerAngles((float)yaw, (float)pitch, (float)roll);
+            else rotation = new ParticleRotation.OrientVector(new Vec3d(yaw, pitch, roll));
+            return new RibbonParticleData(particleTypeIn, rotation, scale, red, green, blue, alpha, airDrag, duration, emissive, length);
         }
 
         public RibbonParticleData read(ParticleType<RibbonParticleData> particleTypeIn, PacketBuffer buffer) {
@@ -47,7 +52,7 @@ public class RibbonParticleData extends AdvancedParticleData {
             double green = buffer.readFloat();
             double blue = buffer.readFloat();
             double alpha = buffer.readFloat();
-            boolean faceCamera = buffer.readBoolean();
+            String rotationMode = buffer.readString();
             double scale = buffer.readFloat();
             double yaw = buffer.readFloat();
             double pitch = buffer.readFloat();
@@ -56,18 +61,22 @@ public class RibbonParticleData extends AdvancedParticleData {
             double duration = buffer.readFloat();
             buffer.readFloat();
             int length = buffer.readInt();
-            return new RibbonParticleData(particleTypeIn, faceCamera, yaw, pitch, roll, scale, red, green, blue, alpha, airDrag, duration, emissive, length);
+            ParticleRotation rotation;
+            if (rotationMode.equals("face_camera")) rotation = new ParticleRotation.FaceCamera((float) 0);
+            else if (rotationMode.equals("euler")) rotation = new ParticleRotation.EulerAngles((float)yaw, (float)pitch, (float)roll);
+            else rotation = new ParticleRotation.OrientVector(new Vec3d(yaw, pitch, roll));
+            return new RibbonParticleData(particleTypeIn, rotation, scale, red, green, blue, alpha, airDrag, duration, emissive, length);
         }
     };
 
     private final int length;
 
-    public RibbonParticleData(ParticleType<? extends RibbonParticleData> type, boolean faceCamera, double yaw, double pitch, double roll, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, int length) {
-        this(type, faceCamera, yaw, pitch, roll, scale, r, g, b, a, drag, duration, emissive, length, new ParticleComponent[]{});
+    public RibbonParticleData(ParticleType<? extends RibbonParticleData> type, ParticleRotation rotation, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, int length) {
+        this(type, rotation, scale, r, g, b, a, drag, duration, emissive, length, new ParticleComponent[]{});
     }
 
-    public RibbonParticleData(ParticleType<? extends RibbonParticleData> type, boolean faceCamera, double yaw, double pitch, double roll, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, int length, ParticleComponent[] components) {
-        super(type, faceCamera, yaw, pitch, roll, 0, scale, r, g, b, a, drag, duration, emissive, components);
+    public RibbonParticleData(ParticleType<? extends RibbonParticleData> type, ParticleRotation rotation, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, int length, ParticleComponent[] components) {
+        super(type, rotation, scale, r, g, b, a, drag, duration, emissive, components);
         this.length = length;
     }
 

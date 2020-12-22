@@ -5,6 +5,8 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
 import com.mojang.brigadier.StringReader;
+import net.minecraft.util.Rotation;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -25,7 +27,7 @@ public class AdvancedParticleData implements IParticleData {
             reader.expect(' ');
             double alpha = (double) reader.readDouble();
             reader.expect(' ');
-            boolean faceCamera = reader.readBoolean();
+            String rotationMode = reader.readString();
             reader.expect(' ');
             double scale = (double) reader.readDouble();
             reader.expect(' ');
@@ -40,7 +42,11 @@ public class AdvancedParticleData implements IParticleData {
             double duration = (double) reader.readDouble();
             reader.expect(' ');
             double faceCameraAngle = (double) reader.readDouble();
-            return new AdvancedParticleData(particleTypeIn, faceCamera, yaw, pitch, roll, faceCameraAngle, scale, red, green, blue, alpha, airDrag, duration, emissive);
+            ParticleRotation rotation;
+            if (rotationMode.equals("face_camera")) rotation = new ParticleRotation.FaceCamera((float) faceCameraAngle);
+            else if (rotationMode.equals("euler")) rotation = new ParticleRotation.EulerAngles((float)yaw, (float)pitch, (float)roll);
+            else rotation = new ParticleRotation.OrientVector(new Vec3d(yaw, pitch, roll));
+            return new AdvancedParticleData(particleTypeIn, rotation, scale, red, green, blue, alpha, airDrag, duration, emissive);
         }
 
         public AdvancedParticleData read(ParticleType<AdvancedParticleData> particleTypeIn, PacketBuffer buffer) {
@@ -49,7 +55,7 @@ public class AdvancedParticleData implements IParticleData {
             double green = buffer.readFloat();
             double blue = buffer.readFloat();
             double alpha = buffer.readFloat();
-            boolean faceCamera = buffer.readBoolean();
+            String rotationMode = buffer.readString();
             double scale = buffer.readFloat();
             double yaw = buffer.readFloat();
             double pitch = buffer.readFloat();
@@ -57,7 +63,11 @@ public class AdvancedParticleData implements IParticleData {
             boolean emissive = buffer.readBoolean();
             double duration = buffer.readFloat();
             double faceCameraAngle = buffer.readFloat();
-            return new AdvancedParticleData(particleTypeIn, faceCamera, yaw, pitch, roll, faceCameraAngle, scale, red, green, blue, alpha, airDrag, duration, emissive);
+            ParticleRotation rotation;
+            if (rotationMode.equals("face_camera")) rotation = new ParticleRotation.FaceCamera((float) faceCameraAngle);
+            else if (rotationMode.equals("euler")) rotation = new ParticleRotation.EulerAngles((float)yaw, (float)pitch, (float)roll);
+            else rotation = new ParticleRotation.OrientVector(new Vec3d(yaw, pitch, roll));
+            return new AdvancedParticleData(particleTypeIn, rotation, scale, red, green, blue, alpha, airDrag, duration, emissive);
         }
     };
 
@@ -65,28 +75,21 @@ public class AdvancedParticleData implements IParticleData {
 
     private final float airDrag;
     private final float red, green, blue, alpha;
-    private final boolean faceCamera;
+    private final ParticleRotation rotation;
     private final float scale;
-    private final float yaw, pitch, roll;
     private final boolean emissive;
     private final float duration;
-    private final float faceCameraAngle;
 
     private final ParticleComponent[] components;
 
-    public AdvancedParticleData(ParticleType<? extends AdvancedParticleData> type, boolean faceCamera, double yaw, double pitch, double roll, double faceCameraAngle, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive) {
-        this(type, faceCamera, yaw, pitch, roll, faceCameraAngle, scale, r, g, b, a, drag, duration, emissive, new ParticleComponent[]{});
+    public AdvancedParticleData(ParticleType<? extends AdvancedParticleData> type, ParticleRotation rotation, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive) {
+        this(type, rotation, scale, r, g, b, a, drag, duration, emissive, new ParticleComponent[]{});
     }
 
-    public AdvancedParticleData(ParticleType<? extends AdvancedParticleData> type, boolean faceCamera, double yaw, double pitch, double roll, double faceCameraAngle, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, ParticleComponent[] components) {
+    public AdvancedParticleData(ParticleType<? extends AdvancedParticleData> type, ParticleRotation rotation, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, ParticleComponent[] components) {
         this.type = type;
 
-        this.faceCamera = faceCamera;
-        this.faceCameraAngle = (float) faceCameraAngle;
-
-        this.yaw = (float) yaw;
-        this.pitch = (float) pitch;
-        this.roll = (float) roll;
+        this.rotation = rotation;
 
         this.scale = (float) scale;
 
@@ -105,26 +108,72 @@ public class AdvancedParticleData implements IParticleData {
 
     @Override
     public void write(PacketBuffer buffer) {
+        String rotationMode;
+        float faceCameraAngle = 0;
+        float yaw = 0;
+        float pitch = 0;
+        float roll = 0;
+        if (rotation instanceof ParticleRotation.FaceCamera) {
+            rotationMode = "face_camera";
+            faceCameraAngle = ((ParticleRotation.FaceCamera) rotation).faceCameraAngle;
+        }
+        else if (rotation instanceof ParticleRotation.EulerAngles) {
+            rotationMode = "euler";
+            yaw = ((ParticleRotation.EulerAngles) rotation).yaw;
+            pitch = ((ParticleRotation.EulerAngles) rotation).pitch;
+            roll = ((ParticleRotation.EulerAngles) rotation).roll;
+        }
+        else {
+            rotationMode = "orient";
+            Vec3d vec = ((ParticleRotation.OrientVector)rotation).orientation;
+            yaw = (float) vec.x;
+            pitch = (float) vec.y;
+            roll = (float) vec.z;
+        }
+
         buffer.writeFloat(this.airDrag);
         buffer.writeFloat(this.red);
         buffer.writeFloat(this.green);
         buffer.writeFloat(this.blue);
         buffer.writeFloat(this.alpha);
-        buffer.writeBoolean(this.faceCamera);
+        buffer.writeString(rotationMode);
         buffer.writeFloat(this.scale);
-        buffer.writeFloat(this.yaw);
-        buffer.writeFloat(this.pitch);
-        buffer.writeFloat(this.roll);
+        buffer.writeFloat(yaw);
+        buffer.writeFloat(pitch);
+        buffer.writeFloat(roll);
         buffer.writeBoolean(this.emissive);
         buffer.writeFloat(this.duration);
-        buffer.writeFloat(this.faceCameraAngle);
+        buffer.writeFloat(faceCameraAngle);
     }
 
     @SuppressWarnings("deprecation")
     @Override
     public String getParameters() {
-        return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f %.2f %b %.2f %.2f %.2f %.2f %b %.2f %.2f", Registry.PARTICLE_TYPE.getKey(this.getType()),
-                this.airDrag, this.red, this.green, this.blue, this.alpha, this.faceCamera, this.scale, this.yaw, this.pitch, this.roll, this.emissive, this.duration, this.faceCameraAngle);
+        String rotationMode;
+        float faceCameraAngle = 0;
+        float yaw = 0;
+        float pitch = 0;
+        float roll = 0;
+        if (rotation instanceof ParticleRotation.FaceCamera) {
+            rotationMode = "face_camera";
+            faceCameraAngle = ((ParticleRotation.FaceCamera) rotation).faceCameraAngle;
+        }
+        else if (rotation instanceof ParticleRotation.EulerAngles) {
+            rotationMode = "euler";
+            yaw = ((ParticleRotation.EulerAngles) rotation).yaw;
+            pitch = ((ParticleRotation.EulerAngles) rotation).pitch;
+            roll = ((ParticleRotation.EulerAngles) rotation).roll;
+        }
+        else {
+            rotationMode = "orient";
+            Vec3d vec = ((ParticleRotation.OrientVector)rotation).orientation;
+            yaw = (float) vec.x;
+            pitch = (float) vec.y;
+            roll = (float) vec.z;
+        }
+
+        return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f %.2f %s %.2f %.2f %.2f %.2f %b %.2f %.2f", Registry.PARTICLE_TYPE.getKey(this.getType()),
+                this.airDrag, this.red, this.green, this.blue, this.alpha, rotationMode, this.scale, yaw, pitch, roll, this.emissive, this.duration, faceCameraAngle);
     }
 
     @Override
@@ -158,28 +207,13 @@ public class AdvancedParticleData implements IParticleData {
     }
     
     @OnlyIn(Dist.CLIENT)
-    public boolean isFaceCamera() {
-        return faceCamera;
+    public ParticleRotation getRotation() {
+        return rotation;
     }
 
     @OnlyIn(Dist.CLIENT)
     public double getScale() {
         return scale;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public double getYaw() {
-        return yaw;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public double getPitch() {
-        return pitch;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public double getRoll() {
-        return roll;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -190,11 +224,6 @@ public class AdvancedParticleData implements IParticleData {
     @OnlyIn(Dist.CLIENT)
     public double getDuration() {
         return duration;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public double getFaceCameraAngle() {
-        return faceCameraAngle;
     }
 
     @OnlyIn(Dist.CLIENT)

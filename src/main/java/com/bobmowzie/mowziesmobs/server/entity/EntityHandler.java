@@ -51,7 +51,6 @@ public enum EntityHandler {
     public static EntityType<EntityIceBreath> ICE_BREATH;
     public static EntityType<EntityIceBall> ICE_BALL;
     public static EntityType<EntityFrozenController> FROZEN_CONTROLLER;
-    public static EntityType<EntityRing> RING;
     public static EntityType<EntityDart> DART;
     public static EntityType<EntityPoisonBall> POISON_BALL;
     public static EntityType<EntitySuperNova> SUPER_NOVA;
@@ -111,9 +110,6 @@ public enum EntityHandler {
         EntityType.Builder<EntityFrozenController> frozenControllerBuilder = EntityType.Builder.create(EntityFrozenController::new, EntityClassification.MISC);
         FROZEN_CONTROLLER = register("frozen_controller", frozenControllerBuilder.disableSummoning().size(0, 0));
 
-        EntityType.Builder<EntityRing> ringBuilder = EntityType.Builder.create(EntityRing::new, EntityClassification.MISC);
-        RING = register("ring", ringBuilder.disableSummoning().size(1F, 1F));
-
         EntityType.Builder<EntityDart> dartBuilder = EntityType.Builder.create(EntityDart::new, EntityClassification.MISC);
         DART = register("dart", dartBuilder.disableSummoning().size(0.5F, 0.5F));
 
@@ -149,7 +145,6 @@ public enum EntityHandler {
             ICE_BREATH,
             ICE_BALL,
             FROZEN_CONTROLLER,
-            RING,
             DART,
             POISON_BALL,
             SUPER_NOVA,

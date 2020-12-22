@@ -19,10 +19,8 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
     public float airDrag;
     public float red, green, blue, alpha;
     public float prevRed, prevGreen, prevBlue, prevAlpha;
-    public boolean faceCamera;
     public float scale, prevScale, particleScale;
-    public float yaw, pitch, roll;
-    public float prevYaw, prevPitch, prevRoll;
+    public ParticleRotation rotation;
     public boolean emissive;
     public double prevMotionX, prevMotionY, prevMotionZ;
 
@@ -30,7 +28,7 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
 
     public ParticleRibbon ribbon;
 
-    protected AdvancedParticleBase(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double motionX, double motionY, double motionZ, double yaw, double pitch, double roll, double scale, double r, double g, double b, double a, double drag, double duration, boolean faceCamera, boolean emissive, float faceCameraAngle, ParticleComponent[] components) {
+    protected AdvancedParticleBase(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double motionX, double motionY, double motionZ, ParticleRotation rotation, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, ParticleComponent[] components) {
         super(worldIn, xCoordIn, yCoordIn, zCoordIn, 0.0D, 0.0D, 0.0D);
         this.motionX = motionX;
         this.motionY = motionY;
@@ -42,13 +40,9 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
         this.scale = (float)scale;
         this.maxAge = (int)duration;
         airDrag = (float)drag;
-        this.faceCamera = faceCamera;
-        this.yaw = (float) (yaw);
-        this.pitch = (float) (pitch);
-        this.roll = (float) (roll);
+        this.rotation = rotation;
         this.components = components;
         this.emissive = emissive;
-        this.particleAngle = faceCameraAngle;
         this.ribbon = null;
 
         for (ParticleComponent component : components) {
@@ -62,10 +56,7 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
         this.prevGreen = this.green;
         this.prevBlue = this.blue;
         this.prevAlpha = this.alpha;
-        this.prevYaw = this.yaw;
-        this.prevPitch = this.pitch;
-        this.prevRoll = this.roll;
-        this.prevParticleAngle = this.particleAngle;
+        this.rotation.setPrevValues();
         this.prevScale = this.scale;
     }
 
@@ -91,10 +82,7 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
         prevBlue = blue;
         prevAlpha = alpha;
         prevScale = scale;
-        prevYaw = yaw;
-        prevPitch = pitch;
-        prevRoll = roll;
-        prevParticleAngle = particleAngle;
+        rotation.setPrevValues();
         this.prevPosX = this.posX;
         this.prevPosY = this.posY;
         this.prevPosZ = this.posZ;
@@ -148,7 +136,7 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
             component.preRender(this, partialTicks);
         }
 
-        if (!faceCamera) {
+        if (!(rotation instanceof ParticleRotation.FaceCamera)) {
             rotationX = 1;
             rotationZ = 1;
             rotationXY = 0;
@@ -170,18 +158,20 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
         int k = i & 65535;
         Vec3d[] avec3d = new Vec3d[] {new Vec3d((double)(-rotationX * f4 - rotationXY * f4), (double)(-rotationZ * f4), (double)(-rotationYZ * f4 - rotationXZ * f4)), new Vec3d((double)(-rotationX * f4 + rotationXY * f4), (double)(rotationZ * f4), (double)(-rotationYZ * f4 + rotationXZ * f4)), new Vec3d((double)(rotationX * f4 + rotationXY * f4), (double)(rotationZ * f4), (double)(rotationYZ * f4 + rotationXZ * f4)), new Vec3d((double)(rotationX * f4 - rotationXY * f4), (double)(-rotationZ * f4), (double)(rotationYZ * f4 - rotationXZ * f4))};
 
-        if (faceCamera && this.particleAngle != 0.0F)
-        {
-            float f8 = this.particleAngle + (this.particleAngle - this.prevParticleAngle) * partialTicks;
-            float f9 = MathHelper.cos(f8 * 0.5F);
-            float f10 = MathHelper.sin(f8 * 0.5F) * (float)entityIn.getLookDirection().x;
-            float f11 = MathHelper.sin(f8 * 0.5F) * (float)entityIn.getLookDirection().y;
-            float f12 = MathHelper.sin(f8 * 0.5F) * (float)entityIn.getLookDirection().z;
-            Vec3d vec3d = new Vec3d((double)f10, (double)f11, (double)f12);
+        if (rotation instanceof ParticleRotation.FaceCamera) {
+            ParticleRotation.FaceCamera faceCameraRot = (ParticleRotation.FaceCamera) rotation;
+            if (faceCameraRot.faceCameraAngle != 0.0F || faceCameraRot.prevFaceCameraAngle != 0.0F) {
+                float f8 = faceCameraRot.prevFaceCameraAngle + (faceCameraRot.faceCameraAngle - faceCameraRot.prevFaceCameraAngle) * partialTicks;
+                float f9 = MathHelper.cos(f8 * 0.5F);
+                float f10 = MathHelper.sin(f8 * 0.5F) * (float)entityIn.getLookDirection().x;
+                float f11 = MathHelper.sin(f8 * 0.5F) * (float)entityIn.getLookDirection().y;
+                float f12 = MathHelper.sin(f8 * 0.5F) * (float)entityIn.getLookDirection().z;
+                Vec3d vec3d = new Vec3d((double)f10, (double)f11, (double)f12);
 
-            for (int l = 0; l < 4; ++l)
-            {
-                avec3d[l] = vec3d.scale(2.0D * avec3d[l].dotProduct(vec3d)).add(avec3d[l].scale((double)(f9 * f9) - vec3d.dotProduct(vec3d))).add(vec3d.crossProduct(avec3d[l]).scale((double)(2.0F * f9)));
+                for (int l = 0; l < 4; ++l)
+                {
+                    avec3d[l] = vec3d.scale(2.0D * avec3d[l].dotProduct(vec3d)).add(avec3d[l].scale((double)(f9 * f9) - vec3d.dotProduct(vec3d))).add(vec3d.crossProduct(avec3d[l]).scale((double)(2.0F * f9)));
+                }
             }
         }
 
@@ -190,9 +180,23 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
         Matrix4d boxRotateY = new Matrix4d();
         Matrix4d boxRotateZ = new Matrix4d();
         boxTranslate.set(new Vector3d(f5, f6, f7));
-        boxRotateX.rotX(prevPitch + (pitch - prevPitch) * partialTicks);
-        boxRotateY.rotY(prevYaw + (yaw - prevYaw) * partialTicks);
-        boxRotateZ.rotZ(prevRoll + (roll - prevRoll) * partialTicks);
+        if (rotation instanceof ParticleRotation.EulerAngles) {
+            ParticleRotation.EulerAngles eulerRot = (ParticleRotation.EulerAngles) rotation;
+            boxRotateX.rotX(eulerRot.prevPitch + (eulerRot.pitch - eulerRot.prevPitch) * partialTicks);
+            boxRotateY.rotY(eulerRot.prevYaw + (eulerRot.yaw - eulerRot.prevYaw) * partialTicks);
+            boxRotateZ.rotZ(eulerRot.prevRoll + (eulerRot.roll - eulerRot.prevRoll) * partialTicks);
+        }
+        else if (rotation instanceof ParticleRotation.OrientVector) {
+            ParticleRotation.OrientVector orientRot = (ParticleRotation.OrientVector) rotation;
+            double x = orientRot.prevOrientation.x + (orientRot.orientation.x - orientRot.prevOrientation.x) * partialTicks;
+            double y = orientRot.prevOrientation.y + (orientRot.orientation.y - orientRot.prevOrientation.y) * partialTicks;
+            double z = orientRot.prevOrientation.z + (orientRot.orientation.z - orientRot.prevOrientation.z) * partialTicks;
+            float pitch = (float) Math.asin(-y);
+            float yaw = (float) MathHelper.atan2(x, z);
+            boxRotateX.rotX(pitch);
+            boxRotateY.rotY(yaw);
+            boxRotateZ.setIdentity();
+        }
 
         Point3d[] vertices = new Point3d[] {
                 new Point3d(avec3d[0].x, avec3d[0].y,  avec3d[0].z),
@@ -201,10 +205,10 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
                 new Point3d(avec3d[3].x,  avec3d[3].y,  avec3d[3].z)
         };
         for (Point3d vertex: vertices) {
-            if (!faceCamera) {
+            if (!(rotation instanceof ParticleRotation.FaceCamera)) {
                 boxRotateZ.transform(vertex);
-                boxRotateY.transform(vertex);
                 boxRotateX.transform(vertex);
+                boxRotateY.transform(vertex);
             }
             boxTranslate.transform(vertex);
         }
@@ -271,14 +275,6 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
         this.motionZ = motionZ;
     }
 
-    public float getAngle() {
-        return particleAngle;
-    }
-
-    public void setAngle(float angle) {
-        this.particleAngle = angle;
-    }
-
     public Vec3d getPrevPos() {
         return new Vec3d(prevPosX, prevPosY, prevPosZ);
     }
@@ -309,7 +305,7 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
 
         @Override
         public Particle makeParticle(AdvancedParticleData typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            AdvancedParticleBase particle = new AdvancedParticleBase(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn.getYaw(), typeIn.getPitch(), typeIn.getRoll(), typeIn.getScale(), typeIn.getRed(), typeIn.getGreen(), typeIn.getBlue(), typeIn.getAlpha(), typeIn.getAirDrag(), typeIn.getDuration(), typeIn.isFaceCamera(), typeIn.isEmissive(), (float) typeIn.getFaceCameraAngle(), typeIn.getComponents());
+            AdvancedParticleBase particle = new AdvancedParticleBase(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn.getRotation(), typeIn.getScale(), typeIn.getRed(), typeIn.getGreen(), typeIn.getBlue(), typeIn.getAlpha(), typeIn.getAirDrag(), typeIn.getDuration(), typeIn.isEmissive(), typeIn.getComponents());
             particle.setColor((float) typeIn.getRed(), (float) typeIn.getGreen(), (float) typeIn.getBlue());
             particle.selectSpriteRandomly(spriteSet);
             return particle;
@@ -317,10 +313,15 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
     }
 
     public static void spawnParticle(World world, ParticleType<AdvancedParticleData> particle, double x, double y, double z, double motionX, double motionY, double motionZ, boolean faceCamera, double yaw, double pitch, double roll, double faceCameraAngle, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive) {
-       world.addParticle(new AdvancedParticleData(particle, faceCamera, yaw, pitch, roll, faceCameraAngle, scale, r, g, b, a, drag, duration, emissive), x, y, z, motionX, motionY, motionZ);
+        spawnParticle(world, particle, x, y, z, motionX, motionY, motionZ, faceCamera, yaw, pitch, roll, faceCameraAngle, scale, r, g, b, a, drag, duration, emissive, new ParticleComponent[]{});
     }
 
     public static void spawnParticle(World world, ParticleType<AdvancedParticleData> particle, double x, double y, double z, double motionX, double motionY, double motionZ, boolean faceCamera, double yaw, double pitch, double roll, double faceCameraAngle, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, ParticleComponent[] components) {
-        world.addParticle(new AdvancedParticleData(particle, faceCamera, yaw, pitch, roll, faceCameraAngle, scale, r, g, b, a, drag, duration, emissive, components), x, y, z, motionX, motionY, motionZ);
+        ParticleRotation rotation = faceCamera ? new ParticleRotation.FaceCamera((float) faceCameraAngle) : new ParticleRotation.EulerAngles((float)yaw, (float)pitch, (float)roll);
+        world.addParticle(new AdvancedParticleData(particle, rotation, scale, r, g, b, a, drag, duration, emissive, components), x, y, z, motionX, motionY, motionZ);
+    }
+
+    public static void spawnParticle(World world, ParticleType<AdvancedParticleData> particle, double x, double y, double z, double motionX, double motionY, double motionZ, ParticleRotation rotation, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, ParticleComponent[] components) {
+        world.addParticle(new AdvancedParticleData(particle, rotation, scale, r, g, b, a, drag, duration, emissive, components), x, y, z, motionX, motionY, motionZ);
     }
 }

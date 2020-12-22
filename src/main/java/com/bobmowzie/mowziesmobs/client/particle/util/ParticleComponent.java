@@ -214,20 +214,32 @@ public abstract class ParticleComponent {
                 else particle.scale = value;
             }
             else if (property == EnumParticleProperty.YAW) {
-                if (additive) particle.yaw += value;
-                else particle.yaw = value;
+                if (particle.rotation instanceof ParticleRotation.EulerAngles) {
+                    ParticleRotation.EulerAngles eulerRot = (ParticleRotation.EulerAngles) particle.rotation;
+                    if (additive) eulerRot.yaw += value;
+                    else eulerRot.yaw = value;
+                }
             }
             else if (property == EnumParticleProperty.PITCH) {
-                if (additive) particle.pitch += value;
-                else particle.pitch = value;
+                if (particle.rotation instanceof ParticleRotation.EulerAngles) {
+                    ParticleRotation.EulerAngles eulerRot = (ParticleRotation.EulerAngles) particle.rotation;
+                    if (additive) eulerRot.pitch += value;
+                    else eulerRot.pitch = value;
+                }
             }
             else if (property == EnumParticleProperty.ROLL) {
-                if (additive) particle.roll += value;
-                else particle.roll = value;
+                if (particle.rotation instanceof ParticleRotation.EulerAngles) {
+                    ParticleRotation.EulerAngles eulerRot = (ParticleRotation.EulerAngles) particle.rotation;
+                    if (additive) eulerRot.roll += value;
+                    else eulerRot.roll = value;
+                }
             }
             else if (property == EnumParticleProperty.PARTICLE_ANGLE) {
-                if (additive) particle.setAngle(particle.getAngle() + value);
-                else particle.setAngle(value);
+                if (particle.rotation instanceof ParticleRotation.FaceCamera) {
+                    ParticleRotation.FaceCamera faceCameraRot = (ParticleRotation.FaceCamera) particle.rotation;
+                    if (additive) faceCameraRot.faceCameraAngle += value;
+                    else faceCameraRot.faceCameraAngle = value;
+                }
             }
         }
     }
@@ -383,19 +395,21 @@ public abstract class ParticleComponent {
             double dz = particle.getPosZ() - particle.getPrevPosZ();
             double d = Math.sqrt(dx * dx + dy * dy + dz * dz);
             if (d != 0) {
-                double a = dy / d;
-                a = Math.max(-1, Math.min(1, a));
-                float pitch = -(float) Math.asin(a);
-                float yaw = -(float) (Math.atan2(dz, dx) + Math.PI);
-                particle.roll = pitch;
-                particle.yaw = yaw;
+                if (particle.rotation instanceof ParticleRotation.EulerAngles) {
+                    ParticleRotation.EulerAngles eulerRot = (ParticleRotation.EulerAngles) particle.rotation;
+                    double a = dy / d;
+                    a = Math.max(-1, Math.min(1, a));
+                    float pitch = -(float) Math.asin(a);
+                    float yaw = -(float) (Math.atan2(dz, dx) + Math.PI);
+                    eulerRot.roll = pitch;
+                    eulerRot.yaw = yaw;
 //                particle.roll = (float) Math.PI / 2;
+                }
+                else if (particle.rotation instanceof ParticleRotation.OrientVector) {
+                    ParticleRotation.OrientVector orientRot = (ParticleRotation.OrientVector) particle.rotation;
+                    orientRot.orientation = new Vec3d(dx, dy, dz).normalize();
+                }
             }
-        }
-    }
-
-    public class AlphaControl extends ParticleComponent {
-        public AlphaControl(float v, float v1) {
         }
     }
 }

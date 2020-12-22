@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.client.particle;
 
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
+import com.bobmowzie.mowziesmobs.client.particle.util.ParticleRotation;
 import com.bobmowzie.mowziesmobs.client.particle.util.RibbonComponent.PropertyOverLength;
 import com.bobmowzie.mowziesmobs.client.particle.util.RibbonComponent.PropertyOverLength.EnumRibbonProperty;
 import com.bobmowzie.mowziesmobs.client.particle.util.RibbonParticleData;
@@ -24,11 +25,10 @@ public class ParticleRibbon extends AdvancedParticleBase {
     public Vec3d[] positions;
     public Vec3d[] prevPositions;
 
-    protected ParticleRibbon(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double motionX, double motionY, double motionZ, double yaw, double pitch, double roll, double scale, double r, double g, double b, double a, double drag, double duration, boolean faceCamera, boolean emissive, int length, ParticleComponent[] components) {
-        super(worldIn, xCoordIn, yCoordIn, zCoordIn, motionX, motionY, motionZ, yaw, pitch, roll, scale, r, g, b, a, drag, duration, faceCamera, emissive, 0, components);
+    protected ParticleRibbon(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double motionX, double motionY, double motionZ, ParticleRotation rotation, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, int length, ParticleComponent[] components) {
+        super(worldIn, xCoordIn, yCoordIn, zCoordIn, motionX, motionY, motionZ, rotation, scale, r, g, b, a, drag, duration, emissive, components);
         positions = new Vec3d[length];
         prevPositions = new Vec3d[length];
-        Vec3d pos = new Vec3d(getPosX(), getPosY(), getPosZ());
         positions[0] = new Vec3d(getPosX(), getPosY(), getPosZ());
         prevPositions[0] = getPrevPos();
     }
@@ -137,7 +137,7 @@ public class ParticleRibbon extends AdvancedParticleBase {
 
             if (index == 0) {
                 Vec3d moveDir = p2.subtract(p1).normalize();
-                if (faceCamera) {
+                if (rotation instanceof ParticleRotation.FaceCamera) {
                     offsetDir = moveDir.crossProduct(entityIn.getLookDirection()).normalize();
                 } else {
                     offsetDir = moveDir.crossProduct(new Vec3d(0, 1, 0)).normalize();
@@ -147,7 +147,7 @@ public class ParticleRibbon extends AdvancedParticleBase {
 
             Vec3d[] avec3d2 = new Vec3d[] {offsetDir.scale(-1), offsetDir, null, null};
             Vec3d moveDir = p2.subtract(p1).normalize();
-            if (faceCamera) {
+            if (rotation instanceof ParticleRotation.FaceCamera) {
                 offsetDir = moveDir.crossProduct(entityIn.getLookDirection()).normalize();
             }
             else {
@@ -197,17 +197,18 @@ public class ParticleRibbon extends AdvancedParticleBase {
 
         @Override
         public Particle makeParticle(RibbonParticleData typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-            ParticleRibbon particle = new ParticleRibbon(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn.getYaw(), typeIn.getPitch(), typeIn.getRoll(), typeIn.getScale(), typeIn.getRed(), typeIn.getGreen(), typeIn.getBlue(), typeIn.getAlpha(), typeIn.getAirDrag(), typeIn.getDuration(), typeIn.isFaceCamera(), typeIn.isEmissive(), typeIn.getLength(), typeIn.getComponents());
+            ParticleRibbon particle = new ParticleRibbon(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn.getRotation(), typeIn.getScale(), typeIn.getRed(), typeIn.getGreen(), typeIn.getBlue(), typeIn.getAlpha(), typeIn.getAirDrag(), typeIn.getDuration(), typeIn.isEmissive(), typeIn.getLength(), typeIn.getComponents());
             particle.selectSpriteWithAge(spriteSet);
             return particle;
         }
     }
 
     public static void spawnRibbon(World world, ParticleType<? extends RibbonParticleData> particle, int length, double x, double y, double z, double motionX, double motionY, double motionZ, boolean faceCamera, double yaw, double pitch, double roll, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive) {
-        world.addParticle(new RibbonParticleData(particle, faceCamera, yaw, pitch, roll, scale, r, g, b, a, drag, duration, emissive, length, new ParticleComponent[] {}), x, y, z, motionX, motionY, motionZ);
+        spawnRibbon(world, particle, length, x, y, z, motionX, motionY, motionZ, faceCamera, yaw, pitch, roll, scale, r, g, b, a, drag, duration, emissive, new ParticleComponent[]{});
     }
 
     public static void spawnRibbon(World world, ParticleType<? extends RibbonParticleData> particle, int length, double x, double y, double z, double motionX, double motionY, double motionZ, boolean faceCamera, double yaw, double pitch, double roll, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, ParticleComponent[] components) {
-        world.addParticle(new RibbonParticleData(particle, faceCamera, yaw, pitch, roll, scale, r, g, b, a, drag, duration, emissive, length, components), x, y, z, motionX, motionY, motionZ);
+        ParticleRotation rotation = faceCamera ? new ParticleRotation.FaceCamera((float) 0) : new ParticleRotation.EulerAngles((float)yaw, (float)pitch, (float)roll);
+        world.addParticle(new RibbonParticleData(particle, rotation, scale, r, g, b, a, drag, duration, emissive, length, components), x, y, z, motionX, motionY, motionZ);
     }
 }
