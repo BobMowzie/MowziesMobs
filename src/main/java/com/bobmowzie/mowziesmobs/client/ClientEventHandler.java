@@ -266,7 +266,7 @@ public enum ClientEventHandler {
         if (player != null) {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
             if (playerCapability != null && playerCapability.getGeomancy().canUse(player) && playerCapability.getGeomancy().isSpawningBoulder() && playerCapability.getGeomancy().getSpawnBoulderCharge() > 2) {
-                Vec3d lookPos = playerCapability.getGeomancy().getLookPos().add(0.5, 1, 0.5);
+                Vec3d lookPos = playerCapability.getGeomancy().getLookPos();
                 Vec3d playerEyes = player.getEyePosition(MowziesMobs.PROXY.getPartialTicks());
                 Vec3d vec = playerEyes.subtract(lookPos).normalize();
                 float yaw = (float) Math.atan2(vec.z, vec.x);

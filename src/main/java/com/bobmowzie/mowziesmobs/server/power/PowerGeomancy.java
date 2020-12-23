@@ -11,6 +11,7 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBlockSwapper;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySolarBeam;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.BlockState;
@@ -25,8 +26,7 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
@@ -202,7 +202,14 @@ public class PowerGeomancy extends Power {
         PlayerEntity player = event.getPlayer();
         if (event.getHand() == Hand.MAIN_HAND && canUse(player)) {
             if (!tunneling && !spawningBoulder && liftedMouse && spawnBoulderCooldown <= 0) {
-                lookPos = new Vec3d(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
+
+                Vec3d from = player.getEyePosition(MowziesMobs.PROXY.getPartialTicks());
+                Vec3d to = from.add(player.getLookVec().scale(10));
+                BlockRayTraceResult result = player.world.rayTraceBlocks(new RayTraceContext(from, to, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, player));
+                if (result.getType() == RayTraceResult.Type.BLOCK) {
+                    lookPos = result.getHitVec();
+                }
+
                 spawnBoulderPos = event.getPos();
                 spawnBoulderBlock = player.world.getBlockState(spawnBoulderPos);
                 if (event.getFace() != Direction.UP) {
@@ -260,17 +267,19 @@ public class PowerGeomancy extends Power {
         if (!player.world.isRemote && boulder.checkCanSpawn()) {
             player.world.addEntity(boulder);
         }
+
+        if (spawnBoulderCharge > 2) {
+            Vec3d playerEyes = player.getEyePosition(MowziesMobs.PROXY.getPartialTicks());
+            Vec3d vec = playerEyes.subtract(getLookPos()).normalize();
+            float yaw = (float) Math.atan2(vec.z, vec.x);
+            float pitch = (float) Math.asin(vec.y);
+            player.rotationYaw = (float) (yaw * 180f / Math.PI + 90);
+            player.rotationPitch = (float) (pitch * 180f / Math.PI);
+        }
+
         spawnBoulderCooldown = 10;
         spawnBoulderCharge = 0;
         spawningBoulder = false;
-
-        Vec3d lookPos = getLookPos().add(0.5, 1, 0.5);
-        Vec3d playerEyes = player.getEyePosition(MowziesMobs.PROXY.getPartialTicks());
-        Vec3d vec = playerEyes.subtract(lookPos).normalize();
-        float yaw = (float) Math.atan2(vec.z, vec.x);
-        float pitch = (float) Math.asin(vec.y);
-        player.rotationYaw = (float) (yaw * 180f/Math.PI + 90);
-        player.rotationPitch = (float) (pitch * 180f/Math.PI);
     }
 
     @Override

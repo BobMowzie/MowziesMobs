@@ -161,6 +161,9 @@ public class EntityBoulder extends Entity {
         }
         if (storedBlock == null) storedBlock = getBlock();
         if (getShouldExplode()) explode();
+        if (!travelling) {
+            setBoundingBox(getType().func_220328_a(posX, posY, posZ).expand(0, -0.5, 0));
+        }
         super.tick();
         move(MoverType.SELF, getMotion());
         if (ridingEntities != null) ridingEntities.clear();
@@ -175,7 +178,7 @@ public class EntityBoulder extends Entity {
         }
         if (boulderSize == BoulderSizeEnum.HUGE) {
             float f = this.getWidth() / 2.0F;
-            AxisAlignedBB aabb = new AxisAlignedBB(posX - (double)f, posY, posZ - (double)f, posX + (double)f, posY + Math.min(ticksExisted/(float)finishedRisingTick * 3.5f, 3.5f), posZ + (double)f);
+            AxisAlignedBB aabb = new AxisAlignedBB(posX - (double)f, posY - 0.5, posZ - (double)f, posX + (double)f, posY + Math.min(ticksExisted/(float)finishedRisingTick * 3.5f, 3.5f), posZ + (double)f);
             setBoundingBox(aabb);
         }
 
@@ -310,8 +313,7 @@ public class EntityBoulder extends Entity {
     @Nullable
     @Override
     public AxisAlignedBB getCollisionBoundingBox() {
-        AxisAlignedBB aabb = getBoundingBox();
-        return travelling ? aabb : aabb.grow(0, 2, 0); //DOESNT WORK
+        return getBoundingBox();
     }
 
     public BlockState getBlock() {
@@ -407,6 +409,7 @@ public class EntityBoulder extends Entity {
             }
             if (!travelling) setDeathTime(60);
             travelling = true;
+            setBoundingBox(getType().func_220328_a(posX, posY, posZ));
 
             if (boulderSize == BoulderSizeEnum.SMALL) {
                 playSound(MMSounds.EFFECT_GEOMANCY_HIT_SMALL.get(), 1.5f, 1.3f);
