@@ -618,7 +618,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             return false;
         }
 //        System.out.println(direction + ", " + (MathHelper.floor(posX) - 1) + ", " + Math.round((float) (posY - 1)) + ", " + MathHelper.floor(posZ) + 1);
-        return !(blockLeft.getBlock().isAir(blockLeft, world, posLeft) && blockRight.getBlock().isAir(blockRight, world, posRight));
+        return blockLeft.getMaterial().blocksMovement() || blockRight.getMaterial().blocksMovement();
     }
 
     private void spawnExplosionParticles(int amount) {

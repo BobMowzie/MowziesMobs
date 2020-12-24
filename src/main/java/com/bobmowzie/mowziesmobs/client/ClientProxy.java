@@ -33,7 +33,7 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 public class ClientProxy extends ServerProxy {
     public static final Minecraft MINECRAFT = Minecraft.getInstance();
-    public static final Timer TIMER = ObfuscationReflectionHelper.getPrivateValue(Minecraft.class, MINECRAFT, "timer"); // TODO: Is this correct?
+    public static final Timer TIMER = ObfuscationReflectionHelper.getPrivateValue(Minecraft.class, MINECRAFT, "timer");
 
     private Entity referencedMob = null;
 

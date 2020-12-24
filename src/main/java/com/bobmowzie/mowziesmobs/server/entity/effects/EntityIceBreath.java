@@ -136,7 +136,7 @@ public class EntityIceBreath extends EntityMagicEffect {
                 if (entityHit.attackEntityFrom(DamageSource.causeIndirectMagicDamage(this, caster), damage)) {
                     entityHit.setMotion(entityHit.getMotion().mul(0.5, 1, 0.5));
                     FrozenCapability.IFrozenCapability capability = CapabilityHandler.getCapability(entityHit, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
-                    capability.addFreezeProgress(entityHit, 0.23f);
+                    if (capability != null) capability.addFreezeProgress(entityHit, 0.23f);
                 }
             }
         }

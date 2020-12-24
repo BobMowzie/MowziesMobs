@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
@@ -16,6 +17,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.entity.model.BipedModel;
+import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
@@ -66,21 +69,19 @@ public enum ClientEventHandler {
         }
     }
 
-    /*@SubscribeEvent
-    public void onRenderPlayerPre(PlayerModelEvent.SetRotationAngles event) {
-        if (event.getEntityPlayer() == null) {
-            return;
-        }
-        PlayerEntity player = event.getEntityPlayer();
-        ModelBiped model = event.getModel();
+    @SubscribeEvent
+    public void onRenderPlayerPre(RenderPlayerEvent.Pre event) {
+        PlayerEntity player = event.getPlayer();
+        if (player == null) return;
+        PlayerModel model = event.getRenderer().getEntityModel();
         player.getHeldItem(Hand.MAIN_HAND);
-        MowziePlayerProperties propertyPlayer = EntityPropertiesHandler.INSTANCE.getProperties(player, MowziePlayerProperties.class);
-        float delta = LLibrary.PROXY.getPartialTicks();
-        if (propertyPlayer != null && propertyPlayer.geomancy.tunneling) {
+        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        float delta = event.getPartialRenderTick();
+        if (playerCapability != null && playerCapability.getGeomancy().tunneling) {
             model.isSneak = false;
-            Vec3d moveVec = new Vec3d(player.motionX, player.motionY, player.motionZ);
+            Vec3d moveVec = player.getMotion();
             moveVec = moveVec.normalize();
-            GlStateManager.rotate(45 - 45 * (float)moveVec.y, 1.0F, 0.0F, 0.0F);
+//            GlStateManager.rotatef(45 - 45 * (float)moveVec.y, 1.0F, 0.0F, 0.0F);
 /* DEAD CODE
             toDefaultBiped(event.getModel());
 
@@ -116,18 +117,18 @@ public enum ClientEventHandler {
             event.getModel().bipedRightLeg.rotateAngleY = spin;
             event.getModel().bipedRightLeg.rotateAngleZ = 0;
             event.getModel().bipedRightLeg.setRotationPoint(-1.9F * (float)Math.sin(spin + Math.PI/2), 12.0F, -1.9f * (float)Math.cos(spin + Math.PI/2));*/
-        /*}
+        }
 
         // Axe of a thousand metals attack animations
-        if (propertyPlayer != null && propertyPlayer.untilAxeSwing > 0) {
-            float frame = (MowziePlayerProperties.SWING_COOLDOWN - propertyPlayer.untilAxeSwing) + delta;
-            ModelRenderer arm = model.bipedRightArm;
-            if (propertyPlayer.verticalSwing) {
+        if (playerCapability != null && playerCapability.getUntilAxeSwing() > 0) {
+            float frame = (PlayerCapability.SWING_COOLDOWN - playerCapability.getUntilAxeSwing()) + delta;
+            RendererModel arm = model.bipedRightArm;
+            if (playerCapability.isVerticalSwing()) {
                 float swingArc = 3f;
                 arm.rotateAngleX = -2.7f + (float) (swingArc * 1 / (1 + Math.exp(1.3f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 2f))));
                 arm.rotateAngleX = Math.min(arm.rotateAngleX, -0.1f);
                 if (!model.isSneak) {
-                    GlStateManager.translate(0.0F, 0.3F, 0.0F);
+                    GlStateManager.translatef(0.0F, 0.3F, 0.0F);
                 }
                 model.isSneak = true;
             } else {
@@ -136,7 +137,7 @@ public enum ClientEventHandler {
                 arm.rotateAngleZ = 1.5f;
             }
         }
-    }*/
+    }
 
     private void toDefaultBiped(BipedModel model) {
         model.bipedHead.setRotationPoint(0.0F, 0.0F, 0.0F);

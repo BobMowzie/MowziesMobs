@@ -13,9 +13,6 @@ import net.minecraft.world.biome.Biome;
 
 import javax.annotation.Nullable;
 
-/**
- * Created by Josh on 5/1/2017.
- */
 public class MowzieBlockAccess implements IBlockReader {
     private BlockState accessState;
     private Biome biome = Biomes.PLAINS;

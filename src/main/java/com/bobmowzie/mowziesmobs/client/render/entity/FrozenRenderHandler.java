@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.render.RenderHelper;
+import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
@@ -96,9 +97,9 @@ public enum FrozenRenderHandler {
 
     @SubscribeEvent
     public void onPreRenderEntityLivingBase(RenderLivingEvent.Pre event) {
-        LivingEntity player = event.getEntity();
+        LivingEntity entity = event.getEntity();
 
-        if(player.isPotionActive(PotionHandler.FROZEN)) {
+        if (entity.getRidingEntity() instanceof EntityFrozenController) {
             if(!RenderHelper.doesRendererHaveLayer(event.getRenderer(), LayerFrozen.class, false)) {
                 event.getRenderer().addLayer(new LayerFrozen(event.getRenderer()));
             }

@@ -1,11 +1,13 @@
 package com.bobmowzie.mowziesmobs.server.capability;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleCloud;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleSnowFlake;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
+import com.bobmowzie.mowziesmobs.server.message.MessageAddFreezeProgress;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.Blocks;
@@ -26,6 +28,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 public class FrozenCapability {
     public static int MAX_FREEZE_DECAY_DELAY = 10;
@@ -219,7 +222,7 @@ public class FrozenCapability {
             if (!entity.world.isRemote && !entity.isPotionActive(PotionHandler.FROZEN)) {
                 freezeProgress += amount;
                 freezeDecayDelay = MAX_FREEZE_DECAY_DELAY;
-//                MowziesMobs.NETWORK_WRAPPER.sendToDimension(new MessageAddFreezeProgress(entity, amount), entity.dimension); TODO
+                MowziesMobs.NETWORK.send(PacketDistributor.ALL.noArg(), new MessageAddFreezeProgress(entity, amount));
             }
         }
 
@@ -259,9 +262,9 @@ public class FrozenCapability {
         public void onUnfreeze(LivingEntity entity) {
             if (entity != null && frozenController != null) {
                 entity.dismountEntity(frozenController);
-                entity.setPosition(frozenController.posX, frozenController.posY, frozenController.posZ);
-                entity.rotationYaw = getFrozenYaw();
-                entity.rotationPitch = getFrozenPitch();
+//                entity.setPosition(frozenController.posX, frozenController.posY, frozenController.posZ);
+//                entity.rotationYaw = getFrozenYaw();
+//                entity.rotationPitch = getFrozenPitch();
                 frozenController.remove();
                 entity.playSound(MMSounds.ENTITY_FROSTMAW_FROZEN_CRASH.get(), 1, 0.5f);
 
