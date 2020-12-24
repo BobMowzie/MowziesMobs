@@ -367,7 +367,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
                             continue;
                         }
 
-                        float dot = (float) getMotion().normalize().dotProduct(this.getPositionVector().subtract(a.getPositionVector()).normalize());
+                        float dot = (float) a.getMotion().normalize().dotProduct(this.getPositionVector().subtract(a.getPositionVector()).normalize());
                         if (dot > 0.96) {
                             Vec3d dodgeVec = getMotion().crossProduct(new Vec3d(0, 1, 0)).normalize().scale(1.2);
                             Vec3d newPosLeft = getPositionVector().add(dodgeVec.scale(2));
@@ -496,11 +496,11 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
         posX = prevPosX;
         posY = prevPosY;
         posZ = prevPosZ;
-        motionX = motionZ = 0;
+        setMotion(new Vec3d(0, 0, 0));
         posY = 10;
 
         if (getAnimation() == NO_ANIMATION) {
-            AnimationHandler.INSTANCE.sendAnimationMessage(this, SPIT_ANIMATION);
+            AnimationHandler.INSTANCE.sendAnimationMessage(this, TAIL_DEMO_ANIMATION);
         }*/
     }
 
@@ -683,7 +683,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
             BlockPos blockpos = new BlockPos(this.posX, this.getBoundingBox().minY - 1.0D, this.posZ);
             float f5 = this.world.getBlockState(blockpos).getSlipperiness(world, blockpos, this);
             float f7 = this.onGround ? f5 * 0.91F : 0.91F;
-            this.moveRelative(this.onGround ? this.getAIMoveSpeed() * (0.21600002F / (f5 * f5 * f5)) : this.jumpMovementFactor, motion);
+//            this.moveRelative(this.onGround ? this.getAIMoveSpeed() * (0.21600002F / (f5 * f5 * f5)) : this.jumpMovementFactor, motion);
             this.move(MoverType.SELF, this.getMotion());
             Vec3d vec3d5 = this.getMotion();
             if ((this.collidedHorizontally || this.isJumping) && this.isOnLadder()) {
@@ -758,7 +758,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
         /**
          * Keep ticking a continuous task that has already been started
          */
-        public void updateTask()
+        public void tick()
         {
             if (this.parentEntity.getAttackTarget() == null)
             {
@@ -769,7 +769,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
             else
             {
                 LivingEntity entitylivingbase = this.parentEntity.getAttackTarget();
-                if (entitylivingbase.getDistanceSq(this.parentEntity) < 4096.0D)
+                if (entitylivingbase.getDistanceSq(this.parentEntity) < 1600.0D)
                 {
                     double d1 = entitylivingbase.posX - this.parentEntity.posX;
                     double d2 = entitylivingbase.posZ - this.parentEntity.posZ;

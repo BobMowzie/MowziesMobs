@@ -40,6 +40,7 @@ import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.potion.Effects;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
@@ -786,14 +787,11 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         Biome biome = world.getBiome(new BlockPos(x, 50, z));
         if (rand.nextFloat() > ConfigHandler.MOBS.FROSTMAW.generationConfig.generationChance.get()) return;
         if(!SpawnHandler.FROSTMAW_BIOMES.contains(biome)) return;
-        /*boolean flag = false;
-        for (int dimensionAllowed : ConfigHandler.MOBS.FROSTMAW.generationData.dimensions) {
-            if (dimensionAllowed == world.getDimension()) {
-                flag = true;
-                break;
-            }
+        List<String> dimensionNames = ConfigHandler.MOBS.FROSTMAW.generationConfig.dimensions.get();
+        ResourceLocation currDimensionName = world.getDimension().getType().getRegistryName();
+        if (currDimensionName == null || !dimensionNames.contains(currDimensionName.toString())) {
+            return;
         }
-        if (!flag) return;*/ // TODO: Fix dimension config
         BlockPos pos = new BlockPos(x, 0, z);
         int heightMax = ConfigHandler.MOBS.FROSTMAW.generationConfig.heightMax.get().intValue();
         int heightMin = ConfigHandler.MOBS.FROSTMAW.generationConfig.heightMin.get().intValue();

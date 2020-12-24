@@ -6,12 +6,9 @@ import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.capability.LastDamageCapability;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySolarBeam;
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
@@ -20,6 +17,7 @@ import com.bobmowzie.mowziesmobs.server.item.ItemSpear;
 import com.bobmowzie.mowziesmobs.server.message.*;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.power.Power;
+import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -49,11 +47,11 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -287,8 +285,8 @@ public final class ServerEventHandler {
     @SubscribeEvent
     public void onLivingDamage(LivingHurtEvent event) {
         if (event.getSource().isFireDamage() && event.getEntityLiving().isPotionActive(PotionHandler.FROZEN)) {
-                event.getEntityLiving().removeActivePotionEffect(PotionHandler.FROZEN);
-//                MowziesMobs.NETWORK.sendToDimension(new MessageUnfreezeEntity(event.getEntityLiving()), event.getEntityLiving().dimension); TODO
+            event.getEntityLiving().removeActivePotionEffect(PotionHandler.FROZEN);
+            MowziesMobs.NETWORK.send(PacketDistributor.ALL.noArg(), new MessageUnfreezeEntity(event.getEntityLiving()));
         }
         if (event.getEntity() instanceof PlayerEntity) {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getEntity(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
@@ -400,15 +398,15 @@ public final class ServerEventHandler {
         }
     }
 
-    /*@SubscribeEvent
-    public void prePopulateWorld(.Pre event) {
-        MowzieWorldGenerator.generatePrePopulate(event.getWorld(), event.getRand(), event.getChunkX(), event.getChunkZ());
-    }*/ // TODO
+//    @SubscribeEvent
+//    public void prePopulateWorld(DecorateBiomeEvent event) {
+//        MowzieWorldGenerator.generatePrePopulate(event.getWorld(), event.getRand(), event.getChunkX(), event.getChunkZ());
+//    }
 
     /*@SubscribeEvent
     public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
         if (event.getModID().equals(MowziesMobs.MODID)) {
             ConfigManager.sync(MowziesMobs.MODID, Config.Type.INSTANCE);
         }
-    }*/ // TODO
+    }*/
 }
