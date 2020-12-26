@@ -6,20 +6,18 @@
       "conditions": [
         {
           "condition": "killed_by_player"
-        },
-        {
-          "condition": "entity_properties",
-          "entity": "this",
-          "properties": {
-            "mowziesmobs:has_crystal": "true"
-          }
         }
       ],
       "entries": [
         {
           "type": "item",
           "name": "mowziesmobs:ice_crystal",
-          "weight": 1
+          "weight": 1,
+          "functions": [
+            {
+              "function": "mowziesmobs:has_crystal"
+            }
+          ]
         }
       ]
     }

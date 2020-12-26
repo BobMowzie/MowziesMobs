@@ -62,6 +62,7 @@ public final class MowziesMobs {
         SpawnHandler.INSTANCE.registerSpawnPlacementTypes();
         PROXY.initNetwork();
         AdvancementHandler.preInit();
+        LootTableHandler.init();
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigHandler.CLIENT_CONFIG);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHandler.COMMON_CONFIG);

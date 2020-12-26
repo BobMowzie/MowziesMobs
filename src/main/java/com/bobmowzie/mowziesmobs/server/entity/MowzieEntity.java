@@ -57,8 +57,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     protected boolean prevPrevOnGround;
     protected boolean willLandSoon;
     
-    private boolean killDataRecentlyHitFlag;
-    private int killDataLootingLevel;
+    private int killDataRecentlyHit;
     private DamageSource killDataCause;
     private PlayerEntity killDataAttackingPlayer;
 
@@ -311,11 +310,12 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     private void onDeathUpdate(int deathDuration) {
         onDeathAIUpdate();
 
-        attackingPlayer = killDataAttackingPlayer;
         ++this.deathTime;
         if (this.deathTime == deathDuration) {
+            attackingPlayer = killDataAttackingPlayer;
+            recentlyHit = killDataRecentlyHit;
             if (!this.world.isRemote && (this.isPlayer() || this.recentlyHit > 0 && this.canDropLoot() && this.world.getGameRules().getBoolean(GameRules.DO_MOB_LOOT))) {
-                if (dropAfterDeathAnim && getLastDamageSource() != null) spawnDrops(getLastDamageSource());
+                if (dropAfterDeathAnim && killDataCause != null) spawnDrops(killDataCause);
                 int i = this.getExperiencePoints(this.attackingPlayer);
 
                 i = net.minecraftforge.event.ForgeEventFactory.getExperienceDrop(this, this.attackingPlayer, i);
@@ -382,6 +382,9 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
                     }
                 }
             }
+            killDataCause = cause;
+            killDataRecentlyHit = this.recentlyHit;
+            killDataAttackingPlayer = attackingPlayer;
 
             this.world.setEntityState(this, (byte)3);
             this.setPose(Pose.DYING);

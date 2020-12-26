@@ -20,6 +20,7 @@ import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBall;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
+import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.bobmowzie.mowziesmobs.server.spawn.SpawnHandler;
@@ -470,7 +471,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                 crystalPos = crystalPos.rotateYaw((float) Math.toRadians(-rotationYaw - 90));
                 crystalPos = crystalPos.add(getPositionVector());
                 for (PlayerEntity player : getPlayersNearby(8, 8, 8, 8)) {
-                    if (player.getPositionVector().distanceTo(crystalPos) <= 1.6 && (player.isCreative() || player.isInvisible())) {
+                    if (player.getPositionVector().distanceTo(crystalPos) <= 1.7 && (player.isCreative() || player.isInvisible())) {
                         ItemHandlerHelper.giveItemToPlayer(player, new ItemStack(ItemHandler.ICE_CRYSTAL));
                         setHasCrystal(false);
                         if (world.getDifficulty() != Difficulty.PEACEFUL) {
@@ -812,5 +813,10 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
     @Override
     protected BossInfo.Color bossBarColor() {
         return BossInfo.Color.WHITE;
+    }
+
+    @Override
+    protected ResourceLocation getLootTable() {
+        return LootTableHandler.FROSTMAW;
     }
 }

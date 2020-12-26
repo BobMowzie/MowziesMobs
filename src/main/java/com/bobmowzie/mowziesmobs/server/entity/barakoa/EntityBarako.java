@@ -18,6 +18,7 @@ import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySuperNova;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoTrade;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
+import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
@@ -794,4 +795,8 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         return BossInfo.Color.YELLOW;
     }
 
+    @Override
+    protected ResourceLocation getLootTable() {
+        return LootTableHandler.BARAKO;
+    }
 }
