@@ -1,0 +1,122 @@
+{
+  "_comment": "####By Xesar_Zk#####",
+  "_comment": "",
+  "_comment": "Creative Tabs",
+  "itemGroup.mowziesmobs.creativeTab": "Mowzie's Mobs",
+
+  "_comment": "Entities",
+  "entity.mowziesmobs.foliaath": "Foliaath",
+  "entity.mowziesmobs.ferrous_wroughtnaut": "Ferrous Wroughtnaut",
+  "entity.mowziesmobs.baby_foliaath": "Bebe Foliaath",
+  "entity.mowziesmobs.barakoan_barakoana": "Barakoa",
+  "entity.mowziesmobs.barakoan_player": "Barakoa",
+  "entity.mowziesmobs.barakoana": "Barakoana",
+  "entity.mowziesmobs.barakoaya": "Barakoa",
+  "entity.mowziesmobs.barako": "Barako, el Jefe Sol",
+  "entity.mowziesmobs.frostmaw": "Frostmaw",
+  "entity.mowziesmobs.grottol": "Grottol",
+  "entity.mowziesmobs.lantern": "Linterna",
+  "entity.mowziesmobs.naga": "Naga",
+
+  "_comment": "Items",
+  "item.mowziesmobs.foliaath_seed": "Semilla de Foliaath",
+  "item.mowziesmobs.mob_remover": "Removedor de Mob",
+  "item.mowziesmobs.wrought_axe": "Hacha de los Mil Metales",
+  "item.mowziesmobs.wrought_helmet": "Casco Forjado",
+  "item.mowziesmobs.barakoa_mask_fury": "Mascara de Furia",
+  "item.mowziesmobs.barakoa_mask_fear": "Mascara de Miedo",
+  "item.mowziesmobs.barakoa_mask_rage": "Mascara de Rabia",
+  "item.mowziesmobs.barakoa_mask_bliss": "Mascara de Dicha",
+  "item.mowziesmobs.barakoa_mask_misery": "Mascara de Miseria",
+  "item.mowziesmobs.barako_mask": "Semblante Sol",
+  "item.mowziesmobs.dart": "Dardo",
+  "item.mowziesmobs.spear": "Lanza",
+  "item.mowziesmobs.blowgun": "Cerbatana",
+  "item.mowziesmobs.grant_suns_blessing": "Recibe la Bendicion del Sol",
+  "item.mowziesmobs.test_structure": "Estructuras de Prueba",
+  "item.mowziesmobs.ice_crystal": "Cristal de hielo",
+  "item.mowziesmobs.earth_talisman": "Talisman de Tierra",
+
+  "item.mowziesmobs.blowgun.text.0": "Cargas rapido",
+  "item.mowziesmobs.blowgun.text.1": "Corto alcance",
+  "item.mowziesmobs.blowgun.text.2": "Solo dispara los dardos",
+
+  "item.mowziesmobs.wrought_axe.text.0": "Nunca se rompe",
+  "item.mowziesmobs.wrought_axe.text.1": "Click derecho para atacar en un arco grande",
+  "item.mowziesmobs.wrought_axe.text.2": "Shift + Click derecho para golpear el suelo y crear una onda de choque",
+
+  "item.mowziesmobs.barako_mask.text.0": "Nunca se rompe",
+  "item.mowziesmobs.barako_mask.text.1": "Equipa, luego Click derecho con una Mascara de Barakoa",
+  "item.mowziesmobs.barako_mask.text.2": "para engendrar seguidores",
+
+  "item.mowziesmobs.barakoa_mask_fear.text.0": "Concede Rapidez",
+  "item.mowziesmobs.barakoa_mask_fear.text.1": "Me pregunto si...?",
+  "item.mowziesmobs.barakoa_mask_rage.text.0": "Concede Prisa",
+  "item.mowziesmobs.barakoa_mask_rage.text.1": "Me pregunto si...?",
+  "item.mowziesmobs.barakoa_mask_misery.text.0": "Concede Resistencia",
+  "item.mowziesmobs.barakoa_mask_misery.text.1": "Me pregunto si...?",
+  "item.mowziesmobs.barakoa_mask_bliss.text.0": "Concede Salto Impulsado",
+  "item.mowziesmobs.barakoa_mask_bliss.text.1": "Me pregunto si...?",
+  "item.mowziesmobs.barakoa_mask_fury.text.0": "Concede Fuerza",
+  "item.mowziesmobs.barakoa_mask_fury.text.1": "Me pregunto si...?",
+
+  "item.mowziesmobs.dart.text.0": "Solo se puede usar con cerbatanas",
+  "item.mowziesmobs.dart.text.1": "Objetivos venenosos",
+
+  "item.mowziesmobs.foliaath_seed.text.0": "Plantalo en la hierba",
+  "item.mowziesmobs.foliaath_seed.text.1": "Alimentalo cuando tenga hambre por 2 dias",
+
+  "item.mowziesmobs.grant_suns_blessing.text.0": "Otorga la Bendicion del Sol por 20 minutos",
+  "item.mowziesmobs.grant_suns_blessing.text.1": "Con la mano vacia, Click derecho para llamar un ataque del sol",
+  "item.mowziesmobs.grant_suns_blessing.text.2": "Con la mano vacia, Shift + Click derecho disparar un rayo solar (cuesta 2 minutos)",
+
+  "item.mowziesmobs.earth_talisman.text.0": "Solo modo Creativo",
+  "item.mowziesmobs.earth_talisman.text.1": "Coloquelo en inventario para manejar la geomancia",
+  "item.mowziesmobs.earth_talisman.text.2": "Click derecho apuntando al suelo con la mano vacia para generar una roca",
+  "item.mowziesmobs.earth_talisman.text.3": "Golpea la Roca para dispararlo como proyectil",
+  "item.mowziesmobs.earth_talisman.text.4": "Carga Click derecho para generar rocas mas grandes",
+
+  "item.mowziesmobs.mob_remover.text.0": "Click izquierdo para eliminar un mob de Mowzie's Mobs",
+
+  "item.mowziesmobs.wrought_helmet.text.0": "Nunca se rompe",
+
+  "item.mowziesmobs.spear.text.0": "Extiende el rango de ataque en 2 bloques",
+  "item.mowziesmobs.spear.text.1": "1/3 posibilidad de matar animales instantaneamente",
+
+  "item.mowziesmobs.ice_crystal.text.0": "Mantenga Click derecho para canalizar un torbellino helado",
+  "item.mowziesmobs.ice_crystal.text.1": "Se recarga en el inventario",
+
+  "item.mowziesmobs.captured_grottol": "Grottol Capturado",
+
+  "item.mowziesmobs.glowing_jelly": "Gelatina Luminosa",
+  "item.mowziesmobs.glowing_jelly.text.0": "Comerlo para ganar brevemente visión nocturna",
+
+  "item.mowziesmobs.naga_fang": "Colmillo de Naga",
+  "item.mowziesmobs.naga_fang.text.0": "Úsalo para crear poción de resistencia al veneno.",
+
+  "_comment": "Blocks",
+  "block.mowziesmobs.campfire": "Hoguera",
+  "block.mowziesmobs.painted_acacia": "Madera de Acacia Pintada",
+  "block.mowziesmobs.painted_acacia_slab": "Losa de Madera de Acacia Pintada",
+
+  "_comment": "Potions",
+  "effect.mowziesmobs.suns_blessing": "Bendicion del Sol",
+  "effect.mowziesmobs.geomancy": "Geomancia",
+  "effect.mowziesmobs.frozen": "Congelado(a)",
+  "effect.mowziesmobs.poison_resist": "Resistencia al Veneno",
+  "effect.mowziesmobs.effect.poison_resist": "Poción de Resistencia al Veneno",
+
+  "_comment": "Tile Entities",
+
+
+  "_comment": "Containers",
+  "entity.mowziesmobs.barakoaya.trade": "Barakoa",
+  "entity.mowziesmobs.barako.trade": "Barako, el Jefe Sol",
+  "entity.mowziesmobs.barako.trade.button.text": "Comercio",
+  "entity.mowziesmobs.barako.trade.button.hover": "Regrese luego para reponer gratis",
+  "entity.mowziesmobs.barako.replenish.button.text": "Reponer",
+  "entity.mowziesmobs.barako.replenish.button.hover": "Reponga su bendicion gratis",
+
+  "_comment": "Death Messages",
+  "death.attack.dart": "%1$s fue destruido por %2$s"
+}

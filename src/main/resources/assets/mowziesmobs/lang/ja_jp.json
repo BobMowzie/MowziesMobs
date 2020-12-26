@@ -1,0 +1,137 @@
+{
+  "_comment": "Creative Tabs",
+  "itemGroup.mowziesmobs.creativeTab": "Mowzie's Mobs",
+
+
+  "_comment": "Entities",
+  "entity.mowziesmobs.foliaath": "フォリアス",
+  "entity.mowziesmobs.ferrous_wroughtnaut": "フェラス・ロートノート",
+  "entity.mowziesmobs.baby_foliaath": "フォリアスの苗",
+  "entity.mowziesmobs.barakoan_barakoana": "バラコア",
+  "entity.mowziesmobs.barakoan_player": "バラコア",
+  "entity.mowziesmobs.barakoana": "バラコアナ",
+  "entity.mowziesmobs.barakoaya": "バラコア",
+  "entity.mowziesmobs.barako": "バラコ・ザ・サンチーフ",
+  "entity.mowziesmobs.frostmaw": "フロスト・モー",
+  "entity.mowziesmobs.lantern": "ランタン",
+  "entity.mowziesmobs.grottol": "グロットル",
+  "entity.mowziesmobs.naga": "ナーガ",
+
+  "_comment": "Items",
+  "item.mowziesmobs.foliaath_seed": "フォリアスの種",
+  "item.mowziesmobs.mob_remover": "モブ削除用アイテム",
+  "item.mowziesmobs.wrought_axe": "千鋼の斧",
+  "item.mowziesmobs.wrought_helmet": "ロートヘルム",
+  "item.mowziesmobs.barakoa_mask_fury": "激情のマスク",
+  "item.mowziesmobs.barakoa_mask_fear": "畏怖のマスク",
+  "item.mowziesmobs.barakoa_mask_rage": "憤怒のマスク",
+  "item.mowziesmobs.barakoa_mask_bliss": "至福のマスク",
+  "item.mowziesmobs.barakoa_mask_misery": "苦悩のマスク",
+  "item.mowziesmobs.barako_mask": "太陽の面",
+  "item.mowziesmobs.dart": "毒の吹き矢",
+  "item.mowziesmobs.spear": "槍",
+  "item.mowziesmobs.blowgun": "吹き筒",
+  "item.mowziesmobs.grant_suns_blessing": "太陽の力",
+  "item.mowziesmobs.test_structure": "テスト",
+  "item.mowziesmobs.ice_crystal": "アイスクリスタル",
+  "item.mowziesmobs.earth_talisman": "大地のタリスマン",
+  "item.mowziesmobs.captured_grottol": "捕まったグロットル",
+  "item.mowziesmobs.glowing_jelly": "輝くジェル",
+
+
+  "item.mowziesmobs.blowgun.text.0": "チャージ速度が速い",
+  "item.mowziesmobs.blowgun.text.1": "飛距離は長くない",
+  "item.mowziesmobs.blowgun.text.2": "吹き矢専用",
+
+
+  "item.mowziesmobs.wrought_axe.text.0": "耐久値無限",
+  "item.mowziesmobs.wrought_axe.text.1": "右クリックで範囲攻撃",
+  "item.mowziesmobs.wrought_axe.text.2": "地面へShift+右クリックで地響き",
+
+
+  "item.mowziesmobs.barako_mask.text.0": "耐久値無限",
+  "item.mowziesmobs.barako_mask.text.1": "バラコアのマスクで右クリック",
+  "item.mowziesmobs.barako_mask.text.2": "手下を呼び出せる",
+
+
+  "item.mowziesmobs.barakoa_mask_fear.text.0": "移動速度が上昇する",
+  "item.mowziesmobs.barakoa_mask_fear.text.1": "もしかすると...?",
+  "item.mowziesmobs.barakoa_mask_rage.text.0": "採掘速度が上昇する",
+  "item.mowziesmobs.barakoa_mask_rage.text.1": "もしかすると...?",
+  "item.mowziesmobs.barakoa_mask_misery.text.0": "攻撃からの耐性が付く",
+  "item.mowziesmobs.barakoa_mask_misery.text.1": "もしかすると...?",
+  "item.mowziesmobs.barakoa_mask_bliss.text.0": "跳躍力が上昇する",
+  "item.mowziesmobs.barakoa_mask_bliss.text.1": "もしかすると...?",
+  "item.mowziesmobs.barakoa_mask_fury.text.0": "攻撃力が上昇する",
+  "item.mowziesmobs.barakoa_mask_fury.text.1": "もしかすると...?",
+
+
+  "item.mowziesmobs.dart.text.0": "吹き筒で撃ち出す",
+  "item.mowziesmobs.dart.text.1": "当たったモブは毒に侵される",
+
+
+  "item.mowziesmobs.foliaath_seed.text.0": "草ブロックに植える",
+  "item.mowziesmobs.foliaath_seed.text.1": "半日後、苗は空腹になる",
+  "item.mowziesmobs.foliaath_seed.text.2": "肉を投げると食べて満腹になる",
+  "item.mowziesmobs.foliaath_seed.text.3": "2日後に完全成長するであろう",
+
+
+  "item.mowziesmobs.grant_suns_blessing.text.0": "20分間太陽の力が付く",
+  "item.mowziesmobs.grant_suns_blessing.text.1": "素手で右クリックでサン・ストライクを放つ",
+  "item.mowziesmobs.grant_suns_blessing.text.2": "素手でShift+右クリックで太陽光線を放つ(ただし制限時間が縮む)",
+
+  "item.mowziesmobs.earth_talisman.text.0": "クリエイティブモードのみ",
+  "item.mowziesmobs.earth_talisman.text.1": "インベントリにあると大地の力が付く",
+  "item.mowziesmobs.earth_talisman.text.2": "地面を右クリックで土が浮き出す",
+  "item.mowziesmobs.earth_talisman.text.3": "土をパンチする事で弾き飛ばす",
+  "item.mowziesmobs.earth_talisman.text.4": "右クリック長押しで大きな土塊が現れる",
+  "item.mowziesmobs.earth_talisman.text.5": "空中で、Shiftを2回押して更に押し続けると回転を始める",
+  "item.mowziesmobs.earth_talisman.text.6": "採掘したいものに向かって方向を転換する",
+  "item.mowziesmobs.earth_talisman.text.7": "地上でスニークして解除",
+
+  "item.mowziesmobs.mob_remover.text.0": "左クリックで当MODのモブを削除",
+
+  "item.mowziesmobs.wrought_helmet.text.0": "耐久値無限",
+
+  "item.mowziesmobs.spear.text.0": "3.5ブロック分のリーチを持つ",
+  "item.mowziesmobs.spear.text.1": "攻撃した動物は1/3の確率で即死する",
+
+  "item.mowziesmobs.ice_crystal.text.0": "右クリックで氷の息吹を放つ",
+  "item.mowziesmobs.ice_crystal.text.1": "放置しておけばチャージされる",
+
+  "item.mowziesmobs.glowing_jelly.text.0": "食べるだけで暗視効果が付く",
+
+  "item.mowziesmobs.naga_fang": "ナーガの牙",
+  "item.mowziesmobs.naga_fang.text.0": "毒耐性のポーションの材料",
+
+  "_comment": "Blocks",
+  "block.mowziesmobs.campfire": "焚き火",
+  "block.mowziesmobs.painted_acacia": "模様付きアカシアの木材",
+  "block.mowziesmobs.painted_acacia_slab": "模様付きアカシアの木材ハーフブロック",
+  "block.mowziesmobs.grottol": "グロットル",
+
+  "_comment": "Potions",
+  "effect.mowziesmobs.suns_blessing": "太陽の祝福",
+  "effect.mowziesmobs.geomancy": "大地の力",
+  "effect.mowziesmobs.frozen": "凍結",
+  "effect.mowziesmobs.poison_resist": "毒耐性",
+
+  "effect.mowziesmobs.effect.poison_resist": "耐毒のポーション",
+
+  "_comment": "Tile Entities",
+
+
+
+  "_comment": "Containers",
+
+  "entity.mowziesmobs.barakoaya.trade": "バラコア",
+  "entity.mowziesmobs.barako.trade": "太陽の酋長",
+  "entity.mowziesmobs.barako.trade.button.text": "取引",
+  "entity.mowziesmobs.barako.trade.button.hover": "2回目以降は無償で補充できる",
+  "entity.mowziesmobs.barako.replenish.button.text": "力の補充",
+  "entity.mowziesmobs.barako.replenish.button.hover": "無償で補充できる",
+
+
+  "_comment": "Death Messages",
+  "death.attack.dart": "%1$sは%2$sに吹き矢で撃ち殺された"
+}

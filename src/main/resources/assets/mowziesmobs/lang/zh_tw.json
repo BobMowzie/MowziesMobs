@@ -1,0 +1,106 @@
+{
+  "_comment": "Creative Tabs",
+  "itemGroup.mowziesmobs.creativeTab": "莫西的傳說生物",
+
+  "_comment": "Entities",
+  "entity.mowziesmobs.foliaath": "食人花",
+  "entity.mowziesmobs.ferrous_wroughtnaut": "鍛鋼盔甲",
+  "entity.mowziesmobs.baby_foliaath": "小食人花",
+  "entity.mowziesmobs.barakoan_barakoana": "獵頭族",
+  "entity.mowziesmobs.barakoan_player": "獵頭族",
+  "entity.mowziesmobs.barakoana": "獵頭族菁英",
+  "entity.mowziesmobs.barakoaya": "獵頭族",
+  "entity.mowziesmobs.barako": "太陽酋長‧巴拉可",
+  "entity.mowziesmobs.frostmaw": "冬之靈",
+
+  "_comment": "Items",
+  "item.mowziesmobs.foliaath_seed": "食人花種子",
+  "item.mowziesmobs.mob_remover": "怪物移除器",
+  "item.mowziesmobs.wrought_axe": "千金之斧",
+  "item.mowziesmobs.wrought_helmet": "鍛鋼頭盔",
+  "item.mowziesmobs.barakoa_mask_fury": "激昂面具",
+  "item.mowziesmobs.barakoa_mask_fear": "恐懼面具",
+  "item.mowziesmobs.barakoa_mask_rage": "憤怒面具",
+  "item.mowziesmobs.barakoa_mask_bliss": "至福面具",
+  "item.mowziesmobs.barakoa_mask_misery": "悲慘面具",
+  "item.mowziesmobs.barako_mask": "洗面乳",
+  "item.mowziesmobs.dart": "飛鏢",
+  "item.mowziesmobs.spear": "長槍",
+  "item.mowziesmobs.blowgun": "吹箭筒",
+  "item.mowziesmobs.grant_suns_blessing": "獲得太陽的祝福",
+  "item.mowziesmobs.test_structure": "測試建造物",
+  "item.mowziesmobs.ice_crystal": "冰之結晶",
+  "item.mowziesmobs.earth_talisman": "大地護身符",
+
+  "item.mowziesmobs.blowgun.text.0": "快速填充",
+  "item.mowziesmobs.blowgun.text.1": "短射程範圍",
+  "item.mowziesmobs.blowgun.text.2": "只射飛鏢",
+
+  "item.mowziesmobs.wrought_axe.text.0": "絕不毀損",
+  "item.mowziesmobs.wrought_axe.text.1": "點右鍵以攻擊巨大弧形範圍",
+  "item.mowziesmobs.wrought_axe.text.2": "shift+點右鍵以打擊地面製造衝擊波",
+
+  "item.mowziesmobs.barako_mask.text.0": "絕不毀損",
+  "item.mowziesmobs.barako_mask.text.1": "裝備後對獵頭族面具點右鍵",
+  "item.mowziesmobs.barako_mask.text.2": "以召喚從者",
+
+  "item.mowziesmobs.barakoa_mask_fear.text.0": "賜予迅捷",
+  "item.mowziesmobs.barakoa_mask_fear.text.1": "我想是不是...?",
+  "item.mowziesmobs.barakoa_mask_rage.text.0": "賜予加速",
+  "item.mowziesmobs.barakoa_mask_rage.text.1": "我想是不是...?",
+  "item.mowziesmobs.barakoa_mask_misery.text.0": "賜予抗性",
+  "item.mowziesmobs.barakoa_mask_misery.text.1": "我想是不是...?",
+  "item.mowziesmobs.barakoa_mask_bliss.text.0": "賜予跳躍",
+  "item.mowziesmobs.barakoa_mask_bliss.text.1": "我想是不是...?",
+  "item.mowziesmobs.barakoa_mask_fury.text.0": "賜予強韌",
+  "item.mowziesmobs.barakoa_mask_fury.text.1": "我想是不是...?",
+
+  "item.mowziesmobs.dart.text.0": "只能透過吹箭筒使用",
+  "item.mowziesmobs.dart.text.1": "使目標中毒",
+
+  "item.mowziesmobs.foliaath_seed.text.0": "種植於草地上",
+  "item.mowziesmobs.foliaath_seed.text.1": "飢餓達兩天時餵食",
+
+  "item.mowziesmobs.grant_suns_blessing.text.0": "賜予陽光的祝福20分鐘",
+  "item.mowziesmobs.grant_suns_blessing.text.1": "空手時點右鍵以召喚太陽衝擊",
+  "item.mowziesmobs.grant_suns_blessing.text.2": "空手時shift+點右鍵以發射太陽光線(消耗2分鐘)",
+
+  "item.mowziesmobs.earth_talisman.text.0": "僅限創造模式",
+  "item.mowziesmobs.earth_talisman.text.1": "置於物品欄裡以掌握大地法術",
+  "item.mowziesmobs.earth_talisman.text.2": "空手右鍵點擊土質地表以生成岩塊",
+  "item.mowziesmobs.earth_talisman.text.3": "擊打岩塊使它作為發射物發射",
+  "item.mowziesmobs.earth_talisman.text.4": "長按右鍵以生成更大的岩塊",
+
+  "item.mowziesmobs.mob_remover.text.0": "點左鍵以消除一莫西傳說生物模組之怪物",
+
+  "item.mowziesmobs.wrought_helmet.text.0": "絕不毀損",
+
+  "item.mowziesmobs.spear.text.0": "延長攻擊距離3.5格",
+  "item.mowziesmobs.spear.text.1": "1/3機率秒殺動物",
+  "item.mowziesmobs.ice_crystal.text.0": "長按右鍵以施放冰之旋風",
+  "item.mowziesmobs.ice_crystal.text.1": "當在物品欄時會自動充填",
+
+  "_comment": "Blocks",
+  "block.mowziesmobs.campfire": "營火",
+  "block.mowziesmobs.painted_acacia": "彩繪相思樹木",
+  "block.mowziesmobs.painted_acacia_slab": "彩繪相思樹木板",
+
+  "_comment": "Potions",
+  "effect.mowziesmobs.suns_blessing": "太陽祝福",
+  "effect.mowziesmobs.geomancy": "大地之力",
+  "effect.mowziesmobs.frozen": "冰凍",
+
+  "_comment": "Tile Entities",
+
+
+  "_comment": "Containers",
+  "entity.mowziesmobs.barakoaya.trade": "獵頭族",
+  "entity.mowziesmobs.barako.trade": "太陽酋長‧巴拉可",
+  "entity.mowziesmobs.barako.trade.button.text": "交易",
+  "entity.mowziesmobs.barako.trade.button.hover": "稍後歸還以免費填充",
+  "entity.mowziesmobs.barako.replenish.button.text": "填充",
+  "entity.mowziesmobs.barako.replenish.button.hover": "免費填充你的祝福",
+
+  "_comment": "Death Messages",
+  "death.attack.dart": "%1$s 被 %2$s 射殺"
+}

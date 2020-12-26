@@ -1,0 +1,132 @@
+{
+  "_comment": "Creative Tabs",
+  "itemGroup.mowziesmobs.creativeTab": "Mowzie's Mobs",
+
+  "_comment": "Entities",
+  "entity.mowziesmobs.foliaath": "Фолиаф",
+  "entity.mowziesmobs.ferrous_wroughtnaut": "Железный Кованый",
+  "entity.mowziesmobs.baby_foliaath": "Малый Фолиаф",
+  "entity.mowziesmobs.barakoan_barakoana": "Баракоа",
+  "entity.mowziesmobs.barakoan_player": "Баракоа",
+  "entity.mowziesmobs.barakoana": "Баракоана",
+  "entity.mowziesmobs.barakoaya": "Баракоа",
+  "entity.mowziesmobs.barako": "Барако, вождь Солнца",
+  "entity.mowziesmobs.frostmaw": "Ледочрев",
+  "entity.mowziesmobs.grottol": "Гроттул",
+  "entity.mowziesmobs.lantern": "Фонар",
+  "entity.mowziesmobs.naga": "Нага",
+
+  "_comment": "Items",
+  "item.mowziesmobs.foliaath_seed": "Зерно Фолиафа",
+  "item.mowziesmobs.mob_remover": "Съёмник существ",
+  "item.mowziesmobs.wrought_axe": "Топор Тысячи Металлов",
+  "item.mowziesmobs.wrought_helmet": "Шлем Кованого",
+  "item.mowziesmobs.barakoa_mask_fury": "Маска Ярости",
+  "item.mowziesmobs.barakoa_mask_fear": "Маска Страха",
+  "item.mowziesmobs.barakoa_mask_rage": "Маска Буйства",
+  "item.mowziesmobs.barakoa_mask_bliss": "Маска Блаженства",
+  "item.mowziesmobs.barakoa_mask_misery": "Маска Несчастья",
+  "item.mowziesmobs.barako_mask": "Лик Солнца",
+  "item.mowziesmobs.dart": "Дротик",
+  "item.mowziesmobs.spear": "Копьё",
+  "item.mowziesmobs.blowgun": "Духовая трубка",
+  "item.mowziesmobs.grant_suns_blessing": "Получить благословение Солнца",
+  "item.mowziesmobs.test_structure": "Проверка структур",
+  "item.mowziesmobs.ice_crystal": "Кристалл Льда",
+  "item.mowziesmobs.earth_talisman": "Талисман Земли",
+
+  "item.mowziesmobs.blowgun.text.0": "Быстро заряжается",
+  "item.mowziesmobs.blowgun.text.1": "Короткая дистанция",
+  "item.mowziesmobs.blowgun.text.2": "Стреляет дротиками",
+
+  "item.mowziesmobs.wrought_axe.text.0": "Не ломается",
+  "item.mowziesmobs.wrought_axe.text.1": "ПКМ: Рассекающий удар",
+  "item.mowziesmobs.wrought_axe.text.2": "\"Красться\"+ПКМ: Ударная волна",
+
+  "item.mowziesmobs.barako_mask.text.0": "Не ломается",
+  "item.mowziesmobs.barako_mask.text.1": "Если экипирован, ПКМ с маской Баракоа в руке:",
+  "item.mowziesmobs.barako_mask.text.2": "Призвать приспешника",
+
+  "item.mowziesmobs.barakoa_mask_fear.text.0": "Дарует скорость",
+  "item.mowziesmobs.barakoa_mask_fear.text.1": "А что если...?",
+  "item.mowziesmobs.barakoa_mask_rage.text.0": "Дарует спешку",
+  "item.mowziesmobs.barakoa_mask_rage.text.1": "А что если...?",
+  "item.mowziesmobs.barakoa_mask_misery.text.0": "Дарует сопротивление",
+  "item.mowziesmobs.barakoa_mask_misery.text.1": "А что если...?",
+  "item.mowziesmobs.barakoa_mask_bliss.text.0": "Дарует прыгучесть",
+  "item.mowziesmobs.barakoa_mask_bliss.text.1": "А что если...?",
+  "item.mowziesmobs.barakoa_mask_fury.text.0": "Дарует силу",
+  "item.mowziesmobs.barakoa_mask_fury.text.1": "А что если...?",
+
+  "item.mowziesmobs.dart.text.0": "Только для Духовой трубки",
+  "item.mowziesmobs.dart.text.1": "Отравляет цель",
+
+  "item.mowziesmobs.foliaath_seed.text.0": "Посади его в траву",
+  "item.mowziesmobs.foliaath_seed.text.1": "Проголодается за половину дня",
+  "item.mowziesmobs.foliaath_seed.text.2": "Кормится броском любого мяса",
+  "item.mowziesmobs.foliaath_seed.text.3": "Полностью вырастает за 2 дня",
+
+  "item.mowziesmobs.grant_suns_blessing.text.0": "Дарует благословение Солнца на 20 минут",
+  "item.mowziesmobs.grant_suns_blessing.text.1": "ПКМ с пустой рукой: Солнечный удар",
+  "item.mowziesmobs.grant_suns_blessing.text.2": "\"Красться\"+ПКМ с пустой рукой: Солнечный луч (перезарядка: 2 минуты)",
+
+  "item.mowziesmobs.earth_talisman.text.0": "Только для творческого режима",
+  "item.mowziesmobs.earth_talisman.text.1": "Если в инвентаре: Даёт Геомантию",
+  "item.mowziesmobs.earth_talisman.text.2": "ПКМ с пустой рукой по земле: Призвать глыбу",
+  "item.mowziesmobs.earth_talisman.text.3": "Зажать ПКМ с пустой рукой по земле: Призвать больше глыб",
+  "item.mowziesmobs.earth_talisman.text.4": "Удар по глыбе пускает её вперёд",
+  "item.mowziesmobs.earth_talisman.text.5": "Двойное нажатие \"Красться\" в воздухе:",
+  "item.mowziesmobs.earth_talisman.text.6": "Туннелирование в сторону взгляда. (Пока что не работает на многопользовательских серверах)",
+  "item.mowziesmobs.earth_talisman.text.7": "Отпустить для остановки и приземления",
+
+  "item.mowziesmobs.mob_remover.text.0": "ЛКМ: убрать существо из мода Mowzie's Mobs",
+
+  "item.mowziesmobs.wrought_helmet.text.0": "Не ломается",
+
+  "item.mowziesmobs.spear.text.0": "Продлевает атаку на 3,5 метра",
+  "item.mowziesmobs.spear.text.1": "Шанс 1/3: Мгновенно убить большинство животных",
+
+  "item.mowziesmobs.ice_crystal.text.0": "Зажать ПКМ: Морозящее дыхание",
+  "item.mowziesmobs.ice_crystal.text.1": "Перезаряжается в инвентаре",
+
+  "item.mowziesmobs.captured_grottol": "Пойманный Гроттул",
+
+  "item.mowziesmobs.glowing_jelly": "Светящееся желе",
+  "item.mowziesmobs.glowing_jelly.text.0": "Ночное зрение (0:30)",
+
+  "item.mowziesmobs.naga_fang": "Клык Наги",
+  "item.mowziesmobs.naga_fang.text.0": "Используется в изготовлении Зелья ядостойкости",
+
+  "_comment": "Blocks",
+  "block.mowziesmobs.campfire": "Костёр",
+  "block.mowziesmobs.painted_acacia": "Окрашенная древесина акации",
+  "block.mowziesmobs.painted_acacia_slab": "Окрашенная плита из акации",
+  "block.mowziesmobs.grottol": "Гроттул",
+
+  "_comment": "Potions",
+  "effect.mowziesmobs.suns_blessing": "Благословение Солнца",
+  "effect.mowziesmobs.geomancy": "Геомантия",
+  "effect.mowziesmobs.frozen": "Замерзание",
+  "effect.mowziesmobs.poison_resist": "Ядостойкость",
+  "effect.mowziesmobs.effect.poison_resist": "Зелье ядостойкости",
+
+  "_comment": "Tile Entities",
+
+
+  "_comment": "Containers",
+  "entity.mowziesmobs.barakoaya.trade": "Баракоа",
+  "entity.mowziesmobs.barako.trade": "Барако, вождь Солнца",
+  "entity.mowziesmobs.barako.trade.button.text": "Обмен",
+  "entity.mowziesmobs.barako.trade.button.hover": "Вернитесь позже для бесплатного восполнения",
+  "entity.mowziesmobs.barako.replenish.button.text": "Восполнить",
+  "entity.mowziesmobs.barako.replenish.button.hover": "Бесплатно восполняет благословение (бесплатно)",
+
+  "_comment": "Death Messages",
+  "death.attack.dart": "%2$s застрелил %1$s",
+
+  "_comment": "Strings which are not contained in source .lang file",
+  "entity.mowziesmobs.boulder": "Глыба",
+  "splash_potion.mowziesmobs.effect.poison_resist": "Взрывное зелье ядостойкости",
+  "lingering_potion.mowziesmobs.effect.poison_resist": "Туманное зелье ядостойкости",
+  "tipped_arrow.effect.poison_resist": "Стрела ядостойкости"
+}
