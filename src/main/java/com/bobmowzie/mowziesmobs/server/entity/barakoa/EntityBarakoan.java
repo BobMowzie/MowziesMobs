@@ -3,13 +3,16 @@ package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.EntityDart;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
+import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -61,8 +64,8 @@ public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarak
     }
 
     @Override
-    protected String getPickedEntityId() {
-        return MowziesMobs.MODID + "." + EntityHandler.BARAKOAYA_ID;
+    public ItemStack getPickedResult(RayTraceResult target) {
+        return new ItemStack(ItemHandler.BARAKOA_SPAWN_EGG);
     }
 
     @Override

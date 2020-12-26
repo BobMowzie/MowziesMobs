@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.IntermittentAnimation;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
@@ -19,6 +20,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.SpawnEggItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.ParticleTypes;
@@ -26,6 +28,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.*;
@@ -65,25 +68,6 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
 
     public MowzieEntity(EntityType<? extends MowzieEntity> type, World world) {
         super(type, world);
-    }
-
-    /*@Override
-    public ItemStack getPickedResult(RayTraceResult target) {
-        String id = getPickedEntityId();
-        if (id == null) {
-            return ItemStack.EMPTY;
-        }
-        Optional<EntityType<?>> type = EntityType.byKey(id);
-        if (type.isPresent() && EntityHandler.INSTANCE.hasEntityEggInfo(type.get())) {
-            ItemStack stack = new ItemStack(ItemHandler.SPAWN_EGG);
-            ItemSpawnEgg.applyEntityIdToItemStack(stack, type.get());
-            return stack;
-        }
-        return ItemStack.EMPTY;
-    }*/ // TODO
-
-    protected String getPickedEntityId() {
-        return getEntityString();
     }
 
     protected void registerAttributes()
