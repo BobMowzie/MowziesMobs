@@ -1,15 +1,14 @@
 package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.model.entity.ModelAxeAttack;
+import com.bobmowzie.mowziesmobs.client.render.entity.RenderAxeAttack;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
-import com.bobmowzie.mowziesmobs.server.item.ItemBarakoMask;
-import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
-import com.bobmowzie.mowziesmobs.server.item.ItemWroughtAxe;
-import com.bobmowzie.mowziesmobs.server.item.ItemWroughtHelm;
+import com.bobmowzie.mowziesmobs.server.item.*;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.MainWindow;
@@ -66,6 +65,9 @@ public enum ClientEventHandler {
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
         if (playerCapability != null && event.getHand() == Hand.MAIN_HAND && playerCapability.getUntilAxeSwing() > 0) {
             event.setCanceled(true);
+        }
+        else if (event.getItemStack().getItem() == ItemHandler.WROUGHT_AXE) {
+
         }
     }
 

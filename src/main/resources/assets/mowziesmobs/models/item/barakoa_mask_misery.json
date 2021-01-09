@@ -1,6 +1,6 @@
 {
 	"parent": "mowziesmobs:item/barakoa_mask",
 	"textures": {
-		"layer0": "mowziesmobs:item/barakoa_mask_misery"
+		"layer0": "mowziesmobs:item/barakoa_mask_misery_icon"
 	}
 }
