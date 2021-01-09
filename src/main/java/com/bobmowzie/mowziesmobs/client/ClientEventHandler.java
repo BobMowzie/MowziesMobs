@@ -1,8 +1,6 @@
 package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.entity.ModelAxeAttack;
-import com.bobmowzie.mowziesmobs.client.render.entity.RenderAxeAttack;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
@@ -11,6 +9,7 @@ import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.item.*;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -18,17 +17,29 @@ import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.*;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.apache.commons.lang3.tuple.Pair;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
+
+import javax.vecmath.Matrix4f;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 @OnlyIn(Dist.CLIENT)
 public enum ClientEventHandler {
@@ -288,7 +299,7 @@ public enum ClientEventHandler {
     @SubscribeEvent
     public void updateFOV(FOVUpdateEvent event) {
         PlayerEntity player = event.getEntity();
-        if (player.isHandActive() && player.getActiveItemStack().getItem() instanceof net.minecraft.item.BowItem) {
+        if (player.isHandActive() && player.getActiveItemStack().getItem() instanceof ItemBlowgun) {
             int i = player.getItemInUseMaxCount();
             float f1 = (float)i / 5.0F;
             if (f1 > 1.0F) {
@@ -300,4 +311,66 @@ public enum ClientEventHandler {
             event.setNewfov(1.0F - f1 * 0.15F);
         }
     }
+
+    @SubscribeEvent
+    public void onModelBake(ModelBakeEvent event) {
+        Map<ResourceLocation, IBakedModel> map = event.getModelRegistry();
+
+        ResourceLocation axeModelInventory = new ModelResourceLocation("wrought_axe", "inventory");
+        ResourceLocation axeModelHand = new ModelResourceLocation("wrought_axe_in_hand", "inventory");
+
+        IBakedModel axeBakedModelDefault = map.get(axeModelInventory);
+        IBakedModel axeBakedModelHand = map.get(axeModelHand);
+        IBakedModel axeModelWrapper = new IBakedModel()
+        {
+            @Override
+            public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand)
+            {
+                return axeBakedModelDefault.getQuads(state, side, rand);
+            }
+
+            @Override
+            public boolean isAmbientOcclusion()
+            {
+                return axeBakedModelDefault.isAmbientOcclusion();
+            }
+
+            @Override
+            public boolean isGui3d()
+            {
+                return axeBakedModelDefault.isGui3d();
+            }
+
+            @Override
+            public boolean isBuiltInRenderer()
+            {
+                return axeBakedModelDefault.isBuiltInRenderer();
+            }
+
+            @Override
+            public TextureAtlasSprite getParticleTexture()
+            {
+                return axeBakedModelDefault.getParticleTexture();
+            }
+
+            @Override
+            public ItemOverrideList getOverrides()
+            {
+                return axeBakedModelDefault.getOverrides();
+            }
+
+            @Override
+            public Pair<? extends IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType) {
+                IBakedModel modelToUse = axeBakedModelDefault;
+                if (cameraTransformType == TransformType.FIRST_PERSON_LEFT_HAND || cameraTransformType == TransformType.FIRST_PERSON_RIGHT_HAND
+                        || cameraTransformType == TransformType.THIRD_PERSON_LEFT_HAND || cameraTransformType == TransformType.THIRD_PERSON_RIGHT_HAND)
+                {
+                    modelToUse = axeBakedModelHand;
+                }
+                return ForgeHooksClient.handlePerspective(modelToUse, cameraTransformType);
+            }
+        };
+        map.put(axeModelInventory, axeModelWrapper);
+    }
+
 }

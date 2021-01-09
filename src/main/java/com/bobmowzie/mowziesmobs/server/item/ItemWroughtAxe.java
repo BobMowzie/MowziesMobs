@@ -24,6 +24,7 @@ public class ItemWroughtAxe extends AxeItem {
 
     public ItemWroughtAxe(Item.Properties properties) {
         super(ItemTier.IRON, -1 + ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get(), -4f + ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackSpeed.get(), properties);
+
     }
 
     @Override

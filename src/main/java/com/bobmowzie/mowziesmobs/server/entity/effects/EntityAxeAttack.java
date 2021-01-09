@@ -150,15 +150,6 @@ public class EntityAxeAttack extends EntityMagicEffect {
                             }
                         }
                     }
-                    if (world.rand.nextBoolean()) {
-                        int amount = world.rand.nextInt(5);
-                        while (amount-- > 0) {
-                            double velX = vx * 0.075;
-                            double velY = factor * 0.3 + 0.025;
-                            double velZ = vz * 0.075;
-                            world.addParticle(ParticleTypes.CLOUD, px + world.rand.nextFloat() * 2 - 1, caster.getBoundingBox().minY + 0.1 + world.rand.nextFloat() * 1.5, pz + world.rand.nextFloat() * 2 - 1, velX, velY, velZ);
-                        }
-                    }
                 }
             }
         }
