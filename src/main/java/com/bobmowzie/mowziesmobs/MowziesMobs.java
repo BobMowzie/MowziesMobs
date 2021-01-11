@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs;
 
 import com.bobmowzie.mowziesmobs.client.ClientProxy;
+import com.bobmowzie.mowziesmobs.client.MMModels;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.server.ServerEventHandler;
 import com.bobmowzie.mowziesmobs.server.ServerProxy;
@@ -51,6 +52,7 @@ public final class MowziesMobs {
         bus.<FMLCommonSetupEvent>addListener(this::init);
         bus.<ModelRegistryEvent>addListener(this::init);
         bus.<FMLLoadCompleteEvent>addListener(this::init);
+        bus.register(MMModels.class);
 
         MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
     }
