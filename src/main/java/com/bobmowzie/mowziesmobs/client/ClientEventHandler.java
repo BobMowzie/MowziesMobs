@@ -9,7 +9,6 @@ import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.item.*;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -17,29 +16,17 @@ import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
-import net.minecraft.client.renderer.model.*;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.apache.commons.lang3.tuple.Pair;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-
-import javax.vecmath.Matrix4f;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 @OnlyIn(Dist.CLIENT)
 public enum ClientEventHandler {
@@ -51,24 +38,6 @@ public enum ClientEventHandler {
     long startWroughtnautHitTime;
 
     long lastWroughtnautHitTime;
-
-    @SubscribeEvent
-    public void onFrameRender(RenderItemInFrameEvent event) {
-        if (event.getItem().getItem() instanceof ItemWroughtAxe) {
-            GlStateManager.translatef(0.325f, 0.4f, -0.05f);
-            GlStateManager.scalef(-0.65f, -0.65f, 0.65f);
-            GlStateManager.rotatef(45f, 0f, -1f, 0f);
-            GlStateManager.rotatef(45f, -1f, 0f, -1f);
-        } else if (event.getItem().getItem() instanceof ItemWroughtHelm) {
-            GlStateManager.translatef(0.19f, -0.37f, -0.25f);
-        } else if (event.getItem().getItem() instanceof ItemBarakoaMask) {
-            GlStateManager.rotatef(180f, 0f, 1f, 0f);
-            GlStateManager.translatef(0f, -0.2f, 0.1f);
-        } else if (event.getItem().getItem() instanceof ItemBarakoMask) {
-            GlStateManager.scalef(0.85f, 0.85f, 0.85f);
-            GlStateManager.translatef(0.32f, -0.4f, -0.25f);
-        }
-    }
 
     @SubscribeEvent
     public void onHandRender(RenderSpecificHandEvent event) {

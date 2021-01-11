@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.render.entity.FrozenRenderHandler;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.ilexiconn.llibrary.client.model.tabula.TabulaModelHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -36,41 +37,34 @@ public class MMModels {
 
         IBakedModel axeBakedModelDefault = map.get(axeModelInventory);
         IBakedModel axeBakedModelHand = map.get(axeModelHand);
-        IBakedModel axeModelWrapper = new IBakedModel()
-        {
+        IBakedModel axeModelWrapper = new IBakedModel() {
             @Override
-            public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand)
-            {
+            public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand) {
                 return axeBakedModelDefault.getQuads(state, side, rand);
             }
 
             @Override
-            public boolean isAmbientOcclusion()
-            {
+            public boolean isAmbientOcclusion() {
                 return axeBakedModelDefault.isAmbientOcclusion();
             }
 
             @Override
-            public boolean isGui3d()
-            {
+            public boolean isGui3d() {
                 return axeBakedModelDefault.isGui3d();
             }
 
             @Override
-            public boolean isBuiltInRenderer()
-            {
+            public boolean isBuiltInRenderer() {
                 return axeBakedModelDefault.isBuiltInRenderer();
             }
 
             @Override
-            public TextureAtlasSprite getParticleTexture()
-            {
+            public TextureAtlasSprite getParticleTexture() {
                 return axeBakedModelDefault.getParticleTexture();
             }
 
             @Override
-            public ItemOverrideList getOverrides()
-            {
+            public ItemOverrideList getOverrides() {
                 return axeBakedModelDefault.getOverrides();
             }
 
@@ -78,13 +72,63 @@ public class MMModels {
             public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
                 IBakedModel modelToUse = axeBakedModelDefault;
                 if (cameraTransformType == ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND || cameraTransformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND
-                        || cameraTransformType == ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND || cameraTransformType == ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND)
-                {
+                        || cameraTransformType == ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND || cameraTransformType == ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND) {
                     modelToUse = axeBakedModelHand;
                 }
                 return ForgeHooksClient.handlePerspective(modelToUse, cameraTransformType);
             }
         };
         map.put(axeModelInventory, axeModelWrapper);
+
+
+        for (MaskType type : MaskType.values()) {
+            ResourceLocation maskModelInventory = new ModelResourceLocation("mowziesmobs:barakoa_mask_" + type.name, "inventory");
+            ResourceLocation maskModelFrame = new ModelResourceLocation("mowziesmobs:barakoa_mask_" + type.name + "_frame", "inventory");
+
+            IBakedModel maskBakedModelDefault = map.get(maskModelInventory);
+            IBakedModel maskBakedModelFrame = map.get(maskModelFrame);
+            IBakedModel maskModelWrapper = new IBakedModel() {
+                @Override
+                public List<BakedQuad> getQuads(BlockState state, Direction side, Random rand) {
+                    return maskBakedModelDefault.getQuads(state, side, rand);
+                }
+
+                @Override
+                public boolean isAmbientOcclusion() {
+                    return maskBakedModelDefault.isAmbientOcclusion();
+                }
+
+                @Override
+                public boolean isGui3d() {
+                    return maskBakedModelDefault.isGui3d();
+                }
+
+                @Override
+                public boolean isBuiltInRenderer() {
+                    return maskBakedModelDefault.isBuiltInRenderer();
+                }
+
+                @Override
+                public TextureAtlasSprite getParticleTexture() {
+                    return maskBakedModelDefault.getParticleTexture();
+                }
+
+                @Override
+                public ItemOverrideList getOverrides() {
+                    return maskBakedModelDefault.getOverrides();
+                }
+
+                @Override
+                public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
+                    IBakedModel modelToUse = maskBakedModelDefault;
+                    if (cameraTransformType == ItemCameraTransforms.TransformType.FIXED) {
+                        modelToUse = maskBakedModelFrame;
+                    }
+                    return ForgeHooksClient.handlePerspective(modelToUse, cameraTransformType);
+                }
+            };
+
+            map.put(maskModelInventory, maskModelWrapper);
+        }
     }
 }
