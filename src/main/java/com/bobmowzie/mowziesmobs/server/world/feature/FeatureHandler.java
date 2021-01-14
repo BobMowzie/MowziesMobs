@@ -2,10 +2,7 @@ package com.bobmowzie.mowziesmobs.server.world.feature;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.spawn.SpawnHandler;
-import com.bobmowzie.mowziesmobs.server.world.feature.structure.BarakoaVillagePieces;
-import com.bobmowzie.mowziesmobs.server.world.feature.structure.BarakoaVillageStructure;
-import com.bobmowzie.mowziesmobs.server.world.feature.structure.WroughtnautChamberPieces;
-import com.bobmowzie.mowziesmobs.server.world.feature.structure.WroughtnautChamberStructure;
+import com.bobmowzie.mowziesmobs.server.world.feature.structure.*;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
@@ -33,14 +30,19 @@ public class FeatureHandler {
     public static Structure<NoFeatureConfig> BARAKOA_VILLAGE = (Structure<NoFeatureConfig>) new BarakoaVillageStructure(NoFeatureConfig::deserialize).setRegistryName(MowziesMobs.MODID, "barakoa_village");
     public static IStructurePieceType BARAKOA_VILLAGE_PIECE = BarakoaVillagePieces.Piece::new;
 
+    public static Structure<NoFeatureConfig> FROSTMAW = (Structure<NoFeatureConfig>) new FrostmawStructure(NoFeatureConfig::deserialize).setRegistryName(MowziesMobs.MODID, "frostmaw_spawn");
+    public static IStructurePieceType FROSTMAW_PIECE = FrostmawPieces.Piece::new;
+
     @SubscribeEvent
     public static void register(RegistryEvent.Register<Feature<?>> event) {
         event.getRegistry().registerAll(
                 WROUGHTNAUT_CHAMBER,
-                BARAKOA_VILLAGE
+                BARAKOA_VILLAGE,
+                FROSTMAW
         );
         registerPiece(WROUGHTNAUT_CHAMBER_PIECE, "WROUGHTNAUT_CHAMBER_PIECE");
         registerPiece(BARAKOA_VILLAGE_PIECE, "BARAKOA_VILLAGE_PIECE");
+        registerPiece(FROSTMAW_PIECE, "FROSTMAW_PIECE");
     }
 
     static IStructurePieceType registerPiece(IStructurePieceType structurePiece, String key)
@@ -63,6 +65,11 @@ public class FeatureHandler {
                 biome.addFeature(GenerationStage.Decoration.SURFACE_STRUCTURES, configuredFeature);
             }
 
+            if (SpawnHandler.FROSTMAW_BIOMES.contains(biome)) {
+                biome.addStructure(FROSTMAW, IFeatureConfig.NO_FEATURE_CONFIG);
+                ConfiguredFeature configuredFeature = Biome.createDecoratedFeature(FROSTMAW, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG);
+                biome.addFeature(GenerationStage.Decoration.SURFACE_STRUCTURES, configuredFeature);
+            }
         }
     }
 }

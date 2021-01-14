@@ -2,10 +2,14 @@ package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
+import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.mojang.datafixers.Dynamic;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
@@ -22,12 +26,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 
-// Edited from Telepathic Grunt's base code
-
-public class BarakoaVillageStructure extends ScatteredStructure<NoFeatureConfig> {
-    public BarakoaVillageStructure(Function<Dynamic<?>, ? extends NoFeatureConfig> config)
-    {
-        super(config);
+public class FrostmawStructure extends ScatteredStructure<NoFeatureConfig> {
+    public FrostmawStructure(Function<Dynamic<?>, ? extends NoFeatureConfig> configFactoryIn) {
+        super(configFactoryIn);
     }
 
     @Override
@@ -43,7 +44,7 @@ public class BarakoaVillageStructure extends ScatteredStructure<NoFeatureConfig>
     @Override
     public String getStructureName()
     {
-        return MowziesMobs.MODID + ":barakoa_village";
+        return MowziesMobs.MODID + ":frostmaw_spawn";
     }
 
     @Override
@@ -52,20 +53,18 @@ public class BarakoaVillageStructure extends ScatteredStructure<NoFeatureConfig>
         return 0;
     }
 
-    @Override
-    public IStartFactory getStartFactory()
-    {
-        return BarakoaVillageStructure.Start::new;
+    protected int getSeedModifier() {
+        return 1237654789;
     }
 
-    protected int getSeedModifier()
-    {
-        return 123555789;
+    @Override
+    public IStartFactory getStartFactory() {
+        return FrostmawStructure.Start::new;
     }
 
     @Override
     public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
-        List<String> dimensionNames = ConfigHandler.MOBS.BARAKO.generationConfig.dimensions.get();
+        List<String> dimensionNames = ConfigHandler.MOBS.FROSTMAW.generationConfig.dimensions.get();
         ResourceLocation currDimensionName = worldIn.getDimension().getType().getRegistryName();
         if (currDimensionName == null || !dimensionNames.contains(currDimensionName.toString())) {
             return false;
@@ -74,8 +73,7 @@ public class BarakoaVillageStructure extends ScatteredStructure<NoFeatureConfig>
         return super.place(worldIn, generator, rand, pos, config);
     }
 
-    public static class Start extends StructureStart
-    {
+    public static class Start extends StructureStart {
         public Start(Structure<?> structureIn, int chunkX, int chunkZ, Biome biomeIn, MutableBoundingBox boundsIn, int referenceIn, long seed) {
             super(structureIn, chunkX, chunkZ, biomeIn, boundsIn, referenceIn, seed);
         }
@@ -94,16 +92,18 @@ public class BarakoaVillageStructure extends ScatteredStructure<NoFeatureConfig>
             int x = (chunkX << 4) + 7;
             int z = (chunkZ << 4) + 7;
             int surfaceY = generator.func_222531_c(x, z, Heightmap.Type.WORLD_SURFACE_WG);
+            int heightMax = ConfigHandler.MOBS.FROSTMAW.generationConfig.heightMax.get().intValue();
+            int heightMin = ConfigHandler.MOBS.FROSTMAW.generationConfig.heightMin.get().intValue();
+            if (heightMax != -1 && surfaceY > heightMax) return;
+            if (heightMin != -1 && surfaceY < heightMin) return;
             BlockPos blockpos = new BlockPos(x, surfaceY, z);
 
             //Now adds the structure pieces to this.components with all details such as where each part goes
             //so that the structure can be added to the world by worldgen.
-            BarakoaVillagePieces.start(templateManagerIn, blockpos, rotation, this.components, this.rand);
+            FrostmawPieces.start(templateManagerIn, blockpos, rotation, this.components, this.rand);
 
             //Sets the bounds of the structure.
             this.recalculateStructureSize();
-
-//            System.out.println("Wroughtnaut chamber at " + blockpos.getX() + " " + blockpos.getY() + " " + blockpos.getZ());
         }
     }
 }

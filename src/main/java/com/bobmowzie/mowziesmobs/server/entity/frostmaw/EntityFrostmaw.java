@@ -230,6 +230,8 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
 
     @Override
     public void tick() {
+//        if (ticksExisted == 1)
+//            System.out.println("Spawned " + getName().getFormattedText() + " at " + getPosition());
         rotationYaw = renderYawOffset;
         super.tick();
         this.repelEntities(3.8f, 3.8f, 3.8f, 3.8f);
