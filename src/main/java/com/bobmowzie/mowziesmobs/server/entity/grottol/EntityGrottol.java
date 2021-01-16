@@ -199,7 +199,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
             if (EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, player.getHeldItemMainhand()) > 0) {
                 if (!world.isRemote && isAlive()) {
                     entityDropItem(ItemHandler.CAPTURED_GROTTOL.create(this), 0.0F);
-                    BlockState state = BlockHandler.GROTTOL.get().getDefaultState();
+                    BlockState state = Blocks.STONE.getDefaultState();
                     SoundType sound = state.getBlock().getSoundType(state, world, new BlockPos(this), entity);
                     world.playSound(
                         null,
@@ -256,16 +256,16 @@ public class EntityGrottol extends MowzieEntity implements IMob {
         if (!world.isRemote) {
             Entity e = getRidingEntity();
             if (isMinecart(e)) {
-                reader.accept((AbstractMinecartEntity) e);
-                setMoveForward(1);
-                timeSinceMinecart++;
+                AbstractMinecartEntity minecart = (AbstractMinecartEntity) e;
+                reader.accept(minecart);
                 boolean onRail = isBlockRail(world.getBlockState(e.getPosition()).getBlock());
                 if ((timeSinceMinecart > 3 && e.getMotion().length() < 0.001) || !onRail) {
-                    dismountEntity(e);
+                    minecart.removePassengers();
                     timeSinceMinecart = 0;
                 }
                 else if (onRail) {
-                    e.setMotion(e.getMotion().x * 2.7, 0, e.getMotion().z * 2.7);
+                    minecart.setMotion(minecart.getForward().scale(2.7));
+                    timeSinceMinecart++;
                 }
             }
         }
@@ -300,8 +300,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
         // AI Task
         if (!world.isRemote && fleeTime >= 55 && getAnimation() == NO_ANIMATION && !isAIDisabled() && !isPotionActive(PotionHandler.FROZEN)) {
             BlockState blockBeneath = world.getBlockState(getPosition().down());
-            Material mat = blockBeneath.getMaterial();
-            if (mat == Material.EARTH || mat == Material.SAND || mat == Material.CLAY || mat == Material.ROCK) {
+            if (isBlockDiggable(blockBeneath)) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, BURROW_ANIMATION);
             }
         }
@@ -338,10 +337,10 @@ public class EntityGrottol extends MowzieEntity implements IMob {
 
     private boolean isBlackPinkInYourArea() {
         Entity e = getRidingEntity();
-        if (isMinecart(e)) {
+        /*if (isMinecart(e)) {
             BlockState state = ((AbstractMinecartEntity) e).getDisplayTile();
             return state.getBlock() == BlockHandler.GROTTOL.get() && state.get(BlockGrottol.VARIANT) == BlockGrottol.Variant.BLACK_PINK;
-        }
+        }*/
         return false;
     }
 
@@ -349,10 +348,10 @@ public class EntityGrottol extends MowzieEntity implements IMob {
         return isMinecart(getRidingEntity());
     }
 
-    public boolean hasMinecartBlockDisplay() {
+    /*public boolean hasMinecartBlockDisplay() {
         Entity entity = getRidingEntity();
         return isMinecart(entity) && ((AbstractMinecartEntity) entity).getDisplayTile().getBlock() == BlockHandler.GROTTOL.get();
-    }
+    }*/
 
     private static boolean isMinecart(Entity entity) {
         return entity instanceof MinecartEntity;
@@ -368,13 +367,13 @@ public class EntityGrottol extends MowzieEntity implements IMob {
     @Override
     public boolean startRiding(Entity entity, boolean force) {
         if (super.startRiding(entity, force)) {
-            if (isMinecart(entity)) {
+            /*if (isMinecart(entity)) {
                 AbstractMinecartEntity minecart = (AbstractMinecartEntity) entity;
                 if (minecart.getDisplayTile().getBlock() != BlockHandler.GROTTOL.get()) {
                     minecart.setDisplayTile(BlockHandler.GROTTOL.get().getDefaultState());
                     minecart.setDisplayTileOffset(minecart.getDefaultDisplayTileOffset());
                 }
-            }
+            }*/
             return true;
         }
         return false;
@@ -383,9 +382,9 @@ public class EntityGrottol extends MowzieEntity implements IMob {
     @Override
     public void dismountEntity(Entity entity) {
         super.dismountEntity(entity);
-        if (isMinecart(entity)) {
-            ((AbstractMinecartEntity) entity).setHasDisplayTile(false);
-        }
+//        if (isMinecart(entity)) {
+//            ((AbstractMinecartEntity) entity).setHasDisplayTile(false);
+//        }
     }
 
     @Override
@@ -416,5 +415,32 @@ public class EntityGrottol extends MowzieEntity implements IMob {
     @Override
     protected ResourceLocation getLootTable() {
         return LootTableHandler.GROTTOL;
+    }
+
+    public boolean isBlockDiggable(BlockState blockState) {
+        Material mat = blockState.getMaterial();
+        if (mat != Material.ORGANIC
+                && mat != Material.EARTH
+                && mat != Material.ROCK
+                && mat != Material.CLAY
+                && mat != Material.SAND
+        ) {
+            return false;
+        }
+        if (blockState.getBlock() == Blocks.HAY_BLOCK
+                || blockState.getBlock() == Blocks.NETHER_WART_BLOCK
+                || blockState.getBlock() instanceof FenceBlock
+                || blockState.getBlock() == Blocks.SPAWNER
+                || blockState.getBlock() == Blocks.BONE_BLOCK
+                || blockState.getBlock() == Blocks.ENCHANTING_TABLE
+                || blockState.getBlock() == Blocks.END_PORTAL_FRAME
+                || blockState.getBlock() == Blocks.ENDER_CHEST
+                || blockState.getBlock() == Blocks.SLIME_BLOCK
+                || blockState.getBlock() == Blocks.HOPPER
+                || blockState.hasTileEntity()
+        ) {
+            return false;
+        }
+        return true;
     }
 }

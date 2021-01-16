@@ -28,7 +28,7 @@ public class RenderGrottol extends MobRenderer<EntityGrottol, ModelGrottol<Entit
         return RenderGrottol.TEXTURE;
     }
 
-    @Override
+    /*@Override
     public void doRender(EntityGrottol entity, double x, double y, double z, float yaw, float delta) {
         if (entity.hasMinecartBlockDisplay()) {
             if (!renderOutlines) {
@@ -44,5 +44,5 @@ public class RenderGrottol extends MobRenderer<EntityGrottol, ModelGrottol<Entit
         if (!(entity instanceof EntityGrottol) || !((EntityGrottol) entity).hasMinecartBlockDisplay()) {
             super.doRenderShadowAndFire(entity, x, y, z, yaw, delta);
         }
-    }
+    }*/
 }

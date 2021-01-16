@@ -9,6 +9,7 @@ import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
@@ -24,6 +25,7 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -63,7 +65,7 @@ public final class MessageBlackPinkInYourArea {
                 if (entity instanceof AbstractMinecartEntity) {
                     AbstractMinecartEntity minecart = (AbstractMinecartEntity) entity;
                     Minecraft.getInstance().getSoundHandler().play(new BlackPinkSound(minecart));
-                    BlockState state = BlockHandler.GROTTOL.get().getDefaultState()
+                    BlockState state = Blocks.STONE.getDefaultState()
                             .with(BlockGrottol.VARIANT, BlockGrottol.Variant.BLACK_PINK);
                     BlockPos pos = new BlockPos(minecart);
                     final float scale = 0.75F;
@@ -87,12 +89,13 @@ public final class MessageBlackPinkInYourArea {
                                 double dx = (double) ix / size * scale;
                                 double dy = (double) iy / size * scale;
                                 double dz = (double) iz / size * scale;
-                                /*Minecraft.getInstance().effectRenderer.addEffect(new DiggingParticle(
+                                Vec3d minecartMotion = minecart.getMotion();
+                                Minecraft.getInstance().particles.addEffect(new DiggingParticle(
                                         world,
                                         x + dx + offset, y + dy + offset, z + dz + offset,
-                                        dx + minecart.motionX, dy + minecart.motionY, dz + minecart.motionZ,
+                                        dx + minecartMotion.getX(), dy + minecartMotion.getY(), dz + minecartMotion.getZ(),
                                         state
-                                ) {}.setBlockPos(pos));*/ // TODO
+                                ) {}.setBlockPos(pos));
                             }
                         }
                     }
