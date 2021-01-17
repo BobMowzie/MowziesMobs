@@ -825,4 +825,10 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
     protected ResourceLocation getLootTable() {
         return LootTableHandler.FROSTMAW;
     }
+
+    @Override
+    public void move(MoverType typeIn, Vec3d pos) {
+        if (typeIn == MoverType.SELF && !active) return;
+        super.move(typeIn, pos);
+    }
 }

@@ -46,11 +46,11 @@ public class WroughtnautChamberStructure extends ScatteredStructure<NoFeatureCon
     }
 
     protected int getBiomeFeatureDistance(ChunkGenerator<?> chunkGenerator) {
-        return 8;
+        return 22;
     }
 
     protected int getBiomeFeatureSeparation(ChunkGenerator<?> chunkGenerator) {
-        return 5;
+        return 8;
     }
 
     @Override
