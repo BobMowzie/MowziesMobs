@@ -30,20 +30,23 @@ public class WroughtnautChamberPieces {
     public static void start(TemplateManager manager, BlockPos pos, Rotation rot, List<StructurePiece> pieces, Random rand) {
         BlockPos rotationOffset = new BlockPos(0, 0, -9).rotate(rot);
         BlockPos blockPos = rotationOffset.add(pos);
-        pieces.add(new WroughtnautChamberPieces.Piece(manager, PART, blockPos, rot));
+        pieces.add(new WroughtnautChamberPieces.Piece(manager, PART, blockPos, rot, String.valueOf(rand.nextInt())));
     }
 
     public static class Piece extends TemplateStructurePiece {
         private ResourceLocation resourceLocation;
         private Rotation rotation;
+        private BlockPos startPos;
+        private BlockPos wallPos;
 
-
-        public Piece(TemplateManager templateManagerIn, ResourceLocation resourceLocationIn, BlockPos pos, Rotation rotationIn)
+        public Piece(TemplateManager templateManagerIn, ResourceLocation resourceLocationIn, BlockPos pos, Rotation rotationIn, String id)
         {
             super(FeatureHandler.WROUGHTNAUT_CHAMBER_PIECE, 0);
             this.resourceLocation = resourceLocationIn;
             this.templatePosition = pos;
             this.rotation = rotationIn;
+            this.startPos = pos;
+            this.wallPos = null;
             this.setupPiece(templateManagerIn);
         }
 
@@ -53,6 +56,18 @@ public class WroughtnautChamberPieces {
             super(FeatureHandler.WROUGHTNAUT_CHAMBER_PIECE, tagCompound);
             this.resourceLocation = new ResourceLocation(tagCompound.getString("Template"));
             this.rotation = Rotation.valueOf(tagCompound.getString("Rot"));
+            this.startPos = new BlockPos(
+                tagCompound.getInt("StartX"),
+                tagCompound.getInt("StartY"),
+                tagCompound.getInt("StartZ")
+            );
+            if (tagCompound.getBoolean("HasWall")) {
+                this.wallPos = new BlockPos(
+                        tagCompound.getInt("WallX"),
+                        tagCompound.getInt("WallY"),
+                        tagCompound.getInt("WallZ")
+                );
+            }
             this.setupPiece(templateManagerIn);
         }
 
@@ -74,6 +89,15 @@ public class WroughtnautChamberPieces {
             super.readAdditional(tagCompound);
             tagCompound.putString("Template", this.resourceLocation.toString());
             tagCompound.putString("Rot", this.rotation.name());
+            tagCompound.putInt("StartX", startPos.getX());
+            tagCompound.putInt("StartY", startPos.getY());
+            tagCompound.putInt("StartZ", startPos.getZ());
+            tagCompound.putBoolean("HasWall", wallPos != null);
+            if (wallPos != null) {
+                tagCompound.putInt("WallX", wallPos.getX());
+                tagCompound.putInt("WallY", wallPos.getY());
+                tagCompound.putInt("WallZ", wallPos.getZ());
+            }
         }
 
 
@@ -95,17 +119,33 @@ public class WroughtnautChamberPieces {
 
         @Override
         public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos chunkPosIn) {
-            Pair<BlockPos, Rotation> chamberResults = tryWroughtChamber(worldIn, templatePosition.getX(), templatePosition.getY(), templatePosition.getZ());
+            Pair<BlockPos, Rotation> chamberResults;
+            if (wallPos == null) {
+                chamberResults = tryWroughtChamber(worldIn, startPos.getX(), startPos.getY(), startPos.getZ());
+                this.placeSettings.setIgnoreEntities(false);
+            }
+            else {
+                chamberResults = Pair.of(wallPos, rotation);
+                this.placeSettings.setIgnoreEntities(true);
+            }
+
             if (chamberResults == null) return false;
+            wallPos = chamberResults.getLeft();
+            rotation = chamberResults.getRight();
             this.templatePosition = chamberResults.getLeft();
             this.placeSettings.setRotation(chamberResults.getRight());
-//            System.out.println("Wroughtnaut Chamber at " + templatePosition.getX() + " " + templatePosition.getY() + " " + templatePosition.getZ());
-            worldIn.setBlockState(templatePosition, Blocks.REDSTONE_BLOCK.getDefaultState(), 0);
-
+            System.out.println("Wroughtnaut Chamber at " + templatePosition.getX() + " " + templatePosition.getY() + " " + templatePosition.getZ());
             BlockPos rotationOffset = new BlockPos(0, -1, -9).rotate(placeSettings.getRotation());
             this.templatePosition = this.templatePosition.add(rotationOffset);
+            structureBoundingBoxIn = template.getMutableBoundingBox(placeSettings, templatePosition);
 
             return super.addComponentParts(worldIn, randomIn, structureBoundingBoxIn, chunkPosIn);
+
+            /*PlacementSettings placementsettings = (new PlacementSettings()).setRotation(this.rotation).setMirror(Mirror.NONE);
+            BlockPos blockpos = new BlockPos(0, 0, 0);
+            this.templatePosition.add(Template.transformedBlockPos(placementsettings, new BlockPos(0 - blockpos.getX(), 0, 0 - blockpos.getZ())));
+
+            return super.addComponentParts(worldIn, randomIn, structureBoundingBoxIn, chunkPosIn);*/
         }
 
         @Nullable

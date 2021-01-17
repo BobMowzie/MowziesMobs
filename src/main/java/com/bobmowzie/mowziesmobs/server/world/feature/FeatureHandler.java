@@ -3,15 +3,17 @@ package com.bobmowzie.mowziesmobs.server.world.feature;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.spawn.SpawnHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.structure.*;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.IFeatureConfig;
-import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.gen.feature.*;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
+import net.minecraft.world.gen.feature.structure.PillagerOutpostPieces;
 import net.minecraft.world.gen.feature.structure.Structure;
+import net.minecraft.world.gen.placement.CaveEdgeConfig;
+import net.minecraft.world.gen.placement.DungeonRoomConfig;
 import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.event.RegistryEvent;
@@ -59,7 +61,7 @@ public class FeatureHandler {
                 biome.addFeature(GenerationStage.Decoration.UNDERGROUND_STRUCTURES, configuredFeature);
             }
 
-            if (SpawnHandler.BARAKO_BIOMES.contains(biome)) {
+            if (true){//SpawnHandler.BARAKO_BIOMES.contains(biome)) {
                 biome.addStructure(BARAKOA_VILLAGE, IFeatureConfig.NO_FEATURE_CONFIG);
                 ConfiguredFeature configuredFeature = Biome.createDecoratedFeature(BARAKOA_VILLAGE, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG);
                 biome.addFeature(GenerationStage.Decoration.SURFACE_STRUCTURES, configuredFeature);
