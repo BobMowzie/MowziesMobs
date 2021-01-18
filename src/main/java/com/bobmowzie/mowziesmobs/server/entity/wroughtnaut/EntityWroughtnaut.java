@@ -121,7 +121,6 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        setPathPriority(PathNodeType.WATER, 0);
         goalSelector.addGoal(1, new AnimationFWNAttackAI(this, 4F, 5F, 100F));
         goalSelector.addGoal(1, new AnimationFWNVerticalAttackAI(this, VERTICAL_ATTACK_ANIMATION, MMSounds.ENTITY_WROUGHT_WHOOSH.get(), 1F, 5F, 40F));
         goalSelector.addGoal(1, new AnimationFWNStompAttackAI(this, STOMP_ATTACK_ANIMATION));

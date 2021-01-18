@@ -117,36 +117,6 @@ public class WroughtnautChamberStructure extends ScatteredStructure<NoFeatureCon
         return super.place(worldIn, generator, rand, pos, config);
     }
 
-    private boolean loadTemplate(World world, BlockPos blockpos, ResourceLocation name, Rotation rotation) {
-        if (!world.isRemote()) {
-            BlockPos blockpos1 = blockpos.add(0, 1, 0);
-            ServerWorld serverworld = (ServerWorld) world;
-            TemplateManager templatemanager = serverworld.getStructureTemplateManager();
-
-            Template template;
-            try {
-                template = templatemanager.getTemplate(name);
-            } catch (ResourceLocationException var10) {
-                return false;
-            }
-
-            if (template == null) {
-                return false;
-            } else {
-                BlockPos blockpos2 = template.getSize();
-
-                PlacementSettings placementsettings = (new PlacementSettings()).setMirror(Mirror.NONE).setRotation(rotation).setIgnoreEntities(false).setChunk((ChunkPos) null);
-//                if (this.integrity < 1.0F) {
-//                    placementsettings.clearProcessors().addProcessor(new IntegrityProcessor(MathHelper.clamp(this.integrity, 0.0F, 1.0F))).setRandom(func_214074_b(this.seed));
-//                }
-
-                template.addBlocksToWorldChunk(world, blockpos1, placementsettings);
-                return true;
-            }
-        }
-        return false;
-    }
-
     public static class Start extends StructureStart
     {
         public Start(Structure<?> structureIn, int chunkX, int chunkZ, Biome biomeIn, MutableBoundingBox boundsIn, int referenceIn, long seed) {

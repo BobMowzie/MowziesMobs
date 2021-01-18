@@ -9,6 +9,7 @@ public class BarakoaMaskModel<T extends LivingEntity> extends BipedModel<T> {
     public RendererModel maskLeft;
     public RendererModel maskRight;
     public RendererModel mane;
+    public RendererModel maneBack;
 
     public BarakoaMaskModel() {
         this.textureWidth = 128;
@@ -28,9 +29,14 @@ public class BarakoaMaskModel<T extends LivingEntity> extends BipedModel<T> {
         this.mane = new RendererModel(this, 0, 0);
         this.mane.setRotationPoint(0.0F, -2.0F, 4.0F);
         this.mane.addBox(-12.0F, -12.0F, 0.0F, 24, 24, 0, 0.0F);
+        this.maneBack = new RendererModel(this, 0, 0);
+        this.maneBack.setRotationPoint(0.0F, -2.0F, 3.999F);
+        this.maneBack.addBox(-12.0F, -12.0F, 0.0F, 24, 24, 0, 0.0F);
+        this.maneBack.rotateAngleY = (float) Math.PI;
         this.maskBase.addChild(this.maskLeft);
         this.maskBase.addChild(this.maskRight);
         this.maskBase.addChild(this.mane);
+        this.maskBase.addChild(this.maneBack);
 
         this.bipedHead.addChild(maskBase);
         this.bipedHead.cubeList.clear();

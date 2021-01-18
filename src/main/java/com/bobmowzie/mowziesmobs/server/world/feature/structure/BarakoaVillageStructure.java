@@ -2,9 +2,12 @@ package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
 import com.mojang.datafixers.Dynamic;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
@@ -15,11 +18,12 @@ import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.ScatteredStructure;
 import net.minecraft.world.gen.feature.structure.Structure;
+import net.minecraft.world.gen.feature.structure.StructurePiece;
 import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+import sun.security.util.ArrayUtil;
 
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Function;
 
 // Edited from Telepathic Grunt's base code
@@ -32,12 +36,12 @@ public class BarakoaVillageStructure extends ScatteredStructure<NoFeatureConfig>
 
     @Override
     protected int getBiomeFeatureDistance(ChunkGenerator<?> chunkGenerator) {
-        return 22;
+        return 8;
     }
 
     @Override
     protected int getBiomeFeatureSeparation(ChunkGenerator<?> chunkGenerator) {
-        return 8;
+        return 5;
     }
 
     @Override
@@ -83,27 +87,64 @@ public class BarakoaVillageStructure extends ScatteredStructure<NoFeatureConfig>
         @Override
         public void init(ChunkGenerator<?> generator, TemplateManager templateManagerIn, int chunkX, int chunkZ, Biome biomeIn)
         {
-            //Check out vanilla's WoodlandMansionStructure for how they offset the x and z
-            //so that they get the y value of the land at the mansion's entrance, no matter
-            //which direction the mansion is rotated.
-            //
-            //However, for most purposes, getting the y value of land with the default x and z is good enough.
             Rotation rotation = Rotation.values()[this.rand.nextInt(Rotation.values().length)];
 
             //Turns the chunk coordinates into actual coordinates we can use. (Gets center of that chunk)
             int x = (chunkX << 4) + 7;
             int z = (chunkZ << 4) + 7;
-            int surfaceY = generator.func_222531_c(x, z, Heightmap.Type.WORLD_SURFACE_WG);
-            BlockPos blockpos = new BlockPos(x, surfaceY, z);
+            BlockPos centerPos = new BlockPos(x, 1, z);
 
-            //Now adds the structure pieces to this.components with all details such as where each part goes
-            //so that the structure can be added to the world by worldgen.
-            BarakoaVillagePieces.start(templateManagerIn, blockpos, rotation, this.components, this.rand);
+            //Firepit
+            components.add(new BarakoaVillagePieces.FirepitPiece(this.rand, x - 4, z - 4));
+
+            //Throne
+            BlockPos offset = new BlockPos(0, 0, 9);
+            offset = offset.rotate(rotation);
+            BlockPos thronePos = posToSurface(generator, centerPos.add(offset));
+            BarakoaVillagePieces.addPiece(BarakoaVillagePieces.THRONE, templateManagerIn, thronePos, rotation, this.components, this.rand);
+
+            //Houses
+            int numHouses = rand.nextInt(4) + 3;
+            for (int i = 1; i <= numHouses; i++) {
+                for (int j = 0; j < 30; j++) {
+                    float distance = rand.nextInt(8) + 10;
+                    int angle = rand.nextInt(360);
+                    BlockPos housePos = new BlockPos(centerPos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, centerPos.getZ() + distance * Math.cos(Math.toRadians(angle)));
+                    housePos = posToSurface(generator, housePos);
+                    housePos = housePos.offset(Direction.UP, rand.nextInt(2));
+                    if (startHouse(generator, templateManagerIn, housePos)) break;
+                }
+            }
 
             //Sets the bounds of the structure.
             this.recalculateStructureSize();
 
-//            System.out.println("Wroughtnaut chamber at " + blockpos.getX() + " " + blockpos.getY() + " " + blockpos.getZ());
+            System.out.println("Barakoa village at " + centerPos.getX() + " " + centerPos.getY() + " " + centerPos.getZ());
+        }
+
+        private boolean startHouse(ChunkGenerator<?> generator, TemplateManager templateManagerIn, BlockPos housePos) {
+            Rotation rotation = Rotation.values()[this.rand.nextInt(Rotation.values().length)];
+            StructurePiece newHouse = BarakoaVillagePieces.addHouse(templateManagerIn, housePos, rotation, this.components, this.rand);
+            if (newHouse != null) {
+                Rotation roofRotation = Rotation.values()[this.rand.nextInt(Rotation.values().length)];
+                StructurePiece roof = BarakoaVillagePieces.addPiece(BarakoaVillagePieces.ROOF, templateManagerIn, housePos, roofRotation, this.components, this.rand);
+
+                int sideHouseDir = rand.nextInt(6) + 1;
+                if (sideHouseDir <= 2) {
+                    Rotation sideHouseRotation = sideHouseDir == 1 ? rotation.add(Rotation.CLOCKWISE_90) : rotation.add(Rotation.COUNTERCLOCKWISE_90);
+                    if (BarakoaVillagePieces.addPieceCheckBounds(BarakoaVillagePieces.HOUSE_SIDE, templateManagerIn, housePos, sideHouseRotation, this.components, this.rand, Arrays.asList(newHouse, roof)) == null) {
+                        sideHouseRotation = sideHouseRotation.add(Rotation.CLOCKWISE_180);
+                        BarakoaVillagePieces.addPieceCheckBounds(BarakoaVillagePieces.HOUSE_SIDE, templateManagerIn, housePos, sideHouseRotation, this.components, this.rand, Arrays.asList(newHouse, roof));
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
+        private BlockPos posToSurface(ChunkGenerator<?> generator, BlockPos pos) {
+            int surfaceY = generator.func_222531_c(pos.getX(), pos.getZ(), Heightmap.Type.WORLD_SURFACE_WG);
+            return new BlockPos(pos.getX(), surfaceY, pos.getZ());
         }
     }
 }

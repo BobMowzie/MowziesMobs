@@ -21,6 +21,7 @@ public class LootTableHandler {
     public static final ResourceLocation BARAKOA_RAGE = register("entities/barakoa_rage");
     public static final ResourceLocation BARAKOA_FEAR = register("entities/barakoa_fear");
     public static final ResourceLocation BARAKO = register("entities/barako");
+    public static final ResourceLocation BARAKOA_VILLAGE_HOUSE = register("chests/barakoa_village_house");
 
     public static void init() {
         LootFunctionManager.registerFunction(new LootFunctionCheckFrostmawCrystal.Serializer());

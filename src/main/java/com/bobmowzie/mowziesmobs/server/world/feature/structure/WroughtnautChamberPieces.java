@@ -30,7 +30,7 @@ public class WroughtnautChamberPieces {
     public static void start(TemplateManager manager, BlockPos pos, Rotation rot, List<StructurePiece> pieces, Random rand) {
         BlockPos rotationOffset = new BlockPos(0, 0, -9).rotate(rot);
         BlockPos blockPos = rotationOffset.add(pos);
-        pieces.add(new WroughtnautChamberPieces.Piece(manager, PART, blockPos, rot, String.valueOf(rand.nextInt())));
+        pieces.add(new WroughtnautChamberPieces.Piece(manager, PART, blockPos, rot));
     }
 
     public static class Piece extends TemplateStructurePiece {
@@ -39,7 +39,7 @@ public class WroughtnautChamberPieces {
         private BlockPos startPos;
         private BlockPos wallPos;
 
-        public Piece(TemplateManager templateManagerIn, ResourceLocation resourceLocationIn, BlockPos pos, Rotation rotationIn, String id)
+        public Piece(TemplateManager templateManagerIn, ResourceLocation resourceLocationIn, BlockPos pos, Rotation rotationIn)
         {
             super(FeatureHandler.WROUGHTNAUT_CHAMBER_PIECE, 0);
             this.resourceLocation = resourceLocationIn;
