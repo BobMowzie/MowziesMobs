@@ -75,7 +75,6 @@ public enum SpawnHandler {
         if (ConfigHandler.MOBS.FOLIAATH.spawnConfig.spawnRate.get() > 0) {
             Set<Biome> foliaathBiomes = getBiomesFromConfig(ConfigHandler.MOBS.FOLIAATH.spawnConfig.biomeConfig);
 //            System.out.println("Foliaath biomes " + foliaathBiomes);
-            Integer spawnrate = ConfigHandler.MOBS.FOLIAATH.spawnConfig.spawnRate.get();
             registerEntityWorldSpawn(EntityHandler.FOLIAATH, ConfigHandler.MOBS.FOLIAATH.spawnConfig.spawnRate.get(), ConfigHandler.MOBS.FOLIAATH.spawnConfig.minGroupSize.get(), ConfigHandler.MOBS.FOLIAATH.spawnConfig.maxGroupSize.get(), EntityClassification.MONSTER, foliaathBiomes.toArray(new Biome[foliaathBiomes.size()]));
         }
         if (ConfigHandler.MOBS.BARAKOA.spawnConfig.spawnRate.get() > 0) {
