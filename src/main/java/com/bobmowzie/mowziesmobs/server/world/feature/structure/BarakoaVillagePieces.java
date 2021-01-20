@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaya;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
@@ -33,6 +34,7 @@ import net.minecraft.util.math.Vec2f;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.Heightmap;
+import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.ScatteredStructurePiece;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
 import net.minecraft.world.gen.feature.structure.TemplateStructurePiece;
@@ -176,11 +178,15 @@ public class BarakoaVillagePieces {
                     }
                 }
             }
-            /*else if ("chest".equals(function)) {
-                Direction facing = Direction.WEST;
-                facing = rotation.rotate(facing);
-                generateChest(worldIn, sbb, rand, pos, LootTables.CHESTS_VILLAGE_VILLAGE_SAVANNA_HOUSE, Blocks.CHEST.getDefaultState().with(BlockStateProperties.HORIZONTAL_FACING, facing));
-            }*/
+            else if ("barako".equals(function)) {
+                setBlockState(worldIn, pos, Blocks.AIR.getDefaultState());
+                EntityBarako barako = new EntityBarako(EntityHandler.BARAKO, worldIn.getWorld());
+                barako.setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
+                int i = rotation.rotate(3, 4);
+                barako.setDirection(i);
+                worldIn.addEntity(barako);
+                barako.onInitialSpawn(worldIn, worldIn.getDifficultyForLocation(barako.getPosition()), SpawnReason.STRUCTURE, null, null);
+            }
         }
 
         protected void setBlockState(IWorld worldIn, BlockPos pos, BlockState state) {
@@ -314,7 +320,45 @@ public class BarakoaVillagePieces {
         }
     }
 
-    public static class FirepitPiece extends ScatteredStructurePiece {
+    public abstract static class NonTemplatePiece extends ScatteredStructurePiece {
+
+        protected NonTemplatePiece(IStructurePieceType structurePieceTypeIn, Random rand, int xIn, int yIn, int zIn, int widthIn, int heightIn, int depthIn) {
+            super(structurePieceTypeIn, rand, xIn, yIn, zIn, widthIn, heightIn, depthIn);
+        }
+
+        protected NonTemplatePiece(IStructurePieceType structurePieceTypeIn, CompoundNBT nbt) {
+            super(structurePieceTypeIn, nbt);
+        }
+
+        public BlockPos findGround(IWorld worldIn, int x, int z) {
+            int i = this.getXWithOffset(x, z);
+            int k = this.getZWithOffset(x, z);
+            int j = worldIn.getHeight(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, i, k);
+            return new BlockPos(i, j, k);
+        }
+
+        public void fillAirLiquidBelowHeightmap(IWorld worldIn, BlockState state, int x, int z) {
+            int i = this.getXWithOffset(x, z);
+            int k = this.getZWithOffset(x, z);
+            int j = worldIn.getHeight(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, i, k) - 2;
+            while(!Block.hasSolidSideOnTop(worldIn, new BlockPos(i, j, k)) && j > 1) {
+                BlockPos pos = new BlockPos(i, j, k);
+                IFluidState ifluidstate = worldIn.getFluidState(pos);
+                BlockState toPut = state;
+                if (!ifluidstate.isEmpty()) {
+                    worldIn.getPendingFluidTicks().scheduleTick(pos, ifluidstate.getFluid(), 0);
+                    if (toPut.has(BlockStateProperties.WATERLOGGED)) toPut = toPut.with(BlockStateProperties.WATERLOGGED, true);
+                }
+                worldIn.setBlockState(pos, toPut, 2);
+                if (BLOCKS_NEEDING_POSTPROCESSING.contains(state.getBlock())) {
+                    worldIn.getChunk(pos).markBlockForPostprocessing(pos);
+                }
+                --j;
+            }
+        }
+    }
+
+    public static class FirepitPiece extends NonTemplatePiece {
 
         public FirepitPiece(Random random, int x, int z) {
             super(FeatureHandler.BARAKOA_VILLAGE_FIREPIT, random, x, 64, z, 9, 3, 9);
@@ -329,7 +373,7 @@ public class BarakoaVillagePieces {
          */
         @Override
         protected void readAdditional(CompoundNBT tagCompound) {
-
+            super.readAdditional(tagCompound);
         }
 
         @Override
@@ -377,30 +421,116 @@ public class BarakoaVillagePieces {
             }
             return true;
         }
+    }
+
+    public static class StakePiece extends NonTemplatePiece {
+        private boolean skull;
+        private int skullDir;
+
+        public StakePiece(Random random, int x, int y, int z) {
+            super(FeatureHandler.BARAKOA_VILLAGE_STAKE, random, x, y, z, 1, 3, 1);
+            skull = random.nextBoolean();
+            skullDir = random.nextInt(16);
+        }
+
+        public StakePiece(TemplateManager templateManagerIn, CompoundNBT tagCompound) {
+            super(FeatureHandler.BARAKOA_VILLAGE_STAKE, tagCompound);
+            skull = tagCompound.getBoolean("Skull");
+            skullDir = tagCompound.getInt("SkullDir");
+        }
+
+        /**
+         * (abstract) Helper method to read subclass data from NBT
+         */
+        @Override
+        protected void readAdditional(CompoundNBT tagCompound) {
+            super.readAdditional(tagCompound);
+            tagCompound.putBoolean("Skull", skull);
+            tagCompound.putInt("SkullDir", skullDir);
+        }
+
+        @Override
+        public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos chunkPosIn) {
+            setBlockState(worldIn, Blocks.OAK_FENCE.getDefaultState(), 0, 1, 0, structureBoundingBoxIn);
+            if (skull) {
+                setBlockState(worldIn, Blocks.SKELETON_SKULL.getDefaultState().with(BlockStateProperties.ROTATION_0_15, skullDir), 0, 2, 0, structureBoundingBoxIn);
+            }
+            else {
+                setBlockState(worldIn, Blocks.TORCH.getDefaultState(), 0, 2, 0, structureBoundingBoxIn);
+            }
+            fillAirLiquidBelowHeightmap(worldIn, Blocks.OAK_FENCE.getDefaultState(), 0, 0);
+            return true;
+        }
+    }
+
+    public static class AltarPiece extends NonTemplatePiece {
+        public AltarPiece(Random random, int x, int y, int z) {
+            super(FeatureHandler.BARAKOA_VILLAGE_ALTAR, random, x - 2, y - 1, z - 2, 5, 4, 5);
+        }
+
+        public AltarPiece(TemplateManager templateManagerIn, CompoundNBT tagCompound) {
+            super(FeatureHandler.BARAKOA_VILLAGE_STAKE, tagCompound);
+        }
+
+        @Override
+        public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos chunkPosIn) {
+            Vec2f[] hayPositions = new Vec2f[] {
+                    new Vec2f(0, 1),
+                    new Vec2f(0, 2),
+                    new Vec2f(0, 3),
+                    new Vec2f(1, 0),
+                    new Vec2f(1, 1),
+                    new Vec2f(1, 2),
+                    new Vec2f(1, 3),
+                    new Vec2f(1, 4),
+                    new Vec2f(2, 0),
+                    new Vec2f(2, 1),
+                    new Vec2f(2, 2),
+                    new Vec2f(2, 3),
+                    new Vec2f(2, 4),
+                    new Vec2f(3, 0),
+                    new Vec2f(3, 1),
+                    new Vec2f(3, 2),
+                    new Vec2f(3, 3),
+                    new Vec2f(3, 4),
+                    new Vec2f(4, 1),
+                    new Vec2f(4, 2),
+                    new Vec2f(4, 3),
+            };
+            for (Vec2f pos : hayPositions) {
+                BlockPos placePos = findGround(worldIn, (int) pos.x, (int) pos.y).down();
+                worldIn.setBlockState(placePos, Blocks.HAY_BLOCK.getDefaultState(), 2);
+            }
+            Vec2f[] groundSkullPositions = new Vec2f[] {
+                    new Vec2f(0, 1),
+                    new Vec2f(0, 3),
+                    new Vec2f(2, 4),
+                    new Vec2f(3, 3),
+                    new Vec2f(4, 2),
+            };
+            for (Vec2f pos : groundSkullPositions) {
+                worldIn.setBlockState(findGround(worldIn, (int) pos.x, (int) pos.y), Blocks.SKELETON_SKULL.getDefaultState().with(BlockStateProperties.ROTATION_0_15, randomIn.nextInt(16)), 2);
+            }
+            Vec2f[] fenceSkullPositions = new Vec2f[] {
+                    new Vec2f(0, 2),
+                    new Vec2f(1, 4),
+                    new Vec2f(3, 4),
+                    new Vec2f(4, 1),
+                    new Vec2f(4, 3),
+            };
+            for (Vec2f pos : fenceSkullPositions) {
+                BlockPos groundPos = findGround(worldIn, (int) pos.x, (int) pos.y);
+                worldIn.setBlockState(groundPos, Blocks.OAK_FENCE.getDefaultState(), 2);
+                worldIn.setBlockState(groundPos.up(), Blocks.SKELETON_SKULL.getDefaultState().with(BlockStateProperties.ROTATION_0_15, randomIn.nextInt(16)), 2);
+            }
+            return true;
+        }
 
         public BlockPos findGround(IWorld worldIn, int x, int z) {
             int i = this.getXWithOffset(x, z);
             int k = this.getZWithOffset(x, z);
-            int j = worldIn.getHeight(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, i, k);
+            int j = worldIn.getHeight(Heightmap.Type.OCEAN_FLOOR_WG, i, k);
             return new BlockPos(i, j, k);
-        }
-
-        public void fillAirLiquidBelowHeightmap(IWorld worldIn, BlockState state, int x, int z) {
-            int i = this.getXWithOffset(x, z);
-            int k = this.getZWithOffset(x, z);
-            int j = worldIn.getHeight(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, i, k) - 2;
-            while(!Block.hasSolidSideOnTop(worldIn, new BlockPos(i, j, k)) && j > 1) {
-                BlockPos pos = new BlockPos(i, j, k);
-                worldIn.setBlockState(pos, state, 2);
-                IFluidState ifluidstate = worldIn.getFluidState(pos);
-                if (!ifluidstate.isEmpty()) {
-                    worldIn.getPendingFluidTicks().scheduleTick(pos, ifluidstate.getFluid(), 0);
-                }
-                if (BLOCKS_NEEDING_POSTPROCESSING.contains(state.getBlock())) {
-                    worldIn.getChunk(pos).markBlockForPostprocessing(pos);
-                }
-                --j;
-            }
         }
     }
 }

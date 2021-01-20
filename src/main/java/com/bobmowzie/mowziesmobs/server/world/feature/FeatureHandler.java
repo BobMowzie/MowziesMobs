@@ -32,8 +32,8 @@ public class FeatureHandler {
     public static Structure<NoFeatureConfig> BARAKOA_VILLAGE = (Structure<NoFeatureConfig>) new BarakoaVillageStructure(NoFeatureConfig::deserialize).setRegistryName(MowziesMobs.MODID, "barakoa_village");
     public static IStructurePieceType BARAKOA_VILLAGE_PIECE = BarakoaVillagePieces.Piece::new;
     public static IStructurePieceType BARAKOA_VILLAGE_FIREPIT = BarakoaVillagePieces.FirepitPiece::new;
-    public static IStructurePieceType BARAKOA_VILLAGE_STAKE = BarakoaVillagePieces.Piece::new;
-    public static IStructurePieceType BARAKOA_VILLAGE_ALTAR = BarakoaVillagePieces.Piece::new;
+    public static IStructurePieceType BARAKOA_VILLAGE_STAKE = BarakoaVillagePieces.StakePiece::new;
+    public static IStructurePieceType BARAKOA_VILLAGE_ALTAR = BarakoaVillagePieces.AltarPiece::new;
 
     public static Structure<NoFeatureConfig> FROSTMAW = (Structure<NoFeatureConfig>) new FrostmawStructure(NoFeatureConfig::deserialize).setRegistryName(MowziesMobs.MODID, "frostmaw_spawn");
     public static IStructurePieceType FROSTMAW_PIECE = FrostmawPieces.Piece::new;

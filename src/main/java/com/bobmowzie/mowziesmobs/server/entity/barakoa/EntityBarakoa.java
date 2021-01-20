@@ -75,6 +75,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     @Override
     protected void registerGoals() {
         super.registerGoals();
+        setPathPriority(PathNodeType.DAMAGE_FIRE, -8);
         goalSelector.addGoal(0, new SwimGoal(this));
         goalSelector.addGoal(0, new AnimationActivateAI<>(this, ACTIVATE_ANIMATION));
         goalSelector.addGoal(0, new AnimationDeactivateAI<>(this, DEACTIVATE_ANIMATION));

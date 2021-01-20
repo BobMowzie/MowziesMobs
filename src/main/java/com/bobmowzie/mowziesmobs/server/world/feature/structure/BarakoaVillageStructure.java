@@ -36,12 +36,12 @@ public class BarakoaVillageStructure extends ScatteredStructure<NoFeatureConfig>
 
     @Override
     protected int getBiomeFeatureDistance(ChunkGenerator<?> chunkGenerator) {
-        return 8;
+        return 32;
     }
 
     @Override
     protected int getBiomeFeatureSeparation(ChunkGenerator<?> chunkGenerator) {
-        return 5;
+        return 8;
     }
 
     @Override
@@ -113,6 +113,56 @@ public class BarakoaVillageStructure extends ScatteredStructure<NoFeatureConfig>
                     housePos = posToSurface(generator, housePos);
                     housePos = housePos.offset(Direction.UP, rand.nextInt(2));
                     if (startHouse(generator, templateManagerIn, housePos)) break;
+                }
+            }
+
+            //Altar
+            int numAltars = rand.nextInt(3) + 2;
+            for (int i = 1; i <= numAltars; i++) {
+                int distance;
+                int angle;
+                for (int j = 1; j <= 10; j++) {
+                    distance = rand.nextInt(15) + 5;
+                    angle = rand.nextInt(360);
+                    BlockPos altarPos = new BlockPos(centerPos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, centerPos.getZ() + distance * Math.cos(Math.toRadians(angle)));
+                    altarPos = posToSurface(generator, altarPos);
+                    StructurePiece altar = new BarakoaVillagePieces.AltarPiece(rand, altarPos.getX(), altarPos.getY(), altarPos.getZ());
+                    boolean intersects = false;
+                    for (StructurePiece piece : components) {
+                        if (altar.getBoundingBox().intersectsWith(piece.getBoundingBox())) {
+                            intersects = true;
+                            break;
+                        }
+                    }
+                    if (!intersects) {
+                        components.add(altar);
+                        break;
+                    }
+                }
+            }
+
+            //Stakes
+            int numStakes = rand.nextInt(12) + 5;
+            for (int i = 1; i <= numStakes; i++) {
+                int distance;
+                int angle;
+                for (int j = 1; j <= 10; j++) {
+                    distance = rand.nextInt(15) + 5;
+                    angle = rand.nextInt(360);
+                    BlockPos stakePos = new BlockPos(centerPos.getX() + distance * Math.sin(Math.toRadians(angle)), 0, centerPos.getZ() + distance * Math.cos(Math.toRadians(angle)));
+                    stakePos = posToSurface(generator, stakePos);
+                    StructurePiece stake = new BarakoaVillagePieces.StakePiece(rand, stakePos.getX(), stakePos.getY(), stakePos.getZ());
+                    boolean intersects = false;
+                    for (StructurePiece piece : components) {
+                        if (stake.getBoundingBox().intersectsWith(piece.getBoundingBox())) {
+                            intersects = true;
+                            break;
+                        }
+                    }
+                    if (!intersects) {
+                        components.add(stake);
+                        break;
+                    }
                 }
             }
 
