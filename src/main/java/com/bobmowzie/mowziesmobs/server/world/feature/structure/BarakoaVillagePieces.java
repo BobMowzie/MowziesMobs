@@ -412,7 +412,7 @@ public class BarakoaVillagePieces {
             }
 
             // Spawn Barakoa
-            int numBarakoa = randomIn.nextInt(7) + 10;
+            int numBarakoa = randomIn.nextInt(10) + 7;
             for (int i = 1; i <= numBarakoa; i++) {
                 int distance;
                 int angle;

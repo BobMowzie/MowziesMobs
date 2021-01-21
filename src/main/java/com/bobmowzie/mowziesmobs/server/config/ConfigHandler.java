@@ -151,15 +151,15 @@ public final class  ConfigHandler {
     }
 
     public static class GenerationConfig {
-        GenerationConfig(final ForgeConfigSpec.Builder builder, int generationFrequency, float generationChance, BiomeConfig biomeConfig, float heightMin, float heightMax) {
+        GenerationConfig(final ForgeConfigSpec.Builder builder, int generationDistance, int generationSeparation, BiomeConfig biomeConfig, float heightMin, float heightMax) {
             builder.comment("Controls for spawning structure/mob with world generation");
             builder.push("generation_config");
-            this.generationFrequency = builder.comment("Smaller number causes more generation, 0 to disable spawning", "Maximum number of chunks between placements of this mob/structure")
-                    .translation(LANG_PREFIX + "generation_frequency")
-                    .define("generation_frequency", generationFrequency);
-            this.generationChance = builder.comment("Probability that generation succeeds.", "For example, set to 0.5 to randomly not generate half of these structures in the world.", "Set to 1 to allow all generation attempts to succeed.")
-                    .translation(LANG_PREFIX + "generation_chance")
-                    .define("generation_chance", generationChance);
+            this.generationDistance = builder.comment("Smaller number causes more generation, -1 to disable generation", "Maximum number of chunks between placements of this mob/structure")
+                    .translation(LANG_PREFIX + "generation_distance")
+                    .define("generation_distance", generationDistance);
+            this.generationSeparation = builder.comment("Smaller number causes more generation, -1 to disable generation", "Minimum number of chunks between placements of this mob/structure")
+                    .translation(LANG_PREFIX + "generation_separation")
+                    .define("generation_separation", generationSeparation);
             this.biomeConfig = biomeConfig;
             this.dimensions = builder.comment("Names of dimensions this mob/structure can generate in")
                     .translation(LANG_PREFIX + "dimensions")
@@ -173,9 +173,9 @@ public final class  ConfigHandler {
             builder.pop();
         }
 
-        public final ConfigValue<Integer> generationFrequency;
+        public final ConfigValue<Integer> generationDistance;
 
-        public final ConfigValue<Float> generationChance;
+        public final ConfigValue<Integer> generationSeparation;
 
         public final BiomeConfig biomeConfig;
 
@@ -336,7 +336,7 @@ public final class  ConfigHandler {
     public static class FerrousWroughtnaut {
         FerrousWroughtnaut(final ForgeConfigSpec.Builder builder) {
             builder.push("ferrous_wroughtnaut");
-            generationConfig = new GenerationConfig(builder, 2, 0.5f,
+            generationConfig = new GenerationConfig(builder, 15, 5,
                     new BiomeConfig(builder,  Arrays.asList(""), new ArrayList<>(), new ArrayList<>()),
                     30, 55
             );
@@ -362,7 +362,7 @@ public final class  ConfigHandler {
         Barako(final ForgeConfigSpec.Builder builder) {
             builder.push("barako");
             builder.comment("Generation controls for Barakoa villages");
-            generationConfig = new GenerationConfig(builder, 12, 0.8f,
+            generationConfig = new GenerationConfig(builder, 24, 8,
                     new BiomeConfig(builder,  Arrays.asList("SAVANNA"), new ArrayList<>(), new ArrayList<>()),
                     50, 100
             );
@@ -388,7 +388,7 @@ public final class  ConfigHandler {
     public static class Frostmaw {
         Frostmaw(final ForgeConfigSpec.Builder builder) {
             builder.push("frostmaw");
-            generationConfig = new GenerationConfig(builder, 12, 0.8f,
+            generationConfig = new GenerationConfig(builder, 24, 8,
                     new BiomeConfig(builder,  Arrays.asList("SNOWY,!OCEAN,!RIVER,!BEACH"), new ArrayList<>(), new ArrayList<>()),
                     50, 100
             );

@@ -17,7 +17,6 @@ import com.bobmowzie.mowziesmobs.server.item.ItemSpear;
 import com.bobmowzie.mowziesmobs.server.message.*;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.power.Power;
-import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -397,16 +396,4 @@ public final class ServerEventHandler {
             event.addCapability(new ResourceLocation(MowziesMobs.MODID, "player"), new PlayerCapability.PlayerProvider());
         }
     }
-
-//    @SubscribeEvent
-//    public void prePopulateWorld(DecorateBiomeEvent event) {
-//        MowzieWorldGenerator.generatePrePopulate(event.getWorld(), event.getRand(), event.getChunkX(), event.getChunkZ());
-//    }
-
-    /*@SubscribeEvent
-    public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
-        if (event.getModID().equals(MowziesMobs.MODID)) {
-            ConfigManager.sync(MowziesMobs.MODID, Config.Type.INSTANCE);
-        }
-    }*/
 }

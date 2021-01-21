@@ -2,46 +2,29 @@ package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
 import com.mojang.datafixers.Dynamic;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.structure.ScatteredStructure;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
 import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.feature.template.TemplateManager;
-import sun.security.util.ArrayUtil;
 
 import java.util.*;
 import java.util.function.Function;
 
 // Edited from Telepathic Grunt's base code
 
-public class BarakoaVillageStructure extends ScatteredStructure<NoFeatureConfig> {
+public class BarakoaVillageStructure extends MowzieStructure {
     public BarakoaVillageStructure(Function<Dynamic<?>, ? extends NoFeatureConfig> config)
     {
         super(config);
-    }
-
-    @Override
-    protected int getBiomeFeatureDistance(ChunkGenerator<?> chunkGenerator) {
-        return 8;
-    }
-
-    @Override
-    protected int getBiomeFeatureSeparation(ChunkGenerator<?> chunkGenerator) {
-        return 5;
     }
 
     @Override
@@ -68,14 +51,8 @@ public class BarakoaVillageStructure extends ScatteredStructure<NoFeatureConfig>
     }
 
     @Override
-    public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
-        List<String> dimensionNames = ConfigHandler.MOBS.BARAKO.generationConfig.dimensions.get();
-        ResourceLocation currDimensionName = worldIn.getDimension().getType().getRegistryName();
-        if (currDimensionName == null || !dimensionNames.contains(currDimensionName.toString())) {
-            return false;
-        }
-
-        return super.place(worldIn, generator, rand, pos, config);
+    public ConfigHandler.GenerationConfig getGenerationConfig() {
+        return ConfigHandler.MOBS.BARAKO.generationConfig;
     }
 
     public static class Start extends StructureStart
@@ -169,7 +146,7 @@ public class BarakoaVillageStructure extends ScatteredStructure<NoFeatureConfig>
             //Sets the bounds of the structure.
             this.recalculateStructureSize();
 
-            System.out.println("Barakoa village at " + centerPos.getX() + " " + centerPos.getY() + " " + centerPos.getZ());
+//            System.out.println("Barakoa village at " + centerPos.getX() + " " + centerPos.getY() + " " + centerPos.getZ());
         }
 
         private boolean startHouse(ChunkGenerator<?> generator, TemplateManager templateManagerIn, BlockPos housePos) {

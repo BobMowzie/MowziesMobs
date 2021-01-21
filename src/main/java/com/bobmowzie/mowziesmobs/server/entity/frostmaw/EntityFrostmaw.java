@@ -23,8 +23,6 @@ import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import com.bobmowzie.mowziesmobs.server.spawn.SpawnHandler;
-import com.bobmowzie.mowziesmobs.server.world.MowzieWorldGenerator;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.entity.*;
@@ -788,27 +786,6 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
     @Override
     public boolean preventDespawn() {
         return getHasCrystal();
-    }
-
-    public void spawnInWorld(World world, Random rand, int x, int z) {
-        Biome biome = world.getBiome(new BlockPos(x, 50, z));
-        if (rand.nextFloat() > ConfigHandler.MOBS.FROSTMAW.generationConfig.generationChance.get()) return;
-        if(!SpawnHandler.FROSTMAW_BIOMES.contains(biome)) return;
-        List<String> dimensionNames = ConfigHandler.MOBS.FROSTMAW.generationConfig.dimensions.get();
-        ResourceLocation currDimensionName = world.getDimension().getType().getRegistryName();
-        if (currDimensionName == null || !dimensionNames.contains(currDimensionName.toString())) {
-            return;
-        }
-        BlockPos pos = new BlockPos(x, 0, z);
-        int heightMax = ConfigHandler.MOBS.FROSTMAW.generationConfig.heightMax.get().intValue();
-        int heightMin = ConfigHandler.MOBS.FROSTMAW.generationConfig.heightMin.get().intValue();
-        if (heightMax == -1) heightMax = world.getHeight();
-        if (heightMin == -1) heightMin = 0;
-        int y = MowzieWorldGenerator.findGenHeight(world, pos, heightMax, heightMin) + 1;
-        if (y == 0) return;
-        setPositionAndRotation(x, y, z, rand.nextFloat() * 360.0f, 0);
-        world.addEntity(this);
-        onInitialSpawn(world, world.getDifficultyForLocation(new BlockPos(x, y, z)), SpawnReason.CHUNK_GENERATION, null, null);
     }
 
     @Override

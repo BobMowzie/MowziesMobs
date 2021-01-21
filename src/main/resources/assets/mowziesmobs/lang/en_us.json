@@ -185,8 +185,8 @@
 
   "config.mowziesmobs.generation_data": "Generation Controls",
   "config.mowziesmobs.generation_data.tooltip": "",
-  "config.mowziesmobs.generation_chance": "Generation Frequency",
-  "config.mowziesmobs.generation_frequency": "Generation Frequency",
+  "config.mowziesmobs.generation_distance": "Generation Distance",
+  "config.mowziesmobs.generation_separation": "Generation Separation",
 
   "config.mowziesmobs.combat_data": "Combat Controls",
   "config.mowziesmobs.combat_data.tooltip": "",

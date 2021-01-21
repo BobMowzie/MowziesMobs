@@ -26,19 +26,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 
-public class FrostmawStructure extends ScatteredStructure<NoFeatureConfig> {
+public class FrostmawStructure extends MowzieStructure {
     public FrostmawStructure(Function<Dynamic<?>, ? extends NoFeatureConfig> configFactoryIn) {
         super(configFactoryIn);
-    }
-
-    @Override
-    protected int getBiomeFeatureDistance(ChunkGenerator<?> chunkGenerator) {
-        return 22;
-    }
-
-    @Override
-    protected int getBiomeFeatureSeparation(ChunkGenerator<?> chunkGenerator) {
-        return 8;
     }
 
     @Override
@@ -53,6 +43,11 @@ public class FrostmawStructure extends ScatteredStructure<NoFeatureConfig> {
         return 0;
     }
 
+    @Override
+    public ConfigHandler.GenerationConfig getGenerationConfig() {
+        return ConfigHandler.MOBS.FROSTMAW.generationConfig;
+    }
+
     protected int getSeedModifier() {
         return 1237654789;
     }
@@ -60,17 +55,6 @@ public class FrostmawStructure extends ScatteredStructure<NoFeatureConfig> {
     @Override
     public IStartFactory getStartFactory() {
         return FrostmawStructure.Start::new;
-    }
-
-    @Override
-    public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
-        List<String> dimensionNames = ConfigHandler.MOBS.FROSTMAW.generationConfig.dimensions.get();
-        ResourceLocation currDimensionName = worldIn.getDimension().getType().getRegistryName();
-        if (currDimensionName == null || !dimensionNames.contains(currDimensionName.toString())) {
-            return false;
-        }
-
-        return super.place(worldIn, generator, rand, pos, config);
     }
 
     public static class Start extends StructureStart {

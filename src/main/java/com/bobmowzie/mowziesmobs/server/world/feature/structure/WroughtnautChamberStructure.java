@@ -2,55 +2,29 @@ package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
-import com.bobmowzie.mowziesmobs.server.world.structure.StructureWroughtnautRoom;
 import com.mojang.datafixers.Dynamic;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.GenerationSettings;
-import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
-import net.minecraft.world.gen.feature.jigsaw.JigsawPiece;
 import net.minecraft.world.gen.feature.structure.*;
-import net.minecraft.world.gen.feature.template.IntegrityProcessor;
-import net.minecraft.world.gen.feature.template.PlacementSettings;
-import net.minecraft.world.gen.feature.template.Template;
 import net.minecraft.world.gen.feature.template.TemplateManager;
-import net.minecraft.world.server.ServerWorld;
 
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 
 // Edited from Telepathic Grunt's base code
 
-public class WroughtnautChamberStructure extends ScatteredStructure<NoFeatureConfig> {
+public class WroughtnautChamberStructure extends MowzieStructure {
     public WroughtnautChamberStructure(Function<Dynamic<?>, ? extends NoFeatureConfig> config)
     {
         super(config);
-    }
-
-    protected int getBiomeFeatureDistance(ChunkGenerator<?> chunkGenerator) {
-        return 24;
-    }
-
-    protected int getBiomeFeatureSeparation(ChunkGenerator<?> chunkGenerator) {
-        return 8;
     }
 
     @Override
@@ -77,44 +51,13 @@ public class WroughtnautChamberStructure extends ScatteredStructure<NoFeatureCon
     }
 
     @Override
-    public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
-        List<String> dimensionNames = ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationConfig.dimensions.get();
-        ResourceLocation currDimensionName = worldIn.getDimension().getType().getRegistryName();
-        if (currDimensionName == null || !dimensionNames.contains(currDimensionName.toString())) {
-            return false;
-        }
+    public ConfigHandler.GenerationConfig getGenerationConfig() {
+        return ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationConfig;
+    }
 
-        /*for (Rotation rot: Rotation.values()) {
-            BlockPos checkPos = pos;
-
-            // Check this air
-            if (worldIn.getBlockState(checkPos).getMaterial().isSolid()) continue;
-
-            // Check ground
-            if (!worldIn.getBlockState(checkPos.offset(Direction.DOWN)).getMaterial().isSolid()) continue;
-
-            // Move scan to wall
-            boolean flag = true;
-            BlockPos offset = new BlockPos(1, 0, 0).rotate(rot);
-            checkPos = checkPos.add(offset);
-            for (int i = 0; i < 4; i++) {
-                BlockState state = worldIn.getBlockState(checkPos);
-                if (!state.getMaterial().isSolid()) {
-                    flag = false;
-                    continue;
-                }
-                checkPos = checkPos.offset(Direction.UP);
-            }
-            if (!flag) continue;
-
-            pos = pos.add(offset);
-            System.out.println("Wroughtnaut chamber at " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
-//            loadTemplate(worldIn.getWorld(), pos, new ResourceLocation(MowziesMobs.MODID, "wroughtnaut_chamber"), rot);
-            return true;
-        }
-        return false;*/
-
-        return super.place(worldIn, generator, rand, pos, config);
+    @Override
+    public boolean checkHeightLimitAgainstSurface() {
+        return false;
     }
 
     public static class Start extends StructureStart

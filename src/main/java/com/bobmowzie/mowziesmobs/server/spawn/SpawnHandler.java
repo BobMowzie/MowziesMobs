@@ -59,15 +59,15 @@ public enum SpawnHandler {
             BY_NAME.put(type.getName(), type);
         }
 
-        if (ConfigHandler.MOBS.FROSTMAW.generationConfig.generationFrequency.get() > 0) {
+        if (ConfigHandler.MOBS.FROSTMAW.generationConfig.generationDistance.get() >= 0) {
             FROSTMAW_BIOMES = getBiomesFromConfig(ConfigHandler.MOBS.FROSTMAW.generationConfig.biomeConfig);
             //System.out.println("Frostmaw biomes " + FROSTMAW_BIOMES);
         }
-        if (ConfigHandler.MOBS.BARAKO.generationConfig.generationFrequency.get() > 0) {
+        if (ConfigHandler.MOBS.BARAKO.generationConfig.generationDistance.get() >= 0) {
             BARAKO_BIOMES = getBiomesFromConfig(ConfigHandler.MOBS.BARAKO.generationConfig.biomeConfig);
             //System.out.println("Barako biomes " + BARAKO_BIOMES);
         }
-        if (ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationConfig.generationFrequency.get() > 0) {
+        if (ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationConfig.generationDistance.get() >= 0) {
             FERROUS_WROUGHTNAUT_BIOMES = getBiomesFromConfig(ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationConfig.biomeConfig);
             //System.out.println("Ferrous Wroughtnaut biomes " + FERROUS_WROUGHTNAUT_BIOMES);
         }
