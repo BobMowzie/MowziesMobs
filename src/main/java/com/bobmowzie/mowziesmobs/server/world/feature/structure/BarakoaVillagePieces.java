@@ -48,7 +48,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class BarakoaVillagePieces {
-    private static final Set<Block> BLOCKS_NEEDING_POSTPROCESSING = ImmutableSet.<Block>builder().add(Blocks.NETHER_BRICK_FENCE).add(Blocks.TORCH).add(Blocks.WALL_TORCH).add(Blocks.OAK_FENCE).add(Blocks.SPRUCE_FENCE).add(Blocks.DARK_OAK_FENCE).add(Blocks.ACACIA_FENCE).add(Blocks.BIRCH_FENCE).add(Blocks.JUNGLE_FENCE).add(Blocks.LADDER).add(Blocks.IRON_BARS).build();
+    private static final Set<Block> BLOCKS_NEEDING_POSTPROCESSING = ImmutableSet.<Block>builder().add(Blocks.NETHER_BRICK_FENCE).add(Blocks.TORCH).add(Blocks.WALL_TORCH).add(Blocks.OAK_FENCE).add(Blocks.SPRUCE_FENCE).add(Blocks.DARK_OAK_FENCE).add(Blocks.ACACIA_FENCE).add(Blocks.BIRCH_FENCE).add(Blocks.JUNGLE_FENCE).add(Blocks.LADDER).add(Blocks.IRON_BARS).add(Blocks.SKELETON_SKULL).build();
 
     public static final ResourceLocation HOUSE = new ResourceLocation(MowziesMobs.MODID, "barakoa_house");
     public static final ResourceLocation ROOF = new ResourceLocation(MowziesMobs.MODID, "barakoa_house_roof");
@@ -356,6 +356,18 @@ public class BarakoaVillagePieces {
                 --j;
             }
         }
+
+        protected void setBlockState(IWorld worldIn, BlockPos pos, BlockState state) {
+            IFluidState ifluidstate = worldIn.getFluidState(pos);
+            if (!ifluidstate.isEmpty()) {
+                worldIn.getPendingFluidTicks().scheduleTick(pos, ifluidstate.getFluid(), 0);
+                if (state.has(BlockStateProperties.WATERLOGGED)) state = state.with(BlockStateProperties.WATERLOGGED, true);
+            }
+            worldIn.setBlockState(pos, state, 2);
+            if (BLOCKS_NEEDING_POSTPROCESSING.contains(state.getBlock())) {
+                worldIn.getChunk(pos).markBlockForPostprocessing(pos);
+            }
+        }
     }
 
     public static class FirepitPiece extends NonTemplatePiece {
@@ -509,7 +521,7 @@ public class BarakoaVillagePieces {
                     new Vec2f(4, 2),
             };
             for (Vec2f pos : groundSkullPositions) {
-                worldIn.setBlockState(findGround(worldIn, (int) pos.x, (int) pos.y), Blocks.SKELETON_SKULL.getDefaultState().with(BlockStateProperties.ROTATION_0_15, randomIn.nextInt(16)), 2);
+                setBlockState(worldIn, findGround(worldIn, (int) pos.x, (int) pos.y), Blocks.SKELETON_SKULL.getDefaultState().with(BlockStateProperties.ROTATION_0_15, randomIn.nextInt(16)));
             }
             Vec2f[] fenceSkullPositions = new Vec2f[] {
                     new Vec2f(0, 2),
@@ -520,8 +532,8 @@ public class BarakoaVillagePieces {
             };
             for (Vec2f pos : fenceSkullPositions) {
                 BlockPos groundPos = findGround(worldIn, (int) pos.x, (int) pos.y);
-                worldIn.setBlockState(groundPos, Blocks.OAK_FENCE.getDefaultState(), 2);
-                worldIn.setBlockState(groundPos.up(), Blocks.SKELETON_SKULL.getDefaultState().with(BlockStateProperties.ROTATION_0_15, randomIn.nextInt(16)), 2);
+                setBlockState(worldIn, groundPos, Blocks.OAK_FENCE.getDefaultState());
+                setBlockState(worldIn, groundPos.up(), Blocks.SKELETON_SKULL.getDefaultState().with(BlockStateProperties.ROTATION_0_15, randomIn.nextInt(16)));
             }
             return true;
         }

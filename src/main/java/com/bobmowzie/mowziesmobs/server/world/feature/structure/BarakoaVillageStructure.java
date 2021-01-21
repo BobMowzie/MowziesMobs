@@ -36,12 +36,12 @@ public class BarakoaVillageStructure extends ScatteredStructure<NoFeatureConfig>
 
     @Override
     protected int getBiomeFeatureDistance(ChunkGenerator<?> chunkGenerator) {
-        return 32;
+        return 8;
     }
 
     @Override
     protected int getBiomeFeatureSeparation(ChunkGenerator<?> chunkGenerator) {
-        return 8;
+        return 5;
     }
 
     @Override
