@@ -134,7 +134,7 @@ public class WroughtnautChamberPieces {
             rotation = chamberResults.getRight();
             this.templatePosition = chamberResults.getLeft();
             this.placeSettings.setRotation(chamberResults.getRight());
-            System.out.println("Wroughtnaut Chamber at " + templatePosition.getX() + " " + templatePosition.getY() + " " + templatePosition.getZ());
+//            System.out.println("Wroughtnaut Chamber at " + templatePosition.getX() + " " + templatePosition.getY() + " " + templatePosition.getZ());
             BlockPos rotationOffset = new BlockPos(0, -1, -9).rotate(placeSettings.getRotation());
             this.templatePosition = this.templatePosition.add(rotationOffset);
             structureBoundingBoxIn = template.getMutableBoundingBox(placeSettings, templatePosition);

@@ -261,9 +261,9 @@ public final class  ConfigHandler {
             builder.push("barakoa");
             builder.comment("Controls spawning for Barakoana hunting groups", "Group size controls how many elites spawn, not followers", "See Barako config for village controls");
             spawnConfig = new SpawnConfig(builder,
-                    4, 1, 1,
+                    5, 1, 1,
                     new BiomeConfig(builder, Arrays.asList("SAVANNA"), new ArrayList<>(), new ArrayList<>()),
-                    Arrays.asList("grass", "stone", "sand"),
+                    Arrays.asList("grass_block", "sand"),
                     -1, 60, false, false, false
             );
             combatConfig = new CombatConfig(builder,1, 1);
@@ -279,9 +279,9 @@ public final class  ConfigHandler {
         Naga(final ForgeConfigSpec.Builder builder) {
             builder.push("naga");
             spawnConfig = new SpawnConfig(builder,
-                    3, 1, 3,
+                    5, 1, 3,
                     new BiomeConfig(builder, Arrays.asList("BEACH,MOUNTAIN", "BEACH,HILLS"),  Arrays.asList("minecraft:stone_shore"), new ArrayList<>()),
-                    Arrays.asList("grass", "stone", "sand"),
+                    Arrays.asList("grass_block", "stone", "sand"),
                     -1, -1, false, true, false
             );
             combatConfig = new CombatConfig(builder,1, 1);
@@ -299,7 +299,7 @@ public final class  ConfigHandler {
             spawnConfig = new SpawnConfig(builder,
                     5, 1, 2,
                     new BiomeConfig(builder, Arrays.asList("FOREST,MAGICAL,!SNOWY"),  Arrays.asList("minecraft:dark_forest", "minecraft:dark_forest_hills"), new ArrayList<>()),
-                    Arrays.asList("grass", "leaves", "leaves2", "log", "log2"),
+                    Arrays.asList("grass_block", "dark_oak_leaves", "dark_oak_log", "oak_leaves", "oak_log", "birch_leaves", "birch_log"),
                     -1, 60, true, false, false
             );
             this.healthMultiplier = builder.comment("Scale mob health by this value")
@@ -362,7 +362,7 @@ public final class  ConfigHandler {
         Barako(final ForgeConfigSpec.Builder builder) {
             builder.push("barako");
             builder.comment("Generation controls for Barakoa villages");
-            generationConfig = new GenerationConfig(builder, 24, 8,
+            generationConfig = new GenerationConfig(builder, 25, 8,
                     new BiomeConfig(builder,  Arrays.asList("SAVANNA"), new ArrayList<>(), new ArrayList<>()),
                     50, 100
             );
@@ -388,7 +388,7 @@ public final class  ConfigHandler {
     public static class Frostmaw {
         Frostmaw(final ForgeConfigSpec.Builder builder) {
             builder.push("frostmaw");
-            generationConfig = new GenerationConfig(builder, 24, 8,
+            generationConfig = new GenerationConfig(builder, 25, 8,
                     new BiomeConfig(builder,  Arrays.asList("SNOWY,!OCEAN,!RIVER,!BEACH"), new ArrayList<>(), new ArrayList<>()),
                     50, 100
             );
