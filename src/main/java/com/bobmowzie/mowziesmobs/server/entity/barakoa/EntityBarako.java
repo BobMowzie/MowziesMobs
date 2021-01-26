@@ -89,7 +89,6 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     public ControlledAnimation angryEyebrow = new ControlledAnimation(5);
     private PlayerEntity customer;
     // TODO: Enum!
-    public int whichDialogue = 0;
     public int barakoaSpawnCount = 0;
     // TODO: use Direction!
     private int direction = 0;
