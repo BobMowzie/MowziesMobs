@@ -74,4 +74,9 @@ public class BarakoaHurtByTargetAI extends TargetGoal
     {
         creatureIn.setAttackTarget(entityLivingBaseIn);
     }
+
+    @Override
+    protected double getTargetDistance() {
+        return super.getTargetDistance() * 1.7;
+    }
 }

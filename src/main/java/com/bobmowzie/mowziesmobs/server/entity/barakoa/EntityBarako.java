@@ -79,6 +79,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     private static final int LASER_PAUSE = 230;
     private static final int SUPERNOVA_PAUSE = 230;
     private static final int BARAKOA_PAUSE = 140;
+    private static final int HEAL_PAUSE = 75;
     private static final DataParameter<Integer> DIRECTION = EntityDataManager.createKey(EntityBarako.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> DIALOGUE = EntityDataManager.createKey(EntityBarako.class, DataSerializers.VARINT);
     private static final DataParameter<Boolean> ANGRY = EntityDataManager.createKey(EntityBarako.class, DataSerializers.BOOLEAN);
@@ -97,6 +98,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     private int timeUntilLaser = 0;
     private int timeUntilBarakoa = 0;
     private int timeUntilSupernova = 0;
+    private int timeUntilHeal = 0;
     private PlayerEntity blessingPlayer;
     private BarakoaHurtByTargetAI hurtByTargetAI;
 
@@ -226,7 +228,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         super.registerAttributes();
         this.getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0);
         this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(MAX_HEALTH * ConfigHandler.MOBS.BARAKO.combatConfig.healthMultiplier.get());
-        this.getAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(50);
+        this.getAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(40);
     }
 
     @Override
@@ -445,8 +447,13 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         }
 
         if (!world.isRemote && getAttackTarget() == null && getAnimation() != SOLAR_BEAM_ANIMATION && getAnimation() != SUPERNOVA_ANIMATION) {
-            if (ConfigHandler.MOBS.BARAKO.healsOutOfBattle.get()) heal(0.3f);
+            timeUntilHeal--;
+            if (ConfigHandler.MOBS.BARAKO.healsOutOfBattle.get() && timeUntilHeal <= 0) heal(0.3f);
         }
+        else {
+            timeUntilHeal = HEAL_PAUSE;
+        }
+
         if (timeUntilSunstrike > 0) {
             timeUntilSunstrike--;
         }
@@ -578,6 +585,12 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                     new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
             });
         }
+    }
+
+    @Override
+    public boolean attackEntityFrom(DamageSource source, float damage) {
+        timeUntilHeal = HEAL_PAUSE;
+        return super.attackEntityFrom(source, damage);
     }
 
     @Override
