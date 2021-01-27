@@ -62,65 +62,65 @@ public enum EntityHandler {
 
         BABY_FOLIAATH = register("baby_foliaath", EntityType.Builder.create(EntityBabyFoliaath::new, EntityClassification.MONSTER).size(0.4f, 0.4f));
 
-        WROUGHTNAUT = register("ferrous_wroughtnaut", EntityType.Builder.create(EntityWroughtnaut::new, EntityClassification.MONSTER).size(2.5f, 3.5f));
+        WROUGHTNAUT = register("ferrous_wroughtnaut", EntityType.Builder.create(EntityWroughtnaut::new, EntityClassification.MONSTER).size(2.5f, 3.5f).setUpdateInterval(1));
 
         EntityType.Builder<EntityBarakoanToBarakoana> barakoanToBarakoanaBuilder = EntityType.Builder.create(EntityBarakoanToBarakoana::new, EntityClassification.MONSTER);
-        BARAKOAN_TO_BARAKOANA = register("barakoan_barakoana", barakoanToBarakoanaBuilder.size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight));
+        BARAKOAN_TO_BARAKOANA = register("barakoan_barakoana", barakoanToBarakoanaBuilder.size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1));
 
         EntityType.Builder<EntityBarakoanToPlayer> barakoanToPlayerBuilder = EntityType.Builder.create(EntityBarakoanToPlayer::new, EntityClassification.MONSTER);
-        BARAKOAN_TO_PLAYER = register("barakoan_player", barakoanToPlayerBuilder.size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight));
+        BARAKOAN_TO_PLAYER = register("barakoan_player", barakoanToPlayerBuilder.size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1));
 
-        BARAKOAYA = register("barakoaya", EntityType.Builder.create(EntityBarakoaya::new, EntityClassification.MONSTER).size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight));
+        BARAKOAYA = register("barakoaya", EntityType.Builder.create(EntityBarakoaya::new, EntityClassification.MONSTER).size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1));
 
-        BARAKOANA = register("barakoana", EntityType.Builder.create(EntityBarakoana::new, EntityClassification.MONSTER).size(MaskType.FURY.entityWidth, MaskType.FURY.entityHeight));
+        BARAKOANA = register("barakoana", EntityType.Builder.create(EntityBarakoana::new, EntityClassification.MONSTER).size(MaskType.FURY.entityWidth, MaskType.FURY.entityHeight).setUpdateInterval(1));
 
-        BARAKO = register("barako", EntityType.Builder.create(EntityBarako::new, EntityClassification.MONSTER).size(1.5f, 2.4f));
+        BARAKO = register("barako", EntityType.Builder.create(EntityBarako::new, EntityClassification.MONSTER).size(1.5f, 2.4f).setUpdateInterval(1));
 
-        FROSTMAW = register("frostmaw", EntityType.Builder.create(EntityFrostmaw::new, EntityClassification.MONSTER).size(4f, 4f));
+        FROSTMAW = register("frostmaw", EntityType.Builder.create(EntityFrostmaw::new, EntityClassification.MONSTER).size(4f, 4f).setUpdateInterval(1));
 
-        GROTTOL = register("grottol", EntityType.Builder.create(EntityGrottol::new, EntityClassification.MONSTER).size(0.9F, 1.2F));
+        GROTTOL = register("grottol", EntityType.Builder.create(EntityGrottol::new, EntityClassification.MONSTER).size(0.9F, 1.2F).setUpdateInterval(1));
 
-        LANTERN = register("lantern", EntityType.Builder.create(EntityLantern::new, EntityClassification.AMBIENT).size(1.0f, 1.0f));
+        LANTERN = register("lantern", EntityType.Builder.create(EntityLantern::new, EntityClassification.AMBIENT).size(1.0f, 1.0f).setUpdateInterval(1));
 
-        NAGA = register("naga", EntityType.Builder.create(EntityNaga::new, EntityClassification.MONSTER).size(3.0f, 1.0f).setTrackingRange(128));
+        NAGA = register("naga", EntityType.Builder.create(EntityNaga::new, EntityClassification.MONSTER).size(3.0f, 1.0f).setTrackingRange(128).setUpdateInterval(1));
 
         // Non-mobs
         EntityType.Builder<EntitySunstrike> sunstrikeBuilder = EntityType.Builder.create(EntitySunstrike::new, EntityClassification.MISC);
         SUNSTRIKE = register("sunstrike", sunstrikeBuilder.disableSummoning().size(0.1F, 0.1F));
 
         EntityType.Builder<EntitySolarBeam> solarBeamBuilder = EntityType.Builder.create(EntitySolarBeam::new, EntityClassification.MISC);
-        SOLAR_BEAM = register("solar_beam", solarBeamBuilder.disableSummoning().size(0.1F, 0.1F));
+        SOLAR_BEAM = register("solar_beam", solarBeamBuilder.disableSummoning().size(0.1F, 0.1F).setUpdateInterval(1));
 
         EntityType.Builder<EntityBoulder> boulderBuilder = EntityType.Builder.create(EntityBoulder::new, EntityClassification.MISC);
-        BOULDER_SMALL = register("boulder_small", boulderBuilder.disableSummoning().size(1, 1));
-        BOULDER_MEDIUM = register("boulder_medium", boulderBuilder.disableSummoning().size(2, 1.5f));
-        BOULDER_LARGE = register("boulder_large", boulderBuilder.disableSummoning().size(3, 2.5f));
-        BOULDER_HUGE = register("boulder_huge", boulderBuilder.disableSummoning().size(4, 3.5f));
+        BOULDER_SMALL = register("boulder_small", boulderBuilder.disableSummoning().size(1, 1).setUpdateInterval(1));
+        BOULDER_MEDIUM = register("boulder_medium", boulderBuilder.disableSummoning().size(2, 1.5f).setUpdateInterval(1));
+        BOULDER_LARGE = register("boulder_large", boulderBuilder.disableSummoning().size(3, 2.5f).setUpdateInterval(1));
+        BOULDER_HUGE = register("boulder_huge", boulderBuilder.disableSummoning().size(4, 3.5f).setUpdateInterval(1));
         BOULDERS = new EntityType[] {BOULDER_SMALL, BOULDER_MEDIUM, BOULDER_LARGE, BOULDER_HUGE};
 
         EntityType.Builder<EntityAxeAttack> axeAttackBuilder = EntityType.Builder.create(EntityAxeAttack::new, EntityClassification.MISC);
-        AXE_ATTACK = register("axe_attack", axeAttackBuilder.disableSummoning().size(1f, 1f));
+        AXE_ATTACK = register("axe_attack", axeAttackBuilder.disableSummoning().size(1f, 1f).setUpdateInterval(1));
 
         EntityType.Builder<EntityIceBreath> iceBreathBuilder = EntityType.Builder.create(EntityIceBreath::new, EntityClassification.MISC);
-        ICE_BREATH = register("ice_breath", iceBreathBuilder.disableSummoning().size(0F, 0F));
+        ICE_BREATH = register("ice_breath", iceBreathBuilder.disableSummoning().size(0F, 0F).setUpdateInterval(1));
 
         EntityType.Builder<EntityIceBall> iceBallBuilder = EntityType.Builder.create(EntityIceBall::new, EntityClassification.MISC);
-        ICE_BALL = register("ice_ball", iceBallBuilder.disableSummoning().size(0.5F, 0.5F));
+        ICE_BALL = register("ice_ball", iceBallBuilder.disableSummoning().size(0.5F, 0.5F).setUpdateInterval(20));
 
         EntityType.Builder<EntityFrozenController> frozenControllerBuilder = EntityType.Builder.create(EntityFrozenController::new, EntityClassification.MISC);
         FROZEN_CONTROLLER = register("frozen_controller", frozenControllerBuilder.disableSummoning().size(0, 0));
 
         EntityType.Builder<EntityDart> dartBuilder = EntityType.Builder.create(EntityDart::new, EntityClassification.MISC);
-        DART = register("dart", dartBuilder.disableSummoning().size(0.5F, 0.5F));
+        DART = register("dart", dartBuilder.disableSummoning().size(0.5F, 0.5F).setUpdateInterval(20));
 
         EntityType.Builder<EntityPoisonBall> poisonBallBuilder = EntityType.Builder.create(EntityPoisonBall::new, EntityClassification.MISC);
-        POISON_BALL = register("poison_ball", poisonBallBuilder.disableSummoning().size(0.5F, 0.5F));
+        POISON_BALL = register("poison_ball", poisonBallBuilder.disableSummoning().size(0.5F, 0.5F).setUpdateInterval(20));
 
         EntityType.Builder<EntitySuperNova> superNovaBuilder = EntityType.Builder.create(EntitySuperNova::new, EntityClassification.MISC);
-        SUPER_NOVA = register("super_nova", superNovaBuilder.disableSummoning().size(1, 1));
+        SUPER_NOVA = register("super_nova", superNovaBuilder.disableSummoning().size(1, 1).setUpdateInterval(Integer.MAX_VALUE));
 
         EntityType.Builder<EntityBlockSwapper> blockSwapperBuilder = EntityType.Builder.create(EntityBlockSwapper::new, EntityClassification.MISC);
-        BLOCK_SWAPPER = register("block_swapper", blockSwapperBuilder.disableSummoning().size(1, 1));
+        BLOCK_SWAPPER = register("block_swapper", blockSwapperBuilder.disableSummoning().size(1, 1).setUpdateInterval(Integer.MAX_VALUE));
 
         ForgeRegistries.ENTITIES.registerAll(
             FOLIAATH,
