@@ -414,6 +414,7 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
                 flap(armUpperLeft, 1 * globalSpeed, 0.3f * globalHeight, false, 0.5f, 0, limbSwing, limbSwingAmount);
                 walk(armUpperLeft, 0.5f * globalSpeed, 0.7f * globalDegree, true, 0, 0, limbSwing, limbSwingAmount);
             }
+            spearBase.rotationPointZ += 1.5;
         }
 
         if (!entity.isPotionActive(PotionHandler.FROZEN)) {
