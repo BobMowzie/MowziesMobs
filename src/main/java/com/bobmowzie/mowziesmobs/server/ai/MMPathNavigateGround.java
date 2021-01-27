@@ -1,11 +1,12 @@
 package com.bobmowzie.mowziesmobs.server.ai;
 
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.pathfinding.GroundPathNavigator;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathFinder;
 import net.minecraft.pathfinding.PathNodeType;
+import net.minecraft.pathfinding.PathType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -18,11 +19,11 @@ public class MMPathNavigateGround extends GroundPathNavigator {
         super(entity, world);
     }
 
-    /*@Override
-    protected PathFinder getPathFinder() {
+    @Override
+    protected PathFinder getPathFinder(int maxVisitedNodes) {
         this.nodeProcessor = new MMWalkNodeProcessor();
         this.nodeProcessor.setCanEnterDoors(true);
-        return new MMPathFinder(this.nodeProcessor);
+        return new MMPathFinder(this.nodeProcessor, maxVisitedNodes);
     }
 
     @Override
@@ -36,10 +37,10 @@ public class MMPathNavigateGround extends GroundPathNavigator {
                 break;
             }
         }
-        final Vec3d base = entityPos.add(-this.entity.width * 0.5F, 0.0F, -this.entity.width * 0.5F);
-        final Vec3d max = base.add(this.entity.width, this.entity.height, this.entity.width);
+        final Vec3d base = entityPos.add(-this.entity.getWidth() * 0.5F, 0.0F, -this.entity.getWidth() * 0.5F);
+        final Vec3d max = base.add(this.entity.getWidth(), this.entity.getHeight(), this.entity.getWidth());
         if (this.tryShortcut(path, new Vec3d(this.entity.posX, this.entity.posY, this.entity.posZ), pathLength, base, max)) {
-            if (this.isAt(path, 0.5F) || this.atElevationChange(path) && this.isAt(path, this.entity.width * 0.5F)) {
+            if (this.isAt(path, 0.5F) || this.atElevationChange(path) && this.isAt(path, this.entity.getWidth() * 0.5F)) {
                 path.setCurrentPathIndex(path.getCurrentPathIndex() + 1);
             }
         }
@@ -55,7 +56,7 @@ public class MMPathNavigateGround extends GroundPathNavigator {
 
     private boolean atElevationChange(Path path) {
         final int curr = path.getCurrentPathIndex();
-        final int end = Math.min(path.getCurrentPathLength(), curr + MathHelper.ceil(this.entity.width * 0.5F) + 1);
+        final int end = Math.min(path.getCurrentPathLength(), curr + MathHelper.ceil(this.entity.getWidth() * 0.5F) + 1);
         final int currY = path.getPathPointFromIndex(curr).y;
         for (int i = curr + 1; i < end; i++) {
             if (path.getPathPointFromIndex(i).y != currY) {
@@ -135,8 +136,8 @@ public class MMPathNavigateGround extends GroundPathNavigator {
             for (int x = x0; x != x1; x += stepx) {
                 for (int z = z0; z != z1; z += stepz) {
                     for (int y = y0; y != y1; y += stepy) {
-                        Block block = this.world.getBlockState(pos.setPos(x, y, z)).getBlock();
-                        if (!block.isPassable(this.world, pos)) return false;
+                        BlockState block = this.world.getBlockState(pos.setPos(x, y, z));
+                        if (!block.allowsMovement(this.world, pos, PathType.LAND)) return false;
                     }
                     PathNodeType below = this.nodeProcessor.getPathNodeType(this.world, x, y0 - 1, z, this.entity, 1, 1, 1, true, true);
                     if (below == PathNodeType.WATER || below == PathNodeType.LAVA || below == PathNodeType.OPEN) return false;
@@ -165,5 +166,5 @@ public class MMPathNavigateGround extends GroundPathNavigator {
             case 2: return (float) v.z;
             default: return 0.0F;
         }
-    }*/
+    }
 }
