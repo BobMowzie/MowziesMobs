@@ -9,6 +9,7 @@ import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.model.ModelBox;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -370,6 +371,8 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
     }
 
     public void setDefaultAngles(EntityBarakoa entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
+        headYaw = MathHelper.wrapDegrees(headYaw);
+        headPitch = MathHelper.wrapDegrees(headPitch);
         resetToDefaultPose();
 //                f = entity.ticksExisted;
 //                f1 = 0.5f;

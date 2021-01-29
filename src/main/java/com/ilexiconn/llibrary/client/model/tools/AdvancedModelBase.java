@@ -5,6 +5,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.lwjgl.system.MathUtil;
 
 /**
  * An enhanced ModelBase
@@ -46,8 +47,8 @@ public class AdvancedModelBase<T extends Entity> extends EntityModel<T> {
      */
     public void faceTarget(float yaw, float pitch, float rotationDivisor, AdvancedModelRenderer... boxes) {
         float actualRotationDivisor = rotationDivisor * boxes.length;
-        float yawAmount = yaw / (180.0F / (float) Math.PI) / actualRotationDivisor;
-        float pitchAmount = pitch / (180.0F / (float) Math.PI) / actualRotationDivisor;
+        float yawAmount = (float) (Math.toRadians(yaw) / actualRotationDivisor);
+        float pitchAmount = (float) (Math.toRadians(pitch) / actualRotationDivisor);
         for (AdvancedModelRenderer box : boxes) {
             box.rotateAngleY += yawAmount;
             box.rotateAngleX += pitchAmount;
