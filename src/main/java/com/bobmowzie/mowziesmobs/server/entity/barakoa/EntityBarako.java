@@ -18,6 +18,7 @@ import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySuperNova;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoTrade;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
+import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
@@ -50,9 +51,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.BossInfo;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.World;
+import net.minecraft.world.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
@@ -810,5 +809,30 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     @Override
     protected ResourceLocation getLootTable() {
         return LootTableHandler.BARAKO;
+    }
+
+    @Override
+    public ILivingEntityData onInitialSpawn(IWorld world, DifficultyInstance difficulty, SpawnReason reason, ILivingEntityData livingData, CompoundNBT compound) {
+        if (reason == SpawnReason.SPAWN_EGG) {
+            // Try to guess which player spawned Barako, rotate towards them
+            List<PlayerEntity> players = getPlayersNearby(5, 5, 5, 5);
+            if (!players.isEmpty()) {
+                PlayerEntity closestPlayer = players.get(0);
+                float closestPlayerDist = 6;
+                for (PlayerEntity player : players) {
+                    if (player.getHeldItemMainhand().getItem() == ItemHandler.BARAKO_SPAWN_EGG || player.getHeldItemMainhand().getItem() == ItemHandler.BARAKO_SPAWN_EGG) {
+                        float thisDist = this.getDistance(player);
+                        if (thisDist < closestPlayerDist) {
+                            closestPlayer = player;
+                            closestPlayerDist = thisDist;
+                        }
+                    }
+                }
+                float angle = (float) getAngleBetweenEntities(this, closestPlayer) + 225;
+                int direction = (int) (angle / 90) % 4 + 1;
+                setDirection(direction);
+            }
+        }
+        return super.onInitialSpawn(world, difficulty, reason, livingData, compound);
     }
 }

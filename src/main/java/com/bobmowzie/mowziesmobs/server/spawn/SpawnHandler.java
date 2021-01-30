@@ -93,7 +93,7 @@ public enum SpawnHandler {
         }
         if (ConfigHandler.MOBS.NAGA.spawnConfig.spawnRate.get() > 0) {
             Set<Biome> nagaBiomes = getBiomesFromConfig(ConfigHandler.MOBS.NAGA.spawnConfig.biomeConfig);
-            System.out.println("Naga biomes " + nagaBiomes);
+//            System.out.println("Naga biomes " + nagaBiomes);
             registerEntityWorldSpawn(EntityHandler.NAGA, ConfigHandler.MOBS.NAGA.spawnConfig.spawnRate.get(), ConfigHandler.MOBS.NAGA.spawnConfig.minGroupSize.get(), ConfigHandler.MOBS.NAGA.spawnConfig.maxGroupSize.get(), EntityClassification.MONSTER, nagaBiomes.toArray(new Biome[nagaBiomes.size()]));
         }
     }
