@@ -24,5 +24,6 @@ public class ModelPlayerAnimated extends PlayerModel {
         this.bipedLeftArmwear.copyModelAngles(this.bipedLeftArm);
         this.bipedRightArmwear.copyModelAngles(this.bipedRightArm);
         this.bipedBodyWear.copyModelAngles(this.bipedBody);
+        this.bipedHeadwear.copyModelAngles(this.bipedHead);
     }
 }
