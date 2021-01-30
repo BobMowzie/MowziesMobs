@@ -78,6 +78,8 @@ public class EntityGrottol extends MowzieEntity implements IMob {
 
     private EnumDeathType death = EnumDeathType.NORMAL;
 
+    private int timeSinceDeflectSound = 0;
+
     public EntityGrottol(EntityType<? extends EntityGrottol> type, World world) {
         super(type, world);
         experienceValue = 20;
@@ -240,7 +242,10 @@ public class EntityGrottol extends MowzieEntity implements IMob {
                 }
                 return super.attackEntityFrom(source, getHealth());
             } else {
-                playSound(MMSounds.ENTITY_GROTTOL_UNDAMAGED.get(), 0.4F, 2.0F);
+                if (timeSinceDeflectSound >= 5) {
+                    timeSinceDeflectSound = 0;
+                    playSound(MMSounds.ENTITY_GROTTOL_UNDAMAGED.get(), 0.4F, 2.0F);
+                }
                 return false;
             }
         }
@@ -296,6 +301,8 @@ public class EntityGrottol extends MowzieEntity implements IMob {
         } else {
             fleeTime = 0;
         }
+
+        if (timeSinceDeflectSound < 5) timeSinceDeflectSound++;
 
         // AI Task
         if (!world.isRemote && fleeTime >= 55 && getAnimation() == NO_ANIMATION && !isAIDisabled() && !isPotionActive(PotionHandler.FROZEN)) {
