@@ -9,8 +9,10 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.SlabBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.*;
@@ -73,7 +75,7 @@ public class EntityBoulder extends Entity {
         this.setOrigin(new BlockPos(this));
     }
 
-    public EntityBoulder(EntityType<? extends EntityBoulder> type, World world, LivingEntity caster, BlockState block) {
+    public EntityBoulder(EntityType<? extends EntityBoulder> type, World world, LivingEntity caster, BlockState blockState, BlockPos pos) {
         this(type, world);
         this.caster = caster;
         if (type == EntityHandler.BOULDER_SMALL) setBoulderSize(BoulderSizeEnum.SMALL);
@@ -81,26 +83,31 @@ public class EntityBoulder extends Entity {
         else if (type == EntityHandler.BOULDER_LARGE) setBoulderSize(BoulderSizeEnum.LARGE);
         else if (type == EntityHandler.BOULDER_HUGE) setBoulderSize(BoulderSizeEnum.HUGE);
         setSizeParams();
-        if (!world.isRemote && block != null) {
-            BlockState newBlock = block;
-            Material mat = block.getMaterial();
-            if (block.getBlock() == Blocks.GRASS_BLOCK || block.getBlock() == Blocks.MYCELIUM || mat == Material.EARTH) newBlock = Blocks.DIRT.getDefaultState();
+        if (!world.isRemote && blockState != null) {
+            Block block = blockState.getBlock();
+            BlockState newBlock = blockState;
+            Material mat = blockState.getMaterial();
+            if (blockState.getBlock() == Blocks.GRASS_BLOCK || blockState.getBlock() == Blocks.MYCELIUM || mat == Material.EARTH) newBlock = Blocks.DIRT.getDefaultState();
             else if (mat == Material.ROCK) {
-                if (block.getBlock().getTranslationKey().contains("ore")) newBlock = Blocks.STONE.getDefaultState();
-                if (block.getBlock() == Blocks.NETHER_QUARTZ_ORE) newBlock = Blocks.NETHERRACK.getDefaultState();
-                if (block.getBlock() == Blocks.FURNACE
-                        || block.getBlock() == Blocks.DISPENSER
-                        || block.getBlock() == Blocks.DROPPER
-                        ) newBlock = Blocks.COBBLESTONE.getDefaultState();
+                if (block.getRegistryName() != null && block.getRegistryName().getPath().contains("ore")) newBlock = Blocks.STONE.getDefaultState();
+                if (blockState.getBlock() == Blocks.NETHER_QUARTZ_ORE) newBlock = Blocks.NETHERRACK.getDefaultState();
+                if (blockState.getBlock() == Blocks.FURNACE
+                        || blockState.getBlock() == Blocks.DISPENSER
+                        || blockState.getBlock() == Blocks.DROPPER
+                ) newBlock = Blocks.COBBLESTONE.getDefaultState();
             }
             else if (mat == Material.CLAY) {
-                if (block.getBlock() == Blocks.CLAY) newBlock = Blocks.TERRACOTTA.getDefaultState();
+                if (blockState.getBlock() == Blocks.CLAY) newBlock = Blocks.TERRACOTTA.getDefaultState();
             }
             else if (mat == Material.SAND) {
-                if (block.getBlock() == Blocks.SAND) newBlock = Blocks.SANDSTONE.getDefaultState();
-                else if (block.getBlock() == Blocks.RED_SAND) newBlock = Blocks.RED_SANDSTONE.getDefaultState();
-                else if (block.getBlock() == Blocks.GRAVEL) newBlock = Blocks.COBBLESTONE.getDefaultState();
-                else if (block.getBlock() == Blocks.SOUL_SAND) newBlock = Blocks.NETHERRACK.getDefaultState();
+                if (blockState.getBlock() == Blocks.SAND) newBlock = Blocks.SANDSTONE.getDefaultState();
+                else if (blockState.getBlock() == Blocks.RED_SAND) newBlock = Blocks.RED_SANDSTONE.getDefaultState();
+                else if (blockState.getBlock() == Blocks.GRAVEL) newBlock = Blocks.COBBLESTONE.getDefaultState();
+                else if (blockState.getBlock() == Blocks.SOUL_SAND) newBlock = Blocks.NETHERRACK.getDefaultState();
+            }
+
+            if (!newBlock.isNormalCube(world, pos)) {
+                newBlock = Blocks.STONE.getDefaultState();
             }
             setBlock(newBlock);
         }
@@ -176,7 +183,7 @@ public class EntityBoulder extends Entity {
                 entity.move(MoverType.SHULKER_BOX, getMotion());
             }
         }
-        if (boulderSize == BoulderSizeEnum.HUGE) {
+        if (boulderSize == BoulderSizeEnum.HUGE && ticksExisted < finishedRisingTick) {
             float f = this.getWidth() / 2.0F;
             AxisAlignedBB aabb = new AxisAlignedBB(posX - (double)f, posY - 0.5, posZ - (double)f, posX + (double)f, posY + Math.min(ticksExisted/(float)finishedRisingTick * 3.5f, 3.5f), posZ + (double)f);
             setBoundingBox(aabb);

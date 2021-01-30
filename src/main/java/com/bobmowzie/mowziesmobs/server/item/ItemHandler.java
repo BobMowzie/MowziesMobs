@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.Mod;
 public final class ItemHandler {
     private ItemHandler() {}
 
-    public static final ItemTestStructure TEST_STRUCTURE = (ItemTestStructure) new ItemTestStructure(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("test_structure");
+//    public static final ItemTestStructure TEST_STRUCTURE = (ItemTestStructure) new ItemTestStructure(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("test_structure");
 
     public static final ItemFoliaathSeed FOLIAATH_SEED = (ItemFoliaathSeed) new ItemFoliaathSeed(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("foliaath_seed");
     public static final ItemMobRemover MOB_REMOVER = (ItemMobRemover) new ItemMobRemover(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("mob_remover");
@@ -55,7 +55,7 @@ public final class ItemHandler {
     @SubscribeEvent
     public static void register(RegistryEvent.Register<Item> event) {
         event.getRegistry().registerAll(
-                TEST_STRUCTURE,
+//                TEST_STRUCTURE,
                 FOLIAATH_SEED,
                 MOB_REMOVER,
                 WROUGHT_AXE,

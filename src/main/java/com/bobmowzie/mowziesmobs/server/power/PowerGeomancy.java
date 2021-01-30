@@ -262,7 +262,7 @@ public class PowerGeomancy extends Power {
     private void spawnBoulder(PlayerEntity player) {
         int size = (int)Math.min(Math.max(0, Math.floor(spawnBoulderCharge/10.f) - 1), 2);
         if (spawnBoulderCharge >= 60) size = 3;
-        EntityBoulder boulder = new EntityBoulder(EntityHandler.BOULDERS[size], player.world, player, spawnBoulderBlock);
+        EntityBoulder boulder = new EntityBoulder(EntityHandler.BOULDERS[size], player.world, player, spawnBoulderBlock, spawnBoulderPos);
         boulder.setPosition(spawnBoulderPos.getX() + 0.5F, spawnBoulderPos.getY() + 2, spawnBoulderPos.getZ() + 0.5F);
         if (!player.world.isRemote && boulder.checkCanSpawn()) {
             player.world.addEntity(boulder);
