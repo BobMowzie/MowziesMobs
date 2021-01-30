@@ -149,11 +149,6 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     }
 
     @Override
-    public int getAttack() {
-        return (int)(30 * ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.combatConfig.attackMultiplier.get());
-    }
-
-    @Override
     protected SoundEvent getHurtSound(DamageSource source) {
         return MMSounds.ENTITY_WROUGHT_HURT_1.get();
     }
@@ -174,6 +169,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         super.registerAttributes();
         getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
         getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(40 * ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.combatConfig.healthMultiplier.get());
+        this.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(30);
     }
 
     @Override

@@ -1,11 +1,13 @@
 package com.bobmowzie.mowziesmobs.server.ai.animation;
 
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MoverType;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.Vec3d;
 
@@ -69,7 +71,7 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
             } else if (entity.getAnimationTick() == 27) {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_SWING_1.get(), 1.5F, 1);
                 List<LivingEntity> entitiesHit = entity.getEntityLivingBaseNearby(range, 3, range, range);
-                float damage = (float) entity.getAttack();
+                float damage = (float)entity.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getValue() * ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.combatConfig.attackMultiplier.get();
                 boolean hit = false;
                 for (LivingEntity entityHit : entitiesHit) {
                     float entityHitAngle = (float) ((Math.atan2(entityHit.posZ - entity.posZ, entityHit.posX - entity.posX) * (180 / Math.PI) - 90) % 360);
@@ -109,7 +111,7 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
             else if (entity.getAnimationTick() == 12) {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_SWING_3.get(), 1.5F, 1);
                 List<LivingEntity> entitiesHit = entity.getEntityLivingBaseNearby(range - 0.3, 3, range - 0.3, range - 0.3);
-                float damage = (float) entity.getAttack();
+                float damage = (float)entity.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getValue() * ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.combatConfig.attackMultiplier.get();
                 boolean hit = false;
                 for (LivingEntity entityHit : entitiesHit) {
                     float entityHitAngle = (float) ((Math.atan2(entityHit.posZ - entity.posZ, entityHit.posX - entity.posX) * (180 / Math.PI) - 90) % 360);
@@ -150,7 +152,7 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_GRUNT_3.get(), 1.5F, 1.13f);
                 entity.move(MoverType.SELF, new Vec3d(Math.cos(Math.toRadians(entity.rotationYaw + 90)), 0, Math.sin(Math.toRadians(entity.rotationYaw + 90))));
                 List<LivingEntity> entitiesHit = entity.getEntityLivingBaseNearby(range + 0.2, 3, range + 0.2, range + 0.2);
-                float damage = (float) entity.getAttack();
+                float damage = (float)entity.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getValue() * ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.combatConfig.attackMultiplier.get();
                 boolean hit = false;
                 for (LivingEntity entityHit : entitiesHit) {
                     float entityHitDistance = (float) Math.sqrt((entityHit.posZ - entity.posZ) * (entityHit.posZ - entity.posZ) + (entityHit.posX - entity.posX) * (entityHit.posX - entity.posX));

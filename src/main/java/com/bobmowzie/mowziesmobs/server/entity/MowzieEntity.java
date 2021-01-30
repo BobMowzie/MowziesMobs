@@ -185,10 +185,6 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         this.setAnimationTick(animTick);
     }
 
-    public int getAttack() {
-        return 0;
-    }
-
     @Override
     public boolean attackEntityAsMob(Entity entityIn) {
         return this.attackEntityAsMob(entityIn, 1.0F, 1.0f);

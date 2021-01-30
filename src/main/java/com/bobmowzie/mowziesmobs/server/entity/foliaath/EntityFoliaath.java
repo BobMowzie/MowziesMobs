@@ -88,11 +88,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         super.registerAttributes();
         this.getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
         this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10 * ConfigHandler.MOBS.FOLIAATH.combatConfig.healthMultiplier.get());
-    }
-
-    @Override
-    public int getAttack() {
-        return 10;
+        this.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(10);
     }
 
     @Override

@@ -195,7 +195,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 }
             }
         });
-        this.goalSelector.addGoal(2, new AnimationRadiusAttack<EntityBarako>(this, ATTACK_ANIMATION, 4f, (int)(5 * ConfigHandler.MOBS.BARAKO.combatConfig.attackMultiplier.get()), 3f, 12, true){
+        this.goalSelector.addGoal(2, new AnimationRadiusAttack<EntityBarako>(this, ATTACK_ANIMATION, 4f, ConfigHandler.MOBS.BARAKO.combatConfig.attackMultiplier.get(), 3f, 12, true){
             @Override
             public void startExecuting() {
                 super.startExecuting();
@@ -227,6 +227,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         this.getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0);
         this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(MAX_HEALTH * ConfigHandler.MOBS.BARAKO.combatConfig.healthMultiplier.get());
         this.getAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(40);
+        this.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(5);
     }
 
     @Override
