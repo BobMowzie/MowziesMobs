@@ -16,13 +16,13 @@ public final class BlackPinkInYourArea implements BiConsumer<World, AbstractMine
 
     @Override
     public void accept(World world, AbstractMinecartEntity minecart) {
-        BlockState state = minecart.getDisplayTile();
+        /*BlockState state = minecart.getDisplayTile();
         if (state.getBlock() != BlockHandler.GROTTOL.get()) {
             state = BlockHandler.GROTTOL.get().getDefaultState();
             minecart.setDisplayTileOffset(minecart.getDefaultDisplayTileOffset());
         }
         minecart.setDisplayTile(state.with(BlockGrottol.VARIANT, BlockGrottol.Variant.BLACK_PINK));
-        ((ServerWorld) minecart.world).getChunkProvider().sendToAllTracking(minecart, new MessageBlackPinkInYourArea(minecart));
+        ((ServerWorld) minecart.world).getChunkProvider().sendToAllTracking(minecart, new MessageBlackPinkInYourArea(minecart)); TODO*/
     }
 
     public static BlackPinkInYourArea create() {
