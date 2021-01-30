@@ -1,8 +1,8 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.MMModelAnimator;
 import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.EntityDynamicsTester;
-import com.ilexiconn.llibrary.client.model.ModelAnimator;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import net.minecraft.client.renderer.entity.model.RendererModel;
@@ -23,10 +23,10 @@ public class ModelDynamicsTester<T extends EntityDynamicsTester> extends Advance
     public SocketModelRenderer[] body;
     public SocketModelRenderer[] bodydynamic;
 
-    private ModelAnimator animator;
+    private MMModelAnimator animator;
 
     public ModelDynamicsTester() {
-        animator = ModelAnimator.create();
+        animator = MMModelAnimator.create();
         this.textureWidth = 64;
         this.textureHeight = 64;
         this.root = new AdvancedModelRenderer(this, 1, 0);

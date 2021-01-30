@@ -58,11 +58,6 @@ public class EntityLantern extends MowzieEntity {
     }
 
     @Override
-    public EntityType<?> getType() {
-        return super.getType();
-    }
-
-    @Override
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(2, new SimpleAnimationAI<>(this, PUFF_ANIMATION, false));
