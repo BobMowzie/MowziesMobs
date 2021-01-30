@@ -1,10 +1,12 @@
 package com.ilexiconn.llibrary.server.animation;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.ilexiconn.llibrary.server.event.AnimationEvent;
 import com.ilexiconn.llibrary.server.network.AnimationMessage;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.network.PacketDistributor;
 import org.apache.commons.lang3.ArrayUtils;
 
 /**
@@ -26,7 +28,8 @@ public enum AnimationHandler {
             return;
         }
         entity.setAnimation(animation);
-        ((ServerWorld) entity.world).getChunkProvider().sendToAllTracking(entity, new AnimationMessage(entity.getEntityId(), ArrayUtils.indexOf(entity.getAnimations(), animation)));
+//        ((ServerWorld) entity.world).getChunkProvider().sendToAllTracking(entity, new AnimationMessage(entity.getEntityId(), ArrayUtils.indexOf(entity.getAnimations(), animation)));
+        MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new AnimationMessage(entity.getEntityId(), ArrayUtils.indexOf(entity.getAnimations(), animation)));
     }
 
     /**

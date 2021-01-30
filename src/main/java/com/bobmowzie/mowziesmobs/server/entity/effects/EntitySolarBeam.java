@@ -286,7 +286,7 @@ public class EntitySolarBeam extends Entity {
             }
             float pad = entity.getCollisionBorderSize() + 0.5f;
             AxisAlignedBB aabb = entity.getBoundingBox().grow(pad, pad, pad);
-            boolean hit = aabb.intersects(from, to);
+            boolean hit = aabb.intersects(from.x, from.y, from.z, to.x, to.y, to.z);
             if (aabb.contains(from)) {
                 result.addEntityHit(entity);
             } else if (hit) {

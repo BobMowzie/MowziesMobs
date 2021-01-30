@@ -285,7 +285,7 @@ public final class ServerEventHandler {
     public void onLivingDamage(LivingHurtEvent event) {
         if (event.getSource().isFireDamage() && event.getEntityLiving().isPotionActive(PotionHandler.FROZEN)) {
             event.getEntityLiving().removeActivePotionEffect(PotionHandler.FROZEN);
-            MowziesMobs.NETWORK.send(PacketDistributor.ALL.noArg(), new MessageUnfreezeEntity(event.getEntityLiving()));
+            MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> event.getEntity()), new MessageUnfreezeEntity(event.getEntityLiving()));
         }
         if (event.getEntity() instanceof PlayerEntity) {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getEntity(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);

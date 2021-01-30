@@ -6,7 +6,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -45,16 +44,13 @@ public class MessageAddFreezeProgress {
         @Override
         public void accept(final MessageAddFreezeProgress message, final Supplier<NetworkEvent.Context> contextSupplier) {
             final NetworkEvent.Context context = contextSupplier.get();
-            final ClientPlayerEntity player = Minecraft.getInstance().player;
             context.enqueueWork(() -> {
-                if (player != null) {
-                    Entity entity = player.world.getEntityByID(message.entityID);
-                    if (entity instanceof LivingEntity) {
-                        LivingEntity living = (LivingEntity) entity;
-                        FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(living, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
-                        frozenCapability.setFreezeProgress(frozenCapability.getFreezeProgress() + message.amount);
-                        frozenCapability.setFreezeDecayDelay(FrozenCapability.MAX_FREEZE_DECAY_DELAY);
-                    }
+                Entity entity = Minecraft.getInstance().world.getEntityByID(message.entityID);
+                if (entity instanceof LivingEntity) {
+                    LivingEntity living = (LivingEntity) entity;
+                    FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(living, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+                    frozenCapability.setFreezeProgress(frozenCapability.getFreezeProgress() + message.amount);
+                    frozenCapability.setFreezeDecayDelay(FrozenCapability.MAX_FREEZE_DECAY_DELAY);
                 }
             });
             context.setPacketHandled(true);

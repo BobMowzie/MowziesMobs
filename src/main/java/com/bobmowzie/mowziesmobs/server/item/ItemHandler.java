@@ -21,7 +21,6 @@ public final class ItemHandler {
     private ItemHandler() {}
 
     public static final ItemFoliaathSeed FOLIAATH_SEED = null;
-    public static final ItemTestStructure TEST_STRUCTURE = null;
     public static final ItemMobRemover MOB_REMOVER = null;
     public static final ItemWroughtAxe WROUGHT_AXE = null;
     public static final ItemWroughtHelm WROUGHT_HELMET = null;

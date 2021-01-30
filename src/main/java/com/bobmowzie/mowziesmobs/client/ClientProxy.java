@@ -45,6 +45,7 @@ public class ClientProxy extends ServerProxy {
     public void init(final IEventBus modbus) {
         super.init(modbus);
 
+        modbus.register(MMModels.class);
         MinecraftForge.EVENT_BUS.register(ClientEventHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(FrozenRenderHandler.INSTANCE);
 

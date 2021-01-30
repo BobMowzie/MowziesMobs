@@ -50,7 +50,6 @@ public final class MowziesMobs {
         bus.<FMLCommonSetupEvent>addListener(this::init);
         bus.<ModelRegistryEvent>addListener(this::init);
         bus.<FMLLoadCompleteEvent>addListener(this::init);
-        bus.register(MMModels.class);
 
         MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
     }

@@ -1,6 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.message;
 
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -26,7 +28,7 @@ public class MessageUnfreezeEntity {
 
 
     public static void serialize(final MessageUnfreezeEntity message, final PacketBuffer buf) {
-        buf.writeInt(message.entityID);
+        buf.writeVarInt(message.entityID);
     }
 
     public static MessageUnfreezeEntity deserialize(final PacketBuffer buf) {
@@ -39,14 +41,11 @@ public class MessageUnfreezeEntity {
         @Override
         public void accept(final MessageUnfreezeEntity message, final Supplier<NetworkEvent.Context> contextSupplier) {
             final NetworkEvent.Context context = contextSupplier.get();
-            final ServerPlayerEntity player = context.getSender();
             context.enqueueWork(() -> {
-                if (player != null) {
-                    Entity entity = player.world.getEntityByID(message.entityID);
-                    if (entity instanceof LivingEntity) {
-                        LivingEntity living = (LivingEntity) entity;
-                        living.removeActivePotionEffect(PotionHandler.FROZEN);
-                    }
+                Entity entity = Minecraft.getInstance().world.getEntityByID(message.entityID);
+                if (entity instanceof LivingEntity) {
+                    LivingEntity living = (LivingEntity) entity;
+                    living.removeActivePotionEffect(PotionHandler.FROZEN);
                 }
             });
             context.setPacketHandled(true);

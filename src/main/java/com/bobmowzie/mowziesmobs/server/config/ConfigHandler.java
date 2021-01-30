@@ -617,7 +617,7 @@ public final class  ConfigHandler {
             builder.push("general");
             this.freeze_blacklist = builder.comment("Add a mob's full name here to prevent it from being frozen or taking damage from ice magic.")
                     .translation(LANG_PREFIX + "freeze_blacklist")
-                    .define("freeze_blacklist", Arrays.asList("mowziesmobs:frostmaw", "minecraft:enderdragon"));
+                    .define("freeze_blacklist", Arrays.asList("mowziesmobs:frostmaw", "minecraft:enderdragon", "minecraft:blaze", "minecraft:magma_cube"));
             builder.pop();
         }
     }
