@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.render.entity.RenderPlayerAnimated;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
@@ -11,6 +12,7 @@ import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.renderer.entity.model.BipedModel;
@@ -18,6 +20,7 @@ import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
@@ -26,6 +29,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.item.ItemEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 @OnlyIn(Dist.CLIENT)
@@ -55,101 +59,15 @@ public enum ClientEventHandler {
     public void onRenderPlayerPre(RenderPlayerEvent.Pre event) {
         PlayerEntity player = event.getPlayer();
         if (player == null) return;
-        PlayerModel model = event.getRenderer().getEntityModel();
-        player.getHeldItem(Hand.MAIN_HAND);
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
         float delta = event.getPartialRenderTick();
-        if (playerCapability != null && playerCapability.getGeomancy().tunneling) {
-            model.isSneak = false;
-            Vec3d moveVec = player.getMotion();
-            moveVec = moveVec.normalize();
-//            GlStateManager.rotatef(45 - 45 * (float)moveVec.y, 1.0F, 0.0F, 0.0F);
-/* DEAD CODE
-            toDefaultBiped(event.getModel());
-
-            float spin = 1f * (player.ticksExisted + delta);
-            event.getModel().bipedHead.rotateAngleX = 1.57f * Math.min(0f, (float)moveVec.y);
-            event.getModel().bipedHead.rotateAngleY = spin;
-            event.getModel().bipedHead.rotateAngleZ = 0;
-
-            event.getModel().bipedHeadwear.rotateAngleX = 1.57f * Math.min(0f, (float)moveVec.y);
-            event.getModel().bipedHeadwear.rotateAngleY = spin;
-            event.getModel().bipedHeadwear.rotateAngleZ = 0;
-
-            event.getModel().bipedBody.rotateAngleX = 0;
-            event.getModel().bipedBody.rotateAngleY = spin;
-            event.getModel().bipedBody.rotateAngleZ = 0;
-
-            event.getModel().bipedLeftArm.rotateAngleX = -3.14f;
-            event.getModel().bipedLeftArm.rotateAngleY = spin;
-            event.getModel().bipedLeftArm.rotateAngleZ = 0;
-            event.getModel().bipedLeftArm.setRotationPoint(5 * (float)Math.sin(spin + Math.PI/2), 2, 5 * (float)Math.cos(spin + Math.PI/2));
-
-            event.getModel().bipedRightArm.rotateAngleX = -3.14f;
-            event.getModel().bipedRightArm.rotateAngleY = spin;
-            event.getModel().bipedRightArm.rotateAngleZ = 0;
-            event.getModel().bipedRightArm.setRotationPoint(-5 * (float)Math.sin(spin + Math.PI/2), 2, -5 * (float)Math.cos(spin + Math.PI/2));
-
-            event.getModel().bipedLeftLeg.rotateAngleX = 0;
-            event.getModel().bipedLeftLeg.rotateAngleY = spin;
-            event.getModel().bipedLeftLeg.rotateAngleZ = 0;
-            event.getModel().bipedLeftLeg.setRotationPoint(1.9F * (float)Math.sin(spin + Math.PI/2), 12.0F, 1.9F * (float)Math.cos(spin + Math.PI/2));
-
-            event.getModel().bipedRightLeg.rotateAngleX = 0;
-            event.getModel().bipedRightLeg.rotateAngleY = spin;
-            event.getModel().bipedRightLeg.rotateAngleZ = 0;
-            event.getModel().bipedRightLeg.setRotationPoint(-1.9F * (float)Math.sin(spin + Math.PI/2), 12.0F, -1.9f * (float)Math.cos(spin + Math.PI/2));*/
+        boolean shouldAnimate = playerCapability != null && playerCapability.getUntilAxeSwing() > 0;
+        shouldAnimate = shouldAnimate || playerCapability != null && playerCapability.getGeomancy().tunneling;
+        if (shouldAnimate) {
+            event.setCanceled(true);
+            RenderPlayerAnimated renderPlayerAnimated = new RenderPlayerAnimated(event.getRenderer().getRenderManager(), ((AbstractClientPlayerEntity) event.getEntity()).getSkinType().equals("slim"));
+            renderPlayerAnimated.doRender((AbstractClientPlayerEntity) event.getEntity(), event.getX(), event.getY(), event.getZ(), event.getEntity().rotationYaw, delta);
         }
-
-        // Axe of a thousand metals attack animations
-        if (playerCapability != null && playerCapability.getUntilAxeSwing() > 0) {
-            float frame = (PlayerCapability.SWING_COOLDOWN - playerCapability.getUntilAxeSwing()) + delta;
-            RendererModel arm = model.bipedRightArm;
-            if (playerCapability.isVerticalSwing()) {
-                float swingArc = 3f;
-                arm.rotateAngleX = -2.7f + (float) (swingArc * 1 / (1 + Math.exp(1.3f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 2f))));
-                arm.rotateAngleX = Math.min(arm.rotateAngleX, -0.1f);
-                if (!model.isSneak) {
-                    GlStateManager.translatef(0.0F, 0.3F, 0.0F);
-                }
-                model.isSneak = true;
-            } else {
-                float swingArc = 2.5f;
-                arm.rotateAngleX = -1.75f + (float) (swingArc * 1 / (1 + Math.exp(1.3f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 2f))));
-                arm.rotateAngleZ = 1.5f;
-            }
-        }
-    }
-
-    private void toDefaultBiped(BipedModel model) {
-        model.bipedHead.setRotationPoint(0.0F, 0.0F, 0.0F);
-        model.bipedHead.rotateAngleX = 0;
-        model.bipedHead.rotateAngleY = 0;
-        model.bipedHead.rotateAngleZ = 0;
-        model.bipedHeadwear.setRotationPoint(0.0F, 0.0F, 0.0F);
-        model.bipedHeadwear.rotateAngleX = 0;
-        model.bipedHeadwear.rotateAngleY = 0;
-        model.bipedHeadwear.rotateAngleZ = 0;
-        model.bipedBody.setRotationPoint(0.0F, 0.0F, 0.0F);
-        model.bipedBody.rotateAngleX = 0;
-        model.bipedBody.rotateAngleY = 0;
-        model.bipedBody.rotateAngleZ = 0;
-        model.bipedRightArm.setRotationPoint(-5.0F, 2.0F, 0.0F);
-        model.bipedRightArm.rotateAngleX = 0;
-        model.bipedRightArm.rotateAngleY = 0;
-        model.bipedRightArm.rotateAngleZ = 0;
-        model.bipedLeftArm.setRotationPoint(5.0F, 2.0F, 0.0F);
-        model.bipedLeftArm.rotateAngleX = 0;
-        model.bipedLeftArm.rotateAngleY = 0;
-        model.bipedLeftArm.rotateAngleZ = 0;
-        model.bipedRightLeg.setRotationPoint(-1.9F, 12.0F, 0.0F);
-        model.bipedRightLeg.rotateAngleX = 0;
-        model.bipedRightLeg.rotateAngleY = 0;
-        model.bipedRightLeg.rotateAngleZ = 0;
-        model.bipedLeftLeg.setRotationPoint(1.9F, 12.0F, 0.0F);
-        model.bipedLeftLeg.rotateAngleX = 0;
-        model.bipedLeftLeg.rotateAngleY = 0;
-        model.bipedLeftLeg.rotateAngleZ = 0;
     }
 
     @SubscribeEvent

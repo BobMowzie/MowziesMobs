@@ -1,10 +1,10 @@
 package com.bobmowzie.mowziesmobs.client.model.armor;
 
-import net.minecraft.client.renderer.entity.model.BipedModel;
+import com.bobmowzie.mowziesmobs.client.model.entity.ModelBipedAnimated;
 import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.entity.LivingEntity;
 
-public class BarakoaMaskModel<T extends LivingEntity> extends BipedModel<T> {
+public class BarakoaMaskModel<T extends LivingEntity> extends ModelBipedAnimated {
     public RendererModel maskBase;
     public RendererModel maskLeft;
     public RendererModel maskRight;
@@ -12,6 +12,7 @@ public class BarakoaMaskModel<T extends LivingEntity> extends BipedModel<T> {
     public RendererModel maneBack;
 
     public BarakoaMaskModel() {
+        super(0.0f);
         this.textureWidth = 128;
         this.textureHeight = 64;
         this.maskLeft = new RendererModel(this, 48, 18);
@@ -44,7 +45,7 @@ public class BarakoaMaskModel<T extends LivingEntity> extends BipedModel<T> {
     }
 
     @Override
-    public void render(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+    public void render(LivingEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         super.render(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale * 0.8f);
     }
 

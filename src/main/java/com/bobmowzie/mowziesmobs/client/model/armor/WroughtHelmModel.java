@@ -1,10 +1,11 @@
 package com.bobmowzie.mowziesmobs.client.model.armor;
 
+import com.bobmowzie.mowziesmobs.client.model.entity.ModelBipedAnimated;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.entity.LivingEntity;
 
-public class WroughtHelmModel<T extends LivingEntity> extends BipedModel<T> {
+public class WroughtHelmModel<T extends LivingEntity> extends ModelBipedAnimated {
     public RendererModel shape1;
     public RendererModel tuskRight1;
     public RendererModel hornRight1;
@@ -16,6 +17,7 @@ public class WroughtHelmModel<T extends LivingEntity> extends BipedModel<T> {
     public RendererModel hornLeft2;
 
     public WroughtHelmModel() {
+        super(0.0f);
         this.textureWidth = 64;
         this.textureHeight = 64;
         this.shape1 = new RendererModel(this, 0, 44);

@@ -70,8 +70,8 @@ public class EntityAxeAttack extends EntityMagicEffect {
         if (caster != null && !caster.isAlive()) remove();
         if (caster != null) {
             setPositionAndRotation(caster.posX, caster.posY, caster.posZ, caster.rotationYaw, caster.rotationPitch);
-            prevRotationYaw = rotationYaw;
-            prevRotationPitch = rotationPitch;
+            prevRotationYaw = caster.prevRotationYaw;
+            prevRotationPitch = caster.prevRotationPitch;
         }
         if (!world.isRemote && ticksExisted == 7) playSound(MMSounds.ENTITY_WROUGHT_WHOOSH.get(), 0.7F, 1.1f);
             if (!world.isRemote && caster != null) {

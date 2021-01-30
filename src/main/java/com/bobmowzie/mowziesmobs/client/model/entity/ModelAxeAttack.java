@@ -100,8 +100,8 @@ public class ModelAxeAttack<T extends EntityAxeAttack> extends AdvancedModelBase
         if (!entity.getVertical()) {
             float swingArc = 2;
             float scale = (float) ((1 / (1 + Math.exp(2f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 5f)))) - (1 / (1 + Math.exp(2f * (-frame + 4 * EntityAxeAttack.SWING_DURATION_HOR / 5f)))));
-            axeBase.rotateAngleY += swingArc * 1 / (1 + Math.exp(1.3f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 2f)));
-            axeBase.rotateAngleY -= swingArc / 2;
+            axeBase.rotateAngleY -= swingArc * 1 / (1 + Math.exp(1.3f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 2f)));
+            axeBase.rotateAngleY += swingArc / 2;
             axeBase.setScale(scale, scale, scale);
         }
         else {

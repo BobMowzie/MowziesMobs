@@ -1,6 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.model.armor;
 
-import net.minecraft.client.renderer.entity.model.BipedModel;
+import com.bobmowzie.mowziesmobs.client.model.entity.ModelBipedAnimated;
 import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -11,7 +11,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * Created using Tabula 8.0.0
  */
 @OnlyIn(Dist.CLIENT)
-public class SolVisageModel<T extends LivingEntity> extends BipedModel<T> {
+public class SolVisageModel<T extends LivingEntity> extends ModelBipedAnimated {
     public RendererModel maskBase;
     public RendererModel maskFace;
     public RendererModel headdress1back;
@@ -44,6 +44,7 @@ public class SolVisageModel<T extends LivingEntity> extends BipedModel<T> {
     public RendererModel leftEarring;
 
     public SolVisageModel() {
+        super(0.0f);
         this.textureWidth = 128;
         this.textureHeight = 128;
         this.headdress5 = new RendererModel(this, 27, 76);
@@ -200,7 +201,7 @@ public class SolVisageModel<T extends LivingEntity> extends BipedModel<T> {
     }
 
     @Override
-    public void render(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+    public void render(LivingEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         super.render(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale * 0.8f);
     }
 
