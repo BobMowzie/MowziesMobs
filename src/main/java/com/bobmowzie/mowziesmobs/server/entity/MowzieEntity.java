@@ -372,6 +372,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
 
             this.world.setEntityState(this, (byte)3);
             this.setPose(Pose.DYING);
+            bossInfo.update();
         }
     }
 
