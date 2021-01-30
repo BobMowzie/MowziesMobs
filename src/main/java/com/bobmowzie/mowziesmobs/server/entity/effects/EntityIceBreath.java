@@ -134,7 +134,7 @@ public class EntityIceBreath extends EntityMagicEffect {
             boolean pitchCheck = (entityRelativePitch <= ARC / 2f && entityRelativePitch >= -ARC / 2f) || (entityRelativePitch >= 360 - ARC / 2f || entityRelativePitch <= -360 + ARC / 2f);
             if (inRange && yawCheck && pitchCheck) {
                 if (entityHit.attackEntityFrom(DamageSource.causeIndirectMagicDamage(this, caster), damage)) {
-                    entityHit.setMotion(entityHit.getMotion().mul(0.5, 1, 0.5));
+                    entityHit.setMotion(entityHit.getMotion().mul(0.25, 1, 0.25));
                     FrozenCapability.IFrozenCapability capability = CapabilityHandler.getCapability(entityHit, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
                     if (capability != null) capability.addFreezeProgress(entityHit, 0.23f);
                 }
