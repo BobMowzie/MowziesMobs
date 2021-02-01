@@ -105,14 +105,16 @@ public class PowerGeomancy extends Power {
             }
             if (!prevUnderground && underground) {
                 player.playSound(MMSounds.EFFECT_GEOMANCY_BREAK_MEDIUM.get(rand.nextInt(3)).get(), 1f, 0.9f + rand.nextFloat() * 0.1f);
-                AdvancedParticleBase.spawnParticle(player.world, ParticleHandler.RING2.get(), (float) player.posX, (float) player.posY + 0.02f, (float) player.posZ, 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, new ParticleComponent[]{
+                if (player.world.isRemote)
+                    AdvancedParticleBase.spawnParticle(player.world, ParticleHandler.RING2.get(), (float) player.posX, (float) player.posY + 0.02f, (float) player.posZ, 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, new ParticleComponent[]{
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(10f, 30f), false)
                 });
             }
             if (prevUnderground && !underground) {
                 player.playSound(MMSounds.EFFECT_GEOMANCY_BREAK.get(), 1f, 0.9f + rand.nextFloat() * 0.1f);
-                AdvancedParticleBase.spawnParticle(player.world, ParticleHandler.RING2.get(), (float) player.posX, (float) player.posY + 0.02f, (float) player.posZ, 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, new ParticleComponent[]{
+                if (player.world.isRemote)
+                    AdvancedParticleBase.spawnParticle(player.world, ParticleHandler.RING2.get(), (float) player.posX, (float) player.posY + 0.02f, (float) player.posZ, 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, new ParticleComponent[]{
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(10f, 30f), false)
                 });

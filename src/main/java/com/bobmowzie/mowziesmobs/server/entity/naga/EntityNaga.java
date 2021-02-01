@@ -392,7 +392,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
             }
         }
         else if (movement == EnumNagaMovement.FALLING) {
-            if (onGround) {
+            if (onGround || isInLava() || isInWater()) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, EntityNaga.LAND_ANIMATION);
                 movement = EnumNagaMovement.FALLEN;
                 onGroundTimer = GROUND_TIMER_MAX;

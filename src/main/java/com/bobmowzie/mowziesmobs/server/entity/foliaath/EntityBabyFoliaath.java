@@ -37,8 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EntityBabyFoliaath extends MowzieEntity {
-//    private static final int JUNGLE_LEAVES = Block.getStateId(Blocks.LEAVES.getDefaultState().withProperty(BlockOldLeaf.VARIANT, BlockPlanks.EnumType.JUNGLE));
-
     private static final DataParameter<Integer> GROWTH = EntityDataManager.createKey(EntityBabyFoliaath.class, DataSerializers.VARINT);
 
     private static final DataParameter<Boolean> INFANT = EntityDataManager.createKey(EntityBabyFoliaath.class, DataSerializers.BOOLEAN);
@@ -53,6 +51,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
 
     public EntityBabyFoliaath(EntityType<? extends EntityBabyFoliaath> type, World world) {
         super(type, world);
+        setInfant(true);
     }
 
     @Override

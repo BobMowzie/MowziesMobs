@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.inventory;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
+import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -9,6 +10,7 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public final class ContainerBarakoTrade extends Container {
     private final EntityBarako barako;
@@ -30,7 +32,7 @@ public final class ContainerBarakoTrade extends Container {
         this.barako = Barako;
         this.player = playerInv.player;
         this.inventory = inventory;
-        if (!barako.hasTradedWith(playerInv.player)) addSlot(new Slot(inventory, 0, 69, 54));
+        if (barako != null && !barako.hasTradedWith(playerInv.player)) addSlot(new Slot(inventory, 0, 69, 54));
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 9; col++) {
                 addSlot(new Slot(playerInv, col + row * 9 + 9, 8 + col * 18, 84 + row * 18));
@@ -43,7 +45,7 @@ public final class ContainerBarakoTrade extends Container {
 
     @Override
     public boolean canInteractWith(PlayerEntity player) {
-        return inventory.isUsableByPlayer(player) && barako.isAlive() && barako.getDistance(player) < 8;
+        return barako != null && inventory.isUsableByPlayer(player) && barako.isAlive() && barako.getDistance(player) < 8;
     }
 
     @Override
@@ -80,7 +82,7 @@ public final class ContainerBarakoTrade extends Container {
     @Override
     public void onContainerClosed(PlayerEntity player) {
         super.onContainerClosed(player);
-        barako.setCustomer(null);
+        if (barako != null) barako.setCustomer(null);
         if (!player.world.isRemote) {
             ItemStack stack = inventory.removeStackFromSlot(0);
             if (stack != ItemStack.EMPTY) {
@@ -88,6 +90,15 @@ public final class ContainerBarakoTrade extends Container {
                 if (dropped != null) {
                     dropped.setMotion(dropped.getMotion().scale(0.5));
                 }
+            }
+        }
+    }
+
+    public void returnItems() {
+        if (!player.world.isRemote) {
+            ItemStack stack = inventory.removeStackFromSlot(0);
+            if (stack != ItemStack.EMPTY) {
+                ItemHandlerHelper.giveItemToPlayer(player, stack);
             }
         }
     }

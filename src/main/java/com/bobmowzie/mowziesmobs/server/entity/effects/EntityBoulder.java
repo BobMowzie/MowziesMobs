@@ -224,29 +224,28 @@ public class EntityBoulder extends Entity {
         if (ticksExisted == 1) {
             for (int i = 0; i < 20 * getWidth(); i++) {
                 Vec3d particlePos = new Vec3d(rand.nextFloat() * 1.3 * getWidth(), 0, 0);
-                particlePos = particlePos.rotateYaw((float)(rand.nextFloat() * 2 * Math.PI));
+                particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                 world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, storedBlock), posX + particlePos.x, posY - 1, posZ + particlePos.z, particlePos.x, 2, particlePos.z);
             }
             if (boulderSize == BoulderSizeEnum.SMALL) {
                 playSound(MMSounds.EFFECT_GEOMANCY_SMALL_CRASH.get(), 1.5f, 1.3f);
                 playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL.get(), 1.5f, 1f);
-            }
-            else if (boulderSize == BoulderSizeEnum.MEDIUM) {
+            } else if (boulderSize == BoulderSizeEnum.MEDIUM) {
                 playSound(MMSounds.EFFECT_GEOMANCY_HIT_MEDIUM_2.get(), 1.5f, 1.5f);
                 playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL.get(), 1.5f, 0.8f);
-            }
-            else if (boulderSize == BoulderSizeEnum.LARGE) {
+            } else if (boulderSize == BoulderSizeEnum.LARGE) {
                 playSound(MMSounds.EFFECT_GEOMANCY_HIT_MEDIUM_1.get(), 1.5f, 0.9f);
                 playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG.get(), 1.5f, 1.5f);
-            }
-            else if (boulderSize == BoulderSizeEnum.HUGE) {
+            } else if (boulderSize == BoulderSizeEnum.HUGE) {
                 playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG.get(), 2f, 0.5f);
                 playSound(MMSounds.EFFECT_GEOMANCY_RUMBLE_1.get(), 2, 0.8f);
             }
-            AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING2.get(), posX, posY - 0.9f, posZ, 0, 0, 0, false, 0, Math.PI / 2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, (int) (5 + 2 * getWidth()), true, new ParticleComponent[]{
-                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
-                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(0f, (1.0f + 0.5f * getWidth()) * 10f), false)
-            });
+            if (world.isRemote) {
+                AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING2.get(), posX, posY - 0.9f, posZ, 0, 0, 0, false, 0, Math.PI / 2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, (int) (5 + 2 * getWidth()), true, new ParticleComponent[]{
+                        new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
+                        new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(0f, (1.0f + 0.5f * getWidth()) * 10f), false)
+                });
+            }
         }
         if (ticksExisted == 30 && boulderSize == BoulderSizeEnum.HUGE) {
             playSound(MMSounds.EFFECT_GEOMANCY_RUMBLE_2.get(), 2, 0.7f);

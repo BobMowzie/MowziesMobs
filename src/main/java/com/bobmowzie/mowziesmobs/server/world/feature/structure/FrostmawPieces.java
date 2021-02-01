@@ -94,7 +94,7 @@ public class FrostmawPieces {
         public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos chunkPosIn) {
             PlacementSettings placementsettings = (new PlacementSettings()).setRotation(this.rotation).setMirror(Mirror.NONE);
             BlockPos blockpos = FrostmawPieces.OFFSET.get(this.resourceLocation);
-            this.templatePosition.add(Template.transformedBlockPos(placementsettings, new BlockPos(0 - blockpos.getX(), 0, 0 - blockpos.getZ())));
+            this.templatePosition.add(Template.transformedBlockPos(placementsettings, new BlockPos(0 - blockpos.getX(), blockpos.getY(), 0 - blockpos.getZ())));
 
             return super.addComponentParts(worldIn, randomIn, structureBoundingBoxIn, chunkPosIn);
         }

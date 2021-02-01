@@ -12,6 +12,7 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.TradeStore;
 import com.bobmowzie.mowziesmobs.server.gui.GuiHandler;
 import com.bobmowzie.mowziesmobs.server.gui.GuiHandler.ContainerHolder;
+import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoTrade;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoayaTrade;
 import com.bobmowzie.mowziesmobs.server.inventory.InventoryBarako;
 import com.bobmowzie.mowziesmobs.server.inventory.InventoryBarakoaya;
@@ -35,6 +36,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.Hand;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
@@ -44,7 +46,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
-public class EntityBarakoaya extends EntityBarakoa implements INamedContainerProvider, LeaderSunstrikeImmune {
+public class EntityBarakoaya extends EntityBarakoa implements LeaderSunstrikeImmune {
     private static final TradeStore DEFAULT = new TradeStore.Builder()
         .addTrade(Items.GOLD_INGOT, 2, ItemHandler.BLOWGUN, 1, 6)
         .addTrade(Items.COCOA_BEANS, 10, ItemHandler.DART, 8, 6)
@@ -171,11 +173,28 @@ public class EntityBarakoaya extends EntityBarakoa implements INamedContainerPro
         }
     }
 
+    public void openGUI(PlayerEntity playerEntity) {
+        setCustomer(playerEntity);
+        MowziesMobs.PROXY.setReferencedMob(this);
+        if (!this.world.isRemote && getAttackTarget() == null && isAlive()) {
+            playerEntity.openContainer(new INamedContainerProvider() {
+                @Override
+                public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
+                    return new ContainerBarakoayaTrade(id, EntityBarakoaya.this, playerInventory);
+                }
+
+                @Override
+                public ITextComponent getDisplayName() {
+                    return EntityBarakoaya.this.getDisplayName();
+                }
+            });
+        }
+    }
+
     @Override
     protected boolean processInteract(PlayerEntity player, Hand hand) {
         if (canTradeWith(player) && getAttackTarget() == null && isAlive()) {
-            setCustomer(player);
-            player.openContainer(this);
+            openGUI(player);
             return true;
         }
         return false;
@@ -219,11 +238,5 @@ public class EntityBarakoaya extends EntityBarakoa implements INamedContainerPro
         setOfferingTrade(Trade.deserialize(compound.getCompound("offeringTrade")));
         timeOffering = compound.getInt("timeOffering");
 //        setNumSales(compound.getInteger("numSales"));
-    }
-
-    @Override
-    public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
-        MowziesMobs.PROXY.setReferencedMob(this);
-        return new ContainerBarakoayaTrade(id,this, playerInventory);
     }
 }

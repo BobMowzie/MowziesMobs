@@ -49,7 +49,7 @@ public final class ContainerBarakoayaTrade extends Container {
 
     @Override
     public boolean canInteractWith(PlayerEntity player) {
-        return inventory.isUsableByPlayer(player) && barakoaya.isAlive() && barakoaya.getDistance(player) < 8;
+        return barakoaya != null && inventory.isUsableByPlayer(player) && barakoaya.isAlive() && barakoaya.getDistance(player) < 8;
     }
 
     @Override
@@ -97,7 +97,7 @@ public final class ContainerBarakoayaTrade extends Container {
     @Override
     public void onContainerClosed(PlayerEntity player) {
         super.onContainerClosed(player);
-        barakoaya.setCustomer(null);
+        if (barakoaya != null) barakoaya.setCustomer(null);
         if (!player.world.isRemote) {
             ItemStack stack = inventory.removeStackFromSlot(0);
             if (stack != ItemStack.EMPTY) {
@@ -149,7 +149,7 @@ public final class ContainerBarakoayaTrade extends Container {
         @Override
         public ItemStack onTake(PlayerEntity player, ItemStack stack) {
             onCrafting(stack);
-            if (barakoaya.isOfferingTrade()) {
+            if (barakoaya != null && barakoaya.isOfferingTrade()) {
                 Trade trade = barakoaya.getOfferingTrade();
                 ItemStack input = inventory.getStackInSlot(0);
                 ItemStack tradeInput = trade.getInput();

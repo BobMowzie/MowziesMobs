@@ -40,6 +40,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
@@ -51,6 +52,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -61,7 +63,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune, INamedContainerProvider, IMob {
+public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune, IMob {
     public static final Animation DIE_ANIMATION = Animation.create(130);
     public static final Animation HURT_ANIMATION = Animation.create(13);
     public static final Animation BELLY_ANIMATION = Animation.create(40);
@@ -74,7 +76,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     public static final Animation SUPERNOVA_ANIMATION = Animation.create(100);
     private static final int MAX_HEALTH = 140;
     private static final int SUNSTRIKE_PAUSE_MAX = 40;
-    private static final int SUNSTRIKE_PAUSE_MIN = 15;
+    private static final int SUNSTRIKE_PAUSE_MIN = 20;
     private static final int LASER_PAUSE = 230;
     private static final int SUPERNOVA_PAUSE = 230;
     private static final int BARAKOA_PAUSE = 140;
@@ -83,7 +85,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     private static final DataParameter<Integer> DIALOGUE = EntityDataManager.createKey(EntityBarako.class, DataSerializers.VARINT);
     private static final DataParameter<Boolean> ANGRY = EntityDataManager.createKey(EntityBarako.class, DataSerializers.BOOLEAN);
     private static final DataParameter<ItemStack> DESIRES = EntityDataManager.createKey(EntityBarako.class, DataSerializers.ITEMSTACK);
-    private final Set<UUID> tradedPlayers = new HashSet<>();
+    private static final DataParameter<CompoundNBT> TRADED_PLAYERS = EntityDataManager.createKey(EntityBarako.class, DataSerializers.COMPOUND_NBT);
     public ControlledAnimation legsUp = new ControlledAnimation(15);
     public ControlledAnimation angryEyebrow = new ControlledAnimation(5);
     private PlayerEntity customer;
@@ -97,7 +99,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     private int timeUntilBarakoa = 0;
     private int timeUntilSupernova = 0;
     private int timeUntilHeal = 0;
-    private PlayerEntity blessingPlayer;
+    public PlayerEntity blessingPlayer;
     private BarakoaHurtByTargetAI hurtByTargetAI;
 
     @OnlyIn(Dist.CLIENT)
@@ -651,7 +653,8 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         getDataManager().register(DIRECTION, 0);
         getDataManager().register(DIALOGUE, 0);
         getDataManager().register(ANGRY, false);
-        getDataManager().register(DESIRES, new ItemStack(Item.getItemFromBlock(Blocks.GOLD_BLOCK), 7));
+        getDataManager().register(DESIRES, new ItemStack(Items.GOLD_BLOCK, 7));
+        getDataManager().register(TRADED_PLAYERS, new CompoundNBT());
     }
 
     public int getDirection() {
@@ -686,6 +689,22 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     	return getDataManager().get(DESIRES);
     }
 
+    public void setTradedPlayersCompound(ListNBT players) {
+        CompoundNBT compound = new CompoundNBT();
+        compound.put("players", players);
+        getDataManager().set(TRADED_PLAYERS, compound);
+    }
+
+    public Set<UUID> getTradedPlayers() {
+        Set<UUID> tradedPlayers = new HashSet<>();
+        CompoundNBT compound = getDataManager().get(TRADED_PLAYERS);
+        ListNBT players = compound.getList("players", Constants.NBT.TAG_COMPOUND);
+        for (int i = 0; i < players.size(); i++) {
+            tradedPlayers.add(NBTUtil.readUniqueId(players.getCompound(i)));
+        }
+        return tradedPlayers;
+    }
+
     public boolean doesItemSatisfyDesire(ItemStack stack) {
         return canPayFor(stack, getDesires());
     }
@@ -700,21 +719,24 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     }
 
     public boolean hasTradedWith(PlayerEntity player) {
-        return tradedPlayers.contains(PlayerEntity.getUUID(player.getGameProfile()));
+        return getTradedPlayers().contains(PlayerEntity.getUUID(player.getGameProfile()));
     }
 
     public void rememberTrade(PlayerEntity player) {
-        tradedPlayers.add(PlayerEntity.getUUID(player.getGameProfile()));
+        UUID uuid = PlayerEntity.getUUID(player.getGameProfile());
+        CompoundNBT compound = getDataManager().get(TRADED_PLAYERS);
+        ListNBT players = compound.getList("players", Constants.NBT.TAG_COMPOUND);
+        players.add(NBTUtil.writeUniqueId(uuid));
+        compound.put("players", players);
+        getDataManager().set(TRADED_PLAYERS, compound);
     }
 
     @Override
     public void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
         compound.putInt("direction", getDirection());
-        ListNBT players = new ListNBT();
-        for (UUID uuid : tradedPlayers) {
-            players.add(NBTUtil.writeUniqueId(uuid));
-        }
+        CompoundNBT compoundTradedPlayers = getDataManager().get(TRADED_PLAYERS);
+        ListNBT players = compoundTradedPlayers.getList("players", Constants.NBT.TAG_COMPOUND);
         compound.put("players", players);
     }
 
@@ -722,11 +744,8 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     public void readAdditional(CompoundNBT compound) {
         super.readAdditional(compound);
         setDirection(compound.getInt("direction"));
-        tradedPlayers.clear();
         ListNBT players = compound.getList("players", Constants.NBT.TAG_COMPOUND);
-        for (int i = 0; i < players.size(); i++) {
-            tradedPlayers.add(NBTUtil.readUniqueId(players.getCompound(i)));
-        }
+        setTradedPlayersCompound(players);
     }
 
 
@@ -769,17 +788,28 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         this.customer = customer;
     }
 
-    @Override
-    public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
+    public void openGUI(PlayerEntity playerEntity) {
+        setCustomer(playerEntity);
         MowziesMobs.PROXY.setReferencedMob(this);
-        return new ContainerBarakoTrade(id,this, playerInventory);
+        if (!this.world.isRemote && getAttackTarget() == null && isAlive()) {
+            playerEntity.openContainer(new INamedContainerProvider() {
+                @Override
+                public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
+                    return new ContainerBarakoTrade(id, EntityBarako.this, playerInventory);
+                }
+
+                @Override
+                public ITextComponent getDisplayName() {
+                    return EntityBarako.this.getDisplayName();
+                }
+            });
+        }
     }
 
     @Override
     protected boolean processInteract(PlayerEntity player, Hand hand) {
         if (canTradeWith(player) && getAttackTarget() == null && isAlive()) {
-            setCustomer(player);
-            player.openContainer(this);
+            openGUI(player);
             return true;
         }
         return false;
