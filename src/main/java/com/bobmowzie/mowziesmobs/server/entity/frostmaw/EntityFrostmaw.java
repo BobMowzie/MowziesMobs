@@ -34,8 +34,10 @@ import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.potion.Effects;
@@ -471,7 +473,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                 crystalPos = crystalPos.rotateYaw((float) Math.toRadians(-rotationYaw - 90));
                 crystalPos = crystalPos.add(getPositionVector());
                 for (PlayerEntity player : getPlayersNearby(8, 8, 8, 8)) {
-                    if (player.getPositionVector().distanceTo(crystalPos) <= 1.8 && (player.isCreative() || player.isInvisible())) {
+                    if (player.getPositionVector().distanceTo(crystalPos) <= 1.8 && (player.isCreative() || player.isInvisible()) && !isInventoryFull(player.inventory)) {
                         ItemHandlerHelper.giveItemToPlayer(player, new ItemStack(ItemHandler.ICE_CRYSTAL));
                         setHasCrystal(false);
                         if (world.getDifficulty() != Difficulty.PEACEFUL) {
@@ -554,6 +556,15 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                 world.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f, 0.75f,1f, 35f, 22, ParticleCloud.EnumCloudBehavior.GROW, 1f), posX, posY + 1f, posZ, xSpeed, 0, zSpeed);
             }
         }
+    }
+
+    private static boolean isInventoryFull(PlayerInventory inventory) {
+        for(ItemStack itemstack : inventory.mainInventory) {
+            if (itemstack.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
