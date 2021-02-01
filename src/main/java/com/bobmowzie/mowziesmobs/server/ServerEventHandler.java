@@ -1,6 +1,10 @@
 package com.bobmowzie.mowziesmobs.server;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
+import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
+import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
+import com.bobmowzie.mowziesmobs.client.particle.util.ParticleRotation;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.capability.LastDamageCapability;
@@ -17,9 +21,14 @@ import com.bobmowzie.mowziesmobs.server.item.ItemSpear;
 import com.bobmowzie.mowziesmobs.server.message.*;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.power.Power;
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
+import net.minecraft.block.AnvilBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.audio.Sound;
+import net.minecraft.client.audio.SoundHandler;
+import net.minecraft.client.audio.SoundList;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -37,6 +46,8 @@ import net.minecraft.potion.Effects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
@@ -306,7 +317,12 @@ public final class ServerEventHandler {
                 Vec3d lookDir = new Vec3d(target.getLookVec().x, 0, target.getLookVec().z).normalize();
                 Vec3d vecBetween = new Vec3d(target.posX - attacker.posX, 0, target.posZ - attacker.posZ).normalize();
                 double dot = lookDir.dotProduct(vecBetween);
-                if (dot > 0.7) event.setAmount(event.getAmount() + ConfigHandler.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.bonusDamage.get());
+                if (dot > 0.7) {
+                    event.setAmount(event.getAmount() + ConfigHandler.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.bonusDamage.get());
+                    target.playSound(MMSounds.ENTITY_NAGA_ACID_HIT.get(), 1f, 1.2f);
+                    target.playSound(SoundEvents.ENTITY_PLAYER_ATTACK_CRIT, 1f, 1f);
+                    MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> target), new MessageDaggerCrit(target, attacker));
+                }
             }
         }
 
