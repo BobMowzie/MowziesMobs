@@ -108,17 +108,6 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
         }
     }
 
-    @Override
-    public boolean attackEntityFrom(DamageSource source, float damage) {
-        /*Entity entity = source.getTrueSource();
-        if (entity != null && entity instanceof EntityLivingBase) {
-            if (!(entity instanceof EntityPlayer) || !(((EntityPlayer) entity).capabilities.isCreativeMode)) {
-                setAttackTarget((EntityLivingBase) entity);
-            }
-        }*/
-        return super.attackEntityFrom(source, damage);
-    }
-
     public void removePackMember(EntityBarakoanToBarakoana tribeHunter) {
         pack.remove(tribeHunter);
         sortPackMembers();

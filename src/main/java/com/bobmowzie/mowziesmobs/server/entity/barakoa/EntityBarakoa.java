@@ -311,7 +311,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
 
         if (timeUntilDeath > 0) timeUntilDeath--;
         else if (timeUntilDeath == 0) {
-            attackEntityFrom(DamageSource.causeMobDamage(this), getHealth());
+            attackEntityFrom(DamageSource.causeIndirectMagicDamage(this, null), getHealth());
         }
 
 //        if (ticksExisted > 50) setDead();
@@ -457,7 +457,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
             angleFlag = (entityRelativeAngle <= arc / 2.0 && entityRelativeAngle >= -arc / 2.0) || (entityRelativeAngle >= 360 - arc / 2.0 || entityRelativeAngle <= -arc + 90 / 2.0);
         }
-        if (angleFlag && getMask().canBlock && entity instanceof LivingEntity && (getAnimation() == NO_ANIMATION || getAnimation() == HURT_ANIMATION || getAnimation() == BLOCK_ANIMATION)) {
+        if (angleFlag && getMask().canBlock && entity instanceof LivingEntity && (getAnimation() == NO_ANIMATION || getAnimation() == HURT_ANIMATION || getAnimation() == BLOCK_ANIMATION) && !source.isUnblockable()) {
             blockingEntity = (LivingEntity) entity;
             playSound(SoundEvents.ITEM_SHIELD_BLOCK, 0.3F, 1.5F);
             AnimationHandler.INSTANCE.sendAnimationMessage(this, BLOCK_ANIMATION);
