@@ -113,7 +113,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             }
         });
         goalSelector.addGoal(4, new MeleeAttackGoal(this, 0.5D, false));
-        goalSelector.addGoal(5, new RandomWalkingGoal(this, 0.4));
+        goalSelector.addGoal(7, new RandomWalkingGoal(this, 0.4));
         goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
         goalSelector.addGoal(8, new LookAtGoal(this, EntityBarakoa.class, 8.0F));
         goalSelector.addGoal(8, new LookAtGoal(this, EntityBarako.class, 8.0F));

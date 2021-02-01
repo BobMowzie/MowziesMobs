@@ -9,7 +9,6 @@ import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseDown;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseUp;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseDown;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseUp;
-import com.google.common.base.Optional;
 import com.ilexiconn.llibrary.server.network.AnimationMessage;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -24,7 +23,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 
-import java.io.IOException;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -49,7 +48,7 @@ public class ServerProxy {
         public Optional<Trade> read(PacketBuffer buf) {
             ItemStack input = buf.readItemStack();
             if (input == ItemStack.EMPTY) {
-                return Optional.absent();
+                return Optional.empty();
             }
             return Optional.of(new Trade(input, buf.readItemStack(), buf.readInt()));
         }
@@ -64,7 +63,7 @@ public class ServerProxy {
             if (value.isPresent()) {
             	return Optional.of(new Trade(value.get()));
             }
-            return Optional.absent();
+            return Optional.empty();
         }
     };
 
