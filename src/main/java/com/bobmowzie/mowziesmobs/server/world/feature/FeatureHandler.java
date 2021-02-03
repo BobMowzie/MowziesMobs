@@ -60,24 +60,23 @@ public class FeatureHandler {
 
     public static void addStructureGeneration() {
         for (Biome biome : ForgeRegistries.BIOMES) {
-
             if (SpawnHandler.FERROUS_WROUGHTNAUT_BIOMES.contains(biome)) {
                 biome.addStructure(WROUGHTNAUT_CHAMBER, IFeatureConfig.NO_FEATURE_CONFIG);
-                ConfiguredFeature configuredFeature = Biome.createDecoratedFeature(WROUGHTNAUT_CHAMBER, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG);
-                biome.addFeature(GenerationStage.Decoration.UNDERGROUND_STRUCTURES, configuredFeature);
             }
+            ConfiguredFeature wroughtnautChamberFeature = Biome.createDecoratedFeature(WROUGHTNAUT_CHAMBER, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG);
+            biome.addFeature(GenerationStage.Decoration.UNDERGROUND_STRUCTURES, wroughtnautChamberFeature);
 
             if (SpawnHandler.BARAKO_BIOMES.contains(biome)) {
                 biome.addStructure(BARAKOA_VILLAGE, IFeatureConfig.NO_FEATURE_CONFIG);
-                ConfiguredFeature configuredFeature = Biome.createDecoratedFeature(BARAKOA_VILLAGE, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG);
-                biome.addFeature(GenerationStage.Decoration.SURFACE_STRUCTURES, configuredFeature);
             }
+            ConfiguredFeature barakoaVillageFeature = Biome.createDecoratedFeature(BARAKOA_VILLAGE, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG);
+            biome.addFeature(GenerationStage.Decoration.SURFACE_STRUCTURES, barakoaVillageFeature);
 
             if (SpawnHandler.FROSTMAW_BIOMES.contains(biome)) {
                 biome.addStructure(FROSTMAW, IFeatureConfig.NO_FEATURE_CONFIG);
-                ConfiguredFeature configuredFeature = Biome.createDecoratedFeature(FROSTMAW, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG);
-                biome.addFeature(GenerationStage.Decoration.SURFACE_STRUCTURES, configuredFeature);
             }
+            ConfiguredFeature frostmawFeature = Biome.createDecoratedFeature(FROSTMAW, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG);
+            biome.addFeature(GenerationStage.Decoration.SURFACE_STRUCTURES, frostmawFeature);
         }
     }
 }
