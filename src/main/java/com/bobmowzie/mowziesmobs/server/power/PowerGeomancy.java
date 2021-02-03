@@ -12,6 +12,8 @@ import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBlockSwapper;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySolarBeam;
+import com.bobmowzie.mowziesmobs.server.message.MessagePlayerSolarBeam;
+import com.bobmowzie.mowziesmobs.server.message.MessagePlayerStartSummonBoulder;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.BlockState;
@@ -34,6 +36,7 @@ import java.util.List;
 import java.util.Random;
 
 public class PowerGeomancy extends Power {
+    public static final double SPAWN_BOULDER_REACH = 5;
 
     private int doubleTapTimer = 0;
 
@@ -42,9 +45,9 @@ public class PowerGeomancy extends Power {
     private int spawnBoulderCooldown = 8;
     private boolean spawningBoulder = false;
     private boolean liftedMouse = true;
-    private int spawnBoulderCharge = 0;
-    private BlockPos spawnBoulderPos = new BlockPos(0, 0, 0);
-    private Vec3d lookPos = new Vec3d(0, 0, 0);
+    public int spawnBoulderCharge = 0;
+    public BlockPos spawnBoulderPos = new BlockPos(0, 0, 0);
+    public Vec3d lookPos = new Vec3d(0, 0, 0);
     private BlockState spawnBoulderBlock = Blocks.DIRT.getDefaultState();
 
     public boolean tunneling;
@@ -199,40 +202,27 @@ public class PowerGeomancy extends Power {
     }
 
     @Override
-    public void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-        super.onRightClickBlock(event);
+    public void onRightClickEmpty(PlayerInteractEvent.RightClickEmpty event) {
+        super.onRightClickEmpty(event);
         PlayerEntity player = event.getPlayer();
         if (event.getHand() == Hand.MAIN_HAND && canUse(player)) {
             if (!tunneling && !spawningBoulder && liftedMouse && spawnBoulderCooldown <= 0) {
-
-                Vec3d from = player.getEyePosition(MowziesMobs.PROXY.getPartialTicks());
-                Vec3d to = from.add(player.getLookVec().scale(10));
-                BlockRayTraceResult result = player.world.rayTraceBlocks(new RayTraceContext(from, to, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, player));
-                if (result.getType() == RayTraceResult.Type.BLOCK) {
-                    lookPos = result.getHitVec();
-                }
-
-                spawnBoulderPos = event.getPos();
-                spawnBoulderBlock = player.world.getBlockState(spawnBoulderPos);
-                if (event.getFace() != Direction.UP) {
-                    BlockState blockAbove = player.world.getBlockState(spawnBoulderPos.up());
-                    //System.out.println(blockAbove.getBlock().getLocalizedName());
-                    if (blockAbove.causesSuffocation(player.world, spawnBoulderPos.up()) || blockAbove.isAir(player.world, spawnBoulderPos.up())) return;
-                }
-                if (!isBlockDiggable(spawnBoulderBlock)) return;
-                spawningBoulder = true;
-                event.setCanceled(true);
+                startSpawningBoulder(player);
+                MowziesMobs.NETWORK.sendToServer(new MessagePlayerStartSummonBoulder());
             }
         }
     }
 
     @Override
-    public void onRightClickEmpty(PlayerInteractEvent.RightClickEmpty event) {
-        super.onRightClickEmpty(event);
-        PlayerEntity player = event.getEntityPlayer();
-//        for (int i = 0; i < 6; i++) {
-//            ParticleFallingBlock.spawnFallingBlock(player.world, player.posX, player.posY + 1, player.posZ, 30f, 80, 1, (float)Math.random() * 0.8f - 0.4f, 0.4f + (float)Math.random() * 0.8f, (float)Math.random() * 0.8f - 0.4f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, Blocks.DIRT.getDefaultState());
-//        }
+    public void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+        super.onRightClickBlock(event);
+        PlayerEntity player = event.getPlayer();
+        if (event.getHand() == Hand.MAIN_HAND && canUse(player)) {
+            if (!tunneling && !spawningBoulder && liftedMouse && spawnBoulderCooldown <= 0) {
+                startSpawningBoulder(player);
+                MowziesMobs.NETWORK.sendToServer(new MessagePlayerStartSummonBoulder());
+            }
+        }
     }
 
     @Override
@@ -318,5 +308,25 @@ public class PowerGeomancy extends Power {
             return false;
         }
         return true;
+    }
+
+    public void startSpawningBoulder(PlayerEntity player) {
+        Vec3d from = player.getEyePosition(MowziesMobs.PROXY.getPartialTicks());
+        Vec3d to = from.add(player.getLookVec().scale(SPAWN_BOULDER_REACH));
+        BlockRayTraceResult result = player.world.rayTraceBlocks(new RayTraceContext(from, to, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, player));
+        if (result.getType() == RayTraceResult.Type.BLOCK) {
+            this.lookPos = result.getHitVec();
+        }
+
+        this.spawnBoulderPos = result.getPos();
+        this.spawnBoulderBlock = player.world.getBlockState(spawnBoulderPos);
+        if (result.getFace() != Direction.UP) {
+            BlockState blockAbove = player.world.getBlockState(spawnBoulderPos.up());
+            //System.out.println(blockAbove.getBlock().getLocalizedName());
+            if (blockAbove.causesSuffocation(player.world, spawnBoulderPos.up()) || blockAbove.isAir(player.world, spawnBoulderPos.up()))
+                return;
+        }
+        if (!isBlockDiggable(spawnBoulderBlock)) return;
+        spawningBoulder = true;
     }
 }
