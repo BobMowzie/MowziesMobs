@@ -222,7 +222,7 @@ public class FrozenCapability {
             if (!entity.world.isRemote && !entity.isPotionActive(PotionHandler.FROZEN)) {
                 freezeProgress += amount;
                 freezeDecayDelay = MAX_FREEZE_DECAY_DELAY;
-                MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new MessageAddFreezeProgress(entity, amount));
+                MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new MessageAddFreezeProgress(entity, amount));
             }
         }
 
