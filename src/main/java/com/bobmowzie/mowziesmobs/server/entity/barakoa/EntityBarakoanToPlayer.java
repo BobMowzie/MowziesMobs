@@ -12,6 +12,7 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -26,6 +27,12 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
     public EntityBarakoanToPlayer(EntityType<? extends EntityBarakoanToPlayer> type, World world, PlayerEntity leader) {
         super(type, world, PlayerEntity.class, leader);
         experienceValue = 0;
+    }
+
+    @Override
+    protected SoundEvent getAmbientSound() {
+        if (rand.nextFloat() < 0.5) return null;
+        return super.getAmbientSound();
     }
 
     @Override
