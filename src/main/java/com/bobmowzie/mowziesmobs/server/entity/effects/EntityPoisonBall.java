@@ -67,7 +67,7 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
             }
         }
 
-        if (world.checkBlockCollision(getBoundingBox().grow(0.1,0.1,0.1))) explode();
+        if (!world.isCollisionBoxesEmpty(this, getBoundingBox().grow(0.1))) explode();
 
         if (world.isRemote) {
             float scale = 1f;

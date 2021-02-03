@@ -36,6 +36,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -219,7 +220,7 @@ public class EntityBoulder extends Entity {
             }
         }
 
-        if (travelling && world.checkBlockCollision(getBoundingBox().grow(0.1,0.1,0.1))) setShouldExplode(true);
+        if (travelling && !world.isCollisionBoxesEmpty(this, getBoundingBox().grow(0.1, 0.1, 0.1), new HashSet<>(ridingEntities))) setShouldExplode(true);
 
         if (ticksExisted == 1) {
             for (int i = 0; i < 20 * getWidth(); i++) {
