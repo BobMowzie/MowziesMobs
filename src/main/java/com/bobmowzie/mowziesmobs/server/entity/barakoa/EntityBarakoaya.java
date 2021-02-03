@@ -99,7 +99,7 @@ public class EntityBarakoaya extends EntityBarakoa implements LeaderSunstrikeImm
         }));
         targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, true, true, null));
         targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, SkeletonEntity.class, 0, true, false, null));
-        this.goalSelector.addGoal(5, new MoveTowardsRestrictionGoal(this, 1.0D));
+        this.goalSelector.addGoal(5, new MoveTowardsRestrictionGoal(this, 0.4));
     }
 
     @Override
@@ -115,7 +115,6 @@ public class EntityBarakoaya extends EntityBarakoa implements LeaderSunstrikeImm
 
     public Trade getOfferingTrade() {
         return getDataManager().get(TRADE).orElse(null);
-    }
     }
 
 //    public int getNumSales() {
@@ -208,9 +207,6 @@ public class EntityBarakoaya extends EntityBarakoa implements LeaderSunstrikeImm
     @Override
     public ILivingEntityData onInitialSpawn(IWorld world, DifficultyInstance difficulty, SpawnReason reason, @Nullable ILivingEntityData livingData, @Nullable CompoundNBT compound) {
         tradeStore = DEFAULT;
-        if (reason == SpawnReason.STRUCTURE) {
-            this.setHomePosAndDistance(getPosition(), 16);
-        }
         return super.onInitialSpawn(world, difficulty, reason, livingData, compound);
     }
 

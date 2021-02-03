@@ -390,7 +390,8 @@ public class BarakoaVillagePieces {
 
         @Override
         public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos chunkPosIn) {
-            worldIn.setBlockState(findGround(worldIn, 4, 4), Blocks.CAMPFIRE.getDefaultState(), 2);
+            BlockPos centerPos = findGround(worldIn, 4, 4);
+            worldIn.setBlockState(centerPos, Blocks.CAMPFIRE.getDefaultState(), 2);
             fillAirLiquidBelowHeightmap(worldIn, Blocks.ACACIA_LOG.getDefaultState(), 4, 4);
             Vec2f[] positions = new Vec2f[] {
                     new Vec2f(0, 3),
@@ -424,9 +425,10 @@ public class BarakoaVillagePieces {
                     int z = (int) (distance * Math.cos(Math.toRadians(angle))) + 4;
                     BlockPos bPos = findGround(worldIn, x, z);
                     barakoa.setPosition(bPos.getX(), bPos.getY(), bPos.getZ());
-                    if(bPos.getY() > 0 && barakoa.canSpawn(worldIn, SpawnReason.STRUCTURE) && worldIn.areCollisionShapesEmpty(barakoa.getBoundingBox())) {
-                        worldIn.addEntity(barakoa);
+                    if (bPos.getY() > 0 && barakoa.canSpawn(worldIn, SpawnReason.STRUCTURE) && worldIn.areCollisionShapesEmpty(barakoa.getBoundingBox())) {
                         barakoa.onInitialSpawn(worldIn, worldIn.getDifficultyForLocation(barakoa.getPosition()), SpawnReason.STRUCTURE, null, null);
+                        barakoa.setHomePosAndDistance(centerPos, 16);
+                        worldIn.addEntity(barakoa);
                         break;
                     }
                 }
