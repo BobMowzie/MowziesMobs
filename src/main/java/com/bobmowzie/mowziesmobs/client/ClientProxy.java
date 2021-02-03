@@ -36,8 +36,6 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 public class ClientProxy extends ServerProxy {
-    public static final Minecraft MINECRAFT = Minecraft.getInstance();
-    public static final Timer TIMER = ObfuscationReflectionHelper.getPrivateValue(Minecraft.class, MINECRAFT, "timer");
 
     private Entity referencedMob = null;
 
@@ -88,12 +86,6 @@ public class ClientProxy extends ServerProxy {
     }
 
     @Override
-    public float getPartialTicks() {
-        if (ClientProxy.TIMER == null) return 0;
-        return ClientProxy.TIMER.renderPartialTicks;
-    }
-
-    @Override
     public void playSunstrikeSound(EntitySunstrike strike) {
         Minecraft.getInstance().getSoundHandler().play(new SunstrikeSound(strike));
     }
@@ -122,10 +114,6 @@ public class ClientProxy extends ServerProxy {
             }
             ClientEventHandler.INSTANCE.lastWroughtnautHitTime = now;
         }
-    }
-
-    public void setTPS(float tickRate) {
-
     }
 
     public Entity getReferencedMob() {

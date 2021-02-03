@@ -5,6 +5,7 @@ import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.entity.model.RendererModel;
@@ -23,7 +24,7 @@ public class ModelBipedAnimated extends BipedModel {
         if (!(entityIn instanceof PlayerEntity)) {
             return;
         }
-        float delta = MowziesMobs.PROXY.getPartialTicks();
+        float delta = Minecraft.getInstance().getRenderPartialTicks();
         PlayerEntity player = (PlayerEntity) entityIn;
         doMowzieAnimations(player, this, delta);
     }

@@ -168,7 +168,7 @@ public enum ClientEventHandler {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
             if (playerCapability != null && playerCapability.getGeomancy().canUse(player) && playerCapability.getGeomancy().isSpawningBoulder() && playerCapability.getGeomancy().getSpawnBoulderCharge() > 2) {
                 Vec3d lookPos = playerCapability.getGeomancy().getLookPos();
-                Vec3d playerEyes = player.getEyePosition(MowziesMobs.PROXY.getPartialTicks());
+                Vec3d playerEyes = player.getEyePosition(Minecraft.getInstance().getRenderPartialTicks());
                 Vec3d vec = playerEyes.subtract(lookPos).normalize();
                 float yaw = (float) Math.atan2(vec.z, vec.x);
                 float pitch = (float) Math.asin(vec.y);

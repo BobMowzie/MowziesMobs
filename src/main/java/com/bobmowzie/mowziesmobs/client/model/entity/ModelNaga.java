@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.Vec3d;
 
 /**
@@ -670,7 +671,7 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
 
         modelCorrections();
 
-        float partial = MowziesMobs.PROXY.getPartialTicks();
+        float partial = Minecraft.getInstance().getRenderPartialTicks();
         float frame = entity.ticksExisted + partial;
 
         float hoverAnim = entity.prevHoverAnimFrac + (entity.hoverAnimFrac - entity.prevHoverAnimFrac) * partial;
@@ -1228,7 +1229,7 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
             jawControls();
             wingFoldControls();
 
-            entity.dc.updateChain(MowziesMobs.PROXY.getPartialTicks(), tailOriginal, tailDynamic, 0.5f, 0.5f, 0.5f, 0.97f, 30, true);
+            entity.dc.updateChain(Minecraft.getInstance().getRenderPartialTicks(), tailOriginal, tailDynamic, 0.5f, 0.5f, 0.5f, 0.97f, 30, true);
 
             computeWingWebbing();
 

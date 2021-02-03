@@ -135,7 +135,7 @@ public class ChainBuffer {
      * @param boxes the box array
      */
     public void applyChainSwingBuffer(RendererModel... boxes) {
-        float rotateAmount = 0.01745329251F * ClientUtils.interpolate(this.prevYawVariation, this.yawVariation, MowziesMobs.PROXY.getPartialTicks()) / boxes.length;
+        float rotateAmount = 0.01745329251F * ClientUtils.interpolate(this.prevYawVariation, this.yawVariation, Minecraft.getInstance().getRenderPartialTicks()) / boxes.length;
         for (RendererModel box : boxes) {
             box.rotateAngleY += rotateAmount;
         }
@@ -147,7 +147,7 @@ public class ChainBuffer {
      * @param boxes the box array
      */
     public void applyChainWaveBuffer(RendererModel... boxes) {
-        float rotateAmount = 0.01745329251F * ClientUtils.interpolate(this.prevPitchVariation, this.pitchVariation, MowziesMobs.PROXY.getPartialTicks()) / boxes.length;
+        float rotateAmount = 0.01745329251F * ClientUtils.interpolate(this.prevPitchVariation, this.pitchVariation, Minecraft.getInstance().getRenderPartialTicks()) / boxes.length;
         for (RendererModel box : boxes) {
             box.rotateAngleX += rotateAmount;
         }

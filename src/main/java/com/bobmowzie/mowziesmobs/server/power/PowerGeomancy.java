@@ -19,6 +19,7 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FenceBlock;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -261,7 +262,7 @@ public class PowerGeomancy extends Power {
         }
 
         if (spawnBoulderCharge > 2) {
-            Vec3d playerEyes = player.getEyePosition(MowziesMobs.PROXY.getPartialTicks());
+            Vec3d playerEyes = player.getEyePosition(Minecraft.getInstance().getRenderPartialTicks());
             Vec3d vec = playerEyes.subtract(getLookPos()).normalize();
             float yaw = (float) Math.atan2(vec.z, vec.x);
             float pitch = (float) Math.asin(vec.y);
@@ -311,7 +312,7 @@ public class PowerGeomancy extends Power {
     }
 
     public void startSpawningBoulder(PlayerEntity player) {
-        Vec3d from = player.getEyePosition(MowziesMobs.PROXY.getPartialTicks());
+        Vec3d from = player.getEyePosition(Minecraft.getInstance().getRenderPartialTicks());
         Vec3d to = from.add(player.getLookVec().scale(SPAWN_BOULDER_REACH));
         BlockRayTraceResult result = player.world.rayTraceBlocks(new RayTraceContext(from, to, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, player));
         if (result.getType() == RayTraceResult.Type.BLOCK) {

@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -16,7 +17,7 @@ public class ModelPlayerAnimated extends PlayerModel {
         if (!(entityIn instanceof PlayerEntity)) {
             return;
         }
-        float delta = MowziesMobs.PROXY.getPartialTicks();
+        float delta = Minecraft.getInstance().getRenderPartialTicks();
         PlayerEntity player = (PlayerEntity) entityIn;
         ModelBipedAnimated.doMowzieAnimations(player, this, delta);
         this.bipedLeftLegwear.copyModelAngles(this.bipedLeftLeg);
