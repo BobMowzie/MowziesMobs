@@ -279,7 +279,7 @@ public final class  ConfigHandler {
         Naga(final ForgeConfigSpec.Builder builder) {
             builder.push("naga");
             spawnConfig = new SpawnConfig(builder,
-                    10, 2, 4,
+                    70, 2, 4,
                     new BiomeConfig(builder, Arrays.asList("BEACH,MOUNTAIN", "BEACH,HILLS"),  Arrays.asList("minecraft:stone_shore"), new ArrayList<>()),
                     Arrays.asList("grass_block", "stone", "sand"),
                     -1, -1, false, true, false
@@ -297,7 +297,7 @@ public final class  ConfigHandler {
         Lantern(final ForgeConfigSpec.Builder builder) {
             builder.push("lantern");
             spawnConfig = new SpawnConfig(builder,
-                    5, 1, 2,
+                    5, 2, 4,
                     new BiomeConfig(builder, Arrays.asList("FOREST,MAGICAL,!SNOWY"),  Arrays.asList("minecraft:dark_forest", "minecraft:dark_forest_hills"), new ArrayList<>()),
                     Arrays.asList("grass_block", "dark_oak_leaves", "dark_oak_log", "oak_leaves", "oak_log", "birch_leaves", "birch_log"),
                     -1, 60, true, false, false
