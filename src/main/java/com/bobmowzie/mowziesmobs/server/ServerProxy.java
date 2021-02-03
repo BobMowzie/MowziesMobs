@@ -113,6 +113,10 @@ public class ServerProxy {
                 .add();
     }
 
+    public void setTPS(float tickRate) {
+    }
+
+
     public Entity getReferencedMob() {
         return null;
     }

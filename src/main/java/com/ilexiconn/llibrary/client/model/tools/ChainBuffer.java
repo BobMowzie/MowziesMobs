@@ -2,6 +2,7 @@ package com.ilexiconn.llibrary.client.model.tools;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.ilexiconn.llibrary.client.util.ClientUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.MathHelper;

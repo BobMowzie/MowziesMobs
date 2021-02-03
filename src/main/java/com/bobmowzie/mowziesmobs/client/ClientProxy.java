@@ -36,7 +36,6 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 public class ClientProxy extends ServerProxy {
-
     private Entity referencedMob = null;
 
     @Override
@@ -114,6 +113,10 @@ public class ClientProxy extends ServerProxy {
             }
             ClientEventHandler.INSTANCE.lastWroughtnautHitTime = now;
         }
+    }
+
+    public void setTPS(float tickRate) {
+
     }
 
     public Entity getReferencedMob() {
