@@ -27,7 +27,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -117,7 +116,7 @@ public class EntityBarakoaya extends EntityBarakoa implements LeaderSunstrikeImm
         return getDataManager().get(TRADE).orElse(null);
     }
 
-//    public int getNumSales() {
+    //    public int getNumSales() {
 //        return getDataManager().get(NUM_SALES);
 //    }
 //
@@ -147,17 +146,6 @@ public class EntityBarakoaya extends EntityBarakoa implements LeaderSunstrikeImm
     protected boolean canHoldVaryingWeapons() {
         return false;
     }
-
-    //    @Override
-//    public ContainerBarakoayaTrade createContainer(World world, PlayerEntity player, int x, int y, int z) {
-//        return
-//    }
-
-//    @Override
-//    @OnlyIn(Dist.CLIENT)
-//    public ContainerScreen createGui(World world, PlayerEntity player, int x, int y, int z) {
-//        return new GuiBarakoayaTrade(this, new InventoryBarakoaya(this), createContainer(world, player, x, y, z), player.inventory, getDisplayName());
-//    }
 
     @Override
     public void tick() {
@@ -223,6 +211,10 @@ public class EntityBarakoaya extends EntityBarakoa implements LeaderSunstrikeImm
             compound.put("offeringTrade", getOfferingTrade().serialize());
         }
         compound.putInt("timeOffering", timeOffering);
+        compound.putInt("HomePosX", this.getHomePosition().getX());
+        compound.putInt("HomePosY", this.getHomePosition().getY());
+        compound.putInt("HomePosZ", this.getHomePosition().getZ());
+        compound.putInt("HomeDist", (int) this.getMaximumHomeDistance());
 //        compound.setInteger("numSales", getNumSales());
     }
 
@@ -232,6 +224,11 @@ public class EntityBarakoaya extends EntityBarakoa implements LeaderSunstrikeImm
         tradeStore = TradeStore.deserialize(compound.getCompound("tradeStore"));
         setOfferingTrade(Trade.deserialize(compound.getCompound("offeringTrade")));
         timeOffering = compound.getInt("timeOffering");
+        int i = compound.getInt("HomePosX");
+        int j = compound.getInt("HomePosY");
+        int k = compound.getInt("HomePosZ");
+        int dist = compound.getInt("HomeDist");
+        this.setHomePosAndDistance(new BlockPos(i, j, k), dist);
 //        setNumSales(compound.getInteger("numSales"));
     }
 }
