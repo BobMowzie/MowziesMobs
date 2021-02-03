@@ -12,6 +12,7 @@ import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -19,7 +20,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -133,6 +134,14 @@ public class EntityIceBreath extends EntityMagicEffect {
             boolean yawCheck = (entityRelativeYaw <= ARC / 2f && entityRelativeYaw >= -ARC / 2f) || (entityRelativeYaw >= 360 - ARC / 2f || entityRelativeYaw <= -360 + ARC / 2f);
             boolean pitchCheck = (entityRelativePitch <= ARC / 2f && entityRelativePitch >= -ARC / 2f) || (entityRelativePitch >= 360 - ARC / 2f || entityRelativePitch <= -360 + ARC / 2f);
             if (inRange && yawCheck && pitchCheck) {
+                // Raytrace to mob center to avoid damaging through walls
+                Vec3d from = getPositionVec();
+                Vec3d to = entityHit.getPositionVec().add(0, entityHit.getHeight() / 2f, 0);
+                BlockRayTraceResult result = world.rayTraceBlocks(new RayTraceContext(from, to, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
+                if (result.getType() == RayTraceResult.Type.BLOCK) {
+                    continue;
+                }
+
                 if (entityHit.attackEntityFrom(DamageSource.causeIndirectMagicDamage(this, caster), damage)) {
                     entityHit.setMotion(entityHit.getMotion().mul(0.25, 1, 0.25));
                     FrozenCapability.IFrozenCapability capability = CapabilityHandler.getCapability(entityHit, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
