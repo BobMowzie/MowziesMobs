@@ -242,9 +242,9 @@ public final class  ConfigHandler {
         Foliaath(final ForgeConfigSpec.Builder builder) {
             builder.push("foliaath");
             spawnConfig = new SpawnConfig(builder,
-                    20, 1, 3,
+                    70, 1, 4,
                     new BiomeConfig(builder, Arrays.asList("JUNGLE"), new ArrayList<>(), new ArrayList<>()),
-                    Arrays.asList("grass_block", "jungle_leaves", "oak_leaves", "oak_log", "jungle_log"),
+                    Arrays.asList("grass_block", "podzol", "jungle_leaves", "oak_leaves", "oak_log", "jungle_log"),
                     -1, 60, false, false, false
             );
             combatConfig = new CombatConfig(builder, 1, 1);
@@ -279,7 +279,7 @@ public final class  ConfigHandler {
         Naga(final ForgeConfigSpec.Builder builder) {
             builder.push("naga");
             spawnConfig = new SpawnConfig(builder,
-                    5, 1, 3,
+                    10, 2, 4,
                     new BiomeConfig(builder, Arrays.asList("BEACH,MOUNTAIN", "BEACH,HILLS"),  Arrays.asList("minecraft:stone_shore"), new ArrayList<>()),
                     Arrays.asList("grass_block", "stone", "sand"),
                     -1, -1, false, true, false

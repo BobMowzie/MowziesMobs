@@ -88,7 +88,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         super.registerAttributes();
         this.getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
         this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10 * ConfigHandler.MOBS.FOLIAATH.combatConfig.healthMultiplier.get());
-        this.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(10);
+        this.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(8);
     }
 
     @Override
@@ -276,7 +276,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         BlockState floorDown2 = world.getBlockState(pos.down(3));
         boolean notInTree = true;
         if (floor instanceof LeavesBlock && floorDown1 != biome.getSurfaceBuilder().config.getTop() && floorDown2 != biome.getSurfaceBuilder().config.getTop()) notInTree = false;
-        return super.canSpawn(world, reason) && notInTree && getEntitiesNearby(AnimalEntity.class, 10, 10, 10, 10).isEmpty() && world.getDifficulty() != Difficulty.PEACEFUL;
+        return super.canSpawn(world, reason) && notInTree && getEntitiesNearby(AnimalEntity.class, 5, 5, 5, 5).isEmpty() && world.getDifficulty() != Difficulty.PEACEFUL;
     }
 
     @Override
