@@ -10,6 +10,7 @@ import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -65,12 +66,14 @@ public final class GuiBarakoTrade extends ContainerScreen<ContainerBarakoTrade> 
             hasTraded = true;
             updateButton();
             MowziesMobs.NETWORK.sendToServer(new MessageBarakoTrade(barako));
-            PlayerEntity player = playerInventory.player;
-            boolean satisfied = barako.hasTradedWith(player);
-            if (!satisfied) {
-                if (barako.fulfillDesire(container.getSlot(0))) {
-                    barako.rememberTrade(player);
-                    container.detectAndSendChanges();
+            if (!Minecraft.getInstance().isIntegratedServerRunning()) {
+                PlayerEntity player = playerInventory.player;
+                boolean satisfied = barako.hasTradedWith(player);
+                if (!satisfied) {
+                    if (barako.fulfillDesire(container.getSlot(0))) {
+                        barako.rememberTrade(player);
+                        container.detectAndSendChanges();
+                    }
                 }
             }
     	}
