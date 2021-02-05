@@ -29,6 +29,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class EntitySolarBeam extends Entity {
     private final double RADIUS = 20;
@@ -286,10 +287,10 @@ public class EntitySolarBeam extends Entity {
             }
             float pad = entity.getCollisionBorderSize() + 0.5f;
             AxisAlignedBB aabb = entity.getBoundingBox().grow(pad, pad, pad);
-            boolean hit = aabb.intersects(from.x, from.y, from.z, to.x, to.y, to.z);
+            Optional<Vec3d> hit = aabb.rayTrace(from, to);
             if (aabb.contains(from)) {
                 result.addEntityHit(entity);
-            } else if (hit) {
+            } else if (hit.isPresent()) {
                 result.addEntityHit(entity);
             }
         }
