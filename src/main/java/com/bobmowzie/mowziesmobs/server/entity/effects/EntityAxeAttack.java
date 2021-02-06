@@ -69,7 +69,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
         super.tick();
         if (caster != null && !caster.isAlive()) remove();
         if (caster != null) {
-            setPositionAndRotation(caster.posX, caster.posY, caster.posZ, caster.rotationYaw, caster.rotationPitch);
+            setPositionAndRotation(caster.getPosX(), caster.getPosY(), caster.getPosZ(), caster.rotationYaw, caster.rotationPitch);
         }
         if (!world.isRemote && ticksExisted == 7) playSound(MMSounds.ENTITY_WROUGHT_WHOOSH.get(), 0.7F, 1.1f);
             if (!world.isRemote && caster != null) {
@@ -97,8 +97,8 @@ public class EntityAxeAttack extends EntityMagicEffect {
                     double theta = (i / (arcLen - 1.0) - 0.5) * spread + facingAngle;
                     double vx = Math.cos(theta);
                     double vz = Math.sin(theta);
-                    double px = posX + vx * distance;
-                    double pz = posZ + vz * distance;
+                    double px = getPosX() + vx * distance;
+                    double pz = getPosZ() + vz * distance;
                     float factor = 1 - distance / (float) maxDistance;
                     AxisAlignedBB selection = new AxisAlignedBB(px - 1.5, minY, pz - 1.5, px + 1.5, maxY, pz + 1.5);
                     List<Entity> hit = world.getEntitiesWithinAABB(Entity.class, selection);
@@ -158,7 +158,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
         boolean hit = false;
         List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(range, 2, range, range);
         for (LivingEntity entityHit : entitiesHit) {
-            float entityHitAngle = (float) ((Math.atan2(entityHit.posZ - posZ, entityHit.posX - posX) * (180 / Math.PI) - 90) % 360);
+            float entityHitAngle = (float) ((Math.atan2(entityHit.getPosZ() - getPosZ(), entityHit.getPosX() - getPosX()) * (180 / Math.PI) - 90) % 360);
             float entityAttackingAngle = rotationYaw % 360;
             if (entityHitAngle < 0) {
                 entityHitAngle += 360;
@@ -167,7 +167,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
                 entityAttackingAngle += 360;
             }
             float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
-            float entityHitDistance = (float) Math.sqrt((entityHit.posZ - posZ) * (entityHit.posZ - posZ) + (entityHit.posX - posX) * (entityHit.posX - posX));
+            float entityHitDistance = (float) Math.sqrt((entityHit.getPosZ() - getPosZ()) * (entityHit.getPosZ() - getPosZ()) + (entityHit.getPosX() - getPosX()) * (entityHit.getPosX() - getPosX()));
             if (entityHit != caster && entityHitDistance <= range && entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2 || entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2) {
                 if (caster instanceof PlayerEntity) ((PlayerEntity)caster).attackTargetEntityWithCurrentItem(entityHit);
                 else entityHit.attackEntityFrom(DamageSource.causeMobDamage(caster), damage);

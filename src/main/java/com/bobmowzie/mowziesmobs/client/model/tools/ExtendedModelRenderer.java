@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.client.model.tools;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.model.ModelBox;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
@@ -14,7 +14,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * Created by Josh on 7/24/2018.
  */
 @OnlyIn(Dist.CLIENT)
-public class ExtendedModelRenderer extends RendererModel {
+public class ExtendedModelRenderer extends ModelRenderer {
     public float defaultRotationX, defaultRotationY, defaultRotationZ;
     public float defaultOffsetX, defaultOffsetY, defaultOffsetZ;
     public float defaultPositionX, defaultPositionY, defaultPositionZ;
@@ -144,7 +144,7 @@ public class ExtendedModelRenderer extends RendererModel {
     }
 
     @Override
-    public void addChild(RendererModel child) {
+    public void addChild(ModelRenderer child) {
         super.addChild(child);
         if (child instanceof ExtendedModelRenderer) {
             ExtendedModelRenderer advancedChild = (ExtendedModelRenderer) child;
@@ -257,7 +257,7 @@ public class ExtendedModelRenderer extends RendererModel {
                     GlStateManager.color4f(1F, 1F, 1F, 1F);
                 }
                 if (this.childModels != null) {
-                    for (RendererModel childModel : this.childModels) {
+                    for (ModelRenderer childModel : this.childModels) {
                         childModel.render(scale);
                     }
                 }

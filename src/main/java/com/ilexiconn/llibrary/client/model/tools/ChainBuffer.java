@@ -3,7 +3,7 @@ package com.ilexiconn.llibrary.client.model.tools;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.ilexiconn.llibrary.client.util.ClientUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
@@ -135,9 +135,9 @@ public class ChainBuffer {
      *
      * @param boxes the box array
      */
-    public void applyChainSwingBuffer(RendererModel... boxes) {
+    public void applyChainSwingBuffer(ModelRenderer... boxes) {
         float rotateAmount = 0.01745329251F * ClientUtils.interpolate(this.prevYawVariation, this.yawVariation, Minecraft.getInstance().getRenderPartialTicks()) / boxes.length;
-        for (RendererModel box : boxes) {
+        for (ModelRenderer box : boxes) {
             box.rotateAngleY += rotateAmount;
         }
     }
@@ -147,9 +147,9 @@ public class ChainBuffer {
      *
      * @param boxes the box array
      */
-    public void applyChainWaveBuffer(RendererModel... boxes) {
+    public void applyChainWaveBuffer(ModelRenderer... boxes) {
         float rotateAmount = 0.01745329251F * ClientUtils.interpolate(this.prevPitchVariation, this.pitchVariation, Minecraft.getInstance().getRenderPartialTicks()) / boxes.length;
-        for (RendererModel box : boxes) {
+        for (ModelRenderer box : boxes) {
             box.rotateAngleX += rotateAmount;
         }
     }

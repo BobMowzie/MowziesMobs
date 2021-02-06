@@ -99,7 +99,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
         }
         if (world.isRemote && getAnimation() == EAT_ANIMATION && (getAnimationTick() == 3 || getAnimationTick() == 7 || getAnimationTick() == 11 || getAnimationTick() == 15 || getAnimationTick() == 19)) {
             for (int i = 0; i <= 5; i++) {
-                world.addParticle(new ItemParticleData(ParticleTypes.ITEM, getEating()), posX, posY + 0.2, posZ, rand.nextFloat() * 0.2 - 0.1, rand.nextFloat() * 0.2, rand.nextFloat() * 0.2 - 0.1);
+                world.addParticle(new ItemParticleData(ParticleTypes.ITEM, getEating()), getPosX(), getPosY() + 0.2, getPosZ(), rand.nextFloat() * 0.2 - 0.1, rand.nextFloat() * 0.2, rand.nextFloat() * 0.2 - 0.1);
             }
         }
 
@@ -128,7 +128,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
             }
             if (getGrowth() == 2400) {
                 EntityFoliaath adultFoliaath = new EntityFoliaath(EntityHandler.FOLIAATH, world);
-                adultFoliaath.setPosition(posX, posY, posZ);
+                adultFoliaath.setPosition(getPosX(), getPosY(), getPosZ());
                 adultFoliaath.setCanDespawn(false);
                 world.addEntity(adultFoliaath);
                 remove();
@@ -162,7 +162,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
     public void onDeath(DamageSource source) {
         super.onDeath(source);
         for (int i = 0; i < 10; i++) {
-            world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, Blocks.JUNGLE_LEAVES.getDefaultState()), posX, posY + 0.2, posZ, 0, 0, 0);
+            world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, Blocks.JUNGLE_LEAVES.getDefaultState()), getPosX(), getPosY() + 0.2, getPosZ(), 0, 0, 0);
         }
         remove();
     }
@@ -185,11 +185,11 @@ public class EntityBabyFoliaath extends MowzieEntity {
 
     @Override
     public boolean canSpawn(IWorld world, SpawnReason reason) {
-        if (world.checkNoEntityCollision(this) && world.areCollisionShapesEmpty(this) && !world.containsAnyLiquid(getBoundingBox())) {
+        if (world.checkNoEntityCollision(this) && world.hasNoCollisions(this) && !world.containsAnyLiquid(getBoundingBox())) {
             BlockPos ground = new BlockPos(
-                    MathHelper.floor(posX),
+                    MathHelper.floor(getPosX()),
                     MathHelper.floor(getBoundingBox().minY) - 1,
-                    MathHelper.floor(posZ)
+                    MathHelper.floor(getPosZ())
             );
 
             BlockState block = world.getBlockState(ground);

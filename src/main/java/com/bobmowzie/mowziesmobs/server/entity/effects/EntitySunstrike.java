@@ -153,7 +153,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
                     float oz = r * MathHelper.sin(theta);
                     final float minY = 0.1F;
                     float oy = rand.nextFloat() * (time * 6 - minY) + minY;
-                    world.addParticle(new ParticleOrb.OrbData((float) posX, (float) posZ), posX + ox, posY + oy, posZ + oz, 0, 0, 0);
+                    world.addParticle(new ParticleOrb.OrbData((float) getPosX(), (float) getPosZ()), getPosX() + ox, getPosY() + oy, getPosZ() + oz, 0, 0, 0);
                 }
             } else if (strikeTime > STRIKE_EXPLOSION) {
                 this.smolder();
@@ -181,9 +181,9 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
                     this.remove();
                 }
                 if (hitBlock.getBlock() instanceof SlabBlock && hitBlock.get(BlockStateProperties.SLAB_TYPE) == SlabType.BOTTOM) {
-                    this.setPosition(posX, hitResult.getPos().getY() + 1.0625F - 0.5f, posZ);
+                    this.setPosition(getPosX(), hitResult.getPos().getY() + 1.0625F - 0.5f, getPosZ());
                 } else {
-                    this.setPosition(posX, hitResult.getPos().getY() + 1.0625F, posZ);
+                    this.setPosition(getPosX(), hitResult.getPos().getY() + 1.0625F, getPosZ());
                 }
                 if (this.world instanceof ServerWorld) {
                     ((ServerWorld) this.world).getChunkProvider().sendToAllTracking(this, new SEntityTeleportPacket(this));
@@ -193,7 +193,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     }
 
     public void damageEntityLivingBaseNearby(double radius) {
-        AxisAlignedBB region = new AxisAlignedBB(posX - radius, posY - 0.5, posZ - radius, posX + radius, Double.POSITIVE_INFINITY, posZ + radius);
+        AxisAlignedBB region = new AxisAlignedBB(getPosX() - radius, getPosY() - 0.5, getPosZ() - radius, getPosX() + radius, Double.POSITIVE_INFINITY, getPosZ() + radius);
         List<Entity> entities = world.getEntitiesWithinAABBExcludingEntity(this, region);
         double radiusSq = radius * radius;
         for (Entity entity : entities) {
@@ -224,8 +224,8 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
 
     public double getDistanceSqXZToEntity(Entity entityIn)
     {
-        double d0 = this.posX - entityIn.posX;
-        double d2 = this.posZ - entityIn.posZ;
+        double d0 = this.getPosX() - entityIn.getPosX();
+        double d2 = this.getPosZ() - entityIn.getPosZ();
         return d0 * d0 + d2 * d2;
     }
 
@@ -237,7 +237,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
                 float r = rand.nextFloat() * 0.7F;
                 float x = r * MathHelper.cos(theta);
                 float z = r * MathHelper.sin(theta);
-                world.addParticle(ParticleTypes.LARGE_SMOKE, posX + x, posY + 0.1, posZ + z, 0, 0, 0);
+                world.addParticle(ParticleTypes.LARGE_SMOKE, getPosX() + x, getPosY() + 0.1, getPosZ() + z, 0, 0, 0);
             }
         }
     }
@@ -249,10 +249,10 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
             float vy = rand.nextFloat() * 0.08F;
             float vx = velocity * MathHelper.cos(yaw);
             float vz = velocity * MathHelper.sin(yaw);
-            world.addParticle(ParticleTypes.FLAME, posX, posY + 0.1, posZ, vx, vy, vz);
+            world.addParticle(ParticleTypes.FLAME, getPosX(), getPosY() + 0.1, getPosZ(), vx, vy, vz);
         }
         for (int i = 0; i < amount / 2; i++) {
-            world.addParticle(ParticleTypes.LAVA, posX, posY + 0.1, posZ, 0, 0, 0);
+            world.addParticle(ParticleTypes.LAVA, getPosX(), getPosY() + 0.1, getPosZ(), 0, 0, 0);
         }
     }
 
@@ -261,8 +261,8 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     }
 
     private RayTraceResult rayTrace(EntitySunstrike entity) {
-        Vec3d startPos = new Vec3d(entity.posX, entity.posY, entity.posZ);
-        Vec3d endPos = new Vec3d(entity.posX, 0, entity.posZ);
+        Vec3d startPos = new Vec3d(entity.getPosX(), entity.getPosY(), entity.getPosZ());
+        Vec3d endPos = new Vec3d(entity.getPosX(), 0, entity.getPosZ());
         return entity.world.rayTraceBlocks(new RayTraceContext(startPos, endPos, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
     }
 

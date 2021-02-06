@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.client.model.tools;
 import com.ilexiconn.llibrary.client.model.Transform;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
-import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -21,8 +21,8 @@ public class MMModelAnimator {
     private float delta;
     private boolean correctAnimation;
     private IAnimatedEntity entity;
-    private HashMap<RendererModel, Transform> transformMap;
-    private HashMap<RendererModel, Transform> prevTransformMap;
+    private HashMap<ModelRenderer, Transform> transformMap;
+    private HashMap<ModelRenderer, Transform> prevTransformMap;
 
     private MMModelAnimator() {
         this.tempTick = 0;
@@ -113,7 +113,7 @@ public class MMModelAnimator {
      * @param y   the y rotation
      * @param z   the z rotation
      */
-    public void rotate(RendererModel box, float x, float y, float z) {
+    public void rotate(ModelRenderer box, float x, float y, float z) {
         if (!this.correctAnimation) {
             return;
         }
@@ -128,14 +128,14 @@ public class MMModelAnimator {
      * @param y   the y offset
      * @param z   the z offset
      */
-    public void move(RendererModel box, float x, float y, float z) {
+    public void move(ModelRenderer box, float x, float y, float z) {
         if (!this.correctAnimation) {
             return;
         }
         this.getTransform(box).addOffset(x, y, z);
     }
 
-    private Transform getTransform(RendererModel box) {
+    private Transform getTransform(ModelRenderer box) {
         return this.transformMap.computeIfAbsent(box, b -> new Transform());
     }
 
@@ -154,7 +154,7 @@ public class MMModelAnimator {
 
         if (animationTick >= this.prevTempTick && animationTick < this.tempTick) {
             if (stationary) {
-                for (RendererModel box : this.prevTransformMap.keySet()) {
+                for (ModelRenderer box : this.prevTransformMap.keySet()) {
                     Transform transform = this.prevTransformMap.get(box);
                     box.rotateAngleX += transform.getRotationX();
                     box.rotateAngleY += transform.getRotationY();
@@ -166,7 +166,7 @@ public class MMModelAnimator {
             } else {
                 float tick = (animationTick - this.prevTempTick + this.delta) / (this.tempTick - this.prevTempTick);
                 float inc = MathHelper.sin((float) (tick * Math.PI / 2.0F)), dec = 1.0F - inc;
-                for (RendererModel box : this.prevTransformMap.keySet()) {
+                for (ModelRenderer box : this.prevTransformMap.keySet()) {
                     Transform transform = this.prevTransformMap.get(box);
                     box.rotateAngleX += dec * transform.getRotationX();
                     box.rotateAngleY += dec * transform.getRotationY();
@@ -175,7 +175,7 @@ public class MMModelAnimator {
                     box.rotationPointY += dec * transform.getOffsetY();
                     box.rotationPointZ += dec * transform.getOffsetZ();
                 }
-                for (RendererModel box : this.transformMap.keySet()) {
+                for (ModelRenderer box : this.transformMap.keySet()) {
                     Transform transform = this.transformMap.get(box);
                     box.rotateAngleX += inc * transform.getRotationX();
                     box.rotateAngleY += inc * transform.getRotationY();

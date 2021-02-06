@@ -205,7 +205,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
                     SoundType sound = state.getBlock().getSoundType(state, world, new BlockPos(this), entity);
                     world.playSound(
                         null,
-                        posX, posY, posZ,
+                        getPosX(), getPosY(), getPosZ(),
                         sound.getBreakSound(),
                         getSoundCategory(),
                         (sound.getVolume() + 1.0F) / 2.0F,
@@ -213,7 +213,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
                     );
                     if (world instanceof ServerWorld) {
                         ((ServerWorld) world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, state),
-                            posX, posY + getHeight() / 2.0D, posZ,
+                            getPosX(), getPosY() + getHeight() / 2.0D, getPosZ(),
                             32,
                             getWidth() / 4.0F, getHeight() / 4.0F, getWidth() / 4.0F,
                             0.05D
@@ -278,9 +278,9 @@ public class EntityGrottol extends MowzieEntity implements IMob {
 
         //Sparkle particles
         if (world.isRemote && isAlive() && rand.nextInt(15) == 0) {
-            double x = posX + 0.5f * (2 * rand.nextFloat() - 1f);
-            double y = posY + 0.8f + 0.3f * (2 * rand.nextFloat() - 1f);
-            double z = posZ + 0.5f * (2 * rand.nextFloat() - 1f);
+            double x = getPosX() + 0.5f * (2 * rand.nextFloat() - 1f);
+            double y = getPosY() + 0.8f + 0.3f * (2 * rand.nextFloat() - 1f);
+            double z = getPosZ() + 0.5f * (2 * rand.nextFloat() - 1f);
             if (isBlackPinkInYourArea()) {
                 world.addParticle(ParticleTypes.NOTE, x, y, z, rand.nextDouble() / 2, 0, 0);
             } else {
@@ -289,8 +289,8 @@ public class EntityGrottol extends MowzieEntity implements IMob {
         }
 
         //Footstep Sounds
-        float moveX = (float) (posX - prevPosX);
-        float moveZ = (float) (posZ - prevPosZ);
+        float moveX = (float) (getPosX() - prevPosX);
+        float moveZ = (float) (getPosZ() - prevPosZ);
         float speed = MathHelper.sqrt(moveX * moveX + moveZ * moveZ);
         if (frame % 6 == 0 && speed > 0.05) {
             playSound(MMSounds.ENTITY_GROTTOL_STEP.get(), 1F, 1.8f);
@@ -320,7 +320,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
                     Vec3d pos = new Vec3d(0.7D, 0.05D, 0.0D).rotateYaw((float) Math.toRadians(-renderYawOffset - 90));
                     if (world instanceof ServerWorld) {
                         ((ServerWorld) world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, blockBeneath),
-                                posX + pos.x, posY + pos.y, posZ + pos.z,
+                                getPosX() + pos.x, getPosY() + pos.y, getPosZ() + pos.z,
                                 8,
                                 0.25D, 0.025D, 0.25D,
                                 0.1D
@@ -387,8 +387,9 @@ public class EntityGrottol extends MowzieEntity implements IMob {
     }
 
     @Override
-    public void dismountEntity(Entity entity) {
-        super.dismountEntity(entity);
+    public void stopRiding() {
+//        Entity entity = this.getRidingEntity();
+        super.stopRiding();
 //        if (isMinecart(entity)) {
 //            ((AbstractMinecartEntity) entity).setHasDisplayTile(false);
 //        }

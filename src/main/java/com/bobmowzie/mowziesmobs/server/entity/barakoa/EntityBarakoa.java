@@ -15,6 +15,7 @@ import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
+import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.*;
@@ -31,7 +32,9 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -98,8 +101,8 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             @Override
             public void startExecuting() {
                 super.startExecuting();
-                LivingEntity player = this.entity.world.func_225318_b(PlayerEntity.class, pred, entity, entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ, this.entity.getBoundingBox().grow(8.0D, 3.0D, 8.0D));
-                LivingEntity barakoa = this.entity.world.func_225318_b(EntityBarakoa.class, pred, this.entity, entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ, this.entity.getBoundingBox().grow(8.0D, 3.0D, 8.0D));
+                LivingEntity player = this.entity.world.func_225318_b(PlayerEntity.class, pred, entity, entity.getPosX(), entity.getPosY() + entity.getEyeHeight(), entity.getPosZ(), this.entity.getBoundingBox().grow(8.0D, 3.0D, 8.0D));
+                LivingEntity barakoa = this.entity.world.func_225318_b(EntityBarakoa.class, pred, this.entity, entity.getPosX(), entity.getPosY() + entity.getEyeHeight(), entity.getPosZ(), this.entity.getBoundingBox().grow(8.0D, 3.0D, 8.0D));
                 if (player == null) talkTarget = barakoa;
                 else if (barakoa == null) talkTarget = player;
                 else if (rand.nextBoolean()) talkTarget = player;
@@ -109,7 +112,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             @Override
             public void tick() {
                 super.tick();
-                if (talkTarget != null) this.entity.lookController.setLookPosition(this.talkTarget.posX, this.talkTarget.posY + (double)this.talkTarget.getEyeHeight(), this.talkTarget.posZ, (float)this.entity.getHorizontalFaceSpeed(), (float)this.entity.getVerticalFaceSpeed());
+                if (talkTarget != null) this.entity.lookController.setLookPositionWithEntity(this.talkTarget, (float)this.entity.getHorizontalFaceSpeed(), (float)this.entity.getVerticalFaceSpeed());
             }
         });
         goalSelector.addGoal(4, new MeleeAttackGoal(this, 0.5D, false));
@@ -178,7 +181,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         }
         if (getAttackTarget() != null) {
             if (targetDistance > 6.5) {
-                getNavigator().tryMoveToXYZ(getAttackTarget().posX, getAttackTarget().posY, getAttackTarget().posZ, 0.6);
+                getNavigator().tryMoveToEntityLiving(getAttackTarget(), 0.6);
             } else {
                 if (!attacking) {
                     updateCircling();
@@ -205,9 +208,8 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         }
     }
 
-    @Nullable
     @Override
-    public ILivingEntityData onInitialSpawn(IWorld world, DifficultyInstance difficulty, SpawnReason reason, @Nullable ILivingEntityData livingData, @Nullable CompoundNBT compound) {
+    public ILivingEntityData onInitialSpawn(IWorld world, DifficultyInstance difficulty, SpawnReason reason, ILivingEntityData livingData, CompoundNBT compound) {
         if (canHoldVaryingWeapons()) {
             setWeapon(rand.nextInt(3) == 0 ? 1 : 0);
         }
@@ -414,9 +416,10 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     @Override
     public void attackEntityWithRangedAttack(LivingEntity target, float p_82196_2_) {
         AbstractArrowEntity dart = new EntityDart(EntityHandler.DART, this.world, this);
-        double dx = target.posX - this.posX;
-        double dy = target.getBoundingBox().minY + (double)(target.getHeight() / 3.0F) - dart.posY;
-        double dz = target.posZ - this.posZ;
+        Vec3d targetPos = target.getPositionVec();
+        double dx = targetPos.getX() - this.getPosX();
+        double dy = target.getBoundingBox().minY + (double)(target.getHeight() / 3.0F) - dart.getPositionVec().getY();
+        double dz = targetPos.getZ() - this.getPosZ();
         double dist = (double)MathHelper.sqrt(dx * dx + dz * dz);
         dart.shoot(dx, dy + dist * 0.2D, dz, 1.6F, 1);
         int i = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, this.getHeldItem(Hand.MAIN_HAND));
@@ -446,7 +449,8 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         boolean angleFlag = true;
         if (entity != null) {
             int arc = 220;
-            float entityHitAngle = (float) ((Math.atan2(entity.posZ - posZ, entity.posX - posX) * (180 / Math.PI) - 90) % 360);
+            Vec3d entityPos = entity.getPositionVec();
+            float entityHitAngle = (float) ((Math.atan2(entityPos.getZ() - getPosZ(), entityPos.getX() - getPosX()) * (180 / Math.PI) - 90) % 360);
             float entityAttackingAngle = renderYawOffset % 360;
             if (entityHitAngle < 0) {
                 entityHitAngle += 360;
@@ -466,7 +470,6 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         return super.attackEntityFrom(source, damage);
     }
 
-    @Nullable
     @Override
     protected ResourceLocation getLootTable() {
         switch (getMask()) {
@@ -490,10 +493,11 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     }
 
     @Override
-    public void fall(float distance, float damageMultipler) {
+    public boolean onLivingFall(float distance, float damageMultipler) {
         if (active) {
-            super.fall(distance, damageMultipler);
+            return super.onLivingFall(distance, damageMultipler);
         }
+        return false;
     }
 
     @Override

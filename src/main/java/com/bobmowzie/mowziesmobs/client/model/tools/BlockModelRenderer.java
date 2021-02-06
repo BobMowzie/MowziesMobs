@@ -8,7 +8,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.model.ModelBox;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
@@ -107,7 +107,7 @@ public class BlockModelRenderer extends AdvancedModelRenderer {
                     }
                 }
                 if (this.childModels != null) {
-                    for (RendererModel childModel : this.childModels) {
+                    for (ModelRenderer childModel : this.childModels) {
                         childModel.render(scale);
                     }
                 }

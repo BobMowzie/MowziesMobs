@@ -425,7 +425,7 @@ public class BarakoaVillagePieces {
                     int z = (int) (distance * Math.cos(Math.toRadians(angle))) + 4;
                     BlockPos bPos = findGround(worldIn, x, z);
                     barakoa.setPosition(bPos.getX(), bPos.getY(), bPos.getZ());
-                    if (bPos.getY() > 0 && barakoa.canSpawn(worldIn, SpawnReason.STRUCTURE) && worldIn.areCollisionShapesEmpty(barakoa.getBoundingBox())) {
+                    if (bPos.getY() > 0 && barakoa.canSpawn(worldIn, SpawnReason.STRUCTURE) && worldIn.hasNoCollisions(barakoa.getBoundingBox())) {
                         barakoa.onInitialSpawn(worldIn, worldIn.getDifficultyForLocation(barakoa.getPosition()), SpawnReason.STRUCTURE, null, null);
                         barakoa.setHomePosAndDistance(centerPos, 16);
                         worldIn.addEntity(barakoa);

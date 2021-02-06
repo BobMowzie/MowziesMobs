@@ -5,22 +5,16 @@ import com.bobmowzie.mowziesmobs.client.render.entity.RenderPlayerAnimated;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.item.*;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
@@ -29,7 +23,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.item.ItemEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 @OnlyIn(Dist.CLIENT)
@@ -44,7 +37,7 @@ public enum ClientEventHandler {
     long lastWroughtnautHitTime;
 
     @SubscribeEvent
-    public void onHandRender(RenderSpecificHandEvent event) {
+    public void onHandRender(RenderHandEvent event) {
         PlayerEntity player = Minecraft.getInstance().player;
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
         if (playerCapability != null && event.getHand() == Hand.MAIN_HAND && playerCapability.getUntilAxeSwing() > 0) {
@@ -86,7 +79,7 @@ public enum ClientEventHandler {
             entity.renderYawOffset = entity.prevRenderYawOffset = frozenCapability.getFrozenRenderYawOffset();
             entity.swingProgress = entity.prevSwingProgress = frozenCapability.getFrozenSwingProgress();
             entity.limbSwingAmount = entity.prevLimbSwingAmount = frozenCapability.getFrozenLimbSwingAmount();
-            entity.setSneaking(false);
+//            entity.setSneaking(false); TODO
         }
     }
 

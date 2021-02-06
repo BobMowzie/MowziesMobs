@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 import com.bobmowzie.mowziesmobs.client.model.tools.MMModelAnimator;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
-import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
 public abstract class MowzieEntityModel<T extends MowzieEntity> extends AdvancedModelBase<T> {
@@ -27,7 +27,7 @@ public abstract class MowzieEntityModel<T extends MowzieEntity> extends Advanced
 
     protected abstract void render(T entity, float scale);
 
-    protected static void setRotateAngle(RendererModel modelRenderer, float x, float y, float z) {
+    protected static void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;

@@ -76,9 +76,9 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
             for (int i = 0; i < pack.size(); i++) {
                 EntityBarakoanToBarakoana hunter = pack.get(i);
                 if (hunter.getAttackTarget() == null) {
-                    hunter.getNavigator().tryMoveToXYZ(posX + packRadius * MathHelper.cos(theta * i), posY, posZ + packRadius * MathHelper.sin(theta * i), 0.45);
+                    hunter.getNavigator().tryMoveToXYZ(getPosX() + packRadius * MathHelper.cos(theta * i), getPosY(), getPosZ() + packRadius * MathHelper.sin(theta * i), 0.45);
                     if (getDistance(hunter) > 20 && onGround) {
-                        hunter.setPosition(posX + packRadius * MathHelper.cos(theta * i), posY, posZ + packRadius * MathHelper.sin(theta * i));
+                        hunter.setPosition(getPosX() + packRadius * MathHelper.cos(theta * i), getPosY(), getPosZ() + packRadius * MathHelper.sin(theta * i));
                     }
                 }
             }
@@ -101,10 +101,10 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
     @Override
     public boolean isNotColliding(IWorldReader worldReader) {
         if (ticksExisted == 0) {
-            return !worldReader.containsAnyLiquid(this.getBoundingBox()) && worldReader.areCollisionShapesEmpty(this);
+            return !worldReader.containsAnyLiquid(this.getBoundingBox()) && worldReader.hasNoCollisions(this);
         }
         else {
-            return !worldReader.containsAnyLiquid(this.getBoundingBox()) && worldReader.areCollisionShapesEmpty(this) && this.world.checkNoEntityCollision(this);
+            return !worldReader.containsAnyLiquid(this.getBoundingBox()) && worldReader.hasNoCollisions(this) && this.world.checkNoEntityCollision(this);
         }
     }
 
@@ -124,11 +124,11 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
             int nearestIndex = -1;
             double smallestDiffSq = Double.MAX_VALUE;
             double targetTheta = theta * i;
-            double x = posX + packRadius * Math.cos(targetTheta);
-            double z = posZ + packRadius * Math.sin(targetTheta);
+            double x = getPosX() + packRadius * Math.cos(targetTheta);
+            double z = getPosZ() + packRadius * Math.sin(targetTheta);
             for (int n = 0; n < pack.size(); n++) {
                 EntityBarakoanToBarakoana tribeHunter = pack.get(n);
-                double diffSq = (x - tribeHunter.posX) * (x - tribeHunter.posX) + (z - tribeHunter.posZ) * (z - tribeHunter.posZ);
+                double diffSq = (x - tribeHunter.getPosX()) * (x - tribeHunter.getPosX()) + (z - tribeHunter.getPosZ()) * (z - tribeHunter.getPosZ());
                 if (diffSq < smallestDiffSq) {
                     smallestDiffSq = diffSq;
                     nearestIndex = n;
@@ -152,7 +152,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
         float theta = (2 * (float) Math.PI / size);
         for (int i = 0; i <= size; i++) {
             EntityBarakoanToBarakoana tribeHunter = new EntityBarakoanToBarakoana(EntityHandler.BARAKOAN_TO_BARAKOANA, this.world, this);
-            tribeHunter.setPosition(posX + 0.1 * MathHelper.cos(theta * i), posY, posZ + 0.1 * MathHelper.sin(theta * i));
+            tribeHunter.setPosition(getPosX() + 0.1 * MathHelper.cos(theta * i), getPosY(), getPosZ() + 0.1 * MathHelper.sin(theta * i));
             int weapon = rand.nextInt(3) == 0 ? 1 : 0;
             tribeHunter.setWeapon(weapon);
             world.addEntity(tribeHunter);
@@ -188,8 +188,10 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
     }
 
     @Override
-    protected void checkDespawn() {
-        if (!this.isNoDespawnRequired() && !this.preventDespawn()) {
+    public void checkDespawn() {
+        if (this.world.getDifficulty() == Difficulty.PEACEFUL && this.isDespawnPeaceful()) {
+            this.remove();
+        } else if (!this.isNoDespawnRequired() && !this.preventDespawn()) {
             Entity entity = this.world.getClosestPlayer(this, -1.0D);
             net.minecraftforge.eventbus.api.Event.Result result = net.minecraftforge.event.ForgeEventFactory.canEntityDespawn(this);
             if (result == net.minecraftforge.eventbus.api.Event.Result.DENY) {
@@ -213,6 +215,9 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
                     this.idleTime = 0;
                 }
             }
+
+        } else {
+            this.idleTime = 0;
         }
     }
 }

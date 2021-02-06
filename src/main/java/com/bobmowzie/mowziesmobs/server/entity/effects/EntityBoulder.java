@@ -121,7 +121,7 @@ public class EntityBoulder extends Entity {
 
     public boolean checkCanSpawn() {
         if (!world.getEntitiesWithinAABB(EntityBoulder.class, getBoundingBox()).isEmpty()) return false;
-        if (!world.isCollisionBoxesEmpty(this, getBoundingBox())) return false;
+        if (!world.hasNoCollisions(this, getBoundingBox())) return false;
         else return true;
     }
 
@@ -220,7 +220,7 @@ public class EntityBoulder extends Entity {
             }
         }
 
-        if (travelling && !world.isCollisionBoxesEmpty(this, getBoundingBox().grow(0.1), new HashSet<>(ridingEntities))) setShouldExplode(true);
+        if (travelling && !world.hasNoCollisions(this, getBoundingBox().grow(0.1), new HashSet<>(ridingEntities))) setShouldExplode(true);
 
         if (ticksExisted == 1) {
             for (int i = 0; i < 20 * getWidth(); i++) {

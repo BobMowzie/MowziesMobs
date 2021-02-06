@@ -19,7 +19,7 @@ archivesBaseName = "mowziesmobs"
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 minecraft {
-    mappings channel: "stable", version: "58-1.14.4"
+    mappings channel: "snapshot", version: "20210204-1.15.1"
     runs {
         client {
             workingDirectory project.file("run")
@@ -57,7 +57,7 @@ jar {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:1.14.4-28.2.0"
+    minecraft "net.minecraftforge:forge:1.15.2-31.2.0"
 }
 
 processResources {

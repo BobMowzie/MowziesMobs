@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 import com.bobmowzie.mowziesmobs.client.model.tools.ExtendedModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBall;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
-import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.model.ModelBox;
 import net.minecraft.entity.Entity;
 
@@ -49,7 +49,7 @@ public class ModelIceBall<T extends EntityIceBall> extends AdvancedModelBase<T> 
 		body2.render(f5);
 	}
 
-	public void setRotationAngle(RendererModel modelRenderer, float x, float y, float z) {
+	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
 		modelRenderer.rotateAngleX = x;
 		modelRenderer.rotateAngleY = y;
 		modelRenderer.rotateAngleZ = z;

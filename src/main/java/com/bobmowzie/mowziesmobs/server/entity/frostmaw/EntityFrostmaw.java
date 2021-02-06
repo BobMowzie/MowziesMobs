@@ -288,10 +288,10 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                 if (getAnimationTick() == 87) {
                     playSound(MMSounds.ENTITY_FROSTMAW_LAND.get(), 3, 1f);
                     float radius = 4;
-                    float slamPosX = (float) (posX + radius * Math.cos(Math.toRadians(rotationYaw + 90)));
-                    float slamPosZ = (float) (posZ + radius * Math.sin(Math.toRadians(rotationYaw + 90)));
-                    if (world.isRemote) world.addParticle(new ParticleRing.RingData(0f, (float)Math.PI/2f, 17, 1f, 1f, 1f, 1f, 60f, false, ParticleRing.EnumRingBehavior.GROW), slamPosX, posY + 0.2f, slamPosZ, 0, 0, 0);
-                    AxisAlignedBB hitBox = new AxisAlignedBB(new BlockPos(slamPosX - 0.5f, posY, slamPosZ - 0.5f)).grow(3, 3, 3);
+                    float slamPosX = (float) (getPosX() + radius * Math.cos(Math.toRadians(rotationYaw + 90)));
+                    float slamPosZ = (float) (getPosZ() + radius * Math.sin(Math.toRadians(rotationYaw + 90)));
+                    if (world.isRemote) world.addParticle(new ParticleRing.RingData(0f, (float)Math.PI/2f, 17, 1f, 1f, 1f, 1f, 60f, false, ParticleRing.EnumRingBehavior.GROW), slamPosX, getPosY() + 0.2f, slamPosZ, 0, 0, 0);
+                    AxisAlignedBB hitBox = new AxisAlignedBB(new BlockPos(slamPosX - 0.5f, getPosY(), slamPosZ - 0.5f)).grow(3, 3, 3);
                     List<LivingEntity> entitiesHit = world.getEntitiesWithinAABB(LivingEntity.class, hitBox);
                     for (LivingEntity entity: entitiesHit) {
                         if (entity != this) {
@@ -396,7 +396,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
             if (getAttackTarget() != null) {
                 timeWithoutTarget = 0;
 
-                float entityHitAngle = (float) ((Math.atan2(getAttackTarget().posZ - posZ, getAttackTarget().posX - posX) * (180 / Math.PI) - 90) % 360);
+                float entityHitAngle = (float) ((Math.atan2(getAttackTarget().getPosZ() - getPosZ(), getAttackTarget().getPosX() - getPosX()) * (180 / Math.PI) - 90) % 360);
                 float entityAttackingAngle = renderYawOffset % 360;
                 if (entityHitAngle < 0) {
                     entityHitAngle += 360;
@@ -505,8 +505,8 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         }
 
         //Footstep Sounds
-        float moveX = (float) (posX - prevPosX);
-        float moveZ = (float) (posZ - prevPosZ);
+        float moveX = (float) (getPosX() - prevPosX);
+        float moveZ = (float) (getPosZ() - prevPosZ);
         float speed = MathHelper.sqrt(moveX * moveX + moveZ * moveZ);
         if (frame % 16 == 5 && speed > 0.05 && active) {
             playSound(MMSounds.ENTITY_FROSTMAW_STEP.get(), 3F, 0.8F + rand.nextFloat() * 0.2f);
@@ -546,14 +546,14 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                 double speed = 0.9;
                 double xSpeed = speed * Math.cos(Math.toRadians(yaw));
                 double zSpeed = speed * Math.sin(Math.toRadians(yaw));
-                world.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f, 0.75f,1f, 40f, 22, ParticleCloud.EnumCloudBehavior.GROW, 1f), posX, posY + 1f, posZ, xSpeed, 0, zSpeed);
+                world.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f, 0.75f,1f, 40f, 22, ParticleCloud.EnumCloudBehavior.GROW, 1f), getPosX(), getPosY() + 1f, getPosZ(), xSpeed, 0, zSpeed);
             }
             for (int i = 1; i <= particleCount; i++) {
                 double yaw = i * 360.f / particleCount;
                 double speed = 0.65;
                 double xSpeed = speed * Math.cos(Math.toRadians(yaw));
                 double zSpeed = speed * Math.sin(Math.toRadians(yaw));
-                world.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f, 0.75f,1f, 35f, 22, ParticleCloud.EnumCloudBehavior.GROW, 1f), posX, posY + 1f, posZ, xSpeed, 0, zSpeed);
+                world.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f, 0.75f,1f, 35f, 22, ParticleCloud.EnumCloudBehavior.GROW, 1f), getPosX(), getPosY() + 1f, getPosZ(), xSpeed, 0, zSpeed);
             }
         }
     }

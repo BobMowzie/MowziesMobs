@@ -29,6 +29,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class EntitySolarBeam extends Entity {
     private final double RADIUS = 20;
@@ -116,12 +117,12 @@ public class EntitySolarBeam extends Entity {
                 if (getHasPlayer()) {
                     offsetX = offsetZ = 0;
                 }
-                world.addParticle(new ParticleOrb.OrbData((float) posX + offsetX, (float) posY + 0.3f, (float) posZ + offsetZ, 10), posX + ox + offsetX, posY + oy + 0.3, posZ + oz + offsetZ, 0, 0, 0);
+                world.addParticle(new ParticleOrb.OrbData((float) getPosX() + offsetX, (float) getPosY() + 0.3f, (float) getPosZ() + offsetZ, 10), getPosX() + ox + offsetX, getPosY() + oy + 0.3, getPosZ() + oz + offsetZ, 0, 0, 0);
             }
         }
         if (ticksExisted > 20) {
             this.calculateEndPos();
-            List<LivingEntity> hit = raytraceEntities(world, new Vec3d(posX, posY, posZ), new Vec3d(endPosX, endPosY, endPosZ), false, true, true).entities;
+            List<LivingEntity> hit = raytraceEntities(world, new Vec3d(getPosX(), getPosY(), getPosZ()), new Vec3d(endPosX, endPosY, endPosZ), false, true, true).entities;
             if (blockSide != null) {
                 spawnExplosionParticles(2);
             }
@@ -161,7 +162,7 @@ public class EntitySolarBeam extends Entity {
                         double o2x = (float) (-1 * Math.cos(getYaw()) * Math.cos(getPitch()));
                         double o2y = (float) (-1 * Math.sin(getPitch()));
                         double o2z = (float) (-1 * Math.sin(getYaw()) * Math.cos(getPitch()));
-                        world.addParticle(new ParticleOrb.OrbData((float) (collidePosX + o2x + ox), (float) (collidePosY + o2y + oy), (float) (collidePosZ + o2z + oz), 15), posX + o2x + ox, posY + o2y + oy, posZ + o2z + oz, 0, 0, 0);
+                        world.addParticle(new ParticleOrb.OrbData((float) (collidePosX + o2x + ox), (float) (collidePosY + o2y + oy), (float) (collidePosZ + o2z + oz), 15), getPosX() + o2x + ox, getPosY() + o2y + oy, getPosZ() + o2z + oz, 0, 0, 0);
                     }
                     particleCount = 4;
                     while (particleCount --> 0) {
@@ -259,9 +260,9 @@ public class EntitySolarBeam extends Entity {
     }
 
     private void calculateEndPos() {
-        endPosX = posX + RADIUS * Math.cos(getYaw()) * Math.cos(getPitch());
-        endPosZ = posZ + RADIUS * Math.sin(getYaw()) * Math.cos(getPitch());
-        endPosY = posY + RADIUS * Math.sin(getPitch());
+        endPosX = getPosX() + RADIUS * Math.cos(getYaw()) * Math.cos(getPitch());
+        endPosZ = getPosZ() + RADIUS * Math.sin(getYaw()) * Math.cos(getPitch());
+        endPosY = getPosY() + RADIUS * Math.sin(getPitch());
     }
 
     public HitResult raytraceEntities(World world, Vec3d from, Vec3d to, boolean stopOnLiquid, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock) {
@@ -279,17 +280,17 @@ public class EntitySolarBeam extends Entity {
             collidePosZ = endPosZ;
             blockSide = null;
         }
-        List<LivingEntity> entities = world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(Math.min(posX, collidePosX), Math.min(posY, collidePosY), Math.min(posZ, collidePosZ), Math.max(posX, collidePosX), Math.max(posY, collidePosY), Math.max(posZ, collidePosZ)).grow(1, 1, 1));
+        List<LivingEntity> entities = world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(Math.min(getPosX(), collidePosX), Math.min(getPosY(), collidePosY), Math.min(getPosZ(), collidePosZ), Math.max(getPosX(), collidePosX), Math.max(getPosY(), collidePosY), Math.max(getPosZ(), collidePosZ)).grow(1, 1, 1));
         for (LivingEntity entity : entities) {
             if (entity == caster) {
                 continue;
             }
             float pad = entity.getCollisionBorderSize() + 0.5f;
             AxisAlignedBB aabb = entity.getBoundingBox().grow(pad, pad, pad);
-            boolean hit = aabb.intersects(from.x, from.y, from.z, to.x, to.y, to.z);
+            Optional<Vec3d> hit = aabb.rayTrace(from, to);
             if (aabb.contains(from)) {
                 result.addEntityHit(entity);
-            } else if (hit) {
+            } else if (hit.isPresent()) {
                 result.addEntityHit(entity);
             }
         }
@@ -318,7 +319,7 @@ public class EntitySolarBeam extends Entity {
     private void updateWithPlayer() {
         this.setYaw((float) ((caster.rotationYawHead + 90) * Math.PI / 180));
         this.setPitch((float) (-caster.rotationPitch * Math.PI / 180));
-        this.setPosition(caster.posX, caster.posY + 1.2f, caster.posZ);
+        this.setPosition(caster.getPosX(), caster.getPosY() + 1.2f, caster.getPosZ());
     }
 
     public static class HitResult {

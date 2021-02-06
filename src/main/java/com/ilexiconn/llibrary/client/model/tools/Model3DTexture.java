@@ -1,7 +1,7 @@
 package com.ilexiconn.llibrary.client.model.tools;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.model.ModelBox;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -24,7 +24,7 @@ public class Model3DTexture extends ModelBox {
     private float u2;
     private float v2;
 
-    public Model3DTexture(RendererModel model, int textureOffsetX, int textureOffsetY, float posX, float posY, float posZ, int width, int height) {
+    public Model3DTexture(ModelRenderer model, int textureOffsetX, int textureOffsetY, float posX, float posY, float posZ, int width, int height) {
         super(model, 0, 0, posX, posY, posZ, 0, 0, 0, 0);
         this.width = width;
         this.height = height;
@@ -34,7 +34,7 @@ public class Model3DTexture extends ModelBox {
         this.v2 = (textureOffsetY + height) / model.textureHeight;
     }
 
-    public Model3DTexture(RendererModel model, int textureOffsetX, int textureOffsetY, int width, int height) {
+    public Model3DTexture(ModelRenderer model, int textureOffsetX, int textureOffsetY, int width, int height) {
         this(model, textureOffsetX, textureOffsetY, 0, 0, 0, width, height);
     }
 

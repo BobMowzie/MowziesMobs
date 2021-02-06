@@ -193,11 +193,11 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         if (getAttackTarget() != null) {
             rotationYawHead = targetAngle;
 
-            if (targetDistance <= 4 && getAttackTarget().posY - posY >= -1 && getAttackTarget().posY - posY <= 2 && getAnimation() == NO_ANIMATION && active) {
+            if (targetDistance <= 4 && getAttackTarget().getPosY() - getPosY() >= -1 && getAttackTarget().getPosY() - getPosY() <= 2 && getAnimation() == NO_ANIMATION && active) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, ATTACK_ANIMATION);
             }
 
-            if (targetDistance <= 10.5 && getAttackTarget().posY - posY >= -1.5 && getAttackTarget().posY - posY <= 2) {
+            if (targetDistance <= 10.5 && getAttackTarget().getPosY() - getPosY() >= -1.5 && getAttackTarget().getPosY() - getPosY() <= 2) {
                 setActivateTarget(ACTIVATE_DURATION);
                 lastTimeDecrease = 0;
             } else if (lastTimeDecrease <= 30 && getAnimation() == NO_ANIMATION) {
@@ -267,9 +267,9 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
     @Override
     public boolean canSpawn(IWorld world, SpawnReason reason) {
         Biome biome = world.getBiome(getPosition());
-        int i = MathHelper.floor(this.posX);
+        int i = MathHelper.floor(this.getPosX());
         int j = MathHelper.floor(this.getBoundingBox().minY);
-        int k = MathHelper.floor(this.posZ);
+        int k = MathHelper.floor(this.getPosZ());
         BlockPos pos = new BlockPos(i, j, k);
         Block floor = world.getBlockState(pos.down()).getBlock();
         BlockState floorDown1 = world.getBlockState(pos.down(2));

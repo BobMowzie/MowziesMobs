@@ -181,7 +181,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                     if (entity.getAnimationTick() == 44) {
                         Vec3d offset = new Vec3d(1.1f, 0, 0);
                         offset = offset.rotateYaw((float) Math.toRadians(-entity.rotationYaw - 90));
-                        EntitySuperNova superNova = new EntitySuperNova(EntityHandler.SUPER_NOVA, entity.world, entity, entity.posX + offset.x, entity.posY + 0.05, entity.posZ + offset.z);
+                        EntitySuperNova superNova = new EntitySuperNova(EntityHandler.SUPER_NOVA, entity.world, entity, entity.getPosX() + offset.x, entity.getPosY() + 0.05, entity.getPosZ() + offset.z);
                         world.addEntity(superNova);
                     }
                 }
@@ -192,8 +192,8 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             public void startExecuting() {
                 super.startExecuting();
                 if (entityTarget != null) {
-                    prevX = entityTarget.posX;
-                    prevZ = entityTarget.posZ;
+                    prevX = entityTarget.getPosX();
+                    prevZ = entityTarget.getPosZ();
                 }
             }
         });
@@ -291,7 +291,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         if (getAttackTarget() != null) {
             LivingEntity target = getAttackTarget();
             this.setAngry(true);
-            float entityHitAngle = (float) ((Math.atan2(target.posZ - posZ, target.posX - posX) * (180 / Math.PI) - 90) % 360);
+            float entityHitAngle = (float) ((Math.atan2(target.getPosZ() - getPosZ(), target.getPosX() - getPosX()) * (180 / Math.PI) - 90) % 360);
             float entityAttackingAngle = rotationYaw % 360;
             if (entityHitAngle < 0) {
                 entityHitAngle += 360;
@@ -377,7 +377,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                     float offsetX = (float) (-0.3 * Math.sin(rotationYaw * Math.PI / 180));
                     float offsetZ = (float) (-0.3 * Math.cos(rotationYaw * Math.PI / 180));
                     float offsetY = 1;
-                    world.addParticle(new ParticleOrb.OrbData((float) posX + offsetX, (float) posY + offsetY, (float) posZ + offsetZ, 6), posX + ox + offsetX, posY + offsetY + oy, posZ + oz + offsetZ, 0, 0, 0);
+                    world.addParticle(new ParticleOrb.OrbData((float) getPosX() + offsetX, (float) getPosY() + offsetY, (float) getPosZ() + offsetZ, 6), getPosX() + ox + offsetX, getPosY() + offsetY + oy, getPosZ() + oz + offsetZ, 0, 0, 0);
                 }
             }
         }
@@ -399,7 +399,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                         double ox = radius * Math.sin(yaw) * Math.sin(pitch);
                         double oy = radius * Math.cos(pitch);
                         double oz = radius * Math.cos(yaw) * Math.sin(pitch);
-                        AdvancedParticleBase.spawnParticle(world, ParticleHandler.ORB2.get(), posX + ox, posY + 0.8f + oy, posZ + oz, 0, 0, 0, true, 0, 0, 0, 0, 5F, 1, 1, 1, 1, 1, 20, true, new ParticleComponent[]{
+                        AdvancedParticleBase.spawnParticle(world, ParticleHandler.ORB2.get(), getPosX() + ox, getPosY() + 0.8f + oy, getPosZ() + oz, 0, 0, 0, true, 0, 0, 0, 0, 5F, 1, 1, 1, 1, 1, 20, true, new ParticleComponent[]{
                                 new ParticleComponent.Attractor(blessingPlayerPos, 0.5f, 0.2f, ParticleComponent.Attractor.EnumAttractorBehavior.LINEAR),
                                 new ParticleComponent.PropertyControl(EnumParticleProperty.POS_X, new ParticleComponent.Oscillator(0, (float) ox, 6f, 2.5f), true),
                                 new ParticleComponent.PropertyControl(EnumParticleProperty.POS_Y, new ParticleComponent.Oscillator(0, (float) oy, 6f, 2.5f), true),
@@ -412,7 +412,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                     }
                 }
                 if (getAnimationTick() % 15 == 0) {
-                    AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING2.get(), posX, posY + 0.8f, posZ, 0, 0, 0, true, 0, 0, 0, 0, 3.5F, 1, 223/255f, 66/255f, 1, 1, 15, true, new ParticleComponent[]{
+                    AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING2.get(), getPosX(), getPosY() + 0.8f, getPosZ(), 0, 0, 0, true, 0, 0, 0, 0, 3.5F, 1, 223/255f, 66/255f, 1, 1, 15, true, new ParticleComponent[]{
                             new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                             new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(5f, 35f), false)
                     });
@@ -433,7 +433,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                     diff = diff.normalize().scale(0.03);
                     inRange.setMotion(getMotion().subtract(diff));
 
-                    if (inRange.posY < posY + 3) inRange.setMotion(inRange.getMotion().add(0, 0.075, 0));
+                    if (inRange.getPosY() < getPosY() + 3) inRange.setMotion(inRange.getMotion().add(0, 0.075, 0));
                 }
             }
         }
@@ -480,14 +480,14 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                     new float[]{0, 0.6f, 0.85f, 1}
             );
             superNovaKeyTrack2 = ParticleComponent.KeyTrack.oscillate(0, 7, 24);
-            AdvancedParticleBase.spawnParticle(world, ParticleHandler.SUN.get(), posX, posY, posZ, 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 33, true, new ParticleComponent[]{
+            AdvancedParticleBase.spawnParticle(world, ParticleHandler.SUN.get(), getPosX(), getPosY(), getPosZ(), 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 33, true, new ParticleComponent[]{
                     new ParticleComponent.PinLocation(betweenHandPos),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, superNovaKeyTrack1, false),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, superNovaKeyTrack2, true)
             });
         }
         if (getAnimationTick() == 33) {
-            AdvancedParticleBase.spawnParticle(world, ParticleHandler.SUN_NOVA.get(), posX, posY, posZ, 0, 0, 0, true, 0, 0, 0, 0, 20F, 1, 1, 1, 0, 1, 13, true, new ParticleComponent[]{
+            AdvancedParticleBase.spawnParticle(world, ParticleHandler.SUN_NOVA.get(), getPosX(), getPosY(), getPosZ(), 0, 0, 0, true, 0, 0, 0, 0, 20F, 1, 1, 1, 0, 1, 13, true, new ParticleComponent[]{
                     new ParticleComponent.PinLocation(betweenHandPos),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
                             new float[]{11f, 7f, 5.5f, 1f, 30},
@@ -501,7 +501,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             });
         }
         if (getAnimationTick() == 32) {
-            AdvancedParticleBase.spawnParticle(world, ParticleHandler.FLARE.get(), posX, posY, posZ, 0, 0, 0, true, 0, 0, 0, 0, 5F, 1,1,1, 0.7, 1, 3, true, new ParticleComponent[]{
+            AdvancedParticleBase.spawnParticle(world, ParticleHandler.FLARE.get(), getPosX(), getPosY(), getPosZ(), 0, 0, 0, true, 0, 0, 0, 0, 5F, 1,1,1, 0.7, 1, 3, true, new ParticleComponent[]{
                     new ParticleComponent.PinLocation(betweenHandPos),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.POS_Y, ParticleComponent.constant(-0.15f), true),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
@@ -541,14 +541,14 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         }
         float timeFrac = Math.min((float)getAnimationTick() / 20f, 1f);
         if (getAnimationTick() > 1 && getAnimationTick() < 25 && getAnimationTick() % (int)(4 * (1 - timeFrac) + 1) == 0) {
-            AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING_SPARKS.get(),  posX, posY, posZ, 0, 0, 0, true, 0, 0, 0, rand.nextFloat() * (float)Math.PI * 2, 5F, 1, 1, 1, 1, 1, 6 + rand.nextFloat() * 3, true, new ParticleComponent[]{
+            AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING_SPARKS.get(),  getPosX(), getPosY(), getPosZ(), 0, 0, 0, true, 0, 0, 0, rand.nextFloat() * (float)Math.PI * 2, 5F, 1, 1, 1, 1, 1, 6 + rand.nextFloat() * 3, true, new ParticleComponent[]{
                     new ParticleComponent.PinLocation(betweenHandPos),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(10f + 20f * timeFrac * timeFrac + 10f * rand.nextFloat() * timeFrac, 0f), false),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0f, 0.7f), false)
             });
         }
         if (getAnimationTick() == 14) {
-            AdvancedParticleBase.spawnParticle(world, ParticleHandler.FLARE.get(),  posX, posY, posZ, 0, 0, 0, true, 0, 0, 0, 0, 5F, 1, 1, 1, 1, 1, 18, true, new ParticleComponent[]{
+            AdvancedParticleBase.spawnParticle(world, ParticleHandler.FLARE.get(),  getPosX(), getPosY(), getPosZ(), 0, 0, 0, true, 0, 0, 0, 0, 5F, 1, 1, 1, 1, 1, 18, true, new ParticleComponent[]{
                     new ParticleComponent.PinLocation(betweenHandPos),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.POS_Y, ParticleComponent.constant(-0.1f), true),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
@@ -560,7 +560,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         }
 
         if (getAnimationTick() == 32) {
-            AdvancedParticleBase.spawnParticle(world, ParticleHandler.BURST_IN.get(),  posX, posY, posZ, 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 5F, 0, 0, 0, 1, 1, 10, true, new ParticleComponent[]{
+            AdvancedParticleBase.spawnParticle(world, ParticleHandler.BURST_IN.get(),  getPosX(), getPosY(), getPosZ(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 5F, 0, 0, 0, 1, 1, 10, true, new ParticleComponent[]{
                     new ParticleComponent.PinLocation(betweenHandPos),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(25f, 0f), false),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0f, 1f), false),
@@ -610,23 +610,23 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         BlockPos posLeft;
         BlockPos posRight;
         if (direction == 1) {
-            posLeft = new BlockPos(MathHelper.floor(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) + 1);
-            posRight = new BlockPos(MathHelper.floor(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) + 1);
+            posLeft = new BlockPos(MathHelper.floor(getPosX()) + 1, Math.round((float) (getPosY() - 1)), MathHelper.floor(getPosZ()) + 1);
+            posRight = new BlockPos(MathHelper.floor(getPosX()) - 1, Math.round((float) (getPosY() - 1)), MathHelper.floor(getPosZ()) + 1);
             blockLeft = world.getBlockState(posLeft);
             blockRight = world.getBlockState(posRight);
         } else if (direction == 2) {
-            posLeft = new BlockPos(MathHelper.floor(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) + 1);
-            posRight = new BlockPos(MathHelper.floor(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) - 1);
+            posLeft = new BlockPos(MathHelper.floor(getPosX()) - 1, Math.round((float) (getPosY() - 1)), MathHelper.floor(getPosZ()) + 1);
+            posRight = new BlockPos(MathHelper.floor(getPosX()) - 1, Math.round((float) (getPosY() - 1)), MathHelper.floor(getPosZ()) - 1);
             blockLeft = world.getBlockState(posLeft);
             blockRight = world.getBlockState(posRight);
         } else if (direction == 3) {
-            posLeft = new BlockPos(MathHelper.floor(posX) - 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) - 1);
-            posRight = new BlockPos(MathHelper.floor(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) - 1);
+            posLeft = new BlockPos(MathHelper.floor(getPosX()) - 1, Math.round((float) (getPosY() - 1)), MathHelper.floor(getPosZ()) - 1);
+            posRight = new BlockPos(MathHelper.floor(getPosX()) + 1, Math.round((float) (getPosY() - 1)), MathHelper.floor(getPosZ()) - 1);
             blockLeft = world.getBlockState(posLeft);
             blockRight = world.getBlockState(posRight);
         } else if (direction == 4) {
-            posLeft = new BlockPos(MathHelper.floor(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) - 1);
-            posRight = new BlockPos(MathHelper.floor(posX) + 1, Math.round((float) (posY - 1)), MathHelper.floor(posZ) + 1);
+            posLeft = new BlockPos(MathHelper.floor(getPosX()) + 1, Math.round((float) (getPosY() - 1)), MathHelper.floor(getPosZ()) - 1);
+            posRight = new BlockPos(MathHelper.floor(getPosX()) + 1, Math.round((float) (getPosY() - 1)), MathHelper.floor(getPosZ()) + 1);
             blockLeft = world.getBlockState(posLeft);
             blockRight = world.getBlockState(posRight);
         } else {
@@ -643,7 +643,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             float vy = rand.nextFloat() * 0.1F - 0.05f;
             float vx = velocity * MathHelper.cos(yaw);
             float vz = velocity * MathHelper.sin(yaw);
-            world.addParticle(ParticleTypes.FLAME, posX, posY + 1, posZ, vx, vy, vz);
+            world.addParticle(ParticleTypes.FLAME, getPosX(), getPosY() + 1, getPosZ(), vx, vy, vz);
         }
     }
 

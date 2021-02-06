@@ -30,8 +30,8 @@ public class SmartBodyHelper extends BodyController {
             histPosX[i] = histPosX[i - 1];
             histPosZ[i] = histPosZ[i - 1];
         }
-        histPosX[0] = entity.posX;
-        histPosZ[0] = entity.posZ;
+        histPosX[0] = entity.getPosX();
+        histPosZ[0] = entity.getPosZ();
         double dx = delta(histPosX);
         double dz = delta(histPosZ);
         double distSq = dx * dx + dz * dz;

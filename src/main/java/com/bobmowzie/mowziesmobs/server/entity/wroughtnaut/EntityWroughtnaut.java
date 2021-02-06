@@ -33,14 +33,12 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.pathfinding.PathNavigator;
-import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockPos.PooledMutableBlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BossInfo;
@@ -179,7 +177,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
             if ((!active || getAttackTarget() == null) && entitySource instanceof LivingEntity && !(entitySource instanceof PlayerEntity && ((PlayerEntity) entitySource).isCreative()) && !(entitySource instanceof EntityWroughtnaut)) setAttackTarget((LivingEntity) entitySource);
             if (vulnerable) {
                 int arc = 220;
-                float entityHitAngle = (float) ((Math.atan2(entitySource.posZ - posZ, entitySource.posX - posX) * (180 / Math.PI) - 90) % 360);
+                float entityHitAngle = (float) ((Math.atan2(entitySource.getPosZ() - getPosZ(), entitySource.getPosX() - getPosX()) * (180 / Math.PI) - 90) % 360);
                 float entityAttackingAngle = renderYawOffset % 360;
                 if (entityHitAngle < 0) {
                     entityHitAngle += 360;
@@ -274,8 +272,8 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
             doVerticalAttackHitFX();
         }
 
-        float moveX = (float) (posX - prevPosX);
-        float moveZ = (float) (posZ - prevPosZ);
+        float moveX = (float) (getPosX() - prevPosX);
+        float moveZ = (float) (getPosZ() - prevPosZ);
         float speed = MathHelper.sqrt(moveX * moveX + moveZ * moveZ);
         if (speed > 0.01) {
             if (getAnimation() == NO_ANIMATION) {
@@ -289,7 +287,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         }
 
         if (this.world.isRemote && frame % 20 == 1 && speed > 0.03 && getAnimation() == NO_ANIMATION && isActive()) {
-            this.world.playSound(this.posX, this.posY, this.posZ, MMSounds.ENTITY_WROUGHT_STEP.get(), this.getSoundCategory(), 0.5F, 0.5F, false);
+            this.world.playSound(this.getPosX(), this.getPosY(), this.getPosZ(), MMSounds.ENTITY_WROUGHT_STEP.get(), this.getSoundCategory(), 0.5F, 0.5F, false);
         }
 
         repelEntities(2.2F, 4, 2.2F, 2.2F);
@@ -348,10 +346,10 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         theta += Math.PI / 2;
         double vecX = Math.cos(theta);
         double vecZ = Math.sin(theta);
-        double x = posX + 4.2 * vecX;
+        double x = getPosX() + 4.2 * vecX;
         double y = getBoundingBox().minY + 0.1;
-        double z = posZ + 4.2 * vecZ;
-        int hitY = MathHelper.floor(posY - 0.2);
+        double z = getPosZ() + 4.2 * vecZ;
+        int hitY = MathHelper.floor(getPosY() - 0.2);
         for (int t = 0; t < VERTICAL_ATTACK_BLOCK_OFFSETS.length; t++) {
             float ox = VERTICAL_ATTACK_BLOCK_OFFSETS[t][0], oy = VERTICAL_ATTACK_BLOCK_OFFSETS[t][1];
             int hitX = MathHelper.floor(x + ox);
@@ -368,7 +366,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
                     double velX = perpX * magnitude;
                     double velY = rand.nextDouble() * 3 + 6;
                     double velZ = perpZ * magnitude;
-                    if (vecX * (pz - posZ) - vecZ * (px - posX) > 0) {
+                    if (vecX * (pz - getPosZ()) - vecZ * (px - getPosX()) > 0) {
                         velX = -velX;
                         velZ = -velZ;
                     }
@@ -381,14 +379,14 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         int hitZ = MathHelper.floor(z);
         final int maxHeight = 5;
         int height = maxHeight;
-        PooledMutableBlockPos pos = PooledMutableBlockPos.retain();
+        /*PooledMutableBlockPos pos = PooledMutableBlockPos.retain();
         for (; height --> 0; ceilY++) {
             pos.setPos(hitX, ceilY, hitZ);
             if (world.getBlockState(pos).getMaterial().blocksMovement()) {
                 break;
             }
         }
-        pos.close();
+        pos.close();*/ // TODO
         float strength = height / (float) maxHeight;
         if (strength >= 0) {
             int radius = MathHelper.ceil(MathHelper.sqrt(1 - strength * strength) * maxHeight);
@@ -424,7 +422,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
             float t = remainingTicks / (float) duration;
             int amount = MathHelper.ceil((1 - MathHelper.sqrt(1 - t * t)) * radius * radius * 0.15F);
             boolean playSound = true;
-            PooledMutableBlockPos pos = PooledMutableBlockPos.retain();
+            /*PooledMutableBlockPos pos = PooledMutableBlockPos.retain();
             while (amount --> 0) {
                 double theta = rand.nextDouble() * Math.PI * 2;
                 double dist = rand.nextDouble() * radius;
@@ -439,12 +437,12 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
                     world.addParticle(new BlockParticleData(ParticleTypes.FALLING_DUST, block), x, y, z, 0, 0, 0);
                     if (playSound && rand.nextFloat() < 0.075F) {
                         SoundType sound = block.getBlock().getSoundType(block, world, pos, null);
-                        world.playSound(posX, posY, posZ, sound.getBreakSound(), SoundCategory.BLOCKS, sound.getVolume() * 2, sound.getPitch() * 0.6F, false);
+                        world.playSound(getPosX(), getPosY(), getPosZ(), sound.getBreakSound(), SoundCategory.BLOCKS, sound.getVolume() * 2, sound.getPitch() * 0.6F, false);
                         playSound = false;
                     }
                 }
             }
-            pos.close();
+            pos.close();*/ // TODO
             return --remainingTicks <= 0;
         }
     }

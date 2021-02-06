@@ -63,7 +63,7 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
             }
         }
 
-        if (!world.isCollisionBoxesEmpty(this, getBoundingBox().grow(0.15))) {
+        if (!world.hasNoCollisions(this, getBoundingBox().grow(0.15))) {
             explode();
         }
 

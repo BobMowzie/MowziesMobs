@@ -50,7 +50,7 @@ public class LegSolver {
 
         public void update(LivingEntity entity, double sideX, double sideZ, double forwardX, double forwardZ) {
             this.prevHeight = this.height;
-            this.height = settle(entity, entity.posX + sideX * this.side + forwardX * this.forward, entity.posY, entity.posZ + sideZ * this.side + forwardZ * this.forward, this.height);
+            this.height = settle(entity, entity.getPosX() + sideX * this.side + forwardX * this.forward, entity.getPosY(), entity.getPosZ() + sideZ * this.side + forwardZ * this.forward, this.height);
         }
 
         private float settle(LivingEntity entity, double x, double y, double z, float height) {

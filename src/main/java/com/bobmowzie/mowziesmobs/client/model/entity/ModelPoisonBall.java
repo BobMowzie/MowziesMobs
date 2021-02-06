@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 import com.bobmowzie.mowziesmobs.client.model.tools.ExtendedModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityPoisonBall;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
-import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.model.ModelBox;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
@@ -45,7 +45,7 @@ public class ModelPoisonBall<T extends EntityPoisonBall> extends AdvancedModelBa
 		outer.render(f5);
 	}
 
-	public void setRotationAngle(RendererModel modelRenderer, float x, float y, float z) {
+	public void setRotationAngle(ModelRenderer modelRenderer, float x, float y, float z) {
 		modelRenderer.rotateAngleX = x;
 		modelRenderer.rotateAngleY = y;
 		modelRenderer.rotateAngleZ = z;

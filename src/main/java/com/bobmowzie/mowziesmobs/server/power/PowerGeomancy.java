@@ -181,7 +181,7 @@ public class PowerGeomancy extends Power {
             else {
                 int size = (int)Math.min(Math.max(0, Math.floor(spawnBoulderCharge/10.f) - 1), 2) + 1;
                 EntityType<EntityBoulder> type = EntityHandler.BOULDERS[size];
-                if (!player.world.areCollisionShapesEmpty(type.func_220328_a(spawnBoulderPos.getX() + 0.5F, spawnBoulderPos.getY() + 2, spawnBoulderPos.getZ() + 0.5F))) {
+                if (!player.world.hasNoCollisions(type.func_220328_a(spawnBoulderPos.getX() + 0.5F, spawnBoulderPos.getY() + 2, spawnBoulderPos.getZ() + 0.5F))) {
                     spawnBoulder(player);
                 }
             }

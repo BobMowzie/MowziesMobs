@@ -193,8 +193,8 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
                             entity.lookController.setLookPositionWithEntity(target, 30F, 30F);
                         if (getAnimationTick() == 23) {
                             if (target != null) {
-                                swoopTargetCorrectY = 0.09f * (float) Math.abs(posY - target.posY);
-                                swoopTargetCorrectX = 0.1f * (float) Math.sqrt((posX - target.posX) * (posX - target.posX) + (posZ - target.posZ) * (posZ - target.posZ));
+                                swoopTargetCorrectY = 0.09f * (float) Math.abs(getPosY() - target.getPosY());
+                                swoopTargetCorrectX = 0.1f * (float) Math.sqrt((getPosX() - target.getPosX()) * (getPosX() - target.getPosX()) + (getPosZ() - target.getPosZ()) * (getPosZ() - target.getPosZ()));
                                 if (swoopTargetCorrectX > 1.8f) swoopTargetCorrectX = 1.8f;
                                 if (swoopTargetCorrectY > 2f) swoopTargetCorrectY = 2f;
                             }
@@ -339,7 +339,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
         if (!world.isRemote) {
             if (getAttackTarget() != null && targetDistance < 29.5 && movement != EnumNagaMovement.FALLEN && movement != EnumNagaMovement.FALLING) {
                 setAttacking(true);
-                if (getAnimation() == NO_ANIMATION && swoopCooldown == 0 && rand.nextInt(80) == 0 && posY - getAttackTarget().posY > 0) {
+                if (getAnimation() == NO_ANIMATION && swoopCooldown == 0 && rand.nextInt(80) == 0 && getPosY() - getAttackTarget().getPosY() > 0) {
                     interrupted = false;
 //                    System.out.println("Swoop");
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, SWOOP_ANIMATION);
@@ -364,7 +364,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
                 if (getAnimation() == NO_ANIMATION && !world.isRemote) {
                     List<AbstractArrowEntity> arrowsNearby = getEntitiesNearby(AbstractArrowEntity.class, 30);
                     for (AbstractArrowEntity a : arrowsNearby) {
-                        Vec3d aActualMotion = new Vec3d(a.posX - a.prevPosX, a.posY - a.prevPosY, a.posZ - a.prevPosZ);
+                        Vec3d aActualMotion = new Vec3d(a.getPosX() - a.prevPosX, a.getPosY() - a.prevPosY, a.getPosZ() - a.prevPosZ);
                         if (aActualMotion.length() < 0.1 || a.ticksExisted <= 1) {
                             continue;
                         }
@@ -480,7 +480,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
             if (shoulderRot > 0.9) hasFlapSoundPlayed = false;
 
             if (shoulderRot <= 0.7 && !hasFlapSoundPlayed) {
-                world.playSound(posX, posY, posZ, MMSounds.ENTITY_NAGA_FLAP_1.get(), SoundCategory.HOSTILE, 2, (float) (0.85 + rand.nextFloat() * 0.2), false);
+                world.playSound(getPosX(), getPosY(), getPosZ(), MMSounds.ENTITY_NAGA_FLAP_1.get(), SoundCategory.HOSTILE, 2, (float) (0.85 + rand.nextFloat() * 0.2), false);
                 hasFlapSoundPlayed = true;
             }
         }
@@ -514,14 +514,14 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
     @Override
     public boolean canSpawn(IWorld world, SpawnReason reason) {
         boolean flag = super.canSpawn(world, reason);
-        setPosition(posX, posY + 5, posZ);
+        setPosition(getPosX(), getPosY() + 5, getPosZ());
         return flag && world.getDifficulty() != Difficulty.PEACEFUL;
     }
 
     @Override
     public boolean isNotColliding(IWorldReader worldIn) {
         boolean liquid = !this.world.containsAnyLiquid(this.getBoundingBox());
-        boolean worldCollision = this.world.isCollisionBoxesEmpty(this, this.getBoundingBox());
+        boolean worldCollision = this.world.hasNoCollisions(this, this.getBoundingBox());
         boolean mobCollision = this.world.checkNoEntityCollision(this);
 
         return liquid && worldCollision && mobCollision;
@@ -558,9 +558,9 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
         Vec3d look = getLookVec();
         Vec3d dir = new Vec3d(look.x, 0, look.z).normalize();
         if (target != null) {
-            float dy = (float) (projectilePos.y - target.posY);
-            float dx = (float) (projectilePos.x - target.posX);
-            float dz = (float) (projectilePos.z - target.posZ);
+            float dy = (float) (projectilePos.y - target.getPosY());
+            float dx = (float) (projectilePos.x - target.getPosX());
+            float dz = (float) (projectilePos.z - target.getPosZ());
             float dist = (float) Math.sqrt(dx * dx + dz * dz);
             float timeGuess = (float) Math.sqrt(2 * dy / EntityPoisonBall.GRAVITY);
             float speed = Math.min(dist/timeGuess, 0.9f);
@@ -588,11 +588,12 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
         return new Animation[] {FLAP_ANIMATION, DODGE_ANIMATION, SWOOP_ANIMATION, SPIT_ANIMATION, HURT_TO_FALL_ANIMATION, LAND_ANIMATION, GET_UP_ANIMATION, DIE_AIR_ANIMATION, DIE_GROUND_ANIMATION, TAIL_DEMO_ANIMATION};
     }
 
-    public void fall(float distance, float damageMultiplier)
+    public boolean onLivingFall(float distance, float damageMultiplier)
     {
         if (movement == EnumNagaMovement.FALLING) {
-            super.fall(distance, damageMultiplier);
+            return super.onLivingFall(distance, damageMultiplier);
         }
+        return false;
     }
 
     protected void updateFallState(double y, boolean onGroundIn, BlockState state, BlockPos pos)
@@ -624,7 +625,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
             this.setMotion(this.getMotion().scale(0.5D));
         }
         else if (movement == EnumNagaMovement.HOVERING) {
-            BlockPos ground = new BlockPos(this.posX, this.getBoundingBox().minY - 1.0D, this.posZ);
+            BlockPos ground = new BlockPos(this.getPosX(), this.getBoundingBox().minY - 1.0D, this.getPosZ());
             float f = 0.91F;
             if (this.onGround) {
                 f = this.world.getBlockState(ground).getSlipperiness(world, ground, this) * 0.91F;
@@ -641,9 +642,9 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
             this.setMotion(this.getMotion().scale((double)f));
 
             MovementController entitymovehelper = this.getMoveHelper();
-            double dx = entitymovehelper.getX() - this.posX;
-            double dy = entitymovehelper.getY() - this.posY;
-            double dz = entitymovehelper.getZ() - this.posZ;
+            double dx = entitymovehelper.getX() - this.getPosX();
+            double dy = entitymovehelper.getY() - this.getPosY();
+            double dz = entitymovehelper.getZ() - this.getPosZ();
             double distanceToDest = Math.sqrt(dx * dx + dy * dy + dz * dz);
             if (distanceToDest < 0.1 && getAnimation() == NO_ANIMATION) {
                 setMotion(0, 0, 0);
@@ -678,11 +679,11 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
 
             this.setMotion(vec3d3.mul((double) 0.99F, (double) 0.98F, (double) 0.99F));
             this.move(MoverType.SELF, this.getMotion());
-            if (getMoveHelper().getY() - posY > 0 && getAnimation() == NO_ANIMATION)
+            if (getMoveHelper().getY() - getPosY() > 0 && getAnimation() == NO_ANIMATION)
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, FLAP_ANIMATION);
 
         } else if (movement == EnumNagaMovement.FALLING || movement == EnumNagaMovement.FALLEN || isAIDisabled()) {
-            BlockPos blockpos = new BlockPos(this.posX, this.getBoundingBox().minY - 1.0D, this.posZ);
+            BlockPos blockpos = new BlockPos(this.getPosX(), this.getBoundingBox().minY - 1.0D, this.getPosZ());
             float f5 = this.world.getBlockState(blockpos).getSlipperiness(world, blockpos, this);
             float f7 = this.onGround ? f5 * 0.91F : 0.91F;
 //            this.moveRelative(this.onGround ? this.getAIMoveSpeed() * (0.21600002F / (f5 * f5 * f5)) : this.jumpMovementFactor, motion);
@@ -697,7 +698,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
                 d10 += (0.05D * (double)(this.getActivePotionEffect(Effects.LEVITATION).getAmplifier() + 1) - vec3d5.y) * 0.2D;
                 this.fallDistance = 0.0F;
             } else if (this.world.isRemote && !this.world.isBlockLoaded(blockpos)) {
-                if (this.posY > 0.0D) {
+                if (this.getPosY() > 0.0D) {
                     d10 = -0.1D;
                 } else {
                     d10 = 0.0D;
@@ -710,9 +711,9 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
         }
 
         this.prevLimbSwingAmount = this.limbSwingAmount;
-        double d5 = this.posX - this.prevPosX;
-        double d6 = this.posZ - this.prevPosZ;
-        double d8 = this.posY - this.prevPosY;
+        double d5 = this.getPosX() - this.prevPosX;
+        double d6 = this.getPosZ() - this.prevPosZ;
+        double d8 = this.getPosY() - this.prevPosY;
         float f8 = MathHelper.sqrt(d5 * d5 + d8 * d8 + d6 * d6) * 4.0F;
         if (f8 > 1.0F) {
             f8 = 1.0F;
@@ -778,8 +779,8 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
                 LivingEntity entitylivingbase = this.parentEntity.getAttackTarget();
                 if (entitylivingbase.getDistanceSq(this.parentEntity) < 1600.0D)
                 {
-                    double d1 = entitylivingbase.posX - this.parentEntity.posX;
-                    double d2 = entitylivingbase.posZ - this.parentEntity.posZ;
+                    double d1 = entitylivingbase.getPosX() - this.parentEntity.getPosX();
+                    double d2 = entitylivingbase.getPosZ() - this.parentEntity.getPosZ();
                     this.parentEntity.rotationYaw = -((float)MathHelper.atan2(d1, d2)) * (180F / (float)Math.PI);
                     this.parentEntity.renderYawOffset = this.parentEntity.rotationYaw;
                 }
@@ -812,9 +813,9 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
             }
             else
             {
-                double d0 = entitymovehelper.getX() - this.parentEntity.posX;
-                double d1 = entitymovehelper.getY() - this.parentEntity.posY;
-                double d2 = entitymovehelper.getZ() - this.parentEntity.posZ;
+                double d0 = entitymovehelper.getX() - this.parentEntity.getPosX();
+                double d1 = entitymovehelper.getY() - this.parentEntity.getPosY();
+                double d2 = entitymovehelper.getZ() - this.parentEntity.getPosZ();
                 double d3 = d0 * d0 + d1 * d1 + d2 * d2;
                 return d3 < 1.0D || d3 > 3600.0D;
             }
@@ -834,9 +835,9 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
         public void startExecuting()
         {
             Random random = this.parentEntity.getRNG();
-            double d0 = this.parentEntity.posX + (double)((random.nextFloat() * 2.0F - 1.0F) * 24.0F);
-            double d1 = this.parentEntity.posY + (double)((random.nextFloat() * 2.0F - 1.0F) * 16.0F);
-            double d2 = this.parentEntity.posZ + (double)((random.nextFloat() * 2.0F - 1.0F) * 24.0F);
+            double d0 = this.parentEntity.getPosX() + (double)((random.nextFloat() * 2.0F - 1.0F) * 24.0F);
+            double d1 = this.parentEntity.getPosY() + (double)((random.nextFloat() * 2.0F - 1.0F) * 16.0F);
+            double d2 = this.parentEntity.getPosZ() + (double)((random.nextFloat() * 2.0F - 1.0F) * 24.0F);
             this.parentEntity.getMoveHelper().setMoveTo(d0, d1, d2, parentEntity.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue());
         }
     }
@@ -862,15 +863,15 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
                 if (!entitymovehelper.isUpdating()) {
                     return true;
                 } else {
-                    double dx = entitymovehelper.getX() - this.parentEntity.posX;
-                    double dy = entitymovehelper.getY() - this.parentEntity.posY;
-                    double dz = entitymovehelper.getZ() - this.parentEntity.posZ;
+                    double dx = entitymovehelper.getX() - this.parentEntity.getPosX();
+                    double dy = entitymovehelper.getY() - this.parentEntity.getPosY();
+                    double dz = entitymovehelper.getZ() - this.parentEntity.getPosZ();
                     double distanceToDest = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
                     LivingEntity target = parentEntity.getAttackTarget();
-                    double dx2 = entitymovehelper.getX() - target.posX;
-                    double dy2 = entitymovehelper.getY() - target.posY;
-                    double dz2 = entitymovehelper.getZ() - target.posZ;
+                    double dx2 = entitymovehelper.getX() - target.getPosX();
+                    double dy2 = entitymovehelper.getY() - target.getPosY();
+                    double dz2 = entitymovehelper.getZ() - target.getPosZ();
                     double distanceDestToTarget = Math.sqrt(dx2 * dx2 + dy2 * dy2 + dz2 * dz2);
 
                     boolean randomChance = parentEntity.rand.nextInt(60) == 0;
@@ -904,9 +905,9 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
             LivingEntity target = parentEntity.getAttackTarget();
             float yaw = (float) (random.nextFloat() * Math.PI * 2);
             float radius = 16;
-            double d0 = target.posX + Math.cos(yaw) * radius;
-            double d1 = target.posY + 8 + random.nextFloat() * 5;
-            double d2 = target.posZ + Math.sin(yaw) * radius;
+            double d0 = target.getPosX() + Math.cos(yaw) * radius;
+            double d1 = target.getPosY() + 8 + random.nextFloat() * 5;
+            double d2 = target.getPosZ() + Math.sin(yaw) * radius;
             double speed = parentEntity.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue();
             this.parentEntity.getMoveHelper().setMoveTo(d0, d1, d2, speed);
         }
@@ -924,16 +925,16 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
         }
 
         public void tick() {
-            if (this.action == Action.MOVE_TO) {
+            if (this.action == MovementController.Action.MOVE_TO) {
                 if (this.courseChangeCooldown-- <= 0) {
                     this.courseChangeCooldown += this.parentEntity.getRNG().nextInt(5) + 2;
-                    Vec3d lvt_1_1_ = new Vec3d(this.posX - this.parentEntity.posX, this.posY - this.parentEntity.posY, this.posZ - this.parentEntity.posZ);
-                    double lvt_2_1_ = lvt_1_1_.length();
-                    lvt_1_1_ = lvt_1_1_.normalize();
-                    if (this.func_220673_a(lvt_1_1_, MathHelper.ceil(lvt_2_1_))) {
-                        this.parentEntity.setMotion(this.parentEntity.getMotion().add(lvt_1_1_.scale(0.1D)));
+                    Vec3d vec3d = new Vec3d(this.posX - this.parentEntity.getPosX(), this.posY - this.parentEntity.getPosY(), this.posZ - this.parentEntity.getPosZ());
+                    double d0 = vec3d.length();
+                    vec3d = vec3d.normalize();
+                    if (this.func_220673_a(vec3d, MathHelper.ceil(d0))) {
+                        this.parentEntity.setMotion(this.parentEntity.getMotion().add(vec3d.scale(0.1D)));
                     } else {
-                        this.action = Action.WAIT;
+                        this.action = MovementController.Action.WAIT;
                     }
                 }
 
@@ -941,11 +942,11 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
         }
 
         private boolean func_220673_a(Vec3d p_220673_1_, int p_220673_2_) {
-            AxisAlignedBB lvt_3_1_ = this.parentEntity.getBoundingBox();
+            AxisAlignedBB axisalignedbb = this.parentEntity.getBoundingBox();
 
-            for(int lvt_4_1_ = 1; lvt_4_1_ < p_220673_2_; ++lvt_4_1_) {
-                lvt_3_1_ = lvt_3_1_.offset(p_220673_1_);
-                if (!this.parentEntity.world.isCollisionBoxesEmpty(this.parentEntity, lvt_3_1_)) {
+            for(int i = 1; i < p_220673_2_; ++i) {
+                axisalignedbb = axisalignedbb.offset(p_220673_1_);
+                if (!this.parentEntity.world.hasNoCollisions(this.parentEntity, axisalignedbb)) {
                     return false;
                 }
             }

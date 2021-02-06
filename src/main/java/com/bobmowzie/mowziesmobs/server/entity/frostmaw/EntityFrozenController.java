@@ -67,8 +67,8 @@ public class EntityFrozenController extends Entity {
     public void updatePassenger(Entity passenger) {
         if (this.isPassenger(passenger))
         {
-            if (passenger instanceof PlayerEntity) passenger.setPosition(this.posX, this.posY, this.posZ);
-            else passenger.setPositionAndRotation(this.posX, this.posY, this.posZ, this.rotationYaw, this.rotationPitch);
+            if (passenger instanceof PlayerEntity) passenger.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
+            else passenger.setPositionAndRotation(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, this.rotationPitch);
         }
     }
 }

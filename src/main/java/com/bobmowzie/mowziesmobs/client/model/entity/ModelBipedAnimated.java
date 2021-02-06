@@ -8,7 +8,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec3d;
@@ -70,7 +70,7 @@ public class ModelBipedAnimated extends BipedModel {
         // Axe of a thousand metals attack animations
         if (playerCapability != null && playerCapability.getUntilAxeSwing() > 0) {
             float frame = (PlayerCapability.SWING_COOLDOWN - playerCapability.getUntilAxeSwing()) + delta;
-            RendererModel arm = model.bipedRightArm;
+            ModelRenderer arm = model.bipedRightArm;
             if (playerCapability.isVerticalSwing()) {
                 float swingArc = 3f;
                 arm.rotateAngleX = -2.7f + (float) (swingArc * 1 / (1 + Math.exp(1.3f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 2f))));

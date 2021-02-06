@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraft.client.renderer.entity.model.RendererModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
@@ -39,9 +39,9 @@ public enum FrozenRenderHandler {
 
     public static class LayerFrozen extends LayerRenderer<LivingEntity, EntityModel<LivingEntity>> {
         private final LivingRenderer<LivingEntity, EntityModel<LivingEntity>> renderer;
-        private final Predicate<RendererModel> modelExclusions;
+        private final Predicate<ModelRenderer> modelExclusions;
 
-        public LayerFrozen(LivingRenderer<LivingEntity, EntityModel<LivingEntity>> renderer, Predicate<RendererModel> modelExclusions) {
+        public LayerFrozen(LivingRenderer<LivingEntity, EntityModel<LivingEntity>> renderer, Predicate<ModelRenderer> modelExclusions) {
             super(renderer);
             this.renderer = renderer;
             this.modelExclusions = modelExclusions;
@@ -64,8 +64,8 @@ public enum FrozenRenderHandler {
         public void render(LivingEntity living, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
             if (living.isPotionActive(PotionHandler.FROZEN)) {
                 EntityModel model = this.renderer.getEntityModel();
-                Map<RendererModel, Boolean> visibilities = new HashMap<>();
-                for(RendererModel box : model.boxList) {
+                Map<ModelRenderer, Boolean> visibilities = new HashMap<>();
+                for(ModelRenderer box : model.boxList) {
                     if(this.modelExclusions.test(box)) {
                         visibilities.put(box, box.showModel);
                         box.showModel = false;
@@ -81,7 +81,7 @@ public enum FrozenRenderHandler {
                 model.render(living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
                 GlStateManager.color4f(1, 1, 1, 1);
 
-                for(Map.Entry<RendererModel, Boolean> entry : visibilities.entrySet()) {
+                for(Map.Entry<ModelRenderer, Boolean> entry : visibilities.entrySet()) {
                     entry.getKey().showModel = entry.getValue();
                 }
 
