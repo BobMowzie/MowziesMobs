@@ -1,10 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.model.tools;
 
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
-import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.client.renderer.model.ModelBox;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
@@ -30,13 +27,9 @@ public class ExtendedModelRenderer extends ModelRenderer {
     private boolean doubleSided = true;
     private int defaultBrightness;
 
-    public ExtendedModelRenderer(AdvancedModelBase model, String name) {
-        super(model, name);
-        this.model = model;
-    }
-
     public ExtendedModelRenderer(AdvancedModelBase model) {
-        this(model, null);
+        super(model);
+        this.model = model;
     }
 
     public ExtendedModelRenderer(AdvancedModelBase model, int textureOffsetX, int textureOffsetY) {
@@ -47,14 +40,14 @@ public class ExtendedModelRenderer extends ModelRenderer {
     /**
      * Creates a textured box.
      */
-    @Override
+    /*@Override
     public void addBox(float offX, float offY, float offZ, int width, int height, int depth, float scaleFactor) {
         this.cubeList.add(new ModelBox(this, this.textureOffsetX, this.textureOffsetY, offX, offY, offZ, width, height, depth, scaleFactor));
     }
 
     public void addBox(ModelBox modelBox) {
         this.cubeList.add(modelBox);
-    }
+    }*/
 
     /**
      * If true, when using setScale, the children of this model part will be scaled as well as just this part. If false, just this part will be scaled.
@@ -106,7 +99,7 @@ public class ExtendedModelRenderer extends ModelRenderer {
 
     // Must call this before rendering a glowing model renderer (hasLighting = false)
     public void setDefaultBrightness(Entity entity) {
-        defaultBrightness = entity.getBrightnessForRender();
+        defaultBrightness = (int) entity.getBrightness();
     }
 
     /**
@@ -116,10 +109,6 @@ public class ExtendedModelRenderer extends ModelRenderer {
         this.defaultRotationX = this.rotateAngleX;
         this.defaultRotationY = this.rotateAngleY;
         this.defaultRotationZ = this.rotateAngleZ;
-
-        this.defaultOffsetX = this.offsetX;
-        this.defaultOffsetY = this.offsetY;
-        this.defaultOffsetZ = this.offsetZ;
 
         this.defaultPositionX = this.rotationPointX;
         this.defaultPositionY = this.rotationPointY;
@@ -133,10 +122,6 @@ public class ExtendedModelRenderer extends ModelRenderer {
         this.rotateAngleX = this.defaultRotationX;
         this.rotateAngleY = this.defaultRotationY;
         this.rotateAngleZ = this.defaultRotationZ;
-
-        this.offsetX = this.defaultOffsetX;
-        this.offsetY = this.defaultOffsetY;
-        this.offsetZ = this.defaultOffsetZ;
 
         this.rotationPointX = this.defaultPositionX;
         this.rotationPointY = this.defaultPositionY;
@@ -173,26 +158,26 @@ public class ExtendedModelRenderer extends ModelRenderer {
      *
      * @param scale the render scale
      */
-    public void parentedPostRender(float scale) {
-        if (this.parent != null) {
-            this.parent.parentedPostRender(scale);
-        }
-        this.postRender(scale);
-    }
+//    public void parentedPostRender(float scale) {
+//        if (this.parent != null) {
+//            this.parent.parentedPostRender(scale);
+//        }
+//        this.postRender(scale);
+//    }
+//
+//    /**
+//     * Renders this box with all it's parents
+//     *
+//     * @param scale the render scale
+//     */
+//    public void renderWithParents(float scale) {
+//        if (this.parent != null) {
+//            this.parent.renderWithParents(scale);
+//        }
+//        this.render(scale);
+//    }
 
-    /**
-     * Renders this box with all it's parents
-     *
-     * @param scale the render scale
-     */
-    public void renderWithParents(float scale) {
-        if (this.parent != null) {
-            this.parent.renderWithParents(scale);
-        }
-        this.render(scale);
-    }
-
-    @Override
+    /*@Override
     public void render(float scale) {
         if (!this.isHidden) {
             if (this.showModel) {
@@ -275,7 +260,7 @@ public class ExtendedModelRenderer extends ModelRenderer {
         }
         GlStateManager.endList();
         this.compiled = true;
-    }
+    }*/
 
     public AdvancedModelBase getModel() {
         return this.model;
@@ -359,7 +344,7 @@ public class ExtendedModelRenderer extends ModelRenderer {
         return this;
     }
 
-    public void transitionTo(ExtendedModelRenderer to, float timer, float maxTime) {
+    /*public void transitionTo(ExtendedModelRenderer to, float timer, float maxTime) {
         this.rotateAngleX += ((to.rotateAngleX - this.rotateAngleX) / maxTime) * timer;
         this.rotateAngleY += ((to.rotateAngleY - this.rotateAngleY) / maxTime) * timer;
         this.rotateAngleZ += ((to.rotateAngleZ - this.rotateAngleZ) / maxTime) * timer;
@@ -371,5 +356,5 @@ public class ExtendedModelRenderer extends ModelRenderer {
         this.offsetX += ((to.offsetX - this.offsetX) / maxTime) * timer;
         this.offsetY += ((to.offsetY - this.offsetY) / maxTime) * timer;
         this.offsetZ += ((to.offsetZ - this.offsetZ) / maxTime) * timer;
-    }
+    }*/
 }

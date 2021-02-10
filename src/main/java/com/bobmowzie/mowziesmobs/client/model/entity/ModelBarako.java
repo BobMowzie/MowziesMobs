@@ -4,8 +4,10 @@ import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.client.renderer.model.ModelBox;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -271,28 +273,28 @@ public class ModelBarako<T extends EntityBarako> extends MowzieEntityModel<T> {
         this.head.addBox(-4.5F, -9.0F, -4.5F, 9, 9, 9, 0.0F);
         head.scaleChildren = true;
         
-        hair1 = new AdvancedModelRenderer(this);
+        hair1 = new AdvancedModelRenderer(this, 79, 121);
         hair1.setRotationPoint(0.0F, -9.0F, -1.0F);
         head.addChild(hair1);
         setRotateAngle(hair1, 0.3491F, 0.0F, 0.0F);
-        hair1.cubeList.add(new ModelBox(hair1, 79, 121, -9.0F, 0.0F, 0.0F, 18, 0, 7, 0.0F, false));
+        hair1.addBox(-9.0F, 0.0F, 0.0F, 18, 0, 7, 0.0F, false);
 
-        hair2 = new AdvancedModelRenderer(this);
+        hair2 = new AdvancedModelRenderer(this, 79, 121);
         hair2.setRotationPoint(0.0F, -9.0F, 2.0F);
         head.addChild(hair2);
-        hair2.cubeList.add(new ModelBox(hair2, 79, 121, -9.0F, 0.0F, 0.0F, 18, 0, 7, 0.0F, false));
+        hair2.addBox(-9.0F, 0.0F, 0.0F, 18, 0, 7, 0.0F, false);
 
-        hair3 = new AdvancedModelRenderer(this);
+        hair3 = new AdvancedModelRenderer(this, 79, 121);
         hair3.setRotationPoint(0.0F, -9.0F, 4.5F);
         head.addChild(hair3);
         setRotateAngle(hair3, -0.7854F, 0.0F, 0.0F);
-        hair3.cubeList.add(new ModelBox(hair3, 79, 121, -9.0F, 0.0F, 0.0F, 18, 0, 7, 0.0F, false));
+        hair3.addBox(-9.0F, 0.0F, 0.0F, 18, 0, 7, 0.0F, false);
 
-        hair4 = new AdvancedModelRenderer(this);
+        hair4 = new AdvancedModelRenderer(this, 79, 121);
         hair4.setRotationPoint(0.0F, -7.0F, 4.5F);
         head.addChild(hair4);
         setRotateAngle(hair4, -1.2654F, 0.0F, 0.0F);
-        hair4.cubeList.add(new ModelBox(hair4, 79, 121, -9.0F, 0.0F, 0.0F, 18, 0, 7, 0.0F, false));
+        hair4.addBox(-9.0F, 0.0F, 0.0F, 18, 0, 7, 0.0F, false);
 
         jiggleController = new AdvancedModelRenderer(this, 0, 0);
         jiggleController.setRotationPoint(0, 0, 0);
@@ -355,11 +357,10 @@ public class ModelBarako<T extends EntityBarako> extends MowzieEntityModel<T> {
     }
 
     @Override
-    protected void render(EntityBarako entity, float scale) {
-        GlStateManager.enableNormalize();
-        this.body.render(scale);
-        this.betweenHands.render(scale);
-        GlStateManager.disableNormalize();
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+//        RenderSystem.disableRescaleNormal();
+        this.body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+//        RenderSystem.enableRescaleNormal();
     }
 
     public void setDefaultAngles(EntityBarako entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {

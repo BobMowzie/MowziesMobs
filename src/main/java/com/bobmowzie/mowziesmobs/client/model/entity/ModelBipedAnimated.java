@@ -13,13 +13,13 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec3d;
 
-public class ModelBipedAnimated extends BipedModel {
+public class ModelBipedAnimated<T extends LivingEntity> extends BipedModel {
     public ModelBipedAnimated(float modelSize) {
         super(modelSize);
     }
 
     @Override
-    public void setRotationAngles(LivingEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
         super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
         if (!(entityIn instanceof PlayerEntity)) {
             return;

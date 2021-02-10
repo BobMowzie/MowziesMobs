@@ -91,9 +91,8 @@ public class EntitySuperNova extends EntityMagicEffect {
         if (ticksExisted > DURATION) remove();
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public int getBrightnessForRender()
-    {
+    @Override
+    public float getBrightness() {
         return 15728880;
     }
 }

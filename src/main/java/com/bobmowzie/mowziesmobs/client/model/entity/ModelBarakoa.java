@@ -1,14 +1,13 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
-import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.client.renderer.model.ModelBox;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -64,6 +63,8 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
     public AdvancedModelRenderer scaler;
     public AdvancedModelRenderer flailer;
     public AdvancedModelRenderer talker;
+
+    private MaskType maskType;
 
     public ModelBarakoa() {
         this.textureWidth = 128;
@@ -124,7 +125,7 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         this.setRotateAngle(armUpperLeft, 0.0F, 0.0F, -0.9599310885968813F);
         this.spear = new AdvancedModelRenderer(this, 66, 0);
         this.spear.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.spear.add3DTexture(-4, -4, 0.5F, 15, 15);
+//        this.spear.add3DTexture(-4, -4, 0.5F, 15, 15);
         this.setRotateAngle(spear, 2.356194490192345F, 0.0F, 3.141592653589793F);
         this.earLeft = new AdvancedModelRenderer(this, 48, 0);
         this.earLeft.setRotationPoint(4.0F, -4.0F, -3.0F);
@@ -223,48 +224,48 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         this.flailer.setRotationPoint(0.0F, 0, 0F);
         this.blowgun = new AdvancedModelRenderer(this, 82, 0);
         this.blowgun.setRotationPoint(0.0F, 0.0F, 0.0F);
-        this.blowgun.add3DTexture(-4, -4, 0.5F, 15, 15);
+//        this.blowgun.add3DTexture(-4, -4, 0.5F, 15, 15);
         this.setRotateAngle(blowgun, 2.356194490192345F, 0.0F, 0);
         this.talker = new AdvancedModelRenderer(this, 0, 0);
         this.talker.setRotationPoint(0, 0, 0);
 
-        earPointLeft = new AdvancedModelRenderer(this);
+        earPointLeft = new AdvancedModelRenderer(this, 48, 7);
         earPointLeft.setRotationPoint(3.0F, 0.0F, 0.9995F);
         earPointLeft.setScale(1f, 1f, 0.999f);
         earLeft.addChild(earPointLeft);
         setRotateAngle(earPointLeft, 0.0F, 0.0F, -0.1745F);
-        earPointLeft.cubeList.add(new ModelBox(earPointLeft, 48, 7, 0.5F, -1.9F, -1.0F, 3, 2, 1, 0.0F, false));
+        earPointLeft.addBox(0.5F, -1.9F, -1.0F, 3, 2, 1, 0.0F, false);
 
-        earPointRight = new AdvancedModelRenderer(this);
+        earPointRight = new AdvancedModelRenderer(this, 48, 7);
         earPointRight.setRotationPoint(-3.0F, 0.0F, 0.9995F);
         earPointRight.setScale(1f, 1f, 0.999f);
         earRight.addChild(earPointRight);
         setRotateAngle(earPointRight, 0.0F, 0.0F, 0.1745F);
-        earPointRight.cubeList.add(new ModelBox(earPointRight, 48, 7, -3.5F, -1.9F, -1.0F, 3, 2, 1, 0.0F, false));
+        earPointRight.addBox(-3.5F, -1.9F, -1.0F, 3, 2, 1, 0.0F, false);
 
-        hair1 = new AdvancedModelRenderer(this);
+        hair1 = new AdvancedModelRenderer(this, 87, 50);
         hair1.setRotationPoint(0.0F, -7.0F, -4.0F);
         head.addChild(hair1);
         setRotateAngle(hair1, 0.3491F, 0.0F, 0.0F);
-        hair1.cubeList.add(new ModelBox(hair1, 87, 50, -7.0F, 0.0F, 0.0F, 14, 0, 7, 0.0F, false));
+        hair1.addBox(-7.0F, 0.0F, 0.0F, 14, 0, 7, 0.0F, false);
 
-        hair2 = new AdvancedModelRenderer(this);
+        hair2 = new AdvancedModelRenderer(this, 87, 57);
         hair2.setRotationPoint(0.0F, -7.0F, -1.5F);
         head.addChild(hair2);
         setRotateAngle(hair2, 0.0436F, 0.0F, 0.0F);
-        hair2.cubeList.add(new ModelBox(hair2, 87, 57, -7.0F, 0.0F, 0.0F, 14, 0, 7, 0.0F, false));
+        hair2.addBox(-7.0F, 0.0F, 0.0F, 14, 0, 7, 0.0F, false);
 
-        hair3 = new AdvancedModelRenderer(this);
+        hair3 = new AdvancedModelRenderer(this, 87, 50);
         hair3.setRotationPoint(0.0F, -7.0F, 1.0F);
         head.addChild(hair3);
         setRotateAngle(hair3, -0.7418F, 0.0F, 0.0F);
-        hair3.cubeList.add(new ModelBox(hair3, 87, 50, -7.0F, 0.0F, 0.0F, 14, 0, 7, 0.0F, false));
+        hair3.addBox(-7.0F, 0.0F, 0.0F, 14, 0, 7, 0.0F, false);
 
-        hair4 = new AdvancedModelRenderer(this);
+        hair4 = new AdvancedModelRenderer(this, 87, 50);
         hair4.setRotationPoint(0.0F, -6.0F, 1.0F);
         head.addChild(hair4);
         setRotateAngle(hair4, -1.2217F, 0.0F, 0.0F);
-        hair4.cubeList.add(new ModelBox(hair4, 87, 50, -7.0F, 0.0F, 0.0F, 14, 0, 7, 0.0F, false));
+        hair4.addBox(-7.0F, 0.0F, 0.0F, 14, 0, 7, 0.0F, false);
 
         mouthLeft = new AdvancedModelRenderer(this);
         mouthLeft.setRotationPoint(0.0F, -1.0F, 0.0F);
@@ -356,32 +357,32 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
     }
 
     @Override
-    protected void render(EntityBarakoa entity, float scale) {
-        GlStateManager.pushMatrix();
-        if (entity.getMask() == MaskType.FURY) {
-            GlStateManager.scalef(0.85f, 0.85f, 0.85f);
-            GlStateManager.translatef(0, 0.25f, 0);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        matrixStackIn.push();
+        if (maskType == MaskType.FURY) {
+            matrixStackIn.scale(0.85f, 0.85f, 0.85f);
+            matrixStackIn.translate(0, 0.25f, 0);
         } else {
-            GlStateManager.scalef(0.75f, 0.75f, 0.75f);
-            GlStateManager.translatef(0, 0.5f, 0);
+            matrixStackIn.scale(0.75f, 0.75f, 0.75f);
+            matrixStackIn.translate(0, 0.5f, 0);
         }
-        this.modelCore.render(scale);
-        GlStateManager.popMatrix();
-        //this.earPointLeft.render(scale);
+        this.modelCore.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        matrixStackIn.pop();
     }
 
     public void setDefaultAngles(EntityBarakoa entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
+        maskType = entity.getMask();
         headYaw = MathHelper.wrapDegrees(headYaw);
         headPitch = MathHelper.wrapDegrees(headPitch);
         resetToDefaultPose();
 //                f = entity.ticksExisted;
 //                f1 = 0.5f;
         if (entity.getWeapon() == 0) {
-            spear.isHidden = false;
-            blowgun.isHidden = true;
+            spear.showModel = true;
+            blowgun.showModel = false;
         } else {
-            spear.isHidden = true;
-            blowgun.isHidden = false;
+            spear.showModel = false;
+            blowgun.showModel = true;
         }
         if (!entity.active) {
             return;
@@ -870,12 +871,12 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
             walk(armLowerLeft, 0.5f, 0.2f * talk, false, -1, 0.3f * talk, frame, 1f);
             swing(handLeft, 0.5f, 0.2f * talk, false, -2, -1.8f * talk, frame, 1f);
             if (Math.sin(frame * 1.8f) * (talk + dance) > 0.1f) {
-                mouthLeft.isHidden = false;
-                mouthRight.isHidden = false;
+                mouthLeft.showModel = true;
+                mouthRight.showModel = true;
             }
             else {
-                mouthLeft.isHidden = true;
-                mouthRight.isHidden = true;
+                mouthLeft.showModel = false;
+                mouthRight.showModel = false;
             }
             if (entity.getMask() == MaskType.FURY) {
                 armLeftJoint.rotateAngleX += 0.2 * talk;

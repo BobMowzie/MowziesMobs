@@ -4,6 +4,8 @@ import com.bobmowzie.mowziesmobs.client.model.tools.ExtendedModelRenderer;
 import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -354,9 +356,9 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
         this.swordJoint.setRotationPoint(0F, -3F, 10F);
         this.swordJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(swordJoint, 0.0F, -0.7853981633974483F, 0.0F);
-        this.sword = new AdvancedModelRenderer(this, 82, 10);
+        /*this.sword = new AdvancedModelRenderer(this, 82, 10);
         this.sword.setRotationPoint(0F, 0F, 0F);
-        this.sword.add3DTexture(-11f, 0, -11f, 11, 11);
+        this.sword.add3DTexture(-11f, 0, -11f, 11, 11);*/ // TODO
         setRotateAngle(sword, 0.0F, 0F, 0.0F);
         this.rootBox = new AdvancedModelRenderer(this, 0, 0);
         this.rootBox.setRotationPoint(0.0F, -1.0F, 0.0F);
@@ -465,22 +467,23 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
     }
 
     @Override
-    protected void render(EntityWroughtnaut entity, float scale) {
-        eyeLeft.setDefaultBrightness(entity);
-        eyeRight.setDefaultBrightness(entity);
-        this.rootBox.render(scale);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        this.rootBox.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
     public void setDefaultAngles(EntityWroughtnaut entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
         resetToDefaultPose();
 
+        eyeLeft.setDefaultBrightness(entity);
+        eyeRight.setDefaultBrightness(entity);
+
         if (entity.isActive()) {
-            eyeLeft.isHidden = false;
-            eyeRight.isHidden = false;
+            eyeLeft.showModel = true;
+            eyeRight.showModel = true;
         }
         else {
-            eyeLeft.isHidden = true;
-            eyeRight.isHidden = true;
+            eyeLeft.showModel = false;
+            eyeRight.showModel = false;
         }
 
         if (entity.getAnimation() != EntityWroughtnaut.ACTIVATE_ANIMATION && entity.getAnimation() != EntityWroughtnaut.DEACTIVATE_ANIMATION) {

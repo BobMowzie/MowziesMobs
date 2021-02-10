@@ -2,20 +2,14 @@ package com.ilexiconn.llibrary.client.model.tools;
 
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.client.renderer.model.ModelBox;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import javax.vecmath.Matrix4f;
-import javax.vecmath.Point3d;
-import javax.vecmath.Vector3d;
 
 /**
  * An enhanced ModelRenderer
@@ -36,18 +30,14 @@ public class AdvancedModelRenderer extends ModelRenderer {
     private int displayList;
     private boolean compiled;
 
-    public AdvancedModelRenderer(AdvancedModelBase model, String name) {
-        super(model, name);
+    public AdvancedModelRenderer(AdvancedModelBase model) {
+        super(model);
         this.model = model;
     }
 
-    public AdvancedModelRenderer(AdvancedModelBase model) {
-        this(model, null);
-    }
-
     public AdvancedModelRenderer(AdvancedModelBase model, int textureOffsetX, int textureOffsetY) {
-        this(model);
-        this.setTextureOffset(textureOffsetX, textureOffsetY);
+        super(model, textureOffsetX, textureOffsetY);
+        this.model = model;
     }
 
     /*public AdvancedModelRenderer add3DTexture(float posX, float posY, float posZ, int width, int height) {
@@ -171,24 +161,24 @@ public class AdvancedModelRenderer extends ModelRenderer {
      *
      * @param scale the render scale
      */
-    public void parentedPostRender(float scale) {
-        if (this.parent != null) {
-            this.parent.parentedPostRender(scale);
-        }
-        this.postRender(scale);
-    }
+//    public void parentedPostRender(float scale) {
+//        if (this.parent != null) {
+//            this.parent.parentedPostRender(scale);
+//        }
+//        this.postRender(scale);
+//    }
 
     /**
      * Renders this box with all it's parents
      *
      * @param scale the render scale
      */
-    public void renderWithParents(float scale) {
-        if (this.parent != null) {
-            this.parent.renderWithParents(scale);
-        }
-        this.render(scale);
-    }
+//    public void renderWithParents(float scale) {
+//        if (this.parent != null) {
+//            this.parent.renderWithParents(scale);
+//        }
+//        this.render(scale);
+//    }
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
@@ -250,7 +240,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
                 GlStateManager.popMatrix();
             }
         }
-    }*/
+    }*/ // TODO
 
     /*private void compileDisplayList(float scale) {
         this.displayList = GLAllocation.generateDisplayLists(1);
@@ -381,7 +371,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
     }
 
     public Vec3d getModelPos(AdvancedModelRenderer modelRenderer, Vec3d recurseValue) {
-        double x = recurseValue.x;
+        /*double x = recurseValue.x;
         double y = recurseValue.y;
         double z = recurseValue.z;
         Point3d rendererPos = new Point3d(x, y, z);
@@ -404,7 +394,8 @@ public class AdvancedModelRenderer extends ModelRenderer {
 
             return getModelPos(parent, new Vec3d(rendererPos.getX(), rendererPos.getY(), rendererPos.getZ()));
         }
-        return new Vec3d(rendererPos.getX(), rendererPos.getY(), rendererPos.getZ());
+        return new Vec3d(rendererPos.getX(), rendererPos.getY(), rendererPos.getZ());*/ // TODO
+        return new Vec3d(0, 0, 0);
     }
 
     public Vec3d getWorldRotation(Entity entity, float delta) {
@@ -433,7 +424,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
     }
 
     public void setWorldPos(Entity entity, Vec3d pos, float delta) {
-        Matrix4f entityTranslate = new Matrix4f();
+        /*Matrix4f entityTranslate = new Matrix4f();
         Matrix4f entityRotate = new Matrix4f();
         float dx = (float) (entity.prevPosX + (entity.getPosX() - entity.prevPosX) * delta);
         float dy = (float) (entity.prevPosY + (entity.getPosY() - entity.prevPosY) * delta);
@@ -447,6 +438,6 @@ public class AdvancedModelRenderer extends ModelRenderer {
         entityRotate.transform(rendererPos);
         rendererPos.y -= 1.5f;
         rendererPos.scale(16);
-        setRotationPoint((float)rendererPos.x, -(float)rendererPos.y, -(float)rendererPos.z);
+        setRotationPoint((float)rendererPos.x, -(float)rendererPos.y, -(float)rendererPos.z);*/ //TODO
     }
 }

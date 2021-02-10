@@ -3,7 +3,10 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.Minecraft;
 
 /**
  * Created by Josh on 4/14/2017.
@@ -82,22 +85,11 @@ public class ModelAxeAttack<T extends EntityAxeAttack> extends AdvancedModelBase
         updateDefaultPose();
     }
 
-    public void setRotateAngle(AdvancedModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.rotateAngleX = x;
-        modelRenderer.rotateAngleY = y;
-        modelRenderer.rotateAngleZ = z;
-    }
-
-    public void render(EntityAxeAttack entity, float f5, float delta) {
-        setRotationAngles(entity, f5, delta);
-        axeBase.render(f5);
-    }
-
-    public void setRotationAngles(EntityAxeAttack entity, float f5, float delta) {
+    @Override
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float frame, float netHeadYaw, float headPitch) {
         resetToDefaultPose();
-        float frame = entity.ticksExisted + delta;
 
-        if (!entity.getVertical()) {
+        if (!entityIn.getVertical()) {
             float swingArc = 2;
             float scale = (float) ((1 / (1 + Math.exp(2f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 5f)))) - (1 / (1 + Math.exp(2f * (-frame + 4 * EntityAxeAttack.SWING_DURATION_HOR / 5f)))));
             axeBase.rotateAngleY -= swingArc * 1 / (1 + Math.exp(1.3f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 2f)));
@@ -113,5 +105,20 @@ public class ModelAxeAttack<T extends EntityAxeAttack> extends AdvancedModelBase
 //            axeBase.rotationPointY -= 16 * animCurve;
             axeBase.setScale(scale, scale, scale);
         }
+    }
+
+    public void setRotateAngle(AdvancedModelRenderer modelRenderer, float x, float y, float z) {
+        modelRenderer.rotateAngleX = x;
+        modelRenderer.rotateAngleY = y;
+        modelRenderer.rotateAngleZ = z;
+    }
+
+    @Override
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        axeBase.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+    }
+
+    public void setRotationAngles(EntityAxeAttack entity, float f5, float delta) {
+
     }
 }

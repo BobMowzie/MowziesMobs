@@ -9,11 +9,9 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.client.renderer.model.ModelBox;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
 import org.lwjgl.opengl.GL11;
 
@@ -55,7 +53,7 @@ public class BlockModelRenderer extends AdvancedModelRenderer {
         this.origin = origin;
     }
 
-    public void render(float scale) {
+    /*public void render(float scale) {
         super.render(scale);
 
         if (!this.isHidden) {
@@ -125,5 +123,5 @@ public class BlockModelRenderer extends AdvancedModelRenderer {
         }
         GlStateManager.endList();
         this.compiled = true;
-    }
+    }*/ // TODO
 }

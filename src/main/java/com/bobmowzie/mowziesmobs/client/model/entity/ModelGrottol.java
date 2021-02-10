@@ -2,11 +2,12 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 /**
  * Created by Josh on 7/3/2018.
  */
-
 
 public class ModelGrottol<T extends EntityGrottol> extends MowzieEntityModel<T> {
     public AdvancedModelRenderer body;
@@ -278,16 +279,18 @@ public class ModelGrottol<T extends EntityGrottol> extends MowzieEntityModel<T> 
     }
 
     @Override
-    protected void render(EntityGrottol entity, float scale) {
-        this.body.render(scale);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
-    public void setDefaultAngles(EntityGrottol entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
+    @Override
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         resetToDefaultPose();
 
-        headYaw = Math.min(headYaw, 30f);
-        headYaw = Math.max(headYaw, -30f);
-        faceTarget(headYaw, headPitch, 1, head);
+        netHeadYaw = Math.min(netHeadYaw, 30f);
+        netHeadYaw = Math.max(netHeadYaw, -30f);
+        faceTarget(netHeadYaw, headPitch, 1, head);
 
         if (limbSwingAmount > 0.5) limbSwingAmount = 0.5f;
         float globalSpeed = 1.5f;
@@ -324,8 +327,8 @@ public class ModelGrottol<T extends EntityGrottol> extends MowzieEntityModel<T> 
     }
 
     @Override
-    protected void animate(EntityGrottol entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
-        setDefaultAngles(entity, limbSwing, limbSwingAmount, headYaw, headPitch, delta);
+    protected void animate(T entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
+//        setRotationAngles(entity, limbSwing, limbSwingAmount, headYaw, headPitch, delta);
         float frame = entity.frame + delta;
 
         if (entity.getAnimation() == EntityGrottol.IDLE_ANIMATION) {

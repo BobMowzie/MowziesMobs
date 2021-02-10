@@ -5,6 +5,8 @@ import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.EntityDynamicsTester;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
@@ -69,21 +71,15 @@ public class ModelDynamicsTester<T extends EntityDynamicsTester> extends Advance
     }
 
     @Override
-    public void render(T entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        body1.isHidden = true;
-        body2.isHidden = true;
-        body3.isHidden = true;
-        body4.isHidden = true;
-        body5.isHidden = true;
-        body6.isHidden = true;
-        if (entity.dc != null) entity.dc.render(f5, bodydynamic);
-        root.render(f5);
-        body1.isHidden = false;
-        body2.isHidden = false;
-        body3.isHidden = false;
-        body4.isHidden = false;
-        body5.isHidden = false;
-//        body1.render(f5);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        body1.showModel = false;
+        body2.showModel = false;
+        body3.showModel = false;
+        body4.showModel = false;
+        body5.showModel = false;
+        body6.showModel = false;
+//        if (entity.dc != null) entity.dc.render(f5, bodydynamic);
+        root.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
     /**
@@ -96,8 +92,7 @@ public class ModelDynamicsTester<T extends EntityDynamicsTester> extends Advance
     }
 
     @Override
-    public void setRotationAngles(T entity, float f, float f1, float f2, float f3, float f4, float f5) {
-        super.setRotationAngles(entity, f, f1, f2, f3, f4, f5);
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         resetToDefaultPose();
 //        bob(body1, 0.3f, 16, false, entity.ticksExisted + LLibrary.PROXY.getPartialTicks(), 1F);
         root.rotationPointZ += 16;

@@ -5,6 +5,8 @@ import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.util.math.Vec3d;
 
 /**
@@ -307,11 +309,11 @@ public class ModelFrostmaw<T extends EntityFrostmaw> extends MowzieEntityModel<T
         this.setRotateAngle(legLeftJoint, -0.6981317007977318F, 0.0F, 0.0F);
         this.iceCrystal = new AdvancedModelRenderer(this, 0, 0);
         this.iceCrystal.setRotationPoint(0, 0, 0);
-        this.iceCrystal.add3DTexture(-8, -8, 0, 16, 16);
+//        this.iceCrystal.add3DTexture(-8, -8, 0, 16, 16);
         this.iceCrystalJoint = new AdvancedModelRenderer(this, 0, 0);
         this.iceCrystalJoint.setRotationPoint(0, 20, -20);
         this.iceCrystalHand = new AdvancedModelRenderer(this, 0, 0);
-        this.iceCrystalHand.add3DTexture(-8, -8, 0, 16, 16);
+//        this.iceCrystalHand.add3DTexture(-8, -8, 0, 16, 16);
         this.iceCrystalHand.setScale(0.5f, 0.5f, 0.5f);
         this.iceCrystalHand.setRotationPoint(-28.5f, 10, -25.5f);
         
@@ -517,8 +519,8 @@ public class ModelFrostmaw<T extends EntityFrostmaw> extends MowzieEntityModel<T
         headJoint.addChild(mouthSocket);
         rightHand.addChild(crystalSocket);
 
-        eyeLidLeft.isHidden = true;
-        eyeLidRight.isHidden = true;
+        eyeLidLeft.showModel = false;
+        eyeLidRight.showModel = false;
         leftHand.setScale(1.001f, 1.001f, 1.001f);
         rightHand.setScale(1.001f, 1.001f, 1.001f);
         leftFingersJoint.setScale(1.002f, 1.002f, 1.002f);
@@ -527,15 +529,30 @@ public class ModelFrostmaw<T extends EntityFrostmaw> extends MowzieEntityModel<T
         leftThumb.rotationPointZ = 4;
         rightThumb.rotateAngleY = (float) (Math.PI);
         rightThumb.rotationPointZ = 4;
-        iceCrystal.isHidden = true;
+        iceCrystal.showModel = false;
 
         updateDefaultPose();
     }
 
     @Override
-    protected void render(EntityFrostmaw entity, float scale) {
-        this.root.render(scale);
-        this.iceCrystalHand.render(scale);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        this.root.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.iceCrystalHand.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+    }
+
+    @Override
+    public void setRotationAngles(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        resetToDefaultPose();
+        LegArticulator.articulateQuadruped(entity, entity.legSolver, waist, headJoint,
+                legLeft1, legLeft2, legRight1, legRight2, armLeftJoint, armLeftJoint2, armRightJoint, armRightJoint2,
+                0.6f, 0.6f, -0.65f, -0.65f,
+                ageInTicks - entity.ticksExisted
+        );
+        legLeftJoint.rotateAngleX -= waist.rotateAngleX - waist.defaultRotationX;
+        legRightJoint.rotateAngleX -= waist.rotateAngleX - waist.defaultRotationX;
+
+        super.setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+
         mouthSocket.setRotationPoint(0, -10, 8);
 
         if (entity.getAnimation() == EntityFrostmaw.SWIPE_ANIMATION || entity.getAnimation() == EntityFrostmaw.SWIPE_TWICE_ANIMATION || entity.getAnimation() == EntityFrostmaw.ICE_BREATH_ANIMATION || entity.getAnimation() == EntityFrostmaw.ICE_BALL_ANIMATION || !entity.getActive()) {
@@ -552,20 +569,8 @@ public class ModelFrostmaw<T extends EntityFrostmaw> extends MowzieEntityModel<T
         }
     }
 
-    public void setDefaultAngles(EntityFrostmaw entity, float delta) {
-        resetToDefaultPose();
-        LegArticulator.articulateQuadruped(entity, entity.legSolver, waist, headJoint,
-                legLeft1, legLeft2, legRight1, legRight2, armLeftJoint, armLeftJoint2, armRightJoint, armRightJoint2,
-                0.6f, 0.6f, -0.65f, -0.65f,
-                delta
-        );
-        legLeftJoint.rotateAngleX -= waist.rotateAngleX - waist.defaultRotationX;
-        legRightJoint.rotateAngleX -= waist.rotateAngleX - waist.defaultRotationX;
-    }
-
     @Override
     protected void animate(EntityFrostmaw entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
-        this.setDefaultAngles(entity, delta);
         float frame = entity.ticksExisted + delta;
 
         crystalSocket.rotationPointZ += 2;
@@ -1025,8 +1030,8 @@ public class ModelFrostmaw<T extends EntityFrostmaw> extends MowzieEntityModel<T
         }
 
         if (entity.getAnimation() == EntityFrostmaw.ACTIVATE_ANIMATION) {
-            eyeLidLeft.isHidden = true;
-            eyeLidRight.isHidden = true;
+            eyeLidLeft.showModel = false;
+            eyeLidRight.showModel = false;
             animator.setAnimation(EntityFrostmaw.ACTIVATE_ANIMATION);
 
             animator.startKeyframe(0);
@@ -1202,8 +1207,8 @@ public class ModelFrostmaw<T extends EntityFrostmaw> extends MowzieEntityModel<T
             animator.resetKeyframe(8);
         }
         if (entity.getAnimation() == EntityFrostmaw.ACTIVATE_NO_CRYSTAL_ANIMATION) {
-            eyeLidLeft.isHidden = true;
-            eyeLidRight.isHidden = true;
+            eyeLidLeft.showModel = false;
+            eyeLidRight.showModel = false;
             animator.setAnimation(EntityFrostmaw.ACTIVATE_NO_CRYSTAL_ANIMATION);
 
             animator.startKeyframe(0);
@@ -1577,8 +1582,8 @@ public class ModelFrostmaw<T extends EntityFrostmaw> extends MowzieEntityModel<T
             animator.setStaticKeyframe(40);
 
             if (entity.getAnimationTick() > 50) {
-                eyeLidLeft.isHidden = false;
-                eyeLidRight.isHidden = false;
+                eyeLidLeft.showModel = true;
+                eyeLidRight.showModel = true;
             }
         }
 
@@ -1701,13 +1706,13 @@ public class ModelFrostmaw<T extends EntityFrostmaw> extends MowzieEntityModel<T
                 }
             }
             if (entity.getAnimation() != EntityFrostmaw.DIE_ANIMATION) {
-                eyeLidRight.isHidden = true;
-                eyeLidLeft.isHidden = true;
+                eyeLidRight.showModel = false;
+                eyeLidLeft.showModel = false;
             }
         }
         else {
-            eyeLidLeft.isHidden = false;
-            eyeLidRight.isHidden = false;
+            eyeLidLeft.showModel = true;
+            eyeLidRight.showModel = true;
             root.rotateAngleZ += 0.9f;
             root.rotationPointX -= 20;
             chest.rotateAngleZ -= 0.1f;
@@ -1773,13 +1778,13 @@ public class ModelFrostmaw<T extends EntityFrostmaw> extends MowzieEntityModel<T
         iceCrystalHand.rotateAngleY -= frame * 0.05f;
 
         if (entity.getHasCrystal()) {
-            iceCrystal.isHidden = entity.getAnimation() == EntityFrostmaw.ACTIVATE_ANIMATION && entity.getAnimationTick() <= 28;
+            iceCrystal.showModel = entity.getAnimation() != EntityFrostmaw.ACTIVATE_ANIMATION && entity.getAnimationTick() <= 28;
 
-            iceCrystalHand.isHidden = entity.active;
+            iceCrystalHand.showModel = !entity.active;
         }
         else {
-            iceCrystal.isHidden = true;
-            iceCrystalHand.isHidden = true;
+            iceCrystal.showModel = false;
+            iceCrystalHand.showModel = false;
         }
     }
 }

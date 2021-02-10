@@ -3,9 +3,12 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.ExtendedModelRenderer;
 import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
+import com.bobmowzie.mowziesmobs.client.model.tools.dynamics.DynamicChain;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.Vec3d;
 
@@ -117,6 +120,8 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
     public SocketModelRenderer[] tailDynamic;
 
     public ExtendedModelRenderer[] reversePlanes;
+
+    private DynamicChain tail;
 
     public ModelNaga() {
         this.textureWidth = 256;
@@ -656,22 +661,22 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
     }
 
     @Override
-    protected void render(EntityNaga entity, float scale) {
-        this.root.render(scale);
-        if (entity.dc != null) entity.dc.render(scale, tailDynamic);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        this.root.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        if (tail != null) tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha, tailDynamic);
         for (SocketModelRenderer socketModelRenderer : tailOriginal) {
-            socketModelRenderer.isHidden = true;
+            socketModelRenderer.showModel = false;
         }
-        entity.mouthPos[0] = mouthSocket.getWorldPos(entity);
     }
 
     public void setDefaultAngle(EntityNaga entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
+        tail = entity.dc;
         resetToDefaultPose();
         resetToDefaultPoseExtendeds();
 
         modelCorrections();
 
-        float partial = Minecraft.getInstance().getRenderPartialTicks();
+        float partial = delta;
         float frame = entity.ticksExisted + partial;
 
         float hoverAnim = entity.prevHoverAnimFrac + (entity.hoverAnimFrac - entity.prevHoverAnimFrac) * partial;
@@ -1235,6 +1240,8 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
 
             entity.shoulderRot = shoulder1_R.rotateAngleZ;
         }
+
+        entity.mouthPos[0] = mouthSocket.getWorldPos(entity);
     }
 
     private void jawControls() {

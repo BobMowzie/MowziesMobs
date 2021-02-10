@@ -3,7 +3,8 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -229,24 +230,24 @@ public class ModelFoliaath<T extends EntityFoliaath> extends MowzieEntityModel<T
     }
 
     @Override
-    protected void render(EntityFoliaath entity, float scale) {
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         float leafScale = 1.25F;
         bigLeaf2Base.rotationPointY -= 3.5;
         bigLeaf1Base.rotationPointY -= 3.5;
         bigLeaf3Base.rotationPointY -= 3.5;
         bigLeaf4Base.rotationPointY -= 3.5;
-        GlStateManager.pushMatrix();
-        GlStateManager.scalef(leafScale, leafScale, leafScale);
-        bigLeaf2Base.render(scale);
-        bigLeaf1Base.render(scale);
-        bigLeaf3Base.render(scale);
-        bigLeaf4Base.render(scale);
-        GlStateManager.popMatrix();
-        GlStateManager.pushMatrix();
-        GlStateManager.translatef(0, 1.4F - 1.4F * activeProgress, 0);
-        GlStateManager.scalef(activeProgress, activeProgress, activeProgress);
-        stem1Joint.render(scale);
-        GlStateManager.popMatrix();
+        matrixStackIn.push();
+        matrixStackIn.scale(leafScale, leafScale, leafScale);
+        bigLeaf2Base.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        bigLeaf1Base.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        bigLeaf3Base.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        bigLeaf4Base.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        matrixStackIn.pop();
+        matrixStackIn.push();
+        matrixStackIn.translate(0, 1.4F - 1.4F * activeProgress, 0);
+        matrixStackIn.scale(activeProgress, activeProgress, activeProgress);
+        stem1Joint.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        matrixStackIn.pop();
     }
 
     public void setDefaultAngles(EntityFoliaath entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {

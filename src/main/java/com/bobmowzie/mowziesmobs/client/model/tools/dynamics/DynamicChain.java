@@ -1,6 +1,8 @@
 package com.bobmowzie.mowziesmobs.client.model.tools.dynamics;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -74,7 +76,7 @@ public class DynamicChain {
                         gravityAmount * d[i+1] * m[i+1] * (Math.sin(down - r[i].y + down)),
                         0));
                 Vec3d floorVec = new Vec3d(0, 1 * d[i+1] * m[i+1] * (Math.sin(Math.PI/2 - r[i].y + Math.PI/2)), 0);
-                if (useFloor && entity.onGround && p[i+1].y < entity.posY) {
+                if (useFloor && entity.onGround && p[i+1].y < entity.getPosY()) {
                     T[i] = T[i].subtract(floorVec);
                 }
                 T[i] = wrapAngles(T[i].add(gravityVec));
@@ -153,7 +155,7 @@ public class DynamicChain {
             else {
                 d[i] = 1f;
             }
-            chainOrig[i].isHidden = true;
+            chainOrig[i].showModel = false;
         }
 
         for (int i = 0; i < chainOrig.length - 1; i++) {
@@ -211,11 +213,11 @@ public class DynamicChain {
         }
     }
 
-    public void render(float f5, SocketModelRenderer[] dynModelRenderers) {
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha, SocketModelRenderer[] dynModelRenderers) {
         if (dynModelRenderers == null) return;
         for (int i = 0; i < dynModelRenderers.length - 1; i++) {
             if (dynModelRenderers[i] == null) return;
-            dynModelRenderers[i].render(f5);
+            dynModelRenderers[i].render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
     }
 

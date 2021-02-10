@@ -3,6 +3,8 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 import com.bobmowzie.mowziesmobs.client.model.tools.ExtendedModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityLantern;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 /**
  * Created by Josh on 7/24/2018.
@@ -136,10 +138,10 @@ public class ModelLantern<T extends EntityLantern> extends MowzieEntityModel<T> 
     }
 
     @Override
-    protected void render(EntityLantern entity, float scale) {
-        this.bubbles.render(scale);
-        this.center.render(scale);
-        this.body.render(scale);
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        this.bubbles.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.center.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
     public void setDefaultAngles() {

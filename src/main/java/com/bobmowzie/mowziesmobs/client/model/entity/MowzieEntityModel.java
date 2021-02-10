@@ -3,6 +3,8 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 import com.bobmowzie.mowziesmobs.client.model.tools.MMModelAnimator;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
@@ -10,12 +12,10 @@ public abstract class MowzieEntityModel<T extends MowzieEntity> extends Advanced
     protected final MMModelAnimator animator = MMModelAnimator.create();
 
     @Override
-    public final void render(T entity, float limbSwing, float limbSwingAmount, float age, float headYaw, float headPitch, float scale) {
-        T mowzie = this.cast(entity);
-        float delta = age - entity.ticksExisted;
-        this.animator.update(mowzie, delta);
-        this.animate(mowzie, limbSwing, limbSwingAmount, headYaw, headPitch, delta);
-        this.render(mowzie, scale);
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        float delta = ageInTicks - entityIn.ticksExisted;
+        this.animator.update(entityIn, delta);
+        this.animate(entityIn, limbSwing, limbSwingAmount, netHeadYaw, headPitch, delta);
     }
 
     @SuppressWarnings("unchecked")
@@ -24,8 +24,6 @@ public abstract class MowzieEntityModel<T extends MowzieEntity> extends Advanced
     }
 
     protected abstract void animate(T entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta);
-
-    protected abstract void render(T entity, float scale);
 
     protected static void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
         modelRenderer.rotateAngleX = x;

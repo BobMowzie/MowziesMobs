@@ -4,6 +4,9 @@ import com.bobmowzie.mowziesmobs.client.model.tools.BlockModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.entity.Entity;
 
 import java.util.Random;
 
@@ -69,6 +72,8 @@ public class ModelBoulder<T extends EntityBoulder> extends AdvancedModelBase {
     public BlockModelRenderer boulder3block28;
 
     public BlockModelRenderer[] blockModels;
+
+    private EntityBoulder.BoulderSizeEnum size;
 
     public ModelBoulder() {
         this.textureWidth = 16;
@@ -300,59 +305,64 @@ public class ModelBoulder<T extends EntityBoulder> extends AdvancedModelBase {
         updateDefaultPose();
     }
 
-    public void render(EntityBoulder entity, float f5, float delta) {
-        setRotationAngles(entity, f5, delta);
-        EntityBoulder.BoulderSizeEnum size = entity.getBoulderSize();
-        if (size == EntityBoulder.BoulderSizeEnum.SMALL) boulder0block1.render(f5);
-        else  if (size == EntityBoulder.BoulderSizeEnum.MEDIUM) boulder1.render(f5);
-        else  if (size == EntityBoulder.BoulderSizeEnum.LARGE) boulder2.render(f5);
-        else boulder3.render(f5);
+    @Override
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        if (size == EntityBoulder.BoulderSizeEnum.SMALL) boulder0block1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        else  if (size == EntityBoulder.BoulderSizeEnum.MEDIUM) boulder1.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        else  if (size == EntityBoulder.BoulderSizeEnum.LARGE) boulder2.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        else boulder3.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
-    public void setRotationAngles(EntityBoulder entity, float f5, float delta) {
-        resetToDefaultPose();
-        int tick = Math.max(entity.ticksExisted, 0);
-        for (int i = 0; i < blockModels.length; i++) {
-            blockModels[i].setBlockState(entity.getBlock());
-            blockModels[i].setBiome(entity.world.getBiome(entity.getOrigin()));
-            blockModels[i].setEntity(entity);
-            blockModels[i].setOrigin(entity.getOrigin());
+    @Override
+    public void setRotationAngles(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        if (entityIn instanceof EntityBoulder) {
+            EntityBoulder entity = (EntityBoulder) entityIn;
+            size = entity.getBoulderSize();
+            resetToDefaultPose();
+            int tick = Math.max(entity.ticksExisted, 0);
+            float delta = ageInTicks - entity.ticksExisted;
+            for (int i = 0; i < blockModels.length; i++) {
+                blockModels[i].setBlockState(entity.getBlock());
+                blockModels[i].setBiome(entity.world.getBiome(entity.getOrigin()));
+                blockModels[i].setEntity(entity);
+                blockModels[i].setOrigin(entity.getOrigin());
+            }
+            boulder0block1.rotationPointY += -32 * (float) (Math.pow(0.6 * (tick + delta + 1), -3));
+            boulder0block1.rotationPointY += 2 * Math.cos(0.1f * (entity.ticksExisted + entity.animationOffset + delta));
+
+            boulder1.rotationPointY += -32 * (float) (Math.pow(0.2 * (tick + delta + 1), -3));
+            boulder1.rotationPointY += 2.4 * Math.cos(0.07f * (entity.ticksExisted + entity.animationOffset + delta));
+
+            boulder2.rotationPointY += -8 * (float) (Math.pow(0.05 * (tick + delta + 1), -1));
+            boulder2.rotationPointY += 2.8 * Math.cos(0.04f * (entity.ticksExisted + entity.animationOffset + delta));
+
+            boulder3.rotationPointY += -90 + Math.min(90, 1.2 * (tick + delta));
+            boulder3.rotationPointY += 3.2 * Math.cos(0.03f * (entity.ticksExisted + entity.animationOffset + delta));
+
+            boulder3.rotationPointY += 16;
+            boulder3block1.rotationPointY -= 8;
+            boulder3block2.rotationPointY -= 8;
+            boulder3block4.rotationPointX += 8;
+            boulder3block5.rotationPointX -= 8;
+            boulder3block6.rotationPointZ -= 8;
+            boulder3block7.rotationPointZ += 8;
+            boulder3block8.rotationPointX += 6;
+            boulder3block8.rotationPointZ += 6;
+            boulder3block9.rotationPointX += 6;
+            boulder3block9.rotationPointZ -= 6;
+            boulder3block10.rotationPointX -= 6;
+            boulder3block10.rotationPointZ -= 6;
+            boulder3block11.rotationPointX -= 6;
+            boulder3block11.rotationPointZ += 6;
+            boulder3block12.rotationPointY -= 8;
+            boulder3block13.rotationPointZ -= 8;
+            boulder3block14.rotationPointX -= 8;
+            boulder3block15.rotationPointX += 8;
+            boulder3block16.rotationPointZ += 8;
+            boulder3block17.rotationPointY -= 16;
+            boulder3block18.rotationPointY -= 16;
+            boulder3block19.rotationPointY -= 16;
+            boulder3block20.rotationPointY -= 16;
         }
-        boulder0block1.rotationPointY += -32 * (float)(Math.pow(0.6 * (tick + delta + 1), -3));
-        boulder0block1.rotationPointY += 2 * Math.cos(0.1f * (entity.ticksExisted + entity.animationOffset + delta));
-
-        boulder1.rotationPointY += -32 * (float)(Math.pow(0.2 * (tick + delta + 1), -3));
-        boulder1.rotationPointY += 2.4 * Math.cos(0.07f * (entity.ticksExisted + entity.animationOffset + delta));
-
-        boulder2.rotationPointY += -8 * (float)(Math.pow(0.05 * (tick + delta + 1), -1));
-        boulder2.rotationPointY += 2.8 * Math.cos(0.04f * (entity.ticksExisted + entity.animationOffset + delta));
-
-        boulder3.rotationPointY += -90 + Math.min(90, 1.2 * (tick + delta));
-        boulder3.rotationPointY += 3.2 * Math.cos(0.03f * (entity.ticksExisted + entity.animationOffset + delta));
-
-        boulder3.rotationPointY += 16;
-        boulder3block1.rotationPointY -= 8;
-        boulder3block2.rotationPointY -= 8;
-        boulder3block4.rotationPointX += 8;
-        boulder3block5.rotationPointX -= 8;
-        boulder3block6.rotationPointZ -= 8;
-        boulder3block7.rotationPointZ += 8;
-        boulder3block8.rotationPointX += 6;
-        boulder3block8.rotationPointZ += 6;
-        boulder3block9.rotationPointX += 6;
-        boulder3block9.rotationPointZ -= 6;
-        boulder3block10.rotationPointX -= 6;
-        boulder3block10.rotationPointZ -= 6;
-        boulder3block11.rotationPointX -= 6;
-        boulder3block11.rotationPointZ += 6;
-        boulder3block12.rotationPointY -= 8;
-        boulder3block13.rotationPointZ -= 8;
-        boulder3block14.rotationPointX -= 8;
-        boulder3block15.rotationPointX += 8;
-        boulder3block16.rotationPointZ += 8;
-        boulder3block17.rotationPointY -= 16;
-        boulder3block18.rotationPointY -= 16;
-        boulder3block19.rotationPointY -= 16;
-        boulder3block20.rotationPointY -= 16;
     }
 }
