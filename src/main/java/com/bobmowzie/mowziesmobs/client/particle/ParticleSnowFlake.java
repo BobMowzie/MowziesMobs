@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.particle;
 
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.particle.*;
@@ -13,9 +14,6 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import javax.vecmath.Matrix4d;
-import javax.vecmath.Point3d;
 import java.util.Locale;
 
 /**
@@ -58,7 +56,7 @@ public class ParticleSnowFlake extends SpriteTexturedParticle {
         super.tick();
 
         if (swirls) {
-            Vec3d motionVec = new Vec3d(motionX, motionY, motionZ).normalize();
+            /*Vec3d motionVec = new Vec3d(motionX, motionY, motionZ).normalize();
             float yaw = (float) Math.atan2(motionVec.x, motionVec.z);
             float xzDistance = (float) motionVec.length();
             float pitch = (float) Math.atan2(motionVec.y, xzDistance);
@@ -72,7 +70,8 @@ public class ParticleSnowFlake extends SpriteTexturedParticle {
             boxRotateY.transform(point);
             posX += point.x;
             posY += point.y;
-            posZ += point.z;
+            posZ += point.z;*/ // TODO
+
 //            posY += swirlRadius * Math.cos(swirlTick * 0.2) * (Math.sqrt(1 - y * y)) * (Math.sqrt(1 - z * z));
         }
 
@@ -84,12 +83,12 @@ public class ParticleSnowFlake extends SpriteTexturedParticle {
     }
 
     @Override
-    public void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
         float var = (age + partialTicks)/(float)maxAge;
         particleAlpha = (float) (1 - Math.exp(10 * (var - 1)) - Math.pow(2000, -var));
         if (particleAlpha < 0.1) particleAlpha = 0.1f;
 
-        super.renderParticle(buffer, entityIn, partialTicks, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
+        super.renderParticle(buffer, renderInfo, partialTicks);
     }
 
     @OnlyIn(Dist.CLIENT)

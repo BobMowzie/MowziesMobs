@@ -68,10 +68,10 @@ public class DamageUtil {
         Entity entity1 = source.getTrueSource();
         if (entity1 != null)
         {
-            double d1 = entity1.posX - target.posX;
+            double d1 = entity1.getPosX() - target.getPosX();
             double d0;
 
-            for (d0 = entity1.posZ - target.posZ; d1 * d1 + d0 * d0 < 1.0E-4D; d0 = (Math.random() - Math.random()) * 0.01D)
+            for (d0 = entity1.getPosZ() - target.getPosZ(); d1 * d1 + d0 * d0 < 1.0E-4D; d0 = (Math.random() - Math.random()) * 0.01D)
             {
                 d1 = (Math.random() - Math.random()) * 0.01D;
             }

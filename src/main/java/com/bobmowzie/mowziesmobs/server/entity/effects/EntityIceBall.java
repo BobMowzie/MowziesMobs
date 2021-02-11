@@ -69,9 +69,9 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
 
         if (world.isRemote) {
             float scale = 2f;
-            double x = posX;
-            double y = posY + getHeight() / 2;
-            double z = posZ;
+            double x = getPosX();
+            double y = getPosY() + getHeight() / 2;
+            double z = getPosZ();
             double motionX = getMotion().x;
             double motionY = getMotion().y;
             double motionZ = getMotion().z;
@@ -136,13 +136,13 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
                 particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                 float value = rand.nextFloat() * 0.15f;
-                world.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f + value, 0.75f + value, 1f, 10f + rand.nextFloat() * 20f, 40, ParticleCloud.EnumCloudBehavior.GROW, 1f), posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, particlePos.x, particlePos.y, particlePos.z);
+                world.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f + value, 0.75f + value, 1f, 10f + rand.nextFloat() * 20f, 40, ParticleCloud.EnumCloudBehavior.GROW, 1f), getPosX() + particlePos.x, getPosY() + particlePos.y, getPosZ() + particlePos.z, particlePos.x, particlePos.y, particlePos.z);
             }
             for (int i = 0; i < 10; i++) {
                 Vec3d particlePos = new Vec3d(rand.nextFloat() * 0.3, 0, 0);
                 particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
-                world.addParticle(new ParticleSnowFlake.SnowflakeData(40, false), posX + particlePos.x, posY + particlePos.y, posZ + particlePos.z, particlePos.x, particlePos.y, particlePos.z);
+                world.addParticle(new ParticleSnowFlake.SnowflakeData(40, false), getPosX() + particlePos.x, getPosY() + particlePos.y, getPosZ() + particlePos.z, particlePos.x, particlePos.y, particlePos.z);
             }
         }
         remove();

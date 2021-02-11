@@ -31,7 +31,7 @@ public class MessagePlayerSolarBeam {
             final NetworkEvent.Context context = contextSupplier.get();
             final ServerPlayerEntity player = context.getSender();
             context.enqueueWork(() -> {
-                EntitySolarBeam solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM, player.world, player, player.posX, player.posY + 1.2f, player.posZ, (float) ((player.rotationYawHead + 90) * Math.PI / 180), (float) (-player.rotationPitch * Math.PI / 180), 55);
+                EntitySolarBeam solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM, player.world, player, player.getPosX(), player.getPosY() + 1.2f, player.getPosZ(), (float) ((player.rotationYawHead + 90) * Math.PI / 180), (float) (-player.rotationPitch * Math.PI / 180), 55);
                 solarBeam.setHasPlayer(true);
                 player.world.addEntity(solarBeam);
                 player.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 80, 2, false, false));

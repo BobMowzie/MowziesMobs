@@ -1,11 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.particle.util;
 
-import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.*;
 import net.minecraft.util.math.Vec3d;
-
-import javax.vecmath.AxisAngle4d;
-import javax.vecmath.Matrix4d;
-import javax.vecmath.Point3d;
 
 public abstract class ParticleComponent {
     public ParticleComponent() {
@@ -351,34 +347,31 @@ public abstract class ParticleComponent {
         private void apply(AdvancedParticleBase particle, float t) {
             float p = phase.evaluate(t);
             float r = radius.evaluate(t);
-            Vec3d axis;
+            Vector3f axis;
 //            if (faceCamera) {
 //                axis = Particle.cameraViewDir;
 //            }
 //            else {
-                axis = new Vec3d(axisX.evaluate(t), axisY.evaluate(t), axisZ.evaluate(t));
-                axis = axis.normalize();
+                axis = new Vector3f(axisX.evaluate(t), axisY.evaluate(t), axisZ.evaluate(t));
+                axis.normalize();
 //            }
 
-            Matrix4d quat = new Matrix4d();
-            quat.setIdentity();
-            AxisAngle4d axisAngle = new AxisAngle4d(axis.x, axis.y,axis.z, p * (float) Math.PI * 2);
-            quat.setRotation(axisAngle);
-            Vec3d up = new Vec3d(0, 1, 0);
-            Vec3d start = axis.crossProduct(up).normalize();
-            if (axis == up) {
-                start = new Vec3d(1, 0, 0);
+            Quaternion quat = new Quaternion(axis, p * (float) Math.PI * 2, false);
+            Vector3f up = new Vector3f(0, 1, 0);
+            Vector3f start = axis;
+            start.cross(up);
+            start.normalize();
+            if (axis.equals(up)) {
+                start = new Vector3f(1, 0, 0);
             }
-            Point3d newPos = new Point3d(start.x, start.y, start.z);
-            quat.transform(newPos);
-            newPos.scale(r);
+            Vector3f newPos = start;
+            newPos.transform(quat);
+            newPos.mul(r);
 
             if (location.length > 0 && location[0] != null) {
-                newPos.x += location[0].x;
-                newPos.y += location[0].y;
-                newPos.z += location[0].z;
+                newPos.add((float)location[0].x, (float)location[0].y, (float)location[0].z);
             }
-            particle.setPosition(newPos.x, newPos.y, newPos.z);
+            particle.setPosition(newPos.getX(), newPos.getY(), newPos.getZ());
         }
     }
 

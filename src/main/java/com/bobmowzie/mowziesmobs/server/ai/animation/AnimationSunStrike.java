@@ -43,9 +43,9 @@ public class AnimationSunStrike<T extends MowzieEntity & IAnimatedEntity> extend
 //            prevZ = entityTarget.posZ;
 //        }
         if (entity.getAnimationTick() == 7) {
-            double x = entityTarget.posX;
-            y = MathHelper.floor(entityTarget.posY - 1);
-            double z = entityTarget.posZ;
+            double x = entityTarget.getPosX();
+            y = MathHelper.floor(entityTarget.getPosY() - 1);
+            double z = entityTarget.getPosZ();
             double vx = (x - prevX) / 9;
             double vz = (z - prevZ) / 9;
             int t = EntitySunstrike.STRIKE_EXPLOSION + 3;

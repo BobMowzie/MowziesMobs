@@ -57,8 +57,8 @@ public class BarakoaVillageStructure extends MowzieStructure {
 
     public static class Start extends StructureStart
     {
-        public Start(Structure<?> structureIn, int chunkX, int chunkZ, Biome biomeIn, MutableBoundingBox boundsIn, int referenceIn, long seed) {
-            super(structureIn, chunkX, chunkZ, biomeIn, boundsIn, referenceIn, seed);
+        public Start(Structure<?> structureIn, int chunkX, int chunkZ, MutableBoundingBox boundsIn, int referenceIn, long seed) {
+            super(structureIn, chunkX, chunkZ, boundsIn, referenceIn, seed);
         }
 
         @Override
@@ -170,7 +170,7 @@ public class BarakoaVillageStructure extends MowzieStructure {
         }
 
         private BlockPos posToSurface(ChunkGenerator<?> generator, BlockPos pos) {
-            int surfaceY = generator.func_222531_c(pos.getX(), pos.getZ(), Heightmap.Type.WORLD_SURFACE_WG);
+            int surfaceY = generator.getHeight(pos.getX(), pos.getZ(), Heightmap.Type.WORLD_SURFACE_WG);
             return new BlockPos(pos.getX(), surfaceY, pos.getZ());
         }
     }

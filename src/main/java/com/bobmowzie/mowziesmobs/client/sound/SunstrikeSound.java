@@ -13,9 +13,9 @@ public class SunstrikeSound extends TickableSound {
         this.sunstrike = sunstrike;
         volume = 1.5F;
         pitch = 1.1F;
-        x = (float) sunstrike.posX;
-        y = (float) sunstrike.posY;
-        z = (float) sunstrike.posZ;
+        x = (float) sunstrike.getPosX();
+        y = (float) sunstrike.getPosY();
+        z = (float) sunstrike.getPosZ();
     }
 
     @Override

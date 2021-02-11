@@ -69,9 +69,9 @@ public final class MessageBlackPinkInYourArea {
                             .with(BlockGrottol.VARIANT, BlockGrottol.Variant.BLACK_PINK);
                     BlockPos pos = new BlockPos(minecart);
                     final float scale = 0.75F;
-                    double x = minecart.posX,
-                            y = minecart.posY + 0.375F + 0.5F + (minecart.getDefaultDisplayTileOffset() - 8) / 16.0F * scale,
-                            z = minecart.posZ;
+                    double x = minecart.getPosX(),
+                            y = minecart.getPosY() + 0.375F + 0.5F + (minecart.getDefaultDisplayTileOffset() - 8) / 16.0F * scale,
+                            z = minecart.getPosZ();
                     SoundType sound = state.getBlock().getSoundType(state, world, pos, minecart);
                     world.playSound(
                             x, y, z,

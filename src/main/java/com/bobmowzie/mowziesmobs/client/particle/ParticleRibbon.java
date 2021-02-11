@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.client.particle.util.ParticleRotation;
 import com.bobmowzie.mowziesmobs.client.particle.util.RibbonComponent.PropertyOverLength;
 import com.bobmowzie.mowziesmobs.client.particle.util.RibbonComponent.PropertyOverLength.EnumRibbonProperty;
 import com.bobmowzie.mowziesmobs.client.particle.util.RibbonParticleData;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
@@ -16,10 +17,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import javax.vecmath.Matrix4d;
-import javax.vecmath.Point3d;
-import javax.vecmath.Vector3d;
 
 public class ParticleRibbon extends AdvancedParticleBase {
     public Vec3d[] positions;
@@ -45,6 +42,11 @@ public class ParticleRibbon extends AdvancedParticleBase {
     }
 
     @Override
+    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
+        super.renderParticle(buffer, renderInfo, partialTicks);
+    }
+
+    /*@Override
     public void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         particleAlpha = prevAlpha + (alpha - prevAlpha) * partialTicks;
         if (particleAlpha < 0.01) particleAlpha = 0.01f;
@@ -185,7 +187,7 @@ public class ParticleRibbon extends AdvancedParticleBase {
         for (ParticleComponent component : components) {
             component.postRender(this, buffer, partialTicks, j, k);
         }
-    }
+    }*/
 
     @OnlyIn(Dist.CLIENT)
     public static final class Factory implements IParticleFactory<RibbonParticleData> {

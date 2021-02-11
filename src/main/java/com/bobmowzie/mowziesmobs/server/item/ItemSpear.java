@@ -48,7 +48,7 @@ public class ItemSpear extends ToolItem {
 
     public static LivingEntity raytraceEntities(World world, PlayerEntity player, double range) {
         ItemSpear.HitResult result = new ItemSpear.HitResult();
-        Vec3d pos = new Vec3d(player.posX, player.posY + player.getEyeHeight(), player.posZ);
+        Vec3d pos = new Vec3d(player.getPosX(), player.getPosY() + player.getEyeHeight(), player.getPosZ());
         Vec3d segment = player.getLookVec();
         segment = pos.add(segment.x * range, segment.y * range, segment.z * range);
         result.setBlockHit(world.rayTraceBlocks(new RayTraceContext(pos, segment, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, player)));

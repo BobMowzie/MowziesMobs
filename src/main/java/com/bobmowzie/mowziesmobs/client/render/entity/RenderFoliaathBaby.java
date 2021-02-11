@@ -23,7 +23,7 @@ public class RenderFoliaathBaby extends MobRenderer<EntityBabyFoliaath, ModelFol
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(EntityBabyFoliaath entity) {
+    public ResourceLocation getEntityTexture(EntityBabyFoliaath entity) {
         return RenderFoliaathBaby.TEXTURE;
     }
 }

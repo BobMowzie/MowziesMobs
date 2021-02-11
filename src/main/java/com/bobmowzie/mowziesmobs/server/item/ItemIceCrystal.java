@@ -40,7 +40,7 @@ public class ItemIceCrystal extends Item {
             if (stack.getDamage() + 20 < stack.getMaxDamage() || ConfigHandler.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable.get()) {
                 if (!playerCapability.isUsingIceBreath()) {
                     playerCapability.setIcebreath(new EntityIceBreath(EntityHandler.ICE_BREATH, worldIn, playerIn));
-                    playerCapability.getIcebreath().setPositionAndRotation(playerIn.posX, playerIn.posY + playerIn.getEyeHeight() - 0.5f, playerIn.posZ, playerIn.rotationYaw, playerIn.rotationPitch);
+                    playerCapability.getIcebreath().setPositionAndRotation(playerIn.getPosX(), playerIn.getPosY() + playerIn.getEyeHeight() - 0.5f, playerIn.getPosZ(), playerIn.rotationYaw, playerIn.rotationPitch);
                     if (!worldIn.isRemote) worldIn.addEntity(playerCapability.getIcebreath());
                     playerCapability.setUsingIceBreath(true);
                 }

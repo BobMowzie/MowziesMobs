@@ -3,8 +3,12 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -36,21 +40,21 @@ public class RenderBarako extends MobRenderer<EntityBarako, ModelBarako<EntityBa
     }
 
     @Override
-    public void doRender(EntityBarako barako, double x, double y, double z, float yaw, float delta) {
+    public void render(EntityBarako barako, float entityYaw, float delta, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         if (barako.getAnimation() == EntityBarako.ATTACK_ANIMATION && barako.getAnimationTick() > BURST_START_FRAME && barako.getAnimationTick() < BURST_START_FRAME + BURST_FRAME_COUNT - 1) {
             GlStateManager.pushMatrix();
-            GlStateManager.translated(x, y + 1.1, z);
+//            GlStateManager.translated(x, y + 1.1, z);
             setupGL();
-            bindTexture(RenderSunstrike.TEXTURE);
-            GlStateManager.rotatef(-renderManager.playerViewY, 0, 1, 0);
-            GlStateManager.rotatef(renderManager.playerViewX, 1, 0, 0);
-            GlStateManager.disableDepthTest();
+            Minecraft.getInstance().getTextureManager().bindTexture(RenderSunstrike.TEXTURE);
+            RenderSystem.rotatef(-renderManager.getCameraOrientation().getY(), 0, 1, 0);
+            RenderSystem.rotatef(renderManager.getCameraOrientation().getX(), 1, 0, 0);
+            RenderSystem.disableDepthTest();
             drawBurst(barako.getAnimationTick() - BURST_START_FRAME + delta);
-            GlStateManager.enableDepthTest();
+            RenderSystem.enableDepthTest();
             revertGL();
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         }
-        super.doRender(barako, x, y, z, yaw, delta);
+        super.render(barako, entityYaw, delta, matrixStackIn, bufferIn, packedLightIn);
     }
 
     private void drawBurst(float tick) {
@@ -61,34 +65,34 @@ public class RenderBarako extends MobRenderer<EntityBarako, ModelBarako<EntityBa
         if (frame > BURST_FRAME_COUNT) {
             frame = BURST_FRAME_COUNT;
         }
-        double minU = 0.0625 * frame;
-        double maxU = minU + 0.0625;
-        double minV = 0.5;
-        double maxV = minV + 0.5;
-        double offset = 0.219 * (frame % 2);
+        float minU = 0.0625f * frame;
+        float maxU = minU + 0.0625f;
+        float minV = 0.5f;
+        float maxV = minV + 0.5f;
+        float offset = 0.219f * (frame % 2);
         Tessellator t = Tessellator.getInstance();
         BufferBuilder buf = t.getBuffer();
-        buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
+        buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP);
         float opacity = (tick < 8) ? 0.8f : 0.4f;
         buf.pos(-BURST_RADIUS + offset, -BURST_RADIUS + offset, 0).tex(minU, minV).lightmap(0, 240).color(1, 1, 1, opacity).endVertex();
         buf.pos(-BURST_RADIUS + offset, BURST_RADIUS + offset, 0).tex(minU, maxV).lightmap(0, 240).color(1, 1, 1, opacity).endVertex();
         buf.pos(BURST_RADIUS + offset, BURST_RADIUS + offset, 0).tex(maxU, maxV).lightmap(0, 240).color(1, 1, 1, opacity).endVertex();
         buf.pos(BURST_RADIUS + offset, -BURST_RADIUS + offset, 0).tex(maxU, minV).lightmap(0, 240).color(1, 1, 1, opacity).endVertex();
-        GlStateManager.disableDepthTest();
+        RenderSystem.disableDepthTest();
         t.draw();
-        GlStateManager.enableDepthTest();
+        RenderSystem.enableDepthTest();
     }
 
     private void setupGL() {
-        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        GlStateManager.enableBlend();
-        GlStateManager.disableLighting();
-        GlStateManager.alphaFunc(GL11.GL_GREATER, 0);
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.enableBlend();
+        RenderSystem.disableLighting();
+        RenderSystem.alphaFunc(GL11.GL_GREATER, 0);
     }
 
     private void revertGL() {
-        GlStateManager.disableBlend();
-        GlStateManager.enableLighting();
-        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+        RenderSystem.disableBlend();
+        RenderSystem.enableLighting();
+        RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
     }
 }

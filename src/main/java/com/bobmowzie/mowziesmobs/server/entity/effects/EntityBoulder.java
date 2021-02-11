@@ -170,14 +170,14 @@ public class EntityBoulder extends Entity {
         if (storedBlock == null) storedBlock = getBlock();
         if (getShouldExplode()) explode();
         if (!travelling) {
-            setBoundingBox(getType().func_220328_a(posX, posY, posZ).expand(0, -0.5, 0));
+            setBoundingBox(getType().getBoundingBoxWithSizeApplied(getPosX(), getPosY(), getPosZ()).expand(0, -0.5, 0));
         }
         super.tick();
         move(MoverType.SELF, getMotion());
         if (ridingEntities != null) ridingEntities.clear();
         List<Entity> onTopOfEntities = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().contract(0, getHeight() - 1, 0).offset(new Vec3d(0, getHeight() - 0.5, 0)).grow(0.6,0.5,0.6));
         for (Entity entity : onTopOfEntities) {
-            if (entity != null && entity.canBeCollidedWith() && !(entity instanceof EntityBoulder) && entity.posY >= this.posY + 0.2) ridingEntities.add(entity);
+            if (entity != null && entity.canBeCollidedWith() && !(entity instanceof EntityBoulder) && entity.getPosY() >= this.getPosY() + 0.2) ridingEntities.add(entity);
         }
         if (travelling){
             for (Entity entity : ridingEntities) {
@@ -186,7 +186,7 @@ public class EntityBoulder extends Entity {
         }
         if (boulderSize == BoulderSizeEnum.HUGE && ticksExisted < finishedRisingTick) {
             float f = this.getWidth() / 2.0F;
-            AxisAlignedBB aabb = new AxisAlignedBB(posX - (double)f, posY - 0.5, posZ - (double)f, posX + (double)f, posY + Math.min(ticksExisted/(float)finishedRisingTick * 3.5f, 3.5f), posZ + (double)f);
+            AxisAlignedBB aabb = new AxisAlignedBB(getPosX() - (double)f, getPosY() - 0.5, getPosZ() - (double)f, getPosX() + (double)f, getPosY() + Math.min(ticksExisted/(float)finishedRisingTick * 3.5f, 3.5f), getPosZ() + (double)f);
             setBoundingBox(aabb);
         }
 
@@ -226,7 +226,7 @@ public class EntityBoulder extends Entity {
             for (int i = 0; i < 20 * getWidth(); i++) {
                 Vec3d particlePos = new Vec3d(rand.nextFloat() * 1.3 * getWidth(), 0, 0);
                 particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
-                world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, storedBlock), posX + particlePos.x, posY - 1, posZ + particlePos.z, particlePos.x, 2, particlePos.z);
+                world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, storedBlock), getPosX() + particlePos.x, getPosY() - 1, getPosZ() + particlePos.z, particlePos.x, 2, particlePos.z);
             }
             if (boulderSize == BoulderSizeEnum.SMALL) {
                 playSound(MMSounds.EFFECT_GEOMANCY_SMALL_CRASH.get(), 1.5f, 1.3f);
@@ -242,7 +242,7 @@ public class EntityBoulder extends Entity {
                 playSound(MMSounds.EFFECT_GEOMANCY_RUMBLE_1.get(), 2, 0.8f);
             }
             if (world.isRemote) {
-                AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING2.get(), posX, posY - 0.9f, posZ, 0, 0, 0, false, 0, Math.PI / 2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, (int) (5 + 2 * getWidth()), true, new ParticleComponent[]{
+                AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING2.get(), getPosX(), getPosY() - 0.9f, getPosZ(), 0, 0, 0, false, 0, Math.PI / 2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, (int) (5 + 2 * getWidth()), true, new ParticleComponent[]{
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(0f, (1.0f + 0.5f * getWidth()) * 10f), false)
                 });
@@ -263,7 +263,7 @@ public class EntityBoulder extends Entity {
                 float offsetY;
                 if (boulderSize == BoulderSizeEnum.HUGE && ticksExisted < finishedRisingTick) offsetY = (float) (rand.nextFloat() * (getHeight()-1) - getHeight() * (finishedRisingTick - ticksExisted)/finishedRisingTick);
                 else offsetY = (float) (rand.nextFloat() * (getHeight()-1));
-                world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, storedBlock), posX + particlePos.x, posY + offsetY, posZ + particlePos.z, 0, -1, 0);
+                world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, storedBlock), getPosX() + particlePos.x, getPosY() + offsetY, getPosZ() + particlePos.z, 0, -1, 0);
             }
         }
         int newDeathTime = getDeathTime() - 1;
@@ -277,7 +277,7 @@ public class EntityBoulder extends Entity {
             Vec3d particlePos = new Vec3d(rand.nextFloat() * 0.7 * getWidth(), 0, 0);
             particlePos = particlePos.rotateYaw((float)(rand.nextFloat() * 2 * Math.PI));
             particlePos = particlePos.rotatePitch((float)(rand.nextFloat() * 2 * Math.PI));
-            world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, storedBlock), posX + particlePos.x, posY + 0.5 + particlePos.y, posZ + particlePos.z, particlePos.x, particlePos.y, particlePos.z);
+            world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, storedBlock), getPosX() + particlePos.x, getPosY() + 0.5 + particlePos.y, getPosZ() + particlePos.z, particlePos.x, particlePos.y, particlePos.z);
         }
         if (boulderSize == BoulderSizeEnum.SMALL) {
             playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL.get(), 1.5f, 0.9f);
@@ -297,7 +297,7 @@ public class EntityBoulder extends Entity {
                     particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                     particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                     particlePos = particlePos.add(new Vec3d(0, getHeight() / 4, 0));
-                    ParticleFallingBlock.spawnFallingBlock(world, posX + particlePos.x, posY + 0.5 + particlePos.y, posZ + particlePos.z, 10.f, 90, 1, (float) particlePos.x * 0.3f, 0.2f + (float) rand.nextFloat() * 0.6f, (float) particlePos.z * 0.3f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, getBlock());
+                    ParticleFallingBlock.spawnFallingBlock(world, getPosX() + particlePos.x, getPosY() + 0.5 + particlePos.y, getPosZ() + particlePos.z, 10.f, 90, 1, (float) particlePos.x * 0.3f, 0.2f + (float) rand.nextFloat() * 0.6f, (float) particlePos.z * 0.3f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, getBlock());
                 }
             }
         }
@@ -311,7 +311,7 @@ public class EntityBoulder extends Entity {
                     particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                     particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                     particlePos = particlePos.add(new Vec3d(0, getHeight() / 4, 0));
-                    ParticleFallingBlock.spawnFallingBlock(world, posX + particlePos.x, posY + 0.5 + particlePos.y, posZ + particlePos.z, 10.f, 70, 1, (float) particlePos.x * 0.3f, 0.2f + (float) rand.nextFloat() * 0.6f, (float) particlePos.z * 0.3f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, getBlock());
+                    ParticleFallingBlock.spawnFallingBlock(world, getPosX() + particlePos.x, getPosY() + 0.5 + particlePos.y, getPosZ() + particlePos.z, 10.f, 70, 1, (float) particlePos.x * 0.3f, 0.2f + (float) rand.nextFloat() * 0.6f, (float) particlePos.z * 0.3f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, getBlock());
                 }
             }
         }
@@ -406,8 +406,8 @@ public class EntityBoulder extends Entity {
             }
             else if (entityIn instanceof EntityBoulder && ((EntityBoulder) entityIn).travelling) {
                 EntityBoulder boulder = (EntityBoulder)entityIn;
-                Vec3d thisPos = new Vec3d(posX, posY, posZ);
-                Vec3d boulderPos = new Vec3d(boulder.posX, boulder.posY, boulder.posZ);
+                Vec3d thisPos = getPositionVec();
+                Vec3d boulderPos = boulder.getPositionVec();
                 Vec3d velVec = thisPos.subtract(boulderPos).normalize();
                 setMotion(velVec.scale(speed * 0.5));
             }
@@ -416,7 +416,7 @@ public class EntityBoulder extends Entity {
             }
             if (!travelling) setDeathTime(60);
             travelling = true;
-            setBoundingBox(getType().func_220328_a(posX, posY, posZ));
+            setBoundingBox(getType().getBoundingBoxWithSizeApplied(getPosX(), getPosY(), getPosZ()));
 
             if (boulderSize == BoulderSizeEnum.SMALL) {
                 playSound(MMSounds.EFFECT_GEOMANCY_HIT_SMALL.get(), 1.5f, 1.3f);
@@ -437,7 +437,7 @@ public class EntityBoulder extends Entity {
 
             Vec3d ringOffset = getMotion().scale(-1).normalize();
             ParticleRotation.OrientVector rotation = new ParticleRotation.OrientVector(ringOffset);
-            AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING2.get(), (float) posX + (float) ringOffset.x, (float) posY + 0.5f + (float) ringOffset.y, (float) posZ + (float) ringOffset.z, 0, 0, 0, rotation, 3.5F, 0.83f, 1, 0.39f, 1, 1, (int) (5 + 2 * getWidth()), true, new ParticleComponent[]{
+            AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING2.get(), (float) getPosX() + (float) ringOffset.x, (float) getPosY() + 0.5f + (float) ringOffset.y, (float) getPosZ() + (float) ringOffset.z, 0, 0, 0, rotation, 3.5F, 0.83f, 1, 0.39f, 1, 1, (int) (5 + 2 * getWidth()), true, new ParticleComponent[]{
                     new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0.7f, 0f), false),
                     new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(0f, (1.0f + 0.5f * getWidth()) * 8f), false)
             });
@@ -460,7 +460,7 @@ public class EntityBoulder extends Entity {
 
 
     public double getAngleBetweenEntities(Entity first, Entity second) {
-        return Math.atan2(second.posZ - first.posZ, second.posX - first.posX) * (180 / Math.PI) + 90;
+        return Math.atan2(second.getPosZ() - first.getPosZ(), second.getPosX() - first.getPosX()) * (180 / Math.PI) + 90;
     }
 
     @Override

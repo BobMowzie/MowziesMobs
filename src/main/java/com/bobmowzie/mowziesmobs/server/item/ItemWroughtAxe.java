@@ -53,7 +53,7 @@ public class ItemWroughtAxe extends AxeItem {
             if (playerCapability.getUntilAxeSwing() <= 0) {
                 boolean verticalAttack = player.isSneaking() && player.onGround;
                 EntityAxeAttack axeAttack = new EntityAxeAttack(EntityHandler.AXE_ATTACK, world, player, verticalAttack);
-                axeAttack.setPositionAndRotation(player.posX, player.posY, player.posZ, player.rotationYaw, player.rotationPitch);
+                axeAttack.setPositionAndRotation(player.getPosX(), player.getPosY(), player.getPosZ(), player.rotationYaw, player.rotationPitch);
                 world.addEntity(axeAttack);
                 playerCapability.setVerticalSwing(verticalAttack);
                 playerCapability.setUntilAxeSwing(PlayerCapability.SWING_COOLDOWN);

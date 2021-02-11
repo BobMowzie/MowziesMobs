@@ -3,8 +3,12 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelAxeAttack;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,20 +28,19 @@ public class RenderAxeAttack extends EntityRenderer<EntityAxeAttack> {
     }
 
     @Override
-    protected ResourceLocation getEntityTexture(EntityAxeAttack entity) {
+    public ResourceLocation getEntityTexture(EntityAxeAttack entity) {
         return TEXTURE;
     }
 
     @Override
-    public void doRender(EntityAxeAttack entity, double x, double y, double z, float yaw, float delta) {
+    public void render(EntityAxeAttack entity, float entityYaw, float delta, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         PlayerEntity player = Minecraft.getInstance().player;
         if (player == entity.getCaster() && Minecraft.getInstance().gameSettings.thirdPersonView == 0) {
-            GlStateManager.pushMatrix();
-            GlStateManager.translated(x, y, z);
-            GlStateManager.rotatef(yaw, 0, -1, 0);
-            bindTexture(TEXTURE);
-            model.render(entity, 0.0625F, delta);
-            GlStateManager.popMatrix();
+            RenderSystem.pushMatrix();
+            RenderSystem.rotatef(entityYaw, 0, -1, 0);
+            Minecraft.getInstance().getTextureManager().bindTexture(TEXTURE);
+            model.render(matrixStackIn, (IVertexBuilder) bufferIn, packedLightIn, 0, 1, 1, 1, 1);
+            RenderSystem.popMatrix();
         }
     }
 }

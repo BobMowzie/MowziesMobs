@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -11,9 +12,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.apache.commons.lang3.tuple.Pair;
-
-import javax.vecmath.Matrix4f;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -46,6 +44,11 @@ public class MMModels {
             }
 
             @Override
+            public boolean func_230044_c_() {
+                return false;
+            }
+
+            @Override
             public boolean isBuiltInRenderer() {
                 return axeBakedModelDefault.isBuiltInRenderer();
             }
@@ -61,13 +64,13 @@ public class MMModels {
             }
 
             @Override
-            public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
+            public IBakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
                 IBakedModel modelToUse = axeBakedModelDefault;
                 if (cameraTransformType == ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND || cameraTransformType == ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND
                         || cameraTransformType == ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND || cameraTransformType == ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND) {
                     modelToUse = axeBakedModelHand;
                 }
-                return ForgeHooksClient.handlePerspective(modelToUse, cameraTransformType);
+                return ForgeHooksClient.handlePerspective(modelToUse, cameraTransformType, mat);
             }
         };
         map.put(axeModelInventory, axeModelWrapper);
@@ -96,6 +99,11 @@ public class MMModels {
                 }
 
                 @Override
+                public boolean func_230044_c_() {
+                    return false;
+                }
+
+                @Override
                 public boolean isBuiltInRenderer() {
                     return maskBakedModelDefault.isBuiltInRenderer();
                 }
@@ -111,12 +119,12 @@ public class MMModels {
                 }
 
                 @Override
-                public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType) {
+                public IBakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat) {
                     IBakedModel modelToUse = maskBakedModelDefault;
                     if (cameraTransformType == ItemCameraTransforms.TransformType.FIXED) {
                         modelToUse = maskBakedModelFrame;
                     }
-                    return ForgeHooksClient.handlePerspective(modelToUse, cameraTransformType);
+                    return ForgeHooksClient.handlePerspective(modelToUse, cameraTransformType, mat);
                 }
             };
 

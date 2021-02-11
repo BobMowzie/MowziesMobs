@@ -62,13 +62,8 @@ public class WroughtnautChamberStructure extends MowzieStructure {
 
     public static class Start extends StructureStart
     {
-        public Start(Structure<?> structureIn, int chunkX, int chunkZ, Biome biomeIn, MutableBoundingBox boundsIn, int referenceIn, long seed) {
-            super(structureIn, chunkX, chunkZ, biomeIn, boundsIn, referenceIn, seed);
-        }
-
-        @Override
-        public void generateStructure(IWorld worldIn, Random rand, MutableBoundingBox structurebb, ChunkPos pos) {
-            super.generateStructure(worldIn, rand, structurebb, pos);
+        public Start(Structure<?> structureIn, int chunkX, int chunkZ, MutableBoundingBox boundsIn, int referenceIn, long seed) {
+            super(structureIn, chunkX, chunkZ, boundsIn, referenceIn, seed);
         }
 
         @Override
@@ -84,7 +79,7 @@ public class WroughtnautChamberStructure extends MowzieStructure {
             //Turns the chunk coordinates into actual coordinates we can use. (Gets center of that chunk)
             int x = (chunkX << 4) + 7;
             int z = (chunkZ << 4) + 7;
-            int surfaceY = generator.func_222531_c(x, z, Heightmap.Type.WORLD_SURFACE_WG);
+            int surfaceY = generator.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG);
             BlockPos pos = new BlockPos(x, surfaceY, z);
 
             //Now adds the structure pieces to this.components with all details such as where each part goes

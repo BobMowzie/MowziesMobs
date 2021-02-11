@@ -234,7 +234,7 @@ public class PlayerCapability {
                     EntityBarakoanToPlayer barakoan = pack.get(i);
                     barakoan.index = i;
                     if (barakoan.getAttackTarget() == null && barakoan.getAnimation() != EntityBarakoanToPlayer.DEACTIVATE_ANIMATION) {
-                        barakoan.getNavigator().tryMoveToXYZ(player.posX + tribePackRadius * MathHelper.cos(theta * i), player.posY, player.posZ + tribePackRadius * MathHelper.sin(theta * i), 0.45);
+                        barakoan.getNavigator().tryMoveToXYZ(player.getPosX() + tribePackRadius * MathHelper.cos(theta * i), player.getPosY(), player.getPosZ() + tribePackRadius * MathHelper.sin(theta * i), 0.45);
                         if (player.getDistance(barakoan) > 20 && player.onGround) {
                             tryTeleportBarakoan(player, barakoan);
                         }
@@ -303,8 +303,8 @@ public class PlayerCapability {
         }
 
         private void tryTeleportBarakoan(PlayerEntity player, EntityBarakoanToPlayer barakoan) {
-            int x = MathHelper.floor(player.posX) - 2;
-            int z = MathHelper.floor(player.posZ) - 2;
+            int x = MathHelper.floor(player.getPosX()) - 2;
+            int z = MathHelper.floor(player.getPosZ()) - 2;
             int y = MathHelper.floor(player.getBoundingBox().minY);
 
             for (int l = 0; l <= 4; ++l) {

@@ -39,7 +39,7 @@ public class MMPathNavigateGround extends GroundPathNavigator {
         }
         final Vec3d base = entityPos.add(-this.entity.getWidth() * 0.5F, 0.0F, -this.entity.getWidth() * 0.5F);
         final Vec3d max = base.add(this.entity.getWidth(), this.entity.getHeight(), this.entity.getWidth());
-        if (this.tryShortcut(path, new Vec3d(this.entity.posX, this.entity.posY, this.entity.posZ), pathLength, base, max)) {
+        if (this.tryShortcut(path, new Vec3d(this.entity.getPosX(), this.entity.getPosY(), this.entity.getPosZ()), pathLength, base, max)) {
             if (this.isAt(path, 0.5F) || this.atElevationChange(path) && this.isAt(path, this.entity.getWidth() * 0.5F)) {
                 path.setCurrentPathIndex(path.getCurrentPathIndex() + 1);
             }
@@ -49,9 +49,9 @@ public class MMPathNavigateGround extends GroundPathNavigator {
 
     private boolean isAt(Path path, float threshold) {
         final Vec3d pathPos = path.getPosition(this.entity);
-        return MathHelper.abs((float) (this.entity.posX - pathPos.x)) < threshold &&
-                MathHelper.abs((float) (this.entity.posZ - pathPos.z)) < threshold &&
-                Math.abs(this.entity.posY - pathPos.y) < 1.0D;
+        return MathHelper.abs((float) (this.entity.getPosX() - pathPos.x)) < threshold &&
+                MathHelper.abs((float) (this.entity.getPosZ() - pathPos.z)) < threshold &&
+                Math.abs(this.entity.getPosY() - pathPos.y) < 1.0D;
     }
 
     private boolean atElevationChange(Path path) {
@@ -109,7 +109,7 @@ public class MMPathNavigateGround extends GroundPathNavigator {
             float dist = dir ? (ldi[i] + 1 - lead) : (lead - ldi[i]);
             tNext[i] = tDelta[i] < Float.POSITIVE_INFINITY ? tDelta[i] * dist : Float.POSITIVE_INFINITY;
         }
-        final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+        final BlockPos.Mutable pos = new BlockPos.Mutable();
         do {
             // stepForward
             int axis = (tNext[0] < tNext[1]) ?

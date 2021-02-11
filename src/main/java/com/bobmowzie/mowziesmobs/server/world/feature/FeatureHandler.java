@@ -3,17 +3,12 @@ package com.bobmowzie.mowziesmobs.server.world.feature;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.spawn.SpawnHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.structure.*;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.*;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
-import net.minecraft.world.gen.feature.structure.PillagerOutpostPieces;
 import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.placement.CaveEdgeConfig;
-import net.minecraft.world.gen.placement.DungeonRoomConfig;
 import net.minecraft.world.gen.placement.IPlacementConfig;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraftforge.event.RegistryEvent;
@@ -60,22 +55,22 @@ public class FeatureHandler {
 
     public static void addStructureGeneration() {
         for (Biome biome : ForgeRegistries.BIOMES) {
+            ConfiguredFeature wroughtnautChamberFeature = WROUGHTNAUT_CHAMBER.withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG);
             if (SpawnHandler.FERROUS_WROUGHTNAUT_BIOMES.contains(biome)) {
-                biome.addStructure(WROUGHTNAUT_CHAMBER, IFeatureConfig.NO_FEATURE_CONFIG);
+                biome.addStructure(wroughtnautChamberFeature);
             }
-            ConfiguredFeature wroughtnautChamberFeature = Biome.createDecoratedFeature(WROUGHTNAUT_CHAMBER, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG);
             biome.addFeature(GenerationStage.Decoration.UNDERGROUND_STRUCTURES, wroughtnautChamberFeature);
 
+            ConfiguredFeature barakoaVillageFeature = BARAKOA_VILLAGE.withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG);
             if (SpawnHandler.BARAKO_BIOMES.contains(biome)) {
-                biome.addStructure(BARAKOA_VILLAGE, IFeatureConfig.NO_FEATURE_CONFIG);
+                biome.addStructure(barakoaVillageFeature);
             }
-            ConfiguredFeature barakoaVillageFeature = Biome.createDecoratedFeature(BARAKOA_VILLAGE, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG);
             biome.addFeature(GenerationStage.Decoration.SURFACE_STRUCTURES, barakoaVillageFeature);
 
+            ConfiguredFeature frostmawFeature = FROSTMAW.withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG);
             if (SpawnHandler.FROSTMAW_BIOMES.contains(biome)) {
-                biome.addStructure(FROSTMAW, IFeatureConfig.NO_FEATURE_CONFIG);
+                biome.addStructure(frostmawFeature);
             }
-            ConfiguredFeature frostmawFeature = Biome.createDecoratedFeature(FROSTMAW, IFeatureConfig.NO_FEATURE_CONFIG, Placement.NOPE, IPlacementConfig.NO_PLACEMENT_CONFIG);
             biome.addFeature(GenerationStage.Decoration.SURFACE_STRUCTURES, frostmawFeature);
         }
     }

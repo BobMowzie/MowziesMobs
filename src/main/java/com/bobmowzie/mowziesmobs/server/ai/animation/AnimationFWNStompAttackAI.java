@@ -49,9 +49,9 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                 double vz = Math.sin(facingAngle) * infront;
                 double perpX = Math.cos(perpFacing);
                 double perpZ = Math.sin(perpFacing);
-                double fx = entity.posX + vx + perpX * side;
+                double fx = entity.getPosX() + vx + perpX * side;
                 double fy = entity.getBoundingBox().minY + 0.1;
-                double fz = entity.posZ + vz + perpZ * side;
+                double fz = entity.getPosZ() + vz + perpZ * side;
                 int bx = MathHelper.floor(fx);
                 int bz = MathHelper.floor(fz);
                 int amount = 16 + world.rand.nextInt(8);
@@ -78,8 +78,8 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                     double theta = (i / (arcLen - 1.0) - 0.5) * spread + facingAngle;
                     double vx = Math.cos(theta);
                     double vz = Math.sin(theta);
-                    double px = entity.posX + vx * distance;
-                    double pz = entity.posZ + vz * distance;
+                    double px = entity.getPosX() + vx * distance;
+                    double pz = entity.getPosZ() + vz * distance;
                     float factor = 1 - distance / (float) maxDistance;
                     AxisAlignedBB selection = new AxisAlignedBB(px - 1.5, minY, pz - 1.5, px + 1.5, maxY, pz + 1.5);
                     List<Entity> hit = world.getEntitiesWithinAABB(Entity.class, selection);

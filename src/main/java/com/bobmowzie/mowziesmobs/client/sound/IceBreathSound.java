@@ -17,9 +17,9 @@ public class IceBreathSound extends TickableSound {
         this.iceBreath = icebreath;
         volume = 2F;
         pitch = 1f;
-        x = (float) icebreath.posX;
-        y = (float) icebreath.posY;
-        z = (float) icebreath.posZ;
+        x = (float) icebreath.getPosX();
+        y = (float) icebreath.getPosY();
+        z = (float) icebreath.getPosZ();
         volumeControl = new ControlledAnimation(10);
         repeat = true;
     }
@@ -31,9 +31,9 @@ public class IceBreathSound extends TickableSound {
         volume = volumeControl.getAnimationFraction();
         if (iceBreath != null) {
             active = true;
-            x = (float) iceBreath.posX;
-            y = (float) iceBreath.posY;
-            z = (float) iceBreath.posZ;
+            x = (float) iceBreath.getPosX();
+            y = (float) iceBreath.getPosY();
+            z = (float) iceBreath.getPosZ();
             if (!iceBreath.isAlive()) {
                 active = false;
                 if (volumeControl.getAnimationFraction() <= 0.05) donePlaying = true;

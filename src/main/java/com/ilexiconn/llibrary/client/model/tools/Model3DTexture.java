@@ -2,7 +2,6 @@ package com.ilexiconn.llibrary.client.model.tools;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.client.renderer.model.ModelBox;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -15,7 +14,8 @@ import org.lwjgl.opengl.GL11;
  * @since 1.4.0
  */
 @OnlyIn(Dist.CLIENT)
-public class Model3DTexture extends ModelBox {
+public class Model3DTexture extends ModelRenderer.ModelBox {
+    // TODO: Major rewrite
     private int width;
     private int height;
 
@@ -25,20 +25,20 @@ public class Model3DTexture extends ModelBox {
     private float v2;
 
     public Model3DTexture(ModelRenderer model, int textureOffsetX, int textureOffsetY, float posX, float posY, float posZ, int width, int height) {
-        super(model, 0, 0, posX, posY, posZ, 0, 0, 0, 0);
+        super(0, 0, posX, posY, posZ, 0, 0, 0, 0, 0, 0, false, 16, 16);
         this.width = width;
         this.height = height;
-        this.u1 = textureOffsetX / model.textureWidth;
-        this.v1 = textureOffsetY / model.textureHeight;
-        this.u2 = (textureOffsetX + width) / model.textureWidth;
-        this.v2 = (textureOffsetY + height) / model.textureHeight;
+//        this.u1 = textureOffsetX / model.textureWidth;
+//        this.v1 = textureOffsetY / model.textureHeight;
+//        this.u2 = (textureOffsetX + width) / model.textureWidth;
+//        this.v2 = (textureOffsetY + height) / model.textureHeight;
     }
 
     public Model3DTexture(ModelRenderer model, int textureOffsetX, int textureOffsetY, int width, int height) {
         this(model, textureOffsetX, textureOffsetY, 0, 0, 0, width, height);
     }
 
-    @Override
+    /*@Override
     public void render(BufferBuilder BufferBuilder, float scale) {
         Tessellator tessellator = Tessellator.getInstance();
         GlStateManager.pushMatrix();
@@ -116,5 +116,5 @@ public class Model3DTexture extends ModelBox {
 
         tessellator.draw();
         GlStateManager.popMatrix();
-    }
+    }*/
 }

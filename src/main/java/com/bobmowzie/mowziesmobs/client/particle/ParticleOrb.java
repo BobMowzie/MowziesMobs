@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.particle;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.particle.*;
@@ -120,14 +121,14 @@ public class ParticleOrb extends SpriteTexturedParticle {
     }
 
     @Override
-    public void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
         if (mode == 2) particleAlpha = Math.max(1 - ((float)age + partialTicks)/(float)duration, 0.001f);
         else particleAlpha = ((float)age + partialTicks)/(float)duration;
         particleRed = red;
         particleGreen = green;
         particleBlue = blue;
 
-        super.renderParticle(buffer, entityIn, partialTicks, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
+        super.renderParticle(buffer, renderInfo, partialTicks);
     }
 
     @OnlyIn(Dist.CLIENT)

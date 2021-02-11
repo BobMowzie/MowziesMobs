@@ -58,8 +58,8 @@ public class FrostmawStructure extends MowzieStructure {
     }
 
     public static class Start extends StructureStart {
-        public Start(Structure<?> structureIn, int chunkX, int chunkZ, Biome biomeIn, MutableBoundingBox boundsIn, int referenceIn, long seed) {
-            super(structureIn, chunkX, chunkZ, biomeIn, boundsIn, referenceIn, seed);
+        public Start(Structure<?> structureIn, int chunkX, int chunkZ, MutableBoundingBox boundsIn, int referenceIn, long seed) {
+            super(structureIn, chunkX, chunkZ, boundsIn, referenceIn, seed);
         }
 
         @Override
@@ -75,7 +75,7 @@ public class FrostmawStructure extends MowzieStructure {
             //Turns the chunk coordinates into actual coordinates we can use. (Gets center of that chunk)
             int x = (chunkX << 4) + 7;
             int z = (chunkZ << 4) + 7;
-            int surfaceY = generator.func_222531_c(x, z, Heightmap.Type.WORLD_SURFACE_WG);
+            int surfaceY = generator.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG);
             int heightMax = ConfigHandler.MOBS.FROSTMAW.generationConfig.heightMax.get().intValue();
             int heightMin = ConfigHandler.MOBS.FROSTMAW.generationConfig.heightMin.get().intValue();
             if (heightMax != -1 && surfaceY > heightMax) return;

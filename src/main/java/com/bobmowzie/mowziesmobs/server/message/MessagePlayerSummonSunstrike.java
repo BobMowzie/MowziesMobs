@@ -21,7 +21,7 @@ public class MessagePlayerSummonSunstrike {
     }
 
     private static RayTraceResult rayTrace(LivingEntity entity, double reach) {
-        Vec3d pos = new Vec3d(entity.posX, entity.posY + entity.getEyeHeight(), entity.posZ);
+        Vec3d pos = entity.getPositionVec();
         Vec3d segment = entity.getLookVec();
         segment = pos.add(segment.x * reach, segment.y * reach, segment.z * reach);
         return entity.world.rayTraceBlocks(new RayTraceContext(pos, segment, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, entity));

@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.particle.util;
 
 import com.bobmowzie.mowziesmobs.client.particle.ParticleRibbon;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -10,10 +11,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import javax.vecmath.Matrix4d;
-import javax.vecmath.Point3d;
-import javax.vecmath.Vector3d;
 
 public class AdvancedParticleBase extends SpriteTexturedParticle {
     public float airDrag;
@@ -124,6 +121,11 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
     }
 
     @Override
+    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
+        super.renderParticle(buffer, renderInfo, partialTicks);
+    }
+
+    /*@Override
     public void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         particleAlpha = prevAlpha + (alpha - prevAlpha) * partialTicks;
         if (particleAlpha < 0.01) particleAlpha = 0.01f;
@@ -221,7 +223,7 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
         for (ParticleComponent component : components) {
             component.postRender(this, buffer, partialTicks, j, k);
         }
-    }
+    }*/ // TODO
 
     public float getAge() {
         return age;

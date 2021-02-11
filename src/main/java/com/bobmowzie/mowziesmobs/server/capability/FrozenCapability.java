@@ -230,7 +230,7 @@ public class FrozenCapability {
         public void onFreeze(LivingEntity entity) {
             if (entity != null) {
                 frozenController = new EntityFrozenController(EntityHandler.FROZEN_CONTROLLER, entity.world);
-                frozenController.setPositionAndRotation(entity.posX, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
+                frozenController.setPositionAndRotation(entity.getPosX(), entity.getPosY(), entity.getPosZ(), entity.rotationYaw, entity.rotationPitch);
                 entity.world.addEntity(frozenController);
                 frozenController.setRenderYawOffset(entity.renderYawOffset);
                 frozenYaw = entity.rotationYaw;
@@ -247,10 +247,10 @@ public class FrozenCapability {
                 if (entity.world.isRemote) {
                     int particleCount = (int) (10 + 1 * entity.getHeight() * entity.getWidth() * entity.getWidth());
                     for (int i = 0; i < particleCount; i++) {
-                        double snowX = entity.posX + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                        double snowZ = entity.posZ + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                        double snowY = entity.posY + entity.getHeight() * entity.getRNG().nextFloat();
-                        Vec3d motion = new Vec3d(snowX - entity.posX, snowY - (entity.posY + entity.getHeight() / 2), snowZ - entity.posZ).normalize();
+                        double snowX = entity.getPosX() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
+                        double snowZ = entity.getPosZ() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
+                        double snowY = entity.getPosY() + entity.getHeight() * entity.getRNG().nextFloat();
+                        Vec3d motion = new Vec3d(snowX - entity.getPosX(), snowY - (entity.getPosY() + entity.getHeight() / 2), snowZ - entity.getPosZ()).normalize();
                         entity.world.addParticle(new ParticleSnowFlake.SnowflakeData(40, false), snowX, snowY, snowZ, 0.1d * motion.x, 0.1d * motion.y, 0.1d * motion.z);
                     }
                 }
@@ -261,16 +261,16 @@ public class FrozenCapability {
         @Override
         public void onUnfreeze(LivingEntity entity) {
             if (entity != null && frozenController != null) {
-                entity.dismountEntity(frozenController);
+                entity.stopRiding();
                 frozenController.remove();
                 entity.playSound(MMSounds.ENTITY_FROSTMAW_FROZEN_CRASH.get(), 1, 0.5f);
 
                 if (entity.world.isRemote) {
                     int particleCount = (int) (10 + 1 * entity.getHeight() * entity.getWidth() * entity.getWidth());
                     for (int i = 0; i < particleCount; i++) {
-                        double particleX = entity.posX + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                        double particleZ = entity.posZ + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                        double particleY = entity.posY + entity.getHeight() * entity.getRNG().nextFloat() + 0.3f;
+                        double particleX = entity.getPosX() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
+                        double particleZ = entity.getPosZ() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
+                        double particleY = entity.getPosY() + entity.getHeight() * entity.getRNG().nextFloat() + 0.3f;
                         entity.world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, Blocks.ICE.getDefaultState()), particleX, particleY, particleZ, 0, 0, 0);
                     }
                 }
@@ -308,14 +308,14 @@ public class FrozenCapability {
                 entity.setSneaking(false);
 
                 if (entity.world.isRemote && entity.ticksExisted % 2 == 0) {
-                    double cloudX = entity.posX + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                    double cloudZ = entity.posZ + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                    double cloudY = entity.posY + entity.getHeight() * entity.getRNG().nextFloat();
+                    double cloudX = entity.getPosX() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
+                    double cloudZ = entity.getPosZ() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
+                    double cloudY = entity.getPosY() + entity.getHeight() * entity.getRNG().nextFloat();
                     entity.world.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f, 0.75f, 1f, 15f, 25, ParticleCloud.EnumCloudBehavior.CONSTANT, 1f), cloudX, cloudY, cloudZ, 0f, -0.01f, 0f);
 
-                    double snowX = entity.posX + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                    double snowZ = entity.posZ + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                    double snowY = entity.posY + entity.getHeight() * entity.getRNG().nextFloat();
+                    double snowX = entity.getPosX() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
+                    double snowZ = entity.getPosZ() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
+                    double snowY = entity.getPosY() + entity.getHeight() * entity.getRNG().nextFloat();
                     entity.world.addParticle(new ParticleSnowFlake.SnowflakeData(40, false), snowX, snowY, snowZ, 0d, -0.01d, 0d);
                 }
             }

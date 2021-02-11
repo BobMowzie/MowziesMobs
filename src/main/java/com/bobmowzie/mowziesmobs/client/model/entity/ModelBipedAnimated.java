@@ -1,10 +1,10 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
@@ -19,8 +19,8 @@ public class ModelBipedAnimated<T extends LivingEntity> extends BipedModel {
     }
 
     @Override
-    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scaleFactor) {
-        super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scaleFactor);
+    public void setRotationAngles(LivingEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         if (!(entityIn instanceof PlayerEntity)) {
             return;
         }
@@ -35,7 +35,7 @@ public class ModelBipedAnimated<T extends LivingEntity> extends BipedModel {
             model.isSneak = false;
             Vec3d moveVec = player.getMotion();
             moveVec = moveVec.normalize();
-            if (model instanceof PlayerModel) GlStateManager.rotatef(45 - 45 * (float)moveVec.y, 1.0F, 0.0F, 0.0F);
+            if (model instanceof PlayerModel) RenderSystem.rotatef(45 - 45 * (float)moveVec.y, 1.0F, 0.0F, 0.0F);
 
             float spin = 1f * (player.ticksExisted + delta);
             model.bipedHead.rotateAngleX = 1.57f * Math.min(0f, (float)moveVec.y);

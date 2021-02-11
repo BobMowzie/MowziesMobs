@@ -44,7 +44,7 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
             List<LivingEntity> entitiesHit = entity.getEntityLivingBaseNearby(range, 3, range, range);
             float damage = (float)entity.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getValue() * ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.combatConfig.attackMultiplier.get();
             for (LivingEntity entityHit : entitiesHit) {
-                float entityHitAngle = (float) ((Math.atan2(entityHit.posZ - entity.posZ, entityHit.posX - entity.posX) * (180 / Math.PI) - 90) % 360);
+                float entityHitAngle = (float) ((Math.atan2(entityHit.getPosZ() - entity.getPosZ(), entityHit.getPosX() - entity.getPosX()) * (180 / Math.PI) - 90) % 360);
                 float entityAttackingAngle = entity.renderYawOffset % 360;
                 if (entityHitAngle < 0) {
                     entityHitAngle += 360;
@@ -53,7 +53,7 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
                     entityAttackingAngle += 360;
                 }
                 float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
-                float entityHitDistance = (float) Math.sqrt((entityHit.posZ - entity.posZ) * (entityHit.posZ - entity.posZ) + (entityHit.posX - entity.posX) * (entityHit.posX - entity.posX));
+                float entityHitDistance = (float) Math.sqrt((entityHit.getPosZ() - entity.getPosZ()) * (entityHit.getPosZ() - entity.getPosZ()) + (entityHit.getPosX() - entity.getPosX()) * (entityHit.getPosX() - entity.getPosX()));
                 if (entityHitDistance <= range && (entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2)) {
                     entityHit.attackEntityFrom(DamageSource.causeMobDamage(entity), damage * 1.5F);
                     if (entityHit.isActiveItemStackBlocking()) entityHit.getActiveItemStack().damageItem(400, entityHit, player -> player.sendBreakAnimation(entityHit.getActiveHand()));

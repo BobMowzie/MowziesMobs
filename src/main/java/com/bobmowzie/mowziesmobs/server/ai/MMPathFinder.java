@@ -10,6 +10,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IWorldReader;
+import net.minecraft.world.Region;
 
 import javax.annotation.Nullable;
 import java.util.Set;
@@ -21,14 +22,14 @@ public class MMPathFinder extends PathFinder {
 
     @Nullable
     @Override
-    public Path func_224775_a(IWorldReader world, MobEntity mob, Set<BlockPos> targets, float maxDistance, int requiredDistance) {
-        Path path = super.func_224775_a(world, mob, targets, maxDistance, requiredDistance);
+    public Path getNewPath(Region regionIn, MobEntity mob, Set<BlockPos> targetPositions, float maxRange, int accuracy, float searchDepthMultiplier) {
+        Path path = super.getNewPath(regionIn, mob, targetPositions, maxRange, accuracy, searchDepthMultiplier);
         return path == null ? null : new PatchedPath(path);
     }
 
     static class PatchedPath extends Path {
         public PatchedPath(Path original) {
-            super(original.func_215746_d(), original.func_224770_k(), original.func_224771_h());
+            super(original.getPoints(), original.getTarget(), original.reachesTarget());
         }
 
         @Override

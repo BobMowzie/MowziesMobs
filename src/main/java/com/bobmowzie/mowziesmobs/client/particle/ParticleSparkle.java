@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.particle;
 
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -39,13 +40,13 @@ public class ParticleSparkle extends SpriteTexturedParticle {
     }
 
     @Override
-    public void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
         float a = ((float)age + partialTicks)/maxAge;
         particleAlpha = -4 * a * a + 4 * a;
         if (particleAlpha < 0.01) particleAlpha = 0.01f;
         particleScale = (-4 * a * a + 4 * a) * scale;
 
-        super.renderParticle(buffer, entityIn, partialTicks, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
+        super.renderParticle(buffer, renderInfo, partialTicks);
     }
 
     @Override

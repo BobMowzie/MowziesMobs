@@ -12,6 +12,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
 import net.minecraft.world.gen.feature.structure.TemplateStructurePiece;
 import net.minecraft.world.gen.feature.template.PlacementSettings;
@@ -118,7 +120,7 @@ public class WroughtnautChamberPieces {
         }
 
         @Override
-        public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos chunkPosIn) {
+        public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGeneratorIn, Random randomIn, MutableBoundingBox mutableBoundingBoxIn, ChunkPos chunkPosIn) {
             Pair<BlockPos, Rotation> chamberResults;
             if (wallPos == null) {
                 chamberResults = tryWroughtChamber(worldIn, startPos.getX(), startPos.getY(), startPos.getZ());
@@ -137,9 +139,9 @@ public class WroughtnautChamberPieces {
 //            System.out.println("Wroughtnaut Chamber at " + templatePosition.getX() + " " + templatePosition.getY() + " " + templatePosition.getZ());
             BlockPos rotationOffset = new BlockPos(0, -1, -9).rotate(placeSettings.getRotation());
             this.templatePosition = this.templatePosition.add(rotationOffset);
-            structureBoundingBoxIn = template.getMutableBoundingBox(placeSettings, templatePosition);
+            mutableBoundingBoxIn = template.getMutableBoundingBox(placeSettings, templatePosition);
 
-            return super.addComponentParts(worldIn, randomIn, structureBoundingBoxIn, chunkPosIn);
+            return super.create(worldIn, chunkGeneratorIn, randomIn, mutableBoundingBoxIn, chunkPosIn);
         }
 
         @Nullable

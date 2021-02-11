@@ -75,7 +75,7 @@ public class MMAIAvoidEntity<U extends CreatureEntity, T extends Entity> extends
         for (int n = 0; n < numChecks; n++) {
             Vec3d pos = RandomPositionGenerator.findRandomTargetBlockAwayFrom(entity, horizontalEvasion, verticalEvasion, entityEvading.getPositionVector());
             if (pos != null && !(entityEvading.getDistanceSq(pos.x, pos.y, pos.z) < entityEvading.getDistanceSq(entity))) {
-                entityPathEntity = entity.getNavigator().func_225466_a(pos.x, pos.y, pos.z, 0);
+                entityPathEntity = entity.getNavigator().getPathToPos(pos.x, pos.y, pos.z, 0);
                 if (entityPathEntity != null) {
                     return true;
                 }

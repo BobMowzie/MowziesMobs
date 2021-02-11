@@ -16,9 +16,9 @@ public final class BlackPinkSound extends TickableSound {
     @Override
     public void tick() {
         if (minecart.isAlive()) {
-            x = (float) minecart.posX;
-            y = (float) minecart.posY;
-            z = (float) minecart.posZ;
+            x = (float) minecart.getPosX();
+            y = (float) minecart.getPosY();
+            z = (float) minecart.getPosZ();
         } else {
             donePlaying = true;
         }

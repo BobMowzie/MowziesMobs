@@ -4,29 +4,25 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.render.RenderHelper;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.client.renderer.entity.*;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.LivingRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.client.event.RenderSpecificHandEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Predicate;
 
 /**
@@ -61,38 +57,38 @@ public enum FrozenRenderHandler {
         }
 
         @Override
-        public void render(LivingEntity living, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
+        public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, LivingEntity living, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             if (living.isPotionActive(PotionHandler.FROZEN)) {
                 EntityModel model = this.renderer.getEntityModel();
-                Map<ModelRenderer, Boolean> visibilities = new HashMap<>();
-                for(ModelRenderer box : model.boxList) {
-                    if(this.modelExclusions.test(box)) {
-                        visibilities.put(box, box.showModel);
-                        box.showModel = false;
-                    }
-                }
+//                Map<ModelRenderer, Boolean> visibilities = new HashMap<>();
+//                for(ModelRenderer box : model.boxList) {
+//                    if(this.modelExclusions.test(box)) {
+//                        visibilities.put(box, box.showModel);
+//                        box.showModel = false;
+//                    }
+//                } TODO
 
                 //Render decay overlay
                 float transparency = 1;
-                GlStateManager.enableBlend();
-                GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-                this.renderer.bindTexture(FROZEN_TEXTURE);
-                GlStateManager.color4f(1, 1, 1, transparency);
-                model.render(living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-                GlStateManager.color4f(1, 1, 1, 1);
+                RenderSystem.enableBlend();
+                RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+                Minecraft.getInstance().getTextureManager().bindTexture(FROZEN_TEXTURE);
+                RenderSystem.color4f(1, 1, 1, transparency);
+                model.render(matrixStackIn, (IVertexBuilder) bufferIn, packedLightIn, 0, 1, 1, 1, 1);
+                RenderSystem.color4f(1, 1, 1, 1);
 
-                for(Map.Entry<ModelRenderer, Boolean> entry : visibilities.entrySet()) {
-                    entry.getKey().showModel = entry.getValue();
-                }
+//                for(Map.Entry<ModelRenderer, Boolean> entry : visibilities.entrySet()) {
+//                    entry.getKey().showModel = entry.getValue();
+//                } TODO
 
 
             }
         }
 
-        @Override
-        public boolean shouldCombineTextures() {
-            return false;
-        }
+//        @Override
+//        public boolean shouldCombineTextures() {
+//            return false;
+//        }
     }
 
     @SubscribeEvent
@@ -107,8 +103,8 @@ public enum FrozenRenderHandler {
     }
 
     @SubscribeEvent
-    public void onRenderHand(RenderSpecificHandEvent event) {
-        GlStateManager.pushMatrix();
+    public void onRenderHand(RenderHandEvent event) {
+        event.getMatrixStack().push();
 
         PlayerEntity player = Minecraft.getInstance().player;
 
@@ -123,7 +119,7 @@ public enum FrozenRenderHandler {
             }
         }
 
-        GlStateManager.popMatrix();
+        event.getMatrixStack().pop();
     }
 
     /**
@@ -133,7 +129,7 @@ public enum FrozenRenderHandler {
      * @param handSide
      */
     private void renderArmFirstPersonFrozen(float swingProgress, float equipProgress, HandSide handSide) {
-        Minecraft mc = Minecraft.getInstance();
+        /*Minecraft mc = Minecraft.getInstance();
         EntityRendererManager renderManager = mc.getRenderManager();
         boolean flag = handSide != HandSide.LEFT;
         float f = flag ? 1.0F : -1.0F;
@@ -199,6 +195,6 @@ public enum FrozenRenderHandler {
 
         GlStateManager.color4f(1, 1, 1, 1);
 
-        GlStateManager.enableCull();
+        GlStateManager.enableCull();*/ // TODO
     }
 }

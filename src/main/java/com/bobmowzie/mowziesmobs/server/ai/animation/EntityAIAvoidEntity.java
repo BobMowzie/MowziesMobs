@@ -55,14 +55,14 @@ public final class EntityAIAvoidEntity<T extends Entity> extends Goal {
             return false;
         }
         avoiding = entities.get(entity.getRNG().nextInt(entities.size()));
-        Vec3d pos = RandomPositionGenerator.findRandomTargetBlockAwayFrom(entity, (int) (distance + 1), (int) (distance / 2 + 1), new Vec3d(avoiding.posX, avoiding.posY, avoiding.posZ));
+        Vec3d pos = RandomPositionGenerator.findRandomTargetBlockAwayFrom(entity, (int) (distance + 1), (int) (distance / 2 + 1), new Vec3d(avoiding.getPosX(), avoiding.getPosY(), avoiding.getPosZ()));
         if (pos == null) {
             return false;
         }
         if (avoiding.getDistanceSq(pos.x, pos.y, pos.z) < avoiding.getDistanceSq(entity)) {
             return false;
         }
-        path = navigator.func_179680_a(new BlockPos(pos), 0);
+        path = navigator.getPathToPos(new BlockPos(pos), 0);
         return path != null;
     }
 

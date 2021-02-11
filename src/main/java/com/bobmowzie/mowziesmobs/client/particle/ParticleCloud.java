@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.particle;
 
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.particle.*;
@@ -59,7 +60,7 @@ public class ParticleCloud extends SpriteTexturedParticle {
     }
 
     @Override
-    public void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
+    public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
         float var = (age + partialTicks)/(float)maxAge;
         particleAlpha = 0.2f * ((float) (1 - Math.exp(5 * (var - 1)) - Math.pow(2000, -var)));
         if (particleAlpha < 0.01) particleAlpha = 0.01f;
@@ -67,7 +68,7 @@ public class ParticleCloud extends SpriteTexturedParticle {
         else if (behavior == EnumCloudBehavior.GROW) this.particleScale = scale * ((0.7f * var) + 0.3f);
         else this.particleScale = scale;
 
-        super.renderParticle(buffer, entityIn, partialTicks, rotationX, rotationZ, rotationYZ, rotationXY, rotationXZ);
+        super.renderParticle(buffer, renderInfo, partialTicks);
     }
 
     @OnlyIn(Dist.CLIENT)

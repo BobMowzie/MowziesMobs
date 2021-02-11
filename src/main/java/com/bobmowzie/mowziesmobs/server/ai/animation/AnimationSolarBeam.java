@@ -30,15 +30,15 @@ public class AnimationSolarBeam<T extends MowzieEntity & IAnimatedEntity> extend
         super.tick();
         float radius1 = 1.7f;
         if (entity.getAnimationTick() == 4 && !entity.world.isRemote) {
-            solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM, entity.world, entity, entity.posX + radius1 * Math.sin(-entity.rotationYaw * Math.PI / 180), entity.posY + 1.4, entity.posZ + radius1 * Math.cos(-entity.rotationYaw * Math.PI / 180), (float) ((entity.rotationYawHead + 90) * Math.PI / 180), (float) (-entity.rotationPitch * Math.PI / 180), 55);
+            solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM, entity.world, entity, entity.getPosX() + radius1 * Math.sin(-entity.rotationYaw * Math.PI / 180), entity.getPosY() + 1.4, entity.getPosZ() + radius1 * Math.cos(-entity.rotationYaw * Math.PI / 180), (float) ((entity.rotationYawHead + 90) * Math.PI / 180), (float) (-entity.rotationPitch * Math.PI / 180), 55);
             entity.world.addEntity(solarBeam);
         }
         if (entity.getAnimationTick() >= 4) {
             if (solarBeam != null) {
                 float radius2 = 1.2f;
-                double x = entity.posX + radius1 * Math.sin(-entity.rotationYaw * Math.PI / 180) + radius2 * Math.sin(-entity.rotationYawHead * Math.PI / 180) * Math.cos(-entity.rotationPitch * Math.PI / 180);
-                double y = entity.posY + 1.4 + radius2 * Math.sin(-entity.rotationPitch * Math.PI / 180);
-                double z = entity.posZ + radius1 * Math.cos(-entity.rotationYaw * Math.PI / 180) + radius2 * Math.cos(-entity.rotationYawHead * Math.PI / 180) * Math.cos(-entity.rotationPitch * Math.PI / 180);
+                double x = entity.getPosX() + radius1 * Math.sin(-entity.rotationYaw * Math.PI / 180) + radius2 * Math.sin(-entity.rotationYawHead * Math.PI / 180) * Math.cos(-entity.rotationPitch * Math.PI / 180);
+                double y = entity.getPosY() + 1.4 + radius2 * Math.sin(-entity.rotationPitch * Math.PI / 180);
+                double z = entity.getPosZ() + radius1 * Math.cos(-entity.rotationYaw * Math.PI / 180) + radius2 * Math.cos(-entity.rotationYawHead * Math.PI / 180) * Math.cos(-entity.rotationPitch * Math.PI / 180);
                 solarBeam.setPosition(x, y, z);
 
                 float yaw = entity.rotationYawHead + 90;
@@ -49,7 +49,7 @@ public class AnimationSolarBeam<T extends MowzieEntity & IAnimatedEntity> extend
         }
         if (entity.getAnimationTick() >= 22) {
             if (entityTarget != null) {
-                entity.getLookController().setLookPosition(entityTarget.posX, entityTarget.posY + entityTarget.getHeight() / 2, entityTarget.posZ, 2, 90);
+                entity.getLookController().setLookPosition(entityTarget.getPosX(), entityTarget.getPosY() + entityTarget.getHeight() / 2, entityTarget.getPosZ(), 2, 90);
             }
         }
     }

@@ -46,7 +46,7 @@ public class MMEntityMoveHelper extends MovementController
             {
                 NodeProcessor nodeprocessor = pathnavigate.getNodeProcessor();
 
-                if (nodeprocessor != null && nodeprocessor.getPathNodeType(this.mob.world, MathHelper.floor(this.mob.posX + (double)f7), MathHelper.floor(this.mob.posY), MathHelper.floor(this.mob.posZ + (double)f8)) != PathNodeType.WALKABLE)
+                if (nodeprocessor != null && nodeprocessor.getPathNodeType(this.mob.world, MathHelper.floor(this.mob.getPosX() + (double)f7), MathHelper.floor(this.mob.getPosY()), MathHelper.floor(this.mob.getPosZ() + (double)f8)) != PathNodeType.WALKABLE)
                 {
                     this.moveForward = 1.0F;
                     this.moveStrafe = 0.0F;
@@ -62,9 +62,9 @@ public class MMEntityMoveHelper extends MovementController
         else if (this.action == MMEntityMoveHelper.Action.MOVE_TO)
         {
             this.action = MMEntityMoveHelper.Action.WAIT;
-            double d0 = this.posX - this.mob.posX;
-            double d1 = this.posZ - this.mob.posZ;
-            double d2 = this.posY - this.mob.posY;
+            double d0 = this.posX - this.mob.getPosX();
+            double d1 = this.posZ - this.mob.getPosZ();
+            double d2 = this.posY - this.mob.getPosY();
             double d3 = d0 * d0 + d2 * d2 + d1 * d1;
 
             if (d3 < 2.500000277905201E-7D)

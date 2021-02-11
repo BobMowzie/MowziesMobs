@@ -97,7 +97,7 @@ public class PowerGeomancy extends Power {
                     for (double y = -1.5; y <= 2; y++) {
                         for (double z = -1.5; z <= 2; z++) {
                             if (Math.sqrt(x * x + y * y + z * z) > 2) continue;
-                            BlockPos pos = new BlockPos(player.posX + x + player.getMotion().getX(), player.posY + y + player.getMotion().getY() + 0.5, player.posZ + z + player.getMotion().getZ());
+                            BlockPos pos = new BlockPos(player.getPosX() + x + player.getMotion().getX(), player.getPosY() + y + player.getMotion().getY() + 0.5, player.getPosZ() + z + player.getMotion().getZ());
                             BlockState blockState = player.world.getBlockState(pos);
                             if (isBlockDiggable(blockState) && blockState.getBlock() != Blocks.BEDROCK) {
                                 justDug = blockState;
@@ -110,7 +110,7 @@ public class PowerGeomancy extends Power {
             if (!prevUnderground && underground) {
                 player.playSound(MMSounds.EFFECT_GEOMANCY_BREAK_MEDIUM.get(rand.nextInt(3)).get(), 1f, 0.9f + rand.nextFloat() * 0.1f);
                 if (player.world.isRemote)
-                    AdvancedParticleBase.spawnParticle(player.world, ParticleHandler.RING2.get(), (float) player.posX, (float) player.posY + 0.02f, (float) player.posZ, 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, new ParticleComponent[]{
+                    AdvancedParticleBase.spawnParticle(player.world, ParticleHandler.RING2.get(), (float) player.getPosX(), (float) player.getPosY() + 0.02f, (float) player.getPosZ(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, new ParticleComponent[]{
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(10f, 30f), false)
                 });
@@ -118,7 +118,7 @@ public class PowerGeomancy extends Power {
             if (prevUnderground && !underground) {
                 player.playSound(MMSounds.EFFECT_GEOMANCY_BREAK.get(), 1f, 0.9f + rand.nextFloat() * 0.1f);
                 if (player.world.isRemote)
-                    AdvancedParticleBase.spawnParticle(player.world, ParticleHandler.RING2.get(), (float) player.posX, (float) player.posY + 0.02f, (float) player.posZ, 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, new ParticleComponent[]{
+                    AdvancedParticleBase.spawnParticle(player.world, ParticleHandler.RING2.get(), (float) player.getPosX(), (float) player.getPosY() + 0.02f, (float) player.getPosZ(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, new ParticleComponent[]{
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(10f, 30f), false)
                 });
@@ -127,7 +127,7 @@ public class PowerGeomancy extends Power {
                 if (player.world.isRemote) {
                     for (int i = 0; i < 6; i++) {
                         if (justDug == null) justDug = Blocks.DIRT.getDefaultState();
-                        ParticleFallingBlock.spawnFallingBlock(player.world, player.posX, player.posY + 1, player.posZ, 30f, 80, 1, player.getRNG().nextFloat() * 0.8f - 0.4f, 0.4f + player.getRNG().nextFloat() * 0.8f, player.getRNG().nextFloat() * 0.8f - 0.4f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, justDug);
+                        ParticleFallingBlock.spawnFallingBlock(player.world, player.getPosX(), player.getPosY() + 1, player.getPosZ(), 30f, 80, 1, player.getRNG().nextFloat() * 0.8f - 0.4f, 0.4f + player.getRNG().nextFloat() * 0.8f, player.getRNG().nextFloat() * 0.8f - 0.4f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, justDug);
                     }
                 }
             }
@@ -146,7 +146,7 @@ public class PowerGeomancy extends Power {
                 if (spawnBoulderCharge == 1 && player.world.isRemote) MowziesMobs.PROXY.playBoulderChargeSound(player);
                 if ((spawnBoulderCharge + 10) % 10 == 0 && spawnBoulderCharge < 40) {
                     if (player.world.isRemote) {
-                        AdvancedParticleBase.spawnParticle(player.world, ParticleHandler.RING2.get(), (float) player.posX, (float) player.posY + player.getHeight() / 2f, (float) player.posZ, 0, 0, 0, false, 0, Math.PI / 2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, new ParticleComponent[]{
+                        AdvancedParticleBase.spawnParticle(player.world, ParticleHandler.RING2.get(), (float) player.getPosX(), (float) player.getPosY() + player.getHeight() / 2f, (float) player.getPosZ(), 0, 0, 0, false, 0, Math.PI / 2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, new ParticleComponent[]{
                                 new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0f, 0.7f), false),
                                 new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd((0.8f + 2.7f * spawnBoulderCharge / 60f) * 10f, 0), false)
                         });
@@ -154,7 +154,7 @@ public class PowerGeomancy extends Power {
                 }
                 if (spawnBoulderCharge == 50) {
                     if (player.world.isRemote) {
-                        AdvancedParticleBase.spawnParticle(player.world, ParticleHandler.RING2.get(), (float) player.posX, (float) player.posY + player.getHeight() / 2f, (float) player.posZ, 0, 0, 0, true, 0, 0, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 20, true, new ParticleComponent[]{
+                        AdvancedParticleBase.spawnParticle(player.world, ParticleHandler.RING2.get(), (float) player.getPosX(), (float) player.getPosY() + player.getHeight() / 2f, (float) player.getPosZ(), 0, 0, 0, true, 0, 0, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 20, true, new ParticleComponent[]{
                                 new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0.7f, 0f), false),
                                 new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(0, 40f), false)
                         });
@@ -170,7 +170,7 @@ public class PowerGeomancy extends Power {
                         double ox = radius * Math.sin(yaw) * Math.sin(pitch);
                         double oy = radius * Math.cos(pitch);
                         double oz = radius * Math.cos(yaw) * Math.sin(pitch);
-                        player.world.addParticle(new ParticleOrb.OrbData((float) player.posX, (float) player.posY + (float) player.getHeight()/2f, (float) player.posZ, 14), player.posX + ox, player.posY + oy + player.getHeight()/2, player.posZ + oz, 0, 0, 0);
+                        player.world.addParticle(new ParticleOrb.OrbData((float) player.getPosX(), (float) player.getPosY() + (float) player.getHeight()/2f, (float) player.getPosZ(), 14), player.getPosX() + ox, player.getPosY() + oy + player.getHeight()/2, player.getPosZ() + oz, 0, 0, 0);
                     }
                 }
             }
@@ -181,7 +181,7 @@ public class PowerGeomancy extends Power {
             else {
                 int size = (int)Math.min(Math.max(0, Math.floor(spawnBoulderCharge/10.f) - 1), 2) + 1;
                 EntityType<EntityBoulder> type = EntityHandler.BOULDERS[size];
-                if (!player.world.hasNoCollisions(type.func_220328_a(spawnBoulderPos.getX() + 0.5F, spawnBoulderPos.getY() + 2, spawnBoulderPos.getZ() + 0.5F))) {
+                if (!player.world.hasNoCollisions(type.getBoundingBoxWithSizeApplied(spawnBoulderPos.getX() + 0.5F, spawnBoulderPos.getY() + 2, spawnBoulderPos.getZ() + 0.5F))) {
                     spawnBoulder(player);
                 }
             }

@@ -10,6 +10,7 @@ import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.gui.widget.button.Button;
@@ -81,7 +82,7 @@ public final class GuiBarakoTrade extends ContainerScreen<ContainerBarakoTrade> 
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float delta, int mouseX, int mouseY) {
-        GlStateManager.color3f(1, 1, 1);
+        RenderSystem.color3f(1, 1, 1);
         minecraft.getTextureManager().bindTexture(hasTraded ? TEXTURE_REPLENISH : TEXTURE_TRADE);
         blit(guiLeft, guiTop, 0, 0, xSize, ySize);
         InventoryScreen.drawEntityOnScreen(guiLeft + 33, guiTop + 56, 14, 0, 0, barako);
@@ -99,7 +100,7 @@ public final class GuiBarakoTrade extends ContainerScreen<ContainerBarakoTrade> 
         super.render(mouseX, mouseY, delta);
         ItemStack inSlot = inventory.getStackInSlot(0);
         GlStateManager.pushMatrix();
-        RenderHelper.enableGUIStandardItemLighting();
+        RenderHelper.enableStandardItemLighting();
         GlStateManager.disableLighting();
         GlStateManager.enableRescaleNormal();
         GlStateManager.enableColorMaterial();

@@ -15,9 +15,9 @@ public class SpawnBoulderChargeSound extends TickableSound {
         this.player = player;
         volume = 1F;
         pitch = 0.95f;
-        x = (float) player.posX;
-        y = (float) player.posY;
-        z = (float) player.posZ;
+        x = (float) player.getPosX();
+        y = (float) player.getPosY();
+        z = (float) player.getPosZ();
     }
 
     @Override

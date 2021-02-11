@@ -26,7 +26,7 @@ public class EntityDart extends ArrowEntity {
 
     public EntityDart(EntityType<? extends EntityDart> type, World world, LivingEntity shooter) {
         super(type, world);
-        this.setPosition(shooter.posX,shooter.posY + (double)shooter.getEyeHeight() - (double)0.1F, shooter.posZ);
+        this.setPosition(shooter.getPosX(),shooter.getPosY() + (double)shooter.getEyeHeight() - (double)0.1F, shooter.getPosZ());
         this.setShooter(shooter);
         if (shooter instanceof PlayerEntity) {
             this.pickupStatus = AbstractArrowEntity.PickupStatus.ALLOWED;

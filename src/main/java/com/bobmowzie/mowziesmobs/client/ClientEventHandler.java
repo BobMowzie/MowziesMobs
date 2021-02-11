@@ -59,7 +59,7 @@ public enum ClientEventHandler {
         if (shouldAnimate) {
             event.setCanceled(true);
             RenderPlayerAnimated renderPlayerAnimated = new RenderPlayerAnimated(event.getRenderer().getRenderManager(), ((AbstractClientPlayerEntity) event.getEntity()).getSkinType().equals("slim"));
-            renderPlayerAnimated.doRender((AbstractClientPlayerEntity) event.getEntity(), event.getX(), event.getY(), event.getZ(), event.getEntity().rotationYaw, delta);
+            renderPlayerAnimated.render((AbstractClientPlayerEntity) event.getEntity(), event.getEntity().rotationYaw, delta, event.getMatrixStack(), event.getBuffers(), event.getLight());
         }
     }
 

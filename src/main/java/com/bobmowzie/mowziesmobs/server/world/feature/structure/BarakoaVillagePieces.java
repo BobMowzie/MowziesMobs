@@ -33,6 +33,7 @@ import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.ScatteredStructurePiece;
@@ -202,12 +203,12 @@ public class BarakoaVillagePieces {
         }
 
         @Override
-        public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos chunkPosIn) {
+        public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGeneratorIn, Random randomIn, MutableBoundingBox mutableBoundingBoxIn, ChunkPos chunkPosIn) {
             PlacementSettings placementsettings = (new PlacementSettings()).setRotation(this.rotation).setMirror(Mirror.NONE);
             BlockPos blockpos = BarakoaVillagePieces.OFFSET.get(this.resourceLocation);
             this.templatePosition.add(Template.transformedBlockPos(placementsettings, new BlockPos(0 - blockpos.getX(), 0, 0 - blockpos.getZ())));
 
-            return super.addComponentParts(worldIn, randomIn, structureBoundingBoxIn, chunkPosIn);
+            return super.create(worldIn, chunkGeneratorIn, randomIn, mutableBoundingBoxIn, chunkPosIn);
         }
 
         public void fillAirLiquidDown(IWorld worldIn, BlockState state, BlockPos startPos) {
@@ -389,7 +390,7 @@ public class BarakoaVillagePieces {
         }
 
         @Override
-        public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos chunkPosIn) {
+        public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGeneratorIn, Random randomIn, MutableBoundingBox mutableBoundingBoxIn, ChunkPos chunkPosIn) {
             BlockPos centerPos = findGround(worldIn, 4, 4);
             worldIn.setBlockState(centerPos, Blocks.CAMPFIRE.getDefaultState(), 2);
             fillAirLiquidBelowHeightmap(worldIn, Blocks.ACACIA_LOG.getDefaultState(), 4, 4);
@@ -464,13 +465,13 @@ public class BarakoaVillagePieces {
         }
 
         @Override
-        public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos chunkPosIn) {
-            setBlockState(worldIn, Blocks.OAK_FENCE.getDefaultState(), 0, 1, 0, structureBoundingBoxIn);
+        public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGeneratorIn, Random randomIn, MutableBoundingBox mutableBoundingBoxIn, ChunkPos chunkPosIn) {
+            setBlockState(worldIn, Blocks.OAK_FENCE.getDefaultState(), 0, 1, 0, mutableBoundingBoxIn);
             if (skull) {
-                setBlockState(worldIn, Blocks.SKELETON_SKULL.getDefaultState().with(BlockStateProperties.ROTATION_0_15, skullDir), 0, 2, 0, structureBoundingBoxIn);
+                setBlockState(worldIn, Blocks.SKELETON_SKULL.getDefaultState().with(BlockStateProperties.ROTATION_0_15, skullDir), 0, 2, 0, mutableBoundingBoxIn);
             }
             else {
-                setBlockState(worldIn, Blocks.TORCH.getDefaultState(), 0, 2, 0, structureBoundingBoxIn);
+                setBlockState(worldIn, Blocks.TORCH.getDefaultState(), 0, 2, 0, mutableBoundingBoxIn);
             }
             fillAirLiquidBelowHeightmap(worldIn, Blocks.OAK_FENCE.getDefaultState(), 0, 0);
             return true;
@@ -487,7 +488,7 @@ public class BarakoaVillagePieces {
         }
 
         @Override
-        public boolean addComponentParts(IWorld worldIn, Random randomIn, MutableBoundingBox structureBoundingBoxIn, ChunkPos chunkPosIn) {
+        public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGeneratorIn, Random randomIn, MutableBoundingBox mutableBoundingBoxIn, ChunkPos chunkPosIn) {
             Vec2f[] hayPositions = new Vec2f[] {
                     new Vec2f(0, 1),
                     new Vec2f(0, 2),
