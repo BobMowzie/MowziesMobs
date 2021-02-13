@@ -9,6 +9,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.entity.player.PlayerEntity;
@@ -38,8 +39,8 @@ public class RenderAxeAttack extends EntityRenderer<EntityAxeAttack> {
         if (player == entity.getCaster() && Minecraft.getInstance().gameSettings.thirdPersonView == 0) {
             RenderSystem.pushMatrix();
             RenderSystem.rotatef(entityYaw, 0, -1, 0);
-            Minecraft.getInstance().getTextureManager().bindTexture(TEXTURE);
-            model.render(matrixStackIn, (IVertexBuilder) bufferIn, packedLightIn, 0, 1, 1, 1, 1);
+            IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntitySolid(TEXTURE));
+            model.render(matrixStackIn, ivertexbuilder, packedLightIn, 0, 1, 1, 1, 1);
             RenderSystem.popMatrix();
         }
     }

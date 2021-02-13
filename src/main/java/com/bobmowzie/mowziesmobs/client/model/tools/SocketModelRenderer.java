@@ -21,7 +21,7 @@ public class SocketModelRenderer extends AdvancedModelRenderer {
     }
 
     public SocketModelRenderer(SocketModelRenderer modelRenderer) {
-        super(modelRenderer.getModel(), modelRenderer.textureOffsetX, modelRenderer.textureOffsetY);
+        super(modelRenderer.getModel());
         this.rotationPointX = modelRenderer.rotationPointX;
         this.rotationPointY = modelRenderer.rotationPointY;
         this.rotationPointZ = modelRenderer.rotationPointZ;

@@ -356,9 +356,9 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
         this.swordJoint.setRotationPoint(0F, -3F, 10F);
         this.swordJoint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(swordJoint, 0.0F, -0.7853981633974483F, 0.0F);
-        /*this.sword = new AdvancedModelRenderer(this, 82, 10);
+        this.sword = new AdvancedModelRenderer(this, 82, 10);
         this.sword.setRotationPoint(0F, 0F, 0F);
-        this.sword.add3DTexture(-11f, 0, -11f, 11, 11);*/ // TODO
+//        this.sword.add3DTexture(-11f, 0, -11f, 11, 11);
         setRotateAngle(sword, 0.0F, 0F, 0.0F);
         this.rootBox = new AdvancedModelRenderer(this, 0, 0);
         this.rootBox.setRotationPoint(0.0F, -1.0F, 0.0F);

@@ -8,6 +8,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.AtlasTexture;
@@ -54,6 +55,7 @@ public class RenderBoulder extends EntityRenderer<EntityBoulder> {
     @Override
     public void render(EntityBoulder entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-        model.render(matrixStackIn, (IVertexBuilder) bufferIn, packedLightIn, 0, 1, 1, 1, 1);
+        IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntitySolid(this.getEntityTexture(entityIn)));
+        model.render(matrixStackIn, ivertexbuilder, packedLightIn, 0, 1, 1, 1, 1);
     }
 }
