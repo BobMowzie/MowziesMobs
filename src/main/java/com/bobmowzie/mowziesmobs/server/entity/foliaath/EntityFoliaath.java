@@ -241,6 +241,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
 
     @Override
     public boolean attackEntityFrom(DamageSource damageSource, float amount) {
+        openMouth.resetTimeRunning();
         return (damageSource.canHarmInCreative() || active) && super.attackEntityFrom(damageSource, amount);
     }
 
