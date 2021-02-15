@@ -48,6 +48,11 @@ public class ItemBarakoMask extends ArmorItem implements BarakoaMask {
     }
 
     @Override
+    public int getMaxDamage(ItemStack stack) {
+        return ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable.get() ? super.getDamage(stack): 0;
+    }
+
+    @Override
     public void setDamage(ItemStack stack, int damage) {
         if (ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable.get()) super.setDamage(stack, damage);
     }

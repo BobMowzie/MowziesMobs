@@ -10,8 +10,8 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
  * Created by Josh on 7/24/2018.
  */
 public class ModelLantern<T extends EntityLantern> extends MowzieEntityModel<T> {
-    public ExtendedModelRenderer body;
-    public ExtendedModelRenderer center;
+    public AdvancedModelRenderer body;
+    public AdvancedModelRenderer center;
     public AdvancedModelRenderer bubbles;
     public AdvancedModelRenderer bubble1;
     public AdvancedModelRenderer bubble2;
@@ -19,10 +19,10 @@ public class ModelLantern<T extends EntityLantern> extends MowzieEntityModel<T> 
     public AdvancedModelRenderer bubble4;
     public AdvancedModelRenderer bottomBits;
     public AdvancedModelRenderer stem;
-    public ExtendedModelRenderer bottomBit1;
-    public ExtendedModelRenderer bottomBit2;
-    public ExtendedModelRenderer bottomBit3;
-    public ExtendedModelRenderer bottomBit4;
+    public AdvancedModelRenderer bottomBit1;
+    public AdvancedModelRenderer bottomBit2;
+    public AdvancedModelRenderer bottomBit3;
+    public AdvancedModelRenderer bottomBit4;
     public AdvancedModelRenderer leaf1;
     public AdvancedModelRenderer leaf2;
     public AdvancedModelRenderer leaf3;
@@ -32,6 +32,10 @@ public class ModelLantern<T extends EntityLantern> extends MowzieEntityModel<T> 
     public AdvancedModelRenderer scaleController;
 
     public ModelLantern() {
+        this(false);
+    }
+
+    public ModelLantern(boolean isGelLayer) {
         this.textureWidth = 64;
         this.textureHeight = 64;
         this.leaf1 = new AdvancedModelRenderer(this, -16, 42);
@@ -43,13 +47,13 @@ public class ModelLantern<T extends EntityLantern> extends MowzieEntityModel<T> 
         this.stem2.setRotationPoint(0.0F, -3.0F, 0.0F);
         this.stem2.addBox(0.0F, -10.0F, -5.0F, 0, 10, 10, 0.0F);
         setRotateAngle(stem2, 0.0F, 0.7853981633974483F, 0.0F);
-        this.body = new ExtendedModelRenderer(this, 1, 0);
+        this.body = new AdvancedModelRenderer(this, 1, 0);
         this.body.setRotationPoint(0.0F, 11.0F, 0.0F);
         this.body.addBox(-7.5F, -7.5F, -7.5F, 15, 15, 15, 0.0F);
-        this.center = new ExtendedModelRenderer(this, 40, 51);
+        this.center = new AdvancedModelRenderer(this, 40, 51);
         this.center.setRotationPoint(0.0F, 11.0F, 0.0F);
         this.center.addBox(-3F, -3F, -3F, 6, 6, 6, 0.0F);
-        this.bottomBit4 = new ExtendedModelRenderer(this, 46, 0);
+        this.bottomBit4 = new AdvancedModelRenderer(this, 46, 0);
         this.bottomBit4.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.bottomBit4.addBox(-2.0F, 0.0F, -2.0F, 4, 7, 4, 0.0F);
         setRotateAngle(bottomBit4, 1.0471975511965976F, 4.71238898038469F, 0.0F);
@@ -73,7 +77,7 @@ public class ModelLantern<T extends EntityLantern> extends MowzieEntityModel<T> 
         this.bubble1.setRotationPoint(2.6F, 2.5F, 2.8F);
         this.bubble1.addBox(-2.0F, -2.0F, -2.0F, 4, 4, 4, 0.0F);
         setRotateAngle(bubble1, 0.27314402793711257F, 0.6829473363053812F, 0.5462880558742251F);
-        this.bottomBit3 = new ExtendedModelRenderer(this, 46, 0);
+        this.bottomBit3 = new AdvancedModelRenderer(this, 46, 0);
         this.bottomBit3.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.bottomBit3.addBox(-2.0F, 0.0F, -2.0F, 4, 7, 4, 0.0F);
         setRotateAngle(bottomBit3, 1.0471975511965976F, 3.141592653589793F, 0.0F);
@@ -84,11 +88,11 @@ public class ModelLantern<T extends EntityLantern> extends MowzieEntityModel<T> 
         this.bubble2.setRotationPoint(-2.8F, -3.0F, 1.8F);
         this.bubble2.addBox(-2.0F, -2.0F, -2.0F, 4, 4, 4, 0.0F);
         setRotateAngle(bubble2, 1.3203415791337103F, 1.5025539530419183F, 0.5462880558742251F);
-        this.bottomBit2 = new ExtendedModelRenderer(this, 46, 0);
+        this.bottomBit2 = new AdvancedModelRenderer(this, 46, 0);
         this.bottomBit2.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.bottomBit2.addBox(-2.0F, 0.0F, -2.0F, 4, 7, 4, 0.0F);
         setRotateAngle(bottomBit2, 1.0471975511965976F, 1.5707963267948966F, 0.0F);
-        this.bottomBit1 = new ExtendedModelRenderer(this, 46, 0);
+        this.bottomBit1 = new AdvancedModelRenderer(this, 46, 0);
         this.bottomBit1.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.bottomBit1.addBox(-2.0F, 0.0F, -2.0F, 4, 7, 4, 0.0F);
         setRotateAngle(bottomBit1, 1.0471975511965976F, 0.0F, 0.0F);
@@ -101,7 +105,7 @@ public class ModelLantern<T extends EntityLantern> extends MowzieEntityModel<T> 
         this.bottomBits.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(bottomBits, 0.0F, 0.7853981633974483F, 0.0F);
         this.stem = new AdvancedModelRenderer(this, 0, 0);
-        this.stem.setRotationPoint(0.0F, -7.5F, 0.0F);
+        this.stem.setRotationPoint(0.0F, -7.51F, 0.0F);
         this.stem.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(stem, 0.0F, 0.7853981633974483F, 0.0F);
         this.bubbles = new AdvancedModelRenderer(this, 0, 0);
@@ -135,6 +139,27 @@ public class ModelLantern<T extends EntityLantern> extends MowzieEntityModel<T> 
         bottomBit2.setOpacity(0.7f);
         bottomBit3.setOpacity(0.7f);
         bottomBit4.setOpacity(0.7f);
+        body.setHasLighting(false);
+        center.setHasLighting(false);
+        bottomBit1.setHasLighting(false);
+        bottomBit2.setHasLighting(false);
+        bottomBit3.setHasLighting(false);
+        bottomBit4.setHasLighting(false);
+        bubble1.setHasLighting(false);
+        bubble2.setHasLighting(false);
+        bubble3.setHasLighting(false);
+        bubble4.setHasLighting(false);
+
+        if (isGelLayer) {
+            stem.setIsHidden(true);
+        }
+        else {
+            stem.showModel = true;
+            body.setIsHidden(true);
+            bubbles.showModel = false;
+            bottomBits.showModel = false;
+            center.showModel = false;
+        }
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.model.tools;
 
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
+import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
@@ -11,7 +12,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * Created by Josh on 7/24/2018.
  */
 @OnlyIn(Dist.CLIENT)
-public class ExtendedModelRenderer extends ModelRenderer {
+public class ExtendedModelRenderer extends AdvancedModelRenderer {
     public float defaultRotationX, defaultRotationY, defaultRotationZ;
     public float defaultOffsetX, defaultOffsetY, defaultOffsetZ;
     public float defaultPositionX, defaultPositionY, defaultPositionZ;

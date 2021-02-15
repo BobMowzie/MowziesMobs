@@ -10,6 +10,7 @@ classes/
 bin/
 eclipse/
 run/
+run-server/
 .settings/
 .classpath
 .project

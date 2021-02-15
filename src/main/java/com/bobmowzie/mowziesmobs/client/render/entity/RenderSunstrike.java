@@ -62,7 +62,7 @@ public class RenderSunstrike extends EntityRenderer<EntitySunstrike> {
 
     @Override
     public void render(EntitySunstrike sunstrike, float entityYaw, float delta, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-        double maxY = MAX_HEIGHT - sunstrike.getPosY();
+        /*double maxY = MAX_HEIGHT - sunstrike.getPosY();
         if (maxY < 0) {
             return;
         }
@@ -78,7 +78,7 @@ public class RenderSunstrike extends EntityRenderer<EntitySunstrike> {
             drawStrike(sunstrike, maxY, delta);
         }
         revertGL();
-        RenderSystem.popMatrix();
+        RenderSystem.popMatrix();*/
     }
 
     private void drawScorch(EntitySunstrike sunstrike, float delta) {

@@ -1,7 +1,5 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.tools.ExtendedModelRenderer;
 import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
 import com.bobmowzie.mowziesmobs.client.model.tools.dynamics.DynamicChain;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
@@ -26,8 +24,8 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
     public AdvancedModelRenderer spike3joint;
     public AdvancedModelRenderer shoulder1_L;
     public AdvancedModelRenderer shoulder1_R;
-    public ExtendedModelRenderer backFin1;
-    public ExtendedModelRenderer backFin1Reversed;
+    public AdvancedModelRenderer backFin1;
+    public AdvancedModelRenderer backFin1Reversed;
     public AdvancedModelRenderer headJoint;
     public AdvancedModelRenderer head;
     public AdvancedModelRenderer jaw;
@@ -40,21 +38,21 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
     public AdvancedModelRenderer eyebrow_L;
     public SocketModelRenderer tail2;
     public AdvancedModelRenderer spike4joint;
-    public ExtendedModelRenderer backFin2;
-    public ExtendedModelRenderer backFin2Reversed;
+    public AdvancedModelRenderer backFin2;
+    public AdvancedModelRenderer backFin2Reversed;
     public SocketModelRenderer tail3;
     public AdvancedModelRenderer spike5joint;
-    public ExtendedModelRenderer backWing_L;
-    public ExtendedModelRenderer backWing_R;
-    public ExtendedModelRenderer backWing_LReversed;
-    public ExtendedModelRenderer backWing_RReversed;
-    public ExtendedModelRenderer backFin3;
-    public ExtendedModelRenderer backFin3Reversed;
+    public AdvancedModelRenderer backWing_L;
+    public AdvancedModelRenderer backWing_R;
+    public AdvancedModelRenderer backWing_LReversed;
+    public AdvancedModelRenderer backWing_RReversed;
+    public AdvancedModelRenderer backFin3;
+    public AdvancedModelRenderer backFin3Reversed;
     public SocketModelRenderer tail4;
     public SocketModelRenderer tail5;
     public SocketModelRenderer tail6;
-    public ExtendedModelRenderer tailFin;
-    public ExtendedModelRenderer tailFinReversed;
+    public AdvancedModelRenderer tailFin;
+    public AdvancedModelRenderer tailFinReversed;
     public AdvancedModelRenderer spike5;
     public AdvancedModelRenderer spike4;
     public AdvancedModelRenderer spike1;
@@ -64,49 +62,49 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
     public AdvancedModelRenderer upperArmJoint_L;
     public AdvancedModelRenderer upperArm_L;
     public AdvancedModelRenderer lowerArmJoint_L;
-    public ExtendedModelRenderer wingWebbing6_L;
-    public ExtendedModelRenderer wingWebbing6_LReversed;
+    public AdvancedModelRenderer wingWebbing6_L;
+    public AdvancedModelRenderer wingWebbing6_LReversed;
     public AdvancedModelRenderer lowerArm_L;
     public AdvancedModelRenderer handJoint_L;
-    public ExtendedModelRenderer wingWebbing5_L;
-    public ExtendedModelRenderer wingWebbing5_LReversed;
+    public AdvancedModelRenderer wingWebbing5_L;
+    public AdvancedModelRenderer wingWebbing5_LReversed;
     public AdvancedModelRenderer hand_L;
     public AdvancedModelRenderer wingFrame1_L;
     public AdvancedModelRenderer wingFrame2_L;
     public AdvancedModelRenderer wingFrame3_L;
     public AdvancedModelRenderer wingFrame4_L;
     public AdvancedModelRenderer wingClaw_L;
-    public ExtendedModelRenderer wingWebbing1_L;
-    public ExtendedModelRenderer wingWebbing2_L;
-    public ExtendedModelRenderer wingWebbing3_L;
-    public ExtendedModelRenderer wingWebbing4_L;
-    public ExtendedModelRenderer wingWebbing1_LReversed;
-    public ExtendedModelRenderer wingWebbing2_LReversed;
-    public ExtendedModelRenderer wingWebbing3_LReversed;
-    public ExtendedModelRenderer wingWebbing4_LReversed;
+    public AdvancedModelRenderer wingWebbing1_L;
+    public AdvancedModelRenderer wingWebbing2_L;
+    public AdvancedModelRenderer wingWebbing3_L;
+    public AdvancedModelRenderer wingWebbing4_L;
+    public AdvancedModelRenderer wingWebbing1_LReversed;
+    public AdvancedModelRenderer wingWebbing2_LReversed;
+    public AdvancedModelRenderer wingWebbing3_LReversed;
+    public AdvancedModelRenderer wingWebbing4_LReversed;
     public AdvancedModelRenderer upperArmJoint_R;
     public AdvancedModelRenderer upperArm_R;
     public AdvancedModelRenderer lowerArmJoint_R;
-    public ExtendedModelRenderer wingWebbing6_R;
-    public ExtendedModelRenderer wingWebbing6_RReversed;
+    public AdvancedModelRenderer wingWebbing6_R;
+    public AdvancedModelRenderer wingWebbing6_RReversed;
     public AdvancedModelRenderer lowerArm_R;
     public AdvancedModelRenderer handJoint_R;
-    public ExtendedModelRenderer wingWebbing5_R;
-    public ExtendedModelRenderer wingWebbing5_RReversed;
+    public AdvancedModelRenderer wingWebbing5_R;
+    public AdvancedModelRenderer wingWebbing5_RReversed;
     public AdvancedModelRenderer hand_R;
     public AdvancedModelRenderer wingFrame1_R;
     public AdvancedModelRenderer wingFrame2_R;
     public AdvancedModelRenderer wingFrame3_R;
     public AdvancedModelRenderer wingFrame4_R;
     public AdvancedModelRenderer wingClaw_R;
-    public ExtendedModelRenderer wingWebbing1_R;
-    public ExtendedModelRenderer wingWebbing2_R;
-    public ExtendedModelRenderer wingWebbing3_R;
-    public ExtendedModelRenderer wingWebbing4_R;
-    public ExtendedModelRenderer wingWebbing1_RReversed;
-    public ExtendedModelRenderer wingWebbing2_RReversed;
-    public ExtendedModelRenderer wingWebbing3_RReversed;
-    public ExtendedModelRenderer wingWebbing4_RReversed;
+    public AdvancedModelRenderer wingWebbing1_R;
+    public AdvancedModelRenderer wingWebbing2_R;
+    public AdvancedModelRenderer wingWebbing3_R;
+    public AdvancedModelRenderer wingWebbing4_R;
+    public AdvancedModelRenderer wingWebbing1_RReversed;
+    public AdvancedModelRenderer wingWebbing2_RReversed;
+    public AdvancedModelRenderer wingWebbing3_RReversed;
+    public AdvancedModelRenderer wingWebbing4_RReversed;
     public AdvancedModelRenderer wingFolder;
     public AdvancedModelRenderer shoulderLJoint;
     public AdvancedModelRenderer shoulderRJoint;
@@ -119,7 +117,7 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
     public SocketModelRenderer[] tailOriginal;
     public SocketModelRenderer[] tailDynamic;
 
-    public ExtendedModelRenderer[] reversePlanes;
+    public AdvancedModelRenderer[] reversePlanes;
 
     private DynamicChain tail;
 
@@ -156,10 +154,10 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         this.spike1.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.spike1.addBox(0.0F, 0.0F, 0.0F, 15, 4, 15, 0.0F);
         setRotateAngle(spike1, 0.0F, -0.7853981633974483F, 0.0F);
-        this.wingWebbing5_L = new ExtendedModelRenderer(this, 193, 128);
+        this.wingWebbing5_L = new AdvancedModelRenderer(this, 193, 128);
         this.wingWebbing5_L.setRotationPoint(12.0F, 0.0F, 1.0F);
         this.wingWebbing5_L.addBox(-12.0F, 0.0F, 0.0F, 20, 0, 23, 0.0F);
-        this.wingWebbing5_LReversed = new ExtendedModelRenderer(this, 193, 128);
+        this.wingWebbing5_LReversed = new AdvancedModelRenderer(this, 193, 128);
         this.wingWebbing5_LReversed.mirror = true;
         this.wingWebbing5_LReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
         this.wingWebbing5_LReversed.addBox(-12.0F, 0.0F, 0.0F, 20, 0, 23, 0.0F);
@@ -170,11 +168,11 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         this.tail3 = new SocketModelRenderer(this, 0, 34);
         this.tail3.setRotationPoint(0.0F, 0.0F, 15.0F);
         this.tail3.addBox(-5.5F, -2.5F, 0.0F, 11, 4, 16, 0.0F);
-        this.wingWebbing2_L = new ExtendedModelRenderer(this, 20, 98);
+        this.wingWebbing2_L = new AdvancedModelRenderer(this, 20, 98);
         this.wingWebbing2_L.setRotationPoint(-1.5F, 0.0F, 0.0F);
         this.wingWebbing2_L.addBox(0.0F, 0.0F, -15.0F, 50, 0, 30, 0.0F);
         setRotateAngle(wingWebbing2_L, 0.0F, -0.30543261909900765F, 0.0F);
-        this.wingWebbing2_LReversed = new ExtendedModelRenderer(this, 20, 98);
+        this.wingWebbing2_LReversed = new AdvancedModelRenderer(this, 20, 98);
         this.wingWebbing2_LReversed.mirror = true;
         this.wingWebbing2_LReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
         this.wingWebbing2_LReversed.addBox(0.0F, 0.0F, -15.0F, 50, 0, 30, 0.0F);
@@ -212,21 +210,21 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         this.eyebrow_R.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.eyebrow_R.addBox(-5.5F, 0.0F, 0.0F, 9, 7, 3, 0.0F);
         setRotateAngle(eyebrow_R, 0.0F, 0.0F, -0.12217304763960307F);
-        this.wingWebbing3_R = new ExtendedModelRenderer(this, 144, 71);
+        this.wingWebbing3_R = new AdvancedModelRenderer(this, 144, 71);
         this.wingWebbing3_R.mirror = true;
         this.wingWebbing3_R.setRotationPoint(-1.0F, 0.0F, 0.0F);
         this.wingWebbing3_R.addBox(-43.0F, 0.0F, -13.0F, 43, 0, 26, 0.0F);
         setRotateAngle(wingWebbing3_R, 0.0F, 0.30543261909900765F, 0.0F);
-        this.wingWebbing3_RReversed = new ExtendedModelRenderer(this, 144, 71);
+        this.wingWebbing3_RReversed = new AdvancedModelRenderer(this, 144, 71);
         this.wingWebbing3_RReversed.mirror = false;
         this.wingWebbing3_RReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
         this.wingWebbing3_RReversed.addBox(-43.0F, 0.0F, -13.0F, 43, 0, 26, 0.0F);
 //        wingWebbing3_RReversed.setScale(1, -1, 1);
-        this.wingWebbing3_L = new ExtendedModelRenderer(this, 144, 71);
+        this.wingWebbing3_L = new AdvancedModelRenderer(this, 144, 71);
         this.wingWebbing3_L.setRotationPoint(1.0F, 0.0F, 0.0F);
         this.wingWebbing3_L.addBox(0.0F, 0.0F, -13.0F, 43, 0, 26, 0.0F);
         setRotateAngle(wingWebbing3_L, 0.0F, -0.30543261909900765F, 0.0F);
-        this.wingWebbing3_LReversed = new ExtendedModelRenderer(this, 144, 71);
+        this.wingWebbing3_LReversed = new AdvancedModelRenderer(this, 144, 71);
         this.wingWebbing3_LReversed.mirror = true;
         this.wingWebbing3_LReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
         this.wingWebbing3_LReversed.addBox(0.0F, 0.0F, -13.0F, 43, 0, 26, 0.0F);
@@ -246,12 +244,12 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         this.spike5joint.setRotationPoint(0.0F, 0.0F, -4.05F);
         this.spike5joint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(spike5joint, 0.5235987755982988F, 0.0F, 0.0F);
-        this.wingWebbing1_R = new ExtendedModelRenderer(this, 119, 97);
+        this.wingWebbing1_R = new AdvancedModelRenderer(this, 119, 97);
         this.wingWebbing1_R.mirror = true;
         this.wingWebbing1_R.setRotationPoint(2.0F, 0.0F, 0.0F);
         this.wingWebbing1_R.addBox(-53.0F, 0.0F, -16.0F, 53, 0, 31, 0.0F);
         setRotateAngle(wingWebbing1_R, 0.0F, 0.30543261909900765F, 0.0F);
-        this.wingWebbing1_RReversed = new ExtendedModelRenderer(this, 119, 97);
+        this.wingWebbing1_RReversed = new AdvancedModelRenderer(this, 119, 97);
         this.wingWebbing1_RReversed.mirror = false;
         this.wingWebbing1_RReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
         this.wingWebbing1_RReversed.addBox(-53.0F, 0.0F, -16.0F, 53, 0, 31, 0.0F);
@@ -263,19 +261,19 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         this.tail1 = new SocketModelRenderer(this, 140, 0);
         this.tail1.setRotationPoint(0.0F, 1.5F, 17.0F);
         this.tail1.addBox(-7.5F, -4.5F, -3.0F, 15, 9, 19, 0.0F);
-        this.wingWebbing5_R = new ExtendedModelRenderer(this, 193, 128);
+        this.wingWebbing5_R = new AdvancedModelRenderer(this, 193, 128);
         this.wingWebbing5_R.mirror = true;
         this.wingWebbing5_R.setRotationPoint(-12.0F, 0.0F, 1.0F);
         this.wingWebbing5_R.addBox(-8.0F, 0.0F, 0.0F, 20, 0, 23, 0.0F);
-        this.wingWebbing5_RReversed = new ExtendedModelRenderer(this, 193, 128);
+        this.wingWebbing5_RReversed = new AdvancedModelRenderer(this, 193, 128);
         this.wingWebbing5_RReversed.mirror = false;
         this.wingWebbing5_RReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
         this.wingWebbing5_RReversed.addBox(-8.0F, 0.0F, 0.0F, 20, 0, 23, 0.0F);
 //        wingWebbing5_RReversed.setScale(1, -1, 1);
-        this.backFin3 = new ExtendedModelRenderer(this, 170, 123);
+        this.backFin3 = new AdvancedModelRenderer(this, 170, 123);
         this.backFin3.setRotationPoint(0.0F, -3.0F, 0.0F);
         this.backFin3.addBox(0.0F, -9.0F, -3.0F, 0, 9, 19, 0.0F);
-        this.backFin3Reversed = new ExtendedModelRenderer(this, 170, 123);
+        this.backFin3Reversed = new AdvancedModelRenderer(this, 170, 123);
         this.backFin3Reversed.mirror = true;
         this.backFin3Reversed.setRotationPoint(0.001F, 0.0F, 0.0F);
         this.backFin3Reversed.addBox(0.0F, -9.0F, -3.0F, 0, 9, 19, 0.0F);
@@ -283,11 +281,11 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         this.handJoint_L = new AdvancedModelRenderer(this, 0, 0);
         this.handJoint_L.setRotationPoint(20.0F, 0.0F, 0.0F);
         this.handJoint_L.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
-        this.wingWebbing4_L = new ExtendedModelRenderer(this, 159, 36);
+        this.wingWebbing4_L = new AdvancedModelRenderer(this, 159, 36);
         this.wingWebbing4_L.setRotationPoint(0.5F, 0.0F, 0.0F);
         this.wingWebbing4_L.addBox(0.0F, 0.0F, -22.0F, 31, 0, 35, 0.0F);
         setRotateAngle(wingWebbing4_L, 0.0F, -0.6544984694978736F, 0.0F);
-        this.wingWebbing4_LReversed = new ExtendedModelRenderer(this, 159, 36);
+        this.wingWebbing4_LReversed = new AdvancedModelRenderer(this, 159, 36);
         this.wingWebbing4_LReversed.mirror = true;
         this.wingWebbing4_LReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
         this.wingWebbing4_LReversed.addBox(0.0F, 0.0F, -22.0F, 31, 0, 35, 0.0F);
@@ -296,11 +294,11 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         this.wingFrame3_L.setRotationPoint(4.0F, 0.0F, 0.0F);
         this.wingFrame3_L.addBox(0.0F, -1.5F, -1.5F, 43, 3, 3, 0.0F);
         setRotateAngle(wingFrame3_L, 0.0F, -1.2217304763960306F, 0.0F);
-        this.wingWebbing1_L = new ExtendedModelRenderer(this, 119, 97);
+        this.wingWebbing1_L = new AdvancedModelRenderer(this, 119, 97);
         this.wingWebbing1_L.setRotationPoint(-2.0F, 0.0F, 0.0F);
         this.wingWebbing1_L.addBox(0.0F, 0.0F, -16.0F, 53, 0, 31, 0.0F);
         setRotateAngle(wingWebbing1_L, 0.0F, -0.30543261909900765F, 0.0F);
-        this.wingWebbing1_LReversed = new ExtendedModelRenderer(this, 119, 97);
+        this.wingWebbing1_LReversed = new AdvancedModelRenderer(this, 119, 97);
         this.wingWebbing1_LReversed.mirror = true;
         this.wingWebbing1_LReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
         this.wingWebbing1_LReversed.addBox(0.0F, 0.0F, -16.0F, 53, 0, 31, 0.0F);
@@ -319,12 +317,12 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         this.wingFrame2_R.setRotationPoint(-7.0F, 0.0F, 0.0F);
         this.wingFrame2_R.addBox(-50.0F, -1.5F, -1.5F, 50, 3, 3, 0.0F);
         setRotateAngle(wingFrame2_R, 0.0F, 0.6108652381980153F, 0.0F);
-        this.wingWebbing2_R = new ExtendedModelRenderer(this, 20, 98);
+        this.wingWebbing2_R = new AdvancedModelRenderer(this, 20, 98);
         this.wingWebbing2_R.mirror = true;
         this.wingWebbing2_R.setRotationPoint(1.5F, 0.0F, 0.0F);
         this.wingWebbing2_R.addBox(-50.0F, 0.0F, -15.0F, 50, 0, 30, 0.0F);
         setRotateAngle(wingWebbing2_R, 0.0F, 0.30543261909900765F, 0.0F);
-        this.wingWebbing2_RReversed = new ExtendedModelRenderer(this, 20, 98);
+        this.wingWebbing2_RReversed = new AdvancedModelRenderer(this, 20, 98);
         this.wingWebbing2_RReversed.mirror = false;
         this.wingWebbing2_RReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
         this.wingWebbing2_RReversed.addBox(-50.0F, 0.0F, -15.0F, 50, 0, 30, 0.0F);
@@ -361,21 +359,21 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         this.teethUpper.setRotationPoint(0.0F, 0.3F, -6.65F);
         this.teethUpper.addBox(-4.0F, -4.0F, -3.0F, 8, 8, 3, 0.0F);
         setRotateAngle(teethUpper, 1.5707963267948966F, 0.7853981633974483F, 0.0F);
-        this.backWing_R = new ExtendedModelRenderer(this, 35, 128);
+        this.backWing_R = new AdvancedModelRenderer(this, 35, 128);
         this.backWing_R.mirror = true;
         this.backWing_R.setRotationPoint(-4.0F, 0.0F, 4.0F);
         this.backWing_R.addBox(-30.0F, 0.0F, 0.0F, 30, 0, 25, 0.0F);
         setRotateAngle(backWing_R, 0.0F, 0.5235987755982988F, 0.0F);
-        this.backWing_RReversed = new ExtendedModelRenderer(this, 35, 128);
+        this.backWing_RReversed = new AdvancedModelRenderer(this, 35, 128);
         this.backWing_RReversed.mirror = false;
         this.backWing_RReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
         this.backWing_RReversed.addBox(-30.0F, 0.0F, 0.0F, 30, 0, 25, 0.0F);
 //        backWing_RReversed.setScale(1, -1, 1);
-        this.tailFin = new ExtendedModelRenderer(this, -30, 128);
+        this.tailFin = new AdvancedModelRenderer(this, -30, 128);
         this.tailFin.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.tailFin.addBox(-5.0F, 0.0F, -5.0F, 30, 0, 30, 0.0F);
         setRotateAngle(tailFin, 0.0F, -0.7853981633974483F, 0.0F);
-        this.tailFinReversed = new ExtendedModelRenderer(this, -30, 128);
+        this.tailFinReversed = new AdvancedModelRenderer(this, -30, 128);
         this.tailFinReversed.mirror = true;
         this.tailFinReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
         this.tailFinReversed.addBox(-5.0F, 0.0F, -5.0F, 30, 0, 30, 0.0F);
@@ -391,10 +389,10 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         this.underHead.setRotationPoint(0.0F, -1.82F, -1.59F);
         this.underHead.addBox(-4.5F, 1.12F, -4.03F, 9, 4, 7, 0.0F);
         setRotateAngle(underHead, -0.17453292519943295F, 0.0F, 0.0F);
-        this.backFin2 = new ExtendedModelRenderer(this, 170, 109);
+        this.backFin2 = new AdvancedModelRenderer(this, 170, 109);
         this.backFin2.setRotationPoint(0.0F, -4.5F, 0.0F);
         this.backFin2.addBox(0.0F, -14.0F, -3.0F, 0, 14, 19, 0.0F);
-        this.backFin2Reversed = new ExtendedModelRenderer(this, 170, 109);
+        this.backFin2Reversed = new AdvancedModelRenderer(this, 170, 109);
         this.backFin2Reversed.mirror = true;
         this.backFin2Reversed.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.backFin2Reversed.addBox(0.0F, -14.0F, -3.0F, 0, 14, 19, 0.0F);
@@ -417,20 +415,20 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         this.spike1joint.setRotationPoint(0.0F, 1.0F, -12.0F);
         this.spike1joint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(spike1joint, 0.5235987755982988F, 0.0F, 0.0F);
-        this.backFin1 = new ExtendedModelRenderer(this, 120, 103);
+        this.backFin1 = new AdvancedModelRenderer(this, 120, 103);
         this.backFin1.setRotationPoint(0.0F, -4.0F, -3.0F);
         this.backFin1.addBox(0.0F, -15.0F, -4.0F, 0, 15, 25, 0.0F);
-        this.backFin1Reversed = new ExtendedModelRenderer(this, 120, 127);
+        this.backFin1Reversed = new AdvancedModelRenderer(this, 120, 127);
         this.backFin1Reversed.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.backFin1Reversed.addBox(0.0F, -15.0F, -4.0F, 0, 15, 25, 0.0F);
         this.backFin1Reversed.mirror = true;
 //        backFin1Reversed.setScale(-1, 1, 1);
-        this.wingWebbing4_R = new ExtendedModelRenderer(this, 159, 36);
+        this.wingWebbing4_R = new AdvancedModelRenderer(this, 159, 36);
         this.wingWebbing4_R.mirror = true;
         this.wingWebbing4_R.setRotationPoint(-0.5F, 0.0F, 0.0F);
         this.wingWebbing4_R.addBox(-31.0F, 0.0F, -22.0F, 31, 0, 35, 0.0F);
         setRotateAngle(wingWebbing4_R, 0.0F, 0.6544984694978736F, 0.0F);
-        this.wingWebbing4_RReversed = new ExtendedModelRenderer(this, 159, 36);
+        this.wingWebbing4_RReversed = new AdvancedModelRenderer(this, 159, 36);
         this.wingWebbing4_RReversed.mirror = false;
         this.wingWebbing4_RReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
         this.wingWebbing4_RReversed.addBox(-31.0F, 0.0F, -22.0F, 31, 0, 35, 0.0F);
@@ -439,11 +437,11 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         this.upperArm_R.mirror = true;
         this.upperArm_R.setRotationPoint(0.0F, 2.0F, 0.0F);
         this.upperArm_R.addBox(-16.0F, -2.0F, -3.0F, 18, 4, 5, 0.0F);
-        this.backWing_L = new ExtendedModelRenderer(this, 35, 128);
+        this.backWing_L = new AdvancedModelRenderer(this, 35, 128);
         this.backWing_L.setRotationPoint(4.0F, 0.0F, 4.0F);
         this.backWing_L.addBox(0.0F, 0.0F, 0.0F, 30, 0, 25, 0.0F);
         setRotateAngle(backWing_L, 0.0F, -0.5235987755982988F, 0.0F);
-        this.backWing_LReversed = new ExtendedModelRenderer(this, 35, 128);
+        this.backWing_LReversed = new AdvancedModelRenderer(this, 35, 128);
         this.backWing_LReversed.mirror = true;
         this.backWing_LReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
         this.backWing_LReversed.addBox(0.0F, 0.0F, 0.0F, 30, 0, 25, 0.0F);
@@ -452,11 +450,11 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         this.spike3.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.spike3.addBox(0.0F, 0.0F, 0.0F, 15, 4, 15, 0.0F);
         setRotateAngle(spike3, 0.0F, -0.7853981633974483F, 0.0F);
-        this.wingWebbing6_R = new ExtendedModelRenderer(this, -24, 94);
+        this.wingWebbing6_R = new AdvancedModelRenderer(this, -24, 94);
         this.wingWebbing6_R.mirror = true;
         this.wingWebbing6_R.setRotationPoint(-0.5F, 0.0F, -2.0F);
         this.wingWebbing6_R.addBox(-14.5F, 0.0F, 0.0F, 25, 0, 24, 0.0F);
-        this.wingWebbing6_RReversed = new ExtendedModelRenderer(this, -24, 94);
+        this.wingWebbing6_RReversed = new AdvancedModelRenderer(this, -24, 94);
         this.wingWebbing6_RReversed.mirror = false;
         this.wingWebbing6_RReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
         this.wingWebbing6_RReversed.addBox(-14.5F, 0.0F, 0.0F, 25, 0, 24, 0.0F);
@@ -465,10 +463,10 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         this.spike2joint.setRotationPoint(0.0F, 1.0F, -4.0F);
         this.spike2joint.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
         setRotateAngle(spike2joint, 0.5235987755982988F, 0.0F, 0.0F);
-        this.wingWebbing6_L = new ExtendedModelRenderer(this, -24, 94);
+        this.wingWebbing6_L = new AdvancedModelRenderer(this, -24, 94);
         this.wingWebbing6_L.setRotationPoint(0.5F, 0.0F, -2.0F);
         this.wingWebbing6_L.addBox(-10.5F, 0.0F, 0.0F, 25, 0, 24, 0.0F);
-        this.wingWebbing6_LReversed = new ExtendedModelRenderer(this, -24, 94);
+        this.wingWebbing6_LReversed = new AdvancedModelRenderer(this, -24, 94);
         this.wingWebbing6_LReversed.mirror = true;
         this.wingWebbing6_LReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
         this.wingWebbing6_LReversed.addBox(-10.5F, 0.0F, 0.0F, 25, 0, 24, 0.0F);
@@ -604,7 +602,7 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         tailOriginal = new SocketModelRenderer[]{tail1, tail2, tail3, tail4, tail5, tailEnd};
         tailDynamic = new SocketModelRenderer[tailOriginal.length];
 
-        reversePlanes = new ExtendedModelRenderer[] {
+        reversePlanes = new AdvancedModelRenderer[] {
                 backWing_LReversed,
                 backWing_RReversed,
                 tailFinReversed,
@@ -664,9 +662,9 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         this.root.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         if (tail != null) tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha, tailDynamic);
-        for (SocketModelRenderer socketModelRenderer : tailOriginal) {
-            socketModelRenderer.showModel = false;
-        }
+//        for (SocketModelRenderer socketModelRenderer : tailOriginal) {
+//            socketModelRenderer.showModel = false;
+//        }
     }
 
     public void setDefaultAngle(EntityNaga entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
@@ -1302,7 +1300,7 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         handJoint_L.rotationPointY += 0.01;
         handJoint_R.rotationPointY += 0.01;
 
-        for (ExtendedModelRenderer m : reversePlanes) {
+        for (AdvancedModelRenderer m : reversePlanes) {
             setRotateAngle(m, (float)Math.PI, (float)Math.PI, 0);
         }
 
@@ -1417,8 +1415,8 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
      * Sets the default pose to the current pose of this model
      */
     public void updateDefaultPoseExtendeds() {
-        this.boxList.stream().filter(modelRenderer -> modelRenderer instanceof ExtendedModelRenderer).forEach(modelRenderer -> {
-            ExtendedModelRenderer extendedModelRenderer = (ExtendedModelRenderer) modelRenderer;
+        this.boxList.stream().filter(modelRenderer -> modelRenderer instanceof AdvancedModelRenderer).forEach(modelRenderer -> {
+            AdvancedModelRenderer extendedModelRenderer = (AdvancedModelRenderer) modelRenderer;
             extendedModelRenderer.updateDefaultPose();
         });
     }
@@ -1427,8 +1425,8 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
      * Sets the current pose to the previously set default pose
      */
     public void resetToDefaultPoseExtendeds() {
-        this.boxList.stream().filter(modelRenderer -> modelRenderer instanceof ExtendedModelRenderer).forEach(modelRenderer -> {
-            ExtendedModelRenderer extendedModelRenderer = (ExtendedModelRenderer) modelRenderer;
+        this.boxList.stream().filter(modelRenderer -> modelRenderer instanceof AdvancedModelRenderer).forEach(modelRenderer -> {
+            AdvancedModelRenderer extendedModelRenderer = (AdvancedModelRenderer) modelRenderer;
             extendedModelRenderer.resetToDefaultPose();
         });
     }

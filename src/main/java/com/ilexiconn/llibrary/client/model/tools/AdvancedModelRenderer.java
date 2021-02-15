@@ -2,14 +2,20 @@ package com.ilexiconn.llibrary.client.model.tools;
 
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.lang.reflect.Field;
 
 /**
  * An enhanced ModelRenderer
@@ -19,51 +25,84 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  */
 @OnlyIn(Dist.CLIENT)
 public class AdvancedModelRenderer extends ModelRenderer {
+    private static final float MINIMUM_SCALE = 0.000001f;
+
     public float defaultRotationX, defaultRotationY, defaultRotationZ;
     public float defaultPositionX, defaultPositionY, defaultPositionZ;
     public float scaleX = 1.0F, scaleY = 1.0F, scaleZ = 1.0F;
     public float opacity = 1.0F;
-//    public int textureOffsetX, textureOffsetY;
     public boolean scaleChildren;
     private AdvancedModelBase model;
     private AdvancedModelRenderer parent;
-    private int displayList;
-    private boolean compiled;
+    private int defaultBrightness;
+    private boolean doubleSided = true;
+    private boolean hasLighting = true;
+    private boolean isHidden = false;
+
+    public ObjectList<ModelBox> cubeList;
+    public ObjectList<ModelRenderer> childModels;
+    public int textureOffsetX, textureOffsetY;
+    private float textureWidth;
+    private float textureHeight;
 
     public AdvancedModelRenderer(AdvancedModelBase model) {
-        super(model);
-        this.model = model;
+        this(model, 0, 0);
     }
 
     public AdvancedModelRenderer(AdvancedModelBase model, int textureOffsetX, int textureOffsetY) {
         super(model, textureOffsetX, textureOffsetY);
         this.model = model;
+        this.textureWidth = model.textureWidth;
+        this.textureHeight = model.textureHeight;
+        this.textureOffsetX = textureOffsetX;
+        this.textureOffsetY = textureOffsetY;
+        this.cubeList = new ObjectArrayList();
+        this.childModels = new ObjectArrayList();
+    }
+
+    @Override
+    public ModelRenderer setTextureSize(int textureWidthIn, int textureHeightIn) {
+        textureWidth = textureWidthIn;
+        textureHeight = textureHeightIn;
+        return super.setTextureSize(textureWidthIn, textureHeightIn);
     }
 
     /*public AdvancedModelRenderer add3DTexture(float posX, float posY, float posZ, int width, int height) {
         this.cubeList.add(new Model3DTexture(this, this.textureOffsetX, this.textureOffsetY, posX, posY, posZ, width, height));
         return this;
-    }
-
-    @Override
-    public ModelRenderer addBox(float offX, float offY, float offZ, int width, int height, int depth) {
-        this.cubeList.add(new ModelBox(this, this.textureOffsetX, this.textureOffsetY, offX, offY, offZ, width, height, depth, 0.0F));
-        return this;
-    }
-
-    @Override
-    public ModelRenderer addBox(float offX, float offY, float offZ, int width, int height, int depth, boolean mirrored) {
-        this.cubeList.add(new ModelBox(this, this.textureOffsetX, this.textureOffsetY, offX, offY, offZ, width, height, depth, 0.0F, mirrored));
-        return this;
     }*/
 
-    /**
-     * Creates a textured box.
-     */
-    /*@Override
-    public void addBox(float offX, float offY, float offZ, int width, int height, int depth, float scaleFactor) {
-        this.cubeList.add(new ModelBox(this, this.textureOffsetX, this.textureOffsetY, offX, offY, offZ, width, height, depth, scaleFactor));
-    }*/
+    public AdvancedModelRenderer addBox(String partName, float x, float y, float z, int width, int height, int depth, float delta, int texX, int texY) {
+      this.setTextureOffset(texX, texY);
+      this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, (float)width, (float)height, (float)depth, delta, delta, delta, this.mirror, false);
+      return this;
+   }
+
+   public AdvancedModelRenderer addBox(float x, float y, float z, float width, float height, float depth) {
+      this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, 0.0F, 0.0F, 0.0F, this.mirror, false);
+      return this;
+   }
+
+   public AdvancedModelRenderer addBox(float x, float y, float z, float width, float height, float depth, boolean mirrorIn) {
+      this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, 0.0F, 0.0F, 0.0F, mirrorIn, false);
+      return this;
+   }
+
+   public void addBox(float x, float y, float z, float width, float height, float depth, float delta) {
+      this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, delta, delta, delta, this.mirror, false);
+   }
+
+   public void addBox(float x, float y, float z, float width, float height, float depth, float deltaX, float deltaY, float deltaZ) {
+      this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, deltaX, deltaY, deltaZ, this.mirror, false);
+   }
+
+   public void addBox(float x, float y, float z, float width, float height, float depth, float delta, boolean mirrorIn) {
+      this.addBox(this.textureOffsetX, this.textureOffsetY, x, y, z, width, height, depth, delta, delta, delta, mirrorIn, false);
+   }
+
+   private void addBox(int texOffX, int texOffY, float x, float y, float z, float width, float height, float depth, float deltaX, float deltaY, float deltaZ, boolean mirror, boolean p_228305_13_) {
+      this.cubeList.add(new AdvancedModelRenderer.ModelBox(texOffX, texOffY, x, y, z, width, height, depth, deltaX, deltaY, deltaZ, mirror, this.textureWidth, this.textureHeight));
+   }
 
     /**
      * If true, when using setScale, the children of this model part will be scaled as well as just this part. If false, just this part will be scaled.
@@ -84,25 +123,42 @@ public class AdvancedModelRenderer extends ModelRenderer {
      * @since 1.1.0
      */
     public void setScale(float scaleX, float scaleY, float scaleZ) {
-        this.scaleX = scaleX;
-        this.scaleY = scaleY;
-        this.scaleZ = scaleZ;
+        setScaleX(scaleX);
+        setScaleY(scaleY);
+        setScaleZ(scaleZ);
     }
 
     public void setScaleX(float scaleX) {
-        this.scaleX = scaleX;
+        this.scaleX = Math.max(MINIMUM_SCALE, scaleX);
     }
 
     public void setScaleY(float scaleY) {
-        this.scaleY = scaleY;
+        this.scaleY = Math.max(MINIMUM_SCALE, scaleY);
     }
 
     public void setScaleZ(float scaleZ) {
-        this.scaleZ = scaleZ;
+        this.scaleZ = Math.max(MINIMUM_SCALE, scaleZ);
     }
-    
+
     public void setOpacity(float opacity) {
         this.opacity = opacity;
+    }
+
+    public void setHasLighting(boolean hasLighting) {
+        this.hasLighting = hasLighting;
+    }
+
+    public void setDoubleSided(boolean doubleSided) {
+        this.doubleSided = doubleSided;
+    }
+
+    public void setIsHidden(boolean isHidden) {
+        this.isHidden = isHidden;
+    }
+
+    // Must call this before rendering a glowing model renderer (hasLighting = false)
+    public void setDefaultBrightness(Entity entity) {
+        defaultBrightness = (int) entity.getBrightness();
     }
 
     /**
@@ -132,10 +188,11 @@ public class AdvancedModelRenderer extends ModelRenderer {
     }
 
     @Override
-    public void addChild(ModelRenderer child) {
-        super.addChild(child);
-        if (child instanceof AdvancedModelRenderer) {
-            AdvancedModelRenderer advancedChild = (AdvancedModelRenderer) child;
+    public void addChild(ModelRenderer renderer) {
+        super.addChild(renderer);
+        this.childModels.add(renderer);
+        if (renderer instanceof AdvancedModelRenderer) {
+            AdvancedModelRenderer advancedChild = (AdvancedModelRenderer) renderer;
             advancedChild.setParent(this);
         }
     }
@@ -156,33 +213,60 @@ public class AdvancedModelRenderer extends ModelRenderer {
         this.parent = parent;
     }
 
-    /**
-     * Post renders this box with all its parents
-     *
-     * @param scale the render scale
-     */
-//    public void parentedPostRender(float scale) {
-//        if (this.parent != null) {
-//            this.parent.parentedPostRender(scale);
-//        }
-//        this.postRender(scale);
-//    }
-
-    /**
-     * Renders this box with all it's parents
-     *
-     * @param scale the render scale
-     */
-//    public void renderWithParents(float scale) {
-//        if (this.parent != null) {
-//            this.parent.renderWithParents(scale);
-//        }
-//        this.render(scale);
-//    }
 
     @Override
+    public void translateRotate(MatrixStack matrixStackIn) {
+        super.translateRotate(matrixStackIn);
+        matrixStackIn.scale(scaleX, scaleY, scaleZ);
+    }
+
+    // Copied from parent class
+    @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        super.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        if (this.showModel) {
+            if (!this.cubeList.isEmpty() || !this.childModels.isEmpty()) {
+                matrixStackIn.push();
+
+                this.translateRotate(matrixStackIn);
+                if (!isHidden) this.doRender(matrixStackIn.getLast(), bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha * opacity);
+                if (!scaleChildren) {
+                    matrixStackIn.scale(1.f / scaleX, 1.f / scaleY, 1.f / scaleZ);
+                }
+
+                // Render children
+                for(ModelRenderer modelrenderer : this.childModels) {
+                    modelrenderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                }
+
+                matrixStackIn.pop();
+            }
+        }
+    }
+
+    // Copied from parent class
+    private void doRender(MatrixStack.Entry matrixEntryIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        Matrix4f matrix4f = matrixEntryIn.getMatrix();
+        Matrix3f matrix3f = matrixEntryIn.getNormal();
+
+        for(AdvancedModelRenderer.ModelBox modelrenderer$modelbox : this.cubeList) {
+            for(AdvancedModelRenderer.TexturedQuad modelrenderer$texturedquad : modelrenderer$modelbox.quads) {
+                Vector3f vector3f = modelrenderer$texturedquad.normal.copy();
+                vector3f.transform(matrix3f);
+                float f = vector3f.getX();
+                float f1 = vector3f.getY();
+                float f2 = vector3f.getZ();
+
+                for(int i = 0; i < 4; ++i) {
+                    AdvancedModelRenderer.PositionTextureVertex modelrenderer$positiontexturevertex = modelrenderer$texturedquad.vertexPositions[i];
+                    float f3 = modelrenderer$positiontexturevertex.position.getX() / 16.0F;
+                    float f4 = modelrenderer$positiontexturevertex.position.getY() / 16.0F;
+                    float f5 = modelrenderer$positiontexturevertex.position.getZ() / 16.0F;
+                    Vector4f vector4f = new Vector4f(f3, f4, f5, 1.0F);
+                    vector4f.transform(matrix4f);
+                    bufferIn.addVertex(vector4f.getX(), vector4f.getY(), vector4f.getZ(), red, green, blue, alpha, modelrenderer$positiontexturevertex.textureU, modelrenderer$positiontexturevertex.textureV, packedOverlayIn, packedLightIn, f, f1, f2);
+                }
+            }
+        }
     }
 
     /*@Override
@@ -432,5 +516,118 @@ public class AdvancedModelRenderer extends ModelRenderer {
         rendererPos.y -= 1.5f;
         rendererPos.scale(16);
         setRotationPoint((float)rendererPos.x, -(float)rendererPos.y, -(float)rendererPos.z);*/ //TODO
+    }
+
+
+    // From parent class. Copied to avoid using reflection to access private data
+    @OnlyIn(Dist.CLIENT)
+    public static class ModelBox {
+        private final AdvancedModelRenderer.TexturedQuad[] quads;
+        public final float posX1;
+        public final float posY1;
+        public final float posZ1;
+        public final float posX2;
+        public final float posY2;
+        public final float posZ2;
+
+        public ModelBox(int texOffX, int texOffY, float x, float y, float z, float width, float height, float depth, float deltaX, float deltaY, float deltaZ, boolean mirror, float texWidth, float texHeight) {
+            this.posX1 = x;
+            this.posY1 = y;
+            this.posZ1 = z;
+            this.posX2 = x + width;
+            this.posY2 = y + height;
+            this.posZ2 = z + depth;
+            this.quads = new AdvancedModelRenderer.TexturedQuad[6];
+            float f = x + width;
+            float f1 = y + height;
+            float f2 = z + depth;
+            x = x - deltaX;
+            y = y - deltaY;
+            z = z - deltaZ;
+            f = f + deltaX;
+            f1 = f1 + deltaY;
+            f2 = f2 + deltaZ;
+            if (mirror) {
+                float f3 = f;
+                f = x;
+                x = f3;
+            }
+
+            AdvancedModelRenderer.PositionTextureVertex modelrenderer$positiontexturevertex7 = new AdvancedModelRenderer.PositionTextureVertex(x, y, z, 0.0F, 0.0F);
+            AdvancedModelRenderer.PositionTextureVertex modelrenderer$positiontexturevertex = new AdvancedModelRenderer.PositionTextureVertex(f, y, z, 0.0F, 8.0F);
+            AdvancedModelRenderer.PositionTextureVertex modelrenderer$positiontexturevertex1 = new AdvancedModelRenderer.PositionTextureVertex(f, f1, z, 8.0F, 8.0F);
+            AdvancedModelRenderer.PositionTextureVertex modelrenderer$positiontexturevertex2 = new AdvancedModelRenderer.PositionTextureVertex(x, f1, z, 8.0F, 0.0F);
+            AdvancedModelRenderer.PositionTextureVertex modelrenderer$positiontexturevertex3 = new AdvancedModelRenderer.PositionTextureVertex(x, y, f2, 0.0F, 0.0F);
+            AdvancedModelRenderer.PositionTextureVertex modelrenderer$positiontexturevertex4 = new AdvancedModelRenderer.PositionTextureVertex(f, y, f2, 0.0F, 8.0F);
+            AdvancedModelRenderer.PositionTextureVertex modelrenderer$positiontexturevertex5 = new AdvancedModelRenderer.PositionTextureVertex(f, f1, f2, 8.0F, 8.0F);
+            AdvancedModelRenderer.PositionTextureVertex modelrenderer$positiontexturevertex6 = new AdvancedModelRenderer.PositionTextureVertex(x, f1, f2, 8.0F, 0.0F);
+            float f4 = (float)texOffX;
+            float f5 = (float)texOffX + depth;
+            float f6 = (float)texOffX + depth + width;
+            float f7 = (float)texOffX + depth + width + width;
+            float f8 = (float)texOffX + depth + width + depth;
+            float f9 = (float)texOffX + depth + width + depth + width;
+            float f10 = (float)texOffY;
+            float f11 = (float)texOffY + depth;
+            float f12 = (float)texOffY + depth + height;
+            this.quads[2] = new AdvancedModelRenderer.TexturedQuad(new AdvancedModelRenderer.PositionTextureVertex[]{modelrenderer$positiontexturevertex4, modelrenderer$positiontexturevertex3, modelrenderer$positiontexturevertex7, modelrenderer$positiontexturevertex}, f5, f10, f6, f11, texWidth, texHeight, mirror, Direction.DOWN);
+            this.quads[3] = new AdvancedModelRenderer.TexturedQuad(new AdvancedModelRenderer.PositionTextureVertex[]{modelrenderer$positiontexturevertex1, modelrenderer$positiontexturevertex2, modelrenderer$positiontexturevertex6, modelrenderer$positiontexturevertex5}, f6, f11, f7, f10, texWidth, texHeight, mirror, Direction.UP);
+            this.quads[1] = new AdvancedModelRenderer.TexturedQuad(new AdvancedModelRenderer.PositionTextureVertex[]{modelrenderer$positiontexturevertex7, modelrenderer$positiontexturevertex3, modelrenderer$positiontexturevertex6, modelrenderer$positiontexturevertex2}, f4, f11, f5, f12, texWidth, texHeight, mirror, Direction.WEST);
+            this.quads[4] = new AdvancedModelRenderer.TexturedQuad(new AdvancedModelRenderer.PositionTextureVertex[]{modelrenderer$positiontexturevertex, modelrenderer$positiontexturevertex7, modelrenderer$positiontexturevertex2, modelrenderer$positiontexturevertex1}, f5, f11, f6, f12, texWidth, texHeight, mirror, Direction.NORTH);
+            this.quads[0] = new AdvancedModelRenderer.TexturedQuad(new AdvancedModelRenderer.PositionTextureVertex[]{modelrenderer$positiontexturevertex4, modelrenderer$positiontexturevertex, modelrenderer$positiontexturevertex1, modelrenderer$positiontexturevertex5}, f6, f11, f8, f12, texWidth, texHeight, mirror, Direction.EAST);
+            this.quads[5] = new AdvancedModelRenderer.TexturedQuad(new AdvancedModelRenderer.PositionTextureVertex[]{modelrenderer$positiontexturevertex3, modelrenderer$positiontexturevertex4, modelrenderer$positiontexturevertex5, modelrenderer$positiontexturevertex6}, f8, f11, f9, f12, texWidth, texHeight, mirror, Direction.SOUTH);
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    static class PositionTextureVertex {
+        public final Vector3f position;
+        public final float textureU;
+        public final float textureV;
+
+        public PositionTextureVertex(float x, float y, float z, float texU, float texV) {
+            this(new Vector3f(x, y, z), texU, texV);
+        }
+
+        public AdvancedModelRenderer.PositionTextureVertex setTextureUV(float texU, float texV) {
+            return new AdvancedModelRenderer.PositionTextureVertex(this.position, texU, texV);
+        }
+
+        public PositionTextureVertex(Vector3f posIn, float texU, float texV) {
+            this.position = posIn;
+            this.textureU = texU;
+            this.textureV = texV;
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    static class TexturedQuad {
+        public final AdvancedModelRenderer.PositionTextureVertex[] vertexPositions;
+        public final Vector3f normal;
+
+        public TexturedQuad(AdvancedModelRenderer.PositionTextureVertex[] positionsIn, float u1, float v1, float u2, float v2, float texWidth, float texHeight, boolean mirrorIn, Direction directionIn) {
+            this.vertexPositions = positionsIn;
+            float f = 0.0F / texWidth;
+            float f1 = 0.0F / texHeight;
+            positionsIn[0] = positionsIn[0].setTextureUV(u2 / texWidth - f, v1 / texHeight + f1);
+            positionsIn[1] = positionsIn[1].setTextureUV(u1 / texWidth + f, v1 / texHeight + f1);
+            positionsIn[2] = positionsIn[2].setTextureUV(u1 / texWidth + f, v2 / texHeight - f1);
+            positionsIn[3] = positionsIn[3].setTextureUV(u2 / texWidth - f, v2 / texHeight - f1);
+            if (mirrorIn) {
+                int i = positionsIn.length;
+
+                for(int j = 0; j < i / 2; ++j) {
+                    AdvancedModelRenderer.PositionTextureVertex modelrenderer$positiontexturevertex = positionsIn[j];
+                    positionsIn[j] = positionsIn[i - 1 - j];
+                    positionsIn[i - 1 - j] = modelrenderer$positiontexturevertex;
+                }
+            }
+
+            this.normal = directionIn.toVector3f();
+            if (mirrorIn) {
+                this.normal.mul(-1.0F, 1.0F, 1.0F);
+            }
+
+        }
     }
 }

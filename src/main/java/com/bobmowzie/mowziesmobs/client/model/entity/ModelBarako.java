@@ -183,7 +183,7 @@ public class ModelBarako<T extends EntityBarako> extends MowzieEntityModel<T> {
         this.leftCalf.addBox(-3.0F, 0.0F, 0.0F, 6, 10, 6, 0.0F);
         leftCalf.scaleChildren = true;
         this.setRotateAngle(leftCalf, 1.1838568316277536F, 0.0F, 0.0F);
-        this.rightHand = new SocketModelRenderer(this, 0, 43);
+        this.rightHand = new AdvancedModelRenderer(this, 0, 43);
         this.rightHand.setRotationPoint(2.5F, 11.0F, 0.0F);
         this.rightHand.addBox(-3.0F, 0.0F, -1.5F, 6, 8, 3, 0.0F);
         this.setRotateAngle(rightHand, 1.0471975511965976F, 0.6981317007977318F, 0.0F);
@@ -236,7 +236,7 @@ public class ModelBarako<T extends EntityBarako> extends MowzieEntityModel<T> {
         this.upperLip.setRotationPoint(0.0F, 0.0F, -2.0F);
         this.upperLip.addBox(-6.0F, -2.0F, 0.0F, 12, 2, 2, 0.0F);
         upperLip.scaleChildren = true;
-        this.leftHand = new SocketModelRenderer(this, 0, 43);
+        this.leftHand = new AdvancedModelRenderer(this, 0, 43);
         this.leftHand.mirror = true;
         this.leftHand.setRotationPoint(-2.5F, 11.0F, 0.0F);
         this.leftHand.addBox(-3.0F, 0.0F, -1.5F, 6, 8, 3, 0.0F);

@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelWroughtnaut;
+import com.bobmowzie.mowziesmobs.client.render.entity.layer.WroughtnautEyesLayer;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -15,6 +16,7 @@ public class RenderWroughtnaut extends MobRenderer<EntityWroughtnaut, ModelWroug
 
     public RenderWroughtnaut(EntityRendererManager mgr) {
         super(mgr, new ModelWroughtnaut<>(), 1.0F);
+        addLayer(new WroughtnautEyesLayer<>(this));
     }
 
     @Override

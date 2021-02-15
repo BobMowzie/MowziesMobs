@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -82,12 +83,16 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
     public AdvancedModelRenderer swordJoint;
     public AdvancedModelRenderer rootBox;
     public AdvancedModelRenderer waistBendController;
-    public ExtendedModelRenderer eyeRight;
-    public ExtendedModelRenderer eyeLeft;
+    public AdvancedModelRenderer eyeRight;
+    public AdvancedModelRenderer eyeLeft;
     public SocketModelRenderer eyeRightSocket;
     public SocketModelRenderer eyeLeftSocket;
 
     public ModelWroughtnaut() {
+        this(false);
+    }
+
+    public ModelWroughtnaut(boolean eyesLayer) {
         this.textureWidth = 128;
         this.textureHeight = 128;
 
@@ -364,10 +369,10 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
         this.rootBox.setRotationPoint(0.0F, -1.0F, 0.0F);
         this.rootBox.addBox(0F, 0F, 0F, 0, 0, 0, 0.0F);
         setRotateAngle(rootBox, 0.0F, 0F, 0.0F);
-        this.eyeLeft = new ExtendedModelRenderer(this, 0, 0);
+        this.eyeLeft = new AdvancedModelRenderer(this, 0, 0);
         this.eyeLeft.setRotationPoint(-4, -4, 4);
         this.eyeLeft.addBox(-1, -0.5F, 0, 2, 1, 0, 0.0F);
-        this.eyeRight = new ExtendedModelRenderer(this, 0, 0);
+        this.eyeRight = new AdvancedModelRenderer(this, 0, 0);
         this.eyeRight.setRotationPoint(4, -4, 4);
         this.eyeRight.addBox(-1, -0.5F, 0, 2, 1, 0, 0.0F);
         eyeRightSocket = new SocketModelRenderer(this, 0, 0);
@@ -445,6 +450,16 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
         swordJoint.addChild(sword);
         head.addChild(eyeRightSocket);
         head.addChild(eyeLeftSocket);
+
+        if (eyesLayer) {
+            for (ModelRenderer box : boxList) {
+                if (box instanceof AdvancedModelRenderer) {
+                    ((AdvancedModelRenderer)box).setIsHidden(true);
+                }
+            }
+            eyeLeft.setIsHidden(false);
+            eyeRight.setIsHidden(false);
+        }
 
         //Corrections
         groin.rotateAngleY -= 45 * Math.PI / 180;

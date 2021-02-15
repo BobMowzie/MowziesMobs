@@ -46,6 +46,11 @@ public class ItemWroughtHelm extends ArmorItem {
     }
 
     @Override
+    public int getMaxDamage(ItemStack stack) {
+        return ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.breakable.get() ? super.getDamage(stack): 0;
+    }
+
+    @Override
     public void setDamage(ItemStack stack, int damage) {
         if (ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.breakable.get()) super.setDamage(stack, damage);
     }

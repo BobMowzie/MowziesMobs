@@ -2,9 +2,11 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelLantern;
+import com.bobmowzie.mowziesmobs.client.render.entity.layer.LanternGelLayer;
 import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityLantern;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.entity.monster.BlazeEntity;
 import net.minecraft.util.ResourceLocation;
 
 /**
@@ -15,6 +17,7 @@ public class RenderLantern extends MobRenderer<EntityLantern, ModelLantern<Entit
 
     public RenderLantern(EntityRendererManager mgr) {
         super(mgr, new ModelLantern<>(), 0.6f);
+        this.addLayer(new LanternGelLayer<>(this));
     }
 
     @Override
