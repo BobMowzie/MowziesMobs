@@ -317,7 +317,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         }
 
 //        if (ticksExisted > 50) setDead();
-//        if (getAnimation() == NO_ANIMATION) AnimationAPI.sendAnimPacket(this, 4);
+//        if (getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(this, ATTACK_ANIMATION);
     }
 
     @Override

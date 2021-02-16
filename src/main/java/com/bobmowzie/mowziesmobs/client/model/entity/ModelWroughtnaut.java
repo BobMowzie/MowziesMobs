@@ -470,8 +470,6 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
         eyeRight.rotationPointY -= 1;
         eyeLeft.rotationPointY -= 1;
         eyeLeft.rotateAngleY -= Math.PI / 2f;
-        eyeLeft.setHasLighting(false);
-        eyeRight.setHasLighting(false);
         
         eyeLeftSocket.setRotationPoint(eyeLeft.rotationPointX, eyeLeft.rotationPointY, eyeLeft.rotationPointZ);
         setRotateAngle(eyeLeft, eyeLeft.rotateAngleX, eyeLeft.rotateAngleY, eyeLeft.rotateAngleZ);
@@ -488,9 +486,6 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
 
     public void setDefaultAngles(EntityWroughtnaut entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
         resetToDefaultPose();
-
-        eyeLeft.setDefaultBrightness(entity);
-        eyeRight.setDefaultBrightness(entity);
 
         if (entity.isActive()) {
             eyeLeft.showModel = true;
@@ -598,19 +593,22 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
         walk(handLeft, 2 * globalSpeed, 0.2F, false, -0.5F, 0.6F, limbSwing, limbSwingAmount);
         lowerArmLeftJoint.rotateAngleY -= 0.65F * limbSwingAmount;
 
-        sword.rotationPointZ += 4;
-        sword.rotationPointX -= 5;
-        sword.rotationPointY -= 3;
+//        sword.rotationPointZ += 4;
+//        sword.rotationPointX -= 5;
+//        sword.rotationPointY -= 3;
         swordJoint.rotationPointX += 2;
-        swordJoint.rotationPointY -= 5;
+//        swordJoint.rotationPointY -= 5;
+        swordJoint.rotationPointZ -= 3;
         swordJoint.rotateAngleY += 1.3;
         swordJoint.rotateAngleX -= 0.5;
         swordJoint.rotateAngleZ -= 0.5;
+//
+//        sword.rotateAngleY += Math.PI / 2;
+        sword.rotationPointX -= 8;
+        sword.rotationPointZ -= 5.5;
+        sword.rotationPointY -= 5;
 
-        sword.rotateAngleY += Math.PI / 2;
-//        sword.rotationPointX += 10;
-        sword.rotationPointZ -= 22;
-        sword.rotationPointY += 10;
+        sword.setScale(1.7f);
     }
 
     @Override

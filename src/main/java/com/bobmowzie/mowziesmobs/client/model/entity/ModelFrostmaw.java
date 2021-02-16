@@ -314,7 +314,7 @@ public class ModelFrostmaw<T extends EntityFrostmaw> extends MowzieEntityModel<T
         this.iceCrystalJoint.setRotationPoint(0, 20, -20);
         this.iceCrystalHand = new AdvancedModelRenderer(this, 0, 0);
 //        this.iceCrystalHand.add3DTexture(-8, -8, 0, 16, 16);
-        this.iceCrystalHand.setScale(0.5f, 0.5f, 0.5f);
+//        this.iceCrystalHand.setScale(0.5f, 0.5f, 0.5f);
         this.iceCrystalHand.setRotationPoint(-28.5f, 10, -25.5f);
         
         headHair = new AdvancedModelRenderer(this);
@@ -1771,14 +1771,18 @@ public class ModelFrostmaw<T extends EntityFrostmaw> extends MowzieEntityModel<T
         leftThumb.rotationPointZ -= handController.rotationPointX * 6;
 
         iceCrystalJoint.rotateAngleX = -headJoint.rotateAngleX - chest.rotateAngleX - waist.rotateAngleX - root.rotateAngleX + 0.9f;
-        iceCrystal.rotateAngleY += (float)Math.PI/2;
-        iceCrystal.rotationPointY += 2 * Math.cos(0.15f * frame);
+//        iceCrystal.rotateAngleY += (float)Math.PI/2;
+        iceCrystal.rotationPointY += 2 * Math.cos(0.15f * frame) + 5;
+        iceCrystal.setScale(2);
+        iceCrystal.rotateAngleZ += (float)Math.PI;
+        iceCrystal.rotationPointY -= 6 * (1 - Math.min(jawJoint.rotateAngleX - jawJoint.defaultRotationX, 1.0f));
 
-        iceCrystalHand.rotationPointY -= 1.7f * Math.cos(0.1f * frame);
+        iceCrystalHand.rotationPointY -= 1.7f * Math.cos(0.1f * frame) - 1;
         iceCrystalHand.rotateAngleY -= frame * 0.05f;
+        iceCrystalHand.rotateAngleZ += Math.PI;
 
         if (entity.getHasCrystal()) {
-            iceCrystal.showModel = entity.getAnimation() != EntityFrostmaw.ACTIVATE_ANIMATION && entity.getAnimationTick() <= 28;
+            iceCrystal.showModel = !(entity.getAnimation() == EntityFrostmaw.ACTIVATE_ANIMATION && entity.getAnimationTick() <= 28);
 
             iceCrystalHand.showModel = !entity.active;
         }

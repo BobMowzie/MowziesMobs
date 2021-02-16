@@ -2,7 +2,9 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelFrostmaw;
+import com.bobmowzie.mowziesmobs.client.render.entity.layer.ItemLayer;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
+import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -17,6 +19,8 @@ public class RenderFrostmaw extends MobRenderer<EntityFrostmaw, ModelFrostmaw<En
 
     public RenderFrostmaw(EntityRendererManager mgr) {
         super(mgr, new ModelFrostmaw<>(), 3.5f);
+        addLayer(new ItemLayer<>(this, getEntityModel().iceCrystalHand, ItemHandler.ICE_CRYSTAL.getDefaultInstance()));
+        addLayer(new ItemLayer<>(this, getEntityModel().iceCrystal, ItemHandler.ICE_CRYSTAL.getDefaultInstance()));
     }
 
     @Override

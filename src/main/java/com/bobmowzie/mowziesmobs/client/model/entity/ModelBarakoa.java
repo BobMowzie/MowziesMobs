@@ -28,6 +28,7 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
     public AdvancedModelRenderer armLowerRight;
     public AdvancedModelRenderer handRight;
     public AdvancedModelRenderer spearBase;
+    public AdvancedModelRenderer bone;
     public AdvancedModelRenderer spear;
     public AdvancedModelRenderer blowgun;
     public AdvancedModelRenderer armUpperLeft;
@@ -125,8 +126,9 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         this.setRotateAngle(armUpperLeft, 0.0F, 0.0F, -0.9599310885968813F);
         this.spear = new AdvancedModelRenderer(this, 66, 0);
         this.spear.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.bone = new AdvancedModelRenderer(this, 66, 0);
+        this.bone.setRotationPoint(0.0F, 0.0F, 0.0F);
 //        this.spear.add3DTexture(-4, -4, 0.5F, 15, 15);
-        this.setRotateAngle(spear, 2.356194490192345F, 0.0F, 3.141592653589793F);
         this.earLeft = new AdvancedModelRenderer(this, 48, 0);
         this.earLeft.setRotationPoint(4.0F, -4.0F, -3.0F);
         this.earLeft.addBox(0.0F, -2.0F, 0.0F, 4, 6, 1, 0.0F);
@@ -225,7 +227,6 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         this.blowgun = new AdvancedModelRenderer(this, 82, 0);
         this.blowgun.setRotationPoint(0.0F, 0.0F, 0.0F);
 //        this.blowgun.add3DTexture(-4, -4, 0.5F, 15, 15);
-        this.setRotateAngle(blowgun, 2.356194490192345F, 0.0F, 0);
         this.talker = new AdvancedModelRenderer(this, 0, 0);
         this.talker.setRotationPoint(0, 0, 0);
 
@@ -314,6 +315,7 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         this.modelCore.addChild(this.body);
         this.maskBase.addChild(this.maskRight);
         this.maskBase.addChild(this.mane);
+        this.spearBase.addChild(bone);
         updateDefaultPose();
 
         modelCore.scaleChildren = true;
@@ -331,6 +333,7 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         handRight.scaleChildren = true;
         spearBase.scaleChildren = true;
         spear.scaleChildren = true;
+        bone.scaleChildren = true;
         blowgun.scaleChildren = true;
         armUpperLeft.scaleChildren = true;
         armLowerLeft.scaleChildren = true;
@@ -360,11 +363,9 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         matrixStackIn.push();
         if (maskType == MaskType.FURY) {
-            matrixStackIn.scale(0.85f, 0.85f, 0.85f);
-            matrixStackIn.translate(0, 0.25f, 0);
+            modelCore.setScale(0.85f);
         } else {
-            matrixStackIn.scale(0.75f, 0.75f, 0.75f);
-            matrixStackIn.translate(0, 0.5f, 0);
+            modelCore.setScale(0.75f);
         }
         this.modelCore.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         matrixStackIn.pop();
@@ -377,11 +378,44 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         resetToDefaultPose();
 //                f = entity.ticksExisted;
 //                f1 = 0.5f;
+
+        bone.setScale(2);
+        blowgun.setScale(2);
+        spear.setScale(2);
+
+        bone.rotateAngleZ -= Math.PI / 2f;
+        bone.rotateAngleX -= Math.PI / 2f;
+        bone.rotateAngleY -= 2.3;
+        bone.rotationPointY += 2.5;
+        bone.rotationPointZ -= 8;
+
+        spear.rotateAngleZ -= Math.PI / 2f;
+        spear.rotateAngleX -= Math.PI / 2f;
+        spear.rotateAngleY -= Math.PI;
+        spear.rotateAngleZ -= Math.PI;
+        spear.rotateAngleY -= 2.3;
+        spear.rotationPointY += 2.5;
+        spear.rotationPointZ -= 3;
+
+        blowgun.rotateAngleZ -= Math.PI / 2f;
+        blowgun.rotateAngleX -= Math.PI / 2f;
+        blowgun.rotateAngleY -= 2.3;
+        blowgun.rotationPointY += 2.5;
+        blowgun.rotationPointZ -= 4;
+
         if (entity.getWeapon() == 0) {
-            spear.showModel = true;
+            if (entity.getMask() == MaskType.FURY) {
+                spear.showModel = true;
+                bone.showModel = false;
+            }
+            else {
+                bone.showModel = true;
+                spear.showModel = false;
+            }
             blowgun.showModel = false;
         } else {
             spear.showModel = false;
+            bone.showModel = false;
             blowgun.showModel = true;
         }
         if (!entity.active) {
@@ -407,7 +441,6 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
             armLowerLeft.rotateAngleX -= 0.2;
             armLowerLeft.rotateAngleY += 0.2;
             armLowerLeft.rotateAngleZ += 1;
-            spearBase.setScale(spearBase.scaleX, -1, spearBase.scaleZ);
 
             if (!entity.isPotionActive(PotionHandler.FROZEN)) {
                 flap(armUpperLeft, 1 * globalSpeed, 0.1f * globalHeight, false, 0.5f, 0, limbSwing, limbSwingAmount);
@@ -697,8 +730,8 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
             animator.rotate(armUpperRight, -1.5f, 0, 0);
             animator.rotate(armLowerRight, 0, 0, -1f);
             animator.rotate(handRight, -1f, -0.2f, 1.2f);
-            animator.move(blowgun, 0, 0, 4.5f);
-            animator.rotate(blowgun, 0, 0, MathUtils.PI);
+//            animator.move(blowgun, 0, 0, 4.5f);
+//            animator.rotate(blowgun, 0, 0, MathUtils.PI);
             animator.endKeyframe();
             animator.setStaticKeyframe(3);
             animator.startKeyframe(3);
@@ -714,8 +747,8 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
             animator.move(armRightJoint, 1, 0, -2);
             animator.rotate(armLowerRight, 0.8f, 0, -0.4f);
             animator.rotate(handRight, -1.5f, 0.4f, 1.0f);
-            animator.move(blowgun, 0, 0, 5f);
-            animator.rotate(blowgun, 0, 0, MathUtils.PI);
+//            animator.move(blowgun, 0, 0, 5f);
+//            animator.rotate(blowgun, 0, 0, MathUtils.PI);
             animator.endKeyframe();
             animator.setStaticKeyframe(2);
             animator.resetKeyframe(7);

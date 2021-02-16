@@ -139,16 +139,6 @@ public class ModelLantern<T extends EntityLantern> extends MowzieEntityModel<T> 
         bottomBit2.setOpacity(0.7f);
         bottomBit3.setOpacity(0.7f);
         bottomBit4.setOpacity(0.7f);
-        body.setHasLighting(false);
-        center.setHasLighting(false);
-        bottomBit1.setHasLighting(false);
-        bottomBit2.setHasLighting(false);
-        bottomBit3.setHasLighting(false);
-        bottomBit4.setHasLighting(false);
-        bubble1.setHasLighting(false);
-        bubble2.setHasLighting(false);
-        bubble3.setHasLighting(false);
-        bubble4.setHasLighting(false);
 
         if (isGelLayer) {
             stem.setIsHidden(true);

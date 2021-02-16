@@ -34,12 +34,11 @@ public class AdvancedModelRenderer extends ModelRenderer {
     public boolean scaleChildren;
     private AdvancedModelBase model;
     private AdvancedModelRenderer parent;
-    private int defaultBrightness;
     private boolean doubleSided = true;
     private boolean hasLighting = true;
     private boolean isHidden = false;
 
-    public ObjectList<ModelBox> cubeList;
+    public ObjectList<ModelPart> cubeList;
     public ObjectList<ModelRenderer> childModels;
     public int textureOffsetX, textureOffsetY;
     private float textureWidth;
@@ -65,6 +64,13 @@ public class AdvancedModelRenderer extends ModelRenderer {
         textureWidth = textureWidthIn;
         textureHeight = textureHeightIn;
         return super.setTextureSize(textureWidthIn, textureHeightIn);
+    }
+
+    @Override
+    public ModelRenderer setTextureOffset(int x, int y) {
+        textureOffsetX = x;
+        textureOffsetY = y;
+        return super.setTextureOffset(x, y);
     }
 
     /*public AdvancedModelRenderer add3DTexture(float posX, float posY, float posZ, int width, int height) {
@@ -128,6 +134,12 @@ public class AdvancedModelRenderer extends ModelRenderer {
         setScaleZ(scaleZ);
     }
 
+    public void setScale(float scale) {
+        setScaleX(scale);
+        setScaleY(scale);
+        setScaleZ(scale);
+    }
+
     public void setScaleX(float scaleX) {
         this.scaleX = Math.max(MINIMUM_SCALE, scaleX);
     }
@@ -156,9 +168,16 @@ public class AdvancedModelRenderer extends ModelRenderer {
         this.isHidden = isHidden;
     }
 
-    // Must call this before rendering a glowing model renderer (hasLighting = false)
-    public void setDefaultBrightness(Entity entity) {
-        defaultBrightness = (int) entity.getBrightness();
+    public boolean isHidden() {
+        return isHidden;
+    }
+
+    public float getTextureWidth() {
+        return textureWidth;
+    }
+
+    public float getTextureHeight() {
+        return textureHeight;
     }
 
     /**
@@ -216,6 +235,10 @@ public class AdvancedModelRenderer extends ModelRenderer {
 
     @Override
     public void translateRotate(MatrixStack matrixStackIn) {
+        AdvancedModelRenderer parent = getParent();
+        if (parent != null && !parent.scaleChildren) {
+            matrixStackIn.scale(1.f / parent.scaleX, 1.f / parent.scaleY, 1.f / parent.scaleZ);
+        }
         super.translateRotate(matrixStackIn);
         matrixStackIn.scale(scaleX, scaleY, scaleZ);
     }
@@ -229,9 +252,6 @@ public class AdvancedModelRenderer extends ModelRenderer {
 
                 this.translateRotate(matrixStackIn);
                 if (!isHidden) this.doRender(matrixStackIn.getLast(), bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha * opacity);
-                if (!scaleChildren) {
-                    matrixStackIn.scale(1.f / scaleX, 1.f / scaleY, 1.f / scaleZ);
-                }
 
                 // Render children
                 for(ModelRenderer modelrenderer : this.childModels) {
@@ -248,94 +268,10 @@ public class AdvancedModelRenderer extends ModelRenderer {
         Matrix4f matrix4f = matrixEntryIn.getMatrix();
         Matrix3f matrix3f = matrixEntryIn.getNormal();
 
-        for(AdvancedModelRenderer.ModelBox modelrenderer$modelbox : this.cubeList) {
-            for(AdvancedModelRenderer.TexturedQuad modelrenderer$texturedquad : modelrenderer$modelbox.quads) {
-                Vector3f vector3f = modelrenderer$texturedquad.normal.copy();
-                vector3f.transform(matrix3f);
-                float f = vector3f.getX();
-                float f1 = vector3f.getY();
-                float f2 = vector3f.getZ();
-
-                for(int i = 0; i < 4; ++i) {
-                    AdvancedModelRenderer.PositionTextureVertex modelrenderer$positiontexturevertex = modelrenderer$texturedquad.vertexPositions[i];
-                    float f3 = modelrenderer$positiontexturevertex.position.getX() / 16.0F;
-                    float f4 = modelrenderer$positiontexturevertex.position.getY() / 16.0F;
-                    float f5 = modelrenderer$positiontexturevertex.position.getZ() / 16.0F;
-                    Vector4f vector4f = new Vector4f(f3, f4, f5, 1.0F);
-                    vector4f.transform(matrix4f);
-                    bufferIn.addVertex(vector4f.getX(), vector4f.getY(), vector4f.getZ(), red, green, blue, alpha, modelrenderer$positiontexturevertex.textureU, modelrenderer$positiontexturevertex.textureV, packedOverlayIn, packedLightIn, f, f1, f2);
-                }
-            }
+        for(AdvancedModelRenderer.ModelPart modelrenderer$modelbox : this.cubeList) {
+            modelrenderer$modelbox.render(matrix4f, matrix3f, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
     }
-
-    /*@Override
-    public void render(float scale) {
-        if (!this.isHidden) {
-            if (this.showModel) {
-                GlStateManager.pushMatrix();
-                if (!this.compiled) {
-                    this.compileDisplayList(scale);
-                }
-                GlStateManager.translatef(this.offsetX, this.offsetY, this.offsetZ);
-                GlStateManager.translatef(this.rotationPointX * scale, this.rotationPointY * scale, this.rotationPointZ * scale);
-                if (this.rotateAngleZ != 0.0F) {
-                    GlStateManager.rotatef((float) Math.toDegrees(this.rotateAngleZ), 0.0F, 0.0F, 1.0F);
-                }
-                if (this.rotateAngleY != 0.0F) {
-                    GlStateManager.rotatef((float) Math.toDegrees(this.rotateAngleY), 0.0F, 1.0F, 0.0F);
-                }
-                if (this.rotateAngleX != 0.0F) {
-                    GlStateManager.rotatef((float) Math.toDegrees(this.rotateAngleX), 1.0F, 0.0F, 0.0F);
-                }
-                if (this.scaleX != 1.0F || this.scaleY != 1.0F || this.scaleZ != 1.0F) {
-                    GlStateManager.scalef(this.scaleX, this.scaleY, this.scaleZ);
-                }
-                if (this.opacity != 1.0F) {
-                    GlStateManager.enableBlend();
-                    GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-                    GlStateManager.color4f(1F, 1F, 1F, this.opacity);
-                }
-                GlStateManager.callList(this.displayList);
-                if (this.opacity != 1.0F) {
-                    GlStateManager.disableBlend();
-                    GlStateManager.color4f(1F, 1F, 1F, 1F);
-                }
-                if (!this.scaleChildren && (this.scaleX != 1.0F || this.scaleY != 1.0F || this.scaleZ != 1.0F)) {
-                    GlStateManager.popMatrix();
-                    GlStateManager.pushMatrix();
-                    GlStateManager.translatef(this.offsetX, this.offsetY, this.offsetZ);
-                    GlStateManager.translatef(this.rotationPointX * scale, this.rotationPointY * scale, this.rotationPointZ * scale);
-                    if (this.rotateAngleZ != 0.0F) {
-                        GlStateManager.rotatef((float) Math.toDegrees(this.rotateAngleZ), 0.0F, 0.0F, 1.0F);
-                    }
-                    if (this.rotateAngleY != 0.0F) {
-                        GlStateManager.rotatef((float) Math.toDegrees(this.rotateAngleY), 0.0F, 1.0F, 0.0F);
-                    }
-                    if (this.rotateAngleX != 0.0F) {
-                        GlStateManager.rotatef((float) Math.toDegrees(this.rotateAngleX), 1.0F, 0.0F, 0.0F);
-                    }
-                }
-                if (this.childModels != null) {
-                    for (ModelRenderer childModel : this.childModels) {
-                        childModel.render(scale);
-                    }
-                }
-                GlStateManager.popMatrix();
-            }
-        }
-    }*/ // TODO
-
-    /*private void compileDisplayList(float scale) {
-        this.displayList = GLAllocation.generateDisplayLists(1);
-        GlStateManager.newList(this.displayList, 4864);
-        BufferBuilder buffer = Tessellator.getInstance().getBuffer();
-        for (ModelBox box : this.cubeList) {
-            box.render(buffer, scale);
-        }
-        GlStateManager.endList();
-        this.compiled = true;
-    }*/
 
     public AdvancedModelBase getModel() {
         return this.model;
@@ -518,11 +454,17 @@ public class AdvancedModelRenderer extends ModelRenderer {
         setRotationPoint((float)rendererPos.x, -(float)rendererPos.y, -(float)rendererPos.z);*/ //TODO
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public abstract static class ModelPart {
+        public void render(Matrix4f mat4, Matrix3f mat3, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+
+        }
+    }
 
     // From parent class. Copied to avoid using reflection to access private data
     @OnlyIn(Dist.CLIENT)
-    public static class ModelBox {
-        private final AdvancedModelRenderer.TexturedQuad[] quads;
+    public static class ModelBox extends ModelPart {
+        protected final AdvancedModelRenderer.TexturedQuad[] quads;
         public final float posX1;
         public final float posY1;
         public final float posZ1;
@@ -576,6 +518,27 @@ public class AdvancedModelRenderer extends ModelRenderer {
             this.quads[4] = new AdvancedModelRenderer.TexturedQuad(new AdvancedModelRenderer.PositionTextureVertex[]{modelrenderer$positiontexturevertex, modelrenderer$positiontexturevertex7, modelrenderer$positiontexturevertex2, modelrenderer$positiontexturevertex1}, f5, f11, f6, f12, texWidth, texHeight, mirror, Direction.NORTH);
             this.quads[0] = new AdvancedModelRenderer.TexturedQuad(new AdvancedModelRenderer.PositionTextureVertex[]{modelrenderer$positiontexturevertex4, modelrenderer$positiontexturevertex, modelrenderer$positiontexturevertex1, modelrenderer$positiontexturevertex5}, f6, f11, f8, f12, texWidth, texHeight, mirror, Direction.EAST);
             this.quads[5] = new AdvancedModelRenderer.TexturedQuad(new AdvancedModelRenderer.PositionTextureVertex[]{modelrenderer$positiontexturevertex3, modelrenderer$positiontexturevertex4, modelrenderer$positiontexturevertex5, modelrenderer$positiontexturevertex6}, f8, f11, f9, f12, texWidth, texHeight, mirror, Direction.SOUTH);
+        }
+
+        @Override
+        public void render(Matrix4f matrix4f, Matrix3f matrix3f, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+            for(AdvancedModelRenderer.TexturedQuad modelrenderer$texturedquad : quads) {
+                Vector3f vector3f = modelrenderer$texturedquad.normal.copy();
+                vector3f.transform(matrix3f);
+                float f = vector3f.getX();
+                float f1 = vector3f.getY();
+                float f2 = vector3f.getZ();
+
+                for(int i = 0; i < 4; ++i) {
+                    AdvancedModelRenderer.PositionTextureVertex modelrenderer$positiontexturevertex = modelrenderer$texturedquad.vertexPositions[i];
+                    float f3 = modelrenderer$positiontexturevertex.position.getX() / 16.0F;
+                    float f4 = modelrenderer$positiontexturevertex.position.getY() / 16.0F;
+                    float f5 = modelrenderer$positiontexturevertex.position.getZ() / 16.0F;
+                    Vector4f vector4f = new Vector4f(f3, f4, f5, 1.0F);
+                    vector4f.transform(matrix4f);
+                    bufferIn.addVertex(vector4f.getX(), vector4f.getY(), vector4f.getZ(), red, green, blue, alpha, modelrenderer$positiontexturevertex.textureU, modelrenderer$positiontexturevertex.textureV, packedOverlayIn, packedLightIn, f, f1, f2);
+                }
+            }
         }
     }
 
