@@ -9,9 +9,10 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.LivingRenderer;
+import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
@@ -20,6 +21,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.GameType;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -36,25 +38,10 @@ public enum FrozenRenderHandler {
 
     public static class LayerFrozen extends LayerRenderer<LivingEntity, EntityModel<LivingEntity>> {
         private final LivingRenderer<LivingEntity, EntityModel<LivingEntity>> renderer;
-        private final Predicate<ModelRenderer> modelExclusions;
-
-        public LayerFrozen(LivingRenderer<LivingEntity, EntityModel<LivingEntity>> renderer, Predicate<ModelRenderer> modelExclusions) {
-            super(renderer);
-            this.renderer = renderer;
-            this.modelExclusions = modelExclusions;
-        }
 
         public LayerFrozen(LivingRenderer<LivingEntity, EntityModel<LivingEntity>> renderer) {
-            this(renderer, box -> {
-//                if(renderer instanceof RenderPlayer) {
-//                    RenderPlayer renderPlayer = (RenderPlayer) renderer;
-//                    ModelPlayer playerModel = renderPlayer.getMainModel();
-//                    return box == playerModel.bipedHeadwear || box == playerModel.bipedRightLegwear ||
-//                            box == playerModel.bipedLeftLegwear || box == playerModel.bipedBodyWear ||
-//                            box == playerModel.bipedRightArmwear || box == playerModel.bipedLeftArmwear;
-//                }
-                return false;
-            });
+            super(renderer);
+            this.renderer = renderer;
         }
 
         @Override
@@ -69,14 +56,9 @@ public enum FrozenRenderHandler {
 //                    }
 //                } TODO
 
-                //Render decay overlay
                 float transparency = 1;
-                RenderSystem.enableBlend();
-                RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-                RenderSystem.color4f(1, 1, 1, transparency);
                 IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntityTranslucent(FROZEN_TEXTURE));
-                model.render(matrixStackIn, ivertexbuilder, packedLightIn, 0, 1, 1, 1, 1);
-                RenderSystem.color4f(1, 1, 1, 1);
+                model.render(matrixStackIn, ivertexbuilder, packedLightIn, 0, 1, 1, 1, transparency);
 
 //                for(Map.Entry<ModelRenderer, Boolean> entry : visibilities.entrySet()) {
 //                    entry.getKey().showModel = entry.getValue();
@@ -114,7 +96,7 @@ public enum FrozenRenderHandler {
                 boolean isMainHand = event.getHand() == Hand.MAIN_HAND;
                 if(isMainHand && !player.isInvisible() && event.getItemStack().isEmpty()) {
                     HandSide enumhandside = isMainHand ? player.getPrimaryHand() : player.getPrimaryHand().opposite();
-                    renderArmFirstPersonFrozen(event.getEquipProgress(), event.getSwingProgress(), enumhandside);
+                    renderArmFirstPersonFrozen(event.getMatrixStack(), event.getBuffers(), event.getLight(), enumhandside);
                     event.setCanceled(true);
                 }
             }
@@ -129,7 +111,23 @@ public enum FrozenRenderHandler {
      * @param equipProgress
      * @param handSide
      */
-    private void renderArmFirstPersonFrozen(float swingProgress, float equipProgress, HandSide handSide) {
+    private void renderArmFirstPersonFrozen(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, HandSide side) {
+        Minecraft.getInstance().getTextureManager().bindTexture(FROZEN_TEXTURE);
+        AbstractClientPlayerEntity player = Minecraft.getInstance().player;
+        PlayerRenderer playerrenderer = (PlayerRenderer)Minecraft.getInstance().getRenderManager().<AbstractClientPlayerEntity>getRenderer(player);
+        matrixStackIn.push();
+        float f = side == HandSide.RIGHT ? 1.0F : -1.0F;
+        matrixStackIn.rotate(Vector3f.YP.rotationDegrees(92.0F));
+        matrixStackIn.rotate(Vector3f.XP.rotationDegrees(45.0F));
+        matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(f * -41.0F));
+        matrixStackIn.translate((double)(f * 0.3F), (double)-1.1F, (double)0.45F);
+        if (side == HandSide.RIGHT) {
+            playerrenderer.renderRightArm(matrixStackIn, bufferIn, combinedLightIn, player);
+        } else {
+            playerrenderer.renderLeftArm(matrixStackIn, bufferIn, combinedLightIn, player);
+        }
+
+        matrixStackIn.pop();
         /*Minecraft mc = Minecraft.getInstance();
         EntityRendererManager renderManager = mc.getRenderManager();
         boolean flag = handSide != HandSide.LEFT;

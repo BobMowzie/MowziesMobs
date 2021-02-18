@@ -264,7 +264,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
     }
 
     // Copied from parent class
-    private void doRender(MatrixStack.Entry matrixEntryIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+    protected void doRender(MatrixStack.Entry matrixEntryIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         Matrix4f matrix4f = matrixEntryIn.getMatrix();
         Matrix3f matrix3f = matrixEntryIn.getNormal();
 

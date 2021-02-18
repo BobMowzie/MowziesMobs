@@ -2,26 +2,22 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBarako;
+import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.lwjgl.opengl.GL11;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderBarako extends MobRenderer<EntityBarako, ModelBarako<EntityBarako>> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/barako.png");
-    private static final double BURST_RADIUS = 3.5;
+    private static final float BURST_RADIUS = 3.5f;
     private static final int BURST_FRAME_COUNT = 10;
     private static final int BURST_START_FRAME = 12;
 
@@ -41,23 +37,25 @@ public class RenderBarako extends MobRenderer<EntityBarako, ModelBarako<EntityBa
 
     @Override
     public void render(EntityBarako barako, float entityYaw, float delta, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-        if (barako.getAnimation() == EntityBarako.ATTACK_ANIMATION && barako.getAnimationTick() > BURST_START_FRAME && barako.getAnimationTick() < BURST_START_FRAME + BURST_FRAME_COUNT - 1) {
-            GlStateManager.pushMatrix();
-//            GlStateManager.translated(x, y + 1.1, z);
-            setupGL();
-            Minecraft.getInstance().getTextureManager().bindTexture(RenderSunstrike.TEXTURE);
-            RenderSystem.rotatef(-renderManager.getCameraOrientation().getY(), 0, 1, 0);
-            RenderSystem.rotatef(renderManager.getCameraOrientation().getX(), 1, 0, 0);
-            RenderSystem.disableDepthTest();
-            drawBurst(barako.getAnimationTick() - BURST_START_FRAME + delta);
-            RenderSystem.enableDepthTest();
-            revertGL();
-            RenderSystem.popMatrix();
+        if (!barako.isInvisible()) {
+            if (barako.getAnimation() == EntityBarako.ATTACK_ANIMATION && barako.getAnimationTick() > BURST_START_FRAME && barako.getAnimationTick() < BURST_START_FRAME + BURST_FRAME_COUNT - 1) {
+                matrixStackIn.push();
+                Quaternion quat = this.renderManager.getCameraOrientation();
+                matrixStackIn.rotate(quat);
+                matrixStackIn.translate(0, 1, 0);
+                matrixStackIn.scale(0.8f, 0.8f, 0.8f);
+                IVertexBuilder ivertexbuilder = bufferIn.getBuffer(MMRenderType.getSolarFlare(RenderSunstrike.TEXTURE));
+                MatrixStack.Entry matrixstack$entry = matrixStackIn.getLast();
+                Matrix4f matrix4f = matrixstack$entry.getMatrix();
+                Matrix3f matrix3f = matrixstack$entry.getNormal();
+                drawBurst(matrix4f, matrix3f, ivertexbuilder, barako.getAnimationTick() - BURST_START_FRAME + delta, packedLightIn);
+                matrixStackIn.pop();
+            }
         }
         super.render(barako, entityYaw, delta, matrixStackIn, bufferIn, packedLightIn);
     }
 
-    private void drawBurst(float tick) {
+    private void drawBurst(Matrix4f matrix4f, Matrix3f matrix3f, IVertexBuilder builder, float tick, int packedLightIn) {
         int dissapateFrame = 6;
         float firstSpeed = 2f;
         float secondSpeed = 1f;
@@ -70,29 +68,14 @@ public class RenderBarako extends MobRenderer<EntityBarako, ModelBarako<EntityBa
         float minV = 0.5f;
         float maxV = minV + 0.5f;
         float offset = 0.219f * (frame % 2);
-        Tessellator t = Tessellator.getInstance();
-        BufferBuilder buf = t.getBuffer();
-        buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP);
         float opacity = (tick < 8) ? 0.8f : 0.4f;
-        buf.pos(-BURST_RADIUS + offset, -BURST_RADIUS + offset, 0).tex(minU, minV).lightmap(0, 240).color(1, 1, 1, opacity).endVertex();
-        buf.pos(-BURST_RADIUS + offset, BURST_RADIUS + offset, 0).tex(minU, maxV).lightmap(0, 240).color(1, 1, 1, opacity).endVertex();
-        buf.pos(BURST_RADIUS + offset, BURST_RADIUS + offset, 0).tex(maxU, maxV).lightmap(0, 240).color(1, 1, 1, opacity).endVertex();
-        buf.pos(BURST_RADIUS + offset, -BURST_RADIUS + offset, 0).tex(maxU, minV).lightmap(0, 240).color(1, 1, 1, opacity).endVertex();
-        RenderSystem.disableDepthTest();
-        t.draw();
-        RenderSystem.enableDepthTest();
+        this.drawVertex(matrix4f, matrix3f, builder, -BURST_RADIUS + offset, -BURST_RADIUS + offset, 0, minU, minV, opacity, packedLightIn);
+        this.drawVertex(matrix4f, matrix3f, builder, -BURST_RADIUS + offset, BURST_RADIUS + offset, 0, minU, maxV, opacity, packedLightIn);
+        this.drawVertex(matrix4f, matrix3f, builder, BURST_RADIUS + offset, BURST_RADIUS + offset, 0, maxU, maxV, opacity, packedLightIn);
+        this.drawVertex(matrix4f, matrix3f, builder, BURST_RADIUS + offset, -BURST_RADIUS + offset, 0, maxU, minV, opacity, packedLightIn);
     }
 
-    private void setupGL() {
-        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        RenderSystem.enableBlend();
-        RenderSystem.disableLighting();
-        RenderSystem.alphaFunc(GL11.GL_GREATER, 0);
-    }
-
-    private void revertGL() {
-        RenderSystem.disableBlend();
-        RenderSystem.enableLighting();
-        RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
+    public void drawVertex(Matrix4f matrix, Matrix3f normals, IVertexBuilder vertexBuilder, float offsetX, float offsetY, float offsetZ, float textureX, float textureY, float alpha, int packedLightIn) {
+        vertexBuilder.pos(matrix, offsetX, offsetY, offsetZ).color(255, 255, 255, 255 * alpha).tex(textureX, textureY).overlay(OverlayTexture.NO_OVERLAY).lightmap(packedLightIn).normal(normals, 0.0F, 1.0F, 0.0F).endVertex();
     }
 }

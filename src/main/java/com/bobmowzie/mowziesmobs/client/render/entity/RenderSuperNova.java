@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelSuperNova;
+import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySuperNova;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -11,6 +12,7 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 
 public class RenderSuperNova extends EntityRenderer<EntitySuperNova> {
@@ -48,22 +50,10 @@ public class RenderSuperNova extends EntityRenderer<EntitySuperNova> {
 
     @Override
     public void render(EntitySuperNova entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-        float ageFrac = (entityIn.ticksExisted + partialTicks) / (float)(EntitySuperNova.DURATION);
-        RenderSystem.disableCull();
-        RenderSystem.disableLighting();
         matrixStackIn.push();
-        int i = (int) entityIn.getBrightness();
-        int k = i >> 16 & 255;
-        i = 240 | k << 16;
-        int j = i >> 16 & 65535;
-        k = i & 65535;
-//        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)j, (float)k); // TODO
-
-        IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntityTranslucent(this.getEntityTexture(entityIn)));
-        model.render(matrixStackIn, ivertexbuilder, packedLightIn, 0, 1, 1, 1, 1);
-
+        IVertexBuilder ivertexbuilder = bufferIn.getBuffer(MMRenderType.getLantern(this.getEntityTexture(entityIn)));
+        model.setRotationAngles(entityIn, 0, 0, entityIn.ticksExisted + partialTicks, 0, 0);
+        model.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
         matrixStackIn.pop();
-        RenderSystem.enableLighting();
-        RenderSystem.enableCull();
     }
 }

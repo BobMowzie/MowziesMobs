@@ -3,24 +3,25 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 import com.bobmowzie.mowziesmobs.client.model.tools.ExtendedModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityPoisonBall;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
+import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.Vec3d;
 
 public class ModelPoisonBall<T extends EntityPoisonBall> extends AdvancedModelBase<T> {
-	private final ExtendedModelRenderer inner;
-	private final ExtendedModelRenderer outer;
+	private final AdvancedModelRenderer inner;
+	private final AdvancedModelRenderer outer;
 
 	public ModelPoisonBall() {
 		textureWidth = 32;
 		textureHeight = 32;
 
-		inner = new ExtendedModelRenderer(this, 0, 16);
+		inner = new AdvancedModelRenderer(this, 0, 16);
 		inner.setRotationPoint(0.0F, 3.5F, 0.0F);
 		inner.addBox(-3.0F, -3.0F, -3.0F, 6, 6, 6, 0.0F, false);
 
-		outer = new ExtendedModelRenderer(this, 0, 0);
+		outer = new AdvancedModelRenderer(this, 0, 0);
 		outer.setRotationPoint(0.0F, 3.5F, 0.0F);
 		outer.addBox(-4.0F, -4.0F, -4.0F, 8, 8, 8, 0.0F, false);
 

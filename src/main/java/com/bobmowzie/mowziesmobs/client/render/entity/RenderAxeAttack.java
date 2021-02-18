@@ -9,9 +9,12 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -37,11 +40,12 @@ public class RenderAxeAttack extends EntityRenderer<EntityAxeAttack> {
     public void render(EntityAxeAttack entity, float entityYaw, float delta, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         PlayerEntity player = Minecraft.getInstance().player;
         if (player == entity.getCaster() && Minecraft.getInstance().gameSettings.thirdPersonView == 0) {
-            RenderSystem.pushMatrix();
-            RenderSystem.rotatef(entityYaw, 0, -1, 0);
+            matrixStackIn.push();
+            matrixStackIn.rotate(new Quaternion(new Vector3f(0, -1, 0), entityYaw, true));
             IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntitySolid(TEXTURE));
-            model.render(matrixStackIn, ivertexbuilder, packedLightIn, 0, 1, 1, 1, 1);
-            RenderSystem.popMatrix();
+            model.setRotationAngles(entity, 0, 0, entity.ticksExisted + delta, 0, 0);
+            model.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
+            matrixStackIn.pop();
         }
     }
 }

@@ -1,17 +1,22 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBoulder;
+import com.bobmowzie.mowziesmobs.client.render.entity.layer.BlockLayer;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
+import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -54,8 +59,16 @@ public class RenderBoulder extends EntityRenderer<EntityBoulder> {
 
     @Override
     public void render(EntityBoulder entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-        Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
-        IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntitySolid(this.getEntityTexture(entityIn)));
-        model.render(matrixStackIn, ivertexbuilder, packedLightIn, 0, 1, 1, 1, 1);
+        matrixStackIn.push();
+        model.setRotationAngles(entityIn, 0, 0, entityIn.ticksExisted + partialTicks, 0, 0);
+        BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
+        AdvancedModelRenderer root;
+        if (entityIn.boulderSize == EntityBoulder.BoulderSizeEnum.SMALL) root = model.boulder0block1;
+        else  if (entityIn.boulderSize == EntityBoulder.BoulderSizeEnum.MEDIUM) root = model.boulder1;
+        else  if (entityIn.boulderSize == EntityBoulder.BoulderSizeEnum.LARGE) root = model.boulder2;
+        else root = model.boulder3;
+        matrixStackIn.translate(-0.5f, 0.5f, -0.5f);
+        BlockLayer.processModelRenderer(root, matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1, blockrendererdispatcher);
+        matrixStackIn.pop();
     }
 }

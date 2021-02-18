@@ -3,29 +3,30 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 import com.bobmowzie.mowziesmobs.client.model.tools.ExtendedModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBall;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
+import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.model.ModelRenderer;
 
 public class ModelIceBall<T extends EntityIceBall> extends AdvancedModelBase<T> {
-	private final ExtendedModelRenderer body1;
-	private final ExtendedModelRenderer body2;
-	private final ExtendedModelRenderer core;
+	private final AdvancedModelRenderer body1;
+	private final AdvancedModelRenderer body2;
+	private final AdvancedModelRenderer core;
 
 	public ModelIceBall() {
 		textureWidth = 128;
 		textureHeight = 64;
 
-		body1 = new ExtendedModelRenderer(this, 32, 0);
+		body1 = new AdvancedModelRenderer(this, 32, 0);
 		body1.setRotationPoint(0.0F, 16.0F, 0.0F);
 		body1.addBox(-12.0F, -12.0F, -12.0F, 24, 24, 24, 0.0F, false);
 
-		body2 = new ExtendedModelRenderer(this, 32, 0);
+		body2 = new AdvancedModelRenderer(this, 32, 0);
 		body2.setRotationPoint(0.0F, 16.0F, 0.0F);
 		setRotationAngle(body2, 0.7854F, 0.0F, 0.7854F);
 		body2.addBox(-12.0F, -12.0F, -12.0F, 24, 24, 24, 0.0F, false);
 
-		core = new ExtendedModelRenderer(this, 8, 0);
+		core = new AdvancedModelRenderer(this, 8, 0);
 		core.setRotationPoint(0.0F, 16.0F, 0.0F);
 		core.addBox( -4.0F, -4.0F, -4.0F, 8, 8, 8, 0.0F, false);
 

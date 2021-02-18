@@ -57,9 +57,9 @@ public enum ClientEventHandler {
         boolean shouldAnimate = playerCapability != null && playerCapability.getUntilAxeSwing() > 0;
         shouldAnimate = shouldAnimate || playerCapability != null && playerCapability.getGeomancy().tunneling;
         if (shouldAnimate) {
-            event.setCanceled(true);
-            RenderPlayerAnimated renderPlayerAnimated = new RenderPlayerAnimated(event.getRenderer().getRenderManager(), ((AbstractClientPlayerEntity) event.getEntity()).getSkinType().equals("slim"));
-            renderPlayerAnimated.render((AbstractClientPlayerEntity) event.getEntity(), event.getEntity().rotationYaw, delta, event.getMatrixStack(), event.getBuffers(), event.getLight());
+//            event.setCanceled(true);
+//            RenderPlayerAnimated renderPlayerAnimated = new RenderPlayerAnimated(event.getRenderer().getRenderManager(), ((AbstractClientPlayerEntity) event.getEntity()).getSkinType().equals("slim"));
+//            renderPlayerAnimated.render((AbstractClientPlayerEntity) event.getEntity(), event.getEntity().rotationYaw, delta, event.getMatrixStack(), event.getBuffers(), event.getLight()); TODO
         }
     }
 

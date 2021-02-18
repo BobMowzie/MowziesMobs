@@ -17,6 +17,11 @@ public abstract class MMRenderType extends RenderType {
 
     public static RenderType getLantern(ResourceLocation locationIn) {
         RenderType.State rendertype$state = RenderType.State.getBuilder().texture(new RenderState.TextureState(locationIn, false, false)).transparency(TRANSLUCENT_TRANSPARENCY).diffuseLighting(DIFFUSE_LIGHTING_ENABLED).alpha(DEFAULT_ALPHA).cull(CULL_DISABLED).lightmap(LIGHTMAP_DISABLED).overlay(OVERLAY_ENABLED).build(true);
-        return makeType("entity_translucent", DefaultVertexFormats.ENTITY, 7, 256, true, true, rendertype$state);
+        return makeType("lantern", DefaultVertexFormats.ENTITY, 7, 256, true, true, rendertype$state);
+    }
+
+    public static RenderType getSolarFlare(ResourceLocation locationIn) {
+        RenderType.State rendertype$state = RenderType.State.getBuilder().texture(new RenderState.TextureState(locationIn, false, false)).transparency(TRANSLUCENT_TRANSPARENCY).depthTest(DEPTH_ALWAYS).diffuseLighting(DIFFUSE_LIGHTING_DISABLED).alpha(DEFAULT_ALPHA).cull(CULL_DISABLED).lightmap(LIGHTMAP_DISABLED).overlay(OVERLAY_DISABLED).build(true);
+        return makeType("solar_flare", DefaultVertexFormats.ENTITY, 7, 256, true, true, rendertype$state);
     }
 }

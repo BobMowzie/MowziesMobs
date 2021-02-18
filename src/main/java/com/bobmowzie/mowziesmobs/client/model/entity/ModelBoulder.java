@@ -323,9 +323,6 @@ public class ModelBoulder<T extends EntityBoulder> extends AdvancedModelBase {
             float delta = ageInTicks - entity.ticksExisted;
             for (int i = 0; i < blockModels.length; i++) {
                 blockModels[i].setBlockState(entity.getBlock());
-                blockModels[i].setBiome(entity.world.getBiome(entity.getOrigin()));
-                blockModels[i].setEntity(entity);
-                blockModels[i].setOrigin(entity.getOrigin());
             }
             boulder0block1.rotationPointY += -32 * (float) (Math.pow(0.6 * (tick + delta + 1), -3));
             boulder0block1.rotationPointY += 2 * Math.cos(0.1f * (entity.ticksExisted + entity.animationOffset + delta));
