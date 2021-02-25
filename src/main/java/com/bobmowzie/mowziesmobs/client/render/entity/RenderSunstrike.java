@@ -1,18 +1,19 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -62,27 +63,25 @@ public class RenderSunstrike extends EntityRenderer<EntitySunstrike> {
 
     @Override
     public void render(EntitySunstrike sunstrike, float entityYaw, float delta, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-        /*double maxY = MAX_HEIGHT - sunstrike.getPosY();
+        float maxY = (float) (MAX_HEIGHT - sunstrike.getPosY());
         if (maxY < 0) {
             return;
         }
         RANDOMIZER.setSeed(sunstrike.getVariant());
         boolean isLingering = sunstrike.isLingering(delta);
         boolean isStriking = sunstrike.isStriking(delta);
-        RenderSystem.pushMatrix();
-        setupGL();
-        Minecraft.getInstance().getTextureManager().bindTexture(getEntityTexture(sunstrike));
+        matrixStackIn.push();
+        IVertexBuilder ivertexbuilder = bufferIn.getBuffer(MMRenderType.getGlowingEffect(RenderSunstrike.TEXTURE));
         if (isLingering) {
-            drawScorch(sunstrike, delta);
+            drawScorch(sunstrike, delta, matrixStackIn, ivertexbuilder, packedLightIn);
         } else if (isStriking) {
-            drawStrike(sunstrike, maxY, delta);
+            drawStrike(sunstrike, maxY, delta, matrixStackIn, ivertexbuilder, packedLightIn);
         }
-        revertGL();
-        RenderSystem.popMatrix();*/
+        matrixStackIn.pop();
     }
 
-    private void drawScorch(EntitySunstrike sunstrike, float delta) {
-        World world = renderManager.pointedEntity.getEntityWorld();
+    private void drawScorch(EntitySunstrike sunstrike, float delta, MatrixStack matrixStack, IVertexBuilder builder, int packedLightIn) {
+        World world = sunstrike.getEntityWorld();
         double ex = sunstrike.lastTickPosX + (sunstrike.getPosX() - sunstrike.lastTickPosX) * delta;
         double ey = sunstrike.lastTickPosY + (sunstrike.getPosY() - sunstrike.lastTickPosY) * delta;
         double ez = sunstrike.lastTickPosZ + (sunstrike.getPosZ() - sunstrike.lastTickPosZ) * delta;
@@ -92,26 +91,21 @@ public class RenderSunstrike extends EntityRenderer<EntitySunstrike> {
         int maxY = MathHelper.floor(ey);
         int minZ = MathHelper.floor(ez - LINGER_RADIUS);
         int maxZ = MathHelper.floor(ez + LINGER_RADIUS);
-        Tessellator t = Tessellator.getInstance();
-        BufferBuilder buf = t.getBuffer();
-        buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP);
         float opacityMultiplier = (0.6F + RANDOMIZER.nextFloat() * 0.2F) * world.getLight(new BlockPos(ex, ey, ez));
         byte mirrorX = (byte) (RANDOMIZER.nextBoolean() ? -1 : 1);
         byte mirrorZ = (byte) (RANDOMIZER.nextBoolean() ? -1 : 1);
         for (BlockPos pos : BlockPos.getAllInBoxMutable(new BlockPos(minX, minY, minZ), new BlockPos(maxX, maxY, maxZ))) {
             BlockState block = world.getBlockState(pos.down());
             if (block.getMaterial() != Material.AIR && world.getLight(pos) > 3) {
-                drawScorchBlock(world, block, pos, ex, ey, ez, opacityMultiplier, mirrorX, mirrorZ);
+                drawScorchBlock(world, block, pos, ex, ey, ez, opacityMultiplier, mirrorX, mirrorZ, matrixStack, builder, packedLightIn);
             }
         }
-        RenderSystem.depthMask(false);
-        t.draw();
-        RenderSystem.depthMask(true);
     }
 
-    private void drawScorchBlock(World world, BlockState block, BlockPos pos, double ex, double ey, double ez, float opacityMultiplier, byte mirrorX, byte mirrorZ) {
-        Tessellator t = Tessellator.getInstance();
-        BufferBuilder buf = t.getBuffer();
+    private void drawScorchBlock(World world, BlockState block, BlockPos pos, double ex, double ey, double ez, float opacityMultiplier, byte mirrorX, byte mirrorZ, MatrixStack matrixStack, IVertexBuilder builder, int packedLightIn) {
+        MatrixStack.Entry matrixstack$entry = matrixStack.getLast();
+        Matrix4f matrix4f = matrixstack$entry.getMatrix();
+        Matrix3f matrix3f = matrixstack$entry.getNormal();
         if (block.isNormalCube(world, pos)) {
             int bx = pos.getX(), by = pos.getY(), bz = pos.getZ();
             float opacity = (float) ((1 - (ey - by) / 2) * opacityMultiplier);
@@ -129,15 +123,15 @@ public class RenderSunstrike extends EntityRenderer<EntitySunstrike> {
                 float maxU = (mirrorX * maxX / 2f / LINGER_RADIUS + 0.5f) * (SCORCH_MAX_U - SCORCH_MIN_U) + SCORCH_MIN_U;
                 float minV = (mirrorZ * minZ / 2f / LINGER_RADIUS + 0.5f) * (SCORCH_MAX_V - SCORCH_MIN_V) + SCORCH_MIN_V;
                 float maxV = (mirrorZ * maxZ / 2f / LINGER_RADIUS + 0.5f) * (SCORCH_MAX_V - SCORCH_MIN_V) + SCORCH_MIN_V;
-                buf.pos(minX, y, minZ).tex(minU, minV).lightmap(0, 240).color(1, 1, 1, opacity).endVertex();
-                buf.pos(minX, y, maxZ).tex(minU, maxV).lightmap(0, 240).color(1, 1, 1, opacity).endVertex();
-                buf.pos(maxX, y, maxZ).tex(maxU, maxV).lightmap(0, 240).color(1, 1, 1, opacity).endVertex();
-                buf.pos(maxX, y, minZ).tex(maxU, minV).lightmap(0, 240).color(1, 1, 1, opacity).endVertex();
+                drawVertex(matrix4f, matrix3f, builder, minX, y, minZ, minU, minV, opacity, packedLightIn);
+                drawVertex(matrix4f, matrix3f, builder, minX, y, maxZ, minU, maxV, opacity, packedLightIn);
+                drawVertex(matrix4f, matrix3f, builder, maxX, y, maxZ, maxU, maxV, opacity, packedLightIn);
+                drawVertex(matrix4f, matrix3f, builder, maxX, y, minZ, maxU, minV, opacity, packedLightIn);
             }
         }
     }
 
-    private void drawStrike(EntitySunstrike sunstrike, double maxY, float delta) {
+    private void drawStrike(EntitySunstrike sunstrike, float maxY, float delta, MatrixStack matrixStack, IVertexBuilder builder, int packedLightIn) {
         float drawTime = sunstrike.getStrikeDrawTime(delta);
         float strikeTime = sunstrike.getStrikeDamageTime(delta);
         boolean drawing = sunstrike.isStrikeDrawing(delta);
@@ -145,12 +139,12 @@ public class RenderSunstrike extends EntityRenderer<EntitySunstrike> {
         if (drawing) {
             opacity *= DRAW_OPACITY_MULTIPLER;
         }
-        drawRing(drawing, drawTime, strikeTime, opacity);
-        GlStateManager.rotatef(-renderManager.getCameraOrientation().getY(), 0, 1, 0);
-        drawBeam(drawing, drawTime, strikeTime, opacity, maxY);
+        drawRing(drawing, drawTime, strikeTime, opacity, matrixStack, builder, packedLightIn);
+        matrixStack.rotate(new Quaternion(0, -Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getYaw(), 0, true));
+        drawBeam(drawing, drawTime, strikeTime, opacity, maxY, matrixStack, builder, packedLightIn);
     }
 
-    private void drawRing(boolean drawing, float drawTime, float strikeTime, float opacity) {
+    private void drawRing(boolean drawing, float drawTime, float strikeTime, float opacity, MatrixStack matrixStack, IVertexBuilder builder, int packedLightIn) {
         int frame = (int) (((drawing ? drawTime : strikeTime) * (RING_FRAME_COUNT + 1)));
         if (frame > RING_FRAME_COUNT) {
             frame = RING_FRAME_COUNT;
@@ -160,49 +154,36 @@ public class RenderSunstrike extends EntityRenderer<EntitySunstrike> {
         float minV = drawing ? 0 : RING_FRAME_SIZE / TEXTURE_HEIGHT;
         float maxV = minV + RING_FRAME_SIZE / TEXTURE_HEIGHT;
         float offset = PIXEL_SCALE * RING_RADIUS * (frame % 2);
-        Tessellator t = Tessellator.getInstance();
-        BufferBuilder buf = t.getBuffer();
-        buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP);
-        buf.pos(-RING_RADIUS + offset, 0, -RING_RADIUS + offset).tex(minU, minV).lightmap(0, 240).color(1, 1, 1, opacity).endVertex();
-        buf.pos(-RING_RADIUS + offset, 0, RING_RADIUS + offset).tex(minU, maxV).lightmap(0, 240).color(1, 1, 1, opacity).endVertex();
-        buf.pos(RING_RADIUS + offset, 0, RING_RADIUS + offset).tex(maxU, maxV).lightmap(0, 240).color(1, 1, 1, opacity).endVertex();
-        buf.pos(RING_RADIUS + offset, 0, -RING_RADIUS + offset).tex(maxU, minV).lightmap(0, 240).color(1, 1, 1, opacity).endVertex();
-        GlStateManager.depthMask(false);
-        t.draw();
-        GlStateManager.depthMask(true);
+        MatrixStack.Entry matrixstack$entry = matrixStack.getLast();
+        Matrix4f matrix4f = matrixstack$entry.getMatrix();
+        Matrix3f matrix3f = matrixstack$entry.getNormal();
+        drawVertex(matrix4f, matrix3f, builder, -RING_RADIUS + offset, 0, -RING_RADIUS + offset, minU, minV, opacity, packedLightIn);
+        drawVertex(matrix4f, matrix3f, builder, -RING_RADIUS + offset, 0, RING_RADIUS + offset, minU, maxV, opacity, packedLightIn);
+        drawVertex(matrix4f, matrix3f, builder, RING_RADIUS + offset, 0, RING_RADIUS + offset, maxU, maxV, opacity, packedLightIn);
+        drawVertex(matrix4f, matrix3f, builder, RING_RADIUS + offset, 0, -RING_RADIUS + offset, maxU, minV, opacity, packedLightIn);
     }
 
-    private void drawBeam(boolean drawing, float drawTime, float strikeTime, float opacity, double maxY) {
+    private void drawBeam(boolean drawing, float drawTime, float strikeTime, float opacity, float maxY, MatrixStack matrixStack, IVertexBuilder builder, int packedLightIn) {
         int frame = drawing ? 0 : (int) (strikeTime * (BREAM_FRAME_COUNT + 1));
         if (frame > BREAM_FRAME_COUNT) {
             frame = BREAM_FRAME_COUNT;
         }
-        double radius = BEAM_STRIKE_RADIUS;
+        float radius = BEAM_STRIKE_RADIUS;
         if (drawing) {
             radius = (BEAM_DRAW_END_RADIUS - BEAM_DRAW_START_RADIUS) * drawTime + BEAM_DRAW_START_RADIUS;
         }
         float minV = frame / TEXTURE_HEIGHT;
         float maxV = (frame + 1) / TEXTURE_HEIGHT;
-        Tessellator t = Tessellator.getInstance();
-        BufferBuilder buf = t.getBuffer();
-        buf.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP);
-        buf.pos(-radius, 0, 0).tex(BEAM_MIN_U, minV).lightmap(0, 240).color(1, 1, 1, opacity).endVertex();
-        buf.pos(-radius, maxY, 0).tex(BEAM_MIN_U, maxV).lightmap(0, 240).color(1, 1, 1, opacity).endVertex();
-        buf.pos(radius, maxY, 0).tex(BEAM_MAX_U, maxV).lightmap(0, 240).color(1, 1, 1, opacity).endVertex();
-        buf.pos(radius, 0, 0).tex(BEAM_MAX_U, minV).lightmap(0, 240).color(1, 1, 1, opacity).endVertex();
-        t.draw();
+        MatrixStack.Entry matrixstack$entry = matrixStack.getLast();
+        Matrix4f matrix4f = matrixstack$entry.getMatrix();
+        Matrix3f matrix3f = matrixstack$entry.getNormal();
+        drawVertex(matrix4f, matrix3f, builder, -radius, 0, 0, BEAM_MIN_U, minV, opacity, packedLightIn);
+        drawVertex(matrix4f, matrix3f, builder, -radius, maxY, 0, BEAM_MIN_U, maxV, opacity, packedLightIn);
+        drawVertex(matrix4f, matrix3f, builder, radius, maxY, 0, BEAM_MAX_U, maxV, opacity, packedLightIn);
+        drawVertex(matrix4f, matrix3f, builder, radius, 0, 0, BEAM_MAX_U, minV, opacity, packedLightIn);
     }
 
-    private void setupGL() {
-        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        RenderSystem.enableBlend();
-        RenderSystem.disableLighting();
-        RenderSystem.alphaFunc(GL11.GL_GREATER, 0);
-    }
-
-    private void revertGL() {
-        RenderSystem.disableBlend();
-        RenderSystem.enableLighting();
-        RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
+    public void drawVertex(Matrix4f matrix, Matrix3f normals, IVertexBuilder vertexBuilder, float offsetX, float offsetY, float offsetZ, float textureX, float textureY, float alpha, int packedLightIn) {
+        vertexBuilder.pos(matrix, offsetX, offsetY, offsetZ).color(1, 1, 1, 1 * alpha).tex(textureX, textureY).overlay(OverlayTexture.NO_OVERLAY).lightmap(packedLightIn).normal(normals, 0.0F, 1.0F, 0.0F).endVertex();
     }
 }

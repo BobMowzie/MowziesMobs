@@ -35,6 +35,7 @@ public class RenderIceBall extends EntityRenderer<EntityIceBall> {
     public void render(EntityIceBall entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         matrixStackIn.push();
         matrixStackIn.rotate(new Quaternion(new Vector3f(0, -1, 0), entityYaw, true));
+        matrixStackIn.translate(0, -0.5f, 0);
         IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntityTranslucent(TEXTURE));
         model.setRotationAngles(entityIn, 0, 0, entityIn.ticksExisted + partialTicks, 0, 0);
         model.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);

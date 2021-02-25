@@ -518,10 +518,10 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
             playSound(MMSounds.ENTITY_FROSTMAW_BREATH.get(i).get(), 1.5F, 1.1F + rand.nextFloat() * 0.1f);
         }
 
-        if (getAnimation() == NO_ANIMATION && onGround) {
-            AnimationHandler.INSTANCE.sendAnimationMessage(this, ICE_BALL_ANIMATION);
-            setActive(true);
-        }
+//        if (getAnimation() == NO_ANIMATION && onGround) {
+//            AnimationHandler.INSTANCE.sendAnimationMessage(this, ICE_BALL_ANIMATION);
+//            setActive(true);
+//        }
 
         if (iceBreathCooldown > 0) iceBreathCooldown--;
         if (iceBallCooldown > 0) iceBallCooldown--;

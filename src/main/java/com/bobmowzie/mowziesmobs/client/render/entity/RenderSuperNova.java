@@ -51,7 +51,7 @@ public class RenderSuperNova extends EntityRenderer<EntitySuperNova> {
     @Override
     public void render(EntitySuperNova entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         matrixStackIn.push();
-        IVertexBuilder ivertexbuilder = bufferIn.getBuffer(MMRenderType.getLantern(this.getEntityTexture(entityIn)));
+        IVertexBuilder ivertexbuilder = bufferIn.getBuffer(MMRenderType.getGlowingEffect(this.getEntityTexture(entityIn)));
         model.setRotationAngles(entityIn, 0, 0, entityIn.ticksExisted + partialTicks, 0, 0);
         model.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
         matrixStackIn.pop();

@@ -1,17 +1,19 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySolarBeam;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.player.PlayerEntity;
@@ -44,57 +46,53 @@ public class RenderSolarBeam extends EntityRenderer<EntitySolarBeam> {
     public void render(EntitySolarBeam solarBeam, float entityYaw, float delta, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         clearerView = solarBeam.caster instanceof PlayerEntity && Minecraft.getInstance().player == solarBeam.caster && Minecraft.getInstance().gameSettings.thirdPersonView == 0;
 
-        double length = Math.sqrt(Math.pow(solarBeam.collidePosX - solarBeam.getPosX(), 2) + Math.pow(solarBeam.collidePosY - solarBeam.getPosY(), 2) + Math.pow(solarBeam.collidePosZ - solarBeam.getPosZ(), 2));
+        float length = (float) Math.sqrt(Math.pow(solarBeam.collidePosX - solarBeam.getPosX(), 2) + Math.pow(solarBeam.collidePosY - solarBeam.getPosY(), 2) + Math.pow(solarBeam.collidePosZ - solarBeam.getPosZ(), 2));
         int frame = MathHelper.floor((solarBeam.appear.getTimer() - 1 + delta) * 2);
         if (frame < 0) {
             frame = 6;
         }
-        RenderSystem.pushMatrix();
-        RenderSystem.translated(solarBeam.getPosX(), solarBeam.getPosY(), solarBeam.getPosZ());
-        setupGL();
-//        bindEntityTexture(solarBeam);
+        IVertexBuilder ivertexbuilder = bufferIn.getBuffer(MMRenderType.getGlowingEffect(getEntityTexture(solarBeam)));
 
-        RenderSystem.depthMask(false);
-        renderStart(frame);
-        renderBeam(length, 180 / Math.PI * solarBeam.getYaw(), 180 / Math.PI * solarBeam.getPitch(), frame);
-        RenderSystem.translated(solarBeam.collidePosX - solarBeam.getPosX(), solarBeam.collidePosY - solarBeam.getPosY(), solarBeam.collidePosZ - solarBeam.getPosZ());
-        renderEnd(frame, solarBeam.blockSide);
-        RenderSystem.depthMask(true);
-        RenderSystem.translated(solarBeam.getPosX() - solarBeam.collidePosX, solarBeam.getPosY() - solarBeam.collidePosY, solarBeam.getPosZ() - solarBeam.collidePosZ);
+        renderStart(frame, matrixStackIn, ivertexbuilder, packedLightIn);
+        renderBeam(length, 180 / (float) Math.PI * solarBeam.getYaw(), 180 / (float) Math.PI * solarBeam.getPitch(), frame, matrixStackIn, ivertexbuilder, packedLightIn);
 
-        RenderSystem.colorMask(false, false, false, true);
-        if (Minecraft.getInstance().gameSettings.thirdPersonView != 0) {
-            renderStart(frame);
-        }
-        renderBeam(length, 180 / Math.PI * solarBeam.getYaw(), 180 / Math.PI * solarBeam.getPitch(), frame);
-        RenderSystem.translated(solarBeam.collidePosX - solarBeam.getPosX(), solarBeam.collidePosY - solarBeam.getPosY(), solarBeam.collidePosZ - solarBeam.getPosZ());
-        renderEnd(frame, null);
-        RenderSystem.colorMask(true, true, true, true);
+        matrixStackIn.push();
+        matrixStackIn.translate(solarBeam.collidePosX - solarBeam.getPosX(), solarBeam.collidePosY - solarBeam.getPosY(), solarBeam.collidePosZ - solarBeam.getPosZ());
+        renderEnd(frame, solarBeam.blockSide, matrixStackIn, ivertexbuilder, packedLightIn);
+        matrixStackIn.pop();
+//        matrixStackIn.translate(solarBeam.getPosX() - solarBeam.collidePosX, solarBeam.getPosY() - solarBeam.collidePosY, solarBeam.getPosZ() - solarBeam.collidePosZ);
 
-        revertGL();
-        RenderSystem.popMatrix();
+//        if (Minecraft.getInstance().gameSettings.thirdPersonView != 0) {
+//            renderStart(frame, matrixStackIn, ivertexbuilder, packedLightIn);
+//        }
+//        renderBeam(length, 180 / (float) Math.PI * solarBeam.getYaw(), 180 / (float) Math.PI * solarBeam.getPitch(), frame, matrixStackIn, ivertexbuilder, packedLightIn);
+//        matrixStackIn.translate(solarBeam.collidePosX - solarBeam.getPosX(), solarBeam.collidePosY - solarBeam.getPosY(), solarBeam.collidePosZ - solarBeam.getPosZ());
+//        renderEnd(frame, null, matrixStackIn, ivertexbuilder, packedLightIn);
     }
 
-    private void renderStart(int frame) {
-        if (clearerView) {
-            return;
-        }
-//        RenderSystem.rotatef(-renderManager.playerViewY, 0, 1, 0); TODO
-//        RenderSystem.rotatef(renderManager.playerViewX, 1, 0, 0);
+    private void renderFlatQuad(int frame, MatrixStack matrixStackIn, IVertexBuilder builder, int packedLightIn) {
         float minU = 0 + 16F / TEXTURE_WIDTH * frame;
         float minV = 0;
         float maxU = minU + 16F / TEXTURE_WIDTH;
         float maxV = minV + 16F / TEXTURE_HEIGHT;
-        Tessellator t = Tessellator.getInstance();
-        BufferBuilder buf = t.getBuffer();
-        buf.begin(GL11.GL_QUADS, POSITION_TEX_LMAP);
-        buf.pos(-START_RADIUS, -START_RADIUS, 0).tex(minU, minV).lightmap(0, 240).endVertex();
-        buf.pos(-START_RADIUS, START_RADIUS, 0).tex(minU, maxV).lightmap(0, 240).endVertex();
-        buf.pos(START_RADIUS, START_RADIUS, 0).tex(maxU, maxV).lightmap(0, 240).endVertex();
-        buf.pos(START_RADIUS, -START_RADIUS, 0).tex(maxU, minV).lightmap(0, 240).endVertex();
-        t.draw();
-//        RenderSystem.rotatef(renderManager.playerViewX, -1, 0, 0); TODO
-//        RenderSystem.rotatef(-renderManager.playerViewY, 0, -1, 0);
+        MatrixStack.Entry matrixstack$entry = matrixStackIn.getLast();
+        Matrix4f matrix4f = matrixstack$entry.getMatrix();
+        Matrix3f matrix3f = matrixstack$entry.getNormal();
+        drawVertex(matrix4f, matrix3f, builder, -START_RADIUS, -START_RADIUS, 0, minU, minV, 1, packedLightIn);
+        drawVertex(matrix4f, matrix3f, builder, -START_RADIUS, START_RADIUS, 0, minU, maxV, 1, packedLightIn);
+        drawVertex(matrix4f, matrix3f, builder, START_RADIUS, START_RADIUS, 0, maxU, maxV, 1, packedLightIn);
+        drawVertex(matrix4f, matrix3f, builder, START_RADIUS, -START_RADIUS, 0, maxU, minV, 1, packedLightIn);
+    }
+
+    private void renderStart(int frame, MatrixStack matrixStackIn, IVertexBuilder builder, int packedLightIn) {
+        if (clearerView) {
+            return;
+        }
+        matrixStackIn.push();
+        Quaternion quat = this.renderManager.getCameraOrientation();
+        matrixStackIn.rotate(quat);
+        renderFlatQuad(frame, matrixStackIn, builder, packedLightIn);
+        matrixStackIn.pop();
     }
 
     public static final VertexFormat POSITION_TEX_LMAP = new VertexFormat(ImmutableList.of(
@@ -103,114 +101,60 @@ public class RenderSolarBeam extends EntityRenderer<EntitySolarBeam> {
             DefaultVertexFormats.TEX_2S
     ));
 
-    private void renderEnd(int frame, Direction side) {
-//        GlStateManager.rotatef(-renderManager.playerViewY, 0, 1, 0); TODO
-//        GlStateManager.rotatef(renderManager.playerViewX, 1, 0, 0);
-        float minU = 0 + 16F / TEXTURE_WIDTH * frame;
-        float minV = 0;
-        float maxU = minU + 16F / TEXTURE_WIDTH;
-        float maxV = minV + 16F / TEXTURE_HEIGHT;
-        Tessellator t = Tessellator.getInstance();
-        BufferBuilder buf = t.getBuffer();
-        buf.begin(GL11.GL_QUADS, POSITION_TEX_LMAP);
-        buf.pos(-START_RADIUS, -START_RADIUS, 0).tex(minU, minV).lightmap(0, 240).endVertex();
-        buf.pos(-START_RADIUS, START_RADIUS, 0).tex(minU, maxV).lightmap(0, 240).endVertex();
-        buf.pos(START_RADIUS, START_RADIUS, 0).tex(maxU, maxV).lightmap(0, 240).endVertex();
-        buf.pos(START_RADIUS, -START_RADIUS, 0).tex(maxU, minV).lightmap(0, 240).endVertex();
-        t.draw();
-//        RenderSystem.rotatef(renderManager.playerViewX, -1, 0, 0); TODO
-//        RenderSystem.rotatef(-renderManager.playerViewY, 0, -1, 0);
+    private void renderEnd(int frame, Direction side, MatrixStack matrixStackIn, IVertexBuilder builder, int packedLightIn) {
+        matrixStackIn.push();
+        Quaternion quat = this.renderManager.getCameraOrientation();
+        matrixStackIn.rotate(quat);
+        renderFlatQuad(frame, matrixStackIn, builder, packedLightIn);
+        matrixStackIn.pop();
         if (side == null) {
             return;
         }
-        buf.begin(GL11.GL_QUADS, POSITION_TEX_LMAP);
-        buf.pos(-START_RADIUS, -START_RADIUS, 0).tex(minU, minV).lightmap(0, 240).endVertex();
-        buf.pos(-START_RADIUS, START_RADIUS, 0).tex(minU, maxV).lightmap(0, 240).endVertex();
-        buf.pos(START_RADIUS, START_RADIUS, 0).tex(maxU, maxV).lightmap(0, 240).endVertex();
-        buf.pos(START_RADIUS, -START_RADIUS, 0).tex(maxU, minV).lightmap(0, 240).endVertex();
-        RenderSystem.pushMatrix();
-        switch (side) {
-        case EAST:
-            RenderSystem.rotatef(270, 0, 1, 0);
-            RenderSystem.translatef(0, 0, -0.01f);
-            break;
-        case WEST:
-            RenderSystem.rotatef(90, 0, 1, 0);
-            RenderSystem.translatef(0, 0, -0.01f);
-            break;
-        case SOUTH:
-            RenderSystem.rotatef(180, 0, 1, 0);
-            RenderSystem.translatef(0, 0, -0.01f);
-            break;
-        case NORTH:
-            RenderSystem.translatef(0, 0, -0.01f);
-            break;
-        case DOWN:
-            RenderSystem.rotatef(-90, 1, 0, 0);
-            RenderSystem.translatef(0, 0, -0.01f);
-            break;
-        case UP:
-            RenderSystem.rotatef(90, 1, 0, 0);
-            RenderSystem.translatef(0, 0, -0.01f);
-        }
-        t.draw();
-        RenderSystem.popMatrix();
+        matrixStackIn.push();
+        Quaternion sideQuat = side.getRotation();
+        sideQuat.multiply(new Quaternion(90, 0, 0, true));
+        matrixStackIn.rotate(sideQuat); // TODO: Make sure this works
+        matrixStackIn.translate(0, 0, -0.01f);
+        renderFlatQuad(frame, matrixStackIn, builder, packedLightIn);
+        matrixStackIn.pop();
     }
 
-    private void renderBeam(double length, double yaw, double pitch, int frame) {
+    private void drawBeam(float length, int frame, MatrixStack matrixStackIn, IVertexBuilder builder, int packedLightIn) {
         float minU = 0;
         float minV = 16 / TEXTURE_HEIGHT + 1 / TEXTURE_HEIGHT * frame;
         float maxU = minU + 20 / TEXTURE_WIDTH;
         float maxV = minV + 1 / TEXTURE_HEIGHT;
-        Tessellator t = Tessellator.getInstance();
-        BufferBuilder buf = t.getBuffer();
-        buf.begin(GL11.GL_QUADS, POSITION_TEX_LMAP);
-        buf.pos(-BEAM_RADIUS, 0, 0).tex(minU, minV).lightmap(0, 240).endVertex();
-        buf.pos(-BEAM_RADIUS, length, 0).tex(minU, maxV).lightmap(0, 240).endVertex();
-        buf.pos(BEAM_RADIUS, length, 0).tex(maxU, maxV).lightmap(0, 240).endVertex();
-        buf.pos(BEAM_RADIUS, 0, 0).tex(maxU, minV).lightmap(0, 240).endVertex();
-        RenderSystem.rotatef(-90, 0, 0, 1);
-        RenderSystem.rotatef((float) yaw, 1, 0, 0);
-        RenderSystem.rotatef((float) pitch, 0, 0, 1);
-        if (clearerView) {
-            RenderSystem.rotatef(90, 0, 1, 0);
-        } else {
-//            RenderSystem.rotatef(renderManager.playerViewX, 0, 1, 0); TODO
+        MatrixStack.Entry matrixstack$entry = matrixStackIn.getLast();
+        Matrix4f matrix4f = matrixstack$entry.getMatrix();
+        Matrix3f matrix3f = matrixstack$entry.getNormal();
+        drawVertex(matrix4f, matrix3f, builder, -BEAM_RADIUS, 0, 0, minU, minV, 1, packedLightIn);
+        drawVertex(matrix4f, matrix3f, builder, -BEAM_RADIUS, length, 0, minU, maxV, 1, packedLightIn);
+        drawVertex(matrix4f, matrix3f, builder, BEAM_RADIUS, length, 0, maxU, maxV, 1, packedLightIn);
+        drawVertex(matrix4f, matrix3f, builder, BEAM_RADIUS, 0, 0, maxU, minV, 1, packedLightIn);
+    }
+
+    private void renderBeam(float length, float yaw, float pitch, int frame,  MatrixStack matrixStackIn, IVertexBuilder builder, int packedLightIn) {
+        matrixStackIn.push();
+        matrixStackIn.rotate(new Quaternion(90, 0, 0, true));
+        matrixStackIn.rotate(new Quaternion(0, 0, yaw - 90f, true));
+        matrixStackIn.rotate(new Quaternion(-pitch, 0, 0, true));
+        matrixStackIn.push();
+        if (!clearerView) {
+            matrixStackIn.rotate(new Quaternion(0, Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getPitch() + 90, 0, true));
         }
-        t.draw();
-        if (clearerView) {
-            RenderSystem.rotatef(-90, 0, 1, 0);
-        } else {
-//            RenderSystem.rotatef(-renderManager.playerViewX, 0, 1, 0); TODO
-        }
+        drawBeam(length, frame, matrixStackIn, builder, packedLightIn);
+        matrixStackIn.pop();
 
         if (!clearerView) {
-            buf.begin(GL11.GL_QUADS, POSITION_TEX_LMAP);
-            buf.pos(-BEAM_RADIUS, 0, 0).tex(minU, minV).lightmap(0, 240).endVertex();
-            buf.pos(-BEAM_RADIUS, length, 0).tex(minU, maxV).lightmap(0, 240).endVertex();
-            buf.pos(BEAM_RADIUS, length, 0).tex(maxU, maxV).lightmap(0, 240).endVertex();
-            buf.pos(BEAM_RADIUS, 0, 0).tex(maxU, minV).lightmap(0, 240).endVertex();
-//            RenderSystem.rotatef(-renderManager.playerViewX, 0, 1, 0); TODO
-            RenderSystem.rotatef(180, 0, 1, 0);
-            t.draw();
-            RenderSystem.rotatef(-180, 0, 1, 0);
-//            RenderSystem.rotatef(renderManager.playerViewX, 0, 1, 0); TODO
+            matrixStackIn.push();
+            matrixStackIn.rotate(new Quaternion(0, -Minecraft.getInstance().gameRenderer.getActiveRenderInfo().getPitch() - 90, 0, true));
+            drawBeam(length, frame, matrixStackIn, builder, packedLightIn);
+            matrixStackIn.pop();
         }
-        RenderSystem.rotatef((float) -pitch, 0, 0, 1);
-        RenderSystem.rotatef((float) -yaw, 1, 0, 0);
-        RenderSystem.rotatef(90, 0, 0, 1);
+        matrixStackIn.pop();
     }
 
-    private void setupGL() {
-        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        RenderSystem.enableBlend();
-        RenderSystem.disableLighting();
-        RenderSystem.alphaFunc(GL11.GL_GREATER, 0);
-    }
-
-    private void revertGL() {
-        RenderSystem.disableBlend();
-        RenderSystem.enableLighting();
-        RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
+    public void drawVertex(Matrix4f matrix, Matrix3f normals, IVertexBuilder vertexBuilder, float offsetX, float offsetY, float offsetZ, float textureX, float textureY, float alpha, int packedLightIn) {
+        vertexBuilder.pos(matrix, offsetX, offsetY, offsetZ).color(1, 1, 1, 1 * alpha).tex(textureX, textureY).overlay(OverlayTexture.NO_OVERLAY).lightmap(packedLightIn).normal(normals, 0.0F, 1.0F, 0.0F).endVertex();
     }
 }
