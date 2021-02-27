@@ -1,8 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.render.RenderHelper;
-import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
@@ -21,7 +19,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -92,17 +89,6 @@ public enum FrozenRenderHandler {
         @Override
         public boolean shouldCombineTextures() {
             return false;
-        }
-    }
-
-    @SubscribeEvent
-    public void onPreRenderEntityLivingBase(RenderLivingEvent.Pre event) {
-        LivingEntity entity = event.getEntity();
-
-        if (entity.getRidingEntity() instanceof EntityFrozenController) {
-            if(!RenderHelper.doesRendererHaveLayer(event.getRenderer(), LayerFrozen.class, false)) {
-                event.getRenderer().addLayer(new LayerFrozen(event.getRenderer()));
-            }
         }
     }
 
