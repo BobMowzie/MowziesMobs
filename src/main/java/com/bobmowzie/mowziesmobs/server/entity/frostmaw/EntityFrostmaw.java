@@ -585,6 +585,13 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         return 1;
     }
 
+    @Nullable
+    @Override
+    public ILivingEntityData onInitialSpawn(IWorld world, DifficultyInstance difficulty, SpawnReason reason, @Nullable ILivingEntityData livingData, @Nullable CompoundNBT compound) {
+        setHasCrystal(true);
+        return super.onInitialSpawn(world, difficulty, reason, livingData, compound);
+    }
+
     private void spawnSwipeParticles() {
         if (world.isRemote) {
             double motionX = getMotion().getX();
