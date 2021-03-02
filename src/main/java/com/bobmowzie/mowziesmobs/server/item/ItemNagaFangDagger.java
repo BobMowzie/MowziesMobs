@@ -5,6 +5,7 @@ import com.google.common.collect.Sets;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentType;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemTier;
 import net.minecraft.potion.EffectInstance;
@@ -26,6 +27,7 @@ public class ItemNagaFangDagger extends ToolItem {
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        if (enchantment == Enchantments.SWEEPING) return false;
         return enchantment.type == EnchantmentType.WEAPON || enchantment.type == EnchantmentType.BREAKABLE || enchantment.type == EnchantmentType.ALL;
     }
 

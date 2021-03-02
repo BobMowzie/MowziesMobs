@@ -16,6 +16,8 @@ import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -75,7 +77,11 @@ public class ClientProxy extends ServerProxy {
 
     @Override
     public void onLateInit(final IEventBus modbus) {
-
+        for (EntityRenderer<?> entity : Minecraft.getInstance().getRenderManager().renderers.values()) {
+            if (entity instanceof LivingRenderer) {
+                ((LivingRenderer) entity).addLayer(new FrozenRenderHandler.LayerFrozen((LivingRenderer) entity));
+            }
+        }
     }
 
     @Override

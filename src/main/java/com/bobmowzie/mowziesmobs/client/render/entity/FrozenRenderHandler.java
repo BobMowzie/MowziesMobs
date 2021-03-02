@@ -1,12 +1,8 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.render.RenderHelper;
-import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
@@ -15,18 +11,13 @@ import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.GameType;
 import net.minecraftforge.client.event.RenderHandEvent;
-import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-
-import java.util.function.Predicate;
 
 /**
  * Created by Josh on 6/28/2017.
@@ -72,17 +63,6 @@ public enum FrozenRenderHandler {
 //        public boolean shouldCombineTextures() {
 //            return false;
 //        }
-    }
-
-    @SubscribeEvent
-    public void onPreRenderEntityLivingBase(RenderLivingEvent.Pre event) {
-        LivingEntity entity = event.getEntity();
-
-        if (entity.getRidingEntity() instanceof EntityFrozenController) {
-            if(!RenderHelper.doesRendererHaveLayer(event.getRenderer(), LayerFrozen.class, false)) {
-                event.getRenderer().addLayer(new LayerFrozen(event.getRenderer()));
-            }
-        }
     }
 
     @SubscribeEvent
