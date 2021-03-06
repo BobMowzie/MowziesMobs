@@ -5,6 +5,8 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -122,11 +124,6 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
 
     @Override
     public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
-        super.renderParticle(buffer, renderInfo, partialTicks);
-    }
-
-    /*@Override
-    public void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         particleAlpha = prevAlpha + (alpha - prevAlpha) * partialTicks;
         if (particleAlpha < 0.01) particleAlpha = 0.01f;
         particleRed = prevRed + (red - prevRed) * partialTicks;
@@ -138,92 +135,70 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
             component.preRender(this, partialTicks);
         }
 
-        if (!(rotation instanceof ParticleRotation.FaceCamera)) {
-            rotationX = 1;
-            rotationZ = 1;
-            rotationXY = 0;
-            rotationXZ = 0;
-            rotationYZ = 0;
-        }
+        Vec3d vec3d = renderInfo.getProjectedView();
+        float f = (float)(MathHelper.lerp((double)partialTicks, this.prevPosX, this.posX) - vec3d.getX());
+        float f1 = (float)(MathHelper.lerp((double)partialTicks, this.prevPosY, this.posY) - vec3d.getY());
+        float f2 = (float)(MathHelper.lerp((double)partialTicks, this.prevPosZ, this.posZ) - vec3d.getZ());
 
-        float f = this.getMinU();
-        float f1 = this.getMaxU();
-        float f2 = this.getMinV();
-        float f3 = this.getMaxV();
-        float f4 = 0.1F * this.particleScale;
-
-        float f5 = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)partialTicks - interpPosX);
-        float f6 = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)partialTicks - interpPosY);
-        float f7 = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * (double)partialTicks - interpPosZ);
-        int i = this.getBrightnessForRender(partialTicks);
-        int j = i >> 16 & 65535;
-        int k = i & 65535;
-        Vec3d[] avec3d = new Vec3d[] {new Vec3d((double)(-rotationX * f4 - rotationXY * f4), (double)(-rotationZ * f4), (double)(-rotationYZ * f4 - rotationXZ * f4)), new Vec3d((double)(-rotationX * f4 + rotationXY * f4), (double)(rotationZ * f4), (double)(-rotationYZ * f4 + rotationXZ * f4)), new Vec3d((double)(rotationX * f4 + rotationXY * f4), (double)(rotationZ * f4), (double)(rotationYZ * f4 + rotationXZ * f4)), new Vec3d((double)(rotationX * f4 - rotationXY * f4), (double)(-rotationZ * f4), (double)(rotationYZ * f4 - rotationXZ * f4))};
-
+        Quaternion quaternion = new Quaternion(0.0F, 0.0F, 0.0F, 1.0F);
         if (rotation instanceof ParticleRotation.FaceCamera) {
-            ParticleRotation.FaceCamera faceCameraRot = (ParticleRotation.FaceCamera) rotation;
-            if (faceCameraRot.faceCameraAngle != 0.0F || faceCameraRot.prevFaceCameraAngle != 0.0F) {
-                float f8 = faceCameraRot.prevFaceCameraAngle + (faceCameraRot.faceCameraAngle - faceCameraRot.prevFaceCameraAngle) * partialTicks;
-                float f9 = MathHelper.cos(f8 * 0.5F);
-                float f10 = MathHelper.sin(f8 * 0.5F) * (float)entityIn.getLookDirection().x;
-                float f11 = MathHelper.sin(f8 * 0.5F) * (float)entityIn.getLookDirection().y;
-                float f12 = MathHelper.sin(f8 * 0.5F) * (float)entityIn.getLookDirection().z;
-                Vec3d vec3d = new Vec3d((double)f10, (double)f11, (double)f12);
-
-                for (int l = 0; l < 4; ++l)
-                {
-                    avec3d[l] = vec3d.scale(2.0D * avec3d[l].dotProduct(vec3d)).add(avec3d[l].scale((double)(f9 * f9) - vec3d.dotProduct(vec3d))).add(vec3d.crossProduct(avec3d[l]).scale((double)(2.0F * f9)));
-                }
+            if (this.particleAngle == 0.0F) {
+                quaternion = renderInfo.getRotation();
+            } else {
+                quaternion = new Quaternion(renderInfo.getRotation());
+                float f3 = MathHelper.lerp(partialTicks, this.prevParticleAngle, this.particleAngle);
+                quaternion.multiply(Vector3f.ZP.rotation(f3));
             }
         }
-
-        Matrix4d boxTranslate = new Matrix4d();
-        Matrix4d boxRotateX = new Matrix4d();
-        Matrix4d boxRotateY = new Matrix4d();
-        Matrix4d boxRotateZ = new Matrix4d();
-        boxTranslate.set(new Vector3d(f5, f6, f7));
-        if (rotation instanceof ParticleRotation.EulerAngles) {
+        else if (rotation instanceof ParticleRotation.EulerAngles) {
             ParticleRotation.EulerAngles eulerRot = (ParticleRotation.EulerAngles) rotation;
-            boxRotateX.rotX(eulerRot.prevPitch + (eulerRot.pitch - eulerRot.prevPitch) * partialTicks);
-            boxRotateY.rotY(eulerRot.prevYaw + (eulerRot.yaw - eulerRot.prevYaw) * partialTicks);
-            boxRotateZ.rotZ(eulerRot.prevRoll + (eulerRot.roll - eulerRot.prevRoll) * partialTicks);
+            float rotX = eulerRot.prevPitch + (eulerRot.pitch - eulerRot.prevPitch) * partialTicks;
+            float rotY = eulerRot.prevYaw + (eulerRot.yaw - eulerRot.prevYaw) * partialTicks;
+            float rotZ = eulerRot.prevRoll + (eulerRot.roll - eulerRot.prevRoll) * partialTicks;
+            Quaternion quatX = new Quaternion(rotX, 0, 0, false);
+            Quaternion quatY = new Quaternion(0, rotY, 0, false);
+            Quaternion quatZ = new Quaternion(0, 0, rotZ, false);
+            quaternion.multiply(quatZ);
+            quaternion.multiply(quatY);
+            quaternion.multiply(quatX);
         }
-        else if (rotation instanceof ParticleRotation.OrientVector) {
+        if (rotation instanceof ParticleRotation.OrientVector) {
             ParticleRotation.OrientVector orientRot = (ParticleRotation.OrientVector) rotation;
             double x = orientRot.prevOrientation.x + (orientRot.orientation.x - orientRot.prevOrientation.x) * partialTicks;
             double y = orientRot.prevOrientation.y + (orientRot.orientation.y - orientRot.prevOrientation.y) * partialTicks;
             double z = orientRot.prevOrientation.z + (orientRot.orientation.z - orientRot.prevOrientation.z) * partialTicks;
             float pitch = (float) Math.asin(-y);
-            float yaw = (float) MathHelper.atan2(x, z);
-            boxRotateX.rotX(pitch);
-            boxRotateY.rotY(yaw);
-            boxRotateZ.setIdentity();
+            float yaw = (float) (MathHelper.atan2(x, z));
+            Quaternion quatX = new Quaternion(pitch, 0, 0, false);
+            Quaternion quatY = new Quaternion(0, yaw, 0, false);
+            quaternion.multiply(quatY);
+            quaternion.multiply(quatX);
         }
 
-        Point3d[] vertices = new Point3d[] {
-                new Point3d(avec3d[0].x, avec3d[0].y,  avec3d[0].z),
-                new Point3d(avec3d[1].x, avec3d[1].y,  avec3d[1].z),
-                new Point3d(avec3d[2].x,  avec3d[2].y,  avec3d[2].z),
-                new Point3d(avec3d[3].x,  avec3d[3].y,  avec3d[3].z)
-        };
-        for (Point3d vertex: vertices) {
-            if (!(rotation instanceof ParticleRotation.FaceCamera)) {
-                boxRotateX.transform(vertex);
-                boxRotateY.transform(vertex);
-                boxRotateZ.transform(vertex);
-            }
-            boxTranslate.transform(vertex);
+        Vector3f[] avector3f = new Vector3f[]{new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F)};
+        float f4 = particleScale * 0.1f;
+
+        for(int i = 0; i < 4; ++i) {
+            Vector3f vector3f = avector3f[i];
+            vector3f.transform(quaternion);
+            vector3f.mul(f4);
+            vector3f.add(f, f1, f2);
         }
 
-        buffer.pos(vertices[0].getX(), vertices[0].getY(), vertices[0].getZ()).tex((double) f1, (double) f3).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-        buffer.pos(vertices[1].getX(), vertices[1].getY(), vertices[1].getZ()).tex((double) f1, (double) f2).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-        buffer.pos(vertices[2].getX(), vertices[2].getY(), vertices[2].getZ()).tex((double) f, (double) f2).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-        buffer.pos(vertices[3].getX(), vertices[3].getY(), vertices[3].getZ()).tex((double) f, (double) f3).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
+        float f7 = this.getMinU();
+        float f8 = this.getMaxU();
+        float f5 = this.getMinV();
+        float f6 = this.getMaxV();
+        int j = this.getBrightnessForRender(partialTicks);
+        buffer.pos((double)avector3f[0].getX(), (double)avector3f[0].getY(), (double)avector3f[0].getZ()).tex(f8, f6).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
+        buffer.pos((double)avector3f[1].getX(), (double)avector3f[1].getY(), (double)avector3f[1].getZ()).tex(f8, f5).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
+        buffer.pos((double)avector3f[2].getX(), (double)avector3f[2].getY(), (double)avector3f[2].getZ()).tex(f7, f5).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
+        buffer.pos((double)avector3f[3].getX(), (double)avector3f[3].getY(), (double)avector3f[3].getZ()).tex(f7, f6).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
 
         for (ParticleComponent component : components) {
-            component.postRender(this, buffer, partialTicks, j, k);
+            component.postRender(this, buffer, renderInfo, partialTicks, j);
         }
-    }*/ // TODO
+    }
 
     public float getAge() {
         return age;

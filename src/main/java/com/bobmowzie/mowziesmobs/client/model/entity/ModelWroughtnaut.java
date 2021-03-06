@@ -1,7 +1,5 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.ExtendedModelRenderer;
-import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -85,8 +83,8 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
     public AdvancedModelRenderer waistBendController;
     public AdvancedModelRenderer eyeRight;
     public AdvancedModelRenderer eyeLeft;
-    public SocketModelRenderer eyeRightSocket;
-    public SocketModelRenderer eyeLeftSocket;
+    public AdvancedModelRenderer eyeRightSocket;
+    public AdvancedModelRenderer eyeLeftSocket;
 
     public ModelWroughtnaut() {
         this(false);
@@ -375,8 +373,8 @@ public class ModelWroughtnaut<T extends EntityWroughtnaut> extends MowzieEntityM
         this.eyeRight = new AdvancedModelRenderer(this, 0, 0);
         this.eyeRight.setRotationPoint(4, -4, 4);
         this.eyeRight.addBox(-1, -0.5F, 0, 2, 1, 0, 0.0F);
-        eyeRightSocket = new SocketModelRenderer(this, 0, 0);
-        eyeLeftSocket = new SocketModelRenderer(this, 0, 0);
+        eyeRightSocket = new AdvancedModelRenderer(this, 0, 0);
+        eyeLeftSocket = new AdvancedModelRenderer(this, 0, 0);
 
         rootBox.addChild(waist);
         this.waist.addChild(this.groinJoint);

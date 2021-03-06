@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.model.tools.dynamics;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
+import com.bobmowzie.mowziesmobs.client.render.RenderUtils;
+import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.entity.Entity;
@@ -126,7 +127,7 @@ public class DynamicChain {
         }
     }
 
-    public void setChain(SocketModelRenderer[] chainOrig, SocketModelRenderer[] chainDynamic) {
+    public void setChain(AdvancedModelRenderer[] chainOrig, AdvancedModelRenderer[] chainDynamic) {
         p = new Vec3d[chainOrig.length];
         v = new Vec3d[chainOrig.length];
         a = new Vec3d[chainOrig.length];
@@ -139,7 +140,7 @@ public class DynamicChain {
         ra = new Vec3d[chainOrig.length];
         pOrig = new Vec3d[chainOrig.length];
         for (int i = 0; i < chainOrig.length; i++) {
-            pOrig[i] = chainOrig[i].getWorldPos(entity, 0);
+            pOrig[i] = RenderUtils.getWorldPosFromModel(entity, entity.rotationYaw, chainOrig[i]);
             p[i] = pOrig[i];
             v[i] = new Vec3d(0, 0, 0);
             a[i] = new Vec3d(0, 0, 0);
@@ -167,19 +168,19 @@ public class DynamicChain {
 
         for (int i = 0; i < chainOrig.length; i++) {
             if (chainDynamic[i] == null) {
-                chainDynamic[i] = new SocketModelRenderer(chainOrig[i]);
+                chainDynamic[i] = new AdvancedModelRenderer(chainOrig[i]);
             }
         }
     }
 
-    public void updateChain(float delta, SocketModelRenderer[] chainOrig, SocketModelRenderer[] chainDynamic, float gravityAmount, float stiffness, float stiffnessFalloff, float damping, int numUpdates, boolean useFloor) {
+    public void updateChain(float delta, AdvancedModelRenderer[] chainOrig, AdvancedModelRenderer[] chainDynamic, float gravityAmount, float stiffness, float stiffnessFalloff, float damping, int numUpdates, boolean useFloor) {
         if (p.length != chainOrig.length || Double.isNaN(p[1].x)) {
             setChain(chainOrig, chainDynamic);
         }
 
         if (prevUpdateTick != entity.ticksExisted) {
             for (int i = 0; i < chainOrig.length; i++) {
-                pOrig[i] = chainOrig[i].getWorldPos(entity, delta);
+                pOrig[i] = RenderUtils.getWorldPosFromModel(entity, entity.rotationYaw, chainOrig[i]);
             }
 
             updateBendConstraint(gravityAmount, stiffness, stiffnessFalloff, damping, numUpdates, useFloor);
@@ -191,7 +192,7 @@ public class DynamicChain {
         for (int i = chainDynamic.length - 1; i >= 0; i--) {
             if (chainDynamic[i] == null) return;
             Vec3d renderPos = p[i].add(v[i].scale(delta)).add(a[i].scale(0.5 * delta * delta));
-            chainDynamic[i].setWorldPos(entity, renderPos, delta);
+//            chainDynamic[i].setWorldPos(entity, renderPos, delta); TODO
 
             if (i < chainDynamic.length - 1) {
                 Vec3d p1 = new Vec3d(chainDynamic[i].rotationPointX, chainDynamic[i].rotationPointY, chainDynamic[i].rotationPointZ);
@@ -213,7 +214,7 @@ public class DynamicChain {
         }
     }
 
-    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha, SocketModelRenderer[] dynModelRenderers) {
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha, AdvancedModelRenderer[] dynModelRenderers) {
         if (dynModelRenderers == null) return;
         for (int i = 0; i < dynModelRenderers.length - 1; i++) {
             if (dynModelRenderers[i] == null) return;

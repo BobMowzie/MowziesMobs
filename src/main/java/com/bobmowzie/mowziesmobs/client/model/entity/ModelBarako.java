@@ -1,12 +1,9 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
@@ -67,7 +64,7 @@ public class ModelBarako<T extends EntityBarako> extends MowzieEntityModel<T> {
     public AdvancedModelRenderer mouthScalerY;
     public AdvancedModelRenderer bellyScaler;
     public AdvancedModelRenderer lookController;
-    public SocketModelRenderer betweenHands;
+    public AdvancedModelRenderer betweenHands;
 
     public ModelBarako() {
         this.textureWidth = 128;
@@ -308,7 +305,7 @@ public class ModelBarako<T extends EntityBarako> extends MowzieEntityModel<T> {
         bellyScaler.setRotationPoint(1, 0, 0);
         lookController = new AdvancedModelRenderer(this, 0, 0);
         lookController.setRotationPoint(1, 0, 0);
-        betweenHands = new SocketModelRenderer(this, 0, 0);
+        betweenHands = new AdvancedModelRenderer(this, 0, 0);
         betweenHands.setRotationPoint(0F, 9F, -20F);
         this.upperLip.addChild(this.teethTop);
         this.head.addChild(this.maskBase);
@@ -358,9 +355,7 @@ public class ModelBarako<T extends EntityBarako> extends MowzieEntityModel<T> {
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-//        RenderSystem.disableRescaleNormal();
         this.body.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-//        RenderSystem.enableRescaleNormal();
     }
 
     public void setDefaultAngles(EntityBarako entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
@@ -1312,7 +1307,5 @@ public class ModelBarako<T extends EntityBarako> extends MowzieEntityModel<T> {
         maskMouth.setScale(mouthScaleX, mouthScaleY, maskMouth.scaleZ);
         forehead.setScale(forehead.scaleX, foreheadScale, forehead.scaleZ);
         maskBase.setScale(1 / (1 - bellyScaler.rotationPointY), 1 / (1 - bellyScaler.rotationPointY), 1 / (1 - bellyScaler.rotationPointY));
-
-        if (entity.betweenHandPos != null && entity.betweenHandPos.length > 0) entity.betweenHandPos[0] = betweenHands.getWorldPos(entity, delta);
     }
 }

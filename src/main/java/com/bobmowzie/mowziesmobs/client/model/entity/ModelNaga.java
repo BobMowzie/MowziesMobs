@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
 import com.bobmowzie.mowziesmobs.client.model.tools.dynamics.DynamicChain;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
@@ -18,7 +17,7 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
     public AdvancedModelRenderer root;
     public AdvancedModelRenderer body;
     public AdvancedModelRenderer neck;
-    public SocketModelRenderer tail1;
+    public AdvancedModelRenderer tail1;
     public AdvancedModelRenderer spike1joint;
     public AdvancedModelRenderer spike2joint;
     public AdvancedModelRenderer spike3joint;
@@ -36,11 +35,11 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
     public AdvancedModelRenderer teethLower;
     public AdvancedModelRenderer eyebrow_R;
     public AdvancedModelRenderer eyebrow_L;
-    public SocketModelRenderer tail2;
+    public AdvancedModelRenderer tail2;
     public AdvancedModelRenderer spike4joint;
     public AdvancedModelRenderer backFin2;
     public AdvancedModelRenderer backFin2Reversed;
-    public SocketModelRenderer tail3;
+    public AdvancedModelRenderer tail3;
     public AdvancedModelRenderer spike5joint;
     public AdvancedModelRenderer backWing_L;
     public AdvancedModelRenderer backWing_R;
@@ -48,9 +47,9 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
     public AdvancedModelRenderer backWing_RReversed;
     public AdvancedModelRenderer backFin3;
     public AdvancedModelRenderer backFin3Reversed;
-    public SocketModelRenderer tail4;
-    public SocketModelRenderer tail5;
-    public SocketModelRenderer tail6;
+    public AdvancedModelRenderer tail4;
+    public AdvancedModelRenderer tail5;
+    public AdvancedModelRenderer tail6;
     public AdvancedModelRenderer tailFin;
     public AdvancedModelRenderer tailFinReversed;
     public AdvancedModelRenderer spike5;
@@ -108,14 +107,14 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
     public AdvancedModelRenderer wingFolder;
     public AdvancedModelRenderer shoulderLJoint;
     public AdvancedModelRenderer shoulderRJoint;
-    public SocketModelRenderer mouthSocket;
+    public AdvancedModelRenderer mouthSocket;
     public AdvancedModelRenderer scaler;
     public AdvancedModelRenderer swooper;
 
-    public SocketModelRenderer tailEnd;
+    public AdvancedModelRenderer tailEnd;
 
-    public SocketModelRenderer[] tailOriginal;
-    public SocketModelRenderer[] tailDynamic;
+    public AdvancedModelRenderer[] tailOriginal;
+    public AdvancedModelRenderer[] tailDynamic;
 
     public AdvancedModelRenderer[] reversePlanes;
 
@@ -162,10 +161,10 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         this.wingWebbing5_LReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
         this.wingWebbing5_LReversed.addBox(-12.0F, 0.0F, 0.0F, 20, 0, 23, 0.0F);
 //        wingWebbing5_LReversed.setScale(1, -1, 1);
-        this.tail5 = new SocketModelRenderer(this, 162, 30);
+        this.tail5 = new AdvancedModelRenderer(this, 162, 30);
         this.tail5.setRotationPoint(0.0F, 0.0F, 14.0F);
         this.tail5.addBox(-1.5F, -1.0F, 0.0F, 3, 2, 13, 0.0F);
-        this.tail3 = new SocketModelRenderer(this, 0, 34);
+        this.tail3 = new AdvancedModelRenderer(this, 0, 34);
         this.tail3.setRotationPoint(0.0F, 0.0F, 15.0F);
         this.tail3.addBox(-5.5F, -2.5F, 0.0F, 11, 4, 16, 0.0F);
         this.wingWebbing2_L = new AdvancedModelRenderer(this, 20, 98);
@@ -258,7 +257,7 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         this.upperArmJoint_L.setRotationPoint(9.0F, -1.0F, -1.0F);
         this.upperArmJoint_L.addBox(-2.0F, 0.0F, -3.0F, 0, 0, 0, 0.0F);
         setRotateAngle(upperArmJoint_L, 0.0F, 0.5235987755982988F, 0.0F);
-        this.tail1 = new SocketModelRenderer(this, 140, 0);
+        this.tail1 = new AdvancedModelRenderer(this, 140, 0);
         this.tail1.setRotationPoint(0.0F, 1.5F, 17.0F);
         this.tail1.addBox(-7.5F, -4.5F, -3.0F, 15, 9, 19, 0.0F);
         this.wingWebbing5_R = new AdvancedModelRenderer(this, 193, 128);
@@ -397,7 +396,7 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         this.backFin2Reversed.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.backFin2Reversed.addBox(0.0F, -14.0F, -3.0F, 0, 14, 19, 0.0F);
 //        backFin2Reversed.setScale(-1, 1, 1);
-        this.tail2 = new SocketModelRenderer(this, 115, 28);
+        this.tail2 = new AdvancedModelRenderer(this, 115, 28);
         this.tail2.setRotationPoint(0.0F, -1.0F, 15.0F);
         this.tail2.addBox(-6.5F, -3.0F, -1.0F, 13, 6, 17, 0.0F);
         this.hand_L = new AdvancedModelRenderer(this, 222, 0);
@@ -471,7 +470,7 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         this.wingWebbing6_LReversed.setRotationPoint(0.0F, -0.004F, 0.0F);
         this.wingWebbing6_LReversed.addBox(-10.5F, 0.0F, 0.0F, 25, 0, 24, 0.0F);
 //        wingWebbing6_LReversed.setScale(1, -1, 1);
-        this.tail6 = new SocketModelRenderer(this, 0, 0);
+        this.tail6 = new AdvancedModelRenderer(this, 0, 0);
         this.tail6.setRotationPoint(0.0F, 0.0F, 13.0F);
         this.tail6.addBox(-1.5F, -1.0F, 0.0F, 0, 0, 0, 0.0F);
         this.wingClaw_L = new AdvancedModelRenderer(this, 231, 8);
@@ -483,7 +482,7 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         this.wingFrame4_R.setRotationPoint(-2.0F, 0.0F, 0.0F);
         this.wingFrame4_R.addBox(-38.0F, -1.5F, -1.5F, 38, 3, 3, 0.0F);
         setRotateAngle(wingFrame4_R, 0.0F, 1.8325957145940461F, 0.0F);
-        this.tail4 = new SocketModelRenderer(this, 142, 52);
+        this.tail4 = new AdvancedModelRenderer(this, 142, 52);
         this.tail4.setRotationPoint(0.0F, -0.5F, 15.0F);
         this.tail4.addBox(-3.5F, -1.5F, 0.0F, 7, 3, 15, 0.0F);
         this.wingFrame3_R = new AdvancedModelRenderer(this, 0, 73);
@@ -495,10 +494,10 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         this.shoulderLJoint.setRotationPoint(8.0F, -2.0F, -1.0F);
         this.shoulderRJoint = new AdvancedModelRenderer(this, 0, 0);
         this.shoulder1_R.setRotationPoint(-8.0F, -2.0F, -1.0F);
-        this.mouthSocket = new SocketModelRenderer(this, 0, 0);
+        this.mouthSocket = new AdvancedModelRenderer(this, 0, 0);
         this.mouthSocket.setRotationPoint(0, 5, -10);
         this.wingFolder = new AdvancedModelRenderer(this, 0, 0);
-        this.tailEnd = new SocketModelRenderer(this, 0, 0);
+        this.tailEnd = new AdvancedModelRenderer(this, 0, 0);
         this.tailEnd.setRotationPoint(0, 0, 5);
         this.scaler = new AdvancedModelRenderer(this, 0, 0);
         this.swooper = new AdvancedModelRenderer(this, 0, 0);
@@ -599,8 +598,8 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         updateDefaultPose();
         updateDefaultPoseExtendeds();
 
-        tailOriginal = new SocketModelRenderer[]{tail1, tail2, tail3, tail4, tail5, tailEnd};
-        tailDynamic = new SocketModelRenderer[tailOriginal.length];
+        tailOriginal = new AdvancedModelRenderer[]{tail1, tail2, tail3, tail4, tail5, tailEnd};
+        tailDynamic = new AdvancedModelRenderer[tailOriginal.length];
 
         reversePlanes = new AdvancedModelRenderer[] {
                 backWing_LReversed,
@@ -662,8 +661,8 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         this.root.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         if (tail != null) tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha, tailDynamic);
-//        for (SocketModelRenderer socketModelRenderer : tailOriginal) {
-//            socketModelRenderer.showModel = false;
+//        for (AdvancedModelRenderer AdvancedModelRenderer : tailOriginal) {
+//            AdvancedModelRenderer.showModel = false;
 //        }
     }
 
@@ -1238,8 +1237,6 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
 
             entity.shoulderRot = shoulder1_R.rotateAngleZ;
         }
-
-        entity.mouthPos[0] = mouthSocket.getWorldPos(entity);
     }
 
     private void jawControls() {

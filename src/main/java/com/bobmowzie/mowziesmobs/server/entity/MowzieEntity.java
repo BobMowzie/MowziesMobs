@@ -29,6 +29,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.*;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -50,6 +52,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     protected boolean dropAfterDeathAnim = true;
     public boolean hurtInterruptsAnimation = false;
 
+    @OnlyIn(Dist.CLIENT)
     public Vec3d[] socketPosArray = new Vec3d[]{};
 
     protected boolean prevOnGround;
@@ -451,5 +454,12 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
 
     protected BossInfo.Color bossBarColor() {
         return BossInfo.Color.PURPLE;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void setSocketPosArray(int index, Vec3d pos) {
+        if (socketPosArray != null && socketPosArray.length > index) {
+            socketPosArray[index] = pos;
+        }
     }
 }

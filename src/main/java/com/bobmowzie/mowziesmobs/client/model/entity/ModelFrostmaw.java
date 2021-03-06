@@ -1,13 +1,11 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.LegArticulator;
-import com.bobmowzie.mowziesmobs.client.model.tools.SocketModelRenderer;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.util.math.Vec3d;
 
 /**
  * Created by Josh on 5/8/2017.
@@ -69,10 +67,9 @@ public class ModelFrostmaw<T extends EntityFrostmaw> extends MowzieEntityModel<T
     public AdvancedModelRenderer handController;
     public AdvancedModelRenderer swingOffsetController;
     public AdvancedModelRenderer roarController;
-    public SocketModelRenderer rightHandSocket;
-    public SocketModelRenderer leftHandSocket;
-    public SocketModelRenderer mouthSocket;
-    public SocketModelRenderer crystalSocket;
+    public AdvancedModelRenderer rightHandSocket;
+    public AdvancedModelRenderer leftHandSocket;
+    public AdvancedModelRenderer mouthSocket;
     public AdvancedModelRenderer iceCrystal;
     public AdvancedModelRenderer iceCrystalJoint;
     public AdvancedModelRenderer iceCrystalHand;
@@ -454,11 +451,9 @@ public class ModelFrostmaw<T extends EntityFrostmaw> extends MowzieEntityModel<T
         swingOffsetController = new AdvancedModelRenderer(this, 0, 0);
         roarController = new AdvancedModelRenderer(this, 0, 0);
         standUpController = new AdvancedModelRenderer(this, 0, 0);
-        rightHandSocket = new SocketModelRenderer(this);
-        leftHandSocket = new SocketModelRenderer(this);
-        mouthSocket = new SocketModelRenderer(this);
-        crystalSocket = new SocketModelRenderer(this);
-        crystalSocket.setRotationPoint(0, 0, -2);
+        rightHandSocket = new AdvancedModelRenderer(this);
+        leftHandSocket = new AdvancedModelRenderer(this);
+        mouthSocket = new AdvancedModelRenderer(this);
 
         this.leftHandJoint.addChild(this.leftHand);
         this.legLeft1.addChild(this.legLeft2);
@@ -517,7 +512,6 @@ public class ModelFrostmaw<T extends EntityFrostmaw> extends MowzieEntityModel<T
         rightHand.addChild(rightHandSocket);
         leftHand.addChild(leftHandSocket);
         headJoint.addChild(mouthSocket);
-        rightHand.addChild(crystalSocket);
 
         eyeLidLeft.showModel = false;
         eyeLidRight.showModel = false;
@@ -554,27 +548,13 @@ public class ModelFrostmaw<T extends EntityFrostmaw> extends MowzieEntityModel<T
         super.setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
         mouthSocket.setRotationPoint(0, -10, 8);
-
-        if (entity.getAnimation() == EntityFrostmaw.SWIPE_ANIMATION || entity.getAnimation() == EntityFrostmaw.SWIPE_TWICE_ANIMATION || entity.getAnimation() == EntityFrostmaw.ICE_BREATH_ANIMATION || entity.getAnimation() == EntityFrostmaw.ICE_BALL_ANIMATION || !entity.getActive()) {
-            Vec3d rightHandPos = rightHandSocket.getWorldPos(entity);
-            Vec3d leftHandPos = leftHandSocket.getWorldPos(entity);
-            mouthSocket.rotationPointZ -= 28;
-            mouthSocket.rotationPointY += 26;
-            Vec3d mouthPos = mouthSocket.getWorldPos(entity);
-            Vec3d crystalPos = crystalSocket.getWorldPos(entity);
-            entity.socketPosArray[0] = rightHandPos;
-            entity.socketPosArray[1] = leftHandPos;
-            entity.socketPosArray[2] = mouthPos;
-            entity.socketPosArray[3] = crystalPos;
-        }
+        mouthSocket.rotationPointZ -= 28;
+        mouthSocket.rotationPointY += 26;
     }
 
     @Override
     protected void animate(EntityFrostmaw entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
         float frame = entity.ticksExisted + delta;
-
-        crystalSocket.rotationPointZ += 2;
-        crystalSocket.rotationPointY -= 11.5;
 
         if (entity.getAnimation() == EntityFrostmaw.SWIPE_ANIMATION) {
             animator.setAnimation(EntityFrostmaw.SWIPE_ANIMATION);

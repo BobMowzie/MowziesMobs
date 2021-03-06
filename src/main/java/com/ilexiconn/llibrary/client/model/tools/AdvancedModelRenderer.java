@@ -59,6 +59,27 @@ public class AdvancedModelRenderer extends ModelRenderer {
         this.childModels = new ObjectArrayList();
     }
 
+    public AdvancedModelRenderer(AdvancedModelRenderer copyFrom) {
+        super(copyFrom.getModel());
+        this.rotationPointX = copyFrom.rotationPointX;
+        this.rotationPointY = copyFrom.rotationPointY;
+        this.rotationPointZ = copyFrom.rotationPointZ;
+        this.rotateAngleX = copyFrom.rotateAngleX;
+        this.rotateAngleY = copyFrom.rotateAngleY;
+        this.rotateAngleZ = copyFrom.rotateAngleZ;
+        this.scaleX = copyFrom.scaleX;
+        this.scaleY = copyFrom.scaleY;
+        this.scaleZ = copyFrom.scaleZ;
+        this.defaultPositionX = copyFrom.defaultPositionX;
+        this.defaultPositionY = copyFrom.defaultPositionY;
+        this.defaultPositionZ = copyFrom.defaultPositionZ;
+        this.defaultRotationX = copyFrom.defaultRotationX;
+        this.defaultRotationY = copyFrom.defaultRotationY;
+        this.defaultRotationZ = copyFrom.defaultRotationZ;
+
+        this.scaleChildren = copyFrom.scaleChildren;
+    }
+
     @Override
     public ModelRenderer setTextureSize(int textureWidthIn, int textureHeightIn) {
         textureWidth = textureWidthIn;
@@ -356,102 +377,6 @@ public class AdvancedModelRenderer extends ModelRenderer {
         this.rotationPointX += ((to.rotationPointX - this.rotationPointX) / maxTime) * timer;
         this.rotationPointY += ((to.rotationPointY - this.rotationPointY) / maxTime) * timer;
         this.rotationPointZ += ((to.rotationPointZ - this.rotationPointZ) / maxTime) * timer;
-    }
-    
-    /**
-     * Returns the position of the model renderer in world space.
-     */
-    public Vec3d getWorldPos(Entity entity, float delta) {
-        Vec3d modelPos = getModelPos(this, new Vec3d(rotationPointX/16, -rotationPointY/16, -rotationPointZ/16));
-        float x = (float) modelPos.x;
-        float y = (float) modelPos.y + 1.5f;
-        float z = (float) modelPos.z;
-        Matrix4f entityTranslate = new Matrix4f();
-        Matrix4f entityRotate = new Matrix4f();
-        float dx = (float) (entity.prevPosX + (entity.getPosX() - entity.prevPosX) * delta);
-        float dy = (float) (entity.prevPosY + (entity.getPosY() - entity.prevPosY) * delta);
-        float dz = (float) (entity.prevPosZ + (entity.getPosZ() - entity.prevPosZ) * delta);
-        entityTranslate.setTranslation(dx, dy, dz);
-        entityRotate.mul(new Quaternion(new Vector3f(0, 1, 0), (float) -Math.toRadians(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * delta), false));
-        Vector4f rendererPos = new Vector4f(x, y, z, 1);
-        rendererPos.transform(entityRotate);
-        rendererPos.transform(entityTranslate);
-        return new Vec3d(rendererPos.getX(), rendererPos.getY(), rendererPos.getZ());
-    }
-
-    public Vec3d getWorldPos(Entity entity) {
-        return getWorldPos(entity, 0);
-    }
-
-    public Vec3d getModelPos(AdvancedModelRenderer modelRenderer, Vec3d recurseValue) {
-        /*double x = recurseValue.x;
-        double y = recurseValue.y;
-        double z = recurseValue.z;
-        Point3d rendererPos = new Point3d(x, y, z);
-
-        AdvancedModelRenderer parent = modelRenderer.getParent();
-        if (parent != null) {
-            Matrix4f boxTranslate = new Matrix4f();
-            Matrix4f boxRotateX = new Matrix4f();
-            Matrix4f boxRotateY = new Matrix4f();
-            Matrix4f boxRotateZ = new Matrix4f();
-            boxTranslate.set(new Vector3d(parent.rotationPointX / 16, -parent.rotationPointY / 16, -parent.rotationPointZ / 16));
-            boxRotateX.rotX(parent.rotateAngleX);
-            boxRotateY.rotY(-parent.rotateAngleY);
-            boxRotateZ.rotZ(-parent.rotateAngleZ);
-
-            boxRotateX.transform(rendererPos);
-            boxRotateY.transform(rendererPos);
-            boxRotateZ.transform(rendererPos);
-            boxTranslate.transform(rendererPos);
-
-            return getModelPos(parent, new Vec3d(rendererPos.getX(), rendererPos.getY(), rendererPos.getZ()));
-        }
-        return new Vec3d(rendererPos.getX(), rendererPos.getY(), rendererPos.getZ());*/ // TODO
-        return new Vec3d(0, 0, 0);
-    }
-
-    public Vec3d getWorldRotation(Entity entity, float delta) {
-        Vec3d modelRot = getModelRotation(this, new Vec3d(rotateAngleX, -rotateAngleY, -rotateAngleZ));
-        double x = modelRot.x;
-        double y = modelRot.y;
-        double z = modelRot.z;
-        y += -Math.toRadians(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * delta);
-        return new Vec3d(x, y, z);
-    }
-
-    public Vec3d getModelRotation(AdvancedModelRenderer modelRenderer, Vec3d recurseValue) {
-        double x = recurseValue.x;
-        double y = recurseValue.y;
-        double z = recurseValue.z;
-
-        AdvancedModelRenderer parent = modelRenderer.getParent();
-        if (parent != null) {
-            x += parent.rotateAngleX;
-            y += -parent.rotateAngleY;
-            z += -parent.rotateAngleZ;
-
-            return getModelRotation(parent, new Vec3d(x, y, z));
-        }
-        return new Vec3d(x, y, z);
-    }
-
-    public void setWorldPos(Entity entity, Vec3d pos, float delta) {
-        /*Matrix4f entityTranslate = new Matrix4f();
-        Matrix4f entityRotate = new Matrix4f();
-        float dx = (float) (entity.prevPosX + (entity.getPosX() - entity.prevPosX) * delta);
-        float dy = (float) (entity.prevPosY + (entity.getPosY() - entity.prevPosY) * delta);
-        float dz = (float) (entity.prevPosZ + (entity.getPosZ() - entity.prevPosZ) * delta);
-        entityTranslate.set(new Vector3d(dx, dy, dz));
-        entityRotate.rotY(-Math.toRadians(entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * delta));
-        entityTranslate.invert();
-        entityRotate.invert();
-        Point3d rendererPos = new Point3d(pos.x, pos.y, pos.z);
-        entityTranslate.transform(rendererPos);
-        entityRotate.transform(rendererPos);
-        rendererPos.y -= 1.5f;
-        rendererPos.scale(16);
-        setRotationPoint((float)rendererPos.x, -(float)rendererPos.y, -(float)rendererPos.z);*/ //TODO
     }
 
     @OnlyIn(Dist.CLIENT)

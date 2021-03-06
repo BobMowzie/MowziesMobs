@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.particle.util;
 
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.*;
 import net.minecraft.util.math.Vec3d;
 
@@ -24,7 +25,7 @@ public abstract class ParticleComponent {
 
     }
 
-    public void postRender(AdvancedParticleBase particle, BufferBuilder buffer, float partialTicks, int lightmapJ, int lightmapK) {
+    public void postRender(AdvancedParticleBase particle, IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks, int lightmap) {
 
     }
 
