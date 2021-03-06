@@ -5,11 +5,23 @@ import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.ResourceLocation;
+
+import java.util.function.Function;
 
 public abstract class MowzieEntityModel<T extends MowzieEntity> extends AdvancedModelBase<T> {
     protected final MMModelAnimator animator = MMModelAnimator.create();
+
+    protected MowzieEntityModel() {
+        super();
+    }
+
+    protected MowzieEntityModel(Function<ResourceLocation, RenderType> renderTypeFunction) {
+        super(renderTypeFunction);
+    }
 
     @Override
     public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {

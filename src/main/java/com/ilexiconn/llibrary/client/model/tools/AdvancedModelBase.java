@@ -3,15 +3,18 @@ package com.ilexiconn.llibrary.client.model.tools;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.system.MathUtil;
 
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * An enhanced ModelBase
@@ -24,6 +27,14 @@ public abstract class AdvancedModelBase<T extends Entity> extends EntityModel<T>
     public final List<ModelRenderer> boxList = Lists.newArrayList();
 
     private float movementScale = 1.0F;
+
+    protected AdvancedModelBase() {
+        super();
+    }
+
+    protected AdvancedModelBase(Function<ResourceLocation, RenderType> renderTypeFunction) {
+        super(renderTypeFunction);
+    }
 
     /**
      * Sets the default pose to the current pose of this model

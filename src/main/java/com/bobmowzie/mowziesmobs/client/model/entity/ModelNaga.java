@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.dynamics.DynamicChain;
+import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
@@ -121,6 +122,7 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
     private DynamicChain tail;
 
     public ModelNaga() {
+        super(MMRenderType::getEntityCutoutCull);
         this.textureWidth = 256;
         this.textureHeight = 256;
         this.eyebrow_L = new AdvancedModelRenderer(this, 63, 0);
@@ -660,7 +662,7 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         this.root.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        if (tail != null) tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha, tailDynamic);
+//        if (tail != null) tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha, tailDynamic);
 //        for (AdvancedModelRenderer AdvancedModelRenderer : tailOriginal) {
 //            AdvancedModelRenderer.showModel = false;
 //        }
