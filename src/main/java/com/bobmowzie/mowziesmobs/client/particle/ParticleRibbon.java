@@ -10,8 +10,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.*;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -43,11 +42,6 @@ public class ParticleRibbon extends AdvancedParticleBase {
 
     @Override
     public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks) {
-        super.renderParticle(buffer, renderInfo, partialTicks);
-    }
-
-    /*@Override
-    public void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
         particleAlpha = prevAlpha + (alpha - prevAlpha) * partialTicks;
         if (particleAlpha < 0.01) particleAlpha = 0.01f;
         particleRed = prevRed + (red - prevRed) * partialTicks;
@@ -64,9 +58,7 @@ public class ParticleRibbon extends AdvancedParticleBase {
         float f2 = this.getMinV();
         float f3 = this.getMaxV();
 
-        int i = this.getBrightnessForRender(partialTicks);
-        int j = i >> 16 & 65535;
-        int k = i & 65535;
+        int j = this.getBrightnessForRender(partialTicks);
 
         float r =  particleRed;
         float g = particleGreen;
@@ -133,14 +125,15 @@ public class ParticleRibbon extends AdvancedParticleBase {
                 }
             }
 
-            Vec3d interpPos = new Vec3d(interpPosX, interpPosY, interpPosZ);
-            Vec3d p1 = prevPositions[index].add(positions[index].subtract(prevPositions[index]).scale(partialTicks)).subtract(interpPos);
-            Vec3d p2 = prevPositions[index + 1].add(positions[index + 1].subtract(prevPositions[index + 1]).scale(partialTicks)).subtract(interpPos);
+            Vec3d vec3d = renderInfo.getProjectedView();
+            Vec3d p1 = prevPositions[index].add(positions[index].subtract(prevPositions[index]).scale(partialTicks)).subtract(vec3d);
+            Vec3d p2 = prevPositions[index + 1].add(positions[index + 1].subtract(prevPositions[index + 1]).scale(partialTicks)).subtract(vec3d);
 
             if (index == 0) {
                 Vec3d moveDir = p2.subtract(p1).normalize();
                 if (rotation instanceof ParticleRotation.FaceCamera) {
-                    offsetDir = moveDir.crossProduct(entityIn.getLookDirection()).normalize();
+                    Vec3d viewVec = new Vec3d(renderInfo.getViewVector());
+                    offsetDir = moveDir.crossProduct(viewVec).normalize();
                 } else {
                     offsetDir = moveDir.crossProduct(new Vec3d(0, 1, 0)).normalize();
                 }
@@ -150,7 +143,8 @@ public class ParticleRibbon extends AdvancedParticleBase {
             Vec3d[] avec3d2 = new Vec3d[] {offsetDir.scale(-1), offsetDir, null, null};
             Vec3d moveDir = p2.subtract(p1).normalize();
             if (rotation instanceof ParticleRotation.FaceCamera) {
-                offsetDir = moveDir.crossProduct(entityIn.getLookDirection()).normalize();
+                Vec3d viewVec = new Vec3d(renderInfo.getViewVector());
+                offsetDir = moveDir.crossProduct(viewVec).normalize();
             }
             else {
                 offsetDir = moveDir.crossProduct(new Vec3d(0, 1, 0)).normalize();
@@ -159,24 +153,23 @@ public class ParticleRibbon extends AdvancedParticleBase {
             avec3d2[2] = offsetDir;
             avec3d2[3] = offsetDir.scale(-1);
 
-            Point3d[] vertices2 = new Point3d[] {
-                    new Point3d(avec3d2[0].x, avec3d2[0].y,  avec3d2[0].z),
-                    new Point3d(avec3d2[1].x, avec3d2[1].y,  avec3d2[1].z),
-                    new Point3d(avec3d2[2].x,  avec3d2[2].y,  avec3d2[2].z),
-                    new Point3d(avec3d2[3].x,  avec3d2[3].y,  avec3d2[3].z)
+            Vector4f[] vertices2 = new Vector4f[] {
+                    new Vector4f((float)avec3d2[0].x, (float)avec3d2[0].y,  (float)avec3d2[0].z, 1f),
+                    new Vector4f((float)avec3d2[1].x, (float)avec3d2[1].y,  (float)avec3d2[1].z, 1f),
+                    new Vector4f((float)avec3d2[2].x,  (float)avec3d2[2].y,  (float)avec3d2[2].z, 1f),
+                    new Vector4f((float)avec3d2[3].x,  (float)avec3d2[3].y,  (float)avec3d2[3].z, 1f)
             };
-            Matrix4d boxTranslate = new Matrix4d();
-            boxTranslate.set(new Vector3d(p1.x, p1.y, p1.z));
-            boxTranslate.transform(vertices2[0]);
-            boxTranslate.transform(vertices2[1]);
-            boxTranslate.set(new Vector3d(p2.x, p2.y, p2.z));
-            boxTranslate.transform(vertices2[2]);
-            boxTranslate.transform(vertices2[3]);
+            Matrix4f boxTranslate = Matrix4f.makeTranslate((float)p1.x, (float)p1.y, (float)p1.z);
+            vertices2[0].transform(boxTranslate);
+            vertices2[1].transform(boxTranslate);
+            boxTranslate = Matrix4f.makeTranslate((float)p2.x, (float)p2.y, (float)p2.z);
+            vertices2[2].transform(boxTranslate);
+            vertices2[3].transform(boxTranslate);
 
-            buffer.pos(vertices2[0].getX(), vertices2[0].getY(), vertices2[0].getZ()).tex((double) f1, (double) f3).color(prevR, prevG, prevB, prevA).lightmap(j, k).endVertex();
-            buffer.pos(vertices2[1].getX(), vertices2[1].getY(), vertices2[1].getZ()).tex((double) f1, (double) f2).color(prevR, prevG, prevB, prevA).lightmap(j, k).endVertex();
-            buffer.pos(vertices2[2].getX(), vertices2[2].getY(), vertices2[2].getZ()).tex((double) f, (double) f2).color(r, g, b, a).lightmap(j, k).endVertex();
-            buffer.pos(vertices2[3].getX(), vertices2[3].getY(), vertices2[3].getZ()).tex((double) f, (double) f3).color(r, g, b, a).lightmap(j, k).endVertex();
+            buffer.pos(vertices2[0].getX(), vertices2[0].getY(), vertices2[0].getZ()).tex(f1, f3).color(prevR, prevG, prevB, prevA).lightmap(j).endVertex();
+            buffer.pos(vertices2[1].getX(), vertices2[1].getY(), vertices2[1].getZ()).tex(f1, f2).color(prevR, prevG, prevB, prevA).lightmap(j).endVertex();
+            buffer.pos(vertices2[2].getX(), vertices2[2].getY(), vertices2[2].getZ()).tex(f, f2).color(r, g, b, a).lightmap(j).endVertex();
+            buffer.pos(vertices2[3].getX(), vertices2[3].getY(), vertices2[3].getZ()).tex(f, f3).color(r, g, b, a).lightmap(j).endVertex();
 
             prevR = r;
             prevG = g;
@@ -185,9 +178,9 @@ public class ParticleRibbon extends AdvancedParticleBase {
         }
 
         for (ParticleComponent component : components) {
-            component.postRender(this, buffer, partialTicks, j, k);
+            component.postRender(this, buffer, renderInfo, partialTicks, j);
         }
-    }*/
+    }
 
     @OnlyIn(Dist.CLIENT)
     public static final class Factory implements IParticleFactory<RibbonParticleData> {

@@ -142,11 +142,12 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
 
         Quaternion quaternion = new Quaternion(0.0F, 0.0F, 0.0F, 1.0F);
         if (rotation instanceof ParticleRotation.FaceCamera) {
-            if (this.particleAngle == 0.0F) {
+            ParticleRotation.FaceCamera faceCameraRot = (ParticleRotation.FaceCamera) rotation;
+            if (faceCameraRot.faceCameraAngle == 0.0F && faceCameraRot.prevFaceCameraAngle == 0.0F) {
                 quaternion = renderInfo.getRotation();
             } else {
                 quaternion = new Quaternion(renderInfo.getRotation());
-                float f3 = MathHelper.lerp(partialTicks, this.prevParticleAngle, this.particleAngle);
+                float f3 = MathHelper.lerp(partialTicks, faceCameraRot.prevFaceCameraAngle, faceCameraRot.faceCameraAngle);
                 quaternion.multiply(Vector3f.ZP.rotation(f3));
             }
         }
