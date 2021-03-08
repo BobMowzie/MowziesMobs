@@ -4,8 +4,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.*;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
@@ -56,23 +55,19 @@ public class ParticleSnowFlake extends SpriteTexturedParticle {
         super.tick();
 
         if (swirls) {
-            /*Vec3d motionVec = new Vec3d(motionX, motionY, motionZ).normalize();
-            float yaw = (float) Math.atan2(motionVec.x, motionVec.z);
-            float xzDistance = (float) motionVec.length();
-            float pitch = (float) Math.atan2(motionVec.y, xzDistance);
+            Vector3f motionVec = new Vector3f((float)motionX, (float)motionY, (float)motionZ);
+            motionVec.normalize();
+            float yaw = (float) Math.atan2(motionVec.getX(), motionVec.getZ());
+            float pitch = (float) Math.atan2(motionVec.getY(), 1);
             float swirlRadius = 4f * (age / (float) maxAge) * spread;
-            Point3d point = new Point3d(swirlRadius * Math.cos(swirlTick * 0.2), swirlRadius * Math.sin(swirlTick * 0.2), 0);
-            Matrix4d boxRotateX = new Matrix4d();
-            Matrix4d boxRotateY = new Matrix4d();
-            boxRotateX.rotX(pitch);
-            boxRotateY.rotY(yaw);
-            boxRotateX.transform(point);
-            boxRotateY.transform(point);
-            posX += point.x;
-            posY += point.y;
-            posZ += point.z;*/ // TODO
-
-//            posY += swirlRadius * Math.cos(swirlTick * 0.2) * (Math.sqrt(1 - y * y)) * (Math.sqrt(1 - z * z));
+            Quaternion quatSpin = motionVec.rotation(swirlTick * 0.2f);
+            Quaternion quatOrient = new Quaternion(pitch, yaw, 0, false);
+            Vector3f vec = new Vector3f(swirlRadius, 0, 0);
+            vec.transform(quatOrient);
+            vec.transform(quatSpin);
+            posX += vec.getX();
+            posY += vec.getY();
+            posZ += vec.getZ();
         }
 
         if (age >= maxAge) {

@@ -54,6 +54,7 @@ public enum EntityHandler {
     public static EntityType<EntityDart> DART;
     public static EntityType<EntityPoisonBall> POISON_BALL;
     public static EntityType<EntitySuperNova> SUPER_NOVA;
+    public static EntityType<EntityFallingBlock> FALLING_BLOCK;
     public static EntityType<EntityBlockSwapper> BLOCK_SWAPPER;
 
     public static void register() {
@@ -119,6 +120,9 @@ public enum EntityHandler {
         EntityType.Builder<EntitySuperNova> superNovaBuilder = EntityType.Builder.create(EntitySuperNova::new, EntityClassification.MISC);
         SUPER_NOVA = register("super_nova", superNovaBuilder.disableSummoning().size(1, 1).setUpdateInterval(Integer.MAX_VALUE));
 
+        EntityType.Builder<EntityFallingBlock> fallingBlockBuilder = EntityType.Builder.create(EntityFallingBlock::new, EntityClassification.MISC);
+        FALLING_BLOCK = register("falling_block", fallingBlockBuilder.disableSummoning().size(1, 1));
+
         EntityType.Builder<EntityBlockSwapper> blockSwapperBuilder = EntityType.Builder.create(EntityBlockSwapper::new, EntityClassification.MISC);
         BLOCK_SWAPPER = register("block_swapper", blockSwapperBuilder.disableSummoning().size(1, 1).setUpdateInterval(Integer.MAX_VALUE));
 
@@ -148,6 +152,7 @@ public enum EntityHandler {
             DART,
             POISON_BALL,
             SUPER_NOVA,
+            FALLING_BLOCK,
             BLOCK_SWAPPER
         );
     }

@@ -26,7 +26,6 @@ public class ParticleHandler {
     public static final RegistryObject<ParticleType<ParticleCloud.CloudData>> CLOUD = REG.register("cloud_soft", () -> new ParticleType<>(false, ParticleCloud.CloudData.DESERIALIZER));
     public static final RegistryObject<ParticleType<ParticleOrb.OrbData>> ORB = REG.register("orb_0", () -> new ParticleType<>(false, ParticleOrb.OrbData.DESERIALIZER));
     public static final RegistryObject<ParticleType<ParticleRing.RingData>> RING = REG.register("ring_0", () -> new ParticleType<>(false, ParticleRing.RingData.DESERIALIZER));
-    public static final RegistryObject<ParticleType<ParticleFallingBlock.FallingBlockData>> FALLING_BLOCK = REG.register("falling_block", () -> new ParticleType<>(false, ParticleFallingBlock.FallingBlockData.DESERIALIZER));
 
     public static final RegistryObject<ParticleType<AdvancedParticleData>> RING2 = REG.register("ring", () -> new ParticleType<>(false, AdvancedParticleData.DESERIALIZER));
     public static final RegistryObject<ParticleType<AdvancedParticleData>> RING_BIG = REG.register("ring_big", () -> new ParticleType<>(false, AdvancedParticleData.DESERIALIZER));
@@ -57,7 +56,6 @@ public class ParticleHandler {
         Minecraft.getInstance().particles.registerFactory(ParticleHandler.CLOUD.get(), ParticleCloud.CloudFactory::new);
         Minecraft.getInstance().particles.registerFactory(ParticleHandler.ORB.get(), ParticleOrb.OrbFactory::new);
         Minecraft.getInstance().particles.registerFactory(ParticleHandler.RING.get(), ParticleRing.RingFactory::new);
-        Minecraft.getInstance().particles.registerFactory(ParticleHandler.FALLING_BLOCK.get(), ParticleFallingBlock.FallingBlockFactory::new);
 
         Minecraft.getInstance().particles.registerFactory(ParticleHandler.RING2.get(), AdvancedParticleBase.Factory::new);
         Minecraft.getInstance().particles.registerFactory(ParticleHandler.RING_BIG.get(), AdvancedParticleBase.Factory::new);

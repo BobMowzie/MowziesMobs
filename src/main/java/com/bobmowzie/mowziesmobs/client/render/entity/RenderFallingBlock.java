@@ -1,0 +1,37 @@
+package com.bobmowzie.mowziesmobs.client.render.entity;
+
+import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityFallingBlock;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
+
+public class RenderFallingBlock extends EntityRenderer<EntityFallingBlock> {
+    public RenderFallingBlock(EntityRendererManager mgr) {
+        super(mgr);
+    }
+
+    @Override
+    public void render(EntityFallingBlock entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+        BlockRendererDispatcher dispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
+        matrixStackIn.push();
+        matrixStackIn.translate(0, 0.5f, 0);
+        matrixStackIn.rotate(new Quaternion(0, MathHelper.lerp(partialTicks, entityIn.prevRotationYaw, entityIn.rotationYaw), 0, true));
+        matrixStackIn.rotate(new Quaternion(MathHelper.lerp(partialTicks, entityIn.prevRotationPitch, entityIn.rotationPitch), 0, 0, true));
+        matrixStackIn.translate(-0.5f, -0.5f, -0.5f);
+        dispatcher.renderBlock(entityIn.getBlock(), matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY);
+        matrixStackIn.pop();
+    }
+
+    @Override
+    public ResourceLocation getEntityTexture(EntityFallingBlock entity) {
+        return null;
+    }
+}

@@ -1,7 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.power;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.particle.ParticleFallingBlock;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleOrb;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
@@ -11,8 +10,7 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBlockSwapper;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySolarBeam;
-import com.bobmowzie.mowziesmobs.server.message.MessagePlayerSolarBeam;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityFallingBlock;
 import com.bobmowzie.mowziesmobs.server.message.MessagePlayerStartSummonBoulder;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
@@ -124,11 +122,13 @@ public class PowerGeomancy extends Power {
                 });
                 player.setMotion(player.getMotion().scale(2f));
 
-                if (player.world.isRemote) {
-                    for (int i = 0; i < 6; i++) {
-                        if (justDug == null) justDug = Blocks.DIRT.getDefaultState();
-                        ParticleFallingBlock.spawnFallingBlock(player.world, player.getPosX(), player.getPosY() + 1, player.getPosZ(), 30f, 80, 1, player.getRNG().nextFloat() * 0.8f - 0.4f, 0.4f + player.getRNG().nextFloat() * 0.8f, player.getRNG().nextFloat() * 0.8f - 0.4f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, justDug);
-                    }
+                for (int i = 0; i < 6; i++) {
+                    if (justDug == null) justDug = Blocks.DIRT.getDefaultState();
+//                        ParticleFallingBlock.spawnFallingBlock(player.world, player.getPosX(), player.getPosY() + 1, player.getPosZ(), 30f, 80, 1, player.getRNG().nextFloat() * 0.8f - 0.4f, 0.4f + player.getRNG().nextFloat() * 0.8f, player.getRNG().nextFloat() * 0.8f - 0.4f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, justDug);
+                    EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK, player.world, 80, justDug);
+                    fallingBlock.setPosition(player.getPosX(), player.getPosY() + 1, player.getPosZ());
+                    fallingBlock.setMotion(player.getRNG().nextFloat() * 0.8f - 0.4f, 0.4f + player.getRNG().nextFloat() * 0.8f, player.getRNG().nextFloat() * 0.8f - 0.4f);
+                    player.world.addEntity(fallingBlock);
                 }
             }
             prevUnderground = underground;

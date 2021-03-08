@@ -41,7 +41,7 @@ public class ParticleRing extends SpriteTexturedParticle {
     public ParticleRing(World world, double x, double y, double z, double motionX, double motionY, double motionZ, float yaw, float pitch, int duration, float r, float g, float b, float opacity, float size, boolean facesCamera, EnumRingBehavior behavior) {
         super(world, x, y, z);
         setSize(1, 1);
-        this.size = size;
+        this.size = size * 0.1f;
         maxAge = duration;
         particleAlpha = 1;
         this.r = r;
