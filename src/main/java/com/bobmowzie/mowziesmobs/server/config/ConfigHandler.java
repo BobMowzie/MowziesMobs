@@ -531,11 +531,11 @@ public final class  ConfigHandler {
                     .define("poison_duration", 40);
             attackDamage = builder.comment("Multiply all damage done with the blowgun/darts by this amount.")
                     .translation(LANG_PREFIX + "attack_damage")
-                    .define("attack_damage", 1f);
+                    .define("attack_damage", 1d);
             builder.pop();
         }
 
-        public final ConfigValue<Float> attackDamage;
+        public final ConfigValue<Double> attackDamage;
 
         public final ConfigValue<Integer> poisonDuration;
     }
