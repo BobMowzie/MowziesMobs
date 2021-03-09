@@ -20,8 +20,8 @@ public class MessagePlayerSummonSunstrike {
 
     }
 
-    private static RayTraceResult rayTrace(LivingEntity entity, double reach) {
-        Vec3d pos = entity.getPositionVec();
+    private static BlockRayTraceResult rayTrace(LivingEntity entity, double reach) {
+        Vec3d pos = entity.getEyePosition(0);
         Vec3d segment = entity.getLookVec();
         segment = pos.add(segment.x * reach, segment.y * reach, segment.z * reach);
         return entity.world.rayTraceBlocks(new RayTraceContext(pos, segment, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, entity));
@@ -41,15 +41,12 @@ public class MessagePlayerSummonSunstrike {
             final NetworkEvent.Context context = contextSupplier.get();
             final ServerPlayerEntity player = context.getSender();
             context.enqueueWork(() -> {
-                RayTraceResult raytrace = rayTrace(player, REACH);
-                if (raytrace.getType() == RayTraceResult.Type.BLOCK) {
-                    BlockRayTraceResult result = (BlockRayTraceResult) raytrace;
-                    if (result.getFace() == Direction.UP && player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(PotionHandler.SUNS_BLESSING)) {
-                        BlockPos hit = result.getPos();
-                        EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE, player.world, player, hit.getX(), hit.getY(), hit.getZ());
-                        sunstrike.onSummon();
-                        player.world.addEntity(sunstrike);
-                    }
+                BlockRayTraceResult raytrace = rayTrace(player, REACH);
+                if (raytrace.getType() == RayTraceResult.Type.BLOCK && raytrace.getFace() == Direction.UP && player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(PotionHandler.SUNS_BLESSING)) {
+                    BlockPos hit = raytrace.getPos();
+                    EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE, player.world, player, hit.getX(), hit.getY(), hit.getZ());
+                    sunstrike.onSummon();
+                    player.world.addEntity(sunstrike);
                 }
             });
             context.setPacketHandled(true);
