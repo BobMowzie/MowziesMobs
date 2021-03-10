@@ -140,6 +140,9 @@ public final class ServerEventHandler {
     @SubscribeEvent
     public void onUseItem(LivingEntityUseItemEvent event) {
         LivingEntity living = event.getEntityLiving();
+        if (event.isCancelable() && living.isPotionActive(PotionHandler.FROZEN)) {
+            event.setCanceled(true);
+        }
         if (living instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) living;
             ItemStack item = event.getItem();
@@ -158,14 +161,19 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onPlaceBlock(BlockEvent.EntityPlaceEvent event) {
-        Entity entity  = event.getEntity();
-        BlockState block = event.getPlacedBlock();
-        if (entity instanceof LivingEntity && block == Blocks.FIRE.getDefaultState()) {
-            LivingEntity living = (LivingEntity)entity;
-            List<EntityBarako> barakos = getEntitiesNearby(entity, EntityBarako.class, 20);
-            for (EntityBarako barako : barakos) {
-                if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
-                    if (barako.canAttack(living)) barako.setAttackTarget(living);
+        Entity entity = event.getEntity();
+        if (entity instanceof LivingEntity) {
+            LivingEntity living = (LivingEntity) entity;
+            if (event.isCancelable() && living.isPotionActive(PotionHandler.FROZEN)) {
+                event.setCanceled(true);
+            }
+            BlockState block = event.getPlacedBlock();
+            if (block == Blocks.FIRE.getDefaultState()) {
+                List<EntityBarako> barakos = getEntitiesNearby(entity, EntityBarako.class, 20);
+                for (EntityBarako barako : barakos) {
+                    if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
+                        if (barako.canAttack(living)) barako.setAttackTarget(living);
+                    }
                 }
             }
         }
@@ -173,8 +181,11 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onFillBucket(FillBucketEvent event) {
-        LivingEntity living  = event.getEntityLiving();
+        LivingEntity living = event.getEntityLiving();
         if (living != null) {
+            if (event.isCancelable() && living.isPotionActive(PotionHandler.FROZEN)) {
+                event.setCanceled(true);
+            }
             if (event.getEmptyBucket().getItem() == Items.LAVA_BUCKET) {
                 List<EntityBarako> barakos = getEntitiesNearby(living, EntityBarako.class, 20);
                 for (EntityBarako barako : barakos) {
@@ -190,6 +201,9 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onBreakBlock(BlockEvent.BreakEvent event) {
+        if (event.isCancelable() && event.getPlayer().isPotionActive(PotionHandler.FROZEN)) {
+            event.setCanceled(true);
+        }
         PlayerEntity player = event.getPlayer();
         BlockState block = event.getState();
         if (block == Blocks.GOLD_BLOCK.getDefaultState()) {
@@ -293,7 +307,7 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onLivingDamage(LivingHurtEvent event) {
-        if (event.getSource().isFireDamage() && event.getEntityLiving().isPotionActive(PotionHandler.FROZEN)) {
+        if (event.getSource().isFireDamage()) {
             event.getEntityLiving().removeActivePotionEffect(PotionHandler.FROZEN);
             MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> event.getEntity()), new MessageUnfreezeEntity(event.getEntityLiving()));
         }

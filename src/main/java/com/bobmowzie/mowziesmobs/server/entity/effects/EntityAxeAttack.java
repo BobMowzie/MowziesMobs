@@ -1,5 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
+import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.material.Material;
@@ -169,7 +171,12 @@ public class EntityAxeAttack extends EntityMagicEffect {
             float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
             float entityHitDistance = (float) Math.sqrt((entityHit.getPosZ() - getPosZ()) * (entityHit.getPosZ() - getPosZ()) + (entityHit.getPosX() - getPosX()) * (entityHit.getPosX() - getPosX()));
             if (entityHit != caster && entityHitDistance <= range && entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2 || entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2) {
-                if (caster instanceof PlayerEntity) ((PlayerEntity)caster).attackTargetEntityWithCurrentItem(entityHit);
+                PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(caster, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+                if (playerCapability != null) {
+                    playerCapability.setAxeCanAttack(true);
+                    if (caster instanceof PlayerEntity) ((PlayerEntity)caster).attackTargetEntityWithCurrentItem(entityHit);
+                    playerCapability.setAxeCanAttack(false);
+                }
                 else entityHit.attackEntityFrom(DamageSource.causeMobDamage(caster), damage);
                 entityHit.setMotion(entityHit.getMotion().x * knockback, entityHit.getMotion().y, entityHit.getMotion().z * knockback);
                 hit = true;

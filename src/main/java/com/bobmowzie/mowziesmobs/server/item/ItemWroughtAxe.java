@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
@@ -33,6 +34,22 @@ public class ItemWroughtAxe extends AxeItem {
     }
 
     @Override
+    public boolean onLeftClickEntity(ItemStack stack, PlayerEntity player, Entity entity) {
+        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        if (playerCapability != null && (playerCapability.getAxeCanAttack() || playerCapability.getUntilAxeSwing() <= 0))
+            return false;
+        return true;
+    }
+
+    @Override
+    public boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
+        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(entity, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        if (playerCapability != null && playerCapability.getUntilAxeSwing() > 0)
+            return true;
+        return false;
+    }
+
+    @Override
     public boolean hitEntity(ItemStack heldItemStack, LivingEntity entityHit, LivingEntity attacker) {
         if (ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable.get()) heldItemStack.damageItem(2, attacker, p -> p.sendBreakAnimation(Hand.MAIN_HAND));
         if (!entityHit.world.isRemote) {
@@ -50,7 +67,7 @@ public class ItemWroughtAxe extends AxeItem {
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
         if (hand == Hand.MAIN_HAND) {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-            if (playerCapability.getUntilAxeSwing() <= 0) {
+            if (playerCapability != null && playerCapability.getUntilAxeSwing() <= 0) {
                 boolean verticalAttack = player.isSneaking() && player.onGround;
                 EntityAxeAttack axeAttack = new EntityAxeAttack(EntityHandler.AXE_ATTACK, world, player, verticalAttack);
                 axeAttack.setPositionAndRotation(player.getPosX(), player.getPosY(), player.getPosZ(), player.rotationYaw, player.rotationPitch);

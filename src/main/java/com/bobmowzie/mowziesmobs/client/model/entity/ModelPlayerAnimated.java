@@ -5,13 +5,13 @@ import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 
-public class ModelPlayerAnimated extends PlayerModel {
+public class ModelPlayerAnimated<T extends LivingEntity> extends PlayerModel<T> {
     public ModelPlayerAnimated(float modelSize, boolean smallArmsIn) {
         super(modelSize, smallArmsIn);
     }
 
     @Override
-    public void setRotationAngles(LivingEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         if (!(entityIn instanceof PlayerEntity)) {
             return;

@@ -49,8 +49,10 @@ public class MessageAddFreezeProgress {
                 if (entity instanceof LivingEntity) {
                     LivingEntity living = (LivingEntity) entity;
                     FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(living, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
-                    frozenCapability.setFreezeProgress(frozenCapability.getFreezeProgress() + message.amount);
-                    frozenCapability.setFreezeDecayDelay(FrozenCapability.MAX_FREEZE_DECAY_DELAY);
+                    if (frozenCapability != null) {
+                        frozenCapability.setFreezeProgress(frozenCapability.getFreezeProgress() + message.amount);
+                        frozenCapability.setFreezeDecayDelay(FrozenCapability.MAX_FREEZE_DECAY_DELAY);
+                    }
                 }
             });
             context.setPacketHandled(true);

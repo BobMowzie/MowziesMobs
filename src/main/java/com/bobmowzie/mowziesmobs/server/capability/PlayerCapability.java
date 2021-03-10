@@ -55,6 +55,10 @@ public class PlayerCapability {
 
         public void setUntilAxeSwing(int untilAxeSwing);
 
+        public void setAxeCanAttack(boolean axeCanAttack);
+
+        public boolean getAxeCanAttack();
+
         public boolean isMouseRightDown();
 
         public void setMouseRightDown(boolean mouseRightDown);
@@ -136,6 +140,14 @@ public class PlayerCapability {
             this.untilAxeSwing = untilAxeSwing;
         }
 
+        public void setAxeCanAttack(boolean axeCanAttack) {
+            this.axeCanAttack = axeCanAttack;
+        }
+
+        public boolean getAxeCanAttack() {
+            return axeCanAttack;
+        }
+
         public boolean isMouseRightDown() {
             return mouseRightDown;
         }
@@ -205,6 +217,8 @@ public class PlayerCapability {
         }
 
         public boolean usingIceBreath;
+
+        public boolean axeCanAttack;
 
         public PowerGeomancy geomancy = new PowerGeomancy(this);
         public Power[] powers = new Power[]{geomancy};
