@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
+import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.entity.LivingEntity;
@@ -12,13 +13,15 @@ public class ModelPlayerAnimated<T extends LivingEntity> extends PlayerModel<T> 
 
     @Override
     public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        if (!(entityIn instanceof PlayerEntity)) {
-            return;
+        if (!entityIn.isPotionActive(PotionHandler.FROZEN)) {
+            super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+            if (!(entityIn instanceof PlayerEntity)) {
+                return;
+            }
+            float delta = Minecraft.getInstance().getRenderPartialTicks();
+            PlayerEntity player = (PlayerEntity) entityIn;
+            ModelBipedAnimated.doMowzieAnimations(player, this, delta);
         }
-        float delta = Minecraft.getInstance().getRenderPartialTicks();
-        PlayerEntity player = (PlayerEntity) entityIn;
-        ModelBipedAnimated.doMowzieAnimations(player, this, delta);
         this.bipedLeftLegwear.copyModelAngles(this.bipedLeftLeg);
         this.bipedRightLegwear.copyModelAngles(this.bipedRightLeg);
         this.bipedLeftArmwear.copyModelAngles(this.bipedLeftArm);

@@ -21,6 +21,7 @@ import net.minecraft.nbt.INBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -92,6 +93,8 @@ public class PlayerCapability {
         public void setUsingIceBreath(boolean usingIceBreath);
 
         public int getPackSize();
+
+        public Vec3d getPrevMotion();
 
         void removePackMember(EntityBarakoanToPlayer tribePlayer);
 
@@ -212,6 +215,10 @@ public class PlayerCapability {
             this.usingIceBreath = usingIceBreath;
         }
 
+        public Vec3d getPrevMotion() {
+            return prevMotion;
+        }
+
         public PowerGeomancy getGeomancy() {
             return geomancy;
         }
@@ -220,12 +227,15 @@ public class PlayerCapability {
 
         public boolean axeCanAttack;
 
+        public Vec3d prevMotion;
+
         public PowerGeomancy geomancy = new PowerGeomancy(this);
         public Power[] powers = new Power[]{geomancy};
 
         public void tick(TickEvent.PlayerTickEvent event) {
             PlayerEntity player = event.player;
 
+            prevMotion = player.getPositionVec().subtract(new Vec3d(player.prevPosX, player.prevPosY, player.prevPosZ));
             prevTime = time;
             if (untilSunstrike > 0) {
                 untilSunstrike--;

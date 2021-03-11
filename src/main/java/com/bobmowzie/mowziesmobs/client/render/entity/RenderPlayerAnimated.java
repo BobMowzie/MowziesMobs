@@ -2,6 +2,9 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBipedAnimated;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelPlayerAnimated;
+import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
+import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -9,6 +12,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
@@ -18,12 +22,14 @@ import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerModelPart;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 
 public class RenderPlayerAnimated extends PlayerRenderer {
     public RenderPlayerAnimated(EntityRendererManager renderManager, boolean useSmallArms) {
@@ -39,8 +45,9 @@ public class RenderPlayerAnimated extends PlayerRenderer {
         this.addLayer(new ParrotVariantLayer<>(this));
         this.addLayer(new SpinAttackEffectLayer<>(this));
         this.addLayer(new BeeStingerLayer<>(this));
+        this.addLayer(new FrozenRenderHandler.LayerFrozen<>(this));
 
-        this.entityModel = new ModelPlayerAnimated(0.0f, useSmallArms);
+        this.entityModel = new ModelPlayerAnimated<>(0.0f, useSmallArms);
     }
 
     public void render(AbstractClientPlayerEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
@@ -165,6 +172,20 @@ public class RenderPlayerAnimated extends PlayerRenderer {
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(renderNameplateEvent);
         if (renderNameplateEvent.getResult() != net.minecraftforge.eventbus.api.Event.Result.DENY && (renderNameplateEvent.getResult() == net.minecraftforge.eventbus.api.Event.Result.ALLOW || this.canRenderName(entityIn))) {
             this.renderName(entityIn, renderNameplateEvent.getContent(), matrixStackIn, bufferIn, packedLightIn);
+        }
+    }
+
+    @Override
+    protected void applyRotations(AbstractClientPlayerEntity entityLiving, MatrixStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks) {
+        super.applyRotations(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks);
+        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(entityLiving, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        if (playerCapability != null && playerCapability.getGeomancy().tunneling) {
+            Vec3d moveVec;
+            if (Math.abs(playerCapability.getPrevMotion().getY()) < 0.0001) moveVec = entityLiving.getMotion();
+            else moveVec = playerCapability.getPrevMotion().add(entityLiving.getMotion().subtract(playerCapability.getPrevMotion()).scale(partialTicks));
+            moveVec = moveVec.normalize();
+            matrixStackIn.translate(0, 1 * (1 - (float)moveVec.y), 0);
+            matrixStackIn.rotate(new Quaternion(-90 + 90 * (float)moveVec.y, 0, 0, true));
         }
     }
 }

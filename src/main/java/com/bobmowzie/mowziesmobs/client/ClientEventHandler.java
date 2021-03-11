@@ -56,6 +56,7 @@ public enum ClientEventHandler {
         float delta = event.getPartialRenderTick();
         boolean shouldAnimate = playerCapability != null && playerCapability.getUntilAxeSwing() > 0;
         shouldAnimate = shouldAnimate || playerCapability != null && playerCapability.getGeomancy().tunneling;
+        shouldAnimate = shouldAnimate || player.isPotionActive(PotionHandler.FROZEN);
         if (shouldAnimate) {
             event.setCanceled(true);
             RenderPlayerAnimated renderPlayerAnimated = new RenderPlayerAnimated(event.getRenderer().getRenderManager(), ((AbstractClientPlayerEntity) event.getEntity()).getSkinType().equals("slim"));

@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
+import com.bobmowzie.mowziesmobs.client.render.entity.RenderSuperNova;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
@@ -35,7 +36,7 @@ public class ModelBipedAnimated<T extends LivingEntity> extends BipedModel {
             model.isSneak = false;
             Vec3d moveVec = player.getMotion();
             moveVec = moveVec.normalize();
-            if (model instanceof PlayerModel) RenderSystem.rotatef(45 - 45 * (float)moveVec.y, 1.0F, 0.0F, 0.0F);
+//            if (model instanceof PlayerModel) RenderSystem.rotatef(45 - 45 * (float)moveVec.y, 1.0F, 0.0F, 0.0F);
 
             float spin = 1f * (player.ticksExisted + delta);
             model.bipedHead.rotateAngleX = 1.57f * Math.min(0f, (float)moveVec.y);

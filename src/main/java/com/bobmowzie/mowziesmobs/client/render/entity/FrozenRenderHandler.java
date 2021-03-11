@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.entity.model.IHasArm;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
@@ -27,10 +28,10 @@ public enum FrozenRenderHandler {
 
     private static final ResourceLocation FROZEN_TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/frozen.png");
 
-    public static class LayerFrozen extends LayerRenderer<LivingEntity, EntityModel<LivingEntity>> {
-        private final LivingRenderer<LivingEntity, EntityModel<LivingEntity>> renderer;
+    public static class LayerFrozen<T extends LivingEntity, M extends EntityModel<T>> extends LayerRenderer<T,M> {
+        private final LivingRenderer<T, M> renderer;
 
-        public LayerFrozen(LivingRenderer<LivingEntity, EntityModel<LivingEntity>> renderer) {
+        public LayerFrozen(LivingRenderer<T, M> renderer) {
             super(renderer);
             this.renderer = renderer;
         }

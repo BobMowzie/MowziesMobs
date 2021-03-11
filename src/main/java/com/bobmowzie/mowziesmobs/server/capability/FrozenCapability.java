@@ -261,7 +261,9 @@ public class FrozenCapability {
         @Override
         public void onUnfreeze(LivingEntity entity) {
             if (entity != null && frozenController != null) {
+                Vec3d oldPosition = entity.getPositionVec();
                 entity.stopRiding();
+                entity.setPositionAndUpdate(oldPosition.getX(), oldPosition.getY(), oldPosition.getZ());
                 frozenController.remove();
                 entity.playSound(MMSounds.ENTITY_FROSTMAW_FROZEN_CRASH.get(), 1, 0.5f);
 
