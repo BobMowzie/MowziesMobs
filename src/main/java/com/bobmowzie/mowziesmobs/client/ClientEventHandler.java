@@ -43,9 +43,6 @@ public enum ClientEventHandler {
         if (playerCapability != null && event.getHand() == Hand.MAIN_HAND && playerCapability.getUntilAxeSwing() > 0) {
             event.setCanceled(true);
         }
-        else if (event.getItemStack().getItem() == ItemHandler.WROUGHT_AXE) {
-
-        }
     }
 
     @SubscribeEvent
@@ -166,13 +163,13 @@ public enum ClientEventHandler {
                 Vec3d vec = playerEyes.subtract(lookPos).normalize();
                 float yaw = (float) Math.atan2(vec.z, vec.x);
                 float pitch = (float) Math.asin(vec.y);
-                event.setYaw((float) (yaw * 180f/Math.PI + 90));
-                event.setPitch((float) (pitch * 180f/Math.PI));
+                player.rotationYaw = (float) (yaw * 180f/Math.PI + 90);
+                player.rotationPitch = (float) (pitch * 180f/Math.PI);
             }
             FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(player, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
             if (frozenCapability != null && player.isPotionActive(PotionHandler.FROZEN) && frozenCapability.getPrevFrozen()) {
-                event.setYaw(frozenCapability.getFrozenYaw());
-                event.setPitch(frozenCapability.getFrozenPitch());
+                player.rotationYaw = frozenCapability.getFrozenYaw();
+                player.rotationPitch = frozenCapability.getFrozenPitch();
             }
         }
     }
