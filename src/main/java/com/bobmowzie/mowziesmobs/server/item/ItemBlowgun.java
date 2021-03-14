@@ -11,6 +11,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.item.*;
 import net.minecraft.stats.Stats;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.SoundCategory;
@@ -20,8 +21,13 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class ItemBlowgun extends BowItem {
+    public static final Predicate<ItemStack> DARTS = (p_220002_0_) -> {
+        return p_220002_0_.getItem() == ItemHandler.DART;
+    };
+
     public ItemBlowgun(Item.Properties properties) {
         super(properties);
     }
@@ -114,5 +120,17 @@ public class ItemBlowgun extends BowItem {
         tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.0"));
         tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.1"));
         tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.2"));
+    }
+
+    /**
+     * Get the predicate to match ammunition when searching the player's inventory, not their main/offhand
+     */
+    public Predicate<ItemStack> getInventoryAmmoPredicate() {
+        return DARTS;
+    }
+
+    @Override
+    public Predicate<ItemStack> getAmmoPredicate() {
+        return DARTS;
     }
 }
