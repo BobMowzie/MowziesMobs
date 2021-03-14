@@ -42,11 +42,6 @@ public class MowzieBlockAccess implements IBlockReader {
         return null;
     }
 
-//    @Override
-//    public boolean isAirBlock(BlockPos pos) {
-//        return false;
-//    }
-
     public void setBiome(Biome biome) {
         this.biome = biome;
     }
@@ -54,19 +49,4 @@ public class MowzieBlockAccess implements IBlockReader {
     public Biome getBiome() {
         return biome;
     }
-
-    /*@Override
-    public int getStrongPower(BlockPos pos, Direction direction) {
-        return 0;
-    }
-
-    @Override
-    public WorldType getWorldType() {
-        return Minecraft.getInstance().world.getWorldType();
-    }
-
-    @Override
-    public boolean isSideSolid(BlockPos pos, Direction side, boolean _default) {
-        return true;
-    }*/ // TODO
 }

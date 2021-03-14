@@ -113,7 +113,7 @@ public class RenderSolarBeam extends EntityRenderer<EntitySolarBeam> {
         matrixStackIn.push();
         Quaternion sideQuat = side.getRotation();
         sideQuat.multiply(new Quaternion(90, 0, 0, true));
-        matrixStackIn.rotate(sideQuat); // TODO: Make sure this works
+        matrixStackIn.rotate(sideQuat);
         matrixStackIn.translate(0, 0, -0.01f);
         renderFlatQuad(frame, matrixStackIn, builder, packedLightIn);
         matrixStackIn.pop();

@@ -50,30 +50,12 @@ public enum FrozenRenderHandler {
         public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, LivingEntity living, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             if (living.isPotionActive(PotionHandler.FROZEN)) {
                 EntityModel model = this.renderer.getEntityModel();
-//                Map<ModelRenderer, Boolean> visibilities = new HashMap<>();
-//                for(ModelRenderer box : model.boxList) {
-//                    if(this.modelExclusions.test(box)) {
-//                        visibilities.put(box, box.showModel);
-//                        box.showModel = false;
-//                    }
-//                } TODO
 
                 float transparency = 1;
                 IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntityTranslucent(FROZEN_TEXTURE));
                 model.render(matrixStackIn, ivertexbuilder, packedLightIn, 0, 1, 1, 1, transparency);
-
-//                for(Map.Entry<ModelRenderer, Boolean> entry : visibilities.entrySet()) {
-//                    entry.getKey().showModel = entry.getValue();
-//                } TODO
-
-
             }
         }
-
-//        @Override
-//        public boolean shouldCombineTextures() {
-//            return false;
-//        }
     }
 
     @SubscribeEvent

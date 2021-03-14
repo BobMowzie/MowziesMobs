@@ -132,7 +132,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         return super.canSpawn(world, reason);
     }
 
-    protected boolean isValidLightLevel(IWorld world, BlockPos pos, Random rand) { // TODO copy from entityMob
+    protected boolean isValidLightLevel(IWorld world, BlockPos pos, Random rand) {
         if (world.getLightFor(LightType.SKY, pos) > rand.nextInt(32)) {
             return false;
         } else {
@@ -235,6 +235,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
             }
 
             this.applyEnchantments(this, entityIn);
+            this.setLastAttackedEntity(entityIn);
         }
 
         return flag;
@@ -334,7 +335,8 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
             this.dead = true;
             this.getCombatTracker().reset();
             if (!this.world.isRemote) {
-                this.spawnDrops(cause);
+                if (!dropAfterDeathAnim)
+                    this.spawnDrops(cause);
                 this.createWitherRose(livingentity);
             }
             killDataCause = cause;
