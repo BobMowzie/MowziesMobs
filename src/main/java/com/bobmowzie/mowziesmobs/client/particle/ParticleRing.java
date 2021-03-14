@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.particle;
 
+import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -127,97 +128,9 @@ public class ParticleRing extends SpriteTexturedParticle {
         buffer.pos((double)avector3f[3].getX(), (double)avector3f[3].getY(), (double)avector3f[3].getZ()).tex(f7, f6).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j).endVertex();
     }
 
-    /*@Override
-    public void renderParticle(BufferBuilder buffer, ActiveRenderInfo entityIn, float partialTicks, float rotationX, float rotationZ, float rotationYZ, float rotationXY, float rotationXZ) {
-        float var = (age + partialTicks)/maxAge;
-        if (behavior == EnumRingBehavior.GROW) {
-            particleScale = size * var;
-        }
-        else if (behavior == EnumRingBehavior.SHRINK) {
-            particleScale = size * (1 - var);
-        }
-        else if (behavior == EnumRingBehavior.GROW_THEN_SHRINK) {
-            particleScale = (float) (size * (1 - var - Math.pow(2000, -var)));
-        }
-        else {
-            particleScale = size;
-        }
-        particleAlpha = opacity * 0.95f * (1 - (age + partialTicks)/maxAge) + 0.05f;
-        particleRed = r;
-        particleGreen = g;
-        particleBlue = b;
-
-        if (!facesCamera) {
-            rotationX = 1;
-            rotationZ = 1;
-            rotationXY = 0;
-            rotationXZ = 0;
-            rotationYZ = 0;
-        }
-
-        float f = this.getMinU();
-        float f1 = this.getMaxU();
-        float f2 = this.getMinV();
-        float f3 = this.getMaxV();
-        float f4 = 0.1F * this.particleScale;
-
-        float f5 = (float)(this.prevPosX + (this.posX - this.prevPosX) * (double)partialTicks - interpPosX);
-        float f6 = (float)(this.prevPosY + (this.posY - this.prevPosY) * (double)partialTicks - interpPosY);
-        float f7 = (float)(this.prevPosZ + (this.posZ - this.prevPosZ) * (double)partialTicks - interpPosZ);
-        int i = this.getBrightnessForRender(partialTicks);
-        int j = i >> 16 & 65535;
-        int k = i & 65535;
-        Vec3d[] avec3d = new Vec3d[] {
-                new Vec3d((double)(-rotationX * f4 - rotationXY * f4), (double)(-rotationZ * f4), (double)(-rotationYZ * f4 - rotationXZ * f4)),
-                new Vec3d((double)(-rotationX * f4 + rotationXY * f4), (double)(rotationZ * f4), (double)(-rotationYZ * f4 + rotationXZ * f4)),
-                new Vec3d((double)(rotationX * f4 + rotationXY * f4), (double)(rotationZ * f4), (double)(rotationYZ * f4 + rotationXZ * f4)),
-                new Vec3d((double)(rotationX * f4 - rotationXY * f4), (double)(-rotationZ * f4), (double)(rotationYZ * f4 - rotationXZ * f4))
-        };
-
-        if (this.particleAngle != 0.0F)
-        {
-            float f8 = this.particleAngle + (this.particleAngle - this.prevParticleAngle) * partialTicks;
-            float f9 = MathHelper.cos(f8 * 0.5F);
-            float f10 = MathHelper.sin(f8 * 0.5F) * (float)entityIn.getLookDirection().x;
-            float f11 = MathHelper.sin(f8 * 0.5F) * (float)entityIn.getLookDirection().y;
-            float f12 = MathHelper.sin(f8 * 0.5F) * (float)entityIn.getLookDirection().z;
-            Vec3d vec3d = new Vec3d((double)f10, (double)f11, (double)f12);
-
-            for (int l = 0; l < 4; ++l)
-            {
-                avec3d[l] = vec3d.scale(2.0D * avec3d[l].dotProduct(vec3d)).add(avec3d[l].scale((double)(f9 * f9) - vec3d.dotProduct(vec3d))).add(vec3d.crossProduct(avec3d[l]).scale((double)(2.0F * f9)));
-            }
-        };
-        Matrix4d boxTranslate = new Matrix4d();
-        Matrix4d boxRotateX = new Matrix4d();
-        Matrix4d boxRotateY = new Matrix4d();
-        boxTranslate.set(new Vector3d(f5, f6, f7));
-        boxRotateX.rotX(pitch);
-        boxRotateY.rotY(yaw);
-
-        Point3d[] vertices = new Point3d[] {
-                new Point3d(avec3d[0].x, avec3d[0].y,  avec3d[0].z),
-                new Point3d(avec3d[1].x, avec3d[1].y,  avec3d[1].z),
-                new Point3d(avec3d[2].x,  avec3d[2].y,  avec3d[2].z),
-                new Point3d(avec3d[3].x,  avec3d[3].y,  avec3d[3].z)
-        };
-        for (Point3d vertex: vertices) {
-            if (!facesCamera) {
-                boxRotateX.transform(vertex);
-                boxRotateY.transform(vertex);
-            }
-            boxTranslate.transform(vertex);
-        }
-
-        buffer.pos(vertices[0].getX(), vertices[0].getY(), vertices[0].getZ()).tex((double) f1, (double) f3).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-        buffer.pos(vertices[1].getX(), vertices[1].getY(), vertices[1].getZ()).tex((double) f1, (double) f2).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-        buffer.pos(vertices[2].getX(), vertices[2].getY(), vertices[2].getZ()).tex((double) f, (double) f2).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-        buffer.pos(vertices[3].getX(), vertices[3].getY(), vertices[3].getZ()).tex((double) f, (double) f3).color(this.particleRed, this.particleGreen, this.particleBlue, this.particleAlpha).lightmap(j, k).endVertex();
-    }*/ // TODO
-
     @Override
     public IParticleRenderType getRenderType() {
-        return IParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+        return MMRenderType.PARTICLE_SHEET_TRANSLUCENT_NO_DEPTH;
     }
 
     @OnlyIn(Dist.CLIENT)
