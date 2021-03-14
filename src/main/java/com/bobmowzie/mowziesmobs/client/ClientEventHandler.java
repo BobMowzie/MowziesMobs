@@ -63,7 +63,32 @@ public enum ClientEventHandler {
 
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event) {
-
+        PlayerEntity player = Minecraft.getInstance().player;
+        if (player != null) {
+            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+            if (playerCapability != null && playerCapability.getGeomancy().canUse(player) && playerCapability.getGeomancy().isSpawningBoulder() && playerCapability.getGeomancy().getSpawnBoulderCharge() > 2) {
+                Vec3d lookPos = playerCapability.getGeomancy().getLookPos();
+                Vec3d playerEyes = player.getEyePosition(Minecraft.getInstance().getRenderPartialTicks());
+                Vec3d vec = playerEyes.subtract(lookPos).normalize();
+                float yaw = (float) Math.atan2(vec.z, vec.x);
+                float pitch = (float) Math.asin(vec.y);
+                player.rotationYaw = (float) (yaw * 180f/Math.PI + 90);
+                player.rotationPitch = (float) (pitch * 180f/Math.PI);
+                player.rotationYawHead = player.rotationYaw;
+                player.prevRotationYaw = player.rotationYaw;
+                player.prevRotationPitch = player.rotationPitch;
+                player.prevRotationYawHead = player.rotationYawHead;
+            }
+            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(player, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+            if (frozenCapability != null && player.isPotionActive(PotionHandler.FROZEN) && frozenCapability.getPrevFrozen()) {
+                player.rotationYaw = frozenCapability.getFrozenYaw();
+                player.rotationPitch = frozenCapability.getFrozenPitch();
+                player.rotationYawHead = frozenCapability.getFrozenYawHead();
+                player.prevRotationYaw = player.rotationYaw;
+                player.prevRotationPitch = player.rotationPitch;
+                player.prevRotationYawHead = player.rotationYawHead;
+            }
+        }
     }
 
     @SubscribeEvent
@@ -149,32 +174,6 @@ public enum ClientEventHandler {
         for (int n = 0; n < length; n++, value /= 10) {
             int digit = value % 10;
             AbstractGui.blit(x + 8 * (length - n - 1), y, digit * 8 % 64, digit / 8f * 8, 8, 7, 64, 64);
-        }
-    }
-
-    @SubscribeEvent
-    public void updateView(EntityViewRenderEvent.CameraSetup event) {
-        PlayerEntity player = Minecraft.getInstance().player;
-        if (player != null) {
-            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-            if (playerCapability != null && playerCapability.getGeomancy().canUse(player) && playerCapability.getGeomancy().isSpawningBoulder() && playerCapability.getGeomancy().getSpawnBoulderCharge() > 2) {
-                Vec3d lookPos = playerCapability.getGeomancy().getLookPos();
-                Vec3d playerEyes = player.getEyePosition(Minecraft.getInstance().getRenderPartialTicks());
-                Vec3d vec = playerEyes.subtract(lookPos).normalize();
-                float yaw = (float) Math.atan2(vec.z, vec.x);
-                float pitch = (float) Math.asin(vec.y);
-                player.rotationYaw = (float) (yaw * 180f/Math.PI + 90);
-                player.rotationPitch = (float) (pitch * 180f/Math.PI);
-                player.prevRotationYaw = player.rotationYaw;
-                player.prevRotationPitch = player.rotationPitch;
-            }
-            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(player, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
-            if (frozenCapability != null && player.isPotionActive(PotionHandler.FROZEN) && frozenCapability.getPrevFrozen()) {
-                player.rotationYaw = frozenCapability.getFrozenYaw();
-                player.rotationPitch = frozenCapability.getFrozenPitch();
-                player.prevRotationYaw = player.rotationYaw;
-                player.prevRotationPitch = player.rotationPitch;
-            }
         }
     }
 
