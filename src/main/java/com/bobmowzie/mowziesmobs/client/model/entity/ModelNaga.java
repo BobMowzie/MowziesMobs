@@ -662,10 +662,10 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         this.root.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-//        if (tail != null) tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha, tailDynamic);
-//        for (AdvancedModelRenderer AdvancedModelRenderer : tailOriginal) {
-//            AdvancedModelRenderer.showModel = false;
-//        }
+        if (tail != null) tail.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha, tailDynamic);
+        for (AdvancedModelRenderer AdvancedModelRenderer : tailOriginal) {
+            AdvancedModelRenderer.showModel = false;
+        }
     }
 
     public void setDefaultAngle(EntityNaga entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
@@ -720,14 +720,14 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
                 double a = dv.y / d;
                 a = Math.max(-1, Math.min(1, a));
                 float pitch = -(float) Math.asin(a);
-                root.rotateAngleX += pitch * nonHoverAnim;
-                neck.rotateAngleX -= pitch / 2 * nonHoverAnim;
-                head.rotateAngleX -= pitch / 2 * nonHoverAnim;
-                shoulderLJoint.rotateAngleX -= Math.min(pitch, 0) * nonHoverAnim;
-                shoulderRJoint.rotateAngleX -= Math.min(pitch, 0) * nonHoverAnim;
-
-                wingFolder.rotationPointX += Math.max(Math.min(pitch * 2, 0.8), 0.1) * nonHoverAnim;
-                wingFolder.rotationPointY += Math.max(Math.min(pitch * 2, 0.8), 0.1) * nonHoverAnim;
+//                root.rotateAngleX += pitch * nonHoverAnim;
+//                neck.rotateAngleX -= pitch / 2 * nonHoverAnim;
+//                head.rotateAngleX -= pitch / 2 * nonHoverAnim;
+//                shoulderLJoint.rotateAngleX -= Math.min(pitch, 0) * nonHoverAnim;
+//                shoulderRJoint.rotateAngleX -= Math.min(pitch, 0) * nonHoverAnim;
+//
+//                wingFolder.rotationPointX += Math.max(Math.min(pitch * 2, 0.8), 0.1) * nonHoverAnim;
+//                wingFolder.rotationPointY += Math.max(Math.min(pitch * 2, 0.8), 0.1) * nonHoverAnim;
 
                 //        root.rotateAngleZ -= Math.toRadians((entity.rotationYaw - entity.prevRotationYaw) * (LLibrary.PROXY.getPartialTicks()));
             }
@@ -1190,19 +1190,19 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
                 animator.setStaticKeyframe(10);
 
                 animator.startKeyframe(4);
-                animator.rotate(root, 0, 0, 1f);
+                animator.rotate(root, 0, 1f, 0);
                 animator.endKeyframe();
 
                 animator.startKeyframe(4);
-                animator.rotate(root, 0, 0, -1f);
+                animator.rotate(root, 0, -1f, 0);
                 animator.endKeyframe();
 
                 animator.startKeyframe(4);
-                animator.rotate(root, 0, 0, 1f);
+                animator.rotate(root, 0, 1f, 0);
                 animator.endKeyframe();
 
                 animator.startKeyframe(4);
-                animator.rotate(root, 0, 0, -1f);
+                animator.rotate(root, 0, -1f, 0);
                 animator.endKeyframe();
 
                 animator.resetKeyframe(4);

@@ -77,7 +77,7 @@ public enum ClientEventHandler {
             entity.renderYawOffset = entity.prevRenderYawOffset = frozenCapability.getFrozenRenderYawOffset();
             entity.swingProgress = entity.prevSwingProgress = frozenCapability.getFrozenSwingProgress();
             entity.limbSwingAmount = entity.prevLimbSwingAmount = frozenCapability.getFrozenLimbSwingAmount();
-//            entity.setSneaking(false); TODO
+            entity.setSneaking(false);
         }
     }
 
@@ -165,11 +165,15 @@ public enum ClientEventHandler {
                 float pitch = (float) Math.asin(vec.y);
                 player.rotationYaw = (float) (yaw * 180f/Math.PI + 90);
                 player.rotationPitch = (float) (pitch * 180f/Math.PI);
+                player.prevRotationYaw = player.rotationYaw;
+                player.prevRotationPitch = player.rotationPitch;
             }
             FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(player, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
             if (frozenCapability != null && player.isPotionActive(PotionHandler.FROZEN) && frozenCapability.getPrevFrozen()) {
                 player.rotationYaw = frozenCapability.getFrozenYaw();
                 player.rotationPitch = frozenCapability.getFrozenPitch();
+                player.prevRotationYaw = player.rotationYaw;
+                player.prevRotationPitch = player.rotationPitch;
             }
         }
     }

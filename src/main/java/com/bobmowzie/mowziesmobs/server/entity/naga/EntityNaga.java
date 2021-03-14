@@ -252,6 +252,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
                 }
             }
         });
+        this.goalSelector.addGoal(2, new SimpleAnimationAI<EntityNaga>(this, TAIL_DEMO_ANIMATION, false));
 
         this.moveController = new NagaMoveHelper(this);
     }
@@ -496,9 +497,10 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
 //        setAttacking(true);
 //        getNavigator().clearPath();
 //        setMotion(new Vec3d(0, 0, 0));
+//        setPosition(getPosX(), 10, getPosZ());
 //
 //        if (getAnimation() == NO_ANIMATION) {
-//            AnimationHandler.INSTANCE.sendAnimationMessage(this, SPIT_ANIMATION);
+//            AnimationHandler.INSTANCE.sendAnimationMessage(this, TAIL_DEMO_ANIMATION);
 //        }
     }
 

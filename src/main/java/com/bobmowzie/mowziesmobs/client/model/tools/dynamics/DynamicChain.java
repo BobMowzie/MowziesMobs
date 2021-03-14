@@ -140,7 +140,7 @@ public class DynamicChain {
         ra = new Vec3d[chainOrig.length];
         pOrig = new Vec3d[chainOrig.length];
         for (int i = 0; i < chainOrig.length; i++) {
-            pOrig[i] = RenderUtils.getWorldPosFromModel(entity, entity.rotationYaw, chainOrig[i]);
+            pOrig[i] = chainOrig[i].getWorldPos(entity, 0);
             p[i] = pOrig[i];
             v[i] = new Vec3d(0, 0, 0);
             a[i] = new Vec3d(0, 0, 0);
@@ -180,7 +180,7 @@ public class DynamicChain {
 
         if (prevUpdateTick != entity.ticksExisted) {
             for (int i = 0; i < chainOrig.length; i++) {
-                pOrig[i] = RenderUtils.getWorldPosFromModel(entity, entity.rotationYaw, chainOrig[i]);
+                pOrig[i] = chainOrig[i].getWorldPos(entity, delta);
             }
 
             updateBendConstraint(gravityAmount, stiffness, stiffnessFalloff, damping, numUpdates, useFloor);
@@ -192,7 +192,7 @@ public class DynamicChain {
         for (int i = chainDynamic.length - 1; i >= 0; i--) {
             if (chainDynamic[i] == null) return;
             Vec3d renderPos = p[i].add(v[i].scale(delta)).add(a[i].scale(0.5 * delta * delta));
-//            chainDynamic[i].setWorldPos(entity, renderPos, delta); TODO
+            chainDynamic[i].setWorldPos(entity, renderPos, delta);
 
             if (i < chainDynamic.length - 1) {
                 Vec3d p1 = new Vec3d(chainDynamic[i].rotationPointX, chainDynamic[i].rotationPointY, chainDynamic[i].rotationPointZ);
