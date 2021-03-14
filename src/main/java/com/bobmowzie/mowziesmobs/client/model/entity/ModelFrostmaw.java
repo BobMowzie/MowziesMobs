@@ -8,7 +8,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 /**
- * Created by Josh on 5/8/2017.
+ * Created by BobMowzie on 5/8/2017.
  */
 public class ModelFrostmaw<T extends EntityFrostmaw> extends MowzieEntityModel<T> {
     public AdvancedModelRenderer root;

@@ -10,7 +10,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 /**
- * Created by Josh on 7/20/2017.
+ * Created by BobMowzie on 7/20/2017.
  */
 public class EntityFrozenController extends Entity {
     public EntityFrozenController(EntityType<? extends EntityFrozenController> type, World world) {

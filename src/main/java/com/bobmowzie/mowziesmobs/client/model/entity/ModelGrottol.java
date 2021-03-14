@@ -6,7 +6,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 /**
- * Created by Josh on 7/3/2018.
+ * Created by BobMowzie on 7/3/2018.
  */
 
 public class ModelGrottol<T extends EntityGrottol> extends MowzieEntityModel<T> {

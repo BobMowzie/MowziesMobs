@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 /**
- * Created by Josh on 1/10/2019.
+ * Created by BobMowzie on 1/10/2019.
  */
 public class ItemNagaFang extends Item {
     public ItemNagaFang(Item.Properties properties) {

@@ -10,7 +10,7 @@ import net.minecraft.entity.monster.BlazeEntity;
 import net.minecraft.util.ResourceLocation;
 
 /**
- * Created by Josh on 5/8/2017.
+ * Created by BobMowzie on 5/8/2017.
  */
 public class RenderLantern extends MobRenderer<EntityLantern, ModelLantern<EntityLantern>> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/mmlantern.png");

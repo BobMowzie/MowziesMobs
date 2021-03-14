@@ -10,7 +10,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
- * Created by Josh on 6/2/2017.
+ * Created by BobMowzie on 6/2/2017.
  */
 public class ParticleSparkle extends SpriteTexturedParticle {
     private float red, green, blue;

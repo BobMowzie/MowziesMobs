@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Created by Josh on 7/8/2018.
+ * Created by BobMowzie on 7/8/2018.
  */
 public class EntityBlockSwapper extends Entity {
     private static final DataParameter<Optional<BlockState>> ORIG_BLOCK_STATE = EntityDataManager.createKey(EntityBlockSwapper.class, DataSerializers.OPTIONAL_BLOCK_STATE);

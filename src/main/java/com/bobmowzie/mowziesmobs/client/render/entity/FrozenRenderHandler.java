@@ -21,7 +21,7 @@ import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 /**
- * Created by Josh on 6/28/2017.
+ * Created by BobMowzie on 6/28/2017.
  */
 public enum FrozenRenderHandler {
     INSTANCE;

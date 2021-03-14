@@ -12,9 +12,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-/**
- * Created by Josh on 9/9/2018.
- */
 @OnlyIn(Dist.CLIENT)
 public class RenderNaga extends MobRenderer<EntityNaga, ModelNaga<EntityNaga>> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/naga.png");

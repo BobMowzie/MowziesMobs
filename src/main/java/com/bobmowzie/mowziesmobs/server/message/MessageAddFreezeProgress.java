@@ -13,7 +13,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 /**
- * Created by Josh on 5/31/2017.
+ * Created by BobMowzie on 5/31/2017.
  */
 public class MessageAddFreezeProgress {
     private int entityID;

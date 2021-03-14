@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 /**
- * Created by Josh on 8/15/2016.
+ * Created by BobMowzie on 8/15/2016.
  */
 public class ItemBarakoMask extends ArmorItem implements BarakoaMask {
     private static final SolVisageMaterial SOL_VISAGE_MATERIAL = new SolVisageMaterial();

@@ -11,7 +11,7 @@ import net.minecraft.entity.Entity;
 import java.util.Random;
 
 /**
- * Created by Josh on 4/14/2017.
+ * Created by BobMowzie on 4/14/2017.
  */
 public class ModelBoulder<T extends EntityBoulder> extends AdvancedModelBase {
 

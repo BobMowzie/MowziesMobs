@@ -17,7 +17,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import java.util.Locale;
 
 /**
- * Created by Josh on 6/2/2017.
+ * Created by BobMowzie on 6/2/2017.
  */
 public class ParticleCloud extends SpriteTexturedParticle {
     private float red, green, blue;

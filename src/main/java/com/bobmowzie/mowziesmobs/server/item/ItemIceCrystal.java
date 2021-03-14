@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 /**
- * Created by Josh on 6/6/2017.
+ * Created by BobMowzie on 6/6/2017.
  */
 public class ItemIceCrystal extends Item {
     public ItemIceCrystal(Item.Properties properties) {

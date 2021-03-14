@@ -7,7 +7,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 
 /**
- * Created by Josh on 7/24/2018.
+ * Created by BobMowzie on 7/24/2018.
  */
 public class ModelLantern<T extends EntityLantern> extends MowzieEntityModel<T> {
     public AdvancedModelRenderer body;

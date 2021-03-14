@@ -20,7 +20,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 /**
- * Created by Josh on 11/14/2016.
+ * Created by BobMowzie on 11/14/2016.
  */
 public class MessageBarakoTrade {
     private int entityID;

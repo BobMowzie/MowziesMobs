@@ -62,7 +62,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Created by Josh on 5/8/2017.
+ * Created by BobMowzie on 5/8/2017.
  */
 public class EntityFrostmaw extends MowzieEntity implements IMob {
     public static final Animation DIE_ANIMATION = Animation.create(94);

@@ -51,7 +51,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 /**
- * Created by Josh on 7/3/2018.
+ * Created by BobMowzie on 7/3/2018.
  */
 public class EntityGrottol extends MowzieEntity implements IMob {
     public static final Animation DIE_ANIMATION = Animation.create(73);

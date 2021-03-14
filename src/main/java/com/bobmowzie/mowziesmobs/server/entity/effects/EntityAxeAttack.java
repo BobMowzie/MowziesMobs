@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Created by Josh on 7/15/2017.
+ * Created by BobMowzie on 7/15/2017.
  */
 public class EntityAxeAttack extends EntityMagicEffect {
     private static final DataParameter<Boolean> VERTICAL = EntityDataManager.createKey(EntityAxeAttack.class, DataSerializers.BOOLEAN);

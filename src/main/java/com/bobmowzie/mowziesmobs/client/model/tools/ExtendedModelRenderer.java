@@ -9,7 +9,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
- * Created by Josh on 7/24/2018.
+ * Created by BobMowzie on 7/24/2018.
  */
 @OnlyIn(Dist.CLIENT)
 public class ExtendedModelRenderer extends AdvancedModelRenderer {

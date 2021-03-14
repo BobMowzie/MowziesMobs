@@ -9,7 +9,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 
 /**
- * Created by Josh on 4/14/2017.
+ * Created by BobMowzie on 4/14/2017.
  */
 public class ModelAxeAttack<T extends EntityAxeAttack> extends AdvancedModelBase<T> {
     public AdvancedModelRenderer axeBase;

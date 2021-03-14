@@ -14,7 +14,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 /**
- * Created by Josh on 7/30/2018.
+ * Created by BobMowzie on 7/30/2018.
  */
 
 public class ItemGlowingJelly extends Item {

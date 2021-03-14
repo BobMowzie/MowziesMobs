@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 /**
- * Created by Josh on 10/31/2016.
+ * Created by BobMowzie on 10/31/2016.
  */
 public class ItemGrantSunsBlessing extends Item {
     public ItemGrantSunsBlessing(Item.Properties properties) {

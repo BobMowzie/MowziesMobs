@@ -19,7 +19,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 /**
- * Created by Josh on 9/2/2018.
+ * Created by BobMowzie on 9/2/2018.
  */
 public abstract class EntityMagicEffect extends Entity {
     public LivingEntity caster;

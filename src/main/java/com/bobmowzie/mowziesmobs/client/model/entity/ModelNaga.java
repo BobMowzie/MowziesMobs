@@ -11,7 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.Vec3d;
 
 /**
- * Created by Josh on 9/9/2018.
+ * Created by BobMowzie on 9/9/2018.
  */
 
 public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
@@ -720,14 +720,14 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
                 double a = dv.y / d;
                 a = Math.max(-1, Math.min(1, a));
                 float pitch = -(float) Math.asin(a);
-//                root.rotateAngleX += pitch * nonHoverAnim;
-//                neck.rotateAngleX -= pitch / 2 * nonHoverAnim;
-//                head.rotateAngleX -= pitch / 2 * nonHoverAnim;
-//                shoulderLJoint.rotateAngleX -= Math.min(pitch, 0) * nonHoverAnim;
-//                shoulderRJoint.rotateAngleX -= Math.min(pitch, 0) * nonHoverAnim;
-//
-//                wingFolder.rotationPointX += Math.max(Math.min(pitch * 2, 0.8), 0.1) * nonHoverAnim;
-//                wingFolder.rotationPointY += Math.max(Math.min(pitch * 2, 0.8), 0.1) * nonHoverAnim;
+                root.rotateAngleX += pitch * nonHoverAnim;
+                neck.rotateAngleX -= pitch / 2 * nonHoverAnim;
+                head.rotateAngleX -= pitch / 2 * nonHoverAnim;
+                shoulderLJoint.rotateAngleX -= Math.min(pitch, 0) * nonHoverAnim;
+                shoulderRJoint.rotateAngleX -= Math.min(pitch, 0) * nonHoverAnim;
+
+                wingFolder.rotationPointX += Math.max(Math.min(pitch * 2, 0.8), 0.1) * nonHoverAnim;
+                wingFolder.rotationPointY += Math.max(Math.min(pitch * 2, 0.8), 0.1) * nonHoverAnim;
 
                 //        root.rotateAngleZ -= Math.toRadians((entity.rotationYaw - entity.prevRotationYaw) * (LLibrary.PROXY.getPartialTicks()));
             }

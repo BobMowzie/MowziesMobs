@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.server.potion;
 import net.minecraft.potion.EffectType;
 
 /**
- * Created by Josh on 1/9/2019.
+ * Created by BobMowzie on 1/9/2019.
  */
 public class MowzieEffectPoisonResist extends MowzieEffect {
     public MowzieEffectPoisonResist() {

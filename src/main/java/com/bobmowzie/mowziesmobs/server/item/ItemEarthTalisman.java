@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 /**
- * Created by Josh on 7/26/2017.
+ * Created by BobMowzie on 7/26/2017.
  */
 public class ItemEarthTalisman extends Item {
     public ItemEarthTalisman(Item.Properties properties) {

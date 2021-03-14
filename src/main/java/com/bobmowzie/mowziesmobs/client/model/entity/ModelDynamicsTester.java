@@ -9,7 +9,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.model.ModelRenderer;
 
 /**
- * Created by Josh on 8/30/2018.
+ * Created by BobMowzie on 8/30/2018.
  */
 public class ModelDynamicsTester<T extends EntityDynamicsTester> extends AdvancedModelBase<T> {
     public AdvancedModelRenderer root;

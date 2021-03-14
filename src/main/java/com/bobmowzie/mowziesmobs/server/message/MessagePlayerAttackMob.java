@@ -12,7 +12,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 /**
- * Created by Josh on 10/28/2016.
+ * Created by BobMowzie on 10/28/2016.
  */
 public class MessagePlayerAttackMob {
     private int entityID;

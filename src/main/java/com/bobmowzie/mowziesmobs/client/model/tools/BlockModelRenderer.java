@@ -20,7 +20,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.Random;
 
 /**
- * Created by Josh on 5/1/2017.
+ * Created by BobMowzie on 5/1/2017.
  */
 public class BlockModelRenderer extends AdvancedModelRenderer {
     private BlockState blockState;

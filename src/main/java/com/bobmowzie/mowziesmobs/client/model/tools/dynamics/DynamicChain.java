@@ -9,7 +9,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 /**
- * Created by Josh on 8/30/2018.
+ * Created by BobMowzie on 8/30/2018.
  */
 public class DynamicChain {
     private Vec3d[] p;

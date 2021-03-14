@@ -20,7 +20,7 @@ import net.minecraft.world.World;
 import java.util.List;
 
 /**
- * Created by Josh on 9/2/2018.
+ * Created by BobMowzie on 9/2/2018.
  */
 public class EntityIceBall extends EntityMagicEffect implements IProjectile {
     public EntityIceBall(World world) {

@@ -26,7 +26,7 @@ import net.minecraft.world.World;
 import java.util.List;
 
 /**
- * Created by Josh on 5/25/2017.
+ * Created by BobMowzie on 5/25/2017.
  */
 public class EntityIceBreath extends EntityMagicEffect {
     private static final int RANGE = 10;

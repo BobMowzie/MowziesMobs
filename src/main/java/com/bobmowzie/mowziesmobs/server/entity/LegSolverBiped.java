@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
 /**
- * Created by Josh on 5/15/2017.
+ * Created by BobMowzie on 5/15/2017.
  */
 public final class LegSolverBiped extends LegSolver {
     public final Leg left, right;

@@ -6,7 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.SoundCategory;
 
 /**
- * Created by Josh on 1/9/2019.
+ * Created by BobMowzie on 1/9/2019.
  */
 public class NagaSwoopSound extends TickableSound {
     private Entity naga;

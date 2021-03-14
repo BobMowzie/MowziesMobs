@@ -49,7 +49,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Created by Josh on 9/9/2018.
+ * Created by BobMowzie on 9/9/2018.
  */
 public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, IFlyingAnimal {
     @OnlyIn(Dist.CLIENT)
