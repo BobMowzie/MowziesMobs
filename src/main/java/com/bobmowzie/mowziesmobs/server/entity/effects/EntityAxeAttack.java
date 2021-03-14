@@ -63,7 +63,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
     @Nullable
     @Override
     public AxisAlignedBB getCollisionBoundingBox() {
-        return this.getBoundingBox();
+        return null;//this.getBoundingBox();
     }
 
     @Override

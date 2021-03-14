@@ -76,9 +76,6 @@ public class ModelBipedAnimated<T extends LivingEntity> extends BipedModel {
                 float swingArc = 3f;
                 arm.rotateAngleX = -2.7f + (float) (swingArc * 1 / (1 + Math.exp(1.3f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 2f))));
                 arm.rotateAngleX = Math.min(arm.rotateAngleX, -0.1f);
-                if (!model.isSneak) {
-                    GlStateManager.translatef(0.0F, 0.3F, 0.0F);
-                }
                 model.isSneak = true;
             } else {
                 float swingArc = 2.5f;
