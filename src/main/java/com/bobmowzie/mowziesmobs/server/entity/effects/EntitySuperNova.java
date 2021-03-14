@@ -67,8 +67,7 @@ public class EntitySuperNova extends EntityMagicEffect {
         if (caster != null && caster instanceof MobEntity) {
             float ageFrac = ticksExisted / (float)(EntitySuperNova.DURATION);
             float scale = (float) Math.pow(ageFrac, 0.5) * 5f;
-//            setSize(scale, scale); //TODO
-            setBoundingBox(getBoundingBox().grow(scale));   // Will this work instead?
+            setBoundingBox(getBoundingBox().grow(scale));
             setPosition(prevPosX, prevPosY, prevPosZ);
             List<LivingEntity> hitList = getEntitiesNearbyCube(LivingEntity.class, scale);
             for (LivingEntity entity : hitList) {
