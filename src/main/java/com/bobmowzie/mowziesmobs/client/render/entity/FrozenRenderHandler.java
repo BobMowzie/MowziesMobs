@@ -134,7 +134,7 @@ public enum FrozenRenderHandler {
         model.swimAnimation = 0.0F;
         model.setRotationAngles(playerIn, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
         rendererArmwearIn.rotateAngleX = 0.0F;
-        rendererArmwearIn.render(matrixStackIn, bufferIn.getBuffer(RenderType.getEntityTranslucent(FROZEN_TEXTURE)), combinedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 0.5f);
+        rendererArmwearIn.render(matrixStackIn, bufferIn.getBuffer(RenderType.getEntityTranslucent(FROZEN_TEXTURE)), combinedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 0.8f);
     }
 
     private void setModelVisibilities(AbstractClientPlayerEntity clientPlayer, PlayerModel<AbstractClientPlayerEntity> playermodel) {

@@ -112,7 +112,8 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         stepHeight = 1;
         frame += rand.nextInt(50);
         legSolver = new LegSolverQuadruped(1f, 2f, -1, 1.5f);
-        socketPosArray = new Vec3d[] {new Vec3d(0, 0, 0), new Vec3d(0, 0, 0), new Vec3d(0, 0, 0)};
+        if (world.isRemote)
+            socketPosArray = new Vec3d[] {new Vec3d(0, 0, 0), new Vec3d(0, 0, 0), new Vec3d(0, 0, 0)};
         active = false;
         playsHurtAnimation = false;
         rotationYaw = renderYawOffset = rand.nextFloat() * 360;

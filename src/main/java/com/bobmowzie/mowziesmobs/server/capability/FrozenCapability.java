@@ -236,7 +236,7 @@ public class FrozenCapability {
                 frozenYaw = entity.rotationYaw;
                 frozenPitch = entity.rotationPitch;
                 frozenYawHead = entity.rotationYawHead;
-                frozenLimbSwingAmount = entity.limbSwingAmount;
+                frozenLimbSwingAmount = 0;//entity.limbSwingAmount;
                 frozenRenderYawOffset = entity.renderYawOffset;
                 frozenSwingProgress = entity.swingProgress;
                 entity.startRiding(frozenController, true);

@@ -53,7 +53,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     public boolean hurtInterruptsAnimation = false;
 
     @OnlyIn(Dist.CLIENT)
-    public Vec3d[] socketPosArray = new Vec3d[]{};
+    public Vec3d[] socketPosArray;
 
     protected boolean prevOnGround;
     protected boolean prevPrevOnGround;
@@ -67,6 +67,9 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
 
     public MowzieEntity(EntityType<? extends MowzieEntity> type, World world) {
         super(type, world);
+        if (world.isRemote) {
+            socketPosArray = new Vec3d[]{};
+        }
     }
 
     protected void registerAttributes()

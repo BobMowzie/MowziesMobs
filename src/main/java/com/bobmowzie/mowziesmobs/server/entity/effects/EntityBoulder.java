@@ -437,12 +437,14 @@ public class EntityBoulder extends Entity {
                 playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG.get(), 1.5f, 0.9f);
             }
 
-            Vec3d ringOffset = getMotion().scale(-1).normalize();
-            ParticleRotation.OrientVector rotation = new ParticleRotation.OrientVector(ringOffset);
-            AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING2.get(), (float) getPosX() + (float) ringOffset.x, (float) getPosY() + 0.5f + (float) ringOffset.y, (float) getPosZ() + (float) ringOffset.z, 0, 0, 0, rotation, 3.5F, 0.83f, 1, 0.39f, 1, 1, (int) (5 + 2 * getWidth()), true, new ParticleComponent[]{
-                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0.7f, 0f), false),
-                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(0f, (1.0f + 0.5f * getWidth()) * 8f), false)
-            });
+            if (world.isRemote) {
+                Vec3d ringOffset = getMotion().scale(-1).normalize();
+                ParticleRotation.OrientVector rotation = new ParticleRotation.OrientVector(ringOffset);
+                AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING2.get(), (float) getPosX() + (float) ringOffset.x, (float) getPosY() + 0.5f + (float) ringOffset.y, (float) getPosZ() + (float) ringOffset.z, 0, 0, 0, rotation, 3.5F, 0.83f, 1, 0.39f, 1, 1, (int) (5 + 2 * getWidth()), true, new ParticleComponent[]{
+                        new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0.7f, 0f), false),
+                        new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(0f, (1.0f + 0.5f * getWidth()) * 8f), false)
+                });
+            }
         }
         return super.hitByEntity(entityIn);
     }

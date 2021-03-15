@@ -262,7 +262,7 @@ public class PowerGeomancy extends Power {
         }
 
         if (spawnBoulderCharge > 2) {
-            Vec3d playerEyes = player.getEyePosition(Minecraft.getInstance().getRenderPartialTicks());
+            Vec3d playerEyes = player.getEyePosition(1);
             Vec3d vec = playerEyes.subtract(getLookPos()).normalize();
             float yaw = (float) Math.atan2(vec.z, vec.x);
             float pitch = (float) Math.asin(vec.y);
@@ -312,7 +312,7 @@ public class PowerGeomancy extends Power {
     }
 
     public void startSpawningBoulder(PlayerEntity player) {
-        Vec3d from = player.getEyePosition(Minecraft.getInstance().getRenderPartialTicks());
+        Vec3d from = player.getEyePosition(1.0f);
         Vec3d to = from.add(player.getLookVec().scale(SPAWN_BOULDER_REACH));
         BlockRayTraceResult result = player.world.rayTraceBlocks(new RayTraceContext(from, to, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, player));
         if (result.getType() == RayTraceResult.Type.BLOCK) {
@@ -324,7 +324,7 @@ public class PowerGeomancy extends Power {
         if (result.getFace() != Direction.UP) {
             BlockState blockAbove = player.world.getBlockState(spawnBoulderPos.up());
             //System.out.println(blockAbove.getBlock().getLocalizedName());
-            if (blockAbove.causesSuffocation(player.world, spawnBoulderPos.up()) || blockAbove.isAir(player.world, spawnBoulderPos.up()))
+            if (blockAbove.isSuffocating(player.world, spawnBoulderPos.up()) || blockAbove.isAir(player.world, spawnBoulderPos.up()))
                 return;
         }
         if (!isBlockDiggable(spawnBoulderBlock)) return;
