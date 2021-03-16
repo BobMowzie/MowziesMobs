@@ -17,7 +17,7 @@ public final class EntityAIBarakoayaTrade extends Goal {
 
     @Override
     public boolean shouldExecute() {
-        if (!barakoaya.isAlive() || barakoaya.isInWater() || !barakoaya.onGround || barakoaya.velocityChanged) {
+        if (!barakoaya.isAlive() || barakoaya.isInWater() || !barakoaya.isOnGround() || barakoaya.velocityChanged) {
             return false;
         } else {
             PlayerEntity plyr = barakoaya.getCustomer();

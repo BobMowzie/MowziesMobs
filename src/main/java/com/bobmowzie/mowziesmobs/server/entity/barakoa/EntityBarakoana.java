@@ -25,9 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImmune {
-    private List<EntityBarakoanToBarakoana> pack = new ArrayList<>();
+    private final List<EntityBarakoanToBarakoana> pack = new ArrayList<>();
 
-    private int packRadius = 3;
+    private final int packRadius = 3;
 
     public EntityBarakoana(EntityType<? extends EntityBarakoana> type, World world) {
         super(type, world);
@@ -50,9 +50,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
             if (target instanceof PlayerEntity) {
                 if (this.world.getDifficulty() == Difficulty.PEACEFUL) return false;
                 ItemStack headArmorStack = ((PlayerEntity) target).inventory.armorInventory.get(3);
-                if (headArmorStack.getItem() instanceof BarakoaMask) {
-                    return false;
-                }
+                return !(headArmorStack.getItem() instanceof BarakoaMask);
             }
             return true;
         }));
@@ -147,7 +145,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
 
     @Nullable
     @Override
-    public ILivingEntityData onInitialSpawn(IWorld world, DifficultyInstance difficulty, SpawnReason reason, @Nullable ILivingEntityData livingData, @Nullable CompoundNBT compound) {
+    public ILivingEntityData onInitialSpawn(IServerWorld world, DifficultyInstance difficulty, SpawnReason reason, @Nullable ILivingEntityData livingData, @Nullable CompoundNBT compound) {
         int size = rand.nextInt(2) + 3;
         float theta = (2 * (float) Math.PI / size);
         for (int i = 0; i <= size; i++) {

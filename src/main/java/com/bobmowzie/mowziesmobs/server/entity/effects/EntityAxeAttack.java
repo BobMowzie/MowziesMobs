@@ -9,7 +9,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.item.FallingBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -60,10 +60,9 @@ public class EntityAxeAttack extends EntityMagicEffect {
         getDataManager().register(VERTICAL, false);
     }
 
-    @Nullable
     @Override
-    public AxisAlignedBB getCollisionBoundingBox() {
-        return null;//this.getBoundingBox();
+    public AxisAlignedBB getBoundingBox() {
+        return null;
     }
 
     @Override
@@ -108,19 +107,19 @@ public class EntityAxeAttack extends EntityMagicEffect {
                         if (entity == this || entity instanceof FallingBlockEntity || entity == caster) {
                             continue;
                         }
-                        float knockbackResistance = 0;
+                        float applyKnockbackResistance = 0;
                         if (entity instanceof LivingEntity) {
                             if (caster instanceof PlayerEntity) entity.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) caster), (factor * 5 + 1) * (ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get() / 9.0f));
                             else entity.attackEntityFrom(DamageSource.causeMobDamage(caster), (factor * 5 + 1) * (ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get() / 9.0f));
-                            knockbackResistance = (float) ((LivingEntity)entity).getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).getValue();
+                            applyKnockbackResistance = (float) ((LivingEntity)entity).getAttribute(Attributes.KNOCKBACK_RESISTANCE).getValue();
                         }
                         double magnitude = -0.2;
-                        double x = vx * (1 - factor) * magnitude * (1 - knockbackResistance);
+                        double x = vx * (1 - factor) * magnitude * (1 - applyKnockbackResistance);
                         double y = 0;
-                        if (entity.onGround) {
-                            y += 0.15 * (1 - knockbackResistance);
+                        if (entity.isOnGround()) {
+                            y += 0.15 * (1 - applyKnockbackResistance);
                         }
-                        double z = vz * (1 - factor) * magnitude * (1 - knockbackResistance);
+                        double z = vz * (1 - factor) * magnitude * (1 - applyKnockbackResistance);
                         entity.setMotion(entity.getMotion().add(x, y, z));
                         if (entity instanceof ServerPlayerEntity) {
                             ((ServerPlayerEntity) entity).connection.sendPacket(new SEntityVelocityPacket(entity));
@@ -156,7 +155,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
         if (ticksExisted > SWING_DURATION_HOR) remove();
     }
 
-    private void dealDamage(float damage, float range, float arc, float knockback) {
+    private void dealDamage(float damage, float range, float arc, float applyKnockback) {
         boolean hit = false;
         List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(range, 2, range, range);
         for (LivingEntity entityHit : entitiesHit) {
@@ -178,7 +177,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
                     playerCapability.setAxeCanAttack(false);
                 }
                 else entityHit.attackEntityFrom(DamageSource.causeMobDamage(caster), damage);
-                entityHit.setMotion(entityHit.getMotion().x * knockback, entityHit.getMotion().y, entityHit.getMotion().z * knockback);
+                entityHit.setMotion(entityHit.getMotion().x * applyKnockback, entityHit.getMotion().y, entityHit.getMotion().z * applyKnockback);
                 hit = true;
             }
         }

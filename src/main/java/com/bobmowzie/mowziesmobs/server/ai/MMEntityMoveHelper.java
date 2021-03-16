@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.ai;
 
 import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.pathfinding.NodeProcessor;
 import net.minecraft.pathfinding.PathNavigator;
@@ -22,7 +22,7 @@ public class MMEntityMoveHelper extends MovementController
     {
         if (this.action == MMEntityMoveHelper.Action.STRAFE)
         {
-            float f = (float)this.mob.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue();
+            float f = (float)this.mob.getAttribute(Attributes.MOVEMENT_SPEED).getValue();
             float f1 = (float)this.speed * f;
             float f2 = this.moveForward;
             float f3 = this.moveStrafe;
@@ -46,7 +46,7 @@ public class MMEntityMoveHelper extends MovementController
             {
                 NodeProcessor nodeprocessor = pathnavigate.getNodeProcessor();
 
-                if (nodeprocessor != null && nodeprocessor.getPathNodeType(this.mob.world, MathHelper.floor(this.mob.getPosX() + (double)f7), MathHelper.floor(this.mob.getPosY()), MathHelper.floor(this.mob.getPosZ() + (double)f8)) != PathNodeType.WALKABLE)
+                if (nodeprocessor != null && nodeprocessor.getFloorNodeType(this.mob.world, MathHelper.floor(this.mob.getPosX() + (double)f7), MathHelper.floor(this.mob.getPosY()), MathHelper.floor(this.mob.getPosZ() + (double)f8)) != PathNodeType.WALKABLE)
                 {
                     this.moveForward = 1.0F;
                     this.moveStrafe = 0.0F;
@@ -75,7 +75,7 @@ public class MMEntityMoveHelper extends MovementController
 
             float f9 = (float)(MathHelper.atan2(d1, d0) * (180D / Math.PI)) - 90.0F;
             this.mob.rotationYaw = this.limitAngle(this.mob.rotationYaw, f9, maxRotate);
-            this.mob.setAIMoveSpeed((float)(this.speed * this.mob.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue()));
+            this.mob.setAIMoveSpeed((float)(this.speed * this.mob.getAttribute(Attributes.MOVEMENT_SPEED).getValue()));
 
             if (d2 > (double)this.mob.stepHeight && d0 * d0 + d1 * d1 < (double)Math.max(1.0F, this.mob.getWidth()))
             {
@@ -85,9 +85,9 @@ public class MMEntityMoveHelper extends MovementController
         }
         else if (this.action == MMEntityMoveHelper.Action.JUMPING)
         {
-            this.mob.setAIMoveSpeed((float)(this.speed * this.mob.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getValue()));
+            this.mob.setAIMoveSpeed((float)(this.speed * this.mob.getAttribute(Attributes.MOVEMENT_SPEED).getValue()));
 
-            if (this.mob.onGround)
+            if (this.mob.isOnGround())
             {
                 this.action = MMEntityMoveHelper.Action.WAIT;
             }

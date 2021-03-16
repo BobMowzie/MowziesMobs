@@ -8,7 +8,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundCategory;
 
 public class SpawnBoulderChargeSound extends TickableSound {
-    private PlayerEntity player;
+    private final PlayerEntity player;
 
     public SpawnBoulderChargeSound(PlayerEntity player) {
         super(MMSounds.EFFECT_GEOMANCY_BOULDER_CHARGE.get(), SoundCategory.PLAYERS);
@@ -24,7 +24,7 @@ public class SpawnBoulderChargeSound extends TickableSound {
     public void tick() {
         PlayerCapability.IPlayerCapability capability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
         if (!capability.getGeomancy().isSpawningBoulder()) {
-            this.donePlaying = true;
+            finishPlaying();
         }
     }
 }

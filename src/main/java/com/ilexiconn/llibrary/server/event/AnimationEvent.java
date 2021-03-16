@@ -8,7 +8,7 @@ import net.minecraftforge.eventbus.api.Event;
 
 public class AnimationEvent<T extends Entity & IAnimatedEntity> extends Event {
     protected Animation animation;
-    private T entity;
+    private final T entity;
 
     AnimationEvent(T entity, Animation animation) {
         this.entity = entity;

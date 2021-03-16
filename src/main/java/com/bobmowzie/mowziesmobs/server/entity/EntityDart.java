@@ -53,9 +53,9 @@ public class EntityDart extends ArrowEntity {
     }
 
     @Override
-    protected void onHit(RayTraceResult raytraceResultIn) {
+    protected void onEntityHit(EntityRayTraceResult raytraceResultIn) {
         if (raytraceResultIn.getType() == RayTraceResult.Type.ENTITY) {
-            Entity hit = ((EntityRayTraceResult) raytraceResultIn).getEntity();
+            Entity hit = raytraceResultIn.getEntity();
             Entity shooter = getShooter();
             if (hit instanceof LivingEntity) {
                 LivingEntity living = (LivingEntity) hit;
@@ -63,6 +63,6 @@ public class EntityDart extends ArrowEntity {
                     return;
             }
         }
-        super.onHit(raytraceResultIn);
+        super.onEntityHit(raytraceResultIn);
     }
 }

@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.mojang.datafixers.Dynamic;
+import com.mojang.serialization.Codec;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
@@ -22,7 +22,15 @@ import java.util.function.Function;
 // Edited from Telepathic Grunt's base code
 
 public class BarakoaVillageStructure extends MowzieStructure {
-    public BarakoaVillageStructure(Function<Dynamic<?>, ? extends NoFeatureConfig> config)
+    public BarakoaVillageStructure(Codec<NoFeatureConfig> codec) {
+        super(codec);
+    }
+
+    @Override
+    public IStartFactory<NoFeatureConfig> getStartFactory() {
+        return null;
+    }
+    /*public BarakoaVillageStructure(Function<Dynamic<?>, ? extends NoFeatureConfig> config)
     {
         super(config);
     }
@@ -173,5 +181,5 @@ public class BarakoaVillageStructure extends MowzieStructure {
             int surfaceY = generator.getHeight(pos.getX(), pos.getZ(), Heightmap.Type.WORLD_SURFACE_WG);
             return new BlockPos(pos.getX(), surfaceY, pos.getZ());
         }
-    }
+    }*/ // TODO
 }

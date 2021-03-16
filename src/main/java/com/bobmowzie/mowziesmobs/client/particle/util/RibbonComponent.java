@@ -59,8 +59,8 @@ public class RibbonComponent extends ParticleComponent {
             RED, GREEN, BLUE, ALPHA,
             SCALE
         }
-        private AnimData animData;
-        private EnumRibbonProperty property;
+        private final AnimData animData;
+        private final EnumRibbonProperty property;
 
         public PropertyOverLength(EnumRibbonProperty property, AnimData animData) {
             this.animData = animData;

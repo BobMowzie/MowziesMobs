@@ -8,11 +8,12 @@ import net.minecraft.pathfinding.PathFinder;
 import net.minecraft.pathfinding.PathPoint;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.Region;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.Set;
 
 public class MMPathFinder extends PathFinder {
@@ -29,16 +30,16 @@ public class MMPathFinder extends PathFinder {
 
     static class PatchedPath extends Path {
         public PatchedPath(Path original) {
-            super(original.getPoints(), original.getTarget(), original.reachesTarget());
+            super(Arrays.asList(original.getClosedSet()), original.getTarget(), original.reachesTarget());
         }
 
         @Override
-        public Vec3d getVectorFromIndex(Entity entity, int index) {
+        public Vector3d getVectorFromIndex(Entity entity, int index) {
             PathPoint point = this.getPathPointFromIndex(index);
             double d0 = point.x + MathHelper.floor(entity.getWidth() + 1.0F) * 0.5D;
             double d1 = point.y;
             double d2 = point.z + MathHelper.floor(entity.getWidth() + 1.0F) * 0.5D;
-            return new Vec3d(d0, d1, d2);
+            return new Vector3d(d0, d1, d2);
         }
     }
 }

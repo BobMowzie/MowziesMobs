@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 /**
  * Created by BobMowzie on 5/8/2017.
@@ -39,9 +39,9 @@ public class RenderFrostmaw extends MobRenderer<EntityFrostmaw, ModelFrostmaw<En
     public void render(EntityFrostmaw entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
         if (entity.getAnimation() == EntityFrostmaw.SWIPE_ANIMATION || entity.getAnimation() == EntityFrostmaw.SWIPE_TWICE_ANIMATION || entity.getAnimation() == EntityFrostmaw.ICE_BREATH_ANIMATION || entity.getAnimation() == EntityFrostmaw.ICE_BALL_ANIMATION || !entity.getActive()) {
-            Vec3d rightHandPos = RenderUtils.getWorldPosFromModel(entity, entityYaw, entityModel.rightHandSocket);
-            Vec3d leftHandPos = RenderUtils.getWorldPosFromModel(entity, entityYaw, entityModel.leftHandSocket);
-            Vec3d mouthPos = RenderUtils.getWorldPosFromModel(entity, entityYaw, entityModel.mouthSocket);
+            Vector3d rightHandPos = RenderUtils.getWorldPosFromModel(entity, entityYaw, entityModel.rightHandSocket);
+            Vector3d leftHandPos = RenderUtils.getWorldPosFromModel(entity, entityYaw, entityModel.leftHandSocket);
+            Vector3d mouthPos = RenderUtils.getWorldPosFromModel(entity, entityYaw, entityModel.mouthSocket);
             entity.setSocketPosArray(0, rightHandPos);
             entity.setSocketPosArray(1, leftHandPos);
             entity.setSocketPosArray(2, mouthPos);

@@ -17,7 +17,7 @@ public final class MMSounds {
     private MMSounds() {
     }
 
-    public static final DeferredRegister<SoundEvent> REG = new DeferredRegister<>(ForgeRegistries.SOUND_EVENTS, MowziesMobs.MODID);
+    public static final DeferredRegister<SoundEvent> REG = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, MowziesMobs.MODID);
 
     // Generic
     public static final RegistryObject<SoundEvent> LASER = create("laser");

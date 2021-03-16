@@ -7,7 +7,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.SoundCategory;
 
 public class IceBreathSound extends TickableSound {
-    private Entity iceBreath;
+    private final Entity iceBreath;
     int ticksExisted = 0;
     ControlledAnimation volumeControl;
     boolean active = true;
@@ -36,7 +36,8 @@ public class IceBreathSound extends TickableSound {
             z = (float) iceBreath.getPosZ();
             if (!iceBreath.isAlive()) {
                 active = false;
-                if (volumeControl.getAnimationFraction() <= 0.05) donePlaying = true;
+                if (volumeControl.getAnimationFraction() <= 0.05)
+                    finishPlaying();
             }
         }
         ticksExisted++;

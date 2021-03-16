@@ -23,6 +23,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -78,7 +79,7 @@ public class EntitySolarBeam extends Entity {
 
     @Nullable
     @Override
-    public AxisAlignedBB getCollisionBoundingBox() {
+    public AxisAlignedBB getBoundingBox() {
         return null;
     }
 
@@ -122,7 +123,7 @@ public class EntitySolarBeam extends Entity {
         }
         if (ticksExisted > 20) {
             this.calculateEndPos();
-            List<LivingEntity> hit = raytraceEntities(world, new Vec3d(getPosX(), getPosY(), getPosZ()), new Vec3d(endPosX, endPosY, endPosZ), false, true, true).entities;
+            List<LivingEntity> hit = raytraceEntities(world, new Vector3d(getPosX(), getPosY(), getPosZ()), new Vector3d(endPosX, endPosY, endPosZ), false, true, true).entities;
             if (blockSide != null) {
                 spawnExplosionParticles(2);
             }
@@ -265,11 +266,11 @@ public class EntitySolarBeam extends Entity {
         endPosY = getPosY() + RADIUS * Math.sin(getPitch());
     }
 
-    public HitResult raytraceEntities(World world, Vec3d from, Vec3d to, boolean stopOnLiquid, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock) {
+    public HitResult raytraceEntities(World world, Vector3d from, Vector3d to, boolean stopOnLiquid, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock) {
         HitResult result = new HitResult();
         result.setBlockHit(world.rayTraceBlocks(new RayTraceContext(from, to, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this)));
         if (result.blockHit != null) {
-            Vec3d hitVec = result.blockHit.getHitVec();
+            Vector3d hitVec = result.blockHit.getHitVec();
             collidePosX = hitVec.x;
             collidePosY = hitVec.y;
             collidePosZ = hitVec.z;
@@ -287,7 +288,7 @@ public class EntitySolarBeam extends Entity {
             }
             float pad = entity.getCollisionBorderSize() + 0.5f;
             AxisAlignedBB aabb = entity.getBoundingBox().grow(pad, pad, pad);
-            Optional<Vec3d> hit = aabb.rayTrace(from, to);
+            Optional<Vector3d> hit = aabb.rayTrace(from, to);
             if (aabb.contains(from)) {
                 result.addEntityHit(entity);
             } else if (hit.isPresent()) {
@@ -325,7 +326,7 @@ public class EntitySolarBeam extends Entity {
     public static class HitResult {
         private BlockRayTraceResult blockHit;
 
-        private List<LivingEntity> entities = new ArrayList<>();
+        private final List<LivingEntity> entities = new ArrayList<>();
 
         public BlockRayTraceResult getBlockHit() {
             return blockHit;

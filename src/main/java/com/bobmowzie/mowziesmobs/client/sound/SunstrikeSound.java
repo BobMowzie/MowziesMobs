@@ -6,7 +6,7 @@ import net.minecraft.client.audio.TickableSound;
 import net.minecraft.util.SoundCategory;
 
 public class SunstrikeSound extends TickableSound {
-    private EntitySunstrike sunstrike;
+    private final EntitySunstrike sunstrike;
 
     public SunstrikeSound(EntitySunstrike sunstrike) {
         super(MMSounds.SUNSTRIKE.get(), SoundCategory.NEUTRAL);
@@ -21,7 +21,7 @@ public class SunstrikeSound extends TickableSound {
     @Override
     public void tick() {
         if (!sunstrike.isAlive()) {
-            this.donePlaying = true;
+            finishPlaying();
         }
     }
 }

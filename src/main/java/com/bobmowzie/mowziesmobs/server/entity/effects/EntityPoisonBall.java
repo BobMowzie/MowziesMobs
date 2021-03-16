@@ -8,13 +8,12 @@ import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.MoverType;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -22,7 +21,7 @@ import java.util.List;
 /**
  * Created by BobMowzie on 11/16/2018.
  */
-public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
+public class EntityPoisonBall extends EntityMagicEffect {
 
     public static float GRAVITY = 0.05f;
 
@@ -39,7 +38,6 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
         }
     }
 
-    @Override
     public void shoot(double x, double y, double z, float velocity, float inaccuracy) {
         setMotion(x * velocity, y * velocity, z * velocity);
     }
@@ -114,7 +112,7 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
         float explodeSpeed = 3.5f;
         if (world.isRemote) {
             for (int i = 0; i < 26; i++) {
-                Vec3d particlePos = new Vec3d(rand.nextFloat() * 0.25, 0, 0);
+                Vector3d particlePos = new Vector3d(rand.nextFloat() * 0.25, 0, 0);
                 particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                 double value = rand.nextFloat() * 0.1f;
@@ -122,7 +120,7 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
                 ParticleVanillaCloudExtended.spawnVanillaCloud(world, getPosX(), getPosY(), getPosZ(), particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 1, 0.25d + value, 0.75d + value, 0.25d + value, 0.6, life);
             }
             for (int i = 0; i < 26; i++) {
-                Vec3d particlePos = new Vec3d(rand.nextFloat() * 0.25, 0, 0);
+                Vector3d particlePos = new Vector3d(rand.nextFloat() * 0.25, 0, 0);
                 particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                 double value = rand.nextFloat() * 0.1f;
@@ -130,7 +128,7 @@ public class EntityPoisonBall extends EntityMagicEffect implements IProjectile {
                 AdvancedParticleBase.spawnParticle(world, ParticleHandler.PIXEL.get(), getPosX() + particlePos.x, getPosY() + particlePos.y, getPosZ() + particlePos.z, particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, true, 0, 0, 0, 0, 3f, 0.07d + value, 0.25d + value, 0.07d + value, 1d, 0.6, life * 0.95, false);
             }
             for (int i = 0; i < 23; i++) {
-                Vec3d particlePos = new Vec3d(rand.nextFloat() * 0.25, 0, 0);
+                Vector3d particlePos = new Vector3d(rand.nextFloat() * 0.25, 0, 0);
                 particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                 double value = rand.nextFloat() * 0.1f;

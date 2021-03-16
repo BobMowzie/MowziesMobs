@@ -1,23 +1,15 @@
 package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
-import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.mojang.datafixers.Dynamic;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationSettings;
-import net.minecraft.world.gen.Heightmap;
+import com.mojang.serialization.Codec;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.structure.ScatteredStructure;
+import net.minecraft.world.gen.feature.structure.Structure;
 
-import java.util.List;
-import java.util.Random;
-import java.util.function.Function;
-
-public abstract class MowzieStructure extends ScatteredStructure<NoFeatureConfig> {
-    public MowzieStructure(Function<Dynamic<?>, ? extends NoFeatureConfig> configFactoryIn) {
-        super(configFactoryIn);
+public abstract class MowzieStructure extends Structure<NoFeatureConfig> {
+    public MowzieStructure(Codec<NoFeatureConfig> codec) {
+        super(codec);
+    }
+    /*public MowzieStructure(Codec<NoFeatureConfig> codec) {
+        super(codec);
     }
 
     @Override
@@ -56,5 +48,5 @@ public abstract class MowzieStructure extends ScatteredStructure<NoFeatureConfig
 
     public boolean checkHeightLimitAgainstSurface() {
         return true;
-    }
+    }*/ //TODO
 }

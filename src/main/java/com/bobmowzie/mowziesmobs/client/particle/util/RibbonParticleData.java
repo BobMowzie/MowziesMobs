@@ -4,7 +4,7 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.ParticleType;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -12,29 +12,29 @@ public class RibbonParticleData extends AdvancedParticleData {
     public static final IDeserializer<RibbonParticleData> DESERIALIZER = new IDeserializer<RibbonParticleData>() {
         public RibbonParticleData deserialize(ParticleType<RibbonParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
             reader.expect(' ');
-            double airDrag = (double) reader.readDouble();
+            double airDrag = reader.readDouble();
             reader.expect(' ');
-            double red = (double) reader.readDouble();
+            double red = reader.readDouble();
             reader.expect(' ');
-            double green = (double) reader.readDouble();
+            double green = reader.readDouble();
             reader.expect(' ');
-            double blue = (double) reader.readDouble();
+            double blue = reader.readDouble();
             reader.expect(' ');
-            double alpha = (double) reader.readDouble();
+            double alpha = reader.readDouble();
             reader.expect(' ');
             String rotationMode = reader.readString();
             reader.expect(' ');
-            double scale = (double) reader.readDouble();
+            double scale = reader.readDouble();
             reader.expect(' ');
-            double yaw = (double) reader.readDouble();
+            double yaw = reader.readDouble();
             reader.expect(' ');
-            double pitch = (double) reader.readDouble();
+            double pitch = reader.readDouble();
             reader.expect(' ');
-            double roll = (double) reader.readDouble();
+            double roll = reader.readDouble();
             reader.expect(' ');
             boolean emissive = reader.readBoolean();
             reader.expect(' ');
-            double duration = (double) reader.readDouble();
+            double duration = reader.readDouble();
             reader.expect(' ');
             reader.readDouble();
             reader.expect(' ');
@@ -42,7 +42,7 @@ public class RibbonParticleData extends AdvancedParticleData {
             ParticleRotation rotation;
             if (rotationMode.equals("face_camera")) rotation = new ParticleRotation.FaceCamera((float) 0);
             else if (rotationMode.equals("euler")) rotation = new ParticleRotation.EulerAngles((float)yaw, (float)pitch, (float)roll);
-            else rotation = new ParticleRotation.OrientVector(new Vec3d(yaw, pitch, roll));
+            else rotation = new ParticleRotation.OrientVector(new Vector3d(yaw, pitch, roll));
             return new RibbonParticleData(particleTypeIn, rotation, scale, red, green, blue, alpha, airDrag, duration, emissive, length);
         }
 
@@ -64,7 +64,7 @@ public class RibbonParticleData extends AdvancedParticleData {
             ParticleRotation rotation;
             if (rotationMode.equals("face_camera")) rotation = new ParticleRotation.FaceCamera((float) 0);
             else if (rotationMode.equals("euler")) rotation = new ParticleRotation.EulerAngles((float)yaw, (float)pitch, (float)roll);
-            else rotation = new ParticleRotation.OrientVector(new Vec3d(yaw, pitch, roll));
+            else rotation = new ParticleRotation.OrientVector(new Vector3d(yaw, pitch, roll));
             return new RibbonParticleData(particleTypeIn, rotation, scale, red, green, blue, alpha, airDrag, duration, emissive, length);
         }
     };

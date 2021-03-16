@@ -1,7 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaya;
@@ -12,17 +11,16 @@ import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.sun.javafx.geom.Vec2f;
 import net.minecraft.block.*;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.item.ItemFrameEntity;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.Half;
 import net.minecraft.state.properties.SlabType;
-import net.minecraft.tileentity.ChestTileEntity;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.ResourceLocation;
@@ -30,22 +28,16 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.util.math.Vec2f;
+import net.minecraft.world.ISeedReader;
+import net.minecraft.world.IServerWorld;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.gen.feature.structure.IStructurePieceType;
-import net.minecraft.world.gen.feature.structure.ScatteredStructurePiece;
-import net.minecraft.world.gen.feature.structure.StructurePiece;
-import net.minecraft.world.gen.feature.structure.TemplateStructurePiece;
+import net.minecraft.world.gen.feature.structure.*;
 import net.minecraft.world.gen.feature.template.PlacementSettings;
 import net.minecraft.world.gen.feature.template.Template;
 import net.minecraft.world.gen.feature.template.TemplateManager;
-import net.minecraft.world.storage.loot.LootTables;
-import org.apache.commons.lang3.tuple.Pair;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 public class BarakoaVillagePieces {
@@ -151,7 +143,7 @@ public class BarakoaVillagePieces {
          * rare block spawns under the floor, or what item an Item Frame will have.
          */
         @Override
-        protected void handleDataMarker(String function, BlockPos pos, IWorld worldIn, Random rand, MutableBoundingBox sbb) {
+        protected void handleDataMarker(String function, BlockPos pos, IServerWorld worldIn, Random rand, MutableBoundingBox sbb) {
             if ("support".equals(function)) {
                 worldIn.setBlockState(pos, Blocks.OAK_FENCE.getDefaultState(), 3);
                 fillAirLiquidDown(worldIn, Blocks.OAK_FENCE.getDefaultState(), pos.down());
@@ -191,10 +183,10 @@ public class BarakoaVillagePieces {
         }
 
         protected void setBlockState(IWorld worldIn, BlockPos pos, BlockState state) {
-            IFluidState ifluidstate = worldIn.getFluidState(pos);
+            FluidState ifluidstate = worldIn.getFluidState(pos);
             if (!ifluidstate.isEmpty()) {
                 worldIn.getPendingFluidTicks().scheduleTick(pos, ifluidstate.getFluid(), 0);
-                if (state.has(BlockStateProperties.WATERLOGGED)) state = state.with(BlockStateProperties.WATERLOGGED, true);
+                if (state.hasProperty(BlockStateProperties.WATERLOGGED)) state = state.with(BlockStateProperties.WATERLOGGED, true);
             }
             worldIn.setBlockState(pos, state, 2);
             if (BLOCKS_NEEDING_POSTPROCESSING.contains(state.getBlock())) {
@@ -203,12 +195,12 @@ public class BarakoaVillagePieces {
         }
 
         @Override
-        public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGeneratorIn, Random randomIn, MutableBoundingBox mutableBoundingBoxIn, ChunkPos chunkPosIn) {
+        public boolean func_230383_a_(ISeedReader p_230383_1_, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, MutableBoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
             PlacementSettings placementsettings = (new PlacementSettings()).setRotation(this.rotation).setMirror(Mirror.NONE);
             BlockPos blockpos = BarakoaVillagePieces.OFFSET.get(this.resourceLocation);
             this.templatePosition.add(Template.transformedBlockPos(placementsettings, new BlockPos(0 - blockpos.getX(), 0, 0 - blockpos.getZ())));
 
-            return super.create(worldIn, chunkGeneratorIn, randomIn, mutableBoundingBoxIn, chunkPosIn);
+            return super.func_230383_a_(p_230383_1_, p_230383_2_, p_230383_3_, p_230383_4_, p_230383_5_, p_230383_6_, p_230383_7_);
         }
 
         public void fillAirLiquidDown(IWorld worldIn, BlockState state, BlockPos startPos) {
@@ -257,7 +249,7 @@ public class BarakoaVillagePieces {
         }
 
         @Override
-        protected void handleDataMarker(String function, BlockPos pos, IWorld worldIn, Random rand, MutableBoundingBox sbb) {
+        protected void handleDataMarker(String function, BlockPos pos, IServerWorld worldIn, Random rand, MutableBoundingBox sbb) {
             super.handleDataMarker(function, pos, worldIn, rand, sbb);
             if ("corner".equals(function.substring(0, function.length() - 1))) {
                 setBlockState(worldIn, pos, Blocks.AIR.getDefaultState());
@@ -344,11 +336,11 @@ public class BarakoaVillagePieces {
             int j = worldIn.getHeight(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, i, k) - 2;
             while(!Block.hasSolidSideOnTop(worldIn, new BlockPos(i, j, k)) && j > 1) {
                 BlockPos pos = new BlockPos(i, j, k);
-                IFluidState ifluidstate = worldIn.getFluidState(pos);
+                FluidState ifluidstate = worldIn.getFluidState(pos);
                 BlockState toPut = state;
                 if (!ifluidstate.isEmpty()) {
                     worldIn.getPendingFluidTicks().scheduleTick(pos, ifluidstate.getFluid(), 0);
-                    if (toPut.has(BlockStateProperties.WATERLOGGED)) toPut = toPut.with(BlockStateProperties.WATERLOGGED, true);
+                    if (toPut.hasProperty(BlockStateProperties.WATERLOGGED)) toPut = toPut.with(BlockStateProperties.WATERLOGGED, true);
                 }
                 worldIn.setBlockState(pos, toPut, 2);
                 if (BLOCKS_NEEDING_POSTPROCESSING.contains(state.getBlock())) {
@@ -359,10 +351,10 @@ public class BarakoaVillagePieces {
         }
 
         protected void setBlockState(IWorld worldIn, BlockPos pos, BlockState state) {
-            IFluidState ifluidstate = worldIn.getFluidState(pos);
+            FluidState ifluidstate = worldIn.getFluidState(pos);
             if (!ifluidstate.isEmpty()) {
                 worldIn.getPendingFluidTicks().scheduleTick(pos, ifluidstate.getFluid(), 0);
-                if (state.has(BlockStateProperties.WATERLOGGED)) state = state.with(BlockStateProperties.WATERLOGGED, true);
+                if (state.hasProperty(BlockStateProperties.WATERLOGGED)) state = state.with(BlockStateProperties.WATERLOGGED, true);
             }
             worldIn.setBlockState(pos, state, 2);
             if (BLOCKS_NEEDING_POSTPROCESSING.contains(state.getBlock())) {
@@ -390,7 +382,7 @@ public class BarakoaVillagePieces {
         }
 
         @Override
-        public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGeneratorIn, Random randomIn, MutableBoundingBox mutableBoundingBoxIn, ChunkPos chunkPosIn) {
+        public boolean func_230383_a_(ISeedReader worldIn, StructureManager structureManager, ChunkGenerator chunkGenerator, Random randomIn, MutableBoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
             BlockPos centerPos = findGround(worldIn, 4, 4);
             worldIn.setBlockState(centerPos, Blocks.CAMPFIRE.getDefaultState(), 2);
             fillAirLiquidBelowHeightmap(worldIn, Blocks.ACACIA_LOG.getDefaultState(), 4, 4);
@@ -439,8 +431,8 @@ public class BarakoaVillagePieces {
     }
 
     public static class StakePiece extends NonTemplatePiece {
-        private boolean skull;
-        private int skullDir;
+        private final boolean skull;
+        private final int skullDir;
 
         public StakePiece(Random random, int x, int y, int z) {
             super(FeatureHandler.BARAKOA_VILLAGE_STAKE, random, x, y, z, 1, 3, 1);
@@ -465,7 +457,7 @@ public class BarakoaVillagePieces {
         }
 
         @Override
-        public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGeneratorIn, Random randomIn, MutableBoundingBox mutableBoundingBoxIn, ChunkPos chunkPosIn) {
+        public boolean func_230383_a_(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, MutableBoundingBox mutableBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
             setBlockState(worldIn, Blocks.OAK_FENCE.getDefaultState(), 0, 1, 0, mutableBoundingBoxIn);
             if (skull) {
                 setBlockState(worldIn, Blocks.SKELETON_SKULL.getDefaultState().with(BlockStateProperties.ROTATION_0_15, skullDir), 0, 2, 0, mutableBoundingBoxIn);
@@ -488,7 +480,7 @@ public class BarakoaVillagePieces {
         }
 
         @Override
-        public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGeneratorIn, Random randomIn, MutableBoundingBox mutableBoundingBoxIn, ChunkPos chunkPosIn) {
+        public boolean func_230383_a_(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, MutableBoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
             Vec2f[] hayPositions = new Vec2f[] {
                     new Vec2f(0, 1),
                     new Vec2f(0, 2),

@@ -9,21 +9,21 @@ import net.minecraft.util.SoundEvent;
 public class AnimationAttackAI<T extends MowzieEntity & IAnimatedEntity> extends SimpleAnimationAI<T> {
     protected LivingEntity entityTarget;
     protected SoundEvent attackSound;
-    protected float knockbackMultiplier = 1;
+    protected float applyKnockbackMultiplier = 1;
     protected float range;
     protected float damageMultiplier;
     protected int damageFrame;
     protected SoundEvent hitSound;
 
-    public AnimationAttackAI(T entity, Animation animation, SoundEvent attackSound, SoundEvent hitSound, float knockback, float range, float damageMultiplier, int damageFrame) {
-        this(entity, animation, attackSound, hitSound, knockback, range, damageMultiplier, damageFrame, false);
+    public AnimationAttackAI(T entity, Animation animation, SoundEvent attackSound, SoundEvent hitSound, float applyKnockback, float range, float damageMultiplier, int damageFrame) {
+        this(entity, animation, attackSound, hitSound, applyKnockback, range, damageMultiplier, damageFrame, false);
     }
 
-    public AnimationAttackAI(T entity, Animation animation, SoundEvent attackSound, SoundEvent hitSound, float knockbackMultiplier, float range, float damageMultiplier, int damageFrame, boolean hurtInterrupts) {
+    public AnimationAttackAI(T entity, Animation animation, SoundEvent attackSound, SoundEvent hitSound, float applyKnockbackMultiplier, float range, float damageMultiplier, int damageFrame, boolean hurtInterrupts) {
         super(entity, animation, false, hurtInterrupts);
         this.entityTarget = null;
         this.attackSound = attackSound;
-        this.knockbackMultiplier = knockbackMultiplier;
+        this.applyKnockbackMultiplier = applyKnockbackMultiplier;
         this.range = range;
         this.damageMultiplier = damageMultiplier;
         this.damageFrame = damageFrame;
@@ -44,7 +44,7 @@ public class AnimationAttackAI<T extends MowzieEntity & IAnimatedEntity> extends
         }
         if (entity.getAnimationTick() == damageFrame) {
             if (entityTarget != null && entity.targetDistance <= range) {
-                entity.attackEntityAsMob(entityTarget, damageMultiplier, knockbackMultiplier);
+                entity.attackEntityAsMob(entityTarget, damageMultiplier, applyKnockbackMultiplier);
                 if (hitSound != null) {
                     entity.playSound(hitSound, 1, 1);   
                 }

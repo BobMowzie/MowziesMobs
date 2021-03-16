@@ -2,32 +2,28 @@ package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
-import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
-import com.mojang.datafixers.Dynamic;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.util.ResourceLocation;
+import com.mojang.serialization.Codec;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.structure.ScatteredStructure;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 
-import java.util.List;
-import java.util.Random;
-import java.util.function.Function;
-
 public class FrostmawStructure extends MowzieStructure {
-    public FrostmawStructure(Function<Dynamic<?>, ? extends NoFeatureConfig> configFactoryIn) {
+    public FrostmawStructure(Codec<NoFeatureConfig> codec) {
+        super(codec);
+    }
+
+    @Override
+    public IStartFactory<NoFeatureConfig> getStartFactory() {
+        return null;
+    }
+    /*public FrostmawStructure(Function<Dynamic<?>, ? extends NoFeatureConfig> configFactoryIn) {
         super(configFactoryIn);
     }
 
@@ -89,5 +85,5 @@ public class FrostmawStructure extends MowzieStructure {
             //Sets the bounds of the structure.
             this.recalculateStructureSize();
         }
-    }
+    }*/
 }

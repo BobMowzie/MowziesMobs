@@ -15,6 +15,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.particle.DiggingParticle;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,7 +26,7 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -60,14 +61,14 @@ public final class MessageBlackPinkInYourArea {
         public void accept(final MessageBlackPinkInYourArea message, final Supplier<NetworkEvent.Context> contextSupplier) {
             final NetworkEvent.Context context = contextSupplier.get();
             context.enqueueWork(() -> {
-                World world = Minecraft.getInstance().world;
+                ClientWorld world = Minecraft.getInstance().world;
                 Entity entity = world.getEntityByID(message.entityID);
                 if (entity instanceof AbstractMinecartEntity) {
                     AbstractMinecartEntity minecart = (AbstractMinecartEntity) entity;
                     Minecraft.getInstance().getSoundHandler().play(new BlackPinkSound(minecart));
                     BlockState state = Blocks.STONE.getDefaultState()
                             .with(BlockGrottol.VARIANT, BlockGrottol.Variant.BLACK_PINK);
-                    BlockPos pos = new BlockPos(minecart);
+                    BlockPos pos = minecart.getPosition();
                     final float scale = 0.75F;
                     double x = minecart.getPosX(),
                             y = minecart.getPosY() + 0.375F + 0.5F + (minecart.getDefaultDisplayTileOffset() - 8) / 16.0F * scale,
@@ -89,7 +90,7 @@ public final class MessageBlackPinkInYourArea {
                                 double dx = (double) ix / size * scale;
                                 double dy = (double) iy / size * scale;
                                 double dz = (double) iz / size * scale;
-                                Vec3d minecartMotion = minecart.getMotion();
+                                Vector3d minecartMotion = minecart.getMotion();
                                 Minecraft.getInstance().particles.addEffect(new DiggingParticle(
                                         world,
                                         x + dx + offset, y + dy + offset, z + dz + offset,

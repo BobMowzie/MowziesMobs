@@ -14,6 +14,8 @@ import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.*;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
 import net.minecraft.entity.monster.IMob;
@@ -24,7 +26,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
@@ -35,6 +36,7 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.server.ServerWorld;
 
 public class EntityFoliaath extends MowzieEntity implements IMob {
     public static final Animation DIE_ANIMATION = Animation.create(50);
@@ -83,12 +85,10 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         getDataManager().register(ACTIVATE_TARGET, 0);
     }
 
-    @Override
-    protected void registerAttributes() {
-        super.registerAttributes();
-        this.getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
-        this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10 * ConfigHandler.MOBS.FOLIAATH.combatConfig.healthMultiplier.get());
-        this.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(8);
+    public static AttributeModifierMap.MutableAttribute createAttributes() {
+        return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 8)
+                .createMutableAttribute(Attributes.MAX_HEALTH, 10 * ConfigHandler.MOBS.FOLIAATH.combatConfig.healthMultiplier.get())
+                .createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1);
     }
 
     @Override
@@ -276,13 +276,15 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         BlockState floorDown1 = world.getBlockState(pos.down(2));
         BlockState floorDown2 = world.getBlockState(pos.down(3));
         boolean notInTree = true;
-        if (floor instanceof LeavesBlock && floorDown1 != biome.getSurfaceBuilder().config.getTop() && floorDown2 != biome.getSurfaceBuilder().config.getTop()) notInTree = false;
+        BlockState topBlock = biome.getGenerationSettings().getSurfaceBuilder().get().getConfig().getTop();
+        if (floor instanceof LeavesBlock && floorDown1 != topBlock && floorDown2 != topBlock) notInTree = false;
         return super.canSpawn(world, reason) && notInTree && getEntitiesNearby(AnimalEntity.class, 5, 5, 5, 5).isEmpty() && world.getDifficulty() != Difficulty.PEACEFUL;
     }
 
     @Override
-    public void onKillEntity(LivingEntity entity) {
+    public void onKillEntity(ServerWorld world, LivingEntity killedEntity) {
         this.addPotionEffect(new EffectInstance(Effects.REGENERATION, 300, 1, true, true));
+        super.onKillEntity(world, killedEntity);
     }
 
     @Override

@@ -64,7 +64,7 @@ public final class TradeStore {
     }
 
     public static final class Builder {
-        private ImmutableSet.Builder<Trade> trades = new ImmutableSet.Builder<>();
+        private final ImmutableSet.Builder<Trade> trades = new ImmutableSet.Builder<>();
 
         private int totalWeight;
 

@@ -28,7 +28,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -51,7 +51,7 @@ public class EntityBoulder extends Entity {
     private static final DataParameter<Integer> DEATH_TIME = EntityDataManager.createKey(EntityBoulder.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> SIZE = EntityDataManager.createKey(EntityBoulder.class, DataSerializers.VARINT);
     public float animationOffset = 0;
-    private List<Entity> ridingEntities = new ArrayList<Entity>();
+    private final List<Entity> ridingEntities = new ArrayList<Entity>();
     public BoulderSizeEnum boulderSize = BoulderSizeEnum.SMALL;
 
     private float speed = 1.5f;
@@ -71,7 +71,7 @@ public class EntityBoulder extends Entity {
         damage = 8;
         finishedRisingTick = 4;
         animationOffset = rand.nextFloat() * 8;
-        this.setOrigin(new BlockPos(this));
+        this.setOrigin(this.getPosition());
     }
 
     public EntityBoulder(EntityType<? extends EntityBoulder> type, World world, LivingEntity caster, BlockState blockState, BlockPos pos) {
@@ -119,8 +119,7 @@ public class EntityBoulder extends Entity {
 
     public boolean checkCanSpawn() {
         if (!world.getEntitiesWithinAABB(EntityBoulder.class, getBoundingBox()).isEmpty()) return false;
-        if (!world.hasNoCollisions(this, getBoundingBox())) return false;
-        else return true;
+        return world.hasNoCollisions(this, getBoundingBox());
     }
 
     @Override
@@ -173,7 +172,7 @@ public class EntityBoulder extends Entity {
         super.tick();
         move(MoverType.SELF, getMotion());
         if (ridingEntities != null) ridingEntities.clear();
-        List<Entity> onTopOfEntities = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().contract(0, getHeight() - 1, 0).offset(new Vec3d(0, getHeight() - 0.5, 0)).grow(0.6,0.5,0.6));
+        List<Entity> onTopOfEntities = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().contract(0, getHeight() - 1, 0).offset(new Vector3d(0, getHeight() - 0.5, 0)).grow(0.6,0.5,0.6));
         for (Entity entity : onTopOfEntities) {
             if (entity != null && entity.canBeCollidedWith() && !(entity instanceof EntityBoulder) && entity.getPosY() >= this.getPosY() + 0.2) ridingEntities.add(entity);
         }
@@ -192,8 +191,8 @@ public class EntityBoulder extends Entity {
             List<Entity> popUpEntities = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox());
             for (Entity entity:popUpEntities) {
                 if (entity.canBeCollidedWith() && !(entity instanceof EntityBoulder)) {
-                    if (boulderSize != BoulderSizeEnum.HUGE) entity.move(MoverType.SHULKER_BOX, new Vec3d(0, 2 * (Math.pow(2, -ticksExisted * (0.6 - 0.1 * boulderSize.ordinal()))), 0));
-                    else entity.move(MoverType.SHULKER_BOX, new Vec3d(0, 0.6f, 0));
+                    if (boulderSize != BoulderSizeEnum.HUGE) entity.move(MoverType.SHULKER_BOX, new Vector3d(0, 2 * (Math.pow(2, -ticksExisted * (0.6 - 0.1 * boulderSize.ordinal()))), 0));
+                    else entity.move(MoverType.SHULKER_BOX, new Vector3d(0, 0.6f, 0));
                 }
             }
         }
@@ -218,11 +217,11 @@ public class EntityBoulder extends Entity {
             }
         }
 
-        if (travelling && !world.hasNoCollisions(this, getBoundingBox().grow(0.1), new HashSet<>(ridingEntities))) setShouldExplode(true);
+        if (travelling && !world.hasNoCollisions(this, getBoundingBox().grow(0.1), (e)->ridingEntities.contains(e))) setShouldExplode(true);
 
         if (ticksExisted == 1) {
             for (int i = 0; i < 20 * getWidth(); i++) {
-                Vec3d particlePos = new Vec3d(rand.nextFloat() * 1.3 * getWidth(), 0, 0);
+                Vector3d particlePos = new Vector3d(rand.nextFloat() * 1.3 * getWidth(), 0, 0);
                 particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                 world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, storedBlock), getPosX() + particlePos.x, getPosY() - 1, getPosZ() + particlePos.z, particlePos.x, 2, particlePos.z);
             }
@@ -256,11 +255,11 @@ public class EntityBoulder extends Entity {
         if (dripNumber >= 1 && dripTick > 0) {
             dripNumber *= rand.nextFloat();
             for (int i = 0; i < dripNumber; i++) {
-                Vec3d particlePos = new Vec3d(rand.nextFloat() * 0.6 * getWidth(), 0, 0);
+                Vector3d particlePos = new Vector3d(rand.nextFloat() * 0.6 * getWidth(), 0, 0);
                 particlePos = particlePos.rotateYaw((float)(rand.nextFloat() * 2 * Math.PI));
                 float offsetY;
-                if (boulderSize == BoulderSizeEnum.HUGE && ticksExisted < finishedRisingTick) offsetY = (float) (rand.nextFloat() * (getHeight()-1) - getHeight() * (finishedRisingTick - ticksExisted)/finishedRisingTick);
-                else offsetY = (float) (rand.nextFloat() * (getHeight()-1));
+                if (boulderSize == BoulderSizeEnum.HUGE && ticksExisted < finishedRisingTick) offsetY = rand.nextFloat() * (getHeight()-1) - getHeight() * (finishedRisingTick - ticksExisted)/finishedRisingTick;
+                else offsetY = rand.nextFloat() * (getHeight()-1);
                 world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, storedBlock), getPosX() + particlePos.x, getPosY() + offsetY, getPosZ() + particlePos.z, 0, -1, 0);
             }
         }
@@ -272,7 +271,7 @@ public class EntityBoulder extends Entity {
     private void explode() {
         remove();
         for (int i = 0; i < 40 * getWidth(); i++) {
-            Vec3d particlePos = new Vec3d(rand.nextFloat() * 0.7 * getWidth(), 0, 0);
+            Vector3d particlePos = new Vector3d(rand.nextFloat() * 0.7 * getWidth(), 0, 0);
             particlePos = particlePos.rotateYaw((float)(rand.nextFloat() * 2 * Math.PI));
             particlePos = particlePos.rotatePitch((float)(rand.nextFloat() * 2 * Math.PI));
             world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, storedBlock), getPosX() + particlePos.x, getPosY() + 0.5 + particlePos.y, getPosZ() + particlePos.z, particlePos.x, particlePos.y, particlePos.z);
@@ -290,14 +289,14 @@ public class EntityBoulder extends Entity {
             playSound(MMSounds.EFFECT_GEOMANCY_BREAK_MEDIUM_1.get(), 1.5f, 0.9f);
 
             for (int i = 0; i < 5; i++) {
-                Vec3d particlePos = new Vec3d(rand.nextFloat() * 2, 0, 0);
+                Vector3d particlePos = new Vector3d(rand.nextFloat() * 2, 0, 0);
                 particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
-                particlePos = particlePos.add(new Vec3d(0, getHeight() / 4, 0));
+                particlePos = particlePos.add(new Vector3d(0, getHeight() / 4, 0));
 //                    ParticleFallingBlock.spawnFallingBlock(world, getPosX() + particlePos.x, getPosY() + 0.5 + particlePos.y, getPosZ() + particlePos.z, 10.f, 90, 1, (float) particlePos.x * 0.3f, 0.2f + (float) rand.nextFloat() * 0.6f, (float) particlePos.z * 0.3f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, getBlock());
                 EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK, world, 70, getBlock());
                 fallingBlock.setPosition(getPosX() + particlePos.x, getPosY() + 0.5 + particlePos.y, getPosZ() + particlePos.z);
-                fallingBlock.setMotion((float) particlePos.x * 0.3f, 0.2f + (float) rand.nextFloat() * 0.6f, (float) particlePos.z * 0.3f);
+                fallingBlock.setMotion((float) particlePos.x * 0.3f, 0.2f + rand.nextFloat() * 0.6f, (float) particlePos.z * 0.3f);
                 world.addEntity(fallingBlock);
             }
         }
@@ -306,23 +305,17 @@ public class EntityBoulder extends Entity {
             playSound(MMSounds.EFFECT_GEOMANCY_BREAK_LARGE_1.get(), 1.5f, 0.5f);
 
             for (int i = 0; i < 7; i++) {
-                Vec3d particlePos = new Vec3d(rand.nextFloat() * 2.5f, 0, 0);
+                Vector3d particlePos = new Vector3d(rand.nextFloat() * 2.5f, 0, 0);
                 particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
-                particlePos = particlePos.add(new Vec3d(0, getHeight() / 4, 0));
+                particlePos = particlePos.add(new Vector3d(0, getHeight() / 4, 0));
 //                    ParticleFallingBlock.spawnFallingBlock(world, getPosX() + particlePos.x, getPosY() + 0.5 + particlePos.y, getPosZ() + particlePos.z, 10.f, 70, 1, (float) particlePos.x * 0.3f, 0.2f + (float) rand.nextFloat() * 0.6f, (float) particlePos.z * 0.3f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, getBlock());
                 EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK, world, 70, getBlock());
                 fallingBlock.setPosition(getPosX() + particlePos.x, getPosY() + 0.5 + particlePos.y, getPosZ() + particlePos.z);
-                fallingBlock.setMotion((float) particlePos.x * 0.3f, 0.2f + (float) rand.nextFloat() * 0.6f, (float) particlePos.z * 0.3f);
+                fallingBlock.setMotion((float) particlePos.x * 0.3f, 0.2f + rand.nextFloat() * 0.6f, (float) particlePos.z * 0.3f);
                 world.addEntity(fallingBlock);
             }
         }
-    }
-
-    @Nullable
-    @Override
-    public AxisAlignedBB getCollisionBoundingBox() {
-        return getBoundingBox();
     }
 
     public BlockState getBlock() {
@@ -400,7 +393,7 @@ public class EntityBoulder extends Entity {
                     && ((PlayerEntity) entityIn).isPotionActive(PotionHandler.GEOMANCY)) {
                 PlayerEntity player = (PlayerEntity) entityIn;
                 if (ridingEntities.contains(player)) {
-                    Vec3d lateralLookVec = Vec3d.fromPitchYaw(0, player.rotationYaw).normalize();
+                    Vector3d lateralLookVec = Vector3d.fromPitchYaw(0, player.rotationYaw).normalize();
                     setMotion(speed * 0.5 * lateralLookVec.x, getMotion().y, speed * 0.5 * lateralLookVec.z);
                 } else {
                     setMotion(player.getLookVec().scale(speed * 0.5));
@@ -408,9 +401,9 @@ public class EntityBoulder extends Entity {
             }
             else if (entityIn instanceof EntityBoulder && ((EntityBoulder) entityIn).travelling) {
                 EntityBoulder boulder = (EntityBoulder)entityIn;
-                Vec3d thisPos = getPositionVec();
-                Vec3d boulderPos = boulder.getPositionVec();
-                Vec3d velVec = thisPos.subtract(boulderPos).normalize();
+                Vector3d thisPos = getPositionVec();
+                Vector3d boulderPos = boulder.getPositionVec();
+                Vector3d velVec = thisPos.subtract(boulderPos).normalize();
                 setMotion(velVec.scale(speed * 0.5));
             }
             else {
@@ -438,7 +431,7 @@ public class EntityBoulder extends Entity {
             }
 
             if (world.isRemote) {
-                Vec3d ringOffset = getMotion().scale(-1).normalize();
+                Vector3d ringOffset = getMotion().scale(-1).normalize();
                 ParticleRotation.OrientVector rotation = new ParticleRotation.OrientVector(ringOffset);
                 AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING2.get(), (float) getPosX() + (float) ringOffset.x, (float) getPosY() + 0.5f + (float) ringOffset.y, (float) getPosZ() + (float) ringOffset.z, 0, 0, 0, rotation, 3.5F, 0.83f, 1, 0.39f, 1, 1, (int) (5 + 2 * getWidth()), true, new ParticleComponent[]{
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0.7f, 0f), false),

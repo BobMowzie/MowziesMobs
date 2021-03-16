@@ -14,7 +14,7 @@ import net.minecraft.entity.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * Created by BobMowzie on 9/2/2018.
  */
-public class EntityIceBall extends EntityMagicEffect implements IProjectile {
+public class EntityIceBall extends EntityMagicEffect {
     public EntityIceBall(World world) {
         super(EntityHandler.ICE_BALL, world);
     }
@@ -124,7 +124,6 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
 
     }
 
-    @Override
     public void shoot(double x, double y, double z, float velocity, float inaccuracy) {
         setMotion(x * velocity, y * velocity, z * velocity);
     }
@@ -132,14 +131,14 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
     private void explode() {
         if (world.isRemote) {
             for (int i = 0; i < 8; i++) {
-                Vec3d particlePos = new Vec3d(rand.nextFloat() * 0.3, 0, 0);
+                Vector3d particlePos = new Vector3d(rand.nextFloat() * 0.3, 0, 0);
                 particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                 float value = rand.nextFloat() * 0.15f;
                 world.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f + value, 0.75f + value, 1f, 10f + rand.nextFloat() * 20f, 40, ParticleCloud.EnumCloudBehavior.GROW, 1f), getPosX() + particlePos.x, getPosY() + particlePos.y, getPosZ() + particlePos.z, particlePos.x, particlePos.y, particlePos.z);
             }
             for (int i = 0; i < 10; i++) {
-                Vec3d particlePos = new Vec3d(rand.nextFloat() * 0.3, 0, 0);
+                Vector3d particlePos = new Vector3d(rand.nextFloat() * 0.3, 0, 0);
                 particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                 world.addParticle(new ParticleSnowFlake.SnowflakeData(40, false), getPosX() + particlePos.x, getPosY() + particlePos.y, getPosZ() + particlePos.z, particlePos.x, particlePos.y, particlePos.z);

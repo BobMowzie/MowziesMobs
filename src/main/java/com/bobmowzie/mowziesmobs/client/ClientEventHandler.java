@@ -13,17 +13,19 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraft.util.math.vector.Vector3d;
 
 @OnlyIn(Dist.CLIENT)
 public enum ClientEventHandler {
@@ -67,9 +69,9 @@ public enum ClientEventHandler {
         if (player != null) {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
             if (playerCapability != null && playerCapability.getGeomancy().canUse(player) && playerCapability.getGeomancy().isSpawningBoulder() && playerCapability.getGeomancy().getSpawnBoulderCharge() > 2) {
-                Vec3d lookPos = playerCapability.getGeomancy().getLookPos();
-                Vec3d playerEyes = player.getEyePosition(Minecraft.getInstance().getRenderPartialTicks());
-                Vec3d vec = playerEyes.subtract(lookPos).normalize();
+                Vector3d lookPos = playerCapability.getGeomancy().getLookPos();
+                Vector3d playerEyes = player.getEyePosition(Minecraft.getInstance().getRenderPartialTicks());
+                Vector3d vec = playerEyes.subtract(lookPos).normalize();
                 float yaw = (float) Math.atan2(vec.z, vec.x);
                 float pitch = (float) Math.asin(vec.y);
                 player.rotationYaw = (float) (yaw * 180f/Math.PI + 90);
@@ -146,10 +148,10 @@ public enum ClientEventHandler {
                 // Time
                 drawMarioNumber(timeOffsetX + 8, offsetY + 8, time, 3);
             }*/
-            if (Minecraft.getInstance().player.isPotionActive(PotionHandler.FROZEN) && Minecraft.getInstance().gameSettings.thirdPersonView == 0) {
+            if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.isPotionActive(PotionHandler.FROZEN) && Minecraft.getInstance().gameSettings.getPointOfView() != PointOfView.FIRST_PERSON) {
                 Minecraft.getInstance().getTextureManager().bindTexture(FROZEN_BLUR);
                 MainWindow res = e.getWindow();
-                AbstractGui.blit(0, 0, 0, 0, res.getScaledWidth(), res.getScaledHeight(), res.getScaledWidth(), res.getScaledHeight());
+                AbstractGui.blit(e.getMatrixStack(), 0, 0, 0, 0, res.getScaledWidth(), res.getScaledHeight(), res.getScaledWidth(), res.getScaledHeight());
             }
         }
     }
@@ -164,16 +166,9 @@ public enum ClientEventHandler {
                     event.setCanceled(true);
                 }
                 if (event.getType().equals(RenderGameOverlayEvent.ElementType.ALL)) {
-                    Minecraft.getInstance().ingameGUI.setOverlayMessage("", false);
+                    Minecraft.getInstance().ingameGUI.setOverlayMessage(new TranslationTextComponent(""), false);
                 }
             }
-        }
-    }
-
-    private static void drawMarioNumber(int x, int y, int value, int length) {
-        for (int n = 0; n < length; n++, value /= 10) {
-            int digit = value % 10;
-            AbstractGui.blit(x + 8 * (length - n - 1), y, digit * 8 % 64, digit / 8f * 8, 8, 7, 64, 64);
         }
     }
 

@@ -36,17 +36,13 @@ public class ItemWroughtAxe extends AxeItem {
     @Override
     public boolean onLeftClickEntity(ItemStack stack, PlayerEntity player, Entity entity) {
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-        if (playerCapability != null && (playerCapability.getAxeCanAttack() || playerCapability.getUntilAxeSwing() <= 0))
-            return false;
-        return true;
+        return playerCapability == null || (!playerCapability.getAxeCanAttack() && playerCapability.getUntilAxeSwing() > 0);
     }
 
     @Override
     public boolean onEntitySwing(ItemStack stack, LivingEntity entity) {
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(entity, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-        if (playerCapability != null && playerCapability.getUntilAxeSwing() > 0)
-            return true;
-        return false;
+        return playerCapability != null && playerCapability.getUntilAxeSwing() > 0;
     }
 
     @Override
@@ -68,7 +64,7 @@ public class ItemWroughtAxe extends AxeItem {
         if (hand == Hand.MAIN_HAND) {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
             if (playerCapability != null && playerCapability.getUntilAxeSwing() <= 0) {
-                boolean verticalAttack = player.isSneaking() && player.onGround;
+                boolean verticalAttack = player.isSneaking() && player.isOnGround();
                 EntityAxeAttack axeAttack = new EntityAxeAttack(EntityHandler.AXE_ATTACK, world, player, verticalAttack);
                 axeAttack.setPositionAndRotation(player.getPosX(), player.getPosY(), player.getPosZ(), player.rotationYaw, player.rotationPitch);
                 world.addEntity(axeAttack);

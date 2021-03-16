@@ -2,11 +2,15 @@ package com.bobmowzie.mowziesmobs.client.particle;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.serialization.Codec;
 import net.minecraft.client.particle.*;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.IParticleData;
+import net.minecraft.particles.ItemParticleData;
 import net.minecraft.particles.ParticleType;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -17,13 +21,15 @@ import java.util.Locale;
 public class ParticleVanillaCloudExtended extends SpriteTexturedParticle {
     private final IAnimatedSprite animatedSprite;
 
-    private float oSize;
-    private float airDrag;
-    private float red, green, blue;
+    private final float oSize;
+    private final float airDrag;
+    private final float red;
+    private final float green;
+    private final float blue;
 
-    private Vec3d[] destination;
+    private final Vector3d[] destination;
 
-    protected ParticleVanillaCloudExtended(World worldIn, IAnimatedSprite animatedSprite, double xCoordIn, double yCoordIn, double zCoordIn, double motionX, double motionY, double motionZ, double scale, double r, double g, double b, double drag, double duration, Vec3d[] destination) {
+    protected ParticleVanillaCloudExtended(ClientWorld worldIn, IAnimatedSprite animatedSprite, double xCoordIn, double yCoordIn, double zCoordIn, double motionX, double motionY, double motionZ, double scale, double r, double g, double b, double drag, double duration, Vector3d[] destination) {
         super(worldIn, xCoordIn, yCoordIn, zCoordIn, 0.0D, 0.0D, 0.0D);
         this.motionX *= 0.10000000149011612D;
         this.motionY *= 0.10000000149011612D;
@@ -70,8 +76,8 @@ public class ParticleVanillaCloudExtended extends SpriteTexturedParticle {
         if (destination != null && destination.length == 1) {
             this.setSprite(animatedSprite.get(this.maxAge - this.age, this.maxAge));
 
-            Vec3d destinationVec = destination[0];
-            Vec3d diff = destinationVec.subtract(new Vec3d(posX, posY, posZ));
+            Vector3d destinationVec = destination[0];
+            Vector3d diff = destinationVec.subtract(new Vector3d(posX, posY, posZ));
             if (diff.length() < 0.5) this.setExpired();
             float attractScale = 0.7f * ((float)this.age / (float)this.maxAge) * ((float)this.age / (float)this.maxAge);
             motionX = diff.x * attractScale;
@@ -99,7 +105,7 @@ public class ParticleVanillaCloudExtended extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle makeParticle(VanillaCloudData typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle makeParticle(VanillaCloudData typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             ParticleVanillaCloudExtended particle = new ParticleVanillaCloudExtended(worldIn, spriteSet, x, y, z, xSpeed, ySpeed, zSpeed, typeIn.getScale(), typeIn.getRed(), typeIn.getGreen(), typeIn.getBlue(), typeIn.getDrag(), typeIn.getDuration(), typeIn.getDestination());
             particle.setColor(typeIn.getRed(), typeIn.getGreen(), typeIn.getBlue());
             return particle;
@@ -135,9 +141,9 @@ public class ParticleVanillaCloudExtended extends SpriteTexturedParticle {
         private final float scale;
         private final float drag;
         private final float duration;
-        private final Vec3d[] destination;
+        private final Vector3d[] destination;
 
-        public VanillaCloudData(float scale, float redIn, float greenIn, float blueIn, float drag, float duration, Vec3d[] destination) {
+        public VanillaCloudData(float scale, float redIn, float greenIn, float blueIn, float drag, float duration, Vector3d[] destination) {
             this.red = redIn;
             this.green = greenIn;
             this.blue = blueIn;
@@ -200,7 +206,7 @@ public class ParticleVanillaCloudExtended extends SpriteTexturedParticle {
         }
 
         @OnlyIn(Dist.CLIENT)
-        public Vec3d[] getDestination() {
+        public Vector3d[] getDestination() {
             return this.destination;
         }
     }
@@ -209,7 +215,7 @@ public class ParticleVanillaCloudExtended extends SpriteTexturedParticle {
         world.addParticle(new VanillaCloudData((float)scale, (float)r, (float)g, (float)b, (float)drag, (float)duration, null), x, y, z, motionX, motionY, motionZ);
     }
 
-    public static void spawnVanillaCloudDestination(World world, double x, double y, double z, double motionX, double motionY, double motionZ, double scale, double r, double g, double b, double drag, double duration, Vec3d[] destination) {
+    public static void spawnVanillaCloudDestination(World world, double x, double y, double z, double motionX, double motionY, double motionZ, double scale, double r, double g, double b, double drag, double duration, Vector3d[] destination) {
         world.addParticle(new VanillaCloudData((float)scale, (float)r, (float)g, (float)b, (float)drag, (float)duration, destination), x, y, z, motionX, motionY, motionZ);
     }
 }

@@ -77,7 +77,7 @@ public final class MowziesMobs {
 
     private void init(FMLLoadCompleteEvent event) {
         SpawnHandler.INSTANCE.registerSpawns();
-        FeatureHandler.addStructureGeneration();
+        //FeatureHandler.addStructureGeneration(); TODO
         final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         PROXY.onLateInit(bus);
     }

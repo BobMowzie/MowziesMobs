@@ -21,8 +21,8 @@ public class MMModelAnimator {
     private float delta;
     private boolean correctAnimation;
     private IAnimatedEntity entity;
-    private HashMap<ModelRenderer, Transform> transformMap;
-    private HashMap<ModelRenderer, Transform> prevTransformMap;
+    private final HashMap<ModelRenderer, Transform> transformMap;
+    private final HashMap<ModelRenderer, Transform> prevTransformMap;
 
     private MMModelAnimator() {
         this.tempTick = 0;

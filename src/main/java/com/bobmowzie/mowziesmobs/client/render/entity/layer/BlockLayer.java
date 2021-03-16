@@ -15,7 +15,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 
 public class BlockLayer <T extends Entity, M extends EntityModel<T>> extends LayerRenderer<T, M> {
-    private AdvancedModelRenderer root;
+    private final AdvancedModelRenderer root;
 
     public BlockLayer(IEntityRenderer<T, M> renderer, AdvancedModelRenderer root) {
         super(renderer);

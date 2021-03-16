@@ -25,6 +25,7 @@ import net.minecraft.state.properties.SlabType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -61,9 +62,8 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         this.setPosition(x + 0.5F, y + 1.0625F, z + 0.5F);
     }
 
-    @Nullable
     @Override
-    public AxisAlignedBB getCollisionBoundingBox() {
+    public AxisAlignedBB getBoundingBox() {
         return null;
     }
 
@@ -261,8 +261,8 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     }
 
     private RayTraceResult rayTrace(EntitySunstrike entity) {
-        Vec3d startPos = new Vec3d(entity.getPosX(), entity.getPosY(), entity.getPosZ());
-        Vec3d endPos = new Vec3d(entity.getPosX(), 0, entity.getPosZ());
+        Vector3d startPos = new Vector3d(entity.getPosX(), entity.getPosY(), entity.getPosZ());
+        Vector3d endPos = new Vector3d(entity.getPosX(), 0, entity.getPosZ());
         return entity.world.rayTraceBlocks(new RayTraceContext(startPos, endPos, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
     }
 

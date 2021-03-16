@@ -25,6 +25,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.goal.RandomWalkingGoal;
 import net.minecraft.entity.ai.goal.LookAtGoal;
@@ -45,7 +47,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -177,11 +179,10 @@ public class EntityGrottol extends MowzieEntity implements IMob {
         return super.isServerWorld() && !isInMinecart();
     }
 
-    @Override
-    protected void registerAttributes() {
-        super.registerAttributes();
-        getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20 * ConfigHandler.MOBS.GROTTOL.healthMultiplier.get());
-        getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
+    public static AttributeModifierMap.MutableAttribute createAttributes() {
+        return MowzieEntity.createAttributes()
+                .createMutableAttribute(Attributes.MAX_HEALTH, 20 * ConfigHandler.MOBS.GROTTOL.healthMultiplier.get())
+                .createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1);
     }
 
     @Override
@@ -202,7 +203,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
                 if (!world.isRemote && isAlive()) {
                     entityDropItem(ItemHandler.CAPTURED_GROTTOL.create(this), 0.0F);
                     BlockState state = Blocks.STONE.getDefaultState();
-                    SoundType sound = state.getBlock().getSoundType(state, world, new BlockPos(this), entity);
+                    SoundType sound = state.getBlock().getSoundType(state, world, this.getPosition(), entity);
                     world.playSound(
                         null,
                         getPosX(), getPosY(), getPosZ(),
@@ -233,7 +234,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
         Entity entity = source.getTrueSource();
         if (entity instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) entity;
-            if (player.canHarvestBlock(Blocks.DIAMOND_ORE.getDefaultState())) {
+            if (player.getHeldItemMainhand().canHarvestBlock(Blocks.DIAMOND_ORE.getDefaultState())) {
                 if (EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, player.getHeldItemMainhand()) > 0) {
                     death = EnumDeathType.FORTUNE_PICKAXE;
                     if (player instanceof ServerPlayerEntity) AdvancementHandler.GROTTOL_KILL_FORTUNE_TRIGGER.trigger((ServerPlayerEntity) player);
@@ -317,7 +318,7 @@ public class EntityGrottol extends MowzieEntity implements IMob {
                 BlockState blockBeneath = world.getBlockState(getPosition().down());
                 Material mat = blockBeneath.getMaterial();
                 if (mat == Material.EARTH || mat == Material.SAND || mat == Material.CLAY || mat == Material.ROCK) {
-                    Vec3d pos = new Vec3d(0.7D, 0.05D, 0.0D).rotateYaw((float) Math.toRadians(-renderYawOffset - 90));
+                    Vector3d pos = new Vector3d(0.7D, 0.05D, 0.0D).rotateYaw((float) Math.toRadians(-renderYawOffset - 90));
                     if (world instanceof ServerWorld) {
                         ((ServerWorld) world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, blockBeneath),
                                 getPosX() + pos.x, getPosY() + pos.y, getPosZ() + pos.z,
@@ -373,17 +374,14 @@ public class EntityGrottol extends MowzieEntity implements IMob {
 
     @Override
     public boolean startRiding(Entity entity, boolean force) {
-        if (super.startRiding(entity, force)) {
-            /*if (isMinecart(entity)) {
+        /*if (isMinecart(entity)) {
                 AbstractMinecartEntity minecart = (AbstractMinecartEntity) entity;
                 if (minecart.getDisplayTile().getBlock() != BlockHandler.GROTTOL.get()) {
                     minecart.setDisplayTile(BlockHandler.GROTTOL.get().getDefaultState());
                     minecart.setDisplayTileOffset(minecart.getDefaultDisplayTileOffset());
                 }
             }*/
-            return true;
-        }
-        return false;
+        return super.startRiding(entity, force);
     }
 
     @Override
@@ -435,20 +433,16 @@ public class EntityGrottol extends MowzieEntity implements IMob {
         ) {
             return false;
         }
-        if (blockState.getBlock() == Blocks.HAY_BLOCK
-                || blockState.getBlock() == Blocks.NETHER_WART_BLOCK
-                || blockState.getBlock() instanceof FenceBlock
-                || blockState.getBlock() == Blocks.SPAWNER
-                || blockState.getBlock() == Blocks.BONE_BLOCK
-                || blockState.getBlock() == Blocks.ENCHANTING_TABLE
-                || blockState.getBlock() == Blocks.END_PORTAL_FRAME
-                || blockState.getBlock() == Blocks.ENDER_CHEST
-                || blockState.getBlock() == Blocks.SLIME_BLOCK
-                || blockState.getBlock() == Blocks.HOPPER
-                || blockState.hasTileEntity()
-        ) {
-            return false;
-        }
-        return true;
+        return blockState.getBlock() != Blocks.HAY_BLOCK
+                && blockState.getBlock() != Blocks.NETHER_WART_BLOCK
+                && !(blockState.getBlock() instanceof FenceBlock)
+                && blockState.getBlock() != Blocks.SPAWNER
+                && blockState.getBlock() != Blocks.BONE_BLOCK
+                && blockState.getBlock() != Blocks.ENCHANTING_TABLE
+                && blockState.getBlock() != Blocks.END_PORTAL_FRAME
+                && blockState.getBlock() != Blocks.ENDER_CHEST
+                && blockState.getBlock() != Blocks.SLIME_BLOCK
+                && blockState.getBlock() != Blocks.HOPPER
+                && !blockState.hasTileEntity();
     }
 }

@@ -26,11 +26,11 @@ public enum MaskType {
 
     public final String name;
 
-    private MaskType(Effect potion) {
+    MaskType(Effect potion) {
         this(potion, 0.6F, 1.7F, false);
     }
 
-    private MaskType(Effect potion, float entityWidth, float entityHeight, boolean canBlock) {
+    MaskType(Effect potion, float entityWidth, float entityHeight, boolean canBlock) {
         this.potion = potion;
         this.entityWidth = entityWidth;
         this.entityHeight = entityHeight;

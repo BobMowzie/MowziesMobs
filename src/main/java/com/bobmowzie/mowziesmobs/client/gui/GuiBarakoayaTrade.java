@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoayaTrade;
 import com.bobmowzie.mowziesmobs.server.inventory.InventoryBarakoaya;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
@@ -60,49 +61,49 @@ public final class GuiBarakoayaTrade extends ContainerScreen<ContainerBarakoayaT
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float delta, int mouseX, int mouseY) {
+    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int x, int y) {
         RenderSystem.color3f(1, 1, 1);
         this.minecraft.getTextureManager().bindTexture(TEXTURE);
-        blit(guiLeft, guiTop, 0, 0, xSize, ySize);
-        InventoryScreen.drawEntityOnScreen(guiLeft + 33, guiTop + 61, 22, guiLeft + 33 - mouseX, guiTop + 21 - mouseY, barakoaya);
+        blit(matrixStack, guiLeft, guiTop, 0, 0, xSize, ySize);
+        InventoryScreen.drawEntityOnScreen(guiLeft + 33, guiTop + 61, 22, guiLeft + 33 - x, guiTop + 21 - y, barakoaya);
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int x, int y) {
         String title = this.title.getUnformattedComponentText();
-        font.drawString(title, xSize / 2f - font.getStringWidth(title) / 2f, 6, 0x404040);
-        font.drawString(I18n.format("container.inventory"), 8, ySize - 96 + 2, 0x404040);
+        font.drawString(matrixStack, title, xSize / 2f - font.getStringWidth(title) / 2f, 6, 0x404040);
+        font.drawString(matrixStack, I18n.format("container.inventory"), 8, ySize - 96 + 2, 0x404040);
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float delta) {
-        super.render(mouseX, mouseY, delta);
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
         if (barakoaya.isOfferingTrade()) {
             Trade trade = barakoaya.getOfferingTrade();
             ItemStack input = trade.getInput();
             ItemStack output = trade.getOutput();
-            GlStateManager.pushMatrix();
+            matrixStack.push();
             RenderHelper.enableStandardItemLighting();
-            GlStateManager.disableLighting();
-            GlStateManager.enableRescaleNormal();
-            GlStateManager.enableColorMaterial();
-            GlStateManager.enableLighting();
+            RenderSystem.disableLighting();
+            RenderSystem.enableRescaleNormal();
+            RenderSystem.enableColorMaterial();
+            RenderSystem.enableLighting();
             itemRenderer.zLevel = 100;
             itemRenderer.renderItemAndEffectIntoGUI(input, guiLeft + 80, guiTop + 24);
             itemRenderer.renderItemOverlays(font, input, guiLeft + 80, guiTop + 24);
             itemRenderer.renderItemAndEffectIntoGUI(output, guiLeft + 134, guiTop + 24);
             itemRenderer.renderItemOverlays(font, output, guiLeft + 134, guiTop + 24);
             itemRenderer.zLevel = 0;
-            GlStateManager.disableLighting();
+            RenderSystem.disableLighting();
             if (isPointInRegion(80, 24, 16, 16, mouseX, mouseY)) {
-                renderTooltip(input, mouseX, mouseY);
+                renderTooltip(matrixStack, input, mouseX, mouseY);
             } else if (isPointInRegion(134, 24, 16, 16, mouseX, mouseY)) {
-                renderTooltip(output, mouseX, mouseY);
+                renderTooltip(matrixStack, output, mouseX, mouseY);
             }
-            GlStateManager.enableLighting();
-            GlStateManager.enableDepthTest();
+            RenderSystem.enableLighting();
+            RenderSystem.enableDepthTest();
             RenderHelper.enableStandardItemLighting();
-            GlStateManager.popMatrix();
+            matrixStack.pop();
         }
     }
 }

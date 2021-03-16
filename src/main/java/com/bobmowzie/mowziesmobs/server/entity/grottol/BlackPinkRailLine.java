@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.server.entity.grottol;
 import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.World;
 
 import java.util.function.Consumer;
@@ -23,7 +23,7 @@ public final class BlackPinkRailLine implements Consumer<AbstractMinecartEntity>
     }
 
     private State next(World world, AbstractMinecartEntity minecart) {
-        BlockPos pos = getRailPosition(world, new BlockPos(minecart));
+        BlockPos pos = getRailPosition(world, new BlockPos(minecart.getPositionVec()));
         if (AbstractRailBlock.isRail(world.getBlockState(pos))) {
             return state.apply(world, minecart, pos);
         }
@@ -58,7 +58,7 @@ public final class BlackPinkRailLine implements Consumer<AbstractMinecartEntity>
     }
 
     private final class StateAcquireEdge extends State {
-        private BlockPos vertex;
+        private final BlockPos vertex;
 
         private StateAcquireEdge(BlockPos vertex) {
             this.vertex = vertex;
@@ -85,7 +85,7 @@ public final class BlackPinkRailLine implements Consumer<AbstractMinecartEntity>
 
         private final long test = 0x10000000000000L;
 
-        private Vec3i edge;
+        private Vector3i edge;
 
         private BlockPos vertex;
 
@@ -93,7 +93,7 @@ public final class BlackPinkRailLine implements Consumer<AbstractMinecartEntity>
 
         private long state = 0xFFFFFFFFFFFFEL;
 
-        private StateSearch(Vec3i edge, BlockPos vertex) {
+        private StateSearch(Vector3i edge, BlockPos vertex) {
             this.edge = edge;
             this.vertex = vertex;
         }
@@ -101,7 +101,7 @@ public final class BlackPinkRailLine implements Consumer<AbstractMinecartEntity>
         @Override
         public State apply(World world, AbstractMinecartEntity minecart, BlockPos vertex) {
             if (!this.vertex.equals(vertex)) {
-                Vec3i edge = vertex.subtract(this.vertex);
+                Vector3i edge = vertex.subtract(this.vertex);
                 int ordinal = getOrdinal(this.edge, edge);
                 if (ordinal >= 0 && ordinal < 4 && (ordinal != 1 || ordinal != this.ordinal) && ((state = (state | mask[ordinal]) << 1) & test) == 0) {
                     action.accept(world, minecart);
@@ -113,7 +113,7 @@ public final class BlackPinkRailLine implements Consumer<AbstractMinecartEntity>
             return this;
         }
 
-        private int getOrdinal(Vec3i v0, Vec3i v1) {
+        private int getOrdinal(Vector3i v0, Vector3i v1) {
             return 1 + (v1.getZ() * v0.getX() - v1.getX() * v0.getZ()) + ((v0.getX() * v1.getX() + v0.getZ() * v1.getZ()) & 2);
         }
 

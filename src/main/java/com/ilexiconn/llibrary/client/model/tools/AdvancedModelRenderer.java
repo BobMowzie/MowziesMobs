@@ -3,20 +3,16 @@ package com.ilexiconn.llibrary.client.model.tools;
 
 import com.bobmowzie.mowziesmobs.client.render.RenderUtils;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
-import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import java.lang.reflect.Field;
 
 /**
  * An enhanced ModelRenderer
@@ -33,7 +29,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
     public float scaleX = 1.0F, scaleY = 1.0F, scaleZ = 1.0F;
     public float opacity = 1.0F;
     public boolean scaleChildren;
-    private AdvancedModelBase model;
+    private final AdvancedModelBase model;
     private AdvancedModelRenderer parent;
     private boolean doubleSided = true;
     private boolean hasLighting = true;
@@ -403,7 +399,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
         translateRotate(matrixStack);
     }
 
-    public Vec3d getWorldPos(Entity entity, float delta) {
+    public Vector3d getWorldPos(Entity entity, float delta) {
         MatrixStack matrixStack = new MatrixStack();
         float dx = (float) (entity.prevPosX + (entity.getPosX() - entity.prevPosX) * delta);
         float dy = (float) (entity.prevPosY + (entity.getPosY() - entity.prevPosY) * delta);
@@ -419,10 +415,10 @@ public class AdvancedModelRenderer extends ModelRenderer {
 
         Vector4f vec = new Vector4f(0, 0, 0, 1);
         vec.transform(matrix4f);
-        return new Vec3d(vec.getX(), vec.getY(), vec.getZ());
+        return new Vector3d(vec.getX(), vec.getY(), vec.getZ());
     }
 
-    public void setWorldPos(Entity entity, Vec3d worldPos, float delta) {
+    public void setWorldPos(Entity entity, Vector3d worldPos, float delta) {
         MatrixStack matrixStack = new MatrixStack();
         float dx = (float) (entity.prevPosX + (entity.getPosX() - entity.prevPosX) * delta);
         float dy = (float) (entity.prevPosY + (entity.getPosY() - entity.prevPosY) * delta);

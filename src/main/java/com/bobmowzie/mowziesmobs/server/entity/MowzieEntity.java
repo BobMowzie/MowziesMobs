@@ -12,9 +12,12 @@ import net.minecraft.entity.*;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Items;
@@ -26,12 +29,17 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.registry.DynamicRegistries;
+import net.minecraft.util.registry.MutableRegistry;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.*;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.*;
@@ -53,7 +61,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     public boolean hurtInterruptsAnimation = false;
 
     @OnlyIn(Dist.CLIENT)
-    public Vec3d[] socketPosArray;
+    public Vector3d[] socketPosArray;
 
     protected boolean prevOnGround;
     protected boolean prevPrevOnGround;
@@ -68,14 +76,12 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     public MowzieEntity(EntityType<? extends MowzieEntity> type, World world) {
         super(type, world);
         if (world.isRemote) {
-            socketPosArray = new Vec3d[]{};
+            socketPosArray = new Vector3d[]{};
         }
     }
 
-    protected void registerAttributes()
-    {
-        super.registerAttributes();
-        this.getAttributes().registerAttribute(SharedMonsterAttributes.ATTACK_DAMAGE);
+    public static AttributeModifierMap.MutableAttribute createAttributes() {
+        return MobEntity.func_233666_p_().createMutableAttribute(Attributes.ATTACK_DAMAGE);
     }
 
     protected ConfigHandler.SpawnConfig getSpawnConfig() {
@@ -97,7 +103,8 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
 
             // Dimension check
             List<String> dimensionNames = spawnConfig.dimensions.get();
-            ResourceLocation currDimensionName = world.getDimension().getType().getRegistryName();
+            MutableRegistry<DimensionType> mutableregistry = DynamicRegistries.func_239770_b_().getRegistry(Registry.DIMENSION_TYPE_KEY);
+            ResourceLocation currDimensionName = mutableregistry.getOptionalKey(world.getDimensionType()).get().getRegistryName();
             if (currDimensionName == null || !dimensionNames.contains(currDimensionName.toString())) {
                 return false;
             }
@@ -113,7 +120,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
             }
 
             // Light level check
-            if (spawnConfig.needsDarkness.get() && !isValidLightLevel(world, pos, rand)) {
+            if (spawnConfig.needsDarkness.get() && !MonsterEntity.isValidLightLevel((IServerWorld) world, pos, rand)) {
                 return false;
             }
 
@@ -135,15 +142,6 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         return super.canSpawn(world, reason);
     }
 
-    protected boolean isValidLightLevel(IWorld world, BlockPos pos, Random rand) {
-        if (world.getLightFor(LightType.SKY, pos) > rand.nextInt(32)) {
-            return false;
-        } else {
-            int lightLevel = world.getWorld().isThundering() ? world.getNeighborAwareLightSubtracted(pos, 10) : world.getLight(pos);
-            return lightLevel <= rand.nextInt(8);
-        }
-    }
-
     @Override
     public void tick() {
         prevPrevOnGround = prevOnGround;
@@ -160,7 +158,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
             targetDistance = getDistance(getAttackTarget()) - getAttackTarget().getWidth() / 2f;
             targetAngle = (float) getAngleBetweenEntities(this, getAttackTarget());
         }
-        willLandSoon = !onGround && world.checkBlockCollision(getBoundingBox().offset(getMotion()));
+        willLandSoon = !onGround && world.hasNoCollisions(getBoundingBox().offset(getMotion()));
     }
 
     @Override
@@ -197,16 +195,17 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
 //        return !this.world.containsAnyLiquid(this.getBoundingBox()) && this.world.checkNoEntityCollision(this.getBoundingBox(), this);
 //    }
 
+
     @Override
-    public ILivingEntityData onInitialSpawn(IWorld world, DifficultyInstance difficulty, SpawnReason reason, ILivingEntityData livingData, CompoundNBT compound) {
+    public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, ILivingEntityData spawnDataIn, CompoundNBT dataTag) {
 //        System.out.println("Spawned " + getName().getFormattedText() + " at " + getPosition());
 //        System.out.println("Block " + world.getBlockState(getPosition().down()).toString());
-        return super.onInitialSpawn(world, difficulty, reason, livingData, compound);
+        return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
 
-    public boolean attackEntityAsMob(Entity entityIn, float damageMultiplier, float knockbackMultiplier) { // TODO copy from mob class
-        float f = (float)this.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getValue() * damageMultiplier;
-        float f1 = (float)this.getAttribute(SharedMonsterAttributes.ATTACK_KNOCKBACK).getValue() * knockbackMultiplier;
+    public boolean attackEntityAsMob(Entity entityIn, float damageMultiplier, float applyKnockbackMultiplier) { // TODO copy from mob class
+        float f = (float)this.getAttribute(Attributes.ATTACK_DAMAGE).getValue() * damageMultiplier;
+        float f1 = (float)this.getAttribute(Attributes.ATTACK_KNOCKBACK).getValue() * applyKnockbackMultiplier;
         if (entityIn instanceof LivingEntity) {
             f += EnchantmentHelper.getModifierForCreature(this.getHeldItemMainhand(), ((LivingEntity)entityIn).getCreatureAttribute());
             f1 += (float)EnchantmentHelper.getKnockbackModifier(this);
@@ -220,7 +219,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         boolean flag = entityIn.attackEntityFrom(DamageSource.causeMobDamage(this), f);
         if (flag) {
             if (f1 > 0.0F && entityIn instanceof LivingEntity) {
-                ((LivingEntity)entityIn).knockBack(this, f1 * 0.5F, (double)MathHelper.sin(this.rotationYaw * ((float)Math.PI / 180F)), (double)(-MathHelper.cos(this.rotationYaw * ((float)Math.PI / 180F))));
+                ((LivingEntity)entityIn).applyKnockback(f1 * 0.5F, MathHelper.sin(this.rotationYaw * ((float)Math.PI / 180F)), -MathHelper.cos(this.rotationYaw * ((float)Math.PI / 180F)));
                 this.setMotion(this.getMotion().mul(0.6D, 1.0D, 0.6D));
             }
 
@@ -327,18 +326,18 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
                 livingentity.awardKillScore(this, this.scoreValue, cause);
             }
 
-            if (entity != null) {
-                entity.onKillEntity(this);
-            }
-
             if (this.isSleeping()) {
                 this.wakeUp();
             }
 
             this.dead = true;
             this.getCombatTracker().reset();
-            if (!this.world.isRemote) {
-                if (!dropAfterDeathAnim)
+            if (this.world instanceof ServerWorld) {
+                if (entity != null) {
+                    entity.onKillEntity((ServerWorld)this.world, this);
+                }
+
+                if (dropAfterDeathAnim)
                     this.spawnDrops(cause);
                 this.createWitherRose(livingentity);
             }
@@ -387,7 +386,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     public void circleEntity(Entity target, float radius, float speed, boolean direction, int circleFrame, float offset, float moveSpeedMultiplier) {
         int directionInt = direction ? 1 : -1;
         double t = directionInt * circleFrame * 0.5 * speed / radius + offset;
-        Vec3d movePos = target.getPositionVec().add(radius * Math.cos(t), 0, radius * Math.sin(t));
+        Vector3d movePos = target.getPositionVec().add(radius * Math.cos(t), 0, radius * Math.sin(t));
         this.getNavigator().tryMoveToXYZ(movePos.getX(), movePos.getY(), movePos.getZ(), speed * moveSpeedMultiplier);
     }
 
@@ -462,7 +461,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void setSocketPosArray(int index, Vec3d pos) {
+    public void setSocketPosArray(int index, Vector3d pos) {
         if (socketPosArray != null && socketPosArray.length > index) {
             socketPosArray[index] = pos;
         }

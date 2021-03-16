@@ -8,6 +8,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
@@ -31,7 +32,7 @@ public class ParticleOrb extends SpriteTexturedParticle {
     private int mode;
     private double duration;
 
-    public ParticleOrb(World world, double x, double y, double z, double targetX, double targetZ) {
+    public ParticleOrb(ClientWorld world, double x, double y, double z, double targetX, double targetZ) {
         super(world, x, y, z);
         this.targetX = targetX;
         this.targetZ = targetZ;
@@ -44,7 +45,7 @@ public class ParticleOrb extends SpriteTexturedParticle {
         red = green = blue = 1;
     }
 
-    public ParticleOrb(World world, double x, double y, double z, double targetX, double targetY, double targetZ, double speed) {
+    public ParticleOrb(ClientWorld world, double x, double y, double z, double targetX, double targetY, double targetZ, double speed) {
         this(world, x, y, z, targetX, targetZ);
         this.targetY = targetY;
         this.startX = x;
@@ -55,7 +56,7 @@ public class ParticleOrb extends SpriteTexturedParticle {
         particleAlpha = 0.1f;
     }
 
-    public ParticleOrb(World world, double x, double y, double z, double vx, double vy, double vz, double r, double g, double b, double scale, int duration) {
+    public ParticleOrb(ClientWorld world, double x, double y, double z, double vx, double vy, double vz, double r, double g, double b, double scale, int duration) {
         super(world, x, y, z);
         particleScale = (float) scale * 0.1f;
         maxAge = duration;
@@ -141,7 +142,7 @@ public class ParticleOrb extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle makeParticle(ParticleOrb.OrbData typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle makeParticle(ParticleOrb.OrbData typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             ParticleOrb particle;
             if (typeIn.getMode() == 0) particle = new ParticleOrb(worldIn, x, y, z, typeIn.getTargetX(), typeIn.getTargetZ());
             else if (typeIn.getMode() == 1) particle = new ParticleOrb(worldIn, x, y, z, typeIn.getTargetX(), typeIn.getTargetY(), typeIn.getTargetZ(), typeIn.getSpeed());

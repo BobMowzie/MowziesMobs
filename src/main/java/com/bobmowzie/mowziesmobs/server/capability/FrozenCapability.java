@@ -23,7 +23,7 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -250,7 +250,7 @@ public class FrozenCapability {
                         double snowX = entity.getPosX() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
                         double snowZ = entity.getPosZ() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
                         double snowY = entity.getPosY() + entity.getHeight() * entity.getRNG().nextFloat();
-                        Vec3d motion = new Vec3d(snowX - entity.getPosX(), snowY - (entity.getPosY() + entity.getHeight() / 2), snowZ - entity.getPosZ()).normalize();
+                        Vector3d motion = new Vector3d(snowX - entity.getPosX(), snowY - (entity.getPosY() + entity.getHeight() / 2), snowZ - entity.getPosZ()).normalize();
                         entity.world.addParticle(new ParticleSnowFlake.SnowflakeData(40, false), snowX, snowY, snowZ, 0.1d * motion.x, 0.1d * motion.y, 0.1d * motion.z);
                     }
                 }
@@ -261,7 +261,7 @@ public class FrozenCapability {
         @Override
         public void onUnfreeze(LivingEntity entity) {
             if (entity != null && frozenController != null) {
-                Vec3d oldPosition = entity.getPositionVec();
+                Vector3d oldPosition = entity.getPositionVec();
                 entity.stopRiding();
                 entity.setPositionAndUpdate(oldPosition.getX(), oldPosition.getY(), oldPosition.getZ());
                 frozenController.remove();
@@ -384,7 +384,7 @@ public class FrozenCapability {
         @CapabilityInject(IFrozenCapability.class)
         public static final Capability<IFrozenCapability> FROZEN_CAPABILITY = null;
 
-        private LazyOptional<IFrozenCapability> instance = LazyOptional.of(FROZEN_CAPABILITY::getDefaultInstance);
+        private final LazyOptional<IFrozenCapability> instance = LazyOptional.of(FROZEN_CAPABILITY::getDefaultInstance);
 
         @Override
         public INBT serializeNBT() {

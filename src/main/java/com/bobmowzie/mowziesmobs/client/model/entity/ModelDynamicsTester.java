@@ -23,7 +23,7 @@ public class ModelDynamicsTester<T extends EntityDynamicsTester> extends Advance
     public AdvancedModelRenderer[] body;
     public AdvancedModelRenderer[] bodydynamic;
 
-    private MMModelAnimator animator;
+    private final MMModelAnimator animator;
 
     public ModelDynamicsTester() {
         animator = MMModelAnimator.create();

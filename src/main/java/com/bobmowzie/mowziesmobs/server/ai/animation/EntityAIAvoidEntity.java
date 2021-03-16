@@ -9,14 +9,14 @@ import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 import java.util.EnumSet;
 import java.util.List;
 import java.util.function.Predicate;
 
 public final class EntityAIAvoidEntity<T extends Entity> extends Goal {
-    private CreatureEntity entity;
+    private final CreatureEntity entity;
 
     private final Class<T> avoidClass;
 
@@ -55,7 +55,7 @@ public final class EntityAIAvoidEntity<T extends Entity> extends Goal {
             return false;
         }
         avoiding = entities.get(entity.getRNG().nextInt(entities.size()));
-        Vec3d pos = RandomPositionGenerator.findRandomTargetBlockAwayFrom(entity, (int) (distance + 1), (int) (distance / 2 + 1), new Vec3d(avoiding.getPosX(), avoiding.getPosY(), avoiding.getPosZ()));
+        Vector3d pos = RandomPositionGenerator.findRandomTargetBlockAwayFrom(entity, (int) (distance + 1), (int) (distance / 2 + 1), new Vector3d(avoiding.getPosX(), avoiding.getPosY(), avoiding.getPosZ()));
         if (pos == null) {
             return false;
         }

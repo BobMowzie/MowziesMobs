@@ -27,7 +27,7 @@ public class MMWalkNodeProcessor extends WalkNodeProcessor {
             for (Block block = this.blockaccess.getBlockState(pos).getBlock(); block == Blocks.FLOWING_WATER || block == Blocks.WATER; block = this.blockaccess.getBlockState(pos).getBlock()) {
                 pos.setY(++y);
             }
-        } else if (this.entity.onGround) {
+        } else if (this.entity.isOnGround()) {
             y = MathHelper.floor(bounds.minY + 0.5D);
         } else {
             y = MathHelper.floor(this.entity.posY);

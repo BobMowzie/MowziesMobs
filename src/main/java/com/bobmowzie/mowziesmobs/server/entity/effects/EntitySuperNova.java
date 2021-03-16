@@ -15,7 +15,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -49,7 +49,7 @@ public class EntitySuperNova extends EntityMagicEffect {
                 for (int i = 0; i < 15; i++) {
                     float phaseOffset = rand.nextFloat();
                     AdvancedParticleBase.spawnParticle(world, ParticleHandler.ARROW_HEAD.get(), getPosX(), getPosY(), getPosZ(), 0, 0, 0, false, 0, 0, 0, 0, 8F, 0.95, 0.9, 0.35, 1, 1, 30, true, new ParticleComponent[]{
-                            new ParticleComponent.Orbit(new Vec3d[]{getPositionVector().add(0, getHeight() / 2, 0)}, KeyTrack.startAndEnd(0 + phaseOffset, 1.6f + phaseOffset), new ParticleComponent.KeyTrack(
+                            new ParticleComponent.Orbit(new Vector3d[]{getPositionVec().add(0, getHeight() / 2, 0)}, KeyTrack.startAndEnd(0 + phaseOffset, 1.6f + phaseOffset), new ParticleComponent.KeyTrack(
                                     new float[]{0.2f * scale, 0.63f * scale, 0.87f * scale, 0.974f * scale, 0.998f * scale, 1f * scale},
                                     new float[]{0, 0.15f, 0.3f, 0.45f, 0.6f, 0.75f}
                             ), KeyTrack.startAndEnd(rand.nextFloat() * 2 - 1, rand.nextFloat() * 2 - 1), KeyTrack.startAndEnd(rand.nextFloat() * 2 - 1, rand.nextFloat() * 2 - 1), KeyTrack.startAndEnd(rand.nextFloat() * 2 - 1, rand.nextFloat() * 2 - 1), false),
@@ -79,9 +79,9 @@ public class EntitySuperNova extends EntityMagicEffect {
                     damageMob *= ConfigHandler.MOBS.BARAKO.combatConfig.attackMultiplier.get();
                     boolean hitWithFire = DamageUtil.dealMixedDamage(entity, DamageSource.causeMobDamage(caster), damageMob, DamageSource.ON_FIRE, damageFire).getRight();
                     if (hitWithFire) {
-                        Vec3d diff = entity.getPositionVector().subtract(getPositionVector());
+                        Vector3d diff = entity.getPositionVec().subtract(getPositionVec());
                         diff = diff.normalize();
-                        entity.knockBack(this, 0.4f, -diff.x, -diff.z);
+                        entity.applyKnockback(0.4f, -diff.x, -diff.z);
                         entity.setFire(5);
                     }
                 }

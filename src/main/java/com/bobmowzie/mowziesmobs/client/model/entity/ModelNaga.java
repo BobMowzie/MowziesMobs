@@ -8,7 +8,7 @@ import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 /**
  * Created by BobMowzie on 9/9/2018.
@@ -713,8 +713,8 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
             faceTarget(headYaw, headPitch, 2, neck, headJoint);
 
             //Glide anim
-            Vec3d prevV = new Vec3d(entity.prevMotionX, entity.prevMotionY, entity.prevMotionZ);
-            Vec3d dv = prevV.add(entity.getMotion().subtract(prevV).scale(delta));
+            Vector3d prevV = new Vector3d(entity.prevMotionX, entity.prevMotionY, entity.prevMotionZ);
+            Vector3d dv = prevV.add(entity.getMotion().subtract(prevV).scale(delta));
             double d = Math.sqrt(dv.x * dv.x + dv.y * dv.y + dv.z * dv.z);
             if (d != 0 && entity.getAnimation() != EntityNaga.DIE_AIR_ANIMATION) {
                 double a = dv.y / d;
@@ -932,8 +932,8 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
                 body.rotateAngleZ += 1f * frame % (Math.PI * 2) * swooper.rotationPointY;
 
                 if (entity.getAnimationTick() >= 23 && entity.getAnimationTick() < 60) {
-                    Vec3d prevV = new Vec3d(entity.prevMotionX, entity.prevMotionY, entity.prevMotionZ);
-                    Vec3d dv = prevV.add(entity.getMotion().subtract(prevV).scale(delta));
+                    Vector3d prevV = new Vector3d(entity.prevMotionX, entity.prevMotionY, entity.prevMotionZ);
+                    Vector3d dv = prevV.add(entity.getMotion().subtract(prevV).scale(delta));
                     double d = Math.sqrt(dv.x * dv.x + dv.y * dv.y + dv.z * dv.z);
                     if (d != 0) {
                         double a = dv.y / d;

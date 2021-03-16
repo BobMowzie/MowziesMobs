@@ -5,7 +5,9 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.PlayerAdvancements;
 import net.minecraft.advancements.criterion.CriterionInstance;
+import net.minecraft.advancements.criterion.EntityPredicate;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.loot.ConditionArrayParser;
 import net.minecraft.util.ResourceLocation;
 
 public class SneakVillageTrigger extends MMTrigger<CriterionInstance, SneakVillageTrigger.Listener> {
@@ -25,8 +27,9 @@ public class SneakVillageTrigger extends MMTrigger<CriterionInstance, SneakVilla
     }
 
     @Override
-    public CriterionInstance deserializeInstance(JsonObject json, JsonDeserializationContext context) {
-        return new CriterionInstance(ID);
+    public CriterionInstance deserialize(JsonObject object, ConditionArrayParser conditions) {
+        EntityPredicate.AndPredicate player = EntityPredicate.AndPredicate.deserializeJSONObject(object, "player", conditions);
+        return new SneakVillageTrigger.Instance(player);
     }
 
     public void trigger(ServerPlayerEntity player) {
@@ -45,6 +48,12 @@ public class SneakVillageTrigger extends MMTrigger<CriterionInstance, SneakVilla
 
         public void trigger() {
             this.listeners.stream().findFirst().ifPresent(listener -> listener.grantCriterion(this.playerAdvancements));
+        }
+    }
+
+    public static class Instance extends CriterionInstance {
+        public Instance(EntityPredicate.AndPredicate player) {
+            super(SneakVillageTrigger.ID, player);
         }
     }
 }

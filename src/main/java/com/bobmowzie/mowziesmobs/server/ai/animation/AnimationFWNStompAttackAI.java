@@ -10,7 +10,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.item.FallingBlockEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.play.server.SEntityVelocityPacket;
@@ -87,18 +87,18 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                         if (entity == this.entity || entity instanceof FallingBlockEntity) {
                             continue;
                         }
-                        float knockbackResistance = 0;
+                        float applyKnockbackResistance = 0;
                         if (entity instanceof LivingEntity) {
                             entity.attackEntityFrom(DamageSource.causeMobDamage(this.entity), (factor * 5 + 1) * ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.combatConfig.attackMultiplier.get());
-                            knockbackResistance = (float) ((LivingEntity)entity).getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).getValue();
+                            applyKnockbackResistance = (float) ((LivingEntity)entity).getAttribute(Attributes.KNOCKBACK_RESISTANCE).getValue();
                         }
                         double magnitude = world.rand.nextDouble() * 0.15 + 0.1;
                         float x = 0, y = 0, z = 0;
-                        x += vx * factor * magnitude * (1 - knockbackResistance);
-                        if (entity.onGround) {
-                            y += 0.1 * (1 - knockbackResistance) + factor * 0.15 * (1 - knockbackResistance);
+                        x += vx * factor * magnitude * (1 - applyKnockbackResistance);
+                        if (entity.isOnGround()) {
+                            y += 0.1 * (1 - applyKnockbackResistance) + factor * 0.15 * (1 - applyKnockbackResistance);
                         }
-                        z += vz * factor * magnitude * (1 - knockbackResistance);
+                        z += vz * factor * magnitude * (1 - applyKnockbackResistance);
                         entity.setMotion(entity.getMotion().add(x, y, z));
                         if (entity instanceof ServerPlayerEntity) {
                             ((ServerPlayerEntity) entity).connection.sendPacket(new SEntityVelocityPacket(entity));

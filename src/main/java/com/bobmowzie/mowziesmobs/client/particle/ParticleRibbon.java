@@ -11,21 +11,24 @@ import net.minecraft.client.particle.IAnimatedSprite;
 import net.minecraft.client.particle.IParticleFactory;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.*;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particles.ParticleType;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector4f;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ParticleRibbon extends AdvancedParticleBase {
-    public Vec3d[] positions;
-    public Vec3d[] prevPositions;
+    public Vector3d[] positions;
+    public Vector3d[] prevPositions;
 
-    protected ParticleRibbon(World worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double motionX, double motionY, double motionZ, ParticleRotation rotation, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, int length, ParticleComponent[] components) {
+    protected ParticleRibbon(ClientWorld worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double motionX, double motionY, double motionZ, ParticleRotation rotation, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, int length, ParticleComponent[] components) {
         super(worldIn, xCoordIn, yCoordIn, zCoordIn, motionX, motionY, motionZ, rotation, scale, r, g, b, a, drag, duration, emissive, components);
-        positions = new Vec3d[length];
-        prevPositions = new Vec3d[length];
-        positions[0] = new Vec3d(getPosX(), getPosY(), getPosZ());
+        positions = new Vector3d[length];
+        prevPositions = new Vector3d[length];
+        positions[0] = new Vector3d(getPosX(), getPosY(), getPosZ());
         prevPositions[0] = getPrevPos();
     }
 
@@ -36,7 +39,7 @@ public class ParticleRibbon extends AdvancedParticleBase {
             positions[i] = positions[i - 1];
             prevPositions[i] = prevPositions[i - 1];
         }
-        positions[0] = new Vec3d(getPosX(), getPosY(), getPosZ());
+        positions[0] = new Vector3d(getPosX(), getPosY(), getPosZ());
         prevPositions[0] = getPrevPos();
     }
 
@@ -93,7 +96,7 @@ public class ParticleRibbon extends AdvancedParticleBase {
             }
         }
 
-        Vec3d offsetDir = new Vec3d(0, 0, 0);
+        Vector3d offsetDir = new Vector3d(0, 0, 0);
         for (int index = 0; index < positions.length - 1; index++) {
             if (positions[index] == null || positions[index + 1] == null) continue;
 
@@ -125,39 +128,39 @@ public class ParticleRibbon extends AdvancedParticleBase {
                 }
             }
 
-            Vec3d vec3d = renderInfo.getProjectedView();
-            Vec3d p1 = prevPositions[index].add(positions[index].subtract(prevPositions[index]).scale(partialTicks)).subtract(vec3d);
-            Vec3d p2 = prevPositions[index + 1].add(positions[index + 1].subtract(prevPositions[index + 1]).scale(partialTicks)).subtract(vec3d);
+            Vector3d Vector3d = renderInfo.getProjectedView();
+            Vector3d p1 = prevPositions[index].add(positions[index].subtract(prevPositions[index]).scale(partialTicks)).subtract(Vector3d);
+            Vector3d p2 = prevPositions[index + 1].add(positions[index + 1].subtract(prevPositions[index + 1]).scale(partialTicks)).subtract(Vector3d);
 
             if (index == 0) {
-                Vec3d moveDir = p2.subtract(p1).normalize();
+                Vector3d moveDir = p2.subtract(p1).normalize();
                 if (rotation instanceof ParticleRotation.FaceCamera) {
-                    Vec3d viewVec = new Vec3d(renderInfo.getViewVector());
+                    Vector3d viewVec = new Vector3d(renderInfo.getViewVector());
                     offsetDir = moveDir.crossProduct(viewVec).normalize();
                 } else {
-                    offsetDir = moveDir.crossProduct(new Vec3d(0, 1, 0)).normalize();
+                    offsetDir = moveDir.crossProduct(new Vector3d(0, 1, 0)).normalize();
                 }
                 offsetDir = offsetDir.scale(prevScale);
             }
 
-            Vec3d[] avec3d2 = new Vec3d[] {offsetDir.scale(-1), offsetDir, null, null};
-            Vec3d moveDir = p2.subtract(p1).normalize();
+            Vector3d[] aVector3d2 = new Vector3d[] {offsetDir.scale(-1), offsetDir, null, null};
+            Vector3d moveDir = p2.subtract(p1).normalize();
             if (rotation instanceof ParticleRotation.FaceCamera) {
-                Vec3d viewVec = new Vec3d(renderInfo.getViewVector());
+                Vector3d viewVec = new Vector3d(renderInfo.getViewVector());
                 offsetDir = moveDir.crossProduct(viewVec).normalize();
             }
             else {
-                offsetDir = moveDir.crossProduct(new Vec3d(0, 1, 0)).normalize();
+                offsetDir = moveDir.crossProduct(new Vector3d(0, 1, 0)).normalize();
             }
             offsetDir = offsetDir.scale(scale);
-            avec3d2[2] = offsetDir;
-            avec3d2[3] = offsetDir.scale(-1);
+            aVector3d2[2] = offsetDir;
+            aVector3d2[3] = offsetDir.scale(-1);
 
             Vector4f[] vertices2 = new Vector4f[] {
-                    new Vector4f((float)avec3d2[0].x, (float)avec3d2[0].y,  (float)avec3d2[0].z, 1f),
-                    new Vector4f((float)avec3d2[1].x, (float)avec3d2[1].y,  (float)avec3d2[1].z, 1f),
-                    new Vector4f((float)avec3d2[2].x,  (float)avec3d2[2].y,  (float)avec3d2[2].z, 1f),
-                    new Vector4f((float)avec3d2[3].x,  (float)avec3d2[3].y,  (float)avec3d2[3].z, 1f)
+                    new Vector4f((float)aVector3d2[0].x, (float)aVector3d2[0].y,  (float)aVector3d2[0].z, 1f),
+                    new Vector4f((float)aVector3d2[1].x, (float)aVector3d2[1].y,  (float)aVector3d2[1].z, 1f),
+                    new Vector4f((float)aVector3d2[2].x,  (float)aVector3d2[2].y,  (float)aVector3d2[2].z, 1f),
+                    new Vector4f((float)aVector3d2[3].x,  (float)aVector3d2[3].y,  (float)aVector3d2[3].z, 1f)
             };
             Matrix4f boxTranslate = Matrix4f.makeTranslate((float)p1.x, (float)p1.y, (float)p1.z);
             vertices2[0].transform(boxTranslate);
@@ -191,7 +194,7 @@ public class ParticleRibbon extends AdvancedParticleBase {
         }
 
         @Override
-        public Particle makeParticle(RibbonParticleData typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle makeParticle(RibbonParticleData typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             ParticleRibbon particle = new ParticleRibbon(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn.getRotation(), typeIn.getScale(), typeIn.getRed(), typeIn.getGreen(), typeIn.getBlue(), typeIn.getAlpha(), typeIn.getAirDrag(), typeIn.getDuration(), typeIn.isEmissive(), typeIn.getLength(), typeIn.getComponents());
             particle.selectSpriteWithAge(spriteSet);
             return particle;

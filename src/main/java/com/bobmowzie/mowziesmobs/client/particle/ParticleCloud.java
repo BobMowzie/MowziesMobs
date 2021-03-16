@@ -7,6 +7,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
@@ -21,10 +22,12 @@ import java.util.Locale;
  * Created by BobMowzie on 6/2/2017.
  */
 public class ParticleCloud extends SpriteTexturedParticle {
-    private float red, green, blue;
-    private float scale;
-    private EnumCloudBehavior behavior;
-    private float airDrag;
+    private final float red;
+    private final float green;
+    private final float blue;
+    private final float scale;
+    private final EnumCloudBehavior behavior;
+    private final float airDrag;
 
     public enum EnumCloudBehavior {
         SHRINK,
@@ -32,7 +35,7 @@ public class ParticleCloud extends SpriteTexturedParticle {
         CONSTANT
     }
 
-    public ParticleCloud(World world, double x, double y, double z, double vx, double vy, double vz, double r, double g, double b, double scale, int duration, EnumCloudBehavior behavior, double airDrag) {
+    public ParticleCloud(ClientWorld world, double x, double y, double z, double vx, double vy, double vz, double r, double g, double b, double scale, int duration, EnumCloudBehavior behavior, double airDrag) {
         super(world, x, y, z);
         this.scale = (float) scale * 0.5f * 0.1f;
         maxAge = duration;
@@ -81,7 +84,7 @@ public class ParticleCloud extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle makeParticle(CloudData typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle makeParticle(CloudData typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             ParticleCloud particleCloud = new ParticleCloud(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn.getR(), typeIn.getG(), typeIn.getB(), typeIn.getScale(), typeIn.getDuration(), typeIn.getBehavior(), typeIn.getAirDrag());
             particleCloud.selectSpriteWithAge(spriteSet);
             particleCloud.setColor(typeIn.getR(), typeIn.getG(), typeIn.getB());

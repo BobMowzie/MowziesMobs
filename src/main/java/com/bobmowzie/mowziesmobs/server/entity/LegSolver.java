@@ -61,7 +61,7 @@ public class LegSolver {
             } else {
                 dist -= 1 - (y % 1);
             }
-            if (entity.onGround && height <= dist) {
+            if (entity.isOnGround() && height <= dist) {
                 return height == dist ? height : Math.min(height + 0.3F, dist);
             } else if (height > 0) {
                 return Math.max(height - 0.4F, dist);

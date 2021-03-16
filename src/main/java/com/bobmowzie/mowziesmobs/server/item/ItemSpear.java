@@ -16,7 +16,7 @@ import net.minecraft.item.ToolItem;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -32,7 +32,7 @@ public class ItemSpear extends ToolItem {
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        return enchantment.type == EnchantmentType.WEAPON || enchantment.type == EnchantmentType.BREAKABLE || enchantment.type == EnchantmentType.ALL;
+        return enchantment.type == EnchantmentType.WEAPON || enchantment.type == EnchantmentType.BREAKABLE;
     }
 
     @Override
@@ -48,8 +48,8 @@ public class ItemSpear extends ToolItem {
 
     public static LivingEntity raytraceEntities(World world, PlayerEntity player, double range) {
         ItemSpear.HitResult result = new ItemSpear.HitResult();
-        Vec3d pos = new Vec3d(player.getPosX(), player.getPosY() + player.getEyeHeight(), player.getPosZ());
-        Vec3d segment = player.getLookVec();
+        Vector3d pos = new Vector3d(player.getPosX(), player.getPosY() + player.getEyeHeight(), player.getPosZ());
+        Vector3d segment = player.getLookVec();
         segment = pos.add(segment.x * range, segment.y * range, segment.z * range);
         result.setBlockHit(world.rayTraceBlocks(new RayTraceContext(pos, segment, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, player)));
         double collidePosX, collidePosY, collidePosZ;
@@ -59,7 +59,7 @@ public class ItemSpear extends ToolItem {
             collidePosZ = result.blockHit.getHitVec().z;
         }
         else {
-            Vec3d end = player.getLookVec().scale(range).add(pos);
+            Vector3d end = player.getLookVec().scale(range).add(pos);
             collidePosX = end.x;
             collidePosY = end.y;
             collidePosZ = end.z;
@@ -92,7 +92,7 @@ public class ItemSpear extends ToolItem {
     public static class HitResult {
         private RayTraceResult blockHit;
 
-        private List<LivingEntity> entities = new ArrayList<>();
+        private final List<LivingEntity> entities = new ArrayList<>();
 
         public RayTraceResult getBlockHit() {
             return blockHit;

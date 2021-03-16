@@ -5,17 +5,17 @@ import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 
 import java.util.List;
 
 public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWroughtnaut> {
-    private float arc;
+    private final float arc;
 
-    public AnimationFWNVerticalAttackAI(EntityWroughtnaut entity, Animation animation, SoundEvent sound, float knockback, float range, float arc) {
-        super(entity, animation, sound, null, knockback, range, 0, 0);
+    public AnimationFWNVerticalAttackAI(EntityWroughtnaut entity, Animation animation, SoundEvent sound, float applyKnockback, float range, float arc) {
+        super(entity, animation, sound, null, applyKnockback, range, 0, 0);
         this.arc = arc;
     }
 
@@ -42,7 +42,7 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
         } else if (entity.getAnimationTick() == 27) {
             entity.playSound(MMSounds.ENTITY_WROUGHT_SWING_2.get(), 1.5F, 1F);
             List<LivingEntity> entitiesHit = entity.getEntityLivingBaseNearby(range, 3, range, range);
-            float damage = (float)entity.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).getValue() * ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.combatConfig.attackMultiplier.get();
+            float damage = (float)entity.getAttribute(Attributes.ATTACK_DAMAGE).getValue() * ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.combatConfig.attackMultiplier.get();
             for (LivingEntity entityHit : entitiesHit) {
                 float entityHitAngle = (float) ((Math.atan2(entityHit.getPosZ() - entity.getPosZ(), entityHit.getPosX() - entity.getPosX()) * (180 / Math.PI) - 90) % 360);
                 float entityAttackingAngle = entity.renderYawOffset % 360;
@@ -57,7 +57,7 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
                 if (entityHitDistance <= range && (entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2) || (entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2)) {
                     entityHit.attackEntityFrom(DamageSource.causeMobDamage(entity), damage * 1.5F);
                     if (entityHit.isActiveItemStackBlocking()) entityHit.getActiveItemStack().damageItem(400, entityHit, player -> player.sendBreakAnimation(entityHit.getActiveHand()));
-                    entityHit.setMotion(entityHit.getMotion().x * knockbackMultiplier, entityHit.getMotion().y, entityHit.getMotion().z * knockbackMultiplier);
+                    entityHit.setMotion(entityHit.getMotion().x * applyKnockbackMultiplier, entityHit.getMotion().y, entityHit.getMotion().z * applyKnockbackMultiplier);
                 }
             }
         } else if (entity.getAnimationTick() == 28) {

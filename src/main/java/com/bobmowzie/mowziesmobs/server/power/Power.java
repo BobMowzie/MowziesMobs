@@ -14,7 +14,7 @@ import java.util.List;
 
 public abstract class Power {
 
-    private PlayerCapability.PlayerCapabilityImp capability;
+    private final PlayerCapability.PlayerCapabilityImp capability;
 
     public Power(PlayerCapability.PlayerCapabilityImp capability) {
         this.capability = capability;

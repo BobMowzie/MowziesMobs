@@ -156,5 +156,10 @@ public class ItemBarakoaMask extends ArmorItem implements BarakoaMask {
         public float getToughness() {
             return ConfigHandler.TOOLS_AND_ABILITIES.BARAKOA_MASK.armorConfig.damageReduction.get();
         }
+
+        @Override
+        public float getKnockbackResistance() {
+            return ArmorMaterial.LEATHER.getKnockbackResistance();
+        }
     }
 }

@@ -9,7 +9,7 @@ import net.minecraft.entity.Entity;
 public class Animation {
     @Deprecated
     private int id;
-    private int duration;
+    private final int duration;
     private boolean looping;
 
     protected Animation(int duration) {

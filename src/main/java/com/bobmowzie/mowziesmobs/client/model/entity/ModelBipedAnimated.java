@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class ModelBipedAnimated<T extends LivingEntity> extends BipedModel {
     public ModelBipedAnimated(float modelSize) {
@@ -34,7 +34,7 @@ public class ModelBipedAnimated<T extends LivingEntity> extends BipedModel {
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
         if (playerCapability != null && playerCapability.getGeomancy().tunneling) {
             model.isSneak = false;
-            Vec3d moveVec = player.getMotion();
+            Vector3d moveVec = player.getMotion();
             moveVec = moveVec.normalize();
 //            if (model instanceof PlayerModel) RenderSystem.rotatef(45 - 45 * (float)moveVec.y, 1.0F, 0.0F, 0.0F);
 

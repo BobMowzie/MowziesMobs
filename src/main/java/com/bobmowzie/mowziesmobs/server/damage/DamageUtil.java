@@ -77,7 +77,7 @@ public class DamageUtil {
             }
 
             target.attackedAtYaw = (float)(MathHelper.atan2(d0, d1) * (180D / Math.PI) - (double)target.rotationYaw);
-            target.knockBack(entity1, 0.4F, d1, d0);
+            target.applyKnockback(0.4F, d1, d0);
         }
         else
         {

@@ -30,6 +30,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.*;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraft.util.math.vector.Vector3d;
 
 import java.util.List;
 import java.util.Random;
@@ -46,7 +47,7 @@ public class PowerGeomancy extends Power {
     private boolean liftedMouse = true;
     public int spawnBoulderCharge = 0;
     public BlockPos spawnBoulderPos = new BlockPos(0, 0, 0);
-    public Vec3d lookPos = new Vec3d(0, 0, 0);
+    public Vector3d lookPos = new Vector3d(0, 0, 0);
     private BlockState spawnBoulderBlock = Blocks.DIRT.getDefaultState();
 
     public boolean tunneling;
@@ -70,8 +71,8 @@ public class PowerGeomancy extends Power {
             player.fallDistance = 0;
             player.abilities.isFlying = false;
             boolean underground = !player.world.getEntitiesWithinAABB(EntityBlockSwapper.class, player.getBoundingBox()).isEmpty();
-            if (player.onGround && !underground) tunneling = false;
-            Vec3d lookVec = player.getLookVec();
+            if (player.isOnGround() && !underground) tunneling = false;
+            Vector3d lookVec = player.getLookVec();
             float tunnelSpeed = 0.9f;
             if (underground) {
                 if (player.isSneaking()) {
@@ -170,7 +171,7 @@ public class PowerGeomancy extends Power {
                         double ox = radius * Math.sin(yaw) * Math.sin(pitch);
                         double oy = radius * Math.cos(pitch);
                         double oz = radius * Math.cos(yaw) * Math.sin(pitch);
-                        player.world.addParticle(new ParticleOrb.OrbData((float) player.getPosX(), (float) player.getPosY() + (float) player.getHeight()/2f, (float) player.getPosZ(), 14), player.getPosX() + ox, player.getPosY() + oy + player.getHeight()/2, player.getPosZ() + oz, 0, 0, 0);
+                        player.world.addParticle(new ParticleOrb.OrbData((float) player.getPosX(), (float) player.getPosY() + player.getHeight() /2f, (float) player.getPosZ(), 14), player.getPosX() + ox, player.getPosY() + oy + player.getHeight()/2, player.getPosZ() + oz, 0, 0, 0);
                     }
                 }
             }
@@ -229,7 +230,7 @@ public class PowerGeomancy extends Power {
     @Override
     public void onSneakDown(PlayerEntity player) {
         super.onSneakDown(player);
-        if (doubleTapTimer > 0 && canUse(player) && !player.onGround) {
+        if (doubleTapTimer > 0 && canUse(player) && !player.isOnGround()) {
             tunneling = true;
         }
         doubleTapTimer = 8;
@@ -248,7 +249,7 @@ public class PowerGeomancy extends Power {
         return spawnBoulderPos;
     }
 
-    public Vec3d getLookPos() {
+    public Vector3d getLookPos() {
         return lookPos;
     }
 
@@ -262,8 +263,8 @@ public class PowerGeomancy extends Power {
         }
 
         if (spawnBoulderCharge > 2) {
-            Vec3d playerEyes = player.getEyePosition(1);
-            Vec3d vec = playerEyes.subtract(getLookPos()).normalize();
+            Vector3d playerEyes = player.getEyePosition(1);
+            Vector3d vec = playerEyes.subtract(getLookPos()).normalize();
             float yaw = (float) Math.atan2(vec.z, vec.x);
             float pitch = (float) Math.asin(vec.y);
             player.rotationYaw = (float) (yaw * 180f / Math.PI + 90);
@@ -294,26 +295,22 @@ public class PowerGeomancy extends Power {
                 ) {
             return false;
         }
-        if (blockState.getBlock() == Blocks.HAY_BLOCK
-                || blockState.getBlock() == Blocks.NETHER_WART_BLOCK
-                || blockState.getBlock() instanceof FenceBlock
-                || blockState.getBlock() == Blocks.SPAWNER
-                || blockState.getBlock() == Blocks.BONE_BLOCK
-                || blockState.getBlock() == Blocks.ENCHANTING_TABLE
-                || blockState.getBlock() == Blocks.END_PORTAL_FRAME
-                || blockState.getBlock() == Blocks.ENDER_CHEST
-                || blockState.getBlock() == Blocks.SLIME_BLOCK
-                || blockState.getBlock() == Blocks.HOPPER
-                || blockState.hasTileEntity()
-                ) {
-            return false;
-        }
-        return true;
+        return blockState.getBlock() != Blocks.HAY_BLOCK
+                && blockState.getBlock() != Blocks.NETHER_WART_BLOCK
+                && !(blockState.getBlock() instanceof FenceBlock)
+                && blockState.getBlock() != Blocks.SPAWNER
+                && blockState.getBlock() != Blocks.BONE_BLOCK
+                && blockState.getBlock() != Blocks.ENCHANTING_TABLE
+                && blockState.getBlock() != Blocks.END_PORTAL_FRAME
+                && blockState.getBlock() != Blocks.ENDER_CHEST
+                && blockState.getBlock() != Blocks.SLIME_BLOCK
+                && blockState.getBlock() != Blocks.HOPPER
+                && !blockState.hasTileEntity();
     }
 
     public void startSpawningBoulder(PlayerEntity player) {
-        Vec3d from = player.getEyePosition(1.0f);
-        Vec3d to = from.add(player.getLookVec().scale(SPAWN_BOULDER_REACH));
+        Vector3d from = player.getEyePosition(1.0f);
+        Vector3d to = from.add(player.getLookVec().scale(SPAWN_BOULDER_REACH));
         BlockRayTraceResult result = player.world.rayTraceBlocks(new RayTraceContext(from, to, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, player));
         if (result.getType() == RayTraceResult.Type.BLOCK) {
             this.lookPos = result.getHitVec();

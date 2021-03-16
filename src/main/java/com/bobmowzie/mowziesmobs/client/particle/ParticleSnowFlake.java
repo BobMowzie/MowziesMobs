@@ -6,10 +6,13 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.*;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -21,10 +24,10 @@ import java.util.Locale;
  */
 public class ParticleSnowFlake extends SpriteTexturedParticle {
     private int swirlTick;
-    private float spread;
+    private final float spread;
     boolean swirls;
 
-    public ParticleSnowFlake(World world, double x, double y, double z, double vX, double vY, double vZ, double duration, boolean swirls) {
+    public ParticleSnowFlake(ClientWorld world, double x, double y, double z, double vX, double vY, double vZ, double duration, boolean swirls) {
         super(world, x, y, z);
         setSize(1, 1);
         motionX = vX;
@@ -96,7 +99,7 @@ public class ParticleSnowFlake extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle makeParticle(ParticleSnowFlake.SnowflakeData typeIn, World worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle makeParticle(ParticleSnowFlake.SnowflakeData typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             ParticleSnowFlake particle = new ParticleSnowFlake(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn.getDuration(), typeIn.getSwirls());
             particle.selectSpriteRandomly(spriteSet);
             return particle;

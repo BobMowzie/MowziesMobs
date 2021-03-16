@@ -21,9 +21,9 @@ public class IntermittentAnimation<T extends Entity & IIntermittentEntity> {
     /**
      * It is the random used to randomize the movement.
      */
-    private Random rand = new Random();
+    private final Random rand = new Random();
 
-    private T entity;
+    private final T entity;
     /**
      * It is the timer used to animate.
      */
@@ -48,13 +48,13 @@ public class IntermittentAnimation<T extends Entity & IIntermittentEntity> {
     /**
      * It is the interval to return to the first animation.
      */
-    private int minIdleTime;
+    private final int minIdleTime;
     /**
      * It is the chance to go to the new animation.
      */
-    private int startProbability;
+    private final int startProbability;
 
-    private boolean isOperator;
+    private final boolean isOperator;
 
     private byte id;
 

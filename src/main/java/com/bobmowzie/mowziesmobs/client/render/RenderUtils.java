@@ -2,11 +2,11 @@ package com.bobmowzie.mowziesmobs.client.render;
 
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.Matrix4f;
-import net.minecraft.client.renderer.Quaternion;
-import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector4f;
 
 public class RenderUtils {
     public static void matrixStackFromModel(MatrixStack matrixStack, AdvancedModelRenderer modelRenderer) {
@@ -15,7 +15,7 @@ public class RenderUtils {
         modelRenderer.translateRotate(matrixStack);
     }
 
-    public static Vec3d getWorldPosFromModel(Entity entity, float entityYaw, AdvancedModelRenderer modelRenderer) {
+    public static Vector3d getWorldPosFromModel(Entity entity, float entityYaw, AdvancedModelRenderer modelRenderer) {
         MatrixStack matrixStack = new MatrixStack();
         matrixStack.translate(entity.getPosX(), entity.getPosY(), entity.getPosZ());
         matrixStack.rotate(new Quaternion(0, -entityYaw + 180, 0, true));
@@ -27,6 +27,6 @@ public class RenderUtils {
 
         Vector4f vec = new Vector4f(0, 0, 0, 1);
         vec.transform(matrix4f);
-        return new Vec3d(vec.getX(), vec.getY(), vec.getZ());
+        return new Vector3d(vec.getX(), vec.getY(), vec.getZ());
     }
 }

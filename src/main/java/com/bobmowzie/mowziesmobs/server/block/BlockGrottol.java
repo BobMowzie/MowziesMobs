@@ -117,7 +117,7 @@ public class BlockGrottol extends HorizontalBlock {
         }
 
         @Override
-        public final String getName() {
+        public final String getString() {
             return name;
         }
 

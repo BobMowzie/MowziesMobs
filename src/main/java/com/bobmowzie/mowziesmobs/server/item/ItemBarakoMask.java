@@ -123,5 +123,10 @@ public class ItemBarakoMask extends ArmorItem implements BarakoaMask {
         public float getToughness() {
             return ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.armorConfig.toughness.get();
         }
+
+        @Override
+        public float getKnockbackResistance() {
+            return ArmorMaterial.GOLD.getKnockbackResistance();
+        }
     }
 }

@@ -20,7 +20,7 @@ public final class BlackPinkSound extends TickableSound {
             y = (float) minecart.getPosY();
             z = (float) minecart.getPosZ();
         } else {
-            donePlaying = true;
+            finishPlaying();
         }
     }
 }

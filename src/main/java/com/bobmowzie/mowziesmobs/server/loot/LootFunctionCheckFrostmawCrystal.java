@@ -1,15 +1,14 @@
 package com.bobmowzie.mowziesmobs.server.loot;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.google.gson.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootFunction;
-import net.minecraft.world.storage.loot.LootParameters;
-import net.minecraft.world.storage.loot.conditions.ILootCondition;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootFunction;
+import net.minecraft.loot.LootFunctionType;
+import net.minecraft.loot.LootParameters;
+import net.minecraft.loot.conditions.ILootCondition;
 
 public class LootFunctionCheckFrostmawCrystal extends LootFunction {
     public LootFunctionCheckFrostmawCrystal(ILootCondition[] conditionsIn) {
@@ -28,12 +27,17 @@ public class LootFunctionCheckFrostmawCrystal extends LootFunction {
         return stack;
     }
 
+    @Override
+    public LootFunctionType getFunctionType() {
+        return LootTableHandler.CHECK_FROSTMAW_CRYSTAL;
+    }
+
     public static class Serializer extends LootFunction.Serializer<LootFunctionCheckFrostmawCrystal> {
         public Serializer() {
-            super(new ResourceLocation(MowziesMobs.MODID, "has_crystal"), LootFunctionCheckFrostmawCrystal.class);
+            super();
         }
 
-        public void serialize(LootFunctionCheckFrostmawCrystal property, JsonSerializationContext serializationContext) {
+        public void serialize(JsonObject object, LootFunctionCheckFrostmawCrystal function, JsonSerializationContext serializationContext) {
         }
 
         @Override

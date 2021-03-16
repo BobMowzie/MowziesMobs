@@ -25,6 +25,8 @@ import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.LookAtGoal;
 import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
@@ -51,7 +53,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.*;
 import net.minecraftforge.api.distmarker.Dist;
@@ -103,11 +105,11 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     private BarakoaHurtByTargetAI hurtByTargetAI;
 
     @OnlyIn(Dist.CLIENT)
-    public Vec3d[] betweenHandPos;
+    public Vector3d[] betweenHandPos;
     @OnlyIn(Dist.CLIENT)
-    public Vec3d[] blessingPlayerPos;
+    public Vector3d[] blessingPlayerPos;
 
-    private static EntityPredicate GIVE_ACHIEVEMENT_PRED = new EntityPredicate().setLineOfSiteRequired().setUseInvisibilityCheck();
+    private static final EntityPredicate GIVE_ACHIEVEMENT_PRED = new EntityPredicate().setUseInvisibilityCheck();
 
     private static ParticleComponent.KeyTrack superNovaKeyTrack1 = new ParticleComponent.KeyTrack(
             new float[]{0, 20f, 20f, 0},
@@ -123,8 +125,8 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         experienceValue = 45;
 
         if (world.isRemote) {
-            betweenHandPos = new Vec3d[]{new Vec3d(0, 0, 0)};
-            blessingPlayerPos = new Vec3d[]{new Vec3d(0, 0, 0)};
+            betweenHandPos = new Vector3d[]{new Vector3d(0, 0, 0)};
+            blessingPlayerPos = new Vector3d[]{new Vector3d(0, 0, 0)};
         }
     }
 
@@ -137,9 +139,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 if (target instanceof PlayerEntity) {
                     if (this.world.getDifficulty() == Difficulty.PEACEFUL) return false;
                     ItemStack headArmorStack = ((PlayerEntity) target).inventory.armorInventory.get(3);
-                    if (headArmorStack.getItem() instanceof BarakoaMask) {
-                        return false;
-                    }
+                    return !(headArmorStack.getItem() instanceof BarakoaMask);
                 }
                 return true;
             }));
@@ -179,7 +179,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 
                 if (!entity.world.isRemote) {
                     if (entity.getAnimationTick() == 44) {
-                        Vec3d offset = new Vec3d(1.1f, 0, 0);
+                        Vector3d offset = new Vector3d(1.1f, 0, 0);
                         offset = offset.rotateYaw((float) Math.toRadians(-entity.rotationYaw - 90));
                         EntitySuperNova superNova = new EntitySuperNova(EntityHandler.SUPER_NOVA, entity.world, entity, entity.getPosX() + offset.x, entity.getPosY() + 0.05, entity.getPosZ() + offset.z);
                         world.addEntity(superNova);
@@ -223,13 +223,11 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         return 1.4f;
     }
 
-    @Override
-    protected void registerAttributes() {
-        super.registerAttributes();
-        this.getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0);
-        this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(MAX_HEALTH * ConfigHandler.MOBS.BARAKO.combatConfig.healthMultiplier.get());
-        this.getAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(40);
-        this.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(5);
+    public static AttributeModifierMap.MutableAttribute createAttributes() {
+        return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 5)
+                .createMutableAttribute(Attributes.MAX_HEALTH, MAX_HEALTH * ConfigHandler.MOBS.BARAKO.combatConfig.healthMultiplier.get())
+                .createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1)
+                .createMutableAttribute(Attributes.FOLLOW_RANGE, 40);
     }
 
     @Override
@@ -300,7 +298,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 entityAttackingAngle += 360;
             }
             float entityRelativeAngle = Math.abs(entityHitAngle - entityAttackingAngle);
-            Vec3d betweenEntitiesVec = getPositionVector().subtract(target.getPositionVector());
+            Vector3d betweenEntitiesVec = getPositionVec().subtract(target.getPositionVec());
             boolean targetComingCloser = target.getMotion().dotProduct(betweenEntitiesVec) > 0;
             if (getAnimation() == NO_ANIMATION && !isAIDisabled() && rand.nextInt(80) == 0 && getEntitiesNearby(EntityBarakoa.class, 25).size() < 5 && targetDistance > 4.5 && timeUntilBarakoa <= 0) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SPAWN_ANIMATION);
@@ -389,7 +387,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 blessingPlayer = getCustomer();
             }
             if (world.isRemote && blessingPlayer != null) {
-                blessingPlayerPos[0] = blessingPlayer.getPositionVector().add(new Vec3d(0, blessingPlayer.getHeight() / 2f, 0));
+                blessingPlayerPos[0] = blessingPlayer.getPositionVec().add(new Vector3d(0, blessingPlayer.getHeight() / 2f, 0));
                 if (getAnimationTick() > 5 && getAnimationTick() < 40) {
                     int particleCount = 2;
                     while (--particleCount != 0) {
@@ -429,7 +427,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 for (LivingEntity inRange : entities) {
                     if (inRange instanceof LeaderSunstrikeImmune) continue;
                     if (inRange instanceof PlayerEntity && inRange.isInvulnerable()) continue;
-                    Vec3d diff = inRange.getPositionVector().subtract(getPositionVector().add(0, 3, 0));
+                    Vector3d diff = inRange.getPositionVec().subtract(getPositionVec().add(0, 3, 0));
                     diff = diff.normalize().scale(0.2);
                     inRange.setMotion(getMotion().subtract(diff));
 
@@ -525,7 +523,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         }
         if (getAnimationTick() > 1 && getAnimationTick() < 27) {
             for (int i = 0; i < 6; i++) {
-                Vec3d particlePos = new Vec3d(rand.nextFloat() * 5, 0, 0);
+                Vector3d particlePos = new Vector3d(rand.nextFloat() * 5, 0, 0);
                 particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.add(betweenHandPos[0]);
@@ -726,7 +724,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         UUID uuid = PlayerEntity.getUUID(player.getGameProfile());
         CompoundNBT compound = getDataManager().get(TRADED_PLAYERS);
         ListNBT players = compound.getList("players", Constants.NBT.TAG_COMPOUND);
-        players.add(NBTUtil.writeUniqueId(uuid));
+        players.add(NBTUtil.func_240626_a_(uuid));
         compound.put("players", players);
         getDataManager().set(TRADED_PLAYERS, compound);
     }
@@ -807,12 +805,12 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     }
 
     @Override
-    protected boolean processInteract(PlayerEntity player, Hand hand) {
+    protected ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
         if (canTradeWith(player) && getAttackTarget() == null && isAlive()) {
             openGUI(player);
-            return true;
+            return ActionResultType.SUCCESS;
         }
-        return false;
+        return ActionResultType.PASS;
     }
 
     public boolean canTradeWith(PlayerEntity player) {
@@ -843,7 +841,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     }
 
     @Override
-    public ILivingEntityData onInitialSpawn(IWorld world, DifficultyInstance difficulty, SpawnReason reason, ILivingEntityData livingData, CompoundNBT compound) {
+    public ILivingEntityData onInitialSpawn(IServerWorld world, DifficultyInstance difficulty, SpawnReason reason, ILivingEntityData livingData, CompoundNBT compound) {
         if (reason == SpawnReason.SPAWN_EGG) {
             // Try to guess which player spawned Barako, rotate towards them
             List<PlayerEntity> players = getPlayersNearby(5, 5, 5, 5);

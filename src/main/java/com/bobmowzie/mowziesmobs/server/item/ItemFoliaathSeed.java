@@ -18,7 +18,9 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -28,12 +30,12 @@ public class ItemFoliaathSeed extends Item {
         super(properties);
     }
 
-    public Entity spawnCreature(World world, MobEntity entity, double x, double y, double z) {
+    public Entity spawnCreature(IServerWorld world, MobEntity entity, double x, double y, double z) {
         if (entity != null) {
-            entity.setLocationAndAngles(x + 0.5, y, z + 0.5, world.rand.nextFloat() * 360 - 180, 0);
+            entity.setLocationAndAngles(x + 0.5, y, z + 0.5, world.getWorld().rand.nextFloat() * 360 - 180, 0);
             entity.rotationYawHead = entity.rotationYaw;
             entity.renderYawOffset = entity.rotationYaw;
-            entity.onInitialSpawn(world, world.getDifficultyForLocation(new BlockPos(entity)), SpawnReason.MOB_SUMMONED, null, null);
+            entity.onInitialSpawn(world, world.getDifficultyForLocation(entity.getPosition()), SpawnReason.MOB_SUMMONED, null, null);
             if (!entity.canSpawn(world, SpawnReason.MOB_SUMMONED)) {
                 return null;
             }
@@ -56,7 +58,7 @@ public class ItemFoliaathSeed extends Item {
         } else if (!player.canPlayerEdit(pos.offset(facing), facing, stack)) {
             return ActionResultType.FAIL;
         }
-        Entity entity = spawnCreature(world, new EntityBabyFoliaath(EntityHandler.BABY_FOLIAATH, world), pos.getX(), pos.getY() + 1, pos.getZ());
+        Entity entity = spawnCreature((ServerWorld) world, new EntityBabyFoliaath(EntityHandler.BABY_FOLIAATH, world), pos.getX(), pos.getY() + 1, pos.getZ());
         if (entity != null) {
             if (entity instanceof LivingEntity && stack.hasDisplayName()) {
                 entity.setCustomName(stack.getDisplayName());

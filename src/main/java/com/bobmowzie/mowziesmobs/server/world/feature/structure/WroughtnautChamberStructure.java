@@ -2,27 +2,29 @@ package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.mojang.datafixers.Dynamic;
+import com.mojang.serialization.Codec;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.*;
 import net.minecraft.world.gen.feature.template.TemplateManager;
 
-import java.util.Random;
-import java.util.function.Function;
-
 // Edited from Telepathic Grunt's base code
 
 public class WroughtnautChamberStructure extends MowzieStructure {
-    public WroughtnautChamberStructure(Function<Dynamic<?>, ? extends NoFeatureConfig> config)
+    public WroughtnautChamberStructure(Codec<NoFeatureConfig> codec) {
+        super(codec);
+    }
+
+    @Override
+    public IStartFactory<NoFeatureConfig> getStartFactory() {
+        return null;
+    }
+    /*public WroughtnautChamberStructure(Function<Dynamic<?>, ? extends NoFeatureConfig> config)
     {
         super(config);
     }
@@ -97,5 +99,5 @@ public class WroughtnautChamberStructure extends MowzieStructure {
             bounds.maxZ = bounds.minZ + 1;
             bounds.maxY = bounds.minY + 1;
         }
-    }
+    }*/ // TODO
 }

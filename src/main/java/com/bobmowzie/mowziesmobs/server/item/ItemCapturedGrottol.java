@@ -16,6 +16,7 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 
 import java.util.Random;
@@ -55,7 +56,7 @@ public class ItemCapturedGrottol extends Item {
             }
             grottol.moveToBlockPosAndAngles(location, 0, 0);
             lookAtPlayer(grottol, player);
-            grottol.onInitialSpawn(world, world.getDifficultyForLocation(location), SpawnReason.MOB_SUMMONED, null, null);
+            grottol.onInitialSpawn((IServerWorld) world, world.getDifficultyForLocation(location), SpawnReason.MOB_SUMMONED, null, null);
             world.addEntity(grottol);
             if (!player.abilities.isCreativeMode) {
                 stack.shrink(1);

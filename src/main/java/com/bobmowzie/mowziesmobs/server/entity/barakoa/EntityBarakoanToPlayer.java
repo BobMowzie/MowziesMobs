@@ -3,13 +3,16 @@ package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -41,20 +44,17 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
     }
 
     @Override
-    protected boolean processInteract(PlayerEntity player, Hand hand) {
-        if (player == leader && getActive() && getAnimation() != DEACTIVATE_ANIMATION) {
+    protected ActionResultType getEntityInteractionResult(PlayerEntity playerIn, Hand hand) {
+        if (playerIn == leader && getActive() && getAnimation() != DEACTIVATE_ANIMATION) {
             AnimationHandler.INSTANCE.sendAnimationMessage(this, DEACTIVATE_ANIMATION);
             playSound(MMSounds.ENTITY_BARAKOA_RETRACT.get(), 1, 1);
         }
-        return super.processInteract(player, hand);
+        return super.getEntityInteractionResult(playerIn, hand);
     }
 
-    @Override
-    protected void registerAttributes() {
-        super.registerAttributes();
-        getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
-        getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(20 * ConfigHandler.MOBS.BARAKOA.combatConfig.healthMultiplier.get());
-        getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(7);
+    public static AttributeModifierMap.MutableAttribute createAttributes() {
+        return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 7 * ConfigHandler.MOBS.BARAKOA.combatConfig.attackMultiplier.get())
+                .createMutableAttribute(Attributes.MAX_HEALTH, 20 * ConfigHandler.MOBS.BARAKOA.combatConfig.healthMultiplier.get());
     }
 
     @Override

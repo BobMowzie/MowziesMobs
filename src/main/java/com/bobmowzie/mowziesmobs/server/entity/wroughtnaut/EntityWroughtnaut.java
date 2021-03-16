@@ -20,6 +20,8 @@ import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.controller.BodyController;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.monster.IMob;
@@ -40,11 +42,8 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.BossInfo;
-import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.*;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nullable;
@@ -100,18 +99,18 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 
     private CeilingDisturbance disturbance;
 
-    public Vec3d leftEyePos, rightEyePos;
-    public Vec3d leftEyeRot, rightEyeRot;
+    public Vector3d leftEyePos, rightEyePos;
+    public Vector3d leftEyeRot, rightEyeRot;
 
     public EntityWroughtnaut(EntityType<? extends EntityWroughtnaut> type, World world) {
         super(type, world);
         experienceValue = 30;
         active = false;
         stepHeight = 1;
-//        rightEyePos = new Vec3d(0, 0, 0);
-//        leftEyePos = new Vec3d(0, 0, 0);
-//        rightEyeRot = new Vec3d(0, 0, 0);
-//        leftEyeRot = new Vec3d(0, 0, 0);
+//        rightEyePos = new Vector3d(0, 0, 0);
+//        leftEyePos = new Vector3d(0, 0, 0);
+//        rightEyeRot = new Vector3d(0, 0, 0);
+//        leftEyeRot = new Vector3d(0, 0, 0);
 
         dropAfterDeathAnim = true;
     }
@@ -162,12 +161,10 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         return getAnimation() == NO_ANIMATION && isActive() ? MMSounds.ENTITY_WROUGHT_AMBIENT.get() : null;
     }
 
-    @Override
-    protected void registerAttributes() {
-        super.registerAttributes();
-        getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1);
-        getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(40 * ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.combatConfig.healthMultiplier.get());
-        this.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(30);
+    public static AttributeModifierMap.MutableAttribute createAttributes() {
+        return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 30)
+                .createMutableAttribute(Attributes.MAX_HEALTH, 40 * ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.combatConfig.healthMultiplier.get())
+                .createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1);
     }
 
     @Override
@@ -306,7 +303,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 //            Path path = this.getNavigator().getPath();
 //            if (path != null) {
 //                for (int i = 0; i < path.getCurrentPathLength(); i++) {
-//                    Vec3d p = path.getVectorFromIndex(this, i);
+//                    Vector3d p = path.getVectorFromIndex(this, i);
 //                    ((WorldServer) this.world).spawnParticle(EnumParticleTypes.BLOCK_DUST, p.x, p.y + 0.1D, p.z, 1, 0.1D, 0.0D, 0.1D, 0.01D, Block.getIdFromBlock(i < path.getCurrentPathIndex() ? Blocks.GOLD_BLOCK : i == path.getCurrentPathIndex() ? Blocks.DIAMOND_BLOCK : Blocks.DIRT));
 //                }
 //            }
@@ -403,7 +400,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 
         private int remainingTicks;
 
-        private int duration;
+        private final int duration;
 
         public CeilingDisturbance(int x, int y, int z, int radius, int delay, int remainingTicks) {
             this.ceilX = x;
@@ -449,7 +446,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 
     @Nullable
     @Override
-    public ILivingEntityData onInitialSpawn(IWorld world, DifficultyInstance difficulty, SpawnReason reason, @Nullable ILivingEntityData livingData, @Nullable CompoundNBT compound) {
+    public ILivingEntityData onInitialSpawn(IServerWorld world, DifficultyInstance difficulty, SpawnReason reason, @Nullable ILivingEntityData livingData, @Nullable CompoundNBT compound) {
         setRestPos(getPosition());
         return super.onInitialSpawn(world, difficulty, reason, livingData, compound);
     }

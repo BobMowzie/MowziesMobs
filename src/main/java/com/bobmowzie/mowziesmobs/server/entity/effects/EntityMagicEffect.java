@@ -49,7 +49,7 @@ public abstract class EntityMagicEffect extends Entity {
 
     @Nullable
     @Override
-    public AxisAlignedBB getCollisionBoundingBox() {
+    public AxisAlignedBB getBoundingBox() {
         return null;
     }
 

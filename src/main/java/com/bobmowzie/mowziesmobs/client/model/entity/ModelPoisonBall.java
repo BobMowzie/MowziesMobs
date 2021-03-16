@@ -6,7 +6,7 @@ import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class ModelPoisonBall<T extends EntityPoisonBall> extends AdvancedModelBase<T> {
 	private final AdvancedModelRenderer inner;
@@ -38,8 +38,8 @@ public class ModelPoisonBall<T extends EntityPoisonBall> extends AdvancedModelBa
 	public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 		EntityPoisonBall poisonBall = entityIn;
 		float delta = ageInTicks - entityIn.ticksExisted;
-		Vec3d prevV = new Vec3d(poisonBall.prevMotionX, poisonBall.prevMotionY, poisonBall.prevMotionZ);
-		Vec3d dv = prevV.add(poisonBall.getMotion().subtract(prevV).scale(delta));
+		Vector3d prevV = new Vector3d(poisonBall.prevMotionX, poisonBall.prevMotionY, poisonBall.prevMotionZ);
+		Vector3d dv = prevV.add(poisonBall.getMotion().subtract(prevV).scale(delta));
 		double d = Math.sqrt(dv.x * dv.x + dv.y * dv.y + dv.z * dv.z);
 		if (d != 0) {
 			double a = dv.y / d;

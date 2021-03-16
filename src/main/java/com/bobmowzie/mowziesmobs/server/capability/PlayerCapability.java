@@ -21,7 +21,7 @@ import net.minecraft.nbt.INBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -42,59 +42,59 @@ public class PlayerCapability {
 
         Power[] getPowers();
 
-        public void tick(TickEvent.PlayerTickEvent event);
+        void tick(TickEvent.PlayerTickEvent event);
 
-        public boolean isVerticalSwing();
+        boolean isVerticalSwing();
 
-        public void setVerticalSwing(boolean verticalSwing);
+        void setVerticalSwing(boolean verticalSwing);
 
-        public int getUntilSunstrike();
+        int getUntilSunstrike();
 
-        public void setUntilSunstrike(int untilSunstrike);
+        void setUntilSunstrike(int untilSunstrike);
 
-        public int getUntilAxeSwing();
+        int getUntilAxeSwing();
 
-        public void setUntilAxeSwing(int untilAxeSwing);
+        void setUntilAxeSwing(int untilAxeSwing);
 
-        public void setAxeCanAttack(boolean axeCanAttack);
+        void setAxeCanAttack(boolean axeCanAttack);
 
-        public boolean getAxeCanAttack();
+        boolean getAxeCanAttack();
 
-        public boolean isMouseRightDown();
+        boolean isMouseRightDown();
 
-        public void setMouseRightDown(boolean mouseRightDown);
+        void setMouseRightDown(boolean mouseRightDown);
 
-        public boolean isMouseLeftDown();
+        boolean isMouseLeftDown();
 
-        public void setMouseLeftDown(boolean mouseLeftDown);
+        void setMouseLeftDown(boolean mouseLeftDown);
 
-        public boolean isPrevSneaking();
+        boolean isPrevSneaking();
 
-        public void setPrevSneaking(boolean prevSneaking);
+        void setPrevSneaking(boolean prevSneaking);
 
-        public int getTribeCircleTick();
+        int getTribeCircleTick();
 
-        public void setTribeCircleTick(int tribeCircleTick);
+        void setTribeCircleTick(int tribeCircleTick);
 
-        public List<EntityBarakoanToPlayer> getTribePack();
+        List<EntityBarakoanToPlayer> getTribePack();
 
-        public void setTribePack(List<EntityBarakoanToPlayer> tribePack);
+        void setTribePack(List<EntityBarakoanToPlayer> tribePack);
 
-        public int getTribePackRadius();
+        int getTribePackRadius();
 
-        public void setTribePackRadius(int tribePackRadius);
+        void setTribePackRadius(int tribePackRadius);
 
-        public EntityIceBreath getIcebreath();
+        EntityIceBreath getIcebreath();
 
-        public void setIcebreath(EntityIceBreath icebreath);
+        void setIcebreath(EntityIceBreath icebreath);
 
-        public boolean isUsingIceBreath();
+        boolean isUsingIceBreath();
 
-        public void setUsingIceBreath(boolean usingIceBreath);
+        void setUsingIceBreath(boolean usingIceBreath);
 
-        public int getPackSize();
+        int getPackSize();
 
-        public Vec3d getPrevMotion();
+        Vector3d getPrevMotion();
 
         void removePackMember(EntityBarakoanToPlayer tribePlayer);
 
@@ -215,7 +215,7 @@ public class PlayerCapability {
             this.usingIceBreath = usingIceBreath;
         }
 
-        public Vec3d getPrevMotion() {
+        public Vector3d getPrevMotion() {
             return prevMotion;
         }
 
@@ -227,7 +227,7 @@ public class PlayerCapability {
 
         public boolean axeCanAttack;
 
-        public Vec3d prevMotion;
+        public Vector3d prevMotion;
 
         public PowerGeomancy geomancy = new PowerGeomancy(this);
         public Power[] powers = new Power[]{geomancy};
@@ -235,7 +235,7 @@ public class PlayerCapability {
         public void tick(TickEvent.PlayerTickEvent event) {
             PlayerEntity player = event.player;
 
-            prevMotion = player.getPositionVec().subtract(new Vec3d(player.prevPosX, player.prevPosY, player.prevPosZ));
+            prevMotion = player.getPositionVec().subtract(new Vector3d(player.prevPosX, player.prevPosY, player.prevPosZ));
             prevTime = time;
             if (untilSunstrike > 0) {
                 untilSunstrike--;
@@ -259,7 +259,7 @@ public class PlayerCapability {
                     barakoan.index = i;
                     if (barakoan.getAttackTarget() == null && barakoan.getAnimation() != EntityBarakoanToPlayer.DEACTIVATE_ANIMATION) {
                         barakoan.getNavigator().tryMoveToXYZ(player.getPosX() + tribePackRadius * MathHelper.cos(theta * i), player.getPosY(), player.getPosZ() + tribePackRadius * MathHelper.sin(theta * i), 0.45);
-                        if (player.getDistance(barakoan) > 20 && player.onGround) {
+                        if (player.getDistance(barakoan) > 20 && player.isOnGround()) {
                             tryTeleportBarakoan(player, barakoan);
                         }
                     }
@@ -334,7 +334,7 @@ public class PlayerCapability {
             for (int l = 0; l <= 4; ++l) {
                 for (int i1 = 0; i1 <= 4; ++i1) {
                     if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && barakoan.isTeleportFriendlyBlock(x, z, y, l, i1)) {
-                        barakoan.setLocationAndAngles((double) ((float) (x + l) + 0.5F), (double) y, (double) ((float) (z + i1) + 0.5F), barakoan.rotationYaw, barakoan.rotationPitch);
+                        barakoan.setLocationAndAngles((float) (x + l) + 0.5F, y, (float) (z + i1) + 0.5F, barakoan.rotationYaw, barakoan.rotationPitch);
                         barakoan.getNavigator().clearPath();
                         return;
                     }
@@ -403,7 +403,7 @@ public class PlayerCapability {
         @CapabilityInject(IPlayerCapability.class)
         public static final Capability<IPlayerCapability> PLAYER_CAPABILITY = null;
 
-        private LazyOptional<IPlayerCapability> instance = LazyOptional.of(PLAYER_CAPABILITY::getDefaultInstance);
+        private final LazyOptional<IPlayerCapability> instance = LazyOptional.of(PLAYER_CAPABILITY::getDefaultInstance);
 
         @Override
         public INBT serializeNBT() {

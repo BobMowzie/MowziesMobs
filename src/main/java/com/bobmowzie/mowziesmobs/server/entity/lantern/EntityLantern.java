@@ -19,12 +19,13 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MoverType;
-import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -42,18 +43,18 @@ public class EntityLantern extends MowzieEntity {
             PUFF_ANIMATION
     };
 
-    public Vec3d dir;
+    public Vector3d dir;
     private int groundDist = 1;
 
     @OnlyIn(Dist.CLIENT)
-    private Vec3d[] pos;
+    private Vector3d[] pos;
 
     public EntityLantern(EntityType<? extends EntityLantern> type, World world) {
         super(type, world);
         dir = null;
 
         if (world.isRemote) {
-            pos = new Vec3d[1];
+            pos = new Vector3d[1];
         }
     }
 
@@ -65,13 +66,11 @@ public class EntityLantern extends MowzieEntity {
         this.goalSelector.addGoal(1, new AnimationDieAI<>(this));
     }
 
-    @Override
-    protected void registerAttributes() {
-        super.registerAttributes();
-        this.getAttributes().registerAttribute(SharedMonsterAttributes.FLYING_SPEED);
-        this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(4.0D * ConfigHandler.MOBS.LANTERN.healthMultiplier.get());
-        this.getAttribute(SharedMonsterAttributes.FLYING_SPEED).setBaseValue(0.3D);
-        this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.20000000298023224D);
+    public static AttributeModifierMap.MutableAttribute createAttributes() {
+        return MowzieEntity.createAttributes()
+                .createMutableAttribute(Attributes.MAX_HEALTH, 4.0D * ConfigHandler.MOBS.LANTERN.healthMultiplier.get())
+                .createMutableAttribute(Attributes.FLYING_SPEED, 0.3D)
+                .createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.2D);
     }
 
     @Override
@@ -120,7 +119,7 @@ public class EntityLantern extends MowzieEntity {
         }
 
         if (world.isRemote && ConfigHandler.CLIENT.glowEffect.get()) {
-            pos[0] = getPositionVector().add(0, getHeight() * 0.8, 0);
+            pos[0] = getPositionVec().add(0, getHeight() * 0.8, 0);
             if (ticksExisted % 70 == 0) {
                 AdvancedParticleBase.spawnParticle(world, ParticleHandler.GLOW.get(), pos[0].x, pos[0].y, pos[0].z, 0, 0, 0, true, 0, 0, 0, 0, 20F, 0.8, 0.95, 0.35, 1, 1, 70, true, new ParticleComponent[]{
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, new ParticleComponent.KeyTrack(
@@ -157,12 +156,12 @@ public class EntityLantern extends MowzieEntity {
     }
 
     @Override
-    public void travel(Vec3d movement)
+    public void travel(Vector3d movement)
     {
         if (this.isInWater()) {
             this.moveRelative(0.02F, movement);
             this.move(MoverType.SELF, this.getMotion());
-            this.setMotion(this.getMotion().scale((double)0.8F));
+            this.setMotion(this.getMotion().scale(0.8F));
         } else if (this.isInLava()) {
             this.moveRelative(0.02F, movement);
             this.move(MoverType.SELF, this.getMotion());
@@ -170,19 +169,19 @@ public class EntityLantern extends MowzieEntity {
         } else {
             BlockPos ground = new BlockPos(this.getPosX(), this.getBoundingBox().minY - 1.0D, this.getPosZ());
             float f = 0.91F;
-            if (this.onGround) {
+            if (this.isOnGround()) {
                 f = this.world.getBlockState(ground).getSlipperiness(world, ground, this) * 0.91F;
             }
 
             float f1 = 0.16277137F / (f * f * f);
             f = 0.91F;
-            if (this.onGround) {
+            if (this.isOnGround()) {
                 f = this.world.getBlockState(ground).getSlipperiness(world, ground, this) * 0.91F;
             }
 
-            this.moveRelative(this.onGround ? 0.1F * f1 : 0.02F, movement);
+            this.moveRelative(this.isOnGround() ? 0.1F * f1 : 0.02F, movement);
             this.move(MoverType.SELF, this.getMotion());
-            this.setMotion(this.getMotion().scale((double)f));
+            this.setMotion(this.getMotion().scale(f));
         }
 
         this.prevLimbSwingAmount = this.limbSwingAmount;

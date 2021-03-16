@@ -15,9 +15,9 @@ public class SmartBodyHelper extends BodyController {
 
 	private float targetYawHead;
 
-    private double[] histPosX = new double[HISTORY_SIZE];
+    private final double[] histPosX = new double[HISTORY_SIZE];
 
-    private double[] histPosZ = new double[HISTORY_SIZE];
+    private final double[] histPosZ = new double[HISTORY_SIZE];
 
 	public SmartBodyHelper(MobEntity entity) {
 		super(entity);

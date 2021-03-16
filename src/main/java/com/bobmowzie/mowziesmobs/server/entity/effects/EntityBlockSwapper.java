@@ -31,7 +31,7 @@ public class EntityBlockSwapper extends Entity {
     private static final DataParameter<Integer> RESTORE_TIME = EntityDataManager.createKey(EntityBlockSwapper.class, DataSerializers.VARINT);
     private static final DataParameter<BlockPos> POS = EntityDataManager.createKey(EntityBlockSwapper.class, DataSerializers.BLOCK_POS);
     private int duration;
-    private boolean breakParticlesEnd;
+    private final boolean breakParticlesEnd;
     private BlockPos pos;
 
     public EntityBlockSwapper(EntityType<? extends EntityBlockSwapper> type, World world) {
@@ -57,9 +57,8 @@ public class EntityBlockSwapper extends Entity {
         }
     }
 
-    @Nullable
     @Override
-    public AxisAlignedBB getCollisionBoundingBox() {
+    public AxisAlignedBB getBoundingBox() {
         return null;
     }
 

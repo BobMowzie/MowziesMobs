@@ -28,13 +28,11 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.Difficulty;
-import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.*;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -90,9 +88,7 @@ public class EntityBarakoaya extends EntityBarakoa implements LeaderSunstrikeImm
             if (target instanceof PlayerEntity) {
                 if (this.world.getDifficulty() == Difficulty.PEACEFUL) return false;
                 ItemStack headArmorStack = ((PlayerEntity) target).inventory.armorInventory.get(3);
-                if (headArmorStack.getItem() instanceof BarakoaMask) {
-                    return false;
-                }
+                return !(headArmorStack.getItem() instanceof BarakoaMask);
             }
             return true;
         }));
@@ -175,12 +171,12 @@ public class EntityBarakoaya extends EntityBarakoa implements LeaderSunstrikeImm
     }
 
     @Override
-    protected boolean processInteract(PlayerEntity player, Hand hand) {
+    protected ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
         if (canTradeWith(player) && getAttackTarget() == null && isAlive()) {
             openGUI(player);
-            return true;
+            return ActionResultType.SUCCESS;
         }
-        return false;
+        return ActionResultType.PASS;
     }
 
     public boolean canTradeWith(PlayerEntity player) {
@@ -193,7 +189,7 @@ public class EntityBarakoaya extends EntityBarakoa implements LeaderSunstrikeImm
 
     @Nullable
     @Override
-    public ILivingEntityData onInitialSpawn(IWorld world, DifficultyInstance difficulty, SpawnReason reason, @Nullable ILivingEntityData livingData, @Nullable CompoundNBT compound) {
+    public ILivingEntityData onInitialSpawn(IServerWorld world, DifficultyInstance difficulty, SpawnReason reason, @Nullable ILivingEntityData livingData, @Nullable CompoundNBT compound) {
         tradeStore = DEFAULT;
         return super.onInitialSpawn(world, difficulty, reason, livingData, compound);
     }

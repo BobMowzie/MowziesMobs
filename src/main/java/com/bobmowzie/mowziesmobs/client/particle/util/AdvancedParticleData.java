@@ -6,7 +6,7 @@ import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
 import com.mojang.brigadier.StringReader;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -17,35 +17,35 @@ public class AdvancedParticleData implements IParticleData {
     public static final IParticleData.IDeserializer<AdvancedParticleData> DESERIALIZER = new IParticleData.IDeserializer<AdvancedParticleData>() {
         public AdvancedParticleData deserialize(ParticleType<AdvancedParticleData> particleTypeIn, StringReader reader) throws CommandSyntaxException {
             reader.expect(' ');
-            double airDrag = (double) reader.readDouble();
+            double airDrag = reader.readDouble();
             reader.expect(' ');
-            double red = (double) reader.readDouble();
+            double red = reader.readDouble();
             reader.expect(' ');
-            double green = (double) reader.readDouble();
+            double green = reader.readDouble();
             reader.expect(' ');
-            double blue = (double) reader.readDouble();
+            double blue = reader.readDouble();
             reader.expect(' ');
-            double alpha = (double) reader.readDouble();
+            double alpha = reader.readDouble();
             reader.expect(' ');
             String rotationMode = reader.readString();
             reader.expect(' ');
-            double scale = (double) reader.readDouble();
+            double scale = reader.readDouble();
             reader.expect(' ');
-            double yaw = (double) reader.readDouble();
+            double yaw = reader.readDouble();
             reader.expect(' ');
-            double pitch = (double) reader.readDouble();
+            double pitch = reader.readDouble();
             reader.expect(' ');
-            double roll = (double) reader.readDouble();
+            double roll = reader.readDouble();
             reader.expect(' ');
             boolean emissive = reader.readBoolean();
             reader.expect(' ');
-            double duration = (double) reader.readDouble();
+            double duration = reader.readDouble();
             reader.expect(' ');
-            double faceCameraAngle = (double) reader.readDouble();
+            double faceCameraAngle = reader.readDouble();
             ParticleRotation rotation;
             if (rotationMode.equals("face_camera")) rotation = new ParticleRotation.FaceCamera((float) faceCameraAngle);
             else if (rotationMode.equals("euler")) rotation = new ParticleRotation.EulerAngles((float)yaw, (float)pitch, (float)roll);
-            else rotation = new ParticleRotation.OrientVector(new Vec3d(yaw, pitch, roll));
+            else rotation = new ParticleRotation.OrientVector(new Vector3d(yaw, pitch, roll));
             return new AdvancedParticleData(particleTypeIn, rotation, scale, red, green, blue, alpha, airDrag, duration, emissive);
         }
 
@@ -66,7 +66,7 @@ public class AdvancedParticleData implements IParticleData {
             ParticleRotation rotation;
             if (rotationMode.equals("face_camera")) rotation = new ParticleRotation.FaceCamera((float) faceCameraAngle);
             else if (rotationMode.equals("euler")) rotation = new ParticleRotation.EulerAngles((float)yaw, (float)pitch, (float)roll);
-            else rotation = new ParticleRotation.OrientVector(new Vec3d(yaw, pitch, roll));
+            else rotation = new ParticleRotation.OrientVector(new Vector3d(yaw, pitch, roll));
             return new AdvancedParticleData(particleTypeIn, rotation, scale, red, green, blue, alpha, airDrag, duration, emissive);
         }
     };
@@ -125,7 +125,7 @@ public class AdvancedParticleData implements IParticleData {
         }
         else {
             rotationMode = "orient";
-            Vec3d vec = ((ParticleRotation.OrientVector)rotation).orientation;
+            Vector3d vec = ((ParticleRotation.OrientVector)rotation).orientation;
             yaw = (float) vec.x;
             pitch = (float) vec.y;
             roll = (float) vec.z;
@@ -166,7 +166,7 @@ public class AdvancedParticleData implements IParticleData {
         }
         else {
             rotationMode = "orient";
-            Vec3d vec = ((ParticleRotation.OrientVector)rotation).orientation;
+            Vector3d vec = ((ParticleRotation.OrientVector)rotation).orientation;
             yaw = (float) vec.x;
             pitch = (float) vec.y;
             roll = (float) vec.z;

@@ -119,5 +119,10 @@ public class ItemWroughtHelm extends ArmorItem {
         public float getToughness() {
             return ConfigHandler.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorConfig.toughness.get();
         }
+
+        @Override
+        public float getKnockbackResistance() {
+            return 0.1f;
+        }
     }
 }

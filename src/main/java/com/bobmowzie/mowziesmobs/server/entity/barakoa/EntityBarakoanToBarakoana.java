@@ -91,9 +91,7 @@ public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> i
             if (target instanceof PlayerEntity) {
                 if (this.world.getDifficulty() == Difficulty.PEACEFUL) return false;
                 ItemStack headArmorStack = ((PlayerEntity) target).inventory.armorInventory.get(3);
-                if (headArmorStack.getItem() instanceof BarakoaMask) {
-                    return false;
-                }
+                return !(headArmorStack.getItem() instanceof BarakoaMask);
             }
             return true;
         }));

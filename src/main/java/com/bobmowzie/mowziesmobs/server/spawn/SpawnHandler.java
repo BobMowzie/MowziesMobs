@@ -9,9 +9,11 @@ import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.EntitySpawnPlacementRegistry;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorldReader;
+import net.minecraft.world.biome.MobSpawnInfo;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.spawner.WorldEntitySpawner;
 import net.minecraft.world.biome.Biome;
@@ -37,11 +39,11 @@ public enum SpawnHandler {
             @Override
             public boolean test(IWorldReader t, BlockPos pos, EntityType<? extends MobEntity> entityType) {
                 BlockState block = t.getBlockState(pos.down());
-                boolean flag = block.getBlock() != Blocks.BEDROCK && block.getBlock() != Blocks.BARRIER && block.getMaterial().blocksMovement();
+                if (block.getBlock() != Blocks.BEDROCK && block.getBlock() != Blocks.BARRIER && block.getMaterial().blocksMovement())
+                    return false;
                 BlockState iblockstateUp = t.getBlockState(pos);
                 BlockState iblockstateUp2 = t.getBlockState(pos.up());
-                flag = flag && WorldEntitySpawner.isSpawnableSpace(t, pos, iblockstateUp, iblockstateUp.getFluidState()) && WorldEntitySpawner.isSpawnableSpace(t, pos.up(), iblockstateUp2, iblockstateUp2.getFluidState());
-                return flag;
+                return WorldEntitySpawner.func_234968_a_(t, pos, iblockstateUp, iblockstateUp.getFluidState(), entityType) && WorldEntitySpawner.func_234968_a_(t, pos.up(), iblockstateUp2, iblockstateUp2.getFluidState(), entityType);
             }
         });
     }
@@ -101,7 +103,7 @@ public enum SpawnHandler {
     private void registerEntityWorldSpawn(EntityType<?> entity, int weight, int min, int max, EntityClassification classification, Biome... biomes) {
         for (Biome biome : biomes) {
             if (biome != null) {
-                biome.getSpawns(classification).add(new Biome.SpawnListEntry(entity, weight, min, max));
+                biome.getMobSpawnInfo().getSpawners(classification).add(new MobSpawnInfo.Spawners(entity, weight, min, max));
             }
         }
     }
@@ -125,7 +127,7 @@ public enum SpawnHandler {
             }
         }
 
-        private boolean acceptsBiome(Biome biome) {
+        private boolean acceptsBiome(RegistryKey<Biome> biome) {
             Set<Type> thisTypes = BiomeDictionary.getTypes(biome);
             for (int i = 0; i < neededTypes.length; i++) {
                 if (neededTypes[i] == null) continue;
@@ -155,7 +157,9 @@ public enum SpawnHandler {
         }
 
         Set<Biome> toReturn = new HashSet<>();
-        for (Biome b : ForgeRegistries.BIOMES) {
+        for (Map.Entry<RegistryKey<Biome>, Biome> e : ForgeRegistries.BIOMES.getEntries()) {
+            RegistryKey<Biome> key = e.getKey();
+            Biome b = e.getValue();
             ResourceLocation biomeRegistryName = b.getRegistryName();
             if (biomeRegistryName != null) {
                 String biomeName = biomeRegistryName.toString();
@@ -169,7 +173,7 @@ public enum SpawnHandler {
                     continue;
                 }
                 for (BiomeCombo biomeCombo : biomeCombos) {
-                    if (biomeCombo.acceptsBiome(b)) toReturn.add(b);
+                    if (biomeCombo.acceptsBiome(key)) toReturn.add(b);
                 }
             }
         }

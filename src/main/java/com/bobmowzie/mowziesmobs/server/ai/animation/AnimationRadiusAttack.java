@@ -12,19 +12,19 @@ import java.util.EnumSet;
 import java.util.List;
 
 public class AnimationRadiusAttack<T extends MowzieEntity & IAnimatedEntity> extends SimpleAnimationAI<T> {
-    private float radius;
-    private float damageMultiplier;
-    private float knockBackMultiplier;
-    private int damageFrame;
-    private boolean pureKnockback;
+    private final float radius;
+    private final float damageMultiplier;
+    private final float applyKnockbackMultiplier;
+    private final int damageFrame;
+    private final boolean pureapplyKnockback;
 
-    public AnimationRadiusAttack(T entity, Animation animation, float radius, float damageMultiplier, float knockBackMultiplier, int damageFrame, boolean pureKnockback) {
+    public AnimationRadiusAttack(T entity, Animation animation, float radius, float damageMultiplier, float applyKnockbackMultiplier, int damageFrame, boolean pureapplyKnockback) {
         super(entity, animation);
         this.radius = radius;
         this.damageMultiplier = damageMultiplier;
-        this.knockBackMultiplier = knockBackMultiplier;
+        this.applyKnockbackMultiplier = applyKnockbackMultiplier;
         this.damageFrame = damageFrame;
-        this.pureKnockback = pureKnockback;
+        this.pureapplyKnockback = pureapplyKnockback;
         this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.JUMP, Flag.LOOK));
     }
 
@@ -37,11 +37,11 @@ public class AnimationRadiusAttack<T extends MowzieEntity & IAnimatedEntity> ext
                 if (entity instanceof EntityBarako && aHit instanceof LeaderSunstrikeImmune) {
                     continue;
                 }
-                entity.attackEntityAsMob(aHit, damageMultiplier, knockBackMultiplier);
-                if (pureKnockback) {
+                entity.attackEntityAsMob(aHit, damageMultiplier, applyKnockbackMultiplier);
+                if (pureapplyKnockback) {
                     double angle = entity.getAngleBetweenEntities(entity, aHit);
-                    double x = knockBackMultiplier * Math.cos(Math.toRadians(angle - 90));
-                    double z = knockBackMultiplier * Math.sin(Math.toRadians(angle - 90));
+                    double x = applyKnockbackMultiplier * Math.cos(Math.toRadians(angle - 90));
+                    double z = applyKnockbackMultiplier * Math.sin(Math.toRadians(angle - 90));
                     aHit.setMotion(x, aHit.getMotion().y, z);
                 }
             }

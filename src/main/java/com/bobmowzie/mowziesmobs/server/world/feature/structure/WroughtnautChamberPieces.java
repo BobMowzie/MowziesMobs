@@ -11,9 +11,12 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.world.ISeedReader;
+import net.minecraft.world.IServerWorld;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
+import net.minecraft.world.gen.feature.structure.StructureManager;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
 import net.minecraft.world.gen.feature.structure.TemplateStructurePiece;
 import net.minecraft.world.gen.feature.template.PlacementSettings;
@@ -36,9 +39,9 @@ public class WroughtnautChamberPieces {
     }
 
     public static class Piece extends TemplateStructurePiece {
-        private ResourceLocation resourceLocation;
+        private final ResourceLocation resourceLocation;
         private Rotation rotation;
-        private BlockPos startPos;
+        private final BlockPos startPos;
         private BlockPos wallPos;
 
         public Piece(TemplateManager templateManagerIn, ResourceLocation resourceLocationIn, BlockPos pos, Rotation rotationIn)
@@ -114,13 +117,12 @@ public class WroughtnautChamberPieces {
          * rare block spawns under the floor, or what item an Item Frame will have.
          */
         @Override
-        protected void handleDataMarker(String function, BlockPos pos, IWorld worldIn, Random rand, MutableBoundingBox sbb)
-        {
+        protected void handleDataMarker(String function, BlockPos pos, IServerWorld worldIn, Random rand, MutableBoundingBox sbb) {
 
         }
 
         @Override
-        public boolean create(IWorld worldIn, ChunkGenerator<?> chunkGeneratorIn, Random randomIn, MutableBoundingBox mutableBoundingBoxIn, ChunkPos chunkPosIn) {
+        public boolean func_230383_a_(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random p_230383_4_, MutableBoundingBox mutableBoundingBoxIn, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
             Pair<BlockPos, Rotation> chamberResults;
             if (wallPos == null) {
                 chamberResults = tryWroughtChamber(worldIn, startPos.getX(), startPos.getY(), startPos.getZ());
@@ -141,7 +143,7 @@ public class WroughtnautChamberPieces {
             this.templatePosition = this.templatePosition.add(rotationOffset);
             mutableBoundingBoxIn = template.getMutableBoundingBox(placeSettings, templatePosition);
 
-            return super.create(worldIn, chunkGeneratorIn, randomIn, mutableBoundingBoxIn, chunkPosIn);
+            return super.func_230383_a_(worldIn, p_230383_2_, p_230383_3_, p_230383_4_, mutableBoundingBoxIn, p_230383_6_, p_230383_7_);
         }
 
         @Nullable

@@ -21,6 +21,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -131,8 +132,8 @@ public class EntityIceBreath extends EntityMagicEffect {
             boolean pitchCheck = (entityRelativePitch <= ARC / 2f && entityRelativePitch >= -ARC / 2f) || (entityRelativePitch >= 360 - ARC / 2f || entityRelativePitch <= -360 + ARC / 2f);
             if (inRange && yawCheck && pitchCheck) {
                 // Raytrace to mob center to avoid damaging through walls
-                Vec3d from = getPositionVec();
-                Vec3d to = entityHit.getPositionVec().add(0, entityHit.getHeight() / 2f, 0);
+                Vector3d from = getPositionVec();
+                Vector3d to = entityHit.getPositionVec().add(0, entityHit.getHeight() / 2f, 0);
                 BlockRayTraceResult result = world.rayTraceBlocks(new RayTraceContext(from, to, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
                 if (result.getType() == RayTraceResult.Type.BLOCK) {
                     continue;

@@ -8,6 +8,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
@@ -21,8 +22,8 @@ public class MessagePlayerSummonSunstrike {
     }
 
     private static BlockRayTraceResult rayTrace(LivingEntity entity, double reach) {
-        Vec3d pos = entity.getEyePosition(0);
-        Vec3d segment = entity.getLookVec();
+        Vector3d pos = entity.getEyePosition(0);
+        Vector3d segment = entity.getLookVec();
         segment = pos.add(segment.x * reach, segment.y * reach, segment.z * reach);
         return entity.world.rayTraceBlocks(new RayTraceContext(pos, segment, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, entity));
     }

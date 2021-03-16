@@ -45,7 +45,7 @@ public class LastDamageCapability {
         @CapabilityInject(ILastDamageCapability.class)
         public static final Capability<ILastDamageCapability> LAST_DAMAGE_CAPABILITY = null;
 
-        private LazyOptional<ILastDamageCapability> instance = LazyOptional.of(LAST_DAMAGE_CAPABILITY::getDefaultInstance);
+        private final LazyOptional<ILastDamageCapability> instance = LazyOptional.of(LAST_DAMAGE_CAPABILITY::getDefaultInstance);
 
         @Override
         public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {

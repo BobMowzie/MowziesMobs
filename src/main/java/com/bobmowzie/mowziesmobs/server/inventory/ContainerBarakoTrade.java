@@ -17,7 +17,7 @@ public final class ContainerBarakoTrade extends Container {
 
     private final PlayerEntity player;
 
-    private InventoryBarako inventory;
+    private final InventoryBarako inventory;
 
     public ContainerBarakoTrade(int id, PlayerInventory playerInventory) {
         this(id, (EntityBarako) MowziesMobs.PROXY.getReferencedMob(), playerInventory);

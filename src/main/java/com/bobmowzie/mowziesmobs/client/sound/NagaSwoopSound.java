@@ -9,7 +9,7 @@ import net.minecraft.util.SoundCategory;
  * Created by BobMowzie on 1/9/2019.
  */
 public class NagaSwoopSound extends TickableSound {
-    private Entity naga;
+    private final Entity naga;
     int ticksExisted = 0;
     boolean active = true;
 
@@ -33,7 +33,7 @@ public class NagaSwoopSound extends TickableSound {
             z = (float) naga.getPosZ();
             if (!naga.isAlive()) {
                 active = false;
-                donePlaying = true;
+                finishPlaying();
             }
         }
         ticksExisted++;
