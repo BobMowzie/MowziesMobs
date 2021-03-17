@@ -1,6 +1,8 @@
 package com.bobmowzie.mowziesmobs.client.particle.util;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
@@ -229,5 +231,20 @@ public class AdvancedParticleData implements IParticleData {
     @OnlyIn(Dist.CLIENT)
     public ParticleComponent[] getComponents() {
         return components;
+    }
+
+    public static Codec<AdvancedParticleData> CODEC(ParticleType<AdvancedParticleData> particleType) {
+        return RecordCodecBuilder.create((codecBuilder) -> codecBuilder.group(
+                Codec.DOUBLE.fieldOf("scale").forGetter(AdvancedParticleData::getScale),
+                Codec.DOUBLE.fieldOf("r").forGetter(AdvancedParticleData::getRed),
+                Codec.DOUBLE.fieldOf("g").forGetter(AdvancedParticleData::getGreen),
+                Codec.DOUBLE.fieldOf("b").forGetter(AdvancedParticleData::getBlue),
+                Codec.DOUBLE.fieldOf("a").forGetter(AdvancedParticleData::getAlpha),
+                Codec.DOUBLE.fieldOf("drag").forGetter(AdvancedParticleData::getAirDrag),
+                Codec.DOUBLE.fieldOf("duration").forGetter(AdvancedParticleData::getDuration),
+                Codec.BOOL.fieldOf("emissive").forGetter(AdvancedParticleData::isEmissive)
+                ).apply(codecBuilder, (scale, r, g, b, a, drag, duration, emissive) ->
+                        new AdvancedParticleData(particleType, new ParticleRotation.FaceCamera(0), scale, r, g, b, a, drag, duration, emissive, new ParticleComponent[]{}))
+        );
     }
 }

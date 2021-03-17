@@ -4,12 +4,17 @@ import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.IParticleData;
+import net.minecraft.particles.ItemParticleData;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
@@ -17,6 +22,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Locale;
+import java.util.Optional;
 
 /**
  * Created by BobMowzie on 6/2/2017.
@@ -191,6 +197,20 @@ public class ParticleCloud extends SpriteTexturedParticle {
         @OnlyIn(Dist.CLIENT)
         public float getAirDrag() {
             return this.airDrag;
+        }
+
+        public static Codec<CloudData> CODEC(ParticleType<CloudData> particleType) {
+            return RecordCodecBuilder.create((codecBuilder) -> codecBuilder.group(
+                    Codec.FLOAT.fieldOf("r").forGetter(CloudData::getR),
+                    Codec.FLOAT.fieldOf("g").forGetter(CloudData::getG),
+                    Codec.FLOAT.fieldOf("b").forGetter(CloudData::getB),
+                    Codec.FLOAT.fieldOf("scale").forGetter(CloudData::getScale),
+                    Codec.STRING.fieldOf("behavior").forGetter((cloudData) -> cloudData.getBehavior().toString()),
+                    Codec.INT.fieldOf("duration").forGetter(CloudData::getDuration),
+                    Codec.FLOAT.fieldOf("airdrag").forGetter(CloudData::getAirDrag)
+            ).apply(codecBuilder, (r, g, b, scale, behavior, duration, airdrag) ->
+                        new CloudData(particleType, r, g, b, scale, duration, EnumCloudBehavior.valueOf(behavior), airdrag))
+            );
         }
     }
 }

@@ -57,11 +57,6 @@ public class EntityBlockSwapper extends Entity {
         }
     }
 
-    @Override
-    public AxisAlignedBB getBoundingBox() {
-        return null;
-    }
-
     public static void swapBlock(World world, BlockPos pos, BlockState newBlock, int duration, boolean breakParticlesStart, boolean breakParticlesEnd) {
         if (!world.isRemote) {
             EntityBlockSwapper swapper = new EntityBlockSwapper(EntityHandler.BLOCK_SWAPPER, world, pos, newBlock, duration, breakParticlesStart, breakParticlesEnd);

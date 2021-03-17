@@ -170,7 +170,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     }
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
-        return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, /*(getMask() == MaskType.FURY ? 6 : 4) TODO*/ 4 * ConfigHandler.MOBS.BARAKOA.combatConfig.attackMultiplier.get())
+        return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 4 * ConfigHandler.MOBS.BARAKOA.combatConfig.attackMultiplier.get())
                 .createMutableAttribute(Attributes.MAX_HEALTH, 10 * ConfigHandler.MOBS.BARAKOA.combatConfig.healthMultiplier.get());
     }
 

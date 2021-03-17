@@ -4,6 +4,8 @@ import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.world.ClientWorld;
@@ -155,6 +157,14 @@ public class ParticleSnowFlake extends SpriteTexturedParticle {
         @OnlyIn(Dist.CLIENT)
         public boolean getSwirls() {
             return this.swirls;
+        }
+
+        public static Codec<SnowflakeData> CODEC(ParticleType<SnowflakeData> particleType) {
+            return RecordCodecBuilder.create((codecBuilder) -> codecBuilder.group(
+                    Codec.FLOAT.fieldOf("duration").forGetter(SnowflakeData::getDuration),
+                    Codec.BOOL.fieldOf("swirls").forGetter(SnowflakeData::getSwirls)
+                    ).apply(codecBuilder, SnowflakeData::new)
+            );
         }
     }
 }

@@ -1,7 +1,11 @@
 package com.bobmowzie.mowziesmobs.client.particle.util;
 
+import com.bobmowzie.mowziesmobs.client.particle.ParticleCloud;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleOrb;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.util.math.vector.Vector3d;
@@ -95,5 +99,21 @@ public class RibbonParticleData extends AdvancedParticleData {
     @OnlyIn(Dist.CLIENT)
     public int getLength() {
         return this.length;
+    }
+
+    public static Codec<RibbonParticleData> CODEC_RIBBON(ParticleType<RibbonParticleData> particleType) {
+        return RecordCodecBuilder.create((codecBuilder) -> codecBuilder.group(
+                Codec.DOUBLE.fieldOf("scale").forGetter(RibbonParticleData::getScale),
+                Codec.DOUBLE.fieldOf("r").forGetter(RibbonParticleData::getRed),
+                Codec.DOUBLE.fieldOf("g").forGetter(RibbonParticleData::getGreen),
+                Codec.DOUBLE.fieldOf("b").forGetter(RibbonParticleData::getBlue),
+                Codec.DOUBLE.fieldOf("a").forGetter(RibbonParticleData::getAlpha),
+                Codec.DOUBLE.fieldOf("drag").forGetter(RibbonParticleData::getAirDrag),
+                Codec.DOUBLE.fieldOf("duration").forGetter(RibbonParticleData::getDuration),
+                Codec.BOOL.fieldOf("emissive").forGetter(RibbonParticleData::isEmissive),
+                Codec.INT.fieldOf("length").forGetter(RibbonParticleData::getLength)
+                ).apply(codecBuilder, (scale, r, g, b, a, drag, duration, emissive, length) ->
+                    new RibbonParticleData(particleType, new ParticleRotation.FaceCamera(0), scale, r, g, b, a, drag, duration, emissive, length, new ParticleComponent[]{}))
+        );
     }
 }

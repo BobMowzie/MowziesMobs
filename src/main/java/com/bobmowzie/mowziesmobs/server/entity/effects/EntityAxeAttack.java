@@ -61,11 +61,6 @@ public class EntityAxeAttack extends EntityMagicEffect {
     }
 
     @Override
-    public AxisAlignedBB getBoundingBox() {
-        return null;
-    }
-
-    @Override
     public void tick() {
         super.tick();
         if (caster != null && !caster.isAlive()) remove();

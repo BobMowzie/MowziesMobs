@@ -12,6 +12,7 @@ import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityLantern;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
@@ -160,5 +161,20 @@ public enum EntityHandler {
     private static <T extends Entity> EntityType<T> register(String name, EntityType.Builder<T> builder) {
         ResourceLocation regName = new ResourceLocation(MowziesMobs.MODID, name);
         return (EntityType<T>) builder.build(name).setRegistryName(regName);
+    }
+
+    public static void initializeAttributes() {
+        GlobalEntityTypeAttributes.put(FOLIAATH, EntityFoliaath.createAttributes().create());
+        GlobalEntityTypeAttributes.put(BABY_FOLIAATH, EntityBabyFoliaath.createAttributes().create());
+        GlobalEntityTypeAttributes.put(WROUGHTNAUT, EntityWroughtnaut.createAttributes().create());
+        GlobalEntityTypeAttributes.put(BARAKOANA, EntityBarakoana.createAttributes().create());
+        GlobalEntityTypeAttributes.put(BARAKOAYA, EntityBarakoa.createAttributes().create());
+        GlobalEntityTypeAttributes.put(BARAKOAN_TO_PLAYER, EntityBarakoanToPlayer.createAttributes().create());
+        GlobalEntityTypeAttributes.put(BARAKOAN_TO_BARAKOANA, EntityBarakoa.createAttributes().create());
+        GlobalEntityTypeAttributes.put(BARAKO, EntityBarako.createAttributes().create());
+        GlobalEntityTypeAttributes.put(FROSTMAW, EntityFrostmaw.createAttributes().create());
+        GlobalEntityTypeAttributes.put(NAGA, EntityNaga.createAttributes().create());
+        GlobalEntityTypeAttributes.put(LANTERN, EntityLantern.createAttributes().create());
+        GlobalEntityTypeAttributes.put(GROTTOL, EntityGrottol.createAttributes().create());
     }
 }

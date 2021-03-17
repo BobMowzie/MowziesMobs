@@ -101,11 +101,11 @@ public enum SpawnHandler {
     }
 
     private void registerEntityWorldSpawn(EntityType<?> entity, int weight, int min, int max, EntityClassification classification, Biome... biomes) {
-        for (Biome biome : biomes) {
-            if (biome != null) {
-                biome.getMobSpawnInfo().getSpawners(classification).add(new MobSpawnInfo.Spawners(entity, weight, min, max));
-            }
-        }
+//        for (Biome biome : biomes) {
+//            if (biome != null) {
+//                biome.getMobSpawnInfo().getSpawners(classification).add(new MobSpawnInfo.Spawners(entity, weight, min, max));
+//            }
+//        } TODO
     }
 
     private class BiomeCombo {

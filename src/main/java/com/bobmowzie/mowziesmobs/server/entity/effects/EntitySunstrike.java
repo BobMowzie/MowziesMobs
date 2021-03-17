@@ -63,11 +63,6 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     }
 
     @Override
-    public AxisAlignedBB getBoundingBox() {
-        return null;
-    }
-
-    @Override
     protected void registerData() {
         getDataManager().register(VARIANT_LEAST, 0);
         getDataManager().register(VARIANT_MOST, 0);

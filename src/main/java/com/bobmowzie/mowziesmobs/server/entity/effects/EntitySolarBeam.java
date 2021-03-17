@@ -77,12 +77,6 @@ public class EntitySolarBeam extends Entity {
         return PushReaction.IGNORE;
     }
 
-    @Nullable
-    @Override
-    public AxisAlignedBB getBoundingBox() {
-        return null;
-    }
-
     @Override
     public void tick() {
         super.tick();

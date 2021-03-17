@@ -47,12 +47,6 @@ public abstract class EntityMagicEffect extends Entity {
         getDataManager().set(CASTER, id);
     }
 
-    @Nullable
-    @Override
-    public AxisAlignedBB getBoundingBox() {
-        return null;
-    }
-
     @Override
     public boolean canBeCollidedWith() {
         return false;

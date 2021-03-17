@@ -5,6 +5,8 @@ import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -281,6 +283,17 @@ public class ParticleOrb extends SpriteTexturedParticle {
         @OnlyIn(Dist.CLIENT)
         public int getMode() {
             return this.mode;
+        }
+
+        public static Codec<OrbData> CODEC(ParticleType<OrbData> particleType) {
+            return RecordCodecBuilder.create((codecBuilder) -> codecBuilder.group(
+                    Codec.FLOAT.fieldOf("r").forGetter(OrbData::getR),
+                    Codec.FLOAT.fieldOf("g").forGetter(OrbData::getG),
+                    Codec.FLOAT.fieldOf("b").forGetter(OrbData::getB),
+                    Codec.FLOAT.fieldOf("scale").forGetter(OrbData::getScale),
+                    Codec.INT.fieldOf("duration").forGetter(OrbData::getDuration)
+                    ).apply(codecBuilder, OrbData::new)
+            );
         }
     }
 }

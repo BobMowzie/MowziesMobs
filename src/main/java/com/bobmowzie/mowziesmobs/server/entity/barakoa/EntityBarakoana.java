@@ -4,8 +4,11 @@ import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
+import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
@@ -59,6 +62,11 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
     @Override
     protected boolean canHoldVaryingWeapons() {
         return false;
+    }
+
+    public static AttributeModifierMap.MutableAttribute createAttributes() {
+        return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 6 * ConfigHandler.MOBS.BARAKOA.combatConfig.attackMultiplier.get())
+                .createMutableAttribute(Attributes.MAX_HEALTH, 10 * ConfigHandler.MOBS.BARAKOA.combatConfig.healthMultiplier.get());
     }
 
     @Override

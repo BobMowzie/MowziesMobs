@@ -4,6 +4,8 @@ import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -272,6 +274,23 @@ public class ParticleRing extends SpriteTexturedParticle {
         @OnlyIn(Dist.CLIENT)
         public EnumRingBehavior getBehavior() {
             return this.behavior;
+        }
+
+        public static Codec<RingData> CODEC(ParticleType<RingData> particleType) {
+            return RecordCodecBuilder.create((codecBuilder) -> codecBuilder.group(
+                    Codec.FLOAT.fieldOf("yaw").forGetter(RingData::getYaw),
+                    Codec.FLOAT.fieldOf("pitch").forGetter(RingData::getPitch),
+                    Codec.FLOAT.fieldOf("r").forGetter(RingData::getR),
+                    Codec.FLOAT.fieldOf("g").forGetter(RingData::getG),
+                    Codec.FLOAT.fieldOf("b").forGetter(RingData::getB),
+                    Codec.FLOAT.fieldOf("a").forGetter(RingData::getA),
+                    Codec.FLOAT.fieldOf("scale").forGetter(RingData::getScale),
+                    Codec.INT.fieldOf("duration").forGetter(RingData::getDuration),
+                    Codec.BOOL.fieldOf("facesCamera").forGetter(RingData::getFacesCamera),
+                    Codec.STRING.fieldOf("behavior").forGetter((ringData) -> ringData.getBehavior().toString())
+                    ).apply(codecBuilder, (yaw, pitch, r, g, b, a, scale, duration, facesCamera, behavior) ->
+                            new RingData(yaw, pitch, duration, r, g, b, a, scale, facesCamera, EnumRingBehavior.valueOf(behavior)))
+            );
         }
     }
 }

@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.client.particle;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.item.ItemStack;
@@ -208,6 +209,19 @@ public class ParticleVanillaCloudExtended extends SpriteTexturedParticle {
         @OnlyIn(Dist.CLIENT)
         public Vector3d[] getDestination() {
             return this.destination;
+        }
+
+        public static Codec<VanillaCloudData> CODEC(ParticleType<VanillaCloudData> particleType) {
+            return RecordCodecBuilder.create((codecBuilder) -> codecBuilder.group(
+                    Codec.FLOAT.fieldOf("r").forGetter(VanillaCloudData::getRed),
+                    Codec.FLOAT.fieldOf("g").forGetter(VanillaCloudData::getGreen),
+                    Codec.FLOAT.fieldOf("b").forGetter(VanillaCloudData::getBlue),
+                    Codec.FLOAT.fieldOf("scale").forGetter(VanillaCloudData::getScale),
+                    Codec.FLOAT.fieldOf("duration").forGetter(VanillaCloudData::getDuration),
+                    Codec.FLOAT.fieldOf("drag").forGetter(VanillaCloudData::getScale)
+                    ).apply(codecBuilder, (r, g, b, scale, duration, drag) ->
+                        new VanillaCloudData(r, g, b, scale, drag, duration, null))
+            );
         }
     }
 
