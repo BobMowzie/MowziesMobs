@@ -38,7 +38,7 @@ public class RenderAxeAttack extends EntityRenderer<EntityAxeAttack> {
     @Override
     public void render(EntityAxeAttack entity, float entityYaw, float delta, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         PlayerEntity player = Minecraft.getInstance().player;
-        if (player == entity.getCaster() && Minecraft.getInstance().gameSettings.getPointOfView() != PointOfView.FIRST_PERSON) {
+        if (player == entity.getCaster() && Minecraft.getInstance().gameSettings.getPointOfView() == PointOfView.FIRST_PERSON) {
             matrixStackIn.push();
             matrixStackIn.rotate(new Quaternion(new Vector3f(0, -1, 0), entityYaw, true));
             IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntitySolid(TEXTURE));
