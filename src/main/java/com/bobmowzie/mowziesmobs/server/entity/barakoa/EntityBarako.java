@@ -230,6 +230,10 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 40);
     }
 
+    protected boolean canTriggerWalking() {
+        return false;
+    }
+
     @Override
     public boolean preventDespawn() {
         return true;

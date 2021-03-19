@@ -67,6 +67,10 @@ public class EntityBabyFoliaath extends MowzieEntity {
                 .createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1);
     }
 
+    protected boolean canTriggerWalking() {
+        return false;
+    }
+
     @Override
     public void tick() {
         super.tick();

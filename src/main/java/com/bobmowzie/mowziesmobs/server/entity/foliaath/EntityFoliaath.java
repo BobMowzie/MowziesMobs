@@ -61,6 +61,10 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         this.addIntermittentAnimation(openMouth);
     }
 
+    protected boolean canTriggerWalking() {
+        return false;
+    }
+
     @Override
     public PushReaction getPushReaction() {
         return PushReaction.IGNORE;

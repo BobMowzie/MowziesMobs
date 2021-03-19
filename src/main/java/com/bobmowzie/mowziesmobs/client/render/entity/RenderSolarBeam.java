@@ -44,7 +44,7 @@ public class RenderSolarBeam extends EntityRenderer<EntitySolarBeam> {
 
     @Override
     public void render(EntitySolarBeam solarBeam, float entityYaw, float delta, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-        clearerView = solarBeam.caster instanceof PlayerEntity && Minecraft.getInstance().player == solarBeam.caster && Minecraft.getInstance().gameSettings.getPointOfView() != PointOfView.FIRST_PERSON;
+        clearerView = solarBeam.caster instanceof PlayerEntity && Minecraft.getInstance().player == solarBeam.caster && Minecraft.getInstance().gameSettings.getPointOfView() == PointOfView.FIRST_PERSON;
 
         float length = (float) Math.sqrt(Math.pow(solarBeam.collidePosX - solarBeam.getPosX(), 2) + Math.pow(solarBeam.collidePosY - solarBeam.getPosY(), 2) + Math.pow(solarBeam.collidePosZ - solarBeam.getPosZ(), 2));
         int frame = MathHelper.floor((solarBeam.appear.getTimer() - 1 + delta) * 2);

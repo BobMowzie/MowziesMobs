@@ -45,6 +45,7 @@ public abstract class MMRenderType extends RenderType {
     public static IParticleRenderType PARTICLE_SHEET_TRANSLUCENT_NO_DEPTH = new IParticleRenderType() {
         public void beginRender(BufferBuilder p_217600_1_, TextureManager p_217600_2_) {
             RenderSystem.depthMask(false);
+            RenderSystem.disableCull();
             p_217600_2_.bindTexture(AtlasTexture.LOCATION_PARTICLES_TEXTURE);
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
