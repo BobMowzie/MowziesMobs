@@ -13,7 +13,9 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.Region;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 public class MMPathFinder extends PathFinder {
@@ -30,7 +32,7 @@ public class MMPathFinder extends PathFinder {
 
     static class PatchedPath extends Path {
         public PatchedPath(Path original) {
-            super(Arrays.asList(original.getClosedSet()), original.getTarget(), original.reachesTarget());
+            super(copyPathPoints(original), original.getTarget(), original.reachesTarget());
         }
 
         @Override
@@ -40,6 +42,14 @@ public class MMPathFinder extends PathFinder {
             double d1 = point.y;
             double d2 = point.z + MathHelper.floor(entity.getWidth() + 1.0F) * 0.5D;
             return new Vector3d(d0, d1, d2);
+        }
+
+        private static List<PathPoint> copyPathPoints(Path original) {
+            List<PathPoint> points = new ArrayList();
+            for (int i = 0; i < original.getCurrentPathLength(); i++) {
+                points.add(original.getPathPointFromIndex(i));
+            }
+            return points;
         }
     }
 }
