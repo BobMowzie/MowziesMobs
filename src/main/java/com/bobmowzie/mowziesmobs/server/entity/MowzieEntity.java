@@ -102,12 +102,12 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
             BlockPos pos = new BlockPos(i, j, k);
 
             // Dimension check
-//            List<String> dimensionNames = spawnConfig.dimensions.get();
-//            MutableRegistry<DimensionType> mutableregistry = DynamicRegistries.func_239770_b_().getRegistry(Registry.DIMENSION_TYPE_KEY);
-//            ResourceLocation currDimensionName = mutableregistry.getOptionalKey(world.getDimensionType()).get().getRegistryName();
-//            if (currDimensionName == null || !dimensionNames.contains(currDimensionName.toString())) {
-//                return false;
-//            }
+            List<String> dimensionNames = spawnConfig.dimensions.get();
+            MutableRegistry<DimensionType> mutableregistry = DynamicRegistries.func_239770_b_().getRegistry(Registry.DIMENSION_TYPE_KEY);
+            ResourceLocation currDimensionName = mutableregistry.getOptionalKey(world.getDimensionType()).get().getLocation();
+            if (currDimensionName == null || !dimensionNames.contains(currDimensionName.toString())) {
+                return false;
+            }
 
             // Height check
             float heightMax = spawnConfig.heightMax.get();
