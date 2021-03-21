@@ -337,7 +337,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
                     entity.onKillEntity((ServerWorld)this.world, this);
                 }
 
-                if (dropAfterDeathAnim)
+                if (!dropAfterDeathAnim)
                     this.spawnDrops(cause);
                 this.createWitherRose(livingentity);
             }
