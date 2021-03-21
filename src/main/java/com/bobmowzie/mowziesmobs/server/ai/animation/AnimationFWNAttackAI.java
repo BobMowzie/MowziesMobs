@@ -33,7 +33,7 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
     @Override
     public void startExecuting() {
         super.startExecuting();
-//        if (entity.getAnimation() == EntityWroughtnaut.ATTACK_ANIMATION) entity.playSound(MMSounds.ENTITY_WROUGHT_PRE_SWING_1.get(), 1.5F, 1F);
+        if (entity.getAnimation() == EntityWroughtnaut.ATTACK_ANIMATION) entity.playSound(MMSounds.ENTITY_WROUGHT_PRE_SWING_1.get(), 1.5F, 1F);
     }
 
     @Override
@@ -140,7 +140,7 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
             }
         }
         else if (entity.getAnimation() == EntityWroughtnaut.ATTACK_THRICE_ANIMATION) {
-//            if (entity.getAnimationTick() == 1) entity.playSound(MMSounds.ENTITY_WROUGHT_PRE_SWING_3.get(), 1.2F, 1f);
+            if (entity.getAnimationTick() == 1) entity.playSound(MMSounds.ENTITY_WROUGHT_PRE_SWING_3.get(), 1.2F, 1f);
             if (entity.getAnimationTick() < 22 && entityTarget != null) {
                 entity.faceEntity(entityTarget, 30F, 30F);
             } else {

@@ -285,8 +285,8 @@ public class ModelGrottol<T extends EntityGrottol> extends MowzieEntityModel<T> 
 
     @Override
     public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         resetToDefaultPose();
+        super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
         netHeadYaw = Math.min(netHeadYaw, 30f);
         netHeadYaw = Math.max(netHeadYaw, -30f);
