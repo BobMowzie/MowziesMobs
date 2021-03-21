@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.particle;
 
+import com.bobmowzie.mowziesmobs.client.particle.util.ParticleRotation;
 import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mojang.brigadier.StringReader;
@@ -99,13 +100,21 @@ public class ParticleRing extends SpriteTexturedParticle {
         float f = (float)(MathHelper.lerp(partialTicks, this.prevPosX, this.posX) - Vector3d.getX());
         float f1 = (float)(MathHelper.lerp(partialTicks, this.prevPosY, this.posY) - Vector3d.getY());
         float f2 = (float)(MathHelper.lerp(partialTicks, this.prevPosZ, this.posZ) - Vector3d.getZ());
-        Quaternion quaternion;
-        if (this.particleAngle == 0.0F) {
-            quaternion = renderInfo.getRotation();
-        } else {
-            quaternion = new Quaternion(renderInfo.getRotation());
-            float f3 = MathHelper.lerp(partialTicks, this.prevParticleAngle, this.particleAngle);
-            quaternion.multiply(Vector3f.ZP.rotation(f3));
+        Quaternion quaternion = new Quaternion(0.0F, 0.0F, 0.0F, 1.0F);
+        if (facesCamera) {
+            if (this.particleAngle == 0.0F) {
+                quaternion = renderInfo.getRotation();
+            } else {
+                quaternion = new Quaternion(renderInfo.getRotation());
+                float f3 = MathHelper.lerp(partialTicks, this.prevParticleAngle, this.particleAngle);
+                quaternion.multiply(Vector3f.ZP.rotation(f3));
+            }
+        }
+        else {
+            Quaternion quatX = new Quaternion(pitch, 0, 0, false);
+            Quaternion quatY = new Quaternion(0, yaw, 0, false);
+            quaternion.multiply(quatY);
+            quaternion.multiply(quatX);
         }
 
         Vector3f vector3f1 = new Vector3f(-1.0F, -1.0F, 0.0F);
