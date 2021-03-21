@@ -17,7 +17,9 @@ import com.bobmowzie.mowziesmobs.server.spawn.SpawnHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -31,6 +33,7 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 import java.nio.file.Path;
 
 @Mod(MowziesMobs.MODID)
+@Mod.EventBusSubscriber(modid = MowziesMobs.MODID)
 public final class MowziesMobs {
     public static final String MODID = "mowziesmobs";
     public static ServerProxy PROXY;
@@ -51,14 +54,16 @@ public final class MowziesMobs {
         bus.<ModelRegistryEvent>addListener(this::init);
         bus.<FMLLoadCompleteEvent>addListener(this::init);
 
+        MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
+        MinecraftForge.EVENT_BUS.addListener(this::onBiomeLoading);
     }
 
     public void init(final FMLCommonSetupEvent event) {
 //        GameRegistry.registerWorldGenerator(new MowzieWorldGenerator(), 0);
 //        NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
         CapabilityHandler.register();
-        SpawnHandler.INSTANCE.registerSpawnPlacementTypes();
+        SpawnHandler.registerSpawnPlacementTypes();
         PROXY.initNetwork();
         AdvancementHandler.preInit();
         LootTableHandler.init();
@@ -77,9 +82,14 @@ public final class MowziesMobs {
 
     private void init(FMLLoadCompleteEvent event) {
         EntityHandler.initializeAttributes();
-        SpawnHandler.INSTANCE.registerSpawns();
+//        SpawnHandler.postLoad();
         //FeatureHandler.addStructureGeneration(); TODO
         final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         PROXY.onLateInit(bus);
+    }
+
+    @SubscribeEvent
+    public void onBiomeLoading(BiomeLoadingEvent event) {
+        SpawnHandler.onBiomeLoading(event);
     }
 }
