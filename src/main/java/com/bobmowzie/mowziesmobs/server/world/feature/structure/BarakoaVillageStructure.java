@@ -7,6 +7,7 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.util.registry.DynamicRegistries;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
@@ -15,47 +16,14 @@ import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
 import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+import org.apache.logging.log4j.Level;
 
 import java.util.*;
-import java.util.function.Function;
 
 // Edited from Telepathic Grunt's base code
-
 public class BarakoaVillageStructure extends MowzieStructure {
     public BarakoaVillageStructure(Codec<NoFeatureConfig> codec) {
         super(codec);
-    }
-
-    @Override
-    public IStartFactory<NoFeatureConfig> getStartFactory() {
-        return null;
-    }
-    /*public BarakoaVillageStructure(Function<Dynamic<?>, ? extends NoFeatureConfig> config)
-    {
-        super(config);
-    }
-
-    @Override
-    public String getStructureName()
-    {
-        return MowziesMobs.MODID + ":barakoa_village";
-    }
-
-    @Override
-    public int getSize()
-    {
-        return 0;
-    }
-
-    @Override
-    public IStartFactory getStartFactory()
-    {
-        return BarakoaVillageStructure.Start::new;
-    }
-
-    protected int getSeedModifier()
-    {
-        return 123555789;
     }
 
     @Override
@@ -63,15 +31,18 @@ public class BarakoaVillageStructure extends MowzieStructure {
         return ConfigHandler.MOBS.BARAKO.generationConfig;
     }
 
-    public static class Start extends StructureStart
-    {
-        public Start(Structure<?> structureIn, int chunkX, int chunkZ, MutableBoundingBox boundsIn, int referenceIn, long seed) {
-            super(structureIn, chunkX, chunkZ, boundsIn, referenceIn, seed);
+    @Override
+    public IStartFactory<NoFeatureConfig> getStartFactory() {
+        return BarakoaVillageStructure.Start::new;
+    }
+
+    public static class Start extends StructureStart<NoFeatureConfig>  {
+        public Start(Structure<NoFeatureConfig> structureIn, int chunkX, int chunkZ, MutableBoundingBox mutableBoundingBox, int referenceIn, long seedIn) {
+            super(structureIn, chunkX, chunkZ, mutableBoundingBox, referenceIn, seedIn);
         }
 
         @Override
-        public void init(ChunkGenerator<?> generator, TemplateManager templateManagerIn, int chunkX, int chunkZ, Biome biomeIn)
-        {
+        public void func_230364_a_(DynamicRegistries dynamicRegistryManager, ChunkGenerator generator, TemplateManager templateManagerIn, int chunkX, int chunkZ, Biome biomeIn, NoFeatureConfig config) {
             Rotation rotation = Rotation.values()[this.rand.nextInt(Rotation.values().length)];
 
             //Turns the chunk coordinates into actual coordinates we can use. (Gets center of that chunk)
@@ -154,10 +125,13 @@ public class BarakoaVillageStructure extends MowzieStructure {
             //Sets the bounds of the structure.
             this.recalculateStructureSize();
 
-//            System.out.println("Barakoa village at " + centerPos.getX() + " " + centerPos.getY() + " " + centerPos.getZ());
+//            MowziesMobs.LOGGER.log(Level.DEBUG, "Barako at " +
+//                    this.components.get(0).getBoundingBox().minX + " " +
+//                    this.components.get(0).getBoundingBox().minY + " " +
+//                    this.components.get(0).getBoundingBox().minZ);
         }
 
-        private boolean startHouse(ChunkGenerator<?> generator, TemplateManager templateManagerIn, BlockPos housePos) {
+        private boolean startHouse(ChunkGenerator generator, TemplateManager templateManagerIn, BlockPos housePos) {
             Rotation rotation = Rotation.values()[this.rand.nextInt(Rotation.values().length)];
             StructurePiece newHouse = BarakoaVillagePieces.addHouse(templateManagerIn, housePos, rotation, this.components, this.rand);
             if (newHouse != null) {
@@ -177,9 +151,9 @@ public class BarakoaVillageStructure extends MowzieStructure {
             return false;
         }
 
-        private BlockPos posToSurface(ChunkGenerator<?> generator, BlockPos pos) {
+        private BlockPos posToSurface(ChunkGenerator generator, BlockPos pos) {
             int surfaceY = generator.getHeight(pos.getX(), pos.getZ(), Heightmap.Type.WORLD_SURFACE_WG);
             return new BlockPos(pos.getX(), surfaceY, pos.getZ());
         }
-    }*/ // TODO
+    }
 }

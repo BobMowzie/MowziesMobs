@@ -5,13 +5,21 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.mojang.serialization.Codec;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.util.registry.DynamicRegistries;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.gen.feature.jigsaw.JigsawManager;
 import net.minecraft.world.gen.feature.structure.*;
 import net.minecraft.world.gen.feature.template.TemplateManager;
+import org.apache.logging.log4j.Level;
 
 // Edited from Telepathic Grunt's base code
 
@@ -21,40 +29,18 @@ public class WroughtnautChamberStructure extends MowzieStructure {
     }
 
     @Override
+    public ConfigHandler.GenerationConfig getGenerationConfig() {
+        return ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationConfig;
+    }
+
+    @Override
     public IStartFactory<NoFeatureConfig> getStartFactory() {
-        return null;
-    }
-    /*public WroughtnautChamberStructure(Function<Dynamic<?>, ? extends NoFeatureConfig> config)
-    {
-        super(config);
-    }
-
-    @Override
-    public String getStructureName()
-    {
-        return MowziesMobs.MODID + ":wroughtnaut_chamber";
-    }
-
-    @Override
-    public int getSize()
-    {
-        return 0;
-    }
-
-    @Override
-    public Structure.IStartFactory getStartFactory()
-    {
         return WroughtnautChamberStructure.Start::new;
     }
 
-    protected int getSeedModifier()
-    {
-        return 123444789;
-    }
-
     @Override
-    public ConfigHandler.GenerationConfig getGenerationConfig() {
-        return ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationConfig;
+    public GenerationStage.Decoration getDecorationStage() {
+        return GenerationStage.Decoration.UNDERGROUND_STRUCTURES;
     }
 
     @Override
@@ -62,32 +48,24 @@ public class WroughtnautChamberStructure extends MowzieStructure {
         return false;
     }
 
-    public static class Start extends StructureStart
-    {
-        public Start(Structure<?> structureIn, int chunkX, int chunkZ, MutableBoundingBox boundsIn, int referenceIn, long seed) {
-            super(structureIn, chunkX, chunkZ, boundsIn, referenceIn, seed);
+    public static class Start extends StructureStart<NoFeatureConfig>  {
+        public Start(Structure<NoFeatureConfig> structureIn, int chunkX, int chunkZ, MutableBoundingBox mutableBoundingBox, int referenceIn, long seedIn) {
+            super(structureIn, chunkX, chunkZ, mutableBoundingBox, referenceIn, seedIn);
         }
 
         @Override
-        public void init(ChunkGenerator<?> generator, TemplateManager templateManagerIn, int chunkX, int chunkZ, Biome biomeIn)
-        {
-            //Check out vanilla's WoodlandMansionStructure for how they offset the x and z
-            //so that they get the y value of the land at the mansion's entrance, no matter
-            //which direction the mansion is rotated.
-            //
-            //However, for most purposes, getting the y value of land with the default x and z is good enough.
+        public void func_230364_a_(DynamicRegistries dynamicRegistryManager, ChunkGenerator chunkGenerator, TemplateManager templateManagerIn, int chunkX, int chunkZ, Biome biomeIn, NoFeatureConfig config) {
             Rotation rotation = Rotation.values()[this.rand.nextInt(Rotation.values().length)];
 
             //Turns the chunk coordinates into actual coordinates we can use. (Gets center of that chunk)
             int x = (chunkX << 4) + 7;
             int z = (chunkZ << 4) + 7;
-            int surfaceY = generator.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG);
+            int surfaceY = chunkGenerator.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG);
             BlockPos pos = new BlockPos(x, surfaceY, z);
 
             //Now adds the structure pieces to this.components with all details such as where each part goes
             //so that the structure can be added to the world by worldgen.
             WroughtnautChamberPieces.start(templateManagerIn, pos, rotation, this.components, this.rand);
-//            System.out.println("Wroughtnaut chamber at " + pos.getX() + " " + pos.getY() + " " + pos.getZ());
 
             //Sets the bounds of the structure.
 //            this.recalculateStructureSize();
@@ -98,6 +76,13 @@ public class WroughtnautChamberStructure extends MowzieStructure {
             bounds.maxX = bounds.minX + 1;
             bounds.maxZ = bounds.minZ + 1;
             bounds.maxY = bounds.minY + 1;
+
+            // I use to debug and quickly find out if the structure is spawning or not and where it is.
+            // This is returning the coordinates of the center starting piece.
+            MowziesMobs.LOGGER.log(Level.DEBUG, "Wroughtnaut at " +
+                    this.components.get(0).getBoundingBox().minX + " " +
+                    this.components.get(0).getBoundingBox().minY + " " +
+                    this.components.get(0).getBoundingBox().minZ);
         }
-    }*/ // TODO
+    }
 }
