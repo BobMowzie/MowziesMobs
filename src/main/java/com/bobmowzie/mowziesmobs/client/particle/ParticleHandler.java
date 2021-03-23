@@ -27,7 +27,6 @@ public class ParticleHandler {
 
     public static final DeferredRegister<ParticleType<?>> REG = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, MowziesMobs.MODID);
 
-    // TODO
     public static final RegistryObject<BasicParticleType> SPARKLE = register("sparkle", false);
     public static final RegistryObject<ParticleType<ParticleVanillaCloudExtended.VanillaCloudData>> VANILLA_CLOUD_EXTENDED = REG.register("vanilla_cloud_extended", () -> new ParticleType<ParticleVanillaCloudExtended.VanillaCloudData>(false, ParticleVanillaCloudExtended.VanillaCloudData.DESERIALIZER) {
         @Override
