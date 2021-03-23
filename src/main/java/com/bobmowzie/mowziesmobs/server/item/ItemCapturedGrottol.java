@@ -65,11 +65,11 @@ public class ItemCapturedGrottol extends Item {
     }
 
     private void setData(EntityGrottol grottol, CompoundNBT compound) {
-        /*CompoundNBT data = grottol.writeToNBT(new CompoundNBT());
+        CompoundNBT data = grottol.serializeNBT();
         UUID id = grottol.getUniqueID();
         data.merge(compound);
-        grottol.readFromNBT(data);
-        grottol.setUniqueId(id);*/ // TODO
+        grottol.deserializeNBT(data);
+        grottol.setUniqueId(id);
     }
 
     private void lookAtPlayer(EntityGrottol grottol, PlayerEntity player) {

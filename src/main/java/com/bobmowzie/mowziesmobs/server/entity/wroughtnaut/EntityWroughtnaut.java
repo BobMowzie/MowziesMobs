@@ -379,14 +379,13 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         int hitZ = MathHelper.floor(z);
         final int maxHeight = 5;
         int height = maxHeight;
-        /*PooledMutableBlockPos pos = PooledMutableBlockPos.retain();
+        BlockPos.Mutable pos = new BlockPos.Mutable();
         for (; height --> 0; ceilY++) {
             pos.setPos(hitX, ceilY, hitZ);
             if (world.getBlockState(pos).getMaterial().blocksMovement()) {
                 break;
             }
         }
-        pos.close();*/ // TODO
         float strength = height / (float) maxHeight;
         if (strength >= 0) {
             int radius = MathHelper.ceil(MathHelper.sqrt(1 - strength * strength) * maxHeight);
@@ -422,7 +421,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
             float t = remainingTicks / (float) duration;
             int amount = MathHelper.ceil((1 - MathHelper.sqrt(1 - t * t)) * radius * radius * 0.15F);
             boolean playSound = true;
-            /*PooledMutableBlockPos pos = PooledMutableBlockPos.retain();
+            BlockPos.Mutable pos = new BlockPos.Mutable();
             while (amount --> 0) {
                 double theta = rand.nextDouble() * Math.PI * 2;
                 double dist = rand.nextDouble() * radius;
@@ -442,7 +441,6 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
                     }
                 }
             }
-            pos.close();*/ // TODO
             return --remainingTicks <= 0;
         }
     }
