@@ -15,7 +15,6 @@
   "criteria": {
     "steal_crystal": {
       "trigger": "mowziesmobs:kill_grottol_silk_touch"
-      }
     }
   }
 }
