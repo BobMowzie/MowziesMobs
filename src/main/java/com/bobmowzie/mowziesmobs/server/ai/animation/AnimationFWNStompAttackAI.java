@@ -1,6 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.ai.animation;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityFallingBlock;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
@@ -44,27 +46,6 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
         } else if (tick > 9 && tick < 17) {
             if (tick == 10) {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_STEP.get(), 1.2F, 0.5F + entity.getRNG().nextFloat() * 0.1F);
-                final double infront = 1.47, side = -0.21;
-                double vx = Math.cos(facingAngle) * infront;
-                double vz = Math.sin(facingAngle) * infront;
-                double perpX = Math.cos(perpFacing);
-                double perpZ = Math.sin(perpFacing);
-                double fx = entity.getPosX() + vx + perpX * side;
-                double fy = entity.getBoundingBox().minY + 0.1;
-                double fz = entity.getPosZ() + vz + perpZ * side;
-                int bx = MathHelper.floor(fx);
-                int bz = MathHelper.floor(fz);
-                int amount = 16 + world.rand.nextInt(8);
-                while (amount-- > 0) {
-                    double theta = world.rand.nextDouble() * Math.PI * 2;
-                    double dist = world.rand.nextDouble() * 0.1 + 0.25;
-                    double sx = Math.cos(theta);
-                    double sz = Math.sin(theta);
-                    double px = fx + sx * dist;
-                    double py = fy + world.rand.nextDouble() * 0.1;
-                    double pz = fz + sz * dist;
-                    world.addParticle(ParticleTypes.SMOKE, px, py, pz, sx * 0.065, 0, sz * 0.065);
-                }
             } else if (tick == 12) {
                 entity.playSound(SoundEvents.ENTITY_GENERIC_EXPLODE, 2, 1F + entity.getRNG().nextFloat() * 0.1F);
             }
@@ -84,7 +65,7 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                     AxisAlignedBB selection = new AxisAlignedBB(px - 1.5, minY, pz - 1.5, px + 1.5, maxY, pz + 1.5);
                     List<Entity> hit = world.getEntitiesWithinAABB(Entity.class, selection);
                     for (Entity entity : hit) {
-                        if (entity == this.entity || entity instanceof FallingBlockEntity) {
+                        if (entity == this.entity || entity instanceof EntityFallingBlock) {
                             continue;
                         }
                         float applyKnockbackResistance = 0;
@@ -109,33 +90,12 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                         int hitZ = MathHelper.floor(pz);
                         BlockPos pos = new BlockPos(hitX, hitY, hitZ);
                         BlockPos abovePos = new BlockPos(pos).up();
-                        BlockPos belowPos = new BlockPos(pos).down();
-                        if (world.isAirBlock(abovePos) && !world.isAirBlock(belowPos)) {
-                            BlockState block = world.getBlockState(pos);
-                            if (block.getMaterial() != Material.AIR && block.isNormalCube(world, pos) && block.getBlock() != Blocks.BEDROCK && !block.getBlock().hasTileEntity(block)) {
-                                FallingBlockEntity fallingBlock = new FallingBlockEntity(world, hitX + 0.5, hitY + 0.5, hitZ + 0.5, block);
-                                fallingBlock.setMotion(0, 0.4 + factor * 0.2, 0);
-                                fallingBlock.fallTime = 2;
-                                world.addEntity(fallingBlock);
-                                world.removeBlock(pos, false);
-                                int amount = 6 + world.rand.nextInt(10);
-                                int stateId = Block.getStateId(block);
-                                while (amount --> 0) {
-                                    double cx = px + world.rand.nextFloat() * 2 - 1;
-                                    double cy = entity.getBoundingBox().minY + 0.1 + world.rand.nextFloat() * 0.3;
-                                    double cz = pz + world.rand.nextFloat() * 2 - 1;
-                                    world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, block), cx, cy, cz, vx, 0.4 + world.rand.nextFloat() * 0.2F, vz);
-                                }
-                            }
-                        }
-                    }
-                    if (world.rand.nextBoolean()) {
-                        int amount = world.rand.nextInt(5);
-                        while (amount-- > 0) {
-                            double velX = vx * 0.075;
-                            double velY = factor * 0.3 + 0.025;
-                            double velZ = vz * 0.075;
-                            world.addParticle(ParticleTypes.CLOUD, px + world.rand.nextFloat() * 2 - 1, entity.getBoundingBox().minY + 0.1 + world.rand.nextFloat() * 1.5, pz + world.rand.nextFloat() * 2 - 1, velX, velY, velZ);
+                        BlockState block = world.getBlockState(pos);
+                        BlockState blockAbove = world.getBlockState(abovePos);
+                        if (block.getMaterial() != Material.AIR && block.isNormalCube(world, pos) && !block.getBlock().hasTileEntity(block) && !blockAbove.getMaterial().blocksMovement()) {
+                            EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK, world, block, (float) (0.4 + factor * 0.2));
+                            fallingBlock.setPosition(hitX + 0.5, hitY + 1, hitZ + 0.5);
+                            world.addEntity(fallingBlock);
                         }
                     }
                 }

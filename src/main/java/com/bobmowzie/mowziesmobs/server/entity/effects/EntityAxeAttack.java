@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.entity.effects;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockState;
@@ -125,23 +126,12 @@ public class EntityAxeAttack extends EntityMagicEffect {
                         int hitZ = MathHelper.floor(pz);
                         BlockPos pos = new BlockPos(hitX, hitY, hitZ);
                         BlockPos abovePos = new BlockPos(pos).up();
-                        BlockPos belowPos = new BlockPos(pos).down();
-                        if (world.isAirBlock(abovePos) && !world.isAirBlock(belowPos)) {
-                            BlockState block = world.getBlockState(pos);
-                            if (block.getMaterial() != Material.AIR && block.isNormalCube(world, pos) && block.getBlock() != Blocks.BEDROCK && !block.getBlock().hasTileEntity(block)) {
-                                FallingBlockEntity fallingBlock = new FallingBlockEntity(world, hitX + 0.5, hitY + 0.5, hitZ + 0.5, block);
-                                fallingBlock.setMotion(0, 0.1, 0);
-                                fallingBlock.fallTime = 2;
-                                world.addEntity(fallingBlock);
-                                world.removeBlock(pos, false);
-                                int amount = 6 + world.rand.nextInt(10);
-                                while (amount-- > 0) {
-                                    double cx = px + world.rand.nextFloat() * 2 - 1;
-                                    double cy = getBoundingBox().minY + 0.1 + world.rand.nextFloat() * 0.3;
-                                    double cz = pz + world.rand.nextFloat() * 2 - 1;
-                                    world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, block), cx, cy, cz, vx, 0.4 + world.rand.nextFloat() * 0.2F, vz);
-                                }
-                            }
+                        BlockState block = world.getBlockState(pos);
+                        BlockState blockAbove = world.getBlockState(abovePos);
+                        if (block.getMaterial() != Material.AIR && block.isNormalCube(world, pos) && !block.getBlock().hasTileEntity(block) && !blockAbove.getMaterial().blocksMovement()) {
+                            EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK, world, block, 0.3f);
+                            fallingBlock.setPosition(hitX + 0.5, hitY + 1, hitZ + 0.5);
+                            world.addEntity(fallingBlock);
                         }
                     }
                 }
