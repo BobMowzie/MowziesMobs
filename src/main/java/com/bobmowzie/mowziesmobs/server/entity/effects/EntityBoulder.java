@@ -117,6 +117,10 @@ public class EntityBoulder extends Entity {
         return PushReaction.BLOCK;
     }
 
+    public boolean func_241845_aY() {
+        return true;
+    }
+
     public boolean checkCanSpawn() {
         if (!world.getEntitiesWithinAABB(EntityBoulder.class, getBoundingBox()).isEmpty()) return false;
         return world.hasNoCollisions(this, getBoundingBox());
