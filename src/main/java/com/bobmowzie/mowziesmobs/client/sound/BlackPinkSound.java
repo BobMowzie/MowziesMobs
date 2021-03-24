@@ -4,7 +4,10 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.client.audio.TickableSound;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.util.SoundCategory;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public final class BlackPinkSound extends TickableSound {
     private final AbstractMinecartEntity minecart;
 

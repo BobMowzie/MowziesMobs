@@ -4,30 +4,36 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoTrade;
 import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoayaTrade;
 import com.bobmowzie.mowziesmobs.client.render.entity.*;
-import com.bobmowzie.mowziesmobs.client.sound.IceBreathSound;
-import com.bobmowzie.mowziesmobs.client.sound.NagaSwoopSound;
-import com.bobmowzie.mowziesmobs.client.sound.SpawnBoulderChargeSound;
-import com.bobmowzie.mowziesmobs.client.sound.SunstrikeSound;
+import com.bobmowzie.mowziesmobs.client.sound.*;
 import com.bobmowzie.mowziesmobs.server.ServerProxy;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.*;
 import com.bobmowzie.mowziesmobs.server.entity.effects.*;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerHandler;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.particle.DiggingParticle;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 
+@OnlyIn(Dist.CLIENT)
 public class ClientProxy extends ServerProxy {
     private Entity referencedMob = null;
 
@@ -103,6 +109,33 @@ public class ClientProxy extends ServerProxy {
     @Override
     public void playNagaSwoopSound(EntityNaga naga) {
         Minecraft.getInstance().getSoundHandler().play(new NagaSwoopSound(naga));
+    }
+
+    @Override
+    public void playBlackPinkSound(AbstractMinecartEntity entity) {
+        Minecraft.getInstance().getSoundHandler().play(new BlackPinkSound(entity));
+    }
+
+    @Override
+    public void minecartParticles(ClientWorld world, AbstractMinecartEntity minecart, float scale, double x, double y, double z, BlockState state, BlockPos pos) {
+        final int size = 3;
+        float offset =  -0.5F * scale;
+        for (int ix = 0; ix < size; ix++) {
+            for (int iy = 0; iy < size; iy++) {
+                for (int iz = 0; iz < size; iz++) {
+                    double dx = (double) ix / size * scale;
+                    double dy = (double) iy / size * scale;
+                    double dz = (double) iz / size * scale;
+                    Vector3d minecartMotion = minecart.getMotion();
+                    Minecraft.getInstance().particles.addEffect(new DiggingParticle(
+                            world,
+                            x + dx + offset, y + dy + offset, z + dz + offset,
+                            dx + minecartMotion.getX(), dy + minecartMotion.getY(), dz + minecartMotion.getZ(),
+                            state
+                    ) {}.setBlockPos(pos));
+                }
+            }
+        }
     }
 
     @Override

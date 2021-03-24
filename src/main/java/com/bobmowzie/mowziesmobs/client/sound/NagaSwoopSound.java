@@ -4,10 +4,13 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.client.audio.TickableSound;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.SoundCategory;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Created by BobMowzie on 1/9/2019.
  */
+@OnlyIn(Dist.CLIENT)
 public class NagaSwoopSound extends TickableSound {
     private final Entity naga;
     int ticksExisted = 0;
