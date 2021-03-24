@@ -60,6 +60,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
@@ -184,7 +185,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         });
         this.goalSelector.addGoal(2, new AnimationDeactivateAI<>(this, DEACTIVATE_ANIMATION));
         this.goalSelector.addGoal(2, new SimpleAnimationAI<>(this, LAND_ANIMATION, false));
-        this.goalSelector.addGoal(2, new SimpleAnimationAI<>(this, SLAM_ANIMATION, false));
+        this.goalSelector.addGoal(2, new SimpleAnimationAI<>(this, SLAM_ANIMATION, EnumSet.of(Goal.Flag.LOOK)));
         this.goalSelector.addGoal(2, new SimpleAnimationAI<>(this, DODGE_ANIMATION, true));
         this.goalSelector.addGoal(3, new AnimationTakeDamage<>(this));
         this.goalSelector.addGoal(1, new AnimationDieAI<>(this));
@@ -227,6 +228,20 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
     @Override
     protected SoundEvent getAmbientSound() {
         return super.getAmbientSound();
+    }
+
+    @Override
+    public boolean canBePushedByEntity(Entity entity) {
+        return false;
+    }
+
+    @Override
+    protected void repelEntities(float x, float y, float z, float radius) {
+        List<PlayerEntity> nearbyEntities = getPlayersNearby(x, y, z, radius);
+        for (Entity entity : nearbyEntities) {
+            double angle = (getAngleBetweenEntities(this, entity) + 90) * Math.PI / 180;
+            entity.setMotion(-0.1 * Math.cos(angle), entity.getMotion().y,-0.1 * Math.sin(angle));
+        }
     }
 
     @Override
@@ -469,7 +484,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                 }
             }
 
-            if (ConfigHandler.MOBS.FROSTMAW.stealableIceCrystal.get() && getHasCrystal() && ticksExisted > 20) {
+            if (ConfigHandler.MOBS.FROSTMAW.stealableIceCrystal.get() && getHasCrystal() && ticksExisted > 20 && getAnimation() == NO_ANIMATION) {
                 Vector3d crystalPos = new Vector3d(1.6, 0.4, 1.8);
                 crystalPos = crystalPos.rotateYaw((float) Math.toRadians(-rotationYaw - 90));
                 crystalPos = crystalPos.add(getPositionVec());

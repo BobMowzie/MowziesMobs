@@ -6,6 +6,7 @@ import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.SoundEvent;
 
+import java.util.EnumSet;
 import java.util.List;
 
 public class AnimationAreaAttackAI<T extends MowzieEntity & IAnimatedEntity> extends AnimationAttackAI<T> {
@@ -14,10 +15,7 @@ public class AnimationAreaAttackAI<T extends MowzieEntity & IAnimatedEntity> ext
     private final boolean faceTarget;
 
     public AnimationAreaAttackAI(T entity, Animation animation, SoundEvent attackSound, SoundEvent hitSound, float applyKnockback, float range, float height, float arc, float damageMultiplier, int damageFrame) {
-        super(entity, animation, attackSound, hitSound, applyKnockback, range, damageMultiplier, damageFrame);
-        this.arc = arc;
-        this.height = height;
-        this.faceTarget = true;
+        this(entity, animation, attackSound, hitSound, applyKnockback, range, height, arc, damageMultiplier, damageFrame, true);
     }
 
     public AnimationAreaAttackAI(T entity, Animation animation, SoundEvent attackSound, SoundEvent hitSound, float applyKnockback, float range, float height, float arc, float damageMultiplier, int damageFrame, boolean faceTarget) {
@@ -25,6 +23,7 @@ public class AnimationAreaAttackAI<T extends MowzieEntity & IAnimatedEntity> ext
         this.arc = arc;
         this.height = height;
         this.faceTarget = faceTarget;
+        if (faceTarget) this.setMutexFlags(EnumSet.of(Flag.LOOK));
     }
 
     @Override

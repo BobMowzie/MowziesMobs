@@ -466,4 +466,48 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
             socketPosArray[index] = pos;
         }
     }
+
+    public boolean canBePushedByEntity(Entity entity) {
+        return true;
+    }
+
+    // TODO: Copied from parent classes
+    @Override
+    public void applyEntityCollision(Entity entityIn) {
+        if (!this.isSleeping()) {
+            if (!this.isRidingSameEntity(entityIn)) {
+                if (!entityIn.noClip && !this.noClip) {
+                    double d0 = entityIn.getPosX() - this.getPosX();
+                    double d1 = entityIn.getPosZ() - this.getPosZ();
+                    double d2 = MathHelper.absMax(d0, d1);
+                    if (d2 >= (double)0.01F) {
+                        d2 = (double)MathHelper.sqrt(d2);
+                        d0 = d0 / d2;
+                        d1 = d1 / d2;
+                        double d3 = 1.0D / d2;
+                        if (d3 > 1.0D) {
+                            d3 = 1.0D;
+                        }
+
+                        d0 = d0 * d3;
+                        d1 = d1 * d3;
+                        d0 = d0 * (double)0.05F;
+                        d1 = d1 * (double)0.05F;
+                        d0 = d0 * (double)(1.0F - this.entityCollisionReduction);
+                        d1 = d1 * (double)(1.0F - this.entityCollisionReduction);
+                        if (!this.isBeingRidden()) {
+                            if (canBePushedByEntity(entityIn)) {
+                                this.addVelocity(-d0, 0.0D, -d1);
+                            }
+                        }
+
+                        if (!entityIn.isBeingRidden()) {
+                            entityIn.addVelocity(d0, 0.0D, d1);
+                        }
+                    }
+
+                }
+            }
+        }
+    }
 }
