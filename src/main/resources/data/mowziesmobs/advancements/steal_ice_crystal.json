@@ -15,7 +15,6 @@
   "criteria": {
     "steal_crystal": {
       "trigger": "mowziesmobs:steal_ice_crystal"
-      }
     }
   }
 }
