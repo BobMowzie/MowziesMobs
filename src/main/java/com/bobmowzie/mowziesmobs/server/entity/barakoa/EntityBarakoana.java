@@ -42,10 +42,10 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
     protected void registerGoals() {
         super.registerGoals();
         this.targetSelector.addGoal(3, new BarakoaHurtByTargetAI(this, true));
-        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, CowEntity.class, 10, true, false, null));
-        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, PigEntity.class, 10, true, false, null));
-        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, SheepEntity.class, 10, true, false, null));
-        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, ChickenEntity.class, 10, true, false, null));
+        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, AnimalEntity.class, 200, true, false, target -> {
+            float volume = target.getWidth() * target.getWidth() * target.getHeight();
+            return (target.getAttribute(Attributes.ATTACK_DAMAGE) == null || target.getAttributeValue(Attributes.ATTACK_DAMAGE) < 3.0D) && volume > 0.1 && volume < 6;
+        }));
         this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, true, false, null));
         this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, SkeletonEntity.class, 0, true, false, null));
         this.targetSelector.addGoal(6, new AvoidEntityGoal<>(this, CreeperEntity.class, 6.0F, 1.0D, 1.2D));
