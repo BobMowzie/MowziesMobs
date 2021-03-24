@@ -17,8 +17,7 @@ import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.BlockState;
+import net.minecraft.block.*;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.controller.BodyController;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
@@ -33,11 +32,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.pathfinding.PathNavigator;
-import net.minecraft.util.DamageSource;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -270,6 +265,8 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
             }
         } else if (getAnimation() == VERTICAL_ATTACK_ANIMATION && getAnimationTick() == 29) {
             doVerticalAttackHitFX();
+        } else if (getAnimation() == STOMP_ATTACK_ANIMATION) {
+            doStompFX();
         }
 
         float moveX = (float) (getPosX() - prevPosX);
@@ -390,6 +387,58 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         if (strength >= 0) {
             int radius = MathHelper.ceil(MathHelper.sqrt(1 - strength * strength) * maxHeight);
             disturbance = new CeilingDisturbance(hitX, ceilY, hitZ, radius, rand.nextInt(5) + 3, rand.nextInt(60) + 20);
+        }
+    }
+
+    private void doStompFX() {
+        double perpFacing = renderYawOffset * (Math.PI / 180);
+        double facingAngle = perpFacing + Math.PI / 2;
+        int tick = getAnimationTick();
+        final int maxDistance = 6;
+        if (tick > 9 && tick < 17) {
+            if (tick == 12) {
+                final double infront = 1.47, side = -0.21;
+                double vx = Math.cos(facingAngle) * infront;
+                double vz = Math.sin(facingAngle) * infront;
+                double perpX = Math.cos(perpFacing);
+                double perpZ = Math.sin(perpFacing);
+                double fx = getPosX() + vx + perpX * side;
+                double fy = getBoundingBox().minY + 0.1;
+                double fz = getPosZ() + vz + perpZ * side;
+                int amount = 16 + world.rand.nextInt(8);
+                while (amount-- > 0) {
+                    double theta = world.rand.nextDouble() * Math.PI * 2;
+                    double dist = world.rand.nextDouble() * 0.1 + 0.25;
+                    double sx = Math.cos(theta);
+                    double sz = Math.sin(theta);
+                    double px = fx + sx * dist;
+                    double py = fy + world.rand.nextDouble() * 0.1;
+                    double pz = fz + sz * dist;
+                    world.addParticle(ParticleTypes.SMOKE, px, py, pz, sx * 0.065, 0, sz * 0.065);
+                }
+            }
+            if (tick % 2 == 0) {
+                int distance = tick / 2 - 2;
+                double spread = Math.PI * 2;
+                int arcLen = MathHelper.ceil(distance * spread);
+                for (int i = 0; i < arcLen; i++) {
+                    double theta = (i / (arcLen - 1.0) - 0.5) * spread + facingAngle;
+                    double vx = Math.cos(theta);
+                    double vz = Math.sin(theta);
+                    double px = getPosX() + vx * distance;
+                    double pz = getPosZ() + vz * distance;
+                    float factor = 1 - distance / (float) maxDistance;
+                    if (world.rand.nextBoolean()) {
+                        int amount = world.rand.nextInt(5);
+                        while (amount-- > 0) {
+                            double velX = vx * 0.075;
+                            double velY = factor * 0.3 + 0.025;
+                            double velZ = vz * 0.075;
+                            world.addParticle(ParticleTypes.CLOUD, px + world.rand.nextFloat() * 2 - 1, getBoundingBox().minY + 0.1 + world.rand.nextFloat() * 1.5, pz + world.rand.nextFloat() * 2 - 1, velX, velY, velZ);
+                        }
+                    }
+                }
+            }
         }
     }
 

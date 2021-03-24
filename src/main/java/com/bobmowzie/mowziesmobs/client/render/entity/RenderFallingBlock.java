@@ -23,8 +23,14 @@ public class RenderFallingBlock extends EntityRenderer<EntityFallingBlock> {
         BlockRendererDispatcher dispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
         matrixStackIn.push();
         matrixStackIn.translate(0, 0.5f, 0);
-        matrixStackIn.rotate(new Quaternion(0, MathHelper.lerp(partialTicks, entityIn.prevRotationYaw, entityIn.rotationYaw), 0, true));
-        matrixStackIn.rotate(new Quaternion(MathHelper.lerp(partialTicks, entityIn.prevRotationPitch, entityIn.rotationPitch), 0, 0, true));
+        if (entityIn.getMode() == EntityFallingBlock.EnumFallingBlockMode.MOBILE) {
+            matrixStackIn.rotate(new Quaternion(0, MathHelper.lerp(partialTicks, entityIn.prevRotationYaw, entityIn.rotationYaw), 0, true));
+            matrixStackIn.rotate(new Quaternion(MathHelper.lerp(partialTicks, entityIn.prevRotationPitch, entityIn.rotationPitch), 0, 0, true));
+        }
+        else {
+            matrixStackIn.translate(0, MathHelper.lerp(partialTicks, entityIn.prevAnimY, entityIn.animY), 0);
+            matrixStackIn.translate(0, -1, 0);
+        }
         matrixStackIn.translate(-0.5f, -0.5f, -0.5f);
         dispatcher.renderBlock(entityIn.getBlock(), matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY);
         matrixStackIn.pop();

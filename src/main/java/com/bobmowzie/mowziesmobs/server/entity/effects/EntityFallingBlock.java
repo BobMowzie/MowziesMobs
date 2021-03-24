@@ -24,6 +24,16 @@ public class EntityFallingBlock extends Entity {
     private static final DataParameter<Optional<BlockState>> BLOCK_STATE = EntityDataManager.createKey(EntityFallingBlock.class, DataSerializers.OPTIONAL_BLOCK_STATE);
     private static final DataParameter<Integer> DURATION = EntityDataManager.createKey(EntityFallingBlock.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> TICKS_EXISTED = EntityDataManager.createKey(EntityFallingBlock.class, DataSerializers.VARINT);
+    private static final DataParameter<String> MODE = EntityDataManager.createKey(EntityFallingBlock.class, DataSerializers.STRING);
+    private static final DataParameter<Float> ANIM_V_Y = EntityDataManager.createKey(EntityFallingBlock.class, DataSerializers.FLOAT);
+
+    public enum EnumFallingBlockMode {
+        MOBILE,
+        POPUP_ANIM
+    }
+
+    public float animY = 0;
+    public float prevAnimY = 0;
 
     public EntityFallingBlock(EntityType<?> entityTypeIn, World worldIn) {
         super(entityTypeIn, worldIn);
@@ -37,6 +47,13 @@ public class EntityFallingBlock extends Entity {
         setDuration(duration);
     }
 
+    public EntityFallingBlock(EntityType<?> entityTypeIn, World worldIn, BlockState blockState, float vy) {
+        super(entityTypeIn, worldIn);
+        setBlock(blockState);
+        setMode(EnumFallingBlockMode.POPUP_ANIM);
+        setAnimVY(vy);
+    }
+
     @Override
     public void onAddedToWorld() {
         if (getMotion().getX() > 0 || getMotion().getZ() > 0) rotationYaw = (float) ((180f/Math.PI) * Math.atan2(getMotion().getX(), getMotion().getZ()));
@@ -46,16 +63,28 @@ public class EntityFallingBlock extends Entity {
 
     @Override
     public void tick() {
+        if (getMode() == EnumFallingBlockMode.POPUP_ANIM) {
+            setMotion(0, 0, 0);
+        }
         prevMotionX = getMotion().x;
         prevMotionY = getMotion().y;
         prevMotionZ = getMotion().z;
         super.tick();
-        setMotion(getMotion().subtract(0, GRAVITY, 0));
-        if (onGround) setMotion(getMotion().scale(0.7));
-        else rotationPitch += 15;
-        this.move(MoverType.SELF, this.getMotion());
+        if (getMode() == EnumFallingBlockMode.MOBILE) {
+            setMotion(getMotion().subtract(0, GRAVITY, 0));
+            if (onGround) setMotion(getMotion().scale(0.7));
+            else rotationPitch += 15;
+            this.move(MoverType.SELF, this.getMotion());
 
-        if (ticksExisted > getDuration()) remove();
+            if (ticksExisted > getDuration()) remove();
+        }
+        else {
+            float animVY = getAnimVY();
+            prevAnimY = animY;
+            animY += animVY;
+            setAnimVY(animVY - GRAVITY);
+            if (animY < -0.5) remove();
+        }
     }
 
     @Override
@@ -63,6 +92,8 @@ public class EntityFallingBlock extends Entity {
         getDataManager().register(BLOCK_STATE, Optional.of(Blocks.DIRT.getDefaultState()));
         getDataManager().register(DURATION, 70);
         getDataManager().register(TICKS_EXISTED, 0);
+        getDataManager().register(MODE, EnumFallingBlockMode.MOBILE.toString());
+        getDataManager().register(ANIM_V_Y, 1f);
     }
 
     @Override
@@ -74,6 +105,9 @@ public class EntityFallingBlock extends Entity {
         }
         setDuration(compound.getInt("duration"));
         ticksExisted = compound.getInt("ticksExisted");
+        getDataManager().set(MODE, compound.getString("mode"));
+        setAnimVY(compound.getFloat("vy"));
+
     }
 
     @Override
@@ -82,6 +116,8 @@ public class EntityFallingBlock extends Entity {
         if (blockState != null) compound.put("block", NBTUtil.writeBlockState(blockState));
         compound.putInt("duration", getDuration());
         compound.putInt("ticksExisted", ticksExisted);
+        compound.putString("mode", getDataManager().get(MODE));
+        compound.putFloat("vy", getDataManager().get(ANIM_V_Y));
     }
 
     @Override
@@ -112,5 +148,23 @@ public class EntityFallingBlock extends Entity {
 
     public void setTicksExisted(int ticksExisted) {
         getDataManager().set(TICKS_EXISTED, ticksExisted);
+    }
+
+    public EnumFallingBlockMode getMode() {
+        String mode = getDataManager().get(MODE);
+        if (mode.isEmpty()) return EnumFallingBlockMode.MOBILE;
+        return EnumFallingBlockMode.valueOf(getDataManager().get(MODE));
+    }
+
+    private void setMode(EnumFallingBlockMode mode) {
+        getDataManager().set(MODE, mode.toString());
+    }
+
+    public float getAnimVY() {
+        return getDataManager().get(ANIM_V_Y);
+    }
+
+    private void setAnimVY(float vy) {
+        getDataManager().set(ANIM_V_Y, vy);
     }
 }
