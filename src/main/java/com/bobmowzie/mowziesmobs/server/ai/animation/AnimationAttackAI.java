@@ -6,6 +6,8 @@ import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.SoundEvent;
 
+import java.util.EnumSet;
+
 public class AnimationAttackAI<T extends MowzieEntity & IAnimatedEntity> extends SimpleAnimationAI<T> {
     protected LivingEntity entityTarget;
     protected SoundEvent attackSound;
@@ -28,6 +30,7 @@ public class AnimationAttackAI<T extends MowzieEntity & IAnimatedEntity> extends
         this.damageMultiplier = damageMultiplier;
         this.damageFrame = damageFrame;
         this.hitSound = hitSound;
+        this.setMutexFlags(EnumSet.of(Flag.LOOK));
     }
 
     @Override

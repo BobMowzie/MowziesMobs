@@ -287,7 +287,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
             this.world.playSound(this.getPosX(), this.getPosY(), this.getPosZ(), MMSounds.ENTITY_WROUGHT_STEP.get(), this.getSoundCategory(), 0.5F, 0.5F, false);
         }
 
-        repelEntities(2.2F, 4, 2.2F, 2.2F);
+        repelEntities(1.7F, 4, 1.7F, 1.7F);
 
         if (!active && !world.isRemote && getAnimation() != ACTIVATE_ANIMATION) {
             if (ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.healsOutOfBattle.get()) heal(0.3f);
@@ -311,8 +311,13 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     }
 
     @Override
-    public boolean canBePushed() {
-        return isActive();
+    protected void repelEntities(float x, float y, float z, float radius) {
+        super.repelEntities(x, y, z, radius);
+    }
+
+    @Override
+    public boolean canBePushedByEntity(Entity entity) {
+        return false;
     }
 
     private boolean isAtRestPos() {
