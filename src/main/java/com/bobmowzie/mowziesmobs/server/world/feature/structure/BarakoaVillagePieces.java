@@ -11,7 +11,6 @@ import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.sun.javafx.geom.Vec2f;
 import net.minecraft.block.*;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.item.ItemFrameEntity;
@@ -28,6 +27,7 @@ import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IServerWorld;
 import net.minecraft.world.IWorld;
@@ -406,21 +406,21 @@ public class BarakoaVillagePieces {
             BlockPos centerPos = findGround(worldIn, 4, 4);
             worldIn.setBlockState(centerPos, Blocks.CAMPFIRE.getDefaultState(), 2);
             fillAirLiquidBelowHeightmap(worldIn, Blocks.ACACIA_LOG.getDefaultState(), 4, 4);
-            Vec2f[] positions = new Vec2f[] {
-                    new Vec2f(0, 3),
-                    new Vec2f(0, 5),
-                    new Vec2f(8, 3),
-                    new Vec2f(8, 5),
-                    new Vec2f(3, 0),
-                    new Vec2f(5, 0),
-                    new Vec2f(3, 8),
-                    new Vec2f(5, 8),
-                    new Vec2f(1, 1),
-                    new Vec2f(1, 7),
-                    new Vec2f(7, 1),
-                    new Vec2f(7, 7),
+            Vector2f[] positions = new Vector2f[] {
+                    new Vector2f(0, 3),
+                    new Vector2f(0, 5),
+                    new Vector2f(8, 3),
+                    new Vector2f(8, 5),
+                    new Vector2f(3, 0),
+                    new Vector2f(5, 0),
+                    new Vector2f(3, 8),
+                    new Vector2f(5, 8),
+                    new Vector2f(1, 1),
+                    new Vector2f(1, 7),
+                    new Vector2f(7, 1),
+                    new Vector2f(7, 7),
             };
-            for (Vec2f pos : positions) {
+            for (Vector2f pos : positions) {
                 worldIn.setBlockState(findGround(worldIn, (int) pos.x, (int) pos.y), Blocks.ACACIA_LOG.getDefaultState(), 2);
                 fillAirLiquidBelowHeightmap(worldIn, Blocks.ACACIA_LOG.getDefaultState(), (int) pos.x, (int) pos.y);
             }
@@ -501,51 +501,51 @@ public class BarakoaVillagePieces {
 
         @Override
         public boolean func_230383_a_(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, MutableBoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
-            Vec2f[] hayPositions = new Vec2f[] {
-                    new Vec2f(0, 1),
-                    new Vec2f(0, 2),
-                    new Vec2f(0, 3),
-                    new Vec2f(1, 0),
-                    new Vec2f(1, 1),
-                    new Vec2f(1, 2),
-                    new Vec2f(1, 3),
-                    new Vec2f(1, 4),
-                    new Vec2f(2, 0),
-                    new Vec2f(2, 1),
-                    new Vec2f(2, 2),
-                    new Vec2f(2, 3),
-                    new Vec2f(2, 4),
-                    new Vec2f(3, 0),
-                    new Vec2f(3, 1),
-                    new Vec2f(3, 2),
-                    new Vec2f(3, 3),
-                    new Vec2f(3, 4),
-                    new Vec2f(4, 1),
-                    new Vec2f(4, 2),
-                    new Vec2f(4, 3),
+            Vector2f[] hayPositions = new Vector2f[] {
+                    new Vector2f(0, 1),
+                    new Vector2f(0, 2),
+                    new Vector2f(0, 3),
+                    new Vector2f(1, 0),
+                    new Vector2f(1, 1),
+                    new Vector2f(1, 2),
+                    new Vector2f(1, 3),
+                    new Vector2f(1, 4),
+                    new Vector2f(2, 0),
+                    new Vector2f(2, 1),
+                    new Vector2f(2, 2),
+                    new Vector2f(2, 3),
+                    new Vector2f(2, 4),
+                    new Vector2f(3, 0),
+                    new Vector2f(3, 1),
+                    new Vector2f(3, 2),
+                    new Vector2f(3, 3),
+                    new Vector2f(3, 4),
+                    new Vector2f(4, 1),
+                    new Vector2f(4, 2),
+                    new Vector2f(4, 3),
             };
-            for (Vec2f pos : hayPositions) {
+            for (Vector2f pos : hayPositions) {
                 BlockPos placePos = findGround(worldIn, (int) pos.x, (int) pos.y).down();
                 worldIn.setBlockState(placePos, Blocks.HAY_BLOCK.getDefaultState(), 2);
             }
-            Vec2f[] groundSkullPositions = new Vec2f[] {
-                    new Vec2f(0, 1),
-                    new Vec2f(0, 3),
-                    new Vec2f(2, 4),
-                    new Vec2f(3, 3),
-                    new Vec2f(4, 2),
+            Vector2f[] groundSkullPositions = new Vector2f[] {
+                    new Vector2f(0, 1),
+                    new Vector2f(0, 3),
+                    new Vector2f(2, 4),
+                    new Vector2f(3, 3),
+                    new Vector2f(4, 2),
             };
-            for (Vec2f pos : groundSkullPositions) {
+            for (Vector2f pos : groundSkullPositions) {
                 setBlockState(worldIn, findGround(worldIn, (int) pos.x, (int) pos.y), Blocks.SKELETON_SKULL.getDefaultState().with(BlockStateProperties.ROTATION_0_15, randomIn.nextInt(16)));
             }
-            Vec2f[] fenceSkullPositions = new Vec2f[] {
-                    new Vec2f(0, 2),
-                    new Vec2f(1, 4),
-                    new Vec2f(3, 4),
-                    new Vec2f(4, 1),
-                    new Vec2f(4, 3),
+            Vector2f[] fenceSkullPositions = new Vector2f[] {
+                    new Vector2f(0, 2),
+                    new Vector2f(1, 4),
+                    new Vector2f(3, 4),
+                    new Vector2f(4, 1),
+                    new Vector2f(4, 3),
             };
-            for (Vec2f pos : fenceSkullPositions) {
+            for (Vector2f pos : fenceSkullPositions) {
                 BlockPos groundPos = findGround(worldIn, (int) pos.x, (int) pos.y);
                 setBlockState(worldIn, groundPos, Blocks.OAK_FENCE.getDefaultState());
                 setBlockState(worldIn, groundPos.up(), Blocks.SKELETON_SKULL.getDefaultState().with(BlockStateProperties.ROTATION_0_15, randomIn.nextInt(16)));

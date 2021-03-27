@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.mojang.serialization.Codec;
 import net.minecraft.util.Direction;
@@ -16,7 +15,6 @@ import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
 import net.minecraft.world.gen.feature.structure.StructureStart;
 import net.minecraft.world.gen.feature.template.TemplateManager;
-import org.apache.logging.log4j.Level;
 
 import java.util.*;
 
