@@ -153,7 +153,7 @@ public class BarakoaVillageStructure extends MowzieStructure {
 
         private BlockPos posToSurface(ChunkGenerator generator, BlockPos pos) {
             int surfaceY = generator.getHeight(pos.getX(), pos.getZ(), Heightmap.Type.WORLD_SURFACE_WG);
-            return new BlockPos(pos.getX(), surfaceY, pos.getZ());
+            return new BlockPos(pos.getX(), surfaceY - 1, pos.getZ());
         }
     }
 }

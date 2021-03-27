@@ -44,6 +44,7 @@ public class FeatureHandler {
 
     public static RegistryObject<Structure<NoFeatureConfig>> BARAKOA_VILLAGE = registerStructure("barakoa_village", () -> (new BarakoaVillageStructure(NoFeatureConfig.CODEC)));
     public static IStructurePieceType BARAKOA_VILLAGE_PIECE = IStructurePieceType.register(BarakoaVillagePieces.Piece::new, MowziesMobs.MODID + "barakoa_village_template");
+    public static IStructurePieceType BARAKOA_VILLAGE_HOUSE = IStructurePieceType.register(BarakoaVillagePieces.HousePiece::new, MowziesMobs.MODID + "barakoa_village_house");
     public static IStructurePieceType BARAKOA_VILLAGE_FIREPIT = IStructurePieceType.register(BarakoaVillagePieces.FirepitPiece::new, MowziesMobs.MODID + "barakoa_village_firepit");
     public static IStructurePieceType BARAKOA_VILLAGE_STAKE = IStructurePieceType.register(BarakoaVillagePieces.StakePiece::new, MowziesMobs.MODID + "barakoa_village_stake");
     public static IStructurePieceType BARAKOA_VILLAGE_ALTAR = IStructurePieceType.register(BarakoaVillagePieces.AltarPiece::new, MowziesMobs.MODID + "barakoa_village_altar");
