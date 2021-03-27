@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBarako;
 import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.bobmowzie.mowziesmobs.client.render.RenderUtils;
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -20,6 +21,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class RenderBarako extends MobRenderer<EntityBarako, ModelBarako<EntityBarako>> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/entity/barako.png");
+    private static final ResourceLocation TEXTURE_OLD = new ResourceLocation(MowziesMobs.MODID, "textures/entity/barako_old.png");
     private static final float BURST_RADIUS = 3.5f;
     private static final int BURST_FRAME_COUNT = 10;
     private static final int BURST_START_FRAME = 12;
@@ -35,7 +37,7 @@ public class RenderBarako extends MobRenderer<EntityBarako, ModelBarako<EntityBa
 
     @Override
     public ResourceLocation getEntityTexture(EntityBarako entity) {
-        return RenderBarako.TEXTURE;
+        return ConfigHandler.CLIENT.oldBarakoaTextures.get() ? TEXTURE_OLD : TEXTURE;
     }
 
     @Override

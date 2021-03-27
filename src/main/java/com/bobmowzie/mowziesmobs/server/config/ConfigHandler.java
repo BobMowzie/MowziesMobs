@@ -628,9 +628,14 @@ public final class  ConfigHandler {
             this.glowEffect = builder.comment("Toggles the lantern glow effect, which may look bad with certain shaders")
                     .translation(LANG_PREFIX + "glow_effect")
                     .define("glow_effect", true);
+            this.oldBarakoaTextures = builder.comment("Use the old Barakoa textures instead of the current ones")
+                    .translation(LANG_PREFIX + "old_barakoa_textures")
+                    .define("old_barakoa_textures", false);
             builder.pop();
         }
 
         public final ConfigValue<Boolean> glowEffect;
+
+        public final ConfigValue<Boolean> oldBarakoaTextures;
     }
 }

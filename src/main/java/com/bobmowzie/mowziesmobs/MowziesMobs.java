@@ -46,6 +46,13 @@ public final class MowziesMobs {
         EntityHandler.register();
         ParticleHandler.REG.register(bus);
 
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigHandler.CLIENT_CONFIG);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHandler.COMMON_CONFIG);
+        Path path = FMLPaths.CONFIGDIR.get().resolve("mowziesmobs-common.toml");
+        ConfigHandler.loadConfig(ConfigHandler.COMMON_CONFIG, path);
+        path = FMLPaths.CONFIGDIR.get().resolve("mowziesmobs-client.toml");
+        ConfigHandler.loadConfig(ConfigHandler.CLIENT_CONFIG, path);
+
         PROXY.init(bus);
         bus.<FMLCommonSetupEvent>addListener(this::init);
         bus.<ModelRegistryEvent>addListener(this::init);
@@ -62,13 +69,6 @@ public final class MowziesMobs {
         PROXY.initNetwork();
         AdvancementHandler.preInit();
         LootTableHandler.init();
-
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigHandler.CLIENT_CONFIG);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHandler.COMMON_CONFIG);
-        Path path = FMLPaths.CONFIGDIR.get().resolve("mowziesmobs-common.toml");
-        ConfigHandler.loadConfig(ConfigHandler.COMMON_CONFIG, path);
-        path = FMLPaths.CONFIGDIR.get().resolve("mowziesmobs-client.toml");
-        ConfigHandler.loadConfig(ConfigHandler.CLIENT_CONFIG, path);
     }
 
     private void init(ModelRegistryEvent modelRegistryEvent) {

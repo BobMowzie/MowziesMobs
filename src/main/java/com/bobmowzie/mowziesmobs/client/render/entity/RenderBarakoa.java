@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBarakoa;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.ItemLayer;
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
@@ -21,7 +22,7 @@ public class RenderBarakoa extends MobRenderer<EntityBarakoa, ModelBarakoa<Entit
 
     static {
         for (MaskType mask : MaskType.values()) {
-            TEXTURES.put(mask, new ResourceLocation(MowziesMobs.MODID, "textures/entity/barakoa_" + mask.name + ".png"));
+            TEXTURES.put(mask, new ResourceLocation(MowziesMobs.MODID, "textures/entity/barakoa_" + mask.name + (ConfigHandler.CLIENT.oldBarakoaTextures.get() ? "_old" : "") + ".png"));
         }
     }
 
