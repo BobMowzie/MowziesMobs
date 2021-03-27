@@ -26,6 +26,7 @@ public class FeatureHandler {
 
     public static Structure<NoFeatureConfig> BARAKOA_VILLAGE = (Structure<NoFeatureConfig>) new BarakoaVillageStructure(NoFeatureConfig::deserialize).setRegistryName(MowziesMobs.MODID, "barakoa_village");
     public static IStructurePieceType BARAKOA_VILLAGE_PIECE = BarakoaVillagePieces.Piece::new;
+    public static IStructurePieceType BARAKOA_VILLAGE_HOUSE = BarakoaVillagePieces.HousePiece::new;
     public static IStructurePieceType BARAKOA_VILLAGE_FIREPIT = BarakoaVillagePieces.FirepitPiece::new;
     public static IStructurePieceType BARAKOA_VILLAGE_STAKE = BarakoaVillagePieces.StakePiece::new;
     public static IStructurePieceType BARAKOA_VILLAGE_ALTAR = BarakoaVillagePieces.AltarPiece::new;
@@ -42,6 +43,7 @@ public class FeatureHandler {
         );
         registerPiece(WROUGHTNAUT_CHAMBER_PIECE, "WROUGHTNAUT_CHAMBER_PIECE");
         registerPiece(BARAKOA_VILLAGE_PIECE, "BARAKOA_VILLAGE_PIECE");
+        registerPiece(BARAKOA_VILLAGE_HOUSE, "BARAKOA_VILLAGE_HOUSE");
         registerPiece(BARAKOA_VILLAGE_FIREPIT, "BARAKOA_VILLAGE_FIREPIT");
         registerPiece(BARAKOA_VILLAGE_STAKE, "BARAKOA_VILLAGE_STAKE");
         registerPiece(BARAKOA_VILLAGE_ALTAR, "BARAKOA_VILLAGE_ALTAR");

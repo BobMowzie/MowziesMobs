@@ -124,6 +124,21 @@ public class BarakoaVillagePieces {
             this.setupPiece(templateManagerIn);
         }
 
+        public Piece(IStructurePieceType piece, TemplateManager templateManagerIn, ResourceLocation resourceLocationIn, BlockPos pos, Rotation rotationIn) {
+            super(piece, 0);
+            this.resourceLocation = resourceLocationIn;
+            this.templatePosition = pos;
+            this.rotation = rotationIn;
+            this.setupPiece(templateManagerIn);
+        }
+
+        public Piece(IStructurePieceType piece, TemplateManager templateManagerIn, CompoundNBT tagCompound) {
+            super(piece, tagCompound);
+            this.resourceLocation = new ResourceLocation(tagCompound.getString("Template"));
+            this.rotation = Rotation.valueOf(tagCompound.getString("Rot"));
+            this.setupPiece(templateManagerIn);
+        }
+
         private void setupPiece(TemplateManager templateManager) {
             Template template = templateManager.getTemplateDefaulted(this.resourceLocation);
             PlacementSettings placementsettings = (new PlacementSettings()).setRotation(this.rotation).setMirror(Mirror.NONE);
@@ -188,6 +203,9 @@ public class BarakoaVillagePieces {
                 worldIn.addEntity(barako);
                 barako.onInitialSpawn(worldIn, worldIn.getDifficultyForLocation(barako.getPosition()), SpawnReason.STRUCTURE, null, null);
             }
+            else {
+                worldIn.removeBlock(pos, false);
+            }
         }
 
         protected void setBlockState(IWorld worldIn, BlockPos pos, BlockState state) {
@@ -232,11 +250,11 @@ public class BarakoaVillagePieces {
         private int chestDirection;
 
         public HousePiece(TemplateManager templateManagerIn, ResourceLocation resourceLocationIn, BlockPos pos, Rotation rotationIn) {
-            super(templateManagerIn, resourceLocationIn, pos, rotationIn);
+            super(FeatureHandler.BARAKOA_VILLAGE_HOUSE, templateManagerIn, resourceLocationIn, pos, rotationIn);
         }
 
         public HousePiece(TemplateManager templateManagerIn, CompoundNBT tagCompound) {
-            super(templateManagerIn, tagCompound);
+            super(FeatureHandler.BARAKOA_VILLAGE_HOUSE, templateManagerIn, tagCompound);
             tableCorner = tagCompound.getInt("TableCorner");
             tableContent = tagCompound.getInt("TableContent");
             bedCorner = tagCompound.getInt("BedCorner");
@@ -258,9 +276,8 @@ public class BarakoaVillagePieces {
 
         @Override
         protected void handleDataMarker(String function, BlockPos pos, IWorld worldIn, Random rand, MutableBoundingBox sbb) {
-            super.handleDataMarker(function, pos, worldIn, rand, sbb);
             if ("corner".equals(function.substring(0, function.length() - 1))) {
-                setBlockState(worldIn, pos, Blocks.AIR.getDefaultState());
+                worldIn.removeBlock(pos, false);
                 pos = pos.down();
                 int whichCorner = Integer.parseInt(function.substring(function.length() - 1));
                 Rotation cornerRotation = Rotation.values()[4 - whichCorner];
@@ -289,10 +306,11 @@ public class BarakoaVillagePieces {
                     facing = cornerRotation.rotate(facing);
                     generateChest(worldIn, sbb, rand, pos, LootTableHandler.BARAKOA_VILLAGE_HOUSE, Blocks.CHEST.getDefaultState().with(BlockStateProperties.HORIZONTAL_FACING, facing));
                 }
-                else setBlockState(worldIn, pos, Blocks.AIR.getDefaultState());
+                else
+                    worldIn.removeBlock(pos, false);
             }
-            if ("mask".equals(function)) {
-                setBlockState(worldIn, pos, Blocks.AIR.getDefaultState());
+            else if ("mask".equals(function)) {
+                worldIn.removeBlock(pos, false);
                 ItemFrameEntity itemFrame = new ItemFrameEntity(worldIn.getWorld(), pos, rotation.rotate(Direction.EAST));
                 int i = rand.nextInt(MaskType.values().length);
                 MaskType type = MaskType.values()[i];
@@ -317,6 +335,9 @@ public class BarakoaVillagePieces {
                 ItemStack stack = new ItemStack(mask);
                 itemFrame.setDisplayedItemWithUpdate(stack, false);
                 worldIn.addEntity(itemFrame);
+            }
+            else {
+                super.handleDataMarker(function, pos, worldIn, rand, sbb);
             }
         }
     }
