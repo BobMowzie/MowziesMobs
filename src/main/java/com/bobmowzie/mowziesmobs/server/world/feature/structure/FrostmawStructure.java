@@ -53,10 +53,10 @@ public class FrostmawStructure extends MowzieStructure {
             //Sets the bounds of the structure.
             this.recalculateStructureSize();
 
-            MowziesMobs.LOGGER.log(Level.DEBUG, "Frostmaw at " +
-                    this.components.get(0).getBoundingBox().minX + " " +
-                    this.components.get(0).getBoundingBox().minY + " " +
-                    this.components.get(0).getBoundingBox().minZ);
+//            MowziesMobs.LOGGER.log(Level.DEBUG, "Frostmaw at " +
+//                    this.components.get(0).getBoundingBox().minX + " " +
+//                    this.components.get(0).getBoundingBox().minY + " " +
+//                    this.components.get(0).getBoundingBox().minZ);
         }
     }
 }
