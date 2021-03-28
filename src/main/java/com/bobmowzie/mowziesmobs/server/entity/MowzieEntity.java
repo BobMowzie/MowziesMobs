@@ -103,9 +103,8 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
 
             // Dimension check
             List<? extends String> dimensionNames = spawnConfig.dimensions.get();
-            MutableRegistry<DimensionType> mutableregistry = DynamicRegistries.func_239770_b_().getRegistry(Registry.DIMENSION_TYPE_KEY);
-            ResourceLocation currDimensionName = mutableregistry.getOptionalKey(world.getDimensionType()).get().getLocation();
-            if (currDimensionName == null || !dimensionNames.contains(currDimensionName.toString())) {
+            ResourceLocation currDimensionName = ((ServerWorld)world).getDimensionKey().getLocation();
+            if (!dimensionNames.contains(currDimensionName.toString())) {
                 return false;
             }
 
