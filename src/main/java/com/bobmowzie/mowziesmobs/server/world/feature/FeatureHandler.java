@@ -57,9 +57,9 @@ public class FeatureHandler {
     }
 
     public static void setupStructures() {
-        setupMapSpacingAndLand(WROUGHTNAUT_CHAMBER.get(), new StructureSeparationSettings(ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationConfig.generationDistance.get(), ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationConfig.generationSeparation.get(),123555789), false);
-        setupMapSpacingAndLand(BARAKOA_VILLAGE.get(), new StructureSeparationSettings(ConfigHandler.MOBS.BARAKO.generationConfig.generationDistance.get(), ConfigHandler.MOBS.BARAKO.generationConfig.generationSeparation.get(),123444789), false);
-        setupMapSpacingAndLand(FROSTMAW.get(), new StructureSeparationSettings(ConfigHandler.MOBS.FROSTMAW.generationConfig.generationDistance.get(), ConfigHandler.MOBS.FROSTMAW.generationConfig.generationSeparation.get(),1237654789), false);
+        setupMapSpacingAndLand(WROUGHTNAUT_CHAMBER.get(), new StructureSeparationSettings(ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig.generationDistance.get(), ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig.generationSeparation.get(),123555789), false);
+        setupMapSpacingAndLand(BARAKOA_VILLAGE.get(), new StructureSeparationSettings(ConfigHandler.COMMON.MOBS.BARAKO.generationConfig.generationDistance.get(), ConfigHandler.COMMON.MOBS.BARAKO.generationConfig.generationSeparation.get(),123444789), false);
+        setupMapSpacingAndLand(FROSTMAW.get(), new StructureSeparationSettings(ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig.generationDistance.get(), ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig.generationSeparation.get(),1237654789), false);
     }
 
     public static <F extends Structure<?>> void setupMapSpacingAndLand(F structure, StructureSeparationSettings structureSeparationSettings, boolean transformSurroundingLand) {
@@ -114,15 +114,15 @@ public class FeatureHandler {
 
             // Put structure spacing
             Map<Structure<?>, StructureSeparationSettings> tempMap = new HashMap<>(serverWorld.getChunkProvider().generator.func_235957_b_().func_236195_a_());
-            addStructureSpacing(WROUGHTNAUT_CHAMBER.get(), tempMap, serverWorld, ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationConfig);
-            addStructureSpacing(BARAKOA_VILLAGE.get(), tempMap, serverWorld, ConfigHandler.MOBS.BARAKO.generationConfig);
-            addStructureSpacing(FROSTMAW.get(), tempMap, serverWorld, ConfigHandler.MOBS.FROSTMAW.generationConfig);
+            addStructureSpacing(WROUGHTNAUT_CHAMBER.get(), tempMap, serverWorld, ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig);
+            addStructureSpacing(BARAKOA_VILLAGE.get(), tempMap, serverWorld, ConfigHandler.COMMON.MOBS.BARAKO.generationConfig);
+            addStructureSpacing(FROSTMAW.get(), tempMap, serverWorld, ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig);
             serverWorld.getChunkProvider().generator.func_235957_b_().field_236193_d_ = tempMap;
         }
     }
 
     private static void addStructureSpacing(Structure<NoFeatureConfig> structure, Map<Structure<?>, StructureSeparationSettings> tempMap, ServerWorld world, ConfigHandler.GenerationConfig generationConfig) {
-        List<String> dimensionNames = generationConfig.dimensions.get();
+        List<? extends String> dimensionNames = generationConfig.dimensions.get();
         MutableRegistry<DimensionType> mutableregistry = DynamicRegistries.func_239770_b_().getRegistry(Registry.DIMENSION_TYPE_KEY);
         Optional<RegistryKey<DimensionType>> currDimension = mutableregistry.getOptionalKey(world.getDimensionType());
         if (currDimension.isPresent() && dimensionNames.contains(currDimension.get().getLocation().toString())) {

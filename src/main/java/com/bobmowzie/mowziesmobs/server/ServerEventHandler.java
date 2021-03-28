@@ -325,7 +325,7 @@ public final class ServerEventHandler {
                 Vector3d vecBetween = new Vector3d(target.getPosX() - attacker.getPosX(), 0, target.getPosZ() - attacker.getPosZ()).normalize();
                 double dot = lookDir.dotProduct(vecBetween);
                 if (dot > 0.7) {
-                    event.setAmount(event.getAmount() + ConfigHandler.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.bonusDamage.get());
+                    event.setAmount(event.getAmount() + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.bonusDamage.get());
                     target.playSound(MMSounds.ENTITY_NAGA_ACID_HIT.get(), 1f, 1.2f);
                     target.playSound(SoundEvents.ENTITY_PLAYER_ATTACK_CRIT, 1f, 1f);
                     MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> target), new MessageDaggerCrit(target, attacker));

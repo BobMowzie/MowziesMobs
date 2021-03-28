@@ -46,25 +46,25 @@ public class SpawnHandler {
     public static void onBiomeLoading(BiomeLoadingEvent event) {
         ResourceLocation biomeName = event.getName();
         if (biomeName == null) return;
-        if (ConfigHandler.MOBS.FOLIAATH.spawnConfig.spawnRate.get() > 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.MOBS.FOLIAATH.spawnConfig.biomeConfig, biomeName)) {
+        if (ConfigHandler.COMMON.MOBS.FOLIAATH.spawnConfig.spawnRate.get() > 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.FOLIAATH.spawnConfig.biomeConfig, biomeName)) {
 //            System.out.println("Added foliaath biome: " + biomeName.toString());
-            registerEntityWorldSpawn(EntityHandler.FOLIAATH, ConfigHandler.MOBS.FOLIAATH.spawnConfig, EntityClassification.MONSTER, event);
+            registerEntityWorldSpawn(EntityHandler.FOLIAATH, ConfigHandler.COMMON.MOBS.FOLIAATH.spawnConfig, EntityClassification.MONSTER, event);
         }
-        if (ConfigHandler.MOBS.BARAKOA.spawnConfig.spawnRate.get() > 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.MOBS.BARAKOA.spawnConfig.biomeConfig, biomeName)) {
+        if (ConfigHandler.COMMON.MOBS.BARAKOA.spawnConfig.spawnRate.get() > 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.BARAKOA.spawnConfig.biomeConfig, biomeName)) {
 //            System.out.println("Added Barakoa biome: " + biomeName.toString());
-            registerEntityWorldSpawn(EntityHandler.BARAKOANA, ConfigHandler.MOBS.BARAKOA.spawnConfig, EntityClassification.MONSTER, event);
+            registerEntityWorldSpawn(EntityHandler.BARAKOANA, ConfigHandler.COMMON.MOBS.BARAKOA.spawnConfig, EntityClassification.MONSTER, event);
         }
-        if (ConfigHandler.MOBS.GROTTOL.spawnConfig.spawnRate.get() > 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.MOBS.GROTTOL.spawnConfig.biomeConfig, biomeName)) {
+        if (ConfigHandler.COMMON.MOBS.GROTTOL.spawnConfig.spawnRate.get() > 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.GROTTOL.spawnConfig.biomeConfig, biomeName)) {
 //            System.out.println("Added grottol biome: " + biomeName.toString());
-            registerEntityWorldSpawn(EntityHandler.GROTTOL, ConfigHandler.MOBS.GROTTOL.spawnConfig, EntityClassification.MONSTER, event);
+            registerEntityWorldSpawn(EntityHandler.GROTTOL, ConfigHandler.COMMON.MOBS.GROTTOL.spawnConfig, EntityClassification.MONSTER, event);
         }
-        if (ConfigHandler.MOBS.LANTERN.spawnConfig.spawnRate.get() > 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.MOBS.LANTERN.spawnConfig.biomeConfig, biomeName)) {
+        if (ConfigHandler.COMMON.MOBS.LANTERN.spawnConfig.spawnRate.get() > 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.LANTERN.spawnConfig.biomeConfig, biomeName)) {
 //            System.out.println("Added lantern biome: " + biomeName.toString());
-            registerEntityWorldSpawn(EntityHandler.LANTERN, ConfigHandler.MOBS.LANTERN.spawnConfig, EntityClassification.AMBIENT, event);
+            registerEntityWorldSpawn(EntityHandler.LANTERN, ConfigHandler.COMMON.MOBS.LANTERN.spawnConfig, EntityClassification.AMBIENT, event);
         }
-        if (ConfigHandler.MOBS.NAGA.spawnConfig.spawnRate.get() > 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.MOBS.NAGA.spawnConfig.biomeConfig, biomeName)) {
+        if (ConfigHandler.COMMON.MOBS.NAGA.spawnConfig.spawnRate.get() > 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.NAGA.spawnConfig.biomeConfig, biomeName)) {
 //            System.out.println("Added naga biome: " + biomeName.toString());
-            registerEntityWorldSpawn(EntityHandler.NAGA, ConfigHandler.MOBS.NAGA.spawnConfig, EntityClassification.MONSTER, event);
+            registerEntityWorldSpawn(EntityHandler.NAGA, ConfigHandler.COMMON.MOBS.NAGA.spawnConfig, EntityClassification.MONSTER, event);
         }
     }
 

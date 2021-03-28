@@ -30,15 +30,15 @@ public class ConfiguredFeatureHandler {
     public static void onBiomeLoading(BiomeLoadingEvent event) {
         ResourceLocation biomeName = event.getName();
         if (biomeName == null) return;
-        if (ConfigHandler.MOBS.FROSTMAW.generationConfig.generationDistance.get() >= 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.MOBS.FROSTMAW.generationConfig.biomeConfig, biomeName)) {
+        if (ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig.generationDistance.get() >= 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig.biomeConfig, biomeName)) {
 //            System.out.println("Added frostmaw biome: " + biomeName.toString());
             event.getGeneration().getStructures().add(() -> CONFIGURED_FROSTMAW);
         }
-        if (ConfigHandler.MOBS.BARAKO.generationConfig.generationDistance.get() >= 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.MOBS.BARAKO.generationConfig.biomeConfig, biomeName)) {
+        if (ConfigHandler.COMMON.MOBS.BARAKO.generationConfig.generationDistance.get() >= 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.BARAKO.generationConfig.biomeConfig, biomeName)) {
 //            System.out.println("Added Barako biome: " + biomeName.toString());
             event.getGeneration().getStructures().add(() -> CONFIGURED_BARAKOA_VILLAGE);
         }
-        if (ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationConfig.generationDistance.get() >= 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationConfig.biomeConfig, biomeName)) {
+        if (ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig.generationDistance.get() >= 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig.biomeConfig, biomeName)) {
 //            System.out.println("Added Ferrous Wroughtnaut biome: " + biomeName.toString());
             event.getGeneration().getStructures().add(() -> CONFIGURED_WROUGHT_CHAMBER);
         }

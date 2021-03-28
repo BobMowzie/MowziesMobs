@@ -30,7 +30,7 @@ public class WroughtnautChamberStructure extends MowzieStructure {
 
     @Override
     public ConfigHandler.GenerationConfig getGenerationConfig() {
-        return ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationConfig;
+        return ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig;
     }
 
     @Override

@@ -23,7 +23,7 @@ public class FrostmawStructure extends MowzieStructure {
 
     @Override
     public ConfigHandler.GenerationConfig getGenerationConfig() {
-        return ConfigHandler.MOBS.FROSTMAW.generationConfig;
+        return ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig;
     }
 
     @Override

@@ -51,7 +51,7 @@ public class ItemBarakoaMask extends ArmorItem implements BarakoaMask {
         ItemStack stack = player.getHeldItem(hand);
         ItemStack headStack = player.inventory.armorInventory.get(3);
         if (headStack.getItem() instanceof ItemBarakoMask) {
-            if (ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable.get() && !player.isCreative()) headStack.damageItem(2, player, p -> p.sendBreakAnimation(hand));
+            if (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable.get() && !player.isCreative()) headStack.damageItem(2, player, p -> p.sendBreakAnimation(hand));
             spawnBarakoa(type, player, (float)stack.getDamage() / (float)stack.getMaxDamage());
             if (!player.isCreative()) {
                 stack.shrink(1);
@@ -129,7 +129,7 @@ public class ItemBarakoaMask extends ArmorItem implements BarakoaMask {
 
         @Override
         public int getDamageReductionAmount(EquipmentSlotType equipmentSlotType) {
-            return ConfigHandler.TOOLS_AND_ABILITIES.BARAKOA_MASK.armorConfig.damageReduction.get();
+            return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.BARAKOA_MASK.armorConfig.damageReduction.get();
         }
 
         @Override
@@ -154,7 +154,7 @@ public class ItemBarakoaMask extends ArmorItem implements BarakoaMask {
 
         @Override
         public float getToughness() {
-            return ConfigHandler.TOOLS_AND_ABILITIES.BARAKOA_MASK.armorConfig.damageReduction.get();
+            return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.BARAKOA_MASK.armorConfig.damageReduction.get();
         }
 
         @Override

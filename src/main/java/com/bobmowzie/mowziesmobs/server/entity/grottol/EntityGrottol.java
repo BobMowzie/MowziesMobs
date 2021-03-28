@@ -181,13 +181,13 @@ public class EntityGrottol extends MowzieEntity implements IMob {
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
         return MowzieEntity.createAttributes()
-                .createMutableAttribute(Attributes.MAX_HEALTH, 20 * ConfigHandler.MOBS.GROTTOL.healthMultiplier.get())
+                .createMutableAttribute(Attributes.MAX_HEALTH, 20 * ConfigHandler.COMMON.MOBS.GROTTOL.healthMultiplier.get())
                 .createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1);
     }
 
     @Override
     protected ConfigHandler.SpawnConfig getSpawnConfig() {
-        return ConfigHandler.MOBS.GROTTOL.spawnConfig;
+        return ConfigHandler.COMMON.MOBS.GROTTOL.spawnConfig;
     }
 
     @Override

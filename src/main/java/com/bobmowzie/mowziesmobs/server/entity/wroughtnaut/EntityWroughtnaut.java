@@ -166,7 +166,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
         return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 30)
-                .createMutableAttribute(Attributes.MAX_HEALTH, 40 * ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.combatConfig.healthMultiplier.get())
+                .createMutableAttribute(Attributes.MAX_HEALTH, 40 * ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.combatConfig.healthMultiplier.get())
                 .createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1);
     }
 
@@ -295,7 +295,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         repelEntities(1.7F, 4, 1.7F, 1.7F);
 
         if (!active && !world.isRemote && getAnimation() != ACTIVATE_ANIMATION) {
-            if (ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.healsOutOfBattle.get()) heal(0.3f);
+            if (ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.healsOutOfBattle.get()) heal(0.3f);
         }
 
         if (disturbance != null) {
@@ -580,7 +580,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 
     @Override
     protected boolean hasBossBar() {
-        return ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.hasBossBar.get();
+        return ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.hasBossBar.get();
     }
 
     @Override

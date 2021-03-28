@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.sound.BlackPinkSound;
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
@@ -27,6 +28,8 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 
@@ -75,6 +78,7 @@ public class ServerProxy {
     };
 
     public void init(final IEventBus modbus) {
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHandler.COMMON_CONFIG);
         DataSerializers.registerSerializer(OPTIONAL_TRADE);
     }
 

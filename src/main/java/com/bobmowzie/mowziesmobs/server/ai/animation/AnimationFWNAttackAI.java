@@ -70,7 +70,7 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
             } else if (entity.getAnimationTick() == 27) {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_SWING_1.get(), 1.5F, 1);
                 List<LivingEntity> entitiesHit = entity.getEntityLivingBaseNearby(range, 3, range, range);
-                float damage = (float)entity.getAttribute(Attributes.ATTACK_DAMAGE).getValue() * ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.combatConfig.attackMultiplier.get();
+                float damage = (float)entity.getAttribute(Attributes.ATTACK_DAMAGE).getValue() * ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.combatConfig.attackMultiplier.get();
                 boolean hit = false;
                 for (LivingEntity entityHit : entitiesHit) {
                     float entityHitAngle = (float) ((Math.atan2(entityHit.getPosZ() - entity.getPosZ(), entityHit.getPosX() - entity.getPosX()) * (180 / Math.PI) - 90) % 360);
@@ -110,7 +110,7 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
             else if (entity.getAnimationTick() == 12) {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_SWING_3.get(), 1.5F, 1);
                 List<LivingEntity> entitiesHit = entity.getEntityLivingBaseNearby(range - 0.3, 3, range - 0.3, range - 0.3);
-                float damage = (float)entity.getAttribute(Attributes.ATTACK_DAMAGE).getValue() * ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.combatConfig.attackMultiplier.get();
+                float damage = (float)entity.getAttribute(Attributes.ATTACK_DAMAGE).getValue() * ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.combatConfig.attackMultiplier.get();
                 boolean hit = false;
                 for (LivingEntity entityHit : entitiesHit) {
                     float entityHitAngle = (float) ((Math.atan2(entityHit.getPosZ() - entity.getPosZ(), entityHit.getPosX() - entity.getPosX()) * (180 / Math.PI) - 90) % 360);
@@ -151,7 +151,7 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_GRUNT_3.get(), 1.5F, 1.13f);
                 entity.move(MoverType.SELF, new Vector3d(Math.cos(Math.toRadians(entity.rotationYaw + 90)), 0, Math.sin(Math.toRadians(entity.rotationYaw + 90))));
                 List<LivingEntity> entitiesHit = entity.getEntityLivingBaseNearby(range + 0.2, 3, range + 0.2, range + 0.2);
-                float damage = (float)entity.getAttribute(Attributes.ATTACK_DAMAGE).getValue() * ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.combatConfig.attackMultiplier.get();
+                float damage = (float)entity.getAttribute(Attributes.ATTACK_DAMAGE).getValue() * ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.combatConfig.attackMultiplier.get();
                 boolean hit = false;
                 for (LivingEntity entityHit : entitiesHit) {
                     float entityHitDistance = (float) Math.sqrt((entityHit.getPosZ() - entity.getPosZ()) * (entityHit.getPosZ() - entity.getPosZ()) + (entityHit.getPosX() - entity.getPosX()) * (entityHit.getPosX() - entity.getPosX()));

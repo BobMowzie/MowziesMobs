@@ -74,7 +74,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(0, new SwimGoal(this));
-        this.goalSelector.addGoal(1, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_FOLIAATH_BITE_1.get(), null, 2, 4F, ConfigHandler.MOBS.FOLIAATH.combatConfig.attackMultiplier.get(), 3));
+        this.goalSelector.addGoal(1, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_FOLIAATH_BITE_1.get(), null, 2, 4F, ConfigHandler.COMMON.MOBS.FOLIAATH.combatConfig.attackMultiplier.get(), 3));
         this.goalSelector.addGoal(1, new AnimationTakeDamage<>(this));
         this.goalSelector.addGoal(1, new AnimationDieAI<>(this));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, LivingEntity.class, 0, true, false, e ->
@@ -91,7 +91,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
         return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 8)
-                .createMutableAttribute(Attributes.MAX_HEALTH, 10 * ConfigHandler.MOBS.FOLIAATH.combatConfig.healthMultiplier.get())
+                .createMutableAttribute(Attributes.MAX_HEALTH, 10 * ConfigHandler.COMMON.MOBS.FOLIAATH.combatConfig.healthMultiplier.get())
                 .createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1);
     }
 
@@ -266,7 +266,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
 
     @Override
     protected ConfigHandler.SpawnConfig getSpawnConfig() {
-        return ConfigHandler.MOBS.FOLIAATH.spawnConfig;
+        return ConfigHandler.COMMON.MOBS.FOLIAATH.spawnConfig;
     }
 
     @Override

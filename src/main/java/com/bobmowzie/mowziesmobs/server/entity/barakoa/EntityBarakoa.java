@@ -170,8 +170,8 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     }
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
-        return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 4 * ConfigHandler.MOBS.BARAKOA.combatConfig.attackMultiplier.get())
-                .createMutableAttribute(Attributes.MAX_HEALTH, 10 * ConfigHandler.MOBS.BARAKOA.combatConfig.healthMultiplier.get());
+        return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 4 * ConfigHandler.COMMON.MOBS.BARAKOA.combatConfig.attackMultiplier.get())
+                .createMutableAttribute(Attributes.MAX_HEALTH, 10 * ConfigHandler.COMMON.MOBS.BARAKOA.combatConfig.healthMultiplier.get());
     }
 
     protected void updateAttackAI() {
@@ -435,7 +435,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             dart.setKnockbackStrength(j);
         }
 
-        dart.setDamage(dart.getDamage() * ConfigHandler.MOBS.BARAKOA.combatConfig.attackMultiplier.get());
+        dart.setDamage(dart.getDamage() * ConfigHandler.COMMON.MOBS.BARAKOA.combatConfig.attackMultiplier.get());
 
         this.world.addEntity(dart);
         attacking = false;

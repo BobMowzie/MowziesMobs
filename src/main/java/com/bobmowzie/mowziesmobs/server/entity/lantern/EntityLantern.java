@@ -68,7 +68,7 @@ public class EntityLantern extends MowzieEntity {
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
         return MowzieEntity.createAttributes()
-                .createMutableAttribute(Attributes.MAX_HEALTH, 4.0D * ConfigHandler.MOBS.LANTERN.healthMultiplier.get())
+                .createMutableAttribute(Attributes.MAX_HEALTH, 4.0D * ConfigHandler.COMMON.MOBS.LANTERN.healthMultiplier.get())
                 .createMutableAttribute(Attributes.FLYING_SPEED, 0.3D)
                 .createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.2D);
     }
@@ -198,7 +198,7 @@ public class EntityLantern extends MowzieEntity {
 
     @Override
     protected ConfigHandler.SpawnConfig getSpawnConfig() {
-        return ConfigHandler.MOBS.LANTERN.spawnConfig;
+        return ConfigHandler.COMMON.MOBS.LANTERN.spawnConfig;
     }
 
     /**

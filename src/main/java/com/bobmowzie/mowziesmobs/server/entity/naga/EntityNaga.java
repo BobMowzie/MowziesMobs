@@ -281,10 +281,10 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
         return MowzieEntity.createAttributes()
-                .createMutableAttribute(Attributes.MAX_HEALTH, 30.0D * ConfigHandler.MOBS.NAGA.combatConfig.healthMultiplier.get())
+                .createMutableAttribute(Attributes.MAX_HEALTH, 30.0D * ConfigHandler.COMMON.MOBS.NAGA.combatConfig.healthMultiplier.get())
                 .createMutableAttribute(Attributes.MOVEMENT_SPEED, 12.0D)
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 45)
-                .createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.0D * ConfigHandler.MOBS.NAGA.combatConfig.attackMultiplier.get());
+                .createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.0D * ConfigHandler.COMMON.MOBS.NAGA.combatConfig.attackMultiplier.get());
     }
 
     @Nullable
@@ -510,7 +510,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
 
     @Override
     protected ConfigHandler.SpawnConfig getSpawnConfig() {
-        return ConfigHandler.MOBS.NAGA.spawnConfig;
+        return ConfigHandler.COMMON.MOBS.NAGA.spawnConfig;
     }
 
     @Override

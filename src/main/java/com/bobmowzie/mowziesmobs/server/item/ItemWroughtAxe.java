@@ -24,13 +24,13 @@ import java.util.List;
 public class ItemWroughtAxe extends AxeItem {
 
     public ItemWroughtAxe(Item.Properties properties) {
-        super(ItemTier.IRON, -3 + ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get(), -4f + ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackSpeed.get(), properties);
+        super(ItemTier.IRON, -3 + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get(), -4f + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackSpeed.get(), properties);
 
     }
 
     @Override
     public boolean getIsRepairable(ItemStack itemStack, ItemStack itemStackMaterial) {
-        return ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable.get() && super.getIsRepairable(itemStack, itemStackMaterial);
+        return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable.get() && super.getIsRepairable(itemStack, itemStackMaterial);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class ItemWroughtAxe extends AxeItem {
 
     @Override
     public boolean hitEntity(ItemStack heldItemStack, LivingEntity entityHit, LivingEntity attacker) {
-        if (ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable.get()) heldItemStack.damageItem(2, attacker, p -> p.sendBreakAnimation(Hand.MAIN_HAND));
+        if (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable.get()) heldItemStack.damageItem(2, attacker, p -> p.sendBreakAnimation(Hand.MAIN_HAND));
         if (!entityHit.world.isRemote) {
             entityHit.playSound(SoundEvents.BLOCK_ANVIL_LAND, 0.3F, 0.5F);
         }
@@ -56,7 +56,7 @@ public class ItemWroughtAxe extends AxeItem {
 
     @Override
     public boolean isDamageable() {
-        return ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable.get();
+        return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable.get();
     }
 
     @Override
@@ -70,7 +70,7 @@ public class ItemWroughtAxe extends AxeItem {
                 world.addEntity(axeAttack);
                 playerCapability.setVerticalSwing(verticalAttack);
                 playerCapability.setUntilAxeSwing(PlayerCapability.SWING_COOLDOWN);
-                if (ConfigHandler.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable.get() && !player.abilities.isCreativeMode) player.getHeldItem(hand).damageItem(2, player, p -> p.sendBreakAnimation(hand));
+                if (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable.get() && !player.abilities.isCreativeMode) player.getHeldItem(hand).damageItem(2, player, p -> p.sendBreakAnimation(hand));
             }
             return new ActionResult<ItemStack>(ActionResultType.SUCCESS, player.getHeldItem(hand));
         }

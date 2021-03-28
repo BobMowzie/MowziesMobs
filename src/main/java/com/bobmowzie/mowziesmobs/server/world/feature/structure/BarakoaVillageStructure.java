@@ -26,7 +26,7 @@ public class BarakoaVillageStructure extends MowzieStructure {
 
     @Override
     public ConfigHandler.GenerationConfig getGenerationConfig() {
-        return ConfigHandler.MOBS.BARAKO.generationConfig;
+        return ConfigHandler.COMMON.MOBS.BARAKO.generationConfig;
     }
 
     @Override
