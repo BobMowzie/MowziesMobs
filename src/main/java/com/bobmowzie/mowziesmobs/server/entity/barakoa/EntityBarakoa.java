@@ -169,8 +169,8 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     @Override
     protected void registerAttributes() {
         super.registerAttributes();
-        getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10  * ConfigHandler.MOBS.BARAKOA.combatConfig.healthMultiplier.get());
-        getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue((getMask() == MaskType.FURY ? 6 : 4)  * ConfigHandler.MOBS.BARAKOA.combatConfig.attackMultiplier.get());
+        getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(10  * ConfigHandler.COMMON.MOBS.BARAKOA.combatConfig.healthMultiplier.get());
+        getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue((getMask() == MaskType.FURY ? 6 : 4)  * ConfigHandler.COMMON.MOBS.BARAKOA.combatConfig.attackMultiplier.get());
     }
 
     protected void updateAttackAI() {
@@ -434,7 +434,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             dart.setKnockbackStrength(j);
         }
 
-        dart.setDamage(dart.getDamage() * ConfigHandler.MOBS.BARAKOA.combatConfig.attackMultiplier.get());
+        dart.setDamage(dart.getDamage() * ConfigHandler.COMMON.MOBS.BARAKOA.combatConfig.attackMultiplier.get());
 
         this.world.addEntity(dart);
         attacking = false;

@@ -38,7 +38,7 @@ public abstract class MowzieStructure extends ScatteredStructure<NoFeatureConfig
     @Override
     public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
         if (getBiomeFeatureDistance(generator) == -1 || getBiomeFeatureSeparation(generator) == -1) return false;
-        List<String> dimensionNames = getGenerationConfig().dimensions.get();
+        List<? extends String> dimensionNames = getGenerationConfig().dimensions.get();
         ResourceLocation currDimensionName = worldIn.getDimension().getType().getRegistryName();
         if (currDimensionName == null || !dimensionNames.contains(currDimensionName.toString())) {
             return false;

@@ -69,7 +69,7 @@ public class EntityLantern extends MowzieEntity {
     protected void registerAttributes() {
         super.registerAttributes();
         this.getAttributes().registerAttribute(SharedMonsterAttributes.FLYING_SPEED);
-        this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(4.0D * ConfigHandler.MOBS.LANTERN.healthMultiplier.get());
+        this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(4.0D * ConfigHandler.COMMON.MOBS.LANTERN.healthMultiplier.get());
         this.getAttribute(SharedMonsterAttributes.FLYING_SPEED).setBaseValue(0.3D);
         this.getAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.20000000298023224D);
     }
@@ -199,7 +199,7 @@ public class EntityLantern extends MowzieEntity {
 
     @Override
     protected ConfigHandler.SpawnConfig getSpawnConfig() {
-        return ConfigHandler.MOBS.LANTERN.spawnConfig;
+        return ConfigHandler.COMMON.MOBS.LANTERN.spawnConfig;
     }
 
     /**

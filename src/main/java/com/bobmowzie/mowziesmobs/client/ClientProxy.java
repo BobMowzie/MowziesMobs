@@ -9,6 +9,7 @@ import com.bobmowzie.mowziesmobs.client.sound.NagaSwoopSound;
 import com.bobmowzie.mowziesmobs.client.sound.SpawnBoulderChargeSound;
 import com.bobmowzie.mowziesmobs.client.sound.SunstrikeSound;
 import com.bobmowzie.mowziesmobs.server.ServerProxy;
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.*;
 import com.bobmowzie.mowziesmobs.server.entity.effects.*;
@@ -26,7 +27,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.config.ModConfig;
 
 public class ClientProxy extends ServerProxy {
     private Entity referencedMob = null;
@@ -34,6 +37,8 @@ public class ClientProxy extends ServerProxy {
     @Override
     public void init(final IEventBus modbus) {
         super.init(modbus);
+
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigHandler.CLIENT_CONFIG);
 
         modbus.register(MMModels.class);
         MinecraftForge.EVENT_BUS.register(ClientEventHandler.INSTANCE);

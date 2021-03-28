@@ -31,7 +31,7 @@ public class EntityDart extends ArrowEntity {
         if (shooter instanceof PlayerEntity) {
             this.pickupStatus = AbstractArrowEntity.PickupStatus.ALLOWED;
         }
-        setDamage(ConfigHandler.TOOLS_AND_ABILITIES.BLOW_GUN.attackDamage.get());
+        setDamage(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.BLOW_GUN.attackDamage.get());
     }
 
     @Override
@@ -42,7 +42,7 @@ public class EntityDart extends ArrowEntity {
     @Override
     protected void arrowHit(LivingEntity living) {
         super.arrowHit(living);
-        if (getShooter() instanceof PlayerEntity) living.addPotionEffect(new EffectInstance(Effects.POISON, ConfigHandler.TOOLS_AND_ABILITIES.BLOW_GUN.poisonDuration.get(), 3, false, true));
+        if (getShooter() instanceof PlayerEntity) living.addPotionEffect(new EffectInstance(Effects.POISON, ConfigHandler.COMMON.TOOLS_AND_ABILITIES.BLOW_GUN.poisonDuration.get(), 3, false, true));
         else living.addPotionEffect(new EffectInstance(Effects.POISON, 20, 1, false, true));
         living.setArrowCountInEntity(living.getArrowCountInEntity() - 1);
     }

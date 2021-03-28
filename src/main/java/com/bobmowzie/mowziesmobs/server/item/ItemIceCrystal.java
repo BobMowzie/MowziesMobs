@@ -37,7 +37,7 @@ public class ItemIceCrystal extends Item {
         if (playerIn.getHeldItemOffhand().getItem() != Items.SHIELD) {
             ItemStack stack = playerIn.getHeldItem(handIn);
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(playerIn, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-            if (stack.getDamage() + 20 < stack.getMaxDamage() || ConfigHandler.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable.get()) {
+            if (stack.getDamage() + 20 < stack.getMaxDamage() || ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable.get()) {
                 if (!playerCapability.isUsingIceBreath()) {
                     playerCapability.setIcebreath(new EntityIceBreath(EntityHandler.ICE_BREATH, worldIn, playerIn));
                     playerCapability.getIcebreath().setPositionAndRotation(playerIn.getPosX(), playerIn.getPosY() + playerIn.getEyeHeight() - 0.5f, playerIn.getPosZ(), playerIn.rotationYaw, playerIn.rotationPitch);

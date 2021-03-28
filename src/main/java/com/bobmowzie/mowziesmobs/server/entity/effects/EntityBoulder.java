@@ -150,7 +150,7 @@ public class EntityBoulder extends Entity {
             speed = 0.65f;
         }
 
-        if (caster instanceof PlayerEntity) damage *= ConfigHandler.TOOLS_AND_ABILITIES.geomancyAttackMultiplier.get();
+        if (caster instanceof PlayerEntity) damage *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.geomancyAttackMultiplier.get();
 
     }
 

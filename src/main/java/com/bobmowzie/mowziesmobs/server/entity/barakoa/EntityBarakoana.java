@@ -168,7 +168,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
 
     @Override
     protected ConfigHandler.SpawnConfig getSpawnConfig() {
-        return ConfigHandler.MOBS.BARAKOA.spawnConfig;
+        return ConfigHandler.COMMON.MOBS.BARAKOA.spawnConfig;
     }
 
     @Override

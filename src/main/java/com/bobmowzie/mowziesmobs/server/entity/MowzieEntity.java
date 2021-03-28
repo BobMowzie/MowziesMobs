@@ -96,7 +96,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
             BlockPos pos = new BlockPos(i, j, k);
 
             // Dimension check
-            List<String> dimensionNames = spawnConfig.dimensions.get();
+            List<? extends String> dimensionNames = spawnConfig.dimensions.get();
             ResourceLocation currDimensionName = world.getDimension().getType().getRegistryName();
             if (currDimensionName == null || !dimensionNames.contains(currDimensionName.toString())) {
                 return false;
@@ -119,7 +119,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
 
             // Block check
             ResourceLocation blockName = world.getBlockState(pos.down()).getBlock().getRegistryName();
-            List<String> allowedBlocks = spawnConfig.allowedBlocks.get();
+            List<? extends String> allowedBlocks = spawnConfig.allowedBlocks.get();
             if (blockName == null) return false;
             if (!allowedBlocks.isEmpty() && !allowedBlocks.contains(blockName.getPath())) return false;
 

@@ -148,8 +148,8 @@ public class WroughtnautChamberPieces {
         public static Pair<BlockPos, Rotation> tryWroughtChamber(IWorld world, int x, int surfaceY, int z) {
             int xzCheckDistance = 6; // Always starts at chunk center, so it can safely check 6 blocks in any direction
 
-            int heightMax = ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationConfig.heightMax.get().intValue();
-            int heightMin = ConfigHandler.MOBS.FERROUS_WROUGHTNAUT.generationConfig.heightMin.get().intValue();
+            int heightMax = ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig.heightMax.get().intValue();
+            int heightMin = ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig.heightMin.get().intValue();
             if (heightMax == -1) heightMax = surfaceY;
             if (heightMin == -1) heightMin = 0;
             for (int y = heightMax; y >= heightMin; y--) {

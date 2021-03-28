@@ -22,7 +22,7 @@ import java.util.List;
 
 public class ItemNagaFangDagger extends ToolItem {
     public ItemNagaFangDagger(Item.Properties properties) {
-        super(-2 + ConfigHandler.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.toolConfig.attackDamage.get(), -4f + ConfigHandler.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.toolConfig.attackSpeed.get(), ItemTier.STONE, Sets.newHashSet(), properties);
+        super(-2 + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.toolConfig.attackDamage.get(), -4f + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.toolConfig.attackSpeed.get(), ItemTier.STONE, Sets.newHashSet(), properties);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class ItemNagaFangDagger extends ToolItem {
     @Override
     public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         if (super.hitEntity(stack, target, attacker)) {
-            target.addPotionEffect(new EffectInstance(Effects.POISON, ConfigHandler.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.poisonDuration.get(), 3, false, true));
+            target.addPotionEffect(new EffectInstance(Effects.POISON, ConfigHandler.COMMON.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.poisonDuration.get(), 3, false, true));
             return true;
         }
         return false;

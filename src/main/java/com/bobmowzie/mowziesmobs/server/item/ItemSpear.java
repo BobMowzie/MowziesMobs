@@ -27,7 +27,7 @@ import java.util.List;
 
 public class ItemSpear extends ToolItem {
     public ItemSpear(Item.Properties properties) {
-        super(-2 + ConfigHandler.TOOLS_AND_ABILITIES.BARAKOA_SPEAR.toolConfig.attackDamage.get(), -4f + ConfigHandler.TOOLS_AND_ABILITIES.BARAKOA_SPEAR.toolConfig.attackSpeed.get(), ItemTier.STONE, Sets.newHashSet(), properties);
+        super(-2 + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.BARAKOA_SPEAR.toolConfig.attackDamage.get(), -4f + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.BARAKOA_SPEAR.toolConfig.attackSpeed.get(), ItemTier.STONE, Sets.newHashSet(), properties);
     }
 
     @Override

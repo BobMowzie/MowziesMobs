@@ -197,7 +197,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 }
             }
         });
-        this.goalSelector.addGoal(2, new AnimationRadiusAttack<EntityBarako>(this, ATTACK_ANIMATION, 4f, ConfigHandler.MOBS.BARAKO.combatConfig.attackMultiplier.get(), 3f, 12, true){
+        this.goalSelector.addGoal(2, new AnimationRadiusAttack<EntityBarako>(this, ATTACK_ANIMATION, 4f, ConfigHandler.COMMON.MOBS.BARAKO.combatConfig.attackMultiplier.get(), 3f, 12, true){
             @Override
             public void startExecuting() {
                 super.startExecuting();
@@ -227,7 +227,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     protected void registerAttributes() {
         super.registerAttributes();
         this.getAttribute(SharedMonsterAttributes.KNOCKBACK_RESISTANCE).setBaseValue(1.0);
-        this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(MAX_HEALTH * ConfigHandler.MOBS.BARAKO.combatConfig.healthMultiplier.get());
+        this.getAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(MAX_HEALTH * ConfigHandler.COMMON.MOBS.BARAKO.combatConfig.healthMultiplier.get());
         this.getAttribute(SharedMonsterAttributes.FOLLOW_RANGE).setBaseValue(40);
         this.getAttribute(SharedMonsterAttributes.ATTACK_DAMAGE).setBaseValue(5);
     }
@@ -449,7 +449,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 
         if (!world.isRemote && getAttackTarget() == null && getAnimation() != SOLAR_BEAM_ANIMATION && getAnimation() != SUPERNOVA_ANIMATION) {
             timeUntilHeal--;
-            if (ConfigHandler.MOBS.BARAKO.healsOutOfBattle.get() && timeUntilHeal <= 0) heal(0.3f);
+            if (ConfigHandler.COMMON.MOBS.BARAKO.healsOutOfBattle.get() && timeUntilHeal <= 0) heal(0.3f);
         }
         else {
             timeUntilHeal = HEAL_PAUSE;
@@ -829,7 +829,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 
     @Override
     protected boolean hasBossBar() {
-        return ConfigHandler.MOBS.BARAKO.hasBossBar.get();
+        return ConfigHandler.COMMON.MOBS.BARAKO.hasBossBar.get();
     }
 
     @Override

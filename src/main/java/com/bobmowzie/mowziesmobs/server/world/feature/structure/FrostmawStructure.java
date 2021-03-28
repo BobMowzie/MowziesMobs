@@ -45,7 +45,7 @@ public class FrostmawStructure extends MowzieStructure {
 
     @Override
     public ConfigHandler.GenerationConfig getGenerationConfig() {
-        return ConfigHandler.MOBS.FROSTMAW.generationConfig;
+        return ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig;
     }
 
     protected int getSeedModifier() {
@@ -76,8 +76,8 @@ public class FrostmawStructure extends MowzieStructure {
             int x = (chunkX << 4) + 7;
             int z = (chunkZ << 4) + 7;
             int surfaceY = generator.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG);
-            int heightMax = ConfigHandler.MOBS.FROSTMAW.generationConfig.heightMax.get().intValue();
-            int heightMin = ConfigHandler.MOBS.FROSTMAW.generationConfig.heightMin.get().intValue();
+            int heightMax = ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig.heightMax.get().intValue();
+            int heightMin = ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig.heightMin.get().intValue();
             if (heightMax != -1 && surfaceY > heightMax) return;
             if (heightMin != -1 && surfaceY < heightMin) return;
             BlockPos blockpos = new BlockPos(x, surfaceY, z);

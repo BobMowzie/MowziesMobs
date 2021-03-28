@@ -11,11 +11,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 
-import javax.tools.Tool;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Mod.EventBusSubscriber(modid = MowziesMobs.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class  ConfigHandler {
@@ -23,9 +20,7 @@ public final class  ConfigHandler {
 
     private static final String LANG_PREFIX = "config." + MowziesMobs.MODID + ".";
 
-    public static final General GENERAL;
-    public static final ToolsAndAbilities TOOLS_AND_ABILITIES;
-    public static final Mobs MOBS;
+    public static final Common COMMON;
     public static final Client CLIENT;
 
     private static final ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
@@ -35,9 +30,7 @@ public final class  ConfigHandler {
     public static ForgeConfigSpec CLIENT_CONFIG;
 
     static {
-        GENERAL = new General(COMMON_BUILDER);
-        TOOLS_AND_ABILITIES = new ToolsAndAbilities(COMMON_BUILDER);
-        MOBS = new Mobs(COMMON_BUILDER);
+        COMMON = new Common(COMMON_BUILDER);
         CLIENT = new Client(CLIENT_BUILDER);
 
         COMMON_CONFIG = COMMON_BUILDER.build();
@@ -68,7 +61,7 @@ public final class  ConfigHandler {
 
     // Config templates
     public static class BiomeConfig {
-        BiomeConfig(final ForgeConfigSpec.Builder builder, List<String> biomeTypes, List<String> biomeWhitelist, List<String> biomeBlacklist) {
+        BiomeConfig(final ForgeConfigSpec.Builder builder, List<? extends String> biomeTypes, List<? extends String> biomeWhitelist, List<? extends String> biomeBlacklist) {
             builder.push("biome_config");
             this.biomeTypes = builder.comment("Each entry is a combination of allowed biome types.", "Separate types with commas to require biomes to have all types in an entry", "Put a '!' before a biome type to mean NOT that type", "A blank entry means all biomes. No entries means no biomes.", "For example, 'FOREST,MAGICAL,!SNOWY' would mean all biomes that are magical forests but not snowy", "'!MOUNTAIN' would mean all non-mountain biomes")
                     .translation(LANG_PREFIX + "biome_type")
@@ -82,15 +75,15 @@ public final class  ConfigHandler {
             builder.pop();
         }
 
-        public final ConfigValue<List<String>> biomeTypes;
+        public final ConfigValue<List<? extends String>> biomeTypes;
 
-        public final ConfigValue<List<String>> biomeWhitelist;
+        public final ConfigValue<List<? extends String>> biomeWhitelist;
 
-        public final ConfigValue<List<String>> biomeBlacklist;
+        public final ConfigValue<List<? extends String>> biomeBlacklist;
     }
 
     public static class SpawnConfig {
-        SpawnConfig(final ForgeConfigSpec.Builder builder, int spawnRate, int minGroupSize, int maxGroupSize, BiomeConfig biomeConfig, List<String> allowedBlocks, int heightMax, int heightMin, boolean needsDarkness, boolean needsSeeSky, boolean needsCantSeeSky) {
+        SpawnConfig(final ForgeConfigSpec.Builder builder, int spawnRate, int minGroupSize, int maxGroupSize, BiomeConfig biomeConfig, List<? extends String> allowedBlocks, int heightMax, int heightMin, boolean needsDarkness, boolean needsSeeSky, boolean needsCantSeeSky) {
             builder.comment("Controls for vanilla-style mob spawning");
             builder.push("spawn_config");
             this.spawnRate = builder.comment("Smaller number causes less spawning, 0 to disable spawning")
@@ -135,7 +128,7 @@ public final class  ConfigHandler {
 
         public final BiomeConfig biomeConfig;
 
-        public final ConfigValue<List<String>> dimensions;
+        public final ConfigValue<List<? extends String>> dimensions;
 
         public final ConfigValue<Integer> heightMin;
 
@@ -147,7 +140,7 @@ public final class  ConfigHandler {
 
         public final ConfigValue<Boolean> needsCantSeeSky;
 
-        public final ConfigValue<List<String>> allowedBlocks;
+        public final ConfigValue<List<? extends String>> allowedBlocks;
     }
 
     public static class GenerationConfig {
@@ -179,7 +172,7 @@ public final class  ConfigHandler {
 
         public final BiomeConfig biomeConfig;
 
-        public final ConfigValue<List<String>> dimensions;
+        public final ConfigValue<List<? extends String>> dimensions;
 
         public final ConfigValue<Float> heightMin;
 
@@ -611,14 +604,12 @@ public final class  ConfigHandler {
     }
 
     public static class General {
-        public final ConfigValue<List<String>> freeze_blacklist;
+        public final ConfigValue<List<? extends String>> freeze_blacklist;
 
         private General(final ForgeConfigSpec.Builder builder) {
-            builder.push("general");
             this.freeze_blacklist = builder.comment("Add a mob's full name here to prevent it from being frozen or taking damage from ice magic.")
                     .translation(LANG_PREFIX + "freeze_blacklist")
                     .define("freeze_blacklist", Arrays.asList("mowziesmobs:frostmaw", "minecraft:enderdragon", "minecraft:blaze", "minecraft:magma_cube"));
-            builder.pop();
         }
     }
 
@@ -637,5 +628,19 @@ public final class  ConfigHandler {
         public final ConfigValue<Boolean> glowEffect;
 
         public final ConfigValue<Boolean> oldBarakoaTextures;
+    }
+
+    public static class Common {
+        private Common(final ForgeConfigSpec.Builder builder) {
+            GENERAL = new General(builder);
+            TOOLS_AND_ABILITIES = new ToolsAndAbilities(builder);
+            MOBS = new Mobs(builder);
+        }
+
+        public final General GENERAL;
+
+        public final ToolsAndAbilities TOOLS_AND_ABILITIES;
+
+        public final Mobs MOBS;
     }
 }

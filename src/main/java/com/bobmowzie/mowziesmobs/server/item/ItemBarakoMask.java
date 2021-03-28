@@ -33,28 +33,28 @@ public class ItemBarakoMask extends ArmorItem implements BarakoaMask {
 
     @Override
     public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
-        if (ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable.get()) return super.getIsRepairable(toRepair, repair);
+        if (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable.get()) return super.getIsRepairable(toRepair, repair);
         return false;
     }
 
     @Override
     public boolean isDamageable() {
-        return ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable.get();
+        return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable.get();
     }
 
     @Override
     public int getDamage(ItemStack stack) {
-        return ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable.get() ? super.getDamage(stack): 0;
+        return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable.get() ? super.getDamage(stack): 0;
     }
 
     @Override
     public int getMaxDamage(ItemStack stack) {
-        return ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable.get() ? super.getDamage(stack): 0;
+        return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable.get() ? super.getDamage(stack): 0;
     }
 
     @Override
     public void setDamage(ItemStack stack, int damage) {
-        if (ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable.get()) super.setDamage(stack, damage);
+        if (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable.get()) super.setDamage(stack, damage);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -96,7 +96,7 @@ public class ItemBarakoMask extends ArmorItem implements BarakoaMask {
 
         @Override
         public int getDamageReductionAmount(EquipmentSlotType equipmentSlotType) {
-            return ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.armorConfig.damageReduction.get();
+            return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.armorConfig.damageReduction.get();
         }
 
         @Override
@@ -121,7 +121,7 @@ public class ItemBarakoMask extends ArmorItem implements BarakoaMask {
 
         @Override
         public float getToughness() {
-            return ConfigHandler.TOOLS_AND_ABILITIES.SOL_VISAGE.armorConfig.toughness.get();
+            return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.armorConfig.toughness.get();
         }
     }
 }
