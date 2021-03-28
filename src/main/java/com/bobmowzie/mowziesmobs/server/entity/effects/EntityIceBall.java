@@ -56,7 +56,7 @@ public class EntityIceBall extends EntityMagicEffect implements IProjectile {
                 List<? extends String> freezeImmune = ConfigHandler.COMMON.GENERAL.freeze_blacklist.get();
                 ResourceLocation mobName = EntityType.getKey(entity.getType());
                 if (freezeImmune.contains(mobName.toString())) continue;
-                if (entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(this, caster), 3f * ConfigHandler.COMMON.MOBS.FROSTMAW.combatConfig.attackMultiplier.get())) {
+                if (entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(this, caster), 3f * ConfigHandler.COMMON.MOBS.FROSTMAW.combatConfig.attackMultiplier.get().floatValue())) {
                     IFrozenCapability capability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
                     if (capability != null) capability.addFreezeProgress(entity, 1);
                 }

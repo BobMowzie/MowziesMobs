@@ -83,7 +83,7 @@ public class PowerGeomancy extends Power {
 
                 List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(player,4, 4, 4, 4);
                 for (LivingEntity entityHit : entitiesHit) {
-                    entityHit.attackEntityFrom(DamageSource.causePlayerDamage(player), 6 * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.geomancyAttackMultiplier.get());
+                    entityHit.attackEntityFrom(DamageSource.causePlayerDamage(player), 6 * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.geomancyAttackMultiplier.get().floatValue());
                 }
             }
             else player.setMotion(player.getMotion().subtract(0, 0.07, 0));

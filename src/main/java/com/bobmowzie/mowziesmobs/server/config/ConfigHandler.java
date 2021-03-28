@@ -1,18 +1,17 @@
 package com.bobmowzie.mowziesmobs.server.config;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.electronwill.nightconfig.core.file.CommentedFileConfig;
-import com.electronwill.nightconfig.core.io.WritingMode;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorMaterial;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.common.ForgeConfigSpec.*;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
 
-import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Predicate;
 
 @Mod.EventBusSubscriber(modid = MowziesMobs.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class  ConfigHandler {
@@ -29,6 +28,8 @@ public final class  ConfigHandler {
     public static ForgeConfigSpec COMMON_CONFIG;
     public static ForgeConfigSpec CLIENT_CONFIG;
 
+    private static final Predicate<Object> STRING_PREDICATE = s -> s instanceof String;
+
     static {
         COMMON = new Common(COMMON_BUILDER);
         CLIENT = new Client(CLIENT_BUILDER);
@@ -37,41 +38,19 @@ public final class  ConfigHandler {
         CLIENT_CONFIG = CLIENT_BUILDER.build();
     }
 
-    public static void loadConfig(ForgeConfigSpec spec, Path path) {
-
-        final CommentedFileConfig configData = CommentedFileConfig.builder(path)
-                .sync()
-                .autosave()
-                .writingMode(WritingMode.REPLACE)
-                .build();
-
-        configData.load();
-        spec.setConfig(configData);
-    }
-
-    @SubscribeEvent
-    public static void onLoad(final ModConfig.Loading configEvent) {
-
-    }
-
-    @SubscribeEvent
-    public static void onReload(final ModConfig.Reloading configEvent) {
-    }
-
-
     // Config templates
     public static class BiomeConfig {
         BiomeConfig(final ForgeConfigSpec.Builder builder, List<? extends String> biomeTypes, List<? extends String> biomeWhitelist, List<? extends String> biomeBlacklist) {
             builder.push("biome_config");
             this.biomeTypes = builder.comment("Each entry is a combination of allowed biome types.", "Separate types with commas to require biomes to have all types in an entry", "Put a '!' before a biome type to mean NOT that type", "A blank entry means all biomes. No entries means no biomes.", "For example, 'FOREST,MAGICAL,!SNOWY' would mean all biomes that are magical forests but not snowy", "'!MOUNTAIN' would mean all non-mountain biomes")
                     .translation(LANG_PREFIX + "biome_type")
-                    .define("biome_type", biomeTypes);
+                    .defineList("biome_type", biomeTypes, STRING_PREDICATE);
             this.biomeWhitelist = builder.comment("Allow spawns in these biomes regardless of the biome type settings")
                     .translation(LANG_PREFIX + "biome_whitelist")
-                    .define("biome_whitelist", biomeWhitelist);
+                    .defineList("biome_whitelist", biomeWhitelist, STRING_PREDICATE);
             this.biomeBlacklist = builder.comment("Prevent spawns in these biomes regardless of the biome type settings")
                     .translation(LANG_PREFIX + "biome_blacklist")
-                    .define("biome_blacklist", biomeBlacklist);
+                    .defineList("biome_blacklist", biomeBlacklist, STRING_PREDICATE);
             builder.pop();
         }
 
@@ -88,26 +67,26 @@ public final class  ConfigHandler {
             builder.push("spawn_config");
             this.spawnRate = builder.comment("Smaller number causes less spawning, 0 to disable spawning")
                     .translation(LANG_PREFIX + "spawn_rate")
-                    .define("spawn_rate", spawnRate);
+                    .defineInRange("spawn_rate", spawnRate, 0, Integer.MAX_VALUE);
             this.minGroupSize = builder.comment("Minimum number of mobs that appear in a spawn group")
                     .translation(LANG_PREFIX + "min_group_size")
-                    .define("min_group_size", minGroupSize);
+                    .defineInRange("min_group_size", minGroupSize, 1, Integer.MAX_VALUE);
             this.maxGroupSize = builder.comment("Maximum number of mobs that appear in a spawn group")
                     .translation(LANG_PREFIX + "max_group_size")
-                    .define("max_group_size", maxGroupSize);
+                    .defineInRange("max_group_size", maxGroupSize, 1, Integer.MAX_VALUE);
             this.biomeConfig = biomeConfig;
             this.dimensions = builder.comment("Names of dimensions this mob can spawn in")
                     .translation(LANG_PREFIX + "dimensions")
-                    .define("dimensions", Arrays.asList("minecraft:overworld"));
+                    .defineList("dimensions", Collections.singletonList("minecraft:overworld"), STRING_PREDICATE);
             this.allowedBlocks = builder.comment("Names of blocks this mob is allowed to spawn on. Leave blank to allow any block.")
                     .translation(LANG_PREFIX + "allowed_blocks")
-                    .define("allowed_blocks", allowedBlocks);
+                    .defineList("allowed_blocks", allowedBlocks, STRING_PREDICATE);
             this.heightMax = builder.comment("Maximum height for this spawn. -1 to ignore.")
                     .translation(LANG_PREFIX + "height_max")
-                    .define("height_max", heightMax);
+                    .defineInRange("height_max", heightMax, -1, 256);
             this.heightMin = builder.comment("Minimum height for this spawn. -1 to ignore.")
                     .translation(LANG_PREFIX + "height_min")
-                    .define("height_min", heightMin);
+                    .defineInRange("height_min", heightMin, -1, 256);
             this.needsDarkness = builder.comment("Set to true to only allow this mob to spawn in the dark, like zombies and skeletons.")
                     .translation(LANG_PREFIX + "needs_darkness")
                     .define("needs_darkness", needsDarkness);
@@ -120,25 +99,25 @@ public final class  ConfigHandler {
             builder.pop();
         }
 
-        public final ConfigValue<Integer> spawnRate;
+        public final IntValue spawnRate;
 
-        public final ConfigValue<Integer> minGroupSize;
+        public final IntValue minGroupSize;
 
-        public final ConfigValue<Integer> maxGroupSize;
+        public final IntValue maxGroupSize;
 
         public final BiomeConfig biomeConfig;
 
         public final ConfigValue<List<? extends String>> dimensions;
 
-        public final ConfigValue<Integer> heightMin;
+        public final IntValue heightMin;
 
-        public final ConfigValue<Integer> heightMax;
+        public final IntValue heightMax;
 
-        public final ConfigValue<Boolean> needsDarkness;
+        public final BooleanValue needsDarkness;
 
-        public final ConfigValue<Boolean> needsSeeSky;
+        public final BooleanValue needsSeeSky;
 
-        public final ConfigValue<Boolean> needsCantSeeSky;
+        public final BooleanValue needsCantSeeSky;
 
         public final ConfigValue<List<? extends String>> allowedBlocks;
     }
@@ -149,34 +128,34 @@ public final class  ConfigHandler {
             builder.push("generation_config");
             this.generationDistance = builder.comment("Smaller number causes more generation, -1 to disable generation", "Maximum number of chunks between placements of this mob/structure")
                     .translation(LANG_PREFIX + "generation_distance")
-                    .define("generation_distance", generationDistance);
+                    .defineInRange("generation_distance", generationDistance, -1, Integer.MAX_VALUE);
             this.generationSeparation = builder.comment("Smaller number causes more generation, -1 to disable generation", "Minimum number of chunks between placements of this mob/structure")
                     .translation(LANG_PREFIX + "generation_separation")
-                    .define("generation_separation", generationSeparation);
+                    .defineInRange("generation_separation", generationSeparation, -1, Integer.MAX_VALUE);
             this.biomeConfig = biomeConfig;
             this.dimensions = builder.comment("Names of dimensions this mob/structure can generate in")
                     .translation(LANG_PREFIX + "dimensions")
-                    .define("dimensions", Arrays.asList("minecraft:overworld"));
+                    .defineList("dimensions", Collections.singletonList("minecraft:overworld"), STRING_PREDICATE);
             this.heightMax = builder.comment("Maximum height for generation placement. -1 to ignore")
                     .translation(LANG_PREFIX + "height_max")
-                    .define("height_max", heightMax);
+                    .defineInRange("height_max", heightMax, -1, 256);
             this.heightMin = builder.comment("Minimum height for generation placement. -1 to ignore")
                     .translation(LANG_PREFIX + "height_min")
-                    .define("height_min", heightMin);
+                    .defineInRange("height_min", heightMin, -1, 256);
             builder.pop();
         }
 
-        public final ConfigValue<Integer> generationDistance;
+        public final IntValue generationDistance;
 
-        public final ConfigValue<Integer> generationSeparation;
+        public final IntValue generationSeparation;
 
         public final BiomeConfig biomeConfig;
 
         public final ConfigValue<List<? extends String>> dimensions;
 
-        public final ConfigValue<Float> heightMin;
+        public final DoubleValue heightMin;
 
-        public final ConfigValue<Float> heightMax;
+        public final DoubleValue heightMax;
     }
 
     public static class CombatConfig {
@@ -184,16 +163,16 @@ public final class  ConfigHandler {
             builder.push("combat_config");
             this.healthMultiplier = builder.comment("Scale mob health by this value")
                     .translation(LANG_PREFIX + "health_multiplier")
-                    .define("health_multiplier", healthMultiplier);
+                    .defineInRange("health_multiplier", healthMultiplier, 0d, Double.MAX_VALUE);
             this.attackMultiplier = builder.comment("Scale mob attack damage by this value")
                     .translation(LANG_PREFIX + "attack_multiplier")
-                    .define("attack_multiplier", attackMultiplier);
+                    .defineInRange("attack_multiplier", attackMultiplier, 0d, Double.MAX_VALUE);
             builder.pop();
         }
 
-        public final ConfigValue<Float> healthMultiplier;
+        public final DoubleValue healthMultiplier;
 
-        public final ConfigValue<Float> attackMultiplier;
+        public final DoubleValue attackMultiplier;
     }
 
     public static class ToolConfig {
@@ -201,16 +180,16 @@ public final class  ConfigHandler {
             builder.push("tool_config");
             this.attackDamage = builder.comment("Tool attack damage")
                     .translation(LANG_PREFIX + "attack_damage")
-                    .define("attack_damage", attackDamage);
+                    .defineInRange("attack_damage", attackDamage, 0d, Double.MAX_VALUE);
             this.attackSpeed = builder.comment("Tool attack speed")
                     .translation(LANG_PREFIX + "attack_speed")
-                    .define("attack_speed", attackSpeed);
+                    .defineInRange("attack_speed", attackSpeed, 0d, Double.MAX_VALUE);
             builder.pop();
         }
 
-        public final ConfigValue<Float> attackDamage;
+        public final DoubleValue attackDamage;
 
-        public final ConfigValue<Float> attackSpeed;
+        public final DoubleValue attackSpeed;
     }
 
     public static class ArmorConfig {
@@ -218,16 +197,16 @@ public final class  ConfigHandler {
             builder.push("armor_config");
             this.damageReduction = builder.comment("See official Minecraft Wiki for an explanation of how armor damage reduction works.")
                     .translation(LANG_PREFIX + "damage_reduction")
-                    .define("damage_reduction", damageReduction);
+                    .defineInRange("damage_reduction", damageReduction, 0, Integer.MAX_VALUE);
             this.toughness = builder.comment("See official Minecraft Wiki for an explanation of how armor toughness works.")
                     .translation(LANG_PREFIX + "toughness")
-                    .define("toughness", toughness);
+                    .defineInRange("toughness", toughness, 0d, Double.MAX_VALUE);
             builder.pop();
         }
 
-        public final ConfigValue<Integer> damageReduction;
+        public final IntValue damageReduction;
 
-        public final ConfigValue<Float> toughness;
+        public final DoubleValue toughness;
     }
 
     // Mob configuration
@@ -236,7 +215,7 @@ public final class  ConfigHandler {
             builder.push("foliaath");
             spawnConfig = new SpawnConfig(builder,
                     70, 1, 4,
-                    new BiomeConfig(builder, Arrays.asList("JUNGLE"), new ArrayList<>(), new ArrayList<>()),
+                    new BiomeConfig(builder, Collections.singletonList("JUNGLE"), new ArrayList<>(), new ArrayList<>()),
                     Arrays.asList("grass_block", "podzol", "jungle_leaves", "oak_leaves", "oak_log", "jungle_log"),
                     -1, 60, false, false, false
             );
@@ -255,7 +234,7 @@ public final class  ConfigHandler {
             builder.comment("Controls spawning for Barakoana hunting groups", "Group size controls how many elites spawn, not followers", "See Barako config for village controls");
             spawnConfig = new SpawnConfig(builder,
                     5, 1, 1,
-                    new BiomeConfig(builder, Arrays.asList("SAVANNA"), new ArrayList<>(), new ArrayList<>()),
+                    new BiomeConfig(builder, Collections.singletonList("SAVANNA"), new ArrayList<>(), new ArrayList<>()),
                     Arrays.asList("grass_block", "sand"),
                     -1, 60, false, false, false
             );
@@ -273,7 +252,7 @@ public final class  ConfigHandler {
             builder.push("naga");
             spawnConfig = new SpawnConfig(builder,
                     70, 2, 4,
-                    new BiomeConfig(builder, Arrays.asList("BEACH,MOUNTAIN", "BEACH,HILLS"),  Arrays.asList("minecraft:stone_shore"), new ArrayList<>()),
+                    new BiomeConfig(builder, Arrays.asList("BEACH,MOUNTAIN", "BEACH,HILLS"), Collections.singletonList("minecraft:stone_shore"), new ArrayList<>()),
                     Arrays.asList("grass_block", "stone", "sand"),
                     -1, -1, false, true, false
             );
@@ -291,19 +270,19 @@ public final class  ConfigHandler {
             builder.push("lantern");
             spawnConfig = new SpawnConfig(builder,
                     5, 2, 4,
-                    new BiomeConfig(builder, Arrays.asList("FOREST,MAGICAL,!SNOWY"),  Arrays.asList("minecraft:dark_forest", "minecraft:dark_forest_hills"), new ArrayList<>()),
+                    new BiomeConfig(builder, Collections.singletonList("FOREST,MAGICAL,!SNOWY"), Arrays.asList("minecraft:dark_forest", "minecraft:dark_forest_hills"), new ArrayList<>()),
                     Arrays.asList("grass_block", "dark_oak_leaves", "dark_oak_log", "oak_leaves", "oak_log", "birch_leaves", "birch_log"),
                     -1, 60, true, false, false
             );
             this.healthMultiplier = builder.comment("Scale mob health by this value")
                     .translation(LANG_PREFIX + "health_multiplier")
-                    .define("health_multiplier", 1.0f);
+                    .defineInRange("health_multiplier", 1.0f, 0d, Double.MAX_VALUE);
             builder.pop();
         }
 
         public final SpawnConfig spawnConfig;
 
-        public final ConfigValue<Float> healthMultiplier;
+        public final DoubleValue healthMultiplier;
     }
 
     public static class Grottol {
@@ -317,13 +296,13 @@ public final class  ConfigHandler {
             );
             this.healthMultiplier = builder.comment("Scale mob health by this value")
                     .translation(LANG_PREFIX + "health_multiplier")
-                    .define("health_multiplier", 1.0f);
+                    .defineInRange("health_multiplier", 1.0f, 0d, Double.MAX_VALUE);
             builder.pop();
         }
 
         public final SpawnConfig spawnConfig;
 
-        public final ConfigValue<Float> healthMultiplier;
+        public final DoubleValue healthMultiplier;
     }
 
     public static class FerrousWroughtnaut {
@@ -346,9 +325,9 @@ public final class  ConfigHandler {
         public final GenerationConfig generationConfig;
 
         public final CombatConfig combatConfig;
-        public final ConfigValue<Boolean> hasBossBar;
+        public final BooleanValue hasBossBar;
 
-        public final ConfigValue<Boolean> healsOutOfBattle;
+        public final BooleanValue healsOutOfBattle;
     }
 
     public static class Barako {
@@ -373,9 +352,9 @@ public final class  ConfigHandler {
 
         public final CombatConfig combatConfig;
 
-        public final ConfigValue<Boolean> hasBossBar;
+        public final BooleanValue hasBossBar;
 
-        public final ConfigValue<Boolean> healsOutOfBattle;
+        public final BooleanValue healsOutOfBattle;
     }
 
     public static class Frostmaw {
@@ -402,11 +381,11 @@ public final class  ConfigHandler {
 
         public final CombatConfig combatConfig;
 
-        public final ConfigValue<Boolean> stealableIceCrystal;
+        public final BooleanValue stealableIceCrystal;
 
-        public final ConfigValue<Boolean> hasBossBar;
+        public final BooleanValue hasBossBar;
 
-        public final ConfigValue<Boolean> healsOutOfBattle;
+        public final BooleanValue healsOutOfBattle;
     }
 
     public static class WroughtHelm {
@@ -421,7 +400,7 @@ public final class  ConfigHandler {
 
         public final ArmorConfig armorConfig;
 
-        public final ConfigValue<Boolean> breakable;
+        public final BooleanValue breakable;
     }
 
     public static class AxeOfAThousandMetals {
@@ -436,7 +415,7 @@ public final class  ConfigHandler {
 
         public final ToolConfig toolConfig;
 
-        public final ConfigValue<Boolean> breakable;
+        public final BooleanValue breakable;
     }
 
     public static class SolVisage {
@@ -451,7 +430,7 @@ public final class  ConfigHandler {
 
         public final ArmorConfig armorConfig;
 
-        public final ConfigValue<Boolean> breakable;
+        public final BooleanValue breakable;
     }
 
     public static class BarakoaMask {
@@ -469,21 +448,21 @@ public final class  ConfigHandler {
             builder.push("ice_crystal");
             attackMultiplier = builder.comment("Multiply all damage done with the ice crystal by this amount.")
                     .translation(LANG_PREFIX + "attack_multiplier")
-                    .define("attack_multiplier", 1f);
+                    .defineInRange("attack_multiplier", 1f, 0d, Double.MAX_VALUE);
             breakable = builder.comment("Set to true for the ice crystal to have limited durability.", "Prevents regeneration in inventory.")
                     .translation(LANG_PREFIX + "breakable")
                     .define("breakable", false);
             durability = builder.comment("Ice crystal durability")
                     .translation(LANG_PREFIX + "durability")
-                    .define("durability", 600);
+                    .defineInRange("durability", 600, 1, Integer.MAX_VALUE);
             builder.pop();
         }
 
-        public final ConfigValue<Float> attackMultiplier;
+        public final DoubleValue attackMultiplier;
 
-        public final ConfigValue<Boolean> breakable;
+        public final BooleanValue breakable;
 
-        public final ConfigValue<Integer> durability;
+        public final IntValue durability;
     }
 
     public static class BarakoaSpear {
@@ -502,18 +481,18 @@ public final class  ConfigHandler {
             toolConfig = new ToolConfig(builder, 3, 2);
             poisonDuration = builder.comment("Duration in ticks of the poison effect (20 ticks = 1 second).")
                     .translation(LANG_PREFIX + "poison_duration")
-                    .define("poison_duration", 40);
+                    .defineInRange("poison_duration", 40, 0, Integer.MAX_VALUE);
             bonusDamage = builder.comment("Bonus damage when attacking from behind")
                     .translation(LANG_PREFIX + "bonus_damage")
-                    .define("bonus_damage", 3f);
+                    .defineInRange("bonus_damage", 3f, 0d, Double.MAX_VALUE);
             builder.pop();
         }
 
         public final ToolConfig toolConfig;
 
-        public final ConfigValue<Integer> poisonDuration;
+        public final IntValue poisonDuration;
 
-        public final ConfigValue<Float> bonusDamage;
+        public final DoubleValue bonusDamage;
     }
 
     public static class Blowgun {
@@ -521,16 +500,16 @@ public final class  ConfigHandler {
             builder.push("blowgun");
             poisonDuration = builder.comment("Duration in ticks of the poison effect (20 ticks = 1 second).")
                     .translation(LANG_PREFIX + "poison_duration")
-                    .define("poison_duration", 40);
+                    .defineInRange("poison_duration", 40, 0, Integer.MAX_VALUE);
             attackDamage = builder.comment("Multiply all damage done with the blowgun/darts by this amount.")
                     .translation(LANG_PREFIX + "attack_damage")
-                    .define("attack_damage", 1d);
+                    .defineInRange("attack_damage", 1d, 0, Double.MAX_VALUE);
             builder.pop();
         }
 
-        public final ConfigValue<Double> attackDamage;
+        public final DoubleValue attackDamage;
 
-        public final ConfigValue<Integer> poisonDuration;
+        public final IntValue poisonDuration;
     }
 
     public static class Mobs {
@@ -568,9 +547,9 @@ public final class  ConfigHandler {
         ToolsAndAbilities(final ForgeConfigSpec.Builder builder) {
             builder.push("tools_and_abilities");
             sunsBlessingAttackMultiplier = builder.translation(LANG_PREFIX + "suns_blessing_attack_multiplier")
-                    .define("suns_blessing_attack_multiplier", 1f);
+                    .defineInRange("suns_blessing_attack_multiplier", 1f, 0, Double.MAX_VALUE);
             geomancyAttackMultiplier = builder.translation(LANG_PREFIX + "geomancy_attack_multiplier")
-                    .define("geomancy_attack_multiplier", 1f);
+                    .defineInRange("geomancy_attack_multiplier", 1f, 0, Double.MAX_VALUE);
             WROUGHT_HELM = new WroughtHelm(builder);
             AXE_OF_A_THOUSAND_METALS = new AxeOfAThousandMetals(builder);
             SOL_VISAGE = new SolVisage(builder);
@@ -582,9 +561,9 @@ public final class  ConfigHandler {
             builder.pop();
         }
 
-        public final ConfigValue<Float> sunsBlessingAttackMultiplier;
+        public final DoubleValue sunsBlessingAttackMultiplier;
 
-        public final ConfigValue<Float> geomancyAttackMultiplier;
+        public final DoubleValue geomancyAttackMultiplier;
 
         public final WroughtHelm WROUGHT_HELM;
 
@@ -607,9 +586,11 @@ public final class  ConfigHandler {
         public final ConfigValue<List<? extends String>> freeze_blacklist;
 
         private General(final ForgeConfigSpec.Builder builder) {
+            builder.push("general");
             this.freeze_blacklist = builder.comment("Add a mob's full name here to prevent it from being frozen or taking damage from ice magic.")
                     .translation(LANG_PREFIX + "freeze_blacklist")
-                    .define("freeze_blacklist", Arrays.asList("mowziesmobs:frostmaw", "minecraft:enderdragon", "minecraft:blaze", "minecraft:magma_cube"));
+                    .defineList("freeze_blacklist", Arrays.asList("mowziesmobs:frostmaw", "minecraft:enderdragon", "minecraft:blaze", "minecraft:magma_cube"), STRING_PREDICATE);
+            builder.pop();
         }
     }
 
@@ -625,9 +606,9 @@ public final class  ConfigHandler {
             builder.pop();
         }
 
-        public final ConfigValue<Boolean> glowEffect;
+        public final BooleanValue glowEffect;
 
-        public final ConfigValue<Boolean> oldBarakoaTextures;
+        public final BooleanValue oldBarakoaTextures;
     }
 
     public static class Common {
