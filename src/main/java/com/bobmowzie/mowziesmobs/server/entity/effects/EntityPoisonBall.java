@@ -59,7 +59,7 @@ public class EntityPoisonBall extends EntityMagicEffect {
             for (LivingEntity entity : entitiesHit) {
                 if (entity == caster) continue;
                 if (entity instanceof EntityNaga) continue;
-                if (entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(this, caster), 3 * ConfigHandler.COMMON.MOBS.NAGA.combatConfig.attackMultiplier.get())) {
+                if (entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(this, caster), 3 * ConfigHandler.COMMON.MOBS.NAGA.combatConfig.attackMultiplier.get().floatValue())) {
                     entity.addPotionEffect(new EffectInstance(Effects.POISON, 80, 1, false, true));
                 }
             }
@@ -144,7 +144,7 @@ public class EntityPoisonBall extends EntityMagicEffect {
             for (LivingEntity entity : entitiesHit) {
                 if (entity == caster) continue;
                 if (entity instanceof EntityNaga) continue;
-                if (entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(this, caster), 3 * ConfigHandler.COMMON.MOBS.NAGA.combatConfig.attackMultiplier.get())) {
+                if (entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(this, caster), 3 * ConfigHandler.COMMON.MOBS.NAGA.combatConfig.attackMultiplier.get().floatValue())) {
                     entity.addPotionEffect(new EffectInstance(Effects.POISON, 80, 0, false, true));
                 }
             }
