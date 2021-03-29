@@ -23,7 +23,7 @@ public abstract class AnimationAI<T extends MowzieEntity & IAnimatedEntity> exte
 
     protected AnimationAI(T entity, boolean interruptsAI, boolean hurtInterruptsAnimation) {
         this.entity = entity;
-        if (interruptsAI) this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.JUMP, Flag.LOOK));
+        if (interruptsAI) this.setMutexFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
         this.hurtInterruptsAnimation = hurtInterruptsAnimation;
     }
 
