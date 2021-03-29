@@ -40,6 +40,7 @@ import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.pathfinding.PathNavigator;
+import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
@@ -126,6 +127,8 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
     @Override
     protected void registerGoals() {
         super.registerGoals();
+        setPathPriority(PathNodeType.WATER, 7);
+        setPathPriority(PathNodeType.WATER_BORDER, 7);
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(5, new MoveTowardsRestrictionGoal(this, 1.0D));
         this.goalSelector.addGoal(7, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
@@ -184,7 +187,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         this.goalSelector.addGoal(2, new AnimationDeactivateAI<>(this, DEACTIVATE_ANIMATION));
         this.goalSelector.addGoal(2, new SimpleAnimationAI<>(this, LAND_ANIMATION, false));
         this.goalSelector.addGoal(2, new SimpleAnimationAI<>(this, SLAM_ANIMATION, EnumSet.of(Goal.Flag.LOOK)));
-        this.goalSelector.addGoal(2, new SimpleAnimationAI<>(this, DODGE_ANIMATION, true));
+        this.goalSelector.addGoal(2, new SimpleAnimationAI<>(this, DODGE_ANIMATION, EnumSet.of(Goal.Flag.MOVE, Goal.Flag.JUMP)));
         this.goalSelector.addGoal(3, new AnimationTakeDamage<>(this));
         this.goalSelector.addGoal(1, new AnimationDieAI<>(this));
         this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 0, true, false, null));
@@ -438,7 +441,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                     else getNavigator().tryMoveToEntityLiving(getAttackTarget(), 0.95);
                 }
                 else getNavigator().clearPath();
-                if (targetDistance <= 8.5 && getAnimation() == NO_ANIMATION && slamCooldown <= 0 && rand.nextInt(4) == 0 && !getAttackTarget().isPotionActive(PotionHandler.FROZEN) && getHealthRatio() < 0.6) {
+                if (targetDistance <= 8.5 && getAnimation() == NO_ANIMATION && slamCooldown <= 0 && rand.nextInt(4) == 0 && getHealthRatio() < 0.6) {
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, SLAM_ANIMATION);
                     slamCooldown = SLAM_COOLDOWN;
                 }
@@ -447,11 +450,11 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                         AnimationHandler.INSTANCE.sendAnimationMessage(this, SWIPE_TWICE_ANIMATION);
                     else AnimationHandler.INSTANCE.sendAnimationMessage(this, SWIPE_ANIMATION);
                 }
-                if (targetDistance >= 3.5 && targetDistance <= 13.5 && getAnimation() == NO_ANIMATION && iceBreathCooldown <= 0 && getHasCrystal() && onGround) {
+                if (targetDistance >= 3.5 && targetDistance <= 13.5 && getAnimation() == NO_ANIMATION && iceBreathCooldown <= 0 && getHasCrystal() && (onGround || inWater)) {
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, ICE_BREATH_ANIMATION);
                     iceBreathCooldown = ICE_BREATH_COOLDOWN;
                 }
-                if (targetDistance >= 14.5 && getAnimation() == NO_ANIMATION && iceBallCooldown <= 0 && getHasCrystal() && onGround) {
+                if (targetDistance >= 14.5 && getAnimation() == NO_ANIMATION && iceBallCooldown <= 0 && getHasCrystal() && (onGround || inWater)) {
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, ICE_BALL_ANIMATION);
                     iceBallCooldown = ICE_BALL_COOLDOWN;
                 }

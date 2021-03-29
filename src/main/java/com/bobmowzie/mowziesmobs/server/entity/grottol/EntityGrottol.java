@@ -93,9 +93,12 @@ public class EntityGrottol extends MowzieEntity implements IMob {
         super.registerGoals();
         setPathPriority(PathNodeType.DANGER_OTHER, 1);
         setPathPriority(PathNodeType.WATER, 3);
+        setPathPriority(PathNodeType.WATER_BORDER, 3);
         setPathPriority(PathNodeType.LAVA, 1);
         setPathPriority(PathNodeType.DANGER_FIRE, 1);
+        setPathPriority(PathNodeType.DAMAGE_FIRE, 1);
         setPathPriority(PathNodeType.DANGER_CACTUS, 1);
+        setPathPriority(PathNodeType.DAMAGE_CACTUS, 1);
         goalSelector.addGoal(3, new SwimGoal(this));
         goalSelector.addGoal(4, new RandomWalkingGoal(this, 0.3));
         goalSelector.addGoal(1, new EntityAIGrottolFindMinecart(this));
