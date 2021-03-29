@@ -325,7 +325,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                 if (getAnimationTick() == 2) {
                     dodgeYaw = (float) Math.toRadians(targetAngle + 90 + rand.nextFloat() * 150 - 75);
                 }
-                if (getAnimationTick() == 6 && (onGround || isInLava())) {
+                if (getAnimationTick() == 6 && (onGround || isInLava() || isInWater())) {
                     float speed = 1.7f;
                     Vector3d m = getMotion().add(speed * Math.cos(dodgeYaw), 0, speed * Math.sin(dodgeYaw));
                     setMotion(m.x, 0.6, m.z);
@@ -457,6 +457,10 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                 if (targetDistance >= 14.5 && getAnimation() == NO_ANIMATION && iceBallCooldown <= 0 && getHasCrystal() && (onGround || inWater)) {
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, ICE_BALL_ANIMATION);
                     iceBallCooldown = ICE_BALL_COOLDOWN;
+                }
+                // Temporary solution while fixing frostmaw pathfinding in water
+                if (isInWater() && getAnimation() == NO_ANIMATION) {
+                    AnimationHandler.INSTANCE.sendAnimationMessage(this, DODGE_ANIMATION);
                 }
             }
             else if (!world.isRemote) {

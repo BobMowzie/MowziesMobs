@@ -700,9 +700,9 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     public Set<UUID> getTradedPlayers() {
         Set<UUID> tradedPlayers = new HashSet<>();
         CompoundNBT compound = getDataManager().get(TRADED_PLAYERS);
-        ListNBT players = compound.getList("players", Constants.NBT.TAG_COMPOUND);
-        for (int i = 0; i < players.size(); i++) {
-            tradedPlayers.add(NBTUtil.readUniqueId(players.getCompound(i)));
+        ListNBT players = compound.getList("players", Constants.NBT.TAG_INT_ARRAY);
+        for (net.minecraft.nbt.INBT player : players) {
+            tradedPlayers.add(NBTUtil.readUniqueId(player));
         }
         return tradedPlayers;
     }
@@ -727,7 +727,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     public void rememberTrade(PlayerEntity player) {
         UUID uuid = PlayerEntity.getUUID(player.getGameProfile());
         CompoundNBT compound = getDataManager().get(TRADED_PLAYERS);
-        ListNBT players = compound.getList("players", Constants.NBT.TAG_COMPOUND);
+        ListNBT players = compound.getList("players", Constants.NBT.TAG_INT_ARRAY);
         players.add(NBTUtil.func_240626_a_(uuid));
         compound.put("players", players);
         getDataManager().set(TRADED_PLAYERS, compound);
@@ -738,7 +738,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         super.writeAdditional(compound);
         compound.putInt("direction", getDirection());
         CompoundNBT compoundTradedPlayers = getDataManager().get(TRADED_PLAYERS);
-        ListNBT players = compoundTradedPlayers.getList("players", Constants.NBT.TAG_COMPOUND);
+        ListNBT players = compoundTradedPlayers.getList("players", Constants.NBT.TAG_INT_ARRAY);
         compound.put("players", players);
     }
 
@@ -746,7 +746,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     public void readAdditional(CompoundNBT compound) {
         super.readAdditional(compound);
         setDirection(compound.getInt("direction"));
-        ListNBT players = compound.getList("players", Constants.NBT.TAG_COMPOUND);
+        ListNBT players = compound.getList("players", Constants.NBT.TAG_INT_ARRAY);
         setTradedPlayersCompound(players);
     }
 
