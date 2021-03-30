@@ -123,10 +123,10 @@
   "effect.mowziesmobs.geomancy": "Geomancy",
   "effect.mowziesmobs.frozen": "Frozen",
   "effect.mowziesmobs.poison_resist": "Poison Resistance",
-  "effect.mowziesmobs.effect.poison_resist": "Potion of Poison Resistance",
-  "splash_potion.mowziesmobs.effect.poison_resist": "Splash Potion of Poison Resistance",
-  "lingering_potion.mowziesmobs.effect.poison_resist": "Lingering Potion of Poison Resistance",
-  "tipped_arrow.effect.poison_resist": "Arrow of Poison Resistance",
+  "item.minecraft.potion.effect.poison_resist": "Potion of Poison Resistance",
+  "item.minecraft.splash_potion.effect.poison_resist": "Splash Potion of Poison Resistance",
+  "item.minecraft.lingering_potion.effect.poison_resist": "Lingering Potion of Poison Resistance",
+  "item.minecraft.tipped_arrow.effect.poison_resist": "Arrow of Poison Resistance",
 
   "_comment": "Tile Entities",
 
