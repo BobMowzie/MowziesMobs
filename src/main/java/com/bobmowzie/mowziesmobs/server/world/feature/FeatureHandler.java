@@ -127,5 +127,8 @@ public class FeatureHandler {
         if (dimensionNames.contains(currDimensionName.toString())) {
             tempMap.putIfAbsent(structure, DimensionStructuresSettings.field_236191_b_.get(structure));
         }
+        else {
+            tempMap.remove(structure);
+        }
     }
 }
