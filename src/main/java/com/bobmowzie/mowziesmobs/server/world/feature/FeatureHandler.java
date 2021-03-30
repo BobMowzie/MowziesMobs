@@ -122,10 +122,10 @@ public class FeatureHandler {
     }
 
     private static void addStructureSpacing(Structure<NoFeatureConfig> structure, Map<Structure<?>, StructureSeparationSettings> tempMap, ServerWorld world, ConfigHandler.GenerationConfig generationConfig) {
-        List<? extends String> dimensionNames = generationConfig.dimensions.get();
-        ResourceLocation currDimensionName = world.getDimensionKey().getLocation();
-        if (dimensionNames.contains(currDimensionName.toString())) {
+//        List<? extends String> dimensionNames = generationConfig.dimensions.get();
+//        ResourceLocation currDimensionName = world.getDimensionKey().getLocation();
+//        if (dimensionNames.contains(currDimensionName.toString())) {
             tempMap.putIfAbsent(structure, DimensionStructuresSettings.field_236191_b_.get(structure));
-        }
+//        }
     }
 }

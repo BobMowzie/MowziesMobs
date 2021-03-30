@@ -216,6 +216,21 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
     }
 
     @Override
+    public void onAddedToWorld() {
+        super.onAddedToWorld();
+    }
+
+    @Override
+    public void onRemovedFromWorld() {
+        super.onRemovedFromWorld();
+    }
+
+    @Override
+    public void remove() {
+        super.remove();
+    }
+
+    @Override
     public void playAmbientSound() {
         if (!active) return;
         int i = rand.nextInt(4);
@@ -476,6 +491,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         }
         else {
             getNavigator().clearPath();
+            setMotion(0, getMotion().y, 0);
             renderYawOffset = prevRenderYawOffset;
             if (!world.isRemote && getAnimation() != ACTIVATE_ANIMATION) {
                 if (ConfigHandler.COMMON.MOBS.FROSTMAW.healsOutOfBattle.get()) heal(0.3f);
@@ -845,8 +861,8 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
     }
 
     @Override
-    public void move(MoverType typeIn, Vector3d pos) {
-        if (typeIn == MoverType.SELF && !active) return;
-        super.move(typeIn, pos);
+    public Vector3d getMotion() {
+        if (!getActive()) return super.getMotion().mul(0, 1, 0);
+        return super.getMotion();
     }
 }

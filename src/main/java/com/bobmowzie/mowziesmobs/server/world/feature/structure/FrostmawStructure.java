@@ -44,7 +44,7 @@ public class FrostmawStructure extends MowzieStructure {
             int x = (chunkX << 4) + 7;
             int z = (chunkZ << 4) + 7;
             int surfaceY = generator.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG);
-            BlockPos blockpos = new BlockPos(x, surfaceY, z);
+            BlockPos blockpos = new BlockPos(x, surfaceY + 1, z);
 
             //Now adds the structure pieces to this.components with all details such as where each part goes
             //so that the structure can be added to the world by worldgen.
