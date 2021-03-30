@@ -319,8 +319,8 @@ public class EntityGrottol extends MowzieEntity implements IMob {
                 playSound(MMSounds.ENTITY_GROTTOL_BURROW.get(), 1, 0.8f + rand.nextFloat() * 0.4f);
                 BlockState blockBeneath = world.getBlockState(getPosition().down());
                 Material mat = blockBeneath.getMaterial();
-                if (mat == Material.EARTH || mat == Material.SAND || mat == Material.CLAY || mat == Material.ROCK) {
-                    Vec3d pos = new Vec3d(0.7D, 0.05D, 0.0D).rotateYaw((float) Math.toRadians(-renderYawOffset - 90));
+                if (mat == Material.EARTH || mat == Material.SAND || mat == Material.CLAY || mat == Material.ROCK || mat == Material.ORGANIC) {
+                    Vec3d pos = new Vec3d(0.5D, 0.05D, 0.0D).rotateYaw((float) Math.toRadians(-renderYawOffset - 90));
                     if (world instanceof ServerWorld) {
                         ((ServerWorld) world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, blockBeneath),
                                 getPosX() + pos.x, getPosY() + pos.y, getPosZ() + pos.z,
