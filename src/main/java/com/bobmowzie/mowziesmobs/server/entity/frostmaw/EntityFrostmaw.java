@@ -127,8 +127,6 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        setPathPriority(PathNodeType.WATER, 7);
-        setPathPriority(PathNodeType.WATER_BORDER, 7);
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(5, new MoveTowardsRestrictionGoal(this, 1.0D));
         this.goalSelector.addGoal(7, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
