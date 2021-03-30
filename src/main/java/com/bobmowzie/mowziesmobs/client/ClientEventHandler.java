@@ -148,7 +148,7 @@ public enum ClientEventHandler {
                 // Time
                 drawMarioNumber(timeOffsetX + 8, offsetY + 8, time, 3);
             }*/
-            if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.isPotionActive(PotionHandler.FROZEN) && Minecraft.getInstance().gameSettings.getPointOfView() != PointOfView.FIRST_PERSON) {
+            if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.isPotionActive(PotionHandler.FROZEN) && Minecraft.getInstance().gameSettings.getPointOfView() == PointOfView.FIRST_PERSON) {
                 Minecraft.getInstance().getTextureManager().bindTexture(FROZEN_BLUR);
                 MainWindow res = e.getWindow();
                 AbstractGui.blit(e.getMatrixStack(), 0, 0, 0, 0, res.getScaledWidth(), res.getScaledHeight(), res.getScaledWidth(), res.getScaledHeight());
