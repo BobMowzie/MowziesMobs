@@ -21,13 +21,12 @@ import java.lang.reflect.Method;
  * Created by BobMowzie on 1/10/2019.
  */
 
-@Mod.EventBusSubscriber(modid = MowziesMobs.MODID)
-public class PotionTypeHandler {
-    private PotionTypeHandler() {
-    }
+@Mod.EventBusSubscriber(modid = MowziesMobs.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+public final class PotionTypeHandler {
+    private PotionTypeHandler() {}
 
-    public static final Potion POISON_RESIST = new Potion("poisonResist", new EffectInstance[]{new EffectInstance(PotionHandler.POISON_RESIST, 3600)}).setRegistryName("poison_resist");
-    public static final Potion LONG_POISON_RESIST = new Potion("poisonResist", new EffectInstance[]{new EffectInstance(PotionHandler.POISON_RESIST, 9600)}).setRegistryName("long_poison_resist");
+    public static final Potion POISON_RESIST = new Potion("poison_resist", new EffectInstance(PotionHandler.POISON_RESIST, 3600)).setRegistryName("poison_resist");
+    public static final Potion LONG_POISON_RESIST = new Potion("poison_resist", new EffectInstance(PotionHandler.POISON_RESIST, 9600)).setRegistryName("long_poison_resist");
 
     private static Method brewing_mixes;
     private static void addMix(Potion start, Item ingredient, Potion result) {
