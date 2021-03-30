@@ -59,22 +59,30 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
 
     @Override
     protected int getTribeCircleTick() {
-        return getPlayerCapability().getTribeCircleTick();
+        PlayerCapability.IPlayerCapability capability = getPlayerCapability();
+        if (capability == null) return 0;
+        return capability.getTribeCircleTick();
     }
 
     @Override
     protected int getPackSize() {
-        return getPlayerCapability().getPackSize();
+        PlayerCapability.IPlayerCapability capability = getPlayerCapability();
+        if (capability == null) return 0;
+        return capability.getPackSize();
     }
 
     @Override
     protected void addAsPackMember() {
-        getPlayerCapability().addPackMember(this);
+        PlayerCapability.IPlayerCapability capability = getPlayerCapability();
+        if (capability == null) return;
+        capability.addPackMember(this);
     }
 
     @Override
     protected void removeAsPackMember() {
-        getPlayerCapability().removePackMember(this);
+        PlayerCapability.IPlayerCapability capability = getPlayerCapability();
+        if (capability == null) return;
+        capability.removePackMember(this);
     }
 
     private PlayerCapability.IPlayerCapability getPlayerCapability() {
