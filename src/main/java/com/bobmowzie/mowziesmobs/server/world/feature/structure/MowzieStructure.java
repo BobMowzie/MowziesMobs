@@ -45,8 +45,10 @@ public abstract class MowzieStructure extends ScatteredStructure<NoFeatureConfig
         }
         if (checkHeightLimitAgainstSurface()) {
             int surfaceY = generator.getHeight(pos.getX(), pos.getZ(), Heightmap.Type.WORLD_SURFACE_WG);
-            if (surfaceY < getGenerationConfig().heightMin.get()) return false;
-            if (surfaceY > getGenerationConfig().heightMax.get()) return false;
+            double minHeight = getGenerationConfig().heightMin.get();
+            double maxHeight = getGenerationConfig().heightMax.get();
+            if (minHeight != -1 && surfaceY < minHeight) return false;
+            if (maxHeight != -1 && surfaceY > maxHeight) return false;
         }
 
         return super.place(worldIn, generator, rand, pos, config);
