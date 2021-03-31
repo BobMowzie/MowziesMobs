@@ -32,8 +32,10 @@ public abstract class MowzieStructure extends Structure<NoFeatureConfig> {
     protected boolean func_230363_a_(ChunkGenerator chunkGenerator, BiomeProvider biomeSource, long seed, SharedSeedRandom chunkRandom, int chunkX, int chunkZ, Biome biome, ChunkPos chunkPos, NoFeatureConfig featureConfig) {
         if (checkHeightLimitAgainstSurface()) {
             int landHeight = chunkGenerator.getNoiseHeight(chunkX << 4, chunkZ << 4, Heightmap.Type.WORLD_SURFACE_WG);
-            if (landHeight < getGenerationConfig().heightMin.get()) return false;
-            if (landHeight > getGenerationConfig().heightMax.get()) return false;
+            double minHeight = getGenerationConfig().heightMin.get();
+            double maxHeight = getGenerationConfig().heightMax.get();
+            if (minHeight != -1 && landHeight < minHeight) return false;
+            if (maxHeight != -1 && landHeight > maxHeight) return false;
         }
         return super.func_230363_a_(chunkGenerator, biomeSource, seed, chunkRandom, chunkX, chunkZ, biome, chunkPos, featureConfig);
     }
