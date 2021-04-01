@@ -37,16 +37,23 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
 
     @Override
     public void tick() {
+        if (getLeader() == null || getLeader().getHealth() <= 0) deactivate();
         super.tick();
     }
 
     @Override
     protected boolean processInteract(PlayerEntity player, Hand hand) {
-        if (player == leader && getActive() && getAnimation() != DEACTIVATE_ANIMATION) {
+        if (player == leader) {
+            deactivate();
+        }
+        return super.processInteract(player, hand);
+    }
+
+    private void deactivate() {
+        if (getActive() && getAnimation() != DEACTIVATE_ANIMATION) {
             AnimationHandler.INSTANCE.sendAnimationMessage(this, DEACTIVATE_ANIMATION);
             playSound(MMSounds.ENTITY_BARAKOA_RETRACT.get(), 1, 1);
         }
-        return super.processInteract(player, hand);
     }
 
     @Override
