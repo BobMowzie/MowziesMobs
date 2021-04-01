@@ -145,8 +145,8 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             }));
         this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, true, false, null));
         this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, SkeletonEntity.class, 0, true, false, null));
-        this.goalSelector.addGoal(2, new SimpleAnimationAI<>(this, BELLY_ANIMATION, false));
-        this.goalSelector.addGoal(2, new SimpleAnimationAI<EntityBarako>(this, TALK_ANIMATION, false) {
+        this.goalSelector.addGoal(6, new SimpleAnimationAI<>(this, BELLY_ANIMATION, false, true));
+        this.goalSelector.addGoal(6, new SimpleAnimationAI<EntityBarako>(this, TALK_ANIMATION, false, true) {
             @Override
             public void startExecuting() {
                 super.startExecuting();
