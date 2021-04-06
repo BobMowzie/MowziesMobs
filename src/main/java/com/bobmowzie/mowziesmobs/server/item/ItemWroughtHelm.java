@@ -62,11 +62,13 @@ public class ItemWroughtHelm extends MowzieArmorItem {
         WroughtHelmModel<?> model = new WroughtHelmModel<>();
         model.bipedHeadwear.showModel = armorSlot == EquipmentSlotType.HEAD;
 
-        model.isChild = _default.isChild;
-        model.isSneak = _default.isSneak;
-        model.isSitting = _default.isSitting;
-        model.rightArmPose = _default.rightArmPose;
-        model.leftArmPose = _default.leftArmPose;
+        if (_default != null) {
+            model.isChild = _default.isChild;
+            model.isSneak = _default.isSneak;
+            model.isSitting = _default.isSitting;
+            model.rightArmPose = _default.rightArmPose;
+            model.leftArmPose = _default.leftArmPose;
+        }
 
         return (A) model;
     }
