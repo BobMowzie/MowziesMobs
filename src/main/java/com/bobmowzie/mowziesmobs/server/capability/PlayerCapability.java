@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.capability;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
 import com.bobmowzie.mowziesmobs.server.item.ItemEarthTalisman;
@@ -19,7 +20,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.potion.EffectInstance;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.common.capabilities.Capability;
@@ -271,16 +275,14 @@ public class PlayerCapability {
                 icebreath.remove();
             }
 
-            if (!ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable.get()) {
-                for (ItemStack stack : player.inventory.mainInventory) {
-                    if (!usingIceBreath && stack.getItem() == ItemHandler.ICE_CRYSTAL)
-                        stack.setDamage(Math.max(stack.getDamage() - 1, 0));
-                }
-                for (ItemStack stack : player.inventory.offHandInventory) {
-                    if (!usingIceBreath && stack.getItem() == ItemHandler.ICE_CRYSTAL)
-                        stack.setDamage(Math.max(stack.getDamage() - 1, 0));
-                }
+            for (ItemStack stack : player.inventory.mainInventory) {
+                restoreIceCrystalStack(stack);
             }
+            for (ItemStack stack : player.inventory.offHandInventory) {
+                restoreIceCrystalStack(stack);
+            }
+
+            useIceCrystalStack(player);
 
             if (event.side == LogicalSide.CLIENT) {
                 if (Minecraft.getInstance().gameSettings.keyBindAttack.isKeyDown() && !mouseLeftDown) {
@@ -324,6 +326,36 @@ public class PlayerCapability {
                 }
             }
             prevSneaking = player.isSneaking();
+        }
+
+        private void restoreIceCrystalStack(ItemStack stack) {
+            if (stack.getItem() == ItemHandler.ICE_CRYSTAL) {
+                if (!isUsingIceBreath()) {
+                    if (!ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable.get()) {
+                        stack.setDamage(Math.max(stack.getDamage() - 1, 0));
+                    }
+                }
+            }
+        }
+
+        private void useIceCrystalStack(PlayerEntity player) {
+            ItemStack stack = player.getActiveItemStack();
+            if (stack.getItem() == ItemHandler.ICE_CRYSTAL) {
+                if (isUsingIceBreath()) {
+                    Hand handIn = player.getActiveHand();
+                    if (stack.getDamage() + 5 < stack.getMaxDamage()) {
+                        stack.damageItem(5, player, p -> p.sendBreakAnimation(handIn));
+                    }
+                    else {
+                        if (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable.get()) {
+                            stack.damageItem(5, player, p -> p.sendBreakAnimation(handIn));
+                        }
+                        setUsingIceBreath(false);
+                        EntityIceBreath iceBreath = getIcebreath();
+                        if (iceBreath != null) iceBreath.remove();
+                    }
+                }
+            }
         }
 
         private void tryTeleportBarakoan(PlayerEntity player, EntityBarakoanToPlayer barakoan) {
