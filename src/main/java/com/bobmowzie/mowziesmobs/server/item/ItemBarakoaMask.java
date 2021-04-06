@@ -28,7 +28,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemBarakoaMask extends ArmorItem implements BarakoaMask {
+public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask {
     private final MaskType type;
     private static final BarakoaMaskMaterial BARAKOA_MASK_MATERIAL = new BarakoaMaskMaterial();
 
@@ -120,6 +120,11 @@ public class ItemBarakoaMask extends ArmorItem implements BarakoaMask {
         tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.1"));
     }
 
+    @Override
+    public ConfigHandler.ArmorConfig getConfig() {
+        return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.BARAKOA_MASK.armorConfig;
+    }
+
     private static class BarakoaMaskMaterial implements IArmorMaterial {
 
         @Override
@@ -154,7 +159,7 @@ public class ItemBarakoaMask extends ArmorItem implements BarakoaMask {
 
         @Override
         public float getToughness() {
-            return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.BARAKOA_MASK.armorConfig.damageReduction.get();
+            return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.BARAKOA_MASK.armorConfig.toughness.get().floatValue();
         }
 
         @Override

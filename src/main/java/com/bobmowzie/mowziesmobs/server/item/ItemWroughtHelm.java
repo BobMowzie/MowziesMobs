@@ -22,7 +22,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemWroughtHelm extends ArmorItem {
+public class ItemWroughtHelm extends MowzieArmorItem {
     private static final WroughtHelmMaterial ARMOR_WROUGHT_HELM = new WroughtHelmMaterial();
 
     public ItemWroughtHelm(Item.Properties properties) {
@@ -81,6 +81,11 @@ public class ItemWroughtHelm extends ArmorItem {
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
         tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.0"));
+    }
+
+    @Override
+    public ConfigHandler.ArmorConfig getConfig() {
+        return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorConfig;
     }
 
     private static class WroughtHelmMaterial implements IArmorMaterial {

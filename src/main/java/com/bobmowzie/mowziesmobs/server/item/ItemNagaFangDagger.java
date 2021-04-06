@@ -12,7 +12,6 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ToolItem;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -20,7 +19,7 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ItemNagaFangDagger extends ToolItem {
+public class ItemNagaFangDagger extends MowzieToolItem {
     public ItemNagaFangDagger(Item.Properties properties) {
         super(-2 + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.toolConfig.attackDamage.get().floatValue(), -4f + ConfigHandler.COMMON.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.toolConfig.attackSpeed.get().floatValue(), ItemTier.STONE, Sets.newHashSet(), properties);
     }
@@ -51,5 +50,10 @@ public class ItemNagaFangDagger extends ToolItem {
         super.addInformation(stack, worldIn, tooltip, flagIn);
         tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.0"));
         tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.1"));
+    }
+
+    @Override
+    public ConfigHandler.ToolConfig getConfig() {
+        return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.toolConfig;
     }
 }

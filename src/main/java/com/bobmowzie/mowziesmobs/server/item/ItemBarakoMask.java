@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Created by BobMowzie on 8/15/2016.
  */
-public class ItemBarakoMask extends ArmorItem implements BarakoaMask {
+public class ItemBarakoMask extends MowzieArmorItem implements BarakoaMask {
     private static final SolVisageMaterial SOL_VISAGE_MATERIAL = new SolVisageMaterial();
 
     public ItemBarakoMask(Item.Properties properties) {
@@ -85,6 +85,11 @@ public class ItemBarakoMask extends ArmorItem implements BarakoaMask {
         tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.0"));
         tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.1"));
         tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.2"));
+    }
+
+    @Override
+    public ConfigHandler.ArmorConfig getConfig() {
+        return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.armorConfig;
     }
 
     private static class SolVisageMaterial implements IArmorMaterial {

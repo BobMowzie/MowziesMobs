@@ -57,7 +57,6 @@ public final class ItemHandler {
 
     @SubscribeEvent
     public static void register(RegistryEvent.Register<Item> event) {
-        int barakoaColor = ConfigHandler.CLIENT.oldBarakoaTextures.get() ? BARAKOA_PINK_COLOR : BARAKOA_GREEN_COLOR;
         event.getRegistry().registerAll(
             new ItemFoliaathSeed(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("foliaath_seed"),
             new ItemMobRemover(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("mob_remover"),
@@ -83,9 +82,9 @@ public final class ItemHandler {
     
             new SpawnEggItem(EntityHandler.FOLIAATH, 0x47CC3B, 0xC03BCC, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("foliaath_spawn_egg"),
             new SpawnEggItem(EntityHandler.WROUGHTNAUT, 0x8C8C8C, 0xFFFFFF, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("wroughtnaut_spawn_egg"),
-            new SpawnEggItem(EntityHandler.BARAKOAYA, barakoaColor, 0xFAFA78, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoa_spawn_egg"),
-            new SpawnEggItem(EntityHandler.BARAKOANA, barakoaColor, 0xFAFA78, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoana_spawn_egg"),
-            new SpawnEggItem(EntityHandler.BARAKO, barakoaColor, 0xFFFF00, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barako_spawn_egg"),
+            new SpawnEggItem(EntityHandler.BARAKOAYA, BARAKOA_GREEN_COLOR, 0xFAFA78, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoa_spawn_egg"),
+            new SpawnEggItem(EntityHandler.BARAKOANA, BARAKOA_GREEN_COLOR, 0xFAFA78, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoana_spawn_egg"),
+            new SpawnEggItem(EntityHandler.BARAKO, BARAKOA_GREEN_COLOR, 0xFFFF00, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barako_spawn_egg"),
             new SpawnEggItem(EntityHandler.FROSTMAW, 0xf7faff, 0xafcdff, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("frostmaw_spawn_egg"),
             new SpawnEggItem(EntityHandler.GROTTOL, 0x777777, 0xbce0ff, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("grottol_spawn_egg"),
             new SpawnEggItem(EntityHandler.LANTERN, 0x6dea00, 0x235a10, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("lantern_spawn_egg"),
@@ -94,5 +93,23 @@ public final class ItemHandler {
             new BlockItem(BlockHandler.PAINTED_ACACIA.get(), new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.PAINTED_ACACIA.get().getRegistryName()),
             new BlockItem(BlockHandler.PAINTED_ACACIA_SLAB.get(), new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.PAINTED_ACACIA_SLAB.get().getRegistryName())
         );
+    }
+
+    public static void initializeAttributes() {
+        WROUGHT_AXE.getAttributesFromConfig();
+        WROUGHT_HELMET.getAttributesFromConfig();
+        BARAKOA_MASK_FURY.getAttributesFromConfig();
+        BARAKOA_MASK_FEAR.getAttributesFromConfig();
+        BARAKOA_MASK_RAGE.getAttributesFromConfig();
+        BARAKOA_MASK_BLISS.getAttributesFromConfig();
+        BARAKOA_MASK_MISERY.getAttributesFromConfig();
+        BARAKO_MASK.getAttributesFromConfig();
+        SPEAR.getAttributesFromConfig();
+        NAGA_FANG_DAGGER.getAttributesFromConfig();
+
+        int barakoaColor = ConfigHandler.CLIENT.oldBarakoaTextures.get() ? BARAKOA_PINK_COLOR : BARAKOA_GREEN_COLOR;
+        BARAKO_SPAWN_EGG.primaryColor = barakoaColor;
+        BARAKOA_SPAWN_EGG.primaryColor = barakoaColor;
+        BARAKOANA_SPAWN_EGG.primaryColor = barakoaColor;
     }
 }
