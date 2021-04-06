@@ -33,6 +33,7 @@ import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.monster.SkeletonEntity;
 import net.minecraft.entity.monster.ZombieEntity;
 import net.minecraft.entity.monster.IMob;
+import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -76,7 +77,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     public static final Animation SOLAR_BEAM_ANIMATION = Animation.create(100);
     public static final Animation BLESS_ANIMATION = Animation.create(60);
     public static final Animation SUPERNOVA_ANIMATION = Animation.create(100);
-    private static final int MAX_HEALTH = 140;
+    private static final int MAX_HEALTH = 150;
     private static final int SUNSTRIKE_PAUSE_MAX = 40;
     private static final int SUNSTRIKE_PAUSE_MIN = 20;
     private static final int LASER_PAUSE = 230;
@@ -143,8 +144,9 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 }
                 return true;
             }));
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, true, false, null));
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, SkeletonEntity.class, 0, true, false, null));
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, IronGolemEntity.class, 0, true, false, null));
+        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, true, false, null));
+        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, SkeletonEntity.class, 0, true, false, null));
         this.goalSelector.addGoal(6, new SimpleAnimationAI<>(this, BELLY_ANIMATION, false, true));
         this.goalSelector.addGoal(6, new SimpleAnimationAI<EntityBarako>(this, TALK_ANIMATION, false, true) {
             @Override
@@ -187,16 +189,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 }
             }
         });
-        this.goalSelector.addGoal(2, new AnimationSunStrike<EntityBarako>(this, SUNSTRIKE_ANIMATION) {
-            @Override
-            public void startExecuting() {
-                super.startExecuting();
-                if (entityTarget != null) {
-                    prevX = entityTarget.getPosX();
-                    prevZ = entityTarget.getPosZ();
-                }
-            }
-        });
+        this.goalSelector.addGoal(2, new AnimationSunStrike<>(this, SUNSTRIKE_ANIMATION));
         this.goalSelector.addGoal(2, new AnimationRadiusAttack<EntityBarako>(this, ATTACK_ANIMATION, 4f, ConfigHandler.COMMON.MOBS.BARAKO.combatConfig.attackMultiplier.get().floatValue(), 3f, 12, true){
             @Override
             public void startExecuting() {
@@ -303,7 +296,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             }
             float entityRelativeAngle = Math.abs(entityHitAngle - entityAttackingAngle);
             Vector3d betweenEntitiesVec = getPositionVec().subtract(target.getPositionVec());
-            boolean targetComingCloser = target.getMotion().dotProduct(betweenEntitiesVec) > 0;
+            boolean targetComingCloser = target.getMotion().dotProduct(betweenEntitiesVec) > 0 && target.getMotion().lengthSquared() > 0.015;
             if (getAnimation() == NO_ANIMATION && !isAIDisabled() && rand.nextInt(80) == 0 && getEntitiesNearby(EntityBarakoa.class, 25).size() < 5 && targetDistance > 4.5 && timeUntilBarakoa <= 0) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SPAWN_ANIMATION);
                 timeUntilBarakoa = BARAKOA_PAUSE;
@@ -313,7 +306,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && getHealthRatio() <= 0.6 && timeUntilSupernova <= 0 && targetDistance <= 10.5) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SUPERNOVA_ANIMATION);
                 timeUntilSupernova = SUPERNOVA_PAUSE;
-            } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && (targetDistance <= 6f && targetComingCloser || targetDistance < 4.f)) {
+            } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && ((targetDistance <= 6f && targetComingCloser) || targetDistance < 4.f)) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, ATTACK_ANIMATION);
             } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && timeUntilSunstrike <= 0) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SUNSTRIKE_ANIMATION);

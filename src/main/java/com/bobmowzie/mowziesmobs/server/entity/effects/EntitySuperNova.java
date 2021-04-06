@@ -73,8 +73,8 @@ public class EntitySuperNova extends EntityMagicEffect {
             for (LivingEntity entity : hitList) {
                 if (entity instanceof LeaderSunstrikeImmune) continue;
                 if (caster.canAttack(entity)) {
-                    float damageFire = 2.5f;
-                    float damageMob = 3f;
+                    float damageFire = 4f;
+                    float damageMob = 4f;
                     damageFire *= ConfigHandler.COMMON.MOBS.BARAKO.combatConfig.attackMultiplier.get();
                     damageMob *= ConfigHandler.COMMON.MOBS.BARAKO.combatConfig.attackMultiplier.get();
                     boolean hitWithFire = DamageUtil.dealMixedDamage(entity, DamageSource.causeMobDamage(caster), damageMob, DamageSource.ON_FIRE, damageFire).getRight();

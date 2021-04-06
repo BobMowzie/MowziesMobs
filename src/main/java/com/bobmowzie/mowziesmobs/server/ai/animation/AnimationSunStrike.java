@@ -9,6 +9,7 @@ import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector2f;
 
 public class AnimationSunStrike<T extends MowzieEntity & IAnimatedEntity> extends SimpleAnimationAI<T> {
     protected LivingEntity entityTarget;
@@ -26,6 +27,10 @@ public class AnimationSunStrike<T extends MowzieEntity & IAnimatedEntity> extend
     public void startExecuting() {
         super.startExecuting();
         entityTarget = entity.getAttackTarget();
+        if (entityTarget != null) {
+            prevX = entityTarget.getPosX();
+            prevZ = entityTarget.getPosZ();
+        }
     }
 
     @Override
@@ -38,10 +43,6 @@ public class AnimationSunStrike<T extends MowzieEntity & IAnimatedEntity> extend
             entity.getLookController().setLookPositionWithEntity(entityTarget, 30, 30);
         }
 
-//        if (entity.getAnimationTick() == 1) {
-//            prevX = entityTarget.posX;
-//            prevZ = entityTarget.posZ;
-//        }
         if (entity.getAnimationTick() == 7) {
             double x = entityTarget.getPosX();
             y = MathHelper.floor(entityTarget.getPosY() - 1);
@@ -51,6 +52,13 @@ public class AnimationSunStrike<T extends MowzieEntity & IAnimatedEntity> extend
             int t = EntitySunstrike.STRIKE_EXPLOSION + 3;
             newX = MathHelper.floor(x + vx * t);
             newZ = MathHelper.floor(z + vz * t);
+            double dx = newX - entity.getPosX();
+            double dz = newZ - entity.getPosZ();
+            double dist2ToBarako = dx * dx + dz * dz;
+            if (dist2ToBarako < 3) {
+                newX = MathHelper.floor(entityTarget.getPosX());
+                newZ = MathHelper.floor(entityTarget.getPosZ());
+            }
             for (int i = 0; i < 5; i++) {
                 if (!entity.world.canBlockSeeSky(new BlockPos(newX, y, newZ))) {
                     y++;
