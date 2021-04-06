@@ -283,7 +283,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
         return MowzieEntity.createAttributes()
                 .createMutableAttribute(Attributes.MAX_HEALTH, 30.0D * ConfigHandler.COMMON.MOBS.NAGA.combatConfig.healthMultiplier.get())
                 .createMutableAttribute(Attributes.MOVEMENT_SPEED, 12.0D)
-                .createMutableAttribute(Attributes.FOLLOW_RANGE, 45)
+                .createMutableAttribute(Attributes.FOLLOW_RANGE, 35)
                 .createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.0D * ConfigHandler.COMMON.MOBS.NAGA.combatConfig.attackMultiplier.get());
     }
 
