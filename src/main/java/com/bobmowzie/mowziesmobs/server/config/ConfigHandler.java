@@ -216,7 +216,7 @@ public final class  ConfigHandler {
             spawnConfig = new SpawnConfig(builder,
                     70, 1, 4,
                     new BiomeConfig(builder, Collections.singletonList("JUNGLE"), new ArrayList<>(), new ArrayList<>()),
-                    Arrays.asList("grass_block", "podzol", "jungle_leaves", "oak_leaves", "oak_log", "jungle_log"),
+                    Arrays.asList("minecraft:grass_block", "minecraft:podzol", "minecraft:jungle_leaves", "minecraft:oak_leaves", "minecraft:oak_log", "minecraft:jungle_log"),
                     -1, 60, false, false, false
             );
             combatConfig = new CombatConfig(builder, 1, 1);
@@ -235,7 +235,7 @@ public final class  ConfigHandler {
             spawnConfig = new SpawnConfig(builder,
                     5, 1, 1,
                     new BiomeConfig(builder, Collections.singletonList("SAVANNA"), new ArrayList<>(), new ArrayList<>()),
-                    Arrays.asList("grass_block", "sand"),
+                    Arrays.asList("minecraft:grass_block", "minecraft:sand"),
                     -1, 60, false, false, false
             );
             combatConfig = new CombatConfig(builder,1, 1);
@@ -253,7 +253,7 @@ public final class  ConfigHandler {
             spawnConfig = new SpawnConfig(builder,
                     70, 2, 4,
                     new BiomeConfig(builder, Arrays.asList("BEACH,MOUNTAIN", "BEACH,HILLS"), Collections.singletonList("minecraft:stone_shore"), new ArrayList<>()),
-                    Arrays.asList("grass_block", "stone", "sand"),
+                    Arrays.asList("minecraft:grass_block", "minecraft:stone", "minecraft:sand"),
                     -1, -1, false, true, false
             );
             combatConfig = new CombatConfig(builder,1, 1);
@@ -271,7 +271,7 @@ public final class  ConfigHandler {
             spawnConfig = new SpawnConfig(builder,
                     5, 2, 4,
                     new BiomeConfig(builder, Collections.singletonList("FOREST,MAGICAL,!SNOWY"), Arrays.asList("minecraft:dark_forest", "minecraft:dark_forest_hills"), new ArrayList<>()),
-                    Arrays.asList("grass_block", "dark_oak_leaves", "dark_oak_log", "oak_leaves", "oak_log", "birch_leaves", "birch_log"),
+                    Arrays.asList("minecraft:grass_block", "minecraft:dark_oak_leaves", "minecraft:dark_oak_log", "minecraft:oak_leaves", "minecraft:oak_log", "minecraft:birch_leaves", "minecraft:birch_log"),
                     -1, 60, true, false, false
             );
             this.healthMultiplier = builder.comment("Scale mob health by this value")
@@ -292,7 +292,7 @@ public final class  ConfigHandler {
                     2, 1, 1,
                     new BiomeConfig(builder,  Arrays.asList(""), new ArrayList<>(), new ArrayList<>()),
                     new ArrayList<>(),
-                    55, -1, false, false, true
+                    55, -1, true, false, true
             );
             this.healthMultiplier = builder.comment("Scale mob health by this value")
                     .translation(LANG_PREFIX + "health_multiplier")
