@@ -44,7 +44,7 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 
-public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttackMob, IMob {
+public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttackMob {
     public static final Animation DIE_ANIMATION = Animation.create(70);
     public static final Animation HURT_ANIMATION = Animation.create(10);
     public static final Animation ATTACK_ANIMATION = Animation.create(19);

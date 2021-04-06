@@ -13,6 +13,7 @@ import net.minecraft.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.monster.CreeperEntity;
+import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.monster.SkeletonEntity;
 import net.minecraft.entity.monster.ZombieEntity;
 import net.minecraft.entity.passive.*;
@@ -27,7 +28,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImmune {
+public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImmune, IMob {
     private final List<EntityBarakoanToBarakoana> pack = new ArrayList<>();
 
     private final int packRadius = 3;

@@ -17,6 +17,7 @@ import net.minecraft.entity.ILivingEntityData;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.MoveTowardsRestrictionGoal;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.monster.SkeletonEntity;
 import net.minecraft.entity.monster.ZombieEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -37,7 +38,7 @@ import net.minecraft.world.*;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-public class EntityBarakoaya extends EntityBarakoa implements LeaderSunstrikeImmune {
+public class EntityBarakoaya extends EntityBarakoa implements LeaderSunstrikeImmune, IMob {
     private static final TradeStore DEFAULT = new TradeStore.Builder()
         .addTrade(Items.GOLD_INGOT, 2, ItemHandler.BLOWGUN, 1, 6)
         .addTrade(Items.COCOA_BEANS, 10, ItemHandler.DART, 8, 6)
