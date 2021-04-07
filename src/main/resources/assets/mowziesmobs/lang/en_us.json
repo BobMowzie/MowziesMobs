@@ -156,6 +156,8 @@
   "config.mowziesmobs.barakoa.tooltip": "Controls for Barakoana hunting packs and Barakoa villagers",
   "config.mowziesmobs.barako": "Barako, the Sun Chief",
   "config.mowziesmobs.barako.tooltip": "Controls for Barako, the Sun Chief and Barakoa villages",
+  "config.mowziesmobs.trade_which_item": "Sun's Blessing Trade Item",
+  "config.mowziesmobs.trade_how_many": "Sun's Blessing Trade Item Amount",
   "config.mowziesmobs.frostmaw": "Frostmaw",
   "config.mowziesmobs.frostmaw.tooltip": "",
   "config.mowziesmobs.stealable_ice_crystal": "Stealable Ice Crystals",

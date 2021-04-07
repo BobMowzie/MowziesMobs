@@ -3,9 +3,11 @@ package com.bobmowzie.mowziesmobs.server.config;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorMaterial;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.*;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,6 +31,7 @@ public final class  ConfigHandler {
     public static ForgeConfigSpec CLIENT_CONFIG;
 
     private static final Predicate<Object> STRING_PREDICATE = s -> s instanceof String;
+    private static final Predicate<Object> ITEM_NAME_PREDICATE = STRING_PREDICATE.and(s -> ForgeRegistries.ITEMS.containsKey(new ResourceLocation((String)s)));
 
     static {
         COMMON = new Common(COMMON_BUILDER);
@@ -345,6 +348,12 @@ public final class  ConfigHandler {
             this.healsOutOfBattle = builder.comment("Disable/enable Barako healing while not in combat")
                     .translation(LANG_PREFIX + "heals_out_of_battle")
                     .define("heals_out_of_battle", true);
+            this.whichItem = builder.comment("Which item Barako desires in exchange for the Sun's Blessing")
+                    .translation(LANG_PREFIX + "trade_which_item")
+                    .define("trade_which_item", "minecraft:gold_block", ITEM_NAME_PREDICATE);
+            this.howMany = builder.comment("How many of the item Barako desires in exchange for the Sun's Blessing")
+                    .translation(LANG_PREFIX + "trade_how_many")
+                    .defineInRange("trade_how_many", 7, 0, 64);
             builder.pop();
         }
 
@@ -355,6 +364,10 @@ public final class  ConfigHandler {
         public final BooleanValue hasBossBar;
 
         public final BooleanValue healsOutOfBattle;
+
+        public final ConfigValue<? extends String> whichItem;
+
+        public final IntValue howMany;
     }
 
     public static class Frostmaw {
