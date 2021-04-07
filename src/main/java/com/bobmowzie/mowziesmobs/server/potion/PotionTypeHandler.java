@@ -28,27 +28,13 @@ public final class PotionTypeHandler {
     public static final Potion POISON_RESIST = new Potion("poison_resist", new EffectInstance(PotionHandler.POISON_RESIST, 3600)).setRegistryName("poison_resist");
     public static final Potion LONG_POISON_RESIST = new Potion("poison_resist", new EffectInstance(PotionHandler.POISON_RESIST, 9600)).setRegistryName("long_poison_resist");
 
-    private static Method brewing_mixes;
-    private static void addMix(Potion start, Item ingredient, Potion result) {
-        if (brewing_mixes == null) {
-            brewing_mixes = ObfuscationReflectionHelper.findMethod(PotionBrewing.class, "addMix", Potion.class, Item.class, Potion.class);
-            brewing_mixes.setAccessible(true);
-        }
-        try {
-            brewing_mixes.invoke(null, start, ingredient, result);
-        }
-        catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-    }
-
     @SubscribeEvent
     public static void register(RegistryEvent.Register<Potion> event) {
         event.getRegistry().registerAll(
                 POISON_RESIST,
                 LONG_POISON_RESIST
         );
-        addMix(Potions.AWKWARD, ItemHandler.NAGA_FANG, POISON_RESIST);
-        addMix(POISON_RESIST, Items.REDSTONE, LONG_POISON_RESIST);
+        PotionBrewing.addMix(Potions.AWKWARD, ItemHandler.NAGA_FANG, POISON_RESIST);
+        PotionBrewing.addMix(POISON_RESIST, Items.REDSTONE, LONG_POISON_RESIST);
     }
 }
