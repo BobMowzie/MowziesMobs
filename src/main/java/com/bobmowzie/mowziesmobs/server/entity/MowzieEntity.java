@@ -117,7 +117,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
             ResourceLocation blockName = world.getBlockState(pos.down()).getBlock().getRegistryName();
             List<? extends String> allowedBlocks = spawnConfig.allowedBlocks.get();
             if (blockName == null) return false;
-            if (!allowedBlocks.isEmpty() && !allowedBlocks.contains(blockName.toString())) return false;
+            if (!allowedBlocks.isEmpty() && !allowedBlocks.contains(blockName.toString()) && !allowedBlocks.contains(blockName.getPath())) return false;
 
             // See sky
             if (spawnConfig.needsSeeSky.get() && !world.canBlockSeeSky(pos)) {
