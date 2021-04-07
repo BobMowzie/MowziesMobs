@@ -115,7 +115,8 @@ public class EntityIceBreath extends EntityMagicEffect {
             float entityRelativeYaw = entityHitYaw - entityAttackingYaw;
 
             float xzDistance = (float) Math.sqrt((entityHit.getPosZ() - getPosZ()) * (entityHit.getPosZ() - getPosZ()) + (entityHit.getPosX() - getPosX()) * (entityHit.getPosX() - getPosX()));
-            float entityHitPitch = (float) ((Math.atan2((entityHit.getPosY() - getPosY()), xzDistance) * (180 / Math.PI)) % 360);
+            double hitY = entityHit.getPosY() + entityHit.getHeight() / 2.0;
+            float entityHitPitch = (float) ((Math.atan2((hitY - getPosY()), xzDistance) * (180 / Math.PI)) % 360);
             float entityAttackingPitch = -rotationPitch % 360;
             if (entityHitPitch < 0) {
                 entityHitPitch += 360;
@@ -125,15 +126,16 @@ public class EntityIceBreath extends EntityMagicEffect {
             }
             float entityRelativePitch = entityHitPitch - entityAttackingPitch;
 
-            float entityHitDistance = (float) Math.sqrt((entityHit.getPosZ() - getPosZ()) * (entityHit.getPosZ() - getPosZ()) + (entityHit.getPosX() - getPosX()) * (entityHit.getPosX() - getPosX()) + (entityHit.getPosY() - getPosY()) * (entityHit.getPosY() - getPosY()));
+            float entityHitDistance = (float) Math.sqrt((entityHit.getPosZ() - getPosZ()) * (entityHit.getPosZ() - getPosZ()) + (entityHit.getPosX() - getPosX()) * (entityHit.getPosX() - getPosX()) + (hitY - getPosY()) * (hitY - getPosY()));
 
             boolean inRange = entityHitDistance <= RANGE;
             boolean yawCheck = (entityRelativeYaw <= ARC / 2f && entityRelativeYaw >= -ARC / 2f) || (entityRelativeYaw >= 360 - ARC / 2f || entityRelativeYaw <= -360 + ARC / 2f);
             boolean pitchCheck = (entityRelativePitch <= ARC / 2f && entityRelativePitch >= -ARC / 2f) || (entityRelativePitch >= 360 - ARC / 2f || entityRelativePitch <= -360 + ARC / 2f);
-            if (inRange && yawCheck && pitchCheck) {
+            boolean frostmawCloseCheck = caster instanceof EntityFrostmaw && entityHitDistance <= 2;
+            if (inRange && yawCheck && pitchCheck || frostmawCloseCheck) {
                 // Raytrace to mob center to avoid damaging through walls
                 Vector3d from = getPositionVec();
-                Vector3d to = entityHit.getPositionVec().add(0, entityHit.getHeight() / 2f, 0);
+                Vector3d to = entityHit.getPositionVec().add(0, hitY, 0);
                 BlockRayTraceResult result = world.rayTraceBlocks(new RayTraceContext(from, to, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
                 if (result.getType() == RayTraceResult.Type.BLOCK) {
                     continue;
