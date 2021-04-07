@@ -19,7 +19,7 @@ archivesBaseName = "mowziesmobs"
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 minecraft {
-    mappings channel: "snapshot", version: "20210309-1.16.5"
+    mappings channel: "snapshot", version: "20201028-1.16.3"
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
     runs {
         client {
@@ -58,7 +58,7 @@ jar {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:1.16.5-36.0.58"
+    minecraft "net.minecraftforge:forge:1.16.3-34.1.0"
 }
 
 processResources {
