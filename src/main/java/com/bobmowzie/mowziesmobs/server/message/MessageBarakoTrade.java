@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.message;
 
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoTrade;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
@@ -68,7 +69,7 @@ public class MessageBarakoTrade {
                         }
                     }
                     if (satisfied) {
-                        player.addPotionEffect(new EffectInstance(PotionHandler.SUNS_BLESSING, 24000 * 3, 0, false, false));
+                        player.addPotionEffect(new EffectInstance(PotionHandler.SUNS_BLESSING, ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.effectDuration.get() * 60 * 20, 0, false, false));
                         if (barako.getAnimation() != EntityBarako.BLESS_ANIMATION) {
                             barako.setAnimationTick(0);
                             AnimationHandler.INSTANCE.sendAnimationMessage(barako, EntityBarako.BLESS_ANIMATION);

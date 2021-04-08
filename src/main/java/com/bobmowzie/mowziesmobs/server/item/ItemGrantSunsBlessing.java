@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
@@ -25,15 +26,25 @@ public class ItemGrantSunsBlessing extends Item {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand hand) {
-        playerIn.addPotionEffect(new EffectInstance(PotionHandler.SUNS_BLESSING, 24000 * 3, 0, false, false));
+        playerIn.addPotionEffect(new EffectInstance(PotionHandler.SUNS_BLESSING, ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.effectDuration.get() * 60 * 20, 0, false, false));
         return super.onItemRightClick(worldIn, playerIn, hand);
     }
 
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.0"));
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.1"));
+        int effectDuration = ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.effectDuration.get();
+        int solarBeamCost = ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.solarBeamCost.get();
+        tooltip.add(
+                new TranslationTextComponent(getTranslationKey() + ".text.0")
+                .appendString(" " + effectDuration + " ")
+                .appendSibling(new TranslationTextComponent(getTranslationKey() + ".text.1"))
+        );
         tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.2"));
+        tooltip.add(
+                new TranslationTextComponent(getTranslationKey() + ".text.3")
+                .appendString(" " + solarBeamCost + " ")
+                .appendSibling(new TranslationTextComponent(getTranslationKey() + ".text.4"))
+        );
     }
 }

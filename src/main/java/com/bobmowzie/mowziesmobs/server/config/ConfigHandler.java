@@ -525,6 +525,27 @@ public final class  ConfigHandler {
         public final IntValue poisonDuration;
     }
 
+    public static class SunsBlessing {
+        SunsBlessing(final ForgeConfigSpec.Builder builder) {
+            builder.push("suns_blessing");
+            effectDuration = builder.comment("Duration in minutes of the Sun's Blessing effect.")
+                    .translation(LANG_PREFIX + "suns_blessing_duration")
+                    .defineInRange("suns_blessing_duration", 60, 0, Integer.MAX_VALUE);
+            sunsBlessingAttackMultiplier = builder.translation(LANG_PREFIX + "suns_blessing_attack_multiplier")
+                    .defineInRange("suns_blessing_attack_multiplier", 1f, 0, Double.MAX_VALUE);
+            solarBeamCost = builder.comment("Cost in minutes of using the solar beam ability.")
+                    .translation(LANG_PREFIX + "solar_beam_cost")
+                    .defineInRange("solar_beam_cost", 5, 0, Integer.MAX_VALUE);
+            builder.pop();
+        }
+
+        public final DoubleValue sunsBlessingAttackMultiplier;
+
+        public final IntValue effectDuration;
+
+        public final IntValue solarBeamCost;
+    }
+
     public static class Mobs {
         Mobs(final ForgeConfigSpec.Builder builder) {
             builder.push("mobs");
@@ -559,10 +580,9 @@ public final class  ConfigHandler {
     public static class ToolsAndAbilities {
         ToolsAndAbilities(final ForgeConfigSpec.Builder builder) {
             builder.push("tools_and_abilities");
-            sunsBlessingAttackMultiplier = builder.translation(LANG_PREFIX + "suns_blessing_attack_multiplier")
-                    .defineInRange("suns_blessing_attack_multiplier", 1f, 0, Double.MAX_VALUE);
             geomancyAttackMultiplier = builder.translation(LANG_PREFIX + "geomancy_attack_multiplier")
                     .defineInRange("geomancy_attack_multiplier", 1f, 0, Double.MAX_VALUE);
+            SUNS_BLESSING = new SunsBlessing(builder);
             WROUGHT_HELM = new WroughtHelm(builder);
             AXE_OF_A_THOUSAND_METALS = new AxeOfAThousandMetals(builder);
             SOL_VISAGE = new SolVisage(builder);
@@ -574,9 +594,9 @@ public final class  ConfigHandler {
             builder.pop();
         }
 
-        public final DoubleValue sunsBlessingAttackMultiplier;
-
         public final DoubleValue geomancyAttackMultiplier;
+
+        public final SunsBlessing SUNS_BLESSING;
 
         public final WroughtHelm WROUGHT_HELM;
 

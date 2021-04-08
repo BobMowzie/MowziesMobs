@@ -133,8 +133,8 @@ public class EntitySolarBeam extends Entity {
                         damageMob *= ConfigHandler.COMMON.MOBS.BARAKO.combatConfig.attackMultiplier.get();
                     }
                     if (caster instanceof PlayerEntity) {
-                        damageFire *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.sunsBlessingAttackMultiplier.get();
-                        damageMob *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.sunsBlessingAttackMultiplier.get();
+                        damageFire *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.sunsBlessingAttackMultiplier.get();
+                        damageMob *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.sunsBlessingAttackMultiplier.get();
                     }
                     DamageUtil.dealMixedDamage(target, DamageSource.causeMobDamage(caster), damageMob, DamageSource.ON_FIRE, damageFire);
                 }

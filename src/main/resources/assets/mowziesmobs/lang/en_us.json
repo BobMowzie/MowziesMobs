@@ -67,9 +67,11 @@
   "item.mowziesmobs.foliaath_seed.text.2": "Toss it any meat to feed it",
   "item.mowziesmobs.foliaath_seed.text.3": "After 2 days, the foliaath will be fully grown",
 
-  "item.mowziesmobs.grant_suns_blessing.text.0": "Grants Sun's Blessing for 1 hour",
-  "item.mowziesmobs.grant_suns_blessing.text.1": "With empty hand, right-click to call a sunstrike",
-  "item.mowziesmobs.grant_suns_blessing.text.2": "With empty hand, sneak-right-click to fire a solar beam (costs 2 minutes)",
+  "item.mowziesmobs.grant_suns_blessing.text.0": "Grants Sun's Blessing for",
+  "item.mowziesmobs.grant_suns_blessing.text.1": "minutes",
+  "item.mowziesmobs.grant_suns_blessing.text.2": "With empty hand, right-click to call a sunstrike",
+  "item.mowziesmobs.grant_suns_blessing.text.3": "With empty hand, sneak-right-click to fire a solar beam (costs",
+  "item.mowziesmobs.grant_suns_blessing.text.4": "minutes)",
 
   "item.mowziesmobs.earth_talisman.text.0": "Creative mode only",
   "item.mowziesmobs.earth_talisman.text.1": "Place in inventory to wield geomancy",
@@ -221,7 +223,11 @@
   "config.mowziesmobs.naga_fang_dagger.tooltip": "",
   "config.mowziesmobs.bonus_damage": "Bonus Damage",
   "config.mowziesmobs.geomancy_attack_multiplier": "Geomancy Attack Damage Multiplier",
+  "config.mowziesmobs.suns_blessing": "Sun's Blessing",
+  "config.mowziesmobs.suns_blessing.tooltip": "",
   "config.mowziesmobs.suns_blessing_attack_multiplier": "Sun's Blessing Attack Damage Multiplier",
+  "config.mowziesmobs.suns_blessing_duration": "Sun's Blessing Duration",
+  "config.mowziesmobs.solar_beam_cost": "Solar Beam Cost",
 
   "config.mowziesmobs.tool_data": "Tool Controls",
   "config.mowziesmobs.tool_data.tooltip": "",
