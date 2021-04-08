@@ -569,28 +569,30 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
     }
 
     private void doRoarEffects() {
-        List<LivingEntity> entities = getEntityLivingBaseNearby(10, 3, 10, 10);
-        for (LivingEntity entity:entities) {
-            if (entity == this) continue;
-            double angle = (getAngleBetweenEntities(this, entity) + 90) * Math.PI / 180;
-            double distance = getDistance(entity) - 4;
-            entity.setMotion(entity.getMotion().add(Math.min(1/(distance * distance), 1) * -1 * Math.cos(angle), 0, Math.min(1/ (distance * distance), 1) * -1 * Math.sin(angle)));
-        }
-        if (getAnimationTick() % 12 == 0 && world.isRemote) {
-            int particleCount = 15;
-            for (int i = 1; i <= particleCount; i++) {
-                double yaw = i * 360.f / particleCount;
-                double speed = 0.9;
-                double xSpeed = speed * Math.cos(Math.toRadians(yaw));
-                double zSpeed = speed * Math.sin(Math.toRadians(yaw));
-                world.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f, 0.75f,1f, 40f, 22, ParticleCloud.EnumCloudBehavior.GROW, 1f), getPosX(), getPosY() + 1f, getPosZ(), xSpeed, 0, zSpeed);
+        if (getHasCrystal()) {
+            List<LivingEntity> entities = getEntityLivingBaseNearby(10, 3, 10, 10);
+            for (LivingEntity entity : entities) {
+                if (entity == this) continue;
+                double angle = (getAngleBetweenEntities(this, entity) + 90) * Math.PI / 180;
+                double distance = getDistance(entity) - 4;
+                entity.setMotion(entity.getMotion().add(Math.min(1 / (distance * distance), 1) * -1 * Math.cos(angle), 0, Math.min(1 / (distance * distance), 1) * -1 * Math.sin(angle)));
             }
-            for (int i = 1; i <= particleCount; i++) {
-                double yaw = i * 360.f / particleCount;
-                double speed = 0.65;
-                double xSpeed = speed * Math.cos(Math.toRadians(yaw));
-                double zSpeed = speed * Math.sin(Math.toRadians(yaw));
-                world.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f, 0.75f,1f, 35f, 22, ParticleCloud.EnumCloudBehavior.GROW, 1f), getPosX(), getPosY() + 1f, getPosZ(), xSpeed, 0, zSpeed);
+            if (getAnimationTick() % 12 == 0 && world.isRemote) {
+                int particleCount = 15;
+                for (int i = 1; i <= particleCount; i++) {
+                    double yaw = i * 360.f / particleCount;
+                    double speed = 0.9;
+                    double xSpeed = speed * Math.cos(Math.toRadians(yaw));
+                    double zSpeed = speed * Math.sin(Math.toRadians(yaw));
+                    world.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f, 0.75f, 1f, 40f, 22, ParticleCloud.EnumCloudBehavior.GROW, 1f), getPosX(), getPosY() + 1f, getPosZ(), xSpeed, 0, zSpeed);
+                }
+                for (int i = 1; i <= particleCount; i++) {
+                    double yaw = i * 360.f / particleCount;
+                    double speed = 0.65;
+                    double xSpeed = speed * Math.cos(Math.toRadians(yaw));
+                    double zSpeed = speed * Math.sin(Math.toRadians(yaw));
+                    world.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f, 0.75f, 1f, 35f, 22, ParticleCloud.EnumCloudBehavior.GROW, 1f), getPosX(), getPosY() + 1f, getPosZ(), xSpeed, 0, zSpeed);
+                }
             }
         }
     }
@@ -630,7 +632,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
     }
 
     private void spawnSwipeParticles() {
-        if (world.isRemote) {
+        if (world.isRemote && getHasCrystal()) {
             double motionX = getMotion().getX();
             double motionY = getMotion().getY();
             double motionZ = getMotion().getZ();
