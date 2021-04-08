@@ -9,6 +9,9 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.SpawnEggItem;
+import net.minecraft.util.text.Color;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -54,6 +57,8 @@ public final class ItemHandler {
 
     private static final int BARAKOA_GREEN_COLOR = 0x748C47;
     private static final int BARAKOA_PINK_COLOR = 0xBA6656;
+
+    public static Style TOOLTIP_STYLE = Style.EMPTY.setColor(Color.fromTextFormatting(TextFormatting.GRAY));
 
     @SubscribeEvent
     public static void register(RegistryEvent.Register<Item> event) {
