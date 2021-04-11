@@ -43,7 +43,7 @@ public class EntityDart extends ArrowEntity {
     protected void arrowHit(LivingEntity living) {
         super.arrowHit(living);
         if (getShooter() instanceof PlayerEntity) living.addPotionEffect(new EffectInstance(Effects.POISON, ConfigHandler.COMMON.TOOLS_AND_ABILITIES.BLOW_GUN.poisonDuration.get(), 3, false, true));
-        else living.addPotionEffect(new EffectInstance(Effects.POISON, 20, 1, false, true));
+        else living.addPotionEffect(new EffectInstance(Effects.POISON, 30, 1, false, true));
         living.setArrowCountInEntity(living.getArrowCountInEntity() - 1);
     }
 
