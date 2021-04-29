@@ -3,6 +3,8 @@ package com.bobmowzie.mowziesmobs.server.entity.effects;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleOrb;
+import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.damage.DamageUtil;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
@@ -315,6 +317,17 @@ public class EntitySolarBeam extends Entity {
         this.setYaw((float) ((caster.rotationYawHead + 90) * Math.PI / 180));
         this.setPitch((float) (-caster.rotationPitch * Math.PI / 180));
         this.setPosition(caster.getPosX(), caster.getPosY() + 1.2f, caster.getPosZ());
+    }
+
+    @Override
+    public void remove() {
+        super.remove();
+        if (caster instanceof PlayerEntity) {
+            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(caster, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+            if (playerCapability != null) {
+                playerCapability.setUsingSolarBeam(false);
+            }
+        }
     }
 
     public static class HitResult {

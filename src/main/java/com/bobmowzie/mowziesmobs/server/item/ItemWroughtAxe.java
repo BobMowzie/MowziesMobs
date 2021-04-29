@@ -71,6 +71,7 @@ public class ItemWroughtAxe extends MowzieAxeItem {
                 world.addEntity(axeAttack);
                 playerCapability.setVerticalSwing(verticalAttack);
                 playerCapability.setUntilAxeSwing(PlayerCapability.SWING_COOLDOWN);
+                player.setActiveHand(hand);
                 if (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.breakable.get() && !player.abilities.isCreativeMode) player.getHeldItem(hand).damageItem(2, player, p -> p.sendBreakAnimation(hand));
             }
             return new ActionResult<ItemStack>(ActionResultType.SUCCESS, player.getHeldItem(hand));

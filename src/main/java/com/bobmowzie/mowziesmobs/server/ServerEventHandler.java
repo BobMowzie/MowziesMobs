@@ -151,6 +151,18 @@ public final class ServerEventHandler {
                     }
                 }
             }
+
+            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+            if (playerCapability != null && event.isCancelable()) {
+                if (
+                        playerCapability.getUsingSolarBeam() ||
+                        playerCapability.getGeomancy().isSpawningBoulder() ||
+                        playerCapability.getGeomancy().tunneling ||
+                        playerCapability.getUntilAxeSwing() > 0
+                ) {
+                    event.setCanceled(true);
+                }
+            }
         }
     }
 
@@ -233,6 +245,7 @@ public final class ServerEventHandler {
                 if (player.isSneaking()) {
                     MowziesMobs.NETWORK.sendToServer(new MessagePlayerSolarBeam());
                     playerCapability.setUntilSunstrike(SOLARBEAM_COOLDOWN);
+                    playerCapability.setUsingSolarBeam(true);
                 } else {
                     MowziesMobs.NETWORK.sendToServer(new MessagePlayerSummonSunstrike());
                     playerCapability.setUntilSunstrike(SUNSTRIKE_COOLDOWN);
@@ -406,6 +419,16 @@ public final class ServerEventHandler {
                 if (event.getTarget() instanceof EntityBarakoanToPlayer) return;
                 for (int i = 0; i < playerCapability.getPackSize(); i++)
                     playerCapability.getTribePack().get(i).setAttackTarget((LivingEntity) event.getTarget());
+
+                if (
+                        event.isCancelable() && (
+                        playerCapability.getUsingSolarBeam() ||
+                        playerCapability.getGeomancy().isSpawningBoulder() ||
+                        playerCapability.getGeomancy().tunneling ||
+                        playerCapability.getUntilAxeSwing() > 0
+                )) {
+                    event.setCanceled(true);
+                }
             }
         }
     }

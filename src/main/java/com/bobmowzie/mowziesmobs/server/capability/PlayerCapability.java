@@ -105,6 +105,10 @@ public class PlayerCapability {
         void addPackMember(EntityBarakoanToPlayer tribePlayer);
 
         PowerGeomancy getGeomancy();
+
+        void setUsingSolarBeam(boolean b);
+
+        boolean getUsingSolarBeam();
     }
 
     public static class PlayerCapabilityImp implements IPlayerCapability {
@@ -227,7 +231,12 @@ public class PlayerCapability {
             return geomancy;
         }
 
+        public void setUsingSolarBeam(boolean b) { this.usingSolarBeam = b; }
+
+        public boolean getUsingSolarBeam() { return this.usingSolarBeam; }
+
         public boolean usingIceBreath;
+        private boolean usingSolarBeam;
 
         public boolean axeCanAttack;
 
