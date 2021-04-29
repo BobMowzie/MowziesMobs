@@ -13,6 +13,7 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
@@ -29,6 +30,8 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.PacketDistributor;
+
+import java.util.UUID;
 
 public class FrozenCapability {
     public static int MAX_FREEZE_DECAY_DELAY = 10;
@@ -74,6 +77,10 @@ public class FrozenCapability {
 
         void setPrevFrozen(boolean prevFrozen);
 
+        UUID getPreAttackTarget();
+
+        void setPreAttackTarget(UUID livingEntity);
+
         EntityFrozenController getFrozenController();
 
         void setFrozenController(EntityFrozenController frozenController);
@@ -100,6 +107,7 @@ public class FrozenCapability {
         public float frozenSwingProgress;
         public float frozenLimbSwingAmount;
         public boolean prevHasAI;
+        public UUID prevAttackTarget;
 
         // After taking freeze progress, this timer needs to reach zero before freeze progress starts to fade
         public int freezeDecayDelay;
@@ -208,6 +216,16 @@ public class FrozenCapability {
         }
 
         @Override
+        public UUID getPreAttackTarget() {
+            return prevAttackTarget;
+        }
+
+        @Override
+        public void setPreAttackTarget(UUID livingEntity) {
+            prevAttackTarget = livingEntity;
+        }
+
+        @Override
         public EntityFrozenController getFrozenController() {
             return frozenController;
         }
@@ -241,8 +259,12 @@ public class FrozenCapability {
                 frozenSwingProgress = entity.swingProgress;
                 entity.startRiding(frozenController, true);
 
-                if (entity instanceof MobEntity) prevHasAI = !((MobEntity)entity).isAIDisabled();
-                if (entity instanceof MobEntity) ((MobEntity)entity).setNoAI(true);
+                if (entity instanceof MobEntity) {
+                    MobEntity mobEntity = (MobEntity) entity;
+                    if (mobEntity.getAttackTarget() != null) setPreAttackTarget(mobEntity.getAttackTarget().getUniqueID());
+                    prevHasAI = !((MobEntity) entity).isAIDisabled();
+                    mobEntity.setNoAI(true);
+                }
 
                 if (entity.world.isRemote) {
                     int particleCount = (int) (10 + 1 * entity.getHeight() * entity.getWidth() * entity.getWidth());
@@ -276,8 +298,16 @@ public class FrozenCapability {
                         entity.world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, Blocks.ICE.getDefaultState()), particleX, particleY, particleZ, 0, 0, 0);
                     }
                 }
-                if (entity instanceof MobEntity && ((MobEntity) entity).isAIDisabled() && prevHasAI) {
-                    ((MobEntity) entity).setNoAI(false);
+                if (entity instanceof MobEntity) {
+                    if (((MobEntity) entity).isAIDisabled() && prevHasAI) {
+                        ((MobEntity) entity).setNoAI(false);
+                    }
+                    if (getPreAttackTarget() != null) {
+                        PlayerEntity target = entity.world.getPlayerByUuid(getPreAttackTarget());
+                        if (target != null) {
+                            ((MobEntity) entity).setAttackTarget(target);
+                        }
+                    }
                 }
             }
         }
@@ -349,6 +379,9 @@ public class FrozenCapability {
             compound.putFloat("frozenYaw", getFrozenYaw());
             compound.putFloat("frozenYawHead", getFrozenYawHead());
             compound.putBoolean("prevHasAI", prevHasAI());
+            if (getPreAttackTarget() != null) {
+                compound.putUniqueId("prevAttackTarget", getPreAttackTarget());
+            }
             return compound;
         }
 
@@ -364,6 +397,10 @@ public class FrozenCapability {
             setFrozenYaw(compound.getFloat("frozenYaw"));
             setFrozenYawHead(compound.getFloat("frozenYawHead"));
             setPrevHasAI(compound.getBoolean("prevHasAI"));
+            try {
+                setPreAttackTarget(compound.getUniqueId("prevAttackTarget"));
+            }
+            catch (NullPointerException ignored) {}
         }
     }
 
