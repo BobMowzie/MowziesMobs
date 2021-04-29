@@ -314,7 +314,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SUNSTRIKE_ANIMATION);
                 timeUntilSunstrike = getTimeUntilSunstrike();
             }
-            if (!hurtByTargetAI.shouldContinueExecuting()) {
+            if (hurtByTargetAI != null && !hurtByTargetAI.shouldContinueExecuting()) {
                 hurtByTargetAI.resetTask();
             }
         } else {
