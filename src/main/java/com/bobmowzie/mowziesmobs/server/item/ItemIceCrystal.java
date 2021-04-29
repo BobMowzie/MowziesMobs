@@ -35,25 +35,24 @@ public class ItemIceCrystal extends Item {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-        if (playerIn.getHeldItemOffhand().getItem() != Items.SHIELD) {
-            ItemStack stack = playerIn.getHeldItem(handIn);
-            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(playerIn, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-            if (playerCapability != null) {
-                if (stack.getDamage() + 5 < stack.getMaxDamage() || ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable.get()) {
-                    if (!playerCapability.isUsingIceBreath()) {
-                        playerCapability.setIcebreath(new EntityIceBreath(EntityHandler.ICE_BREATH, worldIn, playerIn));
-                        playerCapability.getIcebreath().setPositionAndRotation(playerIn.getPosX(), playerIn.getPosY() + playerIn.getEyeHeight() - 0.5f, playerIn.getPosZ(), playerIn.rotationYaw, playerIn.rotationPitch);
-                        if (!worldIn.isRemote) worldIn.addEntity(playerCapability.getIcebreath());
-                        playerCapability.setUsingIceBreath(true);
-                    }
-                    stack.damageItem(5, playerIn, p -> p.sendBreakAnimation(handIn));
-                    showDurabilityBar(playerIn.getHeldItem(handIn));
-                    playerIn.setActiveHand(handIn);
-                    return new ActionResult<ItemStack>(ActionResultType.SUCCESS, playerIn.getHeldItem(handIn));
-                } else {
-                    EntityIceBreath iceBreath = playerCapability.getIcebreath();
-                    if (iceBreath != null) iceBreath.remove();
+        ItemStack stack = playerIn.getHeldItem(handIn);
+        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(playerIn, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        if (playerCapability != null) {
+            playerIn.setActiveHand(handIn);
+            if (stack.getDamage() + 5 < stack.getMaxDamage() || ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable.get()) {
+                if (!playerCapability.isUsingIceBreath()) {
+                    playerCapability.setIcebreath(new EntityIceBreath(EntityHandler.ICE_BREATH, worldIn, playerIn));
+                    playerCapability.getIcebreath().setPositionAndRotation(playerIn.getPosX(), playerIn.getPosY() + playerIn.getEyeHeight() - 0.5f, playerIn.getPosZ(), playerIn.rotationYaw, playerIn.rotationPitch);
+                    if (!worldIn.isRemote) worldIn.addEntity(playerCapability.getIcebreath());
+                    playerCapability.setUsingIceBreath(true);
                 }
+                stack.damageItem(5, playerIn, p -> p.sendBreakAnimation(handIn));
+                showDurabilityBar(playerIn.getHeldItem(handIn));
+                playerIn.setActiveHand(handIn);
+                return new ActionResult<ItemStack>(ActionResultType.SUCCESS, playerIn.getHeldItem(handIn));
+            } else {
+                EntityIceBreath iceBreath = playerCapability.getIcebreath();
+                if (iceBreath != null) iceBreath.remove();
             }
         }
         return super.onItemRightClick(worldIn, playerIn, handIn);
