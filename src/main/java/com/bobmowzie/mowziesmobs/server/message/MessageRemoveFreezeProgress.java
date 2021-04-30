@@ -15,31 +15,31 @@ import java.util.function.Supplier;
 /**
  * Created by BobMowzie on 5/31/2017.
  */
-public class MessageUnfreezeEntity {
+public class MessageRemoveFreezeProgress {
     private int entityID;
 
-    public MessageUnfreezeEntity() {
+    public MessageRemoveFreezeProgress() {
 
     }
 
-    public MessageUnfreezeEntity(LivingEntity entity) {
+    public MessageRemoveFreezeProgress(LivingEntity entity) {
         entityID = entity.getEntityId();
     }
 
 
-    public static void serialize(final MessageUnfreezeEntity message, final PacketBuffer buf) {
+    public static void serialize(final MessageRemoveFreezeProgress message, final PacketBuffer buf) {
         buf.writeVarInt(message.entityID);
     }
 
-    public static MessageUnfreezeEntity deserialize(final PacketBuffer buf) {
-        final MessageUnfreezeEntity message = new MessageUnfreezeEntity();
+    public static MessageRemoveFreezeProgress deserialize(final PacketBuffer buf) {
+        final MessageRemoveFreezeProgress message = new MessageRemoveFreezeProgress();
         message.entityID = buf.readVarInt();
         return message;
     }
 
-    public static class Handler implements BiConsumer<MessageUnfreezeEntity, Supplier<NetworkEvent.Context>> {
+    public static class Handler implements BiConsumer<MessageRemoveFreezeProgress, Supplier<NetworkEvent.Context>> {
         @Override
-        public void accept(final MessageUnfreezeEntity message, final Supplier<NetworkEvent.Context> contextSupplier) {
+        public void accept(final MessageRemoveFreezeProgress message, final Supplier<NetworkEvent.Context> contextSupplier) {
             final NetworkEvent.Context context = contextSupplier.get();
             context.enqueueWork(() -> {
                 Entity entity = Minecraft.getInstance().world.getEntityByID(message.entityID);
@@ -48,7 +48,7 @@ public class MessageUnfreezeEntity {
                     living.removeActivePotionEffect(PotionHandler.FROZEN);
                     FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(living, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
                     if (frozenCapability != null) {
-                        frozenCapability.onUnfreeze(living);
+                        frozenCapability.setFreezeProgress(0);
                     }
                 }
             });

@@ -12,7 +12,7 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
-import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
+import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemNagaFangDagger;
 import com.bobmowzie.mowziesmobs.server.item.ItemSpear;
@@ -20,8 +20,6 @@ import com.bobmowzie.mowziesmobs.server.message.*;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.power.Power;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import com.bobmowzie.mowziesmobs.server.world.spawn.SpawnHandler;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.CreatureEntity;
@@ -36,7 +34,10 @@ import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.ParrotEntity;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EntityDamageSource;
@@ -106,6 +107,14 @@ public final class ServerEventHandler {
 
             if (entity.getActivePotionEffect(PotionHandler.POISON_RESIST) != null && entity.getActivePotionEffect(Effects.POISON) != null) {
                 entity.removeActivePotionEffect(Effects.POISON);
+            }
+
+            if (!entity.world.isRemote) {
+                Item headItemStack = entity.getItemStackFromSlot(EquipmentSlotType.HEAD).getItem();
+                if (headItemStack instanceof ItemBarakoaMask) {
+                    ItemBarakoaMask mask = (ItemBarakoaMask) headItemStack;
+                    entity.addPotionEffect(new EffectInstance(mask.getPotion(), 45, 0, true, false));
+                }
             }
 
 //            MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
@@ -317,7 +326,7 @@ public final class ServerEventHandler {
     public void onLivingDamage(LivingHurtEvent event) {
         if (event.getSource().isFireDamage()) {
             event.getEntityLiving().removeActivePotionEffect(PotionHandler.FROZEN);
-            MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> event.getEntity()), new MessageUnfreezeEntity(event.getEntityLiving()));
+            MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> event.getEntity()), new MessageRemoveFreezeProgress(event.getEntityLiving()));
         }
         if (event.getEntity() instanceof PlayerEntity) {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getEntity(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);

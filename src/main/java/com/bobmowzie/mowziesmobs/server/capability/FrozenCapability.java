@@ -8,9 +8,11 @@ import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.message.MessageAddFreezeProgress;
+import com.bobmowzie.mowziesmobs.server.message.MessageUnfreezeEntity;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -106,7 +108,7 @@ public class FrozenCapability {
         public float frozenRenderYawOffset;
         public float frozenSwingProgress;
         public float frozenLimbSwingAmount;
-        public boolean prevHasAI;
+        public boolean prevHasAI = true;
         public UUID prevAttackTarget;
 
         // After taking freeze progress, this timer needs to reach zero before freeze progress starts to fade
@@ -282,13 +284,14 @@ public class FrozenCapability {
 
         @Override
         public void onUnfreeze(LivingEntity entity) {
-            if (entity != null && frozenController != null) {
-                Vector3d oldPosition = entity.getPositionVec();
-                entity.stopRiding();
-                entity.setPositionAndUpdate(oldPosition.getX(), oldPosition.getY(), oldPosition.getZ());
-                frozenController.remove();
+            if (entity != null) {
+                if (frozenController != null) {
+                    Vector3d oldPosition = entity.getPositionVec();
+                    entity.stopRiding();
+                    entity.setPositionAndUpdate(oldPosition.getX(), oldPosition.getY(), oldPosition.getZ());
+                    frozenController.remove();
+                }
                 entity.playSound(MMSounds.ENTITY_FROSTMAW_FROZEN_CRASH.get(), 1, 0.5f);
-
                 if (entity.world.isRemote) {
                     int particleCount = (int) (10 + 1 * entity.getHeight() * entity.getWidth() * entity.getWidth());
                     for (int i = 0; i < particleCount; i++) {
@@ -322,16 +325,13 @@ public class FrozenCapability {
                 entity.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 9, MathHelper.floor(freezeProgress * 5 + 1), false, false));
             }
 
-            if (entity.isPotionActive(PotionHandler.FROZEN) && !prevFrozen) {
-                onFreeze(entity);
+            if (frozenController == null) {
+                Entity riding = entity.getRidingEntity();
+                if (riding instanceof EntityFrozenController) frozenController = (EntityFrozenController) riding;
             }
 
-            if (!entity.world.isRemote) {
-                Item headItemStack = entity.getItemStackFromSlot(EquipmentSlotType.HEAD).getItem();
-                if (headItemStack instanceof ItemBarakoaMask) {
-                    ItemBarakoaMask mask = (ItemBarakoaMask) headItemStack;
-                    entity.addPotionEffect(new EffectInstance(mask.getPotion(), 45, 0, true, false));
-                }
+            if (entity.isPotionActive(PotionHandler.FROZEN) && !prevFrozen) {
+                onFreeze(entity);
             }
 
             if (entity.isPotionActive(PotionHandler.FROZEN)) {
@@ -352,8 +352,9 @@ public class FrozenCapability {
                 }
             }
             else {
-                if (frozenController != null && frozenController.isAlive()) {
+                if (!entity.world.isRemote && getPrevFrozen()) {
                     onUnfreeze(entity);
+                    MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new MessageUnfreezeEntity(entity));
                 }
             }
 
@@ -382,6 +383,7 @@ public class FrozenCapability {
             if (getPreAttackTarget() != null) {
                 compound.putUniqueId("prevAttackTarget", getPreAttackTarget());
             }
+            compound.putBoolean("prevFrozen", prevFrozen);
             return compound;
         }
 
@@ -397,10 +399,12 @@ public class FrozenCapability {
             setFrozenYaw(compound.getFloat("frozenYaw"));
             setFrozenYawHead(compound.getFloat("frozenYawHead"));
             setPrevHasAI(compound.getBoolean("prevHasAI"));
+            System.out.println("Reading frozen config. Has AI: " + prevHasAI());
             try {
                 setPreAttackTarget(compound.getUniqueId("prevAttackTarget"));
             }
             catch (NullPointerException ignored) {}
+            prevFrozen = compound.getBoolean("prevFrozen");
         }
     }
 
