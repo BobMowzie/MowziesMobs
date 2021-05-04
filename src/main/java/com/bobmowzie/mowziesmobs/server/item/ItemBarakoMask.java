@@ -38,6 +38,11 @@ public class ItemBarakoMask extends MowzieArmorItem implements BarakoaMask {
     }
 
     @Override
+    public boolean makesPiglinsNeutral(ItemStack stack, LivingEntity wearer) {
+        return true;
+    }
+
+    @Override
     public boolean isDamageable() {
         return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable.get();
     }
