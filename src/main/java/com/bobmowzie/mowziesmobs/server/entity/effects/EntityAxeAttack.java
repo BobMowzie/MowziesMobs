@@ -4,19 +4,28 @@ import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
+import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockState;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.CreatureAttribute;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.item.ArmorStandEntity;
 import net.minecraft.entity.item.FallingBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.block.Blocks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.SwordItem;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.potion.Effects;
+import net.minecraft.stats.Stats;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -26,7 +35,9 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -69,15 +80,16 @@ public class EntityAxeAttack extends EntityMagicEffect {
             setPositionAndRotation(caster.getPosX(), caster.getPosY(), caster.getPosZ(), caster.rotationYaw, caster.rotationPitch);
         }
         if (!world.isRemote && ticksExisted == 7) playSound(MMSounds.ENTITY_WROUGHT_WHOOSH.get(), 0.7F, 1.1f);
-            if (!world.isRemote && caster != null) {
-                if (!getVertical() && ticksExisted == SWING_DURATION_HOR /2 - 1) dealDamage(7 * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue(), 4.5f, 160, 1.2f);
-                else if (getVertical() && ticksExisted == SWING_DURATION_VER /2 - 1) {
-                    dealDamage(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue(), 4.5f, 40, 0.8f);
-                    quakeAngle = rotationYaw;
-                    quakeBB = getBoundingBox();
-                    playSound(MMSounds.ENTITY_WROUGHT_AXE_LAND.get(), 0.3F, 0.5F);
-                    playSound(SoundEvents.ENTITY_GENERIC_EXPLODE, 2, 0.9F + rand.nextFloat() * 0.1F);                }
+        if (!world.isRemote && caster != null) {
+            if (!getVertical() && ticksExisted == SWING_DURATION_HOR /2 - 1) dealDamage(7.0f * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f, 4.5f, 160, 1.2f);
+            else if (getVertical() && ticksExisted == SWING_DURATION_VER /2 - 1) {
+                dealDamage(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue(), 4.5f, 40, 0.8f);
+                quakeAngle = rotationYaw;
+                quakeBB = getBoundingBox();
+                playSound(MMSounds.ENTITY_WROUGHT_AXE_LAND.get(), 0.3F, 0.5F);
+                playSound(SoundEvents.ENTITY_GENERIC_EXPLODE, 2, 0.9F + rand.nextFloat() * 0.1F);
             }
+        }
 
         if (getVertical() && caster != null) {
             if (ticksExisted >= SWING_DURATION_VER /2) {
@@ -158,11 +170,13 @@ public class EntityAxeAttack extends EntityMagicEffect {
                 PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(caster, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
                 if (playerCapability != null) {
                     playerCapability.setAxeCanAttack(true);
-                    if (caster instanceof PlayerEntity) ((PlayerEntity)caster).attackTargetEntityWithCurrentItem(entityHit);
+                    if (caster instanceof PlayerEntity) attackTargetEntityWithCurrentItem(entityHit, (PlayerEntity)caster, damage / ItemHandler.WROUGHT_AXE.getAttackDamage(), applyKnockback);
                     playerCapability.setAxeCanAttack(false);
                 }
-                else entityHit.attackEntityFrom(DamageSource.causeMobDamage(caster), damage);
-                entityHit.setMotion(entityHit.getMotion().x * applyKnockback, entityHit.getMotion().y, entityHit.getMotion().z * applyKnockback);
+                else {
+                    entityHit.attackEntityFrom(DamageSource.causeMobDamage(caster), damage);
+                    entityHit.setMotion(entityHit.getMotion().x * applyKnockback, entityHit.getMotion().y, entityHit.getMotion().z * applyKnockback);
+                }
                 hit = true;
             }
         }
@@ -185,7 +199,136 @@ public class EntityAxeAttack extends EntityMagicEffect {
         return nearEntities;
     }
 
+    @Override
+    public void remove() {
+        if (caster instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) caster;
+            player.resetCooldown();
+        }
+        super.remove();
+    }
+
     public LivingEntity getCaster() {
         return caster;
+    }
+
+    /**
+     * Copied from player entity, with modification
+     */
+    public void attackTargetEntityWithCurrentItem(Entity targetEntity, PlayerEntity player, float damageMult, float knockbackMult) {
+        if (!net.minecraftforge.common.ForgeHooks.onPlayerAttackTarget(player, targetEntity)) return;
+        if (targetEntity.canBeAttackedWithItem()) {
+            if (!targetEntity.hitByEntity(player)) {
+                float f = (float)player.getAttributeValue(Attributes.ATTACK_DAMAGE) * damageMult;
+                float f1;
+                if (targetEntity instanceof LivingEntity) {
+                    f1 = EnchantmentHelper.getModifierForCreature(player.getHeldItemMainhand(), ((LivingEntity)targetEntity).getCreatureAttribute());
+                } else {
+                    f1 = EnchantmentHelper.getModifierForCreature(player.getHeldItemMainhand(), CreatureAttribute.UNDEFINED);
+                }
+
+                float f2 = 1.0f;
+                f = f * (0.2F + f2 * f2 * 0.8F);
+                f1 = f1 * f2;
+                if (f > 0.0F || f1 > 0.0F) {
+                    boolean flag = f2 > 0.9F;
+                    boolean flag1 = false;
+                    int i = 0;
+                    i = i + EnchantmentHelper.getKnockbackModifier(player);
+                    if (player.isSprinting() && flag) {
+                        player.world.playSound((PlayerEntity)null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_PLAYER_ATTACK_KNOCKBACK, player.getSoundCategory(), 1.0F, 1.0F);
+                        ++i;
+                        flag1 = true;
+                    }
+
+                    f = f + f1;
+                    boolean flag3 = false;
+
+                    float f4 = 0.0F;
+                    boolean flag4 = false;
+                    int j = EnchantmentHelper.getFireAspectModifier(player);
+                    if (targetEntity instanceof LivingEntity) {
+                        f4 = ((LivingEntity)targetEntity).getHealth();
+                        if (j > 0 && !targetEntity.isBurning()) {
+                            flag4 = true;
+                            targetEntity.setFire(1);
+                        }
+                    }
+
+                    Vector3d vector3d = targetEntity.getMotion();
+                    boolean flag5 = targetEntity.attackEntityFrom(DamageSource.causePlayerDamage(player), f);
+                    if (flag5) {
+                        if (i > 0) {
+                            if (targetEntity instanceof LivingEntity) {
+                                ((LivingEntity)targetEntity).applyKnockback((float)i * 0.5F * knockbackMult, (double)MathHelper.sin(player.rotationYaw * ((float)Math.PI / 180F)), (double)(-MathHelper.cos(player.rotationYaw * ((float)Math.PI / 180F))));
+                            } else {
+                                targetEntity.addVelocity((double)(-MathHelper.sin(player.rotationYaw * ((float)Math.PI / 180F)) * (float)i * 0.5F * knockbackMult), 0.1D, (double)(MathHelper.cos(player.rotationYaw * ((float)Math.PI / 180F)) * (float)i * 0.5F * knockbackMult));
+                            }
+
+                            player.setMotion(player.getMotion().mul(0.6D, 1.0D, 0.6D));
+                            player.setSprinting(false);
+                        }
+
+                        if (targetEntity instanceof ServerPlayerEntity && targetEntity.velocityChanged) {
+                            ((ServerPlayerEntity)targetEntity).connection.sendPacket(new SEntityVelocityPacket(targetEntity));
+                            targetEntity.velocityChanged = false;
+                            targetEntity.setMotion(vector3d);
+                        }
+
+                        if (flag) {
+                            player.world.playSound((PlayerEntity)null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, player.getSoundCategory(), 1.0F, 1.0F);
+                        } else {
+                            player.world.playSound((PlayerEntity)null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_PLAYER_ATTACK_WEAK, player.getSoundCategory(), 1.0F, 1.0F);
+                        }
+
+                        if (f1 > 0.0F) {
+                            player.onEnchantmentCritical(targetEntity);
+                        }
+
+                        player.setLastAttackedEntity(targetEntity);
+                        if (targetEntity instanceof LivingEntity) {
+                            EnchantmentHelper.applyThornEnchantments((LivingEntity)targetEntity, player);
+                        }
+
+                        EnchantmentHelper.applyArthropodEnchantments(player, targetEntity);
+                        ItemStack itemstack1 = player.getHeldItemMainhand();
+                        Entity entity = targetEntity;
+                        if (targetEntity instanceof net.minecraftforge.entity.PartEntity) {
+                            entity = ((net.minecraftforge.entity.PartEntity<?>) targetEntity).getParent();
+                        }
+
+                        if (!player.world.isRemote && !itemstack1.isEmpty() && entity instanceof LivingEntity) {
+                            ItemStack copy = itemstack1.copy();
+                            itemstack1.hitEntity((LivingEntity)entity, player);
+                            if (itemstack1.isEmpty()) {
+                                net.minecraftforge.event.ForgeEventFactory.onPlayerDestroyItem(player, copy, Hand.MAIN_HAND);
+                                player.setHeldItem(Hand.MAIN_HAND, ItemStack.EMPTY);
+                            }
+                        }
+
+                        if (targetEntity instanceof LivingEntity) {
+                            float f5 = f4 - ((LivingEntity)targetEntity).getHealth();
+                            player.addStat(Stats.DAMAGE_DEALT, Math.round(f5 * 10.0F));
+                            if (j > 0) {
+                                targetEntity.setFire(j * 4);
+                            }
+
+                            if (player.world instanceof ServerWorld && f5 > 2.0F) {
+                                int k = (int)((double)f5 * 0.5D);
+                                ((ServerWorld)player.world).spawnParticle(ParticleTypes.DAMAGE_INDICATOR, targetEntity.getPosX(), targetEntity.getPosYHeight(0.5D), targetEntity.getPosZ(), k, 0.1D, 0.0D, 0.1D, 0.2D);
+                            }
+                        }
+
+                        player.addExhaustion(0.1F);
+                    } else {
+                        player.world.playSound((PlayerEntity)null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_PLAYER_ATTACK_NODAMAGE, player.getSoundCategory(), 1.0F, 1.0F);
+                        if (flag4) {
+                            targetEntity.extinguish();
+                        }
+                    }
+                }
+
+            }
+        }
     }
 }

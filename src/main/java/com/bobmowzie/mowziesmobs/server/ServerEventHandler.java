@@ -51,9 +51,11 @@ import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
+import net.minecraftforge.event.entity.player.CriticalHitEvent;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -433,13 +435,17 @@ public final class ServerEventHandler {
                         event.isCancelable() && (
                         playerCapability.getUsingSolarBeam() ||
                         playerCapability.getGeomancy().isSpawningBoulder() ||
-                        playerCapability.getGeomancy().tunneling ||
-                        playerCapability.getUntilAxeSwing() > 0
+                        playerCapability.getGeomancy().tunneling
                 )) {
                     event.setCanceled(true);
                 }
             }
         }
+    }
+
+    @SubscribeEvent
+    public void checkCritEvent(CriticalHitEvent event) {
+        event.setResult(Event.Result.DEFAULT);
     }
 
     @SubscribeEvent
