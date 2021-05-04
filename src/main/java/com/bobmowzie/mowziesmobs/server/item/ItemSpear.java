@@ -1,5 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
+import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
@@ -41,12 +43,18 @@ public class ItemSpear extends MowzieToolItem {
     }
 
     @Override
-    public boolean hitEntity(ItemStack heldItemStack, LivingEntity entityHit, LivingEntity player) {
-        heldItemStack.damageItem(2, player, (p) -> {
+    public boolean hitEntity(ItemStack heldItemStack, LivingEntity entityHit, LivingEntity entityAttacking) {
+        heldItemStack.damageItem(2, entityAttacking, (p) -> {
             p.sendBreakAnimation(EquipmentSlotType.MAINHAND);
         });
         if (entityHit instanceof AnimalEntity && entityHit.getMaxHealth() <= 30 && random.nextFloat() <= 0.33) {
-            entityHit.setHealth(0);
+            if (entityAttacking instanceof PlayerEntity) {
+                PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(entityAttacking, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+                if (playerCapability != null && playerCapability.getPrevCooledAttackStrength() == 1.0f) {
+                    entityHit.setHealth(0);
+                }
+            }
+            else entityHit.setHealth(0);
         }
         return true;
     }

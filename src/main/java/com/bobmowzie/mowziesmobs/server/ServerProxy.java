@@ -115,7 +115,6 @@ public class ServerProxy {
         this.registerMessage(MessagePlayerSummonSunstrike.class, MessagePlayerSummonSunstrike::serialize, MessagePlayerSummonSunstrike::deserialize, new MessagePlayerSummonSunstrike.Handler());
         this.registerMessage(MessageRemoveFreezeProgress.class, MessageRemoveFreezeProgress::serialize, MessageRemoveFreezeProgress::deserialize, new MessageRemoveFreezeProgress.Handler());
         this.registerMessage(MessageUnfreezeEntity.class, MessageUnfreezeEntity::serialize, MessageUnfreezeEntity::deserialize, new MessageUnfreezeEntity.Handler());
-        this.registerMessage(MessageDaggerCrit.class, MessageDaggerCrit::serialize, MessageDaggerCrit::deserialize, new MessageDaggerCrit.Handler());
         this.registerMessage(MessagePlayerStartSummonBoulder.class, MessagePlayerStartSummonBoulder::serialize, MessagePlayerStartSummonBoulder::deserialize, new MessagePlayerStartSummonBoulder.Handler());
     }
 

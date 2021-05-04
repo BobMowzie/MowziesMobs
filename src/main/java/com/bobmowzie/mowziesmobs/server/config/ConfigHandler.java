@@ -495,9 +495,9 @@ public final class  ConfigHandler {
             poisonDuration = builder.comment("Duration in ticks of the poison effect (20 ticks = 1 second).")
                     .translation(LANG_PREFIX + "poison_duration")
                     .defineInRange("poison_duration", 40, 0, Integer.MAX_VALUE);
-            bonusDamage = builder.comment("Bonus damage when attacking from behind")
-                    .translation(LANG_PREFIX + "bonus_damage")
-                    .defineInRange("bonus_damage", 3f, 0d, Double.MAX_VALUE);
+            backstabDamageMultiplier = builder.comment("Damage multiplier when attacking from behind")
+                    .translation(LANG_PREFIX + "backstab_damage_mult")
+                    .defineInRange("backstab_damage_mult", 2f, 0d, Double.MAX_VALUE);
             builder.pop();
         }
 
@@ -505,7 +505,7 @@ public final class  ConfigHandler {
 
         public final IntValue poisonDuration;
 
-        public final DoubleValue bonusDamage;
+        public final DoubleValue backstabDamageMultiplier;
     }
 
     public static class Blowgun {

@@ -109,6 +109,10 @@ public class PlayerCapability {
         void setUsingSolarBeam(boolean b);
 
         boolean getUsingSolarBeam();
+
+        float getPrevCooledAttackStrength();
+
+        void setPrevCooledAttackStrength(float cooledAttackStrength);
     }
 
     public static class PlayerCapabilityImp implements IPlayerCapability {
@@ -120,6 +124,7 @@ public class PlayerCapability {
         public boolean mouseRightDown = false;
         public boolean mouseLeftDown = false;
         public boolean prevSneaking;
+        private float prevCooledAttackStrength;
 
         public int tribeCircleTick;
         public List<EntityBarakoanToPlayer> tribePack = new ArrayList<>();
@@ -234,6 +239,16 @@ public class PlayerCapability {
         public void setUsingSolarBeam(boolean b) { this.usingSolarBeam = b; }
 
         public boolean getUsingSolarBeam() { return this.usingSolarBeam; }
+
+        @Override
+        public float getPrevCooledAttackStrength() {
+            return prevCooledAttackStrength;
+        }
+
+        @Override
+        public void setPrevCooledAttackStrength(float cooledAttackStrength) {
+            prevCooledAttackStrength = cooledAttackStrength;
+        }
 
         public boolean usingIceBreath;
         private boolean usingSolarBeam;

@@ -78,7 +78,7 @@
   "item.mowziesmobs.earth_talisman.text.2": "Right-click earthen ground with empty hand to spawn boulder",
   "item.mowziesmobs.earth_talisman.text.3": "Punch boulder to fire it as projectile",
   "item.mowziesmobs.earth_talisman.text.4": "Charge right-click to spawn bigger boulders",
-  "item.mowziesmobs.earth_talisman.text.5": "While in the air, double-tap and hold sneak to begin tunneling (Does not work in server multiplayer yet)",
+  "item.mowziesmobs.earth_talisman.text.5": "While in the air, double-tap and hold sneak to begin tunneling",
   "item.mowziesmobs.earth_talisman.text.6": "Look in the direction you'd like to dig",
   "item.mowziesmobs.earth_talisman.text.7": "Release sneak to surface and stop tunneling",
 
@@ -221,7 +221,7 @@
   "config.mowziesmobs.durability": "Durability",
   "config.mowziesmobs.naga_fang_dagger": "Naga Fang Dagger",
   "config.mowziesmobs.naga_fang_dagger.tooltip": "",
-  "config.mowziesmobs.bonus_damage": "Bonus Damage",
+  "config.mowziesmobs.backstab_damage_mult": "Backstab Damage Multiplier",
   "config.mowziesmobs.geomancy_attack_multiplier": "Geomancy Attack Damage Multiplier",
   "config.mowziesmobs.suns_blessing": "Sun's Blessing",
   "config.mowziesmobs.suns_blessing.tooltip": "",
