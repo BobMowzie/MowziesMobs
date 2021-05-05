@@ -338,8 +338,8 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event) {
-        if (event.getUseBlock() == Event.Result.ALLOW) return;
         PlayerEntity player = event.getPlayer();
+        if (player.world.getBlockState(event.getPos()).getContainer(player.world, event.getPos()) != null) return;
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
         if (playerCapability != null) {
             if (event.isCancelable()) {
@@ -446,6 +446,17 @@ public final class ServerEventHandler {
         }
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
         if (playerCapability != null) {
+            if (event.isCancelable()) {
+                if (
+                        playerCapability.getUsingSolarBeam() ||
+                                playerCapability.getGeomancy().isSpawningBoulder() ||
+                                playerCapability.getGeomancy().tunneling ||
+                                playerCapability.getUntilAxeSwing() > 0
+                ) {
+                    event.setCanceled(true);
+                }
+            }
+
             Power[] powers = playerCapability.getPowers();
             for (Power power : powers) {
                 power.onLeftClickBlock(event);
