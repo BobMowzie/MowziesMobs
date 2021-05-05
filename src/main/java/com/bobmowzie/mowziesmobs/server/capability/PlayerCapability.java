@@ -275,10 +275,10 @@ public class PlayerCapability {
             if (event.side == LogicalSide.SERVER) {
                 for (ItemStack itemStack : event.player.inventory.mainInventory) {
                     if (itemStack.getItem() instanceof ItemEarthTalisman)
-                        player.addPotionEffect(new EffectInstance(PotionHandler.GEOMANCY, 0, 0, false, false));
+                        player.addPotionEffect(new EffectInstance(PotionHandler.GEOMANCY, 1, 0, false, false));
                 }
                 if (player.getHeldItemOffhand().getItem() instanceof ItemEarthTalisman)
-                    player.addPotionEffect(new EffectInstance(PotionHandler.GEOMANCY, 0, 0, false, false));
+                    player.addPotionEffect(new EffectInstance(PotionHandler.GEOMANCY, 1, 0, false, false));
 
                 List<EntityBarakoanToPlayer> pack = tribePack;
                 float theta = (2 * (float) Math.PI / pack.size());
