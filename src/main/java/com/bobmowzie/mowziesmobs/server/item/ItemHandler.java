@@ -75,7 +75,7 @@ public final class ItemHandler {
             new ItemBarakoMask(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barako_mask"),
             new ItemDart(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("dart"),
             new ItemSpear(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab).maxStackSize(1)).setRegistryName("spear"),
-            new ItemBlowgun(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab).maxStackSize(1)).setRegistryName("blowgun"),
+            new ItemBlowgun(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab).maxStackSize(1).maxDamage(300)).setRegistryName("blowgun"),
             new ItemGrantSunsBlessing(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab).maxStackSize(1)).setRegistryName("grant_suns_blessing"),
             new ItemIceCrystal(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab).defaultMaxDamage(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.durability.get())).setRegistryName("ice_crystal"),
             new ItemEarthTalisman(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab).maxStackSize(1)).setRegistryName("earth_talisman"),
