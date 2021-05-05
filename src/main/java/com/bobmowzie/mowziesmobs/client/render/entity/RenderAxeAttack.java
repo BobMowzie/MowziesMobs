@@ -5,6 +5,7 @@ import com.bobmowzie.mowziesmobs.client.model.entity.ModelAxeAttack;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.sun.javafx.geom.Vec3d;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -15,6 +16,7 @@ import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -36,13 +38,19 @@ public class RenderAxeAttack extends EntityRenderer<EntityAxeAttack> {
     }
 
     @Override
-    public void render(EntityAxeAttack entity, float entityYaw, float delta, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+    public void render(EntityAxeAttack axe, float entityYaw, float delta, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         PlayerEntity player = Minecraft.getInstance().player;
-        if (player == entity.getCaster() && Minecraft.getInstance().gameSettings.getPointOfView() == PointOfView.FIRST_PERSON) {
+        if (player != null && player == axe.getCaster() && Minecraft.getInstance().gameSettings.getPointOfView() == PointOfView.FIRST_PERSON) {
             matrixStackIn.push();
-            matrixStackIn.rotate(new Quaternion(new Vector3f(0, -1, 0), entityYaw, true));
+            Vector3d prevAxePos = new Vector3d(axe.lastTickPosX, axe.lastTickPosY, axe.lastTickPosZ);
+            Vector3d prevPlayerPos = new Vector3d(player.lastTickPosX, player.lastTickPosY, player.lastTickPosZ);
+            Vector3d axePos = prevAxePos.add(axe.getPositionVec().subtract(prevAxePos).scale(delta));
+            Vector3d playerPos = prevPlayerPos.add(player.getPositionVec().subtract(prevPlayerPos).scale(delta));
+            Vector3d deltaPos = axePos.subtract(playerPos).scale(-1);
+            matrixStackIn.translate(deltaPos.getX(), deltaPos.getY(), deltaPos.getZ());
+            matrixStackIn.rotate(new Quaternion(new Vector3f(0, -1, 0), player.rotationYaw, true));
             IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntitySolid(TEXTURE));
-            model.setRotationAngles(entity, 0, 0, entity.ticksExisted + delta, 0, 0);
+            model.setRotationAngles(axe, 0, 0, axe.ticksExisted + delta, 0, 0);
             model.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1);
             matrixStackIn.pop();
         }
