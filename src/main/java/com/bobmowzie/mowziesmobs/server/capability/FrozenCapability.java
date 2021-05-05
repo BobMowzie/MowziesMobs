@@ -399,7 +399,6 @@ public class FrozenCapability {
             setFrozenYaw(compound.getFloat("frozenYaw"));
             setFrozenYawHead(compound.getFloat("frozenYawHead"));
             setPrevHasAI(compound.getBoolean("prevHasAI"));
-            System.out.println("Reading frozen config. Has AI: " + prevHasAI());
             try {
                 setPreAttackTarget(compound.getUniqueId("prevAttackTarget"));
             }
