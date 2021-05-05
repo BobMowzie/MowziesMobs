@@ -1690,7 +1690,7 @@ public class ModelFrostmaw<T extends EntityFrostmaw> extends MowzieEntityModel<T
                 eyeLidLeft.showModel = false;
             }
         }
-        else {
+        else if (entity.getAnimation() != EntityFrostmaw.ACTIVATE_ANIMATION && entity.getAnimation() != EntityFrostmaw.ACTIVATE_NO_CRYSTAL_ANIMATION) {
             eyeLidLeft.showModel = true;
             eyeLidRight.showModel = true;
             root.rotateAngleZ += 0.9f;
