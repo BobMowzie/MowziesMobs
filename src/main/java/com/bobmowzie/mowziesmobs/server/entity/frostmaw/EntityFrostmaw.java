@@ -761,7 +761,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                         else AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_NO_CRYSTAL_ANIMATION);
                     }
                 }
-                setActive(true);
+                if (world.getDifficulty() != Difficulty.PEACEFUL) setActive(true);
             }
             return false;
         }
@@ -777,7 +777,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                     if (getHasCrystal()) AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_ANIMATION);
                     else AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_NO_CRYSTAL_ANIMATION);
                 }
-                setActive(true);
+                if (world.getDifficulty() != Difficulty.PEACEFUL) setActive(true);
             }
         }
 
