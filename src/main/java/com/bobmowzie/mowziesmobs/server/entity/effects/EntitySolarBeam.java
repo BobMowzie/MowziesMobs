@@ -39,6 +39,7 @@ public class EntitySolarBeam extends Entity {
     public LivingEntity caster;
     public double endPosX, endPosY, endPosZ;
     public double collidePosX, collidePosY, collidePosZ;
+    public double prevCollidePosX, prevCollidePosY, prevCollidePosZ;
     public ControlledAnimation appear = new ControlledAnimation(3);
 
     public boolean on = true;
@@ -54,6 +55,9 @@ public class EntitySolarBeam extends Entity {
     private static final DataParameter<Boolean> HAS_PLAYER = EntityDataManager.createKey(EntitySolarBeam.class, DataSerializers.BOOLEAN);
 
     private static final DataParameter<Integer> CASTER = EntityDataManager.createKey(EntitySolarBeam.class, DataSerializers.VARINT);
+
+    public float prevYaw;
+    public float prevPitch;
 
     public EntitySolarBeam(EntityType<? extends EntitySolarBeam> type, World world) {
         super(type, world);
@@ -82,6 +86,11 @@ public class EntitySolarBeam extends Entity {
     @Override
     public void tick() {
         super.tick();
+        prevCollidePosX = collidePosX;
+        prevCollidePosY = collidePosY;
+        prevCollidePosZ = collidePosZ;
+        prevYaw = getYaw();
+        prevPitch = getPitch();
         if (ticksExisted == 1 && world.isRemote) {
             caster = (LivingEntity) world.getEntityByID(getCasterID());
         }

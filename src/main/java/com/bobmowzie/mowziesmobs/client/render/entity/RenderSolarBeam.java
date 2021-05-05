@@ -46,7 +46,16 @@ public class RenderSolarBeam extends EntityRenderer<EntitySolarBeam> {
     public void render(EntitySolarBeam solarBeam, float entityYaw, float delta, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         clearerView = solarBeam.caster instanceof PlayerEntity && Minecraft.getInstance().player == solarBeam.caster && Minecraft.getInstance().gameSettings.getPointOfView() == PointOfView.FIRST_PERSON;
 
-        float length = (float) Math.sqrt(Math.pow(solarBeam.collidePosX - solarBeam.getPosX(), 2) + Math.pow(solarBeam.collidePosY - solarBeam.getPosY(), 2) + Math.pow(solarBeam.collidePosZ - solarBeam.getPosZ(), 2));
+        double collidePosX = solarBeam.prevCollidePosX + (solarBeam.collidePosX - solarBeam.prevCollidePosX) * delta;
+        double collidePosY = solarBeam.prevCollidePosY + (solarBeam.collidePosY - solarBeam.prevCollidePosY) * delta;
+        double collidePosZ = solarBeam.prevCollidePosZ + (solarBeam.collidePosZ - solarBeam.prevCollidePosZ) * delta;
+        double posX = solarBeam.prevPosX + (solarBeam.getPosX() - solarBeam.prevPosX) * delta;
+        double posY = solarBeam.prevPosY + (solarBeam.getPosY() - solarBeam.prevPosY) * delta;
+        double posZ = solarBeam.prevPosZ + (solarBeam.getPosZ() - solarBeam.prevPosZ) * delta;
+        float yaw = solarBeam.prevYaw + (solarBeam.getYaw() - solarBeam.prevYaw) * delta;
+        float pitch = solarBeam.prevPitch + (solarBeam.getPitch() - solarBeam.prevPitch) * delta;
+
+        float length = (float) Math.sqrt(Math.pow(collidePosX - posX, 2) + Math.pow(collidePosY - posY, 2) + Math.pow(collidePosZ - posZ, 2));
         int frame = MathHelper.floor((solarBeam.appear.getTimer() - 1 + delta) * 2);
         if (frame < 0) {
             frame = 6;
@@ -54,20 +63,12 @@ public class RenderSolarBeam extends EntityRenderer<EntitySolarBeam> {
         IVertexBuilder ivertexbuilder = bufferIn.getBuffer(MMRenderType.getGlowingEffect(getEntityTexture(solarBeam)));
 
         renderStart(frame, matrixStackIn, ivertexbuilder, packedLightIn);
-        renderBeam(length, 180 / (float) Math.PI * solarBeam.getYaw(), 180 / (float) Math.PI * solarBeam.getPitch(), frame, matrixStackIn, ivertexbuilder, packedLightIn);
+        renderBeam(length, 180 / (float) Math.PI * yaw, 180 / (float) Math.PI * pitch, frame, matrixStackIn, ivertexbuilder, packedLightIn);
 
         matrixStackIn.push();
-        matrixStackIn.translate(solarBeam.collidePosX - solarBeam.getPosX(), solarBeam.collidePosY - solarBeam.getPosY(), solarBeam.collidePosZ - solarBeam.getPosZ());
+        matrixStackIn.translate(collidePosX - posX, collidePosY - posY, collidePosZ - posZ);
         renderEnd(frame, solarBeam.blockSide, matrixStackIn, ivertexbuilder, packedLightIn);
         matrixStackIn.pop();
-//        matrixStackIn.translate(solarBeam.getPosX() - solarBeam.collidePosX, solarBeam.getPosY() - solarBeam.collidePosY, solarBeam.getPosZ() - solarBeam.collidePosZ);
-
-//        if (Minecraft.getInstance().gameSettings.thirdPersonView != 0) {
-//            renderStart(frame, matrixStackIn, ivertexbuilder, packedLightIn);
-//        }
-//        renderBeam(length, 180 / (float) Math.PI * solarBeam.getYaw(), 180 / (float) Math.PI * solarBeam.getPitch(), frame, matrixStackIn, ivertexbuilder, packedLightIn);
-//        matrixStackIn.translate(solarBeam.collidePosX - solarBeam.getPosX(), solarBeam.collidePosY - solarBeam.getPosY(), solarBeam.collidePosZ - solarBeam.getPosZ());
-//        renderEnd(frame, null, matrixStackIn, ivertexbuilder, packedLightIn);
     }
 
     private void renderFlatQuad(int frame, MatrixStack matrixStackIn, IVertexBuilder builder, int packedLightIn) {
@@ -94,12 +95,6 @@ public class RenderSolarBeam extends EntityRenderer<EntitySolarBeam> {
         renderFlatQuad(frame, matrixStackIn, builder, packedLightIn);
         matrixStackIn.pop();
     }
-
-    public static final VertexFormat POSITION_TEX_LMAP = new VertexFormat(ImmutableList.of(
-            DefaultVertexFormats.POSITION_3F,
-            DefaultVertexFormats.TEX_2F,
-            DefaultVertexFormats.TEX_2S
-    ));
 
     private void renderEnd(int frame, Direction side, MatrixStack matrixStackIn, IVertexBuilder builder, int packedLightIn) {
         matrixStackIn.push();
