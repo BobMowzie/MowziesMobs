@@ -339,7 +339,10 @@ public final class ServerEventHandler {
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event) {
         PlayerEntity player = event.getPlayer();
-        if (player.world.getBlockState(event.getPos()).getContainer(player.world, event.getPos()) != null) return;
+        if (player.world.getBlockState(event.getPos()).getContainer(player.world, event.getPos()) != null) {
+            player.resetCooldown();
+            return;
+        }
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
         if (playerCapability != null) {
             if (event.isCancelable()) {
