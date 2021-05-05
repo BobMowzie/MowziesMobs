@@ -203,8 +203,8 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         this.goalSelector.addGoal(2, new AnimationSolarBeam<>(this, SOLAR_BEAM_ANIMATION));
         this.goalSelector.addGoal(3, new AnimationTakeDamage<>(this));
         this.goalSelector.addGoal(1, new AnimationDieAI<>(this));
-//        this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 8.0F));
-//        this.goalSelector.addGoal(7, new LookAtGoal(this, EntityBarakoa.class, 8.0F));
+        this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        this.goalSelector.addGoal(7, new LookAtGoal(this, EntityBarakoa.class, 8.0F));
         this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
     }
 
@@ -465,9 +465,9 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             timeUntilSupernova--;
         }
 
-//        if (getAnimation() == NO_ANIMATION) {
-//            AnimationHandler.INSTANCE.sendAnimationMessage(this, SUPERNOVA_ANIMATION);
-//        }
+        if (getAnimation() == NO_ANIMATION) {
+            AnimationHandler.INSTANCE.sendAnimationMessage(this, SOLAR_BEAM_ANIMATION);
+        }
     }
 
     private void superNovaEffects() {
