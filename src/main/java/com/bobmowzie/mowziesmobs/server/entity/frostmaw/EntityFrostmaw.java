@@ -441,7 +441,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                     getNavigator().tryMoveToEntityLiving(getAttackTarget(), 0.85);
                 }
 
-                if (shouldDodgeMeasure >= 14) shouldDodge = true;
+                if (shouldDodgeMeasure >= 12) shouldDodge = true;
                 if (targetDistance < 4 && shouldDodge && getAnimation() == NO_ANIMATION) {
                     shouldDodge = false;
                     dodgeCooldown = DODGE_COOLDOWN;
@@ -463,7 +463,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                         AnimationHandler.INSTANCE.sendAnimationMessage(this, SWIPE_TWICE_ANIMATION);
                     else AnimationHandler.INSTANCE.sendAnimationMessage(this, SWIPE_ANIMATION);
                 }
-                if ((targetDistance >= 3 || dodgeCooldown > DODGE_COOLDOWN - 20) && targetDistance <= 13.5 && getAnimation() == NO_ANIMATION && iceBreathCooldown <= 0 && getHasCrystal() && (onGround || inWater)) {
+                if (targetDistance <= 13.5 && getAnimation() == NO_ANIMATION && iceBreathCooldown <= 0 && getHasCrystal() && (onGround || inWater)) {
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, ICE_BREATH_ANIMATION);
                     iceBreathCooldown = ICE_BREATH_COOLDOWN;
                 }
