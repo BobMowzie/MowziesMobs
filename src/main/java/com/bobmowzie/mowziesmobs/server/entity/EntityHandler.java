@@ -88,26 +88,26 @@ public enum EntityHandler {
 
         // Non-mobs
         EntityType.Builder<EntitySunstrike> sunstrikeBuilder = EntityType.Builder.create(EntitySunstrike::new, EntityClassification.MISC);
-        SUNSTRIKE = register("sunstrike", sunstrikeBuilder.disableSummoning().size(0.1F, 0.1F));
+        SUNSTRIKE = register("sunstrike", sunstrikeBuilder.size(0.1F, 0.1F));
 
         EntityType.Builder<EntitySolarBeam> solarBeamBuilder = EntityType.Builder.create(EntitySolarBeam::new, EntityClassification.MISC);
-        SOLAR_BEAM = register("solar_beam", solarBeamBuilder.disableSummoning().size(0.1F, 0.1F).setUpdateInterval(1));
+        SOLAR_BEAM = register("solar_beam", solarBeamBuilder.size(0.1F, 0.1F).setUpdateInterval(1));
 
         EntityType.Builder<EntityBoulder> boulderBuilder = EntityType.Builder.create(EntityBoulder::new, EntityClassification.MISC);
-        BOULDER_SMALL = register("boulder_small", boulderBuilder.disableSummoning().size(1, 1).setUpdateInterval(1));
-        BOULDER_MEDIUM = register("boulder_medium", boulderBuilder.disableSummoning().size(2, 1.5f).setUpdateInterval(1));
-        BOULDER_LARGE = register("boulder_large", boulderBuilder.disableSummoning().size(3, 2.5f).setUpdateInterval(1));
-        BOULDER_HUGE = register("boulder_huge", boulderBuilder.disableSummoning().size(4, 3.5f).setUpdateInterval(1));
+        BOULDER_SMALL = register("boulder_small", boulderBuilder.size(1, 1).setUpdateInterval(1));
+        BOULDER_MEDIUM = register("boulder_medium", boulderBuilder.size(2, 1.5f).setUpdateInterval(1));
+        BOULDER_LARGE = register("boulder_large", boulderBuilder.size(3, 2.5f).setUpdateInterval(1));
+        BOULDER_HUGE = register("boulder_huge", boulderBuilder.size(4, 3.5f).setUpdateInterval(1));
         BOULDERS = new EntityType[] {BOULDER_SMALL, BOULDER_MEDIUM, BOULDER_LARGE, BOULDER_HUGE};
 
         EntityType.Builder<EntityAxeAttack> axeAttackBuilder = EntityType.Builder.create(EntityAxeAttack::new, EntityClassification.MISC);
-        AXE_ATTACK = register("axe_attack", axeAttackBuilder.disableSummoning().size(1f, 1f).setUpdateInterval(1));
+        AXE_ATTACK = register("axe_attack", axeAttackBuilder.size(1f, 1f).setUpdateInterval(1));
 
         EntityType.Builder<EntityIceBreath> iceBreathBuilder = EntityType.Builder.create(EntityIceBreath::new, EntityClassification.MISC);
-        ICE_BREATH = register("ice_breath", iceBreathBuilder.disableSummoning().size(0F, 0F).setUpdateInterval(1));
+        ICE_BREATH = register("ice_breath", iceBreathBuilder.size(0F, 0F).setUpdateInterval(1));
 
         EntityType.Builder<EntityIceBall> iceBallBuilder = EntityType.Builder.create(EntityIceBall::new, EntityClassification.MISC);
-        ICE_BALL = register("ice_ball", iceBallBuilder.disableSummoning().size(0.5F, 0.5F).setUpdateInterval(20));
+        ICE_BALL = register("ice_ball", iceBallBuilder.size(0.5F, 0.5F).setUpdateInterval(20));
 
         EntityType.Builder<EntityFrozenController> frozenControllerBuilder = EntityType.Builder.create(EntityFrozenController::new, EntityClassification.MISC);
         FROZEN_CONTROLLER = register("frozen_controller", frozenControllerBuilder.disableSummoning().size(0, 0));
@@ -116,13 +116,13 @@ public enum EntityHandler {
         DART = register("dart", dartBuilder.disableSummoning().size(0.5F, 0.5F).setUpdateInterval(20));
 
         EntityType.Builder<EntityPoisonBall> poisonBallBuilder = EntityType.Builder.create(EntityPoisonBall::new, EntityClassification.MISC);
-        POISON_BALL = register("poison_ball", poisonBallBuilder.disableSummoning().size(0.5F, 0.5F).setUpdateInterval(20));
+        POISON_BALL = register("poison_ball", poisonBallBuilder.size(0.5F, 0.5F).setUpdateInterval(20));
 
         EntityType.Builder<EntitySuperNova> superNovaBuilder = EntityType.Builder.create(EntitySuperNova::new, EntityClassification.MISC);
-        SUPER_NOVA = register("super_nova", superNovaBuilder.disableSummoning().size(1, 1).setUpdateInterval(Integer.MAX_VALUE));
+        SUPER_NOVA = register("super_nova", superNovaBuilder.size(1, 1).setUpdateInterval(Integer.MAX_VALUE));
 
         EntityType.Builder<EntityFallingBlock> fallingBlockBuilder = EntityType.Builder.create(EntityFallingBlock::new, EntityClassification.MISC);
-        FALLING_BLOCK = register("falling_block", fallingBlockBuilder.disableSummoning().size(1, 1));
+        FALLING_BLOCK = register("falling_block", fallingBlockBuilder.size(1, 1));
 
         EntityType.Builder<EntityBlockSwapper> blockSwapperBuilder = EntityType.Builder.create(EntityBlockSwapper::new, EntityClassification.MISC);
         BLOCK_SWAPPER = register("block_swapper", blockSwapperBuilder.disableSummoning().size(1, 1).setUpdateInterval(Integer.MAX_VALUE));
