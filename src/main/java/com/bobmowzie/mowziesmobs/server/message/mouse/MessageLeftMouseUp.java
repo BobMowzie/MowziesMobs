@@ -37,10 +37,12 @@ public class MessageLeftMouseUp {
         private void accept(final MessageLeftMouseUp message, final ServerPlayerEntity player) {
             if (player != null) {
                 PlayerCapability.IPlayerCapability capability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-                capability.setMouseLeftDown(false);
-                Power[] powers = capability.getPowers();
-                for (int i = 0; i < powers.length; i++) {
-                    powers[i].onLeftMouseUp(player);
+                if (capability != null) {
+                    capability.setMouseLeftDown(false);
+                    Power[] powers = capability.getPowers();
+                    for (int i = 0; i < powers.length; i++) {
+                        powers[i].onLeftMouseUp(player);
+                    }
                 }
             }
         }

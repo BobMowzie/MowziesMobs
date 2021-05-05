@@ -37,10 +37,12 @@ public class MessageLeftMouseDown {
         private void accept(final MessageLeftMouseDown message, final ServerPlayerEntity player) {
             if (player != null) {
                 PlayerCapability.IPlayerCapability capability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-                capability.setMouseLeftDown(true);
-                Power[] powers = capability.getPowers();
-                for (int i = 0; i < powers.length; i++) {
-                    powers[i].onLeftMouseDown(player);
+                if (capability != null) {
+                    capability.setMouseLeftDown(true);
+                    Power[] powers = capability.getPowers();
+                    for (int i = 0; i < powers.length; i++) {
+                        powers[i].onLeftMouseDown(player);
+                    }
                 }
             }
         }

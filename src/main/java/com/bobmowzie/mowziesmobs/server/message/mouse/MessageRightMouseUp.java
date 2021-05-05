@@ -37,10 +37,12 @@ public class MessageRightMouseUp {
         private void accept(final MessageRightMouseUp message, final ServerPlayerEntity player) {
             if (player != null) {
                 PlayerCapability.IPlayerCapability capability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-                capability.setMouseRightDown(false);
-                Power[] powers = capability.getPowers();
-                for (int i = 0; i < powers.length; i++) {
-                    powers[i].onRightMouseUp(player);
+                if (capability != null) {
+                    capability.setMouseRightDown(false);
+                    Power[] powers = capability.getPowers();
+                    for (int i = 0; i < powers.length; i++) {
+                        powers[i].onRightMouseUp(player);
+                    }
                 }
             }
         }
