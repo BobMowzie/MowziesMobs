@@ -56,42 +56,6 @@ public class ClientProxy extends ServerProxy {
         modbus.register(MMModels.class);
         MinecraftForge.EVENT_BUS.register(ClientEventHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(FrozenRenderHandler.INSTANCE);
-
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.BABY_FOLIAATH, RenderFoliaathBaby::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.FOLIAATH, RenderFoliaath::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.WROUGHTNAUT, RenderWroughtnaut::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.BARAKO, RenderBarako::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.BARAKOANA, RenderBarakoa::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.BARAKOAN_TO_BARAKOANA, RenderBarakoa::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.BARAKOAYA, RenderBarakoa::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.BARAKOAN_TO_PLAYER, RenderBarakoa::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.FROSTMAW, RenderFrostmaw::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.GROTTOL, RenderGrottol::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.LANTERN, RenderLantern::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.NAGA, RenderNaga::new);
-
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.DART, RenderDart::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.SUNSTRIKE, RenderSunstrike::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.SOLAR_BEAM, RenderSolarBeam::new);
-        for (EntityType boulderType : EntityHandler.BOULDERS) {
-            RenderingRegistry.registerEntityRenderingHandler(boulderType, RenderBoulder::new);
-        }
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.AXE_ATTACK, RenderAxeAttack::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.POISON_BALL, RenderPoisonBall::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.ICE_BALL, RenderIceBall::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.ICE_BREATH, RenderNothing::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.FROZEN_CONTROLLER, RenderNothing::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.SUPER_NOVA, RenderSuperNova::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.FALLING_BLOCK, RenderFallingBlock::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.BLOCK_SWAPPER, RenderNothing::new);
-
-        ScreenManager.registerFactory(ContainerHandler.CONTAINER_BARAKOAYA_TRADE, GuiBarakoayaTrade::new);
-        ScreenManager.registerFactory(ContainerHandler.CONTAINER_BARAKO_TRADE, GuiBarakoTrade::new);
-
-        ModelLoader.addSpecialModel(new ModelResourceLocation(MowziesMobs.MODID + ":wrought_axe_in_hand", "inventory"));
-        for (MaskType type : MaskType.values()) {
-            ModelLoader.addSpecialModel(new ModelResourceLocation(MowziesMobs.MODID + ":barakoa_mask_" + type.name + "_frame", "inventory"));
-        }
     }
 
     @Override

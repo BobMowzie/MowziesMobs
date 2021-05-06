@@ -1,11 +1,16 @@
 package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.render.entity.RenderPlayerAnimated;
+import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoTrade;
+import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoayaTrade;
+import com.bobmowzie.mowziesmobs.client.render.entity.*;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
+import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
+import com.bobmowzie.mowziesmobs.server.inventory.ContainerHandler;
 import com.bobmowzie.mowziesmobs.server.item.*;
 import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
 import net.minecraft.client.MainWindow;
@@ -13,7 +18,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.settings.PointOfView;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
@@ -23,9 +31,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 @OnlyIn(Dist.CLIENT)
 public enum ClientEventHandler {
