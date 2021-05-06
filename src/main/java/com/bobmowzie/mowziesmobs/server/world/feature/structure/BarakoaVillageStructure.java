@@ -48,6 +48,10 @@ public class BarakoaVillageStructure extends MowzieStructure {
             int z = (chunkZ << 4) + 7;
             BlockPos centerPos = new BlockPos(x, 1, z);
 
+            int surfaceY = generator.getHeight(centerPos.getX(), centerPos.getZ(), Heightmap.Type.WORLD_SURFACE_WG);
+            int oceanFloorY = generator.getHeight(centerPos.getX(), centerPos.getZ(), Heightmap.Type.OCEAN_FLOOR_WG);
+            if (oceanFloorY < surfaceY) return;
+
             //Firepit
             components.add(new BarakoaVillagePieces.FirepitPiece(this.rand, x - 4, z - 4));
 
