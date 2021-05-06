@@ -23,6 +23,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.controller.BodyController;
 import net.minecraft.entity.ai.goal.*;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
@@ -347,10 +348,17 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
                     break;
             }
             if (!world.isRemote) {
-                ItemStack item = entityDropItem(new ItemStack(mask), 1.5f).getItem();
-                item.setDamage((int) Math.ceil((1.0f - getHealthRatio()) * item.getMaxDamage()));
+                ItemEntity itemEntity = entityDropItem(getDeactivatedMask(mask), 1.5f);
+                if (itemEntity != null) {
+                    ItemStack item = itemEntity.getItem();
+                    item.setDamage((int) Math.ceil((1.0f - getHealthRatio()) * item.getMaxDamage()));
+                }
             }
         }
+    }
+
+    protected ItemStack getDeactivatedMask(ItemBarakoaMask mask) {
+        return new ItemStack(mask);
     }
 
     @Override

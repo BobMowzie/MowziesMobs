@@ -4,14 +4,24 @@ import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
+import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.BlockState;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.potion.Effect;
+import net.minecraft.potion.Effects;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -20,9 +30,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
+    private static final DataParameter<ItemStack> MASK = EntityDataManager.createKey(EntityBarakoanToPlayer.class, DataSerializers.ITEMSTACK);
+
     public EntityBarakoanToPlayer(EntityType<? extends EntityBarakoanToPlayer> type, World world) {
         this(type, world, null);
     }
@@ -30,6 +44,12 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
     public EntityBarakoanToPlayer(EntityType<? extends EntityBarakoanToPlayer> type, World world, PlayerEntity leader) {
         super(type, world, PlayerEntity.class, leader);
         experienceValue = 0;
+    }
+
+    @Override
+    protected void registerData() {
+        super.registerData();
+        getDataManager().register(MASK, new ItemStack(ItemHandler.BARAKOA_MASK_FURY, 1));
     }
 
     @Override
@@ -122,5 +142,18 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
         BlockPos blockpos = new BlockPos(x + xOffset, y - 1, z + zOffset);
         BlockState iblockstate = this.world.getBlockState(blockpos);
         return iblockstate.canEntitySpawn(this.world, blockpos, this.getType()) && this.world.isAirBlock(blockpos.up()) && this.world.isAirBlock(blockpos.up(2));
+    }
+
+    public ItemStack getStoredMask() {
+        return getDataManager().get(MASK);
+    }
+
+    public void setStoredMask(ItemStack mask) {
+        getDataManager().set(MASK, mask);
+    }
+
+    @Override
+    protected ItemStack getDeactivatedMask(ItemBarakoaMask mask) {
+        return getStoredMask();
     }
 }

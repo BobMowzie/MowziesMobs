@@ -52,7 +52,7 @@ public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask {
         ItemStack headStack = player.inventory.armorInventory.get(3);
         if (headStack.getItem() instanceof ItemBarakoMask) {
             if (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable.get() && !player.isCreative()) headStack.damageItem(2, player, p -> p.sendBreakAnimation(hand));
-            spawnBarakoa(type, player, (float)stack.getDamage() / (float)stack.getMaxDamage());
+            spawnBarakoa(type, stack, player,(float)stack.getDamage() / (float)stack.getMaxDamage());
             if (!player.isCreative()) {
                 stack.shrink(1);
             }
@@ -61,7 +61,7 @@ public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask {
         else return super.onItemRightClick(world, player, hand);
     }
 
-    private void spawnBarakoa(MaskType mask, PlayerEntity player, float durability) {
+    private void spawnBarakoa(MaskType mask, ItemStack stack, PlayerEntity player, float durability) {
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
         if (playerCapability.getPackSize() < 10) {
             player.playSound(MMSounds.ENTITY_BARAKO_BELLY.get(), 1.5f, 1);
@@ -72,6 +72,7 @@ public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask {
             }
             EntityBarakoanToPlayer barakoa = new EntityBarakoanToPlayer(EntityHandler.BARAKOAN_TO_PLAYER, player.world, player);
             barakoa.setMask(mask);
+            barakoa.setStoredMask(stack);
 //            property.addPackMember(barakoa);
             if (!player.world.isRemote) {
                 int weapon;
