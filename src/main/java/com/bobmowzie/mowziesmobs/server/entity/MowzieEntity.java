@@ -143,6 +143,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
                 setAnimation(NO_ANIMATION);
             }
         }
+        if (ticksExisted % 4 == 0) bossInfo.update();
         if (getAttackTarget() != null) {
             targetDistance = getDistance(getAttackTarget()) - getAttackTarget().getWidth() / 2f;
             targetAngle = (float) getAngleBetweenEntities(this, getAttackTarget());
@@ -153,7 +154,6 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     @Override
     protected void updateAITasks() {
         super.updateAITasks();
-        this.bossInfo.update();
     }
 
     protected void onAnimationFinish(Animation animation) {}

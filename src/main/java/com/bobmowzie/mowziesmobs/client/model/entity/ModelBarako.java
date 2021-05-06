@@ -1260,7 +1260,7 @@ public class ModelBarako<T extends EntityBarako> extends MowzieEntityModel<T> {
             headdress6.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame);
             headdress7.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame);
         }
-        if (!entity.isPotionActive(PotionHandler.FROZEN)) {
+        if (!entity.isPotionActive(PotionHandler.FROZEN) || entity.getAnimation() == EntityBarako.DIE_ANIMATION) {
             body.setScale(scaler * (1 - bellyScaler.rotationPointY), scaler * (1 - bellyScaler.rotationPointY), scaler * (1 - bellyScaler.rotationPointY));
             chest.setScale(1 / scaler, 1 / scaler, 1 / scaler);
             rightThigh.setScale(1 / scaler, 1 / scaler, 1 / scaler);
