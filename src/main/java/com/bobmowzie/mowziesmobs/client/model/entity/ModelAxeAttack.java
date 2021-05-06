@@ -7,6 +7,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.HandSide;
 
 /**
  * Created by BobMowzie on 4/14/2017.
@@ -92,8 +93,9 @@ public class ModelAxeAttack<T extends EntityAxeAttack> extends AdvancedModelBase
         if (!entityIn.getVertical()) {
             float swingArc = 2;
             float scale = (float) ((1 / (1 + Math.exp(2f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 5f)))) - (1 / (1 + Math.exp(2f * (-frame + 4 * EntityAxeAttack.SWING_DURATION_HOR / 5f)))));
-            axeBase.rotateAngleY -= swingArc * 1 / (1 + Math.exp(1.3f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 2f)));
-            axeBase.rotateAngleY += swingArc / 2;
+            float handFlip = entityIn.getCaster().getPrimaryHand() == HandSide.RIGHT ? 1 : -1;
+            axeBase.rotateAngleY -= handFlip * swingArc * 1 / (1 + Math.exp(1.3f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 2f)));
+            axeBase.rotateAngleY += handFlip * swingArc / 2;
             axeBase.setScale(scale, scale, scale);
         }
         else {

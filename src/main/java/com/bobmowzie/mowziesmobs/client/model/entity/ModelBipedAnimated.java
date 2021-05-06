@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.HandSide;
 import net.minecraft.util.math.vector.Vector3d;
 
 public class ModelBipedAnimated<T extends LivingEntity> extends BipedModel {
@@ -71,7 +72,9 @@ public class ModelBipedAnimated<T extends LivingEntity> extends BipedModel {
         // Axe of a thousand metals attack animations
         if (playerCapability != null && playerCapability.getUntilAxeSwing() > 0) {
             float frame = (PlayerCapability.SWING_COOLDOWN - playerCapability.getUntilAxeSwing()) + delta;
-            ModelRenderer arm = model.bipedRightArm;
+            boolean rightHanded = player.getPrimaryHand() == HandSide.RIGHT;
+            ModelRenderer arm = rightHanded ? model.bipedRightArm : model.bipedLeftArm;
+            float handInvert = rightHanded ? 1 : -1;
             if (playerCapability.isVerticalSwing()) {
                 float swingArc = 3f;
                 arm.rotateAngleX = -2.7f + (float) (swingArc * 1 / (1 + Math.exp(1.3f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 2f))));
@@ -80,7 +83,7 @@ public class ModelBipedAnimated<T extends LivingEntity> extends BipedModel {
             } else {
                 float swingArc = 2.5f;
                 arm.rotateAngleX = -1.75f + (float) (swingArc * 1 / (1 + Math.exp(1.3f * (-frame + EntityAxeAttack.SWING_DURATION_HOR / 2f))));
-                arm.rotateAngleZ = 1.5f;
+                arm.rotateAngleZ = handInvert * 1.5f;
             }
         }
     }
