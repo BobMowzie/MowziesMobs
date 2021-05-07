@@ -401,11 +401,11 @@ public class AdvancedModelRenderer extends ModelRenderer {
 
     public Vector3d getWorldPos(Entity entity, float delta) {
         MatrixStack matrixStack = new MatrixStack();
-        float dx = (float) (entity.prevPosX + (entity.getPosX() - entity.prevPosX) * delta);
-        float dy = (float) (entity.prevPosY + (entity.getPosY() - entity.prevPosY) * delta);
-        float dz = (float) (entity.prevPosZ + (entity.getPosZ() - entity.prevPosZ) * delta);
+        float dx = (float) (entity.lastTickPosX + (entity.getPosX() - entity.lastTickPosX) * delta);
+        float dy = (float) (entity.lastTickPosY + (entity.getPosY() - entity.lastTickPosY) * delta);
+        float dz = (float) (entity.lastTickPosZ + (entity.getPosZ() - entity.lastTickPosZ) * delta);
         matrixStack.translate(dx, dy, dz);
-        float dYaw = entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * delta;
+        float dYaw = MathHelper.interpolateAngle(delta, entity.prevRotationYaw, entity.rotationYaw);
         matrixStack.rotate(new Quaternion(0, -dYaw + 180, 0, true));
         matrixStack.scale(-1, -1, 1);
         matrixStack.translate(0, -1.5f, 0);
@@ -420,11 +420,11 @@ public class AdvancedModelRenderer extends ModelRenderer {
 
     public void setWorldPos(Entity entity, Vector3d worldPos, float delta) {
         MatrixStack matrixStack = new MatrixStack();
-        float dx = (float) (entity.prevPosX + (entity.getPosX() - entity.prevPosX) * delta);
-        float dy = (float) (entity.prevPosY + (entity.getPosY() - entity.prevPosY) * delta);
-        float dz = (float) (entity.prevPosZ + (entity.getPosZ() - entity.prevPosZ) * delta);
+        float dx = (float) (entity.lastTickPosX + (entity.getPosX() - entity.lastTickPosX) * delta);
+        float dy = (float) (entity.lastTickPosY + (entity.getPosY() - entity.lastTickPosY) * delta);
+        float dz = (float) (entity.lastTickPosZ + (entity.getPosZ() - entity.lastTickPosZ) * delta);
         matrixStack.translate(dx, dy, dz);
-        float dYaw = entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * delta;
+        float dYaw = MathHelper.interpolateAngle(delta, entity.prevRotationYaw, entity.rotationYaw);
         matrixStack.rotate(new Quaternion(0, -dYaw + 180, 0, true));
         matrixStack.scale(-1, -1, 1);
         matrixStack.translate(0, -1.5f, 0);

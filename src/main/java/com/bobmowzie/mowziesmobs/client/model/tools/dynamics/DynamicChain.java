@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.client.render.RenderUtils;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
@@ -189,6 +190,7 @@ public class DynamicChain {
         }
 
         if (chainDynamic == null) return;
+        if (Minecraft.getInstance().isGamePaused()) delta = 0.5f;
         for (int i = chainDynamic.length - 1; i >= 0; i--) {
             if (chainDynamic[i] == null) return;
             Vector3d renderPos = p[i].add(v[i].scale(delta)).add(a[i].scale(0.5 * delta * delta));
