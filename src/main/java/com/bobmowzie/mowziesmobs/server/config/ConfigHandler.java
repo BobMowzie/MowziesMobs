@@ -65,7 +65,7 @@ public final class  ConfigHandler {
     }
 
     public static class SpawnConfig {
-        SpawnConfig(final ForgeConfigSpec.Builder builder, int spawnRate, int minGroupSize, int maxGroupSize, BiomeConfig biomeConfig, List<? extends String> allowedBlocks, int heightMax, int heightMin, boolean needsDarkness, boolean needsSeeSky, boolean needsCantSeeSky) {
+        SpawnConfig(final ForgeConfigSpec.Builder builder, int spawnRate, int minGroupSize, int maxGroupSize, double extraRarity, BiomeConfig biomeConfig, List<? extends String> allowedBlocks, int heightMax, int heightMin, boolean needsDarkness, boolean needsSeeSky, boolean needsCantSeeSky) {
             builder.comment("Controls for vanilla-style mob spawning");
             builder.push("spawn_config");
             this.spawnRate = builder.comment("Smaller number causes less spawning, 0 to disable spawning")
@@ -77,6 +77,9 @@ public final class  ConfigHandler {
             this.maxGroupSize = builder.comment("Maximum number of mobs that appear in a spawn group")
                     .translation(LANG_PREFIX + "max_group_size")
                     .defineInRange("max_group_size", maxGroupSize, 1, Integer.MAX_VALUE);
+            this.extraRarity = builder.comment("Probability of a spawn attempt succeeding. 1 for normal spawning, 0 will prevent spawning. Used to make mobs extra rare.")
+                    .translation(LANG_PREFIX + "extra_rarity")
+                    .defineInRange("extra_rarity", extraRarity, 0.0, 1.0);
             this.biomeConfig = biomeConfig;
             this.dimensions = builder.comment("Names of dimensions this mob can spawn in")
                     .translation(LANG_PREFIX + "dimensions")
@@ -107,6 +110,8 @@ public final class  ConfigHandler {
         public final IntValue minGroupSize;
 
         public final IntValue maxGroupSize;
+
+        public final DoubleValue extraRarity;
 
         public final BiomeConfig biomeConfig;
 
@@ -217,7 +222,7 @@ public final class  ConfigHandler {
         Foliaath(final ForgeConfigSpec.Builder builder) {
             builder.push("foliaath");
             spawnConfig = new SpawnConfig(builder,
-                    70, 1, 4,
+                    70, 1, 4, 1,
                     new BiomeConfig(builder, Collections.singletonList("JUNGLE"), new ArrayList<>(), new ArrayList<>()),
                     Arrays.asList("minecraft:grass_block", "minecraft:podzol", "minecraft:jungle_leaves", "minecraft:oak_leaves", "minecraft:oak_log", "minecraft:jungle_log"),
                     -1, 60, false, false, false
@@ -236,7 +241,7 @@ public final class  ConfigHandler {
             builder.push("barakoa");
             builder.comment("Controls spawning for Barakoana hunting groups", "Group size controls how many elites spawn, not followers", "See Barako config for village controls");
             spawnConfig = new SpawnConfig(builder,
-                    5, 1, 1,
+                    5, 1, 1, 1,
                     new BiomeConfig(builder, Collections.singletonList("SAVANNA"), new ArrayList<>(), new ArrayList<>()),
                     Arrays.asList("minecraft:grass_block", "minecraft:sand"),
                     -1, 60, false, false, false
@@ -254,7 +259,7 @@ public final class  ConfigHandler {
         Naga(final ForgeConfigSpec.Builder builder) {
             builder.push("naga");
             spawnConfig = new SpawnConfig(builder,
-                    70, 2, 4,
+                    50, 2, 4, 1,
                     new BiomeConfig(builder, Arrays.asList("BEACH,MOUNTAIN", "BEACH,HILLS"), Collections.singletonList("minecraft:stone_shore"), new ArrayList<>()),
                     Arrays.asList("minecraft:grass_block", "minecraft:stone", "minecraft:sand"),
                     -1, -1, false, true, false
@@ -272,7 +277,7 @@ public final class  ConfigHandler {
         Lantern(final ForgeConfigSpec.Builder builder) {
             builder.push("lantern");
             spawnConfig = new SpawnConfig(builder,
-                    5, 2, 4,
+                    5, 2, 4, 1,
                     new BiomeConfig(builder, Collections.singletonList("FOREST,MAGICAL,!SNOWY"), Arrays.asList("minecraft:dark_forest", "minecraft:dark_forest_hills"), new ArrayList<>()),
                     Arrays.asList("minecraft:grass_block", "minecraft:dark_oak_leaves", "minecraft:dark_oak_log", "minecraft:oak_leaves", "minecraft:oak_log", "minecraft:birch_leaves", "minecraft:birch_log"),
                     -1, 60, true, false, false
@@ -292,7 +297,7 @@ public final class  ConfigHandler {
         Grottol(final ForgeConfigSpec.Builder builder) {
             builder.push("grottol");
             this.spawnConfig = new SpawnConfig(builder,
-                    2, 1, 1,
+                    1, 1, 1, 0.7,
                     new BiomeConfig(builder,  Arrays.asList(""), new ArrayList<>(), new ArrayList<>()),
                     new ArrayList<>(),
                     55, -1, true, false, true

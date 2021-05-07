@@ -86,6 +86,8 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     public boolean canSpawn(IWorld world, SpawnReason reason) {
         ConfigHandler.SpawnConfig spawnConfig = getSpawnConfig();
         if (spawnConfig != null) {
+            if (rand.nextDouble() > spawnConfig.extraRarity.get()) return false;
+
             int i = MathHelper.floor(this.getPosX());
             int j = MathHelper.floor(this.getBoundingBox().minY);
             int k = MathHelper.floor(this.getPosZ());
