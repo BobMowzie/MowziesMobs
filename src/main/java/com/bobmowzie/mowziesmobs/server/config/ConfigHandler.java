@@ -300,7 +300,7 @@ public final class  ConfigHandler {
                     1, 1, 1, 0.7,
                     new BiomeConfig(builder,  Arrays.asList(""), new ArrayList<>(), new ArrayList<>()),
                     new ArrayList<>(),
-                    55, -1, true, false, true
+                    25, -1, true, false, true
             );
             this.healthMultiplier = builder.comment("Scale mob health by this value")
                     .translation(LANG_PREFIX + "health_multiplier")
