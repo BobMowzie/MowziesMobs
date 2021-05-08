@@ -379,7 +379,7 @@ public final class  ConfigHandler {
         Frostmaw(final ForgeConfigSpec.Builder builder) {
             builder.push("frostmaw");
             generationConfig = new GenerationConfig(builder, 25, 8,
-                    new BiomeConfig(builder,  Arrays.asList("SNOWY,!OCEAN,!RIVER,!BEACH"), new ArrayList<>(), new ArrayList<>()),
+                    new BiomeConfig(builder,  Arrays.asList("SNOWY,!OCEAN,!RIVER,!BEACH,!FOREST"), new ArrayList<>(), new ArrayList<>()),
                     50, 100
             );
             combatConfig = new CombatConfig(builder, 1, 1);
