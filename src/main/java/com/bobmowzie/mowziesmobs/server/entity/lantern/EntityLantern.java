@@ -17,18 +17,26 @@ import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.controller.MovementController;
+import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.entity.monster.GhastEntity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.util.EnumSet;
+import java.util.Random;
 
 /**
  * Created by BobMowzie on 7/24/2018.
@@ -56,6 +64,7 @@ public class EntityLantern extends MowzieEntity {
         if (world.isRemote) {
             pos = new Vector3d[1];
         }
+        this.moveController = new MoveHelperController(this);
     }
 
     @Override
@@ -64,6 +73,7 @@ public class EntityLantern extends MowzieEntity {
         this.goalSelector.addGoal(2, new SimpleAnimationAI<>(this, PUFF_ANIMATION, false));
         this.goalSelector.addGoal(3, new AnimationTakeDamage<>(this));
         this.goalSelector.addGoal(1, new AnimationDieAI<>(this));
+        this.goalSelector.addGoal(5, new RandomFlyGoal(this));
     }
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
@@ -95,6 +105,16 @@ public class EntityLantern extends MowzieEntity {
                                     new float[] {0.8f, 1}
                             ), false)
                     });
+                }
+            }
+            else {
+                if (getMoveHelperController().getAction() == MovementController.Action.MOVE_TO) {
+                    Vector3d lvt_1_1_ = new Vector3d(getMoveHelper().getX() - this.getPosX(), getMoveHelper().getY() - this.getPosY(), getMoveHelper().getZ() - this.getPosZ());
+                    double lvt_2_1_ = lvt_1_1_.length();
+                    lvt_1_1_ = lvt_1_1_.normalize();
+                    if (getMoveHelperController().func_220673_a(lvt_1_1_, MathHelper.ceil(lvt_2_1_))) {
+                        setMotion(getMotion().add(lvt_1_1_.scale(0.2)));
+                    }
                 }
             }
             playSound(MMSounds.ENTITY_LANTERN_PUFF.get(), 0.6f, 1f + rand.nextFloat() * 0.2f);
@@ -228,5 +248,87 @@ public class EntityLantern extends MowzieEntity {
     @Override
     protected ResourceLocation getLootTable() {
         return LootTableHandler.LANTERN;
+    }
+
+    public MoveHelperController getMoveHelperController() {
+        if (getMoveHelper() instanceof MoveHelperController)
+            return (MoveHelperController) super.getMoveHelper();
+        return null;
+    }
+
+    static class RandomFlyGoal extends Goal {
+        private final EntityLantern parentEntity;
+
+        public RandomFlyGoal(EntityLantern p_i45836_1_) {
+            this.parentEntity = p_i45836_1_;
+            this.setMutexFlags(EnumSet.of(Flag.MOVE));
+        }
+
+        public boolean shouldExecute() {
+            MovementController lvt_1_1_ = this.parentEntity.getMoveHelper();
+            if (!lvt_1_1_.isUpdating()) {
+                return true;
+            } else {
+                double lvt_2_1_ = lvt_1_1_.getX() - this.parentEntity.getPosX();
+                double lvt_4_1_ = lvt_1_1_.getY() - this.parentEntity.getPosY();
+                double lvt_6_1_ = lvt_1_1_.getZ() - this.parentEntity.getPosZ();
+                double lvt_8_1_ = lvt_2_1_ * lvt_2_1_ + lvt_4_1_ * lvt_4_1_ + lvt_6_1_ * lvt_6_1_;
+                return lvt_8_1_ < 1.0D || lvt_8_1_ > 3600.0D;
+            }
+        }
+
+        public boolean shouldContinueExecuting() {
+            return false;
+        }
+
+        public void startExecuting() {
+            Random lvt_1_1_ = this.parentEntity.getRNG();
+            double lvt_2_1_ = this.parentEntity.getPosX() + (double)((lvt_1_1_.nextFloat() * 2.0F - 1.0F) * 16.0F);
+            double lvt_4_1_ = this.parentEntity.getPosY() + (double)((lvt_1_1_.nextFloat() * 2.0F - 1.0F) * 16.0F);
+            double lvt_6_1_ = this.parentEntity.getPosZ() + (double)((lvt_1_1_.nextFloat() * 2.0F - 1.0F) * 16.0F);
+            this.parentEntity.getMoveHelper().setMoveTo(lvt_2_1_, lvt_4_1_, lvt_6_1_, 1.0D);
+        }
+    }
+
+    static class MoveHelperController extends MovementController {
+        private final EntityLantern parentEntity;
+        protected int courseChangeCooldown;
+
+        public MoveHelperController(EntityLantern p_i45838_1_) {
+            super(p_i45838_1_);
+            this.parentEntity = p_i45838_1_;
+        }
+
+        public void tick() {
+            if (this.action == Action.MOVE_TO) {
+                if (this.courseChangeCooldown-- <= 0) {
+                    this.courseChangeCooldown += this.parentEntity.getRNG().nextInt(5) + 2;
+                    Vector3d lvt_1_1_ = new Vector3d(this.posX - this.parentEntity.getPosX(), this.posY - this.parentEntity.getPosY(), this.posZ - this.parentEntity.getPosZ());
+                    double lvt_2_1_ = lvt_1_1_.length();
+                    lvt_1_1_ = lvt_1_1_.normalize();
+                    if (!this.func_220673_a(lvt_1_1_, MathHelper.ceil(lvt_2_1_))) {
+                        this.action = Action.WAIT;
+                    }
+                }
+
+            }
+        }
+
+        public boolean func_220673_a(Vector3d p_220673_1_, int p_220673_2_) {
+            AxisAlignedBB lvt_3_1_ = this.parentEntity.getBoundingBox();
+
+            for(int lvt_4_1_ = 1; lvt_4_1_ < p_220673_2_; ++lvt_4_1_) {
+                lvt_3_1_ = lvt_3_1_.offset(p_220673_1_);
+                if (!this.parentEntity.world.hasNoCollisions(this.parentEntity, lvt_3_1_)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public Action getAction() {
+            return action;
+        }
     }
 }
