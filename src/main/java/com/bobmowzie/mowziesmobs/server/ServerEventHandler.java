@@ -533,7 +533,7 @@ public final class ServerEventHandler {
                 event.setDamageModifier(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.backstabDamageMultiplier.get().floatValue());
                 target.playSound(MMSounds.ENTITY_NAGA_ACID_HIT.get(), 1f, 1.2f);
 
-                if (target != null && attacker != null) {
+                if (target.world.isRemote() && target != null && attacker != null) {
                     Vector3d ringOffset = attacker.getLookVec().scale(-target.getWidth() / 2.f);
                     ParticleRotation.OrientVector rotation = new ParticleRotation.OrientVector(ringOffset);
                     Vector3d pos = target.getPositionVec().add(0, target.getHeight() / 2f, 0).add(ringOffset);
