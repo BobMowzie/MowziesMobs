@@ -35,7 +35,8 @@ public class EntityBlockSwapper extends Entity {
     private BlockPos pos;
 
     public EntityBlockSwapper(EntityType<? extends EntityBlockSwapper> type, World world) {
-        this(type, world, new BlockPos(0, 0, 0), Blocks.AIR.getDefaultState(), 20, false, false);
+        super(type, world);
+        breakParticlesEnd = false;
     }
 
     public EntityBlockSwapper(EntityType<? extends EntityBlockSwapper> type, World world, BlockPos pos, BlockState newBlock, int duration, boolean breakParticlesStart, boolean breakParticlesEnd) {

@@ -127,6 +127,11 @@ public class EntityBoulder extends Entity {
     }
 
     @Override
+    public boolean canRenderOnFire() {
+        return false;
+    }
+
+    @Override
     protected void registerData() {
         getDataManager().register(BLOCK_STATE, Optional.of(Blocks.DIRT.getDefaultState()));
         getDataManager().register(SHOULD_EXPLODE, false);
