@@ -38,6 +38,11 @@ public class ItemBarakoMask extends MowzieArmorItem implements BarakoaMask {
     }
 
     @Override
+    public boolean isEnchantable(ItemStack p_77616_1_) {
+        return true;
+    }
+
+    @Override
     public boolean makesPiglinsNeutral(ItemStack stack, LivingEntity wearer) {
         return true;
     }

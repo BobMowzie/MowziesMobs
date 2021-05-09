@@ -36,6 +36,11 @@ public class ItemWroughtHelm extends MowzieArmorItem {
     }
 
     @Override
+    public boolean isEnchantable(ItemStack p_77616_1_) {
+        return true;
+    }
+
+    @Override
     public boolean isDamageable() {
         return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.WROUGHT_HELM.breakable.get();
     }

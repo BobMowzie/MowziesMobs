@@ -34,6 +34,11 @@ public class ItemWroughtAxe extends MowzieAxeItem {
     }
 
     @Override
+    public boolean isEnchantable(ItemStack p_77616_1_) {
+        return true;
+    }
+
+    @Override
     public boolean onLeftClickEntity(ItemStack stack, PlayerEntity player, Entity entity) {
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
         return playerCapability == null || (!playerCapability.getAxeCanAttack() && playerCapability.getUntilAxeSwing() > 0);
