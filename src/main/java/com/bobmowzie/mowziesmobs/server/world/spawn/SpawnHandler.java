@@ -19,7 +19,18 @@ import net.minecraft.world.spawner.WorldEntitySpawner;
 import net.minecraftforge.common.util.TriPredicate;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class SpawnHandler {
+    public static final Map<EntityType<?>, ConfigHandler.SpawnConfig> spawnConfigs = new HashMap<>();
+    static {
+        spawnConfigs.put(EntityHandler.FOLIAATH, ConfigHandler.COMMON.MOBS.FOLIAATH.spawnConfig);
+        spawnConfigs.put(EntityHandler.BARAKOANA, ConfigHandler.COMMON.MOBS.BARAKOA.spawnConfig);
+        spawnConfigs.put(EntityHandler.LANTERN, ConfigHandler.COMMON.MOBS.LANTERN.spawnConfig);
+        spawnConfigs.put(EntityHandler.NAGA, ConfigHandler.COMMON.MOBS.NAGA.spawnConfig);
+        spawnConfigs.put(EntityHandler.GROTTOL, ConfigHandler.COMMON.MOBS.GROTTOL.spawnConfig);
+    }
 
     public static void registerSpawnPlacementTypes() {
         EntitySpawnPlacementRegistry.PlacementType.create("MMSPAWN", new TriPredicate<IWorldReader, BlockPos, EntityType<? extends MobEntity>>() {
@@ -40,6 +51,7 @@ public class SpawnHandler {
             EntitySpawnPlacementRegistry.register(EntityHandler.LANTERN, mmSpawn, Heightmap.Type.MOTION_BLOCKING, MowzieEntity::spawnPredicate);
             EntitySpawnPlacementRegistry.register(EntityHandler.BARAKOANA, mmSpawn, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, MowzieEntity::spawnPredicate);
             EntitySpawnPlacementRegistry.register(EntityHandler.NAGA, mmSpawn, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, MowzieEntity::spawnPredicate);
+            EntitySpawnPlacementRegistry.register(EntityHandler.GROTTOL, mmSpawn, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, MowzieEntity::spawnPredicate);
         }
     }
 

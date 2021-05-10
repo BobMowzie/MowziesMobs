@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.IntermittentAnimation;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.world.spawn.SpawnHandler;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
@@ -78,20 +79,12 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         return null;
     }
 
-    public static boolean spawnPredicate(EntityType type, IWorld world, SpawnReason reason, BlockPos pos, Random random) {
-        return true;
-    }
-
-    @Override
-    public boolean canSpawn(IWorld world, SpawnReason reason) {
-        ConfigHandler.SpawnConfig spawnConfig = getSpawnConfig();
+    public static boolean spawnPredicate(EntityType type, IWorld world, SpawnReason reason, BlockPos spawnPos, Random rand) {
+        ConfigHandler.SpawnConfig spawnConfig = SpawnHandler.spawnConfigs.get(type);
         if (spawnConfig != null) {
             if (rand.nextDouble() > spawnConfig.extraRarity.get()) return false;
 
-            int i = MathHelper.floor(this.getPosX());
-            int j = MathHelper.floor(this.getBoundingBox().minY);
-            int k = MathHelper.floor(this.getPosZ());
-            BlockPos pos = new BlockPos(i, j, k);
+            BlockPos pos = spawnPos.down();
 
             // Dimension check
             List<? extends String> dimensionNames = spawnConfig.dimensions.get();
@@ -103,10 +96,10 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
             // Height check
             float heightMax = spawnConfig.heightMax.get();
             float heightMin = spawnConfig.heightMin.get();
-            if (getPosY() > heightMax && heightMax >= 0) {
+            if (pos.getY() > heightMax && heightMax >= 0) {
                 return false;
             }
-            if (getPosY() < heightMin) {
+            if (pos.getY() < heightMin) {
                 return false;
             }
 
@@ -122,15 +115,14 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
             if (!allowedBlocks.isEmpty() && !allowedBlocks.contains(blockName.toString()) && !allowedBlocks.contains(blockName.getPath())) return false;
 
             // See sky
-            if (spawnConfig.needsSeeSky.get() && !world.canBlockSeeSky(pos)) {
+            if (spawnConfig.needsSeeSky.get() && !world.canBlockSeeSky(spawnPos)) {
                 return false;
             }
-            if (spawnConfig.needsCantSeeSky.get() && world.canBlockSeeSky(pos)) {
+            if (spawnConfig.needsCantSeeSky.get() && world.canBlockSeeSky(spawnPos)) {
                 return false;
             }
         }
-
-        return super.canSpawn(world, reason);
+        return true;
     }
 
     @Override

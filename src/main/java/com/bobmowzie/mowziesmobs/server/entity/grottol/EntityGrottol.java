@@ -148,6 +148,11 @@ public class EntityGrottol extends MowzieEntity {
     }
 
     @Override
+    public int getMaxSpawnedInChunk() {
+        return 1;
+    }
+
+    @Override
     protected PathNavigator createNavigator(World world) {
         return new MMPathNavigateGround(this, world);
     }
