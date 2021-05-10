@@ -26,6 +26,7 @@ import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.IFlyingAnimal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.potion.Effects;
 import net.minecraft.network.datasync.DataParameter;
@@ -368,8 +369,8 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
                 hoverAnim.increaseTimer();
 
                 if (getAnimation() == NO_ANIMATION && !world.isRemote) {
-                    List<AbstractArrowEntity> arrowsNearby = getEntitiesNearby(AbstractArrowEntity.class, 30);
-                    for (AbstractArrowEntity a : arrowsNearby) {
+                    List<ProjectileEntity> projectilesNearby = getEntitiesNearby(ProjectileEntity.class, 30);
+                    for (ProjectileEntity a : projectilesNearby) {
                         Vector3d aActualMotion = new Vector3d(a.getPosX() - a.prevPosX, a.getPosY() - a.prevPosY, a.getPosZ() - a.prevPosZ);
                         if (aActualMotion.length() < 0.1 || a.ticksExisted <= 1) {
                             continue;
