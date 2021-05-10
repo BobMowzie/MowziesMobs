@@ -259,10 +259,10 @@ public final class  ConfigHandler {
         Naga(final ForgeConfigSpec.Builder builder) {
             builder.push("naga");
             spawnConfig = new SpawnConfig(builder,
-                    50, 2, 4, 1,
+                    15, 2, 4, 1,
                     new BiomeConfig(builder, Arrays.asList("BEACH,MOUNTAIN", "BEACH,HILLS"), Collections.singletonList("minecraft:stone_shore"), new ArrayList<>()),
-                    Arrays.asList("minecraft:grass_block", "minecraft:stone", "minecraft:sand"),
-                    -1, -1, false, true, false
+                    Collections.emptyList(),
+                    -1, 70, false, true, false
             );
             combatConfig = new CombatConfig(builder,1, 1);
             builder.pop();
@@ -297,7 +297,7 @@ public final class  ConfigHandler {
         Grottol(final ForgeConfigSpec.Builder builder) {
             builder.push("grottol");
             this.spawnConfig = new SpawnConfig(builder,
-                    1, 1, 1, 0.7,
+                    2, 1, 1, 1,
                     new BiomeConfig(builder,  Arrays.asList(""), new ArrayList<>(), new ArrayList<>()),
                     new ArrayList<>(),
                     25, -1, true, false, true

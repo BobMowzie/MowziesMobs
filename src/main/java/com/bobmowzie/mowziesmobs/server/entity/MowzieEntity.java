@@ -104,12 +104,12 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
             }
 
             // Light level check
-            if (spawnConfig.needsDarkness.get() && !MonsterEntity.isValidLightLevel((IServerWorld) world, pos, rand)) {
+            if (spawnConfig.needsDarkness.get() && !MonsterEntity.isValidLightLevel((IServerWorld) world, spawnPos, rand)) {
                 return false;
             }
 
             // Block check
-            ResourceLocation blockName = world.getBlockState(pos.down()).getBlock().getRegistryName();
+            ResourceLocation blockName = world.getBlockState(pos).getBlock().getRegistryName();
             List<? extends String> allowedBlocks = spawnConfig.allowedBlocks.get();
             if (blockName == null) return false;
             if (!allowedBlocks.isEmpty() && !allowedBlocks.contains(blockName.toString()) && !allowedBlocks.contains(blockName.getPath())) return false;
@@ -181,7 +181,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
 
     @Override
     public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, ILivingEntityData spawnDataIn, CompoundNBT dataTag) {
-//        System.out.println("Spawned " + getName().getFormattedText() + " at " + getPosition());
+        System.out.println("Spawned " + getName().getString() + " at " + getPosition());
 //        System.out.println("Block " + world.getBlockState(getPosition().down()).toString());
         return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
