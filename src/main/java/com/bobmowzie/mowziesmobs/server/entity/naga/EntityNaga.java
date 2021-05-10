@@ -128,7 +128,8 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        setPathPriority(PathNodeType.WATER, 0);
+        setPathPriority(PathNodeType.WATER, -1);
+        this.goalSelector.addGoal(0, new EntityNaga.FlyOutOfWaterGoal(this));
         this.goalSelector.addGoal(5, new EntityNaga.AIRandomFly(this));
         this.goalSelector.addGoal(5, new EntityNaga.AIFlyAroundTarget(this));
         this.goalSelector.addGoal(7, new EntityNaga.AILookAround(this));
@@ -648,7 +649,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
                 vector3d6 = new Vector3d(vector3d6.x, 0.2D, vector3d6.z);
             }
 
-            this.setMotion(vector3d6.mul(f5, 0.8F, f5));
+//            this.setMotion(vector3d6.mul(f5, 0.8F, f5));
             Vector3d vector3d2 = this.func_233626_a_(d0, flag, this.getMotion());
             this.setMotion(vector3d2);
             if (this.collidedHorizontally && this.isOffsetPositionInLiquid(vector3d2.x, vector3d2.y + (double)0.6F - this.getPosY() + d8, vector3d2.z)) {
@@ -889,7 +890,8 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
             double d0 = this.parentEntity.getPosX() + (double)((random.nextFloat() * 2.0F - 1.0F) * 24.0F);
             double d1 = this.parentEntity.getPosY() + (double)((random.nextFloat() * 2.0F - 1.0F) * 16.0F);
             double d2 = this.parentEntity.getPosZ() + (double)((random.nextFloat() * 2.0F - 1.0F) * 24.0F);
-            this.parentEntity.getMoveHelper().setMoveTo(d0, d1, d2, parentEntity.getAttribute(Attributes.MOVEMENT_SPEED).getValue());
+            if (!parentEntity.world.hasWater(new BlockPos(d0, d1, d2)))
+                this.parentEntity.getMoveHelper().setMoveTo(d0, d1, d2, parentEntity.getAttribute(Attributes.MOVEMENT_SPEED).getValue());
         }
     }
 
@@ -959,8 +961,12 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
             double d0 = target.getPosX() + Math.cos(yaw) * radius;
             double d1 = target.getPosY() + 8 + random.nextFloat() * 5;
             double d2 = target.getPosZ() + Math.sin(yaw) * radius;
+//            while (parentEntity.world.hasWater(new BlockPos(d0, d1, d2))) {
+//                d1 += 1;
+//            }
             double speed = parentEntity.getAttribute(Attributes.MOVEMENT_SPEED).getValue();
-            this.parentEntity.getMoveHelper().setMoveTo(d0, d1, d2, speed);
+            if (!parentEntity.world.hasWater(new BlockPos(d0, d1, d2)))
+                this.parentEntity.getMoveHelper().setMoveTo(d0, d1, d2, speed);
         }
     }
 
@@ -982,7 +988,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
                     Vector3d Vector3d = new Vector3d(this.posX - this.parentEntity.getPosX(), this.posY - this.parentEntity.getPosY(), this.posZ - this.parentEntity.getPosZ());
                     double d0 = Vector3d.length();
                     Vector3d = Vector3d.normalize();
-                    if (this.func_220673_a(Vector3d, MathHelper.ceil(d0))) {
+                    if (this.checkCollisions(Vector3d, MathHelper.ceil(d0))) {
                         this.parentEntity.setMotion(this.parentEntity.getMotion().add(Vector3d.scale(0.1D)));
                     } else {
                         this.action = MovementController.Action.WAIT;
@@ -992,7 +998,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
             }
         }
 
-        private boolean func_220673_a(Vector3d p_220673_1_, int p_220673_2_) {
+        public boolean checkCollisions(Vector3d p_220673_1_, int p_220673_2_) {
             AxisAlignedBB axisalignedbb = this.parentEntity.getBoundingBox();
 
             for(int i = 1; i < p_220673_2_; ++i) {
@@ -1005,4 +1011,30 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
             return true;
         }
     }
+
+    public class FlyOutOfWaterGoal extends Goal {
+        private final EntityNaga entity;
+
+        public FlyOutOfWaterGoal(EntityNaga entityIn) {
+            this.entity = entityIn;
+            this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE));
+        }
+
+        /**
+         * Returns whether execution should begin. You can also read and cache any state necessary for execution in this
+         * method as well.
+         */
+        public boolean shouldExecute() {
+            return this.entity.isInWater() && this.entity.func_233571_b_(FluidTags.WATER) > this.entity.getFluidJumpHeight() || this.entity.isInLava();
+        }
+
+        /**
+         * Keep ticking a continuous task that has already been started
+         */
+        public void tick() {
+            if (entity.getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityNaga.FLAP_ANIMATION);
+
+        }
+    }
+
 }
