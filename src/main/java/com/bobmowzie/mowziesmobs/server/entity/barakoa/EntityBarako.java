@@ -120,6 +120,8 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     );
     private static ParticleComponent.KeyTrack superNovaKeyTrack2 = ParticleComponent.KeyTrack.oscillate(0, 1, 30);
 
+    public Set<EntityBarakeera> sunblockers = new HashSet<>();
+
     public EntityBarako(EntityType<? extends EntityBarako> type, World world) {
         super(type, world);
         if (getDirection() == 0) {

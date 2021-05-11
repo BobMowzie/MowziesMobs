@@ -31,6 +31,7 @@ public class RenderBarakoa extends MobRenderer<EntityBarakoa, ModelBarakoa<Entit
         addLayer(new ItemLayer(this, getEntityModel().bone, Items.BONE.getDefaultInstance()));
         addLayer(new ItemLayer(this, getEntityModel().spear, ItemHandler.SPEAR.getDefaultInstance()));
         addLayer(new ItemLayer(this, getEntityModel().blowgun, ItemHandler.BLOWGUN.getDefaultInstance()));
+        addLayer(new ItemLayer(this, getEntityModel().staff, ItemHandler.SUNBLOCK_STAFF.getDefaultInstance()));
     }
 
     @Override

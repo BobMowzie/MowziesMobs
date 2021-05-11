@@ -54,6 +54,15 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     public static final Animation ACTIVATE_ANIMATION = Animation.create(25);
     public static final Animation DEACTIVATE_ANIMATION = Animation.create(26);
     public static final Animation BLOCK_ANIMATION = Animation.create(10);
+
+    public static final Animation TELEPORT_ANIMATION = Animation.create(20);
+    public static final Animation HEAL_START_ANIMATION = Animation.create(25);
+    public static final Animation HEAL_LOOP_ANIMATION = Animation.create(6);
+    static {
+        HEAL_LOOP_ANIMATION.setLooping(true);
+    }
+    public static final Animation HEAL_STOP_ANIMATION = Animation.create(20);
+
     private static final DataParameter<Boolean> DANCING = EntityDataManager.createKey(EntityBarakoa.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Integer> MASK = EntityDataManager.createKey(EntityBarakoa.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> WEAPON = EntityDataManager.createKey(EntityBarakoa.class, DataSerializers.VARINT);
@@ -119,11 +128,11 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
                 if (talkTarget != null) this.entity.lookController.setLookPositionWithEntity(this.talkTarget, (float)this.entity.getHorizontalFaceSpeed(), (float)this.entity.getVerticalFaceSpeed());
             }
         });
-        goalSelector.addGoal(7, new RandomWalkingGoal(this, 0.4));
-        goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
-        goalSelector.addGoal(8, new LookAtGoal(this, EntityBarakoa.class, 8.0F));
-        goalSelector.addGoal(8, new LookAtGoal(this, EntityBarako.class, 8.0F));
-        goalSelector.addGoal(8, new LookRandomlyGoal(this));
+//        goalSelector.addGoal(7, new RandomWalkingGoal(this, 0.4));
+//        goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+//        goalSelector.addGoal(8, new LookAtGoal(this, EntityBarakoa.class, 8.0F));
+//        goalSelector.addGoal(8, new LookAtGoal(this, EntityBarako.class, 8.0F));
+//        goalSelector.addGoal(8, new LookRandomlyGoal(this));
     }
 
     @Override
@@ -153,7 +162,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             int i = MathHelper.nextInt(rand, 0, 11);
             if (i < MMSounds.ENTITY_BARAKOA_TALK.size()) {
                 playSound(MMSounds.ENTITY_BARAKOA_TALK.get(i).get(), 1, 1.5f);
-                AnimationHandler.INSTANCE.sendAnimationMessage(this, IDLE_ANIMATION);
+//                AnimationHandler.INSTANCE.sendAnimationMessage(this, IDLE_ANIMATION);
             }
         } else {
             int i = MathHelper.nextInt(rand, 0, 7);
@@ -510,7 +519,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
 
     @Override
     public Animation[] getAnimations() {
-        return new Animation[]{DIE_ANIMATION, HURT_ANIMATION, ATTACK_ANIMATION, PROJECTILE_ATTACK_ANIMATION, BLOCK_ANIMATION, IDLE_ANIMATION, ACTIVATE_ANIMATION, DEACTIVATE_ANIMATION};
+        return new Animation[]{DIE_ANIMATION, HURT_ANIMATION, ATTACK_ANIMATION, PROJECTILE_ATTACK_ANIMATION, BLOCK_ANIMATION, IDLE_ANIMATION, ACTIVATE_ANIMATION, DEACTIVATE_ANIMATION, TELEPORT_ANIMATION, HEAL_LOOP_ANIMATION, HEAL_START_ANIMATION, HEAL_STOP_ANIMATION};
     }
 
     public boolean isBarakoDevoted() {

@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakeera;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
@@ -31,6 +32,7 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
     public AdvancedModelRenderer bone;
     public AdvancedModelRenderer spear;
     public AdvancedModelRenderer blowgun;
+    public AdvancedModelRenderer staff;
     public AdvancedModelRenderer armUpperLeft;
     public AdvancedModelRenderer armLowerLeft;
     public AdvancedModelRenderer handLeft;
@@ -128,7 +130,8 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         this.spear.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.bone = new AdvancedModelRenderer(this, 66, 0);
         this.bone.setRotationPoint(0.0F, 0.0F, 0.0F);
-//        this.spear.add3DTexture(-4, -4, 0.5F, 15, 15);
+        this.staff = new AdvancedModelRenderer(this, 66, 0);
+        this.staff.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.earLeft = new AdvancedModelRenderer(this, 48, 0);
         this.earLeft.setRotationPoint(4.0F, -4.0F, -3.0F);
         this.earLeft.addBox(0.0F, -2.0F, 0.0F, 4, 6, 1, 0.0F);
@@ -316,6 +319,7 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         this.maskBase.addChild(this.maskRight);
         this.maskBase.addChild(this.mane);
         this.spearBase.addChild(bone);
+        this.spearBase.addChild(staff);
         updateDefaultPose();
 
         modelCore.scaleChildren = true;
@@ -334,6 +338,7 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         spearBase.scaleChildren = true;
         spear.scaleChildren = true;
         bone.scaleChildren = true;
+        staff.scaleChildren = true;
         blowgun.scaleChildren = true;
         armUpperLeft.scaleChildren = true;
         armLowerLeft.scaleChildren = true;
@@ -382,12 +387,21 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         bone.setScale(2);
         blowgun.setScale(2);
         spear.setScale(2);
+        staff.setScale(2);
 
         bone.rotateAngleZ -= Math.PI / 2f;
         bone.rotateAngleX -= Math.PI / 2f;
         bone.rotateAngleY -= 2.3;
         bone.rotationPointY += 2.5;
         bone.rotationPointZ -= 8;
+
+        staff.rotateAngleZ -= Math.PI / 2f;
+        staff.rotateAngleX -= Math.PI / 2f;
+        staff.rotateAngleY -= Math.PI;
+        staff.rotateAngleZ -= Math.PI;
+        staff.rotateAngleY -= 2.3;
+        staff.rotationPointY += 2.5;
+        staff.rotationPointZ -= 3;
 
         spear.rotateAngleZ -= Math.PI / 2f;
         spear.rotateAngleX -= Math.PI / 2f;
@@ -403,7 +417,12 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         blowgun.rotationPointY += 2.5;
         blowgun.rotationPointZ -= 4;
 
-        if (entity.getWeapon() == 0) {
+        if (entity instanceof EntityBarakeera) {
+            bone.showModel = false;
+            spear.showModel = false;
+            blowgun.showModel = false;
+        }
+        else if (entity.getWeapon() == 0) {
             if (entity.getMask() == MaskType.FURY) {
                 spear.showModel = true;
                 bone.showModel = false;
@@ -413,7 +432,8 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
                 spear.showModel = false;
             }
             blowgun.showModel = false;
-        } else {
+        }
+        else {
             spear.showModel = false;
             bone.showModel = false;
             blowgun.showModel = true;
@@ -858,6 +878,108 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         animator.endKeyframe();
         animator.setStaticKeyframe(1);
 
+        animator.setAnimation(EntityBarakoa.HEAL_LOOP_ANIMATION);
+        animator.startKeyframe(0);
+        animator.move(talker, 0, 1, 0);
+        animator.rotate(body, 0.3f, 0, 0);
+        animator.move(modelCore, 0, 0, -3.5f);
+        animator.rotate(neck, -0.1f, 0, 0);
+        animator.rotate(head, -0.2f, 0, 0);
+        animator.rotate(thighLeftJoint, -0.3f, 0, 0f);
+        animator.rotate(thighRight, 0.4f, 0, 0.1f);
+        animator.rotate(footRight, -0.5f, -0.1f, 0);
+        animator.endKeyframe();
+        animator.setStaticKeyframe(21);
+
+        animator.setAnimation(EntityBarakoa.HEAL_START_ANIMATION);
+        animator.startKeyframe(5);
+        animator.move(talker, 0, 0, 1);
+        animator.rotate(body, -0.3f, 1f, 0);
+        animator.move(modelCore, -2, 0, -2);
+        animator.rotate(chest, 0, 0.2f, 0);
+        animator.rotate(neck, 0.1f, -0.6f, 0);
+        animator.rotate(head, 0.1f, -0.6f, 0);
+        animator.rotate(armUpperLeft, 0, 0, -0.5f);
+        animator.rotate(armUpperRight, -2, 0, -1.2f);
+        animator.rotate(armLowerRight, -0.4f, 0, 0);
+        animator.rotate(handRight, 0, 0.8f, 0);
+        animator.rotate(thighLeft, -0.9f, 0.3f, 0);
+        animator.rotate(calfLeft, 0.1f, 0, 0);
+        animator.rotate(footLeft, 0, 0, 0);
+        animator.rotate(thighRight, 0.3f, -0.9f, 0);
+        animator.rotate(calfRight, 0, 0, 0);
+        animator.rotate(footRight, 0, 0, 0);
+        animator.endKeyframe();
+        animator.setStaticKeyframe(15);
+        animator.startKeyframe(4);
+        animator.move(talker, 0, 1, 0);
+        animator.rotate(body, 0.3f, 0, 0);
+        animator.move(modelCore, 0, 0, -3.5f);
+        animator.rotate(neck, -0.1f, 0, 0);
+        animator.rotate(head, -0.2f, 0, 0);
+        animator.rotate(thighLeftJoint, -0.3f, 0, 0f);
+        animator.rotate(thighRight, 0.4f, 0, 0.1f);
+        animator.rotate(footRight, -0.5f, -0.1f, 0);
+        animator.endKeyframe();
+        animator.setStaticKeyframe(3);
+
+        animator.setAnimation(EntityBarakoa.HEAL_STOP_ANIMATION);
+        animator.startKeyframe(0);
+        animator.move(talker, 0, 1, 0);
+        animator.rotate(body, 0.3f, 0, 0);
+        animator.move(modelCore, 0, 0, -3.5f);
+        animator.rotate(neck, -0.1f, 0, 0);
+        animator.rotate(head, -0.2f, 0, 0);
+        animator.rotate(thighLeftJoint, -0.3f, 0, 0f);
+        animator.rotate(thighRight, 0.4f, 0, 0.1f);
+        animator.rotate(footRight, -0.5f, -0.1f, 0);
+        animator.endKeyframe();
+        animator.resetKeyframe(6);
+
+        float heal = talker.rotationPointY;
+        float wandWave = talker.rotationPointZ;
+        float healAnimSpeed = 0.4f;
+        flap(modelCore, 0.6f * healAnimSpeed, 0.1f * heal, false, 0, 0, frame, 1f);
+        flap(body, 0.6f * healAnimSpeed, 0.1f * heal, false, -0.5f, 0, frame, 1f);
+        flap(chest, 0.6f * healAnimSpeed, 0.1f * heal, false, -1f, 0, frame, 1f);
+        flap(head, 0.6f * healAnimSpeed, 0.1f * heal, false, -1.5f, 0, frame, 1f);
+        armUpperRight.rotateAngleZ += 0.4f * heal;
+        armUpperRight.rotateAngleX -= 1.7f * heal;
+        armLowerRight.rotateAngleX += 0.3f * heal;
+        handRight.rotateAngleX += 0.3f * heal;
+        handRight.rotateAngleY += 2f * heal;
+        armUpperLeft.rotateAngleZ -= 0.6f * heal;
+        armUpperLeft.rotateAngleX -= 1.3f * heal;
+        armLowerLeft.rotateAngleX -= 0.4f * heal;
+        handLeft.rotateAngleX += 0.3f * heal;
+        handLeft.rotateAngleY -= 1.8f * heal;
+        flap(thighLeftJoint, 0.6f * healAnimSpeed, 0.1f * heal, true, 0, 0, frame, 1f);
+        flap(thighLeftJoint, 0.6f * healAnimSpeed, 0.1f * heal, true, -0.5f, 0, frame, 1f);
+        flap(thighRightJoint, 0.6f * healAnimSpeed, 0.1f * heal, true, 0, 0, frame, 1f);
+        flap(thighRightJoint, 0.6f * healAnimSpeed, 0.1f * heal, true, -0.5f, 0, frame, 1f);
+        walk(calfLeft, 0.6f * healAnimSpeed, 0.1f * heal, false, 0, 0, frame, 1f);
+        walk(calfLeft, 0.6f * healAnimSpeed, 0.1f * heal, false, -0.5f, 0, frame, 1f);
+        walk(calfRight, 0.6f * healAnimSpeed, 0.1f * heal, true, 0, 0, frame, 1f);
+        walk(calfRight, 0.6f * healAnimSpeed, 0.1f * heal, true, -0.5f, 0, frame, 1f);
+        walk(footLeft, 0.6f * healAnimSpeed, 0.1f * heal, true, 0, 0, frame, 1f);
+        walk(footLeft, 0.6f * healAnimSpeed, 0.1f * heal, true, -0.5f, 0, frame, 1f);
+        walk(footRight, 0.6f * healAnimSpeed, 0.1f * heal, false, 0, 0, frame, 1f);
+        walk(footRight, 0.6f * healAnimSpeed, 0.1f * heal, false, -0.5f, 0, frame, 1f);
+        float f = (float) (Math.cos(frame * 0.6f * healAnimSpeed) * 0.1f * heal);
+        thighLeftJoint.rotationPointZ -= f * 5;
+        thighLeftJoint.rotationPointX -= f * 5;
+        thighRightJoint.rotationPointZ += f * 5;
+        thighRightJoint.rotationPointX -= f * 5;
+
+        float waveFrame = entity.getAnimationTick() + delta;
+        float offset = -1f;
+        flap(armUpperRight, 2.3f * healAnimSpeed, 0.2f * wandWave, false, 0 + offset, 0, waveFrame, 1f);
+        walk(armUpperRight, 2.3f * healAnimSpeed, 0.2f * wandWave, false, (float) (Math.PI/2f) + offset, 0, waveFrame, 1f);
+        flap(armLowerRight, 2.3f * healAnimSpeed, 0.2f * wandWave, false, -0.6f + offset, 0, waveFrame, 1f);
+        walk(armLowerRight, 2.3f * healAnimSpeed, 0.2f * wandWave, false, (float) (Math.PI/2f) - 0.6f + offset, 0, waveFrame, 1f);
+        flap(handRight, 2.3f * healAnimSpeed, 0.3f * wandWave, false, -1.2f + offset, 0, waveFrame, 1f);
+        walk(handRight, 2.3f * healAnimSpeed, 0.2f * wandWave, false, (float) (Math.PI/2f) - 1.2f + offset, 0, waveFrame, 1f);
+
         //Inactive
         if (!entity.active) {
             scaler.rotationPointX += 0.999f;
@@ -903,6 +1025,10 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
             flap(armUpperLeft, 0.4f, 0.2f * talk, true, 2, 0, frame, 1f);
             walk(armLowerLeft, 0.5f, 0.2f * talk, false, -1, 0.3f * talk, frame, 1f);
             swing(handLeft, 0.5f, 0.2f * talk, false, -2, -1.8f * talk, frame, 1f);
+
+//            armUpperRight.rotateAngleZ += 0.4f;
+
+            
             if (Math.sin(frame * 1.8f) * (talk + dance) > 0.1f) {
                 mouthLeft.showModel = true;
                 mouthRight.showModel = true;

@@ -35,6 +35,7 @@ public final class ItemHandler {
     public static final ItemBarakoMask BARAKO_MASK = null;
     public static final ItemDart DART = null;
     public static final ItemSpear SPEAR = null;
+    public static final ItemSunblockStaff SUNBLOCK_STAFF = null;
     public static final ItemBlowgun BLOWGUN = null;
     public static final ItemGrantSunsBlessing GRANT_SUNS_BLESSING = null;
     public static final ItemIceCrystal ICE_CRYSTAL = null;
@@ -49,6 +50,7 @@ public final class ItemHandler {
     public static final SpawnEggItem WROUGHTNAUT_SPAWN_EGG = null;
     public static final SpawnEggItem BARAKOA_SPAWN_EGG = null;
     public static final SpawnEggItem BARAKOANA_SPAWN_EGG = null;
+    public static final SpawnEggItem BARAKEERA_SPAWN_EGG = null;
     public static final SpawnEggItem BARAKO_SPAWN_EGG = null;
     public static final SpawnEggItem FROSTMAW_SPAWN_EGG = null;
     public static final SpawnEggItem GROTTOL_SPAWN_EGG = null;
@@ -75,6 +77,7 @@ public final class ItemHandler {
             new ItemBarakoMask(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barako_mask"),
             new ItemDart(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("dart"),
             new ItemSpear(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab).maxStackSize(1)).setRegistryName("spear"),
+            new ItemSunblockStaff(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab).maxStackSize(1)).setRegistryName("sunblock_staff"),
             new ItemBlowgun(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab).maxStackSize(1).maxDamage(300)).setRegistryName("blowgun"),
             new ItemGrantSunsBlessing(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab).maxStackSize(1)).setRegistryName("grant_suns_blessing"),
             new ItemIceCrystal(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab).defaultMaxDamage(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.durability.get())).setRegistryName("ice_crystal"),
@@ -89,6 +92,7 @@ public final class ItemHandler {
             new SpawnEggItem(EntityHandler.WROUGHTNAUT, 0x8C8C8C, 0xFFFFFF, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("wroughtnaut_spawn_egg"),
             new SpawnEggItem(EntityHandler.BARAKOAYA, BARAKOA_GREEN_COLOR, 0xFAFA78, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoa_spawn_egg"),
             new SpawnEggItem(EntityHandler.BARAKOANA, BARAKOA_GREEN_COLOR, 0xFAFA78, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoana_spawn_egg"),
+            new SpawnEggItem(EntityHandler.BARAKEERA, BARAKOA_GREEN_COLOR, 0xFAFA78, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakeera_spawn_egg"),
             new SpawnEggItem(EntityHandler.BARAKO, BARAKOA_GREEN_COLOR, 0xFFFF00, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barako_spawn_egg"),
             new SpawnEggItem(EntityHandler.FROSTMAW, 0xf7faff, 0xafcdff, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("frostmaw_spawn_egg"),
             new SpawnEggItem(EntityHandler.GROTTOL, 0x777777, 0xbce0ff, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("grottol_spawn_egg"),
@@ -116,5 +120,6 @@ public final class ItemHandler {
         BARAKO_SPAWN_EGG.primaryColor = barakoaColor;
         BARAKOA_SPAWN_EGG.primaryColor = barakoaColor;
         BARAKOANA_SPAWN_EGG.primaryColor = barakoaColor;
+        BARAKEERA_SPAWN_EGG.primaryColor = barakoaColor;
     }
 }

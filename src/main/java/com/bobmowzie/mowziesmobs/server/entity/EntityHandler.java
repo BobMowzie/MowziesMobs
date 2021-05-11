@@ -35,6 +35,7 @@ public enum EntityHandler {
     public static EntityType<EntityBarakoanToPlayer> BARAKOAN_TO_PLAYER;
     public static EntityType<EntityBarakoaya> BARAKOAYA;
     public static EntityType<EntityBarakoana> BARAKOANA;
+    public static EntityType<EntityBarakeera> BARAKEERA;
     public static EntityType<EntityBarako> BARAKO;
     public static EntityType<EntityFrostmaw> FROSTMAW;
     public static EntityType<EntityGrottol> GROTTOL;
@@ -75,6 +76,8 @@ public enum EntityHandler {
         BARAKOAYA = register("barakoaya", EntityType.Builder.create(EntityBarakoaya::new, EntityClassification.MONSTER).size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1));
 
         BARAKOANA = register("barakoana", EntityType.Builder.create(EntityBarakoana::new, EntityClassification.MONSTER).size(MaskType.FURY.entityWidth, MaskType.FURY.entityHeight).setUpdateInterval(1));
+
+        BARAKEERA = register("barakeera", EntityType.Builder.create(EntityBarakeera::new, EntityClassification.MONSTER).size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1));
 
         BARAKO = register("barako", EntityType.Builder.create(EntityBarako::new, EntityClassification.MONSTER).size(1.5f, 2.4f).setUpdateInterval(1));
 
@@ -135,6 +138,7 @@ public enum EntityHandler {
             BARAKOAN_TO_PLAYER,
             BARAKOAYA,
             BARAKOANA,
+            BARAKEERA,
             BARAKO,
             FROSTMAW,
             GROTTOL,
@@ -171,6 +175,7 @@ public enum EntityHandler {
         GlobalEntityTypeAttributes.put(BARAKOAYA, EntityBarakoa.createAttributes().create());
         GlobalEntityTypeAttributes.put(BARAKOAN_TO_PLAYER, EntityBarakoanToPlayer.createAttributes().create());
         GlobalEntityTypeAttributes.put(BARAKOAN_TO_BARAKOANA, EntityBarakoa.createAttributes().create());
+        GlobalEntityTypeAttributes.put(BARAKEERA, EntityBarakoa.createAttributes().create());
         GlobalEntityTypeAttributes.put(BARAKO, EntityBarako.createAttributes().create());
         GlobalEntityTypeAttributes.put(FROSTMAW, EntityFrostmaw.createAttributes().create());
         GlobalEntityTypeAttributes.put(NAGA, EntityNaga.createAttributes().create());

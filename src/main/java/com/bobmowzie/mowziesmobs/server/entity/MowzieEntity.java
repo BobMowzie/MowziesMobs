@@ -197,7 +197,11 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }
 
-    public boolean attackEntityAsMob(Entity entityIn, float damageMultiplier, float applyKnockbackMultiplier) { // TODO copy from mob class
+    public boolean attackEntityAsMob(Entity entityIn, float damageMultiplier, float applyKnockbackMultiplier) {
+        return attackEntityAsMob(entityIn, damageMultiplier, applyKnockbackMultiplier, false);
+    }
+
+    public boolean attackEntityAsMob(Entity entityIn, float damageMultiplier, float applyKnockbackMultiplier, boolean canDisableShield) { // TODO copy from mob class
         float f = (float)this.getAttribute(Attributes.ATTACK_DAMAGE).getValue() * damageMultiplier;
         float f1 = (float)this.getAttribute(Attributes.ATTACK_KNOCKBACK).getValue() * applyKnockbackMultiplier;
         if (entityIn instanceof LivingEntity) {
@@ -221,7 +225,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
                 PlayerEntity playerentity = (PlayerEntity)entityIn;
                 ItemStack itemstack = this.getHeldItemMainhand();
                 ItemStack itemstack1 = playerentity.isHandActive() ? playerentity.getActiveItemStack() : ItemStack.EMPTY;
-                if (!itemstack.isEmpty() && !itemstack1.isEmpty() && itemstack.canDisableShield(itemstack1, playerentity, this) && itemstack1.isShield(playerentity)) {
+                if (((!itemstack.isEmpty() && itemstack.canDisableShield(itemstack1, playerentity, this)) || canDisableShield) && !itemstack1.isEmpty() && itemstack1.isShield(playerentity)) {
                     float f2 = 0.25F + (float)EnchantmentHelper.getEfficiencyModifier(this) * 0.05F;
                     if (this.rand.nextFloat() < f2) {
                         playerentity.getCooldownTracker().setCooldown(itemstack.getItem(), 100);
