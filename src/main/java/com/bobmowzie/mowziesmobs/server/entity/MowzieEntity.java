@@ -6,6 +6,8 @@ import com.bobmowzie.mowziesmobs.server.world.spawn.SpawnHandler;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
 import net.minecraft.entity.CreatureEntity;
@@ -20,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -84,8 +87,6 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         if (spawnConfig != null) {
             if (rand.nextDouble() > spawnConfig.extraRarity.get()) return false;
 
-            BlockPos pos = spawnPos.down();
-
             // Dimension check
             List<? extends String> dimensionNames = spawnConfig.dimensions.get();
             ResourceLocation currDimensionName = ((ServerWorld)world).getDimensionKey().getLocation();
@@ -96,10 +97,10 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
             // Height check
             float heightMax = spawnConfig.heightMax.get();
             float heightMin = spawnConfig.heightMin.get();
-            if (pos.getY() > heightMax && heightMax >= 0) {
+            if (spawnPos.getY() > heightMax && heightMax >= 0) {
                 return false;
             }
-            if (pos.getY() < heightMin) {
+            if (spawnPos.getY() < heightMin) {
                 return false;
             }
 
@@ -109,10 +110,13 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
             }
 
             // Block check
-            ResourceLocation blockName = world.getBlockState(pos).getBlock().getRegistryName();
+            Block block = world.getBlockState(spawnPos.down()).getBlock();
+            ResourceLocation blockName = block.getRegistryName();
             List<? extends String> allowedBlocks = spawnConfig.allowedBlocks.get();
+            List<? extends String> allowedBlockTags = spawnConfig.allowedBlockTags.get();
             if (blockName == null) return false;
             if (!allowedBlocks.isEmpty() && !allowedBlocks.contains(blockName.toString()) && !allowedBlocks.contains(blockName.getPath())) return false;
+            if (!allowedBlockTags.isEmpty() && !isBlockTagAllowed(allowedBlockTags, block)) return false;
 
             // See sky
             if (spawnConfig.needsSeeSky.get() && !world.canBlockSeeSky(spawnPos)) {
@@ -123,6 +127,13 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
             }
         }
         return true;
+    }
+
+    private static boolean isBlockTagAllowed(List<? extends String> allowedBlockTags, Block block) {
+        for (String allowedBlockTag : allowedBlockTags) {
+            if (BlockTags.getCollection().getTagByID(new ResourceLocation(allowedBlockTag)).contains(block)) return true;
+        }
+        return false;
     }
 
     @Override
@@ -181,7 +192,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
 
     @Override
     public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, ILivingEntityData spawnDataIn, CompoundNBT dataTag) {
-        System.out.println("Spawned " + getName().getString() + " at " + getPosition());
+//        System.out.println("Spawned " + getName().getString() + " at " + getPosition());
 //        System.out.println("Block " + world.getBlockState(getPosition().down()).toString());
         return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
     }

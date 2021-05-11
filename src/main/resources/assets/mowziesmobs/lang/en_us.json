@@ -187,6 +187,7 @@
   "config.mowziesmobs.requires_see_sky": "Needs to See Sky",
   "config.mowziesmobs.requires_cant_see_sky": "Needs to Not See Sky",
   "config.mowziesmobs.allowed_blocks": "Allowed Blocks",
+  "config.mowziesmobs.allowed_block_tags": "Allowed Block Tags",
 
   "config.mowziesmobs.generation_data": "Generation Controls",
   "config.mowziesmobs.generation_data.tooltip": "",

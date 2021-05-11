@@ -65,7 +65,7 @@ public final class  ConfigHandler {
     }
 
     public static class SpawnConfig {
-        SpawnConfig(final ForgeConfigSpec.Builder builder, int spawnRate, int minGroupSize, int maxGroupSize, double extraRarity, BiomeConfig biomeConfig, List<? extends String> allowedBlocks, int heightMax, int heightMin, boolean needsDarkness, boolean needsSeeSky, boolean needsCantSeeSky) {
+        SpawnConfig(final ForgeConfigSpec.Builder builder, int spawnRate, int minGroupSize, int maxGroupSize, double extraRarity, BiomeConfig biomeConfig, List<? extends String> allowedBlocks, List<? extends String> allowedBlockTags, int heightMax, int heightMin, boolean needsDarkness, boolean needsSeeSky, boolean needsCantSeeSky) {
             builder.comment("Controls for vanilla-style mob spawning");
             builder.push("spawn_config");
             this.spawnRate = builder.comment("Smaller number causes less spawning, 0 to disable spawning")
@@ -84,9 +84,12 @@ public final class  ConfigHandler {
             this.dimensions = builder.comment("Names of dimensions this mob can spawn in")
                     .translation(LANG_PREFIX + "dimensions")
                     .defineList("dimensions", Collections.singletonList("minecraft:overworld"), STRING_PREDICATE);
-            this.allowedBlocks = builder.comment("Names of blocks this mob is allowed to spawn on. Leave blank to allow any block.")
+            this.allowedBlocks = builder.comment("Names of blocks this mob is allowed to spawn on. Leave blank to ignore block names.")
                     .translation(LANG_PREFIX + "allowed_blocks")
                     .defineList("allowed_blocks", allowedBlocks, STRING_PREDICATE);
+            this.allowedBlockTags = builder.comment("Tags of blocks this mob is allowed to spawn on. Leave blank to ignore block tags.")
+                    .translation(LANG_PREFIX + "allowed_block_tags")
+                    .defineList("allowed_block_tags", allowedBlockTags, STRING_PREDICATE);
             this.heightMax = builder.comment("Maximum height for this spawn. -1 to ignore.")
                     .translation(LANG_PREFIX + "height_max")
                     .defineInRange("height_max", heightMax, -1, 256);
@@ -128,6 +131,8 @@ public final class  ConfigHandler {
         public final BooleanValue needsCantSeeSky;
 
         public final ConfigValue<List<? extends String>> allowedBlocks;
+
+        public final ConfigValue<List<? extends String>> allowedBlockTags;
     }
 
     public static class GenerationConfig {
@@ -224,7 +229,8 @@ public final class  ConfigHandler {
             spawnConfig = new SpawnConfig(builder,
                     70, 1, 4, 1,
                     new BiomeConfig(builder, Collections.singletonList("JUNGLE"), new ArrayList<>(), new ArrayList<>()),
-                    Arrays.asList("minecraft:grass_block", "minecraft:podzol", "minecraft:jungle_leaves", "minecraft:oak_leaves", "minecraft:oak_log", "minecraft:jungle_log"),
+                    Collections.emptyList(),
+                    Arrays.asList("minecraft:valid_spawn", "minecraft:leaves", "minecraft:logs"),
                     -1, 60, false, false, false
             );
             combatConfig = new CombatConfig(builder, 1, 1);
@@ -243,7 +249,8 @@ public final class  ConfigHandler {
             spawnConfig = new SpawnConfig(builder,
                     5, 1, 1, 1,
                     new BiomeConfig(builder, Collections.singletonList("SAVANNA"), new ArrayList<>(), new ArrayList<>()),
-                    Arrays.asList("minecraft:grass_block", "minecraft:sand"),
+                    Collections.emptyList(),
+                    Arrays.asList("minecraft:valid_spawn", "minecraft:sand"),
                     -1, 60, false, false, false
             );
             combatConfig = new CombatConfig(builder,1, 1);
@@ -262,6 +269,7 @@ public final class  ConfigHandler {
                     15, 2, 4, 1,
                     new BiomeConfig(builder, Arrays.asList("BEACH,MOUNTAIN", "BEACH,HILLS"), Collections.singletonList("minecraft:stone_shore"), new ArrayList<>()),
                     Collections.emptyList(),
+                    Collections.emptyList(),
                     -1, 70, false, true, false
             );
             combatConfig = new CombatConfig(builder,1, 1);
@@ -279,7 +287,8 @@ public final class  ConfigHandler {
             spawnConfig = new SpawnConfig(builder,
                     5, 2, 4, 1,
                     new BiomeConfig(builder, Collections.singletonList("FOREST,MAGICAL,!SNOWY"), Arrays.asList("minecraft:dark_forest", "minecraft:dark_forest_hills"), new ArrayList<>()),
-                    Arrays.asList("minecraft:grass_block", "minecraft:dark_oak_leaves", "minecraft:dark_oak_log", "minecraft:oak_leaves", "minecraft:oak_log", "minecraft:birch_leaves", "minecraft:birch_log"),
+                    Collections.emptyList(),
+                    Arrays.asList("minecraft:valid_spawn", "minecraft:leaves", "minecraft:logs"),
                     -1, 60, true, false, false
             );
             this.healthMultiplier = builder.comment("Scale mob health by this value")
@@ -299,7 +308,8 @@ public final class  ConfigHandler {
             this.spawnConfig = new SpawnConfig(builder,
                     2, 1, 1, 1,
                     new BiomeConfig(builder,  Arrays.asList(""), new ArrayList<>(), new ArrayList<>()),
-                    new ArrayList<>(),
+                    Collections.emptyList(),
+                    Arrays.asList("minecraft:base_stone_overworld"),
                     25, -1, true, false, true
             );
             this.healthMultiplier = builder.comment("Scale mob health by this value")
