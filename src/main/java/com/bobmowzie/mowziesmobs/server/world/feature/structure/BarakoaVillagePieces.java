@@ -192,8 +192,13 @@ public class BarakoaVillagePieces {
                 barako.setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
                 int i = rotation.rotate(3, 4);
                 barako.setDirection(i);
-                worldIn.addEntity(barako);
                 barako.onInitialSpawn(worldIn, worldIn.getDifficultyForLocation(barako.getPosition()), SpawnReason.STRUCTURE, null, null);
+                BlockPos offset = new BlockPos(0, 0, -18);
+                offset = offset.rotate(rotation);
+                BlockPos firePitPos = pos.add(offset);
+                firePitPos = worldIn.getHeight(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, firePitPos);
+                barako.setHomePosAndDistance(firePitPos, 25);
+                worldIn.addEntity(barako);
             }
             else {
                 worldIn.removeBlock(pos, false);
@@ -440,7 +445,7 @@ public class BarakoaVillagePieces {
                     barakoa.setPosition(bPos.getX(), bPos.getY(), bPos.getZ());
                     if (bPos.getY() > 0 && barakoa.canSpawn(worldIn, SpawnReason.STRUCTURE) && worldIn.hasNoCollisions(barakoa.getBoundingBox())) {
                         barakoa.onInitialSpawn(worldIn, worldIn.getDifficultyForLocation(barakoa.getPosition()), SpawnReason.STRUCTURE, null, null);
-                        barakoa.setHomePosAndDistance(centerPos, 16);
+                        barakoa.setHomePosAndDistance(centerPos, 25);
                         worldIn.addEntity(barakoa);
                         break;
                     }

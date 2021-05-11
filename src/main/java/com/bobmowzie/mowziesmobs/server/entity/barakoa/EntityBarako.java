@@ -38,13 +38,11 @@ import net.minecraft.entity.passive.IronGolemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.block.Blocks;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
@@ -120,7 +118,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     );
     private static ParticleComponent.KeyTrack superNovaKeyTrack2 = ParticleComponent.KeyTrack.oscillate(0, 1, 30);
 
-    public Set<EntityBarakeera> sunblockers = new HashSet<>();
+    public Set<EntityBarakoaSunblocker> sunblockers = new HashSet<>();
 
     public EntityBarako(EntityType<? extends EntityBarako> type, World world) {
         super(type, world);
@@ -738,6 +736,10 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         CompoundNBT compoundTradedPlayers = getDataManager().get(TRADED_PLAYERS);
         ListNBT players = compoundTradedPlayers.getList("players", Constants.NBT.TAG_INT_ARRAY);
         compound.put("players", players);
+        compound.putInt("HomePosX", this.getHomePosition().getX());
+        compound.putInt("HomePosY", this.getHomePosition().getY());
+        compound.putInt("HomePosZ", this.getHomePosition().getZ());
+        compound.putInt("HomeDist", (int) this.getMaximumHomeDistance());
     }
 
     @Override
@@ -746,6 +748,11 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         setDirection(compound.getInt("direction"));
         ListNBT players = compound.getList("players", Constants.NBT.TAG_INT_ARRAY);
         setTradedPlayersCompound(players);
+        int i = compound.getInt("HomePosX");
+        int j = compound.getInt("HomePosY");
+        int k = compound.getInt("HomePosZ");
+        int dist = compound.getInt("HomeDist");
+        this.setHomePosAndDistance(new BlockPos(i, j, k), dist);
     }
 
 
