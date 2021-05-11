@@ -289,8 +289,8 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         if (this.deathTime == deathDuration) {
             attackingPlayer = killDataAttackingPlayer;
             recentlyHit = killDataRecentlyHit;
-            if (!this.world.isRemote && (this.isPlayer() || this.recentlyHit > 0 && this.canDropLoot() && this.world.getGameRules().getBoolean(GameRules.DO_MOB_LOOT))) {
-                if (dropAfterDeathAnim && killDataCause != null) spawnDrops(killDataCause);
+            if (!world.isRemote() && dropAfterDeathAnim && killDataCause != null) {
+                spawnDrops(killDataCause);
             }
 
             this.remove(false);
