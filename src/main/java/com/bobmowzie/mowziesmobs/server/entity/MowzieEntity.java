@@ -391,8 +391,10 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     protected void repelEntities(float x, float y, float z, float radius) {
         List<LivingEntity> nearbyEntities = getEntityLivingBaseNearby(x, y, z, radius);
         for (Entity entity : nearbyEntities) {
-            double angle = (getAngleBetweenEntities(this, entity) + 90) * Math.PI / 180;
-            entity.setMotion(-0.1 * Math.cos(angle), entity.getMotion().y,-0.1 * Math.sin(angle));
+            if (entity.canBeCollidedWith() && !entity.noClip) {
+                double angle = (getAngleBetweenEntities(this, entity) + 90) * Math.PI / 180;
+                entity.setMotion(-0.1 * Math.cos(angle), entity.getMotion().y, -0.1 * Math.sin(angle));
+            }
         }
     }
 
