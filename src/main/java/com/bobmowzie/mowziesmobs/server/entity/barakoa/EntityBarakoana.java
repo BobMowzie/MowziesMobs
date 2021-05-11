@@ -33,7 +33,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
     public EntityBarakoana(EntityType<? extends EntityBarakoana> type, World world) {
         super(type, world);
         this.setMask(MaskType.FURY);
-        this.experienceValue = 12;
+        this.experienceValue = 8;
     }
 
     @Override

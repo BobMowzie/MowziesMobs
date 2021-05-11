@@ -84,7 +84,7 @@ public class EntityGrottol extends MowzieEntity {
 
     public EntityGrottol(EntityType<? extends EntityGrottol> type, World world) {
         super(type, world);
-        experienceValue = 20;
+        experienceValue = 15;
         stepHeight = 1.15F;
 
         moveController = new MMEntityMoveHelper(this, 45);

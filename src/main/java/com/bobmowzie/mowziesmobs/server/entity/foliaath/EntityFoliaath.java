@@ -57,7 +57,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
 
     public EntityFoliaath(EntityType<? extends EntityFoliaath> type, World world) {
         super(type, world);
-        this.experienceValue = 10;
+        this.experienceValue = 5;
         this.addIntermittentAnimation(openMouth);
     }
 

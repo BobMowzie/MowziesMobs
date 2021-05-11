@@ -75,7 +75,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         stepHeight = 1;
         circleTick += rand.nextInt(200);
         frame += rand.nextInt(50);
-        experienceValue = 8;
+        experienceValue = 6;
         active = false;
     }
 
