@@ -75,8 +75,8 @@ public class EntityAxeAttack extends EntityMagicEffect {
     @Override
     public void tick() {
         super.tick();
-        if (caster != null && !caster.isAlive()) remove();
         if (caster != null) {
+            if (!caster.isAlive() || caster.getHeldItemMainhand().getItem() != ItemHandler.WROUGHT_AXE) remove();
             setPositionAndRotation(caster.getPosX(), caster.getPosY(), caster.getPosZ(), caster.rotationYaw, caster.rotationPitch);
         }
         if (!world.isRemote && ticksExisted == 7) playSound(MMSounds.ENTITY_WROUGHT_WHOOSH.get(), 0.7F, 1.1f);
