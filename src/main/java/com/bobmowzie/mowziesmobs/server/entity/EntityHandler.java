@@ -14,14 +14,7 @@ import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
-
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public enum EntityHandler {
     INSTANCE;
@@ -35,7 +28,7 @@ public enum EntityHandler {
     public static EntityType<EntityBarakoanToPlayer> BARAKOAN_TO_PLAYER;
     public static EntityType<EntityBarakoaya> BARAKOAYA;
     public static EntityType<EntityBarakoana> BARAKOANA;
-    public static EntityType<EntityBarakeera> BARAKEERA;
+    public static EntityType<EntityBarakoaSunblocker> BARAKOA_SUNBLOCKER;
     public static EntityType<EntityBarako> BARAKO;
     public static EntityType<EntityFrostmaw> FROSTMAW;
     public static EntityType<EntityGrottol> GROTTOL;
@@ -77,7 +70,7 @@ public enum EntityHandler {
 
         BARAKOANA = register("barakoana", EntityType.Builder.create(EntityBarakoana::new, EntityClassification.MONSTER).size(MaskType.FURY.entityWidth, MaskType.FURY.entityHeight).setUpdateInterval(1));
 
-        BARAKEERA = register("barakeera", EntityType.Builder.create(EntityBarakeera::new, EntityClassification.MONSTER).size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1));
+        BARAKOA_SUNBLOCKER = register("barakoa_sunblocker", EntityType.Builder.create(EntityBarakoaSunblocker::new, EntityClassification.MONSTER).size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1));
 
         BARAKO = register("barako", EntityType.Builder.create(EntityBarako::new, EntityClassification.MONSTER).size(1.5f, 2.4f).setUpdateInterval(1));
 
@@ -138,7 +131,7 @@ public enum EntityHandler {
             BARAKOAN_TO_PLAYER,
             BARAKOAYA,
             BARAKOANA,
-            BARAKEERA,
+                BARAKOA_SUNBLOCKER,
             BARAKO,
             FROSTMAW,
             GROTTOL,
@@ -175,7 +168,7 @@ public enum EntityHandler {
         GlobalEntityTypeAttributes.put(BARAKOAYA, EntityBarakoa.createAttributes().create());
         GlobalEntityTypeAttributes.put(BARAKOAN_TO_PLAYER, EntityBarakoanToPlayer.createAttributes().create());
         GlobalEntityTypeAttributes.put(BARAKOAN_TO_BARAKOANA, EntityBarakoa.createAttributes().create());
-        GlobalEntityTypeAttributes.put(BARAKEERA, EntityBarakoa.createAttributes().create());
+        GlobalEntityTypeAttributes.put(BARAKOA_SUNBLOCKER, EntityBarakoa.createAttributes().create());
         GlobalEntityTypeAttributes.put(BARAKO, EntityBarako.createAttributes().create());
         GlobalEntityTypeAttributes.put(FROSTMAW, EntityFrostmaw.createAttributes().create());
         GlobalEntityTypeAttributes.put(NAGA, EntityNaga.createAttributes().create());

@@ -78,6 +78,7 @@ public final class GuiBarakoayaTrade extends ContainerScreen<ContainerBarakoayaT
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
+        this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
         if (barakoaya.isOfferingTrade()) {
             Trade trade = barakoaya.getOfferingTrade();
             ItemStack input = trade.getInput();

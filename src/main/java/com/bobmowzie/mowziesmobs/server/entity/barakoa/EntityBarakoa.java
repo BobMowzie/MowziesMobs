@@ -57,11 +57,8 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
 
     public static final Animation TELEPORT_ANIMATION = Animation.create(20);
     public static final Animation HEAL_START_ANIMATION = Animation.create(25);
-    public static final Animation HEAL_LOOP_ANIMATION = Animation.create(6);
-    static {
-        HEAL_LOOP_ANIMATION.setLooping(true);
-    }
-    public static final Animation HEAL_STOP_ANIMATION = Animation.create(20);
+    public static final Animation HEAL_LOOP_ANIMATION = Animation.create(20);
+    public static final Animation HEAL_STOP_ANIMATION = Animation.create(6);
 
     private static final DataParameter<Boolean> DANCING = EntityDataManager.createKey(EntityBarakoa.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Integer> MASK = EntityDataManager.createKey(EntityBarakoa.class, DataSerializers.VARINT);

@@ -100,6 +100,7 @@ public final class GuiBarakoTrade extends ContainerScreen<ContainerBarakoTrade> 
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
+        this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
         ItemStack inSlot = inventory.getStackInSlot(0);
         matrixStack.push();
         RenderHelper.enableStandardItemLighting();

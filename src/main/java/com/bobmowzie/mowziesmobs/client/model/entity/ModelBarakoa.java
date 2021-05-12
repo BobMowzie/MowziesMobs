@@ -1,7 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakeera;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaSunblocker;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
@@ -417,19 +416,22 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         blowgun.rotationPointY += 2.5;
         blowgun.rotationPointZ -= 4;
 
-        if (entity instanceof EntityBarakeera) {
+        if (entity instanceof EntityBarakoaSunblocker) {
             bone.showModel = false;
             spear.showModel = false;
             blowgun.showModel = false;
+            staff.showModel = true;
         }
         else if (entity.getWeapon() == 0) {
             if (entity.getMask() == MaskType.FURY) {
                 spear.showModel = true;
                 bone.showModel = false;
+                staff.showModel = false;
             }
             else {
                 bone.showModel = true;
                 spear.showModel = false;
+                staff.showModel = false;
             }
             blowgun.showModel = false;
         }
@@ -437,6 +439,7 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
             spear.showModel = false;
             bone.showModel = false;
             blowgun.showModel = true;
+            staff.showModel = false;
         }
         if (!entity.active) {
             return;

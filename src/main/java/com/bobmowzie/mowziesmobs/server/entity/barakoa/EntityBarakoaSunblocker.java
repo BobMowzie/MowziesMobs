@@ -7,10 +7,10 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.world.World;
 
-public class EntityBarakeera extends EntityBarakoaya {
+public class EntityBarakoaSunblocker extends EntityBarakoaya {
     EntityBarako healTarget;
 
-    public EntityBarakeera(EntityType<? extends EntityBarakoaya> type, World world) {
+    public EntityBarakoaSunblocker(EntityType<? extends EntityBarakoaya> type, World world) {
         super(type, world);
     }
 
@@ -36,11 +36,11 @@ public class EntityBarakeera extends EntityBarakoaya {
             @Override
             public void tick() {
                 super.tick();
-                EntityBarakeera barakeera = (EntityBarakeera)entity;
-                barakeera.addPotionEffect(new EffectInstance(Effects.GLOWING, 0));
+                EntityBarakoaSunblocker barakeera = (EntityBarakoaSunblocker)entity;
+                barakeera.addPotionEffect(new EffectInstance(Effects.GLOWING, 20, 0, false, false));
                 if (barakeera.healTarget != null) barakeera.getLookController().setLookPositionWithEntity(barakeera.healTarget, entity.getHorizontalFaceSpeed(), entity.getVerticalFaceSpeed());
                 if (getAnimationTick() == 19)
-                    AnimationHandler.INSTANCE.sendAnimationMessage(entity, HEAL_STOP_ANIMATION);
+                    AnimationHandler.INSTANCE.sendAnimationMessage(entity, HEAL_LOOP_ANIMATION);
             }
         });
     }
@@ -49,7 +49,7 @@ public class EntityBarakeera extends EntityBarakoaya {
     public void tick() {
         super.tick();
 
-        if (getAnimation() == HEAL_LOOP_ANIMATION && healTarget == null) AnimationHandler.INSTANCE.sendAnimationMessage(this, HEAL_STOP_ANIMATION);
+//        if (getAnimation() == HEAL_LOOP_ANIMATION && healTarget == null) AnimationHandler.INSTANCE.sendAnimationMessage(this, HEAL_STOP_ANIMATION);
 
         if (getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(this, HEAL_START_ANIMATION);
     }
