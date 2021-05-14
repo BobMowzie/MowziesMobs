@@ -12,7 +12,8 @@ public enum MaskType {
     FEAR(Effects.SPEED),
     RAGE(Effects.HASTE),
     BLISS(Effects.JUMP_BOOST),
-    MISERY(Effects.RESISTANCE);
+    MISERY(Effects.RESISTANCE),
+    FAITH(Effects.HEALTH_BOOST, 0.7F, 2F, false);
 
     public static final int COUNT = MaskType.values().length;
 

@@ -366,7 +366,7 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         matrixStackIn.push();
-        if (maskType == MaskType.FURY) {
+        if (maskType == MaskType.FURY || maskType == MaskType.FAITH) {
             modelCore.setScale(0.85f);
         } else {
             modelCore.setScale(0.75f);
@@ -416,13 +416,7 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         blowgun.rotationPointY += 2.5;
         blowgun.rotationPointZ -= 4;
 
-        if (entity instanceof EntityBarakoaSunblocker) {
-            bone.showModel = false;
-            spear.showModel = false;
-            blowgun.showModel = false;
-            staff.showModel = true;
-        }
-        else if (entity.getWeapon() == 0) {
+        if (entity.getWeapon() == 0) {
             if (entity.getMask() == MaskType.FURY) {
                 spear.showModel = true;
                 bone.showModel = false;
@@ -435,12 +429,19 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
             }
             blowgun.showModel = false;
         }
-        else {
+        else if (entity.getWeapon() == 1) {
             spear.showModel = false;
             bone.showModel = false;
             blowgun.showModel = true;
             staff.showModel = false;
         }
+        else {
+            spear.showModel = false;
+            bone.showModel = false;
+            blowgun.showModel = false;
+            staff.showModel = true;
+        }
+
         if (!entity.active) {
             return;
         }

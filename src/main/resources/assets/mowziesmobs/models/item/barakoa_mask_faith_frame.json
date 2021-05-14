@@ -1,0 +1,6 @@
+{
+	"parent": "mowziesmobs:item/barakoa_mask_frame",
+	"textures": {
+		"layer0": "mowziesmobs:item/barakoa_mask_faith"
+	}
+}

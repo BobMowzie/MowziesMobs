@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBarako;
 import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.bobmowzie.mowziesmobs.client.render.RenderUtils;
+import com.bobmowzie.mowziesmobs.client.render.entity.layer.SunblockLayer;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -29,6 +30,7 @@ public class RenderBarako extends MobRenderer<EntityBarako, ModelBarako<EntityBa
 
     public RenderBarako(EntityRendererManager mgr) {
         super(mgr, new ModelBarako<>(), 1.0F);
+        addLayer(new SunblockLayer<>(this));
     }
 
     @Override

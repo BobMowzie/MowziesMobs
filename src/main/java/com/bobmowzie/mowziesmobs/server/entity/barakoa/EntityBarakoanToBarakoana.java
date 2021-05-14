@@ -88,20 +88,6 @@ public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> i
         this.setLeaderUUID(ABSENT_LEADER);
         this.leader = null;
         this.setAttackTarget(null);
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 0, true, true, target -> {
-            if (target instanceof PlayerEntity) {
-                if (this.world.getDifficulty() == Difficulty.PEACEFUL) return false;
-                ItemStack headArmorStack = ((PlayerEntity) target).inventory.armorInventory.get(3);
-                return !(headArmorStack.getItem() instanceof BarakoaMask);
-            }
-            return true;
-        }));
-        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, AnimalEntity.class, 200, true, false, target -> {
-            float volume = target.getWidth() * target.getWidth() * target.getHeight();
-            return (target.getAttribute(Attributes.ATTACK_DAMAGE) == null || target.getAttributeValue(Attributes.ATTACK_DAMAGE) < 3.0D) && volume > 0.1 && volume < 6;
-        }));
-        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, true, false, (e) -> !(e instanceof ZombifiedPiglinEntity)));
-        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, SkeletonEntity.class, 0, true, false, null));
-        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, ZoglinEntity.class, 0, true, false, null));
+        registerHuntingTargetGoals();
     }
 }

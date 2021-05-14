@@ -121,7 +121,10 @@ public final class ServerEventHandler {
                 Item headItemStack = entity.getItemStackFromSlot(EquipmentSlotType.HEAD).getItem();
                 if (headItemStack instanceof ItemBarakoaMask) {
                     ItemBarakoaMask mask = (ItemBarakoaMask) headItemStack;
-                    entity.addPotionEffect(new EffectInstance(mask.getPotion(), 45, 0, true, false));
+                    EffectInstance effect = entity.getActivePotionEffect(mask.getPotion());
+                    EffectInstance newEffect = new EffectInstance(mask.getPotion(), 50, 0, true, false);
+                    if (effect != null) effect.combine(newEffect);
+                    else entity.addPotionEffect(newEffect);
                 }
             }
 

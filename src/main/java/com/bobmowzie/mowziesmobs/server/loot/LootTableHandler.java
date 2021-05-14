@@ -20,6 +20,7 @@ public class LootTableHandler {
     public static final ResourceLocation BARAKOA_BLISS = register("entities/barakoa_bliss");
     public static final ResourceLocation BARAKOA_RAGE = register("entities/barakoa_rage");
     public static final ResourceLocation BARAKOA_FEAR = register("entities/barakoa_fear");
+    public static final ResourceLocation BARAKOA_FAITH = register("entities/barakoa_faith");
     public static final ResourceLocation BARAKO = register("entities/barako");
     public static final ResourceLocation BARAKOA_VILLAGE_HOUSE = register("chests/barakoa_village_house");
 

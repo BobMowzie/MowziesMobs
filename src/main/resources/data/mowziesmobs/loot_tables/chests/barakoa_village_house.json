@@ -119,6 +119,11 @@
         },
         {
           "type": "minecraft:item",
+          "name": "mowziesmobs:barakoa_mask_faith",
+          "weight": 1
+        },
+        {
+          "type": "minecraft:item",
           "functions": [
             {
               "function": "minecraft:set_count",

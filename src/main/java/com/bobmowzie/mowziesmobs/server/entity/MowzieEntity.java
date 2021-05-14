@@ -36,6 +36,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import org.apache.commons.lang3.ArrayUtils;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -66,6 +67,8 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     private PlayerEntity killDataAttackingPlayer;
 
     private final MMBossInfoServer bossInfo = new MMBossInfoServer(this);
+
+    private LivingEntity healTarget;
 
     public MowzieEntity(EntityType<? extends MowzieEntity> type, World world) {
         super(type, world);
@@ -509,5 +512,14 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
                 }
             }
         }
+    }
+
+    @Nullable
+    public LivingEntity getHealTarget() {
+        return this.healTarget;
+    }
+
+    public void setHealTarget(@Nullable LivingEntity entitylivingbaseIn) {
+        this.healTarget = entitylivingbaseIn;
     }
 }

@@ -739,7 +739,6 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         compound.putInt("HomePosX", this.getHomePosition().getX());
         compound.putInt("HomePosY", this.getHomePosition().getY());
         compound.putInt("HomePosZ", this.getHomePosition().getZ());
-        compound.putInt("HomeDist", (int) this.getMaximumHomeDistance());
     }
 
     @Override
@@ -751,8 +750,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         int i = compound.getInt("HomePosX");
         int j = compound.getInt("HomePosY");
         int k = compound.getInt("HomePosZ");
-        int dist = compound.getInt("HomeDist");
-        this.setHomePosAndDistance(new BlockPos(i, j, k), dist);
+        this.setHomePosAndDistance(new BlockPos(i, j, k), -1);
     }
 
 

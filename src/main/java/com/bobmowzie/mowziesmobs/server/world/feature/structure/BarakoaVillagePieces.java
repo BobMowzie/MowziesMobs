@@ -197,7 +197,7 @@ public class BarakoaVillagePieces {
                 offset = offset.rotate(rotation);
                 BlockPos firePitPos = pos.add(offset);
                 firePitPos = worldIn.getHeight(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, firePitPos);
-                barako.setHomePosAndDistance(firePitPos, 25);
+                barako.setHomePosAndDistance(firePitPos, -1);
                 worldIn.addEntity(barako);
             }
             else {
@@ -326,6 +326,9 @@ public class BarakoaVillagePieces {
                         break;
                     case RAGE:
                         mask = ItemHandler.BARAKOA_MASK_RAGE;
+                        break;
+                    case FAITH:
+                        mask = ItemHandler.BARAKOA_MASK_FAITH;
                         break;
                 }
                 ItemStack stack = new ItemStack(mask);

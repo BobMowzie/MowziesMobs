@@ -32,6 +32,7 @@ public final class ItemHandler {
     public static final ItemBarakoaMask BARAKOA_MASK_RAGE = null;
     public static final ItemBarakoaMask BARAKOA_MASK_BLISS = null;
     public static final ItemBarakoaMask BARAKOA_MASK_MISERY = null;
+    public static final ItemBarakoaMask BARAKOA_MASK_FAITH = null;
     public static final ItemBarakoMask BARAKO_MASK = null;
     public static final ItemDart DART = null;
     public static final ItemSpear SPEAR = null;
@@ -74,6 +75,7 @@ public final class ItemHandler {
             new ItemBarakoaMask(MaskType.RAGE, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoa_mask_rage"),
             new ItemBarakoaMask(MaskType.BLISS, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoa_mask_bliss"),
             new ItemBarakoaMask(MaskType.MISERY, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoa_mask_misery"),
+            new ItemBarakoaMask(MaskType.FAITH, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoa_mask_faith"),
             new ItemBarakoMask(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barako_mask"),
             new ItemDart(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("dart"),
             new ItemSpear(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab).maxStackSize(1)).setRegistryName("spear"),
@@ -90,10 +92,10 @@ public final class ItemHandler {
     
             new SpawnEggItem(EntityHandler.FOLIAATH, 0x47CC3B, 0xC03BCC, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("foliaath_spawn_egg"),
             new SpawnEggItem(EntityHandler.WROUGHTNAUT, 0x8C8C8C, 0xFFFFFF, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("wroughtnaut_spawn_egg"),
-            new SpawnEggItem(EntityHandler.BARAKOAYA, BARAKOA_GREEN_COLOR, 0xFAFA78, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoa_spawn_egg"),
+            new SpawnEggItem(EntityHandler.BARAKOAYA, BARAKOA_GREEN_COLOR, 0xdbdbdb, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoa_spawn_egg"),
             new SpawnEggItem(EntityHandler.BARAKOANA, BARAKOA_GREEN_COLOR, 0xFAFA78, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoana_spawn_egg"),
-            new SpawnEggItem(EntityHandler.BARAKOA_SUNBLOCKER, BARAKOA_GREEN_COLOR, 0xFAFA78, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoa_sunblocker_spawn_egg"),
-            new SpawnEggItem(EntityHandler.BARAKO, BARAKOA_GREEN_COLOR, 0xFFFF00, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barako_spawn_egg"),
+            new SpawnEggItem(EntityHandler.BARAKOA_SUNBLOCKER, BARAKOA_GREEN_COLOR, 0xff8271, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoa_sunblocker_spawn_egg"),
+            new SpawnEggItem(EntityHandler.BARAKO, BARAKOA_GREEN_COLOR, 0xFFFF2F, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barako_spawn_egg"),
             new SpawnEggItem(EntityHandler.FROSTMAW, 0xf7faff, 0xafcdff, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("frostmaw_spawn_egg"),
             new SpawnEggItem(EntityHandler.GROTTOL, 0x777777, 0xbce0ff, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("grottol_spawn_egg"),
             new SpawnEggItem(EntityHandler.LANTERN, 0x6dea00, 0x235a10, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("lantern_spawn_egg"),
@@ -112,6 +114,7 @@ public final class ItemHandler {
         BARAKOA_MASK_RAGE.getAttributesFromConfig();
         BARAKOA_MASK_BLISS.getAttributesFromConfig();
         BARAKOA_MASK_MISERY.getAttributesFromConfig();
+        BARAKOA_MASK_FAITH.getAttributesFromConfig();
         BARAKO_MASK.getAttributesFromConfig();
         SPEAR.getAttributesFromConfig();
         NAGA_FANG_DAGGER.getAttributesFromConfig();

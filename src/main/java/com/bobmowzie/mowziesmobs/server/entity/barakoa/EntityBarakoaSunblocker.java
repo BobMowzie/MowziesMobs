@@ -1,46 +1,67 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
-import com.bobmowzie.mowziesmobs.server.ai.animation.SimpleAnimationAI;
+import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.entity.EntityType;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.goal.AvoidEntityGoal;
+import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 
-public class EntityBarakoaSunblocker extends EntityBarakoaya {
-    EntityBarako healTarget;
+import java.util.EnumSet;
 
+public class EntityBarakoaSunblocker extends EntityBarakoaya {
     public EntityBarakoaSunblocker(EntityType<? extends EntityBarakoaya> type, World world) {
         super(type, world);
+        setWeapon(3);
+        setMask(MaskType.FAITH);
     }
 
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        goalSelector.addGoal(2, new SimpleAnimationAI<EntityBarakoa>(this, TELEPORT_ANIMATION, false, false) {
-            @Override
-            public void tick() {
-                super.tick();
+        this.goalSelector.addGoal(3, new HealTargetGoal(this));
+        this.goalSelector.addGoal(6, new AvoidEntityGoal<>(this, PlayerEntity.class, 6.0F, 0.7D, 0.5D, target -> {
+            if (target instanceof PlayerEntity) {
+                if (this.world.getDifficulty() == Difficulty.PEACEFUL) return false;
+                if (getAttackTarget() == target) return true;
+                if (getAttackTarget() instanceof EntityBarako) return false;
+                if (getAnimation() != NO_ANIMATION) return false;
+                ItemStack headArmorStack = ((PlayerEntity) target).inventory.armorInventory.get(3);
+                return !(headArmorStack.getItem() instanceof BarakoaMask);
             }
-        });
-        goalSelector.addGoal(2, new SimpleAnimationAI<EntityBarakoa>(this, HEAL_START_ANIMATION, false, false) {
-            @Override
-            public void tick() {
-                super.tick();
-                if (getAnimationTick() == 23)
-                    AnimationHandler.INSTANCE.sendAnimationMessage(entity, HEAL_LOOP_ANIMATION);
+            return true;
+        }));
+    }
+
+    @Override
+    protected void registerTargetGoals() {
+        super.registerTargetGoals();
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<EntityBarako>(this, EntityBarako.class, 0, false, false, target -> {
+            if (target instanceof MobEntity) {
+                return ((MobEntity) target).getAttackTarget() != null || target.getHealth() < target.getMaxHealth();
             }
-        });
-        goalSelector.addGoal(2, new SimpleAnimationAI<EntityBarakoa>(this, HEAL_STOP_ANIMATION, false, false));
-        goalSelector.addGoal(2, new SimpleAnimationAI<EntityBarakoa>(this, HEAL_LOOP_ANIMATION, false, false) {
+            return false;
+        }) {
             @Override
-            public void tick() {
-                super.tick();
-                EntityBarakoaSunblocker barakeera = (EntityBarakoaSunblocker)entity;
-                barakeera.addPotionEffect(new EffectInstance(Effects.GLOWING, 20, 0, false, false));
-                if (barakeera.healTarget != null) barakeera.getLookController().setLookPositionWithEntity(barakeera.healTarget, entity.getHorizontalFaceSpeed(), entity.getVerticalFaceSpeed());
-                if (getAnimationTick() == 19)
-                    AnimationHandler.INSTANCE.sendAnimationMessage(entity, HEAL_LOOP_ANIMATION);
+            public boolean shouldContinueExecuting() {
+                LivingEntity livingentity = this.goalOwner.getAttackTarget();
+                if (livingentity == null) {
+                    livingentity = this.target;
+                }
+                boolean targetHasTarget = false;
+                if (livingentity instanceof MobEntity) targetHasTarget = ((MobEntity)livingentity).getAttackTarget() != null;
+                return super.shouldContinueExecuting() && (livingentity.getHealth() < livingentity.getMaxHealth() || targetHasTarget) && canHeal(target);
+            }
+
+            @Override
+            protected double getTargetDistance() {
+                return super.getTargetDistance() * 2;
             }
         });
     }
@@ -49,8 +70,60 @@ public class EntityBarakoaSunblocker extends EntityBarakoaya {
     public void tick() {
         super.tick();
 
-//        if (getAnimation() == HEAL_LOOP_ANIMATION && healTarget == null) AnimationHandler.INSTANCE.sendAnimationMessage(this, HEAL_STOP_ANIMATION);
+//        if (getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(this, HEAL_START_ANIMATION);
+    }
 
-        if (getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(this, HEAL_START_ANIMATION);
+    @Override
+    protected void updateAttackAI() {
+
+    }
+
+    @Override
+    public boolean canHeal(LivingEntity entity) {
+        return entity instanceof EntityBarako;
+    }
+
+    public class TeleportToSafeSpotGoal extends Goal {
+        private final EntityBarakoaSunblocker entity;
+
+        public TeleportToSafeSpotGoal(EntityBarakoaSunblocker entityIn) {
+            this.entity = entityIn;
+            this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE));
+        }
+
+        @Override
+        public boolean shouldExecute() {
+            return true;
+        }
+
+        @Override
+        public void startExecuting() {
+            super.startExecuting();
+        }
+    }
+
+    public class HealTargetGoal extends Goal {
+        private final EntityBarakoaSunblocker entity;
+
+        public HealTargetGoal(EntityBarakoaSunblocker entityIn) {
+            this.entity = entityIn;
+            this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE, Flag.LOOK));
+        }
+
+        @Override
+        public boolean shouldContinueExecuting() {
+            return entity.canHeal(entity.getAttackTarget());
+        }
+
+        @Override
+        public boolean shouldExecute() {
+            return entity.canHeal(entity.getAttackTarget());
+        }
+
+        @Override
+        public void startExecuting() {
+            super.startExecuting();
+            AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityBarakoa.HEAL_START_ANIMATION);
+        }
     }
 }

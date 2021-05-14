@@ -56,7 +56,7 @@ public class AnimationSpawnBarakoa extends SimpleAnimationAI<EntityBarako> {
             barakoa.setActive(false);
             barakoa.active = false;
             barakoa.onInitialSpawn((IServerWorld) entity.getEntityWorld(), entity.world.getDifficultyForLocation(barakoa.getPosition()), SpawnReason.MOB_SUMMONED, null, null);
-            barakoa.setHomePosAndDistance(entity.getHomePosition(), (int) entity.getMaximumHomeDistance());
+            barakoa.setHomePosAndDistance(entity.getHomePosition(), 25);
             entity.world.addEntity(barakoa);
             barakoa.setMotion(0.7 * Math.sin(-angle * (Math.PI / 180)), 0.5, 0.7 * Math.cos(-angle * (Math.PI / 180)));
             barakoa.setAttackTarget(entity.getAttackTarget());

@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.ai;
 
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaSunblocker;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.LivingEntity;
@@ -65,7 +66,7 @@ public class BarakoaHurtByTargetAI extends TargetGoal
         {
             if (this.goalOwner != entitycreature && !(entitycreature.getAttackTarget() instanceof PlayerEntity) && (!(this.goalOwner instanceof TameableEntity) || ((TameableEntity)this.goalOwner).getOwner() == ((TameableEntity)entitycreature).getOwner()) && !entitycreature.isOnSameTeam(this.goalOwner.getRevengeTarget()))
             {
-                    this.setEntityAttackTarget(entitycreature, this.goalOwner.getRevengeTarget());
+                this.setEntityAttackTarget(entitycreature, this.goalOwner.getRevengeTarget());
             }
         }
     }

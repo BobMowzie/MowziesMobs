@@ -84,6 +84,11 @@ public class EntityBarakoaya extends EntityBarakoa implements LeaderSunstrikeImm
         super.registerGoals();
         goalSelector.addGoal(1, new EntityAIBarakoayaTrade(this));
         goalSelector.addGoal(1, new EntityAIBarakoayaTradeLook(this));
+        this.goalSelector.addGoal(7, new MoveTowardsRestrictionGoal(this, 0.4));
+    }
+
+    @Override
+    protected void registerTargetGoals() {
         targetSelector.addGoal(3, new BarakoaHurtByTargetAI(this, true));
         this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 0, true, true, target -> {
             if (target instanceof PlayerEntity) {
@@ -95,7 +100,6 @@ public class EntityBarakoaya extends EntityBarakoa implements LeaderSunstrikeImm
         }));
         targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, true, true, null));
         targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, SkeletonEntity.class, 0, true, false, null));
-        this.goalSelector.addGoal(5, new MoveTowardsRestrictionGoal(this, 0.4));
     }
 
     @Override
