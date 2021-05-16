@@ -32,6 +32,7 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
     public AdvancedModelRenderer spear;
     public AdvancedModelRenderer blowgun;
     public AdvancedModelRenderer staff;
+    public AdvancedModelRenderer staffEnd;
     public AdvancedModelRenderer armUpperLeft;
     public AdvancedModelRenderer armLowerLeft;
     public AdvancedModelRenderer handLeft;
@@ -131,6 +132,8 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         this.bone.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.staff = new AdvancedModelRenderer(this, 66, 0);
         this.staff.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.staffEnd = new AdvancedModelRenderer(this, 0, 0);
+        this.staffEnd.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.earLeft = new AdvancedModelRenderer(this, 48, 0);
         this.earLeft.setRotationPoint(4.0F, -4.0F, -3.0F);
         this.earLeft.addBox(0.0F, -2.0F, 0.0F, 4, 6, 1, 0.0F);
@@ -319,6 +322,7 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         this.maskBase.addChild(this.mane);
         this.spearBase.addChild(bone);
         this.spearBase.addChild(staff);
+        this.spearBase.addChild(staffEnd);
         updateDefaultPose();
 
         modelCore.scaleChildren = true;
@@ -401,6 +405,8 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         staff.rotateAngleY -= 2.3;
         staff.rotationPointY += 2.5;
         staff.rotationPointZ -= 3;
+
+        staffEnd.rotationPointZ -= 12;
 
         spear.rotateAngleZ -= Math.PI / 2f;
         spear.rotateAngleX -= Math.PI / 2f;

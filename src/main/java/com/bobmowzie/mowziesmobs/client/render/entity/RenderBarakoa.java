@@ -2,15 +2,20 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBarakoa;
+import com.bobmowzie.mowziesmobs.client.render.RenderUtils;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.ItemLayer;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -32,6 +37,14 @@ public class RenderBarakoa extends MobRenderer<EntityBarakoa, ModelBarakoa<Entit
         addLayer(new ItemLayer(this, getEntityModel().spear, ItemHandler.SPEAR.getDefaultInstance()));
         addLayer(new ItemLayer(this, getEntityModel().blowgun, ItemHandler.BLOWGUN.getDefaultInstance()));
         addLayer(new ItemLayer(this, getEntityModel().staff, ItemHandler.SUNBLOCK_STAFF.getDefaultInstance()));
+    }
+
+    @Override
+    public void render(EntityBarakoa entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+        super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+        boolean healingAnim = entityIn.getAnimation() == EntityBarakoa.HEAL_LOOP_ANIMATION || entityIn.getAnimation() == EntityBarakoa.HEAL_START_ANIMATION || entityIn.getAnimation() == EntityBarakoa.HEAL_STOP_ANIMATION;
+        float f = MathHelper.interpolateAngle(partialTicks, entityIn.prevRenderYawOffset, entityIn.renderYawOffset);
+        if (healingAnim && entityIn.staffPos != null && entityIn.staffPos.length > 0) entityIn.staffPos[0] = RenderUtils.getWorldPosFromModel(entityIn, f, getEntityModel().staffEnd);
     }
 
     @Override

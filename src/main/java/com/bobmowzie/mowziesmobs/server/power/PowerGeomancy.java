@@ -17,7 +17,6 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FenceBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -109,7 +108,7 @@ public class PowerGeomancy extends Power {
             if (!prevUnderground && underground) {
                 player.playSound(MMSounds.EFFECT_GEOMANCY_BREAK_MEDIUM.get(rand.nextInt(3)).get(), 1f, 0.9f + rand.nextFloat() * 0.1f);
                 if (player.world.isRemote)
-                    AdvancedParticleBase.spawnParticle(player.world, ParticleHandler.RING2.get(), (float) player.getPosX(), (float) player.getPosY() + 0.02f, (float) player.getPosZ(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, new ParticleComponent[]{
+                    AdvancedParticleBase.spawnParticle(player.world, ParticleHandler.RING2.get(), (float) player.getPosX(), (float) player.getPosY() + 0.02f, (float) player.getPosZ(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, true, new ParticleComponent[]{
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(10f, 30f), false)
                 });
@@ -117,7 +116,7 @@ public class PowerGeomancy extends Power {
             if (prevUnderground && !underground) {
                 player.playSound(MMSounds.EFFECT_GEOMANCY_BREAK.get(), 1f, 0.9f + rand.nextFloat() * 0.1f);
                 if (player.world.isRemote)
-                    AdvancedParticleBase.spawnParticle(player.world, ParticleHandler.RING2.get(), (float) player.getPosX(), (float) player.getPosY() + 0.02f, (float) player.getPosZ(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, new ParticleComponent[]{
+                    AdvancedParticleBase.spawnParticle(player.world, ParticleHandler.RING2.get(), (float) player.getPosX(), (float) player.getPosY() + 0.02f, (float) player.getPosZ(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, true, new ParticleComponent[]{
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(10f, 30f), false)
                 });
@@ -147,7 +146,7 @@ public class PowerGeomancy extends Power {
                 if (spawnBoulderCharge == 1 && player.world.isRemote) MowziesMobs.PROXY.playBoulderChargeSound(player);
                 if ((spawnBoulderCharge + 10) % 10 == 0 && spawnBoulderCharge < 40) {
                     if (player.world.isRemote) {
-                        AdvancedParticleBase.spawnParticle(player.world, ParticleHandler.RING2.get(), (float) player.getPosX(), (float) player.getPosY() + player.getHeight() / 2f, (float) player.getPosZ(), 0, 0, 0, false, 0, Math.PI / 2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, new ParticleComponent[]{
+                        AdvancedParticleBase.spawnParticle(player.world, ParticleHandler.RING2.get(), (float) player.getPosX(), (float) player.getPosY() + player.getHeight() / 2f, (float) player.getPosZ(), 0, 0, 0, false, 0, Math.PI / 2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, true, new ParticleComponent[]{
                                 new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0f, 0.7f), false),
                                 new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd((0.8f + 2.7f * spawnBoulderCharge / 60f) * 10f, 0), false)
                         });
@@ -155,7 +154,7 @@ public class PowerGeomancy extends Power {
                 }
                 if (spawnBoulderCharge == 50) {
                     if (player.world.isRemote) {
-                        AdvancedParticleBase.spawnParticle(player.world, ParticleHandler.RING2.get(), (float) player.getPosX(), (float) player.getPosY() + player.getHeight() / 2f, (float) player.getPosZ(), 0, 0, 0, true, 0, 0, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 20, true, new ParticleComponent[]{
+                        AdvancedParticleBase.spawnParticle(player.world, ParticleHandler.RING2.get(), (float) player.getPosX(), (float) player.getPosY() + player.getHeight() / 2f, (float) player.getPosZ(), 0, 0, 0, true, 0, 0, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 20, true, true, new ParticleComponent[]{
                                 new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0.7f, 0f), false),
                                 new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(0, 40f), false)
                         });

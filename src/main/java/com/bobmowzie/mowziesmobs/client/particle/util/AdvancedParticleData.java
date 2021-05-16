@@ -44,11 +44,13 @@ public class AdvancedParticleData implements IParticleData {
             double duration = reader.readDouble();
             reader.expect(' ');
             double faceCameraAngle = reader.readDouble();
+            reader.expect(' ');
+            boolean canCollide = reader.readBoolean();
             ParticleRotation rotation;
             if (rotationMode.equals("face_camera")) rotation = new ParticleRotation.FaceCamera((float) faceCameraAngle);
             else if (rotationMode.equals("euler")) rotation = new ParticleRotation.EulerAngles((float)yaw, (float)pitch, (float)roll);
             else rotation = new ParticleRotation.OrientVector(new Vector3d(yaw, pitch, roll));
-            return new AdvancedParticleData(particleTypeIn, rotation, scale, red, green, blue, alpha, airDrag, duration, emissive);
+            return new AdvancedParticleData(particleTypeIn, rotation, scale, red, green, blue, alpha, airDrag, duration, emissive, canCollide);
         }
 
         public AdvancedParticleData read(ParticleType<AdvancedParticleData> particleTypeIn, PacketBuffer buffer) {
@@ -65,11 +67,12 @@ public class AdvancedParticleData implements IParticleData {
             boolean emissive = buffer.readBoolean();
             double duration = buffer.readFloat();
             double faceCameraAngle = buffer.readFloat();
+            boolean canCollide = buffer.readBoolean();
             ParticleRotation rotation;
             if (rotationMode.equals("face_camera")) rotation = new ParticleRotation.FaceCamera((float) faceCameraAngle);
             else if (rotationMode.equals("euler")) rotation = new ParticleRotation.EulerAngles((float)yaw, (float)pitch, (float)roll);
             else rotation = new ParticleRotation.OrientVector(new Vector3d(yaw, pitch, roll));
-            return new AdvancedParticleData(particleTypeIn, rotation, scale, red, green, blue, alpha, airDrag, duration, emissive);
+            return new AdvancedParticleData(particleTypeIn, rotation, scale, red, green, blue, alpha, airDrag, duration, emissive, canCollide);
         }
     };
 
@@ -81,14 +84,15 @@ public class AdvancedParticleData implements IParticleData {
     private final float scale;
     private final boolean emissive;
     private final float duration;
+    private final boolean canCollide;
 
     private final ParticleComponent[] components;
 
-    public AdvancedParticleData(ParticleType<? extends AdvancedParticleData> type, ParticleRotation rotation, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive) {
-        this(type, rotation, scale, r, g, b, a, drag, duration, emissive, new ParticleComponent[]{});
+    public AdvancedParticleData(ParticleType<? extends AdvancedParticleData> type, ParticleRotation rotation, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, boolean canCollide) {
+        this(type, rotation, scale, r, g, b, a, drag, duration, emissive, canCollide, new ParticleComponent[]{});
     }
 
-    public AdvancedParticleData(ParticleType<? extends AdvancedParticleData> type, ParticleRotation rotation, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, ParticleComponent[] components) {
+    public AdvancedParticleData(ParticleType<? extends AdvancedParticleData> type, ParticleRotation rotation, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, boolean canCollide, ParticleComponent[] components) {
         this.type = type;
 
         this.rotation = rotation;
@@ -104,6 +108,8 @@ public class AdvancedParticleData implements IParticleData {
         this.airDrag = (float) drag;
 
         this.duration = (float) duration;
+
+        this.canCollide = canCollide;
 
         this.components = components;
     }
@@ -146,6 +152,7 @@ public class AdvancedParticleData implements IParticleData {
         buffer.writeBoolean(this.emissive);
         buffer.writeFloat(this.duration);
         buffer.writeFloat(faceCameraAngle);
+        buffer.writeBoolean(canCollide);
     }
 
     @SuppressWarnings("deprecation")
@@ -174,8 +181,8 @@ public class AdvancedParticleData implements IParticleData {
             roll = (float) vec.z;
         }
 
-        return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f %.2f %s %.2f %.2f %.2f %.2f %b %.2f %.2f", Registry.PARTICLE_TYPE.getKey(this.getType()),
-                this.airDrag, this.red, this.green, this.blue, this.alpha, rotationMode, this.scale, yaw, pitch, roll, this.emissive, this.duration, faceCameraAngle);
+        return String.format(Locale.ROOT, "%s %.2f %.2f %.2f %.2f %.2f %s %.2f %.2f %.2f %.2f %b %.2f %.2f %b", Registry.PARTICLE_TYPE.getKey(this.getType()),
+                this.airDrag, this.red, this.green, this.blue, this.alpha, rotationMode, this.scale, yaw, pitch, roll, this.emissive, this.duration, faceCameraAngle, canCollide);
     }
 
     @Override
@@ -229,6 +236,11 @@ public class AdvancedParticleData implements IParticleData {
     }
 
     @OnlyIn(Dist.CLIENT)
+    public boolean getCanCollide() {
+        return canCollide;
+    }
+
+    @OnlyIn(Dist.CLIENT)
     public ParticleComponent[] getComponents() {
         return components;
     }
@@ -242,9 +254,10 @@ public class AdvancedParticleData implements IParticleData {
                 Codec.DOUBLE.fieldOf("a").forGetter(AdvancedParticleData::getAlpha),
                 Codec.DOUBLE.fieldOf("drag").forGetter(AdvancedParticleData::getAirDrag),
                 Codec.DOUBLE.fieldOf("duration").forGetter(AdvancedParticleData::getDuration),
-                Codec.BOOL.fieldOf("emissive").forGetter(AdvancedParticleData::isEmissive)
-                ).apply(codecBuilder, (scale, r, g, b, a, drag, duration, emissive) ->
-                        new AdvancedParticleData(particleType, new ParticleRotation.FaceCamera(0), scale, r, g, b, a, drag, duration, emissive, new ParticleComponent[]{}))
+                Codec.BOOL.fieldOf("emissive").forGetter(AdvancedParticleData::isEmissive),
+                Codec.BOOL.fieldOf("canCollide").forGetter(AdvancedParticleData::getCanCollide)
+                ).apply(codecBuilder, (scale, r, g, b, a, drag, duration, emissive, canCollide) ->
+                        new AdvancedParticleData(particleType, new ParticleRotation.FaceCamera(0), scale, r, g, b, a, drag, duration, emissive, canCollide, new ParticleComponent[]{}))
         );
     }
 }

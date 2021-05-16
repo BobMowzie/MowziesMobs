@@ -25,7 +25,7 @@ public class ParticleRibbon extends AdvancedParticleBase {
     public Vector3d[] prevPositions;
 
     protected ParticleRibbon(ClientWorld worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double motionX, double motionY, double motionZ, ParticleRotation rotation, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, int length, ParticleComponent[] components) {
-        super(worldIn, xCoordIn, yCoordIn, zCoordIn, motionX, motionY, motionZ, rotation, scale, r, g, b, a, drag, duration, emissive, components);
+        super(worldIn, xCoordIn, yCoordIn, zCoordIn, motionX, motionY, motionZ, rotation, scale, r, g, b, a, drag, duration, emissive, false, components);
         positions = new Vector3d[length];
         prevPositions = new Vector3d[length];
         positions[0] = new Vector3d(getPosX(), getPosY(), getPosZ());

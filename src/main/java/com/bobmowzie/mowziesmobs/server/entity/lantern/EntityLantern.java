@@ -17,14 +17,12 @@ import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.controller.MovementController;
 import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.monster.GhastEntity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -99,7 +97,7 @@ public class EntityLantern extends MowzieEntity {
                     ParticleVanillaCloudExtended.spawnVanillaCloud(world, getPosX(), getPosY() + 0.3, getPosZ(), -getMotion().getX() * 0.2 + 0.1 * (rand.nextFloat() - 0.5), -getMotion().getY() * 0.2 + 0.1 * (rand.nextFloat() - 0.5), -getMotion().getZ() * 0.2 + 0.1 * (rand.nextFloat() - 0.5), 0.8d + rand.nextDouble() * 1d, 163d / 256d, 247d / 256d, 74d / 256d, 0.95, 30);
                 }
                 for (int i = 0; i < 8; i++) {
-                    AdvancedParticleBase.spawnParticle(world, ParticleHandler.PIXEL.get(), getPosX(), getPosY() + 0.3, getPosZ(), -getMotion().getX() * 0.2 + 0.2 * (rand.nextFloat() - 0.5), -getMotion().getY() * 0.2 + 0.1 * (rand.nextFloat() - 0.5), -getMotion().getZ() * 0.2 + 0.2 * (rand.nextFloat() - 0.5), true, 0, 0, 0, 0, 4f, 163d / 256d, 247d / 256d, 74d / 256d, 1, 0.9, 17 + rand.nextFloat() * 10, true, new ParticleComponent[] {
+                    AdvancedParticleBase.spawnParticle(world, ParticleHandler.PIXEL.get(), getPosX(), getPosY() + 0.3, getPosZ(), -getMotion().getX() * 0.2 + 0.2 * (rand.nextFloat() - 0.5), -getMotion().getY() * 0.2 + 0.1 * (rand.nextFloat() - 0.5), -getMotion().getZ() * 0.2 + 0.2 * (rand.nextFloat() - 0.5), true, 0, 0, 0, 0, 4f, 163d / 256d, 247d / 256d, 74d / 256d, 1, 0.9, 17 + rand.nextFloat() * 10, true, true, new ParticleComponent[] {
                             new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
                                     new float[] {4f, 0},
                                     new float[] {0.8f, 1}
@@ -141,7 +139,7 @@ public class EntityLantern extends MowzieEntity {
         if (world.isRemote && ConfigHandler.CLIENT.glowEffect.get()) {
             pos[0] = getPositionVec().add(0, getHeight() * 0.8, 0);
             if (ticksExisted % 70 == 0) {
-                AdvancedParticleBase.spawnParticle(world, ParticleHandler.GLOW.get(), pos[0].x, pos[0].y, pos[0].z, 0, 0, 0, true, 0, 0, 0, 0, 20F, 0.8, 0.95, 0.35, 1, 1, 70, true, new ParticleComponent[]{
+                AdvancedParticleBase.spawnParticle(world, ParticleHandler.GLOW.get(), pos[0].x, pos[0].y, pos[0].z, 0, 0, 0, true, 0, 0, 0, 0, 20F, 0.8, 0.95, 0.35, 1, 1, 70, true, true, new ParticleComponent[]{
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, new ParticleComponent.KeyTrack(
                                 new float[]{0.0f, 0.8f, 0},
                                 new float[]{0, 0.5f, 1}

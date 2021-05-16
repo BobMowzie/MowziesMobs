@@ -80,7 +80,7 @@ public class RibbonParticleData extends AdvancedParticleData {
     }
 
     public RibbonParticleData(ParticleType<? extends RibbonParticleData> type, ParticleRotation rotation, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, int length, ParticleComponent[] components) {
-        super(type, rotation, scale, r, g, b, a, drag, duration, emissive, components);
+        super(type, rotation, scale, r, g, b, a, drag, duration, emissive, false, components);
         this.length = length;
     }
 

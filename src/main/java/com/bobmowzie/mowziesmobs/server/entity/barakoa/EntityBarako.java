@@ -396,7 +396,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                         double ox = radius * Math.sin(yaw) * Math.sin(pitch);
                         double oy = radius * Math.cos(pitch);
                         double oz = radius * Math.cos(yaw) * Math.sin(pitch);
-                        AdvancedParticleBase.spawnParticle(world, ParticleHandler.ORB2.get(), getPosX() + ox, getPosY() + 0.8f + oy, getPosZ() + oz, 0, 0, 0, true, 0, 0, 0, 0, 5F, 1, 1, 1, 1, 1, 20, true, new ParticleComponent[]{
+                        AdvancedParticleBase.spawnParticle(world, ParticleHandler.ORB2.get(), getPosX() + ox, getPosY() + 0.8f + oy, getPosZ() + oz, 0, 0, 0, true, 0, 0, 0, 0, 5F, 1, 1, 1, 1, 1, 20, true, true, new ParticleComponent[]{
                                 new ParticleComponent.Attractor(blessingPlayerPos, 0.5f, 0.2f, ParticleComponent.Attractor.EnumAttractorBehavior.LINEAR),
                                 new ParticleComponent.PropertyControl(EnumParticleProperty.POS_X, new ParticleComponent.Oscillator(0, (float) ox, 6f, 2.5f), true),
                                 new ParticleComponent.PropertyControl(EnumParticleProperty.POS_Y, new ParticleComponent.Oscillator(0, (float) oy, 6f, 2.5f), true),
@@ -409,7 +409,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                     }
                 }
                 if (getAnimationTick() % 15 == 0) {
-                    AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING2.get(), getPosX(), getPosY() + 0.8f, getPosZ(), 0, 0, 0, true, 0, 0, 0, 0, 3.5F, 1, 223/255f, 66/255f, 1, 1, 15, true, new ParticleComponent[]{
+                    AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING2.get(), getPosX(), getPosY() + 0.8f, getPosZ(), 0, 0, 0, true, 0, 0, 0, 0, 3.5F, 1, 223/255f, 66/255f, 1, 1, 15, true, true, new ParticleComponent[]{
                             new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                             new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(5f, 35f), false)
                     });
@@ -446,7 +446,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 
         if (!world.isRemote && getAttackTarget() == null && getAnimation() != SOLAR_BEAM_ANIMATION && getAnimation() != SUPERNOVA_ANIMATION) {
             timeUntilHeal--;
-            if (ConfigHandler.COMMON.MOBS.BARAKO.healsOutOfBattle.get() && timeUntilHeal <= 0) heal(0.3f);
+//            if (ConfigHandler.COMMON.MOBS.BARAKO.healsOutOfBattle.get() && timeUntilHeal <= 0) heal(0.3f);
         }
         else {
             timeUntilHeal = HEAL_PAUSE;
@@ -477,14 +477,14 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                     new float[]{0, 0.6f, 0.85f, 1}
             );
             superNovaKeyTrack2 = ParticleComponent.KeyTrack.oscillate(0, 7, 24);
-            AdvancedParticleBase.spawnParticle(world, ParticleHandler.SUN.get(), getPosX(), getPosY(), getPosZ(), 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 33, true, new ParticleComponent[]{
+            AdvancedParticleBase.spawnParticle(world, ParticleHandler.SUN.get(), getPosX(), getPosY(), getPosZ(), 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 33, true, true, new ParticleComponent[]{
                     new ParticleComponent.PinLocation(betweenHandPos),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, superNovaKeyTrack1, false),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, superNovaKeyTrack2, true)
             });
         }
         if (getAnimationTick() == 33) {
-            AdvancedParticleBase.spawnParticle(world, ParticleHandler.SUN_NOVA.get(), getPosX(), getPosY(), getPosZ(), 0, 0, 0, true, 0, 0, 0, 0, 20F, 1, 1, 1, 0, 1, 13, true, new ParticleComponent[]{
+            AdvancedParticleBase.spawnParticle(world, ParticleHandler.SUN_NOVA.get(), getPosX(), getPosY(), getPosZ(), 0, 0, 0, true, 0, 0, 0, 0, 20F, 1, 1, 1, 0, 1, 13, true, true, new ParticleComponent[]{
                     new ParticleComponent.PinLocation(betweenHandPos),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
                             new float[]{11f, 7f, 5.5f, 1f, 30},
@@ -498,7 +498,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             });
         }
         if (getAnimationTick() == 32) {
-            AdvancedParticleBase.spawnParticle(world, ParticleHandler.FLARE.get(), getPosX(), getPosY(), getPosZ(), 0, 0, 0, true, 0, 0, 0, 0, 5F, 1,1,1, 0.7, 1, 3, true, new ParticleComponent[]{
+            AdvancedParticleBase.spawnParticle(world, ParticleHandler.FLARE.get(), getPosX(), getPosY(), getPosZ(), 0, 0, 0, true, 0, 0, 0, 0, 5F, 1,1,1, 0.7, 1, 3, true, true, new ParticleComponent[]{
                     new ParticleComponent.PinLocation(betweenHandPos),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.POS_Y, ParticleComponent.constant(-0.15f), true),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
@@ -511,7 +511,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             for (int i = 0; i < 6; i++) {
                 float phaseOffset = rand.nextFloat();
                 double value = rand.nextDouble() * 0.3 + 0.05;
-                AdvancedParticleBase.spawnParticle(world, ParticleHandler.PIXEL.get(), betweenHandPos[0].x, betweenHandPos[0].y, betweenHandPos[0].z, 0, 0, 0, true, 0, 0, 0, 0, 5F, value, value, value, 1, 1, 6, false, new ParticleComponent[]{
+                AdvancedParticleBase.spawnParticle(world, ParticleHandler.PIXEL.get(), betweenHandPos[0].x, betweenHandPos[0].y, betweenHandPos[0].z, 0, 0, 0, true, 0, 0, 0, 0, 5F, value, value, value, 1, 1, 6, false, true, new ParticleComponent[]{
                         new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
                                 new float[]{0f, 3f},
                                 new float[]{0, 0.2f}
@@ -527,7 +527,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.add(betweenHandPos[0]);
                 double value = rand.nextDouble() * 0.5 + 0.1;
-                AdvancedParticleBase.spawnParticle(world, ParticleHandler.PIXEL.get(), particlePos.x, particlePos.y, particlePos.z, 0, 0, 0, true, 0, 0, 0, 0, 5F, value, value, value, 1, 1, 7, false, new ParticleComponent[]{
+                AdvancedParticleBase.spawnParticle(world, ParticleHandler.PIXEL.get(), particlePos.x, particlePos.y, particlePos.z, 0, 0, 0, true, 0, 0, 0, 0, 5F, value, value, value, 1, 1, 7, false, true, new ParticleComponent[]{
                         new ParticleComponent.Attractor(betweenHandPos, 1.1f, 1f, ParticleComponent.Attractor.EnumAttractorBehavior.EXPONENTIAL),
                         new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
                                 new float[]{0f, 3.5f},
@@ -538,14 +538,14 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         }
         float timeFrac = Math.min((float)getAnimationTick() / 20f, 1f);
         if (getAnimationTick() > 1 && getAnimationTick() < 25 && getAnimationTick() % (int)(4 * (1 - timeFrac) + 1) == 0) {
-            AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING_SPARKS.get(),  getPosX(), getPosY(), getPosZ(), 0, 0, 0, true, 0, 0, 0, rand.nextFloat() * (float)Math.PI * 2, 5F, 1, 1, 1, 1, 1, 6 + rand.nextFloat() * 3, true, new ParticleComponent[]{
+            AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING_SPARKS.get(),  getPosX(), getPosY(), getPosZ(), 0, 0, 0, true, 0, 0, 0, rand.nextFloat() * (float)Math.PI * 2, 5F, 1, 1, 1, 1, 1, 6 + rand.nextFloat() * 3, true, true, new ParticleComponent[]{
                     new ParticleComponent.PinLocation(betweenHandPos),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(10f + 20f * timeFrac * timeFrac + 10f * rand.nextFloat() * timeFrac, 0f), false),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0f, 0.7f), false)
             });
         }
         if (getAnimationTick() == 14) {
-            AdvancedParticleBase.spawnParticle(world, ParticleHandler.FLARE.get(),  getPosX(), getPosY(), getPosZ(), 0, 0, 0, true, 0, 0, 0, 0, 5F, 1, 1, 1, 1, 1, 18, true, new ParticleComponent[]{
+            AdvancedParticleBase.spawnParticle(world, ParticleHandler.FLARE.get(),  getPosX(), getPosY(), getPosZ(), 0, 0, 0, true, 0, 0, 0, 0, 5F, 1, 1, 1, 1, 1, 18, true, true, new ParticleComponent[]{
                     new ParticleComponent.PinLocation(betweenHandPos),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.POS_Y, ParticleComponent.constant(-0.1f), true),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
@@ -557,7 +557,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         }
 
         if (getAnimationTick() == 32) {
-            AdvancedParticleBase.spawnParticle(world, ParticleHandler.BURST_IN.get(),  getPosX(), getPosY(), getPosZ(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 5F, 0, 0, 0, 1, 1, 10, true, new ParticleComponent[]{
+            AdvancedParticleBase.spawnParticle(world, ParticleHandler.BURST_IN.get(),  getPosX(), getPosY(), getPosZ(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 5F, 0, 0, 0, 1, 1, 10, true, true, new ParticleComponent[]{
                     new ParticleComponent.PinLocation(betweenHandPos),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(25f, 0f), false),
                     new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0f, 1f), false),
@@ -567,7 +567,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 
         if (getAnimationTick() == 44) {
             float scale = 85f;
-            AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING_BIG.get(), betweenHandPos[0].x, betweenHandPos[0].y, betweenHandPos[0].z, 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 5F, 1,1,1, 1, 1, 40, true, new ParticleComponent[]{
+            AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING_BIG.get(), betweenHandPos[0].x, betweenHandPos[0].y, betweenHandPos[0].z, 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 5F, 1,1,1, 1, 1, 40, true, true, new ParticleComponent[]{
                     new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
                             new float[]{0.0f * scale, 0.59f * scale, 0.87f * scale, 0.974f * scale, 0.998f * scale, 1f * scale},
                             new float[]{0, 0.2f, 0.4f, 0.6f, 0.8f, 1f}
@@ -575,7 +575,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                     new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
             });
             scale = 120f;
-            AdvancedParticleBase.spawnParticle(world, ParticleHandler.GLOW.get(), betweenHandPos[0].x, betweenHandPos[0].y, betweenHandPos[0].z, 0, 0, 0, true, 0, 0, 0, 0, 5F, 0.95, 0.9,0.35, 1, 1, 40, true, new ParticleComponent[]{
+            AdvancedParticleBase.spawnParticle(world, ParticleHandler.GLOW.get(), betweenHandPos[0].x, betweenHandPos[0].y, betweenHandPos[0].z, 0, 0, 0, true, 0, 0, 0, 0, 5F, 0.95, 0.9,0.35, 1, 1, 40, true, true, new ParticleComponent[]{
                     new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
                             new float[]{0.0f * scale, 0.59f * scale, 0.87f * scale, 0.974f * scale, 0.998f * scale, 1f * scale},
                             new float[]{0, 0.2f, 0.4f, 0.6f, 0.8f, 1f}

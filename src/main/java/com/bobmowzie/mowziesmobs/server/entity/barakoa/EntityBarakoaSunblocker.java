@@ -16,6 +16,7 @@ import net.minecraft.world.World;
 import java.util.EnumSet;
 
 public class EntityBarakoaSunblocker extends EntityBarakoaya {
+
     public EntityBarakoaSunblocker(EntityType<? extends EntityBarakoaya> type, World world) {
         super(type, world);
         setWeapon(3);
@@ -26,7 +27,7 @@ public class EntityBarakoaSunblocker extends EntityBarakoaya {
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(3, new HealTargetGoal(this));
-        this.goalSelector.addGoal(6, new AvoidEntityGoal<>(this, PlayerEntity.class, 6.0F, 0.7D, 0.5D, target -> {
+        this.goalSelector.addGoal(6, new AvoidEntityGoal<>(this, PlayerEntity.class, 7.0F, 0.8D, 0.6D, target -> {
             if (target instanceof PlayerEntity) {
                 if (this.world.getDifficulty() == Difficulty.PEACEFUL) return false;
                 if (getAttackTarget() == target) return true;
