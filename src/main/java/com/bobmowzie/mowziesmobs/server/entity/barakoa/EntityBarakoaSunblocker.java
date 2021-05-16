@@ -1,10 +1,13 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
+import com.bobmowzie.mowziesmobs.server.ai.NearestAttackableTargetPredicateGoal;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
+import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
@@ -43,12 +46,12 @@ public class EntityBarakoaSunblocker extends EntityBarakoaya {
     @Override
     protected void registerTargetGoals() {
         super.registerTargetGoals();
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<EntityBarako>(this, EntityBarako.class, 0, false, false, target -> {
+        this.targetSelector.addGoal(2, new NearestAttackableTargetPredicateGoal(this, EntityBarako.class, 0, false, false, (new EntityPredicate()).setDistance(getAttributeValue(Attributes.FOLLOW_RANGE) * 2).setCustomPredicate(target -> {
             if (target instanceof MobEntity) {
                 return ((MobEntity) target).getAttackTarget() != null || target.getHealth() < target.getMaxHealth();
             }
             return false;
-        }) {
+        }).allowFriendlyFire().allowInvulnerable().setSkipAttackChecks().setIgnoresLineOfSight()) {
             @Override
             public boolean shouldContinueExecuting() {
                 LivingEntity livingentity = this.goalOwner.getAttackTarget();
@@ -57,12 +60,20 @@ public class EntityBarakoaSunblocker extends EntityBarakoaya {
                 }
                 boolean targetHasTarget = false;
                 if (livingentity instanceof MobEntity) targetHasTarget = ((MobEntity)livingentity).getAttackTarget() != null;
-                return super.shouldContinueExecuting() && (livingentity.getHealth() < livingentity.getMaxHealth() || targetHasTarget) && canHeal(target);
+                boolean canHeal = true;
+                if (this.goalOwner instanceof EntityBarakoa) canHeal = ((EntityBarakoa)this.goalOwner).canHeal(livingentity);
+                return super.shouldContinueExecuting() && (livingentity.getHealth() < livingentity.getMaxHealth() || targetHasTarget) && canHeal;
             }
 
             @Override
             protected double getTargetDistance() {
                 return super.getTargetDistance() * 2;
+            }
+
+            @Override
+            public void startExecuting() {
+                targetEntitySelector.setIgnoresLineOfSight().allowInvulnerable().allowFriendlyFire().setSkipAttackChecks();
+                super.startExecuting();
             }
         });
     }
