@@ -10,6 +10,7 @@ import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent.PropertyControl.EnumParticleProperty;
 import com.bobmowzie.mowziesmobs.server.advancement.AdvancementHandler;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
+import com.bobmowzie.mowziesmobs.server.ai.NearestAttackableTargetPredicateGoal;
 import com.bobmowzie.mowziesmobs.server.ai.animation.*;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
@@ -138,14 +139,14 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         super.registerGoals();
         hurtByTargetAI = new BarakoaHurtByTargetAI(this, true);
         this.targetSelector.addGoal(3, hurtByTargetAI);
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 0, false, true, target -> {
+        this.targetSelector.addGoal(4, new NearestAttackableTargetPredicateGoal<>(this, PlayerEntity.class, 0, false, true, (new EntityPredicate()).setDistance(getAttributeValue(Attributes.FOLLOW_RANGE)).setCustomPredicate(target -> {
                 if (target instanceof PlayerEntity) {
                     if (this.world.getDifficulty() == Difficulty.PEACEFUL) return false;
                     ItemStack headArmorStack = ((PlayerEntity) target).inventory.armorInventory.get(3);
                     return !(headArmorStack.getItem() instanceof BarakoaMask);
                 }
                 return true;
-            }));
+            }).setIgnoresLineOfSight()));
         this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, IronGolemEntity.class, 0, true, false, null));
         this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, true, false, (e) -> !(e instanceof ZombifiedPiglinEntity)));
         this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, SkeletonEntity.class, 0, true, false, null));
