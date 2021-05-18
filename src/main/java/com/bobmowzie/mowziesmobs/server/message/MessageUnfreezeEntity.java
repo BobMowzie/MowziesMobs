@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.server.message;
 
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
-import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
+import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -45,7 +45,7 @@ public class MessageUnfreezeEntity {
                 Entity entity = Minecraft.getInstance().world.getEntityByID(message.entityID);
                 if (entity instanceof LivingEntity) {
                     LivingEntity living = (LivingEntity) entity;
-                    living.removeActivePotionEffect(PotionHandler.FROZEN);
+                    living.removeActivePotionEffect(EffectHandler.FROZEN);
                     FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(living, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
                     if (frozenCapability != null) {
                         frozenCapability.onUnfreeze(living);

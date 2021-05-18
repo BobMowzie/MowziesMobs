@@ -6,18 +6,15 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleCloud;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleSnowFlake;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
-import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.message.MessageAddFreezeProgress;
 import com.bobmowzie.mowziesmobs.server.message.MessageUnfreezeEntity;
-import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
+import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.particles.BlockParticleData;
@@ -239,7 +236,7 @@ public class FrozenCapability {
 
         @Override
         public void addFreezeProgress(LivingEntity entity, float amount) {
-            if (!entity.world.isRemote && !entity.isPotionActive(PotionHandler.FROZEN)) {
+            if (!entity.world.isRemote && !entity.isPotionActive(EffectHandler.FROZEN)) {
                 freezeProgress += amount;
                 freezeDecayDelay = MAX_FREEZE_DECAY_DELAY;
                 MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new MessageAddFreezeProgress(entity, amount));
@@ -319,7 +316,7 @@ public class FrozenCapability {
         public void tick(LivingEntity entity) {
             // Freeze logic
             if (getFreezeProgress() >= 1) {
-                entity.addPotionEffect(new EffectInstance(PotionHandler.FROZEN, 50, 0, false, false));
+                entity.addPotionEffect(new EffectInstance(EffectHandler.FROZEN, 50, 0, false, false));
                 freezeProgress = 1f;
             } else if (freezeProgress > 0) {
                 entity.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 9, MathHelper.floor(freezeProgress * 5 + 1), false, false));
@@ -330,12 +327,12 @@ public class FrozenCapability {
                 if (riding instanceof EntityFrozenController) frozenController = (EntityFrozenController) riding;
             }
 
-            if (entity.isPotionActive(PotionHandler.FROZEN) && !prevFrozen) {
+            if (entity.isPotionActive(EffectHandler.FROZEN) && !prevFrozen) {
                 onFreeze(entity);
             }
 
-            if (entity.isPotionActive(PotionHandler.FROZEN)) {
-                if (entity.getActivePotionEffect(PotionHandler.FROZEN).getDuration() <= 0) entity.removeActivePotionEffect(PotionHandler.FROZEN);
+            if (entity.isPotionActive(EffectHandler.FROZEN)) {
+                if (entity.getActivePotionEffect(EffectHandler.FROZEN).getDuration() <= 0) entity.removeActivePotionEffect(EffectHandler.FROZEN);
                 entity.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 2, 50, false, false));
                 entity.setSneaking(false);
 
@@ -365,7 +362,7 @@ public class FrozenCapability {
             else {
                 freezeDecayDelay--;
             }
-            prevFrozen = entity.isPotionActive(PotionHandler.FROZEN);
+            prevFrozen = entity.isPotionActive(EffectHandler.FROZEN);
         }
 
         @Override

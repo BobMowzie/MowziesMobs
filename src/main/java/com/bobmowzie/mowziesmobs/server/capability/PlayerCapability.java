@@ -2,7 +2,6 @@ package com.bobmowzie.mowziesmobs.server.capability;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
 import com.bobmowzie.mowziesmobs.server.item.ItemEarthTalisman;
@@ -11,7 +10,7 @@ import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseDown;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseUp;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseDown;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseUp;
-import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
+import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.power.Power;
 import com.bobmowzie.mowziesmobs.server.power.PowerGeomancy;
 import net.minecraft.client.Minecraft;
@@ -20,8 +19,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.MathHelper;
@@ -275,10 +272,10 @@ public class PlayerCapability {
             if (event.side == LogicalSide.SERVER) {
                 for (ItemStack itemStack : event.player.inventory.mainInventory) {
                     if (itemStack.getItem() instanceof ItemEarthTalisman)
-                        player.addPotionEffect(new EffectInstance(PotionHandler.GEOMANCY, 1, 0, false, false));
+                        player.addPotionEffect(new EffectInstance(EffectHandler.GEOMANCY, 1, 0, false, false));
                 }
                 if (player.getHeldItemOffhand().getItem() instanceof ItemEarthTalisman)
-                    player.addPotionEffect(new EffectInstance(PotionHandler.GEOMANCY, 1, 0, false, false));
+                    player.addPotionEffect(new EffectInstance(EffectHandler.GEOMANCY, 1, 0, false, false));
 
                 List<EntityBarakoanToPlayer> pack = tribePack;
                 float theta = (2 * (float) Math.PI / pack.size());

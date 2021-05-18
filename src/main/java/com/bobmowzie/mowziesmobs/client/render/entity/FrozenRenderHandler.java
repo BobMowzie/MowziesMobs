@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
+import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
@@ -44,7 +44,7 @@ public enum FrozenRenderHandler {
 
         @Override
         public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, LivingEntity living, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-            if (living.isPotionActive(PotionHandler.FROZEN)) {
+            if (living.isPotionActive(EffectHandler.FROZEN)) {
                 EntityModel model = this.renderer.getEntityModel();
 
                 float transparency = 1;
@@ -60,8 +60,8 @@ public enum FrozenRenderHandler {
 
         PlayerEntity player = Minecraft.getInstance().player;
 
-        if(player != null && player.isPotionActive(PotionHandler.FROZEN)) {
-            if(player.isPotionActive(PotionHandler.FROZEN)) {
+        if(player != null && player.isPotionActive(EffectHandler.FROZEN)) {
+            if(player.isPotionActive(EffectHandler.FROZEN)) {
                 boolean isMainHand = event.getHand() == Hand.MAIN_HAND;
                 if(isMainHand && !player.isInvisible() && event.getItemStack().isEmpty()) {
                     HandSide enumhandside = isMainHand ? player.getPrimaryHand() : player.getPrimaryHand().opposite();

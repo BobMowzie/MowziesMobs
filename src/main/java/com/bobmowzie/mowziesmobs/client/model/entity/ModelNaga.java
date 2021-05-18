@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 import com.bobmowzie.mowziesmobs.client.model.tools.dynamics.DynamicChain;
 import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
-import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
+import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -683,7 +683,7 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
 
         float flapAnim = entity.prevFlapAnimFrac + (entity.flapAnimFrac - entity.prevFlapAnimFrac) * partial;
 
-        if (!entity.isPotionActive(PotionHandler.FROZEN)) {
+        if (!entity.isPotionActive(EffectHandler.FROZEN)) {
             //Hover anim
             float globalSpeed = 0.28f;
             float globalDegree = 1f * hoverAnim;
@@ -794,7 +794,7 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         this.setDefaultAngle(entity, limbSwing, limbSwingAmount, headYaw, headPitch, delta);
         float frame = entity.frame + delta;
 
-        if (!entity.isPotionActive(PotionHandler.FROZEN)) {
+        if (!entity.isPotionActive(EffectHandler.FROZEN)) {
 
 
             if (entity.getAnimation() == EntityNaga.FLAP_ANIMATION) {

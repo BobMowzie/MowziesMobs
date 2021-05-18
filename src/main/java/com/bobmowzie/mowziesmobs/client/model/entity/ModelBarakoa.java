@@ -1,10 +1,9 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaSunblocker;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoana;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
-import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
+import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -472,19 +471,19 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
             armLowerLeft.rotateAngleY += 0.2;
             armLowerLeft.rotateAngleZ += 1;
 
-            if (!entity.isPotionActive(PotionHandler.FROZEN)) {
+            if (!entity.isPotionActive(EffectHandler.FROZEN)) {
                 flap(armUpperLeft, 1 * globalSpeed, 0.1f * globalHeight, false, 0.5f, 0, limbSwing, limbSwingAmount);
                 walk(armUpperLeft, 0.5f * globalSpeed, 0.3f * globalDegree, true, 0, 1, limbSwing, limbSwingAmount);
             }
         } else {
-            if (!entity.isPotionActive(PotionHandler.FROZEN)) {
+            if (!entity.isPotionActive(EffectHandler.FROZEN)) {
                 flap(armUpperLeft, 1 * globalSpeed, 0.3f * globalHeight, false, 0.5f, 0, limbSwing, limbSwingAmount);
                 walk(armUpperLeft, 0.5f * globalSpeed, 0.7f * globalDegree, true, 0, 0, limbSwing, limbSwingAmount);
             }
             spearBase.rotationPointZ += 1.5;
         }
 
-        if (!entity.isPotionActive(PotionHandler.FROZEN)) {
+        if (!entity.isPotionActive(EffectHandler.FROZEN)) {
             bob(body, 1 * globalSpeed, 2.5f * globalHeight, false, limbSwing, limbSwingAmount);
             walk(loinClothFront, 1 * globalSpeed, 0.5f * globalHeight, false, 2, 0, limbSwing, limbSwingAmount);
             walk(loinClothBack, 1 * globalSpeed, 0.5f * globalHeight, true, 2, 0, limbSwing, limbSwingAmount);
@@ -518,7 +517,7 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
             walk(handLeft, 0.5f * globalSpeed, 1 * globalDegree, true, -2, 0.4f * globalDegree, limbSwing, limbSwingAmount);
         }
 
-        if (entity.getAnimation() != EntityBarakoa.DIE_ANIMATION && !entity.isPotionActive(PotionHandler.FROZEN)) {
+        if (entity.getAnimation() != EntityBarakoa.DIE_ANIMATION && !entity.isPotionActive(EffectHandler.FROZEN)) {
             walk(body, 0.2f, 0.05f, false, 0, 0, frame, 1f);
             walk(thighLeftJoint, 0.2f, 0.05f, true, 0, 0, frame, 1f);
             walk(thighRightJoint, 0.2f, 0.05f, true, 0, 0, frame, 1f);
@@ -1024,7 +1023,7 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
 
         float talk = talker.rotationPointX;
         float dance = entity.dancing.getAnimationProgressSinSqrt();
-        if (!entity.isPotionActive(PotionHandler.FROZEN)) {
+        if (!entity.isPotionActive(EffectHandler.FROZEN)) {
             walk(head, 1.5f, 0.1f * talk, false, 0, -0.5f * talk, frame, 1f);
             walk(neck, 0, 0, false, 0, 0.5f * talk, frame, 1f);
             walk(armUpperRight, 0.5f, 0.2f * talk, false, 0, -0.7f * talk, frame, 1f);

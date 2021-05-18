@@ -1,27 +1,19 @@
 package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoTrade;
-import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoayaTrade;
 import com.bobmowzie.mowziesmobs.client.render.entity.*;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
-import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
-import com.bobmowzie.mowziesmobs.server.inventory.ContainerHandler;
 import com.bobmowzie.mowziesmobs.server.item.*;
-import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
+import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.client.settings.PointOfView;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
@@ -31,12 +23,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 @OnlyIn(Dist.CLIENT)
 public enum ClientEventHandler {
@@ -66,7 +55,7 @@ public enum ClientEventHandler {
         float delta = event.getPartialRenderTick();
         boolean shouldAnimate = playerCapability != null && playerCapability.getUntilAxeSwing() > 0;
         shouldAnimate = shouldAnimate || playerCapability != null && playerCapability.getGeomancy().tunneling;
-        shouldAnimate = shouldAnimate || player.isPotionActive(PotionHandler.FROZEN);
+        shouldAnimate = shouldAnimate || player.isPotionActive(EffectHandler.FROZEN);
         if (shouldAnimate) {
             event.setCanceled(true);
             RenderPlayerAnimated renderPlayerAnimated = new RenderPlayerAnimated(event.getRenderer().getRenderManager(), ((AbstractClientPlayerEntity) event.getEntity()).getSkinType().equals("slim"));
@@ -93,7 +82,7 @@ public enum ClientEventHandler {
                 player.prevRotationYawHead = player.rotationYawHead;
             }
             FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(player, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
-            if (frozenCapability != null && player.isPotionActive(PotionHandler.FROZEN) && frozenCapability.getPrevFrozen()) {
+            if (frozenCapability != null && player.isPotionActive(EffectHandler.FROZEN) && frozenCapability.getPrevFrozen()) {
                 player.rotationYaw = frozenCapability.getFrozenYaw();
                 player.rotationPitch = frozenCapability.getFrozenPitch();
                 player.rotationYawHead = frozenCapability.getFrozenYawHead();
@@ -108,7 +97,7 @@ public enum ClientEventHandler {
     public void onRenderLiving(RenderLivingEvent.Pre event) {
         LivingEntity entity = event.getEntity();
         FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
-        if (frozenCapability != null && entity.isPotionActive(PotionHandler.FROZEN) && frozenCapability.getPrevFrozen()) {
+        if (frozenCapability != null && entity.isPotionActive(EffectHandler.FROZEN) && frozenCapability.getPrevFrozen()) {
             entity.rotationYaw = entity.prevRotationYaw = frozenCapability.getFrozenYaw();
             entity.rotationPitch = entity.prevRotationPitch = frozenCapability.getFrozenPitch();
             entity.rotationYawHead = entity.prevRotationYawHead = frozenCapability.getFrozenYawHead();
@@ -159,7 +148,7 @@ public enum ClientEventHandler {
                 // Time
                 drawMarioNumber(timeOffsetX + 8, offsetY + 8, time, 3);
             }*/
-            if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.isPotionActive(PotionHandler.FROZEN) && Minecraft.getInstance().gameSettings.getPointOfView() == PointOfView.FIRST_PERSON) {
+            if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.isPotionActive(EffectHandler.FROZEN) && Minecraft.getInstance().gameSettings.getPointOfView() == PointOfView.FIRST_PERSON) {
                 Minecraft.getInstance().getTextureManager().bindTexture(FROZEN_BLUR);
                 MainWindow res = e.getWindow();
                 AbstractGui.blit(e.getMatrixStack(), 0, 0, 0, 0, res.getScaledWidth(), res.getScaledHeight(), res.getScaledWidth(), res.getScaledHeight());

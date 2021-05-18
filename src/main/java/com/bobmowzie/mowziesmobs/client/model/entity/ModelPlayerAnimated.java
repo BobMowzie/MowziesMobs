@@ -1,6 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
+import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.entity.LivingEntity;
@@ -13,7 +13,7 @@ public class ModelPlayerAnimated<T extends LivingEntity> extends PlayerModel<T> 
 
     @Override
     public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (!entityIn.isPotionActive(PotionHandler.FROZEN)) {
+        if (!entityIn.isPotionActive(EffectHandler.FROZEN)) {
             super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
             if (!(entityIn instanceof PlayerEntity)) {
                 return;

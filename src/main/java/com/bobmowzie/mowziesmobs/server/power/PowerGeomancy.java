@@ -12,7 +12,7 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBlockSwapper;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityFallingBlock;
 import com.bobmowzie.mowziesmobs.server.message.MessagePlayerStartSummonBoulder;
-import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
+import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FenceBlock;
@@ -277,7 +277,7 @@ public class PowerGeomancy extends Power {
 
     @Override
     public boolean canUse(PlayerEntity player) {
-        return player.getHeldItemMainhand().isEmpty() && player.isPotionActive(PotionHandler.GEOMANCY);
+        return player.getHeldItemMainhand().isEmpty() && player.isPotionActive(EffectHandler.GEOMANCY);
     }
 
     public int getSpawnBoulderCharge() {

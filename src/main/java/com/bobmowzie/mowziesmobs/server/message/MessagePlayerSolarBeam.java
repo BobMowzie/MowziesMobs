@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.server.message;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySolarBeam;
-import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
+import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.potion.EffectInstance;
@@ -36,11 +36,11 @@ public class MessagePlayerSolarBeam {
                 solarBeam.setHasPlayer(true);
                 player.world.addEntity(solarBeam);
                 player.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 80, 2, false, false));
-                int duration = player.getActivePotionEffect(PotionHandler.SUNS_BLESSING).getDuration();
-                player.removePotionEffect(PotionHandler.SUNS_BLESSING);
+                int duration = player.getActivePotionEffect(EffectHandler.SUNS_BLESSING).getDuration();
+                player.removePotionEffect(EffectHandler.SUNS_BLESSING);
                 int solarBeamCost = ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.solarBeamCost.get() * 60 * 20;
                 if (duration - solarBeamCost > 0) {
-                    player.addPotionEffect(new EffectInstance(PotionHandler.SUNS_BLESSING, duration - solarBeamCost, 0, false, false));
+                    player.addPotionEffect(new EffectInstance(EffectHandler.SUNS_BLESSING, duration - solarBeamCost, 0, false, false));
                 }
             });
             context.setPacketHandled(true);

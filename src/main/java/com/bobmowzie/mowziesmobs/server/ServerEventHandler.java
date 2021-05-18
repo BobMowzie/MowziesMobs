@@ -22,7 +22,7 @@ import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemNagaFangDagger;
 import com.bobmowzie.mowziesmobs.server.item.ItemSpear;
 import com.bobmowzie.mowziesmobs.server.message.*;
-import com.bobmowzie.mowziesmobs.server.potion.PotionHandler;
+import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.power.Power;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.BlockState;
@@ -110,7 +110,7 @@ public final class ServerEventHandler {
         if (event.getEntity() instanceof LivingEntity) {
             LivingEntity entity = (LivingEntity) event.getEntity();
 
-            if (entity.getActivePotionEffect(PotionHandler.POISON_RESIST) != null && entity.getActivePotionEffect(Effects.POISON) != null) {
+            if (entity.getActivePotionEffect(EffectHandler.POISON_RESIST) != null && entity.getActivePotionEffect(Effects.POISON) != null) {
                 entity.removeActivePotionEffect(Effects.POISON);
             }
 
@@ -152,7 +152,7 @@ public final class ServerEventHandler {
     @SubscribeEvent
     public void onUseItem(LivingEntityUseItemEvent event) {
         LivingEntity living = event.getEntityLiving();
-        if (event.isCancelable() && living.isPotionActive(PotionHandler.FROZEN)) {
+        if (event.isCancelable() && living.isPotionActive(EffectHandler.FROZEN)) {
             event.setCanceled(true);
         }
         if (living instanceof PlayerEntity) {
@@ -188,7 +188,7 @@ public final class ServerEventHandler {
         Entity entity = event.getEntity();
         if (entity instanceof LivingEntity) {
             LivingEntity living = (LivingEntity) entity;
-            if (event.isCancelable() && living.isPotionActive(PotionHandler.FROZEN)) {
+            if (event.isCancelable() && living.isPotionActive(EffectHandler.FROZEN)) {
                 event.setCanceled(true);
             }
             BlockState block = event.getPlacedBlock();
@@ -219,7 +219,7 @@ public final class ServerEventHandler {
     public void onFillBucket(FillBucketEvent event) {
         LivingEntity living = event.getEntityLiving();
         if (living != null) {
-            if (event.isCancelable() && living.isPotionActive(PotionHandler.FROZEN)) {
+            if (event.isCancelable() && living.isPotionActive(EffectHandler.FROZEN)) {
                 event.setCanceled(true);
             }
             if (event.getEmptyBucket().getItem() == Items.LAVA_BUCKET) {
@@ -237,7 +237,7 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onBreakBlock(BlockEvent.BreakEvent event) {
-        if (event.isCancelable() && event.getPlayer().isPotionActive(PotionHandler.FROZEN)) {
+        if (event.isCancelable() && event.getPlayer().isPotionActive(EffectHandler.FROZEN)) {
             event.setCanceled(true);
         }
         PlayerEntity player = event.getPlayer();
@@ -276,7 +276,7 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.RightClickEmpty event) {
-        if (event.isCancelable() && event.getEntityLiving().isPotionActive(PotionHandler.FROZEN)) {
+        if (event.isCancelable() && event.getEntityLiving().isPotionActive(EffectHandler.FROZEN)) {
             event.setCanceled(true);
         }
         PlayerEntity player = event.getPlayer();
@@ -293,7 +293,7 @@ public final class ServerEventHandler {
                 }
             }
 
-            if (event.getWorld().isRemote && player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(PotionHandler.SUNS_BLESSING) && playerCapability.getUntilSunstrike() <= 0) {
+            if (event.getWorld().isRemote && player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(EffectHandler.SUNS_BLESSING) && playerCapability.getUntilSunstrike() <= 0) {
                 if (player.isSneaking()) {
                     MowziesMobs.NETWORK.sendToServer(new MessagePlayerSolarBeam());
                     playerCapability.setUntilSunstrike(SOLARBEAM_COOLDOWN);
@@ -313,7 +313,7 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.EntityInteract event) {
-        if (event.isCancelable() && event.getEntityLiving().isPotionActive(PotionHandler.FROZEN)) {
+        if (event.isCancelable() && event.getEntityLiving().isPotionActive(EffectHandler.FROZEN)) {
             event.setCanceled(true);
         }
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getPlayer(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
@@ -356,7 +356,7 @@ public final class ServerEventHandler {
                 }
             }
 
-            if (event.getSide() == LogicalSide.CLIENT && player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(PotionHandler.SUNS_BLESSING) && playerCapability.getUntilSunstrike() <= 0) {
+            if (event.getSide() == LogicalSide.CLIENT && player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(EffectHandler.SUNS_BLESSING) && playerCapability.getUntilSunstrike() <= 0) {
                 if (player.isSneaking()) {
                     MowziesMobs.NETWORK.sendToServer(new MessagePlayerSolarBeam());
                     playerCapability.setUntilSunstrike(SOLARBEAM_COOLDOWN);
@@ -394,7 +394,7 @@ public final class ServerEventHandler {
     @SubscribeEvent
     public void onLivingDamage(LivingHurtEvent event) {
         if (event.getSource().isFireDamage()) {
-            event.getEntityLiving().removeActivePotionEffect(PotionHandler.FROZEN);
+            event.getEntityLiving().removeActivePotionEffect(EffectHandler.FROZEN);
             MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> event.getEntity()), new MessageRemoveFreezeProgress(event.getEntityLiving()));
         }
         if (event.getEntity() instanceof PlayerEntity) {
@@ -418,7 +418,7 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.RightClickItem event) {
-        if (event.isCancelable() && event.getEntityLiving().isPotionActive(PotionHandler.FROZEN)) {
+        if (event.isCancelable() && event.getEntityLiving().isPotionActive(EffectHandler.FROZEN)) {
             event.setCanceled(true);
         }
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getPlayer(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
@@ -444,7 +444,7 @@ public final class ServerEventHandler {
     @SubscribeEvent
     public void onPlayerLeftClick(PlayerInteractEvent.LeftClickBlock event) {
         PlayerEntity player = event.getPlayer();
-        if (event.isCancelable() && player.isPotionActive(PotionHandler.FROZEN)) {
+        if (event.isCancelable() && player.isPotionActive(EffectHandler.FROZEN)) {
             event.setCanceled(true);
         }
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
@@ -471,7 +471,7 @@ public final class ServerEventHandler {
     public void onLivingJump(LivingEvent.LivingJumpEvent event) {
          if (event.getEntity() instanceof LivingEntity) {
             LivingEntity entity = (LivingEntity) event.getEntity();
-            if (entity.isPotionActive(PotionHandler.FROZEN) && entity.isOnGround()) {
+            if (entity.isPotionActive(EffectHandler.FROZEN) && entity.isOnGround()) {
                 entity.setMotion(entity.getMotion().mul(1, 0, 1));
             }
         }
@@ -489,7 +489,7 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onPlayerAttack(AttackEntityEvent event) {
-        if (event.isCancelable() && event.getEntityLiving().isPotionActive(PotionHandler.FROZEN)) {
+        if (event.isCancelable() && event.getEntityLiving().isPotionActive(EffectHandler.FROZEN)) {
             event.setCanceled(true);
         }
         if (event.getEntity() instanceof PlayerEntity) {
