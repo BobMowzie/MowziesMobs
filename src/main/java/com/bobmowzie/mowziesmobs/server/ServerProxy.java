@@ -116,6 +116,7 @@ public class ServerProxy {
         this.registerMessage(MessageRemoveFreezeProgress.class, MessageRemoveFreezeProgress::serialize, MessageRemoveFreezeProgress::deserialize, new MessageRemoveFreezeProgress.Handler());
         this.registerMessage(MessageUnfreezeEntity.class, MessageUnfreezeEntity::serialize, MessageUnfreezeEntity::deserialize, new MessageUnfreezeEntity.Handler());
         this.registerMessage(MessagePlayerStartSummonBoulder.class, MessagePlayerStartSummonBoulder::serialize, MessagePlayerStartSummonBoulder::deserialize, new MessagePlayerStartSummonBoulder.Handler());
+        this.registerMessage(MessageSunblockEffect.class, MessageSunblockEffect::serialize, MessageSunblockEffect::deserialize, new MessageSunblockEffect.Handler());
     }
 
     private <MSG> void registerMessage(final Class<MSG> clazz, final BiConsumer<MSG, PacketBuffer> encoder, final Function<PacketBuffer, MSG> decoder, final BiConsumer<MSG, Supplier<NetworkEvent.Context>> consumer) {

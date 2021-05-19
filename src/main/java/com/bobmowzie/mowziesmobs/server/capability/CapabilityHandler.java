@@ -1,7 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.capability;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
@@ -10,7 +9,7 @@ import javax.annotation.Nullable;
 public final class CapabilityHandler {
     public static void register() {
         CapabilityManager.INSTANCE.register(FrozenCapability.IFrozenCapability.class, new FrozenCapability.FrozenStorage(), FrozenCapability.FrozenCapabilityImp::new);
-        CapabilityManager.INSTANCE.register(LastDamageCapability.ILastDamageCapability.class, new LastDamageCapability.LastDamageStorage(), LastDamageCapability.LastDamageCapabilityImp::new);
+        CapabilityManager.INSTANCE.register(LivingCapability.ILivingCapability.class, new LivingCapability.LivingStorage(), LivingCapability.LastDamageCapabilityImp::new);
         CapabilityManager.INSTANCE.register(PlayerCapability.IPlayerCapability.class, new PlayerCapability.PlayerStorage(), PlayerCapability.PlayerCapabilityImp::new);
     }
 

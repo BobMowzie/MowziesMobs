@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.damage;
 
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
-import com.bobmowzie.mowziesmobs.server.capability.LastDamageCapability;
+import com.bobmowzie.mowziesmobs.server.capability.LivingCapability;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,7 +15,7 @@ import org.apache.commons.lang3.tuple.Pair;
 public class DamageUtil {
     // TODO: Works for current use cases, but possibly not for future edge cases. Use reflection to get hurt sound for onHit2?
     public static Pair<Boolean, Boolean> dealMixedDamage(LivingEntity target, DamageSource source1, float amount1, DamageSource source2, float amount2) {
-        LastDamageCapability.ILastDamageCapability lastDamageCapability = CapabilityHandler.getCapability(target, LastDamageCapability.LastDamageProvider.LAST_DAMAGE_CAPABILITY);
+        LivingCapability.ILivingCapability lastDamageCapability = CapabilityHandler.getCapability(target, LivingCapability.LivingProvider.LIVING_CAPABILITY);
         if (lastDamageCapability != null) {
             lastDamageCapability.setLastDamage(-1);
             boolean hit1 = target.attackEntityFrom(source1, amount1);

@@ -1,9 +1,7 @@
 package com.bobmowzie.mowziesmobs.client;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoTrade;
-import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoayaTrade;
 import com.bobmowzie.mowziesmobs.client.render.entity.*;
+import com.bobmowzie.mowziesmobs.client.render.entity.layer.SunblockLayer;
 import com.bobmowzie.mowziesmobs.client.sound.*;
 import com.bobmowzie.mowziesmobs.server.ServerProxy;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
@@ -50,9 +48,11 @@ public class ClientProxy extends ServerProxy {
 
     @Override
     public void onLateInit(final IEventBus modbus) {
-        for (EntityRenderer<?> entity : Minecraft.getInstance().getRenderManager().renderers.values()) {
-            if (entity instanceof LivingRenderer) {
-                ((LivingRenderer) entity).addLayer(new FrozenRenderHandler.LayerFrozen((LivingRenderer) entity));
+        for (EntityRenderer<?> entityRenderer : Minecraft.getInstance().getRenderManager().renderers.values()) {
+            if (entityRenderer instanceof LivingRenderer) {
+                LivingRenderer livingRenderer = (LivingRenderer) entityRenderer;
+                livingRenderer.addLayer(new FrozenRenderHandler.LayerFrozen(livingRenderer));
+                livingRenderer.addLayer(new SunblockLayer(livingRenderer));
             }
         }
 

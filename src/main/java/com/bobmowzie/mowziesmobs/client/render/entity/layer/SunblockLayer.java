@@ -1,5 +1,8 @@
 package com.bobmowzie.mowziesmobs.client.render.entity.layer;
 
+import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.LivingCapability;
+import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -13,20 +16,23 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
 public class SunblockLayer<T extends LivingEntity, M extends EntityModel<T>> extends LayerRenderer<T,M> {
-    private static final ResourceLocation SUNBLOCK_ARMOR = new ResourceLocation("textures/entity/creeper/creeper_armor.png");
+    private static final ResourceLocation SUNBLOCK_ARMOR = new ResourceLocation("textures/entity/wither/wither_armor.png");
 
     public SunblockLayer(IEntityRenderer<T, M> entityRendererIn) {
         super(entityRendererIn);
     }
 
     public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        float f = (float)entitylivingbaseIn.ticksExisted + partialTicks;
-        EntityModel<T> entitymodel = this.getEntityModel();
-        entitymodel.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTicks);
-        this.getEntityModel().copyModelAttributesTo(entitymodel);
-        IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEnergySwirl(this.func_225633_a_(), this.func_225634_a_(f), f * 0.01F));
-        entitymodel.setRotationAngles(entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        entitymodel.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 0.1F, 1.0F);
+        LivingCapability.ILivingCapability livingCapability = CapabilityHandler.getCapability(entitylivingbaseIn, LivingCapability.LivingProvider.LIVING_CAPABILITY);
+        if (livingCapability != null && livingCapability.getHasSunblock()) {
+            float f = (float) entitylivingbaseIn.ticksExisted + partialTicks;
+            EntityModel<T> entitymodel = this.getEntityModel();
+            entitymodel.setLivingAnimations(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTicks);
+            this.getEntityModel().copyModelAttributesTo(entitymodel);
+            IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEnergySwirl(this.func_225633_a_(), this.func_225634_a_(f), f * 0.01F));
+            entitymodel.setRotationAngles(entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+            entitymodel.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 0.1F, 1.0F);
+        }
     }
 
     protected float func_225634_a_(float p_225634_1_) {

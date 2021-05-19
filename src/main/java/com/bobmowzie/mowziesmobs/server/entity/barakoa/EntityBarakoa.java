@@ -17,6 +17,7 @@ import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
+import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
@@ -156,7 +157,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
                     sunblocker.getLookController().setLookPositionWithEntity(sunblocker.getAttackTarget(), entity.getHorizontalFaceSpeed(), entity.getVerticalFaceSpeed());
                 }
                 if (getAnimationTick() >= 19) {
-                    sunblocker.addPotionEffect(new EffectInstance(Effects.GLOWING, 5, 0, false, false));
+                    EffectHandler.addOrCombineEffect(entity, Effects.GLOWING, 5, 0, false, false);
                 }
                 if (getAnimationTick() == 23)
                     AnimationHandler.INSTANCE.sendAnimationMessage(entity, HEAL_LOOP_ANIMATION);
@@ -168,7 +169,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             public void tick() {
                 super.tick();
                 EntityBarakoaSunblocker sunblocker = (EntityBarakoaSunblocker)entity;
-                sunblocker.addPotionEffect(new EffectInstance(Effects.GLOWING, 5, 0, false, false));
+                EffectHandler.addOrCombineEffect(entity, Effects.GLOWING, 5, 0, false, false);
                 if (sunblocker.getAttackTarget() != null) {
                     sunblocker.getLookController().setLookPositionWithEntity(sunblocker.getAttackTarget(), entity.getHorizontalFaceSpeed(), entity.getVerticalFaceSpeed());
                 }
@@ -392,6 +393,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
 
         if ((getAnimation() == HEAL_START_ANIMATION && getAnimationTick() >= 23) || getAnimation() == HEAL_LOOP_ANIMATION) {
             spawnHealParticles();
+            sunBlockTarget();
         }
 
         if (getAttackTarget() == null) {
@@ -662,5 +664,9 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
                 });
             }
         }
+    }
+
+    protected void sunBlockTarget() {
+
     }
 }

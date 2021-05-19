@@ -13,6 +13,7 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particles.ParticleType;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector4f;
@@ -183,6 +184,27 @@ public class ParticleRibbon extends AdvancedParticleBase {
         for (ParticleComponent component : components) {
             component.postRender(this, buffer, renderInfo, partialTicks, j);
         }
+    }
+
+    @Override
+    public AxisAlignedBB getBoundingBox() {
+        if (positions == null || positions[0] == null) return super.getBoundingBox();
+        double minX = positions[0].getX() - 0.1;
+        double minY = positions[0].getY() - 0.1;
+        double minZ = positions[0].getZ() - 0.1;
+        double maxX = positions[0].getX() + 0.1;
+        double maxY = positions[0].getY() + 0.1;
+        double maxZ = positions[0].getZ() + 0.1;
+        for (Vector3d pos : positions) {
+            if (pos == null) continue;
+            minX = Math.min(minX, pos.getX());
+            minY = Math.min(minY, pos.getY());
+            minZ = Math.min(minZ, pos.getZ());
+            maxX = Math.max(maxX, pos.getX());
+            maxY = Math.max(maxY, pos.getY());
+            maxZ = Math.max(maxZ, pos.getZ());
+        }
+        return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
     }
 
     @OnlyIn(Dist.CLIENT)

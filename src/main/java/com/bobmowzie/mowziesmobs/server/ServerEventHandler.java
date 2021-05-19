@@ -8,7 +8,7 @@ import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleRotation;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
-import com.bobmowzie.mowziesmobs.server.capability.LastDamageCapability;
+import com.bobmowzie.mowziesmobs.server.capability.LivingCapability;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
@@ -27,6 +27,7 @@ import com.bobmowzie.mowziesmobs.server.power.Power;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -39,12 +40,16 @@ import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.ParrotEntity;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.item.ItemStack;
+import net.minecraft.stats.Stats;
+import net.minecraft.util.CombatRules;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -53,6 +58,7 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.living.PotionEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.CriticalHitEvent;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
@@ -118,10 +124,7 @@ public final class ServerEventHandler {
                 Item headItemStack = entity.getItemStackFromSlot(EquipmentSlotType.HEAD).getItem();
                 if (headItemStack instanceof ItemBarakoaMask) {
                     ItemBarakoaMask mask = (ItemBarakoaMask) headItemStack;
-                    EffectInstance effect = entity.getActivePotionEffect(mask.getPotion());
-                    EffectInstance newEffect = new EffectInstance(mask.getPotion(), 50, 0, true, false);
-                    if (effect != null) effect.combine(newEffect);
-                    else entity.addPotionEffect(newEffect);
+                    EffectHandler.addOrCombineEffect(entity, mask.getPotion(), 50, 0, true, false);
                 }
             }
 
@@ -129,6 +132,65 @@ public final class ServerEventHandler {
             FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
             if (frozenCapability != null) {
                 frozenCapability.tick(entity);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onAddPotionEffect(PotionEvent.PotionAddedEvent event) {
+        if (event.getPotionEffect().getPotion() == EffectHandler.SUNBLOCK) {
+            MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageSunblockEffect(event.getEntityLiving(), true));
+        }
+    }
+
+    @SubscribeEvent
+    public void onRemovePotionEffect(PotionEvent.PotionRemoveEvent event) {
+        if (event.getPotion() == EffectHandler.SUNBLOCK) {
+            MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageSunblockEffect(event.getEntityLiving(), false));
+        }
+    }
+
+    @SubscribeEvent
+    public void onPotionEffectExpire(PotionEvent.PotionExpiryEvent event) {
+        EffectInstance effectInstance = event.getPotionEffect();
+        if (effectInstance != null && effectInstance.getPotion() == EffectHandler.SUNBLOCK) {
+            MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageSunblockEffect(event.getEntityLiving(), false));
+        }
+    }
+
+    @SubscribeEvent
+    public void onLivingHurt(LivingHurtEvent event) {
+        // Copied from LivingEntity's applyPotionDamageCalculations
+        DamageSource source = event.getSource();
+        LivingEntity livingEntity = event.getEntityLiving();
+        if (source == null || livingEntity == null) return;
+        float damage = event.getAmount();
+        if (!source.isDamageAbsolute()) {
+            if (livingEntity.isPotionActive(EffectHandler.SUNBLOCK) && source != DamageSource.OUT_OF_WORLD) {
+                int i = (livingEntity.getActivePotionEffect(EffectHandler.SUNBLOCK).getAmplifier() + 1) * 5;
+                int j = 25 - i;
+                float f = damage * (float)j;
+                float f1 = damage;
+                damage = Math.max(f / 25.0F, 0.0F);
+                float f2 = f1 - damage;
+                if (f2 > 0.0F && f2 < 3.4028235E37F) {
+                    if (livingEntity instanceof ServerPlayerEntity) {
+                        ((ServerPlayerEntity)livingEntity).addStat(Stats.DAMAGE_RESISTED, Math.round(f2 * 10.0F));
+                    } else if (source.getTrueSource() instanceof ServerPlayerEntity) {
+                        ((ServerPlayerEntity)source.getTrueSource()).addStat(Stats.DAMAGE_DEALT_RESISTED, Math.round(f2 * 10.0F));
+                    }
+                }
+            }
+
+            if (damage <= 0.0F) {
+                event.setAmount(0.0F);
+            } else {
+                int k = EnchantmentHelper.getEnchantmentModifierDamage(livingEntity.getArmorInventoryList(), source);
+                if (k > 0) {
+                    damage = CombatRules.getDamageAfterMagicAbsorb(damage, (float)k);
+                }
+
+                event.setAmount(damage);
             }
         }
     }
@@ -409,7 +471,7 @@ public final class ServerEventHandler {
 
         if (event.getEntityLiving() != null) {
             LivingEntity living = event.getEntityLiving();
-            LastDamageCapability.ILastDamageCapability capability = CapabilityHandler.getCapability(living, LastDamageCapability.LastDamageProvider.LAST_DAMAGE_CAPABILITY);
+            LivingCapability.ILivingCapability capability = CapabilityHandler.getCapability(living, LivingCapability.LivingProvider.LIVING_CAPABILITY);
             if (capability != null) {
                 capability.setLastDamage(event.getAmount());
             }
@@ -576,7 +638,7 @@ public final class ServerEventHandler {
     public void onAttachCapabilities(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof LivingEntity) {
             event.addCapability(new ResourceLocation(MowziesMobs.MODID, "frozen"), new FrozenCapability.FrozenProvider());
-            event.addCapability(new ResourceLocation(MowziesMobs.MODID, "last_damage"), new LastDamageCapability.LastDamageProvider());
+            event.addCapability(new ResourceLocation(MowziesMobs.MODID, "last_damage"), new LivingCapability.LivingProvider());
         }
         if (event.getObject() instanceof PlayerEntity) {
             event.addCapability(new ResourceLocation(MowziesMobs.MODID, "player"), new PlayerCapability.PlayerProvider());

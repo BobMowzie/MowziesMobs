@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
 import com.bobmowzie.mowziesmobs.server.ai.NearestAttackableTargetPredicateGoal;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
+import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.entity.EntityPredicate;
 import net.minecraft.entity.EntityType;
@@ -135,6 +136,14 @@ public class EntityBarakoaSunblocker extends EntityBarakoaya {
         public void startExecuting() {
             super.startExecuting();
             AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityBarakoa.HEAL_START_ANIMATION);
+        }
+    }
+
+    @Override
+    protected void sunBlockTarget() {
+        LivingEntity target = getAttackTarget();
+        if (target != null) {
+            EffectHandler.addOrCombineEffect(target, EffectHandler.SUNBLOCK, 20, 0, true, false);
         }
     }
 }
