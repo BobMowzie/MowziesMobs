@@ -337,7 +337,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             getNavigator().clearPath();
             rotationYaw = prevRotationYaw;
             renderYawOffset = rotationYaw;
-            if (onGround && getAnimation() == NO_ANIMATION) {
+            if ((onGround || isInWater() || isInLava()) && getAnimation() == NO_ANIMATION) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, ACTIVATE_ANIMATION);
                 playSound(MMSounds.ENTITY_BARAKOA_EMERGE.get(), 1, 1);
             }

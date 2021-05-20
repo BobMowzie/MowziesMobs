@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.capability;
 
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -15,6 +16,10 @@ public class LivingCapability {
         float getLastDamage();
         void setHasSunblock(boolean hasSunblock);
         boolean getHasSunblock();
+
+        INBT writeNBT();
+
+        void readNBT(INBT nbt);
     }
 
     public static class LastDamageCapabilityImp implements ILivingCapability {
@@ -40,17 +45,30 @@ public class LivingCapability {
         public boolean getHasSunblock() {
             return hasSunblock;
         }
+
+        @Override
+        public INBT writeNBT() {
+            CompoundNBT compound = new CompoundNBT();
+            compound.putBoolean("hasSunblock", getHasSunblock());
+            return compound;
+        }
+
+        @Override
+        public void readNBT(INBT nbt) {
+            CompoundNBT compound = (CompoundNBT) nbt;
+            setHasSunblock(compound.getBoolean("hasSunblock"));
+        }
     }
 
     public static class LivingStorage implements Capability.IStorage<ILivingCapability> {
         @Override
-        public INBT writeNBT(Capability<ILivingCapability> capability, ILivingCapability instance, Direction side) {
-            return null;
+        public INBT writeNBT(Capability<LivingCapability.ILivingCapability> capability, LivingCapability.ILivingCapability instance, Direction side) {
+            return instance.writeNBT();
         }
 
         @Override
-        public void readNBT(Capability<ILivingCapability> capability, ILivingCapability instance, Direction side, INBT nbt) {
-
+        public void readNBT(Capability<LivingCapability.ILivingCapability> capability, LivingCapability.ILivingCapability instance, Direction side, INBT nbt) {
+            instance.readNBT(nbt);
         }
     }
 
