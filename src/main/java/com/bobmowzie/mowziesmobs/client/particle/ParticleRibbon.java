@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector4f;
@@ -25,6 +26,8 @@ public class ParticleRibbon extends AdvancedParticleBase {
     public Vector3d[] positions;
     public Vector3d[] prevPositions;
 
+    public float texPanOffset;
+
     protected ParticleRibbon(ClientWorld worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double motionX, double motionY, double motionZ, ParticleRotation rotation, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, int length, ParticleComponent[] components) {
         super(worldIn, xCoordIn, yCoordIn, zCoordIn, motionX, motionY, motionZ, rotation, scale, r, g, b, a, drag, duration, emissive, false, components);
         positions = new Vector3d[length];
@@ -34,14 +37,8 @@ public class ParticleRibbon extends AdvancedParticleBase {
     }
 
     @Override
-    public void tick() {
-        super.tick();
-        for (int i = positions.length - 1; i > 0; i--) {
-            positions[i] = positions[i - 1];
-            prevPositions[i] = prevPositions[i - 1];
-        }
-        positions[0] = new Vector3d(getPosX(), getPosY(), getPosZ());
-        prevPositions[0] = getPrevPos();
+    protected void updatePosition() {
+        super.updatePosition();
     }
 
     @Override
@@ -56,11 +53,6 @@ public class ParticleRibbon extends AdvancedParticleBase {
         for (ParticleComponent component : components) {
             component.preRender(this, partialTicks);
         }
-
-        float f = this.getMinU();
-        float f1 = this.getMaxU();
-        float f2 = this.getMinV();
-        float f3 = this.getMaxV();
 
         int j = this.getBrightnessForRender(partialTicks);
 
@@ -106,6 +98,7 @@ public class ParticleRibbon extends AdvancedParticleBase {
             b = particleBlue;
             scale = particleScale;
             float t = ((float)index + 1) / ((float)positions.length - 1);
+            float tPrev = ((float)index) / ((float)positions.length - 1);
 
             for (ParticleComponent component : components) {
                 if (component instanceof PropertyOverLength) {
@@ -170,6 +163,12 @@ public class ParticleRibbon extends AdvancedParticleBase {
             vertices2[2].transform(boxTranslate);
             vertices2[3].transform(boxTranslate);
 
+            float halfU = (getMaxU() - getMinU()) / 2 + getMinU();
+            float f = this.getMinU() + texPanOffset;
+            float f1 = halfU + texPanOffset;
+            float f2 = this.getMinV();
+            float f3 = this.getMaxV();
+
             buffer.pos(vertices2[0].getX(), vertices2[0].getY(), vertices2[0].getZ()).tex(f1, f3).color(prevR, prevG, prevB, prevA).lightmap(j).endVertex();
             buffer.pos(vertices2[1].getX(), vertices2[1].getY(), vertices2[1].getZ()).tex(f1, f2).color(prevR, prevG, prevB, prevA).lightmap(j).endVertex();
             buffer.pos(vertices2[2].getX(), vertices2[2].getY(), vertices2[2].getZ()).tex(f, f2).color(r, g, b, a).lightmap(j).endVertex();
@@ -205,6 +204,22 @@ public class ParticleRibbon extends AdvancedParticleBase {
             maxZ = Math.max(maxZ, pos.getZ());
         }
         return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
+    }
+
+    public float getMinUPublic() {
+        return getMinU();
+    }
+
+    public float getMaxUPublic() {
+        return getMaxU();
+    }
+
+    public float getMinVPublic() {
+        return getMinV();
+    }
+
+    public float getMaxVPublic() {
+        return getMaxV();
     }
 
     @OnlyIn(Dist.CLIENT)

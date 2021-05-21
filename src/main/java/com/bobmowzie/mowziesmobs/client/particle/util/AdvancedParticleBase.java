@@ -100,18 +100,7 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
             this.setExpired();
         }
 
-        //this.motionY -= 0.04D * (double)this.particleGravity;
-        this.move(this.motionX, this.motionY, this.motionZ);
-
-        if (this.onGround)
-        {
-            this.motionX *= 0.699999988079071D;
-            this.motionZ *= 0.699999988079071D;
-        }
-
-        this.motionX *= airDrag;
-        this.motionY *= airDrag;
-        this.motionZ *= airDrag;
+        updatePosition();
 
         for (ParticleComponent component : components) {
             component.postUpdate(this);
@@ -122,6 +111,21 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
             ribbon.positions[0] = new Vector3d(posX, posY, posZ);
             ribbon.prevPositions[0] = getPrevPos();
         }
+    }
+
+    protected void updatePosition() {
+        //this.motionY -= 0.04D * (double)this.particleGravity;
+        this.move(this.motionX, this.motionY, this.motionZ);
+
+        if (this.onGround && canCollide)
+        {
+            this.motionX *= 0.699999988079071D;
+            this.motionZ *= 0.699999988079071D;
+        }
+
+        this.motionX *= airDrag;
+        this.motionY *= airDrag;
+        this.motionZ *= airDrag;
     }
 
     @Override

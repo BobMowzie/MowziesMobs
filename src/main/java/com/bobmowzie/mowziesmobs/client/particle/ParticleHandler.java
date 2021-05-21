@@ -79,6 +79,7 @@ public class ParticleHandler {
     public static final RegistryObject<ParticleType<RibbonParticleData>> RIBBON_FLAT = registerRibbon("ribbon_flat", RibbonParticleData.DESERIALIZER);
     public static final RegistryObject<ParticleType<RibbonParticleData>> RIBBON_STREAKS = registerRibbon("ribbon_streaks", RibbonParticleData.DESERIALIZER);
     public static final RegistryObject<ParticleType<RibbonParticleData>> RIBBON_GLOW = registerRibbon("ribbon_glow", RibbonParticleData.DESERIALIZER);
+    public static final RegistryObject<ParticleType<RibbonParticleData>> RIBBON_SQUIGGLE = registerRibbon("ribbon_squiggle", RibbonParticleData.DESERIALIZER);
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void registerParticles(ParticleFactoryRegisterEvent event) {
@@ -109,6 +110,7 @@ public class ParticleHandler {
         Minecraft.getInstance().particles.registerFactory(ParticleHandler.RIBBON_FLAT.get(), ParticleRibbon.Factory::new);
         Minecraft.getInstance().particles.registerFactory(ParticleHandler.RIBBON_STREAKS.get(), ParticleRibbon.Factory::new);
         Minecraft.getInstance().particles.registerFactory(ParticleHandler.RIBBON_GLOW.get(), ParticleRibbon.Factory::new);
+        Minecraft.getInstance().particles.registerFactory(ParticleHandler.RIBBON_SQUIGGLE.get(), ParticleRibbon.Factory::new);
     }
 
     private static RegistryObject<BasicParticleType> register(String key, boolean alwaysShow) {

@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleRibbon;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particle.util.RibbonComponent;
@@ -110,7 +111,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         goalSelector.addGoal(0, new AnimationActivateAI<>(this, ACTIVATE_ANIMATION));
         goalSelector.addGoal(0, new AnimationDeactivateAI<>(this, DEACTIVATE_ANIMATION));
         goalSelector.addGoal(1, new AnimationDieAI<>(this));
-        goalSelector.addGoal(1, new EntityAIAvoidEntity<>(this, EntitySunstrike.class, EntitySunstrike::isStriking, 3, 0.7F));
+        goalSelector.addGoal(3, new EntityAIAvoidEntity<>(this, EntitySunstrike.class, EntitySunstrike::isStriking, 3, 0.7F));
         goalSelector.addGoal(2, new AnimationBlockAI<>(this, BLOCK_ANIMATION));
         goalSelector.addGoal(2, new AnimationAttackAI<>(this, ATTACK_ANIMATION, MMSounds.ENTITY_BARAKOA_SWING.get(), null, 1, 2.5f, 1, 9, true));
         goalSelector.addGoal(2, new AnimationProjectileAttackAI<EntityBarakoa>(this, PROJECTILE_ATTACK_ANIMATION, 9, MMSounds.ENTITY_BARAKOA_BLOWDART.get(), true) {
@@ -639,7 +640,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         }
         if (world.isRemote && barakoPos != null) {
             barakoPos[0] = getHealPos();
-            if (ticksExisted % 5 == 0 && staffPos != null && staffPos[0] != null) {
+            if (staffPos != null && staffPos[0] != null) {
                 double dist = Math.max(barakoPos[0].distanceTo(staffPos[0]), 0.01);
                 double radius = 0.5f;
                 double yaw = rand.nextFloat() * 2 * Math.PI;
@@ -647,9 +648,9 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
                 double ox = radius * Math.sin(yaw) * Math.sin(pitch);
                 double oy = radius * Math.cos(pitch);
                 double oz = radius * Math.cos(yaw) * Math.sin(pitch);
-                AdvancedParticleBase.spawnParticle(world, ParticleHandler.ARROW_HEAD.get(), staffPos[0].getX(), staffPos[0].getY(), staffPos[0].getZ(), 0, 0, 0, false, 0, 0, 0, 0, 4F, 0.95, 0.9, 0.35, 0.75, 1, 2 * dist, true, false, new ParticleComponent[]{
+                if (ticksExisted % 5 == 0) AdvancedParticleBase.spawnParticle(world, ParticleHandler.ARROW_HEAD.get(), staffPos[0].getX(), staffPos[0].getY(), staffPos[0].getZ(), 0, 0, 0, false, 0, 0, 0, 0, 3.5F, 0.95, 0.9, 0.35, 0.75, 1, 2 * dist, true, false, new ParticleComponent[]{
                         new ParticleComponent.Attractor(barakoPos, 0.5f, 0.2f, ParticleComponent.Attractor.EnumAttractorBehavior.LINEAR),
-                        new RibbonComponent(ParticleHandler.RIBBON_FLAT.get(), 10, 0, 0, 0, 0.15F, 0.95, 0.9, 0.35, 0.75, true, true, new ParticleComponent[]{
+                        new RibbonComponent(ParticleHandler.RIBBON_FLAT.get(), 10, 0, 0, 0, 0.12F, 0.95, 0.9, 0.35, 0.75, true, true, new ParticleComponent[]{
                                 new RibbonComponent.PropertyOverLength(RibbonComponent.PropertyOverLength.EnumRibbonProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(1, 0))
                         }),
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.POS_X, new ParticleComponent.Oscillator(0, (float) ox, (float) (1 * dist), 2.5f), true),
@@ -658,9 +659,14 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
                         new ParticleComponent.FaceMotion(),
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, new ParticleComponent.KeyTrack(new float[]{0, 0, 1}, new float[]{0, 0.05f, 0.06f}), false),
                 });
-                AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING2.get(), staffPos[0].getX(), staffPos[0].getY(), staffPos[0].getZ(), 0, 0, 0, true, 0, 0, 0, 0, 1.5F, 1, 223 / 255f, 66 / 255f, 1, 1, 15, true, false, new ParticleComponent[]{
+                if (ticksExisted % 5 == 0) AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING2.get(), staffPos[0].getX(), staffPos[0].getY(), staffPos[0].getZ(), 0, 0, 0, true, 0, 0, 0, 0, 1.5F, 1, 223 / 255f, 66 / 255f, 1, 1, 15, true, false, new ParticleComponent[]{
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(1f, 10f), false)
+                });
+                int spawnFreq = 5;
+                if (ticksExisted % spawnFreq == 0) ParticleRibbon.spawnRibbon(world, ParticleHandler.RIBBON_SQUIGGLE.get(), (int)(0.5 * dist), staffPos[0].getX(), staffPos[0].getY(), staffPos[0].getZ(), 0, 0, 0, true, 0, 0, 0, 0.5F, 0.95, 0.9, 0.35, 0.75, 1, spawnFreq, true, new ParticleComponent[]{
+                        new RibbonComponent.BeamPinning(staffPos, barakoPos),
+                        new RibbonComponent.PanTexture(0, 1)
                 });
             }
         }

@@ -395,7 +395,7 @@ public abstract class ParticleComponent {
                     ParticleRotation.EulerAngles eulerRot = (ParticleRotation.EulerAngles) particle.rotation;
                     double a = dy / d;
                     a = Math.max(-1, Math.min(1, a));
-                    float pitch = (float) Math.asin(a);
+                    float pitch = -(float) Math.asin(a);
                     float yaw = -(float) (Math.atan2(dz, dx) + Math.PI);
                     eulerRot.roll = pitch;
                     eulerRot.yaw = yaw;
