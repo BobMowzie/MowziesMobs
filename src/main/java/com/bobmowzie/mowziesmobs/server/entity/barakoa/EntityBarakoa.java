@@ -35,7 +35,6 @@ import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.*;
 import net.minecraft.item.ItemStack;
@@ -60,7 +59,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     public static final Animation DEACTIVATE_ANIMATION = Animation.create(26);
     public static final Animation BLOCK_ANIMATION = Animation.create(10);
 
-    public static final Animation TELEPORT_ANIMATION = Animation.create(20);
+    public static final Animation TELEPORT_ANIMATION = Animation.create(27);
     public static final Animation HEAL_START_ANIMATION = Animation.create(25);
     public static final Animation HEAL_LOOP_ANIMATION = Animation.create(20);
     public static final Animation HEAL_STOP_ANIMATION = Animation.create(6);
@@ -87,6 +86,10 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     public Vector3d[] staffPos;
     @OnlyIn(Dist.CLIENT)
     public Vector3d[] barakoPos;
+    @OnlyIn(Dist.CLIENT)
+    public Vector3d[] myPos;
+
+    protected Vector3d teleportDestination;
 
     public EntityBarakoa(EntityType<? extends EntityBarakoa> type, World world) {
         super(type, world);
@@ -100,6 +103,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         if (world.isRemote) {
             staffPos = new Vector3d[]{new Vector3d(0, 0, 0)};
             barakoPos = new Vector3d[]{new Vector3d(0, 0, 0)};
+            myPos = new Vector3d[]{new Vector3d(0, 0, 0)};
         }
     }
 
@@ -144,9 +148,22 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             }
         });
         goalSelector.addGoal(2, new SimpleAnimationAI<EntityBarakoa>(this, TELEPORT_ANIMATION, true, false) {
+            private Vector3d teleportStart;
+
             @Override
             public void tick() {
                 super.tick();
+                int startMoveFrame = 7;
+                int endMoveFrame = 16;
+                if (entity.getAnimationTick() == startMoveFrame) teleportStart = entity.getPositionVec();
+                if (entity.teleportDestination != null && entity.getAnimationTick() > startMoveFrame && getAnimationTick() < endMoveFrame) {
+                    float t = (getAnimationTick() - startMoveFrame) / (float)(endMoveFrame - startMoveFrame);
+                    t = (float) (0.5 - 0.5 * Math.cos(t * Math.PI));
+                    Vector3d newPos = teleportStart.add(teleportDestination.subtract(teleportStart).scale(t));
+                    entity.setPositionAndUpdate(newPos.getX(), newPos.getY(), newPos.getZ());
+                    entity.getNavigator().clearPath();
+                }
+                if (entity.getAttackTarget() != null) entity.getLookController().setLookPositionWithEntity(entity.getAttackTarget(), 30, 30);
             }
         });
         goalSelector.addGoal(2, new SimpleAnimationAI<EntityBarakoa>(this, HEAL_START_ANIMATION, true, false) {
@@ -157,10 +174,10 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
                 if (sunblocker.getAttackTarget() != null) {
                     sunblocker.getLookController().setLookPositionWithEntity(sunblocker.getAttackTarget(), entity.getHorizontalFaceSpeed(), entity.getVerticalFaceSpeed());
                 }
-                if (getAnimationTick() >= 19) {
+                if (sunblocker.getAnimationTick() >= 19) {
                     EffectHandler.addOrCombineEffect(entity, Effects.GLOWING, 5, 0, false, false);
                 }
-                if (getAnimationTick() == 23)
+                if (sunblocker.getAnimationTick() == 23)
                     AnimationHandler.INSTANCE.sendAnimationMessage(entity, HEAL_LOOP_ANIMATION);
             }
         });
@@ -238,8 +255,8 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         if (getAttackTarget() == null) {
             int i = MathHelper.nextInt(rand, 0, 11);
             if (i < MMSounds.ENTITY_BARAKOA_TALK.size()) {
-                playSound(MMSounds.ENTITY_BARAKOA_TALK.get(i).get(), 1, 1.5f);
-                AnimationHandler.INSTANCE.sendAnimationMessage(this, IDLE_ANIMATION);
+//                playSound(MMSounds.ENTITY_BARAKOA_TALK.get(i).get(), 1, 1.5f);
+//                AnimationHandler.INSTANCE.sendAnimationMessage(this, IDLE_ANIMATION);
             }
         } else {
             int i = MathHelper.nextInt(rand, 0, 7);
@@ -392,9 +409,27 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
 //            playSound(MMSounds.ENTITY_BARAKOA_INHALE, 0.7f, 1.2f);
 //        }
 
+        if (world.isRemote && getAnimation() == HEAL_START_ANIMATION && getAnimationTick() == 22 && staffPos != null && staffPos.length >= 1)
+            staffPos[0] = getPositionVec().add(0, getEyeHeight(), 0);
         if ((getAnimation() == HEAL_START_ANIMATION && getAnimationTick() >= 23) || getAnimation() == HEAL_LOOP_ANIMATION) {
             spawnHealParticles();
             sunBlockTarget();
+        }
+
+        if (world.isRemote && getAnimation() == TELEPORT_ANIMATION) {
+            myPos[0] = getPositionVec().add(0, 1.2f, 0);
+            if (getAnimationTick() == 5) {
+                ParticleComponent.KeyTrack keyTrack1 = ParticleComponent.KeyTrack.oscillate(0, 2, 24);
+                ParticleComponent.KeyTrack keyTrack2 = new ParticleComponent.KeyTrack(new float[]{0, 18, 18, 0}, new float[]{0, 0.2f, 0.8f, 1});
+                AdvancedParticleBase.spawnParticle(world, ParticleHandler.SUN.get(), getPosX(), getPosY(), getPosZ(), 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 15, true, true, new ParticleComponent[]{
+                        new ParticleComponent.PinLocation(myPos),
+                        new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, keyTrack2, false),
+                        new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, keyTrack1, true),
+                        new RibbonComponent(ParticleHandler.RIBBON_FLAT.get(), 10, 0, 0, 0, 0.12F, 0.95, 0.9, 0.35, 0.75, true, true, new ParticleComponent[]{
+                                new RibbonComponent.PropertyOverLength(RibbonComponent.PropertyOverLength.EnumRibbonProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(1, 0))
+                        }),
+                });
+            }
         }
 
         if (getAttackTarget() == null) {
@@ -409,7 +444,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         }
 
 //        if (ticksExisted > 50) setDead();
-//        if (getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(this, ATTACK_ANIMATION);
+//        if (getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(this, TELEPORT_ANIMATION);
     }
 
     @Override
@@ -648,7 +683,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
                 double ox = radius * Math.sin(yaw) * Math.sin(pitch);
                 double oy = radius * Math.cos(pitch);
                 double oz = radius * Math.cos(yaw) * Math.sin(pitch);
-                if (ticksExisted % 5 == 0) AdvancedParticleBase.spawnParticle(world, ParticleHandler.ARROW_HEAD.get(), staffPos[0].getX(), staffPos[0].getY(), staffPos[0].getZ(), 0, 0, 0, false, 0, 0, 0, 0, 3.5F, 0.95, 0.9, 0.35, 0.75, 1, 2 * dist, true, false, new ParticleComponent[]{
+                if (ticksExisted % 5 == 0) AdvancedParticleBase.spawnParticle(world, ParticleHandler.ARROW_HEAD.get(), staffPos[0].getX(), staffPos[0].getY(), staffPos[0].getZ(), 0, 0, 0, false, 0, 0, 0, 0, 3.5F, 0.95, 0.9, 0.35, 0.75, 1, Math.min(2 * dist, 60), true, false, new ParticleComponent[]{
                         new ParticleComponent.Attractor(barakoPos, 0.5f, 0.2f, ParticleComponent.Attractor.EnumAttractorBehavior.LINEAR),
                         new RibbonComponent(ParticleHandler.RIBBON_FLAT.get(), 10, 0, 0, 0, 0.12F, 0.95, 0.9, 0.35, 0.75, true, true, new ParticleComponent[]{
                                 new RibbonComponent.PropertyOverLength(RibbonComponent.PropertyOverLength.EnumRibbonProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(1, 0))

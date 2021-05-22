@@ -989,6 +989,63 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         flap(handRight, 2.3f * healAnimSpeed, 0.3f * wandWave, false, -1.2f + offset, 0, waveFrame, 1f);
         walk(handRight, 2.3f * healAnimSpeed, 0.2f * wandWave, false, (float) (Math.PI/2f) - 1.2f + offset, 0, waveFrame, 1f);
 
+
+        animator.setAnimation(EntityBarakoa.TELEPORT_ANIMATION);
+        animator.startKeyframe(2);
+        animator.move(body, 0, 5f, 1f);
+        animator.rotate(body, 0.3f, 0, 0);
+        animator.rotate(thighLeftJoint, -0.3f, 0, 0);
+        animator.rotate(thighRightJoint, -0.3f, 0, 0);
+        animator.rotate(thighLeft, -0.5f, 0, 0);
+        animator.rotate(thighRight, -0.5f, 0, 0);
+        animator.rotate(calfLeft, 0.8f, 0, 0);
+        animator.rotate(calfRight, 0.8f, 0, 0);
+        animator.rotate(footLeft, -0.3f, 0, 0);
+        animator.rotate(footRight, -0.3f, 0, 0);
+        animator.rotate(neck, -0.4f, 0, 0);
+        animator.rotate(head, -0.1f, 0, 0);
+        animator.rotate(armUpperLeft, 0, -0.4f, -0.5f);
+        animator.rotate(armUpperRight, 0, 0.4f, 0.5f);
+        animator.rotate(armLowerLeft, -0.7f, 0, 0);
+        animator.rotate(armLowerRight, -0.7f, 0, 0);
+        animator.endKeyframe();
+        animator.setStaticKeyframe(1);
+        animator.startKeyframe(6);
+        animator.rotate(talker, 1, 0, 0);
+        animator.move(body, 0, -10f, -1f);
+        animator.rotate(body, 0.3f, 0, 0);
+        animator.rotate(thighLeftJoint, -0.3f, 0, 0);
+        animator.rotate(thighRightJoint, -0.3f, 0, 0);
+        animator.rotate(thighLeft, 0.5f, 0, 0);
+        animator.rotate(thighRight, 0.5f, 0, 0);
+        animator.rotate(calfLeft, -0.8f, 0, 0);
+        animator.rotate(calfRight, -0.8f, 0, 0);
+        animator.rotate(footLeft, 0.7f, 0, 0);
+        animator.rotate(footRight, 0.7f, 0, 0);
+        animator.rotate(neck, 0f, 0, 0);
+        animator.rotate(head, 0f, 0, 0);
+        animator.rotate(armUpperLeft, 0.3f, 0, 0.3f);
+        animator.rotate(armUpperRight, 0.3f, 0, -0.3f);
+        animator.rotate(armLowerLeft, 0.2f, 0, 0);
+        animator.rotate(armLowerRight, 0.2f, 0, 0);
+        animator.endKeyframe();
+        animator.setStaticKeyframe(9);
+        animator.resetKeyframe(9);
+
+        float ballCurl = (float) Math.pow(talker.rotateAngleX, 7);
+        float ballCurl2 = (float) Math.pow(talker.rotateAngleX, 15);
+        body.rotateAngleX += ballCurl * 4;
+        neck.rotateAngleX += ballCurl * 0.5;
+        head.rotateAngleX += ballCurl * 0.5;
+        armUpperLeft.rotateAngleX -= 1 * ballCurl;
+        armUpperRight.rotateAngleX -= 1 * ballCurl;
+        armLowerLeft.rotateAngleX -= 1 * ballCurl;
+        armLowerRight.rotateAngleX -= 1 * ballCurl;
+        thighLeftJoint.rotateAngleX -= 1 * ballCurl;
+        thighRightJoint.rotateAngleX -= 1 * ballCurl;
+        calfLeft.rotateAngleX += 0.5 * ballCurl;
+        calfRight.rotateAngleX += 0.5 * ballCurl;
+
         //Inactive
         if (!entity.active) {
             scaler.rotationPointX += 0.999f;
@@ -1018,6 +1075,7 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
 
         float scale = 1 - scaler.rotationPointX;
         body.setScale(scale, scale, scale);
+        body.setScale(body.scaleX * (1 - ballCurl2), body.scaleY * (1 - ballCurl2), body.scaleZ * (1 - ballCurl2));
         maskBase.setScale(1 / scale, 1 / scale, 1 / scale);
 
 

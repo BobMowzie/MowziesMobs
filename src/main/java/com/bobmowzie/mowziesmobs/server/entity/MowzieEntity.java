@@ -44,8 +44,8 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     private static final byte START_IA_HEALTH_UPDATE_ID = 4;
 
     public int frame;
-    public float targetDistance;
-    public float targetAngle;
+    public float targetDistance = -1;
+    public float targetAngle = -1;
     public boolean active;
     public LivingEntity blockingEntity = null;
     private int animationTick;

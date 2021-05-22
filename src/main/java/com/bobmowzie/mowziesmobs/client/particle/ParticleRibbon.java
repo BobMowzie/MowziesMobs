@@ -32,8 +32,8 @@ public class ParticleRibbon extends AdvancedParticleBase {
         super(worldIn, xCoordIn, yCoordIn, zCoordIn, motionX, motionY, motionZ, rotation, scale, r, g, b, a, drag, duration, emissive, false, components);
         positions = new Vector3d[length];
         prevPositions = new Vector3d[length];
-        positions[0] = new Vector3d(getPosX(), getPosY(), getPosZ());
-        prevPositions[0] = getPrevPos();
+        if (positions.length >= 1) positions[0] = new Vector3d(getPosX(), getPosY(), getPosZ());
+        if (prevPositions.length >= 1) prevPositions[0] = getPrevPos();
     }
 
     @Override
@@ -187,7 +187,7 @@ public class ParticleRibbon extends AdvancedParticleBase {
 
     @Override
     public AxisAlignedBB getBoundingBox() {
-        if (positions == null || positions[0] == null) return super.getBoundingBox();
+        if (positions == null || positions.length <= 0 || positions[0] == null) return super.getBoundingBox();
         double minX = positions[0].getX() - 0.1;
         double minY = positions[0].getY() - 0.1;
         double minZ = positions[0].getZ() - 0.1;
