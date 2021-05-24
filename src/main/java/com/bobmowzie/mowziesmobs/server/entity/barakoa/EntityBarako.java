@@ -148,9 +148,9 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 }
                 return true;
             }).setIgnoresLineOfSight()));
-        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, IronGolemEntity.class, 0, true, false, null));
-        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, true, false, (e) -> !(e instanceof ZombifiedPiglinEntity)));
-        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, SkeletonEntity.class, 0, true, false, null));
+        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, IronGolemEntity.class, 0, false, false, null));
+        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, false, false, (e) -> !(e instanceof ZombifiedPiglinEntity)));
+        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, SkeletonEntity.class, 0, false, false, null));
         this.goalSelector.addGoal(6, new SimpleAnimationAI<>(this, BELLY_ANIMATION, false, true));
         this.goalSelector.addGoal(6, new SimpleAnimationAI<EntityBarako>(this, TALK_ANIMATION, false, true) {
             @Override
@@ -427,7 +427,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 List<LivingEntity> entities = getEntityLivingBaseNearby(16, 16, 16, 16);
                 for (LivingEntity inRange : entities) {
                     if (inRange instanceof LeaderSunstrikeImmune) continue;
-                    if (inRange instanceof PlayerEntity && inRange.isInvulnerable()) continue;
+                    if (inRange instanceof PlayerEntity && (((PlayerEntity)inRange).isCreative() || inRange.isSpectator())) continue;
                     Vector3d diff = inRange.getPositionVec().subtract(getPositionVec().add(0, 3, 0));
                     diff = diff.normalize().scale(0.2);
                     inRange.setMotion(getMotion().subtract(diff));
@@ -797,7 +797,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     @Override
     public void onDeath(DamageSource cause) {
         super.onDeath(cause);
-        List<EntityBarakoa> barakoa = getEntitiesNearby(EntityBarakoa.class, 20, 10, 20, 20);
+        List<EntityBarakoa> barakoa = getEntitiesNearby(EntityBarakoa.class, 30, 20, 30, 30);
         for (EntityBarakoa entityBarakoa : barakoa) {
             if (entityBarakoa.isBarakoDevoted()) entityBarakoa.timeUntilDeath = rand.nextInt(20);
         }

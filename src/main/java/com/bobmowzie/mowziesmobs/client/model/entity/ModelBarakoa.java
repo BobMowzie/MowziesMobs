@@ -1052,7 +1052,7 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
             head.rotateAngleX -= 1.58f;
             body.rotationPointY += 9f;
             body.rotationPointZ += 5f;
-            if (!entity.isOnGround()) {
+            if (!entity.isOnGround() && !entity.isInLava() && !entity.isInWater()) {
                 body.rotateAngleX += 0.4f * frame;
             }
         }

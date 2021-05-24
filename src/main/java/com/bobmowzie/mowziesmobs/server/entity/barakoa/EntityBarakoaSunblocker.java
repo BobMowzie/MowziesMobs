@@ -11,6 +11,7 @@ import net.minecraft.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.Difficulty;
@@ -214,7 +215,20 @@ public class EntityBarakoaSunblocker extends EntityBarakoaya {
         LivingEntity target = getAttackTarget();
         if (target != null) {
             EffectHandler.addOrCombineEffect(target, EffectHandler.SUNBLOCK, 20, 0, true, false);
-            if (target.ticksExisted % 10 == 0) target.heal(0.1f);
+            if (target.ticksExisted % 20 == 0) target.heal(0.1f);
         }
+    }
+    
+    @Override
+    public boolean isInvulnerableTo(DamageSource source) {
+        boolean teleporting = getAnimation() == TELEPORT_ANIMATION && getAnimationTick() <= 16;
+        return super.isInvulnerableTo(source) || ((!active || teleporting || !hasTeleported) && source != DamageSource.OUT_OF_WORLD && !source.isCreativePlayer());
+    }
+
+    @Override
+    public void setFire(int seconds) {
+        boolean teleporting = getAnimation() == TELEPORT_ANIMATION && getAnimationTick() <= 16;
+        if (!active || teleporting || !hasTeleported) return;
+        super.setFire(seconds);
     }
 }

@@ -712,10 +712,4 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     protected void sunBlockTarget() {
 
     }
-
-    @Override
-    public boolean isInvulnerableTo(DamageSource source) {
-        boolean teleporting = getAnimation() == TELEPORT_ANIMATION && getAnimationTick() <= 16;
-        return super.isInvulnerableTo(source) || ((!active || teleporting) && source != DamageSource.OUT_OF_WORLD && !source.isCreativePlayer());
-    }
 }
