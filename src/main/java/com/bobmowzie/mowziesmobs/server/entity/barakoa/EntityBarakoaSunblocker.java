@@ -19,6 +19,7 @@ import net.minecraft.world.World;
 import java.util.EnumSet;
 
 public class EntityBarakoaSunblocker extends EntityBarakoaya {
+    public boolean hasTeleported = true;
 
     public EntityBarakoaSunblocker(EntityType<? extends EntityBarakoaya> type, World world) {
         super(type, world);
@@ -48,6 +49,7 @@ public class EntityBarakoaSunblocker extends EntityBarakoaya {
     protected void registerTargetGoals() {
         super.registerTargetGoals();
         this.targetSelector.addGoal(2, new NearestAttackableTargetPredicateGoal<EntityBarako>(this, EntityBarako.class, 0, false, false, (new EntityPredicate()).setDistance(getAttributeValue(Attributes.FOLLOW_RANGE) * 2).setCustomPredicate(target -> {
+            if (!active) return false;
             if (target instanceof MobEntity) {
                 return ((MobEntity) target).getAttackTarget() != null || target.getHealth() < target.getMaxHealth();
             }
@@ -106,8 +108,11 @@ public class EntityBarakoaSunblocker extends EntityBarakoaya {
 
         @Override
         public boolean shouldExecute() {
+            if (!entity.active) return false;
             if (entity.getAnimation() == TELEPORT_ANIMATION) return false;
-            if (entity.getAttackTarget() != null && entity.canHeal(entity.getAttackTarget()) && entity.targetDistance < 7 && entity.targetDistance >= 0) {
+            if (entity.getAttackTarget() != null && entity.canHeal(entity.getAttackTarget()) && (
+                    (entity.targetDistance >= 0 && entity.targetDistance < 7) || !hasTeleported
+            )) {
                 return findTeleportLocation();
             }
             return false;
@@ -116,6 +121,7 @@ public class EntityBarakoaSunblocker extends EntityBarakoaya {
         @Override
         public void startExecuting() {
             super.startExecuting();
+            hasTeleported = true;
             AnimationHandler.INSTANCE.sendAnimationMessage(entity, TELEPORT_ANIMATION);
         }
 
@@ -192,6 +198,7 @@ public class EntityBarakoaSunblocker extends EntityBarakoaya {
 
         @Override
         public boolean shouldExecute() {
+            if (!entity.active) return false;
             return entity.canHeal(entity.getAttackTarget());
         }
 
@@ -207,6 +214,7 @@ public class EntityBarakoaSunblocker extends EntityBarakoaya {
         LivingEntity target = getAttackTarget();
         if (target != null) {
             EffectHandler.addOrCombineEffect(target, EffectHandler.SUNBLOCK, 20, 0, true, false);
+            if (target.ticksExisted % 10 == 0) target.heal(0.1f);
         }
     }
 }

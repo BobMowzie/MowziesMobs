@@ -416,19 +416,21 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             sunBlockTarget();
         }
 
-        if (world.isRemote && getAnimation() == TELEPORT_ANIMATION) {
-            myPos[0] = getPositionVec().add(0, 1.2f, 0);
-            if (getAnimationTick() == 5) {
-                ParticleComponent.KeyTrack keyTrack1 = ParticleComponent.KeyTrack.oscillate(0, 2, 24);
-                ParticleComponent.KeyTrack keyTrack2 = new ParticleComponent.KeyTrack(new float[]{0, 18, 18, 0}, new float[]{0, 0.2f, 0.8f, 1});
-                AdvancedParticleBase.spawnParticle(world, ParticleHandler.SUN.get(), getPosX(), getPosY(), getPosZ(), 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 15, true, true, new ParticleComponent[]{
-                        new ParticleComponent.PinLocation(myPos),
-                        new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, keyTrack2, false),
-                        new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, keyTrack1, true),
-                        new RibbonComponent(ParticleHandler.RIBBON_FLAT.get(), 10, 0, 0, 0, 0.12F, 0.95, 0.9, 0.35, 0.75, true, true, new ParticleComponent[]{
-                                new RibbonComponent.PropertyOverLength(RibbonComponent.PropertyOverLength.EnumRibbonProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(1, 0))
-                        }),
-                });
+        if (getAnimation() == TELEPORT_ANIMATION) {
+            if (world.isRemote) {
+                myPos[0] = getPositionVec().add(0, 1.2f, 0);
+                if (getAnimationTick() == 5) {
+                    ParticleComponent.KeyTrack keyTrack1 = ParticleComponent.KeyTrack.oscillate(0, 2, 24);
+                    ParticleComponent.KeyTrack keyTrack2 = new ParticleComponent.KeyTrack(new float[]{0, 18, 18, 0}, new float[]{0, 0.2f, 0.8f, 1});
+                    AdvancedParticleBase.spawnParticle(world, ParticleHandler.SUN.get(), getPosX(), getPosY(), getPosZ(), 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 15, true, true, new ParticleComponent[]{
+                            new ParticleComponent.PinLocation(myPos),
+                            new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, keyTrack2, false),
+                            new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, keyTrack1, true),
+                            new RibbonComponent(ParticleHandler.RIBBON_FLAT.get(), 10, 0, 0, 0, 0.12F, 0.95, 0.9, 0.35, 0.75, true, true, new ParticleComponent[]{
+                                    new RibbonComponent.PropertyOverLength(RibbonComponent.PropertyOverLength.EnumRibbonProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(1, 0))
+                            }),
+                    });
+                }
             }
         }
 
@@ -709,5 +711,11 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
 
     protected void sunBlockTarget() {
 
+    }
+
+    @Override
+    public boolean isInvulnerableTo(DamageSource source) {
+        boolean teleporting = getAnimation() == TELEPORT_ANIMATION && getAnimationTick() <= 16;
+        return super.isInvulnerableTo(source) || ((!active || teleporting) && source != DamageSource.OUT_OF_WORLD && !source.isCreativePlayer());
     }
 }

@@ -21,6 +21,7 @@ import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoTrade;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
+import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
@@ -74,22 +75,25 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     public static final Animation TALK_ANIMATION = Animation.create(80);
     public static final Animation SUNSTRIKE_ANIMATION = Animation.create(15);
     public static final Animation ATTACK_ANIMATION = Animation.create(30);
-    public static final Animation SPAWN_ANIMATION = Animation.create(20);
+    public static final Animation SPAWN_ANIMATION = Animation.create(17);
+    public static final Animation SPAWN_SUNBLOCKERS_ANIMATION = Animation.create(17);
     public static final Animation SOLAR_BEAM_ANIMATION = Animation.create(100);
     public static final Animation BLESS_ANIMATION = Animation.create(60);
     public static final Animation SUPERNOVA_ANIMATION = Animation.create(100);
     private static final int MAX_HEALTH = 150;
     private static final int SUNSTRIKE_PAUSE_MAX = 40;
-    private static final int SUNSTRIKE_PAUSE_MIN = 20;
+    private static final int SUNSTRIKE_PAUSE_MIN = 25;
     private static final int LASER_PAUSE = 230;
     private static final int SUPERNOVA_PAUSE = 230;
     private static final int BARAKOA_PAUSE = 140;
     private static final int HEAL_PAUSE = 75;
+    private static final int HEALTH_LOST_BETWEEN_SUNBLOCKERS = 50;
     private static final DataParameter<Integer> DIRECTION = EntityDataManager.createKey(EntityBarako.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> DIALOGUE = EntityDataManager.createKey(EntityBarako.class, DataSerializers.VARINT);
     private static final DataParameter<Boolean> ANGRY = EntityDataManager.createKey(EntityBarako.class, DataSerializers.BOOLEAN);
     private static final DataParameter<ItemStack> DESIRES = EntityDataManager.createKey(EntityBarako.class, DataSerializers.ITEMSTACK);
     private static final DataParameter<CompoundNBT> TRADED_PLAYERS = EntityDataManager.createKey(EntityBarako.class, DataSerializers.COMPOUND_NBT);
+    private static final DataParameter<Float> HEALTH_LOST = EntityDataManager.createKey(EntityBarako.class, DataSerializers.FLOAT);
     public ControlledAnimation legsUp = new ControlledAnimation(15);
     public ControlledAnimation angryEyebrow = new ControlledAnimation(5);
     private PlayerEntity customer;
@@ -198,7 +202,8 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 playSound(MMSounds.ENTITY_BARAKO_BURST.get(), 1.7f, 1.5f);
             }
         });
-        this.goalSelector.addGoal(2, new AnimationSpawnBarakoa(this, SPAWN_ANIMATION));
+        this.goalSelector.addGoal(2, new AnimationSpawnBarakoa(this, SPAWN_ANIMATION, false));
+        this.goalSelector.addGoal(2, new AnimationSpawnBarakoa(this, SPAWN_SUNBLOCKERS_ANIMATION, true));
         this.goalSelector.addGoal(2, new AnimationSolarBeam<>(this, SOLAR_BEAM_ANIMATION));
         this.goalSelector.addGoal(3, new AnimationTakeDamage<>(this));
         this.goalSelector.addGoal(1, new AnimationDieAI<>(this));
@@ -206,11 +211,6 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         this.goalSelector.addGoal(7, new LookAtGoal(this, EntityBarakoa.class, 8.0F));
         this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
     }
-
-    //    public EntityBarako(World world, int direction) {
-//        this(world);
-//        this.setDirection(direction);
-//    }
 
     @Override
     protected float getStandingEyeHeight(Pose poseIn, EntitySize sizeIn) {
@@ -284,6 +284,10 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 //        this.posZ = prevPosZ;
         setMotion(0, getMotion().y, 0);
 
+        if (!world.isRemote && getHealthLost() >= HEALTH_LOST_BETWEEN_SUNBLOCKERS && getAnimation() == NO_ANIMATION && !isAIDisabled() && getEntitiesNearby(EntityBarakoaSunblocker.class, 25).size() < 3) {
+            AnimationHandler.INSTANCE.sendAnimationMessage(this, SPAWN_SUNBLOCKERS_ANIMATION);
+            setHealthLost(0);
+        }
         if (getAttackTarget() != null) {
             LivingEntity target = getAttackTarget();
             this.setAngry(true);
@@ -445,7 +449,8 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 
         if (!world.isRemote && getAttackTarget() == null && getAnimation() != SOLAR_BEAM_ANIMATION && getAnimation() != SUPERNOVA_ANIMATION) {
             timeUntilHeal--;
-//            if (ConfigHandler.COMMON.MOBS.BARAKO.healsOutOfBattle.get() && timeUntilHeal <= 0) heal(0.3f);
+            if (ConfigHandler.COMMON.MOBS.BARAKO.healsOutOfBattle.get() && timeUntilHeal <= 0) heal(0.3f);
+            if (getHealth() == getMaxHealth()) setHealthLost(0);
         }
         else {
             timeUntilHeal = HEAL_PAUSE;
@@ -465,7 +470,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         }
 
 //        if (getAnimation() == NO_ANIMATION) {
-//            AnimationHandler.INSTANCE.sendAnimationMessage(this, SOLAR_BEAM_ANIMATION);
+//            AnimationHandler.INSTANCE.sendAnimationMessage(this, SPAWN_ANIMATION);
 //        }
     }
 
@@ -586,8 +591,18 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 
     @Override
     public boolean attackEntityFrom(DamageSource source, float damage) {
+        if (isPotionActive(EffectHandler.SUNBLOCK)) {
+            playSound(MMSounds.ENTITY_WROUGHT_UNDAMAGED.get(), 0.4F, 2);
+            return false;
+        }
         timeUntilHeal = HEAL_PAUSE;
-        return super.attackEntityFrom(source, damage);
+        float prevHealth = getHealth();
+        boolean superResult = super.attackEntityFrom(source, damage);
+        if (superResult) {
+            float diffHealth = prevHealth - getHealth();
+            setHealthLost(getHealthLost() + diffHealth);
+        }
+        return superResult;
     }
 
     @Override
@@ -652,6 +667,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         Item tradeItem = ForgeRegistries.ITEMS.getValue(new ResourceLocation(ConfigHandler.COMMON.MOBS.BARAKO.whichItem.get()));
         getDataManager().register(DESIRES, new ItemStack(tradeItem, ConfigHandler.COMMON.MOBS.BARAKO.howMany.get()));
         getDataManager().register(TRADED_PLAYERS, new CompoundNBT());
+        getDataManager().register(HEALTH_LOST, 0.f);
     }
 
     public int getDirection() {
@@ -702,6 +718,14 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         return tradedPlayers;
     }
 
+    public float getHealthLost() {
+        return getDataManager().get(HEALTH_LOST);
+    }
+
+    public void setHealthLost(float amount) {
+        getDataManager().set(HEALTH_LOST, amount);
+    }
+
     public boolean doesItemSatisfyDesire(ItemStack stack) {
         return canPayFor(stack, getDesires());
     }
@@ -738,6 +762,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         compound.putInt("HomePosX", this.getHomePosition().getX());
         compound.putInt("HomePosY", this.getHomePosition().getY());
         compound.putInt("HomePosZ", this.getHomePosition().getZ());
+        compound.putFloat("healthLost", this.getHealthLost());
     }
 
     @Override
@@ -750,6 +775,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         int j = compound.getInt("HomePosY");
         int k = compound.getInt("HomePosZ");
         this.setHomePosAndDistance(new BlockPos(i, j, k), -1);
+        setHealthLost(compound.getInt("healthLost"));
     }
 
 
@@ -766,7 +792,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 
     @Override
     public Animation[] getAnimations() {
-        return new Animation[]{DIE_ANIMATION, HURT_ANIMATION, BELLY_ANIMATION, TALK_ANIMATION, SUNSTRIKE_ANIMATION, ATTACK_ANIMATION, SPAWN_ANIMATION, SOLAR_BEAM_ANIMATION, BLESS_ANIMATION, SUPERNOVA_ANIMATION};
+        return new Animation[]{DIE_ANIMATION, HURT_ANIMATION, BELLY_ANIMATION, TALK_ANIMATION, SUNSTRIKE_ANIMATION, ATTACK_ANIMATION, SPAWN_ANIMATION, SPAWN_SUNBLOCKERS_ANIMATION, SOLAR_BEAM_ANIMATION, BLESS_ANIMATION, SUPERNOVA_ANIMATION};
     }
 
     @Override
@@ -868,6 +894,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 setDirection(direction);
             }
         }
+        if (reason != SpawnReason.STRUCTURE) setHomePosAndDistance(getPosition(), -1);
         return super.onInitialSpawn(world, difficulty, reason, livingData, compound);
     }
 }
