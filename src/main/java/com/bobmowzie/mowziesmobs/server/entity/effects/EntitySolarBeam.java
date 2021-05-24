@@ -137,8 +137,8 @@ public class EntitySolarBeam extends Entity {
                     if (caster instanceof EntityBarako && target instanceof LeaderSunstrikeImmune) {
                         continue;
                     }
-                    float damageFire = 1.5f;
-                    float damageMob = 3f;
+                    float damageFire = 1f;
+                    float damageMob = 2.5f;
                     if (caster instanceof EntityBarako) {
                         damageFire *= ConfigHandler.COMMON.MOBS.BARAKO.combatConfig.attackMultiplier.get();
                         damageMob *= ConfigHandler.COMMON.MOBS.BARAKO.combatConfig.attackMultiplier.get();

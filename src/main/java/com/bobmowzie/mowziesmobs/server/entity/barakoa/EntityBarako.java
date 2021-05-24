@@ -97,7 +97,6 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     public ControlledAnimation legsUp = new ControlledAnimation(15);
     public ControlledAnimation angryEyebrow = new ControlledAnimation(5);
     private PlayerEntity customer;
-    // TODO: Enum!
     public int barakoaSpawnCount = 0;
     // TODO: use Direction!
     private int direction = 0;
@@ -218,7 +217,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     }
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
-        return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 5)
+        return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 4)
                 .createMutableAttribute(Attributes.MAX_HEALTH, MAX_HEALTH * ConfigHandler.COMMON.MOBS.BARAKO.combatConfig.healthMultiplier.get())
                 .createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1)
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 40);
@@ -592,7 +591,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     @Override
     public boolean attackEntityFrom(DamageSource source, float damage) {
         if (isPotionActive(EffectHandler.SUNBLOCK)) {
-            playSound(MMSounds.ENTITY_WROUGHT_UNDAMAGED.get(), 0.4F, 2);
+            if (source.getImmediateSource() != null) playSound(MMSounds.ENTITY_WROUGHT_UNDAMAGED.get(), 0.4F, 2);
             return false;
         }
         timeUntilHeal = HEAL_PAUSE;
