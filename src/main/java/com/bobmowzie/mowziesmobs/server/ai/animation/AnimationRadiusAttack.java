@@ -6,6 +6,9 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.play.server.SEntityVelocityPacket;
 import net.minecraft.util.DamageSource;
 
 import java.util.EnumSet;
@@ -38,11 +41,15 @@ public class AnimationRadiusAttack<T extends MowzieEntity & IAnimatedEntity> ext
                     continue;
                 }
                 entity.attackEntityAsMob(aHit, damageMultiplier, applyKnockbackMultiplier);
-                if (pureapplyKnockback) {
+                if (pureapplyKnockback && !aHit.isInvulnerable()) {
+                    if (aHit instanceof PlayerEntity && ((PlayerEntity)aHit).abilities.disableDamage) continue;
                     double angle = entity.getAngleBetweenEntities(entity, aHit);
                     double x = applyKnockbackMultiplier * Math.cos(Math.toRadians(angle - 90));
                     double z = applyKnockbackMultiplier * Math.sin(Math.toRadians(angle - 90));
-                    aHit.setMotion(x, aHit.getMotion().y, z);
+                    aHit.setMotion(x, 0.3, z);
+                    if (aHit instanceof ServerPlayerEntity) {
+                        ((ServerPlayerEntity) aHit).connection.sendPacket(new SEntityVelocityPacket(aHit));
+                    }
                 }
             }
         }
