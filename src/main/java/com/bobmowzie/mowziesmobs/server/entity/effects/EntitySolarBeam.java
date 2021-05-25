@@ -35,7 +35,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class EntitySolarBeam extends Entity {
-    private final double RADIUS = 20;
+    public static final double RADIUS_BARAKO = 30;
+    public static final double RADIUS_PLAYER = 20;
     public LivingEntity caster;
     public double endPosX, endPosY, endPosZ;
     public double collidePosX, collidePosY, collidePosZ;
@@ -266,9 +267,10 @@ public class EntitySolarBeam extends Entity {
     }
 
     private void calculateEndPos() {
-        endPosX = getPosX() + RADIUS * Math.cos(getYaw()) * Math.cos(getPitch());
-        endPosZ = getPosZ() + RADIUS * Math.sin(getYaw()) * Math.cos(getPitch());
-        endPosY = getPosY() + RADIUS * Math.sin(getPitch());
+        double radius = caster instanceof EntityBarako ? RADIUS_BARAKO : RADIUS_PLAYER;
+        endPosX = getPosX() + radius * Math.cos(getYaw()) * Math.cos(getPitch());
+        endPosZ = getPosZ() + radius * Math.sin(getYaw()) * Math.cos(getPitch());
+        endPosY = getPosY() + radius * Math.sin(getPitch());
     }
 
     public HitResult raytraceEntities(World world, Vector3d from, Vector3d to, boolean stopOnLiquid, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock) {
