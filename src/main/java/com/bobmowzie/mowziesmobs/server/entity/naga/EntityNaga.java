@@ -542,7 +542,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
         boolean flag = super.attackEntityFrom(source, damage);
         boolean isSpitting = getAnimation() == SPIT_ANIMATION && getAnimationTick() < 30;
         boolean isSwooping = getAnimation() == SWOOP_ANIMATION && getAnimationTick() < 25;
-        if (flag && movement != EnumNagaMovement.FALLING && (isSpitting || isSwooping)) {
+        if (flag && movement != EnumNagaMovement.FALLING && (isSpitting || isSwooping) && damage > 0) {
             AnimationHandler.INSTANCE.sendAnimationMessage(this, EntityNaga.HURT_TO_FALL_ANIMATION);
             interrupted = true;
         }
