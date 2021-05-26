@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
+import com.bobmowzie.mowziesmobs.server.ai.NearestAttackableTargetPredicateGoal;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
@@ -11,9 +12,7 @@ import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
@@ -45,6 +44,41 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
     public EntityBarakoanToPlayer(EntityType<? extends EntityBarakoanToPlayer> type, World world, PlayerEntity leader) {
         super(type, world, PlayerEntity.class, leader);
         experienceValue = 0;
+    }
+
+    @Override
+    protected void registerTargetGoals() {
+        super.registerTargetGoals();
+        if (getMask() == MaskType.FAITH) {
+            this.targetSelector.addGoal(2, new NearestAttackableTargetPredicateGoal<PlayerEntity>(this, PlayerEntity.class, 0, true, true, (new EntityPredicate()).setDistance(getAttributeValue(Attributes.FOLLOW_RANGE)).setCustomPredicate(target -> {
+                if (!active) return false;
+                if (target != getLeader()) return false;
+                return target.getLastAttackedEntity() != null || target.getCombatTracker().getBestAttacker() != null || target.getHealth() < target.getMaxHealth();
+            }).allowFriendlyFire().allowInvulnerable().setSkipAttackChecks()) {
+                @Override
+                public boolean shouldContinueExecuting() {
+                    LivingEntity livingentity = this.goalOwner.getAttackTarget();
+                    if (livingentity == null) {
+                        livingentity = this.target;
+                    }
+                    boolean targetHasTarget = target.getCombatTracker().getBestAttacker() != null;
+                    boolean canHeal = true;
+                    if (this.goalOwner instanceof EntityBarakoa) canHeal = ((EntityBarakoa)this.goalOwner).canHeal(livingentity);
+                    return super.shouldContinueExecuting() && (livingentity.getHealth() < livingentity.getMaxHealth() || targetHasTarget) && canHeal;
+                }
+
+                @Override
+                protected double getTargetDistance() {
+                    return super.getTargetDistance() * 2;
+                }
+
+                @Override
+                public void startExecuting() {
+                    targetEntitySelector.setIgnoresLineOfSight().allowInvulnerable().allowFriendlyFire().setSkipAttackChecks();
+                    super.startExecuting();
+                }
+            });
+        }
     }
 
     @Override
@@ -160,5 +194,10 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
 
     public boolean canHeal(LivingEntity entity) {
         return entity == leader;
+    }
+
+    @Override
+    protected void updateAttackAI() {
+        if (getMask() != MaskType.FAITH) super.updateAttackAI();
     }
 }

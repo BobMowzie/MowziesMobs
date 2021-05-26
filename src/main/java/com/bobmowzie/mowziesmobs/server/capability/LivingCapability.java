@@ -17,6 +17,8 @@ public class LivingCapability {
         void setHasSunblock(boolean hasSunblock);
         boolean getHasSunblock();
 
+        void tick(LivingEntity entity);
+
         INBT writeNBT();
 
         void readNBT(INBT nbt);
@@ -44,6 +46,11 @@ public class LivingCapability {
         @Override
         public boolean getHasSunblock() {
             return hasSunblock;
+        }
+
+        @Override
+        public void tick(LivingEntity entity) {
+            if (!hasSunblock && entity.isPotionActive(EffectHandler.SUNBLOCK)) hasSunblock = true;
         }
 
         @Override

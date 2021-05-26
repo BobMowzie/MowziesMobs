@@ -59,7 +59,7 @@ public class AnimationSpawnBarakoa extends SimpleAnimationAI<EntityBarako> {
             EntityBarakoaya barakoa;
             if (spawnSunblockers) {
                 barakoa = new EntityBarakoaSunblocker(EntityHandler.BARAKOA_SUNBLOCKER, entity.world);
-                ((EntityBarakoaSunblocker)barakoa).hasTeleported = false;
+                ((EntityBarakoaSunblocker)barakoa).hasTriedOrSucceededTeleport = false;
             }
             else barakoa = new EntityBarakoaya(EntityHandler.BARAKOAYA, entity.world);
             barakoa.setPositionAndRotation(entity.getPosX() + 2 * Math.sin(-angle * (Math.PI / 180)), entity.getPosY() + 1.5, entity.getPosZ() + 2 * Math.cos(-angle * (Math.PI / 180)), entity.rotationYawHead, 0);

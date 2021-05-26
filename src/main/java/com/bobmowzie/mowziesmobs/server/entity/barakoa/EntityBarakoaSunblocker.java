@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
 import com.bobmowzie.mowziesmobs.server.ai.NearestAttackableTargetPredicateGoal;
+import com.bobmowzie.mowziesmobs.server.ai.animation.AvoidProjectilesGoal;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
@@ -10,6 +11,7 @@ import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.*;
@@ -18,9 +20,13 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 
 import java.util.EnumSet;
+import java.util.List;
 
 public class EntityBarakoaSunblocker extends EntityBarakoaya {
-    public boolean hasTeleported = true;
+    public boolean hasTriedOrSucceededTeleport = true;
+    private int teleportAttempts = 0;
+    private int timeSinceDodge = 0;
+    private static final int MAX_TIME_SINCE_DODGE = 10;
 
     public EntityBarakoaSunblocker(EntityType<? extends EntityBarakoaya> type, World world) {
         super(type, world);
@@ -32,7 +38,7 @@ public class EntityBarakoaSunblocker extends EntityBarakoaya {
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(4, new HealTargetGoal(this));
-        this.goalSelector.addGoal(6, new AvoidEntityGoal<>(this, PlayerEntity.class, 7.0F, 0.8D, 0.6D, target -> {
+        this.goalSelector.addGoal(6, new AvoidEntityGoal<>(this, PlayerEntity.class, 50.0F, 1D, 1D, target -> {
             if (target instanceof PlayerEntity) {
                 if (this.world.getDifficulty() == Difficulty.PEACEFUL) return false;
                 if (getAttackTarget() == target) return true;
@@ -44,6 +50,9 @@ public class EntityBarakoaSunblocker extends EntityBarakoaya {
             return true;
         }));
         this.goalSelector.addGoal(1, new TeleportToSafeSpotGoal(this));
+        this.goalSelector.addGoal(1, new AvoidProjectilesGoal(this, ProjectileEntity.class, target -> {
+            return getAnimation() == HEAL_LOOP_ANIMATION || getAnimation() == HEAL_START_ANIMATION;
+        }, 3.0F, 0.8D, 0.6D));
     }
 
     @Override
@@ -85,6 +94,7 @@ public class EntityBarakoaSunblocker extends EntityBarakoaya {
     @Override
     public void tick() {
         super.tick();
+        if (active && getAttackTarget() == null) hasTriedOrSucceededTeleport = true;
 
 //        if (getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(this, HEAL_START_ANIMATION);
     }
@@ -112,7 +122,7 @@ public class EntityBarakoaSunblocker extends EntityBarakoaya {
             if (!entity.active) return false;
             if (entity.getAnimation() == TELEPORT_ANIMATION) return false;
             if (entity.getAttackTarget() != null && entity.canHeal(entity.getAttackTarget()) && (
-                    (entity.targetDistance >= 0 && entity.targetDistance < 7) || !hasTeleported
+                    (entity.targetDistance >= 0 && entity.targetDistance < 7) || !hasTriedOrSucceededTeleport
             )) {
                 return findTeleportLocation();
             }
@@ -122,7 +132,7 @@ public class EntityBarakoaSunblocker extends EntityBarakoaya {
         @Override
         public void startExecuting() {
             super.startExecuting();
-            hasTeleported = true;
+            hasTriedOrSucceededTeleport = true;
             AnimationHandler.INSTANCE.sendAnimationMessage(entity, TELEPORT_ANIMATION);
         }
 
@@ -158,19 +168,30 @@ public class EntityBarakoaSunblocker extends EntityBarakoaya {
                 AxisAlignedBB newBB = entity.getBoundingBox().offset(offset);
                 if (testBlock(blockpos, newBB) && entity.world.getEntitiesWithinAABB(EntityBarako.class, newBB.grow(7)).isEmpty()) {
                     entity.teleportDestination = newPos.add(0, 1, 0);
-                    foundPosition = true;
-                    if (!entity.world.isPlayerWithin(i1, j1, k1, 5) && !entity.world.containsAnyLiquid(newBB)) {
-                        return true;
+                    if (entity.teleportAttempts >= 3) foundPosition = true;
+                    if (entity.world.getEntitiesWithinAABB(EntityBarakoaSunblocker.class, newBB.grow(5)).isEmpty()) {
+                        if (entity.teleportAttempts >= 2) foundPosition = true;
+                        if (!entity.world.isPlayerWithin(i1, j1, k1, 5) && !entity.world.containsAnyLiquid(newBB)) {
+                            if (entity.teleportAttempts >= 1) foundPosition = true;
+                            LivingEntity target = getAttackTarget();
+                            if (target instanceof MobEntity && ((MobEntity) target).getAttackTarget() != null) {
+                                if (!canEntityBeSeenFromLocation(((MobEntity) target).getAttackTarget(), newPos)) {
+                                    return true;
+                                }
+                            } else return true;
+                        }
                     }
                 }
             }
+            entity.teleportAttempts++;
+            if (entity.teleportAttempts > 3) hasTriedOrSucceededTeleport = true;
             return foundPosition;
         }
 
         public boolean canEntityBeSeenFromLocation(Entity entityIn, Vector3d location) {
             Vector3d vector3d = new Vector3d(location.getX(), location.getY() + entity.getEyeHeight(), location.getZ());
             Vector3d vector3d1 = new Vector3d(entityIn.getPosX(), entityIn.getPosYEye(), entityIn.getPosZ());
-            return entity.world.rayTraceBlocks(new RayTraceContext(vector3d, vector3d1, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, entity)).getType() == RayTraceResult.Type.MISS;
+            return entity.world.rayTraceBlocks(new RayTraceContext(vector3d, vector3d1, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, entity)).getType() != RayTraceResult.Type.BLOCK;
         }
 
         public boolean testBlock(BlockPos blockpos, AxisAlignedBB aabb) {
@@ -208,6 +229,12 @@ public class EntityBarakoaSunblocker extends EntityBarakoaya {
             super.startExecuting();
             AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityBarakoa.HEAL_START_ANIMATION);
         }
+
+        @Override
+        public void resetTask() {
+            super.resetTask();
+//            if (entity.getAnimation() == HEAL_LOOP_ANIMATION || entity.getAnimation() == HEAL_START_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityBarakoa.HEAL_STOP_ANIMATION);
+        }
     }
 
     @Override
@@ -215,20 +242,20 @@ public class EntityBarakoaSunblocker extends EntityBarakoaya {
         LivingEntity target = getAttackTarget();
         if (target != null) {
             EffectHandler.addOrCombineEffect(target, EffectHandler.SUNBLOCK, 20, 0, true, false);
-            if (target.ticksExisted % 20 == 0) target.heal(0.1f);
+            if (target.ticksExisted % 20 == 0) target.heal(0.15f);
         }
     }
     
     @Override
     public boolean isInvulnerableTo(DamageSource source) {
         boolean teleporting = getAnimation() == TELEPORT_ANIMATION && getAnimationTick() <= 16;
-        return super.isInvulnerableTo(source) || ((!active || teleporting || !hasTeleported) && source != DamageSource.OUT_OF_WORLD && !source.isCreativePlayer());
+        return super.isInvulnerableTo(source) || ((!active || teleporting || !hasTriedOrSucceededTeleport) && source != DamageSource.OUT_OF_WORLD && !source.isCreativePlayer());
     }
 
     @Override
     public void setFire(int seconds) {
         boolean teleporting = getAnimation() == TELEPORT_ANIMATION && getAnimationTick() <= 16;
-        if (!active || teleporting || !hasTeleported) return;
+        if (!active || teleporting || !hasTriedOrSucceededTeleport) return;
         super.setFire(seconds);
     }
 }

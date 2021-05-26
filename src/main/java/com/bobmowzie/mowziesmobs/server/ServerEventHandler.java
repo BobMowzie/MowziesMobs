@@ -133,6 +133,10 @@ public final class ServerEventHandler {
             if (frozenCapability != null) {
                 frozenCapability.tick(entity);
             }
+            LivingCapability.ILivingCapability livingCapability = CapabilityHandler.getCapability(entity, LivingCapability.LivingProvider.LIVING_CAPABILITY);
+            if (livingCapability != null) {
+                livingCapability.tick(entity);
+            }
         }
     }
 

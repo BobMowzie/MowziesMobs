@@ -378,12 +378,12 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
 
                         float dot = (float) a.getMotion().normalize().dotProduct(this.getPositionVec().subtract(a.getPositionVec()).normalize());
                         if (dot > 0.96) {
-                            Vector3d dodgeVec = getMotion().crossProduct(new Vector3d(0, 1, 0)).normalize().scale(1.2);
+                            Vector3d dodgeVec = a.getMotion().crossProduct(new Vector3d(0, 1, 0)).normalize().scale(1.2);
                             Vector3d newPosLeft = getPositionVec().add(dodgeVec.scale(2));
                             Vector3d newPosRight = getPositionVec().add(dodgeVec.scale(-2));
                             Vector3d diffLeft = newPosLeft.subtract(a.getPositionVec());
                             Vector3d diffRight = newPosRight.subtract(a.getPositionVec());
-                            if (diffRight.dotProduct(getMotion()) > diffLeft.dotProduct(getMotion())) {
+                            if (diffRight.dotProduct(a.getMotion()) > diffLeft.dotProduct(a.getMotion())) {
                                 dodgeVec = dodgeVec.scale(-1);
                             }
                             setMotion(getMotion().add(dodgeVec));
