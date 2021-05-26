@@ -29,6 +29,7 @@ public class AvoidProjectilesGoal extends Goal {
     /** Class of entity this behavior seeks to avoid */
     protected final Class<ProjectileEntity> classToAvoid;
     protected final Predicate<ProjectileEntity> avoidTargetSelector;
+    private int dodgeTimer = 0;
 
     public AvoidProjectilesGoal(CreatureEntity entityIn, Class<ProjectileEntity> classToAvoidIn, float avoidDistanceIn, double farSpeedIn, double nearSpeedIn) {
         this(entityIn, classToAvoidIn, (entity) -> {
@@ -60,6 +61,7 @@ public class AvoidProjectilesGoal extends Goal {
      * method as well.
      */
     public boolean shouldExecute() {
+        if (dodgeTimer > 0) return false;
         this.avoidTarget = this.getMostMovingTowardsMeEntity(this.classToAvoid, this.avoidTargetSelector, this.entity, this.entity.getBoundingBox().grow((double)this.avoidDistance, 3.0D, (double)this.avoidDistance));
         if (this.avoidTarget == null) {
             return false;
@@ -94,7 +96,7 @@ public class AvoidProjectilesGoal extends Goal {
      * Returns whether an in-progress EntityAIBase should continue executing
      */
     public boolean shouldContinueExecuting() {
-        return !this.navigation.noPath();
+        return !this.navigation.noPath() || dodgeTimer < 10;
     }
 
     /**
@@ -113,6 +115,7 @@ public class AvoidProjectilesGoal extends Goal {
      */
     public void resetTask() {
         this.avoidTarget = null;
+        dodgeTimer = 0;
     }
 
     /**
@@ -124,6 +127,7 @@ public class AvoidProjectilesGoal extends Goal {
         } else {
             this.entity.getNavigator().setSpeed(this.farSpeed);
         }
+        dodgeTimer++;
 
     }
 

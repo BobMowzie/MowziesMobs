@@ -302,7 +302,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             float entityRelativeAngle = Math.abs(entityHitAngle - entityAttackingAngle);
             Vector3d betweenEntitiesVec = getPositionVec().subtract(target.getPositionVec());
             boolean targetComingCloser = target.getMotion().dotProduct(betweenEntitiesVec) > 0 && target.getMotion().lengthSquared() > 0.015;
-            if (getAnimation() == NO_ANIMATION && !isAIDisabled() && rand.nextInt(80) == 0 && getEntitiesNearby(EntityBarakoa.class, 25).size() < 5 && targetDistance > 4.5 && timeUntilBarakoa <= 0) {
+            if (getAnimation() == NO_ANIMATION && !isAIDisabled() && rand.nextInt(80) == 0 && getEntitiesNearby(EntityBarakoa.class, 25).size() < 5 && (targetDistance > 4.5 || isPotionActive(EffectHandler.SUNBLOCK)) && timeUntilBarakoa <= 0) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SPAWN_ANIMATION);
                 timeUntilBarakoa = BARAKOA_PAUSE;
             } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && getHealthRatio() <= 0.6 && timeUntilLaser <= 0 && (entityRelativeAngle < 60 || entityRelativeAngle > 300) && getEntitySenses().canSee(target) && targetDistance < EntitySolarBeam.RADIUS_BARAKO) {
@@ -591,7 +591,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 
     @Override
     public boolean attackEntityFrom(DamageSource source, float damage) {
-        if (isPotionActive(EffectHandler.SUNBLOCK)) {
+        if (isPotionActive(EffectHandler.SUNBLOCK) && !source.canHarmInCreative()) {
             if (source.getImmediateSource() != null) playSound(MMSounds.ENTITY_WROUGHT_UNDAMAGED.get(), 0.4F, 2);
             return false;
         }
@@ -800,7 +800,10 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         super.onDeath(cause);
         List<EntityBarakoa> barakoa = getEntitiesNearby(EntityBarakoa.class, 30, 20, 30, 30);
         for (EntityBarakoa entityBarakoa : barakoa) {
-            if (entityBarakoa.isBarakoDevoted()) entityBarakoa.timeUntilDeath = rand.nextInt(20);
+            if (entityBarakoa.isBarakoDevoted()) {
+                if (entityBarakoa instanceof EntityBarakoaSunblocker) ((EntityBarakoaSunblocker)entityBarakoa).hasTriedOrSucceededTeleport = true;
+                entityBarakoa.timeUntilDeath = rand.nextInt(20);
+            }
         }
 
         super.onDeath(cause);

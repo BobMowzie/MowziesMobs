@@ -20,13 +20,10 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 
 import java.util.EnumSet;
-import java.util.List;
 
 public class EntityBarakoaSunblocker extends EntityBarakoaya {
     public boolean hasTriedOrSucceededTeleport = true;
     private int teleportAttempts = 0;
-    private int timeSinceDodge = 0;
-    private static final int MAX_TIME_SINCE_DODGE = 10;
 
     public EntityBarakoaSunblocker(EntityType<? extends EntityBarakoaya> type, World world) {
         super(type, world);
@@ -38,7 +35,7 @@ public class EntityBarakoaSunblocker extends EntityBarakoaya {
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(4, new HealTargetGoal(this));
-        this.goalSelector.addGoal(6, new AvoidEntityGoal<>(this, PlayerEntity.class, 50.0F, 1D, 1D, target -> {
+        this.goalSelector.addGoal(6, new AvoidEntityGoal<>(this, PlayerEntity.class, 50.0F, 0.8D, 0.6D, target -> {
             if (target instanceof PlayerEntity) {
                 if (this.world.getDifficulty() == Difficulty.PEACEFUL) return false;
                 if (getAttackTarget() == target) return true;
@@ -94,7 +91,7 @@ public class EntityBarakoaSunblocker extends EntityBarakoaya {
     @Override
     public void tick() {
         super.tick();
-        if (active && getAttackTarget() == null) hasTriedOrSucceededTeleport = true;
+        if (active && teleportAttempts > 3 && (getAttackTarget() == null || !getAttackTarget().isAlive())) hasTriedOrSucceededTeleport = true;
 
 //        if (getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(this, HEAL_START_ANIMATION);
     }
