@@ -308,7 +308,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && getHealthRatio() <= 0.6 && timeUntilLaser <= 0 && (entityRelativeAngle < 60 || entityRelativeAngle > 300) && getEntitySenses().canSee(target) && targetDistance < EntitySolarBeam.RADIUS_BARAKO) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SOLAR_BEAM_ANIMATION);
                 timeUntilLaser = LASER_PAUSE;
-            } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && getHealthRatio() <= 0.6 && timeUntilSupernova <= 0 && targetDistance <= 10.5) {
+            } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && getHealthRatio() <= 0.6 && !isPotionActive(EffectHandler.SUNBLOCK) && timeUntilSupernova <= 0 && targetDistance <= 10.5) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SUPERNOVA_ANIMATION);
                 timeUntilSupernova = SUPERNOVA_PAUSE;
             } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && ((targetDistance <= 6f && targetComingCloser) || targetDistance < 4.f)) {
@@ -469,8 +469,8 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             timeUntilSupernova--;
         }
 
-//        if (getAnimation() == NO_ANIMATION) {
-//            AnimationHandler.INSTANCE.sendAnimationMessage(this, SOLAR_BEAM_ANIMATION);
+//        if (getAnimation() == NO_ANIMATION && getAttackTarget() != null) {
+//            AnimationHandler.INSTANCE.sendAnimationMessage(this, SPAWN_SUNBLOCKERS_ANIMATION);
 //        }
     }
 
