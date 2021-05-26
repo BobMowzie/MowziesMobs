@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
 import com.bobmowzie.mowziesmobs.server.ai.NearestAttackableTargetPredicateGoal;
-import com.bobmowzie.mowziesmobs.server.ai.animation.AvoidProjectilesGoal;
+import com.bobmowzie.mowziesmobs.server.ai.AvoidProjectilesGoal;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;

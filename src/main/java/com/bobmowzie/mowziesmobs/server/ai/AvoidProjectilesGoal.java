@@ -1,4 +1,4 @@
-package com.bobmowzie.mowziesmobs.server.ai.animation;
+package com.bobmowzie.mowziesmobs.server.ai;
 
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.LivingEntity;

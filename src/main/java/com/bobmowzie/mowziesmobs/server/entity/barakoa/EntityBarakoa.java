@@ -6,7 +6,7 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleRibbon;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particle.util.RibbonComponent;
-import com.bobmowzie.mowziesmobs.server.ai.animation.EntityAIAvoidEntity;
+import com.bobmowzie.mowziesmobs.server.ai.EntityAIAvoidEntity;
 import com.bobmowzie.mowziesmobs.server.ai.animation.*;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityDart;
