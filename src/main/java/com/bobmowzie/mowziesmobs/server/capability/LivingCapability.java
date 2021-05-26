@@ -50,20 +50,18 @@ public class LivingCapability {
 
         @Override
         public void tick(LivingEntity entity) {
-            if (!hasSunblock && entity.isPotionActive(EffectHandler.SUNBLOCK)) hasSunblock = true;
+//            if (!hasSunblock && entity.isPotionActive(EffectHandler.SUNBLOCK)) hasSunblock = true;
         }
 
         @Override
         public INBT writeNBT() {
             CompoundNBT compound = new CompoundNBT();
-            compound.putBoolean("hasSunblock", getHasSunblock());
             return compound;
         }
 
         @Override
         public void readNBT(INBT nbt) {
             CompoundNBT compound = (CompoundNBT) nbt;
-            setHasSunblock(compound.getBoolean("hasSunblock"));
         }
     }
 
