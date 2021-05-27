@@ -900,4 +900,8 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         if (reason != SpawnReason.STRUCTURE) setHomePosAndDistance(getPosition(), -1);
         return super.onInitialSpawn(world, difficulty, reason, livingData, compound);
     }
+
+    public boolean onLivingFall(float distance, float damageMultiplier) {
+        return false;
+    }
 }
