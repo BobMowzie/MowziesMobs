@@ -904,4 +904,9 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     public boolean onLivingFall(float distance, float damageMultiplier) {
         return false;
     }
+
+    @Override
+    public boolean isPushedByWater() {
+        return false;
+    }
 }
