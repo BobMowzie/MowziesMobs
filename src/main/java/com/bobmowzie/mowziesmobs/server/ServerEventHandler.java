@@ -573,6 +573,14 @@ public final class ServerEventHandler {
                 for (Power power : powers) {
                     power.onLeftClickEntity(event);
                 }
+                if (
+                        event.isCancelable() && (
+                        playerCapability.getUsingSolarBeam() ||
+                        playerCapability.getGeomancy().isSpawningBoulder() ||
+                        playerCapability.getGeomancy().tunneling
+                        )) {
+                    event.setCanceled(true);
+                }
 
                 if (!(event.getTarget() instanceof LivingEntity)) return;
                 if (event.getTarget() instanceof EntityBarakoanToPlayer) return;
@@ -584,15 +592,6 @@ public final class ServerEventHandler {
                             if (!living.isInvulnerable()) barakoa.setAttackTarget(living);
                         }
                     }
-                }
-
-                if (
-                        event.isCancelable() && (
-                        playerCapability.getUsingSolarBeam() ||
-                        playerCapability.getGeomancy().isSpawningBoulder() ||
-                        playerCapability.getGeomancy().tunneling
-                )) {
-                    event.setCanceled(true);
                 }
             }
         }

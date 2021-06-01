@@ -109,10 +109,13 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
                 if (livingentity == null) {
                     livingentity = this.target;
                 }
-                boolean targetHasTarget = livingentity.getCombatTracker().getBestAttacker() != null;
+                boolean targetHasTarget = livingentity.getLastAttackedEntity() != null && (livingentity.ticksExisted - livingentity.getLastAttackedEntityTime() < 120 || livingentity.getDistanceSq(livingentity.getLastAttackedEntity()) < 256);
+                if (livingentity.getLastAttackedEntity() instanceof EntityBarakoanToPlayer) targetHasTarget = false;
                 boolean canHeal = true;
                 if (this.goalOwner instanceof EntityBarakoa) canHeal = ((EntityBarakoa)this.goalOwner).canHeal(livingentity);
-                return super.shouldContinueExecuting() && (livingentity.getHealth() < livingentity.getMaxHealth() || targetHasTarget) && canHeal;
+                boolean survivalMode = false;
+                if (livingentity instanceof PlayerEntity) survivalMode = !((PlayerEntity)livingentity).isSpectator() && !((PlayerEntity)livingentity).isCreative();
+                return super.shouldContinueExecuting() && (livingentity.getHealth() < livingentity.getMaxHealth() || targetHasTarget) && canHeal && survivalMode;
             }
 
             @Override
