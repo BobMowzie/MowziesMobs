@@ -8,6 +8,7 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.world.IServerWorld;
 
 import java.util.EnumSet;
@@ -67,6 +68,9 @@ public class AnimationSpawnBarakoa extends SimpleAnimationAI<EntityBarako> {
             barakoa.active = false;
             barakoa.onInitialSpawn((IServerWorld) entity.getEntityWorld(), entity.world.getDifficultyForLocation(barakoa.getPosition()), SpawnReason.MOB_SUMMONED, null, null);
             barakoa.setHomePosAndDistance(entity.getHomePosition(), 25);
+            if (entity.getTeam() instanceof ScorePlayerTeam) {
+                barakoa.world.getScoreboard().addPlayerToTeam(barakoa.getScoreboardName(), (ScorePlayerTeam) entity.getTeam());
+            }
             entity.world.addEntity(barakoa);
             barakoa.setMotion(0.7 * Math.sin(-angle * (Math.PI / 180)), 0.5, 0.7 * Math.cos(-angle * (Math.PI / 180)));
             barakoa.setAttackTarget(entity.getAttackTarget());
