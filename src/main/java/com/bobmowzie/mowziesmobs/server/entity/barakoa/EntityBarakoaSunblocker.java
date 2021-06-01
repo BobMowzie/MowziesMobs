@@ -202,10 +202,10 @@ public class EntityBarakoaSunblocker extends EntityBarakoaya {
         }
     }
 
-    public class HealTargetGoal extends Goal {
-        private final EntityBarakoaSunblocker entity;
+    public static class HealTargetGoal extends Goal {
+        private final EntityBarakoa entity;
 
-        public HealTargetGoal(EntityBarakoaSunblocker entityIn) {
+        public HealTargetGoal(EntityBarakoa entityIn) {
             this.entity = entityIn;
             this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE, Flag.LOOK));
         }

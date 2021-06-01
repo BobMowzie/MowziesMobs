@@ -10,9 +10,11 @@ import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.particle.DiggingParticle;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingRenderer;
+import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -55,7 +57,10 @@ public class ClientProxy extends ServerProxy {
                 livingRenderer.addLayer(new SunblockLayer(livingRenderer));
             }
         }
-
+        for (PlayerRenderer playerRenderer : Minecraft.getInstance().getRenderManager().getSkinMap().values()) {
+            playerRenderer.addLayer(new FrozenRenderHandler.LayerFrozen(playerRenderer));
+            playerRenderer.addLayer(new SunblockLayer(playerRenderer));
+        }
         IItemPropertyGetter pulling = ItemModelsProperties.func_239417_a_(Items.BOW, new ResourceLocation("pulling"));
         ItemModelsProperties.registerProperty(ItemHandler.BLOWGUN.asItem(), new ResourceLocation("pulling"), pulling);
     }

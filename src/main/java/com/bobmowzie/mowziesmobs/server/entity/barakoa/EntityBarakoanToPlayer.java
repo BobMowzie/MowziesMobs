@@ -7,6 +7,7 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
+import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.BlockState;
@@ -50,6 +51,7 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
     protected void registerTargetGoals() {
         super.registerTargetGoals();
         if (getMask() == MaskType.FAITH) {
+            this.goalSelector.addGoal(4, new EntityBarakoaSunblocker.HealTargetGoal(this));
             this.targetSelector.addGoal(2, new NearestAttackableTargetPredicateGoal<PlayerEntity>(this, PlayerEntity.class, 0, true, true, (new EntityPredicate()).setDistance(getAttributeValue(Attributes.FOLLOW_RANGE)).setCustomPredicate(target -> {
                 if (!active) return false;
                 if (target != getLeader()) return false;
@@ -69,7 +71,7 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
 
                 @Override
                 protected double getTargetDistance() {
-                    return super.getTargetDistance() * 2;
+                    return super.getTargetDistance();
                 }
 
                 @Override
@@ -79,6 +81,40 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
                 }
             });
         }
+    }
+
+    public void initFaithMask() {
+        setMask(MaskType.FAITH);
+        setWeapon(3);
+        this.goalSelector.addGoal(4, new EntityBarakoaSunblocker.HealTargetGoal(this));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetPredicateGoal<PlayerEntity>(this, PlayerEntity.class, 0, true, true, (new EntityPredicate()).setDistance(getAttributeValue(Attributes.FOLLOW_RANGE)).setCustomPredicate(target -> {
+            if (!active) return false;
+            if (target != getLeader()) return false;
+            return target.getLastAttackedEntity() != null || target.getCombatTracker().getBestAttacker() != null || target.getHealth() < target.getMaxHealth();
+        }).allowFriendlyFire().allowInvulnerable().setSkipAttackChecks()) {
+            @Override
+            public boolean shouldContinueExecuting() {
+                LivingEntity livingentity = this.goalOwner.getAttackTarget();
+                if (livingentity == null) {
+                    livingentity = this.target;
+                }
+                boolean targetHasTarget = livingentity.getCombatTracker().getBestAttacker() != null;
+                boolean canHeal = true;
+                if (this.goalOwner instanceof EntityBarakoa) canHeal = ((EntityBarakoa)this.goalOwner).canHeal(livingentity);
+                return super.shouldContinueExecuting() && (livingentity.getHealth() < livingentity.getMaxHealth() || targetHasTarget) && canHeal;
+            }
+
+            @Override
+            protected double getTargetDistance() {
+                return super.getTargetDistance() * 2;
+            }
+
+            @Override
+            public void startExecuting() {
+                targetEntitySelector.setIgnoresLineOfSight().allowInvulnerable().allowFriendlyFire().setSkipAttackChecks();
+                super.startExecuting();
+            }
+        });
     }
 
     @Override
@@ -193,11 +229,19 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
     }
 
     public boolean canHeal(LivingEntity entity) {
-        return entity == leader;
+        return entity == leader && targetDistance < 10;
     }
 
     @Override
     protected void updateAttackAI() {
         if (getMask() != MaskType.FAITH) super.updateAttackAI();
+    }
+
+    @Override
+    protected void sunBlockTarget() {
+        LivingEntity target = getAttackTarget();
+        if (target != null) {
+            EffectHandler.addOrCombineEffect(target, EffectHandler.SUNBLOCK, 20, 0, true, false);
+        }
     }
 }

@@ -14,6 +14,7 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
@@ -33,6 +34,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.monster.SkeletonEntity;
 import net.minecraft.entity.monster.ZombieEntity;
 import net.minecraft.entity.monster.ZombifiedPiglinEntity;
@@ -142,14 +144,14 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onAddPotionEffect(PotionEvent.PotionAddedEvent event) {
-        if (event.getPotionEffect().getPotion() == EffectHandler.SUNBLOCK) {
+        if (!event.getEntity().world.isRemote() && event.getPotionEffect().getPotion() == EffectHandler.SUNBLOCK) {
             MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageSunblockEffect(event.getEntityLiving(), true));
         }
     }
 
     @SubscribeEvent
     public void onRemovePotionEffect(PotionEvent.PotionRemoveEvent event) {
-        if (event.getPotion() == EffectHandler.SUNBLOCK) {
+        if (!event.getEntity().world.isRemote() && event.getPotion() == EffectHandler.SUNBLOCK) {
             MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageSunblockEffect(event.getEntityLiving(), false));
         }
     }
@@ -157,7 +159,7 @@ public final class ServerEventHandler {
     @SubscribeEvent
     public void onPotionEffectExpire(PotionEvent.PotionExpiryEvent event) {
         EffectInstance effectInstance = event.getPotionEffect();
-        if (effectInstance != null && effectInstance.getPotion() == EffectHandler.SUNBLOCK) {
+        if (!event.getEntity().world.isRemote() && effectInstance != null && effectInstance.getPotion() == EffectHandler.SUNBLOCK) {
             MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageSunblockEffect(event.getEntityLiving(), false));
         }
     }
@@ -570,8 +572,15 @@ public final class ServerEventHandler {
 
                 if (!(event.getTarget() instanceof LivingEntity)) return;
                 if (event.getTarget() instanceof EntityBarakoanToPlayer) return;
-                for (int i = 0; i < playerCapability.getPackSize(); i++)
-                    playerCapability.getTribePack().get(i).setAttackTarget((LivingEntity) event.getTarget());
+                if (!event.getPlayer().world.isRemote()) {
+                    for (int i = 0; i < playerCapability.getPackSize(); i++) {
+                        EntityBarakoanToPlayer barakoa = playerCapability.getTribePack().get(i);
+                        LivingEntity living = (LivingEntity) event.getTarget();
+                        if (barakoa.getMask() != MaskType.FAITH) {
+                            if (!living.isInvulnerable()) barakoa.setAttackTarget(living);
+                        }
+                    }
+                }
 
                 if (
                         event.isCancelable() && (

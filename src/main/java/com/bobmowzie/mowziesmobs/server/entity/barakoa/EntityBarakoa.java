@@ -170,7 +170,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             @Override
             public void tick() {
                 super.tick();
-                EntityBarakoaSunblocker sunblocker = (EntityBarakoaSunblocker)entity;
+                EntityBarakoa sunblocker = entity;
                 if (sunblocker.getAttackTarget() != null) {
                     sunblocker.getLookController().setLookPositionWithEntity(sunblocker.getAttackTarget(), entity.getHorizontalFaceSpeed(), entity.getVerticalFaceSpeed());
                 }
@@ -186,7 +186,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             @Override
             public void tick() {
                 super.tick();
-                EntityBarakoaSunblocker sunblocker = (EntityBarakoaSunblocker)entity;
+                EntityBarakoa sunblocker = entity;
                 EffectHandler.addOrCombineEffect(entity, Effects.GLOWING, 5, 0, false, false);
                 if (sunblocker.getAttackTarget() != null) {
                     sunblocker.getLookController().setLookPositionWithEntity(sunblocker.getAttackTarget(), entity.getHorizontalFaceSpeed(), entity.getVerticalFaceSpeed());

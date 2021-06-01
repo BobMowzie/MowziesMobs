@@ -75,10 +75,15 @@ public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask {
             barakoa.setStoredMask(stack);
 //            property.addPackMember(barakoa);
             if (!player.world.isRemote) {
-                int weapon;
-                if (mask != MaskType.FURY) weapon = barakoa.randomizeWeapon();
-                else weapon = 0;
-                barakoa.setWeapon(weapon);
+                if (mask == MaskType.FAITH) {
+                    barakoa.initFaithMask();
+                }
+                else {
+                    int weapon;
+                    if (mask != MaskType.FURY) weapon = barakoa.randomizeWeapon();
+                    else weapon = 0;
+                    barakoa.setWeapon(weapon);
+                }
                 barakoa.setPositionAndRotation(player.getPosX() + 1 * Math.sin(-angle * (Math.PI / 180)), player.getPosY() + 1.5, player.getPosZ() + 1 * Math.cos(-angle * (Math.PI / 180)), (float) angle, 0);
                 barakoa.setActive(false);
                 barakoa.active = false;
