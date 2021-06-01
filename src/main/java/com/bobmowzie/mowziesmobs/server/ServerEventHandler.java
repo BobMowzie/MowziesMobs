@@ -173,7 +173,7 @@ public final class ServerEventHandler {
         float damage = event.getAmount();
         if (!source.isDamageAbsolute()) {
             if (livingEntity.isPotionActive(EffectHandler.SUNBLOCK) && source != DamageSource.OUT_OF_WORLD) {
-                int i = (livingEntity.getActivePotionEffect(EffectHandler.SUNBLOCK).getAmplifier() + 1) * 5;
+                int i = (livingEntity.getActivePotionEffect(EffectHandler.SUNBLOCK).getAmplifier() + 2) * 5;
                 int j = 25 - i;
                 float f = damage * (float)j;
                 float f1 = damage;
