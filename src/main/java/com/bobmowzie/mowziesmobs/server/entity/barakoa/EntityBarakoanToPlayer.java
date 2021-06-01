@@ -1,5 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
+import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
+import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
+import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.server.ai.NearestAttackableTargetPredicateGoal;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
@@ -28,7 +31,10 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -37,6 +43,8 @@ import java.util.UUID;
 
 public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
     private static final DataParameter<ItemStack> MASK = EntityDataManager.createKey(EntityBarakoanToPlayer.class, DataSerializers.ITEMSTACK);
+    @OnlyIn(Dist.CLIENT)
+    public Vector3d[] feetPos;
 
     public EntityBarakoanToPlayer(EntityType<? extends EntityBarakoanToPlayer> type, World world) {
         this(type, world, null);
@@ -45,6 +53,9 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
     public EntityBarakoanToPlayer(EntityType<? extends EntityBarakoanToPlayer> type, World world, PlayerEntity leader) {
         super(type, world, PlayerEntity.class, leader);
         experienceValue = 0;
+        if (world.isRemote) {
+            feetPos = new Vector3d[]{new Vector3d(0, 0, 0)};
+        }
     }
 
     @Override
@@ -133,6 +144,14 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
     public void tick() {
         if (getLeader() == null || getLeader().getHealth() <= 0) deactivate();
         super.tick();
+        if (world.isRemote && feetPos != null && feetPos.length > 0) {
+            feetPos[0] = getPositionVec().add(0, 0.05f, 0);
+            if (ticksExisted % 10 == 0) AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING2.get(), feetPos[0].getX(), feetPos[0].getY(), feetPos[0].getZ(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 1.5F, 1, 223 / 255f, 66 / 255f, 1, 1, 15, true, false, new ParticleComponent[]{
+                    new ParticleComponent.PinLocation(feetPos),
+                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
+                    new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(1f, 10f), false)
+            });
+        }
     }
 
     @Override
