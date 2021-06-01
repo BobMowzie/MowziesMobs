@@ -157,6 +157,7 @@ public class WroughtnautChamberPieces {
             int heightMin = ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig.heightMin.get().intValue();
             if (heightMax == -1) heightMax = surfaceY;
             if (heightMin == -1) heightMin = 0;
+            heightMax = Math.min(heightMax, world.getHeight(Heightmap.Type.OCEAN_FLOOR_WG, x, z));
             for (int y = heightMax; y >= heightMin; y--) {
                 BlockPos airPos = checkForAirInXY(world, new BlockPos(x, y, z), xzCheckDistance);
                 if (airPos != null) {

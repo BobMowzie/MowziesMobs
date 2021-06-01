@@ -60,7 +60,7 @@ public class WroughtnautChamberStructure extends MowzieStructure {
             //Turns the chunk coordinates into actual coordinates we can use. (Gets center of that chunk)
             int x = (chunkX << 4) + 7;
             int z = (chunkZ << 4) + 7;
-            int surfaceY = chunkGenerator.getHeight(x, z, Heightmap.Type.WORLD_SURFACE_WG);
+            int surfaceY = chunkGenerator.getHeight(x, z, Heightmap.Type.OCEAN_FLOOR_WG);
             BlockPos pos = new BlockPos(x, surfaceY, z);
 
             //Now adds the structure pieces to this.components with all details such as where each part goes

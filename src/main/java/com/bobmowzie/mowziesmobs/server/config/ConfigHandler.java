@@ -327,7 +327,7 @@ public final class  ConfigHandler {
         FerrousWroughtnaut(final ForgeConfigSpec.Builder builder) {
             builder.push("ferrous_wroughtnaut");
             generationConfig = new GenerationConfig(builder, 15, 5,
-                    new BiomeConfig(builder,  Arrays.asList(""), new ArrayList<>(), new ArrayList<>()),
+                    new BiomeConfig(builder,  Arrays.asList("!OCEAN"), new ArrayList<>(), new ArrayList<>()),
                     30, 55
             );
             combatConfig = new CombatConfig(builder, 1, 1);
