@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaya;
@@ -509,7 +510,7 @@ public class BarakoaVillagePieces {
 
         @Override
         public boolean func_230383_a_(ISeedReader worldIn, StructureManager p_230383_2_, ChunkGenerator p_230383_3_, Random randomIn, MutableBoundingBox p_230383_5_, ChunkPos p_230383_6_, BlockPos p_230383_7_) {
-            Vector2f[] hayPositions = new Vector2f[] {
+            Vector2f[] thatchPositions = new Vector2f[] {
                     new Vector2f(0, 1),
                     new Vector2f(0, 2),
                     new Vector2f(0, 3),
@@ -532,9 +533,9 @@ public class BarakoaVillagePieces {
                     new Vector2f(4, 2),
                     new Vector2f(4, 3),
             };
-            for (Vector2f pos : hayPositions) {
+            for (Vector2f pos : thatchPositions) {
                 BlockPos placePos = findGround(worldIn, (int) pos.x, (int) pos.y).down();
-                worldIn.setBlockState(placePos, Blocks.HAY_BLOCK.getDefaultState(), 2);
+                worldIn.setBlockState(placePos, BlockHandler.THATCH.get().getDefaultState(), 2);
             }
             Vector2f[] groundSkullPositions = new Vector2f[] {
                     new Vector2f(0, 1),

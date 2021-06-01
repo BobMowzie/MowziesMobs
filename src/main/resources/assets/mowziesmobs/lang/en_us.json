@@ -120,9 +120,9 @@
   "item.mowziesmobs.naga_spawn_egg": "Naga Spawn Egg",
 
   "_comment": "Blocks",
-  "block.mowziesmobs.campfire": "Campfire",
   "block.mowziesmobs.painted_acacia": "Painted Acacia Wood",
   "block.mowziesmobs.painted_acacia_slab": "Painted Acacia Wood Slab",
+  "block.mowziesmobs.thatch_block": "Thatch",
   "block.mowziesmobs.grottol": "Grottol",
 
   "_comment": "Potions",

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "key": {
+    "#": [
+      {
+        "item": "minecraft:grass"
+      },
+      {
+        "item": "minecraft:tall_grass"
+      }
+    ]
+  },
+  "result": {
+    "item": "mowziesmobs:thatch_block"
+  }
+}
