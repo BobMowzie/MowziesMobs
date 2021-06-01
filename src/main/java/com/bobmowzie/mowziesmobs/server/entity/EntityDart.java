@@ -24,14 +24,18 @@ public class EntityDart extends ArrowEntity {
         super(type, world);
     }
 
+    public EntityDart(EntityType<? extends EntityDart> type, World worldIn, double x, double y, double z) {
+        this(type, worldIn);
+        this.setPosition(x, y, z);
+        setDamage(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.BLOW_GUN.attackDamage.get());
+    }
+
     public EntityDart(EntityType<? extends EntityDart> type, World world, LivingEntity shooter) {
-        super(type, world);
-        this.setPosition(shooter.getPosX(),shooter.getPosY() + (double)shooter.getEyeHeight() - (double)0.1F, shooter.getPosZ());
+        this(type, world, shooter.getPosX(),shooter.getPosY() + (double)shooter.getEyeHeight() - (double)0.1F, shooter.getPosZ());
         this.setShooter(shooter);
         if (shooter instanceof PlayerEntity) {
             this.pickupStatus = AbstractArrowEntity.PickupStatus.ALLOWED;
         }
-        setDamage(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.BLOW_GUN.attackDamage.get());
     }
 
     @Override

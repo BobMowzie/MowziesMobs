@@ -4,14 +4,25 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
+import com.bobmowzie.mowziesmobs.server.entity.EntityDart;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.SpawnEggItem;
+import net.minecraft.block.DispenserBlock;
+import net.minecraft.dispenser.DefaultDispenseItemBehavior;
+import net.minecraft.dispenser.IBlockSource;
+import net.minecraft.dispenser.IPosition;
+import net.minecraft.dispenser.ProjectileDispenseBehavior;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.item.*;
+import net.minecraft.util.Direction;
 import net.minecraft.util.text.Color;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -124,5 +135,46 @@ public final class ItemHandler {
         BARAKOA_SPAWN_EGG.primaryColor = barakoaColor;
         BARAKOANA_SPAWN_EGG.primaryColor = barakoaColor;
         BARAKOA_SUNBLOCKER_SPAWN_EGG.primaryColor = barakoaColor;
+    }
+
+    public static void initializeDispenserBehaviors() {
+        // Copied from IDispenseItemBehavior
+        DefaultDispenseItemBehavior defaultdispenseitembehavior = new DefaultDispenseItemBehavior() {
+            /**
+             * Dispense the specified stack, play the dispense sound and spawn particles.
+             */
+            public ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
+                Direction direction = source.getBlockState().get(DispenserBlock.FACING);
+                EntityType<?> entitytype = ((SpawnEggItem)stack.getItem()).getType(stack.getTag());
+                entitytype.spawn(source.getWorld(), stack, (PlayerEntity)null, source.getBlockPos().offset(direction), SpawnReason.DISPENSER, direction != Direction.UP, false);
+                stack.shrink(1);
+                return stack;
+            }
+        };
+        SpawnEggItem[] spawnEggItems = new SpawnEggItem[] {
+                FOLIAATH_SPAWN_EGG ,
+                WROUGHTNAUT_SPAWN_EGG ,
+                BARAKOA_SPAWN_EGG ,
+                BARAKOANA_SPAWN_EGG ,
+                BARAKOA_SUNBLOCKER_SPAWN_EGG ,
+                BARAKO_SPAWN_EGG ,
+                FROSTMAW_SPAWN_EGG ,
+                GROTTOL_SPAWN_EGG ,
+                LANTERN_SPAWN_EGG ,
+                NAGA_SPAWN_EGG
+        };
+        for(SpawnEggItem spawneggitem : spawnEggItems) {
+            DispenserBlock.registerDispenseBehavior(spawneggitem, defaultdispenseitembehavior);
+        }
+        DispenserBlock.registerDispenseBehavior(DART, new ProjectileDispenseBehavior() {
+            /**
+             * Return the projectile entity spawned by this dispense behavior.
+             */
+            protected ProjectileEntity getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
+                EntityDart dartentity = new EntityDart(EntityHandler.DART, worldIn, position.getX(), position.getY(), position.getZ());
+                dartentity.pickupStatus = AbstractArrowEntity.PickupStatus.ALLOWED;
+                return dartentity;
+            }
+        });
     }
 }

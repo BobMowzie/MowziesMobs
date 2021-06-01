@@ -89,6 +89,7 @@ public final class MowziesMobs {
     private void init(FMLLoadCompleteEvent event) {
         EntityHandler.initializeAttributes();
         ItemHandler.initializeAttributes();
+        ItemHandler.initializeDispenserBehaviors();
         final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         PROXY.onLateInit(bus);
     }
