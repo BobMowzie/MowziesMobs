@@ -49,7 +49,7 @@ public enum FrozenRenderHandler {
 
                 float transparency = 1;
                 IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntityTranslucent(FROZEN_TEXTURE));
-                model.render(matrixStackIn, ivertexbuilder, packedLightIn, 0, 1, 1, 1, transparency);
+                model.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, transparency);
             }
         }
     }
