@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleVanillaCloudExtended;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleRotation;
+import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.capability.LivingCapability;
@@ -25,6 +26,7 @@ import com.bobmowzie.mowziesmobs.server.power.Power;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.AvoidEntityGoal;
@@ -226,21 +228,10 @@ public final class ServerEventHandler {
         LivingEntity living = event.getEntityLiving();
         if (event.isCancelable() && living.isPotionActive(EffectHandler.FROZEN)) {
             event.setCanceled(true);
+            return;
         }
         if (living instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) living;
-            ItemStack item = event.getItem();
-            if (item.getItem() == Items.FLINT_AND_STEEL) {
-                List<EntityBarako> barakos = getEntitiesNearby(player, EntityBarako.class, 20);
-                for (EntityBarako barako : barakos) {
-                    if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
-                        if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
-                            if (barako.canAttack(living)) barako.setAttackTarget(living);
-                        }
-                    }
-                }
-            }
-
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
             if (playerCapability != null && event.isCancelable()) {
                 if (
@@ -250,6 +241,7 @@ public final class ServerEventHandler {
                         playerCapability.getUntilAxeSwing() > 0
                 ) {
                     event.setCanceled(true);
+                    return;
                 }
             }
         }
@@ -262,26 +254,34 @@ public final class ServerEventHandler {
             LivingEntity living = (LivingEntity) entity;
             if (event.isCancelable() && living.isPotionActive(EffectHandler.FROZEN)) {
                 event.setCanceled(true);
-            }
-            BlockState block = event.getPlacedBlock();
-            if (block == Blocks.FIRE.getDefaultState()) {
-                List<EntityBarako> barakos = getEntitiesNearby(entity, EntityBarako.class, 20);
-                for (EntityBarako barako : barakos) {
-                    if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
-                        if (barako.canAttack(living)) barako.setAttackTarget(living);
-                    }
-                }
+                return;
             }
 
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(entity, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
             if (playerCapability != null && event.isCancelable()) {
                 if (
                         playerCapability.getUsingSolarBeam() ||
-                        playerCapability.getGeomancy().isSpawningBoulder() ||
-                        playerCapability.getGeomancy().tunneling ||
-                        playerCapability.getUntilAxeSwing() > 0
+                                playerCapability.getGeomancy().isSpawningBoulder() ||
+                                playerCapability.getGeomancy().tunneling ||
+                                playerCapability.getUntilAxeSwing() > 0
                 ) {
                     event.setCanceled(true);
+                    return;
+                }
+            }
+
+            BlockState block = event.getPlacedBlock();
+            if (block.getBlock() == Blocks.FIRE ||
+                block.getBlock() == Blocks.TNT ||
+                block.getBlock() == Blocks.RESPAWN_ANCHOR ||
+                block.getBlock() == Blocks.DISPENSER ||
+                block.getBlock() == Blocks.CACTUS
+            ) {
+                List<EntityBarako> barakos = getEntitiesNearby(entity, EntityBarako.class, 25);
+                for (EntityBarako barako : barakos) {
+                    if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
+                        if (barako.canAttack(living)) barako.setAttackTarget(living);
+                    }
                 }
             }
         }
@@ -293,6 +293,7 @@ public final class ServerEventHandler {
         if (living != null) {
             if (event.isCancelable() && living.isPotionActive(EffectHandler.FROZEN)) {
                 event.setCanceled(true);
+                return;
             }
             if (event.getEmptyBucket().getItem() == Items.LAVA_BUCKET) {
                 List<EntityBarako> barakos = getEntitiesNearby(living, EntityBarako.class, 20);
@@ -311,27 +312,32 @@ public final class ServerEventHandler {
     public void onBreakBlock(BlockEvent.BreakEvent event) {
         if (event.isCancelable() && event.getPlayer().isPotionActive(EffectHandler.FROZEN)) {
             event.setCanceled(true);
+            return;
         }
         PlayerEntity player = event.getPlayer();
-        BlockState block = event.getState();
-        if (block == Blocks.GOLD_BLOCK.getDefaultState()) {
-            List<EntityBarako> barakos = getEntitiesNearby(player, EntityBarako.class, 10);
-            for (EntityBarako barako : barakos) {
-                if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
-                    if (barako.canAttack(player)) barako.setAttackTarget(player);
-                }
-            }
-        }
-
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
         if (playerCapability != null && event.isCancelable()) {
             if (
                     playerCapability.getUsingSolarBeam() ||
-                    playerCapability.getGeomancy().isSpawningBoulder() ||
-                    playerCapability.getGeomancy().tunneling ||
-                    playerCapability.getUntilAxeSwing() > 0
+                            playerCapability.getGeomancy().isSpawningBoulder() ||
+                            playerCapability.getGeomancy().tunneling ||
+                            playerCapability.getUntilAxeSwing() > 0
             ) {
                 event.setCanceled(true);
+                return;
+            }
+        }
+
+        BlockState block = event.getState();
+        if (block.getBlock() == Blocks.GOLD_BLOCK ||
+            block.getMaterial() == Material.WOOD ||
+            block.getBlock() == BlockHandler.THATCH.get()
+        ) {
+            List<EntityBarako> barakos = getEntitiesNearby(player, EntityBarako.class, 25);
+            for (EntityBarako barako : barakos) {
+                if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
+                    if (barako.canAttack(player)) barako.setAttackTarget(player);
+                }
             }
         }
     }
@@ -350,6 +356,7 @@ public final class ServerEventHandler {
     public void onPlayerInteract(PlayerInteractEvent.RightClickEmpty event) {
         if (event.isCancelable() && event.getEntityLiving().isPotionActive(EffectHandler.FROZEN)) {
             event.setCanceled(true);
+            return;
         }
         PlayerEntity player = event.getPlayer();
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
@@ -357,11 +364,12 @@ public final class ServerEventHandler {
             if (event.isCancelable()) {
                 if (
                         playerCapability.getUsingSolarBeam() ||
-                                playerCapability.getGeomancy().isSpawningBoulder() ||
-                                playerCapability.getGeomancy().tunneling ||
-                                playerCapability.getUntilAxeSwing() > 0
+                        playerCapability.getGeomancy().isSpawningBoulder() ||
+                        playerCapability.getGeomancy().tunneling ||
+                        playerCapability.getUntilAxeSwing() > 0
                 ) {
                     event.setCanceled(true);
+                    return;
                 }
             }
 
@@ -387,17 +395,19 @@ public final class ServerEventHandler {
     public void onPlayerInteract(PlayerInteractEvent.EntityInteract event) {
         if (event.isCancelable() && event.getEntityLiving().isPotionActive(EffectHandler.FROZEN)) {
             event.setCanceled(true);
+            return;
         }
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getPlayer(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
         if (playerCapability != null) {
             if (event.isCancelable()) {
                 if (
                         playerCapability.getUsingSolarBeam() ||
-                                playerCapability.getGeomancy().isSpawningBoulder() ||
-                                playerCapability.getGeomancy().tunneling ||
-                                playerCapability.getUntilAxeSwing() > 0
+                        playerCapability.getGeomancy().isSpawningBoulder() ||
+                        playerCapability.getGeomancy().tunneling ||
+                        playerCapability.getUntilAxeSwing() > 0
                 ) {
                     event.setCanceled(true);
+                    return;
                 }
             }
 
@@ -422,9 +432,26 @@ public final class ServerEventHandler {
                         playerCapability.getUsingSolarBeam() ||
                         playerCapability.getGeomancy().isSpawningBoulder() ||
                         playerCapability.getGeomancy().tunneling ||
-                        playerCapability.getUntilAxeSwing() > 0
+                        playerCapability.getUntilAxeSwing() > 0 ||
+                        player.isPotionActive(EffectHandler.FROZEN)
                 ) {
                     event.setCanceled(true);
+                    return;
+                }
+            }
+
+            ItemStack item = event.getItemStack();
+            if (
+                    item.getItem() == Items.FLINT_AND_STEEL ||
+                    item.getItem() == Items.TNT_MINECART
+            ) {
+                List<EntityBarako> barakos = getEntitiesNearby(player, EntityBarako.class, 25);
+                for (EntityBarako barako : barakos) {
+                    if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
+                        if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
+                            if (barako.canAttack(player)) barako.setAttackTarget(player);
+                        }
+                    }
                 }
             }
 
@@ -492,6 +519,7 @@ public final class ServerEventHandler {
     public void onPlayerInteract(PlayerInteractEvent.RightClickItem event) {
         if (event.isCancelable() && event.getEntityLiving().isPotionActive(EffectHandler.FROZEN)) {
             event.setCanceled(true);
+            return;
         }
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getPlayer(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
         if (playerCapability != null) {
@@ -503,6 +531,7 @@ public final class ServerEventHandler {
                         playerCapability.getUntilAxeSwing() > 0
                 ) {
                     event.setCanceled(true);
+                    return;
                 }
             }
 
@@ -518,6 +547,7 @@ public final class ServerEventHandler {
         PlayerEntity player = event.getPlayer();
         if (event.isCancelable() && player.isPotionActive(EffectHandler.FROZEN)) {
             event.setCanceled(true);
+            return;
         }
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
         if (playerCapability != null) {
@@ -529,6 +559,7 @@ public final class ServerEventHandler {
                                 playerCapability.getUntilAxeSwing() > 0
                 ) {
                     event.setCanceled(true);
+                    return;
                 }
             }
 
@@ -563,23 +594,26 @@ public final class ServerEventHandler {
     public void onPlayerAttack(AttackEntityEvent event) {
         if (event.isCancelable() && event.getEntityLiving().isPotionActive(EffectHandler.FROZEN)) {
             event.setCanceled(true);
+            return;
         }
         if (event.getEntity() instanceof PlayerEntity) {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getPlayer(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
             if (playerCapability != null) {
                 playerCapability.setPrevCooledAttackStrength(event.getPlayer().getCooledAttackStrength(0.5f));
 
-                Power[] powers = playerCapability.getPowers();
-                for (Power power : powers) {
-                    power.onLeftClickEntity(event);
-                }
                 if (
                         event.isCancelable() && (
                         playerCapability.getUsingSolarBeam() ||
                         playerCapability.getGeomancy().isSpawningBoulder() ||
                         playerCapability.getGeomancy().tunneling
-                        )) {
+                )) {
                     event.setCanceled(true);
+                    return;
+                }
+
+                Power[] powers = playerCapability.getPowers();
+                for (Power power : powers) {
+                    power.onLeftClickEntity(event);
                 }
 
                 if (!(event.getTarget() instanceof LivingEntity)) return;
