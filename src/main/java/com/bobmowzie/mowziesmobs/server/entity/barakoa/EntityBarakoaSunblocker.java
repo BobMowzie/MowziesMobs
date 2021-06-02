@@ -103,7 +103,7 @@ public class EntityBarakoaSunblocker extends EntityBarakoaya {
 
     @Override
     public boolean canHeal(LivingEntity entity) {
-        return hasTriedOrSucceededTeleport && entity instanceof EntityBarako;
+        return entity instanceof EntityBarako;
     }
 
     public class TeleportToSafeSpotGoal extends Goal {

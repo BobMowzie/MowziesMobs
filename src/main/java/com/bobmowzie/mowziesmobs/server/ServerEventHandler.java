@@ -74,7 +74,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 public final class ServerEventHandler {
-    private final static int SUNSTRIKE_COOLDOWN = 55;
+    private final static int SUNSTRIKE_COOLDOWN = 45;
     private final static int SOLARBEAM_COOLDOWN = 110;
 
     @SubscribeEvent
@@ -150,8 +150,11 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onAddPotionEffect(PotionEvent.PotionAddedEvent event) {
-        if (!event.getEntity().world.isRemote() && event.getPotionEffect().getPotion() == EffectHandler.SUNBLOCK) {
-            MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageSunblockEffect(event.getEntityLiving(), true));
+        if (event.getPotionEffect().getPotion() == EffectHandler.SUNBLOCK) {
+            if (!event.getEntity().world.isRemote()) {
+                MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageSunblockEffect(event.getEntityLiving(), true));
+            }
+            MowziesMobs.PROXY.playSunblockSound(event.getEntityLiving());
         }
     }
 

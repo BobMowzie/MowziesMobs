@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleRibbon;
@@ -174,6 +175,10 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
                 if (sunblocker.getAttackTarget() != null) {
                     sunblocker.getLookController().setLookPositionWithEntity(sunblocker.getAttackTarget(), entity.getHorizontalFaceSpeed(), entity.getVerticalFaceSpeed());
                 }
+                if (sunblocker.getAnimationTick() == 19) {
+                    playSound(MMSounds.ENTITY_BARAKOA_HEAL_START.get(entity.rand.nextInt(3)).get(), 1, 1);
+                    MowziesMobs.PROXY.playSunblockSound(sunblocker);
+                }
                 if (sunblocker.getAnimationTick() >= 19) {
                     EffectHandler.addOrCombineEffect(entity, Effects.GLOWING, 5, 0, false, false);
                 }
@@ -273,8 +278,8 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     }
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
-        return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 4 * ConfigHandler.COMMON.MOBS.BARAKOA.combatConfig.attackMultiplier.get())
-                .createMutableAttribute(Attributes.MAX_HEALTH, 10 * ConfigHandler.COMMON.MOBS.BARAKOA.combatConfig.healthMultiplier.get());
+        return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 3 * ConfigHandler.COMMON.MOBS.BARAKOA.combatConfig.attackMultiplier.get())
+                .createMutableAttribute(Attributes.MAX_HEALTH, 8 * ConfigHandler.COMMON.MOBS.BARAKOA.combatConfig.healthMultiplier.get());
     }
 
     protected void updateAttackAI() {

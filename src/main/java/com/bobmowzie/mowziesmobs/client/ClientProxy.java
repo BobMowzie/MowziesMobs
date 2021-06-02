@@ -91,6 +91,11 @@ public class ClientProxy extends ServerProxy {
     }
 
     @Override
+    public void playSunblockSound(LivingEntity entity) {
+        Minecraft.getInstance().getSoundHandler().play(new SunblockSound(entity));
+    }
+
+    @Override
     public void minecartParticles(ClientWorld world, AbstractMinecartEntity minecart, float scale, double x, double y, double z, BlockState state, BlockPos pos) {
         final int size = 3;
         float offset =  -0.5F * scale;

@@ -91,6 +91,23 @@ public final class MMSounds {
             ENTITY_BARAKOA_ANGRY_5::get,
             ENTITY_BARAKOA_ANGRY_6::get
     );
+    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_HEAL_START_1 = create("barakoa.healstart1");
+    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_HEAL_START_2 = create("barakoa.healstart2");
+    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_HEAL_START_3 = create("barakoa.healstart3");
+    public static final ImmutableList<Supplier<SoundEvent>> ENTITY_BARAKOA_HEAL_START = ImmutableList.of(
+            ENTITY_BARAKOA_HEAL_START_1::get,
+            ENTITY_BARAKOA_HEAL_START_2::get,
+            ENTITY_BARAKOA_HEAL_START_3::get
+    );
+
+    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_HEAL_LOOP_1 = create("barakoa.healloop1");
+    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_HEAL_LOOP_2 = create("barakoa.healloop2");
+    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_HEAL_LOOP_3 = create("barakoa.healloop3");
+    public static final ImmutableList<Supplier<SoundEvent>> ENTITY_BARAKOA_HEAL_LOOP = ImmutableList.of(
+            ENTITY_BARAKOA_HEAL_LOOP_1::get,
+            ENTITY_BARAKOA_HEAL_LOOP_2::get,
+            ENTITY_BARAKOA_HEAL_LOOP_3::get
+    );
 
     public static final RegistryObject<SoundEvent> ENTITY_BARAKO_BELLY = create("barako.belly");
     public static final RegistryObject<SoundEvent> ENTITY_BARAKO_BURST = create("barako.burst");

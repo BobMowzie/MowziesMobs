@@ -32,6 +32,8 @@ public class IceBreathSound extends TickableSound {
         if (active) volumeControl.increaseTimer();
         else volumeControl.decreaseTimer();
         volume = volumeControl.getAnimationFraction();
+        if (volumeControl.getAnimationFraction() <= 0.05)
+            finishPlaying();
         if (iceBreath != null) {
             active = true;
             x = (float) iceBreath.getPosX();
@@ -39,9 +41,10 @@ public class IceBreathSound extends TickableSound {
             z = (float) iceBreath.getPosZ();
             if (!iceBreath.isAlive()) {
                 active = false;
-                if (volumeControl.getAnimationFraction() <= 0.05)
-                    finishPlaying();
             }
+        }
+        else {
+            active = false;
         }
         ticksExisted++;
     }

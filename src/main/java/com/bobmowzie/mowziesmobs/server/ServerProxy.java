@@ -91,6 +91,8 @@ public class ServerProxy {
 
     public void playBlackPinkSound(AbstractMinecartEntity entity) {}
 
+    public void playSunblockSound(LivingEntity entity) {}
+
     public void minecartParticles(ClientWorld world, AbstractMinecartEntity minecart, float scale, double x, double y, double z, BlockState state, BlockPos pos) {}
 
     public void solarBeamHitWroughtnaught(LivingEntity caster) {}

@@ -284,6 +284,30 @@
 		"sounds": [ "mowziesmobs:entity/barakoa/retract" ],
 		"subtitle": "subtitles.mowziesmobs.barakoa.retract"
 	},
+	"barakoa.healstart1": {
+		"sounds": [ "mowziesmobs:entity/barakoa/heal_cast1" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.heal"
+	},
+	"barakoa.healstart2": {
+		"sounds": [ "mowziesmobs:entity/barakoa/heal_cast2" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.heal"
+	},
+	"barakoa.healstart3": {
+		"sounds": [ "mowziesmobs:entity/barakoa/heal_cast3" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.heal"
+	},
+	"barakoa.healloop1": {
+		"sounds": [ "mowziesmobs:entity/barakoa/heal_loop1" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.heal"
+	},
+	"barakoa.healloop2": {
+		"sounds": [ "mowziesmobs:entity/barakoa/heal_loop2" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.heal"
+	},
+	"barakoa.healloop3": {
+		"sounds": [ "mowziesmobs:entity/barakoa/heal_loop3" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.heal"
+	},
 	"barako.belly": {
 		"sounds": [ "mowziesmobs:entity/barako/belly" ],
 		"subtitle": "subtitles.mowziesmobs.barako.belly"
