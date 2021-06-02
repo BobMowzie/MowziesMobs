@@ -82,13 +82,13 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     public static final Animation BLESS_ANIMATION = Animation.create(60);
     public static final Animation SUPERNOVA_ANIMATION = Animation.create(100);
     private static final int MAX_HEALTH = 150;
-    private static final int SUNSTRIKE_PAUSE_MAX = 40;
-    private static final int SUNSTRIKE_PAUSE_MIN = 25;
+    private static final int SUNSTRIKE_PAUSE_MAX = 50;
+    private static final int SUNSTRIKE_PAUSE_MIN = 30;
     private static final int LASER_PAUSE = 230;
     private static final int SUPERNOVA_PAUSE = 230;
-    private static final int BARAKOA_PAUSE = 140;
+    private static final int BARAKOA_PAUSE = 180;
     private static final int HEAL_PAUSE = 75;
-    private static final int HEALTH_LOST_BETWEEN_SUNBLOCKERS = 40;
+    private static final int HEALTH_LOST_BETWEEN_SUNBLOCKERS = 45;
     private static final DataParameter<Integer> DIRECTION = EntityDataManager.createKey(EntityBarako.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> DIALOGUE = EntityDataManager.createKey(EntityBarako.class, DataSerializers.VARINT);
     private static final DataParameter<Boolean> ANGRY = EntityDataManager.createKey(EntityBarako.class, DataSerializers.BOOLEAN);
@@ -218,7 +218,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     }
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
-        return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 4)
+        return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 2)
                 .createMutableAttribute(Attributes.MAX_HEALTH, MAX_HEALTH * ConfigHandler.COMMON.MOBS.BARAKO.combatConfig.healthMultiplier.get())
                 .createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1)
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 40);
@@ -284,7 +284,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 //        this.posZ = prevPosZ;
         setMotion(0, getMotion().y, 0);
 
-        if (!world.isRemote && getHealthLost() >= HEALTH_LOST_BETWEEN_SUNBLOCKERS && getAnimation() == NO_ANIMATION && !isAIDisabled() && getEntitiesNearby(EntityBarakoaSunblocker.class, 25).size() < 3) {
+        if (!world.isRemote && getHealthLost() >= HEALTH_LOST_BETWEEN_SUNBLOCKERS && getAnimation() == NO_ANIMATION && !isAIDisabled() && getEntitiesNearby(EntityBarakoaSunblocker.class, 40).size() < 3) {
             AnimationHandler.INSTANCE.sendAnimationMessage(this, SPAWN_SUNBLOCKERS_ANIMATION);
             setHealthLost(0);
         }
@@ -302,7 +302,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             float entityRelativeAngle = Math.abs(entityHitAngle - entityAttackingAngle);
             Vector3d betweenEntitiesVec = getPositionVec().subtract(target.getPositionVec());
             boolean targetComingCloser = target.getMotion().dotProduct(betweenEntitiesVec) > 0 && target.getMotion().lengthSquared() > 0.015;
-            if (getAnimation() == NO_ANIMATION && !isAIDisabled() && rand.nextInt(80) == 0 && getEntitiesNearby(EntityBarakoa.class, 25).size() < 5 && (targetDistance > 4.5 || isPotionActive(EffectHandler.SUNBLOCK)) && timeUntilBarakoa <= 0) {
+            if (getAnimation() == NO_ANIMATION && !isAIDisabled() && rand.nextInt(80) == 0 && getEntitiesNearby(EntityBarakoa.class, 50).size() < 3 && (targetDistance > 5.5 || isPotionActive(EffectHandler.SUNBLOCK)) && timeUntilBarakoa <= 0) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SPAWN_ANIMATION);
                 timeUntilBarakoa = BARAKOA_PAUSE;
             } else if (getAnimation() == NO_ANIMATION && !isAIDisabled() && getHealthRatio() <= 0.6 && timeUntilLaser <= 0 && (entityRelativeAngle < 60 || entityRelativeAngle > 300) && getEntitySenses().canSee(target) && targetDistance < EntitySolarBeam.RADIUS_BARAKO) {

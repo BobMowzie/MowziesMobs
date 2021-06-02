@@ -103,7 +103,7 @@ public class EntityBarakoaSunblocker extends EntityBarakoaya {
 
     @Override
     public boolean canHeal(LivingEntity entity) {
-        return entity instanceof EntityBarako;
+        return hasTriedOrSucceededTeleport && entity instanceof EntityBarako;
     }
 
     public class TeleportToSafeSpotGoal extends Goal {
@@ -196,7 +196,7 @@ public class EntityBarakoaSunblocker extends EntityBarakoaya {
             if (world.isBlockLoaded(blockpos)) {
                 BlockPos blockpos1 = blockpos.down();
                 BlockState blockstate = world.getBlockState(blockpos1);
-                return blockstate.getMaterial().blocksMovement() && world.hasNoCollisions(aabb);
+                return blockstate.getMaterial().isSolid() && blockstate.getMaterial().blocksMovement() && world.hasNoCollisions(aabb);
             }
             return false;
         }

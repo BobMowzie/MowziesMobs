@@ -32,7 +32,7 @@ public class AnimationSpawnBarakoa extends SimpleAnimationAI<EntityBarako> {
     @Override
     public void resetTask() {
         super.resetTask();
-        if (entity.barakoaSpawnCount < 3 && (entity.targetDistance > 5 || entity.getAttackTarget() == null || spawnSunblockers)) {
+        if (entity.barakoaSpawnCount < 3 && (entity.targetDistance > 6 || entity.getAttackTarget() == null || spawnSunblockers)) {
             if (spawnSunblockers) AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityBarako.SPAWN_SUNBLOCKERS_ANIMATION);
             else AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityBarako.SPAWN_ANIMATION);
         } else {
