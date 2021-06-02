@@ -7,6 +7,7 @@ import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoayaToPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.client.renderer.entity.model.BipedModel;
@@ -53,32 +54,31 @@ public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask {
         if (headStack.getItem() instanceof ItemBarakoMask) {
             if (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.breakable.get() && !player.isCreative()) headStack.damageItem(2, player, p -> p.sendBreakAnimation(hand));
             boolean didSpawn = spawnBarakoa(type, stack, player,(float)stack.getDamage() / (float)stack.getMaxDamage());
-            if (didSpawn && !player.isCreative()) {
-                stack.shrink(1);
+            if (didSpawn) {
+                if (!player.isCreative()) stack.shrink(1);
+                return new ActionResult<>(ActionResultType.SUCCESS, stack);
             }
-            return new ActionResult<>(ActionResultType.SUCCESS, stack);
         }
-        else return super.onItemRightClick(world, player, hand);
+        return super.onItemRightClick(world, player, hand);
     }
 
     private boolean spawnBarakoa(MaskType mask, ItemStack stack, PlayerEntity player, float durability) {
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-        if (playerCapability.getPackSize() < 10) {
+        if (playerCapability != null && playerCapability.getPackSize() < 10) {
             player.playSound(MMSounds.ENTITY_BARAKO_BELLY.get(), 1.5f, 1);
             player.playSound(MMSounds.ENTITY_BARAKOA_BLOWDART.get(), 1.5f, 0.5f);
             double angle = player.getRotationYawHead();
             if (angle < 0) {
                 angle = angle + 360;
             }
-            EntityBarakoanToPlayer barakoa = new EntityBarakoanToPlayer(EntityHandler.BARAKOAN_TO_PLAYER, player.world, player);
+            EntityBarakoanToPlayer barakoa;
+            if (mask == MaskType.FAITH) barakoa = new EntityBarakoayaToPlayer(EntityHandler.BARAKOAYA_TO_PLAYER, player.world, player);
+            else barakoa = new EntityBarakoanToPlayer(EntityHandler.BARAKOAN_TO_PLAYER, player.world, player);
             barakoa.setMask(mask);
             barakoa.setStoredMask(stack);
 //            property.addPackMember(barakoa);
             if (!player.world.isRemote) {
-                if (mask == MaskType.FAITH) {
-                    barakoa.initFaithMask();
-                }
-                else {
+                if (mask != MaskType.FAITH) {
                     int weapon;
                     if (mask != MaskType.FURY) weapon = barakoa.randomizeWeapon();
                     else weapon = 0;

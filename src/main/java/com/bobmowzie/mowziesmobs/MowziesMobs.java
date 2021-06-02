@@ -118,9 +118,10 @@ public final class MowziesMobs {
         RenderingRegistry.registerEntityRenderingHandler(EntityHandler.BARAKO, RenderBarako::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityHandler.BARAKOANA, RenderBarakoa::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityHandler.BARAKOAN_TO_BARAKOANA, RenderBarakoa::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.BARAKOAYA, RenderBarakoa::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.BARAKOA_VILLAGER, RenderBarakoa::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityHandler.BARAKOAN_TO_PLAYER, RenderBarakoa::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.BARAKOA_SUNBLOCKER, RenderBarakoa::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.BARAKOAYA_TO_PLAYER, RenderBarakoa::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.BARAKOAYA, RenderBarakoa::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityHandler.FROSTMAW, RenderFrostmaw::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityHandler.GROTTOL, RenderGrottol::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityHandler.LANTERN, RenderLantern::new);

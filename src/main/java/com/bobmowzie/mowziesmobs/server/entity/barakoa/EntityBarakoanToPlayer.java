@@ -14,8 +14,6 @@ import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.BlockState;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
@@ -24,8 +22,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.Effects;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
@@ -37,8 +33,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
@@ -59,79 +53,6 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
     }
 
     @Override
-    protected void registerTargetGoals() {
-        super.registerTargetGoals();
-        if (getMask() == MaskType.FAITH) {
-            this.goalSelector.addGoal(4, new EntityBarakoaSunblocker.HealTargetGoal(this));
-            this.targetSelector.addGoal(2, new NearestAttackableTargetPredicateGoal<PlayerEntity>(this, PlayerEntity.class, 0, true, true, (new EntityPredicate()).setDistance(getAttributeValue(Attributes.FOLLOW_RANGE)).setCustomPredicate(target -> {
-                if (!active) return false;
-                if (target != getLeader()) return false;
-                return target.getLastAttackedEntity() != null || target.getCombatTracker().getBestAttacker() != null || target.getHealth() < target.getMaxHealth();
-            }).allowFriendlyFire().allowInvulnerable().setSkipAttackChecks()) {
-                @Override
-                public boolean shouldContinueExecuting() {
-                    LivingEntity livingentity = this.goalOwner.getAttackTarget();
-                    if (livingentity == null) {
-                        livingentity = this.target;
-                    }
-                    boolean targetHasTarget = target.getCombatTracker().getBestAttacker() != null;
-                    boolean canHeal = true;
-                    if (this.goalOwner instanceof EntityBarakoa) canHeal = ((EntityBarakoa)this.goalOwner).canHeal(livingentity);
-                    return super.shouldContinueExecuting() && (livingentity.getHealth() < livingentity.getMaxHealth() || targetHasTarget) && canHeal;
-                }
-
-                @Override
-                protected double getTargetDistance() {
-                    return super.getTargetDistance();
-                }
-
-                @Override
-                public void startExecuting() {
-                    targetEntitySelector.setIgnoresLineOfSight().allowInvulnerable().allowFriendlyFire().setSkipAttackChecks();
-                    super.startExecuting();
-                }
-            });
-        }
-    }
-
-    public void initFaithMask() {
-        setMask(MaskType.FAITH);
-        setWeapon(3);
-        this.goalSelector.addGoal(4, new EntityBarakoaSunblocker.HealTargetGoal(this));
-        this.targetSelector.addGoal(2, new NearestAttackableTargetPredicateGoal<PlayerEntity>(this, PlayerEntity.class, 0, true, true, (new EntityPredicate()).setDistance(getAttributeValue(Attributes.FOLLOW_RANGE)).setCustomPredicate(target -> {
-            if (!active) return false;
-            if (target != getLeader()) return false;
-            return target.getLastAttackedEntity() != null || target.getCombatTracker().getBestAttacker() != null || target.getHealth() < target.getMaxHealth();
-        }).allowFriendlyFire().allowInvulnerable().setSkipAttackChecks()) {
-            @Override
-            public boolean shouldContinueExecuting() {
-                LivingEntity livingentity = this.goalOwner.getAttackTarget();
-                if (livingentity == null) {
-                    livingentity = this.target;
-                }
-                boolean targetHasTarget = livingentity.getLastAttackedEntity() != null && (livingentity.ticksExisted - livingentity.getLastAttackedEntityTime() < 120 || livingentity.getDistanceSq(livingentity.getLastAttackedEntity()) < 256);
-                if (livingentity.getLastAttackedEntity() instanceof EntityBarakoanToPlayer) targetHasTarget = false;
-                boolean canHeal = true;
-                if (this.goalOwner instanceof EntityBarakoa) canHeal = ((EntityBarakoa)this.goalOwner).canHeal(livingentity);
-                boolean survivalMode = false;
-                if (livingentity instanceof PlayerEntity) survivalMode = !((PlayerEntity)livingentity).isSpectator() && !((PlayerEntity)livingentity).isCreative();
-                return super.shouldContinueExecuting() && (livingentity.getHealth() < livingentity.getMaxHealth() || targetHasTarget) && canHeal && survivalMode;
-            }
-
-            @Override
-            protected double getTargetDistance() {
-                return super.getTargetDistance() * 2;
-            }
-
-            @Override
-            public void startExecuting() {
-                targetEntitySelector.setIgnoresLineOfSight().allowInvulnerable().allowFriendlyFire().setSkipAttackChecks();
-                super.startExecuting();
-            }
-        });
-    }
-
-    @Override
     protected void registerData() {
         super.registerData();
         getDataManager().register(MASK, new ItemStack(ItemHandler.BARAKOA_MASK_FURY, 1));
@@ -145,7 +66,9 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
 
     @Override
     public void tick() {
-        if (getLeader() == null || getLeader().getHealth() <= 0) deactivate();
+        if (ticksExisted > 20 && (getLeader() == null || getLeader().getHealth() <= 0)) {
+            deactivate();
+        }
         super.tick();
         if (world.isRemote && feetPos != null && feetPos.length > 0) {
             feetPos[0] = getPositionVec().add(0, 0.05f, 0);
@@ -248,22 +171,5 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
     @Override
     protected ItemStack getDeactivatedMask(ItemBarakoaMask mask) {
         return getStoredMask();
-    }
-
-    public boolean canHeal(LivingEntity entity) {
-        return entity == leader && targetDistance < 10;
-    }
-
-    @Override
-    protected void updateAttackAI() {
-        if (getMask() != MaskType.FAITH) super.updateAttackAI();
-    }
-
-    @Override
-    protected void sunBlockTarget() {
-        LivingEntity target = getAttackTarget();
-        if (target != null) {
-            EffectHandler.addOrCombineEffect(target, EffectHandler.SUNBLOCK, 20, 0, true, false);
-        }
     }
 }

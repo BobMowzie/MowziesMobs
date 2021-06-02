@@ -1,235 +1,268 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.ServerProxy;
-import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
-import com.bobmowzie.mowziesmobs.server.ai.EntityAIBarakoayaTrade;
-import com.bobmowzie.mowziesmobs.server.ai.EntityAIBarakoayaTradeLook;
-import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
-import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.TradeStore;
-import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoayaTrade;
+import com.bobmowzie.mowziesmobs.server.ai.NearestAttackableTargetPredicateGoal;
+import com.bobmowzie.mowziesmobs.server.ai.AvoidProjectilesGoal;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
-import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.goal.MoveTowardsRestrictionGoal;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.monster.SkeletonEntity;
-import net.minecraft.entity.monster.ZombieEntity;
+import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
+import com.ilexiconn.llibrary.server.animation.AnimationHandler;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.goal.AvoidEntityGoal;
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.*;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.Difficulty;
+import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.IServerWorld;
+import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
-import java.util.Optional;
+import java.util.EnumSet;
 
-public class EntityBarakoaya extends EntityBarakoa implements LeaderSunstrikeImmune, IMob {
-    private static final TradeStore DEFAULT = new TradeStore.Builder()
-        .addTrade(Items.GOLD_INGOT, 2, ItemHandler.BLOWGUN, 1, 6)
-        .addTrade(Items.COCOA_BEANS, 10, ItemHandler.DART, 8, 6)
-        .addTrade(Items.GOLD_INGOT, 3, ItemHandler.SPEAR, 1, 4)
-        .addTrade(Items.GOLD_NUGGET, 5, BlockHandler.PAINTED_ACACIA.get().asItem(), 2, 4)
-        .addTrade(Items.COCOA_BEANS, 16, BlockHandler.PAINTED_ACACIA.get().asItem(), 1, 4)
-        .addTrade(Items.COCOA_BEANS, 10, Items.COOKED_CHICKEN, 2, 2)
-        .addTrade(Items.GOLD_NUGGET, 8, Items.COOKED_CHICKEN, 1, 2)
-        .addTrade(Items.COCOA_BEANS, 14, Items.COOKED_PORKCHOP, 2, 2)
-        .addTrade(Items.GOLD_NUGGET, 9, Items.COOKED_PORKCHOP, 1, 2)
+public class EntityBarakoaya extends EntityBarakoaVillager {
+    public boolean hasTriedOrSucceededTeleport = true;
+    private int teleportAttempts = 0;
 
-        .addTrade(Items.MELON, 3, Items.GOLD_NUGGET, 5, 2)
-        .addTrade(Items.CHICKEN, 1, Items.GOLD_NUGGET, 3, 2)
-        .addTrade(Items.IRON_SWORD, 1, Items.GOLD_INGOT, 2, 2)
-        .addTrade(Items.IRON_HELMET, 1, Items.GOLD_INGOT, 4, 2)
-        .build();
-
-    private static final DataParameter<Optional<Trade>> TRADE = EntityDataManager.createKey(EntityBarakoaya.class, ServerProxy.OPTIONAL_TRADE);
-    //    private static final DataParameter<Integer> NUM_SALES = EntityDataManager.createKey(EntityBarakoaya.class, DataSerializers.VARINT);
-    //TODO: Sale limits. After X sales, go out of stock and change trade.
-
-    private static final int MIN_OFFER_TIME = 5 * 60 * 20;
-
-    private static final int MAX_OFFER_TIME = 20 * 60 * 20;
-
-    private TradeStore tradeStore = TradeStore.EMPTY;
-
-    private int timeOffering;
-
-//    private static final int SOLD_OUT_TIME = 5 * 60 * 20;
-//    private static final int MAX_SALES = 5;
-
-    private PlayerEntity customer;
-
-    public EntityBarakoaya(EntityType<? extends EntityBarakoaya> type, World world) {
+    public EntityBarakoaya(EntityType<? extends EntityBarakoaVillager> type, World world) {
         super(type, world);
-        setWeapon(0);
-//        setNumSales(MAX_SALES);
+        setWeapon(3);
+        setMask(MaskType.FAITH);
     }
 
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        goalSelector.addGoal(1, new EntityAIBarakoayaTrade(this));
-        goalSelector.addGoal(1, new EntityAIBarakoayaTradeLook(this));
-        this.goalSelector.addGoal(7, new MoveTowardsRestrictionGoal(this, 0.4));
-    }
-
-    @Override
-    protected void registerTargetGoals() {
-        targetSelector.addGoal(3, new BarakoaHurtByTargetAI(this, true));
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 0, true, true, target -> {
+        this.goalSelector.addGoal(4, new HealTargetGoal(this));
+        this.goalSelector.addGoal(6, new AvoidEntityGoal<>(this, PlayerEntity.class, 50.0F, 0.8D, 0.6D, target -> {
             if (target instanceof PlayerEntity) {
                 if (this.world.getDifficulty() == Difficulty.PEACEFUL) return false;
+                if (getAttackTarget() == target) return true;
+                if (getAttackTarget() instanceof EntityBarako) return false;
+                if (getAnimation() != NO_ANIMATION) return false;
                 ItemStack headArmorStack = ((PlayerEntity) target).inventory.armorInventory.get(3);
                 return !(headArmorStack.getItem() instanceof BarakoaMask);
             }
             return true;
         }));
-        targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, true, true, null));
-        targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, SkeletonEntity.class, 0, true, false, null));
+        this.goalSelector.addGoal(1, new TeleportToSafeSpotGoal(this));
+        this.goalSelector.addGoal(1, new AvoidProjectilesGoal(this, ProjectileEntity.class, target -> {
+            return getAnimation() == HEAL_LOOP_ANIMATION || getAnimation() == HEAL_START_ANIMATION;
+        }, 3.0F, 0.8D, 0.6D));
     }
 
     @Override
-    protected void registerData() {
-        super.registerData();
-        getDataManager().register(TRADE, Optional.empty());
-//        getDataManager().register(NUM_SALES, MAX_SALES);
-    }
+    protected void registerTargetGoals() {
+        super.registerTargetGoals();
+        this.targetSelector.addGoal(2, new NearestAttackableTargetPredicateGoal<EntityBarako>(this, EntityBarako.class, 0, false, false, (new EntityPredicate()).setDistance(getAttributeValue(Attributes.FOLLOW_RANGE) * 2).setCustomPredicate(target -> {
+            if (!active) return false;
+            if (target instanceof MobEntity) {
+                return ((MobEntity) target).getAttackTarget() != null || target.getHealth() < target.getMaxHealth();
+            }
+            return false;
+        }).allowFriendlyFire().allowInvulnerable().setSkipAttackChecks().setIgnoresLineOfSight()) {
+            @Override
+            public boolean shouldContinueExecuting() {
+                LivingEntity livingentity = this.goalOwner.getAttackTarget();
+                if (livingentity == null) {
+                    livingentity = this.target;
+                }
+                boolean targetHasTarget = false;
+                if (livingentity instanceof MobEntity) targetHasTarget = ((MobEntity)livingentity).getAttackTarget() != null;
+                boolean canHeal = true;
+                if (this.goalOwner instanceof EntityBarakoa) canHeal = ((EntityBarakoa)this.goalOwner).canHeal(livingentity);
+                return super.shouldContinueExecuting() && (livingentity.getHealth() < livingentity.getMaxHealth() || targetHasTarget) && canHeal;
+            }
 
-    public void setOfferingTrade(Trade trade) {
-        getDataManager().set(TRADE, Optional.ofNullable(trade));
-    }
+            @Override
+            protected double getTargetDistance() {
+                return super.getTargetDistance() * 2;
+            }
 
-    public Trade getOfferingTrade() {
-        return getDataManager().get(TRADE).orElse(null);
-    }
-
-    //    public int getNumSales() {
-//        return getDataManager().get(NUM_SALES);
-//    }
-//
-//    public void setNumSales(int numSales) {
-//        getDataManager().set(NUM_SALES, numSales);
-//    }
-
-    public boolean isOfferingTrade() {
-        if (getDataManager().get(TRADE) instanceof Optional) {
-            return getDataManager().get(TRADE).isPresent();
-        }
-        else return false;
-    }
-
-    public void setCustomer(PlayerEntity customer) {
-        this.customer = customer;
-    }
-
-    public PlayerEntity getCustomer() {
-        return customer;
-    }
-
-    public boolean isTrading() {
-        return customer != null;
-    }
-
-    protected boolean canHoldVaryingWeapons() {
-        return false;
+            @Override
+            public void startExecuting() {
+                targetEntitySelector.setIgnoresLineOfSight().allowInvulnerable().allowFriendlyFire().setSkipAttackChecks();
+                super.startExecuting();
+            }
+        });
     }
 
     @Override
     public void tick() {
         super.tick();
-        if ((!isOfferingTrade() || timeOffering <= 0) && tradeStore.hasStock()) {
-            setOfferingTrade(tradeStore.get(rand));
-            timeOffering = rand.nextInt(MAX_OFFER_TIME - MIN_OFFER_TIME + 1) + MIN_OFFER_TIME;
-        }
-    }
+        if (active && teleportAttempts > 3 && (getAttackTarget() == null || !getAttackTarget().isAlive())) hasTriedOrSucceededTeleport = true;
 
-    public void openGUI(PlayerEntity playerEntity) {
-        setCustomer(playerEntity);
-        MowziesMobs.PROXY.setReferencedMob(this);
-        if (!this.world.isRemote && getAttackTarget() == null && isAlive()) {
-            playerEntity.openContainer(new INamedContainerProvider() {
-                @Override
-                public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
-                    return new ContainerBarakoayaTrade(id, EntityBarakoaya.this, playerInventory);
-                }
-
-                @Override
-                public ITextComponent getDisplayName() {
-                    return EntityBarakoaya.this.getDisplayName();
-                }
-            });
-        }
+//        if (getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(this, HEAL_START_ANIMATION);
     }
 
     @Override
-    protected ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
-        if (canTradeWith(player) && getAttackTarget() == null && isAlive()) {
-            openGUI(player);
-            return ActionResultType.SUCCESS;
-        }
-        return ActionResultType.PASS;
+    protected void updateAttackAI() {
+
     }
 
-    public boolean canTradeWith(PlayerEntity player) {
-        if (isTrading()) {
+    @Override
+    public boolean canHeal(LivingEntity entity) {
+        return entity instanceof EntityBarako;
+    }
+
+    public class TeleportToSafeSpotGoal extends Goal {
+        private final EntityBarakoaya entity;
+
+        public TeleportToSafeSpotGoal(EntityBarakoaya entityIn) {
+            this.entity = entityIn;
+            this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE));
+        }
+
+        @Override
+        public boolean shouldExecute() {
+            if (!entity.active) return false;
+            if (entity.getAnimation() == TELEPORT_ANIMATION) return false;
+            if (entity.getAttackTarget() != null && entity.canHeal(entity.getAttackTarget()) && (
+                    (entity.targetDistance >= 0 && entity.targetDistance < 7) || !hasTriedOrSucceededTeleport
+            )) {
+                return findTeleportLocation();
+            }
             return false;
         }
-        ItemStack headStack = player.inventory.armorInventory.get(3);
-        return headStack.getItem() instanceof BarakoaMask && isOfferingTrade();
-    }
 
-    @Nullable
-    @Override
-    public ILivingEntityData onInitialSpawn(IServerWorld world, DifficultyInstance difficulty, SpawnReason reason, @Nullable ILivingEntityData livingData, @Nullable CompoundNBT compound) {
-        tradeStore = DEFAULT;
-        return super.onInitialSpawn(world, difficulty, reason, livingData, compound);
-    }
-
-    @Override
-    public boolean preventDespawn() {
-        return true;
-    }
-
-    @Override
-    public void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
-        compound.put("tradeStore", tradeStore.serialize());
-        if (isOfferingTrade()) {
-            compound.put("offeringTrade", getOfferingTrade().serialize());
+        @Override
+        public void startExecuting() {
+            super.startExecuting();
+            hasTriedOrSucceededTeleport = true;
+            AnimationHandler.INSTANCE.sendAnimationMessage(entity, TELEPORT_ANIMATION);
         }
-        compound.putInt("timeOffering", timeOffering);
-        compound.putInt("HomePosX", this.getHomePosition().getX());
-        compound.putInt("HomePosY", this.getHomePosition().getY());
-        compound.putInt("HomePosZ", this.getHomePosition().getZ());
-        compound.putInt("HomeDist", (int) this.getMaximumHomeDistance());
-//        compound.setInteger("numSales", getNumSales());
+
+        private boolean findTeleportLocation() {
+            int i;
+            int j;
+            int k;
+            if (entity.getMaximumHomeDistance() > -1) {
+                i = MathHelper.floor(entity.getHomePosition().getX());
+                j = MathHelper.floor(entity.getHomePosition().getY());
+                k = MathHelper.floor(entity.getHomePosition().getZ());
+            }
+            else if (entity.getAttackTarget() != null) {
+                i = MathHelper.floor(entity.getAttackTarget().getPosX());
+                j = MathHelper.floor(entity.getAttackTarget().getPosY());
+                k = MathHelper.floor(entity.getAttackTarget().getPosZ());
+            }
+            else {
+                i = MathHelper.floor(entity.getPosX());
+                j = MathHelper.floor(entity.getPosY());
+                k = MathHelper.floor(entity.getPosZ());
+            }
+            boolean foundPosition = false;
+            for(int l = 0; l < 50; ++l) {
+                double radius = Math.pow(rand.nextFloat(), 1.35) * 25;
+                double angle = rand.nextFloat() * Math.PI * 2;
+                int i1 = i + (int)(Math.cos(angle) * radius);
+                int j1 = j + MathHelper.nextInt(entity.rand, 0, 15) * MathHelper.nextInt(entity.rand, -1, 1);
+                int k1 = k + (int)(Math.sin(angle) * radius);
+                BlockPos blockpos = new BlockPos(i1, j1, k1);
+                Vector3d newPos = new Vector3d(i1, j1, k1);
+                Vector3d offset = newPos.subtract(entity.getPositionVec());
+                AxisAlignedBB newBB = entity.getBoundingBox().offset(offset);
+                if (testBlock(blockpos, newBB) && entity.world.getEntitiesWithinAABB(EntityBarako.class, newBB.grow(7)).isEmpty()) {
+                    entity.teleportDestination = newPos.add(0, 1, 0);
+                    if (entity.teleportAttempts >= 3) foundPosition = true;
+                    if (entity.world.getEntitiesWithinAABB(EntityBarakoaya.class, newBB.grow(5)).isEmpty()) {
+                        if (entity.teleportAttempts >= 2) foundPosition = true;
+                        if (!entity.world.isPlayerWithin(i1, j1, k1, 5) && !entity.world.containsAnyLiquid(newBB)) {
+                            if (entity.teleportAttempts >= 1) foundPosition = true;
+                            LivingEntity target = getAttackTarget();
+                            if (target instanceof MobEntity && ((MobEntity) target).getAttackTarget() != null) {
+                                if (!canEntityBeSeenFromLocation(((MobEntity) target).getAttackTarget(), newPos)) {
+                                    return true;
+                                }
+                            } else return true;
+                        }
+                    }
+                }
+            }
+            entity.teleportAttempts++;
+            if (entity.teleportAttempts > 3) hasTriedOrSucceededTeleport = true;
+            return foundPosition;
+        }
+
+        public boolean canEntityBeSeenFromLocation(Entity entityIn, Vector3d location) {
+            Vector3d vector3d = new Vector3d(location.getX(), location.getY() + entity.getEyeHeight(), location.getZ());
+            Vector3d vector3d1 = new Vector3d(entityIn.getPosX(), entityIn.getPosYEye(), entityIn.getPosZ());
+            return entity.world.rayTraceBlocks(new RayTraceContext(vector3d, vector3d1, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, entity)).getType() != RayTraceResult.Type.BLOCK;
+        }
+
+        public boolean testBlock(BlockPos blockpos, AxisAlignedBB aabb) {
+            World world = entity.world;
+            if (world.isBlockLoaded(blockpos)) {
+                BlockPos blockpos1 = blockpos.down();
+                BlockState blockstate = world.getBlockState(blockpos1);
+                return blockstate.getMaterial().isSolid() && blockstate.getMaterial().blocksMovement() && world.hasNoCollisions(aabb);
+            }
+            return false;
+        }
+    }
+
+    public static class HealTargetGoal extends Goal {
+        private final EntityBarakoa entity;
+
+        public HealTargetGoal(EntityBarakoa entityIn) {
+            this.entity = entityIn;
+            this.setMutexFlags(EnumSet.of(Goal.Flag.MOVE, Flag.LOOK));
+        }
+
+        @Override
+        public boolean shouldContinueExecuting() {
+            return entity.canHeal(entity.getAttackTarget());
+        }
+
+        @Override
+        public boolean shouldExecute() {
+            if (!entity.active) return false;
+            return entity.canHeal(entity.getAttackTarget());
+        }
+
+        @Override
+        public void startExecuting() {
+            super.startExecuting();
+            AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityBarakoa.HEAL_START_ANIMATION);
+        }
+
+        @Override
+        public void resetTask() {
+            super.resetTask();
+//            if (entity.getAnimation() == HEAL_LOOP_ANIMATION || entity.getAnimation() == HEAL_START_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(entity, EntityBarakoa.HEAL_STOP_ANIMATION);
+        }
     }
 
     @Override
-    public void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
-        tradeStore = TradeStore.deserialize(compound.getCompound("tradeStore"));
-        setOfferingTrade(Trade.deserialize(compound.getCompound("offeringTrade")));
-        timeOffering = compound.getInt("timeOffering");
-        int i = compound.getInt("HomePosX");
-        int j = compound.getInt("HomePosY");
-        int k = compound.getInt("HomePosZ");
-        int dist = compound.getInt("HomeDist");
-        this.setHomePosAndDistance(new BlockPos(i, j, k), dist);
-//        setNumSales(compound.getInteger("numSales"));
+    protected void sunBlockTarget() {
+        LivingEntity target = getAttackTarget();
+        if (target != null) {
+            EffectHandler.addOrCombineEffect(target, EffectHandler.SUNBLOCK, 20, 0, true, false);
+            if (target.ticksExisted % 20 == 0) target.heal(0.15f);
+        }
+    }
+    
+    @Override
+    public boolean isInvulnerableTo(DamageSource source) {
+        boolean teleporting = getAnimation() == TELEPORT_ANIMATION && getAnimationTick() <= 16;
+        return super.isInvulnerableTo(source) || ((!active || teleporting || !hasTriedOrSucceededTeleport) && source != DamageSource.OUT_OF_WORLD && !source.isCreativePlayer());
+    }
+
+    @Override
+    public void setFire(int seconds) {
+        boolean teleporting = getAnimation() == TELEPORT_ANIMATION && getAnimationTick() <= 16;
+        if (!active || teleporting || !hasTriedOrSucceededTeleport) return;
+        super.setFire(seconds);
+    }
+
+    @Override
+    public ILivingEntityData onInitialSpawn(IServerWorld world, DifficultyInstance difficulty, SpawnReason reason, ILivingEntityData livingData, CompoundNBT compound) {
+        setMask(MaskType.FAITH);
+        setWeapon(3);
+        return super.onInitialSpawn(world, difficulty, reason, livingData, compound);
     }
 }

@@ -1,13 +1,12 @@
 package com.bobmowzie.mowziesmobs.client.gui;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaya;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaVillager;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoayaTrade;
 import com.bobmowzie.mowziesmobs.server.inventory.InventoryBarakoaya;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
@@ -17,7 +16,6 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -25,7 +23,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public final class GuiBarakoayaTrade extends ContainerScreen<ContainerBarakoayaTrade> {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/gui/container/barakoa.png");
 
-    private final EntityBarakoaya barakoaya;
+    private final EntityBarakoaVillager barakoaya;
 
     private final InventoryBarakoaya inventory;
 
@@ -40,7 +38,7 @@ public final class GuiBarakoayaTrade extends ContainerScreen<ContainerBarakoayaT
     @Override
     public void tick() {
         super.tick();
-        if (barakoaya.getAnimation() == EntityBarakoaya.ATTACK_ANIMATION && barakoaya.getAnimationTick() == 8) {
+        if (barakoaya.getAnimation() == EntityBarakoaVillager.ATTACK_ANIMATION && barakoaya.getAnimationTick() == 8) {
             cursorHit = 6;
         }
         if (cursorHit > 0) {
@@ -53,7 +51,7 @@ public final class GuiBarakoayaTrade extends ContainerScreen<ContainerBarakoayaT
     public boolean mouseReleased(double mouseX, double mouseY, int state) {
         if (barakoaya.getAnimation() == IAnimatedEntity.NO_ANIMATION) {
             if (isPointInRegion(13, 23, 8, 14, mouseX, mouseY)) {
-                barakoaya.setAnimation(EntityBarakoaya.ATTACK_ANIMATION);
+                barakoaya.setAnimation(EntityBarakoaVillager.ATTACK_ANIMATION);
                 barakoaya.setAnimationTick(3);
             }
         }

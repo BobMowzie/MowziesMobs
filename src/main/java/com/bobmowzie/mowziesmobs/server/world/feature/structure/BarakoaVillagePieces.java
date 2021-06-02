@@ -4,7 +4,7 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaya;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaVillager;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
@@ -435,11 +435,11 @@ public class BarakoaVillagePieces {
             }
 
             // Spawn Barakoa
-            int numBarakoa = randomIn.nextInt(10) + 7;
+            int numBarakoa = randomIn.nextInt(5) + 5;
             for (int i = 1; i <= numBarakoa; i++) {
                 int distance;
                 int angle;
-                EntityBarakoaya barakoa = new EntityBarakoaya(EntityHandler.BARAKOAYA, worldIn.getWorld());
+                EntityBarakoaVillager barakoa = new EntityBarakoaVillager(EntityHandler.BARAKOA_VILLAGER, worldIn.getWorld());
                 for (int j = 1; j <= 20; j++) {
                     distance = randomIn.nextInt(10) + 2;
                     angle = randomIn.nextInt(360);

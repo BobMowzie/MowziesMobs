@@ -1,36 +1,32 @@
 package com.bobmowzie.mowziesmobs.server.inventory;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaya;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaVillager;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-
-import java.lang.reflect.Proxy;
 
 public final class ContainerBarakoayaTrade extends Container {
 
-    private final EntityBarakoaya barakoaya;
+    private final EntityBarakoaVillager barakoaya;
 
     private final InventoryBarakoaya inventory;
 
     private final PlayerEntity player;
 
     public ContainerBarakoayaTrade(int id, PlayerInventory playerInventory) {
-        this(id, (EntityBarakoaya) MowziesMobs.PROXY.getReferencedMob(), playerInventory);
+        this(id, (EntityBarakoaVillager) MowziesMobs.PROXY.getReferencedMob(), playerInventory);
     }
 
-    public ContainerBarakoayaTrade(int id, EntityBarakoaya barakoaya, PlayerInventory playerInv) {
+    public ContainerBarakoayaTrade(int id, EntityBarakoaVillager barakoaya, PlayerInventory playerInv) {
         this(id, barakoaya, new InventoryBarakoaya(barakoaya), playerInv);
     }
 
-    public ContainerBarakoayaTrade(int id, EntityBarakoaya barakoaya, InventoryBarakoaya inventory, PlayerInventory playerInv) {
+    public ContainerBarakoayaTrade(int id, EntityBarakoaVillager barakoaya, InventoryBarakoaya inventory, PlayerInventory playerInv) {
         super(ContainerHandler.CONTAINER_BARAKOAYA_TRADE, id);
         this.barakoaya = barakoaya;
         this.inventory = inventory;
@@ -106,7 +102,7 @@ public final class ContainerBarakoayaTrade extends Container {
         }
     }
 
-    public EntityBarakoaya getBarakoaya() {
+    public EntityBarakoaVillager getBarakoaya() {
         return barakoaya;
     }
 

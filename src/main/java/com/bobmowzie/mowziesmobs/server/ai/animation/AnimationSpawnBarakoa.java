@@ -2,8 +2,8 @@ package com.bobmowzie.mowziesmobs.server.ai.animation;
 
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaSunblocker;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaya;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaVillager;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
@@ -57,12 +57,12 @@ public class AnimationSpawnBarakoa extends SimpleAnimationAI<EntityBarako> {
             } else if (angle - entity.rotationYaw < -70) {
                 angle = -70 + entity.rotationYaw;
             }
-            EntityBarakoaya barakoa;
+            EntityBarakoaVillager barakoa;
             if (spawnSunblockers) {
-                barakoa = new EntityBarakoaSunblocker(EntityHandler.BARAKOA_SUNBLOCKER, entity.world);
-                ((EntityBarakoaSunblocker)barakoa).hasTriedOrSucceededTeleport = false;
+                barakoa = new EntityBarakoaya(EntityHandler.BARAKOAYA, entity.world);
+                ((EntityBarakoaya)barakoa).hasTriedOrSucceededTeleport = false;
             }
-            else barakoa = new EntityBarakoaya(EntityHandler.BARAKOAYA, entity.world);
+            else barakoa = new EntityBarakoaVillager(EntityHandler.BARAKOA_VILLAGER, entity.world);
             barakoa.setPositionAndRotation(entity.getPosX() + 2 * Math.sin(-angle * (Math.PI / 180)), entity.getPosY() + 1.5, entity.getPosZ() + 2 * Math.cos(-angle * (Math.PI / 180)), entity.rotationYawHead, 0);
             barakoa.setActive(false);
             barakoa.active = false;

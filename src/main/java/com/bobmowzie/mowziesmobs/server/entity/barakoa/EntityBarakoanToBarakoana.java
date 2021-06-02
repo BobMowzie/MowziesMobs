@@ -17,6 +17,9 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 
+import java.util.Optional;
+import java.util.UUID;
+
 public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> implements LeaderSunstrikeImmune, IMob {
     public EntityBarakoanToBarakoana(EntityType<? extends EntityBarakoanToBarakoana> type, World world) {
         this(type, world, null);
@@ -88,6 +91,11 @@ public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> i
         this.setLeaderUUID(ABSENT_LEADER);
         this.leader = null;
         this.setAttackTarget(null);
-        registerHuntingTargetGoals();
+    }
+
+    @Override
+    public void setLeaderUUID(Optional<UUID> uuid) {
+        super.setLeaderUUID(uuid);
+        if (uuid == ABSENT_LEADER) registerHuntingTargetGoals();
     }
 }

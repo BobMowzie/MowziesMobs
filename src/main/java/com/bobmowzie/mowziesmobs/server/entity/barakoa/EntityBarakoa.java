@@ -322,6 +322,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         if (canHoldVaryingWeapons()) {
             setWeapon(rand.nextInt(3) == 0 ? 1 : 0);
         }
+        if (reason == SpawnReason.COMMAND && !(this instanceof EntityBarakoana) && !(this instanceof EntityBarakoaya) && !(this instanceof EntityBarakoayaToPlayer)) setMask(MaskType.from(MathHelper.nextInt(rand, 1, 4)));
         return super.onInitialSpawn(world, difficulty, reason, livingData, compound);
     }
 

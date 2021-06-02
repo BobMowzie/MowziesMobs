@@ -26,9 +26,10 @@ public enum EntityHandler {
     public static EntityType<EntityWroughtnaut> WROUGHTNAUT;
     public static EntityType<EntityBarakoanToBarakoana> BARAKOAN_TO_BARAKOANA;
     public static EntityType<EntityBarakoanToPlayer> BARAKOAN_TO_PLAYER;
-    public static EntityType<EntityBarakoaya> BARAKOAYA;
+    public static EntityType<EntityBarakoayaToPlayer> BARAKOAYA_TO_PLAYER;
+    public static EntityType<EntityBarakoaVillager> BARAKOA_VILLAGER;
     public static EntityType<EntityBarakoana> BARAKOANA;
-    public static EntityType<EntityBarakoaSunblocker> BARAKOA_SUNBLOCKER;
+    public static EntityType<EntityBarakoaya> BARAKOAYA;
     public static EntityType<EntityBarako> BARAKO;
     public static EntityType<EntityFrostmaw> FROSTMAW;
     public static EntityType<EntityGrottol> GROTTOL;
@@ -66,11 +67,14 @@ public enum EntityHandler {
         EntityType.Builder<EntityBarakoanToPlayer> barakoanToPlayerBuilder = EntityType.Builder.create(EntityBarakoanToPlayer::new, EntityClassification.MONSTER);
         BARAKOAN_TO_PLAYER = register("barakoan_player", barakoanToPlayerBuilder.size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1));
 
-        BARAKOAYA = register("barakoaya", EntityType.Builder.create(EntityBarakoaya::new, EntityClassification.MONSTER).size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1));
+        EntityType.Builder<EntityBarakoayaToPlayer> barakoayaToPlayerBuilder = EntityType.Builder.create(EntityBarakoayaToPlayer::new, EntityClassification.MONSTER);
+        BARAKOAYA_TO_PLAYER = register("barakoa_sunblocker_player", barakoayaToPlayerBuilder.size(MaskType.FAITH.entityWidth, MaskType.FAITH.entityHeight).setUpdateInterval(1));
+
+        BARAKOA_VILLAGER = register("barakoaya", EntityType.Builder.create(EntityBarakoaVillager::new, EntityClassification.MONSTER).size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1));
 
         BARAKOANA = register("barakoana", EntityType.Builder.create(EntityBarakoana::new, EntityClassification.MONSTER).size(MaskType.FURY.entityWidth, MaskType.FURY.entityHeight).setUpdateInterval(1));
 
-        BARAKOA_SUNBLOCKER = register("barakoa_sunblocker", EntityType.Builder.create(EntityBarakoaSunblocker::new, EntityClassification.MONSTER).size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1));
+        BARAKOAYA = register("barakoa_sunblocker", EntityType.Builder.create(EntityBarakoaya::new, EntityClassification.MONSTER).size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1));
 
         BARAKO = register("barako", EntityType.Builder.create(EntityBarako::new, EntityClassification.MONSTER).size(1.5f, 2.4f).setUpdateInterval(1));
 
@@ -129,9 +133,10 @@ public enum EntityHandler {
             WROUGHTNAUT,
             BARAKOAN_TO_BARAKOANA,
             BARAKOAN_TO_PLAYER,
-            BARAKOAYA,
+            BARAKOAYA_TO_PLAYER,
+            BARAKOA_VILLAGER,
             BARAKOANA,
-                BARAKOA_SUNBLOCKER,
+            BARAKOAYA,
             BARAKO,
             FROSTMAW,
             GROTTOL,
@@ -165,10 +170,11 @@ public enum EntityHandler {
         GlobalEntityTypeAttributes.put(BABY_FOLIAATH, EntityBabyFoliaath.createAttributes().create());
         GlobalEntityTypeAttributes.put(WROUGHTNAUT, EntityWroughtnaut.createAttributes().create());
         GlobalEntityTypeAttributes.put(BARAKOANA, EntityBarakoana.createAttributes().create());
-        GlobalEntityTypeAttributes.put(BARAKOAYA, EntityBarakoa.createAttributes().create());
+        GlobalEntityTypeAttributes.put(BARAKOA_VILLAGER, EntityBarakoa.createAttributes().create());
         GlobalEntityTypeAttributes.put(BARAKOAN_TO_PLAYER, EntityBarakoanToPlayer.createAttributes().create());
+        GlobalEntityTypeAttributes.put(BARAKOAYA_TO_PLAYER, EntityBarakoanToPlayer.createAttributes().create());
         GlobalEntityTypeAttributes.put(BARAKOAN_TO_BARAKOANA, EntityBarakoa.createAttributes().create());
-        GlobalEntityTypeAttributes.put(BARAKOA_SUNBLOCKER, EntityBarakoa.createAttributes().create());
+        GlobalEntityTypeAttributes.put(BARAKOAYA, EntityBarakoa.createAttributes().create());
         GlobalEntityTypeAttributes.put(BARAKO, EntityBarako.createAttributes().create());
         GlobalEntityTypeAttributes.put(FROSTMAW, EntityFrostmaw.createAttributes().create());
         GlobalEntityTypeAttributes.put(NAGA, EntityNaga.createAttributes().create());

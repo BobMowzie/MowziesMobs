@@ -1,6 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.inventory;
 
-import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaya;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaVillager;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
@@ -12,13 +12,13 @@ import net.minecraft.util.NonNullList;
 import java.util.List;
 
 public final class InventoryBarakoaya implements IInventory {
-    private final EntityBarakoaya barakoaya;
+    private final EntityBarakoaVillager barakoaya;
 
     private final List<ItemStack> slots = NonNullList.withSize(2, ItemStack.EMPTY);
 
     private Trade trade;
 
-    public InventoryBarakoaya(EntityBarakoaya barakoaya) {
+    public InventoryBarakoaya(EntityBarakoaVillager barakoaya) {
         this.barakoaya = barakoaya;
     }
 

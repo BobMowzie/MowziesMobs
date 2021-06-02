@@ -161,6 +161,12 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
     }
 
     @Override
+    public void remove(boolean keepData) {
+        super.remove(keepData);
+        pack.forEach(EntityBarakoanToBarakoana::removeLeader);
+    }
+
+    @Override
     protected ConfigHandler.SpawnConfig getSpawnConfig() {
         return ConfigHandler.COMMON.MOBS.BARAKOA.spawnConfig;
     }

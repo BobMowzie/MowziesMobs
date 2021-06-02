@@ -31,7 +31,6 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.ai.goal.TargetGoal;
 import net.minecraft.entity.monster.SkeletonEntity;
 import net.minecraft.entity.monster.ZombieEntity;
 import net.minecraft.entity.monster.ZombifiedPiglinEntity;
@@ -50,7 +49,6 @@ import net.minecraft.stats.Stats;
 import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
@@ -131,7 +129,7 @@ public final class ServerEventHandler {
             if (entity instanceof MobEntity) {
                 MobEntity mob = (MobEntity) entity;
                 if (mob.getAttackTarget() instanceof EntityBarako && mob.getAttackTarget().isPotionActive(EffectHandler.SUNBLOCK)) {
-                    EntityBarakoaSunblocker sunblocker = mob.world.getClosestEntity(EntityBarakoaSunblocker.class, EntityPredicate.DEFAULT, mob, mob.getPosX(), mob.getPosY() + mob.getEyeHeight(), mob.getPosZ(), mob.getBoundingBox().grow(40.0D, 15.0D, 40.0D));
+                    EntityBarakoaya sunblocker = mob.world.getClosestEntity(EntityBarakoaya.class, EntityPredicate.DEFAULT, mob, mob.getPosX(), mob.getPosY() + mob.getEyeHeight(), mob.getPosZ(), mob.getBoundingBox().grow(40.0D, 15.0D, 40.0D));
                     mob.setAttackTarget(sunblocker);
                 }
             }
