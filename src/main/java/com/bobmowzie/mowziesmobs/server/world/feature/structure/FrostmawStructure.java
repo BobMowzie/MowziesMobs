@@ -31,6 +31,11 @@ public class FrostmawStructure extends MowzieStructure {
         return FrostmawStructure.Start::new;
     }
 
+    @Override
+    public boolean avoidStructures() {
+        return true;
+    }
+
     public static class Start extends StructureStart<NoFeatureConfig> {
         public Start(Structure<NoFeatureConfig> structureIn, int chunkX, int chunkZ, MutableBoundingBox mutableBoundingBox, int referenceIn, long seedIn) {
             super(structureIn, chunkX, chunkZ, mutableBoundingBox, referenceIn, seedIn);
