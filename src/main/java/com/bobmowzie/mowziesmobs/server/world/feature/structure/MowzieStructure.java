@@ -63,6 +63,7 @@ public abstract class MowzieStructure extends Structure<NoFeatureConfig> {
         List<? extends String> avoidStructures = getGenerationConfig().avoidStructures.get();
         for (String structureName : avoidStructures) {
             Structure<?> structure = ForgeRegistries.STRUCTURE_FEATURES.getValue(new ResourceLocation(structureName));
+            if (structure == null) continue;
             if (structureNearby(structure, chunkGenerator, seed, chunkRandom, chunkX, chunkZ)) return false;
         }
         return super.func_230363_a_(chunkGenerator, biomeSource, seed, chunkRandom, chunkX, chunkZ, biome, chunkPos, featureConfig);
