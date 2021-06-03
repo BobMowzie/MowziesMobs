@@ -18,7 +18,7 @@ public class IceBreathSound extends TickableSound {
     public IceBreathSound(Entity icebreath) {
         super(MMSounds.ENTITY_FROSTMAW_ICEBREATH.get(), SoundCategory.NEUTRAL);
         this.iceBreath = icebreath;
-        volume = 2F;
+        volume = 3F;
         pitch = 1f;
         x = (float) icebreath.getPosX();
         y = (float) icebreath.getPosY();

@@ -296,16 +296,8 @@
 		"sounds": [ "mowziesmobs:entity/barakoa/heal_cast3" ],
 		"subtitle": "subtitles.mowziesmobs.barakoa.heal"
 	},
-	"barakoa.healloop1": {
-		"sounds": [ "mowziesmobs:entity/barakoa/heal_loop1" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.heal"
-	},
-	"barakoa.healloop2": {
-		"sounds": [ "mowziesmobs:entity/barakoa/heal_loop2" ],
-		"subtitle": "subtitles.mowziesmobs.barakoa.heal"
-	},
-	"barakoa.healloop3": {
-		"sounds": [ "mowziesmobs:entity/barakoa/heal_loop3" ],
+	"barakoa.healloop": {
+		"sounds": [ "mowziesmobs:entity/barakoa/heal_loop" ],
 		"subtitle": "subtitles.mowziesmobs.barakoa.heal"
 	},
 	"barako.belly": {

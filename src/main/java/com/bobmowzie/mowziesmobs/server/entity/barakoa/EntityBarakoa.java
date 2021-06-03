@@ -176,7 +176,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
                     sunblocker.getLookController().setLookPositionWithEntity(sunblocker.getAttackTarget(), entity.getHorizontalFaceSpeed(), entity.getVerticalFaceSpeed());
                 }
                 if (sunblocker.getAnimationTick() == 19) {
-                    playSound(MMSounds.ENTITY_BARAKOA_HEAL_START.get(entity.rand.nextInt(3)).get(), 1, 1);
+                    playSound(MMSounds.ENTITY_BARAKOA_HEAL_START.get(entity.rand.nextInt(3)).get(), 4, 1);
                     MowziesMobs.PROXY.playSunblockSound(sunblocker);
                 }
                 if (sunblocker.getAnimationTick() >= 19) {

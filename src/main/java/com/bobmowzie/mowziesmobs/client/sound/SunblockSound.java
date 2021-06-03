@@ -19,9 +19,9 @@ public class SunblockSound extends TickableSound {
     boolean active = true;
 
     public SunblockSound(LivingEntity entity) {
-        super(MMSounds.ENTITY_BARAKOA_HEAL_LOOP.get((int)(Math.random() * 3.0)).get(), SoundCategory.NEUTRAL);
+        super(MMSounds.ENTITY_BARAKOA_HEAL_LOOP.get(), SoundCategory.NEUTRAL);
         this.entity = entity;
-        volume = 2F;
+        volume = 4F;
         pitch = 1f;
         x = (float) entity.getPosX();
         y = (float) entity.getPosY();
