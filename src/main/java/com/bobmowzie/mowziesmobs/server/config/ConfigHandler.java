@@ -65,7 +65,7 @@ public final class  ConfigHandler {
     }
 
     public static class SpawnConfig {
-        SpawnConfig(final ForgeConfigSpec.Builder builder, int spawnRate, int minGroupSize, int maxGroupSize, double extraRarity, BiomeConfig biomeConfig, List<? extends String> allowedBlocks, List<? extends String> allowedBlockTags, int heightMax, int heightMin, boolean needsDarkness, boolean needsSeeSky, boolean needsCantSeeSky) {
+        SpawnConfig(final ForgeConfigSpec.Builder builder, int spawnRate, int minGroupSize, int maxGroupSize, double extraRarity, BiomeConfig biomeConfig, List<? extends String> allowedBlocks, List<? extends String> allowedBlockTags, int heightMax, int heightMin, boolean needsDarkness, boolean needsSeeSky, boolean needsCantSeeSky, List<String> avoidStructures) {
             builder.comment("Controls for vanilla-style mob spawning");
             builder.push("spawn_config");
             this.spawnRate = builder.comment("Smaller number causes less spawning, 0 to disable spawning")
@@ -105,6 +105,9 @@ public final class  ConfigHandler {
             this.needsCantSeeSky = builder.comment("Set to true to only spawn mob if it can't see the sky.")
                     .translation(LANG_PREFIX + "min_group_size")
                     .define("needs_cant_see_sky", needsCantSeeSky);
+            this.avoidStructures = builder.comment("Names of structures this mob will avoid spawning near.")
+                    .translation(LANG_PREFIX + "avoid_structures")
+                    .defineList("avoid_structures", avoidStructures, STRING_PREDICATE);
             builder.pop();
         }
 
@@ -133,10 +136,12 @@ public final class  ConfigHandler {
         public final ConfigValue<List<? extends String>> allowedBlocks;
 
         public final ConfigValue<List<? extends String>> allowedBlockTags;
+
+        public final ConfigValue<List<? extends String>> avoidStructures;
     }
 
     public static class GenerationConfig {
-        GenerationConfig(final ForgeConfigSpec.Builder builder, int generationDistance, int generationSeparation, BiomeConfig biomeConfig, float heightMin, float heightMax) {
+        GenerationConfig(final ForgeConfigSpec.Builder builder, int generationDistance, int generationSeparation, BiomeConfig biomeConfig, float heightMin, float heightMax, List<String> avoidStructures) {
             builder.comment("Controls for spawning structure/mob with world generation");
             builder.push("generation_config");
             this.generationDistance = builder.comment("Smaller number causes more generation, -1 to disable generation", "Maximum number of chunks between placements of this mob/structure")
@@ -155,6 +160,9 @@ public final class  ConfigHandler {
             this.heightMin = builder.comment("Minimum height for generation placement. -1 to ignore")
                     .translation(LANG_PREFIX + "height_min")
                     .defineInRange("height_min", heightMin, -1, 256);
+            this.avoidStructures = builder.comment("Names of structures this mob/structure will avoid when generating")
+                    .translation(LANG_PREFIX + "avoid_structures")
+                    .defineList("avoid_structures", avoidStructures, STRING_PREDICATE);
             builder.pop();
         }
 
@@ -169,6 +177,8 @@ public final class  ConfigHandler {
         public final DoubleValue heightMin;
 
         public final DoubleValue heightMax;
+
+        public final ConfigValue<List<? extends String>> avoidStructures;
     }
 
     public static class CombatConfig {
@@ -231,7 +241,9 @@ public final class  ConfigHandler {
                     new BiomeConfig(builder, Collections.singletonList("JUNGLE"), new ArrayList<>(), new ArrayList<>()),
                     Collections.emptyList(),
                     Arrays.asList("minecraft:valid_spawn", "minecraft:leaves", "minecraft:logs"),
-                    -1, 60, false, false, false
+                    -1, 60, false, false, false,
+                    Arrays.asList("minecraft:village", "minecraft:pillager_outpost")
+
             );
             combatConfig = new CombatConfig(builder, 1, 1);
             builder.pop();
@@ -251,7 +263,8 @@ public final class  ConfigHandler {
                     new BiomeConfig(builder, Collections.singletonList("SAVANNA"), new ArrayList<>(), new ArrayList<>()),
                     Collections.emptyList(),
                     Arrays.asList("minecraft:valid_spawn", "minecraft:sand"),
-                    -1, 60, false, false, false
+                    -1, 60, false, false, false,
+                    Arrays.asList("minecraft:village", "minecraft:pillager_outpost", "mowziesmobs:barakoa_village")
             );
             combatConfig = new CombatConfig(builder,1, 1);
             builder.pop();
@@ -270,7 +283,8 @@ public final class  ConfigHandler {
                     new BiomeConfig(builder, Arrays.asList("BEACH,MOUNTAIN", "BEACH,HILLS"), Collections.singletonList("minecraft:stone_shore"), new ArrayList<>()),
                     Collections.emptyList(),
                     Collections.emptyList(),
-                    -1, 70, false, true, false
+                    -1, 70, false, true, false,
+                    Arrays.asList("minecraft:village", "minecraft:pillager_outpost")
             );
             combatConfig = new CombatConfig(builder,1, 1);
             builder.pop();
@@ -289,7 +303,8 @@ public final class  ConfigHandler {
                     new BiomeConfig(builder, Collections.singletonList("FOREST,MAGICAL,!SNOWY"), Arrays.asList("minecraft:dark_forest", "minecraft:dark_forest_hills"), new ArrayList<>()),
                     Collections.emptyList(),
                     Arrays.asList("minecraft:valid_spawn", "minecraft:leaves", "minecraft:logs"),
-                    -1, 60, true, false, false
+                    -1, 60, true, false, false,
+                    Collections.emptyList()
             );
             this.healthMultiplier = builder.comment("Scale mob health by this value")
                     .translation(LANG_PREFIX + "health_multiplier")
@@ -310,7 +325,8 @@ public final class  ConfigHandler {
                     new BiomeConfig(builder,  Arrays.asList(""), new ArrayList<>(), new ArrayList<>()),
                     Collections.emptyList(),
                     Arrays.asList("minecraft:base_stone_overworld"),
-                    25, -1, true, false, true
+                    25, -1, true, false, true,
+                    Collections.emptyList()
             );
             this.healthMultiplier = builder.comment("Scale mob health by this value")
                     .translation(LANG_PREFIX + "health_multiplier")
@@ -328,7 +344,8 @@ public final class  ConfigHandler {
             builder.push("ferrous_wroughtnaut");
             generationConfig = new GenerationConfig(builder, 15, 5,
                     new BiomeConfig(builder,  Arrays.asList("!OCEAN"), new ArrayList<>(), new ArrayList<>()),
-                    30, 55
+                    30, 55,
+                    Collections.emptyList()
             );
             combatConfig = new CombatConfig(builder, 1, 1);
             this.hasBossBar = builder.comment("Disable/enable Ferrous Wroughtnauts' boss health bars")
@@ -354,7 +371,8 @@ public final class  ConfigHandler {
             builder.comment("Generation controls for Barakoa villages");
             generationConfig = new GenerationConfig(builder, 25, 8,
                     new BiomeConfig(builder,  Arrays.asList("SAVANNA"), new ArrayList<>(), new ArrayList<>()),
-                    50, 100
+                    50, 100,
+                    Arrays.asList("minecraft:village", "minecraft:pillager_outpost")
             );
             combatConfig = new CombatConfig(builder, 1, 1);
             this.hasBossBar = builder.comment("Disable/enable Barako's boss health bar")
@@ -390,7 +408,8 @@ public final class  ConfigHandler {
             builder.push("frostmaw");
             generationConfig = new GenerationConfig(builder, 25, 8,
                     new BiomeConfig(builder,  Arrays.asList("SNOWY,!OCEAN,!RIVER,!BEACH,!FOREST"), new ArrayList<>(), new ArrayList<>()),
-                    50, 100
+                    50, 100,
+                    Arrays.asList("minecraft:village", "minecraft:pillager_outpost")
             );
             combatConfig = new CombatConfig(builder, 1, 1);
             this.hasBossBar = builder.comment("Disable/enable Barako's boss health bar")

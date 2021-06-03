@@ -25,18 +25,25 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.*;
+import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.feature.structure.Structure;
+import net.minecraft.world.gen.settings.StructureSeparationSettings;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nullable;
+import java.rmi.registry.Registry;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -128,8 +135,34 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
             if (spawnConfig.needsCantSeeSky.get() && world.canBlockSeeSky(spawnPos)) {
                 return false;
             }
+
+            List<? extends String> avoidStructures = spawnConfig.avoidStructures.get();
+            for (String structureName : avoidStructures) {
+                Structure<?> structure = ForgeRegistries.STRUCTURE_FEATURES.getValue(new ResourceLocation(structureName));
+                if (structure == null) continue;
+                BlockPos pos = ((ServerWorld) world).getStructureLocation(structure, spawnPos, 3, false);
+                if (pos == null) continue;
+                double dist = spawnPos.add(0, -spawnPos.getY(), 0).distanceSq(pos);
+                if (dist < 900) return false;
+            }
         }
         return true;
+    }
+
+    private static boolean structureNearby(Structure structure, ChunkGenerator chunkGenerator, long seed, SharedSeedRandom chunkRandom, int chunkX, int chunkY) {
+        StructureSeparationSettings structureseparationsettings = chunkGenerator.func_235957_b_().func_236197_a_(structure);
+        if (structureseparationsettings != null) {
+            for (int i = chunkX - 10; i <= chunkX + 10; ++i) {
+                for (int j = chunkY - 10; j <= chunkY + 10; ++j) {
+                    ChunkPos chunkpos = structure.getChunkPosForStructure(structureseparationsettings, seed, chunkRandom, i, j);
+                    if (i == chunkpos.x && j == chunkpos.z) {
+                        return true;
+                    }
+                }
+            }
+
+        }
+        return false;
     }
 
     private static boolean isBlockTagAllowed(List<? extends String> allowedBlockTags, Block block) {

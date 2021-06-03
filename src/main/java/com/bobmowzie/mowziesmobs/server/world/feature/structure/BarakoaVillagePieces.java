@@ -50,9 +50,9 @@ public class BarakoaVillagePieces {
     public static final ResourceLocation THRONE = new ResourceLocation(MowziesMobs.MODID, "barako_throne");
 
     private static final Map<ResourceLocation, BlockPos> OFFSET = ImmutableMap.of(
-        HOUSE, new BlockPos(-3, 0, -3),
-        ROOF, new BlockPos(-3, 4, -3),
-        HOUSE_SIDE, new BlockPos(2, 0, -2),
+        HOUSE, new BlockPos(-3, 1, -3),
+        ROOF, new BlockPos(-3, 5, -3),
+        HOUSE_SIDE, new BlockPos(2, 1, -2),
         THRONE, new BlockPos(-3, 0, 0)
     );
 

@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.mojang.serialization.Codec;
 import net.minecraft.block.BlockState;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SharedSeedRandom;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -15,6 +16,9 @@ import net.minecraft.world.gen.Heightmap;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.settings.StructureSeparationSettings;
+import net.minecraftforge.registries.ForgeRegistries;
+
+import java.util.List;
 
 public abstract class MowzieStructure extends Structure<NoFeatureConfig> {
     public MowzieStructure(Codec<NoFeatureConfig> codec) {
@@ -56,9 +60,10 @@ public abstract class MowzieStructure extends Structure<NoFeatureConfig> {
             BlockState topBlock = columnOfBlocks.getBlockState(centerOfChunk.up(landHeight));
             if (!topBlock.getFluidState().isEmpty()) return false;
         }
-        if (avoidStructures()) {
-            if (structureNearby(Structure.VILLAGE, chunkGenerator, seed, chunkRandom, chunkX, chunkZ)) return false;
-            if (structureNearby(Structure.PILLAGER_OUTPOST, chunkGenerator, seed, chunkRandom, chunkX, chunkZ)) return false;
+        List<? extends String> avoidStructures = getGenerationConfig().avoidStructures.get();
+        for (String structureName : avoidStructures) {
+            Structure<?> structure = ForgeRegistries.STRUCTURE_FEATURES.getValue(new ResourceLocation(structureName));
+            if (structureNearby(structure, chunkGenerator, seed, chunkRandom, chunkX, chunkZ)) return false;
         }
         return super.func_230363_a_(chunkGenerator, biomeSource, seed, chunkRandom, chunkX, chunkZ, biome, chunkPos, featureConfig);
     }
