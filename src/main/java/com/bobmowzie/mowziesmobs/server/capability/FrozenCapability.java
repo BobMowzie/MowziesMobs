@@ -257,6 +257,7 @@ public class FrozenCapability {
                 frozenRenderYawOffset = entity.renderYawOffset;
                 frozenSwingProgress = entity.swingProgress;
                 entity.startRiding(frozenController, true);
+                entity.resetActiveHand();
 
                 if (entity instanceof MobEntity) {
                     MobEntity mobEntity = (MobEntity) entity;
