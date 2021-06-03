@@ -66,7 +66,7 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
 
     @Override
     public void tick() {
-        if (ticksExisted > 20 && (getLeader() == null || getLeader().getHealth() <= 0)) {
+        if (ticksExisted > 30 && (getLeader() == null || getLeader().getHealth() <= 0)) {
             deactivate();
         }
         super.tick();
