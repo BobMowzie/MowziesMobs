@@ -2,9 +2,15 @@ package com.bobmowzie.mowziesmobs.server.damage;
 
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.LivingCapability;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.potion.Effects;
+import net.minecraft.stats.Stats;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
@@ -15,13 +21,33 @@ import org.apache.commons.lang3.tuple.Pair;
 public class DamageUtil {
     // TODO: Works for current use cases, but possibly not for future edge cases. Use reflection to get hurt sound for onHit2?
     public static Pair<Boolean, Boolean> dealMixedDamage(LivingEntity target, DamageSource source1, float amount1, DamageSource source2, float amount2) {
+        if (target.world.isRemote()) return Pair.of(false, false);
         LivingCapability.ILivingCapability lastDamageCapability = CapabilityHandler.getCapability(target, LivingCapability.LivingProvider.LIVING_CAPABILITY);
         if (lastDamageCapability != null) {
             lastDamageCapability.setLastDamage(-1);
+            float damageSoFar = 0;
+            float origLastDamage = target.lastDamage;
             boolean hit1 = target.attackEntityFrom(source1, amount1);
             boolean hit1Registered = hit1;
-            if (lastDamageCapability.getLastDamage() != -1) hit1Registered = true;
-            boolean hit2 = target.attackEntityFrom(source2, amount2 + lastDamageCapability.getLastDamage());
+            if (lastDamageCapability.getLastDamage() != -1) {
+                hit1Registered = true;
+            }
+            if (lastDamageCapability.getLastDamage() != 0) {
+                damageSoFar += amount1;
+            }
+            target.lastDamage = Math.max(target.lastDamage - amount1, 0);
+            lastDamageCapability.setLastDamage(-1);
+            boolean hit2 = target.attackEntityFrom(source2, amount2);
+            boolean hit2Registered = hit2;
+            if (lastDamageCapability.getLastDamage() != -1) {
+                hit2Registered = true;
+            }
+            if (lastDamageCapability.getLastDamage() != 0) {
+                damageSoFar += amount2;
+            }
+            target.lastDamage = origLastDamage;
+            if (damageSoFar > target.lastDamage) target.lastDamage = damageSoFar;
+
             if (hit2 && hit1Registered) {
                 onHit2(target, source2);
                 if (target instanceof PlayerEntity) {
