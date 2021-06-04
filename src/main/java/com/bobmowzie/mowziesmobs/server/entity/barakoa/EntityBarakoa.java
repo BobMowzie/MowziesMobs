@@ -154,14 +154,21 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             @Override
             public void tick() {
                 super.tick();
+                if (getAnimationTick() == 2) playSound(MMSounds.ENTITY_BARAKOA_TELEPORT.get(entity.rand.nextInt(3)).get(), 3f, 1);
+                if (getAnimationTick() == 16) playSound(MMSounds.ENTITY_BARAKOA_TELEPORT.get(entity.rand.nextInt(3)).get(), 3f, 1.2f);
                 int startMoveFrame = 7;
-                int endMoveFrame = 16;
+                int endMoveFrame = 14;
                 if (entity.getAnimationTick() == startMoveFrame) teleportStart = entity.getPositionVec();
-                if (entity.teleportDestination != null && entity.getAnimationTick() > startMoveFrame && getAnimationTick() < endMoveFrame) {
+                if (entity.teleportDestination != null && entity.getAnimationTick() > startMoveFrame && entity.getAnimationTick() < endMoveFrame) {
                     float t = (getAnimationTick() - startMoveFrame) / (float)(endMoveFrame - startMoveFrame);
                     t = (float) (0.5 - 0.5 * Math.cos(t * Math.PI));
                     Vector3d newPos = teleportStart.add(teleportDestination.subtract(teleportStart).scale(t));
                     entity.setPositionAndUpdate(newPos.getX(), newPos.getY(), newPos.getZ());
+                    entity.getNavigator().clearPath();
+                }
+                if (entity.teleportDestination != null && entity.getAnimationTick() == endMoveFrame) {
+                    entity.setPositionAndUpdate(entity.teleportDestination.getX(), entity.teleportDestination.getY(), entity.teleportDestination.getZ());
+                    entity.setMotion(0, 0, 0);
                     entity.getNavigator().clearPath();
                 }
                 if (entity.getAttackTarget() != null) entity.getLookController().setLookPositionWithEntity(entity.getAttackTarget(), 30, 30);
@@ -428,7 +435,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
                 if (getAnimationTick() == 5) {
                     ParticleComponent.KeyTrack keyTrack1 = ParticleComponent.KeyTrack.oscillate(0, 2, 24);
                     ParticleComponent.KeyTrack keyTrack2 = new ParticleComponent.KeyTrack(new float[]{0, 18, 18, 0}, new float[]{0, 0.2f, 0.8f, 1});
-                    AdvancedParticleBase.spawnParticle(world, ParticleHandler.SUN.get(), getPosX(), getPosY(), getPosZ(), 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 15, true, true, new ParticleComponent[]{
+                    AdvancedParticleBase.spawnParticle(world, ParticleHandler.SUN.get(), getPosX(), getPosY(), getPosZ(), 0, 0, 0, true, 0, 0, 0, 0, 0F, 1, 1, 1, 1, 1, 15, true, false, new ParticleComponent[]{
                             new ParticleComponent.PinLocation(myPos),
                             new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, keyTrack2, false),
                             new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, keyTrack1, true),
@@ -436,6 +443,23 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
                                     new RibbonComponent.PropertyOverLength(RibbonComponent.PropertyOverLength.EnumRibbonProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(1, 0))
                             }),
                     });
+                }
+                myPos[0] = getPositionVec().add(0, 1.2f, 0);
+                if (getAnimationTick() == 4 || getAnimationTick() == 18) {
+                    int num = 5;
+                    for (int i = 0; i < num * num; i++) {
+                        Vector3d v = new Vector3d((0.3 + 0.15 * rand.nextFloat()) * 0.8, 0, 0);
+                        float increment = (float)Math.PI * 2f / (float) num;
+//                        v = v.rotatePitch(increment * i);
+                        v = v.rotateYaw(increment * rand.nextFloat() + increment * (i / (float)num));
+                        v = v.rotateRoll(increment * rand.nextFloat() + increment * (i % num));
+                        AdvancedParticleBase.spawnParticle(world, ParticleHandler.PIXEL.get(), myPos[0].getX(), myPos[0].getY(), myPos[0].getZ(), v.getX(), v.getY(), v.getZ(), true, 0, 0, 0, 0, 4f, 0.98, 0.94, 0.39, 1, 0.8, 6 + rand.nextFloat() * 4, true, false, new ParticleComponent[] {
+                                new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
+                                        new float[] {4f, 0},
+                                        new float[] {0.8f, 1}
+                                ), false)
+                        });
+                    }
                 }
             }
         }
@@ -451,7 +475,6 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             attackEntityFrom(DamageSource.causeIndirectMagicDamage(this, null), getHealth());
         }
 
-//        if (ticksExisted > 50) setDead();
 //        if (getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(this, TELEPORT_ANIMATION);
     }
 

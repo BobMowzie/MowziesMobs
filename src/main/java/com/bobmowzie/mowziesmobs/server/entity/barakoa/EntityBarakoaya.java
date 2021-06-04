@@ -167,7 +167,7 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
                 Vector3d offset = newPos.subtract(entity.getPositionVec());
                 AxisAlignedBB newBB = entity.getBoundingBox().offset(offset);
                 if (testBlock(blockpos, newBB) && entity.world.getEntitiesWithinAABB(EntityBarako.class, newBB.grow(7)).isEmpty()) {
-                    entity.teleportDestination = newPos.add(0, 1, 0);
+                    entity.teleportDestination = newPos.add(0, 0, 0);
                     if (entity.teleportAttempts >= 3) foundPosition = true;
                     if (entity.world.getEntitiesWithinAABB(EntityBarakoaya.class, newBB.grow(5)).isEmpty()) {
                         if (entity.teleportAttempts >= 2) foundPosition = true;
@@ -249,7 +249,7 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
     @Override
     public boolean isInvulnerableTo(DamageSource source) {
         boolean teleporting = getAnimation() == TELEPORT_ANIMATION && getAnimationTick() <= 16;
-        return super.isInvulnerableTo(source) || ((!active || teleporting || !hasTriedOrSucceededTeleport) && source != DamageSource.OUT_OF_WORLD && !source.isCreativePlayer());
+        return super.isInvulnerableTo(source) || ((!active || teleporting || !hasTriedOrSucceededTeleport) && source != DamageSource.OUT_OF_WORLD);
     }
 
     @Override

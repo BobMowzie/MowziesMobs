@@ -300,6 +300,18 @@
 		"sounds": [ "mowziesmobs:entity/barakoa/heal_loop" ],
 		"subtitle": "subtitles.mowziesmobs.barakoa.heal"
 	},
+	"barakoa.teleport1": {
+		"sounds": [ "mowziesmobs:entity/barakoa/teleport_1" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.teleport"
+	},
+	"barakoa.teleport2": {
+		"sounds": [ "mowziesmobs:entity/barakoa/teleport_2" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.teleport"
+	},
+	"barakoa.teleport3": {
+		"sounds": [ "mowziesmobs:entity/barakoa/teleport_3" ],
+		"subtitle": "subtitles.mowziesmobs.barakoa.teleport"
+	},
 	"barako.belly": {
 		"sounds": [ "mowziesmobs:entity/barako/belly" ],
 		"subtitle": "subtitles.mowziesmobs.barako.belly"

@@ -99,6 +99,14 @@ public final class MMSounds {
             ENTITY_BARAKOA_HEAL_START_2::get,
             ENTITY_BARAKOA_HEAL_START_3::get
     );
+    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_TELEPORT_1 = create("barakoa.teleport1");
+    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_TELEPORT_2 = create("barakoa.teleport2");
+    public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_TELEPORT_3 = create("barakoa.teleport3");
+    public static final ImmutableList<Supplier<SoundEvent>> ENTITY_BARAKOA_TELEPORT = ImmutableList.of(
+            ENTITY_BARAKOA_TELEPORT_1::get,
+            ENTITY_BARAKOA_TELEPORT_2::get,
+            ENTITY_BARAKOA_TELEPORT_3::get
+    );
 
     public static final RegistryObject<SoundEvent> ENTITY_BARAKOA_HEAL_LOOP = create("barakoa.healloop");
 
