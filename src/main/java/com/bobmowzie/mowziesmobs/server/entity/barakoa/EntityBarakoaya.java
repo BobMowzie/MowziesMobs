@@ -101,6 +101,7 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
     public void tick() {
         super.tick();
         if (active && teleportAttempts > 3 && (getAttackTarget() == null || !getAttackTarget().isAlive())) hasTriedOrSucceededTeleport = true;
+        if (getAnimation() == HEAL_LOOP_ANIMATION && !canHeal(getAttackTarget())) AnimationHandler.INSTANCE.sendAnimationMessage(this, HEAL_STOP_ANIMATION);
 
 //        if (getAnimation() == NO_ANIMATION) AnimationHandler.INSTANCE.sendAnimationMessage(this, HEAL_START_ANIMATION);
     }
