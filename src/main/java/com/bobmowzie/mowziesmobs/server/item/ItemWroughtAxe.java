@@ -11,13 +11,11 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.util.*;
-import net.minecraft.item.AxeItem;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import sun.security.krb5.Config;
 
 import javax.annotation.Nullable;
 import java.util.List;
