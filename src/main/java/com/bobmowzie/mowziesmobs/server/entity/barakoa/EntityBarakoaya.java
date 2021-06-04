@@ -38,17 +38,23 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(4, new HealTargetGoal(this));
-        this.goalSelector.addGoal(6, new AvoidEntityGoal<>(this, PlayerEntity.class, 50.0F, 0.8D, 0.6D, target -> {
+        this.goalSelector.addGoal(6, new AvoidEntityGoal<PlayerEntity>(this, PlayerEntity.class, 50.0F, 0.8D, 0.6D, target -> {
             if (target instanceof PlayerEntity) {
                 if (this.world.getDifficulty() == Difficulty.PEACEFUL) return false;
                 if (getAttackTarget() == target) return true;
                 if (getAttackTarget() instanceof EntityBarako) return false;
                 if (getAnimation() != NO_ANIMATION) return false;
                 ItemStack headArmorStack = ((PlayerEntity) target).inventory.armorInventory.get(3);
-                return !(headArmorStack.getItem() instanceof BarakoaMask);
+                return !(headArmorStack.getItem() instanceof BarakoaMask) || target == getMisbehavedPlayer();
             }
             return true;
-        }));
+        }){
+            @Override
+            public void resetTask() {
+                super.resetTask();
+                setMisbehavedPlayerId(null);
+            }
+        });
         this.goalSelector.addGoal(1, new TeleportToSafeSpotGoal(this));
         this.goalSelector.addGoal(1, new AvoidProjectilesGoal(this, ProjectileEntity.class, target -> {
             return getAnimation() == HEAL_LOOP_ANIMATION || getAnimation() == HEAL_START_ANIMATION;

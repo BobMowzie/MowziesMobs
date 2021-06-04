@@ -12,6 +12,7 @@ import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.capability.LivingCapability;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.*;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
@@ -26,11 +27,13 @@ import com.bobmowzie.mowziesmobs.server.power.Power;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.ChestBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.entity.item.ItemFrameEntity;
 import net.minecraft.entity.monster.SkeletonEntity;
 import net.minecraft.entity.monster.ZombieEntity;
 import net.minecraft.entity.monster.ZombifiedPiglinEntity;
@@ -46,6 +49,7 @@ import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.Stats;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.CombatRules;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
@@ -262,27 +266,25 @@ public final class ServerEventHandler {
             if (playerCapability != null && event.isCancelable()) {
                 if (
                         playerCapability.getUsingSolarBeam() ||
-                                playerCapability.getGeomancy().isSpawningBoulder() ||
-                                playerCapability.getGeomancy().tunneling ||
-                                playerCapability.getUntilAxeSwing() > 0
+                        playerCapability.getGeomancy().isSpawningBoulder() ||
+                        playerCapability.getGeomancy().tunneling ||
+                        playerCapability.getUntilAxeSwing() > 0
                 ) {
                     event.setCanceled(true);
                     return;
                 }
             }
 
-            BlockState block = event.getPlacedBlock();
-            if (block.getBlock() == Blocks.FIRE ||
-                block.getBlock() == Blocks.TNT ||
-                block.getBlock() == Blocks.RESPAWN_ANCHOR ||
-                block.getBlock() == Blocks.DISPENSER ||
-                block.getBlock() == Blocks.CACTUS
-            ) {
-                List<EntityBarako> barakos = getEntitiesNearby(entity, EntityBarako.class, 25);
-                for (EntityBarako barako : barakos) {
-                    if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
-                        if (barako.canAttack(living)) barako.setAttackTarget(living);
-                    }
+            if (entity instanceof PlayerEntity) {
+                BlockState block = event.getPlacedBlock();
+                if (
+                        block.getBlock() == Blocks.FIRE ||
+                        block.getBlock() == Blocks.TNT ||
+                        block.getBlock() == Blocks.RESPAWN_ANCHOR ||
+                        block.getBlock() == Blocks.DISPENSER ||
+                        block.getBlock() == Blocks.CACTUS
+                ) {
+                    aggroBarakoa((PlayerEntity) entity);
                 }
             }
         }
@@ -297,14 +299,7 @@ public final class ServerEventHandler {
                 return;
             }
             if (event.getEmptyBucket().getItem() == Items.LAVA_BUCKET) {
-                List<EntityBarako> barakos = getEntitiesNearby(living, EntityBarako.class, 20);
-                for (EntityBarako barako : barakos) {
-                    if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
-                        if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
-                            if (barako.canAttack(living)) barako.setAttackTarget(living);
-                        }
-                    }
-                }
+                aggroBarakoa(event.getPlayer());
             }
         }
     }
@@ -332,14 +327,12 @@ public final class ServerEventHandler {
         BlockState block = event.getState();
         if (block.getBlock() == Blocks.GOLD_BLOCK ||
             block.getMaterial() == Material.WOOD ||
-            block.getBlock() == BlockHandler.THATCH.get()
+            block.getBlock() == BlockHandler.THATCH.get() ||
+            block.getBlock() == Blocks.RED_TERRACOTTA ||
+            block.getBlock() == Blocks.SKELETON_SKULL ||
+            block.getBlock() == Blocks.TORCH
         ) {
-            List<EntityBarako> barakos = getEntitiesNearby(player, EntityBarako.class, 25);
-            for (EntityBarako barako : barakos) {
-                if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
-                    if (barako.canAttack(player)) barako.setAttackTarget(player);
-                }
-            }
+            aggroBarakoa(player);
         }
     }
 
@@ -422,9 +415,8 @@ public final class ServerEventHandler {
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event) {
         PlayerEntity player = event.getPlayer();
-        if (player.world.getBlockState(event.getPos()).getContainer(player.world, event.getPos()) != null) {
-            player.resetCooldown();
-            return;
+        if (player.world.getBlockState(event.getPos()).getBlock() instanceof ChestBlock) {
+            aggroBarakoa(player);
         }
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
         if (playerCapability != null) {
@@ -446,14 +438,7 @@ public final class ServerEventHandler {
                     item.getItem() == Items.FLINT_AND_STEEL ||
                     item.getItem() == Items.TNT_MINECART
             ) {
-                List<EntityBarako> barakos = getEntitiesNearby(player, EntityBarako.class, 25);
-                for (EntityBarako barako : barakos) {
-                    if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
-                        if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
-                            if (barako.canAttack(player)) barako.setAttackTarget(player);
-                        }
-                    }
-                }
+                aggroBarakoa(player);
             }
 
             if (event.getSide() == LogicalSide.CLIENT && player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(EffectHandler.SUNS_BLESSING) && playerCapability.getUntilSunstrike() <= 0) {
@@ -464,6 +449,10 @@ public final class ServerEventHandler {
                     MowziesMobs.NETWORK.sendToServer(new MessagePlayerSummonSunstrike());
                     playerCapability.setUntilSunstrike(SUNSTRIKE_COOLDOWN);
                 }
+            }
+            if (player.world.getBlockState(event.getPos()).getContainer(player.world, event.getPos()) != null) {
+                player.resetCooldown();
+                return;
             }
             Power[] powers = playerCapability.getPowers();
             for (Power power : powers) {
@@ -617,6 +606,16 @@ public final class ServerEventHandler {
                     power.onLeftClickEntity(event);
                 }
 
+                if (event.getTarget() instanceof ItemFrameEntity) {
+                    ItemFrameEntity itemFrame = (ItemFrameEntity) event.getTarget();
+                    if (itemFrame.getDisplayedItem().getItem() instanceof ItemBarakoaMask) {
+                        aggroBarakoa(event.getPlayer());
+                    }
+                }
+                if (event.getTarget() instanceof LeaderSunstrikeImmune) {
+                    aggroBarakoa(event.getPlayer());
+                }
+
                 if (!(event.getTarget() instanceof LivingEntity)) return;
                 if (event.getTarget() instanceof EntityBarakoanToPlayer) return;
                 if (!event.getPlayer().world.isRemote()) {
@@ -693,6 +692,25 @@ public final class ServerEventHandler {
         }
         if (event.getObject() instanceof PlayerEntity) {
             event.addCapability(new ResourceLocation(MowziesMobs.MODID, "player"), new PlayerCapability.PlayerProvider());
+        }
+    }
+
+    private void aggroBarakoa(PlayerEntity player) {
+        List<EntityBarako> barakos = getEntitiesNearby(player, EntityBarako.class, 50);
+        for (EntityBarako barako : barakos) {
+            if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
+                if (player.getPosition().distanceSq(barako.getHomePosition()) < 900) {
+                    if (barako.canAttack(player)) barako.setMisbehavedPlayerId(player.getUniqueID());
+                }
+            }
+        }
+        List<EntityBarakoaVillager> barakoas = getEntitiesNearby(player, EntityBarakoaVillager.class, 50);
+        for (EntityBarakoaVillager barakoa : barakoas) {
+            if (barakoa.getAttackTarget() == null || !(barakoa.getAttackTarget() instanceof PlayerEntity)) {
+                if (player.getPosition().distanceSq(barakoa.getHomePosition()) < 900) {
+                    if (barakoa.canAttack(player)) barakoa.setMisbehavedPlayerId(player.getUniqueID());
+                }
+            }
         }
     }
 }

@@ -8,6 +8,7 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.world.IServerWorld;
 
@@ -74,6 +75,9 @@ public class AnimationSpawnBarakoa extends SimpleAnimationAI<EntityBarako> {
             entity.world.addEntity(barakoa);
             barakoa.setMotion(0.7 * Math.sin(-angle * (Math.PI / 180)), 0.5, 0.7 * Math.cos(-angle * (Math.PI / 180)));
             barakoa.setAttackTarget(entity.getAttackTarget());
+            if (entity.getAttackTarget() instanceof PlayerEntity) {
+                barakoa.setMisbehavedPlayerId(entity.getAttackTarget().getUniqueID());
+            }
         }
     }
 }

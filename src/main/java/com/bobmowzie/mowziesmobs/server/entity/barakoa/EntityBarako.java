@@ -53,6 +53,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.server.management.PreYggdrasilConverter;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -64,10 +65,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import javax.annotation.Nullable;
+import java.util.*;
 
 public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune, IMob {
     public static final Animation DIE_ANIMATION = Animation.create(130);
@@ -95,6 +94,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     private static final DataParameter<ItemStack> DESIRES = EntityDataManager.createKey(EntityBarako.class, DataSerializers.ITEMSTACK);
     private static final DataParameter<CompoundNBT> TRADED_PLAYERS = EntityDataManager.createKey(EntityBarako.class, DataSerializers.COMPOUND_NBT);
     private static final DataParameter<Float> HEALTH_LOST = EntityDataManager.createKey(EntityBarako.class, DataSerializers.FLOAT);
+    private static final DataParameter<Optional<UUID>> MISBEHAVED_PLAYER = EntityDataManager.createKey(EntityBarakoaVillager.class, DataSerializers.OPTIONAL_UNIQUE_ID);
     public ControlledAnimation legsUp = new ControlledAnimation(15);
     public ControlledAnimation angryEyebrow = new ControlledAnimation(5);
     private PlayerEntity customer;
@@ -141,14 +141,20 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         super.registerGoals();
         hurtByTargetAI = new BarakoaHurtByTargetAI(this, true);
         this.targetSelector.addGoal(3, hurtByTargetAI);
-        this.targetSelector.addGoal(4, new NearestAttackableTargetPredicateGoal<>(this, PlayerEntity.class, 0, false, true, (new EntityPredicate()).setDistance(getAttributeValue(Attributes.FOLLOW_RANGE)).setCustomPredicate(target -> {
-                if (target instanceof PlayerEntity) {
-                    if (this.world.getDifficulty() == Difficulty.PEACEFUL) return false;
-                    ItemStack headArmorStack = ((PlayerEntity) target).inventory.armorInventory.get(3);
-                    return !(headArmorStack.getItem() instanceof BarakoaMask);
-                }
-                return true;
-            }).setIgnoresLineOfSight()));
+        this.targetSelector.addGoal(4, new NearestAttackableTargetPredicateGoal<PlayerEntity>(this, PlayerEntity.class, 0, false, true, (new EntityPredicate()).setDistance(getAttributeValue(Attributes.FOLLOW_RANGE)).setCustomPredicate(target -> {
+            if (target instanceof PlayerEntity) {
+                if (this.world.getDifficulty() == Difficulty.PEACEFUL) return false;
+                ItemStack headArmorStack = ((PlayerEntity) target).inventory.armorInventory.get(3);
+                return !(headArmorStack.getItem() instanceof BarakoaMask) || target == getMisbehavedPlayer();
+            }
+            return true;
+        }).setIgnoresLineOfSight()){
+            @Override
+            public void resetTask() {
+                super.resetTask();
+                setMisbehavedPlayerId(null);
+            }
+        });
         this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, IronGolemEntity.class, 0, false, false, null));
         this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, false, false, (e) -> !(e instanceof ZombifiedPiglinEntity)));
         this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, SkeletonEntity.class, 0, false, false, null));
@@ -668,6 +674,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         getDataManager().register(DESIRES, new ItemStack(tradeItem, ConfigHandler.COMMON.MOBS.BARAKO.howMany.get()));
         getDataManager().register(TRADED_PLAYERS, new CompoundNBT());
         getDataManager().register(HEALTH_LOST, 0.f);
+        getDataManager().register(MISBEHAVED_PLAYER, Optional.empty());
     }
 
     public int getDirection() {
@@ -763,6 +770,9 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         compound.putInt("HomePosY", this.getHomePosition().getY());
         compound.putInt("HomePosZ", this.getHomePosition().getZ());
         compound.putFloat("healthLost", this.getHealthLost());
+        if (this.getMisbehavedPlayerId() != null) {
+            compound.putUniqueId("MisbehavedPlayer", this.getMisbehavedPlayerId());
+        }
     }
 
     @Override
@@ -776,8 +786,41 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         int k = compound.getInt("HomePosZ");
         this.setHomePosAndDistance(new BlockPos(i, j, k), -1);
         setHealthLost(compound.getInt("healthLost"));
+        UUID uuid;
+        if (compound.hasUniqueId("MisbehavedPlayer")) {
+            uuid = compound.getUniqueId("MisbehavedPlayer");
+        } else {
+            String s = compound.getString("MisbehavedPlayer");
+            uuid = PreYggdrasilConverter.convertMobOwnerIfNeeded(this.getServer(), s);
+        }
+
+        if (uuid != null) {
+            try {
+                this.setMisbehavedPlayerId(uuid);
+            } catch (Throwable ignored) {
+
+            }
+        }
     }
 
+    @Nullable
+    public UUID getMisbehavedPlayerId() {
+        return this.dataManager.get(MISBEHAVED_PLAYER).orElse((UUID)null);
+    }
+
+    public void setMisbehavedPlayerId(@Nullable UUID p_184754_1_) {
+        this.dataManager.set(MISBEHAVED_PLAYER, Optional.ofNullable(p_184754_1_));
+    }
+
+    @Nullable
+    public LivingEntity getMisbehavedPlayer() {
+        try {
+            UUID uuid = this.getMisbehavedPlayerId();
+            return uuid == null ? null : this.world.getPlayerByUuid(uuid);
+        } catch (IllegalArgumentException illegalargumentexception) {
+            return null;
+        }
+    }
 
     @Override
     protected void playStepSound(BlockPos pos, BlockState blockState) {}

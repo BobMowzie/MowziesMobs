@@ -14,6 +14,7 @@ import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ILivingEntityData;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.MoveTowardsRestrictionGoal;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
@@ -28,7 +29,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.server.management.PreYggdrasilConverter;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -37,6 +40,7 @@ import net.minecraft.world.*;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
+import java.util.UUID;
 
 public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstrikeImmune, IMob {
     private static final TradeStore DEFAULT = new TradeStore.Builder()
@@ -58,6 +62,8 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
 
     private static final DataParameter<Optional<Trade>> TRADE = EntityDataManager.createKey(EntityBarakoaVillager.class, ServerProxy.OPTIONAL_TRADE);
     //    private static final DataParameter<Integer> NUM_SALES = EntityDataManager.createKey(EntityBarakoaya.class, DataSerializers.VARINT);
+    private static final DataParameter<Optional<UUID>> MISBEHAVED_PLAYER = EntityDataManager.createKey(EntityBarakoaVillager.class, DataSerializers.OPTIONAL_UNIQUE_ID);
+
     //TODO: Sale limits. After X sales, go out of stock and change trade.
 
     private static final int MIN_OFFER_TIME = 5 * 60 * 20;
@@ -90,14 +96,20 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
     @Override
     protected void registerTargetGoals() {
         targetSelector.addGoal(3, new BarakoaHurtByTargetAI(this, true));
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 0, true, true, target -> {
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<PlayerEntity>(this, PlayerEntity.class, 0, true, true, target -> {
             if (target instanceof PlayerEntity) {
                 if (this.world.getDifficulty() == Difficulty.PEACEFUL) return false;
                 ItemStack headArmorStack = ((PlayerEntity) target).inventory.armorInventory.get(3);
-                return !(headArmorStack.getItem() instanceof BarakoaMask);
+                return !(headArmorStack.getItem() instanceof BarakoaMask) || target == getMisbehavedPlayer();
             }
             return true;
-        }));
+        }){
+            @Override
+            public void resetTask() {
+                super.resetTask();
+                setMisbehavedPlayerId(null);
+            }
+        });
         targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, true, true, null));
         targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, SkeletonEntity.class, 0, true, false, null));
     }
@@ -106,6 +118,7 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
     protected void registerData() {
         super.registerData();
         getDataManager().register(TRADE, Optional.empty());
+        this.dataManager.register(MISBEHAVED_PLAYER, Optional.empty());
 //        getDataManager().register(NUM_SALES, MAX_SALES);
     }
 
@@ -217,6 +230,9 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
         compound.putInt("HomePosY", this.getHomePosition().getY());
         compound.putInt("HomePosZ", this.getHomePosition().getZ());
         compound.putInt("HomeDist", (int) this.getMaximumHomeDistance());
+        if (this.getMisbehavedPlayerId() != null) {
+            compound.putUniqueId("MisbehavedPlayer", this.getMisbehavedPlayerId());
+        }
 //        compound.setInteger("numSales", getNumSales());
     }
 
@@ -231,6 +247,40 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
         int k = compound.getInt("HomePosZ");
         int dist = compound.getInt("HomeDist");
         this.setHomePosAndDistance(new BlockPos(i, j, k), dist);
+        UUID uuid;
+        if (compound.hasUniqueId("MisbehavedPlayer")) {
+            uuid = compound.getUniqueId("MisbehavedPlayer");
+        } else {
+            String s = compound.getString("MisbehavedPlayer");
+            uuid = PreYggdrasilConverter.convertMobOwnerIfNeeded(this.getServer(), s);
+        }
+
+        if (uuid != null) {
+            try {
+                this.setMisbehavedPlayerId(uuid);
+            } catch (Throwable ignored) {
+
+            }
+        }
 //        setNumSales(compound.getInteger("numSales"));
+    }
+
+    @Nullable
+    public UUID getMisbehavedPlayerId() {
+        return this.dataManager.get(MISBEHAVED_PLAYER).orElse((UUID)null);
+    }
+
+    public void setMisbehavedPlayerId(@Nullable UUID p_184754_1_) {
+        this.dataManager.set(MISBEHAVED_PLAYER, Optional.ofNullable(p_184754_1_));
+    }
+
+    @Nullable
+    public LivingEntity getMisbehavedPlayer() {
+        try {
+            UUID uuid = this.getMisbehavedPlayerId();
+            return uuid == null ? null : this.world.getPlayerByUuid(uuid);
+        } catch (IllegalArgumentException illegalargumentexception) {
+            return null;
+        }
     }
 }
