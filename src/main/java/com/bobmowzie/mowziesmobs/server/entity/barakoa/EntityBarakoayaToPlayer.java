@@ -35,7 +35,7 @@ public class EntityBarakoayaToPlayer extends EntityBarakoanToPlayer {
             if (!active) return false;
             if (target != getLeader()) return false;
             return healAICheckTarget(target);
-        }).allowFriendlyFire().allowInvulnerable().setSkipAttackChecks()) {
+        }).allowFriendlyFire().allowInvulnerable().setSkipAttackChecks().setUseInvisibilityCheck()) {
             @Override
             public boolean shouldContinueExecuting() {
                 LivingEntity livingentity = this.goalOwner.getAttackTarget();
@@ -47,7 +47,7 @@ public class EntityBarakoayaToPlayer extends EntityBarakoanToPlayer {
 
             @Override
             public void startExecuting() {
-                targetEntitySelector.setIgnoresLineOfSight().allowInvulnerable().allowFriendlyFire().setSkipAttackChecks();
+                targetEntitySelector.setIgnoresLineOfSight().allowInvulnerable().allowFriendlyFire().setSkipAttackChecks().setUseInvisibilityCheck();
                 super.startExecuting();
             }
         });

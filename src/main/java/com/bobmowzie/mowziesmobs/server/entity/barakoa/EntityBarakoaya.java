@@ -70,7 +70,7 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
                 return ((MobEntity) target).getAttackTarget() != null || target.getHealth() < target.getMaxHealth();
             }
             return false;
-        }).allowFriendlyFire().allowInvulnerable().setSkipAttackChecks().setIgnoresLineOfSight()) {
+        }).allowFriendlyFire().allowInvulnerable().setSkipAttackChecks().setIgnoresLineOfSight().setUseInvisibilityCheck()) {
             @Override
             public boolean shouldContinueExecuting() {
                 LivingEntity livingentity = this.goalOwner.getAttackTarget();
@@ -91,7 +91,7 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
 
             @Override
             public void startExecuting() {
-                targetEntitySelector.setIgnoresLineOfSight().allowInvulnerable().allowFriendlyFire().setSkipAttackChecks();
+                targetEntitySelector.setIgnoresLineOfSight().allowInvulnerable().allowFriendlyFire().setSkipAttackChecks().setUseInvisibilityCheck();
                 super.startExecuting();
             }
         });
