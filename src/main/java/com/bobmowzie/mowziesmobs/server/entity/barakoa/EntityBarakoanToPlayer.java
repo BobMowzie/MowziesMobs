@@ -17,6 +17,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -34,7 +35,7 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
-    private static final DataParameter<ItemStack> MASK = EntityDataManager.createKey(EntityBarakoanToPlayer.class, DataSerializers.ITEMSTACK);
+    private static final DataParameter<ItemStack> MASK_STORED = EntityDataManager.createKey(EntityBarakoanToPlayer.class, DataSerializers.ITEMSTACK);
     @OnlyIn(Dist.CLIENT)
     public Vector3d[] feetPos;
 
@@ -53,7 +54,7 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
     @Override
     protected void registerData() {
         super.registerData();
-        getDataManager().register(MASK, new ItemStack(ItemHandler.BARAKOA_MASK_FURY, 1));
+        getDataManager().register(MASK_STORED, new ItemStack(ItemHandler.BARAKOA_MASK_FURY, 1));
     }
 
     @Override
@@ -159,15 +160,30 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
     }
 
     public ItemStack getStoredMask() {
-        return getDataManager().get(MASK);
+        return getDataManager().get(MASK_STORED);
     }
 
     public void setStoredMask(ItemStack mask) {
-        getDataManager().set(MASK, mask);
+        getDataManager().set(MASK_STORED, mask);
     }
 
     @Override
     protected ItemStack getDeactivatedMask(ItemBarakoaMask mask) {
         return getStoredMask();
+    }
+
+    @Override
+    public void readAdditional(CompoundNBT compound) {
+        super.readAdditional(compound);
+        CompoundNBT compoundnbt = compound.getCompound("storedMask");
+        this.setStoredMask(ItemStack.read(compoundnbt));
+    }
+
+    @Override
+    public void writeAdditional(CompoundNBT compound) {
+        super.writeAdditional(compound);
+        if (!this.getStoredMask().isEmpty()) {
+            compound.put("storedMask", this.getStoredMask().write(new CompoundNBT()));
+        }
     }
 }
