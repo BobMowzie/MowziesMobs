@@ -71,6 +71,11 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
     }
 
     @Override
+    public boolean isPushedByWater() {
+        return false;
+    }
+
+    @Override
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(0, new SwimGoal(this));

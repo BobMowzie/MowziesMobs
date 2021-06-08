@@ -72,6 +72,11 @@ public class EntityBabyFoliaath extends MowzieEntity {
     }
 
     @Override
+    public boolean isPushedByWater() {
+        return false;
+    }
+
+    @Override
     public void tick() {
         super.tick();
         setMotion(0, getMotion().y, 0);
