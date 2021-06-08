@@ -134,7 +134,7 @@ public class EntityIceBreath extends EntityMagicEffect {
             boolean frostmawCloseCheck = caster instanceof EntityFrostmaw && entityHitDistance <= 2;
             if (inRange && yawCheck && pitchCheck || frostmawCloseCheck) {
                 // Raytrace to mob center to avoid damaging through walls
-                Vector3d from = caster.getEyePosition(0.5f);
+                Vector3d from = this.getPositionVec();
                 Vector3d to = entityHit.getPositionVec().add(0, entityHit.getHeight() / 2.0f, 0);
                 BlockRayTraceResult result = world.rayTraceBlocks(new RayTraceContext(from, to, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
                 if (result.getType() == RayTraceResult.Type.BLOCK) {
