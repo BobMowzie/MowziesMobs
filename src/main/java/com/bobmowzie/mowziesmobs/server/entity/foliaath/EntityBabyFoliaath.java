@@ -77,6 +77,11 @@ public class EntityBabyFoliaath extends MowzieEntity {
     }
 
     @Override
+    public void addVelocity(double x, double y, double z) {
+        super.addVelocity(0, y, 0);
+    }
+
+    @Override
     public void tick() {
         super.tick();
         setMotion(0, getMotion().y, 0);

@@ -952,4 +952,9 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     public boolean isPushedByWater() {
         return false;
     }
+
+    @Override
+    public void addVelocity(double x, double y, double z) {
+        super.addVelocity(0, y, 0);
+    }
 }

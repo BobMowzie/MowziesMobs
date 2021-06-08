@@ -76,6 +76,11 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
     }
 
     @Override
+    public void addVelocity(double x, double y, double z) {
+        super.addVelocity(0, y, 0);
+    }
+
+    @Override
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(0, new SwimGoal(this));
