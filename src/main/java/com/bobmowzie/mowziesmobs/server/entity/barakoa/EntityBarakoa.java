@@ -267,8 +267,8 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         if (getAttackTarget() == null) {
             int i = MathHelper.nextInt(rand, 0, 11);
             if (i < MMSounds.ENTITY_BARAKOA_TALK.size()) {
-//                playSound(MMSounds.ENTITY_BARAKOA_TALK.get(i).get(), 1, 1.5f);
-//                AnimationHandler.INSTANCE.sendAnimationMessage(this, IDLE_ANIMATION);
+                playSound(MMSounds.ENTITY_BARAKOA_TALK.get(i).get(), 1, 1.5f);
+                AnimationHandler.INSTANCE.sendAnimationMessage(this, IDLE_ANIMATION);
             }
         } else {
             int i = MathHelper.nextInt(rand, 0, 7);
