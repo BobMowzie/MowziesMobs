@@ -26,7 +26,7 @@ public class SpawnBoulderChargeSound extends TickableSound {
     @Override
     public void tick() {
         PlayerCapability.IPlayerCapability capability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-        if (!capability.getGeomancy().isSpawningBoulder()) {
+        if (capability != null && !capability.getGeomancy().isSpawningBoulder()) {
             finishPlaying();
         }
     }
