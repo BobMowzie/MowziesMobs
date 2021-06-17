@@ -197,17 +197,6 @@ public final class ServerEventHandler {
                     }
                 }
             }
-
-            if (damage <= 0.0F) {
-                event.setAmount(0.0F);
-            } else {
-                int k = EnchantmentHelper.getEnchantmentModifierDamage(livingEntity.getArmorInventoryList(), source);
-                if (k > 0) {
-                    damage = CombatRules.getDamageAfterMagicAbsorb(damage, (float)k);
-                }
-
-                event.setAmount(damage);
-            }
         }
     }
 
