@@ -436,8 +436,8 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                     if (inRange instanceof LeaderSunstrikeImmune) continue;
                     if (inRange instanceof PlayerEntity && ((PlayerEntity)inRange).abilities.disableDamage) continue;
                     Vector3d diff = inRange.getPositionVec().subtract(getPositionVec().add(0, 3, 0));
-                    diff = diff.normalize().scale(0.2);
-                    inRange.setMotion(getMotion().subtract(diff));
+                    diff = diff.normalize().scale(0.03);
+                    inRange.setMotion(inRange.getMotion().subtract(diff));
 
                     if (inRange.getPosY() < getPosY() + 3) inRange.setMotion(inRange.getMotion().add(0, 0.075, 0));
                 }
