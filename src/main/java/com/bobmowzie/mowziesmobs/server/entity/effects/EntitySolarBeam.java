@@ -148,7 +148,7 @@ public class EntitySolarBeam extends Entity {
                         damageFire *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.sunsBlessingAttackMultiplier.get();
                         damageMob *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.sunsBlessingAttackMultiplier.get();
                     }
-                    DamageUtil.dealMixedDamage(target, DamageSource.causeMobDamage(caster), damageMob, DamageSource.ON_FIRE, damageFire);
+                    DamageUtil.dealMixedDamage(target, DamageSource.causeIndirectDamage(this, caster), damageMob, DamageSource.ON_FIRE, damageFire);
                 }
             } else {
                 for (LivingEntity e : hit) {
