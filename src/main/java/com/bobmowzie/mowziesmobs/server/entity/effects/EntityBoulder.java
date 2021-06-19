@@ -471,4 +471,9 @@ public class EntityBoulder extends Entity {
     public void playSound(SoundEvent soundIn, float volume, float pitch) {
         super.playSound(soundIn, volume, pitch + rand.nextFloat() * 0.25f - 0.125f);
     }
+
+    @Override
+    public boolean isImmuneToExplosions() {
+        return true;
+    }
 }
