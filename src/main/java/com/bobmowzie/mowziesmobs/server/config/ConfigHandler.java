@@ -322,9 +322,9 @@ public final class  ConfigHandler {
             builder.push("grottol");
             this.spawnConfig = new SpawnConfig(builder,
                     2, 1, 1, 1,
-                    new BiomeConfig(builder,  Arrays.asList(""), new ArrayList<>(), new ArrayList<>()),
+                    new BiomeConfig(builder,  Collections.singletonList("!MUSHROOM"), new ArrayList<>(), new ArrayList<>()),
                     Collections.emptyList(),
-                    Arrays.asList("minecraft:base_stone_overworld"),
+                    Collections.singletonList("minecraft:base_stone_overworld"),
                     25, -1, true, false, true,
                     Collections.emptyList()
             );
