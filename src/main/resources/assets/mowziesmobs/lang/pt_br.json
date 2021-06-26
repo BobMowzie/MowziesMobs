@@ -120,9 +120,9 @@
   "item.mowziesmobs.naga_spawn_egg": "Ovo Gerador de Naga",
 
   "_comment": "Blocks",
-  "block.mowziesmobs.campfire": "Fogueira",
   "block.mowziesmobs.painted_acacia": "Tábuas de Acácia Pintada",
   "block.mowziesmobs.painted_acacia_slab": "Laje de Acácia Pintada",
+  "block.mowziesmobs.thatch_block": "Palha",
   "block.mowziesmobs.grottol": "Grutáceo",
 
   "_comment": "Potions",
