@@ -41,6 +41,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import software.bernie.geckolib3.GeckoLib;
 
 @Mod(MowziesMobs.MODID)
 @Mod.EventBusSubscriber(modid = MowziesMobs.MODID)
@@ -52,6 +53,8 @@ public final class MowziesMobs {
     public static SimpleChannel NETWORK;
 
     public MowziesMobs() {
+        GeckoLib.initialize();
+
         PROXY = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
         final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         CreativeTabHandler.INSTANCE.onInit();
@@ -126,6 +129,7 @@ public final class MowziesMobs {
         RenderingRegistry.registerEntityRenderingHandler(EntityHandler.GROTTOL, RenderGrottol::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityHandler.LANTERN, RenderLantern::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityHandler.NAGA, RenderNaga::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.SCULPTOR, RenderSculptor::new);
 
         RenderingRegistry.registerEntityRenderingHandler(EntityHandler.DART, RenderDart::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityHandler.SUNSTRIKE, RenderSunstrike::new);

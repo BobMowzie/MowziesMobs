@@ -10,6 +10,7 @@ import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityLantern;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
+import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
@@ -35,6 +36,7 @@ public enum EntityHandler {
     public static EntityType<EntityGrottol> GROTTOL;
     public static EntityType<EntityLantern> LANTERN;
     public static EntityType<EntityNaga> NAGA;
+    public static EntityType<EntitySculptor> SCULPTOR;
 
     public static EntityType<EntitySunstrike> SUNSTRIKE;
     public static EntityType<EntitySolarBeam> SOLAR_BEAM;
@@ -85,6 +87,8 @@ public enum EntityHandler {
         LANTERN = register("lantern", EntityType.Builder.create(EntityLantern::new, EntityClassification.AMBIENT).size(1.0f, 1.0f).setUpdateInterval(1));
 
         NAGA = register("naga", EntityType.Builder.create(EntityNaga::new, EntityClassification.MONSTER).size(3.0f, 1.0f).setTrackingRange(128).setUpdateInterval(1));
+
+        SCULPTOR = register("sculptor", EntityType.Builder.create(EntitySculptor::new, EntityClassification.MISC).size(1.0f, 2.0f).setUpdateInterval(1));
 
         // Non-mobs
         EntityType.Builder<EntitySunstrike> sunstrikeBuilder = EntityType.Builder.create(EntitySunstrike::new, EntityClassification.MISC);
@@ -142,6 +146,7 @@ public enum EntityHandler {
             GROTTOL,
             LANTERN,
             NAGA,
+            SCULPTOR,
             SUNSTRIKE,
             SOLAR_BEAM,
             BOULDER_SMALL,
@@ -180,5 +185,6 @@ public enum EntityHandler {
         GlobalEntityTypeAttributes.put(NAGA, EntityNaga.createAttributes().create());
         GlobalEntityTypeAttributes.put(LANTERN, EntityLantern.createAttributes().create());
         GlobalEntityTypeAttributes.put(GROTTOL, EntityGrottol.createAttributes().create());
+        GlobalEntityTypeAttributes.put(SCULPTOR, EntitySculptor.createAttributes().create());
     }
 }

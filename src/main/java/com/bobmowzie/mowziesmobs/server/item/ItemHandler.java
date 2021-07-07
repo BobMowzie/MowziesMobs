@@ -68,6 +68,7 @@ public final class ItemHandler {
     public static final SpawnEggItem GROTTOL_SPAWN_EGG = null;
     public static final SpawnEggItem LANTERN_SPAWN_EGG = null;
     public static final SpawnEggItem NAGA_SPAWN_EGG = null;
+    public static final SpawnEggItem SCULPTOR_SPAWN_EGG = null;
 
     private static final int BARAKOA_GREEN_COLOR = 0x748C47;
     private static final int BARAKOA_PINK_COLOR = 0xBA6656;
@@ -111,6 +112,7 @@ public final class ItemHandler {
             new SpawnEggItem(EntityHandler.GROTTOL, 0x777777, 0xbce0ff, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("grottol_spawn_egg"),
             new SpawnEggItem(EntityHandler.LANTERN, 0x6dea00, 0x235a10, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("lantern_spawn_egg"),
             new SpawnEggItem(EntityHandler.NAGA, 0x154850, 0x8dd759, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("naga_spawn_egg"),
+            new SpawnEggItem(EntityHandler.SCULPTOR, 0x154850, 0x8dd759, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("sculptor_spawn_egg"),
 
             new BlockItem(BlockHandler.PAINTED_ACACIA.get(), new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.PAINTED_ACACIA.get().getRegistryName()),
             new BlockItem(BlockHandler.PAINTED_ACACIA_SLAB.get(), new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.PAINTED_ACACIA_SLAB.get().getRegistryName()),
@@ -153,16 +155,17 @@ public final class ItemHandler {
             }
         };
         SpawnEggItem[] spawnEggItems = new SpawnEggItem[] {
-                FOLIAATH_SPAWN_EGG ,
-                WROUGHTNAUT_SPAWN_EGG ,
-                BARAKOA_SPAWN_EGG ,
-                BARAKOANA_SPAWN_EGG ,
-                BARAKOA_SUNBLOCKER_SPAWN_EGG ,
-                BARAKO_SPAWN_EGG ,
-                FROSTMAW_SPAWN_EGG ,
-                GROTTOL_SPAWN_EGG ,
-                LANTERN_SPAWN_EGG ,
-                NAGA_SPAWN_EGG
+                FOLIAATH_SPAWN_EGG,
+                WROUGHTNAUT_SPAWN_EGG,
+                BARAKOA_SPAWN_EGG,
+                BARAKOANA_SPAWN_EGG,
+                BARAKOA_SUNBLOCKER_SPAWN_EGG,
+                BARAKO_SPAWN_EGG,
+                FROSTMAW_SPAWN_EGG,
+                GROTTOL_SPAWN_EGG,
+                LANTERN_SPAWN_EGG,
+                NAGA_SPAWN_EGG,
+                SCULPTOR_SPAWN_EGG
         };
         for(SpawnEggItem spawneggitem : spawnEggItems) {
             DispenserBlock.registerDispenseBehavior(spawneggitem, defaultdispenseitembehavior);
