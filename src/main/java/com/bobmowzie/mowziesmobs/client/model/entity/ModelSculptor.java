@@ -20,6 +20,8 @@ import java.util.Map;
 public class ModelSculptor extends MowzieAnimatedGeoModel<EntitySculptor> {
     public ModelSculptor() {
         super();
+        trackBone("body");
+        trackBone("chest");
         trackBone("thighR");
         trackBone("calfR");
         trackBone("thighL");
@@ -115,7 +117,7 @@ public class ModelSculptor extends MowzieAnimatedGeoModel<EntitySculptor> {
         Vector3d thighToKneeL = getModelPosition(calfL).subtract(getModelPosition(thighL)).mul(0, 1, 1).normalize();
         double angleR = MathHelper.atan2(thighToKneeR.getY(), thighToKneeR.getZ());
         double angleL = MathHelper.atan2(thighToKneeL.getY(), thighToKneeL.getZ());
-        skirtM.setRotationX((float) (skirtM.getRotationX() - (angleR + angleL) / 2f));
+        skirtM.setRotationX((float) (skirtM.getRotationX() - (angleR + angleL) / 2f) - 1.0f);
 
         IBone test = this.getBone("test");
         setModelPosition(test, getModelPosition(thighR));
@@ -123,6 +125,7 @@ public class ModelSculptor extends MowzieAnimatedGeoModel<EntitySculptor> {
         setModelPosition(test2, getModelPosition(calfR));
         IBone test3 = this.getBone("test3");
         setModelPosition(test3, getModelPosition(footR));
+        System.out.println(getModelPosition(getBone("body")));
     }
 
     protected void addRotOffsetFromBone(IBone source, IBone target) {
@@ -138,19 +141,24 @@ public class ModelSculptor extends MowzieAnimatedGeoModel<EntitySculptor> {
     }
 
     protected Vector3d getModelPosition(IBone bone) {
+        if (bone == null) {
+            System.out.println("Bone is null!");
+            return new Vector3d(0, 0, 0);
+        }
         String boneName = bone.getName();
         BoneInfo boneInfo = boneInfoMap.get(boneName);
         Matrix4f matrix = boneInfo.modelSpaceXform;
 
         Vector4f vec = new Vector4f(0, 0, 0, 1);
         vec.transform(matrix);
-        return new Vector3d(vec.getX(), vec.getY(), vec.getZ());
+        return new Vector3d(vec.getX() * 16f, vec.getY() * 16f, vec.getZ() * 16f);
     }
 
     protected void setModelPosition(IBone bone, Vector3d vec) {
 //        Matrix4f matrix = boneInfoMap.get(bone.getName()).modelSpaceXform;
-        bone.setPositionX((float) (-vec.getX() * 16f));
-        bone.setPositionY((float) (-vec.getY() * 16f));
-        bone.setPositionZ((float) (vec.getZ() * 16f));
+
+        bone.setPositionX((float) (vec.getX()));
+        bone.setPositionY((float) (vec.getY()));
+        bone.setPositionZ((float) (vec.getZ()));
     }
 }

@@ -117,6 +117,8 @@ public final class MowziesMobs {
     }
 
     private void init(final FMLClientSetupEvent event) {
+        MowzieGeoBuilder.registerGeoBuilder(MODID, new MowzieGeoBuilder());
+
         RenderingRegistry.registerEntityRenderingHandler(EntityHandler.BABY_FOLIAATH, RenderFoliaathBaby::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityHandler.FOLIAATH, RenderFoliaath::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityHandler.WROUGHTNAUT, RenderWroughtnaut::new);

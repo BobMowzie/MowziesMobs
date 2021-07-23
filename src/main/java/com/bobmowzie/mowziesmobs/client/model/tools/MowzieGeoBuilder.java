@@ -17,7 +17,6 @@ public class MowzieGeoBuilder extends GeoBuilder {
     @Override
     public GeoBone constructBone(RawBoneGroup bone, ModelProperties properties, GeoBone parent) {
         MowzieGeoBone geoBone = new MowzieGeoBone();
-        System.out.println("Mowzie geo bone");
 
         Bone rawBone = bone.selfBone;
         Vector3f rotation = VectorUtils.convertDoubleToFloat(VectorUtils.fromArray(rawBone.getRotation()));
