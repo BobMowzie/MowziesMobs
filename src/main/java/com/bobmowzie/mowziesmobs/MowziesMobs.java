@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs;
 import com.bobmowzie.mowziesmobs.client.ClientProxy;
 import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoTrade;
 import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoayaTrade;
+import com.bobmowzie.mowziesmobs.client.model.tools.MowzieGeoBuilder;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.render.entity.*;
 import com.bobmowzie.mowziesmobs.server.ServerEventHandler;
@@ -42,6 +43,7 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import software.bernie.geckolib3.GeckoLib;
+import software.bernie.geckolib3.geo.render.GeoBuilder;
 
 @Mod(MowziesMobs.MODID)
 @Mod.EventBusSubscriber(modid = MowziesMobs.MODID)

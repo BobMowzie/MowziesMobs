@@ -4,9 +4,8 @@ import com.bobmowzie.mowziesmobs.client.model.entity.ModelSculptor;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
-import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 
-public class RenderSculptor extends GeoEntityRenderer<EntitySculptor> {
+public class RenderSculptor extends MowzieGeoEntityRenderer<EntitySculptor> {
     public RenderSculptor(EntityRendererManager renderManager) {
         super(renderManager, new ModelSculptor());
         this.shadowSize = 0.7f;
