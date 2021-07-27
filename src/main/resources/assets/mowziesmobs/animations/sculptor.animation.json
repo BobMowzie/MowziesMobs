@@ -71,14 +71,6 @@
 						"vector": [0, -7.5, "-20 + math.sin((query.anim_time-0.5) * 70) * 2"]
 					}
 				},
-				"skirtR": {
-					"rotation": {
-						"vector": [12.5, 0, "-15 + math.sin((query.anim_time-1.5) * 70) * 3"]
-					},
-					"scale": {
-						"vector": ["0.85 + math.sin((query.anim_time-1.5) * 70) * 0.025", 1, 1]
-					}
-				},
 				"chest": {
 					"rotation": {
 						"vector": ["-math.sin((query.anim_time-1) * 70) * 1", 0, 0]
@@ -107,14 +99,6 @@
 				"clothBack": {
 					"rotation": {
 						"vector": ["-math.sin((query.anim_time+1) * 70) * 3", 0, 0]
-					}
-				},
-				"skirtL": {
-					"rotation": {
-						"vector": [0, 0, "-math.sin((query.anim_time-1.5) * 70) * 2"]
-					},
-					"scale": {
-						"vector": ["1 + math.sin((query.anim_time-1.5) * 70) * 0.025", 1, 1]
 					}
 				},
 				"clothFront2": {

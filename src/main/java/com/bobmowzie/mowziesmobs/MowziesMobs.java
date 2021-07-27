@@ -14,6 +14,7 @@ import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
@@ -43,7 +44,6 @@ import net.minecraftforge.fml.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import software.bernie.geckolib3.GeckoLib;
-import software.bernie.geckolib3.geo.render.GeoBuilder;
 
 @Mod(MowziesMobs.MODID)
 @Mod.EventBusSubscriber(modid = MowziesMobs.MODID)
@@ -55,6 +55,7 @@ public final class MowziesMobs {
     public static SimpleChannel NETWORK;
 
     public MowziesMobs() {
+        MowzieGeoBuilder.registerGeoBuilder(MODID, new MowzieGeoBuilder());
         GeckoLib.initialize();
 
         PROXY = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
@@ -117,8 +118,6 @@ public final class MowziesMobs {
     }
 
     private void init(final FMLClientSetupEvent event) {
-        MowzieGeoBuilder.registerGeoBuilder(MODID, new MowzieGeoBuilder());
-
         RenderingRegistry.registerEntityRenderingHandler(EntityHandler.BABY_FOLIAATH, RenderFoliaathBaby::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityHandler.FOLIAATH, RenderFoliaath::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityHandler.WROUGHTNAUT, RenderWroughtnaut::new);
@@ -138,7 +137,7 @@ public final class MowziesMobs {
         RenderingRegistry.registerEntityRenderingHandler(EntityHandler.DART, RenderDart::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityHandler.SUNSTRIKE, RenderSunstrike::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityHandler.SOLAR_BEAM, RenderSolarBeam::new);
-        for (EntityType boulderType : EntityHandler.BOULDERS) {
+        for (EntityType<EntityBoulder> boulderType : EntityHandler.BOULDERS) {
             RenderingRegistry.registerEntityRenderingHandler(boulderType, RenderBoulder::new);
         }
         RenderingRegistry.registerEntityRenderingHandler(EntityHandler.AXE_ATTACK, RenderAxeAttack::new);

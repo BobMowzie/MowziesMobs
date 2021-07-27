@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.BoneInfo;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -12,8 +13,12 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Matrix4f;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
+import software.bernie.geckolib3.geo.render.built.GeoCube;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
+import software.bernie.geckolib3.util.RenderUtils;
+
+import java.util.Iterator;
 
 public abstract class MowzieGeoEntityRenderer<T extends LivingEntity & IAnimatable> extends GeoEntityRenderer<T> {
     private Matrix4f renderEarlyMat = new Matrix4f();
@@ -35,11 +40,49 @@ public abstract class MowzieGeoEntityRenderer<T extends LivingEntity & IAnimatab
 
     @Override
     public void renderRecursively(GeoBone bone, MatrixStack stack, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        super.renderRecursively(bone, stack, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        stack.push();
+        RenderUtils.translate(bone, stack);
+        RenderUtils.moveToPivot(bone, stack);
+
         if (getGeoModelProvider() instanceof MowzieAnimatedGeoModel) {
             MowzieAnimatedGeoModel<?> model = (MowzieAnimatedGeoModel<?>) getGeoModelProvider();
             fillBoneInfo(model.boneInfoMap.get(bone.getName()), stack);
         }
+
+        RenderUtils.rotate(bone, stack);
+        RenderUtils.scale(bone, stack);
+
+        if (bone instanceof MowzieGeoBone) {
+            MowzieGeoBone mowzieBone = (MowzieGeoBone) bone;
+            if (mowzieBone.isTrackingXform()) {
+                Matrix4f matBone = stack.getLast().getMatrix().copy();
+                Matrix4f renderEarlyMatInvert = renderEarlyMat.copy();
+                renderEarlyMatInvert.invert();
+                matBone.multiplyBackward(renderEarlyMatInvert);
+                mowzieBone.getModelSpaceXform().set(matBone);
+            }
+        }
+        RenderUtils.moveBackFromPivot(bone, stack);
+
+        if (!bone.isHidden) {
+            Iterator var10 = bone.childCubes.iterator();
+
+            while(var10.hasNext()) {
+                GeoCube cube = (GeoCube)var10.next();
+                stack.push();
+                this.renderCube(cube, stack, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                stack.pop();
+            }
+
+            var10 = bone.childBones.iterator();
+
+            while(var10.hasNext()) {
+                GeoBone childBone = (GeoBone)var10.next();
+                this.renderRecursively(childBone, stack, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            }
+        }
+
+        stack.pop();
     }
 
     protected void fillBoneInfo(BoneInfo boneInfo, MatrixStack stack) {

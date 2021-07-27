@@ -1,8 +1,10 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.model.tools.RigUtils.*;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.BoneInfo;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -27,6 +29,8 @@ public class ModelSculptor extends MowzieAnimatedGeoModel<EntitySculptor> {
         trackBone("thighL");
         trackBone("calfL");
         trackBone("footR");
+        trackBone("skirtL");
+        trackBone("skirtR");
     }
 
     @Override
@@ -65,9 +69,9 @@ public class ModelSculptor extends MowzieAnimatedGeoModel<EntitySculptor> {
         handOpenL.setHidden(!entity.handLOpen);
         handOpenR.setHidden(!entity.handROpen);
 
-        frontCloth.setHidden(true);
-        frontCloth2.setHidden(true);
-        backCloth.setHidden(true);
+//        frontCloth.setHidden(true);
+//        frontCloth2.setHidden(true);
+//        backCloth.setHidden(true);
 
         beadsCorrections(entity);
         skirtCorrections(entity);
@@ -99,66 +103,134 @@ public class ModelSculptor extends MowzieAnimatedGeoModel<EntitySculptor> {
             Vector3d moveDir = beadDir.getValue().normalize();
             addPosition(bead, moveDir.scale(dot * 3));
         }
-        head.setHidden(false);
+//        head.setHidden(false);
     }
 
     private void skirtCorrections(EntitySculptor entity) {
-        IBone headJoint = this.getBone("head_joint");
-        IBone skirtM = this.getBone("skirtM");
-        IBone skirtL = this.getBone("skirtL");
-        IBone skirtR = this.getBone("skirtR");
-        GeoBone thighR = (GeoBone) this.getBone("thighR");
-        GeoBone calfR = (GeoBone) this.getBone("calfR");
-        GeoBone thighL = (GeoBone) this.getBone("thighL");
-        GeoBone calfL = (GeoBone) this.getBone("calfL");
-        GeoBone footR = (GeoBone) this.getBone("footR");
-        headJoint.setHidden(true);
-        Vector3d thighToKneeR = getModelPosition(calfR).subtract(getModelPosition(thighR)).mul(0, 1, 1).normalize();
-        Vector3d thighToKneeL = getModelPosition(calfL).subtract(getModelPosition(thighL)).mul(0, 1, 1).normalize();
-        double angleR = MathHelper.atan2(thighToKneeR.getY(), thighToKneeR.getZ());
-        double angleL = MathHelper.atan2(thighToKneeL.getY(), thighToKneeL.getZ());
-        skirtM.setRotationX((float) (skirtM.getRotationX() - (angleR + angleL) / 2f) - 1.0f);
+        MowzieGeoBone headJoint = this.getMowzieBone("head_joint");
+        MowzieGeoBone skirtBack = this.getMowzieBone("skirtBack");
+        MowzieGeoBone skirtFront = this.getMowzieBone("skirtFront");
+        MowzieGeoBone skirtL = this.getMowzieBone("skirtL");
+        MowzieGeoBone skirtR = this.getMowzieBone("skirtR");
+        MowzieGeoBone skirtLRot = this.getMowzieBone("skirtLRot");
+        MowzieGeoBone skirtRRot = this.getMowzieBone("skirtRRot");
+        MowzieGeoBone thighR = this.getMowzieBone("thighR");
+        MowzieGeoBone thighJointR = this.getMowzieBone("thighJointR");
+        MowzieGeoBone calfR = this.getMowzieBone("calfR");
+        MowzieGeoBone thighL = this.getMowzieBone("thighL");
+        MowzieGeoBone calfL = this.getMowzieBone("calfL");
+        MowzieGeoBone footR = this.getMowzieBone("footR");
+//        headJoint.setHidden(true);
 
-        IBone test = this.getBone("test");
-        setModelPosition(test, getModelPosition(thighR));
-        IBone test2 = this.getBone("test2");
-        setModelPosition(test2, getModelPosition(calfR));
-        IBone test3 = this.getBone("test3");
-        setModelPosition(test3, getModelPosition(footR));
-        System.out.println(getModelPosition(getBone("body")));
-    }
+//        thighJointR.setRotationX(0);
+//        thighJointR.setRotationY((float) (Math.PI / 2.0));
+//        thighJointR.setRotationZ(0);
+//        thighR.setRotationX(0);
+//        thighR.setRotationY(-0.9f);
+//        thighR.setRotationZ(-0.8f);
 
-    protected void addRotOffsetFromBone(IBone source, IBone target) {
-        target.setRotationX(target.getInitialSnapshot().rotationValueX + source.getRotationX() - source.getInitialSnapshot().rotationValueX);
-        target.setRotationY(target.getInitialSnapshot().rotationValueY + source.getRotationY() - source.getInitialSnapshot().rotationValueY);
-        target.setRotationZ(target.getInitialSnapshot().rotationValueZ + source.getRotationZ() - source.getInitialSnapshot().rotationValueZ);
-    }
+        Vector3d thighToKneeR = calfR.getModelPosition().subtract(thighR.getModelPosition()).normalize();
+        Vector3d thighToKneeL = calfL.getModelPosition().subtract(thighL.getModelPosition()).normalize();
+        Vector3d average = thighToKneeL.add(thighToKneeR).scale(2).mul(0, 1, 1).normalize();
+        float angleAv = (float) MathHelper.atan2(average.getY(), average.getZ());
+        skirtBack.setRotationX(skirtBack.getRotationX() - angleAv + 3.48f);
+        skirtFront.setRotationX(skirtFront.getRotationX() - Math.min(angleAv, -2) + 3.48f);
 
-    protected void addPosition(IBone bone, Vector3d vec) {
-        bone.setPositionX((float) (bone.getPositionX() + vec.getX()));
-        bone.setPositionY((float) (bone.getPositionY() + vec.getY()));
-        bone.setPositionZ((float) (bone.getPositionZ() + vec.getZ()));
-    }
+        Vector3d neutralDir = new Vector3d(-0.461, -0.297, -0.836);
+        Vector3d outwardDir = new Vector3d(-0.997, 0.014, -0.079);
+        Vector3d forwardDir = new Vector3d(0.081, 0.173, -0.982);
+        Vector3d downwardDir = new Vector3d(0.081, -0.982, -0.173);
+        Vector3d forwardDownDir = new Vector3d(0.08054550975390348, -0.318712495954773, -0.9444230175545759);
+        Vector3d diagonalUpDir = new Vector3d(-0.49633081828428827, 0.3175958029975034, -0.8079533990032902);
+        Vector3d diagonalOutDir = new Vector3d(-0.7307140013921798, -0.3996947712758693, -0.5534447538006492);
+        BlendShape3D bshapeSkirtRot = new BlendShape3D(new BlendShape3DEntry[]{
+                new BlendShape3DEntry(new BoneTransform(
+                        0, 0, 0,
+                        0, 0, 0,
+                        1, 1, 1
+                ), neutralDir, 1),
+                new BlendShape3DEntry(new BoneTransform(
+                        0, 0, 1.1,
+                        0, -0.7, 0.5,
+                        1, 1, 1
+                ), outwardDir, 0.4f),
+                new BlendShape3DEntry(new BoneTransform(
+                        0, 0, 0,
+                        0, 0.9, 0,
+                        1, 1, 1
+                ), forwardDir, 1),
+                new BlendShape3DEntry(new BoneTransform(
+                        0.8, 0, 1.1,
+                        0, 0, 0,
+                        1, 1, 1
+                ), downwardDir, 1),
+                new BlendShape3DEntry(new BoneTransform(
+                        0, 0, -1,
+                        0, 0.9, 0,
+                        1, 1, 1
+                ), forwardDownDir, 1),
+                new BlendShape3DEntry(new BoneTransform(
+                        0, 0, 0,
+                        0.3, 0.2, 0.3,
+                        1, 1, 1
+                ), diagonalUpDir, 0.4f),
+                new BlendShape3DEntry(new BoneTransform(
+                        0, 0, 1,
+                        0.1, -0.4, 0.3,
+                        1, 1, 1
+                ), diagonalOutDir, 0.4f)
+        });
+        bshapeSkirtRot.evaluate(skirtRRot, thighToKneeR);
+        bshapeSkirtRot.evaluate(skirtLRot, thighToKneeL, true);
 
-    protected Vector3d getModelPosition(IBone bone) {
-        if (bone == null) {
-            System.out.println("Bone is null!");
-            return new Vector3d(0, 0, 0);
-        }
-        String boneName = bone.getName();
-        BoneInfo boneInfo = boneInfoMap.get(boneName);
-        Matrix4f matrix = boneInfo.modelSpaceXform;
+        BlendShape3D bshapeSkirt = new BlendShape3D(new BlendShape3DEntry[]{
+                new BlendShape3DEntry(new BoneTransform(
+                        0, 0, 0,
+                        0, 0, 0,
+                        1, 1, 1
+                ), neutralDir, 1),
+                new BlendShape3DEntry(new BoneTransform(
+                        0, 0.5, 0,
+                        -0.1, 0.2, 0.3,
+                        1, 1, 1
+                ), outwardDir, 1),
+                new BlendShape3DEntry(new BoneTransform(
+                        0, 0.8, -0.6,
+                        0, 0, 0.9,
+                        1, 1, 0.8
+                ), forwardDir, 1),
+                new BlendShape3DEntry(new BoneTransform(
+                        0, 0, 0,
+                        -0.65, 0, -0.6,
+                        1, 1, 1
+                ), downwardDir, 1),
+                new BlendShape3DEntry(new BoneTransform(
+                        0, 0.1, -0.6,
+                        0, 0.4, 0.3,
+                        1, 1, 0.8
+                ), forwardDownDir, 1),
+                new BlendShape3DEntry(new BoneTransform(
+                        0, 0.8, 0,
+                        0, 0, 0.6,
+                        1, 1, 1
+                ), diagonalUpDir, 1),
+                new BlendShape3DEntry(new BoneTransform(
+                        0, 0, 0,
+                        -0.3, 0, -0.3,
+                        1, 1, 1
+                ), diagonalOutDir, 1)
+        });
+        bshapeSkirt.evaluate(skirtR, thighToKneeR);
+        bshapeSkirt.evaluate(skirtL, thighToKneeL, true);
 
-        Vector4f vec = new Vector4f(0, 0, 0, 1);
-        vec.transform(matrix);
-        return new Vector3d(vec.getX() * 16f, vec.getY() * 16f, vec.getZ() * 16f);
-    }
 
-    protected void setModelPosition(IBone bone, Vector3d vec) {
-//        Matrix4f matrix = boneInfoMap.get(bone.getName()).modelSpaceXform;
+//        System.out.println(thighToKneeR.normalize());
 
-        bone.setPositionX((float) (vec.getX()));
-        bone.setPositionY((float) (vec.getY()));
-        bone.setPositionZ((float) (vec.getZ()));
+//        MowzieGeoBone test = this.getMowzieBone("test");
+//        test.setModelPosition(thighR.getModelPosition());
+//        MowzieGeoBone test2 = this.getMowzieBone("test2");
+//        test2.setModelPosition(calfR.getModelPosition());
+//        MowzieGeoBone test3 = this.getMowzieBone("test3");
+//        test3.setModelPosition(footR.getModelPosition());
     }
 }
