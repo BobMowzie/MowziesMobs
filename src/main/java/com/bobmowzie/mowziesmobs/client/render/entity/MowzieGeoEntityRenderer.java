@@ -1,7 +1,5 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
-import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.BoneInfo;
-import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -43,15 +41,8 @@ public abstract class MowzieGeoEntityRenderer<T extends LivingEntity & IAnimatab
         stack.push();
         RenderUtils.translate(bone, stack);
         RenderUtils.moveToPivot(bone, stack);
-
-        if (getGeoModelProvider() instanceof MowzieAnimatedGeoModel) {
-            MowzieAnimatedGeoModel<?> model = (MowzieAnimatedGeoModel<?>) getGeoModelProvider();
-            fillBoneInfo(model.boneInfoMap.get(bone.getName()), stack);
-        }
-
         RenderUtils.rotate(bone, stack);
         RenderUtils.scale(bone, stack);
-
         if (bone instanceof MowzieGeoBone) {
             MowzieGeoBone mowzieBone = (MowzieGeoBone) bone;
             if (mowzieBone.isTrackingXform()) {
@@ -83,14 +74,5 @@ public abstract class MowzieGeoEntityRenderer<T extends LivingEntity & IAnimatab
         }
 
         stack.pop();
-    }
-
-    protected void fillBoneInfo(BoneInfo boneInfo, MatrixStack stack) {
-        if (boneInfo == null) return;
-        Matrix4f matBone = stack.getLast().getMatrix().copy();
-        Matrix4f renderEarlyMatInvert = renderEarlyMat.copy();
-        renderEarlyMatInvert.invert();
-        matBone.multiplyBackward(renderEarlyMatInvert);
-        boneInfo.modelSpaceXform.set(matBone);
     }
 }

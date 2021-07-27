@@ -8,14 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class MowzieAnimatedGeoModel<T extends IAnimatable> extends AnimatedGeoModel<T> {
-    public Map<String, BoneInfo> boneInfoMap;
-
     public MowzieAnimatedGeoModel() {
-        boneInfoMap = new HashMap<>();
-    }
-
-    public void trackBone(String name) {
-        boneInfoMap.put(name, new BoneInfo());
     }
 
     public MowzieGeoBone getMowzieBone(String boneName) {

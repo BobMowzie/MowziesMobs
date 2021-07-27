@@ -2,18 +2,14 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.RigUtils.*;
-import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.BoneInfo;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector4f;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.geo.render.built.GeoBone;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 
 import java.util.HashMap;
@@ -22,15 +18,6 @@ import java.util.Map;
 public class ModelSculptor extends MowzieAnimatedGeoModel<EntitySculptor> {
     public ModelSculptor() {
         super();
-        trackBone("body");
-        trackBone("chest");
-        trackBone("thighR");
-        trackBone("calfR");
-        trackBone("thighL");
-        trackBone("calfL");
-        trackBone("footR");
-        trackBone("skirtL");
-        trackBone("skirtR");
     }
 
     @Override
