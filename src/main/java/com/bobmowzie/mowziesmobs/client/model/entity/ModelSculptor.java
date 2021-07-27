@@ -78,30 +78,30 @@ public class ModelSculptor extends MowzieAnimatedGeoModel<EntitySculptor> {
     }
 
     private void beadsCorrections(EntitySculptor entity) {
-        Map<IBone, Vector3d> beadsDirections = new HashMap<>();
-        beadsDirections.put(this.getBone("bead1"), new Vector3d(0, -1, 0));
-        beadsDirections.put(this.getBone("bead2"), new Vector3d(0, -1, 0));
-        beadsDirections.put(this.getBone("bead3"), new Vector3d(0, -1, 0));
-        beadsDirections.put(this.getBone("bead4"), new Vector3d(0, -0.5, 0.25));
-        beadsDirections.put(this.getBone("bead5"), new Vector3d(0, -0.5, 0.25));
-        beadsDirections.put(this.getBone("bead6"), new Vector3d(0, -0.5, 1));
-        beadsDirections.put(this.getBone("bead7"), new Vector3d(0, -0.5, 1));
-        beadsDirections.put(this.getBone("bead8"), new Vector3d(0, -0.25, 0.75));
-        beadsDirections.put(this.getBone("bead9"), new Vector3d(0, -0.25, 0.75));
+        Map<MowzieGeoBone, Vector3d> beadsDirections = new HashMap<>();
+        beadsDirections.put(this.getMowzieBone("bead1"), new Vector3d(0, -1, 0));
+        beadsDirections.put(this.getMowzieBone("bead2"), new Vector3d(0, -1, 0));
+        beadsDirections.put(this.getMowzieBone("bead3"), new Vector3d(0, -1, 0));
+        beadsDirections.put(this.getMowzieBone("bead4"), new Vector3d(0, -0.5, 0.25));
+        beadsDirections.put(this.getMowzieBone("bead5"), new Vector3d(0, -0.5, 0.25));
+        beadsDirections.put(this.getMowzieBone("bead6"), new Vector3d(0, -0.5, 1));
+        beadsDirections.put(this.getMowzieBone("bead7"), new Vector3d(0, -0.5, 1));
+        beadsDirections.put(this.getMowzieBone("bead8"), new Vector3d(0, -0.25, 0.75));
+        beadsDirections.put(this.getMowzieBone("bead9"), new Vector3d(0, -0.25, 0.75));
 
         IBone headJoint = this.getBone("head_joint");
         Vector3d headPos = new Vector3d(headJoint.getPivotX(), headJoint.getPivotY(), headJoint.getPivotZ());
         IBone head = this.getBone("head");
         Vector3d headDir = new Vector3d(0, 0, -1).normalize();
         headDir = headDir.rotateYaw(head.getRotationY()).rotatePitch(head.getRotationX());
-        for (Map.Entry<IBone, Vector3d> beadDir : beadsDirections.entrySet()) {
-            IBone bead = beadDir.getKey();
+        for (Map.Entry<MowzieGeoBone, Vector3d> beadDir : beadsDirections.entrySet()) {
+            MowzieGeoBone bead = beadDir.getKey();
             Vector3d beadPos = new Vector3d(bead.getPivotX(), bead.getPivotY(), bead.getPivotZ());
             Vector3d dir = beadPos.subtract(headPos).normalize().mul(1, -1, 1);
             double dot = dir.dotProduct(headDir);
             dot = Math.pow(Math.max(dot, 0), 3.5);
             Vector3d moveDir = beadDir.getValue().normalize();
-            addPosition(bead, moveDir.scale(dot * 3));
+            bead.addPosition(moveDir.scale(dot * 3));
         }
 //        head.setHidden(false);
     }
