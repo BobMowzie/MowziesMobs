@@ -1,8 +1,13 @@
 package com.bobmowzie.mowziesmobs.client.model.tools;
 
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Matrix3f;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
 import software.bernie.geckolib3.core.processor.IBone;
+
+import java.util.Arrays;
 
 public class RigUtils {
     public static Vector3d lerp(Vector3d v, Vector3d u, float alpha) {
@@ -92,7 +97,7 @@ public class RigUtils {
         public double getWeight(Vector3d dir) {
             double dot = dir.normalize().dotProduct(direction.normalize());
             dot = Math.max(dot, 0);
-            dot = Math.pow(dot, power);
+            dot = Math.pow(dot, 0.01 * power);
             return dot;
         }
 
@@ -184,5 +189,77 @@ public class RigUtils {
             }
             transform.apply(bone, mirrorX);
         }
+    }
+
+    public static Quaternion matrixToQuaternion(Matrix3f matrix)
+    {
+        double tr = matrix.m00 + matrix.m11 + matrix.m22;
+        double qw = 0;
+        double qx = 0;
+        double qy = 0;
+        double qz = 0;
+
+        if (tr > 0)
+        {
+            double S = Math.sqrt(tr+1.0) * 2; // S=4*qw
+            qw = 0.25 * S;
+            qx = (matrix.m21 - matrix.m12) / S;
+            qy = (matrix.m02 - matrix.m20) / S;
+            qz = (matrix.m10 - matrix.m01) / S;
+        }
+        else if ((matrix.m00 > matrix.m11) & (matrix.m00 > matrix.m22))
+        {
+            double S = Math.sqrt(1.0 + matrix.m00 - matrix.m11 - matrix.m22) * 2; // S=4*qx
+            qw = (matrix.m21 - matrix.m12) / S;
+            qx = 0.25 * S;
+            qy = (matrix.m01 + matrix.m10) / S;
+            qz = (matrix.m02 + matrix.m20) / S;
+        }
+        else if (matrix.m11 > matrix.m22)
+        {
+            double S = Math.sqrt(1.0 + matrix.m11 - matrix.m00 - matrix.m22) * 2; // S=4*qy
+            qw = (matrix.m02 - matrix.m20) / S;
+            qx = (matrix.m01 + matrix.m10) / S;
+            qy = 0.25 * S;
+            qz = (matrix.m12 + matrix.m21) / S;
+        }
+        else
+        {
+            double S = Math.sqrt(1.0 + matrix.m22 - matrix.m00 - matrix.m11) * 2; // S=4*qz
+            qw = (matrix.m10 - matrix.m01) / S;
+            qx = (matrix.m02 + matrix.m20) / S;
+            qy = (matrix.m12 + matrix.m21) / S;
+            qz = 0.25 * S;
+        }
+
+        return new Quaternion((float)qw, (float)qx, (float)qy, (float)qz);
+    }
+
+    public static void removeMatrixRotation(Matrix4f matrix)
+    {
+        matrix.m00 = 1;
+        matrix.m11 = 1;
+        matrix.m22 = 1;
+        matrix.m01 = 0;
+        matrix.m02 = 0;
+        matrix.m10 = 0;
+        matrix.m12 = 0;
+        matrix.m20 = 0;
+        matrix.m21 = 0;
+    }
+
+    public static void removeMatrixTranslation(Matrix4f matrix)
+    {
+        matrix.m03 = 0;
+        matrix.m13 = 0;
+        matrix.m23 = 0;
+    }
+
+    public static Quaternion betweenVectors(Vector3d u, Vector3d v) {
+        Vector3d a = u.crossProduct(v);
+        float w = (float) (Math.sqrt(u.lengthSquared() * v.lengthSquared()) + u.dotProduct(v));
+        Quaternion q = new Quaternion((float) a.getX(), -(float) a.getY(), -(float) a.getZ(), w);
+        q.normalize();
+        return q;
     }
 }

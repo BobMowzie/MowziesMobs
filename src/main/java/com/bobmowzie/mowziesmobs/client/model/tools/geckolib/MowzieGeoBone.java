@@ -1,19 +1,20 @@
 package com.bobmowzie.mowziesmobs.client.model.tools.geckolib;
 
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector4f;
+import com.bobmowzie.mowziesmobs.client.model.tools.RigUtils;
+import net.minecraft.util.math.vector.*;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 
 public class MowzieGeoBone extends GeoBone {
     private Matrix4f modelSpaceXform;
     private boolean trackXform;
+    public Matrix4f rotMat;
 
     public MowzieGeoBone() {
         super();
         modelSpaceXform = new Matrix4f();
         modelSpaceXform.setIdentity();
         trackXform = false;
+        rotMat = null;
     }
 
     public MowzieGeoBone getParent() {
@@ -50,6 +51,16 @@ public class MowzieGeoBone extends GeoBone {
         Vector4f vec = new Vector4f(-(float) pos.getX() / 16f, (float) pos.getY() / 16f, (float) pos.getZ() / 16f, 1);
         vec.transform(matrix);
         setPosition(-vec.getX() * 16f, vec.getY() * 16f, vec.getZ() * 16f);
+    }
+
+    public Matrix4f getModelRotationMat() {
+        Matrix4f matrix = getModelSpaceXform().copy();
+        RigUtils.removeMatrixTranslation(matrix);
+        return matrix;
+    }
+
+    public void setModelRotationMat(Matrix4f mat) {
+        rotMat = mat;
     }
 
     // Position utils
@@ -125,5 +136,11 @@ public class MowzieGeoBone extends GeoBone {
 
     public Vector3d getScale() {
         return new Vector3d(getScaleX(), getScaleY(), getScaleZ());
+    }
+
+    public void addRotationOffsetFromBone(MowzieGeoBone source) {
+        setRotationX(getRotationX() + source.getRotationX() - source.getInitialSnapshot().rotationValueX);
+        setRotationY(getRotationY() + source.getRotationY() - source.getInitialSnapshot().rotationValueY);
+        setRotationZ(getRotationZ() + source.getRotationZ() - source.getInitialSnapshot().rotationValueZ);
     }
 }

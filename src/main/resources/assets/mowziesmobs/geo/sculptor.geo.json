@@ -596,6 +596,16 @@
 					"pivot": [-3.96875, 17.7773, 1.32578]
 				},
 				{
+					"name": "skirtEndR",
+					"parent": "skirt",
+					"pivot": [-6, 13.25, -2.75]
+				},
+				{
+					"name": "skirtEndL",
+					"parent": "skirt",
+					"pivot": [6, 13.25, -2.75]
+				},
+				{
 					"name": "skirtFront",
 					"parent": "skirt",
 					"pivot": [0, 16.2789, -0.83047],
@@ -605,32 +615,76 @@
 					]
 				},
 				{
-					"name": "skirtRRot",
+					"name": "skirtJointR",
 					"parent": "skirt",
-					"pivot": [-3.75, 17.52, 1.6695]
+					"pivot": [-3.75, 17.52, 1.6695],
+					"rotation": [10, 0, 0]
+				},
+				{
+					"name": "skirtJoint2R",
+					"parent": "skirtJointR",
+					"pivot": [-3.75, 17.52, 1.6695],
+					"rotation": [-10, 0, 0]
+				},
+				{
+					"name": "skirtJoint3R",
+					"parent": "skirtJoint2R",
+					"pivot": [-3.46875, 15.7773, 1.32578],
+					"rotation": [-40, 0, 47.5]
 				},
 				{
 					"name": "skirtR",
-					"parent": "skirtRRot",
+					"parent": "skirtJoint3R",
 					"pivot": [-3.46875, 15.7773, 1.32578],
-					"rotation": [-40, 0, 47.5],
 					"cubes": [
 						{"origin": [-5.31235, 11.43782, -1.57724], "size": [5, 7, 5], "uv": [88, 41]}
 					]
 				},
 				{
-					"name": "skirtLRot",
+					"name": "skirtFrontLocR",
+					"parent": "skirtJoint3R",
+					"pivot": [-0.3125, 11.87105, -1.58047]
+				},
+				{
+					"name": "skirtBackLocR",
+					"parent": "skirtJoint3R",
+					"pivot": [-0.3125, 13.62105, 3.54453]
+				},
+				{
+					"name": "skirtJointL",
 					"parent": "skirt",
-					"pivot": [3.75, 17.52, 1.6695]
+					"pivot": [3.75, 17.52, 1.6695],
+					"rotation": [10, 0, 0]
+				},
+				{
+					"name": "skirtJoint2L",
+					"parent": "skirtJointL",
+					"pivot": [3.75, 17.52, 1.6695],
+					"rotation": [-10, 0, 0]
+				},
+				{
+					"name": "skirtJoint3L",
+					"parent": "skirtJoint2L",
+					"pivot": [3.46875, 15.7773, 1.32578],
+					"rotation": [-40, 0, -47.5]
 				},
 				{
 					"name": "skirtL",
-					"parent": "skirtLRot",
+					"parent": "skirtJoint3L",
 					"pivot": [3.46875, 15.7773, 1.32578],
-					"rotation": [-40, 0, -47.5],
 					"cubes": [
 						{"origin": [0.31235, 11.43782, -1.57724], "size": [5, 7, 5], "uv": [88, 41], "mirror": true}
 					]
+				},
+				{
+					"name": "skirtFrontLocL",
+					"parent": "skirtJoint3L",
+					"pivot": [0.3125, 11.87105, -1.58047]
+				},
+				{
+					"name": "skirtBackLocL",
+					"parent": "skirtJoint3L",
+					"pivot": [0.3125, 13.62105, 3.54453]
 				},
 				{
 					"name": "skirtBack",
