@@ -519,12 +519,198 @@
 							"vector": [0, 0, 0.29]
 						}
 					}
+				},
+				"thighR": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.6": {
+							"vector": [20, 7.5, -30],
+							"easing": "easeInSine"
+						},
+						"0.96": {
+							"vector": [27.5, 10, -35],
+							"easing": "easeOutSine"
+						},
+						"1.16": {
+							"vector": [5, -7.5, 22.5],
+							"easing": "easeInSine"
+						},
+						"1.32": {
+							"vector": [5, -7.5, 7.5],
+							"easing": "easeOutSine"
+						},
+						"1.76": {
+							"vector": [5, -7.5, 7.5],
+							"easing": "easeOutSine"
+						},
+						"2.52": {
+							"vector": [0, 0, 0],
+							"easing": "easeOutSine"
+						}
+					}
+				},
+				"calfR": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.6": {
+							"vector": [0, 0, 42.5],
+							"easing": "easeInSine"
+						},
+						"0.96": {
+							"vector": [0, 0, 47.5],
+							"easing": "easeOutSine"
+						},
+						"1.16": {
+							"vector": [0, 0, -7.5],
+							"easing": "easeInSine"
+						},
+						"1.32": {
+							"vector": [0, 0, 12.5],
+							"easing": "easeOutSine"
+						},
+						"1.76": {
+							"vector": [0, 0, 12.5],
+							"easing": "easeOutSine"
+						},
+						"2.52": {
+							"vector": [0, 0, 0],
+							"easing": "easeOutSine"
+						}
+					}
+				},
+				"footR": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.6": {
+							"vector": [0, -10, -12.5],
+							"easing": "easeInSine"
+						},
+						"0.96": {
+							"vector": [0, -12.5, -17.5],
+							"easing": "easeOutSine"
+						},
+						"1.16": {
+							"vector": [0, -12.5, 27.5],
+							"easing": "easeInSine"
+						},
+						"1.32": {
+							"vector": [0, -12.5, 25],
+							"easing": "easeOutSine"
+						},
+						"1.76": {
+							"vector": [0, -12.5, 25],
+							"easing": "easeOutSine"
+						},
+						"2.52": {
+							"vector": [0, 0, 0],
+							"easing": "easeOutSine"
+						}
+					}
+				},
+				"thighL": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.6": {
+							"vector": [7.5, 20, -15],
+							"easing": "easeInSine"
+						},
+						"0.96": {
+							"vector": [5, 22.5, -17.5],
+							"easing": "easeOutSine"
+						},
+						"1.16": {
+							"vector": [5, 7.5, -20],
+							"easing": "easeInSine"
+						},
+						"1.32": {
+							"vector": [5, 7.5, -7.5],
+							"easing": "easeOutSine"
+						},
+						"1.76": {
+							"vector": [5, 7.5, -7.5],
+							"easing": "easeOutSine"
+						},
+						"2.52": {
+							"vector": [0, 0, 0],
+							"easing": "easeOutSine"
+						}
+					}
+				},
+				"calfL": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.6": {
+							"vector": [0, 0, 12.5],
+							"easing": "easeInSine"
+						},
+						"0.96": {
+							"vector": [0, 0, 17.5],
+							"easing": "easeOutSine"
+						},
+						"1.16": {
+							"vector": [0, 0, 17.5],
+							"easing": "easeInSine"
+						},
+						"1.32": {
+							"vector": [0, 0, -5],
+							"easing": "easeOutSine"
+						},
+						"1.76": {
+							"vector": [0, 0, -5],
+							"easing": "easeOutSine"
+						},
+						"2.52": {
+							"vector": [0, 0, 0],
+							"easing": "easeOutSine"
+						}
+					}
+				},
+				"footL": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.6": {
+							"vector": [0, 10, -31.67],
+							"easing": "easeInSine"
+						},
+						"0.96": {
+							"vector": [0, 10, -35],
+							"easing": "easeOutSine"
+						},
+						"1.16": {
+							"vector": [0, 10, -40],
+							"easing": "easeInSine"
+						},
+						"1.32": {
+							"vector": [0, 10, -35],
+							"easing": "easeOutSine"
+						},
+						"1.76": {
+							"vector": [0, 10, -35],
+							"easing": "easeOutSine"
+						},
+						"2.52": {
+							"vector": [0, 0, 0],
+							"easing": "easeOutSine"
+						}
+					}
 				}
 			},
 			"timeline": {
 				"0.2": ["closeHandR"],
 				"0.48": ["closeHandL"],
-				"2.28": ["openHandL", "openHandR"]
+				"2.24": ["openHandL", "openHandR"]
 			}
 		},
 		"shakeHead": {

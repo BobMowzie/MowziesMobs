@@ -8,10 +8,7 @@ import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleRotation;
 import com.bobmowzie.mowziesmobs.server.ai.AvoidEntityIfNotTamedGoal;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
-import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
-import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
-import com.bobmowzie.mowziesmobs.server.capability.LivingCapability;
-import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
+import com.bobmowzie.mowziesmobs.server.capability.*;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.*;
@@ -137,7 +134,6 @@ public final class ServerEventHandler {
                 }
             }
 
-//            MowzieLivingProperties property = EntityPropertiesHandler.INSTANCE.getProperties(entity, MowzieLivingProperties.class);
             FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
             if (frozenCapability != null) {
                 frozenCapability.tick(entity);
@@ -145,6 +141,10 @@ public final class ServerEventHandler {
             LivingCapability.ILivingCapability livingCapability = CapabilityHandler.getCapability(entity, LivingCapability.LivingProvider.LIVING_CAPABILITY);
             if (livingCapability != null) {
                 livingCapability.tick(entity);
+            }
+            AbilityCapability.IAbilityCapability abilityCapability = CapabilityHandler.getCapability(entity, AbilityCapability.AbilityProvider.ABILITY_CAPABILITY);
+            if (abilityCapability != null) {
+                abilityCapability.tick(entity);
             }
         }
     }
@@ -616,6 +616,12 @@ public final class ServerEventHandler {
                     }
                 }
             }
+
+
+            AbilityCapability.IAbilityCapability abilityCapability = CapabilityHandler.getCapability(event.getPlayer(), AbilityCapability.AbilityProvider.ABILITY_CAPABILITY);
+            if (abilityCapability != null) {
+                abilityCapability.activateAbility(event.getPlayer(), AbilityCapability.abilityList[0]);
+            }
         }
     }
 
@@ -677,6 +683,7 @@ public final class ServerEventHandler {
         if (event.getObject() instanceof LivingEntity) {
             event.addCapability(new ResourceLocation(MowziesMobs.MODID, "frozen"), new FrozenCapability.FrozenProvider());
             event.addCapability(new ResourceLocation(MowziesMobs.MODID, "last_damage"), new LivingCapability.LivingProvider());
+            event.addCapability(new ResourceLocation(MowziesMobs.MODID, "ability"), new AbilityCapability.AbilityProvider());
         }
         if (event.getObject() instanceof PlayerEntity) {
             event.addCapability(new ResourceLocation(MowziesMobs.MODID, "player"), new PlayerCapability.PlayerProvider());

@@ -28,7 +28,6 @@ public enum AnimationHandler {
             return;
         }
         entity.setAnimation(animation);
-//        ((ServerWorld) entity.world).getChunkProvider().sendToAllTracking(entity, new AnimationMessage(entity.getEntityId(), ArrayUtils.indexOf(entity.getAnimations(), animation)));
         MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new AnimationMessage(entity.getEntityId(), ArrayUtils.indexOf(entity.getAnimations(), animation)));
     }
 

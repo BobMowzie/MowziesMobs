@@ -11,6 +11,7 @@ public final class CapabilityHandler {
         CapabilityManager.INSTANCE.register(FrozenCapability.IFrozenCapability.class, new FrozenCapability.FrozenStorage(), FrozenCapability.FrozenCapabilityImp::new);
         CapabilityManager.INSTANCE.register(LivingCapability.ILivingCapability.class, new LivingCapability.LivingStorage(), LivingCapability.LastDamageCapabilityImp::new);
         CapabilityManager.INSTANCE.register(PlayerCapability.IPlayerCapability.class, new PlayerCapability.PlayerStorage(), PlayerCapability.PlayerCapabilityImp::new);
+        CapabilityManager.INSTANCE.register(AbilityCapability.IAbilityCapability.class, new AbilityCapability.AbilityStorage(), AbilityCapability.AbilityCapabilityImp::new);
     }
 
     @Nullable

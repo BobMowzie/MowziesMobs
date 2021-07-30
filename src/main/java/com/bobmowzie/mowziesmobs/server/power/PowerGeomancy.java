@@ -72,16 +72,16 @@ public class PowerGeomancy extends Power {
             boolean underground = !player.world.getEntitiesWithinAABB(EntityBlockSwapper.class, player.getBoundingBox()).isEmpty();
             if (player.isOnGround() && !underground) tunneling = false;
             Vector3d lookVec = player.getLookVec();
-            float tunnelSpeed = 0.9f;
+            float tunnelSpeed = 0.3f;
             if (underground) {
                 if (player.isSneaking()) {
-                    player.setMotion(tunnelSpeed * 0.5 * lookVec.x, tunnelSpeed * lookVec.y, tunnelSpeed * 0.5 * lookVec.z);
+                    player.setMotion(lookVec.normalize().scale(tunnelSpeed));
                 }
                 else {
-                    player.setMotion(tunnelSpeed * 0.5 * lookVec.x, 1, tunnelSpeed * 0.5 * lookVec.z);
+                    player.setMotion(lookVec.mul(0.3, 0, 0.3).add(0, 1, 0).normalize().scale(tunnelSpeed));
                 }
 
-                List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(player,4, 4, 4, 4);
+                List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(player,2, 2, 2, 2);
                 for (LivingEntity entityHit : entitiesHit) {
                     entityHit.attackEntityFrom(DamageSource.causePlayerDamage(player), 6 * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.geomancyAttackMultiplier.get().floatValue());
                 }
@@ -91,15 +91,15 @@ public class PowerGeomancy extends Power {
 
             if ((player.isSneaking() && lookVec.y < 0) || underground) {
                 if (player.ticksExisted % 16 == 0) player.playSound(MMSounds.EFFECT_GEOMANCY_RUMBLE.get(rand.nextInt(3)).get(), 0.6f, 0.5f + rand.nextFloat() * 0.2f);
-                for (double x = -1.5; x <= 1.5; x++) {
-                    for (double y = -1.5; y <= 2; y++) {
-                        for (double z = -1.5; z <= 2; z++) {
-                            if (Math.sqrt(x * x + y * y + z * z) > 2) continue;
-                            BlockPos pos = new BlockPos(player.getPosX() + x + player.getMotion().getX(), player.getPosY() + y + player.getMotion().getY() + 0.5, player.getPosZ() + z + player.getMotion().getZ());
+                for (double x = -1; x <= 1; x++) {
+                    for (double y = -1; y <= 2; y++) {
+                        for (double z = -1; z <= 1; z++) {
+                            if (Math.sqrt(x * x + y * y + z * z) > 1.75) continue;
+                            BlockPos pos = new BlockPos(player.getPosX() + x + player.getMotion().getX(), player.getPosY() + y + player.getMotion().getY() + player.getHeight()/2f, player.getPosZ() + z + player.getMotion().getZ());
                             BlockState blockState = player.world.getBlockState(pos);
                             if (isBlockDiggable(blockState) && blockState.getBlock() != Blocks.BEDROCK) {
                                 justDug = blockState;
-                                EntityBlockSwapper.swapBlock(player.world, pos, Blocks.AIR.getDefaultState(), 10, false, false);
+                                EntityBlockSwapper.swapBlock(player.world, pos, Blocks.AIR.getDefaultState(), 20, false, false);
                             }
                         }
                     }
@@ -120,7 +120,7 @@ public class PowerGeomancy extends Power {
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(10f, 30f), false)
                 });
-                player.setMotion(player.getMotion().scale(2f));
+                player.setMotion(player.getMotion().scale(10f));
 
                 for (int i = 0; i < 6; i++) {
                     if (justDug == null) justDug = Blocks.DIRT.getDefaultState();

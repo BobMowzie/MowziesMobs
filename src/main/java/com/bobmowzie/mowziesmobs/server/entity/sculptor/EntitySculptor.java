@@ -57,7 +57,7 @@ public class EntitySculptor extends MowzieEntity implements IAnimatable {
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event)
     {
-        event.getController().setAnimation(new AnimationBuilder().addAnimation("rigTest", true));
+        event.getController().setAnimation(new AnimationBuilder().addAnimation("testStart", true));
         return PlayState.CONTINUE;
     }
 
