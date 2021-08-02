@@ -13,15 +13,20 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AbilityCapability {
-    public static final Ability<?>[] abilityList = new Ability[] {
-        new FireballAbility()
+    public static final FireballAbility FIREBALL_ABILITY = new FireballAbility();
+    public static final Ability<?>[] ABILITIES = new Ability[] {
+            FIREBALL_ABILITY
     };
 
     public interface IAbilityCapability {
         void activateAbility(LivingEntity entity, Ability<?> ability);
+
+        public void instanceAbilities(LivingEntity entity);
 
         void tick(LivingEntity entity);
 
@@ -31,20 +36,26 @@ public class AbilityCapability {
     }
 
     public static class AbilityCapabilityImp implements IAbilityCapability {
-        List<AbilityInstance> activeAbilities = new ArrayList<>();
+        Map<Ability<?>, AbilityInstance> abilityInstances = new HashMap<>();
+
+        @Override
+        public void instanceAbilities(LivingEntity entity) {
+            for (Ability<?> ability : ABILITIES) {
+                abilityInstances.put(ability, ability.makeInstance(entity));
+            }
+        }
 
         @Override
         public void activateAbility(LivingEntity entity, Ability<?> ability) {
-            AbilityInstance instance = ability.makeInstance(entity);
-            instance.onStart();
-            activeAbilities.add(instance);
+            AbilityInstance instance = abilityInstances.get(ability);
+            if (instance != null) instance.onStart();
+            else System.out.println("Ability " + ability.getClass().getSimpleName() + " does not exist on mob " + entity.getClass().getSimpleName());
         }
 
         @Override
         public void tick(LivingEntity entity) {
-            for (AbilityInstance abilityInstance : activeAbilities) {
-                if (!abilityInstance.isUsing()) activeAbilities.remove(abilityInstance);
-                else abilityInstance.tick();
+            for (AbilityInstance abilityInstance : abilityInstances.values()) {
+                if (abilityInstance.isUsing()) abilityInstance.tick();
             }
         }
 

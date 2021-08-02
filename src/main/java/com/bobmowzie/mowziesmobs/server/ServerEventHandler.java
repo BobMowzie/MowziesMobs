@@ -77,6 +77,9 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onJoinWorld(EntityJoinWorldEvent event) {
+        AbilityCapability.IAbilityCapability abilityCapability = CapabilityHandler.getCapability(event.getEntity(), AbilityCapability.AbilityProvider.ABILITY_CAPABILITY);
+        if (abilityCapability != null) abilityCapability.instanceAbilities((LivingEntity) event.getEntity());
+
         if (event.getWorld().isRemote) {
             return;
         }
@@ -620,7 +623,7 @@ public final class ServerEventHandler {
 
             AbilityCapability.IAbilityCapability abilityCapability = CapabilityHandler.getCapability(event.getPlayer(), AbilityCapability.AbilityProvider.ABILITY_CAPABILITY);
             if (abilityCapability != null) {
-                abilityCapability.activateAbility(event.getPlayer(), AbilityCapability.abilityList[0]);
+                abilityCapability.activateAbility(event.getPlayer(), AbilityCapability.FIREBALL_ABILITY);
             }
         }
     }
