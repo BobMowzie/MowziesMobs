@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleVanillaCloudExtended;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleRotation;
+import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ai.AvoidEntityIfNotTamedGoal;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.capability.*;
@@ -374,6 +375,8 @@ public final class ServerEventHandler {
                 power.onRightClickEmpty(event);
             }
         }
+
+        AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getPlayer(), AbilityCapability.FIREBALL_ABILITY);
     }
 
     @SubscribeEvent
@@ -618,12 +621,6 @@ public final class ServerEventHandler {
                         }
                     }
                 }
-            }
-
-
-            AbilityCapability.IAbilityCapability abilityCapability = CapabilityHandler.getCapability(event.getPlayer(), AbilityCapability.AbilityProvider.ABILITY_CAPABILITY);
-            if (abilityCapability != null) {
-                abilityCapability.activateAbility(event.getPlayer(), AbilityCapability.FIREBALL_ABILITY);
             }
         }
     }

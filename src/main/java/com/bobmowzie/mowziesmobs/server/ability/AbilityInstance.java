@@ -20,12 +20,14 @@ public class AbilityInstance {
         ticksInSection = 0;
         isUsing = true;
         abilityType.onStart(this);
+        System.out.println("Start ability");
     }
 
     public void tick() {
         ticksInUse++;
         ticksInSection++;
         abilityType.tick(this);
+        System.out.println("tick ability " + ticksInUse);
     }
 
     public void onEnd() {

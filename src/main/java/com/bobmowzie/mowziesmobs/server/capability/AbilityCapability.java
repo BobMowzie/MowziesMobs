@@ -12,10 +12,7 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class AbilityCapability {
     public static final FireballAbility FIREBALL_ABILITY = new FireballAbility();
@@ -29,6 +26,10 @@ public class AbilityCapability {
         public void instanceAbilities(LivingEntity entity);
 
         void tick(LivingEntity entity);
+
+        public List<Ability<?>> getAbilities();
+
+        public Map<Ability<?>, AbilityInstance> getAbilityInstances();
 
         INBT writeNBT();
 
@@ -57,6 +58,14 @@ public class AbilityCapability {
             for (AbilityInstance abilityInstance : abilityInstances.values()) {
                 if (abilityInstance.isUsing()) abilityInstance.tick();
             }
+        }
+
+        public List<Ability<?>> getAbilities() {
+            return new ArrayList<>(abilityInstances.keySet());
+        }
+
+        public Map<Ability<?>, AbilityInstance> getAbilityInstances() {
+            return abilityInstances;
         }
 
         @Override
