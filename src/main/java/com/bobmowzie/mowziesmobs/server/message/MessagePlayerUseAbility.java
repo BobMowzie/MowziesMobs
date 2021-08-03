@@ -10,30 +10,30 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
-public class MessagePlayerTryAbility {
+public class MessagePlayerUseAbility {
     private int index;
 
-    public MessagePlayerTryAbility() {
+    public MessagePlayerUseAbility() {
 
     }
 
-    public MessagePlayerTryAbility(int index) {
+    public MessagePlayerUseAbility(int index) {
         this.index = index;
     }
 
-    public static void serialize(final MessagePlayerTryAbility message, final PacketBuffer buf) {
+    public static void serialize(final MessagePlayerUseAbility message, final PacketBuffer buf) {
         buf.writeVarInt(message.index);
     }
 
-    public static MessagePlayerTryAbility deserialize(final PacketBuffer buf) {
-        final MessagePlayerTryAbility message = new MessagePlayerTryAbility();
+    public static MessagePlayerUseAbility deserialize(final PacketBuffer buf) {
+        final MessagePlayerUseAbility message = new MessagePlayerUseAbility();
         message.index = buf.readVarInt();
         return message;
     }
 
-    public static class Handler implements BiConsumer<MessagePlayerTryAbility, Supplier<NetworkEvent.Context>> {
+    public static class Handler implements BiConsumer<MessagePlayerUseAbility, Supplier<NetworkEvent.Context>> {
         @Override
-        public void accept(final MessagePlayerTryAbility message, final Supplier<NetworkEvent.Context> contextSupplier) {
+        public void accept(final MessagePlayerUseAbility message, final Supplier<NetworkEvent.Context> contextSupplier) {
             final NetworkEvent.Context context = contextSupplier.get();
             final ServerPlayerEntity player = context.getSender();
             context.enqueueWork(() -> {

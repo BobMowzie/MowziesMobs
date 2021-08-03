@@ -365,8 +365,8 @@ public final class ServerEventHandler {
                     playerCapability.setUntilSunstrike(SOLARBEAM_COOLDOWN);
                     playerCapability.setUsingSolarBeam(true);
                 } else {
-                    MowziesMobs.NETWORK.sendToServer(new MessagePlayerSummonSunstrike());
-                    playerCapability.setUntilSunstrike(SUNSTRIKE_COOLDOWN);
+//                    MowziesMobs.NETWORK.sendToServer(new MessagePlayerSummonSunstrike());
+//                    playerCapability.setUntilSunstrike(SUNSTRIKE_COOLDOWN);
                 }
             }
 
@@ -376,7 +376,7 @@ public final class ServerEventHandler {
             }
         }
 
-        AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getPlayer(), AbilityCapability.FIREBALL_ABILITY);
+        AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getPlayer(), AbilityCapability.SUNSTRIKE_ABILITY);
     }
 
     @SubscribeEvent
@@ -440,8 +440,8 @@ public final class ServerEventHandler {
                     MowziesMobs.NETWORK.sendToServer(new MessagePlayerSolarBeam());
                     playerCapability.setUntilSunstrike(SOLARBEAM_COOLDOWN);
                 } else {
-                    MowziesMobs.NETWORK.sendToServer(new MessagePlayerSummonSunstrike());
-                    playerCapability.setUntilSunstrike(SUNSTRIKE_COOLDOWN);
+//                    MowziesMobs.NETWORK.sendToServer(new MessagePlayerSummonSunstrike());
+//                    playerCapability.setUntilSunstrike(SUNSTRIKE_COOLDOWN);
                 }
             }
             if (player.world.getBlockState(event.getPos()).getContainer(player.world, event.getPos()) != null) {
@@ -453,6 +453,8 @@ public final class ServerEventHandler {
                 power.onRightClickBlock(event);
             }
         }
+
+        AbilityHandler.INSTANCE.sendAbilityMessage(event.getPlayer(), AbilityCapability.SUNSTRIKE_ABILITY);
     }
 
     @SubscribeEvent

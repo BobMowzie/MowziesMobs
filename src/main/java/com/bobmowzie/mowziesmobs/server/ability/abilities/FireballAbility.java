@@ -1,5 +1,8 @@
-package com.bobmowzie.mowziesmobs.server.ability;
+package com.bobmowzie.mowziesmobs.server.ability.abilities;
 
+import com.bobmowzie.mowziesmobs.server.ability.Ability;
+import com.bobmowzie.mowziesmobs.server.ability.AbilityInstance;
+import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.SmallFireballEntity;
 import net.minecraft.util.math.vector.Vector3d;
@@ -9,12 +12,12 @@ public class FireballAbility extends Ability<AbilityInstance> {
         super(new AbilitySection[] {
                 new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 20),
                 new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE)
-        });
+        }, 20);
     }
 
     @Override
-    protected void onStart(AbilityInstance abilityInstance) {
-        super.onStart(abilityInstance);
+    protected void start(AbilityInstance abilityInstance) {
+        super.start(abilityInstance);
     }
 
     @Override

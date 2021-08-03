@@ -4,7 +4,7 @@ public abstract class AbilitySection {
     public enum AbilitySectionType {
         STARTUP,
         ACTIVE,
-        ENDLAG,
+        RECOVERY,
         MISC
     }
     public final AbilitySectionType sectionType;

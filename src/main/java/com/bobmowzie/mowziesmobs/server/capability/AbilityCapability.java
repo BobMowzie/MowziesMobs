@@ -2,7 +2,8 @@ package com.bobmowzie.mowziesmobs.server.capability;
 
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityInstance;
-import com.bobmowzie.mowziesmobs.server.ability.FireballAbility;
+import com.bobmowzie.mowziesmobs.server.ability.abilities.FireballAbility;
+import com.bobmowzie.mowziesmobs.server.ability.abilities.SunstrikeAbility;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
@@ -16,8 +17,9 @@ import java.util.*;
 
 public class AbilityCapability {
     public static final FireballAbility FIREBALL_ABILITY = new FireballAbility();
+    public static final SunstrikeAbility SUNSTRIKE_ABILITY = new SunstrikeAbility();
     public static final Ability<?>[] ABILITIES = new Ability[] {
-            FIREBALL_ABILITY
+            SUNSTRIKE_ABILITY
     };
 
     public interface IAbilityCapability {
@@ -49,14 +51,17 @@ public class AbilityCapability {
         @Override
         public void activateAbility(LivingEntity entity, Ability<?> ability) {
             AbilityInstance instance = abilityInstances.get(ability);
-            if (instance != null) instance.onStart();
+            if (instance != null) {
+                boolean tryResult = instance.tryAbility();
+                if (tryResult) instance.start();
+            }
             else System.out.println("Ability " + ability.getClass().getSimpleName() + " does not exist on mob " + entity.getClass().getSimpleName());
         }
 
         @Override
         public void tick(LivingEntity entity) {
             for (AbilityInstance abilityInstance : abilityInstances.values()) {
-                if (abilityInstance.isUsing()) abilityInstance.tick();
+                abilityInstance.tick();
             }
         }
 

@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.server.ability;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
-import com.bobmowzie.mowziesmobs.server.message.MessagePlayerTryAbility;
+import com.bobmowzie.mowziesmobs.server.message.MessagePlayerUseAbility;
 import com.bobmowzie.mowziesmobs.server.message.MessageUseAbility;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.LivingEntity;
@@ -33,7 +33,7 @@ public enum AbilityHandler {
         }
         AbilityCapability.IAbilityCapability abilityCapability = CapabilityHandler.getCapability(entity, AbilityCapability.AbilityProvider.ABILITY_CAPABILITY);
         if (abilityCapability != null) {
-            MowziesMobs.NETWORK.sendToServer(new MessagePlayerTryAbility(abilityCapability.getAbilities().indexOf(ability)));
+            MowziesMobs.NETWORK.sendToServer(new MessagePlayerUseAbility(abilityCapability.getAbilities().indexOf(ability)));
         }
     }
 }
