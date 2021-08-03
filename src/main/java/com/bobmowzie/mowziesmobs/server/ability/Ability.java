@@ -25,6 +25,10 @@ public abstract class Ability<T extends AbilityInstance> {
     protected void end(T abilityInstance) {
     }
 
+    protected void beginSection(AbilitySection section, T abilityInstance) {
+
+    }
+
     public void interrupt(T abilityInstance) {
 
     }
@@ -64,5 +68,19 @@ public abstract class Ability<T extends AbilityInstance> {
 
     public int getCooldown() {
         return cooldown;
+    }
+
+    /**
+     * Non-background abilities require no other non-background abilities running to run.
+     * Only one non-background ability can run at once.
+     * Background abilities can all run simultaneously
+     * @return
+     */
+    public boolean runsInBackground() {
+        return false;
+    }
+
+    public boolean canCancelActiveAbility(T abilityInstance) {
+        return false;
     }
 }

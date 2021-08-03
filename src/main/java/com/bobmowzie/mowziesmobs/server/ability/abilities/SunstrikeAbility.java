@@ -67,7 +67,7 @@ public class SunstrikeAbility extends Ability<SunstrikeAbility.SunstrikeAbilityI
         return new SunstrikeAbilityInstance(this, user);
     }
 
-    protected static class SunstrikeAbilityInstance extends AbilityInstance<SunstrikeAbility> {
+    protected static class SunstrikeAbilityInstance extends AbilityInstance {
         protected BlockRayTraceResult rayTrace;
         public SunstrikeAbilityInstance(SunstrikeAbility abilityType, LivingEntity user) {
             super(abilityType, user);

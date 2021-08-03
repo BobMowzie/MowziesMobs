@@ -1,21 +1,24 @@
 package com.bobmowzie.mowziesmobs.server.ability;
 
+import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import net.minecraft.entity.LivingEntity;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection.*;
 
 // Ability instance class tracking a specific entity's use of an ability type
-public class AbilityInstance<M extends Ability> {
-    private final M abilityType;
+public class AbilityInstance {
+    private final Ability abilityType;
     private final LivingEntity user;
+    private final AbilityCapability.IAbilityCapability abilityCapability;
     private int ticksInUse;
     private int ticksInSection;
     private int currentSectionIndex;
     private boolean isUsing;
     private int cooldownTimer;
 
-    public AbilityInstance(M abilityType, LivingEntity user) {
+    public AbilityInstance(Ability abilityType, LivingEntity user) {
         this.abilityType = abilityType;
         this.user = user;
+        this.abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(user);
     }
 
     public void start() {
@@ -23,6 +26,7 @@ public class AbilityInstance<M extends Ability> {
         ticksInSection = 0;
         currentSectionIndex = 0;
         isUsing = true;
+        if (!abilityType.runsInBackground()) abilityCapability.setActiveAbility(this);
         abilityType.start(this);
 //        System.out.println("Start ability " + abilityType.getClass().getSimpleName());
     }
@@ -55,6 +59,7 @@ public class AbilityInstance<M extends Ability> {
         isUsing = false;
         cooldownTimer = abilityType.getCooldown();
         currentSectionIndex = 0;
+        if (!abilityType.runsInBackground()) abilityCapability.setActiveAbility(null);
 //        System.out.println("End ability " + abilityType.getClass().getSimpleName());
     }
 
@@ -73,7 +78,8 @@ public class AbilityInstance<M extends Ability> {
      * @return Whether or not the ability can be used
      */
     public boolean canUse() {
-        return !isUsing() && cooldownTimer == 0 && abilityType.canUse(user);
+        boolean nonBackgroundCheck = abilityType.runsInBackground() || abilityCapability.getActiveAbility() == null || canCancelActiveAbility();
+        return !isUsing() && cooldownTimer == 0 && abilityType.canUse(user) && nonBackgroundCheck;
     }
 
     /**
@@ -83,6 +89,10 @@ public class AbilityInstance<M extends Ability> {
      */
     public boolean tryAbility() {
         return abilityType.tryAbility(this);
+    }
+
+    public boolean canCancelActiveAbility() {
+        return abilityType.canCancelActiveAbility(this);
     }
 
     protected boolean canContinueUsing() {
@@ -107,14 +117,21 @@ public class AbilityInstance<M extends Ability> {
 
     public void nextSection() {
         jumpToSection(currentSectionIndex + 1);
-        if (currentSectionIndex >= abilityType.getSectionTrack().length) {
-            complete();
-        }
     }
 
     public void jumpToSection(int sectionIndex) {
         currentSectionIndex = sectionIndex;
         ticksInSection = 0;
+        if (currentSectionIndex >= abilityType.getSectionTrack().length) {
+            complete();
+        }
+        else {
+            beginSection(getCurrentSection());
+        }
+    }
+
+    protected void beginSection(AbilitySection section) {
+        abilityType.beginSection(section, this);
     }
 
     public AbilitySection getCurrentSection() {

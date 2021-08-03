@@ -44,7 +44,7 @@ public class MessageUseAbility {
                 if (entity != null) {
                     AbilityCapability.IAbilityCapability abilityCapability = CapabilityHandler.getCapability(entity, AbilityCapability.AbilityProvider.ABILITY_CAPABILITY);
                     if (abilityCapability != null) {
-                        abilityCapability.activateAbility(entity, abilityCapability.getAbilities().get(message.index));
+                        abilityCapability.activateAbility(entity, abilityCapability.getAbilities(entity)[message.index]);
                     }
                 }
             });

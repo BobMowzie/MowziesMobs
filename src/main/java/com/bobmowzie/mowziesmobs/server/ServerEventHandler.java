@@ -359,14 +359,11 @@ public final class ServerEventHandler {
                 }
             }
 
-            if (event.getWorld().isRemote && player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(EffectHandler.SUNS_BLESSING) && playerCapability.getUntilSunstrike() <= 0) {
+            if (event.getWorld().isRemote && player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(EffectHandler.SUNS_BLESSING)) {
                 if (player.isSneaking()) {
-                    MowziesMobs.NETWORK.sendToServer(new MessagePlayerSolarBeam());
-                    playerCapability.setUntilSunstrike(SOLARBEAM_COOLDOWN);
-                    playerCapability.setUsingSolarBeam(true);
+                    AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getPlayer(), AbilityCapability.SOLAR_BEAM_ABILITY);
                 } else {
-//                    MowziesMobs.NETWORK.sendToServer(new MessagePlayerSummonSunstrike());
-//                    playerCapability.setUntilSunstrike(SUNSTRIKE_COOLDOWN);
+                    AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getPlayer(), AbilityCapability.SUNSTRIKE_ABILITY);
                 }
             }
 
@@ -375,8 +372,6 @@ public final class ServerEventHandler {
                 power.onRightClickEmpty(event);
             }
         }
-
-        AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getPlayer(), AbilityCapability.SUNSTRIKE_ABILITY);
     }
 
     @SubscribeEvent
@@ -435,13 +430,11 @@ public final class ServerEventHandler {
                 aggroBarakoa(player);
             }
 
-            if (event.getSide() == LogicalSide.CLIENT && player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(EffectHandler.SUNS_BLESSING) && playerCapability.getUntilSunstrike() <= 0) {
+            if (event.getSide() == LogicalSide.CLIENT && player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(EffectHandler.SUNS_BLESSING)) {
                 if (player.isSneaking()) {
-                    MowziesMobs.NETWORK.sendToServer(new MessagePlayerSolarBeam());
-                    playerCapability.setUntilSunstrike(SOLARBEAM_COOLDOWN);
+                    AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getPlayer(), AbilityCapability.SOLAR_BEAM_ABILITY);
                 } else {
-//                    MowziesMobs.NETWORK.sendToServer(new MessagePlayerSummonSunstrike());
-//                    playerCapability.setUntilSunstrike(SUNSTRIKE_COOLDOWN);
+                    AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getPlayer(), AbilityCapability.SUNSTRIKE_ABILITY);
                 }
             }
             if (player.world.getBlockState(event.getPos()).getContainer(player.world, event.getPos()) != null) {
@@ -453,8 +446,6 @@ public final class ServerEventHandler {
                 power.onRightClickBlock(event);
             }
         }
-
-        AbilityHandler.INSTANCE.sendAbilityMessage(event.getPlayer(), AbilityCapability.SUNSTRIKE_ABILITY);
     }
 
     @SubscribeEvent
