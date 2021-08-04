@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.ability.abilities;
 
+import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
-import com.bobmowzie.mowziesmobs.server.ability.AbilityInstance;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
@@ -15,12 +15,14 @@ import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 
-public class SunstrikeAbility extends Ability<SunstrikeAbility.SunstrikeAbilityInstance> {
+public class SunstrikeAbility extends Ability {
     private static final double REACH = 15;
     private final static int SUNSTRIKE_RECOVERY = 20;
 
-    public SunstrikeAbility() {
-        super(new AbilitySection[] {
+    protected BlockRayTraceResult rayTrace;
+
+    public SunstrikeAbility(AbilityType<SunstrikeAbility> abilityType, LivingEntity user) {
+        super(abilityType, user, new AbilitySection[] {
                 new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),
                 new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, SUNSTRIKE_RECOVERY)
         });
@@ -34,43 +36,32 @@ public class SunstrikeAbility extends Ability<SunstrikeAbility.SunstrikeAbilityI
     }
 
     @Override
-    public boolean tryAbility(SunstrikeAbilityInstance abilityInstance) {
-        LivingEntity user = abilityInstance.getUser();
+    public boolean tryAbility() {
+        super.tryAbility();
+        LivingEntity user = getUser();
         BlockRayTraceResult raytrace = rayTrace(user, REACH);
         if (raytrace.getType() == RayTraceResult.Type.BLOCK && raytrace.getFace() == Direction.UP) {
-            abilityInstance.rayTrace = raytrace;
+            this.rayTrace = raytrace;
             return true;
         }
         return false;
     }
 
     @Override
-    protected void start(SunstrikeAbilityInstance abilityInstance) {
-        super.start(abilityInstance);
-        LivingEntity user = abilityInstance.getUser();
-        if (!abilityInstance.getUser().world.isRemote()) {
-            BlockPos hit = abilityInstance.rayTrace.getPos();
+    public void start() {
+        super.start();
+        LivingEntity user = getUser();
+        if (!user.world.isRemote()) {
+            BlockPos hit = rayTrace.getPos();
             EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE, user.world, user, hit.getX(), hit.getY(), hit.getZ());
             sunstrike.onSummon();
-            abilityInstance.getUser().world.addEntity(sunstrike);
+            user.world.addEntity(sunstrike);
         }
     }
 
     @Override
-    public boolean canUse(LivingEntity user) {
-        if (user instanceof PlayerEntity && !((PlayerEntity)user).inventory.getCurrentItem().isEmpty()) return false;
-        return user.isPotionActive(EffectHandler.SUNS_BLESSING);
-    }
-
-    @Override
-    public SunstrikeAbilityInstance makeInstance(LivingEntity user) {
-        return new SunstrikeAbilityInstance(this, user);
-    }
-
-    protected static class SunstrikeAbilityInstance extends AbilityInstance {
-        protected BlockRayTraceResult rayTrace;
-        public SunstrikeAbilityInstance(SunstrikeAbility abilityType, LivingEntity user) {
-            super(abilityType, user);
-        }
+    public boolean canUse() {
+        if (getUser() instanceof PlayerEntity && !((PlayerEntity)getUser()).inventory.getCurrentItem().isEmpty()) return false;
+        return getUser().isPotionActive(EffectHandler.SUNS_BLESSING);
     }
 }

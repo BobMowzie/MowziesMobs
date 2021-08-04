@@ -21,13 +21,13 @@ public enum AbilityHandler {
         return CapabilityHandler.getCapability(entity, AbilityCapability.AbilityProvider.ABILITY_CAPABILITY);
     }
 
-    public <T extends LivingEntity> void sendAbilityMessage(T entity, Ability<?> ability) {
+    public <T extends LivingEntity> void sendAbilityMessage(T entity, AbilityType<?> ability) {
         if (entity.world.isRemote) {
             return;
         }
         AbilityCapability.IAbilityCapability abilityCapability = getAbilityCapability(entity);
         if (abilityCapability != null) {
-            AbilityInstance instance = abilityCapability.getAbilityInstances().get(ability);
+            Ability instance = abilityCapability.getAbilityInstances().get(ability);
             if (instance.canUse()) {
                 abilityCapability.activateAbility(entity, ability);
                 MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new MessageUseAbility(entity.getEntityId(), ArrayUtils.indexOf(abilityCapability.getAbilities(entity), ability)));
@@ -35,7 +35,7 @@ public enum AbilityHandler {
         }
     }
 
-    public <T extends PlayerEntity> void sendPlayerTryAbilityMessage(T entity, Ability<?> ability) {
+    public <T extends PlayerEntity> void sendPlayerTryAbilityMessage(T entity, AbilityType<?> ability) {
         if (!(entity.world.isRemote && entity instanceof ClientPlayerEntity)) {
             return;
         }

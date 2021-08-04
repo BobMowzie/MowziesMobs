@@ -73,13 +73,13 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 public final class ServerEventHandler {
-    private final static int SUNSTRIKE_COOLDOWN = 45;
-    private final static int SOLARBEAM_COOLDOWN = 110;
 
     @SubscribeEvent
     public void onJoinWorld(EntityJoinWorldEvent event) {
-        AbilityCapability.IAbilityCapability abilityCapability = CapabilityHandler.getCapability(event.getEntity(), AbilityCapability.AbilityProvider.ABILITY_CAPABILITY);
-        if (abilityCapability != null) abilityCapability.instanceAbilities((LivingEntity) event.getEntity());
+        if (event.getEntity() instanceof LivingEntity) {
+            AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability((LivingEntity) event.getEntity());
+            if (abilityCapability != null) abilityCapability.instanceAbilities((LivingEntity) event.getEntity());
+        }
 
         if (event.getWorld().isRemote) {
             return;

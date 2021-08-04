@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.capability;
 
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
-import com.bobmowzie.mowziesmobs.server.ability.AbilityInstance;
+import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.FireballAbility;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.SolarBeamAbility;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.SunstrikeAbility;
@@ -18,29 +18,29 @@ import net.minecraftforge.common.util.LazyOptional;
 import java.util.*;
 
 public class AbilityCapability {
-    public static final FireballAbility FIREBALL_ABILITY = new FireballAbility();
-    public static final SunstrikeAbility SUNSTRIKE_ABILITY = new SunstrikeAbility();
-    public static final SolarBeamAbility SOLAR_BEAM_ABILITY = new SolarBeamAbility();
-    public static final Ability<?>[] PLAYER_ABILITIES = new Ability[] {
+    public static final AbilityType<FireballAbility> FIREBALL_ABILITY = new AbilityType<>(FireballAbility::new);
+    public static final AbilityType<SunstrikeAbility> SUNSTRIKE_ABILITY = new AbilityType<>(SunstrikeAbility::new);
+    public static final AbilityType<SolarBeamAbility> SOLAR_BEAM_ABILITY = new AbilityType<>(SolarBeamAbility::new);
+    public static final AbilityType<?>[] PLAYER_ABILITIES = new AbilityType[] {
             SUNSTRIKE_ABILITY,
             SOLAR_BEAM_ABILITY
     };
 
     public interface IAbilityCapability {
 
-        void activateAbility(LivingEntity entity, Ability<?> ability);
+        void activateAbility(LivingEntity entity, AbilityType<?> ability);
 
         void instanceAbilities(LivingEntity entity);
 
         void tick(LivingEntity entity);
 
-        Ability<?>[] getAbilities(LivingEntity entity);
+        AbilityType<?>[] getAbilities(LivingEntity entity);
 
-        Map<Ability<?>, AbilityInstance> getAbilityInstances();
+        Map<AbilityType<?>, Ability> getAbilityInstances();
 
-        AbilityInstance getActiveAbility();
+        Ability getActiveAbility();
 
-        void setActiveAbility(AbilityInstance activeAbility);
+        void setActiveAbility(Ability activeAbility);
 
         INBT writeNBT();
 
@@ -48,53 +48,53 @@ public class AbilityCapability {
     }
 
     public static class AbilityCapabilityImp implements IAbilityCapability {
-        Map<Ability<?>, AbilityInstance> abilityInstances = new HashMap<>();
-        AbilityInstance activeAbility = null;
+        Map<AbilityType<?>, Ability> abilityInstances = new HashMap<>();
+        Ability activeAbility = null;
 
         @Override
         public void instanceAbilities(LivingEntity entity) {
-            for (Ability<?> ability : getAbilities(entity)) {
+            for (AbilityType<?> ability : getAbilities(entity)) {
                 abilityInstances.put(ability, ability.makeInstance(entity));
             }
         }
 
         @Override
-        public void activateAbility(LivingEntity entity, Ability<?> ability) {
-            AbilityInstance instance = abilityInstances.get(ability);
-            if (instance != null) {
-                boolean tryResult = instance.tryAbility();
-                if (tryResult) instance.start();
+        public void activateAbility(LivingEntity entity, AbilityType<?> abilityType) {
+            Ability ability = abilityInstances.get(abilityType);
+            if (ability != null) {
+                boolean tryResult = ability.tryAbility();
+                if (tryResult) ability.start();
             }
-            else System.out.println("Ability " + ability.getClass().getSimpleName() + " does not exist on mob " + entity.getClass().getSimpleName());
+            else System.out.println("Ability " + abilityType.toString() + " does not exist on mob " + entity.getClass().getSimpleName());
         }
 
         @Override
         public void tick(LivingEntity entity) {
-            for (AbilityInstance abilityInstance : abilityInstances.values()) {
-                abilityInstance.tick();
+            for (Ability ability : abilityInstances.values()) {
+                ability.tick();
             }
         }
 
         @Override
-        public Ability<?>[] getAbilities(LivingEntity entity) {
+        public AbilityType<?>[] getAbilities(LivingEntity entity) {
             if (entity instanceof PlayerEntity) {
                 return PLAYER_ABILITIES;
             }
-            return new Ability[0];
+            return new AbilityType[0];
         }
 
         @Override
-        public Map<Ability<?>, AbilityInstance> getAbilityInstances() {
+        public Map<AbilityType<?>, Ability> getAbilityInstances() {
             return abilityInstances;
         }
 
         @Override
-        public AbilityInstance getActiveAbility() {
+        public Ability getActiveAbility() {
             return activeAbility;
         }
 
         @Override
-        public void setActiveAbility(AbilityInstance activeAbility) {
+        public void setActiveAbility(Ability activeAbility) {
             if (getActiveAbility() != null && getActiveAbility().isUsing()) getActiveAbility().end();
             this.activeAbility = activeAbility;
         }

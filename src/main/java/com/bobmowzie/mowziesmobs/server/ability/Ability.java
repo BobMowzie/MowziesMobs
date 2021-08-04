@@ -1,73 +1,156 @@
 package com.bobmowzie.mowziesmobs.server.ability;
 
+import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import net.minecraft.entity.LivingEntity;
+import com.bobmowzie.mowziesmobs.server.ability.AbilitySection.*;
 
-// Ability type class defining behaviors and attributes of ability
-public abstract class Ability<T extends AbilityInstance> {
+// Ability instance class tracking a specific entity's use of an ability type
+public class Ability {
     private final AbilitySection[] sectionTrack;
-    private final int cooldown;
+    private final int cooldownMax;
+    private final AbilityType abilityType;
+    private final LivingEntity user;
+    private final AbilityCapability.IAbilityCapability abilityCapability;
 
-    protected Ability(AbilitySection[] sectionTrack) {
-        this(sectionTrack, 0);
-    }
+    private int ticksInUse;
+    private int ticksInSection;
+    private int currentSectionIndex;
+    private boolean isUsing;
+    private int cooldownTimer;
 
-    protected Ability(AbilitySection[] sectionTrack, int cooldown) {
+    public Ability(AbilityType abilityType, LivingEntity user, AbilitySection[] sectionTrack, int cooldownMax) {
+        this.abilityType = abilityType;
+        this.user = user;
+        this.abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(user);
         this.sectionTrack = sectionTrack;
-        this.cooldown = cooldown;
+        this.cooldownMax = cooldownMax;
     }
 
-    protected void start(T abilityInstance) {
+    public Ability(AbilityType abilityType, LivingEntity user, AbilitySection[] sectionTrack) {
+        this(abilityType, user, sectionTrack, 0);
     }
 
-    public void tick(T abilityInstance) {
+    public void start() {
+        ticksInUse = 0;
+        ticksInSection = 0;
+        currentSectionIndex = 0;
+        isUsing = true;
+        if (!runsInBackground()) abilityCapability.setActiveAbility(this);
+//        System.out.println("Start ability " + abilityType.getClass().getSimpleName());
     }
 
-    protected void end(T abilityInstance) {
+    public void tick() {
+        if (isUsing()) {
+            if (!canContinueUsing()) end();
+
+            tickUsing();
+
+            ticksInUse++;
+            ticksInSection++;
+            AbilitySection section = getCurrentSection();
+            if (section instanceof AbilitySectionInstant) {
+                nextSection();
+            } else if (section instanceof AbilitySectionDuration) {
+                AbilitySectionDuration sectionDuration = (AbilitySectionDuration) section;
+                if (ticksInSection > sectionDuration.duration) nextSection();
+            }
+        }
+        else {
+            tickNotUsing();
+            if (getCooldownTimer() > 0) cooldownTimer--;
+        }
     }
 
-    protected void beginSection(AbilitySection section, T abilityInstance) {
+    public void tickUsing() {
 
     }
 
-    public void interrupt(T abilityInstance) {
+    public void tickNotUsing() {
 
     }
 
-    public void complete(T abilityInstance) {
+    public void end() {
+        ticksInUse = 0;
+        ticksInSection = 0;
+        isUsing = false;
+        cooldownTimer = getMaxCooldown();
+        currentSectionIndex = 0;
+        if (!runsInBackground()) abilityCapability.setActiveAbility(null);
+//        System.out.println("End ability " + abilityType.getClass().getSimpleName());
+    }
 
+    public void interrupt() {
+        end();
+    }
+
+    public void complete() {
+        end();
     }
 
     /**
      * Server-only check to see if the user can use this ability. Checked before packet is sent.
-     * @param user User of the ability
      * @return Whether or not the ability can be used
      */
-    public boolean canUse(LivingEntity user) {
-        return true;
+    public boolean canUse() {
+        boolean nonBackgroundCheck = runsInBackground() || abilityCapability.getActiveAbility() == null || canCancelActiveAbility();
+        return !isUsing() && cooldownTimer == 0 && nonBackgroundCheck;
     }
 
     /**
      * Both sides check and behavior when user tries to use this ability. Ability only starts if this returns true.
      * Called after packet is received.
-     * @param abilityInstance This ability's instance
      * @return Whether or not the ability try succeeded
      */
-    public boolean tryAbility(T abilityInstance) {
+    public boolean tryAbility() {
         return true;
     }
 
-    protected boolean canContinueUsing(T abilityInstance) {
+    public boolean canCancelActiveAbility() {
+        return false;
+    }
+
+    protected boolean canContinueUsing() {
         return true;
     }
 
-    public abstract T makeInstance(LivingEntity user);
-
-    public AbilitySection[] getSectionTrack() {
-        return sectionTrack;
+    public boolean isUsing() {
+        return isUsing;
     }
 
-    public int getCooldown() {
-        return cooldown;
+    public LivingEntity getUser() {
+        return user;
+    }
+
+    public int getTicksInUse() {
+        return ticksInUse;
+    }
+
+    public int getCooldownTimer() {
+        return cooldownTimer;
+    }
+
+    public void nextSection() {
+        jumpToSection(currentSectionIndex + 1);
+    }
+
+    public void jumpToSection(int sectionIndex) {
+        currentSectionIndex = sectionIndex;
+        ticksInSection = 0;
+        if (currentSectionIndex >= getSectionTrack().length) {
+            complete();
+        }
+        else {
+            beginSection(getCurrentSection());
+        }
+    }
+
+    protected void beginSection(AbilitySection section) {
+
+    }
+
+    public AbilitySection getCurrentSection() {
+        if (currentSectionIndex >= getSectionTrack().length) return null;
+        return getSectionTrack()[currentSectionIndex];
     }
 
     /**
@@ -80,7 +163,11 @@ public abstract class Ability<T extends AbilityInstance> {
         return false;
     }
 
-    public boolean canCancelActiveAbility(T abilityInstance) {
-        return false;
+    public AbilitySection[] getSectionTrack() {
+        return sectionTrack;
+    }
+
+    public int getMaxCooldown() {
+        return cooldownMax;
     }
 }

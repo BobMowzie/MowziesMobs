@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.ability.abilities;
 
+import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
-import com.bobmowzie.mowziesmobs.server.ability.AbilityInstance;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
@@ -12,9 +12,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 
-public class SolarBeamAbility extends Ability<SolarBeamAbility.SolarBeamAbilityInstance> {
-    public SolarBeamAbility() {
-        super(new AbilitySection[] {
+public class SolarBeamAbility extends Ability {
+    protected EntitySolarBeam solarBeam;
+
+    public SolarBeamAbility(AbilityType<SolarBeamAbility> abilityType, LivingEntity user) {
+        super(abilityType, user, new AbilitySection[] {
                 new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 20),
                 new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.ACTIVE, 55),
                 new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 20)
@@ -22,10 +24,10 @@ public class SolarBeamAbility extends Ability<SolarBeamAbility.SolarBeamAbilityI
     }
 
     @Override
-    protected void start(SolarBeamAbilityInstance abilityInstance) {
-        super.start(abilityInstance);
-        LivingEntity user = abilityInstance.getUser();
-        if (!abilityInstance.getUser().world.isRemote()) {
+    public void start() {
+        super.start();
+        LivingEntity user = getUser();
+        if (!getUser().world.isRemote()) {
             EntitySolarBeam solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM, user.world, user, user.getPosX(), user.getPosY() + 1.2f, user.getPosZ(), (float) ((user.rotationYawHead + 90) * Math.PI / 180), (float) (-user.rotationPitch * Math.PI / 180), 55);
             solarBeam.setHasPlayer(true);
             user.world.addEntity(solarBeam);
@@ -40,31 +42,19 @@ public class SolarBeamAbility extends Ability<SolarBeamAbility.SolarBeamAbilityI
                 }
             }
 
-            abilityInstance.solarBeam = solarBeam;
+            this.solarBeam = solarBeam;
         }
     }
 
     @Override
-    protected void end(SolarBeamAbilityInstance abilityInstance) {
-        super.end(abilityInstance);
-        if (abilityInstance.solarBeam != null) abilityInstance.solarBeam.remove();
+    public void end() {
+        super.end();
+        if (solarBeam != null) solarBeam.remove();
     }
 
     @Override
-    public boolean canUse(LivingEntity user) {
-        if (user instanceof PlayerEntity && !((PlayerEntity)user).inventory.getCurrentItem().isEmpty()) return false;
-        return user.isPotionActive(EffectHandler.SUNS_BLESSING);
-    }
-
-    @Override
-    public SolarBeamAbilityInstance makeInstance(LivingEntity user) {
-        return new SolarBeamAbilityInstance(this, user);
-    }
-
-    protected static class SolarBeamAbilityInstance extends AbilityInstance {
-        protected EntitySolarBeam solarBeam;
-        public SolarBeamAbilityInstance(SolarBeamAbility abilityType, LivingEntity user) {
-            super(abilityType, user);
-        }
+    public boolean canUse() {
+        if (getUser() instanceof PlayerEntity && !((PlayerEntity)getUser()).inventory.getCurrentItem().isEmpty()) return false;
+        return getUser().isPotionActive(EffectHandler.SUNS_BLESSING);
     }
 }
