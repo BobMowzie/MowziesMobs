@@ -55,6 +55,6 @@ public class SolarBeamAbility extends Ability {
     @Override
     public boolean canUse() {
         if (getUser() instanceof PlayerEntity && !((PlayerEntity)getUser()).inventory.getCurrentItem().isEmpty()) return false;
-        return getUser().isPotionActive(EffectHandler.SUNS_BLESSING);
+        return getUser().isPotionActive(EffectHandler.SUNS_BLESSING) && super.canUse();
     }
 }

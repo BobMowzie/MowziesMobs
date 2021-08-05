@@ -10,6 +10,7 @@ import com.bobmowzie.mowziesmobs.server.ServerEventHandler;
 import com.bobmowzie.mowziesmobs.server.ServerProxy;
 import com.bobmowzie.mowziesmobs.server.advancement.AdvancementHandler;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
+import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
@@ -75,6 +76,7 @@ public final class MowziesMobs {
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
+        MinecraftForge.EVENT_BUS.register(new AbilityCapability.AbilityEventHandler());
         MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, this::onWorldLoad);
         MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, this::onBiomeLoading);
     }

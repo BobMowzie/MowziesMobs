@@ -1,10 +1,9 @@
 package com.bobmowzie.mowziesmobs.server.capability;
 
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
+import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
-import com.bobmowzie.mowziesmobs.server.ability.abilities.FireballAbility;
-import com.bobmowzie.mowziesmobs.server.ability.abilities.SolarBeamAbility;
-import com.bobmowzie.mowziesmobs.server.ability.abilities.SunstrikeAbility;
+import com.bobmowzie.mowziesmobs.server.ability.abilities.*;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -14,6 +13,11 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.*;
 
@@ -21,9 +25,13 @@ public class AbilityCapability {
     public static final AbilityType<FireballAbility> FIREBALL_ABILITY = new AbilityType<>(FireballAbility::new);
     public static final AbilityType<SunstrikeAbility> SUNSTRIKE_ABILITY = new AbilityType<>(SunstrikeAbility::new);
     public static final AbilityType<SolarBeamAbility> SOLAR_BEAM_ABILITY = new AbilityType<>(SolarBeamAbility::new);
+    public static final AbilityType<WroughtAxeSwingAbility> WROUGHT_AXE_SWING_ABILITY = new AbilityType<>(WroughtAxeSwingAbility::new);
+    public static final AbilityType<WroughtAxeSlamAbility> WROUGHT_AXE_SLAM_ABILITY = new AbilityType<>(WroughtAxeSlamAbility::new);
     public static final AbilityType<?>[] PLAYER_ABILITIES = new AbilityType[] {
             SUNSTRIKE_ABILITY,
-            SOLAR_BEAM_ABILITY
+            SOLAR_BEAM_ABILITY,
+            WROUGHT_AXE_SWING_ABILITY,
+            WROUGHT_AXE_SLAM_ABILITY
     };
 
     public interface IAbilityCapability {
@@ -34,9 +42,11 @@ public class AbilityCapability {
 
         void tick(LivingEntity entity);
 
-        AbilityType<?>[] getAbilities(LivingEntity entity);
+        AbilityType<?>[] getAbilityTypesOnEntity(LivingEntity entity);
 
-        Map<AbilityType<?>, Ability> getAbilityInstances();
+        Map<AbilityType<?>, Ability> getAbilityMap();
+
+        Collection<Ability> getAbilities();
 
         Ability getActiveAbility();
 
@@ -53,7 +63,7 @@ public class AbilityCapability {
 
         @Override
         public void instanceAbilities(LivingEntity entity) {
-            for (AbilityType<?> ability : getAbilities(entity)) {
+            for (AbilityType<?> ability : getAbilityTypesOnEntity(entity)) {
                 abilityInstances.put(ability, ability.makeInstance(entity));
             }
         }
@@ -76,7 +86,7 @@ public class AbilityCapability {
         }
 
         @Override
-        public AbilityType<?>[] getAbilities(LivingEntity entity) {
+        public AbilityType<?>[] getAbilityTypesOnEntity(LivingEntity entity) {
             if (entity instanceof PlayerEntity) {
                 return PLAYER_ABILITIES;
             }
@@ -84,7 +94,7 @@ public class AbilityCapability {
         }
 
         @Override
-        public Map<AbilityType<?>, Ability> getAbilityInstances() {
+        public Map<AbilityType<?>, Ability> getAbilityMap() {
             return abilityInstances;
         }
 
@@ -97,6 +107,11 @@ public class AbilityCapability {
         public void setActiveAbility(Ability activeAbility) {
             if (getActiveAbility() != null && getActiveAbility().isUsing()) getActiveAbility().end();
             this.activeAbility = activeAbility;
+        }
+
+        @Override
+        public Collection<Ability> getAbilities() {
+            return abilityInstances.values();
         }
 
         @Override
@@ -133,6 +148,107 @@ public class AbilityCapability {
         @Override
         public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
             return cap == ABILITY_CAPABILITY ? instance.cast() : LazyOptional.empty();
+        }
+    }
+
+    public static final class AbilityEventHandler {
+        @SubscribeEvent
+        public void onPlayerInteract(PlayerInteractEvent.RightClickEmpty event) {
+            PlayerEntity player = event.getPlayer();
+            IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+            if (abilityCapability != null) {
+                for (Ability ability : abilityCapability.getAbilities()) {
+                    ability.onRightClickEmpty(event);
+                }
+            }
+        }
+
+        @SubscribeEvent
+        public void onPlayerRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+            PlayerEntity player = event.getPlayer();
+            IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+            if (abilityCapability != null) {
+                for (Ability ability : abilityCapability.getAbilities()) {
+                    ability.onRightClickBlock(event);
+                }
+            }
+        }
+
+        @SubscribeEvent
+        public void onPlayerRightClickItem(PlayerInteractEvent.RightClickItem event) {
+            PlayerEntity player = event.getPlayer();
+            IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+            if (abilityCapability != null) {
+                for (Ability ability : abilityCapability.getAbilities()) {
+                    ability.onRightClickWithItem(event);
+                }
+            }
+        }
+
+        @SubscribeEvent
+        public void onPlayerRightClickEntity(PlayerInteractEvent.EntityInteract event) {
+            PlayerEntity player = event.getPlayer();
+            IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+            if (abilityCapability != null) {
+                for (Ability ability : abilityCapability.getAbilities()) {
+                    ability.onRightClickEntity(event);
+                }
+            }
+        }
+
+        @SubscribeEvent
+        public void onPlayerLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event) {
+            PlayerEntity player = event.getPlayer();
+            IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+            if (abilityCapability != null) {
+                for (Ability ability : abilityCapability.getAbilities()) {
+                    ability.onLeftClickEmpty(event);
+                }
+            }
+        }
+
+        @SubscribeEvent
+        public void onPlayerLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
+            PlayerEntity player = event.getPlayer();
+            IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+            if (abilityCapability != null) {
+                for (Ability ability : abilityCapability.getAbilities()) {
+                    ability.onLeftClickBlock(event);
+                }
+            }
+        }
+
+        @SubscribeEvent
+        public void onLeftClickEntity(AttackEntityEvent event) {
+            PlayerEntity player = event.getPlayer();
+            IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+            if (abilityCapability != null) {
+                for (Ability ability : abilityCapability.getAbilities()) {
+                    ability.onLeftClickEntity(event);
+                }
+            }
+        }
+
+        @SubscribeEvent
+        public void onTakeDamage(LivingHurtEvent event) {
+            LivingEntity player = event.getEntityLiving();
+            IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+            if (abilityCapability != null) {
+                for (Ability ability : abilityCapability.getAbilities()) {
+                    ability.onTakeDamage(event);
+                }
+            }
+        }
+
+        @SubscribeEvent
+        public void onJump(LivingEvent.LivingJumpEvent event) {
+            LivingEntity player = event.getEntityLiving();
+            IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+            if (abilityCapability != null) {
+                for (Ability ability : abilityCapability.getAbilities()) {
+                    ability.onJump(event);
+                }
+            }
         }
     }
 }

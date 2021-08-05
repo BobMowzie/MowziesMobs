@@ -1,5 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.message.mouse;
 
+import com.bobmowzie.mowziesmobs.server.ability.Ability;
+import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.power.Power;
@@ -42,6 +45,12 @@ public class MessageLeftMouseUp {
                     Power[] powers = capability.getPowers();
                     for (int i = 0; i < powers.length; i++) {
                         powers[i].onLeftMouseUp(player);
+                    }
+                }
+                AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+                if (abilityCapability != null) {
+                    for (Ability ability : abilityCapability.getAbilities()) {
+                        ability.onLeftMouseUp(player);
                     }
                 }
             }

@@ -14,6 +14,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 public class SunstrikeAbility extends Ability {
     private static final double REACH = 15;
@@ -62,6 +63,6 @@ public class SunstrikeAbility extends Ability {
     @Override
     public boolean canUse() {
         if (getUser() instanceof PlayerEntity && !((PlayerEntity)getUser()).inventory.getCurrentItem().isEmpty()) return false;
-        return getUser().isPotionActive(EffectHandler.SUNS_BLESSING);
+        return getUser().isPotionActive(EffectHandler.SUNS_BLESSING) && super.canUse();
     }
 }

@@ -3,12 +3,16 @@ package com.bobmowzie.mowziesmobs.server.ability;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import net.minecraft.entity.LivingEntity;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection.*;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-// Ability instance class tracking a specific entity's use of an ability type
 public class Ability {
     private final AbilitySection[] sectionTrack;
     private final int cooldownMax;
-    private final AbilityType abilityType;
+    private final AbilityType<? extends Ability> abilityType;
     private final LivingEntity user;
     private final AbilityCapability.IAbilityCapability abilityCapability;
 
@@ -18,7 +22,7 @@ public class Ability {
     private boolean isUsing;
     private int cooldownTimer;
 
-    public Ability(AbilityType abilityType, LivingEntity user, AbilitySection[] sectionTrack, int cooldownMax) {
+    public Ability(AbilityType<? extends Ability> abilityType, LivingEntity user, AbilitySection[] sectionTrack, int cooldownMax) {
         this.abilityType = abilityType;
         this.user = user;
         this.abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(user);
@@ -26,7 +30,7 @@ public class Ability {
         this.cooldownMax = cooldownMax;
     }
 
-    public Ability(AbilityType abilityType, LivingEntity user, AbilitySection[] sectionTrack) {
+    public Ability(AbilityType<? extends Ability> abilityType, LivingEntity user, AbilitySection[] sectionTrack) {
         this(abilityType, user, sectionTrack, 0);
     }
 
@@ -36,7 +40,6 @@ public class Ability {
         currentSectionIndex = 0;
         isUsing = true;
         if (!runsInBackground()) abilityCapability.setActiveAbility(this);
-//        System.out.println("Start ability " + abilityType.getClass().getSimpleName());
     }
 
     public void tick() {
@@ -76,7 +79,6 @@ public class Ability {
         cooldownTimer = getMaxCooldown();
         currentSectionIndex = 0;
         if (!runsInBackground()) abilityCapability.setActiveAbility(null);
-//        System.out.println("End ability " + abilityType.getClass().getSimpleName());
     }
 
     public void interrupt() {
@@ -169,5 +171,66 @@ public class Ability {
 
     public int getMaxCooldown() {
         return cooldownMax;
+    }
+
+    // Events
+    public void onRightClickEmpty(PlayerInteractEvent.RightClickEmpty event) {
+
+    }
+
+    public void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+
+    }
+
+    public void onRightClickWithItem(PlayerInteractEvent.RightClickItem event) {
+
+    }
+
+    public void onRightClickEntity(PlayerInteractEvent.EntityInteract event) {
+
+    }
+
+    public void onLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event) {
+
+    }
+
+    public void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
+
+    }
+
+    public void onLeftClickEntity(AttackEntityEvent event) {
+
+    }
+
+    public void onTakeDamage(LivingHurtEvent event) {
+
+    }
+
+    public void onJump(LivingEvent.LivingJumpEvent event) {
+
+    }
+
+    public void onRightMouseDown(PlayerEntity player) {
+
+    }
+
+    public void onLeftMouseDown(PlayerEntity player) {
+
+    }
+
+    public void onRightMouseUp(PlayerEntity player) {
+
+    }
+
+    public void onLeftMouseUp(PlayerEntity player) {
+
+    }
+
+    public void onSneakDown(PlayerEntity player) {
+
+    }
+
+    public void onSneakUp(PlayerEntity player) {
+
     }
 }

@@ -1,6 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.capability;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.ability.Ability;
+import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
@@ -14,6 +16,7 @@ import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.power.Power;
 import com.bobmowzie.mowziesmobs.server.power.PowerGeomancy;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -34,7 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerCapability {
-    public static final int SWING_COOLDOWN = 30;
 
     public interface IPlayerCapability {
         INBT writeNBT();
@@ -312,12 +314,24 @@ public class PlayerCapability {
                     for (int i = 0; i < powers.length; i++) {
                         powers[i].onLeftMouseDown(player);
                     }
+                    AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+                    if (abilityCapability != null) {
+                        for (Ability ability : abilityCapability.getAbilities()) {
+                            ability.onLeftMouseDown(player);
+                        }
+                    }
                 }
                 if (Minecraft.getInstance().gameSettings.keyBindUseItem.isKeyDown() && !mouseRightDown) {
                     mouseRightDown = true;
                     MowziesMobs.NETWORK.sendToServer(new MessageRightMouseDown());
                     for (int i = 0; i < powers.length; i++) {
                         powers[i].onRightMouseDown(player);
+                    }
+                    AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+                    if (abilityCapability != null) {
+                        for (Ability ability : abilityCapability.getAbilities()) {
+                            ability.onRightMouseDown(player);
+                        }
                     }
                 }
                 if (!Minecraft.getInstance().gameSettings.keyBindAttack.isKeyDown() && mouseLeftDown) {
@@ -326,12 +340,24 @@ public class PlayerCapability {
                     for (int i = 0; i < powers.length; i++) {
                         powers[i].onLeftMouseUp(player);
                     }
+                    AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+                    if (abilityCapability != null) {
+                        for (Ability ability : abilityCapability.getAbilities()) {
+                            ability.onLeftMouseUp(player);
+                        }
+                    }
                 }
                 if (!Minecraft.getInstance().gameSettings.keyBindUseItem.isKeyDown() && mouseRightDown) {
                     mouseRightDown = false;
                     MowziesMobs.NETWORK.sendToServer(new MessageRightMouseUp());
                     for (int i = 0; i < powers.length; i++) {
                         powers[i].onRightMouseUp(player);
+                    }
+                    AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+                    if (abilityCapability != null) {
+                        for (Ability ability : abilityCapability.getAbilities()) {
+                            ability.onRightMouseUp(player);
+                        }
                     }
                 }
             }
@@ -340,10 +366,22 @@ public class PlayerCapability {
                 for (int i = 0; i < powers.length; i++) {
                     powers[i].onSneakDown(player);
                 }
+                AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+                if (abilityCapability != null) {
+                    for (Ability ability : abilityCapability.getAbilities()) {
+                        ability.onSneakDown(player);
+                    }
+                }
             }
             else if (!player.isSneaking() && prevSneaking) {
                 for (int i = 0; i < powers.length; i++) {
                     powers[i].onSneakUp(player);
+                }
+                AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+                if (abilityCapability != null) {
+                    for (Ability ability : abilityCapability.getAbilities()) {
+                        ability.onSneakUp(player);
+                    }
                 }
             }
             prevSneaking = player.isSneaking();

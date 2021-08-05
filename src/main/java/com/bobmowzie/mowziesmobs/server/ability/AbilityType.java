@@ -2,7 +2,6 @@ package com.bobmowzie.mowziesmobs.server.ability;
 
 import net.minecraft.entity.LivingEntity;
 
-// Ability type class defining behaviors and attributes of ability
 public class AbilityType<T extends Ability> {
     private final IFactory<T> factory;
 

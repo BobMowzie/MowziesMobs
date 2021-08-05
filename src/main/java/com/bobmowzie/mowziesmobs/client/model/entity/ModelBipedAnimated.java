@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.render.entity.RenderSuperNova;
+import com.bobmowzie.mowziesmobs.server.ability.abilities.WroughtAxeSwingAbility;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
@@ -71,7 +72,7 @@ public class ModelBipedAnimated<T extends LivingEntity> extends BipedModel {
 
         // Axe of a thousand metals attack animations
         if (playerCapability != null && playerCapability.getUntilAxeSwing() > 0) {
-            float frame = (PlayerCapability.SWING_COOLDOWN - playerCapability.getUntilAxeSwing()) + delta;
+            float frame = (30 - playerCapability.getUntilAxeSwing()) + delta;
             boolean rightHanded = player.getPrimaryHand() == HandSide.RIGHT;
             ModelRenderer arm = rightHanded ? model.bipedRightArm : model.bipedLeftArm;
             float handInvert = rightHanded ? 1 : -1;

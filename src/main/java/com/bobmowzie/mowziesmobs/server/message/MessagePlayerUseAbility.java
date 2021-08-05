@@ -39,7 +39,7 @@ public class MessagePlayerUseAbility {
             context.enqueueWork(() -> {
                 AbilityCapability.IAbilityCapability abilityCapability = CapabilityHandler.getCapability(player, AbilityCapability.AbilityProvider.ABILITY_CAPABILITY);
                 if (abilityCapability != null) {
-                    AbilityHandler.INSTANCE.sendAbilityMessage(player, abilityCapability.getAbilities(player)[message.index]);
+                    AbilityHandler.INSTANCE.sendAbilityMessage(player, abilityCapability.getAbilityTypesOnEntity(player)[message.index]);
                 }
             });
             context.setPacketHandled(true);
