@@ -66,12 +66,9 @@ public class ItemWroughtAxe extends MowzieAxeItem {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-        System.out.println("RIGHT CLICK");
         if (hand == Hand.MAIN_HAND && player.getCooledAttackStrength(0.5F) == 1.0f) {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-            System.out.println("MAIN HAND, ATTACK STRENGTH");
             if (playerCapability != null && playerCapability.getUntilAxeSwing() <= 0) {
-                System.out.println("PASS");
                 boolean verticalAttack = player.isSneaking() && player.isOnGround();
                 if (verticalAttack)
                     AbilityHandler.INSTANCE.sendAbilityMessage(player, AbilityCapability.WROUGHT_AXE_SLAM_ABILITY);

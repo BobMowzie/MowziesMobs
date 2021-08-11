@@ -127,6 +127,10 @@ public class Ability {
         return ticksInUse;
     }
 
+    public int getTicksInSection() {
+        return ticksInSection;
+    }
+
     public int getCooldownTimer() {
         return cooldownTimer;
     }

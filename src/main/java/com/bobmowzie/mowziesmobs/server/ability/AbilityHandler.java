@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.ability;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.ability.abilities.*;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.message.MessagePlayerUseAbility;
@@ -15,6 +16,20 @@ import javax.annotation.Nullable;
 
 public enum AbilityHandler {
     INSTANCE;
+
+    public static final AbilityType<FireballAbility> FIREBALL_ABILITY = new AbilityType<>(FireballAbility::new);
+    public static final AbilityType<SunstrikeAbility> SUNSTRIKE_ABILITY = new AbilityType<>(SunstrikeAbility::new);
+    public static final AbilityType<SolarBeamAbility> SOLAR_BEAM_ABILITY = new AbilityType<>(SolarBeamAbility::new);
+    public static final AbilityType<WroughtAxeSwingAbility> WROUGHT_AXE_SWING_ABILITY = new AbilityType<>(WroughtAxeSwingAbility::new);
+    public static final AbilityType<WroughtAxeSlamAbility> WROUGHT_AXE_SLAM_ABILITY = new AbilityType<>(WroughtAxeSlamAbility::new);
+    public static final AbilityType<SpawnBoulderAbility> SPAWN_BOULDER_ABILITY = new AbilityType<>(SpawnBoulderAbility::new);
+    public static final AbilityType<?>[] PLAYER_ABILITIES = new AbilityType[] {
+            SUNSTRIKE_ABILITY,
+            SOLAR_BEAM_ABILITY,
+            WROUGHT_AXE_SWING_ABILITY,
+            WROUGHT_AXE_SLAM_ABILITY,
+            SPAWN_BOULDER_ABILITY
+    };
 
     @Nullable
     public AbilityCapability.IAbilityCapability getAbilityCapability(LivingEntity entity) {

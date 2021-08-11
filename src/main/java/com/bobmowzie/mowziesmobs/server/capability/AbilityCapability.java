@@ -22,17 +22,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import java.util.*;
 
 public class AbilityCapability {
-    public static final AbilityType<FireballAbility> FIREBALL_ABILITY = new AbilityType<>(FireballAbility::new);
-    public static final AbilityType<SunstrikeAbility> SUNSTRIKE_ABILITY = new AbilityType<>(SunstrikeAbility::new);
-    public static final AbilityType<SolarBeamAbility> SOLAR_BEAM_ABILITY = new AbilityType<>(SolarBeamAbility::new);
-    public static final AbilityType<WroughtAxeSwingAbility> WROUGHT_AXE_SWING_ABILITY = new AbilityType<>(WroughtAxeSwingAbility::new);
-    public static final AbilityType<WroughtAxeSlamAbility> WROUGHT_AXE_SLAM_ABILITY = new AbilityType<>(WroughtAxeSlamAbility::new);
-    public static final AbilityType<?>[] PLAYER_ABILITIES = new AbilityType[] {
-            SUNSTRIKE_ABILITY,
-            SOLAR_BEAM_ABILITY,
-            WROUGHT_AXE_SWING_ABILITY,
-            WROUGHT_AXE_SLAM_ABILITY
-    };
 
     public interface IAbilityCapability {
 
@@ -88,7 +77,7 @@ public class AbilityCapability {
         @Override
         public AbilityType<?>[] getAbilityTypesOnEntity(LivingEntity entity) {
             if (entity instanceof PlayerEntity) {
-                return PLAYER_ABILITIES;
+                return AbilityHandler.PLAYER_ABILITIES;
             }
             return new AbilityType[0];
         }
