@@ -3,7 +3,6 @@ package com.bobmowzie.mowziesmobs.server.capability;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
-import com.bobmowzie.mowziesmobs.server.ability.abilities.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,6 +14,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -51,13 +51,16 @@ public class AbilityCapability {
     }
 
     public static class AbilityCapabilityImp implements IAbilityCapability {
-        Map<AbilityType<?>, Ability> abilityInstances = new HashMap<>();
+        SortedMap<AbilityType<?>, Ability> abilityInstances = new TreeMap<>();
         Ability activeAbility = null;
+        Map<String, INBT> nbtMap = new HashMap<>();
 
         @Override
         public void instanceAbilities(LivingEntity entity) {
-            for (AbilityType<?> ability : getAbilityTypesOnEntity(entity)) {
-                abilityInstances.put(ability, ability.makeInstance(entity));
+            for (AbilityType<?> abilityType : getAbilityTypesOnEntity(entity)) {
+                Ability ability = abilityType.makeInstance(entity);
+                abilityInstances.put(abilityType, ability);
+                if (nbtMap.containsKey(abilityType.getName())) ability.readNBT(nbtMap.get(abilityType.getName()));
             }
         }
 
@@ -110,12 +113,22 @@ public class AbilityCapability {
         @Override
         public INBT writeNBT() {
             CompoundNBT compound = new CompoundNBT();
+            for (Map.Entry<AbilityType<?>, Ability> abilityEntry : getAbilityMap().entrySet()) {
+                CompoundNBT nbt = abilityEntry.getValue().writeNBT();
+                if (!nbt.isEmpty()) {
+                    compound.put(abilityEntry.getKey().getName(), nbt);
+                }
+            }
             return compound;
         }
 
         @Override
         public void readNBT(INBT nbt) {
             CompoundNBT compound = (CompoundNBT) nbt;
+            Set<String> keys = compound.keySet();
+            for (String abilityName : keys) {
+                nbtMap.put(abilityName, compound.get(abilityName));
+            }
         }
     }
 
@@ -131,12 +144,22 @@ public class AbilityCapability {
         }
     }
 
-    public static class AbilityProvider implements ICapabilityProvider
+    public static class AbilityProvider implements ICapabilitySerializable<INBT>
     {
         @CapabilityInject(IAbilityCapability.class)
         public static final Capability<IAbilityCapability> ABILITY_CAPABILITY = null;
 
         private final LazyOptional<IAbilityCapability> instance = LazyOptional.of(ABILITY_CAPABILITY::getDefaultInstance);
+
+        @Override
+        public INBT serializeNBT() {
+            return ABILITY_CAPABILITY.getStorage().writeNBT(ABILITY_CAPABILITY, this.instance.orElseThrow(() -> new IllegalArgumentException("Lazy optional must not be empty")), null);
+        }
+
+        @Override
+        public void deserializeNBT(INBT nbt) {
+            ABILITY_CAPABILITY.getStorage().readNBT(ABILITY_CAPABILITY, this.instance.orElseThrow(() -> new IllegalArgumentException("Lazy optional must not be empty")), null, nbt);
+        }
 
         @Override
         public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {

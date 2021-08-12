@@ -4,6 +4,8 @@ import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import net.minecraft.entity.LivingEntity;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection.*;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -176,6 +178,32 @@ public class Ability {
 
     public int getMaxCooldown() {
         return cooldownMax;
+    }
+
+    public CompoundNBT writeNBT() {
+        CompoundNBT compound = new CompoundNBT();
+        if (isUsing()) {
+            compound.putInt("ticks_in_use", ticksInUse);
+            compound.putInt("ticks_in_section", ticksInSection);
+            compound.putInt("current_section", currentSectionIndex);
+        }
+        else if (cooldownTimer > 0) {
+            compound.putInt("cooldown_timer", cooldownTimer);
+        }
+        return compound;
+    }
+
+    public void readNBT(INBT nbt) {
+        CompoundNBT compound = (CompoundNBT) nbt;
+        isUsing = compound.contains("ticks_in_use");
+        if (isUsing) {
+            ticksInUse = compound.getInt("ticks_in_use");
+            ticksInSection = compound.getInt("ticks_in_section");
+            currentSectionIndex = compound.getInt("current_section");
+        }
+        else {
+            cooldownTimer = compound.getInt("cooldown_timer");
+        }
     }
 
     // Events
