@@ -71,9 +71,9 @@ public class ItemWroughtAxe extends MowzieAxeItem {
             if (playerCapability != null && playerCapability.getUntilAxeSwing() <= 0) {
                 boolean verticalAttack = player.isSneaking() && player.isOnGround();
                 if (verticalAttack)
-                    AbilityHandler.INSTANCE.sendAbilityMessage(player, AbilityCapability.WROUGHT_AXE_SLAM_ABILITY);
+                    AbilityHandler.INSTANCE.sendAbilityMessage(player, AbilityHandler.WROUGHT_AXE_SLAM_ABILITY);
                 else
-                    AbilityHandler.INSTANCE.sendAbilityMessage(player, AbilityCapability.WROUGHT_AXE_SWING_ABILITY);
+                    AbilityHandler.INSTANCE.sendAbilityMessage(player, AbilityHandler.WROUGHT_AXE_SWING_ABILITY);
                 playerCapability.setVerticalSwing(verticalAttack);
                 playerCapability.setUntilAxeSwing(30);
                 player.setActiveHand(hand);

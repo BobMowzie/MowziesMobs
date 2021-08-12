@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import net.minecraft.entity.LivingEntity;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection.*;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
@@ -235,6 +236,11 @@ public class Ability {
     }
 
     public void onSneakUp(PlayerEntity player) {
+
+    }
+
+    // Client events
+    public void onRenderTick(TickEvent.RenderTickEvent event) {
 
     }
 }

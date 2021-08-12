@@ -277,7 +277,7 @@ public class PowerGeomancy extends Power {
 
     @Override
     public boolean canUse(PlayerEntity player) {
-        return player.getHeldItemMainhand().isEmpty() && player.isPotionActive(EffectHandler.GEOMANCY);
+        return false;//player.getHeldItemMainhand().isEmpty() && player.isPotionActive(EffectHandler.GEOMANCY);
     }
 
     public int getSpawnBoulderCharge() {

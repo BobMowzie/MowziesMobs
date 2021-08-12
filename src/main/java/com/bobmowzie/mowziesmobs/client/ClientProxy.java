@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.client.render.entity.*;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.SunblockLayer;
 import com.bobmowzie.mowziesmobs.client.sound.*;
 import com.bobmowzie.mowziesmobs.server.ServerProxy;
+import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.*;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
@@ -46,6 +47,7 @@ public class ClientProxy extends ServerProxy {
         modbus.register(MMModels.class);
         MinecraftForge.EVENT_BUS.register(ClientEventHandler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(FrozenRenderHandler.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(AbilityCapability.AbilityClientEventHandler.INSTANCE);
     }
 
     @Override
@@ -76,7 +78,7 @@ public class ClientProxy extends ServerProxy {
     }
 
     @Override
-    public void playBoulderChargeSound(PlayerEntity player) {
+    public void playBoulderChargeSound(LivingEntity player) {
         Minecraft.getInstance().getSoundHandler().play(new SpawnBoulderChargeSound(player));
     }
 

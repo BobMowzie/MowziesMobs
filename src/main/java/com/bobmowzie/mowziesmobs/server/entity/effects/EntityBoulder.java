@@ -120,8 +120,8 @@ public class EntityBoulder extends Entity {
     }
 
     public boolean checkCanSpawn() {
-        if (!world.getEntitiesWithinAABB(EntityBoulder.class, getBoundingBox()).isEmpty()) return false;
-        return world.hasNoCollisions(this, getBoundingBox());
+        if (!world.getEntitiesWithinAABB(EntityBoulder.class, getBoundingBox().shrink(0.01)).isEmpty()) return false;
+        return world.hasNoCollisions(this, getBoundingBox().shrink(0.01));
     }
 
     @Override

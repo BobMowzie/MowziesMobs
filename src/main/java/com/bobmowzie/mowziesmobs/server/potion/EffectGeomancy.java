@@ -4,6 +4,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FenceBlock;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.potion.EffectType;
 
 public class EffectGeomancy extends MowzieEffect {
@@ -32,5 +33,9 @@ public class EffectGeomancy extends MowzieEffect {
                 && blockState.getBlock() != Blocks.SLIME_BLOCK
                 && blockState.getBlock() != Blocks.HOPPER
                 && !blockState.hasTileEntity();
+    }
+
+    public static boolean canUse(LivingEntity entity) {
+        return entity.getHeldItemMainhand().isEmpty() && entity.isPotionActive(EffectHandler.GEOMANCY);
     }
 }

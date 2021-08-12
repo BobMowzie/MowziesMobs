@@ -85,7 +85,7 @@ public class ServerProxy {
 
     public void playIceBreathSound(Entity entity) {}
 
-    public void playBoulderChargeSound(PlayerEntity player) {}
+    public void playBoulderChargeSound(LivingEntity player) {}
 
     public void playNagaSwoopSound(EntityNaga naga) {}
 

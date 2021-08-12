@@ -1,24 +1,33 @@
 package com.bobmowzie.mowziesmobs.server.ability.abilities;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleOrb;
+import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
+import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
-import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBoulder;
 import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 public class SpawnBoulderAbility extends Ability {
@@ -60,12 +69,46 @@ public class SpawnBoulderAbility extends Ability {
     @Override
     public void tick() {
         super.tick();
-        if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.STARTUP) {
+        if (isUsing() && getCurrentSection().sectionType == AbilitySection.AbilitySectionType.STARTUP) {
             spawnBoulderCharge++;
+            if (spawnBoulderCharge > 1) getUser().addPotionEffect(new EffectInstance(Effects.SLOWNESS, 3, 2, false, false));
+            if (spawnBoulderCharge == 1 && getUser().world.isRemote) MowziesMobs.PROXY.playBoulderChargeSound(getUser());
+            if ((spawnBoulderCharge + 10) % 10 == 0 && spawnBoulderCharge < 40) {
+                if (getUser().world.isRemote) {
+                    AdvancedParticleBase.spawnParticle(getUser().world, ParticleHandler.RING2.get(), (float) getUser().getPosX(), (float) getUser().getPosY() + getUser().getHeight() / 2f, (float) getUser().getPosZ(), 0, 0, 0, false, 0, Math.PI / 2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, true, new ParticleComponent[]{
+                            new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0f, 0.7f), false),
+                            new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd((0.8f + 2.7f * spawnBoulderCharge / 60f) * 10f, 0), false)
+                    });
+                }
+            }
+            if (spawnBoulderCharge == 50) {
+                if (getUser().world.isRemote) {
+                    AdvancedParticleBase.spawnParticle(getUser().world, ParticleHandler.RING2.get(), (float) getUser().getPosX(), (float) getUser().getPosY() + getUser().getHeight() / 2f, (float) getUser().getPosZ(), 0, 0, 0, true, 0, 0, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 20, true, true, new ParticleComponent[]{
+                            new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0.7f, 0f), false),
+                            new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(0, 40f), false)
+                    });
+                }
+                getUser().playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL.get(), 1, 1f);
+            }
+            if (getUser().world.isRemote && spawnBoulderCharge > 5 && spawnBoulderCharge < 30) {
+                int particleCount = 4;
+                while (--particleCount != 0) {
+                    double radius = 0.5f + 1.5f * spawnBoulderCharge/30f;
+                    double yaw = getUser().getRNG().nextFloat() * 2 * Math.PI;
+                    double pitch = getUser().getRNG().nextFloat() * 2 * Math.PI;
+                    double ox = radius * Math.sin(yaw) * Math.sin(pitch);
+                    double oy = radius * Math.cos(pitch);
+                    double oz = radius * Math.cos(yaw) * Math.sin(pitch);
+                    getUser().world.addParticle(new ParticleOrb.OrbData((float) getUser().getPosX(), (float) getUser().getPosY() + getUser().getHeight() /2f, (float) getUser().getPosZ(), 14), getUser().getPosX() + ox, getUser().getPosY() + oy + getUser().getHeight()/2, getUser().getPosZ() + oz, 0, 0, 0);
+                }
+            }
 
             int size = getBoulderSize() + 1;
             EntityType<EntityBoulder> type = EntityHandler.BOULDERS[size];
-            if (!getUser().world.hasNoCollisions(type.getBoundingBoxWithSizeApplied(spawnBoulderPos.getX() + 0.5F, spawnBoulderPos.getY() + 2, spawnBoulderPos.getZ() + 0.5F))) {
+            if (
+                    !getUser().world.hasNoCollisions(type.getBoundingBoxWithSizeApplied(spawnBoulderPos.getX() + 0.5F, spawnBoulderPos.getY() + 2, spawnBoulderPos.getZ() + 0.5F))
+                    || getUser().getDistanceSq(spawnBoulderPos.getX(), spawnBoulderPos.getY(), spawnBoulderPos.getZ()) > 36
+            ) {
                 nextSection();
             }
         }
@@ -115,6 +158,17 @@ public class SpawnBoulderAbility extends Ability {
     }
 
     @Override
+    public boolean canUse() {
+        return EffectGeomancy.canUse(getUser()) && super.canUse();
+    }
+
+    @Override
+    public void end() {
+        spawnBoulderCharge = 0;
+        super.end();
+    }
+
+    @Override
     public void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         super.onRightClickBlock(event);
         if (!event.getWorld().isRemote()) AbilityHandler.INSTANCE.sendAbilityMessage(event.getEntityLiving(), AbilityHandler.SPAWN_BOULDER_ABILITY);
@@ -124,5 +178,22 @@ public class SpawnBoulderAbility extends Ability {
     public void onRightClickEmpty(PlayerInteractEvent.RightClickEmpty event) {
         super.onRightClickEmpty(event);
         AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getPlayer(), AbilityHandler.SPAWN_BOULDER_ABILITY);
+    }
+
+    @Override
+    public void onRenderTick(TickEvent.RenderTickEvent event) {
+        super.onRenderTick(event);
+        if (isUsing() && getCurrentSection().sectionType == AbilitySection.AbilitySectionType.STARTUP && getTicksInSection() > 1) {
+            Vector3d playerEyes = getUser().getEyePosition(Minecraft.getInstance().getRenderPartialTicks());
+            Vector3d vec = playerEyes.subtract(lookPos).normalize();
+            float yaw = (float) Math.atan2(vec.z, vec.x);
+            float pitch = (float) Math.asin(vec.y);
+            getUser().rotationYaw = (float) (yaw * 180f / Math.PI + 90);
+            getUser().rotationPitch = (float) (pitch * 180f / Math.PI);
+            getUser().rotationYawHead = getUser().rotationYaw;
+            getUser().prevRotationYaw = getUser().rotationYaw;
+            getUser().prevRotationPitch = getUser().rotationPitch;
+            getUser().prevRotationYawHead = getUser().rotationYawHead;
+        }
     }
 }

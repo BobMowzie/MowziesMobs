@@ -4,15 +4,19 @@ import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.*;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
@@ -236,6 +240,24 @@ public class AbilityCapability {
             if (abilityCapability != null) {
                 for (Ability ability : abilityCapability.getAbilities()) {
                     ability.onJump(event);
+                }
+            }
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public enum AbilityClientEventHandler {
+        INSTANCE;
+
+        @SubscribeEvent
+        public void onRenderTick(TickEvent.RenderTickEvent event) {
+            PlayerEntity player = Minecraft.getInstance().player;
+            if (player != null) {
+                IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+                if (abilityCapability != null) {
+                    for (Ability ability : abilityCapability.getAbilities()) {
+                        ability.onRenderTick(event);
+                    }
                 }
             }
         }
