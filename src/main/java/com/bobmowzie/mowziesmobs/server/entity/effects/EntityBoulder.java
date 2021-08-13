@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleRotation;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
+import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.Block;
@@ -396,8 +397,7 @@ public class EntityBoulder extends Entity {
     public boolean hitByEntity(Entity entityIn) {
         if (ticksExisted > finishedRisingTick - 1 && !travelling) {
             if (entityIn instanceof PlayerEntity
-                    && ((PlayerEntity)entityIn).inventory.getCurrentItem().isEmpty()
-                    && ((PlayerEntity) entityIn).isPotionActive(EffectHandler.GEOMANCY)) {
+                    && EffectGeomancy.canUse((PlayerEntity)entityIn)) {
                 PlayerEntity player = (PlayerEntity) entityIn;
                 if (ridingEntities.contains(player)) {
                     Vector3d lateralLookVec = Vector3d.fromPitchYaw(0, player.rotationYaw).normalize();

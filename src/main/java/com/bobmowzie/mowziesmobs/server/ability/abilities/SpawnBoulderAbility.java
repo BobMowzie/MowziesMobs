@@ -19,6 +19,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.INBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.Direction;
@@ -44,7 +45,7 @@ public class SpawnBoulderAbility extends Ability {
                 new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, MAX_CHARGE),
                 new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),
                 new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 5)
-        }, 200);
+        });
     }
 
     @Override
@@ -166,6 +167,12 @@ public class SpawnBoulderAbility extends Ability {
     public void end() {
         spawnBoulderCharge = 0;
         super.end();
+    }
+
+    @Override
+    public void readNBT(INBT nbt) {
+        super.readNBT(nbt);
+        if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.STARTUP) spawnBoulderCharge = getTicksInSection();
     }
 
     @Override
