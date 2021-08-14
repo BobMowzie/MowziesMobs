@@ -87,14 +87,6 @@ public class PlayerCapability {
 
         void setTribePackRadius(int tribePackRadius);
 
-        EntityIceBreath getIcebreath();
-
-        void setIcebreath(EntityIceBreath icebreath);
-
-        boolean isUsingIceBreath();
-
-        void setUsingIceBreath(boolean usingIceBreath);
-
         int getPackSize();
 
         Vector3d getPrevMotion();
@@ -128,8 +120,6 @@ public class PlayerCapability {
         public int tribeCircleTick;
         public List<EntityBarakoanToPlayer> tribePack = new ArrayList<>();
         public int tribePackRadius = 3;
-
-        public EntityIceBreath icebreath;
 
         public boolean isVerticalSwing() {
             return verticalSwing;
@@ -211,22 +201,6 @@ public class PlayerCapability {
             this.tribePackRadius = tribePackRadius;
         }
 
-        public EntityIceBreath getIcebreath() {
-            return icebreath;
-        }
-
-        public void setIcebreath(EntityIceBreath icebreath) {
-            this.icebreath = icebreath;
-        }
-
-        public boolean isUsingIceBreath() {
-            return usingIceBreath;
-        }
-
-        public void setUsingIceBreath(boolean usingIceBreath) {
-            this.usingIceBreath = usingIceBreath;
-        }
-
         public Vector3d getPrevMotion() {
             return prevMotion;
         }
@@ -249,7 +223,6 @@ public class PlayerCapability {
             prevCooledAttackStrength = cooledAttackStrength;
         }
 
-        public boolean usingIceBreath;
         private boolean usingSolarBeam;
 
         public boolean axeCanAttack;
@@ -293,16 +266,14 @@ public class PlayerCapability {
                 }
             }
 
-            if (!(player.getHeldItemMainhand().getItem() == ItemHandler.ICE_CRYSTAL || player.getHeldItemOffhand().getItem() == ItemHandler.ICE_CRYSTAL) && usingIceBreath && icebreath != null) {
-                usingIceBreath = false;
-                icebreath.remove();
-            }
-
-            for (ItemStack stack : player.inventory.mainInventory) {
-                restoreIceCrystalStack(stack);
-            }
-            for (ItemStack stack : player.inventory.offHandInventory) {
-                restoreIceCrystalStack(stack);
+            Ability iceBreathAbility = AbilityHandler.INSTANCE.getAbility(player, AbilityHandler.ICE_BREATH_ABILITY);
+            if (!iceBreathAbility.isUsing()) {
+                for (ItemStack stack : player.inventory.mainInventory) {
+                    restoreIceCrystalStack(player, stack);
+                }
+                for (ItemStack stack : player.inventory.offHandInventory) {
+                    restoreIceCrystalStack(player, stack);
+                }
             }
 
             useIceCrystalStack(player);
@@ -387,12 +358,10 @@ public class PlayerCapability {
             prevSneaking = player.isSneaking();
         }
 
-        private void restoreIceCrystalStack(ItemStack stack) {
+        private void restoreIceCrystalStack(PlayerEntity entity, ItemStack stack) {
             if (stack.getItem() == ItemHandler.ICE_CRYSTAL) {
-                if (!isUsingIceBreath()) {
-                    if (!ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable.get()) {
-                        stack.setDamage(Math.max(stack.getDamage() - 1, 0));
-                    }
+                if (!ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable.get()) {
+                    stack.setDamage(Math.max(stack.getDamage() - 1, 0));
                 }
             }
         }
@@ -400,7 +369,8 @@ public class PlayerCapability {
         private void useIceCrystalStack(PlayerEntity player) {
             ItemStack stack = player.getActiveItemStack();
             if (stack.getItem() == ItemHandler.ICE_CRYSTAL) {
-                if (isUsingIceBreath()) {
+                Ability iceBreathAbility = AbilityHandler.INSTANCE.getAbility(player, AbilityHandler.ICE_BREATH_ABILITY);
+                if (iceBreathAbility != null && iceBreathAbility.isUsing()) {
                     Hand handIn = player.getActiveHand();
                     if (stack.getDamage() + 5 < stack.getMaxDamage()) {
                         stack.damageItem(5, player, p -> p.sendBreakAnimation(handIn));
@@ -409,9 +379,7 @@ public class PlayerCapability {
                         if (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable.get()) {
                             stack.damageItem(5, player, p -> p.sendBreakAnimation(handIn));
                         }
-                        setUsingIceBreath(false);
-                        EntityIceBreath iceBreath = getIcebreath();
-                        if (iceBreath != null) iceBreath.remove();
+                        iceBreathAbility.end();
                     }
                 }
             }

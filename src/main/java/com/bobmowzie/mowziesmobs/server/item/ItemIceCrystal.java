@@ -1,5 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
+import com.bobmowzie.mowziesmobs.server.ability.Ability;
+import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
@@ -36,23 +39,17 @@ public class ItemIceCrystal extends Item {
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
         ItemStack stack = playerIn.getHeldItem(handIn);
-        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(playerIn, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-        if (playerCapability != null) {
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(playerIn);
+        if (abilityCapability != null) {
             playerIn.setActiveHand(handIn);
             if (stack.getDamage() + 5 < stack.getMaxDamage() || ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable.get()) {
-                if (!playerCapability.isUsingIceBreath()) {
-                    playerCapability.setIcebreath(new EntityIceBreath(EntityHandler.ICE_BREATH, worldIn, playerIn));
-                    playerCapability.getIcebreath().setPositionAndRotation(playerIn.getPosX(), playerIn.getPosY() + playerIn.getEyeHeight() - 0.5f, playerIn.getPosZ(), playerIn.rotationYaw, playerIn.rotationPitch);
-                    if (!worldIn.isRemote) worldIn.addEntity(playerCapability.getIcebreath());
-                    playerCapability.setUsingIceBreath(true);
-                }
+                if (!worldIn.isRemote()) AbilityHandler.INSTANCE.sendAbilityMessage(playerIn, AbilityHandler.ICE_BREATH_ABILITY);
                 stack.damageItem(5, playerIn, p -> p.sendBreakAnimation(handIn));
                 showDurabilityBar(playerIn.getHeldItem(handIn));
                 playerIn.setActiveHand(handIn);
                 return new ActionResult<ItemStack>(ActionResultType.SUCCESS, playerIn.getHeldItem(handIn));
             } else {
-                EntityIceBreath iceBreath = playerCapability.getIcebreath();
-                if (iceBreath != null) iceBreath.remove();
+                abilityCapability.getAbilityMap().get(AbilityHandler.ICE_BREATH_ABILITY).end();
             }
         }
         return super.onItemRightClick(worldIn, playerIn, handIn);
@@ -61,11 +58,9 @@ public class ItemIceCrystal extends Item {
     @Override
     public void onPlayerStoppedUsing(ItemStack stack, World worldIn, LivingEntity entityLiving, int timeLeft) {
         if (entityLiving instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity) entityLiving;
-            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-            if (playerCapability != null && playerCapability.isUsingIceBreath() && playerCapability.getIcebreath() != null) {
-                playerCapability.setUsingIceBreath(false);
-                playerCapability.getIcebreath().remove();
+            Ability iceBreathAbility = AbilityHandler.INSTANCE.getAbility(entityLiving, AbilityHandler.ICE_BREATH_ABILITY);
+            if (iceBreathAbility != null && iceBreathAbility.isUsing()) {
+                iceBreathAbility.end();
             }
         }
         super.onPlayerStoppedUsing(stack, worldIn, entityLiving, timeLeft);
