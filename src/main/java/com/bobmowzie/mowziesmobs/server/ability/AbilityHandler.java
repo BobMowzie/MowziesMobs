@@ -24,13 +24,15 @@ public enum AbilityHandler {
     public static final AbilityType<WroughtAxeSlamAbility> WROUGHT_AXE_SLAM_ABILITY = new AbilityType<>("wrought_axe_slam", WroughtAxeSlamAbility::new);
     public static final AbilityType<IceBreathAbility> ICE_BREATH_ABILITY = new AbilityType<>("ice_breath", IceBreathAbility::new);
     public static final AbilityType<SpawnBoulderAbility> SPAWN_BOULDER_ABILITY = new AbilityType<>("spawn_boulder", SpawnBoulderAbility::new);
+    public static final AbilityType<TunnelingAbility> TUNNELING_ABILITY = new AbilityType<>("tunneling", TunnelingAbility::new);
     public static final AbilityType<?>[] PLAYER_ABILITIES = new AbilityType[] {
             SUNSTRIKE_ABILITY,
             SOLAR_BEAM_ABILITY,
             WROUGHT_AXE_SWING_ABILITY,
             WROUGHT_AXE_SLAM_ABILITY,
             ICE_BREATH_ABILITY,
-            SPAWN_BOULDER_ABILITY
+            SPAWN_BOULDER_ABILITY,
+            TUNNELING_ABILITY
     };
 
     @Nullable

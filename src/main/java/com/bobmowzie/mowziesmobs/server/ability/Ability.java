@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.ability;
 
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection.*;
 import net.minecraft.entity.player.PlayerEntity;
@@ -11,6 +12,9 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+
+import java.util.List;
+import java.util.Random;
 
 public class Ability {
     private final AbilitySection[] sectionTrack;
@@ -25,12 +29,15 @@ public class Ability {
     private boolean isUsing;
     private int cooldownTimer;
 
+    protected Random rand;
+
     public Ability(AbilityType<? extends Ability> abilityType, LivingEntity user, AbilitySection[] sectionTrack, int cooldownMax) {
         this.abilityType = abilityType;
         this.user = user;
         this.abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(user);
         this.sectionTrack = sectionTrack;
         this.cooldownMax = cooldownMax;
+        this.rand = new Random();
     }
 
     public Ability(AbilityType<? extends Ability> abilityType, LivingEntity user, AbilitySection[] sectionTrack) {
@@ -178,6 +185,18 @@ public class Ability {
 
     public int getMaxCooldown() {
         return cooldownMax;
+    }
+
+    public List<LivingEntity> getEntityLivingBaseNearby(LivingEntity player, double distanceX, double distanceY, double distanceZ, double radius) {
+        return getEntitiesNearby(player, LivingEntity.class, distanceX, distanceY, distanceZ, radius);
+    }
+
+    public <T extends Entity> List<T> getEntitiesNearby(LivingEntity player, Class<T> entityClass, double r) {
+        return player.world.getEntitiesWithinAABB(entityClass, player.getBoundingBox().grow(r, r, r), e -> e != player && player.getDistance(e) <= r);
+    }
+
+    public <T extends Entity> List<T> getEntitiesNearby(LivingEntity player, Class<T> entityClass, double dX, double dY, double dZ, double r) {
+        return player.world.getEntitiesWithinAABB(entityClass, player.getBoundingBox().grow(dX, dY, dZ), e -> e != player && player.getDistance(e) <= r);
     }
 
     public CompoundNBT writeNBT() {
