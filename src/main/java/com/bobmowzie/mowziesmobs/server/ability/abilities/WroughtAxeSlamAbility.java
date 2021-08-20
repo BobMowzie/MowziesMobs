@@ -38,4 +38,9 @@ public class WroughtAxeSlamAbility extends Ability {
             this.axeAttack.remove();
         }
     }
+
+    @Override
+    public boolean preventsAttacking() {
+        return false;
+    }
 }

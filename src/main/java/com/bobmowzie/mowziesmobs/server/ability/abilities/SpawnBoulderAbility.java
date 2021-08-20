@@ -68,9 +68,9 @@ public class SpawnBoulderAbility extends Ability {
     }
 
     @Override
-    public void tick() {
-        super.tick();
-        if (isUsing() && getCurrentSection().sectionType == AbilitySection.AbilitySectionType.STARTUP) {
+    public void tickUsing() {
+        super.tickUsing();
+        if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.STARTUP) {
             spawnBoulderCharge++;
             if (spawnBoulderCharge > 1) getUser().addPotionEffect(new EffectInstance(Effects.SLOWNESS, 3, 2, false, false));
             if (spawnBoulderCharge == 1 && getUser().world.isRemote) MowziesMobs.PROXY.playBoulderChargeSound(getUser());

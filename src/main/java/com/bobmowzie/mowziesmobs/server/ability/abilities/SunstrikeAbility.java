@@ -65,4 +65,19 @@ public class SunstrikeAbility extends Ability {
         if (getUser() instanceof PlayerEntity && !((PlayerEntity)getUser()).inventory.getCurrentItem().isEmpty()) return false;
         return getUser().isPotionActive(EffectHandler.SUNS_BLESSING) && super.canUse();
     }
+
+    @Override
+    public boolean preventsBlockBreakingBuilding() {
+        return false;
+    }
+
+    @Override
+    public boolean preventsAttacking() {
+        return false;
+    }
+
+    @Override
+    public boolean preventsInteracting() {
+        return false;
+    }
 }

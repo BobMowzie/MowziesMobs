@@ -54,7 +54,7 @@ public class Ability {
 
     public void tick() {
         if (isUsing()) {
-            if (!canContinueUsing()) end();
+            if (!canContinueUsing()) interrupt();
 
             tickUsing();
 
@@ -177,6 +177,30 @@ public class Ability {
      */
     public boolean runsInBackground() {
         return false;
+    }
+
+    /**
+     * Unused for background abilities
+     * @return
+     */
+    public boolean preventsAttacking() {
+        return true;
+    }
+
+    /**
+     * Unused for background abilities
+     * @return
+     */
+    public boolean preventsBlockBreakingBuilding() {
+        return true;
+    }
+
+    /**
+     * Unused for background abilities
+     * @return
+     */
+    public boolean preventsInteracting() {
+        return true;
     }
 
     public AbilitySection[] getSectionTrack() {

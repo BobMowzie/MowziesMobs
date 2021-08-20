@@ -13,7 +13,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
@@ -44,6 +43,12 @@ public class AbilityCapability {
         Ability getActiveAbility();
 
         void setActiveAbility(Ability activeAbility);
+
+        boolean attackingPrevented();
+
+        boolean blockBreakingBuildingPrevented();
+
+        boolean interactingPrevented();
 
         INBT writeNBT();
 
@@ -108,6 +113,21 @@ public class AbilityCapability {
         @Override
         public Collection<Ability> getAbilities() {
             return abilityInstances.values();
+        }
+
+        @Override
+        public boolean attackingPrevented() {
+            return getActiveAbility() != null && getActiveAbility().preventsAttacking();
+        }
+
+        @Override
+        public boolean blockBreakingBuildingPrevented() {
+            return getActiveAbility() != null && getActiveAbility().preventsBlockBreakingBuilding();
+        }
+
+        @Override
+        public boolean interactingPrevented() {
+            return getActiveAbility() != null && getActiveAbility().preventsInteracting();
         }
 
         @Override
