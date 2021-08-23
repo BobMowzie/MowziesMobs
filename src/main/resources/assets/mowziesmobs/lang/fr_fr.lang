@@ -1,0 +1,131 @@
+# Creative Tabs
+itemGroup.mowziesmobs.creativeTab=Mowzie's Mobs
+
+# Entities
+entity.foliaath.name=Foliaath
+entity.ferrous_wroughtnaut.name=Ferrous Wroughtnaut
+entity.baby_foliaath.name=Bébé Foliaath
+entity.barakoan_barakoana.name=Barakoa
+entity.barakoan_player.name=Barakoa
+entity.barakoana.name=Barakoana
+entity.barakoaya.name=Barakoa
+entity.barako.name=Barako, le Chef du Soleil
+entity.frostmaw.name=Frostmaw
+entity.grottol.name=Grottol
+entity.lantern.name=Lanterne
+entity.naga.name=Naga
+entity.boulder.name=Boulder
+
+# Items
+item.foliaathSeed.name=Graine de Foliaath
+item.mobRemover.name=Supprimeur de Monstre
+item.wroughtHelmet.name=Casque de Chevalier Forgé
+item.barakoaMask.fury.name=Masque de la Fureur
+item.barakoaMask.fear.name=Masque de la Peur
+item.barakoaMask.rage.name=Masque de la Rage
+item.barakoaMask.bliss.name=Masque de Félicité
+item.barakoaMask.misery.name=Masque de la Misère
+item.barakoMask.name=Masque du Soleil
+item.dart.name=Fléchette
+item.spear.name=Lance
+item.blowgun.name=Sarbacane
+item.grantSunsBlessing.name=Bénédiction du Soleil
+item.testStructure.name=Structures d'essai
+item.iceCrystal.name=Cristal de Glace
+item.earthTalisman.name=Talisman de la Terre
+
+item.blowgun.text.0=Chargement rapide
+item.blowgun.text.1=Courte portée
+item.blowgun.text.2=Ne tirez que des fléchettes
+
+item.wroughtAxe.text.0=Ne se casse jamais
+item.wroughtAxe.text.1=Clic droit pour attaquer dans un grand arc
+item.wroughtAxe.text.2=Shift-clic droit pour frapper le sol et créer une onde de choc
+
+item.barakoMask.text.0=Ne se casse jamais
+item.barakoMask.text.1=Équipé, puis clic droit avec le masque Barakoa pour faire apparaître des disciples
+item.barakoMask.text.2=Cliquez avec le bouton droit de la souris sur un disciple pour le remettre dans son masque
+
+item.barakoaMask.fear.text.0=Donne de la Vitesse
+item.barakoaMask.fear.text.1=Je me demande si... ?
+item.barakoaMask.rage.text.0=Donne de la Célérité
+item.barakoaMask.rage.text.1=Je me demande si... ?
+item.barakoaMask.misery.text.0=Donne de la Résistance
+item.barakoaMask.misery.text.1=Je me demande si... ?
+item.barakoaMask.bliss.text.0=Donne du Sauts
+item.barakoaMask.bliss.text.1=Je me demande si... ?
+item.barakoaMask.fury.text.0=Donne de la Force
+item.barakoaMask.fury.text.1=Je me demande si... ?
+
+item.dart.text.0=Ne peut être utilisé qu'avec une sarbacane
+item.dart.text.1=Empoisonne les Cibles
+
+item.foliaathSeed.text.0=À planter sur un bloc d'herbe
+item.foliaathSeed.text.1=Chaque demi-journée, le bébé foliaath aura faim
+item.foliaathSeed.text.2=Lancez-lui n'importe quelle viande pour le nourrir
+item.foliaathSeed.text.3=Après 2 jours, le foliaath sera complètement développé
+
+item.grantSunsBlessing.text.0=Accorde la bénédiction du Soleil pendant 1 heure.
+item.grantSunsBlessing.text.1=Avec la main vide, cliquez avec le bouton droit de la souris pour appeler un lance soleil
+item.grantSunsBlessing.text.2=Avec une main vide, cliquer furtivement sur le bouton droit pour tirer un rayon solaire (coûte 2 minutes)
+
+item.earthTalisman.text.0=Mode créatif uniquement
+item.earthTalisman.text.1=Placer dans l'inventaire pour manier la géomancie
+item.earthTalisman.text.2=Cliquez avec le bouton droit de la souris sur le sol en terre avec une main vide pour faire apparaître un rocher
+item.earthTalisman.text.3=Frappez un rocher pour le lancer comme projectile
+item.earthTalisman.text.4=Enfoncez le clic droit pour faire apparaître de plus gros rochers
+item.earthTalisman.text.5=Lorsque vous êtes en l'air, tapez deux fois et maintenez la touche "sneak" enfoncée pour commencer à creuser un tunnel (ne fonctionne pas encore en mode multijoueur)
+item.earthTalisman.text.6=Regardez dans la direction où vous voulez creuser
+item.earthTalisman.text.7=Libérer le sneak à la surface et arrêter le tunnelage
+
+item.mobRemover.text.0=Clic gauche pour enlever un mob de Mowzie's Mobs.
+
+item.wroughtHelmet.text.0=Ne se casse jamais
+
+item.spear.text.0=Augmente la portée des attaques de 3,5 blocs
+item.spear.text.1=1/3 de chances de tuer instantanément les animaux ayant moins de 30 points de vie
+
+item.iceCrystal.text.0=Maintenez le clic droit pour canaliser un tourbillon glacé
+item.iceCrystal.text.1=Recharges automatiquement dans l'inventaire
+
+item.capturedGrottol.name=Grottol Capturé
+
+item.glowingJelly.name=Gelée Lumineuse
+item.glowingJelly.text.0=Mangez-le pour obtenir brièvement une vision nocturne
+
+item.nagaFang.name=Dent de Naga
+item.nagaFang.text.0=Utilisé pour préparer une potion de résistance au poison ou pour fabriquer une Dague en Dent de Naga.
+
+item.nagaFangDagger.name=Dague en Dent de Naga
+item.nagaFangDagger.text.0=Empoisonne les Cibles
+item.nagaFangDagger.text.1=Inflige des dégâts supplémentaires par derrière
+
+# Blocks
+tile.campfire.name=Feu de Camp
+tile.paintedAcacia.name=Bois d'acacia Peint
+tile.paintedAcaciaSlab.name=Dalle en Bois d'acacia Peint
+tile.grottol.name=Grottol
+
+# Potions
+potion.sunsBlessing=Bénédiction du Soleil
+potion.geomancy=Géomancie
+potion.frozen=Congelé
+potion.poisonResist=Résistance au Poison
+potion.effect.poisonResist=Potion de Résistance au Poison
+splash_potion.effect.poisonResist=Potion Jetable de Résistance au Poison
+lingering_potion.effect.poisonResist=Potion Persistante de Résistance au Poison
+tipped_arrow.effect.poisonResist=Flèche de Résistance au Poison
+
+# Tile Entities
+
+
+# Containers
+entity.barakoaya.trade=Barakoa
+entity.barako.trade=Barako, le Chef du Soleil
+entity.barako.trade.button.text=Échange
+entity.barako.trade.button.hover=Revenez plus tard pour vous réapprovisionner gratuitement
+entity.barako.replenish.button.text=Réapprovisionner
+entity.barako.replenish.button.hover=Réalimentez votre bénédiction gratuitement
+
+# Death Messages
+death.attack.dart=%1$s a été abattu par %2$s
