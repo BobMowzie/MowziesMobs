@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.client.model.entity.ModelBipedAnimated;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelPlayerAnimated;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
+import com.bobmowzie.mowziesmobs.server.entity.GeckoPlayer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
@@ -19,12 +20,25 @@ import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerModelPart;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
+import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.geo.render.built.GeoModel;
+import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 
-public class RenderPlayerAnimated extends PlayerRenderer {
-    public RenderPlayerAnimated(EntityRendererManager renderManager, boolean useSmallArms) {
+import javax.annotation.Nullable;
+import java.util.HashMap;
+
+public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer<GeckoPlayer> {
+
+    private static HashMap<Class<? extends GeckoPlayer>, RenderPlayerAnimated> modelsToLoad = new HashMap<>();
+    private AnimatedGeoModel<GeckoPlayer> modelProvider;
+
+    public RenderPlayerAnimated(EntityRendererManager renderManager, AnimatedGeoModel<GeckoPlayer> modelProvider, boolean useSmallArms) {
         super(renderManager, useSmallArms);
         this.layerRenderers.clear();
         this.addLayer(new BipedArmorLayer<>(this, new ModelBipedAnimated(0.5F), new ModelBipedAnimated(1.0F)));
@@ -40,11 +54,31 @@ public class RenderPlayerAnimated extends PlayerRenderer {
         this.addLayer(new FrozenRenderHandler.LayerFrozen<>(this));
 
         this.entityModel = new ModelPlayerAnimated<>(0.0f, useSmallArms);
+        this.modelProvider = modelProvider;
     }
 
-    public void render(AbstractClientPlayerEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+    static {
+        AnimationController.addModelFetcher((IAnimatable object) -> {
+            if (object instanceof GeckoPlayer) {
+                RenderPlayerAnimated render = modelsToLoad.get(object.getClass());
+                return render.getGeoModelProvider();
+            } else {
+                return null;
+            }
+        });
+    }
+
+    public RenderPlayerAnimated getModelProvider(Class<? extends GeckoPlayer> animatable) {
+        return modelsToLoad.get(animatable);
+    }
+
+    public HashMap<Class<? extends GeckoPlayer>, RenderPlayerAnimated> getModelsToLoad() {
+        return modelsToLoad;
+    }
+
+    public void render(AbstractClientPlayerEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, GeckoPlayer geckoPlayer) {
         this.setModelVisibilities(entityIn);
-        renderLiving(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
+        renderLiving(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn, geckoPlayer);
     }
 
     private void setModelVisibilities(AbstractClientPlayerEntity clientPlayer) {
@@ -77,7 +111,7 @@ public class RenderPlayerAnimated extends PlayerRenderer {
 
     }
 
-    public void renderLiving(AbstractClientPlayerEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+    public void renderLiving(AbstractClientPlayerEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, GeckoPlayer geckoPlayer) {
         if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Pre<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>>(entityIn, this, partialTicks, matrixStackIn, bufferIn, packedLightIn))) return;
         matrixStackIn.push();
         this.entityModel.swingProgress = this.getSwingProgress(entityIn, partialTicks);
@@ -137,8 +171,7 @@ public class RenderPlayerAnimated extends PlayerRenderer {
             }
         }
 
-        this.entityModel.setLivingAnimations(entityIn, f5, f8, partialTicks);
-        this.entityModel.setRotationAngles(entityIn, f5, f8, f7, f2, f6);
+        this.modelProvider.setLivingAnimations(geckoPlayer, entityIn.getUniqueID().hashCode());
         Minecraft minecraft = Minecraft.getInstance();
         boolean flag = this.isVisible(entityIn);
         boolean flag1 = !flag && !entityIn.isInvisibleToPlayer(minecraft.player);
@@ -147,7 +180,14 @@ public class RenderPlayerAnimated extends PlayerRenderer {
         if (rendertype != null) {
             IVertexBuilder ivertexbuilder = bufferIn.getBuffer(rendertype);
             int i = getPackedOverlay(entityIn, this.getOverlayProgress(entityIn, partialTicks));
-            this.entityModel.render(matrixStackIn, ivertexbuilder, packedLightIn, i, 1.0F, 1.0F, 1.0F, flag1 ? 0.15F : 1.0F);
+            matrixStackIn.push();
+            matrixStackIn.rotate(new Quaternion(0, 0, 180, true));
+            matrixStackIn.translate(0, -1.5, 0);
+            render(
+                    getGeoModelProvider().getModel(getGeoModelProvider().getModelLocation(geckoPlayer)),
+                    geckoPlayer, partialTicks, rendertype, matrixStackIn, bufferIn, ivertexbuilder, packedLightIn, i, 1.0F, 1.0F, 1.0F, flag1 ? 0.15F : 1.0F
+            );
+            matrixStackIn.pop();
         }
 
         if (!entityIn.isSpectator()) {
@@ -181,5 +221,15 @@ public class RenderPlayerAnimated extends PlayerRenderer {
             matrixStackIn.translate(0, 1 * (1 - (float)moveVec.y), 0);
             matrixStackIn.rotate(new Quaternion(-90 + 90 * (float)moveVec.y, 0, 0, true));
         }
+    }
+
+    @Override
+    public AnimatedGeoModel<GeckoPlayer> getGeoModelProvider() {
+        return this.modelProvider;
+    }
+
+    @Override
+    public ResourceLocation getTextureLocation(GeckoPlayer geckoPlayer) {
+        return getEntityTexture((AbstractClientPlayerEntity) geckoPlayer.getPlayer());
     }
 }

@@ -1,10 +1,14 @@
 package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.*;
+import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
+import com.bobmowzie.mowziesmobs.server.entity.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.item.*;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
@@ -27,6 +31,9 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraft.util.math.vector.Vector3d;
 
+import java.util.HashMap;
+import java.util.UUID;
+
 @OnlyIn(Dist.CLIENT)
 public enum ClientEventHandler {
     INSTANCE;
@@ -37,6 +44,15 @@ public enum ClientEventHandler {
     long startWroughtnautHitTime;
 
     long lastWroughtnautHitTime;
+
+    // List of players that are under GeckoPlayer
+    public static HashMap<UUID, GeckoPlayer> geckoPlayers = new HashMap<>();
+
+    // List of the players models
+    public static HashMap<UUID, ModelGeckoPlayer> geckoPlayerModels = new HashMap<>();
+
+    // List of the players renderer
+    public static HashMap<UUID, RenderPlayerAnimated> geckoPlayerRenderers = new HashMap<>();
 
     @SubscribeEvent
     public void onHandRender(RenderHandEvent event) {
@@ -56,10 +72,39 @@ public enum ClientEventHandler {
         boolean shouldAnimate = playerCapability != null && playerCapability.getUntilAxeSwing() > 0;
         shouldAnimate = shouldAnimate || playerCapability != null && playerCapability.getGeomancy().tunneling;
         shouldAnimate = shouldAnimate || player.isPotionActive(EffectHandler.FROZEN);
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+        if (abilityCapability != null) shouldAnimate = shouldAnimate || abilityCapability.getActiveAbility() != null;
         if (shouldAnimate) {
-            event.setCanceled(true);
-            RenderPlayerAnimated renderPlayerAnimated = new RenderPlayerAnimated(event.getRenderer().getRenderManager(), ((AbstractClientPlayerEntity) event.getEntity()).getSkinType().equals("slim"));
-            renderPlayerAnimated.render((AbstractClientPlayerEntity) event.getEntity(), event.getEntity().rotationYaw, delta, event.getMatrixStack(), event.getBuffers(), event.getLight());
+            /**
+             * This look a little bit messy, if you know another way of how to do this feel
+             * free to open a PR!
+             **/
+            if (!geckoPlayers.containsKey(player.getUniqueID())) {
+                geckoPlayers.put(player.getUniqueID(), new GeckoPlayer(player.getUniqueID()));
+            }
+            GeckoPlayer geckoPlayer = geckoPlayers.get(player.getUniqueID());
+
+            if (!geckoPlayerModels.containsKey(player.getUniqueID())) {
+                geckoPlayerModels.put(player.getUniqueID(), new ModelGeckoPlayer());
+            }
+            ModelGeckoPlayer geckoPlayerModel = geckoPlayerModels.get(player.getUniqueID());
+
+            if (!geckoPlayerRenderers.containsKey(player.getUniqueID())) {
+                geckoPlayerRenderers.put(player.getUniqueID(),
+                        new RenderPlayerAnimated(event.getRenderer().getRenderManager(), geckoPlayerModel, ((AbstractClientPlayerEntity) event.getEntity()).getSkinType().equals("slim")));
+            }
+            RenderPlayerAnimated animatedPlayerRenderer = geckoPlayerRenderers.get(player.getUniqueID());
+
+            if (!animatedPlayerRenderer.getModelsToLoad().containsKey(geckoPlayer.getClass())) {
+                animatedPlayerRenderer.getModelsToLoad().put(geckoPlayer.getClass(), animatedPlayerRenderer);
+            }
+
+            event.setCanceled(geckoPlayerModel.resourceForModelId((AbstractClientPlayerEntity) player));
+
+            if (event.isCanceled()) {
+                // After all the comprobation we can already render the player. Yay!
+                animatedPlayerRenderer.render((AbstractClientPlayerEntity) event.getEntity(), event.getEntity().rotationYaw, delta, event.getMatrixStack(), event.getBuffers(), event.getLight(), geckoPlayer);
+            }
         }
     }
 
