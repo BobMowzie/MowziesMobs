@@ -1,37 +1,35 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.server.entity.GeckoPlayer;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.util.ResourceLocation;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 
-public class ModelGeckoPlayer extends AnimatedGeoModel<GeckoPlayer> {
-	
-	private ResourceLocation animationFileLocation;
-	private ResourceLocation modelLocation;
-	private ResourceLocation textureLocation;
-	
-	@Override
-	public ResourceLocation getAnimationFileLocation(GeckoPlayer animatable) {
-		return animationFileLocation;
+public class ModelGeckoPlayer extends ModelGeckoBiped {
+
+	public MowzieGeoBone bipedLeftArmwear() {
+		return getMowzieBone("LeftArmLayer");
 	}
 
-	@Override
-	public ResourceLocation getModelLocation(GeckoPlayer animatable) {
-		return modelLocation;
+	public MowzieGeoBone bipedRightArmwear() {
+		return getMowzieBone("RightArmLayer");
 	}
 
-	@Override
-	public ResourceLocation getTextureLocation(GeckoPlayer animatable) {
-		return textureLocation;
+	public MowzieGeoBone bipedLeftLegwear() {
+		return getMowzieBone("LeftLegLayer");
 	}
 
-	/** Check if the modelId has some ResourceLocation **/
-	public boolean resourceForModelId(AbstractClientPlayerEntity player) {
-		this.animationFileLocation = new ResourceLocation(MowziesMobs.MODID, "animations/animated_player.animation.json");
-		this.modelLocation = new ResourceLocation(MowziesMobs.MODID, "geo/animated_player.geo.json");
-		this.textureLocation = player.getLocationSkin();
-		return true;
+	public MowzieGeoBone bipedRightLegwear() {
+		return getMowzieBone("RightLegLayer");
+	}
+
+	public MowzieGeoBone bipedBodywear() {
+		return getMowzieBone("BodyLayer");
+	}
+
+	public void setVisible(boolean visible) {
+		super.setVisible(visible);
+		this.bipedLeftArmwear().setHidden(!visible);
+		this.bipedRightArmwear().setHidden(!visible);
+		this.bipedLeftLegwear().setHidden(!visible);
+		this.bipedRightLegwear().setHidden(!visible);
+		this.bipedBodywear().setHidden(!visible);
 	}
 }

@@ -1,9 +1,8 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBipedAnimated;
+import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayer;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelPlayerAnimated;
-import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
-import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.entity.GeckoPlayer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -23,22 +22,17 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3d;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.geo.render.built.GeoModel;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
-
-import javax.annotation.Nullable;
 import java.util.HashMap;
 
 public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer<GeckoPlayer> {
 
     private static HashMap<Class<? extends GeckoPlayer>, RenderPlayerAnimated> modelsToLoad = new HashMap<>();
-    private AnimatedGeoModel<GeckoPlayer> modelProvider;
+    private ModelGeckoPlayer modelProvider;
 
-    public RenderPlayerAnimated(EntityRendererManager renderManager, AnimatedGeoModel<GeckoPlayer> modelProvider, boolean useSmallArms) {
+    public RenderPlayerAnimated(EntityRendererManager renderManager, ModelGeckoPlayer modelProvider, boolean useSmallArms) {
         super(renderManager, useSmallArms);
         this.layerRenderers.clear();
         this.addLayer(new BipedArmorLayer<>(this, new ModelBipedAnimated(0.5F), new ModelBipedAnimated(1.0F)));
@@ -82,22 +76,23 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
     }
 
     private void setModelVisibilities(AbstractClientPlayerEntity clientPlayer) {
-        PlayerModel<AbstractClientPlayerEntity> playermodel = this.getEntityModel();
-        if (clientPlayer.isSpectator()) {
-            playermodel.setVisible(false);
-            playermodel.bipedHead.showModel = true;
-            playermodel.bipedHeadwear.showModel = true;
-        } else {
-            ItemStack itemstack = clientPlayer.getHeldItemMainhand();
-            ItemStack itemstack1 = clientPlayer.getHeldItemOffhand();
-            playermodel.setVisible(true);
-            playermodel.bipedHeadwear.showModel = clientPlayer.isWearing(PlayerModelPart.HAT);
-            playermodel.bipedBodyWear.showModel = clientPlayer.isWearing(PlayerModelPart.JACKET);
-            playermodel.bipedLeftLegwear.showModel = clientPlayer.isWearing(PlayerModelPart.LEFT_PANTS_LEG);
-            playermodel.bipedRightLegwear.showModel = clientPlayer.isWearing(PlayerModelPart.RIGHT_PANTS_LEG);
-            playermodel.bipedLeftArmwear.showModel = clientPlayer.isWearing(PlayerModelPart.LEFT_SLEEVE);
-            playermodel.bipedRightArmwear.showModel = clientPlayer.isWearing(PlayerModelPart.RIGHT_SLEEVE);
-            playermodel.isSneak = clientPlayer.isCrouching();
+        ModelGeckoPlayer playermodel = getGeoModelProvider();
+        if (playermodel.isInitialized()) {
+            if (clientPlayer.isSpectator()) {
+                playermodel.setVisible(false);
+                playermodel.bipedHead().setHidden(false);
+                playermodel.bipedHeadwear().setHidden(false);
+            } else {
+                ItemStack itemstack = clientPlayer.getHeldItemMainhand();
+                ItemStack itemstack1 = clientPlayer.getHeldItemOffhand();
+                playermodel.setVisible(true);
+                playermodel.bipedHeadwear().setHidden(clientPlayer.isWearing(PlayerModelPart.HAT));
+                playermodel.bipedBodywear().setHidden(clientPlayer.isWearing(PlayerModelPart.JACKET));
+                playermodel.bipedLeftLegwear().setHidden(clientPlayer.isWearing(PlayerModelPart.LEFT_PANTS_LEG));
+                playermodel.bipedRightLegwear().setHidden(clientPlayer.isWearing(PlayerModelPart.RIGHT_PANTS_LEG));
+                playermodel.bipedLeftArmwear().setHidden(clientPlayer.isWearing(PlayerModelPart.LEFT_SLEEVE));
+                playermodel.bipedRightArmwear().setHidden(clientPlayer.isWearing(PlayerModelPart.RIGHT_SLEEVE));
+                playermodel.isSneak = clientPlayer.isCrouching();
 //            BipedModel.ArmPose bipedmodel$armpose = this.getArmPose(clientPlayer, itemstack, itemstack1, Hand.MAIN_HAND);
 //            BipedModel.ArmPose bipedmodel$armpose1 = this.getArmPose(clientPlayer, itemstack, itemstack1, Hand.OFF_HAND);
 //            if (clientPlayer.getPrimaryHand() == HandSide.RIGHT) {
@@ -107,8 +102,8 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
 //                playermodel.rightArmPose = bipedmodel$armpose1;
 //                playermodel.leftArmPose = bipedmodel$armpose;
 //            }
+            }
         }
-
     }
 
     public void renderLiving(AbstractClientPlayerEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, GeckoPlayer geckoPlayer) {
@@ -154,9 +149,7 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
 
         float f7 = this.handleRotationFloat(entityIn, partialTicks);
         this.applyRotations(entityIn, matrixStackIn, f7, f, partialTicks);
-        matrixStackIn.scale(-1.0F, -1.0F, 1.0F);
         this.preRenderCallback(entityIn, matrixStackIn, partialTicks);
-        matrixStackIn.translate(0.0D, (double)-1.501F, 0.0D);
         float f8 = 0.0F;
         float f5 = 0.0F;
         if (!shouldSit && entityIn.isAlive()) {
@@ -172,6 +165,7 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
         }
 
         this.modelProvider.setLivingAnimations(geckoPlayer, entityIn.getUniqueID().hashCode());
+        this.modelProvider.setRotationAngles(entityIn, f5, f8, f7, f2, f6, partialTicks);
         Minecraft minecraft = Minecraft.getInstance();
         boolean flag = this.isVisible(entityIn);
         boolean flag1 = !flag && !entityIn.isInvisibleToPlayer(minecraft.player);
@@ -181,8 +175,6 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
             IVertexBuilder ivertexbuilder = bufferIn.getBuffer(rendertype);
             int i = getPackedOverlay(entityIn, this.getOverlayProgress(entityIn, partialTicks));
             matrixStackIn.push();
-            matrixStackIn.rotate(new Quaternion(0, 0, 180, true));
-            matrixStackIn.translate(0, -1.5, 0);
             render(
                     getGeoModelProvider().getModel(getGeoModelProvider().getModelLocation(geckoPlayer)),
                     geckoPlayer, partialTicks, rendertype, matrixStackIn, bufferIn, ivertexbuilder, packedLightIn, i, 1.0F, 1.0F, 1.0F, flag1 ? 0.15F : 1.0F
@@ -212,19 +204,10 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
     @Override
     protected void applyRotations(AbstractClientPlayerEntity entityLiving, MatrixStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks) {
         super.applyRotations(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks);
-        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(entityLiving, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-        if (playerCapability != null && playerCapability.getGeomancy().tunneling) {
-            Vector3d moveVec;
-            if (Math.abs(playerCapability.getPrevMotion().getY()) < 0.0001) moveVec = entityLiving.getMotion();
-            else moveVec = playerCapability.getPrevMotion().add(entityLiving.getMotion().subtract(playerCapability.getPrevMotion()).scale(partialTicks));
-            moveVec = moveVec.normalize();
-            matrixStackIn.translate(0, 1 * (1 - (float)moveVec.y), 0);
-            matrixStackIn.rotate(new Quaternion(-90 + 90 * (float)moveVec.y, 0, 0, true));
-        }
     }
 
     @Override
-    public AnimatedGeoModel<GeckoPlayer> getGeoModelProvider() {
+    public ModelGeckoPlayer getGeoModelProvider() {
         return this.modelProvider;
     }
 

@@ -15,4 +15,8 @@ public abstract class MowzieAnimatedGeoModel<T extends IAnimatable> extends Anim
         IBone bone = this.getBone(boneName);
         return (MowzieGeoBone) bone;
     }
+
+    public boolean isInitialized() {
+        return getAnimationProcessor().getModelRendererList().size() > 0;
+    }
 }

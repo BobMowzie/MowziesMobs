@@ -69,8 +69,20 @@ public class MowzieGeoBone extends GeoBone {
     }
 
     public void addPosition(float x, float y, float z) {
+        addPositionX(x);
+        addPositionY(y);
+        addPositionZ(z);
+    }
+
+    public void addPositionX(float x) {
         setPositionX(getPositionX() + x);
+    }
+
+    public void addPositionY(float y) {
         setPositionY(getPositionY() + y);
+    }
+
+    public void addPositionZ(float z) {
         setPositionZ(getPositionZ() + z);
     }
 
@@ -94,8 +106,20 @@ public class MowzieGeoBone extends GeoBone {
     }
 
     public void addRotation(float x, float y, float z) {
+        addRotationX(x);
+        addRotationY(y);
+        addRotationZ(z);
+    }
+
+    public void addRotationX(float x) {
         setRotationX(getRotationX() + x);
+    }
+
+    public void addRotationY(float y) {
         setRotationY(getRotationY() + y);
+    }
+
+    public void addRotationZ(float z) {
         setRotationZ(getRotationZ() + z);
     }
 
