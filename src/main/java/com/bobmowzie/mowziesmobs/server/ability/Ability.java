@@ -1,6 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.ability;
 
+import com.bobmowzie.mowziesmobs.client.ClientEventHandler;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
+import com.bobmowzie.mowziesmobs.server.entity.GeckoPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection.*;
@@ -15,6 +17,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 
 import java.util.List;
@@ -54,6 +57,13 @@ public class Ability {
         currentSectionIndex = 0;
         isUsing = true;
         if (!runsInBackground()) abilityCapability.setActiveAbility(this);
+
+        if (getUser() instanceof PlayerEntity && getUser().world.isRemote()) {
+            AnimationController<GeckoPlayer> controller = ClientEventHandler.getAnimationController((PlayerEntity) getUser());
+            if (controller != null) {
+                controller.markNeedsReload();
+            }
+        }
     }
 
     public void tick() {

@@ -57,19 +57,6 @@ public class SpawnBoulderAbility extends Ability {
     }
 
     @Override
-    public void start() {
-        super.start();
-//        if (getUser().world.isRemote) {
-//            GeckoPlayer geckoPlayer = ClientEventHandler.geckoPlayers.get(getUser().getUniqueID());
-//            if (geckoPlayer != null) {
-//                final AnimationController<?> controller = GeckoLibUtil.getControllerForID(geckoPlayer.getFactory(), getUser().getUniqueID().hashCode(), GeckoPlayer.CONTROLLER_NAME);
-//                controller.markNeedsReload();
-//                controller.setAnimation(new AnimationBuilder().addAnimation("spawn_boulder", false));
-//            }
-//        }
-    }
-
-    @Override
     public boolean tryAbility() {
         Vector3d from = getUser().getEyePosition(1.0f);
         Vector3d to = from.add(getUser().getLookVec().scale(SPAWN_BOULDER_REACH));

@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.ClientEventHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleVanillaCloudExtended;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
@@ -11,6 +12,7 @@ import com.bobmowzie.mowziesmobs.server.ai.AvoidEntityIfNotTamedGoal;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.capability.*;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.entity.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.*;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
@@ -50,6 +52,7 @@ import net.minecraft.stats.Stats;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -65,6 +68,9 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.PacketDistributor;
+import software.bernie.geckolib3.core.IAnimatableModel;
+import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -216,6 +222,13 @@ public final class ServerEventHandler {
             for (Power power : powers) {
                 power.tick(event);
             }
+        }
+
+        if (event.side == LogicalSide.CLIENT) {
+//            IAnimatableModel<GeckoPlayer> model = ClientEventHandler.geckoPlayerModels.get(player.getUniqueID());
+            GeckoPlayer geckoPlayer = ClientEventHandler.geckoPlayers.get(player.getUniqueID());
+            if (geckoPlayer != null) geckoPlayer.tick();
+//            if (model != null && geckoPlayer != null) model.setLivingAnimations(geckoPlayer, player.getUniqueID().hashCode());
         }
     }
 

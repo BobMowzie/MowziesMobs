@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.sculptor;
 
+import com.bobmowzie.mowziesmobs.server.entity.IAnimationTickable;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import net.minecraft.entity.EntityType;
@@ -17,7 +18,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
-public class EntitySculptor extends MowzieEntity implements IAnimatable {
+public class EntitySculptor extends MowzieEntity implements IAnimatable, IAnimationTickable {
 
     public boolean handLOpen = true;
     public boolean handROpen = true;
@@ -38,6 +39,11 @@ public class EntitySculptor extends MowzieEntity implements IAnimatable {
         return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 10)
                 .createMutableAttribute(Attributes.MAX_HEALTH, 40)
                 .createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1);
+    }
+
+    @Override
+    public int tickTimer() {
+        return ticksExisted;
     }
 
     @Override

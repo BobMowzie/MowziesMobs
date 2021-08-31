@@ -15,7 +15,9 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import java.util.UUID;
 
-public class GeckoPlayer implements IAnimatable {
+public class GeckoPlayer implements IAnimatable, IAnimationTickable {
+
+	private int tickTimer = 0;
 
 	private UUID uuid;
 	private AnimationFactory factory = new AnimationFactory(this);
@@ -27,7 +29,7 @@ public class GeckoPlayer implements IAnimatable {
 
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<>(this, CONTROLLER_NAME, 0, this::predicate));
+		data.addAnimationController(new AnimationController<>(this, CONTROLLER_NAME, 1, this::predicate));
 	}
 
 	@Override
@@ -43,6 +45,16 @@ public class GeckoPlayer implements IAnimatable {
 		return null;
 	}
 
+	@Override
+	public void tick() {
+		tickTimer++;
+	}
+
+	@Override
+	public int tickTimer() {
+		return tickTimer;
+	}
+
 	public <E extends IAnimatable> PlayState predicate(AnimationEvent<E> e) {
 		PlayerEntity player = getPlayer();
 		if (player == null) {
@@ -52,6 +64,7 @@ public class GeckoPlayer implements IAnimatable {
 		if (abilityCapability == null) {
 			return PlayState.STOP;
 		}
+
 		if (abilityCapability.getActiveAbility() != null) {
 			return abilityCapability.animationPredicate(e);
 		}
@@ -59,6 +72,5 @@ public class GeckoPlayer implements IAnimatable {
 			e.getController().setAnimation(new AnimationBuilder().addAnimation("idle"));
 			return PlayState.CONTINUE;
 		}
-//		return PlayState.CONTINUE;
 	}
 }

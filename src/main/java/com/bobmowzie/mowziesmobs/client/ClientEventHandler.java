@@ -77,7 +77,6 @@ public enum ClientEventHandler {
         shouldAnimate = shouldAnimate || player.isPotionActive(EffectHandler.FROZEN);
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
         if (abilityCapability != null) shouldAnimate = shouldAnimate || abilityCapability.getActiveAbility() != null;
-        shouldAnimate = true;
         if (shouldAnimate) {
             /**
              * This look a little bit messy, if you know another way of how to do this feel
@@ -110,6 +109,14 @@ public enum ClientEventHandler {
                 animatedPlayerRenderer.render((AbstractClientPlayerEntity) event.getEntity(), event.getEntity().rotationYaw, delta, event.getMatrixStack(), event.getBuffers(), event.getLight(), geckoPlayer);
             }
         }
+    }
+
+    public static AnimationController<GeckoPlayer> getAnimationController(PlayerEntity player) {
+        GeckoPlayer geckoPlayer = ClientEventHandler.geckoPlayers.get(player.getUniqueID());
+        if (geckoPlayer != null) {
+            return GeckoLibUtil.getControllerForID(geckoPlayer.getFactory(), player.getUniqueID().hashCode(), GeckoPlayer.CONTROLLER_NAME);
+        }
+        return null;
     }
 
     @SubscribeEvent
