@@ -119,17 +119,9 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 		float yaw = 0;
 		float pitch = 0;
 		float roll = 0;
-		MowzieGeoBone neck = getMowzieBone("Neck");
-		GeoBone parent = neck;
-		while (parent != null) {
-			pitch += parent.getRotationX();
-			yaw += parent.getRotationY();
-			roll += parent.getRotationZ();
-			parent = parent.parent;
-		}
 		this.bipedHead().addRotationY(headLookAmount * -netHeadYaw * ((float)Math.PI / 180F));
 		if (flag) {
-			this.bipedHead().setRotationX((-(float)Math.PI / 4F));
+			this.bipedHead().addRotationX((-(float)Math.PI / 4F));
 		} else if (this.swimAnimation > 0.0F) {
 			if (flag1) {
 				this.bipedHead().addRotationX(headLookAmount * this.rotLerpRad(this.swimAnimation, this.bipedHead().getRotationX(), (-(float)Math.PI / 4F)));
@@ -139,7 +131,6 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 		} else {
 			this.bipedHead().addRotationX(headLookAmount * -headPitch * ((float)Math.PI / 180F));
 		}
-		neck.addRotation(headLookAmount * -pitch, headLookAmount * -yaw, headLookAmount * -roll);
 		
 		float f = 1.0F;
 		if (flag) {
@@ -238,6 +229,7 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 	}
 
 	public float getControllerValue(String controllerName) {
+		if (!isInitialized()) return 1.0f;
 		return 1.0f - getBone(controllerName).getPositionX();
 	}
 

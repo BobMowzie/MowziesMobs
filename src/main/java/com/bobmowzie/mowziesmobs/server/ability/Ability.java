@@ -12,6 +12,10 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 
 import java.util.List;
 import java.util.Random;
@@ -209,6 +213,10 @@ public class Ability {
 
     public int getMaxCooldown() {
         return cooldownMax;
+    }
+
+    public <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e) {
+        return PlayState.STOP;
     }
 
     public List<LivingEntity> getEntityLivingBaseNearby(LivingEntity player, double distanceX, double distanceY, double distanceZ, double radius) {

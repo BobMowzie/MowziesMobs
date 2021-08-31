@@ -14,14 +14,19 @@ import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.layers.*;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerModelPart;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.text.TextFormatting;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
@@ -148,7 +153,6 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
         }
 
         float f7 = this.handleRotationFloat(entityIn, partialTicks);
-        this.applyRotations(entityIn, matrixStackIn, f7, f, partialTicks);
         this.preRenderCallback(entityIn, matrixStackIn, partialTicks);
         float f8 = 0.0F;
         float f5 = 0.0F;
@@ -164,8 +168,12 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
             }
         }
 
-        this.modelProvider.setLivingAnimations(geckoPlayer, entityIn.getUniqueID().hashCode());
-        this.modelProvider.setRotationAngles(entityIn, f5, f8, f7, f2, f6, partialTicks);
+        if (this.modelProvider.isInitialized()) {
+            this.modelProvider.setLivingAnimations(geckoPlayer, entityIn.getUniqueID().hashCode());
+            this.applyRotationsPlayerRenderer(entityIn, matrixStackIn, f7, f, partialTicks, f1);
+            float bodyRotateAmount = this.modelProvider.getControllerValue("BodyRotateController");
+            this.modelProvider.setRotationAngles(entityIn, f5, f8, f7, f2 * bodyRotateAmount, f6, partialTicks);
+        }
         Minecraft minecraft = Minecraft.getInstance();
         boolean flag = this.isVisible(entityIn);
         boolean flag1 = !flag && !entityIn.isInvisibleToPlayer(minecraft.player);
@@ -201,9 +209,88 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
         }
     }
 
-    @Override
-    protected void applyRotations(AbstractClientPlayerEntity entityLiving, MatrixStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks) {
-        super.applyRotations(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks);
+    protected void applyRotationsPlayerRenderer(AbstractClientPlayerEntity entityLiving, MatrixStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks, float headYaw) {
+        float f = entityLiving.getSwimAnimation(partialTicks);
+        if (entityLiving.isElytraFlying()) {
+            this.applyRotationsLivingRenderer(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks, headYaw);
+            float f1 = (float)entityLiving.getTicksElytraFlying() + partialTicks;
+            float f2 = MathHelper.clamp(f1 * f1 / 100.0F, 0.0F, 1.0F);
+            if (!entityLiving.isSpinAttacking()) {
+                matrixStackIn.rotate(Vector3f.XP.rotationDegrees(f2 * (-90.0F - entityLiving.rotationPitch)));
+            }
+
+            Vector3d vector3d = entityLiving.getLook(partialTicks);
+            Vector3d vector3d1 = entityLiving.getMotion();
+            double d0 = Entity.horizontalMag(vector3d1);
+            double d1 = Entity.horizontalMag(vector3d);
+            if (d0 > 0.0D && d1 > 0.0D) {
+                double d2 = (vector3d1.x * vector3d.x + vector3d1.z * vector3d.z) / Math.sqrt(d0 * d1);
+                double d3 = vector3d1.x * vector3d.z - vector3d1.z * vector3d.x;
+                matrixStackIn.rotate(Vector3f.YP.rotation((float)(Math.signum(d3) * Math.acos(d2))));
+            }
+        } else if (f > 0.0F) {
+            this.applyRotationsLivingRenderer(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks, headYaw);
+            float f3 = entityLiving.isInWater() ? -90.0F - entityLiving.rotationPitch : -90.0F;
+            float f4 = MathHelper.lerp(f, 0.0F, f3);
+            matrixStackIn.rotate(Vector3f.XP.rotationDegrees(f4));
+            if (entityLiving.isActualySwimming()) {
+                matrixStackIn.translate(0.0D, -1.0D, (double)0.3F);
+            }
+        } else {
+            this.applyRotationsLivingRenderer(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks, headYaw);
+        }
+    }
+
+    protected void applyRotationsLivingRenderer(AbstractClientPlayerEntity entityLiving, MatrixStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks, float headYaw) {
+        if (this.func_230495_a_(entityLiving)) {
+            rotationYaw += (float)(Math.cos((double)entityLiving.ticksExisted * 3.25D) * Math.PI * (double)0.4F);
+        }
+
+        Pose pose = entityLiving.getPose();
+        if (pose != Pose.SLEEPING) {
+            float bodyRotateAmount = this.modelProvider.getControllerValue("BodyRotateController");
+            matrixStackIn.rotate(Vector3f.YP.rotationDegrees(180.0F - rotationYaw * bodyRotateAmount - headYaw * (1.0f - bodyRotateAmount)));
+        }
+
+        if (entityLiving.deathTime > 0) {
+            float f = ((float)entityLiving.deathTime + partialTicks - 1.0F) / 20.0F * 1.6F;
+            f = MathHelper.sqrt(f);
+            if (f > 1.0F) {
+                f = 1.0F;
+            }
+
+            matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(f * this.getDeathMaxRotation(entityLiving)));
+        } else if (entityLiving.isSpinAttacking()) {
+            matrixStackIn.rotate(Vector3f.XP.rotationDegrees(-90.0F - entityLiving.rotationPitch));
+            matrixStackIn.rotate(Vector3f.YP.rotationDegrees(((float)entityLiving.ticksExisted + partialTicks) * -75.0F));
+        } else if (pose == Pose.SLEEPING) {
+            Direction direction = entityLiving.getBedDirection();
+            float f1 = direction != null ? getFacingAngle(direction) : rotationYaw;
+            matrixStackIn.rotate(Vector3f.YP.rotationDegrees(f1));
+            matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(this.getDeathMaxRotation(entityLiving)));
+            matrixStackIn.rotate(Vector3f.YP.rotationDegrees(270.0F));
+        } else if (entityLiving.hasCustomName() || entityLiving instanceof PlayerEntity) {
+            String s = TextFormatting.getTextWithoutFormattingCodes(entityLiving.getName().getString());
+            if (("Dinnerbone".equals(s) || "Grumm".equals(s)) && (!(entityLiving instanceof PlayerEntity) || ((PlayerEntity)entityLiving).isWearing(PlayerModelPart.CAPE))) {
+                matrixStackIn.translate(0.0D, (double)(entityLiving.getHeight() + 0.1F), 0.0D);
+                matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(180.0F));
+            }
+        }
+    }
+
+    private static float getFacingAngle(Direction facingIn) {
+        switch(facingIn) {
+            case SOUTH:
+                return 90.0F;
+            case WEST:
+                return 0.0F;
+            case NORTH:
+                return 270.0F;
+            case EAST:
+                return 180.0F;
+            default:
+                return 0.0F;
+        }
     }
 
     @Override

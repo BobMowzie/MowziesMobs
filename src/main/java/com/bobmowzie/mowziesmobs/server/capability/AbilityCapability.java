@@ -21,6 +21,10 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 
 import java.util.*;
 
@@ -49,6 +53,8 @@ public class AbilityCapability {
         boolean blockBreakingBuildingPrevented();
 
         boolean interactingPrevented();
+
+        public <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e);
 
         INBT writeNBT();
 
@@ -128,6 +134,11 @@ public class AbilityCapability {
         @Override
         public boolean interactingPrevented() {
             return getActiveAbility() != null && getActiveAbility().preventsInteracting();
+        }
+
+        @Override
+        public <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e) {
+            return getActiveAbility().animationPredicate(e);
         }
 
         @Override

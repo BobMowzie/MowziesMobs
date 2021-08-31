@@ -30,6 +30,9 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraft.util.math.vector.Vector3d;
+import software.bernie.geckolib3.core.AnimationState;
+import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -74,6 +77,7 @@ public enum ClientEventHandler {
         shouldAnimate = shouldAnimate || player.isPotionActive(EffectHandler.FROZEN);
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
         if (abilityCapability != null) shouldAnimate = shouldAnimate || abilityCapability.getActiveAbility() != null;
+        shouldAnimate = true;
         if (shouldAnimate) {
             /**
              * This look a little bit messy, if you know another way of how to do this feel

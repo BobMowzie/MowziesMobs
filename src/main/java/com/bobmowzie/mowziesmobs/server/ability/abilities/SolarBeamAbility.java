@@ -1,16 +1,24 @@
 package com.bobmowzie.mowziesmobs.server.ability.abilities;
 
+import com.bobmowzie.mowziesmobs.client.ClientEventHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
+import com.bobmowzie.mowziesmobs.server.entity.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySolarBeam;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
+import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
 public class SolarBeamAbility extends Ability {
     protected EntitySolarBeam solarBeam;
@@ -44,6 +52,15 @@ public class SolarBeamAbility extends Ability {
 
             this.solarBeam = solarBeam;
         }
+
+//        if (getUser().world.isRemote) {
+//            GeckoPlayer geckoPlayer = ClientEventHandler.geckoPlayers.get(getUser().getUniqueID());
+//            if (geckoPlayer != null) {
+//                final AnimationController<?> controller = GeckoLibUtil.getControllerForID(geckoPlayer.getFactory(), getUser().getUniqueID().hashCode(), GeckoPlayer.CONTROLLER_NAME);
+//                controller.markNeedsReload();
+//                controller.setAnimation(new AnimationBuilder().addAnimation("solar_beam_charge", false));
+//            }
+//        }
     }
 
     @Override
@@ -56,5 +73,11 @@ public class SolarBeamAbility extends Ability {
     public boolean canUse() {
         if (getUser() instanceof PlayerEntity && !((PlayerEntity)getUser()).inventory.getCurrentItem().isEmpty()) return false;
         return getUser().isPotionActive(EffectHandler.SUNS_BLESSING) && super.canUse();
+    }
+
+    @Override
+    public <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e) {
+        e.getController().setAnimation(new AnimationBuilder().addAnimation("solar_beam_charge", false));
+        return PlayState.CONTINUE;
     }
 }

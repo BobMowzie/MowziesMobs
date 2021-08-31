@@ -1,5 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
+import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
@@ -17,6 +19,7 @@ public class GeckoPlayer implements IAnimatable {
 
 	private UUID uuid;
 	private AnimationFactory factory = new AnimationFactory(this);
+	public static final String CONTROLLER_NAME = "playerController";
 
 	public GeckoPlayer(UUID uuid) {
 		this.uuid = uuid;
@@ -24,7 +27,7 @@ public class GeckoPlayer implements IAnimatable {
 
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new AnimationController<>(this, "controller", 3, this::predicate));
+		data.addAnimationController(new AnimationController<>(this, CONTROLLER_NAME, 0, this::predicate));
 	}
 
 	@Override
@@ -42,9 +45,20 @@ public class GeckoPlayer implements IAnimatable {
 
 	public <E extends IAnimatable> PlayState predicate(AnimationEvent<E> e) {
 		PlayerEntity player = getPlayer();
-		if (player != null) {
-			e.getController().setAnimation(new AnimationBuilder().addAnimation("spawn_boulder"));
+		if (player == null) {
+			return PlayState.STOP;
 		}
-		return PlayState.CONTINUE;
+		AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+		if (abilityCapability == null) {
+			return PlayState.STOP;
+		}
+		if (abilityCapability.getActiveAbility() != null) {
+			return abilityCapability.animationPredicate(e);
+		}
+		else {
+			e.getController().setAnimation(new AnimationBuilder().addAnimation("idle"));
+			return PlayState.CONTINUE;
+		}
+//		return PlayState.CONTINUE;
 	}
 }
