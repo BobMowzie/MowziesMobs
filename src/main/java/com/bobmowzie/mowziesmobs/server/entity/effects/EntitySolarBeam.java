@@ -41,6 +41,7 @@ public class EntitySolarBeam extends Entity {
     public double endPosX, endPosY, endPosZ;
     public double collidePosX, collidePosY, collidePosZ;
     public double prevCollidePosX, prevCollidePosY, prevCollidePosZ;
+    public float renderYaw, renderPitch;
     public ControlledAnimation appear = new ControlledAnimation(3);
 
     public boolean on = true;
@@ -90,13 +91,19 @@ public class EntitySolarBeam extends Entity {
         prevCollidePosX = collidePosX;
         prevCollidePosY = collidePosY;
         prevCollidePosZ = collidePosZ;
-        prevYaw = getYaw();
-        prevPitch = getPitch();
+        prevYaw = renderYaw;
+        prevPitch = renderPitch;
         if (ticksExisted == 1 && world.isRemote) {
             caster = (LivingEntity) world.getEntityByID(getCasterID());
         }
-        if (!world.isRemote && getHasPlayer()) {
-            this.updateWithPlayer();
+        if (getHasPlayer()) {
+            if (!world.isRemote) {
+                this.updateWithPlayer();
+            }
+            else {
+                renderYaw = (float) ((caster.rotationYawHead + 90.0d) * Math.PI / 180.0d);
+                renderPitch = (float) (-caster.rotationPitch * Math.PI / 180.0d);
+            }
         }
 
         if (!on && appear.getTimer() == 0) {
@@ -268,9 +275,16 @@ public class EntitySolarBeam extends Entity {
 
     private void calculateEndPos() {
         double radius = caster instanceof EntityBarako ? RADIUS_BARAKO : RADIUS_PLAYER;
-        endPosX = getPosX() + radius * Math.cos(getYaw()) * Math.cos(getPitch());
-        endPosZ = getPosZ() + radius * Math.sin(getYaw()) * Math.cos(getPitch());
-        endPosY = getPosY() + radius * Math.sin(getPitch());
+        if (world.isRemote()) {
+            endPosX = getPosX() + radius * Math.cos(renderYaw) * Math.cos(renderPitch);
+            endPosZ = getPosZ() + radius * Math.sin(renderYaw) * Math.cos(renderPitch);
+            endPosY = getPosY() + radius * Math.sin(renderPitch);
+        }
+        else {
+            endPosX = getPosX() + radius * Math.cos(getYaw()) * Math.cos(getPitch());
+            endPosZ = getPosZ() + radius * Math.sin(getYaw()) * Math.cos(getPitch());
+            endPosY = getPosY() + radius * Math.sin(getPitch());
+        }
     }
 
     public HitResult raytraceEntities(World world, Vector3d from, Vector3d to, boolean stopOnLiquid, boolean ignoreBlockWithoutBoundingBox, boolean returnLastUncollidableBlock) {
@@ -325,8 +339,8 @@ public class EntitySolarBeam extends Entity {
     }
 
     private void updateWithPlayer() {
-        this.setYaw((float) ((caster.rotationYawHead + 90) * Math.PI / 180));
-        this.setPitch((float) (-caster.rotationPitch * Math.PI / 180));
+        this.setYaw((float) ((caster.rotationYawHead + 90) * Math.PI / 180.0d));
+        this.setPitch((float) (-caster.rotationPitch * Math.PI / 180.0d));
         this.setPosition(caster.getPosX(), caster.getPosY() + 1.2f, caster.getPosZ());
     }
 

@@ -64,7 +64,7 @@ public class SolarBeamAbility extends Ability {
 
     @Override
     public <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e) {
-//        e.getController().setAnimation(new AnimationBuilder().addAnimation("solar_beam_charge", false));
+        e.getController().setAnimation(new AnimationBuilder().addAnimation("solar_beam_charge", false));
         return PlayState.CONTINUE;
     }
 }

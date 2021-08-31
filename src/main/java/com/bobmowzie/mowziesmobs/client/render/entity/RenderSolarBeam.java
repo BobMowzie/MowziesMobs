@@ -52,8 +52,8 @@ public class RenderSolarBeam extends EntityRenderer<EntitySolarBeam> {
         double posX = solarBeam.prevPosX + (solarBeam.getPosX() - solarBeam.prevPosX) * delta;
         double posY = solarBeam.prevPosY + (solarBeam.getPosY() - solarBeam.prevPosY) * delta;
         double posZ = solarBeam.prevPosZ + (solarBeam.getPosZ() - solarBeam.prevPosZ) * delta;
-        float yaw = solarBeam.prevYaw + (solarBeam.getYaw() - solarBeam.prevYaw) * delta;
-        float pitch = solarBeam.prevPitch + (solarBeam.getPitch() - solarBeam.prevPitch) * delta;
+        float yaw = solarBeam.prevYaw + (solarBeam.renderYaw - solarBeam.prevYaw) * delta;
+        float pitch = solarBeam.prevPitch + (solarBeam.renderPitch - solarBeam.prevPitch) * delta;
 
         float length = (float) Math.sqrt(Math.pow(collidePosX - posX, 2) + Math.pow(collidePosY - posY, 2) + Math.pow(collidePosZ - posZ, 2));
         int frame = MathHelper.floor((solarBeam.appear.getTimer() - 1 + delta) * 2);
@@ -63,7 +63,7 @@ public class RenderSolarBeam extends EntityRenderer<EntitySolarBeam> {
         IVertexBuilder ivertexbuilder = bufferIn.getBuffer(MMRenderType.getGlowingEffect(getEntityTexture(solarBeam)));
 
         renderStart(frame, matrixStackIn, ivertexbuilder, packedLightIn);
-        renderBeam(length, 180 / (float) Math.PI * yaw, 180 / (float) Math.PI * pitch, frame, matrixStackIn, ivertexbuilder, packedLightIn);
+        renderBeam(length, 180f / (float) Math.PI * yaw, 180f / (float) Math.PI * pitch, frame, matrixStackIn, ivertexbuilder, packedLightIn);
 
         matrixStackIn.push();
         matrixStackIn.translate(collidePosX - posX, collidePosY - posY, collidePosZ - posZ);
