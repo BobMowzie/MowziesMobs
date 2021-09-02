@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayer;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
 import com.bobmowzie.mowziesmobs.client.render.entity.*;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
@@ -77,6 +78,7 @@ public enum ClientEventHandler {
         shouldAnimate = shouldAnimate || player.isPotionActive(EffectHandler.FROZEN);
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
         if (abilityCapability != null) shouldAnimate = shouldAnimate || abilityCapability.getActiveAbility() != null;
+//        shouldAnimate = true;
         if (shouldAnimate) {
             /**
              * This look a little bit messy, if you know another way of how to do this feel
@@ -111,10 +113,10 @@ public enum ClientEventHandler {
         }
     }
 
-    public static AnimationController<GeckoPlayer> getAnimationController(PlayerEntity player) {
+    public static MowzieAnimationController<GeckoPlayer> getAnimationController(PlayerEntity player) {
         GeckoPlayer geckoPlayer = ClientEventHandler.geckoPlayers.get(player.getUniqueID());
         if (geckoPlayer != null) {
-            return GeckoLibUtil.getControllerForID(geckoPlayer.getFactory(), player.getUniqueID().hashCode(), GeckoPlayer.CONTROLLER_NAME);
+            return (MowzieAnimationController<GeckoPlayer>) GeckoLibUtil.getControllerForID(geckoPlayer.getFactory(), player.getUniqueID().hashCode(), GeckoPlayer.CONTROLLER_NAME);
         }
         return null;
     }

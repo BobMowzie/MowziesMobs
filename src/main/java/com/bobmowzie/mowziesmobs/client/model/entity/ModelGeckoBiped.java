@@ -116,9 +116,6 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 		float headLookAmount = getControllerValue("HeadLookController");
 		boolean flag = entityIn.getTicksElytraFlying() > 4;
 		boolean flag1 = entityIn.isActualySwimming();
-		float yaw = 0;
-		float pitch = 0;
-		float roll = 0;
 		this.bipedHead().addRotationY(headLookAmount * -netHeadYaw * ((float)Math.PI / 180F));
 		if (flag) {
 			this.bipedHead().addRotationX((-(float)Math.PI / 4F));
@@ -188,10 +185,11 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 			this.bipedBody().setPositionY(3.2F);
 			this.bipedLeftArm().setPositionY(5.2F);
 			this.bipedRightArm().setPositionY(5.2F);
-		}
+		}*/
 
-//		ModelHelper.func_239101_a_(this.bipedRightArm(), this.bipedLeftArm(), ageInTicks);
-		if (this.swimAnimation > 0.0F) {
+		float armBreathAmount = getControllerValue("ArmBreathController");
+		breathAnim(this.bipedRightArm(), this.bipedLeftArm(), ageInTicks, armBreathAmount);
+		/*if (this.swimAnimation > 0.0F) {
 			float f1 = limbSwing % 26.0F;
 			HandSide handside = this.getMainHand(entityIn);
 			float f2 = handside == HandSide.RIGHT && this.swingProgress > 0.0F ? 0.0F : this.swimAnimation;
@@ -257,5 +255,12 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 	protected HandSide getMainHand(PlayerEntity entityIn) {
 		HandSide handside = entityIn.getPrimaryHand();
 		return entityIn.swingingHand == Hand.MAIN_HAND ? handside : handside.opposite();
+	}
+
+	public static void breathAnim(MowzieGeoBone rightArm, MowzieGeoBone leftArm, float ageInTicks, float armBreathAmount) {
+		rightArm.addRotationZ(armBreathAmount * MathHelper.cos(ageInTicks * 0.09F) * 0.05F + 0.05F);
+		leftArm.addRotationZ(armBreathAmount * -MathHelper.cos(ageInTicks * 0.09F) * 0.05F - 0.05F);
+		rightArm.addRotationX(armBreathAmount * MathHelper.sin(ageInTicks * 0.067F) * 0.05F);
+		leftArm.addRotationX(armBreathAmount * -MathHelper.sin(ageInTicks * 0.067F) * 0.05F);
 	}
 }

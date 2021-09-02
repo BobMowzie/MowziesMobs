@@ -23,12 +23,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.TextFormatting;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.IAnimatableModel;
 import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.model.provider.GeoModelProvider;
 import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
 import java.util.HashMap;
 
@@ -60,7 +61,7 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
         AnimationController.addModelFetcher((IAnimatable object) -> {
             if (object instanceof GeckoPlayer) {
                 RenderPlayerAnimated render = modelsToLoad.get(object.getClass());
-                return render.getGeoModelProvider();
+                return (IAnimatableModel<Object>) render.getGeoModelProvider();
             } else {
                 return null;
             }
@@ -81,7 +82,7 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
     }
 
     private void setModelVisibilities(AbstractClientPlayerEntity clientPlayer) {
-        ModelGeckoPlayer playermodel = getGeoModelProvider();
+        ModelGeckoPlayer playermodel = (ModelGeckoPlayer) getGeoModelProvider();
         if (playermodel.isInitialized()) {
             if (clientPlayer.isSpectator()) {
                 playermodel.setVisible(false);
@@ -294,7 +295,7 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
     }
 
     @Override
-    public ModelGeckoPlayer getGeoModelProvider() {
+    public GeoModelProvider<GeckoPlayer> getGeoModelProvider() {
         return this.modelProvider;
     }
 

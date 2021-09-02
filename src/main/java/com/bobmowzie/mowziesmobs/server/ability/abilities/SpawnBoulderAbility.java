@@ -57,6 +57,12 @@ public class SpawnBoulderAbility extends Ability {
     }
 
     @Override
+    public void start() {
+        super.start();
+        playAnimation("spawn_boulder");
+    }
+
+    @Override
     public boolean tryAbility() {
         Vector3d from = getUser().getEyePosition(1.0f);
         Vector3d to = from.add(getUser().getLookVec().scale(SPAWN_BOULDER_REACH));

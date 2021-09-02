@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.ability;
 
 import com.bobmowzie.mowziesmobs.client.ClientEventHandler;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.entity.GeckoPlayer;
 import net.minecraft.entity.Entity;
@@ -57,11 +58,14 @@ public class Ability {
         currentSectionIndex = 0;
         isUsing = true;
         if (!runsInBackground()) abilityCapability.setActiveAbility(this);
+    }
 
+    public void playAnimation(String animationName) {
         if (getUser() instanceof PlayerEntity && getUser().world.isRemote()) {
-            AnimationController<GeckoPlayer> controller = ClientEventHandler.getAnimationController((PlayerEntity) getUser());
-            if (controller != null) {
-                controller.markNeedsReload();
+            MowzieAnimationController<GeckoPlayer> controller = ClientEventHandler.getAnimationController((PlayerEntity) getUser());
+            GeckoPlayer geckoPlayer = ClientEventHandler.geckoPlayers.get(getUser().getUniqueID());
+            if (controller != null && geckoPlayer != null) {
+                controller.playAnimation(geckoPlayer, animationName);
             }
         }
     }
