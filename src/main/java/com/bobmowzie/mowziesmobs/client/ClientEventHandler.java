@@ -66,12 +66,8 @@ public enum ClientEventHandler {
         boolean shouldAnimate = player.isPotionActive(EffectHandler.FROZEN);
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
         if (abilityCapability != null) shouldAnimate = shouldAnimate || abilityCapability.getActiveAbility() != null;
-//        shouldAnimate = true;
+//        shouldAnimate = (player.ticksExisted / 20) % 2 == 0;
         if (shouldAnimate) {
-            /**
-             * This look a little bit messy, if you know another way of how to do this feel
-             * free to open a PR!
-             **/
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getEntity(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
             if (playerCapability != null) {
                 GeckoPlayer geckoPlayer = playerCapability.getGeckoPlayer();
@@ -81,7 +77,6 @@ public enum ClientEventHandler {
                 event.setCanceled(geckoPlayerModel.resourceForModelId((AbstractClientPlayerEntity) player));
 
                 if (event.isCanceled()) {
-                    // After all the comprobation we can already render the player. Yay!
                     animatedPlayerRenderer.render((AbstractClientPlayerEntity) event.getEntity(), event.getEntity().rotationYaw, delta, event.getMatrixStack(), event.getBuffers(), event.getLight(), geckoPlayer);
                 }
             }

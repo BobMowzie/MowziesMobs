@@ -173,19 +173,23 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 //		}
 
 //		this.func_230486_a_(entityIn, ageInTicks);
+		*/
+		float sneakController = getControllerValue("CrouchController");
 		if (this.isSneak) {
-			this.bipedBody().setRotationX(0.5F);
-			this.bipedRightArm().addRotation(0.4F, 0, 0);
-			this.bipedLeftArm().addRotation(0.4F, 0, 0);
-			this.bipedRightLeg().setPositionZ(4.0F);
-			this.bipedLeftLeg().setPositionZ(4.0F);
-			this.bipedRightLeg().setPositionY(12.2F);
-			this.bipedLeftLeg().setPositionY(12.2F);
-			this.bipedHead().setPositionY(4.2F);
-			this.bipedBody().setPositionY(3.2F);
-			this.bipedLeftArm().setPositionY(5.2F);
-			this.bipedRightArm().setPositionY(5.2F);
-		}*/
+			this.bipedBody().addRotationX(-0.5F * sneakController);
+			this.getMowzieBone("Neck").addRotationX(0.5F * sneakController);
+			this.bipedRightArm().addRotation(0.4F * sneakController, 0, 0);
+			this.bipedLeftArm().addRotation(0.4F * sneakController, 0, 0);
+			this.bipedHead().addPositionY(-1F * sneakController);
+			this.bipedBody().addPosition(0, -1.5F * sneakController, 1.7f * sneakController);
+			this.getMowzieBone("Waist").addPosition(0, -0.2f * sneakController, 4F * sneakController);
+			this.bipedLeftArm().addRotationX(-0.4f * sneakController);
+			this.bipedLeftArm().addPosition(0, 0.2f * sneakController, -1f * sneakController);
+			this.bipedRightArm().addRotationX(-0.4f * sneakController);
+			this.bipedRightArm().addPosition(0, 0.2f * sneakController, -1f * sneakController);
+
+			this.getMowzieBone("Waist").addPositionY(2f * (1f - sneakController));
+		}
 
 		float armBreathAmount = getControllerValue("ArmBreathController");
 		breathAnim(this.bipedRightArm(), this.bipedLeftArm(), ageInTicks, armBreathAmount);

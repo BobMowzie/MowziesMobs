@@ -721,6 +721,22 @@
 						}
 					}
 				},
+				"CrouchController": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.2": {
+							"vector": [1, 0, 0]
+						},
+						"4.4": {
+							"vector": [1, 0, 0]
+						},
+						"4.84": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
 				"BodyRotateController": {
 					"position": {
 						"0.0": {

@@ -53,7 +53,6 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
         this.addLayer(new BeeStingerLayer<>(this));
         this.addLayer(new FrozenRenderHandler.LayerFrozen<>(this));
 
-//        this.entityModel = new ModelPlayerAnimated<>(0.0f, useSmallArms);
         this.modelProvider = modelProvider;
     }
 
