@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.entity.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
 import com.bobmowzie.mowziesmobs.server.item.ItemEarthTalisman;
@@ -26,11 +27,14 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.LogicalSide;
 
 import java.util.ArrayList;
@@ -46,6 +50,8 @@ public class PlayerCapability {
         Power[] getPowers();
 
         void tick(TickEvent.PlayerTickEvent event);
+
+        void addedToWorld(EntityJoinWorldEvent event);
 
         boolean isVerticalSwing();
 
@@ -104,6 +110,9 @@ public class PlayerCapability {
         float getPrevCooledAttackStrength();
 
         void setPrevCooledAttackStrength(float cooledAttackStrength);
+
+        @OnlyIn(Dist.CLIENT)
+        GeckoPlayer getGeckoPlayer();
     }
 
     public static class PlayerCapabilityImp implements IPlayerCapability {
@@ -120,6 +129,9 @@ public class PlayerCapability {
         public int tribeCircleTick;
         public List<EntityBarakoanToPlayer> tribePack = new ArrayList<>();
         public int tribePackRadius = 3;
+
+        @OnlyIn(Dist.CLIENT)
+        private GeckoPlayer geckoPlayer;
 
         public boolean isVerticalSwing() {
             return verticalSwing;
@@ -223,6 +235,11 @@ public class PlayerCapability {
             prevCooledAttackStrength = cooledAttackStrength;
         }
 
+        @OnlyIn(Dist.CLIENT)
+        public GeckoPlayer getGeckoPlayer() {
+            return geckoPlayer;
+        }
+
         private boolean usingSolarBeam;
 
         public boolean axeCanAttack;
@@ -231,6 +248,13 @@ public class PlayerCapability {
 
         public PowerGeomancy geomancy = new PowerGeomancy(this);
         public Power[] powers = new Power[]{geomancy};
+
+        @Override
+        public void addedToWorld(EntityJoinWorldEvent event) {
+            if (event.getWorld().isRemote()) {
+                geckoPlayer = new GeckoPlayer((PlayerEntity) event.getEntity());
+            }
+        }
 
         public void tick(TickEvent.PlayerTickEvent event) {
             PlayerEntity player = event.player;

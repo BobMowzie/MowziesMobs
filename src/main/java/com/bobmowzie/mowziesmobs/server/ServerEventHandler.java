@@ -86,6 +86,11 @@ public final class ServerEventHandler {
             if (abilityCapability != null) abilityCapability.instanceAbilities((LivingEntity) event.getEntity());
         }
 
+        if (event.getEntity() instanceof PlayerEntity) {
+            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability((PlayerEntity) event.getEntity(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+            if (playerCapability != null) playerCapability.addedToWorld(event);
+        }
+
         if (event.getWorld().isRemote) {
             return;
         }
@@ -218,17 +223,16 @@ public final class ServerEventHandler {
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
         if (playerCapability != null) {
             playerCapability.tick(event);
+
+            if (event.side == LogicalSide.CLIENT) {
+                GeckoPlayer geckoPlayer = playerCapability.getGeckoPlayer();
+                if (geckoPlayer != null) geckoPlayer.tick();
+            }
+
             Power[] powers = playerCapability.getPowers();
             for (Power power : powers) {
                 power.tick(event);
             }
-        }
-
-        if (event.side == LogicalSide.CLIENT) {
-//            IAnimatableModel<GeckoPlayer> model = ClientEventHandler.geckoPlayerModels.get(player.getUniqueID());
-            GeckoPlayer geckoPlayer = ClientEventHandler.geckoPlayers.get(player.getUniqueID());
-            if (geckoPlayer != null) geckoPlayer.tick();
-//            if (model != null && geckoPlayer != null) model.setLivingAnimations(geckoPlayer, player.getUniqueID().hashCode());
         }
     }
 

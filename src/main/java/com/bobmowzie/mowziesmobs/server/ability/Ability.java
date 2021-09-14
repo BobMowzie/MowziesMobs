@@ -10,6 +10,8 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilitySection.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -39,6 +41,9 @@ public class Ability {
 
     protected Random rand;
 
+    @OnlyIn(Dist.CLIENT)
+    private String activeAnimation;
+
     public Ability(AbilityType<? extends Ability> abilityType, LivingEntity user, AbilitySection[] sectionTrack, int cooldownMax) {
         this.abilityType = abilityType;
         this.user = user;
@@ -62,11 +67,12 @@ public class Ability {
 
     public void playAnimation(String animationName) {
         if (getUser() instanceof PlayerEntity && getUser().world.isRemote()) {
-            MowzieAnimationController<GeckoPlayer> controller = ClientEventHandler.getAnimationController((PlayerEntity) getUser());
-            GeckoPlayer geckoPlayer = ClientEventHandler.geckoPlayers.get(getUser().getUniqueID());
+            MowzieAnimationController<GeckoPlayer> controller = GeckoPlayer.getAnimationController((PlayerEntity) getUser());
+            GeckoPlayer geckoPlayer = GeckoPlayer.getGeckoPlayer((PlayerEntity) getUser());
             if (controller != null && geckoPlayer != null) {
                 controller.playAnimation(geckoPlayer, animationName);
             }
+            activeAnimation = animationName;
         }
     }
 
@@ -230,7 +236,10 @@ public class Ability {
     }
 
     public <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e) {
-        return PlayState.STOP;
+        if (activeAnimation == null || activeAnimation.isEmpty())
+            return PlayState.STOP;
+        e.getController().setAnimation(new AnimationBuilder().addAnimation(activeAnimation, false));
+        return PlayState.CONTINUE;
     }
 
     public List<LivingEntity> getEntityLivingBaseNearby(LivingEntity player, double distanceX, double distanceY, double distanceZ, double radius) {

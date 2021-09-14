@@ -16,7 +16,7 @@ public class MowzieAnimationController<T extends IAnimatable & IAnimationTickabl
 
     public void playAnimation(T animatable, String animationName) {
         markNeedsReload();
-        setAnimation(new AnimationBuilder().addAnimation(animationName, false));
+//        setAnimation(new AnimationBuilder().addAnimation(animationName, false));
         adjustTick(animatable.tickTimer());
     }
 

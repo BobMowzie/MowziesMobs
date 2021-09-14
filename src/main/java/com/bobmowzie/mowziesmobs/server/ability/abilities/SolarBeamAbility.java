@@ -11,10 +11,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 
 public class SolarBeamAbility extends Ability {
     protected EntitySolarBeam solarBeam;
@@ -61,11 +57,5 @@ public class SolarBeamAbility extends Ability {
     public boolean canUse() {
         if (getUser() instanceof PlayerEntity && !((PlayerEntity)getUser()).inventory.getCurrentItem().isEmpty()) return false;
         return getUser().isPotionActive(EffectHandler.SUNS_BLESSING) && super.canUse();
-    }
-
-    @Override
-    public <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e) {
-        e.getController().setAnimation(new AnimationBuilder().addAnimation("solar_beam_charge", false));
-        return PlayState.CONTINUE;
     }
 }

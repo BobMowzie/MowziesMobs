@@ -53,7 +53,7 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
         this.addLayer(new BeeStingerLayer<>(this));
         this.addLayer(new FrozenRenderHandler.LayerFrozen<>(this));
 
-        this.entityModel = new ModelPlayerAnimated<>(0.0f, useSmallArms);
+//        this.entityModel = new ModelPlayerAnimated<>(0.0f, useSmallArms);
         this.modelProvider = modelProvider;
     }
 
@@ -169,8 +169,8 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
             }
         }
 
+        this.modelProvider.setLivingAnimations(geckoPlayer, entityIn.getUniqueID().hashCode());
         if (this.modelProvider.isInitialized()) {
-            this.modelProvider.setLivingAnimations(geckoPlayer, entityIn.getUniqueID().hashCode());
             this.applyRotationsPlayerRenderer(entityIn, matrixStackIn, f7, f, partialTicks, f1);
             float bodyRotateAmount = this.modelProvider.getControllerValue("BodyRotateController");
             this.modelProvider.setRotationAngles(entityIn, f5, f8, f7, f2 * bodyRotateAmount, f6, partialTicks);

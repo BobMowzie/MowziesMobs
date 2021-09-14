@@ -217,10 +217,4 @@ public class SpawnBoulderAbility extends Ability {
             getUser().prevRotationYawHead = getUser().rotationYawHead;
         }
     }
-
-    @Override
-    public <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e) {
-        e.getController().setAnimation(new AnimationBuilder().addAnimation("spawn_boulder", false));
-        return PlayState.CONTINUE;
-    }
 }
