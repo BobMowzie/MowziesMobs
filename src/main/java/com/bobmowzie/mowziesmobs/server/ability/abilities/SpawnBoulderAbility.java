@@ -52,14 +52,14 @@ public class SpawnBoulderAbility extends Ability {
         super(abilityType, user,  new AbilitySection[] {
                 new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, MAX_CHARGE),
                 new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),
-                new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 11)
+                new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 12)
         });
     }
 
     @Override
     public void start() {
         super.start();
-        playAnimation("spawn_boulder");
+        playAnimation("spawn_boulder_start");
     }
 
     @Override
@@ -86,7 +86,7 @@ public class SpawnBoulderAbility extends Ability {
         super.tickUsing();
         if (getCurrentSection().sectionType == AbilitySection.AbilitySectionType.STARTUP) {
             spawnBoulderCharge++;
-            if (spawnBoulderCharge > 1) getUser().addPotionEffect(new EffectInstance(Effects.SLOWNESS, 3, 2, false, false));
+            if (spawnBoulderCharge > 1) getUser().addPotionEffect(new EffectInstance(Effects.SLOWNESS, 3, 3, false, false));
             if (spawnBoulderCharge == 1 && getUser().world.isRemote) MowziesMobs.PROXY.playBoulderChargeSound(getUser());
             if ((spawnBoulderCharge + 10) % 10 == 0 && spawnBoulderCharge < 40) {
                 if (getUser().world.isRemote) {
@@ -104,18 +104,6 @@ public class SpawnBoulderAbility extends Ability {
                     });
                 }
                 getUser().playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL.get(), 1, 1f);
-            }
-            if (getUser().world.isRemote && spawnBoulderCharge > 5 && spawnBoulderCharge < 30) {
-                int particleCount = 4;
-                while (--particleCount != 0) {
-                    double radius = 0.5f + 1.5f * spawnBoulderCharge/30f;
-                    double yaw = getUser().getRNG().nextFloat() * 2 * Math.PI;
-                    double pitch = getUser().getRNG().nextFloat() * 2 * Math.PI;
-                    double ox = radius * Math.sin(yaw) * Math.sin(pitch);
-                    double oy = radius * Math.cos(pitch);
-                    double oz = radius * Math.cos(yaw) * Math.sin(pitch);
-                    getUser().world.addParticle(new ParticleOrb.OrbData((float) getUser().getPosX(), (float) getUser().getPosY() + getUser().getHeight() /2f, (float) getUser().getPosZ(), 14), getUser().getPosX() + ox, getUser().getPosY() + oy + getUser().getHeight()/2, getUser().getPosZ() + oz, 0, 0, 0);
-                }
             }
 
             int size = getBoulderSize() + 1;
@@ -141,6 +129,13 @@ public class SpawnBoulderAbility extends Ability {
     }
 
     private void spawnBoulder() {
+        if (spawnBoulderCharge <= 2) {
+            playAnimation("spawn_boulder_instant");
+        }
+        else {
+            playAnimation("spawn_boulder_end");
+        }
+
         int size = getBoulderSize();
         if (spawnBoulderCharge >= 60) size = 3;
         EntityBoulder boulder = new EntityBoulder(EntityHandler.BOULDERS[size], getUser().world, getUser(), spawnBoulderBlock, spawnBoulderPos);
