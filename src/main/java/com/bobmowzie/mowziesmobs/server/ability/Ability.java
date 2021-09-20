@@ -51,6 +51,7 @@ public class Ability {
         this.sectionTrack = sectionTrack;
         this.cooldownMax = cooldownMax;
         this.rand = new Random();
+        this.activeAnimation = "idle";
     }
 
     public Ability(AbilityType<? extends Ability> abilityType, LivingEntity user, AbilitySection[] sectionTrack) {

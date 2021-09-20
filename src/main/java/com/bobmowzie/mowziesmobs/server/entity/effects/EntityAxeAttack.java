@@ -81,7 +81,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
         }
         if (!world.isRemote && ticksExisted == 7) playSound(MMSounds.ENTITY_WROUGHT_WHOOSH.get(), 0.7F, 1.1f);
         if (!world.isRemote && caster != null) {
-            if (!getVertical() && ticksExisted == SWING_DURATION_HOR /2 - 1) dealDamage(7.0f * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f, 4.5f, 160, 1.2f);
+            if (!getVertical() && ticksExisted == SWING_DURATION_HOR /2 - 1) dealDamage(7.0f * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f, 4f, 160, 1.2f);
             else if (getVertical() && ticksExisted == SWING_DURATION_VER /2 - 1) {
                 dealDamage(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue(), 4.5f, 40, 0.8f);
                 quakeAngle = rotationYaw;

@@ -6,15 +6,11 @@ import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.server.entity.GeckoPlayer;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraft.client.renderer.model.ModelHelper;
-import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 
 public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
@@ -160,20 +156,18 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 			getMowzieBone("Root").setRotation(0, 0, 0);
 		}
 
-		/*this.bipedRightArm().setRotationY(0.0F);
-		this.bipedLeftArm().setRotationY(0.0F);
 		boolean flag2 = entityIn.getPrimaryHand() == HandSide.RIGHT;
 		boolean flag3 = flag2 ? this.leftArmPose.func_241657_a_() : this.rightArmPose.func_241657_a_();
-//		if (flag2 != flag3) {
-//			this.func_241655_c_(entityIn);
-//			this.func_241654_b_(entityIn);
-//		} else {
-//			this.func_241654_b_(entityIn);
-//			this.func_241655_c_(entityIn);
-//		}
+		if (flag2 != flag3) {
+			this.func_241655_c_(entityIn);
+			this.func_241654_b_(entityIn);
+		} else {
+			this.func_241654_b_(entityIn);
+			this.func_241655_c_(entityIn);
+		}
 
-//		this.func_230486_a_(entityIn, ageInTicks);
-		*/
+//		this.swingAnim(entityIn, ageInTicks);
+
 		float sneakController = getControllerValue("CrouchController");
 		if (this.isSneak) {
 			this.bipedBody().addRotationX(-0.5F * sneakController);
@@ -266,5 +260,34 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 		leftArm.addRotationZ(armBreathAmount * -MathHelper.cos(ageInTicks * 0.09F) * 0.05F - 0.05F);
 		rightArm.addRotationX(armBreathAmount * MathHelper.sin(ageInTicks * 0.067F) * 0.05F);
 		leftArm.addRotationX(armBreathAmount * -MathHelper.sin(ageInTicks * 0.067F) * 0.05F);
+	}
+
+	private void func_241654_b_(PlayerEntity p_241654_1_) {
+		float armSwingAmount = getControllerValue("ArmSwingController");
+		switch(this.rightArmPose) {
+			case EMPTY:
+				break;
+			case BLOCK:
+				this.bipedRightArm().addRotationX(0.9424779F * armSwingAmount);
+				break;
+			case ITEM:
+				this.bipedRightArm().addRotationX( ((float)Math.PI / 10F) * armSwingAmount);
+				break;
+		}
+
+	}
+
+	private void func_241655_c_(PlayerEntity p_241655_1_) {
+		float armSwingAmount = getControllerValue("ArmSwingController");
+		switch(this.leftArmPose) {
+			case EMPTY:
+				break;
+			case BLOCK:
+				this.bipedLeftArm().addRotationX(0.9424779F * armSwingAmount);
+				break;
+			case ITEM:
+				this.bipedLeftArm().addRotationX(((float)Math.PI / 10F) * armSwingAmount);
+				break;
+		}
 	}
 }

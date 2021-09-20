@@ -71,6 +71,11 @@
 					]
 				},
 				{
+					"name": "LeftHeldItem",
+					"parent": "LeftArm",
+					"pivot": [6.25, 12, -2]
+				},
+				{
 					"name": "RightClavicle",
 					"parent": "Body",
 					"pivot": [-2, 22, 0]
@@ -90,6 +95,11 @@
 					"cubes": [
 						{"origin": [-8, 12, -2], "size": [4, 12, 4], "inflate": 0.25, "uv": [40, 32]}
 					]
+				},
+				{
+					"name": "RightHeldItem",
+					"parent": "RightArm",
+					"pivot": [-6, 12, -2]
 				},
 				{
 					"name": "BodyLayer",

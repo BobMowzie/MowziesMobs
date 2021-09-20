@@ -16,7 +16,7 @@ public class WroughtAxeSwingAbility extends Ability {
         super(abilityType, user, new AbilitySection[] {
                 new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, SWING_DURATION_HOR / 2 - 2),
                 new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),
-                new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, SWING_DURATION_HOR / 2 + 2)
+                new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, SWING_DURATION_HOR / 2 + 2 + 7)
         });
     }
 
@@ -28,6 +28,9 @@ public class WroughtAxeSwingAbility extends Ability {
             axeAttack.setPositionAndRotation(getUser().getPosX(), getUser().getPosY(), getUser().getPosZ(), getUser().rotationYaw, getUser().rotationPitch);
             getUser().world.addEntity(axeAttack);
             this.axeAttack = axeAttack;
+        }
+        else {
+            playAnimation("axe_swing_start_right");
         }
     }
 

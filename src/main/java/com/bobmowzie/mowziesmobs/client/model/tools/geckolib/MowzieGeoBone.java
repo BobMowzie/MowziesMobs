@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.model.tools.geckolib;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.RigUtils;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.util.math.vector.*;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 
@@ -9,12 +10,20 @@ public class MowzieGeoBone extends GeoBone {
     private boolean trackXform;
     public Matrix4f rotMat;
 
+    private Matrix4f worldSpaceXform;
+    private Matrix3f worldSpaceNormal;
+
     public MowzieGeoBone() {
         super();
         modelSpaceXform = new Matrix4f();
         modelSpaceXform.setIdentity();
         trackXform = false;
         rotMat = null;
+
+        worldSpaceXform = new Matrix4f();
+        worldSpaceXform.setIdentity();
+        worldSpaceNormal = new Matrix3f();
+        worldSpaceNormal.setIdentity();
     }
 
     public MowzieGeoBone getParent() {
@@ -61,6 +70,22 @@ public class MowzieGeoBone extends GeoBone {
 
     public void setModelRotationMat(Matrix4f mat) {
         rotMat = mat;
+    }
+
+    public void setWorldSpaceNormal(Matrix3f worldSpaceNormal) {
+        this.worldSpaceNormal = worldSpaceNormal;
+    }
+
+    public Matrix3f getWorldSpaceNormal() {
+        return worldSpaceNormal;
+    }
+
+    public void setWorldSpaceXform(Matrix4f worldSpaceXform) {
+        this.worldSpaceXform = worldSpaceXform;
+    }
+
+    public Matrix4f getWorldSpaceXform() {
+        return worldSpaceXform;
     }
 
     // Position utils
