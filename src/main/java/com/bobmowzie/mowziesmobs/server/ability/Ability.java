@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.ability;
 
-import com.bobmowzie.mowziesmobs.client.ClientEventHandler;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.entity.GeckoPlayer;
@@ -20,7 +19,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 
 import java.util.List;
@@ -42,7 +40,7 @@ public class Ability {
     protected Random rand;
 
     @OnlyIn(Dist.CLIENT)
-    private String activeAnimation;
+    protected String activeAnimation;
 
     public Ability(AbilityType<? extends Ability> abilityType, LivingEntity user, AbilitySection[] sectionTrack, int cooldownMax) {
         this.abilityType = abilityType;
@@ -59,11 +57,11 @@ public class Ability {
     }
 
     public void start() {
+        if (!runsInBackground()) abilityCapability.setActiveAbility(this);
         ticksInUse = 0;
         ticksInSection = 0;
         currentSectionIndex = 0;
         isUsing = true;
-        if (!runsInBackground()) abilityCapability.setActiveAbility(this);
     }
 
     public void playAnimation(String animationName) {
@@ -130,7 +128,7 @@ public class Ability {
      */
     public boolean canUse() {
         boolean nonBackgroundCheck = runsInBackground() || abilityCapability.getActiveAbility() == null || canCancelActiveAbility();
-        return !isUsing() && cooldownTimer == 0 && nonBackgroundCheck;
+        return (!isUsing() || canCancelActiveAbility()) && cooldownTimer == 0 && nonBackgroundCheck;
     }
 
     /**
@@ -236,11 +234,19 @@ public class Ability {
         return cooldownMax;
     }
 
+    public AbilityCapability.IAbilityCapability getAbilityCapability() {
+        return abilityCapability;
+    }
+
     public <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e) {
         if (activeAnimation == null || activeAnimation.isEmpty())
             return PlayState.STOP;
         e.getController().setAnimation(new AnimationBuilder().addAnimation(activeAnimation, false));
         return PlayState.CONTINUE;
+    }
+
+    public boolean isAnimating() {
+        return isUsing();
     }
 
     public List<LivingEntity> getEntityLivingBaseNearby(LivingEntity player, double distanceX, double distanceY, double distanceZ, double radius) {

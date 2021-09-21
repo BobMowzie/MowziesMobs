@@ -1,11 +1,19 @@
 package com.bobmowzie.mowziesmobs.server.ability.abilities;
 
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
+import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
+import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.HandSide;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 
 import static com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack.SWING_DURATION_HOR;
 
@@ -30,7 +38,8 @@ public class WroughtAxeSwingAbility extends Ability {
             this.axeAttack = axeAttack;
         }
         else {
-            playAnimation("axe_swing_start_right");
+            boolean handSide = getUser().getPrimaryHand() == HandSide.RIGHT;
+            playAnimation("axe_swing_start_" + (handSide ? "right" : "left"));
         }
     }
 
@@ -39,6 +48,10 @@ public class WroughtAxeSwingAbility extends Ability {
         super.end();
         if (axeAttack != null) {
             this.axeAttack.remove();
+        }
+        if (getUser() instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) getUser();
+            player.resetCooldown();
         }
     }
 

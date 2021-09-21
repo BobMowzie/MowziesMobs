@@ -112,7 +112,7 @@ public class AbilityCapability {
 
         @Override
         public void setActiveAbility(Ability activeAbility) {
-            if (getActiveAbility() != null && getActiveAbility().isUsing()) getActiveAbility().end();
+            if (getActiveAbility() != null && getActiveAbility().isUsing()) getActiveAbility().interrupt();
             this.activeAbility = activeAbility;
         }
 

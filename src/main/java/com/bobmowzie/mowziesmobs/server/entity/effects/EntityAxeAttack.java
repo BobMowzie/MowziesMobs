@@ -201,10 +201,6 @@ public class EntityAxeAttack extends EntityMagicEffect {
 
     @Override
     public void remove() {
-        if (caster instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity) caster;
-            player.resetCooldown();
-        }
         super.remove();
     }
 
