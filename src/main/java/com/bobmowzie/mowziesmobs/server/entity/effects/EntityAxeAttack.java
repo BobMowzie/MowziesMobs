@@ -19,8 +19,10 @@ import net.minecraft.entity.item.FallingBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.block.Blocks;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.Effects;
@@ -49,6 +51,7 @@ import java.util.stream.Collectors;
  */
 public class EntityAxeAttack extends EntityMagicEffect {
     private static final DataParameter<Boolean> VERTICAL = EntityDataManager.createKey(EntityAxeAttack.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<ItemStack> AXE_STACK = EntityDataManager.createKey(EntityAxeAttack.class, DataSerializers.ITEMSTACK);
 
     public static int SWING_DURATION_HOR = 24;
     public static int SWING_DURATION_VER = 30;
@@ -65,18 +68,20 @@ public class EntityAxeAttack extends EntityMagicEffect {
             this.setCasterID(caster.getEntityId());
         }
         setVertical(vertical);
+        setAxeStack(caster.getHeldItemMainhand());
     }
     @Override
     protected void registerData() {
         super.registerData();
         getDataManager().register(VERTICAL, false);
+        getDataManager().register(AXE_STACK, ItemHandler.WROUGHT_AXE.getDefaultInstance());
     }
 
     @Override
     public void tick() {
         super.tick();
         if (caster != null) {
-            if (!caster.isAlive() || caster.getHeldItemMainhand().getItem() != ItemHandler.WROUGHT_AXE) remove();
+            if (!caster.isAlive()) remove();
             setPositionAndRotation(caster.getPosX(), caster.getPosY(), caster.getPosZ(), caster.rotationYaw, caster.rotationPitch);
         }
         if (!world.isRemote && ticksExisted == 7) playSound(MMSounds.ENTITY_WROUGHT_WHOOSH.get(), 0.7F, 1.1f);
@@ -208,11 +213,25 @@ public class EntityAxeAttack extends EntityMagicEffect {
         return caster;
     }
 
+    public void setAxeStack(ItemStack axeStack) {
+        getDataManager().set(AXE_STACK, axeStack);
+    }
+
+    public ItemStack getAxeStack() {
+        return getDataManager().get(AXE_STACK);
+    }
+
     /**
      * Copied from player entity, with modification
      */
     public void attackTargetEntityWithCurrentItem(Entity targetEntity, PlayerEntity player, float damageMult, float knockbackMult) {
         if (!net.minecraftforge.common.ForgeHooks.onPlayerAttackTarget(player, targetEntity)) return;
+
+        ItemStack oldStack = player.getHeldItemMainhand();
+        ItemStack newStack = getAxeStack();
+        player.setHeldItem(Hand.MAIN_HAND, newStack);
+        player.getAttributeManager().reapplyModifiers(newStack.getAttributeModifiers(EquipmentSlotType.MAINHAND));
+
         if (targetEntity.canBeAttackedWithItem()) {
             if (!targetEntity.hitByEntity(player)) {
                 float f = (float)player.getAttributeValue(Attributes.ATTACK_DAMAGE) * damageMult;
@@ -326,5 +345,21 @@ public class EntityAxeAttack extends EntityMagicEffect {
 
             }
         }
+        player.setHeldItem(Hand.MAIN_HAND, oldStack);
+        player.getAttributeManager().reapplyModifiers(oldStack.getAttributeModifiers(EquipmentSlotType.MAINHAND));
+    }
+
+    @Override
+    protected void readAdditional(CompoundNBT compound) {
+        super.readAdditional(compound);
+        setAxeStack(ItemStack.read(compound.getCompound("axe_stack")));
+        setVertical(compound.getBoolean("vertical"));
+    }
+
+    @Override
+    protected void writeAdditional(CompoundNBT compound) {
+        super.writeAdditional(compound);
+        compound.put("axe_stack", getAxeStack().write(new CompoundNBT()));
+        compound.putBoolean("vertical", getVertical());
     }
 }

@@ -7,6 +7,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection.*;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraftforge.api.distmarker.Dist;
@@ -42,6 +43,11 @@ public class Ability {
     @OnlyIn(Dist.CLIENT)
     protected String activeAnimation;
 
+    @OnlyIn(Dist.CLIENT)
+    protected ItemStack heldItemMainHandVisualOverride;
+    @OnlyIn(Dist.CLIENT)
+    protected ItemStack heldItemOffHandVisualOverride;
+
     public Ability(AbilityType<? extends Ability> abilityType, LivingEntity user, AbilitySection[] sectionTrack, int cooldownMax) {
         this.abilityType = abilityType;
         this.user = user;
@@ -49,7 +55,11 @@ public class Ability {
         this.sectionTrack = sectionTrack;
         this.cooldownMax = cooldownMax;
         this.rand = new Random();
-        this.activeAnimation = "idle";
+        if (user.world.isRemote) {
+            this.activeAnimation = "idle";
+            heldItemMainHandVisualOverride = null;
+            heldItemOffHandVisualOverride = null;
+        }
     }
 
     public Ability(AbilityType<? extends Ability> abilityType, LivingEntity user, AbilitySection[] sectionTrack) {
@@ -112,6 +122,11 @@ public class Ability {
         cooldownTimer = getMaxCooldown();
         currentSectionIndex = 0;
         if (!runsInBackground()) abilityCapability.setActiveAbility(null);
+
+        if (getUser().world.isRemote) {
+            heldItemMainHandVisualOverride = null;
+            heldItemOffHandVisualOverride = null;
+        }
     }
 
     public void interrupt() {
@@ -259,6 +274,16 @@ public class Ability {
 
     public <T extends Entity> List<T> getEntitiesNearby(LivingEntity player, Class<T> entityClass, double dX, double dY, double dZ, double r) {
         return player.world.getEntitiesWithinAABB(entityClass, player.getBoundingBox().grow(dX, dY, dZ), e -> e != player && player.getDistance(e) <= r);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public ItemStack heldItemMainHandOverride() {
+        return heldItemMainHandVisualOverride;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public ItemStack heldItemOffHandOverride() {
+        return heldItemOffHandVisualOverride;
     }
 
     public CompoundNBT writeNBT() {

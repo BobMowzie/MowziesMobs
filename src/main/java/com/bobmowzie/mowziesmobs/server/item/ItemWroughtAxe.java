@@ -66,8 +66,6 @@ public class ItemWroughtAxe extends MowzieAxeItem {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand) {
-        player.getCooledAttackStrength(0.5F);
-        System.out.println("Pass " + player.getCooledAttackStrength(0.5F));
         if (hand == Hand.MAIN_HAND && player.getCooledAttackStrength(0.5F) == 1.0f) {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
             if (playerCapability != null && playerCapability.getUntilAxeSwing() <= 0) {

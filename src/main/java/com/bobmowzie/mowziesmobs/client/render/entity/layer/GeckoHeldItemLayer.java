@@ -2,6 +2,9 @@ package com.bobmowzie.mowziesmobs.client.render.entity.layer;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.render.entity.RenderPlayerAnimated;
+import com.bobmowzie.mowziesmobs.server.ability.Ability;
+import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
@@ -9,6 +12,7 @@ import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.math.vector.Vector3f;
@@ -23,8 +27,16 @@ public class GeckoHeldItemLayer extends GeckoRenderLayer {
     public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, AbstractClientPlayerEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         super.render(matrixStackIn, bufferIn, packedLightIn, entitylivingbaseIn, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
         boolean flag = entitylivingbaseIn.getPrimaryHand() == HandSide.RIGHT;
-        ItemStack itemstack = flag ? entitylivingbaseIn.getHeldItemOffhand() : entitylivingbaseIn.getHeldItemMainhand();
-        ItemStack itemstack1 = flag ? entitylivingbaseIn.getHeldItemMainhand() : entitylivingbaseIn.getHeldItemOffhand();
+        ItemStack mainHandStack = entitylivingbaseIn.getHeldItemMainhand();
+        ItemStack offHandStack = entitylivingbaseIn.getHeldItemOffhand();
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(entitylivingbaseIn);
+        if (abilityCapability != null && abilityCapability.getActiveAbility() != null) {
+            Ability ability = abilityCapability.getActiveAbility();
+            mainHandStack = ability.heldItemMainHandOverride() != null ? ability.heldItemMainHandOverride() : mainHandStack;
+            offHandStack = ability.heldItemOffHandOverride() != null ? ability.heldItemOffHandOverride() : offHandStack;
+        }
+        ItemStack itemstack = flag ? offHandStack : mainHandStack;
+        ItemStack itemstack1 = flag ? mainHandStack : offHandStack;
         if (!itemstack.isEmpty() || !itemstack1.isEmpty()) {
             matrixStackIn.push();
             if (this.getEntityModel().isChild) {

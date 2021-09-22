@@ -45,7 +45,7 @@ public class GeckoPlayer implements IAnimatable, IAnimationTickable {
 
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new MowzieAnimationController<>(this, CONTROLLER_NAME, 0, this::predicate));
+		data.addAnimationController(new MowzieAnimationController<>(this, CONTROLLER_NAME, 1, this::predicate));
 	}
 
 	@Override
