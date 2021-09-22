@@ -37,6 +37,7 @@ public class GeckoPlayer implements IAnimatable, IAnimationTickable {
 	public GeckoPlayer(PlayerEntity player) {
 		this.player = player;
 		geckoPlayerModel = new ModelGeckoPlayer();
+		geckoPlayerModel.resourceForModelId((AbstractClientPlayerEntity) player);
 		renderPlayerAnimated = new RenderPlayerAnimated(Minecraft.getInstance().getRenderManager(), geckoPlayerModel, ((AbstractClientPlayerEntity) player).getSkinType().equals("slim"));
 		if (!renderPlayerAnimated.getModelsToLoad().containsKey(this.getClass())) {
 			renderPlayerAnimated.getModelsToLoad().put(this.getClass(), renderPlayerAnimated);
@@ -45,7 +46,7 @@ public class GeckoPlayer implements IAnimatable, IAnimationTickable {
 
 	@Override
 	public void registerControllers(AnimationData data) {
-		data.addAnimationController(new MowzieAnimationController<>(this, CONTROLLER_NAME, 1, this::predicate));
+		data.addAnimationController(new MowzieAnimationController<>(this, CONTROLLER_NAME, 0, this::predicate));
 	}
 
 	@Override
