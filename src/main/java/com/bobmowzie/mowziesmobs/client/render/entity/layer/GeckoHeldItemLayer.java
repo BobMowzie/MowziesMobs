@@ -6,13 +6,11 @@ import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.math.vector.Vector3f;
@@ -26,6 +24,7 @@ public class GeckoHeldItemLayer extends GeckoRenderLayer {
     @Override
     public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, AbstractClientPlayerEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         super.render(matrixStackIn, bufferIn, packedLightIn, entitylivingbaseIn, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
+        if (!getGeckoModel().isInitialized()) return;
         boolean flag = entitylivingbaseIn.getPrimaryHand() == HandSide.RIGHT;
         ItemStack mainHandStack = entitylivingbaseIn.getHeldItemMainhand();
         ItemStack offHandStack = entitylivingbaseIn.getHeldItemOffhand();
@@ -59,11 +58,7 @@ public class GeckoHeldItemLayer extends GeckoRenderLayer {
             newMatrixStack.getLast().getNormal().mul(bone.getWorldSpaceNormal());
             newMatrixStack.getLast().getMatrix().mul(bone.getWorldSpaceXform());
             newMatrixStack.rotate(Vector3f.XP.rotationDegrees(-90.0F));
-            newMatrixStack.rotate(Vector3f.YP.rotationDegrees(180.0F));
             boolean flag = side == HandSide.LEFT;
-//            newMatrixStack.translate((double)((float)(flag ? -1 : 1) / 16.0F), 0.125D, -0.625D);
-//            newMatrixStack.translate((double)((float)(flag ? 1 : -1) * 0.43f), 0, -0.13);
-            newMatrixStack.rotate(Vector3f.YP.rotationDegrees(180.0F));
             Minecraft.getInstance().getFirstPersonRenderer().renderItemSide(entity, itemStack, transformType, flag, newMatrixStack, buffer, packedLightIn);
         }
     }

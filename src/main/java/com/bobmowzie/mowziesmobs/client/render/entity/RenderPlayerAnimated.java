@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBipedAnimated;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayer;
+import com.bobmowzie.mowziesmobs.client.model.entity.ModelPlayerAnimated;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoHeldItemLayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoRenderLayer;
@@ -27,6 +28,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.TextFormatting;
@@ -47,10 +49,17 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
     private static HashMap<Class<? extends GeckoPlayer>, RenderPlayerAnimated> modelsToLoad = new HashMap<>();
     private ModelGeckoPlayer modelProvider;
 
+    private ModelBipedAnimated<AbstractClientPlayerEntity> armorModelMain;
+    private ModelBipedAnimated<AbstractClientPlayerEntity> armorModelLegs;
+
+    private Matrix4f worldRenderMat;
+
     public RenderPlayerAnimated(EntityRendererManager renderManager, ModelGeckoPlayer modelProvider, boolean useSmallArms) {
         super(renderManager, useSmallArms);
         this.layerRenderers.clear();
-        this.addLayer(new BipedArmorLayer<>(this, new ModelBipedAnimated(0.5F), new ModelBipedAnimated(1.0F)));
+        armorModelLegs = new ModelBipedAnimated<AbstractClientPlayerEntity>(0.5F);
+        armorModelMain = new ModelBipedAnimated<AbstractClientPlayerEntity>(1.0F);
+        this.addLayer(new BipedArmorLayer<>(this, armorModelLegs, armorModelMain));
         this.addLayer(new GeckoHeldItemLayer(this));
         this.addLayer(new ArrowLayer<>(this));
         this.addLayer(new Deadmau5HeadLayer(this));
@@ -62,7 +71,11 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
         this.addLayer(new BeeStingerLayer<>(this));
         this.addLayer(new FrozenRenderHandler.LayerFrozen<>(this));
 
+        this.entityModel = new ModelPlayerAnimated<>(0.0f, useSmallArms);
         this.modelProvider = modelProvider;
+
+        worldRenderMat = new Matrix4f();
+        worldRenderMat.setIdentity();
     }
 
     static {
@@ -98,12 +111,12 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
                 playermodel.bipedHeadwear().setHidden(false);
             } else {
                 playermodel.setVisible(true);
-                playermodel.bipedHeadwear().setHidden(clientPlayer.isWearing(PlayerModelPart.HAT));
-                playermodel.bipedBodywear().setHidden(clientPlayer.isWearing(PlayerModelPart.JACKET));
-                playermodel.bipedLeftLegwear().setHidden(clientPlayer.isWearing(PlayerModelPart.LEFT_PANTS_LEG));
-                playermodel.bipedRightLegwear().setHidden(clientPlayer.isWearing(PlayerModelPart.RIGHT_PANTS_LEG));
-                playermodel.bipedLeftArmwear().setHidden(clientPlayer.isWearing(PlayerModelPart.LEFT_SLEEVE));
-                playermodel.bipedRightArmwear().setHidden(clientPlayer.isWearing(PlayerModelPart.RIGHT_SLEEVE));
+                playermodel.bipedHeadwear().setHidden(!clientPlayer.isWearing(PlayerModelPart.HAT));
+                playermodel.bipedBodywear().setHidden(!clientPlayer.isWearing(PlayerModelPart.JACKET));
+                playermodel.bipedLeftLegwear().setHidden(!clientPlayer.isWearing(PlayerModelPart.LEFT_PANTS_LEG));
+                playermodel.bipedRightLegwear().setHidden(!clientPlayer.isWearing(PlayerModelPart.RIGHT_PANTS_LEG));
+                playermodel.bipedLeftArmwear().setHidden(!clientPlayer.isWearing(PlayerModelPart.LEFT_SLEEVE));
+                playermodel.bipedRightArmwear().setHidden(!clientPlayer.isWearing(PlayerModelPart.RIGHT_SLEEVE));
                 playermodel.isSneak = clientPlayer.isCrouching();
                 BipedModel.ArmPose bipedmodel$armpose = func_241741_a_(clientPlayer, Hand.MAIN_HAND);
                 BipedModel.ArmPose bipedmodel$armpose1 = func_241741_a_(clientPlayer, Hand.OFF_HAND);
@@ -194,14 +207,19 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
             IVertexBuilder ivertexbuilder = bufferIn.getBuffer(rendertype);
             int i = getPackedOverlay(entityIn, this.getOverlayProgress(entityIn, partialTicks));
             matrixStackIn.push();
+            worldRenderMat.set(matrixStackIn.getLast().getMatrix());
             render(
                     getGeoModelProvider().getModel(getGeoModelProvider().getModelLocation(geckoPlayer)),
                     geckoPlayer, partialTicks, rendertype, matrixStackIn, bufferIn, ivertexbuilder, packedLightIn, i, 1.0F, 1.0F, 1.0F, flag1 ? 0.15F : 1.0F
             );
             matrixStackIn.pop();
+            this.entityModel.setRotationAngles(entityIn, f5, f8, f7, f2, f6);
+            ModelBipedAnimated.copyFromGeckoModel(this.entityModel, this.modelProvider);
         }
 
         if (!entityIn.isSpectator()) {
+//            ModelBipedAnimated.copyFromGeckoModel(this.armorModelLegs, this.modelProvider);
+//            ModelBipedAnimated.copyFromGeckoModel(this.armorModelMain, this.modelProvider);
             for(LayerRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>> layerrenderer : this.layerRenderers) {
                 layerrenderer.render(matrixStackIn, bufferIn, packedLightIn, entityIn, f5, f8, partialTicks, f7, f2, f6);
             }
@@ -327,10 +345,32 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
         RenderUtils.scale(bone, stack);
         if (bone instanceof MowzieGeoBone) {
             MowzieGeoBone mowzieBone = (MowzieGeoBone)bone;
-            if (mowzieBone.name.equals("LeftHeldItem") || mowzieBone.name.equals("RightHeldItem")) {
+            if (
+                    mowzieBone.name.equals("LeftHeldItem") || mowzieBone.name.equals("RightHeldItem") ||
+                    mowzieBone.name.equals("Head") ||
+                    mowzieBone.name.equals("Body") ||
+                    mowzieBone.name.equals("LeftArm") ||
+                    mowzieBone.name.equals("RightArm") ||
+                    mowzieBone.name.equals("RightLeg") ||
+                    mowzieBone.name.equals("LeftLeg")
+            ) {
+                stack.push();
+                if (!mowzieBone.name.equals("LeftHeldItem") && !mowzieBone.name.equals("RightHeldItem")) {
+                    stack.scale(-1.0F, -1.0F, 1.0F);
+                }
+                if (mowzieBone.name.equals("Body")) {
+                    stack.translate(0, -0.75, 0);
+                }
+                if (mowzieBone.name.equals("LeftArm")) {
+                    stack.translate(-0.075, 0, 0);
+                }
+                if (mowzieBone.name.equals("RightArm")) {
+                    stack.translate(0.075, 0, 0);
+                }
                 MatrixStack.Entry entry = stack.getLast();
                 mowzieBone.setWorldSpaceNormal(entry.getNormal().copy());
                 mowzieBone.setWorldSpaceXform(entry.getMatrix().copy());
+                stack.pop();
             }
         }
         RenderUtils.moveBackFromPivot(bone, stack);

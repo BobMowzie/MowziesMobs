@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.client.model.tools.geckolib;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.IAnimationTickable;
 import net.minecraft.client.Minecraft;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -12,8 +11,6 @@ import software.bernie.geckolib3.resource.GeckoLibCache;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 public abstract class MowzieAnimatedGeoModel<T extends IAnimatable & IAnimationTickable> extends AnimatedGeoModel<T> {
     public MowzieAnimatedGeoModel() {

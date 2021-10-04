@@ -1,28 +1,30 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
-import com.bobmowzie.mowziesmobs.client.render.entity.RenderSuperNova;
-import com.bobmowzie.mowziesmobs.server.ability.abilities.WroughtAxeSwingAbility;
+import com.bobmowzie.mowziesmobs.client.model.tools.ModelRendererMatrix;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.math.vector.Vector3d;
 
-public class ModelBipedAnimated<T extends LivingEntity> extends BipedModel {
+public class ModelBipedAnimated<T extends LivingEntity> extends BipedModel<T> {
     public ModelBipedAnimated(float modelSize) {
         super(modelSize);
+        this.bipedBody = new ModelRendererMatrix(bipedBody);
+        this.bipedHead = new ModelRendererMatrix(bipedHead);
+        this.bipedRightArm = new ModelRendererMatrix(bipedRightArm);
+        this.bipedLeftArm = new ModelRendererMatrix(bipedLeftArm);
+        this.bipedRightLeg = new ModelRendererMatrix(bipedRightLeg);
+        this.bipedLeftLeg = new ModelRendererMatrix(bipedLeftLeg);
     }
 
     @Override
-    public void setRotationAngles(LivingEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         if (!(entityIn instanceof PlayerEntity)) {
             return;
@@ -32,7 +34,27 @@ public class ModelBipedAnimated<T extends LivingEntity> extends BipedModel {
         doMowzieAnimations(player, this, delta);
     }
 
-    public static void doMowzieAnimations(PlayerEntity player, BipedModel model, float delta) {
+    public static void copyFromGeckoModel(BipedModel<?> bipedModel, ModelGeckoPlayer geckoModel) {
+        ((ModelRendererMatrix)bipedModel.bipedBody).setWorldXform(geckoModel.bipedBody().getWorldSpaceXform());
+        ((ModelRendererMatrix)bipedModel.bipedBody).setWorldNormal(geckoModel.bipedBody().getWorldSpaceNormal());
+        
+        ((ModelRendererMatrix)bipedModel.bipedHead).setWorldXform(geckoModel.bipedHead().getWorldSpaceXform());
+        ((ModelRendererMatrix)bipedModel.bipedHead).setWorldNormal(geckoModel.bipedHead().getWorldSpaceNormal());
+
+        ((ModelRendererMatrix)bipedModel.bipedLeftLeg).setWorldXform(geckoModel.bipedLeftLeg().getWorldSpaceXform());
+        ((ModelRendererMatrix)bipedModel.bipedLeftLeg).setWorldNormal(geckoModel.bipedLeftLeg().getWorldSpaceNormal());
+
+        ((ModelRendererMatrix)bipedModel.bipedRightLeg).setWorldXform(geckoModel.bipedRightLeg().getWorldSpaceXform());
+        ((ModelRendererMatrix)bipedModel.bipedRightLeg).setWorldNormal(geckoModel.bipedRightLeg().getWorldSpaceNormal());
+
+        ((ModelRendererMatrix)bipedModel.bipedRightArm).setWorldXform(geckoModel.bipedRightArm().getWorldSpaceXform());
+        ((ModelRendererMatrix)bipedModel.bipedRightArm).setWorldNormal(geckoModel.bipedRightArm().getWorldSpaceNormal());
+
+        ((ModelRendererMatrix)bipedModel.bipedLeftArm).setWorldXform(geckoModel.bipedLeftArm().getWorldSpaceXform());
+        ((ModelRendererMatrix)bipedModel.bipedLeftArm).setWorldNormal(geckoModel.bipedLeftArm().getWorldSpaceNormal());
+    }
+
+    public static void doMowzieAnimations(PlayerEntity player, BipedModel<?> model, float delta) {
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
         if (playerCapability != null && playerCapability.getGeomancy().tunneling) {
             model.isSneak = false;

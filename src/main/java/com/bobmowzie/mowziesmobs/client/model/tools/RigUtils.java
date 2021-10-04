@@ -1,10 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.model.tools;
 
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix3f;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.*;
 import software.bernie.geckolib3.core.processor.IBone;
 
 import java.util.Arrays;
@@ -261,5 +258,59 @@ public class RigUtils {
         Quaternion q = new Quaternion((float) a.getX(), -(float) a.getY(), -(float) a.getZ(), w);
         q.normalize();
         return q;
+    }
+
+    public static Vector3f translationFromMatrix(Matrix4f matrix4f) {
+        return new Vector3f(matrix4f.m03, matrix4f.m13, matrix4f.m23);
+    }
+
+    public static Vector3f eulerAnglesZYXFromMatrix(Matrix4f matrix4f) {
+        // From https://www.geometrictools.com/Documentation/EulerAngles.pdf
+        float thetaZ;
+        float thetaY;
+        float thetaX;
+        if (matrix4f.m20 < 1f) {
+            if (matrix4f.m20 > -1f) {
+                thetaY = (float) Math.asin(-matrix4f.m20);
+                thetaZ = (float) Math.atan2(matrix4f.m10, matrix4f.m00) ;
+                thetaX = (float) Math.atan2(matrix4f.m21, matrix4f.m22);
+            }
+            else { // m20 = −1
+                thetaY = (float) (Math.PI / 2f);
+                thetaZ = -(float) Math.atan2(-matrix4f.m12, matrix4f.m11);
+                thetaX = 0;
+            }
+        }
+        else { // m20 = +1
+            thetaY = -(float) (Math.PI / 2f);
+            thetaZ = (float) Math.atan2(-matrix4f.m12, matrix4f.m11);
+            thetaX = 0;
+        }
+        return new Vector3f(thetaX, thetaY, thetaZ);
+    }
+
+    public static Vector3f eulerAnglesXYZFromMatrix(Matrix4f matrix4f) {
+        // From https://www.geometrictools.com/Documentation/EulerAngles.pdf
+        float thetaZ;
+        float thetaY;
+        float thetaX;
+        if (matrix4f.m20 < 1f) {
+            if (matrix4f.m20 > -1f) {
+                thetaY = (float) Math.asin(matrix4f.m02);
+                thetaX = (float) Math.atan2(-matrix4f.m12, matrix4f.m22) ;
+                thetaZ = (float) Math.atan2(-matrix4f.m01, matrix4f.m00);
+            }
+            else { // m20 = −1
+                thetaY = -(float) (Math.PI / 2f);
+                thetaX = -(float) Math.atan2(matrix4f.m10, matrix4f.m11);
+                thetaZ = 0;
+            }
+        }
+        else { // m20 = +1
+            thetaY = (float) (Math.PI / 2f);
+            thetaX = (float) Math.atan2(matrix4f.m10, matrix4f.m11);
+            thetaZ = 0;
+        }
+        return new Vector3f(thetaX, thetaY, thetaZ);
     }
 }

@@ -13,7 +13,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * Created using Tabula 8.0.0
  */
 @OnlyIn(Dist.CLIENT)
-public class SolVisageModel<T extends LivingEntity> extends ModelBipedAnimated {
+public class SolVisageModel<T extends LivingEntity> extends ModelBipedAnimated<T> {
     public ModelRenderer maskBase;
     public ModelRenderer maskFace;
     public ModelRenderer headdress1back;
