@@ -1,8 +1,10 @@
 package com.bobmowzie.mowziesmobs.client.model.armor;
 
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBipedAnimated;
+import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -13,8 +15,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * Created using Tabula 8.0.0
  */
 @OnlyIn(Dist.CLIENT)
-public class SolVisageModel<T extends LivingEntity> extends ModelBipedAnimated<T> {
-    public ModelRenderer maskBase;
+public class SolVisageModel<T extends LivingEntity> extends BipedModel<T> {
+    public AdvancedModelRenderer maskBase;
     public ModelRenderer maskFace;
     public ModelRenderer headdress1back;
     public ModelRenderer headdress2back;
@@ -49,6 +51,7 @@ public class SolVisageModel<T extends LivingEntity> extends ModelBipedAnimated<T
         super(0.0f);
         this.textureWidth = 128;
         this.textureHeight = 128;
+        bipedHead.cubeList.clear();
         this.headdress5 = new ModelRenderer(this, 27, 76);
         this.headdress5.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.headdress5.addBox(-3.0F, -18.0F, 0.0F, 6, 12, 0, 0.0F);
@@ -106,9 +109,10 @@ public class SolVisageModel<T extends LivingEntity> extends ModelBipedAnimated<T
         this.headdress7.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.headdress7.addBox(-3.0F, -18.0F, 0.0F, 6, 12, 0, 0.0F);
         this.setRotateAngle(headdress7, -2.6179938779914944F, 0.0F, 1.0471975511965976F);
-        this.maskBase = new ModelRenderer(this, 0, 0);
-        this.maskBase.setRotationPoint(0.0F, -7.777372F, -4F);
+        this.maskBase = new AdvancedModelRenderer(this, 0, 0);
+        this.maskBase.setRotationPoint(0.0F, -6.777372F, -4F);
         this.maskBase.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0, 0.0F);
+        this.maskBase.setScale(0.8f);
         this.jaw = new ModelRenderer(this, 48, 109);
         this.jaw.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.jaw.addBox(-6.0F, 0.0F, 0.0F, 12, 4, 7, 0.0F);
@@ -204,10 +208,8 @@ public class SolVisageModel<T extends LivingEntity> extends ModelBipedAnimated<T
 
     @Override
     public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        matrixStackIn.push();
-        matrixStackIn.scale(0.8f, 0.8f, 0.8f);
+        bipedHeadwear.showModel = false;
         super.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        matrixStackIn.pop();
     }
 
     /**

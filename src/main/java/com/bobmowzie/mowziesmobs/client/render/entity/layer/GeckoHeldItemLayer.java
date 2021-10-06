@@ -9,22 +9,28 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.entity.layers.LayerRenderer;
+import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class GeckoHeldItemLayer extends GeckoRenderLayer {
+@OnlyIn(Dist.CLIENT)
+public class GeckoHeldItemLayer extends LayerRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>> implements IGeckoRenderLayer {
+    private RenderPlayerAnimated renderPlayerAnimated;
 
     public GeckoHeldItemLayer(RenderPlayerAnimated entityRendererIn) {
         super(entityRendererIn);
+        renderPlayerAnimated = entityRendererIn;
     }
 
     @Override
     public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, AbstractClientPlayerEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        super.render(matrixStackIn, bufferIn, packedLightIn, entitylivingbaseIn, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
-        if (!getGeckoModel().isInitialized()) return;
+        if (!renderPlayerAnimated.getAnimatedPlayerModel().isInitialized()) return;
         boolean flag = entitylivingbaseIn.getPrimaryHand() == HandSide.RIGHT;
         ItemStack mainHandStack = entitylivingbaseIn.getHeldItemMainhand();
         ItemStack offHandStack = entitylivingbaseIn.getHeldItemOffhand();
@@ -53,7 +59,7 @@ public class GeckoHeldItemLayer extends GeckoRenderLayer {
     private void func_229135_a_(LivingEntity entity, ItemStack itemStack, ItemCameraTransforms.TransformType transformType, HandSide side, MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLightIn) {
         if (!itemStack.isEmpty()) {
             String boneName = side == HandSide.RIGHT ? "RightHeldItem" : "LeftHeldItem";
-            MowzieGeoBone bone = getGeckoModel().getMowzieBone(boneName);
+            MowzieGeoBone bone = renderPlayerAnimated.getAnimatedPlayerModel().getMowzieBone(boneName);
             MatrixStack newMatrixStack = new MatrixStack();
             newMatrixStack.getLast().getNormal().mul(bone.getWorldSpaceNormal());
             newMatrixStack.getLast().getMatrix().mul(bone.getWorldSpaceXform());

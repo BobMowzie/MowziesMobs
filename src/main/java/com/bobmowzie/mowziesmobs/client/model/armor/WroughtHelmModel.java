@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
 
-public class WroughtHelmModel<T extends LivingEntity> extends ModelBipedAnimated {
+public class WroughtHelmModel<T extends LivingEntity> extends BipedModel<T> {
     public ModelRenderer shape1;
     public ModelRenderer tuskRight1;
     public ModelRenderer hornRight1;
@@ -20,6 +20,7 @@ public class WroughtHelmModel<T extends LivingEntity> extends ModelBipedAnimated
         super(0.0f);
         this.textureWidth = 64;
         this.textureHeight = 64;
+        bipedHead.cubeList.clear();
         this.shape1 = new ModelRenderer(this, 0, 44);
         this.shape1.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.shape1.addBox(-5.0F, -9.0F, -5.0F, 10, 10, 10, 0.0F);

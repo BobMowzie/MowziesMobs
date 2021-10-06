@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.client.model.tools.ModelRendererMatrix;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
@@ -65,5 +66,19 @@ public class ModelPlayerAnimated<T extends LivingEntity> extends PlayerModel<T> 
     @Override
     public ModelRenderer getRandomModelRenderer(Random randomIn) {
         return this.modelRenderers.get(randomIn.nextInt(this.modelRenderers.size()));
+    }
+
+    @Override
+    public void setModelAttributes(BipedModel<T> modelIn) {
+        if (!(modelIn.bipedBody instanceof ModelRendererMatrix)) {
+            modelIn.bipedHead = new ModelRendererMatrix(modelIn.bipedHead);
+            modelIn.bipedHeadwear = new ModelRendererMatrix(modelIn.bipedHeadwear);
+            modelIn.bipedBody = new ModelRendererMatrix(modelIn.bipedBody);
+            modelIn.bipedLeftArm = new ModelRendererMatrix(modelIn.bipedLeftArm);
+            modelIn.bipedRightArm = new ModelRendererMatrix(modelIn.bipedRightArm);
+            modelIn.bipedLeftLeg = new ModelRendererMatrix(modelIn.bipedLeftLeg);
+            modelIn.bipedRightLeg = new ModelRendererMatrix(modelIn.bipedRightLeg);
+        }
+        super.setModelAttributes(modelIn);
     }
 }

@@ -4,8 +4,9 @@ import com.bobmowzie.mowziesmobs.client.model.entity.ModelBipedAnimated;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayer;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelPlayerAnimated;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
+import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoBipedArmorLayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoHeldItemLayer;
-import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoRenderLayer;
+import com.bobmowzie.mowziesmobs.client.render.entity.layer.IGeckoRenderLayer;
 import com.bobmowzie.mowziesmobs.server.entity.GeckoPlayer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -23,6 +24,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerModelPart;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
@@ -49,17 +51,17 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
     private static HashMap<Class<? extends GeckoPlayer>, RenderPlayerAnimated> modelsToLoad = new HashMap<>();
     private ModelGeckoPlayer modelProvider;
 
-    private ModelBipedAnimated<AbstractClientPlayerEntity> armorModelMain;
-    private ModelBipedAnimated<AbstractClientPlayerEntity> armorModelLegs;
+    private GeckoBipedArmorLayer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>, ModelBipedAnimated<AbstractClientPlayerEntity>> armorLayer;
+    private IRenderTypeBuffer renderTypeBuffer;
+    private AbstractClientPlayerEntity entity;
 
     private Matrix4f worldRenderMat;
 
     public RenderPlayerAnimated(EntityRendererManager renderManager, ModelGeckoPlayer modelProvider, boolean useSmallArms) {
         super(renderManager, useSmallArms);
         this.layerRenderers.clear();
-        armorModelLegs = new ModelBipedAnimated<AbstractClientPlayerEntity>(0.5F);
-        armorModelMain = new ModelBipedAnimated<AbstractClientPlayerEntity>(1.0F);
-        this.addLayer(new BipedArmorLayer<>(this, armorModelLegs, armorModelMain));
+//        armorLayer = new GeckoBipedArmorLayer<>(this, new ModelBipedAnimated<>(0.5F), new ModelBipedAnimated<>(1.0F));
+        this.addLayer(new BipedArmorLayer<>(this, new ModelBipedAnimated<>(0.5F), new ModelBipedAnimated<>(1.0F)));
         this.addLayer(new GeckoHeldItemLayer(this));
         this.addLayer(new ArrowLayer<>(this));
         this.addLayer(new Deadmau5HeadLayer(this));
@@ -136,6 +138,9 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
     }
 
     public void renderLiving(AbstractClientPlayerEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, GeckoPlayer geckoPlayer) {
+        renderTypeBuffer = bufferIn;
+        entity = entityIn;
+
         if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Pre<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>>(entityIn, this, partialTicks, matrixStackIn, bufferIn, packedLightIn))) return;
         matrixStackIn.push();
         this.entityModel.swingProgress = this.getSwingProgress(entityIn, partialTicks);
@@ -218,8 +223,6 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
         }
 
         if (!entityIn.isSpectator()) {
-//            ModelBipedAnimated.copyFromGeckoModel(this.armorModelLegs, this.modelProvider);
-//            ModelBipedAnimated.copyFromGeckoModel(this.armorModelMain, this.modelProvider);
             for(LayerRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>> layerrenderer : this.layerRenderers) {
                 layerrenderer.render(matrixStackIn, bufferIn, packedLightIn, entityIn, f5, f8, partialTicks, f7, f2, f6);
             }
@@ -337,12 +340,13 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
     }
 
     @Override
-    public void renderRecursively(GeoBone bone, MatrixStack stack, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        stack.push();
-        RenderUtils.translate(bone, stack);
-        RenderUtils.moveToPivot(bone, stack);
-        RenderUtils.rotate(bone, stack);
-        RenderUtils.scale(bone, stack);
+    public void renderRecursively(GeoBone bone, MatrixStack matrixStack, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        matrixStack.push();
+        RenderUtils.translate(bone, matrixStack);
+        RenderUtils.moveToPivot(bone, matrixStack);
+        RenderUtils.rotate(bone, matrixStack);
+        RenderUtils.scale(bone, matrixStack);
+        // Record xform matrices for relevant bones
         if (bone instanceof MowzieGeoBone) {
             MowzieGeoBone mowzieBone = (MowzieGeoBone)bone;
             if (
@@ -354,48 +358,48 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
                     mowzieBone.name.equals("RightLeg") ||
                     mowzieBone.name.equals("LeftLeg")
             ) {
-                stack.push();
+                matrixStack.push();
                 if (!mowzieBone.name.equals("LeftHeldItem") && !mowzieBone.name.equals("RightHeldItem")) {
-                    stack.scale(-1.0F, -1.0F, 1.0F);
+                    matrixStack.scale(-1.0F, -1.0F, 1.0F);
                 }
                 if (mowzieBone.name.equals("Body")) {
-                    stack.translate(0, -0.75, 0);
+                    matrixStack.translate(0, -0.75, 0);
                 }
                 if (mowzieBone.name.equals("LeftArm")) {
-                    stack.translate(-0.075, 0, 0);
+                    matrixStack.translate(-0.075, 0, 0);
                 }
                 if (mowzieBone.name.equals("RightArm")) {
-                    stack.translate(0.075, 0, 0);
+                    matrixStack.translate(0.075, 0, 0);
                 }
-                MatrixStack.Entry entry = stack.getLast();
+                MatrixStack.Entry entry = matrixStack.getLast();
                 mowzieBone.setWorldSpaceNormal(entry.getNormal().copy());
                 mowzieBone.setWorldSpaceXform(entry.getMatrix().copy());
-                stack.pop();
+                matrixStack.pop();
             }
         }
-        RenderUtils.moveBackFromPivot(bone, stack);
+        RenderUtils.moveBackFromPivot(bone, matrixStack);
         if (!bone.isHidden) {
             Iterator var10 = bone.childCubes.iterator();
 
             while(var10.hasNext()) {
                 GeoCube cube = (GeoCube)var10.next();
-                stack.push();
-                this.renderCube(cube, stack, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                stack.pop();
+                matrixStack.push();
+                this.renderCube(cube, matrixStack, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                matrixStack.pop();
             }
 
             var10 = bone.childBones.iterator();
 
             while(var10.hasNext()) {
                 GeoBone childBone = (GeoBone)var10.next();
-                this.renderRecursively(childBone, stack, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.renderRecursively(childBone, matrixStack, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
         }
 
-        stack.pop();
+        matrixStack.pop();
 
         for(LayerRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>> layerrenderer : this.layerRenderers) {
-            if (layerrenderer instanceof GeckoRenderLayer) ((GeckoRenderLayer)layerrenderer).renderRecursively(bone, stack, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            if (layerrenderer instanceof IGeckoRenderLayer) ((IGeckoRenderLayer)layerrenderer).renderRecursively(bone, matrixStack, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
     }
 }

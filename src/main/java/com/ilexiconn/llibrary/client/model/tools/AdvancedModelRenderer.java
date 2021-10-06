@@ -6,6 +6,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
+import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Direction;
@@ -29,7 +30,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
     public float scaleX = 1.0F, scaleY = 1.0F, scaleZ = 1.0F;
     public float opacity = 1.0F;
     public boolean scaleChildren;
-    private final AdvancedModelBase model;
+    private final Model model;
     private AdvancedModelRenderer parent;
     private boolean doubleSided = true;
     private boolean hasLighting = true;
@@ -44,11 +45,11 @@ public class AdvancedModelRenderer extends ModelRenderer {
     private Matrix3f mat3Override;
     private Matrix4f mat4Override;
 
-    public AdvancedModelRenderer(AdvancedModelBase model) {
+    public AdvancedModelRenderer(Model model) {
         this(model, 0, 0);
     }
 
-    public AdvancedModelRenderer(AdvancedModelBase model, int textureOffsetX, int textureOffsetY) {
+    public AdvancedModelRenderer(Model model, int textureOffsetX, int textureOffsetY) {
         super(model, textureOffsetX, textureOffsetY);
         this.model = model;
         this.textureWidth = model.textureWidth;
@@ -60,7 +61,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
     }
 
     public AdvancedModelRenderer(AdvancedModelRenderer copyFrom) {
-        this(copyFrom.getModel(), copyFrom.textureOffsetX, copyFrom.textureOffsetY);
+        this(copyFrom.getAdvancedModel(), copyFrom.textureOffsetX, copyFrom.textureOffsetY);
         this.rotationPointX = copyFrom.rotationPointX;
         this.rotationPointY = copyFrom.rotationPointY;
         this.rotationPointZ = copyFrom.rotationPointZ;
@@ -298,12 +299,12 @@ public class AdvancedModelRenderer extends ModelRenderer {
         }
     }
 
-    public AdvancedModelBase getModel() {
-        return this.model;
+    public AdvancedModelBase getAdvancedModel() {
+        return (AdvancedModelBase) this.model;
     }
 
     private float calculateRotation(float speed, float degree, boolean invert, float offset, float weight, float f, float f1) {
-        float movementScale = this.model.getMovementScale();
+        float movementScale = this.model instanceof AdvancedModelBase ? ((AdvancedModelBase<?>)this.model).getMovementScale() : 1;
         float rotation = (MathHelper.cos(f * (speed * movementScale) + offset) * (degree * movementScale) * f1) + (weight * f1);
         return invert ? -rotation : rotation;
     }
@@ -363,7 +364,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
      * @param f1     is the walk speed.
      */
     public void bob(float speed, float degree, boolean bounce, float f, float f1) {
-        float movementScale = this.model.getMovementScale();
+        float movementScale = this.model instanceof AdvancedModelBase ? ((AdvancedModelBase<?>)this.model).getMovementScale() : 1;
         degree *= movementScale;
         speed *= movementScale;
         float bob = (float) (Math.sin(f * speed) * f1 * degree - f1 * degree);
