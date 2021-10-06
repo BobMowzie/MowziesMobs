@@ -4,7 +4,6 @@ import com.bobmowzie.mowziesmobs.client.model.entity.ModelBipedAnimated;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayer;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelPlayerAnimated;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
-import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoBipedArmorLayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoHeldItemLayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.IGeckoRenderLayer;
 import com.bobmowzie.mowziesmobs.server.entity.GeckoPlayer;
@@ -24,7 +23,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerModelPart;
-import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
@@ -51,16 +49,11 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
     private static HashMap<Class<? extends GeckoPlayer>, RenderPlayerAnimated> modelsToLoad = new HashMap<>();
     private ModelGeckoPlayer modelProvider;
 
-    private GeckoBipedArmorLayer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>, ModelBipedAnimated<AbstractClientPlayerEntity>> armorLayer;
-    private IRenderTypeBuffer renderTypeBuffer;
-    private AbstractClientPlayerEntity entity;
-
     private Matrix4f worldRenderMat;
 
-    public RenderPlayerAnimated(EntityRendererManager renderManager, ModelGeckoPlayer modelProvider, boolean useSmallArms) {
-        super(renderManager, useSmallArms);
+    public RenderPlayerAnimated(EntityRendererManager renderManager, ModelGeckoPlayer modelProvider) {
+        super(renderManager, false);
         this.layerRenderers.clear();
-//        armorLayer = new GeckoBipedArmorLayer<>(this, new ModelBipedAnimated<>(0.5F), new ModelBipedAnimated<>(1.0F));
         this.addLayer(new BipedArmorLayer<>(this, new ModelBipedAnimated<>(0.5F), new ModelBipedAnimated<>(1.0F)));
         this.addLayer(new GeckoHeldItemLayer(this));
         this.addLayer(new ArrowLayer<>(this));
@@ -73,7 +66,7 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
         this.addLayer(new BeeStingerLayer<>(this));
         this.addLayer(new FrozenRenderHandler.LayerFrozen<>(this));
 
-        this.entityModel = new ModelPlayerAnimated<>(0.0f, useSmallArms);
+        this.entityModel = new ModelPlayerAnimated<>(0.0f, false);
         this.modelProvider = modelProvider;
 
         worldRenderMat = new Matrix4f();
@@ -97,6 +90,11 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
 
     public HashMap<Class<? extends GeckoPlayer>, RenderPlayerAnimated> getModelsToLoad() {
         return modelsToLoad;
+    }
+
+    public void setSmallArms() {
+        this.entityModel = new ModelPlayerAnimated<>(0.0f, true);
+        this.modelProvider.setUseSmallArms(true);
     }
 
     public void render(AbstractClientPlayerEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, GeckoPlayer geckoPlayer) {
@@ -138,9 +136,6 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
     }
 
     public void renderLiving(AbstractClientPlayerEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, GeckoPlayer geckoPlayer) {
-        renderTypeBuffer = bufferIn;
-        entity = entityIn;
-
         if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Pre<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>>(entityIn, this, partialTicks, matrixStackIn, bufferIn, packedLightIn))) return;
         matrixStackIn.push();
         this.entityModel.swingProgress = this.getSwingProgress(entityIn, partialTicks);

@@ -42,12 +42,7 @@ import java.util.UUID;
 public enum ClientEventHandler {
     INSTANCE;
 
-    private static final ResourceLocation MARIO = new ResourceLocation(MowziesMobs.MODID, "textures/gui/mario.png");
     private static final ResourceLocation FROZEN_BLUR = new ResourceLocation(MowziesMobs.MODID, "textures/gui/frozenblur.png");
-
-    long startWroughtnautHitTime;
-
-    long lastWroughtnautHitTime;
 
     @SubscribeEvent
     public void onHandRender(RenderHandEvent event) {
@@ -71,13 +66,21 @@ public enum ClientEventHandler {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getEntity(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
             if (playerCapability != null) {
                 GeckoPlayer geckoPlayer = playerCapability.getGeckoPlayer();
-                ModelGeckoPlayer geckoPlayerModel = geckoPlayer.getGeckoPlayerModel();
-                RenderPlayerAnimated animatedPlayerRenderer = geckoPlayer.getPlayerRenderer();
+                if (geckoPlayer != null) {
+                    ModelGeckoPlayer geckoPlayerModel = geckoPlayer.getGeckoPlayerModel();
+                    RenderPlayerAnimated animatedPlayerRenderer = geckoPlayer.getPlayerRenderer();
 
-                event.setCanceled(geckoPlayerModel.resourceForModelId((AbstractClientPlayerEntity) player));
+                    if (geckoPlayerModel != null && animatedPlayerRenderer != null) {
+                        if (!geckoPlayerModel.isUsingSmallArms() && ((AbstractClientPlayerEntity) player).getSkinType().equals("slim")) {
+                            animatedPlayerRenderer.setSmallArms();
+                        }
 
-                if (event.isCanceled()) {
-                    animatedPlayerRenderer.render((AbstractClientPlayerEntity) event.getEntity(), event.getEntity().rotationYaw, delta, event.getMatrixStack(), event.getBuffers(), event.getLight(), geckoPlayer);
+                        event.setCanceled(geckoPlayerModel.resourceForModelId((AbstractClientPlayerEntity) player));
+
+                        if (event.isCanceled()) {
+                            animatedPlayerRenderer.render((AbstractClientPlayerEntity) event.getEntity(), event.getEntity().rotationYaw, delta, event.getMatrixStack(), event.getBuffers(), event.getLight(), geckoPlayer);
+                        }
+                    }
                 }
             }
         }

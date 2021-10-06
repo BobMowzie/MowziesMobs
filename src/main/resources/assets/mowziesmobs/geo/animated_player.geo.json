@@ -57,17 +57,43 @@
 				{
 					"name": "LeftArm",
 					"parent": "LeftClavicle",
-					"pivot": [6, 22, 0],
+					"pivot": [6, 22, 0]
+				},
+				{
+					"name": "LeftArmClassic",
+					"parent": "LeftArm",
+					"pivot": [0, 0, 0],
 					"cubes": [
 						{"origin": [4, 12, -2], "size": [4, 12, 4], "uv": [32, 48]}
 					]
 				},
 				{
-					"name": "LeftArmLayer",
+					"name": "LeftArmSlim",
 					"parent": "LeftArm",
 					"pivot": [0, 0, 0],
 					"cubes": [
+						{"origin": [4, 12, -2], "size": [3, 12, 4], "uv": [32, 48]}
+					]
+				},
+				{
+					"name": "LeftArmLayer",
+					"parent": "LeftArm",
+					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "LeftArmLayerClassic",
+					"parent": "LeftArmLayer",
+					"pivot": [0, 0, 0],
+					"cubes": [
 						{"origin": [4, 12, -2], "size": [4, 12, 4], "inflate": 0.25, "uv": [48, 48]}
+					]
+				},
+				{
+					"name": "LeftArmLayerSlim",
+					"parent": "LeftArmLayer",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [4, 12, -2], "size": [3, 12, 4], "inflate": 0.25, "uv": [48, 48]}
 					]
 				},
 				{
@@ -83,17 +109,43 @@
 				{
 					"name": "RightArm",
 					"parent": "RightClavicle",
-					"pivot": [-6, 22, 0],
+					"pivot": [-6, 22, 0]
+				},
+				{
+					"name": "RightArmClassic",
+					"parent": "RightArm",
+					"pivot": [0, 0, 0],
 					"cubes": [
 						{"origin": [-8, 12, -2], "size": [4, 12, 4], "uv": [40, 16]}
 					]
 				},
 				{
-					"name": "RightArmLayer",
+					"name": "RightArmSlim",
 					"parent": "RightArm",
 					"pivot": [0, 0, 0],
 					"cubes": [
+						{"origin": [-7, 12, -2], "size": [3, 12, 4], "uv": [40, 16]}
+					]
+				},
+				{
+					"name": "RightArmLayer",
+					"parent": "RightArm",
+					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "RightArmLayerClassic",
+					"parent": "RightArmLayer",
+					"pivot": [0, 0, 0],
+					"cubes": [
 						{"origin": [-8, 12, -2], "size": [4, 12, 4], "inflate": 0.25, "uv": [40, 32]}
+					]
+				},
+				{
+					"name": "RightArmLayerSlim",
+					"parent": "RightArmLayer",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-7, 12, -2], "size": [3, 12, 4], "inflate": 0.25, "uv": [40, 32]}
 					]
 				},
 				{

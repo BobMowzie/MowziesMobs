@@ -158,12 +158,6 @@ public class EntitySolarBeam extends Entity {
                     DamageUtil.dealMixedDamage(target, DamageSource.causeIndirectDamage(this, caster), damageMob, DamageSource.ON_FIRE, damageFire);
                 }
             } else {
-                for (LivingEntity e : hit) {
-                    if (e instanceof EntityWroughtnaut) {
-                        MowziesMobs.PROXY.solarBeamHitWroughtnaught(caster);
-                        break;
-                    }
-                }
                 if (ticksExisted - 15 < getDuration()) {
                     int particleCount = 4;
                     while (particleCount --> 0) {

@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
+import net.minecraft.entity.player.PlayerEntity;
 
 public class ModelGeckoPlayer extends ModelGeckoBiped {
 
@@ -31,5 +32,26 @@ public class ModelGeckoPlayer extends ModelGeckoBiped {
 		this.bipedLeftLegwear().setHidden(!visible);
 		this.bipedRightLegwear().setHidden(!visible);
 		this.bipedBodywear().setHidden(!visible);
+	}
+
+	@Override
+	public void setRotationAngles(PlayerEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float partialTick) {
+		super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, partialTick);
+		MowzieGeoBone rightArmLayerClassic = getMowzieBone("RightArmLayerClassic");
+		MowzieGeoBone leftArmLayerClassic = getMowzieBone("LeftArmLayerClassic");
+		MowzieGeoBone rightArmLayerSlim = getMowzieBone("RightArmLayerSlim");
+		MowzieGeoBone leftArmLayerSlim = getMowzieBone("LeftArmLayerSlim");
+		if (useSmallArms) {
+			rightArmLayerClassic.setHidden(true);
+			leftArmLayerClassic.setHidden(true);
+			rightArmLayerSlim.setHidden(false);
+			leftArmLayerSlim.setHidden(false);
+		}
+		else {
+			rightArmLayerSlim.setHidden(true);
+			leftArmLayerSlim.setHidden(true);
+			rightArmLayerClassic.setHidden(false);
+			leftArmLayerClassic.setHidden(false);
+		}
 	}
 }

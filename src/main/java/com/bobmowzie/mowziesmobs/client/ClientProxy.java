@@ -119,17 +119,6 @@ public class ClientProxy extends ServerProxy {
         }
     }
 
-    @Override
-    public void solarBeamHitWroughtnaught(LivingEntity caster) {
-        if (caster == Minecraft.getInstance().player) {
-            long now = System.currentTimeMillis();
-            if (now - ClientEventHandler.INSTANCE.lastWroughtnautHitTime > 500) {
-                ClientEventHandler.INSTANCE.startWroughtnautHitTime = now;
-            }
-            ClientEventHandler.INSTANCE.lastWroughtnautHitTime = now;
-        }
-    }
-
     public void setTPS(float tickRate) {
 
     }

@@ -95,8 +95,6 @@ public class ServerProxy {
 
     public void minecartParticles(ClientWorld world, AbstractMinecartEntity minecart, float scale, double x, double y, double z, BlockState state, BlockPos pos) {}
 
-    public void solarBeamHitWroughtnaught(LivingEntity caster) {}
-
     public void initNetwork() {
         final String version = "1";
         MowziesMobs.NETWORK = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(MowziesMobs.MODID, "net"))

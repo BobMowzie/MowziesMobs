@@ -27,6 +27,8 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 
 	public BipedModel.ArmPose leftArmPose = BipedModel.ArmPose.EMPTY;
 	public BipedModel.ArmPose rightArmPose = BipedModel.ArmPose.EMPTY;
+
+	protected boolean useSmallArms;
 	
 	@Override
 	public ResourceLocation getAnimationFileLocation(GeckoPlayer animatable) {
@@ -49,6 +51,14 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 		this.modelLocation = new ResourceLocation(MowziesMobs.MODID, "geo/animated_player.geo.json");
 		this.textureLocation = player.getLocationSkin();
 		return true;
+	}
+
+	public void setUseSmallArms(boolean useSmallArms) {
+		this.useSmallArms = useSmallArms;
+	}
+
+	public boolean isUsingSmallArms() {
+		return useSmallArms;
 	}
 
 	public MowzieGeoBone bipedHead() {
@@ -107,6 +117,24 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 
 	public void setRotationAngles(PlayerEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float partialTick) {
 		if (!isInitialized()) return;
+
+		MowzieGeoBone rightArmClassic = getMowzieBone("RightArmClassic");
+		MowzieGeoBone leftArmClassic = getMowzieBone("LeftArmClassic");
+		MowzieGeoBone rightArmSlim = getMowzieBone("RightArmSlim");
+		MowzieGeoBone leftArmSlim = getMowzieBone("LeftArmSlim");
+		if (useSmallArms) {
+			rightArmClassic.setHidden(true);
+			leftArmClassic.setHidden(true);
+			rightArmSlim.setHidden(false);
+			leftArmSlim.setHidden(false);
+		}
+		else {
+			rightArmSlim.setHidden(true);
+			leftArmSlim.setHidden(true);
+			rightArmClassic.setHidden(false);
+			leftArmClassic.setHidden(false);
+		}
+		
 		this.swimAnimation = entityIn.getSwimAnimation(partialTick);
 
 		float headLookAmount = getControllerValue("HeadLookController");

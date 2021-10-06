@@ -38,7 +38,7 @@ public class GeckoPlayer implements IAnimatable, IAnimationTickable {
 		this.player = player;
 		geckoPlayerModel = new ModelGeckoPlayer();
 		geckoPlayerModel.resourceForModelId((AbstractClientPlayerEntity) player);
-		renderPlayerAnimated = new RenderPlayerAnimated(Minecraft.getInstance().getRenderManager(), geckoPlayerModel, ((AbstractClientPlayerEntity) player).getSkinType().equals("slim"));
+		renderPlayerAnimated = new RenderPlayerAnimated(Minecraft.getInstance().getRenderManager(), geckoPlayerModel);
 		if (!renderPlayerAnimated.getModelsToLoad().containsKey(this.getClass())) {
 			renderPlayerAnimated.getModelsToLoad().put(this.getClass(), renderPlayerAnimated);
 		}
