@@ -38,8 +38,7 @@ public class ModelSculptor extends MowzieAnimatedGeoModel<EntitySculptor> {
     }
 
     @Override
-    public void setLivingAnimations(EntitySculptor entity, Integer uniqueID, AnimationEvent customPredicate) {
-        super.setLivingAnimations(entity, uniqueID, customPredicate);
+    public void codeAnimations(EntitySculptor entity, Integer uniqueID, AnimationEvent<?> customPredicate) {
         IBone head = this.getBone("head");
         IBone handClosedL = this.getBone("handClosedL");
         IBone handClosedR = this.getBone("handClosedR");

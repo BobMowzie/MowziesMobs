@@ -55,5 +55,13 @@ public abstract class MowzieAnimatedGeoModel<T extends IAnimatable & IAnimationT
             getAnimationProcessor().tickAnimation(entity, uniqueID, seekTime, predicate, GeckoLibCache.getInstance().parser,
                     shouldCrashOnMissing);
         }
+
+        if (!Minecraft.getInstance().isGamePaused() || manager.shouldPlayWhilePaused) {
+            codeAnimations(entity, uniqueID, customPredicate);
+        }
+    }
+
+    public void codeAnimations(T entity, Integer uniqueID, AnimationEvent<?> customPredicate) {
+
     }
 }
