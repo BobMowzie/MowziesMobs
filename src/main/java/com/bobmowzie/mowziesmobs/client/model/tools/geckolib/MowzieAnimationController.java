@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.client.model.tools.geckolib;
 import com.bobmowzie.mowziesmobs.server.entity.IAnimationTickable;
 import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.builder.Animation;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
 
@@ -14,12 +15,15 @@ public class MowzieAnimationController<T extends IAnimatable & IAnimationTickabl
         tickOffset = 0.0d;
     }
 
-    public void playAnimation(T animatable, String animationName) {
+    public void playAnimation(T animatable, AnimationBuilder animationBuilder) {
         markNeedsReload();
-        shouldResetTick = true;
-        this.animationState = AnimationState.Transitioning;
-        this.justStartedTransition = true;
-        this.needsAnimationReload = false;
+//        shouldResetTick = true;
+//        this.currentAnimationBuilder = animationBuilder;
+//        this.animationState = AnimationState.Transitioning;
+//        this.justStartedTransition = true;
+//        this.needsAnimationReload = false;
+        setAnimation(animationBuilder);
+        currentAnimation = (Animation)this.animationQueue.poll();
         adjustTick(animatable.tickTimer());
     }
 

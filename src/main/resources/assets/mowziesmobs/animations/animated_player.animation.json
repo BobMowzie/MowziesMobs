@@ -3366,6 +3366,51 @@
 					}
 				}
 			}
+		},
+		"axe_swing_vertical": {
+			"loop": true,
+			"bones": {
+				"Root": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"Waist": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"Body": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"Neck": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"LeftArm": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"RightArm": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"RightHip": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"LeftHip": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				}
+			}
 		}
 	},
 	"geckolib_format_version": 2

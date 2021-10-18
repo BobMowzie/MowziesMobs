@@ -41,7 +41,7 @@ public class Ability {
     protected Random rand;
 
     @OnlyIn(Dist.CLIENT)
-    protected String activeAnimation;
+    protected AnimationBuilder activeAnimation;
 
     @OnlyIn(Dist.CLIENT)
     protected ItemStack heldItemMainHandVisualOverride;
@@ -56,7 +56,7 @@ public class Ability {
         this.cooldownMax = cooldownMax;
         this.rand = new Random();
         if (user.world.isRemote) {
-            this.activeAnimation = "idle";
+            this.activeAnimation = new AnimationBuilder().addAnimation("idle");
             heldItemMainHandVisualOverride = null;
             heldItemOffHandVisualOverride = null;
         }
@@ -76,12 +76,12 @@ public class Ability {
 
     public void playAnimation(String animationName) {
         if (getUser() instanceof PlayerEntity && getUser().world.isRemote()) {
+            activeAnimation = new AnimationBuilder().addAnimation(animationName);
             MowzieAnimationController<GeckoPlayer> controller = GeckoPlayer.getAnimationController((PlayerEntity) getUser());
             GeckoPlayer geckoPlayer = GeckoPlayer.getGeckoPlayer((PlayerEntity) getUser());
             if (controller != null && geckoPlayer != null) {
-                controller.playAnimation(geckoPlayer, animationName);
+                controller.playAnimation(geckoPlayer, activeAnimation);
             }
-            activeAnimation = animationName;
         }
     }
 
@@ -254,9 +254,9 @@ public class Ability {
     }
 
     public <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e) {
-        if (activeAnimation == null || activeAnimation.isEmpty())
+        if (activeAnimation == null || activeAnimation.getRawAnimationList().isEmpty())
             return PlayState.STOP;
-        e.getController().setAnimation(new AnimationBuilder().addAnimation(activeAnimation, false));
+        e.getController().setAnimation(activeAnimation);
         return PlayState.CONTINUE;
     }
 
