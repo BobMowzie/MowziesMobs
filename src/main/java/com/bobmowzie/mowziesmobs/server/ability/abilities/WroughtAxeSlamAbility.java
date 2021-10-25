@@ -6,7 +6,10 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.HandSide;
 
+import static com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack.SWING_DURATION_HOR;
 import static com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack.SWING_DURATION_VER;
 
 public class WroughtAxeSlamAbility extends Ability {
@@ -28,6 +31,19 @@ public class WroughtAxeSlamAbility extends Ability {
             axeAttack.setPositionAndRotation(getUser().getPosX(), getUser().getPosY(), getUser().getPosZ(), getUser().rotationYaw, getUser().rotationPitch);
             getUser().world.addEntity(axeAttack);
             this.axeAttack = axeAttack;
+        }
+        else {
+            playAnimation("axe_swing_vertical");
+            heldItemMainHandVisualOverride = getUser().getHeldItemMainhand();
+        }
+    }
+
+    @Override
+    public void tickUsing() {
+        super.tickUsing();
+        if (getTicksInUse() == SWING_DURATION_VER && getUser() instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) getUser();
+            player.resetCooldown();
         }
     }
 
