@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.client.model.entity.ModelBipedAnimated;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayer;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelPlayerAnimated;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
+import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoElytraLayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoHeldItemLayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.IGeckoRenderLayer;
 import com.bobmowzie.mowziesmobs.server.entity.GeckoPlayer;
@@ -53,6 +54,9 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
 
     public RenderPlayerAnimated(EntityRendererManager renderManager, ModelGeckoPlayer modelProvider) {
         super(renderManager, false);
+
+        this.entityModel = new ModelPlayerAnimated<>(0.0f, false);
+
         this.layerRenderers.clear();
         this.addLayer(new BipedArmorLayer<>(this, new ModelBipedAnimated<>(0.5F), new ModelBipedAnimated<>(1.0F)));
         this.addLayer(new GeckoHeldItemLayer(this));
@@ -60,13 +64,12 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
         this.addLayer(new Deadmau5HeadLayer(this));
         this.addLayer(new CapeLayer(this));
         this.addLayer(new HeadLayer<>(this));
-        this.addLayer(new ElytraLayer<>(this));
+        this.addLayer(new GeckoElytraLayer<>(this, this.entityModel.bipedBody));
         this.addLayer(new ParrotVariantLayer<>(this));
         this.addLayer(new SpinAttackEffectLayer<>(this));
         this.addLayer(new BeeStingerLayer<>(this));
         this.addLayer(new FrozenRenderHandler.LayerFrozen<>(this));
 
-        this.entityModel = new ModelPlayerAnimated<>(0.0f, false);
         this.modelProvider = modelProvider;
 
         worldRenderMat = new Matrix4f();

@@ -1,10 +1,12 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
+import com.bobmowzie.mowziesmobs.client.model.armor.MowzieElytraModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.ModelRendererMatrix;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.BipedModel;
+import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
@@ -66,6 +68,15 @@ public class ModelPlayerAnimated<T extends LivingEntity> extends PlayerModel<T> 
     @Override
     public ModelRenderer getRandomModelRenderer(Random randomIn) {
         return this.modelRenderers.get(randomIn.nextInt(this.modelRenderers.size()));
+    }
+
+    @Override
+    public void copyModelAttributesTo(EntityModel<T> p_217111_1_) {
+        super.copyModelAttributesTo(p_217111_1_);
+        if (p_217111_1_ instanceof MowzieElytraModel) {
+            MowzieElytraModel<?> elytraModel = (MowzieElytraModel<?>) p_217111_1_;
+            elytraModel.bipedBody.copyModelAngles(this.bipedBody);
+        }
     }
 
     @Override
