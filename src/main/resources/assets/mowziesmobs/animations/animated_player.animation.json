@@ -292,6 +292,22 @@
 							"vector": [0, 0, 0]
 						}
 					}
+				},
+				"SwimController": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.04": {
+							"vector": [1, 0, 0]
+						},
+						"0.44": {
+							"vector": [1, 0, 0]
+						},
+						"0.68": {
+							"vector": [0, 0, 0]
+						}
+					}
 				}
 			}
 		},
@@ -551,6 +567,19 @@
 					}
 				},
 				"ArmSwingController": {
+					"position": {
+						"0.0": {
+							"vector": [1, 0, 0]
+						},
+						"0.44": {
+							"vector": [1, 0, 0]
+						},
+						"0.64": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"SwimController": {
 					"position": {
 						"0.0": {
 							"vector": [1, 0, 0]
@@ -849,6 +878,16 @@
 					}
 				},
 				"ArmSwingController": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.2": {
+							"vector": [1, 0, 0]
+						}
+					}
+				},
+				"SwimController": {
 					"position": {
 						"0.0": {
 							"vector": [0, 0, 0]
@@ -1346,6 +1385,22 @@
 							"vector": [1, 0, 0]
 						},
 						"4.84": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"SwimController": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.16": {
+							"vector": [1, 0, 0]
+						},
+						"5.16": {
+							"vector": [1, 0, 0]
+						},
+						"5.36": {
 							"vector": [0, 0, 0]
 						}
 					}
@@ -1914,6 +1969,22 @@
 						"1.04": {
 							"vector": [1, 1, 1],
 							"easing": "easeOutCubic"
+						}
+					}
+				},
+				"SwimController": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.16": {
+							"vector": [1, 0, 0]
+						},
+						"1.44": {
+							"vector": [1, 0, 0]
+						},
+						"1.64": {
+							"vector": [0, 0, 0]
 						}
 					}
 				}
@@ -2922,6 +2993,22 @@
 							"easing": "easeOutCubic"
 						}
 					}
+				},
+				"SwimController": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.16": {
+							"vector": [1, 0, 0]
+						},
+						"1.44": {
+							"vector": [1, 0, 0]
+						},
+						"1.64": {
+							"vector": [0, 0, 0]
+						}
+					}
 				}
 			}
 		},
@@ -3905,6 +3992,22 @@
 					}
 				},
 				"CrouchController": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.16": {
+							"vector": [1, 0, 0]
+						},
+						"1.44": {
+							"vector": [1, 0, 0]
+						},
+						"1.64": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"SwimController": {
 					"position": {
 						"0.0": {
 							"vector": [0, 0, 0]

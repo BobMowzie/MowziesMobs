@@ -260,9 +260,10 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
                 matrixStackIn.rotate(Vector3f.YP.rotation((float)(Math.signum(d3) * Math.acos(d2))));
             }
         } else if (f > 0.0F) {
+            float swimController = this.modelProvider.getControllerValue("SwimController");
             this.applyRotationsLivingRenderer(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks, headYaw);
             float f3 = entityLiving.isInWater() ? -90.0F - entityLiving.rotationPitch : -90.0F;
-            float f4 = MathHelper.lerp(f, 0.0F, f3);
+            float f4 = MathHelper.lerp(f, 0.0F, f3) * swimController;
             matrixStackIn.rotate(Vector3f.XP.rotationDegrees(f4));
             if (entityLiving.isActualySwimming()) {
                 matrixStackIn.translate(0.0D, -1.0D, (double)0.3F);
