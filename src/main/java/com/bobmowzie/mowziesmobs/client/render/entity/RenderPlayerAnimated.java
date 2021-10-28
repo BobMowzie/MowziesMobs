@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.client.model.entity.ModelPlayerAnimated;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoElytraLayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoHeldItemLayer;
+import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoParrotVariantLayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.IGeckoRenderLayer;
 import com.bobmowzie.mowziesmobs.server.entity.GeckoPlayer;
 import com.mojang.blaze3d.matrix.MatrixStack;
@@ -65,7 +66,7 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
         this.addLayer(new CapeLayer(this));
         this.addLayer(new HeadLayer<>(this));
         this.addLayer(new GeckoElytraLayer<>(this, this.entityModel.bipedBody));
-        this.addLayer(new ParrotVariantLayer<>(this));
+        this.addLayer(new GeckoParrotVariantLayer(this));
         this.addLayer(new SpinAttackEffectLayer<>(this));
         this.addLayer(new BeeStingerLayer<>(this));
         this.addLayer(new FrozenRenderHandler.LayerFrozen<>(this));
