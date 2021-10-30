@@ -164,6 +164,9 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
     @Override
     public void tick() {
         super.tick();
+        if (getAttackTarget() instanceof PlayerEntity) {
+            if (((PlayerEntity) getAttackTarget()).isCreative() || getAttackTarget().isSpectator()) setAttackTarget(null);
+        }
         if ((!isOfferingTrade() || timeOffering <= 0) && tradeStore.hasStock()) {
             setOfferingTrade(tradeStore.get(rand));
             timeOffering = rand.nextInt(MAX_OFFER_TIME - MIN_OFFER_TIME + 1) + MIN_OFFER_TIME;
