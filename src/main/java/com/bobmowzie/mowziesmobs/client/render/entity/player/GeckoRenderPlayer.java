@@ -1,14 +1,14 @@
-package com.bobmowzie.mowziesmobs.client.render.entity;
+package com.bobmowzie.mowziesmobs.client.render.entity.player;
 
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBipedAnimated;
-import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayer;
+import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerThirdPerson;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelPlayerAnimated;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
+import com.bobmowzie.mowziesmobs.client.render.entity.FrozenRenderHandler;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoElytraLayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoHeldItemLayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.GeckoParrotVariantLayer;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.IGeckoRenderLayer;
-import com.bobmowzie.mowziesmobs.server.entity.GeckoPlayer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
@@ -46,14 +46,14 @@ import software.bernie.geckolib3.util.RenderUtils;
 import java.util.HashMap;
 import java.util.Iterator;
 
-public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer<GeckoPlayer> {
+public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<GeckoPlayer> {
 
-    private static HashMap<Class<? extends GeckoPlayer>, RenderPlayerAnimated> modelsToLoad = new HashMap<>();
-    private ModelGeckoPlayer modelProvider;
+    private static HashMap<Class<? extends GeckoPlayer>, GeckoRenderPlayer> modelsToLoad = new HashMap<>();
+    private ModelGeckoPlayerThirdPerson modelProvider;
 
     private Matrix4f worldRenderMat;
 
-    public RenderPlayerAnimated(EntityRendererManager renderManager, ModelGeckoPlayer modelProvider) {
+    public GeckoRenderPlayer(EntityRendererManager renderManager, ModelGeckoPlayerThirdPerson modelProvider) {
         super(renderManager, false);
 
         this.entityModel = new ModelPlayerAnimated<>(0.0f, false);
@@ -79,8 +79,8 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
 
     static {
         AnimationController.addModelFetcher((IAnimatable object) -> {
-            if (object instanceof GeckoPlayer) {
-                RenderPlayerAnimated render = modelsToLoad.get(object.getClass());
+            if (object instanceof GeckoPlayer.GeckoPlayerThirdPerson) {
+                GeckoRenderPlayer render = modelsToLoad.get(object.getClass());
                 return (IAnimatableModel<Object>) render.getGeoModelProvider();
             } else {
                 return null;
@@ -88,11 +88,11 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
         });
     }
 
-    public RenderPlayerAnimated getModelProvider(Class<? extends GeckoPlayer> animatable) {
+    public GeckoRenderPlayer getModelProvider(Class<? extends GeckoPlayer> animatable) {
         return modelsToLoad.get(animatable);
     }
 
-    public HashMap<Class<? extends GeckoPlayer>, RenderPlayerAnimated> getModelsToLoad() {
+    public HashMap<Class<? extends GeckoPlayer>, GeckoRenderPlayer> getModelsToLoad() {
         return modelsToLoad;
     }
 
@@ -107,7 +107,7 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
     }
 
     private void setModelVisibilities(AbstractClientPlayerEntity clientPlayer) {
-        ModelGeckoPlayer playermodel = (ModelGeckoPlayer) getGeoModelProvider();
+        ModelGeckoPlayerThirdPerson playermodel = (ModelGeckoPlayerThirdPerson) getGeoModelProvider();
         if (playermodel.isInitialized()) {
             if (clientPlayer.isSpectator()) {
                 playermodel.setVisible(false);
@@ -330,7 +330,7 @@ public class RenderPlayerAnimated extends PlayerRenderer implements IGeoRenderer
         return this.modelProvider;
     }
 
-    public ModelGeckoPlayer getAnimatedPlayerModel() {
+    public ModelGeckoPlayerThirdPerson getAnimatedPlayerModel() {
         return this.modelProvider;
     }
 

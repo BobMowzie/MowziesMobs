@@ -1,0 +1,135 @@
+{
+	"format_version": "1.12.0",
+	"minecraft:geometry": [
+		{
+			"description": {
+				"identifier": "geometry.unknown",
+				"texture_width": 64,
+				"texture_height": 64,
+				"visible_bounds_width": 3,
+				"visible_bounds_height": 4.5,
+				"visible_bounds_offset": [0, 1.75, 0]
+			},
+			"bones": [
+				{
+					"name": "Root",
+					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "RightArm",
+					"parent": "Root",
+					"pivot": [-6, 22, 0],
+					"rotation": [-90, 0, 0]
+				},
+				{
+					"name": "RightArmClassic",
+					"parent": "RightArm",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-8, 12, -2], "size": [4, 12, 4], "uv": [40, 16]}
+					]
+				},
+				{
+					"name": "RightArmSlim",
+					"parent": "RightArm",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-7, 12, -2], "size": [3, 12, 4], "uv": [40, 16]}
+					]
+				},
+				{
+					"name": "RightArmLayer",
+					"parent": "RightArm",
+					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "RightArmLayerClassic",
+					"parent": "RightArmLayer",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-8, 12, -2], "size": [4, 12, 4], "inflate": 0.25, "uv": [40, 32]}
+					]
+				},
+				{
+					"name": "RightArmLayerSlim",
+					"parent": "RightArmLayer",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [-7, 12, -2], "size": [3, 12, 4], "inflate": 0.25, "uv": [40, 32]}
+					]
+				},
+				{
+					"name": "RightHeldItem",
+					"parent": "RightArm",
+					"pivot": [-6, 12, -2]
+				},
+				{
+					"name": "bone2",
+					"parent": "RightHeldItem",
+					"pivot": [-6, 13.5, -27.75],
+					"cubes": [
+						{"origin": [-6.5, 5.25, -28.5], "size": [1, 17, 7.25], "uv": [0, 0]},
+						{"origin": [-6.5, 13, -30.5], "size": [1, 1, 34.5], "uv": [0, 0]}
+					]
+				},
+				{
+					"name": "LeftArm",
+					"parent": "Root",
+					"pivot": [6, 22, 0],
+					"rotation": [-90, 0, 0]
+				},
+				{
+					"name": "LeftArmClassic",
+					"parent": "LeftArm",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [4, 12, -2], "size": [4, 12, 4], "uv": [32, 48]}
+					]
+				},
+				{
+					"name": "LeftArmSlim",
+					"parent": "LeftArm",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [4, 12, -2], "size": [3, 12, 4], "uv": [32, 48]}
+					]
+				},
+				{
+					"name": "LeftArmLayer",
+					"parent": "LeftArm",
+					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "LeftArmLayerClassic",
+					"parent": "LeftArmLayer",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [4, 12, -2], "size": [4, 12, 4], "inflate": 0.25, "uv": [48, 48]}
+					]
+				},
+				{
+					"name": "LeftArmLayerSlim",
+					"parent": "LeftArmLayer",
+					"pivot": [0, 0, 0],
+					"cubes": [
+						{"origin": [4, 12, -2], "size": [3, 12, 4], "inflate": 0.25, "uv": [48, 48]}
+					]
+				},
+				{
+					"name": "LeftHeldItem",
+					"parent": "LeftArm",
+					"pivot": [6, 12, -2]
+				},
+				{
+					"name": "bone3",
+					"parent": "LeftHeldItem",
+					"pivot": [-6, 13.5, -27.75],
+					"cubes": [
+						{"origin": [5.5, 5.25, -28.5], "size": [1, 17, 7.25], "uv": [0, 0]},
+						{"origin": [5.5, 13, -30.5], "size": [1, 1, 34.5], "uv": [0, 0]}
+					]
+				}
+			]
+		}
+	]
+}

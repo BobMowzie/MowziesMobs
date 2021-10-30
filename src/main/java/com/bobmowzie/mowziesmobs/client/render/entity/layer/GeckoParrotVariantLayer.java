@@ -1,16 +1,16 @@
 package com.bobmowzie.mowziesmobs.client.render.entity.layer;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
-import com.bobmowzie.mowziesmobs.client.render.entity.RenderPlayerAnimated;
+import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoRenderPlayer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.layers.ParrotVariantLayer;
 
 public class GeckoParrotVariantLayer extends ParrotVariantLayer<AbstractClientPlayerEntity> implements IGeckoRenderLayer {
-    private final RenderPlayerAnimated renderPlayerAnimated;
+    private final GeckoRenderPlayer renderPlayerAnimated;
 
-    public GeckoParrotVariantLayer(RenderPlayerAnimated rendererIn) {
+    public GeckoParrotVariantLayer(GeckoRenderPlayer rendererIn) {
         super(rendererIn);
         renderPlayerAnimated = rendererIn;
     }

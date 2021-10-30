@@ -34,7 +34,7 @@ public class ModelBipedAnimated<T extends LivingEntity> extends BipedModel<T> {
         doMowzieAnimations(player, this, delta);
     }
 
-    public static void copyFromGeckoModel(BipedModel<?> bipedModel, ModelGeckoPlayer geckoModel) {
+    public static void copyFromGeckoModel(BipedModel<?> bipedModel, ModelGeckoPlayerThirdPerson geckoModel) {
         ((ModelRendererMatrix)bipedModel.bipedBody).setWorldXform(geckoModel.bipedBody().getWorldSpaceXform());
         ((ModelRendererMatrix)bipedModel.bipedBody).setWorldNormal(geckoModel.bipedBody().getWorldSpaceNormal());
         

@@ -1,7 +1,6 @@
 package com.bobmowzie.mowziesmobs.server;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.ClientEventHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleVanillaCloudExtended;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
@@ -12,7 +11,7 @@ import com.bobmowzie.mowziesmobs.server.ai.AvoidEntityIfNotTamedGoal;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.capability.*;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.entity.GeckoPlayer;
+import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.*;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
@@ -52,7 +51,6 @@ import net.minecraft.stats.Stats;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -68,9 +66,6 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.PacketDistributor;
-import software.bernie.geckolib3.core.IAnimatableModel;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -681,7 +676,7 @@ public final class ServerEventHandler {
         List<EntityBarako> barakos = getEntitiesNearby(player, EntityBarako.class, 50);
         for (EntityBarako barako : barakos) {
             if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
-                if (player.getPosition().distanceSq(barako.getHomePosition()) < 900) {
+                if (!player.isCreative() && !player.isSpectator() && player.getPosition().distanceSq(barako.getHomePosition()) < 900) {
                     if (barako.canAttack(player)) barako.setMisbehavedPlayerId(player.getUniqueID());
                 }
             }

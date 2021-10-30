@@ -1,15 +1,16 @@
 package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayer;
-import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
-import com.bobmowzie.mowziesmobs.client.render.entity.*;
+import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerFirstPerson;
+import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerThirdPerson;
+import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoFirstPersonRenderer;
+import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoRenderPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
-import com.bobmowzie.mowziesmobs.server.entity.GeckoPlayer;
+import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.item.*;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
@@ -21,8 +22,8 @@ import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -31,12 +32,6 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraft.util.math.vector.Vector3d;
-import software.bernie.geckolib3.core.AnimationState;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.util.GeckoLibUtil;
-
-import java.util.HashMap;
-import java.util.UUID;
 
 @OnlyIn(Dist.CLIENT)
 public enum ClientEventHandler {
@@ -47,9 +42,31 @@ public enum ClientEventHandler {
     @SubscribeEvent
     public void onHandRender(RenderHandEvent event) {
         PlayerEntity player = Minecraft.getInstance().player;
-        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-        if (playerCapability != null && event.getHand() == Hand.MAIN_HAND && playerCapability.getUntilAxeSwing() > 0) {
-            event.setCanceled(true);
+        if (player == null) return;
+        boolean shouldAnimate = false;
+        AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+        if (abilityCapability != null) shouldAnimate = abilityCapability.getActiveAbility() != null;
+        shouldAnimate = true;//(player.ticksExisted / 20) % 2 == 0;
+        if (shouldAnimate) {
+            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+            if (playerCapability != null) {
+                GeckoPlayer.GeckoPlayerFirstPerson geckoPlayer = GeckoFirstPersonRenderer.GECKO_PLAYER_FIRST_PERSON;
+                if (geckoPlayer != null) {
+                    ModelGeckoPlayerFirstPerson geckoFirstPersonModel = (ModelGeckoPlayerFirstPerson) geckoPlayer.getModel();
+                    GeckoFirstPersonRenderer firstPersonRenderer = (GeckoFirstPersonRenderer) geckoPlayer.getPlayerRenderer();
+
+                    if (geckoFirstPersonModel != null && firstPersonRenderer != null) {
+
+                        event.setCanceled(geckoFirstPersonModel.resourceForModelId((AbstractClientPlayerEntity) player));
+
+                        if (event.isCanceled()) {
+                            float delta = event.getPartialTicks();
+                            float f1 = MathHelper.lerp(delta, player.prevRotationPitch, player.rotationPitch);
+                            firstPersonRenderer.renderItemInFirstPerson((AbstractClientPlayerEntity) player, f1, delta, event.getHand(), event.getSwingProgress(), event.getItemStack(), event.getEquipProgress(), event.getMatrixStack(), event.getBuffers(), event.getLight(), geckoPlayer);
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -65,10 +82,10 @@ public enum ClientEventHandler {
         if (shouldAnimate) {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getEntity(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
             if (playerCapability != null) {
-                GeckoPlayer geckoPlayer = playerCapability.getGeckoPlayer();
+                GeckoPlayer.GeckoPlayerThirdPerson geckoPlayer = playerCapability.getGeckoPlayer();
                 if (geckoPlayer != null) {
-                    ModelGeckoPlayer geckoPlayerModel = geckoPlayer.getGeckoPlayerModel();
-                    RenderPlayerAnimated animatedPlayerRenderer = geckoPlayer.getPlayerRenderer();
+                    ModelGeckoPlayerThirdPerson geckoPlayerModel = (ModelGeckoPlayerThirdPerson) geckoPlayer.getModel();
+                    GeckoRenderPlayer animatedPlayerRenderer = (GeckoRenderPlayer) geckoPlayer.getPlayerRenderer();
 
                     if (geckoPlayerModel != null && animatedPlayerRenderer != null) {
                         if (!geckoPlayerModel.isUsingSmallArms() && ((AbstractClientPlayerEntity) player).getSkinType().equals("slim")) {
@@ -90,6 +107,8 @@ public enum ClientEventHandler {
     public void onRenderTick(TickEvent.RenderTickEvent event) {
         PlayerEntity player = Minecraft.getInstance().player;
         if (player != null) {
+            if (GeckoFirstPersonRenderer.GECKO_PLAYER_FIRST_PERSON == null) GeckoFirstPersonRenderer.GECKO_PLAYER_FIRST_PERSON = new GeckoPlayer.GeckoPlayerFirstPerson(player);
+
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
             if (playerCapability != null && playerCapability.getGeomancy().canUse(player) && playerCapability.getGeomancy().isSpawningBoulder() && playerCapability.getGeomancy().getSpawnBoulderCharge() > 2) {
                 Vector3d lookPos = playerCapability.getGeomancy().getLookPos();

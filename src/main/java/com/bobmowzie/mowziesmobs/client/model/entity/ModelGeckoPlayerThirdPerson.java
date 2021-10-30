@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import net.minecraft.entity.player.PlayerEntity;
 
-public class ModelGeckoPlayer extends ModelGeckoBiped {
+public class ModelGeckoPlayerThirdPerson extends ModelGeckoBiped {
 
 	public MowzieGeoBone bipedLeftArmwear() {
 		return getMowzieBone("LeftArmLayer");

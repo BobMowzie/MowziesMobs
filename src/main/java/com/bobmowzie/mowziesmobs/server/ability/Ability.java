@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.server.ability;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
-import com.bobmowzie.mowziesmobs.server.entity.GeckoPlayer;
+import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection.*;
@@ -41,7 +41,9 @@ public class Ability {
     protected Random rand;
 
     @OnlyIn(Dist.CLIENT)
-    protected AnimationBuilder activeAnimation;
+    protected AnimationBuilder activeThirdPersonAnimation;
+    @OnlyIn(Dist.CLIENT)
+    protected AnimationBuilder activeFirstPersonAnimation;
 
     @OnlyIn(Dist.CLIENT)
     protected ItemStack heldItemMainHandVisualOverride;
@@ -56,7 +58,7 @@ public class Ability {
         this.cooldownMax = cooldownMax;
         this.rand = new Random();
         if (user.world.isRemote) {
-            this.activeAnimation = new AnimationBuilder().addAnimation("idle");
+            this.activeThirdPersonAnimation = new AnimationBuilder().addAnimation("idle");
             heldItemMainHandVisualOverride = null;
             heldItemOffHandVisualOverride = null;
         }
@@ -74,15 +76,26 @@ public class Ability {
         isUsing = true;
     }
 
-    public void playAnimation(String animationName) {
+    public void playAnimation(String animationName, GeckoPlayer.Perspective perspective) {
         if (getUser() instanceof PlayerEntity && getUser().world.isRemote()) {
-            activeAnimation = new AnimationBuilder().addAnimation(animationName);
-            MowzieAnimationController<GeckoPlayer> controller = GeckoPlayer.getAnimationController((PlayerEntity) getUser());
+            AnimationBuilder newActiveAnimation = new AnimationBuilder().addAnimation(animationName);
+            if (perspective == GeckoPlayer.Perspective.FIRST_PERSON) {
+                activeFirstPersonAnimation = newActiveAnimation;
+            }
+            else {
+                activeThirdPersonAnimation = newActiveAnimation;
+            }
+            MowzieAnimationController<GeckoPlayer> controller = GeckoPlayer.getAnimationController((PlayerEntity) getUser(), perspective);
             GeckoPlayer geckoPlayer = GeckoPlayer.getGeckoPlayer((PlayerEntity) getUser());
             if (controller != null && geckoPlayer != null) {
-                controller.playAnimation(geckoPlayer, activeAnimation);
+                controller.playAnimation(geckoPlayer, newActiveAnimation);
             }
         }
+    }
+
+    public void playAnimation(String animationName) {
+        playAnimation(animationName, GeckoPlayer.Perspective.FIRST_PERSON);
+        playAnimation(animationName, GeckoPlayer.Perspective.THIRD_PERSON);
     }
 
     public void tick() {
@@ -253,10 +266,10 @@ public class Ability {
         return abilityCapability;
     }
 
-    public <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e) {
-        if (activeAnimation == null || activeAnimation.getRawAnimationList().isEmpty())
+    public <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e, GeckoPlayer.Perspective perspective) {
+        if (activeThirdPersonAnimation == null || activeThirdPersonAnimation.getRawAnimationList().isEmpty())
             return PlayState.STOP;
-        e.getController().setAnimation(activeAnimation);
+        e.getController().setAnimation(activeThirdPersonAnimation);
         return PlayState.CONTINUE;
     }
 

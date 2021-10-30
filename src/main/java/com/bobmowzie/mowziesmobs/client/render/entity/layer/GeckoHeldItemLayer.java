@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.render.entity.layer;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
-import com.bobmowzie.mowziesmobs.client.render.entity.RenderPlayerAnimated;
+import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoRenderPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
@@ -21,9 +21,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class GeckoHeldItemLayer extends LayerRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>> implements IGeckoRenderLayer {
-    private RenderPlayerAnimated renderPlayerAnimated;
+    private GeckoRenderPlayer renderPlayerAnimated;
 
-    public GeckoHeldItemLayer(RenderPlayerAnimated entityRendererIn) {
+    public GeckoHeldItemLayer(GeckoRenderPlayer entityRendererIn) {
         super(entityRendererIn);
         renderPlayerAnimated = entityRendererIn;
     }

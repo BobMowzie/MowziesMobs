@@ -4,9 +4,8 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import com.bobmowzie.mowziesmobs.server.entity.GeckoPlayer;
+import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
-import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
 import com.bobmowzie.mowziesmobs.server.item.ItemEarthTalisman;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseDown;
@@ -17,7 +16,6 @@ import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.power.Power;
 import com.bobmowzie.mowziesmobs.server.power.PowerGeomancy;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -112,7 +110,7 @@ public class PlayerCapability {
         void setPrevCooledAttackStrength(float cooledAttackStrength);
 
         @OnlyIn(Dist.CLIENT)
-        GeckoPlayer getGeckoPlayer();
+        GeckoPlayer.GeckoPlayerThirdPerson getGeckoPlayer();
     }
 
     public static class PlayerCapabilityImp implements IPlayerCapability {
@@ -131,7 +129,7 @@ public class PlayerCapability {
         public int tribePackRadius = 3;
 
         @OnlyIn(Dist.CLIENT)
-        private GeckoPlayer geckoPlayer;
+        private GeckoPlayer.GeckoPlayerThirdPerson geckoPlayer;
 
         public boolean isVerticalSwing() {
             return verticalSwing;
@@ -236,7 +234,7 @@ public class PlayerCapability {
         }
 
         @OnlyIn(Dist.CLIENT)
-        public GeckoPlayer getGeckoPlayer() {
+        public GeckoPlayer.GeckoPlayerThirdPerson getGeckoPlayer() {
             return geckoPlayer;
         }
 
@@ -252,7 +250,7 @@ public class PlayerCapability {
         @Override
         public void addedToWorld(EntityJoinWorldEvent event) {
             if (event.getWorld().isRemote()) {
-                geckoPlayer = new GeckoPlayer((PlayerEntity) event.getEntity());
+                geckoPlayer = new GeckoPlayer.GeckoPlayerThirdPerson((PlayerEntity) event.getEntity());
             }
         }
 

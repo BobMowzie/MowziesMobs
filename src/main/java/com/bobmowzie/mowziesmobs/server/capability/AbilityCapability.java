@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.server.capability;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
+import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -23,7 +24,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 
 import java.util.*;
@@ -54,7 +54,7 @@ public class AbilityCapability {
 
         boolean interactingPrevented();
 
-        public <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e);
+        public <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e, GeckoPlayer.Perspective perspective);
 
         INBT writeNBT();
 
@@ -137,8 +137,8 @@ public class AbilityCapability {
         }
 
         @Override
-        public <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e) {
-            return getActiveAbility().animationPredicate(e);
+        public <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e, GeckoPlayer.Perspective perspective) {
+            return getActiveAbility().animationPredicate(e, perspective);
         }
 
         @Override
