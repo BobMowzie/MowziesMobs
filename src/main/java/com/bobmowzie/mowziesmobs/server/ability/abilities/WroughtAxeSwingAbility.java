@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.ability.abilities;
 
+import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
@@ -33,7 +34,8 @@ public class WroughtAxeSwingAbility extends Ability {
         }
         else {
             boolean handSide = getUser().getPrimaryHand() == HandSide.RIGHT;
-            playAnimation("axe_swing_start_" + (handSide ? "right" : "left"));
+            playAnimation("axe_swing_start_" + (handSide ? "right" : "left"), GeckoPlayer.Perspective.THIRD_PERSON);
+            playAnimation("test", GeckoPlayer.Perspective.FIRST_PERSON);
             heldItemMainHandVisualOverride = getUser().getHeldItemMainhand();
         }
     }

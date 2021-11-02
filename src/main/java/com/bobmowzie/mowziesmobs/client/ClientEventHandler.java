@@ -107,8 +107,6 @@ public enum ClientEventHandler {
     public void onRenderTick(TickEvent.RenderTickEvent event) {
         PlayerEntity player = Minecraft.getInstance().player;
         if (player != null) {
-            if (GeckoFirstPersonRenderer.GECKO_PLAYER_FIRST_PERSON == null) GeckoFirstPersonRenderer.GECKO_PLAYER_FIRST_PERSON = new GeckoPlayer.GeckoPlayerFirstPerson(player);
-
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
             if (playerCapability != null && playerCapability.getGeomancy().canUse(player) && playerCapability.getGeomancy().isSpawningBoulder() && playerCapability.getGeomancy().getSpawnBoulderCharge() > 2) {
                 Vector3d lookPos = playerCapability.getGeomancy().getLookPos();

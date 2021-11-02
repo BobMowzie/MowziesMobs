@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.capability;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoFirstPersonRenderer;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
@@ -16,6 +17,7 @@ import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.power.Power;
 import com.bobmowzie.mowziesmobs.server.power.PowerGeomancy;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.item.minecart.MinecartEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -250,7 +252,9 @@ public class PlayerCapability {
         @Override
         public void addedToWorld(EntityJoinWorldEvent event) {
             if (event.getWorld().isRemote()) {
-                geckoPlayer = new GeckoPlayer.GeckoPlayerThirdPerson((PlayerEntity) event.getEntity());
+                PlayerEntity player = (PlayerEntity) event.getEntity();
+                geckoPlayer = new GeckoPlayer.GeckoPlayerThirdPerson(player);
+                if (event.getEntity() == Minecraft.getInstance().player) GeckoFirstPersonRenderer.GECKO_PLAYER_FIRST_PERSON = new GeckoPlayer.GeckoPlayerFirstPerson(player);
             }
         }
 

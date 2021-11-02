@@ -6,6 +6,7 @@ import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.util.ResourceLocation;
+import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 
 public class ModelGeckoPlayerFirstPerson extends MowzieAnimatedGeoModel<GeckoPlayer> {
 	
@@ -37,6 +38,21 @@ public class ModelGeckoPlayerFirstPerson extends MowzieAnimatedGeoModel<GeckoPla
 	@Override
 	public ResourceLocation getTextureLocation(GeckoPlayer animatable) {
 		return textureLocation;
+	}
+
+	@Override
+	public void setLivingAnimations(GeckoPlayer entity, Integer uniqueID) {
+		super.setLivingAnimations(entity, uniqueID);
+		if (isInitialized()) {
+			getMowzieBone("LeftArmSlim").setHidden(true);
+			getMowzieBone("RightArmSlim").setHidden(true);
+			getMowzieBone("LeftArmLayerSlim").setHidden(true);
+			getMowzieBone("RightArmLayerSlim").setHidden(true);
+			getMowzieBone("LeftArmClassic").setHidden(false);
+			getMowzieBone("RightArmClassic").setHidden(false);
+			getMowzieBone("LeftArmLayerClassic").setHidden(false);
+			getMowzieBone("RightArmLayerClassic").setHidden(false);
+		}
 	}
 
 	/** Check if the modelId has some ResourceLocation **/

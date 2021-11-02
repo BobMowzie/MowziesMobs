@@ -86,7 +86,7 @@ public class Ability {
                 activeThirdPersonAnimation = newActiveAnimation;
             }
             MowzieAnimationController<GeckoPlayer> controller = GeckoPlayer.getAnimationController((PlayerEntity) getUser(), perspective);
-            GeckoPlayer geckoPlayer = GeckoPlayer.getGeckoPlayer((PlayerEntity) getUser());
+            GeckoPlayer geckoPlayer = GeckoPlayer.getGeckoPlayer((PlayerEntity) getUser(), perspective);
             if (controller != null && geckoPlayer != null) {
                 controller.playAnimation(geckoPlayer, newActiveAnimation);
             }
@@ -267,9 +267,16 @@ public class Ability {
     }
 
     public <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e, GeckoPlayer.Perspective perspective) {
-        if (activeThirdPersonAnimation == null || activeThirdPersonAnimation.getRawAnimationList().isEmpty())
+        AnimationBuilder whichAnimation;
+        if (perspective == GeckoPlayer.Perspective.FIRST_PERSON) {
+            whichAnimation = activeFirstPersonAnimation;
+        }
+        else {
+            whichAnimation = activeThirdPersonAnimation;
+        }
+        if (whichAnimation == null || whichAnimation.getRawAnimationList().isEmpty())
             return PlayState.STOP;
-        e.getController().setAnimation(activeThirdPersonAnimation);
+        e.getController().setAnimation(whichAnimation);
         return PlayState.CONTINUE;
     }
 

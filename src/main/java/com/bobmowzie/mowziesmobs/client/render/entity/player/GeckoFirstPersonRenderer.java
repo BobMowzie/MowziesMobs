@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Vector3f;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimatableModel;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -75,6 +76,7 @@ public class GeckoFirstPersonRenderer extends FirstPersonRenderer implements IGe
             MatrixStack newMatrixStack = new MatrixStack();
             newMatrixStack.getLast().getNormal().mul(bone.getWorldSpaceNormal());
             newMatrixStack.getLast().getMatrix().mul(bone.getWorldSpaceXform());
+//            newMatrixStack.rotate(Vector3f.XP.rotation((float) (-Math.PI/2f)));
             super.renderItemInFirstPerson(player, partialTicks, pitch, handIn, swingProgress, stack, equippedProgress, newMatrixStack, bufferIn, combinedLightIn);
         }
     }

@@ -66,6 +66,27 @@
 					}
 				}
 			}
+		},
+		"axe_swing_start_right": {
+			"animation_length": 1.64,
+			"bones": {
+				"RightArm": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					},
+					"position": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"LeftArm": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					},
+					"position": {
+						"vector": [0, 0, 0]
+					}
+				}
+			}
 		}
 	},
 	"geckolib_format_version": 2
