@@ -140,6 +140,7 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 		this.swimAnimation = entityIn.getSwimAnimation(partialTick);
 
 		float headLookAmount = getControllerValue("HeadLookController");
+		float armLookAmount = 1f - getControllerValue("ArmPitchController");
 		boolean flag = entityIn.getTicksElytraFlying() > 4;
 		boolean flag1 = entityIn.isActualySwimming();
 		this.bipedHead().addRotationY(headLookAmount * -netHeadYaw * ((float)Math.PI / 180F));
@@ -153,6 +154,8 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 			}
 		} else {
 			this.bipedHead().addRotationX(headLookAmount * -headPitch * ((float)Math.PI / 180F));
+			this.getMowzieBone("LeftClavicle").addRotationX(armLookAmount * -headPitch * ((float)Math.PI / 180F));
+			this.getMowzieBone("RightClavicle").addRotationX(armLookAmount * -headPitch * ((float)Math.PI / 180F));
 		}
 		
 		float f = 1.0F;

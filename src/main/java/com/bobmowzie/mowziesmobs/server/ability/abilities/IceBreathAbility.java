@@ -20,7 +20,9 @@ public class IceBreathAbility extends Ability {
 
     public IceBreathAbility(AbilityType<IceBreathAbility> abilityType, LivingEntity user) {
         super(abilityType, user, new AbilitySection[] {
-                new AbilitySection.AbilitySectionInfinite(AbilitySection.AbilitySectionType.ACTIVE)
+                new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.STARTUP, 6),
+                new AbilitySection.AbilitySectionInfinite(AbilitySection.AbilitySectionType.ACTIVE),
+                new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 6)
         });
     }
 
@@ -34,6 +36,13 @@ public class IceBreathAbility extends Ability {
             user.world.addEntity(iceBreath);
             this.iceBreath = iceBreath;
         }
+        playAnimation("ice_breath_start", false);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (getCurrentSection().sectionType != AbilitySection.AbilitySectionType.RECOVERY && !checkIceCrystal()) jumpToSection(2);
     }
 
     @Override
@@ -54,7 +63,16 @@ public class IceBreathAbility extends Ability {
     }
 
     @Override
-    protected boolean canContinueUsing() {
-        return checkIceCrystal();
+    protected void beginSection(AbilitySection section) {
+        super.beginSection(section);
+        if (section.sectionType == AbilitySection.AbilitySectionType.STARTUP) {
+            playAnimation("ice_breath_start", false);
+        }
+        else if (section.sectionType == AbilitySection.AbilitySectionType.ACTIVE) {
+            playAnimation("ice_breath_loop", true);
+        }
+        else if (section.sectionType == AbilitySection.AbilitySectionType.RECOVERY) {
+            playAnimation("ice_breath_end", false);
+        }
     }
 }

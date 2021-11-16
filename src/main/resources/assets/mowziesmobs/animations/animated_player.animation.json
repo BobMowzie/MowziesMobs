@@ -4024,6 +4024,373 @@
 					}
 				}
 			}
+		},
+		"ice_breath_start": {
+			"animation_length": 0.52,
+			"bones": {
+				"Body": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.12": {
+							"vector": [-12.5, 0, 0],
+							"easing": "easeInOutQuad"
+						},
+						"0.28": {
+							"vector": [12.5, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					}
+				},
+				"Neck": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.12": {
+							"vector": [10, 0, 0],
+							"easing": "easeInOutQuad"
+						},
+						"0.28": {
+							"vector": [-12.5, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					}
+				},
+				"LeftArm": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.12": {
+							"vector": [-37.5, 0, -22.5],
+							"easing": "easeInOutQuad"
+						},
+						"0.28": {
+							"vector": [-100, 12.5, -2],
+							"easing": "easeInOutQuad"
+						}
+					}
+				},
+				"LeftHeldItem": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.12": {
+							"vector": [0, 0, 0]
+						},
+						"0.28": {
+							"vector": [0, 0, "-24.5 + query.anim_time * 1400"]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.12": {
+							"vector": [0, 0, 0]
+						},
+						"0.28": {
+							"vector": [-3.5, -1, 0]
+						}
+					}
+				},
+				"RightArm": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.12": {
+							"vector": [-37.5, 0, 22.5],
+							"easing": "easeInOutQuad"
+						},
+						"0.28": {
+							"vector": [-100, -12.5, 2],
+							"easing": "easeInOutQuad"
+						}
+					}
+				},
+				"RightHeldItem": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.12": {
+							"vector": [0, 0, 0]
+						},
+						"0.28": {
+							"vector": [0, 0, "24.5 + query.anim_time * 1400"]
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.12": {
+							"vector": [0, 0, 0]
+						},
+						"0.28": {
+							"vector": [3.5, -1, 0]
+						}
+					}
+				},
+				"ArmBreathController": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.28": {
+							"vector": [1, 0, 0]
+						}
+					}
+				},
+				"ArmSwingController": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.28": {
+							"vector": [1, 0, 0]
+						}
+					}
+				},
+				"BodyRotateController": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.28": {
+							"vector": [1, 0, 0]
+						}
+					}
+				},
+				"ArmPitchController": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.28": {
+							"vector": [1, 0, 0]
+						}
+					}
+				}
+			}
+		},
+		"ice_breath_loop": {
+			"animation_length": 5.04,
+			"bones": {
+				"Body": {
+					"rotation": {
+						"vector": [12.5, 0, 0],
+						"easing": "easeInOutQuad"
+					}
+				},
+				"Neck": {
+					"rotation": {
+						"vector": [-12.5, 0, 0],
+						"easing": "easeInOutQuad"
+					}
+				},
+				"LeftArm": {
+					"rotation": {
+						"vector": [-100, 12.5, -2],
+						"easing": "easeInOutQuad"
+					}
+				},
+				"LeftHeldItem": {
+					"rotation": {
+						"vector": [0, 0, "-24.5 + query.anim_time * 1400"]
+					},
+					"position": {
+						"vector": [-3.5, -1, 0]
+					}
+				},
+				"RightArm": {
+					"rotation": {
+						"vector": [-100, -12.5, 2],
+						"easing": "easeInOutQuad"
+					}
+				},
+				"RightHeldItem": {
+					"rotation": {
+						"vector": [0, 0, "24.5 + query.anim_time * 1400"]
+					},
+					"position": {
+						"vector": [3.5, -1, 0]
+					}
+				},
+				"ArmBreathController": {
+					"position": {
+						"vector": [1, 0, 0]
+					}
+				},
+				"ArmSwingController": {
+					"position": {
+						"vector": [1, 0, 0]
+					}
+				},
+				"BodyRotateController": {
+					"position": {
+						"vector": [1, 0, 0]
+					}
+				},
+				"ArmPitchController": {
+					"position": {
+						"vector": [1, 0, 0]
+					}
+				}
+			}
+		},
+		"ice_breath_end": {
+			"animation_length": 0.24,
+			"bones": {
+				"Body": {
+					"rotation": {
+						"0.0": {
+							"vector": [12.5, 0, 0],
+							"easing": "easeInOutQuad"
+						},
+						"0.24": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					}
+				},
+				"Neck": {
+					"rotation": {
+						"0.0": {
+							"vector": [-12.5, 0, 0],
+							"easing": "easeInOutQuad"
+						},
+						"0.24": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					}
+				},
+				"LeftClavicle": {
+					"rotation": {
+						"vector": [0, 0, 0],
+						"easing": "easeInOutQuad"
+					}
+				},
+				"LeftArm": {
+					"rotation": {
+						"0.0": {
+							"vector": [-100, 12.5, -2],
+							"easing": "easeInOutQuad"
+						},
+						"0.24": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					}
+				},
+				"LeftHeldItem": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, "-24.5 + query.anim_time * 1400"]
+						},
+						"0.24": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [-3.5, -1, 0]
+						},
+						"0.24": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					}
+				},
+				"RightClavicle": {
+					"rotation": {
+						"vector": [0, 0, 0],
+						"easing": "easeInOutQuad"
+					},
+					"position": {
+						"vector": [0, 0, 0],
+						"easing": "easeInOutQuad"
+					}
+				},
+				"RightArm": {
+					"rotation": {
+						"0.0": {
+							"vector": [-100, -12.5, 2],
+							"easing": "easeInOutQuad"
+						},
+						"0.24": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					}
+				},
+				"RightHeldItem": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, "24.5 + query.anim_time * 1400"]
+						},
+						"0.24": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [3.5, -1, 0]
+						},
+						"0.24": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					}
+				},
+				"ArmBreathController": {
+					"position": {
+						"0.0": {
+							"vector": [1, 0, 0]
+						},
+						"0.24": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"ArmSwingController": {
+					"position": {
+						"0.0": {
+							"vector": [1, 0, 0]
+						},
+						"0.24": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"BodyRotateController": {
+					"position": {
+						"0.0": {
+							"vector": [1, 0, 0]
+						},
+						"0.24": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"ArmPitchController": {
+					"position": {
+						"0.0": {
+							"vector": [1, 0, 0]
+						},
+						"0.24": {
+							"vector": [0, 0, 0]
+						}
+					}
+				}
+			}
 		}
 	},
 	"geckolib_format_version": 2

@@ -34,7 +34,7 @@ public class WroughtAxeSwingAbility extends Ability {
         }
         else {
             boolean handSide = getUser().getPrimaryHand() == HandSide.RIGHT;
-            playAnimation("axe_swing_start_" + (handSide ? "right" : "left"));
+            playAnimation("axe_swing_start_" + (handSide ? "right" : "left"), false);
             heldItemMainHandVisualOverride = getUser().getHeldItemMainhand();
         }
     }

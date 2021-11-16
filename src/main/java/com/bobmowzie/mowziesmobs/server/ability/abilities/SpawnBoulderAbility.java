@@ -50,7 +50,7 @@ public class SpawnBoulderAbility extends Ability {
     @Override
     public void start() {
         super.start();
-        playAnimation("spawn_boulder_start");
+        playAnimation("spawn_boulder_start", false);
     }
 
     @Override
@@ -121,10 +121,10 @@ public class SpawnBoulderAbility extends Ability {
 
     private void spawnBoulder() {
         if (spawnBoulderCharge <= 2) {
-            playAnimation("spawn_boulder_instant");
+            playAnimation("spawn_boulder_instant", false);
         }
         else {
-            playAnimation("spawn_boulder_end");
+            playAnimation("spawn_boulder_end", false);
         }
 
         int size = getBoulderSize();

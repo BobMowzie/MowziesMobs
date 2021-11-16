@@ -35,8 +35,8 @@ public class WroughtAxeSlamAbility extends Ability {
         }
         else {
             boolean handSide = getUser().getPrimaryHand() == HandSide.RIGHT;
-            playAnimation("axe_slam_" + (handSide ? "right" : "left"), GeckoPlayer.Perspective.FIRST_PERSON);
-            playAnimation("axe_swing_vertical", GeckoPlayer.Perspective.THIRD_PERSON);
+            playAnimation("axe_slam_" + (handSide ? "right" : "left"), GeckoPlayer.Perspective.FIRST_PERSON, false);
+            playAnimation("axe_swing_vertical", GeckoPlayer.Perspective.THIRD_PERSON, false);
             heldItemMainHandVisualOverride = getUser().getHeldItemMainhand();
         }
     }

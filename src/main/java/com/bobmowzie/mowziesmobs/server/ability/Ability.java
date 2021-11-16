@@ -76,9 +76,9 @@ public class Ability {
         isUsing = true;
     }
 
-    public void playAnimation(String animationName, GeckoPlayer.Perspective perspective) {
+    public void playAnimation(String animationName, GeckoPlayer.Perspective perspective, boolean shouldLoop) {
         if (getUser() instanceof PlayerEntity && getUser().world.isRemote()) {
-            AnimationBuilder newActiveAnimation = new AnimationBuilder().addAnimation(animationName);
+            AnimationBuilder newActiveAnimation = new AnimationBuilder().addAnimation(animationName, shouldLoop);
             if (perspective == GeckoPlayer.Perspective.FIRST_PERSON) {
                 activeFirstPersonAnimation = newActiveAnimation;
             }
@@ -93,9 +93,9 @@ public class Ability {
         }
     }
 
-    public void playAnimation(String animationName) {
-        playAnimation(animationName, GeckoPlayer.Perspective.FIRST_PERSON);
-        playAnimation(animationName, GeckoPlayer.Perspective.THIRD_PERSON);
+    public void playAnimation(String animationName, boolean shouldLoop) {
+        playAnimation(animationName, GeckoPlayer.Perspective.FIRST_PERSON, shouldLoop);
+        playAnimation(animationName, GeckoPlayer.Perspective.THIRD_PERSON, shouldLoop);
     }
 
     public void tick() {

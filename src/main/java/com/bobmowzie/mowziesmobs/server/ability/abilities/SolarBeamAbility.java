@@ -44,7 +44,7 @@ public class SolarBeamAbility extends Ability {
 
             this.solarBeam = solarBeam;
         }
-        playAnimation("solar_beam_charge");
+        playAnimation("solar_beam_charge", false);
     }
 
     @Override

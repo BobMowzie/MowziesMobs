@@ -230,6 +230,10 @@
 				{
 					"name": "SwimController",
 					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "ArmPitchController",
+					"pivot": [0, 0, 0]
 				}
 			]
 		}
