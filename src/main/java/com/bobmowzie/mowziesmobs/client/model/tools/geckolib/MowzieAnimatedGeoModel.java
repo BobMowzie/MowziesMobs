@@ -69,4 +69,9 @@ public abstract class MowzieAnimatedGeoModel<T extends IAnimatable & IAnimationT
     public boolean resourceForModelId(AbstractClientPlayerEntity player) {
         return true;
     }
+
+    public float getControllerValue(String controllerName) {
+        if (!isInitialized()) return 1.0f;
+        return 1.0f - getBone(controllerName).getPositionX();
+    }
 }

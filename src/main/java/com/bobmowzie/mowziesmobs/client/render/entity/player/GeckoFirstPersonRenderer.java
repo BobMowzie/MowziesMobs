@@ -1,7 +1,11 @@
 package com.bobmowzie.mowziesmobs.client.render.entity.player;
 
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerFirstPerson;
+import com.bobmowzie.mowziesmobs.client.model.entity.ModelPlayerAnimated;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
+import com.bobmowzie.mowziesmobs.server.ability.Ability;
+import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
@@ -14,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimatableModel;
@@ -58,27 +63,49 @@ public class GeckoFirstPersonRenderer extends FirstPersonRenderer implements IGe
     }
 
     public void renderItemInFirstPerson(AbstractClientPlayerEntity player, float partialTicks, float pitch, Hand handIn, float swingProgress, ItemStack stack, float equippedProgress, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, GeckoPlayer geckoPlayer) {
-        this.modelProvider.setLivingAnimations(geckoPlayer, player.getUniqueID().hashCode());
+        if (handIn == Hand.MAIN_HAND) {
+            this.modelProvider.setLivingAnimations(geckoPlayer, player.getUniqueID().hashCode());
 
-        RenderType rendertype = RenderType.getItemEntityTranslucentCull(getTextureLocation(geckoPlayer));
-        IVertexBuilder ivertexbuilder = bufferIn.getBuffer(rendertype);
-        matrixStackIn.translate(0, -2, -1);
-        render(
-                getGeoModelProvider().getModel(getGeoModelProvider().getModelLocation(geckoPlayer)),
-                geckoPlayer, partialTicks, rendertype, matrixStackIn, bufferIn, ivertexbuilder, combinedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F
-        );
+            RenderType rendertype = RenderType.getItemEntityTranslucentCull(getTextureLocation(geckoPlayer));
+            IVertexBuilder ivertexbuilder = bufferIn.getBuffer(rendertype);
+            matrixStackIn.translate(0, -2, -1);
+            render(
+                    getGeoModelProvider().getModel(getGeoModelProvider().getModelLocation(geckoPlayer)),
+                    geckoPlayer, partialTicks, rendertype, matrixStackIn, bufferIn, ivertexbuilder, combinedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F
+            );
+        }
 
         if (modelProvider.isInitialized()) {
             boolean flag = handIn == Hand.MAIN_HAND;
             HandSide handside = flag ? player.getPrimaryHand() : player.getPrimaryHand().opposite();
-            String boneName = handside == HandSide.RIGHT ? "RightArm" : "LeftArm";
+            int sideMult = handside == HandSide.RIGHT ? -1 : 1;
+            String sideName = handside == HandSide.RIGHT ? "Right" : "Left";
+            String boneName = sideName + "Arm";
             MowzieGeoBone bone = this.modelProvider.getMowzieBone(boneName);
+
             MatrixStack newMatrixStack = new MatrixStack();
+
+            float fixedPitchController = 1f - this.modelProvider.getControllerValue("FixedPitchController" + sideName);
+            float playerLookPitch = (player.rotationPitch - player.prevRotationPitch) * partialTicks + player.prevRotationPitch;
+            newMatrixStack.rotate(new Quaternion(Vector3f.XP, playerLookPitch * fixedPitchController, true));
+
             newMatrixStack.getLast().getNormal().mul(bone.getWorldSpaceNormal());
             newMatrixStack.getLast().getMatrix().mul(bone.getWorldSpaceXform());
-//            newMatrixStack.rotate(Vector3f.XP.rotation((float) (-Math.PI/2f)));
+            newMatrixStack.translate(sideMult * 0.547, 0.7655, 0.625);
+
+            AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+            if (abilityCapability != null && abilityCapability.getActiveAbility() != null) {
+                Ability ability = abilityCapability.getActiveAbility();
+                ItemStack stackOverride = flag ? ability.heldItemMainHandOverride() : ability.heldItemOffHandOverride();
+                if (stackOverride != null) stack = stackOverride;
+            }
+
             super.renderItemInFirstPerson(player, partialTicks, pitch, handIn, swingProgress, stack, equippedProgress, newMatrixStack, bufferIn, combinedLightIn);
         }
+    }
+
+    public void setSmallArms() {
+        this.modelProvider.setUseSmallArms(true);
     }
 
     @Override

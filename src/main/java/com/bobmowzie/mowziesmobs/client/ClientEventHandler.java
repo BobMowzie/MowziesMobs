@@ -22,6 +22,7 @@ import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -46,7 +47,7 @@ public enum ClientEventHandler {
         boolean shouldAnimate = false;
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
         if (abilityCapability != null) shouldAnimate = abilityCapability.getActiveAbility() != null;
-        shouldAnimate = true;//(player.ticksExisted / 20) % 2 == 0;
+//        shouldAnimate = (player.ticksExisted / 20) % 2 == 0;
         if (shouldAnimate) {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
             if (playerCapability != null) {
@@ -56,7 +57,9 @@ public enum ClientEventHandler {
                     GeckoFirstPersonRenderer firstPersonRenderer = (GeckoFirstPersonRenderer) geckoPlayer.getPlayerRenderer();
 
                     if (geckoFirstPersonModel != null && firstPersonRenderer != null) {
-
+                        if (!geckoFirstPersonModel.isUsingSmallArms() && ((AbstractClientPlayerEntity) player).getSkinType().equals("slim")) {
+                            firstPersonRenderer.setSmallArms();
+                        }
                         event.setCanceled(geckoFirstPersonModel.resourceForModelId((AbstractClientPlayerEntity) player));
 
                         if (event.isCanceled()) {

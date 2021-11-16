@@ -72,10 +72,75 @@
 			"bones": {
 				"RightArm": {
 					"rotation": {
-						"vector": [0, 0, 0]
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.16": {
+							"vector": [-1.98, 0, 71.4],
+							"easing": "easeInQuad"
+						},
+						"0.44": {
+							"vector": [-2.5, 0, 90],
+							"easing": "easeOutQuad"
+						},
+						"0.72": {
+							"vector": [84.99, 0, 90],
+							"easing": "easeInQuart"
+						},
+						"1.04": {
+							"vector": [152.5, 0, 90],
+							"easing": "easeOutQuint"
+						},
+						"1.2": {
+							"vector": [152.5, 0, 90],
+							"easing": "easeOutQuart"
+						},
+						"1.64": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
+						}
 					},
 					"position": {
-						"vector": [0, 0, 0]
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.16": {
+							"vector": [14.48, 3, -5.36],
+							"easing": "easeInQuad"
+						},
+						"0.44": {
+							"vector": [18.25, 3.5, -6.75],
+							"easing": "easeOutQuad"
+						},
+						"0.72": {
+							"vector": [5.27, 3.5, -9.17],
+							"easing": "easeInQuart"
+						},
+						"1.04": {
+							"vector": [-4.75, 3.5, -3.5],
+							"easing": "easeOutQuint"
+						},
+						"1.2": {
+							"vector": [-4.75, 3.5, -3.5],
+							"easing": "easeOutQuart"
+						},
+						"1.64": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					},
+					"scale": {
+						"0.44": {
+							"vector": [1, 1, 1]
+						},
+						"0.72": {
+							"vector": [1.2, 1.2, 1.2],
+							"easing": "easeInCubic"
+						},
+						"1.04": {
+							"vector": [1, 1, 1],
+							"easing": "easeOutCubic"
+						}
 					}
 				},
 				"LeftArm": {
@@ -85,9 +150,298 @@
 					"position": {
 						"vector": [0, 0, 0]
 					}
+				},
+				"FixedPitchControllerRight": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.2": {
+							"vector": [1, 0, 0]
+						},
+						"1.4": {
+							"vector": [1, 0, 0]
+						},
+						"1.64": {
+							"vector": [0, 0, 0]
+						}
+					}
+				}
+			}
+		},
+		"axe_slam_right": {
+			"animation_length": 1.64,
+			"bones": {
+				"RightArm": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.2": {
+							"vector": [-27.77, 0, 0],
+							"easing": "easeInQuad"
+						},
+						"0.44": {
+							"vector": [-35, 0, 0],
+							"easing": "easeOutQuad"
+						},
+						"0.84": {
+							"vector": [85, 0, 0],
+							"easing": "easeInQuint"
+						},
+						"1.04": {
+							"vector": [85, 0, 0],
+							"easing": "easeInQuad"
+						},
+						"1.64": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.2": {
+							"vector": [7.34, 8.33, -5.36],
+							"easing": "easeInQuad"
+						},
+						"0.44": {
+							"vector": [9.25, 10.5, -6.75],
+							"easing": "easeOutQuad"
+						},
+						"0.84": {
+							"vector": [9.25, -11.5, -13.5],
+							"easing": "easeInQuint"
+						},
+						"1.04": {
+							"vector": [9.25, -11.5, -13.5],
+							"easing": "easeInQuad"
+						},
+						"1.64": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					},
+					"scale": {
+						"0.44": {
+							"vector": [1, 1, 1]
+						},
+						"0.84": {
+							"vector": [1, 1, 1],
+							"easing": "easeOutCubic"
+						}
+					}
+				},
+				"LeftArm": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					},
+					"position": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"FixedPitchControllerRight": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.2": {
+							"vector": [1, 0, 0]
+						},
+						"1.4": {
+							"vector": [1, 0, 0]
+						},
+						"1.64": {
+							"vector": [0, 0, 0]
+						}
+					}
+				}
+			}
+		},
+		"axe_slam_left": {
+			"animation_length": 1.64,
+			"bones": {
+				"LeftArm": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.2": {
+							"vector": [-27.77, 0, 0],
+							"easing": "easeInQuad"
+						},
+						"0.44": {
+							"vector": [-35, 0, 0],
+							"easing": "easeOutQuad"
+						},
+						"0.84": {
+							"vector": [85, 0, 0],
+							"easing": "easeInQuint"
+						},
+						"1.04": {
+							"vector": [85, 0, 0],
+							"easing": "easeInQuad"
+						},
+						"1.64": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.2": {
+							"vector": [-7.34, 8.33, -5.36],
+							"easing": "easeInQuad"
+						},
+						"0.44": {
+							"vector": [-9.25, 10.5, -6.75],
+							"easing": "easeOutQuad"
+						},
+						"0.84": {
+							"vector": [-9.25, -11.5, -13.5],
+							"easing": "easeInQuint"
+						},
+						"1.04": {
+							"vector": [-9.25, -11.5, -13.5],
+							"easing": "easeInQuad"
+						},
+						"1.64": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					},
+					"scale": {
+						"0.44": {
+							"vector": [1, 1, 1]
+						},
+						"0.84": {
+							"vector": [1, 1, 1],
+							"easing": "easeOutCubic"
+						}
+					}
+				},
+				"FixedPitchControllerLeft": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.2": {
+							"vector": [1, 0, 0]
+						},
+						"1.4": {
+							"vector": [1, 0, 0]
+						},
+						"1.64": {
+							"vector": [0, 0, 0]
+						}
+					}
+				}
+			}
+		},
+		"axe_swing_start_left": {
+			"animation_length": 1.64,
+			"bones": {
+				"RightArm": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					},
+					"position": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"LeftArm": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.16": {
+							"vector": [-1.98, 0, -71.4],
+							"easing": "easeInQuad"
+						},
+						"0.44": {
+							"vector": [-2.5, 0, -90],
+							"easing": "easeOutQuad"
+						},
+						"0.72": {
+							"vector": [84.99, 0, -90],
+							"easing": "easeInQuart"
+						},
+						"1.04": {
+							"vector": [152.5, 0, -90],
+							"easing": "easeOutQuint"
+						},
+						"1.2": {
+							"vector": [152.5, 0, -90],
+							"easing": "easeOutQuart"
+						},
+						"1.64": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.16": {
+							"vector": [-14.48, 3, -5.36],
+							"easing": "easeInQuad"
+						},
+						"0.44": {
+							"vector": [-18.25, 3.5, -6.75],
+							"easing": "easeOutQuad"
+						},
+						"0.72": {
+							"vector": [-5.27, 3.5, -9.17],
+							"easing": "easeInQuart"
+						},
+						"1.04": {
+							"vector": [4.75, 3.5, -3.5],
+							"easing": "easeOutQuint"
+						},
+						"1.2": {
+							"vector": [4.75, 3.5, -3.5],
+							"easing": "easeOutQuart"
+						},
+						"1.64": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					},
+					"scale": {
+						"0.44": {
+							"vector": [1, 1, 1]
+						},
+						"0.72": {
+							"vector": [1.2, 1.2, 1.2],
+							"easing": "easeInCubic"
+						},
+						"1.04": {
+							"vector": [1, 1, 1],
+							"easing": "easeOutCubic"
+						}
+					}
+				},
+				"FixedPitchControllerLeft": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.2": {
+							"vector": [1, 0, 0]
+						},
+						"1.4": {
+							"vector": [1, 0, 0]
+						},
+						"1.64": {
+							"vector": [0, 0, 0]
+						}
+					}
 				}
 			}
 		}
-	},
-	"geckolib_format_version": 2
+	}
 }

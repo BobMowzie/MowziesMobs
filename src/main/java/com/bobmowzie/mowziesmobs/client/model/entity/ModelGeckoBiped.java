@@ -254,11 +254,6 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 //		}
 	}
 
-	public float getControllerValue(String controllerName) {
-		if (!isInitialized()) return 1.0f;
-		return 1.0f - getBone(controllerName).getPositionX();
-	}
-
 	protected MowzieGeoBone getArmForSide(HandSide side) {
 		return side == HandSide.LEFT ? this.bipedLeftArm() : this.bipedRightArm();
 	}
