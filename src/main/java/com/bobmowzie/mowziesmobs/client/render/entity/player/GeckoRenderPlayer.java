@@ -30,9 +30,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.math.vector.*;
 import net.minecraft.util.text.TextFormatting;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimatableModel;
@@ -52,6 +50,8 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
     private ModelGeckoPlayerThirdPerson modelProvider;
 
     private Matrix4f worldRenderMat;
+
+    public Vector3d betweenHandsPos;
 
     public GeckoRenderPlayer(EntityRendererManager renderManager, ModelGeckoPlayerThirdPerson modelProvider) {
         super(renderManager, false);
@@ -201,6 +201,31 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
             this.applyRotationsPlayerRenderer(entityIn, matrixStackIn, f7, f, partialTicks, f1);
             float bodyRotateAmount = this.modelProvider.getControllerValue("BodyRotateController");
             this.modelProvider.setRotationAngles(entityIn, f5, f8, f7, f2 * bodyRotateAmount, f6, partialTicks);
+
+            MowzieGeoBone leftHeldItem = modelProvider.getMowzieBone("LeftHeldItem");
+            MowzieGeoBone rightHeldItem = modelProvider.getMowzieBone("RightHeldItem");
+
+            Matrix4f worldMatInverted = matrixStackIn.getLast().getMatrix().copy();
+            worldMatInverted.invert();
+            Matrix3f worldNormInverted = matrixStackIn.getLast().getNormal().copy();
+            worldNormInverted.invert();
+            MatrixStack toWorldSpace = new MatrixStack();
+            toWorldSpace.rotate(new Quaternion(0, -entityYaw + 180, 0, true));
+            toWorldSpace.translate(0, -1.5f, 0);
+            toWorldSpace.getLast().getNormal().mul(worldNormInverted);
+            toWorldSpace.getLast().getMatrix().mul(worldMatInverted);
+
+            Vector4f leftHeldItemPos = new Vector4f(0, 0, 0, 1);
+            leftHeldItemPos.transform(leftHeldItem.getWorldSpaceXform());
+            leftHeldItemPos.transform(toWorldSpace.getLast().getMatrix());
+            Vector3d leftHeldItemPos3 = new Vector3d(leftHeldItemPos.getX(), leftHeldItemPos.getY(), leftHeldItemPos.getZ());
+
+            Vector4f rightHeldItemPos = new Vector4f(0, 0, 0, 1);
+            rightHeldItemPos.transform(rightHeldItem.getWorldSpaceXform());
+            rightHeldItemPos.transform(toWorldSpace.getLast().getMatrix());
+            Vector3d rightHeldItemPos3 = new Vector3d(rightHeldItemPos.getX(), rightHeldItemPos.getY(), rightHeldItemPos.getZ());
+
+            betweenHandsPos = rightHeldItemPos3.add(leftHeldItemPos3.subtract(rightHeldItemPos3).scale(0.5));
         }
         Minecraft minecraft = Minecraft.getInstance();
         boolean flag = this.isVisible(entityIn);

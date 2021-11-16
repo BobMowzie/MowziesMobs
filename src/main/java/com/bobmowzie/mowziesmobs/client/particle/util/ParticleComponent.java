@@ -292,7 +292,7 @@ public abstract class ParticleComponent {
 
         @Override
         public void preUpdate(AdvancedParticleBase particle) {
-            float ageFrac = particle.getAge() / particle.getMaxAge();
+            float ageFrac = particle.getAge() / (particle.getMaxAge() - 1);
             if (location.length > 0) {
                 Vector3d destinationVec = location[0];
                 Vector3d currPos = new Vector3d(particle.getPosX(), particle.getPosY(), particle.getPosZ());

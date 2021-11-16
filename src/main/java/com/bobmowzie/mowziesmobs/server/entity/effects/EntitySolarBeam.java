@@ -2,7 +2,12 @@ package com.bobmowzie.mowziesmobs.server.entity.effects;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
+import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleOrb;
+import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
+import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
+import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
+import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoRenderPlayer;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
@@ -12,6 +17,9 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.material.PushReaction;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
+import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -26,7 +34,10 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
@@ -61,9 +72,15 @@ public class EntitySolarBeam extends Entity {
     public float prevYaw;
     public float prevPitch;
 
+    @OnlyIn(Dist.CLIENT)
+    private Vector3d[] attractorPos;
+
     public EntitySolarBeam(EntityType<? extends EntitySolarBeam> type, World world) {
         super(type, world);
         ignoreFrustumCheck = true;
+        if (world.isRemote) {
+            attractorPos = new Vector3d[] {new Vector3d(0, 0, 0)};
+        }
     }
 
     public EntitySolarBeam(EntityType<? extends EntitySolarBeam> type, World world, LivingEntity caster, double x, double y, double z, float yaw, float pitch, int duration) {
@@ -100,10 +117,10 @@ public class EntitySolarBeam extends Entity {
             if (!world.isRemote) {
                 this.updateWithPlayer();
             }
-            else {
-                renderYaw = (float) ((caster.rotationYawHead + 90.0d) * Math.PI / 180.0d);
-                renderPitch = (float) (-caster.rotationPitch * Math.PI / 180.0d);
-            }
+        }
+        else {
+            renderYaw = (float) ((caster.rotationYawHead + 90.0d) * Math.PI / 180.0d);
+            renderPitch = (float) (-caster.rotationPitch * Math.PI / 180.0d);
         }
 
         if (!on && appear.getTimer() == 0) {
@@ -117,21 +134,43 @@ public class EntitySolarBeam extends Entity {
 
         if (caster != null && !caster.isAlive()) remove();
 
-        if (world.isRemote && ticksExisted <= 10) {
+        if (world.isRemote && ticksExisted <= 10 && caster != null) {
             int particleCount = 8;
             while (--particleCount != 0) {
-                double radius = 2f;
+                double radius = 2f * caster.getWidth();
                 double yaw = rand.nextFloat() * 2 * Math.PI;
                 double pitch = rand.nextFloat() * 2 * Math.PI;
                 double ox = radius * Math.sin(yaw) * Math.sin(pitch);
                 double oy = radius * Math.cos(pitch);
                 double oz = radius * Math.cos(yaw) * Math.sin(pitch);
-                float offsetX = (float) (-2 * Math.cos(getYaw()));
-                float offsetZ = (float) (-2 * Math.sin(getYaw()));
+                double rootX = caster.getPosX();
+                double rootY = caster.getPosY() + caster.getHeight() / 2f + 0.3f;
+                double rootZ = caster.getPosZ();
                 if (getHasPlayer()) {
-                    offsetX = offsetZ = 0;
+                    if (caster instanceof PlayerEntity && !(caster == Minecraft.getInstance().player && Minecraft.getInstance().gameSettings.getPointOfView() == PointOfView.FIRST_PERSON)) {
+                        GeckoPlayer geckoPlayer = GeckoPlayer.getGeckoPlayer((PlayerEntity) caster, GeckoPlayer.Perspective.THIRD_PERSON);
+                        if (geckoPlayer != null) {
+                            GeckoRenderPlayer renderPlayer = (GeckoRenderPlayer) geckoPlayer.getPlayerRenderer();
+                            if (renderPlayer.betweenHandsPos != null) {
+                                rootX += renderPlayer.betweenHandsPos.getX();
+                                rootY += renderPlayer.betweenHandsPos.getY();
+                                rootZ += renderPlayer.betweenHandsPos.getZ();
+                            }
+                        }
+                    }
                 }
-                world.addParticle(new ParticleOrb.OrbData((float) getPosX() + offsetX, (float) getPosY() + 0.3f, (float) getPosZ() + offsetZ, 10), getPosX() + ox + offsetX, getPosY() + oy + 0.3, getPosZ() + oz + offsetZ, 0, 0, 0);
+                attractorPos[0] = new Vector3d(rootX, rootY, rootZ);
+                AdvancedParticleBase.spawnParticle(world, ParticleHandler.ORB2.get(), rootX + ox, rootY + oy, rootZ + oz, 0, 0, 0, true, 0, 0, 0, 0, 5F, 1, 1, 1, 1, 1, 7, true, false, new ParticleComponent[]{
+                        new ParticleComponent.Attractor(attractorPos, 1.7f, 0.0f, ParticleComponent.Attractor.EnumAttractorBehavior.EXPONENTIAL),
+                        new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, new ParticleComponent.KeyTrack(
+                                new float[]{0f, 0.8f},
+                                new float[]{0f, 1f}
+                        ), false),
+                        new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, new ParticleComponent.KeyTrack(
+                                new float[]{3f, 6f},
+                                new float[]{0f, 1f}
+                        ), false)
+                });
             }
         }
         if (ticksExisted > 20) {
