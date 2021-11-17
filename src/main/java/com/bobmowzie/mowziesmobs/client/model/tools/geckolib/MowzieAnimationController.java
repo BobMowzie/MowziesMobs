@@ -18,7 +18,7 @@ public class MowzieAnimationController<T extends IAnimatable & IAnimationTickabl
     public void playAnimation(T animatable, AnimationBuilder animationBuilder) {
         markNeedsReload();
         setAnimation(animationBuilder);
-        currentAnimation = this.animationQueue.poll();
+        currentAnimation = this.animationQueue.peek();
         adjustTick(animatable.tickTimer());
     }
 

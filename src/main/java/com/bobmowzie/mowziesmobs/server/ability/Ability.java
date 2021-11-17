@@ -50,6 +50,17 @@ public class Ability {
     @OnlyIn(Dist.CLIENT)
     protected ItemStack heldItemOffHandVisualOverride;
 
+    public enum HandDisplay {
+        DEFAULT,
+        DONT_RENDER,
+        FORCE_RENDER
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    protected HandDisplay firstPersonMainHandDisplay;
+    @OnlyIn(Dist.CLIENT)
+    protected HandDisplay firstPersonOffHandDisplay;
+
     public Ability(AbilityType<? extends Ability> abilityType, LivingEntity user, AbilitySection[] sectionTrack, int cooldownMax) {
         this.abilityType = abilityType;
         this.user = user;
@@ -61,6 +72,8 @@ public class Ability {
             this.activeThirdPersonAnimation = new AnimationBuilder().addAnimation("idle");
             heldItemMainHandVisualOverride = null;
             heldItemOffHandVisualOverride = null;
+            firstPersonMainHandDisplay = HandDisplay.DEFAULT;
+            firstPersonOffHandDisplay = HandDisplay.DEFAULT;
         }
     }
 
@@ -139,6 +152,8 @@ public class Ability {
         if (getUser().world.isRemote) {
             heldItemMainHandVisualOverride = null;
             heldItemOffHandVisualOverride = null;
+            firstPersonMainHandDisplay = HandDisplay.DEFAULT;
+            firstPersonOffHandDisplay = HandDisplay.DEFAULT;
         }
     }
 
@@ -304,6 +319,16 @@ public class Ability {
     @OnlyIn(Dist.CLIENT)
     public ItemStack heldItemOffHandOverride() {
         return heldItemOffHandVisualOverride;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public HandDisplay getFirstPersonMainHandDisplay() {
+        return firstPersonMainHandDisplay;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public HandDisplay getFirstPersonOffHandDisplay() {
+        return firstPersonOffHandDisplay;
     }
 
     public CompoundNBT writeNBT() {

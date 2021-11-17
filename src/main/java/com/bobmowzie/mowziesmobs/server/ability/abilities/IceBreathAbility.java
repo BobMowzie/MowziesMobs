@@ -42,10 +42,12 @@ public class IceBreathAbility extends Ability {
         if (getUser().getActiveHand() == Hand.MAIN_HAND) {
             heldItemMainHandVisualOverride = getUser().getActiveItemStack();
             heldItemOffHandVisualOverride = ItemStack.EMPTY;
+            firstPersonOffHandDisplay = Ability.HandDisplay.DONT_RENDER;
         }
         else {
             heldItemOffHandVisualOverride = getUser().getActiveItemStack();
             heldItemMainHandVisualOverride = ItemStack.EMPTY;
+            firstPersonMainHandDisplay = Ability.HandDisplay.DONT_RENDER;
         }
     }
 

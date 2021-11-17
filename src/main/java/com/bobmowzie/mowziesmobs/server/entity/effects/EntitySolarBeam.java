@@ -118,7 +118,7 @@ public class EntitySolarBeam extends Entity {
                 this.updateWithPlayer();
             }
         }
-        else {
+        if (caster != null) {
             renderYaw = (float) ((caster.rotationYawHead + 90.0d) * Math.PI / 180.0d);
             renderPitch = (float) (-caster.rotationPitch * Math.PI / 180.0d);
         }

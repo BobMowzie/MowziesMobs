@@ -9,6 +9,7 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySolarBeam;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 
@@ -43,6 +44,12 @@ public class SolarBeamAbility extends Ability {
             }
 
             this.solarBeam = solarBeam;
+        }
+        else {
+            heldItemMainHandVisualOverride = ItemStack.EMPTY;
+            heldItemOffHandVisualOverride = ItemStack.EMPTY;
+            firstPersonOffHandDisplay = HandDisplay.FORCE_RENDER;
+            firstPersonMainHandDisplay = HandDisplay.FORCE_RENDER;
         }
         playAnimation("solar_beam_charge", false);
     }
