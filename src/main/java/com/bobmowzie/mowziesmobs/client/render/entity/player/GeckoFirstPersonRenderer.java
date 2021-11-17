@@ -99,8 +99,9 @@ public class GeckoFirstPersonRenderer extends FirstPersonRenderer implements IGe
                 ItemStack stackOverride = flag ? ability.heldItemMainHandOverride() : ability.heldItemOffHandOverride();
                 if (stackOverride != null) stack = stackOverride;
             }
-
-            super.renderItemInFirstPerson(player, partialTicks, pitch, handIn, swingProgress, stack, equippedProgress, newMatrixStack, bufferIn, combinedLightIn);
+            if (stack != ItemStack.EMPTY) {
+                super.renderItemInFirstPerson(player, partialTicks, pitch, handIn, 0.0f, stack, 0.0f, newMatrixStack, bufferIn, combinedLightIn);
+            }
         }
     }
 

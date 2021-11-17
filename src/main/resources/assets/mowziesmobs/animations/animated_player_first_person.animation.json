@@ -4,69 +4,6 @@
 		"idle": {
 			"loop": true
 		},
-		"test": {
-			"loop": true,
-			"animation_length": 1.44,
-			"bones": {
-				"RightArm": {
-					"rotation": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.44": {
-							"vector": [-30, 0, -20]
-						},
-						"0.84": {
-							"vector": [20, 60, 0]
-						},
-						"1.44": {
-							"vector": [0, 0, 0]
-						}
-					},
-					"position": {
-						"0.84": {
-							"vector": [0, 0, 0]
-						},
-						"1.16": {
-							"vector": [10, 0, 0]
-						},
-						"1.44": {
-							"vector": [0, 0, 0]
-						}
-					}
-				},
-				"LeftArm": {
-					"rotation": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.28": {
-							"vector": [0, -20, 20]
-						},
-						"0.84": {
-							"vector": [0, -20, 20]
-						},
-						"1.44": {
-							"vector": [0, 0, 0]
-						}
-					},
-					"position": {
-						"0.0": {
-							"vector": [0, 0, 0]
-						},
-						"0.28": {
-							"vector": [0, 4, 0]
-						},
-						"0.84": {
-							"vector": [10, 0, 0]
-						},
-						"1.44": {
-							"vector": [0, 0, 0]
-						}
-					}
-				}
-			}
-		},
 		"axe_swing_start_right": {
 			"animation_length": 1.64,
 			"bones": {
@@ -438,6 +375,141 @@
 						},
 						"1.64": {
 							"vector": [0, 0, 0]
+						}
+					}
+				}
+			}
+		},
+		"ice_breath_start": {
+			"animation_length": 0.52,
+			"bones": {
+				"RightArm": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.12": {
+							"vector": [-12.5, 0, -2.5],
+							"easing": "easeInOutQuad"
+						},
+						"0.28": {
+							"vector": [-26, "query.anim_time * 1800", 0],
+							"easing": "easeInOutQuad"
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.12": {
+							"vector": [-0.5, 1.75, 0],
+							"easing": "easeInOutQuad"
+						},
+						"0.28": {
+							"vector": ["8.75 - 3 * math.sin(query.anim_time * 1800)", -3, "-4 - 3 * math.cos(query.anim_time * 1800)"],
+							"easing": "easeInOutQuad"
+						}
+					}
+				},
+				"LeftArm": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.12": {
+							"vector": [-12.5, 0, 2.5],
+							"easing": "easeInOutQuad"
+						},
+						"0.28": {
+							"vector": [-26, "query.anim_time * 1800", 0],
+							"easing": "easeInOutQuad"
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.12": {
+							"vector": [0.5, 1.75, 0],
+							"easing": "easeInOutQuad"
+						},
+						"0.28": {
+							"vector": ["-8.75 - 3 * math.sin(query.anim_time * 1800)", -3, "-4 - 3 * math.cos(query.anim_time * 1800)"],
+							"easing": "easeInOutQuad"
+						}
+					}
+				}
+			}
+		},
+		"ice_breath_loop": {
+			"animation_length": 3.6,
+			"bones": {
+				"RightArm": {
+					"rotation": {
+						"vector": [-26, "query.anim_time * 1800", 0],
+						"easing": "easeInOutQuad"
+					},
+					"position": {
+						"vector": ["8.75 - 3 * math.sin(query.anim_time * 1800)", -3, "-4 - 3 * math.cos(query.anim_time * 1800)"],
+						"easing": "easeInOutQuad"
+					}
+				},
+				"LeftArm": {
+					"rotation": {
+						"vector": [-26, "query.anim_time * 1800", 0],
+						"easing": "easeInOutQuad"
+					},
+					"position": {
+						"vector": ["-8.75 - 3 * math.sin(query.anim_time * 1800)", -3, "-4 - 3 * math.cos(query.anim_time * 1800)"],
+						"easing": "easeInOutQuad"
+					}
+				}
+			}
+		},
+		"ice_breath_end": {
+			"animation_length": 0.24,
+			"bones": {
+				"RightArm": {
+					"rotation": {
+						"0.0": {
+							"vector": [-6, "query.anim_time * 1800", 0],
+							"easing": "easeInOutQuad"
+						},
+						"0.24": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": ["8.75 - 3 * math.sin(query.anim_time * 1800)", -3, "-4 - 3 * math.cos(query.anim_time * 1800)"],
+							"easing": "easeInOutQuad"
+						},
+						"0.24": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					}
+				},
+				"LeftArm": {
+					"rotation": {
+						"0.0": {
+							"vector": [-6, "query.anim_time * 1800", 0],
+							"easing": "easeInOutQuad"
+						},
+						"0.24": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					},
+					"position": {
+						"0.0": {
+							"vector": ["-8.75 - 3 * math.sin(query.anim_time * 1800)", -3, "-4 - 3 * math.cos(query.anim_time * 1800)"],
+							"easing": "easeInOutQuad"
+						},
+						"0.24": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
 						}
 					}
 				}

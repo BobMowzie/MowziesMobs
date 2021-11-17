@@ -4098,7 +4098,7 @@
 							"vector": [0, 0, 0]
 						},
 						"0.28": {
-							"vector": [0, 0, "-24.5 + query.anim_time * 1400"]
+							"vector": [0, 0, "24.5 + query.anim_time * 1800"]
 						}
 					},
 					"position": {
@@ -4137,7 +4137,7 @@
 							"vector": [0, 0, 0]
 						},
 						"0.28": {
-							"vector": [0, 0, "24.5 + query.anim_time * 1400"]
+							"vector": [0, 0, "24.5 + query.anim_time * 1800"]
 						}
 					},
 					"position": {
@@ -4217,7 +4217,7 @@
 				},
 				"LeftHeldItem": {
 					"rotation": {
-						"vector": [0, 0, "-24.5 + query.anim_time * 1400"]
+						"vector": [0, 0, "-24.5 + query.anim_time * 1800"]
 					},
 					"position": {
 						"vector": [-3.5, -1, 0]
@@ -4231,7 +4231,7 @@
 				},
 				"RightHeldItem": {
 					"rotation": {
-						"vector": [0, 0, "24.5 + query.anim_time * 1400"]
+						"vector": [0, 0, "-24.5 + query.anim_time * 1800"]
 					},
 					"position": {
 						"vector": [3.5, -1, 0]
@@ -4307,7 +4307,7 @@
 				"LeftHeldItem": {
 					"rotation": {
 						"0.0": {
-							"vector": [0, 0, "-24.5 + query.anim_time * 1400"]
+							"vector": [0, 0, "24.5 + query.anim_time * 1800"]
 						},
 						"0.24": {
 							"vector": [0, 0, 0],
@@ -4349,7 +4349,7 @@
 				"RightHeldItem": {
 					"rotation": {
 						"0.0": {
-							"vector": [0, 0, "24.5 + query.anim_time * 1400"]
+							"vector": [0, 0, "24.5 + query.anim_time * 1800"]
 						},
 						"0.24": {
 							"vector": [0, 0, 0],

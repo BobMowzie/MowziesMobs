@@ -14,6 +14,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
+import net.minecraft.util.Hand;
 
 public class IceBreathAbility extends Ability {
     protected EntityIceBreath iceBreath;
@@ -37,6 +38,15 @@ public class IceBreathAbility extends Ability {
             this.iceBreath = iceBreath;
         }
         playAnimation("ice_breath_start", false);
+
+        if (getUser().getActiveHand() == Hand.MAIN_HAND) {
+            heldItemMainHandVisualOverride = getUser().getActiveItemStack();
+            heldItemOffHandVisualOverride = ItemStack.EMPTY;
+        }
+        else {
+            heldItemOffHandVisualOverride = getUser().getActiveItemStack();
+            heldItemMainHandVisualOverride = ItemStack.EMPTY;
+        }
     }
 
     @Override
