@@ -58,6 +58,7 @@ public class SunstrikeAbility extends Ability {
             sunstrike.onSummon();
             user.world.addEntity(sunstrike);
         }
+        playAnimation("sunstrike", false);
     }
 
     @Override

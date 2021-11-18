@@ -4079,11 +4079,11 @@
 						"0.0": {
 							"vector": [0, 0, 0]
 						},
-						"0.12": {
+						"0.16": {
 							"vector": [-37.5, 0, -22.5],
 							"easing": "easeInOutQuad"
 						},
-						"0.28": {
+						"0.32": {
 							"vector": [-100, 12.5, -2],
 							"easing": "easeInOutQuad"
 						}
@@ -4094,10 +4094,10 @@
 						"0.0": {
 							"vector": [0, 0, 0]
 						},
-						"0.12": {
+						"0.16": {
 							"vector": [0, 0, 0]
 						},
-						"0.28": {
+						"0.32": {
 							"vector": [0, 0, "24.5 + query.anim_time * 1800"]
 						}
 					},
@@ -4105,10 +4105,10 @@
 						"0.0": {
 							"vector": [0, 0, 0]
 						},
-						"0.12": {
+						"0.16": {
 							"vector": [0, 0, 0]
 						},
-						"0.28": {
+						"0.32": {
 							"vector": [-3.5, -1, 0]
 						}
 					}
@@ -4118,11 +4118,11 @@
 						"0.0": {
 							"vector": [0, 0, 0]
 						},
-						"0.12": {
+						"0.16": {
 							"vector": [-37.5, 0, 22.5],
 							"easing": "easeInOutQuad"
 						},
-						"0.28": {
+						"0.32": {
 							"vector": [-100, -12.5, 2],
 							"easing": "easeInOutQuad"
 						}
@@ -4133,10 +4133,10 @@
 						"0.0": {
 							"vector": [0, 0, 0]
 						},
-						"0.12": {
+						"0.16": {
 							"vector": [0, 0, 0]
 						},
-						"0.28": {
+						"0.32": {
 							"vector": [0, 0, "24.5 + query.anim_time * 1800"]
 						}
 					},
@@ -4144,10 +4144,10 @@
 						"0.0": {
 							"vector": [0, 0, 0]
 						},
-						"0.12": {
+						"0.16": {
 							"vector": [0, 0, 0]
 						},
-						"0.28": {
+						"0.32": {
 							"vector": [3.5, -1, 0]
 						}
 					}
@@ -4402,6 +4402,151 @@
 							"vector": [1, 0, 0]
 						},
 						"0.24": {
+							"vector": [0, 0, 0]
+						}
+					}
+				}
+			}
+		},
+		"sunstrike": {
+			"animation_length": 0.92,
+			"bones": {
+				"Body": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.08": {
+							"vector": [-5, 10, 0],
+							"easing": "easeInOutQuad"
+						},
+						"0.16": {
+							"vector": [5, -5, 0],
+							"easing": "easeInQuad"
+						},
+						"0.36": {
+							"vector": [2.14, -3.21, 0],
+							"easing": "easeOutQuad"
+						},
+						"0.52": {
+							"vector": [2.14, -3.21, 0],
+							"easing": "easeOutQuad"
+						},
+						"0.84": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					}
+				},
+				"Neck": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.08": {
+							"vector": [0, -12.5, 0],
+							"easing": "easeInOutQuad"
+						},
+						"0.16": {
+							"vector": [-5, 2.5, 0],
+							"easing": "easeInQuad"
+						},
+						"0.36": {
+							"vector": [-2.5, 2.5, 0],
+							"easing": "easeOutQuad"
+						},
+						"0.52": {
+							"vector": [-2.5, 2.5, 0],
+							"easing": "easeOutQuad"
+						},
+						"0.84": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					}
+				},
+				"LeftArm": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.08": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
+						},
+						"0.16": {
+							"vector": [-7.5, 0, 0],
+							"easing": "easeInQuad"
+						},
+						"0.4": {
+							"vector": [-2.5, 0, 0],
+							"easing": "easeOutQuad"
+						},
+						"0.52": {
+							"vector": [-2.5, 0, 0],
+							"easing": "easeInQuad"
+						},
+						"0.84": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					}
+				},
+				"RightArm": {
+					"rotation": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.12": {
+							"vector": [-55, 5, 15],
+							"easing": "easeInOutQuad"
+						},
+						"0.16": {
+							"vector": [-92.5, 0, 2.5],
+							"easing": "easeInQuad"
+						},
+						"0.4": {
+							"vector": [-89.64, 1.43, 6.07],
+							"easing": "easeOutQuad"
+						},
+						"0.56": {
+							"vector": [-89.64, 1.43, 6.07],
+							"easing": "easeOutQuad"
+						},
+						"0.84": {
+							"vector": [0, 0, 0],
+							"easing": "easeInOutQuad"
+						}
+					}
+				},
+				"ArmSwingController": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.16": {
+							"vector": [0, 1, 0]
+						},
+						"0.52": {
+							"vector": [0, 1, 0]
+						},
+						"0.84": {
+							"vector": [0, 0, 0]
+						}
+					}
+				},
+				"ArmPitchController": {
+					"position": {
+						"0.0": {
+							"vector": [0, 0, 0]
+						},
+						"0.16": {
+							"vector": [0, 1, 0]
+						},
+						"0.52": {
+							"vector": [0, 1, 0]
+						},
+						"0.84": {
 							"vector": [0, 0, 0]
 						}
 					}
