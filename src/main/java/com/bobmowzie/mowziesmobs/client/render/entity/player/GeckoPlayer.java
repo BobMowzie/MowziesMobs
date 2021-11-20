@@ -74,6 +74,7 @@ public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
 	}
 
 	public <E extends IAnimatable> PlayState predicate(AnimationEvent<E> e) {
+		e.getController().transitionLengthTicks = 0;
 		PlayerEntity player = getPlayer();
 		if (player == null) {
 			return PlayState.STOP;

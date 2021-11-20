@@ -16,8 +16,13 @@
 					"pivot": [0, 0, 0]
 				},
 				{
-					"name": "Waist",
+					"name": "CenterOfMass",
 					"parent": "Root",
+					"pivot": [0, 12, 0]
+				},
+				{
+					"name": "Waist",
+					"parent": "CenterOfMass",
 					"pivot": [0, 12, 0]
 				},
 				{
@@ -234,6 +239,10 @@
 				{
 					"name": "ArmPitchController",
 					"pivot": [0, 0, 0]
+				},
+				{
+					"name": "FaceVelocityController",
+					"pivot": [-1.9, 12, 0]
 				}
 			]
 		}

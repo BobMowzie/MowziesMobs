@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.capability;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
@@ -54,7 +55,9 @@ public class AbilityCapability {
 
         boolean interactingPrevented();
 
-        public <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e, GeckoPlayer.Perspective perspective);
+         <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e, GeckoPlayer.Perspective perspective);
+
+        void codeAnimations(MowzieAnimatedGeoModel<? extends IAnimatable> model, float partialTick);
 
         INBT writeNBT();
 
@@ -139,6 +142,10 @@ public class AbilityCapability {
         @Override
         public <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e, GeckoPlayer.Perspective perspective) {
             return getActiveAbility().animationPredicate(e, perspective);
+        }
+
+        public void codeAnimations(MowzieAnimatedGeoModel<? extends IAnimatable> model, float partialTick) {
+            getActiveAbility().codeAnimations(model, partialTick);
         }
 
         @Override

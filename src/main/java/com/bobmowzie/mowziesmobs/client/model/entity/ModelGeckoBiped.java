@@ -4,6 +4,10 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
+import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
+import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.entity.model.BipedModel;
@@ -12,6 +16,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 
 public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
@@ -226,6 +231,7 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 
 		float armBreathAmount = getControllerValue("ArmBreathController");
 		breathAnim(this.bipedRightArm(), this.bipedLeftArm(), ageInTicks, armBreathAmount);
+
 //		if (this.swimAnimation > 0.0F) {
 //			float f1 = limbSwing % 26.0F;
 //			HandSide handside = this.getMainHand(entityIn);
@@ -261,6 +267,11 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 //			this.bipedLeftLeg().setRotationX(MathHelper.lerp(this.swimAnimation, this.bipedLeftLeg().getRotationX(), 0.3F * MathHelper.cos(limbSwing * 0.33333334F + (float)Math.PI)));
 //			this.bipedRightLeg().setRotationX(MathHelper.lerp(this.swimAnimation, this.bipedRightLeg().getRotationX(), 0.3F * MathHelper.cos(limbSwing * 0.33333334F)));
 //		}
+
+		AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(entityIn);
+		if (abilityCapability != null && abilityCapability.getActiveAbility() != null) {
+			abilityCapability.codeAnimations(this, partialTick);
+		}
 	}
 
 	protected MowzieGeoBone getArmForSide(HandSide side) {

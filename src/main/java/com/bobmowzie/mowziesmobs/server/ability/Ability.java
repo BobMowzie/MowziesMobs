@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.ability;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
@@ -293,6 +294,10 @@ public class Ability {
             return PlayState.STOP;
         e.getController().setAnimation(whichAnimation);
         return PlayState.CONTINUE;
+    }
+
+    public void codeAnimations(MowzieAnimatedGeoModel<? extends IAnimatable> model, float partialTick) {
+
     }
 
     public boolean isAnimating() {

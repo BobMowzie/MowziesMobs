@@ -1,12 +1,18 @@
 package com.bobmowzie.mowziesmobs.server.ability.abilities;
 
+import com.bobmowzie.mowziesmobs.client.model.tools.MathUtils;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
+import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
+import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
+import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBlockSwapper;
@@ -19,7 +25,14 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 
 import java.util.List;
 
@@ -28,6 +41,11 @@ public class TunnelingAbility extends Ability {
     public boolean prevUnderground;
     public BlockState justDug = Blocks.DIRT.getDefaultState();
     boolean underground = false;
+
+    @OnlyIn(Dist.CLIENT)
+    private float spinAmount = 0;
+    @OnlyIn(Dist.CLIENT)
+    private float pitch = 0;
 
     public TunnelingAbility(AbilityType<? extends Ability> abilityType, LivingEntity user) {
         super(abilityType, user, new AbilitySection[] {
@@ -39,6 +57,17 @@ public class TunnelingAbility extends Ability {
     public void tickNotUsing() {
         super.tickNotUsing();
         if (doubleTapTimer > 0) doubleTapTimer--;
+    }
+
+    @Override
+    public void start() {
+        super.start();
+        underground = false;
+        prevUnderground = false;
+        if (getUser().world.isRemote()) {
+            spinAmount = 0;
+            pitch = 0;
+        }
     }
 
     @Override
@@ -69,10 +98,10 @@ public class TunnelingAbility extends Ability {
 
         if ((getUser().isSneaking() && lookVec.y < 0) || underground) {
             if (getUser().ticksExisted % 16 == 0) getUser().playSound(MMSounds.EFFECT_GEOMANCY_RUMBLE.get(rand.nextInt(3)).get(), 0.6f, 0.5f + rand.nextFloat() * 0.2f);
-            for (double x = -1; x <= 1; x++) {
-                for (double y = -1; y <= 2; y++) {
-                    for (double z = -1; z <= 1; z++) {
-                        if (Math.sqrt(x * x + y * y + z * z) > 1.75) continue;
+            for (double x = -2; x <= 2; x++) {
+                for (double y = -2; y <= 2; y++) {
+                    for (double z = -2; z <= 2; z++) {
+                        if (Math.sqrt(x * x + y * y + z * z) > 3) continue;
                         BlockPos pos = new BlockPos(getUser().getPosX() + x + getUser().getMotion().getX(), getUser().getPosY() + y + getUser().getMotion().getY() + getUser().getHeight()/2f, getUser().getPosZ() + z + getUser().getMotion().getZ());
                         BlockState blockState = getUser().world.getBlockState(pos);
                         if (EffectGeomancy.isBlockDiggable(blockState) && blockState.getBlock() != Blocks.BEDROCK) {
@@ -102,7 +131,6 @@ public class TunnelingAbility extends Ability {
 
             for (int i = 0; i < 6; i++) {
                 if (justDug == null) justDug = Blocks.DIRT.getDefaultState();
-//                        ParticleFallingBlock.spawnFallingBlock(getUser().world, getUser().getPosX(), getUser().getPosY() + 1, getUser().getPosZ(), 30f, 80, 1, getUser().getRNG().nextFloat() * 0.8f - 0.4f, 0.4f + getUser().getRNG().nextFloat() * 0.8f, getUser().getRNG().nextFloat() * 0.8f - 0.4f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, justDug);
                 EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK, getUser().world, 80, justDug);
                 fallingBlock.setPosition(getUser().getPosX(), getUser().getPosY() + 1, getUser().getPosZ());
                 fallingBlock.setMotion(getUser().getRNG().nextFloat() * 0.8f - 0.4f, 0.4f + getUser().getRNG().nextFloat() * 0.8f, getUser().getRNG().nextFloat() * 0.8f - 0.4f);
@@ -129,5 +157,46 @@ public class TunnelingAbility extends Ability {
             AbilityHandler.INSTANCE.sendAbilityMessage(player, AbilityHandler.TUNNELING_ABILITY);
         }
         doubleTapTimer = 9;
+    }
+
+    @Override
+    public <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e, GeckoPlayer.Perspective perspective) {
+        e.getController().transitionLengthTicks = 4;
+        if (perspective == GeckoPlayer.Perspective.THIRD_PERSON) {
+            if (!underground && !getUser().isSneaking() && getUser().getMotion().getY() < 1) {
+                e.getController().setAnimation(new AnimationBuilder().addAnimation("tunneling_fall", false));
+            }
+            else {
+                e.getController().setAnimation(new AnimationBuilder().addAnimation("tunneling_drill", true));
+            }
+        }
+        return PlayState.CONTINUE;
+    }
+
+    @Override
+    public void codeAnimations(MowzieAnimatedGeoModel<? extends IAnimatable> model, float partialTick) {
+        super.codeAnimations(model, partialTick);
+        float faceMotionController = 1f - model.getControllerValue("FaceVelocityController");
+        Vector3d moveVec = getUser().getMotion().normalize();
+        pitch = (float) MathHelper.lerp(0.3 * partialTick, pitch, moveVec.getY());
+        MowzieGeoBone com = model.getMowzieBone("CenterOfMass");
+        com.setRotationX((float) (-Math.PI/2f + Math.PI/2f * pitch) * faceMotionController);
+
+        float spinSpeed = 0.35f;
+        if (faceMotionController < 1 && spinAmount < Math.PI * 2f - 0.01 && spinAmount > 0.01) {
+            float f = (float) ((Math.PI * 2f - spinAmount) / (Math.PI * 2f));
+            f = (float) Math.pow(f, 0.5);
+            spinAmount += partialTick * spinSpeed * f;
+            System.out.println(f);
+            if (spinAmount > Math.PI * 2f) {
+                spinAmount = 0;
+            }
+        }
+        else {
+            spinAmount += faceMotionController * partialTick * spinSpeed;
+            spinAmount = (float) (spinAmount % (Math.PI * 2));
+        }
+        MowzieGeoBone waist = model.getMowzieBone("Waist");
+        waist.addRotationY(-spinAmount);
     }
 }
