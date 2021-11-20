@@ -187,7 +187,6 @@ public class TunnelingAbility extends Ability {
             float f = (float) ((Math.PI * 2f - spinAmount) / (Math.PI * 2f));
             f = (float) Math.pow(f, 0.5);
             spinAmount += partialTick * spinSpeed * f;
-            System.out.println(f);
             if (spinAmount > Math.PI * 2f) {
                 spinAmount = 0;
             }
