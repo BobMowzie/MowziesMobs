@@ -24,6 +24,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
@@ -75,7 +76,7 @@ public class TunnelingAbility extends Ability {
         super.tickUsing();
         getUser().fallDistance = 0;
         if (getUser() instanceof PlayerEntity) ((PlayerEntity)getUser()).abilities.isFlying = false;
-        underground = !getUser().world.getEntitiesWithinAABB(EntityBlockSwapper.class, getUser().getBoundingBox().grow(0.2)).isEmpty();
+        underground = !getUser().world.getEntitiesWithinAABB(EntityBlockSwapper.class, getUser().getBoundingBox().grow(1)).isEmpty();
         Vector3d lookVec = getUser().getLookVec();
         float tunnelSpeed = 0.3f;
         if (underground) {
@@ -93,20 +94,31 @@ public class TunnelingAbility extends Ability {
                 entityHit.attackEntityFrom(damageSource, 6 * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.geomancyAttackMultiplier.get().floatValue());
             }
         }
-        else getUser().setMotion(getUser().getMotion().subtract(0, 0.07, 0));
+        else {
+            getUser().setMotion(getUser().getMotion().subtract(0, 0.07, 0));
+            if (getUser().getMotion().getY() < -1.3) getUser().setMotion(getUser().getMotion().getX(), -1.3, getUser().getMotion().getZ());
+        }
 
-
-        if ((getUser().isSneaking() && lookVec.y < 0) || underground) {
+        if ((getUser().isSneaking() && getUser().getMotion().y < 0) || underground) {
             if (getUser().ticksExisted % 16 == 0) getUser().playSound(MMSounds.EFFECT_GEOMANCY_RUMBLE.get(rand.nextInt(3)).get(), 0.6f, 0.5f + rand.nextFloat() * 0.2f);
-            for (double x = -2; x <= 2; x++) {
-                for (double y = -2; y <= 2; y++) {
-                    for (double z = -2; z <= 2; z++) {
-                        if (Math.sqrt(x * x + y * y + z * z) > 3) continue;
-                        BlockPos pos = new BlockPos(getUser().getPosX() + x + getUser().getMotion().getX(), getUser().getPosY() + y + getUser().getMotion().getY() + getUser().getHeight()/2f, getUser().getPosZ() + z + getUser().getMotion().getZ());
-                        BlockState blockState = getUser().world.getBlockState(pos);
-                        if (EffectGeomancy.isBlockDiggable(blockState) && blockState.getBlock() != Blocks.BEDROCK) {
-                            justDug = blockState;
-                            EntityBlockSwapper.swapBlock(getUser().world, pos, Blocks.AIR.getDefaultState(), 20, false, false);
+            Vector3d userCenter = getUser().getPositionVec().add(0, getUser().getHeight() / 2f, 0);
+            float radius = 2f;
+            AxisAlignedBB aabb = new AxisAlignedBB(-radius, -radius, -radius, radius, radius, radius);
+            aabb = aabb.offset(userCenter);
+            for (int i = 0; i < getUser().getMotion().length() * 4; i++) {
+                for (int x = (int) Math.floor(aabb.minX); x <= Math.floor(aabb.maxX); x++) {
+                    for (int y = (int) Math.floor(aabb.minY); y <= Math.floor(aabb.maxY); y++) {
+                        for (int z = (int) Math.floor(aabb.minZ); z <= Math.floor(aabb.maxZ); z++) {
+                            Vector3d posVec = new Vector3d(x, y, z);
+                            if (posVec.add(0.5, 0.5, 0.5).subtract(userCenter).lengthSquared() > radius * radius) continue;
+                            Vector3d motionScaled = getUser().getMotion().normalize().scale(i);
+                            posVec = posVec.add(motionScaled);
+                            BlockPos pos = new BlockPos(posVec);
+                            BlockState blockState = getUser().world.getBlockState(pos);
+                            if (EffectGeomancy.isBlockDiggable(blockState) && blockState.getBlock() != Blocks.BEDROCK) {
+                                justDug = blockState;
+                                EntityBlockSwapper.swapBlock(getUser().world, pos, Blocks.AIR.getDefaultState(), 20, false, false);
+                            }
                         }
                     }
                 }
@@ -147,7 +159,12 @@ public class TunnelingAbility extends Ability {
 
     @Override
     protected boolean canContinueUsing() {
-        return EffectGeomancy.canUse(getUser()) && (!getUser().isOnGround() || underground) && super.canContinueUsing();
+        boolean canContinueUsing = EffectGeomancy.canUse(getUser()) && (!getUser().isOnGround() || underground) && super.canContinueUsing();
+        if (!canContinueUsing) {
+            System.out.println("On Ground: " + getUser().isOnGround());
+            System.out.println("underground: " + underground);
+        }
+        return canContinueUsing;
     }
 
     @Override
