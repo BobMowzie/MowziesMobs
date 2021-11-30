@@ -40,6 +40,8 @@ public class GeckoFirstPersonRenderer extends FirstPersonRenderer implements IGe
     private static HashMap<Class<? extends GeckoPlayer>, GeckoFirstPersonRenderer> modelsToLoad = new HashMap<>();
     private ModelGeckoPlayerFirstPerson modelProvider;
 
+    boolean mirror;
+
     public GeckoFirstPersonRenderer(Minecraft mcIn, ModelGeckoPlayerFirstPerson modelProvider) {
         super(mcIn);
         this.modelProvider = modelProvider;
@@ -66,6 +68,9 @@ public class GeckoFirstPersonRenderer extends FirstPersonRenderer implements IGe
 
     public void renderItemInFirstPerson(AbstractClientPlayerEntity player, float pitch, float partialTicks, Hand handIn, float swingProgress, ItemStack stack, float equippedProgress, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, GeckoPlayer geckoPlayer) {
         boolean flag = handIn == Hand.MAIN_HAND;
+        HandSide handside = flag ? player.getPrimaryHand() : player.getPrimaryHand().opposite();
+        mirror = player.getPrimaryHand() == HandSide.LEFT;
+
         if (flag) {
             this.modelProvider.setLivingAnimations(geckoPlayer, player.getUniqueID().hashCode());
 
@@ -95,8 +100,8 @@ public class GeckoFirstPersonRenderer extends FirstPersonRenderer implements IGe
         }
 
         if (handDisplay != Ability.HandDisplay.DONT_RENDER && modelProvider.isInitialized()) {
-            HandSide handside = flag ? player.getPrimaryHand() : player.getPrimaryHand().opposite();
             int sideMult = handside == HandSide.RIGHT ? -1 : 1;
+            if (mirror) handside = handside.opposite();
             String sideName = handside == HandSide.RIGHT ? "Right" : "Left";
             String boneName = sideName + "Arm";
             MowzieGeoBone bone = this.modelProvider.getMowzieBone(boneName);
@@ -109,6 +114,8 @@ public class GeckoFirstPersonRenderer extends FirstPersonRenderer implements IGe
             newMatrixStack.getLast().getNormal().mul(bone.getWorldSpaceNormal());
             newMatrixStack.getLast().getMatrix().mul(bone.getWorldSpaceXform());
             newMatrixStack.translate(sideMult * 0.547, 0.7655, 0.625);
+
+            if (mirror) handside = handside.opposite();
 
             if (stack.isEmpty() && !flag && handDisplay == Ability.HandDisplay.FORCE_RENDER && !player.isInvisible()) {
                 newMatrixStack.translate(0, -1 * offHandEquipProgress, 0);
@@ -141,10 +148,18 @@ public class GeckoFirstPersonRenderer extends FirstPersonRenderer implements IGe
     @Override
     public void renderRecursively(GeoBone bone, MatrixStack matrixStack, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         matrixStack.push();
-        RenderUtils.translate(bone, matrixStack);
-        RenderUtils.moveToPivot(bone, matrixStack);
-        RenderUtils.rotate(bone, matrixStack);
-        RenderUtils.scale(bone, matrixStack);
+        if (mirror) {
+            translateMirror(bone, matrixStack);
+            moveToPivotMirror(bone, matrixStack);
+            rotateMirror(bone, matrixStack);
+            RenderUtils.scale(bone, matrixStack);
+        }
+        else {
+            RenderUtils.translate(bone, matrixStack);
+            RenderUtils.moveToPivot(bone, matrixStack);
+            RenderUtils.rotate(bone, matrixStack);
+            RenderUtils.scale(bone, matrixStack);
+        }
         // Record xform matrices for relevant bones
         if (bone instanceof MowzieGeoBone) {
             MowzieGeoBone mowzieBone = (MowzieGeoBone)bone;
@@ -156,7 +171,12 @@ public class GeckoFirstPersonRenderer extends FirstPersonRenderer implements IGe
                 matrixStack.pop();
             }
         }
-        RenderUtils.moveBackFromPivot(bone, matrixStack);
+        if (mirror) {
+            moveBackFromPivotMirror(bone, matrixStack);
+        }
+        else {
+            RenderUtils.moveBackFromPivot(bone, matrixStack);
+        }
         if (!bone.isHidden) {
             Iterator var10 = bone.childCubes.iterator();
 
@@ -176,5 +196,50 @@ public class GeckoFirstPersonRenderer extends FirstPersonRenderer implements IGe
         }
 
         matrixStack.pop();
+    }
+
+    // Mirrored render utils
+    public static void moveToPivotMirror(GeoCube cube, MatrixStack stack) {
+        Vector3f pivot = cube.pivot;
+        stack.translate((double)(-pivot.getX() / 16.0F), (double)(pivot.getY() / 16.0F), (double)(pivot.getZ() / 16.0F));
+    }
+
+    public static void moveBackFromPivotMirror(GeoCube cube, MatrixStack stack) {
+        Vector3f pivot = cube.pivot;
+        stack.translate((double)(pivot.getX() / 16.0F), (double)(-pivot.getY() / 16.0F), (double)(-pivot.getZ() / 16.0F));
+    }
+
+    public static void moveToPivotMirror(GeoBone bone, MatrixStack stack) {
+        stack.translate((double)(-bone.rotationPointX / 16.0F), (double)(bone.rotationPointY / 16.0F), (double)(bone.rotationPointZ / 16.0F));
+    }
+
+    public static void moveBackFromPivotMirror(GeoBone bone, MatrixStack stack) {
+        stack.translate((double)(bone.rotationPointX / 16.0F), (double)(-bone.rotationPointY / 16.0F), (double)(-bone.rotationPointZ / 16.0F));
+    }
+
+    public static void translateMirror(GeoBone bone, MatrixStack stack) {
+        stack.translate((double)(bone.getPositionX() / 16.0F), (double)(bone.getPositionY() / 16.0F), (double)(bone.getPositionZ() / 16.0F));
+    }
+
+    public static void rotateMirror(GeoBone bone, MatrixStack stack) {
+        if (bone.getRotationZ() != 0.0F) {
+            stack.rotate(Vector3f.ZP.rotation(-bone.getRotationZ()));
+        }
+
+        if (bone.getRotationY() != 0.0F) {
+            stack.rotate(Vector3f.YP.rotation(-bone.getRotationY()));
+        }
+
+        if (bone.getRotationX() != 0.0F) {
+            stack.rotate(Vector3f.XP.rotation(bone.getRotationX()));
+        }
+
+    }
+
+    public static void rotateMirror(GeoCube bone, MatrixStack stack) {
+        Vector3f rotation = bone.rotation;
+        stack.rotate(new Quaternion(0.0F, 0.0F, -rotation.getZ(), false));
+        stack.rotate(new Quaternion(0.0F, -rotation.getY(), 0.0F, false));
+        stack.rotate(new Quaternion(rotation.getX(), 0.0F, 0.0F, false));
     }
 }
