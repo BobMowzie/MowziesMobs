@@ -160,10 +160,6 @@ public class TunnelingAbility extends Ability {
     @Override
     protected boolean canContinueUsing() {
         boolean canContinueUsing = EffectGeomancy.canUse(getUser()) && (!getUser().isOnGround() || underground) && super.canContinueUsing();
-        if (!canContinueUsing) {
-            System.out.println("On Ground: " + getUser().isOnGround());
-            System.out.println("underground: " + underground);
-        }
         return canContinueUsing;
     }
 
