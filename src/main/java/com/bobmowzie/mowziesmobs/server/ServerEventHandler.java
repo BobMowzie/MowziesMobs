@@ -623,6 +623,7 @@ public final class ServerEventHandler {
             if (dot > 0.7) {
                 event.setDamageModifier(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.backstabDamageMultiplier.get().floatValue());
                 target.playSound(MMSounds.ENTITY_NAGA_ACID_HIT.get(), 1f, 1.2f);
+                AbilityHandler.INSTANCE.sendAbilityMessage(attacker, AbilityHandler.BACKSTAB_ABILITY);
 
                 if (target.world.isRemote() && target != null && attacker != null) {
                     Vector3d ringOffset = attacker.getLookVec().scale(-target.getWidth() / 2.f);

@@ -5,17 +5,20 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import net.minecraft.entity.LivingEntity;
 
-public class HitBoulderAbility extends Ability {
-    public HitBoulderAbility(AbilityType<HitBoulderAbility> abilityType, LivingEntity user) {
+public class SimpleAnimationAbility extends Ability {
+    private String animation;
+
+    public SimpleAnimationAbility(AbilityType<SimpleAnimationAbility> abilityType, LivingEntity user, String animationName, int duration) {
         super(abilityType, user, new AbilitySection[] {
                 new AbilitySection.AbilitySectionInstant(AbilitySection.AbilitySectionType.ACTIVE),
-                new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, 10)
+                new AbilitySection.AbilitySectionDuration(AbilitySection.AbilitySectionType.RECOVERY, duration)
         });
+        animation = animationName;
     }
 
     @Override
     public void start() {
         super.start();
-        playAnimation("hit_boulder", false);
+        playAnimation(animation, false);
     }
 }
