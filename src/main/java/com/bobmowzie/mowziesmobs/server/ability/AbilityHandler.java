@@ -25,8 +25,12 @@ public enum AbilityHandler {
     public static final AbilityType<IceBreathAbility> ICE_BREATH_ABILITY = new AbilityType<>("ice_breath", IceBreathAbility::new);
     public static final AbilityType<SpawnBoulderAbility> SPAWN_BOULDER_ABILITY = new AbilityType<>("spawn_boulder", SpawnBoulderAbility::new);
     public static final AbilityType<TunnelingAbility> TUNNELING_ABILITY = new AbilityType<>("tunneling", TunnelingAbility::new);
-    public static final AbilityType<SimpleAnimationAbility> HIT_BOULDER_ABILITY = new AbilityType<>("hit_boulder", (type, player) -> new SimpleAnimationAbility(type, player, "hit_boulder", 12));
-    public static final AbilityType<SimpleAnimationAbility> BACKSTAB_ABILITY = new AbilityType<>("backstab", (type, player) -> new SimpleAnimationAbility(type, player, "backstab", 12));
+    public static final AbilityType<SimpleAnimationAbility> HIT_BOULDER_ABILITY = new AbilityType<>("hit_boulder", (type, player) ->
+            new SimpleAnimationAbility(type, player, "hit_boulder", 12, false, false)
+    );
+    public static final AbilityType<SimpleAnimationAbility> BACKSTAB_ABILITY = new AbilityType<>("backstab", (type, player) ->
+            new SimpleAnimationAbility(type, player, "backstab", 12, true, true)
+    );
     public static final AbilityType<?>[] PLAYER_ABILITIES = new AbilityType[] {
             SUNSTRIKE_ABILITY,
             SOLAR_BEAM_ABILITY,
