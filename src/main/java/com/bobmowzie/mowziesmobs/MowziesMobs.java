@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs;
 
 import com.bobmowzie.mowziesmobs.client.ClientProxy;
+import com.bobmowzie.mowziesmobs.client.MMModels;
 import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoTrade;
 import com.bobmowzie.mowziesmobs.client.gui.GuiBarakoayaTrade;
 import com.bobmowzie.mowziesmobs.client.model.tools.MowzieGeoBuilder;
@@ -113,7 +114,9 @@ public final class MowziesMobs {
     }
 
     private void init(ModelRegistryEvent modelRegistryEvent) {
-        ModelLoader.addSpecialModel(new ModelResourceLocation(MowziesMobs.MODID + ":wrought_axe_in_hand", "inventory"));
+        for (String item : MMModels.HAND_MODEL_ITEMS) {
+            ModelLoader.addSpecialModel(new ModelResourceLocation(MowziesMobs.MODID + ":" + item + "_in_hand", "inventory"));
+        }
         for (MaskType type : MaskType.values()) {
             ModelLoader.addSpecialModel(new ModelResourceLocation(MowziesMobs.MODID + ":barakoa_mask_" + type.name + "_frame", "inventory"));
         }

@@ -15,11 +15,13 @@ import net.minecraft.item.ItemStack;
 public class ItemLayer<T extends LivingEntity, M extends EntityModel<T>> extends LayerRenderer<T, M> {
     private AdvancedModelRenderer modelRenderer;
     private ItemStack itemstack;
+    private ItemCameraTransforms.TransformType transformType;
 
-    public ItemLayer(IEntityRenderer<T, M> renderer, AdvancedModelRenderer modelRenderer, ItemStack itemstack) {
+    public ItemLayer(IEntityRenderer<T, M> renderer, AdvancedModelRenderer modelRenderer, ItemStack itemstack, ItemCameraTransforms.TransformType transformType) {
         super(renderer);
         this.itemstack = itemstack;
         this.modelRenderer = modelRenderer;
+        this.transformType = transformType;
     }
 
     @Override
@@ -27,7 +29,7 @@ public class ItemLayer<T extends LivingEntity, M extends EntityModel<T>> extends
         if (!modelRenderer.showModel || modelRenderer.isHidden()) return;
         matrixStackIn.push();
         RenderUtils.matrixStackFromModel(matrixStackIn, getModelRenderer());
-        Minecraft.getInstance().getFirstPersonRenderer().renderItemSide(entitylivingbaseIn, getItemstack(), ItemCameraTransforms.TransformType.GROUND, false, matrixStackIn, bufferIn, packedLightIn);
+        Minecraft.getInstance().getFirstPersonRenderer().renderItemSide(entitylivingbaseIn, getItemstack(), transformType, false, matrixStackIn, bufferIn, packedLightIn);
         matrixStackIn.pop();
     }
 

@@ -386,40 +386,31 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
 //                f = entity.ticksExisted;
 //                f1 = 0.5f;
 
-        bone.setScale(2);
-        blowgun.setScale(2);
-        spear.setScale(2);
-        staff.setScale(2);
+        bone.setScale(1.25f);
+        blowgun.setScale(1f);
+        spear.setScale(1.25f);
+        staff.setScale(1f);
 
-        bone.rotateAngleZ -= Math.PI / 2f;
-        bone.rotateAngleX -= Math.PI / 2f;
-        bone.rotateAngleY -= 2.3;
-        bone.rotationPointY += 2.5;
-        bone.rotationPointZ -= 8;
+        bone.rotateAngleZ -= Math.PI;
+        bone.rotateAngleX += Math.PI / 2f + 0.1;
+        bone.rotationPointY -= 1.5;
+        bone.rotationPointZ -= 10.5;
 
-        staff.rotateAngleZ -= Math.PI / 2f;
-        staff.rotateAngleX -= Math.PI / 2f;
-        staff.rotateAngleY -= Math.PI;
         staff.rotateAngleZ -= Math.PI;
-        staff.rotateAngleY -= 2.3;
-        staff.rotationPointY += 2.5;
-        staff.rotationPointZ -= 3;
+        staff.rotateAngleX -= Math.PI / 2f;
+        staff.rotationPointY += 2;
+        staff.rotationPointZ -= 1;
 
         staffEnd.rotationPointZ -= 12;
 
-        spear.rotateAngleZ -= Math.PI / 2f;
-        spear.rotateAngleX -= Math.PI / 2f;
-        spear.rotateAngleY -= Math.PI;
         spear.rotateAngleZ -= Math.PI;
-        spear.rotateAngleY -= 2.3;
-        spear.rotationPointY += 2.5;
-        spear.rotationPointZ -= 3;
+        spear.rotateAngleX -= Math.PI / 2f;
+        spear.rotateAngleY -= 0.2f;
+        spear.rotationPointY += 1.5;
+        spear.rotationPointZ -= 2;
 
-        blowgun.rotateAngleZ -= Math.PI / 2f;
-        blowgun.rotateAngleX -= Math.PI / 2f;
-        blowgun.rotateAngleY -= 2.3;
-        blowgun.rotationPointY += 2.5;
-        blowgun.rotationPointZ -= 4;
+        blowgun.rotateAngleX += Math.PI / 2f;
+        blowgun.rotationPointY += 1;
 
         if (entity.getWeapon() == 0) {
             if (entity.getMask() == MaskType.FURY) {

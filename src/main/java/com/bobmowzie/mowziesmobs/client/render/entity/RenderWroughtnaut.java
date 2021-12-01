@@ -7,6 +7,7 @@ import com.bobmowzie.mowziesmobs.client.render.entity.layer.WroughtnautEyesLayer
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -19,7 +20,7 @@ public class RenderWroughtnaut extends MobRenderer<EntityWroughtnaut, ModelWroug
     public RenderWroughtnaut(EntityRendererManager mgr) {
         super(mgr, new ModelWroughtnaut<>(), 1.0F);
         addLayer(new WroughtnautEyesLayer<>(this));
-        addLayer(new ItemLayer<>(this, getEntityModel().sword, Items.DIAMOND_SWORD.getDefaultInstance()));
+        addLayer(new ItemLayer<>(this, getEntityModel().sword, Items.DIAMOND_SWORD.getDefaultInstance(), ItemCameraTransforms.TransformType.GROUND));
     }
 
     @Override

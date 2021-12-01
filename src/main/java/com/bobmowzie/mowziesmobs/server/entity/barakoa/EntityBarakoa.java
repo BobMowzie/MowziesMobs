@@ -210,11 +210,11 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
                     AnimationHandler.INSTANCE.sendAnimationMessage(entity, HEAL_LOOP_ANIMATION);
             }
         });
-        goalSelector.addGoal(7, new RandomWalkingGoal(this, 0.4));
-        goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
-        goalSelector.addGoal(8, new LookAtGoal(this, EntityBarakoa.class, 8.0F));
-        goalSelector.addGoal(8, new LookAtGoal(this, EntityBarako.class, 8.0F));
-        goalSelector.addGoal(8, new LookRandomlyGoal(this));
+//        goalSelector.addGoal(7, new RandomWalkingGoal(this, 0.4));
+//        goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+//        goalSelector.addGoal(8, new LookAtGoal(this, EntityBarakoa.class, 8.0F));
+//        goalSelector.addGoal(8, new LookAtGoal(this, EntityBarako.class, 8.0F));
+//        goalSelector.addGoal(8, new LookRandomlyGoal(this));
         registerTargetGoals();
     }
 
