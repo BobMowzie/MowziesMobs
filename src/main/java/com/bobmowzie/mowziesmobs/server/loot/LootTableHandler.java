@@ -2,7 +2,9 @@ package com.bobmowzie.mowziesmobs.server.loot;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import net.minecraft.loot.ILootSerializer;
+import net.minecraft.loot.LootConditionType;
 import net.minecraft.loot.LootFunctionType;
+import net.minecraft.loot.conditions.ILootCondition;
 import net.minecraft.loot.functions.ILootFunction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
@@ -27,9 +29,12 @@ public class LootTableHandler {
     public static LootFunctionType CHECK_FROSTMAW_CRYSTAL;
     public static LootFunctionType GROTTOL_DEATH_TYPE;
 
+    public static LootConditionType FROSTMAW_HAS_CRYSTAL;
+
     public static void init() {
-        CHECK_FROSTMAW_CRYSTAL = registerFunction("mowziesmobs:has_crystal", new LootFunctionCheckFrostmawCrystal.Serializer());
+//        CHECK_FROSTMAW_CRYSTAL = registerFunction("mowziesmobs:has_crystal", new LootFunctionCheckFrostmawCrystal.Serializer());
         GROTTOL_DEATH_TYPE = registerFunction("mowziesmobs:grottol_death_type", new LootFunctionGrottolDeathType.Serializer());
+        FROSTMAW_HAS_CRYSTAL = registerCondition("mowziesmobs:has_crystal", new LootConditionFrostmawHasCrystal.Serializer());
     }
 
     private static ResourceLocation register(String id) {
@@ -38,5 +43,9 @@ public class LootTableHandler {
 
     private static LootFunctionType registerFunction(String name, ILootSerializer<? extends ILootFunction> serializer) {
         return Registry.register(Registry.LOOT_FUNCTION_TYPE, new ResourceLocation(name), new LootFunctionType(serializer));
+    }
+
+    private static LootConditionType registerCondition(String registryName, ILootSerializer<? extends ILootCondition> serializer) {
+        return Registry.register(Registry.LOOT_CONDITION_TYPE, new ResourceLocation(registryName), new LootConditionType(serializer));
     }
 }

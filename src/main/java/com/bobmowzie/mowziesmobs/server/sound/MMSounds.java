@@ -274,9 +274,9 @@ public final class MMSounds {
     public static final RegistryObject<SoundEvent> MISC_GROUNDHIT_1 = create("misc.groundhit1");
     public static final RegistryObject<SoundEvent> MISC_GROUNDHIT_2 = create("misc.groundhit2");
 
-    // Easter Eggs
+    // Music
     public static final RegistryObject<SoundEvent> MUSIC_BLACK_PINK = create("music.black_pink");
-
+    public static final RegistryObject<SoundEvent> MUSIC_PETIOLE = create("music.petiole");
 
     private static RegistryObject<SoundEvent> create(String name) {
         return REG.register(name, () -> new SoundEvent(new ResourceLocation(MowziesMobs.MODID, name)));

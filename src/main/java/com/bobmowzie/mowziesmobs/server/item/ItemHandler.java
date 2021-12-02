@@ -7,6 +7,7 @@ import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityDart;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
+import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.dispenser.IBlockSource;
@@ -57,6 +58,7 @@ public final class ItemHandler {
     public static final ItemNagaFang NAGA_FANG = null;
     public static final ItemNagaFangDagger NAGA_FANG_DAGGER = null;
     public static final ItemLogo LOGO = null;
+    public static final MusicDiscItem PETIOLE_MUSIC_DISC = null;
 
     public static final SpawnEggItem FOLIAATH_SPAWN_EGG = null;
     public static final SpawnEggItem WROUGHTNAUT_SPAWN_EGG = null;
@@ -101,6 +103,7 @@ public final class ItemHandler {
             new ItemNagaFang(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("naga_fang"),
             new ItemNagaFangDagger(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("naga_fang_dagger"),
             new ItemLogo(new Item.Properties()).setRegistryName("logo"),
+            new MusicDiscItem(14, MMSounds.MUSIC_PETIOLE, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab).maxStackSize(1).rarity(Rarity.RARE)).setRegistryName("music_disc_petiole"),
     
             new SpawnEggItem(EntityHandler.FOLIAATH, 0x47CC3B, 0xC03BCC, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("foliaath_spawn_egg"),
             new SpawnEggItem(EntityHandler.WROUGHTNAUT, 0x8C8C8C, 0xFFFFFF, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("wroughtnaut_spawn_egg"),
