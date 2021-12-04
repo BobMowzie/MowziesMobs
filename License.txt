@@ -1,0 +1,38 @@
+All Rights Reserved unless otherwise explicitly stated.
+
+
+This document will outline the terms of fair use of intellectual property (including ideas, names, code, models, textures, sounds) collectively comprising the modification "Mowzie's Mobs" for the video game "Minecraft". All assets and ideas present in the mod are property of the individuals aliased "Bob Mowzie" and "pau101" with the following exceptions: code present in packages labeled "LLibrary", code annotated through comments or filenames to credit another author, and sound assets edited from other media (specifics listed in "Credits" section of the mod description on Curseforge).
+
+ 
+
+Cases of private use do not fall under purview of this license. This includes standard modded play, private modpacks, or customization through configuration files or direct editing of modded contents as long as the project, associated files, or related media content (i.e. Youtube videos) are not made available to the public. Any use of Mowzie's Mobs intellectual property that is distributed or made available to the public (via download, screenshots, video media platforms, etc) becomes subject to the constraints presented in this license.
+
+ 
+
+Credit Constraints
+All use of Mowzie's Mobs intellectual property must credit the original mod by name ("Mowzie's Mobs") with some form of access or direction to the official mod page on Curseforge (found at this URL: https://www.curseforge.com/minecraft/mc-mods/mowzies-mobs). Distributors may not claim authorship or ownership of Mowzie's Mobs intellectual property.
+
+ 
+
+Profitability Constraints
+Direct sale of Mowzie's Mobs content or assets is strictly prohibited. Ad revenue and download-link revenue is acceptable provided all other terms of this license are met.
+
+ 
+
+Non-Compete
+For projects utilizing Mowzie's Mobs ideas, code, or assets, direct competition with the original mod is not permitted. A project is considered in competition with Mowzie's Mobs if it offers to players gameplay features or interactive content from Mowzie's Mobs on the Minecraft Java Edition platform. Modpacks are exempt from this clause so long as they contain sufficiently large amounts of content to warrant the redistribution of Mowzie's Mobs files for ease of installation.
+
+ 
+
+Non-Imitate
+Projects not directly utilizing the complete original Mowzie's Mobs mod may not present themselves as affiliated with the official Mowzie's Mobs mod. Such projects must denote their status by including the phrase "Unofficial", "Fan-made", or any other equivalent language somewhere clear and readable to players on any platform showcasing the project.
+
+ 
+
+Non-Manipulate
+Alterations to the ideas, assets, and source code from Mowzie's Mobs are permitted so long as such changes remain faithful to the source material. This can include integration with modpacks or story-related changes for modpacks, adventure maps, and video content. Exceptions to this clause can be made on a case-by-case basis; please contact Bob Mowzie if you are planning more drastic changes to Mowzie's Mobs for a project.
+
+ 
+
+The author of Mowzie's Mobs, Bob Mowzie, reserves the right to alter this license as necessary to protect his work in the future.
+
