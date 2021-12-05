@@ -1,13 +1,14 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.IntermittentAnimation;
+import com.bobmowzie.mowziesmobs.client.sound.BossMusicSound;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.world.spawn.SpawnHandler;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
 import net.minecraft.entity.CreatureEntity;
@@ -23,9 +24,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SharedSeedRandom;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
@@ -42,13 +41,13 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.ArrayUtils;
 
-import javax.annotation.Nullable;
-import java.rmi.registry.Registry;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class MowzieEntity extends CreatureEntity implements IEntityAdditionalSpawnData, IAnimatedEntity, IntermittentAnimatableEntity {
     private static final byte START_IA_HEALTH_UPDATE_ID = 4;
+    private static final byte MUSIC_PLAY_ID = 67;
+    private static final byte MUSIC_STOP_ID = 68;
 
     public int frame;
     public float targetDistance = -1;
@@ -75,7 +74,8 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
 
     private final MMBossInfoServer bossInfo = new MMBossInfoServer(this);
 
-    private LivingEntity healTarget;
+    public static BossMusicSound bossMusic;
+    public static MowzieEntity bossMusicEntity;
 
     public MowzieEntity(EntityType<? extends MowzieEntity> type, World world) {
         super(type, world);
@@ -190,6 +190,15 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
             targetAngle = (float) getAngleBetweenEntities(this, getAttackTarget());
         }
         willLandSoon = !onGround && world.hasNoCollisions(getBoundingBox().offset(getMotion()));
+
+        if (!world.isRemote && getBossMusic() != null) {// && getAttackTarget() instanceof PlayerEntity) {
+            if (!isSilent()) {
+                this.world.setEntityState(this, MUSIC_PLAY_ID);
+            }
+            else {
+                this.world.setEntityState(this, MUSIC_STOP_ID);
+            }
+        }
     }
 
     @Override
@@ -407,9 +416,32 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     public void handleStatusUpdate(byte id) {
         if (id >= START_IA_HEALTH_UPDATE_ID && id - START_IA_HEALTH_UPDATE_ID < intermittentAnimations.size()) {
             intermittentAnimations.get(id - START_IA_HEALTH_UPDATE_ID).start();
-            return;
         }
-        super.handleStatusUpdate(id);
+        else if (id == MUSIC_PLAY_ID) {
+            SoundEvent soundEvent = getBossMusic();
+            if (soundEvent != null && this.isAlive()) {
+                float f2 = Minecraft.getInstance().gameSettings.getSoundLevel(SoundCategory.MUSIC);
+                if (bossMusic != null && f2 <= 0) {
+                    bossMusic = null;
+                }
+                else {
+                    if (bossMusic == null) {
+                        bossMusic = new BossMusicSound(getBossMusic(), this);
+                    }
+                    else if (bossMusic.getBoss() == null && bossMusic.getSoundEvent() == soundEvent) {
+                        bossMusic.setBoss(this);
+                    }
+                    if (!Minecraft.getInstance().getSoundHandler().isPlaying(bossMusic)) {
+                        Minecraft.getInstance().getSoundHandler().play(bossMusic);
+                    }
+                }
+            }
+        }
+        else if (id == MUSIC_STOP_ID) {
+            if (bossMusic != null && bossMusic.getBoss() == this)
+                bossMusic.setBoss(null);
+        }
+        else super.handleStatusUpdate(id);
     }
 
     @Override
@@ -547,12 +579,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         }
     }
 
-    @Nullable
-    public LivingEntity getHealTarget() {
-        return this.healTarget;
-    }
-
-    public void setHealTarget(@Nullable LivingEntity entitylivingbaseIn) {
-        this.healTarget = entitylivingbaseIn;
+    public SoundEvent getBossMusic() {
+        return null;
     }
 }

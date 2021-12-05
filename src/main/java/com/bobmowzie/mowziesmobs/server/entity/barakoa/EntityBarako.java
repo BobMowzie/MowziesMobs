@@ -8,6 +8,7 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleOrb;
 import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent.PropertyControl.EnumParticleProperty;
+import com.bobmowzie.mowziesmobs.client.sound.BossMusicSound;
 import com.bobmowzie.mowziesmobs.server.advancement.AdvancementHandler;
 import com.bobmowzie.mowziesmobs.server.ai.BarakoaHurtByTargetAI;
 import com.bobmowzie.mowziesmobs.server.ai.NearestAttackableTargetPredicateGoal;
@@ -956,5 +957,10 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     @Override
     public void addVelocity(double x, double y, double z) {
         super.addVelocity(0, y, 0);
+    }
+
+    @Override
+    public SoundEvent getBossMusic() {
+        return MMSounds.MUSIC_BARAKO_THEME.get();
     }
 }

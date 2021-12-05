@@ -587,4 +587,9 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     protected BossInfo.Color bossBarColor() {
         return BossInfo.Color.RED;
     }
+
+    @Override
+    public SoundEvent getBossMusic() {
+        return MMSounds.MUSIC_FERROUS_WROUGHTNAUT_THEME.get();
+    }
 }
