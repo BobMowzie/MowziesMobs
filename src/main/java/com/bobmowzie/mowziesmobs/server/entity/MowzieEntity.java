@@ -9,6 +9,7 @@ import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
 import net.minecraft.entity.CreatureEntity;
@@ -75,7 +76,6 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     private final MMBossInfoServer bossInfo = new MMBossInfoServer(this);
 
     public static BossMusicSound bossMusic;
-    public static MowzieEntity bossMusicEntity;
 
     public MowzieEntity(EntityType<? extends MowzieEntity> type, World world) {
         super(type, world);
@@ -191,14 +191,25 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         }
         willLandSoon = !onGround && world.hasNoCollisions(getBoundingBox().offset(getMotion()));
 
-        if (!world.isRemote && getBossMusic() != null) {// && getAttackTarget() instanceof PlayerEntity) {
-            if (!isSilent()) {
+        if (!world.isRemote && getBossMusic() != null) {
+            PlayerEntity player = Minecraft.getInstance().player;
+            if (canPlayMusic()) {
                 this.world.setEntityState(this, MUSIC_PLAY_ID);
             }
             else {
                 this.world.setEntityState(this, MUSIC_STOP_ID);
             }
         }
+    }
+
+    protected boolean canPlayMusic() {
+        return !isSilent() && getAttackTarget() instanceof PlayerEntity;
+    }
+
+    protected boolean canPlayerHearMusic(PlayerEntity player) {
+        return player != null
+                && canAttack(player)
+                && getDistance(player) < 2500;
     }
 
     @Override
@@ -233,7 +244,6 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
 //    public boolean isNotColliding() {
 //        return !this.world.containsAnyLiquid(this.getBoundingBox()) && this.world.checkNoEntityCollision(this.getBoundingBox(), this);
 //    }
-
 
     @Override
     public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, ILivingEntityData spawnDataIn, CompoundNBT dataTag) {
@@ -420,20 +430,28 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         else if (id == MUSIC_PLAY_ID) {
             SoundEvent soundEvent = getBossMusic();
             if (soundEvent != null && this.isAlive()) {
-                float f2 = Minecraft.getInstance().gameSettings.getSoundLevel(SoundCategory.MUSIC);
-                if (bossMusic != null && f2 <= 0) {
-                    bossMusic = null;
+                PlayerEntity player = Minecraft.getInstance().player;
+                if (bossMusic != null) {
+                    float f2 = Minecraft.getInstance().gameSettings.getSoundLevel(SoundCategory.MUSIC);
+                    if (f2 <= 0) {
+                        bossMusic = null;
+                    }
+                    else if (bossMusic.getBoss() == this && !canPlayerHearMusic(player)) {
+                        bossMusic.setBoss(null);
+                    }
                 }
                 else {
-                    if (bossMusic == null) {
-                        bossMusic = new BossMusicSound(getBossMusic(), this);
+                    if (canPlayerHearMusic(player)) {
+                        if (bossMusic == null) {
+                            bossMusic = new BossMusicSound(getBossMusic(), this);
+                        }
+                        else if (bossMusic.getBoss() == null && bossMusic.getSoundEvent() == soundEvent) {
+                            bossMusic.setBoss(this);
+                        }
                     }
-                    else if (bossMusic.getBoss() == null && bossMusic.getSoundEvent() == soundEvent) {
-                        bossMusic.setBoss(this);
-                    }
-                    if (!Minecraft.getInstance().getSoundHandler().isPlaying(bossMusic)) {
-                        Minecraft.getInstance().getSoundHandler().play(bossMusic);
-                    }
+                }
+                if (bossMusic != null && !Minecraft.getInstance().getSoundHandler().isPlaying(bossMusic)) {
+                    Minecraft.getInstance().getSoundHandler().play(bossMusic);
                 }
             }
         }

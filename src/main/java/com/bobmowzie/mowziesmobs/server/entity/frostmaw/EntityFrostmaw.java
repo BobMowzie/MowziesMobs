@@ -872,4 +872,9 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         if (!getActive()) return super.getMotion().mul(0, 1, 0);
         return super.getMotion();
     }
+
+    @Override
+    protected boolean canPlayMusic() {
+        return super.canPlayMusic() && (active || getAnimation() == ACTIVATE_ANIMATION);
+    }
 }

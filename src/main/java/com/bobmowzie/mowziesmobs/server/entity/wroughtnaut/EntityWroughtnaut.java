@@ -592,4 +592,9 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     public SoundEvent getBossMusic() {
         return MMSounds.MUSIC_FERROUS_WROUGHTNAUT_THEME.get();
     }
+
+    @Override
+    protected boolean canPlayMusic() {
+        return super.canPlayMusic() && (active || getAnimation() == ACTIVATE_ANIMATION);
+    }
 }

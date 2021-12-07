@@ -26,18 +26,22 @@ public class BossMusicSound extends TickableSound {
         this.x = boss.getPosX();
         this.y = boss.getPosY();
         this.z = boss.getPosZ();
-        volume = 1;
 
         volumeControl = new ControlledAnimation(40);
+        volumeControl.setTimer(20);
+        volume = volumeControl.getAnimationFraction();
         timeUntilFade = 60;
     }
 
     public boolean shouldPlaySound() {
-        return !this.boss.isSilent() && MowzieEntity.bossMusic == this;
+        return MowzieEntity.bossMusic == this;
     }
 
     public void tick() {
-        if (boss == null || !boss.isAlive() || boss.isSilent()) volumeControl.decreaseTimer();
+        if (boss == null || !boss.isAlive() || boss.isSilent()) {
+            boss = null;
+            volumeControl.decreaseTimer();
+        }
         else volumeControl.increaseTimer();
 
         if (volumeControl.getAnimationFraction() < 0.025) {
