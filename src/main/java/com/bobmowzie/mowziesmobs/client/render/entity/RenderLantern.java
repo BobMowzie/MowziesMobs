@@ -6,7 +6,6 @@ import com.bobmowzie.mowziesmobs.client.render.entity.layer.LanternGelLayer;
 import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityLantern;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.entity.monster.BlazeEntity;
 import net.minecraft.util.ResourceLocation;
 
 /**

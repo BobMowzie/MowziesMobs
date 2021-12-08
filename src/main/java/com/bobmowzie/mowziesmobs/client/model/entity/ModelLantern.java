@@ -128,10 +128,18 @@ public class ModelLantern<T extends EntityLantern> extends MowzieEntityModel<T> 
         this.bubbles.addChild(bubble2);
         this.bubbles.addChild(bubble3);
         this.bubbles.addChild(bubble4);
+
+        leaf1.rotationPointX += 0.5;
+        leaf2.rotationPointZ -= 0.5;
+        leaf3.rotationPointX += 0.5;
+        leaf4.rotationPointZ += 0.5;
+        stem2.rotationPointX += 0.3536;
+        stem2.rotationPointZ += 0.3536;
+
         updateDefaultPose();
 
         bubbles.setShouldScaleChildren(true);
-        body.setOpacity(0.5f);
+        body.setOpacity(0.6f);
         center.setOpacity(0.5f);
         center.setScale(2, 2, 2);
         bottomBit1.setOpacity(0.7f);
