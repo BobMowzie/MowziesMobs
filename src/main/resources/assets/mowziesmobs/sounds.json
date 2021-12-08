@@ -695,17 +695,23 @@
 	"music.barako_theme": {
 		"category": "music",
 		"sounds": [
-			"mowziesmobs:music/barako"
+			{
+				"name": "mowziesmobs:music/barako",
+				"stream": true,
+				"volume": 0.5
+			}
 		],
-		"subtitle": "subtitles.mowziesmobs.barako_theme",
-		"stream": true
+		"subtitle": "subtitles.mowziesmobs.barako_theme"
 	},
 	"music.ferrous_wroughtnaut_theme": {
 		"category": "music",
 		"sounds": [
-			"mowziesmobs:music/ferrous_wroughtnaut"
+			{
+				"name": "mowziesmobs:music/ferrous_wroughtnaut",
+				"stream": true,
+				"volume": 0.5
+			}
 		],
-		"subtitle": "subtitles.mowziesmobs.ferrous_wroughtnaut_theme",
-		"stream": true
+		"subtitle": "subtitles.mowziesmobs.ferrous_wroughtnaut_theme"
 	}
 }

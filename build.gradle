@@ -63,7 +63,7 @@ repositories {
 
 dependencies {
     minecraft "net.minecraftforge:forge:1.16.5-36.1.0"
-    implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.16.5:3.0.46')
+    implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.16.5:3.0.57')
 }
 
 processResources {
