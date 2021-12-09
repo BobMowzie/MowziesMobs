@@ -713,5 +713,16 @@
 			}
 		],
 		"subtitle": "subtitles.mowziesmobs.ferrous_wroughtnaut_theme"
+	},
+	"music.frostmaw_theme": {
+		"category": "music",
+		"sounds": [
+			{
+				"name": "mowziesmobs:music/frostmaw",
+				"stream": true,
+				"volume": 0.5
+			}
+		],
+		"subtitle": "subtitles.mowziesmobs.frostmaw_theme"
 	}
 }

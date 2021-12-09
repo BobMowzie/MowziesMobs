@@ -279,6 +279,7 @@ public final class MMSounds {
     public static final RegistryObject<SoundEvent> MUSIC_PETIOLE = create("music.petiole");
     public static final RegistryObject<SoundEvent> MUSIC_BARAKO_THEME = create("music.barako_theme");
     public static final RegistryObject<SoundEvent> MUSIC_FERROUS_WROUGHTNAUT_THEME = create("music.ferrous_wroughtnaut_theme");
+    public static final RegistryObject<SoundEvent> MUSIC_FROSTMAW_THEME = create("music.frostmaw_theme");
 
     private static RegistryObject<SoundEvent> create(String name) {
         return REG.register(name, () -> new SoundEvent(new ResourceLocation(MowziesMobs.MODID, name)));

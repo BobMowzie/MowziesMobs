@@ -874,6 +874,11 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
     }
 
     @Override
+    public SoundEvent getBossMusic() {
+        return MMSounds.MUSIC_FROSTMAW_THEME.get();
+    }
+
+    @Override
     protected boolean canPlayMusic() {
         return super.canPlayMusic() && (active || getAnimation() == ACTIVATE_ANIMATION);
     }
