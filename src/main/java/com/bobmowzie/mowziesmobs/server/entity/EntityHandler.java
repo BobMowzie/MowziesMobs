@@ -13,178 +13,103 @@ import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import net.minecraft.entity.*;
-import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
-public enum EntityHandler {
-    INSTANCE;
+import java.lang.reflect.Field;
 
-    public static final String BARAKOAYA_ID = "barakoaya";
+@Mod.EventBusSubscriber(modid = MowziesMobs.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+public class EntityHandler {
+    public static final EntityType<EntityFoliaath> FOLIAATH = register("foliaath", EntityType.Builder.create(EntityFoliaath::new, EntityClassification.MONSTER).size(0.5f, 2.5f));
+    public static final EntityType<EntityBabyFoliaath> BABY_FOLIAATH = register("baby_foliaath", EntityType.Builder.create(EntityBabyFoliaath::new, EntityClassification.MONSTER).size(0.4f, 0.4f));
+    public static final EntityType<EntityWroughtnaut> WROUGHTNAUT = register("ferrous_wroughtnaut", EntityType.Builder.create(EntityWroughtnaut::new, EntityClassification.MONSTER).size(2.5f, 3.5f).setUpdateInterval(1));
+    private static final EntityType.Builder<EntityBarakoanToBarakoana> barakoanToBarakoanaBuilder = EntityType.Builder.create(EntityBarakoanToBarakoana::new, EntityClassification.MONSTER);
+    public static final EntityType<EntityBarakoanToBarakoana> BARAKOAN_TO_BARAKOANA = register("barakoan_barakoana", barakoanToBarakoanaBuilder.size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1));
+    private static final EntityType.Builder<EntityBarakoanToPlayer> barakoanToPlayerBuilder = EntityType.Builder.create(EntityBarakoanToPlayer::new, EntityClassification.MONSTER);
+    public static final EntityType<EntityBarakoanToPlayer> BARAKOAN_TO_PLAYER = register("barakoan_player", barakoanToPlayerBuilder.size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1));
+    private static final EntityType.Builder<EntityBarakoayaToPlayer> barakoayaToPlayerBuilder = EntityType.Builder.create(EntityBarakoayaToPlayer::new, EntityClassification.MONSTER);
+    public static final EntityType<EntityBarakoayaToPlayer> BARAKOAYA_TO_PLAYER = register("barakoa_sunblocker_player", barakoayaToPlayerBuilder.size(MaskType.FAITH.entityWidth, MaskType.FAITH.entityHeight).setUpdateInterval(1));
+    public static final EntityType<EntityBarakoaVillager> BARAKOA_VILLAGER = register("barakoaya", EntityType.Builder.create(EntityBarakoaVillager::new, EntityClassification.MONSTER).size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1));
+    public static final EntityType<EntityBarakoana> BARAKOANA = register("barakoana", EntityType.Builder.create(EntityBarakoana::new, EntityClassification.MONSTER).size(MaskType.FURY.entityWidth, MaskType.FURY.entityHeight).setUpdateInterval(1));
+    public static final EntityType<EntityBarakoaya> BARAKOAYA = register("barakoa_sunblocker", EntityType.Builder.create(EntityBarakoaya::new, EntityClassification.MONSTER).size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1));
+    public static final EntityType<EntityBarako> BARAKO = register("barako", EntityType.Builder.create(EntityBarako::new, EntityClassification.MONSTER).size(1.5f, 2.4f).setUpdateInterval(1));
+    public static final EntityType<EntityFrostmaw> FROSTMAW = register("frostmaw", EntityType.Builder.create(EntityFrostmaw::new, EntityClassification.MONSTER).size(4f, 4f).setUpdateInterval(1));
+    public static final EntityType<EntityGrottol> GROTTOL = register("grottol", EntityType.Builder.create(EntityGrottol::new, EntityClassification.MONSTER).size(0.9F, 1.2F).setUpdateInterval(1));
+    public static final EntityType<EntityLantern> LANTERN = register("lantern", EntityType.Builder.create(EntityLantern::new, EntityClassification.AMBIENT).size(1.0f, 1.0f).setUpdateInterval(1));
+    public static final EntityType<EntityNaga> NAGA = register("naga", EntityType.Builder.create(EntityNaga::new, EntityClassification.MONSTER).size(3.0f, 1.0f).setTrackingRange(128).setUpdateInterval(1));
+    public static final EntityType<EntitySculptor> SCULPTOR = register("sculptor", EntityType.Builder.create(EntitySculptor::new, EntityClassification.MISC).size(1.0f, 2.0f).setUpdateInterval(1));
 
-    public static EntityType<EntityFoliaath> FOLIAATH;
-    public static EntityType<EntityBabyFoliaath> BABY_FOLIAATH;
-    public static EntityType<EntityWroughtnaut> WROUGHTNAUT;
-    public static EntityType<EntityBarakoanToBarakoana> BARAKOAN_TO_BARAKOANA;
-    public static EntityType<EntityBarakoanToPlayer> BARAKOAN_TO_PLAYER;
-    public static EntityType<EntityBarakoayaToPlayer> BARAKOAYA_TO_PLAYER;
-    public static EntityType<EntityBarakoaVillager> BARAKOA_VILLAGER;
-    public static EntityType<EntityBarakoana> BARAKOANA;
-    public static EntityType<EntityBarakoaya> BARAKOAYA;
-    public static EntityType<EntityBarako> BARAKO;
-    public static EntityType<EntityFrostmaw> FROSTMAW;
-    public static EntityType<EntityGrottol> GROTTOL;
-    public static EntityType<EntityLantern> LANTERN;
-    public static EntityType<EntityNaga> NAGA;
-    public static EntityType<EntitySculptor> SCULPTOR;
-
-    public static EntityType<EntitySunstrike> SUNSTRIKE;
-    public static EntityType<EntitySolarBeam> SOLAR_BEAM;
-    public static EntityType<EntityBoulder> BOULDER_SMALL;
-    public static EntityType<EntityBoulder> BOULDER_MEDIUM;
-    public static EntityType<EntityBoulder> BOULDER_LARGE;
-    public static EntityType<EntityBoulder> BOULDER_HUGE;
-    public static EntityType<EntityBoulder>[] BOULDERS;
-    public static EntityType<EntityAxeAttack> AXE_ATTACK;
-    public static EntityType<EntityIceBreath> ICE_BREATH;
-    public static EntityType<EntityIceBall> ICE_BALL;
-    public static EntityType<EntityFrozenController> FROZEN_CONTROLLER;
-    public static EntityType<EntityDart> DART;
-    public static EntityType<EntityPoisonBall> POISON_BALL;
-    public static EntityType<EntitySuperNova> SUPER_NOVA;
-    public static EntityType<EntityFallingBlock> FALLING_BLOCK;
-    public static EntityType<EntityBlockSwapper> BLOCK_SWAPPER;
-
-    public static void register() {
-        // Mobs
-        FOLIAATH = register("foliaath", EntityType.Builder.create(EntityFoliaath::new, EntityClassification.MONSTER).size(0.5f, 2.5f));
-
-        BABY_FOLIAATH = register("baby_foliaath", EntityType.Builder.create(EntityBabyFoliaath::new, EntityClassification.MONSTER).size(0.4f, 0.4f));
-
-        WROUGHTNAUT = register("ferrous_wroughtnaut", EntityType.Builder.create(EntityWroughtnaut::new, EntityClassification.MONSTER).size(2.5f, 3.5f).setUpdateInterval(1));
-
-        EntityType.Builder<EntityBarakoanToBarakoana> barakoanToBarakoanaBuilder = EntityType.Builder.create(EntityBarakoanToBarakoana::new, EntityClassification.MONSTER);
-        BARAKOAN_TO_BARAKOANA = register("barakoan_barakoana", barakoanToBarakoanaBuilder.size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1));
-
-        EntityType.Builder<EntityBarakoanToPlayer> barakoanToPlayerBuilder = EntityType.Builder.create(EntityBarakoanToPlayer::new, EntityClassification.MONSTER);
-        BARAKOAN_TO_PLAYER = register("barakoan_player", barakoanToPlayerBuilder.size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1));
-
-        EntityType.Builder<EntityBarakoayaToPlayer> barakoayaToPlayerBuilder = EntityType.Builder.create(EntityBarakoayaToPlayer::new, EntityClassification.MONSTER);
-        BARAKOAYA_TO_PLAYER = register("barakoa_sunblocker_player", barakoayaToPlayerBuilder.size(MaskType.FAITH.entityWidth, MaskType.FAITH.entityHeight).setUpdateInterval(1));
-
-        BARAKOA_VILLAGER = register("barakoaya", EntityType.Builder.create(EntityBarakoaVillager::new, EntityClassification.MONSTER).size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1));
-
-        BARAKOANA = register("barakoana", EntityType.Builder.create(EntityBarakoana::new, EntityClassification.MONSTER).size(MaskType.FURY.entityWidth, MaskType.FURY.entityHeight).setUpdateInterval(1));
-
-        BARAKOAYA = register("barakoa_sunblocker", EntityType.Builder.create(EntityBarakoaya::new, EntityClassification.MONSTER).size(MaskType.FEAR.entityWidth, MaskType.FEAR.entityHeight).setUpdateInterval(1));
-
-        BARAKO = register("barako", EntityType.Builder.create(EntityBarako::new, EntityClassification.MONSTER).size(1.5f, 2.4f).setUpdateInterval(1));
-
-        FROSTMAW = register("frostmaw", EntityType.Builder.create(EntityFrostmaw::new, EntityClassification.MONSTER).size(4f, 4f).setUpdateInterval(1));
-
-        GROTTOL = register("grottol", EntityType.Builder.create(EntityGrottol::new, EntityClassification.MONSTER).size(0.9F, 1.2F).setUpdateInterval(1));
-
-        LANTERN = register("lantern", EntityType.Builder.create(EntityLantern::new, EntityClassification.AMBIENT).size(1.0f, 1.0f).setUpdateInterval(1));
-
-        NAGA = register("naga", EntityType.Builder.create(EntityNaga::new, EntityClassification.MONSTER).size(3.0f, 1.0f).setTrackingRange(128).setUpdateInterval(1));
-
-        SCULPTOR = register("sculptor", EntityType.Builder.create(EntitySculptor::new, EntityClassification.MISC).size(1.0f, 2.0f).setUpdateInterval(1));
-
-        // Non-mobs
-        EntityType.Builder<EntitySunstrike> sunstrikeBuilder = EntityType.Builder.create(EntitySunstrike::new, EntityClassification.MISC);
-        SUNSTRIKE = register("sunstrike", sunstrikeBuilder.size(0.1F, 0.1F));
-
-        EntityType.Builder<EntitySolarBeam> solarBeamBuilder = EntityType.Builder.create(EntitySolarBeam::new, EntityClassification.MISC);
-        SOLAR_BEAM = register("solar_beam", solarBeamBuilder.size(0.1F, 0.1F).setUpdateInterval(1));
-
-        EntityType.Builder<EntityBoulder> boulderBuilder = EntityType.Builder.create(EntityBoulder::new, EntityClassification.MISC);
-        BOULDER_SMALL = register("boulder_small", boulderBuilder.size(1, 1).setUpdateInterval(1));
-        BOULDER_MEDIUM = register("boulder_medium", boulderBuilder.size(2, 1.5f).setUpdateInterval(1));
-        BOULDER_LARGE = register("boulder_large", boulderBuilder.size(3, 2.5f).setUpdateInterval(1));
-        BOULDER_HUGE = register("boulder_huge", boulderBuilder.size(4, 3.5f).setUpdateInterval(1));
-        BOULDERS = new EntityType[] {BOULDER_SMALL, BOULDER_MEDIUM, BOULDER_LARGE, BOULDER_HUGE};
-
-        EntityType.Builder<EntityAxeAttack> axeAttackBuilder = EntityType.Builder.create(EntityAxeAttack::new, EntityClassification.MISC);
-        AXE_ATTACK = register("axe_attack", axeAttackBuilder.size(1f, 1f).setUpdateInterval(1));
-
-        EntityType.Builder<EntityIceBreath> iceBreathBuilder = EntityType.Builder.create(EntityIceBreath::new, EntityClassification.MISC);
-        ICE_BREATH = register("ice_breath", iceBreathBuilder.size(0F, 0F).setUpdateInterval(1));
-
-        EntityType.Builder<EntityIceBall> iceBallBuilder = EntityType.Builder.create(EntityIceBall::new, EntityClassification.MISC);
-        ICE_BALL = register("ice_ball", iceBallBuilder.size(0.5F, 0.5F).setUpdateInterval(20));
-
-        EntityType.Builder<EntityFrozenController> frozenControllerBuilder = EntityType.Builder.create(EntityFrozenController::new, EntityClassification.MISC);
-        FROZEN_CONTROLLER = register("frozen_controller", frozenControllerBuilder.disableSummoning().size(0, 0));
-
-        EntityType.Builder<EntityDart> dartBuilder = EntityType.Builder.create(EntityDart::new, EntityClassification.MISC);
-        DART = register("dart", dartBuilder.disableSummoning().size(0.5F, 0.5F).setUpdateInterval(20));
-
-        EntityType.Builder<EntityPoisonBall> poisonBallBuilder = EntityType.Builder.create(EntityPoisonBall::new, EntityClassification.MISC);
-        POISON_BALL = register("poison_ball", poisonBallBuilder.size(0.5F, 0.5F).setUpdateInterval(20));
-
-        EntityType.Builder<EntitySuperNova> superNovaBuilder = EntityType.Builder.create(EntitySuperNova::new, EntityClassification.MISC);
-        SUPER_NOVA = register("super_nova", superNovaBuilder.size(1, 1).setUpdateInterval(Integer.MAX_VALUE));
-
-        EntityType.Builder<EntityFallingBlock> fallingBlockBuilder = EntityType.Builder.create(EntityFallingBlock::new, EntityClassification.MISC);
-        FALLING_BLOCK = register("falling_block", fallingBlockBuilder.size(1, 1));
-
-        EntityType.Builder<EntityBlockSwapper> blockSwapperBuilder = EntityType.Builder.create(EntityBlockSwapper::new, EntityClassification.MISC);
-        BLOCK_SWAPPER = register("block_swapper", blockSwapperBuilder.disableSummoning().size(1, 1).setUpdateInterval(Integer.MAX_VALUE));
-
-        ForgeRegistries.ENTITIES.registerAll(
-            FOLIAATH,
-            BABY_FOLIAATH,
-            WROUGHTNAUT,
-            BARAKOAN_TO_BARAKOANA,
-            BARAKOAN_TO_PLAYER,
-            BARAKOAYA_TO_PLAYER,
-            BARAKOA_VILLAGER,
-            BARAKOANA,
-            BARAKOAYA,
-            BARAKO,
-            FROSTMAW,
-            GROTTOL,
-            LANTERN,
-            NAGA,
-            SCULPTOR,
-            SUNSTRIKE,
-            SOLAR_BEAM,
-            BOULDER_SMALL,
-            BOULDER_MEDIUM,
-            BOULDER_LARGE,
-            BOULDER_HUGE,
-            AXE_ATTACK,
-            ICE_BREATH,
-            ICE_BALL,
-            FROZEN_CONTROLLER,
-            DART,
-            POISON_BALL,
-            SUPER_NOVA,
-            FALLING_BLOCK,
-            BLOCK_SWAPPER
-        );
-    }
+    private static final EntityType.Builder<EntitySunstrike> sunstrikeBuilder = EntityType.Builder.create(EntitySunstrike::new, EntityClassification.MISC);
+    public static final EntityType<EntitySunstrike> SUNSTRIKE = register("sunstrike", sunstrikeBuilder.size(0.1F, 0.1F));
+    private static final EntityType.Builder<EntitySolarBeam> solarBeamBuilder = EntityType.Builder.create(EntitySolarBeam::new, EntityClassification.MISC);
+    public static final EntityType<EntitySolarBeam> SOLAR_BEAM = register("solar_beam", solarBeamBuilder.size(0.1F, 0.1F).setUpdateInterval(1));
+    private static final EntityType.Builder<EntityBoulder> boulderBuilder = EntityType.Builder.create(EntityBoulder::new, EntityClassification.MISC);
+    public static final EntityType<EntityBoulder> BOULDER_SMALL = register("boulder_small", boulderBuilder.size(1, 1).setUpdateInterval(1));;
+    public static final EntityType<EntityBoulder> BOULDER_MEDIUM = register("boulder_medium", boulderBuilder.size(2, 1.5f).setUpdateInterval(1));
+    public static final EntityType<EntityBoulder> BOULDER_LARGE = register("boulder_large", boulderBuilder.size(3, 2.5f).setUpdateInterval(1));
+    public static final EntityType<EntityBoulder> BOULDER_HUGE = register("boulder_huge", boulderBuilder.size(4, 3.5f).setUpdateInterval(1));
+    public static final EntityType<EntityBoulder>[] BOULDERS = new EntityType[] {BOULDER_SMALL, BOULDER_MEDIUM, BOULDER_LARGE, BOULDER_HUGE};
+    private static final EntityType.Builder<EntityAxeAttack> axeAttackBuilder = EntityType.Builder.create(EntityAxeAttack::new, EntityClassification.MISC);
+    public static final EntityType<EntityAxeAttack> AXE_ATTACK = register("axe_attack", axeAttackBuilder.size(1f, 1f).setUpdateInterval(1));
+    private static final EntityType.Builder<EntityIceBreath> iceBreathBuilder = EntityType.Builder.create(EntityIceBreath::new, EntityClassification.MISC);
+    public static final EntityType<EntityIceBreath> ICE_BREATH = register("ice_breath", iceBreathBuilder.size(0F, 0F).setUpdateInterval(1));
+    private static final EntityType.Builder<EntityIceBall> iceBallBuilder = EntityType.Builder.create(EntityIceBall::new, EntityClassification.MISC);
+    public static final EntityType<EntityIceBall> ICE_BALL = register("ice_ball", iceBallBuilder.size(0.5F, 0.5F).setUpdateInterval(20));
+    private static final EntityType.Builder<EntityFrozenController> frozenControllerBuilder = EntityType.Builder.create(EntityFrozenController::new, EntityClassification.MISC);
+    public static final EntityType<EntityFrozenController> FROZEN_CONTROLLER = register("frozen_controller", frozenControllerBuilder.disableSummoning().size(0, 0));
+    private static final EntityType.Builder<EntityDart> dartBuilder = EntityType.Builder.create(EntityDart::new, EntityClassification.MISC);
+    public static final EntityType<EntityDart> DART = register("dart", dartBuilder.disableSummoning().size(0.5F, 0.5F).setUpdateInterval(20));
+    private static final EntityType.Builder<EntityPoisonBall> poisonBallBuilder = EntityType.Builder.create(EntityPoisonBall::new, EntityClassification.MISC);
+    public static final EntityType<EntityPoisonBall> POISON_BALL = register("poison_ball", poisonBallBuilder.size(0.5F, 0.5F).setUpdateInterval(20));
+    private static final EntityType.Builder<EntitySuperNova> superNovaBuilder = EntityType.Builder.create(EntitySuperNova::new, EntityClassification.MISC);
+    public static final EntityType<EntitySuperNova> SUPER_NOVA = register("super_nova", superNovaBuilder.size(1, 1).setUpdateInterval(Integer.MAX_VALUE));
+    private static final EntityType.Builder<EntityFallingBlock> fallingBlockBuilder = EntityType.Builder.create(EntityFallingBlock::new, EntityClassification.MISC);
+    public static final EntityType<EntityFallingBlock> FALLING_BLOCK = register("falling_block", fallingBlockBuilder.size(1, 1));
+    private static final EntityType.Builder<EntityBlockSwapper> blockSwapperBuilder = EntityType.Builder.create(EntityBlockSwapper::new, EntityClassification.MISC);
+    public static final EntityType<EntityBlockSwapper> BLOCK_SWAPPER = register("block_swapper", blockSwapperBuilder.disableSummoning().size(1, 1).setUpdateInterval(Integer.MAX_VALUE));
 
     private static <T extends Entity> EntityType<T> register(String name, EntityType.Builder<T> builder) {
         ResourceLocation regName = new ResourceLocation(MowziesMobs.MODID, name);
         return (EntityType<T>) builder.build(name).setRegistryName(regName);
     }
 
-    public static void initializeAttributes() {
-        GlobalEntityTypeAttributes.put(FOLIAATH, EntityFoliaath.createAttributes().create());
-        GlobalEntityTypeAttributes.put(BABY_FOLIAATH, EntityBabyFoliaath.createAttributes().create());
-        GlobalEntityTypeAttributes.put(WROUGHTNAUT, EntityWroughtnaut.createAttributes().create());
-        GlobalEntityTypeAttributes.put(BARAKOANA, EntityBarakoana.createAttributes().create());
-        GlobalEntityTypeAttributes.put(BARAKOA_VILLAGER, EntityBarakoa.createAttributes().create());
-        GlobalEntityTypeAttributes.put(BARAKOAN_TO_PLAYER, EntityBarakoanToPlayer.createAttributes().create());
-        GlobalEntityTypeAttributes.put(BARAKOAYA_TO_PLAYER, EntityBarakoanToPlayer.createAttributes().create());
-        GlobalEntityTypeAttributes.put(BARAKOAN_TO_BARAKOANA, EntityBarakoa.createAttributes().create());
-        GlobalEntityTypeAttributes.put(BARAKOAYA, EntityBarakoa.createAttributes().create());
-        GlobalEntityTypeAttributes.put(BARAKO, EntityBarako.createAttributes().create());
-        GlobalEntityTypeAttributes.put(FROSTMAW, EntityFrostmaw.createAttributes().create());
-        GlobalEntityTypeAttributes.put(NAGA, EntityNaga.createAttributes().create());
-        GlobalEntityTypeAttributes.put(LANTERN, EntityLantern.createAttributes().create());
-        GlobalEntityTypeAttributes.put(GROTTOL, EntityGrottol.createAttributes().create());
-        GlobalEntityTypeAttributes.put(SCULPTOR, EntitySculptor.createAttributes().create());
+    @SubscribeEvent
+    public static void registerEntities(final RegistryEvent.Register<EntityType<?>> event) {
+        try {
+            for (Field f : EntityHandler.class.getDeclaredFields()) {
+                Object obj = f.get(null);
+                if (obj instanceof EntityType) {
+                    event.getRegistry().register((EntityType) obj);
+                } else if (obj instanceof EntityType[]) {
+                    for (EntityType type : (EntityType[]) obj) {
+                        event.getRegistry().register(type);
+                    }
+                }
+            }
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onCreateAttributes(EntityAttributeCreationEvent event) {
+        event.put(EntityHandler.FOLIAATH, EntityFoliaath.createAttributes().create());
+        event.put(EntityHandler.BABY_FOLIAATH, EntityBabyFoliaath.createAttributes().create());
+        event.put(EntityHandler.WROUGHTNAUT, EntityWroughtnaut.createAttributes().create());
+        event.put(EntityHandler.BARAKOANA, EntityBarakoana.createAttributes().create());
+        event.put(EntityHandler.BARAKOA_VILLAGER, EntityBarakoa.createAttributes().create());
+        event.put(EntityHandler.BARAKOAN_TO_PLAYER, EntityBarakoanToPlayer.createAttributes().create());
+        event.put(EntityHandler.BARAKOAYA_TO_PLAYER, EntityBarakoanToPlayer.createAttributes().create());
+        event.put(EntityHandler.BARAKOAN_TO_BARAKOANA, EntityBarakoa.createAttributes().create());
+        event.put(EntityHandler.BARAKOAYA, EntityBarakoa.createAttributes().create());
+        event.put(EntityHandler.BARAKO, EntityBarako.createAttributes().create());
+        event.put(EntityHandler.FROSTMAW, EntityFrostmaw.createAttributes().create());
+        event.put(EntityHandler.NAGA, EntityNaga.createAttributes().create());
+        event.put(EntityHandler.LANTERN, EntityLantern.createAttributes().create());
+        event.put(EntityHandler.GROTTOL, EntityGrottol.createAttributes().create());
+        event.put(EntityHandler.SCULPTOR, EntitySculptor.createAttributes().create());
     }
 }
