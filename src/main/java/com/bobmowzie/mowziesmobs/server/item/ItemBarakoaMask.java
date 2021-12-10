@@ -21,6 +21,7 @@ import net.minecraft.potion.Effect;
 import net.minecraft.util.*;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -93,6 +94,8 @@ public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask {
                 barakoa.setHealth((1.0f - durability) * barakoa.getMaxHealth());
                 barakoa.setMask(mask);
                 barakoa.setStoredMask(stack.copy());
+                if (stack.hasDisplayName())
+                    barakoa.setCustomName(stack.getDisplayName());
             }
             return true;
         }
@@ -120,7 +123,9 @@ public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask {
     @Nullable
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
-        return new ResourceLocation(MowziesMobs.MODID, "textures/entity/barakoa_" + this.type.name + ".png").toString();
+        String s = TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName().getString());
+        boolean wadoo = stack.hasDisplayName() && s != null && s.equals("Wadoo");
+        return new ResourceLocation(MowziesMobs.MODID, "textures/entity/barakoa_" + this.type.name + (wadoo ? "_wadoo" : "") + ".png").toString();
     }
 
     @Override

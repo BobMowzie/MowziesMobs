@@ -512,6 +512,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
                 if (itemEntity != null) {
                     ItemStack item = itemEntity.getItem();
                     item.setDamage((int) Math.ceil((1.0f - getHealthRatio()) * item.getMaxDamage()));
+                    item.setDisplayName(this.getCustomName());
                 }
             }
         }
