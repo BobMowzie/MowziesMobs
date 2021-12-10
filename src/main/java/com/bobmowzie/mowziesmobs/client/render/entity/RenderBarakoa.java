@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -25,10 +26,12 @@ import java.util.EnumMap;
 @OnlyIn(Dist.CLIENT)
 public class RenderBarakoa extends MobRenderer<EntityBarakoa, ModelBarakoa<EntityBarakoa>> {
     private static final EnumMap<MaskType, ResourceLocation> TEXTURES = MaskType.newEnumMap(ResourceLocation.class);
+    private static final EnumMap<MaskType, ResourceLocation> WADOO_TEXTURES = MaskType.newEnumMap(ResourceLocation.class);
 
     static {
         for (MaskType mask : MaskType.values()) {
             TEXTURES.put(mask, new ResourceLocation(MowziesMobs.MODID, "textures/entity/barakoa_" + mask.name + (ConfigHandler.CLIENT.oldBarakoaTextures.get() ? "_old" : "") + ".png"));
+            WADOO_TEXTURES.put(mask, new ResourceLocation(MowziesMobs.MODID, "textures/entity/barakoa_" + mask.name + "_wadoo.png"));
         }
     }
 
@@ -55,6 +58,10 @@ public class RenderBarakoa extends MobRenderer<EntityBarakoa, ModelBarakoa<Entit
 
     @Override
     public ResourceLocation getEntityTexture(EntityBarakoa entity) {
-        return TEXTURES.get(entity.getMask());
+        String s = TextFormatting.getTextWithoutFormattingCodes(entity.getName().getString());
+        if (s != null && s.equals("Wadoo"))
+            return WADOO_TEXTURES.get(entity.getMask());
+        else
+            return TEXTURES.get(entity.getMask());
     }
 }
