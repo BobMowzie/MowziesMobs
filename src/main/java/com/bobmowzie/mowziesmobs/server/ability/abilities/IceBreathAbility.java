@@ -30,6 +30,7 @@ public class IceBreathAbility extends Ability {
     @Override
     public void start() {
         super.start();
+        System.out.println("START");
         LivingEntity user = getUser();
         if (!getUser().world.isRemote()) {
             EntityIceBreath iceBreath = new EntityIceBreath(EntityHandler.ICE_BREATH, user.world, user);
@@ -40,12 +41,12 @@ public class IceBreathAbility extends Ability {
         playAnimation("ice_breath_start", false);
 
         if (getUser().getActiveHand() == Hand.MAIN_HAND) {
-            heldItemMainHandVisualOverride = getUser().getActiveItemStack();
+            heldItemMainHandVisualOverride = getUser().getHeldItemMainhand();
             heldItemOffHandVisualOverride = ItemStack.EMPTY;
             firstPersonOffHandDisplay = Ability.HandDisplay.DONT_RENDER;
         }
         else {
-            heldItemOffHandVisualOverride = getUser().getActiveItemStack();
+            heldItemOffHandVisualOverride = getUser().getHeldItemOffhand();
             heldItemMainHandVisualOverride = ItemStack.EMPTY;
             firstPersonMainHandDisplay = Ability.HandDisplay.DONT_RENDER;
         }
@@ -60,6 +61,7 @@ public class IceBreathAbility extends Ability {
     @Override
     public void end() {
         super.end();
+        System.out.println("END");
         if (iceBreath != null) iceBreath.remove();
     }
 

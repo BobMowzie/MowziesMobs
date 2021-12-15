@@ -200,7 +200,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
         if (this.modelProvider.isInitialized()) {
             this.applyRotationsPlayerRenderer(entityIn, matrixStackIn, f7, f, partialTicks, f1);
             float bodyRotateAmount = this.modelProvider.getControllerValue("BodyRotateController");
-            this.modelProvider.setRotationAngles(entityIn, f5, f8, f7, f2 * bodyRotateAmount, f6, partialTicks);
+            this.modelProvider.setRotationAngles(entityIn, f5, f8, f7, MathHelper.interpolateAngle(bodyRotateAmount, 0, f2), f6, partialTicks);
 
             MowzieGeoBone leftHeldItem = modelProvider.getMowzieBone("LeftHeldItem");
             MowzieGeoBone rightHeldItem = modelProvider.getMowzieBone("RightHeldItem");
@@ -306,7 +306,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
         Pose pose = entityLiving.getPose();
         if (pose != Pose.SLEEPING) {
             float bodyRotateAmount = this.modelProvider.getControllerValue("BodyRotateController");
-            matrixStackIn.rotate(Vector3f.YP.rotationDegrees(180.0F - rotationYaw * bodyRotateAmount - headYaw * (1.0f - bodyRotateAmount)));
+            matrixStackIn.rotate(Vector3f.YP.rotationDegrees(180.0F - MathHelper.interpolateAngle(bodyRotateAmount, headYaw, rotationYaw)));
         }
 
         if (entityLiving.deathTime > 0) {
