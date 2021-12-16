@@ -65,6 +65,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -685,6 +686,12 @@ public final class ServerEventHandler {
         if (event.getObject() instanceof PlayerEntity) {
             event.addCapability(new ResourceLocation(MowziesMobs.MODID, "player"), new PlayerCapability.PlayerProvider());
         }
+    }
+
+    @SubscribeEvent
+    public void onRideEntity(EntityMountEvent event) {
+        if (event.getEntityMounting() instanceof EntityBarako || event.getEntityMounting() instanceof EntityFrostmaw || event.getEntityMounting() instanceof EntityWroughtnaut)
+            event.setCanceled(true);
     }
 
     private void aggroBarakoa(PlayerEntity player) {
