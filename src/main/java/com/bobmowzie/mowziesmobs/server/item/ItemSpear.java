@@ -42,23 +42,6 @@ public class ItemSpear extends MowzieToolItem {
         return enchantment.type == EnchantmentType.WEAPON || enchantment.type == EnchantmentType.BREAKABLE;
     }
 
-    @Override
-    public boolean hitEntity(ItemStack heldItemStack, LivingEntity entityHit, LivingEntity entityAttacking) {
-        heldItemStack.damageItem(2, entityAttacking, (p) -> {
-            p.sendBreakAnimation(EquipmentSlotType.MAINHAND);
-        });
-        if (entityHit instanceof AnimalEntity && entityHit.getMaxHealth() <= 30 && random.nextFloat() <= 0.33) {
-            if (entityAttacking instanceof PlayerEntity) {
-                PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(entityAttacking, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-                if (playerCapability != null && playerCapability.getPrevCooledAttackStrength() == 1.0f) {
-                    entityHit.setHealth(0);
-                }
-            }
-            else entityHit.setHealth(0);
-        }
-        return true;
-    }
-
     public static LivingEntity raytraceEntities(World world, PlayerEntity player, double range) {
         ItemSpear.HitResult result = new ItemSpear.HitResult();
         Vector3d pos = new Vector3d(player.getPosX(), player.getPosY() + player.getEyeHeight(), player.getPosZ());

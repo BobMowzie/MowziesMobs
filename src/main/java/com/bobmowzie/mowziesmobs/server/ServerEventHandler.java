@@ -626,51 +626,59 @@ public final class ServerEventHandler {
         ItemStack weapon = event.getPlayer().getHeldItemMainhand();
         PlayerEntity attacker = event.getPlayer();
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getPlayer(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-        if (playerCapability != null && playerCapability.getPrevCooledAttackStrength() == 1.0f && !weapon.isEmpty() && weapon.getItem() instanceof ItemNagaFangDagger && event.getTarget() instanceof LivingEntity) {
+        if (playerCapability != null && playerCapability.getPrevCooledAttackStrength() == 1.0f && !weapon.isEmpty() && event.getTarget() instanceof LivingEntity) {
             LivingEntity target = (LivingEntity)event.getTarget();
-            Vector3d lookDir = new Vector3d(target.getLookVec().x, 0, target.getLookVec().z).normalize();
-            Vector3d vecBetween = new Vector3d(target.getPosX() - event.getPlayer().getPosX(), 0, target.getPosZ() - event.getPlayer().getPosZ()).normalize();
-            double dot = lookDir.dotProduct(vecBetween);
-            if (dot > 0.7) {
-                event.setResult(Event.Result.ALLOW);
-                event.setDamageModifier(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.backstabDamageMultiplier.get().floatValue());
-                target.playSound(MMSounds.ENTITY_NAGA_ACID_HIT.get(), 1f, 1.2f);
-                AbilityHandler.INSTANCE.sendAbilityMessage(attacker, AbilityHandler.BACKSTAB_ABILITY);
+            if (weapon.getItem() instanceof ItemNagaFangDagger) {
+                Vector3d lookDir = new Vector3d(target.getLookVec().x, 0, target.getLookVec().z).normalize();
+                Vector3d vecBetween = new Vector3d(target.getPosX() - event.getPlayer().getPosX(), 0, target.getPosZ() - event.getPlayer().getPosZ()).normalize();
+                double dot = lookDir.dotProduct(vecBetween);
+                if (dot > 0.7) {
+                    event.setResult(Event.Result.ALLOW);
+                    event.setDamageModifier(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.NAGA_FANG_DAGGER.backstabDamageMultiplier.get().floatValue());
+                    target.playSound(MMSounds.ENTITY_NAGA_ACID_HIT.get(), 1f, 1.2f);
+                    AbilityHandler.INSTANCE.sendAbilityMessage(attacker, AbilityHandler.BACKSTAB_ABILITY);
 
-                if (target.world.isRemote() && target != null && attacker != null) {
-                    Vector3d ringOffset = attacker.getLookVec().scale(-target.getWidth() / 2.f);
-                    ParticleRotation.OrientVector rotation = new ParticleRotation.OrientVector(ringOffset);
-                    Vector3d pos = target.getPositionVec().add(0, target.getHeight() / 2f, 0).add(ringOffset);
-                    AdvancedParticleBase.spawnParticle(target.world, ParticleHandler.RING_SPARKS.get(), pos.getX(), pos.getY(), pos.getZ(), 0, 0, 0, rotation, 3.5F, 0.83f, 1, 0.39f, 1, 1, 6, false, true, new ParticleComponent[]{
-                            new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, new ParticleComponent.KeyTrack(new float[]{1f, 1f, 0f}, new float[]{0f, 0.5f, 1f}), false),
-                            new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(0f, 15f), false)
-                    });
-                    Random rand = attacker.world.getRandom();
-                    float explodeSpeed = 2.5f;
-                    for (int i = 0; i < 10; i++) {
-                        Vector3d particlePos = new Vector3d(rand.nextFloat() * 0.25, 0, 0);
-                        particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
-                        particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
-                        double value = rand.nextFloat() * 0.1f;
-                        double life = rand.nextFloat() * 8f + 15f;
-                        ParticleVanillaCloudExtended.spawnVanillaCloud(target.world, pos.getX(), pos.getY(), pos.getZ(), particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 1, 0.25d + value, 0.75d + value, 0.25d + value, 0.6, life);
+                    if (target.world.isRemote() && target != null && attacker != null) {
+                        Vector3d ringOffset = attacker.getLookVec().scale(-target.getWidth() / 2.f);
+                        ParticleRotation.OrientVector rotation = new ParticleRotation.OrientVector(ringOffset);
+                        Vector3d pos = target.getPositionVec().add(0, target.getHeight() / 2f, 0).add(ringOffset);
+                        AdvancedParticleBase.spawnParticle(target.world, ParticleHandler.RING_SPARKS.get(), pos.getX(), pos.getY(), pos.getZ(), 0, 0, 0, rotation, 3.5F, 0.83f, 1, 0.39f, 1, 1, 6, false, true, new ParticleComponent[]{
+                                new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, new ParticleComponent.KeyTrack(new float[]{1f, 1f, 0f}, new float[]{0f, 0.5f, 1f}), false),
+                                new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(0f, 15f), false)
+                        });
+                        Random rand = attacker.world.getRandom();
+                        float explodeSpeed = 2.5f;
+                        for (int i = 0; i < 10; i++) {
+                            Vector3d particlePos = new Vector3d(rand.nextFloat() * 0.25, 0, 0);
+                            particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
+                            particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
+                            double value = rand.nextFloat() * 0.1f;
+                            double life = rand.nextFloat() * 8f + 15f;
+                            ParticleVanillaCloudExtended.spawnVanillaCloud(target.world, pos.getX(), pos.getY(), pos.getZ(), particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 1, 0.25d + value, 0.75d + value, 0.25d + value, 0.6, life);
+                        }
+                        for (int i = 0; i < 10; i++) {
+                            Vector3d particlePos = new Vector3d(rand.nextFloat() * 0.25, 0, 0);
+                            particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
+                            particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
+                            double value = rand.nextFloat() * 0.1f;
+                            double life = rand.nextFloat() * 2.5f + 5f;
+                            AdvancedParticleBase.spawnParticle(target.world, ParticleHandler.PIXEL.get(), pos.getX(), pos.getY(), pos.getZ(), particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, true, 0, 0, 0, 0, 3f, 0.07d + value, 0.25d + value, 0.07d + value, 1d, 0.6, life * 0.95, false, true);
+                        }
+                        for (int i = 0; i < 6; i++) {
+                            Vector3d particlePos = new Vector3d(rand.nextFloat() * 0.25, 0, 0);
+                            particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
+                            particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
+                            double value = rand.nextFloat() * 0.1f;
+                            double life = rand.nextFloat() * 5f + 10f;
+                            AdvancedParticleBase.spawnParticle(target.world, ParticleHandler.BUBBLE.get(), pos.getX(), pos.getY(), pos.getZ(), particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, true, 0, 0, 0, 0, 3f, 0.25d + value, 0.75d + value, 0.25d + value, 1d, 0.6, life * 0.95, false, true);
+                        }
                     }
-                    for (int i = 0; i < 10; i++) {
-                        Vector3d particlePos = new Vector3d(rand.nextFloat() * 0.25, 0, 0);
-                        particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
-                        particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
-                        double value = rand.nextFloat() * 0.1f;
-                        double life = rand.nextFloat() * 2.5f + 5f;
-                        AdvancedParticleBase.spawnParticle(target.world, ParticleHandler.PIXEL.get(), pos.getX(), pos.getY(), pos.getZ(), particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, true, 0, 0, 0, 0, 3f, 0.07d + value, 0.25d + value, 0.07d + value, 1d, 0.6, life * 0.95, false, true);
-                    }
-                    for (int i = 0; i < 6; i++) {
-                        Vector3d particlePos = new Vector3d(rand.nextFloat() * 0.25, 0, 0);
-                        particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
-                        particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
-                        double value = rand.nextFloat() * 0.1f;
-                        double life = rand.nextFloat() * 5f + 10f;
-                        AdvancedParticleBase.spawnParticle(target.world, ParticleHandler.BUBBLE.get(), pos.getX(), pos.getY(), pos.getZ(), particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, true, 0, 0, 0, 0, 3f, 0.25d + value, 0.75d + value, 0.25d + value, 1d, 0.6, life * 0.95, false, true);
-                    }
+                }
+            }
+            else if (weapon.getItem() instanceof ItemSpear) {
+                if (target instanceof AnimalEntity && target.getMaxHealth() <= 30 && attacker.world.getRandom().nextFloat() <= 0.334) {
+                    event.setResult(Event.Result.ALLOW);
+                    event.setDamageModifier(400);
                 }
             }
         }
