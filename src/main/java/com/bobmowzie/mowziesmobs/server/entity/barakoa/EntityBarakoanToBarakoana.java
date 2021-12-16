@@ -72,21 +72,6 @@ public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> i
         leader.removePackMember(this);
     }
 
-    @Override
-    public boolean attackEntityFrom(DamageSource source, float damage) {
-        /*Entity entity = source.getTrueSource();
-        if (entity != null && entity instanceof EntityLivingBase) {
-            if (!(entity instanceof EntityPlayer) || !(((EntityPlayer) entity).capabilities.isCreativeMode)) {
-                if (leader != null) {
-                    leader.setAttackTarget((EntityLivingBase) entity);
-                } else {
-                    this.setAttackTarget((EntityLivingBase) entity);
-                }
-            }
-        }*/
-        return super.attackEntityFrom(source, damage);
-    }
-
     public void removeLeader() {
         this.setLeaderUUID(ABSENT_LEADER);
         this.leader = null;

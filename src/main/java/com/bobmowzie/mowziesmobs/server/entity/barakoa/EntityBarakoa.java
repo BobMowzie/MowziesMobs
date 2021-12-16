@@ -210,11 +210,11 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
                     AnimationHandler.INSTANCE.sendAnimationMessage(entity, HEAL_LOOP_ANIMATION);
             }
         });
-//        goalSelector.addGoal(7, new RandomWalkingGoal(this, 0.4));
-//        goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
-//        goalSelector.addGoal(8, new LookAtGoal(this, EntityBarakoa.class, 8.0F));
-//        goalSelector.addGoal(8, new LookAtGoal(this, EntityBarako.class, 8.0F));
-//        goalSelector.addGoal(8, new LookRandomlyGoal(this));
+        goalSelector.addGoal(7, new RandomWalkingGoal(this, 0.4));
+        goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        goalSelector.addGoal(8, new LookAtGoal(this, EntityBarakoa.class, 8.0F));
+        goalSelector.addGoal(8, new LookAtGoal(this, EntityBarako.class, 8.0F));
+        goalSelector.addGoal(8, new LookRandomlyGoal(this));
         registerTargetGoals();
     }
 
@@ -228,7 +228,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             return (target.getAttribute(Attributes.ATTACK_DAMAGE) == null || target.getAttributeValue(Attributes.ATTACK_DAMAGE) < 3.0D) && volume > 0.1 && volume < 6;
         }));
         this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, true, false, (e) -> !(e instanceof ZombifiedPiglinEntity)));
-        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, SkeletonEntity.class, 0, true, false, null));
+        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, AbstractSkeletonEntity.class, 0, true, false, null));
         this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, ZoglinEntity.class, 0, true, false, null));
         this.targetSelector.addGoal(6, new AvoidEntityGoal<>(this, CreeperEntity.class, 6.0F, 1.0D, 1.2D));
         this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 0, true, true, target -> {
