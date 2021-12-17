@@ -32,6 +32,7 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.bobmowzie.mowziesmobs.server.world.feature.ConfiguredFeatureHandler;
 import com.bobmowzie.mowziesmobs.server.world.spawn.SpawnHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
+import jdk.nashorn.internal.ir.Block;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.entity.EntityType;
@@ -106,6 +107,7 @@ public final class MowziesMobs {
     private void init(FMLLoadCompleteEvent event) {
         ItemHandler.initializeAttributes();
         ItemHandler.initializeDispenserBehaviors();
+        BlockHandler.init();
         final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         PROXY.onLateInit(bus);
     }

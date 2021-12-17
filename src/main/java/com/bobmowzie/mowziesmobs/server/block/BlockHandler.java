@@ -16,4 +16,11 @@ public final class BlockHandler {
     public static final RegistryObject<SlabBlock> PAINTED_ACACIA_SLAB = REG.register("painted_acacia_slab", () -> new SlabBlock(Block.Properties.from(PAINTED_ACACIA.get())));
     public static final RegistryObject<Block> THATCH = REG.register("thatch_block", () -> new HayBlock(AbstractBlock.Properties.create(Material.ORGANIC, MaterialColor.YELLOW).hardnessAndResistance(0.5F).sound(SoundType.PLANT)));
     //public static final RegistryObject<BlockGrottol> GROTTOL = REG.register("grottol", () -> new BlockGrottol(Block.Properties.create(Material.ROCK).noDrops()));
+
+    public static void init() {
+        FireBlock fireblock = (FireBlock)Blocks.FIRE;
+        fireblock.setFireInfo(THATCH.get(), 60, 20);
+        fireblock.setFireInfo(PAINTED_ACACIA.get(), 5, 20);
+        fireblock.setFireInfo(PAINTED_ACACIA_SLAB.get(), 5, 20);
+    }
 }
