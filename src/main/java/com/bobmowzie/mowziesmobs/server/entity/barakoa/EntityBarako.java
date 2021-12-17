@@ -277,6 +277,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 
     @Override
     public void tick() {
+        setMotion(0, getMotion().y, 0);
         super.tick();
         if (ticksExisted == 1) {
             direction = getDirection();
@@ -286,7 +287,6 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         this.renderYawOffset = rotationYaw;
 //        this.posX = prevPosX;
 //        this.posZ = prevPosZ;
-        setMotion(0, getMotion().y, 0);
 
         if (!world.isRemote && getHealthLost() >= HEALTH_LOST_BETWEEN_SUNBLOCKERS && getAnimation() == NO_ANIMATION && !isAIDisabled() && getEntitiesNearby(EntityBarakoaya.class, 40).size() < 3) {
             AnimationHandler.INSTANCE.sendAnimationMessage(this, SPAWN_SUNBLOCKERS_ANIMATION);
