@@ -54,6 +54,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.*;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
@@ -214,6 +215,11 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
     }
 
     @Override
+    protected float getWaterSlowDown() {
+        return 0.98F;
+    }
+
+    @Override
     protected void registerData() {
         super.registerData();
         getDataManager().register(ACTIVE, false);
@@ -281,7 +287,6 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
             legSolver.update(this);
 
             if (getAnimation() == SWIPE_ANIMATION || getAnimation() == SWIPE_TWICE_ANIMATION) {
-//                if (getAnimationTick() == 1) swingWhichArm = rand.nextBoolean();
                 if (getAnimationTick() == 3) {
                     int i = MathHelper.nextInt(rand, 0, MMSounds.ENTITY_FROSTMAW_ATTACK.size());
                     if (i < MMSounds.ENTITY_FROSTMAW_ATTACK.size()) {
@@ -456,7 +461,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, DODGE_ANIMATION);
                 }
 
-                if (targetDistance > 5.5 && !(getAnimation() == ICE_BREATH_ANIMATION && targetDistance < 7.5) && onGround) {
+                if (targetDistance > 5.5 && !(getAnimation() == ICE_BREATH_ANIMATION && targetDistance < 7.5)) {
                     if (getAnimation() != SLAM_ANIMATION) getNavigator().tryMoveToEntityLiving(getAttackTarget(), 1);
                     else getNavigator().tryMoveToEntityLiving(getAttackTarget(), 0.95);
                 }
@@ -479,9 +484,9 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                     iceBallCooldown = ICE_BALL_COOLDOWN;
                 }
                 // Temporary solution while fixing frostmaw pathfinding in water
-                if (isInWater() && getAnimation() == NO_ANIMATION) {
-                    AnimationHandler.INSTANCE.sendAnimationMessage(this, DODGE_ANIMATION);
-                }
+//                if (isInWater() && getAnimation() == NO_ANIMATION) {
+//                    AnimationHandler.INSTANCE.sendAnimationMessage(this, DODGE_ANIMATION);
+//                }
             }
             else if (!world.isRemote) {
                 timeWithoutTarget++;
