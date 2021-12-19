@@ -114,7 +114,7 @@ public class Ability {
 
     public void tick() {
         if (isUsing()) {
-            if (!canContinueUsing()) interrupt();
+            if (getUser().isServerWorld() && !canContinueUsing()) AbilityHandler.INSTANCE.sendInterruptAbilityMessage(getUser(), this.abilityType);
 
             tickUsing();
 

@@ -4,6 +4,7 @@ import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.ability.abilities.*;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
+import com.bobmowzie.mowziesmobs.server.message.MessageInterruptAbility;
 import com.bobmowzie.mowziesmobs.server.message.MessagePlayerUseAbility;
 import com.bobmowzie.mowziesmobs.server.message.MessageUseAbility;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -57,16 +58,30 @@ public enum AbilityHandler {
         return null;
     }
 
-    public <T extends LivingEntity> void sendAbilityMessage(T entity, AbilityType<?> ability) {
+    public <T extends LivingEntity> void sendAbilityMessage(T entity, AbilityType<?> abilityType) {
         if (entity.world.isRemote) {
             return;
         }
         AbilityCapability.IAbilityCapability abilityCapability = getAbilityCapability(entity);
         if (abilityCapability != null) {
-            Ability instance = abilityCapability.getAbilityMap().get(ability);
+            Ability instance = abilityCapability.getAbilityMap().get(abilityType);
             if (instance.canUse()) {
-                abilityCapability.activateAbility(entity, ability);
-                MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new MessageUseAbility(entity.getEntityId(), ArrayUtils.indexOf(abilityCapability.getAbilityTypesOnEntity(entity), ability)));
+                abilityCapability.activateAbility(entity, abilityType);
+                MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new MessageUseAbility(entity.getEntityId(), ArrayUtils.indexOf(abilityCapability.getAbilityTypesOnEntity(entity), abilityType)));
+            }
+        }
+    }
+
+    public <T extends LivingEntity> void sendInterruptAbilityMessage(T entity, AbilityType<?> abilityType) {
+        if (entity.world.isRemote) {
+            return;
+        }
+        AbilityCapability.IAbilityCapability abilityCapability = getAbilityCapability(entity);
+        if (abilityCapability != null) {
+            Ability instance = abilityCapability.getAbilityMap().get(abilityType);
+            if (instance.isUsing()) {
+                instance.interrupt();
+                MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new MessageInterruptAbility(entity.getEntityId(), ArrayUtils.indexOf(abilityCapability.getAbilityTypesOnEntity(entity), abilityType)));
             }
         }
     }

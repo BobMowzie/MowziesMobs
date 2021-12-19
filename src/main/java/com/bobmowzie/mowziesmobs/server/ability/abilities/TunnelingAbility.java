@@ -21,6 +21,7 @@ import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DamageSource;
@@ -176,7 +177,8 @@ public class TunnelingAbility extends Ability {
     public <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e, GeckoPlayer.Perspective perspective) {
         e.getController().transitionLengthTicks = 4;
         if (perspective == GeckoPlayer.Perspective.THIRD_PERSON) {
-            if (!underground && !getUser().isSneaking() && getUser().getMotion().getY() < 1) {
+            float yMotionThreshold = getUser() == Minecraft.getInstance().player ? 1 : 2;
+            if (!underground && !getUser().isSneaking() && getUser().getMotion().getY() < yMotionThreshold) {
                 e.getController().setAnimation(new AnimationBuilder().addAnimation("tunneling_fall", false));
             }
             else {
