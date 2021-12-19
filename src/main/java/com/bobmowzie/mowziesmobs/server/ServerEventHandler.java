@@ -66,10 +66,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
-import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.living.PotionEvent;
+import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.CriticalHitEvent;
 import net.minecraftforge.event.entity.player.FillBucketEvent;
@@ -218,6 +215,28 @@ public final class ServerEventHandler {
                         ((ServerPlayerEntity)source.getTrueSource()).addStat(Stats.DAMAGE_DEALT_RESISTED, Math.round(f2 * 10.0F));
                     }
                 }
+            }
+        }
+
+        if (event.getSource().isFireDamage()) {
+            event.getEntityLiving().removeActivePotionEffect(EffectHandler.FROZEN);
+            MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> event.getEntity()), new MessageRemoveFreezeProgress(event.getEntityLiving()));
+        }
+        if (event.getEntity() instanceof PlayerEntity) {
+            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getEntity(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+            if (playerCapability != null) {
+                Power[] powers = playerCapability.getPowers();
+                for (Power power : powers) {
+                    power.onTakeDamage(event);
+                }
+            }
+        }
+
+        if (event.getEntityLiving() != null) {
+            LivingEntity living = event.getEntityLiving();
+            LivingCapability.ILivingCapability capability = CapabilityHandler.getCapability(living, LivingCapability.LivingProvider.LIVING_CAPABILITY);
+            if (capability != null) {
+                capability.setLastDamage(event.getAmount());
             }
         }
     }
@@ -484,26 +503,13 @@ public final class ServerEventHandler {
     }
 
     @SubscribeEvent
-    public void onLivingDamage(LivingHurtEvent event) {
-        if (event.getSource().isFireDamage()) {
-            event.getEntityLiving().removeActivePotionEffect(EffectHandler.FROZEN);
-            MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> event.getEntity()), new MessageRemoveFreezeProgress(event.getEntityLiving()));
-        }
-        if (event.getEntity() instanceof PlayerEntity) {
-            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getEntity(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-            if (playerCapability != null) {
-                Power[] powers = playerCapability.getPowers();
-                for (Power power : powers) {
-                    power.onTakeDamage(event);
-                }
-            }
-        }
-
-        if (event.getEntityLiving() != null) {
-            LivingEntity living = event.getEntityLiving();
-            LivingCapability.ILivingCapability capability = CapabilityHandler.getCapability(living, LivingCapability.LivingProvider.LIVING_CAPABILITY);
-            if (capability != null) {
-                capability.setLastDamage(event.getAmount());
+    public void onLivingDamage(LivingDamageEvent event) {
+        LivingEntity entity = event.getEntityLiving();
+        if (entity.getHealth() <= event.getAmount() && entity.isPotionActive(EffectHandler.FROZEN)) {
+            entity.removeActivePotionEffect(EffectHandler.FROZEN);
+            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+            if (frozenCapability != null) {
+                frozenCapability.onUnfreeze(entity);
             }
         }
     }

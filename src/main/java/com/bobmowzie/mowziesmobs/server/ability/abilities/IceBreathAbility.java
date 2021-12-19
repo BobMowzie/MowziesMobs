@@ -30,7 +30,6 @@ public class IceBreathAbility extends Ability {
     @Override
     public void start() {
         super.start();
-        System.out.println("START");
         LivingEntity user = getUser();
         if (!getUser().world.isRemote()) {
             EntityIceBreath iceBreath = new EntityIceBreath(EntityHandler.ICE_BREATH, user.world, user);
@@ -61,7 +60,6 @@ public class IceBreathAbility extends Ability {
     @Override
     public void end() {
         super.end();
-        System.out.println("END");
         if (iceBreath != null) iceBreath.remove();
     }
 

@@ -87,8 +87,6 @@ public final class MowziesMobs {
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
         MinecraftForge.EVENT_BUS.register(new AbilityCapability.AbilityEventHandler());
-//        MinecraftForge.EVENT_BUS.addListener(EventPriority.NORMAL, this::onWorldLoad);
-//        MinecraftForge.EVENT_BUS.addListener(EventPriority.HIGH, this::onBiomeLoading);
     }
 
     public void init(final FMLCommonSetupEvent event) {
