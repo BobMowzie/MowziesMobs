@@ -48,7 +48,7 @@ public class EntityBlockSwapper extends Entity {
         if (!world.isRemote) {
             setOrigBlock(world.getBlockState(pos));
             if (breakParticlesStart) world.destroyBlock(pos, false);
-            world.setBlockState(pos, newBlock);
+            world.setBlockState(pos, newBlock, 19);
         }
         List<EntityBlockSwapper> swappers = world.getEntitiesWithinAABB(EntityBlockSwapper.class, getBoundingBox());
         if (!swappers.isEmpty()) {
@@ -108,7 +108,7 @@ public class EntityBlockSwapper extends Entity {
     public void restoreBlock() {
         if (!world.isRemote) {
             if (breakParticlesEnd) world.destroyBlock(pos, false);
-            world.setBlockState(pos, getOrigBlock());
+            world.setBlockState(pos, getOrigBlock(), 19);
             remove();
         }
     }
