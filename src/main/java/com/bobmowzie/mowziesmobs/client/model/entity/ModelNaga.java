@@ -712,25 +712,6 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
 
             faceTarget(headYaw, headPitch, 2, neck, headJoint);
 
-            //Glide anim
-            Vector3d prevV = new Vector3d(entity.prevMotionX, entity.prevMotionY, entity.prevMotionZ);
-            Vector3d dv = prevV.add(entity.getMotion().subtract(prevV).scale(delta));
-            double d = Math.sqrt(dv.x * dv.x + dv.y * dv.y + dv.z * dv.z);
-            if (d != 0 && entity.getAnimation() != EntityNaga.DIE_AIR_ANIMATION) {
-                double a = dv.y / d;
-                a = Math.max(-1, Math.min(1, a));
-                float pitch = -(float) Math.asin(a);
-                root.rotateAngleX += pitch * nonHoverAnim;
-                neck.rotateAngleX -= pitch / 2 * nonHoverAnim;
-                head.rotateAngleX -= pitch / 2 * nonHoverAnim;
-                shoulderLJoint.rotateAngleX -= Math.min(pitch, 0) * nonHoverAnim;
-                shoulderRJoint.rotateAngleX -= Math.min(pitch, 0) * nonHoverAnim;
-
-                wingFolder.rotationPointX += Math.max(Math.min(pitch * 2, 0.8), 0.1) * nonHoverAnim;
-                wingFolder.rotationPointY += Math.max(Math.min(pitch * 2, 0.8), 0.1) * nonHoverAnim;
-
-                //        root.rotateAngleZ -= Math.toRadians((entity.rotationYaw - entity.prevRotationYaw) * (LLibrary.PROXY.getPartialTicks()));
-            }
 
             // Falling Anim
             if (entity.movement == EntityNaga.EnumNagaMovement.FALLING && entity.getAnimation() == EntityNaga.NO_ANIMATION) {
@@ -1216,8 +1197,9 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
             float flapFrame = (float) ((wingFolder.rotateAngleX * Math.PI * 2f / globalSpeed) - (Math.PI * 0.5 / globalSpeed));
             globalDegree *= 1 - Math.pow(Math.sin(wingFolder.rotateAngleX * Math.PI - Math.PI / 2), 8);
 
-            wingFolder.rotationPointX += globalDegree * (0.9f * (float) (0.5 * Math.cos(flapFrame * globalSpeed + 1.4) + 0.5) + 0.05f);
-            wingFolder.rotationPointY += globalDegree * (0.9f * (float) (0.5 * Math.cos(flapFrame * globalSpeed + 1.4) + 0.5) + 0.05f);
+            double folder = 0.5 * Math.cos(flapFrame * globalSpeed + 1.4) + 0.5;
+            wingFolder.rotationPointX += globalDegree * (0.9f * (float) folder + 0.05f);
+            wingFolder.rotationPointY += globalDegree * (0.9f * (float) folder + 0.05f);
 
             flap(shoulder1_R, globalSpeed, 1f * globalDegree, false, 0, 0, flapFrame, 1);
             flap(lowerArmJoint_R, globalSpeed, 0.7f * globalDegree, false, -0.6f, 0, flapFrame, 1);
@@ -1229,6 +1211,31 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
 
             backWing_R.flap(globalSpeed, 1f * globalDegree, false, -0.5f, -0.2f, flapFrame, 1);
             backWing_L.flap(globalSpeed, 1f * globalDegree, true, -0.5f, -0.2f, flapFrame, 1);
+
+            //Glide anim
+            float hoverAnim = entity.prevHoverAnimFrac + (entity.hoverAnimFrac - entity.prevHoverAnimFrac) * delta;
+            float nonHoverAnim = 1f - hoverAnim;
+            float flapAnim = entity.prevFlapAnimFrac + (entity.flapAnimFrac - entity.prevFlapAnimFrac) * delta;
+            Vector3d prevV = new Vector3d(entity.prevMotionX, entity.prevMotionY, entity.prevMotionZ);
+            Vector3d dv = prevV.add(entity.getMotion().subtract(prevV).scale(delta));
+            double d = Math.sqrt(dv.x * dv.x + dv.y * dv.y + dv.z * dv.z);
+            if (d != 0 && entity.getAnimation() != EntityNaga.DIE_AIR_ANIMATION) {
+                double a = dv.y / d;
+                a = Math.max(-1, Math.min(1, a));
+                float pitch = -(float) Math.asin(a);
+                pitch = (float) (-entity.rotationPitch * Math.PI / 180f);
+                root.rotateAngleX += pitch * nonHoverAnim;
+//                neck.rotateAngleX -= pitch / 2 * nonHoverAnim;
+//                headJoint.rotateAngleX -= pitch / 2 * nonHoverAnim;
+                shoulderLJoint.rotateAngleX -= Math.min(pitch, 0) * nonHoverAnim * (1-folder);
+                shoulderRJoint.rotateAngleX -= Math.min(pitch, 0) * nonHoverAnim * (1-folder);
+
+                double folder2 = Math.max(Math.min(pitch * 2, 0.8), 0.1) * nonHoverAnim * (1 - flapAnim);
+                wingFolder.rotationPointX += folder2 * folder;
+                wingFolder.rotationPointY += folder2 * folder;
+
+                //        root.rotateAngleZ -= Math.toRadians((entity.rotationYaw - entity.prevRotationYaw) * (LLibrary.PROXY.getPartialTicks()));
+            }
 
             jawControls();
             wingFoldControls();

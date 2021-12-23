@@ -172,6 +172,10 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         return false;
     }
 
+    protected boolean isWithinDistance(BlockPos pos, int distance) {
+        return pos.withinDistance(this.getPosition(), (double)distance);
+    }
+
     @Override
     public void tick() {
         prevPrevOnGround = prevOnGround;
