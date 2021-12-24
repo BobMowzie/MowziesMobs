@@ -30,6 +30,8 @@ import net.minecraft.entity.passive.IFlyingAnimal;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.pathfinding.FlyingPathNavigator;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.potion.Effects;
@@ -47,6 +49,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
@@ -76,6 +79,8 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
     private static final DataParameter<Boolean> ATTACKING = EntityDataManager.createKey(EntityNaga.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Float> BANKING = EntityDataManager.createKey(EntityNaga.class, DataSerializers.FLOAT);
     private static final DataParameter<Float> PREV_BANKING = EntityDataManager.createKey(EntityNaga.class, DataSerializers.FLOAT);
+
+    public static int MAX_DIST_FROM_HOME = 50;
 
     private final ControlledAnimation hoverAnim = new ControlledAnimation(10);
     private final ControlledAnimation flapAnim = new ControlledAnimation(10);
@@ -154,7 +159,12 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
         this.goalSelector.addGoal(6, new LookRandomlyGoal(this));
         this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 8.0F));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 0, true, true, null));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<PlayerEntity>(this, PlayerEntity.class, 0, true, true, null) {
+            @Override
+            public boolean shouldContinueExecuting() {
+                return super.shouldContinueExecuting() && getAttackTarget() != null && getAttackTarget().getPosition().withinDistance(getHomePosition(), getMaximumHomeDistance());
+            }
+        });
         this.goalSelector.addGoal(2, new SimpleAnimationAI<EntityNaga>(this, FLAP_ANIMATION, false) {
             @Override
             public void startExecuting() {
@@ -547,6 +557,12 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
     }
 
     @Override
+    public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, ILivingEntityData spawnDataIn, CompoundNBT dataTag) {
+        setHomePosAndDistance(this.getPosition(), MAX_DIST_FROM_HOME);
+        return super.onInitialSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+    }
+
+    @Override
     protected ConfigHandler.SpawnConfig getSpawnConfig() {
         return ConfigHandler.COMMON.MOBS.NAGA.spawnConfig;
     }
@@ -849,6 +865,25 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
     }
 
     @Override
+    public void writeAdditional(CompoundNBT compound) {
+        super.writeAdditional(compound);
+        compound.putInt("HomePosX", this.getHomePosition().getX());
+        compound.putInt("HomePosY", this.getHomePosition().getY());
+        compound.putInt("HomePosZ", this.getHomePosition().getZ());
+        compound.putInt("HomeDist", (int) this.getMaximumHomeDistance());
+    }
+
+    @Override
+    public void readAdditional(CompoundNBT compound) {
+        super.readAdditional(compound);
+        int i = compound.getInt("HomePosX");
+        int j = compound.getInt("HomePosY");
+        int k = compound.getInt("HomePosZ");
+        int dist = compound.getInt("HomeDist");
+        this.setHomePosAndDistance(new BlockPos(i, j, k), dist);
+    }
+
+    @Override
     protected ResourceLocation getLootTable() {
         return LootTableHandler.NAGA;
     }
@@ -955,7 +990,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
 //            } else {
                 vector3d = EntityNaga.this.getLook(0.0F);
 //            }
-            Vector3d position = RandomPositionGenerator.findAirTarget(EntityNaga.this, 24, 24, vector3d, ((float)Math.PI / 2F), 6, 20);
+            Vector3d position = RandomPositionGenerator.findAirTarget(EntityNaga.this, 24, 24, vector3d, ((float)Math.PI / 2F), 8, 18);
             if (position == null) {
                 position = RandomPositionGenerator.func_226344_b_(EntityNaga.this, 24, 8, -8, getPositionVec().add(vector3d), ((float)Math.PI / 2F));
                 seesGround = false;
