@@ -1216,25 +1216,19 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
             float hoverAnim = entity.prevHoverAnimFrac + (entity.hoverAnimFrac - entity.prevHoverAnimFrac) * delta;
             float nonHoverAnim = 1f - hoverAnim;
             float flapAnim = entity.prevFlapAnimFrac + (entity.flapAnimFrac - entity.prevFlapAnimFrac) * delta;
-            Vector3d prevV = new Vector3d(entity.prevMotionX, entity.prevMotionY, entity.prevMotionZ);
-            Vector3d dv = prevV.add(entity.getMotion().subtract(prevV).scale(delta));
-            double d = Math.sqrt(dv.x * dv.x + dv.y * dv.y + dv.z * dv.z);
-            if (d != 0 && entity.getAnimation() != EntityNaga.DIE_AIR_ANIMATION) {
-                double a = dv.y / d;
-                a = Math.max(-1, Math.min(1, a));
-                float pitch = -(float) Math.asin(a);
-                pitch = (float) (-entity.rotationPitch * Math.PI / 180f);
+            if (entity.getAnimation() != EntityNaga.DIE_AIR_ANIMATION) {
+                float pitch = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * delta;
+                pitch = (float) (-pitch * Math.PI / 180f);
                 root.rotateAngleX += pitch * nonHoverAnim;
-//                neck.rotateAngleX -= pitch / 2 * nonHoverAnim;
-//                headJoint.rotateAngleX -= pitch / 2 * nonHoverAnim;
                 shoulderLJoint.rotateAngleX -= Math.min(pitch, 0) * nonHoverAnim * (1-folder);
                 shoulderRJoint.rotateAngleX -= Math.min(pitch, 0) * nonHoverAnim * (1-folder);
 
-                double folder2 = Math.max(Math.min(pitch * 2, 0.8), 0.1) * nonHoverAnim * (1 - flapAnim);
+                double folder2 = Math.max(Math.min(pitch, 0.8), 0.1) * nonHoverAnim * (1 - flapAnim);
                 wingFolder.rotationPointX += folder2 * folder;
                 wingFolder.rotationPointY += folder2 * folder;
 
-                //        root.rotateAngleZ -= Math.toRadians((entity.rotationYaw - entity.prevRotationYaw) * (LLibrary.PROXY.getPartialTicks()));
+                float banking = entity.prevBanking + (entity.banking - entity.prevBanking) * delta;
+                body.rotateAngleZ -= 10 * Math.toRadians(banking) * nonHoverAnim;
             }
 
             jawControls();
