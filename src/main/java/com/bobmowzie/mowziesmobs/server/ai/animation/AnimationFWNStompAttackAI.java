@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.ai.animation;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityFallingBlock;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
@@ -48,6 +49,7 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                 entity.playSound(MMSounds.ENTITY_WROUGHT_STEP.get(), 1.2F, 0.5F + entity.getRNG().nextFloat() * 0.1F);
             } else if (tick == 12) {
                 entity.playSound(SoundEvents.ENTITY_GENERIC_EXPLODE, 2, 1F + entity.getRNG().nextFloat() * 0.1F);
+                EntityCameraShake.cameraShake(entity.world, entity.getPositionVec(), 25, 0.1f, 0, 20);
             }
             if (tick % 2 == 0) {
                 int distance = tick / 2 - 2;
