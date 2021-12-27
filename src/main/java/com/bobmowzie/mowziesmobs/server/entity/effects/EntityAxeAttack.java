@@ -120,25 +120,29 @@ public class EntityAxeAttack extends EntityMagicEffect {
                     AxisAlignedBB selection = new AxisAlignedBB(px - 1.5, minY, pz - 1.5, px + 1.5, maxY, pz + 1.5);
                     List<Entity> hit = world.getEntitiesWithinAABB(Entity.class, selection);
                     for (Entity entity : hit) {
-                        if (entity == this || entity instanceof FallingBlockEntity || entity == caster) {
-                            continue;
-                        }
-                        float applyKnockbackResistance = 0;
-                        if (entity instanceof LivingEntity) {
-                            if (caster instanceof PlayerEntity) entity.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) caster), (factor * 5 + 1) * (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f));
-                            else entity.attackEntityFrom(DamageSource.causeMobDamage(caster), (factor * 5 + 1) * (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f));
-                            applyKnockbackResistance = (float) ((LivingEntity)entity).getAttribute(Attributes.KNOCKBACK_RESISTANCE).getValue();
-                        }
-                        double magnitude = -0.2;
-                        double x = vx * (1 - factor) * magnitude * (1 - applyKnockbackResistance);
-                        double y = 0;
                         if (entity.isOnGround()) {
-                            y += 0.15 * (1 - applyKnockbackResistance);
-                        }
-                        double z = vz * (1 - factor) * magnitude * (1 - applyKnockbackResistance);
-                        entity.setMotion(entity.getMotion().add(x, y, z));
-                        if (entity instanceof ServerPlayerEntity) {
-                            ((ServerPlayerEntity) entity).connection.sendPacket(new SEntityVelocityPacket(entity));
+                            if (entity == this || entity instanceof FallingBlockEntity || entity == caster) {
+                                continue;
+                            }
+                            float applyKnockbackResistance = 0;
+                            if (entity instanceof LivingEntity) {
+                                if (caster instanceof PlayerEntity)
+                                    entity.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) caster), (factor * 5 + 1) * (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f));
+                                else
+                                    entity.attackEntityFrom(DamageSource.causeMobDamage(caster), (factor * 5 + 1) * (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f));
+                                applyKnockbackResistance = (float) ((LivingEntity) entity).getAttribute(Attributes.KNOCKBACK_RESISTANCE).getValue();
+                            }
+                            double magnitude = -0.2;
+                            double x = vx * (1 - factor) * magnitude * (1 - applyKnockbackResistance);
+                            double y = 0;
+                            if (entity.isOnGround()) {
+                                y += 0.15 * (1 - applyKnockbackResistance);
+                            }
+                            double z = vz * (1 - factor) * magnitude * (1 - applyKnockbackResistance);
+                            entity.setMotion(entity.getMotion().add(x, y, z));
+                            if (entity instanceof ServerPlayerEntity) {
+                                ((ServerPlayerEntity) entity).connection.sendPacket(new SEntityVelocityPacket(entity));
+                            }
                         }
                     }
                     if (world.rand.nextBoolean()) {

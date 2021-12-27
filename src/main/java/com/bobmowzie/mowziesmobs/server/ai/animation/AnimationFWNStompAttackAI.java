@@ -65,24 +65,24 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                     AxisAlignedBB selection = new AxisAlignedBB(px - 1.5, minY, pz - 1.5, px + 1.5, maxY, pz + 1.5);
                     List<Entity> hit = world.getEntitiesWithinAABB(Entity.class, selection);
                     for (Entity entity : hit) {
-                        if (entity == this.entity || entity instanceof EntityFallingBlock) {
-                            continue;
-                        }
-                        float applyKnockbackResistance = 0;
-                        if (entity instanceof LivingEntity) {
-                            entity.attackEntityFrom(DamageSource.causeMobDamage(this.entity), (factor * 5 + 1) * ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.combatConfig.attackMultiplier.get().floatValue());
-                            applyKnockbackResistance = (float) ((LivingEntity)entity).getAttribute(Attributes.KNOCKBACK_RESISTANCE).getValue();
-                        }
-                        double magnitude = world.rand.nextDouble() * 0.15 + 0.1;
-                        float x = 0, y = 0, z = 0;
-                        x += vx * factor * magnitude * (1 - applyKnockbackResistance);
                         if (entity.isOnGround()) {
+                            if (entity == this.entity || entity instanceof EntityFallingBlock) {
+                                continue;
+                            }
+                            float applyKnockbackResistance = 0;
+                            if (entity instanceof LivingEntity) {
+                                entity.attackEntityFrom(DamageSource.causeMobDamage(this.entity), (factor * 5 + 1) * ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.combatConfig.attackMultiplier.get().floatValue());
+                                applyKnockbackResistance = (float) ((LivingEntity) entity).getAttribute(Attributes.KNOCKBACK_RESISTANCE).getValue();
+                            }
+                            double magnitude = world.rand.nextDouble() * 0.15 + 0.1;
+                            float x = 0, y = 0, z = 0;
+                            x += vx * factor * magnitude * (1 - applyKnockbackResistance);
                             y += 0.1 * (1 - applyKnockbackResistance) + factor * 0.15 * (1 - applyKnockbackResistance);
-                        }
-                        z += vz * factor * magnitude * (1 - applyKnockbackResistance);
-                        entity.setMotion(entity.getMotion().add(x, y, z));
-                        if (entity instanceof ServerPlayerEntity) {
-                            ((ServerPlayerEntity) entity).connection.sendPacket(new SEntityVelocityPacket(entity));
+                            z += vz * factor * magnitude * (1 - applyKnockbackResistance);
+                            entity.setMotion(entity.getMotion().add(x, y, z));
+                            if (entity instanceof ServerPlayerEntity) {
+                                ((ServerPlayerEntity) entity).connection.sendPacket(new SEntityVelocityPacket(entity));
+                            }
                         }
                     }
                     if (world.rand.nextBoolean()) {

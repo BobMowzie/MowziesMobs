@@ -557,7 +557,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         float speed = MathHelper.sqrt(moveX * moveX + moveZ * moveZ);
         if (frame % 16 == 5 && speed > 0.05 && active) {
             playSound(MMSounds.ENTITY_FROSTMAW_STEP.get(), 3F, 0.8F + rand.nextFloat() * 0.2f);
-            EntityCameraShake.cameraShake(world, getPositionVec(), 20, 0.05f, 0, 10);
+            EntityCameraShake.cameraShake(world, getPositionVec(), 20, 0.03f, 0, 10);
         }
 
         //Breathing sounds
