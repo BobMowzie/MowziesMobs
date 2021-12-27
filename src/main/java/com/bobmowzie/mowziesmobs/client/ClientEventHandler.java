@@ -11,6 +11,7 @@ import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.item.*;
@@ -268,16 +269,18 @@ public enum ClientEventHandler {
                 event.setYaw(frozenCapability.getFrozenYaw());
             }
 
-            float shakeAmplitude = 0;
-            for (EntityCameraShake cameraShake : player.world.getEntitiesWithinAABB(EntityCameraShake.class, player.getBoundingBox().grow(20, 20, 20))) {
-                if (cameraShake.getDistance(player) < cameraShake.getRadius()) {
-                    shakeAmplitude += cameraShake.getShakeAmount(player, delta);
+            if (ConfigHandler.CLIENT.doCameraShakes.get()) {
+                float shakeAmplitude = 0;
+                for (EntityCameraShake cameraShake : player.world.getEntitiesWithinAABB(EntityCameraShake.class, player.getBoundingBox().grow(20, 20, 20))) {
+                    if (cameraShake.getDistance(player) < cameraShake.getRadius()) {
+                        shakeAmplitude += cameraShake.getShakeAmount(player, delta);
+                    }
                 }
+                if (shakeAmplitude > 1.0f) shakeAmplitude = 1.0f;
+                event.setPitch((float) (event.getPitch() + shakeAmplitude * Math.cos(ticksExistedDelta * 3 + 2) * 25));
+                event.setYaw((float) (event.getYaw() + shakeAmplitude * Math.cos(ticksExistedDelta * 5 + 1) * 25));
+                event.setRoll((float) (event.getRoll() + shakeAmplitude * Math.cos(ticksExistedDelta * 4) * 25));
             }
-            if (shakeAmplitude > 1.0f) shakeAmplitude = 1.0f;
-            event.setPitch((float) (event.getPitch() + shakeAmplitude * Math.cos(ticksExistedDelta * 3 + 2) * 25));
-            event.setYaw((float) (event.getYaw() + shakeAmplitude * Math.cos(ticksExistedDelta * 5 + 1) * 25));
-            event.setRoll((float) (event.getRoll() + shakeAmplitude * Math.cos(ticksExistedDelta * 4) * 25));
         }
     }
 

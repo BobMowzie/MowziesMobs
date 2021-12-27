@@ -163,6 +163,7 @@
   "config.mowziesmobs.has_boss_bar": "Display Boss Bar",
   "config.mowziesmobs.heals_out_of_battle": "Heal While Not In Battle",
   "config.mowziesmobs.old_barakoa_textures": "Use Old Barakoa Textures",
+  "config.mowziesmobs.do_camera_shake": "Do Camera Shake",
   "config.mowziesmobs.ferrous_wroughtnaut.tooltip": "",
   "config.mowziesmobs.barakoa": "Barakoa",
   "config.mowziesmobs.barakoa.tooltip": "Controls for Barakoana hunting packs and Barakoa villagers",

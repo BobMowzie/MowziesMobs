@@ -670,12 +670,17 @@ public final class  ConfigHandler {
             this.oldBarakoaTextures = builder.comment("Use the old Barakoa textures instead of the current ones")
                     .translation(LANG_PREFIX + "old_barakoa_textures")
                     .define("old_barakoa_textures", false);
+            this.doCameraShakes = builder.comment("Enable camera shaking during certain mob attacks and abilities.")
+                    .translation(LANG_PREFIX + "do_camera_shake")
+                    .define("do_camera_shake", true);
             builder.pop();
         }
 
         public final BooleanValue glowEffect;
 
         public final BooleanValue oldBarakoaTextures;
+
+        public final BooleanValue doCameraShakes;
     }
 
     public static class Common {
