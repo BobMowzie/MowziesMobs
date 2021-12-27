@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.ai.animation;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
@@ -62,6 +63,7 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
             }
         } else if (entity.getAnimationTick() == 28) {
             entity.playSound(MMSounds.ENTITY_WROUGHT_AXE_LAND.get(), 1, 0.5F);
+            EntityCameraShake.cameraShake(entity.world, entity.getPositionVec(), 20, 0.3f, 0, 10);
         } else if (entity.getAnimationTick() == 44) {
             entity.playSound(MMSounds.ENTITY_WROUGHT_PULL_1.get(), 1, 1F);
             entity.playSound(MMSounds.ENTITY_WROUGHT_CREAK.get(), 0.5F, 1F);

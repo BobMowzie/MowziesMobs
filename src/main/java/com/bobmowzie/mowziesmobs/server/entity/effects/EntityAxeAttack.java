@@ -94,6 +94,9 @@ public class EntityAxeAttack extends EntityMagicEffect {
                 playSound(MMSounds.ENTITY_WROUGHT_AXE_LAND.get(), 0.3F, 0.5F);
                 playSound(SoundEvents.ENTITY_GENERIC_EXPLODE, 2, 0.9F + rand.nextFloat() * 0.1F);
             }
+            else if (getVertical() && ticksExisted == SWING_DURATION_VER /2 + 1) {
+                EntityCameraShake.cameraShake(world, getPositionVec(), 10, 0.05f, 0, 10);
+            }
         }
 
         if (getVertical() && caster != null) {

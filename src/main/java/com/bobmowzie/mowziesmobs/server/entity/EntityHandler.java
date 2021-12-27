@@ -70,6 +70,8 @@ public class EntityHandler {
     public static final EntityType<EntityFallingBlock> FALLING_BLOCK = register("falling_block", fallingBlockBuilder.size(1, 1));
     private static final EntityType.Builder<EntityBlockSwapper> blockSwapperBuilder = EntityType.Builder.create(EntityBlockSwapper::new, EntityClassification.MISC);
     public static final EntityType<EntityBlockSwapper> BLOCK_SWAPPER = register("block_swapper", blockSwapperBuilder.disableSummoning().size(1, 1).setUpdateInterval(Integer.MAX_VALUE));
+    private static final EntityType.Builder<EntityCameraShake> cameraShakeBuilder = EntityType.Builder.create(EntityCameraShake::new, EntityClassification.MISC);
+    public static final EntityType<EntityCameraShake> CAMERA_SHAKE = register("camera_shake", cameraShakeBuilder.disableSummoning().size(1, 1).setUpdateInterval(Integer.MAX_VALUE));
 
     private static <T extends Entity> EntityType<T> register(String name, EntityType.Builder<T> builder) {
         ResourceLocation regName = new ResourceLocation(MowziesMobs.MODID, name);

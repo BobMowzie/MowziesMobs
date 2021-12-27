@@ -41,6 +41,7 @@ public class EntitySuperNova extends EntityMagicEffect {
         if (caster == null || !caster.isAlive()) this.remove();
 
         if (ticksExisted == 1) {
+            EntityCameraShake.cameraShake(world, getPositionVec(), 30, 0.05f, 10, 30);
             playSound(MMSounds.ENTITY_SUPERNOVA_END.get(), 3f, 1f);
             if (world.isRemote) {
                 float scale = 8.2f;

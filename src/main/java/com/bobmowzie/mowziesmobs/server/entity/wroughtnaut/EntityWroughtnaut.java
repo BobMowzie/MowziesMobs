@@ -225,7 +225,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 //        if (getAnimation() == NO_ANIMATION) {
 //            setActive(true);
 //            swingDirection = true;
-//            AnimationHandler.INSTANCE.sendAnimationMessage(this, STOMP_ATTACK_ANIMATION);
+//            AnimationHandler.INSTANCE.sendAnimationMessage(this, VERTICAL_ATTACK_ANIMATION);
 //            getNavigator().clearPath();
 //        }
 

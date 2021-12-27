@@ -11,6 +11,7 @@ import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
 import com.bobmowzie.mowziesmobs.server.item.*;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
@@ -33,6 +34,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraft.util.math.vector.Vector3d;
+import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Min;
 
 @OnlyIn(Dist.CLIENT)
 public enum ClientEventHandler {
@@ -108,32 +110,32 @@ public enum ClientEventHandler {
 
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event) {
-        PlayerEntity player = Minecraft.getInstance().player;
-        if (player != null) {
-            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-            if (playerCapability != null && playerCapability.getGeomancy().canUse(player) && playerCapability.getGeomancy().isSpawningBoulder() && playerCapability.getGeomancy().getSpawnBoulderCharge() > 2) {
-                Vector3d lookPos = playerCapability.getGeomancy().getLookPos();
-                Vector3d playerEyes = player.getEyePosition(Minecraft.getInstance().getRenderPartialTicks());
-                Vector3d vec = playerEyes.subtract(lookPos).normalize();
-                float yaw = (float) Math.atan2(vec.z, vec.x);
-                float pitch = (float) Math.asin(vec.y);
-                player.rotationYaw = (float) (yaw * 180f/Math.PI + 90);
-                player.rotationPitch = (float) (pitch * 180f/Math.PI);
-                player.rotationYawHead = player.rotationYaw;
-                player.prevRotationYaw = player.rotationYaw;
-                player.prevRotationPitch = player.rotationPitch;
-                player.prevRotationYawHead = player.rotationYawHead;
-            }
-            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(player, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
-            if (frozenCapability != null && player.isPotionActive(EffectHandler.FROZEN) && frozenCapability.getPrevFrozen()) {
-                player.rotationYaw = frozenCapability.getFrozenYaw();
-                player.rotationPitch = frozenCapability.getFrozenPitch();
-                player.rotationYawHead = frozenCapability.getFrozenYawHead();
-                player.prevRotationYaw = player.rotationYaw;
-                player.prevRotationPitch = player.rotationPitch;
-                player.prevRotationYawHead = player.rotationYawHead;
-            }
-        }
+//        PlayerEntity player = Minecraft.getInstance().player;
+//        if (player != null) {
+//            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+//            if (playerCapability != null && playerCapability.getGeomancy().canUse(player) && playerCapability.getGeomancy().isSpawningBoulder() && playerCapability.getGeomancy().getSpawnBoulderCharge() > 2) {
+//                Vector3d lookPos = playerCapability.getGeomancy().getLookPos();
+//                Vector3d playerEyes = player.getEyePosition(Minecraft.getInstance().getRenderPartialTicks());
+//                Vector3d vec = playerEyes.subtract(lookPos).normalize();
+//                float yaw = (float) Math.atan2(vec.z, vec.x);
+//                float pitch = (float) Math.asin(vec.y);
+//                player.rotationYaw = (float) (yaw * 180f/Math.PI + 90);
+//                player.rotationPitch = (float) (pitch * 180f/Math.PI);
+//                player.rotationYawHead = player.rotationYaw;
+//                player.prevRotationYaw = player.rotationYaw;
+//                player.prevRotationPitch = player.rotationPitch;
+//                player.prevRotationYawHead = player.rotationYawHead;
+//            }
+//            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(player, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+//            if (frozenCapability != null && player.isPotionActive(EffectHandler.FROZEN) && frozenCapability.getPrevFrozen()) {
+//                player.rotationYaw = frozenCapability.getFrozenYaw();
+//                player.rotationPitch = frozenCapability.getFrozenPitch();
+//                player.rotationYawHead = frozenCapability.getFrozenYawHead();
+//                player.prevRotationYaw = player.rotationYaw;
+//                player.prevRotationPitch = player.rotationPitch;
+//                player.prevRotationYawHead = player.rotationYawHead;
+//            }
+//        }
     }
 
     @SubscribeEvent
@@ -228,6 +230,54 @@ public enum ClientEventHandler {
             }
 
             event.setNewfov(1.0F - f1 * 0.15F);
+        }
+    }
+
+    @SubscribeEvent
+    public void onSetupCamera(EntityViewRenderEvent.CameraSetup event) {
+        PlayerEntity player = Minecraft.getInstance().player;
+        float delta = Minecraft.getInstance().getRenderPartialTicks();
+        float ticksExistedDelta = player.ticksExisted + delta;
+        if (player != null) {
+            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+            if (playerCapability != null && playerCapability.getGeomancy().canUse(player) && playerCapability.getGeomancy().isSpawningBoulder() && playerCapability.getGeomancy().getSpawnBoulderCharge() > 2) {
+                Vector3d lookPos = playerCapability.getGeomancy().getLookPos();
+                Vector3d playerEyes = player.getEyePosition(delta);
+                Vector3d vec = playerEyes.subtract(lookPos).normalize();
+                float yaw = (float) Math.atan2(vec.z, vec.x);
+                float pitch = (float) Math.asin(vec.y);
+                player.rotationYaw = (float) (yaw * 180f/Math.PI + 90);
+                player.rotationPitch = (float) (pitch * 180f/Math.PI);
+                player.rotationYawHead = player.rotationYaw;
+                player.prevRotationYaw = player.rotationYaw;
+                player.prevRotationPitch = player.rotationPitch;
+                player.prevRotationYawHead = player.rotationYawHead;
+                event.setPitch(pitch);
+                event.setYaw(yaw);
+            }
+            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(player, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+            if (frozenCapability != null && player.isPotionActive(EffectHandler.FROZEN) && frozenCapability.getPrevFrozen()) {
+                player.rotationYaw = frozenCapability.getFrozenYaw();
+                player.rotationPitch = frozenCapability.getFrozenPitch();
+                player.rotationYawHead = frozenCapability.getFrozenYawHead();
+                player.prevRotationYaw = player.rotationYaw;
+                player.prevRotationPitch = player.rotationPitch;
+                player.prevRotationYawHead = player.rotationYawHead;
+
+                event.setPitch(frozenCapability.getFrozenPitch());
+                event.setYaw(frozenCapability.getFrozenYaw());
+            }
+
+            float shakeAmplitude = 0;
+            for (EntityCameraShake cameraShake : player.world.getEntitiesWithinAABB(EntityCameraShake.class, player.getBoundingBox().grow(20, 20, 20))) {
+                if (cameraShake.getDistance(player) < cameraShake.getRadius()) {
+                    shakeAmplitude += cameraShake.getShakeAmount(player, delta);
+                }
+            }
+            if (shakeAmplitude > 1.0f) shakeAmplitude = 1.0f;
+            event.setPitch((float) (event.getPitch() + shakeAmplitude * Math.cos(ticksExistedDelta * 3 + 2) * 25));
+            event.setYaw((float) (event.getYaw() + shakeAmplitude * Math.cos(ticksExistedDelta * 5 + 1) * 25));
+            event.setRoll((float) (event.getRoll() + shakeAmplitude * Math.cos(ticksExistedDelta * 4) * 25));
         }
     }
 

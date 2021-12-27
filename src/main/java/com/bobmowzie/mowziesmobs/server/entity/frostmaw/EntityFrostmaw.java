@@ -17,6 +17,7 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LegSolverQuadruped;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
+import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBall;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
@@ -343,6 +344,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                             if (entity.isActiveItemStackBlocking()) entity.getActiveItemStack().damageItem(400, entity, p -> p.sendBreakAnimation(entity.getActiveHand()));
                         }
                     }
+                    EntityCameraShake.cameraShake(world, new Vector3d(slamPosX, getPosY(), slamPosZ), 30, 0.1f, 0, 20);
                 }
             }
             if (getAnimation() == DODGE_ANIMATION && !world.isRemote) {
@@ -483,10 +485,6 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, ICE_BALL_ANIMATION);
                     iceBallCooldown = ICE_BALL_COOLDOWN;
                 }
-                // Temporary solution while fixing frostmaw pathfinding in water
-//                if (isInWater() && getAnimation() == NO_ANIMATION) {
-//                    AnimationHandler.INSTANCE.sendAnimationMessage(this, DODGE_ANIMATION);
-//                }
             }
             else if (!world.isRemote) {
                 timeWithoutTarget++;
@@ -559,6 +557,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         float speed = MathHelper.sqrt(moveX * moveX + moveZ * moveZ);
         if (frame % 16 == 5 && speed > 0.05 && active) {
             playSound(MMSounds.ENTITY_FROSTMAW_STEP.get(), 3F, 0.8F + rand.nextFloat() * 0.2f);
+            EntityCameraShake.cameraShake(world, getPositionVec(), 20, 0.05f, 0, 10);
         }
 
         //Breathing sounds

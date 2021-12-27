@@ -243,9 +243,11 @@ public class EntityBoulder extends Entity {
             } else if (boulderSize == BoulderSizeEnum.LARGE) {
                 playSound(MMSounds.EFFECT_GEOMANCY_HIT_MEDIUM_1.get(), 1.5f, 0.9f);
                 playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG.get(), 1.5f, 1.5f);
+                EntityCameraShake.cameraShake(world, getPositionVec(), 10, 0.05f, 0, 20);
             } else if (boulderSize == BoulderSizeEnum.HUGE) {
                 playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG.get(), 2f, 0.5f);
                 playSound(MMSounds.EFFECT_GEOMANCY_RUMBLE_1.get(), 2, 0.8f);
+                EntityCameraShake.cameraShake(world, getPositionVec(), 15, 0.05f, 50, 30);
             }
             if (world.isRemote) {
                 AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING2.get(), getPosX(), getPosY() - 0.9f, getPosZ(), 0, 0, 0, false, 0, Math.PI / 2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, (int) (5 + 2 * getWidth()), true, true, new ParticleComponent[]{
@@ -296,6 +298,7 @@ public class EntityBoulder extends Entity {
         else if (boulderSize == BoulderSizeEnum.LARGE) {
             playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG.get(), 1.5f, 1f);
             playSound(MMSounds.EFFECT_GEOMANCY_BREAK_MEDIUM_1.get(), 1.5f, 0.9f);
+            EntityCameraShake.cameraShake(world, getPositionVec(), 15, 0.05f, 0, 20);
 
             for (int i = 0; i < 5; i++) {
                 Vector3d particlePos = new Vector3d(rand.nextFloat() * 2, 0, 0);
@@ -312,6 +315,7 @@ public class EntityBoulder extends Entity {
         else if (boulderSize == BoulderSizeEnum.HUGE) {
             playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG.get(), 1.5f, 0.5f);
             playSound(MMSounds.EFFECT_GEOMANCY_BREAK_LARGE_1.get(), 1.5f, 0.5f);
+            EntityCameraShake.cameraShake(world, getPositionVec(), 20, 0.05f, 0, 20);
 
             for (int i = 0; i < 7; i++) {
                 Vector3d particlePos = new Vector3d(rand.nextFloat() * 2.5f, 0, 0);
@@ -433,10 +437,12 @@ public class EntityBoulder extends Entity {
             else if (boulderSize == BoulderSizeEnum.LARGE) {
                 playSound(MMSounds.EFFECT_GEOMANCY_HIT_SMALL.get(), 1.5f, 0.5f);
                 playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG.get(), 1.5f, 1.3f);
+                EntityCameraShake.cameraShake(world, getPositionVec(), 10, 0.05f, 0, 20);
             }
             else if (boulderSize == BoulderSizeEnum.HUGE) {
                 playSound(MMSounds.EFFECT_GEOMANCY_HIT_MEDIUM_1.get(), 1.5f, 1f);
                 playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_BIG.get(), 1.5f, 0.9f);
+                EntityCameraShake.cameraShake(world, getPositionVec(), 15, 0.05f, 0, 20);
             }
 
             if (world.isRemote) {
