@@ -159,10 +159,10 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
         this.goalSelector.addGoal(6, new LookRandomlyGoal(this));
         this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 8.0F));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<PlayerEntity>(this, PlayerEntity.class, 0, true, true, null) {
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<PlayerEntity>(this, PlayerEntity.class, 0, true, true, target -> target.getPosition().withinDistance(getHomePosition(), getMaximumHomeDistance())) {
             @Override
             public boolean shouldContinueExecuting() {
-                return super.shouldContinueExecuting() && getAttackTarget() != null && getAttackTarget().getPosition().withinDistance(getHomePosition(), getMaximumHomeDistance());
+                return super.shouldContinueExecuting() && getAttackTarget() != null && getAttackTarget().getPosition().withinDistance(getHomePosition(), getMaximumHomeDistance()) && getAnimation() == NO_ANIMATION;
             }
         });
         this.goalSelector.addGoal(2, new SimpleAnimationAI<EntityNaga>(this, FLAP_ANIMATION, false) {
@@ -213,12 +213,14 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
 
                 int phase1Length = 15;
                 int phase2Length = 21;
-                if (getAnimationTick() < 23 + phase2Length) {
-                    LivingEntity target = getAttackTarget();
+                LivingEntity target = getAttackTarget();
+                if (getAnimationTick() < phase1Length) {
                     if (target != null) {
                         entity.faceEntity(target, 100, 100);
                         entity.lookController.setLookPositionWithEntity(target, 30F, 30F);
                     }
+                }
+                if (getAnimationTick() < 23 + phase2Length) {
                     if (getAnimationTick() >= 1 && getAnimationTick() < 1 + phase1Length) {
                         float frame = (getAnimationTick() - 1) / (float) phase1Length;
                         v = v.add(new Vector3d(
@@ -327,7 +329,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
         return MowzieEntity.createAttributes()
                 .createMutableAttribute(Attributes.MAX_HEALTH, 30.0D * ConfigHandler.COMMON.MOBS.NAGA.combatConfig.healthMultiplier.get())
                 .createMutableAttribute(Attributes.MOVEMENT_SPEED, 12.0D)
-                .createMutableAttribute(Attributes.FOLLOW_RANGE, 35)
+                .createMutableAttribute(Attributes.FOLLOW_RANGE, 40)
                 .createMutableAttribute(Attributes.ATTACK_DAMAGE, 4.0D * ConfigHandler.COMMON.MOBS.NAGA.combatConfig.attackMultiplier.get());
     }
 
