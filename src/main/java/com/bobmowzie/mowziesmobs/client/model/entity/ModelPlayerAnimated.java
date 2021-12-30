@@ -2,15 +2,12 @@ package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.armor.MowzieElytraModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.ModelRendererMatrix;
-import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.google.common.collect.Lists;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 
 import java.util.List;
 import java.util.Random;
