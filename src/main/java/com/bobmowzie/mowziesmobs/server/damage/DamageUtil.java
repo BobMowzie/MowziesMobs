@@ -2,9 +2,9 @@ package com.bobmowzie.mowziesmobs.server.damage;
 
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.LivingCapability;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
@@ -44,7 +44,7 @@ public class DamageUtil {
 
             if (hit2 && hit1Registered) {
                 onHit2(target, source2);
-                if (target instanceof PlayerEntity) {
+                if (target instanceof Player) {
                     SoundEvent sound = SoundEvents.ENTITY_PLAYER_HURT;
                     if (source2 == DamageSource.ON_FIRE) sound = SoundEvents.ENTITY_PLAYER_HURT_ON_FIRE;
                     else if (source2 == DamageSource.DROWN) sound = SoundEvents.ENTITY_PLAYER_HURT_DROWN;
@@ -96,7 +96,7 @@ public class DamageUtil {
                 d1 = (Math.random() - Math.random()) * 0.01D;
             }
 
-            target.attackedAtYaw = (float)(MathHelper.atan2(d0, d1) * (180D / Math.PI) - (double)target.rotationYaw);
+            target.attackedAtYaw = (float)(MathHelper.atan2(d0, d1) * (180D / Math.PI) - (double)target.getYRot());
             target.applyKnockback(0.4F, d1, d0);
         }
         else

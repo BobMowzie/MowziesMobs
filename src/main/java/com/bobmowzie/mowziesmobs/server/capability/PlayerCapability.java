@@ -17,8 +17,8 @@ import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.power.Power;
 import com.bobmowzie.mowziesmobs.server.power.PowerGeomancy;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.item.minecart.MinecartEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.item.minecart.MinecartEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
@@ -252,14 +252,14 @@ public class PlayerCapability {
         @Override
         public void addedToWorld(EntityJoinWorldEvent event) {
             if (event.getWorld().isRemote()) {
-                PlayerEntity player = (PlayerEntity) event.getEntity();
+                Player player = (Player) event.getEntity();
                 geckoPlayer = new GeckoPlayer.GeckoPlayerThirdPerson(player);
                 if (event.getEntity() == Minecraft.getInstance().player) GeckoFirstPersonRenderer.GECKO_PLAYER_FIRST_PERSON = new GeckoPlayer.GeckoPlayerFirstPerson(player);
             }
         }
 
         public void tick(TickEvent.PlayerTickEvent event) {
-            PlayerEntity player = event.player;
+            Player player = event.player;
 
             prevMotion = player.getPositionVec().subtract(new Vector3d(player.prevPosX, player.prevPosY, player.prevPosZ));
             prevTime = time;
@@ -384,7 +384,7 @@ public class PlayerCapability {
             prevSneaking = player.isSneaking();
         }
 
-        private void restoreIceCrystalStack(PlayerEntity entity, ItemStack stack) {
+        private void restoreIceCrystalStack(Player entity, ItemStack stack) {
             if (stack.getItem() == ItemHandler.ICE_CRYSTAL) {
                 if (!ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable.get()) {
                     stack.setDamage(Math.max(stack.getDamage() - 1, 0));
@@ -392,7 +392,7 @@ public class PlayerCapability {
             }
         }
 
-        private void useIceCrystalStack(PlayerEntity player) {
+        private void useIceCrystalStack(Player player) {
             ItemStack stack = player.getActiveItemStack();
             if (stack.getItem() == ItemHandler.ICE_CRYSTAL) {
                 Ability iceBreathAbility = AbilityHandler.INSTANCE.getAbility(player, AbilityHandler.ICE_BREATH_ABILITY);
@@ -411,7 +411,7 @@ public class PlayerCapability {
             }
         }
 
-        private void tryTeleportBarakoan(PlayerEntity player, EntityBarakoanToPlayer barakoan) {
+        private void tryTeleportBarakoan(Player player, EntityBarakoanToPlayer barakoan) {
             int x = MathHelper.floor(player.getPosX()) - 2;
             int z = MathHelper.floor(player.getPosZ()) - 2;
             int y = MathHelper.floor(player.getBoundingBox().minY);
@@ -419,7 +419,7 @@ public class PlayerCapability {
             for (int l = 0; l <= 4; ++l) {
                 for (int i1 = 0; i1 <= 4; ++i1) {
                     if ((l < 1 || i1 < 1 || l > 3 || i1 > 3) && barakoan.isTeleportFriendlyBlock(x, z, y, l, i1)) {
-                        barakoan.setLocationAndAngles((float) (x + l) + 0.5F, y, (float) (z + i1) + 0.5F, barakoan.rotationYaw, barakoan.rotationPitch);
+                        barakoan.setLocationAndAngles((float) (x + l) + 0.5F, y, (float) (z + i1) + 0.5F, barakoan.getYRot(), barakoan.getXRot());
                         barakoan.getNavigator().clearPath();
                         return;
                     }

@@ -1,6 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.potion;
 
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.potion.EffectType;
 
 public class EffectSunblock extends MowzieEffect {

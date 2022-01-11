@@ -7,8 +7,8 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.math.vector.Vector3d;
 
@@ -26,11 +26,11 @@ public class ModelBipedAnimated<T extends LivingEntity> extends BipedModel<T> {
     @Override
     public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        if (!(entityIn instanceof PlayerEntity)) {
+        if (!(entityIn instanceof Player)) {
             return;
         }
         float delta = Minecraft.getInstance().getRenderPartialTicks();
-        PlayerEntity player = (PlayerEntity) entityIn;
+        Player player = (Player) entityIn;
         doMowzieAnimations(player, this, delta);
     }
 
@@ -54,7 +54,7 @@ public class ModelBipedAnimated<T extends LivingEntity> extends BipedModel<T> {
         ((ModelRendererMatrix)bipedModel.bipedLeftArm).setWorldNormal(geckoModel.bipedLeftArm().getWorldSpaceNormal());
     }
 
-    public static void doMowzieAnimations(PlayerEntity player, BipedModel<?> model, float delta) {
+    public static void doMowzieAnimations(Player player, BipedModel<?> model, float delta) {
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
         if (playerCapability != null && playerCapability.getGeomancy().tunneling) {
             model.isSneak = false;

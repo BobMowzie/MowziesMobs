@@ -1217,7 +1217,7 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
             float nonHoverAnim = 1f - hoverAnim;
             float flapAnim = entity.prevFlapAnimFrac + (entity.flapAnimFrac - entity.prevFlapAnimFrac) * delta;
             if (entity.getAnimation() != EntityNaga.DIE_AIR_ANIMATION) {
-                float pitch = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * delta;
+                float pitch = entity.xRot0 + (entity.getXRot() - entity.xRot0) * delta;
                 pitch = (float) (-pitch * Math.PI / 180f);
                 root.rotateAngleX += pitch * nonHoverAnim;
                 shoulderLJoint.rotateAngleX -= Math.min(pitch, 0) * nonHoverAnim * (1-folder);

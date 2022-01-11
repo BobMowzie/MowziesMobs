@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.server.inventory;
 
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaVillager;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
@@ -75,15 +75,15 @@ public final class InventoryBarakoaya implements IInventory {
     }
 
     @Override
-    public boolean isUsableByPlayer(PlayerEntity player) {
+    public boolean isUsableByPlayer(Player player) {
         return barakoaya.getCustomer() == player;
     }
 
     @Override
-    public void openInventory(PlayerEntity player) {}
+    public void openInventory(Player player) {}
 
     @Override
-    public void closeInventory(PlayerEntity player) {}
+    public void closeInventory(Player player) {}
 
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {

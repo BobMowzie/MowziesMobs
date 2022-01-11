@@ -17,18 +17,18 @@ import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.RandomPositionGenerator;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
-import net.minecraft.entity.ai.controller.LookController;
-import net.minecraft.entity.ai.controller.MovementController;
-import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.passive.IFlyingAnimal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.RandomPositionGenerator;
+import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.ModifiableAttributeInstance;
+import net.minecraft.world.entity.ai.controller.LookController;
+import net.minecraft.world.entity.ai.controller.MovementController;
+import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.monster.IMob;
+import net.minecraft.world.entity.passive.IFlyingAnimal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ProjectileEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -47,6 +47,8 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.*;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
@@ -157,9 +159,9 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
         this.goalSelector.addGoal(4, new EntityNaga.AIFlyAroundTarget(this));
         this.goalSelector.addGoal(3, new EntityNaga.AIFlyTowardsTarget(this));
         this.goalSelector.addGoal(6, new LookRandomlyGoal(this));
-        this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        this.goalSelector.addGoal(6, new LookAtGoal(this, Player.class, 8.0F));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<PlayerEntity>(this, PlayerEntity.class, 0, true, true, target -> target.getPosition().withinDistance(getHomePosition(), getMaximumHomeDistance())) {
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<Player>(this, Player.class, 0, true, true, target -> target.getPosition().withinDistance(getHomePosition(), getMaximumHomeDistance())) {
             @Override
             public boolean shouldContinueExecuting() {
                 return super.shouldContinueExecuting() && getAttackTarget() != null && getAttackTarget().getPosition().withinDistance(getHomePosition(), getMaximumHomeDistance()) && getAnimation() == NO_ANIMATION;
@@ -766,7 +768,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
 
             Vector3d moveDirection = this.getLookVec();
             moveDirection = moveDirection.normalize();
-            float f6 = this.rotationPitch * ((float) Math.PI / 180F);
+            float f6 = this.getXRot() * ((float) Math.PI / 180F);
             double d9 = Math.sqrt(moveDirection.x * moveDirection.x + moveDirection.z * moveDirection.z);
             double d11 = Math.sqrt(horizontalMag(Vector3d3));
             double d12 = moveDirection.length();
@@ -916,8 +918,8 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
             if (this.parentEntity.getAttackTarget() == null)
             {
                 Vector3d motion = this.parentEntity.getMotion();
-                this.parentEntity.rotationYaw = -((float)MathHelper.atan2(motion.x, motion.z)) * (180F / (float)Math.PI);
-                this.parentEntity.renderYawOffset = this.parentEntity.rotationYaw;
+                this.parentEntity.getYRot() = -((float)MathHelper.atan2(motion.x, motion.z)) * (180F / (float)Math.PI);
+                this.parentEntity.renderYawOffset = this.parentEntity.getYRot();
             }
             else
             {
@@ -926,8 +928,8 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
                 {
                     double d1 = entitylivingbase.getPosX() - this.parentEntity.getPosX();
                     double d2 = entitylivingbase.getPosZ() - this.parentEntity.getPosZ();
-                    this.parentEntity.rotationYaw = -((float)MathHelper.atan2(d1, d2)) * (180F / (float)Math.PI);
-                    this.parentEntity.renderYawOffset = this.parentEntity.rotationYaw;
+                    this.parentEntity.getYRot() = -((float)MathHelper.atan2(d1, d2)) * (180F / (float)Math.PI);
+                    this.parentEntity.renderYawOffset = this.parentEntity.getYRot();
                 }
             }
         }
@@ -1187,7 +1189,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
                 if (this.action == Action.MOVE_TO) {
                     if (EntityNaga.this.collidedHorizontally) {
                         EntityNaga naga = EntityNaga.this;
-                        naga.rotationYaw += 180.0F;
+                        naga.getYRot() += 180.0F;
                         this.speedFactor = 0.1F;
                         getNavigator().clearPath();
                     }
@@ -1201,24 +1203,24 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
                     orbitOffsetDiffZ = (float) ((double) orbitOffsetDiffZ * yFractionReduction);
                     horizontalDistToOrbitOffset = (double) MathHelper.sqrt(orbitOffsetDiffX * orbitOffsetDiffX + orbitOffsetDiffZ * orbitOffsetDiffZ);
                     double distToOrbitOffset = (double) MathHelper.sqrt(orbitOffsetDiffX * orbitOffsetDiffX + orbitOffsetDiffZ * orbitOffsetDiffZ + orbitOffsetDiffY * orbitOffsetDiffY);
-                    float rotationYaw = EntityNaga.this.rotationYaw;
+                    float rotationYaw = EntityNaga.this.getYRot();
                     float desiredRotationYaw = (float) MathHelper.atan2((double) orbitOffsetDiffZ, (double) orbitOffsetDiffX);
-                    float rotationYawWrapped = MathHelper.wrapDegrees(EntityNaga.this.rotationYaw + 90.0F);
+                    float rotationYawWrapped = MathHelper.wrapDegrees(EntityNaga.this.getYRot() + 90.0F);
                     float desiredRotationYawWrapped = MathHelper.wrapDegrees(desiredRotationYaw * 57.295776F);
-                    EntityNaga.this.rotationYaw = MathHelper.approachDegrees(rotationYawWrapped, desiredRotationYawWrapped, 4.0F) - 90.0F;
-                    float newBanking = MowzieMathUtil.approachDegreesSmooth(getBanking(), getPrevBanking(), EntityNaga.this.rotationYaw - rotationYaw, 0.5f, 0.1f);
+                    EntityNaga.this.getYRot() = MathHelper.approachDegrees(rotationYawWrapped, desiredRotationYawWrapped, 4.0F) - 90.0F;
+                    float newBanking = MowzieMathUtil.approachDegreesSmooth(getBanking(), getPrevBanking(), EntityNaga.this.getYRot() - rotationYaw, 0.5f, 0.1f);
                     setPrevBanking(getBanking());
                     setBanking(newBanking);
-                    EntityNaga.this.renderYawOffset = EntityNaga.this.rotationYaw;
-//                if (MathHelper.degreesDifferenceAbs(rotationYaw, EntityNaga.this.rotationYaw) < 3.0F) {
+                    EntityNaga.this.renderYawOffset = EntityNaga.this.getYRot();
+//                if (MathHelper.degreesDifferenceAbs(rotationYaw, EntityNaga.this.getYRot()) < 3.0F) {
 //                    this.speedFactor = MathHelper.approach(this.speedFactor, 1.8F, 0.005F * (1.8F / this.speedFactor));
 //                } else {
 //                    this.speedFactor = MathHelper.approach(this.speedFactor, 0.2F, 0.025F);
 //                }
 
                     float desiredPitch = (float) (-(MathHelper.atan2((double) (-orbitOffsetDiffY), horizontalDistToOrbitOffset) * 57.2957763671875D));
-                    EntityNaga.this.rotationPitch = MathHelper.approachDegrees(EntityNaga.this.rotationPitch, desiredPitch, 8);
-                    float rotationYaw1 = EntityNaga.this.rotationYaw + 90.0F;
+                    EntityNaga.this.getXRot() = MathHelper.approachDegrees(EntityNaga.this.getXRot(), desiredPitch, 8);
+                    float rotationYaw1 = EntityNaga.this.getYRot() + 90.0F;
                     double xMotion = (double) (this.speedFactor * MathHelper.cos(rotationYaw1 * 0.017453292F)) * Math.abs((double) orbitOffsetDiffX / distToOrbitOffset);
                     double yMotion = (double) (this.speedFactor * MathHelper.sin(rotationYaw1 * 0.017453292F)) * Math.abs((double) orbitOffsetDiffZ / distToOrbitOffset);
                     double zMotion = (double) (this.speedFactor * MathHelper.sin(desiredPitch * 0.017453292F)) * Math.abs((double) orbitOffsetDiffY / distToOrbitOffset);
@@ -1273,13 +1275,13 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
         public void tick() {
             if (this.isLooking) {
                 this.isLooking = false;
-                this.mob.rotationYawHead = this.clampedRotate(this.mob.rotationYawHead, this.getTargetYaw(), this.deltaLookYaw);
+                this.mob.getYRot()Head = this.clampedRotate(this.mob.getYRot()Head, this.getTargetYaw(), this.deltaLookYaw);
             } else {
-                this.mob.rotationYawHead = this.clampedRotate(this.mob.rotationYawHead, this.mob.renderYawOffset, 10.0F);
+                this.mob.getYRot()Head = this.clampedRotate(this.mob.getYRot()Head, this.mob.renderYawOffset, 10.0F);
             }
 
             if (!this.mob.getNavigator().noPath()) {
-                this.mob.rotationYawHead = MathHelper.func_219800_b(this.mob.rotationYawHead, this.mob.renderYawOffset, (float)this.mob.getHorizontalFaceSpeed());
+                this.mob.getYRot()Head = MathHelper.func_219800_b(this.mob.getYRot()Head, this.mob.renderYawOffset, (float)this.mob.getHorizontalFaceSpeed());
             }
         }
     }

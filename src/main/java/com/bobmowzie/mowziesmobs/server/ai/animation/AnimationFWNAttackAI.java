@@ -5,9 +5,9 @@ import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.vector.Vector3d;
 
@@ -61,7 +61,7 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
             if (entity.getAnimationTick() < 23 && entityTarget != null) {
                 entity.faceEntity(entityTarget, 30F, 30F);
             } else {
-                entity.rotationYaw = entity.prevRotationYaw;
+                entity.getYRot() = entity.yRot0;
             }
             if (entity.getAnimationTick() == 6) {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_CREAK.get(), 0.5F, 1);
@@ -102,7 +102,7 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
             if (entity.getAnimationTick() < 7 && entityTarget != null) {
                 entity.faceEntity(entityTarget, 30F, 30F);
             } else {
-                entity.rotationYaw = entity.prevRotationYaw;
+                entity.getYRot() = entity.yRot0;
             }
             if (entity.getAnimationTick() == 10) {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_WHOOSH.get(), 1.2F, 1);
@@ -143,13 +143,13 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
             if (entity.getAnimationTick() < 22 && entityTarget != null) {
                 entity.faceEntity(entityTarget, 30F, 30F);
             } else {
-                entity.rotationYaw = entity.prevRotationYaw;
+                entity.getYRot() = entity.yRot0;
             }
             if (entity.getAnimationTick() == 20) {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_WHOOSH.get(), 1.2F, 0.9f);
             } else if (entity.getAnimationTick() == 24) {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_GRUNT_3.get(), 1.5F, 1.13f);
-                entity.move(MoverType.SELF, new Vector3d(Math.cos(Math.toRadians(entity.rotationYaw + 90)), 0, Math.sin(Math.toRadians(entity.rotationYaw + 90))));
+                entity.move(MoverType.SELF, new Vector3d(Math.cos(Math.toRadians(entity.getYRot() + 90)), 0, Math.sin(Math.toRadians(entity.getYRot() + 90))));
                 List<LivingEntity> entitiesHit = entity.getEntityLivingBaseNearby(range + 0.2, 3, range + 0.2, range + 0.2);
                 float damage = (float)entity.getAttribute(Attributes.ATTACK_DAMAGE).getValue() * ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.combatConfig.attackMultiplier.get().floatValue();
                 boolean hit = false;

@@ -1,6 +1,6 @@
 package com.ilexiconn.llibrary.server.animation;
 
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 
 /**
  * @author iLexiconn

@@ -1,8 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.ai;
 
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.controller.MovementController;
+import net.minecraft.world.entity.MobEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.controller.MovementController;
 import net.minecraft.pathfinding.NodeProcessor;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.pathfinding.PathNodeType;
@@ -36,8 +36,8 @@ public class MMEntityMoveHelper extends MovementController
             f4 = f1 / f4;
             f2 = f2 * f4;
             f3 = f3 * f4;
-            float f5 = MathHelper.sin(this.mob.rotationYaw * 0.017453292F);
-            float f6 = MathHelper.cos(this.mob.rotationYaw * 0.017453292F);
+            float f5 = MathHelper.sin(this.mob.getYRot() * 0.017453292F);
+            float f6 = MathHelper.cos(this.mob.getYRot() * 0.017453292F);
             float f7 = f2 * f6 - f3 * f5;
             float f8 = f3 * f6 + f2 * f5;
             PathNavigator pathnavigate = this.mob.getNavigator();
@@ -74,7 +74,7 @@ public class MMEntityMoveHelper extends MovementController
             }
 
             float f9 = (float)(MathHelper.atan2(d1, d0) * (180D / Math.PI)) - 90.0F;
-            this.mob.rotationYaw = this.limitAngle(this.mob.rotationYaw, f9, maxRotate);
+            this.mob.getYRot() = this.limitAngle(this.mob.getYRot(), f9, maxRotate);
             this.mob.setAIMoveSpeed((float)(this.speed * this.mob.getAttribute(Attributes.MOVEMENT_SPEED).getValue()));
 
             if (d2 > (double)this.mob.stepHeight && d0 * d0 + d1 * d1 < (double)Math.max(1.0F, this.mob.getWidth()))

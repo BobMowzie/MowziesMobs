@@ -6,8 +6,8 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.util.HandSide;
 
 import static com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack.SWING_DURATION_HOR;
@@ -29,7 +29,7 @@ public class WroughtAxeSlamAbility extends Ability {
         super.start();
         if (!getUser().world.isRemote()) {
             EntityAxeAttack axeAttack = new EntityAxeAttack(EntityHandler.AXE_ATTACK, getUser().world, getUser(), true);
-            axeAttack.setPositionAndRotation(getUser().getPosX(), getUser().getPosY(), getUser().getPosZ(), getUser().rotationYaw, getUser().rotationPitch);
+            axeAttack.setPositionAndRotation(getUser().getPosX(), getUser().getPosY(), getUser().getPosZ(), getUser().getYRot(), getUser().getXRot());
             getUser().world.addEntity(axeAttack);
             this.axeAttack = axeAttack;
         }
@@ -42,8 +42,8 @@ public class WroughtAxeSlamAbility extends Ability {
     @Override
     public void tickUsing() {
         super.tickUsing();
-        if (getTicksInUse() == SWING_DURATION_VER && getUser() instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity) getUser();
+        if (getTicksInUse() == SWING_DURATION_VER && getUser() instanceof Player) {
+            Player player = (Player) getUser();
             player.resetCooldown();
         }
     }

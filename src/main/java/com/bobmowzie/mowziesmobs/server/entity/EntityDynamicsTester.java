@@ -2,9 +2,9 @@ package com.bobmowzie.mowziesmobs.server.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.dynamics.DynamicChain;
 import com.ilexiconn.llibrary.server.animation.Animation;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ai.goal.LookRandomlyGoal;
-import net.minecraft.entity.ai.goal.RandomWalkingGoal;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.goal.LookRandomlyGoal;
+import net.minecraft.world.entity.ai.goal.RandomWalkingGoal;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;

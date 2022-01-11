@@ -14,8 +14,8 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -62,7 +62,7 @@ public final class GuiBarakoTrade extends ContainerScreen<ContainerBarakoTrade> 
             updateButton();
             MowziesMobs.NETWORK.sendToServer(new MessageBarakoTrade(barako));
             if (!Minecraft.getInstance().isIntegratedServerRunning()) {
-                PlayerEntity player = playerInventory.player;
+                Player player = playerInventory.player;
                 boolean satisfied = barako.hasTradedWith(player);
                 if (!satisfied) {
                     if (barako.fulfillDesire(container.getSlot(0))) {

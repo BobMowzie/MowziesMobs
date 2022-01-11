@@ -22,8 +22,8 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -76,7 +76,7 @@ public class TunnelingAbility extends Ability {
     public void tickUsing() {
         super.tickUsing();
         getUser().fallDistance = 0;
-        if (getUser() instanceof PlayerEntity) ((PlayerEntity)getUser()).abilities.isFlying = false;
+        if (getUser() instanceof Player) ((Player)getUser()).abilities.isFlying = false;
         underground = !getUser().world.getEntitiesWithinAABB(EntityBlockSwapper.class, getUser().getBoundingBox().grow(1)).isEmpty();
         Vector3d lookVec = getUser().getLookVec();
         float tunnelSpeed = 0.3f;
@@ -91,7 +91,7 @@ public class TunnelingAbility extends Ability {
             List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(getUser(),2, 2, 2, 2);
             for (LivingEntity entityHit : entitiesHit) {
                 DamageSource damageSource = DamageSource.causeMobDamage(getUser());
-                if (getUser() instanceof PlayerEntity) damageSource = DamageSource.causePlayerDamage((PlayerEntity) getUser());
+                if (getUser() instanceof Player) damageSource = DamageSource.causePlayerDamage((Player) getUser());
                 entityHit.attackEntityFrom(damageSource, 6 * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.geomancyAttackMultiplier.get().floatValue());
             }
         }
@@ -165,7 +165,7 @@ public class TunnelingAbility extends Ability {
     }
 
     @Override
-    public void onSneakDown(PlayerEntity player) {
+    public void onSneakDown(Player player) {
         super.onSneakDown(player);
         if (doubleTapTimer > 0 && !player.isOnGround()) {
             AbilityHandler.INSTANCE.sendAbilityMessage(player, AbilityHandler.TUNNELING_ABILITY);

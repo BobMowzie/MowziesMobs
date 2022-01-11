@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.client.model.armor;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBipedAnimated;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.entity.LivingEntity;
 
 public class WroughtHelmModel<T extends LivingEntity> extends BipedModel<T> {
     public ModelRenderer shape1;

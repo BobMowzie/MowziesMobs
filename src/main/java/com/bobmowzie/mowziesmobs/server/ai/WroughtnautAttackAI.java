@@ -3,8 +3,8 @@ package com.bobmowzie.mowziesmobs.server.ai;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.EnumSet;
@@ -68,7 +68,7 @@ public class WroughtnautAttackAI extends Goal {
         dist = this.wroughtnaut.getDistanceSq(this.targetX, this.targetY, this.targetZ);
         if (target.getPosY() - this.wroughtnaut.getPosY() >= -1 && target.getPosY() - this.wroughtnaut.getPosY() <= 3) {
             boolean couldStomp = dist < 6.0D * 6.0D && this.timeSinceStomp > 200;
-            if (dist < 3.5D * 3.5D && Math.abs(MathHelper.wrapDegrees(this.wroughtnaut.getAngleBetweenEntities(target, this.wroughtnaut) - this.wroughtnaut.rotationYaw)) < 35.0D && (!couldStomp || this.wroughtnaut.getRNG().nextFloat() < 0.667F)) {
+            if (dist < 3.5D * 3.5D && Math.abs(MathHelper.wrapDegrees(this.wroughtnaut.getAngleBetweenEntities(target, this.wroughtnaut) - this.wroughtnaut.getYRot())) < 35.0D && (!couldStomp || this.wroughtnaut.getRNG().nextFloat() < 0.667F)) {
                 if (this.attacksSinceVertical > 3 + 2 * (1 - wroughtnaut.getHealthRatio()) || this.wroughtnaut.getRNG().nextFloat() < 0.18F) {
                     AnimationHandler.INSTANCE.sendAnimationMessage(this.wroughtnaut, EntityWroughtnaut.VERTICAL_ATTACK_ANIMATION);
                     this.attacksSinceVertical = 0;

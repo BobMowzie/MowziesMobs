@@ -1,8 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.entity.frostmaw;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.world.World;
@@ -73,8 +73,8 @@ public class EntityFrozenController extends Entity {
     public void updatePassenger(Entity passenger) {
         if (this.isPassenger(passenger))
         {
-            if (passenger instanceof PlayerEntity) passenger.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
-            else passenger.setPositionAndRotation(this.getPosX(), this.getPosY(), this.getPosZ(), this.rotationYaw, this.rotationPitch);
+            if (passenger instanceof Player) passenger.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
+            else passenger.setPositionAndRotation(this.getPosX(), this.getPosY(), this.getPosZ(), this.getYRot(), this.getXRot());
         }
     }
 }

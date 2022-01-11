@@ -3,8 +3,8 @@ package com.bobmowzie.mowziesmobs.server.inventory;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaVillager;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
@@ -16,7 +16,7 @@ public final class ContainerBarakoayaTrade extends Container {
 
     private final InventoryBarakoaya inventory;
 
-    private final PlayerEntity player;
+    private final Player player;
 
     public ContainerBarakoayaTrade(int id, PlayerInventory playerInventory) {
         this(id, (EntityBarakoaVillager) MowziesMobs.PROXY.getReferencedMob(), playerInventory);
@@ -44,7 +44,7 @@ public final class ContainerBarakoayaTrade extends Container {
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity player) {
+    public boolean canInteractWith(Player player) {
         return barakoaya != null && inventory.isUsableByPlayer(player) && barakoaya.isAlive() && barakoaya.getDistance(player) < 8;
     }
 
@@ -55,7 +55,7 @@ public final class ContainerBarakoayaTrade extends Container {
     }
 
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity player, int index) {
+    public ItemStack transferStackInSlot(Player player, int index) {
         ItemStack stack = ItemStack.EMPTY;
         Slot slot = inventorySlots.get(index);
         if (slot != null && slot.getHasStack()) {
@@ -91,7 +91,7 @@ public final class ContainerBarakoayaTrade extends Container {
     }
 
     @Override
-    public void onContainerClosed(PlayerEntity player) {
+    public void onContainerClosed(Player player) {
         super.onContainerClosed(player);
         if (barakoaya != null) barakoaya.setCustomer(null);
         if (!player.world.isRemote) {
@@ -143,7 +143,7 @@ public final class ContainerBarakoayaTrade extends Container {
         }
 
         @Override
-        public ItemStack onTake(PlayerEntity player, ItemStack stack) {
+        public ItemStack onTake(Player player, ItemStack stack) {
             onCrafting(stack);
             if (barakoaya != null && barakoaya.isOfferingTrade()) {
                 Trade trade = barakoaya.getOfferingTrade();

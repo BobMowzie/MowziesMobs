@@ -3,8 +3,8 @@ package com.bobmowzie.mowziesmobs.server.ability.abilities;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.SmallFireballEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.SmallFireballEntity;
 import net.minecraft.util.math.vector.Vector3d;
 
 public class FireballAbility extends Ability {

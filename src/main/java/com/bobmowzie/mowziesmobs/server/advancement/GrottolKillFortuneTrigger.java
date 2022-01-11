@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.advancements.PlayerAdvancements;
 import net.minecraft.advancements.criterion.CriterionInstance;
 import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.entity.player.ServerPlayer;
 import net.minecraft.loot.ConditionArrayParser;
 import net.minecraft.util.ResourceLocation;
 
@@ -32,7 +32,7 @@ public class GrottolKillFortuneTrigger extends MMTrigger<CriterionInstance, Grot
         return new GrottolKillFortuneTrigger.Listener(playerAdvancements);
     }
 
-    public void trigger(ServerPlayerEntity player) {
+    public void trigger(ServerPlayer player) {
         GrottolKillFortuneTrigger.Listener listeners = this.listeners.get(player.getAdvancements());
 
         if (listeners != null) {

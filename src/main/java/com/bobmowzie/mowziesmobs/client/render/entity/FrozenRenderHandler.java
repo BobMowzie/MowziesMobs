@@ -5,7 +5,7 @@ import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
+import net.minecraft.client.entity.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.LivingRenderer;
@@ -15,9 +15,9 @@ import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerModelPart;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
@@ -58,7 +58,7 @@ public enum FrozenRenderHandler {
     public void onRenderHand(RenderHandEvent event) {
         event.getMatrixStack().push();
 
-        PlayerEntity player = Minecraft.getInstance().player;
+        Player player = Minecraft.getInstance().player;
 
         if(player != null && player.isPotionActive(EffectHandler.FROZEN)) {
             if(player.isPotionActive(EffectHandler.FROZEN)) {
@@ -96,34 +96,34 @@ public enum FrozenRenderHandler {
         float f6 = MathHelper.sin(f1 * (float)Math.PI);
         matrixStackIn.rotate(Vector3f.YP.rotationDegrees(f * f6 * 70.0F));
         matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(f * f5 * -20.0F));
-        AbstractClientPlayerEntity abstractclientplayerentity = mc.player;
-        mc.getTextureManager().bindTexture(abstractclientplayerentity.getLocationSkin());
+        AbstractClientPlayer abstractclientPlayer = mc.player;
+        mc.getTextureManager().bindTexture(abstractclientPlayer.getLocationSkin());
         matrixStackIn.translate(f * -1.0F, 3.6F, 3.5D);
         matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(f * 120.0F));
         matrixStackIn.rotate(Vector3f.XP.rotationDegrees(200.0F));
         matrixStackIn.rotate(Vector3f.YP.rotationDegrees(f * -135.0F));
         matrixStackIn.translate(f * 5.6F, 0.0D, 0.0D);
-        PlayerRenderer playerrenderer = (PlayerRenderer)renderManager.getRenderer(abstractclientplayerentity);
+        PlayerRenderer playerrenderer = (PlayerRenderer)renderManager.getRenderer(abstractclientPlayer);
         if (flag) {
-            playerrenderer.renderRightArm(matrixStackIn, bufferIn, combinedLightIn, abstractclientplayerentity);
+            playerrenderer.renderRightArm(matrixStackIn, bufferIn, combinedLightIn, abstractclientPlayer);
             matrixStackIn.scale(1.02f, 1.02f, 1.02f);
-            this.renderRightArm(matrixStackIn, bufferIn, combinedLightIn, abstractclientplayerentity, playerrenderer.getEntityModel());
+            this.renderRightArm(matrixStackIn, bufferIn, combinedLightIn, abstractclientPlayer, playerrenderer.getEntityModel());
         } else {
-            playerrenderer.renderLeftArm(matrixStackIn, bufferIn, combinedLightIn, abstractclientplayerentity);
+            playerrenderer.renderLeftArm(matrixStackIn, bufferIn, combinedLightIn, abstractclientPlayer);
             matrixStackIn.scale(1.02f, 1.02f, 1.02f);
-            this.renderLeftArm(matrixStackIn, bufferIn, combinedLightIn, abstractclientplayerentity, playerrenderer.getEntityModel());
+            this.renderLeftArm(matrixStackIn, bufferIn, combinedLightIn, abstractclientPlayer, playerrenderer.getEntityModel());
         }
     }
 
-    public void renderRightArm(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, AbstractClientPlayerEntity playerIn, PlayerModel<AbstractClientPlayerEntity> model) {
+    public void renderRightArm(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, AbstractClientPlayer playerIn, PlayerModel<AbstractClientPlayer> model) {
         this.renderItem(matrixStackIn, bufferIn, combinedLightIn, playerIn, (model).bipedRightArm, (model).bipedRightArmwear, model);
     }
 
-    public void renderLeftArm(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, AbstractClientPlayerEntity playerIn, PlayerModel<AbstractClientPlayerEntity> model) {
+    public void renderLeftArm(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, AbstractClientPlayer playerIn, PlayerModel<AbstractClientPlayer> model) {
         this.renderItem(matrixStackIn, bufferIn, combinedLightIn, playerIn, (model).bipedLeftArm, (model).bipedLeftArmwear, model);
     }
 
-    private void renderItem(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, AbstractClientPlayerEntity playerIn, ModelRenderer rendererArmIn, ModelRenderer rendererArmwearIn, PlayerModel<AbstractClientPlayerEntity> model) {
+    private void renderItem(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, AbstractClientPlayer playerIn, ModelRenderer rendererArmIn, ModelRenderer rendererArmwearIn, PlayerModel<AbstractClientPlayer> model) {
         this.setModelVisibilities(playerIn, model);
         model.swingProgress = 0.0F;
         model.isSneak = false;
@@ -133,7 +133,7 @@ public enum FrozenRenderHandler {
         rendererArmwearIn.render(matrixStackIn, bufferIn.getBuffer(RenderType.getEntityTranslucent(FROZEN_TEXTURE)), combinedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 0.8f);
     }
 
-    private void setModelVisibilities(AbstractClientPlayerEntity clientPlayer, PlayerModel<AbstractClientPlayerEntity> playermodel) {
+    private void setModelVisibilities(AbstractClientPlayer clientPlayer, PlayerModel<AbstractClientPlayer> playermodel) {
         if (clientPlayer.isSpectator()) {
             playermodel.setVisible(false);
             playermodel.bipedHead.showModel = true;

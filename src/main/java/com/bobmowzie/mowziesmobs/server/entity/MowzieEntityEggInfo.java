@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MobEntity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobEntity;
 import net.minecraft.util.ResourceLocation;
 
 public class MowzieEntityEggInfo {

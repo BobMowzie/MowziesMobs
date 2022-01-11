@@ -15,9 +15,9 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.INBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
@@ -140,14 +140,14 @@ public class SpawnBoulderAbility extends Ability {
             Vector3d vec = playerEyes.subtract(lookPos).normalize();
             float yaw = (float) Math.atan2(vec.z, vec.x);
             float pitch = (float) Math.asin(vec.y);
-            getUser().rotationYaw = (float) (yaw * 180f / Math.PI + 90);
-            getUser().rotationPitch = (float) (pitch * 180f / Math.PI);
+            getUser().getYRot() = (float) (yaw * 180f / Math.PI + 90);
+            getUser().getXRot() = (float) (pitch * 180f / Math.PI);
         }
         spawnBoulderCharge = 0;
     }
 
     @Override
-    public void onRightMouseUp(PlayerEntity player) {
+    public void onRightMouseUp(Player player) {
         super.onRightMouseUp(player);
         if (isUsing() && getCurrentSection().sectionType == AbilitySection.AbilitySectionType.STARTUP) {
             if (player.getDistanceSq(spawnBoulderPos.getX(), spawnBoulderPos.getY(), spawnBoulderPos.getZ()) < 36) {
@@ -195,12 +195,12 @@ public class SpawnBoulderAbility extends Ability {
             Vector3d vec = playerEyes.subtract(lookPos).normalize();
             float yaw = (float) Math.atan2(vec.z, vec.x);
             float pitch = (float) Math.asin(vec.y);
-            getUser().rotationYaw = (float) (yaw * 180f / Math.PI + 90);
-            getUser().rotationPitch = (float) (pitch * 180f / Math.PI);
-            getUser().rotationYawHead = getUser().rotationYaw;
-            getUser().prevRotationYaw = getUser().rotationYaw;
-            getUser().prevRotationPitch = getUser().rotationPitch;
-            getUser().prevRotationYawHead = getUser().rotationYawHead;
+            getUser().getYRot() = (float) (yaw * 180f / Math.PI + 90);
+            getUser().getXRot() = (float) (pitch * 180f / Math.PI);
+            getUser().getYRot()Head = getUser().getYRot();
+            getUser().yRot0 = getUser().getYRot();
+            getUser().xRot0 = getUser().getXRot();
+            getUser().yHeadRot0 = getUser().getYRot()Head;
         }
     }
 }

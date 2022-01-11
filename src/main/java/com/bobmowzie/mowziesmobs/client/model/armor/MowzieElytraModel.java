@@ -4,7 +4,7 @@ import com.bobmowzie.mowziesmobs.client.model.tools.ModelRendererMatrix;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.entity.model.ElytraModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

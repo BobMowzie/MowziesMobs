@@ -7,8 +7,8 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySolarBeam;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
@@ -29,7 +29,7 @@ public class SolarBeamAbility extends Ability {
         super.start();
         LivingEntity user = getUser();
         if (!getUser().world.isRemote()) {
-            EntitySolarBeam solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM, user.world, user, user.getPosX(), user.getPosY() + 1.2f, user.getPosZ(), (float) ((user.rotationYawHead + 90) * Math.PI / 180), (float) (-user.rotationPitch * Math.PI / 180), 55);
+            EntitySolarBeam solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM, user.world, user, user.getPosX(), user.getPosY() + 1.2f, user.getPosZ(), (float) ((user.getYRot()Head + 90) * Math.PI / 180), (float) (-user.getXRot() * Math.PI / 180), 55);
             solarBeam.setHasPlayer(true);
             user.world.addEntity(solarBeam);
             user.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 80, 2, false, false));
@@ -62,7 +62,7 @@ public class SolarBeamAbility extends Ability {
 
     @Override
     public boolean canUse() {
-        if (getUser() instanceof PlayerEntity && !((PlayerEntity)getUser()).inventory.getCurrentItem().isEmpty()) return false;
+        if (getUser() instanceof Player && !((Player)getUser()).inventory.getCurrentItem().isEmpty()) return false;
         return getUser().isPotionActive(EffectHandler.SUNS_BLESSING) && super.canUse();
     }
 }

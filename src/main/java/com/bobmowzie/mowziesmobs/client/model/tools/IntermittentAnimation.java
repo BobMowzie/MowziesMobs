@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.model.tools;
 
 import com.bobmowzie.mowziesmobs.server.entity.IntermittentAnimatableEntity;
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.Random;

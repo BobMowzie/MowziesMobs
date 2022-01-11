@@ -10,7 +10,7 @@ import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
+import net.minecraft.client.entity.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.FirstPersonRenderer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -66,7 +66,7 @@ public class GeckoFirstPersonRenderer extends FirstPersonRenderer implements IGe
         return modelsToLoad;
     }
 
-    public void renderItemInFirstPerson(AbstractClientPlayerEntity player, float pitch, float partialTicks, Hand handIn, float swingProgress, ItemStack stack, float equippedProgress, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, GeckoPlayer geckoPlayer) {
+    public void renderItemInFirstPerson(AbstractClientPlayer player, float pitch, float partialTicks, Hand handIn, float swingProgress, ItemStack stack, float equippedProgress, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, GeckoPlayer geckoPlayer) {
         boolean flag = handIn == Hand.MAIN_HAND;
         HandSide handside = flag ? player.getPrimaryHand() : player.getPrimaryHand().opposite();
         mirror = player.getPrimaryHand() == HandSide.LEFT;
@@ -142,7 +142,7 @@ public class GeckoFirstPersonRenderer extends FirstPersonRenderer implements IGe
 
     @Override
     public ResourceLocation getTextureLocation(GeckoPlayer geckoPlayer) {
-        return ((AbstractClientPlayerEntity)geckoPlayer.getPlayer()).getLocationSkin();
+        return ((AbstractClientPlayer)geckoPlayer.getPlayer()).getLocationSkin();
     }
 
     @Override

@@ -37,20 +37,20 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
-import net.minecraft.entity.ai.goal.AvoidEntityGoal;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.item.ItemFrameEntity;
-import net.minecraft.entity.merchant.villager.AbstractVillagerEntity;
-import net.minecraft.entity.monster.AbstractSkeletonEntity;
-import net.minecraft.entity.monster.SkeletonEntity;
-import net.minecraft.entity.monster.ZombieEntity;
-import net.minecraft.entity.monster.ZombifiedPiglinEntity;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.passive.ParrotEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.GlobalEntityTypeAttributes;
+import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
+import net.minecraft.world.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.item.ItemFrameEntity;
+import net.minecraft.world.entity.merchant.villager.AbstractVillagerEntity;
+import net.minecraft.world.entity.monster.AbstractSkeletonEntity;
+import net.minecraft.world.entity.monster.SkeletonEntity;
+import net.minecraft.world.entity.monster.ZombieEntity;
+import net.minecraft.world.entity.monster.ZombifiedPiglinEntity;
+import net.minecraft.world.entity.passive.AnimalEntity;
+import net.minecraft.world.entity.passive.ParrotEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.ServerPlayer;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
@@ -91,8 +91,8 @@ public final class ServerEventHandler {
             if (abilityCapability != null) abilityCapability.instanceAbilities((LivingEntity) event.getEntity());
         }
 
-        if (event.getEntity() instanceof PlayerEntity) {
-            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability((PlayerEntity) event.getEntity(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        if (event.getEntity() instanceof Player) {
+            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability((Player) event.getEntity(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
             if (playerCapability != null) playerCapability.addedToWorld(event);
         }
 
@@ -209,10 +209,10 @@ public final class ServerEventHandler {
                 damage = Math.max(f / 25.0F, 0.0F);
                 float f2 = f1 - damage;
                 if (f2 > 0.0F && f2 < 3.4028235E37F) {
-                    if (livingEntity instanceof ServerPlayerEntity) {
-                        ((ServerPlayerEntity)livingEntity).addStat(Stats.DAMAGE_RESISTED, Math.round(f2 * 10.0F));
-                    } else if (source.getTrueSource() instanceof ServerPlayerEntity) {
-                        ((ServerPlayerEntity)source.getTrueSource()).addStat(Stats.DAMAGE_DEALT_RESISTED, Math.round(f2 * 10.0F));
+                    if (livingEntity instanceof ServerPlayer) {
+                        ((ServerPlayer)livingEntity).addStat(Stats.DAMAGE_RESISTED, Math.round(f2 * 10.0F));
+                    } else if (source.getTrueSource() instanceof ServerPlayer) {
+                        ((ServerPlayer)source.getTrueSource()).addStat(Stats.DAMAGE_DEALT_RESISTED, Math.round(f2 * 10.0F));
                     }
                 }
             }
@@ -222,7 +222,7 @@ public final class ServerEventHandler {
             event.getEntityLiving().removeActivePotionEffect(EffectHandler.FROZEN);
             MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> event.getEntity()), new MessageRemoveFreezeProgress(event.getEntityLiving()));
         }
-        if (event.getEntity() instanceof PlayerEntity) {
+        if (event.getEntity() instanceof Player) {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getEntity(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
             if (playerCapability != null) {
                 Power[] powers = playerCapability.getPowers();
@@ -246,7 +246,7 @@ public final class ServerEventHandler {
         if (event.phase == TickEvent.Phase.START || event.player == null) {
             return;
         }
-        PlayerEntity player = event.player;
+        Player player = event.player;
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
         if (playerCapability != null) {
             playerCapability.tick(event);
@@ -278,8 +278,8 @@ public final class ServerEventHandler {
             return;
         }
 
-        if (living instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity) living;
+        if (living instanceof Player) {
+            Player player = (Player) living;
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
             if (playerCapability != null && event.isCancelable()) {
                 if (
@@ -311,7 +311,7 @@ public final class ServerEventHandler {
                 return;
             }
 
-            if (entity instanceof PlayerEntity) {
+            if (entity instanceof Player) {
                 BlockState block = event.getPlacedBlock();
                 if (
                         block.getBlock() == Blocks.FIRE ||
@@ -320,7 +320,7 @@ public final class ServerEventHandler {
                         block.getBlock() == Blocks.DISPENSER ||
                         block.getBlock() == Blocks.CACTUS
                 ) {
-                    aggroBarakoa((PlayerEntity) entity);
+                    aggroBarakoa((Player) entity);
                 }
             }
         }
@@ -395,7 +395,7 @@ public final class ServerEventHandler {
             return;
         }
 
-        PlayerEntity player = event.getPlayer();
+        Player player = event.getPlayer();
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
         if (playerCapability != null) {
 
@@ -449,7 +449,7 @@ public final class ServerEventHandler {
             return;
         }
 
-        PlayerEntity player = event.getPlayer();
+        Player player = event.getPlayer();
         if (player.world.getBlockState(event.getPos()).getBlock() instanceof ChestBlock) {
             aggroBarakoa(player);
         }
@@ -486,7 +486,7 @@ public final class ServerEventHandler {
     @SubscribeEvent
     public void onPlayerLeftClick(PlayerInteractEvent.LeftClickEmpty event) {
         double range = 6.5;
-        PlayerEntity player = event.getPlayer();
+        Player player = event.getPlayer();
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
         if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == ItemHandler.SPEAR) {
             LivingEntity entityHit = ItemSpear.raytraceEntities(player.getEntityWorld(), player, range);
@@ -538,7 +538,7 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onPlayerLeftClick(PlayerInteractEvent.LeftClickBlock event) {
-        PlayerEntity player = event.getPlayer();
+        Player player = event.getPlayer();
         if (event.isCancelable() && player.isPotionActive(EffectHandler.FROZEN)) {
             event.setCanceled(true);
             return;
@@ -568,7 +568,7 @@ public final class ServerEventHandler {
             }
         }
 
-        if (event.getEntity() instanceof PlayerEntity) {
+        if (event.getEntity() instanceof Player) {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getEntity(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
             if (playerCapability != null) {
                 Power[] powers = playerCapability.getPowers();
@@ -586,7 +586,7 @@ public final class ServerEventHandler {
             return;
         }
 
-        if (event.getEntity() instanceof PlayerEntity) {
+        if (event.getEntity() instanceof Player) {
             AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(event.getPlayer());
             if (abilityCapability != null && event.isCancelable() && abilityCapability.attackingPrevented()) {
                 event.setCanceled(true);
@@ -630,7 +630,7 @@ public final class ServerEventHandler {
     @SubscribeEvent
     public void checkCritEvent(CriticalHitEvent event) {
         ItemStack weapon = event.getPlayer().getHeldItemMainhand();
-        PlayerEntity attacker = event.getPlayer();
+        Player attacker = event.getPlayer();
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getPlayer(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
         if (playerCapability != null && playerCapability.getPrevCooledAttackStrength() == 1.0f && !weapon.isEmpty() && event.getTarget() instanceof LivingEntity) {
             LivingEntity target = (LivingEntity)event.getTarget();
@@ -697,7 +697,7 @@ public final class ServerEventHandler {
             event.addCapability(new ResourceLocation(MowziesMobs.MODID, "last_damage"), new LivingCapability.LivingProvider());
             event.addCapability(new ResourceLocation(MowziesMobs.MODID, "ability"), new AbilityCapability.AbilityProvider());
         }
-        if (event.getObject() instanceof PlayerEntity) {
+        if (event.getObject() instanceof Player) {
             event.addCapability(new ResourceLocation(MowziesMobs.MODID, "player"), new PlayerCapability.PlayerProvider());
         }
     }
@@ -708,10 +708,10 @@ public final class ServerEventHandler {
             event.setCanceled(true);
     }
 
-    private void aggroBarakoa(PlayerEntity player) {
+    private void aggroBarakoa(Player player) {
         List<EntityBarako> barakos = getEntitiesNearby(player, EntityBarako.class, 50);
         for (EntityBarako barako : barakos) {
-            if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof PlayerEntity)) {
+            if (barako.getAttackTarget() == null || !(barako.getAttackTarget() instanceof Player)) {
                 if (!player.isCreative() && !player.isSpectator() && player.getPosition().distanceSq(barako.getHomePosition()) < 900) {
                     if (barako.canAttack(player)) barako.setMisbehavedPlayerId(player.getUniqueID());
                 }
@@ -719,7 +719,7 @@ public final class ServerEventHandler {
         }
         List<EntityBarakoaVillager> barakoas = getEntitiesNearby(player, EntityBarakoaVillager.class, 50);
         for (EntityBarakoaVillager barakoa : barakoas) {
-            if (barakoa.getAttackTarget() == null || !(barakoa.getAttackTarget() instanceof PlayerEntity)) {
+            if (barakoa.getAttackTarget() == null || !(barakoa.getAttackTarget() instanceof Player)) {
                 if (player.getPosition().distanceSq(barakoa.getHomePosition()) < 900) {
                     if (barakoa.canAttack(player)) barakoa.setMisbehavedPlayerId(player.getUniqueID());
                 }

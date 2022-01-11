@@ -7,9 +7,9 @@ import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
+import net.minecraft.client.entity.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
@@ -49,7 +49,7 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 	}
 
 	/** Check if the modelId has some ResourceLocation **/
-	public boolean resourceForModelId(AbstractClientPlayerEntity player) {
+	public boolean resourceForModelId(AbstractClientPlayer player) {
 		this.animationFileLocation = new ResourceLocation(MowziesMobs.MODID, "animations/animated_player.animation.json");
 		this.modelLocation = new ResourceLocation(MowziesMobs.MODID, "geo/animated_player.geo.json");
 		this.textureLocation = player.getLocationSkin();
@@ -118,7 +118,7 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 		neck.addRotation(-yaw, -pitch, -roll);
 	}
 
-	public void setRotationAngles(PlayerEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float partialTick) {
+	public void setRotationAngles(Player entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float partialTick) {
 		if (!isInitialized()) return;
 		if (Minecraft.getInstance().isGamePaused()) return;
 
@@ -292,7 +292,7 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 		return -65.0F * limbSwing + limbSwing * limbSwing;
 	}
 
-	protected HandSide getMainHand(PlayerEntity entityIn) {
+	protected HandSide getMainHand(Player entityIn) {
 		HandSide handside = entityIn.getPrimaryHand();
 		return entityIn.swingingHand == Hand.MAIN_HAND ? handside : handside.opposite();
 	}
@@ -304,7 +304,7 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 		leftArm.addRotationX(armBreathAmount * -MathHelper.sin(ageInTicks * 0.067F) * 0.05F);
 	}
 
-	private void func_241654_b_(PlayerEntity p_241654_1_) {
+	private void func_241654_b_(Player p_241654_1_) {
 		float armSwingAmount = getControllerValue("ArmSwingController");
 		switch(this.rightArmPose) {
 			case EMPTY:
@@ -319,7 +319,7 @@ public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 
 	}
 
-	private void func_241655_c_(PlayerEntity p_241655_1_) {
+	private void func_241655_c_(Player p_241655_1_) {
 		float armSwingAmount = getControllerValue("ArmSwingController");
 		switch(this.leftArmPose) {
 			case EMPTY:

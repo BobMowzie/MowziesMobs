@@ -11,11 +11,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.item.FallingBlockEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.item.FallingBlockEntity;
+import net.minecraft.world.entity.player.ServerPlayer;
 import net.minecraft.network.play.server.SEntityVelocityPacket;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
@@ -82,8 +82,8 @@ public class AnimationFWNStompAttackAI extends SimpleAnimationAI<EntityWroughtna
                             y += 0.1 * (1 - applyKnockbackResistance) + factor * 0.15 * (1 - applyKnockbackResistance);
                             z += vz * factor * magnitude * (1 - applyKnockbackResistance);
                             entity.setMotion(entity.getMotion().add(x, y, z));
-                            if (entity instanceof ServerPlayerEntity) {
-                                ((ServerPlayerEntity) entity).connection.sendPacket(new SEntityVelocityPacket(entity));
+                            if (entity instanceof ServerPlayer) {
+                                ((ServerPlayer) entity).connection.sendPacket(new SEntityVelocityPacket(entity));
                             }
                         }
                     }

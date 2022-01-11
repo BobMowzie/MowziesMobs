@@ -10,8 +10,8 @@ import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.entity.IAnimationTickable;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.entity.player.AbstractClientPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -33,7 +33,7 @@ public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
 
 	private int tickTimer = 0;
 
-	private PlayerEntity player;
+	private Player player;
 	private AnimationFactory factory = new AnimationFactory(this);
 	public static final String THIRD_PERSON_CONTROLLER_NAME = "thirdPersonAnimation";
 	public static final String FIRST_PERSON_CONTROLLER_NAME = "firstPersonAnimation";
@@ -43,7 +43,7 @@ public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
 		THIRD_PERSON
 	}
 
-	public GeckoPlayer(PlayerEntity player) {
+	public GeckoPlayer(Player player) {
 		this.player = player;
 		setup(player);
 	}
@@ -58,7 +58,7 @@ public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
 		return factory;
 	}
 
-	public PlayerEntity getPlayer() {
+	public Player getPlayer() {
 		return player;
 	}
 
@@ -74,7 +74,7 @@ public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
 
 	public <E extends IAnimatable> PlayState predicate(AnimationEvent<E> e) {
 		e.getController().transitionLengthTicks = 0;
-		PlayerEntity player = getPlayer();
+		Player player = getPlayer();
 		if (player == null) {
 			return PlayState.STOP;
 		}
@@ -93,7 +93,7 @@ public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
 	}
 
 	@Nullable
-	public static GeckoPlayer getGeckoPlayer(PlayerEntity player, Perspective perspective) {
+	public static GeckoPlayer getGeckoPlayer(Player player, Perspective perspective) {
 		if (perspective == Perspective.FIRST_PERSON) return GeckoFirstPersonRenderer.GECKO_PLAYER_FIRST_PERSON;
 		PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
 		if (playerCapability != null) {
@@ -102,7 +102,7 @@ public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
 		return null;
 	}
 
-	public static MowzieAnimationController<GeckoPlayer> getAnimationController(PlayerEntity player, Perspective perspective) {
+	public static MowzieAnimationController<GeckoPlayer> getAnimationController(Player player, Perspective perspective) {
 		PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
 		if (playerCapability != null) {
 			GeckoPlayer geckoPlayer;
@@ -128,10 +128,10 @@ public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
 
 	public abstract Perspective getPerspective();
 
-	public abstract void setup(PlayerEntity player);
+	public abstract void setup(Player player);
 
 	public static class GeckoPlayerFirstPerson extends GeckoPlayer {
-		public GeckoPlayerFirstPerson(PlayerEntity player) {
+		public GeckoPlayerFirstPerson(Player player) {
 			super(player);
 		}
 
@@ -146,10 +146,10 @@ public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
 		}
 
 		@Override
-		public void setup(PlayerEntity player) {
+		public void setup(Player player) {
 			ModelGeckoPlayerFirstPerson modelGeckoPlayer = new ModelGeckoPlayerFirstPerson();
 			model = modelGeckoPlayer;
-			model.resourceForModelId((AbstractClientPlayerEntity) player);
+			model.resourceForModelId((AbstractClientPlayer) player);
 			GeckoFirstPersonRenderer geckoRenderer = new GeckoFirstPersonRenderer(Minecraft.getInstance(), modelGeckoPlayer);
 			renderer = geckoRenderer;
 			if (!geckoRenderer.getModelsToLoad().containsKey(this.getClass())) {
@@ -159,7 +159,7 @@ public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
 	}
 
 	public static class GeckoPlayerThirdPerson extends GeckoPlayer {
-		public GeckoPlayerThirdPerson(PlayerEntity player) {
+		public GeckoPlayerThirdPerson(Player player) {
 			super(player);
 		}
 
@@ -174,10 +174,10 @@ public abstract class GeckoPlayer implements IAnimatable, IAnimationTickable {
 		}
 
 		@Override
-		public void setup(PlayerEntity player) {
+		public void setup(Player player) {
 			ModelGeckoPlayerThirdPerson modelGeckoPlayer = new ModelGeckoPlayerThirdPerson();
 			model = modelGeckoPlayer;
-			model.resourceForModelId((AbstractClientPlayerEntity) player);
+			model.resourceForModelId((AbstractClientPlayer) player);
 			GeckoRenderPlayer geckoRenderer = new GeckoRenderPlayer(Minecraft.getInstance().getRenderManager(), modelGeckoPlayer);
 			renderer = geckoRenderer;
 			if (!geckoRenderer.getModelsToLoad().containsKey(this.getClass())) {

@@ -4,10 +4,10 @@ import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoMo
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimationController;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection.*;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
@@ -91,7 +91,7 @@ public class Ability {
     }
 
     public void playAnimation(String animationName, GeckoPlayer.Perspective perspective, boolean shouldLoop) {
-        if (getUser() instanceof PlayerEntity && getUser().world.isRemote()) {
+        if (getUser() instanceof Player && getUser().world.isRemote()) {
             AnimationBuilder newActiveAnimation = new AnimationBuilder().addAnimation(animationName, shouldLoop);
             if (perspective == GeckoPlayer.Perspective.FIRST_PERSON) {
                 activeFirstPersonAnimation = newActiveAnimation;
@@ -99,8 +99,8 @@ public class Ability {
             else {
                 activeThirdPersonAnimation = newActiveAnimation;
             }
-            MowzieAnimationController<GeckoPlayer> controller = GeckoPlayer.getAnimationController((PlayerEntity) getUser(), perspective);
-            GeckoPlayer geckoPlayer = GeckoPlayer.getGeckoPlayer((PlayerEntity) getUser(), perspective);
+            MowzieAnimationController<GeckoPlayer> controller = GeckoPlayer.getAnimationController((Player) getUser(), perspective);
+            GeckoPlayer geckoPlayer = GeckoPlayer.getGeckoPlayer((Player) getUser(), perspective);
             if (controller != null && geckoPlayer != null) {
                 controller.playAnimation(geckoPlayer, newActiveAnimation);
             }
@@ -399,27 +399,27 @@ public class Ability {
 
     }
 
-    public void onRightMouseDown(PlayerEntity player) {
+    public void onRightMouseDown(Player player) {
 
     }
 
-    public void onLeftMouseDown(PlayerEntity player) {
+    public void onLeftMouseDown(Player player) {
 
     }
 
-    public void onRightMouseUp(PlayerEntity player) {
+    public void onRightMouseUp(Player player) {
 
     }
 
-    public void onLeftMouseUp(PlayerEntity player) {
+    public void onLeftMouseUp(Player player) {
 
     }
 
-    public void onSneakDown(PlayerEntity player) {
+    public void onSneakDown(Player player) {
 
     }
 
-    public void onSneakUp(PlayerEntity player) {
+    public void onSneakUp(Player player) {
 
     }
 

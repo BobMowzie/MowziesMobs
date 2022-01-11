@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 
 public class ModelGeckoPlayerThirdPerson extends ModelGeckoBiped {
 
@@ -35,7 +35,7 @@ public class ModelGeckoPlayerThirdPerson extends ModelGeckoBiped {
 	}
 
 	@Override
-	public void setRotationAngles(PlayerEntity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float partialTick) {
+	public void setRotationAngles(Player entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float partialTick) {
 		super.setRotationAngles(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, partialTick);
 		MowzieGeoBone rightArmLayerClassic = getMowzieBone("RightArmLayerClassic");
 		MowzieGeoBone leftArmLayerClassic = getMowzieBone("LeftArmLayerClassic");

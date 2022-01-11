@@ -1,7 +1,7 @@
 package com.ilexiconn.llibrary.server.animation;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.goal.Goal;
 
 /**
  * @author iLexiconn

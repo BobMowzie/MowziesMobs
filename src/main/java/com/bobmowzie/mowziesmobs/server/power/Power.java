@@ -1,9 +1,9 @@
 package com.bobmowzie.mowziesmobs.server.power;
 
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -60,31 +60,31 @@ public abstract class Power {
 
     }
 
-    public void onRightMouseDown(PlayerEntity player) {
+    public void onRightMouseDown(Player player) {
 
     }
 
-    public void onLeftMouseDown(PlayerEntity player) {
+    public void onLeftMouseDown(Player player) {
 
     }
 
-    public void onRightMouseUp(PlayerEntity player) {
+    public void onRightMouseUp(Player player) {
 
     }
 
-    public void onLeftMouseUp(PlayerEntity player) {
+    public void onLeftMouseUp(Player player) {
 
     }
 
-    public void onSneakDown(PlayerEntity player) {
+    public void onSneakDown(Player player) {
 
     }
 
-    public void onSneakUp(PlayerEntity player) {
+    public void onSneakUp(Player player) {
 
     }
 
-    public boolean canUse(PlayerEntity player) {
+    public boolean canUse(Player player) {
         return true;
     }
 

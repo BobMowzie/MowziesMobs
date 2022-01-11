@@ -8,7 +8,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.client.renderer.model.Model;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.*;
@@ -406,7 +406,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
         float dy = (float) (entity.lastTickPosY + (entity.getPosY() - entity.lastTickPosY) * delta);
         float dz = (float) (entity.lastTickPosZ + (entity.getPosZ() - entity.lastTickPosZ) * delta);
         matrixStack.translate(dx, dy, dz);
-        float dYaw = MathHelper.interpolateAngle(delta, entity.prevRotationYaw, entity.rotationYaw);
+        float dYaw = MathHelper.interpolateAngle(delta, entity.yRot0, entity.getYRot());
         matrixStack.rotate(new Quaternion(0, -dYaw + 180, 0, true));
         matrixStack.scale(-1, -1, 1);
         matrixStack.translate(0, -1.5f, 0);
@@ -425,7 +425,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
         float dy = (float) (entity.lastTickPosY + (entity.getPosY() - entity.lastTickPosY) * delta);
         float dz = (float) (entity.lastTickPosZ + (entity.getPosZ() - entity.lastTickPosZ) * delta);
         matrixStack.translate(dx, dy, dz);
-        float dYaw = MathHelper.interpolateAngle(delta, entity.prevRotationYaw, entity.rotationYaw);
+        float dYaw = MathHelper.interpolateAngle(delta, entity.yRot0, entity.getYRot());
         matrixStack.rotate(new Quaternion(0, -dYaw + 180, 0, true));
         matrixStack.scale(-1, -1, 1);
         matrixStack.translate(0, -1.5f, 0);

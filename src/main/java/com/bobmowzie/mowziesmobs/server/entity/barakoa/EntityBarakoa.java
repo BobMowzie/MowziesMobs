@@ -25,16 +25,16 @@ import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.controller.BodyController;
-import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.monster.*;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.controller.BodyController;
+import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.*;
+import net.minecraft.world.entity.passive.AnimalEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrowEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.*;
@@ -134,7 +134,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             @Override
             public void startExecuting() {
                 super.startExecuting();
-                LivingEntity player = this.entity.world.getClosestEntity(PlayerEntity.class, pred, entity, entity.getPosX(), entity.getPosY() + entity.getEyeHeight(), entity.getPosZ(), this.entity.getBoundingBox().grow(8.0D, 3.0D, 8.0D));
+                LivingEntity player = this.entity.world.getClosestEntity(Player.class, pred, entity, entity.getPosX(), entity.getPosY() + entity.getEyeHeight(), entity.getPosZ(), this.entity.getBoundingBox().grow(8.0D, 3.0D, 8.0D));
                 LivingEntity barakoa = this.entity.world.getClosestEntity(EntityBarakoa.class, pred, this.entity, entity.getPosX(), entity.getPosY() + entity.getEyeHeight(), entity.getPosZ(), this.entity.getBoundingBox().grow(8.0D, 3.0D, 8.0D));
                 if (player == null) talkTarget = barakoa;
                 else if (barakoa == null) talkTarget = player;
@@ -211,7 +211,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             }
         });
         goalSelector.addGoal(7, new WaterAvoidingRandomWalkingGoal(this, 0.4));
-        goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+        goalSelector.addGoal(8, new LookAtGoal(this, Player.class, 8.0F));
         goalSelector.addGoal(8, new LookAtGoal(this, EntityBarakoa.class, 8.0F));
         goalSelector.addGoal(8, new LookAtGoal(this, EntityBarako.class, 8.0F));
         goalSelector.addGoal(8, new LookRandomlyGoal(this));
@@ -231,10 +231,10 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, AbstractSkeletonEntity.class, 0, true, false, null));
         this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, ZoglinEntity.class, 0, true, false, null));
         this.targetSelector.addGoal(6, new AvoidEntityGoal<>(this, CreeperEntity.class, 6.0F, 1.0D, 1.2D));
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 0, true, true, target -> {
-            if (target instanceof PlayerEntity) {
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Player.class, 0, true, true, target -> {
+            if (target instanceof Player) {
                 if (this.world.getDifficulty() == Difficulty.PEACEFUL) return false;
-                ItemStack headArmorStack = ((PlayerEntity) target).inventory.armorInventory.get(3);
+                ItemStack headArmorStack = ((Player) target).inventory.armorInventory.get(3);
                 return !(headArmorStack.getItem() instanceof BarakoaMask);
             }
             return true;
@@ -261,7 +261,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         if (getAnimation() == DEACTIVATE_ANIMATION) {
             return null;
         }
-        if (!active || danceTimer != 0 || (getEntitiesNearby(EntityBarakoa.class, 8, 3, 8, 8).isEmpty() && getEntitiesNearby(EntityBarako.class, 8, 3, 8, 8).isEmpty() && getEntitiesNearby(PlayerEntity.class, 8, 3, 8, 8).isEmpty())) {
+        if (!active || danceTimer != 0 || (getEntitiesNearby(EntityBarakoa.class, 8, 3, 8, 8).isEmpty() && getEntitiesNearby(EntityBarako.class, 8, 3, 8, 8).isEmpty() && getEntitiesNearby(Player.class, 8, 3, 8, 8).isEmpty())) {
             return null;
         }
         if (getAttackTarget() == null) {

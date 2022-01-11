@@ -7,8 +7,8 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoaVillager;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.SpawnReason;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.world.IServerWorld;
 
@@ -49,14 +49,14 @@ public class AnimationSpawnBarakoa extends SimpleAnimationAI<EntityBarako> {
         if (entity.getAnimationTick() == 6) {
             entity.playSound(MMSounds.ENTITY_BARAKO_BELLY.get(), 1.5f, 1);
             entity.playSound(MMSounds.ENTITY_BARAKOA_BLOWDART.get(), 1.5f, 0.5f);
-            double angle = entity.rotationYawHead;
+            double angle = entity.getYRot()Head;
             if (angle < 0) {
                 angle = angle + 360;
             }
-            if (angle - entity.rotationYaw > 70) {
-                angle = 70 + entity.rotationYaw;
-            } else if (angle - entity.rotationYaw < -70) {
-                angle = -70 + entity.rotationYaw;
+            if (angle - entity.getYRot() > 70) {
+                angle = 70 + entity.getYRot();
+            } else if (angle - entity.getYRot() < -70) {
+                angle = -70 + entity.getYRot();
             }
             EntityBarakoaVillager barakoa;
             if (spawnSunblockers) {
@@ -64,7 +64,7 @@ public class AnimationSpawnBarakoa extends SimpleAnimationAI<EntityBarako> {
                 ((EntityBarakoaya)barakoa).hasTriedOrSucceededTeleport = false;
             }
             else barakoa = new EntityBarakoaVillager(EntityHandler.BARAKOA_VILLAGER, entity.world);
-            barakoa.setPositionAndRotation(entity.getPosX() + 2 * Math.sin(-angle * (Math.PI / 180)), entity.getPosY() + 1.5, entity.getPosZ() + 2 * Math.cos(-angle * (Math.PI / 180)), entity.rotationYawHead, 0);
+            barakoa.setPositionAndRotation(entity.getPosX() + 2 * Math.sin(-angle * (Math.PI / 180)), entity.getPosY() + 1.5, entity.getPosZ() + 2 * Math.cos(-angle * (Math.PI / 180)), entity.getYRot()Head, 0);
             barakoa.setActive(false);
             barakoa.active = false;
             barakoa.onInitialSpawn((IServerWorld) entity.getEntityWorld(), entity.world.getDifficultyForLocation(barakoa.getPosition()), SpawnReason.MOB_SUMMONED, null, null);
@@ -75,7 +75,7 @@ public class AnimationSpawnBarakoa extends SimpleAnimationAI<EntityBarako> {
             entity.world.addEntity(barakoa);
             barakoa.setMotion(0.7 * Math.sin(-angle * (Math.PI / 180)), 0.5, 0.7 * Math.cos(-angle * (Math.PI / 180)));
             barakoa.setAttackTarget(entity.getAttackTarget());
-            if (entity.getAttackTarget() instanceof PlayerEntity) {
+            if (entity.getAttackTarget() instanceof Player) {
                 barakoa.setMisbehavedPlayerId(entity.getAttackTarget().getUniqueID());
             }
         }

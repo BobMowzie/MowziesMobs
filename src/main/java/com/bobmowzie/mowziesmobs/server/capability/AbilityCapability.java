@@ -6,8 +6,8 @@ import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
@@ -97,7 +97,7 @@ public class AbilityCapability {
 
         @Override
         public AbilityType<?>[] getAbilityTypesOnEntity(LivingEntity entity) {
-            if (entity instanceof PlayerEntity) {
+            if (entity instanceof Player) {
                 return AbilityHandler.PLAYER_ABILITIES;
             }
             return new AbilityType[0];
@@ -208,7 +208,7 @@ public class AbilityCapability {
     public static final class AbilityEventHandler {
         @SubscribeEvent
         public void onPlayerInteract(PlayerInteractEvent.RightClickEmpty event) {
-            PlayerEntity player = event.getPlayer();
+            Player player = event.getPlayer();
             IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
             if (abilityCapability != null) {
                 for (Ability ability : abilityCapability.getAbilities()) {
@@ -219,7 +219,7 @@ public class AbilityCapability {
 
         @SubscribeEvent
         public void onPlayerRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-            PlayerEntity player = event.getPlayer();
+            Player player = event.getPlayer();
             IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
             if (abilityCapability != null) {
                 for (Ability ability : abilityCapability.getAbilities()) {
@@ -230,7 +230,7 @@ public class AbilityCapability {
 
         @SubscribeEvent
         public void onPlayerRightClickItem(PlayerInteractEvent.RightClickItem event) {
-            PlayerEntity player = event.getPlayer();
+            Player player = event.getPlayer();
             IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
             if (abilityCapability != null) {
                 for (Ability ability : abilityCapability.getAbilities()) {
@@ -241,7 +241,7 @@ public class AbilityCapability {
 
         @SubscribeEvent
         public void onPlayerRightClickEntity(PlayerInteractEvent.EntityInteract event) {
-            PlayerEntity player = event.getPlayer();
+            Player player = event.getPlayer();
             IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
             if (abilityCapability != null) {
                 for (Ability ability : abilityCapability.getAbilities()) {
@@ -252,7 +252,7 @@ public class AbilityCapability {
 
         @SubscribeEvent
         public void onPlayerLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event) {
-            PlayerEntity player = event.getPlayer();
+            Player player = event.getPlayer();
             IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
             if (abilityCapability != null) {
                 for (Ability ability : abilityCapability.getAbilities()) {
@@ -263,7 +263,7 @@ public class AbilityCapability {
 
         @SubscribeEvent
         public void onPlayerLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
-            PlayerEntity player = event.getPlayer();
+            Player player = event.getPlayer();
             IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
             if (abilityCapability != null) {
                 for (Ability ability : abilityCapability.getAbilities()) {
@@ -274,7 +274,7 @@ public class AbilityCapability {
 
         @SubscribeEvent
         public void onLeftClickEntity(AttackEntityEvent event) {
-            PlayerEntity player = event.getPlayer();
+            Player player = event.getPlayer();
             IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
             if (abilityCapability != null) {
                 for (Ability ability : abilityCapability.getAbilities()) {
@@ -312,7 +312,7 @@ public class AbilityCapability {
 
         @SubscribeEvent
         public void onRenderTick(TickEvent.RenderTickEvent event) {
-            PlayerEntity player = Minecraft.getInstance().player;
+            Player player = Minecraft.getInstance().player;
             if (player != null) {
                 IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
                 if (abilityCapability != null) {

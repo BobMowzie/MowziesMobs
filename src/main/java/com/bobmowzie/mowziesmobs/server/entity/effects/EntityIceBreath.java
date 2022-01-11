@@ -13,10 +13,10 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
@@ -55,9 +55,9 @@ public class EntityIceBreath extends EntityMagicEffect {
         }
         if (caster != null && !caster.isAlive()) this.remove();
         if (ticksExisted == 1) playSound(MMSounds.ENTITY_FROSTMAW_ICEBREATH_START.get(), 1, 0.6f);
-        if (caster instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity) caster;
-            setPositionAndRotation(player.getPosX(), player.getPosY() + player.getStandingEyeHeight(player.getPose(), player.getSize(player.getPose())) - 0.5f, player.getPosZ(), player.rotationYaw, player.rotationPitch);
+        if (caster instanceof Player) {
+            Player player = (Player) caster;
+            setPositionAndRotation(player.getPosX(), player.getPosY() + player.getStandingEyeHeight(player.getPose(), player.getSize(player.getPose())) - 0.5f, player.getPosZ(), player.getYRot(), player.getXRot());
         }
 
         float yaw = (float) Math.toRadians(-rotationYaw);
@@ -89,14 +89,14 @@ public class EntityIceBreath extends EntityMagicEffect {
         if (ticksExisted > 10) hitEntities();
         if (ticksExisted > 10) freezeBlocks();
 
-        if (ticksExisted > 65 && !(caster instanceof PlayerEntity)) remove();
+        if (ticksExisted > 65 && !(caster instanceof Player)) remove();
     }
 
     public void hitEntities() {
         List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(RANGE, RANGE, RANGE, RANGE);
         float damage = DAMAGE_PER_HIT;
         if (caster instanceof EntityFrostmaw) damage *= ConfigHandler.COMMON.MOBS.FROSTMAW.combatConfig.attackMultiplier.get();
-        if (caster instanceof PlayerEntity) damage *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.attackMultiplier.get();
+        if (caster instanceof Player) damage *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.attackMultiplier.get();
         for (LivingEntity entityHit : entitiesHit) {
             if (entityHit == caster) continue;
 

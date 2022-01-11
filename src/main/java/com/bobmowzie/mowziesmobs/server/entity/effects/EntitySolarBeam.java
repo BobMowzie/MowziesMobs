@@ -18,12 +18,12 @@ import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
+import net.minecraft.client.entity.player.AbstractClientPlayer;
 import net.minecraft.client.settings.PointOfView;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
@@ -119,8 +119,8 @@ public class EntitySolarBeam extends Entity {
             }
         }
         if (caster != null) {
-            renderYaw = (float) ((caster.rotationYawHead + 90.0d) * Math.PI / 180.0d);
-            renderPitch = (float) (-caster.rotationPitch * Math.PI / 180.0d);
+            renderYaw = (float) ((caster.getYRot()Head + 90.0d) * Math.PI / 180.0d);
+            renderPitch = (float) (-caster.getXRot() * Math.PI / 180.0d);
         }
 
         if (!on && appear.getTimer() == 0) {
@@ -147,8 +147,8 @@ public class EntitySolarBeam extends Entity {
                 double rootY = caster.getPosY() + caster.getHeight() / 2f + 0.3f;
                 double rootZ = caster.getPosZ();
                 if (getHasPlayer()) {
-                    if (caster instanceof PlayerEntity && !(caster == Minecraft.getInstance().player && Minecraft.getInstance().gameSettings.getPointOfView() == PointOfView.FIRST_PERSON)) {
-                        GeckoPlayer geckoPlayer = GeckoPlayer.getGeckoPlayer((PlayerEntity) caster, GeckoPlayer.Perspective.THIRD_PERSON);
+                    if (caster instanceof Player && !(caster == Minecraft.getInstance().player && Minecraft.getInstance().gameSettings.getPointOfView() == PointOfView.FIRST_PERSON)) {
+                        GeckoPlayer geckoPlayer = GeckoPlayer.getGeckoPlayer((Player) caster, GeckoPlayer.Perspective.THIRD_PERSON);
                         if (geckoPlayer != null) {
                             GeckoRenderPlayer renderPlayer = (GeckoRenderPlayer) geckoPlayer.getPlayerRenderer();
                             if (renderPlayer.betweenHandsPos != null) {
@@ -190,7 +190,7 @@ public class EntitySolarBeam extends Entity {
                         damageFire *= ConfigHandler.COMMON.MOBS.BARAKO.combatConfig.attackMultiplier.get();
                         damageMob *= ConfigHandler.COMMON.MOBS.BARAKO.combatConfig.attackMultiplier.get();
                     }
-                    if (caster instanceof PlayerEntity) {
+                    if (caster instanceof Player) {
                         damageFire *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.sunsBlessingAttackMultiplier.get();
                         damageMob *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.sunsBlessingAttackMultiplier.get();
                     }
@@ -372,15 +372,15 @@ public class EntitySolarBeam extends Entity {
     }
 
     private void updateWithPlayer() {
-        this.setYaw((float) ((caster.rotationYawHead + 90) * Math.PI / 180.0d));
-        this.setPitch((float) (-caster.rotationPitch * Math.PI / 180.0d));
+        this.setYaw((float) ((caster.getYRot()Head + 90) * Math.PI / 180.0d));
+        this.setPitch((float) (-caster.getXRot() * Math.PI / 180.0d));
         this.setPosition(caster.getPosX(), caster.getPosY() + 1.2f, caster.getPosZ());
     }
 
     @Override
     public void remove() {
         super.remove();
-        if (caster instanceof PlayerEntity) {
+        if (caster instanceof Player) {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(caster, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
             if (playerCapability != null) {
                 playerCapability.setUsingSolarBeam(false);

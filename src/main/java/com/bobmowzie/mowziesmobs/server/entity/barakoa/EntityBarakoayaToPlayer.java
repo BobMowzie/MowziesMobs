@@ -2,9 +2,9 @@ package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
 import com.bobmowzie.mowziesmobs.server.ai.NearestAttackableTargetPredicateGoal;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IServerWorld;
@@ -16,7 +16,7 @@ public class EntityBarakoayaToPlayer extends EntityBarakoanToPlayer {
         this(type, world, null);
     }
 
-    public EntityBarakoayaToPlayer(EntityType<? extends EntityBarakoayaToPlayer> type, World world, PlayerEntity leader) {
+    public EntityBarakoayaToPlayer(EntityType<? extends EntityBarakoayaToPlayer> type, World world, Player leader) {
         super(type, world, leader);
         setMask(MaskType.FAITH);
         setWeapon(3);
@@ -31,7 +31,7 @@ public class EntityBarakoayaToPlayer extends EntityBarakoanToPlayer {
     @Override
     protected void registerTargetGoals() {
         super.registerTargetGoals();
-        this.targetSelector.addGoal(2, new NearestAttackableTargetPredicateGoal<PlayerEntity>(this, PlayerEntity.class, 0, true, true, (new EntityPredicate()).setDistance(getAttributeValue(Attributes.FOLLOW_RANGE)).setCustomPredicate(target -> {
+        this.targetSelector.addGoal(2, new NearestAttackableTargetPredicateGoal<Player>(this, Player.class, 0, true, true, (new EntityPredicate()).setDistance(getAttributeValue(Attributes.FOLLOW_RANGE)).setCustomPredicate(target -> {
             if (!active) return false;
             if (target != getLeader()) return false;
             return healAICheckTarget(target);
@@ -58,7 +58,7 @@ public class EntityBarakoayaToPlayer extends EntityBarakoanToPlayer {
         boolean targetHasTarget = livingentity.getLastAttackedEntity() != null && (livingentity.ticksExisted - livingentity.getLastAttackedEntityTime() < 120 || livingentity.getDistanceSq(livingentity.getLastAttackedEntity()) < 256);
         if (livingentity.getLastAttackedEntity() instanceof EntityBarakoanToPlayer) targetHasTarget = false;
         boolean canHeal = this.canHeal(livingentity);
-        boolean survivalMode = !livingentity.isSpectator() && !((PlayerEntity)livingentity).isCreative();
+        boolean survivalMode = !livingentity.isSpectator() && !((Player)livingentity).isCreative();
         return (livingentity.getHealth() < livingentity.getMaxHealth() || targetHasTarget) && canHeal && survivalMode;
     }
 

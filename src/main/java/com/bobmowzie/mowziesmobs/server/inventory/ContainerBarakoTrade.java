@@ -3,9 +3,9 @@ package com.bobmowzie.mowziesmobs.server.inventory;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -15,7 +15,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 public final class ContainerBarakoTrade extends Container {
     private final EntityBarako barako;
 
-    private final PlayerEntity player;
+    private final Player player;
 
     private final InventoryBarako inventory;
 
@@ -44,12 +44,12 @@ public final class ContainerBarakoTrade extends Container {
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity player) {
+    public boolean canInteractWith(Player player) {
         return barako != null && inventory.isUsableByPlayer(player) && barako.isAlive() && barako.getDistance(player) < 8;
     }
 
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity player, int index) {
+    public ItemStack transferStackInSlot(Player player, int index) {
         ItemStack stack = ItemStack.EMPTY;
         Slot slot = inventorySlots.get(index);
         if (slot != null && slot.getHasStack()) {
@@ -80,7 +80,7 @@ public final class ContainerBarakoTrade extends Container {
     }
 
     @Override
-    public void onContainerClosed(PlayerEntity player) {
+    public void onContainerClosed(Player player) {
         super.onContainerClosed(player);
         if (barako != null) barako.setCustomer(null);
         if (!player.world.isRemote) {

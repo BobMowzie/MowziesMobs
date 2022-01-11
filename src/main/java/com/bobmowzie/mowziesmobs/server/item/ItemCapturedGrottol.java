@@ -3,11 +3,11 @@ package com.bobmowzie.mowziesmobs.server.item;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import com.google.common.collect.Sets;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.controller.LookController;
-import net.minecraft.entity.ai.goal.GoalSelector;
-import net.minecraft.entity.ai.goal.LookAtGoal;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.SpawnReason;
+import net.minecraft.world.entity.ai.controller.LookController;
+import net.minecraft.world.entity.ai.goal.GoalSelector;
+import net.minecraft.world.entity.ai.goal.LookAtGoal;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -35,7 +35,7 @@ public class ItemCapturedGrottol extends Item {
 
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {
-        PlayerEntity player = context.getPlayer();
+        Player player = context.getPlayer();
         BlockPos pos = context.getPos();
         Direction facing = context.getFace();
         Hand hand = context.getHand();
@@ -73,7 +73,7 @@ public class ItemCapturedGrottol extends Item {
         grottol.setUniqueId(id);
     }
 
-    private void lookAtPlayer(EntityGrottol grottol, PlayerEntity player) {
+    private void lookAtPlayer(EntityGrottol grottol, Player player) {
         LookController helper = new LookController(grottol);
         helper.setLookPositionWithEntity(player, 180, 90);
         helper.tick();

@@ -1,10 +1,10 @@
 package com.bobmowzie.mowziesmobs.server.ai;
 
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.RandomPositionGenerator;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.world.entity.CreatureEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.RandomPositionGenerator;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.projectile.ProjectileEntity;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.util.math.AxisAlignedBB;

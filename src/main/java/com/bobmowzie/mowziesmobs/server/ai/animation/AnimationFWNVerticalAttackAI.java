@@ -5,8 +5,8 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundEvent;
 
@@ -33,7 +33,7 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
             entity.faceEntity(entityTarget, 30F, 30F);
         }
         else {
-            entity.rotationYaw = entity.prevRotationYaw;
+            entity.getYRot() = entity.yRot0;
         }
 
         if (entity.getAnimationTick() == 6) {
@@ -74,7 +74,7 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
         }
         if (entity.getAnimationTick() > 26 && entity.getAnimationTick() < 85) {
             entity.vulnerable = true;
-            entity.rotationYaw = entity.prevRotationYaw;
+            entity.getYRot() = entity.yRot0;
             entity.renderYawOffset = entity.prevRenderYawOffset;
         } else {
             entity.vulnerable = false;

@@ -9,17 +9,17 @@ import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
+import net.minecraft.client.entity.player.AbstractClientPlayer;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.*;
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.CreatureEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ILivingEntityData;
+import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.monster.MonsterEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.ServerPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -71,7 +71,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     
     private int killDataRecentlyHit;
     private DamageSource killDataCause;
-    private PlayerEntity killDataAttackingPlayer;
+    private Player killDataAttackingPlayer;
 
     private final MMBossInfoServer bossInfo = new MMBossInfoServer(this);
 
@@ -196,7 +196,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         willLandSoon = !onGround && world.hasNoCollisions(getBoundingBox().offset(getMotion()));
 
         if (!world.isRemote && getBossMusic() != null) {
-            PlayerEntity player = Minecraft.getInstance().player;
+            Player player = Minecraft.getInstance().player;
             if (canPlayMusic()) {
                 this.world.setEntityState(this, MUSIC_PLAY_ID);
             }
@@ -207,10 +207,10 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     }
 
     protected boolean canPlayMusic() {
-        return !isSilent() && getAttackTarget() instanceof PlayerEntity;
+        return !isSilent() && getAttackTarget() instanceof Player;
     }
 
-    protected boolean canPlayerHearMusic(PlayerEntity player) {
+    protected boolean canPlayerHearMusic(Player player) {
         return player != null
                 && canAttack(player)
                 && getDistance(player) < 2500;
@@ -276,19 +276,19 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         boolean flag = entityIn.attackEntityFrom(DamageSource.causeMobDamage(this), f);
         if (flag) {
             if (f1 > 0.0F && entityIn instanceof LivingEntity) {
-                ((LivingEntity)entityIn).applyKnockback(f1 * 0.5F, MathHelper.sin(this.rotationYaw * ((float)Math.PI / 180F)), -MathHelper.cos(this.rotationYaw * ((float)Math.PI / 180F)));
+                ((LivingEntity)entityIn).applyKnockback(f1 * 0.5F, MathHelper.sin(this.getYRot() * ((float)Math.PI / 180F)), -MathHelper.cos(this.getYRot() * ((float)Math.PI / 180F)));
                 this.setMotion(this.getMotion().mul(0.6D, 1.0D, 0.6D));
             }
 
-            if (entityIn instanceof PlayerEntity) {
-                PlayerEntity playerentity = (PlayerEntity)entityIn;
+            if (entityIn instanceof Player) {
+                Player Player = (Player)entityIn;
                 ItemStack itemstack = this.getHeldItemMainhand();
-                ItemStack itemstack1 = playerentity.isHandActive() ? playerentity.getActiveItemStack() : ItemStack.EMPTY;
-                if (((!itemstack.isEmpty() && itemstack.canDisableShield(itemstack1, playerentity, this)) || canDisableShield) && !itemstack1.isEmpty() && itemstack1.isShield(playerentity)) {
+                ItemStack itemstack1 = Player.isHandActive() ? Player.getActiveItemStack() : ItemStack.EMPTY;
+                if (((!itemstack.isEmpty() && itemstack.canDisableShield(itemstack1, Player, this)) || canDisableShield) && !itemstack1.isEmpty() && itemstack1.isShield(Player)) {
                     float f2 = 0.25F + (float)EnchantmentHelper.getEfficiencyModifier(this) * 0.05F;
                     if (this.rand.nextFloat() < f2) {
-                        playerentity.getCooldownTracker().setCooldown(itemstack.getItem(), 100);
-                        this.world.setEntityState(playerentity, (byte)30);
+                        Player.getCooldownTracker().setCooldown(itemstack.getItem(), 100);
+                        this.world.setEntityState(Player, (byte)30);
                     }
                 }
             }
@@ -308,15 +308,15 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         return Math.atan2(second.getPosZ() - first.getPosZ(), second.getPosX() - first.getPosX()) * (180 / Math.PI) + 90;
     }
 
-    public List<PlayerEntity> getPlayersNearby(double distanceX, double distanceY, double distanceZ, double radius) {
+    public List<Player> getPlayersNearby(double distanceX, double distanceY, double distanceZ, double radius) {
         List<Entity> nearbyEntities = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(distanceX, distanceY, distanceZ));
-        List<PlayerEntity> listEntityPlayers = nearbyEntities.stream().filter(entityNeighbor -> entityNeighbor instanceof PlayerEntity && getDistance(entityNeighbor) <= radius + entityNeighbor.getWidth() / 2f).map(entityNeighbor -> (PlayerEntity) entityNeighbor).collect(Collectors.toList());
+        List<Player> listEntityPlayers = nearbyEntities.stream().filter(entityNeighbor -> entityNeighbor instanceof Player && getDistance(entityNeighbor) <= radius + entityNeighbor.getWidth() / 2f).map(entityNeighbor -> (Player) entityNeighbor).collect(Collectors.toList());
         return listEntityPlayers;
     }
 
     public List<LivingEntity> getAttackableEntityLivingBaseNearby(double distanceX, double distanceY, double distanceZ, double radius) {
         List<Entity> nearbyEntities = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().grow(distanceX, distanceY, distanceZ));
-        List<LivingEntity> listEntityLivingBase = nearbyEntities.stream().filter(entityNeighbor -> entityNeighbor instanceof LivingEntity && ((LivingEntity)entityNeighbor).attackable() && (!(entityNeighbor instanceof PlayerEntity) || !((PlayerEntity)entityNeighbor).isCreative()) && getDistance(entityNeighbor) <= radius + entityNeighbor.getWidth() / 2f).map(entityNeighbor -> (LivingEntity) entityNeighbor).collect(Collectors.toList());
+        List<LivingEntity> listEntityLivingBase = nearbyEntities.stream().filter(entityNeighbor -> entityNeighbor instanceof LivingEntity && ((LivingEntity)entityNeighbor).attackable() && (!(entityNeighbor instanceof Player) || !((Player)entityNeighbor).isCreative()) && getDistance(entityNeighbor) <= radius + entityNeighbor.getWidth() / 2f).map(entityNeighbor -> (LivingEntity) entityNeighbor).collect(Collectors.toList());
         return listEntityLivingBase;
     }
 
@@ -434,7 +434,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         else if (id == MUSIC_PLAY_ID) {
             SoundEvent soundEvent = getBossMusic();
             if (soundEvent != null && this.isAlive()) {
-                PlayerEntity player = Minecraft.getInstance().player;
+                Player player = Minecraft.getInstance().player;
                 if (bossMusic != null) {
                     float f2 = Minecraft.getInstance().gameSettings.getSoundLevel(SoundCategory.MUSIC);
                     if (f2 <= 0) {
@@ -517,13 +517,13 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     public abstract Animation getHurtAnimation();
 
     @Override
-    public void addTrackingPlayer(ServerPlayerEntity player) {
+    public void addTrackingPlayer(ServerPlayer player) {
         super.addTrackingPlayer(player);
         this.bossInfo.addPlayer(player);
     }
 
     @Override
-    public void removeTrackingPlayer(ServerPlayerEntity player) {
+    public void removeTrackingPlayer(ServerPlayer player) {
         super.removeTrackingPlayer(player);
         this.bossInfo.removePlayer(player);
     }

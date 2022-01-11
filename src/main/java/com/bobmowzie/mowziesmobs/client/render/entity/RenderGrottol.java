@@ -5,7 +5,7 @@ import com.bobmowzie.mowziesmobs.client.model.entity.ModelGrottol;
 import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 
 /**

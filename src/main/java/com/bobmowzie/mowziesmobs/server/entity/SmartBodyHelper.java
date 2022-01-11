@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
-import net.minecraft.entity.ai.controller.BodyController;
-import net.minecraft.entity.MobEntity;
+import net.minecraft.world.entity.ai.controller.BodyController;
+import net.minecraft.world.entity.MobEntity;
 import net.minecraft.util.math.MathHelper;
 
 public class SmartBodyHelper extends BodyController {
@@ -38,15 +38,15 @@ public class SmartBodyHelper extends BodyController {
 		if (distSq > 2.5e-7) {
 			double moveAngle = (float) MathHelper.atan2(dz, dx) * (180 / (float) Math.PI) - 90;
 			entity.renderYawOffset += MathHelper.wrapDegrees(moveAngle - entity.renderYawOffset) * 0.6F;
-//			this.entity.renderYawOffset = this.entity.rotationYaw;
-//			this.entity.rotationYawHead = approach(this.entity.renderYawOffset, this.entity.rotationYawHead, 75.0F);
-			this.targetYawHead = this.entity.rotationYawHead;
+//			this.entity.renderYawOffset = this.entity.getYRot();
+//			this.entity.getYRot()Head = approach(this.entity.renderYawOffset, this.entity.getYRot()Head, 75.0F);
+			this.targetYawHead = this.entity.getYRot()Head;
 			this.rotateTime = 0;
         } else if (entity.getPassengers().isEmpty() || !(entity.getPassengers().get(0) instanceof MobEntity)) {
 			float limit = MAX_ROTATE;
-			if (Math.abs(entity.rotationYawHead - targetYawHead) > 15) {
+			if (Math.abs(entity.getYRot()Head - targetYawHead) > 15) {
 				rotateTime = 0;
-				targetYawHead = entity.rotationYawHead;
+				targetYawHead = entity.getYRot()Head;
 			} else {
 				rotateTime++;
 				final int speed = 10;
@@ -54,7 +54,7 @@ public class SmartBodyHelper extends BodyController {
 					limit = Math.max(1 - (rotateTime - speed) / (float) speed, 0) * MAX_ROTATE;
 				}
 			}
-			entity.renderYawOffset = approach(entity.rotationYawHead, entity.renderYawOffset, limit);
+			entity.renderYawOffset = approach(entity.getYRot()Head, entity.renderYawOffset, limit);
 		}
 	}
 

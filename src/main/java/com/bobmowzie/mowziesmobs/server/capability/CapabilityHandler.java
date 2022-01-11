@@ -1,6 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.capability;
 
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 

@@ -10,13 +10,13 @@ import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.SpawnReason;
+import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Food;
 import net.minecraft.particles.BlockParticleData;
@@ -156,9 +156,9 @@ public class EntityBabyFoliaath extends MowzieEntity {
         return null;
     }
 
-    private boolean arePlayersCarryingMeat(List<PlayerEntity> players) {
+    private boolean arePlayersCarryingMeat(List<Player> players) {
         if (players.size() > 0) {
-            for (PlayerEntity player : players) {
+            for (Player player : players) {
                 Food food = player.getHeldItemMainhand().getItem().getFood();
                 if (food != null && food.isMeat()) {
                     return true;

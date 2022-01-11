@@ -17,9 +17,9 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FenceBlock;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.block.Blocks;
 import net.minecraft.potion.Effects;
 import net.minecraft.potion.EffectInstance;
@@ -61,7 +61,7 @@ public class PowerGeomancy extends Power {
     @Override
     public void tick(TickEvent.PlayerTickEvent event) {
         super.tick(event);
-        PlayerEntity player = event.player;
+        Player player = event.player;
         spawnBoulderCooldown -= 1;
         if (doubleTapTimer > 0) doubleTapTimer--;
 
@@ -190,7 +190,7 @@ public class PowerGeomancy extends Power {
     }
 
     @Override
-    public void onRightMouseUp(PlayerEntity player) {
+    public void onRightMouseUp(Player player) {
         super.onRightMouseUp(player);
         liftedMouse = true;
         if (spawningBoulder && player.getDistanceSq(spawnBoulderPos.getX(), spawnBoulderPos.getY(), spawnBoulderPos.getZ()) < 36) {
@@ -205,7 +205,7 @@ public class PowerGeomancy extends Power {
     @Override
     public void onRightClickEmpty(PlayerInteractEvent.RightClickEmpty event) {
         super.onRightClickEmpty(event);
-        PlayerEntity player = event.getPlayer();
+        Player player = event.getPlayer();
         if (event.getHand() == Hand.MAIN_HAND && canUse(player)) {
             if (!tunneling && !spawningBoulder && liftedMouse && spawnBoulderCooldown <= 0) {
                 startSpawningBoulder(player);
@@ -217,7 +217,7 @@ public class PowerGeomancy extends Power {
     @Override
     public void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         super.onRightClickBlock(event);
-        PlayerEntity player = event.getPlayer();
+        Player player = event.getPlayer();
         if (event.getHand() == Hand.MAIN_HAND && canUse(player)) {
             if (!tunneling && !spawningBoulder && liftedMouse && spawnBoulderCooldown <= 0) {
                 startSpawningBoulder(player);
@@ -227,7 +227,7 @@ public class PowerGeomancy extends Power {
     }
 
     @Override
-    public void onSneakDown(PlayerEntity player) {
+    public void onSneakDown(Player player) {
         super.onSneakDown(player);
         if (doubleTapTimer > 0 && canUse(player) && !player.isOnGround()) {
             tunneling = true;
@@ -236,7 +236,7 @@ public class PowerGeomancy extends Power {
     }
 
     @Override
-    public void onSneakUp(PlayerEntity player) {
+    public void onSneakUp(Player player) {
         super.onSneakUp(player);
     }
 
@@ -252,7 +252,7 @@ public class PowerGeomancy extends Power {
         return lookPos;
     }
 
-    private void spawnBoulder(PlayerEntity player) {
+    private void spawnBoulder(Player player) {
         int size = (int)Math.min(Math.max(0, Math.floor(spawnBoulderCharge/10.f) - 1), 2);
         if (spawnBoulderCharge >= 60) size = 3;
         EntityBoulder boulder = new EntityBoulder(EntityHandler.BOULDERS[size], player.world, player, spawnBoulderBlock, spawnBoulderPos);
@@ -266,8 +266,8 @@ public class PowerGeomancy extends Power {
             Vector3d vec = playerEyes.subtract(getLookPos()).normalize();
             float yaw = (float) Math.atan2(vec.z, vec.x);
             float pitch = (float) Math.asin(vec.y);
-            player.rotationYaw = (float) (yaw * 180f / Math.PI + 90);
-            player.rotationPitch = (float) (pitch * 180f / Math.PI);
+            player.getYRot() = (float) (yaw * 180f / Math.PI + 90);
+            player.getXRot() = (float) (pitch * 180f / Math.PI);
         }
 
         spawnBoulderCooldown = 10;
@@ -276,7 +276,7 @@ public class PowerGeomancy extends Power {
     }
 
     @Override
-    public boolean canUse(PlayerEntity player) {
+    public boolean canUse(Player player) {
         return false;//player.getHeldItemMainhand().isEmpty() && player.isPotionActive(EffectHandler.GEOMANCY);
     }
 
@@ -307,7 +307,7 @@ public class PowerGeomancy extends Power {
                 && !blockState.hasTileEntity();
     }
 
-    public void startSpawningBoulder(PlayerEntity player) {
+    public void startSpawningBoulder(Player player) {
         Vector3d from = player.getEyePosition(1.0f);
         Vector3d to = from.add(player.getLookVec().scale(SPAWN_BOULDER_REACH));
         BlockRayTraceResult result = player.world.rayTraceBlocks(new RayTraceContext(from, to, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, player));

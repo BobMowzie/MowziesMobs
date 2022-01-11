@@ -6,12 +6,12 @@ import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.goal.AvoidEntityGoal;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ProjectileEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
@@ -38,13 +38,13 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(4, new HealTargetGoal(this));
-        this.goalSelector.addGoal(6, new AvoidEntityGoal<PlayerEntity>(this, PlayerEntity.class, 50.0F, 0.8D, 0.6D, target -> {
-            if (target instanceof PlayerEntity) {
+        this.goalSelector.addGoal(6, new AvoidEntityGoal<Player>(this, Player.class, 50.0F, 0.8D, 0.6D, target -> {
+            if (target instanceof Player) {
                 if (this.world.getDifficulty() == Difficulty.PEACEFUL) return false;
                 if (getAttackTarget() == target) return true;
                 if (getAttackTarget() instanceof EntityBarako) return false;
                 if (getAnimation() != NO_ANIMATION) return false;
-                ItemStack headArmorStack = ((PlayerEntity) target).inventory.armorInventory.get(3);
+                ItemStack headArmorStack = ((Player) target).inventory.armorInventory.get(3);
                 return !(headArmorStack.getItem() instanceof BarakoaMask) || target == getMisbehavedPlayer();
             }
             return true;

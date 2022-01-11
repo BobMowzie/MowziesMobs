@@ -9,7 +9,7 @@ import com.bobmowzie.mowziesmobs.client.render.entity.layer.*;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
+import net.minecraft.client.entity.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -17,11 +17,11 @@ import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.layers.*;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerModelPart;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
@@ -98,12 +98,12 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
         this.modelProvider.setUseSmallArms(true);
     }
 
-    public void render(AbstractClientPlayerEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, GeckoPlayer geckoPlayer) {
+    public void render(AbstractClientPlayer entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, GeckoPlayer geckoPlayer) {
         this.setModelVisibilities(entityIn);
         renderLiving(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn, geckoPlayer);
     }
 
-    private void setModelVisibilities(AbstractClientPlayerEntity clientPlayer) {
+    private void setModelVisibilities(AbstractClientPlayer clientPlayer) {
         ModelGeckoPlayerThirdPerson playermodel = (ModelGeckoPlayerThirdPerson) getGeoModelProvider();
         if (playermodel.isInitialized()) {
             if (clientPlayer.isSpectator()) {
@@ -136,8 +136,8 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
         }
     }
 
-    public void renderLiving(AbstractClientPlayerEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, GeckoPlayer geckoPlayer) {
-        if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Pre<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>>(entityIn, this, partialTicks, matrixStackIn, bufferIn, packedLightIn))) return;
+    public void renderLiving(AbstractClientPlayer entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, GeckoPlayer geckoPlayer) {
+        if (net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Pre<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>>(entityIn, this, partialTicks, matrixStackIn, bufferIn, packedLightIn))) return;
         matrixStackIn.push();
         this.entityModel.swingProgress = this.getSwingProgress(entityIn, partialTicks);
 
@@ -145,7 +145,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
         this.entityModel.isSitting = shouldSit;
         this.entityModel.isChild = entityIn.isChild();
         float f = MathHelper.interpolateAngle(partialTicks, entityIn.prevRenderYawOffset, entityIn.renderYawOffset);
-        float f1 = MathHelper.interpolateAngle(partialTicks, entityIn.prevRotationYawHead, entityIn.rotationYawHead);
+        float f1 = MathHelper.interpolateAngle(partialTicks, entityIn.yHeadRot0, entityIn.getYRot()Head);
         float f2 = f1 - f;
         if (shouldSit && entityIn.getRidingEntity() instanceof LivingEntity) {
             LivingEntity livingentity = (LivingEntity)entityIn.getRidingEntity();
@@ -168,7 +168,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
             f2 = f1 - f;
         }
 
-        float f6 = MathHelper.lerp(partialTicks, entityIn.prevRotationPitch, entityIn.rotationPitch);
+        float f6 = MathHelper.lerp(partialTicks, entityIn.xRot0, entityIn.getXRot());
         if (entityIn.getPose() == Pose.SLEEPING) {
             Direction direction = entityIn.getBedDirection();
             if (direction != null) {
@@ -244,17 +244,17 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
         }
 
         if (!entityIn.isSpectator()) {
-            for(LayerRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>> layerrenderer : this.layerRenderers) {
+            for(LayerRenderer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> layerrenderer : this.layerRenderers) {
                 layerrenderer.render(matrixStackIn, bufferIn, packedLightIn, entityIn, f5, f8, partialTicks, f7, f2, f6);
             }
         }
 
         matrixStackIn.pop();
         renderEntity(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
-        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Post<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>>(entityIn, this, partialTicks, matrixStackIn, bufferIn, packedLightIn));
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.RenderLivingEvent.Post<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>>(entityIn, this, partialTicks, matrixStackIn, bufferIn, packedLightIn));
     }
 
-    public void renderEntity(AbstractClientPlayerEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+    public void renderEntity(AbstractClientPlayer entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         net.minecraftforge.client.event.RenderNameplateEvent renderNameplateEvent = new net.minecraftforge.client.event.RenderNameplateEvent(entityIn, entityIn.getDisplayName(), this, matrixStackIn, bufferIn, packedLightIn, partialTicks);
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(renderNameplateEvent);
         if (renderNameplateEvent.getResult() != net.minecraftforge.eventbus.api.Event.Result.DENY && (renderNameplateEvent.getResult() == net.minecraftforge.eventbus.api.Event.Result.ALLOW || this.canRenderName(entityIn))) {
@@ -262,14 +262,14 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
         }
     }
 
-    protected void applyRotationsPlayerRenderer(AbstractClientPlayerEntity entityLiving, MatrixStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks, float headYaw) {
+    protected void applyRotationsPlayerRenderer(AbstractClientPlayer entityLiving, MatrixStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks, float headYaw) {
         float f = entityLiving.getSwimAnimation(partialTicks);
         if (entityLiving.isElytraFlying()) {
             this.applyRotationsLivingRenderer(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks, headYaw);
             float f1 = (float)entityLiving.getTicksElytraFlying() + partialTicks;
             float f2 = MathHelper.clamp(f1 * f1 / 100.0F, 0.0F, 1.0F);
             if (!entityLiving.isSpinAttacking()) {
-                matrixStackIn.rotate(Vector3f.XP.rotationDegrees(f2 * (-90.0F - entityLiving.rotationPitch)));
+                matrixStackIn.rotate(Vector3f.XP.rotationDegrees(f2 * (-90.0F - entityLiving.getXRot())));
             }
 
             Vector3d vector3d = entityLiving.getLook(partialTicks);
@@ -284,7 +284,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
         } else if (f > 0.0F) {
             float swimController = this.modelProvider.getControllerValue("SwimController");
             this.applyRotationsLivingRenderer(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks, headYaw);
-            float f3 = entityLiving.isInWater() ? -90.0F - entityLiving.rotationPitch : -90.0F;
+            float f3 = entityLiving.isInWater() ? -90.0F - entityLiving.getXRot() : -90.0F;
             float f4 = MathHelper.lerp(f, 0.0F, f3) * swimController;
             matrixStackIn.rotate(Vector3f.XP.rotationDegrees(f4));
             if (entityLiving.isActualySwimming()) {
@@ -295,7 +295,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
         }
     }
 
-    protected void applyRotationsLivingRenderer(AbstractClientPlayerEntity entityLiving, MatrixStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks, float headYaw) {
+    protected void applyRotationsLivingRenderer(AbstractClientPlayer entityLiving, MatrixStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks, float headYaw) {
         if (this.func_230495_a_(entityLiving)) {
             rotationYaw += (float)(Math.cos((double)entityLiving.ticksExisted * 3.25D) * Math.PI * (double)0.4F);
         }
@@ -315,7 +315,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
 
             matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(f * this.getDeathMaxRotation(entityLiving)));
         } else if (entityLiving.isSpinAttacking()) {
-            matrixStackIn.rotate(Vector3f.XP.rotationDegrees(-90.0F - entityLiving.rotationPitch));
+            matrixStackIn.rotate(Vector3f.XP.rotationDegrees(-90.0F - entityLiving.getXRot()));
             matrixStackIn.rotate(Vector3f.YP.rotationDegrees(((float)entityLiving.ticksExisted + partialTicks) * -75.0F));
         } else if (pose == Pose.SLEEPING) {
             Direction direction = entityLiving.getBedDirection();
@@ -323,9 +323,9 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
             matrixStackIn.rotate(Vector3f.YP.rotationDegrees(f1));
             matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(this.getDeathMaxRotation(entityLiving)));
             matrixStackIn.rotate(Vector3f.YP.rotationDegrees(270.0F));
-        } else if (entityLiving.hasCustomName() || entityLiving instanceof PlayerEntity) {
+        } else if (entityLiving.hasCustomName() || entityLiving instanceof Player) {
             String s = TextFormatting.getTextWithoutFormattingCodes(entityLiving.getName().getString());
-            if (("Dinnerbone".equals(s) || "Grumm".equals(s)) && (!(entityLiving instanceof PlayerEntity) || ((PlayerEntity)entityLiving).isWearing(PlayerModelPart.CAPE))) {
+            if (("Dinnerbone".equals(s) || "Grumm".equals(s)) && (!(entityLiving instanceof Player) || ((Player)entityLiving).isWearing(PlayerModelPart.CAPE))) {
                 matrixStackIn.translate(0.0D, (double)(entityLiving.getHeight() + 0.1F), 0.0D);
                 matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(180.0F));
             }
@@ -358,7 +358,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
 
     @Override
     public ResourceLocation getTextureLocation(GeckoPlayer geckoPlayer) {
-        return getEntityTexture((AbstractClientPlayerEntity) geckoPlayer.getPlayer());
+        return getEntityTexture((AbstractClientPlayer) geckoPlayer.getPlayer());
     }
 
     @Override
@@ -420,7 +420,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
 
         matrixStack.pop();
 
-        for(LayerRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>> layerrenderer : this.layerRenderers) {
+        for(LayerRenderer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> layerrenderer : this.layerRenderers) {
             if (layerrenderer instanceof IGeckoRenderLayer) ((IGeckoRenderLayer)layerrenderer).renderRecursively(bone, matrixStack, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
     }

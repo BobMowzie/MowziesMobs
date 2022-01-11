@@ -15,8 +15,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.PushReaction;
-import net.minecraft.entity.*;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.NBTUtil;
@@ -158,7 +158,7 @@ public class EntityBoulder extends Entity {
             speed = 0.65f;
         }
 
-        if (caster instanceof PlayerEntity) damage *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.geomancyAttackMultiplier.get();
+        if (caster instanceof Player) damage *= ConfigHandler.COMMON.TOOLS_AND_ABILITIES.geomancyAttackMultiplier.get();
 
     }
 
@@ -401,11 +401,11 @@ public class EntityBoulder extends Entity {
     @Override
     public boolean hitByEntity(Entity entityIn) {
         if (ticksExisted > finishedRisingTick - 1 && !travelling) {
-            if (entityIn instanceof PlayerEntity
-                    && EffectGeomancy.canUse((PlayerEntity)entityIn)) {
-                PlayerEntity player = (PlayerEntity) entityIn;
+            if (entityIn instanceof Player
+                    && EffectGeomancy.canUse((Player)entityIn)) {
+                Player player = (Player) entityIn;
                 if (ridingEntities.contains(player)) {
-                    Vector3d lateralLookVec = Vector3d.fromPitchYaw(0, player.rotationYaw).normalize();
+                    Vector3d lateralLookVec = Vector3d.fromPitchYaw(0, player.getYRot()).normalize();
                     setMotion(speed * 0.5 * lateralLookVec.x, getMotion().y, speed * 0.5 * lateralLookVec.z);
                 } else {
                     setMotion(player.getLookVec().scale(speed * 0.5));

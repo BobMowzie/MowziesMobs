@@ -12,10 +12,10 @@ import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
@@ -34,7 +34,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
+public class EntityBarakoanToPlayer extends EntityBarakoan<Player> {
     private static final DataParameter<ItemStack> MASK_STORED = EntityDataManager.createKey(EntityBarakoanToPlayer.class, DataSerializers.ITEMSTACK);
     @OnlyIn(Dist.CLIENT)
     public Vector3d[] feetPos;
@@ -43,8 +43,8 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
         this(type, world, null);
     }
 
-    public EntityBarakoanToPlayer(EntityType<? extends EntityBarakoanToPlayer> type, World world, PlayerEntity leader) {
-        super(type, world, PlayerEntity.class, leader);
+    public EntityBarakoanToPlayer(EntityType<? extends EntityBarakoanToPlayer> type, World world, Player leader) {
+        super(type, world, Player.class, leader);
         experienceValue = 0;
         if (world.isRemote) {
             feetPos = new Vector3d[]{new Vector3d(0, 0, 0)};
@@ -80,7 +80,7 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
     }
 
     @Override
-    protected ActionResultType getEntityInteractionResult(PlayerEntity playerIn, Hand hand) {
+    protected ActionResultType getEntityInteractionResult(Player playerIn, Hand hand) {
         if (playerIn == leader) {
             deactivate();
         }

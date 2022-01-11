@@ -4,11 +4,11 @@ import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityBabyFoliaath;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.MobEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.SpawnReason;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
@@ -33,8 +33,8 @@ public class ItemFoliaathSeed extends Item {
     public Entity spawnCreature(IServerWorld world, MobEntity entity, double x, double y, double z) {
         if (entity != null) {
             entity.setLocationAndAngles(x + 0.5, y, z + 0.5, world.getWorld().rand.nextFloat() * 360 - 180, 0);
-            entity.rotationYawHead = entity.rotationYaw;
-            entity.renderYawOffset = entity.rotationYaw;
+            entity.getYRot()Head = entity.getYRot();
+            entity.renderYawOffset = entity.getYRot();
             entity.onInitialSpawn(world, world.getDifficultyForLocation(entity.getPosition()), SpawnReason.MOB_SUMMONED, null, null);
             if (!entity.canSpawn(world, SpawnReason.MOB_SUMMONED)) {
                 return null;
@@ -46,7 +46,7 @@ public class ItemFoliaathSeed extends Item {
 
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {
-        PlayerEntity player = context.getPlayer();
+        Player player = context.getPlayer();
         if (player == null) return ActionResultType.FAIL;
         Hand hand = context.getHand();
         Direction facing = context.getFace();

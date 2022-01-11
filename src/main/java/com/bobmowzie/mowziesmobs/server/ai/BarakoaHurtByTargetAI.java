@@ -2,12 +2,12 @@ package com.bobmowzie.mowziesmobs.server.ai;
 
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.EntityPredicate;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.TargetGoal;
-import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.CreatureEntity;
+import net.minecraft.world.entity.EntityPredicate;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.TargetGoal;
+import net.minecraft.world.entity.passive.TameableEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.util.math.AxisAlignedBB;
 
 import java.util.List;
@@ -63,7 +63,7 @@ public class BarakoaHurtByTargetAI extends TargetGoal
         nearby.addAll(this.goalOwner.world.getLoadedEntitiesWithinAABB(EntityBarako.class, (new AxisAlignedBB(this.goalOwner.getPosX(), this.goalOwner.getPosY(), this.goalOwner.getPosZ(), this.goalOwner.getPosX() + 1.0D, this.goalOwner.getPosY() + 1.0D, this.goalOwner.getPosZ() + 1.0D)).grow(d0, 10.0D, d0)));
         for (CreatureEntity entitycreature : nearby)
         {
-            if (this.goalOwner != entitycreature && !(entitycreature.getAttackTarget() instanceof PlayerEntity) && (!(this.goalOwner instanceof TameableEntity) || ((TameableEntity)this.goalOwner).getOwner() == ((TameableEntity)entitycreature).getOwner()) && this.goalOwner.getRevengeTarget() != null && !entitycreature.isOnSameTeam(this.goalOwner.getRevengeTarget()))
+            if (this.goalOwner != entitycreature && !(entitycreature.getAttackTarget() instanceof Player) && (!(this.goalOwner instanceof TameableEntity) || ((TameableEntity)this.goalOwner).getOwner() == ((TameableEntity)entitycreature).getOwner()) && this.goalOwner.getRevengeTarget() != null && !entitycreature.isOnSameTeam(this.goalOwner.getRevengeTarget()))
             {
                 this.setEntityAttackTarget(entitycreature, this.goalOwner.getRevengeTarget());
             }

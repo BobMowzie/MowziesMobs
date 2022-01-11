@@ -3,9 +3,9 @@ package com.bobmowzie.mowziesmobs.server.entity.effects;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.NBTUtil;
@@ -116,7 +116,7 @@ public class EntityBlockSwapper extends Entity {
     @Override
     public void tick() {
         super.tick();
-        if (ticksExisted > duration && world.getEntitiesWithinAABB(PlayerEntity.class, getBoundingBox()).isEmpty()) restoreBlock();
+        if (ticksExisted > duration && world.getEntitiesWithinAABB(Player.class, getBoundingBox()).isEmpty()) restoreBlock();
     }
 
     @Override

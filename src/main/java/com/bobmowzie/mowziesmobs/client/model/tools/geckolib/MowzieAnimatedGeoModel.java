@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.client.model.tools.geckolib;
 
 import com.bobmowzie.mowziesmobs.server.entity.IAnimationTickable;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
+import net.minecraft.client.entity.player.AbstractClientPlayer;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
@@ -66,7 +66,7 @@ public abstract class MowzieAnimatedGeoModel<T extends IAnimatable & IAnimationT
 
     }
 
-    public boolean resourceForModelId(AbstractClientPlayerEntity player) {
+    public boolean resourceForModelId(AbstractClientPlayer player) {
         return true;
     }
 

@@ -23,8 +23,8 @@ public class RenderFallingBlock extends EntityRenderer<EntityFallingBlock> {
         matrixStackIn.push();
         matrixStackIn.translate(0, 0.5f, 0);
         if (entityIn.getMode() == EntityFallingBlock.EnumFallingBlockMode.MOBILE) {
-            matrixStackIn.rotate(new Quaternion(0, MathHelper.lerp(partialTicks, entityIn.prevRotationYaw, entityIn.rotationYaw), 0, true));
-            matrixStackIn.rotate(new Quaternion(MathHelper.lerp(partialTicks, entityIn.prevRotationPitch, entityIn.rotationPitch), 0, 0, true));
+            matrixStackIn.rotate(new Quaternion(0, MathHelper.lerp(partialTicks, entityIn.yRot0, entityIn.getYRot()), 0, true));
+            matrixStackIn.rotate(new Quaternion(MathHelper.lerp(partialTicks, entityIn.xRot0, entityIn.getXRot()), 0, 0, true));
         }
         else {
             matrixStackIn.translate(0, MathHelper.lerp(partialTicks, entityIn.prevAnimY, entityIn.animY), 0);

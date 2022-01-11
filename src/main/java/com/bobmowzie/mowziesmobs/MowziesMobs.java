@@ -26,7 +26,7 @@ import com.bobmowzie.mowziesmobs.server.world.spawn.SpawnHandler;
 import com.bobmowzie.mowziesmobs.server.world.feature.FeatureHandler;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraft.entity.EntityType;
+import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;

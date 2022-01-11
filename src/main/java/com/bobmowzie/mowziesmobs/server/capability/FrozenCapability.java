@@ -11,10 +11,10 @@ import com.bobmowzie.mowziesmobs.server.message.MessageUnfreezeEntity;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.particles.BlockParticleData;
@@ -247,12 +247,12 @@ public class FrozenCapability {
         public void onFreeze(LivingEntity entity) {
             if (entity != null) {
                 frozenController = new EntityFrozenController(EntityHandler.FROZEN_CONTROLLER, entity.world);
-                frozenController.setPositionAndRotation(entity.getPosX(), entity.getPosY(), entity.getPosZ(), entity.rotationYaw, entity.rotationPitch);
+                frozenController.setPositionAndRotation(entity.getPosX(), entity.getPosY(), entity.getPosZ(), entity.getYRot(), entity.getXRot());
                 entity.world.addEntity(frozenController);
                 frozenController.setRenderYawOffset(entity.renderYawOffset);
-                frozenYaw = entity.rotationYaw;
-                frozenPitch = entity.rotationPitch;
-                frozenYawHead = entity.rotationYawHead;
+                frozenYaw = entity.getYRot();
+                frozenPitch = entity.getXRot();
+                frozenYawHead = entity.getYRot()Head;
                 frozenLimbSwingAmount = 0;//entity.limbSwingAmount;
                 frozenRenderYawOffset = entity.renderYawOffset;
                 frozenSwingProgress = entity.swingProgress;
@@ -304,7 +304,7 @@ public class FrozenCapability {
                         ((MobEntity) entity).setNoAI(false);
                     }
                     if (getPreAttackTarget() != null) {
-                        PlayerEntity target = entity.world.getPlayerByUuid(getPreAttackTarget());
+                        Player target = entity.world.getPlayerByUuid(getPreAttackTarget());
                         if (target != null) {
                             ((MobEntity) entity).setAttackTarget(target);
                         }

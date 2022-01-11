@@ -1,10 +1,10 @@
 package com.bobmowzie.mowziesmobs.server.ai;
 
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.RandomPositionGenerator;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.CreatureEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.RandomPositionGenerator;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.util.EntityPredicates;
@@ -41,7 +41,7 @@ public final class EntityAIAvoidEntity<T extends Entity> extends Goal {
         this.avoidClass = avoidClass;
         this.distance = distance;
         Predicate<T> visible = e -> e.isAlive() && entity.getEntitySenses().canSee(e);
-        Predicate<T> targetable = e -> !(e instanceof PlayerEntity) || !e.isSpectator() && !((PlayerEntity)e).isCreative();
+        Predicate<T> targetable = e -> !(e instanceof Player) || !e.isSpectator() && !((Player)e).isCreative();
         this.predicate = targetable.and(predicate).and(visible);
         this.speed = speed;
         navigator = entity.getNavigator();

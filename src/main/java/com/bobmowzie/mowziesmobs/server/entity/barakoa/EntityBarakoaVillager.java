@@ -12,18 +12,18 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.TradeStore;
 import com.bobmowzie.mowziesmobs.server.inventory.ContainerBarakoayaTrade;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.ai.goal.MoveTowardsRestrictionGoal;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.monster.AbstractSkeletonEntity;
-import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.monster.SkeletonEntity;
-import net.minecraft.entity.monster.ZombieEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ILivingEntityData;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.SpawnReason;
+import net.minecraft.world.entity.ai.goal.MoveTowardsRestrictionGoal;
+import net.minecraft.world.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.monster.AbstractSkeletonEntity;
+import net.minecraft.world.entity.monster.IMob;
+import net.minecraft.world.entity.monster.SkeletonEntity;
+import net.minecraft.world.entity.monster.ZombieEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
@@ -78,7 +78,7 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
 //    private static final int SOLD_OUT_TIME = 5 * 60 * 20;
 //    private static final int MAX_SALES = 5;
 
-    private PlayerEntity customer;
+    private Player customer;
 
     public EntityBarakoaVillager(EntityType<? extends EntityBarakoaVillager> type, World world) {
         super(type, world);
@@ -97,10 +97,10 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
     @Override
     protected void registerTargetGoals() {
         targetSelector.addGoal(3, new BarakoaHurtByTargetAI(this, true));
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<PlayerEntity>(this, PlayerEntity.class, 0, true, true, target -> {
-            if (target instanceof PlayerEntity) {
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<Player>(this, Player.class, 0, true, true, target -> {
+            if (target instanceof Player) {
                 if (this.world.getDifficulty() == Difficulty.PEACEFUL) return false;
-                ItemStack headArmorStack = ((PlayerEntity) target).inventory.armorInventory.get(3);
+                ItemStack headArmorStack = ((Player) target).inventory.armorInventory.get(3);
                 return !(headArmorStack.getItem() instanceof BarakoaMask) || target == getMisbehavedPlayer();
             }
             return true;
@@ -146,11 +146,11 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
         else return false;
     }
 
-    public void setCustomer(PlayerEntity customer) {
+    public void setCustomer(Player customer) {
         this.customer = customer;
     }
 
-    public PlayerEntity getCustomer() {
+    public Player getCustomer() {
         return customer;
     }
 
@@ -165,8 +165,8 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
     @Override
     public void tick() {
         super.tick();
-        if (getAttackTarget() instanceof PlayerEntity) {
-            if (((PlayerEntity) getAttackTarget()).isCreative() || getAttackTarget().isSpectator()) setAttackTarget(null);
+        if (getAttackTarget() instanceof Player) {
+            if (((Player) getAttackTarget()).isCreative() || getAttackTarget().isSpectator()) setAttackTarget(null);
         }
         if ((!isOfferingTrade() || timeOffering <= 0) && tradeStore.hasStock()) {
             setOfferingTrade(tradeStore.get(rand));
@@ -174,13 +174,13 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
         }
     }
 
-    public void openGUI(PlayerEntity playerEntity) {
-        setCustomer(playerEntity);
+    public void openGUI(Player Player) {
+        setCustomer(Player);
         MowziesMobs.PROXY.setReferencedMob(this);
         if (!this.world.isRemote && getAttackTarget() == null && isAlive()) {
-            playerEntity.openContainer(new INamedContainerProvider() {
+            Player.openContainer(new INamedContainerProvider() {
                 @Override
-                public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player) {
+                public Container createMenu(int id, PlayerInventory playerInventory, Player player) {
                     return new ContainerBarakoayaTrade(id, EntityBarakoaVillager.this, playerInventory);
                 }
 
@@ -193,7 +193,7 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
     }
 
     @Override
-    protected ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
+    protected ActionResultType getEntityInteractionResult(Player player, Hand hand) {
         if (canTradeWith(player) && getAttackTarget() == null && isAlive()) {
             openGUI(player);
             return ActionResultType.SUCCESS;
@@ -201,7 +201,7 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
         return ActionResultType.PASS;
     }
 
-    public boolean canTradeWith(PlayerEntity player) {
+    public boolean canTradeWith(Player player) {
         if (isTrading()) {
             return false;
         }
