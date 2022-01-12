@@ -1,19 +1,19 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa;
 
 import com.google.common.base.Defaults;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.Effects;
+import net.minecraft.world.effect.Effect;
+import net.minecraft.world.effect.MobEffects;
 
 import java.util.EnumMap;
 import java.util.Locale;
 
 public enum MaskType {
-    FURY(Effects.STRENGTH, 0.7F, 2F, true),
-    FEAR(Effects.SPEED),
-    RAGE(Effects.HASTE),
-    BLISS(Effects.JUMP_BOOST),
-    MISERY(Effects.RESISTANCE),
-    FAITH(Effects.HEALTH_BOOST, 0.7F, 2F, false);
+    FURY(MobEffects.STRENGTH, 0.7F, 2F, true),
+    FEAR(MobEffects.SPEED),
+    RAGE(MobEffects.HASTE),
+    BLISS(MobEffects.JUMP_BOOST),
+    MISERY(MobEffects.RESISTANCE),
+    FAITH(MobEffects.HEALTH_BOOST, 0.7F, 2F, false);
 
     public static final int COUNT = MaskType.values().length;
 

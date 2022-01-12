@@ -10,18 +10,18 @@ import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.*;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.math.*;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -40,7 +40,7 @@ public class EntityIceBreath extends EntityMagicEffect {
 
     public EntityIceBreath(EntityType<? extends EntityIceBreath> type, World world, LivingEntity caster) {
         super(type, world);
-        if (!world.isRemote) {
+        if (!world.isClientSide) {
             this.setCasterID(caster.getEntityId());
         }
     }
@@ -49,7 +49,7 @@ public class EntityIceBreath extends EntityMagicEffect {
     public void tick() {
         super.tick();
         if (ticksExisted == 1) {
-            if (world.isRemote) {
+            if (world.isClientSide) {
                 MowziesMobs.PROXY.playIceBreathSound(this);
             }
         }
@@ -67,7 +67,7 @@ public class EntityIceBreath extends EntityMagicEffect {
         float xComp = (float) (Math.sin(yaw) * Math.cos(pitch));
         float yComp = (float) (Math.sin(pitch));
         float zComp = (float) (Math.cos(yaw) * Math.cos(pitch));
-        if (world.isRemote) {
+        if (world.isClientSide) {
             if (ticksExisted % 8 == 0) {
                 world.addParticle(new ParticleRing.RingData(yaw, -pitch, 40, 1f, 1f, 1f, 1f, 110f * spread, false, ParticleRing.EnumRingBehavior.GROW), getPosX(), getPosY(), getPosZ(), 0.5f * xComp, 0.5f * yComp, 0.5f * zComp);
             }
@@ -134,8 +134,8 @@ public class EntityIceBreath extends EntityMagicEffect {
             boolean frostmawCloseCheck = caster instanceof EntityFrostmaw && entityHitDistance <= 2;
             if (inRange && yawCheck && pitchCheck || frostmawCloseCheck) {
                 // Raytrace to mob center to avoid damaging through walls
-                Vector3d from = this.getPositionVec();
-                Vector3d to = entityHit.getPositionVec().add(0, entityHit.getHeight() / 2.0f, 0);
+                Vec3 from = this.getPositionVec();
+                Vec3 to = entityHit.getPositionVec().add(0, entityHit.getHeight() / 2.0f, 0);
                 BlockRayTraceResult result = world.rayTraceBlocks(new RayTraceContext(from, to, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
                 if (result.getType() == RayTraceResult.Type.BLOCK) {
                     continue;

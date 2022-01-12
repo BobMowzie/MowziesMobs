@@ -6,8 +6,8 @@ import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
@@ -27,11 +27,11 @@ public class MessageUnfreezeEntity {
     }
 
 
-    public static void serialize(final MessageUnfreezeEntity message, final PacketBuffer buf) {
+    public static void serialize(final MessageUnfreezeEntity message, final FriendlyByteBuf buf) {
         buf.writeVarInt(message.entityID);
     }
 
-    public static MessageUnfreezeEntity deserialize(final PacketBuffer buf) {
+    public static MessageUnfreezeEntity deserialize(final FriendlyByteBuf buf) {
         final MessageUnfreezeEntity message = new MessageUnfreezeEntity();
         message.entityID = buf.readVarInt();
         return message;

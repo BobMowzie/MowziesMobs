@@ -4,7 +4,7 @@ import com.bobmowzie.mowziesmobs.client.model.entity.ModelDynamicsTester;
 import com.bobmowzie.mowziesmobs.server.entity.EntityDynamicsTester;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Created by BobMowzie on 8/30/2018.

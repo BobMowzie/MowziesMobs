@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class SunblockLayer<T extends LivingEntity, M extends EntityModel<T>> extends LayerRenderer<T,M> {
     private static final ResourceLocation SUNBLOCK_ARMOR = new ResourceLocation(MowziesMobs.MODID, "textures/entity/sunblock_glow.png");

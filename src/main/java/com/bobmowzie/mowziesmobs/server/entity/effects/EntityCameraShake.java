@@ -7,27 +7,27 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.EntityDataManager;
+import net.minecraft.resources.math.MathHelper;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 public class EntityCameraShake extends Entity {
-    private static final DataParameter<Float> RADIUS = EntityDataManager.createKey(EntityCameraShake.class, DataSerializers.FLOAT);
-    private static final DataParameter<Float> MAGNITUDE = EntityDataManager.createKey(EntityCameraShake.class, DataSerializers.FLOAT);
-    private static final DataParameter<Integer> DURATION = EntityDataManager.createKey(EntityCameraShake.class, DataSerializers.VARINT);
-    private static final DataParameter<Integer> FADE_DURATION = EntityDataManager.createKey(EntityCameraShake.class, DataSerializers.VARINT);
+    private static final EntityDataAccessor<Float> RADIUS = EntityDataManager.createKey(EntityCameraShake.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> MAGNITUDE = EntityDataManager.createKey(EntityCameraShake.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Integer> DURATION = EntityDataManager.createKey(EntityCameraShake.class, EntityDataSerializers.VARINT);
+    private static final EntityDataAccessor<Integer> FADE_DURATION = EntityDataManager.createKey(EntityCameraShake.class, EntityDataSerializers.VARINT);
 
     public EntityCameraShake(EntityType<?> type, World world) {
         super(type, world);
     }
 
-    public EntityCameraShake(World world, Vector3d position, float radius, float magnitude, int duration, int fadeDuration) {
+    public EntityCameraShake(World world, Vec3 position, float radius, float magnitude, int duration, int fadeDuration) {
         super(EntityHandler.CAMERA_SHAKE, world);
         setRadius(radius);
         setMagnitude(magnitude);
@@ -41,7 +41,7 @@ public class EntityCameraShake extends Entity {
         float ticksDelta = ticksExisted + delta;
         float timeFrac = 1.0f - (ticksDelta - getDuration()) / (getFadeDuration() + 1.0f);
         float baseAmount = ticksDelta < getDuration() ? getMagnitude() : timeFrac * timeFrac * getMagnitude();
-        Vector3d playerPos = player.getEyePosition(delta);
+        Vec3 playerPos = player.getEyePosition(delta);
         float distFrac = (float) (1.0f - MathHelper.clamp(getPositionVec().distanceTo(playerPos) / getRadius(), 0, 1));
         return baseAmount * distFrac * distFrac;
     }
@@ -115,8 +115,8 @@ public class EntityCameraShake extends Entity {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
-    public static void cameraShake(World world, Vector3d position, float radius, float magnitude, int duration, int fadeDuration) {
-        if (!world.isRemote) {
+    public static void cameraShake(World world, Vec3 position, float radius, float magnitude, int duration, int fadeDuration) {
+        if (!world.isClientSide) {
             EntityCameraShake cameraShake = new EntityCameraShake(world, position, radius, magnitude, duration, fadeDuration);
             world.addEntity(cameraShake);
         }

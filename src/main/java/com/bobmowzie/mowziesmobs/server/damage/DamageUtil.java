@@ -5,17 +5,17 @@ import com.bobmowzie.mowziesmobs.server.capability.LivingCapability;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntityDamageSource;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.resources.SoundEvents;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.resources.EntityDamageSource;
+import net.minecraft.resources.SoundEvent;
+import net.minecraft.resources.math.MathHelper;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class DamageUtil {
     // TODO: Works for current use cases, but possibly not for future edge cases. Use reflection to get hurt sound for onHit2?
     public static Pair<Boolean, Boolean> dealMixedDamage(LivingEntity target, DamageSource source1, float amount1, DamageSource source2, float amount2) {
-        if (target.world.isRemote()) return Pair.of(false, false);
+        if (target.world.isClientSide()) return Pair.of(false, false);
         LivingCapability.ILivingCapability lastDamageCapability = CapabilityHandler.getCapability(target, LivingCapability.LivingProvider.LIVING_CAPABILITY);
         if (lastDamageCapability != null) {
             lastDamageCapability.setLastDamage(-1);

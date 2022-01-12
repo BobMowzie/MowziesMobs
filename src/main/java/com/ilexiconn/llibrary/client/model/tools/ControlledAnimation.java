@@ -1,6 +1,6 @@
 package com.ilexiconn.llibrary.client.model.tools;
 
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.resources.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

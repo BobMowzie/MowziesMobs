@@ -3,9 +3,9 @@ package com.bobmowzie.mowziesmobs.server.message;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
-import net.minecraft.world.entity.player.ServerPlayer;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
@@ -21,11 +21,11 @@ public class MessagePlayerUseAbility {
         this.index = index;
     }
 
-    public static void serialize(final MessagePlayerUseAbility message, final PacketBuffer buf) {
+    public static void serialize(final MessagePlayerUseAbility message, final FriendlyByteBuf buf) {
         buf.writeVarInt(message.index);
     }
 
-    public static MessagePlayerUseAbility deserialize(final PacketBuffer buf) {
+    public static MessagePlayerUseAbility deserialize(final FriendlyByteBuf buf) {
         final MessagePlayerUseAbility message = new MessagePlayerUseAbility();
         message.index = buf.readVarInt();
         return message;

@@ -6,9 +6,9 @@ import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.particles.ParticleType;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -46,11 +46,11 @@ public class RibbonParticleData extends AdvancedParticleData {
             ParticleRotation rotation;
             if (rotationMode.equals("face_camera")) rotation = new ParticleRotation.FaceCamera((float) 0);
             else if (rotationMode.equals("euler")) rotation = new ParticleRotation.EulerAngles((float)yaw, (float)pitch, (float)roll);
-            else rotation = new ParticleRotation.OrientVector(new Vector3d(yaw, pitch, roll));
+            else rotation = new ParticleRotation.OrientVector(new Vec3(yaw, pitch, roll));
             return new RibbonParticleData(particleTypeIn, rotation, scale, red, green, blue, alpha, airDrag, duration, emissive, length);
         }
 
-        public RibbonParticleData read(ParticleType<RibbonParticleData> particleTypeIn, PacketBuffer buffer) {
+        public RibbonParticleData read(ParticleType<RibbonParticleData> particleTypeIn, FriendlyByteBuf buffer) {
             double airDrag = buffer.readFloat();
             double red = buffer.readFloat();
             double green = buffer.readFloat();
@@ -68,7 +68,7 @@ public class RibbonParticleData extends AdvancedParticleData {
             ParticleRotation rotation;
             if (rotationMode.equals("face_camera")) rotation = new ParticleRotation.FaceCamera((float) 0);
             else if (rotationMode.equals("euler")) rotation = new ParticleRotation.EulerAngles((float)yaw, (float)pitch, (float)roll);
-            else rotation = new ParticleRotation.OrientVector(new Vector3d(yaw, pitch, roll));
+            else rotation = new ParticleRotation.OrientVector(new Vec3(yaw, pitch, roll));
             return new RibbonParticleData(particleTypeIn, rotation, scale, red, green, blue, alpha, airDrag, duration, emissive, length);
         }
     };
@@ -85,7 +85,7 @@ public class RibbonParticleData extends AdvancedParticleData {
     }
 
     @Override
-    public void write(PacketBuffer buffer) {
+    public void write(FriendlyByteBuf buffer) {
         super.write(buffer);
         buffer.writeInt(this.length);
     }

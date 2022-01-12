@@ -10,10 +10,10 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.merchant.villager.VillagerEntity;
 import net.minecraft.world.entity.monster.*;
-import net.minecraft.world.entity.passive.*;
+import net.minecraft.world.entity.animal.*;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.resources.math.MathHelper;
 import net.minecraft.world.*;
 
 import javax.annotation.Nullable;
@@ -60,7 +60,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
             pack.get(i).index = i;
         }
 
-        if (!world.isRemote && pack != null) {
+        if (!world.isClientSide && pack != null) {
             float theta = (2 * (float) Math.PI / pack.size());
             for (int i = 0; i < pack.size(); i++) {
                 EntityBarakoanToBarakoana hunter = pack.get(i);
@@ -73,7 +73,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
             }
         }
 
-        if (!this.world.isRemote && this.world.getDifficulty() == Difficulty.PEACEFUL)
+        if (!this.world.isClientSide && this.world.getDifficulty() == Difficulty.PEACEFUL)
         {
             this.remove();
         }
@@ -170,7 +170,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
     public boolean canSpawn(IWorld world, SpawnReason reason) {
         List<LivingEntity> nearby = getEntityLivingBaseNearby(30, 10, 30, 30);
         for (LivingEntity nearbyEntity : nearby) {
-            if (nearbyEntity instanceof EntityBarakoana || nearbyEntity instanceof VillagerEntity || nearbyEntity instanceof EntityBarako || nearbyEntity instanceof AnimalEntity) {
+            if (nearbyEntity instanceof EntityBarakoana || nearbyEntity instanceof VillagerEntity || nearbyEntity instanceof EntityBarako || nearbyEntity instanceof Animal) {
                 return false;
             }
         }

@@ -15,12 +15,12 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix3f;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.resources.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.math.MathHelper;
+import net.minecraft.world.phys.Matrix3f;
+import net.minecraft.world.phys.Matrix4f;
+import net.minecraft.world.phys.Quaternion;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

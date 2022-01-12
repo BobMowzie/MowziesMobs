@@ -11,13 +11,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrowEntity;
 import net.minecraft.world.entity.projectile.ArrowEntity;
 import net.minecraft.network.IPacket;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.math.EntityRayTraceResult;
+import net.minecraft.resources.math.RayTraceResult;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 public class EntityDart extends ArrowEntity {
     public EntityDart(EntityType<? extends EntityDart> type, World world) {
@@ -46,8 +46,8 @@ public class EntityDart extends ArrowEntity {
     @Override
     protected void arrowHit(LivingEntity living) {
         super.arrowHit(living);
-        if (getShooter() instanceof Player) living.addPotionEffect(new EffectInstance(Effects.POISON, ConfigHandler.COMMON.TOOLS_AND_ABILITIES.BLOW_GUN.poisonDuration.get(), 3, false, true));
-        else living.addPotionEffect(new EffectInstance(Effects.POISON, 30, 1, false, true));
+        if (getShooter() instanceof Player) living.addPotionEffect(new MobEffectInstance(MobEffects.POISON, ConfigHandler.COMMON.TOOLS_AND_ABILITIES.BLOW_GUN.poisonDuration.get(), 3, false, true));
+        else living.addPotionEffect(new MobEffectInstance(MobEffects.POISON, 30, 1, false, true));
         living.setArrowCountInEntity(living.getArrowCountInEntity() - 1);
     }
 
@@ -63,7 +63,7 @@ public class EntityDart extends ArrowEntity {
             Entity shooter = getShooter();
             if (hit instanceof LivingEntity) {
                 LivingEntity living = (LivingEntity) hit;
-                if (world.isRemote || (shooter == hit) || (shooter instanceof EntityBarakoa && living instanceof EntityBarakoa && ((EntityBarakoa) shooter).isBarakoDevoted() == ((EntityBarakoa) living).isBarakoDevoted()))
+                if (world.isClientSide || (shooter == hit) || (shooter instanceof EntityBarakoa && living instanceof EntityBarakoa && ((EntityBarakoa) shooter).isBarakoDevoted() == ((EntityBarakoa) living).isBarakoDevoted()))
                     return;
             }
         }

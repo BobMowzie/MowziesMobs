@@ -6,13 +6,13 @@ import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.EntityDataManager;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.resources.math.RayTraceResult;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -22,7 +22,7 @@ import java.util.UUID;
 public abstract class EntityBarakoan<L extends LivingEntity> extends EntityBarakoa {
     protected static final Optional<UUID> ABSENT_LEADER = Optional.empty();
 
-    private static final DataParameter<Optional<UUID>> LEADER = EntityDataManager.createKey(EntityBarakoan.class, DataSerializers.OPTIONAL_UNIQUE_ID);
+    private static final EntityDataAccessor<Optional<UUID>> LEADER = EntityDataManager.createKey(EntityBarakoan.class, EntityDataSerializers.OPTIONAL_UNIQUE_ID);
 
     private final Class<L> leaderClass;
 

@@ -2,8 +2,8 @@ package com.bobmowzie.mowziesmobs.server.potion;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.EffectInstance;
+import net.minecraft.world.effect.Effect;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -31,8 +31,8 @@ public final class EffectHandler {
     }
 
     public static void addOrCombineEffect(LivingEntity entity, Effect effect, int duration, int amplifier, boolean ambient, boolean showParticles) {
-        EffectInstance effectInst = entity.getActivePotionEffect(effect);
-        EffectInstance newEffect = new EffectInstance(effect, duration, amplifier, ambient, showParticles);
+        MobEffectInstance effectInst = entity.getActivePotionEffect(effect);
+        MobEffectInstance newEffect = new MobEffectInstance(effect, duration, amplifier, ambient, showParticles);
         if (effectInst != null) effectInst.combine(newEffect);
         else entity.addPotionEffect(newEffect);
     }

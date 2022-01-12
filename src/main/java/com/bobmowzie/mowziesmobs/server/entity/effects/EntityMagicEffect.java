@@ -1,19 +1,19 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
-import net.minecraft.block.material.PushReaction;
+import net.minecraft.world.level.block.material.PushReaction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.EntityDataManager;
 import net.minecraft.network.play.server.SSpawnObjectPacket;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.resources.math.AxisAlignedBB;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.List;
  */
 public abstract class EntityMagicEffect extends Entity {
     public LivingEntity caster;
-    private static final DataParameter<Integer> CASTER = EntityDataManager.createKey(EntityMagicEffect.class, DataSerializers.VARINT);
+    private static final EntityDataAccessor<Integer> CASTER = EntityDataManager.createKey(EntityMagicEffect.class, EntityDataSerializers.VARINT);
 
     public EntityMagicEffect(EntityType<? extends EntityMagicEffect> type, World worldIn) {
         super(type, worldIn);

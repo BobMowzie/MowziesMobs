@@ -7,14 +7,14 @@ import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.*;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.SoundEvent;
+import net.minecraft.resources.text.ITextComponent;
+import net.minecraft.resources.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -26,7 +26,7 @@ public class ItemWroughtHelm extends MowzieArmorItem {
     private static final WroughtHelmMaterial ARMOR_WROUGHT_HELM = new WroughtHelmMaterial();
 
     public ItemWroughtHelm(Item.Properties properties) {
-        super(ARMOR_WROUGHT_HELM, EquipmentSlotType.HEAD, properties);
+        super(ARMOR_WROUGHT_HELM, EquipmentSlot.HEAD, properties);
     }
 
     @Override
@@ -63,9 +63,9 @@ public class ItemWroughtHelm extends MowzieArmorItem {
     @OnlyIn(Dist.CLIENT)
     @Nullable
     @Override
-    public <A extends BipedModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, A _default) {
+    public <A extends BipedModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, A _default) {
         WroughtHelmModel<?> model = new WroughtHelmModel<>();
-        model.bipedHeadwear.showModel = armorSlot == EquipmentSlotType.HEAD;
+        model.bipedHeadwear.showModel = armorSlot == EquipmentSlot.HEAD;
 
         if (_default != null) {
             model.isChild = _default.isChild;
@@ -80,7 +80,7 @@ public class ItemWroughtHelm extends MowzieArmorItem {
 
     @Nullable
     @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
+    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
         return new ResourceLocation(MowziesMobs.MODID, "textures/item/wrought_helmet.png").toString();
     }
 
@@ -98,12 +98,12 @@ public class ItemWroughtHelm extends MowzieArmorItem {
     private static class WroughtHelmMaterial implements IArmorMaterial {
 
         @Override
-        public int getDurability(EquipmentSlotType equipmentSlotType) {
+        public int getDurability(EquipmentSlot equipmentSlotType) {
             return ArmorMaterial.IRON.getDurability(equipmentSlotType);
         }
 
         @Override
-        public int getDamageReductionAmount(EquipmentSlotType equipmentSlotType) {
+        public int getDamageReductionAmount(EquipmentSlot equipmentSlotType) {
             return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.WROUGHT_HELM.armorConfig.damageReduction.get();
         }
 

@@ -8,12 +8,12 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.resources.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.math.BlockRayTraceResult;
+import net.minecraft.resources.math.RayTraceContext;
+import net.minecraft.resources.math.RayTraceResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 public class SunstrikeAbility extends Ability {
@@ -30,8 +30,8 @@ public class SunstrikeAbility extends Ability {
     }
 
     private static BlockRayTraceResult rayTrace(LivingEntity entity, double reach) {
-        Vector3d pos = entity.getEyePosition(0);
-        Vector3d segment = entity.getLookVec();
+        Vec3 pos = entity.getEyePosition(0);
+        Vec3 segment = entity.getLookVec();
         segment = pos.add(segment.x * reach, segment.y * reach, segment.z * reach);
         return entity.world.rayTraceBlocks(new RayTraceContext(pos, segment, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, entity));
     }
@@ -52,7 +52,7 @@ public class SunstrikeAbility extends Ability {
     public void start() {
         super.start();
         LivingEntity user = getUser();
-        if (!user.world.isRemote()) {
+        if (!user.world.isClientSide()) {
             BlockPos hit = rayTrace.getPos();
             EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE, user.world, user, hit.getX(), hit.getY(), hit.getZ());
             sunstrike.onSummon();

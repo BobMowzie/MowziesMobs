@@ -2,11 +2,11 @@ package com.bobmowzie.mowziesmobs.server.world.feature.structure;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.mojang.serialization.Codec;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SharedSeedRandom;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.SharedSeedRandom;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.math.ChunkPos;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.provider.BiomeProvider;

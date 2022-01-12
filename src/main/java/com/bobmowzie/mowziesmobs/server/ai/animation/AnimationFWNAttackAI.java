@@ -8,8 +8,8 @@ import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.phys.Vec3;
 
 import javax.management.Attribute;
 import java.util.List;
@@ -45,8 +45,8 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
     private boolean shouldFollowUp(float bonusRange) {
         LivingEntity entityTarget = entity.getAttackTarget();
         if (entityTarget != null && entityTarget.isAlive()) {
-            Vector3d targetMoveVec = entityTarget.getMotion();
-            Vector3d betweenEntitiesVec = entity.getPositionVec().subtract(entityTarget.getPositionVec());
+            Vec3 targetMoveVec = entityTarget.getMotion();
+            Vec3 betweenEntitiesVec = entity.getPositionVec().subtract(entityTarget.getPositionVec());
             boolean targetComingCloser = targetMoveVec.dotProduct(betweenEntitiesVec) > 0;
             return entity.targetDistance < range + bonusRange || (entity.targetDistance < range + 5 + bonusRange && targetComingCloser);
         }
@@ -149,7 +149,7 @@ public class AnimationFWNAttackAI extends AnimationAI<EntityWroughtnaut> {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_WHOOSH.get(), 1.2F, 0.9f);
             } else if (entity.getAnimationTick() == 24) {
                 entity.playSound(MMSounds.ENTITY_WROUGHT_GRUNT_3.get(), 1.5F, 1.13f);
-                entity.move(MoverType.SELF, new Vector3d(Math.cos(Math.toRadians(entity.getYRot() + 90)), 0, Math.sin(Math.toRadians(entity.getYRot() + 90))));
+                entity.move(MoverType.SELF, new Vec3(Math.cos(Math.toRadians(entity.getYRot() + 90)), 0, Math.sin(Math.toRadians(entity.getYRot() + 90))));
                 List<LivingEntity> entitiesHit = entity.getEntityLivingBaseNearby(range + 0.2, 3, range + 0.2, range + 0.2);
                 float damage = (float)entity.getAttribute(Attributes.ATTACK_DAMAGE).getValue() * ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.combatConfig.attackMultiplier.get().floatValue();
                 boolean hit = false;

@@ -4,8 +4,8 @@ import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
@@ -23,12 +23,12 @@ public class MessageUseAbility {
         this.index = index;
     }
 
-    public static void serialize(final MessageUseAbility message, final PacketBuffer buf) {
+    public static void serialize(final MessageUseAbility message, final FriendlyByteBuf buf) {
         buf.writeVarInt(message.entityID);
         buf.writeVarInt(message.index);
     }
 
-    public static MessageUseAbility deserialize(final PacketBuffer buf) {
+    public static MessageUseAbility deserialize(final FriendlyByteBuf buf) {
         final MessageUseAbility message = new MessageUseAbility();
         message.entityID = buf.readVarInt();
         message.index = buf.readVarInt();

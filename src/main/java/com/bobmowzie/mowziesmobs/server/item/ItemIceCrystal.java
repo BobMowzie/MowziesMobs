@@ -12,12 +12,12 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.item.*;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.item.*;
+import net.minecraft.resources.ActionResult;
+import net.minecraft.resources.ActionResultType;
+import net.minecraft.resources.Hand;
+import net.minecraft.resources.text.ITextComponent;
+import net.minecraft.resources.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -43,7 +43,7 @@ public class ItemIceCrystal extends Item {
         if (abilityCapability != null) {
             playerIn.setActiveHand(handIn);
             if (stack.getDamage() + 5 < stack.getMaxDamage() || ConfigHandler.COMMON.TOOLS_AND_ABILITIES.ICE_CRYSTAL.breakable.get()) {
-                if (!worldIn.isRemote()) AbilityHandler.INSTANCE.sendAbilityMessage(playerIn, AbilityHandler.ICE_BREATH_ABILITY);
+                if (!worldIn.isClientSide()) AbilityHandler.INSTANCE.sendAbilityMessage(playerIn, AbilityHandler.ICE_BREATH_ABILITY);
                 stack.damageItem(5, playerIn, p -> p.sendBreakAnimation(handIn));
                 showDurabilityBar(playerIn.getHeldItem(handIn));
                 playerIn.setActiveHand(handIn);

@@ -8,7 +8,7 @@ import net.minecraft.world.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public final class ContainerBarakoayaTrade extends Container {
 
@@ -94,7 +94,7 @@ public final class ContainerBarakoayaTrade extends Container {
     public void onContainerClosed(Player player) {
         super.onContainerClosed(player);
         if (barakoaya != null) barakoaya.setCustomer(null);
-        if (!player.world.isRemote) {
+        if (!player.world.isClientSide) {
             ItemStack stack = inventory.removeStackFromSlot(0);
             if (stack != ItemStack.EMPTY) {
                 player.dropItem(stack, false);

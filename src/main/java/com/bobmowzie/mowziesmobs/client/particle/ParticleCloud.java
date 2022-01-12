@@ -9,14 +9,14 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ItemParticleData;
 import net.minecraft.particles.ParticleType;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.resources.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -41,7 +41,7 @@ public class ParticleCloud extends SpriteTexturedParticle {
         CONSTANT
     }
 
-    public ParticleCloud(ClientWorld world, double x, double y, double z, double vx, double vy, double vz, double r, double g, double b, double scale, int duration, EnumCloudBehavior behavior, double airDrag) {
+    public ParticleCloud(ClientLevel world, double x, double y, double z, double vx, double vy, double vz, double r, double g, double b, double scale, int duration, EnumCloudBehavior behavior, double airDrag) {
         super(world, x, y, z);
         this.scale = (float) scale * 0.5f * 0.1f;
         maxAge = duration;
@@ -90,7 +90,7 @@ public class ParticleCloud extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle makeParticle(CloudData typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle makeParticle(CloudData typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             ParticleCloud particleCloud = new ParticleCloud(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn.getR(), typeIn.getG(), typeIn.getB(), typeIn.getScale(), typeIn.getDuration(), typeIn.getBehavior(), typeIn.getAirDrag());
             particleCloud.selectSpriteWithAge(spriteSet);
             particleCloud.setColor(typeIn.getR(), typeIn.getG(), typeIn.getB());
@@ -116,7 +116,7 @@ public class ParticleCloud extends SpriteTexturedParticle {
                 return new ParticleCloud.CloudData(particleTypeIn, r, g, b, scale, duration, EnumCloudBehavior.CONSTANT, airDrag);
             }
 
-            public ParticleCloud.CloudData read(ParticleType<ParticleCloud.CloudData> particleTypeIn, PacketBuffer buffer) {
+            public ParticleCloud.CloudData read(ParticleType<ParticleCloud.CloudData> particleTypeIn, FriendlyByteBuf buffer) {
                 return new ParticleCloud.CloudData(particleTypeIn, buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readInt(), EnumCloudBehavior.CONSTANT, buffer.readFloat());
             }
         };
@@ -143,7 +143,7 @@ public class ParticleCloud extends SpriteTexturedParticle {
         }
 
         @Override
-        public void write(PacketBuffer buffer) {
+        public void write(FriendlyByteBuf buffer) {
             buffer.writeFloat(this.r);
             buffer.writeFloat(this.g);
             buffer.writeFloat(this.b);

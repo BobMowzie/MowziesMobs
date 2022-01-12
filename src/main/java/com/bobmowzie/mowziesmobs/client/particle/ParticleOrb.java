@@ -10,11 +10,11 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.resources.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -34,7 +34,7 @@ public class ParticleOrb extends SpriteTexturedParticle {
     private int mode;
     private double duration;
 
-    public ParticleOrb(ClientWorld world, double x, double y, double z, double targetX, double targetZ) {
+    public ParticleOrb(ClientLevel world, double x, double y, double z, double targetX, double targetZ) {
         super(world, x, y, z);
         this.targetX = targetX;
         this.targetZ = targetZ;
@@ -47,7 +47,7 @@ public class ParticleOrb extends SpriteTexturedParticle {
         red = green = blue = 1;
     }
 
-    public ParticleOrb(ClientWorld world, double x, double y, double z, double targetX, double targetY, double targetZ, double speed) {
+    public ParticleOrb(ClientLevel world, double x, double y, double z, double targetX, double targetY, double targetZ, double speed) {
         this(world, x, y, z, targetX, targetZ);
         this.targetY = targetY;
         this.startX = x;
@@ -58,7 +58,7 @@ public class ParticleOrb extends SpriteTexturedParticle {
         particleAlpha = 0.1f;
     }
 
-    public ParticleOrb(ClientWorld world, double x, double y, double z, double vx, double vy, double vz, double r, double g, double b, double scale, int duration) {
+    public ParticleOrb(ClientLevel world, double x, double y, double z, double vx, double vy, double vz, double r, double g, double b, double scale, int duration) {
         super(world, x, y, z);
         particleScale = (float) scale * 0.1f;
         maxAge = duration;
@@ -144,7 +144,7 @@ public class ParticleOrb extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle makeParticle(ParticleOrb.OrbData typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle makeParticle(ParticleOrb.OrbData typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             ParticleOrb particle;
             if (typeIn.getMode() == 0) particle = new ParticleOrb(worldIn, x, y, z, typeIn.getTargetX(), typeIn.getTargetZ());
             else if (typeIn.getMode() == 1) particle = new ParticleOrb(worldIn, x, y, z, typeIn.getTargetX(), typeIn.getTargetY(), typeIn.getTargetZ(), typeIn.getSpeed());
@@ -170,7 +170,7 @@ public class ParticleOrb extends SpriteTexturedParticle {
                 return new ParticleOrb.OrbData(r, g, b, scale, duration);
             }
 
-            public ParticleOrb.OrbData read(ParticleType<ParticleOrb.OrbData> particleTypeIn, PacketBuffer buffer) {
+            public ParticleOrb.OrbData read(ParticleType<ParticleOrb.OrbData> particleTypeIn, FriendlyByteBuf buffer) {
                 return new ParticleOrb.OrbData(buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readInt());
             }
         };
@@ -215,7 +215,7 @@ public class ParticleOrb extends SpriteTexturedParticle {
         }
 
         @Override
-        public void write(PacketBuffer buffer) {
+        public void write(FriendlyByteBuf buffer) {
             buffer.writeFloat(this.r);
             buffer.writeFloat(this.g);
             buffer.writeFloat(this.b);

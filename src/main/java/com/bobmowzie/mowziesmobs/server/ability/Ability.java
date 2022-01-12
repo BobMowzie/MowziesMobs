@@ -8,7 +8,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection.*;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraftforge.api.distmarker.Dist;
@@ -69,7 +69,7 @@ public class Ability {
         this.sectionTrack = sectionTrack;
         this.cooldownMax = cooldownMax;
         this.rand = new Random();
-        if (user.world.isRemote) {
+        if (user.world.isClientSide) {
             this.activeThirdPersonAnimation = new AnimationBuilder().addAnimation("idle");
             heldItemMainHandVisualOverride = null;
             heldItemOffHandVisualOverride = null;
@@ -91,7 +91,7 @@ public class Ability {
     }
 
     public void playAnimation(String animationName, GeckoPlayer.Perspective perspective, boolean shouldLoop) {
-        if (getUser() instanceof Player && getUser().world.isRemote()) {
+        if (getUser() instanceof Player && getUser().world.isClientSide()) {
             AnimationBuilder newActiveAnimation = new AnimationBuilder().addAnimation(animationName, shouldLoop);
             if (perspective == GeckoPlayer.Perspective.FIRST_PERSON) {
                 activeFirstPersonAnimation = newActiveAnimation;
@@ -150,7 +150,7 @@ public class Ability {
         currentSectionIndex = 0;
         if (!runsInBackground()) abilityCapability.setActiveAbility(null);
 
-        if (getUser().world.isRemote) {
+        if (getUser().world.isClientSide) {
             heldItemMainHandVisualOverride = null;
             heldItemOffHandVisualOverride = null;
             firstPersonMainHandDisplay = HandDisplay.DEFAULT;

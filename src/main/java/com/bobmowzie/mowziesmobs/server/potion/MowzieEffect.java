@@ -1,9 +1,9 @@
 package com.bobmowzie.mowziesmobs.server.potion;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.EffectType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.effect.Effect;
+import net.minecraft.world.effect.EffectType;
+import net.minecraft.resources.ResourceLocation;
 
 public class MowzieEffect extends Effect {
     private static final ResourceLocation TEXTURE = new ResourceLocation(MowziesMobs.MODID, "textures/gui/container/potions.png");

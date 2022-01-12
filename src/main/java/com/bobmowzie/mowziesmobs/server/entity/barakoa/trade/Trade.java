@@ -1,6 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa.trade;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 
 public final class Trade {

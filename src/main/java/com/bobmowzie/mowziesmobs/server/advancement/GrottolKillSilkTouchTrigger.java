@@ -6,9 +6,9 @@ import com.google.gson.JsonObject;
 import net.minecraft.advancements.PlayerAdvancements;
 import net.minecraft.advancements.criterion.CriterionInstance;
 import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.world.entity.player.ServerPlayer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.loot.ConditionArrayParser;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class GrottolKillSilkTouchTrigger extends MMTrigger<CriterionInstance, GrottolKillSilkTouchTrigger.Listener> {
     public static final ResourceLocation ID = new ResourceLocation(MowziesMobs.MODID, "kill_grottol_silk_touch");

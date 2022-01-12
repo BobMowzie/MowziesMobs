@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.model.tools;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.world.phys.Vector3f;
 import org.apache.commons.lang3.ArrayUtils;
 import software.bernie.geckolib3.geo.raw.pojo.Bone;
 import software.bernie.geckolib3.geo.raw.pojo.Cube;

@@ -4,7 +4,7 @@ import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.resources.SoundEvent;
 
 import java.util.EnumSet;
 

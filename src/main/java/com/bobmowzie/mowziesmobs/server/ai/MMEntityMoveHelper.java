@@ -6,7 +6,7 @@ import net.minecraft.world.entity.ai.controller.MovementController;
 import net.minecraft.pathfinding.NodeProcessor;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.pathfinding.PathNodeType;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.resources.math.MathHelper;
 
 public class MMEntityMoveHelper extends MovementController
 {

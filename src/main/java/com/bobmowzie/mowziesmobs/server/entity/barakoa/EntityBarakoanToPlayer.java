@@ -11,22 +11,22 @@ import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.EntityDataManager;
+import net.minecraft.resources.ActionResultType;
+import net.minecraft.resources.Hand;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.SoundEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -35,9 +35,9 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class EntityBarakoanToPlayer extends EntityBarakoan<Player> {
-    private static final DataParameter<ItemStack> MASK_STORED = EntityDataManager.createKey(EntityBarakoanToPlayer.class, DataSerializers.ITEMSTACK);
+    private static final EntityDataAccessor<ItemStack> MASK_STORED = EntityDataManager.createKey(EntityBarakoanToPlayer.class, EntityDataSerializers.ITEMSTACK);
     @OnlyIn(Dist.CLIENT)
-    public Vector3d[] feetPos;
+    public Vec3[] feetPos;
 
     public EntityBarakoanToPlayer(EntityType<? extends EntityBarakoanToPlayer> type, World world) {
         this(type, world, null);
@@ -46,8 +46,8 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<Player> {
     public EntityBarakoanToPlayer(EntityType<? extends EntityBarakoanToPlayer> type, World world, Player leader) {
         super(type, world, Player.class, leader);
         experienceValue = 0;
-        if (world.isRemote) {
-            feetPos = new Vector3d[]{new Vector3d(0, 0, 0)};
+        if (world.isClientSide) {
+            feetPos = new Vec3[]{new Vec3(0, 0, 0)};
         }
     }
 
@@ -69,7 +69,7 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<Player> {
             deactivate();
         }
         super.tick();
-        if (world.isRemote && feetPos != null && feetPos.length > 0) {
+        if (world.isClientSide && feetPos != null && feetPos.length > 0) {
             feetPos[0] = getPositionVec().add(0, 0.05f, 0);
             if (ticksExisted % 10 == 0) AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING2.get(), feetPos[0].getX(), feetPos[0].getY(), feetPos[0].getZ(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 1.5F, 1, 223 / 255f, 66 / 255f, 1, 1, 15, true, false, new ParticleComponent[]{
                     new ParticleComponent.PinLocation(feetPos),

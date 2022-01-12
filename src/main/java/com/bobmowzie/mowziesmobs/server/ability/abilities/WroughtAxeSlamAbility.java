@@ -8,7 +8,7 @@ import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.util.HandSide;
+import net.minecraft.resources.HandSide;
 
 import static com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack.SWING_DURATION_HOR;
 import static com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack.SWING_DURATION_VER;
@@ -27,7 +27,7 @@ public class WroughtAxeSlamAbility extends Ability {
     @Override
     public void start() {
         super.start();
-        if (!getUser().world.isRemote()) {
+        if (!getUser().world.isClientSide()) {
             EntityAxeAttack axeAttack = new EntityAxeAttack(EntityHandler.AXE_ATTACK, getUser().world, getUser(), true);
             axeAttack.setPositionAndRotation(getUser().getPosX(), getUser().getPosY(), getUser().getPosZ(), getUser().getYRot(), getUser().getXRot());
             getUser().world.addEntity(axeAttack);

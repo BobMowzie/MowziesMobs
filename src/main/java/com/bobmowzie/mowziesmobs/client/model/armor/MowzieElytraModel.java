@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.client.model.armor;
 import com.bobmowzie.mowziesmobs.client.model.tools.ModelRendererMatrix;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.entity.model.ElytraModel;
-import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.resources.model.ModelRenderer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;

@@ -11,14 +11,14 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrowEntity;
-import net.minecraft.item.*;
+import net.minecraft.world.item.*;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.resources.Hand;
+import net.minecraft.resources.SoundEvents;
+import net.minecraft.resources.SoundCategory;
+import net.minecraft.resources.text.ITextComponent;
+import net.minecraft.resources.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -54,7 +54,7 @@ public class ItemBlowgun extends BowItem {
                 float f = getArrowVelocity(i);
                 if (!((double)f < 0.1D)) {
                     boolean flag1 = Player.abilities.isCreativeMode || (itemstack.getItem() instanceof ItemDart && ((ItemDart)itemstack.getItem()).isInfinite(itemstack, stack, Player));
-                    if (!worldIn.isRemote) {
+                    if (!worldIn.isClientSide) {
                         ArrowItem arrowitem = (ArrowItem)(itemstack.getItem() instanceof ItemDart ? itemstack.getItem() : ItemHandler.DART);
                         AbstractArrowEntity abstractarrowentity = arrowitem.createArrow(worldIn, itemstack, Player);
                         abstractarrowentity = customArrow(abstractarrowentity);

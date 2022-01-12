@@ -10,29 +10,29 @@ import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.PushReaction;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.block.material.PushReaction;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.EntityDataManager;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.resources.SoundEvent;
+import net.minecraft.resources.math.AxisAlignedBB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,11 +45,11 @@ public class EntityBoulder extends Entity {
     private LivingEntity caster;
     private boolean travelling;
     public BlockState storedBlock;
-    private static final DataParameter<Optional<BlockState>> BLOCK_STATE = EntityDataManager.createKey(EntityBoulder.class, DataSerializers.OPTIONAL_BLOCK_STATE);
-    private static final DataParameter<Boolean> SHOULD_EXPLODE = EntityDataManager.createKey(EntityBoulder.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<BlockPos> ORIGIN = EntityDataManager.createKey(EntityBoulder.class, DataSerializers.BLOCK_POS);
-    private static final DataParameter<Integer> DEATH_TIME = EntityDataManager.createKey(EntityBoulder.class, DataSerializers.VARINT);
-    private static final DataParameter<Integer> SIZE = EntityDataManager.createKey(EntityBoulder.class, DataSerializers.VARINT);
+    private static final EntityDataAccessor<Optional<BlockState>> BLOCK_STATE = EntityDataManager.createKey(EntityBoulder.class, EntityDataSerializers.OPTIONAL_BLOCK_STATE);
+    private static final EntityDataAccessor<Boolean> SHOULD_EXPLODE = EntityDataManager.createKey(EntityBoulder.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<BlockPos> ORIGIN = EntityDataManager.createKey(EntityBoulder.class, EntityDataSerializers.BLOCK_POS);
+    private static final EntityDataAccessor<Integer> DEATH_TIME = EntityDataManager.createKey(EntityBoulder.class, EntityDataSerializers.VARINT);
+    private static final EntityDataAccessor<Integer> SIZE = EntityDataManager.createKey(EntityBoulder.class, EntityDataSerializers.VARINT);
     public float animationOffset = 0;
     private final List<Entity> ridingEntities = new ArrayList<Entity>();
     public BoulderSizeEnum boulderSize = BoulderSizeEnum.SMALL;
@@ -82,7 +82,7 @@ public class EntityBoulder extends Entity {
         else if (type == EntityHandler.BOULDER_LARGE) setBoulderSize(BoulderSizeEnum.LARGE);
         else if (type == EntityHandler.BOULDER_HUGE) setBoulderSize(BoulderSizeEnum.HUGE);
         setSizeParams();
-        if (!world.isRemote && blockState != null) {
+        if (!world.isClientSide && blockState != null) {
             Block block = blockState.getBlock();
             BlockState newBlock = blockState;
             Material mat = blockState.getMaterial();
@@ -181,7 +181,7 @@ public class EntityBoulder extends Entity {
         super.tick();
         move(MoverType.SELF, getMotion());
         if (ridingEntities != null) ridingEntities.clear();
-        List<Entity> onTopOfEntities = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().contract(0, getHeight() - 1, 0).offset(new Vector3d(0, getHeight() - 0.5, 0)).grow(0.6,0.5,0.6));
+        List<Entity> onTopOfEntities = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox().contract(0, getHeight() - 1, 0).offset(new Vec3(0, getHeight() - 0.5, 0)).grow(0.6,0.5,0.6));
         for (Entity entity : onTopOfEntities) {
             if (entity != null && entity.canBeCollidedWith() && !(entity instanceof EntityBoulder) && entity.getPosY() >= this.getPosY() + 0.2) ridingEntities.add(entity);
         }
@@ -200,15 +200,15 @@ public class EntityBoulder extends Entity {
             List<Entity> popUpEntities = world.getEntitiesWithinAABBExcludingEntity(this, getBoundingBox());
             for (Entity entity:popUpEntities) {
                 if (entity.canBeCollidedWith() && !(entity instanceof EntityBoulder)) {
-                    if (boulderSize != BoulderSizeEnum.HUGE) entity.move(MoverType.SHULKER_BOX, new Vector3d(0, 2 * (Math.pow(2, -ticksExisted * (0.6 - 0.1 * boulderSize.ordinal()))), 0));
-                    else entity.move(MoverType.SHULKER_BOX, new Vector3d(0, 0.6f, 0));
+                    if (boulderSize != BoulderSizeEnum.HUGE) entity.move(MoverType.SHULKER_BOX, new Vec3(0, 2 * (Math.pow(2, -ticksExisted * (0.6 - 0.1 * boulderSize.ordinal()))), 0));
+                    else entity.move(MoverType.SHULKER_BOX, new Vec3(0, 0.6f, 0));
                 }
             }
         }
         List<LivingEntity> entitiesHit = getEntityLivingBaseNearby(1.7);
         if (travelling && !entitiesHit.isEmpty()) {
             for (Entity entity : entitiesHit) {
-                if (world.isRemote) continue;
+                if (world.isClientSide) continue;
                 if (entity == caster) continue;
                 if (ridingEntities.contains(entity)) continue;
                 if (caster != null) entity.attackEntityFrom(DamageSource.causeIndirectDamage(this, caster), damage);
@@ -230,7 +230,7 @@ public class EntityBoulder extends Entity {
 
         if (ticksExisted == 1) {
             for (int i = 0; i < 20 * getWidth(); i++) {
-                Vector3d particlePos = new Vector3d(rand.nextFloat() * 1.3 * getWidth(), 0, 0);
+                Vec3 particlePos = new Vec3(rand.nextFloat() * 1.3 * getWidth(), 0, 0);
                 particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                 world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, storedBlock), getPosX() + particlePos.x, getPosY() - 1, getPosZ() + particlePos.z, particlePos.x, 2, particlePos.z);
             }
@@ -249,7 +249,7 @@ public class EntityBoulder extends Entity {
                 playSound(MMSounds.EFFECT_GEOMANCY_RUMBLE_1.get(), 2, 0.8f);
                 EntityCameraShake.cameraShake(world, getPositionVec(), 15, 0.05f, 50, 30);
             }
-            if (world.isRemote) {
+            if (world.isClientSide) {
                 AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING2.get(), getPosX(), getPosY() - 0.9f, getPosZ(), 0, 0, 0, false, 0, Math.PI / 2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, (int) (5 + 2 * getWidth()), true, true, new ParticleComponent[]{
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(0f, (1.0f + 0.5f * getWidth()) * 10f), false)
@@ -266,7 +266,7 @@ public class EntityBoulder extends Entity {
         if (dripNumber >= 1 && dripTick > 0) {
             dripNumber *= rand.nextFloat();
             for (int i = 0; i < dripNumber; i++) {
-                Vector3d particlePos = new Vector3d(rand.nextFloat() * 0.6 * getWidth(), 0, 0);
+                Vec3 particlePos = new Vec3(rand.nextFloat() * 0.6 * getWidth(), 0, 0);
                 particlePos = particlePos.rotateYaw((float)(rand.nextFloat() * 2 * Math.PI));
                 float offsetY;
                 if (boulderSize == BoulderSizeEnum.HUGE && ticksExisted < finishedRisingTick) offsetY = rand.nextFloat() * (getHeight()-1) - getHeight() * (finishedRisingTick - ticksExisted)/finishedRisingTick;
@@ -282,7 +282,7 @@ public class EntityBoulder extends Entity {
     private void explode() {
         remove();
         for (int i = 0; i < 40 * getWidth(); i++) {
-            Vector3d particlePos = new Vector3d(rand.nextFloat() * 0.7 * getWidth(), 0, 0);
+            Vec3 particlePos = new Vec3(rand.nextFloat() * 0.7 * getWidth(), 0, 0);
             particlePos = particlePos.rotateYaw((float)(rand.nextFloat() * 2 * Math.PI));
             particlePos = particlePos.rotatePitch((float)(rand.nextFloat() * 2 * Math.PI));
             world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, storedBlock), getPosX() + particlePos.x, getPosY() + 0.5 + particlePos.y, getPosZ() + particlePos.z, particlePos.x, particlePos.y, particlePos.z);
@@ -301,10 +301,10 @@ public class EntityBoulder extends Entity {
             EntityCameraShake.cameraShake(world, getPositionVec(), 15, 0.05f, 0, 20);
 
             for (int i = 0; i < 5; i++) {
-                Vector3d particlePos = new Vector3d(rand.nextFloat() * 2, 0, 0);
+                Vec3 particlePos = new Vec3(rand.nextFloat() * 2, 0, 0);
                 particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
-                particlePos = particlePos.add(new Vector3d(0, getHeight() / 4, 0));
+                particlePos = particlePos.add(new Vec3(0, getHeight() / 4, 0));
 //                    ParticleFallingBlock.spawnFallingBlock(world, getPosX() + particlePos.x, getPosY() + 0.5 + particlePos.y, getPosZ() + particlePos.z, 10.f, 90, 1, (float) particlePos.x * 0.3f, 0.2f + (float) rand.nextFloat() * 0.6f, (float) particlePos.z * 0.3f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, getBlock());
                 EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK, world, 70, getBlock());
                 fallingBlock.setPosition(getPosX() + particlePos.x, getPosY() + 0.5 + particlePos.y, getPosZ() + particlePos.z);
@@ -318,10 +318,10 @@ public class EntityBoulder extends Entity {
             EntityCameraShake.cameraShake(world, getPositionVec(), 20, 0.05f, 0, 20);
 
             for (int i = 0; i < 7; i++) {
-                Vector3d particlePos = new Vector3d(rand.nextFloat() * 2.5f, 0, 0);
+                Vec3 particlePos = new Vec3(rand.nextFloat() * 2.5f, 0, 0);
                 particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
-                particlePos = particlePos.add(new Vector3d(0, getHeight() / 4, 0));
+                particlePos = particlePos.add(new Vec3(0, getHeight() / 4, 0));
 //                    ParticleFallingBlock.spawnFallingBlock(world, getPosX() + particlePos.x, getPosY() + 0.5 + particlePos.y, getPosZ() + particlePos.z, 10.f, 70, 1, (float) particlePos.x * 0.3f, 0.2f + (float) rand.nextFloat() * 0.6f, (float) particlePos.z * 0.3f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, getBlock());
                 EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK, world, 70, getBlock());
                 fallingBlock.setPosition(getPosX() + particlePos.x, getPosY() + 0.5 + particlePos.y, getPosZ() + particlePos.z);
@@ -405,7 +405,7 @@ public class EntityBoulder extends Entity {
                     && EffectGeomancy.canUse((Player)entityIn)) {
                 Player player = (Player) entityIn;
                 if (ridingEntities.contains(player)) {
-                    Vector3d lateralLookVec = Vector3d.fromPitchYaw(0, player.getYRot()).normalize();
+                    Vec3 lateralLookVec = Vec3.fromPitchYaw(0, player.getYRot()).normalize();
                     setMotion(speed * 0.5 * lateralLookVec.x, getMotion().y, speed * 0.5 * lateralLookVec.z);
                 } else {
                     setMotion(player.getLookVec().scale(speed * 0.5));
@@ -414,9 +414,9 @@ public class EntityBoulder extends Entity {
             }
             else if (entityIn instanceof EntityBoulder && ((EntityBoulder) entityIn).travelling) {
                 EntityBoulder boulder = (EntityBoulder)entityIn;
-                Vector3d thisPos = getPositionVec();
-                Vector3d boulderPos = boulder.getPositionVec();
-                Vector3d velVec = thisPos.subtract(boulderPos).normalize();
+                Vec3 thisPos = getPositionVec();
+                Vec3 boulderPos = boulder.getPositionVec();
+                Vec3 velVec = thisPos.subtract(boulderPos).normalize();
                 setMotion(velVec.scale(speed * 0.5));
             }
             else {
@@ -445,8 +445,8 @@ public class EntityBoulder extends Entity {
                 EntityCameraShake.cameraShake(world, getPositionVec(), 15, 0.05f, 0, 20);
             }
 
-            if (world.isRemote) {
-                Vector3d ringOffset = getMotion().scale(-1).normalize();
+            if (world.isClientSide) {
+                Vec3 ringOffset = getMotion().scale(-1).normalize();
                 ParticleRotation.OrientVector rotation = new ParticleRotation.OrientVector(ringOffset);
                 AdvancedParticleBase.spawnParticle(world, ParticleHandler.RING2.get(), (float) getPosX() + (float) ringOffset.x, (float) getPosY() + 0.5f + (float) ringOffset.y, (float) getPosZ() + (float) ringOffset.z, 0, 0, 0, rotation, 3.5F, 0.83f, 1, 0.39f, 1, 1, (int) (5 + 2 * getWidth()), true, true, new ParticleComponent[]{
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0.7f, 0f), false),

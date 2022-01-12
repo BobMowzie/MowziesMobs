@@ -1,6 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.model.tools;
 
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.resources.math.MathHelper;
 
 /**
  * This is a timer that can be used to easily animate models between poses. You have to set the number of

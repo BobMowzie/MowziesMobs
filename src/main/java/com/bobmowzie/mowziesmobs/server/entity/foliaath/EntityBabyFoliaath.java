@@ -8,8 +8,8 @@ import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.SpawnReason;
@@ -17,21 +17,21 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Food;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.item.Food;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ItemParticleData;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.item.ItemStack;
+import net.minecraft.resources.SoundEvents;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.EntityDataManager;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.resources.SoundEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.math.MathHelper;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
@@ -39,13 +39,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EntityBabyFoliaath extends MowzieEntity {
-    private static final DataParameter<Integer> GROWTH = EntityDataManager.createKey(EntityBabyFoliaath.class, DataSerializers.VARINT);
+    private static final EntityDataAccessor<Integer> GROWTH = EntityDataManager.createKey(EntityBabyFoliaath.class, EntityDataSerializers.VARINT);
 
-    private static final DataParameter<Boolean> INFANT = EntityDataManager.createKey(EntityBabyFoliaath.class, DataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> INFANT = EntityDataManager.createKey(EntityBabyFoliaath.class, EntityDataSerializers.BOOLEAN);
 
-    private static final DataParameter<Boolean> HUNGRY = EntityDataManager.createKey(EntityBabyFoliaath.class, DataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> HUNGRY = EntityDataManager.createKey(EntityBabyFoliaath.class, EntityDataSerializers.BOOLEAN);
 
-    private static final DataParameter<ItemStack> EATING = EntityDataManager.createKey(EntityBabyFoliaath.class, DataSerializers.ITEMSTACK);
+    private static final EntityDataAccessor<ItemStack> EATING = EntityDataManager.createKey(EntityBabyFoliaath.class, EntityDataSerializers.ITEMSTACK);
 
     public static final Animation EAT_ANIMATION = Animation.create(20);
     public ControlledAnimation activate = new ControlledAnimation(5);
@@ -98,7 +98,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
         }
         prevActivate = activate.getTimer();
 
-        if (!world.isRemote && getHungry() && getAnimation() == NO_ANIMATION) {
+        if (!world.isClientSide && getHungry() && getAnimation() == NO_ANIMATION) {
             for (ItemEntity meat : getMeatsNearby(0.4, 0.2, 0.4, 0.4)) {
                 ItemStack stack = meat.getItem().split(1);
                 if (!stack.isEmpty()) {
@@ -111,14 +111,14 @@ public class EntityBabyFoliaath extends MowzieEntity {
                 }
             }
         }
-        if (world.isRemote && getAnimation() == EAT_ANIMATION && (getAnimationTick() == 3 || getAnimationTick() == 7 || getAnimationTick() == 11 || getAnimationTick() == 15 || getAnimationTick() == 19)) {
+        if (world.isClientSide && getAnimation() == EAT_ANIMATION && (getAnimationTick() == 3 || getAnimationTick() == 7 || getAnimationTick() == 11 || getAnimationTick() == 15 || getAnimationTick() == 19)) {
             for (int i = 0; i <= 5; i++) {
                 world.addParticle(new ItemParticleData(ParticleTypes.ITEM, getEating()), getPosX(), getPosY() + 0.2, getPosZ(), rand.nextFloat() * 0.2 - 0.1, rand.nextFloat() * 0.2, rand.nextFloat() * 0.2 - 0.1);
             }
         }
 
         //Growing
-        if (!world.isRemote) {
+        if (!world.isClientSide) {
             if (ticksExisted % 20 == 0 && !getHungry()) {
                 incrementGrowth();
             }

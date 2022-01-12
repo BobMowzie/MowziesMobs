@@ -5,8 +5,8 @@ import com.google.common.collect.ImmutableMultimap;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.IItemTier;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.IItemTier;
 
 public abstract class MowzieAxeItem extends AxeItem {
     public MowzieAxeItem(IItemTier tier, float attackDamageIn, float attackSpeedIn, Properties builderIn) {

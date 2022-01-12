@@ -1,6 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.util;
 
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.resources.math.MathHelper;
 
 public class MowzieMathUtil {
     public static float approachSmooth(float current, float previous, float desired, float desiredSpeed, float deltaSpeed) {

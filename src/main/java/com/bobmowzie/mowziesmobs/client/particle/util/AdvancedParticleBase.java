@@ -5,12 +5,12 @@ import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.particles.ParticleType;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.resources.math.MathHelper;
+import net.minecraft.world.phys.Quaternion;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.Vector3f;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -28,7 +28,7 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
 
     public ParticleRibbon ribbon;
 
-    protected AdvancedParticleBase(ClientWorld worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double motionX, double motionY, double motionZ, ParticleRotation rotation, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, boolean canCollide, ParticleComponent[] components) {
+    protected AdvancedParticleBase(ClientLevel worldIn, double xCoordIn, double yCoordIn, double zCoordIn, double motionX, double motionY, double motionZ, ParticleRotation rotation, double scale, double r, double g, double b, double a, double drag, double duration, boolean emissive, boolean canCollide, ParticleComponent[] components) {
         super(worldIn, xCoordIn, yCoordIn, zCoordIn, 0.0D, 0.0D, 0.0D);
         this.motionX = motionX;
         this.motionY = motionY;
@@ -108,7 +108,7 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
 
         if (ribbon != null) {
             ribbon.setPosition(posX, posY, posZ);
-            ribbon.positions[0] = new Vector3d(posX, posY, posZ);
+            ribbon.positions[0] = new Vec3(posX, posY, posZ);
             ribbon.prevPositions[0] = getPrevPos();
         }
     }
@@ -141,10 +141,10 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
             component.preRender(this, partialTicks);
         }
 
-        Vector3d Vector3d = renderInfo.getProjectedView();
-        float f = (float)(MathHelper.lerp(partialTicks, this.prevPosX, this.posX) - Vector3d.getX());
-        float f1 = (float)(MathHelper.lerp(partialTicks, this.prevPosY, this.posY) - Vector3d.getY());
-        float f2 = (float)(MathHelper.lerp(partialTicks, this.prevPosZ, this.posZ) - Vector3d.getZ());
+        Vec3 Vec3 = renderInfo.getProjectedView();
+        float f = (float)(MathHelper.lerp(partialTicks, this.prevPosX, this.posX) - Vec3.getX());
+        float f1 = (float)(MathHelper.lerp(partialTicks, this.prevPosY, this.posY) - Vec3.getY());
+        float f2 = (float)(MathHelper.lerp(partialTicks, this.prevPosZ, this.posZ) - Vec3.getZ());
 
         Quaternion quaternion = new Quaternion(0.0F, 0.0F, 0.0F, 1.0F);
         if (rotation instanceof ParticleRotation.FaceCamera) {
@@ -259,8 +259,8 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
         this.motionZ = motionZ;
     }
 
-    public Vector3d getPrevPos() {
-        return new Vector3d(prevPosX, prevPosY, prevPosZ);
+    public Vec3 getPrevPos() {
+        return new Vec3(prevPosX, prevPosY, prevPosZ);
     }
 
     public double getPrevPosX() {
@@ -288,7 +288,7 @@ public class AdvancedParticleBase extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle makeParticle(AdvancedParticleData typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle makeParticle(AdvancedParticleData typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             AdvancedParticleBase particle = new AdvancedParticleBase(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn.getRotation(), typeIn.getScale(), typeIn.getRed(), typeIn.getGreen(), typeIn.getBlue(), typeIn.getAlpha(), typeIn.getAirDrag(), typeIn.getDuration(), typeIn.isEmissive(), typeIn.getCanCollide(), typeIn.getComponents());
             particle.setColor((float) typeIn.getRed(), (float) typeIn.getGreen(), (float) typeIn.getBlue());
             particle.selectSpriteRandomly(spriteSet);

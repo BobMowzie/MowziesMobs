@@ -2,10 +2,10 @@ package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.text.ITextComponent;
+import net.minecraft.resources.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;

@@ -6,8 +6,8 @@ import net.minecraft.loot.LootConditionType;
 import net.minecraft.loot.LootFunctionType;
 import net.minecraft.loot.conditions.ILootCondition;
 import net.minecraft.loot.functions.ILootFunction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.registry.Registry;
 
 public class LootTableHandler {
     // Mob drops

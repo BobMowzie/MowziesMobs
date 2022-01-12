@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelSculptor;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class RenderSculptor extends MowzieGeoEntityRenderer<EntitySculptor> {
     public RenderSculptor(EntityRendererManager renderManager) {

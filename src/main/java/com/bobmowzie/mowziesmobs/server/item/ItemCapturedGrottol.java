@@ -8,14 +8,14 @@ import net.minecraft.world.entity.ai.controller.LookController;
 import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.goal.LookAtGoal;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUseContext;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.resources.ActionResultType;
+import net.minecraft.resources.Direction;
+import net.minecraft.resources.Hand;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 
@@ -48,7 +48,7 @@ public class ItemCapturedGrottol extends Item {
         if (!player.canPlayerEdit(location, facing, stack)) {
             return ActionResultType.FAIL;
         }
-        if (!world.isRemote) {
+        if (!world.isClientSide) {
             EntityGrottol grottol = new EntityGrottol(EntityHandler.GROTTOL, world);
             CompoundNBT compound = stack.getChildTag("EntityTag");
             if (compound != null) {

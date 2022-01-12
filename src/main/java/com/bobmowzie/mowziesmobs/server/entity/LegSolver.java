@@ -4,11 +4,11 @@ package com.bobmowzie.mowziesmobs.server.entity;
  * Created by pau101
  */
 
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.resources.math.AxisAlignedBB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.math.shapes.VoxelShape;
 import net.minecraft.world.World;
 
 public class LegSolver {

@@ -7,30 +7,30 @@ import com.bobmowzie.mowziesmobs.server.world.spawn.SpawnHandler;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayer;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.CreatureEntity;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ILivingEntityData;
 import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.MonsterEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.ServerPlayer;
-import net.minecraft.item.ItemStack;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.resources.*;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.math.ChunkPos;
+import net.minecraft.resources.math.MathHelper;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.resources.text.ITextComponent;
 import net.minecraft.world.*;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.structure.Structure;
@@ -45,7 +45,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class MowzieEntity extends CreatureEntity implements IEntityAdditionalSpawnData, IAnimatedEntity, IntermittentAnimatableEntity {
+public abstract class MowzieEntity extends PathfinderMob implements IEntityAdditionalSpawnData, IAnimatedEntity, IntermittentAnimatableEntity {
     private static final byte START_IA_HEALTH_UPDATE_ID = 4;
     private static final byte MUSIC_PLAY_ID = 67;
     private static final byte MUSIC_STOP_ID = 68;
@@ -63,7 +63,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     public boolean hurtInterruptsAnimation = false;
 
     @OnlyIn(Dist.CLIENT)
-    public Vector3d[] socketPosArray;
+    public Vec3[] socketPosArray;
 
     protected boolean prevOnGround;
     protected boolean prevPrevOnGround;
@@ -79,8 +79,8 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
 
     public MowzieEntity(EntityType<? extends MowzieEntity> type, World world) {
         super(type, world);
-        if (world.isRemote) {
-            socketPosArray = new Vector3d[]{};
+        if (world.isClientSide) {
+            socketPosArray = new Vec3[]{};
         }
     }
 
@@ -184,7 +184,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         frame++;
         if (getAnimation() != NO_ANIMATION) {
             animationTick++;
-            if (world.isRemote && animationTick >= animation.getDuration()) {
+            if (world.isClientSide && animationTick >= animation.getDuration()) {
                 setAnimation(NO_ANIMATION);
             }
         }
@@ -195,7 +195,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         }
         willLandSoon = !onGround && world.hasNoCollisions(getBoundingBox().offset(getMotion()));
 
-        if (!world.isRemote && getBossMusic() != null) {
+        if (!world.isClientSide && getBossMusic() != null) {
             Player player = Minecraft.getInstance().player;
             if (canPlayMusic()) {
                 this.world.setEntityState(this, MUSIC_PLAY_ID);
@@ -224,13 +224,13 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     protected void onAnimationFinish(Animation animation) {}
 
     @Override
-    public void writeSpawnData(PacketBuffer buf) {
+    public void writeSpawnData(FriendlyByteBuf buf) {
         buf.writeInt(ArrayUtils.indexOf(this.getAnimations(), this.getAnimation()));
         buf.writeInt(this.getAnimationTick());
     }
 
     @Override
-    public void readSpawnData(PacketBuffer buf) {
+    public void readSpawnData(FriendlyByteBuf buf) {
         prevRotationYaw = rotationYaw;
         prevRenderYawOffset = renderYawOffset = prevRotationYawHead = rotationYawHead;
         int animOrdinal = buf.readInt();
@@ -352,7 +352,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         if (this.deathTime == deathDuration) {
             attackingPlayer = killDataAttackingPlayer;
             recentlyHit = killDataRecentlyHit;
-            if (!world.isRemote() && dropAfterDeathAnim && killDataCause != null) {
+            if (!world.isClientSide() && dropAfterDeathAnim && killDataCause != null) {
                 spawnDrops(killDataCause);
             }
 
@@ -474,7 +474,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     public void circleEntity(Entity target, float radius, float speed, boolean direction, int circleFrame, float offset, float moveSpeedMultiplier) {
         int directionInt = direction ? 1 : -1;
         double t = directionInt * circleFrame * 0.5 * speed / radius + offset;
-        Vector3d movePos = target.getPositionVec().add(radius * Math.cos(t), 0, radius * Math.sin(t));
+        Vec3 movePos = target.getPositionVec().add(radius * Math.cos(t), 0, radius * Math.sin(t));
         this.getNavigator().tryMoveToXYZ(movePos.getX(), movePos.getY(), movePos.getZ(), speed * moveSpeedMultiplier);
     }
 
@@ -551,7 +551,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void setSocketPosArray(int index, Vector3d pos) {
+    public void setSocketPosArray(int index, Vec3 pos) {
         if (socketPosArray != null && socketPosArray.length > index) {
             socketPosArray[index] = pos;
         }

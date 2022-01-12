@@ -7,13 +7,13 @@ import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.item.*;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.item.*;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.SoundEvent;
+import net.minecraft.resources.text.ITextComponent;
+import net.minecraft.resources.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -28,7 +28,7 @@ public class ItemBarakoMask extends MowzieArmorItem implements BarakoaMask {
     private static final SolVisageMaterial SOL_VISAGE_MATERIAL = new SolVisageMaterial();
 
     public ItemBarakoMask(Item.Properties properties) {
-        super(SOL_VISAGE_MATERIAL, EquipmentSlotType.HEAD, properties);
+        super(SOL_VISAGE_MATERIAL, EquipmentSlot.HEAD, properties);
     }
 
     @Override
@@ -70,9 +70,9 @@ public class ItemBarakoMask extends MowzieArmorItem implements BarakoaMask {
     @OnlyIn(Dist.CLIENT)
     @Nullable
     @Override
-    public <A extends BipedModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, A _default) {
+    public <A extends BipedModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, A _default) {
         SolVisageModel<?> model = new SolVisageModel<>();
-        model.bipedHeadwear.showModel = armorSlot == EquipmentSlotType.HEAD;
+        model.bipedHeadwear.showModel = armorSlot == EquipmentSlot.HEAD;
 
         if (_default != null) {
             model.isChild = _default.isChild;
@@ -87,7 +87,7 @@ public class ItemBarakoMask extends MowzieArmorItem implements BarakoaMask {
 
     @Nullable
     @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
+    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
         return new ResourceLocation(MowziesMobs.MODID, "textures/item/barako_mask.png").toString();
     }
 
@@ -107,12 +107,12 @@ public class ItemBarakoMask extends MowzieArmorItem implements BarakoaMask {
     private static class SolVisageMaterial implements IArmorMaterial {
 
         @Override
-        public int getDurability(EquipmentSlotType equipmentSlotType) {
+        public int getDurability(EquipmentSlot equipmentSlotType) {
             return ArmorMaterial.GOLD.getDamageReductionAmount(equipmentSlotType);
         }
 
         @Override
-        public int getDamageReductionAmount(EquipmentSlotType equipmentSlotType) {
+        public int getDamageReductionAmount(EquipmentSlot equipmentSlotType) {
             return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SOL_VISAGE.armorConfig.damageReduction.get();
         }
 

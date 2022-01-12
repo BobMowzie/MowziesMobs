@@ -1,6 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
-import net.minecraft.world.entity.player.ServerPlayer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.server.ServerBossInfo;
 
 import java.util.HashSet;

@@ -3,8 +3,8 @@ package com.bobmowzie.mowziesmobs.client.model.tools;
 import com.ilexiconn.llibrary.client.model.Transform;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.resources.model.ModelRenderer;
+import net.minecraft.resources.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

@@ -4,10 +4,10 @@ import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.text.ITextComponent;
+import net.minecraft.resources.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -21,7 +21,7 @@ public class ItemMobRemover extends Item {
     @Override
     public boolean onLeftClickEntity(ItemStack stack, Player player, Entity entity) {
         if (entity instanceof MowzieEntity) {
-            if (!entity.world.isRemote) {
+            if (!entity.world.isClientSide) {
                 entity.remove();
             }
             return true;

@@ -3,9 +3,9 @@ package com.ilexiconn.llibrary.client.model.tools;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.ilexiconn.llibrary.client.util.ClientUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.resources.model.ModelRenderer;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.resources.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

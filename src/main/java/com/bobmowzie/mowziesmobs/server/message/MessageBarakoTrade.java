@@ -8,11 +8,11 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.ServerPlayer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.potion.EffectInstance;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
@@ -31,11 +31,11 @@ public class MessageBarakoTrade {
         entityID = sender.getEntityId();
     }
 
-    public static void serialize(final MessageBarakoTrade message, final PacketBuffer buf) {
+    public static void serialize(final MessageBarakoTrade message, final FriendlyByteBuf buf) {
         buf.writeVarInt(message.entityID);
     }
 
-    public static MessageBarakoTrade deserialize(final PacketBuffer buf) {
+    public static MessageBarakoTrade deserialize(final FriendlyByteBuf buf) {
         final MessageBarakoTrade message = new MessageBarakoTrade();
         message.entityID = buf.readVarInt();
         return message;
@@ -69,7 +69,7 @@ public class MessageBarakoTrade {
                         }
                     }
                     if (satisfied) {
-                        player.addPotionEffect(new EffectInstance(EffectHandler.SUNS_BLESSING, ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.effectDuration.get() * 60 * 20, 0, false, false));
+                        player.addPotionEffect(new MobEffectInstance(EffectHandler.SUNS_BLESSING, ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.effectDuration.get() * 60 * 20, 0, false, false));
                         if (barako.getAnimation() != EntityBarako.BLESS_ANIMATION) {
                             barako.setAnimationTick(0);
                             AnimationHandler.INSTANCE.sendAnimationMessage(barako, EntityBarako.BLESS_ANIMATION);

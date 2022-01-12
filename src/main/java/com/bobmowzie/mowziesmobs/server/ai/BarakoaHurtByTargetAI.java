@@ -2,13 +2,13 @@ package com.bobmowzie.mowziesmobs.server.ai;
 
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
-import net.minecraft.world.entity.CreatureEntity;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.EntityPredicate;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.TargetGoal;
-import net.minecraft.world.entity.passive.TameableEntity;
+import net.minecraft.world.entity.animal.TameableEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.resources.math.AxisAlignedBB;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ public class BarakoaHurtByTargetAI extends TargetGoal
     private int revengeTimerOld;
     private final Class<?>[] excludedReinforcementTypes;
 
-    public BarakoaHurtByTargetAI(CreatureEntity creatureIn, boolean entityCallsForHelpIn, Class<?>... excludedReinforcementTypes)
+    public BarakoaHurtByTargetAI(PathfinderMob creatureIn, boolean entityCallsForHelpIn, Class<?>... excludedReinforcementTypes)
     {
         super(creatureIn, true);
         this.entityCallsForHelp = entityCallsForHelpIn;
@@ -58,10 +58,10 @@ public class BarakoaHurtByTargetAI extends TargetGoal
     {
         double d0 = this.getTargetDistance();
 
-        List<CreatureEntity> nearby = this.goalOwner.world.getLoadedEntitiesWithinAABB(EntityBarakoa.class, (new AxisAlignedBB(this.goalOwner.getPosX(), this.goalOwner.getPosY(), this.goalOwner.getPosZ(), this.goalOwner.getPosX() + 1.0D, this.goalOwner.getPosY() + 1.0D, this.goalOwner.getPosZ() + 1.0D)).grow(d0, 10.0D, d0), e ->
+        List<PathfinderMob> nearby = this.goalOwner.world.getLoadedEntitiesWithinAABB(EntityBarakoa.class, (new AxisAlignedBB(this.goalOwner.getPosX(), this.goalOwner.getPosY(), this.goalOwner.getPosZ(), this.goalOwner.getPosX() + 1.0D, this.goalOwner.getPosY() + 1.0D, this.goalOwner.getPosZ() + 1.0D)).grow(d0, 10.0D, d0), e ->
                 ((EntityBarakoa)e).isBarakoDevoted());
         nearby.addAll(this.goalOwner.world.getLoadedEntitiesWithinAABB(EntityBarako.class, (new AxisAlignedBB(this.goalOwner.getPosX(), this.goalOwner.getPosY(), this.goalOwner.getPosZ(), this.goalOwner.getPosX() + 1.0D, this.goalOwner.getPosY() + 1.0D, this.goalOwner.getPosZ() + 1.0D)).grow(d0, 10.0D, d0)));
-        for (CreatureEntity entitycreature : nearby)
+        for (PathfinderMob entitycreature : nearby)
         {
             if (this.goalOwner != entitycreature && !(entitycreature.getAttackTarget() instanceof Player) && (!(this.goalOwner instanceof TameableEntity) || ((TameableEntity)this.goalOwner).getOwner() == ((TameableEntity)entitycreature).getOwner()) && this.goalOwner.getRevengeTarget() != null && !entitycreature.isOnSameTeam(this.goalOwner.getRevengeTarget()))
             {
@@ -70,7 +70,7 @@ public class BarakoaHurtByTargetAI extends TargetGoal
         }
     }
 
-    protected void setEntityAttackTarget(CreatureEntity creatureIn, LivingEntity entityLivingBaseIn)
+    protected void setEntityAttackTarget(PathfinderMob creatureIn, LivingEntity entityLivingBaseIn)
     {
         creatureIn.setAttackTarget(entityLivingBaseIn);
     }

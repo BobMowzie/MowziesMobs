@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.client.render;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.util.math.vector.*;
+import net.minecraft.world.phys.*;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 
 public class RenderUtils {
@@ -13,7 +13,7 @@ public class RenderUtils {
         modelRenderer.translateRotate(matrixStack);
     }
 
-    public static Vector3d getWorldPosFromModel(Entity entity, float entityYaw, AdvancedModelRenderer modelRenderer) {
+    public static Vec3 getWorldPosFromModel(Entity entity, float entityYaw, AdvancedModelRenderer modelRenderer) {
         MatrixStack matrixStack = new MatrixStack();
         matrixStack.translate(entity.getPosX(), entity.getPosY(), entity.getPosZ());
         matrixStack.rotate(new Quaternion(0, -entityYaw + 180, 0, true));
@@ -25,7 +25,7 @@ public class RenderUtils {
 
         Vector4f vec = new Vector4f(0, 0, 0, 1);
         vec.transform(matrix4f);
-        return new Vector3d(vec.getX(), vec.getY(), vec.getZ());
+        return new Vec3(vec.getX(), vec.getY(), vec.getZ());
     }
 
     public static void translateRotateGeckolib(GeoBone bone, MatrixStack matrixStackIn) {
@@ -51,7 +51,7 @@ public class RenderUtils {
         translateRotateGeckolib(geoBone, matrixStack);
     }
 
-    public static Vector3d getWorldPosFromModel(Entity entity, float entityYaw, GeoBone geoBone) {
+    public static Vec3 getWorldPosFromModel(Entity entity, float entityYaw, GeoBone geoBone) {
         MatrixStack matrixStack = new MatrixStack();
         matrixStack.translate(entity.getPosX(), entity.getPosY(), entity.getPosZ());
         matrixStack.rotate(new Quaternion(0, -entityYaw + 180, 0, true));
@@ -63,6 +63,6 @@ public class RenderUtils {
 
         Vector4f vec = new Vector4f(0, 0, 0, 1);
         vec.transform(matrix4f);
-        return new Vector3d(vec.getX(), vec.getY(), vec.getZ());
+        return new Vec3(vec.getX(), vec.getY(), vec.getZ());
     }
 }

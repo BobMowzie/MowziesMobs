@@ -5,8 +5,8 @@ import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
@@ -27,12 +27,12 @@ public class MessageAddFreezeProgress {
         this.amount = amount;
     }
 
-    public static void serialize(final MessageAddFreezeProgress message, final PacketBuffer buf) {
+    public static void serialize(final MessageAddFreezeProgress message, final FriendlyByteBuf buf) {
         buf.writeVarInt(message.entityID);
         buf.writeFloat(message.amount);
     }
 
-    public static MessageAddFreezeProgress deserialize(final PacketBuffer buf) {
+    public static MessageAddFreezeProgress deserialize(final FriendlyByteBuf buf) {
         final MessageAddFreezeProgress message = new MessageAddFreezeProgress();
         message.entityID = buf.readVarInt();
         message.amount = buf.readFloat();

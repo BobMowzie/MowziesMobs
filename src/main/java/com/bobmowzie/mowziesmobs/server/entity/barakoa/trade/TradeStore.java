@@ -1,8 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.entity.barakoa.trade;
 
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.Constants.NBT;

@@ -1,6 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.potion;
 
-import net.minecraft.potion.EffectType;
+import net.minecraft.world.effect.EffectType;
 
 public class EffectSunsBlessing extends MowzieEffect {
     public EffectSunsBlessing() {

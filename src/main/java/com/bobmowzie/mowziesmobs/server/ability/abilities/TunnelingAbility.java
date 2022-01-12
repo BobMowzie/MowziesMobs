@@ -19,16 +19,16 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBlockSwapper;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityFallingBlock;
 import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.resources.math.AxisAlignedBB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.math.MathHelper;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -66,7 +66,7 @@ public class TunnelingAbility extends Ability {
         super.start();
         underground = false;
         prevUnderground = false;
-        if (getUser().world.isRemote()) {
+        if (getUser().world.isClientSide()) {
             spinAmount = 0;
             pitch = 0;
         }
@@ -78,7 +78,7 @@ public class TunnelingAbility extends Ability {
         getUser().fallDistance = 0;
         if (getUser() instanceof Player) ((Player)getUser()).abilities.isFlying = false;
         underground = !getUser().world.getEntitiesWithinAABB(EntityBlockSwapper.class, getUser().getBoundingBox().grow(1)).isEmpty();
-        Vector3d lookVec = getUser().getLookVec();
+        Vec3 lookVec = getUser().getLookVec();
         float tunnelSpeed = 0.3f;
         if (underground) {
             if (getUser().isSneaking()) {
@@ -102,7 +102,7 @@ public class TunnelingAbility extends Ability {
 
         if ((getUser().isSneaking() && getUser().getMotion().y < 0) || underground) {
             if (getUser().ticksExisted % 16 == 0) getUser().playSound(MMSounds.EFFECT_GEOMANCY_RUMBLE.get(rand.nextInt(3)).get(), 0.6f, 0.5f + rand.nextFloat() * 0.2f);
-            Vector3d userCenter = getUser().getPositionVec().add(0, getUser().getHeight() / 2f, 0);
+            Vec3 userCenter = getUser().getPositionVec().add(0, getUser().getHeight() / 2f, 0);
             float radius = 2f;
             AxisAlignedBB aabb = new AxisAlignedBB(-radius, -radius, -radius, radius, radius, radius);
             aabb = aabb.offset(userCenter);
@@ -110,9 +110,9 @@ public class TunnelingAbility extends Ability {
                 for (int x = (int) Math.floor(aabb.minX); x <= Math.floor(aabb.maxX); x++) {
                     for (int y = (int) Math.floor(aabb.minY); y <= Math.floor(aabb.maxY); y++) {
                         for (int z = (int) Math.floor(aabb.minZ); z <= Math.floor(aabb.maxZ); z++) {
-                            Vector3d posVec = new Vector3d(x, y, z);
+                            Vec3 posVec = new Vec3(x, y, z);
                             if (posVec.add(0.5, 0.5, 0.5).subtract(userCenter).lengthSquared() > radius * radius) continue;
-                            Vector3d motionScaled = getUser().getMotion().normalize().scale(i);
+                            Vec3 motionScaled = getUser().getMotion().normalize().scale(i);
                             posVec = posVec.add(motionScaled);
                             BlockPos pos = new BlockPos(posVec);
                             BlockState blockState = getUser().world.getBlockState(pos);
@@ -127,7 +127,7 @@ public class TunnelingAbility extends Ability {
         }
         if (!prevUnderground && underground) {
             getUser().playSound(MMSounds.EFFECT_GEOMANCY_BREAK_MEDIUM.get(rand.nextInt(3)).get(), 1f, 0.9f + rand.nextFloat() * 0.1f);
-            if (getUser().world.isRemote)
+            if (getUser().world.isClientSide)
                 AdvancedParticleBase.spawnParticle(getUser().world, ParticleHandler.RING2.get(), (float) getUser().getPosX(), (float) getUser().getPosY() + 0.02f, (float) getUser().getPosZ(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, true, new ParticleComponent[]{
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(10f, 30f), false)
@@ -135,7 +135,7 @@ public class TunnelingAbility extends Ability {
         }
         if (prevUnderground && !underground) {
             getUser().playSound(MMSounds.EFFECT_GEOMANCY_BREAK.get(), 1f, 0.9f + rand.nextFloat() * 0.1f);
-            if (getUser().world.isRemote)
+            if (getUser().world.isClientSide)
                 AdvancedParticleBase.spawnParticle(getUser().world, ParticleHandler.RING2.get(), (float) getUser().getPosX(), (float) getUser().getPosY() + 0.02f, (float) getUser().getPosZ(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, true, new ParticleComponent[]{
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(10f, 30f), false)
@@ -192,7 +192,7 @@ public class TunnelingAbility extends Ability {
     public void codeAnimations(MowzieAnimatedGeoModel<? extends IAnimatable> model, float partialTick) {
         super.codeAnimations(model, partialTick);
         float faceMotionController = 1f - model.getControllerValue("FaceVelocityController");
-        Vector3d moveVec = getUser().getMotion().normalize();
+        Vec3 moveVec = getUser().getMotion().normalize();
         pitch = (float) MathHelper.lerp(0.3 * partialTick, pitch, moveVec.getY());
         MowzieGeoBone com = model.getMowzieBone("CenterOfMass");
         com.setRotationX((float) (-Math.PI/2f + Math.PI/2f * pitch) * faceMotionController);

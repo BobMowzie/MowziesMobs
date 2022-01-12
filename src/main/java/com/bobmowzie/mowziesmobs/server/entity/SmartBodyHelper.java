@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.server.entity;
 
 import net.minecraft.world.entity.ai.controller.BodyController;
 import net.minecraft.world.entity.MobEntity;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.resources.math.MathHelper;
 
 public class SmartBodyHelper extends BodyController {
 	private static final float MAX_ROTATE = 75;

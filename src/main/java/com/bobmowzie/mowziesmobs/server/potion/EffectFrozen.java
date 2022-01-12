@@ -1,6 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.potion;
 
-import net.minecraft.potion.EffectType;
+import net.minecraft.world.effect.EffectType;
 
 /**
  * Created by BobMowzie on 5/31/2017.

@@ -7,9 +7,9 @@ import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.ServerPlayer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.play.server.SEntityVelocityPacket;
-import net.minecraft.util.DamageSource;
+import net.minecraft.world.damagesource.DamageSource;
 
 import java.util.EnumSet;
 import java.util.List;

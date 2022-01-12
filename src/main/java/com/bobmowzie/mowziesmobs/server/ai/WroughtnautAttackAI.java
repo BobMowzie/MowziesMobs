@@ -5,7 +5,7 @@ import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.resources.math.MathHelper;
 
 import java.util.EnumSet;
 

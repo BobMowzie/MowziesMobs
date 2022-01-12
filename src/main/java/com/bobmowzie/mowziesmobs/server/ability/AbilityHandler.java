@@ -10,7 +10,7 @@ import com.bobmowzie.mowziesmobs.server.message.MessageUseAbility;
 import net.minecraft.client.entity.player.ClientPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nullable;
@@ -59,7 +59,7 @@ public enum AbilityHandler {
     }
 
     public <T extends LivingEntity> void sendAbilityMessage(T entity, AbilityType<?> abilityType) {
-        if (entity.world.isRemote) {
+        if (entity.world.isClientSide) {
             return;
         }
         AbilityCapability.IAbilityCapability abilityCapability = getAbilityCapability(entity);
@@ -73,7 +73,7 @@ public enum AbilityHandler {
     }
 
     public <T extends LivingEntity> void sendInterruptAbilityMessage(T entity, AbilityType<?> abilityType) {
-        if (entity.world.isRemote) {
+        if (entity.world.isClientSide) {
             return;
         }
         AbilityCapability.IAbilityCapability abilityCapability = getAbilityCapability(entity);
@@ -87,7 +87,7 @@ public enum AbilityHandler {
     }
 
     public <T extends Player> void sendPlayerTryAbilityMessage(T entity, AbilityType<?> ability) {
-        if (!(entity.world.isRemote && entity instanceof ClientPlayer)) {
+        if (!(entity.world.isClientSide && entity instanceof ClientPlayer)) {
             return;
         }
         AbilityCapability.IAbilityCapability abilityCapability = getAbilityCapability(entity);

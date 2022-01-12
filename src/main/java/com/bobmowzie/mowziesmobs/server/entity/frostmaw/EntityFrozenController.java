@@ -6,7 +6,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 /**
  * Created by BobMowzie on 7/20/2017.
@@ -19,7 +19,7 @@ public class EntityFrozenController extends Entity {
     @Override
     public void tick() {
         super.tick();
-        if (!world.isRemote && ticksExisted >= 70 && !isBeingRidden()) remove();
+        if (!world.isClientSide && ticksExisted >= 70 && !isBeingRidden()) remove();
 //        List<Entity> passengers = getPassengers();
 //        for (Entity passenger : passengers) {
 //            if (passenger instanceof LivingEntity) {

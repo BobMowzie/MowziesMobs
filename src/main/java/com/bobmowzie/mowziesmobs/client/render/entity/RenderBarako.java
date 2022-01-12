@@ -13,10 +13,10 @@ import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Matrix3f;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Matrix3f;
+import net.minecraft.world.phys.Matrix4f;
+import net.minecraft.world.phys.Quaternion;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

@@ -3,10 +3,10 @@ package com.bobmowzie.mowziesmobs.server.message;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.ServerPlayer;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
@@ -25,11 +25,11 @@ public class MessagePlayerAttackMob {
         entityID = target.getEntityId();
     }
 
-    public static void serialize(final MessagePlayerAttackMob message, final PacketBuffer buf) {
+    public static void serialize(final MessagePlayerAttackMob message, final FriendlyByteBuf buf) {
         buf.writeVarInt(message.entityID);
     }
 
-    public static MessagePlayerAttackMob deserialize(final PacketBuffer buf) {
+    public static MessagePlayerAttackMob deserialize(final FriendlyByteBuf buf) {
         final MessagePlayerAttackMob message = new MessagePlayerAttackMob();
         message.entityID = buf.readVarInt();
         return message;

@@ -5,7 +5,7 @@ import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.resources.model.ModelRenderer;
 
 public class ModelIceBall<T extends EntityIceBall> extends AdvancedModelBase<T> {
 	private final AdvancedModelRenderer body1;

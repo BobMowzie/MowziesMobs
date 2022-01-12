@@ -7,9 +7,9 @@ import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.power.Power;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.ServerPlayer;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
@@ -20,11 +20,11 @@ import java.util.function.Supplier;
 public class MessageRightMouseDown {
     public MessageRightMouseDown() {}
 
-    public static void serialize(final MessageRightMouseDown message, final PacketBuffer buf) {
+    public static void serialize(final MessageRightMouseDown message, final FriendlyByteBuf buf) {
 
     }
 
-    public static MessageRightMouseDown deserialize(final PacketBuffer buf) {
+    public static MessageRightMouseDown deserialize(final FriendlyByteBuf buf) {
         final MessageRightMouseDown message = new MessageRightMouseDown();
         return message;
     }

@@ -4,8 +4,8 @@ import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.ilexiconn.llibrary.client.model.tools.ControlledAnimation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.TickableSound;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.resources.SoundCategory;
+import net.minecraft.resources.SoundEvent;
 
 public class BossMusicSound extends TickableSound {
     private MowzieEntity boss;

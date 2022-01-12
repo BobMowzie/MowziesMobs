@@ -5,7 +5,7 @@ import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.IRangedAttackMob;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.resources.SoundEvent;
 
 public class AnimationProjectileAttackAI<T extends MowzieEntity & IAnimatedEntity & IRangedAttackMob> extends SimpleAnimationAI<T> {
     private final int attackFrame;

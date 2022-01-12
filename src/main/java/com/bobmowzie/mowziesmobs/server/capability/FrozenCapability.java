@@ -10,7 +10,7 @@ import com.bobmowzie.mowziesmobs.server.message.MessageAddFreezeProgress;
 import com.bobmowzie.mowziesmobs.server.message.MessageUnfreezeEntity;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import net.minecraft.block.Blocks;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobEntity;
@@ -19,16 +19,16 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.resources.Direction;
+import net.minecraft.resources.math.MathHelper;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 
 import java.util.UUID;
 
@@ -236,7 +236,7 @@ public class FrozenCapability {
 
         @Override
         public void addFreezeProgress(LivingEntity entity, float amount) {
-            if (!entity.world.isRemote && !entity.isPotionActive(EffectHandler.FROZEN)) {
+            if (!entity.world.isClientSide && !entity.isPotionActive(EffectHandler.FROZEN)) {
                 freezeProgress += amount;
                 freezeDecayDelay = MAX_FREEZE_DECAY_DELAY;
                 MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new MessageAddFreezeProgress(entity, amount));
@@ -266,13 +266,13 @@ public class FrozenCapability {
                     mobEntity.setNoAI(true);
                 }
 
-                if (entity.world.isRemote) {
+                if (entity.world.isClientSide) {
                     int particleCount = (int) (10 + 1 * entity.getHeight() * entity.getWidth() * entity.getWidth());
                     for (int i = 0; i < particleCount; i++) {
                         double snowX = entity.getPosX() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
                         double snowZ = entity.getPosZ() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
                         double snowY = entity.getPosY() + entity.getHeight() * entity.getRNG().nextFloat();
-                        Vector3d motion = new Vector3d(snowX - entity.getPosX(), snowY - (entity.getPosY() + entity.getHeight() / 2), snowZ - entity.getPosZ()).normalize();
+                        Vec3 motion = new Vec3(snowX - entity.getPosX(), snowY - (entity.getPosY() + entity.getHeight() / 2), snowZ - entity.getPosZ()).normalize();
                         entity.world.addParticle(new ParticleSnowFlake.SnowflakeData(40, false), snowX, snowY, snowZ, 0.1d * motion.x, 0.1d * motion.y, 0.1d * motion.z);
                     }
                 }
@@ -284,13 +284,13 @@ public class FrozenCapability {
         public void onUnfreeze(LivingEntity entity) {
             if (entity != null) {
                 if (frozenController != null) {
-                    Vector3d oldPosition = entity.getPositionVec();
+                    Vec3 oldPosition = entity.getPositionVec();
                     entity.stopRiding();
                     entity.setPositionAndUpdate(oldPosition.getX(), oldPosition.getY(), oldPosition.getZ());
                     frozenController.remove();
                 }
                 entity.playSound(MMSounds.ENTITY_FROSTMAW_FROZEN_CRASH.get(), 1, 0.5f);
-                if (entity.world.isRemote) {
+                if (entity.world.isClientSide) {
                     int particleCount = (int) (10 + 1 * entity.getHeight() * entity.getWidth() * entity.getWidth());
                     for (int i = 0; i < particleCount; i++) {
                         double particleX = entity.getPosX() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
@@ -317,10 +317,10 @@ public class FrozenCapability {
         public void tick(LivingEntity entity) {
             // Freeze logic
             if (getFreezeProgress() >= 1) {
-                entity.addPotionEffect(new EffectInstance(EffectHandler.FROZEN, 50, 0, false, false));
+                entity.addPotionEffect(new MobEffectInstance(EffectHandler.FROZEN, 50, 0, false, false));
                 freezeProgress = 1f;
             } else if (freezeProgress > 0) {
-                entity.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 9, MathHelper.floor(freezeProgress * 5 + 1), false, false));
+                entity.addPotionEffect(new MobEffectInstance(MobEffects.SLOWNESS, 9, MathHelper.floor(freezeProgress * 5 + 1), false, false));
             }
 
             if (frozenController == null) {
@@ -334,10 +334,10 @@ public class FrozenCapability {
 
             if (entity.isPotionActive(EffectHandler.FROZEN)) {
                 if (entity.getActivePotionEffect(EffectHandler.FROZEN).getDuration() <= 0) entity.removeActivePotionEffect(EffectHandler.FROZEN);
-                entity.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 2, 50, false, false));
+                entity.addPotionEffect(new MobEffectInstance(MobEffects.SLOWNESS, 2, 50, false, false));
                 entity.setSneaking(false);
 
-                if (entity.world.isRemote && entity.ticksExisted % 2 == 0) {
+                if (entity.world.isClientSide && entity.ticksExisted % 2 == 0) {
                     double cloudX = entity.getPosX() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
                     double cloudZ = entity.getPosZ() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
                     double cloudY = entity.getPosY() + entity.getHeight() * entity.getRNG().nextFloat();
@@ -350,7 +350,7 @@ public class FrozenCapability {
                 }
             }
             else {
-                if (!entity.world.isRemote && getPrevFrozen()) {
+                if (!entity.world.isClientSide && getPrevFrozen()) {
                     onUnfreeze(entity);
                     MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new MessageUnfreezeEntity(entity));
                 }

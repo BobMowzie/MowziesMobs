@@ -19,14 +19,14 @@ import com.bobmowzie.mowziesmobs.server.power.PowerGeomancy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.item.minecart.MinecartEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.resources.Direction;
+import net.minecraft.resources.Hand;
+import net.minecraft.resources.math.MathHelper;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -95,7 +95,7 @@ public class PlayerCapability {
 
         int getPackSize();
 
-        Vector3d getPrevMotion();
+        Vec3 getPrevMotion();
 
         void removePackMember(EntityBarakoanToPlayer tribePlayer);
 
@@ -213,7 +213,7 @@ public class PlayerCapability {
             this.tribePackRadius = tribePackRadius;
         }
 
-        public Vector3d getPrevMotion() {
+        public Vec3 getPrevMotion() {
             return prevMotion;
         }
 
@@ -244,14 +244,14 @@ public class PlayerCapability {
 
         public boolean axeCanAttack;
 
-        public Vector3d prevMotion;
+        public Vec3 prevMotion;
 
         public PowerGeomancy geomancy = new PowerGeomancy(this);
         public Power[] powers = new Power[]{geomancy};
 
         @Override
         public void addedToWorld(EntityJoinWorldEvent event) {
-            if (event.getWorld().isRemote()) {
+            if (event.getWorld().isClientSide()) {
                 Player player = (Player) event.getEntity();
                 geckoPlayer = new GeckoPlayer.GeckoPlayerThirdPerson(player);
                 if (event.getEntity() == Minecraft.getInstance().player) GeckoFirstPersonRenderer.GECKO_PLAYER_FIRST_PERSON = new GeckoPlayer.GeckoPlayerFirstPerson(player);
@@ -261,7 +261,7 @@ public class PlayerCapability {
         public void tick(TickEvent.PlayerTickEvent event) {
             Player player = event.player;
 
-            prevMotion = player.getPositionVec().subtract(new Vector3d(player.prevPosX, player.prevPosY, player.prevPosZ));
+            prevMotion = player.getPositionVec().subtract(new Vec3(player.prevPosX, player.prevPosY, player.prevPosZ));
             prevTime = time;
             if (untilSunstrike > 0) {
                 untilSunstrike--;
@@ -273,10 +273,10 @@ public class PlayerCapability {
             if (event.side == LogicalSide.SERVER) {
                 for (ItemStack itemStack : event.player.inventory.mainInventory) {
                     if (itemStack.getItem() instanceof ItemEarthTalisman)
-                        player.addPotionEffect(new EffectInstance(EffectHandler.GEOMANCY, 20, 0, false, false));
+                        player.addPotionEffect(new MobEffectInstance(EffectHandler.GEOMANCY, 20, 0, false, false));
                 }
                 if (player.getHeldItemOffhand().getItem() instanceof ItemEarthTalisman)
-                    player.addPotionEffect(new EffectInstance(EffectHandler.GEOMANCY, 20, 0, false, false));
+                    player.addPotionEffect(new MobEffectInstance(EffectHandler.GEOMANCY, 20, 0, false, false));
 
                 List<EntityBarakoanToPlayer> pack = tribePack;
                 float theta = (2 * (float) Math.PI / pack.size());

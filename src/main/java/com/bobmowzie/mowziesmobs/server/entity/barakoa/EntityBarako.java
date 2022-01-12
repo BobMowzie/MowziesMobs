@@ -27,36 +27,36 @@ import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.LookAtGoal;
 import net.minecraft.world.entity.ai.goal.LookRandomlyGoal;
-import net.minecraft.world.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.*;
-import net.minecraft.world.entity.passive.IronGolemEntity;
+import net.minecraft.world.entity.animal.IronGolemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerInventory;
-import net.minecraft.world.entity.player.ServerPlayer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.NBTUtil;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.EntityDataManager;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.server.management.PreYggdrasilConverter;
-import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.resources.*;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.math.MathHelper;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.resources.text.ITextComponent;
 import net.minecraft.world.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -86,13 +86,13 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     private static final int BARAKOA_PAUSE = 200;
     private static final int HEAL_PAUSE = 75;
     private static final int HEALTH_LOST_BETWEEN_SUNBLOCKERS = 45;
-    private static final DataParameter<Integer> DIRECTION = EntityDataManager.createKey(EntityBarako.class, DataSerializers.VARINT);
-    private static final DataParameter<Integer> DIALOGUE = EntityDataManager.createKey(EntityBarako.class, DataSerializers.VARINT);
-    private static final DataParameter<Boolean> ANGRY = EntityDataManager.createKey(EntityBarako.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<ItemStack> DESIRES = EntityDataManager.createKey(EntityBarako.class, DataSerializers.ITEMSTACK);
-    private static final DataParameter<CompoundNBT> TRADED_PLAYERS = EntityDataManager.createKey(EntityBarako.class, DataSerializers.COMPOUND_NBT);
-    private static final DataParameter<Float> HEALTH_LOST = EntityDataManager.createKey(EntityBarako.class, DataSerializers.FLOAT);
-    private static final DataParameter<Optional<UUID>> MISBEHAVED_PLAYER = EntityDataManager.createKey(EntityBarakoaVillager.class, DataSerializers.OPTIONAL_UNIQUE_ID);
+    private static final EntityDataAccessor<Integer> DIRECTION = EntityDataManager.createKey(EntityBarako.class, EntityDataSerializers.VARINT);
+    private static final EntityDataAccessor<Integer> DIALOGUE = EntityDataManager.createKey(EntityBarako.class, EntityDataSerializers.VARINT);
+    private static final EntityDataAccessor<Boolean> ANGRY = EntityDataManager.createKey(EntityBarako.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<ItemStack> DESIRES = EntityDataManager.createKey(EntityBarako.class, EntityDataSerializers.ITEMSTACK);
+    private static final EntityDataAccessor<CompoundNBT> TRADED_PLAYERS = EntityDataManager.createKey(EntityBarako.class, EntityDataSerializers.COMPOUND_NBT);
+    private static final EntityDataAccessor<Float> HEALTH_LOST = EntityDataManager.createKey(EntityBarako.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Optional<UUID>> MISBEHAVED_PLAYER = EntityDataManager.createKey(EntityBarakoaVillager.class, EntityDataSerializers.OPTIONAL_UNIQUE_ID);
     public ControlledAnimation legsUp = new ControlledAnimation(15);
     public ControlledAnimation angryEyebrow = new ControlledAnimation(5);
     private Player customer;
@@ -109,9 +109,9 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     private BarakoaHurtByTargetAI hurtByTargetAI;
 
     @OnlyIn(Dist.CLIENT)
-    public Vector3d[] betweenHandPos;
+    public Vec3[] betweenHandPos;
     @OnlyIn(Dist.CLIENT)
-    public Vector3d[] blessingPlayerPos;
+    public Vec3[] blessingPlayerPos;
 
     private static final EntityPredicate GIVE_ACHIEVEMENT_PRED = new EntityPredicate().setUseInvisibilityCheck();
 
@@ -128,9 +128,9 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         }
         experienceValue = 45;
 
-        if (world.isRemote) {
-            betweenHandPos = new Vector3d[]{new Vector3d(0, 0, 0)};
-            blessingPlayerPos = new Vector3d[]{new Vector3d(0, 0, 0)};
+        if (world.isClientSide) {
+            betweenHandPos = new Vec3[]{new Vec3(0, 0, 0)};
+            blessingPlayerPos = new Vec3[]{new Vec3(0, 0, 0)};
         }
     }
 
@@ -154,8 +154,8 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             }
         });
         this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, IronGolemEntity.class, 0, false, false, null));
-        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, false, false, (e) -> !(e instanceof ZombifiedPiglinEntity)));
-        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, AbstractSkeletonEntity.class, 0, false, false, null));
+        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, Zombie.class, 0, false, false, (e) -> !(e instanceof ZombifiedPiglin)));
+        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, AbstractSkeleton.class, 0, false, false, null));
         this.goalSelector.addGoal(6, new SimpleAnimationAI<>(this, BELLY_ANIMATION, false, true));
         this.goalSelector.addGoal(6, new SimpleAnimationAI<EntityBarako>(this, TALK_ANIMATION, false, true) {
             @Override
@@ -188,9 +188,9 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                     playSound(MMSounds.ENTITY_BARAKO_SCREAM.get(), 1.5f, 1f);
                 }
 
-                if (!entity.world.isRemote) {
+                if (!entity.world.isClientSide) {
                     if (entity.getAnimationTick() == 44) {
-                        Vector3d offset = new Vector3d(1.1f, 0, 0);
+                        Vec3 offset = new Vec3(1.1f, 0, 0);
                         offset = offset.rotateYaw((float) Math.toRadians(-entity.getYRot() - 90));
                         EntitySuperNova superNova = new EntitySuperNova(EntityHandler.SUPER_NOVA, entity.world, entity, entity.getPosX() + offset.x, entity.getPosY() + 0.05, entity.getPosZ() + offset.z);
                         world.addEntity(superNova);
@@ -288,7 +288,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 //        this.posX = prevPosX;
 //        this.posZ = prevPosZ;
 
-        if (!world.isRemote && getHealthLost() >= HEALTH_LOST_BETWEEN_SUNBLOCKERS && getAnimation() == NO_ANIMATION && !isAIDisabled() && getEntitiesNearby(EntityBarakoaya.class, 40).size() < 3) {
+        if (!world.isClientSide && getHealthLost() >= HEALTH_LOST_BETWEEN_SUNBLOCKERS && getAnimation() == NO_ANIMATION && !isAIDisabled() && getEntitiesNearby(EntityBarakoaya.class, 40).size() < 3) {
             AnimationHandler.INSTANCE.sendAnimationMessage(this, SPAWN_SUNBLOCKERS_ANIMATION);
             setHealthLost(0);
         }
@@ -304,7 +304,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 entityAttackingAngle += 360;
             }
             float entityRelativeAngle = Math.abs(entityHitAngle - entityAttackingAngle);
-            Vector3d betweenEntitiesVec = getPositionVec().subtract(target.getPositionVec());
+            Vec3 betweenEntitiesVec = getPositionVec().subtract(target.getPositionVec());
             boolean targetComingCloser = target.getMotion().dotProduct(betweenEntitiesVec) > 0 && target.getMotion().lengthSquared() > 0.015;
             if (getAnimation() == NO_ANIMATION && !isAIDisabled() && rand.nextInt(80) == 0 && (targetDistance > 5.5 || isPotionActive(EffectHandler.SUNBLOCK)) && timeUntilBarakoa <= 0 && getEntitiesNearby(EntityBarakoa.class, 50).size() < 4) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, SPAWN_ANIMATION);
@@ -325,7 +325,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                 hurtByTargetAI.resetTask();
             }
         } else {
-            if (!world.isRemote) {
+            if (!world.isClientSide) {
                 this.setAngry(false);
             }
         }
@@ -364,12 +364,12 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 //                this.playSound(MMSounds.ENTITY_BARAKO_BURST, 1.7f, 1.5f);
 //            }
             if (getAnimationTick() == 10) {
-                if (world.isRemote) {
+                if (world.isClientSide) {
                     spawnExplosionParticles(30);
                 }
                 this.playSound(MMSounds.ENTITY_BARAKO_ATTACK.get(), 1.7f, 0.9f);
             }
-            if (getAnimationTick() <= 6 && world.isRemote) {
+            if (getAnimationTick() <= 6 && world.isClientSide) {
                 int particleCount = 8;
                 while (--particleCount != 0) {
                     double radius = 2f;
@@ -392,8 +392,8 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             if (getAnimationTick() == 1) {
                 blessingPlayer = getCustomer();
             }
-            if (world.isRemote && blessingPlayer != null) {
-                blessingPlayerPos[0] = blessingPlayer.getPositionVec().add(new Vector3d(0, blessingPlayer.getHeight() / 2f, 0));
+            if (world.isClientSide && blessingPlayer != null) {
+                blessingPlayerPos[0] = blessingPlayer.getPositionVec().add(new Vec3(0, blessingPlayer.getHeight() / 2f, 0));
                 if (getAnimationTick() > 5 && getAnimationTick() < 40) {
                     int particleCount = 2;
                     while (--particleCount != 0) {
@@ -425,15 +425,15 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         }
 
         if (getAnimation() == SUPERNOVA_ANIMATION) {
-            if (world.isRemote && betweenHandPos.length > 0) {
-                superNovaEffects();
+            if (world.isClientSide && betweenHandPos.length > 0) {
+                superNovaMobEffects();
             }
             if (getAnimationTick() < 30) {
                 List<LivingEntity> entities = getEntityLivingBaseNearby(16, 16, 16, 16);
                 for (LivingEntity inRange : entities) {
                     if (inRange instanceof LeaderSunstrikeImmune) continue;
                     if (inRange instanceof Player && ((Player)inRange).abilities.disableDamage) continue;
-                    Vector3d diff = inRange.getPositionVec().subtract(getPositionVec().add(0, 3, 0));
+                    Vec3 diff = inRange.getPositionVec().subtract(getPositionVec().add(0, 3, 0));
                     diff = diff.normalize().scale(0.03);
                     inRange.setMotion(inRange.getMotion().subtract(diff));
 
@@ -451,7 +451,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             }
         }
 
-        if (!world.isRemote && getAttackTarget() == null && getAnimation() != SOLAR_BEAM_ANIMATION && getAnimation() != SUPERNOVA_ANIMATION) {
+        if (!world.isClientSide && getAttackTarget() == null && getAnimation() != SOLAR_BEAM_ANIMATION && getAnimation() != SUPERNOVA_ANIMATION) {
             timeUntilHeal--;
             if (ConfigHandler.COMMON.MOBS.BARAKO.healsOutOfBattle.get() && timeUntilHeal <= 0) heal(0.3f);
             if (getHealth() == getMaxHealth()) setHealthLost(0);
@@ -478,7 +478,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 //        }
     }
 
-    private void superNovaEffects() {
+    private void superNovaMobEffects() {
         if (getAnimationTick() == 1) {
             superNovaKeyTrack1 = new ParticleComponent.KeyTrack(
                     new float[]{0, 25f, 32f, 0},
@@ -530,7 +530,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
         }
         if (getAnimationTick() > 1 && getAnimationTick() < 27) {
             for (int i = 0; i < 6; i++) {
-                Vector3d particlePos = new Vector3d(rand.nextFloat() * 5, 0, 0);
+                Vec3 particlePos = new Vec3(rand.nextFloat() * 5, 0, 0);
                 particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.add(betweenHandPos[0]);
@@ -865,7 +865,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     public void openGUI(Player Player) {
         setCustomer(Player);
         MowziesMobs.PROXY.setReferencedMob(this);
-        if (!this.world.isRemote && getAttackTarget() == null && isAlive()) {
+        if (!this.world.isClientSide && getAttackTarget() == null && isAlive()) {
             Player.openContainer(new INamedContainerProvider() {
                 @Override
                 public Container createMenu(int id, PlayerInventory playerInventory, Player player) {

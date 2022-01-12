@@ -32,20 +32,20 @@ import net.minecraft.world.entity.ai.controller.BodyController;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.*;
-import net.minecraft.world.entity.passive.AnimalEntity;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrowEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.*;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.resources.*;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.EntityDataManager;
 import net.minecraft.pathfinding.PathNodeType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.resources.Hand;
+import net.minecraft.resources.math.MathHelper;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -65,13 +65,13 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     public static final Animation HEAL_LOOP_ANIMATION = Animation.create(20);
     public static final Animation HEAL_STOP_ANIMATION = Animation.create(6);
 
-    private static final DataParameter<Boolean> DANCING = EntityDataManager.createKey(EntityBarakoa.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Integer> MASK = EntityDataManager.createKey(EntityBarakoa.class, DataSerializers.VARINT);
-    private static final DataParameter<Integer> WEAPON = EntityDataManager.createKey(EntityBarakoa.class, DataSerializers.VARINT);
-    private static final DataParameter<Boolean> ACTIVE = EntityDataManager.createKey(EntityBarakoa.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Float> HEALPOSX = EntityDataManager.createKey(EntityBarakoa.class, DataSerializers.FLOAT);
-    private static final DataParameter<Float> HEALPOSY = EntityDataManager.createKey(EntityBarakoa.class, DataSerializers.FLOAT);
-    private static final DataParameter<Float> HEALPOSZ = EntityDataManager.createKey(EntityBarakoa.class, DataSerializers.FLOAT);
+    private static final EntityDataAccessor<Boolean> DANCING = EntityDataManager.createKey(EntityBarakoa.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> MASK = EntityDataManager.createKey(EntityBarakoa.class, EntityDataSerializers.VARINT);
+    private static final EntityDataAccessor<Integer> WEAPON = EntityDataManager.createKey(EntityBarakoa.class, EntityDataSerializers.VARINT);
+    private static final EntityDataAccessor<Boolean> ACTIVE = EntityDataManager.createKey(EntityBarakoa.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Float> HEALPOSX = EntityDataManager.createKey(EntityBarakoa.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> HEALPOSY = EntityDataManager.createKey(EntityBarakoa.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> HEALPOSZ = EntityDataManager.createKey(EntityBarakoa.class, EntityDataSerializers.FLOAT);
     public ControlledAnimation doWalk = new ControlledAnimation(3);
     public ControlledAnimation dancing = new ControlledAnimation(7);
     private boolean circleDirection = true;
@@ -84,13 +84,13 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     public int timeUntilDeath = -1;
 
     @OnlyIn(Dist.CLIENT)
-    public Vector3d[] staffPos;
+    public Vec3[] staffPos;
     @OnlyIn(Dist.CLIENT)
-    public Vector3d[] barakoPos;
+    public Vec3[] barakoPos;
     @OnlyIn(Dist.CLIENT)
-    public Vector3d[] myPos;
+    public Vec3[] myPos;
 
-    protected Vector3d teleportDestination;
+    protected Vec3 teleportDestination;
 
     public EntityBarakoa(EntityType<? extends EntityBarakoa> type, World world) {
         super(type, world);
@@ -101,10 +101,10 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         experienceValue = 6;
         active = false;
 
-        if (world.isRemote) {
-            staffPos = new Vector3d[]{new Vector3d(0, 0, 0)};
-            barakoPos = new Vector3d[]{new Vector3d(0, 0, 0)};
-            myPos = new Vector3d[]{new Vector3d(0, 0, 0)};
+        if (world.isClientSide) {
+            staffPos = new Vec3[]{new Vec3(0, 0, 0)};
+            barakoPos = new Vec3[]{new Vec3(0, 0, 0)};
+            myPos = new Vec3[]{new Vec3(0, 0, 0)};
         }
     }
 
@@ -149,7 +149,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             }
         });
         goalSelector.addGoal(2, new SimpleAnimationAI<EntityBarakoa>(this, TELEPORT_ANIMATION, true, false) {
-            private Vector3d teleportStart;
+            private Vec3 teleportStart;
 
             @Override
             public void tick() {
@@ -162,7 +162,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
                 if (entity.teleportDestination != null && entity.getAnimationTick() > startMoveFrame && entity.getAnimationTick() < endMoveFrame) {
                     float t = (getAnimationTick() - startMoveFrame) / (float)(endMoveFrame - startMoveFrame);
                     t = (float) (0.5 - 0.5 * Math.cos(t * Math.PI));
-                    Vector3d newPos = teleportStart.add(teleportDestination.subtract(teleportStart).scale(t));
+                    Vec3 newPos = teleportStart.add(teleportDestination.subtract(teleportStart).scale(t));
                     entity.setPositionAndUpdate(newPos.getX(), newPos.getY(), newPos.getZ());
                     entity.getNavigator().clearPath();
                 }
@@ -187,7 +187,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
                     MowziesMobs.PROXY.playSunblockSound(sunblocker);
                 }
                 if (sunblocker.getAnimationTick() >= 19) {
-                    EffectHandler.addOrCombineEffect(entity, Effects.GLOWING, 5, 0, false, false);
+                    EffectHandler.addOrCombineEffect(entity, MobEffects.GLOWING, 5, 0, false, false);
                 }
                 if (sunblocker.getAnimationTick() == 23)
                     AnimationHandler.INSTANCE.sendAnimationMessage(entity, HEAL_LOOP_ANIMATION);
@@ -199,7 +199,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             public void tick() {
                 super.tick();
                 EntityBarakoa sunblocker = entity;
-                EffectHandler.addOrCombineEffect(entity, Effects.GLOWING, 5, 0, false, false);
+                EffectHandler.addOrCombineEffect(entity, MobEffects.GLOWING, 5, 0, false, false);
                 if (sunblocker.getAttackTarget() != null) {
                     sunblocker.getLookController().setLookPositionWithEntity(sunblocker.getAttackTarget(), entity.getHorizontalFaceSpeed(), entity.getVerticalFaceSpeed());
                 }
@@ -223,12 +223,12 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     };
 
     protected void registerHuntingTargetGoals() {
-        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, AnimalEntity.class, 200, true, false, target -> {
+        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, Animal.class, 200, true, false, target -> {
             float volume = target.getWidth() * target.getWidth() * target.getHeight();
             return (target.getAttribute(Attributes.ATTACK_DAMAGE) == null || target.getAttributeValue(Attributes.ATTACK_DAMAGE) < 3.0D) && volume > 0.1 && volume < 6;
         }));
-        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, true, false, (e) -> !(e instanceof ZombifiedPiglinEntity)));
-        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, AbstractSkeletonEntity.class, 0, true, false, null));
+        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, Zombie.class, 0, true, false, (e) -> !(e instanceof ZombifiedPiglin)));
+        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, AbstractSkeleton.class, 0, true, false, null));
         this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, ZoglinEntity.class, 0, true, false, null));
         this.targetSelector.addGoal(6, new AvoidEntityGoal<>(this, CreeperEntity.class, 6.0F, 1.0D, 1.2D));
         this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Player.class, 0, true, true, target -> {
@@ -290,7 +290,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     }
 
     protected void updateAttackAI() {
-        if (!world.isRemote && getAttackTarget() != null && !getAttackTarget().isAlive()) setAttackTarget(null);
+        if (!world.isClientSide && getAttackTarget() != null && !getAttackTarget().isAlive()) setAttackTarget(null);
 
         if (timeSinceAttack < 80) {
             timeSinceAttack++;
@@ -360,7 +360,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     @Override
     public void tick() {
         super.tick();
-        if (!world.isRemote && active && !getActive()) {
+        if (!world.isClientSide && active && !getActive()) {
             setActive(true);
         }
         active = getActive();
@@ -397,7 +397,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             danceTimer = 0;
             dancing.decreaseTimer();
         }
-        if (!world.isRemote && getAnimation() == NO_ANIMATION && danceTimer == 0 && rand.nextInt(800) == 0) {
+        if (!world.isClientSide && getAnimation() == NO_ANIMATION && danceTimer == 0 && rand.nextInt(800) == 0) {
             setDancing(true);
             playSound(MMSounds.ENTITY_BARAKOA_BATTLECRY_2.get(), 1.2f, 1.3f);
         }
@@ -422,7 +422,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
 //            playSound(MMSounds.ENTITY_BARAKOA_INHALE, 0.7f, 1.2f);
 //        }
 
-        if (world.isRemote && getAnimation() == HEAL_START_ANIMATION && getAnimationTick() == 22 && staffPos != null && staffPos.length >= 1)
+        if (world.isClientSide && getAnimation() == HEAL_START_ANIMATION && getAnimationTick() == 22 && staffPos != null && staffPos.length >= 1)
             staffPos[0] = getPositionVec().add(0, getEyeHeight(), 0);
         if ((getAnimation() == HEAL_START_ANIMATION && getAnimationTick() >= 23) || getAnimation() == HEAL_LOOP_ANIMATION) {
             spawnHealParticles();
@@ -430,7 +430,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         }
 
         if (getAnimation() == TELEPORT_ANIMATION) {
-            if (world.isRemote) {
+            if (world.isClientSide) {
                 myPos[0] = getPositionVec().add(0, 1.2f, 0);
                 if (getAnimationTick() == 5) {
                     ParticleComponent.KeyTrack keyTrack1 = ParticleComponent.KeyTrack.oscillate(0, 2, 24);
@@ -448,7 +448,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
                 if (getAnimationTick() == 4 || getAnimationTick() == 18) {
                     int num = 5;
                     for (int i = 0; i < num * num; i++) {
-                        Vector3d v = new Vector3d((0.3 + 0.15 * rand.nextFloat()) * 0.8, 0, 0);
+                        Vec3 v = new Vec3((0.3 + 0.15 * rand.nextFloat()) * 0.8, 0, 0);
                         float increment = (float)Math.PI * 2f / (float) num;
 //                        v = v.rotatePitch(increment * i);
                         v = v.rotateYaw(increment * rand.nextFloat() + increment * (i / (float)num));
@@ -507,7 +507,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
                     mask = ItemHandler.BARAKOA_MASK_FAITH;
                     break;
             }
-            if (!world.isRemote) {
+            if (!world.isClientSide) {
                 ItemEntity itemEntity = entityDropItem(getDeactivatedMask(mask), 1.5f);
                 if (itemEntity != null) {
                     ItemStack item = itemEntity.getItem();
@@ -571,11 +571,11 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         getDataManager().set(ACTIVE, active);
     }
 
-    public Vector3d getHealPos() {
-        return new Vector3d(getDataManager().get(HEALPOSX), getDataManager().get(HEALPOSY), getDataManager().get(HEALPOSZ));
+    public Vec3 getHealPos() {
+        return new Vec3(getDataManager().get(HEALPOSX), getDataManager().get(HEALPOSY), getDataManager().get(HEALPOSZ));
     }
 
-    public void setHealPos(Vector3d vec) {
+    public void setHealPos(Vec3 vec) {
         getDataManager().set(HEALPOSX, (float) vec.x);
         getDataManager().set(HEALPOSY, (float) vec.y);
         getDataManager().set(HEALPOSZ, (float) vec.z);
@@ -598,7 +598,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     @Override
     public void attackEntityWithRangedAttack(LivingEntity target, float p_82196_2_) {
         AbstractArrowEntity dart = new EntityDart(EntityHandler.DART, this.world, this);
-        Vector3d targetPos = target.getPositionVec();
+        Vec3 targetPos = target.getPositionVec();
         double dx = targetPos.getX() - this.getPosX();
         double dy = target.getBoundingBox().minY + (double)(target.getHeight() / 3.0F) - dart.getPositionVec().getY();
         double dz = targetPos.getZ() - this.getPosZ();
@@ -631,7 +631,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         boolean angleFlag = true;
         if (entity != null) {
             int arc = 220;
-            Vector3d entityPos = entity.getPositionVec();
+            Vec3 entityPos = entity.getPositionVec();
             float entityHitAngle = (float) ((Math.atan2(entityPos.getZ() - getPosZ(), entityPos.getX() - getPosX()) * (180 / Math.PI) - 90) % 360);
             float entityAttackingAngle = renderYawOffset % 360;
             if (entityHitAngle < 0) {
@@ -703,9 +703,9 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
 
     public void spawnHealParticles() {
         if (getAttackTarget() != null) {
-            setHealPos(getAttackTarget().getPositionVec().add(new Vector3d(0, getAttackTarget().getHeight() / 2f, 0)));
+            setHealPos(getAttackTarget().getPositionVec().add(new Vec3(0, getAttackTarget().getHeight() / 2f, 0)));
         }
-        if (world.isRemote && barakoPos != null) {
+        if (world.isClientSide && barakoPos != null) {
             barakoPos[0] = getHealPos();
             if (staffPos != null && staffPos[0] != null) {
                 double dist = Math.max(barakoPos[0].distanceTo(staffPos[0]), 0.01);

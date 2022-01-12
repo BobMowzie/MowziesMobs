@@ -37,23 +37,23 @@ import net.minecraft.world.entity.merchant.villager.VillagerEntity;
 import net.minecraft.world.entity.monster.IMob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerInventory;
-import net.minecraft.world.entity.player.ServerPlayer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.projectile.AbstractArrowEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.pathfinding.PathNavigator;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.SoundEvents;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.EntityDataManager;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.resources.SoundEvent;
+import net.minecraft.resources.math.AxisAlignedBB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.math.MathHelper;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.*;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -80,8 +80,8 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
     public static final Animation LAND_ANIMATION = Animation.create(14);
     public static final Animation SLAM_ANIMATION = Animation.create(113);
 
-    private static final DataParameter<Boolean> ACTIVE = EntityDataManager.createKey(EntityFrostmaw.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> HAS_CRYSTAL = EntityDataManager.createKey(EntityFrostmaw.class, DataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> ACTIVE = EntityDataManager.createKey(EntityFrostmaw.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> HAS_CRYSTAL = EntityDataManager.createKey(EntityFrostmaw.class, EntityDataSerializers.BOOLEAN);
 
     public static final int ICE_BREATH_COOLDOWN = 260;
     public static final int ICE_BALL_COOLDOWN = 200;
@@ -91,8 +91,8 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
     public EntityIceBreath iceBreath;
 
     public boolean swingWhichArm = false;
-    private Vector3d prevRightHandPos = new Vector3d(0, 0, 0);
-    private Vector3d prevLeftHandPos = new Vector3d(0, 0, 0);
+    private Vec3 prevRightHandPos = new Vec3(0, 0, 0);
+    private Vec3 prevLeftHandPos = new Vec3(0, 0, 0);
     private int iceBreathCooldown = 0;
     private int iceBallCooldown = 0;
     private int slamCooldown = 0;
@@ -102,7 +102,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
     private boolean shouldDodge;
     private float dodgeYaw = 0;
 
-    private Vector3d prevTargetPos = new Vector3d(0, 0, 0);
+    private Vec3 prevTargetPos = new Vec3(0, 0, 0);
 
     private boolean shouldPlayLandAnimation = false;
 
@@ -113,8 +113,8 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         stepHeight = 1;
         frame += rand.nextInt(50);
         legSolver = new LegSolverQuadruped(1f, 2f, -1, 1.5f);
-        if (world.isRemote)
-            socketPosArray = new Vector3d[] {new Vector3d(0, 0, 0), new Vector3d(0, 0, 0), new Vector3d(0, 0, 0)};
+        if (world.isClientSide)
+            socketPosArray = new Vec3[] {new Vec3(0, 0, 0), new Vec3(0, 0, 0), new Vec3(0, 0, 0)};
         active = false;
         playsHurtAnimation = false;
         rotationYaw = renderYawOffset = rand.nextFloat() * 360;
@@ -308,7 +308,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                     playSound(MMSounds.ENTITY_FROSTMAW_ROAR.get(), 4, 1);
                 }
                 if (getAnimationTick() >= 8 && getAnimationTick() < 65) {
-                    doRoarEffects();
+                    doRoarMobEffects();
                 }
             }
 
@@ -335,7 +335,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                     float radius = 4;
                     float slamPosX = (float) (getPosX() + radius * Math.cos(Math.toRadians(rotationYaw + 90)));
                     float slamPosZ = (float) (getPosZ() + radius * Math.sin(Math.toRadians(rotationYaw + 90)));
-                    if (world.isRemote) world.addParticle(new ParticleRing.RingData(0f, (float)Math.PI/2f, 17, 1f, 1f, 1f, 1f, 60f, false, ParticleRing.EnumRingBehavior.GROW), slamPosX, getPosY() + 0.2f, slamPosZ, 0, 0, 0);
+                    if (world.isClientSide) world.addParticle(new ParticleRing.RingData(0f, (float)Math.PI/2f, 17, 1f, 1f, 1f, 1f, 60f, false, ParticleRing.EnumRingBehavior.GROW), slamPosX, getPosY() + 0.2f, slamPosZ, 0, 0, 0);
                     AxisAlignedBB hitBox = new AxisAlignedBB(new BlockPos(slamPosX - 0.5f, getPosY(), slamPosZ - 0.5f)).grow(3, 3, 3);
                     List<LivingEntity> entitiesHit = world.getEntitiesWithinAABB(LivingEntity.class, hitBox);
                     for (LivingEntity entity: entitiesHit) {
@@ -344,17 +344,17 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                             if (entity.isActiveItemStackBlocking()) entity.getActiveItemStack().damageItem(400, entity, p -> p.sendBreakAnimation(entity.getActiveHand()));
                         }
                     }
-                    EntityCameraShake.cameraShake(world, new Vector3d(slamPosX, getPosY(), slamPosZ), 30, 0.1f, 0, 20);
+                    EntityCameraShake.cameraShake(world, new Vec3(slamPosX, getPosY(), slamPosZ), 30, 0.1f, 0, 20);
                 }
             }
-            if (getAnimation() == DODGE_ANIMATION && !world.isRemote) {
+            if (getAnimation() == DODGE_ANIMATION && !world.isClientSide) {
                 getNavigator().clearPath();
                 if (getAnimationTick() == 2) {
                     dodgeYaw = (float) Math.toRadians(targetAngle + 90 + rand.nextFloat() * 150 - 75);
                 }
                 if (getAnimationTick() == 6 && (onGround || isInLava() || isInWater())) {
                     float speed = 1.7f;
-                    Vector3d m = getMotion().add(speed * Math.cos(dodgeYaw), 0, speed * Math.sin(dodgeYaw));
+                    Vec3 m = getMotion().add(speed * Math.cos(dodgeYaw), 0, speed * Math.sin(dodgeYaw));
                     setMotion(m.x, 0.6, m.z);
                 }
                 if (getAttackTarget() != null) lookController.setLookPositionWithEntity(getAttackTarget(), 30, 30);
@@ -365,14 +365,14 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                     lookController.setLookPositionWithEntity(getAttackTarget(), 30, 30);
                     faceEntity(getAttackTarget(), 30, 30);
                 }
-                Vector3d mouthPos = new Vector3d(2.3, 2.65, 0);
+                Vec3 mouthPos = new Vec3(2.3, 2.65, 0);
                 mouthPos = mouthPos.rotateYaw((float)Math.toRadians(-rotationYaw - 90));
                 mouthPos = mouthPos.add(getPositionVec());
-                mouthPos = mouthPos.add(new Vector3d(0, 0, 1).rotatePitch((float)Math.toRadians(-rotationPitch)).rotateYaw((float)Math.toRadians(-rotationYawHead)));
+                mouthPos = mouthPos.add(new Vec3(0, 0, 1).rotatePitch((float)Math.toRadians(-rotationPitch)).rotateYaw((float)Math.toRadians(-rotationYawHead)));
                 if (getAnimationTick() == 13) {
                     iceBreath = new EntityIceBreath(EntityHandler.ICE_BREATH, world, this);
                     iceBreath.setPositionAndRotation(mouthPos.x, mouthPos.y, mouthPos.z, rotationYawHead, rotationPitch + 10);
-                    if (!world.isRemote) world.addEntity(iceBreath);
+                    if (!world.isClientSide) world.addEntity(iceBreath);
                 }
                 if (iceBreath != null)
                     iceBreath.setPositionAndRotation(mouthPos.x, mouthPos.y, mouthPos.z, rotationYawHead, rotationPitch + 10);
@@ -380,22 +380,22 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
 
             if (getAnimation() == ICE_BALL_ANIMATION) {
                 if (getAttackTarget() != null) lookController.setLookPositionWithEntity(getAttackTarget(), 15, 15);
-                Vector3d projectilePos = new Vector3d(2.0, 1.9, 0);
+                Vec3 projectilePos = new Vec3(2.0, 1.9, 0);
                 projectilePos = projectilePos.rotateYaw((float)Math.toRadians(-rotationYaw - 90));
                 projectilePos = projectilePos.add(getPositionVec());
-                projectilePos = projectilePos.add(new Vector3d(0, 0, 1).rotatePitch((float)Math.toRadians(-rotationPitch)).rotateYaw((float)Math.toRadians(-rotationYawHead)));
-                if (world.isRemote) {
-                    Vector3d mouthPos = socketPosArray[2];
+                projectilePos = projectilePos.add(new Vec3(0, 0, 1).rotatePitch((float)Math.toRadians(-rotationPitch)).rotateYaw((float)Math.toRadians(-rotationYawHead)));
+                if (world.isClientSide) {
+                    Vec3 mouthPos = socketPosArray[2];
                     if (getAnimationTick() < 12) {
                         for (int i = 0; i < 6; i++) {
-                            Vector3d particlePos = new Vector3d(3.5, 0, 0);
+                            Vec3 particlePos = new Vec3(3.5, 0, 0);
                             particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                             particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                             float value = rand.nextFloat() * 0.15f;
                             world.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f + value, 0.75f + value, 1f, 5f + rand.nextFloat() * 15f, 30, ParticleCloud.EnumCloudBehavior.CONSTANT, 1f), mouthPos.x + particlePos.x, mouthPos.y + particlePos.y, mouthPos.z + particlePos.z, -0.1 * particlePos.x, -0.1 * particlePos.y, -0.1 * particlePos.z);
                         }
                         for (int i = 0; i < 8; i++) {
-                            Vector3d particlePos = new Vector3d(3.5, 0, 0);
+                            Vec3 particlePos = new Vec3(3.5, 0, 0);
                             particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                             particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                             world.addParticle(new ParticleSnowFlake.SnowflakeData(40, false), mouthPos.x + particlePos.x, mouthPos.y + particlePos.y, mouthPos.z + particlePos.z, -0.07 * particlePos.x, -0.07 * particlePos.y, -0.07 * particlePos.z);
@@ -404,7 +404,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                 }
 
                 if (getAnimationTick() == 32) {
-                    if (getAttackTarget() != null) prevTargetPos = getAttackTarget().getPositionVec().add(new Vector3d(0f, getAttackTarget().getHeight() / 2.0, 0f));
+                    if (getAttackTarget() != null) prevTargetPos = getAttackTarget().getPositionVec().add(new Vec3(0f, getAttackTarget().getHeight() / 2.0, 0f));
                 }
                 if (getAnimationTick() == 33) {
                     playSound(MMSounds.ENTITY_FROSTMAW_ICEBALL_SHOOT.get(), 2, 0.7f);
@@ -414,18 +414,18 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                     float projSpeed = 1.6f;
                     if (getAttackTarget() != null) {
                         float ticksUntilHit = targetDistance / projSpeed;
-                        Vector3d targetPos = getAttackTarget().getPositionVec().add(new Vector3d(0f, getAttackTarget().getHeight() / 2.0, 0f));
-                        Vector3d targetMovement = targetPos.subtract(prevTargetPos).scale(ticksUntilHit * 0.95);
+                        Vec3 targetPos = getAttackTarget().getPositionVec().add(new Vec3(0f, getAttackTarget().getHeight() / 2.0, 0f));
+                        Vec3 targetMovement = targetPos.subtract(prevTargetPos).scale(ticksUntilHit * 0.95);
                         targetMovement = targetMovement.subtract(0, targetMovement.y, 0);
-                        Vector3d futureTargetPos = targetPos.add(targetMovement);
-                        Vector3d projectileMid = projectilePos.add(new Vector3d(0, iceBall.getHeight() / 2.0, 0));
-                        Vector3d shootVec = futureTargetPos.subtract(projectileMid).normalize();
+                        Vec3 futureTargetPos = targetPos.add(targetMovement);
+                        Vec3 projectileMid = projectilePos.add(new Vec3(0, iceBall.getHeight() / 2.0, 0));
+                        Vec3 shootVec = futureTargetPos.subtract(projectileMid).normalize();
                         iceBall.shoot(shootVec.x, shootVec.y, shootVec.z, projSpeed, 0);
                     }
                     else {
                         iceBall.shoot(getLookVec().x, getLookVec().y, getLookVec().z, projSpeed, 0);
                     }
-                    if (!world.isRemote) world.addEntity(iceBall);
+                    if (!world.isClientSide) world.addEntity(iceBall);
                 }
             }
 
@@ -433,7 +433,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
 
             if ((fallDistance > 0.2 && !onGround) || getAnimation() == DODGE_ANIMATION) shouldPlayLandAnimation = true;
             if (onGround && shouldPlayLandAnimation && getAnimation() != DODGE_ANIMATION) {
-                if (!world.isRemote && getAnimation() == NO_ANIMATION) {
+                if (!world.isClientSide && getAnimation() == NO_ANIMATION) {
                     AnimationHandler.INSTANCE.sendAnimationMessage(this, LAND_ANIMATION);
                 }
                 shouldPlayLandAnimation = false;
@@ -486,7 +486,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                     iceBallCooldown = ICE_BALL_COOLDOWN;
                 }
             }
-            else if (!world.isRemote) {
+            else if (!world.isClientSide) {
                 timeWithoutTarget++;
                 if (timeWithoutTarget > 1200 || world.getDifficulty() == Difficulty.PEACEFUL) {
                     timeWithoutTarget = 0;
@@ -501,10 +501,10 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
             getNavigator().clearPath();
             setMotion(0, getMotion().y, 0);
             renderYawOffset = prevRenderYawOffset;
-            if (!world.isRemote && getAnimation() != ACTIVATE_ANIMATION) {
+            if (!world.isClientSide && getAnimation() != ACTIVATE_ANIMATION) {
                 if (ConfigHandler.COMMON.MOBS.FROSTMAW.healsOutOfBattle.get()) heal(0.3f);
             }
-            if (getAttackTarget() != null && getAttackTarget().isPotionActive(Effects.INVISIBILITY)) {
+            if (getAttackTarget() != null && getAttackTarget().isPotionActive(MobEffects.INVISIBILITY)) {
                 setAttackTarget(null);
             }
             if (!getAttackableEntityLivingBaseNearby(8, 8, 8, 8).isEmpty() && getAttackTarget() != null && getAnimation() == NO_ANIMATION) {
@@ -516,7 +516,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
             }
 
             if (ConfigHandler.COMMON.MOBS.FROSTMAW.stealableIceCrystal.get() && getHasCrystal() && ticksExisted > 20 && getAnimation() == NO_ANIMATION) {
-                Vector3d crystalPos = new Vector3d(1.6, 0.4, 1.8);
+                Vec3 crystalPos = new Vec3(1.6, 0.4, 1.8);
                 crystalPos = crystalPos.rotateYaw((float) Math.toRadians(-rotationYaw - 90));
                 crystalPos = crystalPos.add(getPositionVec());
                 for (Player player : getPlayersNearby(8, 8, 8, 8)) {
@@ -541,11 +541,11 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                 playSound(MMSounds.ENTITY_FROSTMAW_ROAR.get(), 4, 1);
             }
             if ((getAnimation() == ACTIVATE_ANIMATION && getAnimationTick() >= 51 && getAnimationTick() < 108) || (getAnimation() == ACTIVATE_NO_CRYSTAL_ANIMATION && getAnimationTick() >= 33 && getAnimationTick() < 90)) {
-                doRoarEffects();
+                doRoarMobEffects();
             }
         }
 
-        if (world.isRemote) {
+        if (world.isClientSide) {
             if ((getAnimation() == SWIPE_ANIMATION || getAnimation() == SWIPE_TWICE_ANIMATION) && getAnimationTick() == 1) {
                 swingWhichArm = rand.nextBoolean();
             }
@@ -579,7 +579,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         prevRotationYaw = rotationYaw;
     }
 
-    private void doRoarEffects() {
+    private void doRoarMobEffects() {
         if (getHasCrystal()) {
             List<LivingEntity> entities = getEntityLivingBaseNearby(10, 3, 10, 10);
             for (LivingEntity entity : entities) {
@@ -588,7 +588,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                 double distance = getDistance(entity) - 4;
                 entity.setMotion(entity.getMotion().add(Math.min(1 / (distance * distance), 1) * -1 * Math.cos(angle), 0, Math.min(1 / (distance * distance), 1) * -1 * Math.sin(angle)));
             }
-            if (getAnimationTick() % 12 == 0 && world.isRemote) {
+            if (getAnimationTick() % 12 == 0 && world.isClientSide) {
                 int particleCount = 15;
                 for (int i = 1; i <= particleCount; i++) {
                     double yaw = i * 360.f / particleCount;
@@ -643,7 +643,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
     }
 
     private void spawnSwipeParticles() {
-        if (world.isRemote && getHasCrystal()) {
+        if (world.isClientSide && getHasCrystal()) {
             double motionX = getMotion().getX();
             double motionY = getMotion().getY();
             double motionZ = getMotion().getZ();
@@ -653,8 +653,8 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
             int cloudDensity = 2;
             float cloudRandomness = 0.5f;
             if (getAnimation() == SWIPE_ANIMATION || getAnimation() == SWIPE_TWICE_ANIMATION) {
-                Vector3d rightHandPos = socketPosArray[0];
-                Vector3d leftHandPos = socketPosArray[1];
+                Vec3 rightHandPos = socketPosArray[0];
+                Vec3 leftHandPos = socketPosArray[1];
                 if (getAnimation() == SWIPE_ANIMATION) {
                     if (getAnimationTick() > 8 && getAnimationTick() < 14) {
                         if (swingWhichArm) {
@@ -872,7 +872,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
     }
 
     @Override
-    public Vector3d getMotion() {
+    public Vec3 getMotion() {
         if (!getActive()) return super.getMotion().mul(0, 1, 0);
         return super.getMotion();
     }

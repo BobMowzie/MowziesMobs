@@ -2,9 +2,9 @@ package com.bobmowzie.mowziesmobs.client.particle.util;
 
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.*;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.world.phys.Quaternion;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.Vector3f;
 
 public abstract class ParticleComponent {
     public ParticleComponent() {
@@ -244,9 +244,9 @@ public abstract class ParticleComponent {
     }
 
     public static class PinLocation extends ParticleComponent {
-        private final Vector3d[] location;
+        private final Vec3[] location;
 
-        public PinLocation(Vector3d[] location) {
+        public PinLocation(Vec3[] location) {
             this.location = location;
         }
 
@@ -272,13 +272,13 @@ public abstract class ParticleComponent {
             SIMULATED,
         }
 
-        private final Vector3d[] location;
+        private final Vec3[] location;
         private final float strength;
         private final float killDist;
         private final EnumAttractorBehavior behavior;
-        private Vector3d startLocation;
+        private Vec3 startLocation;
 
-        public Attractor(Vector3d[] location, float strength, float killDist, EnumAttractorBehavior behavior) {
+        public Attractor(Vec3[] location, float strength, float killDist, EnumAttractorBehavior behavior) {
             this.location = location;
             this.strength = strength;
             this.killDist = killDist;
@@ -287,23 +287,23 @@ public abstract class ParticleComponent {
 
         @Override
         public void init(AdvancedParticleBase particle) {
-            startLocation = new Vector3d(particle.getPosX(), particle.getPosY(), particle.getPosZ());
+            startLocation = new Vec3(particle.getPosX(), particle.getPosY(), particle.getPosZ());
         }
 
         @Override
         public void preUpdate(AdvancedParticleBase particle) {
             float ageFrac = particle.getAge() / (particle.getMaxAge() - 1);
             if (location.length > 0) {
-                Vector3d destinationVec = location[0];
-                Vector3d currPos = new Vector3d(particle.getPosX(), particle.getPosY(), particle.getPosZ());
-                Vector3d diff = destinationVec.subtract(currPos);
+                Vec3 destinationVec = location[0];
+                Vec3 currPos = new Vec3(particle.getPosX(), particle.getPosY(), particle.getPosZ());
+                Vec3 diff = destinationVec.subtract(currPos);
                 if (diff.length() < killDist) particle.setExpired();
                 if (behavior == EnumAttractorBehavior.EXPONENTIAL) {
-                    Vector3d path = destinationVec.subtract(startLocation).scale(Math.pow(ageFrac, strength)).add(startLocation).subtract(currPos);
+                    Vec3 path = destinationVec.subtract(startLocation).scale(Math.pow(ageFrac, strength)).add(startLocation).subtract(currPos);
                     particle.move(path.x, path.y, path.z);
                 }
                 else if (behavior == EnumAttractorBehavior.LINEAR) {
-                    Vector3d path = destinationVec.subtract(startLocation).scale(ageFrac).add(startLocation).subtract(currPos);
+                    Vec3 path = destinationVec.subtract(startLocation).scale(ageFrac).add(startLocation).subtract(currPos);
                     particle.move(path.x, path.y, path.z);
                 }
                 else {
@@ -318,7 +318,7 @@ public abstract class ParticleComponent {
     }
 
     public static class Orbit extends ParticleComponent {
-        private final Vector3d[] location;
+        private final Vec3[] location;
         private final AnimData phase;
         private final AnimData radius;
         private final AnimData axisX;
@@ -326,7 +326,7 @@ public abstract class ParticleComponent {
         private final AnimData axisZ;
         private final boolean faceCamera;
 
-        public Orbit(Vector3d[] location, AnimData phase, AnimData radius, AnimData axisX, AnimData axisY, AnimData axisZ, boolean faceCamera) {
+        public Orbit(Vec3[] location, AnimData phase, AnimData radius, AnimData axisX, AnimData axisY, AnimData axisZ, boolean faceCamera) {
             this.location = location;
             this.phase = phase;
             this.radius = radius;
@@ -403,7 +403,7 @@ public abstract class ParticleComponent {
                 }
                 else if (particle.rotation instanceof ParticleRotation.OrientVector) {
                     ParticleRotation.OrientVector orientRot = (ParticleRotation.OrientVector) particle.rotation;
-                    orientRot.orientation = new Vector3d(dx, dy, dz).normalize();
+                    orientRot.orientation = new Vec3(dx, dy, dz).normalize();
                 }
             }
         }

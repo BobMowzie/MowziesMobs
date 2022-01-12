@@ -3,9 +3,9 @@ package com.bobmowzie.mowziesmobs.server.message;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.power.PowerGeomancy;
-import net.minecraft.world.entity.player.ServerPlayer;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
@@ -16,10 +16,10 @@ public class MessagePlayerStartSummonBoulder {
 
     }
 
-    public static void serialize(final MessagePlayerStartSummonBoulder message, final PacketBuffer buf) {
+    public static void serialize(final MessagePlayerStartSummonBoulder message, final FriendlyByteBuf buf) {
     }
 
-    public static MessagePlayerStartSummonBoulder deserialize(final PacketBuffer buf) {
+    public static MessagePlayerStartSummonBoulder deserialize(final FriendlyByteBuf buf) {
         final MessagePlayerStartSummonBoulder message = new MessagePlayerStartSummonBoulder();
         return message;
     }

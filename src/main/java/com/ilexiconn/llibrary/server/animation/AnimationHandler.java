@@ -6,7 +6,7 @@ import com.ilexiconn.llibrary.server.network.AnimationMessage;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import org.apache.commons.lang3.ArrayUtils;
 
 /**
@@ -24,7 +24,7 @@ public enum AnimationHandler {
      * @param <T>       the entity type
      */
     public <T extends Entity & IAnimatedEntity> void sendAnimationMessage(T entity, Animation animation) {
-        if (entity.world.isRemote) {
+        if (entity.world.isClientSide) {
             return;
         }
         entity.setAnimation(animation);

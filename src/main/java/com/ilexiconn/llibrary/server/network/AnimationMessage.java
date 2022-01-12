@@ -2,8 +2,8 @@ package com.ilexiconn.llibrary.server.network;
 
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
@@ -21,12 +21,12 @@ public class AnimationMessage {
         this.index = index;
     }
 
-    public static void serialize(final AnimationMessage message, final PacketBuffer buf) {
+    public static void serialize(final AnimationMessage message, final FriendlyByteBuf buf) {
         buf.writeVarInt(message.entityID);
         buf.writeVarInt(message.index);
     }
 
-    public static AnimationMessage deserialize(final PacketBuffer buf) {
+    public static AnimationMessage deserialize(final FriendlyByteBuf buf) {
         final AnimationMessage message = new AnimationMessage();
         message.entityID = buf.readVarInt();
         message.index = buf.readVarInt();

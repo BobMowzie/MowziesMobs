@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.server.ai;
 import net.minecraft.world.entity.EntityPredicate;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobEntity;
-import net.minecraft.world.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 
 
 public class NearestAttackableTargetPredicateGoal<T extends LivingEntity> extends NearestAttackableTargetGoal<T> {

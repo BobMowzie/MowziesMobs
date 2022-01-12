@@ -13,16 +13,11 @@ import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import com.bobmowzie.mowziesmobs.server.capability.*;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
-import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.*;
-import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityBabyFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityFoliaath;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
-import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
-import com.bobmowzie.mowziesmobs.server.entity.lantern.EntityLantern;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
-import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.item.ItemBarakoaMask;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
@@ -32,38 +27,35 @@ import com.bobmowzie.mowziesmobs.server.message.*;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.power.Power;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.ChestBlock;
-import net.minecraft.block.material.Material;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.animal.Parrot;
+import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.ChestBlock;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
-import net.minecraft.world.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.item.ItemFrameEntity;
-import net.minecraft.world.entity.merchant.villager.AbstractVillagerEntity;
-import net.minecraft.world.entity.monster.AbstractSkeletonEntity;
-import net.minecraft.world.entity.monster.SkeletonEntity;
-import net.minecraft.world.entity.monster.ZombieEntity;
-import net.minecraft.world.entity.monster.ZombifiedPiglinEntity;
-import net.minecraft.world.entity.passive.AnimalEntity;
-import net.minecraft.world.entity.passive.ParrotEntity;
+import net.minecraft.world.entity.decoration.ItemFrame;
+import net.minecraft.world.entity.monster.AbstractSkeleton;
+import net.minecraft.world.entity.monster.Zombie;
+import net.minecraft.world.entity.monster.ZombifiedPiglin;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.ServerPlayer;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.item.ItemStack;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.living.*;
@@ -75,7 +67,7 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,35 +88,35 @@ public final class ServerEventHandler {
             if (playerCapability != null) playerCapability.addedToWorld(event);
         }
 
-        if (event.getWorld().isRemote) {
+        if (event.getWorld().isClientSide) {
             return;
         }
         Entity entity = event.getEntity();
-        if (entity instanceof ZombieEntity && !(entity instanceof ZombifiedPiglinEntity)) {
-            ((CreatureEntity) entity).targetSelector.addGoal(2, new NearestAttackableTargetGoal<>((CreatureEntity) entity, EntityFoliaath.class, 0, true, false, null));
-            ((CreatureEntity) entity).targetSelector.addGoal(3, new NearestAttackableTargetGoal<>((CreatureEntity) entity, EntityBarakoa.class, 0, true, false, null));
-            ((CreatureEntity) entity).targetSelector.addGoal(2, new NearestAttackableTargetGoal<>((CreatureEntity) entity, EntityBarako.class, 0, true, false, null));
+        if (entity instanceof Zombie && !(entity instanceof ZombifiedPiglin)) {
+            ((PathfinderMob) entity).targetSelector.addGoal(2, new NearestAttackableTargetGoal<>((PathfinderMob) entity, EntityFoliaath.class, 0, true, false, null));
+            ((PathfinderMob) entity).targetSelector.addGoal(3, new NearestAttackableTargetGoal<>((PathfinderMob) entity, EntityBarakoa.class, 0, true, false, null));
+            ((PathfinderMob) entity).targetSelector.addGoal(2, new NearestAttackableTargetGoal<>((PathfinderMob) entity, EntityBarako.class, 0, true, false, null));
         }
-        if (entity instanceof AbstractSkeletonEntity) {
-            ((CreatureEntity) entity).targetSelector.addGoal(3, new NearestAttackableTargetGoal<>((CreatureEntity) entity, EntityBarakoa.class, 0, true, false, null));
-            ((CreatureEntity) entity).targetSelector.addGoal(2, new NearestAttackableTargetGoal<>((CreatureEntity) entity, EntityBarako.class, 0, true, false, null));
+        if (entity instanceof AbstractSkeleton) {
+            ((PathfinderMob) entity).targetSelector.addGoal(3, new NearestAttackableTargetGoal<>((PathfinderMob) entity, EntityBarakoa.class, 0, true, false, null));
+            ((PathfinderMob) entity).targetSelector.addGoal(2, new NearestAttackableTargetGoal<>((PathfinderMob) entity, EntityBarako.class, 0, true, false, null));
         }
 
-        if (entity instanceof ParrotEntity) {
-            ((CreatureEntity) entity).goalSelector.addGoal(3, new AvoidEntityGoal<>((CreatureEntity) entity, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
+        if (entity instanceof Parrot) {
+            ((PathfinderMob) entity).goalSelector.addGoal(3, new AvoidEntityGoal<>((PathfinderMob) entity, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
         }
-        if (entity instanceof AnimalEntity) {
-            ((CreatureEntity) entity).goalSelector.addGoal(3, new AvoidEntityIfNotTamedGoal<>((CreatureEntity) entity, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
-            ((CreatureEntity) entity).goalSelector.addGoal(3, new AvoidEntityIfNotTamedGoal<>((CreatureEntity) entity, EntityBarakoa.class, 6.0F, 1.0D, 1.2D));
-            ((CreatureEntity) entity).goalSelector.addGoal(3, new AvoidEntityIfNotTamedGoal<>((CreatureEntity) entity, EntityBarako.class, 6.0F, 1.0D, 1.2D));
-            ((CreatureEntity) entity).goalSelector.addGoal(3, new AvoidEntityIfNotTamedGoal<>((CreatureEntity) entity, EntityNaga.class, 10.0F, 1.0D, 1.2D));
-            ((CreatureEntity) entity).goalSelector.addGoal(3, new AvoidEntityIfNotTamedGoal<>((CreatureEntity) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
+        if (entity instanceof Animal) {
+            ((PathfinderMob) entity).goalSelector.addGoal(3, new AvoidEntityIfNotTamedGoal<>((PathfinderMob) entity, EntityFoliaath.class, 6.0F, 1.0D, 1.2D));
+            ((PathfinderMob) entity).goalSelector.addGoal(3, new AvoidEntityIfNotTamedGoal<>((PathfinderMob) entity, EntityBarakoa.class, 6.0F, 1.0D, 1.2D));
+            ((PathfinderMob) entity).goalSelector.addGoal(3, new AvoidEntityIfNotTamedGoal<>((PathfinderMob) entity, EntityBarako.class, 6.0F, 1.0D, 1.2D));
+            ((PathfinderMob) entity).goalSelector.addGoal(3, new AvoidEntityIfNotTamedGoal<>((PathfinderMob) entity, EntityNaga.class, 10.0F, 1.0D, 1.2D));
+            ((PathfinderMob) entity).goalSelector.addGoal(3, new AvoidEntityIfNotTamedGoal<>((PathfinderMob) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
         }
-        if (entity instanceof AbstractVillagerEntity) {
-            ((CreatureEntity) entity).goalSelector.addGoal(3, new AvoidEntityGoal<>((CreatureEntity) entity, EntityBarakoa.class, 6.0F, 1.0D, 1.2D));
-            ((CreatureEntity) entity).goalSelector.addGoal(3, new AvoidEntityGoal<>((CreatureEntity) entity, EntityBarako.class, 6.0F, 1.0D, 1.2D));
-            ((CreatureEntity) entity).goalSelector.addGoal(3, new AvoidEntityGoal<>((CreatureEntity) entity, EntityNaga.class, 10.0F, 1.0D, 1.2D));
-            ((CreatureEntity) entity).goalSelector.addGoal(3, new AvoidEntityGoal<>((CreatureEntity) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
+        if (entity instanceof AbstractVillager) {
+            ((PathfinderMob) entity).goalSelector.addGoal(3, new AvoidEntityGoal<>((PathfinderMob) entity, EntityBarakoa.class, 6.0F, 1.0D, 1.2D));
+            ((PathfinderMob) entity).goalSelector.addGoal(3, new AvoidEntityGoal<>((PathfinderMob) entity, EntityBarako.class, 6.0F, 1.0D, 1.2D));
+            ((PathfinderMob) entity).goalSelector.addGoal(3, new AvoidEntityGoal<>((PathfinderMob) entity, EntityNaga.class, 10.0F, 1.0D, 1.2D));
+            ((PathfinderMob) entity).goalSelector.addGoal(3, new AvoidEntityGoal<>((PathfinderMob) entity, EntityFrostmaw.class, 10.0F, 1.0D, 1.2D));
         }
     }
 
@@ -133,12 +125,12 @@ public final class ServerEventHandler {
         if (event.getEntity() instanceof LivingEntity) {
             LivingEntity entity = (LivingEntity) event.getEntity();
 
-            if (entity.getActivePotionEffect(EffectHandler.POISON_RESIST) != null && entity.getActivePotionEffect(Effects.POISON) != null) {
-                entity.removeActivePotionEffect(Effects.POISON);
+            if (entity.getActivePotionEffect(EffectHandler.POISON_RESIST) != null && entity.getActivePotionEffect(MobEffects.POISON) != null) {
+                entity.removeActivePotionEffect(MobEffects.POISON);
             }
 
-            if (!entity.world.isRemote) {
-                Item headItemStack = entity.getItemStackFromSlot(EquipmentSlotType.HEAD).getItem();
+            if (!entity.world.isClientSide) {
+                Item headItemStack = entity.getItemStackFromSlot(EquipmentSlot.HEAD).getItem();
                 if (headItemStack instanceof ItemBarakoaMask) {
                     ItemBarakoaMask mask = (ItemBarakoaMask) headItemStack;
                     EffectHandler.addOrCombineEffect(entity, mask.getPotion(), 50, 0, true, false);
@@ -171,7 +163,7 @@ public final class ServerEventHandler {
     @SubscribeEvent
     public void onAddPotionEffect(PotionEvent.PotionAddedEvent event) {
         if (event.getPotionEffect().getPotion() == EffectHandler.SUNBLOCK) {
-            if (!event.getEntity().world.isRemote()) {
+            if (!event.getEntity().world.isClientSide()) {
                 MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageSunblockEffect(event.getEntityLiving(), true));
             }
             MowziesMobs.PROXY.playSunblockSound(event.getEntityLiving());
@@ -180,15 +172,15 @@ public final class ServerEventHandler {
 
     @SubscribeEvent
     public void onRemovePotionEffect(PotionEvent.PotionRemoveEvent event) {
-        if (!event.getEntity().world.isRemote() && event.getPotion() == EffectHandler.SUNBLOCK) {
+        if (!event.getEntity().world.isClientSide() && event.getPotion() == EffectHandler.SUNBLOCK) {
             MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageSunblockEffect(event.getEntityLiving(), false));
         }
     }
 
     @SubscribeEvent
     public void onPotionEffectExpire(PotionEvent.PotionExpiryEvent event) {
-        EffectInstance effectInstance = event.getPotionEffect();
-        if (!event.getEntity().world.isRemote() && effectInstance != null && effectInstance.getPotion() == EffectHandler.SUNBLOCK) {
+        MobEffectInstance effectInstance = event.getPotionEffect();
+        if (!event.getEntity().world.isClientSide() && effectInstance != null && effectInstance.getPotion() == EffectHandler.SUNBLOCK) {
             MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageSunblockEffect(event.getEntityLiving(), false));
         }
     }
@@ -399,7 +391,7 @@ public final class ServerEventHandler {
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
         if (playerCapability != null) {
 
-            if (event.getWorld().isRemote && player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(EffectHandler.SUNS_BLESSING)) {
+            if (event.getWorld().isClientSide && player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(EffectHandler.SUNS_BLESSING)) {
                 if (player.isSneaking()) {
                     AbilityHandler.INSTANCE.sendPlayerTryAbilityMessage(event.getPlayer(), AbilityHandler.SOLAR_BEAM_ABILITY);
                 } else {
@@ -602,8 +594,8 @@ public final class ServerEventHandler {
                     power.onLeftClickEntity(event);
                 }
 
-                if (event.getTarget() instanceof ItemFrameEntity) {
-                    ItemFrameEntity itemFrame = (ItemFrameEntity) event.getTarget();
+                if (event.getTarget() instanceof ItemFrame) {
+                    ItemFrame itemFrame = (ItemFrame) event.getTarget();
                     if (itemFrame.getDisplayedItem().getItem() instanceof ItemBarakoaMask) {
                         aggroBarakoa(event.getPlayer());
                     }
@@ -614,7 +606,7 @@ public final class ServerEventHandler {
 
                 if (!(event.getTarget() instanceof LivingEntity)) return;
                 if (event.getTarget() instanceof EntityBarakoanToPlayer) return;
-                if (!event.getPlayer().world.isRemote()) {
+                if (!event.getPlayer().world.isClientSide()) {
                     for (int i = 0; i < playerCapability.getPackSize(); i++) {
                         EntityBarakoanToPlayer barakoa = playerCapability.getTribePack().get(i);
                         LivingEntity living = (LivingEntity) event.getTarget();
@@ -635,8 +627,8 @@ public final class ServerEventHandler {
         if (playerCapability != null && playerCapability.getPrevCooledAttackStrength() == 1.0f && !weapon.isEmpty() && event.getTarget() instanceof LivingEntity) {
             LivingEntity target = (LivingEntity)event.getTarget();
             if (weapon.getItem() instanceof ItemNagaFangDagger) {
-                Vector3d lookDir = new Vector3d(target.getLookVec().x, 0, target.getLookVec().z).normalize();
-                Vector3d vecBetween = new Vector3d(target.getPosX() - event.getPlayer().getPosX(), 0, target.getPosZ() - event.getPlayer().getPosZ()).normalize();
+                Vec3 lookDir = new Vec3(target.getLookVec().x, 0, target.getLookVec().z).normalize();
+                Vec3 vecBetween = new Vec3(target.getPosX() - event.getPlayer().getPosX(), 0, target.getPosZ() - event.getPlayer().getPosZ()).normalize();
                 double dot = lookDir.dotProduct(vecBetween);
                 if (dot > 0.7) {
                     event.setResult(Event.Result.ALLOW);
@@ -644,10 +636,10 @@ public final class ServerEventHandler {
                     target.playSound(MMSounds.ENTITY_NAGA_ACID_HIT.get(), 1f, 1.2f);
                     AbilityHandler.INSTANCE.sendAbilityMessage(attacker, AbilityHandler.BACKSTAB_ABILITY);
 
-                    if (target.world.isRemote() && target != null && attacker != null) {
-                        Vector3d ringOffset = attacker.getLookVec().scale(-target.getWidth() / 2.f);
+                    if (target.world.isClientSide() && target != null && attacker != null) {
+                        Vec3 ringOffset = attacker.getLookVec().scale(-target.getWidth() / 2.f);
                         ParticleRotation.OrientVector rotation = new ParticleRotation.OrientVector(ringOffset);
-                        Vector3d pos = target.getPositionVec().add(0, target.getHeight() / 2f, 0).add(ringOffset);
+                        Vec3 pos = target.getPositionVec().add(0, target.getHeight() / 2f, 0).add(ringOffset);
                         AdvancedParticleBase.spawnParticle(target.world, ParticleHandler.RING_SPARKS.get(), pos.getX(), pos.getY(), pos.getZ(), 0, 0, 0, rotation, 3.5F, 0.83f, 1, 0.39f, 1, 1, 6, false, true, new ParticleComponent[]{
                                 new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, new ParticleComponent.KeyTrack(new float[]{1f, 1f, 0f}, new float[]{0f, 0.5f, 1f}), false),
                                 new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(0f, 15f), false)
@@ -655,7 +647,7 @@ public final class ServerEventHandler {
                         Random rand = attacker.world.getRandom();
                         float explodeSpeed = 2.5f;
                         for (int i = 0; i < 10; i++) {
-                            Vector3d particlePos = new Vector3d(rand.nextFloat() * 0.25, 0, 0);
+                            Vec3 particlePos = new Vec3(rand.nextFloat() * 0.25, 0, 0);
                             particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                             particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                             double value = rand.nextFloat() * 0.1f;
@@ -663,7 +655,7 @@ public final class ServerEventHandler {
                             ParticleVanillaCloudExtended.spawnVanillaCloud(target.world, pos.getX(), pos.getY(), pos.getZ(), particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 1, 0.25d + value, 0.75d + value, 0.25d + value, 0.6, life);
                         }
                         for (int i = 0; i < 10; i++) {
-                            Vector3d particlePos = new Vector3d(rand.nextFloat() * 0.25, 0, 0);
+                            Vec3 particlePos = new Vec3(rand.nextFloat() * 0.25, 0, 0);
                             particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                             particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                             double value = rand.nextFloat() * 0.1f;
@@ -671,7 +663,7 @@ public final class ServerEventHandler {
                             AdvancedParticleBase.spawnParticle(target.world, ParticleHandler.PIXEL.get(), pos.getX(), pos.getY(), pos.getZ(), particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, true, 0, 0, 0, 0, 3f, 0.07d + value, 0.25d + value, 0.07d + value, 1d, 0.6, life * 0.95, false, true);
                         }
                         for (int i = 0; i < 6; i++) {
-                            Vector3d particlePos = new Vector3d(rand.nextFloat() * 0.25, 0, 0);
+                            Vec3 particlePos = new Vec3(rand.nextFloat() * 0.25, 0, 0);
                             particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                             particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                             double value = rand.nextFloat() * 0.1f;
@@ -682,7 +674,7 @@ public final class ServerEventHandler {
                 }
             }
             else if (weapon.getItem() instanceof ItemSpear) {
-                if (target instanceof AnimalEntity && target.getMaxHealth() <= 30 && attacker.world.getRandom().nextFloat() <= 0.334) {
+                if (target instanceof Animal && target.getMaxHealth() <= 30 && attacker.world.getRandom().nextFloat() <= 0.334) {
                     event.setResult(Event.Result.ALLOW);
                     event.setDamageModifier(400);
                 }

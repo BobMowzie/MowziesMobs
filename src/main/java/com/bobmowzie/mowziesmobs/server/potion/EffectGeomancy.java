@@ -1,11 +1,11 @@
 package com.bobmowzie.mowziesmobs.server.potion;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FenceBlock;
-import net.minecraft.block.material.Material;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.FenceBlock;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.potion.EffectType;
+import net.minecraft.world.effect.EffectType;
 
 public class EffectGeomancy extends MowzieEffect {
     public EffectGeomancy() {

@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.particles.BasicParticleType;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -20,7 +20,7 @@ public class ParticleSparkle extends SpriteTexturedParticle {
     private final float blue;
     private final float scale;
 
-    public ParticleSparkle(ClientWorld world, double x, double y, double z, double vx, double vy, double vz, double r, double g, double b, double scale, int duration) {
+    public ParticleSparkle(ClientLevel world, double x, double y, double z, double vx, double vy, double vz, double r, double g, double b, double scale, int duration) {
         super(world, x, y, z);
         this.scale = (float) scale * 1f;
         maxAge = duration;
@@ -68,7 +68,7 @@ public class ParticleSparkle extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle makeParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle makeParticle(BasicParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             ParticleSparkle particle = new ParticleSparkle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, 1, 1, 1, 0.4d, 13);
             particle.selectSpriteRandomly(spriteSet);
             return particle;

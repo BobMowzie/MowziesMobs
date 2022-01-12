@@ -17,12 +17,12 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.util.text.event.HoverEvent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.text.ITextComponent;
+import net.minecraft.resources.text.Style;
+import net.minecraft.resources.text.TranslationTextComponent;
+import net.minecraft.resources.text.event.HoverEvent;
 
 public final class GuiBarakoTrade extends ContainerScreen<ContainerBarakoTrade> implements InventoryBarako.ChangeListener {
     private static final ResourceLocation TEXTURE_TRADE = new ResourceLocation(MowziesMobs.MODID, "textures/gui/container/barako_trade.png");

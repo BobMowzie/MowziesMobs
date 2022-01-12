@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.server.loot;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.google.gson.*;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.loot.LootContext;
 import net.minecraft.loot.LootFunction;
 import net.minecraft.loot.LootFunctionType;

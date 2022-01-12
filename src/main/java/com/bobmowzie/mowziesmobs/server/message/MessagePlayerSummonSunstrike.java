@@ -4,12 +4,12 @@ import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.ServerPlayer;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.*;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.Direction;
+import net.minecraft.resources.math.*;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
@@ -22,16 +22,16 @@ public class MessagePlayerSummonSunstrike {
     }
 
     private static BlockRayTraceResult rayTrace(LivingEntity entity, double reach) {
-        Vector3d pos = entity.getEyePosition(0);
-        Vector3d segment = entity.getLookVec();
+        Vec3 pos = entity.getEyePosition(0);
+        Vec3 segment = entity.getLookVec();
         segment = pos.add(segment.x * reach, segment.y * reach, segment.z * reach);
         return entity.world.rayTraceBlocks(new RayTraceContext(pos, segment, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, entity));
     }
 
-    public static void serialize(final MessagePlayerSummonSunstrike message, final PacketBuffer buf) {
+    public static void serialize(final MessagePlayerSummonSunstrike message, final FriendlyByteBuf buf) {
     }
 
-    public static MessagePlayerSummonSunstrike deserialize(final PacketBuffer buf) {
+    public static MessagePlayerSummonSunstrike deserialize(final FriendlyByteBuf buf) {
         final MessagePlayerSummonSunstrike message = new MessagePlayerSummonSunstrike();
         return message;
     }

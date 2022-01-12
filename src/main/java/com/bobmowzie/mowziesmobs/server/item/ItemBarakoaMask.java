@@ -15,14 +15,14 @@ import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.item.*;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.potion.Effect;
-import net.minecraft.util.*;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.effect.Effect;
+import net.minecraft.resources.*;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.resources.text.ITextComponent;
+import net.minecraft.resources.text.TextFormatting;
+import net.minecraft.resources.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -35,7 +35,7 @@ public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask {
     private static final BarakoaMaskMaterial BARAKOA_MASK_MATERIAL = new BarakoaMaskMaterial();
 
     public ItemBarakoaMask(MaskType type, Item.Properties properties) {
-        super(BARAKOA_MASK_MATERIAL, EquipmentSlotType.HEAD, properties);
+        super(BARAKOA_MASK_MATERIAL, EquipmentSlot.HEAD, properties);
         this.type = type;
     }
 
@@ -76,7 +76,7 @@ public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask {
             if (mask == MaskType.FAITH) barakoa = new EntityBarakoayaToPlayer(EntityHandler.BARAKOAYA_TO_PLAYER, player.world, player);
             else barakoa = new EntityBarakoanToPlayer(EntityHandler.BARAKOAN_TO_PLAYER, player.world, player);
 //            property.addPackMember(barakoa);
-            if (!player.world.isRemote) {
+            if (!player.world.isClientSide) {
                 if (mask != MaskType.FAITH) {
                     int weapon;
                     if (mask != MaskType.FURY) weapon = barakoa.randomizeWeapon();
@@ -105,9 +105,9 @@ public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask {
     @OnlyIn(Dist.CLIENT)
     @Nullable
     @Override
-    public <A extends BipedModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, A _default) {
+    public <A extends BipedModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, A _default) {
         BarakoaMaskModel<?> model = new BarakoaMaskModel<>();
-        model.bipedHeadwear.showModel = armorSlot == EquipmentSlotType.HEAD;
+        model.bipedHeadwear.showModel = armorSlot == EquipmentSlot.HEAD;
 
         if (_default != null) {
             model.isChild = _default.isChild;
@@ -122,7 +122,7 @@ public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask {
 
     @Nullable
     @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type) {
+    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
         String s = TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName().getString());
         boolean wadoo = stack.hasDisplayName() && s != null && s.equals("Wadoo");
         return new ResourceLocation(MowziesMobs.MODID, "textures/entity/barakoa_" + this.type.name + (wadoo ? "_wadoo" : "") + ".png").toString();
@@ -143,12 +143,12 @@ public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask {
     private static class BarakoaMaskMaterial implements IArmorMaterial {
 
         @Override
-        public int getDurability(EquipmentSlotType equipmentSlotType) {
+        public int getDurability(EquipmentSlot equipmentSlotType) {
             return ArmorMaterial.LEATHER.getDurability(equipmentSlotType);
         }
 
         @Override
-        public int getDamageReductionAmount(EquipmentSlotType equipmentSlotType) {
+        public int getDamageReductionAmount(EquipmentSlot equipmentSlotType) {
             return ConfigHandler.COMMON.TOOLS_AND_ABILITIES.BARAKOA_MASK.armorConfig.damageReduction.get();
         }
 

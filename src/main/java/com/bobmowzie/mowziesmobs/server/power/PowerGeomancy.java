@@ -14,22 +14,22 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.EntityFallingBlock;
 import com.bobmowzie.mowziesmobs.server.message.MessagePlayerStartSummonBoulder;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.FenceBlock;
-import net.minecraft.block.material.Material;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.FenceBlock;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.block.Blocks;
-import net.minecraft.potion.Effects;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.*;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.resources.Direction;
+import net.minecraft.resources.Hand;
+import net.minecraft.resources.math.*;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 import java.util.Random;
@@ -46,7 +46,7 @@ public class PowerGeomancy extends Power {
     private boolean liftedMouse = true;
     public int spawnBoulderCharge = 0;
     public BlockPos spawnBoulderPos = new BlockPos(0, 0, 0);
-    public Vector3d lookPos = new Vector3d(0, 0, 0);
+    public Vec3 lookPos = new Vec3(0, 0, 0);
     private BlockState spawnBoulderBlock = Blocks.DIRT.getDefaultState();
 
     public boolean tunneling;
@@ -71,7 +71,7 @@ public class PowerGeomancy extends Power {
             player.abilities.isFlying = false;
             boolean underground = !player.world.getEntitiesWithinAABB(EntityBlockSwapper.class, player.getBoundingBox()).isEmpty();
             if (player.isOnGround() && !underground) tunneling = false;
-            Vector3d lookVec = player.getLookVec();
+            Vec3 lookVec = player.getLookVec();
             float tunnelSpeed = 0.3f;
             if (underground) {
                 if (player.isSneaking()) {
@@ -107,7 +107,7 @@ public class PowerGeomancy extends Power {
             }
             if (!prevUnderground && underground) {
                 player.playSound(MMSounds.EFFECT_GEOMANCY_BREAK_MEDIUM.get(rand.nextInt(3)).get(), 1f, 0.9f + rand.nextFloat() * 0.1f);
-                if (player.world.isRemote)
+                if (player.world.isClientSide)
                     AdvancedParticleBase.spawnParticle(player.world, ParticleHandler.RING2.get(), (float) player.getPosX(), (float) player.getPosY() + 0.02f, (float) player.getPosZ(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, true, new ParticleComponent[]{
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(10f, 30f), false)
@@ -115,7 +115,7 @@ public class PowerGeomancy extends Power {
             }
             if (prevUnderground && !underground) {
                 player.playSound(MMSounds.EFFECT_GEOMANCY_BREAK.get(), 1f, 0.9f + rand.nextFloat() * 0.1f);
-                if (player.world.isRemote)
+                if (player.world.isClientSide)
                     AdvancedParticleBase.spawnParticle(player.world, ParticleHandler.RING2.get(), (float) player.getPosX(), (float) player.getPosY() + 0.02f, (float) player.getPosZ(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, true, new ParticleComponent[]{
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(10f, 30f), false)
@@ -142,10 +142,10 @@ public class PowerGeomancy extends Power {
             }
             else {
                 spawnBoulderCharge++;
-                if (spawnBoulderCharge > 2) player.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 0, 2, false, false));
-                if (spawnBoulderCharge == 1 && player.world.isRemote) MowziesMobs.PROXY.playBoulderChargeSound(player);
+                if (spawnBoulderCharge > 2) player.addPotionEffect(new MobEffectInstance(MobEffects.SLOWNESS, 0, 2, false, false));
+                if (spawnBoulderCharge == 1 && player.world.isClientSide) MowziesMobs.PROXY.playBoulderChargeSound(player);
                 if ((spawnBoulderCharge + 10) % 10 == 0 && spawnBoulderCharge < 40) {
-                    if (player.world.isRemote) {
+                    if (player.world.isClientSide) {
                         AdvancedParticleBase.spawnParticle(player.world, ParticleHandler.RING2.get(), (float) player.getPosX(), (float) player.getPosY() + player.getHeight() / 2f, (float) player.getPosZ(), 0, 0, 0, false, 0, Math.PI / 2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, true, new ParticleComponent[]{
                                 new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0f, 0.7f), false),
                                 new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd((0.8f + 2.7f * spawnBoulderCharge / 60f) * 10f, 0), false)
@@ -153,7 +153,7 @@ public class PowerGeomancy extends Power {
                     }
                 }
                 if (spawnBoulderCharge == 50) {
-                    if (player.world.isRemote) {
+                    if (player.world.isClientSide) {
                         AdvancedParticleBase.spawnParticle(player.world, ParticleHandler.RING2.get(), (float) player.getPosX(), (float) player.getPosY() + player.getHeight() / 2f, (float) player.getPosZ(), 0, 0, 0, true, 0, 0, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 20, true, true, new ParticleComponent[]{
                                 new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(0.7f, 0f), false),
                                 new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(0, 40f), false)
@@ -161,7 +161,7 @@ public class PowerGeomancy extends Power {
                     }
                     player.playSound(MMSounds.EFFECT_GEOMANCY_MAGIC_SMALL.get(), 1, 1f);
                 }
-                if (player.world.isRemote && spawnBoulderCharge > 5 && spawnBoulderCharge < 30) {
+                if (player.world.isClientSide && spawnBoulderCharge > 5 && spawnBoulderCharge < 30) {
                     int particleCount = 4;
                     while (--particleCount != 0) {
                         double radius = 0.5f + 1.5f * spawnBoulderCharge/30f;
@@ -248,7 +248,7 @@ public class PowerGeomancy extends Power {
         return spawnBoulderPos;
     }
 
-    public Vector3d getLookPos() {
+    public Vec3 getLookPos() {
         return lookPos;
     }
 
@@ -257,13 +257,13 @@ public class PowerGeomancy extends Power {
         if (spawnBoulderCharge >= 60) size = 3;
         EntityBoulder boulder = new EntityBoulder(EntityHandler.BOULDERS[size], player.world, player, spawnBoulderBlock, spawnBoulderPos);
         boulder.setPosition(spawnBoulderPos.getX() + 0.5F, spawnBoulderPos.getY() + 2, spawnBoulderPos.getZ() + 0.5F);
-        if (!player.world.isRemote && boulder.checkCanSpawn()) {
+        if (!player.world.isClientSide && boulder.checkCanSpawn()) {
             player.world.addEntity(boulder);
         }
 
         if (spawnBoulderCharge > 2) {
-            Vector3d playerEyes = player.getEyePosition(1);
-            Vector3d vec = playerEyes.subtract(getLookPos()).normalize();
+            Vec3 playerEyes = player.getEyePosition(1);
+            Vec3 vec = playerEyes.subtract(getLookPos()).normalize();
             float yaw = (float) Math.atan2(vec.z, vec.x);
             float pitch = (float) Math.asin(vec.y);
             player.getYRot() = (float) (yaw * 180f / Math.PI + 90);
@@ -308,8 +308,8 @@ public class PowerGeomancy extends Power {
     }
 
     public void startSpawningBoulder(Player player) {
-        Vector3d from = player.getEyePosition(1.0f);
-        Vector3d to = from.add(player.getLookVec().scale(SPAWN_BOULDER_REACH));
+        Vec3 from = player.getEyePosition(1.0f);
+        Vec3 to = from.add(player.getLookVec().scale(SPAWN_BOULDER_REACH));
         BlockRayTraceResult result = player.world.rayTraceBlocks(new RayTraceContext(from, to, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, player));
         if (result.getType() == RayTraceResult.Type.BLOCK) {
             this.lookPos = result.getHitVec();

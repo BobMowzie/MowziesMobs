@@ -6,14 +6,14 @@ import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.*;
-import net.minecraft.world.entity.passive.*;
-import net.minecraft.world.entity.passive.ChickenEntity;
-import net.minecraft.world.entity.passive.SheepEntity;
+import net.minecraft.world.entity.animal.*;
+import net.minecraft.world.entity.animal.ChickenEntity;
+import net.minecraft.world.entity.animal.SheepEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.World;
 
@@ -42,7 +42,7 @@ public class EntityBarakoanToBarakoana extends EntityBarakoan<EntityBarakoana> i
             setAttackTarget(leader.getAttackTarget());
         }
 
-        if (!this.world.isRemote && this.world.getDifficulty() == Difficulty.PEACEFUL)
+        if (!this.world.isClientSide && this.world.getDifficulty() == Difficulty.PEACEFUL)
         {
             this.remove();
         }

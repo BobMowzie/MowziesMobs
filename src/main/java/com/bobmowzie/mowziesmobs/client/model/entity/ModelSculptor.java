@@ -5,11 +5,11 @@ import com.bobmowzie.mowziesmobs.client.model.tools.RigUtils;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieAnimatedGeoModel;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
 import com.bobmowzie.mowziesmobs.server.entity.sculptor.EntitySculptor;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.math.MathHelper;
+import net.minecraft.world.phys.Matrix4f;
+import net.minecraft.world.phys.Quaternion;
+import net.minecraft.world.phys.Vec3;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
@@ -62,29 +62,29 @@ public class ModelSculptor extends MowzieAnimatedGeoModel<EntitySculptor> {
     }
 
     private void beadsCorrections(EntitySculptor entity) {
-        Map<MowzieGeoBone, Vector3d> beadsDirections = new HashMap<>();
-        beadsDirections.put(this.getMowzieBone("bead1"), new Vector3d(0, -1, 0));
-        beadsDirections.put(this.getMowzieBone("bead2"), new Vector3d(0, -1, 0));
-        beadsDirections.put(this.getMowzieBone("bead3"), new Vector3d(0, -1, 0));
-        beadsDirections.put(this.getMowzieBone("bead4"), new Vector3d(0, -0.5, 0.25));
-        beadsDirections.put(this.getMowzieBone("bead5"), new Vector3d(0, -0.5, 0.25));
-        beadsDirections.put(this.getMowzieBone("bead6"), new Vector3d(0, -0.5, 1));
-        beadsDirections.put(this.getMowzieBone("bead7"), new Vector3d(0, -0.5, 1));
-        beadsDirections.put(this.getMowzieBone("bead8"), new Vector3d(0, -0.25, 0.75));
-        beadsDirections.put(this.getMowzieBone("bead9"), new Vector3d(0, -0.25, 0.75));
+        Map<MowzieGeoBone, Vec3> beadsDirections = new HashMap<>();
+        beadsDirections.put(this.getMowzieBone("bead1"), new Vec3(0, -1, 0));
+        beadsDirections.put(this.getMowzieBone("bead2"), new Vec3(0, -1, 0));
+        beadsDirections.put(this.getMowzieBone("bead3"), new Vec3(0, -1, 0));
+        beadsDirections.put(this.getMowzieBone("bead4"), new Vec3(0, -0.5, 0.25));
+        beadsDirections.put(this.getMowzieBone("bead5"), new Vec3(0, -0.5, 0.25));
+        beadsDirections.put(this.getMowzieBone("bead6"), new Vec3(0, -0.5, 1));
+        beadsDirections.put(this.getMowzieBone("bead7"), new Vec3(0, -0.5, 1));
+        beadsDirections.put(this.getMowzieBone("bead8"), new Vec3(0, -0.25, 0.75));
+        beadsDirections.put(this.getMowzieBone("bead9"), new Vec3(0, -0.25, 0.75));
 
         IBone headJoint = this.getBone("head_joint");
-        Vector3d headPos = new Vector3d(headJoint.getPivotX(), headJoint.getPivotY(), headJoint.getPivotZ());
+        Vec3 headPos = new Vec3(headJoint.getPivotX(), headJoint.getPivotY(), headJoint.getPivotZ());
         IBone head = this.getBone("head");
-        Vector3d headDir = new Vector3d(0, 0, -1).normalize();
+        Vec3 headDir = new Vec3(0, 0, -1).normalize();
         headDir = headDir.rotateYaw(head.getRotationY()).rotatePitch(head.getRotationX());
-        for (Map.Entry<MowzieGeoBone, Vector3d> beadDir : beadsDirections.entrySet()) {
+        for (Map.Entry<MowzieGeoBone, Vec3> beadDir : beadsDirections.entrySet()) {
             MowzieGeoBone bead = beadDir.getKey();
-            Vector3d beadPos = new Vector3d(bead.getPivotX(), bead.getPivotY(), bead.getPivotZ());
-            Vector3d dir = beadPos.subtract(headPos).normalize().mul(1, -1, 1);
+            Vec3 beadPos = new Vec3(bead.getPivotX(), bead.getPivotY(), bead.getPivotZ());
+            Vec3 dir = beadPos.subtract(headPos).normalize().mul(1, -1, 1);
             double dot = dir.dotProduct(headDir);
             dot = Math.pow(Math.max(dot, 0), 3.5);
-            Vector3d moveDir = beadDir.getValue().normalize();
+            Vec3 moveDir = beadDir.getValue().normalize();
             bead.addPosition(moveDir.scale(dot * 3));
         }
     }
@@ -117,16 +117,16 @@ public class ModelSculptor extends MowzieAnimatedGeoModel<EntitySculptor> {
 
         headJoint.setHidden(false);
 
-        Vector3d thighToKneeR = calfR.getModelPosition().subtract(thighR.getModelPosition()).normalize();
-        Vector3d thighToKneeL = calfL.getModelPosition().subtract(thighL.getModelPosition()).normalize();
+        Vec3 thighToKneeR = calfR.getModelPosition().subtract(thighR.getModelPosition()).normalize();
+        Vec3 thighToKneeL = calfL.getModelPosition().subtract(thighL.getModelPosition()).normalize();
 
         skirtEndL.addPosition(-0.2f, -1.5f, 0);
         skirtEndR.addPosition( 0.2f, -1.5f, 0);
-        Vector3d thighToSkirtEndR = skirtEndR.getModelPosition().subtract(thighR.getModelPosition()).normalize();
-        Vector3d thighToSkirtEndL = skirtEndL.getModelPosition().subtract(thighL.getModelPosition()).normalize();
-        float rightDot = (float) thighToKneeR.dotProduct(new Vector3d(0, -1, 0));
+        Vec3 thighToSkirtEndR = skirtEndR.getModelPosition().subtract(thighR.getModelPosition()).normalize();
+        Vec3 thighToSkirtEndL = skirtEndL.getModelPosition().subtract(thighL.getModelPosition()).normalize();
+        float rightDot = (float) thighToKneeR.dotProduct(new Vec3(0, -1, 0));
         rightDot = (float) Math.pow(Math.max(rightDot, 0), 3);
-        float leftDot = (float) thighToKneeL.dotProduct(new Vector3d(0, -1, 0));
+        float leftDot = (float) thighToKneeL.dotProduct(new Vec3(0, -1, 0));
         leftDot = (float) Math.pow(Math.max(leftDot, 0), 3);
         skirtJointR.addPosition(Math.max(-0.9f * rightDot, -0.7f), 0, Math.max(-0.7f * rightDot, -0.5f));
         skirtJointL.addPosition(-Math.max(-0.9f * leftDot, -0.7f), 0, Math.max(-0.7f * leftDot, -0.5f));
@@ -142,13 +142,13 @@ public class ModelSculptor extends MowzieAnimatedGeoModel<EntitySculptor> {
         skirtJoint2R.setModelRotationMat(rightMat);
         skirtJoint2L.setModelRotationMat(leftMat);
 
-        Vector3d average = thighToKneeL.add(thighToKneeR).scale(2).mul(0, 1, 1).normalize();
+        Vec3 average = thighToKneeL.add(thighToKneeR).scale(2).mul(0, 1, 1).normalize();
         float angleAv = (float) MathHelper.atan2(average.getY(), average.getZ());
         skirtBack.setRotationX(skirtBack.getRotationX() - angleAv + 3.48f);
         skirtFront.setRotationX(skirtFront.getRotationX() - Math.min(angleAv, -2) + 3.48f);
-        Vector3d skirtFrontDiff = skirtLocFrontL.getModelPosition().subtract(skirtLocFrontR.getModelPosition());
+        Vec3 skirtFrontDiff = skirtLocFrontL.getModelPosition().subtract(skirtLocFrontR.getModelPosition());
         skirtFront.setScaleX(Math.max((float) (0.3f + 0.15f * skirtFrontDiff.length()), 0.4f));
-        Vector3d skirtBackDiff = skirtLocBackL.getModelPosition().subtract(skirtLocBackR.getModelPosition());
+        Vec3 skirtBackDiff = skirtLocBackL.getModelPosition().subtract(skirtLocBackR.getModelPosition());
         skirtBack.setScaleX((float) (0.15f + 0.1f * skirtBackDiff.length()));
         float angleF = (float) MathHelper.atan2(skirtFrontDiff.normalize().getZ(), skirtFrontDiff.normalize().getX());
         if (angleF < 0.001 || angleF > 3.141) angleF = 0;

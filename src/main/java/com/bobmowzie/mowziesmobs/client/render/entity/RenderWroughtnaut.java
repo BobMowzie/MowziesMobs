@@ -7,9 +7,9 @@ import com.bobmowzie.mowziesmobs.client.render.entity.layer.WroughtnautEyesLayer
 import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.item.Items;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.resources.model.ItemCameraTransforms;
+import net.minecraft.world.item.Items;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

@@ -1,12 +1,12 @@
 package com.bobmowzie.mowziesmobs.server.ai;
 
-import net.minecraft.world.entity.CreatureEntity;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
-import net.minecraft.world.entity.passive.TameableEntity;
+import net.minecraft.world.entity.animal.TameableEntity;
 
 public class AvoidEntityIfNotTamedGoal<T extends LivingEntity> extends AvoidEntityGoal<T> {
-    public AvoidEntityIfNotTamedGoal(CreatureEntity entityIn, Class classToAvoidIn, float avoidDistanceIn, double farSpeedIn, double nearSpeedIn) {
+    public AvoidEntityIfNotTamedGoal(PathfinderMob entityIn, Class classToAvoidIn, float avoidDistanceIn, double farSpeedIn, double nearSpeedIn) {
         super(entityIn, classToAvoidIn, avoidDistanceIn, farSpeedIn, nearSpeedIn);
     }
 

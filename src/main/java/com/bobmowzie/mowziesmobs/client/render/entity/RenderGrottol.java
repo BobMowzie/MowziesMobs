@@ -6,7 +6,7 @@ import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Created by BobMowzie on 5/8/2017.

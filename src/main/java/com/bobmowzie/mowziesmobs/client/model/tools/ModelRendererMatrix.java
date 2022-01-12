@@ -1,10 +1,10 @@
 package com.bobmowzie.mowziesmobs.client.model.tools;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.util.math.vector.Matrix3f;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.resources.model.ModelRenderer;
+import net.minecraft.world.phys.Matrix3f;
+import net.minecraft.world.phys.Matrix4f;
+import net.minecraft.world.phys.Vector3f;
 
 public class ModelRendererMatrix extends ModelRenderer {
     private Matrix4f worldXform;

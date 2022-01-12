@@ -4,7 +4,7 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.client.model.tools.ControlledAnimation;
 import net.minecraft.client.audio.TickableSound;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.resources.SoundCategory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

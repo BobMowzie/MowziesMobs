@@ -2,16 +2,16 @@ package com.bobmowzie.mowziesmobs.server.message;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.server.block.BlockGrottol;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.world.entity.item.minecart.AbstractMinecart;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.BlockPos;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
@@ -21,7 +21,7 @@ public final class MessageBlackPinkInYourArea {
 
     public MessageBlackPinkInYourArea() {}
 
-    public MessageBlackPinkInYourArea(AbstractMinecartEntity minecart) {
+    public MessageBlackPinkInYourArea(AbstractMinecart minecart) {
         this(minecart.getEntityId());
     }
 
@@ -29,11 +29,11 @@ public final class MessageBlackPinkInYourArea {
         this.entityID = entityId;
     }
 
-    public static void serialize(final MessageBlackPinkInYourArea message, final PacketBuffer buf) {
+    public static void serialize(final MessageBlackPinkInYourArea message, final FriendlyByteBuf buf) {
         buf.writeVarInt(message.entityID);
     }
 
-    public static MessageBlackPinkInYourArea deserialize(final PacketBuffer buf) {
+    public static MessageBlackPinkInYourArea deserialize(final FriendlyByteBuf buf) {
         final MessageBlackPinkInYourArea message = new MessageBlackPinkInYourArea();
         message.entityID = buf.readVarInt();
         return message;
@@ -44,10 +44,10 @@ public final class MessageBlackPinkInYourArea {
         public void accept(final MessageBlackPinkInYourArea message, final Supplier<NetworkEvent.Context> contextSupplier) {
             final NetworkEvent.Context context = contextSupplier.get();
             context.enqueueWork(() -> {
-                ClientWorld world = Minecraft.getInstance().world;
+                ClientLevel world = Minecraft.getInstance().world;
                 Entity entity = world.getEntityByID(message.entityID);
-                if (entity instanceof AbstractMinecartEntity) {
-                    AbstractMinecartEntity minecart = (AbstractMinecartEntity) entity;
+                if (entity instanceof AbstractMinecart) {
+                    AbstractMinecart minecart = (AbstractMinecart) entity;
                     MowziesMobs.PROXY.playBlackPinkSound(minecart);
                     BlockState state = Blocks.STONE.getDefaultState()
                             .with(BlockGrottol.VARIANT, BlockGrottol.Variant.BLACK_PINK);

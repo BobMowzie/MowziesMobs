@@ -11,10 +11,10 @@ import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.Hand;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.resources.Hand;
 
 public class IceBreathAbility extends Ability {
     protected EntityIceBreath iceBreath;
@@ -31,7 +31,7 @@ public class IceBreathAbility extends Ability {
     public void start() {
         super.start();
         LivingEntity user = getUser();
-        if (!getUser().world.isRemote()) {
+        if (!getUser().world.isClientSide()) {
             EntityIceBreath iceBreath = new EntityIceBreath(EntityHandler.ICE_BREATH, user.world, user);
             iceBreath.setPositionAndRotation(user.getPosX(), user.getPosY() + user.getEyeHeight() - 0.5f, user.getPosZ(), user.getYRot(), user.getXRot());
             user.world.addEntity(iceBreath);

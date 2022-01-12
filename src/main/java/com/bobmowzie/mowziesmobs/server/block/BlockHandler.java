@@ -1,9 +1,9 @@
 package com.bobmowzie.mowziesmobs.server.block;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
-import net.minecraft.block.*;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;

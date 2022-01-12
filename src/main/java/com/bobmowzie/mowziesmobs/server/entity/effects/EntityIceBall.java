@@ -12,9 +12,9 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import net.minecraft.world.entity.*;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public class EntityIceBall extends EntityMagicEffect {
 
     public EntityIceBall(EntityType<? extends EntityIceBall> type, World worldIn, LivingEntity caster) {
         this(type, worldIn);
-        if (!world.isRemote) {
+        if (!world.isClientSide) {
             this.setCasterID(caster.getEntityId());
         }
     }
@@ -44,7 +44,7 @@ public class EntityIceBall extends EntityMagicEffect {
         move(MoverType.SELF, getMotion());
 
         if (ticksExisted == 1) {
-            if (world.isRemote) {
+            if (world.isClientSide) {
                 MowziesMobs.PROXY.playIceBreathSound(this);
             }
         }
@@ -67,7 +67,7 @@ public class EntityIceBall extends EntityMagicEffect {
             explode();
         }
 
-        if (world.isRemote) {
+        if (world.isClientSide) {
             float scale = 2f;
             double x = getPosX();
             double y = getPosY() + getHeight() / 2;
@@ -129,16 +129,16 @@ public class EntityIceBall extends EntityMagicEffect {
     }
 
     private void explode() {
-        if (world.isRemote) {
+        if (world.isClientSide) {
             for (int i = 0; i < 8; i++) {
-                Vector3d particlePos = new Vector3d(rand.nextFloat() * 0.3, 0, 0);
+                Vec3 particlePos = new Vec3(rand.nextFloat() * 0.3, 0, 0);
                 particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                 float value = rand.nextFloat() * 0.15f;
                 world.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 0.75f + value, 0.75f + value, 1f, 10f + rand.nextFloat() * 20f, 40, ParticleCloud.EnumCloudBehavior.GROW, 1f), getPosX() + particlePos.x, getPosY() + particlePos.y, getPosZ() + particlePos.z, particlePos.x, particlePos.y, particlePos.z);
             }
             for (int i = 0; i < 10; i++) {
-                Vector3d particlePos = new Vector3d(rand.nextFloat() * 0.3, 0, 0);
+                Vec3 particlePos = new Vec3(rand.nextFloat() * 0.3, 0, 0);
                 particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                 world.addParticle(new ParticleSnowFlake.SnowflakeData(40, false), getPosX() + particlePos.x, getPosY() + particlePos.y, getPosZ() + particlePos.z, particlePos.x, particlePos.y, particlePos.z);

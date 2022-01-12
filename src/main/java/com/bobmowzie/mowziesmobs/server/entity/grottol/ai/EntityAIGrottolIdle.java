@@ -5,7 +5,7 @@ import com.bobmowzie.mowziesmobs.server.entity.grottol.EntityGrottol;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.resources.SoundEvents;
 
 public class EntityAIGrottolIdle extends SimpleAnimationAI<EntityGrottol> {
     private static final Animation ANIMATION = Animation.create(47);

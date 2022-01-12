@@ -10,15 +10,15 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.resources.math.MathHelper;
+import net.minecraft.world.phys.Quaternion;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.Vector3f;
+import net.minecraft.resources.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -43,7 +43,7 @@ public class ParticleRing extends SpriteTexturedParticle {
         GROW_THEN_SHRINK
     }
 
-    public ParticleRing(ClientWorld world, double x, double y, double z, double motionX, double motionY, double motionZ, float yaw, float pitch, int duration, float r, float g, float b, float opacity, float size, boolean facesCamera, EnumRingBehavior behavior) {
+    public ParticleRing(ClientLevel world, double x, double y, double z, double motionX, double motionY, double motionZ, float yaw, float pitch, int duration, float r, float g, float b, float opacity, float size, boolean facesCamera, EnumRingBehavior behavior) {
         super(world, x, y, z);
         setSize(1, 1);
         this.size = size * 0.1f;
@@ -96,10 +96,10 @@ public class ParticleRing extends SpriteTexturedParticle {
         particleGreen = g;
         particleBlue = b;
 
-        Vector3d Vector3d = renderInfo.getProjectedView();
-        float f = (float)(MathHelper.lerp(partialTicks, this.prevPosX, this.posX) - Vector3d.getX());
-        float f1 = (float)(MathHelper.lerp(partialTicks, this.prevPosY, this.posY) - Vector3d.getY());
-        float f2 = (float)(MathHelper.lerp(partialTicks, this.prevPosZ, this.posZ) - Vector3d.getZ());
+        Vec3 Vec3 = renderInfo.getProjectedView();
+        float f = (float)(MathHelper.lerp(partialTicks, this.prevPosX, this.posX) - Vec3.getX());
+        float f1 = (float)(MathHelper.lerp(partialTicks, this.prevPosY, this.posY) - Vec3.getY());
+        float f2 = (float)(MathHelper.lerp(partialTicks, this.prevPosZ, this.posZ) - Vec3.getZ());
         Quaternion quaternion = new Quaternion(0.0F, 0.0F, 0.0F, 1.0F);
         if (facesCamera) {
             if (this.particleAngle == 0.0F) {
@@ -154,7 +154,7 @@ public class ParticleRing extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle makeParticle(RingData typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle makeParticle(RingData typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             ParticleRing particle = new ParticleRing(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn.getYaw(), typeIn.getPitch(), typeIn.getDuration(), typeIn.getR(), typeIn.getG(), typeIn.getB(), typeIn.getA(), typeIn.getScale(), typeIn.getFacesCamera(), typeIn.getBehavior());
             particle.selectSpriteWithAge(spriteSet);
             return particle;
@@ -185,7 +185,7 @@ public class ParticleRing extends SpriteTexturedParticle {
                 return new ParticleRing.RingData(yaw, pitch, duration, r, g, b, a, scale, facesCamera, EnumRingBehavior.GROW);
             }
 
-            public ParticleRing.RingData read(ParticleType<ParticleRing.RingData> particleTypeIn, PacketBuffer buffer) {
+            public ParticleRing.RingData read(ParticleType<ParticleRing.RingData> particleTypeIn, FriendlyByteBuf buffer) {
                 return new ParticleRing.RingData(buffer.readFloat(), buffer.readFloat(), buffer.readInt(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readBoolean(), EnumRingBehavior.GROW);
             }
         };
@@ -215,7 +215,7 @@ public class ParticleRing extends SpriteTexturedParticle {
         }
 
         @Override
-        public void write(PacketBuffer buffer) {
+        public void write(FriendlyByteBuf buffer) {
             buffer.writeFloat(this.r);
             buffer.writeFloat(this.g);
             buffer.writeFloat(this.b);

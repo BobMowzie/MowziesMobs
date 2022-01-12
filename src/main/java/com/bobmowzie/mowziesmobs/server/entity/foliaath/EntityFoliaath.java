@@ -11,27 +11,27 @@ import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
-import net.minecraft.block.*;
-import net.minecraft.block.material.PushReaction;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.material.PushReaction;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.CreeperEntity;
 import net.minecraft.world.entity.monster.IMob;
-import net.minecraft.world.entity.passive.AnimalEntity;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.potion.Effects;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.EntityDataManager;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.SoundEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.math.MathHelper;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -42,10 +42,10 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
     public static final Animation DIE_ANIMATION = Animation.create(50);
     public static final Animation HURT_ANIMATION = Animation.create(10);
     public static final Animation ATTACK_ANIMATION = Animation.create(14);
-    private static final DataParameter<Boolean> CAN_DESPAWN = EntityDataManager.createKey(EntityFoliaath.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Integer> ACTIVATE_TARGET = EntityDataManager.createKey(EntityFoliaath.class, DataSerializers.VARINT);
+    private static final EntityDataAccessor<Boolean> CAN_DESPAWN = EntityDataManager.createKey(EntityFoliaath.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> ACTIVATE_TARGET = EntityDataManager.createKey(EntityFoliaath.class, EntityDataSerializers.VARINT);
     private static final int ACTIVATE_DURATION = 30;
-    public IntermittentAnimation<EntityFoliaath> openMouth = new IntermittentAnimation<>(this, 15, 30, 50, !world.isRemote);
+    public IntermittentAnimation<EntityFoliaath> openMouth = new IntermittentAnimation<>(this, 15, 30, 50, !world.isClientSide);
     public ControlledAnimation activate = new ControlledAnimation(ACTIVATE_DURATION);
     public ControlledAnimation deathFlail = new ControlledAnimation(5);
     public ControlledAnimation stopDance = new ControlledAnimation(10);
@@ -87,7 +87,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         this.goalSelector.addGoal(1, new AnimationTakeDamage<>(this));
         this.goalSelector.addGoal(1, new AnimationDieAI<>(this));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, LivingEntity.class, 0, true, false, e ->
-                (CreatureEntity.class.isAssignableFrom(e.getClass())) && !(e instanceof EntityFoliaath || e instanceof EntityBabyFoliaath || e instanceof CreeperEntity))
+                (PathfinderMob.class.isAssignableFrom(e.getClass())) && !(e instanceof EntityFoliaath || e instanceof EntityBabyFoliaath || e instanceof CreeperEntity))
         );
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal(this, Player.class, true, false));
     }
@@ -164,7 +164,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         prevOpenMouth = openMouthTime;
 
         int activateTime = activate.getTimer();
-        if (!world.isRemote) {
+        if (!world.isClientSide) {
             SoundEvent sound = null;
             if (prevActivate - activateTime < 0) {
                 switch (activateTime) {
@@ -200,7 +200,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
 //            setAttackTarget(null);
 //        }
 
-        if (resettingTargetTimer > 0 && !world.isRemote) {
+        if (resettingTargetTimer > 0 && !world.isClientSide) {
             rotationYawHead = prevRotationYawHead;
         }
 
@@ -218,7 +218,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
                 setActivateTarget(0);
                 lastTimeDecrease++;
             }
-        } else if (!world.isRemote && lastTimeDecrease <= 30 && getAnimation() == NO_ANIMATION && resettingTargetTimer == 0) {
+        } else if (!world.isClientSide && lastTimeDecrease <= 30 && getAnimation() == NO_ANIMATION && resettingTargetTimer == 0) {
             setActivateTarget(0);
             lastTimeDecrease++;
         }
@@ -247,7 +247,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
             activate.increaseTimer(activateTime < activateTarget ? 1 : -2);
         }
 
-        if (!this.world.isRemote && this.world.getDifficulty() == Difficulty.PEACEFUL)
+        if (!this.world.isClientSide && this.world.getDifficulty() == Difficulty.PEACEFUL)
         {
             this.remove();
         }
@@ -292,12 +292,12 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         boolean notInTree = true;
         BlockState topBlock = biome.getGenerationSettings().getSurfaceBuilder().get().getConfig().getTop();
         if (floor instanceof LeavesBlock && floorDown1 != topBlock && floorDown2 != topBlock) notInTree = false;
-        return super.canSpawn(world, reason) && notInTree && getEntitiesNearby(AnimalEntity.class, 5, 5, 5, 5).isEmpty() && world.getDifficulty() != Difficulty.PEACEFUL;
+        return super.canSpawn(world, reason) && notInTree && getEntitiesNearby(Animal.class, 5, 5, 5, 5).isEmpty() && world.getDifficulty() != Difficulty.PEACEFUL;
     }
 
     @Override
     public void onKillEntity(ServerWorld world, LivingEntity killedEntity) {
-        this.addPotionEffect(new EffectInstance(Effects.REGENERATION, 300, 1, true, true));
+        this.addPotionEffect(new MobEffectInstance(MobEffects.REGENERATION, 300, 1, true, true));
         super.onKillEntity(world, killedEntity);
     }
 

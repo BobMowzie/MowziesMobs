@@ -1,7 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
@@ -9,11 +9,11 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.EntityDataManager;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 import java.util.Optional;
 
@@ -21,11 +21,11 @@ public class EntityFallingBlock extends Entity {
     public static float GRAVITY = 0.1f;
     public double prevMotionX, prevMotionY, prevMotionZ;
 
-    private static final DataParameter<Optional<BlockState>> BLOCK_STATE = EntityDataManager.createKey(EntityFallingBlock.class, DataSerializers.OPTIONAL_BLOCK_STATE);
-    private static final DataParameter<Integer> DURATION = EntityDataManager.createKey(EntityFallingBlock.class, DataSerializers.VARINT);
-    private static final DataParameter<Integer> TICKS_EXISTED = EntityDataManager.createKey(EntityFallingBlock.class, DataSerializers.VARINT);
-    private static final DataParameter<String> MODE = EntityDataManager.createKey(EntityFallingBlock.class, DataSerializers.STRING);
-    private static final DataParameter<Float> ANIM_V_Y = EntityDataManager.createKey(EntityFallingBlock.class, DataSerializers.FLOAT);
+    private static final EntityDataAccessor<Optional<BlockState>> BLOCK_STATE = EntityDataManager.createKey(EntityFallingBlock.class, EntityDataSerializers.OPTIONAL_BLOCK_STATE);
+    private static final EntityDataAccessor<Integer> DURATION = EntityDataManager.createKey(EntityFallingBlock.class, EntityDataSerializers.VARINT);
+    private static final EntityDataAccessor<Integer> TICKS_EXISTED = EntityDataManager.createKey(EntityFallingBlock.class, EntityDataSerializers.VARINT);
+    private static final EntityDataAccessor<String> MODE = EntityDataManager.createKey(EntityFallingBlock.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<Float> ANIM_V_Y = EntityDataManager.createKey(EntityFallingBlock.class, EntityDataSerializers.FLOAT);
 
     public enum EnumFallingBlockMode {
         MOBILE,

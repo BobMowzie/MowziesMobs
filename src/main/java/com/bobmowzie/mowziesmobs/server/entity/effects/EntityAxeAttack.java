@@ -6,8 +6,8 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.world.entity.CreatureAttribute;
 import net.minecraft.world.entity.Entity;
@@ -17,27 +17,27 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ArmorStandEntity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.ServerPlayer;
-import net.minecraft.block.Blocks;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.SwordItem;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SwordItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.potion.Effects;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.resources.Hand;
+import net.minecraft.resources.SoundEvents;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.EntityDataManager;
 import net.minecraft.network.play.server.SEntityVelocityPacket;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.resources.math.AxisAlignedBB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.math.MathHelper;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
@@ -50,8 +50,8 @@ import java.util.stream.Collectors;
  * Created by BobMowzie on 7/15/2017.
  */
 public class EntityAxeAttack extends EntityMagicEffect {
-    private static final DataParameter<Boolean> VERTICAL = EntityDataManager.createKey(EntityAxeAttack.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<ItemStack> AXE_STACK = EntityDataManager.createKey(EntityAxeAttack.class, DataSerializers.ITEMSTACK);
+    private static final EntityDataAccessor<Boolean> VERTICAL = EntityDataManager.createKey(EntityAxeAttack.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<ItemStack> AXE_STACK = EntityDataManager.createKey(EntityAxeAttack.class, EntityDataSerializers.ITEMSTACK);
 
     public static int SWING_DURATION_HOR = 24;
     public static int SWING_DURATION_VER = 30;
@@ -64,7 +64,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
 
     public EntityAxeAttack(EntityType<? extends EntityAxeAttack> type, World world, LivingEntity caster, boolean vertical) {
         this(type, world);
-        if (!world.isRemote) {
+        if (!world.isClientSide) {
             this.setCasterID(caster.getEntityId());
         }
         setVertical(vertical);
@@ -84,8 +84,8 @@ public class EntityAxeAttack extends EntityMagicEffect {
             if (!caster.isAlive()) remove();
             setPositionAndRotation(caster.getPosX(), caster.getPosY(), caster.getPosZ(), caster.getYRot(), caster.getXRot());
         }
-        if (!world.isRemote && ticksExisted == 7) playSound(MMSounds.ENTITY_WROUGHT_WHOOSH.get(), 0.7F, 1.1f);
-        if (!world.isRemote && caster != null) {
+        if (!world.isClientSide && ticksExisted == 7) playSound(MMSounds.ENTITY_WROUGHT_WHOOSH.get(), 0.7F, 1.1f);
+        if (!world.isClientSide && caster != null) {
             if (!getVertical() && ticksExisted == SWING_DURATION_HOR /2 - 1) dealDamage(7.0f * ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f, 4f, 160, 1.2f);
             else if (getVertical() && ticksExisted == SWING_DURATION_VER /2 - 1) {
                 dealDamage(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue(), 4.5f, 40, 0.8f);
@@ -237,7 +237,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
         ItemStack oldStack = player.getHeldItemMainhand();
         ItemStack newStack = getAxeStack();
         player.setHeldItem(Hand.MAIN_HAND, newStack);
-        player.getAttributeManager().reapplyModifiers(newStack.getAttributeModifiers(EquipmentSlotType.MAINHAND));
+        player.getAttributeManager().reapplyModifiers(newStack.getAttributeModifiers(EquipmentSlot.MAINHAND));
 
         if (targetEntity.canBeAttackedWithItem()) {
             if (!targetEntity.hitByEntity(player)) {
@@ -277,7 +277,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
                         }
                     }
 
-                    Vector3d vector3d = targetEntity.getMotion();
+                    Vec3 vector3d = targetEntity.getMotion();
                     boolean flag5 = targetEntity.attackEntityFrom(DamageSource.causePlayerDamage(player), f);
                     if (flag5) {
                         if (i > 0) {
@@ -319,7 +319,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
                             entity = ((net.minecraftforge.entity.PartEntity<?>) targetEntity).getParent();
                         }
 
-                        if (!player.world.isRemote && !itemstack1.isEmpty() && entity instanceof LivingEntity) {
+                        if (!player.world.isClientSide && !itemstack1.isEmpty() && entity instanceof LivingEntity) {
                             ItemStack copy = itemstack1.copy();
                             itemstack1.hitEntity((LivingEntity)entity, player);
                             if (itemstack1.isEmpty()) {
@@ -353,7 +353,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
             }
         }
         player.setHeldItem(Hand.MAIN_HAND, oldStack);
-        player.getAttributeManager().reapplyModifiers(oldStack.getAttributeModifiers(EquipmentSlotType.MAINHAND));
+        player.getAttributeManager().reapplyModifiers(oldStack.getAttributeModifiers(EquipmentSlot.MAINHAND));
     }
 
     @Override

@@ -6,8 +6,8 @@ import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
@@ -25,12 +25,12 @@ public class MessageInterruptAbility {
         this.index = index;
     }
 
-    public static void serialize(final MessageInterruptAbility message, final PacketBuffer buf) {
+    public static void serialize(final MessageInterruptAbility message, final FriendlyByteBuf buf) {
         buf.writeVarInt(message.entityID);
         buf.writeVarInt(message.index);
     }
 
-    public static MessageInterruptAbility deserialize(final PacketBuffer buf) {
+    public static MessageInterruptAbility deserialize(final FriendlyByteBuf buf) {
         final MessageInterruptAbility message = new MessageInterruptAbility();
         message.entityID = buf.readVarInt();
         message.index = buf.readVarInt();

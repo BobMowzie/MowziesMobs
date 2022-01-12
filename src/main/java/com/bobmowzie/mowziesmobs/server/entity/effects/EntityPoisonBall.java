@@ -9,11 +9,11 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.resources.math.MathHelper;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public class EntityPoisonBall extends EntityMagicEffect {
 
     public EntityPoisonBall(EntityType<? extends EntityPoisonBall> type, World worldIn, LivingEntity caster) {
         super(type, worldIn);
-        if (!world.isRemote) {
+        if (!world.isClientSide) {
             this.setCasterID(caster.getEntityId());
         }
     }
@@ -60,14 +60,14 @@ public class EntityPoisonBall extends EntityMagicEffect {
                 if (entity == caster) continue;
                 if (entity instanceof EntityNaga) continue;
                 if (entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(this, caster), 3 * ConfigHandler.COMMON.MOBS.NAGA.combatConfig.attackMultiplier.get().floatValue())) {
-                    entity.addPotionEffect(new EffectInstance(Effects.POISON, 80, 1, false, true));
+                    entity.addPotionEffect(new MobEffectInstance(MobEffects.POISON, 80, 1, false, true));
                 }
             }
         }
 
         if (!world.hasNoCollisions(this, getBoundingBox().grow(0.1))) explode();
 
-        if (world.isRemote) {
+        if (world.isClientSide) {
             float scale = 1f;
             int steps = 4;
             double motionX = getMotion().x;
@@ -110,9 +110,9 @@ public class EntityPoisonBall extends EntityMagicEffect {
 
     private void explode() {
         float explodeSpeed = 3.5f;
-        if (world.isRemote) {
+        if (world.isClientSide) {
             for (int i = 0; i < 26; i++) {
-                Vector3d particlePos = new Vector3d(rand.nextFloat() * 0.25, 0, 0);
+                Vec3 particlePos = new Vec3(rand.nextFloat() * 0.25, 0, 0);
                 particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                 double value = rand.nextFloat() * 0.1f;
@@ -120,7 +120,7 @@ public class EntityPoisonBall extends EntityMagicEffect {
                 ParticleVanillaCloudExtended.spawnVanillaCloud(world, getPosX(), getPosY(), getPosZ(), particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, 1, 0.25d + value, 0.75d + value, 0.25d + value, 0.6, life);
             }
             for (int i = 0; i < 26; i++) {
-                Vector3d particlePos = new Vector3d(rand.nextFloat() * 0.25, 0, 0);
+                Vec3 particlePos = new Vec3(rand.nextFloat() * 0.25, 0, 0);
                 particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                 double value = rand.nextFloat() * 0.1f;
@@ -128,7 +128,7 @@ public class EntityPoisonBall extends EntityMagicEffect {
                 AdvancedParticleBase.spawnParticle(world, ParticleHandler.PIXEL.get(), getPosX() + particlePos.x, getPosY() + particlePos.y, getPosZ() + particlePos.z, particlePos.x * explodeSpeed, particlePos.y * explodeSpeed, particlePos.z * explodeSpeed, true, 0, 0, 0, 0, 3f, 0.07d + value, 0.25d + value, 0.07d + value, 1d, 0.6, life * 0.95, false, true);
             }
             for (int i = 0; i < 23; i++) {
-                Vector3d particlePos = new Vector3d(rand.nextFloat() * 0.25, 0, 0);
+                Vec3 particlePos = new Vec3(rand.nextFloat() * 0.25, 0, 0);
                 particlePos = particlePos.rotateYaw((float) (rand.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                 double value = rand.nextFloat() * 0.1f;
@@ -145,7 +145,7 @@ public class EntityPoisonBall extends EntityMagicEffect {
                 if (entity == caster) continue;
                 if (entity instanceof EntityNaga) continue;
                 if (entity.attackEntityFrom(DamageSource.causeIndirectMagicDamage(this, caster), 3 * ConfigHandler.COMMON.MOBS.NAGA.combatConfig.attackMultiplier.get().floatValue())) {
-                    entity.addPotionEffect(new EffectInstance(Effects.POISON, 80, 0, false, true));
+                    entity.addPotionEffect(new MobEffectInstance(MobEffects.POISON, 80, 0, false, true));
                 }
             }
         }

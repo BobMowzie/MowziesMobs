@@ -2,22 +2,22 @@ package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityBabyFoliaath;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MobEntity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SpawnReason;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUseContext;
+import net.minecraft.resources.ActionResultType;
+import net.minecraft.resources.Direction;
+import net.minecraft.resources.Hand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.text.ITextComponent;
+import net.minecraft.resources.text.TranslationTextComponent;
 import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -53,7 +53,7 @@ public class ItemFoliaathSeed extends Item {
         ItemStack stack = player.getHeldItem(hand);
         BlockPos pos = context.getPos();
         World world = context.getWorld();
-        if (world.isRemote) {
+        if (world.isClientSide) {
             return ActionResultType.SUCCESS;
         } else if (!player.canPlayerEdit(pos.offset(facing), facing, stack)) {
             return ActionResultType.FAIL;

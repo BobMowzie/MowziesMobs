@@ -4,14 +4,14 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.world.BiomeChecker;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.world.entity.EntityClassification;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobEntity;
 import net.minecraft.world.entity.EntitySpawnPlacementRegistry;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.biome.MobSpawnInfo;
 import net.minecraft.world.gen.Heightmap;
@@ -61,27 +61,27 @@ public class SpawnHandler {
         if (biomeName == null) return;
         if (ConfigHandler.COMMON.MOBS.FOLIAATH.spawnConfig.spawnRate.get() > 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.FOLIAATH.spawnConfig.biomeConfig, biomeName)) {
 //            System.out.println("Added foliaath biome: " + biomeName.toString());
-            registerEntityWorldSpawn(EntityHandler.FOLIAATH, ConfigHandler.COMMON.MOBS.FOLIAATH.spawnConfig, EntityClassification.MONSTER, event);
+            registerEntityWorldSpawn(EntityHandler.FOLIAATH, ConfigHandler.COMMON.MOBS.FOLIAATH.spawnConfig, MobCategory.MONSTER, event);
         }
         if (ConfigHandler.COMMON.MOBS.BARAKOA.spawnConfig.spawnRate.get() > 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.BARAKOA.spawnConfig.biomeConfig, biomeName)) {
 //            System.out.println("Added Barakoa biome: " + biomeName.toString());
-            registerEntityWorldSpawn(EntityHandler.BARAKOANA, ConfigHandler.COMMON.MOBS.BARAKOA.spawnConfig, EntityClassification.MONSTER, event);
+            registerEntityWorldSpawn(EntityHandler.BARAKOANA, ConfigHandler.COMMON.MOBS.BARAKOA.spawnConfig, MobCategory.MONSTER, event);
         }
         if (ConfigHandler.COMMON.MOBS.GROTTOL.spawnConfig.spawnRate.get() > 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.GROTTOL.spawnConfig.biomeConfig, biomeName)) {
 //            System.out.println("Added grottol biome: " + biomeName.toString());
-            registerEntityWorldSpawn(EntityHandler.GROTTOL, ConfigHandler.COMMON.MOBS.GROTTOL.spawnConfig, EntityClassification.MONSTER, event);
+            registerEntityWorldSpawn(EntityHandler.GROTTOL, ConfigHandler.COMMON.MOBS.GROTTOL.spawnConfig, MobCategory.MONSTER, event);
         }
         if (ConfigHandler.COMMON.MOBS.LANTERN.spawnConfig.spawnRate.get() > 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.LANTERN.spawnConfig.biomeConfig, biomeName)) {
 //            System.out.println("Added lantern biome: " + biomeName.toString());
-            registerEntityWorldSpawn(EntityHandler.LANTERN, ConfigHandler.COMMON.MOBS.LANTERN.spawnConfig, EntityClassification.AMBIENT, event);
+            registerEntityWorldSpawn(EntityHandler.LANTERN, ConfigHandler.COMMON.MOBS.LANTERN.spawnConfig, MobCategory.AMBIENT, event);
         }
         if (ConfigHandler.COMMON.MOBS.NAGA.spawnConfig.spawnRate.get() > 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.NAGA.spawnConfig.biomeConfig, biomeName)) {
 //            System.out.println("Added naga biome: " + biomeName.toString());
-            registerEntityWorldSpawn(EntityHandler.NAGA, ConfigHandler.COMMON.MOBS.NAGA.spawnConfig, EntityClassification.MONSTER, event);
+            registerEntityWorldSpawn(EntityHandler.NAGA, ConfigHandler.COMMON.MOBS.NAGA.spawnConfig, MobCategory.MONSTER, event);
         }
     }
 
-    private static void registerEntityWorldSpawn(EntityType<?> entity, ConfigHandler.SpawnConfig spawnConfig, EntityClassification classification, BiomeLoadingEvent event) {
+    private static void registerEntityWorldSpawn(EntityType<?> entity, ConfigHandler.SpawnConfig spawnConfig, MobCategory classification, BiomeLoadingEvent event) {
         event.getSpawns().getSpawner(classification).add(new MobSpawnInfo.Spawners(entity, spawnConfig.spawnRate.get(), spawnConfig.minGroupSize.get(), spawnConfig.maxGroupSize.get()));
     }
 }

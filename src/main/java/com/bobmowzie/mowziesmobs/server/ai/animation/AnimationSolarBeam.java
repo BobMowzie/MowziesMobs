@@ -29,7 +29,7 @@ public class AnimationSolarBeam<T extends MowzieEntity & IAnimatedEntity> extend
     public void tick() {
         super.tick();
         float radius1 = 0.8f;
-        if (entity.getAnimationTick() == 4 && !entity.world.isRemote) {
+        if (entity.getAnimationTick() == 4 && !entity.world.isClientSide) {
             solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM, entity.world, entity, entity.getPosX() + radius1 * Math.sin(-entity.getYRot() * Math.PI / 180), entity.getPosY() + 1.4, entity.getPosZ() + radius1 * Math.cos(-entity.getYRot() * Math.PI / 180), (float) ((entity.getYRot()Head + 90) * Math.PI / 180), (float) (-entity.getXRot() * Math.PI / 180), 55);
             entity.world.addEntity(solarBeam);
         }

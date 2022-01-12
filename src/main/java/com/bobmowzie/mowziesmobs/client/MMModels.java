@@ -2,11 +2,11 @@ package com.bobmowzie.mowziesmobs.client;
 
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.MaskType;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.model.*;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.resources.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ForgeHooksClient;

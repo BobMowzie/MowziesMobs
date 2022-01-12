@@ -5,18 +5,18 @@ import com.bobmowzie.mowziesmobs.server.ai.AvoidProjectilesGoal;
 import com.bobmowzie.mowziesmobs.server.item.BarakoaMask;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.*;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.resources.math.*;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.IServerWorld;
@@ -170,8 +170,8 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
                 int j1 = j + MathHelper.nextInt(entity.rand, 0, 15) * MathHelper.nextInt(entity.rand, -1, 1);
                 int k1 = k + (int)(Math.sin(angle) * radius);
                 BlockPos blockpos = new BlockPos(i1, j1, k1);
-                Vector3d newPos = new Vector3d(i1, j1, k1);
-                Vector3d offset = newPos.subtract(entity.getPositionVec());
+                Vec3 newPos = new Vec3(i1, j1, k1);
+                Vec3 offset = newPos.subtract(entity.getPositionVec());
                 AxisAlignedBB newBB = entity.getBoundingBox().offset(offset);
                 if (testBlock(blockpos, newBB) && entity.world.getEntitiesWithinAABB(EntityBarako.class, newBB.grow(7)).isEmpty()) {
                     entity.teleportDestination = newPos.add(0, 0, 0);
@@ -195,9 +195,9 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
             return foundPosition;
         }
 
-        public boolean canEntityBeSeenFromLocation(Entity entityIn, Vector3d location) {
-            Vector3d vector3d = new Vector3d(location.getX(), location.getY() + entity.getEyeHeight(), location.getZ());
-            Vector3d vector3d1 = new Vector3d(entityIn.getPosX(), entityIn.getPosYEye(), entityIn.getPosZ());
+        public boolean canEntityBeSeenFromLocation(Entity entityIn, Vec3 location) {
+            Vec3 vector3d = new Vec3(location.getX(), location.getY() + entity.getEyeHeight(), location.getZ());
+            Vec3 vector3d1 = new Vec3(entityIn.getPosX(), entityIn.getPosYEye(), entityIn.getPosZ());
             return entity.world.rayTraceBlocks(new RayTraceContext(vector3d, vector3d1, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, entity)).getType() != RayTraceResult.Type.BLOCK;
         }
 

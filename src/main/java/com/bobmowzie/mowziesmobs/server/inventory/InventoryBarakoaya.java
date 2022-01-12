@@ -5,9 +5,9 @@ import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.NBTUtil;
-import net.minecraft.util.NonNullList;
+import net.minecraft.resources.NonNullList;
 
 import java.util.List;
 

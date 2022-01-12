@@ -2,12 +2,12 @@ package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.google.common.collect.ImmutableMultimap;
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.item.IItemTier;
-import net.minecraft.item.ToolItem;
+import net.minecraft.world.item.IItemTier;
+import net.minecraft.world.item.ToolItem;
 
 import java.util.Set;
 

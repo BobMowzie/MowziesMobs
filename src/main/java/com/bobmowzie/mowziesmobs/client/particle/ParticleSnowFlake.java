@@ -8,14 +8,14 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.world.phys.Quaternion;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.Vector3f;
+import net.minecraft.resources.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -29,7 +29,7 @@ public class ParticleSnowFlake extends SpriteTexturedParticle {
     private final float spread;
     boolean swirls;
 
-    public ParticleSnowFlake(ClientWorld world, double x, double y, double z, double vX, double vY, double vZ, double duration, boolean swirls) {
+    public ParticleSnowFlake(ClientLevel world, double x, double y, double z, double vX, double vY, double vZ, double duration, boolean swirls) {
         super(world, x, y, z);
         setSize(1, 1);
         motionX = vX;
@@ -101,7 +101,7 @@ public class ParticleSnowFlake extends SpriteTexturedParticle {
         }
 
         @Override
-        public Particle makeParticle(ParticleSnowFlake.SnowflakeData typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle makeParticle(ParticleSnowFlake.SnowflakeData typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
             ParticleSnowFlake particle = new ParticleSnowFlake(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn.getDuration(), typeIn.getSwirls());
             particle.selectSpriteRandomly(spriteSet);
             return particle;
@@ -118,7 +118,7 @@ public class ParticleSnowFlake extends SpriteTexturedParticle {
                 return new ParticleSnowFlake.SnowflakeData(duration, swirls);
             }
 
-            public ParticleSnowFlake.SnowflakeData read(ParticleType<ParticleSnowFlake.SnowflakeData> particleTypeIn, PacketBuffer buffer) {
+            public ParticleSnowFlake.SnowflakeData read(ParticleType<ParticleSnowFlake.SnowflakeData> particleTypeIn, FriendlyByteBuf buffer) {
                 return new ParticleSnowFlake.SnowflakeData(buffer.readFloat(), buffer.readBoolean());
             }
         };
@@ -132,7 +132,7 @@ public class ParticleSnowFlake extends SpriteTexturedParticle {
         }
 
         @Override
-        public void write(PacketBuffer buffer) {
+        public void write(FriendlyByteBuf buffer) {
             buffer.writeFloat(this.duration);
             buffer.writeBoolean(this.swirls);
         }

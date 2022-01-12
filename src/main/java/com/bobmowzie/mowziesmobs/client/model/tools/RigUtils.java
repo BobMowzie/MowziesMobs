@@ -1,30 +1,30 @@
 package com.bobmowzie.mowziesmobs.client.model.tools;
 
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.*;
+import net.minecraft.resources.math.MathHelper;
+import net.minecraft.world.phys.*;
 import software.bernie.geckolib3.core.processor.IBone;
 
 import java.util.Arrays;
 
 public class RigUtils {
-    public static Vector3d lerp(Vector3d v, Vector3d u, float alpha) {
-        return new Vector3d(
+    public static Vec3 lerp(Vec3 v, Vec3 u, float alpha) {
+        return new Vec3(
                 MathHelper.lerp(alpha, (float)v.getX(), (float) u.getX()),
                 MathHelper.lerp(alpha, (float)v.getY(), (float) u.getY()),
                 MathHelper.lerp(alpha, (float)v.getZ(), (float) u.getZ())
         );
     }
 
-    public static Vector3d lerpAngles(Vector3d v, Vector3d u, float alpha) {
-        return new Vector3d(
+    public static Vec3 lerpAngles(Vec3 v, Vec3 u, float alpha) {
+        return new Vec3(
                 Math.toRadians(MathHelper.interpolateAngle(alpha, (float) Math.toDegrees(v.getX()), (float) Math.toDegrees(u.getX()))),
                 Math.toRadians(MathHelper.interpolateAngle(alpha, (float) Math.toDegrees(v.getY()), (float) Math.toDegrees(u.getY()))),
                 Math.toRadians(MathHelper.interpolateAngle(alpha, (float) Math.toDegrees(v.getZ()), (float) Math.toDegrees(u.getZ())))
         );
     }
 
-    public static Vector3d blendAngles(Vector3d v, Vector3d u, float alpha) {
-        return new Vector3d(
+    public static Vec3 blendAngles(Vec3 v, Vec3 u, float alpha) {
+        return new Vec3(
                 Math.toRadians(MathHelper.wrapDegrees(Math.toDegrees(v.getX()) * alpha + Math.toDegrees(u.getX()))),
                 Math.toRadians(MathHelper.wrapDegrees(Math.toDegrees(v.getY()) * alpha + Math.toDegrees(u.getY()))),
                 Math.toRadians(MathHelper.wrapDegrees(Math.toDegrees(v.getZ()) * alpha + Math.toDegrees(u.getZ())))
@@ -32,21 +32,21 @@ public class RigUtils {
     }
 
     public static class BoneTransform {
-        private final Vector3d translation;
-        private final Vector3d rotation;
-        private final Vector3d scale;
+        private final Vec3 translation;
+        private final Vec3 rotation;
+        private final Vec3 scale;
 
         public BoneTransform(
                 double tx, double ty, double tz,
                 double rx, double ry, double rz,
                 double sx, double sy, double sz
         ) {
-            translation = new Vector3d(tx, ty, tz);
-            rotation = new Vector3d(rx, ry, rz);
-            scale = new Vector3d(sx, sy, sz);
+            translation = new Vec3(tx, ty, tz);
+            rotation = new Vec3(rx, ry, rz);
+            scale = new Vec3(sx, sy, sz);
         }
 
-        public BoneTransform(Vector3d t, Vector3d r, Vector3d s) {
+        public BoneTransform(Vec3 t, Vec3 r, Vec3 s) {
             translation = t;
             rotation = r;
             scale = s;
@@ -82,16 +82,16 @@ public class RigUtils {
 
     public static class BlendShape3DEntry {
         private BoneTransform transform;
-        private Vector3d direction;
+        private Vec3 direction;
         private float power;
 
-        public BlendShape3DEntry(BoneTransform transform, Vector3d direction, float power) {
+        public BlendShape3DEntry(BoneTransform transform, Vec3 direction, float power) {
             this.transform = transform;
             this.direction = direction.normalize();
             this.power = power;
         }
 
-        public double getWeight(Vector3d dir) {
+        public double getWeight(Vec3 dir) {
             double dot = dir.normalize().dotProduct(direction.normalize());
             dot = Math.max(dot, 0);
             dot = Math.pow(dot, 0.01 * power);
@@ -109,11 +109,11 @@ public class RigUtils {
             this.entries = entries;
         }
 
-        public void evaluate(IBone bone, Vector3d dir) {
+        public void evaluate(IBone bone, Vec3 dir) {
             evaluate(bone, dir, false);
         }
 
-        private double[] getWeights(Vector3d dir) {
+        private double[] getWeights(Vec3 dir) {
             double[] weights = new double[entries.length];
             double[] dotProducts = new double[entries.length];
             double totalDotProduct = 0.0;
@@ -137,7 +137,7 @@ public class RigUtils {
             return weights;
         }
 
-        private double[] getWeightsGradientBand(Vector3d dir) {
+        private double[] getWeightsGradientBand(Vec3 dir) {
             double[] weights = new double[entries.length];
             double[] sqrdDistances = new double[entries.length];
             double[] angularDistances = new double[entries.length];
@@ -170,8 +170,8 @@ public class RigUtils {
             return weights;
         }
 
-        public void evaluate(IBone bone, Vector3d d, boolean mirrorX) {
-            Vector3d dir = mirrorX ? d.mul(-1, 1, 1) : d;
+        public void evaluate(IBone bone, Vec3 d, boolean mirrorX) {
+            Vec3 dir = mirrorX ? d.mul(-1, 1, 1) : d;
             dir = dir.normalize();
 
             double[] weights = getWeights(dir);
@@ -252,8 +252,8 @@ public class RigUtils {
         matrix.m23 = 0;
     }
 
-    public static Quaternion betweenVectors(Vector3d u, Vector3d v) {
-        Vector3d a = u.crossProduct(v);
+    public static Quaternion betweenVectors(Vec3 u, Vec3 v) {
+        Vec3 a = u.crossProduct(v);
         float w = (float) (Math.sqrt(u.lengthSquared() * v.lengthSquared()) + u.dotProduct(v));
         Quaternion q = new Quaternion((float) a.getX(), -(float) a.getY(), -(float) a.getZ(), w);
         q.normalize();

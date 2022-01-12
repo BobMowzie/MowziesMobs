@@ -11,24 +11,24 @@ import com.bobmowzie.mowziesmobs.server.message.mouse.MessageLeftMouseUp;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseDown;
 import com.bobmowzie.mowziesmobs.server.message.mouse.MessageRightMouseUp;
 import com.ilexiconn.llibrary.server.network.AnimationMessage;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.minecart.AbstractMinecartEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.IDataSerializer;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializer;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkRegistry;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -38,35 +38,35 @@ import java.util.function.Supplier;
 public class ServerProxy {
     private int nextMessageId;
 
-    public static final IDataSerializer<Optional<Trade>> OPTIONAL_TRADE = new IDataSerializer<Optional<Trade>>() {
+    public static final EntityDataSerializer<Optional<Trade>> OPTIONAL_TRADE = new EntityDataSerializer<Optional<Trade>>() {
         @Override
-        public void write(PacketBuffer buf, Optional<Trade> value) {
+        public void write(FriendlyByteBuf buf, Optional<Trade> value) {
             if (value.isPresent()) {
                 Trade trade = value.get();
-                buf.writeItemStack(trade.getInput());
-                buf.writeItemStack(trade.getOutput());
+                buf.writeItem(trade.getInput());
+                buf.writeItem(trade.getOutput());
                 buf.writeInt(trade.getWeight());
             } else {
-                buf.writeItemStack(ItemStack.EMPTY);
+                buf.writeItem(ItemStack.EMPTY);
             }
         }
 
         @Override
-        public Optional<Trade> read(PacketBuffer buf) {
-            ItemStack input = buf.readItemStack();
+        public Optional<Trade> read(FriendlyByteBuf buf) {
+            ItemStack input = buf.readItem();
             if (input == ItemStack.EMPTY) {
                 return Optional.empty();
             }
-            return Optional.of(new Trade(input, buf.readItemStack(), buf.readInt()));
+            return Optional.of(new Trade(input, buf.readItem(), buf.readInt()));
         }
 
         @Override
-        public DataParameter<Optional<Trade>> createKey(int id) {
-            return new DataParameter<>(id, this);
+        public EntityDataAccessor<Optional<Trade>> createAccessor(int id) {
+            return new EntityDataAccessor<>(id, this);
         }
 
         @Override
-        public Optional<Trade> copyValue(Optional<Trade> value) {
+        public Optional<Trade> copy(Optional<Trade> value) {
             if (value.isPresent()) {
             	return Optional.of(new Trade(value.get()));
             }
@@ -76,7 +76,7 @@ public class ServerProxy {
 
     public void init(final IEventBus modbus) {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigHandler.COMMON_CONFIG);
-        DataSerializers.registerSerializer(OPTIONAL_TRADE);
+        EntityDataSerializers.registerSerializer(OPTIONAL_TRADE);
     }
 
     public void onLateInit(final IEventBus modbus) {}
@@ -89,11 +89,11 @@ public class ServerProxy {
 
     public void playNagaSwoopSound(EntityNaga naga) {}
 
-    public void playBlackPinkSound(AbstractMinecartEntity entity) {}
+    public void playBlackPinkSound(AbstractMinecart entity) {}
 
     public void playSunblockSound(LivingEntity entity) {}
 
-    public void minecartParticles(ClientWorld world, AbstractMinecartEntity minecart, float scale, double x, double y, double z, BlockState state, BlockPos pos) {}
+    public void minecartParticles(ClientLevel world, AbstractMinecart minecart, float scale, double x, double y, double z, BlockState state, BlockPos pos) {}
 
     public void initNetwork() {
         final String version = "1";
@@ -122,7 +122,7 @@ public class ServerProxy {
         this.registerMessage(MessageInterruptAbility.class, MessageInterruptAbility::serialize, MessageInterruptAbility::deserialize, new MessageInterruptAbility.Handler());
     }
 
-    private <MSG> void registerMessage(final Class<MSG> clazz, final BiConsumer<MSG, PacketBuffer> encoder, final Function<PacketBuffer, MSG> decoder, final BiConsumer<MSG, Supplier<NetworkEvent.Context>> consumer) {
+    private <MSG> void registerMessage(final Class<MSG> clazz, final BiConsumer<MSG, FriendlyByteBuf> encoder, final Function<FriendlyByteBuf, MSG> decoder, final BiConsumer<MSG, Supplier<NetworkEvent.Context>> consumer) {
         MowziesMobs.NETWORK.messageBuilder(clazz, this.nextMessageId++)
                 .encoder(encoder).decoder(decoder)
                 .consumer(consumer)

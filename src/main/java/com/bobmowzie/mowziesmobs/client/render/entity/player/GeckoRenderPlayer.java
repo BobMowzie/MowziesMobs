@@ -22,13 +22,13 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.HandSide;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.*;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.resources.Direction;
+import net.minecraft.resources.Hand;
+import net.minecraft.resources.HandSide;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.math.MathHelper;
+import net.minecraft.world.phys.*;
+import net.minecraft.resources.text.TextFormatting;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimatableModel;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -48,7 +48,7 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
 
     private Matrix4f worldRenderMat;
 
-    public Vector3d betweenHandsPos;
+    public Vec3 betweenHandsPos;
 
     public GeckoRenderPlayer(EntityRendererManager renderManager, ModelGeckoPlayerThirdPerson modelProvider) {
         super(renderManager, false);
@@ -215,12 +215,12 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
             Vector4f leftHeldItemPos = new Vector4f(0, 0, 0, 1);
             leftHeldItemPos.transform(leftHeldItem.getWorldSpaceXform());
             leftHeldItemPos.transform(toWorldSpace.getLast().getMatrix());
-            Vector3d leftHeldItemPos3 = new Vector3d(leftHeldItemPos.getX(), leftHeldItemPos.getY(), leftHeldItemPos.getZ());
+            Vec3 leftHeldItemPos3 = new Vec3(leftHeldItemPos.getX(), leftHeldItemPos.getY(), leftHeldItemPos.getZ());
 
             Vector4f rightHeldItemPos = new Vector4f(0, 0, 0, 1);
             rightHeldItemPos.transform(rightHeldItem.getWorldSpaceXform());
             rightHeldItemPos.transform(toWorldSpace.getLast().getMatrix());
-            Vector3d rightHeldItemPos3 = new Vector3d(rightHeldItemPos.getX(), rightHeldItemPos.getY(), rightHeldItemPos.getZ());
+            Vec3 rightHeldItemPos3 = new Vec3(rightHeldItemPos.getX(), rightHeldItemPos.getY(), rightHeldItemPos.getZ());
 
             betweenHandsPos = rightHeldItemPos3.add(leftHeldItemPos3.subtract(rightHeldItemPos3).scale(0.5));
         }
@@ -272,8 +272,8 @@ public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<Ge
                 matrixStackIn.rotate(Vector3f.XP.rotationDegrees(f2 * (-90.0F - entityLiving.getXRot())));
             }
 
-            Vector3d vector3d = entityLiving.getLook(partialTicks);
-            Vector3d vector3d1 = entityLiving.getMotion();
+            Vec3 vector3d = entityLiving.getLook(partialTicks);
+            Vec3 vector3d1 = entityLiving.getMotion();
             double d0 = Entity.horizontalMag(vector3d1);
             double d1 = Entity.horizontalMag(vector3d);
             if (d0 > 0.0D && d1 > 0.0D) {

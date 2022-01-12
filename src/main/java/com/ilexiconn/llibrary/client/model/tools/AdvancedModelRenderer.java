@@ -6,12 +6,12 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
-import net.minecraft.client.renderer.model.Model;
-import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.resources.model.Model;
+import net.minecraft.client.resources.model.ModelRenderer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.*;
+import net.minecraft.resources.Direction;
+import net.minecraft.resources.math.MathHelper;
+import net.minecraft.world.phys.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -400,7 +400,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
         translateRotate(matrixStack);
     }
 
-    public Vector3d getWorldPos(Entity entity, float delta) {
+    public Vec3 getWorldPos(Entity entity, float delta) {
         MatrixStack matrixStack = new MatrixStack();
         float dx = (float) (entity.lastTickPosX + (entity.getPosX() - entity.lastTickPosX) * delta);
         float dy = (float) (entity.lastTickPosY + (entity.getPosY() - entity.lastTickPosY) * delta);
@@ -416,10 +416,10 @@ public class AdvancedModelRenderer extends ModelRenderer {
 
         Vector4f vec = new Vector4f(0, 0, 0, 1);
         vec.transform(matrix4f);
-        return new Vector3d(vec.getX(), vec.getY(), vec.getZ());
+        return new Vec3(vec.getX(), vec.getY(), vec.getZ());
     }
 
-    public void setWorldPos(Entity entity, Vector3d worldPos, float delta) {
+    public void setWorldPos(Entity entity, Vec3 worldPos, float delta) {
         MatrixStack matrixStack = new MatrixStack();
         float dx = (float) (entity.lastTickPosX + (entity.getPosX() - entity.lastTickPosX) * delta);
         float dy = (float) (entity.lastTickPosY + (entity.getPosY() - entity.lastTickPosY) * delta);

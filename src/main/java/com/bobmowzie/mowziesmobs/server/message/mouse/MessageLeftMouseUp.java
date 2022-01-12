@@ -6,9 +6,9 @@ import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.power.Power;
-import net.minecraft.world.entity.player.ServerPlayer;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
@@ -19,11 +19,11 @@ import java.util.function.Supplier;
 public class MessageLeftMouseUp {
     public MessageLeftMouseUp() {}
 
-    public static void serialize(final MessageLeftMouseUp message, final PacketBuffer buf) {
+    public static void serialize(final MessageLeftMouseUp message, final FriendlyByteBuf buf) {
 
     }
 
-    public static MessageLeftMouseUp deserialize(final PacketBuffer buf) {
+    public static MessageLeftMouseUp deserialize(final FriendlyByteBuf buf) {
         final MessageLeftMouseUp message = new MessageLeftMouseUp();
         return message;
     }

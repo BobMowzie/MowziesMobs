@@ -8,7 +8,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -83,7 +83,7 @@ public final class ContainerBarakoTrade extends Container {
     public void onContainerClosed(Player player) {
         super.onContainerClosed(player);
         if (barako != null) barako.setCustomer(null);
-        if (!player.world.isRemote) {
+        if (!player.world.isClientSide) {
             ItemStack stack = inventory.removeStackFromSlot(0);
             if (stack != ItemStack.EMPTY) {
                 ItemEntity dropped = player.dropItem(stack, false);
@@ -95,7 +95,7 @@ public final class ContainerBarakoTrade extends Container {
     }
 
     public void returnItems() {
-        if (!player.world.isRemote) {
+        if (!player.world.isClientSide) {
             ItemStack stack = inventory.removeStackFromSlot(0);
             if (stack != ItemStack.EMPTY) {
                 ItemHandlerHelper.giveItemToPlayer(player, stack);

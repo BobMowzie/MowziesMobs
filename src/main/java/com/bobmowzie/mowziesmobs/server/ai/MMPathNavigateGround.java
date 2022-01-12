@@ -1,15 +1,15 @@
 package com.bobmowzie.mowziesmobs.server.ai;
 
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.pathfinding.GroundPathNavigator;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathFinder;
 import net.minecraft.pathfinding.PathNodeType;
 import net.minecraft.pathfinding.PathType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.math.MathHelper;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.World;
 
 import java.util.Objects;
@@ -29,7 +29,7 @@ public class MMPathNavigateGround extends GroundPathNavigator {
     @Override
     protected void pathFollow() {
         Path path = Objects.requireNonNull(this.currentPath);
-        Vector3d entityPos = this.getEntityPosition();
+        Vec3 entityPos = this.getEntityPosition();
         int pathLength = path.getCurrentPathLength();
         for (int i = path.getCurrentPathIndex(); i < path.getCurrentPathLength(); i++) {
             if (path.getPathPointFromIndex(i).y != Math.floor(entityPos.y)) {
@@ -37,9 +37,9 @@ public class MMPathNavigateGround extends GroundPathNavigator {
                 break;
             }
         }
-        final Vector3d base = entityPos.add(-this.entity.getWidth() * 0.5F, 0.0F, -this.entity.getWidth() * 0.5F);
-        final Vector3d max = base.add(this.entity.getWidth(), this.entity.getHeight(), this.entity.getWidth());
-        if (this.tryShortcut(path, new Vector3d(this.entity.getPosX(), this.entity.getPosY(), this.entity.getPosZ()), pathLength, base, max)) {
+        final Vec3 base = entityPos.add(-this.entity.getWidth() * 0.5F, 0.0F, -this.entity.getWidth() * 0.5F);
+        final Vec3 max = base.add(this.entity.getWidth(), this.entity.getHeight(), this.entity.getWidth());
+        if (this.tryShortcut(path, new Vec3(this.entity.getPosX(), this.entity.getPosY(), this.entity.getPosZ()), pathLength, base, max)) {
             if (this.isAt(path, 0.5F) || this.atElevationChange(path) && this.isAt(path, this.entity.getWidth() * 0.5F)) {
                 path.setCurrentPathIndex(path.getCurrentPathIndex() + 1);
             }
@@ -48,7 +48,7 @@ public class MMPathNavigateGround extends GroundPathNavigator {
     }
 
     private boolean isAt(Path path, float threshold) {
-        final Vector3d pathPos = path.getPosition(this.entity);
+        final Vec3 pathPos = path.getPosition(this.entity);
         return MathHelper.abs((float) (this.entity.getPosX() - pathPos.x)) < threshold &&
                 MathHelper.abs((float) (this.entity.getPosZ() - pathPos.z)) < threshold &&
                 Math.abs(this.entity.getPosY() - pathPos.y) < 1.0D;
@@ -66,9 +66,9 @@ public class MMPathNavigateGround extends GroundPathNavigator {
         return false;
     }
 
-    private boolean tryShortcut(Path path, Vector3d entityPos, int pathLength, Vector3d base, Vector3d max) {
+    private boolean tryShortcut(Path path, Vec3 entityPos, int pathLength, Vec3 base, Vec3 max) {
         for (int i = pathLength; --i > path.getCurrentPathIndex(); ) {
-            final Vector3d vec = path.getVectorFromIndex(this.entity, i).subtract(entityPos);
+            final Vec3 vec = path.getVectorFromIndex(this.entity, i).subtract(entityPos);
             if (this.sweep(vec, base, max)) {
                 path.setCurrentPathIndex(i);
                 return false;
@@ -78,14 +78,14 @@ public class MMPathNavigateGround extends GroundPathNavigator {
     }
 
     @Override
-    protected boolean isDirectPathBetweenPoints(Vector3d start, Vector3d end, int sizeX, int sizeY, int sizeZ) {
+    protected boolean isDirectPathBetweenPoints(Vec3 start, Vec3 end, int sizeX, int sizeY, int sizeZ) {
         return true;
     }
 
     static final float EPSILON = 1.0E-8F;
 
     // Based off of https://github.com/andyhall/voxel-aabb-sweep/blob/d3ef85b19c10e4c9d2395c186f9661b052c50dc7/index.js
-    private boolean sweep(Vector3d vec, Vector3d base, Vector3d max) {
+    private boolean sweep(Vec3 vec, Vec3 base, Vec3 max) {
         float t = 0.0F;
         float max_t = (float) vec.length();
         if (max_t < EPSILON) return true;
@@ -159,7 +159,7 @@ public class MMPathNavigateGround extends GroundPathNavigator {
         return MathHelper.floor(coord + step * EPSILON);
     }
 
-    static float element(Vector3d v, int i) {
+    static float element(Vec3 v, int i) {
         switch (i) {
             case 0: return (float) v.x;
             case 1: return (float) v.y;

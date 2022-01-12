@@ -15,8 +15,8 @@ import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
@@ -24,11 +24,11 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.controller.MovementController;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.math.AxisAlignedBB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.math.MathHelper;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -49,18 +49,18 @@ public class EntityLantern extends MowzieEntity {
             PUFF_ANIMATION
     };
 
-    public Vector3d dir;
+    public Vec3 dir;
     private int groundDist = 1;
 
     @OnlyIn(Dist.CLIENT)
-    private Vector3d[] pos;
+    private Vec3[] pos;
 
     public EntityLantern(EntityType<? extends EntityLantern> type, World world) {
         super(type, world);
         dir = null;
 
-        if (world.isRemote) {
-            pos = new Vector3d[1];
+        if (world.isClientSide) {
+            pos = new Vec3[1];
         }
         this.moveController = new MoveHelperController(this);
     }
@@ -92,7 +92,7 @@ public class EntityLantern extends MowzieEntity {
         if (getAnimation() == PUFF_ANIMATION && getAnimationTick() == 7) {
             if (groundDist == 0) groundDist = 1;
             setMotion(getMotion().add(0, 0.2d + 0.2d / groundDist, 0));
-            if (world.isRemote) {
+            if (world.isClientSide) {
                 for (int i = 0; i < 5; i++) {
                     ParticleVanillaCloudExtended.spawnVanillaCloud(world, getPosX(), getPosY() + 0.3, getPosZ(), -getMotion().getX() * 0.2 + 0.1 * (rand.nextFloat() - 0.5), -getMotion().getY() * 0.2 + 0.1 * (rand.nextFloat() - 0.5), -getMotion().getZ() * 0.2 + 0.1 * (rand.nextFloat() - 0.5), 0.8d + rand.nextDouble() * 1d, 163d / 256d, 247d / 256d, 74d / 256d, 0.95, 30);
                 }
@@ -107,7 +107,7 @@ public class EntityLantern extends MowzieEntity {
             }
             else {
                 if (getMoveHelperController().getAction() == MovementController.Action.MOVE_TO) {
-                    Vector3d lvt_1_1_ = new Vector3d(getMoveHelper().getX() - this.getPosX(), getMoveHelper().getY() - this.getPosY(), getMoveHelper().getZ() - this.getPosZ());
+                    Vec3 lvt_1_1_ = new Vec3(getMoveHelper().getX() - this.getPosX(), getMoveHelper().getY() - this.getPosY(), getMoveHelper().getZ() - this.getPosZ());
                     double lvt_2_1_ = lvt_1_1_.length();
                     lvt_1_1_ = lvt_1_1_.normalize();
                     if (getMoveHelperController().func_220673_a(lvt_1_1_, MathHelper.ceil(lvt_2_1_))) {
@@ -118,7 +118,7 @@ public class EntityLantern extends MowzieEntity {
             playSound(MMSounds.ENTITY_LANTERN_PUFF.get(), 0.6f, 1f + rand.nextFloat() * 0.2f);
         }
 
-        if (!world.isRemote && getAnimation() == NO_ANIMATION) {
+        if (!world.isClientSide && getAnimation() == NO_ANIMATION) {
             if (groundDist < 5 || (rand.nextInt(13) == 0 && groundDist < 16)) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, PUFF_ANIMATION);
             }
@@ -136,7 +136,7 @@ public class EntityLantern extends MowzieEntity {
             groundDist = i;
         }
 
-        if (world.isRemote && ConfigHandler.CLIENT.glowEffect.get()) {
+        if (world.isClientSide && ConfigHandler.CLIENT.glowEffect.get()) {
             pos[0] = getPositionVec().add(0, getHeight() * 0.8, 0);
             if (ticksExisted % 70 == 0) {
                 AdvancedParticleBase.spawnParticle(world, ParticleHandler.GLOW.get(), pos[0].x, pos[0].y, pos[0].z, 0, 0, 0, true, 0, 0, 0, 0, 20F, 0.8, 0.95, 0.35, 1, 1, 70, true, true, new ParticleComponent[]{
@@ -155,7 +155,7 @@ public class EntityLantern extends MowzieEntity {
     @Override
     protected void onDeathAIUpdate() {
         super.onDeathAIUpdate();
-        if (getAnimationTick() == 1 && world.isRemote) {
+        if (getAnimationTick() == 1 && world.isClientSide) {
             for (int i = 0; i < 8; i++) {
                 world.addParticle(ParticleTypes.ITEM_SLIME, getPosX(), getPosY(), getPosZ(), 0.2 * (rand.nextFloat() - 0.5), 0.2 * (rand.nextFloat() - 0.5), 0.2 * (rand.nextFloat() - 0.5));
                 world.addParticle(new ParticleCloud.CloudData(ParticleHandler.CLOUD.get(), 163f / 256f, 247f / 256f, 74f / 256f, 10f + rand.nextFloat() * 20f, 30, ParticleCloud.EnumCloudBehavior.GROW, 0.9f), getPosX(), getPosY() + 0.3, getPosZ(), 0.25 * (rand.nextFloat() - 0.5), 0.25 * (rand.nextFloat() - 0.5), 0.25 * (rand.nextFloat() - 0.5));
@@ -174,7 +174,7 @@ public class EntityLantern extends MowzieEntity {
     }
 
     @Override
-    public void travel(Vector3d movement)
+    public void travel(Vec3 movement)
     {
         if (this.isInWater()) {
             this.moveRelative(0.02F, movement);
@@ -301,7 +301,7 @@ public class EntityLantern extends MowzieEntity {
             if (this.action == Action.MOVE_TO) {
                 if (this.courseChangeCooldown-- <= 0) {
                     this.courseChangeCooldown += this.parentEntity.getRNG().nextInt(5) + 2;
-                    Vector3d lvt_1_1_ = new Vector3d(this.posX - this.parentEntity.getPosX(), this.posY - this.parentEntity.getPosY(), this.posZ - this.parentEntity.getPosZ());
+                    Vec3 lvt_1_1_ = new Vec3(this.posX - this.parentEntity.getPosX(), this.posY - this.parentEntity.getPosY(), this.posZ - this.parentEntity.getPosZ());
                     double lvt_2_1_ = lvt_1_1_.length();
                     lvt_1_1_ = lvt_1_1_.normalize();
                     if (!this.func_220673_a(lvt_1_1_, MathHelper.ceil(lvt_2_1_))) {
@@ -312,7 +312,7 @@ public class EntityLantern extends MowzieEntity {
             }
         }
 
-        public boolean func_220673_a(Vector3d p_220673_1_, int p_220673_2_) {
+        public boolean func_220673_a(Vec3 p_220673_1_, int p_220673_2_) {
             AxisAlignedBB lvt_3_1_ = this.parentEntity.getBoundingBox();
 
             for(int lvt_4_1_ = 1; lvt_4_1_ < p_220673_2_; ++lvt_4_1_) {

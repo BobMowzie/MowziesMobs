@@ -14,10 +14,10 @@ import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Quaternion;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -42,11 +42,11 @@ public class RenderAxeAttack extends EntityRenderer<EntityAxeAttack> {
 //        Player player = Minecraft.getInstance().player;
 //        if (player != null && player == axe.getCaster() && Minecraft.getInstance().gameSettings.getPointOfView() == PointOfView.FIRST_PERSON) {
 //            matrixStackIn.push();
-//            Vector3d prevAxePos = new Vector3d(axe.lastTickPosX, axe.lastTickPosY, axe.lastTickPosZ);
-//            Vector3d prevPlayerPos = new Vector3d(player.lastTickPosX, player.lastTickPosY, player.lastTickPosZ);
-//            Vector3d axePos = prevAxePos.add(axe.getPositionVec().subtract(prevAxePos).scale(delta));
-//            Vector3d playerPos = prevPlayerPos.add(player.getPositionVec().subtract(prevPlayerPos).scale(delta));
-//            Vector3d deltaPos = axePos.subtract(playerPos).scale(-1);
+//            Vec3 prevAxePos = new Vec3(axe.lastTickPosX, axe.lastTickPosY, axe.lastTickPosZ);
+//            Vec3 prevPlayerPos = new Vec3(player.lastTickPosX, player.lastTickPosY, player.lastTickPosZ);
+//            Vec3 axePos = prevAxePos.add(axe.getPositionVec().subtract(prevAxePos).scale(delta));
+//            Vec3 playerPos = prevPlayerPos.add(player.getPositionVec().subtract(prevPlayerPos).scale(delta));
+//            Vec3 deltaPos = axePos.subtract(playerPos).scale(-1);
 //            matrixStackIn.translate(deltaPos.getX(), deltaPos.getY(), deltaPos.getZ());
 //            matrixStackIn.rotate(new Quaternion(new Vector3f(0, -1, 0), player.getYRot(), true));
 //            IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntitySolid(TEXTURE));

@@ -6,7 +6,7 @@ import com.ilexiconn.llibrary.client.model.tools.AdvancedModelBase;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.resources.model.ModelRenderer;
 
 /**
  * Created by BobMowzie on 8/30/2018.

@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.client.particle.util;
 
 import com.bobmowzie.mowziesmobs.client.particle.ParticleRibbon;
 import net.minecraft.particles.ParticleType;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec3;
 
 public class RibbonComponent extends ParticleComponent {
     int length;
@@ -87,17 +87,17 @@ public class RibbonComponent extends ParticleComponent {
                     ribbon.positions[i] = ribbon.positions[i - 1];
                     ribbon.prevPositions[i] = ribbon.prevPositions[i - 1];
                 }
-                ribbon.positions[0] = new Vector3d(ribbon.getPosX(), ribbon.getPosY(), ribbon.getPosZ());
+                ribbon.positions[0] = new Vec3(ribbon.getPosX(), ribbon.getPosY(), ribbon.getPosZ());
                 ribbon.prevPositions[0] = ribbon.getPrevPos();
             }
         }
     }
 
     public static class BeamPinning extends ParticleComponent {
-        private final Vector3d[] startLocation;
-        private final Vector3d[] endLocation;
+        private final Vec3[] startLocation;
+        private final Vec3[] endLocation;
 
-        public BeamPinning(Vector3d[] startLocation, Vector3d[] endLocation) {
+        public BeamPinning(Vec3[] startLocation, Vec3[] endLocation) {
             this.startLocation = startLocation;
             this.endLocation = endLocation;
         }
@@ -108,16 +108,16 @@ public class RibbonComponent extends ParticleComponent {
                 ParticleRibbon ribbon = (ParticleRibbon) particle;
                 ribbon.setPosition(startLocation[0].getX(), startLocation[0].getY(), startLocation[0].getZ());
 
-                Vector3d increment = endLocation[0].subtract(startLocation[0]).scale(1.0f / (float) (ribbon.positions.length - 1));
+                Vec3 increment = endLocation[0].subtract(startLocation[0]).scale(1.0f / (float) (ribbon.positions.length - 1));
                 for (int i = 0; i < ribbon.positions.length; i++) {
-                    Vector3d newPos = startLocation[0].add(increment.scale(i));
+                    Vec3 newPos = startLocation[0].add(increment.scale(i));
                     ribbon.prevPositions[i] = ribbon.positions[i] == null ? newPos : ribbon.positions[i];
                     ribbon.positions[i] = newPos;
                 }
             }
         }
 
-        private boolean validateLocation(Vector3d[] location) {
+        private boolean validateLocation(Vec3[] location) {
             return location != null && location.length >= 1 && location[0] != null;
         }
     }

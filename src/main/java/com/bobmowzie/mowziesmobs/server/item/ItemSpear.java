@@ -13,19 +13,19 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.passive.AnimalEntity;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemTier;
-import net.minecraft.item.ToolItem;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemTier;
+import net.minecraft.world.item.ToolItem;
+import net.minecraft.resources.math.AxisAlignedBB;
+import net.minecraft.resources.math.RayTraceContext;
+import net.minecraft.resources.math.RayTraceResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.resources.text.ITextComponent;
+import net.minecraft.resources.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -44,8 +44,8 @@ public class ItemSpear extends MowzieToolItem {
 
     public static LivingEntity raytraceEntities(World world, Player player, double range) {
         ItemSpear.HitResult result = new ItemSpear.HitResult();
-        Vector3d pos = new Vector3d(player.getPosX(), player.getPosY() + player.getEyeHeight(), player.getPosZ());
-        Vector3d segment = player.getLookVec();
+        Vec3 pos = new Vec3(player.getPosX(), player.getPosY() + player.getEyeHeight(), player.getPosZ());
+        Vec3 segment = player.getLookVec();
         segment = pos.add(segment.x * range, segment.y * range, segment.z * range);
         result.setBlockHit(world.rayTraceBlocks(new RayTraceContext(pos, segment, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, player)));
         double collidePosX, collidePosY, collidePosZ;
@@ -55,7 +55,7 @@ public class ItemSpear extends MowzieToolItem {
             collidePosZ = result.blockHit.getHitVec().z;
         }
         else {
-            Vector3d end = player.getLookVec().scale(range).add(pos);
+            Vec3 end = player.getLookVec().scale(range).add(pos);
             collidePosX = end.x;
             collidePosY = end.y;
             collidePosZ = end.z;

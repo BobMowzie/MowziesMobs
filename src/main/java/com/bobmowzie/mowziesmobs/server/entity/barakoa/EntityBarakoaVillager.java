@@ -17,26 +17,26 @@ import net.minecraft.world.entity.ILivingEntityData;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SpawnReason;
 import net.minecraft.world.entity.ai.goal.MoveTowardsRestrictionGoal;
-import net.minecraft.world.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.world.entity.monster.AbstractSkeletonEntity;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.monster.IMob;
-import net.minecraft.world.entity.monster.SkeletonEntity;
-import net.minecraft.world.entity.monster.ZombieEntity;
+import net.minecraft.world.entity.monster.Skeleton;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.EntityDataManager;
 import net.minecraft.server.management.PreYggdrasilConverter;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.resources.ActionResultType;
+import net.minecraft.resources.Hand;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.text.ITextComponent;
 import net.minecraft.world.*;
 
 import javax.annotation.Nullable;
@@ -61,9 +61,9 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
         .addTrade(Items.IRON_HELMET, 1, Items.GOLD_INGOT, 4, 2)
         .build();
 
-    private static final DataParameter<Optional<Trade>> TRADE = EntityDataManager.createKey(EntityBarakoaVillager.class, ServerProxy.OPTIONAL_TRADE);
-    //    private static final DataParameter<Integer> NUM_SALES = EntityDataManager.createKey(EntityBarakoaya.class, DataSerializers.VARINT);
-    private static final DataParameter<Optional<UUID>> MISBEHAVED_PLAYER = EntityDataManager.createKey(EntityBarakoaVillager.class, DataSerializers.OPTIONAL_UNIQUE_ID);
+    private static final EntityDataAccessor<Optional<Trade>> TRADE = EntityDataManager.createKey(EntityBarakoaVillager.class, ServerProxy.OPTIONAL_TRADE);
+    //    private static final EntityDataAccessor<Integer> NUM_SALES = EntityDataManager.createKey(EntityBarakoaya.class, EntityDataSerializers.VARINT);
+    private static final EntityDataAccessor<Optional<UUID>> MISBEHAVED_PLAYER = EntityDataManager.createKey(EntityBarakoaVillager.class, EntityDataSerializers.OPTIONAL_UNIQUE_ID);
 
     //TODO: Sale limits. After X sales, go out of stock and change trade.
 
@@ -111,8 +111,8 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
                 setMisbehavedPlayerId(null);
             }
         });
-        targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, ZombieEntity.class, 0, true, true, null));
-        targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, AbstractSkeletonEntity.class, 0, true, false, null));
+        targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, Zombie.class, 0, true, true, null));
+        targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, AbstractSkeleton.class, 0, true, false, null));
     }
 
     @Override
@@ -177,7 +177,7 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
     public void openGUI(Player Player) {
         setCustomer(Player);
         MowziesMobs.PROXY.setReferencedMob(this);
-        if (!this.world.isRemote && getAttackTarget() == null && isAlive()) {
+        if (!this.world.isClientSide && getAttackTarget() == null && isAlive()) {
             Player.openContainer(new INamedContainerProvider() {
                 @Override
                 public Container createMenu(int id, PlayerInventory playerInventory, Player player) {

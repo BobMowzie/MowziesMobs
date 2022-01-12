@@ -6,30 +6,30 @@ import com.bobmowzie.mowziesmobs.client.particle.ParticleOrb;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.LeaderSunstrikeImmune;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SlabBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.EntityDataManager;
 import net.minecraft.network.play.server.SEntityTeleportPacket;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.state.properties.SlabType;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.*;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.resources.Direction;
+import net.minecraft.resources.math.*;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -47,9 +47,9 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
 
     private LivingEntity caster;
 
-    private static final DataParameter<Integer> VARIANT_LEAST = EntityDataManager.createKey(EntitySunstrike.class, DataSerializers.VARINT);
+    private static final EntityDataAccessor<Integer> VARIANT_LEAST = EntityDataManager.createKey(EntitySunstrike.class, EntityDataSerializers.VARINT);
 
-    private static final DataParameter<Integer> VARIANT_MOST = EntityDataManager.createKey(EntitySunstrike.class, DataSerializers.VARINT);
+    private static final EntityDataAccessor<Integer> VARIANT_MOST = EntityDataManager.createKey(EntitySunstrike.class, EntityDataSerializers.VARINT);
 
     public EntitySunstrike(EntityType<? extends EntitySunstrike> type, World world) {
         super(type, world);
@@ -133,7 +133,7 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
         super.tick();
         prevStrikeTime = strikeTime;
 
-        if (world.isRemote) {
+        if (world.isClientSide) {
             if (strikeTime == 0) {
                 MowziesMobs.PROXY.playSunstrikeSound(this);
             } else if (strikeTime < STRIKE_EXPLOSION - 10) {
@@ -256,8 +256,8 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     }
 
     private RayTraceResult rayTrace(EntitySunstrike entity) {
-        Vector3d startPos = new Vector3d(entity.getPosX(), entity.getPosY(), entity.getPosZ());
-        Vector3d endPos = new Vector3d(entity.getPosX(), 0, entity.getPosZ());
+        Vec3 startPos = new Vec3(entity.getPosX(), entity.getPosY(), entity.getPosZ());
+        Vec3 endPos = new Vec3(entity.getPosX(), 0, entity.getPosZ());
         return entity.world.rayTraceBlocks(new RayTraceContext(startPos, endPos, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
     }
 
@@ -279,12 +279,12 @@ public class EntitySunstrike extends Entity implements IEntityAdditionalSpawnDat
     }
 
     @Override
-    public void writeSpawnData(PacketBuffer buffer) {
+    public void writeSpawnData(FriendlyByteBuf buffer) {
         buffer.writeInt(strikeTime);
     }
 
     @Override
-    public void readSpawnData(PacketBuffer buffer) {
+    public void readSpawnData(FriendlyByteBuf buffer) {
         setStrikeTime(buffer.readInt());
     }
 }

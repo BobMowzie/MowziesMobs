@@ -19,31 +19,31 @@ import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
-import net.minecraft.block.*;
-import net.minecraft.block.material.Material;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.controller.BodyController;
-import net.minecraft.world.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.IMob;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.ServerPlayer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.EntityDataManager;
 import net.minecraft.network.play.server.SEntityVelocityPacket;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.pathfinding.PathNavigator;
-import net.minecraft.util.*;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.resources.*;
+import net.minecraft.resources.math.AxisAlignedBB;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.math.MathHelper;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.*;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -90,9 +90,9 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         {0.1F, -0.1F}
     };
 
-    private static final DataParameter<Optional<BlockPos>> REST_POSITION = EntityDataManager.createKey(EntityWroughtnaut.class, DataSerializers.OPTIONAL_BLOCK_POS);
+    private static final EntityDataAccessor<Optional<BlockPos>> REST_POSITION = EntityDataManager.createKey(EntityWroughtnaut.class, EntityDataSerializers.OPTIONAL_BLOCK_POS);
 
-    private static final DataParameter<Boolean> ACTIVE = EntityDataManager.createKey(EntityWroughtnaut.class, DataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> ACTIVE = EntityDataManager.createKey(EntityWroughtnaut.class, EntityDataSerializers.BOOLEAN);
 
     public ControlledAnimation walkAnim = new ControlledAnimation(10);
 
@@ -102,18 +102,18 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 
     private CeilingDisturbance disturbance;
 
-    public Vector3d leftEyePos, rightEyePos;
-    public Vector3d leftEyeRot, rightEyeRot;
+    public Vec3 leftEyePos, rightEyePos;
+    public Vec3 leftEyeRot, rightEyeRot;
 
     public EntityWroughtnaut(EntityType<? extends EntityWroughtnaut> type, World world) {
         super(type, world);
         experienceValue = 30;
         active = false;
         stepHeight = 1;
-//        rightEyePos = new Vector3d(0, 0, 0);
-//        leftEyePos = new Vector3d(0, 0, 0);
-//        rightEyeRot = new Vector3d(0, 0, 0);
-//        leftEyeRot = new Vector3d(0, 0, 0);
+//        rightEyePos = new Vec3(0, 0, 0);
+//        leftEyePos = new Vec3(0, 0, 0);
+//        rightEyeRot = new Vec3(0, 0, 0);
+//        leftEyeRot = new Vec3(0, 0, 0);
 
         dropAfterDeathAnim = true;
     }
@@ -231,7 +231,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 
         if (getAttackTarget() != null && (!getAttackTarget().isAlive() || getAttackTarget().getHealth() <= 0)) setAttackTarget(null);
 
-        if (!world.isRemote) {
+        if (!world.isClientSide) {
             if (getAnimation() == NO_ANIMATION && !isAIDisabled()) {
                 if (isActive()) {
                     if (getAttackTarget() == null && moveForward == 0 && isAtRestPos()) {
@@ -251,7 +251,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
             setMotion(0, getMotion().y, 0);
             rotationYaw = prevRotationYaw;
         }
-//        else if (world.isRemote && leftEyePos != null && rightEyePos != null) {
+//        else if (world.isClientSide && leftEyePos != null && rightEyePos != null) {
 //            MowzieParticleBase.spawnParticle(world, MMParticle.EYE, leftEyePos.x, leftEyePos.y, leftEyePos.z, 0, 0, 0, false, leftEyeRot.y + 1.5708, 0, 0, 0, 5f, 0.8f, 0.1f, 0.1f, 1f, 1, 10, false, new ParticleComponent[]{new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1, 0), false)});
 //            MowzieParticleBase.spawnParticle(world, MMParticle.EYE, rightEyePos.x, rightEyePos.y, rightEyePos.z, 0, 0, 0, false, rightEyeRot.y, 0, 0, 0, 5f, 0.8f, 0.1f, 0.1f, 1f, 1, 10, false, new ParticleComponent[]{new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1, 0), false)});
 //        }
@@ -288,13 +288,13 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
             walkAnim.decreaseTimer(2);
         }
 
-        if (this.world.isRemote && frame % 20 == 1 && speed > 0.03 && getAnimation() == NO_ANIMATION && isActive()) {
+        if (this.world.isClientSide && frame % 20 == 1 && speed > 0.03 && getAnimation() == NO_ANIMATION && isActive()) {
             this.world.playSound(this.getPosX(), this.getPosY(), this.getPosZ(), MMSounds.ENTITY_WROUGHT_STEP.get(), this.getSoundCategory(), 0.5F, 0.5F, false);
         }
 
         repelEntities(1.7F, 4, 1.7F, 1.7F);
 
-        if (!active && !world.isRemote && getAnimation() != ACTIVATE_ANIMATION) {
+        if (!active && !world.isClientSide && getAnimation() != ACTIVATE_ANIMATION) {
             if (ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.healsOutOfBattle.get()) heal(0.3f);
         }
 
@@ -304,11 +304,11 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
             }
         }
 
-//        if (!this.world.isRemote) {
+//        if (!this.world.isClientSide) {
 //            Path path = this.getNavigator().getPath();
 //            if (path != null) {
 //                for (int i = 0; i < path.getCurrentPathLength(); i++) {
-//                    Vector3d p = path.getVectorFromIndex(this, i);
+//                    Vec3 p = path.getVectorFromIndex(this, i);
 //                    ((WorldServer) this.world).spawnParticle(EnumParticleTypes.BLOCK_DUST, p.x, p.y + 0.1D, p.z, 1, 0.1D, 0.0D, 0.1D, 0.01D, Block.getIdFromBlock(i < path.getCurrentPathIndex() ? Blocks.GOLD_BLOCK : i == path.getCurrentPathIndex() ? Blocks.DIAMOND_BLOCK : Blocks.DIRT));
 //                }
 //            }
@@ -540,7 +540,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     }
 
     @Override
-    public void writeSpawnData(PacketBuffer buf) {
+    public void writeSpawnData(FriendlyByteBuf buf) {
         super.writeSpawnData(buf);
     }
 

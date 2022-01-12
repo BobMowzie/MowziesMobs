@@ -6,11 +6,11 @@ import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityAxeAttack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.resources.model.ModelRenderer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.util.HandSide;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.resources.HandSide;
+import net.minecraft.world.phys.Vec3;
 
 public class ModelBipedAnimated<T extends LivingEntity> extends BipedModel<T> {
     public ModelBipedAnimated(float modelSize) {
@@ -58,7 +58,7 @@ public class ModelBipedAnimated<T extends LivingEntity> extends BipedModel<T> {
         PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
         if (playerCapability != null && playerCapability.getGeomancy().tunneling) {
             model.isSneak = false;
-            Vector3d moveVec = player.getMotion();
+            Vec3 moveVec = player.getMotion();
             moveVec = moveVec.normalize();
 //            if (model instanceof PlayerModel) RenderSystem.rotatef(45 - 45 * (float)moveVec.y, 1.0F, 0.0F, 0.0F);
 

@@ -2,19 +2,19 @@ package com.bobmowzie.mowziesmobs.server.ai;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
-import net.minecraft.world.entity.CreatureEntity;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.RandomPositionGenerator;
 import net.minecraft.pathfinding.Path;
-import net.minecraft.util.EntityPredicates;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.resources.EntityPredicates;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
 import java.util.List;
 
-public class MMAIAvoidEntity<U extends CreatureEntity, T extends Entity> extends Goal {
+public class MMAIAvoidEntity<U extends PathfinderMob, T extends Entity> extends Goal {
     private static final double NEAR_DISTANCE = 7.0D;
     
     protected final U entity;
@@ -74,7 +74,7 @@ public class MMAIAvoidEntity<U extends CreatureEntity, T extends Entity> extends
         }
         entityEvading = entities.get(0);
         for (int n = 0; n < numChecks; n++) {
-            Vector3d pos = RandomPositionGenerator.findRandomTargetBlockAwayFrom(entity, horizontalEvasion, verticalEvasion, entityEvading.getPositionVec());
+            Vec3 pos = RandomPositionGenerator.findRandomTargetBlockAwayFrom(entity, horizontalEvasion, verticalEvasion, entityEvading.getPositionVec());
             if (pos != null && !(entityEvading.getDistanceSq(pos.x, pos.y, pos.z) < entityEvading.getDistanceSq(entity))) {
                 entityPathEntity = entity.getNavigator().getPathToPos(new BlockPos(pos), 0);
                 if (entityPathEntity != null) {

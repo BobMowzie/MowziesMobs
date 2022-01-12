@@ -7,9 +7,9 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector2f;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.math.MathHelper;
+import net.minecraft.world.phys.Vector2f;
 
 public class AnimationSunStrike<T extends MowzieEntity & IAnimatedEntity> extends SimpleAnimationAI<T> {
     protected LivingEntity entityTarget;
@@ -67,7 +67,7 @@ public class AnimationSunStrike<T extends MowzieEntity & IAnimatedEntity> extend
                 }
             }
         }
-        if (!entity.world.isRemote && entity.getAnimationTick() == 9) {
+        if (!entity.world.isClientSide && entity.getAnimationTick() == 9) {
             entity.playSound(MMSounds.ENTITY_BARAKO_ATTACK.get(), 1.4f, 1);
             EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE, entity.world, entity, newX, y, newZ);
             sunstrike.onSummon();

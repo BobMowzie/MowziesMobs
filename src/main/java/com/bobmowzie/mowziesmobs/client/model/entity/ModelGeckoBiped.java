@@ -10,10 +10,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.util.Hand;
-import net.minecraft.util.HandSide;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.resources.Hand;
+import net.minecraft.resources.HandSide;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.math.MathHelper;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 
 public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {

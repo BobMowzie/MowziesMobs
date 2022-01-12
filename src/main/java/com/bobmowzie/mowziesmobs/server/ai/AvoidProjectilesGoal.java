@@ -1,15 +1,15 @@
 package com.bobmowzie.mowziesmobs.server.ai;
 
-import net.minecraft.world.entity.CreatureEntity;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.RandomPositionGenerator;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.projectile.ProjectileEntity;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathNavigator;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.resources.math.AxisAlignedBB;
+import net.minecraft.resources.math.RayTraceContext;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
@@ -18,30 +18,30 @@ import java.util.function.Predicate;
 
 // Copied from AvoidEntityGoal
 public class AvoidProjectilesGoal extends Goal {
-    protected final CreatureEntity entity;
+    protected final PathfinderMob entity;
     private final double farSpeed;
     private final double nearSpeed;
     protected ProjectileEntity avoidTarget;
     protected final float avoidDistance;
     protected Path path;
-    protected Vector3d dodgeVec;
+    protected Vec3 dodgeVec;
     protected final PathNavigator navigation;
     /** Class of entity this behavior seeks to avoid */
     protected final Class<ProjectileEntity> classToAvoid;
     protected final Predicate<ProjectileEntity> avoidTargetSelector;
     private int dodgeTimer = 0;
 
-    public AvoidProjectilesGoal(CreatureEntity entityIn, Class<ProjectileEntity> classToAvoidIn, float avoidDistanceIn, double farSpeedIn, double nearSpeedIn) {
+    public AvoidProjectilesGoal(PathfinderMob entityIn, Class<ProjectileEntity> classToAvoidIn, float avoidDistanceIn, double farSpeedIn, double nearSpeedIn) {
         this(entityIn, classToAvoidIn, (entity) -> {
             return true;
         }, avoidDistanceIn, farSpeedIn, nearSpeedIn);
     }
 
-    public AvoidProjectilesGoal(CreatureEntity entityIn, Class<ProjectileEntity> avoidClass, Predicate<ProjectileEntity> targetPredicate, float distance, double nearSpeedIn, double farSpeedIn) {
+    public AvoidProjectilesGoal(PathfinderMob entityIn, Class<ProjectileEntity> avoidClass, Predicate<ProjectileEntity> targetPredicate, float distance, double nearSpeedIn, double farSpeedIn) {
         this.entity = entityIn;
         this.classToAvoid = avoidClass;
         this.avoidTargetSelector = targetPredicate.and(target -> {
-            Vector3d aActualMotion = new Vector3d(target.getPosX() - target.prevPosX, target.getPosY() - target.prevPosY, target.getPosZ() - target.prevPosZ);
+            Vec3 aActualMotion = new Vec3(target.getPosX() - target.prevPosX, target.getPosY() - target.prevPosY, target.getPosZ() - target.prevPosZ);
             if (aActualMotion.length() < 0.1 || target.ticksExisted < 0) {
                 return false;
             }
@@ -66,20 +66,20 @@ public class AvoidProjectilesGoal extends Goal {
         if (this.avoidTarget == null) {
             return false;
         } else {
-            Vector3d projectilePos = guessProjectileDestination(this.avoidTarget);
-//            Vector3d vector3d = entity.getPositionVec().subtract(projectilePos);
+            Vec3 projectilePos = guessProjectileDestination(this.avoidTarget);
+//            Vec3 vector3d = entity.getPositionVec().subtract(projectilePos);
 //            entity.setMotion(entity.getMotion().add(vector3d.normalize().scale(1.0)));
 
-            dodgeVec = avoidTarget.getMotion().crossProduct(new Vector3d(0, 1, 0)).normalize().scale(1);
-            Vector3d newPosLeft = entity.getPositionVec().add(dodgeVec);
-            Vector3d newPosRight = entity.getPositionVec().add(dodgeVec.scale(-1));
-            Vector3d diffLeft = newPosLeft.subtract(projectilePos);
-            Vector3d diffRight = newPosRight.subtract(projectilePos);
+            dodgeVec = avoidTarget.getMotion().crossProduct(new Vec3(0, 1, 0)).normalize().scale(1);
+            Vec3 newPosLeft = entity.getPositionVec().add(dodgeVec);
+            Vec3 newPosRight = entity.getPositionVec().add(dodgeVec.scale(-1));
+            Vec3 diffLeft = newPosLeft.subtract(projectilePos);
+            Vec3 diffRight = newPosRight.subtract(projectilePos);
             if (diffRight.lengthSquared() > diffLeft.lengthSquared()) {
                 dodgeVec = dodgeVec.scale(-1);
             }
-            Vector3d dodgeDest = diffRight.lengthSquared() > diffLeft.lengthSquared() ? newPosRight : newPosLeft;
-            Vector3d vector3d = RandomPositionGenerator.findRandomTargetBlockTowards(this.entity, 5, 3, dodgeDest);
+            Vec3 dodgeDest = diffRight.lengthSquared() > diffLeft.lengthSquared() ? newPosRight : newPosLeft;
+            Vec3 vector3d = RandomPositionGenerator.findRandomTargetBlockTowards(this.entity, 5, 3, dodgeDest);
             if (vector3d == null) {
                 this.path = null;
                 return true;
@@ -131,9 +131,9 @@ public class AvoidProjectilesGoal extends Goal {
 
     }
 
-    private Vector3d guessProjectileDestination(ProjectileEntity projectile) {
-        Vector3d vector3d = projectile.getPositionVec();
-        Vector3d vector3d1 = vector3d.add(projectile.getMotion().scale(50));
+    private Vec3 guessProjectileDestination(ProjectileEntity projectile) {
+        Vec3 vector3d = projectile.getPositionVec();
+        Vec3 vector3d1 = vector3d.add(projectile.getMotion().scale(50));
         return entity.world.rayTraceBlocks(new RayTraceContext(vector3d, vector3d1, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, projectile)).getHitVec();
     }
 

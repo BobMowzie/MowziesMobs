@@ -7,8 +7,8 @@ import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.resources.SoundEvent;
 
 import java.util.List;
 

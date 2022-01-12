@@ -4,13 +4,13 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.resources.ActionResult;
+import net.minecraft.resources.Hand;
+import net.minecraft.resources.text.ITextComponent;
+import net.minecraft.resources.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -26,7 +26,7 @@ public class ItemGrantSunsBlessing extends Item {
 
     @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, Player playerIn, Hand hand) {
-        playerIn.addPotionEffect(new EffectInstance(EffectHandler.SUNS_BLESSING, ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.effectDuration.get() * 60 * 20, 0, false, false));
+        playerIn.addPotionEffect(new MobEffectInstance(EffectHandler.SUNS_BLESSING, ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.effectDuration.get() * 60 * 20, 0, false, false));
         return super.onItemRightClick(worldIn, playerIn, hand);
     }
 

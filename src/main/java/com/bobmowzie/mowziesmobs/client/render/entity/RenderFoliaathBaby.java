@@ -5,7 +5,7 @@ import com.bobmowzie.mowziesmobs.client.model.entity.ModelFoliaathBaby;
 import com.bobmowzie.mowziesmobs.server.entity.foliaath.EntityBabyFoliaath;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

@@ -6,8 +6,8 @@ import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
@@ -28,12 +28,12 @@ public class MessageSunblockEffect {
         this.hasSunblock = activate;
     }
 
-    public static void serialize(final MessageSunblockEffect message, final PacketBuffer buf) {
+    public static void serialize(final MessageSunblockEffect message, final FriendlyByteBuf buf) {
         buf.writeVarInt(message.entityID);
         buf.writeBoolean(message.hasSunblock);
     }
 
-    public static MessageSunblockEffect deserialize(final PacketBuffer buf) {
+    public static MessageSunblockEffect deserialize(final FriendlyByteBuf buf) {
         final MessageSunblockEffect message = new MessageSunblockEffect();
         message.entityID = buf.readVarInt();
         message.hasSunblock = buf.readBoolean();

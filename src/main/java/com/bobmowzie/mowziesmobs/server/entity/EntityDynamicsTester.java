@@ -42,7 +42,7 @@ public class EntityDynamicsTester extends MowzieEntity {
     @Override
     public void tick() {
         super.tick();
-        if (world.isRemote) {
+        if (world.isClientSide) {
             if (ticksExisted == 1) {
                 dc = new DynamicChain(this);
             }

@@ -9,7 +9,7 @@ import com.bobmowzie.mowziesmobs.server.capability.PlayerCapability;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.client.audio.TickableSound;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.resources.SoundCategory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

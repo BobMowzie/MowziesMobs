@@ -18,9 +18,9 @@ import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
-import net.minecraft.block.*;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeModifierMap;
@@ -29,22 +29,22 @@ import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.RandomWalkingGoal;
 import net.minecraft.world.entity.ai.goal.LookAtGoal;
 import net.minecraft.world.entity.ai.goal.LookRandomlyGoal;
-import net.minecraft.world.entity.item.minecart.AbstractMinecartEntity;
+import net.minecraft.world.entity.item.minecart.AbstractMinecart;
 import net.minecraft.world.entity.item.minecart.MinecartEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.ServerPlayer;
-import net.minecraft.block.Blocks;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.pathfinding.PathNodeType;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.SoundEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.math.MathHelper;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -205,7 +205,7 @@ public class EntityGrottol extends MowzieEntity {
         if (entity instanceof Player) {
             Player player = (Player) entity;
             if (EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, player.getHeldItemMainhand()) > 0) {
-                if (!world.isRemote && isAlive()) {
+                if (!world.isClientSide && isAlive()) {
                     entityDropItem(ItemHandler.CAPTURED_GROTTOL.create(this), 0.0F);
                     BlockState state = Blocks.STONE.getDefaultState();
                     SoundType sound = state.getBlock().getSoundType(state, world, this.getPosition(), entity);
@@ -264,10 +264,10 @@ public class EntityGrottol extends MowzieEntity {
     @Override
     public void tick() {
         super.tick();
-        if (!world.isRemote) {
+        if (!world.isClientSide) {
             Entity e = getRidingEntity();
             if (isMinecart(e)) {
-                AbstractMinecartEntity minecart = (AbstractMinecartEntity) e;
+                AbstractMinecart minecart = (AbstractMinecart) e;
                 reader.accept(minecart);
                 boolean onRail = isBlockRail(world.getBlockState(e.getPosition()).getBlock());
                 if ((timeSinceMinecart > 3 && e.getMotion().length() < 0.001) || !onRail) {
@@ -283,7 +283,7 @@ public class EntityGrottol extends MowzieEntity {
 //        if (ticksExisted == 1) System.out.println("Grottle at " + getPosition());
 
         //Sparkle particles
-        if (world.isRemote && isAlive() && rand.nextInt(15) == 0) {
+        if (world.isClientSide && isAlive() && rand.nextInt(15) == 0) {
             double x = getPosX() + 0.5f * (2 * rand.nextFloat() - 1f);
             double y = getPosY() + 0.8f + 0.3f * (2 * rand.nextFloat() - 1f);
             double z = getPosZ() + 0.5f * (2 * rand.nextFloat() - 1f);
@@ -311,19 +311,19 @@ public class EntityGrottol extends MowzieEntity {
         if (timeSinceDeflectSound < 5) timeSinceDeflectSound++;
 
         // AI Task
-        if (!world.isRemote && fleeTime >= 55 && getAnimation() == NO_ANIMATION && !isAIDisabled() && !isPotionActive(EffectHandler.FROZEN)) {
+        if (!world.isClientSide && fleeTime >= 55 && getAnimation() == NO_ANIMATION && !isAIDisabled() && !isPotionActive(EffectHandler.FROZEN)) {
             BlockState blockBeneath = world.getBlockState(getPosition().down());
             if (isBlockDiggable(blockBeneath)) {
                 AnimationHandler.INSTANCE.sendAnimationMessage(this, BURROW_ANIMATION);
             }
         }
-        if (!world.isRemote && getAnimation() == BURROW_ANIMATION) {
+        if (!world.isClientSide && getAnimation() == BURROW_ANIMATION) {
             if (getAnimationTick() % 4 == 3) {
                 playSound(MMSounds.ENTITY_GROTTOL_BURROW.get(), 1, 0.8f + rand.nextFloat() * 0.4f);
                 BlockState blockBeneath = world.getBlockState(getPosition().down());
                 Material mat = blockBeneath.getMaterial();
                 if (mat == Material.EARTH || mat == Material.SAND || mat == Material.CLAY || mat == Material.ROCK || mat == Material.ORGANIC) {
-                    Vector3d pos = new Vector3d(0.5D, 0.05D, 0.0D).rotateYaw((float) Math.toRadians(-renderYawOffset - 90));
+                    Vec3 pos = new Vec3(0.5D, 0.05D, 0.0D).rotateYaw((float) Math.toRadians(-renderYawOffset - 90));
                     if (world instanceof ServerWorld) {
                         ((ServerWorld) world).spawnParticle(new BlockParticleData(ParticleTypes.BLOCK, blockBeneath),
                                 getPosX() + pos.x, getPosY() + pos.y, getPosZ() + pos.z,
@@ -351,7 +351,7 @@ public class EntityGrottol extends MowzieEntity {
     private boolean isBlackPinkInYourArea() {
         Entity e = getRidingEntity();
         /*if (isMinecart(e)) {
-            BlockState state = ((AbstractMinecartEntity) e).getDisplayTile();
+            BlockState state = ((AbstractMinecart) e).getDisplayTile();
             return state.getBlock() == BlockHandler.GROTTOL.get() && state.get(BlockGrottol.VARIANT) == BlockGrottol.Variant.BLACK_PINK;
         }*/
         return false;
@@ -363,7 +363,7 @@ public class EntityGrottol extends MowzieEntity {
 
     /*public boolean hasMinecartBlockDisplay() {
         Entity entity = getRidingEntity();
-        return isMinecart(entity) && ((AbstractMinecartEntity) entity).getDisplayTile().getBlock() == BlockHandler.GROTTOL.get();
+        return isMinecart(entity) && ((AbstractMinecart) entity).getDisplayTile().getBlock() == BlockHandler.GROTTOL.get();
     }*/
 
     private static boolean isMinecart(Entity entity) {
@@ -380,7 +380,7 @@ public class EntityGrottol extends MowzieEntity {
     @Override
     public boolean startRiding(Entity entity, boolean force) {
         /*if (isMinecart(entity)) {
-                AbstractMinecartEntity minecart = (AbstractMinecartEntity) entity;
+                AbstractMinecart minecart = (AbstractMinecart) entity;
                 if (minecart.getDisplayTile().getBlock() != BlockHandler.GROTTOL.get()) {
                     minecart.setDisplayTile(BlockHandler.GROTTOL.get().getDefaultState());
                     minecart.setDisplayTileOffset(minecart.getDefaultDisplayTileOffset());
@@ -394,7 +394,7 @@ public class EntityGrottol extends MowzieEntity {
 //        Entity entity = this.getRidingEntity();
         super.stopRiding();
 //        if (isMinecart(entity)) {
-//            ((AbstractMinecartEntity) entity).setHasDisplayTile(false);
+//            ((AbstractMinecart) entity).setHasDisplayTile(false);
 //        }
     }
 

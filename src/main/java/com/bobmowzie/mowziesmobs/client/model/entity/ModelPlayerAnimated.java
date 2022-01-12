@@ -6,7 +6,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.resources.model.ModelRenderer;
 import net.minecraft.world.entity.LivingEntity;
 
 import java.util.List;

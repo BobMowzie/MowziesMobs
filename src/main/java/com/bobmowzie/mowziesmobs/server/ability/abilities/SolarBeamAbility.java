@@ -9,9 +9,9 @@ import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySolarBeam;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 
 public class SolarBeamAbility extends Ability {
     protected EntitySolarBeam solarBeam;
@@ -28,18 +28,18 @@ public class SolarBeamAbility extends Ability {
     public void start() {
         super.start();
         LivingEntity user = getUser();
-        if (!getUser().world.isRemote()) {
+        if (!getUser().world.isClientSide()) {
             EntitySolarBeam solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM, user.world, user, user.getPosX(), user.getPosY() + 1.2f, user.getPosZ(), (float) ((user.getYRot()Head + 90) * Math.PI / 180), (float) (-user.getXRot() * Math.PI / 180), 55);
             solarBeam.setHasPlayer(true);
             user.world.addEntity(solarBeam);
-            user.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 80, 2, false, false));
-            EffectInstance sunsBlessingInstance = user.getActivePotionEffect(EffectHandler.SUNS_BLESSING);
+            user.addPotionEffect(new MobEffectInstance(MobEffects.SLOWNESS, 80, 2, false, false));
+            MobEffectInstance sunsBlessingInstance = user.getActivePotionEffect(EffectHandler.SUNS_BLESSING);
             if (sunsBlessingInstance != null) {
                 int duration = sunsBlessingInstance.getDuration();
                 user.removePotionEffect(EffectHandler.SUNS_BLESSING);
                 int solarBeamCost = ConfigHandler.COMMON.TOOLS_AND_ABILITIES.SUNS_BLESSING.solarBeamCost.get() * 60 * 20;
                 if (duration - solarBeamCost > 0) {
-                    user.addPotionEffect(new EffectInstance(EffectHandler.SUNS_BLESSING, duration - solarBeamCost, 0, false, false));
+                    user.addPotionEffect(new MobEffectInstance(EffectHandler.SUNS_BLESSING, duration - solarBeamCost, 0, false, false));
                 }
             }
 

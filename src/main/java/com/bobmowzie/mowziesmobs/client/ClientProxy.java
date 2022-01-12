@@ -9,24 +9,24 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.*;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayer;
 import net.minecraft.client.particle.DiggingParticle;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.minecart.AbstractMinecartEntity;
+import net.minecraft.world.entity.item.minecart.AbstractMinecart;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.item.IItemPropertyGetter;
-import net.minecraft.item.ItemModelsProperties;
-import net.minecraft.item.Items;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.item.IItemPropertyGetter;
+import net.minecraft.world.item.ItemModelsProperties;
+import net.minecraft.world.item.Items;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -88,7 +88,7 @@ public class ClientProxy extends ServerProxy {
     }
 
     @Override
-    public void playBlackPinkSound(AbstractMinecartEntity entity) {
+    public void playBlackPinkSound(AbstractMinecart entity) {
         Minecraft.getInstance().getSoundHandler().play(new BlackPinkSound(entity));
     }
 
@@ -98,7 +98,7 @@ public class ClientProxy extends ServerProxy {
     }
 
     @Override
-    public void minecartParticles(ClientWorld world, AbstractMinecartEntity minecart, float scale, double x, double y, double z, BlockState state, BlockPos pos) {
+    public void minecartParticles(ClientLevel world, AbstractMinecart minecart, float scale, double x, double y, double z, BlockState state, BlockPos pos) {
         final int size = 3;
         float offset =  -0.5F * scale;
         for (int ix = 0; ix < size; ix++) {
@@ -107,7 +107,7 @@ public class ClientProxy extends ServerProxy {
                     double dx = (double) ix / size * scale;
                     double dy = (double) iy / size * scale;
                     double dz = (double) iz / size * scale;
-                    Vector3d minecartMotion = minecart.getMotion();
+                    Vec3 minecartMotion = minecart.getMotion();
                     Minecraft.getInstance().particles.addEffect(new DiggingParticle(
                             world,
                             x + dx + offset, y + dy + offset, z + dz + offset,

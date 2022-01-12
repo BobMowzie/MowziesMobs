@@ -1,8 +1,8 @@
 package com.bobmowzie.mowziesmobs.server.world;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.RegistryKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.registries.ForgeRegistries;

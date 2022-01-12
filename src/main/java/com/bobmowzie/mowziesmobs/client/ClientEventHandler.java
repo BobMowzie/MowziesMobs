@@ -25,10 +25,10 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.resources.Hand;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.math.MathHelper;
+import net.minecraft.resources.text.TranslationTextComponent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
@@ -37,7 +37,7 @@ import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec3;
 import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Min;
 
 @OnlyIn(Dist.CLIENT)
@@ -118,9 +118,9 @@ public enum ClientEventHandler {
 //        if (player != null) {
 //            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
 //            if (playerCapability != null && playerCapability.getGeomancy().canUse(player) && playerCapability.getGeomancy().isSpawningBoulder() && playerCapability.getGeomancy().getSpawnBoulderCharge() > 2) {
-//                Vector3d lookPos = playerCapability.getGeomancy().getLookPos();
-//                Vector3d playerEyes = player.getEyePosition(Minecraft.getInstance().getRenderPartialTicks());
-//                Vector3d vec = playerEyes.subtract(lookPos).normalize();
+//                Vec3 lookPos = playerCapability.getGeomancy().getLookPos();
+//                Vec3 playerEyes = player.getEyePosition(Minecraft.getInstance().getRenderPartialTicks());
+//                Vec3 vec = playerEyes.subtract(lookPos).normalize();
 //                float yaw = (float) Math.atan2(vec.z, vec.x);
 //                float pitch = (float) Math.asin(vec.y);
 //                player.getYRot() = (float) (yaw * 180f/Math.PI + 90);
@@ -248,9 +248,9 @@ public enum ClientEventHandler {
         if (player != null) {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
             if (playerCapability != null && playerCapability.getGeomancy().canUse(player) && playerCapability.getGeomancy().isSpawningBoulder() && playerCapability.getGeomancy().getSpawnBoulderCharge() > 2) {
-                Vector3d lookPos = playerCapability.getGeomancy().getLookPos();
-                Vector3d playerEyes = player.getEyePosition(delta);
-                Vector3d vec = playerEyes.subtract(lookPos).normalize();
+                Vec3 lookPos = playerCapability.getGeomancy().getLookPos();
+                Vec3 playerEyes = player.getEyePosition(delta);
+                Vec3 vec = playerEyes.subtract(lookPos).normalize();
                 float yaw = (float) Math.atan2(vec.z, vec.x);
                 float pitch = (float) Math.asin(vec.y);
                 player.getYRot() = (float) (yaw * 180f/Math.PI + 90);
