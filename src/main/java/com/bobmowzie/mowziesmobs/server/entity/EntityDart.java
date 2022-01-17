@@ -2,6 +2,7 @@ package com.bobmowzie.mowziesmobs.server.entity;
 
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoa;
+import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarakoanToPlayer;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import net.minecraft.entity.Entity;
@@ -63,7 +64,12 @@ public class EntityDart extends ArrowEntity {
             Entity shooter = getShooter();
             if (hit instanceof LivingEntity) {
                 LivingEntity living = (LivingEntity) hit;
-                if (world.isRemote || (shooter == hit) || (shooter instanceof EntityBarakoa && living instanceof EntityBarakoa && ((EntityBarakoa) shooter).isBarakoDevoted() == ((EntityBarakoa) living).isBarakoDevoted()))
+                if (
+                        world.isRemote ||
+                        (shooter == hit) ||
+                        (shooter instanceof EntityBarakoa && living instanceof EntityBarakoa && ((EntityBarakoa) shooter).isBarakoDevoted() == ((EntityBarakoa) living).isBarakoDevoted()) ||
+                        (shooter instanceof EntityBarakoanToPlayer && living == ((EntityBarakoanToPlayer) shooter).getLeader())
+                )
                     return;
             }
         }
