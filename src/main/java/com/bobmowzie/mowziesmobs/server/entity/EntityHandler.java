@@ -40,7 +40,7 @@ public class EntityHandler {
     public static final EntityType<EntityGrottol> GROTTOL = register("grottol", EntityType.Builder.create(EntityGrottol::new, EntityClassification.MONSTER).size(0.9F, 1.2F).setUpdateInterval(1));
     public static final EntityType<EntityLantern> LANTERN = register("lantern", EntityType.Builder.create(EntityLantern::new, EntityClassification.AMBIENT).size(1.0f, 1.0f).setUpdateInterval(1));
     public static final EntityType<EntityNaga> NAGA = register("naga", EntityType.Builder.create(EntityNaga::new, EntityClassification.MONSTER).size(3.0f, 1.0f).setTrackingRange(128).setUpdateInterval(1));
-    public static final EntityType<EntitySculptor> SCULPTOR = register("sculptor", EntityType.Builder.create(EntitySculptor::new, EntityClassification.MISC).size(1.0f, 2.0f).setUpdateInterval(1));
+//    public static final EntityType<EntitySculptor> SCULPTOR = register("sculptor", EntityType.Builder.create(EntitySculptor::new, EntityClassification.MISC).size(1.0f, 2.0f).setUpdateInterval(1));
 
     private static final EntityType.Builder<EntitySunstrike> sunstrikeBuilder = EntityType.Builder.create(EntitySunstrike::new, EntityClassification.MISC);
     public static final EntityType<EntitySunstrike> SUNSTRIKE = register("sunstrike", sunstrikeBuilder.size(0.1F, 0.1F));
@@ -112,6 +112,6 @@ public class EntityHandler {
         event.put(EntityHandler.NAGA, EntityNaga.createAttributes().create());
         event.put(EntityHandler.LANTERN, EntityLantern.createAttributes().create());
         event.put(EntityHandler.GROTTOL, EntityGrottol.createAttributes().create());
-        event.put(EntityHandler.SCULPTOR, EntitySculptor.createAttributes().create());
+//        event.put(EntityHandler.SCULPTOR, EntitySculptor.createAttributes().create());
     }
 }

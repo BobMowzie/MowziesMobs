@@ -134,7 +134,7 @@ public final class MowziesMobs {
         RenderingRegistry.registerEntityRenderingHandler(EntityHandler.GROTTOL, RenderGrottol::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityHandler.LANTERN, RenderLantern::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityHandler.NAGA, RenderNaga::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.SCULPTOR, RenderSculptor::new);
+//        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.SCULPTOR, RenderSculptor::new);
 
         RenderingRegistry.registerEntityRenderingHandler(EntityHandler.DART, RenderDart::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityHandler.SUNSTRIKE, RenderSunstrike::new);
