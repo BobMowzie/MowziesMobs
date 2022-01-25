@@ -1,14 +1,13 @@
 package com.bobmowzie.mowziesmobs.server.entity;
 
 import com.bobmowzie.mowziesmobs.client.model.tools.IntermittentAnimation;
-import com.bobmowzie.mowziesmobs.client.sound.BossMusicSound;
+import com.bobmowzie.mowziesmobs.client.sound.BossMusicPlayer;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.world.spawn.SpawnHandler;
 import com.ilexiconn.llibrary.server.animation.Animation;
 import com.ilexiconn.llibrary.server.animation.AnimationHandler;
 import com.ilexiconn.llibrary.server.animation.IAnimatedEntity;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.*;
 import net.minecraft.entity.CreatureEntity;
@@ -73,8 +72,6 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     private PlayerEntity killDataAttackingPlayer;
 
     private final MMBossInfoServer bossInfo = new MMBossInfoServer(this);
-
-    public static BossMusicSound bossMusic;
 
     public MowzieEntity(EntityType<? extends MowzieEntity> type, World world) {
         super(type, world);
@@ -195,7 +192,6 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         willLandSoon = !onGround && world.hasNoCollisions(getBoundingBox().offset(getMotion()));
 
         if (!world.isRemote && getBossMusic() != null) {
-            PlayerEntity player = Minecraft.getInstance().player;
             if (canPlayMusic()) {
                 this.world.setEntityState(this, MUSIC_PLAY_ID);
             }
@@ -209,7 +205,7 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         return !isSilent() && getAttackTarget() instanceof PlayerEntity;
     }
 
-    protected boolean canPlayerHearMusic(PlayerEntity player) {
+    public boolean canPlayerHearMusic(PlayerEntity player) {
         return player != null
                 && canAttack(player)
                 && getDistance(player) < 2500;
@@ -431,36 +427,10 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
             intermittentAnimations.get(id - START_IA_HEALTH_UPDATE_ID).start();
         }
         else if (id == MUSIC_PLAY_ID) {
-            SoundEvent soundEvent = getBossMusic();
-            if (soundEvent != null && this.isAlive()) {
-                PlayerEntity player = Minecraft.getInstance().player;
-                if (bossMusic != null) {
-                    float f2 = Minecraft.getInstance().gameSettings.getSoundLevel(SoundCategory.MUSIC);
-                    if (f2 <= 0) {
-                        bossMusic = null;
-                    }
-                    else if (bossMusic.getBoss() == this && !canPlayerHearMusic(player)) {
-                        bossMusic.setBoss(null);
-                    }
-                }
-                else {
-                    if (canPlayerHearMusic(player)) {
-                        if (bossMusic == null) {
-                            bossMusic = new BossMusicSound(getBossMusic(), this);
-                        }
-                        else if (bossMusic.getBoss() == null && bossMusic.getSoundEvent() == soundEvent) {
-                            bossMusic.setBoss(this);
-                        }
-                    }
-                }
-                if (bossMusic != null && !Minecraft.getInstance().getSoundHandler().isPlaying(bossMusic)) {
-                    Minecraft.getInstance().getSoundHandler().play(bossMusic);
-                }
-            }
+            BossMusicPlayer.playBossMusic(this);
         }
         else if (id == MUSIC_STOP_ID) {
-            if (bossMusic != null && bossMusic.getBoss() == this)
-                bossMusic.setBoss(null);
+            BossMusicPlayer.stopBossMusic(this);
         }
         else super.handleStatusUpdate(id);
     }

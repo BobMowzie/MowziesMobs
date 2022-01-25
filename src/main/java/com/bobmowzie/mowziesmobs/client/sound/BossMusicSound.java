@@ -34,7 +34,7 @@ public class BossMusicSound extends TickableSound {
     }
 
     public boolean shouldPlaySound() {
-        return MowzieEntity.bossMusic == this;
+        return BossMusicPlayer.bossMusic == this;
     }
 
     public void tick() {
@@ -46,7 +46,7 @@ public class BossMusicSound extends TickableSound {
 
         if (volumeControl.getAnimationFraction() < 0.025) {
             finishPlaying();
-            MowzieEntity.bossMusic = null;
+            BossMusicPlayer.bossMusic = null;
         }
 
         volume = volumeControl.getAnimationFraction();
