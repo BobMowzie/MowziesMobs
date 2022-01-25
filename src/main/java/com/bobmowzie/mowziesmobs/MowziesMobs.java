@@ -11,7 +11,6 @@ import com.bobmowzie.mowziesmobs.server.ServerEventHandler;
 import com.bobmowzie.mowziesmobs.server.ServerProxy;
 import com.bobmowzie.mowziesmobs.server.advancement.AdvancementHandler;
 import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
-import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
 import com.bobmowzie.mowziesmobs.server.creativetab.CreativeTabHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
@@ -35,6 +34,7 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -62,6 +62,7 @@ public final class MowziesMobs {
         PROXY = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
         final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         CreativeTabHandler.INSTANCE.onInit();
+        EntityHandler.REG.register(bus);
         MMSounds.REG.register(bus);
         BlockHandler.REG.register(bus);
         ParticleHandler.REG.register(bus);
@@ -69,13 +70,11 @@ public final class MowziesMobs {
 
         PROXY.init(bus);
         bus.<FMLCommonSetupEvent>addListener(this::init);
-        bus.<FMLClientSetupEvent>addListener(this::init);
-        bus.<ModelRegistryEvent>addListener(this::init);
         bus.<FMLLoadCompleteEvent>addListener(this::init);
 
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(new ServerEventHandler());
-        MinecraftForge.EVENT_BUS.register(new AbilityCapability.AbilityEventHandler());
+//        MinecraftForge.EVENT_BUS.register(new AbilityCapability.AbilityEventHandler());
     }
 
     public void init(final FMLCommonSetupEvent event) {
@@ -108,51 +107,5 @@ public final class MowziesMobs {
     @SubscribeEvent
     public void onWorldLoad(final WorldEvent.Load event) {
         FeatureHandler.addDimensionalSpacing(event);
-    }
-
-    private void init(ModelRegistryEvent modelRegistryEvent) {
-        for (String item : MMModels.HAND_MODEL_ITEMS) {
-            ModelLoader.addSpecialModel(new ModelResourceLocation(MowziesMobs.MODID + ":" + item + "_in_hand", "inventory"));
-        }
-        for (MaskType type : MaskType.values()) {
-            ModelLoader.addSpecialModel(new ModelResourceLocation(MowziesMobs.MODID + ":barakoa_mask_" + type.name + "_frame", "inventory"));
-        }
-    }
-
-    private void init(final FMLClientSetupEvent event) {
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.BABY_FOLIAATH, RenderFoliaathBaby::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.FOLIAATH, RenderFoliaath::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.WROUGHTNAUT, RenderWroughtnaut::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.BARAKO, RenderBarako::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.BARAKOANA, RenderBarakoa::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.BARAKOAN_TO_BARAKOANA, RenderBarakoa::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.BARAKOA_VILLAGER, RenderBarakoa::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.BARAKOAN_TO_PLAYER, RenderBarakoa::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.BARAKOAYA_TO_PLAYER, RenderBarakoa::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.BARAKOAYA, RenderBarakoa::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.FROSTMAW, RenderFrostmaw::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.GROTTOL, RenderGrottol::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.LANTERN, RenderLantern::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.NAGA, RenderNaga::new);
-//        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.SCULPTOR, RenderSculptor::new);
-
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.DART, RenderDart::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.SUNSTRIKE, RenderSunstrike::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.SOLAR_BEAM, RenderSolarBeam::new);
-        for (EntityType<EntityBoulder> boulderType : EntityHandler.BOULDERS) {
-            RenderingRegistry.registerEntityRenderingHandler(boulderType, RenderBoulder::new);
-        }
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.AXE_ATTACK, RenderAxeAttack::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.POISON_BALL, RenderPoisonBall::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.ICE_BALL, RenderIceBall::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.ICE_BREATH, RenderNothing::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.FROZEN_CONTROLLER, RenderNothing::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.SUPER_NOVA, RenderSuperNova::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.FALLING_BLOCK, RenderFallingBlock::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.BLOCK_SWAPPER, RenderNothing::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityHandler.CAMERA_SHAKE, RenderNothing::new);
-
-        ScreenManager.registerFactory(ContainerHandler.CONTAINER_BARAKOAYA_TRADE, GuiBarakoayaTrade::new);
-        ScreenManager.registerFactory(ContainerHandler.CONTAINER_BARAKO_TRADE, GuiBarakoTrade::new);
     }
 }

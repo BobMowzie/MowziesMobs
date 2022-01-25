@@ -597,7 +597,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
 
     @Override
     public void attackEntityWithRangedAttack(LivingEntity target, float p_82196_2_) {
-        AbstractArrowEntity dart = new EntityDart(EntityHandler.DART, this.world, this);
+        AbstractArrowEntity dart = new EntityDart(EntityHandler.DART.get(), this.world, this);
         Vector3d targetPos = target.getPositionVec();
         double dx = targetPos.getX() - this.getPosX();
         double dy = target.getBoundingBox().minY + (double)(target.getHeight() / 3.0F) - dart.getPositionVec().getY();

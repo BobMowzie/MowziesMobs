@@ -58,7 +58,7 @@ public class ItemFoliaathSeed extends Item {
         } else if (!player.canPlayerEdit(pos.offset(facing), facing, stack)) {
             return ActionResultType.FAIL;
         }
-        Entity entity = spawnCreature((ServerWorld) world, new EntityBabyFoliaath(EntityHandler.BABY_FOLIAATH, world), pos.getX(), pos.getY() + 1, pos.getZ());
+        Entity entity = spawnCreature((ServerWorld) world, new EntityBabyFoliaath(EntityHandler.BABY_FOLIAATH.get(), world), pos.getX(), pos.getY() + 1, pos.getZ());
         if (entity != null) {
             if (entity instanceof LivingEntity && stack.hasDisplayName()) {
                 entity.setCustomName(stack.getDisplayName());

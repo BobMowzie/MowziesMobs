@@ -28,7 +28,7 @@ public class EntityCameraShake extends Entity {
     }
 
     public EntityCameraShake(World world, Vector3d position, float radius, float magnitude, int duration, int fadeDuration) {
-        super(EntityHandler.CAMERA_SHAKE, world);
+        super(EntityHandler.CAMERA_SHAKE.get(), world);
         setRadius(radius);
         setMagnitude(magnitude);
         setDuration(duration);

@@ -60,7 +60,7 @@ public class EntityBlockSwapper extends Entity {
 
     public static void swapBlock(World world, BlockPos pos, BlockState newBlock, int duration, boolean breakParticlesStart, boolean breakParticlesEnd) {
         if (!world.isRemote) {
-            EntityBlockSwapper swapper = new EntityBlockSwapper(EntityHandler.BLOCK_SWAPPER, world, pos, newBlock, duration, breakParticlesStart, breakParticlesEnd);
+            EntityBlockSwapper swapper = new EntityBlockSwapper(EntityHandler.BLOCK_SWAPPER.get(), world, pos, newBlock, duration, breakParticlesStart, breakParticlesEnd);
             world.addEntity(swapper);
         }
     }

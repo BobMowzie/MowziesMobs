@@ -29,7 +29,7 @@ public class SolarBeamAbility extends Ability {
         super.start();
         LivingEntity user = getUser();
         if (!getUser().world.isRemote()) {
-            EntitySolarBeam solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM, user.world, user, user.getPosX(), user.getPosY() + 1.2f, user.getPosZ(), (float) ((user.rotationYawHead + 90) * Math.PI / 180), (float) (-user.rotationPitch * Math.PI / 180), 55);
+            EntitySolarBeam solarBeam = new EntitySolarBeam(EntityHandler.SOLAR_BEAM.get(), user.world, user, user.getPosX(), user.getPosY() + 1.2f, user.getPosZ(), (float) ((user.rotationYawHead + 90) * Math.PI / 180), (float) (-user.rotationPitch * Math.PI / 180), 55);
             solarBeam.setHasPlayer(true);
             user.world.addEntity(solarBeam);
             user.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 80, 2, false, false));

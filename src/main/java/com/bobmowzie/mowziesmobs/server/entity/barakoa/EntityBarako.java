@@ -192,7 +192,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
                     if (entity.getAnimationTick() == 44) {
                         Vector3d offset = new Vector3d(1.1f, 0, 0);
                         offset = offset.rotateYaw((float) Math.toRadians(-entity.rotationYaw - 90));
-                        EntitySuperNova superNova = new EntitySuperNova(EntityHandler.SUPER_NOVA, entity.world, entity, entity.getPosX() + offset.x, entity.getPosY() + 0.05, entity.getPosZ() + offset.z);
+                        EntitySuperNova superNova = new EntitySuperNova(EntityHandler.SUPER_NOVA.get(), entity.world, entity, entity.getPosX() + offset.x, entity.getPosY() + 0.05, entity.getPosZ() + offset.z);
                         world.addEntity(superNova);
                     }
                 }

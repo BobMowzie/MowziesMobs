@@ -32,7 +32,7 @@ public class IceBreathAbility extends Ability {
         super.start();
         LivingEntity user = getUser();
         if (!getUser().world.isRemote()) {
-            EntityIceBreath iceBreath = new EntityIceBreath(EntityHandler.ICE_BREATH, user.world, user);
+            EntityIceBreath iceBreath = new EntityIceBreath(EntityHandler.ICE_BREATH.get(), user.world, user);
             iceBreath.setPositionAndRotation(user.getPosX(), user.getPosY() + user.getEyeHeight() - 0.5f, user.getPosZ(), user.rotationYaw, user.rotationPitch);
             user.world.addEntity(iceBreath);
             this.iceBreath = iceBreath;

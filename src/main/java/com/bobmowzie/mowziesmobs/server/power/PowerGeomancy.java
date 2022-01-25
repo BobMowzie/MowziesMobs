@@ -125,7 +125,7 @@ public class PowerGeomancy extends Power {
                 for (int i = 0; i < 6; i++) {
                     if (justDug == null) justDug = Blocks.DIRT.getDefaultState();
 //                        ParticleFallingBlock.spawnFallingBlock(player.world, player.getPosX(), player.getPosY() + 1, player.getPosZ(), 30f, 80, 1, player.getRNG().nextFloat() * 0.8f - 0.4f, 0.4f + player.getRNG().nextFloat() * 0.8f, player.getRNG().nextFloat() * 0.8f - 0.4f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, justDug);
-                    EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK, player.world, 80, justDug);
+                    EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK.get(), player.world, 80, justDug);
                     fallingBlock.setPosition(player.getPosX(), player.getPosY() + 1, player.getPosZ());
                     fallingBlock.setMotion(player.getRNG().nextFloat() * 0.8f - 0.4f, 0.4f + player.getRNG().nextFloat() * 0.8f, player.getRNG().nextFloat() * 0.8f - 0.4f);
                     player.world.addEntity(fallingBlock);
@@ -180,7 +180,7 @@ public class PowerGeomancy extends Power {
             }
             else {
                 int size = (int)Math.min(Math.max(0, Math.floor(spawnBoulderCharge/10.f) - 1), 2) + 1;
-                EntityType<EntityBoulder> type = EntityHandler.BOULDERS[size];
+                EntityType<EntityBoulder> type = EntityHandler.BOULDERS[size].get();
                 if (!player.world.hasNoCollisions(type.getBoundingBoxWithSizeApplied(spawnBoulderPos.getX() + 0.5F, spawnBoulderPos.getY() + 2, spawnBoulderPos.getZ() + 0.5F))) {
                     spawnBoulder(player);
                 }
@@ -255,7 +255,7 @@ public class PowerGeomancy extends Power {
     private void spawnBoulder(PlayerEntity player) {
         int size = (int)Math.min(Math.max(0, Math.floor(spawnBoulderCharge/10.f) - 1), 2);
         if (spawnBoulderCharge >= 60) size = 3;
-        EntityBoulder boulder = new EntityBoulder(EntityHandler.BOULDERS[size], player.world, player, spawnBoulderBlock, spawnBoulderPos);
+        EntityBoulder boulder = new EntityBoulder(EntityHandler.BOULDERS[size].get(), player.world, player, spawnBoulderBlock, spawnBoulderPos);
         boulder.setPosition(spawnBoulderPos.getX() + 0.5F, spawnBoulderPos.getY() + 2, spawnBoulderPos.getZ() + 0.5F);
         if (!player.world.isRemote && boulder.checkCanSpawn()) {
             player.world.addEntity(boulder);

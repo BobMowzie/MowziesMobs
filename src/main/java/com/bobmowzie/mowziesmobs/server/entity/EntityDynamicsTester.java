@@ -14,7 +14,7 @@ public class EntityDynamicsTester extends MowzieEntity {
     public DynamicChain dc;
 
     public EntityDynamicsTester(World world) {
-        super(EntityHandler.NAGA, world);
+        super(EntityHandler.NAGA.get(), world);
     }
 
     @Override

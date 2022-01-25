@@ -144,7 +144,7 @@ public class TunnelingAbility extends Ability {
 
             for (int i = 0; i < 6; i++) {
                 if (justDug == null) justDug = Blocks.DIRT.getDefaultState();
-                EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK, getUser().world, 80, justDug);
+                EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK.get(), getUser().world, 80, justDug);
                 fallingBlock.setPosition(getUser().getPosX(), getUser().getPosY() + 1, getUser().getPosZ());
                 fallingBlock.setMotion(getUser().getRNG().nextFloat() * 0.8f - 0.4f, 0.4f + getUser().getRNG().nextFloat() * 0.8f, getUser().getRNG().nextFloat() * 0.8f - 0.4f);
                 getUser().world.addEntity(fallingBlock);

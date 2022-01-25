@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class EntityIceBall extends EntityMagicEffect {
     public EntityIceBall(World world) {
-        super(EntityHandler.ICE_BALL, world);
+        super(EntityHandler.ICE_BALL.get(), world);
     }
 
     public EntityIceBall(EntityType<? extends EntityIceBall> type, World worldIn) {

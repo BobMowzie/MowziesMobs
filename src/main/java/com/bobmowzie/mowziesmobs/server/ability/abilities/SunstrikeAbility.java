@@ -54,7 +54,7 @@ public class SunstrikeAbility extends Ability {
         LivingEntity user = getUser();
         if (!user.world.isRemote()) {
             BlockPos hit = rayTrace.getPos();
-            EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE, user.world, user, hit.getX(), hit.getY(), hit.getZ());
+            EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE.get(), user.world, user, hit.getX(), hit.getY(), hit.getZ());
             sunstrike.onSummon();
             user.world.addEntity(sunstrike);
         }

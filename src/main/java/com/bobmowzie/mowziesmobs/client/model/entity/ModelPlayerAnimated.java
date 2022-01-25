@@ -8,10 +8,13 @@ import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.List;
 import java.util.Random;
 
+@OnlyIn(Dist.CLIENT)
 public class ModelPlayerAnimated<T extends LivingEntity> extends PlayerModel<T> {
     private List<ModelRenderer> modelRenderers = Lists.newArrayList();
 

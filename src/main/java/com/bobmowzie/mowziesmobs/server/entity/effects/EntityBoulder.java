@@ -77,10 +77,10 @@ public class EntityBoulder extends Entity {
     public EntityBoulder(EntityType<? extends EntityBoulder> type, World world, LivingEntity caster, BlockState blockState, BlockPos pos) {
         this(type, world);
         this.caster = caster;
-        if (type == EntityHandler.BOULDER_SMALL) setBoulderSize(BoulderSizeEnum.SMALL);
-        else if (type == EntityHandler.BOULDER_MEDIUM) setBoulderSize(BoulderSizeEnum.MEDIUM);
-        else if (type == EntityHandler.BOULDER_LARGE) setBoulderSize(BoulderSizeEnum.LARGE);
-        else if (type == EntityHandler.BOULDER_HUGE) setBoulderSize(BoulderSizeEnum.HUGE);
+        if (type == EntityHandler.BOULDER_SMALL.get()) setBoulderSize(BoulderSizeEnum.SMALL);
+        else if (type == EntityHandler.BOULDER_MEDIUM.get()) setBoulderSize(BoulderSizeEnum.MEDIUM);
+        else if (type == EntityHandler.BOULDER_LARGE.get()) setBoulderSize(BoulderSizeEnum.LARGE);
+        else if (type == EntityHandler.BOULDER_HUGE.get()) setBoulderSize(BoulderSizeEnum.HUGE);
         setSizeParams();
         if (!world.isRemote && blockState != null) {
             Block block = blockState.getBlock();
@@ -306,7 +306,7 @@ public class EntityBoulder extends Entity {
                 particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.add(new Vector3d(0, getHeight() / 4, 0));
 //                    ParticleFallingBlock.spawnFallingBlock(world, getPosX() + particlePos.x, getPosY() + 0.5 + particlePos.y, getPosZ() + particlePos.z, 10.f, 90, 1, (float) particlePos.x * 0.3f, 0.2f + (float) rand.nextFloat() * 0.6f, (float) particlePos.z * 0.3f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, getBlock());
-                EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK, world, 70, getBlock());
+                EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK.get(), world, 70, getBlock());
                 fallingBlock.setPosition(getPosX() + particlePos.x, getPosY() + 0.5 + particlePos.y, getPosZ() + particlePos.z);
                 fallingBlock.setMotion((float) particlePos.x * 0.3f, 0.2f + rand.nextFloat() * 0.6f, (float) particlePos.z * 0.3f);
                 world.addEntity(fallingBlock);
@@ -323,7 +323,7 @@ public class EntityBoulder extends Entity {
                 particlePos = particlePos.rotatePitch((float) (rand.nextFloat() * 2 * Math.PI));
                 particlePos = particlePos.add(new Vector3d(0, getHeight() / 4, 0));
 //                    ParticleFallingBlock.spawnFallingBlock(world, getPosX() + particlePos.x, getPosY() + 0.5 + particlePos.y, getPosZ() + particlePos.z, 10.f, 70, 1, (float) particlePos.x * 0.3f, 0.2f + (float) rand.nextFloat() * 0.6f, (float) particlePos.z * 0.3f, ParticleFallingBlock.EnumScaleBehavior.CONSTANT, getBlock());
-                EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK, world, 70, getBlock());
+                EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK.get(), world, 70, getBlock());
                 fallingBlock.setPosition(getPosX() + particlePos.x, getPosY() + 0.5 + particlePos.y, getPosZ() + particlePos.z);
                 fallingBlock.setMotion((float) particlePos.x * 0.3f, 0.2f + rand.nextFloat() * 0.6f, (float) particlePos.z * 0.3f);
                 world.addEntity(fallingBlock);

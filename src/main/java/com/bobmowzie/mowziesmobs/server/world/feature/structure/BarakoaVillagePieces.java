@@ -189,7 +189,7 @@ public class BarakoaVillagePieces {
             }
             else if ("barako".equals(function)) {
                 setBlockState(worldIn, pos, Blocks.AIR.getDefaultState());
-                EntityBarako barako = new EntityBarako(EntityHandler.BARAKO, worldIn.getWorld());
+                EntityBarako barako = new EntityBarako(EntityHandler.BARAKO.get(), worldIn.getWorld());
                 barako.setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
                 int i = rotation.rotate(3, 4);
                 barako.setDirection(i);
@@ -439,7 +439,7 @@ public class BarakoaVillagePieces {
             for (int i = 1; i <= numBarakoa; i++) {
                 int distance;
                 int angle;
-                EntityBarakoaVillager barakoa = new EntityBarakoaVillager(EntityHandler.BARAKOA_VILLAGER, worldIn.getWorld());
+                EntityBarakoaVillager barakoa = new EntityBarakoaVillager(EntityHandler.BARAKOA_VILLAGER.get(), worldIn.getWorld());
                 for (int j = 1; j <= 20; j++) {
                     distance = randomIn.nextInt(10) + 2;
                     angle = randomIn.nextInt(360);

@@ -28,7 +28,7 @@ public class WroughtAxeSlamAbility extends Ability {
     public void start() {
         super.start();
         if (!getUser().world.isRemote()) {
-            EntityAxeAttack axeAttack = new EntityAxeAttack(EntityHandler.AXE_ATTACK, getUser().world, getUser(), true);
+            EntityAxeAttack axeAttack = new EntityAxeAttack(EntityHandler.AXE_ATTACK.get(), getUser().world, getUser(), true);
             axeAttack.setPositionAndRotation(getUser().getPosX(), getUser().getPosY(), getUser().getPosZ(), getUser().rotationYaw, getUser().rotationPitch);
             getUser().world.addEntity(axeAttack);
             this.axeAttack = axeAttack;

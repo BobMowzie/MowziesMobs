@@ -25,7 +25,7 @@ public class ItemDart extends ArrowItem {
 
     @Override
     public AbstractArrowEntity createArrow(World world, ItemStack stack, LivingEntity shooter) {
-        return new EntityDart(EntityHandler.DART, world, shooter);
+        return new EntityDart(EntityHandler.DART.get(), world, shooter);
     }
 
     public static DamageSource causeArrowDamage(EntityDart entitydart, Entity entity) {

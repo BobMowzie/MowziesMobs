@@ -137,7 +137,7 @@ public class EntityBabyFoliaath extends MowzieEntity {
                 setHungry(true);
             }
             if (getGrowth() == 2400) {
-                EntityFoliaath adultFoliaath = new EntityFoliaath(EntityHandler.FOLIAATH, world);
+                EntityFoliaath adultFoliaath = new EntityFoliaath(EntityHandler.FOLIAATH.get(), world);
                 adultFoliaath.setPosition(getPosX(), getPosY(), getPosZ());
                 adultFoliaath.setCanDespawn(false);
                 world.addEntity(adultFoliaath);

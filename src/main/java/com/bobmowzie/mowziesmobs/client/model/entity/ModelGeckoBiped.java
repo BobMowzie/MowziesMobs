@@ -14,8 +14,11 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
 
+@OnlyIn(Dist.CLIENT)
 public class ModelGeckoBiped extends MowzieAnimatedGeoModel<GeckoPlayer> {
 	
 	private ResourceLocation animationFileLocation;

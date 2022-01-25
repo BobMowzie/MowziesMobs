@@ -105,17 +105,17 @@ public final class ItemHandler {
             new ItemLogo(new Item.Properties()).setRegistryName("logo"),
             new MusicDiscItem(14, MMSounds.MUSIC_PETIOLE, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab).maxStackSize(1).rarity(Rarity.RARE)).setRegistryName("music_disc_petiole"),
     
-            new SpawnEggItem(EntityHandler.FOLIAATH, 0x47CC3B, 0xC03BCC, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("foliaath_spawn_egg"),
-            new SpawnEggItem(EntityHandler.WROUGHTNAUT, 0x8C8C8C, 0xFFFFFF, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("wroughtnaut_spawn_egg"),
-            new SpawnEggItem(EntityHandler.BARAKOA_VILLAGER, BARAKOA_GREEN_COLOR, 0xdbdbdb, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoa_spawn_egg"),
-            new SpawnEggItem(EntityHandler.BARAKOANA, BARAKOA_GREEN_COLOR, 0xFAFA78, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoana_spawn_egg"),
-            new SpawnEggItem(EntityHandler.BARAKOAYA, BARAKOA_GREEN_COLOR, 0xff8271, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoa_sunblocker_spawn_egg"),
-            new SpawnEggItem(EntityHandler.BARAKO, BARAKOA_GREEN_COLOR, 0xFFFF2F, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barako_spawn_egg"),
-            new SpawnEggItem(EntityHandler.FROSTMAW, 0xf7faff, 0xafcdff, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("frostmaw_spawn_egg"),
-            new SpawnEggItem(EntityHandler.GROTTOL, 0x777777, 0xbce0ff, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("grottol_spawn_egg"),
-            new SpawnEggItem(EntityHandler.LANTERN, 0x6dea00, 0x235a10, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("lantern_spawn_egg"),
-            new SpawnEggItem(EntityHandler.NAGA, 0x154850, 0x8dd759, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("naga_spawn_egg"),
-//            new SpawnEggItem(EntityHandler.SCULPTOR, 0x154850, 0x8dd759, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("sculptor_spawn_egg"),
+            new ModSpawnEggItem(EntityHandler.FOLIAATH, 0x47CC3B, 0xC03BCC, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("foliaath_spawn_egg"),
+            new ModSpawnEggItem(EntityHandler.WROUGHTNAUT, 0x8C8C8C, 0xFFFFFF, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("wroughtnaut_spawn_egg"),
+            new ModSpawnEggItem(EntityHandler.BARAKOA_VILLAGER, BARAKOA_GREEN_COLOR, 0xdbdbdb, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoa_spawn_egg"),
+            new ModSpawnEggItem(EntityHandler.BARAKOANA, BARAKOA_GREEN_COLOR, 0xFAFA78, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoana_spawn_egg"),
+            new ModSpawnEggItem(EntityHandler.BARAKOAYA, BARAKOA_GREEN_COLOR, 0xff8271, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barakoa_sunblocker_spawn_egg"),
+            new ModSpawnEggItem(EntityHandler.BARAKO, BARAKOA_GREEN_COLOR, 0xFFFF2F, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("barako_spawn_egg"),
+            new ModSpawnEggItem(EntityHandler.FROSTMAW, 0xf7faff, 0xafcdff, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("frostmaw_spawn_egg"),
+            new ModSpawnEggItem(EntityHandler.GROTTOL, 0x777777, 0xbce0ff, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("grottol_spawn_egg"),
+            new ModSpawnEggItem(EntityHandler.LANTERN, 0x6dea00, 0x235a10, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("lantern_spawn_egg"),
+            new ModSpawnEggItem(EntityHandler.NAGA, 0x154850, 0x8dd759, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("naga_spawn_egg"),
+//            new ModSpawnEggItem(EntityHandler.SCULPTOR, 0x154850, 0x8dd759, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("sculptor_spawn_egg"),
 
             new BlockItem(BlockHandler.PAINTED_ACACIA.get(), new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.PAINTED_ACACIA.get().getRegistryName()),
             new BlockItem(BlockHandler.PAINTED_ACACIA_SLAB.get(), new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName(BlockHandler.PAINTED_ACACIA_SLAB.get().getRegistryName()),
@@ -144,41 +144,12 @@ public final class ItemHandler {
     }
 
     public static void initializeDispenserBehaviors() {
-        // Copied from IDispenseItemBehavior
-        DefaultDispenseItemBehavior defaultdispenseitembehavior = new DefaultDispenseItemBehavior() {
-            /**
-             * Dispense the specified stack, play the dispense sound and spawn particles.
-             */
-            public ItemStack dispenseStack(IBlockSource source, ItemStack stack) {
-                Direction direction = source.getBlockState().get(DispenserBlock.FACING);
-                EntityType<?> entitytype = ((SpawnEggItem)stack.getItem()).getType(stack.getTag());
-                entitytype.spawn(source.getWorld(), stack, (PlayerEntity)null, source.getBlockPos().offset(direction), SpawnReason.DISPENSER, direction != Direction.UP, false);
-                stack.shrink(1);
-                return stack;
-            }
-        };
-        SpawnEggItem[] spawnEggItems = new SpawnEggItem[] {
-                FOLIAATH_SPAWN_EGG,
-                WROUGHTNAUT_SPAWN_EGG,
-                BARAKOA_SPAWN_EGG,
-                BARAKOANA_SPAWN_EGG,
-                BARAKOA_SUNBLOCKER_SPAWN_EGG,
-                BARAKO_SPAWN_EGG,
-                FROSTMAW_SPAWN_EGG,
-                GROTTOL_SPAWN_EGG,
-                LANTERN_SPAWN_EGG,
-                NAGA_SPAWN_EGG/*,
-                SCULPTOR_SPAWN_EGG*/
-        };
-        for(SpawnEggItem spawneggitem : spawnEggItems) {
-            DispenserBlock.registerDispenseBehavior(spawneggitem, defaultdispenseitembehavior);
-        }
         DispenserBlock.registerDispenseBehavior(DART, new ProjectileDispenseBehavior() {
             /**
              * Return the projectile entity spawned by this dispense behavior.
              */
             protected ProjectileEntity getProjectileEntity(World worldIn, IPosition position, ItemStack stackIn) {
-                EntityDart dartentity = new EntityDart(EntityHandler.DART, worldIn, position.getX(), position.getY(), position.getZ());
+                EntityDart dartentity = new EntityDart(EntityHandler.DART.get(), worldIn, position.getX(), position.getY(), position.getZ());
                 dartentity.pickupStatus = AbstractArrowEntity.PickupStatus.ALLOWED;
                 return dartentity;
             }

@@ -35,6 +35,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.fml.LogicalSide;
 import software.bernie.shadowed.eliotlash.mclib.math.functions.limit.Min;
 
 @OnlyIn(Dist.CLIENT)
@@ -284,4 +285,17 @@ public enum ClientEventHandler {
         }
     }
 
+    @SubscribeEvent
+    public void onPlayerTick(TickEvent.PlayerTickEvent event) {
+        if (event.phase == TickEvent.Phase.START || event.player == null) {
+            return;
+        }
+        PlayerEntity player = event.player;
+        PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+        if (playerCapability != null && event.side == LogicalSide.CLIENT) {
+            GeckoPlayer geckoPlayer = playerCapability.getGeckoPlayer();
+            if (geckoPlayer != null) geckoPlayer.tick();
+            if (player == Minecraft.getInstance().player) GeckoFirstPersonRenderer.GECKO_PLAYER_FIRST_PERSON.tick();
+        }
+    }
 }

@@ -73,8 +73,8 @@ public class ItemBarakoaMask extends MowzieArmorItem implements BarakoaMask {
                 angle = angle + 360;
             }
             EntityBarakoanToPlayer barakoa;
-            if (mask == MaskType.FAITH) barakoa = new EntityBarakoayaToPlayer(EntityHandler.BARAKOAYA_TO_PLAYER, player.world, player);
-            else barakoa = new EntityBarakoanToPlayer(EntityHandler.BARAKOAN_TO_PLAYER, player.world, player);
+            if (mask == MaskType.FAITH) barakoa = new EntityBarakoayaToPlayer(EntityHandler.BARAKOAYA_TO_PLAYER.get(), player.world, player);
+            else barakoa = new EntityBarakoanToPlayer(EntityHandler.BARAKOAN_TO_PLAYER.get(), player.world, player);
 //            property.addPackMember(barakoa);
             if (!player.world.isRemote) {
                 if (mask != MaskType.FAITH) {

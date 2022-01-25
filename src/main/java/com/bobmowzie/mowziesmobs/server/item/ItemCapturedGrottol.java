@@ -49,7 +49,7 @@ public class ItemCapturedGrottol extends Item {
             return ActionResultType.FAIL;
         }
         if (!world.isRemote) {
-            EntityGrottol grottol = new EntityGrottol(EntityHandler.GROTTOL, world);
+            EntityGrottol grottol = new EntityGrottol(EntityHandler.GROTTOL.get(), world);
             CompoundNBT compound = stack.getChildTag("EntityTag");
             if (compound != null) {
                 setData(grottol, compound);

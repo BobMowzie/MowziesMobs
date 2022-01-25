@@ -29,6 +29,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.*;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.IAnimatableModel;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -41,6 +43,7 @@ import software.bernie.geckolib3.util.RenderUtils;
 import java.util.HashMap;
 import java.util.Iterator;
 
+@OnlyIn(Dist.CLIENT)
 public class GeckoRenderPlayer extends PlayerRenderer implements IGeoRenderer<GeckoPlayer> {
 
     private static HashMap<Class<? extends GeckoPlayer>, GeckoRenderPlayer> modelsToLoad = new HashMap<>();

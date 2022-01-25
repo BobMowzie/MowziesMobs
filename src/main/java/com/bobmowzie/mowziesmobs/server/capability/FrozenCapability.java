@@ -246,7 +246,7 @@ public class FrozenCapability {
         @Override
         public void onFreeze(LivingEntity entity) {
             if (entity != null) {
-                frozenController = new EntityFrozenController(EntityHandler.FROZEN_CONTROLLER, entity.world);
+                frozenController = new EntityFrozenController(EntityHandler.FROZEN_CONTROLLER.get(), entity.world);
                 frozenController.setPositionAndRotation(entity.getPosX(), entity.getPosY(), entity.getPosZ(), entity.rotationYaw, entity.rotationPitch);
                 entity.world.addEntity(frozenController);
                 frozenController.setRenderYawOffset(entity.renderYawOffset);

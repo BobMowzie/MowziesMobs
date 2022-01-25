@@ -611,7 +611,7 @@ public class EntityNaga extends MowzieEntity implements IRangedAttackMob, IMob, 
         projectilePos = projectilePos.add(getPositionVec());
         projectilePos = projectilePos.add(new Vector3d(0, 0, 1).rotatePitch((float)Math.toRadians(-rotationPitch)).rotateYaw((float)Math.toRadians(-rotationYawHead)));
         projectilePos = projectilePos.add(new Vector3d(0, 0, 0));
-        EntityPoisonBall poisonBall = new EntityPoisonBall(EntityHandler.POISON_BALL, this.world, this);
+        EntityPoisonBall poisonBall = new EntityPoisonBall(EntityHandler.POISON_BALL.get(), this.world, this);
         poisonBall.setPosition(projectilePos.x, projectilePos.y, projectilePos.z);
         Vector3d look = getLookVec();
         Vector3d dir = new Vector3d(look.x, 0, look.z).normalize();

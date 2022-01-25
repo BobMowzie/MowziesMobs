@@ -45,7 +45,7 @@ public class MessagePlayerSummonSunstrike {
                 BlockRayTraceResult raytrace = rayTrace(player, REACH);
                 if (raytrace.getType() == RayTraceResult.Type.BLOCK && raytrace.getFace() == Direction.UP && player.inventory.getCurrentItem().isEmpty() && player.isPotionActive(EffectHandler.SUNS_BLESSING)) {
                     BlockPos hit = raytrace.getPos();
-                    EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE, player.world, player, hit.getX(), hit.getY(), hit.getZ());
+                    EntitySunstrike sunstrike = new EntitySunstrike(EntityHandler.SUNSTRIKE.get(), player.world, player, hit.getX(), hit.getY(), hit.getZ());
                     sunstrike.onSummon();
                     player.world.addEntity(sunstrike);
                 }

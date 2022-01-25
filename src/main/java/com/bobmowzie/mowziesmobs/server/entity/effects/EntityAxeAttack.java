@@ -154,7 +154,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
                         BlockState block = world.getBlockState(pos);
                         BlockState blockAbove = world.getBlockState(abovePos);
                         if (block.getMaterial() != Material.AIR && block.isNormalCube(world, pos) && !block.getBlock().hasTileEntity(block) && !blockAbove.getMaterial().blocksMovement()) {
-                            EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK, world, block, 0.3f);
+                            EntityFallingBlock fallingBlock = new EntityFallingBlock(EntityHandler.FALLING_BLOCK.get(), world, block, 0.3f);
                             fallingBlock.setPosition(hitX + 0.5, hitY + 1, hitZ + 0.5);
                             world.addEntity(fallingBlock);
                         }

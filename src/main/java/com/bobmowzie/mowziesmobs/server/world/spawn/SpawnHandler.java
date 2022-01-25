@@ -25,11 +25,11 @@ import java.util.Map;
 public class SpawnHandler {
     public static final Map<EntityType<?>, ConfigHandler.SpawnConfig> spawnConfigs = new HashMap<>();
     static {
-        spawnConfigs.put(EntityHandler.FOLIAATH, ConfigHandler.COMMON.MOBS.FOLIAATH.spawnConfig);
-        spawnConfigs.put(EntityHandler.BARAKOANA, ConfigHandler.COMMON.MOBS.BARAKOA.spawnConfig);
-        spawnConfigs.put(EntityHandler.LANTERN, ConfigHandler.COMMON.MOBS.LANTERN.spawnConfig);
-        spawnConfigs.put(EntityHandler.NAGA, ConfigHandler.COMMON.MOBS.NAGA.spawnConfig);
-        spawnConfigs.put(EntityHandler.GROTTOL, ConfigHandler.COMMON.MOBS.GROTTOL.spawnConfig);
+        spawnConfigs.put(EntityHandler.FOLIAATH.get(), ConfigHandler.COMMON.MOBS.FOLIAATH.spawnConfig);
+        spawnConfigs.put(EntityHandler.BARAKOANA.get(), ConfigHandler.COMMON.MOBS.BARAKOA.spawnConfig);
+        spawnConfigs.put(EntityHandler.LANTERN.get(), ConfigHandler.COMMON.MOBS.LANTERN.spawnConfig);
+        spawnConfigs.put(EntityHandler.NAGA.get(), ConfigHandler.COMMON.MOBS.NAGA.spawnConfig);
+        spawnConfigs.put(EntityHandler.GROTTOL.get(), ConfigHandler.COMMON.MOBS.GROTTOL.spawnConfig);
     }
 
     public static void registerSpawnPlacementTypes() {
@@ -47,12 +47,12 @@ public class SpawnHandler {
 
         EntitySpawnPlacementRegistry.PlacementType mmSpawn = EntitySpawnPlacementRegistry.PlacementType.valueOf("MMSPAWN");
         if (mmSpawn != null) {
-            EntitySpawnPlacementRegistry.register(EntityHandler.FOLIAATH, mmSpawn, Heightmap.Type.MOTION_BLOCKING, MowzieEntity::spawnPredicate);
-            EntitySpawnPlacementRegistry.register(EntityHandler.LANTERN, mmSpawn, Heightmap.Type.MOTION_BLOCKING, MowzieEntity::spawnPredicate);
-            EntitySpawnPlacementRegistry.register(EntityHandler.BARAKOANA, mmSpawn, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, MowzieEntity::spawnPredicate);
-            EntitySpawnPlacementRegistry.register(EntityHandler.NAGA, EntitySpawnPlacementRegistry.PlacementType.NO_RESTRICTIONS, Heightmap.Type.MOTION_BLOCKING, MowzieEntity::spawnPredicate);
-            EntitySpawnPlacementRegistry.register(EntityHandler.GROTTOL, mmSpawn, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, MowzieEntity::spawnPredicate);
-            EntitySpawnPlacementRegistry.register(EntityHandler.BARAKOAYA, mmSpawn, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, MowzieEntity::spawnPredicate);
+            EntitySpawnPlacementRegistry.register(EntityHandler.FOLIAATH.get(), mmSpawn, Heightmap.Type.MOTION_BLOCKING, MowzieEntity::spawnPredicate);
+            EntitySpawnPlacementRegistry.register(EntityHandler.LANTERN.get(), mmSpawn, Heightmap.Type.MOTION_BLOCKING, MowzieEntity::spawnPredicate);
+            EntitySpawnPlacementRegistry.register(EntityHandler.BARAKOANA.get(), mmSpawn, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, MowzieEntity::spawnPredicate);
+            EntitySpawnPlacementRegistry.register(EntityHandler.NAGA.get(), EntitySpawnPlacementRegistry.PlacementType.NO_RESTRICTIONS, Heightmap.Type.MOTION_BLOCKING, MowzieEntity::spawnPredicate);
+            EntitySpawnPlacementRegistry.register(EntityHandler.GROTTOL.get(), mmSpawn, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, MowzieEntity::spawnPredicate);
+            EntitySpawnPlacementRegistry.register(EntityHandler.BARAKOAYA.get(), mmSpawn, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, MowzieEntity::spawnPredicate);
         }
     }
 
@@ -61,23 +61,23 @@ public class SpawnHandler {
         if (biomeName == null) return;
         if (ConfigHandler.COMMON.MOBS.FOLIAATH.spawnConfig.spawnRate.get() > 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.FOLIAATH.spawnConfig.biomeConfig, biomeName)) {
 //            System.out.println("Added foliaath biome: " + biomeName.toString());
-            registerEntityWorldSpawn(EntityHandler.FOLIAATH, ConfigHandler.COMMON.MOBS.FOLIAATH.spawnConfig, EntityClassification.MONSTER, event);
+            registerEntityWorldSpawn(EntityHandler.FOLIAATH.get(), ConfigHandler.COMMON.MOBS.FOLIAATH.spawnConfig, EntityClassification.MONSTER, event);
         }
         if (ConfigHandler.COMMON.MOBS.BARAKOA.spawnConfig.spawnRate.get() > 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.BARAKOA.spawnConfig.biomeConfig, biomeName)) {
 //            System.out.println("Added Barakoa biome: " + biomeName.toString());
-            registerEntityWorldSpawn(EntityHandler.BARAKOANA, ConfigHandler.COMMON.MOBS.BARAKOA.spawnConfig, EntityClassification.MONSTER, event);
+            registerEntityWorldSpawn(EntityHandler.BARAKOANA.get(), ConfigHandler.COMMON.MOBS.BARAKOA.spawnConfig, EntityClassification.MONSTER, event);
         }
         if (ConfigHandler.COMMON.MOBS.GROTTOL.spawnConfig.spawnRate.get() > 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.GROTTOL.spawnConfig.biomeConfig, biomeName)) {
 //            System.out.println("Added grottol biome: " + biomeName.toString());
-            registerEntityWorldSpawn(EntityHandler.GROTTOL, ConfigHandler.COMMON.MOBS.GROTTOL.spawnConfig, EntityClassification.MONSTER, event);
+            registerEntityWorldSpawn(EntityHandler.GROTTOL.get(), ConfigHandler.COMMON.MOBS.GROTTOL.spawnConfig, EntityClassification.MONSTER, event);
         }
         if (ConfigHandler.COMMON.MOBS.LANTERN.spawnConfig.spawnRate.get() > 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.LANTERN.spawnConfig.biomeConfig, biomeName)) {
 //            System.out.println("Added lantern biome: " + biomeName.toString());
-            registerEntityWorldSpawn(EntityHandler.LANTERN, ConfigHandler.COMMON.MOBS.LANTERN.spawnConfig, EntityClassification.AMBIENT, event);
+            registerEntityWorldSpawn(EntityHandler.LANTERN.get(), ConfigHandler.COMMON.MOBS.LANTERN.spawnConfig, EntityClassification.AMBIENT, event);
         }
         if (ConfigHandler.COMMON.MOBS.NAGA.spawnConfig.spawnRate.get() > 0 && BiomeChecker.isBiomeInConfig(ConfigHandler.COMMON.MOBS.NAGA.spawnConfig.biomeConfig, biomeName)) {
 //            System.out.println("Added naga biome: " + biomeName.toString());
-            registerEntityWorldSpawn(EntityHandler.NAGA, ConfigHandler.COMMON.MOBS.NAGA.spawnConfig, EntityClassification.MONSTER, event);
+            registerEntityWorldSpawn(EntityHandler.NAGA.get(), ConfigHandler.COMMON.MOBS.NAGA.spawnConfig, EntityClassification.MONSTER, event);
         }
     }
 

@@ -27,7 +27,7 @@ public class WroughtAxeSwingAbility extends Ability {
     public void start() {
         super.start();
         if (!getUser().world.isRemote()) {
-            EntityAxeAttack axeAttack = new EntityAxeAttack(EntityHandler.AXE_ATTACK, getUser().world, getUser(), false);
+            EntityAxeAttack axeAttack = new EntityAxeAttack(EntityHandler.AXE_ATTACK.get(), getUser().world, getUser(), false);
             axeAttack.setPositionAndRotation(getUser().getPosX(), getUser().getPosY(), getUser().getPosZ(), getUser().rotationYaw, getUser().rotationPitch);
             getUser().world.addEntity(axeAttack);
             this.axeAttack = axeAttack;

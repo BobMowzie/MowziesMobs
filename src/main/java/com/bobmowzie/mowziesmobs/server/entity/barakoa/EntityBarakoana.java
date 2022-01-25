@@ -140,7 +140,7 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
         int size = rand.nextInt(2) + 3;
         float theta = (2 * (float) Math.PI / size);
         for (int i = 0; i <= size; i++) {
-            EntityBarakoanToBarakoana tribeHunter = new EntityBarakoanToBarakoana(EntityHandler.BARAKOAN_TO_BARAKOANA, this.world, this);
+            EntityBarakoanToBarakoana tribeHunter = new EntityBarakoanToBarakoana(EntityHandler.BARAKOAN_TO_BARAKOANA.get(), this.world, this);
             tribeHunter.setPosition(getPosX() + 0.1 * MathHelper.cos(theta * i), getPosY(), getPosZ() + 0.1 * MathHelper.sin(theta * i));
             int weapon = rand.nextInt(3) == 0 ? 1 : 0;
             tribeHunter.setWeapon(weapon);

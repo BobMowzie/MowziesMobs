@@ -98,7 +98,7 @@ public class SpawnBoulderAbility extends Ability {
             }
 
             int size = getBoulderSize() + 1;
-            EntityType<EntityBoulder> type = EntityHandler.BOULDERS[size];
+            EntityType<EntityBoulder> type = EntityHandler.BOULDERS[size].get();
             if (
                     !getUser().world.hasNoCollisions(type.getBoundingBoxWithSizeApplied(spawnBoulderPos.getX() + 0.5F, spawnBoulderPos.getY() + 2, spawnBoulderPos.getZ() + 0.5F))
                     || getUser().getDistanceSq(spawnBoulderPos.getX(), spawnBoulderPos.getY(), spawnBoulderPos.getZ()) > 36
@@ -129,7 +129,7 @@ public class SpawnBoulderAbility extends Ability {
 
         int size = getBoulderSize();
         if (spawnBoulderCharge >= 60) size = 3;
-        EntityBoulder boulder = new EntityBoulder(EntityHandler.BOULDERS[size], getUser().world, getUser(), spawnBoulderBlock, spawnBoulderPos);
+        EntityBoulder boulder = new EntityBoulder(EntityHandler.BOULDERS[size].get(), getUser().world, getUser(), spawnBoulderBlock, spawnBoulderPos);
         boulder.setPosition(spawnBoulderPos.getX() + 0.5F, spawnBoulderPos.getY() + 2, spawnBoulderPos.getZ() + 0.5F);
         if (!getUser().world.isRemote && boulder.checkCanSpawn()) {
             getUser().world.addEntity(boulder);
