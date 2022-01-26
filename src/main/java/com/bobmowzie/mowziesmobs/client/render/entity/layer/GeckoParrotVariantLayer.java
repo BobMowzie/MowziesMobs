@@ -17,11 +17,14 @@ public class GeckoParrotVariantLayer extends ParrotVariantLayer<AbstractClientPl
 
     @Override
     public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, AbstractClientPlayerEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        MowzieGeoBone bone = renderPlayerAnimated.getAnimatedPlayerModel().getMowzieBone("Body");
-        MatrixStack newMatrixStack = new MatrixStack();
-        newMatrixStack.getLast().getNormal().mul(bone.getWorldSpaceNormal());
-        newMatrixStack.getLast().getMatrix().mul(bone.getWorldSpaceXform());
-        this.renderParrot(newMatrixStack, bufferIn, packedLightIn, entitylivingbaseIn, limbSwing, limbSwingAmount, netHeadYaw, headPitch, true);
-        this.renderParrot(newMatrixStack, bufferIn, packedLightIn, entitylivingbaseIn, limbSwing, limbSwingAmount, netHeadYaw, headPitch, false);
+        try {
+            MowzieGeoBone bone = renderPlayerAnimated.getAnimatedPlayerModel().getMowzieBone("Body");
+            MatrixStack newMatrixStack = new MatrixStack();
+            newMatrixStack.getLast().getNormal().mul(bone.getWorldSpaceNormal());
+            newMatrixStack.getLast().getMatrix().mul(bone.getWorldSpaceXform());
+            this.renderParrot(newMatrixStack, bufferIn, packedLightIn, entitylivingbaseIn, limbSwing, limbSwingAmount, netHeadYaw, headPitch, true);
+            this.renderParrot(newMatrixStack, bufferIn, packedLightIn, entitylivingbaseIn, limbSwing, limbSwingAmount, netHeadYaw, headPitch, false);
+        }
+        catch (RuntimeException ignored) {}
     }
 }

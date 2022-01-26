@@ -21,6 +21,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -33,6 +34,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.fml.LogicalSide;
@@ -44,7 +46,7 @@ public enum ClientEventHandler {
 
     private static final ResourceLocation FROZEN_BLUR = new ResourceLocation(MowziesMobs.MODID, "textures/gui/frozenblur.png");
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onHandRender(RenderHandEvent event) {
         PlayerEntity player = Minecraft.getInstance().player;
         if (player == null) return;
@@ -77,32 +79,35 @@ public enum ClientEventHandler {
         }
     }
 
-    @SubscribeEvent
-    public void onRenderPlayerPre(RenderPlayerEvent.Pre event) {
-        PlayerEntity player = event.getPlayer();
-        if (player == null) return;
-        float delta = event.getPartialRenderTick();
-        boolean shouldAnimate = player.isPotionActive(EffectHandler.FROZEN);
-        AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
-        if (abilityCapability != null) shouldAnimate = shouldAnimate || abilityCapability.getActiveAbility() != null;
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void renderLivingEvent(RenderLivingEvent.Pre<? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>> event) {
+        if (event.getEntity() instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) event.getEntity();
+            if (player == null) return;
+            float delta = event.getPartialRenderTick();
+            boolean shouldAnimate = player.isPotionActive(EffectHandler.FROZEN);
+            AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
+            if (abilityCapability != null)
+                shouldAnimate = shouldAnimate || abilityCapability.getActiveAbility() != null;
 //        shouldAnimate = (player.ticksExisted / 20) % 2 == 0;
-        if (shouldAnimate) {
-            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getEntity(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
-            if (playerCapability != null) {
-                GeckoPlayer.GeckoPlayerThirdPerson geckoPlayer = playerCapability.getGeckoPlayer();
-                if (geckoPlayer != null) {
-                    ModelGeckoPlayerThirdPerson geckoPlayerModel = (ModelGeckoPlayerThirdPerson) geckoPlayer.getModel();
-                    GeckoRenderPlayer animatedPlayerRenderer = (GeckoRenderPlayer) geckoPlayer.getPlayerRenderer();
+            if (shouldAnimate) {
+                PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getEntity(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
+                if (playerCapability != null) {
+                    GeckoPlayer.GeckoPlayerThirdPerson geckoPlayer = playerCapability.getGeckoPlayer();
+                    if (geckoPlayer != null) {
+                        ModelGeckoPlayerThirdPerson geckoPlayerModel = (ModelGeckoPlayerThirdPerson) geckoPlayer.getModel();
+                        GeckoRenderPlayer animatedPlayerRenderer = (GeckoRenderPlayer) geckoPlayer.getPlayerRenderer();
 
-                    if (geckoPlayerModel != null && animatedPlayerRenderer != null) {
-                        if (!geckoPlayerModel.isUsingSmallArms() && ((AbstractClientPlayerEntity) player).getSkinType().equals("slim")) {
-                            animatedPlayerRenderer.setSmallArms();
-                        }
+                        if (geckoPlayerModel != null && animatedPlayerRenderer != null) {
+                            if (!geckoPlayerModel.isUsingSmallArms() && ((AbstractClientPlayerEntity) player).getSkinType().equals("slim")) {
+                                animatedPlayerRenderer.setSmallArms();
+                            }
 
-                        event.setCanceled(geckoPlayerModel.resourceForModelId((AbstractClientPlayerEntity) player));
+                            event.setCanceled(geckoPlayerModel.resourceForModelId((AbstractClientPlayerEntity) player));
 
-                        if (event.isCanceled()) {
-                            animatedPlayerRenderer.render((AbstractClientPlayerEntity) event.getEntity(), event.getEntity().rotationYaw, delta, event.getMatrixStack(), event.getBuffers(), event.getLight(), geckoPlayer);
+                            if (event.isCanceled()) {
+                                animatedPlayerRenderer.render((AbstractClientPlayerEntity) event.getEntity(), event.getEntity().rotationYaw, delta, event.getMatrixStack(), event.getBuffers(), event.getLight(), geckoPlayer);
+                            }
                         }
                     }
                 }
