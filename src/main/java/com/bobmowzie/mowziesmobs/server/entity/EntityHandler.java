@@ -105,7 +105,7 @@ public class EntityHandler {
     private static EntityType.Builder<EntityCameraShake> cameraShakeBuilder() {
         return EntityType.Builder.create(EntityCameraShake::new, EntityClassification.MISC);
     }
-    public static final RegistryObject<EntityType<EntityCameraShake>> CAMERA_SHAKE = REG.register("camera_shake", () -> cameraShakeBuilder().disableSummoning().size(1, 1).setUpdateInterval(Integer.MAX_VALUE).build(new ResourceLocation(MowziesMobs.MODID, "camera_shake").toString()));
+    public static final RegistryObject<EntityType<EntityCameraShake>> CAMERA_SHAKE = REG.register("camera_shake", () -> cameraShakeBuilder().size(1, 1).setUpdateInterval(Integer.MAX_VALUE).build(new ResourceLocation(MowziesMobs.MODID, "camera_shake").toString()));
 
     @SubscribeEvent
     public static void onCreateAttributes(EntityAttributeCreationEvent event) {
