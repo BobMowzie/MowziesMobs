@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.potion;
 
+import com.bobmowzie.mowziesmobs.server.block.BlockHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FenceBlock;
@@ -32,6 +33,7 @@ public class EffectGeomancy extends MowzieEffect {
                 && blockState.getBlock() != Blocks.ENDER_CHEST
                 && blockState.getBlock() != Blocks.SLIME_BLOCK
                 && blockState.getBlock() != Blocks.HOPPER
+                && blockState.getBlock() != BlockHandler.THATCH.get()
                 && !blockState.hasTileEntity();
     }
 
