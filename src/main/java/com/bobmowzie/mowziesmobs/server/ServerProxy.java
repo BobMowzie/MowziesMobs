@@ -1,6 +1,9 @@
 package com.bobmowzie.mowziesmobs.server;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.model.armor.BarakoaMaskModel;
+import com.bobmowzie.mowziesmobs.client.model.armor.SolVisageModel;
+import com.bobmowzie.mowziesmobs.client.model.armor.WroughtHelmModel;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.trade.Trade;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntitySunstrike;
@@ -138,4 +141,16 @@ public class ServerProxy {
     }
 
     public void setReferencedMob(Entity referencedMob) {}
+
+    public WroughtHelmModel<LivingEntity> getWroughtHelmModel() {
+        return null;
+    }
+
+    public BarakoaMaskModel<LivingEntity> getBarakoaMaskModel() {
+        return null;
+    }
+
+    public SolVisageModel<LivingEntity> getSolVisageModel() {
+        return null;
+    }
 }

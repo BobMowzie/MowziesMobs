@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.server.item;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.client.ClientProxy;
 import com.bobmowzie.mowziesmobs.client.model.armor.WroughtHelmModel;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import net.minecraft.client.renderer.entity.model.BipedModel;
@@ -64,7 +65,7 @@ public class ItemWroughtHelm extends MowzieArmorItem {
     @Nullable
     @Override
     public <A extends BipedModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, A _default) {
-        WroughtHelmModel<?> model = new WroughtHelmModel<>();
+        WroughtHelmModel<?> model = MowziesMobs.PROXY.getWroughtHelmModel();
         model.bipedHeadwear.showModel = armorSlot == EquipmentSlotType.HEAD;
 
         if (_default != null) {

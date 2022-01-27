@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.common.Mod;
 
 import java.util.List;
 import java.util.Random;
@@ -90,6 +91,11 @@ public class ModelPlayerAnimated<T extends LivingEntity> extends PlayerModel<T> 
             modelIn.bipedLeftLeg = new ModelRendererMatrix(modelIn.bipedLeftLeg);
             modelIn.bipedRightLeg = new ModelRendererMatrix(modelIn.bipedRightLeg);
         }
+        setUseMatrixMode(modelIn, true);
         super.setModelAttributes(modelIn);
+    }
+
+    public static void setUseMatrixMode(BipedModel<? extends LivingEntity> bipedModel, boolean useMatrixMode) {
+        ModelBipedAnimated.setUseMatrixMode(bipedModel, useMatrixMode);
     }
 }

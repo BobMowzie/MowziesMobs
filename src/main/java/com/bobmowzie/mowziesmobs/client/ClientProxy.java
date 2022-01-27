@@ -1,18 +1,19 @@
 package com.bobmowzie.mowziesmobs.client;
 
+import com.bobmowzie.mowziesmobs.client.model.armor.BarakoaMaskModel;
+import com.bobmowzie.mowziesmobs.client.model.armor.SolVisageModel;
+import com.bobmowzie.mowziesmobs.client.model.armor.WroughtHelmModel;
 import com.bobmowzie.mowziesmobs.client.render.entity.*;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.SunblockLayer;
 import com.bobmowzie.mowziesmobs.client.sound.*;
 import com.bobmowzie.mowziesmobs.server.ServerProxy;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityClientEventHandler;
-import com.bobmowzie.mowziesmobs.server.capability.AbilityCapability;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.*;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.particle.DiggingParticle;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingRenderer;
@@ -21,7 +22,6 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.item.Items;
@@ -37,6 +37,10 @@ import net.minecraftforge.fml.config.ModConfig;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientProxy extends ServerProxy {
+    private static final WroughtHelmModel<LivingEntity> WROUGHT_HELM_MODEL = new WroughtHelmModel<>();
+    private static final BarakoaMaskModel<LivingEntity> BARAKOA_MASK_MODEL = new BarakoaMaskModel<>();
+    private static final SolVisageModel<LivingEntity> SOL_VISAGE_MODEL = new SolVisageModel<>();
+
     private Entity referencedMob = null;
 
     @Override
@@ -130,5 +134,20 @@ public class ClientProxy extends ServerProxy {
 
     public void setReferencedMob(Entity referencedMob) {
         this.referencedMob = referencedMob;
+    }
+
+    @Override
+    public WroughtHelmModel<LivingEntity> getWroughtHelmModel() {
+        return WROUGHT_HELM_MODEL;
+    }
+
+    @Override
+    public BarakoaMaskModel<LivingEntity> getBarakoaMaskModel() {
+        return BARAKOA_MASK_MODEL;
+    }
+
+    @Override
+    public SolVisageModel<LivingEntity> getSolVisageModel() {
+        return SOL_VISAGE_MODEL;
     }
 }

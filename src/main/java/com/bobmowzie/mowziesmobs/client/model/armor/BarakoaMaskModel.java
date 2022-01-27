@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.client.model.armor;
 
-import com.bobmowzie.mowziesmobs.client.model.entity.ModelBipedAnimated;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;

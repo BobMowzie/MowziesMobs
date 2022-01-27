@@ -71,7 +71,7 @@ public class ItemBarakoMask extends MowzieArmorItem implements BarakoaMask {
     @Nullable
     @Override
     public <A extends BipedModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, A _default) {
-        SolVisageModel<?> model = new SolVisageModel<>();
+        SolVisageModel<?> model = MowziesMobs.PROXY.getSolVisageModel();
         model.bipedHeadwear.showModel = armorSlot == EquipmentSlotType.HEAD;
 
         if (_default != null) {

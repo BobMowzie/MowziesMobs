@@ -4,11 +4,12 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3f;
 
 public class ModelRendererMatrix extends ModelRenderer {
     private Matrix4f worldXform;
     private Matrix3f worldNormal;
+
+    private boolean useMatrixMode;
 
     public ModelRendererMatrix(ModelRenderer original) {
         super((int) original.textureWidth, (int) original.textureHeight, original.textureOffsetX, original.textureOffsetY);
@@ -20,11 +21,13 @@ public class ModelRendererMatrix extends ModelRenderer {
         worldNormal.setIdentity();
         worldXform = new Matrix4f();
         worldXform.setIdentity();
+
+        useMatrixMode = true;
     }
 
     @Override
     public void translateRotate(MatrixStack matrixStackIn) {
-        if (getWorldNormal() == null || getWorldXform() == null) {
+        if (!useMatrixMode || getWorldNormal() == null || getWorldXform() == null) {
             super.translateRotate(matrixStackIn);
         }
         else {
@@ -34,6 +37,7 @@ public class ModelRendererMatrix extends ModelRenderer {
             last.getMatrix().mul(getWorldXform());
             last.getNormal().mul(getWorldNormal());
         }
+        useMatrixMode = false;
     }
 
     @Override
@@ -43,9 +47,7 @@ public class ModelRendererMatrix extends ModelRenderer {
             this.setWorldNormal(other.getWorldNormal());
             this.setWorldXform(other.getWorldXform());
         }
-        else {
-            super.copyModelAngles(modelRendererIn);
-        }
+        super.copyModelAngles(modelRendererIn);
     }
 
     public Matrix3f getWorldNormal() {
@@ -62,5 +64,13 @@ public class ModelRendererMatrix extends ModelRenderer {
 
     public void setWorldXform(Matrix4f worldXform) {
         this.worldXform = worldXform;
+    }
+
+    public void setUseMatrixMode(boolean useMatrixMode) {
+        this.useMatrixMode = useMatrixMode;
+    }
+
+    public boolean isUseMatrixMode() {
+        return useMatrixMode;
     }
 }

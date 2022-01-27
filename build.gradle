@@ -59,11 +59,13 @@ jar {
 
 repositories {
     maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+//    maven { url "https://www.cursemaven.com" }
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:1.16.5-36.1.0"
+    minecraft "net.minecraftforge:forge:1.16.5-36.2.20"
     implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.16.5:3.0.57')
+//    implementation fg.deobf("curse.maven:iceandfire-264231:3361256")
 }
 
 processResources {
