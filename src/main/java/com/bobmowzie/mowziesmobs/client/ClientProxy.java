@@ -14,6 +14,7 @@ import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.TickableSound;
 import net.minecraft.client.particle.DiggingParticle;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingRenderer;
@@ -35,11 +36,17 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 @OnlyIn(Dist.CLIENT)
 public class ClientProxy extends ServerProxy {
     private static final WroughtHelmModel<LivingEntity> WROUGHT_HELM_MODEL = new WroughtHelmModel<>();
     private static final BarakoaMaskModel<LivingEntity> BARAKOA_MASK_MODEL = new BarakoaMaskModel<>();
     private static final SolVisageModel<LivingEntity> SOL_VISAGE_MODEL = new SolVisageModel<>();
+
+    private static final List<SunblockSound> sunblockSounds = new ArrayList<>();
 
     private Entity referencedMob = null;
 
@@ -99,7 +106,12 @@ public class ClientProxy extends ServerProxy {
 
     @Override
     public void playSunblockSound(LivingEntity entity) {
-        Minecraft.getInstance().getSoundHandler().play(new SunblockSound(entity));
+        sunblockSounds.removeIf(TickableSound::isDonePlaying);
+        if (sunblockSounds.size() < 10) {
+            SunblockSound sunblockSound = new SunblockSound(entity);
+            sunblockSounds.add(sunblockSound);
+            Minecraft.getInstance().getSoundHandler().play(sunblockSound);
+        }
     }
 
     @Override
