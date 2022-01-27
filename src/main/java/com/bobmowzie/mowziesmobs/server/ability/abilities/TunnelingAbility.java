@@ -42,6 +42,8 @@ public class TunnelingAbility extends Ability {
     private float spinAmount = 0;
     private float pitch = 0;
 
+    private int timeUnderground = 0;
+
     public TunnelingAbility(AbilityType<? extends Ability> abilityType, LivingEntity user) {
         super(abilityType, user, new AbilitySection[] {
                 new AbilitySection.AbilitySectionInfinite(AbilitySection.AbilitySectionType.ACTIVE)
@@ -70,10 +72,11 @@ public class TunnelingAbility extends Ability {
         super.tickUsing();
         getUser().fallDistance = 0;
         if (getUser() instanceof PlayerEntity) ((PlayerEntity)getUser()).abilities.isFlying = false;
-        underground = !getUser().world.getEntitiesWithinAABB(EntityBlockSwapper.class, getUser().getBoundingBox().grow(1)).isEmpty();
+        underground = !getUser().world.getEntitiesWithinAABB(EntityBlockSwapper.class, getUser().getBoundingBox().grow(0.5)).isEmpty();
         Vector3d lookVec = getUser().getLookVec();
         float tunnelSpeed = 0.3f;
         if (underground) {
+            timeUnderground++;
             if (getUser().isSneaking()) {
                 getUser().setMotion(lookVec.normalize().scale(tunnelSpeed));
             }
@@ -93,7 +96,7 @@ public class TunnelingAbility extends Ability {
             if (getUser().getMotion().getY() < -1.3) getUser().setMotion(getUser().getMotion().getX(), -1.3, getUser().getMotion().getZ());
         }
 
-        if ((getUser().isSneaking() && getUser().getMotion().y < 0) || underground) {
+        if ((getUser().isSneaking() && lookVec.y < 0) || underground) {
             if (getUser().ticksExisted % 16 == 0) getUser().playSound(MMSounds.EFFECT_GEOMANCY_RUMBLE.get(rand.nextInt(3)).get(), 0.6f, 0.5f + rand.nextFloat() * 0.2f);
             Vector3d userCenter = getUser().getPositionVec().add(0, getUser().getHeight() / 2f, 0);
             float radius = 2f;
@@ -111,7 +114,7 @@ public class TunnelingAbility extends Ability {
                             BlockState blockState = getUser().world.getBlockState(pos);
                             if (EffectGeomancy.isBlockDiggable(blockState) && blockState.getBlock() != Blocks.BEDROCK) {
                                 justDug = blockState;
-                                EntityBlockSwapper.swapBlock(getUser().world, pos, Blocks.AIR.getDefaultState(), 20, false, false);
+                                EntityBlockSwapper.swapBlock(getUser().world, pos, Blocks.AIR.getDefaultState(), 15, false, false);
                             }
                         }
                     }
@@ -119,6 +122,7 @@ public class TunnelingAbility extends Ability {
             }
         }
         if (!prevUnderground && underground) {
+            timeUnderground = 0;
             getUser().playSound(MMSounds.EFFECT_GEOMANCY_BREAK_MEDIUM.get(rand.nextInt(3)).get(), 1f, 0.9f + rand.nextFloat() * 0.1f);
             if (getUser().world.isRemote)
                 AdvancedParticleBase.spawnParticle(getUser().world, ParticleHandler.RING2.get(), (float) getUser().getPosX(), (float) getUser().getPosY() + 0.02f, (float) getUser().getPosZ(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, true, new ParticleComponent[]{
@@ -133,7 +137,10 @@ public class TunnelingAbility extends Ability {
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(10f, 30f), false)
                 });
-            getUser().setMotion(getUser().getMotion().scale(10f));
+            if (timeUnderground > 10)
+                getUser().setMotion(getUser().getMotion().scale(10f));
+            else
+                getUser().setMotion(getUser().getMotion().mul(3, 7, 3));
 
             for (int i = 0; i < 6; i++) {
                 if (justDug == null) justDug = Blocks.DIRT.getDefaultState();
