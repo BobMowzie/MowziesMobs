@@ -63,9 +63,9 @@ public enum ClientEventHandler {
                     GeckoFirstPersonRenderer firstPersonRenderer = (GeckoFirstPersonRenderer) geckoPlayer.getPlayerRenderer();
 
                     if (geckoFirstPersonModel != null && firstPersonRenderer != null) {
-                        if (!geckoFirstPersonModel.isUsingSmallArms() && ((AbstractClientPlayerEntity) player).getSkinType().equals("slim")) {
+//                        if (!geckoFirstPersonModel.isUsingSmallArms() && ((AbstractClientPlayerEntity) player).getSkinType().equals("slim")) {
                             firstPersonRenderer.setSmallArms();
-                        }
+//                        }
                         event.setCanceled(geckoFirstPersonModel.resourceForModelId((AbstractClientPlayerEntity) player));
 
                         if (event.isCanceled()) {

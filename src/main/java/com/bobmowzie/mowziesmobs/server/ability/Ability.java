@@ -53,9 +53,7 @@ public class Ability {
         FORCE_RENDER
     }
 
-    @OnlyIn(Dist.CLIENT)
     protected HandDisplay firstPersonMainHandDisplay;
-    @OnlyIn(Dist.CLIENT)
     protected HandDisplay firstPersonOffHandDisplay;
 
     public Ability(AbilityType<? extends Ability> abilityType, LivingEntity user, AbilitySection[] sectionTrack, int cooldownMax) {

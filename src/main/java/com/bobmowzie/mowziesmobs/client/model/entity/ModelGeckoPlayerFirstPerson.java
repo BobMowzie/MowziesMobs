@@ -59,34 +59,16 @@ public class ModelGeckoPlayerFirstPerson extends MowzieAnimatedGeoModel<GeckoPla
 			MowzieGeoBone leftArmClassic = getMowzieBone("LeftArmClassic");
 			MowzieGeoBone rightArmSlim = getMowzieBone("RightArmSlim");
 			MowzieGeoBone leftArmSlim = getMowzieBone("LeftArmSlim");
-			if (useSmallArms) {
-				rightArmLayerClassic.setHidden(true);
-				rightArmClassic.setHidden(true);
-				leftArmLayerClassic.setHidden(true);
-				leftArmClassic.setHidden(true);
-				rightArmLayerSlim.setHidden(false);
-				rightArmSlim.setHidden(false);
-				leftArmLayerSlim.setHidden(false);
-				leftArmSlim.setHidden(false);
-			}
-			else {
-				rightArmLayerSlim.setHidden(true);
-				rightArmSlim.setHidden(true);
-				leftArmLayerSlim.setHidden(true);
-				leftArmSlim.setHidden(true);
-				rightArmLayerClassic.setHidden(false);
-				rightArmClassic.setHidden(false);
-				leftArmLayerClassic.setHidden(false);
-				leftArmClassic.setHidden(false);
-			}
-
-
 			getMowzieBone("LeftHeldItem").setHidden(true);
 			getMowzieBone("RightHeldItem").setHidden(true);
-			getMowzieBone("RightArmClassic").setHidden(true);
-			getMowzieBone("LeftArmClassic").setHidden(true);
-			getMowzieBone("RightArmLayerClassic").setHidden(true);
-			getMowzieBone("LeftArmLayerClassic").setHidden(true);
+			rightArmClassic.setHidden(true);
+			leftArmClassic.setHidden(true);
+			rightArmLayerClassic.setHidden(true);
+			leftArmLayerClassic.setHidden(true);
+			rightArmSlim.setHidden(true);
+			leftArmSlim.setHidden(true);
+			rightArmLayerSlim.setHidden(true);
+			leftArmLayerSlim.setHidden(true);
 		}
 	}
 
