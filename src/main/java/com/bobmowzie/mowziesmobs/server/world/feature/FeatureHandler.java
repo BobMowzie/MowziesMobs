@@ -59,7 +59,7 @@ public class FeatureHandler {
     public static void setupStructures() {
         setupMapSpacingAndLand(WROUGHTNAUT_CHAMBER.get(), new StructureSeparationSettings(ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig.generationDistance.get(), ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.generationConfig.generationSeparation.get(),123555789), false);
         setupMapSpacingAndLand(BARAKOA_VILLAGE.get(), new StructureSeparationSettings(ConfigHandler.COMMON.MOBS.BARAKO.generationConfig.generationDistance.get(), ConfigHandler.COMMON.MOBS.BARAKO.generationConfig.generationSeparation.get(),123444789), false);
-        setupMapSpacingAndLand(FROSTMAW.get(), new StructureSeparationSettings(ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig.generationDistance.get(), ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig.generationSeparation.get(),1237654789), false);
+        setupMapSpacingAndLand(FROSTMAW.get(), new StructureSeparationSettings(ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig.generationDistance.get(), ConfigHandler.COMMON.MOBS.FROSTMAW.generationConfig.generationSeparation.get(),1237654789), true);
     }
 
     public static <F extends Structure<?>> void setupMapSpacingAndLand(F structure, StructureSeparationSettings structureSeparationSettings, boolean transformSurroundingLand) {

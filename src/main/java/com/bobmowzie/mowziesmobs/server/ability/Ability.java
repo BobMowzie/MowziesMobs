@@ -41,14 +41,10 @@ public class Ability {
 
     protected Random rand;
 
-    @OnlyIn(Dist.CLIENT)
     protected AnimationBuilder activeThirdPersonAnimation;
-    @OnlyIn(Dist.CLIENT)
     protected AnimationBuilder activeFirstPersonAnimation;
 
-    @OnlyIn(Dist.CLIENT)
     protected ItemStack heldItemMainHandVisualOverride;
-    @OnlyIn(Dist.CLIENT)
     protected ItemStack heldItemOffHandVisualOverride;
 
     public enum HandDisplay {
