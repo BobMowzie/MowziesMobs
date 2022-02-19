@@ -95,8 +95,8 @@ public class EntityBarakoanToPlayer extends EntityBarakoan<PlayerEntity> {
     }
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
-        return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 7 * ConfigHandler.COMMON.MOBS.BARAKOA.combatConfig.attackMultiplier.get())
-                .createMutableAttribute(Attributes.MAX_HEALTH, 20 * ConfigHandler.COMMON.MOBS.BARAKOA.combatConfig.healthMultiplier.get());
+        return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 7)
+                .createMutableAttribute(Attributes.MAX_HEALTH, 20);
     }
 
     @Override

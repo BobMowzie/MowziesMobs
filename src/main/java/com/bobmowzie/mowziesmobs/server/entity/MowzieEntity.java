@@ -13,8 +13,7 @@ import net.minecraft.entity.*;
 import net.minecraft.entity.CreatureEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ILivingEntityData;
-import net.minecraft.entity.ai.attributes.AttributeModifierMap;
-import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.attributes.*;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -73,10 +72,30 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
 
     private final MMBossInfoServer bossInfo = new MMBossInfoServer(this);
 
+    private static final UUID HEALTH_CONFIG_MODIFIER_UUID = UUID.fromString("eff1c400-910c-11ec-b909-0242ac120002");
+    private static final UUID ATTACK_CONFIG_MODIFIER_UUID = UUID.fromString("f76a7c90-910c-11ec-b909-0242ac120002");
+
     public MowzieEntity(EntityType<? extends MowzieEntity> type, World world) {
         super(type, world);
         if (world.isRemote) {
             socketPosArray = new Vector3d[]{};
+        }
+
+        // Load config attribute multipliers
+        ConfigHandler.CombatConfig combatConfig = getCombatConfig();
+        if (combatConfig != null) {
+            ModifiableAttributeInstance maxHealthAttr = getAttribute(Attributes.MAX_HEALTH);
+            if (maxHealthAttr != null) {
+                double difference = maxHealthAttr.getBaseValue() * getCombatConfig().healthMultiplier.get() - maxHealthAttr.getBaseValue();
+                maxHealthAttr.applyNonPersistentModifier(new AttributeModifier(HEALTH_CONFIG_MODIFIER_UUID, "Health config multiplier", difference, AttributeModifier.Operation.ADDITION));
+                this.setHealth(this.getMaxHealth());
+            }
+
+            ModifiableAttributeInstance attackDamageAttr = getAttribute(Attributes.ATTACK_DAMAGE);
+            if (attackDamageAttr != null) {
+                double difference = attackDamageAttr.getBaseValue() * getCombatConfig().attackMultiplier.get() - attackDamageAttr.getBaseValue();
+                attackDamageAttr.applyNonPersistentModifier(new AttributeModifier(ATTACK_CONFIG_MODIFIER_UUID, "Attack config multiplier", difference, AttributeModifier.Operation.ADDITION));
+            }
         }
     }
 
@@ -85,6 +104,10 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
     }
 
     protected ConfigHandler.SpawnConfig getSpawnConfig() {
+        return null;
+    }
+
+    protected ConfigHandler.CombatConfig getCombatConfig() {
         return null;
     }
 

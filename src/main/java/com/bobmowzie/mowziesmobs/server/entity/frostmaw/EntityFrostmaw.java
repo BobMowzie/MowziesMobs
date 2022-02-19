@@ -131,7 +131,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         this.goalSelector.addGoal(7, new WaterAvoidingRandomWalkingGoal(this, 1.0D));
         this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
         this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
-        this.goalSelector.addGoal(2, new AnimationAreaAttackAI<EntityFrostmaw>(this, SWIPE_ANIMATION, null, null, 2, 6.5f, 6, 135, ConfigHandler.COMMON.MOBS.FROSTMAW.combatConfig.attackMultiplier.get().floatValue(), 9) {
+        this.goalSelector.addGoal(2, new AnimationAreaAttackAI<EntityFrostmaw>(this, SWIPE_ANIMATION, null, null, 2, 6.5f, 6, 135, 1, 9) {
             @Override
             public void startExecuting() {
                 super.startExecuting();
@@ -146,7 +146,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                 }
             }
         });
-        this.goalSelector.addGoal(2, new AnimationAreaAttackAI<EntityFrostmaw>(this, SWIPE_TWICE_ANIMATION, null, null, 1, 6.5f, 6, 135, ConfigHandler.COMMON.MOBS.FROSTMAW.combatConfig.attackMultiplier.get().floatValue(), 9) {
+        this.goalSelector.addGoal(2, new AnimationAreaAttackAI<EntityFrostmaw>(this, SWIPE_TWICE_ANIMATION, null, null, 1, 6.5f, 6, 135, 1, 9) {
             @Override
             public void startExecuting() {
                 super.startExecuting();
@@ -215,7 +215,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
         return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 10)
-                .createMutableAttribute(Attributes.MAX_HEALTH, 250 * ConfigHandler.COMMON.MOBS.FROSTMAW.combatConfig.healthMultiplier.get())
+                .createMutableAttribute(Attributes.MAX_HEALTH, 250)
                 .createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1)
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 50)
                 .createMutableAttribute(Attributes.MOVEMENT_SPEED, 0.3D);
@@ -346,7 +346,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                     List<LivingEntity> entitiesHit = world.getEntitiesWithinAABB(LivingEntity.class, hitBox);
                     for (LivingEntity entity: entitiesHit) {
                         if (entity != this) {
-                            attackEntityAsMob(entity, 4f * ConfigHandler.COMMON.MOBS.FROSTMAW.combatConfig.attackMultiplier.get().floatValue(), 1);
+                            attackEntityAsMob(entity, 4f, 1);
                             if (entity.isActiveItemStackBlocking()) entity.getActiveItemStack().damageItem(400, entity, p -> p.sendBreakAnimation(entity.getActiveHand()));
                         }
                     }
@@ -875,6 +875,11 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
     @Override
     protected ResourceLocation getLootTable() {
         return LootTableHandler.FROSTMAW;
+    }
+
+    @Override
+    protected ConfigHandler.CombatConfig getCombatConfig() {
+        return ConfigHandler.COMMON.MOBS.FROSTMAW.combatConfig;
     }
 
     @Override

@@ -186,7 +186,7 @@ public class EntityGrottol extends MowzieEntity {
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
         return MowzieEntity.createAttributes()
-                .createMutableAttribute(Attributes.MAX_HEALTH, 20 * ConfigHandler.COMMON.MOBS.GROTTOL.healthMultiplier.get())
+                .createMutableAttribute(Attributes.MAX_HEALTH, 20)
                 .createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1);
     }
 
@@ -426,6 +426,11 @@ public class EntityGrottol extends MowzieEntity {
     @Override
     protected ResourceLocation getLootTable() {
         return LootTableHandler.GROTTOL;
+    }
+
+    @Override
+    protected ConfigHandler.CombatConfig getCombatConfig() {
+        return ConfigHandler.COMMON.MOBS.GROTTOL.combatConfig;
     }
 
     public boolean isBlockDiggable(BlockState blockState) {

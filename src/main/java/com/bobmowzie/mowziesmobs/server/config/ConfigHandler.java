@@ -306,15 +306,13 @@ public final class  ConfigHandler {
                     -1, 60, true, false, false,
                     Collections.emptyList()
             );
-            this.healthMultiplier = builder.comment("Scale mob health by this value")
-                    .translation(LANG_PREFIX + "health_multiplier")
-                    .defineInRange("health_multiplier", 1.0f, 0d, Double.MAX_VALUE);
+            combatConfig = new CombatConfig(builder, 1, 1);
             builder.pop();
         }
 
         public final SpawnConfig spawnConfig;
 
-        public final DoubleValue healthMultiplier;
+        public final CombatConfig combatConfig;
     }
 
     public static class Grottol {
@@ -328,15 +326,13 @@ public final class  ConfigHandler {
                     25, -1, true, false, true,
                     Collections.emptyList()
             );
-            this.healthMultiplier = builder.comment("Scale mob health by this value")
-                    .translation(LANG_PREFIX + "health_multiplier")
-                    .defineInRange("health_multiplier", 1.0f, 0d, Double.MAX_VALUE);
+            combatConfig = new CombatConfig(builder, 1, 1);
             builder.pop();
         }
 
         public final SpawnConfig spawnConfig;
 
-        public final DoubleValue healthMultiplier;
+        public final CombatConfig combatConfig;
     }
 
     public static class FerrousWroughtnaut {

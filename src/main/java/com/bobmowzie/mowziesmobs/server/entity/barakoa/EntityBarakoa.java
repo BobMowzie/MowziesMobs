@@ -285,8 +285,8 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
     }
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
-        return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 3 * ConfigHandler.COMMON.MOBS.BARAKOA.combatConfig.attackMultiplier.get())
-                .createMutableAttribute(Attributes.MAX_HEALTH, 8 * ConfigHandler.COMMON.MOBS.BARAKOA.combatConfig.healthMultiplier.get());
+        return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 3)
+                .createMutableAttribute(Attributes.MAX_HEALTH, 8);
     }
 
     protected void updateAttackAI() {
@@ -524,7 +524,8 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
 
     @Override
     protected SoundEvent getDeathSound() {
-        return MMSounds.ENTITY_BARAKOA_DIE.get();
+        this.playSound(MMSounds.ENTITY_BARAKOA_DIE.get(), 1f, 0.95f + rand.nextFloat() * 0.1f);
+        return null;
     }
 
     @Override
@@ -682,6 +683,11 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             return super.onLivingFall(distance, damageMultipler);
         }
         return false;
+    }
+
+    @Override
+    protected ConfigHandler.CombatConfig getCombatConfig() {
+        return ConfigHandler.COMMON.MOBS.BARAKOA.combatConfig;
     }
 
     @Override

@@ -166,7 +166,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
         return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 30)
-                .createMutableAttribute(Attributes.MAX_HEALTH, 40 * ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.combatConfig.healthMultiplier.get())
+                .createMutableAttribute(Attributes.MAX_HEALTH, 40)
                 .createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1);
     }
 
@@ -562,6 +562,11 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         }
         setActive(compound.getBoolean("active"));
         active = isActive();
+    }
+
+    @Override
+    protected ConfigHandler.CombatConfig getCombatConfig() {
+        return ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.combatConfig;
     }
 
     @Override

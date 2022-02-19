@@ -43,7 +43,7 @@ public class AnimationFWNVerticalAttackAI extends AnimationAttackAI<EntityWrough
         } else if (entity.getAnimationTick() == 27) {
             entity.playSound(MMSounds.ENTITY_WROUGHT_SWING_2.get(), 1.5F, 1F);
             List<LivingEntity> entitiesHit = entity.getEntityLivingBaseNearby(range, 3, range, range);
-            float damage = (float)entity.getAttribute(Attributes.ATTACK_DAMAGE).getValue() * ConfigHandler.COMMON.MOBS.FERROUS_WROUGHTNAUT.combatConfig.attackMultiplier.get().floatValue();
+            float damage = (float)entity.getAttribute(Attributes.ATTACK_DAMAGE).getValue();
             for (LivingEntity entityHit : entitiesHit) {
                 float entityHitAngle = (float) ((Math.atan2(entityHit.getPosZ() - entity.getPosZ(), entityHit.getPosX() - entity.getPosX()) * (180 / Math.PI) - 90) % 360);
                 float entityAttackingAngle = entity.renderYawOffset % 360;

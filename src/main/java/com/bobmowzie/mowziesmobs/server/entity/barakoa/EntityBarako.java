@@ -199,7 +199,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
             }
         });
         this.goalSelector.addGoal(2, new AnimationSunStrike<>(this, SUNSTRIKE_ANIMATION));
-        this.goalSelector.addGoal(2, new AnimationRadiusAttack<EntityBarako>(this, ATTACK_ANIMATION, 4f, ConfigHandler.COMMON.MOBS.BARAKO.combatConfig.attackMultiplier.get().floatValue(), 3f, 12, true){
+        this.goalSelector.addGoal(2, new AnimationRadiusAttack<EntityBarako>(this, ATTACK_ANIMATION, 4f, 1, 3f, 12, true){
             @Override
             public void startExecuting() {
                 super.startExecuting();
@@ -223,7 +223,7 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
         return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 2)
-                .createMutableAttribute(Attributes.MAX_HEALTH, MAX_HEALTH * ConfigHandler.COMMON.MOBS.BARAKO.combatConfig.healthMultiplier.get())
+                .createMutableAttribute(Attributes.MAX_HEALTH, MAX_HEALTH)
                 .createMutableAttribute(Attributes.KNOCKBACK_RESISTANCE, 1)
                 .createMutableAttribute(Attributes.FOLLOW_RANGE, 40);
     }
@@ -914,6 +914,11 @@ public class EntityBarako extends MowzieEntity implements LeaderSunstrikeImmune,
     @Override
     protected ResourceLocation getLootTable() {
         return LootTableHandler.BARAKO;
+    }
+
+    @Override
+    protected ConfigHandler.CombatConfig getCombatConfig() {
+        return ConfigHandler.COMMON.MOBS.BARAKO.combatConfig;
     }
 
     @Override

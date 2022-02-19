@@ -48,8 +48,8 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
     }
 
     public static AttributeModifierMap.MutableAttribute createAttributes() {
-        return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 6 * ConfigHandler.COMMON.MOBS.BARAKOA.combatConfig.attackMultiplier.get())
-                .createMutableAttribute(Attributes.MAX_HEALTH, 10 * ConfigHandler.COMMON.MOBS.BARAKOA.combatConfig.healthMultiplier.get());
+        return MowzieEntity.createAttributes().createMutableAttribute(Attributes.ATTACK_DAMAGE, 6)
+                .createMutableAttribute(Attributes.MAX_HEALTH, 10);
     }
 
     @Override
