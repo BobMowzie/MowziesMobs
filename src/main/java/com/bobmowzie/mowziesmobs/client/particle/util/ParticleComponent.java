@@ -1,6 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.particle.util;
 
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
@@ -351,22 +352,23 @@ public abstract class ParticleComponent {
             float p = phase.evaluate(t);
             float r = radius.evaluate(t);
             Vector3f axis;
-//            if (faceCamera) {
-//                axis = Particle.cameraViewDir;
-//            }
-//            else {
+            if (faceCamera && Minecraft.getInstance().player != null) {
+                axis = new Vector3f(Minecraft.getInstance().player.getLookVec());
+                axis.normalize();
+            }
+            else {
                 axis = new Vector3f(axisX.evaluate(t), axisY.evaluate(t), axisZ.evaluate(t));
                 axis.normalize();
-//            }
+            }
 
             Quaternion quat = new Quaternion(axis, p * (float) Math.PI * 2, false);
             Vector3f up = new Vector3f(0, 1, 0);
             Vector3f start = axis;
-            start.cross(up);
-            start.normalize();
-            if (axis.equals(up)) {
+            if (Math.abs(axis.dot(up)) > 0.99) {
                 start = new Vector3f(1, 0, 0);
             }
+            start.cross(up);
+            start.normalize();
             Vector3f newPos = start;
             newPos.transform(quat);
             newPos.mul(r);
