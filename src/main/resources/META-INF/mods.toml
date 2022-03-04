@@ -22,7 +22,7 @@ issueTrackerURL="https://github.com/BobMowzie/MowziesMobs/issues"
     versionRange="[1.16.3, 1.16.5]"
     ordering="NONE"
     side="BOTH"
-[[dependencies.geckolib]]
+[[dependencies.mowziesmobs]]
     modId="geckolib3"
     mandatory=true
     versionRange="[3.0.57,)"
