@@ -283,9 +283,13 @@ public class PlayerCapability {
                 for (int i = 0; i < pack.size(); i++) {
                     EntityBarakoanToPlayer barakoan = pack.get(i);
                     barakoan.index = i;
+                    float distanceToPlayer = player.getDistance(barakoan);
                     if (barakoan.getAttackTarget() == null && barakoan.getAnimation() != EntityBarakoanToPlayer.DEACTIVATE_ANIMATION) {
-                        barakoan.getNavigator().tryMoveToXYZ(player.getPosX() + tribePackRadius * MathHelper.cos(theta * i), player.getPosY(), player.getPosZ() + tribePackRadius * MathHelper.sin(theta * i), 0.45);
-                        if (player.getDistance(barakoan) > 20 && player.isOnGround()) {
+                        if (distanceToPlayer > 4)
+                            barakoan.getNavigator().tryMoveToXYZ(player.getPosX() + tribePackRadius * MathHelper.cos(theta * i), player.getPosY(), player.getPosZ() + tribePackRadius * MathHelper.sin(theta * i), 0.45);
+                        else
+                            barakoan.getNavigator().clearPath();
+                        if (distanceToPlayer > 20 && player.isOnGround()) {
                             tryTeleportBarakoan(player, barakoan);
                         }
                     }
