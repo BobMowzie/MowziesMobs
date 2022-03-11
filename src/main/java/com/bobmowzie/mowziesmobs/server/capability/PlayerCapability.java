@@ -297,7 +297,7 @@ public class PlayerCapability {
             }
 
             Ability iceBreathAbility = AbilityHandler.INSTANCE.getAbility(player, AbilityHandler.ICE_BREATH_ABILITY);
-            if (!iceBreathAbility.isUsing()) {
+            if (iceBreathAbility != null && !iceBreathAbility.isUsing()) {
                 for (ItemStack stack : player.inventory.mainInventory) {
                     restoreIceCrystalStack(player, stack);
                 }
