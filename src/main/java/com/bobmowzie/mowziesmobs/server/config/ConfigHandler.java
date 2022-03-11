@@ -660,15 +660,18 @@ public final class  ConfigHandler {
     public static class Client {
         private Client(final ForgeConfigSpec.Builder builder) {
             builder.push("client");
-            this.glowEffect = builder.comment("Toggles the lantern glow effect, which may look bad with certain shaders")
+            this.glowEffect = builder.comment("Toggles the lantern glow effect, which may look bad with certain shaders.")
                     .translation(LANG_PREFIX + "glow_effect")
                     .define("glow_effect", true);
-            this.oldBarakoaTextures = builder.comment("Use the old Barakoa textures instead of the current ones")
+            this.oldBarakoaTextures = builder.comment("Use the old Barakoa textures instead of the current ones.")
                     .translation(LANG_PREFIX + "old_barakoa_textures")
                     .define("old_barakoa_textures", false);
             this.doCameraShakes = builder.comment("Enable camera shaking during certain mob attacks and abilities.")
                     .translation(LANG_PREFIX + "do_camera_shake")
                     .define("do_camera_shake", true);
+            this.playBossMusic = builder.comment("Play boss battle themes during boss encounters.")
+                    .translation(LANG_PREFIX + "play_boss_music")
+                    .define("play_boss_music", true);
             builder.pop();
         }
 
@@ -677,6 +680,8 @@ public final class  ConfigHandler {
         public final BooleanValue oldBarakoaTextures;
 
         public final BooleanValue doCameraShakes;
+
+        public final BooleanValue playBossMusic;
     }
 
     public static class Common {

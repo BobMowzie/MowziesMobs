@@ -159,11 +159,9 @@
   "config.mowziesmobs.mobs.tooltip": "Controls for all of Mowzie's Mobs mobs",
   "config.mowziesmobs.foliaath": "Foliaath",
   "config.mowziesmobs.foliaath.tooltip": "",
-  "config.mowziesmobs.ferrous_wroughtnaut": "Ferrous Wroughtnaut",
   "config.mowziesmobs.has_boss_bar": "Display Boss Bar",
   "config.mowziesmobs.heals_out_of_battle": "Heal While Not In Battle",
-  "config.mowziesmobs.old_barakoa_textures": "Use Old Barakoa Textures",
-  "config.mowziesmobs.do_camera_shake": "Do Camera Shake",
+  "config.mowziesmobs.ferrous_wroughtnaut": "Ferrous Wroughtnaut",
   "config.mowziesmobs.ferrous_wroughtnaut.tooltip": "",
   "config.mowziesmobs.barakoa": "Barakoa",
   "config.mowziesmobs.barakoa.tooltip": "Controls for Barakoana hunting packs and Barakoa villagers",
@@ -178,7 +176,6 @@
   "config.mowziesmobs.grottol.tooltip": "",
   "config.mowziesmobs.lantern": "Lantern",
   "config.mowziesmobs.lantern.tooltip": "",
-  "config.mowziesmobs.glow_effect": "Display Glow Effect",
   "config.mowziesmobs.naga": "Naga",
   "config.mowziesmobs.naga.tooltip": "",
 
@@ -254,6 +251,11 @@
   "config.mowziesmobs.general": "General",
   "config.mowziesmobs.general.tooltip": "Miscellaneous controls and settings",
   "config.mowziesmobs.freeze_blacklist": "Freeze-Immune Mobs",
+
+  "config.mowziesmobs.old_barakoa_textures": "Use Old Barakoa Textures",
+  "config.mowziesmobs.do_camera_shake": "Do Camera Shake",
+  "config.mowziesmobs.play_boss_music": "Play Boss Music",
+  "config.mowziesmobs.glow_effect": "Display Glow Effect",
 
   "_comment": "Advancements",
   "advancements.mowziesmobs.root.title": "Mowzie's Mobs",

@@ -262,11 +262,6 @@ public abstract class MowzieEntity extends CreatureEntity implements IEntityAddi
         return this.attackEntityAsMob(entityIn, 1.0F, 1.0f);
     }
 
-//    @Override
-//    public boolean isNotColliding() {
-//        return !this.world.containsAnyLiquid(this.getBoundingBox()) && this.world.checkNoEntityCollision(this.getBoundingBox(), this);
-//    }
-
     @Override
     public ILivingEntityData onInitialSpawn(IServerWorld worldIn, DifficultyInstance difficultyIn, SpawnReason reason, ILivingEntityData spawnDataIn, CompoundNBT dataTag) {
 //        System.out.println("Spawned " + getName().getString() + " at " + getPosition());

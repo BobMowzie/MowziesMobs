@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.sound;
 
+import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -10,6 +11,8 @@ public class BossMusicPlayer {
     public static BossMusicSound bossMusic;
 
     public static void playBossMusic(MowzieEntity entity) {
+        if (!ConfigHandler.CLIENT.playBossMusic.get()) return;
+
         SoundEvent soundEvent = entity.getBossMusic();
         if (soundEvent != null && entity.isAlive()) {
             PlayerEntity player = Minecraft.getInstance().player;
@@ -39,6 +42,8 @@ public class BossMusicPlayer {
     }
 
     public static void stopBossMusic(MowzieEntity entity) {
+        if (!ConfigHandler.CLIENT.playBossMusic.get()) return;
+
         if (bossMusic != null && bossMusic.getBoss() == entity)
             bossMusic.setBoss(null);
     }
