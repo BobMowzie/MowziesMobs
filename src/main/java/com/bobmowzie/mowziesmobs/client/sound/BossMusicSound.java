@@ -30,7 +30,7 @@ public class BossMusicSound extends TickableSound {
         volumeControl = new ControlledAnimation(40);
         volumeControl.setTimer(20);
         volume = volumeControl.getAnimationFraction();
-        timeUntilFade = 60;
+        timeUntilFade = 80;
     }
 
     public boolean shouldPlaySound() {
@@ -38,11 +38,19 @@ public class BossMusicSound extends TickableSound {
     }
 
     public void tick() {
+        // If the music should stop playing
         if (boss == null || !boss.isAlive() || boss.isSilent()) {
+            // If the boss is dead, skip the fade timer and fade out right away
+            if (boss != null && !boss.isAlive()) timeUntilFade = 0;
             boss = null;
-            volumeControl.decreaseTimer();
+            if (timeUntilFade > 0) timeUntilFade--;
+            else volumeControl.decreaseTimer();
         }
-        else volumeControl.increaseTimer();
+        // If the music should keep playing
+        else {
+            volumeControl.increaseTimer();
+            timeUntilFade = 60;
+        }
 
         if (volumeControl.getAnimationFraction() < 0.025) {
             finishPlaying();

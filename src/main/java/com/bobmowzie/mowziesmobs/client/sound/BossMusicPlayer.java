@@ -24,15 +24,13 @@ public class BossMusicPlayer {
                 else if (bossMusic.getBoss() == entity && !entity.canPlayerHearMusic(player)) {
                     bossMusic.setBoss(null);
                 }
+                else if (bossMusic.getBoss() == null && bossMusic.getSoundEvent() == soundEvent) {
+                    bossMusic.setBoss(entity);
+                }
             }
             else {
                 if (entity.canPlayerHearMusic(player)) {
-                    if (bossMusic == null) {
-                        bossMusic = new BossMusicSound(entity.getBossMusic(), entity);
-                    }
-                    else if (bossMusic.getBoss() == null && bossMusic.getSoundEvent() == soundEvent) {
-                        bossMusic.setBoss(entity);
-                    }
+                    bossMusic = new BossMusicSound(entity.getBossMusic(), entity);
                 }
             }
             if (bossMusic != null && !Minecraft.getInstance().getSoundHandler().isPlaying(bossMusic)) {
