@@ -35,9 +35,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.server.SEntityVelocityPacket;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.*;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -83,7 +81,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
         super.tick();
         if (caster != null) {
             if (!caster.isAlive()) remove();
-            setPositionAndRotation(caster.getPosX(), caster.getPosY(), caster.getPosZ(), caster.rotationYaw, caster.rotationPitch);
+            setPositionAndRotation(caster.getPosX(), caster.getPosY() + caster.getEyeHeight(), caster.getPosZ(), caster.rotationYaw, caster.rotationPitch);
         }
         if (!world.isRemote && ticksExisted == 7) playSound(MMSounds.ENTITY_WROUGHT_WHOOSH.get(), 0.7F, 1.1f);
         if (!world.isRemote && caster != null) {
@@ -91,7 +89,7 @@ public class EntityAxeAttack extends EntityMagicEffect {
             else if (getVertical() && ticksExisted == SWING_DURATION_VER /2 - 1) {
                 dealDamage(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue(), 4.5f, 40, 0.8f);
                 quakeAngle = rotationYaw;
-                quakeBB = getBoundingBox();
+                quakeBB = getBoundingBox().offset(0, -caster.getEyeHeight(), 0);
                 playSound(MMSounds.ENTITY_WROUGHT_AXE_LAND.get(), 0.3F, 0.5F);
                 playSound(SoundEvents.ENTITY_GENERIC_EXPLODE, 2, 0.9F + rand.nextFloat() * 0.1F);
             }
@@ -128,6 +126,8 @@ public class EntityAxeAttack extends EntityMagicEffect {
                             float applyKnockbackResistance = 0;
                             boolean hitEntity = false;
                             if (entity instanceof LivingEntity) {
+                                if (!raytraceCheckEntity(entity)) continue;
+
                                 if (caster instanceof PlayerEntity)
                                     hitEntity = entity.attackEntityFrom(DamageSource.causePlayerDamage((PlayerEntity) caster), (factor * 5 + 1) * (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.AXE_OF_A_THOUSAND_METALS.toolConfig.attackDamage.get().floatValue() / 9.0f));
                                 else
@@ -183,6 +183,9 @@ public class EntityAxeAttack extends EntityMagicEffect {
             float entityRelativeAngle = entityHitAngle - entityAttackingAngle;
             float entityHitDistance = (float) Math.sqrt((entityHit.getPosZ() - getPosZ()) * (entityHit.getPosZ() - getPosZ()) + (entityHit.getPosX() - getPosX()) * (entityHit.getPosX() - getPosX())) - entityHit.getWidth() / 2f;
             if (entityHit != caster && (!(entityHit instanceof ParrotEntity) || entityHit.getRidingEntity() != caster) && entityHitDistance <= range && entityRelativeAngle <= arc / 2 && entityRelativeAngle >= -arc / 2 || entityRelativeAngle >= 360 - arc / 2 || entityRelativeAngle <= -360 + arc / 2) {
+                // Do raycast check to prevent damaging through walls
+                if (!raytraceCheckEntity(entityHit)) continue;
+
                 PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(caster, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
                 if (playerCapability != null) {
                     playerCapability.setAxeCanAttack(true);

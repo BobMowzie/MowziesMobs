@@ -12,6 +12,10 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.server.SSpawnObjectPacket;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.RayTraceContext;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -89,5 +93,19 @@ public abstract class EntityMagicEffect extends Entity {
 
     public <T extends Entity> List<T> getEntitiesNearbyCube(Class<T> entityClass, double r) {
         return world.getEntitiesWithinAABB(entityClass, getBoundingBox().grow(r, r, r), e -> e != this);
+    }
+
+    public boolean raytraceCheckEntity(Entity entity) {
+        Vector3d from = this.getPositionVec();
+        int numChecks = 3;
+        for (int i = 0; i < numChecks; i++) {
+            float increment = entity.getHeight() / (numChecks + 1);
+            Vector3d to = entity.getPositionVec().add(0, increment * (i + 1), 0);
+            BlockRayTraceResult result = world.rayTraceBlocks(new RayTraceContext(from, to, RayTraceContext.BlockMode.COLLIDER, RayTraceContext.FluidMode.NONE, this));
+            if (result.getType() != RayTraceResult.Type.BLOCK) {
+                return true;
+            }
+        }
+        return false;
     }
 }
