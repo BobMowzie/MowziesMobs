@@ -136,15 +136,6 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
             public void startExecuting() {
                 super.startExecuting();
             }
-
-            @Override
-            protected void onAttack(LivingEntity entityTarget, float damageMultiplier, float applyKnockbackMultiplier) {
-                super.onAttack(entityTarget, damageMultiplier, applyKnockbackMultiplier);
-                if (entityTarget instanceof PlayerEntity){
-                    PlayerEntity player = (PlayerEntity)entityTarget;
-                    if (player.isActiveItemStackBlocking()) player.disableShield(false);
-                }
-            }
         });
         this.goalSelector.addGoal(2, new AnimationAreaAttackAI<EntityFrostmaw>(this, SWIPE_TWICE_ANIMATION, null, null, 1, 6.5f, 6, 135, 1, 9) {
             @Override
@@ -170,9 +161,9 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
             @Override
             protected void onAttack(LivingEntity entityTarget, float damageMultiplier, float applyKnockbackMultiplier) {
                 super.onAttack(entityTarget, damageMultiplier, applyKnockbackMultiplier);
-                if (entityTarget instanceof PlayerEntity){
+                if (getAnimationTick() == 21 && entityTarget instanceof PlayerEntity){
                     PlayerEntity player = (PlayerEntity)entityTarget;
-                    if (player.isActiveItemStackBlocking()) player.disableShield(false);
+                    if (player.isActiveItemStackBlocking()) player.disableShield(true);
                 }
             }
         });
