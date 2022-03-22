@@ -20,6 +20,7 @@ import com.bobmowzie.mowziesmobs.server.entity.MowzieEntity;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityCameraShake;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBall;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityIceBreath;
+import com.bobmowzie.mowziesmobs.server.entity.wroughtnaut.EntityWroughtnaut;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.loot.LootTableHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
@@ -82,6 +83,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
 
     private static final DataParameter<Boolean> ACTIVE = EntityDataManager.createKey(EntityFrostmaw.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> HAS_CRYSTAL = EntityDataManager.createKey(EntityFrostmaw.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> ALWAYS_ACTIVE = EntityDataManager.createKey(EntityWroughtnaut.class, DataSerializers.BOOLEAN);
 
     public static final int ICE_BREATH_COOLDOWN = 260;
     public static final int ICE_BALL_COOLDOWN = 200;
@@ -222,6 +224,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         super.registerData();
         getDataManager().register(ACTIVE, false);
         getDataManager().register(HAS_CRYSTAL, true);
+        getDataManager().register(ALWAYS_ACTIVE, false);
     }
 
     @Override
@@ -280,6 +283,10 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         this.repelEntities(3.8f, 3.8f, 3.8f, 3.8f);
 
         if (getAttackTarget() != null && (!getAttackTarget().isAlive() || getAttackTarget().getHealth() <= 0)) setAttackTarget(null);
+
+        if (isAlwaysActive()) {
+            setActive(true);
+        }
 
         if (getActive() && getAnimation() != ACTIVATE_ANIMATION && getAnimation() != ACTIVATE_NO_CRYSTAL_ANIMATION) {
             legSolver.update(this);
@@ -484,12 +491,14 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
                 }
             }
             else if (!world.isRemote) {
-                timeWithoutTarget++;
-                if (timeWithoutTarget > 1200 || world.getDifficulty() == Difficulty.PEACEFUL) {
-                    timeWithoutTarget = 0;
-                    if (getAnimation() == NO_ANIMATION) {
-                        AnimationHandler.INSTANCE.sendAnimationMessage(this, DEACTIVATE_ANIMATION);
-                        setActive(false);
+                if (!isAlwaysActive()) {
+                    timeWithoutTarget++;
+                    if (timeWithoutTarget > 1200 || world.getDifficulty() == Difficulty.PEACEFUL) {
+                        timeWithoutTarget = 0;
+                        if (getAnimation() == NO_ANIMATION) {
+                            AnimationHandler.INSTANCE.sendAnimationMessage(this, DEACTIVATE_ANIMATION);
+                            setActive(false);
+                        }
                     }
                 }
             }
@@ -829,6 +838,14 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         return getDataManager().get(HAS_CRYSTAL);
     }
 
+    public boolean isAlwaysActive() {
+        return getDataManager().get(ALWAYS_ACTIVE);
+    }
+
+    public void setAlwaysActive(boolean isAlwaysActive) {
+        getDataManager().set(ALWAYS_ACTIVE, isAlwaysActive);
+    }
+
     @Override
     public Animation[] getAnimations() {
         return new Animation[] {DIE_ANIMATION, HURT_ANIMATION, ROAR_ANIMATION, SWIPE_ANIMATION, SWIPE_TWICE_ANIMATION, ICE_BREATH_ANIMATION, ICE_BALL_ANIMATION, ACTIVATE_ANIMATION, ACTIVATE_NO_CRYSTAL_ANIMATION, DEACTIVATE_ANIMATION, SLAM_ANIMATION, LAND_ANIMATION, DODGE_ANIMATION};
@@ -839,6 +856,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         super.readAdditional(compound);
         setHasCrystal(compound.getBoolean("has_crystal"));
         setActive(compound.getBoolean("active"));
+        setAlwaysActive(compound.getBoolean("alwaysActive"));
     }
 
     @Override
@@ -846,6 +864,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
         super.writeAdditional(compound);
         compound.putBoolean("has_crystal", getHasCrystal());
         compound.putBoolean("active", getActive());
+        compound.putBoolean("alwaysActive", isAlwaysActive());
     }
 
     @Override

@@ -25,7 +25,10 @@ import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.AttributeModifierMap;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.controller.BodyController;
+import net.minecraft.entity.ai.goal.LookAtGoal;
+import net.minecraft.entity.ai.goal.LookRandomlyGoal;
 import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.entity.ai.goal.WaterAvoidingRandomWalkingGoal;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -94,6 +97,8 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 
     private static final DataParameter<Boolean> ACTIVE = EntityDataManager.createKey(EntityWroughtnaut.class, DataSerializers.BOOLEAN);
 
+    private static final DataParameter<Boolean> ALWAYS_ACTIVE = EntityDataManager.createKey(EntityWroughtnaut.class, DataSerializers.BOOLEAN);
+
     public ControlledAnimation walkAnim = new ControlledAnimation(10);
 
     public boolean swingDirection;
@@ -130,7 +135,6 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         goalSelector.addGoal(1, new AnimationDeactivateAI<>(this, DEACTIVATE_ANIMATION));
         goalSelector.addGoal(2, new WroughtnautAttackAI(this));
         targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, 0, true, false, null));
-
     }
 
     @Override
@@ -232,7 +236,10 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         if (getAttackTarget() != null && (!getAttackTarget().isAlive() || getAttackTarget().getHealth() <= 0)) setAttackTarget(null);
 
         if (!world.isRemote) {
-            if (getAnimation() == NO_ANIMATION && !isAIDisabled()) {
+            if (isAlwaysActive()) {
+                setActive(true);
+            }
+            else if (getAnimation() == NO_ANIMATION && !isAIDisabled()) {
                 if (isActive()) {
                     if (getAttackTarget() == null && moveForward == 0 && isAtRestPos()) {
                         AnimationHandler.INSTANCE.sendAnimationMessage(this, DEACTIVATE_ANIMATION);
@@ -255,9 +262,11 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
 //            MowzieParticleBase.spawnParticle(world, MMParticle.EYE, leftEyePos.x, leftEyePos.y, leftEyePos.z, 0, 0, 0, false, leftEyeRot.y + 1.5708, 0, 0, 0, 5f, 0.8f, 0.1f, 0.1f, 1f, 1, 10, false, new ParticleComponent[]{new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1, 0), false)});
 //            MowzieParticleBase.spawnParticle(world, MMParticle.EYE, rightEyePos.x, rightEyePos.y, rightEyePos.z, 0, 0, 0, false, rightEyeRot.y, 0, 0, 0, 5f, 0.8f, 0.1f, 0.1f, 1f, 1, 10, false, new ParticleComponent[]{new ParticleComponent.PropertyControl(EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1, 0), false)});
 //        }
-        renderYawOffset = rotationYaw;
+        if (getAnimation() != NO_ANIMATION || !isActive()) {
+            rotationYawHead = renderYawOffset = rotationYaw;
+        }
 
-        if (getAttackTarget() == null && getNavigator().noPath() && !isAtRestPos() && isActive()) updateRestPos();
+        if (!isAlwaysActive() && getAttackTarget() == null && getNavigator().noPath() && !isAtRestPos() && isActive()) updateRestPos();
 
         if (getAnimation() == ATTACK_ANIMATION && getAnimationTick() == 1) {
             swingDirection = rand.nextBoolean();
@@ -521,6 +530,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         super.registerData();
         getDataManager().register(REST_POSITION, Optional.empty());
         getDataManager().register(ACTIVE, false);
+        getDataManager().register(ALWAYS_ACTIVE, false);
     }
 
     public Optional<BlockPos> getRestPos() {
@@ -539,6 +549,19 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         getDataManager().set(ACTIVE, isActive);
     }
 
+    public boolean isAlwaysActive() {
+        return getDataManager().get(ALWAYS_ACTIVE);
+    }
+
+    public void setAlwaysActive(boolean isAlwaysActive) {
+        getDataManager().set(ALWAYS_ACTIVE, isAlwaysActive);
+        if (isAlwaysActive) {
+            this.goalSelector.addGoal(7, new WaterAvoidingRandomWalkingGoal(this, 0.2D));
+            this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 8.0F));
+            this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
+        }
+    }
+
     @Override
     public void writeSpawnData(PacketBuffer buf) {
         super.writeSpawnData(buf);
@@ -552,6 +575,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
             compound.put("restPos", NBTUtil.writeBlockPos(getRestPos().get()));
         }
         compound.putBoolean("active", isActive());
+        compound.putBoolean("alwaysActive", isAlwaysActive());
     }
 
     @Override
@@ -562,6 +586,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         }
         setActive(compound.getBoolean("active"));
         active = isActive();
+        setAlwaysActive(compound.getBoolean("alwaysActive"));
     }
 
     @Override
