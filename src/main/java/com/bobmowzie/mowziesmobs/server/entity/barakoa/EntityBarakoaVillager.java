@@ -64,6 +64,7 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
     private static final DataParameter<Optional<Trade>> TRADE = EntityDataManager.createKey(EntityBarakoaVillager.class, ServerProxy.OPTIONAL_TRADE);
     //    private static final DataParameter<Integer> NUM_SALES = EntityDataManager.createKey(EntityBarakoaya.class, DataSerializers.VARINT);
     private static final DataParameter<Optional<UUID>> MISBEHAVED_PLAYER = EntityDataManager.createKey(EntityBarakoaVillager.class, DataSerializers.OPTIONAL_UNIQUE_ID);
+    private static final DataParameter<Boolean> IS_TRADING = EntityDataManager.createKey(EntityBarakoaVillager.class, DataSerializers.BOOLEAN);
 
     //TODO: Sale limits. After X sales, go out of stock and change trade.
 
@@ -120,6 +121,7 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
         super.registerData();
         getDataManager().register(TRADE, Optional.empty());
         this.dataManager.register(MISBEHAVED_PLAYER, Optional.empty());
+        this.dataManager.register(IS_TRADING, false);
 //        getDataManager().register(NUM_SALES, MAX_SALES);
     }
 
@@ -147,6 +149,7 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
     }
 
     public void setCustomer(PlayerEntity customer) {
+        setTrading(customer != null);
         this.customer = customer;
     }
 
@@ -154,8 +157,12 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
         return customer;
     }
 
+    public void setTrading(boolean trading) {
+        dataManager.set(IS_TRADING, trading);
+    }
+
     public boolean isTrading() {
-        return customer != null;
+        return dataManager.get(IS_TRADING);
     }
 
     protected boolean canHoldVaryingWeapons() {
@@ -164,6 +171,7 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
 
     @Override
     public void tick() {
+        System.out.println(customer);
         super.tick();
         if (getAttackTarget() instanceof PlayerEntity) {
             if (((PlayerEntity) getAttackTarget()).isCreative() || getAttackTarget().isSpectator()) setAttackTarget(null);
@@ -196,7 +204,7 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
     protected ActionResultType getEntityInteractionResult(PlayerEntity player, Hand hand) {
         if (canTradeWith(player) && getAttackTarget() == null && isAlive()) {
             openGUI(player);
-            return ActionResultType.SUCCESS;
+            return ActionResultType.func_233537_a_(this.world.isRemote);
         }
         return ActionResultType.PASS;
     }
