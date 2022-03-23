@@ -71,6 +71,7 @@ public class AbilityCapability {
 
         @Override
         public void instanceAbilities(LivingEntity entity) {
+            setActiveAbility(null);
             for (AbilityType<?> abilityType : getAbilityTypesOnEntity(entity)) {
                 Ability ability = abilityType.makeInstance(entity);
                 abilityInstances.put(abilityType, ability);
