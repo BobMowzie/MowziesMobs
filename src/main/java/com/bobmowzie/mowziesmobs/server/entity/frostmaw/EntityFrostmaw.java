@@ -310,6 +310,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
             if (getAnimation() == ROAR_ANIMATION) {
                 if (getAnimationTick() == 10) {
                     playSound(MMSounds.ENTITY_FROSTMAW_ROAR.get(), 4, 1);
+                    EntityCameraShake.cameraShake(world, getPositionVec(), 45, 0.03f, 60, 20);
                 }
                 if (getAnimationTick() >= 8 && getAnimationTick() < 65) {
                     doRoarEffects();
@@ -545,6 +546,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
             if (getAnimation() == ACTIVATE_ANIMATION && getAnimationTick() == 18) playSound(MMSounds.ENTITY_FROSTMAW_ATTACK.get(0).get(), 1.5f, 1);
             if ((getAnimation() == ACTIVATE_ANIMATION && getAnimationTick() == 52) || (getAnimation() == ACTIVATE_NO_CRYSTAL_ANIMATION && getAnimationTick() == 34)) {
                 playSound(MMSounds.ENTITY_FROSTMAW_ROAR.get(), 4, 1);
+                EntityCameraShake.cameraShake(world, getPositionVec(), 45, 0.03f, 60, 20);
             }
             if ((getAnimation() == ACTIVATE_ANIMATION && getAnimationTick() >= 51 && getAnimationTick() < 108) || (getAnimation() == ACTIVATE_NO_CRYSTAL_ANIMATION && getAnimationTick() >= 33 && getAnimationTick() < 90)) {
                 doRoarEffects();
