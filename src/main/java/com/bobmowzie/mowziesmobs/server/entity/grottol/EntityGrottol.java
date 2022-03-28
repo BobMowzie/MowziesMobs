@@ -1,5 +1,6 @@
 package com.bobmowzie.mowziesmobs.server.entity.grottol;
 
+import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.server.advancement.AdvancementHandler;
 import com.bobmowzie.mowziesmobs.server.ai.EntityAIGrottolFindMinecart;
@@ -39,6 +40,7 @@ import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.pathfinding.PathNavigator;
 import net.minecraft.pathfinding.PathNodeType;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
@@ -78,6 +80,8 @@ public class EntityGrottol extends MowzieEntity {
     private EnumDeathType death = EnumDeathType.NORMAL;
 
     private int timeSinceDeflectSound = 0;
+
+    private static final ResourceLocation CAN_HIT_TAG = new ResourceLocation(MowziesMobs.MODID, "can_hit_grottol");
 
     public EntityGrottol(EntityType<? extends EntityGrottol> type, World world) {
         super(type, world);
@@ -239,7 +243,8 @@ public class EntityGrottol extends MowzieEntity {
         Entity entity = source.getTrueSource();
         if (entity instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) entity;
-            if (player.getHeldItemMainhand().canHarvestBlock(Blocks.DIAMOND_ORE.getDefaultState())) {
+            boolean canHitTag = ItemTags.getCollection().getTagByID(CAN_HIT_TAG).contains(player.getHeldItemMainhand().getItem());
+            if (player.getHeldItemMainhand().canHarvestBlock(Blocks.DIAMOND_ORE.getDefaultState()) || canHitTag) {
                 if (EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, player.getHeldItemMainhand()) > 0) {
                     death = EnumDeathType.FORTUNE_PICKAXE;
                     if (player instanceof ServerPlayerEntity) AdvancementHandler.GROTTOL_KILL_FORTUNE_TRIGGER.trigger((ServerPlayerEntity) player);
