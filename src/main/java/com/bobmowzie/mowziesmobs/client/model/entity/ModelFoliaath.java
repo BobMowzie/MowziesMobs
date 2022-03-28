@@ -255,10 +255,10 @@ public class ModelFoliaath<T extends EntityFoliaath> extends MowzieEntityModel<T
 
         stem1Joint.rotateAngleY += (headYaw / (180f / (float) Math.PI));
 
-        activeProgress = entity.activate.getAnimationProgressSinSqrt();
-        float activeIntermittent = entity.activate.getAnimationProgressSinSqrt() - entity.activate.getAnimationProgressSinToTenWithoutReturn();
+        activeProgress = entity.activate.getAnimationProgressSinSqrt(delta);
+        float activeIntermittent = entity.activate.getAnimationProgressSinSqrt(delta) - entity.activate.getAnimationProgressSinToTenWithoutReturn(delta);
         float activeComplete = activeProgress - activeIntermittent;
-        float stopDance = entity.stopDance.getAnimationProgressSinSqrt() - (entity.stopDance.getAnimationProgressSinSqrt() - entity.stopDance.getAnimationProgressSinToTenWithoutReturn());
+        float stopDance = entity.stopDance.getAnimationProgressSinSqrt(delta) - (entity.stopDance.getAnimationProgressSinSqrt(delta) - entity.stopDance.getAnimationProgressSinToTenWithoutReturn(delta));
         float frame = entity.frame + delta;
 
         float globalSpeed = 0.9f;
@@ -285,8 +285,8 @@ public class ModelFoliaath<T extends EntityFoliaath> extends MowzieEntityModel<T
             chainWave(leafParts4, 0.5F * globalSpeed, 0.13F * (activeComplete - stopDance), 2, frame, 1F);
 
             //Open Mouth Animation
-            float openMouthProgress = entity.openMouth.getAnimationProgressSinSqrt();
-            float openMouthIntermittent = entity.openMouth.getAnimationProgressSinSqrt() - entity.openMouth.getAnimationProgressSinToTenWithoutReturn();
+            float openMouthProgress = entity.openMouth.getAnimationProgressSinSqrt(delta);
+            float openMouthIntermittent = entity.openMouth.getAnimationProgressSinSqrt(delta) - entity.openMouth.getAnimationProgressSinToTenWithoutReturn(delta);
             float headLeafRotation = 0.2F * openMouthProgress - 0.8F * openMouthIntermittent;
             mouthTop1.rotateAngleX -= 0.3 * openMouthIntermittent;
             mouthBottom1.rotateAngleX -= 0.3 * openMouthIntermittent;

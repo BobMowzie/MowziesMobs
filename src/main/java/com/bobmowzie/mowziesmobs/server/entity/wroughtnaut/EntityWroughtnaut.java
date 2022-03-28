@@ -225,6 +225,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
     @Override
     public void tick() {
         super.tick();
+        walkAnim.updatePrevTimer();
 
 //        if (getAnimation() == NO_ANIMATION) {
 //            setActive(true);

@@ -87,7 +87,7 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         this.goalSelector.addGoal(1, new AnimationTakeDamage<>(this));
         this.goalSelector.addGoal(1, new AnimationDieAI<>(this));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, LivingEntity.class, 0, true, false, e ->
-                (CreatureEntity.class.isAssignableFrom(e.getClass())) && !(e instanceof EntityFoliaath || e instanceof EntityBabyFoliaath || e instanceof CreeperEntity)) {
+                (CreatureEntity.class.isAssignableFrom(e.getClass()) || e instanceof PlayerEntity) && !(e instanceof EntityFoliaath || e instanceof EntityBabyFoliaath || e instanceof CreeperEntity)) {
                     @Override
                     public boolean shouldContinueExecuting() {
                         findNearestTarget();
@@ -129,6 +129,10 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
     @Override
     public void tick() {
         super.tick();
+        activate.updatePrevTimer();
+        deathFlail.updatePrevTimer();
+        stopDance.updatePrevTimer();
+        openMouth.updatePrevTimer();
         setMotion(0, getMotion().y, 0);
         // Open mouth animation
         if (getAnimation() == NO_ANIMATION && !activate.canIncreaseTimer()) {
