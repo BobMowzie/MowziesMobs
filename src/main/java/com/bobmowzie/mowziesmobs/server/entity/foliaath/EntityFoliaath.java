@@ -87,9 +87,15 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         this.goalSelector.addGoal(1, new AnimationTakeDamage<>(this));
         this.goalSelector.addGoal(1, new AnimationDieAI<>(this));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal(this, LivingEntity.class, 0, true, false, e ->
-                (CreatureEntity.class.isAssignableFrom(e.getClass())) && !(e instanceof EntityFoliaath || e instanceof EntityBabyFoliaath || e instanceof CreeperEntity))
+                (CreatureEntity.class.isAssignableFrom(e.getClass())) && !(e instanceof EntityFoliaath || e instanceof EntityBabyFoliaath || e instanceof CreeperEntity)) {
+                    @Override
+                    public boolean shouldContinueExecuting() {
+                        findNearestTarget();
+                        if (nearestTarget != getAttackTarget()) return false;
+                        return super.shouldContinueExecuting();
+                    }
+                }
         );
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal(this, PlayerEntity.class, true, false));
     }
 
     @Override
@@ -123,8 +129,6 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
     @Override
     public void tick() {
         super.tick();
-//        this.posX = prevPosX;
-//        this.posZ = prevPosZ;
         setMotion(0, getMotion().y, 0);
         // Open mouth animation
         if (getAnimation() == NO_ANIMATION && !activate.canIncreaseTimer()) {
@@ -196,10 +200,6 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
         renderYawOffset = 0;
         rotationYaw = 0;
 
-//        if (getAttackTarget() instanceof EntityFoliaath || getAttackTarget() instanceof EntityBabyFoliaath) {
-//            setAttackTarget(null);
-//        }
-
         if (resettingTargetTimer > 0 && !world.isRemote) {
             rotationYawHead = prevRotationYawHead;
         }
@@ -237,10 +237,6 @@ public class EntityFoliaath extends MowzieEntity implements IMob {
             resettingTargetTimer--;
         }
 
-        if (getAttackTarget() != null && frame % 20 == 0 && getAnimation() == NO_ANIMATION) {
-            setAttackTarget(null);
-            resettingTargetTimer = 20;
-        }
         if (activateTarget == activateTime) {
             activateTarget = getActivateTarget();
         } else if (activateTime < activateTarget && activate.canIncreaseTimer() || activateTime > activateTarget && activate.canDecreaseTimer()) {
