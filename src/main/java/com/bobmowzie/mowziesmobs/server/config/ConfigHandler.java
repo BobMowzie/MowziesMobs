@@ -672,6 +672,9 @@ public final class  ConfigHandler {
             this.playBossMusic = builder.comment("Play boss battle themes during boss encounters.")
                     .translation(LANG_PREFIX + "play_boss_music")
                     .define("play_boss_music", true);
+            this.customPlayerAnims = builder.comment("Use custom player animations.")
+                    .translation(LANG_PREFIX + "custom_player_anims")
+                    .define("custom_player_anims", true);
             builder.pop();
         }
 
@@ -682,6 +685,8 @@ public final class  ConfigHandler {
         public final BooleanValue doCameraShakes;
 
         public final BooleanValue playBossMusic;
+
+        public final BooleanValue customPlayerAnims;
     }
 
     public static class Common {

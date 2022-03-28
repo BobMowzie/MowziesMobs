@@ -48,6 +48,7 @@ public enum ClientEventHandler {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onHandRender(RenderHandEvent event) {
+        if (!ConfigHandler.CLIENT.customPlayerAnims.get()) return;
         PlayerEntity player = Minecraft.getInstance().player;
         if (player == null) return;
         boolean shouldAnimate = false;
@@ -82,6 +83,7 @@ public enum ClientEventHandler {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void renderLivingEvent(RenderLivingEvent.Pre<? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>> event) {
         if (event.getEntity() instanceof PlayerEntity) {
+            if (!ConfigHandler.CLIENT.customPlayerAnims.get()) return;
             PlayerEntity player = (PlayerEntity) event.getEntity();
             if (player == null) return;
             float delta = event.getPartialRenderTick();
