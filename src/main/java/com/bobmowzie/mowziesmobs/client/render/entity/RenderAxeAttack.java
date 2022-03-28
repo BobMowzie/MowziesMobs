@@ -40,9 +40,9 @@ public class RenderAxeAttack extends EntityRenderer<EntityAxeAttack> {
 
     @Override
     public void render(EntityAxeAttack axe, float entityYaw, float delta, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-        if (ConfigHandler.CLIENT.customPlayerAnims.get()) {
+        if (!ConfigHandler.CLIENT.customPlayerAnims.get()) {
             PlayerEntity player = Minecraft.getInstance().player;
-            if (player != null && player == axe.getCaster() && Minecraft.getInstance().gameSettings.getPointOfView() == PointOfView.FIRST_PERSON) {
+            if (player != null && player == axe.getCaster()) {
                 matrixStackIn.push();
                 Vector3d prevAxePos = new Vector3d(axe.lastTickPosX, axe.lastTickPosY, axe.lastTickPosZ);
                 Vector3d prevPlayerPos = new Vector3d(player.lastTickPosX, player.lastTickPosY, player.lastTickPosZ);
