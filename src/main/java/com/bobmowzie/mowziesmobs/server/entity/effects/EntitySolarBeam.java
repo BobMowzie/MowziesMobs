@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.server.entity.effects;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.tools.ControlledAnimation;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleOrb;
@@ -106,6 +105,9 @@ public class EntitySolarBeam extends Entity {
         prevCollidePosZ = collidePosZ;
         prevYaw = renderYaw;
         prevPitch = renderPitch;
+        prevPosX = getPosX();
+        prevPosY = getPosY();
+        prevPosZ = getPosZ();
         if (ticksExisted == 1 && world.isRemote) {
             caster = (LivingEntity) world.getEntityByID(getCasterID());
         }
@@ -370,7 +372,8 @@ public class EntitySolarBeam extends Entity {
     private void updateWithPlayer() {
         this.setYaw((float) ((caster.rotationYawHead + 90) * Math.PI / 180.0d));
         this.setPitch((float) (-caster.rotationPitch * Math.PI / 180.0d));
-        this.setPosition(caster.getPosX(), caster.getPosY() + 1.2f, caster.getPosZ());
+        Vector3d vecOffset = caster.getLookVec().normalize().scale(1);
+        this.setPosition(caster.getPosX() + vecOffset.getX(), caster.getPosY() + 1.2f + vecOffset.getY(), caster.getPosZ() + vecOffset.getZ());
     }
 
     @Override
