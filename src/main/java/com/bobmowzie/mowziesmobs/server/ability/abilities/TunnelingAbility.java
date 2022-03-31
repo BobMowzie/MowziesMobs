@@ -144,7 +144,6 @@ public class TunnelingAbility extends Ability {
         }
 
         if (underground || (getTicksInUse() > 1 && usingGauntlet && lookVec.y < 0 && stack.getDamage() + 5 < stack.getMaxDamage())) {
-            System.out.println(usingGauntlet);
             if (getUser().ticksExisted % 16 == 0) getUser().playSound(MMSounds.EFFECT_GEOMANCY_RUMBLE.get(rand.nextInt(3)).get(), 0.6f, 0.5f + rand.nextFloat() * 0.2f);
             Vector3d userCenter = getUser().getPositionVec().add(0, getUser().getHeight() / 2f, 0);
             float radius = 2f;
