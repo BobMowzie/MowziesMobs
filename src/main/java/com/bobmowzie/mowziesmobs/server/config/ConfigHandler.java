@@ -508,6 +508,28 @@ public final class  ConfigHandler {
         public final IntValue durability;
     }
 
+    public static class EarthboreGauntlet {
+        EarthboreGauntlet(final ForgeConfigSpec.Builder builder) {
+            builder.push("earthbore_gauntlet");
+            attackMultiplier = builder.comment("Multiply all damage done with the Earthbore Gauntlet by this amount.")
+                    .translation(LANG_PREFIX + "attack_multiplier")
+                    .defineInRange("attack_multiplier", 1f, 0d, Double.MAX_VALUE);
+            breakable = builder.comment("Set to true for the Earthbore Gauntlet to have limited durability.", "Prevents regeneration in inventory.")
+                    .translation(LANG_PREFIX + "breakable")
+                    .define("breakable", false);
+            durability = builder.comment("Earthbore Gauntlet durability")
+                    .translation(LANG_PREFIX + "durability")
+                    .defineInRange("durability", 400, 1, Integer.MAX_VALUE);
+            builder.pop();
+        }
+
+        public final DoubleValue attackMultiplier;
+
+        public final BooleanValue breakable;
+
+        public final IntValue durability;
+    }
+
     public static class BarakoaSpear {
         BarakoaSpear(final ForgeConfigSpec.Builder builder) {
             builder.push("barakoa_spear");
@@ -621,6 +643,7 @@ public final class  ConfigHandler {
             BARAKOA_SPEAR = new BarakoaSpear(builder);
             NAGA_FANG_DAGGER = new NagaFangDagger(builder);
             BLOW_GUN = new Blowgun(builder);
+            EARTHBORE_GAUNTLET = new EarthboreGauntlet(builder);
             builder.pop();
         }
 
@@ -643,6 +666,8 @@ public final class  ConfigHandler {
         public final NagaFangDagger NAGA_FANG_DAGGER;
 
         public final Blowgun BLOW_GUN;
+
+        public final EarthboreGauntlet EARTHBORE_GAUNTLET;
     }
 
     public static class General {

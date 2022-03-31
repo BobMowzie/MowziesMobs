@@ -256,7 +256,7 @@ public final class ServerEventHandler {
         }
 
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(living);
-        if (abilityCapability != null && event.isCancelable() && abilityCapability.interactingPrevented()) {
+        if (abilityCapability != null && event.isCancelable() && abilityCapability.itemUsePrevented(event.getItem())) {
             event.setCanceled(true);
             return;
         }
@@ -505,7 +505,7 @@ public final class ServerEventHandler {
         }
 
         AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(event.getPlayer());
-        if (abilityCapability != null && event.isCancelable() && abilityCapability.interactingPrevented()) {
+        if (abilityCapability != null && event.isCancelable() && abilityCapability.itemUsePrevented(event.getItemStack())) {
             event.setCanceled(true);
             return;
         }

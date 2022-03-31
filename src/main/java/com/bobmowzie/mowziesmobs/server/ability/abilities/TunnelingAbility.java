@@ -14,6 +14,7 @@ import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityBlockSwapper;
 import com.bobmowzie.mowziesmobs.server.entity.effects.EntityFallingBlock;
+import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
 import com.bobmowzie.mowziesmobs.server.potion.EffectGeomancy;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.BlockState;
@@ -21,11 +22,14 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -61,9 +65,50 @@ public class TunnelingAbility extends Ability {
         super.start();
         underground = false;
         prevUnderground = false;
+        if (getUser().isOnGround()) getUser().addVelocity(0, 0.8f, 0);
         if (getUser().world.isRemote()) {
             spinAmount = 0;
             pitch = 0;
+        }
+    }
+
+    public boolean damageGauntlet() {
+        ItemStack stack = getUser().getActiveItemStack();
+        if (stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET) {
+            Hand handIn = getUser().getActiveHand();
+            if (stack.getDamage() + 5 < stack.getMaxDamage()) {
+                stack.damageItem(5, getUser(), p -> p.sendBreakAnimation(handIn));
+                return true;
+            }
+            else {
+                if (ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHBORE_GAUNTLET.breakable.get()) {
+                    stack.damageItem(5, getUser(), p -> p.sendBreakAnimation(handIn));
+                }
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public void restoreGauntlet(ItemStack stack) {
+        if (stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET) {
+            if (!ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHBORE_GAUNTLET.breakable.get()) {
+                stack.setDamage(Math.max(stack.getDamage() - 1, 0));
+            }
+        }
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (!isUsing() && getUser() instanceof PlayerEntity) {
+            PlayerEntity player = (PlayerEntity) getUser();
+            for (ItemStack stack : player.inventory.mainInventory) {
+                restoreGauntlet(stack);
+            }
+            for (ItemStack stack : player.inventory.offHandInventory) {
+                restoreGauntlet(stack);
+            }
         }
     }
 
@@ -75,9 +120,11 @@ public class TunnelingAbility extends Ability {
         underground = !getUser().world.getEntitiesWithinAABB(EntityBlockSwapper.class, getUser().getBoundingBox().grow(0.5)).isEmpty();
         Vector3d lookVec = getUser().getLookVec();
         float tunnelSpeed = 0.3f;
+        ItemStack stack = getUser().getActiveItemStack();
+        boolean usingGauntlet = stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET;
         if (underground) {
             timeUnderground++;
-            if (getUser().isSneaking()) {
+            if (usingGauntlet && damageGauntlet()) {
                 getUser().setMotion(lookVec.normalize().scale(tunnelSpeed));
             }
             else {
@@ -96,7 +143,8 @@ public class TunnelingAbility extends Ability {
             if (getUser().getMotion().getY() < -1.3) getUser().setMotion(getUser().getMotion().getX(), -1.3, getUser().getMotion().getZ());
         }
 
-        if ((getUser().isSneaking() && lookVec.y < 0) || underground) {
+        if (underground || (getTicksInUse() > 1 && usingGauntlet && lookVec.y < 0 && stack.getDamage() + 5 < stack.getMaxDamage())) {
+            System.out.println(usingGauntlet);
             if (getUser().ticksExisted % 16 == 0) getUser().playSound(MMSounds.EFFECT_GEOMANCY_RUMBLE.get(rand.nextInt(3)).get(), 0.6f, 0.5f + rand.nextFloat() * 0.2f);
             Vector3d userCenter = getUser().getPositionVec().add(0, getUser().getHeight() / 2f, 0);
             float radius = 2f;
@@ -155,22 +203,19 @@ public class TunnelingAbility extends Ability {
 
     @Override
     public boolean canUse() {
-        return EffectGeomancy.canUse(getUser()) && super.canUse();
+        return super.canUse();
     }
 
     @Override
     protected boolean canContinueUsing() {
-        boolean canContinueUsing = EffectGeomancy.canUse(getUser()) && (!getUser().isOnGround() || underground) && super.canContinueUsing();
+        boolean canContinueUsing = (getTicksInUse() <= 1 || !getUser().isOnGround() || underground) && super.canContinueUsing();
         return canContinueUsing;
     }
 
     @Override
-    public void onSneakDown(PlayerEntity player) {
-        super.onSneakDown(player);
-        if (doubleTapTimer > 0 && !player.isOnGround()) {
-            AbilityHandler.INSTANCE.sendAbilityMessage(player, AbilityHandler.TUNNELING_ABILITY);
-        }
-        doubleTapTimer = 9;
+    public boolean preventsItemUse(ItemStack stack) {
+        if (stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET) return false;
+        return super.preventsItemUse(stack);
     }
 
     @Override
@@ -178,7 +223,7 @@ public class TunnelingAbility extends Ability {
         e.getController().transitionLengthTicks = 4;
         if (perspective == GeckoPlayer.Perspective.THIRD_PERSON) {
             float yMotionThreshold = getUser() == Minecraft.getInstance().player ? 1 : 2;
-            if (!underground && !getUser().isSneaking() && getUser().getMotion().getY() < yMotionThreshold) {
+            if (!underground && getUser().getActiveItemStack().getItem() != ItemHandler.EARTHBORE_GAUNTLET && getUser().getMotion().getY() < yMotionThreshold) {
                 e.getController().setAnimation(new AnimationBuilder().addAnimation("tunneling_fall", false));
             }
             else {

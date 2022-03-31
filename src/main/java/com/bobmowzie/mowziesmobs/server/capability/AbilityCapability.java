@@ -8,6 +8,7 @@ import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
@@ -54,6 +55,8 @@ public class AbilityCapability {
         boolean blockBreakingBuildingPrevented();
 
         boolean interactingPrevented();
+
+        boolean itemUsePrevented(ItemStack itemStack);
 
          <E extends IAnimatable> PlayState animationPredicate(AnimationEvent<E> e, GeckoPlayer.Perspective perspective);
 
@@ -138,6 +141,11 @@ public class AbilityCapability {
         @Override
         public boolean interactingPrevented() {
             return getActiveAbility() != null && getActiveAbility().preventsInteracting();
+        }
+
+        @Override
+        public boolean itemUsePrevented(ItemStack itemStack) {
+            return getActiveAbility() != null && getActiveAbility().preventsItemUse(itemStack);
         }
 
         @Override

@@ -57,7 +57,8 @@ public final class ItemHandler {
     public static final ItemGlowingJelly GLOWING_JELLY = null;
     public static final ItemNagaFang NAGA_FANG = null;
     public static final ItemNagaFangDagger NAGA_FANG_DAGGER = null;
-    public static final ItemLogo LOGO = null;
+    public static final ItemEarthboreGauntlet EARTHBORE_GAUNTLET = null;
+    public static final Item LOGO = null;
     public static final MusicDiscItem PETIOLE_MUSIC_DISC = null;
 
     public static final SpawnEggItem FOLIAATH_SPAWN_EGG = null;
@@ -102,7 +103,8 @@ public final class ItemHandler {
             new ItemGlowingJelly( new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab).food(ItemGlowingJelly.GLOWING_JELLY_FOOD)).setRegistryName("glowing_jelly"),
             new ItemNagaFang(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("naga_fang"),
             new ItemNagaFangDagger(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("naga_fang_dagger"),
-            new ItemLogo(new Item.Properties()).setRegistryName("logo"),
+            new ItemEarthboreGauntlet(new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab).defaultMaxDamage(ConfigHandler.COMMON.TOOLS_AND_ABILITIES.EARTHBORE_GAUNTLET.durability.get()).rarity(Rarity.RARE)).setRegistryName("earthbore_gauntlet"),
+            new Item(new Item.Properties()).setRegistryName("logo"),
             new MusicDiscItem(14, MMSounds.MUSIC_PETIOLE, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab).maxStackSize(1).rarity(Rarity.RARE)).setRegistryName("music_disc_petiole"),
     
             new ModSpawnEggItem(EntityHandler.FOLIAATH, 0x47CC3B, 0xC03BCC, new Item.Properties().group(CreativeTabHandler.INSTANCE.creativeTab)).setRegistryName("foliaath_spawn_egg"),

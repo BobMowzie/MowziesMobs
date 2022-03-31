@@ -264,6 +264,14 @@ public class Ability {
         return true;
     }
 
+    /**
+     * Unused for background abilities
+     * @return
+     */
+    public boolean preventsItemUse(ItemStack stack) {
+        return true;
+    }
+
     public AbilitySection[] getSectionTrack() {
         return sectionTrack;
     }

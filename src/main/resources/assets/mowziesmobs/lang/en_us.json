@@ -38,6 +38,7 @@
   "item.mowziesmobs.test_structure": "Test Structures",
   "item.mowziesmobs.ice_crystal": "Ice Crystal",
   "item.mowziesmobs.earth_talisman": "Earth Talisman",
+  "item.mowziesmobs.earthbore_gauntlet": "Earthbore Gauntlet",
 
   "item.mowziesmobs.blowgun.text.0": "Charges quickly",
   "item.mowziesmobs.blowgun.text.1": "Short range",
@@ -83,9 +84,11 @@
   "item.mowziesmobs.earth_talisman.text.2": "Right-click earthen ground with empty hand to spawn boulder",
   "item.mowziesmobs.earth_talisman.text.3": "Punch boulder to fire it as projectile",
   "item.mowziesmobs.earth_talisman.text.4": "Charge right-click to spawn bigger boulders",
-  "item.mowziesmobs.earth_talisman.text.5": "While in the air, double-tap and hold sneak to begin tunneling",
-  "item.mowziesmobs.earth_talisman.text.6": "Look in the direction you'd like to dig",
-  "item.mowziesmobs.earth_talisman.text.7": "Release sneak to surface and stop tunneling",
+
+  "item.mowziesmobs.earthbore_gauntlet.text.0": "Hold right-click to tunnel through the ground",
+  "item.mowziesmobs.earthbore_gauntlet.text.1": "Look in the direction you'd like to dig",
+  "item.mowziesmobs.earthbore_gauntlet.text.2": "Release right-click to surface and stop tunneling",
+  "item.mowziesmobs.earthbore_gauntlet.text.3": "Recharges while in inventory",
 
   "item.mowziesmobs.mob_remover.text.0": "Left-click to remove a Mowzie's Mobs mob",
 
@@ -225,8 +228,6 @@
   "config.mowziesmobs.poison_duration": "Poison Duration",
   "config.mowziesmobs.ice_crystal": "Ice Crystal",
   "config.mowziesmobs.ice_crystal.tooltip": "",
-  "config.mowziesmobs.ice_crystal_breakable": "Breakable",
-  "config.mowziesmobs.ice_crystal_attack_multiplier": "",
   "config.mowziesmobs.durability": "Durability",
   "config.mowziesmobs.naga_fang_dagger": "Naga Fang Dagger",
   "config.mowziesmobs.naga_fang_dagger.tooltip": "",
@@ -237,6 +238,8 @@
   "config.mowziesmobs.suns_blessing_attack_multiplier": "Sun's Blessing Attack Damage Multiplier",
   "config.mowziesmobs.suns_blessing_duration": "Sun's Blessing Duration",
   "config.mowziesmobs.solar_beam_cost": "Solar Beam Cost",
+  "config.mowziesmobs.earthbore_gauntlet": "Earthbore Gauntlet",
+  "config.mowziesmobs.earthbore_gauntlet.tooltip": "",
 
   "config.mowziesmobs.tool_data": "Tool Controls",
   "config.mowziesmobs.tool_data.tooltip": "",
