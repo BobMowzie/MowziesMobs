@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelFrostmaw;
-import com.bobmowzie.mowziesmobs.client.render.RenderUtils;
+import com.bobmowzie.mowziesmobs.client.render.MowzieRenderUtils;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.ItemLayer;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrostmaw;
 import com.bobmowzie.mowziesmobs.server.item.ItemHandler;
@@ -40,9 +40,9 @@ public class RenderFrostmaw extends MobRenderer<EntityFrostmaw, ModelFrostmaw<En
     public void render(EntityFrostmaw entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
         if (entity.getAnimation() == EntityFrostmaw.SWIPE_ANIMATION || entity.getAnimation() == EntityFrostmaw.SWIPE_TWICE_ANIMATION || entity.getAnimation() == EntityFrostmaw.ICE_BREATH_ANIMATION || entity.getAnimation() == EntityFrostmaw.ICE_BALL_ANIMATION || !entity.getActive()) {
-            Vector3d rightHandPos = RenderUtils.getWorldPosFromModel(entity, entityYaw, entityModel.rightHandSocket);
-            Vector3d leftHandPos = RenderUtils.getWorldPosFromModel(entity, entityYaw, entityModel.leftHandSocket);
-            Vector3d mouthPos = RenderUtils.getWorldPosFromModel(entity, entityYaw, entityModel.mouthSocket);
+            Vector3d rightHandPos = MowzieRenderUtils.getWorldPosFromModel(entity, entityYaw, entityModel.rightHandSocket);
+            Vector3d leftHandPos = MowzieRenderUtils.getWorldPosFromModel(entity, entityYaw, entityModel.leftHandSocket);
+            Vector3d mouthPos = MowzieRenderUtils.getWorldPosFromModel(entity, entityYaw, entityModel.mouthSocket);
             entity.setSocketPosArray(0, rightHandPos);
             entity.setSocketPosArray(1, leftHandPos);
             entity.setSocketPosArray(2, mouthPos);

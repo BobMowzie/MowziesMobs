@@ -83,7 +83,7 @@ public class EntityFrostmaw extends MowzieEntity implements IMob {
 
     private static final DataParameter<Boolean> ACTIVE = EntityDataManager.createKey(EntityFrostmaw.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> HAS_CRYSTAL = EntityDataManager.createKey(EntityFrostmaw.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> ALWAYS_ACTIVE = EntityDataManager.createKey(EntityWroughtnaut.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> ALWAYS_ACTIVE = EntityDataManager.createKey(EntityFrostmaw.class, DataSerializers.BOOLEAN);
 
     public static final int ICE_BREATH_COOLDOWN = 260;
     public static final int ICE_BALL_COOLDOWN = 200;

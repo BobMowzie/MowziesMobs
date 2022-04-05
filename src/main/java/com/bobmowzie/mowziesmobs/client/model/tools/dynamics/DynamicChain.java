@@ -1,6 +1,5 @@
 package com.bobmowzie.mowziesmobs.client.model.tools.dynamics;
 
-import com.bobmowzie.mowziesmobs.client.render.RenderUtils;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;

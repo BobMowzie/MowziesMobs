@@ -3,6 +3,7 @@ package com.bobmowzie.mowziesmobs.client.render.entity.player;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelGeckoPlayerFirstPerson;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelPlayerAnimated;
 import com.bobmowzie.mowziesmobs.client.model.tools.geckolib.MowzieGeoBone;
+import com.bobmowzie.mowziesmobs.client.render.MowzieRenderUtils;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
@@ -152,9 +153,9 @@ public class GeckoFirstPersonRenderer extends FirstPersonRenderer implements IGe
     public void renderRecursively(GeoBone bone, MatrixStack matrixStack, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         matrixStack.push();
         if (mirror) {
-            translateMirror(bone, matrixStack);
-            moveToPivotMirror(bone, matrixStack);
-            rotateMirror(bone, matrixStack);
+            MowzieRenderUtils.translateMirror(bone, matrixStack);
+            MowzieRenderUtils.moveToPivotMirror(bone, matrixStack);
+            MowzieRenderUtils.rotateMirror(bone, matrixStack);
             RenderUtils.scale(bone, matrixStack);
         }
         else {
@@ -175,7 +176,7 @@ public class GeckoFirstPersonRenderer extends FirstPersonRenderer implements IGe
             }
         }
         if (mirror) {
-            moveBackFromPivotMirror(bone, matrixStack);
+            MowzieRenderUtils.moveBackFromPivotMirror(bone, matrixStack);
         }
         else {
             RenderUtils.moveBackFromPivot(bone, matrixStack);
@@ -199,50 +200,5 @@ public class GeckoFirstPersonRenderer extends FirstPersonRenderer implements IGe
         }
 
         matrixStack.pop();
-    }
-
-    // Mirrored render utils
-    public static void moveToPivotMirror(GeoCube cube, MatrixStack stack) {
-        Vector3f pivot = cube.pivot;
-        stack.translate((double)(-pivot.getX() / 16.0F), (double)(pivot.getY() / 16.0F), (double)(pivot.getZ() / 16.0F));
-    }
-
-    public static void moveBackFromPivotMirror(GeoCube cube, MatrixStack stack) {
-        Vector3f pivot = cube.pivot;
-        stack.translate((double)(pivot.getX() / 16.0F), (double)(-pivot.getY() / 16.0F), (double)(-pivot.getZ() / 16.0F));
-    }
-
-    public static void moveToPivotMirror(GeoBone bone, MatrixStack stack) {
-        stack.translate((double)(-bone.rotationPointX / 16.0F), (double)(bone.rotationPointY / 16.0F), (double)(bone.rotationPointZ / 16.0F));
-    }
-
-    public static void moveBackFromPivotMirror(GeoBone bone, MatrixStack stack) {
-        stack.translate((double)(bone.rotationPointX / 16.0F), (double)(-bone.rotationPointY / 16.0F), (double)(-bone.rotationPointZ / 16.0F));
-    }
-
-    public static void translateMirror(GeoBone bone, MatrixStack stack) {
-        stack.translate((double)(bone.getPositionX() / 16.0F), (double)(bone.getPositionY() / 16.0F), (double)(bone.getPositionZ() / 16.0F));
-    }
-
-    public static void rotateMirror(GeoBone bone, MatrixStack stack) {
-        if (bone.getRotationZ() != 0.0F) {
-            stack.rotate(Vector3f.ZP.rotation(-bone.getRotationZ()));
-        }
-
-        if (bone.getRotationY() != 0.0F) {
-            stack.rotate(Vector3f.YP.rotation(-bone.getRotationY()));
-        }
-
-        if (bone.getRotationX() != 0.0F) {
-            stack.rotate(Vector3f.XP.rotation(bone.getRotationX()));
-        }
-
-    }
-
-    public static void rotateMirror(GeoCube bone, MatrixStack stack) {
-        Vector3f rotation = bone.rotation;
-        stack.rotate(new Quaternion(0.0F, 0.0F, -rotation.getZ(), false));
-        stack.rotate(new Quaternion(0.0F, -rotation.getY(), 0.0F, false));
-        stack.rotate(new Quaternion(rotation.getX(), 0.0F, 0.0F, false));
     }
 }

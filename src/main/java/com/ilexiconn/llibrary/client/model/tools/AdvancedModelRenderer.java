@@ -1,7 +1,7 @@
 package com.ilexiconn.llibrary.client.model.tools;
 
 
-import com.bobmowzie.mowziesmobs.client.render.RenderUtils;
+import com.bobmowzie.mowziesmobs.client.render.MowzieRenderUtils;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -410,7 +410,7 @@ public class AdvancedModelRenderer extends ModelRenderer {
         matrixStack.rotate(new Quaternion(0, -dYaw + 180, 0, true));
         matrixStack.scale(-1, -1, 1);
         matrixStack.translate(0, -1.5f, 0);
-        RenderUtils.matrixStackFromModel(matrixStack, this);
+        MowzieRenderUtils.matrixStackFromModel(matrixStack, this);
         MatrixStack.Entry matrixEntry = matrixStack.getLast();
         Matrix4f matrix4f = matrixEntry.getMatrix();
 

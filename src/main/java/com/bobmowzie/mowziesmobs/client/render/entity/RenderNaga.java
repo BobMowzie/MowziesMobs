@@ -2,7 +2,7 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelNaga;
-import com.bobmowzie.mowziesmobs.client.render.RenderUtils;
+import com.bobmowzie.mowziesmobs.client.render.MowzieRenderUtils;
 import com.bobmowzie.mowziesmobs.server.entity.naga.EntityNaga;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -33,6 +33,6 @@ public class RenderNaga extends MobRenderer<EntityNaga, ModelNaga<EntityNaga>> {
     @Override
     public void render(EntityNaga entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
-        if (entityIn.getAnimation() == EntityNaga.SPIT_ANIMATION && entityIn.mouthPos != null && entityIn.mouthPos.length > 0) entityIn.mouthPos[0] = RenderUtils.getWorldPosFromModel(entityIn, entityYaw, getEntityModel().mouthSocket);
+        if (entityIn.getAnimation() == EntityNaga.SPIT_ANIMATION && entityIn.mouthPos != null && entityIn.mouthPos.length > 0) entityIn.mouthPos[0] = MowzieRenderUtils.getWorldPosFromModel(entityIn, entityYaw, getEntityModel().mouthSocket);
     }
 }

@@ -3,7 +3,7 @@ package com.bobmowzie.mowziesmobs.client.render.entity;
 import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.model.entity.ModelBarako;
 import com.bobmowzie.mowziesmobs.client.render.MMRenderType;
-import com.bobmowzie.mowziesmobs.client.render.RenderUtils;
+import com.bobmowzie.mowziesmobs.client.render.MowzieRenderUtils;
 import com.bobmowzie.mowziesmobs.client.render.entity.layer.SunblockLayer;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
@@ -61,7 +61,7 @@ public class RenderBarako extends MobRenderer<EntityBarako, ModelBarako<EntityBa
             }
         }
         super.render(barako, entityYaw, delta, matrixStackIn, bufferIn, packedLightIn);
-        if (barako.getAnimation() == EntityBarako.SUPERNOVA_ANIMATION && barako.betweenHandPos != null && barako.betweenHandPos.length > 0) barako.betweenHandPos[0] = RenderUtils.getWorldPosFromModel(barako, entityYaw, getEntityModel().betweenHands);
+        if (barako.getAnimation() == EntityBarako.SUPERNOVA_ANIMATION && barako.betweenHandPos != null && barako.betweenHandPos.length > 0) barako.betweenHandPos[0] = MowzieRenderUtils.getWorldPosFromModel(barako, entityYaw, getEntityModel().betweenHands);
     }
 
     private void drawBurst(Matrix4f matrix4f, Matrix3f matrix3f, IVertexBuilder builder, float tick, int packedLightIn) {

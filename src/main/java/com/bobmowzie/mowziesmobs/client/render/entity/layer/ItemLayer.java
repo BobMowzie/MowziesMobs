@@ -1,6 +1,6 @@
 package com.bobmowzie.mowziesmobs.client.render.entity.layer;
 
-import com.bobmowzie.mowziesmobs.client.render.RenderUtils;
+import com.bobmowzie.mowziesmobs.client.render.MowzieRenderUtils;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
@@ -28,7 +28,7 @@ public class ItemLayer<T extends LivingEntity, M extends EntityModel<T>> extends
     public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, T entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         if (!modelRenderer.showModel || modelRenderer.isHidden()) return;
         matrixStackIn.push();
-        RenderUtils.matrixStackFromModel(matrixStackIn, getModelRenderer());
+        MowzieRenderUtils.matrixStackFromModel(matrixStackIn, getModelRenderer());
         Minecraft.getInstance().getFirstPersonRenderer().renderItemSide(entitylivingbaseIn, getItemstack(), transformType, false, matrixStackIn, bufferIn, packedLightIn);
         matrixStackIn.pop();
     }
