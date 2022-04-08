@@ -520,6 +520,7 @@ public final class  ConfigHandler {
             durability = builder.comment("Earthbore Gauntlet durability")
                     .translation(LANG_PREFIX + "durability")
                     .defineInRange("durability", 400, 1, Integer.MAX_VALUE);
+            toolConfig = new ToolConfig(builder, 6, 1.2f);
             builder.pop();
         }
 
@@ -528,6 +529,8 @@ public final class  ConfigHandler {
         public final BooleanValue breakable;
 
         public final IntValue durability;
+
+        public final ToolConfig toolConfig;
     }
 
     public static class BarakoaSpear {

@@ -53,6 +53,7 @@ public class TunnelingAbility extends Ability {
     private float pitch = 0;
 
     private int timeUnderground = 0;
+    private int timeAboveGround = 0;
 
     public TunnelingAbility(AbilityType<? extends Ability> abilityType, LivingEntity user) {
         super(abilityType, user, new AbilitySection[] {
@@ -64,6 +65,28 @@ public class TunnelingAbility extends Ability {
     public void tickNotUsing() {
         super.tickNotUsing();
         if (doubleTapTimer > 0) doubleTapTimer--;
+    }
+
+    public void playGauntletAnimation() {
+        if (getUser() instanceof PlayerEntity) {
+            ItemStack stack = getUser().getActiveItemStack();
+            if (stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET) {
+                PlayerEntity player = (PlayerEntity) getUser();
+                ItemHandler.EARTHBORE_GAUNTLET.playAnimation(player, stack, ItemEarthboreGauntlet.ANIM_OPEN);
+            }
+        }
+    }
+
+    public void stopGauntletAnimation() {
+        if (getUser() instanceof PlayerEntity) {
+            ItemStack[] stacks = new ItemStack[] {getUser().getHeldItemMainhand(), getUser().getHeldItemOffhand()};
+            for (ItemStack stack : stacks) {
+                if (stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET) {
+                    PlayerEntity player = (PlayerEntity) getUser();
+                    ItemHandler.EARTHBORE_GAUNTLET.playAnimation(player, stack, ItemEarthboreGauntlet.ANIM_REST);
+                }
+            }
+        }
     }
 
     @Override
@@ -123,7 +146,7 @@ public class TunnelingAbility extends Ability {
         super.tickUsing();
         getUser().fallDistance = 0;
         if (getUser() instanceof PlayerEntity) ((PlayerEntity)getUser()).abilities.isFlying = false;
-        underground = !getUser().world.getEntitiesWithinAABB(EntityBlockSwapper.class, getUser().getBoundingBox().grow(0.5)).isEmpty();
+        underground = !getUser().world.getEntitiesWithinAABB(EntityBlockSwapper.class, getUser().getBoundingBox().grow(0.3)).isEmpty();
         Vector3d lookVec = getUser().getLookVec();
         float tunnelSpeed = 0.3f;
         ItemStack stack = getUser().getActiveItemStack();
@@ -145,11 +168,12 @@ public class TunnelingAbility extends Ability {
             }
         }
         else {
+            timeAboveGround++;
             getUser().setMotion(getUser().getMotion().subtract(0, 0.07, 0));
             if (getUser().getMotion().getY() < -1.3) getUser().setMotion(getUser().getMotion().getX(), -1.3, getUser().getMotion().getZ());
         }
 
-        if (underground || (getTicksInUse() > 1 && usingGauntlet && lookVec.y < 0 && stack.getDamage() + 5 < stack.getMaxDamage())) {
+        if ((underground && (prevUnderground || lookVec.y < 0) && timeAboveGround > 5) || (getTicksInUse() > 1 && usingGauntlet && lookVec.y < 0 && stack.getDamage() + 5 < stack.getMaxDamage())) {
             if (getUser().ticksExisted % 16 == 0) getUser().playSound(MMSounds.EFFECT_GEOMANCY_RUMBLE.get(rand.nextInt(3)).get(), 0.6f, 0.5f + rand.nextFloat() * 0.2f);
             Vector3d userCenter = getUser().getPositionVec().add(0, getUser().getHeight() / 2f, 0);
             float radius = 2f;
@@ -182,8 +206,10 @@ public class TunnelingAbility extends Ability {
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.ALPHA, ParticleComponent.KeyTrack.startAndEnd(1f, 0f), false),
                         new ParticleComponent.PropertyControl(ParticleComponent.PropertyControl.EnumParticleProperty.SCALE, ParticleComponent.KeyTrack.startAndEnd(10f, 30f), false)
                 });
+            playGauntletAnimation();
         }
         if (prevUnderground && !underground) {
+            timeAboveGround = 0;
             getUser().playSound(MMSounds.EFFECT_GEOMANCY_BREAK.get(), 1f, 0.9f + rand.nextFloat() * 0.1f);
             if (getUser().world.isRemote)
                 AdvancedParticleBase.spawnParticle(getUser().world, ParticleHandler.RING2.get(), (float) getUser().getPosX(), (float) getUser().getPosY() + 0.02f, (float) getUser().getPosZ(), 0, 0, 0, false, 0, Math.PI/2f, 0, 0, 3.5F, 0.83f, 1, 0.39f, 1, 1, 10, true, true, new ParticleComponent[]{
@@ -202,8 +228,15 @@ public class TunnelingAbility extends Ability {
                 fallingBlock.setMotion(getUser().getRNG().nextFloat() * 0.8f - 0.4f, 0.4f + getUser().getRNG().nextFloat() * 0.8f, getUser().getRNG().nextFloat() * 0.8f - 0.4f);
                 getUser().world.addEntity(fallingBlock);
             }
+            stopGauntletAnimation();
         }
         prevUnderground = underground;
+    }
+
+    @Override
+    public void end() {
+        super.end();
+        stopGauntletAnimation();
     }
 
     @Override
