@@ -85,10 +85,11 @@
   "item.mowziesmobs.earth_talisman.text.3": "Punch boulder to fire it as projectile",
   "item.mowziesmobs.earth_talisman.text.4": "Charge right-click to spawn bigger boulders",
 
-  "item.mowziesmobs.earthbore_gauntlet.text.0": "Hold right-click to tunnel through the ground",
-  "item.mowziesmobs.earthbore_gauntlet.text.1": "Look in the direction you'd like to dig",
-  "item.mowziesmobs.earthbore_gauntlet.text.2": "Release right-click to surface and stop tunneling",
-  "item.mowziesmobs.earthbore_gauntlet.text.3": "Recharges while in inventory",
+  "item.mowziesmobs.earthbore_gauntlet.text.0": "Creative mode only",
+  "item.mowziesmobs.earthbore_gauntlet.text.1": "Hold right-click to tunnel through the ground",
+  "item.mowziesmobs.earthbore_gauntlet.text.2": "Look in the direction you'd like to dig",
+  "item.mowziesmobs.earthbore_gauntlet.text.3": "Release right-click to surface and stop tunneling",
+  "item.mowziesmobs.earthbore_gauntlet.text.4": "Recharges while in inventory",
 
   "item.mowziesmobs.mob_remover.text.0": "Left-click to remove a Mowzie's Mobs mob",
 
