@@ -256,7 +256,7 @@ public class EntityBarakoaya extends EntityBarakoaVillager {
     @Override
     public boolean isInvulnerableTo(DamageSource source) {
         boolean teleporting = getAnimation() == TELEPORT_ANIMATION && getAnimationTick() <= 16;
-        return super.isInvulnerableTo(source) || ((!active || teleporting || !hasTriedOrSucceededTeleport) && source != DamageSource.OUT_OF_WORLD);
+        return super.isInvulnerableTo(source) || ((!active || teleporting || !hasTriedOrSucceededTeleport) && source != DamageSource.OUT_OF_WORLD && timeUntilDeath != 0);
     }
 
     @Override

@@ -171,7 +171,6 @@ public class EntityBarakoaVillager extends EntityBarakoa implements LeaderSunstr
 
     @Override
     public void tick() {
-        System.out.println(customer);
         super.tick();
         if (getAttackTarget() instanceof PlayerEntity) {
             if (((PlayerEntity) getAttackTarget()).isCreative() || getAttackTarget().isSpectator()) setAttackTarget(null);
