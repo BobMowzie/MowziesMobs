@@ -344,7 +344,7 @@ public final class  ConfigHandler {
                     Collections.emptyList()
             );
             combatConfig = new CombatConfig(builder, 1, 1);
-            this.hasBossBar = builder.comment("Disable/enable Ferrous Wroughtnauts' boss health bars")
+            this.hasBossBar = builder.comment("Disable/enable Ferrous Wroughtnaut's boss health bar")
                     .translation(LANG_PREFIX + "has_boss_bar")
                     .define("has_boss_bar", true);
             this.healsOutOfBattle = builder.comment("Disable/enable Ferrous Wroughtnaut healing while not active")
@@ -408,7 +408,7 @@ public final class  ConfigHandler {
                     Arrays.asList("minecraft:village", "minecraft:pillager_outpost")
             );
             combatConfig = new CombatConfig(builder, 1, 1);
-            this.hasBossBar = builder.comment("Disable/enable Barako's boss health bar")
+            this.hasBossBar = builder.comment("Disable/enable Frostmaw's boss health bar")
                     .translation(LANG_PREFIX + "has_boss_bar")
                     .define("has_boss_bar", true);
             this.healsOutOfBattle = builder.comment("Disable/enable frostmaws healing while asleep")
