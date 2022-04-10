@@ -27,8 +27,5 @@ public class ItemEarthTalisman extends Item {
         tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.2").setStyle(ItemHandler.TOOLTIP_STYLE));
         tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.3").setStyle(ItemHandler.TOOLTIP_STYLE));
         tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.4").setStyle(ItemHandler.TOOLTIP_STYLE));
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.5").setStyle(ItemHandler.TOOLTIP_STYLE));
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.6").setStyle(ItemHandler.TOOLTIP_STYLE));
-        tooltip.add(new TranslationTextComponent(getTranslationKey() + ".text.7").setStyle(ItemHandler.TOOLTIP_STYLE));
     }
 }
