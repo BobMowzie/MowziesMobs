@@ -1,5 +1,7 @@
 package com.bobmowzie.mowziesmobs.client.model.entity;
 
+import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.entity.barakoa.EntityBarako;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.ilexiconn.llibrary.client.model.tools.AdvancedModelRenderer;
@@ -363,7 +365,8 @@ public class ModelBarako<T extends EntityBarako> extends MowzieEntityModel<T> {
         float liftLegs = entity.legsUp.getAnimationProgressSinSqrt();
         float frame = entity.frame + delta;
 
-        if (entity.getAnimation() != EntityBarako.DIE_ANIMATION && !entity.isPotionActive(EffectHandler.FROZEN)) {
+        FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+        if (entity.getAnimation() != EntityBarako.DIE_ANIMATION && !(frozenCapability != null && frozenCapability.getFrozen())) {
             walk(body, 0.06f, 0.05f, true, 0, -0.05f, frame, 1f);
             walk(neck, 0.06f, 0.05f, false, 0.5f, -0.05f, frame, 1f);
             swing(rightThigh, 0.06f, 0.05f * liftLegs, false, 0, 0, frame, 1f);
@@ -1220,7 +1223,8 @@ public class ModelBarako<T extends EntityBarako> extends MowzieEntityModel<T> {
             headdress6.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame);
             headdress7.rotateAngleX += jiggleController.rotationPointX * 0.1 * Math.cos(jiggleSpeed * frame);
         }
-        if (!entity.isPotionActive(EffectHandler.FROZEN) || entity.getAnimation() == EntityBarako.DIE_ANIMATION) {
+        FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+        if (!(frozenCapability != null && frozenCapability.getFrozen()) || entity.getAnimation() == EntityBarako.DIE_ANIMATION) {
             body.setScale(scaler * (1 - bellyScaler.rotationPointY), scaler * (1 - bellyScaler.rotationPointY), scaler * (1 - bellyScaler.rotationPointY));
             chest.setScale(1 / scaler, 1 / scaler, 1 / scaler);
             rightThigh.setScale(1 / scaler, 1 / scaler, 1 / scaler);

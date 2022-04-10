@@ -1,6 +1,8 @@
 package com.bobmowzie.mowziesmobs.client.render.entity;
 
 import com.bobmowzie.mowziesmobs.MowziesMobs;
+import com.bobmowzie.mowziesmobs.server.capability.CapabilityHandler;
+import com.bobmowzie.mowziesmobs.server.capability.FrozenCapability;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -44,7 +46,9 @@ public enum FrozenRenderHandler {
 
         @Override
         public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, LivingEntity living, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-            if (living.isPotionActive(EffectHandler.FROZEN)) {
+            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(living, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+            System.out.println(frozenCapability != null && frozenCapability.getFrozen());
+            if (frozenCapability != null && frozenCapability.getFrozen()) {
                 EntityModel model = this.renderer.getEntityModel();
 
                 float transparency = 1;
@@ -60,10 +64,11 @@ public enum FrozenRenderHandler {
 
         PlayerEntity player = Minecraft.getInstance().player;
 
-        if(player != null && player.isPotionActive(EffectHandler.FROZEN)) {
-            if(player.isPotionActive(EffectHandler.FROZEN)) {
+        if(player != null) {
+            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(player, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+            if (frozenCapability != null && frozenCapability.getFrozen()) {
                 boolean isMainHand = event.getHand() == Hand.MAIN_HAND;
-                if(isMainHand && !player.isInvisible() && event.getItemStack().isEmpty()) {
+                if (isMainHand && !player.isInvisible() && event.getItemStack().isEmpty()) {
                     HandSide enumhandside = isMainHand ? player.getPrimaryHand() : player.getPrimaryHand().opposite();
                     renderArmFirstPersonFrozen(event.getMatrixStack(), event.getBuffers(), event.getLight(), event.getEquipProgress(), event.getSwingProgress(), enumhandside);
                     event.setCanceled(true);

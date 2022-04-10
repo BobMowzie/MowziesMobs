@@ -43,7 +43,7 @@ public final class MowziesMobs {
     public static SimpleChannel NETWORK;
 
     public MowziesMobs() {
-        GeckoLibMod.DISABLE_IN_DEV = false;
+        GeckoLibMod.DISABLE_IN_DEV = true;
         MowzieGeoBuilder.registerGeoBuilder(MODID, new MowzieGeoBuilder());
         GeckoLib.initialize();
 

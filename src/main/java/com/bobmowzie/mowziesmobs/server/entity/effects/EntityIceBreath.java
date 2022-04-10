@@ -53,6 +53,7 @@ public class EntityIceBreath extends EntityMagicEffect {
                 MowziesMobs.PROXY.playIceBreathSound(this);
             }
         }
+        if (caster == null) this.remove();
         if (caster != null && !caster.isAlive()) this.remove();
         if (ticksExisted == 1) playSound(MMSounds.ENTITY_FROSTMAW_ICEBREATH_START.get(), 1, 0.6f);
         if (caster instanceof PlayerEntity) {

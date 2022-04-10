@@ -1,13 +1,10 @@
 package com.bobmowzie.mowziesmobs.server.capability;
 
-import com.bobmowzie.mowziesmobs.MowziesMobs;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleHandler;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleCloud;
 import com.bobmowzie.mowziesmobs.client.particle.ParticleSnowFlake;
 import com.bobmowzie.mowziesmobs.server.entity.EntityHandler;
 import com.bobmowzie.mowziesmobs.server.entity.frostmaw.EntityFrozenController;
-import com.bobmowzie.mowziesmobs.server.message.MessageAddFreezeProgress;
-import com.bobmowzie.mowziesmobs.server.message.MessageUnfreezeEntity;
 import com.bobmowzie.mowziesmobs.server.potion.EffectHandler;
 import com.bobmowzie.mowziesmobs.server.sound.MMSounds;
 import net.minecraft.block.Blocks;
@@ -28,7 +25,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.UUID;
 
@@ -36,6 +32,8 @@ public class FrozenCapability {
     public static int MAX_FREEZE_DECAY_DELAY = 10;
 
     public interface IFrozenCapability {
+        boolean getFrozen();
+
         float getFreezeProgress();
 
         void setFreezeProgress(float freezeProgress);
@@ -98,6 +96,7 @@ public class FrozenCapability {
     }
 
     public static class FrozenCapabilityImp implements IFrozenCapability {
+        public boolean frozen;
         public float freezeProgress = 0;
         public float frozenYaw;
         public float frozenPitch;
@@ -113,6 +112,11 @@ public class FrozenCapability {
 
         public boolean prevFrozen = false;
         public EntityFrozenController frozenController;
+
+        @Override
+        public boolean getFrozen() {
+            return frozen;
+        }
 
         @Override
         public float getFreezeProgress() {
@@ -239,13 +243,13 @@ public class FrozenCapability {
             if (!entity.world.isRemote && !entity.isPotionActive(EffectHandler.FROZEN)) {
                 freezeProgress += amount;
                 freezeDecayDelay = MAX_FREEZE_DECAY_DELAY;
-                MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new MessageAddFreezeProgress(entity, amount));
             }
         }
 
         @Override
         public void onFreeze(LivingEntity entity) {
             if (entity != null) {
+                frozen = true;
                 frozenController = new EntityFrozenController(EntityHandler.FROZEN_CONTROLLER.get(), entity.world);
                 frozenController.setPositionAndRotation(entity.getPosX(), entity.getPosY(), entity.getPosZ(), entity.rotationYaw, entity.rotationPitch);
                 entity.world.addEntity(frozenController);
@@ -283,30 +287,35 @@ public class FrozenCapability {
         @Override
         public void onUnfreeze(LivingEntity entity) {
             if (entity != null) {
-                if (frozenController != null) {
-                    Vector3d oldPosition = entity.getPositionVec();
-                    entity.stopRiding();
-                    entity.setPositionAndUpdate(oldPosition.getX(), oldPosition.getY(), oldPosition.getZ());
-                    frozenController.remove();
-                }
-                entity.playSound(MMSounds.ENTITY_FROSTMAW_FROZEN_CRASH.get(), 1, 0.5f);
-                if (entity.world.isRemote) {
-                    int particleCount = (int) (10 + 1 * entity.getHeight() * entity.getWidth() * entity.getWidth());
-                    for (int i = 0; i < particleCount; i++) {
-                        double particleX = entity.getPosX() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                        double particleZ = entity.getPosZ() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
-                        double particleY = entity.getPosY() + entity.getHeight() * entity.getRNG().nextFloat() + 0.3f;
-                        entity.world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, Blocks.ICE.getDefaultState()), particleX, particleY, particleZ, 0, 0, 0);
+                freezeProgress = 0;
+                if (frozen) {
+                    entity.removeActivePotionEffect(EffectHandler.FROZEN);
+                    frozen = false;
+                    if (frozenController != null) {
+                        Vector3d oldPosition = entity.getPositionVec();
+                        entity.stopRiding();
+                        entity.setPositionAndUpdate(oldPosition.getX(), oldPosition.getY(), oldPosition.getZ());
+                        frozenController.remove();
                     }
-                }
-                if (entity instanceof MobEntity) {
-                    if (((MobEntity) entity).isAIDisabled() && prevHasAI) {
-                        ((MobEntity) entity).setNoAI(false);
+                    entity.playSound(MMSounds.ENTITY_FROSTMAW_FROZEN_CRASH.get(), 1, 0.5f);
+                    if (entity.world.isRemote) {
+                        int particleCount = (int) (10 + 1 * entity.getHeight() * entity.getWidth() * entity.getWidth());
+                        for (int i = 0; i < particleCount; i++) {
+                            double particleX = entity.getPosX() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
+                            double particleZ = entity.getPosZ() + entity.getWidth() * entity.getRNG().nextFloat() - entity.getWidth() / 2;
+                            double particleY = entity.getPosY() + entity.getHeight() * entity.getRNG().nextFloat() + 0.3f;
+                            entity.world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, Blocks.ICE.getDefaultState()), particleX, particleY, particleZ, 0, 0, 0);
+                        }
                     }
-                    if (getPreAttackTarget() != null) {
-                        PlayerEntity target = entity.world.getPlayerByUuid(getPreAttackTarget());
-                        if (target != null) {
-                            ((MobEntity) entity).setAttackTarget(target);
+                    if (entity instanceof MobEntity) {
+                        if (((MobEntity) entity).isAIDisabled() && prevHasAI) {
+                            ((MobEntity) entity).setNoAI(false);
+                        }
+                        if (getPreAttackTarget() != null) {
+                            PlayerEntity target = entity.world.getPlayerByUuid(getPreAttackTarget());
+                            if (target != null) {
+                                ((MobEntity) entity).setAttackTarget(target);
+                            }
                         }
                     }
                 }
@@ -316,7 +325,7 @@ public class FrozenCapability {
         @Override
         public void tick(LivingEntity entity) {
             // Freeze logic
-            if (getFreezeProgress() >= 1) {
+            if (getFreezeProgress() >= 1 && !entity.isPotionActive(EffectHandler.FROZEN)) {
                 entity.addPotionEffect(new EffectInstance(EffectHandler.FROZEN, 50, 0, false, false));
                 freezeProgress = 1f;
             } else if (freezeProgress > 0) {
@@ -328,12 +337,7 @@ public class FrozenCapability {
                 if (riding instanceof EntityFrozenController) frozenController = (EntityFrozenController) riding;
             }
 
-            if (entity.isPotionActive(EffectHandler.FROZEN) && !prevFrozen) {
-                onFreeze(entity);
-            }
-
-            if (entity.isPotionActive(EffectHandler.FROZEN)) {
-                if (entity.getActivePotionEffect(EffectHandler.FROZEN).getDuration() <= 0) entity.removeActivePotionEffect(EffectHandler.FROZEN);
+            if (frozen) {
                 entity.addPotionEffect(new EffectInstance(Effects.SLOWNESS, 2, 50, false, false));
                 entity.setSneaking(false);
 
@@ -352,7 +356,6 @@ public class FrozenCapability {
             else {
                 if (!entity.world.isRemote && getPrevFrozen()) {
                     onUnfreeze(entity);
-                    MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), new MessageUnfreezeEntity(entity));
                 }
             }
 
@@ -381,6 +384,7 @@ public class FrozenCapability {
             if (getPreAttackTarget() != null) {
                 compound.putUniqueId("prevAttackTarget", getPreAttackTarget());
             }
+            compound.putBoolean("frozen", frozen);
             compound.putBoolean("prevFrozen", prevFrozen);
             return compound;
         }
@@ -401,6 +405,7 @@ public class FrozenCapability {
                 setPreAttackTarget(compound.getUniqueId("prevAttackTarget"));
             }
             catch (NullPointerException ignored) {}
+            frozen = compound.getBoolean("frozen");
             prevFrozen = compound.getBoolean("prevFrozen");
         }
     }

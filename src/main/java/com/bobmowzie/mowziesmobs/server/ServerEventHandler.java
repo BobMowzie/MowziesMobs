@@ -165,12 +165,28 @@ public final class ServerEventHandler {
             }
             MowziesMobs.PROXY.playSunblockSound(event.getEntityLiving());
         }
+        if (event.getPotionEffect().getPotion() == EffectHandler.FROZEN) {
+            if (!event.getEntity().world.isRemote()) {
+                MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageFreezeEffect(event.getEntityLiving(), true));
+                FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(event.getEntity(), FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+                if (frozenCapability != null) {
+                    frozenCapability.onFreeze(event.getEntityLiving());
+                }
+            }
+        }
     }
 
     @SubscribeEvent
     public void onRemovePotionEffect(PotionEvent.PotionRemoveEvent event) {
         if (!event.getEntity().world.isRemote() && event.getPotion() == EffectHandler.SUNBLOCK) {
             MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageSunblockEffect(event.getEntityLiving(), false));
+        }
+        if (!event.getEntity().world.isRemote() && event.getPotion() == EffectHandler.FROZEN) {
+            MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageFreezeEffect(event.getEntityLiving(), false));
+            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(event.getEntity(), FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+            if (frozenCapability != null) {
+                frozenCapability.onUnfreeze(event.getEntityLiving());
+            }
         }
     }
 
@@ -179,6 +195,13 @@ public final class ServerEventHandler {
         EffectInstance effectInstance = event.getPotionEffect();
         if (!event.getEntity().world.isRemote() && effectInstance != null && effectInstance.getPotion() == EffectHandler.SUNBLOCK) {
             MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageSunblockEffect(event.getEntityLiving(), false));
+        }
+        if (!event.getEntity().world.isRemote() && effectInstance != null && effectInstance.getPotion() == EffectHandler.FROZEN) {
+            MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageFreezeEffect(event.getEntityLiving(), false));
+            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(event.getEntity(), FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+            if (frozenCapability != null) {
+                frozenCapability.onUnfreeze(event.getEntityLiving());
+            }
         }
     }
 
@@ -209,7 +232,11 @@ public final class ServerEventHandler {
 
         if (event.getSource().isFireDamage()) {
             event.getEntityLiving().removeActivePotionEffect(EffectHandler.FROZEN);
-            MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> event.getEntity()), new MessageRemoveFreezeProgress(event.getEntityLiving()));
+            MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageFreezeEffect(event.getEntityLiving(), false));
+            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(event.getEntityLiving(), FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+            if (frozenCapability != null) {
+                frozenCapability.onUnfreeze(event.getEntityLiving());
+            }
         }
         if (event.getEntity() instanceof PlayerEntity) {
             PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getEntity(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
@@ -491,6 +518,7 @@ public final class ServerEventHandler {
         if (entity.getHealth() <= event.getAmount() && entity.isPotionActive(EffectHandler.FROZEN)) {
             entity.removeActivePotionEffect(EffectHandler.FROZEN);
             FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+            MowziesMobs.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(event::getEntity), new MessageFreezeEffect(event.getEntityLiving(), false));
             if (frozenCapability != null) {
                 frozenCapability.onUnfreeze(entity);
             }

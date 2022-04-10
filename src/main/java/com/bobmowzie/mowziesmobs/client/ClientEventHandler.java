@@ -87,12 +87,9 @@ public enum ClientEventHandler {
             PlayerEntity player = (PlayerEntity) event.getEntity();
             if (player == null) return;
             float delta = event.getPartialRenderTick();
-            boolean shouldAnimate = player.isPotionActive(EffectHandler.FROZEN);
             AbilityCapability.IAbilityCapability abilityCapability = AbilityHandler.INSTANCE.getAbilityCapability(player);
-            if (abilityCapability != null)
-                shouldAnimate = shouldAnimate || abilityCapability.getActiveAbility() != null;
 //        shouldAnimate = (player.ticksExisted / 20) % 2 == 0;
-            if (shouldAnimate) {
+            if (abilityCapability != null && abilityCapability.getActiveAbility() != null) {
                 PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(event.getEntity(), PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
                 if (playerCapability != null) {
                     GeckoPlayer.GeckoPlayerThirdPerson geckoPlayer = playerCapability.getGeckoPlayer();
@@ -119,7 +116,7 @@ public enum ClientEventHandler {
 
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event) {
-//        PlayerEntity player = Minecraft.getInstance().player;
+        PlayerEntity player = Minecraft.getInstance().player;
 //        if (player != null) {
 //            PlayerCapability.IPlayerCapability playerCapability = CapabilityHandler.getCapability(player, PlayerCapability.PlayerProvider.PLAYER_CAPABILITY);
 //            if (playerCapability != null && playerCapability.getGeomancy().canUse(player) && playerCapability.getGeomancy().isSpawningBoulder() && playerCapability.getGeomancy().getSpawnBoulderCharge() > 2) {
@@ -135,23 +132,22 @@ public enum ClientEventHandler {
 //                player.prevRotationPitch = player.rotationPitch;
 //                player.prevRotationYawHead = player.rotationYawHead;
 //            }
-//            FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(player, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
-//            if (frozenCapability != null && player.isPotionActive(EffectHandler.FROZEN) && frozenCapability.getPrevFrozen()) {
-//                player.rotationYaw = frozenCapability.getFrozenYaw();
-//                player.rotationPitch = frozenCapability.getFrozenPitch();
-//                player.rotationYawHead = frozenCapability.getFrozenYawHead();
-//                player.prevRotationYaw = player.rotationYaw;
-//                player.prevRotationPitch = player.rotationPitch;
-//                player.prevRotationYawHead = player.rotationYawHead;
-//            }
-//        }
+        FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(player, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+        if (frozenCapability != null && player.isPotionActive(EffectHandler.FROZEN) && frozenCapability.getPrevFrozen()) {
+            player.rotationYaw = frozenCapability.getFrozenYaw();
+            player.rotationPitch = frozenCapability.getFrozenPitch();
+            player.rotationYawHead = frozenCapability.getFrozenYawHead();
+            player.prevRotationYaw = player.rotationYaw;
+            player.prevRotationPitch = player.rotationPitch;
+            player.prevRotationYawHead = player.rotationYawHead;
+        }
     }
 
     @SubscribeEvent
     public void onRenderLiving(RenderLivingEvent.Pre event) {
         LivingEntity entity = event.getEntity();
         FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
-        if (frozenCapability != null && entity.isPotionActive(EffectHandler.FROZEN) && frozenCapability.getPrevFrozen()) {
+        if (frozenCapability != null && frozenCapability.getFrozen() && frozenCapability.getPrevFrozen()) {
             entity.rotationYaw = entity.prevRotationYaw = frozenCapability.getFrozenYaw();
             entity.rotationPitch = entity.prevRotationPitch = frozenCapability.getFrozenPitch();
             entity.rotationYawHead = entity.prevRotationYawHead = frozenCapability.getFrozenYawHead();
@@ -202,10 +198,13 @@ public enum ClientEventHandler {
                 // Time
                 drawMarioNumber(timeOffsetX + 8, offsetY + 8, time, 3);
             }*/
-            if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.isPotionActive(EffectHandler.FROZEN) && Minecraft.getInstance().gameSettings.getPointOfView() == PointOfView.FIRST_PERSON) {
-                Minecraft.getInstance().getTextureManager().bindTexture(FROZEN_BLUR);
-                MainWindow res = e.getWindow();
-                AbstractGui.blit(e.getMatrixStack(), 0, 0, 0, 0, res.getScaledWidth(), res.getScaledHeight(), res.getScaledWidth(), res.getScaledHeight());
+            if (Minecraft.getInstance().player != null) {
+                FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(Minecraft.getInstance().player, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+                if (frozenCapability != null && frozenCapability.getFrozen() && Minecraft.getInstance().gameSettings.getPointOfView() == PointOfView.FIRST_PERSON) {
+                    Minecraft.getInstance().getTextureManager().bindTexture(FROZEN_BLUR);
+                    MainWindow res = e.getWindow();
+                    AbstractGui.blit(e.getMatrixStack(), 0, 0, 0, 0, res.getScaledWidth(), res.getScaledHeight(), res.getScaledWidth(), res.getScaledHeight());
+                }
             }
         }
     }
@@ -265,16 +264,16 @@ public enum ClientEventHandler {
                 event.setYaw(yaw);
             }
             FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(player, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
-            if (frozenCapability != null && player.isPotionActive(EffectHandler.FROZEN) && frozenCapability.getPrevFrozen()) {
-                player.rotationYaw = frozenCapability.getFrozenYaw();
-                player.rotationPitch = frozenCapability.getFrozenPitch();
-                player.rotationYawHead = frozenCapability.getFrozenYawHead();
-                player.prevRotationYaw = player.rotationYaw;
-                player.prevRotationPitch = player.rotationPitch;
-                player.prevRotationYawHead = player.rotationYawHead;
-
-                event.setPitch(frozenCapability.getFrozenPitch());
-                event.setYaw(frozenCapability.getFrozenYaw());
+            if (frozenCapability != null && frozenCapability.getFrozen() && frozenCapability.getPrevFrozen()) {
+//                player.rotationYaw = frozenCapability.getFrozenYaw();
+//                player.rotationPitch = frozenCapability.getFrozenPitch();
+//                player.rotationYawHead = frozenCapability.getFrozenYawHead();
+//                player.prevRotationYaw = player.rotationYaw;
+//                player.prevRotationPitch = player.rotationPitch;
+//                player.prevRotationYawHead = player.rotationYawHead;
+//
+//                event.setPitch(frozenCapability.getFrozenPitch());
+//                event.setYaw(frozenCapability.getFrozenYaw());
             }
 
             if (ConfigHandler.CLIENT.doCameraShakes.get()) {

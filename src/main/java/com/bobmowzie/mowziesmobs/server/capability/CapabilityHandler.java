@@ -16,6 +16,7 @@ public final class CapabilityHandler {
 
     @Nullable
     public static <T> T getCapability(Entity entity, Capability<T> capability) {
+        if (entity == null) return null;
         if (!entity.isAlive()) return null;
         return entity.getCapability(capability).isPresent() ? entity.getCapability(capability).orElseThrow(() -> new IllegalArgumentException("Lazy optional must not be empty")) : null;
     }
