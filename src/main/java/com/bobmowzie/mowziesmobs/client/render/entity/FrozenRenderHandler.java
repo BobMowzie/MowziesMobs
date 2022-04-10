@@ -47,7 +47,6 @@ public enum FrozenRenderHandler {
         @Override
         public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, LivingEntity living, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(living, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
-            System.out.println(frozenCapability != null && frozenCapability.getFrozen());
             if (frozenCapability != null && frozenCapability.getFrozen()) {
                 EntityModel model = this.renderer.getEntityModel();
 

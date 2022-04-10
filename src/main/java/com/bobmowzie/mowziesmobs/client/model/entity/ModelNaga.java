@@ -778,8 +778,9 @@ public class ModelNaga<T extends EntityNaga> extends MowzieEntityModel<T> {
         this.setDefaultAngle(entity, limbSwing, limbSwingAmount, headYaw, headPitch, delta);
         float frame = entity.frame + delta;
 
-        if (!entity.isPotionActive(EffectHandler.FROZEN)) {
-
+        FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
+        boolean frozen = frozenCapability != null && frozenCapability.getFrozen();
+        if (!frozen) {
 
             if (entity.getAnimation() == EntityNaga.FLAP_ANIMATION) {
                 animator.setAnimation(EntityNaga.FLAP_ANIMATION);

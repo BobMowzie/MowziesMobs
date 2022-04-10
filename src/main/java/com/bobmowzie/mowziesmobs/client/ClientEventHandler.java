@@ -133,7 +133,7 @@ public enum ClientEventHandler {
 //                player.prevRotationYawHead = player.rotationYawHead;
 //            }
         FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(player, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
-        if (frozenCapability != null && player.isPotionActive(EffectHandler.FROZEN) && frozenCapability.getPrevFrozen()) {
+        if (frozenCapability != null && frozenCapability.getFrozen() && frozenCapability.getPrevFrozen()) {
             player.rotationYaw = frozenCapability.getFrozenYaw();
             player.rotationPitch = frozenCapability.getFrozenPitch();
             player.rotationYawHead = frozenCapability.getFrozenYawHead();
