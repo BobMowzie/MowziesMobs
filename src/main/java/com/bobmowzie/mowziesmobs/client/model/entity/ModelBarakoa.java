@@ -443,8 +443,8 @@ public class ModelBarakoa<T extends EntityBarakoa> extends MowzieEntityModel<T> 
         if (!entity.active) {
             return;
         }
-        float doWalk = entity.doWalk.getAnimationProgressSinSqrt();
-        float dance = entity.dancing.getAnimationProgressSinSqrt();
+        float doWalk = entity.doWalk.getAnimationProgressSinSqrt(delta);
+        float dance = entity.dancing.getAnimationProgressSinSqrt(delta);
         if (limbSwingAmount > 0.55f) {
             limbSwingAmount = 0.55f;
         }

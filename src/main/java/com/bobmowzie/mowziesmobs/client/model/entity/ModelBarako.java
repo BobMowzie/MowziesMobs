@@ -362,7 +362,7 @@ public class ModelBarako<T extends EntityBarako> extends MowzieEntityModel<T> {
 
     public void setDefaultAngles(EntityBarako entity, float limbSwing, float limbSwingAmount, float headYaw, float headPitch, float delta) {
         resetToDefaultPose();
-        float liftLegs = entity.legsUp.getAnimationProgressSinSqrt();
+        float liftLegs = entity.legsUp.getAnimationProgressSinSqrt(delta);
         float frame = entity.frame + delta;
 
         FrozenCapability.IFrozenCapability frozenCapability = CapabilityHandler.getCapability(entity, FrozenCapability.FrozenProvider.FROZEN_CAPABILITY);
@@ -393,8 +393,8 @@ public class ModelBarako<T extends EntityBarako> extends MowzieEntityModel<T> {
         }
         this.setDefaultAngles(entity, limbSwing, limbSwingAmount, headYaw, headPitch, delta);
 
-        float eyebrows = entity.angryEyebrow.getAnimationProgressSinSqrt();
-        float liftLegs = entity.legsUp.getAnimationProgressSinSqrt();
+        float eyebrows = entity.angryEyebrow.getAnimationProgressSinSqrt(delta);
+        float liftLegs = entity.legsUp.getAnimationProgressSinSqrt(delta);
 
         float frame = entity.frame + delta;
 

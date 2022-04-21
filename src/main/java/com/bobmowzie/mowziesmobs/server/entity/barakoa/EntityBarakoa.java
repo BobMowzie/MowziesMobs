@@ -359,6 +359,8 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
 
     @Override
     public void tick() {
+        doWalk.updatePrevTimer();
+        dancing.updatePrevTimer();
         super.tick();
         if (!world.isRemote && active && !getActive()) {
             setActive(true);
@@ -379,10 +381,10 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             getNavigator().clearPath();
         }
 
-        if (getDancing()) {
-            setDancing(false);
-            danceTimer++;
-        }
+//        if (getDancing()) {
+//            setDancing(false);
+//            danceTimer++;
+//        }
 
         if (getAnimation() == NO_ANIMATION || getAnimation() == IDLE_ANIMATION) {
             doWalk.increaseTimer();
@@ -390,20 +392,20 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
             doWalk.decreaseTimer();
         }
 
-        if (danceTimer != 0 && danceTimer != 30) {
-            danceTimer++;
-            dancing.increaseTimer();
-        } else {
-            danceTimer = 0;
-            dancing.decreaseTimer();
-        }
-        if (!world.isRemote && getAnimation() == NO_ANIMATION && danceTimer == 0 && rand.nextInt(800) == 0) {
-            setDancing(true);
-            playSound(MMSounds.ENTITY_BARAKOA_BATTLECRY_2.get(), 1.2f, 1.3f);
-        }
-        if (getAnimation() != NO_ANIMATION) {
-            danceTimer = 0;
-        }
+//        if (danceTimer != 0 && danceTimer != 30) {
+//            danceTimer++;
+//            dancing.increaseTimer();
+//        } else {
+//            danceTimer = 0;
+//            dancing.decreaseTimer();
+//        }
+//        if (!world.isRemote && getAnimation() == NO_ANIMATION && danceTimer == 0 && rand.nextInt(800) == 0) {
+//            setDancing(true);
+//            playSound(MMSounds.ENTITY_BARAKOA_BATTLECRY_2.get(), 1.2f, 1.3f);
+//        }
+//        if (getAnimation() != NO_ANIMATION) {
+//            danceTimer = 0;
+//        }
 
         if (cryDelay > -1) {
             cryDelay--;
