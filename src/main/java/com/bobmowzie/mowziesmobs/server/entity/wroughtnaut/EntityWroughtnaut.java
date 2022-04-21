@@ -239,6 +239,7 @@ public class EntityWroughtnaut extends MowzieEntity implements IMob {
         if (!world.isRemote) {
             if (isAlwaysActive()) {
                 setActive(true);
+                active = true;
             }
             else if (getAnimation() == NO_ANIMATION && !isAIDisabled()) {
                 if (isActive()) {
