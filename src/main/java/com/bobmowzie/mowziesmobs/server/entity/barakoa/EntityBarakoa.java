@@ -401,7 +401,7 @@ public abstract class EntityBarakoa extends MowzieEntity implements IRangedAttac
         }
         if (!world.isRemote && getAnimation() == NO_ANIMATION && danceTimer == 0 && rand.nextInt(800) == 0 && getAttackTarget() != null) {
             setDancing(true);
-            playSound(MMSounds.ENTITY_BARAKOA_BATTLECRY_2.get(), 1.2f, 1.3f);
+            playSound(MMSounds.ENTITY_BARAKOA_BATTLECRY_2.get(), 1.2f, 1.5f);
         }
         if (getAnimation() != NO_ANIMATION) {
             danceTimer = 0;

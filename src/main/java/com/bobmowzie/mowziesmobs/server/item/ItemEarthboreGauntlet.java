@@ -40,6 +40,7 @@ public class ItemEarthboreGauntlet extends MowzieToolItem implements IAnimatable
     public static final int ANIM_OPEN = 1;
     public static final int ANIM_FIST = 2;
     public String controllerName = "controller";
+    public String controllerIdleName = "controller_idle";
     public AnimationFactory factory = new AnimationFactory(this);
 
     public ItemEarthboreGauntlet(Properties properties) {
@@ -99,10 +100,16 @@ public class ItemEarthboreGauntlet extends MowzieToolItem implements IAnimatable
 
     @Override
     public void registerControllers(AnimationData animationData) {
+        animationData.addAnimationController(new AnimationController<>(this, controllerIdleName, 3, this::predicateIdle));
         animationData.addAnimationController(new AnimationController<>(this, controllerName, 3, this::predicate));
     }
 
     public <P extends Item & IAnimatable> PlayState predicate(AnimationEvent<P> event) {
+        return PlayState.CONTINUE;
+    }
+
+    public <P extends Item & IAnimatable> PlayState predicateIdle(AnimationEvent<P> event) {
+        event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
         return PlayState.CONTINUE;
     }
 
@@ -129,6 +136,7 @@ public class ItemEarthboreGauntlet extends MowzieToolItem implements IAnimatable
         final AnimationController<?> controller = GeckoLibUtil.getControllerForID(this.factory, id, controllerName);
         controller.markNeedsReload();
         if (state == ANIM_REST) {
+            controller.clearAnimationCache();
             controller.setAnimation(new AnimationBuilder().addAnimation("idle", true));
         } else if (state == ANIM_OPEN) {
             controller.clearAnimationCache();
