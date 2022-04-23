@@ -198,12 +198,12 @@ public class EntityBarakoana extends EntityBarakoa implements LeaderSunstrikeImm
             }
             if (entity != null) {
                 double d0 = entity.getDistanceSq(this);
-                if (d0 > 16384.0D && this.canDespawn(d0)) {
+                if (d0 > 16384.0D && this.canDespawn(d0) && pack != null) {
                     pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
                     this.remove();
                 }
 
-                if (this.idleTime > 600 && this.rand.nextInt(800) == 0 && d0 > 1024.0D && this.canDespawn(d0)) {
+                if (this.idleTime > 600 && this.rand.nextInt(800) == 0 && d0 > 1024.0D && this.canDespawn(d0) && pack != null) {
                     pack.forEach(EntityBarakoanToBarakoana::setShouldSetDead);
                     this.remove();
                 } else if (d0 < 1024.0D) {
