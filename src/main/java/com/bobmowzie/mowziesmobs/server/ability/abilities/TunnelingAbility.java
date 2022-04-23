@@ -240,7 +240,9 @@ public class TunnelingAbility extends Ability {
 
     @Override
     protected boolean canContinueUsing() {
-        boolean canContinueUsing = (getTicksInUse() <= 1 || !getUser().isOnGround() || underground) && getUser().getHeldItem(whichHand).getItem() == ItemHandler.EARTHBORE_GAUNTLET && super.canContinueUsing();
+        ItemStack stack = getUser().getActiveItemStack();
+        boolean usingGauntlet = stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET;
+        boolean canContinueUsing = (getTicksInUse() <= 1 || !(getUser().isOnGround() || (getUser().isInWater() && !usingGauntlet)) || underground) && getUser().getHeldItem(whichHand).getItem() == ItemHandler.EARTHBORE_GAUNTLET && super.canContinueUsing();
         return canContinueUsing;
     }
 
