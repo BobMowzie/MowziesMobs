@@ -7,7 +7,6 @@ import com.bobmowzie.mowziesmobs.client.particle.util.AdvancedParticleBase;
 import com.bobmowzie.mowziesmobs.client.particle.util.ParticleComponent;
 import com.bobmowzie.mowziesmobs.client.render.entity.player.GeckoPlayer;
 import com.bobmowzie.mowziesmobs.server.ability.Ability;
-import com.bobmowzie.mowziesmobs.server.ability.AbilityHandler;
 import com.bobmowzie.mowziesmobs.server.ability.AbilitySection;
 import com.bobmowzie.mowziesmobs.server.ability.AbilityType;
 import com.bobmowzie.mowziesmobs.server.config.ConfigHandler;
@@ -30,16 +29,10 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.fml.network.PacketDistributor;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.network.GeckoLibNetwork;
-import software.bernie.geckolib3.network.ISyncable;
-import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import java.util.List;
 
@@ -55,6 +48,9 @@ public class TunnelingAbility extends Ability {
     private int timeUnderground = 0;
     private int timeAboveGround = 0;
 
+    private Hand whichHand;
+    private ItemStack gauntletStack;
+
     public TunnelingAbility(AbilityType<? extends Ability> abilityType, LivingEntity user) {
         super(abilityType, user, new AbilitySection[] {
                 new AbilitySection.AbilitySectionInfinite(AbilitySection.AbilitySectionType.ACTIVE)
@@ -69,22 +65,18 @@ public class TunnelingAbility extends Ability {
 
     public void playGauntletAnimation() {
         if (getUser() instanceof PlayerEntity) {
-            ItemStack stack = getUser().getActiveItemStack();
-            if (stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET) {
+            if (gauntletStack.getItem() == ItemHandler.EARTHBORE_GAUNTLET) {
                 PlayerEntity player = (PlayerEntity) getUser();
-                ItemHandler.EARTHBORE_GAUNTLET.playAnimation(player, stack, ItemEarthboreGauntlet.ANIM_OPEN);
+                ItemHandler.EARTHBORE_GAUNTLET.playAnimation(player, gauntletStack, ItemEarthboreGauntlet.ANIM_OPEN);
             }
         }
     }
 
     public void stopGauntletAnimation() {
         if (getUser() instanceof PlayerEntity) {
-            ItemStack[] stacks = new ItemStack[] {getUser().getHeldItemMainhand(), getUser().getHeldItemOffhand()};
-            for (ItemStack stack : stacks) {
-                if (stack.getItem() == ItemHandler.EARTHBORE_GAUNTLET) {
-                    PlayerEntity player = (PlayerEntity) getUser();
-                    ItemHandler.EARTHBORE_GAUNTLET.playAnimation(player, stack, ItemEarthboreGauntlet.ANIM_REST);
-                }
+            if (gauntletStack.getItem() == ItemHandler.EARTHBORE_GAUNTLET) {
+                PlayerEntity player = (PlayerEntity) getUser();
+                ItemHandler.EARTHBORE_GAUNTLET.playAnimation(player, gauntletStack, ItemEarthboreGauntlet.ANIM_REST);
             }
         }
     }
@@ -95,6 +87,8 @@ public class TunnelingAbility extends Ability {
         underground = false;
         prevUnderground = false;
         if (getUser().isOnGround()) getUser().addVelocity(0, 0.8f, 0);
+        whichHand = getUser().getActiveHand();
+        gauntletStack = getUser().getActiveItemStack();
         if (getUser().world.isRemote()) {
             spinAmount = 0;
             pitch = 0;
@@ -246,7 +240,7 @@ public class TunnelingAbility extends Ability {
 
     @Override
     protected boolean canContinueUsing() {
-        boolean canContinueUsing = (getTicksInUse() <= 1 || !getUser().isOnGround() || underground) && super.canContinueUsing();
+        boolean canContinueUsing = (getTicksInUse() <= 1 || !getUser().isOnGround() || underground) && getUser().getHeldItem(whichHand).getItem() == ItemHandler.EARTHBORE_GAUNTLET && super.canContinueUsing();
         return canContinueUsing;
     }
 
