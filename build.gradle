@@ -13,7 +13,7 @@ buildscript {
 
 apply plugin: "net.minecraftforge.gradle"
 
-version = "1.5.23"
+version = "1.5.24"
 group = "com.bobmowzie.mowziesmobs"
 archivesBaseName = "mowziesmobs"
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
