@@ -122,10 +122,11 @@ public class RenderSolarBeam extends EntityRenderer<EntitySolarBeam> {
         MatrixStack.Entry matrixstack$entry = matrixStackIn.getLast();
         Matrix4f matrix4f = matrixstack$entry.getMatrix();
         Matrix3f matrix3f = matrixstack$entry.getNormal();
-        drawVertex(matrix4f, matrix3f, builder, -BEAM_RADIUS, -1, 0, minU, minV, 1, packedLightIn);
+        float offset = clearerView ? -1 : 0;
+        drawVertex(matrix4f, matrix3f, builder, -BEAM_RADIUS, offset, 0, minU, minV, 1, packedLightIn);
         drawVertex(matrix4f, matrix3f, builder, -BEAM_RADIUS, length, 0, minU, maxV, 1, packedLightIn);
         drawVertex(matrix4f, matrix3f, builder, BEAM_RADIUS, length, 0, maxU, maxV, 1, packedLightIn);
-        drawVertex(matrix4f, matrix3f, builder, BEAM_RADIUS, -1, 0, maxU, minV, 1, packedLightIn);
+        drawVertex(matrix4f, matrix3f, builder, BEAM_RADIUS, offset, 0, maxU, minV, 1, packedLightIn);
     }
 
     private void renderBeam(float length, float yaw, float pitch, int frame,  MatrixStack matrixStackIn, IVertexBuilder builder, int packedLightIn) {
